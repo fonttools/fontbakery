@@ -65,7 +65,7 @@ class Status(object):
   __instances = {}
 
   def __str__(self):
-    return '<Status {}>'.format(self.__name)
+    return f'<Status {self.__name}>'
 
   @property
   def name(self):
@@ -475,7 +475,7 @@ class CheckRunner(object):
 
     if not iterargs:
       # without this, we would return just an empty tuple
-      raise TypeError('Condition "{}" uses no iterargs.'.format(name))
+      raise TypeError(f'Condition "{name}" uses no iterargs.')
 
     # like [('font', 10), ('other', 22)]
     requirements = [(singular, self._iterargs[singular])
@@ -535,10 +535,10 @@ class CheckRunner(object):
       return fallback
 
     if original_name != name:
-      report_name = '"{}" as "{}"'.format(original_name, name)
+      report_name = f'"{original_name}" as "{name}"'
     else:
-      report_name = '"{}"'.format(name)
-    raise MissingValueError('Value {} is undefined.'.format(report_name))
+      report_name = f'"{name}"'
+    raise MissingValueError(f'Value {report_name} is undefined.')
 
   def _get_args(self, item, iterargs, path=None):
     # iterargs can't be optional arguments yet, we wouldn't generate
@@ -631,7 +631,7 @@ class CheckRunner(object):
       # We can also use it to display status updates to the user.
     if summary_status is None:
       summary_status = ERROR
-      yield ERROR, ('The check {} did not yield any status'.format(check))
+      yield ERROR, (f'The check {check} did not yield any status')
     elif summary_status < PASS:
       summary_status = ERROR
       # got to yield it,so we can see it in the report
@@ -671,7 +671,7 @@ class CheckRunner(object):
     own_order = self.order
     for item in order:
       if item not in own_order:
-        raise ValueError('Order item {} not found.'.format(item))
+        raise ValueError(f'Order item {item} not found.')
     return order
 
   def run(self, order=None):
@@ -745,7 +745,7 @@ class Section(object):
             )
 
   def __repr__(self):
-    return '<Section: {}>'.format(self.name)
+    return f'<Section: {self.name}>'
 
   def __eq__(self, other):
     """ True if other.checks has the same checks in the same order"""
@@ -767,7 +767,7 @@ class Section(object):
       # allow only one, otherwise, skipping registration in
       # add_check becomes problematic, can't skip just for some
       # callbacks.
-      raise Exception('{} already has an on_add_check callback'.format(self))
+      raise Exception(f'{self} already has an on_add_check callback')
     self._add_check_callback = callback
 
   def add_check(self, check):
@@ -806,13 +806,13 @@ class Section(object):
       yield PASS, 'example'
     """
     if not self.add_check(func):
-      raise SetupError('Can\'t add check {} to section {}.'.format(func, self))
+      raise SetupError(f'Can\'t add check {func} to section {self}.')
     return func
 
   def list_checks(self):
     checks = []
     for check in self._checks:
-      checks.append("{} # {}".format(check.id, check.description))
+      checks.append(f"{check.id} # {check.description}")
     return checks
 
 class Spec(object):
@@ -1187,7 +1187,7 @@ class Spec(object):
       else:
         current_section = None
 
-      assert current_section not in seen, 'Scopes are badly sorted.{} in {}'.format(current_section, seen)
+      assert current_section not in seen, f'Scopes are badly sorted.{current_section} in {seen}'
 
       if current_section != last_section:
         if len(items):
@@ -1297,12 +1297,12 @@ class Spec(object):
     return section.get_check(check_id), section
 
   def add_section(self, section):
-    key = '{}'.format(section)
+    key = f'{section}'
     if key in self._sections:
       # the string representation of a section must be unique.
       # string representations of section and check will be used as unique keys
       if self._sections[key] is not section:
-        raise SetupError('A section with key {} is already registered'.format(section))
+        raise SetupError(f'A section with key {section} is already registered')
       return
     self._sections[key] = section
     section.on_add_check(self._register_check)
@@ -1413,7 +1413,7 @@ class Spec(object):
       if '.' in module_name and len(set(module_name)) == 1  and names is not None:
         # if you execute `from . import mod` from a module in the pkg package
         # then you will end up importing pkg.mod
-        module_names = ['{}{}'.format(module_name, name) for name in names]
+        module_names = [f'{module_name}{name}' for name in names]
         names = None
       else:
         module_names = [module_name]
@@ -1528,7 +1528,7 @@ class Spec(object):
     check_filter_func = None if not filter_func else \
                       lambda check: filter_func('check', check.id, check)
     for section in specification.sections:
-      key = '{}'.format(section)
+      key = f'{section}'
       my_section = self._sections.get(key, None)
       if not len(section.checks):
         continue
@@ -1589,7 +1589,7 @@ class Spec(object):
         # and conveys insights on how the order came to be (clustering of
         # iterargs). `sorted(iterargs)` however is more robust over time,
         # the keys will be the same, even if the sorting order changes.
-      , ['{}'.format(section), check.id, sorted(iterargs)]
+      , [f'{section}', check.id, sorted(iterargs)]
     )
     return '{{"section":{},"check":{},"iterargs":{}}}'.format(*values)
 

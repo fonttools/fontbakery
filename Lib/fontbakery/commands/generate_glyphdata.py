@@ -82,7 +82,7 @@ def main():
 
     fonts_data = []
     for font_url in fonts_urls:
-        print('Downloading and generating glyph data for {}'.format(font_url))
+        print(f'Downloading and generating glyph data for {font_url}')
         font_ttf = download_file(font_url)
         font = TTFont(font_ttf)
         fonts_data.append(get_font_glyph_data(font))
@@ -93,7 +93,7 @@ def main():
     script_path = os.path.dirname(__file__)
     glyph_data_path = os.path.join(script_path, '..', 'desired_glyph_data.json')
 
-    print('Saving to {}'.format(glyph_data_path))
+    print(f'Saving to {glyph_data_path}')
     with open(glyph_data_path, 'w') as glyph_file:
         json.dump(glyph_data, glyph_file, indent=4, cls=JsonSetEncoder)
     print('done')

@@ -137,7 +137,7 @@ def test_check_033():
   ]
   good_value = ttFont["OS/2"].panose.bProportion
   for bad_value in bad_monospaced_panose_values:
-    print('Test FAIL with a monospaced font with bad OS/2.panose.bProportion value ({}) ...'.format(bad_value))
+    print(f'Test FAIL with a monospaced font with bad OS/2.panose.bProportion value ({bad_value}) ...')
     ttFont["OS/2"].panose.bProportion = bad_value
     # again, we search the expected FAIL because we may algo get an outliers WARN here:
     results = list(check(ttFont, stats))

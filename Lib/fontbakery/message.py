@@ -23,7 +23,7 @@ class Message(object):
     self.message = message
 
   def __repr__(self):
-    return '{1} [code: {0}]'.format(self.code, self.message)
+    return f'{self.message} [code: {self.code}]'
 
   def getData(self):
     """ return a dictionary with data suitable for serialization,

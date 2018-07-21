@@ -111,7 +111,7 @@ class SerializeReporter(FontbakeryReporter):
     if status >= DEBUG:
       item['logs'].append(dict(
                           status= status.name
-                        , message= '{}'.format(message)
+                        , message= f'{message}'
                         , traceback= getattr(message, 'traceback', None)
                         )
                       )

@@ -209,7 +209,7 @@ def get_spec():
   imported = get_module(args.specification)
   specification = get_module_specification(imported)
   if not specification:
-    raise Exception('Can\'t get a specification from {}.'.format(imported))
+    raise Exception(f'Can\'t get a specification from {imported}.')
   return specification
 
 def runner_factory( specification

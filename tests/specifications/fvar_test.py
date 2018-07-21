@@ -189,7 +189,7 @@ def test_check_171():
     regular_opticalsize_coord = value
 
     # and now this should PASS the test:
-    print('Test PASS with a good Regular:opsz coordinate ({})...'.format(value))
+    print(f'Test PASS with a good Regular:opsz coordinate ({value})...')
     status, message = list(check(ttFont, regular_opticalsize_coord))[-1]
     assert status == PASS
 

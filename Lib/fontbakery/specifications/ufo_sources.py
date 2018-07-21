@@ -126,7 +126,7 @@ def com_daltonmaag_check_required_fields(ufo_font):
       recommended_fields.append(field)
 
   if recommended_fields:
-    yield FAIL, "Required field(s) missing: {}".format(recommended_fields)
+    yield FAIL, f"Required field(s) missing: {recommended_fields}"
   else:
     yield PASS, "Required fields present."
 
@@ -151,7 +151,7 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
       recommended_fields.append(field)
 
   if recommended_fields:
-    yield WARN, "Recommended field(s) missing: {}".format(recommended_fields)
+    yield WARN, f"Recommended field(s) missing: {recommended_fields}"
   else:
     yield PASS, "Recommended fields present."
 
@@ -181,7 +181,7 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
       unnecessary_fields.append(field)
 
   if unnecessary_fields:
-    yield WARN, "Unnecessary field(s) present: {}".format(unnecessary_fields)
+    yield WARN, f"Unnecessary field(s) present: {unnecessary_fields}"
   else:
     yield PASS, "Unnecessary fields omitted."
 

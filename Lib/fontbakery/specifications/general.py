@@ -105,7 +105,7 @@ def com_google_fonts_check_035(font):
           font
       ]
       ftx_output = subprocess.check_output(ftx_cmd, stderr=subprocess.STDOUT)
-      yield FAIL, "ftxvalidator output follows:\n\n{}\n".format(ftx_output)
+      yield FAIL, f"ftxvalidator output follows:\n\n{ftx_output}\n"
 
   except subprocess.CalledProcessError as e:
     yield WARN, ("ftxvalidator returned an error code. Output follows :"
@@ -124,7 +124,7 @@ def com_google_fonts_check_036(font):
     ots_output = subprocess.check_output(
         ["ots-sanitize", font], stderr=subprocess.STDOUT).decode()
     if ots_output != "" and "File sanitized successfully" not in ots_output:
-      yield FAIL, "ots-sanitize output follows:\n\n{}".format(ots_output)
+      yield FAIL, f"ots-sanitize output follows:\n\n{ots_output}"
     else:
       yield PASS, "ots-sanitize passed this file"
   except subprocess.CalledProcessError as e:
@@ -183,12 +183,12 @@ def com_google_fonts_check_037(font):
 
   def report_message(msg, details):
     if details:
-      return "MS-FonVal: {} DETAILS: {}".format(msg, details)
+      return f"MS-FonVal: {msg} DETAILS: {details}"
     else:
-      return "MS-FonVal: {}".format(msg)
+      return f"MS-FonVal: {msg}"
 
-  xml_report_file = "{}.report.xml".format(font)
-  html_report_file = "{}.report.html".format(font)
+  xml_report_file = f"{font}.report.xml"
+  html_report_file = f"{font}.report.html"
   fval_file = os.path.join(os.path.dirname(font), 'fval.xsl')
 
   with open(xml_report_file, "rb") as xml_report:
@@ -393,9 +393,9 @@ def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
        bool(fontforge_skip_checks & bit) is not False:
       yield SKIP, description
     elif bool(validation_state & bit) is not False:
-      yield failure_status_override, "fontforge-check: {}".format(fail_msg)
+      yield failure_status_override, f"fontforge-check: {fail_msg}"
     else:
-      yield PASS, "fontforge-check: {}".format(ok_msg)
+      yield PASS, f"fontforge-check: {ok_msg}"
 
 
 @check(

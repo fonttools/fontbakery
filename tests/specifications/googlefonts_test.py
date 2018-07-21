@@ -181,12 +181,12 @@ def test_check_001():
   ]
 
   for canonical in canonical_names:
-    print('Test PASS with "{}" ...'.format(canonical))
+    print(f'Test PASS with "{canonical}" ...')
     status, message = list(check(canonical))[-1]
     assert status == PASS
 
   for non_canonical in non_canonical_names:
-    print('Test FAIL with "{}" ...'.format(non_canonical))
+    print(f'Test FAIL with "{non_canonical}" ...')
     status, message = list(check(non_canonical))[-1]
     assert status == FAIL
 
@@ -402,14 +402,14 @@ def test_check_020():
                                                      style)
   # Our reference Mada Regular is know to be bad here.
   font = "data/test/mada/Mada-Regular.ttf"
-  print("Test FAIL with bad font '{}' ...".format(font))
+  print(f"Test FAIL with bad font '{font}' ...")
   ttFont = TTFont(font)
   status, message = list(check(font, ttFont, style(font)))[-1]
   assert status == FAIL
 
   # All fonts in our reference Cabin family are know to be good here.
   for font in cabin_fonts:
-    print("Test PASS with good font '{}' ...".format(font))
+    print(f"Test PASS with good font '{font}' ...")
     ttFont = TTFont(font)
     status, message = list(check(font, ttFont, style(font)))[-1]
     assert status == PASS
@@ -853,13 +853,13 @@ def test_check_085():
   some_bad_values = ["APACHE", "Apache", "Ufl", "Ofl", "Open Font License"]
 
   for good in good_licenses:
-    print ("Test PASS: ".format(good))
+    print (f"Test PASS: ")
     md.license = good
     status, message = list(check(md))[-1]
     assert status == PASS
 
   for bad in some_bad_values:
-    print ("Test FAIL: ".format(bad))
+    print (f"Test FAIL: ")
     md.license = bad
     status, message = list(check(md))[-1]
     assert status == FAIL
@@ -888,14 +888,14 @@ def test_check_086():
   ]
 
   for good in good_cases:
-    print ("Test PASS: ".format(good))
+    print (f"Test PASS: ")
     del md.subsets[:]
     md.subsets.extend(good)
     status, message = list(check(md))[-1]
     assert status == PASS
 
   for bad in bad_cases:
-    print ("Test FAIL: ".format(bad))
+    print (f"Test FAIL: ")
     del md.subsets[:]
     md.subsets.extend(bad)
     status, message = list(check(md))[-1]
@@ -924,14 +924,14 @@ def test_check_087():
   ]
 
   for good in good_cases:
-    print ("Test PASS: ".format(good))
+    print (f"Test PASS: ")
     del md.subsets[:]
     md.subsets.extend(good)
     status, message = list(check(md))[-1]
     assert status == PASS
 
   for bad in bad_cases:
-    print ("Test FAIL: ".format(bad))
+    print (f"Test FAIL: ")
     del md.subsets[:]
     md.subsets.extend(bad)
     status, message = list(check(md))[-1]
@@ -1281,13 +1281,13 @@ def test_check_098():
     font_tfnames = []
 
     # So it must PASS the check:
-    print ("Test PASS with a good RIBBI font ({})...".format(fontfile))
+    print (f"Test PASS with a good RIBBI font ({fontfile})...")
     status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == PASS
 
     # And fail if it finds a bad font_familyname:
     font_fnames = ["WrongFamilyName"]
-    print ("Test FAIL with a bad RIBBI font ({})...".format(fontfile))
+    print (f"Test FAIL with a bad RIBBI font ({fontfile})...")
     status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == FAIL
 
@@ -1302,13 +1302,13 @@ def test_check_098():
     font_tfnames = typographic_familynames(ttFont)
 
     # So it must PASS the check:
-    print ("Test PASS with a good NON-RIBBI font ({})...".format(fontfile))
+    print (f"Test PASS with a good NON-RIBBI font ({fontfile})...")
     status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == PASS
 
     # And fail if it finds a bad font_familyname:
     font_tfnames = ["WrongFamilyName"]
-    print ("Test FAIL with a bad NON_RIBBI font ({})...".format(fontfile))
+    print (f"Test FAIL with a bad NON_RIBBI font ({fontfile})...")
     status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == FAIL
 
@@ -1332,13 +1332,13 @@ def test_check_099():
     font_tfnames = []
 
     # So it must PASS the check:
-    print ("Test PASS with a good RIBBI font ({})...".format(fontfile))
+    print (f"Test PASS with a good RIBBI font ({fontfile})...")
     status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == PASS
 
     # And fail if it finds a bad font_familyname:
     font_fnames = ["WrongFamilyName"]
-    print ("Test FAIL with a bad RIBBI font ({})...".format(fontfile))
+    print (f"Test FAIL with a bad RIBBI font ({fontfile})...")
     status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == FAIL
 
@@ -1353,13 +1353,13 @@ def test_check_099():
     font_tfnames = typographic_familynames(ttFont)
 
     # So it must PASS the check:
-    print ("Test PASS with a good NON-RIBBI font ({})...".format(fontfile))
+    print (f"Test PASS with a good NON-RIBBI font ({fontfile})...")
     status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == PASS
 
     # And fail if it finds a bad font_familyname:
     font_tfnames = ["WrongFamilyName"]
-    print ("Test FAIL with a bad NON_RIBBI font ({})...".format(fontfile))
+    print (f"Test FAIL with a bad NON_RIBBI font ({fontfile})...")
     status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
     assert status == FAIL
 
@@ -1376,13 +1376,13 @@ def test_check_100():
     font_meta = font_metadata(meta, fontfile)
 
     # So it must PASS the check:
-    print ("Test PASS with a good font ({})...".format(fontfile))
+    print (f"Test PASS with a good font ({fontfile})...")
     status, message = list(check(fontfile, font_meta))[-1]
     assert status == PASS
 
     # And fail if it finds a bad filename:
     font_meta.filename = "WrongFileName"
-    print ("Test FAIL with a bad font ({})...".format(fontfile))
+    print (f"Test FAIL with a bad font ({fontfile})...")
     status, message = list(check(fontfile, font_meta))[-1]
     assert status == FAIL
 
@@ -1403,13 +1403,13 @@ def test_check_101():
     font_fnames = font_familynames(ttFont)
 
     # So it must PASS the check:
-    print ("Test PASS with a good font ({})...".format(fontfile))
+    print (f"Test PASS with a good font ({fontfile})...")
     status, message = list(check(font_meta, font_fnames))[-1]
     assert status == PASS
 
     # And fail if it finds a bad filename:
     font_meta.post_script_name = "WrongPSName"
-    print ("Test FAIL with a bad font ({})...".format(fontfile))
+    print (f"Test FAIL with a bad font ({fontfile})...")
     status, message = list(check(font_meta, font_fnames))[-1]
     assert status == FAIL
 
@@ -1696,7 +1696,7 @@ def test_check_109():
   good_names = ["VT323", "PT Sans", "Amatic SC"]
   for good_name in good_names:
     font_meta.name = good_name
-    print ("Test PASS with a good font name '{}'...".format(good_name))
+    print (f"Test PASS with a good font name '{good_name}'...")
     status, message = list(check(font_meta))[-1]
     assert status == PASS
 
@@ -1736,13 +1736,13 @@ def test_check_111():
   font_meta = font_metadata(family_meta, fontfile)
 
   for w in [100, 200, 300, 400, 500, 600, 700, 800, 900]:
-    print ("Test PASS with a good weight value ({})...".format(w))
+    print (f"Test PASS with a good weight value ({w})...")
     font_meta.weight = w
     status, message = list(check(font_meta))[-1]
     assert status == PASS
 
   for w in [150, 250, 350, 450, 550, 650, 750, 850]:
-    print ("Test FAIL with a bad weight value ({})...".format(w))
+    print (f"Test FAIL with a bad weight value ({w})...")
     font_meta.weight = w
     status, message = list(check(font_meta))[-1]
     assert status == FAIL
@@ -1761,7 +1761,7 @@ def test_check_112():
     font_meta = font_metadata(family_meta, fontfile)
 
     # So it must PASS the check:
-    print ("Test PASS with a good font ({})...".format(fontfile))
+    print (f"Test PASS with a good font ({fontfile})...")
     status, message = list(check(ttFont, font_meta))[-1]
     assert status == PASS
 
@@ -1769,7 +1769,7 @@ def test_check_112():
     good_value = font_meta.weight
     bad_value = good_value + 50
     font_meta.weight = bad_value
-    print ("Test FAIL with a bad font ({})...".format(fontfile))
+    print (f"Test FAIL with a bad font ({fontfile})...")
     status, message = list(check(ttFont, font_meta))[-1]
     assert status == FAIL
 

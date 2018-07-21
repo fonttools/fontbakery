@@ -55,7 +55,7 @@ class GHMarkdownReporter(SerializeReporter):
     return self.html5_collapsible("{} <b>{}:</b> {}".format(self.emoticon(check["result"]),
                                                             check["result"],
                                                             check["description"]),
-                                  "\n* {}\n{}".format(github_search_url, logs))
+                                  f"\n* {github_search_url}\n{logs}")
 
   def omit_loglevel(self, msg):
     return self.loglevels and (self.loglevels[0] > Status(msg))
