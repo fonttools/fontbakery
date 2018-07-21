@@ -422,7 +422,7 @@ class TerminalReporter(TerminalProgress):
 
     if status == STARTSECTION:
       order = message
-      print('='*8, f'{section}','='*8)
+      print('='*8, str(section),'='*8)
       print('{} {} in section'.format(len(order)
                           , len(order) == 1 and 'check' or 'checks' ))
       print('')
