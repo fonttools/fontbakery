@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 # usage:
 # $ fontbakery check-specification fontbakery.specifications.googlefonts -h
 import argparse

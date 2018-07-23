@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Separation of Concerns Disclaimer:
 While created specifically for checking fonts and font-families this

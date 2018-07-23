@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from fontbakery.checkrunner import (
               DEBUG
             , INFO

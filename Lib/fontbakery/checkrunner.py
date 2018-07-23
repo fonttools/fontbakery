@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Font Bakery CheckRunner is the driver of a font bakery suite of checks.
 

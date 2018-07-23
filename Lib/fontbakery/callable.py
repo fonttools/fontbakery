@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Font Bakery callable is the wrapper for your custom check code.
 

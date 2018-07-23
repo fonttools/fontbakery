@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 class Message(object):
   """Status messages to be yielded by FontBakeryCheck"""
   def __init__(self, code, message):

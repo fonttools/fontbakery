@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from fontbakery.fonts_spec import spec_factory  # NOQA pylint: disable=unused-import
 
 spec_imports = ((
