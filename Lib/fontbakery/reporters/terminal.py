@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Font Bakery reporters/terminal can report the events of the Font Bakery
 CheckRunner Protocol to the terminal (or by pipe to files). It understands

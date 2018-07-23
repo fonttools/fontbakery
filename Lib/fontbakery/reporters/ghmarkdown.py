@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.checkrunner import Status

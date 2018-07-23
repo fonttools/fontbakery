@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 
 from fontbakery.callable import check, condition

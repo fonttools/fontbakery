@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Font Bakery reporters/serialize can report the events of the Font Bakery
 CheckRunner Protocol to a serializeable document e.g. for usage with `json.dumps`.
