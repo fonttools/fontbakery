@@ -2249,31 +2249,26 @@ def remote_styles(family_metadata):
   def fonts_from_zip(zipfile):
     '''return a list of fontTools TTFonts'''
     from fontTools.ttLib import TTFont
+    from io import BytesIO
     fonts = []
     for file_name in zipfile.namelist():
       if file_name.lower().endswith(".ttf"):
-        fonts.append([file_name, TTFont(zipfile.open(file_name))])
+        file_obj = BytesIO(zipfile.open(file_name).read())
+        fonts.append([file_name, TTFont(file_obj)])
     return fonts
-
-  from zipfile import BadZipfile
 
   if (not listed_on_gfonts_api or
       not family_metadata):
     return None
 
-  try:
-    remote_fonts_zip = download_family_from_Google_Fonts(family_metadata.name)
-    rstyles = {}
+  remote_fonts_zip = download_family_from_Google_Fonts(family_metadata.name)
+  rstyles = {}
 
-    for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
-      if '-' in remote_filename[:-4]:
-        remote_style = remote_filename[:-4].split('-')[1]
-      rstyles[remote_style] = remote_font
-    return rstyles
-  except IOError:
-    return None
-  except BadZipfile:
-    return None
+  for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
+    if '-' in remote_filename[:-4]:
+      remote_style = remote_filename[:-4].split('-')[1]
+    rstyles[remote_style] = remote_font
+  return rstyles
 
 
 @condition

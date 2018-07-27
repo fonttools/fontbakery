@@ -158,10 +158,9 @@ def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
 
 
 def download_file(url):
-  from io import StringIO
-  from urllib import urlopen
-  request = urlopen(url)
-  return StringIO(request.read())
+  from urllib.request import urlopen
+  from io import BytesIO
+  return BytesIO(urlopen(url).read())
 
 
 def glyph_has_ink(font, name):
