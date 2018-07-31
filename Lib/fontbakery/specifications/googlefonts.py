@@ -1111,7 +1111,11 @@ def com_google_fonts_check_062(ttFont):
   scenario it makes sense to simply toggle all
   4 flags ON for all font sizes.
   """
-  try:
+
+  if "gasp" not in ttFont.keys():
+    yield FAIL, ("Font is missing the 'gasp' table."
+                 " Try exporting the font with autohinting enabled.")
+  else:
     if not isinstance(ttFont["gasp"].gaspRange, dict):
       yield FAIL, "'gasp' table has no values."
     else:
@@ -1134,9 +1138,6 @@ def com_google_fonts_check_062(ttFont):
         if not failed:
           yield PASS, ("'gasp' table is correctly set, with one "
                        "gaspRange:value of 0xFFFF:0x0F.")
-  except KeyError:
-    yield FAIL, ("Font is missing the 'gasp' table."
-                 " Try exporting the font with autohinting enabled.")
 
 
 @check(
