@@ -1,6 +1,42 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.5.0 (2018-Jul-31)
+### Release highlights & new features
+  - focused on overall bugfixing and improving codebase test-coverage.
+  - first Python 3-only release.
+  - We've got a cupcake ASCII art by Tony de Marco! Cheers!!!
+
+### New checks
+  - **[com.google.fonts/check/ttx-roundtrip]:** Make sure the font roundtrips nicely on the TTX tool.
+
+### Changes to existing checks
+  - **[com.google.fonts/check/001]:** Added support for canonical variable font filenames
+  - **[com.google.fonts/check/018]:** Update cached vendor list from microsoft
+  - **[com.google.fonts/check/020]:** Move it entirely to GFonts spec and simplify the code
+  - **[com.google.fonts/check/032]:** Moved to specs/googlefonts.py
+                                      - updating max-length for description name entries
+  - **[com.google.fonts/check/035]:** Update plist module API used
+  - **[com.google.fonts/check/038]:** fontforge check (038) must only emit WARNs
+  - **[com.google.fonts/check/039]:** Custom override of fontforge failure results
+  - **[com.google.fonts/check/040]:** Moved to specs/googlefonts.py
+  - **[com.google.fonts/check/042]:** Moved to specs/googlefonts.py
+  - **[com.google.fonts/check/046]:** Only check for .notdef glyph. Previously, the OpenType spec recommended .notdef, .null, CR and space as the first four glyphs, but OpenType v1.8.0 specification removed this, .notdef is now the only recommended glyph
+  - **[com.google.fonts/check/071]:** Remove "usWeight is multiple of 50" checking routine. This should focus on checking strings on the name table
+  - **[com.google.fonts/check/072]:** Now emits FAILs instead of WARNs.
+                                      - Moved to specs/googlefonts.py
+  - **[com.google.fonts/check/090]:** bugfix (it was completely broken)
+
+### Noteworthy bugfixes
+  - fix serializer crash on py3 when using check clustering
+  - decode subprocess output (fixes python3 crash on check/054)
+  - fix py3 crash on check/056 The map func changed on Python 3
+  - downgrade a few fval checks from FAIL to WARN
+  - fix crash on checks 117 & 154 related to py3 BytesIO usage
+
+### Code-Test coverage
+  - We currently have code-tests covering 59% of Font Bakery's codebase.
+
 ## 0.4.1 (2018-May-30)
 ### Release highlights & new features
   - Added shorthand for running checks on the opentype specification with `fontbakery check-opentype`.
