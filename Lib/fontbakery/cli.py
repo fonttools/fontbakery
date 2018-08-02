@@ -38,6 +38,10 @@ def main(args=None):
             help='print the list of subcommnds '
             'to stdout, separated by a space character. This is '
             'usually only used to generate the shell completion code.')
+        parser.add_argument(
+            '--version',
+            action='version',
+            version=fontbakery.__version__)
         args = parser.parse_args()
 
         if args.list_subcommands:

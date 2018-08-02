@@ -19,7 +19,7 @@ from setuptools import setup
 
 setup(
     name="fontbakery",
-    use_scm_version=True,
+    use_scm_version={"write_to": "Lib/fontbakery/_version.py"},
     url='https://github.com/googlefonts/fontbakery/',
     description='Well designed Font QA tool, written in Python 3',
     long_description=('Font Bakery is a set of command-line tools'

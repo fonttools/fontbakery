@@ -22,3 +22,4 @@ fontbakery-check-results.json
 fontbakery-check-results.md
 .coverage
 htmlcov
+_version.py
