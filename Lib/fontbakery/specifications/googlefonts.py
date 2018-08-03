@@ -2623,15 +2623,15 @@ def com_google_fonts_check_153(ttFont):
       cmap = ttFont['cmap'].getcmap(PLATFORM_ID__WINDOWS,
                                     PLAT_ENC_ID__UCS2).cmap
       bad_glyphs_name = [("Glyph name: {}\t"
-                          "Counters detected: {}\t"
+                          "Contours detected: {}\t"
                           "Expected: {}").format(cmap[name],
                                                  count,
                                                  pretty_print_list(expected))
                          for name, count, expected in bad_glyphs]
       yield WARN, (("This check inspects the glyph outlines and detects the"
-                    " total number of counters in each of them. The expected"
+                    " total number of contours in each of them. The expected"
                     " values are infered from the typical ammounts of"
-                    " counters observed in a large collection of reference"
+                    " contours observed in a large collection of reference"
                     " font families. The divergences listed below may simply"
                     " indicate a significantly different design on some of"
                     " your glyphs. On the other hand, some of these may flag"
