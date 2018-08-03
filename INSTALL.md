@@ -48,7 +48,7 @@ Install it with:
 
 ##### Apple OS X Font Tools
 
-Apple provides various font utilities, and `ftxvalidator` is especially useful as it runs the same checks that are run for users when they install a font using Font Book.
+Apple provides various font utilities, and `ftxvalidator` is especially useful as it runs the same checks that are run for users when they install a font using Font Book.  Please note that the use of the OS X Font Tools application `ftxvalidator` requires *macOS v10.13 or greater* before you attempt to install the application using the instructions below.
 
 You must use your Apple ID to sign in to http://developer.apple.com and then:
 
