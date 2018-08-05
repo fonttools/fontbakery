@@ -342,7 +342,7 @@ class CheckRunner(object):
         # or ends the generator.
         yield sub_result
     except Exception as e:
-      tb = get_traceback()
+      tb = "".join(traceback.format_tb(e.__traceback__.tb_next))
       error = FailedCheckError(e, tb)
       yield (ERROR, error)
 
@@ -369,7 +369,7 @@ class CheckRunner(object):
     try:
       result = check(**args)
     except Exception as e:
-      tb = get_traceback()
+      tb = "".join(traceback.format_tb(e.__traceback__.tb_next.tb_next))
       error = FailedCheckError(e, tb)
       result = (FAIL, error)
 
