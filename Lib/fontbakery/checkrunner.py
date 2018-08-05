@@ -329,23 +329,6 @@ class CheckRunner(object):
 
     return result
 
-  def _exec_check_generator(self, gen):
-    """ Execute a generator returned by a check callable.
-       Yield each sub-result or, in case of an error, (FAIL, exception)
-    """
-    try:
-       for sub_result in gen:
-        # Collect as much as possible
-        # list(gen) would in case only produce one
-        # error entry. This loop however keeps
-        # all sub_results upon the point of error
-        # or ends the generator.
-        yield sub_result
-    except Exception as e:
-      tb = "".join(traceback.format_tb(e.__traceback__.tb_next))
-      error = FailedCheckError(e, tb)
-      yield (ERROR, error)
-
   def _exec_check(self, check, args):
     """ Yields check sub results.
 
@@ -367,23 +350,23 @@ class CheckRunner(object):
         knowledge from the check definition.
     """
     try:
-      result = check(**args)
+      # A check can be either a normal function that returns one Status or a
+      # generator that yields one or more. The latter will return a generator
+      # object that we can detect with types.GeneratorType.
+      result = check(**args)  # Might raise.
+
+      if isinstance(result, types.GeneratorType):
+        # Iterate over sub-results one-by-one, list(result) would abort on
+        # encountering the first exception.
+        for sub_result in result:  # Might raise.
+          yield self._check_result(sub_result)
+        return  # Do not fall through to rest of method.
     except Exception as e:
-      tb = "".join(traceback.format_tb(e.__traceback__.tb_next.tb_next))
+      tb = "".join(traceback.format_tb(e.__traceback__))
       error = FailedCheckError(e, tb)
       result = (FAIL, error)
 
-    # We allow the `check` callable to "yield" multiple
-    # times, instead of returning just once. That's
-    # a common thing for unit checks (checking multiple conditions
-    # in one method) and a nice feature via yield. It will also
-    # help us to be better compatible with our old style checks
-    # or with pyunittest-like tests.
-    if isinstance(result, types.GeneratorType):
-      for sub_result in self._exec_check_generator(result):
-        yield self._check_result(sub_result)
-    else:
-      yield self._check_result(result)
+    yield self._check_result(result)
 
   def _evaluate_condition(self, name, iterargs, path=None):
     if path is None:
