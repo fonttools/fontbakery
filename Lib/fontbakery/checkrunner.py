@@ -19,8 +19,10 @@ import importlib
 import traceback
 import json
 import logging
+from typing import Dict, Any
 
-from fontbakery.callable import ( FontBakeryCheck
+from fontbakery.callable import ( FontbakeryCallable
+                                , FontBakeryCheck
                                 , FontBakeryCondition
                                 , FontBakeryExpectedValue
                                 )
@@ -318,10 +320,8 @@ class CheckRunner(object):
 
     return result
 
-  def _exec_check(self, check, args):
+  def _exec_check(self, check: FontbakeryCallable, args: Dict[str, Any]):
     """ Yields check sub results.
-
-    `check` must be a callable
 
     Each check result is a tuple of: (<Status>, mixed message)
     `status`: must be an instance of Status.
