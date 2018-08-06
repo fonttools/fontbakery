@@ -16,7 +16,6 @@ from collections import OrderedDict, Counter
 from functools import partial
 from itertools import chain
 import importlib
-import sys
 import traceback
 import json
 import logging
@@ -215,16 +214,6 @@ class NamespaceError(FontBakeryRunnerError):
 class ValueValidationError(FontBakeryRunnerError):
   pass
 
-def get_traceback():
-  """
-  Returns a string with a traceback as the python interpreter would
-  render it. Run this inside of the except block.
-  """
-  ex_type, ex, tb = sys.exc_info()
-  result = traceback.format_tb(tb)[0]
-  del tb
-  return result
-
 # TODO: this should be part of FontBakeryCheck and check.conditions
 # should be a tuple (negated, name)
 def is_negated(name):
@@ -380,14 +369,14 @@ class CheckRunner(object):
     try:
       condition = self._spec.conditions[name]
     except KeyError as err:
-      tb = get_traceback()
+      tb = "".join(traceback.format_tb(err.__traceback__))
       error = MissingConditionError(name, err, tb)
       return error, None
 
     try:
       args = self._get_args(condition, iterargs, path)
     except Exception as err:
-      tb = get_traceback()
+      tb = "".join(traceback.format_tb(err.__traceback__))
       error = FailedConditionError(condition, err, tb)
       return error, None
 
@@ -395,7 +384,7 @@ class CheckRunner(object):
     try:
       return None, condition(**args)
     except Exception as err:
-      tb = get_traceback()
+      tb = "".join(traceback.format_tb(err.__traceback__))
       error = FailedConditionError(condition, err, tb)
       return error, None
 
@@ -557,7 +546,7 @@ class CheckRunner(object):
     try:
       return None, self._get_args(check, iterargs)
     except Exception as error:
-      tb = get_traceback()
+      tb = "".join(traceback.format_tb(error.__traceback__))
       status = (ERROR, FailedDependenciesError(check, error, tb))
       return (status, None)
 
