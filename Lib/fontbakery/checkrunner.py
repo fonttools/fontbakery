@@ -352,7 +352,7 @@ class CheckRunner(object):
         return  # Do not fall through to rest of method.
     except Exception as e:
       error = FailedCheckError(e)
-      result = (FAIL, error)
+      result = (ERROR, error)
 
     yield self._check_result(result)
 
