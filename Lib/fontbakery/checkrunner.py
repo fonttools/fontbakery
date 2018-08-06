@@ -163,40 +163,40 @@ class ProtocolViolationError(FontBakeryRunnerError):
 
 
 class FailedCheckError(FontBakeryRunnerError):
-  def __init__(self, error, traceback, *args):
+  def __init__(self, error, *args):
     message = 'Failed with {}: {}'.format(type(error).__name__, error)
     self.error = error
-    self.traceback = traceback
+    self.traceback = "".join(traceback.format_tb(error.__traceback__))
     super(FailedCheckError, self).__init__(message, *args)
 
 class FailedConditionError(FontBakeryRunnerError):
   """ This is a serious problem with the check suite spec and it must
   be solved.
   """
-  def __init__(self, condition, error, traceback, *args):
+  def __init__(self, condition, error, *args):
     message = 'The condition {} had an error: {}: {}'.format(condition, type(error).__name__, error)
     self.condition = condition
     self.error = error
-    self.traceback = traceback
+    self.traceback = "".join(traceback.format_tb(error.__traceback__))
     super(FailedConditionError, self).__init__(message, *args)
 
 class MissingConditionError(FontBakeryRunnerError):
   """ This is a serious problem with the check suite spec and it must
   be solved, most probably a typo.
   """
-  def __init__(self, condition_name, error, traceback, *args):
+  def __init__(self, condition_name, error, *args):
     message = 'The condition named {} is missing: {}: {}'.format(
                               condition_name, type(error).__name__, error)
     self.error = error
-    self.traceback = traceback
+    self.traceback = "".join(traceback.format_tb(error.__traceback__))
     super(MissingConditionError, self).__init__(message, *args)
 
 class FailedDependenciesError(FontBakeryRunnerError):
-  def __init__(self, check, error, traceback, *args):
+  def __init__(self, check, error, *args):
     message = 'The check {} had an error: {}: {}'.format(check, type(error).__name__, error)
     self.check = check
     self.error = error
-    self.traceback = traceback
+    self.traceback = "".join(traceback.format_tb(error.__traceback__))
     super(FailedDependenciesError, self).__init__(message, *args)
 
 class SetupError(FontBakeryRunnerError):
@@ -351,8 +351,7 @@ class CheckRunner(object):
           yield self._check_result(sub_result)
         return  # Do not fall through to rest of method.
     except Exception as e:
-      tb = "".join(traceback.format_tb(e.__traceback__))
-      error = FailedCheckError(e, tb)
+      error = FailedCheckError(e)
       result = (FAIL, error)
 
     yield self._check_result(result)
@@ -369,23 +368,20 @@ class CheckRunner(object):
     try:
       condition = self._spec.conditions[name]
     except KeyError as err:
-      tb = "".join(traceback.format_tb(err.__traceback__))
-      error = MissingConditionError(name, err, tb)
+      error = MissingConditionError(name, err)
       return error, None
 
     try:
       args = self._get_args(condition, iterargs, path)
     except Exception as err:
-      tb = "".join(traceback.format_tb(err.__traceback__))
-      error = FailedConditionError(condition, err, tb)
+      error = FailedConditionError(condition, err)
       return error, None
 
     path.pop()
     try:
       return None, condition(**args)
     except Exception as err:
-      tb = "".join(traceback.format_tb(err.__traceback__))
-      error = FailedConditionError(condition, err, tb)
+      error = FailedConditionError(condition, err)
       return error, None
 
   def _filter_condition_used_iterargs(self, name, iterargs):
@@ -546,8 +542,7 @@ class CheckRunner(object):
     try:
       return None, self._get_args(check, iterargs)
     except Exception as error:
-      tb = "".join(traceback.format_tb(error.__traceback__))
-      status = (ERROR, FailedDependenciesError(check, error, tb))
+      status = (ERROR, FailedDependenciesError(check, error))
       return (status, None)
 
   def _run_check(self, check, iterargs):
