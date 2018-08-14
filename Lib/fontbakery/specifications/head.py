@@ -81,7 +81,8 @@ def parse_version_string(name):
 )
 def com_google_fonts_check_044(ttFont):
   """Checking font version fields (head and name table)."""
-  head_version = parse_version_string(str(ttFont["head"].fontRevision))
+  from decimal import Decimal
+  head_version = parse_version_string(str(Decimal(ttFont["head"].fontRevision).quantize(Decimal('1.000'))))
 
   # Compare the head version against the name ID 5 strings in all name records.
   from fontbakery.constants import NAMEID_VERSION_STRING
