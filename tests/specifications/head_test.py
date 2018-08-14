@@ -106,11 +106,25 @@ def test_check_044():
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
+  # 1.00099 is only a mis-interpretation of a valid float value (1.001)
+  # See more detailed discussion at:
+  # https://github.com/googlefonts/fontbakery/issues/2006
+  test_font = TTFont(test_font_path)
+  test_font["head"].fontRevision = 1.00099
+  test_font["name"].setName("Version 1.001", 5, 1, 0, 0x0)
+  test_font["name"].setName("Version 1.001", 5, 3, 1, 0x409)
+  status, message = list(check(test_font))[-1]
+  assert status == PASS
+
+  test_font = TTFont(test_font_path)
   test_font["head"].fontRevision = 3.1
+  test_font["name"].setName("Version 3.000", 5, 1, 0, 0x0)
+  test_font["name"].setName("Version 3.000", 5, 3, 1, 0x409)
   status, message = list(check(test_font))[-1]
   assert status == FAIL and message.code == "mismatch"
 
   test_font = TTFont(test_font_path)
+  test_font["head"].fontRevision = 3.0
   test_font["name"].setName("Version 1.000", 5, 3, 1, 0x409)
   status, message = list(check(test_font))[-1]
   assert status == FAIL and message.code == "mismatch"
