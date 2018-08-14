@@ -102,7 +102,6 @@ expected_check_ids = [
       , 'com.google.fonts/check/077' # Check all glyphs have codepoints assigned.
       #, 'com.google.fonts/check/078' # Check that glyph names do not exceed max length.
       , 'com.google.fonts/check/079' # Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth?
-      , 'com.google.fonts/check/080' # METADATA.pb: Ensure designer simple short name.
       , 'com.google.fonts/check/081' # METADATA.pb: Fontfamily is listed on Google Fonts API?
       , 'com.google.fonts/check/083' # METADATA.pb: check if fonts field only has unique "full_name" values.
       , 'com.google.fonts/check/084' # METADATA.pb: check if fonts field only contains unique style:weight pairs.
@@ -1245,20 +1244,6 @@ def com_google_fonts_check_074(ttFont):
     yield PASS, ("None of the ASCII-only NAME table entries"
                  " contain non-ASCII characteres.")
 
-
-@check(
-  id = 'com.google.fonts/check/080',
-  conditions = ['family_metadata']
-)
-def com_google_fonts_check_080(family_metadata):
-  """METADATA.pb: Ensure designer simple short name."""
-  if len(family_metadata.designer.split(" ")) >= 4 or \
-     " and " in family_metadata.designer or \
-     "." in family_metadata.designer or \
-     "," in family_metadata.designer:
-    yield FAIL, "\"designer\" key must be simple short name"
-  else:
-    yield PASS, "Designer is a simple short name"
 
 @condition
 def listed_on_gfonts_api(family_metadata):

@@ -726,45 +726,6 @@ def test_check_074():
   assert status == PASS
 
 
-def test_check_080():
-  """ METADATA.pb: Ensure designer simple short name. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_080 as check,
-                                                     family_metadata,
-                                                     family_directory)
-  print ("Test PASS with a good designer name...")
-  # Our reference Merriweather family has got a good entry
-  # for designer name on its METADATA.pb file:
-  fonts = ["data/test/merriweather/Merriweather-Regular.ttf"]
-  md = family_metadata(family_directory(fonts))
-  status, message = list(check(md))[-1]
-  assert status == PASS
-
-  print ("Test FAIL: 4 names or more is too much.")
-  md.designer = "Dude With Many Surnames"
-  status, message = list(check(md))[-1]
-  assert status == FAIL
-
-  print ("Test PASS: but 3 names is OK!")
-  md.designer = "This Looks Good"
-  status, message = list(check(md))[-1]
-  assert status == PASS
-
-  print ("Test FAIL: We won't accept designer names containing dots.")
-  md.designer = "user.name"
-  status, message = list(check(md))[-1]
-  assert status == FAIL
-
-  print ("Test FAIL: A list of names is also not OK.")
-  md.designer = "Peter, Joanna, Bianca"
-  status, message = list(check(md))[-1]
-  assert status == FAIL
-
-  print ("Test FAIL: And here's another bad one...")
-  md.designer = "Alice and Bob"
-  status, message = list(check(md))[-1]
-  assert status == FAIL
-
-
 def test_check_081():
   """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_081 as check,
