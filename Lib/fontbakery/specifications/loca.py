@@ -8,7 +8,8 @@ spec_imports = (
 )
 
 @check(
-  id = 'com.google.fonts/check/180'
+  id = 'com.google.fonts/check/180',
+  conditions = ['is_ttf']
 )
 def com_google_fonts_check_180(ttFont):
   """Does the number of glyphs in the loca table match the maxp table?"""
