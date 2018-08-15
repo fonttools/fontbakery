@@ -7,6 +7,11 @@ matrix:
     - python: 3.6
       env: TOXENV=flake8,pylint LINT_ONLY=1
 
+branches:
+  only:
+  - master
+  - /^v\d+\.\d+\.\d+/
+
 before_install:
 - if [ -z "$LINT_ONLY" ]; then sudo add-apt-repository --yes ppa:fontforge/fontforge; fi
 - if [ -z "$LINT_ONLY" ]; then sudo apt-get update -qq; fi
