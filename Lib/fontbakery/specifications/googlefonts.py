@@ -2244,7 +2244,7 @@ def remote_styles(family_metadata):
         fonts.append([file_name, TTFont(file_obj)])
     return fonts
 
-  if (not listed_on_gfonts_api or
+  if (not listed_on_gfonts_api(family_metadata) or
       not family_metadata):
     return None
 
@@ -2278,6 +2278,7 @@ def github_gfonts_ttFont(ttFont, license):
 
   from fontbakery.utils import download_file
   from fontTools.ttLib import TTFont
+  from urllib.request import HTTPError
   LICENSE_DIRECTORY = {
     "OFL.txt": "ofl",
     "UFL.txt": "ufl",
@@ -2289,7 +2290,11 @@ def github_gfonts_ttFont(ttFont, license):
          "/{}/{}/{}").format(LICENSE_DIRECTORY[license],
                              fontname,
                              filename)
-  return TTFont(download_file(url))
+  try:
+    fontfile = download_file(url)
+    return TTFont(fontfile)
+  except HTTPError:
+    return None
 
 
 @check(
