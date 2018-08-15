@@ -1093,11 +1093,8 @@ def com_google_fonts_check_061(ttFont):
 
 @check(
   id = 'com.google.fonts/check/062',
-  conditions = ['is_ttf']
-)
-def com_google_fonts_check_062(ttFont):
-  """Is 'gasp' table set to optimize rendering?
-
+  conditions = ['is_ttf'],
+  rationale = """
   Traditionally version 0 'gasp' tables were set
   so that font sizes below 8 ppem had no grid
   fitting but did have antialiasing. From 9-16
@@ -1111,6 +1108,9 @@ def com_google_fonts_check_062(ttFont):
   scenario it makes sense to simply toggle all
   4 flags ON for all font sizes.
   """
+)
+def com_google_fonts_check_062(ttFont):
+  """Is 'gasp' table set to optimize rendering?"""
 
   if "gasp" not in ttFont.keys():
     yield FAIL, ("Font is missing the 'gasp' table."
@@ -1121,20 +1121,41 @@ def com_google_fonts_check_062(ttFont):
     else:
       failed = False
       if 0xFFFF not in ttFont["gasp"].gaspRange:
-        yield WARN, ("'gasp' table does not have a value for all"
-                     " sizes (gaspRange 0xFFFF). It should be set to 1.")
+        yield WARN, ("'gasp' table does not have an entry for all"
+                     " font sizes (gaspRange 0xFFFF).")
       else:
+        gasp_meaning = {
+          0x01: "- Use gridfitting",
+          0x02: "- Use grayscale rendering",
+          0x04: "- Use gridfitting with ClearType symmetric smoothing",
+          0x08: "- Use smoothing along multiple axes with ClearType®"
+        }
+        table = []
+        for key in ttFont["gasp"].gaspRange.keys():
+          value = ttFont["gasp"].gaspRange[key]
+          meaning = []
+          for flag, info in gasp_meaning.items():
+            if value & flag:
+              meaning.append(info)
+
+          meaning = "\n\t".join(meaning)
+          table.append(f"PPM <= {key}:\n\tflag = 0x{value:02X}\n\t{meaning}")
+
+        table = "\n".join(table)
+        yield INFO, ("These are the ppm ranges declared on the"
+                    f" gasp table:\n\n{table}\n")
+
         for key in ttFont["gasp"].gaspRange.keys():
           if key != 0xFFFF:
             yield WARN, ("'gasp' table has a gaspRange of {} that"
-                         " may be unneccessary.").format(hex(key))
+                         " may be unneccessary.").format(key)
             failed = True
           else:
-            value = ttFont["gasp"].gaspRange[key]
+            value = ttFont["gasp"].gaspRange[0xFFFF]
             if value != 0x0F:
               failed = True
-              yield WARN, ("gaspRange {} value {} should be set"
-                           " to 0x0F.").format(hex(key), value)
+              yield WARN, (f"gaspRange 0xFFFF value {value:%02X}"
+                            " should be set to 0x0F.")
         if not failed:
           yield PASS, ("'gasp' table is correctly set, with one "
                        "gaspRange:value of 0xFFFF:0x0F.")
