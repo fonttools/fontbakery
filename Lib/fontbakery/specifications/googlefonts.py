@@ -1092,7 +1092,8 @@ def com_google_fonts_check_061(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/062'
+  id = 'com.google.fonts/check/062',
+  conditions = ['is_ttf']
 )
 def com_google_fonts_check_062(ttFont):
   """Is 'gasp' table set to optimize rendering?
@@ -2554,6 +2555,7 @@ def com_google_fonts_check_131(ttFont, style):
 
 @check(
   id = 'com.google.fonts/check/153',
+  conditions = ['is_ttf'],
   rationale = """
     Visually QAing thousands of glyphs by hand is tiring. Most glyphs can only
     be constructured in a handful of ways. This means a glyph's contour count
