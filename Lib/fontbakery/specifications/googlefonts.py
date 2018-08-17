@@ -2709,6 +2709,7 @@ def com_google_fonts_check_155(ttFont, font_metadata):
 @condition
 def familyname_with_spaces(familyname):
   FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
+                                   'K2D': 'K2D',
                                    'PressStart2P': 'Press Start 2P',
                                    'ABeeZee': 'ABeeZee',
                                    'IBMPlexMono': 'IBM Plex Mono',
