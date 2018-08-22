@@ -876,33 +876,25 @@ def com_google_fonts_check_032(ttFont):
 
 @condition
 def ttfautohint_stats(font):
-  import re
-  import subprocess
-  import tempfile
+  from ttfautohint import ttfautohint, libttfautohint
+  from io import BytesIO
+  from fontTools.ttLib import TTFont
+
   try:
     hinted_size = os.stat(font).st_size
 
-    dehinted = tempfile.NamedTemporaryFile(suffix=".ttf", delete=False)
-    subprocess.call(["ttfautohint",
-                     "--dehint",
-                     font,
-                     dehinted.name])
-    dehinted_size = os.stat(dehinted.name).st_size
-    os.unlink(dehinted.name)
+    buf = BytesIO()
+    TTFont(font).save(buf)
+    data = ttfautohint(in_buffer=buf.getvalue(), dehint=True)
+#    dehinted = TTFont(BytesIO(data))
+    dehinted_size = len(data)
   except OSError:
     return {"missing": True}
-
-  ttfa_cmd = ["ttfautohint",
-              "-V"]  # print version info
-  ttfa_output = subprocess.check_output(ttfa_cmd,
-                                        stderr=subprocess.STDOUT)
-  installed_ttfa = re.search(r'ttfautohint ([^-\n]*)(-.*)?\n',
-                             ttfa_output.decode('utf-8')).group(1)
 
   return {
     "dehinted_size": dehinted_size,
     "hinted_size": hinted_size,
-    "version": installed_ttfa
+    "version": libttfautohint.version_string
   }
 
 TTFAUTOHINT_MISSING_MSG = (
@@ -1055,8 +1047,8 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
                      " with the newer version!").format(ttfa_version,
                                                         installed_ttfa)
       else:
-        yield PASS, ("ttfautohint available in the system is older"
-                     " than the one used in the font.")
+        yield PASS, (f"ttfautohint available in the system ({installed_ttfa}) is older"
+                     f" than the one used in the font ({ttfa_version}).")
     except ValueError:
       yield FAIL, Message("parse-error",
                           ("Failed to parse ttfautohint version values:"

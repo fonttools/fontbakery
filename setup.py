@@ -63,19 +63,9 @@ setup(
         'font-v',
         'defcon',
         'ufolint',
+        'ttfautohint-py'
     ],
     entry_points={
         'console_scripts': ['fontbakery=fontbakery.cli:main'],
     }
 )
-
-
-# check for ttfautohint
-found_ttfautohint = False
-for p in os.environ.get('PATH').split(':'):
-    if os.path.exists(os.path.join(p, 'ttfautohint')):
-        found_ttfautohint = True
-
-if not found_ttfautohint:
-    print('WARNING: Command line tool `ttfautohint` is recommended. Install it with'
-           ' `apt-get install ttfautohint` or `brew install ttfautohint`')
