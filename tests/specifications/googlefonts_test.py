@@ -583,6 +583,12 @@ def NOT_IMPLEMENTED_test_check_056():
   # - FAIL, code="parse-error"
 
 
+def NOT_IMPLEMENTED_test_check_has_ttfautohint_params():
+  """ Font has ttfautohint params? """
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_has_ttfautohint_params as check
+  # TODO: Implement-me!
+
+
 def test_check_061():
   """ EPAR table present in font ? """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_061 as check

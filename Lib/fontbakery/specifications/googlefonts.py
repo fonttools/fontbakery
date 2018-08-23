@@ -166,6 +166,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/174' # Check a static ttf can be generated from a variable font.
       , 'com.google.fonts/check/180' # Does the number of glyphs in the loca table match the maxp table?
       , 'com.google.fonts/check/ttx-roundtrip' # Checking with fontTools.ttx
+      , 'com.google.fonts/check/has_ttfautohint_params' # Font has ttfautohint params
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
@@ -960,6 +961,36 @@ def com_google_fonts_check_055(ttFont):
 
 
 @check(
+  id = 'com.google.fonts/check/has_ttfautohint_params',
+)
+def com_google_fonts_check_has_ttfautohint_params(ttFont):
+  """ Font has ttfautohint params? """
+  from fontbakery.utils import get_name_entry_strings
+  from fontbakery.constants import NAMEID_VERSION_STRING
+
+  def ttfautohint_version(value):
+    # example string:
+    #'Version 1.000; ttfautohint (v0.93) -l 8 -r 50 -G 200 -x 14 -w "G"
+    import re
+    results = re.search(r'ttfautohint \(v(.*)\) ([^;]*)', value)
+    if results:
+      return results.group(1), results.group(2)
+
+  version_strings = get_name_entry_strings(ttFont, NAMEID_VERSION_STRING)
+  failed = True
+  for vstring in version_strings:
+    values = ttfautohint_version(vstring)
+    if values:
+      ttfa_version, params = values
+      if params:
+        yield PASS, f"Font has ttfautohint params ({params})"
+        failed = False
+
+  if failed:
+    yield FAIL, "Font is lacking ttfautohint params on its version strings on the name table."
+
+
+@check(
   id = 'com.google.fonts/check/056',
   conditions = ['ttfautohint_stats']
 )
@@ -969,10 +1000,6 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
      1. find which version was used, by inspecting name table entries
 
      2. find which version of ttfautohint is installed
-        and warn if not available
-
-     3. rehint the font with the latest version of ttfautohint
-        using the same options
   """
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import NAMEID_VERSION_STRING
