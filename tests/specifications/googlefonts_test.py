@@ -528,15 +528,15 @@ def test_check_032():
   assert status == WARN
 
 
-def NOT_IMPLEMENTED_test_check_054():
+def test_check_054():
   """ Show hinting filesize impact. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_054 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - WARN, code="ttfa-missing"
-  # - WARN, code="ttfa-bug"
-  # - INFO
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_054 as check,
+                                                     ttfautohint_stats)
+  font = "data/test/mada/Mada-Regular.ttf"
+
+  print('Test this check always emits an INFO result...')
+  status, message = list(check(TTFont(font), ttfautohint_stats(font)))[-1]
+  assert status == INFO
 
 
 def test_check_055():
@@ -578,7 +578,6 @@ def NOT_IMPLEMENTED_test_check_056():
   # code-paths:
   # - FAIL, code="lacks-version-strings"
   # - INFO, "Could not detect which version of ttfautohint was used in this font."
-  # - SKIP, TTFAUTOHINT_MISSING_MSG
   # - WARN, "detected an old ttfa version"
   # - PASS
   # - FAIL, code="parse-error"

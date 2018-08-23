@@ -880,29 +880,15 @@ def ttfautohint_stats(font):
   from io import BytesIO
   from fontTools.ttLib import TTFont
 
-  try:
-    hinted_size = os.stat(font).st_size
-
-    buf = BytesIO()
-    TTFont(font).save(buf)
-    data = ttfautohint(in_buffer=buf.getvalue(), dehint=True)
-#    dehinted = TTFont(BytesIO(data))
-    dehinted_size = len(data)
-  except OSError:
-    return {"missing": True}
-
+  original_buffer = BytesIO()
+  TTFont(font).save(original_buffer)
+  dehinted_buffer = ttfautohint(in_buffer=original_buffer.getvalue(),
+                                dehint=True)
   return {
-    "dehinted_size": dehinted_size,
-    "hinted_size": hinted_size,
+    "dehinted_size": len(dehinted_buffer),
+    "hinted_size": os.stat(font).st_size,
     "version": libttfautohint.version_string
   }
-
-TTFAUTOHINT_MISSING_MSG = (
-  "ttfautohint is not available!"
-  " You really MUST check the fonts with this tool."
-  " To install it, see https://github.com"
-  "/googlefonts/gf-docs/blob/master"
-  "/ProjectChecklist.md#ttfautohint")
 
 @check(
   id = 'com.google.fonts/check/054',
@@ -913,22 +899,6 @@ def com_google_fonts_check_054(font, ttfautohint_stats):
 
      Current implementation simply logs useful info
      but there's no fail scenario for this checker."""
-
-  if "missing" in ttfautohint_stats:
-    yield WARN, Message("ttfa-missing",
-                        TTFAUTOHINT_MISSING_MSG)
-    return
-
-  if ttfautohint_stats["dehinted_size"] == 0:
-    yield WARN, Message("ttfa-bug",
-                        ("ttfautohint --dehint reports that"
-                         " \"This font has already been processed"
-                         " with ttfautohint\"."
-                         " This is a bug in an old version of ttfautohint."
-                         " You'll need to upgrade it."
-                         " See https://github.com/googlefonts/fontbakery/"
-                         "issues/1043#issuecomment-249035069"))
-    return
 
   hinted = ttfautohint_stats["hinted_size"]
   dehinted = ttfautohint_stats["dehinted_size"]
@@ -1032,11 +1002,6 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
                  " in the font version entries of the 'name' table."
                  " Such font version strings are currently:"
                  " {}").format(version_strings)
-  elif "missing" in ttfautohint_stats:
-    # Even though we skip here, we still have a chance of performing
-    # early portions of the check in the 2 error/info scenarios above
-    # regardless of the avaiability of ttfautohint.
-    yield SKIP, TTFAUTOHINT_MISSING_MSG
   else:
     installed_ttfa = ttfautohint_stats["version"]
     try:
