@@ -23,3 +23,5 @@ fontbakery-check-results.md
 .coverage
 htmlcov
 _version.py
+venv
+docs/_build
