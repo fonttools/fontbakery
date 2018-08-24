@@ -5,12 +5,12 @@ from fontbakery.message import Message
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 spec_imports = [
-    ('.shared_conditions', ('ligatures', ))
+    ('.shared_conditions', ('ligature_glyphs', ))
 ]
 
 @check(
   id = 'com.google.fonts/check/064',
-  conditions = ['ligatures'],
+  conditions = ['ligature_glyphs'],
   rationale = """
     All ligatures in a font must have corresponding caret (text cursor)
     positions defined in the GDEF table, otherwhise, users may experience
@@ -20,9 +20,9 @@ spec_imports = [
     'request': 'https://github.com/googlefonts/fontbakery/issues/1225'
   }
 )
-def com_google_fonts_check_064(ttFont, ligatures):
-  """Is there a caret position declared for every ligature?"""
-  if ligatures == -1:
+def com_google_fonts_check_064(ttFont, ligature_glyphs):
+  """Are there caret positions declared for every ligature?"""
+  if ligature_glyphs == -1:
     yield FAIL, Message("malformed", "Failed to lookup ligatures."
                         " This font file seems to be malformed."
                         " For more info, read:"
@@ -36,21 +36,21 @@ def com_google_fonts_check_064(ttFont, ligatures):
                          " positioning for each ligature must be"
                          " provided in this table."))
   else:
-    # TODO: After getting a sample of a good font,
-    #       resume the implementation of this routine:
     lig_caret_list = ttFont["GDEF"].table.LigCaretList
+    if lig_caret_list is None:
+      missing = set(ligature_glyphs)
+    else:
+      missing = set(ligature_glyphs) - set(lig_caret_list.Coverage.glyphs)
+
     if lig_caret_list is None or lig_caret_list.LigGlyphCount == 0:
       yield WARN, Message("lacks-caret-pos",
                           ("This font lacks caret position values for"
                            " ligature glyphs on its GDEF table."))
-    elif lig_caret_list.LigGlyphCount != len(ligatures):
+    elif missing:
+      missing = "\n\t- ".join(missing)
       yield WARN, Message("incomplete-caret-pos-data",
-                          ("It seems that this font lacks caret positioning"
-                           " values for some of its ligature glyphs on the"
-                           " GDEF table. There's a total of {} ligatures,"
-                           " but only {} sets of caret positioning"
-                           " values.").format(
-                               len(ligatures), lig_caret_list.LigGlyphCount))
+                          ("This font lacks caret positioning"
+                           " values for these ligature glyphs:"
+                           f"\n\t- {missing}\n\n  "))
     else:
-      # Should we also actually check each individual entry here?
       yield PASS, "Looks good!"
