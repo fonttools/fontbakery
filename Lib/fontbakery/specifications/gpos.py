@@ -70,8 +70,8 @@ def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
   def ligatures_str(ligs):
     result = []
     for first in ligs:
-      result.extend([f"{first}_{second}" for second in ligs[first]])
-    return result
+      result.extend([f"\t- {first}_{second}" for second in ligs[first]])
+    return "\n".join(result)
 
   if ligatures == -1:
     yield FAIL, Message("malformed", "Failed to lookup ligatures."
@@ -90,8 +90,8 @@ def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
     if remaining != {}:
       yield WARN, Message("lacks-kern-info",
                           ("GPOS table lacks kerning info for the following"
-                           " non-ligated sequences: "
-                           "{}").format(ligatures_str(remaining)))
+                           " non-ligated sequences:\n"
+                           "{}\n\n  ").format(ligatures_str(remaining)))
     else:
       yield PASS, ("GPOS table provides kerning info for "
                    "all non-ligated sequences.")

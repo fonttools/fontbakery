@@ -33,6 +33,23 @@ def ligatures(ttFont):
                   all_ligatures[firstGlyph].append(lig.Component[0])
     return all_ligatures
   except:
+    return -1 # Indicate fontTools-related crash...
+
+
+@condition
+def ligature_glyphs(ttFont):
+  all_ligature_glyphs = []
+  try:
+    if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
+      for lookup in ttFont["GSUB"].table.LookupList.Lookup:
+        if lookup.LookupType == 4:  # type 4 = Ligature Substitution
+          for subtable in lookup.SubTable:
+            for firstGlyph in subtable.ligatures.keys():
+              for lig in subtable.ligatures[firstGlyph]:
+                if lig.LigGlyph not in all_ligature_glyphs:
+                  all_ligature_glyphs.append(lig.LigGlyph)
+    return all_ligature_glyphs
+  except:
     return -1  # Indicate fontTools-related crash...
 
 
