@@ -23,14 +23,16 @@ def ligatures(ttFont):
   all_ligatures = {}
   try:
     if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
-      for lookup in ttFont["GSUB"].table.LookupList.Lookup:
-        if lookup.LookupType == 4:  # type 4 = Ligature Substitution
-          for subtable in lookup.SubTable:
-            for firstGlyph in subtable.ligatures.keys():
-              all_ligatures[firstGlyph] = []
-              for lig in subtable.ligatures[firstGlyph]:
-                if lig.Component[0] not in all_ligatures[firstGlyph]:
-                  all_ligatures[firstGlyph].append(lig.Component[0])
+      for record in ttFont["GSUB"].table.FeatureList.FeatureRecord:
+        if record.FeatureTag == 'liga':
+          for index in record.Feature.LookupListIndex:
+            lookup = ttFont["GSUB"].table.LookupList.Lookup[index]
+            for subtable in lookup.SubTable:
+              for firstGlyph in subtable.ligatures.keys():
+                all_ligatures[firstGlyph] = []
+                for lig in subtable.ligatures[firstGlyph]:
+                  if lig.Component not in all_ligatures[firstGlyph]:
+                    all_ligatures[firstGlyph].append(lig.Component)
     return all_ligatures
   except:
     return -1 # Indicate fontTools-related crash...
@@ -41,13 +43,15 @@ def ligature_glyphs(ttFont):
   all_ligature_glyphs = []
   try:
     if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
-      for lookup in ttFont["GSUB"].table.LookupList.Lookup:
-        if lookup.LookupType == 4:  # type 4 = Ligature Substitution
-          for subtable in lookup.SubTable:
-            for firstGlyph in subtable.ligatures.keys():
-              for lig in subtable.ligatures[firstGlyph]:
-                if lig.LigGlyph not in all_ligature_glyphs:
-                  all_ligature_glyphs.append(lig.LigGlyph)
+      for record in ttFont["GSUB"].table.FeatureList.FeatureRecord:
+        if record.FeatureTag == 'liga':
+          for index in record.Feature.LookupListIndex:
+            lookup = ttFont["GSUB"].table.LookupList.Lookup[index]
+            for subtable in lookup.SubTable:
+              for firstGlyph in subtable.ligatures.keys():
+                for lig in subtable.ligatures[firstGlyph]:
+                  if lig.LigGlyph not in all_ligature_glyphs:
+                    all_ligature_glyphs.append(lig.LigGlyph)
     return all_ligature_glyphs
   except:
     return -1  # Indicate fontTools-related crash...

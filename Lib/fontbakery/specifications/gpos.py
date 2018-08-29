@@ -54,23 +54,28 @@ def com_google_fonts_check_063(ttFont):
   })
 def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
   """Is there kerning info for non-ligated sequences?"""
-  remaining = ligatures
+  ligature_pairs = []
+  for first, comp in ligatures.items():
+    for components in comp:
+      while components:
+        pair = (first, components[0])
+        if pair not in ligature_pairs:
+          ligature_pairs.append(pair)
+        first = components[0]
+        components.pop(0)
 
   def look_for_nonligated_kern_info(table):
     for pairpos in table.SubTable:
       for i, glyph in enumerate(pairpos.Coverage.glyphs):
-        if glyph in ligatures.keys():
-          if not hasattr(pairpos, 'PairSet'):
-            continue
-          for pairvalue in pairpos.PairSet[i].PairValueRecord:
-            if (glyph in ligatures and glyph in remaining and
-                pairvalue.SecondGlyph in ligatures[glyph]):
-              del remaining[glyph]
+        if not hasattr(pairpos, 'PairSet'):
+          continue
+        for pairvalue in pairpos.PairSet[i].PairValueRecord:
+          kern_pair = (glyph, pairvalue.SecondGlyph)
+          if kern_pair in ligature_pairs:
+            ligature_pairs.remove(kern_pair)
 
-  def ligatures_str(ligs):
-    result = []
-    for first in ligs:
-      result.extend([f"\t- {first}_{second}" for second in ligs[first]])
+  def ligatures_str(pairs):
+    result = [f"\t- {first} + {second}" for first, second in pairs]
     return "\n".join(result)
 
   if ligatures == -1:
@@ -80,18 +85,17 @@ def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
                         " https://github.com"
                         "/googlefonts/fontbakery/issues/1596")
   else:
-    for lookup in ttFont["GPOS"].table.LookupList.Lookup:
-      if lookup.LookupType == 2:  # type 2 = Pair Adjustment
-        look_for_nonligated_kern_info(lookup)
-      # elif lookup.LookupType == 9:
-      #   if lookup.SubTable[0].ExtensionLookupType == 2:
-      #     look_for_nonligated_kern_info(lookup.SubTable[0])
+    for record in ttFont["GSUB"].table.FeatureList.FeatureRecord:
+      if record.FeatureTag == 'kern':
+        for index in record.Feature.LookupListIndex:
+          lookup = ttFont["GSUB"].table.LookupList.Lookup[index]
+          look_for_nonligated_kern_info(lookup)
 
-    if remaining != {}:
+    if ligature_pairs:
       yield WARN, Message("lacks-kern-info",
                           ("GPOS table lacks kerning info for the following"
                            " non-ligated sequences:\n"
-                           "{}\n\n  ").format(ligatures_str(remaining)))
+                           "{}\n\n  ").format(ligatures_str(ligature_pairs)))
     else:
       yield PASS, ("GPOS table provides kerning info for "
                    "all non-ligated sequences.")
