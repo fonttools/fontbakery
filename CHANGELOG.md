@@ -1,6 +1,48 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.5.1 (2018-Aug-31)
+This release-cycle focused on addressing the issues brought up by attendees at the MFDOS - Multiple Font Distributors Onboarding Summit- an event organized by Dave Crossland during TypeCon 2018 in Portland, Oregon.
+
+More info on MFDOS is available at: https://github.com/davelab6/mfdos
+
+### Release highlights & new features / noteworthy bugfixes
+  - Added a --version command line switch.
+  - We're now using ttfautohint-py to ensure users always run the latest available version.
+  - **[BUGFIX]:** Only run regression checks if family is on GF (There was a bug in the implementation that was causing HTTP Errors since it was attempting to fetch the files even though they're not listed on the gfonts API).
+  - **[BUGFIX]:** Access kern data and ligatures by looking up features in order to find the correct Lookup entries with the data. Previous implentation was buggy because it included all lookups regardless of whether they were referenced by the specific features or not, resulting in non-sensical FAIL messages in the caret-positioning and ligature related checks.
+  - **[INSTALL.md]:** include macOS >= 10.13 for ftxvalidator install docs.
+
+### New dependencies
+  - **ttfautohint-py** from PyPI
+
+### deprecated dependencies
+  - A system-wide install of ttfautohint is not needed anymore. The ttfautohint-py package from PyPI includes its own ttfautohint together with the python wrapper.
+
+### New checks
+  - **[com.google.fonts/check/has_ttfautohint_params]:** "Font has ttfautohint parameters."
+
+### Deprecated checks:
+  - **[com.google.fonts/check/080]** METADATA.pb: Ensure designer simple short name.
+
+### Changes to existing checks
+  - **[com.google.fonts/check/044]:** Split code-test and check_parse_version_string function.
+  - **[com.google.fonts/check/044]:** Accept rounding fontRevision due to bad interpretations of float values causing false-FAILs (such as 1.001 being interpreted as 1.00099).
+  - **[com.google.fonts/check/054]:** Simplified ttfautohint-related checks and implemented their code-tests
+  - **[com.google.fonts/check/056]:** Simplified ttfautohint-related checks and implemented their code-tests
+  - **[com.google.fonts/check/058]:** Add .ttfautohint glyph to valid glyphs.
+  - **[com.google.fonts/check/062]:** Improved verbosity of the gasp-table check
+  - **[com.google.fonts/check/062]:** Do not fail or error on absence of 'gasp' table if font contains a 'CFF' or 'CFF2' table.
+  - **[com.google.fonts/check/064]:** Fixed buggy implementations of ligatures and caret positions checks.
+  - **[com.google.fonts/check/065]:** Fixed buggy implementations of ligatures and caret positions checks.
+  - **[com.google.fonts/check/153]:** Do not fail or error on absence of 'glyf' table if font contains a 'CFF' or 'CFF2' table.
+  - **[com.google.fonts/check/153]:** Fix typos: change "counters" to "contours".
+  - **[com.google.fonts/check/155]:** Added K2D as yet another familyname "camelcase" exception
+  - **[com.google.fonts/check/180]:** Do not fail or error on absence of 'loca' table if font contains a 'CFF' or 'CFF2' table.
+
+### Code-Test coverage
+  - We currently have code-tests covering 59% of Font Bakery's codebase.
+
 ## 0.5.0 (2018-Jul-31)
 ### Release highlights & new features
   - focused on overall bugfixing and improving codebase test-coverage.
