@@ -6,7 +6,7 @@ See [docs/code-testing.md](https://github.com/googlefonts/fontbakery/blob/master
 
 ## Updating the distribution package
 
-Releases to PyPI are performed by tagging a commit and then running the following commands (with the proper version number and date):
+Releases to PyPI are performed by running the following commands (with the proper version number and date):
 
 ```sh
 # cleanup
@@ -15,7 +15,7 @@ rm dist/ -rf
 rm venv/ -rf
 
 # create a fresh python virtual env
-virtualenv venv
+virtualenv venv -ppython3
 . venv/bin/activate
 
 # Install tox and run our code tests
