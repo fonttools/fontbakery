@@ -32,7 +32,7 @@ def fontforge_check_results(font):
   try:
     return {
       "validation_state": int(ret_val),
-      "ff_err_messages": ff_err_messages
+      "ff_err_messages": ff_err_messages.decode("utf-8")
     }
   except:
     return None
