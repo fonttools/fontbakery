@@ -2287,7 +2287,7 @@ def github_gfonts_ttFont(ttFont, license):
   LICENSE_DIRECTORY = {
     "OFL.txt": "ofl",
     "UFL.txt": "ufl",
-    "APACHE.txt": "apache"
+    "LICENSE.txt": "apache"
   }
   filename = os.path.basename(ttFont.reader.file.name)
   fontname = filename.split('-')[0].lower()
