@@ -547,7 +547,7 @@ def registered_vendor_ids():
   registered_vendor_ids = {}
   CACHED = resource_filename('fontbakery',
                              'data/fontbakery-microsoft-vendorlist.cache')
-  content = open(CACHED).read()
+  content = open(CACHED, encoding='utf-8').read()
   soup = BeautifulSoup(content, 'html.parser')
 
   IDs = [chr(c + ord('a')) for c in range(ord('z') - ord('a') + 1)]
