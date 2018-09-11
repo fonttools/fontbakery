@@ -1,4 +1,4 @@
-fonttools==3.6
+fonttools>=3.19
 protobuf>=3.4.0
 requests==2.11.1
 beautifulsoup4==4.5.1
