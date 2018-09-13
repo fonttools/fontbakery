@@ -893,7 +893,8 @@ def ttfautohint_stats(font):
 
 @check(
   id = 'com.google.fonts/check/054',
-  conditions = ['ttfautohint_stats']
+  conditions = ['ttfautohint_stats',
+                'is_ttf']
 )
 def com_google_fonts_check_054(font, ttfautohint_stats):
   """Show hinting filesize impact.
@@ -992,7 +993,8 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
 
 @check(
   id = 'com.google.fonts/check/056',
-  conditions = ['ttfautohint_stats']
+  conditions = ['ttfautohint_stats',
+                'is_ttf']
 )
 def com_google_fonts_check_056(ttFont, ttfautohint_stats):
   """Font has old ttfautohint applied?
