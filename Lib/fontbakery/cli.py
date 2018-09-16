@@ -6,7 +6,7 @@ import sys
 import fontbakery.commands
 
 
-def main(args=None):
+def main():
     subcommands = [
         pkg[1].replace("_", "-")
         for pkg in pkgutil.walk_packages(fontbakery.commands.__path__)
