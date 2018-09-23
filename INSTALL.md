@@ -32,11 +32,9 @@ This checker is embedded in Chrome and Firefox, so it is important that font fil
 If available, Font Bakery will wrap around OTS and run it as part of its standard checking.
 Install it with:
 
-    brew tap bramstein/webfonttools;
-    brew update;
-    brew install ots --HEAD;
-
-If brew fails, try installing the binaries from <https://github.com/khaledhosny/ots/releases> and report an error on the Font Bakery issue tracker.
+    curl -L -O https://github.com/khaledhosny/ots/releases/download/v7.1.7/ots-7.1.7-osx.zip
+    unzip ots-7.1.7-osx.zip
+    mv ots-7.1.7-osx.zip/ots-sanitize /usr/local/bin/ots-sanitize
 
 ##### FontForge
 
