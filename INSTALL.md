@@ -36,7 +36,7 @@ Install it with:
     unzip ots-7.1.7-osx.zip
     mv ots-7.1.7-osx/ots-sanitize /usr/local/bin/ots-sanitize
     rm -rf ots-7.1.7-osx
-    rm ots-7.1.1-osx.zip
+    rm ots-7.1.7-osx.zip
 
 
 ##### FontForge
