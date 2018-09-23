@@ -34,7 +34,10 @@ Install it with:
 
     curl -L -O https://github.com/khaledhosny/ots/releases/download/v7.1.7/ots-7.1.7-osx.zip
     unzip ots-7.1.7-osx.zip
-    mv ots-7.1.7-osx.zip/ots-sanitize /usr/local/bin/ots-sanitize
+    mv ots-7.1.7-osx/ots-sanitize /usr/local/bin/ots-sanitize
+    rm -rf ots-7.1.7-osx
+    rm ots-7.1.1-osx.zip
+
 
 ##### FontForge
 
