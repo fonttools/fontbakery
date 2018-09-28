@@ -167,6 +167,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/180' # Does the number of glyphs in the loca table match the maxp table?
       , 'com.google.fonts/check/ttx-roundtrip' # Checking with fontTools.ttx
       , 'com.google.fonts/check/has_ttfautohint_params' # Font has ttfautohint params
+      , 'com.google.fonts/check/vttclean' # There must not be VTT Talk sources in the font.
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
@@ -3314,6 +3315,32 @@ def com_google_fonts_check_072(ttFont):
                   " To fix, export the font with autohinting enabled,"
                   " or run ttfautohint on the font, or run the "
                   " `gftools fix-nonhinting` script.")
+
+
+@condition
+def vtt_talk_sources(ttFont):
+  VTT_TALK_TABLES = {
+      'TSI0', 'TSI1', 'TSI2', 'TSI3', 'TSI5'}
+  tables_found = []
+  for table in ttFont.keys():
+    if table in VTT_TALK_TABLES:
+      tables_found.append(table)
+  return tables_found
+
+
+@check(
+  id = 'com.google.fonts/check/vttclean'
+)
+def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
+  """There must not be VTT Talk sources in the font."""
+
+  if vtt_talk_sources:
+    yield FAIL, ("Some tables containing VTT Talk (hinting) sources"
+                 " were found in the font and should be removed in order"
+                 " to reduce total filesize:"
+                 " {}").format(", ".join(vtt_talk_sources))
+  else:
+    yield PASS, "There are no tables with VTT Talk sources embedded in the font."
 
 
 def is_librebarcode(font):
