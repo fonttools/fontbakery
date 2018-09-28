@@ -2349,3 +2349,18 @@ def test_check_072():
   test_font["prep"].program.bytecode = array.array('B', [0])
   status, _ = list(check(test_font))[-1]
   assert status == FAIL
+
+
+def test_check_vtt_clean():
+  """ There must not be VTT Talk sources in the font. """
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_vtt_clean as check,
+                                                     vtt_talk_sources)
+
+  good_font = TTFont(os.path.join("data", "test", "mada", "Mada-Regular.ttf"))
+  bad_font = TTFont(os.path.join("data", "test", "hinting", "Roboto-VF.ttf"))
+
+  status, _ = list(check(good_font, vtt_talk_sources(good_font)))[-1]
+  assert status == PASS
+
+  status, _ = list(check(bad_font, vtt_talk_sources(bad_font)))[-1]
+  assert status == FAIL
