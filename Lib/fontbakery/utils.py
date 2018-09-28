@@ -63,6 +63,20 @@ def get_name_entry_strings(font,
   return list(map(lambda e: e.string.decode(e.getEncoding()), entries))
 
 
+def get_name_entry_string(font,
+                          nameID,
+                          platformID=None,
+                          encodingID=None,
+                          langID=None):
+  values = get_name_entry_strings(font, nameID, platformID, encodingID, langID)
+  if values:
+    return values[0]
+    #TODO: There should be a fontbakery check that ensures all occurrences of
+    #      a given name id have identical string contents, so that is safe
+    #      for us to simply use the zeroeth occurence here.
+    #      I believe that having different strings would be a problem in the font.
+
+
 def name_entry_id(name):
   from fontbakery.constants import (NameID,
                                     PlatformID)
