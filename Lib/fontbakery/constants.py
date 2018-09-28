@@ -142,13 +142,19 @@ PLATID_STR = {
   PLATFORM_ID__CUSTOM: "CUSTOM"
 }
 
-# Unicode pladdtform-specific encoding IDs (when platID == 0):
+# Unicode platform-specific encoding IDs (when platID == 0):
 PLAT_ENC_ID__UNICODE_BMP_ONLY = 3
+
+# Machintosh platform-specific encoding IDs (when platID == 1):
+PLAT_ENC_ID__MAC_ROMAN = 0
 
 # Windows platform-specific encoding IDs (when platID == 3):
 PLAT_ENC_ID__SYMBOL = 0
 PLAT_ENC_ID__UCS2 = 1
 PLAT_ENC_ID__UCS4 = 10
+
+# Machintosh language IDs:
+MAC_LANG_ID__ENGLISH = 0
 
 PLACEHOLDER_LICENSING_TEXT = {
     'UFL.txt': 'Licensed under the Ubuntu Font Licence 1.0.',
