@@ -297,9 +297,14 @@ def main(specification=None, values=None):
   if args.json:
     import json
     json.dump(sr.getdoc(), args.json, sort_keys=True, indent=4)
+    print("A report in JSON format has been"
+          " saved to '{}'".format(args.json.name))
 
   if args.ghmarkdown:
     args.ghmarkdown.write(mdr.get_markdown())
+    print("A report in GitHub Markdown format which can be useful\n"
+          " for posting issues on a GitHub issue tracker has been\n"
+          " saved to '{}'".format(args.ghmarkdown.name))
 
   # Fail and error let the command fail
   return 1 if tr.worst_check_status in (ERROR, FAIL) else 0
