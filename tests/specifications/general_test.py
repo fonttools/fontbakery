@@ -482,3 +482,17 @@ def DISABLED_test_check_078():
   test_otf = ufo2ft.compileOTF(test_font, useProductionNames=True)
   status, _ = list(check(test_otf))[-1]
   assert status == PASS
+
+
+def test_check_ttx_roundtrip():
+  """ Checking with fontTools.ttx """
+  from fontbakery.specifications.general import com_google_fonts_check_ttx_roundtrip as check
+
+  good_font_path = os.path.join("data", "test", "mada", "Mada-Regular.ttf")
+  status, _ = list(check(good_font_path))[-1]
+  assert status == PASS
+
+  # TODO: Can anyone show us a font file that fails ttx roundtripping?!
+  #bad_font_path = os.path.join("data", "test", ...)
+  #status, _ = list(check(bad_font_path))[-1]
+  #assert status == FAIL

@@ -677,7 +677,8 @@ def com_google_fonts_check_078(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/ttx-roundtrip'
+  id = 'com.google.fonts/check/ttx-roundtrip',
+  conditions = ["not vtt_talk_sources"]
 )
 def com_google_fonts_check_ttx_roundtrip(font):
   """Checking with fontTools.ttx"""
