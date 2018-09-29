@@ -347,7 +347,204 @@ def com_adobe_typetools_check_singleface_33(ttFonts):
 )
 def com_adobe_typetools_check_singleface_34(ttFonts):
   """ Check that the difference between numbers
-      in blue value pairs meet the requirement."""
+      in blue value pairs meet the requirement. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-1'
+)
+def com_adobe_typetools_check_family_1(ttFonts):
+  """ Verify that each group of fonts with the
+      same nameID 1 has maximum of 4 fonts. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-2'
+)
+def com_adobe_typetools_check_family_2(ttFonts):
+  """ Check that the Compatible Family group has
+      same name ID's in all languages except for
+      the compatible names 16,17,18, 20, 21 and 22. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-3'
+)
+def com_adobe_typetools_check_family_3(ttFonts):
+  """ Check that the Compatible Family group has
+      same Preferred Family name (name ID 16) in
+      all languagesID 16 in all other languages. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-4'
+)
+def com_adobe_typetools_check_family_4(ttFonts):
+  """ Family-wide 'size' feature checks. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-5'
+)
+def com_adobe_typetools_check_family_5(ttFonts):
+  """ Check that style settings for each face is
+      unique within Compatible Family group, in all languages. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-6'
+)
+def com_adobe_typetools_check_family_6(ttFonts):
+  """ Check that the Compatible Family group has a
+      base font and at least two faces, and check
+      if weight class is valid. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-7'
+)
+def com_adobe_typetools_check_family_7(ttFonts):
+  """ Check that all faces in the Preferred Family
+      group have the same Copyright and Trademark string. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-8'
+)
+def com_adobe_typetools_check_family_8(ttFonts):
+  """ Check the Compatible Family group style vs OS/2.usWeightClass settings.
+      Max 2 usWeightClass allowed. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-9'
+)
+def com_adobe_typetools_check_family_9(ttFonts):
+  """ Check that all faces in the Compatible Family
+      group have the same OS/2.usWidthClass value. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-10'
+)
+def com_adobe_typetools_check_family_10(ttFonts):
+  """ Check that if all faces in family have a Panose number
+      and that CFF ISFixedPtch matches the Panose monospace setting. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-11'
+)
+def com_adobe_typetools_check_family_11(ttFonts):
+  """ Check that Mac and Windows menu names differ for all
+      but base font, and are the same for the base font. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-12'
+)
+def com_adobe_typetools_check_family_12(ttFonts):
+  """ Check that GSUB/GPOS script and language feature lists
+      are the same in all faces, and that DFLT/dflt
+      and latn/dflt are present. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-13'
+)
+def com_adobe_typetools_check_family_13(ttFonts):
+  """ Check that no two faces in a preferred group
+      have the same weight/width/Italic-style values
+      when the OS/2 table fsSelection bit 8
+      (WEIGHT_WIDTH_SLOPE_ONLY) is set. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-14'
+)
+def com_adobe_typetools_check_family_14(ttFonts):
+  """ Check that all faces in a preferred group
+      have the same fsType embedding values. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-15'
+)
+def com_adobe_typetools_check_family_15(ttFonts):
+  """ Check that all faces in a preferred group
+      have the same underline position and width. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-16'
+)
+def com_adobe_typetools_check_family_16(ttFonts):
+  """ Check that for all faces in a preferred family group,
+      that the width of any glyph is not more than 3 times
+      the width of the same glyph in any other face. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-17'
+)
+def com_adobe_typetools_check_family_17(ttFonts):
+  """ Check that fonts have OS/2 table version 4. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-18'
+)
+def com_adobe_typetools_check_family_18(ttFonts):
+  """ Check that all faces in a Compatible Family group
+      have the same array size of BlueValues and OtherBlues
+      within a Compatible Family Name Italic or Regular
+      sub-group of the family. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-19'
+)
+def com_adobe_typetools_check_family_19(ttFonts):
+  """ Check that all faces in the Preferred Family group
+      have the same values of FamilyBlues and
+      FamilyOtherBlues, and are valid. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-20'
+)
+def com_adobe_typetools_check_family_20(ttFonts):
+  """ Check that all faces in the Compatible Family group
+      have the same BlueScale value. """
+  yield ERROR, "Implement-me!"
+
+
+@check(
+  id = 'com.adobe.typetools/check/implement-me/family-21'
+)
+def com_adobe_typetools_check_family_21(ttFonts):
+  """ Check that all faces in the Compatible Family group
+      have the same BlueShift value. """
   yield ERROR, "Implement-me!"
 
 
