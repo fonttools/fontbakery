@@ -1,0 +1,13 @@
+language: python
+
+python:
+  - "3.6"
+
+before_install:
+  - sudo apt-get install -y jq
+
+install:
+  - pip install fontbakery
+
+script:
+  - sh run_fb.sh
