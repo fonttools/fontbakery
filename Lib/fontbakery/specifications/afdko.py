@@ -366,7 +366,7 @@ def com_adobe_typetools_check_family_1(ttFonts):
 def com_adobe_typetools_check_family_2(ttFonts):
   """ Check that the Compatible Family group has
       same name ID's in all languages except for
-      the compatible names 16,17,18, 20, 21 and 22. """
+      the compatible names 16, 17, 18, 20, 21 and 22. """
   yield ERROR, "Implement-me!"
 
 

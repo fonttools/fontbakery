@@ -257,3 +257,158 @@ def IMPLEMENT_ME_test_check_singleface_34():
       in blue value pairs meet the requirement. """
   #from fontbakery.specifications.afdko import com_adobe_typetools_check_singleface_34 as check
   # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_1():
+  """ Verify that each group of fonts with the
+      same nameID 1 has maximum of 4 fonts. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_1 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_2():
+  """ Check that the Compatible Family group has
+      same name ID's in all languages except for
+      the compatible names 16, 17, 18, 20, 21 and 22. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_2 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_3():
+  """ Check that the Compatible Family group has
+      same Preferred Family name (name ID 16) in
+      all languagesID 16 in all other languages. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_3 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_4():
+  """ Family-wide 'size' feature checks. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_4 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_5():
+  """ Check that style settings for each face is
+      unique within Compatible Family group, in all languages. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_5 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_6():
+  """ Check that the Compatible Family group has a
+      base font and at least two faces, and check
+      if weight class is valid. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_6 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_7():
+  """ Check that all faces in the Preferred Family
+      group have the same Copyright and Trademark string. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_7 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_8():
+  """ Check the Compatible Family group style vs OS/2.usWeightClass settings.
+      Max 2 usWeightClass allowed. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_8 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_9():
+  """ Check that all faces in the Compatible Family
+      group have the same OS/2.usWidthClass value. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_9 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_10():
+  """ Check that if all faces in family have a Panose number
+      and that CFF ISFixedPtch matches the Panose monospace setting. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_10 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_11():
+  """ Check that Mac and Windows menu names differ for all
+      but base font, and are the same for the base font. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_11 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_12():
+  """ Check that GSUB/GPOS script and language feature lists
+      are the same in all faces, and that DFLT/dflt
+      and latn/dflt are present. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_12 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_13():
+  """ Check that no two faces in a preferred group
+      have the same weight/width/Italic-style values
+      when the OS/2 table fsSelection bit 8
+      (WEIGHT_WIDTH_SLOPE_ONLY) is set. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_13 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_14():
+  """ Check that all faces in a preferred group
+      have the same fsType embedding values. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_14 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_15():
+  """ Check that all faces in a preferred group
+      have the same underline position and width. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_15 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_16():
+  """ Check that for all faces in a preferred family group,
+      that the width of any glyph is not more than 3 times
+      the width of the same glyph in any other face. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_16 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_17():
+  """ Check that fonts have OS/2 table version 4. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_17 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_18():
+  """ Check that all faces in a Compatible Family group
+      have the same array size of BlueValues and OtherBlues
+      within a Compatible Family Name Italic or Regular
+      sub-group of the family. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_18 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_19():
+  """ Check that all faces in the Preferred Family group
+      have the same values of FamilyBlues and
+      FamilyOtherBlues, and are valid. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_19 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_20():
+  """ Check that all faces in the Compatible Family group
+      have the same BlueScale value. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_20 as check
+  # TODO: Implement-me!
+
+
+def IMPLEMENT_ME_test_check_family_21():
+  """ Check that all faces in the Compatible Family group
+      have the same BlueShift value. """
+  #from fontbakery.specifications.afdko import com_adobe_typetools_check_family_21 as check
+  # TODO: Implement-me!
