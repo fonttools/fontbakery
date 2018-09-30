@@ -178,7 +178,7 @@ def com_adobe_typetools_check_singleface_13(ttFonts):
 )
 def com_adobe_typetools_check_singleface_14(ttFonts):
   """ Warn if Bold/Italic style bits do not match
-      between the head Table and OS/2 Table """
+      between the head Table and OS/2 Table. """
   yield ERROR, "Implement-me!"
 
 
