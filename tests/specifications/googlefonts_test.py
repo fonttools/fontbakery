@@ -2000,15 +2000,17 @@ def test_check_156():
                        NAMEID_FULL_FONT_NAME,
                        NAMEID_POSTSCRIPT_NAME]
 
-  # then we remove each mandatory entry
-  # one by one:
-  for mandatory in [mandatory_entries]:
+  # then we "remove" each mandatory entry one by one:
+  for mandatory in mandatory_entries:
+    ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
     for i, name in enumerate(ttFont['name'].names):
       if name.nameID == mandatory:
-        del ttFont['name'].names[i]
-        print ("Test FAIL with a missing madatory (RIBBI) name entry...")
-        status, message = list(check(ttFont, style))[-1]
-        assert status == FAIL
+        ttFont['name'].names[i].nameID = 0 # not really removing it, but replacing it
+                                           # by something else completely irrelevant
+                                           # for the purposes of this specific check
+    print (f"Test FAIL with a missing madatory (RIBBI) name entry (id={mandatory})...")
+    status, message = list(check(ttFont, style))[-1]
+    assert status == FAIL
 
   #And now a non-RIBBI font:
   # Our reference Merriweather Black is known to be good
@@ -2027,15 +2029,17 @@ def test_check_156():
                        NAMEID_TYPOGRAPHIC_FAMILY_NAME,
                        NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]
 
-  # then we (again) remove each mandatory entry
-  # one by one:
-  for mandatory in [mandatory_entries]:
+  # then we (again) "remove" each mandatory entry one by one:
+  for mandatory in mandatory_entries:
+    ttFont = TTFont("data/test/merriweather/Merriweather-Black.ttf")
     for i, name in enumerate(ttFont['name'].names):
-      if name.nameID == mandatory:
-        del ttFont['name'].names[i]
-        print ("Test FAIL with a missing madatory (non-RIBBI) name entry...")
-        status, message = list(check(ttFont, style))[-1]
-        assert status == FAIL
+      if name.nameID in mandatory_entries:
+        ttFont['name'].names[i].nameID = 0 # not really removing it, but replacing it
+                                           # by something else completely irrelevant
+                                           # for the purposes of this specific check
+    print ("Test FAIL with a missing madatory (non-RIBBI) name entry (id={mandatory})...")
+    status, message = list(check(ttFont, style))[-1]
+    assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_157():
