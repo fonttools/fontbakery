@@ -747,7 +747,8 @@ def com_google_fonts_check_029(ttFont, license):
 def familyname(font):
   filename = os.path.basename(font)
   filename_base = os.path.splitext(filename)[0]
-  return filename_base.split('-')[0]
+  if '-' in filename_base:
+    return filename_base.split('-')[0]
 
 
 @check(
@@ -2669,6 +2670,9 @@ def familyname_with_spaces(familyname):
                                    'IBMPlexMono': 'IBM Plex Mono',
                                    'IBMPlexSans': 'IBM Plex Sans',
                                    'IBMPlexSerif': 'IBM Plex Serif'}
+  if not familyname:
+    return None
+
   if familyname in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
     return FAMILY_WITH_SPACES_EXCEPTIONS[familyname]
 
@@ -2747,7 +2751,8 @@ def com_google_fonts_check_156(ttFont, style):
 
 @check(
   id = 'com.google.fonts/check/157',
-  conditions = ['style'],
+  conditions = ['style',
+                'familyname_with_spaces'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
@@ -2790,7 +2795,8 @@ def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
 
 @check(
   id = 'com.google.fonts/check/158',
-  conditions = ['style'],
+  conditions = ['style',
+                'familyname_with_spaces'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
@@ -2842,7 +2848,8 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
 
 @check(
   id = 'com.google.fonts/check/159',
-  conditions = ['style'],
+  conditions = ['style',
+                'familyname_with_spaces'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
@@ -2881,7 +2888,8 @@ def com_google_fonts_check_159(ttFont, style, familyname_with_spaces):
 
 @check(
   id = 'com.google.fonts/check/160',
-  conditions = ['style'],
+  conditions = ['style',
+                'familyname'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
@@ -2909,7 +2917,8 @@ def com_google_fonts_check_160(ttFont, style, familyname):
 
 @check(
   id = 'com.google.fonts/check/161',
-  conditions = ['style'],
+  conditions = ['style',
+                'familyname_with_spaces'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
