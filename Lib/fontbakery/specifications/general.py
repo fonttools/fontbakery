@@ -159,6 +159,8 @@ def com_google_fonts_check_037(font):
         fval_exec = 'FontValidator'
     elif os.name == 'nt':
         fval_exec = 'FontValidator.exe'
+    else:
+        raise NotImplementedError('OS not supported')
     fval_cmd = [
         fval_exec, "-file", font, "-all-tables",
         "-report-in-font-dir", "-no-raster-tests"
