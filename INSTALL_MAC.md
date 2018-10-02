@@ -59,5 +59,9 @@ If you wish to run the installation process in Terminal, you can do it this way:
 
 ##### Microsoft Font Validator
 
-TODO - see [#1929](https://github.com/googlefonts/fontbakery/issues/1928)
+Font Validator has useful tests for a font's glyf table. We use Hintak's fork.
 
+* download the latest [release](https://github.com/HinTak/Font-Validator/) for your OS.
+* unzip it
+* Change the unzipped binary's permissions, `chmod 755 FontValidator`
+* Move the binary to your bin folder, `mv /path/to/unzipped/FontValidator /usr/local/bin/FontValidator`

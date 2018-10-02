@@ -156,8 +156,8 @@ def com_google_fonts_check_037(font):
   try:
     import subprocess
     fval_cmd = [
-        "FontValidator.exe", "-file", font, "-all-tables",
-        "-report-in-font-dir", "+raster-tests"
+        "FontValidator", "-file", font, "-all-tables",
+        "-report-in-font-dir", "-no-raster-tests"
     ]
     subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
   except subprocess.CalledProcessError as e:
