@@ -2704,22 +2704,6 @@ def familyname_with_spaces(familyname):
     return result
 
 
-def get_only_weight(value):
-  onlyWeight = {"BlackItalic": "Black",
-                "BoldItalic": "",
-                "ExtraBold": "ExtraBold",
-                "ExtraBoldItalic": "ExtraBold",
-                "ExtraLightItalic": "ExtraLight",
-                "LightItalic": "Light",
-                "MediumItalic": "Medium",
-                "SemiBoldItalic": "SemiBold",
-                "ThinItalic": "Thin"}
-  if value in onlyWeight.keys():
-    return onlyWeight[value]
-  else:
-    return value
-
-
 @check(
   id = 'com.google.fonts/check/156',
   conditions = ['style'],
@@ -2749,10 +2733,29 @@ def com_google_fonts_check_156(ttFont, style):
     yield PASS, "Font contains values for all mandatory name table entries."
 
 
+def get_only_weight(value):
+  onlyWeight = {"BlackItalic": "Black",
+                "BoldItalic": "",
+                "ExtraBold": "ExtraBold",
+                "ExtraBoldItalic": "ExtraBold",
+                "ExtraLightItalic": "ExtraLight",
+                "LightItalic": "Light",
+                "MediumItalic": "Medium",
+                "SemiBoldItalic": "SemiBold",
+                "ThinItalic": "Thin"}
+  return onlyWeight.get(value, value)
+
+
 @check(
   id = 'com.google.fonts/check/157',
   conditions = ['style',
                 'familyname_with_spaces'],
+  rationale = """
+    Checks that the family name infered from the font filename
+    matches the string at nameID 1 (NAMEID_FONT_FAMILY_NAME)
+    if it conforms to RIBBI and otherwise checks that nameID 1
+    is the family name + the style name.
+  """,
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
@@ -2784,6 +2787,7 @@ def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
 
       string = name.string.decode(name.getEncoding()).strip()
       if string != expected_value:
+        failed = True
         yield FAIL, ("Entry {} on the 'name' table: "
                      "Expected '{}' "
                      "but got '{}'.").format(name_entry_id(name),
@@ -2836,6 +2840,7 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
 
       string = name.string.decode(name.getEncoding()).strip()
       if string != expected_value:
+        failed = True
         yield FAIL, ("Entry {} on the 'name' table: "
                      "Expected '{}' "
                      "but got '{}'.").format(name_entry_id(name),
