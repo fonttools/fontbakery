@@ -1,5 +1,6 @@
 import os
 
+from fontbakery.constants import NameID
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -19,7 +20,6 @@ def test_check_031():
       must not contain copyright info.
   """
   from fontbakery.specifications.name import com_google_fonts_check_031 as check
-  from fontbakery.constants import NAMEID_DESCRIPTION
 
   print('Test PASS with a good font...')
   # Our reference Mada Regular is know to be good here.
@@ -27,9 +27,9 @@ def test_check_031():
   status, message = list(check(ttFont))[-1]
   assert status == PASS
 
-  # here we add a "Copyright" string to a NAMEID_DESCRIPTION
+  # here we add a "Copyright" string to a NameID.DESCRIPTION
   for i, name in enumerate(ttFont['name'].names):
-    if name.nameID == NAMEID_DESCRIPTION:
+    if name.nameID == NameID.DESCRIPTION:
       ttFont['name'].names[i].string = "Copyright".encode(name.getEncoding())
 
   print('Test FAIL with a bad font...')
@@ -165,8 +165,6 @@ def test_check_057():
 def test_check_068():
   """ Does full font name begin with the font family name ? """
   from fontbakery.specifications.name import com_google_fonts_check_068 as check
-  from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
-                                    NAMEID_FONT_FAMILY_NAME)
   # Our reference Mada Regular is known to be good
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
 
@@ -177,7 +175,7 @@ def test_check_068():
 
   # alter the full-font-name prepending a bad prefix:
   for i, name in enumerate(ttFont["name"].names):
-    if name.nameID == NAMEID_FULL_FONT_NAME:
+    if name.nameID == NameID.FULL_FONT_NAME:
       ttFont["name"].names[i].string = "bad-prefix".encode(name.getEncoding())
 
   # and make sure the check FAILs:
@@ -188,7 +186,7 @@ def test_check_068():
   print ("Test FAIL with no FULL_FONT_NAME entries...")
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
   for i, name in enumerate(ttFont["name"].names):
-    if name.nameID == NAMEID_FULL_FONT_NAME:
+    if name.nameID == NameID.FULL_FONT_NAME:
       del ttFont["name"].names[i]
   status, message = list(check(ttFont))[-1]
   assert status == FAIL and message.code == "no-full-font-name"
@@ -196,7 +194,7 @@ def test_check_068():
   print ("Test FAIL with no FONT_FAMILY_NAME entries...")
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
   for i, name in enumerate(ttFont["name"].names):
-    if name.nameID == NAMEID_FONT_FAMILY_NAME:
+    if name.nameID == NameID.FONT_FAMILY_NAME:
       del ttFont["name"].names[i]
   status, message = list(check(ttFont))[-1]
   assert status == FAIL and message.code == "no-font-family-name"
@@ -215,12 +213,6 @@ def assert_name_table_check_result(ttFont, index, name, check, value, expected_r
 def test_check_071():
   """ Font follows the family naming recommendations ? """
   from fontbakery.specifications.name import com_google_fonts_check_071 as check
-  from fontbakery.constants import (NAMEID_POSTSCRIPT_NAME,
-                                    NAMEID_FULL_FONT_NAME,
-                                    NAMEID_FONT_FAMILY_NAME,
-                                    NAMEID_FONT_SUBFAMILY_NAME,
-                                    NAMEID_TYPOGRAPHIC_FAMILY_NAME,
-                                    NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME)
   # Our reference Mada Medium is known to be good
   ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
 
@@ -235,8 +227,8 @@ def test_check_071():
     def name_test(value, expected):
       assert_name_table_check_result(ttFont, index, name, check, value, expected) #pylint: disable=cell-var-from-loop
 
-    if name.nameID == NAMEID_POSTSCRIPT_NAME:
-      print ("== NAMEID_POST_SCRIPT_NAME ==")
+    if name.nameID == NameID.POSTSCRIPT_NAME:
+      print ("== NameID.POST_SCRIPT_NAME ==")
 
       print ("Test INFO: May contain only a-zA-Z0-9 characters and an hyphen...")
       # The '@' and '!' chars here are the expected rule violations:
@@ -256,8 +248,8 @@ def test_check_071():
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*29, PASS)
 
-    elif name.nameID == NAMEID_FULL_FONT_NAME:
-      print ("== NAMEID_FULL_FONT_NAME ==")
+    elif name.nameID == NameID.FULL_FONT_NAME:
+      print ("== NameID.FULL_FONT_NAME ==")
 
       print ("Test INFO: Exceeds max length (63)...")
       name_test("A"*64, INFO)
@@ -265,8 +257,8 @@ def test_check_071():
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*63, PASS)
 
-    elif name.nameID == NAMEID_FONT_FAMILY_NAME:
-      print ("== NAMEID_FONT_FAMILY_NAME ==")
+    elif name.nameID == NameID.FONT_FAMILY_NAME:
+      print ("== NameID.FONT_FAMILY_NAME ==")
 
       print ("Test INFO: Exceeds max length (31)...")
       name_test("A"*32, INFO)
@@ -274,8 +266,8 @@ def test_check_071():
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*31, PASS)
 
-    elif name.nameID == NAMEID_FONT_SUBFAMILY_NAME:
-      print ("== NAMEID_FONT_SUBFAMILY_NAME ==")
+    elif name.nameID == NameID.FONT_SUBFAMILY_NAME:
+      print ("== NameID.FONT_SUBFAMILY_NAME ==")
 
       print ("Test INFO: Exceeds max length (31)...")
       name_test("A"*32, INFO)
@@ -283,8 +275,8 @@ def test_check_071():
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*31, PASS)
 
-    elif name.nameID == NAMEID_TYPOGRAPHIC_FAMILY_NAME:
-      print ("== NAMEID_TYPOGRAPHIC_FAMILY_NAME ==")
+    elif name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
+      print ("== NameID.TYPOGRAPHIC_FAMILY_NAME ==")
 
       print ("Test INFO: Exceeds max length (31)...")
       name_test("A"*32, INFO)
@@ -292,8 +284,8 @@ def test_check_071():
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*31, PASS)
 
-    elif name.nameID == NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME:
-      print ("== NAMEID_FONT_TYPOGRAPHIC_SUBFAMILY_NAME ==")
+    elif name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
+      print ("== NameID.FONT_TYPOGRAPHIC_SUBFAMILY_NAME ==")
 
       print ("Test INFO: Exceeds max length (31)...")
       name_test("A"*32, INFO)
@@ -319,8 +311,6 @@ def test_check_152():
 def test_check_163():
   """ Check font name is the same as family name. """
   from fontbakery.specifications.name import com_google_fonts_check_163 as check
-  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
-                                    NAMEID_FONT_SUBFAMILY_NAME)
   # Our reference Cabin Regular is known to be good
   ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
 
@@ -333,12 +323,12 @@ def test_check_163():
   # that were used as an example on the glyphs tutorial
   # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances):
   for index, name in enumerate(ttFont["name"].names):
-    if name.nameID == NAMEID_FONT_FAMILY_NAME:
+    if name.nameID == NameID.FONT_FAMILY_NAME:
       ttFont["name"].names[index].string = "ImpossibleFamilyNameFont".encode(name.getEncoding())
       break
 
   for index, name in enumerate(ttFont["name"].names):
-    if name.nameID == NAMEID_FONT_SUBFAMILY_NAME:
+    if name.nameID == NameID.FONT_SUBFAMILY_NAME:
       ttFont["name"].names[index].string = "WithAVeryLongStyleName".encode(name.getEncoding())
       break
 
