@@ -28,8 +28,7 @@ If this doesn't work for you, wait for the next release of FontBakery after 0.5.
 
 #### FontForge
 
-1. Grab a Windows release from https://github.com/fontforge/fontforge/releases
-2. ???
+1. Grab and install a Windows release from https://github.com/fontforge/fontforge/releases
 
 #### Microsoft Font Validator
 
