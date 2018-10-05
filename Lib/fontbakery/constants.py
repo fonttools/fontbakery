@@ -42,6 +42,14 @@ RIBBI_STYLE_NAMES = ["Regular",
                      "BoldItalic",
                      "Bold Italic"]  # <-- Do we really need this one?
 
+PLACEHOLDER_LICENSING_TEXT = {
+    'UFL.txt': 'Licensed under the Ubuntu Font Licence 1.0.',
+    'OFL.txt': 'This Font Software is licensed under the SIL Open Font '
+               'License, Version 1.1. This license is available with a FAQ '
+               'at: http://scripts.sil.org/OFL',
+    'LICENSE.txt': 'Licensed under the Apache License, Version 2.0'
+}
+
 # nameID definitions for the name table:
 class NameID(enum.IntEnum):
   COPYRIGHT_NOTICE = 0
@@ -69,33 +77,6 @@ class NameID(enum.IntEnum):
   WWS_SUBFAMILY_NAME = 22
   LIGHT_BACKGROUND_PALETTE = 23
   DARK_BACKGROUD_PALETTE = 24
-
-NAMEID_STR = {
-  NameID.COPYRIGHT_NOTICE: "COPYRIGHT_NOTICE",
-  NameID.FONT_FAMILY_NAME: "FONT_FAMILY_NAME",
-  NameID.FONT_SUBFAMILY_NAME: "FONT_SUBFAMILY_NAME",
-  NameID.UNIQUE_FONT_IDENTIFIER: "UNIQUE_FONT_IDENTIFIER",
-  NameID.FULL_FONT_NAME: "FULL_FONT_NAME",
-  NameID.VERSION_STRING: "VERSION_STRING",
-  NameID.POSTSCRIPT_NAME: "POSTSCRIPT_NAME",
-  NameID.TRADEMARK: "TRADEMARK",
-  NameID.MANUFACTURER_NAME: "MANUFACTURER_NAME",
-  NameID.DESIGNER: "DESIGNER",
-  NameID.DESCRIPTION: "DESCRIPTION",
-  NameID.VENDOR_URL: "VENDOR_URL",
-  NameID.DESIGNER_URL: "DESIGNER_URL",
-  NameID.LICENSE_DESCRIPTION: "LICENSE_DESCRIPTION",
-  NameID.LICENSE_INFO_URL: "LICENSE_INFO_URL",
-  NameID.TYPOGRAPHIC_FAMILY_NAME: "TYPOGRAPHIC_FAMILY_NAME",
-  NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "TYPOGRAPHIC_SUBFAMILY_NAME",
-  NameID.COMPATIBLE_FULL_MACONLY: "COMPATIBLE_FULL_MACONLY",
-  NameID.SAMPLE_TEXT: "SAMPLE_TEXT",
-  NameID.POSTSCRIPT_CID_NAME: "POSTSCRIPT_CID_NAME",
-  NameID.WWS_FAMILY_NAME: "WWS_FAMILY_NAME",
-  NameID.WWS_SUBFAMILY_NAME: "WWS_SUBFAMILY_NAME",
-  NameID.LIGHT_BACKGROUND_PALETTE: "LIGHT_BACKGROUND_PALETTE",
-  NameID.DARK_BACKGROUD_PALETTE: "DARK_BACKGROUD_PALETTE"
-}
 
 class FsSelection(enum.IntEnum):
   ITALIC         = (1 << 0)
@@ -137,14 +118,6 @@ class PlatformID(enum.IntEnum):
   WINDOWS = 3
   CUSTOM = 4
 
-PLATID_STR = {
-  PlatformID.UNICODE: "UNICODE",
-  PlatformID.MACINTOSH: "MACINTOSH",
-  PlatformID.ISO: "ISO",
-  PlatformID.WINDOWS: "WINDOWS",
-  PlatformID.CUSTOM: "CUSTOM"
-}
-
 # Unicode platform-specific encoding IDs (when platID == 0):
 class UnicodeEncodingID(enum.IntEnum):
   UNICODE_1_0 = 0
@@ -166,15 +139,6 @@ class WindowsEncodingID(enum.IntEnum):
   JOHAB = 6
   # IDs 7, 8 and 9 are reserved.
   UNICODE_FULL_REPERTOIRE = 10
-
-
-PLACEHOLDER_LICENSING_TEXT = {
-    'UFL.txt': 'Licensed under the Ubuntu Font Licence 1.0.',
-    'OFL.txt': 'This Font Software is licensed under the SIL Open Font '
-               'License, Version 1.1. This license is available with a FAQ '
-               'at: http://scripts.sil.org/OFL',
-    'LICENSE.txt': 'Licensed under the Apache License, Version 2.0'
-}
 
 # =====================================
 # Helper logging class

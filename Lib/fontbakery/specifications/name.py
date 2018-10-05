@@ -1,7 +1,9 @@
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN, INFO
-from fontbakery.constants import CRITICAL, NameID
 from fontbakery.message import Message
+from fontbakery.constants import (CRITICAL,
+                                  NameID,
+                                  PlatformID)
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
@@ -159,15 +161,14 @@ def com_google_fonts_check_033(ttFont, monospace_stats):
 )
 def com_google_fonts_check_057(ttFont):
   """Name table entries should not contain line-breaks."""
-  from fontbakery.constants import (NAMEID_STR, PLATID_STR)
   failed = False
   for name in ttFont["name"].names:
     string = name.string.decode(name.getEncoding())
     if "\n" in string:
       failed = True
       yield FAIL, ("Name entry {} on platform {} contains"
-                   " a line-break.").format(NAMEID_STR[name.nameID],
-                                            PLATID_STR[name.platformID])
+                   " a line-break.").format(NameID(name.nameID).name,
+                                            PlatformID(name.platformID).name)
   if not failed:
     yield PASS, ("Name table entries are all single-line"
                  " (no line-breaks found).")
@@ -352,7 +353,6 @@ def com_google_fonts_check_163(ttFont):
   from unidecode import unidecode
   from fontbakery.utils import (get_name_entries,
                                 get_name_entry_strings)
-  from fontbakery.constants import PLATID_STR
   failed = False
   for familyname in get_name_entries(ttFont,
                                      NameID.FONT_FAMILY_NAME):
@@ -367,7 +367,7 @@ def com_google_fonts_check_163(ttFont):
         yield WARN, ("The combined length of family and style"
                      " exceeds 20 chars in the following '{}' entries:"
                      " FONT_FAMILY_NAME = '{}' / SUBFAMILY_NAME = '{}'"
-                     "").format(PLATID_STR[plat],
+                     "").format(PlatformID(plat).name,
                                 unidecode(familyname_str),
                                 unidecode(stylename_str))
   if not failed:
