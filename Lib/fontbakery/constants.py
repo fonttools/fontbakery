@@ -129,28 +129,43 @@ PANOSE_PROPORTION__MONOSPACED = 9
 IS_FIXED_WIDTH__NOT_MONOSPACED = 0
 IS_FIXED_WIDTH__MONOSPACED = 1  # any non-zero value means monospaced
 
-# Platform IDs:
-PLATFORM_ID__UNICODE = 0
-PLATFORM_ID__MACINTOSH = 1
-PLATFORM_ID__ISO = 2
-PLATFORM_ID__WINDOWS = 3
-PLATFORM_ID__CUSTOM = 4
+class PlatformID(enum.IntEnum):
+  UNICODE = 0
+  MACINTOSH = 1
+  ISO = 2
+  WINDOWS = 3
+  CUSTOM = 4
 
 PLATID_STR = {
-  PLATFORM_ID__UNICODE: "UNICODE",
-  PLATFORM_ID__MACINTOSH: "MACINTOSH",
-  PLATFORM_ID__ISO: "ISO",
-  PLATFORM_ID__WINDOWS: "WINDOWS",
-  PLATFORM_ID__CUSTOM: "CUSTOM"
+  PlatformID.UNICODE: "UNICODE",
+  PlatformID.MACINTOSH: "MACINTOSH",
+  PlatformID.ISO: "ISO",
+  PlatformID.WINDOWS: "WINDOWS",
+  PlatformID.CUSTOM: "CUSTOM"
 }
 
-# Unicode pladdtform-specific encoding IDs (when platID == 0):
-PLAT_ENC_ID__UNICODE_BMP_ONLY = 3
+# Unicode platform-specific encoding IDs (when platID == 0):
+class UnicodeEncodingID(enum.IntEnum):
+  UNICODE_1_0 = 0
+  UNICODE_1_1 = 1
+  ISO_IEC_10646 = 2
+  UNICODE_2_0_BMP_ONLY = 3
+  UNICODE_2_0_FULL = 4
+  UNICODE_VARIATION_SEQUENCES = 5
+  UNICODE_FULL = 6
 
 # Windows platform-specific encoding IDs (when platID == 3):
-PLAT_ENC_ID__SYMBOL = 0
-PLAT_ENC_ID__UCS2 = 1
-PLAT_ENC_ID__UCS4 = 10
+class WindowsEncodingID(enum.IntEnum):
+  SYMBOL = 0
+  UNICODE_BMP = 1
+  SHIFTJIS = 2
+  PRC = 3
+  BIG5 = 4
+  WANSUNG = 5
+  JOHAB = 6
+  # IDs 7, 8 and 9 are reserved.
+  UNICODE_FULL_REPERTOIRE = 10
+
 
 PLACEHOLDER_LICENSING_TEXT = {
     'UFL.txt': 'Licensed under the Ubuntu Font Licence 1.0.',
