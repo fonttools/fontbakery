@@ -1896,7 +1896,8 @@ def com_google_fonts_check_105(font_metadata, canonical_filename):
 def com_google_fonts_check_106(ttFont, font_metadata):
   """METADATA.pb font.style "italic" matches font internals?"""
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import MACSTYLE_ITALIC
+  from fontbakery.constants import MacStyle
+
   if font_metadata.style != "italic":
     yield SKIP, "This check only applies to italic fonts."
   else:
@@ -1912,7 +1913,7 @@ def com_google_fonts_check_106(ttFont, font_metadata):
       #        if they're all the same?
       font_fullname = font_fullname[0]
 
-      if not bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
+      if not bool(ttFont["head"].macStyle & MacStyle.ITALIC):
         yield FAIL, Message("bad-macstyle",
                             "METADATA.pb style has been set to italic"
                             " but font macStyle is improperly set.")
@@ -1934,7 +1935,8 @@ def com_google_fonts_check_106(ttFont, font_metadata):
 def com_google_fonts_check_107(ttFont, font_metadata):
   """METADATA.pb font.style "normal" matches font internals?"""
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import MACSTYLE_ITALIC
+  from fontbakery.constants import MacStyle
+
   if font_metadata.style != "normal":
     yield SKIP, "This check only applies to normal fonts."
     # FIXME: declare a common condition called "normal_style"
@@ -1950,7 +1952,7 @@ def com_google_fonts_check_107(ttFont, font_metadata):
       font_familyname = font_familyname[0]
       font_fullname = font_fullname[0]
 
-      if bool(ttFont["head"].macStyle & MACSTYLE_ITALIC):
+      if bool(ttFont["head"].macStyle & MacStyle.ITALIC):
         yield FAIL, Message("bad-macstyle",
                             ("METADATA.pb style has been set to normal"
                              " but font macStyle is improperly set."))
@@ -2166,7 +2168,7 @@ def com_google_fonts_check_113(font_metadata):
 )
 def com_google_fonts_check_115(ttFont, font_metadata):
   """METADATA.pb: Font styles are named canonically?"""
-  from fontbakery.constants import MACSTYLE_ITALIC
+  from fontbakery.constants import MacStyle
 
   def find_italic_in_name_table():
     for entry in ttFont["name"].names:
@@ -2175,7 +2177,7 @@ def com_google_fonts_check_115(ttFont, font_metadata):
     return False
 
   def is_italic():
-    return (ttFont["head"].macStyle & MACSTYLE_ITALIC or
+    return (ttFont["head"].macStyle & MacStyle.ITALIC or
             ttFont["post"].italicAngle or
             find_italic_in_name_table())
 
@@ -2444,9 +2446,7 @@ def com_google_fonts_check_129(ttFont, style):
   from fontbakery.utils import check_bit_entry
   from fontbakery.constants import (STYLE_NAMES,
                                     RIBBI_STYLE_NAMES,
-                                    FSSEL_REGULAR,
-                                    FSSEL_ITALIC,
-                                    FSSEL_BOLD)
+                                    FsSelection)
 
   # Checking fsSelection REGULAR bit:
   expected = "Regular" in style or \
@@ -2455,21 +2455,21 @@ def com_google_fonts_check_129(ttFont, style):
               "Italic" not in style)
   yield check_bit_entry(ttFont, "OS/2", "fsSelection",
                         expected,
-                        bitmask=FSSEL_REGULAR,
+                        bitmask=FsSelection.REGULAR,
                         bitname="REGULAR")
 
   # Checking fsSelection ITALIC bit:
   expected = "Italic" in style
   yield check_bit_entry(ttFont, "OS/2", "fsSelection",
                         expected,
-                        bitmask=FSSEL_ITALIC,
+                        bitmask=FsSelection.ITALIC,
                         bitname="ITALIC")
 
   # Checking fsSelection BOLD bit:
   expected = style in ["Bold", "BoldItalic"]
   yield check_bit_entry(ttFont, "OS/2", "fsSelection",
                         expected,
-                        bitmask=FSSEL_BOLD,
+                        bitmask=FsSelection.BOLD,
                         bitname="BOLD")
 
 
@@ -2528,20 +2528,20 @@ def com_google_fonts_check_130(ttFont, style):
 def com_google_fonts_check_131(ttFont, style):
   """Checking head.macStyle value."""
   from fontbakery.utils import check_bit_entry
-  from fontbakery.constants import (MACSTYLE_ITALIC,
-                                    MACSTYLE_BOLD)
+  from fontbakery.constants import MacStyle
+
   # Checking macStyle ITALIC bit:
   expected = "Italic" in style
   yield check_bit_entry(ttFont, "head", "macStyle",
                         expected,
-                        bitmask=MACSTYLE_ITALIC,
+                        bitmask=MacStyle.ITALIC,
                         bitname="ITALIC")
 
   # Checking macStyle BOLD bit:
   expected = style in ["Bold", "BoldItalic"]
   yield check_bit_entry(ttFont, "head", "macStyle",
                         expected,
-                        bitmask=MACSTYLE_BOLD,
+                        bitmask=MacStyle.BOLD,
                         bitname="BOLD")
 
 
