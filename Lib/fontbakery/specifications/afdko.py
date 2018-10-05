@@ -1,33 +1,32 @@
 from fontbakery.callable import check, condition
 from fontbakery.checkrunner import FAIL, PASS, ERROR, Section
+from fontbakery.constants import (NameID,
+                                  PlatformID,
+                                  MacEncodingID,
+                                  MacLanguageID)
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 specification = spec_factory(default_section=Section("Adobe Font Development Kit for OpenType"))
 
-from fontbakery.constants import (NAMEID_COMPATIBLE_FULL_MACONLY,
-                                  NAMEID_POSTSCRIPT_NAME,
-                                  PLATFORM_ID__MACINTOSH,
-                                  PLAT_ENC_ID__MAC_ROMAN,
-                                  MAC_LANG_ID__ENGLISH)
 
 @condition
 def macCompFullName(ttFont):
   from fontbakery.utils import get_name_entry_string
   return get_name_entry_string(ttFont,
-                               NAMEID_COMPATIBLE_FULL_MACONLY,
-                               PLATFORM_ID__MACINTOSH,
-                               PLAT_ENC_ID__MAC_ROMAN,
-                               MAC_LANG_ID__ENGLISH)
+                               NameID.COMPATIBLE_FULL_MACONLY,
+                               PlatformID.MACINTOSH,
+                               MacEncodingID.ROMAN,
+                               MacLanguageID.ENGLISH)
 
 @condition
 def postScriptName(ttFont):
   from fontbakery.utils import get_name_entry_string
   return get_name_entry_string(ttFont,
-                               NAMEID_POSTSCRIPT_NAME,
-                               PLATFORM_ID__MACINTOSH,
-                               PLAT_ENC_ID__MAC_ROMAN,
-                               MAC_LANG_ID__ENGLISH)
+                               NameID.POSTSCRIPT_NAME,
+                               PlatformID.MACINTOSH,
+                               MacEncodingID.ROMAN,
+                               MacLanguageID.ENGLISH)
 @check(
   id = 'com.adobe.typetools/check/name/id18/length',
   conditions = ["macCompFullName",
