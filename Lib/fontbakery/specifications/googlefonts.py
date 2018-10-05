@@ -20,6 +20,7 @@ from fontbakery.constants import(
 #     , NORMAL
 #     , LOW
 #     , TRIVIAL
+      , NameID
 )
 from fontbakery.fonts_spec import spec_factory
 
@@ -713,17 +714,14 @@ def com_google_fonts_check_028(licenses):
   })
 def com_google_fonts_check_029(ttFont, license):
   """Check copyright namerecords match license file."""
-  from fontbakery.constants import (NAMEID_LICENSE_DESCRIPTION,
-                                    # NAMEID_LICENSE_INFO_URL,
-                                    PLACEHOLDER_LICENSING_TEXT,
-                                    # NAMEID_STR,
+  from fontbakery.constants import (PLACEHOLDER_LICENSING_TEXT,
                                     PLATID_STR)
   from unidecode import unidecode
   failed = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
   entry_found = False
   for i, nameRecord in enumerate(ttFont["name"].names):
-    if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION:
+    if nameRecord.nameID == NameID.LICENSE_DESCRIPTION:
       entry_found = True
       value = nameRecord.toUnicode()
       if value != placeholder:
@@ -736,7 +734,7 @@ def com_google_fonts_check_029(ttFont, license):
                              " Value was: \"{}\""
                              " Must be changed to \"{}\""
                              "").format(license,
-                                        NAMEID_LICENSE_DESCRIPTION,
+                                        NameID.LICENSE_DESCRIPTION,
                                         nameRecord.platformID,
                                         PLATID_STR[nameRecord.platformID],
                                         unidecode(value),
@@ -745,7 +743,7 @@ def com_google_fonts_check_029(ttFont, license):
     yield FAIL, Message("missing", \
                         ("Font lacks NameID {} "
                          "(LICENSE DESCRIPTION). A proper licensing entry"
-                         " must be set.").format(NAMEID_LICENSE_DESCRIPTION))
+                         " must be set.").format(NameID.LICENSE_DESCRIPTION))
   elif not failed:
     yield PASS, "Licensing entry on name table is correctly set."
 
@@ -766,9 +764,7 @@ def familyname(font):
 )
 def com_google_fonts_check_030(ttFont, familyname):
   """"License URL matches License text on name table?"""
-  from fontbakery.constants import (NAMEID_LICENSE_DESCRIPTION,
-                                    NAMEID_LICENSE_INFO_URL,
-                                    PLACEHOLDER_LICENSING_TEXT)
+  from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
   LEGACY_UFL_FAMILIES = ["Ubuntu", "UbuntuCondensed", "UbuntuMono"]
   LICENSE_URL = {
     'OFL.txt': 'http://scripts.sil.org/OFL',
@@ -785,7 +781,7 @@ def com_google_fonts_check_030(ttFont, familyname):
     placeholder = PLACEHOLDER_LICENSING_TEXT[license]
     for nameRecord in ttFont['name'].names:
       string = nameRecord.string.decode(nameRecord.getEncoding())
-      if nameRecord.nameID == NAMEID_LICENSE_DESCRIPTION and\
+      if nameRecord.nameID == NameID.LICENSE_DESCRIPTION and\
          string == placeholder:
         detected_license = license
         break
@@ -803,7 +799,7 @@ def com_google_fonts_check_030(ttFont, familyname):
       failed = False
       expected = LICENSE_URL[detected_license]
       for nameRecord in ttFont['name'].names:
-        if nameRecord.nameID == NAMEID_LICENSE_INFO_URL:
+        if nameRecord.nameID == NameID.LICENSE_INFO_URL:
           string = nameRecord.string.decode(nameRecord.getEncoding())
           if string == expected:
             found_good_entry = True
@@ -814,9 +810,9 @@ def com_google_fonts_check_030(ttFont, familyname):
                                  " entries! NameID={} (LICENSE DESCRIPTION)"
                                  " indicates {} licensing, but NameID={}"
                                  " (LICENSE URL) has '{}'. Expected: '{}'"
-                                 "").format(NAMEID_LICENSE_DESCRIPTION,
+                                 "").format(NameID.LICENSE_DESCRIPTION,
                                             LICENSE_NAME[detected_license],
-                                            NAMEID_LICENSE_INFO_URL,
+                                            NameID.LICENSE_INFO_URL,
                                             string, expected))
     if not found_good_entry:
       yield FAIL, Message("no-license-found",
@@ -826,7 +822,7 @@ def com_google_fonts_check_030(ttFont, familyname):
                            " Open Font License. For a small set of legacy"
                            " families the Ubuntu Font License may be"
                            " acceptable as well."
-                           "").format(NAMEID_LICENSE_INFO_URL))
+                           "").format(NameID.LICENSE_INFO_URL))
     else:
       if failed:
         yield FAIL, Message("bad-entries",
@@ -834,8 +830,8 @@ def com_google_fonts_check_030(ttFont, familyname):
                              " NAME table, there were also bad entries."
                              " Please review NameIDs {} (LICENSE DESCRIPTION)"
                              " and {} (LICENSE INFO URL)."
-                             "").format(NAMEID_LICENSE_DESCRIPTION,
-                                        NAMEID_LICENSE_INFO_URL))
+                             "").format(NameID.LICENSE_DESCRIPTION,
+                                        NameID.LICENSE_INFO_URL))
       else:
         yield PASS, "Font has a valid license URL in NAME table."
 
@@ -855,23 +851,22 @@ def com_google_fonts_check_030(ttFont, familyname):
 )
 def com_google_fonts_check_032(ttFont):
   """Description strings in the name table must not exceed 200 characters."""
-  from fontbakery.constants import NAMEID_DESCRIPTION
   failed = False
   for name in ttFont['name'].names:
-    if (name.nameID == NAMEID_DESCRIPTION and
+    if (name.nameID == NameID.DESCRIPTION and
         len(name.string.decode(name.getEncoding())) > 200):
       failed = True
       break
 
   if failed:
-    yield WARN, ("A few name table entries with ID={} (NAMEID_DESCRIPTION)"
+    yield WARN, ("A few name table entries with ID={} (NameID.DESCRIPTION)"
                  " are longer than 200 characters."
                  " Please check whether those entries are copyright notices"
                  " mistakenly stored in the description string entries by"
                  " a bug in an old FontLab version."
                  " If that's the case, then such copyright notices must be"
                  " removed from these entries."
-                 "").format(NAMEID_DESCRIPTION)
+                 "").format(NameID.DESCRIPTION)
   else:
     yield PASS, "All description name records have reasonably small lengths."
 
@@ -936,27 +931,26 @@ def com_google_fonts_check_054(font, ttfautohint_stats):
 def com_google_fonts_check_055(ttFont):
   """Version format is correct in 'name' table?"""
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_VERSION_STRING
   import re
   def is_valid_version_format(value):
     return re.match(r'Version\s0*[1-9]+\.\d+', value)
 
   failed = False
-  version_entries = get_name_entry_strings(ttFont, NAMEID_VERSION_STRING)
+  version_entries = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
   if len(version_entries) == 0:
     failed = True
     yield FAIL, Message("no-version-string",
-                        ("Font lacks a NAMEID_VERSION_STRING (nameID={})"
-                         " entry").format(NAMEID_VERSION_STRING))
+                        ("Font lacks a NameID.VERSION_STRING (nameID={})"
+                         " entry").format(NameID.VERSION_STRING))
   for ventry in version_entries:
     if not is_valid_version_format(ventry):
       failed = True
       yield FAIL, Message("bad-version-strings",
-                          ("The NAMEID_VERSION_STRING (nameID={}) value must"
+                          ("The NameID.VERSION_STRING (nameID={}) value must"
                            " follow the pattern \"Version X.Y\" with X.Y"
                            " between 1.000 and 9.999."
                            " Current version string is:"
-                           " \"{}\"").format(NAMEID_VERSION_STRING,
+                           " \"{}\"").format(NameID.VERSION_STRING,
                                              ventry))
   if not failed:
     yield PASS, "Version format in NAME table entries is correct."
@@ -968,7 +962,6 @@ def com_google_fonts_check_055(ttFont):
 def com_google_fonts_check_has_ttfautohint_params(ttFont):
   """ Font has ttfautohint params? """
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_VERSION_STRING
 
   def ttfautohint_version(value):
     # example string:
@@ -978,7 +971,7 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
     if results:
       return results.group(1), results.group(2)
 
-  version_strings = get_name_entry_strings(ttFont, NAMEID_VERSION_STRING)
+  version_strings = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
   failed = True
   for vstring in version_strings:
     values = ttfautohint_version(vstring)
@@ -1005,7 +998,6 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
      2. find which version of ttfautohint is installed
   """
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_VERSION_STRING
 
   def ttfautohint_version(values):
     import re
@@ -1019,7 +1011,7 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
     used = list(map(int, used.split(".")))
     return installed > used
 
-  version_strings = get_name_entry_strings(ttFont, NAMEID_VERSION_STRING)
+  version_strings = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
   ttfa_version = ttfautohint_version(version_strings)
   if len(version_strings) == 0:
     yield FAIL, Message("lacks-version-strings",
@@ -1158,9 +1150,8 @@ def com_google_fonts_check_067(ttFont):
      discoverable in Windows applications.
   """
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
   failed = False
-  for familyname in get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME):
+  for familyname in get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME):
     digits = map(str, range(0, 10))
     if familyname[0] in digits:
       yield FAIL, ("Font family name '{}'"
@@ -1227,12 +1218,10 @@ def com_google_fonts_check_070(ttFont):
 )
 def com_google_fonts_check_074(ttFont):
   """Are there non-ASCII characters in ASCII-only NAME table entries?"""
-  from fontbakery.constants import (NAMEID_COPYRIGHT_NOTICE,
-                                    NAMEID_POSTSCRIPT_NAME)
   bad_entries = []
   for name in ttFont["name"].names:
-    if name.nameID == NAMEID_COPYRIGHT_NOTICE or \
-       name.nameID == NAMEID_POSTSCRIPT_NAME:
+    if name.nameID == NameID.COPYRIGHT_NOTICE or \
+       name.nameID == NameID.POSTSCRIPT_NAME:
       string = name.string.decode(name.getEncoding())
       try:
         string.encode('ascii')
@@ -1512,14 +1501,13 @@ def com_google_fonts_check_092(ttFont, font_metadata):
      family name declared on the name table.
   """
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
 
-  familynames = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
+  familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
   if len(familynames) == 0:
     yield FAIL, Message("missing",
                         ("This font lacks a FONT_FAMILY_NAME entry"
                          " (nameID={}) in the name"
-                         " table.").format(NAMEID_FONT_FAMILY_NAME))
+                         " table.").format(NameID.FONT_FAMILY_NAME))
   else:
     if font_metadata.name not in familynames:
       yield FAIL, Message("mismatch",
@@ -1542,15 +1530,14 @@ def com_google_fonts_check_093(ttFont, font_metadata):
   """
   failed = False
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_POSTSCRIPT_NAME
 
-  postscript_names = get_name_entry_strings(ttFont, NAMEID_POSTSCRIPT_NAME)
+  postscript_names = get_name_entry_strings(ttFont, NameID.POSTSCRIPT_NAME)
   if len(postscript_names) == 0:
     failed = True
     yield FAIL, Message("missing",
                         ("This font lacks a POSTSCRIPT_NAME"
                          " entry (nameID={}) in the "
-                         "name table.").format(NAMEID_POSTSCRIPT_NAME))
+                         "name table.").format(NameID.POSTSCRIPT_NAME))
   else:
     for psname in postscript_names:
       if psname != font_metadata.post_script_name:
@@ -1576,14 +1563,13 @@ def com_google_fonts_check_094(ttFont, font_metadata):
      fullname declared on the name table?
   """
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_FULL_FONT_NAME
 
-  full_fontnames = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
+  full_fontnames = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
   if len(full_fontnames) == 0:
     yield FAIL, Message("lacks-entry",
                         ("This font lacks a FULL_FONT_NAME"
                          " entry (nameID={}) in the"
-                         " name table.").format(NAMEID_FULL_FONT_NAME))
+                         " name table.").format(NameID.FULL_FONT_NAME))
   else:
     for full_fontname in full_fontnames:
       if full_fontname != font_metadata.full_name:
@@ -1608,15 +1594,13 @@ def com_google_fonts_check_095(ttFont, style, font_metadata):
   """
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import (RIBBI_STYLE_NAMES,
-                                    NAMEID_FONT_FAMILY_NAME,
-                                    NAMEID_TYPOGRAPHIC_FAMILY_NAME,
                                     NAMEID_STR)
   if style in RIBBI_STYLE_NAMES:
-    font_familynames = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
-    nameid = NAMEID_FONT_FAMILY_NAME
+    font_familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+    nameid = NameID.FONT_FAMILY_NAME
   else:
-    font_familynames = get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
-    nameid = NAMEID_TYPOGRAPHIC_FAMILY_NAME
+    font_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+    nameid = NameID.TYPOGRAPHIC_FAMILY_NAME
 
   if len(font_familynames) == 0:
     yield FAIL, Message("lacks-entry",
@@ -1685,15 +1669,13 @@ def com_google_fonts_check_097(font_metadata):
 @condition
 def font_familynames(ttFont):
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_FONT_FAMILY_NAME
-  return get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
+  return get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
 
 
 @condition
 def typographic_familynames(ttFont):
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import NAMEID_TYPOGRAPHIC_FAMILY_NAME
-  return get_name_entry_strings(ttFont, NAMEID_TYPOGRAPHIC_FAMILY_NAME)
+  return get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
 
 
 @condition
@@ -1912,12 +1894,11 @@ def com_google_fonts_check_105(font_metadata, canonical_filename):
 def com_google_fonts_check_106(ttFont, font_metadata):
   """METADATA.pb font.style "italic" matches font internals?"""
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import (NAMEID_FULL_FONT_NAME,
-                                    MACSTYLE_ITALIC)
+  from fontbakery.constants import MACSTYLE_ITALIC
   if font_metadata.style != "italic":
     yield SKIP, "This check only applies to italic fonts."
   else:
-    font_fullname = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
+    font_fullname = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
     if len(font_fullname) == 0:
       yield SKIP, "Font lacks fullname entries in name table."
       # this fail scenario was already checked above
@@ -1937,7 +1918,7 @@ def com_google_fonts_check_106(ttFont, font_metadata):
         yield FAIL, Message("bad-fullfont-name",
                             ("Font macStyle Italic bit is set"
                              " but nameID {} (\"{}\") is not ended with"
-                             " \"Italic\"").format(NAMEID_FULL_FONT_NAME,
+                             " \"Italic\"").format(NameID.FULL_FONT_NAME,
                                                    font_fullname))
       else:
         yield PASS, ("OK: METADATA.pb font.style \"italic\""
@@ -1951,15 +1932,13 @@ def com_google_fonts_check_106(ttFont, font_metadata):
 def com_google_fonts_check_107(ttFont, font_metadata):
   """METADATA.pb font.style "normal" matches font internals?"""
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
-                                    NAMEID_FULL_FONT_NAME,
-                                    MACSTYLE_ITALIC)
+  from fontbakery.constants import MACSTYLE_ITALIC
   if font_metadata.style != "normal":
     yield SKIP, "This check only applies to normal fonts."
     # FIXME: declare a common condition called "normal_style"
   else:
-    font_familyname = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)
-    font_fullname = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)
+    font_familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+    font_fullname = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
     if len(font_familyname) == 0 or len(font_fullname) == 0:
       yield SKIP, ("Font lacks familyname and/or"
                    " fullname entries in name table.")
@@ -1977,13 +1956,13 @@ def com_google_fonts_check_107(ttFont, font_metadata):
         yield FAIL, Message("familyname-italic",
                             ("Font macStyle indicates a non-Italic font, but"
                              " nameID {} (FONT_FAMILY_NAME: \"{}\") ends with"
-                             " \"Italic\".").format(NAMEID_FONT_FAMILY_NAME,
+                             " \"Italic\".").format(NameID.FONT_FAMILY_NAME,
                                                     font_familyname))
       elif font_fullname.split("-")[-1].endswith("Italic"):
         yield FAIL, Message("fullfont-italic",
                             ("Font macStyle indicates a non-Italic font but"
                              " nameID {} (FULL_FONT_NAME: \"{}\") ends with"
-                             " \"Italic\".").format(NAMEID_FULL_FONT_NAME,
+                             " \"Italic\".").format(NameID.FULL_FONT_NAME,
                                                     font_fullname))
       else:
         yield PASS, ("METADATA.pb font.style \"normal\""
@@ -1999,11 +1978,9 @@ def com_google_fonts_check_108(ttFont, font_metadata):
      the values declared on the name table?
   """
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
-                                    NAMEID_FULL_FONT_NAME)
 
-  font_familyname = get_name_entry_strings(ttFont, NAMEID_FONT_FAMILY_NAME)[0]
-  font_fullname = get_name_entry_strings(ttFont, NAMEID_FULL_FONT_NAME)[0]
+  font_familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)[0]
+  font_fullname = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)[0]
   # FIXME: common condition/name-id check as in the two previous checks.
 
   if font_fullname != font_metadata.full_name:
@@ -2675,12 +2652,11 @@ def com_google_fonts_check_154(ttFont, api_gfonts_ttFont):
 def com_google_fonts_check_155(ttFont, font_metadata):
   """Copyright field for this font on METADATA.pb matches
      all copyright notice entries on the name table ?"""
-  from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
   from unidecode import unidecode
   failed = False
   for nameRecord in ttFont['name'].names:
     string = nameRecord.string.decode(nameRecord.getEncoding())
-    if nameRecord.nameID == NAMEID_COPYRIGHT_NOTICE and\
+    if nameRecord.nameID == NameID.COPYRIGHT_NOTICE and\
        string != font_metadata.copyright:
         failed = True
         yield FAIL, ("Copyright field for this font on METADATA.pb ('{}')"
@@ -2759,20 +2735,14 @@ def com_google_fonts_check_156(ttFont, style):
   """Font has all mandatory 'name' table entries ?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import (RIBBI_STYLE_NAMES,
-                                    NAMEID_STR,
-                                    NAMEID_FONT_FAMILY_NAME,
-                                    NAMEID_FONT_SUBFAMILY_NAME,
-                                    NAMEID_FULL_FONT_NAME,
-                                    NAMEID_POSTSCRIPT_NAME,
-                                    NAMEID_TYPOGRAPHIC_FAMILY_NAME,
-                                    NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME)
-  required_nameIDs = [NAMEID_FONT_FAMILY_NAME,
-                      NAMEID_FONT_SUBFAMILY_NAME,
-                      NAMEID_FULL_FONT_NAME,
-                      NAMEID_POSTSCRIPT_NAME]
+                                    NAMEID_STR)
+  required_nameIDs = [NameID.FONT_FAMILY_NAME,
+                      NameID.FONT_SUBFAMILY_NAME,
+                      NameID.FULL_FONT_NAME,
+                      NameID.POSTSCRIPT_NAME]
   if style not in RIBBI_STYLE_NAMES:
-    required_nameIDs += [NAMEID_TYPOGRAPHIC_FAMILY_NAME,
-                         NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME]
+    required_nameIDs += [NameID.TYPOGRAPHIC_FAMILY_NAME,
+                         NameID.TYPOGRAPHIC_SUBFAMILY_NAME]
   failed = False
   # The font must have at least these name IDs:
   for nameId in required_nameIDs:
@@ -2794,13 +2764,12 @@ def com_google_fonts_check_156(ttFont, style):
 def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
   """ Check name table: FONT_FAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
-                                    PLATFORM_ID__MACINTOSH,
+  from fontbakery.constants import (PLATFORM_ID__MACINTOSH,
                                     PLATFORM_ID__WINDOWS)
   failed = False
   only_weight = get_only_weight(style)
   for name in ttFont['name'].names:
-    if name.nameID == NAMEID_FONT_FAMILY_NAME:
+    if name.nameID == NameID.FONT_FAMILY_NAME:
 
       if name.platformID == PLATFORM_ID__MACINTOSH:
         expected_value = familyname_with_spaces
@@ -2840,15 +2809,14 @@ def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
 def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import (NAMEID_FONT_SUBFAMILY_NAME,
-                                    PLATFORM_ID__MACINTOSH,
+  from fontbakery.constants import (PLATFORM_ID__MACINTOSH,
                                     PLATFORM_ID__WINDOWS,
                                     STYLE_NAMES)
   failed = False
   style_with_spaces = style.replace('Italic',
                                     ' Italic').strip()
   for name in ttFont['name'].names:
-    if name.nameID == NAMEID_FONT_SUBFAMILY_NAME:
+    if name.nameID == NameID.FONT_SUBFAMILY_NAME:
       if style_with_spaces not in STYLE_NAMES:
         yield FAIL, ("Style name '{}' inferred from filename"
                      " is not canonical."
@@ -2896,12 +2864,11 @@ def com_google_fonts_check_159(ttFont, style, familyname_with_spaces):
   """ Check name table: FULL_FONT_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import NAMEID_FULL_FONT_NAME
   failed = False
   style_with_spaces = style.replace('Italic',
                                     ' Italic').strip()
   for name in ttFont['name'].names:
-    if name.nameID == NAMEID_FULL_FONT_NAME:
+    if name.nameID == NameID.FULL_FONT_NAME:
       expected_value = "{} {}".format(familyname_with_spaces,
                                       style_with_spaces)
       string = name.string.decode(name.getEncoding()).strip()
@@ -2936,11 +2903,10 @@ def com_google_fonts_check_160(ttFont, style, familyname):
   """ Check name table: POSTSCRIPT_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import NAMEID_POSTSCRIPT_NAME
 
   failed = False
   for name in ttFont['name'].names:
-    if name.nameID == NAMEID_POSTSCRIPT_NAME:
+    if name.nameID == NameID.POSTSCRIPT_NAME:
       expected_value = f"{familyname}-{style}"
 
       string = name.string.decode(name.getEncoding()).strip()
@@ -2965,11 +2931,10 @@ def com_google_fonts_check_161(ttFont, style, familyname_with_spaces):
   """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import NAMEID_TYPOGRAPHIC_FAMILY_NAME
 
   failed = False
   for name in ttFont['name'].names:
-    if name.nameID == NAMEID_TYPOGRAPHIC_FAMILY_NAME:
+    if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
       if style in ['Regular',
                    'Italic',
                    'Bold',
@@ -3003,13 +2968,12 @@ def com_google_fonts_check_162(ttFont, style):
   """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME
 
   failed = False
   style_with_spaces = style.replace('Italic',
                                     ' Italic').strip()
   for name in ttFont['name'].names:
-    if name.nameID == NAMEID_TYPOGRAPHIC_SUBFAMILY_NAME:
+    if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
       if style in ['Regular',
                    'Italic',
                    'Bold',
@@ -3048,10 +3012,9 @@ def com_google_fonts_check_164(ttFont):
   """ Length of copyright notice must not exceed 500 characters. """
   from unidecode import unidecode
   from fontbakery.utils import get_name_entries
-  from fontbakery.constants import NAMEID_COPYRIGHT_NOTICE
 
   failed = False
-  for notice in get_name_entries(ttFont, NAMEID_COPYRIGHT_NOTICE):
+  for notice in get_name_entries(ttFont, NameID.COPYRIGHT_NOTICE):
     notice_str = notice.string.decode(notice.getEncoding())
     if len(notice_str) > 500:
         failed = True

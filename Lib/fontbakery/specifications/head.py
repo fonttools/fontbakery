@@ -1,6 +1,7 @@
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.message import Message
+from fontbakery.constants import NameID
 
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
@@ -85,10 +86,9 @@ def com_google_fonts_check_044(ttFont):
   head_version = parse_version_string(str(Decimal(ttFont["head"].fontRevision).quantize(Decimal('1.000'))))
 
   # Compare the head version against the name ID 5 strings in all name records.
-  from fontbakery.constants import NAMEID_VERSION_STRING
   name_id_5_records = [
       record for record in ttFont["name"].names
-      if record.nameID == NAMEID_VERSION_STRING
+      if record.nameID == NameID.VERSION_STRING
   ]
 
   failed = False
