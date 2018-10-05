@@ -97,21 +97,21 @@ NAMEID_STR = {
   NameID.DARK_BACKGROUD_PALETTE: "DARK_BACKGROUD_PALETTE"
 }
 
-# fsSelection bit definitions:
-FSSEL_ITALIC         = (1 << 0)
-FSSEL_UNDERSCORE     = (1 << 1)
-FSSEL_NEGATIVE       = (1 << 2)
-FSSEL_OUTLINED       = (1 << 3)
-FSSEL_STRIKEOUT      = (1 << 4)
-FSSEL_BOLD           = (1 << 5)
-FSSEL_REGULAR        = (1 << 6)
-FSSEL_USETYPOMETRICS = (1 << 7)
-FSSEL_WWS            = (1 << 8)
-FSSEL_OBLIQUE        = (1 << 9)
+class FsSelection(enum.IntEnum):
+  ITALIC         = (1 << 0)
+  UNDERSCORE     = (1 << 1)
+  NEGATIVE       = (1 << 2)
+  OUTLINED       = (1 << 3)
+  STRIKEOUT      = (1 << 4)
+  BOLD           = (1 << 5)
+  REGULAR        = (1 << 6)
+  USETYPOMETRICS = (1 << 7)
+  WWS            = (1 << 8)
+  OBLIQUE        = (1 << 9)
 
-# macStyle bit definitions:
-MACSTYLE_BOLD   = (1 << 0)
-MACSTYLE_ITALIC = (1 << 1)
+class MacStyle(enum.IntEnum):
+  BOLD   = (1 << 0)
+  ITALIC = (1 << 1)
 
 class PANOSE_Proportion(enum.IntEnum):
   ANY = 0

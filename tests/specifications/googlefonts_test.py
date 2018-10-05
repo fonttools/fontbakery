@@ -1485,7 +1485,7 @@ def test_check_105():
 
 def test_check_106():
   """ METADATA.pb font.style "italic" matches font internals ? """
-  from fontbakery.constants import MACSTYLE_ITALIC
+  from fontbakery.constants import MacStyle
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_106 as check,
                                                      family_metadata,
                                                      font_metadata)
@@ -1516,14 +1516,14 @@ def test_check_106():
   # And, finally, let's flip off that italic bit
   # and get a "bad-macstyle" FAIL (so much fun!):
   print ("Test FAIL with bad macstyle bit value...")
-  ttFont['head'].macStyle &= ~MACSTYLE_ITALIC
+  ttFont['head'].macStyle &= ~MacStyle.ITALIC
   status, message = list(check(ttFont, font_meta))[-1]
   assert status == FAIL and message.code == "bad-macstyle"
 
 
 def test_check_107():
   """ METADATA.pb font.style "normal" matches font internals ? """
-  from fontbakery.constants import MACSTYLE_ITALIC
+  from fontbakery.constants import MacStyle
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_107 as check,
                                                      family_metadata,
                                                      font_metadata)
@@ -1571,7 +1571,7 @@ def test_check_107():
   # But this time the boolean logic is the quite opposite in
   # comparison to test_check_106 above. Here we have to set the
   # bit back to 1 to get a wrongful "this font is an italic" setting:
-  ttFont['head'].macStyle |= MACSTYLE_ITALIC
+  ttFont['head'].macStyle |= MacStyle.ITALIC
   status, message = list(check(ttFont, font_meta))[-1]
   # Not it's not! FAIL! :-D
   assert status == FAIL and message.code == "bad-macstyle"
@@ -1847,8 +1847,7 @@ def test_check_131():
   """ Checking head.macStyle value. """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_131 as check
   from fontbakery.utils import assert_results_contain
-  from fontbakery.constants import (MACSTYLE_ITALIC,
-                                    MACSTYLE_BOLD)
+  from fontbakery.constants import MacStyle
 
   fontfile = "data/test/cabin/Cabin-Regular.ttf"
   ttFont = TTFont(fontfile)
@@ -1858,11 +1857,11 @@ def test_check_131():
     [0, "Thin", PASS],
     [0, "Bold", "bad-BOLD"],
     [0, "Italic", "bad-ITALIC"],
-    [MACSTYLE_ITALIC, "Italic", PASS],
-    [MACSTYLE_ITALIC, "Thin", "bad-ITALIC"],
-    [MACSTYLE_BOLD, "Bold", PASS],
-    [MACSTYLE_BOLD, "Thin", "bad-BOLD"],
-    [MACSTYLE_BOLD|MACSTYLE_ITALIC, "BoldItalic", PASS]
+    [MacStyle.ITALIC, "Italic", PASS],
+    [MacStyle.ITALIC, "Thin", "bad-ITALIC"],
+    [MacStyle.BOLD, "Bold", PASS],
+    [MacStyle.BOLD, "Thin", "bad-BOLD"],
+    [MacStyle.BOLD | MacStyle.ITALIC, "BoldItalic", PASS]
   ]
 
   for macStyle_value, style, expected in test_cases:
