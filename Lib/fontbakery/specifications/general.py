@@ -1,7 +1,7 @@
 import os
 from fontbakery.callable import check, condition, disable
 from fontbakery.checkrunner import ERROR, FAIL, INFO, PASS, SKIP, WARN
-from fontbakery.constants import CRITICAL
+from fontbakery.constants import PriorityLevel
 from fontbakery.message import Message
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
@@ -41,7 +41,7 @@ def fontforge_check_results(font):
 @check(
   id = 'com.google.fonts/check/002',
   misc_metadata = {
-    'priority': CRITICAL
+    'priority': PriorityLevel.CRITICAL
   }
 )
 def com_google_fonts_check_002(fonts):

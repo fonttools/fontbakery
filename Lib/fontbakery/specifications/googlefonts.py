@@ -11,19 +11,10 @@ import os
 from .shared_conditions import is_variable_font
 from fontbakery.callable import condition, check, disable
 from fontbakery.message import Message
-from fontbakery.constants import(
-        # TODO: priority levels are not yet part of the new runner/reporters.
-        # How did we ever use this information?
-        # Check priority levels:
-        CRITICAL
-      , IMPORTANT
-#     , NORMAL
-#     , LOW
-#     , TRIVIAL
-      , NameID
-      , PlatformID
-      , WindowsEncodingID
-)
+from fontbakery.constants import(PriorityLevel,
+                                 NameID,
+                                 PlatformID,
+                                 WindowsEncodingID)
 from fontbakery.fonts_spec import spec_factory
 
 spec_imports = (
@@ -239,7 +230,7 @@ def expected_os2_weight(style):
 @check(
   id = 'com.google.fonts/check/001',
   misc_metadata = {
-    'priority': CRITICAL
+    'priority': PriorityLevel.CRITICAL
   }
 )
 def com_google_fonts_check_001(font):
@@ -712,7 +703,7 @@ def com_google_fonts_check_028(licenses):
   id = 'com.google.fonts/check/029',
   conditions = ['license'],
   misc_metadata = {
-    'priority': CRITICAL
+    'priority': PriorityLevel.CRITICAL
   })
 def com_google_fonts_check_029(ttFont, license):
   """Check copyright namerecords match license file."""
@@ -760,7 +751,7 @@ def familyname(font):
   id = 'com.google.fonts/check/030',
   conditions = ['familyname'],
   misc_metadata = {
-    'priority': CRITICAL
+    'priority': PriorityLevel.CRITICAL
   }
 )
 def com_google_fonts_check_030(ttFont, familyname):
@@ -2726,7 +2717,7 @@ def get_only_weight(value):
   id = 'com.google.fonts/check/156',
   conditions = ['style'],
   misc_metadata = {
-    'priority': IMPORTANT
+    'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_156(ttFont, style):
   """Font has all mandatory 'name' table entries ?"""
@@ -2755,7 +2746,7 @@ def com_google_fonts_check_156(ttFont, style):
   id = 'com.google.fonts/check/157',
   conditions = ['style'],
   misc_metadata = {
-    'priority': IMPORTANT
+    'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
   """ Check name table: FONT_FAMILY_NAME entries. """
@@ -2798,7 +2789,7 @@ def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
   id = 'com.google.fonts/check/158',
   conditions = ['style'],
   misc_metadata = {
-    'priority': IMPORTANT
+    'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
@@ -2850,7 +2841,7 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
   id = 'com.google.fonts/check/159',
   conditions = ['style'],
   misc_metadata = {
-    'priority': IMPORTANT
+    'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_159(ttFont, style, familyname_with_spaces):
   """ Check name table: FULL_FONT_NAME entries. """
@@ -2889,7 +2880,7 @@ def com_google_fonts_check_159(ttFont, style, familyname_with_spaces):
   id = 'com.google.fonts/check/160',
   conditions = ['style'],
   misc_metadata = {
-   'priority': IMPORTANT
+    'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_160(ttFont, style, familyname):
   """ Check name table: POSTSCRIPT_NAME entries. """
@@ -2917,7 +2908,7 @@ def com_google_fonts_check_160(ttFont, style, familyname):
   id = 'com.google.fonts/check/161',
   conditions = ['style'],
   misc_metadata = {
-    'priority': IMPORTANT
+    'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_161(ttFont, style, familyname_with_spaces):
   """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
@@ -2954,7 +2945,7 @@ def com_google_fonts_check_161(ttFont, style, familyname_with_spaces):
   id = 'com.google.fonts/check/162',
   conditions=['style'],
   misc_metadata = {
-    'priority': IMPORTANT
+    'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_162(ttFont, style):
   """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
