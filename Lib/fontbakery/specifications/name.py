@@ -1,7 +1,7 @@
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN, INFO
 from fontbakery.message import Message
-from fontbakery.constants import (CRITICAL,
+from fontbakery.constants import (PriorityLevel,
                                   NameID,
                                   PlatformID)
 # used to inform get_module_specification whether and how to create a specification
@@ -14,7 +14,7 @@ spec_imports = [
 @check(
   id = 'com.google.fonts/check/031',
   misc_metadata = {
-    'priority': CRITICAL
+    'priority': PriorityLevel.CRITICAL
   }
 )
 def com_google_fonts_check_031(ttFont):

@@ -17,6 +17,7 @@ import enum
 
 # =====================================
 # GLOBAL CONSTANTS DEFINITIONS
+
 STYLE_NAMES = ["Thin",
                "ExtraLight",
                "Light",
@@ -50,8 +51,16 @@ PLACEHOLDER_LICENSING_TEXT = {
     'LICENSE.txt': 'Licensed under the Apache License, Version 2.0'
 }
 
-# nameID definitions for the name table:
+# ANSI color codes for the helper logging class:
+RED_STR = '\033[1;31;40m{}\033[0m'
+GREEN_STR = '\033[1;32;40m{}\033[0m'
+YELLOW_STR = '\033[1;33;40m{}\033[0m'
+BLUE_STR = '\033[1;34;40m{}\033[0m'
+CYAN_STR = '\033[1;36;40m{}\033[0m'
+WHITE_STR = '\033[1;37;40m{}\033[0m'
+
 class NameID(enum.IntEnum):
+  """ nameID definitions for the name table """
   COPYRIGHT_NOTICE = 0
   FONT_FAMILY_NAME = 1
   FONT_SUBFAMILY_NAME = 2
@@ -106,8 +115,8 @@ class PANOSE_Proportion(enum.IntEnum):
   VERY_CONDENSED = 8
   MONOSPACED = 9
 
-# 'post' table / isFixedWidth definitions:
 class IsFixedWidth(enum.IntEnum):
+  """ 'post' table / isFixedWidth definitions """
   NOT_MONOSPACED = 0
   MONOSPACED = 1  # any non-zero value means monospaced
 
@@ -118,8 +127,10 @@ class PlatformID(enum.IntEnum):
   WINDOWS = 3
   CUSTOM = 4
 
-# Unicode platform-specific encoding IDs (when platID == 0):
 class UnicodeEncodingID(enum.IntEnum):
+  """ Unicode platform-specific encoding IDs
+      (when platID == 0)
+  """
   UNICODE_1_0 = 0
   UNICODE_1_1 = 1
   ISO_IEC_10646 = 2
@@ -128,8 +139,10 @@ class UnicodeEncodingID(enum.IntEnum):
   UNICODE_VARIATION_SEQUENCES = 5
   UNICODE_FULL = 6
 
-# Windows platform-specific encoding IDs (when platID == 3):
 class WindowsEncodingID(enum.IntEnum):
+  """ Windows platform-specific encoding IDs
+      (when platID == 3)
+  """
   SYMBOL = 0
   UNICODE_BMP = 1
   SHIFTJIS = 2
@@ -140,19 +153,10 @@ class WindowsEncodingID(enum.IntEnum):
   # IDs 7, 8 and 9 are reserved.
   UNICODE_FULL_REPERTOIRE = 10
 
-# =====================================
-# Helper logging class
-RED_STR = '\033[1;31;40m{}\033[0m'
-GREEN_STR = '\033[1;32;40m{}\033[0m'
-YELLOW_STR = '\033[1;33;40m{}\033[0m'
-BLUE_STR = '\033[1;34;40m{}\033[0m'
-CYAN_STR = '\033[1;36;40m{}\033[0m'
-WHITE_STR = '\033[1;37;40m{}\033[0m'
-
-# =====================================
-# Check priority levels:
-TRIVIAL = 4
-LOW = 3
-NORMAL = 2
-IMPORTANT = 1
-CRITICAL = 0  # ON FIRE! Must immediately fix!
+class PriorityLevel(enum.IntEnum):
+  """ Check priority levels """
+  TRIVIAL = 4
+  LOW = 3
+  NORMAL = 2
+  IMPORTANT = 1
+  CRITICAL = 0  # ON FIRE! Must immediately fix!
