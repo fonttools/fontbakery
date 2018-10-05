@@ -52,24 +52,22 @@ def ArgumentParser(specification, spec_arg=True):
 
   values_keys = specification.setup_argparse(argument_parser)
 
-  select_group = argument_parser.add_mutually_exclusive_group()
-
-  select_group.add_argument(
+  argument_parser.add_argument(
       "-c",
       "--checkid",
       action="append",
       help=(
-          "Explicit check-ids to be executed. "
+          "Explicit check-ids (or parts of their name) to be executed. "
           "Use this option multiple times to select multiple checks."
       ),
   )
 
-  select_group.add_argument(
+  argument_parser.add_argument(
       "-x",
       "--exclude-checkid",
       action="append",
       help=(
-          "Exclude check-ids from execution. "
+          "Exclude check-ids (or parts of their name) from execution. "
           "Use this option multiple times to exclude multiple checks."
       ),
   )
