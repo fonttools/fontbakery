@@ -21,6 +21,8 @@ from fontbakery.constants import(
 #     , LOW
 #     , TRIVIAL
       , NameID
+      , PlatformID
+      , WindowsEncodingID
 )
 from fontbakery.fonts_spec import spec_factory
 
@@ -2570,8 +2572,6 @@ def com_google_fonts_check_153(ttFont):
   from fontbakery.glyphdata import desired_glyph_data as glyph_data
   from fontbakery.utils import (get_font_glyph_data,
                                 pretty_print_list)
-  from fontbakery.constants import (PLATFORM_ID__WINDOWS,
-                                    PLAT_ENC_ID__UCS2)
   # rearrange data structure:
   desired_glyph_data = {}
   for glyph in glyph_data:
@@ -2597,8 +2597,8 @@ def com_google_fonts_check_153(ttFont):
                            desired_glyph_contours[glyph]])
 
     if len(bad_glyphs) > 0:
-      cmap = ttFont['cmap'].getcmap(PLATFORM_ID__WINDOWS,
-                                    PLAT_ENC_ID__UCS2).cmap
+      cmap = ttFont['cmap'].getcmap(PlatformID.WINDOWS,
+                                    WindowsEncodingID.UNICODE_BMP).cmap
       bad_glyphs_name = [("Glyph name: {}\t"
                           "Contours detected: {}\t"
                           "Expected: {}").format(cmap[name],
@@ -2764,17 +2764,15 @@ def com_google_fonts_check_156(ttFont, style):
 def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
   """ Check name table: FONT_FAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import (PLATFORM_ID__MACINTOSH,
-                                    PLATFORM_ID__WINDOWS)
   failed = False
   only_weight = get_only_weight(style)
   for name in ttFont['name'].names:
     if name.nameID == NameID.FONT_FAMILY_NAME:
 
-      if name.platformID == PLATFORM_ID__MACINTOSH:
+      if name.platformID == PlatformID.MACINTOSH:
         expected_value = familyname_with_spaces
 
-      elif name.platformID == PLATFORM_ID__WINDOWS:
+      elif name.platformID == PlatformID.WINDOWS:
         if style in ['Regular',
                      'Italic',
                      'Bold',
@@ -2809,9 +2807,7 @@ def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
 def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import (PLATFORM_ID__MACINTOSH,
-                                    PLATFORM_ID__WINDOWS,
-                                    STYLE_NAMES)
+  from fontbakery.constants import STYLE_NAMES
   failed = False
   style_with_spaces = style.replace('Italic',
                                     ' Italic').strip()
@@ -2825,10 +2821,10 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
         failed = True
         continue
 
-      if name.platformID == PLATFORM_ID__MACINTOSH:
+      if name.platformID == PlatformID.MACINTOSH:
         expected_value = style_with_spaces
 
-      elif name.platformID == PLATFORM_ID__WINDOWS:
+      elif name.platformID == PlatformID.WINDOWS:
         if style_with_spaces in ["Bold", "Bold Italic"]:
           expected_value = style_with_spaces
         else:

@@ -31,8 +31,8 @@ def mada_ttFonts():
 def test_check_013(mada_ttFonts):
   """ Fonts have equal unicode encodings ? """
   from fontbakery.specifications.cmap import com_google_fonts_check_013 as check
-  from fontbakery.constants import (PLAT_ENC_ID__SYMBOL,
-                                    PLAT_ENC_ID__UCS2)
+  from fontbakery.constants import WindowsEncodingID
+
   print('Test PASS with good family.')
   # our reference Mada family is know to be good here.
   status, message = list(check(mada_ttFonts))[-1]
@@ -40,8 +40,8 @@ def test_check_013(mada_ttFonts):
 
   bad_ttFonts = mada_ttFonts
   # introduce mismatching encodings into the first 2 font files:
-  for i, encoding in enumerate([PLAT_ENC_ID__SYMBOL,
-                                PLAT_ENC_ID__UCS2]):
+  for i, encoding in enumerate([WindowsEncodingID.SYMBOL,
+                                WindowsEncodingID.UNICODE_BMP]):
     for table in bad_ttFonts[i]['cmap'].tables:
       if table.format == 4:
         table.platEncID = encoding
