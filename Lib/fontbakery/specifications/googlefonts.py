@@ -716,8 +716,7 @@ def com_google_fonts_check_028(licenses):
   })
 def com_google_fonts_check_029(ttFont, license):
   """Check copyright namerecords match license file."""
-  from fontbakery.constants import (PLACEHOLDER_LICENSING_TEXT,
-                                    PLATID_STR)
+  from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
   from unidecode import unidecode
   failed = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
@@ -738,7 +737,7 @@ def com_google_fonts_check_029(ttFont, license):
                              "").format(license,
                                         NameID.LICENSE_DESCRIPTION,
                                         nameRecord.platformID,
-                                        PLATID_STR[nameRecord.platformID],
+                                        PlatformID(nameRecord.platformID).name,
                                         unidecode(value),
                                         unidecode(placeholder)))
   if not entry_found:
@@ -1595,8 +1594,8 @@ def com_google_fonts_check_095(ttFont, style, font_metadata):
      the family name declared on the name table.
   """
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import (RIBBI_STYLE_NAMES,
-                                    NAMEID_STR)
+  from fontbakery.constants import RIBBI_STYLE_NAMES
+
   if style in RIBBI_STYLE_NAMES:
     font_familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
     nameid = NameID.FONT_FAMILY_NAME
@@ -1606,10 +1605,8 @@ def com_google_fonts_check_095(ttFont, style, font_metadata):
 
   if len(font_familynames) == 0:
     yield FAIL, Message("lacks-entry",
-                        ("This font lacks a {} entry"
-                         " (nameID={}) in the"
-                         " name table.").format(NAMEID_STR[nameid],
-                                                nameid))
+                        (f"This font lacks a {NameID(nameid).name} entry"
+                         f" (nameID={nameid}) in the name table."))
   else:
     for font_familyname in font_familynames:
       if font_familyname != font_metadata.name:
@@ -2734,8 +2731,8 @@ def get_only_weight(value):
 def com_google_fonts_check_156(ttFont, style):
   """Font has all mandatory 'name' table entries ?"""
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.constants import (RIBBI_STYLE_NAMES,
-                                    NAMEID_STR)
+  from fontbakery.constants import RIBBI_STYLE_NAMES
+
   required_nameIDs = [NameID.FONT_FAMILY_NAME,
                       NameID.FONT_SUBFAMILY_NAME,
                       NameID.FULL_FONT_NAME,
@@ -2748,9 +2745,8 @@ def com_google_fonts_check_156(ttFont, style):
   for nameId in required_nameIDs:
     if len(get_name_entry_strings(ttFont, nameId)) == 0:
       failed = True
-      yield FAIL, ("Font lacks entry with"
-                   " nameId={} ({})").format(nameId,
-                                             NAMEID_STR[nameId])
+      yield FAIL, (f"Font lacks entry with nameId={nameId}"
+                   f" ({NameID(nameId).name})")
   if not failed:
     yield PASS, "Font contains values for all mandatory name table entries."
 

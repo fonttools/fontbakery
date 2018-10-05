@@ -64,11 +64,11 @@ def get_name_entry_strings(font,
 
 
 def name_entry_id(name):
-  from fontbakery.constants import (NAMEID_STR,
-                                    PLATID_STR)
-  return "[{}({}):{}({})]".format(NAMEID_STR[name.nameID],
+  from fontbakery.constants import (NameID,
+                                    PlatformID)
+  return "[{}({}):{}({})]".format(NameID(name.nameID).name,
                                   name.nameID,
-                                  PLATID_STR[name.platformID],
+                                  PlatformID(name.platformID).name,
                                   name.platformID)
 
 
