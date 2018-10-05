@@ -73,9 +73,8 @@ def com_google_fonts_check_033(ttFont, monospace_stats):
 
   Also we should report an error for glyphs not of average width
   """
-  from fontbakery.constants import (IS_FIXED_WIDTH__MONOSPACED,
-                                    IS_FIXED_WIDTH__NOT_MONOSPACED,
-                                    PANOSE_PROPORTION__MONOSPACED)
+  from fontbakery.constants import (IsFixedWidth,
+                                    PANOSE_Proportion)
   failed = False
   # Note: These values are read from the dict here only to
   # reduce the max line length in the check implementation below:
@@ -91,24 +90,24 @@ def com_google_fonts_check_033(ttFont, monospace_stats):
                          " {} instead."
                          "").format(width_max, ttFont['hhea'].advanceWidthMax))
   if seems_monospaced:
-    if ttFont['post'].isFixedPitch != IS_FIXED_WIDTH__MONOSPACED:
+    if ttFont['post'].isFixedPitch != IsFixedWidth.MONOSPACED:
       failed = True
       yield FAIL, Message("mono-bad-post-isFixedPitch",
                           ("On monospaced fonts, the value of"
                            " post.isFixedPitch must be set to {}"
                            " (fixed width monospaced),"
                            " but got {} instead."
-                           "").format(IS_FIXED_WIDTH__MONOSPACED,
+                           "").format(IsFixedWidth.MONOSPACED,
                                       ttFont['post'].isFixedPitch))
 
-    if ttFont['OS/2'].panose.bProportion != PANOSE_PROPORTION__MONOSPACED:
+    if ttFont['OS/2'].panose.bProportion != PANOSE_Proportion.MONOSPACED:
       failed = True
       yield FAIL, Message("mono-bad-panose-proportion",
                           ("On monospaced fonts, the value of"
                            " OS/2.panose.bProportion must be set to {}"
                            " (proportion: monospaced), but got"
                            " {} instead."
-                           "").format(PANOSE_PROPORTION__MONOSPACED,
+                           "").format(PANOSE_Proportion.MONOSPACED,
                                       ttFont['OS/2'].panose.bProportion))
 
     num_glyphs = len(ttFont['glyf'].glyphs)
@@ -134,16 +133,16 @@ def com_google_fonts_check_033(ttFont, monospace_stats):
     # it is a non-monospaced font, so lets make sure
     # that all monospace-related metadata is properly unset.
 
-    if ttFont['post'].isFixedPitch == IS_FIXED_WIDTH__MONOSPACED:
+    if ttFont['post'].isFixedPitch == IsFixedWidth.MONOSPACED:
       failed = True
       yield FAIL, Message("bad-post-isFixedPitch",
                           ("On non-monospaced fonts, the"
                            " post.isFixedPitch value must be set to {}"
                            " (not monospaced), but got {} instead."
-                           "").format(IS_FIXED_WIDTH__NOT_MONOSPACED,
+                           "").format(IsFixedWidth.NOT_MONOSPACED,
                                       ttFont['post'].isFixedPitch))
 
-    if ttFont['OS/2'].panose.bProportion == PANOSE_PROPORTION__MONOSPACED:
+    if ttFont['OS/2'].panose.bProportion == PANOSE_Proportion.MONOSPACED:
       failed = True
       yield FAIL, Message("bad-panose-proportion",
                           ("On non-monospaced fonts, the"

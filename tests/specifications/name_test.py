@@ -51,18 +51,8 @@ def test_check_033():
   """ Checking correctness of monospaced metadata. """
   from fontbakery.specifications.name import com_google_fonts_check_033 as check
   from fontbakery.specifications.shared_conditions import monospace_stats
-  from fontbakery.constants import (PANOSE_PROPORTION__ANY,
-                                    PANOSE_PROPORTION__NO_FIT,
-                                    PANOSE_PROPORTION__OLD_STYLE,
-                                    PANOSE_PROPORTION__MODERN,
-                                    PANOSE_PROPORTION__EVEN_WIDTH,
-                                    PANOSE_PROPORTION__EXTENDED,
-                                    PANOSE_PROPORTION__CONDENSED,
-                                    PANOSE_PROPORTION__VERY_EXTENDED,
-                                    PANOSE_PROPORTION__VERY_CONDENSED,
-                                    PANOSE_PROPORTION__MONOSPACED,
-                                    IS_FIXED_WIDTH__MONOSPACED,
-                                    IS_FIXED_WIDTH__NOT_MONOSPACED)
+  from fontbakery.constants import (PANOSE_Proportion,
+                                    IsFixedWidth)
 
   # This check has a large number of code-paths
   # We'll make sure to test them all here.
@@ -81,16 +71,16 @@ def test_check_033():
 
   # We'll mark it as monospaced on the post table and make sure it fails:
   print('Test FAIL with a non-monospaced font with bad post.isFixedPitch value ...')
-  ttFont["post"].isFixedPitch = IS_FIXED_WIDTH__MONOSPACED
+  ttFont["post"].isFixedPitch = IsFixedWidth.MONOSPACED
   status, message = list(check(ttFont, stats))[-1]
   assert status == FAIL and message.code == "bad-post-isFixedPitch"
 
   # restore good value:
-  ttFont["post"].isFixedPitch = IS_FIXED_WIDTH__NOT_MONOSPACED
+  ttFont["post"].isFixedPitch = IsFixedWidth.NOT_MONOSPACED
 
   # Now we mark it as monospaced on the OS/2 and it should also fail:
   print('Test FAIL with a non-monospaced font with bad OS/2.panose.bProportion value (MONOSPACED) ...')
-  ttFont["OS/2"].panose.bProportion = PANOSE_PROPORTION__MONOSPACED
+  ttFont["OS/2"].panose.bProportion = PANOSE_Proportion.MONOSPACED
   status, message = list(check(ttFont, stats))[-1]
   assert status == FAIL and message.code == "bad-panose-proportion"
 
@@ -111,7 +101,7 @@ def test_check_033():
 
   # Let's incorrectly mark it as a non-monospaced on the post table and it should fail:
   print('Test FAIL with a monospaced font with bad post.isFixedPitch value ...')
-  ttFont["post"].isFixedPitch = IS_FIXED_WIDTH__NOT_MONOSPACED
+  ttFont["post"].isFixedPitch = IsFixedWidth.NOT_MONOSPACED
   # here we search for the expected FAIL among all results
   # instead of simply looking at the last one
   # because we may also get an outliers WARN in some cases:
@@ -119,18 +109,18 @@ def test_check_033():
   assert results_contain(results, FAIL, "mono-bad-post-isFixedPitch")
 
   # There are several bad panose proportion values for a monospaced font.
-  # Only PANOSE_PROPORTION__MONOSPACED would be valid.
+  # Only PANOSE_Proportion.MONOSPACED would be valid.
   # So we'll try all the bad ones here to make sure all of them emit a FAIL:
   bad_monospaced_panose_values = [
-    PANOSE_PROPORTION__ANY,
-    PANOSE_PROPORTION__NO_FIT,
-    PANOSE_PROPORTION__OLD_STYLE,
-    PANOSE_PROPORTION__MODERN,
-    PANOSE_PROPORTION__EVEN_WIDTH,
-    PANOSE_PROPORTION__EXTENDED,
-    PANOSE_PROPORTION__CONDENSED,
-    PANOSE_PROPORTION__VERY_EXTENDED,
-    PANOSE_PROPORTION__VERY_CONDENSED,
+    PANOSE_Proportion.ANY,
+    PANOSE_Proportion.NO_FIT,
+    PANOSE_Proportion.OLD_STYLE,
+    PANOSE_Proportion.MODERN,
+    PANOSE_Proportion.EVEN_WIDTH,
+    PANOSE_Proportion.EXTENDED,
+    PANOSE_Proportion.CONDENSED,
+    PANOSE_Proportion.VERY_EXTENDED,
+    PANOSE_Proportion.VERY_CONDENSED,
   ]
   good_value = ttFont["OS/2"].panose.bProportion
   for bad_value in bad_monospaced_panose_values:
