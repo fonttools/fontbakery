@@ -139,6 +139,44 @@ class UnicodeEncodingID(enum.IntEnum):
   UNICODE_VARIATION_SEQUENCES = 5
   UNICODE_FULL = 6
 
+class MacEncodingID(enum.IntEnum):
+  """ Machintosh platform-specific encoding IDs
+      (when platID == 1)
+  """
+  ROMAN = 0
+  JAPANESE = 1
+  CHINESE_TRADITIONAL = 2
+  KOREAN = 3
+  ARABIC = 4
+  HEBREW = 5
+  GREEK = 6
+  RUSSIAN = 7
+  RSYMBOL = 8
+  DEVANAGARI = 9
+  GURMUKHI = 10
+  GUJARATI = 11
+  ORIYA = 12
+  BENGALI = 13
+  TAMIL = 14
+  TELUGU = 15
+  KANNADA = 16
+  MALAYALAM = 17
+  SINHALESE = 18
+  BURMESE = 19
+  KHMER = 20
+  THAI = 21
+  LAOTIAN = 22
+  GEORGIAN = 23
+  ARMENIAN = 24
+  CHINESE_SIMPLIFIED = 25
+  TIBETAN = 26
+  MONGOLIAN = 27
+  GEEZ = 28
+  SLAVIC = 29
+  VIETNAMESE = 30
+  SINDHI = 31
+  UNINTERPRETED = 32
+
 class WindowsEncodingID(enum.IntEnum):
   """ Windows platform-specific encoding IDs
       (when platID == 3)
@@ -152,6 +190,14 @@ class WindowsEncodingID(enum.IntEnum):
   JOHAB = 6
   # IDs 7, 8 and 9 are reserved.
   UNICODE_FULL_REPERTOIRE = 10
+
+class MacLanguageID(enum.IntEnum):
+  """ Machintosh platform-specific language IDs
+      (when platID == 1)
+  """
+  ENGLISH = 0
+  # There are lots of language IDs but
+  # for now we are only using this one.
 
 class PriorityLevel(enum.IntEnum):
   """ Check priority levels """
