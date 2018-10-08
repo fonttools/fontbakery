@@ -3263,17 +3263,6 @@ def com_google_fonts_check_072(ttFont):
                   " `gftools fix-nonhinting` script.")
 
 
-@condition
-def vtt_talk_sources(ttFont):
-  VTT_TALK_TABLES = {
-      'TSI0', 'TSI1', 'TSI2', 'TSI3', 'TSI5'}
-  tables_found = []
-  for table in ttFont.keys():
-    if table in VTT_TALK_TABLES:
-      tables_found.append(table)
-  return tables_found
-
-
 @check(
   id = 'com.google.fonts/check/vttclean'
 )

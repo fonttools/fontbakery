@@ -2328,8 +2328,8 @@ def test_check_072():
 
 def test_check_vtt_clean():
   """ There must not be VTT Talk sources in the font. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_vtt_clean as check,
-                                                     vtt_talk_sources)
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_vtt_clean as check
+  from fontbakery.specifications.shared_conditions import vtt_talk_sources
 
   good_font = TTFont(os.path.join("data", "test", "mada", "Mada-Regular.ttf"))
   bad_font = TTFont(os.path.join("data", "test", "hinting", "Roboto-VF.ttf"))
