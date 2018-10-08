@@ -687,7 +687,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
   ttFont = ttx.TTFont(font)
   failed = False
 
-  class TTXLogger(object):
+  class TTXLogger:
     msgs = []
 
     def __init__(self):

@@ -28,7 +28,7 @@ def cached_getter(func):
     return value
   return wrapper
 
-class FontbakeryCallable(object):
+class FontbakeryCallable:
   def __init__(self, func):
     self._args = None
     self._mandatoryArgs = None
@@ -232,7 +232,7 @@ def check(*args, **kwds):
 
 # ExpectedValue is not a callable, but it belongs next to check and condition
 _NOT_SET = object() # used as a marker
-class FontBakeryExpectedValue(object):
+class FontBakeryExpectedValue:
   def __init__(self,
                  name, # unique name in global namespace
                  description=None, # short text, this is mandatory
@@ -272,7 +272,7 @@ class FontBakeryExpectedValue(object):
     return self._validator(value) if self._validator else (True, None)
 
 
-class Disabled(object):
+class Disabled:
   def __init__(self, func):
     self.func = func
 
