@@ -170,10 +170,16 @@ def test_in_and_exclude_checks():
   explicit_checks = ["06", "07"]  # "06" or "07" in check ID
   exclude_checks = ["065", "079"]  # "065" or "079" in check ID
   iterargs = {"font": 1}
-  check_names = sorted(c[1].id for c in specification.execution_order(
-      iterargs, explicit_checks=explicit_checks, exclude_checks=exclude_checks))
-  check_names_expected = sorted(
-      c for c in specification._check_registry
-      if any(i in c for i in explicit_checks) and not any(
-          x in c for x in exclude_checks))
+  check_names = {
+      c[1].id for c in specification.execution_order(
+          iterargs,
+          explicit_checks=explicit_checks,
+          exclude_checks=exclude_checks)
+  }
+  check_names_expected = set()
+  for section in specification.sections:
+    for check in section.checks:
+      if any(i in check.id for i in explicit_checks) and not any(
+          x in check.id for x in exclude_checks):
+        check_names_expected.add(check.id)
   assert check_names == check_names_expected
