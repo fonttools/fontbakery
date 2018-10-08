@@ -160,3 +160,20 @@ def test_googlefonts_checks_load():
   specification = spec_factory(default_section=Section("Google Fonts Testing"))
   specification.auto_register({}, spec_imports=spec_imports)
   specification.test_dependencies()
+
+
+def test_in_and_exclude_checks():
+  spec_imports = ("fontbakery.specifications.opentype", )
+  specification = spec_factory(default_section=Section("OpenType Testing"))
+  specification.auto_register({}, spec_imports=spec_imports)
+  specification.test_dependencies()
+  explicit_checks = ["06", "07"]  # "06" or "07" in check ID
+  exclude_checks = ["065", "079"]  # "065" or "079" in check ID
+  iterargs = {"font": 1}
+  check_names = sorted(c[1].id for c in specification.execution_order(
+      iterargs, explicit_checks=explicit_checks, exclude_checks=exclude_checks))
+  check_names_expected = sorted(
+      c for c in specification._check_registry
+      if any(i in c for i in explicit_checks) and not any(
+          x in c for x in exclude_checks))
+  assert check_names == check_names_expected
