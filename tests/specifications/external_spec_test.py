@@ -146,3 +146,17 @@ def test_spec_imports():
         'regular_wdth_coord', 'regular_slnt_coord', 'regular_ital_coord',
         'regular_opsz_coord', 'bold_wght_coord', 'familyname')
   _test(spec_imports, expected_tests, expected_conditions)
+
+
+def test_opentype_checks_load():
+  spec_imports = ("fontbakery.specifications.opentype", )
+  specification = spec_factory(default_section=Section("OpenType Testing"))
+  specification.auto_register({}, spec_imports=spec_imports)
+  specification.test_dependencies()
+
+
+def test_googlefonts_checks_load():
+  spec_imports = ("fontbakery.specifications.googlefonts", )
+  specification = spec_factory(default_section=Section("Google Fonts Testing"))
+  specification.auto_register({}, spec_imports=spec_imports)
+  specification.test_dependencies()
