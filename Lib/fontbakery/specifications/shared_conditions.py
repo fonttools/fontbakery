@@ -19,6 +19,14 @@ def is_ttf(ttFont):
 def is_cff(ttFont):
   return 'CFF ' in ttFont or 'CFF2' in ttFont
 
+@condition
+def vtt_talk_sources(ttFont):
+  VTT_TALK_TABLES = {'TSI0', 'TSI1', 'TSI2', 'TSI3', 'TSI5'}
+  tables_found = []
+  for table in ttFont.keys():
+    if table in VTT_TALK_TABLES:
+      tables_found.append(table)
+  return tables_found
 
 @condition
 def ligatures(ttFont):

@@ -8,7 +8,8 @@ from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-imp
 from .shared_conditions import is_variable_font
 
 spec_imports = [
-    ('.shared_conditions', ('missing_whitespace_chars', ))
+    ('.shared_conditions', ('missing_whitespace_chars',
+                            'vtt_talk_sources', ))
 ]
 
 @condition
