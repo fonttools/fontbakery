@@ -125,7 +125,7 @@ UNICORN = r"""
        <<Art by Tony de Marco, July 26, 2018>>
 """
 
-class ThrottledOut(object):
+class ThrottledOut:
   def __init__(self, outFile, holdback_time=None, max_ticks=0, draw_progressbar=None):
     """ holdback_time: float, 1.0 = 1 second"""
     self._outFile = outFile

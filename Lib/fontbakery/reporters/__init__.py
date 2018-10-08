@@ -26,7 +26,7 @@ from fontbakery.checkrunner import (
             , ProtocolViolationError
             )
 
-class FontbakeryReporter(object):
+class FontbakeryReporter:
   def __init__(self, is_async=False, runner=None):
     self._started = None
     self._ended = None

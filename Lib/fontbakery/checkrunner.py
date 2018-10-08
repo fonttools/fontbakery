@@ -27,7 +27,7 @@ from fontbakery.callable import ( FontbakeryCallable
                                 , FontBakeryExpectedValue
                                 )
 
-class Status(object):
+class Status:
   """ If you create a custom Status symbol, please keep in mind that
   all statuses are registered globally and that can cause name collisions.
 
@@ -226,7 +226,7 @@ def is_negated(name):
     return True, stripped[1:].strip()
   return False, stripped
 
-class CheckRunner(object):
+class CheckRunner:
   def __init__(self, spec, values
              , values_can_override_spec_names=True
              , custom_order=None
@@ -675,7 +675,7 @@ def distribute_generator(gen, targets_callbacks):
     for target in targets_callbacks:
       target(item)
 
-class Section(object):
+class Section:
   """ An ordered set of checks.
 
   Used to structure checks in a specification. A specification consists
@@ -770,7 +770,7 @@ class Section(object):
       checks.append(f"{check.id} # {check.description}")
     return checks
 
-class Spec(object):
+class Spec:
   def __init__(self
              , sections=None
              , iterargs=None

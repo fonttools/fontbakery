@@ -1,4 +1,4 @@
-class Message(object):
+class Message:
   """Status messages to be yielded by FontBakeryCheck"""
   def __init__(self, code, message):
     """
