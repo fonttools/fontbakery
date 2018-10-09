@@ -183,3 +183,24 @@ def test_in_and_exclude_checks():
           x in check.id for x in exclude_checks):
         check_names_expected.add(check.id)
   assert check_names == check_names_expected
+
+
+def test_in_and_exclude_checks_default():
+  spec_imports = ("fontbakery.specifications.opentype",)
+  specification = spec_factory(default_section=Section("OpenType Testing"))
+  specification.auto_register({}, spec_imports=spec_imports)
+  specification.test_dependencies()
+  explicit_checks = None  # "All checks aboard"
+  exclude_checks = None  # "No checks left behind"
+  iterargs = {"font": 1}
+  check_names = {
+      c[1].id for c in specification.execution_order(
+          iterargs,
+          explicit_checks=explicit_checks,
+          exclude_checks=exclude_checks)
+  }
+  check_names_expected = set()
+  for section in specification.sections:
+    for check in section.checks:
+      check_names_expected.add(check.id)
+  assert check_names == check_names_expected
