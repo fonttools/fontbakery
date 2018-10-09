@@ -32,16 +32,26 @@ def test_check_008(mada_ttFonts):
   """ Fonts have consistent underline thickness ? """
   from fontbakery.specifications.post import com_google_fonts_check_008 as check
 
-  print('Test PASS with good family.')
+  # We start with our reference Mada font family,
+  # which we know has the same value of post.underlineThickness
+  # accross all of its font files, based on our inspection
+  # of the file contents using TTX.
+  #
+  # So the check should PASS in this case:
+  print('Test PASS with a good family.')
   status, message = list(check(mada_ttFonts))[-1]
   assert status == PASS
 
-  # introduce a wronge value in one of the font files:
+  # Then we introduce the issue by setting a
+  # different underlineThickness value in just
+  # one of the font files:
   value = mada_ttFonts[0]['post'].underlineThickness
   incorrect_value = value + 1
   mada_ttFonts[0]['post'].underlineThickness = incorrect_value
 
-  print('Test FAIL with inconsistent family.')
+  # And now re-running the check on the modified
+  # family should result in a FAIL:
+  print('Test FAIL with an inconsistent family.')
   status, message = list(check(mada_ttFonts))[-1]
   assert status == FAIL
 
