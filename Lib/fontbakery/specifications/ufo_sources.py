@@ -187,7 +187,3 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
 # postscriptFamilyBlues, postscriptFamilyOtherBlues,
 # postscriptStemSnapH, postscriptStemSnapV -- not sure if checking for that
 # is useful.
-
-for section_name, section in specification._sections.items():
-  print("There is a total of {} checks on {}.".format(
-      len(section._checks), section_name))
