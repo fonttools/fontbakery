@@ -189,7 +189,7 @@ def get_spec():
   argument_parser = ThrowingArgumentParser(add_help=False)
   argument_parser.add_argument('specification')
   try:
-    args, unknown = argument_parser.parse_known_args()
+    args, _ = argument_parser.parse_known_args()
   except ArgumentParserError:
     # silently fails, the main parser will show usage string.
     return Spec()
