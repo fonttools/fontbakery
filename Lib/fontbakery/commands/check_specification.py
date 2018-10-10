@@ -196,7 +196,7 @@ def get_spec():
   imported = get_module(args.specification)
   specification = get_module_specification(imported)
   if not specification:
-    raise Exception(f'Can\'t get a specification from {imported}.')
+    raise Exception(f"Can't get a specification from {imported}.")
   return specification
 
 # This stub or alias is kept for compatibility (e.g. check-commands, FontBakery
