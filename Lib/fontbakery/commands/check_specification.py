@@ -207,17 +207,10 @@ def get_spec():
     raise Exception(f'Can\'t get a specification from {imported}.')
   return specification
 
-def runner_factory( specification
-                  , explicit_checks=None
-                  , exclude_checks=None
-                  , custom_order=None
-                  , values=None):
-  """ Convenience CheckRunner factory. """
-  return CheckRunner( specification, values
-                    , explicit_checks=explicit_checks
-                    , exclude_checks=exclude_checks
-                    , custom_order=custom_order
-                    )
+# This stub or alias is kept for compatibility (e.g. check-commands, FontBakery
+# Dashboard). The function of the same name previously only passed on all parameters to
+# CheckRunner.
+runner_factory = CheckRunner
 
 def main(specification=None, values=None):
   # specification can be injected by e.g. check-googlefonts injects it's own spec
@@ -249,12 +242,12 @@ def main(specification=None, values=None):
         values_[key] = getattr(args, key)
 
   try:
-    runner = runner_factory(specification
-                     , explicit_checks=args.checkid
-                     , exclude_checks=args.exclude_checkid
-                     , custom_order=args.order
-                     , values=values_
-                     )
+    runner = CheckRunner(specification
+                        , values=values_
+                        , custom_order=args.order
+                        , explicit_checks=args.checkid
+                        , exclude_checks=args.exclude_checkid
+                        )
   except ValueValidationError as e:
     print(e)
     argument_parser.print_usage()
