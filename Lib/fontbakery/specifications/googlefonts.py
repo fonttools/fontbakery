@@ -279,7 +279,10 @@ def com_google_fonts_check_001(font):
 def family_directory(fonts):
   """Get the path of font project directory."""
   if fonts:
-    return os.path.dirname(fonts[0])
+    dirname = os.path.dirname(fonts[0])
+    if dirname == '':
+      dirname = '.'
+    return dirname
 
 
 @condition
@@ -688,7 +691,7 @@ def com_google_fonts_check_028(licenses):
                         ("More than a single license file found."
                          " Please review."))
   elif not licenses:
-    yield FAIL, Message("none",
+    yield FAIL, Message("no-license",
                         ("No license file was found."
                          " Please add an OFL.txt or a LICENSE.txt file."
                          " If you are running fontbakery on a Google Fonts"
