@@ -429,6 +429,14 @@ def test_check_020():
   # TODO: test FAIL with an ExtraLight:200 OTF
 
 
+def test_family_directory_condition():
+  from fontbakery.specifications.googlefonts import family_directory
+  assert family_directory(["some_directory/Foo.ttf"]) == "some_directory"
+  assert family_directory(["some_directory/subdir/Foo.ttf"]) == "some_directory/subdir"
+  assert family_directory(["Foo.ttf"]) == "." # This is meant to ensure license files
+                                              # are correctly detected on the current
+                                              # working directory.
+
 def test_check_028():
   """ Check font project has a license. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_028 as check,
@@ -441,7 +449,7 @@ def test_check_028():
   print('Test FAIL with no license...')
   detected_licenses = licenses("data/test/028/none/")
   status, message = list(check(detected_licenses))[-1]
-  assert status == FAIL and message.code == "none"
+  assert status == FAIL and message.code == "no-license"
 
   print('Test PASS with a single OFL license...')
   detected_licenses = licenses("data/test/028/pass_ofl/")
