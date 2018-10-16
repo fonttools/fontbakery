@@ -59,15 +59,11 @@ def test_check_036():
   status, _ = list(check(sanitary_font))[-1]
   assert status == PASS
 
-  bogus_font = os.path.join("data", "test", "cabinvfbeta", "CabinVFBeta.ttf")
-  status, _ = list(check(bogus_font))[-1]
+  bogus_font = os.path.join("data", "test", "README.txt")
+  status, output = list(check(bogus_font))[-1]
   assert status == FAIL
-
-  old_path = os.environ["PATH"]
-  os.environ["PATH"] = ""
-  status, _ = list(check(bogus_font))[-1]
-  assert status == ERROR
-  os.environ["PATH"] = old_path
+  assert "invalid version tag" in output
+  assert "Failed to sanitize file!" in output
 
 
 def test_check_037():
