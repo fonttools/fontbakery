@@ -2030,9 +2030,7 @@ def test_check_156():
 
 def test_check_157():
   """ Check name table: FONT_FAMILY_NAME entries. """
-  from fontbakery.constants import (NAMEID_FONT_FAMILY_NAME,
-                                    PLATFORM_ID__MACINTOSH,
-                                    PLATFORM_ID__WINDOWS)
+  from fontbakery.constants import PlatformID, NameID
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_157 as check,
                                                      familyname,
                                                      familyname_with_spaces,
@@ -2051,13 +2049,13 @@ def test_check_157():
   for expected, filename, mac_value, win_value in test_cases:
     ttFont = TTFont(filename)
     for i, name in enumerate(ttFont['name'].names):
-      if name.platformID == PLATFORM_ID__MACINTOSH:
+      if name.platformID == PlatformID.MACINTOSH:
         value = mac_value
-      if name.platformID == PLATFORM_ID__WINDOWS:
+      if name.platformID == PlatformID.WINDOWS:
         value = win_value
       assert value
 
-      if name.nameID == NAMEID_FONT_FAMILY_NAME:
+      if name.nameID == NameID.FONT_FAMILY_NAME:
           ttFont['name'].names[i].string = value.encode(name.getEncoding())
     print (f"Test {expected} with filename='{filename}', value='{value}', style='{style(filename)}'...")
     status, message = list(check(ttFont,
