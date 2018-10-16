@@ -20,12 +20,6 @@ If this doesn't work for you, wait for the next release of FontBakery after 0.5.
 
 ### Additional Dependencies
 
-#### OTS - Opentype Sanitizer
-
-1. Grab a Windows release from https://github.com/khaledhosny/ots/releases
-2. Put the contained `.exe` files somewhere and remember where
-3. Repeat the steps above to add fontbakery to the PATH variable and add the directory where you put the `.exe`s this time.
-
 #### FontForge
 
 1. Grab and install a Windows release from https://github.com/fontforge/fontforge/releases

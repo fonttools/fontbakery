@@ -24,19 +24,6 @@ If you already installed a previous version of Font Bakery, upgrade to a newer v
 
 #### Additional dependencies
 
-##### OTS: OpenType Sanitizer
-
-This checker is embedded in Chrome and Firefox, so it is important that font files pass OTS.
-If available, Font Bakery will wrap around OTS and run it as part of its standard checking.
-Install it with:
-
-    curl -L -O https://github.com/khaledhosny/ots/releases/download/v7.1.7/ots-7.1.7-osx.zip
-    unzip ots-7.1.7-osx.zip
-    mv ots-7.1.7-osx/ots-sanitize /usr/local/bin/ots-sanitize
-    rm -rf ots-7.1.7-osx
-    rm ots-7.1.7-osx.zip
-
-
 ##### FontForge
 
 FontForge has some font checking features, which Font Bakery will also wrap around and run, if available.
