@@ -63,7 +63,8 @@ setup(
         'font-v',
         'defcon',
         'ufolint',
-        'ttfautohint-py'
+        'ttfautohint-py',
+        'opentype-sanitizer',
     ],
     entry_points={
         'console_scripts': ['fontbakery=fontbakery.cli:main'],
