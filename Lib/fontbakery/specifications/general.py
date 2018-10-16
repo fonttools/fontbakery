@@ -116,25 +116,21 @@ def com_google_fonts_check_035(font):
 )
 def com_google_fonts_check_036(font):
   """Checking with ots-sanitize."""
+  import ots
+
   try:
-    import subprocess
-    ots_output = subprocess.check_output(
-        ["ots-sanitize", font], stderr=subprocess.STDOUT).decode()
-    if ots_output != "" and "File sanitized successfully" not in ots_output:
-      yield FAIL, f"ots-sanitize output follows:\n\n{ots_output}"
+    process = ots.sanitize(font, check=True, capture_output=True)
+  except ots.CalledProcessError as e:
+    yield FAIL, (
+      "ots-sanitize returned an error code ({}). Output follows:\n\n{}{}"
+    ).format(e.returncode, e.stderr.decode(), e.stdout.decode())
+  else:
+    if process.stderr:
+      yield WARN, (
+        "ots-sanitize passed this file, however warnings were printed:\n\n{}"
+      ).format(process.stderr.decode())
     else:
       yield PASS, "ots-sanitize passed this file"
-  except subprocess.CalledProcessError as e:
-    yield FAIL, ("ots-sanitize returned an error code. Output follows :"
-                 "\n\n{}").format(e.output)
-  except OSError as e:
-    yield ERROR, ("ots-sanitize is not available!"
-                  " You really MUST check the fonts with this tool."
-                  " To install it, see"
-                  " https://github.com/googlefonts"
-                  "/gf-docs/blob/master/ProjectChecklist.md#ots"
-                  " Actual error message was: "
-                  "'{}'").format(e)
 
 
 @check(
