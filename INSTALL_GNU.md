@@ -10,19 +10,6 @@ To upgrade:
 
 #### Additional Dependencies
 
-##### OTS
-
-From source:
-
-    git clone https://github.com/khaledhosny/ots.git;
-    cd ots;
-    ./autogen.sh;
-    ./configure;
-    make CXXFLAGS=-DOTS_DEBUG;
-    sudo make install;
-    cd ..;
-    rm -rf ots;
-
 ##### FontForge
 
 From a PPA on Ubuntu:
