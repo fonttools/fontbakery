@@ -95,7 +95,7 @@ def com_daltonmaag_check_ufolint(font):
     subprocess.check_output(ufolint_cmd, stderr=subprocess.STDOUT)
   except subprocess.CalledProcessError as e:
     yield FAIL, ("ufolint failed the UFO source. Output follows :"
-                 "\n\n{}\n").format(e.output)
+                 "\n\n{}\n").format(e.output.decode())
   except OSError:
     yield ERROR, "ufolint is not available!"
   else:

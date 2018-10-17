@@ -29,8 +29,9 @@ def test_check_ufolint(empty_ufo_font):
     print('Test FAIL with maimed UFO.')
     os.remove(os.path.join(ufo_path, "metainfo.plist"))
     c = list(check(ufo_path))
-    status, _ = c[-1]
+    status, message = c[-1]
     assert status == FAIL
+    assert type(message) == str
 
 
 def test_check_required_fields(empty_ufo_font):
