@@ -155,14 +155,8 @@ def com_google_fonts_check_037(font):
 
   try:
     import subprocess
-    if os.name == 'posix':
-        fval_exec = 'FontValidator'
-    elif os.name == 'nt':
-        fval_exec = 'FontValidator.exe'
-    else:
-        raise NotImplementedError('OS not supported')
     fval_cmd = [
-        fval_exec, "-file", font, "-all-tables",
+        "FontValidator", "-file", font, "-all-tables",
         "-report-in-font-dir", "-no-raster-tests"
     ]
     subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
