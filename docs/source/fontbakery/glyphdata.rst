@@ -2,6 +2,5 @@
 glyphdata
 #########
 
-.. automodule:: fontbakery.glyphdata
-   :members:
-   :undoc-members:
+.. autodata:: fontbakery.glyphdata.desired_glyph_data
+
