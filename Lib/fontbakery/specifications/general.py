@@ -142,17 +142,32 @@ def com_google_fonts_check_037(font):
   # In some cases we want to override the severity level of
   # certain checks in FontValidator:
   downgrade_to_warn = [
-    "The xAvgCharWidth field does not equal the calculated value",
+    # There are reports that this fontval check has an out-of-date
+    # understanding of valid bits in fsSelection.
+    # More info at:
+    # https://github.com/googlei18n/fontmake/issues/414#issuecomment-379408127
     "There are undefined bits set in fsSelection field",
+
+    # FIX-ME: Why did we downgrade this one to WARN?
     "Misoriented contour",
-    "The table doesn't contain strings for Mac platform",
-    "The PostScript string is not present for both required platforms"
   ]
 
   # Some other checks we want to completely disable:
   disabled_fval_checks = [
+    # These messages below are simply fontval given user feedback
+    # on the progress of runnint it. It has nothing to do with
+    # actual issues on the font files:
     "Validating glyph with index",
     "Table Test:"
+
+    # No software is affected by Mac strings nowadays.
+    # More info at: googlei18n/fontmake#414
+    "The table doesn't contain strings for Mac platform",
+    "The PostScript string is not present for both required platforms"
+
+    # Font Bakery has got a native check for the xAvgCharWidth field
+    # which is: com.google.fonts/check/034
+    "The xAvgCharWidth field does not equal the calculated value",
   ]
 
   try:
@@ -165,10 +180,12 @@ def com_google_fonts_check_037(font):
   except subprocess.CalledProcessError as e:
     filtered_msgs = ""
     for line in e.output.decode().split("\n"):
+      disable_it = False
       for substring in disabled_fval_checks:
         if substring in line:
-          continue
-      filtered_msgs += line + "\n"
+          disable_it = True
+      if not disable_it:
+        filtered_msgs += line + "\n"
     yield INFO, ("Microsoft Font Validator returned an error code."
                  " Output follows :\n\n{}\n").format(filtered_msgs)
   except (OSError, IOError) as error:
