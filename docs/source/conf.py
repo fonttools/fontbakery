@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath("../Lib"))
 # -- Project information -----------------------------------------------------
 
 project = "Font Bakery"
-copyright = "2018, Google Inc."
+copyright = "2018, Google Inc. CC BY-SA 4.0 License"
 author = "Google Inc."
 
 # The short X.Y version
