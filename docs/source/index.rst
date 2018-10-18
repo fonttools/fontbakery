@@ -1,27 +1,40 @@
-Welcome to Font Bakery's documentation!
-=======================================
+.. image:: ../../data/logo.png
+
+Welcome to the Font Bakery Documentation!
+=========================================
 
 Font Bakery is a command-line tool for checking the quality of font projects.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: User Documentation
 
-   BRIEF
-   USAGE
-   developer-notes
-   bash-completion
-   variable-fonts-levels
-   writing-specifications
-   code-testing
-   test
+   user/BRIEF
+   user/USAGE
+   user/bash-completion
 
-.. automodule:: fontbakery
-   :members:
+.. toctree::
+   :maxdepth: 2
+   :caption: Developer Documentation
 
-Indices and tables
-==================
+   developer/writing-specifications
+   developer/code-testing
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Maintainer Documentation
+   
+   maintainer/maintainer-notes
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Source Documentation
+   
+   fontbakery/index
+
+
+Indices
+=======
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
