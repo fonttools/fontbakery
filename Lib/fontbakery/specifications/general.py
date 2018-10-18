@@ -144,7 +144,9 @@ def com_google_fonts_check_037(font):
   downgrade_to_warn = [
     "The xAvgCharWidth field does not equal the calculated value",
     "There are undefined bits set in fsSelection field",
-    "Misoriented contour"
+    "Misoriented contour",
+    "The table doesn't contain strings for Mac platform",
+    "The PostScript string is not present for both required platforms"
   ]
 
   # Some other checks we want to completely disable:
