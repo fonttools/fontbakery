@@ -2,6 +2,8 @@
 fontbakery
 ##########
 
+A single-page index of all source modules is available in :ref:`modindex`.
+
 .. toctree::
    :maxdepth: 1
 
