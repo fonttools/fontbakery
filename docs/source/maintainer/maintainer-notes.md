@@ -1,4 +1,4 @@
-# Font Bakery Miscellaneous Developer Notes
+# Project Maintainer Notes
 
 ## Code Testing
 

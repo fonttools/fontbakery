@@ -1,4 +1,4 @@
-### Font Bakery Bash Completion
+### Bash Completion
 
 Font Bakery comes with a minimal Bash completion script to help you to type the subcommands that follow directly after the `fontbakery` command by hitting the tab key.
 

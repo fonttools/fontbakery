@@ -1,4 +1,4 @@
-## Font Bakery Code Testing
+## Testing
 
 Font Bakery `check-googlefonts` provides over 130 checks for fonts and families according to the quality requirements of the Google Fonts team.
 In addition to a complete architectural overhaul, release 0.3.1 introduced a set of code tests to assure the quality of the Font Bakery suite of checks.

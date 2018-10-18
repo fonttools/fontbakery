@@ -1,4 +1,4 @@
-# Font Bakery Product Requirements Document
+# Product Requirements
 
 The Font Bakery project develops tools for font production.
 
