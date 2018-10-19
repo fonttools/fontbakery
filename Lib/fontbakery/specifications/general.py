@@ -183,6 +183,20 @@ def com_google_fonts_check_037(font):
     "Recommended table is missing"
   ]
 
+  # There are also some checks that do not make
+  # sense when we're dealing with variable fonts:
+  VARFONT_disabled_fval_checks = [
+    # Variable fonts typically do have lots of self-intersecting
+    # contours because they are used to draw each portion
+    # of variable glyph features.
+    "Intersecting contours",
+    "Intersecting components of composite glyph"
+  ]
+
+  from fontTools.ttLib import TTFont
+  if is_variable_font(TTFont(font)):
+    disabled_fval_checks.extend(VARFONT_disabled_fval_checks)
+
   try:
     import subprocess
     fval_cmd = [
