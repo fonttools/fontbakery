@@ -222,6 +222,12 @@ def com_google_fonts_check_037(font):
 
   def report_message(msg, details):
     if details:
+      if isinstance(details, list) and len(details) > 1:
+        # We'll print lists with one item per line for
+        # improved readability.
+        if None in details:
+          details.remove(None)
+        details = '\n\t- ' + '\n\t- '.join(details)
       return f"MS-FonVal: {msg} DETAILS: {details}"
     else:
       return f"MS-FonVal: {msg}"
@@ -230,10 +236,11 @@ def com_google_fonts_check_037(font):
   html_report_file = f"{font}.report.html"
   fval_file = os.path.join(os.path.dirname(font), 'fval.xsl')
 
+  grouped_msgs = {}
   with open(xml_report_file, "rb") as xml_report:
     import defusedxml.lxml
     doc = defusedxml.lxml.parse(xml_report)
-    already_reported = []
+
     for report in doc.iter('Report'):
       msg = report.get("Message")
       details = report.get("Details")
@@ -245,26 +252,17 @@ def com_google_fonts_check_037(font):
       if disable_it:
         continue
 
-      if [msg, details] not in already_reported:
-        # avoid cluttering the output with tons of identical reports
-        already_reported.append([msg, details])
+      if msg not in grouped_msgs:
+        grouped_msgs[msg] = {"errortype": report.get("ErrorType"),
+                             "details": [details]}
+      else:
+        if details not in grouped_msgs[msg]["details"]:
+          # avoid cluttering the output with tons of identical reports
+          # yield INFO, 'grouped_msgs[msg]["details"]: {}'.format(grouped_msgs[msg]["details"])
+          grouped_msgs[msg]["details"].append(details)
 
-        if report.get("ErrorType") == "P":
-          yield PASS, report_message(msg, details)
-
-        elif report.get("ErrorType") == "E":
-          status = FAIL
-          for substring in downgrade_to_warn:
-            if substring in msg:
-              status = WARN
-          yield status, report_message(msg, details)
-
-        elif report.get("ErrorType") == "W":
-          yield WARN, report_message(msg, details)
-
-        else:
-          yield INFO, report_message(msg, details)
-
+  # ---------------------------
+  # Clean-up generated files...
   os.remove(xml_report_file)
   # FontVal internal detail: HTML report generated only on non-Windows due to
   # Mono or the used HTML renderer not being able to render XML with a
@@ -272,6 +270,48 @@ def com_google_fonts_check_037(font):
   if os.path.exists(html_report_file):
     os.remove(html_report_file)
   os.remove(fval_file)
+
+  # ---------------------------
+  # Here we start emitting the grouped log messages
+  for msg, data in grouped_msgs.items():
+    # But before printing we try to make the "details" more
+    # readable. Otherwise the user would get the text terminal
+    # flooded with messy data.
+
+    # No need to print is as a list if wereally only
+    # got one log message of this kind:
+    if len(data["details"]) == 1:
+      data["details"] = data["details"][0]
+
+    # Simplify the list of glyph indices by only displaying
+    # their numerical values in a list:
+    for glyph_index in ["Glyph index ", "glyph# "]:
+      if data["details"] and \
+         data["details"][0] and \
+         glyph_index in data["details"][0]:
+        try:
+          data["details"] = {'Glyph index': [int(x.split(glyph_index)[1])
+                                             for x in data["details"]]}
+          break
+        except ValueError:
+          pass
+
+    # And, finally, the log messages are emitted:
+    if data["errortype"] == "P":
+      yield PASS, report_message(msg, data["details"])
+
+    elif data["errortype"] == "E":
+      status = FAIL
+      for substring in downgrade_to_warn:
+        if substring in msg:
+          status = WARN
+      yield status, report_message(msg, data["details"])
+
+    elif data["errortype"] == "W":
+      yield WARN, report_message(msg, data["details"])
+
+    else:
+      yield INFO, report_message(msg, data["details"])
 
 
 @check(
