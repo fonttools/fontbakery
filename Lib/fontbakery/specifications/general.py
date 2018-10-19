@@ -238,6 +238,16 @@ def com_google_fonts_check_037(font):
         # improved readability.
         if None in details:
           details.remove(None)
+
+        # A designer will likely not need the full list
+        # in order to fix a problem.
+        # Showing only the 10 first ones is more than enough
+        # and helps avoid flooding the report.
+        if len(details) > 25:
+          num_similar = len(details) - 10
+          details = details[:10]
+          details.append(f"NOTE: {num_similar} other similar"
+                          " results were hidden!")
         details = '\n\t- ' + '\n\t- '.join(details)
       return f"MS-FonVal: {msg} DETAILS: {details}"
     else:
