@@ -176,7 +176,11 @@ def com_google_fonts_check_037(font):
     # this check's table ordering requirements.
     # More info at:
     # https://github.com/googlefonts/fontbakery/issues/2105
-    "Tables are not in optimal order"
+    "Tables are not in optimal order",
+
+    # Font Bakery has its own check for required/optional tables:
+    # com.google.fonts/check/052 - "Font contains all required tables?"
+    "Recommended table is missing"
   ]
 
   try:
@@ -551,8 +555,18 @@ def com_google_fonts_check_049(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/052',
-    conditions=['is_ttf']
+  id='com.google.fonts/check/052',
+  conditions=['is_ttf'],
+  rationale="""Depending on the typeface and coverage of a font, certain
+  tables are recommended for optimum quality. For example, the performance
+  of a non-linear font is improved if the VDMX, LTSH, and hdmx tables are
+  present. Non-monospaced Latin fonts should have a kern table. A gasp table
+  is necessary if a designer wants to influence the sizes at which grayscaling
+  is used under Windows. A DSIG table containing a digital signature helps
+  ensure the integrity of the font file. Etc.
+  """
+  # TODO: The rationale description above comes from FontValidator, check W0022.
+  #       We may want to improve it and/or rephrase it.
 )
 def com_google_fonts_check_052(ttFont):
   """Font contains all required tables?"""
