@@ -167,7 +167,16 @@ def com_google_fonts_check_037(font):
 
     # Font Bakery has got a native check for the xAvgCharWidth field
     # which is: com.google.fonts/check/034
-    "The xAvgCharWidth field does not equal the calculated value"
+    "The xAvgCharWidth field does not equal the calculated value",
+
+    # The optimal ordering suggested by FVal check W0020 seems to only be
+    # relevant to performance optimizations on old versions of Windows
+    # running on old hardware. Since such performance considerations
+    # are most likely negligible, we're not going to bother users with
+    # this check's table ordering requirements.
+    # More info at:
+    # https://github.com/googlefonts/fontbakery/issues/2105
+    "Tables are not in optimal order"
   ]
 
   try:
