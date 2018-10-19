@@ -149,7 +149,7 @@ def com_google_fonts_check_037(font):
     "There are undefined bits set in fsSelection field",
 
     # FIX-ME: Why did we downgrade this one to WARN?
-    "Misoriented contour",
+    "Misoriented contour"
   ]
 
   # Some other checks we want to completely disable:
@@ -158,16 +158,16 @@ def com_google_fonts_check_037(font):
     # on the progress of runnint it. It has nothing to do with
     # actual issues on the font files:
     "Validating glyph with index",
-    "Table Test:"
+    "Table Test:",
 
     # No software is affected by Mac strings nowadays.
     # More info at: googlei18n/fontmake#414
     "The table doesn't contain strings for Mac platform",
-    "The PostScript string is not present for both required platforms"
+    "The PostScript string is not present for both required platforms",
 
     # Font Bakery has got a native check for the xAvgCharWidth field
     # which is: com.google.fonts/check/034
-    "The xAvgCharWidth field does not equal the calculated value",
+    "The xAvgCharWidth field does not equal the calculated value"
   ]
 
   try:
@@ -210,20 +210,31 @@ def com_google_fonts_check_037(font):
     for report in doc.iter('Report'):
       msg = report.get("Message")
       details = report.get("Details")
+
+      disable_it = False
+      for substring in disabled_fval_checks:
+        if substring in msg:
+          disable_it = True
+      if disable_it:
+        continue
+
       if [msg, details] not in already_reported:
         # avoid cluttering the output with tons of identical reports
         already_reported.append([msg, details])
 
         if report.get("ErrorType") == "P":
           yield PASS, report_message(msg, details)
+
         elif report.get("ErrorType") == "E":
           status = FAIL
           for substring in downgrade_to_warn:
             if substring in msg:
               status = WARN
           yield status, report_message(msg, details)
+
         elif report.get("ErrorType") == "W":
           yield WARN, report_message(msg, details)
+
         else:
           yield INFO, report_message(msg, details)
 
