@@ -12,6 +12,7 @@ The project is licensed under the `Apache v2.0 license <https://github.com/googl
    :caption: User Documentation
 
    user/BRIEF
+   user/installation
    user/USAGE
    user/bash-completion
 
@@ -19,8 +20,9 @@ The project is licensed under the `Apache v2.0 license <https://github.com/googl
    :maxdepth: 2
    :caption: Developer Documentation
 
-   developer/writing-specifications
-   developer/code-testing
+   developer/contrib-getting-started
+   developer/source-contrib-guide
+   developer/doc-contrib-guide
 
 .. toctree::
    :maxdepth: 2
