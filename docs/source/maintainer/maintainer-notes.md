@@ -2,7 +2,17 @@
 
 ## Code Testing
 
-See [docs/code-testing.md](https://github.com/googlefonts/fontbakery/blob/master/docs/code-testing.md)
+`tox` and `coverage` are used to execute the Font Bakery test suite and line coverage assessment, respectively.  
+
+Use the following command to run all tests:
+
+```
+$ tox
+```
+
+The coverage report can be found at the end of the test results that are printed to the standard output/error stream.
+
+Continuous integration testing is performed on Travis CI. Test jobs can be found at [https://travis-ci.org/googlefonts/fontbakery](https://travis-ci.org/googlefonts/fontbakery).
 
 ## Updating the distribution package
 
