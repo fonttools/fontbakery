@@ -123,9 +123,6 @@ If you need to generate a list of all issues in a font family collection, such a
 
 This will create a folder called `check_results/` then run the `check-googlefonts` subcommand on every family, saving individual per-family reports in json format into subdirectories.
 
-#### Bash completion
-
-See [docs/bash-completion.md](https://github.com/googlefonts/fontbakery/blob/davelab6-docs/docs/bash-completion.md)
 
 #### Old Command Line Tools
 
