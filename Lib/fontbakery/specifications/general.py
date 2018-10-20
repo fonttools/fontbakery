@@ -133,11 +133,13 @@ def com_google_fonts_check_036(font):
       yield PASS, "ots-sanitize passed this file"
 
 
+
 @check(
   id = 'com.google.fonts/check/037'
 )
 def com_google_fonts_check_037(font):
   """Checking with Microsoft Font Validator."""
+  import fontval
 
   # In some cases we want to override the severity level of
   # certain checks in FontValidator:
@@ -209,15 +211,15 @@ def com_google_fonts_check_037(font):
     disabled_fval_checks.extend(VARFONT_disabled_fval_checks)
 
   try:
-    import subprocess
-    fval_cmd = [
-        "FontValidator", "-file", font, "-all-tables",
-        "-report-in-font-dir", "-no-raster-tests"
-    ]
-    subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
-  except subprocess.CalledProcessError as e:
+    process = fontval.run_checks("-file", font,
+                                 "-all-tables",
+                                 "-report-in-font-dir",
+                                 "-no-raster-tests",
+                                 check=True,
+                                 capture_output=True)
+  except fontval.CalledProcessError as e:
     filtered_msgs = ""
-    for line in e.output.decode().split("\n"):
+    for line in e.stderr.decode().split("\n"):
       disable_it = False
       for substring in disabled_fval_checks:
         if substring in line:
@@ -226,10 +228,13 @@ def com_google_fonts_check_037(font):
         filtered_msgs += line + "\n"
     yield INFO, ("Microsoft Font Validator returned an error code."
                  " Output follows :\n\n{}\n").format(filtered_msgs)
-  except (OSError, IOError) as error:
-    yield ERROR, ("Mono runtime and/or "
-                  "Microsoft Font Validator are not available!")
-    raise error
+  else:
+    if process.stderr:
+      yield WARN, (
+        "font-validator passed this file, however warnings were printed:\n\n{}"
+      ).format(process.stderr.decode())
+    else:
+      yield PASS, "font-validator passed this file"
 
   def report_message(msg, details):
     if details:
