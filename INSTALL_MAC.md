@@ -56,12 +56,3 @@ If you wish to run the installation process in Terminal, you can do it this way:
     cd fontTools.pkg/ ;
     cat Payload | gunzip -dc | cpio -i ;
     sudo mv ftx* /usr/local/bin/ ;
-
-##### Microsoft Font Validator
-
-Font Validator has useful tests for a font's glyf table. We use Hintak's fork.
-
-* download the latest [release](https://github.com/HinTak/Font-Validator/) for your OS.
-* unzip it
-* Change the unzipped binary's permissions, `chmod 755 FontValidator`
-* Move the binary to your bin folder, `mv /path/to/unzipped/FontValidator /usr/local/bin/FontValidator`

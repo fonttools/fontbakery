@@ -24,12 +24,6 @@ If this doesn't work for you, wait for the next release of FontBakery after 0.5.
 
 1. Grab and install a Windows release from https://github.com/fontforge/fontforge/releases
 
-#### Microsoft Font Validator
-
-1. Grab a Windows release from https://github.com/HinTak/Font-Validator/releases (e.g. `FontVal-something-win32+64.zip`)
-2. Extract the archive somewhere and remember where
-3. Repeat the steps above to add fontbakery to the PATH variable and add the directory where you extracted the `FontValidator.exe`.
-
 #### ftxvalidator
 
 Not available for Windows.
