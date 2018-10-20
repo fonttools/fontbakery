@@ -476,8 +476,8 @@ def com_google_fonts_check_012(ttFonts):
       yield FAIL, ("Glyphname '{}' is defined on {}"
                    " but is missing on"
                    " {}.").format(gn,
-                                  ', '.join(missing[gn]),
-                                  ', '.join(available[gn]))
+                                  ', '.join(available[gn]),
+                                  ', '.join(missing[gn]))
   if not failed:
     yield PASS, "All font files have identical glyph names."
 
