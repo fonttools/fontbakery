@@ -1,5 +1,7 @@
 .. image:: ../../data/logo.png
 
+|PyPI| |PyVersion| |TravisBuild| |License|
+
 Welcome to the Font Bakery Documentation!
 =========================================
 
@@ -42,3 +44,20 @@ Indices
 
 * :ref:`genindex`
 * :ref:`modindex`
+
+
+.. |PyPI| image:: https://img.shields.io/pypi/v/fontbakery.svg?style=flat
+   :alt: Font Bakery PyPI Version
+   :target: https://pypi.python.org/pypi/fontbakery/
+
+.. |PyVersion| image:: https://img.shields.io/pypi/pyversions/fontbakery.svg?style=flat
+   :alt: Python versions
+   :target: https://pypi.python.org/pypi/fontbakery/
+
+.. |TravisBuild| image:: https://travis-ci.org/googlefonts/fontbakery.svg
+   :alt: Travis CI Build
+   :target: https://travis-ci.org/googlefonts/fontbakery
+
+.. |License| image:: https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg
+   :alt: License
+   :target: https://github.com/googlefonts/fontbakery/blob/master/LICENSE.txt
