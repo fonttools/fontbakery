@@ -977,7 +977,7 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
         yield PASS, f"Font has ttfautohint params ({params})"
         failed = False
     else:
-        yield SKIP, "Font is not hinted using ttfautohint."
+        yield SKIP, "Font appears to our heuristic as not hinted using ttfautohint."
         failed = False
 
   if failed:
