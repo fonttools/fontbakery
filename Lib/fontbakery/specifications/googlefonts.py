@@ -163,6 +163,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/has_ttfautohint_params' # Font has ttfautohint params
       , 'com.google.fonts/check/vttclean' # There must not be VTT Talk sources in the font.
       , 'com.google.fonts/check/varfont/has_HVAR' # Check that variable fonts have an HVAR table.
+      , 'com.google.fonts/check/varfont/has_MVAR' # Check that variable fonts have an MVAR table.
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
@@ -3205,6 +3206,34 @@ def com_google_fonts_check_varfont_has_HVAR(ttFont):
                  " must have a properly set HVAR table in order"
                  " to avoid costly text-layout operations on"
                  " certain platforms.")
+
+
+@check(
+  id = 'com.google.fonts/check/varfont/has_MVAR',
+  rationale = """
+  Per the OpenType spec, the MVAR tables contain
+  variation data for metadata otherwise in tables
+  such as OS/2 and hhea; if not present, then
+  the default values in those tables will apply
+  to all instances, which can effect text layout.
+
+  Thus, MVAR tables should be present and correct
+  in all variable fonts since text layout software
+  depends on these values.
+  """, # FIX-ME: Clarify this rationale text.
+       #         See: https://github.com/googlefonts/fontbakery/issues/2118#issuecomment-432108560
+  conditions = ['is_variable_font'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2118'
+  })
+def com_google_fonts_check_varfont_has_MVAR(ttFont):
+  """ Check that variable fonts have an MVAR table. """
+  if "MVAR" in ttFont.keys():
+    yield PASS, ("This variable font contains an MVAR table.")
+  else:
+    yield FAIL, ("All variable fonts on the Google Fonts collection"
+                 " must have a properly set MVAR table because"
+                 " text-layout software depends on it.")
 
 
 @check(

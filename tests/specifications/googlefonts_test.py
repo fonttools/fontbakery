@@ -2302,6 +2302,23 @@ def test_check_varfont_has_HVAR():
   assert status == FAIL
 
 
+def test_check_varfont_has_MVAR():
+  """ Check that variable fonts have an MVAR table. """
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_varfont_has_MVAR as check
+
+  # Our reference Cabin Variable Font contains an MVAR table.
+  ttFont = TTFont('data/test/cabinvfbeta/CabinVFBeta.ttf')
+
+  # So the check must PASS.
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  # Introduce the problem by removing the HVAR table:
+  del ttFont['MVAR']
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
+
+
 def test_check_040(mada_ttFonts):
   """ Checking OS/2 usWinAscent & usWinDescent. """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_040 as check
