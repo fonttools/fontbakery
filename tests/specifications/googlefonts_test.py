@@ -2302,7 +2302,9 @@ def test_check_varfont_has_HVAR():
   assert status == FAIL
 
 
-def test_check_varfont_has_MVAR():
+# temporarily disabled.
+# See: https://github.com/googlefonts/fontbakery/issues/2118#issuecomment-432283698
+def DISABLED_test_check_varfont_has_MVAR():
   """ Check that variable fonts have an MVAR table. """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_varfont_has_MVAR as check
 

@@ -163,7 +163,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/has_ttfautohint_params' # Font has ttfautohint params
       , 'com.google.fonts/check/vttclean' # There must not be VTT Talk sources in the font.
       , 'com.google.fonts/check/varfont/has_HVAR' # Check that variable fonts have an HVAR table.
-      , 'com.google.fonts/check/varfont/has_MVAR' # Check that variable fonts have an MVAR table.
+#      , 'com.google.fonts/check/varfont/has_MVAR' # Check that variable fonts have an MVAR table.
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
@@ -3208,6 +3208,9 @@ def com_google_fonts_check_varfont_has_HVAR(ttFont):
                  " certain platforms.")
 
 
+# Temporarily disabled.
+# See: https://github.com/googlefonts/fontbakery/issues/2118#issuecomment-432283698
+@disable
 @check(
   id = 'com.google.fonts/check/varfont/has_MVAR',
   rationale = """
