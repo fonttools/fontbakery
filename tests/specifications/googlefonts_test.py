@@ -2036,14 +2036,15 @@ def test_check_157():
                                                      familyname_with_spaces,
                                                      style)
   test_cases = [
-    (PASS, "data/test/cabin/Cabin-Regular.ttf",               "Cabin", "Cabin"),
-    (FAIL, "data/test/cabin/Cabin-Regular.ttf",               "Wrong", "Cabin"),
-    (PASS, "data/test/overpassmono/OverpassMono-Regular.ttf", "Overpass Mono", "Overpass Mono"),
-    (PASS, "data/test/overpassmono/OverpassMono-Bold.ttf",    "Overpass Mono", "Overpass Mono"),
-    (FAIL, "data/test/overpassmono/OverpassMono-Regular.ttf", "Overpass Mono", "Foo"),
-    (PASS, "data/test/merriweather/Merriweather-Black.ttf", "Merriweather", "Merriweather Black"),
-    (PASS, "data/test/merriweather/Merriweather-LightItalic.ttf", "Merriweather", "Merriweather Light"),
-    (FAIL, "data/test/merriweather/Merriweather-LightItalic.ttf", "Merriweather", "Merriweather Light Italic"),
+  # expect             filename                                   mac_value        win_value
+    (PASS, "data/test/cabin/Cabin-Regular.ttf",                   "Cabin",         "Cabin"),
+    (FAIL, "data/test/cabin/Cabin-Regular.ttf",                   "Wrong",         "Cabin"),
+    (PASS, "data/test/overpassmono/OverpassMono-Regular.ttf",     "Overpass Mono", "Overpass Mono"),
+    (PASS, "data/test/overpassmono/OverpassMono-Bold.ttf",        "Overpass Mono", "Overpass Mono"),
+    (FAIL, "data/test/overpassmono/OverpassMono-Regular.ttf",     "Overpass Mono", "Foo"),
+    (PASS, "data/test/merriweather/Merriweather-Black.ttf",       "Merriweather",  "Merriweather Black"),
+    (PASS, "data/test/merriweather/Merriweather-LightItalic.ttf", "Merriweather",  "Merriweather Light"),
+    (FAIL, "data/test/merriweather/Merriweather-LightItalic.ttf", "Merriweather",  "Merriweather Light Italic"),
   ]
 
   for expected, filename, mac_value, win_value in test_cases:
@@ -2064,16 +2065,60 @@ def test_check_157():
     assert status == expected
 
 
-def NOT_IMPLEMENTED_test_check_158():
+def test_check_158():
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_158 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - FAIL, "Style name inferred from filename is not canonical."
-  # - FAIL, "Font should not have a certain name table entry."
-  # - FAIL, "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
-  # - PASS
+  from fontbakery.constants import PlatformID, NameID
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_158 as check,
+                                                     familyname,
+                                                     familyname_with_spaces,
+                                                     style)
+  #TODO: Test the FAIL cases:
+  # - FAIL, "non-canonical" - "Style name inferred from filename is not canonical."
+  # - FAIL, "invalid-entry" - "Font should not have a certain name table entry."
+  # - FAIL, "bad-familyname" - "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
+
+  PASS_test_cases = [
+  #  filename                                                mac_value             win_value
+    ("data/test/overpassmono/OverpassMono-Regular.ttf",      "Regular",            "Regular"),
+    ("data/test/overpassmono/OverpassMono-Bold.ttf",         "Bold",               "Bold"),
+    ("data/test/merriweather/Merriweather-Black.ttf",        "Black",              "Regular"),
+    ("data/test/merriweather/Merriweather-LightItalic.ttf",  "Light Italic",       "Italic"),
+    ("data/test/montserrat/Montserrat-BlackItalic.ttf",      "Black Italic",       "Italic"),
+    ("data/test/montserrat/Montserrat-Black.ttf",            "Black",              "Regular"),
+    ("data/test/montserrat/Montserrat-BoldItalic.ttf",       "Bold Italic",        "Bold Italic"),
+    ("data/test/montserrat/Montserrat-Bold.ttf",             "Bold",               "Bold"),
+    ("data/test/montserrat/Montserrat-ExtraBoldItalic.ttf",  "ExtraBold Italic",   "Italic"),
+    ("data/test/montserrat/Montserrat-ExtraBold.ttf",        "ExtraBold",          "Regular"),
+    ("data/test/montserrat/Montserrat-ExtraLightItalic.ttf", "ExtraLight Italic",  "Italic"),
+    ("data/test/montserrat/Montserrat-ExtraLight.ttf",       "ExtraLight",         "Regular"),
+    ("data/test/montserrat/Montserrat-Italic.ttf",           "Italic",             "Italic"),
+    ("data/test/montserrat/Montserrat-LightItalic.ttf",      "Light Italic",       "Italic"),
+    ("data/test/montserrat/Montserrat-Light.ttf",            "Light",              "Regular"),
+    ("data/test/montserrat/Montserrat-MediumItalic.ttf",     "Medium Italic",      "Italic"),
+    ("data/test/montserrat/Montserrat-Medium.ttf",           "Medium",             "Regular"),
+    ("data/test/montserrat/Montserrat-Regular.ttf",          "Regular",            "Regular"),
+    ("data/test/montserrat/Montserrat-SemiBoldItalic.ttf",   "SemiBold Italic",    "Italic"),
+    ("data/test/montserrat/Montserrat-SemiBold.ttf",         "SemiBold",           "Regular"),
+    ("data/test/montserrat/Montserrat-ThinItalic.ttf",       "Thin Italic",        "Italic"),
+    ("data/test/montserrat/Montserrat-Thin.ttf",             "Thin",               "Regular")
+  ]
+
+  for filename, mac_value, win_value in PASS_test_cases:
+    ttFont = TTFont(filename)
+    for i, name in enumerate(ttFont['name'].names):
+      if name.platformID == PlatformID.MACINTOSH:
+        value = mac_value
+      if name.platformID == PlatformID.WINDOWS:
+        value = win_value
+      assert value
+
+      if name.nameID == NameID.FONT_SUBFAMILY_NAME:
+          ttFont['name'].names[i].string = value.encode(name.getEncoding())
+    print (f"Test PASS with filename='{filename}', value='{value}', style='{style(filename)}'...")
+    status, message = list(check(ttFont,
+                                 style(filename),
+                                 familyname_with_spaces(familyname(filename))))[-1]
+    assert status == PASS
 
 
 def test_check_159():
