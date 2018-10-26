@@ -2819,10 +2819,12 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
   for name in ttFont['name'].names:
     if name.nameID == NameID.FONT_SUBFAMILY_NAME:
       if style_with_spaces not in STYLE_NAMES:
-        yield FAIL, ("Style name '{}' inferred from filename"
-                     " is not canonical."
-                     " Valid options are: {}").format(style_with_spaces,
-                                                      STYLE_NAMES)
+        yield FAIL, Message("non-canonical",
+                            ("Style name '{}' inferred from filename"
+                             " is not canonical."
+                             " Valid options are:"
+                             " {}").format(style_with_spaces,
+                                           STYLE_NAMES))
         failed = True
         continue
 
@@ -2838,19 +2840,21 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
           else:
             expected_value = "Regular"
       else:
-        yield FAIL, ("Font should not have a "
-                     "{} entry!").format(name_entry_id(name))
+        yield FAIL, Message("invalid-entry",
+                            ("Font should not have a "
+                             "{} entry!").format(name_entry_id(name)))
         failed = True
         continue
 
       string = name.string.decode(name.getEncoding()).strip()
       if string != expected_value:
         failed = True
-        yield FAIL, ("Entry {} on the 'name' table: "
-                     "Expected '{}' "
-                     "but got '{}'.").format(name_entry_id(name),
-                                             expected_value,
-                                             string)
+        yield FAIL, Message("bad-familyname",
+                            ("Entry {} on the 'name' table: "
+                             "Expected '{}' "
+                             "but got '{}'.").format(name_entry_id(name),
+                                                     expected_value,
+                                                     string))
 
   if not failed:
     yield PASS, "FONT_SUBFAMILY_NAME entries are all good."
