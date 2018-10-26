@@ -704,7 +704,16 @@ def com_google_fonts_check_053(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/058'
+  id = 'com.google.fonts/check/058',
+  rationale = """Microsoft's recommendations for OpenType Fonts states the
+  following, 'NOTE: The PostScript glyph name must be no longer than 31
+  characters, include only uppercase or lowercase English letters, European
+  digits, the period or the underscore, i.e. from the set [A-Za-z0-9_.] and
+  should start with a letter, except the special glyph name ".notdef" which
+  starts with a period.'
+
+  https://docs.microsoft.com/en-us/typography/opentype/spec/recom#post-table
+  """
 )
 def com_google_fonts_check_058(ttFont):
   """Glyph names are all valid?"""
