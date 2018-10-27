@@ -2129,14 +2129,19 @@ def test_check_158():
                                familyname_with_spaces(familyname(filename))))[-1]
   assert status == FAIL and message.code == "invalid-entry"
 
-  # TODO:
+
   # - FAIL, "bad-familyname" - "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
-  #filename = "data/test/something...ttf"
-  #print (f"Test FAIL 'bad-familyname' with filename='{filename}'...")
-  #status, message = list(check(TTFont(filename),
-  #                             style_with_spaces(filename),
-  #                             familyname_with_spaces(familyname(filename))))[-1]
-  #assert status == FAIL and message.code == "bad-familyname"
+  filename = "data/test/montserrat/Montserrat-ThinItalic.ttf"
+  print (f"Test FAIL 'bad-familyname' with filename='{filename}'...")
+  ttFont = TTFont(filename)
+  # We setup a bad familyname:
+  ttFont["name"].names[0].nameID = NameID.FONT_SUBFAMILY_NAME
+  ttFont["name"].names[0].string = "Foo".encode(ttFont["name"].names[0].getEncoding())
+  # And this should now FAIL:
+  status, message = list(check(ttFont,
+                               style_with_spaces(filename),
+                               familyname_with_spaces(familyname(filename))))[-1]
+  assert status == FAIL and message.code == "bad-familyname"
 
 
 def test_check_159():
