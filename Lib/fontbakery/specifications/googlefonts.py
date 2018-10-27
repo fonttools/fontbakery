@@ -184,6 +184,15 @@ def style(font):
 
 
 @condition
+def style_with_spaces(font):
+  """Stylename with spaces (derived from a canonical filename)."""
+  from fontbakery.constants import STYLE_NAMES
+  if style(font):
+    return style(font).replace('Italic',
+                               ' Italic').strip()
+
+
+@condition
 def expected_os2_weight(style):
   """The weight name and the expected OS/2 usWeightClass value inferred from
   the style part of the font name
@@ -2804,30 +2813,20 @@ def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
 
 @check(
   id = 'com.google.fonts/check/158',
-  conditions = ['style',
+  conditions = ['style_with_spaces',
                 'familyname_with_spaces'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
+def com_google_fonts_check_158(ttFont,
+                               style_with_spaces,
+                               familyname_with_spaces):
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
-  from fontbakery.constants import STYLE_NAMES
+
   failed = False
-  style_with_spaces = style.replace('Italic',
-                                    ' Italic').strip()
   for name in ttFont['name'].names:
     if name.nameID == NameID.FONT_SUBFAMILY_NAME:
-      if style_with_spaces not in STYLE_NAMES:
-        yield FAIL, Message("non-canonical",
-                            ("Style name '{}' inferred from filename"
-                             " is not canonical."
-                             " Valid options are:"
-                             " {}").format(style_with_spaces,
-                                           STYLE_NAMES))
-        failed = True
-        continue
-
       if name.platformID == PlatformID.MACINTOSH:
         expected_value = style_with_spaces
 
@@ -2835,7 +2834,7 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
         if style_with_spaces in ["Bold", "Bold Italic"]:
           expected_value = style_with_spaces
         else:
-          if "Italic" in style:
+          if "Italic" in style_with_spaces:
             expected_value = "Italic"
           else:
             expected_value = "Regular"
@@ -2862,18 +2861,18 @@ def com_google_fonts_check_158(ttFont, style, familyname_with_spaces):
 
 @check(
   id = 'com.google.fonts/check/159',
-  conditions = ['style',
+  conditions = ['style_with_spaces',
                 'familyname_with_spaces'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_159(ttFont, style, familyname_with_spaces):
+def com_google_fonts_check_159(ttFont,
+                               style_with_spaces,
+                               familyname_with_spaces):
   """ Check name table: FULL_FONT_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
   failed = False
-  style_with_spaces = style.replace('Italic',
-                                    ' Italic').strip()
   for name in ttFont['name'].names:
     if name.nameID == NameID.FULL_FONT_NAME:
       expected_value = "{} {}".format(familyname_with_spaces,
@@ -2883,7 +2882,7 @@ def com_google_fonts_check_159(ttFont, style, familyname_with_spaces):
         failed = True
         # special case
         # see https://github.com/googlefonts/fontbakery/issues/1436
-        if style == "Regular" \
+        if style_with_spaces == "Regular" \
            and string == familyname_with_spaces:
           yield WARN, ("Entry {} on the 'name' table:"
                        " Got '{}' which lacks 'Regular',"
@@ -2896,6 +2895,7 @@ def com_google_fonts_check_159(ttFont, style, familyname_with_spaces):
                        "but got '{}'.").format(name_entry_id(name),
                                                expected_value,
                                                unidecode(string))
+
   if not failed:
     yield PASS, "FULL_FONT_NAME entries are all good."
 
@@ -2969,27 +2969,25 @@ def com_google_fonts_check_161(ttFont, style, familyname_with_spaces):
 
 @check(
   id = 'com.google.fonts/check/162',
-  conditions=['style'],
+  conditions=['style_with_spaces'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_162(ttFont, style):
+def com_google_fonts_check_162(ttFont, style_with_spaces):
   """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
 
   failed = False
-  style_with_spaces = style.replace('Italic',
-                                    ' Italic').strip()
   for name in ttFont['name'].names:
     if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
-      if style in ['Regular',
-                   'Italic',
-                   'Bold',
-                   'Bold Italic']:
+      if style_with_spaces in ['Regular',
+                               'Italic',
+                               'Bold',
+                               'Bold Italic']:
         yield WARN, ("Font style is '{}' and, for that reason,"
                      " it is not expected to have a "
-                     "{} entry!").format(style,
+                     "{} entry!").format(style_with_spaces,
                                          name_entry_id(name))
       else:
         expected_value = style_with_spaces
