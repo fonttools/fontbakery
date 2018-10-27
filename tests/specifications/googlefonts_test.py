@@ -2071,11 +2071,7 @@ def test_check_158():
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_158 as check,
                                                      familyname,
                                                      familyname_with_spaces,
-                                                     style)
-  #TODO: Test the FAIL cases:
-  # - FAIL, "non-canonical" - "Style name inferred from filename is not canonical."
-  # - FAIL, "invalid-entry" - "Font should not have a certain name table entry."
-  # - FAIL, "bad-familyname" - "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
+                                                     style_with_spaces)
 
   PASS_test_cases = [
   #  filename                                                mac_value             win_value
@@ -2114,11 +2110,29 @@ def test_check_158():
 
       if name.nameID == NameID.FONT_SUBFAMILY_NAME:
           ttFont['name'].names[i].string = value.encode(name.getEncoding())
-    print (f"Test PASS with filename='{filename}', value='{value}', style='{style(filename)}'...")
+    print (f"Test PASS with filename='{filename}', value='{value}', style_with_spaces='{style_with_spaces(filename)}'...")
     status, message = list(check(ttFont,
-                                 style(filename),
+                                 style_with_spaces(filename),
                                  familyname_with_spaces(familyname(filename))))[-1]
     assert status == PASS
+
+  # TODO:
+  # - FAIL, "invalid-entry" - "Font should not have a certain name table entry."
+  #filename = "data/test/something...ttf"
+  #print (f"Test FAIL 'invalid-entry' with filename='{filename}'...")
+  #status, message = list(check(TTFont(filename),
+  #                             style_with_spaces(filename),
+  #                             familyname_with_spaces(familyname(filename))))[-1]
+  #assert status == FAIL and message == "invalid-entry"
+
+  # TODO:
+  # - FAIL, "bad-familyname" - "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
+  #filename = "data/test/something...ttf"
+  #print (f"Test FAIL 'bad-familyname' with filename='{filename}'...")
+  #status, message = list(check(TTFont(filename),
+  #                             style_with_spaces(filename),
+  #                             familyname_with_spaces(familyname(filename))))[-1]
+  #assert status == FAIL and message == "bad-familyname"
 
 
 def test_check_159():
@@ -2151,7 +2165,7 @@ def test_check_159():
 
   # So it must PASS the check:
   print ("Test PASS with a good Bold Italic font...")
-  status, message = list(check(ttFont, "BoldItalic", "Cabin"))[-1]
+  status, message = list(check(ttFont, "Bold Italic", "Cabin"))[-1]
   assert status == PASS
 
   # And here we test the FAIL codepath:
@@ -2160,7 +2174,7 @@ def test_check_159():
       backup = name.string
       ttFont["name"].names[index].string = "MAKE IT FAIL".encode(name.getEncoding())
       print ("Test FAIL with a bad FULL_FONT_NAME entry...")
-      status, message = list(check(ttFont, "BoldItalic", "Cabin"))[-1]
+      status, message = list(check(ttFont, "Bold Italic", "Cabin"))[-1]
       assert status == FAIL
       # restore it:
       ttFont["name"].names[index].string = backup
