@@ -154,6 +154,15 @@ def com_google_fonts_check_037(font):
 
   # Some other checks we want to completely disable:
   disabled_fval_checks = [
+    # FontVal E4012 thinks that
+    # "Versions 0x00010000 and 0x0001002 are currently
+    #  the only defined versions of the GDEF table."
+    # but the GDEF chapter of the OpenType specification at
+    # https://docs.microsoft.com/en-us/typography/opentype/spec/gdef
+    # describes GDEF header version 1.3, which is not yet recognized
+    # by FontVal, thus resulting in this spurious false-FAIL:
+    "The version number is neither 0x00010000 nor 0x0001002",
+
     # These messages below are simply fontval given user feedback
     # on the progress of runnint it. It has nothing to do with
     # actual issues on the font files:
