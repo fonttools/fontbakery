@@ -492,3 +492,25 @@ def test_check_ttx_roundtrip():
   #bad_font_path = os.path.join("data", "test", ...)
   #status, _ = list(check(bad_font_path))[-1]
   #assert status == FAIL
+
+def test_is_up_to_date():
+  from fontbakery.specifications.general import is_up_to_date
+  # is_up_to_date(installed, latest)
+  assert(is_up_to_date(installed="0.5.0",
+                          latest="0.5.0") == True)
+  assert(is_up_to_date(installed="0.5.1",
+                          latest="0.5.0") == True)
+  assert(is_up_to_date(installed="0.4.1",
+                          latest="0.5.0") == False)
+  assert(is_up_to_date(installed="0.3.4",
+                          latest="0.3.5") == False)
+  assert(is_up_to_date(installed="1.0.0",
+                          latest="1.0.1") == False)
+  assert(is_up_to_date(installed="2.0.0",
+                          latest="1.5.3") == True)
+  assert(is_up_to_date(installed="0.5.2.dev73+g8c9ebc0.d20181023",
+                          latest="0.5.1") == True)
+  assert(is_up_to_date(installed="0.5.2.dev73+g8c9ebc0.d20181023",
+                          latest="0.5.2") == False)
+  assert(is_up_to_date(installed="0.5.2.dev73+g8c9ebc0.d20181023",
+                          latest="0.5.3") == False)

@@ -344,6 +344,62 @@ def com_google_fonts_check_037(font):
       yield INFO, report_message(msg, data["details"])
 
 
+def is_up_to_date(installed, latest):
+  # ignoring the development version suffix is ok
+  # and is necessary for the string comparison
+  # below to always yield valid results
+  has_githash = ".dev" in installed
+  installed = installed.split(".dev")[0]
+
+  # Maybe the installed version is even newer than the 
+  # released one (such as during development on git).
+  # That's what we're trying to detect here:
+  installed = installed.split('.')
+  latest = latest.split('.')
+  for i in range(len(installed)):
+    if installed[i] > latest[i]:
+      return True
+    if installed[i] < latest[i]:
+      return False
+
+  # Otherwise it should be identical
+  # to the latest released version.
+  return not has_githash
+
+
+@check(
+  id = 'com.google.fonts/check/fontbakery_version'
+)
+def com_google_fonts_check_fontbakery_version():
+  """Do we have the latest version of FontBakery installed?"""
+
+  try:
+    import subprocess
+    installed = None
+    latest = None
+    failed = False
+    pip_cmd = ["pip", "search", "fontbakery"]
+    pip_output = subprocess.check_output(pip_cmd, stderr=subprocess.STDOUT)
+    for line in pip_output.decode().split('\n'):
+      if 'INSTALLED' in line:
+        installed = line.split('INSTALLED')[1].strip()
+      if 'LATEST' in line:
+        latest = line.split('LATEST')[1].strip()
+
+    if not is_up_to_date(installed, latest):
+      failed = True
+      yield FAIL, (f"Current Font Bakery version is {installed},"
+                   f" while a newer {latest} is already available."
+                    " Please upgrade it with 'pip install -U fontbakery'")
+    yield INFO, pip_output.decode()
+  except subprocess.CalledProcessError as e:
+    yield ERROR, ("Running 'pip search fontbakery' returned an error code."
+                  " Output follows :\n\n{}\n").format(e.output.decode())
+
+  if not failed:
+    yield PASS, "Font Bakery is up-to-date"
+
+
 @check(
   id = 'com.google.fonts/check/038',
   conditions = ['fontforge_check_results']
