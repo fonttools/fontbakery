@@ -1,6 +1,6 @@
 fonttools>=3.19
 protobuf>=3.4.0
-requests==2.11.1
+requests>=2.20.0
 beautifulsoup4==4.5.1
 bs4==0.0.1
 defusedxml==0.4.1
