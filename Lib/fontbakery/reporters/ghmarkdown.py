@@ -1,6 +1,7 @@
 import os
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.checkrunner import Status
+from fontbakery import __version__ as version
 
 LOGLEVELS=["ERROR","FAIL","WARN","SKIP","INFO","PASS"]
 
@@ -78,6 +79,7 @@ class GHMarkdownReporter(SerializeReporter):
             checks[key].append(check)
 
     md = "## Fontbakery report\n\n"
+    md += f"Fontbakery version: {version}\n\n"
 
     if family_checks:
       family_checks.sort(key=lambda c: c["result"])
