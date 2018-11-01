@@ -3310,9 +3310,16 @@ def com_google_fonts_check_042(ttFont):
     yield PASS, ("OS/2.sTypoAscender/Descender" " match hhea.ascent/descent.")
 
 
+@condition
+def VTT_hinted(ttFont):
+  # it seems that VTT is the only program that generates a TSI5 table
+  return 'TSI5' in ttFont
+
+
 @check(
   id = 'com.google.fonts/check/072',
-  conditions = ['is_ttf']
+  conditions = ['is_ttf',
+                'not VTT_hinted']
 )
 def com_google_fonts_check_072(ttFont):
   """Font enables smart dropout control in "prep" table instructions?
