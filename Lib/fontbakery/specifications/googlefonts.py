@@ -2961,8 +2961,9 @@ def com_google_fonts_check_161(ttFont, style, familyname_with_spaces):
     for name in ttFont['name'].names:
       if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
         string = name.string.decode(name.getEncoding()).strip()
-        has_entry = True
-        if string != expected_value:
+        if string == expected_value:
+          has_entry = True
+        else:
           failed = True
           yield FAIL, Message("non-ribbi-bad-value",
                               ("Entry {} on the 'name' table: "
@@ -2970,7 +2971,7 @@ def com_google_fonts_check_161(ttFont, style, familyname_with_spaces):
                                "but got '{}'.").format(name_entry_id(name),
                                                        expected_value,
                                                        unidecode(string)))
-    if not has_entry:
+    if not failed and not has_entry:
       failed = True
       yield FAIL, Message("non-ribbi-lacks-entry",
                           ("non-RIBBI fonts must have a"
@@ -2992,27 +2993,40 @@ def com_google_fonts_check_162(ttFont, style_with_spaces):
   from fontbakery.utils import name_entry_id
 
   failed = False
-  for name in ttFont['name'].names:
-    if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
-      if style_with_spaces in ['Regular',
-                               'Italic',
-                               'Bold',
-                               'Bold Italic']:
-        yield WARN, ("Font style is '{}' and, for that reason,"
-                     " it is not expected to have a "
-                     "{} entry!").format(style_with_spaces,
-                                         name_entry_id(name))
-      else:
-        expected_value = style_with_spaces
-
+  if style_with_spaces in ['Regular',
+                           'Italic',
+                           'Bold',
+                           'Bold Italic']:
+    for name in ttFont['name'].names:
+      if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
+        failed = True
+        yield FAIL, Message("ribbi",
+                            ("Font style is '{}' and, for that reason,"
+                             " it is not expected to have a "
+                             "{} entry!").format(style_with_spaces,
+                                                 name_entry_id(name)))
+  else:
+    expected_value = style_with_spaces
+    has_entry = False
+    for name in ttFont['name'].names:
+      if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
         string = name.string.decode(name.getEncoding()).strip()
-        if string != expected_value:
+        if string == expected_value:
+          has_entry = True
+        else:
           failed = True
-          yield FAIL, ("Entry {} on the 'name' table: "
-                       "Expected '{}' "
-                       "but got '{}'.").format(name_entry_id(name),
-                                               expected_value,
-                                               unidecode(string))
+          yield FAIL, Message("non-ribbi-bad-value",
+                              ("Entry {} on the 'name' table: "
+                               "Expected '{}' "
+                               "but got '{}'.").format(name_entry_id(name),
+                                                       expected_value,
+                                                       unidecode(string)))
+    if not failed and not has_entry:
+      failed = True
+      yield FAIL, Message("non-ribbi-lacks-entry",
+                          ("non-RIBBI fonts must have a"
+                           " TYPOGRAPHIC_SUBFAMILY_NAME entry"
+                           " on the name table."))
   if not failed:
     yield PASS, "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good."
 
