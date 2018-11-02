@@ -2199,15 +2199,61 @@ def NOT_IMPLEMENTED_test_check_160():
   # - PASS
 
 
-def NOT_IMPLEMENTED_test_check_161():
+def test_check_161():
   """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_161 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - WARN
-  # - FAIL
-  # - PASS
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_161 as check,
+                                                     style,
+                                                     familyname,
+                                                     familyname_with_spaces)
+
+  # RIBBI fonts must not have a TYPOGRAPHIC_FAMILY_NAME entry
+  font = "data/test/montserrat/Montserrat-BoldItalic.ttf"
+  ttFont = TTFont(font)
+  print (f"Test PASS with a RIBBI without nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
+  status, message = list(check(ttFont,
+                               style(font),
+                               familyname_with_spaces(familyname(font))))[-1]
+  assert status == PASS
+
+  # so we add one and make sure is emits a FAIL:
+  ttFont['name'].names[5].nameID = NameID.TYPOGRAPHIC_FAMILY_NAME # 5 is arbitrary here
+  print (f"Test FAIL with a RIBBI that has got a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
+  status, message = list(check(ttFont,
+                               style(font),
+                               familyname_with_spaces(familyname(font))))[-1]
+  assert status == FAIL and message.code == "ribbi"
+
+  # non-RIBBI fonts must have a TYPOGRAPHIC_FAMILY_NAME entry
+  font = "data/test/montserrat/Montserrat-ExtraLight.ttf"
+  ttFont = TTFont(font)
+  print (f"Test PASS with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
+  status, message = list(check(ttFont,
+                               style(font),
+                               familyname_with_spaces(familyname(font))))[-1]
+  assert status == PASS
+
+  # set bad values on all TYPOGRAPHIC_FAMILY_NAME entries:
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
+      ttFont['name'].names[i].string = "foo".encode(name.getEncoding())
+
+  print (f"Test FAIL with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
+  status, message = list(check(ttFont,
+                               style(font),
+                               familyname_with_spaces(familyname(font))))[-1]
+  assert status == FAIL and message.code == "non-ribbi-bad-value"
+
+  # remove all TYPOGRAPHIC_FAMILY_NAME entries
+  # by changing their nameid to something else:
+  for i, name in enumerate(ttFont['name'].names):
+    if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
+      ttFont['name'].names[i].nameID = 255 # blah! :-)
+
+  print (f"Test FAIL with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
+  status, message = list(check(ttFont,
+                               style(font),
+                               familyname_with_spaces(familyname(font))))[-1]
+  assert status == FAIL and message.code == "non-ribbi-lacks-entry"
 
 
 def NOT_IMPLEMENTED_test_check_162():
