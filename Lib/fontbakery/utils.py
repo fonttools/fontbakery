@@ -163,6 +163,10 @@ def download_file(url):
   return BytesIO(urlopen(url).read())
 
 
+# FIX-ME:
+#  This method directly references `glyf`.
+#  In the future we should consider refactoring
+#  it to also deal with CFF fonts.
 def glyph_has_ink(font, name):
   # type: (TTFont, Text) -> bool
   """Checks if specified glyph has any ink.

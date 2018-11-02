@@ -575,7 +575,8 @@ def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
 
 
 @check(
-  id = 'com.google.fonts/check/046'
+  id = 'com.google.fonts/check/046',
+  conditions = ['not is_cff']
 )
 def com_google_fonts_check_046(ttFont):
   """Font contains .notdef as first glyph?
