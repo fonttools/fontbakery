@@ -2520,7 +2520,7 @@ def test_check_042(mada_ttFonts):
   correct = ttFont['hhea'].ascent
   ttFont['OS/2'].sTypoAscender = correct + 1
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "ascender"
+  assert status == WARN and message.code == "ascender"
 
   # Restore good value:
   ttFont['OS/2'].sTypoAscender = correct
@@ -2530,7 +2530,7 @@ def test_check_042(mada_ttFonts):
   correct = ttFont['hhea'].descent
   ttFont['OS/2'].sTypoDescender = correct + 1
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "descender"
+  assert status == WARN and message.code == "descender"
 
 
 def test_check_072():
