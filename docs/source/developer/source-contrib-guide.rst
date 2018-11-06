@@ -77,7 +77,7 @@ Next, install the Font Bakery source in editable mode with:
 
    Please note that there are optional non-Python dependencies that must be installed to 
    execute some features in the Font Bakery project.  Please see the 
-   :doc:`../user/installation` for additional details.
+   :doc:`../user/installation/index` for additional details.
 
 You are now ready to modify the Font Bakery source files and test your changes.
 
