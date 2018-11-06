@@ -71,6 +71,8 @@ register_check = specification.register_check
 register_condition = specification.register_condition
 # ----------------------------------------------------------------------------
 
+basic_checks = Section("Basic checks")
+
 
 @register_condition
 @condition
@@ -79,7 +81,7 @@ def ufo_font(font):
   return defcon.Font(font)
 
 
-@register_check
+@register_check(section=basic_checks)
 @check(
   id = 'com.daltonmaag/check/ufolint',
   misc_metadata = {
@@ -102,7 +104,7 @@ def com_daltonmaag_check_ufolint(font):
     yield PASS, "ufolint passed the UFO source."
 
 
-@register_check
+@register_check(section=basic_checks)
 @check(
   id = 'com.daltonmaag/check/ufo-required-fields'
 )
@@ -127,7 +129,7 @@ def com_daltonmaag_check_required_fields(ufo_font):
     yield PASS, "Required fields present."
 
 
-@register_check
+@register_check(section=basic_checks)
 @check(
   id = 'com.daltonmaag/check/ufo-recommended-fields'
 )
@@ -152,7 +154,7 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
     yield PASS, "Recommended fields present."
 
 
-@register_check
+@register_check(section=basic_checks)
 @check(
   id = 'com.daltonmaag/check/ufo-unnecessary-fields'
 )
