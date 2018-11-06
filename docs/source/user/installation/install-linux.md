@@ -1,4 +1,4 @@
-# Linux + GNU Installation Guide
+# GNU + Linux Installation Guide
 
 You'll need Python 3.6 (or newer) to run FontBakery. Install with your Linux package manager or from [www.python.org](https://www.python.org).
 
