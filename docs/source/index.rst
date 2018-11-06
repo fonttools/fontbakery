@@ -14,7 +14,7 @@ The project is licensed under the `Apache v2.0 license <https://github.com/googl
    :caption: User Documentation
 
    user/BRIEF
-   user/installation
+   user/installation/index
    user/USAGE
    user/bash-completion
 
