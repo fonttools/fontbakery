@@ -348,17 +348,17 @@ def test_check_018():
   # Let's start with our reference Cabin Regular
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
 
-  print('Test FAIL with bad vid.')
+  print('Test WARN with bad vid.')
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   for bad_vid in bad_vids:
     ttFont['OS/2'].achVendID = bad_vid
     status, message = list(check(ttFont, registered_ids))[-1]
-    assert status == FAIL and message.code == "bad"
+    assert status == WARN and message.code == "bad"
 
   print('Test FAIL with font missing vendor id info.')
   ttFont['OS/2'].achVendID = None
   status, message = list(check(ttFont, registered_ids))[-1]
-  assert status == FAIL and message.code == "not set"
+  assert status == WARN and message.code == "not set"
 
   print('Test WARN with unknwon vendor id.')
   ttFont['OS/2'].achVendID = "????"
