@@ -17,6 +17,8 @@ message FamilyProto {
   repeated FontProto fonts = 6;
   repeated string aliases = 7;
   repeated string subsets = 8;
+  optional string ttf_autohint_args = 9;
+  repeated AxisProto axes = 10;
 };
 
 message FontProto {
@@ -27,4 +29,11 @@ message FontProto {
   required string post_script_name = 5;
   required string full_name = 6;
   optional string copyright = 7;
+};
+
+message AxisProto {
+  optional string tag = 1;
+  optional float min_value = 2;
+  optional float default_value = 3;
+  optional float max_value = 4;
 };
