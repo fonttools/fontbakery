@@ -11,6 +11,8 @@ Format specifications, distributor requirements, and custom checks.
 
 For a full introduction, [check out the Typecon 2018 presentation deck](https://docs.google.com/presentation/d/14dU3cUXelwvpVokhKYmJ6jT51AASDaOFyEUSdxb0RAg/)
 
+For full developer documentation, check out [font-bakery.readthedocs.io](https://font-bakery.readthedocs.io)
+
 Font Bakery has an active community of contributors from foundries around the world, including Adobe Typekit, Dalton Maag, Type Network, and Google Fonts.
 
 Font Bakery is not an official Google project, and Google provides no support for it.
@@ -41,6 +43,6 @@ A UI and a cloud system that scales up for checking 1,000s of font files super f
 Most of the checks are for OpenType binary files, and project metadata files. 
 (Currently, the Google Fonts `METADATA.pb` files are supported.)
 
-To learn more about writing custom checks, see [docs/writing-specifications.md](https://github.com/googlefonts/fontbakery/blob/master/docs/writing-specifications.md)
+To learn more about writing custom checks, see [docs/source/developer/writing-specifications.md](https://font-bakery.readthedocs.io/en/latest/developer/writing-specifications.html)
 
 If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (like [Travis](https://www.travis-ci.org)) to run Font Bakery on each commit, so that with each update all checks will be run on your files.
