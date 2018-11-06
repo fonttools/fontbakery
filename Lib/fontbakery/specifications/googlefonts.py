@@ -598,10 +598,10 @@ def com_google_fonts_check_018(ttFont, registered_vendor_ids):
   vid = ttFont['OS/2'].achVendID
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   if vid is None:
-    yield FAIL, Message("not set", "OS/2 VendorID is not set." +
+    yield WARN, Message("not set", "OS/2 VendorID is not set." +
                                    SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif vid in bad_vids:
-    yield FAIL, Message("bad", ("OS/2 VendorID is '{}',"
+    yield WARN, Message("bad", ("OS/2 VendorID is '{}',"
                                 " a font editor default.").format(vid) +
                                 SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   elif vid not in registered_vendor_ids.keys():
