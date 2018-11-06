@@ -21,13 +21,13 @@ sys.path.insert(0, os.path.abspath("../Lib"))
 # -- Project information -----------------------------------------------------
 
 project = "Font Bakery"
-copyright = "2018, Google Inc. CC BY-SA 4.0 License"
-author = "Google Inc."
+copyright = "Copyright 2013 The Font Bakery Authors"
+author = "The Font Bakery Authors"
 
 # The short X.Y version
-version = ""
+version = "0.6"
 # The full version, including alpha/beta/rc tags
-release = ""
+release = "0.6.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -125,7 +125,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "FontBakery.tex", "Font Bakery Documentation", "Google Inc.", "manual")
+    (master_doc, "FontBakery.tex", "Font Bakery Documentation", "The Font Bakery Authors", "manual")
 ]
 
 
@@ -148,7 +148,7 @@ texinfo_documents = [
         "Font Bakery Documentation",
         author,
         "FontBakery",
-        "One line description of project.",
+        "Well designed Font QA tool, written in Python 3.",
         "Miscellaneous",
     )
 ]
