@@ -204,6 +204,9 @@ class FontBakeryCheck(FontbakeryCallable):
     # self._conditions_setup = conditions_setup
     self._advancedMessageSetup = advancedMessageSetup
 
+  def __str__(self):
+    return self.id
+
 def condition(*args, **kwds):
   """Check wrapper, a factory for FontBakeryCondition
 
