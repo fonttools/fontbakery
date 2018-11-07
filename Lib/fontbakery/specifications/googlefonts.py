@@ -55,7 +55,6 @@ expected_check_ids = [
       , 'com.google.fonts/check/034' # Check if OS/2 xAvgCharWidth is correct.
       , 'com.google.fonts/check/035' # Checking with ftxvalidator.
       , 'com.google.fonts/check/036' # Checking with ots-sanitize.
-      , 'com.google.fonts/check/037' # Checking with Microsoft Font Validator.
       , 'com.google.fonts/check/038' # FontForge validation outputs error messages?
       , 'com.google.fonts/check/039' # FontForge checks.
       , 'com.google.fonts/check/040' # Checking OS/2 usWinAscent & usWinDescent.
