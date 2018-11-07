@@ -3314,7 +3314,7 @@ def com_google_fonts_check_040(ttFont, vmetrics):
 
 
 @check(
-  id = 'com.google.fonts/check/042'
+  id = 'com.google.fonts/check/042',
   rationale = """When OS/2 and hhea vertical metrics match, the same 
   linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018,
   Google Fonts has released many fonts with vertical metrics that don't match 
