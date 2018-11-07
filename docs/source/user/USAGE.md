@@ -1,6 +1,6 @@
 ## Font Bakery Command Line Usage
 
-Install Font Bakery as a package, following the installation instructions in [INSTALL.md](https://github.com/googlefonts/fontbakery/blob/master/INSTALL.md), and you will have a `fontbakery` command in your `$PATH`.
+Install Font Bakery as a package with the instructions in the [Installation Guides](https://font-bakery.readthedocs.io/en/latest/user/installation/index.html), and you will have a `fontbakery` command in your `$PATH`.
 
 This has several subcommands, described in the help function:
 
@@ -34,7 +34,7 @@ This is the command used by foundries checking their projects for Google Fonts
 
 
 
-It runs the checks that we use  <https://github.com/google/fonts>`specifications/googlefonts.py`
+It runs the checks that we use in the [`specifications/googlefonts.py` Python script](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/specifications/googlefonts.py)
 
 To run the checks on some fonts:
 
