@@ -9,14 +9,14 @@ Font Bakery is a command-line tool for checking the quality of font projects.
 It currently comes with checks for OpenType files, at 3 levels: 
 Format specifications, distributor requirements, and custom checks.
 
-For a full introduction, [check out the Typecon 2018 presentation deck](https://docs.google.com/presentation/d/14dU3cUXelwvpVokhKYmJ6jT51AASDaOFyEUSdxb0RAg/)
-
-For full developer documentation, check out [font-bakery.readthedocs.io](https://font-bakery.readthedocs.io)
+For a full introduction, [check out the Typecon 2018 presentation deck](https://docs.google.com/presentation/d/14dU3cUXelwvpVokhKYmJ6jT51AASDaOFyEUSdxb0RAg/).
 
 Font Bakery has an active community of contributors from foundries around the world, including Adobe Typekit, Dalton Maag, Type Network, and Google Fonts.
 
 Font Bakery is not an official Google project, and Google provides no support for it.
-However, throughout 2018 the project maintainers Felipe Corrêa da Silva Sanches <juca@members.fsf.org> and Lasse Fister <commander@graphicore.de> were funded by the Google Fonts team.
+However, throughout 2018 the core project maintainers Felipe Corrêa da Silva Sanches <juca@members.fsf.org> and Lasse Fister <commander@graphicore.de> were funded by the Google Fonts team.
+
+## License
 
 Font Bakery is available under the Apache 2.0 license.
 
@@ -30,7 +30,11 @@ See the Font Bakery Installation Guide for your platform:
 
 ## Usage
 
-See the [Font Bakery Command Line Usage Guide](https://font-bakery.readthedocs.io/en/latest/user/USAGE.html).
+Font Bakery is primarily a Terminal app, learn more in the [Command Line Usage Guide](https://font-bakery.readthedocs.io/en/latest/user/USAGE.html).
+
+If you write little Python scripts in your workflow, you can easily [write custom checks](https://font-bakery.readthedocs.io/en/latest/developer/writing-specifications.html).
+
+For full developer documentation, check out [font-bakery.readthedocs.io](https://font-bakery.readthedocs.io) (a hosted and compiled copy of contents in the `/docs` directory.)
 
 ## Web Dashboard
 
@@ -39,18 +43,18 @@ A web dashboard for monitoring check-results of project collections is at <https
 ## History
 
 The project was initiated by Dave Crossland in 2013 to accelerate the onboarding process for Google Fonts. 
-In 2017 Lasse Fister and Felipe Sanches rewrote it into a modern, modular architecture suitable for both individuals and large distributors. Felipe has maintained the check contents since 2016.
+In 2017 Lasse Fister and Felipe Sanches rewrote it into a modern, modular architecture suitable for both individuals and large distributors.
+Felipe has maintained the check contents since 2016.
 
 Lasse also began a sister project, [Font Bakery Dashboard](https://GitHub.com/GoogleFonts/Fontbakery-Dashboard):
-A UI and a cloud system that scales up for checking 1,000s of font files super fast and in parallel, by using 1,000s of "container" virtual machines. See his [TypoLabs 2018 talk on YouTube](https://www.youtube.com/watch?v=Kqhzg89zKYw).
+A UI and a cloud system that scales up for checking 1,000s of font files super fast and in parallel, by using 1,000s of "container" virtual machines.
+See his [TypoLabs 2018 talk on YouTube](https://www.youtube.com/watch?v=Kqhzg89zKYw).
 
 Most of the checks are for OpenType binary files, and project metadata files. 
 (Currently, the Google Fonts `METADATA.pb` files are supported.)
-
-To learn more about writing custom checks, see [docs/source/developer/writing-specifications.md](https://font-bakery.readthedocs.io/en/latest/developer/writing-specifications.html)
 
 If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (like [Travis](https://www.travis-ci.org)) to run Font Bakery on each commit, so that with each update all checks will be run on your files.
 
 ## Contributing
 
-See the [Font Bakery developer documentation](https://font-bakery.readthedocs.io/en/latest/developer/contrib-getting-started.html).
+See the guide to [Getting Started as a Contributor](https://font-bakery.readthedocs.io/en/latest/developer/contrib-getting-started.html).
