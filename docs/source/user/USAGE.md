@@ -10,6 +10,7 @@ This has several subcommands, described in the help function:
     Run fontbakery subcommands:
         build-contributors
         check-collection
+        check-fontval
         check-googlefonts
         check-noto-version
         check-specification
@@ -123,6 +124,11 @@ If you need to generate a list of all issues in a font family collection, such a
 
 This will create a folder called `check_results/` then run the `check-googlefonts` subcommand on every family, saving individual per-family reports in json format into subdirectories.
 
+### fontbakery check-fontval
+
+This is a wrapper around the Microsoft Font Validator.
+
+Usage is similar to the check-googlefonts command described above.
 
 #### Old Command Line Tools
 
