@@ -22,11 +22,15 @@ Font Bakery is available under the Apache 2.0 license.
 
 ## Install
 
-See [INSTALL.md](https://github.com/googlefonts/fontbakery/blob/master/INSTALL.md)
+See the Font Bakery Installation Guide for your platform:
+
+- [GNU + Linux](https://font-bakery.readthedocs.io/en/latest/user/installation/install-gnu-linux.html)
+- [macOS](https://font-bakery.readthedocs.io/en/latest/user/installation/install-macos.html)
+- [Windows](https://font-bakery.readthedocs.io/en/latest/user/installation/install-windows.html)
 
 ## Usage
 
-See [docs/USAGE.md](https://github.com/googlefonts/fontbakery/blob/master/docs/USAGE.md)
+See the [Font Bakery Command Line Usage Guide](https://font-bakery.readthedocs.io/en/latest/user/USAGE.html).
 
 ## Web Dashboard
 
@@ -46,3 +50,7 @@ Most of the checks are for OpenType binary files, and project metadata files.
 To learn more about writing custom checks, see [docs/source/developer/writing-specifications.md](https://font-bakery.readthedocs.io/en/latest/developer/writing-specifications.html)
 
 If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (like [Travis](https://www.travis-ci.org)) to run Font Bakery on each commit, so that with each update all checks will be run on your files.
+
+## Contributing
+
+See the [Font Bakery developer documentation](https://font-bakery.readthedocs.io/en/latest/developer/contrib-getting-started.html).
