@@ -3409,6 +3409,37 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
     yield PASS, "There are no tables with VTT Talk sources embedded in the font."
 
 
+@check(
+  id = 'com.google.fonts/check/aat'
+  rationale = """Apple's TrueType reference manual
+  (https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6.html)
+  describes SFNT tables not in the Microsoft OpenType specification
+  (https://docs.microsoft.com/en-us/typography/opentype/spec/)
+  and these can sometimes sneak into final release files, 
+  but Google Fonts should only have OpenType tables.""" 
+)
+def com_google_fonts_check_aat(ttFont):
+  """Are there unwanted tables?"""
+  UNWANTED_TABLES = {
+      'EBSC', 'Zaph', 'acnt', 'ankr', 'bdat', 'bhed', 'bloc', 
+	  'bmap', 'bsln', 'fdsc', 'feat', 'fond', 'gcid', 'just', 
+	  'kerx', 'lcar', 'ltag', 'mort', 'morx', 'opbd', 'prop', 
+	  'trak', 'xref'}
+  unwanted_tables_found = []
+  for table in ttFont.keys():
+    if table in UNWANTED_TABLES:
+      unwanted_tables_found.append(table)
+
+  if len(unwanted_tables_found) > 0:
+    yield FAIL, ("Unwanted AAT tables were found"
+                 " in the font and should be removed, either by
+                 " fonttools/ttx or by editing them using the tool
+                 " they are from:"
+                 " {}").format(", ".join(unwanted_tables_found))
+  else:
+    yield PASS, "There are no unwanted AAT tables."
+
+
 def is_librebarcode(font):
   font_filenames = [
     "LibreBarcode39-Regular.ttf",
