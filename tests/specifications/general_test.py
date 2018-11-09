@@ -307,7 +307,16 @@ def test_check_053():
   """ Are there unwanted tables ? """
   from fontbakery.specifications.general import com_google_fonts_check_053 as check
 
-  unwanted_tables = ["FFTM", "TTFA", "prop"]
+  unwanted_tables = [
+    "FFTM", # FontForge
+    "TTFA", # TTFAutohint
+    "TSI0", # TSI* = VTT
+    "TSI1",
+    "TSI2",
+    "TSI3",
+    "TSI5",
+    "prop" # FIXME: Why is this one unwanted?
+  ]
   # Our reference Mada Regular font is good here:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
 

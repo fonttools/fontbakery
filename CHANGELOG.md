@@ -3,6 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.6.1 (2018-Nov-11)
   - **[com.google.fonts/check/fontbakery_version]:** Fix crash
+  - **[com.google.fonts/check/053]**: Clarify unwanted tables
 
 ## 0.6.0 (2018-Nov-08)
 ### Noteworthy changes

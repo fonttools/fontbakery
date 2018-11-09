@@ -542,20 +542,34 @@ def com_google_fonts_check_052(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/053'
+  id = 'com.google.fonts/check/053',
+  rationale = """Some font editors store source data in their own SFNT
+  tables, and these can sometimes sneak into final release files,
+  which should only have OpenType spec tables."""
 )
 def com_google_fonts_check_053(ttFont):
   """Are there unwanted tables?"""
   UNWANTED_TABLES = {
-      'FFTM', 'TTFA', 'prop', 'TSI0', 'TSI1', 'TSI2', 'TSI3', 'TSI5'}
+      'FFTM': '(from FontForge)',
+      'TTFA': '(from TTFAutohint)',
+      'TSI0': '(from VTT)',
+      'TSI1': '(from VTT)',
+      'TSI2': '(from VTT)',
+      'TSI3': '(from VTT)',
+      'TSI5': '(from VTT)',
+      'prop': '' # FIXME: why is this one unwanted?
+  }
   unwanted_tables_found = []
   for table in ttFont.keys():
-    if table in UNWANTED_TABLES:
-      unwanted_tables_found.append(table)
+    if table in UNWANTED_TABLES.keys():
+      info = UNWANTED_TABLES[table]
+      unwanted_tables_found.append(f"{table} {info}")
 
   if len(unwanted_tables_found) > 0:
     yield FAIL, ("Unwanted tables were found"
-                 " in the font and should be removed:"
+                 " in the font and should be removed, either by"
+                 " fonttools/ttx or by editing them using the tool"
+                 " they are from:"
                  " {}").format(", ".join(unwanted_tables_found))
   else:
     yield PASS, "There are no unwanted tables."
