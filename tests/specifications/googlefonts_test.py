@@ -2565,3 +2565,30 @@ def test_check_vtt_clean():
 
   status, _ = list(check(bad_font, vtt_talk_sources(bad_font)))[-1]
   assert status == FAIL
+
+
+def test_check_aat():
+  """ Are there unwanted Apple tables ? """
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_aat as check
+
+  unwanted_tables = [
+    'EBSC', 'Zaph', 'acnt', 'ankr', 'bdat', 'bhed', 'bloc',
+    'bmap', 'bsln', 'fdsc', 'feat', 'fond', 'gcid', 'just',
+    'kerx', 'lcar', 'ltag', 'mort', 'morx', 'opbd', 'prop',
+    'trak', 'xref'
+  ]
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+
+  # So it must PASS the check:
+  print ("Test PASS with a good font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  # We now add unwanted tables one-by-one to validate the FAIL code-path:
+  for unwanted in unwanted_tables:
+    print (f"Test FAIL with unwanted table {unwanted} ...")
+    ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+    ttFont.reader.tables[unwanted] = "foo"
+    status, message = list(check(ttFont))[-1]
+    assert status == FAIL
