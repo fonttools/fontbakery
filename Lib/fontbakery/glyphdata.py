@@ -88,7 +88,7 @@ desired_glyph_data = \
         "name": "uni200C", 
         "unicode": 8204, 
         "contours": [
-            1
+            0
         ]
     }, 
     {
@@ -4250,7 +4250,7 @@ desired_glyph_data = \
         "name": "uni200D", 
         "unicode": 8205, 
         "contours": [
-            1
+            0
         ]
     }, 
     {
