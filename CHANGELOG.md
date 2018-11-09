@@ -2,7 +2,14 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.6.1 (2018-Nov-11)
+### New checks
+  - **['com.google.fonts/check/aat']]**: "Are there unwanted Apple tables?"
+
+### Bug fixes
   - **[com.google.fonts/check/fontbakery_version]:** Fix crash
+  - **[com.google.fonts/check/153]**: Fix expected contour count for glyphs zerowidthjoiner(uni200D) and zerowidthnonjoiner(uni200C) from 1 to 0
+
+### Changes to existing checks
   - **[com.google.fonts/check/053]**: Clarify unwanted tables
 
 ## 0.6.0 (2018-Nov-08)
