@@ -180,8 +180,8 @@ def com_google_fonts_check_fontbakery_version():
 
     if not (is_latest or is_up_to_date(installed_str, latest_str)):
       failed = True
-      yield FAIL, (f"Current Font Bakery version is {installed},"
-                   f" while a newer {latest} is already available."
+      yield FAIL, (f"Current Font Bakery version is {installed_str},"
+                   f" while a newer {latest_str} is already available."
                     " Please upgrade it with 'pip install -U fontbakery'")
     yield INFO, pip_output.decode()
   except subprocess.CalledProcessError as e:
