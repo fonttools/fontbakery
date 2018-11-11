@@ -164,18 +164,21 @@ def com_google_fonts_check_fontbakery_version():
 
   try:
     import subprocess
-    installed = None
-    latest = None
+    installed_str = None
+    latest_str = None
+    is_latest = False
     failed = False
     pip_cmd = ["pip", "search", "fontbakery"]
     pip_output = subprocess.check_output(pip_cmd, stderr=subprocess.STDOUT)
     for line in pip_output.decode().split('\n'):
       if 'INSTALLED' in line:
-        installed = line.split('INSTALLED')[1].strip()
+        installed_str = line.split('INSTALLED')[1].strip()
       if 'LATEST' in line:
-        latest = line.split('LATEST')[1].strip()
+        latest_str = line.split('LATEST')[1].strip()
+      if '(latest)' in line:
+        is_latest = True
 
-    if not is_up_to_date(installed, latest):
+    if not (is_latest or is_up_to_date(installed_str, latest_str)):
       failed = True
       yield FAIL, (f"Current Font Bakery version is {installed},"
                    f" while a newer {latest} is already available."
