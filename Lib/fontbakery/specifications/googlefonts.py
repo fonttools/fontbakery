@@ -2498,7 +2498,7 @@ def com_google_fonts_check_130(ttFont, style):
   if value > 0:
     failed = True
     yield FAIL, Message("positive",
-                        ("The value of post.italicAngle is positive, which
+                        ("The value of post.italicAngle is positive, which"
                          " is likely a mistake and should become negative,"
                          " from {} to {}.").format(value, -value))
 
