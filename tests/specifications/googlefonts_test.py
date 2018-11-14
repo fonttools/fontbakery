@@ -1827,23 +1827,28 @@ def test_check_130():
 
   # italic-angle, style, fail_message
   test_cases = [
-    [1, "Italic", "positive"],
-    [0, "Regular", None], # This must PASS as it is a non-italic
-    [-21, "ThinItalic", ">20 degrees"],
-    [0, "Italic", "zero-italic"],
-    [-1,"ExtraBold", "non-zero-normal"]
+    [1, "Italic", FAIL, "positive"],
+    [0, "Regular", PASS, None], # This must PASS as it is a non-italic
+    [-21, "ThinItalic", WARN, "over -20 degrees"],
+    [-30, "ThinItalic", WARN, "over -20 degrees"],
+    [-31, "ThinItalic", FAIL, "over -30 degrees"],
+    [0, "Italic", FAIL, "zero-italic"],
+    [-1,"ExtraBold", FAIL, "non-zero-normal"]
   ]
 
-  for value, style, expected_fail_msg in test_cases:
+  for value, style, expected_result, expected_msg in test_cases:
     ttFont["post"].italicAngle = value
     results = list(check(ttFont, style))
 
-    if expected_fail_msg:
-      print (("Test FAIL '{}' with"
-              " italic-angle:{} style:{}...").format(expected_fail_msg,
+    if expected_result != PASS:
+      print (("Test {} '{}' with"
+              " italic-angle:{} style:{}...").format(expected_result,
+                                                     expected_msg,
                                                      value,
                                                      style))
-      assert_results_contain(results, FAIL, expected_fail_msg)
+      assert_results_contain(results,
+                             expected_result,
+                             expected_msg)
     else:
       print (("Test PASS with"
               " italic-angle:{} style:{}...").format(value, style))
