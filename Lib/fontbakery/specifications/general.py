@@ -13,9 +13,10 @@ spec_imports = [
 
 @condition
 def fontforge_check_results(font):
-  if "adobeblank" in font:
-    return SKIP, ("Skipping AdobeBlank since"
-                  " this font is a very peculiar hack.")
+  # Would be AdobeBlank.ttf usually
+  if "adobeblank" in font.lower():
+    return {"skip": "Skipping AdobeBlank since "
+                    "this font is a very peculiar hack."}
 
   import subprocess
   cmd = (
@@ -232,6 +233,9 @@ def com_google_fonts_check_fontbakery_version():
 )
 def com_google_fonts_check_038(font, fontforge_check_results):
   """FontForge validation outputs error messages?"""
+  if "skip" in fontforge_check_results:
+    yield SKIP, fontforge_check_results["skip"]
+    return
 
   filtered_err_msgs = ""
   for line in fontforge_check_results["ff_err_messages"].split('\n'):
@@ -272,6 +276,9 @@ def fontforge_skip_checks():
 )
 def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
   """FontForge checks."""
+  if "skip" in fontforge_check_results:
+    yield SKIP, fontforge_check_results["skip"]
+    return
 
   validation_state = fontforge_check_results["validation_state"]
   fontforge_checks = (
