@@ -165,6 +165,7 @@ expected_check_ids = [
 #      , 'com.google.fonts/check/varfont/has_MVAR' # Check that variable fonts have an MVAR table.
       , 'com.google.fonts/check/fontbakery_version' # Do we have the latest version of FontBakery installed?
       , 'com.google.fonts/check/aat' # Are there unwanted Apple tables?
+      , 'com.google.fonts/check/ftxvalidator_is_available' # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))

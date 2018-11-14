@@ -39,6 +39,22 @@ def test_check_002():
   assert status == FAIL
 
 
+def test_check_ftxvalidator_is_available():
+  """ Is the command `ftxvalidator` (Apple Font Tool Suite) available? """
+  from fontbakery.specifications.general import com_google_fonts_check_ftxvalidator_is_available as check
+
+  # code-paths:
+  # - PASS, "ftxvalidator is available."
+  # - WARN, "ftxvalidator is not available."
+  status, output = check(True)
+  assert status == PASS
+  assert "is available" in output
+
+  status, output = check(False)
+  assert status == WARN
+  assert "is not available" in output
+
+
 def NOT_IMPLEMENTED_test_check_035():
   """ Checking with ftxvalidator. """
   # from fontbakery.specifications.general import com_google_fonts_check_035 as check
@@ -47,7 +63,7 @@ def NOT_IMPLEMENTED_test_check_035():
   # code-paths:
   # - PASS, "ftxvalidator passed this file."
   # - FAIL, "ftxvalidator outputs to stderr."
-  # - WARN, "ftxvalidator returned an error code."
+  # - ERROR, "ftxvalidator returned an error code."
   # - ERROR, "ftxvalidator is not available!"
 
 
