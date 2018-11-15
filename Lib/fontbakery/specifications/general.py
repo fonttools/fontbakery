@@ -13,9 +13,10 @@ spec_imports = [
 
 @condition
 def fontforge_check_results(font):
-  if "adobeblank" in font:
-    return SKIP, ("Skipping AdobeBlank since"
-                  " this font is a very peculiar hack.")
+  # Would be AdobeBlank.ttf usually
+  if "adobeblank" in font.lower():
+    return {"skip": "Skipping AdobeBlank since "
+                    "this font is a very peculiar hack."}
 
   import subprocess
   cmd = (
@@ -71,8 +72,42 @@ def com_google_fonts_check_002(fonts):
                  " {}".format(directories))
 
 
+@condition
+def ftxvalidator_is_available():
+  """ Test if `ftxvalidator` is a command; i.e. an executable with a path."""
+  import shutil
+  return shutil.which('ftxvalidator') is not None
+
+
 @check(
-  id = 'com.google.fonts/check/035'
+  id = 'com.google.fonts/check/ftxvalidator_is_available',
+  rationale = """
+    There's no reasonable (and legal) way to run the command `ftxvalidator`
+    of the Apple Font Tool Suite on a non-macOS machine. I.e. on GNU+Linux
+    or Windows etc.
+
+    If Font Bakery is not running on an OSX machine, the machine running
+    Font Bakery could access `ftxvalidator` on OSX, e.g. via ssh or a
+    remote procedure call (rpc).
+
+    There's an ssh example implementation at:
+    https://github.com/googlefonts/fontbakery/blob/master/prebuilt/workarounds/ftxvalidator/ssh-implementation/ftxvalidator
+
+    This check was suggested and requested at:
+    https://github.com/googlefonts/fontbakery/issues/2184
+  """
+)
+def com_google_fonts_check_ftxvalidator_is_available(ftxvalidator_is_available):
+  """Is the command `ftxvalidator` (Apple Font Tool Suite) available?"""
+  if ftxvalidator_is_available:
+    return PASS, "ftxvalidator is available."
+  else:
+    return WARN, "ftxvalidator is not available."
+
+
+@check(
+  id = 'com.google.fonts/check/035',
+  conditions = ['ftxvalidator_is_available']
 )
 def com_google_fonts_check_035(font):
   """Checking with ftxvalidator."""
@@ -105,8 +140,8 @@ def com_google_fonts_check_035(font):
       yield FAIL, f"ftxvalidator output follows:\n\n{ftx_output}\n"
 
   except subprocess.CalledProcessError as e:
-    yield WARN, ("ftxvalidator returned an error code. Output follows :"
-                 "\n\n{}\n").format(e.output)
+    yield ERROR, ("ftxvalidator returned an error code. Output follows:"
+                 "\n\n{}\n").format(e.output.decode('utf-8'))
   except OSError:
     yield ERROR, "ftxvalidator is not available!"
 
@@ -198,6 +233,9 @@ def com_google_fonts_check_fontbakery_version():
 )
 def com_google_fonts_check_038(font, fontforge_check_results):
   """FontForge validation outputs error messages?"""
+  if "skip" in fontforge_check_results:
+    yield SKIP, fontforge_check_results["skip"]
+    return
 
   filtered_err_msgs = ""
   for line in fontforge_check_results["ff_err_messages"].split('\n'):
@@ -238,6 +276,9 @@ def fontforge_skip_checks():
 )
 def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
   """FontForge checks."""
+  if "skip" in fontforge_check_results:
+    yield SKIP, fontforge_check_results["skip"]
+    return
 
   validation_state = fontforge_check_results["validation_state"]
   fontforge_checks = (
