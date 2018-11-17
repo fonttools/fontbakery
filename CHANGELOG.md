@@ -1,13 +1,24 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.6.2 (2018-Nov-19)
+### New checks
+  - **[com.google.fonts/check/ftxvalidator_is_available]:** Detects whether the ftxvalidator is installed on the system or not.
+
+### Bug fixes
+  - **[com.google.fonts/check/098]:** in some cases the check did not yield any result. (issue #2206)
+
+### Changes to existing checks
+  - **[com.google.fonts/check/130]:** update italic angle check with "over -30 degrees" FAIL and "over -20 degrees" WARN (#2197)
+
+
 ## 0.6.1 (2018-Nov-11)
 ### New checks
-  - **['com.google.fonts/check/aat']]**: "Are there unwanted Apple tables?"
+  - **['com.google.fonts/check/aat']:** "Are there unwanted Apple tables?"
 
 ### Bug fixes
   - **[com.google.fonts/check/fontbakery_version]:** Fix crash
-  - **[com.google.fonts/check/153]**: Fix expected contour count for glyphs zerowidthjoiner(uni200D) and zerowidthnonjoiner(uni200C) from 1 to 0
+  - **[com.google.fonts/check/153]:** Fix expected contour count for glyphs zerowidthjoiner(uni200D) and zerowidthnonjoiner(uni200C) from 1 to 0
 
 ### Changes to existing checks
   - **[com.google.fonts/check/053]**: Clarify unwanted tables
