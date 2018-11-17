@@ -1714,17 +1714,17 @@ def com_google_fonts_check_098(style,
   else:
     familynames = typographic_familynames
 
+  failed = False
   for font_familyname in familynames:
-    if font_familyname in font_metadata.name:
-      yield PASS, ("METADATA.pb font.name field contains"
-                   " font name in right format."
-                   " ('{}' in '{}')").format(font_familyname,
-                                             font_metadata.name)
-    else:
+    if font_familyname not in font_metadata.name:
+      failed = True
       yield FAIL, ("METADATA.pb font.name field (\"{}\")"
                    " does not match correct font name format (\"{}\")."
                    "").format(font_metadata.name,
                               font_familyname)
+  if not failed:
+    yield PASS, ("METADATA.pb font.name field contains"
+                 " font name in right format.")
 
 
 @check(
