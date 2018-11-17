@@ -751,7 +751,8 @@ def com_google_fonts_check_ttx_roundtrip(font):
       sys.stdout = self.original_stdout
 
   logger = TTXLogger()
-  ttFont.saveXML(font + ".xml")
+  xml_file = font + ".xml"
+  ttFont.saveXML(xml_file)
   export_error_msgs = logger.msgs
 
   if len(export_error_msgs):
@@ -775,3 +776,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
 
   if not failed:
     yield PASS, "Hey! It all looks good!"
+
+  # and then we need to cleanup our mess...
+  if os.path.exists(xml_file):
+    os.remove(xml_file)
