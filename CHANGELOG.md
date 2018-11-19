@@ -12,6 +12,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
   - **[com.google.fonts/check/130]:** update italic angle check with "over -30 degrees" FAIL and "over -20 degrees" WARN (#2197)
+  - **[com.google.fonts/check/ttx-roundtrip]:** Emit a FAIL when TTX roundtripping results in a parsing error (ExpatError) since a malformed XML most likely means an issue with the font. (issue #2205)
 
 
 ## 0.6.1 (2018-Nov-11)
