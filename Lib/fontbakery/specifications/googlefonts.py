@@ -2431,7 +2431,7 @@ def com_google_fonts_check_119(ttFont, api_gfonts_ttFont):
 
   if 'fpgm' in api_gfonts_ttFont:
     gfonts_fpgm_tbl = api_gfonts_ttFont["fpgm"].program.getAssembly()
-    warn, gf_inc_xheight = \
+    msg, gf_inc_xheight = \
       ttfauto_fpgm_xheight_rounding(gfonts_fpgm_tbl, "GFonts release")
     if msg: yield WARN, msg
 
