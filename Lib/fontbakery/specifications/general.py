@@ -750,29 +750,40 @@ def com_google_fonts_check_ttx_roundtrip(font):
       sys.stderr = self.original_stderr
       sys.stdout = self.original_stdout
 
-  logger = TTXLogger()
-  xml_file = font + ".xml"
-  ttFont.saveXML(xml_file)
-  export_error_msgs = logger.msgs
+  from xml.parsers.expat import ExpatError
+  try:
+    logger = TTXLogger()
+    xml_file = font + ".xml"
+    ttFont.saveXML(xml_file)
+    export_error_msgs = logger.msgs
 
-  if len(export_error_msgs):
+    if len(export_error_msgs):
+      failed = True
+      yield INFO, ("While converting TTF into an XML file,"
+                   " ttx emited the messages listed below.")
+      for msg in export_error_msgs:
+        yield FAIL, msg.strip()
+
+    f = ttx.TTFont()
+    f.importXML(font + ".xml")
+    import_error_msgs = [msg for msg in logger.msgs if msg not in export_error_msgs]
+
+    if len(import_error_msgs):
+      failed = True
+      yield INFO, ("While importing an XML file and converting"
+                   " it back to TTF, ttx emited the messages"
+                   " listed below.")
+      for msg in import_error_msgs:
+        yield FAIL, msg.strip()
+    logger.restore()
+  except ExpatError as e:
     failed = True
-    yield INFO, ("While converting TTF into an XML file,"
-                 " ttx emited the messages listed below.")
-    for msg in export_error_msgs:
-      yield FAIL, msg.strip()
-
-  f = ttx.TTFont()
-  f.importXML(font + ".xml")
-  import_error_msgs = [msg for msg in logger.msgs if msg not in export_error_msgs]
-
-  if len(import_error_msgs):
-    failed = True
-    yield INFO, ("While importing an XML file and converting it back to TTF,"
-                 " ttx emited the messages listed below.")
-    for msg in import_error_msgs:
-      yield FAIL, msg.strip()
-  logger.restore()
+    yield FAIL, ("TTX had some problem parsing the generated XML file."
+                 " This most likely mean there's some problem in the font."
+		 " Please inspect the output of ttx in order to find more"
+		 " on what went wrong."
+		 " The full ttx error message was:\n"
+		 "======\n{}\n======".format(e))
 
   if not failed:
     yield PASS, "Hey! It all looks good!"
