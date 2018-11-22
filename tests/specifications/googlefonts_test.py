@@ -147,6 +147,8 @@ def test_example_checkrunner_based(cabin_regular_path):
 def test_check_001():
   """ Files are named canonically. """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_001 as check
+  from fontbakery.specifications.shared_conditions import is_variable_font
+
   canonical_names = [
     "data/test/montserrat/Montserrat-Thin.ttf",
     "data/test/montserrat/Montserrat-ExtraLight.ttf",
@@ -168,23 +170,28 @@ def test_check_001():
     "data/test/montserrat/Montserrat-BlackItalic.ttf",
     "data/test/cabinvfbeta/Cabin-Italic-VF.ttf",
     "data/test/cabinvfbeta/Cabin-Roman-VF.ttf",
-    "data/test/cabinvfbeta/Cabin-VF.ttf"
+    "data/test/cabinvfbeta/Cabin-VF.ttf",
+    "data/test/cabinvfbeta/Cabin-Italic.ttf",
+    "data/test/cabinvfbeta/Cabin-Roman.ttf"
   ]
   non_canonical_names = [
     "data/test/montserrat/Montserrat/Montserrat.ttf",
     "data/test/montserrat/Montserrat-semibold.ttf",
-    "data/test/cabinvfbeta/CabinVFBeta-Italic.ttf",
-    "data/test/cabinvfbeta/CabinVFBeta.ttf",
+    "data/test/cabinvfbeta/CabinVFBeta.ttf"
   ]
 
   for canonical in canonical_names:
+    is_var = os.path.exists(canonical) and is_variable_font(TTFont(canonical))
     print(f'Test PASS with "{canonical}" ...')
-    status, message = list(check(canonical))[-1]
+    status, message = list(check(canonical,
+                                 is_var))[-1]
     assert status == PASS
 
   for non_canonical in non_canonical_names:
+    is_var = os.path.exists(non_canonical) and is_variable_font(TTFont(non_canonical))
     print(f'Test FAIL with "{non_canonical}" ...')
-    status, message = list(check(non_canonical))[-1]
+    status, message = list(check(non_canonical,
+                                 is_var))[-1]
     assert status == FAIL
 
 
@@ -1454,48 +1461,54 @@ def test_check_104():
 
 def test_check_105():
   """ METADATA.pb: Filename is set canonically? """
+  from fontbakery.specifications.shared_conditions import is_variable_font
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_105 as check,
                                                      family_metadata,
                                                      font_metadata,
                                                      canonical_filename)
-  fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  fontfile = "data/test/montserrat/Montserrat-Regular.ttf"
   family_directory = os.path.dirname(fontfile)
   family_meta = family_metadata(family_directory)
   font_meta = font_metadata(family_meta, fontfile)
 
   test_cases = [
   #expected, weight, style,    filename
-    [PASS,   100,    "normal", "Cabin-Thin.ttf"],
-    [PASS,   100,    "italic", "Cabin-ThinItalic.ttf"],
-    [PASS,   200,    "normal", "Cabin-ExtraLight.ttf"],
-    [PASS,   200,    "italic", "Cabin-ExtraLightItalic.ttf"],
-    [PASS,   300,    "normal", "Cabin-Light.ttf"],
-    [PASS,   300,    "italic", "Cabin-LightItalic.ttf"],
-    [PASS,   400,    "normal", "Cabin-Regular.ttf"],
-    [PASS,   400,    "italic", "Cabin-Italic.ttf"],
-    [FAIL,   400,    "italic", "Cabin-RegularItalic.ttf"],
-    [PASS,   500,    "normal", "Cabin-Medium.ttf"],
-    [PASS,   500,    "italic", "Cabin-MediumItalic.ttf"],
-    [PASS,   600,    "normal", "Cabin-SemiBold.ttf"],
-    [PASS,   600,    "italic", "Cabin-SemiBoldItalic.ttf"],
-    [PASS,   700,    "normal", "Cabin-Bold.ttf"],
-    [PASS,   700,    "italic", "Cabin-BoldItalic.ttf"],
-    [PASS,   800,    "normal", "Cabin-ExtraBold.ttf"],
-    [PASS,   800,    "italic", "Cabin-ExtraBoldItalic.ttf"],
-    [PASS,   900,    "normal", "Cabin-Black.ttf"],
-    [PASS,   900,    "italic", "Cabin-BlackItalic.ttf"]
+    [PASS,   100,    "normal", "data/test/montserrat/Montserrat-Thin.ttf"],
+    [PASS,   100,    "italic", "data/test/montserrat/Montserrat-ThinItalic.ttf"],
+    [PASS,   200,    "normal", "data/test/montserrat/Montserrat-ExtraLight.ttf"],
+    [PASS,   200,    "italic", "data/test/montserrat/Montserrat-ExtraLightItalic.ttf"],
+    [PASS,   300,    "normal", "data/test/montserrat/Montserrat-Light.ttf"],
+    [PASS,   300,    "italic", "data/test/montserrat/Montserrat-LightItalic.ttf"],
+    [PASS,   400,    "normal", "data/test/montserrat/Montserrat-Regular.ttf"],
+    [PASS,   400,    "italic", "data/test/montserrat/Montserrat-Italic.ttf"],
+    [FAIL,   400,    "italic", "data/test/montserrat/Montserrat-RegularItalic.ttf"],
+    [PASS,   500,    "normal", "data/test/montserrat/Montserrat-Medium.ttf"],
+    [PASS,   500,    "italic", "data/test/montserrat/Montserrat-MediumItalic.ttf"],
+    [PASS,   600,    "normal", "data/test/montserrat/Montserrat-SemiBold.ttf"],
+    [PASS,   600,    "italic", "data/test/montserrat/Montserrat-SemiBoldItalic.ttf"],
+    [PASS,   700,    "normal", "data/test/montserrat/Montserrat-Bold.ttf"],
+    [PASS,   700,    "italic", "data/test/montserrat/Montserrat-BoldItalic.ttf"],
+    [PASS,   800,    "normal", "data/test/montserrat/Montserrat-ExtraBold.ttf"],
+    [PASS,   800,    "italic", "data/test/montserrat/Montserrat-ExtraBoldItalic.ttf"],
+    [PASS,   900,    "normal", "data/test/montserrat/Montserrat-Black.ttf"],
+    [PASS,   900,    "italic", "data/test/montserrat/Montserrat-BlackItalic.ttf"]
   ]
 
   for expected, weight, style, filename in test_cases:
+    is_var = os.path.exists(filename) and is_variable_font(TTFont(filename))
     print (("Test {} with style:'{}',"
-            " weight:{} and filename:'{}'...").format(expected,
-                                                      style,
-                                                      weight,
-                                                      filename))
+            " weight:{}, filename:'{}', varfont:'{}'...").format(expected,
+                                                                 style,
+                                                                 weight,
+                                                                 filename,
+                                                                 is_var))
+    filename = os.path.basename(filename)
     font_meta.style = style
     font_meta.weight = weight
     font_meta.filename = filename
-    status, message = list(check(font_meta, canonical_filename(font_meta)))[-1]
+    status, message = list(check(font_meta,
+                                 canonical_filename(font_meta),
+                                 is_var))[-1]
     assert status == expected
 
 

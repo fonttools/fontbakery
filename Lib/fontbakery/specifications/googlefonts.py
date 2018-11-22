@@ -8,7 +8,7 @@ from fontbakery.checkrunner import (
             , Section
             )
 import os
-from .shared_conditions import is_variable_font
+# from .shared_conditions import is_variable_font
 from fontbakery.callable import condition, check, disable
 from fontbakery.message import Message
 from fontbakery.constants import(PriorityLevel,
@@ -246,18 +246,23 @@ def expected_os2_weight(style):
     'priority': PriorityLevel.CRITICAL
   }
 )
-def com_google_fonts_check_001(font):
+def com_google_fonts_check_001(font, is_variable_font):
   """Checking file is named canonically.
 
   A font's filename must be composed in the following manner:
   <familyname>-<stylename>.ttf
 
-  e.g. Nunito-Regular.ttf, Oswald-BoldItalic.ttf
+  e.g. Nunito-Regular.ttf,
+       Oswald-BoldItalic.ttf
 
-  Variable fonts must use the "-VF" suffix such:
+  Variable fonts must use the "-VF", "Roman" or "Italic" suffixes:
 
-  e.g. Roboto-VF.ttf, Barlow-VF.ttf,
-       Example-Roman-VF.ttf, Familyname-Italic-VF.ttf
+  e.g. Roboto-VF.ttf,
+       Barlow-VF.ttf,
+       Example-Roman-VF.ttf,
+       Familyname-Italic-VF.ttf
+       Orbitron-Roman.ttf,
+       Somethingelse-Italic.ttf
   """
   from fontbakery.constants import STYLE_NAMES
   from fontTools.ttLib import TTFont
@@ -267,7 +272,9 @@ def com_google_fonts_check_001(font):
   # remove spaces in style names
   valid_style_suffixes = [name.replace(' ', '') for name in STYLE_NAMES]
   valid_varfont_suffixes = ["VF",
+                            "Italic",
                             "Italic-VF",
+                            "Roman",
                             "Roman-VF"]
 
   suffix = basename.split('-')
@@ -276,9 +283,9 @@ def com_google_fonts_check_001(font):
 
   if ('-' in basename and
       (suffix in valid_varfont_suffixes
-       and is_variable_font(TTFont(font)))
+       and is_variable_font)
       or (suffix in valid_style_suffixes
-          and not is_variable_font(TTFont(font)))):
+          and not is_variable_font)):
     yield PASS, f"{font} is named canonically."
   else:
     yield FAIL, ('Style name used in "{}" is not canonical.'
@@ -1658,14 +1665,25 @@ def com_google_fonts_check_096(font_metadata):
   id = 'com.google.fonts/check/097',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_097(font_metadata):
+def com_google_fonts_check_097(font_metadata, is_variable_font):
   """METADATA.pb font.filename and font.post_script_name
      fields have equivalent values?
   """
-  import re
-  regex = re.compile(r"\W")
-  post_script_name = regex.sub("", font_metadata.post_script_name)
-  filename = regex.sub("", os.path.splitext(font_metadata.filename)[0])
+  post_script_name = font_metadata.post_script_name
+  filename = os.path.splitext(font_metadata.filename)[0]
+
+  if is_variable_font:
+    valid_varfont_suffixes = [
+      ("-VF", "Regular"),
+      ("Roman", "Regular"),
+      ("Roman-VF", "Regular"),
+      ("Italic", "Italic"),
+      ("Italic-VF", "Italic"),
+    ]
+    for valid_suffix, style in valid_varfont_suffixes:
+      if valid_suffix in filename:
+        filename = style.join(filename.split(valid_suffix))
+
   if filename != post_script_name:
     yield FAIL, ("METADATA.pb font filename=\"{}\" does not match"
                  " post_script_name=\"{}\"."
@@ -1897,8 +1915,23 @@ def canonical_filename(font_metadata):
   conditions = ['font_metadata',
                 'canonical_filename']
 )
-def com_google_fonts_check_105(font_metadata, canonical_filename):
+def com_google_fonts_check_105(font_metadata,
+                               canonical_filename,
+                               is_variable_font):
   """METADATA.pb: Filename is set canonically?"""
+
+  if is_variable_font:
+    valid_varfont_suffixes = [
+      ("-VF", "Regular"),
+      ("Roman", "Regular"),
+      ("Roman-VF", "Regular"),
+      ("Italic", "Italic"),
+      ("Italic-VF", "Italic"),
+    ]
+    for valid_suffix, style in valid_varfont_suffixes:
+      if valid_suffix in canonical_filename:
+        canonical_filename = style.join(canonical_filename.split(valid_suffix))
+
   if canonical_filename != font_metadata.filename:
     yield FAIL, ("METADATA.pb: filename field (\"{}\")"
                  " does not match "
