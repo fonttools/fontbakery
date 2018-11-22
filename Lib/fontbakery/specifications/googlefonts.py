@@ -1806,22 +1806,33 @@ def com_google_fonts_check_101(font_metadata,
   id = 'com.google.fonts/check/102',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_102(font_metadata):
-  """Copyright notice on METADATA.pb matches canonical pattern?"""
+def com_google_fonts_check_102(ttFont, font_metadata):
+  """Copyright notices match canonical pattern?"""
   import re
-  from unidecode import unidecode
-  does_match = re.search(r'Copyright [0-9]{4} The .* Project Authors \([^\@]*\)',
-                         font_metadata.copyright)
-  if does_match:
-    yield PASS, ("METADATA.pb copyright field '{}'"
-                 " matches canonical pattern.").format(font_metadata.copyright)
-  else:
-    yield FAIL, ("METADATA.pb: Copyright notices should match"
-                 " a pattern similar to:"
-                 " 'Copyright 2017 The Familyname"
-                 " Project Authors (git url)'\n"
-                 "But instead we have got:"
-                 " '{}'").format(unidecode(font_metadata.copyright))
+  from fontbakery.utils import get_name_entry_strings
+
+  testcases = [('METADATA.pb', font_metadata.copyright)]
+  for entry in get_name_entry_strings(ttFont, NameID.COPYRIGHT_NOTICE):
+    testcases.append(('Name table entry', entry))
+
+  failed = False
+  for case, value in testcases:
+    does_match = re.search(r'Copyright [0-9]{4} The .* Project Authors \([^\@]*\)',
+                           value)
+    if does_match:
+      yield PASS, ("{}: Copyright field '{}'"
+                   " matches canonical pattern.").format(case, value)
+    else:
+      failed = True
+      yield FAIL, ("{}: Copyright notices should match"
+                   " a pattern similar to:"
+                   " 'Copyright 2017 The Familyname"
+                   " Project Authors (git url)'\n"
+                   "But instead we have got:"
+                   " '{}'").format(case, value)
+
+  if not failed:
+    yield PASS, "All copyright notice strings are good."
 
 
 @check(
