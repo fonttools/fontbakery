@@ -1385,19 +1385,27 @@ def test_check_102():
   # Our reference Cabin Regular is known to be bad
   # Since it provides an email instead of a git URL:
   fontfile = "data/test/cabin/Cabin-Regular.ttf"
+  ttFont = TTFont(fontfile)
   family_directory = os.path.dirname(fontfile)
   family_meta = family_metadata(family_directory)
   font_meta = font_metadata(family_meta, fontfile)
 
   # So it must FAIL the check:
   print ("Test FAIL with a bad copyright notice string...")
-  status, message = list(check(font_meta))[-1]
+  status, message = list(check(ttFont, font_meta))[-1]
   assert status == FAIL
 
   # Then we change it into a good string (example extracted from Archivo Black):
-  font_meta.copyright = "Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)"
+  # note: the check does not actually verify that the project name is correct.
+  #       It only focuses on the string format.
+  good_string = "Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)"
+  font_meta.copyright = good_string
+  for i, entry in enumerate(ttFont['name'].names):
+    if entry.nameID == NameID.COPYRIGHT_NOTICE:
+      ttFont['name'].names[i].string = good_string.encode(entry.getEncoding())
+
   print ("Test PASS with a good copyright notice string...")
-  status, message = list(check(font_meta))[-1]
+  status, message = list(check(ttFont, font_meta))[-1]
   assert status == PASS
 
 
