@@ -6,7 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/062]:** fix a typo leading to a bad string formatting syntax crash. (issue #2183)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/001]:** Accept variable font filenames with Roman/Italic suffixes (issue #2214)
+  - **[com.google.fonts/check/097]:** Accept variable font filenames with Roman/Italic suffixes (issue #2214)
   - **[com.google.fonts/check/102]:** Check for consistency of copyright notice strings on both METADATA.pb and on name table entries. (issue #2210)
+  - **[com.google.fonts/check/105]:** Accept variable font filenames with Roman/Italic suffixes (issue #2214)
 
 
 ## 0.6.2 (2018-Nov-19)
