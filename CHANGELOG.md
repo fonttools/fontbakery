@@ -2,6 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.6.3 (2018-Nov-26)
+### Bug fixes
+  - **[com.google.fonts/check/062]:** fix a typo leading to a bad string formatting syntax crash. (issue #2183)
+
 ### Changes to existing checks
   - **[com.google.fonts/check/102]:** Check for consistency of copyright notice strings on both METADATA.pb and on name table entries. (issue #2210)
 

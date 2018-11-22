@@ -1145,7 +1145,7 @@ def com_google_fonts_check_062(ttFont):
             value = ttFont["gasp"].gaspRange[0xFFFF]
             if value != 0x0F:
               failed = True
-              yield WARN, (f"gaspRange 0xFFFF value {value:%02X}"
+              yield WARN, (f"gaspRange 0xFFFF value 0x{value:02X}"
                             " should be set to 0x0F.")
         if not failed:
           yield PASS, ("'gasp' table is correctly set, with one "
