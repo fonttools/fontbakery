@@ -3,6 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.6.3 (2018-Nov-26)
 ### Bug fixes
+  - **[GHMarkdown output]:** PR #2167 (__str__ for Section and Check) was reverted because it was causing the ghmarkdown output to crash. We may get back to it later, but being more careful about the side effects of it. (issue #2194)
   - **[com.google.fonts/check/028]:** Also search for a license file on the git-repo rootdir if the font project is in a repo. (issue #2087)
   - **[com.google.fonts/check/062]:** fix a typo leading to a bad string formatting syntax crash. (issue #2183)
 
