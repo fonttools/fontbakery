@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/062]:** fix a typo leading to a bad string formatting syntax crash. (issue #2183)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/ttx-roundtrip]:** Improved the FAIL message to give the users a hint about what could have gone wrong. The most likely reason is a shortcoming on fonttools that makes TTX generate corrupt XML files when dealing with contol code chars in the name table. (issue #2212)
   - **[com.google.fonts/check/001]:** Accept variable font filenames with Roman/Italic suffixes (issue #2214)
   - **[com.google.fonts/check/034]:** Downgrade xAvgWidth check from FAIL to WARN since sometimes it diverges from GlyphsApp. Also, it seems that the value is not actually used on relevant programs. I still want to clarify what's going on with GlyphsApp calculations of this value. Once that's figured out, we may redefine the severity of the check once again. (issue #2095)
   - **[com.google.fonts/check/097]:** Accept variable font filenames with Roman/Italic suffixes (issue #2214)

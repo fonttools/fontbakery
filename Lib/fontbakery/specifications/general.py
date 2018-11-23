@@ -781,7 +781,12 @@ def com_google_fonts_check_ttx_roundtrip(font):
     yield FAIL, ("TTX had some problem parsing the generated XML file."
                  " This most likely mean there's some problem in the font."
 		 " Please inspect the output of ttx in order to find more"
-		 " on what went wrong."
+		 " on what went wrong. A common problem is the presence of"
+                 " control characteres outside the accepted character range"
+                 " as defined in the XML spec. FontTools has got a bug which"
+                 " causes TTX to generate corrupt XML files in those cases."
+                 " So, check the entries of the name table and remove any"
+                 " control chars that you find there."
 		 " The full ttx error message was:\n"
 		 "======\n{}\n======".format(e))
 
