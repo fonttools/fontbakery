@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.checkrunner import FAIL, PASS, WARN
+from fontbakery.checkrunner import FAIL, PASS, WARN, INFO
 from fontbakery.message import Message
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
@@ -133,7 +133,7 @@ def com_google_fonts_check_034(ttFont):
   if current_value == expected_value or difference == 1:
     yield PASS, "OS/2 xAvgCharWidth value is correct."
   elif difference < ACCEPTABLE_ERROR:
-    yield WARN, ("OS/2 xAvgCharWidth is {} but should be"
+    yield INFO, ("OS/2 xAvgCharWidth is {} but should be"
                   " {} which corresponds to the weighted"
                   " average of the widths of the latin"
                   " lowercase glyphs in the font."
@@ -144,7 +144,7 @@ def com_google_fonts_check_034(ttFont):
                   " this at https://github.com/googlefonts/fontbakery"
                   "/issues/1622").format(current_value, expected_value)
   else:
-    yield FAIL, ("OS/2 xAvgCharWidth is {} but it should be "
+    yield WARN, ("OS/2 xAvgCharWidth is {} but it should be "
                   "{} which corresponds to the weighted "
                   "average of the widths of the latin "
                   "lowercase glyphs in "

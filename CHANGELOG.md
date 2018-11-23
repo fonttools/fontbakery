@@ -7,10 +7,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
   - **[com.google.fonts/check/001]:** Accept variable font filenames with Roman/Italic suffixes (issue #2214)
+  - **[com.google.fonts/check/034]:** Downgrade xAvgWidth check from FAIL to WARN since sometimes it diverges from GlyphsApp. Also, it seems that the value is not actually used on relevant programs. I still want to clarify what's going on with GlyphsApp calculations of this value. Once that's figured out, we may redefine the severity of the check once again. (issue #2095)
   - **[com.google.fonts/check/097]:** Accept variable font filenames with Roman/Italic suffixes (issue #2214)
   - **[com.google.fonts/check/102]:** Check for consistency of copyright notice strings on both METADATA.pb and on name table entries. (issue #2210)
   - **[com.google.fonts/check/105]:** Accept variable font filenames with Roman/Italic suffixes (issue #2214)
-
 
 ## 0.6.2 (2018-Nov-19)
 ### New checks
