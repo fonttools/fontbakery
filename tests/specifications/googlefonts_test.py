@@ -105,9 +105,16 @@ def test_example_checkrunner_based(cabin_regular_path):
   from fontbakery.checkrunner import CheckRunner
   from fontbakery.specifications.googlefonts import specification
   values = dict(fonts=[cabin_regular_path])
-  runner = CheckRunner(specification, values, explicit_checks=['com.google.fonts/check/029'])
+  runner = CheckRunner(specification, values, explicit_checks=['com.google.fonts/check/018'])
+
+  # we could also reuse the `iterargs` that was assigned in the previous
+  # for loop, but this here is more explicit
+  iterargs = (('font', 0),)
+  ttFont = runner.get('ttFont', iterargs)
 
   print('Test PASS ...')
+  # prepare
+  ttFont['OS/2'].achVendID = "APPL"
   # run
   for status, message, _ in runner.run():
     if status in check_statuses:
@@ -116,31 +123,15 @@ def test_example_checkrunner_based(cabin_regular_path):
       assert message == PASS
       break
 
-  # we could also reuse the `iterargs` that was assigned in the previous
-  # for loop, but this here is more explicit
-  iterargs = (('font', 0),)
-  ttFont = runner.get('ttFont', iterargs)
-
-  print('Test failing entry ...')
+  print('Test WARN ...')
   # prepare
-  change_name_table_id(ttFont, NameID.LICENSE_DESCRIPTION, 'failing entry')
+  ttFont['OS/2'].achVendID = "????"
   # run
   for status, message, _ in runner.run():
     if status in check_statuses:
       last_check_message = message
     if status == ENDCHECK:
-      assert message == FAIL and last_check_message.code == 'wrong'
-      break
-
-  print('Test missing entry ...')
-  # prepare
-  delete_name_table_id(ttFont, NameID.LICENSE_DESCRIPTION)
-  # run
-  for status, message, _ in runner.run():
-    if status in check_statuses:
-      last_check_message = message
-    if status == ENDCHECK:
-      assert message == FAIL and last_check_message.code == 'missing'
+      assert message == WARN and last_check_message.code == 'unknown'
       break
 
 
@@ -352,7 +343,7 @@ def test_check_018():
                                                      registered_vendor_ids)
   registered_ids = registered_vendor_ids()
 
-  # Let's start with our reference Cabin Regular
+  # Let's start with our reference Merriweather Regular
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
 
   print('Test WARN with bad vid.')
@@ -448,23 +439,31 @@ def test_check_028():
   """ Check font project has a license. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_028 as check,
                                                      licenses)
+
+  # The lines maked with 'hack' below are meant to
+  # not let fontbakery's own license to mess up
+  # this code test.
   print('Test FAIL with multiple licenses...')
   detected_licenses = licenses("data/test/028/multiple/")
+  detected_licenses.pop(-1) # hack
   status, message = list(check(detected_licenses))[-1]
   assert status == FAIL and message.code == "multiple"
 
   print('Test FAIL with no license...')
   detected_licenses = licenses("data/test/028/none/")
+  detected_licenses.pop(-1) # hack
   status, message = list(check(detected_licenses))[-1]
   assert status == FAIL and message.code == "no-license"
 
   print('Test PASS with a single OFL license...')
   detected_licenses = licenses("data/test/028/pass_ofl/")
+  detected_licenses.pop(-1) # hack
   status, message = list(check(detected_licenses))[-1]
   assert status == PASS
 
   print('Test PASS with a single Apache license...')
   detected_licenses = licenses("data/test/028/pass_apache/")
+  detected_licenses.pop(-1) # hack
   status, message = list(check(detected_licenses))[-1]
   assert status == PASS
 

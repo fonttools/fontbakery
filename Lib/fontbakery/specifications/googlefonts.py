@@ -674,17 +674,45 @@ def com_google_fonts_check_020(font, ttFont, style):
     yield PASS, "OS/2 usWeightClass value looks good!"
 
 
+def git_rootdir(family_dir):
+  if not family_dir:
+    return None
+
+  original_dir = os.getcwd()
+  root_dir = None
+  try:
+    import subprocess
+    os.chdir(family_dir)
+    git_cmd = [
+        "git", "rev-parse", "--show-toplevel"
+    ]
+    git_output = subprocess.check_output(git_cmd, stderr=subprocess.STDOUT)
+    root_dir = git_output.decode("utf-8").strip()
+
+  except (OSError, IOError):
+    pass # Not a git repo, or git is not installed.
+
+  os.chdir(original_dir)
+  return root_dir
+
+
 @condition
 def licenses(family_directory):
   """Get a list of paths for every license
      file found in a font project."""
-  licenses = []
-  if family_directory:
-    for license in ['OFL.txt', 'LICENSE.txt']:
-      license_path = os.path.join(family_directory, license)
-      if os.path.exists(license_path):
-        licenses.append(license_path)
-  return licenses
+  found = []
+  search_paths = [family_directory]
+  gitroot = git_rootdir(family_directory)
+  if gitroot and gitroot not in search_paths:
+    search_paths.append(gitroot)
+
+  for directory in search_paths:
+    if directory:
+      for license in ['OFL.txt', 'LICENSE.txt']:
+        license_path = os.path.join(directory, license)
+        if os.path.exists(license_path):
+          found.append(license_path)
+  return found
 
 
 @condition
