@@ -92,11 +92,11 @@ def test_check_034():
 
   test_font['OS/2'].xAvgCharWidth = 556
   status, message = list(check(test_font))[-1]
-  assert status == WARN
+  assert status == INFO
 
   test_font['OS/2'].xAvgCharWidth = 500
   status, message = list(check(test_font))[-1]
-  assert status == FAIL
+  assert status == WARN
 
   test_font = TTFont()
   test_font['OS/2'] = fontTools.ttLib.newTable('OS/2')
@@ -124,11 +124,11 @@ def test_check_034():
 
   test_font['OS/2'].xAvgCharWidth = 450
   status, message = list(check(test_font))[-1]
-  assert status == WARN
+  assert status == INFO
 
   test_font['OS/2'].xAvgCharWidth = 500
   status, message = list(check(test_font))[-1]
-  assert status == FAIL
+  assert status == WARN
 
   test_font = TTFont(temp_file)
   subsetter = fontTools.subset.Subsetter()
