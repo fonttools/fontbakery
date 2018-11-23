@@ -1931,35 +1931,34 @@ def test_check_153(montserrat_ttFonts):
     assert status == WARN
 
 
-# FIXME! This works fine locally, but crashes on Travis
-# See: https://travis-ci.org/googlefonts/fontbakery/builds/341946880
-# and also: https://github.com/googlefonts/fontbakery/issues/1712
-#
-def DISABLED_test_check_154(cabin_ttFonts):
+def test_check_154(cabin_ttFonts):
     """Check glyphs are not missing when compared to version on fonts.google.com"""
     from fontbakery.specifications.googlefonts import (com_google_fonts_check_154 as check,
                                                        api_gfonts_ttFont,
+                                                       style,
                                                        remote_styles,
-                                                       family_metadata)
-    font = cabin_ttFonts[-1]
-    print(cabin_ttFonts)
-    style = font['name'].getName(2, 1, 0, 0)
+                                                       family_metadata,
+                                                       family_directory)
+    family_meta = family_metadata(family_directory(cabin_fonts))
+    remote = remote_styles(family_meta)
+    if remote:
+      for font in cabin_fonts:
+        ttFont = TTFont(font)
+        gfont = api_gfonts_ttFont(style(font), remote)
 
-    family_meta = family_metadata("data/test/regression/cabin/")
-    gfonts_remote_styles = remote_styles(family_meta)
-    gfont = api_gfonts_ttFont(str(style), gfonts_remote_styles)
+        # Cabin font hosted on fonts.google.com contains
+        # all the glyphs for the font in data/test/cabin
+        status, message = list(check(ttFont, gfont))[-1]
+        assert status == PASS
 
-    # Cabin font hosted on fonts.google.com contains
-    # all the glyphs for the font in data/test/cabin
-    status, message = list(check(font, gfont))[-1]
-    assert status == PASS
+        # Take A glyph out of font
+        ttFont['cmap'].getcmap(3, 1).cmap.pop(ord('A'))
+        ttFont['glyf'].glyphs.pop('A')
 
-    # Take A glyph out of font
-    font['cmap'].getcmap(3, 1).cmap.pop(ord('A'))
-    font['glyf'].glyphs.pop('A')
-
-    status, message = list(check(font, gfont))[-1]
-    assert status == FAIL
+        status, message = list(check(ttFont, gfont))[-1]
+        assert status == FAIL
+    else:
+      print (f"Warning: Seems to have failed to download remote font files: {cabin_ttFonts}.")
 
 
 def test_check_155():
