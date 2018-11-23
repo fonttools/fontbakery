@@ -702,8 +702,9 @@ class Section:
   def __repr__(self):
     return f'<Section: {self.name}>'
 
-  def __str__(self):
-    return self.name
+  # This was problematic. See: https://github.com/googlefonts/fontbakery/issues/2194
+  # def __str__(self):
+  #   return self.name
 
   def __eq__(self, other):
     """ True if other.checks has the same checks in the same order"""

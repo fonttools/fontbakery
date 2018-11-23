@@ -204,8 +204,9 @@ class FontBakeryCheck(FontbakeryCallable):
     # self._conditions_setup = conditions_setup
     self._advancedMessageSetup = advancedMessageSetup
 
-  def __str__(self):
-    return self.id
+  # This was problematic. See: https://github.com/googlefonts/fontbakery/issues/2194
+  # def __str__(self):
+  #  return self.id
 
 def condition(*args, **kwds):
   """Check wrapper, a factory for FontBakeryCondition
