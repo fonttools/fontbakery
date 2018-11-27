@@ -17,8 +17,11 @@ def is_ttf(ttFont):
 
 @condition
 def is_cff(ttFont):
-  return 'CFF ' in ttFont or 'CFF2' in ttFont
+  return 'CFF ' in ttFont
 
+@condition
+def is_cff2(ttFont):
+  return 'CFF2' in ttFont
 
 @condition
 def ligatures(ttFont):
