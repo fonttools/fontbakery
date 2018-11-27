@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.checkrunner import FAIL, PASS, WARN, INFO
+from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN, INFO
 from fontbakery.message import Message
 from fontbakery.constants import (PriorityLevel,
                                   NameID,
@@ -372,3 +372,28 @@ def com_google_fonts_check_163(ttFont):
                                 unidecode(stylename_str))
   if not failed:
     yield PASS, "All name entries are good."
+
+
+@check(
+  id='com.google.fonts/check/postscript_name_cff_vs_name',
+  conditions=['is_cff']
+)
+def com_google_fonts_check_postscript_name_cff_vs_name(ttFont):
+  """CFF table FontName must match name table ID 6 (PostScript name)."""
+  failed = False
+  cff_names = ttFont['CFF '].cff.fontNames
+  if len(cff_names) != 1:
+    yield ERROR, ("Unexpected number of font names in CFF table.")
+    return
+  cff_name = cff_names[0]
+  for entry in ttFont['name'].names:
+    if entry.nameID == NameID.POSTSCRIPT_NAME:
+        postscript_name = entry.toUnicode()
+        if postscript_name != cff_name:
+          yield FAIL, ("Name table PostScript name '{}' "
+                       "does not match CFF table FontName '{}'."
+                       .format(postscript_name, cff_name))
+          failed = True
+
+  if not failed:
+    yield PASS, ("Name table PostScript name matches CFF table FontName.")
