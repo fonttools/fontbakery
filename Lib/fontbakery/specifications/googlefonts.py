@@ -188,7 +188,6 @@ def style(font):
 @condition
 def style_with_spaces(font):
   """Stylename with spaces (derived from a canonical filename)."""
-  from fontbakery.constants import STYLE_NAMES
   if style(font):
     return style(font).replace('Italic',
                                ' Italic').strip()
@@ -265,7 +264,6 @@ def com_google_fonts_check_001(font, is_variable_font):
        Somethingelse-Italic.ttf
   """
   from fontbakery.constants import STYLE_NAMES
-  from fontTools.ttLib import TTFont
 
   filename = os.path.basename(font)
   basename = os.path.splitext(filename)[0]
@@ -3433,7 +3431,8 @@ def com_google_fonts_check_042(ttFont):
     yield FAIL, Message("descender",
                         "OS/2 sTypoDescender and hhea descent must be equal.")
   else:
-    yield PASS, ("OS/2.sTypoAscender/Descender" " match hhea.ascent/descent.")
+    yield PASS, ("OS/2.sTypoAscender/Descender values"
+                 " match hhea.ascent/descent.")
 
 
 @condition
