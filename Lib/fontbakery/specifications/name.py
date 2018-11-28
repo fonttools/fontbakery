@@ -378,7 +378,12 @@ def com_google_fonts_check_163(ttFont):
   id='com.adobe.fonts/check/postscript_name_cff_vs_name',
   conditions=['is_cff'],
   rationale="""
-  The PostScript name entries in the font should matc
+  The PostScript name entries in the font's 'name' table should match the
+  FontName string in the 'CFF ' table. 
+  
+  The 'CFF ' table has a lot of information that is duplicated in other tables.
+  This information should be consistent across tables, because there's no 
+  guarantee which table an app will get the data from.
   """,
 )
 def com_adobe_fonts_check_postscript_name_cff_vs_name(ttFont):
