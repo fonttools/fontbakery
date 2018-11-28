@@ -439,6 +439,8 @@ def com_google_fonts_check_011(ttFonts):
   for ttFont in fonts:
     fontname = ttFont.reader.file.name
     stylename = style(fontname)
+    if stylename == None:
+      continue
     this_count = len(ttFont['glyf'].glyphs)
     if this_count > max_count:
       max_count = this_count
@@ -447,6 +449,8 @@ def com_google_fonts_check_011(ttFonts):
   for ttFont in fonts:
     fontname = ttFont.reader.file.name
     stylename = style(fontname)
+    if stylename == None:
+      continue
     this_count = len(ttFont['glyf'].glyphs)
     if this_count != max_count:
       failed = True

@@ -1,10 +1,15 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.6.3 (2018-Nov-26)
+## 0.6.4 (2018-Dec-03)
 ### New checks
   - **[com.abobe.fonts/check/postscript_name_cff_vs_name]:** CFF table FontName must match name table ID 6 (PostScript name). (PR #2229)
 
+### Bug fixes
+  - **[com.google.fonts/check/011]:** Safeguard against `None` when style is non-cannonical. (issue #2196)
+
+
+## 0.6.3 (2018-Nov-26)
 ### Bug fixes
   - **[GHMarkdown output]:** PR #2167 (__str__ for Section and Check) was reverted because it was causing the ghmarkdown output to crash. We may get back to it later, but being more careful about the side effects of it. (issue #2194)
   - **[com.google.fonts/check/028]:** Also search for a license file on the git-repo rootdir if the font project is in a repo. (issue #2087)
