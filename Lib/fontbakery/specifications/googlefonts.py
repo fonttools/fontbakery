@@ -166,6 +166,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/fontbakery_version' # Do we have the latest version of FontBakery installed?
       , 'com.google.fonts/check/aat' # Are there unwanted Apple tables?
       , 'com.google.fonts/check/ftxvalidator_is_available' # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
+      , 'com.google.fonts/check/postscript_name_cff_vs_name' # CFF table FontName must match name table ID 6 (PostScript name).
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
