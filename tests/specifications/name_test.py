@@ -1,6 +1,7 @@
 import os
+import fontTools.ttLib
 
-from fontbakery.constants import NameID
+from fontbakery.constants import NameID, PlatformID, WindowsEncodingID, ENGLISH_LANG_ID
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -325,3 +326,31 @@ def test_check_163():
   print ("Test WARN with a bad font...")
   status, message = list(check(ttFont))[-1]
   assert status == WARN
+
+
+def test_check_postscript_name_cff_vs_name():
+  from fontbakery.specifications.name import com_adobe_fonts_check_postscript_name_cff_vs_name as check
+  test_font = TTFont()
+  test_font['CFF '] = fontTools.ttLib.newTable('CFF ')
+  test_font['CFF '].cff.fontNames = ['SomeFontName']
+  test_font['name'] = fontTools.ttLib.newTable('name')
+
+  test_font['name'].setName(
+    'SomeOtherFontName',
+    NameID.POSTSCRIPT_NAME,
+    PlatformID.WINDOWS,
+    WindowsEncodingID.UNICODE_BMP,
+    ENGLISH_LANG_ID
+  )
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL
+
+  test_font['name'].setName(
+    'SomeFontName',
+    NameID.POSTSCRIPT_NAME,
+    PlatformID.WINDOWS,
+    WindowsEncodingID.UNICODE_BMP,
+    ENGLISH_LANG_ID
+  )
+  status, message = list(check(test_font))[-1]
+  assert status == PASS

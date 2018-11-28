@@ -160,3 +160,5 @@ class PriorityLevel(enum.IntEnum):
   NORMAL = 2
   IMPORTANT = 1
   CRITICAL = 0  # ON FIRE! Must immediately fix!
+
+ENGLISH_LANG_ID = 0x0409
