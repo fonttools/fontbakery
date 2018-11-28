@@ -3,7 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.6.3 (2018-Nov-26)
 ### New checks
-  - **[com.google.fonts/check/postscript_name_cff_vs_name]:** CFF table FontName must match name table ID 6 (PostScript name). (PR #2229)
+  - **[com.abobe.fonts/check/postscript_name_cff_vs_name]:** CFF table FontName must match name table ID 6 (PostScript name). (PR #2229)
 
 ### Bug fixes
   - **[GHMarkdown output]:** PR #2167 (__str__ for Section and Check) was reverted because it was causing the ghmarkdown output to crash. We may get back to it later, but being more careful about the side effects of it. (issue #2194)

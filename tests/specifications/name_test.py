@@ -1,7 +1,7 @@
 import os
 import fontTools.ttLib
 
-from fontbakery.constants import NameID, PlatformID, WindowsEncodingID
+from fontbakery.constants import NameID, PlatformID, WindowsEncodingID, ENGLISH_LANG_ID
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -329,29 +329,28 @@ def test_check_163():
 
 
 def test_check_postscript_name_cff_vs_name():
-  from fontbakery.specifications.name import com_google_fonts_check_postscript_name_cff_vs_name as check
+  from fontbakery.specifications.name import com_adobe_fonts_check_postscript_name_cff_vs_name as check
   test_font = TTFont()
   test_font['CFF '] = fontTools.ttLib.newTable('CFF ')
   test_font['CFF '].cff.fontNames = ['SomeFontName']
   test_font['name'] = fontTools.ttLib.newTable('name')
 
-  english_lang_id = 0x0409
   test_font['name'].setName(
-      'SomeOtherFontName',
-      NameID.POSTSCRIPT_NAME,
-      PlatformID.WINDOWS,
-      WindowsEncodingID.UNICODE_BMP,
-      english_lang_id
+    'SomeOtherFontName',
+    NameID.POSTSCRIPT_NAME,
+    PlatformID.WINDOWS,
+    WindowsEncodingID.UNICODE_BMP,
+    ENGLISH_LANG_ID
   )
   status, message = list(check(test_font))[-1]
   assert status == FAIL
 
   test_font['name'].setName(
-      'SomeFontName',
-      NameID.POSTSCRIPT_NAME,
-      PlatformID.WINDOWS,
-      WindowsEncodingID.UNICODE_BMP,
-      english_lang_id
+    'SomeFontName',
+    NameID.POSTSCRIPT_NAME,
+    PlatformID.WINDOWS,
+    WindowsEncodingID.UNICODE_BMP,
+    ENGLISH_LANG_ID
   )
   status, message = list(check(test_font))[-1]
   assert status == PASS

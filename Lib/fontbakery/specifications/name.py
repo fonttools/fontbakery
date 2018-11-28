@@ -375,10 +375,13 @@ def com_google_fonts_check_163(ttFont):
 
 
 @check(
-  id='com.google.fonts/check/postscript_name_cff_vs_name',
-  conditions=['is_cff']
+  id='com.adobe.fonts/check/postscript_name_cff_vs_name',
+  conditions=['is_cff'],
+  rationale="""
+  The PostScript name entries in the font should matc
+  """,
 )
-def com_google_fonts_check_postscript_name_cff_vs_name(ttFont):
+def com_adobe_fonts_check_postscript_name_cff_vs_name(ttFont):
   """CFF table FontName must match name table ID 6 (PostScript name)."""
   failed = False
   cff_names = ttFont['CFF '].cff.fontNames
