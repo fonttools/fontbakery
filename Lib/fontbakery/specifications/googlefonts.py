@@ -240,13 +240,51 @@ def expected_os2_weight(style):
   return weight_name, expected
 
 
+@condition
+def stylenames_are_canonical(fonts):
+  """ Are all font files named canonically ? """
+  for font in fonts:
+    if not canonical_stylename(font):
+      return False
+  # otherwise:
+  return True
+
+
+@condition
+def canonical_stylename(font):
+  """ Returns the canonical stylename of a given font. """
+  from fontbakery.constants import STYLE_NAMES
+  from fontbakery.specifications.shared_conditions import is_variable_font
+  from fontTools.ttLib import TTFont
+
+  filename = os.path.basename(font)
+  basename = os.path.splitext(filename)[0]
+  # remove spaces in style names
+  valid_style_suffixes = [name.replace(' ', '') for name in STYLE_NAMES]
+  valid_varfont_suffixes = ["VF",
+                            "Italic",
+                            "Italic-VF",
+                            "Roman",
+                            "Roman-VF"]
+
+  suffix = basename.split('-')
+  suffix.pop(0)
+  suffix = '-'.join(suffix)
+
+  varfont = os.path.exists(font) and is_variable_font(TTFont(font))
+  if ('-' in basename and
+      (suffix in valid_varfont_suffixes and varfont)
+      or (suffix in valid_style_suffixes and not varfont)):
+    return suffix
+
+
 @check(
   id = 'com.google.fonts/check/001',
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   }
 )
-def com_google_fonts_check_001(font, is_variable_font):
+def com_google_fonts_check_001(font):
   """Checking file is named canonically.
 
   A font's filename must be composed in the following manner:
@@ -266,32 +304,14 @@ def com_google_fonts_check_001(font, is_variable_font):
   """
   from fontbakery.constants import STYLE_NAMES
 
-  filename = os.path.basename(font)
-  basename = os.path.splitext(filename)[0]
-  # remove spaces in style names
-  valid_style_suffixes = [name.replace(' ', '') for name in STYLE_NAMES]
-  valid_varfont_suffixes = ["VF",
-                            "Italic",
-                            "Italic-VF",
-                            "Roman",
-                            "Roman-VF"]
-
-  suffix = basename.split('-')
-  suffix.pop(0)
-  suffix = '-'.join(suffix)
-
-  if ('-' in basename and
-      (suffix in valid_varfont_suffixes
-       and is_variable_font)
-      or (suffix in valid_style_suffixes
-          and not is_variable_font)):
+  if canonical_stylename(font):
     yield PASS, f"{font} is named canonically."
   else:
-    yield FAIL, ('Style name used in "{}" is not canonical.'
-                 ' You should rebuild the font using'
-                 ' any of the following'
-                 ' style names: "{}".').format(font,
-                                               '", "'.join(STYLE_NAMES))
+    style_names = '", "'.join(STYLE_NAMES)
+    yield FAIL, (f'Style name used in "{font}" is not canonical.'
+                  ' You should rebuild the font using'
+                  ' any of the following'
+                 f' style names: "{style_names}".')
 
 
 @condition
@@ -428,36 +448,36 @@ def com_google_fonts_check_007(family_metadata):
 
 @check(
   id = 'com.google.fonts/check/011',
-  conditions = ['is_ttf']
+  conditions = ['is_ttf',
+                'stylenames_are_canonical']
 )
 def com_google_fonts_check_011(ttFonts):
   """Fonts have equal numbers of glyphs?"""
-  fonts = list(ttFonts)
+  # ttFonts is an iterator, so here we make a list from it
+  # because we'll have to iterate twice in this check implementation:
+  the_ttFonts = list(ttFonts)
+
   failed = False
-  max_style = None
+  max_stylename = None
   max_count = 0
-  for ttFont in fonts:
+  for ttFont in the_ttFonts:
     fontname = ttFont.reader.file.name
-    stylename = style(fontname)
-    if stylename == None:
-      continue
+    stylename = canonical_stylename(fontname)
     this_count = len(ttFont['glyf'].glyphs)
     if this_count > max_count:
       max_count = this_count
-      max_style = stylename
+      max_stylename = stylename
 
-  for ttFont in fonts:
+  for ttFont in the_ttFonts:
     fontname = ttFont.reader.file.name
-    stylename = style(fontname)
-    if stylename == None:
-      continue
+    stylename = canonical_stylename(fontname)
     this_count = len(ttFont['glyf'].glyphs)
     if this_count != max_count:
       failed = True
       yield FAIL, ("{} has {} glyphs while"
                    " {} has {} glyphs.").format(stylename,
                                                 this_count,
-                                                max_style,
+                                                max_stylename,
                                                 max_count)
   if not failed:
     yield PASS, ("All font files in this family have"

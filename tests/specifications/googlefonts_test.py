@@ -138,7 +138,6 @@ def test_example_checkrunner_based(cabin_regular_path):
 def test_check_001():
   """ Files are named canonically. """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_001 as check
-  from fontbakery.specifications.shared_conditions import is_variable_font
 
   canonical_names = [
     "data/test/montserrat/Montserrat-Thin.ttf",
@@ -172,17 +171,13 @@ def test_check_001():
   ]
 
   for canonical in canonical_names:
-    is_var = os.path.exists(canonical) and is_variable_font(TTFont(canonical))
     print(f'Test PASS with "{canonical}" ...')
-    status, message = list(check(canonical,
-                                 is_var))[-1]
+    status, message = list(check(canonical))[-1]
     assert status == PASS
 
   for non_canonical in non_canonical_names:
-    is_var = os.path.exists(non_canonical) and is_variable_font(TTFont(non_canonical))
     print(f'Test FAIL with "{non_canonical}" ...')
-    status, message = list(check(non_canonical,
-                                 is_var))[-1]
+    status, message = list(check(non_canonical))[-1]
     assert status == FAIL
 
 

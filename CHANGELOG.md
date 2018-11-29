@@ -6,7 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.abobe.fonts/check/postscript_name_cff_vs_name]:** CFF table FontName must match name table ID 6 (PostScript name). (PR #2229)
 
 ### Bug fixes
-  - **[com.google.fonts/check/011]:** Safeguard against `None` when style is non-cannonical. (issue #2196)
+  - **[com.google.fonts/check/011]:** Safeguard against reportingn style=`None` by only running the check when all font files are named cannonically. (issue #2196)
 
 
 ## 0.6.3 (2018-Nov-26)
