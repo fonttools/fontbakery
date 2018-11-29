@@ -6,11 +6,13 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.abobe.fonts/check/postscript_name_cff_vs_name]:** CFF table FontName must match name table ID 6 (PostScript name). (PR #2229)
 
 ### Bug fixes
-  - **[com.google.fonts/check/011]:** Safeguard against reportingn style=`None` by only running the check when all font files are named cannonically. (issue #2196)
+  - **[com.google.fonts/check/011]:** Safeguard against reporting style=`None` by only running the check when all font files are named canonically. (issue #2196)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/011]:** List which glyphs differ among font files (issue #2196)
 
+### Other relevant code changes
+  - **[setup.py]:** display README.md as long-description on PyPI webpage. (issue #2225)
 
 ## 0.6.3 (2018-Nov-26)
 ### Bug fixes
