@@ -8,6 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bug fixes
   - **[com.google.fonts/check/011]:** Safeguard against reportingn style=`None` by only running the check when all font files are named cannonically. (issue #2196)
 
+### Changes to existing checks
+  - **[com.google.fonts/check/011]:** List which glyphs differ among font files (issue #2196)
+
 
 ## 0.6.3 (2018-Nov-26)
 ### Bug fixes
