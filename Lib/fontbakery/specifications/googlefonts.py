@@ -460,6 +460,7 @@ def com_google_fonts_check_011(ttFonts):
   failed = False
   max_stylename = None
   max_count = 0
+  max_glyphs = None
   for ttFont in the_ttFonts:
     fontname = ttFont.reader.file.name
     stylename = canonical_stylename(fontname)
@@ -467,18 +468,28 @@ def com_google_fonts_check_011(ttFonts):
     if this_count > max_count:
       max_count = this_count
       max_stylename = stylename
+      max_glyphs = set(ttFont['glyf'].glyphs)
 
   for ttFont in the_ttFonts:
     fontname = ttFont.reader.file.name
     stylename = canonical_stylename(fontname)
-    this_count = len(ttFont['glyf'].glyphs)
+    these_glyphs = set(ttFont['glyf'].glyphs)
+    this_count = len(these_glyphs)
     if this_count != max_count:
       failed = True
-      yield FAIL, ("{} has {} glyphs while"
-                   " {} has {} glyphs.").format(stylename,
-                                                this_count,
-                                                max_stylename,
-                                                max_count)
+      all_glyphs = max_glyphs.union(these_glyphs)
+      common_glyphs = max_glyphs.intersection(these_glyphs)
+      diff = all_glyphs - common_glyphs
+      diff_count = len(diff)
+      if diff_count < 10:
+        diff = ", ".join(diff)
+      else:
+        diff = ", ".join(list(diff)[:10]) + " (and more)"
+
+      yield FAIL, (f"{stylename} has {this_count} glyphs while"
+                   f" {max_stylename} has {max_count} glyphs."
+                   f" There are {diff_count} different glyphs"
+                   f" among them: {diff}")
   if not failed:
     yield PASS, ("All font files in this family have"
                  " an equal total ammount of glyphs.")
