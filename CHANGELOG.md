@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Other relevant code changes
   - **[setup.py]:** display README.md as long-description on PyPI webpage. (issue #2225)
+  - **[README.md]:** mention our new developer chat channel at https://gitter.im/fontbakery/Lobby
 
 ## 0.6.3 (2018-Nov-26)
 ### Bug fixes
