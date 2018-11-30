@@ -11,7 +11,7 @@ Format specifications, distributor requirements, and custom checks.
 
 For a full introduction, [check out the Typecon 2018 presentation deck](https://docs.google.com/presentation/d/14dU3cUXelwvpVokhKYmJ6jT51AASDaOFyEUSdxb0RAg/).
 
-Font Bakery has an active community of contributors from foundries around the world, including Adobe Typekit, Dalton Maag, Type Network, and Google Fonts.
+Font Bakery has an active community of contributors from foundries around the world, including Adobe Typekit, Dalton Maag, Type Network, and Google Fonts. Please join our developer chat channel at https://gitter.im/fontbakery/Lobby
 
 Font Bakery is not an official Google project, and Google provides no support for it.
 However, throughout 2018 the core project maintainers Felipe Corrêa da Silva Sanches <juca@members.fsf.org> and Lasse Fister <commander@graphicore.de> were funded by the Google Fonts team.
