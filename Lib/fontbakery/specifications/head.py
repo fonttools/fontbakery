@@ -33,20 +33,43 @@ def com_google_fonts_check_014(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/043'
+  id = 'com.google.fonts/check/043',
+  rationale = """
+  According to the OpenType spec:
+
+  The value of unitsPerEm at the head table must be
+  a value between 16 and 16384. Any value in this
+  range is valid.
+
+  In fonts that have TrueType outlines, a power of 2
+  is recommended as this allows performance
+  optimizations in some rasterizers.
+
+  But 1000 is a commonly used value. And 2000 may
+  become increasingly more common on Variable Fonts.
+  """
 )
 def com_google_fonts_check_043(ttFont):
   """Checking unitsPerEm value is reasonable."""
   upem = ttFont['head'].unitsPerEm
   target_upem = [2**i for i in range(4, 15)]
-  target_upem.insert(0, 1000)
-  if upem not in target_upem:
+  target_upem.append(1000)
+  target_upem.append(2000)
+  if upem < 16 or upem > 16384:
     yield FAIL, ("The value of unitsPerEm at the head table"
-                 " must be either 1000 or a power of"
-                 " 2 between 16 to 16384."
+                 " must be a value between 16 and 16384."
                  " Got '{}' instead.").format(upem)
+  elif upem not in target_upem:
+    yield WARN, ("In order to optimize performance on some"
+                 " legacy renderers, the value of unitsPerEm"
+                 " at the head table should idealy be"
+                 " a power of between 16 to 16384."
+                 " And values of 1000 and 2000 are also"
+                 " common and may be just fine as well."
+                 " But we got upm={} instead.").format(upem)
   else:
-    yield PASS, "unitsPerEm value on the 'head' table is reasonable."
+    yield PASS, ("unitsPerEm value ({}) on the 'head' table"
+                 " is reasonable.").format(upem)
 
 
 def parse_version_string(name):

@@ -58,19 +58,26 @@ def test_check_043():
   # We'll use Mada Regular to start with:
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
 
-  for good_value in [1000, 16, 32, 64, 128, 256,
-                     512, 1024, 2048, 4096, 8192, 16384]:
+  for good_value in [16, 32, 64, 128, 256, 512, 1000,
+                     1024, 2000, 2048, 4096, 8192, 16384]:
     print(f"Test PASS with a good value of unitsPerEm = {good_value} ...")
     ttFont['head'].unitsPerEm = good_value
     status, _ = list(check(ttFont))[-1]
     assert status == PASS
 
+  for warn_value in [20, 50, 100, 500, 4000]:
+    print(f"Test WARN with a value of unitsPerEm = {warn_value} ...")
+    ttFont['head'].unitsPerEm = warn_value
+    status, _ = list(check(ttFont))[-1]
+    assert status == WARN
+
   # These are arbitrarily chosen bad values:
-  for bad_value in [0, 1, 2, 4, 8, 10, 100, 10000, 32768]:
+  for bad_value in [0, 1, 2, 4, 8, 10, 15, 16385, 32768]:
     print(f"Test FAIL with a bad value of unitsPerEm = {bad_value} ...")
     ttFont['head'].unitsPerEm = bad_value
     status, message = list(check(ttFont))[-1]
     assert status == FAIL
+
 
 def test_parse_version_string():
   """ Checking font version fields. """
