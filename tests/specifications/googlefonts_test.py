@@ -1770,21 +1770,40 @@ def NOT_IMPLEMENTED_test_check_115():
 
 
 def test_check_116():
-  """ Is font em size (ideally) equal to 1000? """
+  """ Stricter unitsPerEm criteria for Google Fonts. """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_116 as check
 
   fontfile = "data/test/cabin/Cabin-Regular.ttf"
   ttFont = TTFont(fontfile)
 
-  print ("Test PASS with unitsPerEm = 1000...")
-  ttFont["head"].unitsPerEm = 1000
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  PASS_VALUES = [2000] # The potential "New Standard" for Variable Fonts!
 
-  print ("Test WARN with unitsPerEm = 1024...")
-  ttFont["head"].unitsPerEm = 1024
-  status, message = list(check(ttFont))[-1]
-  assert status == WARN
+  WARN_VALUES = [16, 32, 64, 128, 256, 512, 1024, 2048] # Good for better performance on legacy renderers
+  WARN_VALUES.extend([500, 1000]) # or common typical values
+
+  # and finally the bad ones, including:
+  FAIL_VALUES = [0, 1, 2, 4, 8, 15, 16385] # simply invalid
+  FAIL_VALUES.extend([100, 2500]) # suboptimal (uncommon and not power of two)
+  FAIL_VALUES.extend([4096, 8192, 16384]) # and valid ones suggested by the opentype spec,
+                                          # but too large, causing undesireable filesize bloat.
+
+  for pass_value in PASS_VALUES:
+    print (f"Test PASS with unitsPerEm = {pass_value}...")
+    ttFont["head"].unitsPerEm = pass_value
+    status, message = list(check(ttFont))[-1]
+    assert status == PASS
+
+  for warn_value in WARN_VALUES:
+    print (f"Test WARN with unitsPerEm = {warn_value}...")
+    ttFont["head"].unitsPerEm = warn_value
+    status, message = list(check(ttFont))[-1]
+    assert status == WARN
+
+  for fail_value in FAIL_VALUES:
+    print (f"Test FAIL with unitsPerEm = {fail_value}...")
+    ttFont["head"].unitsPerEm = fail_value
+    status, message = list(check(ttFont))[-1]
+    assert status == FAIL
 
 
 def NOT_IMPLEMENTED_test_check_117():
