@@ -6,6 +6,7 @@ reporters
    :maxdepth: 1
 
    ghmarkdown
+   html
    serialize
    terminal
 
