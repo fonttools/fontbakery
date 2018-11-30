@@ -128,7 +128,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/112' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
       , 'com.google.fonts/check/113' # METADATA.pb weight matches postScriptName.
       , 'com.google.fonts/check/115' # METADATA.pb: Font styles are named canonically?
-      , 'com.google.fonts/check/116' # Is font em size (ideally) equal to 1000?
+      , 'com.google.fonts/check/116' # Stricter unitsPerEm criteria for Google Fonts.
       , 'com.google.fonts/check/117' # Version number has increased since previous release on Google Fonts?
       , 'com.google.fonts/check/118' # Glyphs are similiar to Google Fonts version?
       , 'com.google.fonts/check/119' # TTFAutohint x-height increase value is same as in previous release on Google Fonts ?
@@ -2310,16 +2310,58 @@ def com_google_fonts_check_115(ttFont, font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/116'
+  id = 'com.google.fonts/check/116',
+  rationale = """
+  Even though the OpenType spec allows unitsPerEm to
+  be any value between 16 and 16384, the Google Fonts
+  project aims at a narrower set of reasonable values.
+
+  The spec suggests usage of powers of two in order
+  to get some performance improvements on legacy
+  renderers, so those values are acceptable.
+
+  But value of 500 or 1000 are also acceptable, with
+  the added benefit that it makes upm math easier for
+  designers, while the performance hit of not using
+  a power of two is most likely negligible nowadays.
+
+  Another acceptable value is 2000.
+  Since TT outlines are all integers (no floats),
+  then instances in a VF suffer rounding compromises,
+  and therefore a 1000 UPM is to small because it
+  forces too many such compromises.
+  Therefore 2000 is a good 'new VF standard',
+  because 2000 is a simple 2x conversion from existing
+  fonts drawn on a 1000 UPM, and anyone who knows
+  what 10 units can do for 1000 UPM will know what
+  20 units does too.
+
+  Additionally, values above 2048 would
+  result in filesize increases with not much
+  added benefit.
+  """
 )
 def com_google_fonts_check_116(ttFont):
-  """Is font em size (ideally) equal to 1000?"""
+  """ Stricter unitsPerEm criteria for Google Fonts. """
   upm_height = ttFont["head"].unitsPerEm
-  if upm_height != 1000:
-    yield WARN, ("Font em size ({}) is not"
-                 " equal to 1000.").format(upm_height)
+  ACCEPTABLE = [16, 32, 64, 128, 256, 500,
+                512, 1000, 1024, 2000, 2048]
+  if upm_height not in ACCEPTABLE:
+    yield FAIL, (f"Font em size (unitsPerEm) is {upm_height}."
+                  " If possible, please consider using 1000"
+                  " or even 2000 (which is ideal for"
+                  " Variable Fonts)."
+                  " The acceptable values for unitsPerEm,"
+                 f" though, are: {ACCEPTABLE}.")
+  elif upm_height != 2000:
+    yield WARN, (f"Even though unitsPerEm ({upm_height}) in"
+                  " this font is reasonable. It is strongly"
+                  " advised to consider changing it to 2000,"
+                  " since it will liely improve the quality of"
+                  " Variable Fonts by avoiding excessive"
+                  " rounding of coordinates on interpolations.")
   else:
-    yield PASS, "Font em size is equal to 1000."
+    yield PASS, "Font em size is good (unitsPerEm = 2000)."
 
 
 @condition
