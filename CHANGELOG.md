@@ -2,6 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.6.4 (2018-Dec-03)
+### New Features
+  - Nikolaus Waxweiler has contributed an HTML reporter. It can be used by passing -html filename.html to the command line. Thanks a lot!
+
 ### New checks
   - **[com.abobe.fonts/check/postscript_name_cff_vs_name]:** CFF table FontName must match name table ID 6 (PostScript name). (PR #2229)
 

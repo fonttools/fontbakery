@@ -39,6 +39,7 @@ DEFAULT_LOG_LEVEL = WARN
 from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.ghmarkdown import GHMarkdownReporter
+from fontbakery.reporters.html import HTMLReporter
 
 def ArgumentParser(specification, spec_arg=True):
   argument_parser = argparse.ArgumentParser(description="Check TTF files"
@@ -122,6 +123,11 @@ def ArgumentParser(specification, spec_arg=True):
   argument_parser.add_argument('--ghmarkdown', default=False, type=argparse.FileType('w'),
                       metavar= 'MD_FILE',
                       help='Write a GitHub-Markdown formatted report to MD_FILE.')
+
+  argument_parser.add_argument('--html', default=False,
+                      type=argparse.FileType('w', encoding="utf-8"),
+                      metavar= 'HTML_FILE',
+                      help='Write a HTML report to HTML_FILE.')
 
   iterargs = sorted(specification.iterargs.keys())
 
@@ -275,6 +281,12 @@ def main(specification=None, values=None):
                              collect_results_by=args.gather_by)
     reporters.append(mdr.receive)
 
+  if args.html:
+    hr = HTMLReporter(loglevels=args.loglevels,
+                      runner=runner,
+                      collect_results_by=args.gather_by)
+    reporters.append(hr.receive)
+
   distribute_generator(runner.run(), reporters)
 
   if args.json:
@@ -288,6 +300,10 @@ def main(specification=None, values=None):
     print("A report in GitHub Markdown format which can be useful\n"
           " for posting issues on a GitHub issue tracker has been\n"
           " saved to '{}'".format(args.ghmarkdown.name))
+
+  if args.html:
+    args.html.write(hr.get_html())
+    print(f"A report in HTML format has been saved to '{args.html.name}'")
 
   # Fail and error let the command fail
   return 1 if tr.worst_check_status in (ERROR, FAIL) else 0
