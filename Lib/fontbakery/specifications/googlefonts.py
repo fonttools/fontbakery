@@ -2397,8 +2397,9 @@ def remote_styles(family_metadata):
   rstyles = {}
 
   for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
-    if '-' in remote_filename[:-4]:
-      remote_style = remote_filename[:-4].split('-')[1]
+    remote_style = os.path.splitext(remote_filename)[0]
+    if '-' in remote_style:
+      remote_style = remote_style.split('-')[1]
     rstyles[remote_style] = remote_font
   return rstyles
 
