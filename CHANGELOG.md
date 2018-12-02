@@ -7,6 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bug fixes
   - **[com.google.fonts/check/011]:** Safeguard against reporting style=`None` by only running the check when all font files are named canonically. (issue #2196)
+  - **[com.google.fonts/check/065]:** Fix AttributeError: 'int' object has no attribute 'items'. (issue #2203)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/011]:** List which glyphs differ among font files (issue #2196)
