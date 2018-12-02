@@ -54,15 +54,6 @@ def com_google_fonts_check_063(ttFont):
   })
 def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
   """Is there kerning info for non-ligated sequences?"""
-  ligature_pairs = []
-  for first, comp in ligatures.items():
-    for components in comp:
-      while components:
-        pair = (first, components[0])
-        if pair not in ligature_pairs:
-          ligature_pairs.append(pair)
-        first = components[0]
-        components.pop(0)
 
   def look_for_nonligated_kern_info(table):
     for pairpos in table.SubTable:
@@ -85,6 +76,16 @@ def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
                         " https://github.com"
                         "/googlefonts/fontbakery/issues/1596")
   else:
+    ligature_pairs = []
+    for first, comp in ligatures.items():
+      for components in comp:
+        while components:
+          pair = (first, components[0])
+          if pair not in ligature_pairs:
+            ligature_pairs.append(pair)
+          first = components[0]
+          components.pop(0)
+
     for record in ttFont["GSUB"].table.FeatureList.FeatureRecord:
       if record.FeatureTag == 'kern':
         for index in record.Feature.LookupListIndex:
