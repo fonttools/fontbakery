@@ -508,3 +508,34 @@ def test_is_up_to_date():
                           latest="0.5.2") == False)
   assert(is_up_to_date(installed="0.5.2.dev73+g8c9ebc0.d20181023",
                           latest="0.5.3") == False)
+
+
+def test_glyph_has_ink():
+  from fontbakery.utils import glyph_has_ink
+  from fontTools.ttLib import TTFont
+
+  print()  # so next line doesn't start with '.....'
+
+  cff_test_font = TTFont(
+    'data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf')
+  print('Test if CFF glyph with ink has ink')
+  assert(glyph_has_ink(cff_test_font, '.notdef') is True)
+  print('Test if CFF glyph without ink has ink')
+  assert(glyph_has_ink(cff_test_font, 'space') is False)
+
+  ttf_test_font = TTFont(
+    'data/test/source-sans-pro/TTF/SourceSansPro-Regular.ttf')
+  print('Test if TTF glyph with ink has ink')
+  assert(glyph_has_ink(ttf_test_font, '.notdef') is True)
+  print('Test if TTF glyph without ink has ink')
+  assert(glyph_has_ink(ttf_test_font, 'space') is False)
+
+  # TODO: uncomment the lines below once the bug in the
+  #       fonttools CFF2 charstring calcBounds method is fixed
+
+  # cff2_test_font = TTFont(
+  #   'data/test/source-sans-pro/VAR/SourceSansVariable-Roman.otf')
+  # print('Test if CFF2 glyph with ink has ink')
+  # assert(glyph_has_ink(cff2_test_font, '.notdef') is True)
+  # print('Test if CFF2 glyph without ink has ink')
+  # assert(glyph_has_ink(cff2_test_font, 'space') is False)

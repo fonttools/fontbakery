@@ -409,7 +409,7 @@ def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
 
 @check(
   id = 'com.google.fonts/check/046',
-  conditions = ['is_ttf']
+  conditions = ['not is_cff2']
 )
 def com_google_fonts_check_046(ttFont):
   """Font contains .notdef as first glyph?
@@ -503,7 +503,7 @@ def com_google_fonts_check_048(ttFont):
 
 @check(
   id = 'com.google.fonts/check/049',
-  conditions = ['is_ttf']
+  conditions = ['not is_cff2']
 )
 def com_google_fonts_check_049(ttFont):
   """Whitespace glyphs have ink?"""
