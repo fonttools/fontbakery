@@ -69,6 +69,9 @@ setup(
         'ufolint',
         'ttfautohint-py',
         'opentype-sanitizer',
+        # The following 2 modules are actually needed by fontTools:
+        'fs',
+        'unicodedata2'
     ],
     extras_require={
         'docs': [
