@@ -265,6 +265,26 @@ def test_check_006():
   assert status == PASS
 
 
+def test_check_metadata_parses():
+  """ Check METADATA.pb parse correctly. """
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_metadata_parses as check
+
+  good = "data/test/merriweather/"
+  print('Test PASS with a good METADATA.pb file...')
+  status, message = list(check(good))[-1]
+  assert status == PASS
+
+  skip = "data/test/slabo/"
+  print('Test SKIP with a missing METADATA.pb file...')
+  status, message = list(check(skip))[-1]
+  assert status == SKIP
+
+  bad = "data/test/broken_metadata/"
+  print('Test FAIL with a bad METADATA.pb file...')
+  status, message = list(check(bad))[-1]
+  assert status == FAIL
+
+
 def test_check_007():
   """ Font designer field in METADATA.pb must not be 'unknown'. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_007 as check,
