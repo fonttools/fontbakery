@@ -167,6 +167,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/aat' # Are there unwanted Apple tables?
       , 'com.google.fonts/check/ftxvalidator_is_available' # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
       , 'com.adobe.fonts/check/postscript_name_cff_vs_name' # CFF table FontName must match name table ID 6 (PostScript name).
+      , 'com.google.fonts/check/metadata/parses' # Check METADATA.pb parses correctly.
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
@@ -426,12 +427,39 @@ def com_google_fonts_check_006(description):
 
 @condition
 def family_metadata(family_directory):
+  from google.protobuf import text_format
   from fontbakery.utils import get_FamilyProto_Message
 
   if family_directory:
+    try:
+      pb_file = os.path.join(family_directory, "METADATA.pb")
+      if os.path.exists(pb_file):
+        return get_FamilyProto_Message(pb_file)
+    except text_format.ParseError:
+      return None
+
+
+@check(
+  id = 'com.google.fonts/check/metadata/parses',
+  conditions = ['family_directory'],
+  rationale = """
+  The purpose of this check is to ensure that
+  the METADATA.pb file is not malformed.
+  """
+)
+def com_google_fonts_check_metadata_parses(family_directory):
+  """ Check METADATA.pb parse correctly. """
+  from google.protobuf import text_format
+  from fontbakery.utils import get_FamilyProto_Message
+  try:
     pb_file = os.path.join(family_directory, "METADATA.pb")
-    if os.path.exists(pb_file):
-      return get_FamilyProto_Message(pb_file)
+    get_FamilyProto_Message(pb_file)
+    yield PASS, "METADATA.pb parsed successfuly."
+  except text_format.ParseError as e:
+    yield FAIL, (f"Family metadata at {family_directory} failed to parse.\n"
+                 f"TRACEBACK:\n{e}")
+  except FileNotFoundError:
+    yield SKIP, f"Font family at '{family_directory}' lacks a METADATA.pb file."
 
 
 @check(
