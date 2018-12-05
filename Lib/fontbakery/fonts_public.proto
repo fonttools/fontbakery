@@ -19,7 +19,6 @@ message FamilyProto {
   repeated string subsets = 8;
   optional string ttf_autohint_args = 9;
   repeated AxisProto axes = 10;
-  optional string trademark = 11;
 };
 
 message FontProto {
