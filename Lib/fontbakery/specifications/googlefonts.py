@@ -1008,7 +1008,7 @@ def com_google_fonts_check_054(font, ttfautohint_stats):
   hinted = ttfautohint_stats["hinted_size"]
   dehinted = ttfautohint_stats["dehinted_size"]
   increase = hinted - dehinted
-  change = float(hinted)/dehinted - 1
+  change = (float(hinted)/dehinted - 1) * 100
 
   def filesize_formatting(s):
     if s < 1024:
