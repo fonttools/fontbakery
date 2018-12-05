@@ -4,6 +4,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.6.5 (2018-Dec-10)
 ### New Checks
   - **[com.google.fonts/check/metadata/parses]:** "Check METADATA.pb parse correctly." (issue #2248)
+  - **[com.google.fonts/check/fvar_name_entries]:** "All name entries referenced by fvar instances exist on the name table?" (issue #2069)
+
 
 ### Changes to existing checks
   - **[com.google.fonts/check/046]:** Removed restriction on CFF fonts (and added restriction on CFF2 pending a fonttools bug fix) because the helper method `glyph_has_ink` now handles `CFF` as well as `glyf`.

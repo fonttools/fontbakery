@@ -168,6 +168,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/ftxvalidator_is_available' # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
       , 'com.adobe.fonts/check/postscript_name_cff_vs_name' # CFF table FontName must match name table ID 6 (PostScript name).
       , 'com.google.fonts/check/metadata/parses' # Check METADATA.pb parses correctly.
+      , 'com.google.fonts/check/fvar_name_entries' # All name entries referenced by fvar instances exist on the name table?
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
@@ -3634,6 +3635,30 @@ def com_google_fonts_check_aat(ttFont):
                  " {}").format(", ".join(unwanted_tables_found))
   else:
     yield PASS, "There are no unwanted AAT tables."
+
+
+@check(
+  id = 'com.google.fonts/check/fvar_name_entries',
+  rationale = """
+  The purpose of this check is to make sure that all
+  name entries referenced by variable font instances
+  do exist in the name table.
+  """
+)
+def com_google_fonts_check_fvar_name_entries(ttFont):
+  """All name entries referenced by fvar instances exist on the name table?"""
+
+  failed = False
+  for instance in ttFont["fvar"].instances:
+
+    entries = [entry for entry in ttFont["name"].names if entry.nameID == instance.subfamilyNameID]
+    if len(entries) == 0:
+      failed = True
+      yield FAIL, (f"Named instance with coordinates {instance.coordinates}"
+                   f" lacks an entry on the name table (nameID={instance.subfamilyNameID}).")
+
+  if not failed:
+    yield PASS, "OK"
 
 
 def is_librebarcode(font):
