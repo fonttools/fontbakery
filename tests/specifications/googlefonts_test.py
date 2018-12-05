@@ -2650,3 +2650,25 @@ def test_check_aat():
     ttFont.reader.tables[unwanted] = "foo"
     status, message = list(check(ttFont))[-1]
     assert status == FAIL
+
+
+def test_check_fvar_name_entries():
+  """ All name entries referenced by fvar instances exist on the name table? """
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_fvar_name_entries as check
+
+  # This broken version of the Expletus variable font, was where this kind of problem was first observed:
+  ttFont = TTFont("data/test/broken_expletus_vf/ExpletusSansBeta-VF.ttf")
+
+  # So it must FAIL the check:
+  print ("Test FAIL with a good font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
+
+  # If we add the name entry with id=265 (which was the one missing)
+  # then the check must now PASS:
+  from fontTools.ttLib.tables._n_a_m_e import makeName
+  ttFont["name"].names.append(makeName("Foo", 265, 1, 0, 0))
+
+  print ("Test PASS with a good font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
