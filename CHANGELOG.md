@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
   - **[com.google.fonts/check/metadata/parses]:** "Check METADATA.pb parse correctly." (issue #2248)
   - **[com.google.fonts/check/fvar_name_entries]:** "All name entries referenced by fvar instances exist on the name table?" (issue #2069)
+  - **[com.google.fonts/check/varfont_has_instances:]** "A variable font must have named instances." (issue #2127)
 
 ### Bug fixes
   - **[com.google.fonts/check/054]:** Correct math in report of font file size change by properly converting result to a percentage.
@@ -12,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
   - **[com.google.fonts/check/046]:** Removed restriction on CFF fonts (and added restriction on CFF2 pending a fonttools bug fix) because the helper method `glyph_has_ink` now handles `CFF` as well as `glyf`.
   - **[com.google.fonts/check/049]:** Removed restriction on CFF fonts (and added restriction on CFF2 pending a fonttools bug fix) because the helper method `glyph_has_ink` now handles `CFF` as well as `glyf`.
+
 
 ## 0.6.4 (2018-Dec-03)
 ### New Features
@@ -25,7 +27,6 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/065]:** Fix AttributeError: 'int' object has no attribute 'items'. (issue #2203)
   - **[FontBakeryCondition:remote_styles]:** fix UnboundLocalError. local variable 'remote_style' was referenced before assignment. (issue #2204)
 
-
 ### Changes to existing checks
   - **[com.google.fonts/check/011]:** List which glyphs differ among font files (issue #2196)
   - **[com.google.fonts/check/043]:** unitsPerEm check on OpenType profile is now less opinionated. Only FAILs when strictly invalid according to the spec. (issue #2185)
@@ -35,6 +36,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[setup.py]:** display README.md as long-description on PyPI webpage. (issue #2225)
   - **[README.md]:** mention our new developer chat channel at https://gitter.im/fontbakery/Lobby
   - **[Dependencies]:** The following 2 modules are actually needed by fontTools: fs and unicodedata2.
+
 
 ## 0.6.3 (2018-Nov-26)
 ### Bug fixes

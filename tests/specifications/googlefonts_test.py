@@ -2672,3 +2672,26 @@ def test_check_fvar_name_entries():
   print ("Test PASS with a good font...")
   status, message = list(check(ttFont))[-1]
   assert status == PASS
+
+
+def test_check_varfont_has_instances():
+  """ A variable font must have named instances. """
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_varfont_has_instances as check
+
+  # ExpletusVF does have instances.
+  # Note: The "broken" in the path name refers to something else.
+  #       (See test_check_fvar_name_entries)
+  ttFont = TTFont("data/test/broken_expletus_vf/ExpletusSansBeta-VF.ttf")
+
+  # So it must PASS the check:
+  print ("Test PASS with a good font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  # If we delete all instances, then it must FAIL:
+  while len(ttFont["fvar"].instances):
+    del ttFont["fvar"].instances[0]
+
+  print ("Test FAIL with a good font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
