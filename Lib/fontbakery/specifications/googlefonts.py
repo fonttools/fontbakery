@@ -170,6 +170,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/metadata/parses' # Check METADATA.pb parses correctly.
       , 'com.google.fonts/check/fvar_name_entries' # All name entries referenced by fvar instances exist on the name table?
       , 'com.google.fonts/check/varfont_has_instances' # A variable font must have named instances.
+      , 'com.google.fonts/check/varfont_weight_instances' # Variable font weight coordinates must be multiples of 100.
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
@@ -3677,6 +3678,29 @@ def com_google_fonts_check_varfont_has_instances(ttFont):
     yield PASS, "OK"
   else:
     yield FAIL, "This variable font lacks named instances on the fvar table."
+
+
+@check(
+  id = 'com.google.fonts/check/varfont_weight_instances',
+  conditions = ['is_variable_font'],
+  rationale = """
+  The named instances on the weight axis of a variable font
+  must have coordinates that are multiples of 100 on the design space.
+  """
+)
+def com_google_fonts_check_varfont_weight_instances(ttFont):
+  """Variable font weight coordinates must be multiples of 100."""
+
+  failed = False
+  for instance in ttFont["fvar"].instances:
+    if 'wght' in instance.coordinates and instance.coordinates['wght'] % 100 != 0:
+      failed = True
+      yield FAIL, ("Found an variable font instance with"
+                  f" 'wght'={instance.coordinates['wght']}."
+                   " This should instead be a multiple of 100.")
+
+  if not failed:
+    yield PASS, "OK"
 
 
 def is_librebarcode(font):
