@@ -3639,6 +3639,7 @@ def com_google_fonts_check_aat(ttFont):
 
 @check(
   id = 'com.google.fonts/check/fvar_name_entries',
+  conditions = ['is_variable_font'],
   rationale = """
   The purpose of this check is to make sure that all
   name entries referenced by variable font instances
