@@ -169,6 +169,7 @@ expected_check_ids = [
       , 'com.adobe.fonts/check/postscript_name_cff_vs_name' # CFF table FontName must match name table ID 6 (PostScript name).
       , 'com.google.fonts/check/metadata/parses' # Check METADATA.pb parses correctly.
       , 'com.google.fonts/check/fvar_name_entries' # All name entries referenced by fvar instances exist on the name table?
+      , 'com.google.fonts/check/varfont_has_instances' # A variable font must have named instances.
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
@@ -3660,6 +3661,22 @@ def com_google_fonts_check_fvar_name_entries(ttFont):
 
   if not failed:
     yield PASS, "OK"
+
+
+@check(
+  id = 'com.google.fonts/check/varfont_has_instances',
+  conditions = ['is_variable_font'],
+  rationale = """
+  Named instances must be present in all variable fonts.
+  """
+)
+def com_google_fonts_check_varfont_has_instances(ttFont):
+  """A variable font must have named instances."""
+
+  if len(ttFont["fvar"].instances):
+    yield PASS, "OK"
+  else:
+    yield FAIL, "This variable font lacks named instances on the fvar table."
 
 
 def is_librebarcode(font):
