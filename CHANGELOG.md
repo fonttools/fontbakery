@@ -5,7 +5,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
   - **[com.google.fonts/check/metadata/parses]:** "Check METADATA.pb parse correctly." (issue #2248)
   - **[com.google.fonts/check/fvar_name_entries]:** "All name entries referenced by fvar instances exist on the name table?" (issue #2069)
-  - **[com.google.fonts/check/varfont_has_instances:]** "A variable font must have named instances." (issue #2127)
+  - **[com.google.fonts/check/varfont_has_instances]:** "A variable font must have named instances." (issue #2127)
+  - **[com.google.fonts/check/varfont_weight_instances]:** "Variable font weight coordinates must be multiples of 100." (issue #2258)
+
 
 ### Bug fixes
   - **[com.google.fonts/check/054]:** Correct math in report of font file size change by properly converting result to a percentage.

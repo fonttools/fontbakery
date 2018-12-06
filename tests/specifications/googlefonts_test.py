@@ -2660,7 +2660,7 @@ def test_check_fvar_name_entries():
   ttFont = TTFont("data/test/broken_expletus_vf/ExpletusSansBeta-VF.ttf")
 
   # So it must FAIL the check:
-  print ("Test FAIL with a good font...")
+  print ("Test FAIL with a bad font...")
   status, message = list(check(ttFont))[-1]
   assert status == FAIL
 
@@ -2692,6 +2692,28 @@ def test_check_varfont_has_instances():
   while len(ttFont["fvar"].instances):
     del ttFont["fvar"].instances[0]
 
-  print ("Test FAIL with a good font...")
+  print ("Test FAIL with a bad font...")
   status, message = list(check(ttFont))[-1]
   assert status == FAIL
+
+
+def test_check_varfont_weight_instances():
+  """ Variable font weight coordinates must be multiples of 100. """
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_varfont_weight_instances as check
+
+  # This copy of Markazi Text has an instance with
+  # a 491 'wght' coordinate instead of 500.
+  ttFont = TTFont("data/test/broken_markazitext/MarkaziText-VF.ttf")
+
+  # So it must FAIL the check:
+  print ("Test FAIL with a bad font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
+
+  # Let's then change the weight coordinates to make it PASS the check:
+  for i, instance in enumerate(ttFont["fvar"].instances):
+    ttFont["fvar"].instances[i].coordinates['wght'] -= instance.coordinates['wght'] % 100
+
+  print ("Test PASS with a good font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
