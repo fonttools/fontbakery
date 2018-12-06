@@ -1875,20 +1875,22 @@ def com_google_fonts_check_099(style,
   id = 'com.google.fonts/check/100',
   conditions = ['style', # This means the font filename
                          # (source of truth here) is good
-                'font_metadata']
+                'family_metadata']
 )
 def com_google_fonts_check_100(font,
-                               font_metadata):
+                               family_metadata):
   """METADATA.pb font.filename field contains font name in right format?"""
   expected = os.path.basename(font)
-  if font_metadata.filename == expected:
-    yield PASS, ("METADATA.pb filename field contains"
-                 " font name in right format.")
-  else:
-    yield FAIL, ("METADATA.pb filename field (\"{}\") does not match"
-                 " correct font name format (\"{}\")."
-                 "").format(font_metadata.filename,
-                            expected)
+  failed = True
+  for font_metadata in family_metadata.fonts:
+    if font_metadata.filename == expected:
+      failed = False
+      yield PASS, ("METADATA.pb filename field contains"
+                   " font name in right format.")
+      break
+  if failed:
+    yield FAIL, ("None of the METADATA.pb filename fields match"
+                f" correct font name format (\"{expected}\").")
 
 
 @check(
