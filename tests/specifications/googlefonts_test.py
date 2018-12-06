@@ -1348,26 +1348,26 @@ def test_check_099():
     assert status == FAIL
 
 
+@pytest.mark.wip
 def test_check_100():
   """ METADATA.pb font.filename field contains font name in right format ? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_100 as check,
-                                                     family_metadata,
-                                                     font_metadata)
+                                                     family_metadata)
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
     family_directory = os.path.dirname(fontfile)
     meta = family_metadata(family_directory)
-    font_meta = font_metadata(meta, fontfile)
 
     # So it must PASS the check:
     print (f"Test PASS with a good font ({fontfile})...")
-    status, message = list(check(fontfile, font_meta))[-1]
+    status, message = list(check(fontfile, meta))[-1]
     assert status == PASS
 
     # And fail if it finds a bad filename:
-    font_meta.filename = "WrongFileName"
+    for font in meta.fonts:
+      font.filename = "WrongFileName"
     print (f"Test FAIL with a bad font ({fontfile})...")
-    status, message = list(check(fontfile, font_meta))[-1]
+    status, message = list(check(fontfile, meta))[-1]
     assert status == FAIL
 
 

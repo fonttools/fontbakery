@@ -8,9 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont_has_instances]:** "A variable font must have named instances." (issue #2127)
   - **[com.google.fonts/check/varfont_weight_instances]:** "Variable font weight coordinates must be multiples of 100." (issue #2258)
 
-
 ### Bug fixes
   - **[com.google.fonts/check/054]:** Correct math in report of font file size change by properly converting result to a percentage.
+  - **[com.google.fonts/check/100]:** Fix check that would never FAIL. Now it runs correctly. (issue #1836)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/046]:** Removed restriction on CFF fonts (and added restriction on CFF2 pending a fonttools bug fix) because the helper method `glyph_has_ink` now handles `CFF` as well as `glyf`.
