@@ -2752,7 +2752,8 @@ def com_google_fonts_check_131(ttFont, style):
 
 @check(
   id = 'com.google.fonts/check/153',
-  conditions = ['is_ttf'],
+  conditions = ['is_ttf',
+                'not is_variable_font'],
   rationale = """
     Visually QAing thousands of glyphs by hand is tiring. Most glyphs can only
     be constructured in a handful of ways. This means a glyph's contour count
@@ -2760,6 +2761,11 @@ def com_google_fonts_check_131(ttFont, style):
     be 2 or 3 contours, depending on whether its double story or single story.
     However, a quotedbl should have 2 contours, unless the font belongs to a
     display family.
+
+    This check currently does not cover variable fonts because there's plenty
+    of alternative ways of constructing glyphs with multiple outlines for each
+    feature in a VarFont. The expected contour count data for this check is
+    currently optimized for the typical construction of glyphs in static fonts.
   """
 )
 def com_google_fonts_check_153(ttFont):

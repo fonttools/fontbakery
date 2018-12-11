@@ -1,6 +1,10 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.6.6 (2018-Dec-17)
+### Changes to existing checks
+  - **[com.google.fonts/check/153]:** Disable "expected contour count" check for variable fonts. There's plenty of alternative ways of constructing glyphs with multiple outlines for each feature in a VarFont. The expected contour count data for this check is currently optimized for the typical construction of glyphs in static fonts. (issue #2262)
+
 ## 0.6.5 (2018-Dec-10)
 ### New Checks
   - **[com.google.fonts/check/metadata/parses]:** "Check METADATA.pb parse correctly." (issue #2248)
