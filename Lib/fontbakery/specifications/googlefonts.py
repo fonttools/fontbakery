@@ -171,6 +171,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/fvar_name_entries' # All name entries referenced by fvar instances exist on the name table?
       , 'com.google.fonts/check/varfont_has_instances' # A variable font must have named instances.
       , 'com.google.fonts/check/varfont_weight_instances' # Variable font weight coordinates must be multiples of 100.
+      , 'com.google.fonts/check/wght_valid_range' # Weight axis coordinate must be within spec range of 1 to 1000 on all instances.
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
