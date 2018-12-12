@@ -219,3 +219,34 @@ def test_check_172():
   print('Test PASS with a good Bold:wght coordinage (700)...')
   status, message = list(check(ttFont, bold_weight_coord))[-1]
   assert status == PASS
+
+
+def test_check_wght_valid_range():
+  """ The variable font 'wght' (Weight) axis coordinate
+      must be within spec range of 1 to 1000 on all instances. """
+  from fontbakery.specifications.fvar import com_google_fonts_check_wght_valid_range as check
+
+  # Our reference varfont, CabinVFBeta.ttf, has
+  # all instances within the 1-1000 range
+  ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+
+  # so it must PASS the test:
+  print('Test PASS with a good varfont...')
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  # We then introduce a bad value:
+  ttFont["fvar"].instances[0].coordinates["wght"] = 0
+
+  # And it must FAIL the test
+  print('Test FAIL with wght=0...')
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
+
+  # And yet another bad value:
+  ttFont["fvar"].instances[0].coordinates["wght"] = 1001
+
+  # Should also FAIL:
+  print('Test FAIL with wght=1001...')
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL

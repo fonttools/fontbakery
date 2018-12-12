@@ -183,3 +183,35 @@ def com_google_fonts_check_172(ttFont, bold_wght_coord):
                  " the 'Bold' instance must be 700."
                  " Got a '{}' coordinate instead."
                  "").format(bold_wght_coord)
+
+
+@check(
+  id = 'com.google.fonts/check/wght_valid_range',
+  rationale = """
+    According to the Open-Type spec's registered
+    design-variation tag 'wght' available at
+    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
+
+    On the 'wght' (Weight) axis, the valid coordinate range is 1-1000.
+  """,
+  conditions = ['is_variable_font'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2264'
+  }
+)
+def com_google_fonts_check_wght_valid_range(ttFont):
+  """The variable font 'wght' (Weight) axis coordinate
+     must be within spec range of 1 to 1000 on all instances."""
+
+  Failed = False
+  for instance in ttFont['fvar'].instances:
+    if 'wght' in instance.coordinates:
+      value = instance.coordinates['wght']
+      if value < 1 or value > 1000:
+        Failed = True
+        yield FAIL, (f"Found a bad wght coordinate with value '{value}'"
+                      " outside of the valid range from 1 to 1000.") 
+        break
+
+  if not Failed:
+    yield PASS, ("OK")
