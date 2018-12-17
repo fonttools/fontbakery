@@ -530,12 +530,9 @@ def test_glyph_has_ink():
   print('Test if TTF glyph without ink has ink')
   assert(glyph_has_ink(ttf_test_font, 'space') is False)
 
-  # TODO: uncomment the lines below once the bug in the
-  #       fonttools CFF2 charstring calcBounds method is fixed
-
-  # cff2_test_font = TTFont(
-  #   'data/test/source-sans-pro/VAR/SourceSansVariable-Roman.otf')
-  # print('Test if CFF2 glyph with ink has ink')
-  # assert(glyph_has_ink(cff2_test_font, '.notdef') is True)
-  # print('Test if CFF2 glyph without ink has ink')
-  # assert(glyph_has_ink(cff2_test_font, 'space') is False)
+  cff2_test_font = TTFont(
+    'data/test/source-sans-pro/VAR/SourceSansVariable-Roman.otf')
+  print('Test if CFF2 glyph with ink has ink')
+  assert(glyph_has_ink(cff2_test_font, '.notdef') is True)
+  print('Test if CFF2 glyph without ink has ink')
+  assert(glyph_has_ink(cff2_test_font, 'space') is False)
