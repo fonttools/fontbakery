@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
   - **[com.google.fonts/check/153]:** Disable "expected contour count" check for variable fonts. There's plenty of alternative ways of constructing glyphs with multiple outlines for each feature in a VarFont. The expected contour count data for this check is currently optimized for the typical construction of glyphs in static fonts. (issue #2262)
+  - **[com.google.fonts/check/046]:** Removed restriction on CFF2 fonts because the helper method `glyph_has_ink` now handles `CFF2`.
+  - **[com.google.fonts/check/049]:** Removed restriction on CFF2 fonts because the helper method `glyph_has_ink` now handles `CFF2`.
+
 
 ## 0.6.5 (2018-Dec-10)
 ### New Checks

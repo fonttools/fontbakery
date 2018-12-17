@@ -212,18 +212,10 @@ def glyph_has_ink(font, name):
   """
   if 'glyf' in font:
     return ttf_glyph_has_ink(font, name)
-  elif 'CFF ' in font:
+  elif ('CFF ' in font) or ('CFF2' in font):
     return cff_glyph_has_ink(font, name)
   else:
-    raise Exception("Could not find 'glyf' or 'CFF ' table.")
-
-  # TODO: replace lines above with lines below once the bug in
-  #       the fonttools CFF2 charstring calcBounds method is fixed
-
-  # elif ('CFF ' in font) or ('CFF2' in font):
-  #   return cff_glyph_has_ink(font, name)
-  # else:
-  #   raise Exception("Could not find 'glyf', 'CFF ', or 'CFF2' table.")
+    raise Exception("Could not find 'glyf', 'CFF ', or 'CFF2' table.")
 
 
 def assert_results_contain(check_results, expected_status, expected_msgcode=None):
