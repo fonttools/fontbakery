@@ -63,7 +63,7 @@ setup(
         'unidecode',
         'protobuf',
         'bs4',
-        'fontTools',
+        'fontTools>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
         'font-v',
         'defcon',
         'ufolint',
