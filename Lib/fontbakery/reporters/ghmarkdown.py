@@ -45,8 +45,7 @@ class GHMarkdownReporter(SerializeReporter):
 
     check["logs"].sort(key=lambda c: c["status"])
     logs = "".join(map(self.log_md, check["logs"]))
-    github_search_url = (f"[{checkid}](https://github.com/googlefonts/fontbakery/"
-                          "search?q={checkid})")
+    github_search_url = (f"[{checkid}](https://github.com/googlefonts/fontbakery/search?q={checkid})")
     return self.html5_collapsible("{} <b>{}:</b> {}".format(self.emoticon(check["result"]),
                                                             check["result"],
                                                             check["description"]),
