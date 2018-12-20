@@ -1,9 +1,12 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.6.6 (2018-Dec-17)
+## 0.6.6 (2018-Dec-20)
 ### New Checks
   - **[com.google.fonts/check/wght_valid_range]:** Weight axis coordinate must be within spec range of 1 to 1000 on all instances. (issue #2264)
+
+### Bugfixes
+  - fixed the checkID variable in our ghmarkdown reporter (the f-string syntax was broken)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/153]:** Disable "expected contour count" check for variable fonts. There's plenty of alternative ways of constructing glyphs with multiple outlines for each feature in a VarFont. The expected contour count data for this check is currently optimized for the typical construction of glyphs in static fonts. (issue #2262)
