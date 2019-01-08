@@ -1615,7 +1615,9 @@ def com_google_fonts_check_092(ttFont, font_metadata):
   """
   from fontbakery.utils import get_name_entry_strings
 
-  familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+  familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+  if not familynames:
+      familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
   if len(familynames) == 0:
     yield FAIL, Message("missing",
                         ("This font lacks a FONT_FAMILY_NAME entry"
@@ -2131,7 +2133,11 @@ def com_google_fonts_check_108(ttFont, font_metadata):
   """
   from fontbakery.utils import get_name_entry_strings
 
-  font_familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)[0]
+  font_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+  if font_familynames:
+      font_familyname = font_familynames[0]
+  else:
+      font_familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)[0]
   font_fullname = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)[0]
   # FIXME: common condition/name-id check as in the two previous checks.
 
