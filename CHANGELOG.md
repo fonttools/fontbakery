@@ -1,6 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.6.7 (2019-Jan-08)
+### Changes to existing checks
+  - **[com.google.fonts/check/092 & 108]:** Use *Typographic Family Name* instead of *Font Family Name* if it exists in the font's name table.
+
+
 ## 0.6.6 (2018-Dec-20)
 ### New Checks
   - **[com.google.fonts/check/wght_valid_range]:** Weight axis coordinate must be within spec range of 1 to 1000 on all instances. (issue #2264)
