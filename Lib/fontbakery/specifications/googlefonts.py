@@ -2391,7 +2391,7 @@ def com_google_fonts_check_116(ttFont):
     yield WARN, (f"Even though unitsPerEm ({upm_height}) in"
                   " this font is reasonable. It is strongly"
                   " advised to consider changing it to 2000,"
-                  " since it will liely improve the quality of"
+                  " since it will likely improve the quality of"
                   " Variable Fonts by avoiding excessive"
                   " rounding of coordinates on interpolations.")
   else:
