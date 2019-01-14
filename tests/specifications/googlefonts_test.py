@@ -1849,19 +1849,6 @@ def NOT_IMPLEMENTED_test_check_118():
   # - PASS, "Glyphs are similar"
 
 
-def NOT_IMPLEMENTED_test_check_119():
-  """ TTFAutohint x-height increase value is same as in
-      previous release on Google Fonts? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_119 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - WARN ("fpgm" in ttFont)
-  # - WARN ("fpgm" in api_gfonts_ttFont)
-  # - FAIL, "TTFAutohint --increase-x-height should match the previous version's value"
-  # - PASS
-
-
 def NOT_IMPLEMENTED_test_check_129():
   """ Checking OS/2 fsSelection value. """
   # from fontbakery.specifications.googlefonts import com_google_fonts_check_129 as check
