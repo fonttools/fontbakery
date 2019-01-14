@@ -131,7 +131,6 @@ expected_check_ids = [
       , 'com.google.fonts/check/116' # Stricter unitsPerEm criteria for Google Fonts.
       , 'com.google.fonts/check/117' # Version number has increased since previous release on Google Fonts?
       , 'com.google.fonts/check/118' # Glyphs are similiar to Google Fonts version?
-      , 'com.google.fonts/check/119' # TTFAutohint x-height increase value is same as in previous release on Google Fonts ?
       , 'com.google.fonts/check/129' # Checking OS/2 fsSelection value.
       , 'com.google.fonts/check/130' # Checking post.italicAngle value.
       , 'com.google.fonts/check/131' # Checking head.macStyle value.
@@ -2576,62 +2575,6 @@ def com_google_fonts_check_118(ttFont, api_gfonts_ttFont):
   else:
     yield PASS, ("Glyphs are similar in"
                  " comparison to the Google Fonts version.")
-
-
-@check(
-  id = 'com.google.fonts/check/119',
-  conditions = ['api_gfonts_ttFont']
-)
-def com_google_fonts_check_119(ttFont, api_gfonts_ttFont):
-  """TTFAutohint x-height increase value is same as in
-     previous release on Google Fonts?"""
-
-  def ttfauto_fpgm_xheight_rounding(fpgm_tbl, which):
-    """Find the value from the fpgm table which controls ttfautohint's
-    increase xheight parameter, '--increase-x-height'.
-    This implementation is based on ttfautohint v1.6.
-
-    This function has been tested on every font in the fonts/google repo
-    which has an fpgm table. Results have been stored in a spreadsheet:
-    http://tinyurl.com/jmlfmh3
-
-    For more information regarding the fpgm table read:
-    http://tinyurl.com/jzekfyx"""
-    import re
-    fpgm_tbl = '\n'.join(fpgm_tbl)
-    xheight_pattern = r'(MPPEM\[ \].*\nPUSHW\[ \].*\n)([0-9]{1,5})'
-    warning = None
-    try:
-      xheight_val = int(re.search(xheight_pattern, fpgm_tbl).group(2))
-    except AttributeError:
-      warning = ("No instruction for xheight rounding found"
-                 " on the {} font").format(which)
-      xheight_val = None
-    return (warning, xheight_val)
-
-  inc_xheight = None
-  gf_inc_xheight = None
-
-  if "fpgm" in ttFont:
-    fpgm_tbl = ttFont["fpgm"].program.getAssembly()
-    msg, inc_xheight = \
-      ttfauto_fpgm_xheight_rounding(fpgm_tbl, "this fontfile")
-    if msg: yield WARN, msg
-
-  if 'fpgm' in api_gfonts_ttFont:
-    gfonts_fpgm_tbl = api_gfonts_ttFont["fpgm"].program.getAssembly()
-    msg, gf_inc_xheight = \
-      ttfauto_fpgm_xheight_rounding(gfonts_fpgm_tbl, "GFonts release")
-    if msg: yield WARN, msg
-
-  if inc_xheight != gf_inc_xheight:
-    yield FAIL, ("TTFAutohint --increase-x-height is {}. "
-                 "It should match the previous"
-                 " version's value ({}).").format(inc_xheight,
-                                                  gf_inc_xheight)
-  else:
-    yield PASS, ("TTFAutohint --increase-x-height is the same as in"
-                  " the previous Google Fonts release ({}).").format(inc_xheight)
 
 
 @check(
