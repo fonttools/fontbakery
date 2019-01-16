@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Other code changes
   - Added more valid options of contour count values for Oslash and f_f_i glyphs (issue #1851)
+  - The HTML reporter now places the percentages summary before the check details.
 
 
 ## 0.6.6 (2018-Dec-20)
