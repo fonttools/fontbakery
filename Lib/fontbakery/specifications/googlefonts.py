@@ -3677,21 +3677,24 @@ def com_google_fonts_check_varfont_weight_instances(ttFont):
     'request': 'https://github.com/googlefonts/fontbakery/issues/2278'
   }
 )
-def com_google_fonts_check_tnum_horizontal_metrics(ttFonts):
-  """All tabular figures must have the same width across the whole family."""
-
+def com_google_fonts_check_tnum_horizontal_metrics(fonts):
+  """All tabular figures must have the same width across the RIBBI-family."""
+  from fontbakery.constants import RIBBI_STYLE_NAMES
+  from fontTools.ttLib import TTFont
+  RIBBI_ttFonts = [TTFont(f)
+                   for f in fonts
+                   if style(f) in RIBBI_STYLE_NAMES]
   tnum_widths = {}
-  for ttFont in ttFonts:
+  for ttFont in RIBBI_ttFonts:
     glyphs = ttFont.getGlyphSet()
-    tnum_glyphs = [glyphs[glyph_id]
+    tnum_glyphs = [(glyph_id, glyphs[glyph_id])
                    for glyph_id in glyphs.keys()
                    if glyph_id.endswith(".tnum")]
-    for glyph in tnum_glyphs:
-
+    for glyph_id, glyph in tnum_glyphs:
       if glyph.width not in tnum_widths:
-        tnum_widths[glyph.width] = [glyph]
+        tnum_widths[glyph.width] = [glyph_id]
       else:
-        tnum_widths[glyph.width].append(glyph)
+        tnum_widths[glyph.width].append(glyph_id)
 
   if len(tnum_widths.keys()) > 1:
     max_num = 0
@@ -3702,9 +3705,9 @@ def com_google_fonts_check_tnum_horizontal_metrics(ttFonts):
         most_common_width = width
 
     del tnum_widths[most_common_width]
-    yield FAIL, ("The most common tabular glyph width is {most_common_width}."
-                 " But there are other tabular glyphs with different widths"
-                f" such as the following ones:\n\t{tnum_widths}.")
+    yield FAIL, (f"The most common tabular glyph width is {most_common_width}."
+                  " But there are other tabular glyphs with different widths"
+                 f" such as the following ones:\n\t{tnum_widths}.")
   else:
     yield PASS, "OK"
 
