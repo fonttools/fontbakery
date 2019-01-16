@@ -2,14 +2,17 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.6.7 (2019-Jan-21)
-### Changes
-  - The HTML reporter now places the percentages summary before the check details.
+### New checks
+  - **[com.google.fonts/check/tnum_horizontal_metrics]:** "All tabular figures must have the same width across the whole family." (issue #2278)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/092 & 108]:** Use *Typographic Family Name* instead of *Font Family Name* if it exists in the font's name table.
 
 ### Deprecated checks
   - **[com.google.fonts/check/119]:** "TTFAutohint x-height increase value is same as in previous release on Google Fonts?". Marc Foley said: "Since we now have visual diffing, I would like to remove it. This test is also bunk because ttfautohint's results are not consistent when they update it." (issue #2280)
+
+### Other relevant code changes
+  - The HTML reporter now places the percentages summary before the check details.
 
 
 ## 0.6.6 (2018-Dec-20)

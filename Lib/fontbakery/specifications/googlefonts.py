@@ -171,6 +171,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/varfont_has_instances' # A variable font must have named instances.
       , 'com.google.fonts/check/varfont_weight_instances' # Variable font weight coordinates must be multiples of 100.
       , 'com.google.fonts/check/wght_valid_range' # Weight axis coordinate must be within spec range of 1 to 1000 on all instances.
+      , 'com.google.fonts/check/tnum_horizontal_metrics' # All tabular figures must have the same width across the whole family.
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
@@ -3658,6 +3659,56 @@ def com_google_fonts_check_varfont_weight_instances(ttFont):
                    " This should instead be a multiple of 100.")
 
   if not failed:
+    yield PASS, "OK"
+
+
+@check(
+  id = 'com.google.fonts/check/tnum_horizontal_metrics',
+  rationale = """
+    Tabular figures need to have the same metrics in all styles
+    in order to allow tables to be set with proper
+    typographic control, but to maintain the placement of
+    decimals and numeric columns between rows.
+
+    Here's a good explanation of this:
+    https://www.typography.com/techniques/fonts-for-financials/#tabular-figs
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2278'
+  }
+)
+def com_google_fonts_check_tnum_horizontal_metrics(fonts):
+  """All tabular figures must have the same width across the RIBBI-family."""
+  from fontbakery.constants import RIBBI_STYLE_NAMES
+  from fontTools.ttLib import TTFont
+  RIBBI_ttFonts = [TTFont(f)
+                   for f in fonts
+                   if style(f) in RIBBI_STYLE_NAMES]
+  tnum_widths = {}
+  for ttFont in RIBBI_ttFonts:
+    glyphs = ttFont.getGlyphSet()
+    tnum_glyphs = [(glyph_id, glyphs[glyph_id])
+                   for glyph_id in glyphs.keys()
+                   if glyph_id.endswith(".tnum")]
+    for glyph_id, glyph in tnum_glyphs:
+      if glyph.width not in tnum_widths:
+        tnum_widths[glyph.width] = [glyph_id]
+      else:
+        tnum_widths[glyph.width].append(glyph_id)
+
+  if len(tnum_widths.keys()) > 1:
+    max_num = 0
+    most_common_width = None
+    for width, glyphs in tnum_widths.items():
+      if len(glyphs) > max_num:
+        max_num = len(glyphs)
+        most_common_width = width
+
+    del tnum_widths[most_common_width]
+    yield FAIL, (f"The most common tabular glyph width is {most_common_width}."
+                  " But there are other tabular glyphs with different widths"
+                 f" such as the following ones:\n\t{tnum_widths}.")
+  else:
     yield PASS, "OK"
 
 
