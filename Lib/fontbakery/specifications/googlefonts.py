@@ -1100,8 +1100,7 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
 
 @check(
   id = 'com.google.fonts/check/056',
-  conditions = ['ttfautohint_stats',
-                'is_ttf']
+  conditions = ['is_ttf']
 )
 def com_google_fonts_check_056(ttFont, ttfautohint_stats):
   """Font has old ttfautohint applied?
@@ -1123,6 +1122,10 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
     installed = list(map(int, installed.split(".")))
     used = list(map(int, used.split(".")))
     return installed > used
+
+  if not ttfautohint_stats:
+    yield ERROR, "ttfautohint is not available."
+    return
 
   version_strings = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
   ttfa_version = ttfautohint_version(version_strings)
