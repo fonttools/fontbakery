@@ -6,6 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/tnum_horizontal_metrics]:** "All tabular figures must have the same width across the whole family." (issue #2278)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/056]:** Require ttfautohint. Emit an ERROR when it is not properly installed in the system. (issue #1851)
   - **[com.google.fonts/check/092 & 108]:** Use *Typographic Family Name* instead of *Font Family Name* if it exists in the font's name table.
 
 ### Deprecated checks
