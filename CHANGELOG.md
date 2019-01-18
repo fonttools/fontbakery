@@ -15,6 +15,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Other code changes
   - Added more valid options of contour count values for Oslash and f_f_i glyphs (issue #1851)
   - The HTML reporter now places the percentages summary before the check details.
+  - updated dependencies on setup.py and requirements.txt to make sure we ship exactly what we test during development (issue #2174)
+
+### New dependencies
+  - **ufo2ft** from PyPI
 
 
 ## 0.6.6 (2018-Dec-20)
