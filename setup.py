@@ -69,6 +69,7 @@ setup(
         'ufolint',
         'ttfautohint-py',
         'opentype-sanitizer',
+        'ufo2ft',
         # The following 2 modules are actually needed by fontTools:
         'fs',
         'unicodedata2'
