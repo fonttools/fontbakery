@@ -1426,6 +1426,7 @@ desired_glyph_data = \
         "name": "Oslash", 
         "unicode": 216, 
         "contours": [
+            2,
             3
         ]
     }, 
@@ -11934,7 +11935,8 @@ desired_glyph_data = \
         "unicode": 64259, 
         "contours": [
             1, 
-            2, 
+            2,
+            3,
             4
         ]
     }, 
