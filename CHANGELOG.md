@@ -12,6 +12,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Deprecated checks
   - **[com.google.fonts/check/119]:** "TTFAutohint x-height increase value is same as in previous release on Google Fonts?". Marc Foley said: "Since we now have visual diffing, I would like to remove it. This test is also bunk because ttfautohint's results are not consistent when they update it." (issue #2280)
 
+### Other code changes
+  - Added more valid options of contour count values for Oslash and f_f_i glyphs (issue #1851)
+
 
 ## 0.6.6 (2018-Dec-20)
 ### New Checks
