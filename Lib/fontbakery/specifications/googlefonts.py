@@ -755,7 +755,7 @@ def git_rootdir(family_dir):
     git_output = subprocess.check_output(git_cmd, stderr=subprocess.STDOUT)
     root_dir = git_output.decode("utf-8").strip()
 
-  except (OSError, IOError):
+  except (OSError, IOError, subprocess.CalledProcessError):
     pass # Not a git repo, or git is not installed.
 
   os.chdir(original_dir)
