@@ -57,21 +57,20 @@ setup(
     python_requires='>=3.6',
     setup_requires=['setuptools_scm'],
     install_requires=[
-        'beautifulsoup4==4.7.1',
-        'defcon==0.6.0',
-        'defusedxml==0.5.0',
-        'font-v==0.7.1',
-        'fontTools==3.36.0',  # 3.34 fixed some CFF2 issues, including calcBounds
-        'lxml==4.3.0',
-        'opentype-sanitizer==7.1.8',
-        'protobuf==3.6.1',
-        'requests==2.21.0',
-        'ttfautohint-py==0.4.2',
-        'ufo2ft==2.6.0',
-        'ufolint==0.3.5',
-        'Unidecode==1.0.23',
-        # The following 2 modules are actually needed by fontTools:
-        'fs==2.2.1'
+        'beautifulsoup4',
+        'defcon',
+        'defusedxml',
+        'font-v',
+        'fontTools>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
+        'lxml',
+        'opentype-sanitizer',
+        'protobuf',
+        'requests',
+        'ttfautohint-py',
+        'ufolint',
+        'Unidecode',
+        # The following module is actually needed by fontTools:
+        'fs'
     ],
     extras_require={
         'docs': [
