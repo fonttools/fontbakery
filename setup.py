@@ -61,16 +61,14 @@ setup(
         'defcon',
         'defusedxml',
         'font-v',
-        'fontTools>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
+        'fontTools[ufo,lxml]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
         'lxml',
         'opentype-sanitizer',
         'protobuf',
         'requests',
         'ttfautohint-py',
         'ufolint',
-        'Unidecode',
-        # The following module is actually needed by fontTools:
-        'fs'
+        'Unidecode'
     ],
     extras_require={
         'docs': [
