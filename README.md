@@ -36,6 +36,10 @@ If you write little Python scripts in your workflow, you can easily [write custo
 
 For full developer documentation, check out [font-bakery.readthedocs.io](https://font-bakery.readthedocs.io) (a hosted and compiled copy of contents in the `/docs` directory.)
 
+## Contributing
+
+See the guide to [Getting Started as a Contributor](https://font-bakery.readthedocs.io/en/latest/developer/contrib-getting-started.html).
+
 ## Web Dashboard
 
 A web dashboard for monitoring check-results of project collections is at <https://github.com/googlefonts/fontbakery-dashboard>
@@ -55,6 +59,6 @@ Most of the checks are for OpenType binary files, and project metadata files.
 
 If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (like [Travis](https://www.travis-ci.org)) to run Font Bakery on each commit, so that with each update all checks will be run on your files.
 
-## Contributing
+## Trivia
 
-See the guide to [Getting Started as a Contributor](https://font-bakery.readthedocs.io/en/latest/developer/contrib-getting-started.html).
+* [Advances in Continuous Integration Testing at Google](https://ai.google/research/pubs/pub46593) - 2018 presentation
