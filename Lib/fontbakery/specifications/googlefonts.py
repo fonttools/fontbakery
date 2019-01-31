@@ -2329,7 +2329,7 @@ def com_google_fonts_check_115(ttFont, font_metadata):
 
   def find_italic_in_name_table():
     for entry in ttFont["name"].names:
-      if "italic" in entry.string.decode(entry.getEncoding()).lower():
+      if entry.nameID < 256 and "italic" in entry.string.decode(entry.getEncoding()).lower():
         return True
     return False
 
