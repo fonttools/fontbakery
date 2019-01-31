@@ -67,6 +67,7 @@ def com_google_fonts_check_034(ttFont):
 
   # Since version 3, the average is computed using _all_ glyphs in a font.
   if ttFont['OS/2'].version >= 3:
+    calculation_rule = "the average of the widths of all glyphs in the font"
     if not ttFont['hmtx'].metrics:  # May contain just '.notdef', which is valid.
       yield FAIL, Message("missing-glyphs",
                           "CRITICAL: Found no glyph width data in the hmtx table!")
@@ -84,6 +85,8 @@ def com_google_fonts_check_034(ttFont):
 
     expected_value = int(round(width_sum / count))
   else:  # Version 2 and below only consider lowercase latin glyphs and space.
+    calculation_rule = ("the weighted average of the widths of the latin"
+                        " lowercase glyphs in the font")
     weightFactors = {
         'a': 64,
         'b': 14,
@@ -133,19 +136,14 @@ def com_google_fonts_check_034(ttFont):
   if current_value == expected_value or difference == 1:
     yield PASS, "OS/2 xAvgCharWidth value is correct."
   elif difference < ACCEPTABLE_ERROR:
-    yield INFO, ("OS/2 xAvgCharWidth is {} but should be"
-                  " {} which corresponds to the weighted"
-                  " average of the widths of the latin"
-                  " lowercase glyphs in the font."
+    yield INFO, (f"OS/2 xAvgCharWidth is {current_value} but it should be"
+                 f" {expected_value} which corresponds to {calculation_rule}."
                   " These are similar values, which"
                   " may be a symptom of the slightly different"
                   " calculation of the xAvgCharWidth value in"
                   " font editors. There's further discussion on"
                   " this at https://github.com/googlefonts/fontbakery"
-                  "/issues/1622").format(current_value, expected_value)
+                  "/issues/1622")
   else:
-    yield WARN, ("OS/2 xAvgCharWidth is {} but it should be "
-                  "{} which corresponds to the weighted "
-                  "average of the widths of the latin "
-                  "lowercase glyphs in "
-                  "the font").format(current_value, expected_value)
+    yield WARN, (f"OS/2 xAvgCharWidth is {current_value} but it should be"
+                 f" {expected_value} which corresponds to {calculation_rule}.")

@@ -2,6 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
+## 0.6.9 (2019-Fev-04)
+### Bugfixes ###
+  - **[com.google.fonts/check/034]:** fix explanation of xAvgWidth on WARN/INFO messages. (issue #2285)
+
+
 ## 0.6.8 (2019-Jan-28)
 ### Bugfixes ###
   - **[FontBakeryCondition:licenses]:** Do not crash when font project is not in a git repo (issue #2296)
