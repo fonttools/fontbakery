@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bugfixes ###
   - **[com.google.fonts/check/034]:** fix explanation of xAvgWidth on WARN/INFO messages. (issue #2285)
 
+### Other code changes
+  - Adopting python type hint notation.
+
 
 ## 0.6.8 (2019-Jan-28)
 ### Bugfixes ###
