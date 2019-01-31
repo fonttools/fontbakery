@@ -1,3 +1,4 @@
+from typing import Tuple
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.message import Message
@@ -72,8 +73,7 @@ def com_google_fonts_check_043(ttFont):
                  " is reasonable.").format(upem)
 
 
-def parse_version_string(name):
-  # type: (str) -> Tuple[str, str]
+def parse_version_string(name: str) -> Tuple[str, str]:
   """Parse a version string (name ID 5) and return (major, minor) strings.
 
   Example of the expected format: 'Version 01.003; Comments'. Version

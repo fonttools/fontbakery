@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from fontTools.ttLib import TTFont
+from typing import Text, Optional
 
 def pretty_print_list(values):
   if len(values) == 1:
@@ -72,8 +74,7 @@ def name_entry_id(name):
                                   name.platformID)
 
 
-def get_glyph_name(font, codepoint):
-  # type: (fontTools.ttLib.TTFont, int) -> Optional[str]
+def get_glyph_name(font: TTFont, codepoint: int) -> Optional[str]:
   next_best_cmap = font.getBestCmap()
 
   if codepoint in next_best_cmap:
@@ -163,8 +164,7 @@ def download_file(url):
   return BytesIO(urlopen(url).read())
 
 
-def cff_glyph_has_ink(font, glyph_name):
-  # type: (TTFont, Text) -> bool
+def cff_glyph_has_ink(font: TTFont, glyph_name: Text) -> bool:
   if 'CFF2' in font:
     top_dict = font['CFF2'].cff.topDictIndex[0]
   else:
@@ -178,8 +178,7 @@ def cff_glyph_has_ink(font, glyph_name):
   return False
 
 
-def ttf_glyph_has_ink(font, name):
-  # type: (TTFont, Text) -> bool
+def ttf_glyph_has_ink(font: TTFont, name: Text) -> bool:
   glyph = font['glyf'].glyphs[name]
   glyph.expand(font['glyf'])
 
@@ -198,8 +197,7 @@ def ttf_glyph_has_ink(font, name):
   return False
 
 
-def glyph_has_ink(font, name):
-  # type: (TTFont, Text) -> bool
+def glyph_has_ink(font: TTFont, name: Text) -> bool:
   """Checks if specified glyph has any ink.
 
   That is, that it has at least one defined contour associated.
