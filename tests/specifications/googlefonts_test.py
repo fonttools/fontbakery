@@ -609,10 +609,21 @@ def NOT_IMPLEMENTED_test_check_056():
   # - FAIL, code="parse-error"
 
 
-def NOT_IMPLEMENTED_test_check_has_ttfautohint_params():
+@pytest.mark.parametrize("expected_status,fontfile",[
+  # Font is lacking ttfautohint params on its version strings on the name table.
+  (FAIL, "data/test/coveredbyyourgrace/CoveredByYourGrace.ttf"),
+
+  # Font appears to our heuristic as not hinted using ttfautohint.
+  (SKIP, "data/test/mada/Mada-Regular.ttf"),
+
+  # Font has ttfautohint params (-l 6 -r 36 -G 0 -x 10 -H 350 -D latn -f cyrl -w "" -X "")
+  (PASS, "data/test/merriweather/Merriweather-Regular.ttf") 
+])
+def test_check_has_ttfautohint_params(expected_status, fontfile):
   """ Font has ttfautohint params? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_has_ttfautohint_params as check
-  # TODO: Implement-me!
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_has_ttfautohint_params as check
+  status, _ = list(check(TTFont(fontfile)))[-1]
+  assert status == expected_status
 
 
 def test_check_061():
