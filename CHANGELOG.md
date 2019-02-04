@@ -7,6 +7,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Dependencies (concrete deps on requirements.txt)
   - **[fontTools]:** upgraded to 3.37.0
 
+### new Code-tests
+  - Code-coverage: 63% (up from 63% on v0.6.9)
+  - **[com.google.fonts/check/has_ttfautohint_params]** (issue #2312)
+
 
 ## 0.6.9 (2019-Feb-04)
 ### Bugfixes
