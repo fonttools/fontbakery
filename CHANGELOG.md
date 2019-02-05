@@ -10,9 +10,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[fontTools]:** upgraded to 3.37.0
 
 ### new Code-tests
-  - Code-coverage: 62% (down from 63% on v0.6.9)
+  - Code-coverage: 63% (same as on v0.6.9)
   - **[com.google.fonts/check/has_ttfautohint_params]:** (issue #2312)
-  - **[com.google.fonts/check/077]:** "glyphs have codepoints" - I am unaware of any font that actually FAILs this check, though... (issue #2325)
+  - **[com.google.fonts/check/076]:** "glyphs have unique unicode codepoints" - (only PASS code-path) - I am unaware of any font that actually FAILs this check, though... (issue #2324)
+  - **[com.google.fonts/check/077]:** "all glyphs have codepoints" - I am unaware of any font that actually FAILs this check, though... (issue #2325)
 
 
 ## 0.6.9 (2019-Feb-04)
