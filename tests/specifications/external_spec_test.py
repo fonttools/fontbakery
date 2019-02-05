@@ -56,7 +56,7 @@ def test_spec_imports():
   ]
   # Probe some tests
   expected_tests = [
-      "com.google.fonts/check/076", # in cmap
+      "com.google.fonts/check/077", # in cmap
       "com.google.fonts/check/043"  # in head
   ]
   _test(spec_imports, expected_tests)
@@ -87,7 +87,7 @@ def test_spec_imports():
   )
   # Probe some tests
   expected_tests = [
-      "com.google.fonts/check/076", # in cmap
+      "com.google.fonts/check/077", # in cmap
       "com.google.fonts/check/043"  # in head
   ]
   _test(spec_imports, expected_tests)
@@ -114,7 +114,7 @@ def test_spec_imports():
   )
   # Probe some tests
   expected_tests = [
-      "com.google.fonts/check/076", # in cmap
+      "com.google.fonts/check/077", # in cmap
       "com.google.fonts/check/043"  # in head
   ]
   _test(spec_imports, expected_tests)
