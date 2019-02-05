@@ -6,13 +6,15 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bugfixes
   - **[fontbakery.utils.download_file]:** Printing a message with a hint of a possible fix to "SSL bad certificate" when trying to download files. (issue #2274)
 
+### Deprecated checks
+  - **[com.google.fonts/check/076]:** "unique unicode codepoints" - This check seemd impossible to FAIL! (issue #2324)
+
 ### Dependencies (concrete deps on requirements.txt)
   - **[fontTools]:** upgraded to 3.37.0
 
 ### new Code-tests
   - Code-coverage: 63% (same as on v0.6.9)
   - **[com.google.fonts/check/has_ttfautohint_params]:** (issue #2312)
-  - **[com.google.fonts/check/076]:** "glyphs have unique unicode codepoints" - (only PASS code-path) - I am unaware of any font that actually FAILs this check, though... (issue #2324)
   - **[com.google.fonts/check/077]:** "all glyphs have codepoints" - I am unaware of any font that actually FAILs this check, though... (issue #2325)
 
 

@@ -34,33 +34,6 @@ def com_google_fonts_check_013(ttFonts):
 # Mekkablue Preflight Checks available at:
 # https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
 @check(
-  id = 'com.google.fonts/check/076',
-  misc_metadata = {
-    'request': 'https://github.com/googlefonts/fontbakery/issues/735'
-  }
-)
-def com_google_fonts_check_076(ttFont):
-  """Check glyphs have unique unicode codepoints."""
-  failed = False
-  for subtable in ttFont['cmap'].tables:
-    if subtable.isUnicode():
-      codepoints = {}
-      for codepoint, name in subtable.cmap.items():
-        codepoints.setdefault(codepoint, set()).add(name)
-      for value in codepoints.keys():
-        if len(codepoints[value]) >= 2:
-          failed = True
-          yield FAIL, ("These glyphs carry the same"
-                       " unicode value {}:"
-                       " {}").format(value, ", ".join(codepoints[value]))
-  if not failed:
-    yield PASS, "All glyphs have unique unicode codepoint assignments."
-
-
-# This check was originally ported from
-# Mekkablue Preflight Checks available at:
-# https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
-@check(
   id = 'com.google.fonts/check/077',
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/735'
