@@ -3,12 +3,14 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.6.10 (2019-Feb-11)
+### Bugfixes
+  - **[fontbakery.utils.download_file]:** Printing a message with a hint of a possible fix to "SSL bad certificate" when trying to download files. (issue #2274)
 
 ### Dependencies (concrete deps on requirements.txt)
   - **[fontTools]:** upgraded to 3.37.0
 
 ### new Code-tests
-  - Code-coverage: 63% (up from 63% on v0.6.9)
+  - Code-coverage: 62% (down from 63% on v0.6.9)
   - **[com.google.fonts/check/has_ttfautohint_params]** (issue #2312)
 
 

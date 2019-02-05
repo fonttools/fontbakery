@@ -2421,6 +2421,7 @@ def remote_styles(family_metadata):
     url = '{}{}'.format(url_prefix, family_name.replace(' ', '+'))
     return ZipFile(download_file(url))
 
+
   def fonts_from_zip(zipfile):
     '''return a list of fontTools TTFonts'''
     from fontTools.ttLib import TTFont
