@@ -61,11 +61,16 @@ def NOT_IMPLEMENTED_test_check_076():
   # - PASS
 
 
-def NOT_IMPLEMENTED_test_check_077():
+def test_check_077():
   """ Check all glyphs have codepoints assigned. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_077 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
+  from fontbakery.specifications.cmap import com_google_fonts_check_077 as check
+
+  print('Test PASS with good font.')
+  # our reference Mada SemiBold is know to be good here.
+  ttFont = TTFont("data/test/mada/Mada-SemiBold.ttf")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  # TODO: other code-paths:
   # - FAIL, "A glyph lacks a unicode codepoint assignment."
-  # - PASS
+  # Note: I am not aware of any real-case of a font that FAILs this check.
