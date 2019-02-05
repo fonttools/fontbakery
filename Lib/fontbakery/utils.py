@@ -160,8 +160,18 @@ def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
 
 def download_file(url):
   from urllib.request import urlopen
+  from urllib.error import URLError
   from io import BytesIO
-  return BytesIO(urlopen(url).read())
+  try:
+    return BytesIO(urlopen(url).read())
+  except URLError as e:
+    if "CERTIFICATE_VERIFY_FAILED" in e.strerror:
+      print("You probably installed official Mac python from python.org"
+            " but forgot to also install the certificates. There is a"
+            " note in the installer Readme about that. Check the Python"
+            " folder in the Applications directory, you should find"
+            " a shell script to install the certificates.")
+    raise
 
 
 def cff_glyph_has_ink(font: TTFont, glyph_name: Text) -> bool:
