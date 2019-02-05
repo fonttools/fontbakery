@@ -11,7 +11,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### new Code-tests
   - Code-coverage: 62% (down from 63% on v0.6.9)
-  - **[com.google.fonts/check/has_ttfautohint_params]** (issue #2312)
+  - **[com.google.fonts/check/has_ttfautohint_params]:** (issue #2312)
+  - **[com.google.fonts/check/077]:** "glyphs have codepoints" - Only the PASS code-path. I am unaware of any font that actually FAILs this check... (issue #2325)
 
 
 ## 0.6.9 (2019-Feb-04)
