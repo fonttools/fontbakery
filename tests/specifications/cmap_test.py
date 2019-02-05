@@ -51,17 +51,21 @@ def test_check_013(mada_ttFonts):
   assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_076():
+# Note: I am not aware of any real-case of a font that FAILs this check.
+def test_check_076():
   """ Check glyphs have unique unicode codepoints. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_076 as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
+  from fontbakery.specifications.cmap import com_google_fonts_check_076 as check
+
+  print('Test PASS with a good font.')
+  # our reference Mada SemiBold is know to be good here.
+  ttFont = TTFont("data/test/mada/Mada-SemiBold.ttf")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  # TODO: other code-paths:
   # - FAIL, "Some glyphs carry the same unicode value."
-  # - PASS
 
 
-@pytest.mark.focus
 # Note: I am not aware of any real-case of a font that FAILs this check.
 def test_check_077():
   """ Check all glyphs have codepoints assigned. """
