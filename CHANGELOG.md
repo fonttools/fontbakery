@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.6.10 (2019-Feb-11)
+### Documentation
+  - The documentation was updated incorporating an article that was originally presented at the 9ET conference in Portugal in the end of 2018. The article gives a detailed overview of the goals of the Font Bakery project.
+
 ### Bugfixes
   - **[fontbakery.utils.download_file]:** Printing a message with a hint of a possible fix to "SSL bad certificate" when trying to download files. (issue #2274)
 
