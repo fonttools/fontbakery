@@ -11,9 +11,14 @@ The project is licensed under the `Apache v2.0 license <https://github.com/googl
 
 .. toctree::
    :maxdepth: 2
+   :caption: Product Overview
+
+   product/Overview
+
+.. toctree::
+   :maxdepth: 2
    :caption: User Documentation
 
-   user/BRIEF
    user/installation/index
    user/USAGE
    user/bash-completion
