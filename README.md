@@ -16,6 +16,10 @@ Font Bakery has an active community of contributors from foundries around the wo
 Font Bakery is not an official Google project, and Google provides no support for it.
 However, throughout 2018 the core project maintainers Felipe Corrêa da Silva Sanches <juca@members.fsf.org> and Lasse Fister <commander@graphicore.de> were funded by the Google Fonts team.
 
+## Docs
+
+Find the full docs at https://font-bakery.readthedocs.io
+
 ## License
 
 Font Bakery is available under the Apache 2.0 license.
