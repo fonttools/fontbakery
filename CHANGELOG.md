@@ -1,6 +1,10 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.6.11 (2019-Feb-18)
+### Bugfixes
+  - **[fontbakery.utils.download_file]:** Fix error message when ssl certificates are not installed. (issue #2346)
+
 
 ## 0.6.10 (2019-Feb-11)
 ### Documentation
