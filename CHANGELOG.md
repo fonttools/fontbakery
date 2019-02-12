@@ -2,6 +2,12 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.6.11 (2019-Feb-18)
+### New checks
+  - **[com.google.fonts/check/integer_ppem_if_hinted]:** "PPEM must be an integer on hinted fonts." (issue #2338)
+
+### New conditions
+  - **[is_hinted]:** allows restricting certain checks to only run on hinted fonts. Detection is based on the presence of an "fpgm" (Font Program) table.
+
 ### Bugfixes
   - **[fontbakery.utils.download_file]:** Fix error message when ssl certificates are not installed. (issue #2346)
 

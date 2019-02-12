@@ -1359,7 +1359,6 @@ def test_check_099():
     assert status == FAIL
 
 
-@pytest.mark.wip
 def test_check_100():
   """ METADATA.pb font.filename field contains font name in right format ? """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_100 as check,
@@ -2711,6 +2710,28 @@ def test_check_varfont_weight_instances():
   # Let's then change the weight coordinates to make it PASS the check:
   for i, instance in enumerate(ttFont["fvar"].instances):
     ttFont["fvar"].instances[i].coordinates['wght'] -= instance.coordinates['wght'] % 100
+
+  print ("Test PASS with a good font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+
+def test_check_integer_ppem_if_hinted():
+  """ PPEM must be an integer on hinted fonts. """
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_integer_ppem_if_hinted as check
+
+  # Our reference Merriweather Regular is hinted, but does not set
+  # the "rounded PPEM" flag (bit 3 on the head table flags) as
+  # described at https://docs.microsoft.com/en-us/typography/opentype/spec/head
+  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+
+  # So it must FAIL the check:
+  print ("Test FAIL with a bad font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
+
+  # hotfixing it should make it PASS:
+  ttFont["head"].flags |= (1 << 3)
 
   print ("Test PASS with a good font...")
   status, message = list(check(ttFont))[-1]

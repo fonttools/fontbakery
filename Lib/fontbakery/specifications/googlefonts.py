@@ -171,6 +171,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/varfont_weight_instances' # Variable font weight coordinates must be multiples of 100.
       , 'com.google.fonts/check/wght_valid_range' # Weight axis coordinate must be within spec range of 1 to 1000 on all instances.
       , 'com.google.fonts/check/tnum_horizontal_metrics' # All tabular figures must have the same width across the whole family.
+      , 'com.google.fonts/check/integer_ppem_if_hinted' # PPEM must be an integer on hinted fonts.
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
@@ -3713,6 +3714,40 @@ def com_google_fonts_check_tnum_horizontal_metrics(fonts):
                  f" such as the following ones:\n\t{tnum_widths}.")
   else:
     yield PASS, "OK"
+
+
+@condition
+def is_hinted(ttFont):
+  return "fpgm" in ttFont
+
+
+@check(
+  id = 'com.google.fonts/check/integer_ppem_if_hinted',
+  conditions = ['is_hinted'],
+  rationale = """
+    Hinted fonts must have head table flag bit 3 set.
+
+    Per https://docs.microsoft.com/en-us/typography/opentype/spec/head,
+    bit 3 of Head::flags decides whether PPEM should be rounded.
+    This bit should always be set for hinted fonts.
+
+    Note:
+    Bit 3 = Force ppem to integer values for all internal scaler math;
+            May use fractional ppem sizes if this bit is clear;
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2338'
+  }
+)
+def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
+  """PPEM must be an integer on hinted fonts."""
+
+  if ttFont["head"].flags & (1 << 3):
+    yield PASS, "OK"
+  else:
+    yield FAIL, ("This is a hinted font, so it must have bit 3 set"
+                 " on the flags of the head table, so that PPEM values"
+                 " will be rounded into and integer value.")
 
 
 def is_librebarcode(font):
