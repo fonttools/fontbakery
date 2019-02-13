@@ -5,7 +5,7 @@ from fontbakery.message import Message
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 spec_imports = [
-    ('.shared_conditions', ('seems_monospaced', 'monospace_stats', 'is_ttf'))
+    ('.shared_conditions', ('glyph_metrics_stats', 'is_ttf'))
 ]
 
 @check(
@@ -45,7 +45,7 @@ def com_google_fonts_check_073(ttFont):
 
 @check(
   id = 'com.google.fonts/check/079',
-  conditions = ['seems_monospaced']
+  conditions = ['glyph_metrics_stats']
 )
 def com_google_fonts_check_079(ttFont):
   """Monospace font has hhea.advanceWidthMax equal to each glyph's

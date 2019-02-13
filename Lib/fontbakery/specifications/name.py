@@ -8,7 +8,7 @@ from fontbakery.constants import (PriorityLevel,
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 spec_imports = [
-    ('.shared_conditions', ('seems_monospaced', 'monospace_stats'))
+    ('.shared_conditions', ('glyph_metrics_stats', ))
 ]
 
 @check(
@@ -38,10 +38,10 @@ def com_google_fonts_check_031(ttFont):
 
 @check(
   id = 'com.google.fonts/check/033',
-  conditions = ['monospace_stats',
+  conditions = ['glyph_metrics_stats',
                 'is_ttf']
 )
-def com_google_fonts_check_033(ttFont, monospace_stats):
+def com_google_fonts_check_033(ttFont, glyph_metrics_stats):
   """Checking correctness of monospaced metadata.
 
   There are various metadata in the OpenType spec to specify if
@@ -80,9 +80,9 @@ def com_google_fonts_check_033(ttFont, monospace_stats):
   failed = False
   # Note: These values are read from the dict here only to
   # reduce the max line length in the check implementation below:
-  seems_monospaced = monospace_stats["seems_monospaced"]
-  most_common_width = monospace_stats["most_common_width"]
-  width_max = monospace_stats['width_max']
+  seems_monospaced = glyph_metrics_stats["seems_monospaced"]
+  most_common_width = glyph_metrics_stats["most_common_width"]
+  width_max = glyph_metrics_stats['width_max']
 
   if ttFont['hhea'].advanceWidthMax != width_max:
     failed = True
