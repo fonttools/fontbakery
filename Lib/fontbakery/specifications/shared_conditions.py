@@ -1,8 +1,10 @@
 from typing import List
+from collections import Counter
 
 from fontbakery.callable import condition
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import,cyclic-import
+
 
 @condition
 def ttFont(font):
@@ -63,44 +65,28 @@ def ligature_glyphs(ttFont):
 
 
 @condition
-def monospace_stats(ttFont):
-  """Returns a dict with data related to the set of glyphs
-     among which is a boolean indicating whether or not the
-     given font is trully monospaced. The source of truth for
-     if a font is monospaced is if at least 80% of all glyphs
-     have the same width.
-  """
-  glyphs = ttFont.getGlyphSet()
-  width_occurrences = {}
-  width_max = 0
-  # count how many times a width occurs
-  for glyph_id in glyphs.keys():
-    width = glyphs[glyph_id].width
-    width_max = max(width, width_max)
-    try:
-      width_occurrences[width] += 1
-    except KeyError:
-      width_occurrences[width] = 1
-  # find the most_common_width
-  occurrences = 0
-  for width in width_occurrences.keys():
-    if width_occurrences[width] > occurrences:
-      occurrences = width_occurrences[width]
-      most_common_width = width
-  # if more than 80% of glyphs have the same width
-  # then the font is very likely considered to be monospaced
-  seems_monospaced = occurrences > 0.80 * len(glyphs.keys())
+def glyph_metrics_stats(ttFont):
+  """Returns a dict containing whether the font seems_monospaced,
+  what's the maximum glyph width and what's the most common width.
 
+  For a font to be considered monospaced, at least 80% of
+  the ascii glyphs must have the same width."""
+  glyph_metrics = ttFont['hmtx'].metrics
+  ascii_glyph_names = [ttFont.getBestCmap()[c] for c in range(32, 128)
+                       if c in ttFont.getBestCmap()]
+  ascii_widths = [adv for name, (adv, lsb) in glyph_metrics.items()
+                  if name in ascii_glyph_names]
+  ascii_width_count = Counter(ascii_widths)
+  ascii_most_common_width = ascii_width_count.most_common(1)[0][1]
+  seems_monospaced = ascii_most_common_width >= len(ascii_widths) * 0.8
+
+  width_max = max([adv for k, (adv, lsb) in glyph_metrics.items()])
+  most_common_width = Counter(glyph_metrics.values()).most_common(1)[0][0]
   return {
       "seems_monospaced": seems_monospaced,
       "width_max": width_max,
-      "most_common_width": most_common_width
+      "most_common_width": most_common_width,
   }
-
-
-@condition
-def seems_monospaced(monospace_stats):
-  return monospace_stats['seems_monospaced']
 
 
 @condition

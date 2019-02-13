@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - **[fontbakery.utils.download_file]:** Fix error message when ssl certificates are not installed. (issue #2346)
+  - **[fontbakery.specifications.shared_conditions]:** Determine whether a font is monospaced by analysing the ascii character set only.
 
 
 ## 0.6.10 (2019-Feb-11)

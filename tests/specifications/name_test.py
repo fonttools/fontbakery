@@ -51,7 +51,7 @@ def results_contain(results, expected_status, expected_code):
 def test_check_033():
   """ Checking correctness of monospaced metadata. """
   from fontbakery.specifications.name import com_google_fonts_check_033 as check
-  from fontbakery.specifications.shared_conditions import monospace_stats
+  from fontbakery.specifications.shared_conditions import glyph_metrics_stats
   from fontbakery.constants import (PANOSE_Proportion,
                                     IsFixedWidth)
 
@@ -66,7 +66,7 @@ def test_check_033():
   # Our reference Mada Regular is a non-monospace font
   # know to have good metadata for this check.
   ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
-  stats = monospace_stats(ttFont)
+  stats = glyph_metrics_stats(ttFont)
   status, message = list(check(ttFont, stats))[-1]
   assert status == PASS and message.code == "good"
 
@@ -93,7 +93,7 @@ def test_check_033():
   # Our reference OverpassMono Regular is know to be
   # a monospaced font with good metadata here.
   ttFont = TTFont("data/test/overpassmono/OverpassMono-Regular.ttf")
-  stats = monospace_stats(ttFont)
+  stats = glyph_metrics_stats(ttFont)
   status, message = list(check(ttFont, stats))[-1]
   # WARN is emitted when there's at least one outlier.
   # I don't see a good reason to be picky and also test that one separately here...
