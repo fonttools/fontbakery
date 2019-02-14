@@ -44,7 +44,35 @@ def compute_stats(dlig_list,
       stats[ligature] = {"dlig": 0, "clig": 0, "liga": 1}
 
 badguys = []
-for fontdir in open("latin-ext.txt").readlines():
+
+try:
+  fontdirs = open("latin-ext.txt").readlines()
+except:
+  sys.exit("\n"
+           "\n"
+           "Before using this tool, please generate a list of"
+           " directories with latin-ext fonts by running the"
+           " following commands:\n"
+           "\n"
+           "        cd github.com/google/fonts/\n"
+           "        git grep -l latin-ext | cut -d\/ -f1,2 > latin-ext.txt\n"
+           "\n"
+           "This will create a file called 'latin-ext.txt'"
+           " with one family directory per line, including only"
+           " those families that are tagged 'latin-ext' on their"
+           " METADATA.pb file."
+           "\n"
+           "\n"
+           "Note: You might also want to craft this file manually"
+           " depending on what set of font families you wish"
+           " to run the tool against."
+           "\n"
+           "\n"
+           "Once you have the latin-ext.txt file you can"
+           " re-run this python script.\n"
+           "\n")
+
+for fontdir in fontdirs:
   dligs_in_family = []
   cligs_in_family = []
   ligas_in_family = []
