@@ -2888,50 +2888,21 @@ def get_only_weight(value):
   conditions = ['style',
                 'familyname'],
   rationale = """
-    Checks that the family name infered from the font filename
-    matches the string at nameID 1 (NAMEID_FONT_FAMILY_NAME)
-    if it conforms to RIBBI and otherwise checks that nameID 1
-    is the family name + the style name.
+    Check the font family name plus style name resemble the font
+    filename.
   """,
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_157(ttFont, style, familyname):
   """ Check name table: FONT_FAMILY_NAME entries. """
-  from fontbakery.utils import name_entry_id
-  failed = False
-  only_weight = get_only_weight(style)
-  for name in ttFont['name'].names:
-    if name.nameID == NameID.FONT_FAMILY_NAME:
-
-      if name.platformID == PlatformID.MACINTOSH:
-        expected_value = familyname
-
-      elif name.platformID == PlatformID.WINDOWS:
-        if style in ['Regular',
-                     'Italic',
-                     'Bold',
-                     'Bold Italic']:
-          expected_value = familyname
-        else:
-          expected_value = " ".join([familyname,
-                                     only_weight]).strip()
-      else:
-        failed = True
-        yield FAIL, ("Font should not have a "
-                     "{} entry!").format(name_entry_id(name))
-        continue
-
-      string = name.string.decode(name.getEncoding()).strip()
-      if string != expected_value:
-        failed = True
-        yield FAIL, ("Entry {} on the 'name' table: "
-                     "Expected '{}' "
-                     "but got '{}'.").format(name_entry_id(name),
-                                             expected_value,
-                                             string)
-  if not failed:
-    yield PASS, "FONT_FAMILY_NAME entries are all good."
+  target = "{}-{}".format(familyname.replace(" ", ""), style.replace(" ", ""))
+  filename = os.path.basename(ttFont.reader.file.name)[:-4]
+  if target == filename:
+    yield PASS, ("Font family name matches font filename")
+  else:
+    yield FAIL, ("Font family name {} does not match font filename {}".format(
+                 target, filename))
 
 
 @check(
