@@ -17,11 +17,6 @@ import os
 import sys
 from fontTools.ttLib import TTFont
 
-#if len(sys.argv) != 2:
-#  sys.exit(f"usage: {sys.argv[0]} fontfile.ttf")
-#
-#fontname = sys.argv[1]
-
 def ligatures(L):
   ligs = []
   for x in L:
