@@ -2088,7 +2088,6 @@ def test_check_157():
   from fontbakery.constants import PlatformID, NameID
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_157 as check,
                                                      familyname,
-                                                     familyname_with_spaces,
                                                      style)
   test_cases = [
   # expect             filename                                   mac_value        win_value
@@ -2116,7 +2115,7 @@ def test_check_157():
     print (f"Test {expected} with filename='{filename}', value='{value}', style='{style(filename)}'...")
     status, message = list(check(ttFont,
                                  style(filename),
-                                 familyname_with_spaces(familyname(filename))))[-1]
+                                 familyname(ttFont)))[-1]
     assert status == expected
 
 
@@ -2125,7 +2124,6 @@ def test_check_158():
   from fontbakery.constants import PlatformID, NameID
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_158 as check,
                                                      familyname,
-                                                     familyname_with_spaces,
                                                      style_with_spaces)
 
   PASS_test_cases = [
@@ -2168,7 +2166,7 @@ def test_check_158():
     print (f"Test PASS with filename='{filename}', value='{value}', style_with_spaces='{style_with_spaces(filename)}'...")
     status, message = list(check(ttFont,
                                  style_with_spaces(filename),
-                                 familyname_with_spaces(familyname(filename))))[-1]
+                                 familyname(ttFont)))[-1]
     assert status == PASS
 
   # - FAIL, "invalid-entry" - "Font should not have a certain name table entry."
@@ -2181,7 +2179,7 @@ def test_check_158():
   # And this should now FAIL:
   status, message = list(check(ttFont,
                                style_with_spaces(filename),
-                               familyname_with_spaces(familyname(filename))))[-1]
+                               familyname(ttFont)))[-1]
   assert status == FAIL and message.code == "invalid-entry"
 
 
@@ -2195,7 +2193,7 @@ def test_check_158():
   # And this should now FAIL:
   status, message = list(check(ttFont,
                                style_with_spaces(filename),
-                               familyname_with_spaces(familyname(filename))))[-1]
+                               familyname(ttFont)))[-1]
   assert status == FAIL and message.code == "bad-familyname"
 
 
@@ -2258,8 +2256,7 @@ def test_check_161():
   """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_161 as check,
                                                      style,
-                                                     familyname,
-                                                     familyname_with_spaces)
+                                                     familyname)
 
   # RIBBI fonts must not have a TYPOGRAPHIC_FAMILY_NAME entry
   font = "data/test/montserrat/Montserrat-BoldItalic.ttf"
@@ -2267,7 +2264,7 @@ def test_check_161():
   print (f"Test PASS with a RIBBI without nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
   status, message = list(check(ttFont,
                                style(font),
-                               familyname_with_spaces(familyname(font))))[-1]
+                               familyname(ttFont)))[-1]
   assert status == PASS
 
   # so we add one and make sure is emits a FAIL:
@@ -2275,7 +2272,7 @@ def test_check_161():
   print (f"Test FAIL with a RIBBI that has got a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
   status, message = list(check(ttFont,
                                style(font),
-                               familyname_with_spaces(familyname(font))))[-1]
+                               familyname(ttFont)))[-1]
   assert status == FAIL and message.code == "ribbi"
 
   # non-RIBBI fonts must have a TYPOGRAPHIC_FAMILY_NAME entry
@@ -2284,7 +2281,7 @@ def test_check_161():
   print (f"Test PASS with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
   status, message = list(check(ttFont,
                                style(font),
-                               familyname_with_spaces(familyname(font))))[-1]
+                               familyname(ttFont)))[-1]
   assert status == PASS
 
   # set bad values on all TYPOGRAPHIC_FAMILY_NAME entries:
@@ -2295,7 +2292,7 @@ def test_check_161():
   print (f"Test FAIL with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entries...")
   status, message = list(check(ttFont,
                                style(font),
-                               familyname_with_spaces(familyname(font))))[-1]
+                               familyname(ttFont)))[-1]
   assert status == FAIL and message.code == "non-ribbi-bad-value"
 
   # remove all TYPOGRAPHIC_FAMILY_NAME entries
@@ -2307,7 +2304,7 @@ def test_check_161():
   print (f"Test FAIL with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
   status, message = list(check(ttFont,
                                style(font),
-                               familyname_with_spaces(familyname(font))))[-1]
+                               familyname(ttFont)))[-1]
   assert status == FAIL and message.code == "non-ribbi-lacks-entry"
 
 
@@ -2404,7 +2401,7 @@ def test_check_165():
   # namecheck.fontdata.com database.
   font = "data/test/cabin/Cabin-Regular.ttf"
   ttFont = TTFont(font)
-  status, message = list(check(ttFont, familyname(font)))[-1]
+  status, message = list(check(ttFont, familyname(ttFont)))[-1]
   assert status == INFO
 
   print('Test PASS with a unique family name...')
@@ -2412,7 +2409,7 @@ def test_check_165():
   # registered as a real family.
   font = "data/test/familysans/FamilySans-Regular.ttf"
   ttFont = TTFont(font)
-  status, message = list(check(ttFont, familyname(font)))[-1]
+  status, message = list(check(ttFont, familyname(ttFont)))[-1]
   assert status == PASS
 
 

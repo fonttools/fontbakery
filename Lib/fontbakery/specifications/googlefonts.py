@@ -857,14 +857,6 @@ def com_google_fonts_check_029(ttFont, license):
     yield PASS, "Licensing entry on name table is correctly set."
 
 
-@condition
-def familyname(font):
-  filename = os.path.basename(font)
-  filename_base = os.path.splitext(filename)[0]
-  if '-' in filename_base:
-    return filename_base.split('-')[0]
-
-
 @check(
   id = 'com.google.fonts/check/030',
   conditions = ['familyname'],
@@ -2836,46 +2828,17 @@ def com_google_fonts_check_155(ttFont, font_metadata):
 
 
 @condition
-def familyname_with_spaces(familyname):
-  FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
-                                   'K2D': 'K2D',
-                                   'PressStart2P': 'Press Start 2P',
-                                   'ABeeZee': 'ABeeZee',
-                                   'IBMPlexMono': 'IBM Plex Mono',
-                                   'IBMPlexSans': 'IBM Plex Sans',
-                                   'IBMPlexSerif': 'IBM Plex Serif'}
-  if not familyname:
-    return None
+def familyname(ttFont):
+  nametable = ttFont['name']
+  typographic_name = nametable.getName(16, 3, 1, 1033)
+  std_family_name = nametable.getName(1, 3, 1, 1033)
 
-  if familyname in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
-    return FAMILY_WITH_SPACES_EXCEPTIONS[familyname]
-
-  result = []
-  for c in familyname:
-    if c.isupper():
-      result.append(" ")
-    result.append(c)
-  result = ''.join(result).strip()
-
-  def of_special_case(s):
-    """Special case for family names such as
-       MountainsofChristmas which would need to
-       have the "of" split apart from "Mountains".
-
-       See also: https://github.com/googlefonts/fontbakery/issues/1489
-       "Failure to handle font family with 3 words in it"
-    """
-    if s[-2:] == "of":
-      return s[:-2] + " of"
-    else:
-      return s
-
-  result = " ".join(map(of_special_case, result.split(" ")))
-
-  if result[-3:] == "S C":
-    return result[:-3] + "SC"
-  else:
-    return result
+  family_name = None
+  if typographic_name:
+    family_name = typographic_name.toUnicode()
+  elif std_family_name:
+    family_name = std_family_name.toUnicode()
+  return family_name
 
 
 @check(
@@ -2923,7 +2886,7 @@ def get_only_weight(value):
 @check(
   id = 'com.google.fonts/check/157',
   conditions = ['style',
-                'familyname_with_spaces'],
+                'familyname'],
   rationale = """
     Checks that the family name infered from the font filename
     matches the string at nameID 1 (NAMEID_FONT_FAMILY_NAME)
@@ -2933,7 +2896,7 @@ def get_only_weight(value):
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
+def com_google_fonts_check_157(ttFont, style, familyname):
   """ Check name table: FONT_FAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
   failed = False
@@ -2942,16 +2905,16 @@ def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
     if name.nameID == NameID.FONT_FAMILY_NAME:
 
       if name.platformID == PlatformID.MACINTOSH:
-        expected_value = familyname_with_spaces
+        expected_value = familyname
 
       elif name.platformID == PlatformID.WINDOWS:
         if style in ['Regular',
                      'Italic',
                      'Bold',
                      'Bold Italic']:
-          expected_value = familyname_with_spaces
+          expected_value = familyname
         else:
-          expected_value = " ".join([familyname_with_spaces,
+          expected_value = " ".join([familyname,
                                      only_weight]).strip()
       else:
         failed = True
@@ -2974,13 +2937,13 @@ def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
 @check(
   id = 'com.google.fonts/check/158',
   conditions = ['style_with_spaces',
-                'familyname_with_spaces'],
+                'familyname'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_158(ttFont,
                                style_with_spaces,
-                               familyname_with_spaces):
+                               familyname):
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
 
@@ -3022,20 +2985,20 @@ def com_google_fonts_check_158(ttFont,
 @check(
   id = 'com.google.fonts/check/159',
   conditions = ['style_with_spaces',
-                'familyname_with_spaces'],
+                'familyname'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_159(ttFont,
                                style_with_spaces,
-                               familyname_with_spaces):
+                               familyname):
   """ Check name table: FULL_FONT_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
   failed = False
   for name in ttFont['name'].names:
     if name.nameID == NameID.FULL_FONT_NAME:
-      expected_value = "{} {}".format(familyname_with_spaces,
+      expected_value = "{} {}".format(familyname,
                                       style_with_spaces)
       string = name.string.decode(name.getEncoding()).strip()
       if string != expected_value:
@@ -3043,7 +3006,7 @@ def com_google_fonts_check_159(ttFont,
         # special case
         # see https://github.com/googlefonts/fontbakery/issues/1436
         if style_with_spaces == "Regular" \
-           and string == familyname_with_spaces:
+           and string == familyname:
           yield WARN, ("Entry {} on the 'name' table:"
                        " Got '{}' which lacks 'Regular',"
                        " but it is probably OK in this case."
@@ -3092,11 +3055,11 @@ def com_google_fonts_check_160(ttFont, style, familyname):
 @check(
   id = 'com.google.fonts/check/161',
   conditions = ['style',
-                'familyname_with_spaces'],
+                'familyname'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_161(ttFont, style, familyname_with_spaces):
+def com_google_fonts_check_161(ttFont, style, familyname):
   """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
@@ -3115,11 +3078,12 @@ def com_google_fonts_check_161(ttFont, style, familyname_with_spaces):
                              "{} entry!").format(style,
                                                  name_entry_id(name)))
   else:
-    expected_value = familyname_with_spaces
+    # Check typographic family name resembles filename
+    expected_value = os.path.basename(ttFont.reader.file.name).split("-")[0]
     has_entry = False
     for name in ttFont['name'].names:
       if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
-        string = name.string.decode(name.getEncoding()).strip()
+        string = name.toUnicode().replace(" ", "")
         if string == expected_value:
           has_entry = True
         else:
