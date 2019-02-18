@@ -414,28 +414,28 @@ def test_check_020():
   font = "data/test/mada/Mada-Regular.ttf"
   print(f"Test FAIL with bad font '{font}' ...")
   ttFont = TTFont(font)
-  status, message = list(check(font, ttFont, style(font)))[-1]
+  status, message = list(check(font, ttFont, style(ttFont)))[-1]
   assert status == FAIL
 
   # All fonts in our reference Cabin family are know to be good here.
   for font in cabin_fonts:
     print(f"Test PASS with good font '{font}' ...")
     ttFont = TTFont(font)
-    status, message = list(check(font, ttFont, style(font)))[-1]
+    status, message = list(check(font, ttFont, style(ttFont)))[-1]
     assert status == PASS
 
   font = "data/test/montserrat/Montserrat-Thin.ttf"
   ttFont = TTFont(font)
   ttFont["OS/2"].usWeightClass = 100
   print("Test WARN with a Thin:100 TTF...")
-  status, message = list(check(font, ttFont, style(font)))[-1]
+  status, message = list(check(font, ttFont, style(ttFont)))[-1]
   assert status == WARN
 
   font = "data/test/montserrat/Montserrat-ExtraLight.ttf"
   ttFont = TTFont(font)
   ttFont["OS/2"].usWeightClass = 200
   print("Test WARN with an ExtraLight:200 TTF...")
-  status, message = list(check(font, ttFont, style(font)))[-1]
+  status, message = list(check(font, ttFont, style(ttFont)))[-1]
   assert status == WARN
 
   # TODO: test FAIL with a Thin:100 OTF
@@ -1146,7 +1146,7 @@ def test_check_095():
   family_directory = os.path.dirname(font)
   family_meta = family_metadata(family_directory)
   font_meta = font_metadata(family_meta, font)
-  font_style = style(font)
+  font_style = style(ttFont)
   status, message = list(check(ttFont, font_style, font_meta))[-1]
   assert status == PASS
 
@@ -1268,7 +1268,7 @@ def test_check_098():
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
-    font_style = style(fontfile)
+    font_style = style(ttFont)
     family_directory = os.path.dirname(fontfile)
     family_meta = family_metadata(family_directory)
     font_meta = font_metadata(family_meta, fontfile)
@@ -1289,7 +1289,7 @@ def test_check_098():
   #we do the same for NON-RIBBI styles:
   for fontfile in MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
-    font_style = style(fontfile)
+    font_style = style(ttFont)
     family_directory = os.path.dirname(fontfile)
     family_meta = family_metadata(family_directory)
     font_meta = font_metadata(family_meta, fontfile)
@@ -1319,7 +1319,7 @@ def test_check_099():
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
-    font_style = style(fontfile)
+    font_style = style(ttFont)
     family_directory = os.path.dirname(fontfile)
     family_meta = family_metadata(family_directory)
     font_meta = font_metadata(family_meta, fontfile)
@@ -1340,7 +1340,7 @@ def test_check_099():
   #we do the same for NON-RIBBI styles:
   for fontfile in MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
-    font_style = style(fontfile)
+    font_style = style(ttFont)
     family_directory = os.path.dirname(fontfile)
     family_meta = family_metadata(family_directory)
     font_meta = font_metadata(family_meta, fontfile)
@@ -1975,7 +1975,7 @@ def test_check_154(cabin_ttFonts):
     if remote:
       for font in cabin_fonts:
         ttFont = TTFont(font)
-        gfont = api_gfonts_ttFont(style(font), remote)
+        gfont = api_gfonts_ttFont(style(ttFont), remote)
 
         # Cabin font hosted on fonts.google.com contains
         # all the glyphs for the font in data/test/cabin
@@ -2112,9 +2112,9 @@ def test_check_157():
 
       if name.nameID == NameID.FONT_FAMILY_NAME:
           ttFont['name'].names[i].string = value.encode(name.getEncoding())
-    print (f"Test {expected} with filename='{filename}', value='{value}', style='{style(filename)}'...")
+    print (f"Test {expected} with filename='{filename}', value='{value}', style='{style(ttFont)}'...")
     status, message = list(check(ttFont,
-                                 style(filename),
+                                 style(ttFont),
                                  familyname(ttFont)))[-1]
     assert status == expected
 
@@ -2124,7 +2124,7 @@ def test_check_158():
   from fontbakery.constants import PlatformID, NameID
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_158 as check,
                                                      familyname,
-                                                     style_with_spaces)
+                                                     style)
 
   PASS_test_cases = [
   #  filename                                                mac_value             win_value
@@ -2163,9 +2163,9 @@ def test_check_158():
 
       if name.nameID == NameID.FONT_SUBFAMILY_NAME:
           ttFont['name'].names[i].string = value.encode(name.getEncoding())
-    print (f"Test PASS with filename='{filename}', value='{value}', style_with_spaces='{style_with_spaces(filename)}'...")
+    print (f"Test PASS with filename='{filename}', value='{value}', style='{style(ttFont)}'...")
     status, message = list(check(ttFont,
-                                 style_with_spaces(filename),
+                                 style(ttFont),
                                  familyname(ttFont)))[-1]
     assert status == PASS
 
@@ -2178,7 +2178,7 @@ def test_check_158():
   ttFont["name"].names[0].platformID = PlatformID.CUSTOM
   # And this should now FAIL:
   status, message = list(check(ttFont,
-                               style_with_spaces(filename),
+                               style(ttFont),
                                familyname(ttFont)))[-1]
   assert status == FAIL and message.code == "invalid-entry"
 
@@ -2192,7 +2192,7 @@ def test_check_158():
   ttFont["name"].names[0].string = "Foo".encode(ttFont["name"].names[0].getEncoding())
   # And this should now FAIL:
   status, message = list(check(ttFont,
-                               style_with_spaces(filename),
+                               style(ttFont),
                                familyname(ttFont)))[-1]
   assert status == FAIL and message.code == "bad-familyname"
 
@@ -2263,7 +2263,7 @@ def test_check_161():
   ttFont = TTFont(font)
   print (f"Test PASS with a RIBBI without nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style(font),
+                               style(ttFont),
                                familyname(ttFont)))[-1]
   assert status == PASS
 
@@ -2271,7 +2271,7 @@ def test_check_161():
   ttFont['name'].names[5].nameID = NameID.TYPOGRAPHIC_FAMILY_NAME # 5 is arbitrary here
   print (f"Test FAIL with a RIBBI that has got a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style(font),
+                               style(ttFont),
                                familyname(ttFont)))[-1]
   assert status == FAIL and message.code == "ribbi"
 
@@ -2280,7 +2280,7 @@ def test_check_161():
   ttFont = TTFont(font)
   print (f"Test PASS with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style(font),
+                               style(ttFont),
                                familyname(ttFont)))[-1]
   assert status == PASS
 
@@ -2291,7 +2291,7 @@ def test_check_161():
 
   print (f"Test FAIL with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entries...")
   status, message = list(check(ttFont,
-                               style(font),
+                               style(ttFont),
                                familyname(ttFont)))[-1]
   assert status == FAIL and message.code == "non-ribbi-bad-value"
 
@@ -2303,7 +2303,7 @@ def test_check_161():
 
   print (f"Test FAIL with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style(font),
+                               style(ttFont),
                                familyname(ttFont)))[-1]
   assert status == FAIL and message.code == "non-ribbi-lacks-entry"
 
@@ -2311,21 +2311,21 @@ def test_check_161():
 def test_check_162():
   """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_162 as check,
-                                                     style_with_spaces)
+                                                     style)
 
   # RIBBI fonts must not have a TYPOGRAPHIC_SUBFAMILY_NAME entry
   font = "data/test/montserrat/Montserrat-BoldItalic.ttf"
   ttFont = TTFont(font)
   print (f"Test PASS with a RIBBI without nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style_with_spaces(font)))[-1]
+                               style(ttFont)))[-1]
   assert status == PASS
 
   # so we add one and make sure is emits a FAIL:
   ttFont['name'].names[5].nameID = NameID.TYPOGRAPHIC_SUBFAMILY_NAME # 5 is arbitrary here
   print (f"Test FAIL with a RIBBI that has got a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style_with_spaces(font)))[-1]
+                               style(ttFont)))[-1]
   assert status == FAIL and message.code == "ribbi"
 
   # non-RIBBI fonts must have a TYPOGRAPHIC_SUBFAMILY_NAME entry
@@ -2333,7 +2333,7 @@ def test_check_162():
   ttFont = TTFont(font)
   print (f"Test PASS with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style_with_spaces(font)))[-1]
+                               style(ttFont)))[-1]
   assert status == PASS
 
   # set bad values on all TYPOGRAPHIC_SUBFAMILY_NAME entries:
@@ -2343,7 +2343,7 @@ def test_check_162():
 
   print (f"Test FAIL with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...")
   status, message = list(check(ttFont,
-                               style_with_spaces(font)))[-1]
+                               style(ttFont)))[-1]
   assert status == FAIL and message.code == "non-ribbi-bad-value"
 
   # remove all TYPOGRAPHIC_SUBFAMILY_NAME entries
@@ -2351,11 +2351,11 @@ def test_check_162():
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
       ttFont['name'].names[i].nameID = 255 # blah! :-)
-
+  
   print (f"Test FAIL with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style_with_spaces(font)))[-1]
-  assert status == FAIL and message.code == "non-ribbi-lacks-entry"
+                               style(ttFont)))[-1]
+  assert status == FAIL
 
 
 def test_check_164():

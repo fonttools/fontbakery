@@ -181,23 +181,19 @@ specification = spec_factory(default_section=Section("Google Fonts"))
 # -------------------------------------------------------------------
 
 @condition
-def style(font):
+def style(ttFont):
   """Determine font style from canonical filename."""
-  from fontbakery.constants import STYLE_NAMES
-  filename = os.path.basename(font)
-  if '-' in filename:
-    stylename = os.path.splitext(filename)[0].split('-')[1]
-    if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
-      return stylename
-  return None
+  nametable = ttFont['name']
+  typographic_style_name = nametable.getName(17, 3, 1, 1033)
+  std_style_name = nametable.getName(2, 3, 1, 1033)
 
+  style_name = None
+  if typographic_style_name:
+    style_name = typographic_style_name.toUnicode()
+  elif std_style_name:
+    style_name = std_style_name.toUnicode()
+  return style_name
 
-@condition
-def style_with_spaces(font):
-  """Stylename with spaces (derived from a canonical filename)."""
-  if style(font):
-    return style(font).replace('Italic',
-                               ' Italic').strip()
 
 
 @condition
@@ -237,8 +233,8 @@ def expected_os2_weight(style):
   }
   if style == "Italic":
     weight_name = "Regular"
-  elif style.endswith("Italic"):
-    weight_name = style.replace("Italic", "")
+  elif style.endswith(" Italic"):
+    weight_name = style.replace(" Italic", "")
   else:
     weight_name = style
 
@@ -549,7 +545,7 @@ def com_google_fonts_check_012(ttFonts):
   failed = False
   for ttFont in fonts:
     fontname = ttFont.reader.file.name
-    stylename = style(fontname)
+    stylename = style(ttFont)
     these_ones = set(ttFont["glyf"].glyphs.keys())
     for glyphname in all_glyphnames:
       if glyphname not in these_ones:
@@ -2423,7 +2419,7 @@ def remote_styles(family_metadata):
     for file_name in zipfile.namelist():
       if file_name.lower().endswith(".ttf"):
         file_obj = BytesIO(zipfile.open(file_name).read())
-        fonts.append([file_name, TTFont(file_obj)])
+        fonts.append(TTFont(file_obj))
     return fonts
 
   if (not listed_on_gfonts_api(family_metadata) or
@@ -2431,14 +2427,7 @@ def remote_styles(family_metadata):
     return None
 
   remote_fonts_zip = download_family_from_Google_Fonts(family_metadata.name)
-  rstyles = {}
-
-  for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
-    remote_style = os.path.splitext(remote_filename)[0]
-    if '-' in remote_style:
-      remote_style = remote_style.split('-')[1]
-    rstyles[remote_style] = remote_font
-  return rstyles
+  return {style(f): f for f in fonts_from_zip(remote_fonts_zip)}
 
 
 @condition
@@ -2872,16 +2861,9 @@ def com_google_fonts_check_156(ttFont, style):
 
 
 def get_only_weight(value):
-  onlyWeight = {"BlackItalic": "Black",
-                "BoldItalic": "",
-                "ExtraBold": "ExtraBold",
-                "ExtraBoldItalic": "ExtraBold",
-                "ExtraLightItalic": "ExtraLight",
-                "LightItalic": "Light",
-                "MediumItalic": "Medium",
-                "SemiBoldItalic": "SemiBold",
-                "ThinItalic": "Thin"}
-  return onlyWeight.get(value, value)
+  if value.endswith(" Italic"):
+      return value.replace(" Italic", "")
+  return value.replace("Italic", "")
 
 
 @check(
@@ -2910,7 +2892,7 @@ def com_google_fonts_check_157(ttFont, style, familyname):
         mac_familyname.toUnicode(), filename)
 
   if win_familyname and style in RIBBI_STYLE_NAMES:
-    if win_familyname.toUnicode().replace(" ", "") != file_familyname:
+    if win_familyname.toUnicode().replace(" ", "") != get_only_weight(file_familyname):
       failed = True
       yield FAIL, "Win Family name {} is not similar to filename {}".format(
         win_familyname.toUnicode(), filename)
@@ -2927,13 +2909,13 @@ def com_google_fonts_check_157(ttFont, style, familyname):
 
 @check(
   id = 'com.google.fonts/check/158',
-  conditions = ['style_with_spaces',
+  conditions = ['style',
                 'familyname'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_158(ttFont,
-                               style_with_spaces,
+                               style,
                                familyname):
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
@@ -2942,13 +2924,13 @@ def com_google_fonts_check_158(ttFont,
   for name in ttFont['name'].names:
     if name.nameID == NameID.FONT_SUBFAMILY_NAME:
       if name.platformID == PlatformID.MACINTOSH:
-        expected_value = style_with_spaces
+        expected_value = style
 
       elif name.platformID == PlatformID.WINDOWS:
-        if style_with_spaces in ["Bold", "Bold Italic"]:
-          expected_value = style_with_spaces
+        if style in ["Bold", "Bold Italic"]:
+          expected_value = style
         else:
-          if "Italic" in style_with_spaces:
+          if "Italic" in style:
             expected_value = "Italic"
           else:
             expected_value = "Regular"
@@ -2975,13 +2957,13 @@ def com_google_fonts_check_158(ttFont,
 
 @check(
   id = 'com.google.fonts/check/159',
-  conditions = ['style_with_spaces',
+  conditions = ['style',
                 'familyname'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_159(ttFont,
-                               style_with_spaces,
+                               style,
                                familyname):
   """ Check name table: FULL_FONT_NAME entries. """
   from unidecode import unidecode
@@ -2990,13 +2972,13 @@ def com_google_fonts_check_159(ttFont,
   for name in ttFont['name'].names:
     if name.nameID == NameID.FULL_FONT_NAME:
       expected_value = "{} {}".format(familyname,
-                                      style_with_spaces)
+                                      style)
       string = name.string.decode(name.getEncoding()).strip()
       if string != expected_value:
         failed = True
         # special case
         # see https://github.com/googlefonts/fontbakery/issues/1436
-        if style_with_spaces == "Regular" \
+        if style == "Regular" \
            and string == familyname:
           yield WARN, ("Entry {} on the 'name' table:"
                        " Got '{}' which lacks 'Regular',"
@@ -3059,7 +3041,7 @@ def com_google_fonts_check_161(ttFont, style, familyname):
   if style in ['Regular',
                'Italic',
                'Bold',
-               'BoldItalic']:
+               'Bold Italic']:
     for name in ttFont['name'].names:
       if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
         failed = True
@@ -3097,44 +3079,48 @@ def com_google_fonts_check_161(ttFont, style, familyname):
 
 @check(
   id = 'com.google.fonts/check/162',
-  conditions=['style_with_spaces'],
+  conditions=['style'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_162(ttFont, style_with_spaces):
+def com_google_fonts_check_162(ttFont, style):
   """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
 
+  filename = os.path.basename(ttFont.reader.file.name)
+  expected_value = filename.split('-')[1][:-4]
+
   failed = False
-  if style_with_spaces in ['Regular',
-                           'Italic',
-                           'Bold',
-                           'Bold Italic']:
+
+  if style in ['Regular',
+               'Italic',
+               'Bold',
+               'Bold Italic']:
     for name in ttFont['name'].names:
       if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
         failed = True
         yield FAIL, Message("ribbi",
                             ("Font style is '{}' and, for that reason,"
                              " it is not expected to have a "
-                             "{} entry!").format(style_with_spaces,
+                             "{} entry!").format(style,
                                                  name_entry_id(name)))
+    if style.replace(" ", "") != expected_value:
+      failed = True
+      yield FAIL, ("Font style '{}' is not similar to "
+                   "filename '{}'".format(style,
+                                          filename))
   else:
-    expected_value = style_with_spaces
     has_entry = False
     for name in ttFont['name'].names:
       if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
-        string = name.string.decode(name.getEncoding()).strip()
-        if string == expected_value:
+        if name.toUnicode().replace(" ", "") == expected_value:
           has_entry = True
         else:
           failed = True
           yield FAIL, Message("non-ribbi-bad-value",
-                              ("Entry {} on the 'name' table: "
-                               "Expected '{}' "
-                               "but got '{}'.").format(name_entry_id(name),
-                                                       expected_value,
-                                                       unidecode(string)))
+                             ("Typographic Style name {} is not similar "
+                              "to filename {}".format(name.toUnicode(), filename)))
     if not failed and not has_entry:
       failed = True
       yield FAIL, Message("non-ribbi-lacks-entry",
@@ -3640,9 +3626,8 @@ def com_google_fonts_check_tnum_horizontal_metrics(fonts):
   """All tabular figures must have the same width across the RIBBI-family."""
   from fontbakery.constants import RIBBI_STYLE_NAMES
   from fontTools.ttLib import TTFont
-  RIBBI_ttFonts = [TTFont(f)
-                   for f in fonts
-                   if style(f) in RIBBI_STYLE_NAMES]
+  ttFonts = [TTFont(f) for f in fonts]
+  RIBBI_ttFonts = [f for f in ttFonts if style(f) in RIBBI_STYLE_NAMES]
   tnum_widths = {}
   for ttFont in RIBBI_ttFonts:
     glyphs = ttFont.getGlyphSet()
