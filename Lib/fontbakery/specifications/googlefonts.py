@@ -14,7 +14,8 @@ from fontbakery.message import Message
 from fontbakery.constants import(PriorityLevel,
                                  NameID,
                                  PlatformID,
-                                 WindowsEncodingID)
+                                 WindowsEncodingID,
+                                 RIBBI_STYLE_NAMES)
 from fontbakery.fonts_spec import spec_factory
 
 spec_imports = (
@@ -2888,21 +2889,40 @@ def get_only_weight(value):
   conditions = ['style',
                 'familyname'],
   rationale = """
-    Check the font family name plus style name resemble the font
-    filename.
+    Check the Win and Mac Family Name record (nameID 1) are
+    related to the font filename.
   """,
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_157(ttFont, style, familyname):
   """ Check name table: FONT_FAMILY_NAME entries. """
-  target = "{}-{}".format(familyname.replace(" ", ""), style.replace(" ", ""))
-  filename = os.path.basename(ttFont.reader.file.name)[:-4]
-  if target == filename:
-    yield PASS, ("Font family name matches font filename")
-  else:
-    yield FAIL, ("Font family name {} does not match font filename {}".format(
-                 target, filename))
+  filename = os.path.basename(ttFont.reader.file.name)
+  file_familyname = filename.split('-')[0]
+  mac_familyname = ttFont['name'].getName(1, 1, 0, 0)
+  win_familyname = ttFont['name'].getName(1, 3, 1, 1033)
+
+  failed = False
+  if mac_familyname:
+    if mac_familyname.toUnicode().replace(" ", "") != file_familyname:
+      failed = True
+      yield FAIL, "Mac Family name {} is not similar to filename {}".format(
+        mac_familyname.toUnicode(), filename)
+
+  if win_familyname and style in RIBBI_STYLE_NAMES:
+    if win_familyname.toUnicode().replace(" ", "") != file_familyname:
+      failed = True
+      yield FAIL, "Win Family name {} is not similar to filename {}".format(
+        win_familyname.toUnicode(), filename)
+  elif win_familyname and style not in RIBBI_STYLE_NAMES:
+    desired_name = "{} {}".format(familyname, get_only_weight(style))
+    if win_familyname.toUnicode() != desired_name:
+      failed = True
+      yield FAIL, "Win Family name {} must be {}".format(
+        win_familyname, desired_name)
+
+  if not failed:
+    yield PASS, "FONT_FAMILY_NAME entries are all good."
 
 
 @check(
