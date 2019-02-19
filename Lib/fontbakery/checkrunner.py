@@ -352,13 +352,15 @@ class CheckRunner:
     yield self._check_result(result)
 
   def _evaluate_condition(self, name, iterargs, path=None):
+
     if path is None:
       # top level call
-      path = []
+      path = tuple()
+
     if name in path:
       raise CircularDependencyError('Condition "{}" is a circular dependency in {}'\
                                   .format(name, ' -> '.join(path)))
-    path.append(name)
+    path = path + (name, )
 
     try:
       condition = self._spec.conditions[name]
@@ -372,7 +374,6 @@ class CheckRunner:
       error = FailedConditionError(condition, err)
       return error, None
 
-    path.pop()
     try:
       return None, condition(**args)
     except Exception as err:
