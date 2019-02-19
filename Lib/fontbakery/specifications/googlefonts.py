@@ -628,6 +628,11 @@ def registered_vendor_ids():
   from bs4 import BeautifulSoup
   from pkg_resources import resource_filename
 
+  # Please update the cached list from time to time:
+  #
+  # wget https://docs.microsoft.com/en-us/typography/vendors/
+  # mv index.html Lib/fontbakery/data/fontbakery-microsoft-vendorlist.cache
+
   registered_vendor_ids = {}
   CACHED = resource_filename('fontbakery',
                              'data/fontbakery-microsoft-vendorlist.cache')
@@ -635,7 +640,7 @@ def registered_vendor_ids():
   soup = BeautifulSoup(content, 'html.parser')
 
   IDs = [chr(c + ord('a')) for c in range(ord('z') - ord('a') + 1)]
-  IDs.append("vendor-id-and-name-list")
+  IDs.append("0-9-")
 
   for section_id in IDs:
     section = soup.find('h2', {'id': section_id})
