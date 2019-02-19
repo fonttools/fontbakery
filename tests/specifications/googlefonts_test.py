@@ -352,7 +352,6 @@ def test_check_016():
   assert status == FAIL
 
 
-@pytest.mark.focus
 def test_condition__registered_vendor_ids():
   """ Get a list of vendor IDs from Microsoft's website. """
   from fontbakery.specifications.googlefonts import registered_vendor_ids
