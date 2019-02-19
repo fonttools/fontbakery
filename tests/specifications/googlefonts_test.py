@@ -352,6 +352,48 @@ def test_check_016():
   assert status == FAIL
 
 
+@pytest.mark.focus
+def test_condition__registered_vendor_ids():
+  """ Get a list of vendor IDs from Microsoft's website. """
+  from fontbakery.specifications.googlefonts import registered_vendor_ids
+  registered_ids = registered_vendor_ids()
+
+  print('As of July 2018, "MLAG": "Michael LaGattuta" must show up in the list...')
+  assert "MLAG" in registered_ids # Michael LaGattuta
+
+  print('"CFA ": "Computer Fonts Australia" is a good vendor id, lacking a URL')
+  assert "CFA " in registered_ids # Computer Fonts Australia
+
+  print('"GNU ": "Free Software Foundation, Inc." is a good vendor id with 3 letters and a space.')
+  assert "GNU " in registered_ids # Free Software Foundation, Inc. / http://www.gnu.org/
+
+  print('"GNU" without the right-padding space must not be on the list!')
+  assert "GNU" not in registered_ids # All vendor ids must be 4 chars long!
+
+  print('"ADBE": "Adobe" is a good 4-letter vendor id.')
+  assert "ADBE" in registered_ids # Adobe
+
+  print('"B&H ": "Bigelow & Holmes" is a valid vendor id that contains an ampersand.')
+  assert "B&H " in registered_ids # Bigelow & Holmes
+
+  print('"AE  ": "AE Type" is a good vendor id with 2 letters and padded with spaces.')
+  assert "AE  " in registered_ids # AE Type
+
+  print('All vendor ids must be 4 chars long!')
+  assert "GNU" not in registered_ids # 3 chars long is bad
+  assert "AE" not in registered_ids # 2 chars long is bad
+  assert "H" not in registered_ids # 1 char long is bad
+
+  print('"H   ": "Hurme Design" is a good vendor id with a single letter padded with spaces.')
+  assert "H   " in registered_ids # Hurme Design
+
+  print('"   H": But not padded on the left, please!')
+  assert "   H" not in registered_ids # a bad vendor id (presumably for "Hurme Design" but with a vendor id parsing bug)
+
+  print('"????" is an unknown vendor id.')
+  assert "????" not in registered_ids
+
+
 def test_check_018():
   """ Checking OS/2 achVendID """
   from fontbakery.specifications.googlefonts import (com_google_fonts_check_018 as check,
@@ -383,9 +425,6 @@ def test_check_018():
   ttFont['OS/2'].achVendID = "APPL"
   status, message = list(check(ttFont, registered_ids))[-1]
   assert status == PASS
-
-  print('As of July 2018, MLAG: "Michael LaGattuta" must show up in the list...')
-  assert "MLAG" in registered_ids
 
 
 def test_check_019():
