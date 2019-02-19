@@ -15,6 +15,8 @@ import types
 from collections import OrderedDict, Counter
 from functools import partial
 from itertools import chain
+from contextlib import contextmanager
+from collections.abc import Generator
 import importlib
 import traceback
 import json
@@ -226,6 +228,51 @@ def is_negated(name):
     return True, stripped[1:].strip()
   return False, stripped
 
+
+class DerrivedIterablesGenerator(Generator):
+  def __init__(self, get_condition
+                   , iterargs_generator
+                   , simple=False
+                   , *
+                   , counter=None
+                   , decrement_expiration_counters=False):
+    self._get_condition = get_condition
+    self._iterargs_generator = iterargs_generator
+    self._simple = simple
+    self._counter = counter
+    self._decrement_expiration_counters = decrement_expiration_counters
+
+  def throw(self, *args):
+    return super(DerrivedIterablesGenerator, self).throw(*args)
+
+  def send(self, close=False):
+    decrement_expiration_counters = True if close\
+                            else self._decrement_expiration_counters
+
+
+    iterargs = next(self._iterargs_generator)
+    error, value = self._get_condition(iterargs
+                  , counter=self._counter
+                  , decrement_expiration_counters=decrement_expiration_counters)
+    if error:
+      raise error
+    if self._simple:
+      return value
+    else:
+      return (iterargs, value)
+
+  def close(self):
+    try:
+      while True:
+        self.send(True);
+    except StopIteration as e:
+      # all done
+      pass
+    return super(DerrivedIterablesGenerator, self).close()
+
+  def finish(self):
+    return self.close()
+
 class CheckRunner:
   def __init__(self, spec, values
              , values_can_override_spec_names=True
@@ -261,6 +308,10 @@ class CheckRunner:
                       '\n{}'.format(message))
     self._values = values
 
+    # TODO: make this an cli argument
+    self._collect_garbage = True
+    self._use_cache = True
+    self._condition_expiration_counter = None
     self._cache = {
       'conditions': {}
     , 'order': None
@@ -351,7 +402,18 @@ class CheckRunner:
 
     yield self._check_result(result)
 
-  def _evaluate_condition(self, name, iterargs, path=None):
+  @contextmanager
+  def _args_context(self, args):
+    yield args
+    for name, value in args.items():
+      nametype = self._spec.get_type(name, None)
+      if nametype == 'derived_iterables':
+        value.finish()
+        pass
+
+  def _evaluate_condition(self, name, iterargs, path=None, *
+                              , counter=None
+                              , decrement_expiration_counters=False):
 
     if path is None:
       # top level call
@@ -369,13 +431,19 @@ class CheckRunner:
       return error, None
 
     try:
-      args = self._get_args(condition, iterargs, path)
+      args = self._get_args(condition, iterargs, path, counter=counter
+                , decrement_expiration_counters=decrement_expiration_counters)
     except Exception as err:
       error = FailedConditionError(condition, err)
       return error, None
 
+
+    # Are only counting (up or down) condition usage, not evaluating?
+    do_evaluate = counter is None and not decrement_expiration_counters
     try:
-      return None, condition(**args)
+      with self._args_context(args):
+        result  = condition(**args) if do_evaluate else None
+        return None, result
     except Exception as err:
       error = FailedConditionError(condition, err)
       return error, None
@@ -393,19 +461,41 @@ class CheckRunner:
     return tuple( (name, value) for name, value in iterargs
                                                   if name in allArgs)
 
-  def _get_condition(self, name, iterargs, path=None):
+  def _get_condition(self, name, iterargs, path=None, *, counter=None
+                                , decrement_expiration_counters=False):
     # conditions are evaluated lazily
-    usecache = True #False
     used_iterargs = self._filter_condition_used_iterargs(name, iterargs)
     key = (name, used_iterargs)
-    if not usecache or key not in self._cache['conditions']:
-      err, val = self._evaluate_condition(name, used_iterargs, path)
-      if usecache:
+
+    if not self._use_cache or key not in self._cache['conditions']:
+      # evaluate
+      err, val = self._evaluate_condition(name, used_iterargs, path
+                , counter=counter
+                , decrement_expiration_counters=decrement_expiration_counters)
+      if self._use_cache and not decrement_expiration_counters:
+        # cache write
         self._cache['conditions'][key] = err, val
     else:
+      # cache hit
       err, val = self._cache['conditions'][key]
+
+    if counter is not None:
+      # only counting _get_condition calls for
+      counter[key] += 1
+    elif self._use_cache and self._collect_garbage:
+      self._condition_expiration_counter[key] -= 1
+      if key in self._cache['conditions']\
+                      and self._condition_expiration_counter[key] <= 0:
+        assert self._condition_expiration_counter[key] == 0, \
+                        f'Overcompensated garbage collection for '\
+                        f'{key} {self._condition_expiration_counter[key]}'
+        del self._cache['conditions'][key]
+
     return err, val
 
+  # FIXME: where is this used? We should make sure the garbage collector
+  # does not respond to this ... ?
+  # used once in googlefonts_test.py
   def get(self, key, iterargs, *args):
     return self._get(key, iterargs, None, *args)
 
@@ -424,9 +514,17 @@ class CheckRunner:
       for tail in self._generate_iterargs(requirements[1:]):
         yield (current, ) + tail
 
-  def _derive_iterable_condition(self, name, simple=False, path=None):
-    # returns a generator, which is better for memory critical situations
-    # than a list containing all results of the used conditions
+  def _derive_iterable_condition(self, name, simple=False, path=None, *
+                                     , counter=None
+                                     , decrement_expiration_counters=False):
+    """ Returns a generator, which is better for memory critical situations
+        than a list containing all results of the used conditions.
+
+        The garbage collection only works when the generator is ended with
+        its generator.finish method after it is not used anymore
+        self._args_context is helping with this.
+    """
+
     condition = self._spec.conditions[name]
     iterargs = self._spec.get_iterargs(condition)
 
@@ -437,16 +535,17 @@ class CheckRunner:
     # like [('font', 10), ('other', 22)]
     requirements = [(singular, self._iterargs[singular])
                                             for singular in iterargs]
-    for iterargs in self._generate_iterargs(requirements):
-      error, value = self._get_condition(name, iterargs, path)
-      if error:
-        raise error
-      if simple:
-        yield value
-      else:
-        yield (iterargs, value)
 
-  def _get(self, name, iterargs, path, *args):
+    return DerrivedIterablesGenerator(
+        partial(self._get_condition, name, path=path)
+      , self._generate_iterargs(requirements)
+      , simple
+      , counter=counter
+      , decrement_expiration_counters=decrement_expiration_counters
+    )
+
+  def _get(self, name, iterargs, path, *args, counter=None
+                                  , decrement_expiration_counters=False):
     iterargsDict = dict(iterargs)
     has_fallback = bool(len(args))
     if has_fallback:
@@ -479,14 +578,17 @@ class CheckRunner:
       return self._values[plural][index]
 
     if nametype == 'conditions':
-      error, value = self._get_condition(name, iterargs, path)
+      error, value = self._get_condition(name, iterargs, path, counter=counter
+                  , decrement_expiration_counters=decrement_expiration_counters)
       if error:
         raise error
       return value
 
     if nametype == 'derived_iterables':
       condition_name, simple = self._spec.get(name)
-      return self._derive_iterable_condition(condition_name, simple, path)
+      return self._derive_iterable_condition(condition_name, simple, path
+                  , counter=counter
+                  , decrement_expiration_counters=decrement_expiration_counters)
 
     if has_fallback:
       return fallback
@@ -497,23 +599,31 @@ class CheckRunner:
       report_name = f'"{name}"'
     raise MissingValueError(f'Value {report_name} is undefined.')
 
-  def _get_args(self, item, iterargs, path=None):
+  def _get_args(self, item, iterargs, path=None, *, counter=None
+                                , decrement_expiration_counters=False):
     # iterargs can't be optional arguments yet, we wouldn't generate
     # an execution with an empty list. I don't know if that would be even
     # feasible, so I don't add this complication for the sake of clarity.
     # If this is needed for anything useful, we'll have to figure this out.
     args = {}
-    for name in item.args:
-      if name in args:
-        continue
-      try:
-        args[name] = self._get(name, iterargs, path)
-      except MissingValueError:
-        if name not in item.optionalArgs:
-          raise
+    try:
+      for name in item.args:
+        if name in args:
+          continue
+        try:
+          args[name] = self._get(name, iterargs, path, counter=counter
+              , decrement_expiration_counters=decrement_expiration_counters)
+        except MissingValueError:
+          if name not in item.optionalArgs:
+            raise
+    except:
+      with self._args_context(args):
+        # cleans up what we already have created if failed
+        pass;
+      raise
     return args
 
-  def _get_check_dependencies(self, check, iterargs):
+  def _get_check_dependencies(self, check, iterargs, *, counter=None):
     unfulfilled_conditions = []
     for condition in check.conditions:
       negate, name = is_negated(condition)
@@ -521,7 +631,7 @@ class CheckRunner:
         # this is a handy way to set flags from the outside
         err, val = None, self._values[name]
       else:
-        err, val = self._get_condition(name, iterargs)
+        err, val = self._get_condition(name, iterargs, counter=counter)
       if negate:
         val = not val
       if err:
@@ -529,17 +639,33 @@ class CheckRunner:
         return (status, None)
       if not val:
         unfulfilled_conditions.append(condition)
-    if unfulfilled_conditions:
+
+    # never skip if just counting
+    skippedStatus = None
+    if counter is None and unfulfilled_conditions:
       # This will make the check neither pass nor fail
-      status = (SKIP, 'Unfulfilled Conditions: {}'.format(
+      skippedStatus = (SKIP, 'Unfulfilled Conditions: {}'.format(
                                     ', '.join(unfulfilled_conditions)))
-      return (status, None)
 
     try:
-      return None, self._get_args(check, iterargs)
+      if not skippedStatus:
+        return None, self._get_args(check, iterargs, counter=counter)
+      else:
+        # If skipping we still have to decrease the counters!
+        args = self._get_args(check, iterargs, decrement_expiration_counters=True)
+        with self._args_context(args):
+          pass;
+        return skippedStatus, None
     except Exception as error:
       status = (ERROR, FailedDependenciesError(check, error))
       return (status, None)
+
+
+  def _is_skip_filtered(self, check, iterargs):
+    if self._spec.check_skip_filter:
+      iterargsDict = {key:self.get_iterarg(key, index) for key, index in iterargs}
+      return self._spec.check_skip_filter(check.id, **iterargsDict)
+    return True, None
 
   def _run_check(self, check, iterargs):
     summary_status = None
@@ -551,11 +677,9 @@ class CheckRunner:
     # inspection results).
 
     skipped = None
-    if self._spec.check_skip_filter:
-      iterargsDict = {key:self.get_iterarg(key, index) for key, index in iterargs}
-      accepted, message = self._spec.check_skip_filter(check.id, **iterargsDict)
-      if not accepted:
-        skipped = (SKIP, 'Filtered: {}'.format(message or '(no message)'))
+    accepted, message = self._is_skip_filtered(check, iterargs)
+    if not accepted:
+      skipped = (SKIP, 'Filtered: {}'.format(message or '(no message)'))
 
     if not skipped:
       skipped, args = self._get_check_dependencies(check, iterargs)
@@ -575,11 +699,12 @@ class CheckRunner:
       # correctly.
       yield skipped
     else:
-      for sub_result in self._exec_check(check, args):
-        status, _ = sub_result
-        if summary_status is None or status >= summary_status:
-          summary_status = status
-        yield sub_result
+      with self._args_context(args):
+        for sub_result in self._exec_check(check, args):
+          status, _ = sub_result
+          if summary_status is None or status >= summary_status:
+            summary_status = status
+          yield sub_result
       # The only reason to yield this is to make it testable
       # that a check ran to its end, or, if we start to allow
       # nestable subchecks. Otherwise, a STARTCHECK would end the
@@ -630,6 +755,23 @@ class CheckRunner:
         raise ValueError(f'Order item {item} not found.')
     return order
 
+  def _count_condition_usage(self, order):
+    counter = Counter()
+
+    # the feature of preserving oldcache is just to make this method
+    # behave as if it had no side effects, it's not 100% waterproof though
+
+    oldcache = self._cache['conditions']
+    self._cache['conditions'] = {}
+    for _, check, iterargs in order:
+      accepted, _ = self._is_skip_filtered(check, iterargs)
+      if not accepted:
+        # skipped
+        continue
+      self._get_check_dependencies(check, iterargs, counter=counter)
+    self._cache['conditions'] = oldcache
+    return counter
+
   def run(self, order=None):
     checkrun_summary = Counter()
 
@@ -637,6 +779,9 @@ class CheckRunner:
       order = self.check_order(order)
     else:
       order = self.order
+
+    if self._collect_garbage:
+      self._condition_expiration_counter = self._count_condition_usage(order)
 
     # prepare: we'll have less ENDSECTION code in the actual run
     # also, we can prepare section_order tuples
@@ -670,6 +815,16 @@ class CheckRunner:
       yield ENDSECTION, section_summary, (section, None, None)
       checkrun_summary.update(section_summary)
     yield END, checkrun_summary, (None, None, None)
+
+    # reset, empty cache
+    if self._collect_garbage:
+      assert not self._cache['conditions'], 'Cache should be empty now.'
+    else:
+      # We could also keep the cache, but that seems like a very uncommon
+      # use case and rather unexpected behavior for me. We could make
+      # keeping the cache explicit with an argument.
+      self._cache['conditions'] = {}
+    self._condition_expiration_counter = None
 
 def distribute_generator(gen, targets_callbacks):
   for item in gen:
