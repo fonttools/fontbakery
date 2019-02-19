@@ -2,6 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.6.11 (2019-Feb-18)
+### Documentation
+  - Update maintainer notes so that we do not forget to update the cache of vendor ids list. (issue #2359)
+
 ### New checks
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** "PPEM must be an integer on hinted fonts." (issue #2338)
 
@@ -10,7 +13,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - **[fontbakery.utils.download_file]:** Fix error message when ssl certificates are not installed. (issue #2346)
-  - **[fontbakery.specifications.shared_conditions]:** Determine whether a font is monospaced by analysing the ascii character set only.
+  - **[fontbakery.specifications.shared_conditions]:** Determine whether a font is monospaced by analysing the ascii character set only. (issue #2202)
+  - **[fontbakery.specifications.googlefonts.registered_vendor_ids]:** Update cache of vendor ID list from Microsoft's website. (issue #2359)
+
+### new Code-tests
+  - **[registered_vendor_ids condition]:** Make sure several corner cases are properly parsed. This includes ensuring that vendor IDs lacking a URL are properly handled. (issue #2359)
 
 
 ## 0.6.10 (2019-Feb-11)
