@@ -24,6 +24,13 @@ rm build/ -rf
 rm dist/ -rf
 rm venv/ -rf
 
+# Update the cached list of vendor IDs:
+wget https://docs.microsoft.com/en-us/typography/vendors/ --output-document=Lib/fontbakery/data/fontbakery-microsoft-vendorlist.cache
+git add -p
+
+# If something changed, commit it:
+git commit -m "Updating cache of vendor IDs list from Microsoft's website"
+
 # create a fresh python virtual env
 virtualenv venv -ppython3
 . venv/bin/activate
@@ -33,7 +40,7 @@ pip install tox
 tox
 
 # Register a git tag for this release and publish it
-git tag -a v0.4.0 -m "Font Bakery version 0.4.0 (2018-May-16)"
+git tag -a v0.6.11 -m "Font Bakery version 0.6.11 (2019-Feb-18)"
 git push upstream --tags
 
 # create the package
