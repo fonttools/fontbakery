@@ -811,14 +811,14 @@ class Spec:
 
           derived_iterables={'ttFonts': ('ttFont', True)}
           # Then:
-          ttfons = (
+          ttFonts = (
             <TTFont object from font_0>
           , <TTFont object from font_1>
           )
 
           # However
           derived_iterables={'ttFonts': ('ttFont', False)}
-          ttfons = [
+          ttFonts = [
             ((('font', 0), ), <TTFont object from font_0>)
           , ((('font', 1), ), <TTFont object from font_1>)
           ]

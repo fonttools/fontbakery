@@ -135,50 +135,118 @@ def test_example_checkrunner_based(cabin_regular_path):
       break
 
 
+class CheckResultsEvaluation():
+
+  def __init__(self, log_messages):
+    self.log_messages = log_messages
+
+  def assert_result(self, expected_status, expected_message=None):
+    last_result = None
+    for result in self.log_messages:
+      status, message, _ = result
+      if status in check_statuses:
+        last_result = result
+      if status == ENDCHECK:
+        assert last_result # The check must have emitted
+                           # at least one log message!
+
+        # we always test at least the status:
+        assert last_result[0] == expected_status
+
+        if expected_message: # and testing the message is optional
+          assert last_result[1] == expected_message
+        break
+
+
+class FBCheckTesterBadParamsError(Exception):
+  pass
+
+
+class FBCheck_Tester():
+
+  def __init__(self, profile, checkid):
+    self.profile = profile
+    self.checkid = checkid
+    self.log_messages = None
+    self.testcase_number = 0
+    print(f"Testing check '{checkid}' from the '{profile}' profile.")
+
+  def run(self, params, reasoning):
+    from fontbakery.checkrunner import CheckRunner
+    assert self.profile == "googlefonts" #TODO: use import module to load the correct specification otherwise.
+    from fontbakery.specifications.googlefonts import specification
+
+    if type(params) is str:
+      values = dict(fonts=[params])
+
+    elif type(params) is TTFont:
+      values = dict(fonts=[], ttfonts=[params])
+
+    elif type(params) is list and type(params[0]) is str: # here we assume all list items are the same type...
+      values = dict(fonts=params)
+
+    elif type(params) is list and type(params[0]) is TTFont: # same here.
+      values = dict(fonts=[], ttfonts=params)
+
+    else:
+      raise FBCheckTesterBadParamsError
+
+    log_messages = CheckRunner(specification,
+                               values,
+                               explicit_checks=[self.checkid]).run()
+    if reasoning:
+      print(reasoning)
+    else:
+      print(f"testcase #{self.testcase_number}")
+
+    self.testcase_number += 1
+    return CheckResultsEvaluation(log_messages)
+
+
+CANONICAL_FILENAMES = [
+  "data/test/montserrat/Montserrat-Thin.ttf",
+  "data/test/montserrat/Montserrat-ExtraLight.ttf",
+  "data/test/montserrat/Montserrat-Light.ttf",
+  "data/test/montserrat/Montserrat-Regular.ttf",
+  "data/test/montserrat/Montserrat-Medium.ttf",
+  "data/test/montserrat/Montserrat-SemiBold.ttf",
+  "data/test/montserrat/Montserrat-Bold.ttf",
+  "data/test/montserrat/Montserrat-ExtraBold.ttf",
+  "data/test/montserrat/Montserrat-Black.ttf",
+  "data/test/montserrat/Montserrat-ThinItalic.ttf",
+  "data/test/montserrat/Montserrat-ExtraLightItalic.ttf",
+  "data/test/montserrat/Montserrat-LightItalic.ttf",
+  "data/test/montserrat/Montserrat-Italic.ttf",
+  "data/test/montserrat/Montserrat-MediumItalic.ttf",
+  "data/test/montserrat/Montserrat-SemiBoldItalic.ttf",
+  "data/test/montserrat/Montserrat-BoldItalic.ttf",
+  "data/test/montserrat/Montserrat-ExtraBoldItalic.ttf",
+  "data/test/montserrat/Montserrat-BlackItalic.ttf",
+  "data/test/cabinvfbeta/Cabin-Italic-VF.ttf",
+  "data/test/cabinvfbeta/Cabin-Roman-VF.ttf",
+  "data/test/cabinvfbeta/Cabin-VF.ttf",
+  "data/test/cabinvfbeta/Cabin-Italic.ttf",
+  "data/test/cabinvfbeta/Cabin-Roman.ttf"
+]
+
+NON_CANONICAL_FILENAMES = [
+  "data/test/montserrat/Montserrat/Montserrat.ttf",
+  "data/test/montserrat/Montserrat-semibold.ttf",
+  "data/test/cabinvfbeta/CabinVFBeta.ttf"
+]
+
 def test_check_001():
   """ Files are named canonically. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_001 as check
+  check = FBCheck_Tester("googlefonts",
+                         "com.google.fonts/check/001")
 
-  canonical_names = [
-    "data/test/montserrat/Montserrat-Thin.ttf",
-    "data/test/montserrat/Montserrat-ExtraLight.ttf",
-    "data/test/montserrat/Montserrat-Light.ttf",
-    "data/test/montserrat/Montserrat-Regular.ttf",
-    "data/test/montserrat/Montserrat-Medium.ttf",
-    "data/test/montserrat/Montserrat-SemiBold.ttf",
-    "data/test/montserrat/Montserrat-Bold.ttf",
-    "data/test/montserrat/Montserrat-ExtraBold.ttf",
-    "data/test/montserrat/Montserrat-Black.ttf",
-    "data/test/montserrat/Montserrat-ThinItalic.ttf",
-    "data/test/montserrat/Montserrat-ExtraLightItalic.ttf",
-    "data/test/montserrat/Montserrat-LightItalic.ttf",
-    "data/test/montserrat/Montserrat-Italic.ttf",
-    "data/test/montserrat/Montserrat-MediumItalic.ttf",
-    "data/test/montserrat/Montserrat-SemiBoldItalic.ttf",
-    "data/test/montserrat/Montserrat-BoldItalic.ttf",
-    "data/test/montserrat/Montserrat-ExtraBoldItalic.ttf",
-    "data/test/montserrat/Montserrat-BlackItalic.ttf",
-    "data/test/cabinvfbeta/Cabin-Italic-VF.ttf",
-    "data/test/cabinvfbeta/Cabin-Roman-VF.ttf",
-    "data/test/cabinvfbeta/Cabin-VF.ttf",
-    "data/test/cabinvfbeta/Cabin-Italic.ttf",
-    "data/test/cabinvfbeta/Cabin-Roman.ttf"
-  ]
-  non_canonical_names = [
-    "data/test/montserrat/Montserrat/Montserrat.ttf",
-    "data/test/montserrat/Montserrat-semibold.ttf",
-    "data/test/cabinvfbeta/CabinVFBeta.ttf"
-  ]
+  for filename in CANONICAL_FILENAMES:
+    check.run(filename,
+              f"Canonical name '{filename}'").assert_result(PASS)
 
-  for canonical in canonical_names:
-    print(f'Test PASS with "{canonical}" ...')
-    status, message = list(check(canonical))[-1]
-    assert status == PASS
-
-  for non_canonical in non_canonical_names:
-    print(f'Test FAIL with "{non_canonical}" ...')
-    status, message = list(check(non_canonical))[-1]
-    assert status == FAIL
+  for filename in NON_CANONICAL_FILENAMES:
+    check.run(filename,
+              f"Non-canonical name '{filename}'").assert_result(FAIL)
 
 
 def test_check_003():
@@ -267,22 +335,17 @@ def test_check_006():
 
 def test_check_metadata_parses():
   """ Check METADATA.pb parse correctly. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_metadata_parses as check
+  check = FBCheck_Tester("googlefonts",
+                         "com.google.fonts/check/metadata/parses")
 
-  good = "data/test/merriweather/"
-  print('Test PASS with a good METADATA.pb file...')
-  status, message = list(check(good))[-1]
-  assert status == PASS
+  check.run("data/test/merriweather/foo.ttf",
+            "Good METADATA.pb file").assert_result(PASS)
 
-  skip = "data/test/slabo/"
-  print('Test SKIP with a missing METADATA.pb file...')
-  status, message = list(check(skip))[-1]
-  assert status == SKIP
+  check.run("data/test/slabo/foo.ttf",
+            "Missing METADATA.pb file").assert_result(SKIP)
 
-  bad = "data/test/broken_metadata/"
-  print('Test FAIL with a bad METADATA.pb file...')
-  status, message = list(check(bad))[-1]
-  assert status == FAIL
+  check.run("data/test/broken_metadata/foo.ttf",
+            "Bad METADATA.pb file").assert_result(FAIL)
 
 
 def test_check_007():
@@ -301,20 +364,19 @@ def test_check_007():
   assert status == FAIL
 
 
-def test_check_011(mada_ttFonts, cabin_ttFonts):
+def test_check_equal_number_of_glyphs():
   """ Fonts have equal numbers of glyphs ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_011 as check
+  check = FBCheck_Tester("googlefonts",
+                         "com.google.fonts/check/011")
 
-  print('Test PASS with good family.')
   # our reference Cabin family is know to be good here.
-  status, message = list(check(cabin_ttFonts))[-1]
-  assert status == PASS
+  check.run(cabin_fonts,
+            "Good family").assert_result(PASS)
 
-  print('Test FAIL with fonts that diverge on number of glyphs.')
   # our reference Mada family is bad here with 407 glyphs on most font files
   # except the Black and the Medium, that both have 408 glyphs.
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL
+  check.run(mada_fonts,
+            "Fonts that diverge on number of glyphs").assert_result(FAIL)
 
 
 def test_check_012(mada_ttFonts, cabin_ttFonts):
@@ -395,35 +457,30 @@ def test_condition__registered_vendor_ids():
 
 def test_check_018():
   """ Checking OS/2 achVendID """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_018 as check,
-                                                     registered_vendor_ids)
-  registered_ids = registered_vendor_ids()
+  check = FBCheck_Tester("googlefonts",
+                         "com.google.fonts/check/018")
 
   # Let's start with our reference Merriweather Regular
   ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
 
-  print('Test WARN with bad vid.')
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   for bad_vid in bad_vids:
     ttFont['OS/2'].achVendID = bad_vid
-    status, message = list(check(ttFont, registered_ids))[-1]
-    assert status == WARN and message.code == "bad"
+    check.run(ttFont,
+              f"Bad vendor id '{bad_vid}'").assert_result(WARN, "bad")
 
-  print('Test FAIL with font missing vendor id info.')
   ttFont['OS/2'].achVendID = None
-  status, message = list(check(ttFont, registered_ids))[-1]
-  assert status == WARN and message.code == "not set"
+  check.run(ttFont,
+            "Font missing vendor id info").assert_result(WARN, "not set")
 
-  print('Test WARN with unknwon vendor id.')
   ttFont['OS/2'].achVendID = "????"
-  status, message = list(check(ttFont, registered_ids))[-1]
-  assert status == WARN and message.code == "unknown"
+  check.run(ttFont,
+            "Unknwon vendor id").assert_result(WARN, "unknown")
 
-  print('Test PASS with good font.')
   # we now change the fields into a known good vendor id:
   ttFont['OS/2'].achVendID = "APPL"
-  status, message = list(check(ttFont, registered_ids))[-1]
-  assert status == PASS
+  check.run(ttFont,
+            "Good font").assert_result(PASS)
 
 
 def test_check_019():
