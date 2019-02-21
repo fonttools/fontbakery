@@ -21,7 +21,12 @@ from typing import Text, Optional
 def portable_path(p):
   return os.path.join(*p.split('/'))
 
+# TEST_FILE and TEST_DIR are identical only
+# for the sake of syntatic sugar.
 def TEST_FILE(f):
+  return portable_path("data/test/" + f)
+
+def TEST_DIR(f):
   return portable_path("data/test/" + f)
 
 
@@ -251,3 +256,82 @@ def assert_results_contain(check_results, expected_status, expected_msgcode=None
       found = True
       break
   assert(found)
+
+
+from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL, ENDCHECK)
+check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
+
+class FBCheckTesterFailedExpectedResultError(Exception):
+  pass
+
+class FBCheckTesterBadParamsError(Exception):
+  pass
+
+
+class CheckResultsEvaluation():
+
+  def __init__(self, tester, log_messages):
+    self.log_messages = log_messages
+    self.tester = tester
+
+  def assert_result(self, expected_status, expected_message=None):
+    last_result = None
+    for result in self.log_messages:
+      status, message, _ = result
+      if status in check_statuses:
+        last_result = result
+      if status == ENDCHECK:
+        assert last_result # The check must have emitted
+                           # at least one log message!
+
+        # we always test at least the status:
+        if last_result[0] != expected_status:
+          print(f"[{self.tester.checkid}]: Expected {expected_status} but got {last_result[0]}.")
+          raise FBCheckTesterFailedExpectedResultError
+
+        if expected_message: # and testing the message is optional
+          if last_result[1] != expected_message:
+            raise FBCheckTesterFailedExpectedResultError
+        break
+
+
+class FBCheck_Tester():
+
+  def __init__(self, profile, checkid):
+    self.profile = profile
+    self.checkid = checkid
+    self.log_messages = None
+    self.testcase_number = 0
+    print(f"Testing check '{checkid}' from the '{profile}' profile.")
+
+  def run(self, params, reasoning):
+    from fontbakery.checkrunner import CheckRunner
+    assert self.profile == "googlefonts" #TODO: use import module to load the correct specification otherwise.
+    from fontbakery.profiles.googlefonts import profile
+
+    if type(params) is str:
+      values = dict(fonts=[params])
+
+    elif type(params) is TTFont:
+      values = dict(fonts=[], ttfonts=[params])
+
+    elif type(params) is list and type(params[0]) is str: # here we assume all list items are the same type...
+      values = dict(fonts=params)
+
+    elif type(params) is list and type(params[0]) is TTFont: # same here.
+      values = dict(fonts=[], ttfonts=params)
+
+    else:
+      raise FBCheckTesterBadParamsError
+
+    log_messages = CheckRunner(profile,
+                               values,
+                               explicit_checks=[self.checkid]).run()
+    if reasoning:
+      print(reasoning)
+    else:
+      print(f"testcase #{self.testcase_number}")
+
+    self.testcase_number += 1
+    return CheckResultsEvaluation(self, log_messages)
+

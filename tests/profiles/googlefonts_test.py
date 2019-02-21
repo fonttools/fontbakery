@@ -1,11 +1,12 @@
-import pytest
 import os
+
+import pytest
 from fontTools.ttLib import TTFont
 
 from fontbakery.constants import NameID
-from fontbakery.utils import (portable_path,
+from fontbakery.utils import (FBCheck_Tester,
+                              TEST_DIR,
                               TEST_FILE)
-
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -89,7 +90,7 @@ def delete_name_table_id(ttFont, nameID):
 
 @pytest.fixture
 def cabin_regular_path():
-  return portable_path('data/test/cabin/Cabin-Regular.ttf')
+  return TEST_DIR('cabin/Cabin-Regular.ttf')
 
 
 def test_example_checkrunner_based(cabin_regular_path):
@@ -136,56 +137,56 @@ def test_example_checkrunner_based(cabin_regular_path):
       break
 
 
+STATIC_CANONICAL_FILENAMES = [
+  TEST_FILE("montserrat/Montserrat-Thin.ttf"),
+  TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"),
+  TEST_FILE("montserrat/Montserrat-Light.ttf"),
+  TEST_FILE("montserrat/Montserrat-Regular.ttf"),
+  TEST_FILE("montserrat/Montserrat-Medium.ttf"),
+  TEST_FILE("montserrat/Montserrat-SemiBold.ttf"),
+  TEST_FILE("montserrat/Montserrat-Bold.ttf"),
+  TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"),
+  TEST_FILE("montserrat/Montserrat-Black.ttf"),
+  TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-LightItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-Italic.ttf"),
+  TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"),
+]
+
+VARFONT_CANONICAL_FILENAMES = [
+  TEST_FILE("cabinvfbeta/Cabin-Italic-VF.ttf"),
+  TEST_FILE("cabinvfbeta/Cabin-Roman-VF.ttf"),
+  TEST_FILE("cabinvfbeta/Cabin-VF.ttf"),
+]
+
+NON_CANONICAL_FILENAMES = [
+  TEST_FILE("montserrat/Montserrat/Montserrat.ttf"),
+  TEST_FILE("montserrat/Montserrat-semibold.ttf"),
+  TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"),
+  TEST_FILE("cabinvfbeta/Cabin-Italic.ttf"),
+  TEST_FILE("cabinvfbeta/Cabin-Roman.ttf")
+]
+
 def test_check_canonical_filename():
   """ Files are named canonically. """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_canonical_filename as check
+  check = FBCheck_Tester("googlefonts",
+                         "com.google.fonts/check/canonical_filename")
 
-  static_canonical_names = [
-    TEST_FILE("montserrat/Montserrat-Thin.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"),
-    TEST_FILE("montserrat/Montserrat-Light.ttf"),
-    TEST_FILE("montserrat/Montserrat-Regular.ttf"),
-    TEST_FILE("montserrat/Montserrat-Medium.ttf"),
-    TEST_FILE("montserrat/Montserrat-SemiBold.ttf"),
-    TEST_FILE("montserrat/Montserrat-Bold.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"),
-    TEST_FILE("montserrat/Montserrat-Black.ttf"),
-    TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-LightItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Italic.ttf"),
-    TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"),
-  ]
+  for filename in STATIC_CANONICAL_FILENAMES + VARFONT_CANONICAL_FILENAMES:
+    check.run(filename,
+              f"Canonical name '{filename}'").assert_result(PASS)
 
-  varfont_canonical_names = [
-    TEST_FILE("cabinvfbeta/Cabin-Italic-VF.ttf"),
-    TEST_FILE("cabinvfbeta/Cabin-Roman-VF.ttf"),
-    TEST_FILE("cabinvfbeta/Cabin-VF.ttf"),
-  ]
-
-  non_canonical_names = [
-    TEST_FILE("montserrat/Montserrat/Montserrat.ttf"),
-    TEST_FILE("montserrat/Montserrat-semibold.ttf"),
-    TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"),
-    TEST_FILE("cabinvfbeta/Cabin-Italic.ttf"),
-    TEST_FILE("cabinvfbeta/Cabin-Roman.ttf")
-  ]
-
-  for canonical in static_canonical_names + varfont_canonical_names:
-    print(f'Test PASS with "{canonical}" ...')
-    status, message = list(check(canonical))[-1]
-    assert status == PASS
-
-  for non_canonical in non_canonical_names:
-    print(f'Test FAIL with "{non_canonical}" ...')
-    status, message = list(check(non_canonical))[-1]
-    assert status == FAIL
+  for filename in NON_CANONICAL_FILENAMES:
+    check.run(filename,
+              f"Non-canonical name '{filename}'").assert_result(FAIL)
 
 
+@pytest.mark.network
 def test_check_description_broken_links():
   """ Does DESCRIPTION file contain broken links ? """
   from fontbakery.profiles.googlefonts import (
@@ -193,7 +194,7 @@ def test_check_description_broken_links():
     description,
     descfile)
 
-  good_desc = description(descfile(portable_path("data/test/cabin")))
+  good_desc = description(descfile(TEST_DIR("cabin")))
   print('Test PASS with description file that has no links...')
   status, message = list(check(good_desc))[-1]
   assert status == PASS
@@ -222,7 +223,7 @@ def test_check_description_valid_html():
     descfile,
     description)
 
-  good_descfile = descfile(portable_path("data/test/nunito"))
+  good_descfile = descfile(TEST_DIR("nunito"))
   good_desc = description(good_descfile)
   print('Test PASS with description file that contains a good HTML snippet...')
   status, message = list(check(good_descfile, good_desc))[-1]
@@ -275,56 +276,50 @@ def test_check_description_max_length():
   assert status == PASS
 
 
-def test_check_metadata_parses():
+def PROPOSED_NEW_STYLE_test_check_metadata_parses():
   """ Check METADATA.pb parse correctly. """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_metadata_parses as check
+  check = FBCheck_Tester("googlefonts",
+                         "com.google.fonts/check/metadata/parses")
 
-  good = portable_path("data/test/merriweather")
-  print('Test PASS with a good METADATA.pb file...')
-  status, message = list(check(good))[-1]
-  assert status == PASS
+  check.run(TEST_DIR("merriweather"),
+            "Good METADATA.pb file").assert_result(PASS)
 
-  skip = portable_path("data/test/slabo")
-  print('Test SKIP with a missing METADATA.pb file...')
-  status, message = list(check(skip))[-1]
-  assert status == SKIP
+  check.run(TEST_DIR("slabo"),
+            "Missing METADATA.pb file").assert_result(SKIP)
 
-  bad = portable_path("data/test/broken_metadata")
-  print('Test FAIL with a bad METADATA.pb file...')
-  status, message = list(check(bad))[-1]
-  assert status == FAIL
+  check.run(TEST_DIR("broken_metadata"),
+            "Bad METADATA.pb file").assert_result(FAIL)
 
 
 def test_check_metadata_unknown_designer():
   """ Font designer field in METADATA.pb must not be 'unknown'. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_unknown_designer as check,
                                                      family_metadata)
-  good = family_metadata(portable_path("data/test/merriweather"))
+  good = family_metadata(TEST_DIR("merriweather"))
   print('Test PASS with a good METADATA.pb file...')
   status, message = list(check(good))[-1]
   assert status == PASS
 
-  bad = family_metadata(portable_path("data/test/merriweather"))
+  bad = family_metadata(TEST_DIR("merriweather"))
   bad.designer = "unknown"
   print('Test FAIL with a bad METADATA.pb file...')
   status, message = list(check(bad))[-1]
   assert status == FAIL
 
 
-def test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
+def test_check_family_equal_numbers_of_glyphs():
   """ Fonts have equal numbers of glyphs? """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_family_equal_numbers_of_glyphs as check
+  check = FBCheck_Tester("googlefonts",
+                         "com.google.fonts/check/family/equal_number_of_glyphs")
 
-  print('Test PASS with good family.')
   # our reference Cabin family is know to be good here.
-  status, message = list(check(cabin_ttFonts))[-1]
-  assert status == PASS
+  check.run(cabin_fonts,
+            "Good family").assert_result(PASS)
 
-  print('Test FAIL with fonts that diverge on number of glyphs.')
   # our reference Mada family is bad here with 407 glyphs on most font files
   # except the Black and the Medium, that both have 408 glyphs.
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL
+  check.run(mada_fonts,
+            "Fonts that diverge on number of glyphs").assert_result(FAIL)
 
 
 def test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
@@ -406,7 +401,7 @@ def test_condition__registered_vendor_ids():
 def test_check_vendor_id():
   """ Checking OS/2 achVendID """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_vendor_id as check,
-                                                     registered_vendor_ids)
+                                               registered_vendor_ids)
   registered_ids = registered_vendor_ids()
 
   # Let's start with our reference Merriweather Regular
@@ -419,7 +414,7 @@ def test_check_vendor_id():
     status, message = list(check(ttFont, registered_ids))[-1]
     assert status == WARN and message.code == "bad"
 
-  print('Test FAIL with font missing vendor id info.')
+  print('Test WARN with font missing vendor id info.')
   ttFont['OS/2'].achVendID = None
   status, message = list(check(ttFont, registered_ids))[-1]
   assert status == WARN and message.code == "not set"
@@ -434,6 +429,34 @@ def test_check_vendor_id():
   ttFont['OS/2'].achVendID = "APPL"
   status, message = list(check(ttFont, registered_ids))[-1]
   assert status == PASS
+
+
+def PROPOSED_NEW_STYLE_test_check_vendor_id():
+  """ Checking OS/2 achVendID """
+  check = FBCheck_Tester("googlefonts",
+                         "com.google.fonts/check/vendor_id")
+
+  # Let's start with our reference Merriweather Regular
+  ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+
+  bad_vids = ['UKWN', 'ukwn', 'PfEd']
+  for bad_vid in bad_vids:
+    ttFont['OS/2'].achVendID = bad_vid
+    check.run(ttFont,
+              f"Bad vendor id '{bad_vid}'").assert_result(WARN, "bad")
+
+  ttFont['OS/2'].achVendID = None
+  check.run(ttFont,
+            "Font missing vendor id info").assert_result(WARN, "not set")
+
+  ttFont['OS/2'].achVendID = "????"
+  check.run(ttFont,
+            "Unknwon vendor id").assert_result(WARN, "unknown")
+
+  # we now change the fields into a known good vendor id:
+  ttFont['OS/2'].achVendID = "APPL"
+  check.run(ttFont,
+            "Good font").assert_result(PASS)
 
 
 def test_check_name_unwanted_chars():
@@ -507,25 +530,25 @@ def test_check_family_has_license():
   # not let fontbakery's own license to mess up
   # this code test.
   print('Test FAIL with multiple licenses...')
-  detected_licenses = licenses(portable_path("data/test/028/multiple"))
+  detected_licenses = licenses(TEST_DIR("028/multiple"))
   detected_licenses.pop(-1) # hack
   status, message = list(check(detected_licenses))[-1]
   assert status == FAIL and message.code == "multiple"
 
   print('Test FAIL with no license...')
-  detected_licenses = licenses(portable_path("data/test/028/none"))
+  detected_licenses = licenses(TEST_DIR("028/none"))
   detected_licenses.pop(-1) # hack
   status, message = list(check(detected_licenses))[-1]
   assert status == FAIL and message.code == "no-license"
 
   print('Test PASS with a single OFL license...')
-  detected_licenses = licenses(portable_path("data/test/028/pass_ofl"))
+  detected_licenses = licenses(TEST_DIR("028/pass_ofl"))
   detected_licenses.pop(-1) # hack
   status, message = list(check(detected_licenses))[-1]
   assert status == PASS
 
   print('Test PASS with a single Apache license...')
-  detected_licenses = licenses(portable_path("data/test/028/pass_apache"))
+  detected_licenses = licenses(TEST_DIR("028/pass_apache"))
   detected_licenses.pop(-1) # hack
   status, message = list(check(detected_licenses))[-1]
   assert status == PASS
@@ -605,13 +628,11 @@ def test_check_name_description_max_length():
 
 def test_check_hinting_impact():
   """ Show hinting filesize impact. """
-  from fontbakery.profiles.googlefonts import (com_google_fonts_check_hinting_impact as check,
-                                                     ttfautohint_stats)
-  font = TEST_FILE("mada/Mada-Regular.ttf")
+  check = FBCheck_Tester("googlefonts",
+                         "com.google.fonts/check/hinting_impact")
 
-  print('Test this check always emits an INFO result...')
-  status, message = list(check(TTFont(font), ttfautohint_stats(font)))[-1]
-  assert status == INFO
+  check.run(TEST_FILE("mada/Mada-Regular.ttf"),
+            "This check always emits an INFO result.").assert_result(INFO)
 
 
 def test_check_name_version_format():
@@ -657,21 +678,23 @@ def NOT_IMPLEMENTED_test_check_old_ttfautohint():
   # - FAIL, code="parse-error"
 
 
-@pytest.mark.parametrize("expected_status,fontfile",[
-  # Font is lacking ttfautohint params on its version strings on the name table.
-  (FAIL, TEST_FILE("coveredbyyourgrace/CoveredByYourGrace.ttf")),
-
-  # Font appears to our heuristic as not hinted using ttfautohint.
-  (SKIP, TEST_FILE("mada/Mada-Regular.ttf")),
-
-  # Font has ttfautohint params (-l 6 -r 36 -G 0 -x 10 -H 350 -D latn -f cyrl -w "" -X "")
-  (PASS, TEST_FILE("merriweather/Merriweather-Regular.ttf"))
-])
-def test_check_has_ttfautohint_params(expected_status, fontfile):
+def test_check_has_ttfautohint_params():
   """ Font has ttfautohint params? """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_has_ttfautohint_params as check
-  status, _ = list(check(TTFont(fontfile)))[-1]
-  assert status == expected_status
+  check = FBCheck_Tester("googlefonts",
+                         "com.google.fonts/check/has_ttfautohint_params")
+
+  check.run(TEST_FILE("coveredbyyourgrace/CoveredByYourGrace.ttf"),
+            ("Font is lacking ttfautohint params on its"
+             " version strings on the name table.")).assert_result(FAIL)
+
+  check.run(TEST_FILE("mada/Mada-Regular.ttf"),
+            ("Font appears to our heuristic as"
+             " not hinted using ttfautohint.")).assert_result(SKIP)
+
+  check.run(TEST_FILE("merriweather/Merriweather-Regular.ttf"),
+            ('Font has ttfautohint params'
+             ' (-l 6 -r 36 -G 0 -x 10 -H 350'
+             ' -D latn -f cyrl -w "" -X "")')).assert_result(PASS)
 
 
 def test_check_epar():
@@ -813,6 +836,7 @@ def test_check_name_ascii_only_entries():
   assert status == PASS
 
 
+@pytest.mark.network
 def test_check_metadata_listed_on_gfonts():
   """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_listed_on_gfonts as check,
@@ -822,7 +846,7 @@ def test_check_metadata_listed_on_gfonts():
   print ("Test WARN with a family that is not listed on Google Fonts...")
   # Our reference FamilySans family is a just a generic example
   # and thus is not really hosted (nor will ever be hosted) at Google Fonts servers:
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   listed = listed_on_gfonts_api(family_metadata(family_directory))
   # For that reason, we expect to get a WARN in this case:
   status, message = list(check(listed))[-1]
@@ -830,7 +854,7 @@ def test_check_metadata_listed_on_gfonts():
 
   print ("Test PASS with a family that is available...")
   # Our reference Merriweather family is available on the Google Fonts collection:
-  family_directory = portable_path("data/test/merriweather")
+  family_directory = TEST_DIR("merriweather")
   listed = listed_on_gfonts_api(family_metadata(family_directory))
   # So it must PASS:
   status, message = list(check(listed))[-1]
@@ -855,7 +879,7 @@ def test_check_metadata_unique_full_name_values():
                                                      family_metadata)
   print ("Test PASS with a good family...")
   # Our reference FamilySans family is good:
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   md = family_metadata(family_directory)
   status, message = list(check(md))[-1]
   assert status == PASS
@@ -872,7 +896,7 @@ def test_check_metadata_unique_weight_style_pairs():
                                                      family_metadata)
   print ("Test PASS with a good family...")
   # Our reference FamilySans family is good:
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   md = family_metadata(family_directory)
   status, message = list(check(md))[-1]
   assert status == PASS
@@ -916,7 +940,7 @@ def test_check_metadata_menu_and_latin():
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   md = family_metadata(family_directory)
 
   good_cases = [
@@ -953,7 +977,7 @@ def test_check_metadata_subsets_order():
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   md = family_metadata(family_directory)
 
   good_cases = [
@@ -989,7 +1013,7 @@ def test_check_metadata_copyright():
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   md = family_metadata(family_directory)
 
   # We know its copyright notices are consistent, so the check should PASS:
@@ -1012,7 +1036,7 @@ def test_check_metadata_familyname():
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   md = family_metadata(family_directory)
 
   # We know its family name entries on METADATA.pb are consistent, so the check should PASS:
@@ -1035,7 +1059,7 @@ def test_check_metadata_has_regular():
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   md = family_metadata(family_directory)
 
   # We know that Family Sans has got a regular declares in its METADATA.pb file, so the check should PASS:
@@ -1060,7 +1084,7 @@ def test_check_metadata_regular_is_400():
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   md = family_metadata(family_directory)
 
   # We know that Family Sans' Regular has a weight value equal to 400, so the check should PASS:
@@ -1089,7 +1113,7 @@ def test_check_metadata_nameid_family_name():
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
   font = TEST_FILE("familysans/FamilySans-Regular.ttf")
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   family_meta = family_metadata(family_directory)
   font_meta = font_metadata(family_meta, font)
   ttFont = TTFont(font)
@@ -1122,7 +1146,7 @@ def test_check_metadata_nameid_post_script_name():
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
   font = TEST_FILE("familysans/FamilySans-Regular.ttf")
-  family_directory = portable_path("data/test/familysans")
+  family_directory = TEST_DIR("familysans")
   family_meta = family_metadata(family_directory)
   font_meta = font_metadata(family_meta, font)
   ttFont = TTFont(font)
@@ -1224,7 +1248,7 @@ def test_check_metadata_match_fullname_postscript():
 
   regular_font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
   lightitalic_font = TEST_FILE("merriweather/Merriweather-LightItalic.ttf")
-  family_meta = family_metadata(portable_path("data/test/merriweather"))
+  family_meta = family_metadata(TEST_DIR("merriweather"))
 
   regular_meta = font_metadata(family_meta, regular_font)
   lightitalic_meta = font_metadata(family_meta, lightitalic_font)
@@ -2094,7 +2118,8 @@ def test_check_contour_count(montserrat_ttFonts):
     assert status == WARN
 
 
-def test_check_production_encoded_glyphs(cabin_ttFonts):
+@pytest.mark.network
+def test_check_production_encoded_glyphs():
   """Check glyphs are not missing when compared to version on fonts.google.com"""
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_production_encoded_glyphs as check,
@@ -2530,6 +2555,7 @@ def test_check_name_copyright_length():
   assert status == FAIL
 
 
+@pytest.mark.network
 def test_check_fontdata_namecheck():
   """ Familyname is unique according to namecheck.fontdata.com """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_fontdata_namecheck as check,

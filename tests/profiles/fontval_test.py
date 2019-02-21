@@ -5,7 +5,7 @@ from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import ERROR
 
 
-def test_check_fontvalidator():
+def DISABLED_test_check_fontvalidator():
   """ MS Font Validator checks """
   from fontbakery.profiles.fontval import com_google_fonts_check_fontvalidator as check
 
