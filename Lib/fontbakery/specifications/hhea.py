@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.checkrunner import FAIL, PASS, WARN
+from fontbakery.checkrunner import FAIL, PASS, SKIP, WARN
 from fontbakery.message import Message
 # used to inform get_module_specification whether and how to create a specification
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
@@ -53,7 +53,7 @@ def com_google_fonts_check_079(ttFont, glyph_metrics_stats):
 
   seems_monospaced = glyph_metrics_stats["seems_monospaced"]
   if not seems_monospaced:
-    yield PASS, ("Font is not monospaced.")
+    yield SKIP, ("Font is not monospaced.")
     return
 
   # hhea:advanceWidthMax is treated as source of truth here.
