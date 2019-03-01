@@ -60,6 +60,7 @@ def test_check_079():
   """ Monospace font has hhea.advanceWidthMax equal
       to each glyph's advanceWidth? """
   from fontbakery.specifications.hhea import com_google_fonts_check_079 as check
+  from fontbakery.specifications.shared_conditions import glyph_metrics_stats
 
   test_font_path = os.path.join("data", "test", "cousine", "Cousine-Regular.ttf")
 
@@ -68,21 +69,25 @@ def test_check_079():
   subsetter = fontTools.subset.Subsetter()
   subsetter.populate(glyphs="A")  # Arbitrarily remove everything except n.
   subsetter.subset(test_font)
-  status, _ = list(check(test_font))[-1]
+  stats = glyph_metrics_stats(test_font)
+  status, _ = list(check(test_font, stats))[-1]
   assert status == PASS
 
   metrics_A = test_font["hmtx"].metrics["A"]
   test_font["hmtx"].metrics["A"] = (metrics_A[0] + 1, metrics_A[1])
-  status, message = list(check(test_font))[-1]
+  stats = glyph_metrics_stats(test_font)
+  status, message = list(check(test_font, stats))[-1]
   assert status == WARN
   assert message.code == "should-be-monospaced"
 
   test_font["hmtx"].metrics["A"] = (metrics_A[0] + metrics_A[0], metrics_A[1])
-  status, message = list(check(test_font))[-1]
+  stats = glyph_metrics_stats(test_font)
+  status, message = list(check(test_font, stats))[-1]
   assert status == WARN
   assert message.code == "variable-monospaced"
 
   test_font["hmtx"].metrics["A"] = (0, metrics_A[1])
-  status, message = list(check(test_font))[-1]
+  stats = glyph_metrics_stats(test_font)
+  status, message = list(check(test_font, stats))[-1]
   assert status == WARN
   assert message.code == "variable-monospaced"
