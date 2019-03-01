@@ -47,9 +47,14 @@ def com_google_fonts_check_073(ttFont):
   id = 'com.google.fonts/check/079',
   conditions = ['glyph_metrics_stats']
 )
-def com_google_fonts_check_079(ttFont):
+def com_google_fonts_check_079(ttFont, glyph_metrics_stats):
   """Monospace font has hhea.advanceWidthMax equal to each glyph's
   advanceWidth?"""
+
+  seems_monospaced = glyph_metrics_stats["seems_monospaced"]
+  if not seems_monospaced:
+    yield PASS, ("Font is not monospaced.")
+    return
 
   # hhea:advanceWidthMax is treated as source of truth here.
   max_advw = ttFont['hhea'].advanceWidthMax
