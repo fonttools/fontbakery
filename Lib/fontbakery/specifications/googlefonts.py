@@ -2968,11 +2968,12 @@ def com_google_fonts_check_159(ttFont,
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
   failed = False
-  for name in ttFont['name'].names:
-    if name.nameID == NameID.FULL_FONT_NAME:
-      expected_value = "{} {}".format(familyname,
-                                      style)
-      string = name.string.decode(name.getEncoding()).strip()
+  full_name_records = [ttFont['name'].getName(4, 1, 0, 0),
+                       ttFont['name'].getName(4, 3, 1, 1033)]
+  full_names = [r for r in full_name_records if r]
+  expected_value = "{} {}".format(familyname, style)
+  for full_name in full_names:
+      string = full_name.toUnicode().strip()
       if string != expected_value:
         failed = True
         # special case
@@ -2982,12 +2983,12 @@ def com_google_fonts_check_159(ttFont,
           yield WARN, ("Entry {} on the 'name' table:"
                        " Got '{}' which lacks 'Regular',"
                        " but it is probably OK in this case."
-                       "").format(name_entry_id(name),
+                       "").format(name_entry_id(full_name),
                                   unidecode(string))
         else:
           yield FAIL, ("Entry {} on the 'name' table: "
                        "Expected '{}' "
-                       "but got '{}'.").format(name_entry_id(name),
+                       "but got '{}'.").format(name_entry_id(full_name),
                                                expected_value,
                                                unidecode(string))
 
