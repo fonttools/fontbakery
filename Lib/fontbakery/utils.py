@@ -49,9 +49,9 @@ def get_name_entries(font,
   results = []
   for entry in font['name'].names:
     if entry.nameID == nameID and \
-       (platformID is None or entry.platformID == platformID) and \
-       (encodingID is None or entry.platEncID == encodingID) and \
-       (langID is None or entry.langID == langID):
+       (platformID is None or entry.platformID in platformID) and \
+       (encodingID is None or entry.platEncID in encodingID) and \
+       (langID is None or entry.langID in langID):
       results.append(entry)
   return results
 

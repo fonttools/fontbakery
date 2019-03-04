@@ -361,7 +361,7 @@ def com_google_fonts_check_163(ttFont):
     familyname_str = familyname.string.decode(familyname.getEncoding())
     for stylename_str in get_name_entry_strings(ttFont,
                                                 NameID.FONT_SUBFAMILY_NAME,
-                                                platformID=plat):
+                                                platformID=[plat]):
       if len(familyname_str + stylename_str) > 20:
         failed = True
         yield WARN, ("The combined length of family and style"
