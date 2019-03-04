@@ -3054,21 +3054,22 @@ def com_google_fonts_check_161(ttFont, style, familyname):
                                                  name_entry_id(name)))
   else:
     # Check typographic family name resembles filename
-    expected_value = os.path.basename(ttFont.reader.file.name).split("-")[0]
+    family_filename = font_filename(ttFont).split("-")[0]
     has_entry = False
-    for name in ttFont['name'].names:
-      if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
-        string = name.toUnicode().replace(" ", "")
-        if string == expected_value:
-          has_entry = True
-        else:
+    typo_family_name_records = [ttFont['name'].getName(16, 1, 0, 0),
+                                ttFont['name'].getName(16, 3, 1, 1033)]
+    typo_family_names = [r for r in typo_family_name_records if r]
+    for name in typo_family_names:
+      if name.toUnicode().replace(" ", "") == family_filename:
+        has_entry = True
+      else:
           failed = True
           yield FAIL, Message("non-ribbi-bad-value",
-                              ("Entry {} on the 'name' table: "
-                               "Expected '{}' "
-                               "but got '{}'.").format(name_entry_id(name),
-                                                       expected_value,
-                                                       unidecode(string)))
+                              ("Entry {} on the 'name' table: '{}' "
+                               "is not similar to "
+                               "filename '{}'").format(name_entry_id(name),
+                                                       family_filename,
+                                                       unidecode(name.toUnicode())))
     if not failed and not has_entry:
       failed = True
       yield FAIL, Message("non-ribbi-lacks-entry",
