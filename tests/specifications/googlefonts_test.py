@@ -2169,19 +2169,6 @@ def test_check_158():
                                  familyname(ttFont)))[-1]
     assert status == PASS
 
-  # - FAIL, "invalid-entry" - "Font should not have a certain name table entry."
-  filename = "data/test/montserrat/Montserrat-ThinItalic.ttf"
-  print ("Test FAIL 'invalid-entry'...")
-  ttFont = TTFont(filename)
-  # We setup a bad entry:
-  ttFont["name"].names[0].nameID = NameID.FONT_SUBFAMILY_NAME
-  ttFont["name"].names[0].platformID = PlatformID.CUSTOM
-  # And this should now FAIL:
-  status, message = list(check(ttFont,
-                               style(ttFont),
-                               familyname(ttFont)))[-1]
-  assert status == FAIL and message.code == "invalid-entry"
-
 
   # - FAIL, "bad-familyname" - "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
   filename = "data/test/montserrat/Montserrat-ThinItalic.ttf"

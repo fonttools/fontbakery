@@ -2831,6 +2831,10 @@ def familyname(ttFont):
   return family_name
 
 
+def font_filename(ttFont):
+    return os.path.basename(ttFont.reader.file.name)
+
+
 @check(
   id = 'com.google.fonts/check/156',
   conditions = ['style'],
@@ -2879,8 +2883,7 @@ def get_only_weight(value):
   })
 def com_google_fonts_check_157(ttFont, style, familyname):
   """ Check name table: FONT_FAMILY_NAME entries. """
-  filename = os.path.basename(ttFont.reader.file.name)
-  file_familyname = filename.split('-')[0]
+  file_familyname = font_filename(ttFont).split('-')[0]
   mac_familyname = ttFont['name'].getName(1, 1, 0, 0)
   win_familyname = ttFont['name'].getName(1, 3, 1, 1033)
 
@@ -2889,13 +2892,13 @@ def com_google_fonts_check_157(ttFont, style, familyname):
     if mac_familyname.toUnicode().replace(" ", "") != file_familyname:
       failed = True
       yield FAIL, "Mac Family name {} is not similar to filename {}".format(
-        mac_familyname.toUnicode(), filename)
+        mac_familyname.toUnicode(), file_familyname)
 
   if win_familyname and style in RIBBI_STYLE_NAMES:
-    if win_familyname.toUnicode().replace(" ", "") != get_only_weight(file_familyname):
+    if win_familyname.toUnicode().replace(" ", "") != file_familyname:
       failed = True
       yield FAIL, "Win Family name {} is not similar to filename {}".format(
-        win_familyname.toUnicode(), filename)
+        win_familyname.toUnicode(), file_familyname)
   elif win_familyname and style not in RIBBI_STYLE_NAMES:
     desired_name = "{} {}".format(familyname, get_only_weight(style))
     if win_familyname.toUnicode() != desired_name:
@@ -2918,39 +2921,35 @@ def com_google_fonts_check_158(ttFont,
                                style,
                                familyname):
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
-  from fontbakery.utils import name_entry_id
+  file_subfamilyname = font_filename(ttFont).split("-")[1][:-4]
+  mac_subfamilyname = ttFont['name'].getName(2, 1, 0, 0)
+  win_subfamilyname = ttFont['name'].getName(2, 3, 1, 1033)
 
   failed = False
-  for name in ttFont['name'].names:
-    if name.nameID == NameID.FONT_SUBFAMILY_NAME:
-      if name.platformID == PlatformID.MACINTOSH:
-        expected_value = style
 
-      elif name.platformID == PlatformID.WINDOWS:
-        if style in ["Bold", "Bold Italic"]:
-          expected_value = style
-        else:
-          if "Italic" in style:
-            expected_value = "Italic"
-          else:
-            expected_value = "Regular"
+  if mac_subfamilyname:
+    if mac_subfamilyname.toUnicode().replace(" ", "") != file_subfamilyname:
+      failed = True
+      yield FAIL, Message("bad-familyname",
+                         ("Mac SubFamily name {} is not similar to "
+                          "filename {}").format(
+                              mac_subfamilyname.toUnicode(), file_subfamilyname))
+
+  if win_subfamilyname:
+    if style in RIBBI_STYLE_NAMES:
+      expected = style
+    elif style not in RIBBI_STYLE_NAMES:
+      if "Italic" in style:
+        expected = "Italic"
       else:
-        yield FAIL, Message("invalid-entry",
-                            ("Font should not have a "
-                             "{} entry!").format(name_entry_id(name)))
-        failed = True
-        continue
+        expected = "Regular"
 
-      string = name.string.decode(name.getEncoding()).strip()
-      if string != expected_value:
-        failed = True
-        yield FAIL, Message("bad-familyname",
-                            ("Entry {} on the 'name' table: "
-                             "Expected '{}' "
-                             "but got '{}'.").format(name_entry_id(name),
-                                                     expected_value,
-                                                     string))
-
+    if win_subfamilyname.toUnicode() != expected:
+      failed = True
+      yield FAIL, Message("bad-familyname",
+                         ("Entry FONT_SUBFAMILY_NAME name on the 'name' "
+                          "table: Expected '{}' "
+                          "but got '{}'.").format(expected, style))
   if not failed:
     yield PASS, "FONT_SUBFAMILY_NAME entries are all good."
 
