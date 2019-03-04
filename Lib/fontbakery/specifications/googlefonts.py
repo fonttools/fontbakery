@@ -3009,16 +3009,18 @@ def com_google_fonts_check_160(ttFont, style, familyname):
   from fontbakery.utils import name_entry_id
 
   failed = False
-  for name in ttFont['name'].names:
-    if name.nameID == NameID.POSTSCRIPT_NAME:
-      expected_value = f"{familyname}-{style}"
-
-      string = name.string.decode(name.getEncoding()).strip()
+  ps_name_records = [ttFont['name'].getName(6, 1, 0, 0),
+                     ttFont['name'].getName(6, 3, 1, 1033)]
+  ps_names = [r for r in ps_name_records if r]
+  expected_value = "{}-{}".format(familyname.replace(" ", ""),
+                                  style.replace(" ", ""))
+  for ps_name in ps_names:
+      string = ps_name.toUnicode().strip()
       if string != expected_value:
         failed = True
         yield FAIL, ("Entry {} on the 'name' table: "
                      "Expected '{}' "
-                     "but got '{}'.").format(name_entry_id(name),
+                     "but got '{}'.").format(name_entry_id(ps_name),
                                              expected_value,
                                              unidecode(string))
   if not failed:
