@@ -3091,9 +3091,7 @@ def com_google_fonts_check_162(ttFont, style):
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
 
-  filename = os.path.basename(ttFont.reader.file.name)
-  expected_value = filename.split('-')[1][:-4]
-
+  expected_value = font_filename(ttFont).split('-')[1][:-4]
   failed = False
 
   if style in ['Regular',
@@ -3112,18 +3110,21 @@ def com_google_fonts_check_162(ttFont, style):
       failed = True
       yield FAIL, ("Font style '{}' is not similar to "
                    "filename '{}'".format(style,
-                                          filename))
+                                          expected_value))
   else:
     has_entry = False
-    for name in ttFont['name'].names:
-      if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
-        if name.toUnicode().replace(" ", "") == expected_value:
-          has_entry = True
-        else:
-          failed = True
-          yield FAIL, Message("non-ribbi-bad-value",
-                             ("Typographic Style name {} is not similar "
-                              "to filename {}".format(name.toUnicode(), filename)))
+    typo_subfamily_name_records = [ttFont['name'].getName(17, 1, 0, 0),
+                                   ttFont['name'].getName(17, 3, 1, 1033)]
+    typo_subfamily_names = [r for r in typo_subfamily_name_records if r]
+    for name in typo_subfamily_names:
+      if name.toUnicode().replace(" ", "") == expected_value:
+        has_entry = True
+      else:
+        failed = True
+        yield FAIL, Message("non-ribbi-bad-value",
+                           ("Typographic Style name '{}' is not similar "
+                            "to filename '{}'".format(name.toUnicode(),
+                                                      expected_value)))
     if not failed and not has_entry:
       failed = True
       yield FAIL, Message("non-ribbi-lacks-entry",
