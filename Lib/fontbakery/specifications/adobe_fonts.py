@@ -14,6 +14,11 @@ spec_imports = ((
 ),)
 
 
+# The line below is to get around the flake8 complaint that these checks
+# are "imported but unused".
+# ToDo: find if there's a better way to handle this.
+_imported_checks = [com_google_fonts_check_040, com_google_fonts_check_042]
+
 # this is from the output of
 # $ fontbakery check-specification  fontbakery.specifications.googlefonts -L
 expected_check_ids = [
