@@ -1,6 +1,15 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+
+## 0.6.12 (2019-Mar-07)
+### Bug fixes
+  - Fix bug in which a singular ttFont condition causes a family-wide (ttFonts) check to be executed once per font. (issue #2370)
+
+### New features
+  - We now have an Adobe collection of checks (specification). It will include more checks in future releases. (PR #2369)
+
+
 ## 0.6.11 (2019-Feb-18)
 ### Documentation
   - Update maintainer notes so that we do not forget to update the cache of vendor ids list. (issue #2359)

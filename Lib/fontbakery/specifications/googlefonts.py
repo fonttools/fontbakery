@@ -480,7 +480,7 @@ def com_google_fonts_check_007(family_metadata):
 
 @check(
   id = 'com.google.fonts/check/011',
-  conditions = ['is_ttf',
+  conditions = ['are_ttf',
                 'stylenames_are_canonical']
 )
 def com_google_fonts_check_011(ttFonts):
@@ -529,7 +529,7 @@ def com_google_fonts_check_011(ttFonts):
 
 @check(
   id = 'com.google.fonts/check/012',
-  conditions = ['is_ttf']
+  conditions = ['are_ttf']
 )
 def com_google_fonts_check_012(ttFonts):
   """Fonts have equal glyph names?"""

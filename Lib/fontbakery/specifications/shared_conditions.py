@@ -18,6 +18,15 @@ def is_ttf(ttFont):
 
 
 @condition
+def are_ttf(ttFonts):
+  for f in ttFonts:
+    if not is_ttf(f):
+      return False
+  # otherwise:
+  return True
+
+
+@condition
 def is_cff(ttFont):
   return 'CFF ' in ttFont
 
