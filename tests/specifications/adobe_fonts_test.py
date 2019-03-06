@@ -3,7 +3,6 @@ from fontTools.ttLib import TTFont
 
 
 def test_check_name_empty_records():
-    """ Checking OS/2.usWeightClass """
     from fontbakery.specifications.adobe_fonts import (
         com_adobe_fonts_check_name_empty_records as check)
     font_path = "data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf"
@@ -21,4 +20,28 @@ def test_check_name_empty_records():
     # now try a string that only has whitespace
     test_font['name'].names[3].string = b' '
     status, message = list(check(test_font))[-1]
+    assert status == FAIL
+
+
+def test_check_consistent_upm():
+    from fontbakery.specifications.adobe_fonts import (
+        com_adobe_fonts_check_consistent_upm as check)
+
+    base_path = 'data/test/source-sans-pro/OTF/'
+
+    font_names = ['SourceSansPro-Regular.otf',
+                  'SourceSansPro-Bold.otf',
+                  'SourceSansPro-It.otf']
+
+    font_paths = [base_path + n for n in font_names]
+
+    test_fonts = [TTFont(x) for x in font_paths]
+
+    # try fonts with consistent UPM
+    status, message = list(check(test_fonts))[-1]
+    assert status == PASS
+
+    # now try with one font with a different UPM
+    test_fonts[1]['head'].unitsPerEm = 2048
+    status, message = list(check(test_fonts))[-1]
     assert status == FAIL

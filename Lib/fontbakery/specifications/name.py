@@ -405,3 +405,36 @@ def com_adobe_fonts_check_postscript_name_cff_vs_name(ttFont):
 
   if not failed:
     yield PASS, ("Name table PostScript name matches CFF table FontName.")
+
+
+@check(
+  id='com.adobe.fonts/check/max_4_fonts_per_family_name',
+  rationale="""Per the OpenType spec. 'The Font Family name ... should be
+  shared among at most four fonts that differ only in weight or style ...'
+  """,
+)
+def com_adobe_fonts_check_max_4_fonts_per_family_name(ttFonts):
+  """Verify that each group of fonts with the same nameID 1
+  has maximum of 4 fonts"""
+  from collections import Counter
+  from fontbakery.utils import get_name_entry_strings
+  failed = False
+  family_names = list()
+  for ttFont in ttFonts:
+    # family_names.append(ttFont['name'].)
+    names_list = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+    # names_list will likely contain multiple entries, e.g. multiple copies
+    # of the same name in the same language for different platforms, but
+    # also different names in different languages, we use set() below
+    # to remove the duplicates and only store the unique family name(s)
+    # used for a given font
+    names_set = set(names_list)
+    family_names.extend(names_set)
+  counter = Counter(family_names)
+  for family_name, count in counter.items():
+    if count > 4:
+      failed = True
+      yield FAIL, ("Family '{}' has {} fonts (should be 4 or fewer)."
+                   ).format(family_name, count)
+  if not failed:
+    yield PASS, ("There were no more than 4 fonts per family name.")

@@ -354,3 +354,43 @@ def test_check_postscript_name_cff_vs_name():
   )
   status, message = list(check(test_font))[-1]
   assert status == PASS
+
+
+def test_check_max_4_fonts_per_family_name():
+  from fontbakery.specifications.name import \
+    com_adobe_fonts_check_max_4_fonts_per_family_name as check
+
+  base_path = 'data/test/source-sans-pro/OTF/'
+
+  font_names = [
+    'SourceSansPro-Black.otf',
+    'SourceSansPro-BlackIt.otf',
+    'SourceSansPro-Bold.otf',
+    'SourceSansPro-BoldIt.otf',
+    'SourceSansPro-ExtraLight.otf',
+    'SourceSansPro-ExtraLightIt.otf',
+    'SourceSansPro-It.otf',
+    'SourceSansPro-Light.otf',
+    'SourceSansPro-LightIt.otf',
+    'SourceSansPro-Regular.otf',
+    'SourceSansPro-Semibold.otf',
+    'SourceSansPro-SemiboldIt.otf']
+
+  font_paths = [base_path + n for n in font_names]
+
+  test_fonts = [TTFont(x) for x in font_paths]
+
+  # try fonts with correct family name grouping
+  status, message = list(check(test_fonts))[-1]
+  assert status == PASS
+
+  # now set 5 of the fonts to have the same family name
+  for font in test_fonts[:5]:
+    name_records = font['name'].names
+    for name_record in name_records:
+      if name_record.nameID == 1:
+        # print(repr(name_record.string))
+        name_record.string = 'foobar'.encode('utf-16be')
+
+  status, message = list(check(test_fonts))[-1]
+  assert status == FAIL

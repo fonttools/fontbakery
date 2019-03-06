@@ -4,6 +4,7 @@ Checks for Adobe Fonts (formerly known as Typekit).
 from fontbakery.callable import check
 from fontbakery.checkrunner import (PASS, FAIL, Section)
 from fontbakery.fonts_spec import spec_factory
+
 from fontbakery.specifications.googlefonts import (
     com_google_fonts_check_040, com_google_fonts_check_042)
 
@@ -78,7 +79,9 @@ expected_check_ids = [
     'com.google.fonts/check/ftxvalidator_is_available',  # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
     'com.google.fonts/check/wght_valid_range',  # Weight axis coordinate must be within spec range of 1 to 1000 on all instances.
     'com.adobe.fonts/check/postscript_name_cff_vs_name',  # CFF table FontName must match name table ID 6 (PostScript name).
-    'com.adobe.fonts/check/name_empty_records'  # check 'name' table for empty records
+    'com.adobe.fonts/check/max_4_fonts_per_family_name',  # Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts
+    'com.adobe.fonts/check/name_empty_records',  # check 'name' table for empty records
+    'com.adobe.fonts/check/consistent_upm'  # fonts have consistent Units Per Em?
 ]
 
 specification = spec_factory(default_section=Section("Adobe Fonts"))
@@ -104,6 +107,21 @@ def com_adobe_fonts_check_name_empty_records(ttFont):
                          ).format(name_key)
     if not failed:
         yield PASS, ("No empty name table records found.")
+
+
+@check(
+    id='com.adobe.fonts/check/consistent_upm'
+)
+def com_adobe_fonts_check_consistent_upm(ttFonts):
+    """Fonts have consistent Units Per Em?"""
+    upm_set = set()
+    for ttFont in ttFonts:
+        upm_set.add(ttFont['head'].unitsPerEm)
+    if len(upm_set) > 1:
+        yield FAIL, ("Fonts have different units per em: {}."
+                     ).format(sorted(upm_set))
+    else:
+        yield PASS, "Fonts have consistent units per em."
 
 
 def check_skip_filter(checkid, font=None, **iterargs):
