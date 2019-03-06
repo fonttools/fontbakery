@@ -1575,6 +1575,39 @@ class Spec:
     """
     pass
 
+  def get_deep_check_dependencies(self, check):
+    seen = set()
+    dependencies = list(check.args)
+    if hasattr(check, 'conditions'):
+      dependencies += [name for negated, name in
+                       map(is_negated, check.conditions)]
+    while dependencies:
+      name = dependencies.pop()
+      if name in seen:
+        continue
+      seen.add(name)
+      condition = self.conditions.get(name, None)
+      if condition is not None:
+        dependencies += condition.args
+    return seen
+
+  @property
+  def checks(self):
+    for section in self.sections:
+      for check in section.checks:
+        yield check
+
+  def get_checks_by_dependencies(self, *dependencies, subset=False):
+    deps = set(dependencies)  # faster membership checking
+    result = []
+    for check in self.checks:
+      check_deps = self.get_deep_check_dependencies(check)
+      if (subset and deps.issubset(check_deps)) \
+        or (not subset and len(deps.intersection(check_deps))):
+        result.append(check)
+    return result
+
+
 def get_module_specification(module, name=None):
   """
   Get or create a specification from a module and return it.
