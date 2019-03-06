@@ -29,6 +29,7 @@ def test_check_consistent_upm():
 
     base_path = 'data/test/source-sans-pro/OTF/'
 
+    # these fonts have a consistent unitsPerEm of 1000:
     font_names = ['SourceSansPro-Regular.otf',
                   'SourceSansPro-Bold.otf',
                   'SourceSansPro-It.otf']
@@ -37,11 +38,11 @@ def test_check_consistent_upm():
 
     test_fonts = [TTFont(x) for x in font_paths]
 
-    # try fonts with consistent UPM
+    # try fonts with consistent UPM (i.e. 1000)
     status, message = list(check(test_fonts))[-1]
     assert status == PASS
 
-    # now try with one font with a different UPM
+    # now try with one font with a different UPM (i.e. 2048)
     test_fonts[1]['head'].unitsPerEm = 2048
     status, message = list(check(test_fonts))[-1]
     assert status == FAIL
