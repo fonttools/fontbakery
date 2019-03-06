@@ -44,6 +44,11 @@ class FontsSpec(Spec):
 
     return ('fonts', )
 
+  def get_family_checks(self):
+    family_checks = self.get_checks_by_dependencies('ttFonts', 'vmetrics')
+    return family_checks
+
+
 fonts_expected_value = ExpectedValue(
       'fonts'
     , default=[]

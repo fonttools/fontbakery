@@ -46,3 +46,20 @@ def test_check_consistent_upm():
     test_fonts[1]['head'].unitsPerEm = 2048
     status, message = list(check(test_fonts))[-1]
     assert status == FAIL
+
+
+def test_get_family_checks():
+    from fontbakery.specifications.adobe_fonts import specification
+    family_checks = specification.get_family_checks()
+    family_check_ids = {check.id for check in family_checks}
+    expected_family_check_ids = {
+        'com.adobe.fonts/check/consistent_upm',
+        'com.adobe.fonts/check/max_4_fonts_per_family_name',
+        'com.google.fonts/check/008',
+        'com.google.fonts/check/009',
+        'com.google.fonts/check/010',
+        'com.google.fonts/check/013',
+        'com.google.fonts/check/014',
+        'com.google.fonts/check/040'
+    }
+    assert family_check_ids == expected_family_check_ids
