@@ -394,3 +394,8 @@ def test_check_max_4_fonts_per_family_name():
 
   status, message = list(check(test_fonts))[-1]
   assert status == FAIL
+
+  # now try with a set of 3 fonts to make sure we skip the test
+  short_list = test_fonts[:3]
+  status, message = list(check(short_list))[-1]
+  assert status == SKIP
