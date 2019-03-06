@@ -110,7 +110,10 @@ def com_adobe_fonts_check_name_empty_records(ttFont):
 
 
 @check(
-    id='com.adobe.fonts/check/consistent_upm'
+    id='com.adobe.fonts/check/consistent_upm',
+    rationale="""While not required by the OpenType spec, we (Adobe) expect
+    that a group of fonts designed & produced as a family have consistent
+    units per em. """
 )
 def com_adobe_fonts_check_consistent_upm(ttFonts):
     """Fonts have consistent Units Per Em?"""
