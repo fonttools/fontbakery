@@ -165,6 +165,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/aat' # Are there unwanted Apple tables?
       , 'com.google.fonts/check/ftxvalidator_is_available' # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
       , 'com.adobe.fonts/check/postscript_name_cff_vs_name' # CFF table FontName must match name table ID 6 (PostScript name).
+      , 'com.adobe.fonts/check/max_4_fonts_per_family_name' # Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts
       , 'com.google.fonts/check/metadata/parses' # Check METADATA.pb parses correctly.
       , 'com.google.fonts/check/fvar_name_entries' # All name entries referenced by fvar instances exist on the name table?
       , 'com.google.fonts/check/varfont_has_instances' # A variable font must have named instances.
