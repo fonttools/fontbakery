@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN, INFO, SKIP
+from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN, INFO
 from fontbakery.message import Message
 from fontbakery.constants import (PriorityLevel,
                                   NameID,
@@ -418,10 +418,6 @@ def com_adobe_fonts_check_max_4_fonts_per_family_name(ttFonts):
   has maximum of 4 fonts"""
   from collections import Counter
   from fontbakery.utils import get_name_entry_strings
-
-  if len(ttFonts) < 4:
-    yield SKIP, ("Fewer than 4 fonts in list, so no need for this check.")
-    return
 
   failed = False
   family_names = list()
