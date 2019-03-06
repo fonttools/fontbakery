@@ -5,20 +5,14 @@ from fontbakery.callable import check
 from fontbakery.checkrunner import (PASS, FAIL, Section)
 from fontbakery.fonts_spec import spec_factory
 
-from fontbakery.specifications.googlefonts import (
-    com_google_fonts_check_040, com_google_fonts_check_042)
-
-spec_imports = ((
-    '.',
-    ('general', 'cmap', 'head', 'os2', 'post', 'name', 'hhea', 'dsig', 'hmtx',
-     'gpos', 'gdef', 'kern', 'glyf', 'fvar', 'shared_conditions', 'loca')
-),)
-
-
-# The line below is to get around the flake8 complaint that these checks
-# are "imported but unused".
-# ToDo: find if there's a better way to handle this.
-_imported_checks = [com_google_fonts_check_040, com_google_fonts_check_042]
+spec_imports = (
+    ('.',
+        ('general', 'cmap', 'head', 'os2', 'post', 'name', 'hhea', 'dsig',
+         'hmtx', 'gpos', 'gdef', 'kern', 'glyf', 'fvar', 'shared_conditions',
+         'loca')),
+    ('fontbakery.specifications.googlefonts',
+        ('com_google_fonts_check_040', 'com_google_fonts_check_042')),
+)
 
 # this is from the output of
 # $ fontbakery check-specification  fontbakery.specifications.googlefonts -L
