@@ -137,3 +137,32 @@ def test_check_034():
   status, message = list(check(test_font))[-1]
   assert status == FAIL
   assert message.code == "missing-glyphs"
+
+
+def test_check_fsselection_matches_macstyle():
+  """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
+  from fontbakery.specifications.os2 import \
+    com_adobe_fonts_check_fsselection_matches_macstyle as check
+  from fontbakery.constants import FsSelection
+
+  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+
+  # try a regular (not bold, not italic) font
+  test_font = TTFont(test_font_path)
+  status, message = list(check(test_font))[-1]
+  assert status == PASS
+
+  # now turn on bold in OS/2.fsSelection, but not in head.macStyle
+  test_font['OS/2'].fsSelection |= FsSelection.BOLD
+  status, message = list(check(test_font))[-1]
+  assert 'bold' in message
+  assert status == FAIL
+
+  # now turn off bold in OS/2.fsSelection so we can focus on italic
+  test_font['OS/2'].fsSelection &= ~FsSelection.BOLD
+
+  # now turn on italic in OS/2.fsSelection, but not in head.macStyle
+  test_font['OS/2'].fsSelection |= FsSelection.ITALIC
+  status, message = list(check(test_font))[-1]
+  assert 'italic' in message
+  assert status == FAIL
