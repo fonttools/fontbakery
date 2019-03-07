@@ -246,9 +246,12 @@ class DerrivedIterablesGenerator(Generator):
     return super(DerrivedIterablesGenerator, self).throw(*args)
 
   def send(self, close=False):
+
     decrement_expiration_counters = True if close\
                             else self._decrement_expiration_counters
-
+    if self._counter is not None and decrement_expiration_counters:
+      # we're counting not using
+      decrement_expiration_counters = False
 
     iterargs = next(self._iterargs_generator)
     error, value = self._get_condition(iterargs
@@ -309,8 +312,10 @@ class CheckRunner:
     self._values = values
 
     # TODO: make this an cli argument
-    self._collect_garbage = True
     self._use_cache = True
+    # if we don't use the cache we can't purge it
+    self._purge_condition_cache = self._use_cache and True
+
     self._condition_expiration_counter = None
     self._cache = {
       'conditions': {}
@@ -404,6 +409,12 @@ class CheckRunner:
 
   @contextmanager
   def _args_context(self, args):
+    """
+    This is used to finish all instances of DerrivedIterablesGenerator
+    returnd by _get_args without actually executing the condition functions.
+    The reason is to register all reads from the condition cache to
+    invalidate the cache when not needed anymore.
+    """
     yield args
     for name, value in args.items():
       nametype = self._spec.get_type(name, None)
@@ -467,29 +478,85 @@ class CheckRunner:
     used_iterargs = self._filter_condition_used_iterargs(name, iterargs)
     key = (name, used_iterargs)
 
-    if not self._use_cache or key not in self._cache['conditions']:
-      # evaluate
-      err, val = self._evaluate_condition(name, used_iterargs, path
-                , counter=counter
-                , decrement_expiration_counters=decrement_expiration_counters)
-      if self._use_cache and not decrement_expiration_counters:
-        # cache write
-        self._cache['conditions'][key] = err, val
-    else:
-      # cache hit
-      err, val = self._cache['conditions'][key]
+    # do we expect/produce a real result?
+    expect_value = counter is None and not decrement_expiration_counters
+    do_execute = not self._use_cache or expect_value
 
-    if counter is not None:
+    if expect_value:
+      logging.warning(f'get: {key}')
+
+    # do we already have a real result
+    has_cache = self._use_cache and key in self._cache['conditions']
+
+    do_not_execute = has_cache or not do_execute
+
+    # always run, even if we have a cache
+    # now this seems to get the usage up/down counts right, but it
+    # prevents us from freeing cached dependencies that are no longer
+    # required, when it's a sub-dependency of another cached condtion,
+    # it's never going to be accessed directly anymore :-/
+    # thus, we should register only none cache hits, up and down counting
+    # the problem with this is, when down counting, we have skips depending
+    # on condition values
+    err, val = self._evaluate_condition(name, used_iterargs, path
+                , counter=counter
+                , decrement_expiration_counters=do_not_execute)
+
+    if not has_cache and expect_value:
+        self._cache['conditions'][key] = err, val
+        logging.warning(f'cached: {key}')
+
+    elif has_cache:
+      if expect_value:
+        err, val = self._cache['conditions'][key]
+      else:
+        err, val = None, None
+
+#    if not self._use_cache or key not in self._cache['conditions']:
+#      # evaluate
+#      err, val = self._evaluate_condition(name, used_iterargs, path
+#                , counter=counter
+#                , decrement_expiration_counters=decrement_expiration_counters)
+#
+#      # FIXME: this looks fishy! A) we can't cache if we did not execute
+#      # i.e. use decrement_expiration_counters which is basically synonymous
+#      # to not executing and hence not producing a valid value. But then
+#      # the next time we arrive here the value may still not be cached
+#      # and thusly we decrement all it's dependencies again, where the
+#      # increment counter would have counted the usage only once and then
+#      # let it go ...
+#      # if we write the return value to cache however, it's wrongly None,
+#      # because we didn't execute!
+#      # consequently, cached hit or not, we need to fake execute run
+#      # _evaluate_condition always.
+#      if self._use_cache and not decrement_expiration_counters: # and not counter:
+#        # cache write
+#        self._cache['conditions'][key] = err, val
+#    else:
+#      # cache hit
+#      err, val = self._cache['conditions'][key]
+
+
+    increment = counter is not None
+    condition_counter = counter if increment \
+                            else self._condition_expiration_counter
+
+
+    if increment:
       # only counting _get_condition calls for
-      counter[key] += 1
-    elif self._use_cache and self._collect_garbage:
-      self._condition_expiration_counter[key] -= 1
-      if key in self._cache['conditions']\
-                      and self._condition_expiration_counter[key] <= 0:
-        assert self._condition_expiration_counter[key] == 0, \
-                        f'Overcompensated garbage collection for '\
-                        f'{key} {self._condition_expiration_counter[key]}'
+      condition_counter[key] += 1
+
+    if self._use_cache and self._purge_condition_cache and not increment:
+      condition_counter[key] -= 1
+      # TODO: make this an assertion once it works precisely
+      if condition_counter[key] < 0:
+        # This means the cache is purged too early, probably because
+        # we initially counted wrong.
+        logging.warning(f'Overcompensated cache invalidation for '\
+                        f'{key} {condition_counter[key]}')
+      if key in self._cache['conditions'] and condition_counter[key] <= 0:
         del self._cache['conditions'][key]
+        logging.warning(f'purged: {key}')
 
     return err, val
 
@@ -520,9 +587,9 @@ class CheckRunner:
     """ Returns a generator, which is better for memory critical situations
         than a list containing all results of the used conditions.
 
-        The garbage collection only works when the generator is ended with
-        its generator.finish method after it is not used anymore
-        self._args_context is helping with this.
+        The conditon cache invalidation only works when the generator
+        is ended with its generator.finish method after it is not used
+        anymore self._args_context is helping with this.
     """
 
     condition = self._spec.conditions[name]
@@ -660,7 +727,6 @@ class CheckRunner:
       status = (ERROR, FailedDependenciesError(check, error))
       return (status, None)
 
-
   def _is_skip_filtered(self, check, iterargs):
     if self._spec.check_skip_filter:
       iterargsDict = {key:self.get_iterarg(key, index) for key, index in iterargs}
@@ -768,7 +834,11 @@ class CheckRunner:
       if not accepted:
         # skipped
         continue
-      self._get_check_dependencies(check, iterargs, counter=counter)
+      skipped, args = self._get_check_dependencies(check, iterargs, counter=counter)
+      if not skipped:
+        with self._args_context(args):
+          pass
+
     self._cache['conditions'] = oldcache
     return counter
 
@@ -780,8 +850,9 @@ class CheckRunner:
     else:
       order = self.order
 
-    if self._collect_garbage:
+    if self._purge_condition_cache:
       self._condition_expiration_counter = self._count_condition_usage(order)
+      print('self._condition_expiration_counter', self._condition_expiration_counter)
 
     # prepare: we'll have less ENDSECTION code in the actual run
     # also, we can prepare section_order tuples
@@ -799,6 +870,8 @@ class CheckRunner:
     if section is not None:
       section_orders.append((section, tuple(section_order)))
 
+    from time import time
+    start = time()
     # run
     yield START, order, (None, None, None)
     section = None
@@ -806,6 +879,8 @@ class CheckRunner:
       section_summary = Counter()
       yield STARTSECTION, section_order, (section, None, None)
       for check, iterargs in section_order:
+        seconds = time() - start
+        logging.warn(f'exec {seconds}s: {check}')
         for status, message in self._run_check(check, iterargs):
           yield status, message, (section, check, iterargs)
         # after _run_check the last status must be ENDCHECK
@@ -817,7 +892,10 @@ class CheckRunner:
     yield END, checkrun_summary, (None, None, None)
 
     # reset, empty cache
-    if self._collect_garbage:
+    if self._purge_condition_cache:
+      if self._cache['conditions']:
+        print("self._cache['conditions']", self._cache['conditions'].keys())
+        print('self._condition_expiration_counter', self._condition_expiration_counter)
       assert not self._cache['conditions'], 'Cache should be empty now.'
     else:
       # We could also keep the cache, but that seems like a very uncommon
