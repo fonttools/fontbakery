@@ -147,3 +147,29 @@ def com_google_fonts_check_034(ttFont):
   else:
     yield WARN, (f"OS/2 xAvgCharWidth is {current_value} but it should be"
                  f" {expected_value} which corresponds to {calculation_rule}.")
+
+
+@check(
+  id = 'com.adobe.fonts/check/fsselection_matches_macstyle',
+  rationale = """The bold and italic bits in OS/2.fsSelection must match the
+  bold and italic bits in head.macStyle per the OpenType spec."""
+)
+def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
+  """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
+  from fontbakery.constants import FsSelection, MacStyle
+  failed = False
+  head_bold = (ttFont['head'].macStyle & MacStyle.BOLD) != 0
+  os2_bold = (ttFont['OS/2'].fsSelection & FsSelection.BOLD) != 0
+  if head_bold != os2_bold:
+    failed = True
+    yield FAIL, "The OS/2.fsSelection and head.macStyle " \
+                "bold settings do not match."
+  head_italic = (ttFont['head'].macStyle & MacStyle.ITALIC) != 0
+  os2_italic = (ttFont['OS/2'].fsSelection & FsSelection.ITALIC) != 0
+  if head_italic != os2_italic:
+    failed = True
+    yield FAIL, "The OS/2.fsSelection and head.macStyle " \
+                "italic settings do not match."
+  if not failed:
+    yield PASS, "The OS/2.fsSelection and head.macStyle " \
+                "bold and italic settings match."

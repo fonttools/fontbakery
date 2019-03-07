@@ -53,6 +53,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 200 characters.
       , 'com.google.fonts/check/033' # Checking correctness of monospaced metadata.
       , 'com.google.fonts/check/034' # Check if OS/2 xAvgCharWidth is correct.
+      , 'com.adobe.fonts/check/fsselection_matches_macstyle' # Check if OS/2 fsSelection matches head macStyle bold and italic bits.
       , 'com.google.fonts/check/035' # Checking with ftxvalidator.
       , 'com.google.fonts/check/036' # Checking with ots-sanitize.
       , 'com.google.fonts/check/038' # FontForge validation outputs error messages?

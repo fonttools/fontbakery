@@ -14,8 +14,9 @@ spec_imports = (
         ('com_google_fonts_check_040', 'com_google_fonts_check_042')),
 )
 
-# this is from the output of
-# $ fontbakery check-specification  fontbakery.specifications.googlefonts -L
+# If you comment out the call to specification.test_expected_checks() below,
+# then this list can be generated from the output of:
+# $ fontbakery check-specification fontbakery.specifications.adobe_fonts -L
 expected_check_ids = [
     'com.google.fonts/check/002',  # Checking all files are in the same directory.
     'com.google.fonts/check/008',  # Fonts have consistent underline thickness?
@@ -27,6 +28,7 @@ expected_check_ids = [
     'com.google.fonts/check/031',  # Description strings in the name table must not contain copyright info.
     'com.google.fonts/check/033',  # Checking correctness of monospaced metadata.
     'com.google.fonts/check/034',  # Check if OS/2 xAvgCharWidth is correct.
+    'com.adobe.fonts/check/fsselection_matches_macstyle',  # Check if OS/2 fsSelection matches head macStyle bold and italic bits.
     'com.google.fonts/check/035',  # Checking with ftxvalidator.
     'com.google.fonts/check/036',  # Checking with ots-sanitize.
     'com.google.fonts/check/038',  # FontForge validation outputs error messages?
