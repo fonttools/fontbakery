@@ -6,8 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/canonical_filename]:** Distinguish static from varfont when reporting correctness of fontfile names. There are special naming rules for variable fonts. (issue #2396)
   - Fix bug in handling of `most_common_width` in `glyph_metrics_stats` which affected checking of monospaced metadata. (PR #2391)
   - Fix handling of `post.isFixedPitch` (accept any nonzero value). (PR #2392)
+  - **[com.google.fonts/check/metadata/valid_copyright]:** Check was being skipped when run on upstream font repos which don't have a METADATA.pb file. This check will now only test METADATA.pb files. A new check has been added to check the copyright string in fonts.
 
 ### New checks
+  - **[com.google.fonts/check/font_copyright]: "Copyright notices match canonical pattern in fonts"**
   - **[com.adobe.fonts/check/postscript_name_consistency]:** "Name table ID 6 (PostScript name) must be consistent across platforms." (PR #2394)
 
 ### Renamed numerical check-IDs:
