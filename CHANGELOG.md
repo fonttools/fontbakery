@@ -2,10 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.6.12 (2019-Mar-07)
+## 0.6.12 (2019-Mar-08)
 ### Bug fixes
   - Fix bug in which a singular ttFont condition causes a family-wide (ttFonts) check to be executed once per font. (issue #2370)
   - **[com.google.fonts/check/079]:** Fixed bug in which this check was not confirming that font seemed monospaced before reporting different advance widths. (PR #2368, part of issue #2366)
+  - Protect condition ttfautohint_stats against non-ttf fonts (issue #2385)
 
 ### New features
   - We now have an Adobe collection of checks (specification). It will include more checks in future releases. (PR #2369)
@@ -16,6 +17,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/max_4_fonts_per_family_name]:**  "Each group of fonts with same nameID 1 has maximum of 4 fonts." (PR #2372)
   - **[com.adobe.fonts/check/consistent_upm]:**  "Fonts have consistent units per em." (PR #2372)
   - **[com.adobe.fonts/check/name_empty_records]:** "Check 'name' table for empty records." (PR #2369)
+
 
 ## 0.6.11 (2019-Feb-18)
 ### Documentation
