@@ -1,6 +1,12 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.6.13 (2019-Mar-18)
+### Bug fixes
+  - **[com_google_fonts_check_102]:** Check was being skipped when run on upstream font repos which don't have a METADATA.pb file. This check will now only test METADATA.pb files. A new check has been added to check the copyright string in fonts.
+
+### New checks
+  - **[com.google.fonts/check/font_copyright]: "Copyright notices match canonical pattern in fonts"**
 
 ## 0.6.12 (2019-Mar-07)
 ### Bug fixes

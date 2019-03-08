@@ -116,6 +116,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/100' # METADATA.pb font.filename field contains font name in right format?
       , 'com.google.fonts/check/101' # METADATA.pb font.post_script_name field contains font name in right format?
       , 'com.google.fonts/check/102' # Copyright notice on METADATA.pb matches canonical pattern?
+      , 'com.google.fonts/check/font_copyright' # Copyright notice in font name table entries match canonical pattern?
       , 'com.google.fonts/check/103' # Copyright notice on METADATA.pb does not contain Reserved Font Name?
       , 'com.google.fonts/check/104' # METADATA.pb: Copyright notice shouldn't exceed 500 chars.
       , 'com.google.fonts/check/105' # Filename is set canonically in METADATA.pb?
@@ -1927,33 +1928,48 @@ def com_google_fonts_check_101(font_metadata,
   id = 'com.google.fonts/check/102',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_102(ttFont, font_metadata):
-  """Copyright notices match canonical pattern?"""
+def com_google_fonts_check_102(font_metadata):
+  """Copyright notices match canonical pattern in METADATA.pb"""
+  import re
+  string = font_metadata.copyright
+  does_match = re.search(r'Copyright [0-9]{4} The .* Project Authors \([^\@]*\)',
+                           string)
+  if does_match:
+    yield PASS, "METADATA.pb copyright string is good"
+  else:
+    yield FAIL, ("METADATA.pb: Copyright notices should match"
+                 " a pattern similar to:"
+                 " 'Copyright 2017 The Familyname"
+                 " Project Authors (git url)'\n"
+                 "But instead we have got:"
+                 " '{}'").format(string)
+
+
+@check(
+  id = 'com.google.fonts/check/font_copyright',
+)
+def com_google_fonts_check_font_copyright(ttFont):
+  """Copyright notices match canonical pattern in fonts"""
   import re
   from fontbakery.utils import get_name_entry_strings
 
-  testcases = [('METADATA.pb', font_metadata.copyright)]
-  for entry in get_name_entry_strings(ttFont, NameID.COPYRIGHT_NOTICE):
-    testcases.append(('Name table entry', entry))
-
   failed = False
-  for case, value in testcases:
+  for string in get_name_entry_strings(ttFont, NameID.COPYRIGHT_NOTICE):
     does_match = re.search(r'Copyright [0-9]{4} The .* Project Authors \([^\@]*\)',
-                           value)
+                           string)
     if does_match:
-      yield PASS, ("{}: Copyright field '{}'"
-                   " matches canonical pattern.").format(case, value)
+      yield PASS, ("Name Table entry: Copyright field '{}'"
+                   " matches canonical pattern.").format(string)
     else:
       failed = True
-      yield FAIL, ("{}: Copyright notices should match"
+      yield FAIL, ("Name Table entry: Copyright notices should match"
                    " a pattern similar to:"
                    " 'Copyright 2017 The Familyname"
                    " Project Authors (git url)'\n"
                    "But instead we have got:"
-                   " '{}'").format(case, value)
-
+                   " '{}'").format(string)
   if not failed:
-    yield PASS, "All copyright notice strings are good."
+    yield PASS, "Name table copyright entries are good"
 
 
 @check(
