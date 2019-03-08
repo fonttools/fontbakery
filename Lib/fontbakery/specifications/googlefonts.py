@@ -988,6 +988,10 @@ def ttfautohint_stats(font):
   from ttfautohint import ttfautohint, libttfautohint
   from io import BytesIO
   from fontTools.ttLib import TTFont
+  from fontbakery.specifications.shared_conditions import is_ttf
+
+  if not is_ttf(TTFont(font)):
+    return None
 
   original_buffer = BytesIO()
   TTFont(font).save(original_buffer)
@@ -1001,8 +1005,8 @@ def ttfautohint_stats(font):
 
 @check(
   id = 'com.google.fonts/check/054',
-  conditions = ['ttfautohint_stats',
-                'is_ttf']
+  conditions = ['is_ttf',
+                'ttfautohint_stats']
 )
 def com_google_fonts_check_054(font, ttfautohint_stats):
   """Show hinting filesize impact.
@@ -1179,6 +1183,7 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
 )
 def com_google_fonts_check_061(ttFont):
   """EPAR table present in font?"""
+#  import ipdb; ipdb.set_trace()
   if "EPAR" not in ttFont:
     yield INFO, ("EPAR table not present in font."
                  " To learn more see"
