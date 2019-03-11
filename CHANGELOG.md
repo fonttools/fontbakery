@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - The `FontSpec` class now has a `get_family_checks()` method that returns a list of family-level checks. (PR #2380) 
 
 ### New checks
+  - **[com.adobe.fonts/check/bold_italic_unique_for_nameid1]:** "OS/2.fsSelection bold & italic are unique for each NameID1" (PR #2388)
   - **[com.adobe.fonts/check/fsselection_matches_macstyle]:**  "OS/2.fsSelection and head.macStyle bold and italic bits match." (PR #2382)
   - **[com.adobe.fonts/check/max_4_fonts_per_family_name]:**  "Each group of fonts with same nameID 1 has maximum of 4 fonts." (PR #2372)
   - **[com.adobe.fonts/check/consistent_upm]:**  "Fonts have consistent units per em." (PR #2372)
