@@ -14,7 +14,7 @@ spec_imports = (
         ('com_google_fonts_check_040', 'com_google_fonts_check_042')),
 )
 
-# If you comment out the call to specification.test_expected_checks() below,
+# If you comment out the call to specification.test_expected_checks(),
 # then this list can be generated from the output of:
 # $ fontbakery check-specification fontbakery.specifications.adobe_fonts -L
 expected_check_ids = [
@@ -29,6 +29,7 @@ expected_check_ids = [
     'com.google.fonts/check/033',  # Checking correctness of monospaced metadata.
     'com.google.fonts/check/034',  # Check if OS/2 xAvgCharWidth is correct.
     'com.adobe.fonts/check/fsselection_matches_macstyle',  # Check if OS/2 fsSelection matches head macStyle bold and italic bits.
+    'com.adobe.fonts/check/bold_italic_unique_for_nameid1', # Check that OS/2.fsSelection bold & italic settings are unique for each NameID1
     'com.google.fonts/check/035',  # Checking with ftxvalidator.
     'com.google.fonts/check/036',  # Checking with ots-sanitize.
     'com.google.fonts/check/038',  # FontForge validation outputs error messages?
