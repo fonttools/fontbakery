@@ -166,3 +166,38 @@ def test_check_fsselection_matches_macstyle():
   status, message = list(check(test_font))[-1]
   assert 'italic' in message
   assert status == FAIL
+
+
+def test_check_bold_italic_unique_for_nameid1():
+  """Check that OS/2.fsSelection bold/italic settings are unique within each
+  Compatible Family group (i.e. group of up to 4 with same NameID1)"""
+  from fontbakery.specifications.os2 import \
+    com_adobe_fonts_check_bold_italic_unique_for_nameid1 as check
+  from fontbakery.constants import FsSelection
+
+  base_path = 'data/test/source-sans-pro/OTF/'
+
+  # these fonts have the same NameID1
+  font_names = ['SourceSansPro-Regular.otf',
+                'SourceSansPro-Bold.otf',
+                'SourceSansPro-It.otf',
+                'SourceSansPro-BoldIt.otf']
+
+  font_paths = [base_path + n for n in font_names]
+
+  test_fonts = [TTFont(x) for x in font_paths]
+
+  # the family should be correctly constructed
+  status, message = list(check(test_fonts))[-1]
+  assert status == PASS
+
+  # now hack the italic font to also have the bold bit set
+  test_fonts[2]['OS/2'].fsSelection |= FsSelection.BOLD
+
+  # we should get a failure due to two fonts with both bold & italic set
+  status, message = list(check(test_fonts))[-1]
+  expected_message = "Family 'Source Sans Pro' has 2 fonts (should be no " \
+                     "more than 1) with the same OS/2.fsSelection " \
+                     "bold & italic settings: Bold=True, Italic=True"
+  assert message == expected_message
+  assert status == FAIL
