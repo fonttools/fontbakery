@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.6.12 (2019-Mar-08)
+## 0.6.12 (2019-Mar-11)
 ### Bug fixes
   - Fix bug in which a singular ttFont condition causes a family-wide (ttFonts) check to be executed once per font. (issue #2370)
   - **[com.google.fonts/check/079]:** Fixed bug in which this check was not confirming that font seemed monospaced before reporting different advance widths. (PR #2368, part of issue #2366)
