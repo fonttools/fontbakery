@@ -162,6 +162,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix bug in which a singular ttFont condition causes a family-wide (ttFonts) check to be executed once per font. (issue #2370)
   - **[com.google.fonts/check/079]:** Fixed bug in which this check was not confirming that font seemed monospaced before reporting different advance widths. (PR #2368, part of issue #2366)
   - Protect condition ttfautohint_stats against non-ttf fonts (issue #2385)
+  - **[com.google/fonts/check/040]:** Cap accepted winDescent and winAscent values. Both should be less than double their respective bounding box values.
 
 ### New features
   - We now have an Adobe collection of checks (specification). It will include more checks in future releases. (PR #2369)

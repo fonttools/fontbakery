@@ -3484,6 +3484,13 @@ def com_google_fonts_check_win_ascent_and_descent(ttFont, vmetrics):
                          " should be equal or greater than {}, but got"
                          " {} instead").format(vmetrics['ymax'],
                                                ttFont['OS/2'].usWinAscent))
+  if ttFont['OS/2'].usWinAscent > vmetrics['ymax'] * 2:
+    failed = True
+    yield FAIL, Message(
+        "ascent", ("OS/2.usWinAscent value {} is too large."
+                   " It should be less than double the yMax."
+                   " Current yMax value is {}").format(ttFont['OS/2'].usWinDescent,
+                                                       vmetrics['ymax']))
   # OS/2 usWinDescent:
   if ttFont['OS/2'].usWinDescent < abs(vmetrics['ymin']):
     failed = True
@@ -3492,6 +3499,14 @@ def com_google_fonts_check_win_ascent_and_descent(ttFont, vmetrics):
                     " should be equal or greater than {}, but got"
                     " {} instead").format(
                         abs(vmetrics['ymin']), ttFont['OS/2'].usWinDescent))
+
+  if ttFont['OS/2'].usWinDescent > abs(vmetrics['ymin']) * 2:
+    failed = True
+    yield FAIL, Message(
+        "descent", ("OS/2.usWinDescent value {} is too large."
+                    " It should be less than double the yMin."
+                    " Current absolute yMin value is {}").format(ttFont['OS/2'].usWinDescent,
+                                                                 abs(vmetrics['ymin'])))
   if not failed:
     yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
 
