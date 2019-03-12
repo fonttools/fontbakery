@@ -29,6 +29,7 @@
 
 
 
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual" lang="en-us" dir="ltr" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -60,23 +61,23 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-02-11 09:57 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/797c5ed2dcbf307559ea05486cc353b016a25090/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-03-11 05:28 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/c97e90c05c464565b11349b043e0139b76c6cd7e/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2579" />
+<meta name="word_count" content="2607" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cc019f29.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/15b8e1c6.site-ltr.css ">
 
-	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/baf7101.conceptual.css ">
+	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/89eb8f33.conceptual.css ">
 
 
 	<script>
@@ -108,18 +109,18 @@
 		}
 	};
 	if (!('Promise' in window && 'resolve' in window.Promise && 'reject' in window.Promise && 'all' in window.Promise && 'race' in window.Promise)) {
-		document.write('<script src="/_themes/docs.theme/master/en-us/_themes/global/js/6ee34c01.bluebird.min.js"><\/script>');
+		document.write('<script src="https://static.docs.com/ui/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"><\/script>');
 	}
 	if (typeof fetch !== 'function') {
-		document.write('<script src="/_themes/docs.theme/master/en-us/_themes/global/js/d9fc435c.fetch.min.js"><\/script>');
+		document.write('<script src="https://static.docs.com/ui/third-party/fetch/2.0.3/fetch.min.js" integrity="sha384-H3LQq82b6Mm80GYRHtRSlTwO9DoXctmYCVEYk9M8mp97lRzs6DuSrHVUg3SBP9w0" crossorigin="anonymous"><\/script>');
 	}
 	if (typeof HTMLTemplateElement === 'undefined') {
-		document.write('<script src="/_themes/docs.theme/master/en-us/_themes/global/js/96af6a8d.template.min.js"><\/script>');
+		document.write('<script src="https://static.docs.com/ui/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"><\/script>');
 	}
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8fe91209.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/4f58cdc1.index-docs.js"></script>
 
 </head>
 
@@ -275,9 +276,7 @@
 							<li class="displayDate loading">
 								<time role="presentation" datetime="2018-07-31T00:00:00.000Z" data-article-date-source="ms.date">7/31/2018</time>
 							</li>
-								<li class="readingTime">
-									12 minutes to read
-								</li>
+								<li class="readingTime">13 minutes to read</li>
 							<li class="contributors-holder">
 								<span class="contributors-text">Contributors</span>
 								<ul class="contributors" data-bi-name="contributors">
@@ -437,7 +436,7 @@
 
 <tr>
 <td>Adam</td>
-<td>Adam Jagosz</td>
+<td><a href="http://www.adamjagosz.com" data-linktype="external">Adam Jagosz</a></td>
 </tr>
 
 <tr>
@@ -742,6 +741,11 @@
 <tr>
 <td>bftr</td>
 <td><a href="http://www.bleed.com" data-linktype="external">Bleed Design Studio</a></td>
+</tr>
+
+<tr>
+<td>BGDN</td>
+<td><a href="http://www.ryanbugden.com" data-linktype="external">Ryan Bugden</a></td>
 </tr>
 
 <tr>
@@ -1516,6 +1520,11 @@
 </tr>
 
 <tr>
+<td>FOSH</td>
+<td><a href="http://www.forgotten-shapes.com" data-linktype="external">Forgotten Shapes</a></td>
+</tr>
+
+<tr>
 <td>FOST</td>
 <td><a href="http://www.fostertype.com" data-linktype="external">Foster Type</a></td>
 </tr>
@@ -1968,6 +1977,11 @@
 </tr>
 
 <tr>
+<td>IDMS</td>
+<td><a href="https://www.incstonedesign.com/" data-linktype="external">Incstone Design by Megami Studios</a></td>
+</tr>
+
+<tr>
 <td>Idt.</td>
 <td><a href="http://www.identitype.se/" data-linktype="external">Identitype</a></td>
 </tr>
@@ -2144,6 +2158,11 @@
 <tr>
 <td>JPTT</td>
 <td><a href="http://www.typography.net/" data-linktype="external">Jeremy Tankard Typography Ltd</a></td>
+</tr>
+
+<tr>
+<td>JRW</td>
+<td><a href="http://wrdingham.co.uk/" data-linktype="external">Richard Wordingham</a></td>
 </tr>
 
 <tr>
@@ -3021,6 +3040,11 @@
 </tr>
 
 <tr>
+<td>PEAC</td>
+<td><a href="https://www.peachcreme.com/collections/fonts" data-linktype="external">PeachCreme.com</a></td>
+</tr>
+
+<tr>
 <td>PECI</td>
 <td><a href="http://www.pecita.net" data-linktype="external">Pecita</a></td>
 </tr>
@@ -3098,6 +3122,11 @@
 <tr>
 <td>PROT</td>
 <td><a href="http://www.prototypo.io" data-linktype="external">PROTOTYPO</a></td>
+</tr>
+
+<tr>
+<td>Prox</td>
+<td><a href="http://proximasoftware.com/" data-linktype="external">Proxima Software</a></td>
 </tr>
 
 <tr>
@@ -3226,6 +3255,11 @@
 <tr>
 <td>RJPS</td>
 <td><a href="http://www.reallgraphics.com/" data-linktype="external">Reall Graphics</a></td>
+</tr>
+
+<tr>
+<td>RJST</td>
+<td><a href="https://robjelinskistudios.com/Beth-Ellen/" data-linktype="external">Rob Jelinski Studios, llc.</a></td>
 </tr>
 
 <tr>
@@ -3901,6 +3935,11 @@
 </tr>
 
 <tr>
+<td>UNIC</td>
+<td><a href="https://www.unicode.org" data-linktype="external">Unicode Consortium</a></td>
+</tr>
+
+<tr>
 <td>URW</td>
 <td><a href="http://www.urwpp.de/" data-linktype="external">URW++</a></td>
 </tr>
@@ -4163,8 +4202,8 @@ Would you like to provide feedback?		</p>
 					</button>
 				</div>
 				<div class="control dropdown has-caret has-margin-top-none has-margin-bottom-none" auto-align>
-					<button class="button dropdown-trigger has-text-wrap" aria-haspopup="true" aria-expanded="false" aria-controls="fbm0"
-						aria-label="Expand documentation feedback menu" data-bi-name="documentation-feedback-menu">
+					<button class="button dropdown-trigger is-full-height" aria-haspopup="true" aria-expanded="false" aria-controls="fbm0"
+						aria-label="Expand content feedback menu" data-bi-name="documentation-feedback-menu">
 						<span class="icon docon docon-chevron-down-light" aria-hidden="true"></span>
 					</button>
 					<div class="dropdown-menu documentation-feedback-menu" id="fbm0" role="menu">
@@ -4180,7 +4219,7 @@ Would you like to provide feedback?		</p>
 				</div>
 				<div class="control dropdown has-caret has-margin-top-none has-margin-bottom-none" auto-align>
 					<button class="button dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="fbm1"
-						aria-label="Expand documentation feedback menu" data-bi-name="documentation-feedback-menu">
+						aria-label="Liquid error: Can't find the localized string expandDocumentationFeedbackMenu for template Conceptual." data-bi-name="documentation-feedback-menu">
 						<span class="icon docon docon-chevron-down-light" aria-hidden="true"></span>
 					</button>
 					<div class="dropdown-menu documentation-feedback-menu" id="fbm1" role="menu">
@@ -4310,6 +4349,7 @@ Would you like to provide feedback?		</p>
 		<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
     </ul>
 </footer>
+
 	</div>
 
 	<div class="action-panel has-default-focus"></div>
