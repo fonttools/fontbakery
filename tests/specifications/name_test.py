@@ -94,6 +94,7 @@ def test_check_033():
   # a monospaced font with good metadata here.
   ttFont = TTFont("data/test/overpassmono/OverpassMono-Regular.ttf")
   stats = glyph_metrics_stats(ttFont)
+  assert stats['most_common_width'] == 616
   status, message = list(check(ttFont, stats))[-1]
   # WARN is emitted when there's at least one outlier.
   # I don't see a good reason to be picky and also test that one separately here...
