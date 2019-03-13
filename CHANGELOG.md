@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.6.13 (2019-??-??)
 ### Bug fixes
   - Fix bug in handling of `most_common_width` in `glyph_metrics_stats` which affected checking of monospaced metadata. (PR #2391)
+  - Fix handling of `post.isFixedPitch` (accept any nonzero value). (PR #2392)
 
 ## 0.6.12 (2019-Mar-11)
 ### Bug fixes
