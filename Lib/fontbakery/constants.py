@@ -118,7 +118,8 @@ class PANOSE_Proportion(enum.IntEnum):
 class IsFixedWidth(enum.IntEnum):
   """ 'post' table / isFixedWidth definitions """
   NOT_MONOSPACED = 0
-  MONOSPACED = 1  # any non-zero value means monospaced
+  # Do NOT use `MONOSPACED = 1` because *any* non-zero value means monospaced.
+  # I've commented it out because we were incorrectly testing against it. - CJC
 
 class PlatformID(enum.IntEnum):
   UNICODE = 0

@@ -72,7 +72,7 @@ def test_check_033():
 
   # We'll mark it as monospaced on the post table and make sure it fails:
   print('Test FAIL with a non-monospaced font with bad post.isFixedPitch value ...')
-  ttFont["post"].isFixedPitch = IsFixedWidth.MONOSPACED
+  ttFont["post"].isFixedPitch = 42 # *any* non-zero value means monospaced
   status, message = list(check(ttFont, stats))[-1]
   assert status == FAIL and message.code == "bad-post-isFixedPitch"
 
