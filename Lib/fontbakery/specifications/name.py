@@ -407,6 +407,34 @@ def com_adobe_fonts_check_postscript_name_cff_vs_name(ttFont):
 
 
 @check(
+  id='com.adobe.fonts/check/name_id_6_consistency',
+  conditions=['not is_cff'],  # e.g. TTF or CFF2
+  rationale="""
+  The PostScript name entries in the font's 'name' table should be
+  consistent across platforms.
+
+  This is the TTF/CFF2 equivalent of the CFF 'postscript_name_cff_vs_name'
+  check above.
+  """,
+)
+def com_adobe_fonts_check_name_id_6_consistency(ttFont):
+  """Name table ID 6 (PostScript name) must be consistent across platforms."""
+  postscript_names = set()
+  for entry in ttFont['name'].names:
+    if entry.nameID == NameID.POSTSCRIPT_NAME:
+      postscript_name = entry.toUnicode()
+      postscript_names.add(postscript_name)
+
+  if len(postscript_names) > 1:
+    yield FAIL, ("Entries in the 'name' table for ID 6 (PostScript name) are "
+                 "not consistent. Names found: {}."
+                 .format(sorted(postscript_names)))
+  else:
+    yield PASS, ("Entries in the 'name' table for ID 6 "
+                 "(PostScript name) are consistent.")
+
+
+@check(
   id='com.adobe.fonts/check/max_4_fonts_per_family_name',
   rationale="""Per the OpenType spec. 'The Font Family name ... should be
   shared among at most four fonts that differ only in weight or style ...'
