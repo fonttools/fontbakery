@@ -15,12 +15,12 @@ class GHMarkdownReporter(SerializeReporter):
 
   def emoticon(self, name):
     return {
-      'ERROR': ':broken_heart:',
-      'FAIL': ':fire:',
-      'WARN': ':warning:',
-      'INFO': ':information_source:',
-      'SKIP': ':zzz:',
-      'PASS': ':bread:',
+      'ERROR': '💔', 
+      'FAIL': '🔥',
+      'WARN': '⚠️',
+      'INFO': 'ℹ️',
+      'SKIP': '💤',
+      'PASS': '🍞',
     }[name]
 
 
