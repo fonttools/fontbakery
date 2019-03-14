@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix bug in handling of `most_common_width` in `glyph_metrics_stats` which affected checking of monospaced metadata. (PR #2391)
   - Fix handling of `post.isFixedPitch` (accept any nonzero value). (PR #2392)
 
+### New checks
+  - **[com.adobe.fonts/check/name_id_6_consistency]:** "Name table ID 6 (PostScript name) must be consistent across platforms." (PR #2394)
+
 ## 0.6.12 (2019-Mar-11)
 ### Bug fixes
   - Fix bug in which a singular ttFont condition causes a family-wide (ttFonts) check to be executed once per font. (issue #2370)
