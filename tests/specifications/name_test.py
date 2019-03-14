@@ -357,11 +357,44 @@ def test_check_postscript_name_cff_vs_name():
   assert status == PASS
 
 
+def test_check_name_id_6_consistency():
+  from fontbakery.specifications.name import \
+    com_adobe_fonts_check_name_id_6_consistency as check
+
+  base_path = os.path.join('data', 'test', 'source-sans-pro', 'TTF')
+
+  font_path = os.path.join(base_path, 'SourceSansPro-Regular.ttf')
+  test_font = TTFont(font_path)
+
+  # SourceSansPro-Regular only has one name ID 6 entry (for Windows),
+  # let's add another one for Mac that matches the Windows entry:
+  test_font['name'].setName(
+    'SourceSansPro-Regular',
+    NameID.POSTSCRIPT_NAME,
+    PlatformID.MACINTOSH,
+    WindowsEncodingID.UNICODE_BMP,
+    ENGLISH_LANG_ID
+  )
+  status, message = list(check(test_font))[-1]
+  assert status == PASS
+
+  # ...now let's change the Mac name ID 6 entry to something else:
+  test_font['name'].setName(
+    'YetAnotherFontName',
+    NameID.POSTSCRIPT_NAME,
+    PlatformID.MACINTOSH,
+    WindowsEncodingID.UNICODE_BMP,
+    ENGLISH_LANG_ID
+  )
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL
+
+
 def test_check_max_4_fonts_per_family_name():
   from fontbakery.specifications.name import \
     com_adobe_fonts_check_max_4_fonts_per_family_name as check
 
-  base_path = 'data/test/source-sans-pro/OTF/'
+  base_path = os.path.join('data', 'test', 'source-sans-pro', 'OTF')
 
   font_names = [
     'SourceSansPro-Black.otf',
