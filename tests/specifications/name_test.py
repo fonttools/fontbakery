@@ -410,7 +410,7 @@ def test_check_max_4_fonts_per_family_name():
     'SourceSansPro-Semibold.otf',
     'SourceSansPro-SemiboldIt.otf']
 
-  font_paths = [base_path + n for n in font_names]
+  font_paths = [os.path.join(base_path, n) for n in font_names]
 
   test_fonts = [TTFont(x) for x in font_paths]
 
