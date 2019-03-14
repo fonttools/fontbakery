@@ -175,7 +175,7 @@ def test_check_bold_italic_unique_for_nameid1():
     com_adobe_fonts_check_bold_italic_unique_for_nameid1 as check
   from fontbakery.constants import FsSelection
 
-  base_path = 'data/test/source-sans-pro/OTF/'
+  base_path = os.path.join('data', 'test', 'source-sans-pro', 'OTF')
 
   # these fonts have the same NameID1
   font_names = ['SourceSansPro-Regular.otf',
@@ -183,7 +183,7 @@ def test_check_bold_italic_unique_for_nameid1():
                 'SourceSansPro-It.otf',
                 'SourceSansPro-BoldIt.otf']
 
-  font_paths = [base_path + n for n in font_names]
+  font_paths = [os.path.join(base_path, n) for n in font_names]
 
   test_fonts = [TTFont(x) for x in font_paths]
 
