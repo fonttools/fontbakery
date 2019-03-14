@@ -167,7 +167,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/aat' # Are there unwanted Apple tables?
       , 'com.google.fonts/check/ftxvalidator_is_available' # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
       , 'com.adobe.fonts/check/postscript_name_cff_vs_name' # CFF table FontName must match name table ID 6 (PostScript name).
-      , 'com.adobe.fonts/check/name_id_6_consistency' # Name table ID 6 (PostScript name) must be consistent across platforms.
+      , 'com.adobe.fonts/check/postscript_name_consistency' # Name table ID 6 (PostScript name) must be consistent across platforms.
       , 'com.adobe.fonts/check/max_4_fonts_per_family_name' # Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts
       , 'com.google.fonts/check/metadata/parses' # Check METADATA.pb parses correctly.
       , 'com.google.fonts/check/fvar_name_entries' # All name entries referenced by fvar instances exist on the name table?
@@ -3483,17 +3483,17 @@ def com_google_fonts_check_040(ttFont, vmetrics):
 
 @check(
   id = 'com.google.fonts/check/042',
-  rationale = """When OS/2 and hhea vertical metrics match, the same 
+  rationale = """When OS/2 and hhea vertical metrics match, the same
   linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018,
-  Google Fonts has released many fonts with vertical metrics that don't match 
-  in this way. When we fix this issue in these existing families, we will 
+  Google Fonts has released many fonts with vertical metrics that don't match
+  in this way. When we fix this issue in these existing families, we will
   create a visible change in line/paragraph layout for either Windows or macOS
-  users, which will upset some of them. 
+  users, which will upset some of them.
 
   But we have a duty to fix broken stuff, and inconsistent paragraph layout is
-  unacceptably broken when it is possible to avoid it. 
-  
-  If users complain and prefer the old broken version, they are libre to take 
+  unacceptably broken when it is possible to avoid it.
+
+  If users complain and prefer the old broken version, they are libre to take
   care of their own situation."""
 )
 def com_google_fonts_check_042(ttFont):
@@ -3585,8 +3585,8 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
   (https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6.html)
   describes SFNT tables not in the Microsoft OpenType specification
   (https://docs.microsoft.com/en-us/typography/opentype/spec/)
-  and these can sometimes sneak into final release files, 
-  but Google Fonts should only have OpenType tables.""" 
+  and these can sometimes sneak into final release files,
+  but Google Fonts should only have OpenType tables."""
 )
 def com_google_fonts_check_aat(ttFont):
   """Are there unwanted Apple tables?"""

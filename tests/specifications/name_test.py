@@ -357,9 +357,9 @@ def test_check_postscript_name_cff_vs_name():
   assert status == PASS
 
 
-def test_check_name_id_6_consistency():
+def test_check_postscript_name_consistency():
   from fontbakery.specifications.name import \
-    com_adobe_fonts_check_name_id_6_consistency as check
+    com_adobe_fonts_check_postscript_name_consistency as check
 
   base_path = os.path.join('data', 'test', 'source-sans-pro', 'TTF')
 

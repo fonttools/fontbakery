@@ -378,10 +378,10 @@ def com_google_fonts_check_163(ttFont):
   conditions=['is_cff'],
   rationale="""
   The PostScript name entries in the font's 'name' table should match the
-  FontName string in the 'CFF ' table. 
-  
+  FontName string in the 'CFF ' table.
+
   The 'CFF ' table has a lot of information that is duplicated in other tables.
-  This information should be consistent across tables, because there's no 
+  This information should be consistent across tables, because there's no
   guarantee which table an app will get the data from.
   """,
 )
@@ -407,17 +407,17 @@ def com_adobe_fonts_check_postscript_name_cff_vs_name(ttFont):
 
 
 @check(
-  id='com.adobe.fonts/check/name_id_6_consistency',
+  id='com.adobe.fonts/check/postscript_name_consistency',
   conditions=['not is_cff'],  # e.g. TTF or CFF2
   rationale="""
   The PostScript name entries in the font's 'name' table should be
   consistent across platforms.
 
   This is the TTF/CFF2 equivalent of the CFF 'postscript_name_cff_vs_name'
-  check above.
+  check.
   """,
 )
-def com_adobe_fonts_check_name_id_6_consistency(ttFont):
+def com_adobe_fonts_check_postscript_name_consistency(ttFont):
   """Name table ID 6 (PostScript name) must be consistent across platforms."""
   postscript_names = set()
   for entry in ttFont['name'].names:

@@ -7,7 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix handling of `post.isFixedPitch` (accept any nonzero value). (PR #2392)
 
 ### New checks
-  - **[com.adobe.fonts/check/name_id_6_consistency]:** "Name table ID 6 (PostScript name) must be consistent across platforms." (PR #2394)
+  - **[com.adobe.fonts/check/postscript_name_consistency]:** "Name table ID 6 (PostScript name) must be consistent across platforms." (PR #2394)
 
 ## 0.6.12 (2019-Mar-11)
 ### Bug fixes

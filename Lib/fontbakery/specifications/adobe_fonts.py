@@ -76,7 +76,7 @@ expected_check_ids = [
     'com.google.fonts/check/ftxvalidator_is_available',  # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
     'com.google.fonts/check/wght_valid_range',  # Weight axis coordinate must be within spec range of 1 to 1000 on all instances.
     'com.adobe.fonts/check/postscript_name_cff_vs_name',  # CFF table FontName must match name table ID 6 (PostScript name).
-    'com.adobe.fonts/check/name_id_6_consistency',  # Name table ID 6 (PostScript name) must be consistent across platforms.
+    'com.adobe.fonts/check/postscript_name_consistency',  # Name table ID 6 (PostScript name) must be consistent across platforms.
     'com.adobe.fonts/check/max_4_fonts_per_family_name',  # Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts
     'com.adobe.fonts/check/name_empty_records',  # check 'name' table for empty records
     'com.adobe.fonts/check/consistent_upm'  # fonts have consistent Units Per Em?
