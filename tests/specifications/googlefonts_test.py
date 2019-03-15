@@ -1001,9 +1001,9 @@ def test_check_metadata_copyright():
   assert status == FAIL
 
 
-def test_check_089():
+def test_check_metadata_familyname():
   """ Check that METADATA.pb family values are all the same. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_089 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_familyname as check,
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
