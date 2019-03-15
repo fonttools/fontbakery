@@ -101,7 +101,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/metadata/unique_weight_style_pairs' # METADATA.pb: check if fonts field only contains unique style:weight pairs.
       , 'com.google.fonts/check/metadata/license' # METADATA.pb license is "APACHE2", "UFL" or "OFL"?
       , 'com.google.fonts/check/metadata/menu_and_latin' # METADATA.pb should contain at least "menu" and "latin" subsets.
-      , 'com.google.fonts/check/087' # METADATA.pb subsets should be alphabetically ordered.
+      , 'com.google.fonts/check/metadata/subsets_order' # METADATA.pb subsets should be alphabetically ordered.
       , 'com.google.fonts/check/088' # METADATA.pb: Copyright notice is the same in all fonts?
       , 'com.google.fonts/check/089' # Check that METADATA.pb family values are all the same.
       , 'com.google.fonts/check/090' # METADATA.pb: According Google Fonts standards, families should have a Regular style.
@@ -1518,10 +1518,10 @@ def com_google_fonts_check_metadata_menu_and_latin(family_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/087',
+  id = 'com.google.fonts/check/metadata/subsets_order',
   conditions = ['family_metadata']
 )
-def com_google_fonts_check_087(family_metadata):
+def com_google_fonts_check_metadata_subsets_order(family_metadata):
   """METADATA.pb subsets should be alphabetically ordered."""
   expected = list(sorted(family_metadata.subsets))
 

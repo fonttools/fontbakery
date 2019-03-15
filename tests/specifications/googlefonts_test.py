@@ -942,9 +942,9 @@ def test_check_metadata_menu_and_latin():
     assert status == FAIL
 
 
-def test_check_087():
+def test_check_metadata_subsets_order():
   """ METADATA.pb subsets should be alphabetically ordered. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_087 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_subsets_order as check,
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
