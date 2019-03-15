@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Renamed numerical check-IDs:
   - **[com.google.fonts/check/001]:** com.google.fonts/check/canonical_filename
   - **[com.google.fonts/check/097]:** com.google.fonts/check/metadata/match_filename_postscript
+  - **[com.google.fonts/check/105]:** com.google.fonts/check/metadata/canonical_filename
 
 ### Other important code-changes
   - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817

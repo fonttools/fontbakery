@@ -119,7 +119,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/102' # Copyright notice on METADATA.pb matches canonical pattern?
       , 'com.google.fonts/check/103' # Copyright notice on METADATA.pb does not contain Reserved Font Name?
       , 'com.google.fonts/check/104' # METADATA.pb: Copyright notice shouldn't exceed 500 chars.
-      , 'com.google.fonts/check/105' # Filename is set canonically in METADATA.pb?
+      , 'com.google.fonts/check/metadata/canonical_filename' # Filename is set canonically in METADATA.pb?
       , 'com.google.fonts/check/106' # METADATA.pb font.style "italic" matches font internals?
       , 'com.google.fonts/check/107' # METADATA.pb font.style "normal" matches font internals?
       , 'com.google.fonts/check/108' # METADATA.pb font.name and font.full_name fields match the values declared on the name table?
@@ -2021,13 +2021,13 @@ def canonical_filename(font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/105',
+  id = 'com.google.fonts/check/metadata/canonical_filename',
   conditions = ['font_metadata',
                 'canonical_filename']
 )
-def com_google_fonts_check_105(font_metadata,
-                               canonical_filename,
-                               is_variable_font):
+def com_google_fonts_check_metadata_canonical_filename(font_metadata,
+                                                       canonical_filename,
+                                                       is_variable_font):
   """METADATA.pb: Filename is set canonically?"""
 
   if is_variable_font:
