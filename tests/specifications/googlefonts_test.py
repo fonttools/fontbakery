@@ -808,9 +808,9 @@ def test_check_074():
   assert status == PASS
 
 
-def test_check_081():
+def test_check_metadata_listed_on_gfonts():
   """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_081 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_listed_on_gfonts as check,
                                                      listed_on_gfonts_api,
                                                      family_metadata)
 
