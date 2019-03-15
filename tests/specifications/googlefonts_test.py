@@ -1265,10 +1265,10 @@ def test_check_096():
   assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_097():
+def NOT_IMPLEMENTED_test_check_match_filename_postscript():
   """ METADATA.pb family.filename and family.post_script_name
       fields have equivalent values? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_097 as check
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_match_filename_postscript as check
   # TODO: Implement-me!
   #
   # code-paths:
@@ -1559,6 +1559,7 @@ def test_check_105():
     [PASS,   900,    "normal", "data/test/montserrat/Montserrat-Black.ttf"],
     [PASS,   900,    "italic", "data/test/montserrat/Montserrat-BlackItalic.ttf"]
   ]
+  # FIXME: There should also be samples of good and bad variable fonts in this code-test.
 
   for expected, weight, style, filename in test_cases:
     is_var = os.path.exists(filename) and is_variable_font(TTFont(filename))

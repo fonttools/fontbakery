@@ -111,7 +111,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/094' # METADATA.pb font.full_name value matches fullname declared on the name table?
       , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
       , 'com.google.fonts/check/096' # METADATA.pb font.full_name and font.post_script_name fields have equivalent values ?
-      , 'com.google.fonts/check/097' # METADATA.pb font.filename and font.post_script_name fields have equivalent values?
+      , 'com.google.fonts/check/metadata/match_filename_postscript' # METADATA.pb font.filename and font.post_script_name fields have equivalent values?
       , 'com.google.fonts/check/098' # METADATA.pb font.name field contains font name in right format?
       , 'com.google.fonts/check/099' # METADATA.pb font.full_name field contains font name in right format?
       , 'com.google.fonts/check/100' # METADATA.pb font.filename field contains font name in right format?
@@ -1779,25 +1779,18 @@ def com_google_fonts_check_096(font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/097',
-  conditions = ['font_metadata']
+  id = 'com.google.fonts/check/metadata/match_filename_postscript',
+  conditions = ['font_metadata',
+                'not is_variable_font']
+  # FIXME: We'll want to review this once
+  #        naming rules for varfonts are settled.
 )
-def com_google_fonts_check_097(font_metadata, is_variable_font):
+def com_google_fonts_check_metadata_match_filename_postscript(font_metadata):
   """METADATA.pb font.filename and font.post_script_name
      fields have equivalent values?
   """
   post_script_name = font_metadata.post_script_name
   filename = os.path.splitext(font_metadata.filename)[0]
-
-  if is_variable_font:
-    valid_varfont_suffixes = [
-      ("-VF", "Regular"),
-      ("Roman-VF", "Regular"),
-      ("Italic-VF", "Italic"),
-    ]
-    for valid_suffix, style in valid_varfont_suffixes:
-      if valid_suffix in filename:
-        filename = style.join(filename.split(valid_suffix))
 
   if filename != post_script_name:
     yield FAIL, ("METADATA.pb font filename=\"{}\" does not match"
@@ -2039,13 +2032,12 @@ def com_google_fonts_check_105(font_metadata,
 
   if is_variable_font:
     valid_varfont_suffixes = [
-      ("-VF", "Regular"),
       ("Roman-VF", "Regular"),
       ("Italic-VF", "Italic"),
     ]
     for valid_suffix, style in valid_varfont_suffixes:
-      if valid_suffix in canonical_filename:
-        canonical_filename = style.join(canonical_filename.split(valid_suffix))
+      if style in canonical_filename:
+        canonical_filename = valid_suffix.join(canonical_filename.split(style))
 
   if canonical_filename != font_metadata.filename:
     yield FAIL, ("METADATA.pb: filename field (\"{}\")"
