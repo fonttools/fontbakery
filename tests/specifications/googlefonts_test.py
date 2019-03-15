@@ -164,14 +164,14 @@ def test_check_canonical_filename():
     "data/test/cabinvfbeta/Cabin-Italic-VF.ttf",
     "data/test/cabinvfbeta/Cabin-Roman-VF.ttf",
     "data/test/cabinvfbeta/Cabin-VF.ttf",
-    "data/test/cabinvfbeta/Cabin-Italic.ttf",
-    "data/test/cabinvfbeta/Cabin-Roman.ttf"
   ]
 
   non_canonical_names = [
     "data/test/montserrat/Montserrat/Montserrat.ttf",
     "data/test/montserrat/Montserrat-semibold.ttf",
-    "data/test/cabinvfbeta/CabinVFBeta.ttf"
+    "data/test/cabinvfbeta/CabinVFBeta.ttf",
+    "data/test/cabinvfbeta/Cabin-Italic.ttf",
+    "data/test/cabinvfbeta/Cabin-Roman.ttf"
   ]
 
   for canonical in static_canonical_names + varfont_canonical_names:
