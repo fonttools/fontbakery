@@ -1,7 +1,7 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.6.13 (2019-Mar-18)
+## 0.7.0 (2019-Mar-21)
 ### Bug fixes
   - **[com.google.fonts/check/canonical_filename]:** Distinguish static from varfont when reporting correctness of fontfile names. There are special naming rules for variable fonts. (issue #2396)
   - Fix bug in handling of `most_common_width` in `glyph_metrics_stats` which affected checking of monospaced metadata. (PR #2391)
@@ -15,13 +15,13 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/097]:** com.google.fonts/check/metadata/match_filename_postscript
   - **[com.google.fonts/check/105]:** com.google.fonts/check/metadata/canonical_filename
 
-### Other important code-changes
+### Other relevant code-changes
   - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817
-  - We're now using portable paths on the code-tests. (issue #2398)
+  - We are now using portable paths on the code-tests. (issue #2398)
   - The Adobe Fonts profile now includes FontForge checks. (PR #2401)
-
-### Miscellaneous
+  - Improve emoji output of `--ghmarkdown` option, so that actual emoji appear in text editors, rather than the previous emoji names
   - The HTML reporter will now display check results more table-like, which makes multi-line check results look better.
+
 
 ## 0.6.12 (2019-Mar-11)
 ### Bug fixes
