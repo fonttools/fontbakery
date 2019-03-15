@@ -135,9 +135,9 @@ def test_example_checkrunner_based(cabin_regular_path):
       break
 
 
-def test_check_001():
+def test_check_canonical_filename():
   """ Files are named canonically. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_001 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_canonical_filename as check
 
   static_canonical_names = [
     "data/test/montserrat/Montserrat-Thin.ttf",
