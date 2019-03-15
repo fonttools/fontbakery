@@ -2,6 +2,8 @@ import io
 import os
 
 from fontTools.ttLib import TTFont
+
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -19,7 +21,7 @@ def test_check_069():
   """ Is there any unused data at the end of the glyf table? """
   from fontbakery.specifications.glyf import com_google_fonts_check_069 as check
 
-  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+  test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
 
   test_font = TTFont(test_font_path)
   status, _ = list(check(test_font))[-1]
@@ -51,12 +53,10 @@ def test_check_075():
   """ Check for points out of bounds. """
   from fontbakery.specifications.glyf import com_google_fonts_check_075 as check
 
-  test_font = TTFont(
-      os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
+  test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
   status, _ = list(check(test_font))[-1]
   assert status == WARN
 
-  test_font2 = TTFont(
-      os.path.join("data", "test", "familysans", "FamilySans-Regular.ttf"))
+  test_font2 = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
   status, _ = list(check(test_font2))[-1]
   assert status == PASS

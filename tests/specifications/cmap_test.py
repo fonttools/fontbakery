@@ -1,4 +1,7 @@
 import pytest
+from fontTools.ttLib import TTFont
+
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -9,18 +12,16 @@ from fontbakery.checkrunner import (
             , FAIL
             )
 
-from fontTools.ttLib import TTFont
-
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 mada_fonts = [
-  "data/test/mada/Mada-Black.ttf",
-  "data/test/mada/Mada-ExtraLight.ttf",
-  "data/test/mada/Mada-Medium.ttf",
-  "data/test/mada/Mada-SemiBold.ttf",
-  "data/test/mada/Mada-Bold.ttf",
-  "data/test/mada/Mada-Light.ttf",
-  "data/test/mada/Mada-Regular.ttf",
+  TEST_FILE("mada/Mada-Black.ttf"),
+  TEST_FILE("mada/Mada-ExtraLight.ttf"),
+  TEST_FILE("mada/Mada-Medium.ttf"),
+  TEST_FILE("mada/Mada-SemiBold.ttf"),
+  TEST_FILE("mada/Mada-Bold.ttf"),
+  TEST_FILE("mada/Mada-Light.ttf"),
+  TEST_FILE("mada/Mada-Regular.ttf")
 ]
 
 @pytest.fixture
@@ -58,7 +59,7 @@ def test_check_077():
 
   print('Test PASS with a good font.')
   # our reference Mada SemiBold is know to be good here.
-  ttFont = TTFont("data/test/mada/Mada-SemiBold.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-SemiBold.ttf"))
   status, message = list(check(ttFont))[-1]
   assert status == PASS
 

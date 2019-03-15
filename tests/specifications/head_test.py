@@ -2,6 +2,8 @@ import io
 import os
 
 import pytest
+
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -17,13 +19,13 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 from fontTools.ttLib import TTFont
 
 mada_fonts = [
-  "data/test/mada/Mada-Black.ttf",
-  "data/test/mada/Mada-ExtraLight.ttf",
-  "data/test/mada/Mada-Medium.ttf",
-  "data/test/mada/Mada-SemiBold.ttf",
-  "data/test/mada/Mada-Bold.ttf",
-  "data/test/mada/Mada-Light.ttf",
-  "data/test/mada/Mada-Regular.ttf",
+  TEST_FILE("mada/Mada-Black.ttf"),
+  TEST_FILE("mada/Mada-ExtraLight.ttf"),
+  TEST_FILE("mada/Mada-Medium.ttf"),
+  TEST_FILE("mada/Mada-SemiBold.ttf"),
+  TEST_FILE("mada/Mada-Bold.ttf"),
+  TEST_FILE("mada/Mada-Light.ttf"),
+  TEST_FILE("mada/Mada-Regular.ttf")
 ]
 
 @pytest.fixture
@@ -56,7 +58,7 @@ def test_check_043():
 
   # In this test we'll forge several known-good and known-bad values.
   # We'll use Mada Regular to start with:
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   for good_value in [16, 32, 64, 128, 256, 512, 1000,
                      1024, 2000, 2048, 4096, 8192, 16384]:
@@ -107,8 +109,7 @@ def test_check_044():
   """ Checking font version fields. """
   from fontbakery.specifications.head import com_google_fonts_check_044 as check
 
-  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
-
+  test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
   test_font = TTFont(test_font_path)
   status, _ = list(check(test_font))[-1]
   assert status == PASS

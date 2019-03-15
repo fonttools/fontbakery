@@ -1,3 +1,4 @@
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -17,7 +18,7 @@ def test_check_045():
   from fontbakery.specifications.dsig import com_google_fonts_check_045 as check
 
   # Our reference Cabin Regular font is good (theres a DSIG table declared):
-  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")

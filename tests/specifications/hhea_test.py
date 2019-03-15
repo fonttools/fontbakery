@@ -1,5 +1,6 @@
 import os
 
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -20,7 +21,7 @@ def test_check_041():
 
   print('Test FAIL with non-zero hhea.lineGap...')
   # Our reference Mada Regular is know to be bad here.
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # But just to be sure, we first explicitely set
   # the values we're checking for:
@@ -46,8 +47,8 @@ def test_check_073():
   """ MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables? """
   from fontbakery.specifications.hhea import com_google_fonts_check_073 as check
 
-  test_font = TTFont(
-      os.path.join("data", "test", "familysans", "FamilySans-Regular.ttf"))
+  test_font = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
+
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
@@ -62,7 +63,7 @@ def test_check_079():
   from fontbakery.specifications.hhea import com_google_fonts_check_079 as check
   from fontbakery.specifications.shared_conditions import glyph_metrics_stats
 
-  test_font_path = os.path.join("data", "test", "cousine", "Cousine-Regular.ttf")
+  test_font_path = TEST_FILE("cousine/Cousine-Regular.ttf")
 
   test_font = TTFont(test_font_path)
   import fontTools.subset

@@ -1,3 +1,4 @@
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -19,7 +20,7 @@ def test_check_063():
   # Our reference Mada Regular is known to have kerning-info
   # exclusively on an extension subtable
   # (lookup type = 9 / ext-type = 2):
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
   print ("Test PASS with a font that has got kerning info...")
@@ -65,7 +66,7 @@ def test_check_065():
                                                      has_kerning_info)
   from fontbakery.specifications.shared_conditions import ligatures
   # Our reference Mada Medium is known to be good
-  ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
   lig = ligatures(ttFont)
   has_kinfo = has_kerning_info(ttFont)
 
@@ -75,7 +76,7 @@ def test_check_065():
   assert status == PASS
 
   # And Merriweather Regular is known to be bad
-  ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
   lig = ligatures(ttFont)
   has_kinfo = has_kerning_info(ttFont)
 
