@@ -33,7 +33,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/004' # Is this a propper HTML snippet?
       , 'com.google.fonts/check/005' # DESCRIPTION.en_us.html must have more than 200 bytes.
       , 'com.google.fonts/check/006' # DESCRIPTION.en_us.html must have less than 1000 bytes.
-      , 'com.google.fonts/check/007' # Font designer field in METADATA.pb must not be 'unknown'.
+      , 'com.google.fonts/check/metadata/unknown_designer' # Font designer field in METADATA.pb must not be 'unknown'.
       , 'com.google.fonts/check/008' # Fonts have consistent underline thickness?
       , 'com.google.fonts/check/009' # Fonts have consistent PANOSE proportion?
       , 'com.google.fonts/check/010' # Fonts have consistent PANOSE family type?
@@ -480,10 +480,10 @@ def com_google_fonts_check_metadata_parses(family_directory):
 
 
 @check(
-  id = 'com.google.fonts/check/007',
+  id = 'com.google.fonts/check/metadata/unknown_designer',
   conditions = ['family_metadata']
 )
-def com_google_fonts_check_007(family_metadata):
+def com_google_fonts_check_metadata_unknown_designer(family_metadata):
   """Font designer field in METADATA.pb must not be 'unknown'."""
   if family_metadata.designer.lower() == 'unknown':
     yield FAIL, f"Font designer field is '{family_metadata.designer}'."

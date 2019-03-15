@@ -290,9 +290,9 @@ def test_check_metadata_parses():
   assert status == FAIL
 
 
-def test_check_007():
+def test_check_metadata_unknown_designer():
   """ Font designer field in METADATA.pb must not be 'unknown'. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_007 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_unknown_designer as check,
                                                      family_metadata)
   good = family_metadata(portable_path("data/test/merriweather"))
   print('Test PASS with a good METADATA.pb file...')
