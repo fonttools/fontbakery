@@ -2,6 +2,8 @@ import io
 import os
 
 import pytest
+
+from fontbakery.utils import TEST_FILE, portable_path
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -19,13 +21,13 @@ from fontTools.ttLib import TTFont
 import fontTools.subset
 
 mada_fonts = [
-  "data/test/mada/Mada-Black.ttf",
-  "data/test/mada/Mada-ExtraLight.ttf",
-  "data/test/mada/Mada-Medium.ttf",
-  "data/test/mada/Mada-SemiBold.ttf",
-  "data/test/mada/Mada-Bold.ttf",
-  "data/test/mada/Mada-Light.ttf",
-  "data/test/mada/Mada-Regular.ttf",
+  TEST_FILE("mada/Mada-Black.ttf"),
+  TEST_FILE("mada/Mada-ExtraLight.ttf"),
+  TEST_FILE("mada/Mada-Medium.ttf"),
+  TEST_FILE("mada/Mada-SemiBold.ttf"),
+  TEST_FILE("mada/Mada-Bold.ttf"),
+  TEST_FILE("mada/Mada-Light.ttf"),
+  TEST_FILE("mada/Mada-Regular.ttf")
 ]
 
 @pytest.fixture
@@ -33,14 +35,14 @@ def mada_ttFonts():
   return [TTFont(path) for path in mada_fonts]
 
 cabin_fonts = [
-  "data/test/cabin/Cabin-BoldItalic.ttf",
-  "data/test/cabin/Cabin-Bold.ttf",
-  "data/test/cabin/Cabin-Italic.ttf",
-  "data/test/cabin/Cabin-MediumItalic.ttf",
-  "data/test/cabin/Cabin-Medium.ttf",
-  "data/test/cabin/Cabin-Regular.ttf",
-  "data/test/cabin/Cabin-SemiBoldItalic.ttf",
-  "data/test/cabin/Cabin-SemiBold.ttf"
+  TEST_FILE("cabin/Cabin-BoldItalic.ttf"),
+  TEST_FILE("cabin/Cabin-Bold.ttf"),
+  TEST_FILE("cabin/Cabin-Italic.ttf"),
+  TEST_FILE("cabin/Cabin-MediumItalic.ttf"),
+  TEST_FILE("cabin/Cabin-Medium.ttf"),
+  TEST_FILE("cabin/Cabin-Regular.ttf"),
+  TEST_FILE("cabin/Cabin-SemiBoldItalic.ttf"),
+  TEST_FILE("cabin/Cabin-SemiBold.ttf")
 ]
 
 
@@ -84,7 +86,7 @@ def test_check_034():
   """ Check if OS/2 xAvgCharWidth is correct. """
   from fontbakery.specifications.os2 import com_google_fonts_check_034 as check
 
-  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+  test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
 
   test_font = TTFont(test_font_path)
   status, message = list(check(test_font))[-1]
@@ -145,7 +147,7 @@ def test_check_fsselection_matches_macstyle():
     com_adobe_fonts_check_fsselection_matches_macstyle as check
   from fontbakery.constants import FsSelection
 
-  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+  test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
 
   # try a regular (not bold, not italic) font
   test_font = TTFont(test_font_path)
@@ -175,7 +177,7 @@ def test_check_bold_italic_unique_for_nameid1():
     com_adobe_fonts_check_bold_italic_unique_for_nameid1 as check
   from fontbakery.constants import FsSelection
 
-  base_path = os.path.join('data', 'test', 'source-sans-pro', 'OTF')
+  base_path = portable_path("data/test/source-sans-pro/OTF")
 
   # these fonts have the same NameID1
   font_names = ['SourceSansPro-Regular.otf',

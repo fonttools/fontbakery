@@ -1,3 +1,4 @@
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -18,7 +19,7 @@ def test_check_064():
   from fontbakery.specifications.shared_conditions import ligatures
 
   # Our reference Mada Medium is known to be bad
-  ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
   lig = ligatures(ttFont)
 
   # So it must emit a WARN:

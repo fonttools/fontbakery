@@ -2,13 +2,13 @@ import os
 
 from fontTools.ttLib import TTFont
 from fontbakery.checkrunner import (PASS, FAIL)
+from fontbakery.utils import TEST_FILE
 
 
 def test_check_name_empty_records():
     from fontbakery.specifications.adobe_fonts import (
         com_adobe_fonts_check_name_empty_records as check)
-    font_path = os.path.join('data', 'test', 'source-sans-pro', 'OTF',
-                             'SourceSansPro-Regular.otf')
+    font_path = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
     test_font = TTFont(font_path)
 
     # try a font with fully populated name records
@@ -30,7 +30,7 @@ def test_check_consistent_upm():
     from fontbakery.specifications.adobe_fonts import (
         com_adobe_fonts_check_consistent_upm as check)
 
-    base_path = os.path.join('data', 'test', 'source-sans-pro', 'OTF')
+    base_path = TEST_FILE("source-sans-pro/OTF")
 
     # these fonts have a consistent unitsPerEm of 1000:
     font_names = ['SourceSansPro-Regular.otf',

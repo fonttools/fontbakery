@@ -1,4 +1,6 @@
 import pytest
+
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -14,13 +16,13 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 from fontTools.ttLib import TTFont
 
 mada_fonts = [
-  "data/test/mada/Mada-Black.ttf",
-  "data/test/mada/Mada-ExtraLight.ttf",
-  "data/test/mada/Mada-Medium.ttf",
-  "data/test/mada/Mada-SemiBold.ttf",
-  "data/test/mada/Mada-Bold.ttf",
-  "data/test/mada/Mada-Light.ttf",
-  "data/test/mada/Mada-Regular.ttf",
+  TEST_FILE("mada/Mada-Black.ttf"),
+  TEST_FILE("mada/Mada-ExtraLight.ttf"),
+  TEST_FILE("mada/Mada-Medium.ttf"),
+  TEST_FILE("mada/Mada-SemiBold.ttf"),
+  TEST_FILE("mada/Mada-Bold.ttf"),
+  TEST_FILE("mada/Mada-Light.ttf"),
+  TEST_FILE("mada/Mada-Regular.ttf")
 ]
 
 @pytest.fixture
@@ -62,7 +64,7 @@ def test_check_015():
 
   print('Test PASS with good font.')
   # our reference Mada family is know to be good here.
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
   status, message = list(check(ttFont, 'glyf' in ttFont))[-1]
   assert status == PASS
 

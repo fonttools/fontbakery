@@ -1,3 +1,4 @@
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -18,7 +19,7 @@ def test_check_066():
 
   # Our reference Mada Regular is known to be good
   # (does not have a 'kern' table):
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
   print ("Test PASS with a font without a 'kern' table...")

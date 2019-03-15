@@ -6,6 +6,7 @@ import pytest
 import ufo2ft
 from fontTools.ttLib import TTFont
 
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -23,12 +24,12 @@ def test_check_002():
   """ Fonts are all in the same directory. """
   from fontbakery.specifications.general import com_google_fonts_check_002 as check
   same_dir = [
-    "data/test/cabin/Cabin-Thin.ttf",
-    "data/test/cabin/Cabin-ExtraLight.ttf"
+    TEST_FILE("cabin/Cabin-Thin.ttf"),
+    TEST_FILE("cabin/Cabin-ExtraLight.ttf")
   ]
   multiple_dirs = [
-    "data/test/mada/Mada-Regular.ttf",
-    "data/test/cabin/Cabin-ExtraLight.ttf"
+    TEST_FILE("mada/Mada-Regular.ttf"),
+    TEST_FILE("cabin/Cabin-ExtraLight.ttf")
   ]
   print(f'Test PASS with same dir: {same_dir}')
   status, message = list(check(same_dir))[-1]
@@ -71,11 +72,11 @@ def test_check_036():
   """ Checking with ots-sanitize. """
   from fontbakery.specifications.general import com_google_fonts_check_036 as check
 
-  sanitary_font = os.path.join("data", "test", "cabin", "Cabin-Regular.ttf")
+  sanitary_font = TEST_FILE("cabin/Cabin-Regular.ttf")
   status, _ = list(check(sanitary_font))[-1]
   assert status == PASS
 
-  bogus_font = os.path.join("data", "test", "README.txt")
+  bogus_font = TEST_FILE("README.txt")
   status, output = list(check(bogus_font))[-1]
   assert status == FAIL
   assert "invalid version tag" in output
@@ -127,7 +128,7 @@ def test_check_046():
   space)? """
   from fontbakery.specifications.general import com_google_fonts_check_046 as check
 
-  test_font = TTFont(os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
+  test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
@@ -145,7 +146,7 @@ def test_check_047():
   from fontbakery.specifications.shared_conditions import missing_whitespace_chars
 
   # Our reference Mada Regular font is good here:
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
   missing = missing_whitespace_chars(ttFont)
 
   # So it must PASS the check:
@@ -164,7 +165,7 @@ def test_check_047():
   assert status == FAIL
 
   # restore original Mada Regular font:
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # And finally remove the space character (0x0020) to get another FAIL:
   print ("Test FAIL with a font lacking a space (0x0020)...")
@@ -194,7 +195,7 @@ def test_check_048():
         }
 
   # Our reference Mada Regular font is good here:
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -215,7 +216,7 @@ def test_check_048():
   assert status == FAIL and message.code == "bad20"
 
   # restore the original font object in preparation for the next test-case:
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   print ("Test FAIL with bad glyph name for char 0x00A0 ...")
   deleteGlyphEncodings(ttFont, 0x00A0)
@@ -227,8 +228,7 @@ def test_check_049():
   """ Whitespace glyphs have ink? """
   from fontbakery.specifications.general import com_google_fonts_check_049 as check
 
-  test_font = TTFont(
-      os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
+  test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
@@ -264,7 +264,7 @@ def test_check_052():
                      "LTSH", "PCLT", "VDMX", "vhea",
                      "vmtx"]
   # Our reference Mada Regular font is good here
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -295,7 +295,7 @@ def test_check_052():
   # Now we remove required tables one-by-one to validate the FAIL code-path:
   for required in required_tables:
     print (f"Test FAIL with missing mandatory table {required} ...")
-    ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     if required in ttFont.reader.tables:
       del ttFont.reader.tables[required]
     status, message = list(check(ttFont))[-1]
@@ -334,7 +334,7 @@ def test_check_053():
     "prop" # FIXME: Why is this one unwanted?
   ]
   # Our reference Mada Regular font is good here:
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -344,7 +344,7 @@ def test_check_053():
   # We now add unwanted tables one-by-one to validate the FAIL code-path:
   for unwanted in unwanted_tables:
     print (f"Test FAIL with unwanted table {unwanted} ...")
-    ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     ttFont.reader.tables[unwanted] = "foo"
     status, message = list(check(ttFont))[-1]
     assert status == FAIL
@@ -354,8 +354,7 @@ def test_check_058():
   """ Glyph names are all valid? """
   from fontbakery.specifications.general import com_google_fonts_check_058 as check
 
-  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
-
+  test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
   test_font = TTFont(test_font_path)
   status, _ = list(check(test_font))[-1]
   assert status == PASS
@@ -389,8 +388,7 @@ def test_check_059():
   """ Font contains unique glyph names? """
   from fontbakery.specifications.general import com_google_fonts_check_059 as check
 
-  test_font_path = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
-
+  test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
   test_font = TTFont(test_font_path)
   status, _ = list(check(test_font))[-1]
   assert status == PASS
@@ -426,7 +424,7 @@ def DISABLED_test_check_078():
   from fontbakery.specifications.general import com_google_fonts_check_078 as check
 
   # TTF
-  test_font = defcon.Font("data/test/test.ufo")
+  test_font = defcon.Font(TEST_FILE("test.ufo"))
   test_ttf = ufo2ft.compileTTF(test_font)
   status, _ = list(check(test_ttf))[-1]
   assert status == PASS
@@ -458,7 +456,7 @@ def DISABLED_test_check_078():
   del test_font, test_ttf, test_file  # Prevent copypasta errors.
 
   # CFF
-  test_font = defcon.Font("data/test/test.ufo")
+  test_font = defcon.Font(TEST_FILE("test.ufo"))
   test_otf = ufo2ft.compileOTF(test_font)
   status, _ = list(check(test_otf))[-1]
   assert status == PASS
@@ -478,14 +476,15 @@ def test_check_ttx_roundtrip():
   """ Checking with fontTools.ttx """
   from fontbakery.specifications.general import com_google_fonts_check_ttx_roundtrip as check
 
-  good_font_path = os.path.join("data", "test", "mada", "Mada-Regular.ttf")
+  good_font_path = TEST_FILE("mada/Mada-Regular.ttf")
   status, _ = list(check(good_font_path))[-1]
   assert status == PASS
 
   # TODO: Can anyone show us a font file that fails ttx roundtripping?!
-  #bad_font_path = os.path.join("data", "test", ...)
+  #bad_font_path = TEST_FILE("...")
   #status, _ = list(check(bad_font_path))[-1]
   #assert status == FAIL
+
 
 def test_is_up_to_date():
   from fontbakery.specifications.general import is_up_to_date
@@ -516,22 +515,19 @@ def test_glyph_has_ink():
 
   print()  # so next line doesn't start with '.....'
 
-  cff_test_font = TTFont(
-    'data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf')
+  cff_test_font = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
   print('Test if CFF glyph with ink has ink')
   assert(glyph_has_ink(cff_test_font, '.notdef') is True)
   print('Test if CFF glyph without ink has ink')
   assert(glyph_has_ink(cff_test_font, 'space') is False)
 
-  ttf_test_font = TTFont(
-    'data/test/source-sans-pro/TTF/SourceSansPro-Regular.ttf')
+  ttf_test_font = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Regular.ttf"))
   print('Test if TTF glyph with ink has ink')
   assert(glyph_has_ink(ttf_test_font, '.notdef') is True)
   print('Test if TTF glyph without ink has ink')
   assert(glyph_has_ink(ttf_test_font, 'space') is False)
 
-  cff2_test_font = TTFont(
-    'data/test/source-sans-pro/VAR/SourceSansVariable-Roman.otf')
+  cff2_test_font = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf"))
   print('Test if CFF2 glyph with ink has ink')
   assert(glyph_has_ink(cff2_test_font, '.notdef') is True)
   print('Test if CFF2 glyph without ink has ink')
