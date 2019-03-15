@@ -18,6 +18,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Other important code-changes
   - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817
   - We're now using portable paths on the code-tests. (issue #2398)
+  - The Adobe Fonts profile now includes FontForge checks. (PR #2401)
 
 
 ## 0.6.12 (2019-Mar-11)
