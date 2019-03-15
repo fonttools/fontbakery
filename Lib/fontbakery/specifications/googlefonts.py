@@ -303,14 +303,12 @@ def com_google_fonts_check_canonical_filename(font):
   e.g. Nunito-Regular.ttf,
        Oswald-BoldItalic.ttf
 
-  Variable fonts must use the "-VF", "Roman" or "Italic" suffixes:
+  Variable fonts must use the "-VF" suffix:
 
   e.g. Roboto-VF.ttf,
        Barlow-VF.ttf,
        Example-Roman-VF.ttf,
        Familyname-Italic-VF.ttf
-       Orbitron-Roman.ttf,
-       Somethingelse-Italic.ttf
   """
   from fontTools.ttLib import TTFont
   from fontbakery.specifications.shared_conditions import is_variable_font
@@ -1794,9 +1792,7 @@ def com_google_fonts_check_097(font_metadata, is_variable_font):
   if is_variable_font:
     valid_varfont_suffixes = [
       ("-VF", "Regular"),
-      ("Roman", "Regular"),
       ("Roman-VF", "Regular"),
-      ("Italic", "Italic"),
       ("Italic-VF", "Italic"),
     ]
     for valid_suffix, style in valid_varfont_suffixes:
@@ -2044,9 +2040,7 @@ def com_google_fonts_check_105(font_metadata,
   if is_variable_font:
     valid_varfont_suffixes = [
       ("-VF", "Regular"),
-      ("Roman", "Regular"),
       ("Roman-VF", "Regular"),
-      ("Italic", "Italic"),
       ("Italic-VF", "Italic"),
     ]
     for valid_suffix, style in valid_varfont_suffixes:
