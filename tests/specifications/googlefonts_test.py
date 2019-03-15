@@ -905,9 +905,9 @@ def test_check_metadata_license():
     assert status == FAIL
 
 
-def test_check_086():
+def test_check_metadata_menu_and_latin():
   """ METADATA.pb should contain at least "menu" and "latin" subsets. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_086 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_menu_and_latin as check,
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
