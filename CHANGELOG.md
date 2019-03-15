@@ -3,7 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.6.13 (2019-Mar-18)
 ### Bug fixes
-  - **[com.google.fonts/check/001]:** Distinguish static from varfont when reporting correctness of fontfile names. There are special naming rules for variable fonts. (issue #2396)
+  - **[com.google.fonts/check/canonical_filename]:** Distinguish static from varfont when reporting correctness of fontfile names. There are special naming rules for variable fonts. (issue #2396)
   - Fix bug in handling of `most_common_width` in `glyph_metrics_stats` which affected checking of monospaced metadata. (PR #2391)
   - Fix handling of `post.isFixedPitch` (accept any nonzero value). (PR #2392)
 
@@ -11,7 +11,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/postscript_name_consistency]:** "Name table ID 6 (PostScript name) must be consistent across platforms." (PR #2394)
 
 ### Renamed numerical check-IDs:
-  - **[com.google.fonts.check/001]:** com.google.fonts/check/canonical_filename
+  - **[com.google.fonts/check/001]:** com.google.fonts/check/canonical_filename
+  - **[com.google.fonts/check/097]:** com.google.fonts/check/metadata/match_filename_postscript
+
+### Other important code-changes
+  - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817
 
 
 ## 0.6.12 (2019-Mar-11)
