@@ -10,6 +10,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New checks
   - **[com.adobe.fonts/check/postscript_name_consistency]:** "Name table ID 6 (PostScript name) must be consistent across platforms." (PR #2394)
 
+### Renamed numerical check-IDs:
+  - **[com.google.fonts.check/001]:** com.google.fonts/check/canonical_filename
+
+
 ## 0.6.12 (2019-Mar-11)
 ### Bug fixes
   - Fix bug in which a singular ttFont condition causes a family-wide (ttFonts) check to be executed once per font. (issue #2370)

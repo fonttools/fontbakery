@@ -27,7 +27,7 @@ spec_imports = (
 # this is from the output of
 # $ fontbakery check-specification  fontbakery.specifications.googlefonts -L
 expected_check_ids = [
-        'com.google.fonts/check/001' # Checking file is named canonically.
+        'com.google.fonts/check/canonical_filename' # Checking file is named canonically.
       , 'com.google.fonts/check/002' # Checking all files are in the same directory.
       , 'com.google.fonts/check/003' # Does DESCRIPTION file contain broken links?
       , 'com.google.fonts/check/004' # Is this a propper HTML snippet?
@@ -289,12 +289,12 @@ def canonical_stylename(font):
 
 
 @check(
-  id = 'com.google.fonts/check/001',
+  id = 'com.google.fonts/check/canonical_filename',
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   }
 )
-def com_google_fonts_check_001(font):
+def com_google_fonts_check_canonical_filename(font):
   """Checking file is named canonically.
 
   A font's filename must be composed in the following manner:
