@@ -127,9 +127,6 @@ def com_adobe_fonts_check_consistent_upm(ttFonts):
 
 def check_skip_filter(checkid, font=None, **iterargs):
     if font and checkid in (
-        # ToDo: revisit the FontForge checks -- can we filter just some out?
-        'com.google.fonts/check/038',  # FontForge #1 of 2
-        'com.google.fonts/check/039',  # FontForge #2 of 2
         'com.google.fonts/check/064',  # Is there a caret position declared for every ligature?
         'com.google.fonts/check/065',  # Is there kerning info for non-ligated sequences?
         'com.google.fonts/check/163'   # Combined length of family and style must not exceed 20 characters.
