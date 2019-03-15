@@ -844,9 +844,9 @@ def NOT_IMPLEMENTED_test_check_082():
   # ...
 
 
-def test_check_metadata_unique_full_name():
+def test_check_metadata_unique_full_name_values():
   """ METADATA.pb: check if fonts field only has unique "full_name" values. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_unique_full_name as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_unique_full_name_values as check,
                                                      family_metadata)
   print ("Test PASS with a good family...")
   # Our reference FamilySans family is good:
@@ -861,9 +861,9 @@ def test_check_metadata_unique_full_name():
   assert status == FAIL
 
 
-def test_check_084():
+def test_check_metadata_unique_weight_style_pairs():
   """ METADATA.pb: check if fonts field only contains unique style:weight pairs. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_084 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_unique_weight_style_pairs as check,
                                                      family_metadata)
   print ("Test PASS with a good family...")
   # Our reference FamilySans family is good:
