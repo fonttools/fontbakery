@@ -102,7 +102,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/metadata/license' # METADATA.pb license is "APACHE2", "UFL" or "OFL"?
       , 'com.google.fonts/check/metadata/menu_and_latin' # METADATA.pb should contain at least "menu" and "latin" subsets.
       , 'com.google.fonts/check/metadata/subsets_order' # METADATA.pb subsets should be alphabetically ordered.
-      , 'com.google.fonts/check/088' # METADATA.pb: Copyright notice is the same in all fonts?
+      , 'com.google.fonts/check/metadata/copyright' # METADATA.pb: Copyright notice is the same in all fonts?
       , 'com.google.fonts/check/089' # Check that METADATA.pb family values are all the same.
       , 'com.google.fonts/check/090' # METADATA.pb: According Google Fonts standards, families should have a Regular style.
       , 'com.google.fonts/check/091' # METADATA.pb: Regular should be 400.
@@ -1535,10 +1535,10 @@ def com_google_fonts_check_metadata_subsets_order(family_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/088',
+  id = 'com.google.fonts/check/metadata/copyright',
   conditions = ['family_metadata']
 )
-def com_google_fonts_check_088(family_metadata):
+def com_google_fonts_check_metadata_copyright(family_metadata):
   """METADATA.pb: Copyright notice is the same in all fonts?"""
   copyright = None
   fail = False

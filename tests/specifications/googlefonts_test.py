@@ -978,9 +978,9 @@ def test_check_metadata_subsets_order():
     assert status == FAIL
 
 
-def test_check_088():
+def test_check_metadata_copyright():
   """ METADATA.pb: Copyright notice is the same in all fonts? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_088 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_copyright as check,
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
