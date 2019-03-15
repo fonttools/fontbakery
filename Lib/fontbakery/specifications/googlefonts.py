@@ -100,7 +100,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/metadata/unique_full_name_values' # METADATA.pb: check if fonts field only has unique "full_name" values.
       , 'com.google.fonts/check/metadata/unique_weight_style_pairs' # METADATA.pb: check if fonts field only contains unique style:weight pairs.
       , 'com.google.fonts/check/metadata/license' # METADATA.pb license is "APACHE2", "UFL" or "OFL"?
-      , 'com.google.fonts/check/086' # METADATA.pb should contain at least "menu" and "latin" subsets.
+      , 'com.google.fonts/check/metadata/menu_and_latin' # METADATA.pb should contain at least "menu" and "latin" subsets.
       , 'com.google.fonts/check/087' # METADATA.pb subsets should be alphabetically ordered.
       , 'com.google.fonts/check/088' # METADATA.pb: Copyright notice is the same in all fonts?
       , 'com.google.fonts/check/089' # Check that METADATA.pb family values are all the same.
@@ -1499,10 +1499,10 @@ def com_google_fonts_check_metadata_license(family_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/086',
+  id = 'com.google.fonts/check/metadata/menu_and_latin',
   conditions = ['family_metadata']
 )
-def com_google_fonts_check_086(family_metadata):
+def com_google_fonts_check_metadata_menu_and_latin(family_metadata):
   """METADATA.pb should contain at least "menu" and "latin" subsets."""
   missing = []
   for s in ["menu", "latin"]:
