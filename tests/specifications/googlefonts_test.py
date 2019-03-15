@@ -139,7 +139,7 @@ def test_check_001():
   """ Files are named canonically. """
   from fontbakery.specifications.googlefonts import com_google_fonts_check_001 as check
 
-  canonical_names = [
+  static_canonical_names = [
     "data/test/montserrat/Montserrat-Thin.ttf",
     "data/test/montserrat/Montserrat-ExtraLight.ttf",
     "data/test/montserrat/Montserrat-Light.ttf",
@@ -158,19 +158,23 @@ def test_check_001():
     "data/test/montserrat/Montserrat-BoldItalic.ttf",
     "data/test/montserrat/Montserrat-ExtraBoldItalic.ttf",
     "data/test/montserrat/Montserrat-BlackItalic.ttf",
+  ]
+
+  varfont_canonical_names = [
     "data/test/cabinvfbeta/Cabin-Italic-VF.ttf",
     "data/test/cabinvfbeta/Cabin-Roman-VF.ttf",
     "data/test/cabinvfbeta/Cabin-VF.ttf",
     "data/test/cabinvfbeta/Cabin-Italic.ttf",
     "data/test/cabinvfbeta/Cabin-Roman.ttf"
   ]
+
   non_canonical_names = [
     "data/test/montserrat/Montserrat/Montserrat.ttf",
     "data/test/montserrat/Montserrat-semibold.ttf",
     "data/test/cabinvfbeta/CabinVFBeta.ttf"
   ]
 
-  for canonical in canonical_names:
+  for canonical in static_canonical_names + varfont_canonical_names:
     print(f'Test PASS with "{canonical}" ...')
     status, message = list(check(canonical))[-1]
     assert status == PASS

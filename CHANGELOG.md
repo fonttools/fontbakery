@@ -1,8 +1,9 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.6.13 (2019-??-??)
+## 0.6.13 (2019-Mar-18)
 ### Bug fixes
+  - **[com.google.fonts/check/001]:** Distinguish static from varfont when reporting correctness of fontfile names. There are special naming rules for variable fonts. (issue #2396)
   - Fix bug in handling of `most_common_width` in `glyph_metrics_stats` which affected checking of monospaced metadata. (PR #2391)
   - Fix handling of `post.isFixedPitch` (accept any nonzero value). (PR #2392)
 
