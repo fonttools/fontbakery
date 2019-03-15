@@ -20,6 +20,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/086]:** com.google.fonts/check/metadata/menu_and_latin
   - **[com.google.fonts/check/087]:** com.google.fonts/check/metadata/subsets_order
   - **[com.google.fonts/check/088]:** com.google.fonts/check/metadata/copyright
+  - **[com.google.fonts/check/089]:** com.google.fonts/check/metadata/familyname
   - **[com.google.fonts/check/097]:** com.google.fonts/check/metadata/match_filename_postscript
   - **[com.google.fonts/check/105]:** com.google.fonts/check/metadata/canonical_filename
 
