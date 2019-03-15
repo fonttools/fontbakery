@@ -182,15 +182,15 @@ specification = spec_factory(default_section=Section("Google Fonts"))
 
 
 # -------------------------------------------------------------------
-
+#FIXME! Redundant with @condition canonical_stylename(font)?
 @condition
 def style(font):
   """Determine font style from canonical filename."""
-  from fontbakery.constants import STYLE_NAMES
+  from fontbakery.constants import STATIC_STYLE_NAMES
   filename = os.path.basename(font)
   if '-' in filename:
     stylename = os.path.splitext(filename)[0].split('-')[1]
-    if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
+    if stylename in [name.replace(' ', '') for name in STATIC_STYLE_NAMES]:
       return stylename
   return None
 
@@ -259,32 +259,33 @@ def stylenames_are_canonical(fonts):
   return True
 
 
+def suffix(font):
+  filename = os.path.basename(font)
+  basename = os.path.splitext(filename)[0]
+  s = basename.split('-')
+  s.pop(0)
+  return '-'.join(s)
+
+
 @condition
 def canonical_stylename(font):
   """ Returns the canonical stylename of a given font. """
-  from fontbakery.constants import STYLE_NAMES
+  from fontbakery.constants import (STATIC_STYLE_NAMES,
+                                    VARFONT_SUFFIXES)
   from fontbakery.specifications.shared_conditions import is_variable_font
   from fontTools.ttLib import TTFont
 
+  # remove spaces in style names
+  valid_style_suffixes = [name.replace(' ', '') for name in STATIC_STYLE_NAMES]
+
   filename = os.path.basename(font)
   basename = os.path.splitext(filename)[0]
-  # remove spaces in style names
-  valid_style_suffixes = [name.replace(' ', '') for name in STYLE_NAMES]
-  valid_varfont_suffixes = ["VF",
-                            "Italic",
-                            "Italic-VF",
-                            "Roman",
-                            "Roman-VF"]
-
-  suffix = basename.split('-')
-  suffix.pop(0)
-  suffix = '-'.join(suffix)
-
+  s = suffix(font)
   varfont = os.path.exists(font) and is_variable_font(TTFont(font))
   if ('-' in basename and
-      (suffix in valid_varfont_suffixes and varfont)
-      or (suffix in valid_style_suffixes and not varfont)):
-    return suffix
+      (s in VARFONT_SUFFIXES and varfont)
+      or (s in valid_style_suffixes and not varfont)):
+    return s
 
 
 @check(
@@ -311,16 +312,26 @@ def com_google_fonts_check_001(font):
        Orbitron-Roman.ttf,
        Somethingelse-Italic.ttf
   """
-  from fontbakery.constants import STYLE_NAMES
-
+  from fontTools.ttLib import TTFont
+  from fontbakery.specifications.shared_conditions import is_variable_font
+  from fontbakery.constants import (STATIC_STYLE_NAMES,
+                                    VARFONT_SUFFIXES)
   if canonical_stylename(font):
     yield PASS, f"{font} is named canonically."
   else:
-    style_names = '", "'.join(STYLE_NAMES)
-    yield FAIL, (f'Style name used in "{font}" is not canonical.'
-                  ' You should rebuild the font using'
-                  ' any of the following'
-                 f' style names: "{style_names}".')
+    if os.path.exists(font) and is_variable_font(TTFont(font)):
+      if suffix(font) in STATIC_STYLE_NAMES:
+        yield FAIL, (f'This is a variable font, but it is using'
+                      ' a naming scheme typical of a static font.')
+      yield FAIL, ('Please change the font filename to use one'
+                   ' of the following valid suffixes for variable fonts:'
+                  f' {", ".join(VARFONT_SUFFIXES)}')
+    else:
+      style_names = '", "'.join(STATIC_STYLE_NAMES)
+      yield FAIL, (f'Style name used in "{font}" is not canonical.'
+                    ' You should rebuild the font using'
+                    ' any of the following'
+                   f' style names: "{style_names}".')
 
 
 @condition
@@ -2598,13 +2609,13 @@ def com_google_fonts_check_118(ttFont, api_gfonts_ttFont):
 def com_google_fonts_check_129(ttFont, style):
   """Checking OS/2 fsSelection value."""
   from fontbakery.utils import check_bit_entry
-  from fontbakery.constants import (STYLE_NAMES,
+  from fontbakery.constants import (STATIC_STYLE_NAMES,
                                     RIBBI_STYLE_NAMES,
                                     FsSelection)
 
   # Checking fsSelection REGULAR bit:
   expected = "Regular" in style or \
-             (style in STYLE_NAMES and
+             (style in STATIC_STYLE_NAMES and
               style not in RIBBI_STYLE_NAMES and
               "Italic" not in style)
   yield check_bit_entry(ttFont, "OS/2", "fsSelection",
