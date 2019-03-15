@@ -1525,10 +1525,10 @@ def test_check_104():
   assert status == FAIL
 
 
-def test_check_105():
+def test_check_metadata_canonical_filename():
   """ METADATA.pb: Filename is set canonically? """
   from fontbakery.specifications.shared_conditions import is_variable_font
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_105 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_canonical_filename as check,
                                                      family_metadata,
                                                      font_metadata,
                                                      canonical_filename)
