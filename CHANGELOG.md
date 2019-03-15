@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/001]:** com.google.fonts/check/canonical_filename
   - **[com.google.fonts/check/007]:** com.google.fonts/check/metadata/unknown_designer
   - **[com.google.fonts/check/082]:** com.google.fonts/check/metadata/listed_on_gfonts
+  - **[com.google.fonts/check/083]:** com.google.fonts/check/metadata_unique_full_name
   - **[com.google.fonts/check/097]:** com.google.fonts/check/metadata/match_filename_postscript
   - **[com.google.fonts/check/105]:** com.google.fonts/check/metadata/canonical_filename
 
