@@ -1024,9 +1024,9 @@ def test_check_metadata_familyname():
   assert status == FAIL
 
 
-def test_check_090():
+def test_check_metadata_has_regular():
   """ METADATA.pb: According Google Fonts standards, families should have a Regular style. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_090 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_has_regular as check,
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
