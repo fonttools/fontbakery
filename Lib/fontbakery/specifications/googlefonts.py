@@ -97,8 +97,8 @@ expected_check_ids = [
       #, 'com.google.fonts/check/078' # Check that glyph names do not exceed max length.
       , 'com.google.fonts/check/079' # Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth?
       , 'com.google.fonts/check/metadata/listed_on_gfonts' # METADATA.pb: Fontfamily is listed on Google Fonts API?
-      , 'com.google.fonts/check/metadata/unique_full_name' # METADATA.pb: check if fonts field only has unique "full_name" values.
-      , 'com.google.fonts/check/084' # METADATA.pb: check if fonts field only contains unique style:weight pairs.
+      , 'com.google.fonts/check/metadata/unique_full_name_values' # METADATA.pb: check if fonts field only has unique "full_name" values.
+      , 'com.google.fonts/check/metadata/unique_weight_style_pairs' # METADATA.pb: check if fonts field only contains unique style:weight pairs.
       , 'com.google.fonts/check/085' # METADATA.pb license is "APACHE2", "UFL" or "OFL"?
       , 'com.google.fonts/check/086' # METADATA.pb should contain at least "menu" and "latin" subsets.
       , 'com.google.fonts/check/087' # METADATA.pb subsets should be alphabetically ordered.
@@ -1442,10 +1442,10 @@ def com_google_fonts_check_082(family_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/metadata/unique_full_name',
+  id = 'com.google.fonts/check/metadata/unique_full_name_values',
   conditions = ['family_metadata']
 )
-def com_google_fonts_check_metadata_unique_full_name(family_metadata):
+def com_google_fonts_check_metadata_unique_full_name_values(family_metadata):
   """METADATA.pb: check if fonts field only has
      unique "full_name" values.
   """
@@ -1462,10 +1462,10 @@ def com_google_fonts_check_metadata_unique_full_name(family_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/084',
+  id = 'com.google.fonts/check/metadata/unique_weight_style_pairs',
   conditions = ['family_metadata']
 )
-def com_google_fonts_check_084(family_metadata):
+def com_google_fonts_check_metadata_unique_weight_style_pairs(family_metadata):
   """METADATA.pb: check if fonts field
      only contains unique style:weight pairs.
   """
