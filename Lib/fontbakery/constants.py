@@ -23,9 +23,7 @@ import enum
 # https://github.com/googlefonts/fontbakery/issues/2396#issuecomment-473250089
 VARFONT_SUFFIXES = [
   "VF",
-  "Italic",
   "Italic-VF",
-  "Roman",
   "Roman-VF"]
 
 STATIC_STYLE_NAMES = [
