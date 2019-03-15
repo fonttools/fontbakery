@@ -879,9 +879,9 @@ def test_check_metadata_unique_weight_style_pairs():
   assert status == FAIL
 
 
-def test_check_085():
+def test_check_metadata_license():
   """ METADATA.pb license is "APACHE2", "UFL" or "OFL"? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_085 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_license as check,
                                                      family_directory,
                                                      family_metadata)
 
