@@ -66,13 +66,27 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/155' # Copyright field for this font on METADATA.pb matches all copyright notice entries on the name table ?
 ]
 
-expected_check_ids = METADATA_CHECKS + [
-        'com.google.fonts/check/canonical_filename'
-      , 'com.google.fonts/check/002' # Checking all files are in the same directory.
-      , 'com.google.fonts/check/003' # Does DESCRIPTION file contain broken links?
+DESCRIPTION_CHECKS = [
+        'com.google.fonts/check/003' # Does DESCRIPTION file contain broken links?
       , 'com.google.fonts/check/004' # Is this a propper HTML snippet?
       , 'com.google.fonts/check/005' # DESCRIPTION.en_us.html must have more than 200 bytes.
       , 'com.google.fonts/check/006' # DESCRIPTION.en_us.html must have less than 1000 bytes.
+]
+
+THIRDPARTY_CHECKS = [
+        'com.google.fonts/check/ftxvalidator_is_available'
+      , 'com.google.fonts/check/ftxvalidator'
+      , 'com.google.fonts/check/ots'
+      , 'com.google.fonts/check/fontforge_stderr'
+      , 'com.google.fonts/check/fontforge'
+]
+
+expected_check_ids = \
+    METADATA_CHECKS + \
+    DESCRIPTION_CHECKS + \
+    THIRDPARTY_CHECKS + [
+        'com.google.fonts/check/canonical_filename'
+      , 'com.google.fonts/check/002' # Checking all files are in the same directory.
       , 'com.google.fonts/check/008' # Fonts have consistent underline thickness?
       , 'com.google.fonts/check/009' # Fonts have consistent PANOSE proportion?
       , 'com.google.fonts/check/010' # Fonts have consistent PANOSE family type?
@@ -94,10 +108,6 @@ expected_check_ids = METADATA_CHECKS + [
       , 'com.google.fonts/check/034' # Check if OS/2 xAvgCharWidth is correct.
       , 'com.adobe.fonts/check/fsselection_matches_macstyle'
       , 'com.adobe.fonts/check/bold_italic_unique_for_nameid1'
-      , 'com.google.fonts/check/ftxvalidator'
-      , 'com.google.fonts/check/ots'
-      , 'com.google.fonts/check/fontforge_stderr'
-      , 'com.google.fonts/check/fontforge'
       , 'com.google.fonts/check/040' # Checking OS/2 usWinAscent & usWinDescent.
       , 'com.google.fonts/check/041' # Checking Vertical Metric Linegaps.
       , 'com.google.fonts/check/042' # Checking OS/2 Metrics match hhea Metrics.
@@ -170,7 +180,6 @@ expected_check_ids = METADATA_CHECKS + [
 #      , 'com.google.fonts/check/varfont/has_MVAR'
       , 'com.google.fonts/check/fontbakery_version'
       , 'com.google.fonts/check/aat'
-      , 'com.google.fonts/check/ftxvalidator_is_available'
       , 'com.adobe.fonts/check/postscript_name_cff_vs_name'
       , 'com.adobe.fonts/check/postscript_name_consistency'
       , 'com.adobe.fonts/check/max_4_fonts_per_family_name'
