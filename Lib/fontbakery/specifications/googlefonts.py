@@ -106,19 +106,19 @@ expected_check_ids = [
       , 'com.google.fonts/check/metadata/familyname' # Check that METADATA.pb family values are all the same.
       , 'com.google.fonts/check/metadata/has_regular' # METADATA.pb: According Google Fonts standards, families should have a Regular style.
       , 'com.google.fonts/check/metadata/regular_is_400' # METADATA.pb: Regular should be 400.
-      , 'com.google.fonts/check/092' # Checks METADATA.pb font.name field matches family name declared on the name table.
-      , 'com.google.fonts/check/093' # Checks METADATA.pb font.post_script_name matches postscript name declared on the name table.
-      , 'com.google.fonts/check/094' # METADATA.pb font.full_name value matches fullname declared on the name table?
+      , 'com.google.fonts/check/metadata/nameid/family_name' # Checks METADATA.pb font.name field matches family name declared on the name table.
+      , 'com.google.fonts/check/metadata/nameid/post_script_name' # Checks METADATA.pb font.post_script_name matches postscript name declared on the name table.
+      , 'com.google.fonts/check/metadata/nameid/full_name' # METADATA.pb font.full_name value matches fullname declared on the name table?
       , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
-      , 'com.google.fonts/check/096' # METADATA.pb font.full_name and font.post_script_name fields have equivalent values ?
+      , 'com.google.fonts/check/metadata/match_fullname_postscript' # METADATA.pb font.full_name and font.post_script_name fields have equivalent values ?
       , 'com.google.fonts/check/metadata/match_filename_postscript' # METADATA.pb font.filename and font.post_script_name fields have equivalent values?
-      , 'com.google.fonts/check/098' # METADATA.pb font.name field contains font name in right format?
-      , 'com.google.fonts/check/099' # METADATA.pb font.full_name field contains font name in right format?
-      , 'com.google.fonts/check/100' # METADATA.pb font.filename field contains font name in right format?
-      , 'com.google.fonts/check/101' # METADATA.pb font.post_script_name field contains font name in right format?
-      , 'com.google.fonts/check/102' # Copyright notice on METADATA.pb matches canonical pattern?
-      , 'com.google.fonts/check/103' # Copyright notice on METADATA.pb does not contain Reserved Font Name?
-      , 'com.google.fonts/check/104' # METADATA.pb: Copyright notice shouldn't exceed 500 chars.
+      , 'com.google.fonts/check/metadata/valid_name_values' # METADATA.pb font.name field contains font name in right format?
+      , 'com.google.fonts/check/metadata/valid_full_name_values' # METADATA.pb font.full_name field contains font name in right format?
+      , 'com.google.fonts/check/metadata/valid_filename_values' # METADATA.pb font.filename field contains font name in right format?
+      , 'com.google.fonts/check/metadata/valid_post_script_name_values' # METADATA.pb font.post_script_name field contains font name in right format?
+      , 'com.google.fonts/check/metadata/valid_copyright' # Copyright notice on METADATA.pb matches canonical pattern?
+      , 'com.google.fonts/check/metadata/reserved_font_name' # Copyright notice on METADATA.pb does not contain Reserved Font Name?
+      , 'com.google.fonts/check/metadata/copyright_max_length' # METADATA.pb: Copyright notice shouldn't exceed 500 chars.
       , 'com.google.fonts/check/metadata/canonical_filename' # Filename is set canonically in METADATA.pb?
       , 'com.google.fonts/check/106' # METADATA.pb font.style "italic" matches font internals?
       , 'com.google.fonts/check/107' # METADATA.pb font.style "normal" matches font internals?
@@ -1627,10 +1627,10 @@ def font_metadata(family_metadata, font):
 
 
 @check(
-  id = 'com.google.fonts/check/092',
+  id = 'com.google.fonts/check/metadata/nameid/family_name',
   conditions=['font_metadata']
 )
-def com_google_fonts_check_092(ttFont, font_metadata):
+def com_google_fonts_check_metadata_nameid_family_name(ttFont, font_metadata):
   """Checks METADATA.pb font.name field matches
      family name declared on the name table.
   """
@@ -1657,10 +1657,10 @@ def com_google_fonts_check_092(ttFont, font_metadata):
                    " TTF file.").format(font_metadata.name)
 
 @check(
-  id = 'com.google.fonts/check/093',
+  id = 'com.google.fonts/check/metadata/nameid/post_script_name',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_093(ttFont, font_metadata):
+def com_google_fonts_check_metadata_nameid_post_script_name(ttFont, font_metadata):
   """Checks METADATA.pb font.post_script_name matches
      postscript name declared on the name table.
   """
@@ -1691,10 +1691,10 @@ def com_google_fonts_check_093(ttFont, font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/094',
+  id = 'com.google.fonts/check/metadata/nameid/full_name',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_094(ttFont, font_metadata):
+def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
   """METADATA.pb font.full_name value matches
      fullname declared on the name table?
   """
@@ -1757,10 +1757,10 @@ def com_google_fonts_check_095(ttFont, style, font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/096',
+  id = 'com.google.fonts/check/metadata/match_fullname_postscript',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_096(font_metadata):
+def com_google_fonts_check_metadata_match_fullname_postscript(font_metadata):
   """METADATA.pb font.full_name and font.post_script_name
      fields have equivalent values ?
   """
@@ -1825,14 +1825,14 @@ def font_familyname(font_familynames):
 
 
 @check(
-  id = 'com.google.fonts/check/098',
+  id = 'com.google.fonts/check/metadata/valid_name_values',
   conditions = ['style',
                 'font_metadata']
 )
-def com_google_fonts_check_098(style,
-                               font_metadata,
-                               font_familynames,
-                               typographic_familynames):
+def com_google_fonts_check_metadata_valid_name_values(style,
+                                                      font_metadata,
+                                                      font_familynames,
+                                                      typographic_familynames):
   """METADATA.pb font.name field contains font name in right format?"""
   from fontbakery.constants import RIBBI_STYLE_NAMES
   if style in RIBBI_STYLE_NAMES:
@@ -1854,14 +1854,14 @@ def com_google_fonts_check_098(style,
 
 
 @check(
-  id = 'com.google.fonts/check/099',
+  id = 'com.google.fonts/check/metadata/valid_full_name_values',
   conditions = ['style',
                 'font_metadata']
 )
-def com_google_fonts_check_099(style,
-                               font_metadata,
-                               font_familynames,
-                               typographic_familynames):
+def com_google_fonts_check_metadata_valid_full_name_values(style,
+                                                           font_metadata,
+                                                           font_familynames,
+                                                           typographic_familynames):
   """METADATA.pb font.full_name field contains font name in right format?"""
   from fontbakery.constants import RIBBI_STYLE_NAMES
   if style in RIBBI_STYLE_NAMES:
@@ -1887,13 +1887,13 @@ def com_google_fonts_check_099(style,
 
 
 @check(
-  id = 'com.google.fonts/check/100',
+  id = 'com.google.fonts/check/metadata/valid_filename_values',
   conditions = ['style', # This means the font filename
                          # (source of truth here) is good
                 'family_metadata']
 )
-def com_google_fonts_check_100(font,
-                               family_metadata):
+def com_google_fonts_check_metadata_valid_filename_values(font,
+                                                          family_metadata):
   """METADATA.pb font.filename field contains font name in right format?"""
   expected = os.path.basename(font)
   failed = True
@@ -1909,12 +1909,12 @@ def com_google_fonts_check_100(font,
 
 
 @check(
-  id = 'com.google.fonts/check/101',
+  id = 'com.google.fonts/check/metadata/valid_post_script_name_values',
   conditions = ['font_metadata',
                 'font_familynames']
 )
-def com_google_fonts_check_101(font_metadata,
-                              font_familynames):
+def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
+                                                                  font_familynames):
   """METADATA.pb font.post_script_name field
      contains font name in right format?
   """
@@ -1931,10 +1931,10 @@ def com_google_fonts_check_101(font_metadata,
 
 
 @check(
-  id = 'com.google.fonts/check/102',
+  id = 'com.google.fonts/check/metadata/valid_copyright',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_102(ttFont, font_metadata):
+def com_google_fonts_check_metadata_valid_copyright(ttFont, font_metadata):
   """Copyright notices match canonical pattern?"""
   import re
   from fontbakery.utils import get_name_entry_strings
@@ -1964,10 +1964,10 @@ def com_google_fonts_check_102(ttFont, font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/103',
+  id = 'com.google.fonts/check/metadata/reserved_font_name',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_103(font_metadata):
+def com_google_fonts_check_metadata_reserved_font_name(font_metadata):
   """Copyright notice on METADATA.pb should not contain 'Reserved Font Name'."""
   from unidecode import unidecode
   if "Reserved Font Name" in font_metadata.copyright:
@@ -1981,10 +1981,10 @@ def com_google_fonts_check_103(font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/104',
+  id = 'com.google.fonts/check/metadata/copyright_max_length',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_104(font_metadata):
+def com_google_fonts_check_metadata_copyright_max_length(font_metadata):
   """METADATA.pb: Copyright notice shouldn't exceed 500 chars."""
   if len(font_metadata.copyright) > 500:
     yield FAIL, ("METADATA.pb: Copyright notice exceeds"
