@@ -56,9 +56,9 @@ def test_check_ftxvalidator_is_available():
   assert "is not available" in output
 
 
-def NOT_IMPLEMENTED_test_check_035():
+def NOT_IMPLEMENTED_test_check_ftxvalidator():
   """ Checking with ftxvalidator. """
-  # from fontbakery.specifications.general import com_google_fonts_check_035 as check
+  # from fontbakery.specifications.general import com_google_fonts_check_ftxvalidator as check
   # TODO: Implement-me!
   #
   # code-paths:

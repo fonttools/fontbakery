@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Renamed numerical check-IDs:
   - **[com.google.fonts/check/001]:** com.google.fonts/check/canonical_filename
   - **[com.google.fonts/check/007]:** com.google.fonts/check/metadata/unknown_designer
+  - **[com.google.fonts/check/035]:** com.google.fonts/check/ftxvalidator
   - **[com.google.fonts/check/038]:** com.google.fonts/check/fontforge_stderr
   - **[com.google.fonts/check/039]:** com.google.fonts/check/fontforge
   - **[com.google.fonts/check/082]:** com.google.fonts/check/metadata/listed_on_gfonts

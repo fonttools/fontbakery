@@ -106,10 +106,10 @@ def com_google_fonts_check_ftxvalidator_is_available(ftxvalidator_is_available):
 
 
 @check(
-  id = 'com.google.fonts/check/035',
+  id = 'com.google.fonts/check/ftxvalidator',
   conditions = ['ftxvalidator_is_available']
 )
-def com_google_fonts_check_035(font):
+def com_google_fonts_check_ftxvalidator(font):
   """Checking with ftxvalidator."""
   import plistlib
   try:

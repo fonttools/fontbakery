@@ -34,7 +34,7 @@ expected_check_ids = [
     'com.google.fonts/check/034',  # Check if OS/2 xAvgCharWidth is correct.
     'com.adobe.fonts/check/fsselection_matches_macstyle',
     'com.adobe.fonts/check/bold_italic_unique_for_nameid1',
-    'com.google.fonts/check/035',  # Checking with ftxvalidator.
+    'com.google.fonts/check/ftxvalidator',
     'com.google.fonts/check/036',  # Checking with ots-sanitize.
     'com.google.fonts/check/fontforge_stderr',
     'com.google.fonts/check/fontforge',
