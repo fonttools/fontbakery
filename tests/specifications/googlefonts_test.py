@@ -186,11 +186,13 @@ def test_check_canonical_filename():
     assert status == FAIL
 
 
-def test_check_003():
+def test_check_description_broken_links():
   """ Does DESCRIPTION file contain broken links ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_003 as check,
-                                                     description,
-                                                     descfile)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_description_broken_links as check,
+    description,
+    descfile)
+
   good_desc = description(descfile(portable_path("data/test/cabin")))
   print('Test PASS with description file that has no links...')
   status, message = list(check(good_desc))[-1]
