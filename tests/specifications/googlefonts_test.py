@@ -1739,11 +1739,13 @@ def test_check_metadata_nameid_family_and_full_names():
       ttFont['name'].names[i].string = backup
 
 
-def test_check_109():
+def test_check_metadata_fontname_not_camel_cased():
   """ METADATA.pb: Check if fontname is not camel cased. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_109 as check,
-                                                     family_metadata,
-                                                     font_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_fontname_not_camel_cased as check,
+    family_metadata,
+    font_metadata)
+
   # Our reference Cabin Regular is known to be good
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   family_directory = os.path.dirname(fontfile)
