@@ -215,10 +215,13 @@ def test_check_description_broken_links():
   assert status == FAIL
 
 
-def test_check_004():
+def test_check_description_valid_html():
   """ DESCRIPTION file is a propper HTML snippet ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_004 as check,
-                                                     descfile, description)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_description_valid_html as check,
+    descfile,
+    description)
+
   good_descfile = descfile(portable_path("data/test/nunito"))
   good_desc = description(good_descfile)
   print('Test PASS with description file that contains a good HTML snippet...')
