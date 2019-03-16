@@ -1600,10 +1600,10 @@ def test_check_metadata_canonical_filename():
     assert status == expected
 
 
-def test_check_106():
+def test_check_metadata_italic_style():
   """ METADATA.pb font.style "italic" matches font internals ? """
   from fontbakery.constants import MacStyle
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_106 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_italic_style as check,
                                                      family_metadata,
                                                      font_metadata)
   # Our reference Merriweather Italic is known to good
@@ -1638,14 +1638,15 @@ def test_check_106():
   assert status == FAIL and message.code == "bad-macstyle"
 
 
-def test_check_107():
+def test_check_metadata_normal_style():
   """ METADATA.pb font.style "normal" matches font internals ? """
   from fontbakery.constants import MacStyle
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_107 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_normal_style as check,
                                                      family_metadata,
                                                      font_metadata)
-  # This one is pretty similar to check/106
+  # This one is pretty similar to check/metadata/italic_style
   # You may want to take a quick look above...
+
   # Our reference Merriweather Regular is known to be good here.
   fontfile = TEST_FILE("merriweather/Merriweather-Regular.ttf")
   ttFont = TTFont(fontfile)

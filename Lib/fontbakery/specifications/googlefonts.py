@@ -54,8 +54,8 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/reserved_font_name'
       , 'com.google.fonts/check/metadata/copyright_max_length'
       , 'com.google.fonts/check/metadata/canonical_filename'
-      , 'com.google.fonts/check/106' # METADATA.pb font.style "italic" matches font internals?
-      , 'com.google.fonts/check/107' # METADATA.pb font.style "normal" matches font internals?
+      , 'com.google.fonts/check/metadata/italic_style'
+      , 'com.google.fonts/check/metadata/normal_style'
       , 'com.google.fonts/check/108' # METADATA.pb font.name and font.full_name fields match the values declared on the name table?
       , 'com.google.fonts/check/109' # METADATA.pb: Check if fontname is not camel cased.
       , 'com.google.fonts/check/110' # METADATA.pb: Check font name is the same as family name.
@@ -2053,10 +2053,10 @@ def com_google_fonts_check_metadata_canonical_filename(font_metadata,
 
 
 @check(
-  id = 'com.google.fonts/check/106',
+  id = 'com.google.fonts/check/metadata/italic_style',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_106(ttFont, font_metadata):
+def com_google_fonts_check_metadata_italic_style(ttFont, font_metadata):
   """METADATA.pb font.style "italic" matches font internals?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import MacStyle
@@ -2092,10 +2092,10 @@ def com_google_fonts_check_106(ttFont, font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/107',
+  id = 'com.google.fonts/check/metadata/normal_style',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_107(ttFont, font_metadata):
+def com_google_fonts_check_metadata_normal_style(ttFont, font_metadata):
   """METADATA.pb font.style "normal" matches font internals?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import MacStyle
@@ -2109,7 +2109,7 @@ def com_google_fonts_check_107(ttFont, font_metadata):
     if len(font_familyname) == 0 or len(font_fullname) == 0:
       yield SKIP, ("Font lacks familyname and/or"
                    " fullname entries in name table.")
-      # FIXME: This is the same SKIP condition as in check/106
+      # FIXME: This is the same SKIP condition as in check/metadata/italic_style
       #        so we definitely need to address them with a common condition!
     else:
       font_familyname = font_familyname[0]
