@@ -1049,9 +1049,9 @@ def test_check_metadata_has_regular():
   assert status == FAIL
 
 
-def test_check_091():
+def test_check_metadata_regular_is_400():
   """ METADATA.pb: Regular should be 400. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_091 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_metadata_regular_is_400 as check,
                                                      family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
