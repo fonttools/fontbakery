@@ -9,9 +9,13 @@ spec_imports = (
     ('.',
         ('general', 'cmap', 'head', 'os2', 'post', 'name', 'hhea', 'dsig',
          'hmtx', 'gpos', 'gdef', 'kern', 'glyf', 'fvar', 'shared_conditions',
-         'loca')),
+         'loca')
+    ),
     ('fontbakery.specifications.googlefonts',
-        ('com_google_fonts_check_040', 'com_google_fonts_check_042')),
+        ('com_google_fonts_check_040' # Checking OS/2 usWinAscent & usWinDescent.
+        ,'com_google_fonts_check_042' # Checking OS/2 Metrics match hhea Metrics.
+        )
+    ),
 )
 
 # If you comment out the call to specification.test_expected_checks(),
@@ -28,8 +32,8 @@ expected_check_ids = [
     'com.google.fonts/check/031',  # Description strings in the name table must not contain copyright info.
     'com.google.fonts/check/033',  # Checking correctness of monospaced metadata.
     'com.google.fonts/check/034',  # Check if OS/2 xAvgCharWidth is correct.
-    'com.adobe.fonts/check/fsselection_matches_macstyle',  # Check if OS/2 fsSelection matches head macStyle bold and italic bits.
-    'com.adobe.fonts/check/bold_italic_unique_for_nameid1', # Check that OS/2.fsSelection bold & italic settings are unique for each NameID1
+    'com.adobe.fonts/check/fsselection_matches_macstyle',
+    'com.adobe.fonts/check/bold_italic_unique_for_nameid1',
     'com.google.fonts/check/035',  # Checking with ftxvalidator.
     'com.google.fonts/check/036',  # Checking with ots-sanitize.
     'com.google.fonts/check/038',  # FontForge validation outputs error messages?
@@ -71,15 +75,15 @@ expected_check_ids = [
     'com.google.fonts/check/171',  # The variable font 'opsz' (Optical Size) axis coordinate should be between 9 and 13 on the 'Regular' instance.
     'com.google.fonts/check/172',  # The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
     'com.google.fonts/check/180',  # Does the number of glyphs in the loca table match the maxp table?
-    'com.google.fonts/check/ttx-roundtrip',  # Checking with fontTools.ttx
-    'com.google.fonts/check/fontbakery_version',  # Do we have the latest version of FontBakery installed?
-    'com.google.fonts/check/ftxvalidator_is_available',  # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
-    'com.google.fonts/check/wght_valid_range',  # Weight axis coordinate must be within spec range of 1 to 1000 on all instances.
-    'com.adobe.fonts/check/postscript_name_cff_vs_name',  # CFF table FontName must match name table ID 6 (PostScript name).
-    'com.adobe.fonts/check/postscript_name_consistency',  # Name table ID 6 (PostScript name) must be consistent across platforms.
-    'com.adobe.fonts/check/max_4_fonts_per_family_name',  # Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts
-    'com.adobe.fonts/check/name_empty_records',  # check 'name' table for empty records
-    'com.adobe.fonts/check/consistent_upm'  # fonts have consistent Units Per Em?
+    'com.google.fonts/check/ttx-roundtrip',
+    'com.google.fonts/check/fontbakery_version',
+    'com.google.fonts/check/ftxvalidator_is_available',
+    'com.google.fonts/check/wght_valid_range',
+    'com.adobe.fonts/check/postscript_name_cff_vs_name',
+    'com.adobe.fonts/check/postscript_name_consistency',
+    'com.adobe.fonts/check/max_4_fonts_per_family_name',
+    'com.adobe.fonts/check/name_empty_records',
+    'com.adobe.fonts/check/consistent_upm'
 ]
 
 specification = spec_factory(default_section=Section("Adobe Fonts"))
