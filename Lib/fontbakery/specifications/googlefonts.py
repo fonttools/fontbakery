@@ -154,7 +154,7 @@ expected_check_ids = METADATA_CHECKS + [
       , 'com.google.fonts/check/163' # Combined length of family and style must not exceed 20 characters.
       , 'com.google.fonts/check/164' # Length of copyright notice must not exceed 500 characters.
       , 'com.google.fonts/check/165' # Familyname must be unique according to namecheck.fontdata.com
-      , 'com.google.fonts/check/166' # Check for font-v versioning
+      , 'com.google.fonts/check/fontv'
       , 'com.google.fonts/check/167' # The variable font 'wght' (Weight) axis coordinate must be 400 on the 'Regular' instance.
       , 'com.google.fonts/check/168' # The variable font 'wdth' (Width) axis coordinate must be 100 on the 'Regular' instance.
       , 'com.google.fonts/check/169' # The variable font 'slnt' (Slant) axis coordinate must be zero on the 'Regular' instance.
@@ -3259,7 +3259,7 @@ def com_google_fonts_check_165(ttFont, familyname):
                                                              FB_ISSUE_TRACKER)
 
 @check(
-  id = 'com.google.fonts/check/166',
+  id = 'com.google.fonts/check/fontv',
   rationale = """
     The git sha1 tagging and dev/release features of Source Foundry font-v
      tool are awesome and we would love to consider upstreaming the approach
@@ -3270,7 +3270,7 @@ def com_google_fonts_check_165(ttFont, familyname):
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1563'
   })
-def com_google_fonts_check_166(ttFont):
+def com_google_fonts_check_fontv(ttFont):
   """ Check for font-v versioning """
   from fontv.libfv import FontVersion
 
