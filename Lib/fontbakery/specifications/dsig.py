@@ -4,9 +4,9 @@ from fontbakery.checkrunner import FAIL, PASS
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 @check(
-  id = 'com.google.fonts/check/045'
+  id = 'com.google.fonts/check/dsig'
 )
-def com_google_fonts_check_045(ttFont):
+def com_google_fonts_check_dsig(ttFont):
   """Does the font have a DSIG table?"""
   if "DSIG" in ttFont:
     yield PASS, "Digital Signature (DSIG) exists."

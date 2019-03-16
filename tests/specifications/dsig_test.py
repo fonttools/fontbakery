@@ -13,9 +13,9 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 from fontTools.ttLib import TTFont
 
-def test_check_045():
+def test_check_dsig():
   """ Does the font have a DSIG table ? """
-  from fontbakery.specifications.dsig import com_google_fonts_check_045 as check
+  from fontbakery.specifications.dsig import com_google_fonts_check_dsig as check
 
   # Our reference Cabin Regular font is good (theres a DSIG table declared):
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
