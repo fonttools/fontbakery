@@ -83,9 +83,9 @@ def test_check_036():
   assert "Failed to sanitize file!" in output
 
 
-def NOT_IMPLEMENTED_test_check_038():
+def NOT_IMPLEMENTED_test_check_fontforge_stderr():
   """ FontForge validation outputs error messages? """
-  # from fontbakery.specifications.general import com_google_fonts_check_038 as check
+  # from fontbakery.specifications.general import com_google_fonts_check_fontforge_error_messages as check
   # TODO: Implement-me!
   #
   # code-paths:
@@ -93,9 +93,9 @@ def NOT_IMPLEMENTED_test_check_038():
   # PASS, "Fontforge validation did not output any error message."
 
 
-def NOT_IMPLEMENTED_test_check_039():
+def NOT_IMPLEMENTED_test_check_fontforge():
   """ FontForge checks. """
-  # from fontbakery.specifications.general import com_google_fonts_check_039 as check
+  # from fontbakery.specifications.general import com_google_fonts_check_fontforge as check
   # TODO: Implement-me!
   #
   # code-paths:

@@ -228,10 +228,10 @@ def com_google_fonts_check_fontbakery_version():
 
 
 @check(
-  id = 'com.google.fonts/check/038',
+  id = 'com.google.fonts/check/fontforge_stderr',
   conditions = ['fontforge_check_results']
 )
-def com_google_fonts_check_038(font, fontforge_check_results):
+def com_google_fonts_check_fontforge_stderr(font, fontforge_check_results):
   """FontForge validation outputs error messages?"""
   if "skip" in fontforge_check_results:
     yield SKIP, fontforge_check_results["skip"]
@@ -271,10 +271,10 @@ def fontforge_skip_checks():
   return None
 
 @check(
-  id = 'com.google.fonts/check/039',
+  id = 'com.google.fonts/check/fontforge',
   conditions = ['fontforge_check_results']
 )
-def com_google_fonts_check_039(fontforge_check_results, fontforge_skip_checks):
+def com_google_fonts_check_fontforge(fontforge_check_results, fontforge_skip_checks):
   """FontForge checks."""
   if "skip" in fontforge_check_results:
     yield SKIP, fontforge_check_results["skip"]

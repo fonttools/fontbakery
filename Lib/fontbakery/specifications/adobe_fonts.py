@@ -36,8 +36,8 @@ expected_check_ids = [
     'com.adobe.fonts/check/bold_italic_unique_for_nameid1',
     'com.google.fonts/check/035',  # Checking with ftxvalidator.
     'com.google.fonts/check/036',  # Checking with ots-sanitize.
-    'com.google.fonts/check/038',  # FontForge validation outputs error messages?
-    'com.google.fonts/check/039',  # FontForge checks.
+    'com.google.fonts/check/fontforge_stderr',
+    'com.google.fonts/check/fontforge',
     'com.google.fonts/check/040',  # Checking OS/2 usWinAscent & usWinDescent.
     'com.google.fonts/check/041',  # Checking Vertical Metric Linegaps.
     'com.google.fonts/check/042',  # Checking OS/2 Metrics match hhea Metrics.
