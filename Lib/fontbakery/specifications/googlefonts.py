@@ -57,7 +57,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/canonical_filename'
       , 'com.google.fonts/check/metadata/italic_style'
       , 'com.google.fonts/check/metadata/normal_style'
-      , 'com.google.fonts/check/109' # METADATA.pb: Check if fontname is not camel cased.
+      , 'com.google.fonts/check/metadata/fontname_not_camel_cased'
       , 'com.google.fonts/check/110' # METADATA.pb: Check font name is the same as family name.
       , 'com.google.fonts/check/111' # METADATA.pb: Check that font weight has a canonical value.
       , 'com.google.fonts/check/112' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
@@ -2189,11 +2189,11 @@ def whitelist_camelcased_familyname(font):
 
 
 @check(
-  id = 'com.google.fonts/check/109',
+  id = 'com.google.fonts/check/metadata/fontname_not_camel_cased',
   conditions = ['font_metadata',
                 'not whitelist_camelcased_familyname']
 )
-def com_google_fonts_check_109(font_metadata):
+def com_google_fonts_check_metadata_fontname_not_camel_cased(font_metadata):
   """METADATA.pb: Check if fontname is not camel cased."""
   import re
   if bool(re.match(r'([A-Z][a-z]+){2,}', font_metadata.name)):
