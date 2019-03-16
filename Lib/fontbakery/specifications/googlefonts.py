@@ -26,14 +26,53 @@ spec_imports = (
 
 # this is from the output of
 # $ fontbakery check-specification  fontbakery.specifications.googlefonts -L
-expected_check_ids = [
-        'com.google.fonts/check/canonical_filename' # Checking file is named canonically.
+
+METADATA_CHECKS = [
+        'com.google.fonts/check/metadata/parses'
+      , 'com.google.fonts/check/metadata/unknown_designer'
+      , 'com.google.fonts/check/metadata/listed_on_gfonts'
+      , 'com.google.fonts/check/metadata/unique_full_name_values'
+      , 'com.google.fonts/check/metadata/unique_weight_style_pairs'
+      , 'com.google.fonts/check/metadata/license'
+      , 'com.google.fonts/check/metadata/menu_and_latin'
+      , 'com.google.fonts/check/metadata/subsets_order'
+      , 'com.google.fonts/check/metadata/copyright'
+      , 'com.google.fonts/check/metadata/familyname'
+      , 'com.google.fonts/check/metadata/has_regular'
+      , 'com.google.fonts/check/metadata/regular_is_400'
+      , 'com.google.fonts/check/metadata/nameid/family_name'
+      , 'com.google.fonts/check/metadata/nameid/post_script_name'
+      , 'com.google.fonts/check/metadata/nameid/full_name'
+      , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
+      , 'com.google.fonts/check/metadata/match_fullname_postscript'
+      , 'com.google.fonts/check/metadata/match_filename_postscript'
+      , 'com.google.fonts/check/metadata/valid_name_values'
+      , 'com.google.fonts/check/metadata/valid_full_name_values'
+      , 'com.google.fonts/check/metadata/valid_filename_values'
+      , 'com.google.fonts/check/metadata/valid_post_script_name_values'
+      , 'com.google.fonts/check/metadata/valid_copyright'
+      , 'com.google.fonts/check/metadata/reserved_font_name'
+      , 'com.google.fonts/check/metadata/copyright_max_length'
+      , 'com.google.fonts/check/metadata/canonical_filename'
+      , 'com.google.fonts/check/106' # METADATA.pb font.style "italic" matches font internals?
+      , 'com.google.fonts/check/107' # METADATA.pb font.style "normal" matches font internals?
+      , 'com.google.fonts/check/108' # METADATA.pb font.name and font.full_name fields match the values declared on the name table?
+      , 'com.google.fonts/check/109' # METADATA.pb: Check if fontname is not camel cased.
+      , 'com.google.fonts/check/110' # METADATA.pb: Check font name is the same as family name.
+      , 'com.google.fonts/check/111' # METADATA.pb: Check that font weight has a canonical value.
+      , 'com.google.fonts/check/112' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
+      , 'com.google.fonts/check/113' # METADATA.pb weight matches postScriptName.
+      , 'com.google.fonts/check/115' # METADATA.pb: Font styles are named canonically?
+      , 'com.google.fonts/check/155' # Copyright field for this font on METADATA.pb matches all copyright notice entries on the name table ?
+]
+
+expected_check_ids = METADATA_CHECKS + [
+        'com.google.fonts/check/canonical_filename'
       , 'com.google.fonts/check/002' # Checking all files are in the same directory.
       , 'com.google.fonts/check/003' # Does DESCRIPTION file contain broken links?
       , 'com.google.fonts/check/004' # Is this a propper HTML snippet?
       , 'com.google.fonts/check/005' # DESCRIPTION.en_us.html must have more than 200 bytes.
       , 'com.google.fonts/check/006' # DESCRIPTION.en_us.html must have less than 1000 bytes.
-      , 'com.google.fonts/check/metadata/unknown_designer' # Font designer field in METADATA.pb must not be 'unknown'.
       , 'com.google.fonts/check/008' # Fonts have consistent underline thickness?
       , 'com.google.fonts/check/009' # Fonts have consistent PANOSE proportion?
       , 'com.google.fonts/check/010' # Fonts have consistent PANOSE family type?
@@ -48,13 +87,13 @@ expected_check_ids = [
       , 'com.google.fonts/check/020' # Checking OS/2 usWeightClass.
       , 'com.google.fonts/check/028' # Check font has a license.
       , 'com.google.fonts/check/029' # Check copyright namerecords match license file.
-      , 'com.google.fonts/check/030' # "License URL matches License text on name table?
+      , 'com.google.fonts/check/030' # License URL matches License text on name table?
       , 'com.google.fonts/check/031' # Description strings in the name table must not contain copyright info.
       , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 200 characters.
       , 'com.google.fonts/check/033' # Checking correctness of monospaced metadata.
       , 'com.google.fonts/check/034' # Check if OS/2 xAvgCharWidth is correct.
-      , 'com.adobe.fonts/check/fsselection_matches_macstyle' # Check if OS/2 fsSelection matches head macStyle bold and italic bits.
-      , 'com.adobe.fonts/check/bold_italic_unique_for_nameid1' # Check that OS/2.fsSelection bold & italic settings are unique for each NameID1
+      , 'com.adobe.fonts/check/fsselection_matches_macstyle'
+      , 'com.adobe.fonts/check/bold_italic_unique_for_nameid1'
       , 'com.google.fonts/check/035' # Checking with ftxvalidator.
       , 'com.google.fonts/check/036' # Checking with ots-sanitize.
       , 'com.google.fonts/check/038' # FontForge validation outputs error messages?
@@ -96,39 +135,6 @@ expected_check_ids = [
       , 'com.google.fonts/check/077' # Check all glyphs have codepoints assigned.
       #, 'com.google.fonts/check/078' # Check that glyph names do not exceed max length.
       , 'com.google.fonts/check/079' # Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth?
-      , 'com.google.fonts/check/metadata/listed_on_gfonts' # METADATA.pb: Fontfamily is listed on Google Fonts API?
-      , 'com.google.fonts/check/metadata/unique_full_name_values' # METADATA.pb: check if fonts field only has unique "full_name" values.
-      , 'com.google.fonts/check/metadata/unique_weight_style_pairs' # METADATA.pb: check if fonts field only contains unique style:weight pairs.
-      , 'com.google.fonts/check/metadata/license' # METADATA.pb license is "APACHE2", "UFL" or "OFL"?
-      , 'com.google.fonts/check/metadata/menu_and_latin' # METADATA.pb should contain at least "menu" and "latin" subsets.
-      , 'com.google.fonts/check/metadata/subsets_order' # METADATA.pb subsets should be alphabetically ordered.
-      , 'com.google.fonts/check/metadata/copyright' # METADATA.pb: Copyright notice is the same in all fonts?
-      , 'com.google.fonts/check/metadata/familyname' # Check that METADATA.pb family values are all the same.
-      , 'com.google.fonts/check/metadata/has_regular' # METADATA.pb: According Google Fonts standards, families should have a Regular style.
-      , 'com.google.fonts/check/metadata/regular_is_400' # METADATA.pb: Regular should be 400.
-      , 'com.google.fonts/check/metadata/nameid/family_name' # Checks METADATA.pb font.name field matches family name declared on the name table.
-      , 'com.google.fonts/check/metadata/nameid/post_script_name' # Checks METADATA.pb font.post_script_name matches postscript name declared on the name table.
-      , 'com.google.fonts/check/metadata/nameid/full_name' # METADATA.pb font.full_name value matches fullname declared on the name table?
-      , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
-      , 'com.google.fonts/check/metadata/match_fullname_postscript' # METADATA.pb font.full_name and font.post_script_name fields have equivalent values ?
-      , 'com.google.fonts/check/metadata/match_filename_postscript' # METADATA.pb font.filename and font.post_script_name fields have equivalent values?
-      , 'com.google.fonts/check/metadata/valid_name_values' # METADATA.pb font.name field contains font name in right format?
-      , 'com.google.fonts/check/metadata/valid_full_name_values' # METADATA.pb font.full_name field contains font name in right format?
-      , 'com.google.fonts/check/metadata/valid_filename_values' # METADATA.pb font.filename field contains font name in right format?
-      , 'com.google.fonts/check/metadata/valid_post_script_name_values' # METADATA.pb font.post_script_name field contains font name in right format?
-      , 'com.google.fonts/check/metadata/valid_copyright' # Copyright notice on METADATA.pb matches canonical pattern?
-      , 'com.google.fonts/check/metadata/reserved_font_name' # Copyright notice on METADATA.pb does not contain Reserved Font Name?
-      , 'com.google.fonts/check/metadata/copyright_max_length' # METADATA.pb: Copyright notice shouldn't exceed 500 chars.
-      , 'com.google.fonts/check/metadata/canonical_filename' # Filename is set canonically in METADATA.pb?
-      , 'com.google.fonts/check/106' # METADATA.pb font.style "italic" matches font internals?
-      , 'com.google.fonts/check/107' # METADATA.pb font.style "normal" matches font internals?
-      , 'com.google.fonts/check/108' # METADATA.pb font.name and font.full_name fields match the values declared on the name table?
-      , 'com.google.fonts/check/109' # METADATA.pb: Check if fontname is not camel cased.
-      , 'com.google.fonts/check/110' # METADATA.pb: Check font name is the same as family name.
-      , 'com.google.fonts/check/111' # METADATA.pb: Check that font weight has a canonical value.
-      , 'com.google.fonts/check/112' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
-      , 'com.google.fonts/check/113' # METADATA.pb weight matches postScriptName.
-      , 'com.google.fonts/check/115' # METADATA.pb: Font styles are named canonically?
       , 'com.google.fonts/check/116' # Stricter unitsPerEm criteria for Google Fonts.
       , 'com.google.fonts/check/117' # Version number has increased since previous release on Google Fonts?
       , 'com.google.fonts/check/118' # Glyphs are similiar to Google Fonts version?
@@ -138,7 +144,6 @@ expected_check_ids = [
       , 'com.google.fonts/check/152' # Name table strings must not contain 'Reserved Font Name'.
       , 'com.google.fonts/check/153' # Check if each glyph has the recommended amount of contours.
       , 'com.google.fonts/check/154' # Check font has same encoded glyphs as version hosted on fonts.google.com
-      , 'com.google.fonts/check/155' # Copyright field for this font on METADATA.pb matches all copyright notice entries on the name table ?
       , 'com.google.fonts/check/156' # Font has all mandatory 'name' table entries ?
       , 'com.google.fonts/check/157' # Check name table: FONT_FAMILY_NAME entries.
       , 'com.google.fonts/check/158' # Check name table: FONT_SUBFAMILY_NAME entries.
@@ -158,24 +163,23 @@ expected_check_ids = [
       , 'com.google.fonts/check/172' # The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
       , 'com.google.fonts/check/174' # Check a static ttf can be generated from a variable font.
       , 'com.google.fonts/check/180' # Does the number of glyphs in the loca table match the maxp table?
-      , 'com.google.fonts/check/ttx-roundtrip' # Checking with fontTools.ttx
-      , 'com.google.fonts/check/has_ttfautohint_params' # Font has ttfautohint params
-      , 'com.google.fonts/check/vttclean' # There must not be VTT Talk sources in the font.
-      , 'com.google.fonts/check/varfont/has_HVAR' # Check that variable fonts have an HVAR table.
-#      , 'com.google.fonts/check/varfont/has_MVAR' # Check that variable fonts have an MVAR table.
-      , 'com.google.fonts/check/fontbakery_version' # Do we have the latest version of FontBakery installed?
-      , 'com.google.fonts/check/aat' # Are there unwanted Apple tables?
-      , 'com.google.fonts/check/ftxvalidator_is_available' # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
-      , 'com.adobe.fonts/check/postscript_name_cff_vs_name' # CFF table FontName must match name table ID 6 (PostScript name).
-      , 'com.adobe.fonts/check/postscript_name_consistency' # Name table ID 6 (PostScript name) must be consistent across platforms.
-      , 'com.adobe.fonts/check/max_4_fonts_per_family_name' # Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts
-      , 'com.google.fonts/check/metadata/parses' # Check METADATA.pb parses correctly.
-      , 'com.google.fonts/check/fvar_name_entries' # All name entries referenced by fvar instances exist on the name table?
-      , 'com.google.fonts/check/varfont_has_instances' # A variable font must have named instances.
-      , 'com.google.fonts/check/varfont_weight_instances' # Variable font weight coordinates must be multiples of 100.
-      , 'com.google.fonts/check/wght_valid_range' # Weight axis coordinate must be within spec range of 1 to 1000 on all instances.
-      , 'com.google.fonts/check/tnum_horizontal_metrics' # All tabular figures must have the same width across the whole family.
-      , 'com.google.fonts/check/integer_ppem_if_hinted' # PPEM must be an integer on hinted fonts.
+      , 'com.google.fonts/check/ttx-roundtrip'
+      , 'com.google.fonts/check/has_ttfautohint_params'
+      , 'com.google.fonts/check/vttclean'
+      , 'com.google.fonts/check/varfont/has_HVAR'
+#      , 'com.google.fonts/check/varfont/has_MVAR'
+      , 'com.google.fonts/check/fontbakery_version'
+      , 'com.google.fonts/check/aat'
+      , 'com.google.fonts/check/ftxvalidator_is_available'
+      , 'com.adobe.fonts/check/postscript_name_cff_vs_name'
+      , 'com.adobe.fonts/check/postscript_name_consistency'
+      , 'com.adobe.fonts/check/max_4_fonts_per_family_name'
+      , 'com.google.fonts/check/fvar_name_entries'
+      , 'com.google.fonts/check/varfont_has_instances'
+      , 'com.google.fonts/check/varfont_weight_instances'
+      , 'com.google.fonts/check/wght_valid_range'
+      , 'com.google.fonts/check/tnum_horizontal_metrics'
+      , 'com.google.fonts/check/integer_ppem_if_hinted'
 ]
 
 specification = spec_factory(default_section=Section("Google Fonts"))
