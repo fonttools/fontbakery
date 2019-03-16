@@ -103,7 +103,7 @@ expected_check_ids = METADATA_CHECKS + [
       , 'com.google.fonts/check/042' # Checking OS/2 Metrics match hhea Metrics.
       , 'com.google.fonts/check/043' # Checking unitsPerEm value is reasonable.
       , 'com.google.fonts/check/044' # Checking font version fields.
-      , 'com.google.fonts/check/045' # Does the font have a DSIG table?
+      , 'com.google.fonts/check/dsig'
       , 'com.google.fonts/check/046' # Font contains the first few mandatory glyphs (.null or NULL, CR and space)?
       , 'com.google.fonts/check/047' # Font contains glyphs for whitespace characters?
       , 'com.google.fonts/check/048' # Font has **proper** whitespace glyph names?
