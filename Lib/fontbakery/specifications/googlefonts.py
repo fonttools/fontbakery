@@ -43,6 +43,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/nameid/family_name'
       , 'com.google.fonts/check/metadata/nameid/post_script_name'
       , 'com.google.fonts/check/metadata/nameid/full_name'
+      , 'com.google.fonts/check/metadata/nameid/family_and_full_names' #FIXME! This seems redundant!
       , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
       , 'com.google.fonts/check/metadata/match_fullname_postscript'
       , 'com.google.fonts/check/metadata/match_filename_postscript'
@@ -56,7 +57,6 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/canonical_filename'
       , 'com.google.fonts/check/metadata/italic_style'
       , 'com.google.fonts/check/metadata/normal_style'
-      , 'com.google.fonts/check/108' # METADATA.pb font.name and font.full_name fields match the values declared on the name table?
       , 'com.google.fonts/check/109' # METADATA.pb: Check if fontname is not camel cased.
       , 'com.google.fonts/check/110' # METADATA.pb: Check font name is the same as family name.
       , 'com.google.fonts/check/111' # METADATA.pb: Check that font weight has a canonical value.
@@ -2137,10 +2137,10 @@ def com_google_fonts_check_metadata_normal_style(ttFont, font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/108',
+  id = 'com.google.fonts/check/metadata/nameid/family_and_full_names',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_108(ttFont, font_metadata):
+def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_metadata):
   """METADATA.pb font.name and font.full_name fields match
      the values declared on the name table?
   """

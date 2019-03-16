@@ -38,6 +38,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/105]:** com.google.fonts/check/metadata/canonical_filename
   - **[com.google.fonts/check/106]:** com.google.fonts/check/metadata/italic_style
   - **[com.google.fonts/check/107]:** com.google.fonts/check/metadata/normal_style
+  - **[com.google.fonts/check/108]:** com.google.fonts/check/metadata/nameid/family_and_full_names
 
 ### Other relevant code-changes
   - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817

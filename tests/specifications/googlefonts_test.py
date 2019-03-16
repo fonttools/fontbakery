@@ -1695,11 +1695,13 @@ def test_check_metadata_normal_style():
   assert status == FAIL and message.code == "bad-macstyle"
 
 
-def test_check_108():
+def test_check_metadata_nameid_family_and_full_names():
   """ METADATA.pb font.name and font.full_name fields match the values declared on the name table? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_108 as check,
-                                                     family_metadata,
-                                                     font_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_nameid_family_and_full_names as check,
+    family_metadata,
+    font_metadata)
+
   # Our reference Merriweather Regular is known to be good here.
   fontfile = TEST_FILE("merriweather/Merriweather-Regular.ttf")
   ttFont = TTFont(fontfile)
