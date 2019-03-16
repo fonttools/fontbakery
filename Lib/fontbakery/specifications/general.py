@@ -147,9 +147,9 @@ def com_google_fonts_check_ftxvalidator(font):
 
 
 @check(
-  id = 'com.google.fonts/check/036'
+  id = 'com.google.fonts/check/ots'
 )
-def com_google_fonts_check_036(font):
+def com_google_fonts_check_ots(font):
   """Checking with ots-sanitize."""
   import ots
 

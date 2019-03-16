@@ -95,7 +95,7 @@ expected_check_ids = METADATA_CHECKS + [
       , 'com.adobe.fonts/check/fsselection_matches_macstyle'
       , 'com.adobe.fonts/check/bold_italic_unique_for_nameid1'
       , 'com.google.fonts/check/ftxvalidator'
-      , 'com.google.fonts/check/036' # Checking with ots-sanitize.
+      , 'com.google.fonts/check/ots'
       , 'com.google.fonts/check/fontforge_stderr'
       , 'com.google.fonts/check/fontforge'
       , 'com.google.fonts/check/040' # Checking OS/2 usWinAscent & usWinDescent.

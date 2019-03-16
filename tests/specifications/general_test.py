@@ -68,9 +68,9 @@ def NOT_IMPLEMENTED_test_check_ftxvalidator():
   # - ERROR, "ftxvalidator is not available!"
 
 
-def test_check_036():
+def test_check_ots():
   """ Checking with ots-sanitize. """
-  from fontbakery.specifications.general import com_google_fonts_check_036 as check
+  from fontbakery.specifications.general import com_google_fonts_check_ots as check
 
   sanitary_font = TEST_FILE("cabin/Cabin-Regular.ttf")
   status, _ = list(check(sanitary_font))[-1]
