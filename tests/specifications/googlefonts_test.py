@@ -2485,9 +2485,9 @@ def test_check_165():
   assert status == PASS
 
 
-def test_check_166():
+def test_check_fontv():
   """ Check for font-v versioning """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_166 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_fontv as check
   from fontv.libfv import FontVersion
 
   print('Test INFO for font that does not follow'
