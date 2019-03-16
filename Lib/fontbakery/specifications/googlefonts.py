@@ -105,7 +105,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/metadata/copyright' # METADATA.pb: Copyright notice is the same in all fonts?
       , 'com.google.fonts/check/metadata/familyname' # Check that METADATA.pb family values are all the same.
       , 'com.google.fonts/check/metadata/has_regular' # METADATA.pb: According Google Fonts standards, families should have a Regular style.
-      , 'com.google.fonts/check/091' # METADATA.pb: Regular should be 400.
+      , 'com.google.fonts/check/metadata/regular_is_400' # METADATA.pb: Regular should be 400.
       , 'com.google.fonts/check/092' # Checks METADATA.pb font.name field matches family name declared on the name table.
       , 'com.google.fonts/check/093' # Checks METADATA.pb font.post_script_name matches postscript name declared on the name table.
       , 'com.google.fonts/check/094' # METADATA.pb font.full_name value matches fullname declared on the name table?
@@ -1599,11 +1599,11 @@ def com_google_fonts_check_metadata_has_regular(family_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/091',
+  id = 'com.google.fonts/check/metadata/regular_is_400',
   conditions = ['family_metadata',
                 'has_regular_style']
 )
-def com_google_fonts_check_091(family_metadata):
+def com_google_fonts_check_metadata_regular_is_400(family_metadata):
   """METADATA.pb: Regular should be 400."""
   badfonts = []
   for f in family_metadata.fonts:
