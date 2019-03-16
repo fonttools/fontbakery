@@ -68,7 +68,7 @@ METADATA_CHECKS = [
 
 DESCRIPTION_CHECKS = [
         'com.google.fonts/check/description/broken_links' # Does DESCRIPTION file contain broken links?
-      , 'com.google.fonts/check/004' # Is this a propper HTML snippet?
+      , 'com.google.fonts/check/description/valid_html' # Is this a propper HTML snippet?
       , 'com.google.fonts/check/005' # DESCRIPTION.en_us.html must have more than 200 bytes.
       , 'com.google.fonts/check/006' # DESCRIPTION.en_us.html must have less than 1000 bytes.
 ]
@@ -412,10 +412,10 @@ def com_google_fonts_check_description_broken_links(description):
 
 
 @check(
-  id = 'com.google.fonts/check/004',
+  id = 'com.google.fonts/check/description/valid_html',
   conditions = ['descfile']
 )
-def com_google_fonts_check_004(descfile, description):
+def com_google_fonts_check_description_valid_html(descfile, description):
   """Is this a proper HTML snippet?
 
   When packaging families for google/fonts, if there is no
