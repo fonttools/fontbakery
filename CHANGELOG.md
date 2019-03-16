@@ -23,7 +23,18 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/089]:** com.google.fonts/check/metadata/familyname
   - **[com.google.fonts/check/090]:** com.google.fonts/check/metadata/has_regular
   - **[com.google.fonts/check/091]:** com.google.fonts/check/metadata/regular_is_400
+  - **[com.google.fonts/check/092]:** com.google.fonts/check/metadata/nameid/family_name
+  - **[com.google.fonts/check/093]:** com.google.fonts/check/metadata/nameid/post_script_name
+  - **[com.google.fonts/check/094]:** com.google.fonts/check/metadata/nameid/full_name
+  - **[com.google.fonts/check/096]:** com.google.fonts/check/metadata/match_fullname_postscript
   - **[com.google.fonts/check/097]:** com.google.fonts/check/metadata/match_filename_postscript
+  - **[com.google.fonts/check/098]:** com.google.fonts/check/metadata/valid_name_values
+  - **[com.google.fonts/check/099]:** com.google.fonts/check/metadata/valid_full_name_values
+  - **[com.google.fonts/check/100]:** com.google.fonts/check/metadata/valid_filename_values
+  - **[com.google.fonts/check/101]:** com.google.fonts/check/metadata/valid_post_script_name_values
+  - **[com.google.fonts/check/102]:** com.google.fonts/check/metadata/valid_copyright
+  - **[com.google.fonts/check/103]:** com.google.fonts/check/metadata/reserved_font_name
+  - **[com.google.fonts/check/104]:** com.google.fonts/check/metadata/copyright_max_length
   - **[com.google.fonts/check/105]:** com.google.fonts/check/metadata/canonical_filename
 
 ### Other relevant code-changes

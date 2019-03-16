@@ -1074,12 +1074,13 @@ def test_check_metadata_regular_is_400():
   assert status == FAIL
 
 
-def test_check_092():
+def test_check_metadata_nameid_family_name():
   """ Checks METADATA.pb font.name field matches
       family name declared on the name table. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_092 as check,
-                                                     font_metadata,
-                                                     family_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_nameid_family_name as check,
+    font_metadata,
+    family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
   font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1106,12 +1107,13 @@ def test_check_092():
   # - FAIL code="missing", "Font lacks a FONT_FAMILY_NAME entry"
 
 
-def test_check_093():
+def test_check_metadata_nameid_post_script_name():
   """ Checks METADATA.pb font.post_script_name matches
       postscript name declared on the name table. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_093 as check,
-                                                     font_metadata,
-                                                     family_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_nameid_post_script_name as check,
+    font_metadata,
+    family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
   font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1138,10 +1140,12 @@ def test_check_093():
   # - FAIL code="missing", "Font lacks a POSTSCRIPT_NAME"
 
 
-def test_check_094():
+def test_check_metadata_nameid_full_name():
   """ METADATA.pb font.fullname value matches fullname declared on the name table ? """
-  from fontbakery.specifications.googlefonts import font_metadata, family_metadata
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_094 as check
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_nameid_full_name as check,
+    font_metadata,
+    family_metadata)
   import os
 
   # Our reference Merriweather-Regular is know to be good here
@@ -1203,12 +1207,13 @@ def test_check_095():
       ttFont["name"].names[i].string = good # restore good value
 
 
-def test_check_096():
+def test_check_metadata_match_fullname_postscript():
   """ METADATA.pb family.full_name and family.post_script_name
       fields have equivalent values ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_096 as check,
-                                                     font_metadata,
-                                                     family_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_match_fullname_postscript as check,
+    font_metadata,
+    family_metadata)
 
   regular_font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
   lightitalic_font = TEST_FILE("merriweather/Merriweather-LightItalic.ttf")
@@ -1229,8 +1234,9 @@ def test_check_096():
   #       There's some relevant info at:
   #       https://github.com/googlefonts/fontbakery/issues/1517
   #
-  # FIXME: com.google.fonts/check/094 ties the full_name values from the
-  #        METADATA.pb file and the internal name table entry (FULL_FONT_NAME)
+  # FIXME: com.google.fonts/check/metadata/nameid/full_name
+  #        ties the full_name values from the METADATA.pb file and the
+  #        internal name table entry (FULL_FONT_NAME)
   #        to be strictly identical. So it seems that the test below is
   #        actually wrong (as well as the current implementation):
   #
@@ -1300,14 +1306,16 @@ MONTSERRAT_NON_RIBBI = [
   TEST_FILE("montserrat/Montserrat-Thin.ttf")
 ]
 
-def test_check_098():
+def test_check_metadata_valid_name_values():
   """ METADATA.pb font.name field contains font name in right format ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_098 as check,
-                                                     style,
-                                                     family_metadata,
-                                                     font_metadata,
-                                                     font_familynames,
-                                                     typographic_familynames)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_valid_name_values as check,
+    style,
+    family_metadata,
+    font_metadata,
+    font_familynames,
+    typographic_familynames)
+
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
@@ -1351,14 +1359,16 @@ def test_check_098():
     assert status == FAIL
 
 
-def test_check_099():
+def test_check_metadata_valid_full_name_values():
   """ METADATA.pb font.full_name field contains font name in right format ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_099 as check,
-                                                     style,
-                                                     family_metadata,
-                                                     font_metadata,
-                                                     font_familynames,
-                                                     typographic_familynames)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_valid_full_name_values as check,
+    style,
+    family_metadata,
+    font_metadata,
+    font_familynames,
+    typographic_familynames)
+
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI:
     ttFont = TTFont(fontfile)
@@ -1402,10 +1412,12 @@ def test_check_099():
     assert status == FAIL
 
 
-def test_check_100():
+def test_check_metadata_valid_filename_values():
   """ METADATA.pb font.filename field contains font name in right format ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_100 as check,
-                                                     family_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_valid_filename_values as check,
+    family_metadata)
+
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
     family_directory = os.path.dirname(fontfile)
@@ -1424,12 +1436,14 @@ def test_check_100():
     assert status == FAIL
 
 
-def test_check_101():
-  """ METADATA.pb font.post_script_name field contains font name in right format ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_101 as check,
-                                                     family_metadata,
-                                                     font_metadata,
-                                                     font_familynames)
+def test_check_metadata_valid_post_script_name_values():
+  """ METADATA.pb font.post_script_name field contains font name in right format? """
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_valid_post_script_name_values as check,
+    family_metadata,
+    font_metadata,
+    font_familynames)
+
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
 
@@ -1451,11 +1465,13 @@ def test_check_101():
     assert status == FAIL
 
 
-def test_check_102():
+def test_check_metadata_valid_copyright():
   """ Copyright notice on METADATA.pb matches canonical pattern ? """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_102 as check,
-                                                     family_metadata,
-                                                     font_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_valid_copyright as check,
+    family_metadata,
+    font_metadata)
+
   # Our reference Cabin Regular is known to be bad
   # Since it provides an email instead of a git URL:
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
@@ -1483,11 +1499,13 @@ def test_check_102():
   assert status == PASS
 
 
-def test_check_103():
+def test_check_metadata_reserved_font_name():
   """ Copyright notice on METADATA.pb should not contain Reserved Font Name. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_103 as check,
-                                                     family_metadata,
-                                                     font_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_reserved_font_name as check,
+    family_metadata,
+    font_metadata)
+
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   family_directory = os.path.dirname(fontfile)
   family_meta = family_metadata(family_directory)
@@ -1505,11 +1523,13 @@ def test_check_103():
   assert status == WARN
 
 
-def test_check_104():
+def test_check_metadata_copyright_max_length():
   """ METADATA.pb: Copyright notice shouldn't exceed 500 chars. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_104 as check,
-                                                     family_metadata,
-                                                     font_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_copyright_max_length as check,
+    family_metadata,
+    font_metadata)
+
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   family_directory = os.path.dirname(fontfile)
   family_meta = family_metadata(family_directory)
