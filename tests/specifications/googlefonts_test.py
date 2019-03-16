@@ -1845,9 +1845,11 @@ def test_check_112():
     assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_113():
+def NOT_IMPLEMENTED_test_check_metadata_match_weight_postscript():
   """ METADATA.pb: Metadata weight matches postScriptName. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_113 as check
+  # from fontbakery.specifications.googlefonts import (
+  #   com_google_fonts_check_metadata_match_weight_postscript as check)
+  #
   # TODO: Implement-me!
   #
   # code-paths:

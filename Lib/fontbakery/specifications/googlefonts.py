@@ -47,6 +47,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
       , 'com.google.fonts/check/metadata/match_fullname_postscript'
       , 'com.google.fonts/check/metadata/match_filename_postscript'
+      , 'com.google.fonts/check/metadata/match_weight_postscript'
       , 'com.google.fonts/check/metadata/valid_name_values'
       , 'com.google.fonts/check/metadata/valid_full_name_values'
       , 'com.google.fonts/check/metadata/valid_filename_values'
@@ -61,7 +62,6 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/110' # METADATA.pb: Check font name is the same as family name.
       , 'com.google.fonts/check/111' # METADATA.pb: Check that font weight has a canonical value.
       , 'com.google.fonts/check/112' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
-      , 'com.google.fonts/check/113' # METADATA.pb weight matches postScriptName.
       , 'com.google.fonts/check/115' # METADATA.pb: Font styles are named canonically?
       , 'com.google.fonts/check/155' # Copyright field for this font on METADATA.pb matches all copyright notice entries on the name table ?
 ]
@@ -2283,10 +2283,10 @@ def com_google_fonts_check_112(ttFont,
 
 
 @check(
-  id = 'com.google.fonts/check/113',
+  id = 'com.google.fonts/check/metadata/match_weight_postscript',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_113(font_metadata):
+def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
   """METADATA.pb weight matches postScriptName."""
   WEIGHTS = {
     "Thin": 100,
