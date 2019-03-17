@@ -62,7 +62,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/110' # METADATA.pb: Check font name is the same as family name.
       , 'com.google.fonts/check/111' # METADATA.pb: Check that font weight has a canonical value.
       , 'com.google.fonts/check/112' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
-      , 'com.google.fonts/check/115' # METADATA.pb: Font styles are named canonically?
+      , 'com.google.fonts/check/metatada/canonical_style_names'
       , 'com.google.fonts/check/155' # Copyright field for this font on METADATA.pb matches all copyright notice entries on the name table ?
 ]
 
@@ -2339,10 +2339,10 @@ def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/115',
+  id = 'com.google.fonts/check/metatada/canonical_style_names',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_115(ttFont, font_metadata):
+def com_google_fonts_check_metatada_canonical_style_names(ttFont, font_metadata):
   """METADATA.pb: Font styles are named canonically?"""
   from fontbakery.constants import MacStyle
 

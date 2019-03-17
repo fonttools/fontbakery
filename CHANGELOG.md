@@ -48,6 +48,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/108]:** com.google.fonts/check/metadata/nameid/family_and_full_names
   - **[com.google.fonts/check/109]:** com.google.fonts/check/metadata/fontname_not_camel_cased
   - **[com.google.fonts/check/113]:** com.google.fonts/check/metadata/match_weight_postscript
+  - **[com.google.fonts/check/115]:** com.google.fonts/check/metatada/canonical_style_names
   - **[com.google.fonts/check/166]:** com.google.fonts/check/fontv
 
 ### Other relevant code-changes
