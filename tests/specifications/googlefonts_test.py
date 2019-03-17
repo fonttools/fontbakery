@@ -1824,11 +1824,13 @@ def test_check_111():
     assert status == FAIL
 
 
-def test_check_112():
+def test_check_metadata_os2_weightclass():
   """ Checking OS/2 usWeightClass matches weight specified at METADATA.pb """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_112 as check,
-                                                     family_metadata,
-                                                     font_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_os2_weightclass as check,
+    family_metadata,
+    font_metadata)
+
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)

@@ -61,7 +61,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/fontname_not_camel_cased'
       , 'com.google.fonts/check/110' # METADATA.pb: Check font name is the same as family name.
       , 'com.google.fonts/check/111' # METADATA.pb: Check that font weight has a canonical value.
-      , 'com.google.fonts/check/112' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
+      , 'com.google.fonts/check/metadata/os2_weightclass' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
       , 'com.google.fonts/check/metatada/canonical_style_names'
       , 'com.google.fonts/check/155' # Copyright field for this font on METADATA.pb matches all copyright notice entries on the name table ?
 ]
@@ -2248,11 +2248,11 @@ def com_google_fonts_check_111(font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/112',
+  id = 'com.google.fonts/check/metadata/os2_weightclass',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_112(ttFont,
-                              font_metadata):
+def com_google_fonts_check_metadata_os2_weightclass(ttFont,
+                                                    font_metadata):
   """Checking OS/2 usWeightClass matches weight specified at METADATA.pb."""
   # Weight name to value mapping:
   GF_API_WEIGHT_NAMES = {250: "Thin",
