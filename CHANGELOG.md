@@ -12,6 +12,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Renamed numerical check-IDs:
   - **[com.google.fonts/check/001]:** com.google.fonts/check/canonical_filename
+  - **[com.google.fonts/check/002]:** com.google.fonts/check/single_family_directory
   - **[com.google.fonts/check/003]:** com.google.fonts/check/description/broken_links
   - **[com.google.fonts/check/004]:** com.google.fonts/check/description/valid_html
   - **[com.google.fonts/check/005]:** com.google.fonts/check/description/min_length

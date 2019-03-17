@@ -20,9 +20,9 @@ from fontbakery.checkrunner import (
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 
-def test_check_002():
+def test_check_single_family_directory():
   """ Fonts are all in the same directory. """
-  from fontbakery.specifications.general import com_google_fonts_check_002 as check
+  from fontbakery.specifications.general import com_google_fonts_check_single_family_directory as check
   same_dir = [
     TEST_FILE("cabin/Cabin-Thin.ttf"),
     TEST_FILE("cabin/Cabin-ExtraLight.ttf")

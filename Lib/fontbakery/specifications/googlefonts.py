@@ -86,7 +86,7 @@ expected_check_ids = \
     DESCRIPTION_CHECKS + \
     THIRDPARTY_CHECKS + [
         'com.google.fonts/check/canonical_filename'
-      , 'com.google.fonts/check/002' # Checking all files are in the same directory.
+      , 'com.google.fonts/check/single_family_directory'
       , 'com.google.fonts/check/008' # Fonts have consistent underline thickness?
       , 'com.google.fonts/check/009' # Fonts have consistent PANOSE proportion?
       , 'com.google.fonts/check/010' # Fonts have consistent PANOSE family type?
