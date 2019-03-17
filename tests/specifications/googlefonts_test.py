@@ -1863,9 +1863,11 @@ def NOT_IMPLEMENTED_test_check_metadata_match_weight_postscript():
   # - PASS
 
 
-def NOT_IMPLEMENTED_test_check_115():
+def NOT_IMPLEMENTED_test_check_metatada_canonical_style_names():
   """ METADATA.pb: Font styles are named canonically? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_115 as check
+  # from fontbakery.specifications.googlefonts import (
+  #   com_google_fonts_check_metatada_canonical_style_names as check)
+  #
   # TODO: Implement-me!
   #
   # code-paths:
