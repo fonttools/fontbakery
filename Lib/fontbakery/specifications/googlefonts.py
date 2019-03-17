@@ -70,7 +70,7 @@ DESCRIPTION_CHECKS = [
         'com.google.fonts/check/description/broken_links'
       , 'com.google.fonts/check/description/valid_html'
       , 'com.google.fonts/check/description/min_length'
-      , 'com.google.fonts/check/006' # DESCRIPTION.en_us.html must have less than 1000 bytes.
+      , 'com.google.fonts/check/description/max_length'
 ]
 
 THIRDPARTY_CHECKS = [
@@ -443,10 +443,10 @@ def com_google_fonts_check_description_min_length(description):
 
 
 @check(
-  id = 'com.google.fonts/check/006',
+  id = 'com.google.fonts/check/description/max_length',
   conditions = ['description']
 )
-def com_google_fonts_check_006(description):
+def com_google_fonts_check_description_max_length(description):
   """DESCRIPTION.en_us.html must have less than 1000 bytes."""
   if len(description) >= 1000:
     yield FAIL, ("DESCRIPTION.en_us.html must"

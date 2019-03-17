@@ -255,9 +255,9 @@ def test_check_description_min_length():
   assert status == PASS
 
 
-def test_check_006():
+def test_check_description_max_length():
   """ DESCRIPTION.en_us.html must have less than 1000 bytes. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_006 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_description_max_length as check
 
   bad_length = 'a' * 1001
   print('Test FAIL with 1001-byte buffer...')
