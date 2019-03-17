@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/001]:** com.google.fonts/check/canonical_filename
   - **[com.google.fonts/check/003]:** com.google.fonts/check/description/broken_links
   - **[com.google.fonts/check/004]:** com.google.fonts/check/description/valid_html
+  - **[com.google.fonts/check/005]:** com.google.fonts/check/description/min_length
   - **[com.google.fonts/check/007]:** com.google.fonts/check/metadata/unknown_designer
   - **[com.google.fonts/check/035]:** com.google.fonts/check/ftxvalidator
   - **[com.google.fonts/check/036]:** com.google.fonts/check/ots
