@@ -22,7 +22,7 @@ spec_imports = (
 # then this list can be generated from the output of:
 # $ fontbakery check-specification fontbakery.specifications.adobe_fonts -L
 expected_check_ids = [
-    'com.google.fonts/check/002',  # Checking all files are in the same directory.
+    'com.google.fonts/check/single_family_directory',
     'com.google.fonts/check/008',  # Fonts have consistent underline thickness?
     'com.google.fonts/check/009',  # Fonts have consistent PANOSE proportion?
     'com.google.fonts/check/010',  # Fonts have consistent PANOSE family type?
