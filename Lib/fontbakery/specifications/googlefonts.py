@@ -44,6 +44,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/nameid/post_script_name'
       , 'com.google.fonts/check/metadata/nameid/full_name'
       , 'com.google.fonts/check/metadata/nameid/family_and_full_names' #FIXME! This seems redundant!
+      , 'com.google.fonts/check/metadata/nameid/copyright'
       , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
       , 'com.google.fonts/check/metadata/match_fullname_postscript'
       , 'com.google.fonts/check/metadata/match_filename_postscript'
@@ -63,7 +64,6 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/111' # METADATA.pb: Check that font weight has a canonical value.
       , 'com.google.fonts/check/metadata/os2_weightclass' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
       , 'com.google.fonts/check/metatada/canonical_style_names'
-      , 'com.google.fonts/check/155' # Copyright field for this font on METADATA.pb matches all copyright notice entries on the name table ?
 ]
 
 DESCRIPTION_CHECKS = [
@@ -2831,10 +2831,10 @@ def com_google_fonts_check_154(ttFont, api_gfonts_ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/155',
+  id = 'com.google.fonts/check/metadata/nameid/copyright',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_155(ttFont, font_metadata):
+def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
   """Copyright field for this font on METADATA.pb matches
      all copyright notice entries on the name table ?"""
   from unidecode import unidecode

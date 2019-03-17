@@ -52,6 +52,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/112]:** com.google.fonts/check/metadata/os2_weightclass
   - **[com.google.fonts/check/113]:** com.google.fonts/check/metadata/match_weight_postscript
   - **[com.google.fonts/check/115]:** com.google.fonts/check/metatada/canonical_style_names
+  - **[com.google.fonts/check/155]:** com.google.fonts/check/metadata_nameid_copyright
   - **[com.google.fonts/check/166]:** com.google.fonts/check/fontv
 
 ### Other relevant code-changes
