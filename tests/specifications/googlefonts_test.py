@@ -2072,13 +2072,15 @@ def test_check_154(cabin_ttFonts):
       print (f"Warning: Seems to have failed to download remote font files: {cabin_ttFonts}.")
 
 
-def test_check_155():
+def test_check_metadata_nameid_copyright():
   """ Copyright field for this font on METADATA.pb matches
       all copyright notice entries on the name table ? """
   from fontbakery.utils import get_name_entry_strings
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_155 as check,
-                                                     family_metadata,
-                                                     font_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_nameid_copyright as check,
+    family_metadata,
+    font_metadata)
+
   # Our reference Cabin Regular is known to be good
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   ttFont = TTFont(fontfile)
