@@ -88,7 +88,7 @@ expected_check_ids = \
         'com.google.fonts/check/canonical_filename'
       , 'com.google.fonts/check/single_family_directory'
       , 'com.google.fonts/check/underline_thickness'
-      , 'com.google.fonts/check/009' # Fonts have consistent PANOSE proportion?
+      , 'com.google.fonts/check/panose_proportion'
       , 'com.google.fonts/check/010' # Fonts have consistent PANOSE family type?
       , 'com.google.fonts/check/011' # Fonts have equal numbers of glyphs?
       , 'com.google.fonts/check/012' # Fonts have equal glyph names?

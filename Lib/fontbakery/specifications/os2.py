@@ -9,9 +9,9 @@ spec_imports = [
 ]
 
 @check(
-  id = 'com.google.fonts/check/009'
+  id = 'com.google.fonts/check/panose_proportion'
 )
-def com_google_fonts_check_009(ttFonts):
+def com_google_fonts_check_panose_proportion(ttFonts):
   """Fonts have consistent PANOSE proportion?"""
   failed = False
   proportion = None
