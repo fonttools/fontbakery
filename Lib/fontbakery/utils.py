@@ -13,8 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
+
 from fontTools.ttLib import TTFont
 from typing import Text, Optional
+
+def portable_path(p):
+  return os.path.join(*p.split('/'))
+
+def TEST_FILE(f):
+  return portable_path("data/test/" + f)
+
 
 def pretty_print_list(values):
   if len(values) == 1:

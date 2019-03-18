@@ -27,7 +27,7 @@ spec_imports = (
 # this is from the output of
 # $ fontbakery check-specification  fontbakery.specifications.googlefonts -L
 expected_check_ids = [
-        'com.google.fonts/check/001' # Checking file is named canonically.
+        'com.google.fonts/check/canonical_filename' # Checking file is named canonically.
       , 'com.google.fonts/check/002' # Checking all files are in the same directory.
       , 'com.google.fonts/check/003' # Does DESCRIPTION file contain broken links?
       , 'com.google.fonts/check/004' # Is this a propper HTML snippet?
@@ -111,7 +111,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/094' # METADATA.pb font.full_name value matches fullname declared on the name table?
       , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
       , 'com.google.fonts/check/096' # METADATA.pb font.full_name and font.post_script_name fields have equivalent values ?
-      , 'com.google.fonts/check/097' # METADATA.pb font.filename and font.post_script_name fields have equivalent values?
+      , 'com.google.fonts/check/metadata/match_filename_postscript' # METADATA.pb font.filename and font.post_script_name fields have equivalent values?
       , 'com.google.fonts/check/098' # METADATA.pb font.name field contains font name in right format?
       , 'com.google.fonts/check/099' # METADATA.pb font.full_name field contains font name in right format?
       , 'com.google.fonts/check/100' # METADATA.pb font.filename field contains font name in right format?
@@ -119,7 +119,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/102' # Copyright notice on METADATA.pb matches canonical pattern?
       , 'com.google.fonts/check/103' # Copyright notice on METADATA.pb does not contain Reserved Font Name?
       , 'com.google.fonts/check/104' # METADATA.pb: Copyright notice shouldn't exceed 500 chars.
-      , 'com.google.fonts/check/105' # Filename is set canonically in METADATA.pb?
+      , 'com.google.fonts/check/metadata/canonical_filename' # Filename is set canonically in METADATA.pb?
       , 'com.google.fonts/check/106' # METADATA.pb font.style "italic" matches font internals?
       , 'com.google.fonts/check/107' # METADATA.pb font.style "normal" matches font internals?
       , 'com.google.fonts/check/108' # METADATA.pb font.name and font.full_name fields match the values declared on the name table?
@@ -167,6 +167,7 @@ expected_check_ids = [
       , 'com.google.fonts/check/aat' # Are there unwanted Apple tables?
       , 'com.google.fonts/check/ftxvalidator_is_available' # Is the command "ftxvalidator" (Apple Font Tool Suite) available?
       , 'com.adobe.fonts/check/postscript_name_cff_vs_name' # CFF table FontName must match name table ID 6 (PostScript name).
+      , 'com.adobe.fonts/check/postscript_name_consistency' # Name table ID 6 (PostScript name) must be consistent across platforms.
       , 'com.adobe.fonts/check/max_4_fonts_per_family_name' # Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts
       , 'com.google.fonts/check/metadata/parses' # Check METADATA.pb parses correctly.
       , 'com.google.fonts/check/fvar_name_entries' # All name entries referenced by fvar instances exist on the name table?
@@ -181,15 +182,15 @@ specification = spec_factory(default_section=Section("Google Fonts"))
 
 
 # -------------------------------------------------------------------
-
+#FIXME! Redundant with @condition canonical_stylename(font)?
 @condition
 def style(font):
   """Determine font style from canonical filename."""
-  from fontbakery.constants import STYLE_NAMES
+  from fontbakery.constants import STATIC_STYLE_NAMES
   filename = os.path.basename(font)
   if '-' in filename:
     stylename = os.path.splitext(filename)[0].split('-')[1]
-    if stylename in [name.replace(' ', '') for name in STYLE_NAMES]:
+    if stylename in [name.replace(' ', '') for name in STATIC_STYLE_NAMES]:
       return stylename
   return None
 
@@ -258,41 +259,42 @@ def stylenames_are_canonical(fonts):
   return True
 
 
+def suffix(font):
+  filename = os.path.basename(font)
+  basename = os.path.splitext(filename)[0]
+  s = basename.split('-')
+  s.pop(0)
+  return '-'.join(s)
+
+
 @condition
 def canonical_stylename(font):
   """ Returns the canonical stylename of a given font. """
-  from fontbakery.constants import STYLE_NAMES
+  from fontbakery.constants import (STATIC_STYLE_NAMES,
+                                    VARFONT_SUFFIXES)
   from fontbakery.specifications.shared_conditions import is_variable_font
   from fontTools.ttLib import TTFont
 
+  # remove spaces in style names
+  valid_style_suffixes = [name.replace(' ', '') for name in STATIC_STYLE_NAMES]
+
   filename = os.path.basename(font)
   basename = os.path.splitext(filename)[0]
-  # remove spaces in style names
-  valid_style_suffixes = [name.replace(' ', '') for name in STYLE_NAMES]
-  valid_varfont_suffixes = ["VF",
-                            "Italic",
-                            "Italic-VF",
-                            "Roman",
-                            "Roman-VF"]
-
-  suffix = basename.split('-')
-  suffix.pop(0)
-  suffix = '-'.join(suffix)
-
+  s = suffix(font)
   varfont = os.path.exists(font) and is_variable_font(TTFont(font))
   if ('-' in basename and
-      (suffix in valid_varfont_suffixes and varfont)
-      or (suffix in valid_style_suffixes and not varfont)):
-    return suffix
+      (s in VARFONT_SUFFIXES and varfont)
+      or (s in valid_style_suffixes and not varfont)):
+    return s
 
 
 @check(
-  id = 'com.google.fonts/check/001',
+  id = 'com.google.fonts/check/canonical_filename',
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   }
 )
-def com_google_fonts_check_001(font):
+def com_google_fonts_check_canonical_filename(font):
   """Checking file is named canonically.
 
   A font's filename must be composed in the following manner:
@@ -301,25 +303,33 @@ def com_google_fonts_check_001(font):
   e.g. Nunito-Regular.ttf,
        Oswald-BoldItalic.ttf
 
-  Variable fonts must use the "-VF", "Roman" or "Italic" suffixes:
+  Variable fonts must use the "-VF" suffix:
 
   e.g. Roboto-VF.ttf,
        Barlow-VF.ttf,
        Example-Roman-VF.ttf,
        Familyname-Italic-VF.ttf
-       Orbitron-Roman.ttf,
-       Somethingelse-Italic.ttf
   """
-  from fontbakery.constants import STYLE_NAMES
-
+  from fontTools.ttLib import TTFont
+  from fontbakery.specifications.shared_conditions import is_variable_font
+  from fontbakery.constants import (STATIC_STYLE_NAMES,
+                                    VARFONT_SUFFIXES)
   if canonical_stylename(font):
     yield PASS, f"{font} is named canonically."
   else:
-    style_names = '", "'.join(STYLE_NAMES)
-    yield FAIL, (f'Style name used in "{font}" is not canonical.'
-                  ' You should rebuild the font using'
-                  ' any of the following'
-                 f' style names: "{style_names}".')
+    if os.path.exists(font) and is_variable_font(TTFont(font)):
+      if suffix(font) in STATIC_STYLE_NAMES:
+        yield FAIL, (f'This is a variable font, but it is using'
+                      ' a naming scheme typical of a static font.')
+      yield FAIL, ('Please change the font filename to use one'
+                   ' of the following valid suffixes for variable fonts:'
+                  f' {", ".join(VARFONT_SUFFIXES)}')
+    else:
+      style_names = '", "'.join(STATIC_STYLE_NAMES)
+      yield FAIL, (f'Style name used in "{font}" is not canonical.'
+                    ' You should rebuild the font using'
+                    ' any of the following'
+                   f' style names: "{style_names}".')
 
 
 @condition
@@ -1769,27 +1779,18 @@ def com_google_fonts_check_096(font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/097',
-  conditions = ['font_metadata']
+  id = 'com.google.fonts/check/metadata/match_filename_postscript',
+  conditions = ['font_metadata',
+                'not is_variable_font']
+  # FIXME: We'll want to review this once
+  #        naming rules for varfonts are settled.
 )
-def com_google_fonts_check_097(font_metadata, is_variable_font):
+def com_google_fonts_check_metadata_match_filename_postscript(font_metadata):
   """METADATA.pb font.filename and font.post_script_name
      fields have equivalent values?
   """
   post_script_name = font_metadata.post_script_name
   filename = os.path.splitext(font_metadata.filename)[0]
-
-  if is_variable_font:
-    valid_varfont_suffixes = [
-      ("-VF", "Regular"),
-      ("Roman", "Regular"),
-      ("Roman-VF", "Regular"),
-      ("Italic", "Italic"),
-      ("Italic-VF", "Italic"),
-    ]
-    for valid_suffix, style in valid_varfont_suffixes:
-      if valid_suffix in filename:
-        filename = style.join(filename.split(valid_suffix))
 
   if filename != post_script_name:
     yield FAIL, ("METADATA.pb font filename=\"{}\" does not match"
@@ -2020,26 +2021,23 @@ def canonical_filename(font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/105',
+  id = 'com.google.fonts/check/metadata/canonical_filename',
   conditions = ['font_metadata',
                 'canonical_filename']
 )
-def com_google_fonts_check_105(font_metadata,
-                               canonical_filename,
-                               is_variable_font):
+def com_google_fonts_check_metadata_canonical_filename(font_metadata,
+                                                       canonical_filename,
+                                                       is_variable_font):
   """METADATA.pb: Filename is set canonically?"""
 
   if is_variable_font:
     valid_varfont_suffixes = [
-      ("-VF", "Regular"),
-      ("Roman", "Regular"),
       ("Roman-VF", "Regular"),
-      ("Italic", "Italic"),
       ("Italic-VF", "Italic"),
     ]
     for valid_suffix, style in valid_varfont_suffixes:
-      if valid_suffix in canonical_filename:
-        canonical_filename = style.join(canonical_filename.split(valid_suffix))
+      if style in canonical_filename:
+        canonical_filename = valid_suffix.join(canonical_filename.split(style))
 
   if canonical_filename != font_metadata.filename:
     yield FAIL, ("METADATA.pb: filename field (\"{}\")"
@@ -2597,13 +2595,13 @@ def com_google_fonts_check_118(ttFont, api_gfonts_ttFont):
 def com_google_fonts_check_129(ttFont, style):
   """Checking OS/2 fsSelection value."""
   from fontbakery.utils import check_bit_entry
-  from fontbakery.constants import (STYLE_NAMES,
+  from fontbakery.constants import (STATIC_STYLE_NAMES,
                                     RIBBI_STYLE_NAMES,
                                     FsSelection)
 
   # Checking fsSelection REGULAR bit:
   expected = "Regular" in style or \
-             (style in STYLE_NAMES and
+             (style in STATIC_STYLE_NAMES and
               style not in RIBBI_STYLE_NAMES and
               "Italic" not in style)
   yield check_bit_entry(ttFont, "OS/2", "fsSelection",
@@ -3482,17 +3480,17 @@ def com_google_fonts_check_040(ttFont, vmetrics):
 
 @check(
   id = 'com.google.fonts/check/042',
-  rationale = """When OS/2 and hhea vertical metrics match, the same 
+  rationale = """When OS/2 and hhea vertical metrics match, the same
   linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018,
-  Google Fonts has released many fonts with vertical metrics that don't match 
-  in this way. When we fix this issue in these existing families, we will 
+  Google Fonts has released many fonts with vertical metrics that don't match
+  in this way. When we fix this issue in these existing families, we will
   create a visible change in line/paragraph layout for either Windows or macOS
-  users, which will upset some of them. 
+  users, which will upset some of them.
 
   But we have a duty to fix broken stuff, and inconsistent paragraph layout is
-  unacceptably broken when it is possible to avoid it. 
-  
-  If users complain and prefer the old broken version, they are libre to take 
+  unacceptably broken when it is possible to avoid it.
+
+  If users complain and prefer the old broken version, they are libre to take
   care of their own situation."""
 )
 def com_google_fonts_check_042(ttFont):
@@ -3584,8 +3582,8 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
   (https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6.html)
   describes SFNT tables not in the Microsoft OpenType specification
   (https://docs.microsoft.com/en-us/typography/opentype/spec/)
-  and these can sometimes sneak into final release files, 
-  but Google Fonts should only have OpenType tables.""" 
+  and these can sometimes sneak into final release files,
+  but Google Fonts should only have OpenType tables."""
 )
 def com_google_fonts_check_aat(ttFont):
   """Are there unwanted Apple tables?"""

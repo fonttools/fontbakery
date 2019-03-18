@@ -1,6 +1,9 @@
 import os
-import fontTools.ttLib
 
+import fontTools.ttLib
+from fontTools.ttLib import TTFont
+
+from fontbakery.utils import TEST_FILE, portable_path
 from fontbakery.constants import NameID, PlatformID, WindowsEncodingID, ENGLISH_LANG_ID
 from fontbakery.checkrunner import (
               DEBUG
@@ -14,8 +17,6 @@ from fontbakery.checkrunner import (
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
-from fontTools.ttLib import TTFont
-
 def test_check_031():
   """ Description strings in the name table
       must not contain copyright info.
@@ -24,7 +25,7 @@ def test_check_031():
 
   print('Test PASS with a good font...')
   # Our reference Mada Regular is know to be good here.
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
   status, message = list(check(ttFont))[-1]
   assert status == PASS
 
@@ -65,7 +66,7 @@ def test_check_033():
   print('Test PASS with a good non-monospace font...')
   # Our reference Mada Regular is a non-monospace font
   # know to have good metadata for this check.
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
   stats = glyph_metrics_stats(ttFont)
   status, message = list(check(ttFont, stats))[-1]
   assert status == PASS and message.code == "good"
@@ -92,7 +93,8 @@ def test_check_033():
   print('Test PASS with a good monospaced font...')
   # Our reference OverpassMono Regular is know to be
   # a monospaced font with good metadata here.
-  ttFont = TTFont("data/test/overpassmono/OverpassMono-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("overpassmono/OverpassMono-Regular.ttf"))
+
   stats = glyph_metrics_stats(ttFont)
   assert stats['most_common_width'] == 616
   status, message = list(check(ttFont, stats))[-1]
@@ -138,7 +140,7 @@ def test_check_057():
   from fontbakery.specifications.name import com_google_fonts_check_057 as check
 
   # Our reference Mada Regular font is good here:
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -147,7 +149,7 @@ def test_check_057():
 
   print ("Test FAIL with name entries containing a linebreak...")
   for i in range(len(ttFont["name"].names)):
-    ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     encoding = ttFont["name"].names[i].getEncoding()
     ttFont["name"].names[i].string = "bad\nstring".encode(encoding)
     status, message = list(check(ttFont))[-1]
@@ -158,7 +160,7 @@ def test_check_068():
   """ Does full font name begin with the font family name ? """
   from fontbakery.specifications.name import com_google_fonts_check_068 as check
   # Our reference Mada Regular is known to be good
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -176,7 +178,7 @@ def test_check_068():
   assert status == FAIL and message.code == "does-not"
 
   print ("Test FAIL with no FULL_FONT_NAME entries...")
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NameID.FULL_FONT_NAME:
       del ttFont["name"].names[i]
@@ -184,7 +186,7 @@ def test_check_068():
   assert status == FAIL and message.code == "no-full-font-name"
 
   print ("Test FAIL with no FONT_FAMILY_NAME entries...")
-  ttFont = TTFont("data/test/mada/Mada-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NameID.FONT_FAMILY_NAME:
       del ttFont["name"].names[i]
@@ -206,7 +208,7 @@ def test_check_071():
   """ Font follows the family naming recommendations ? """
   from fontbakery.specifications.name import com_google_fonts_check_071 as check
   # Our reference Mada Medium is known to be good
-  ttFont = TTFont("data/test/mada/Mada-Medium.ttf")
+  ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -290,8 +292,8 @@ def test_check_152():
   """ Name table strings must not contain 'Reserved Font Name'. """
   from fontbakery.specifications.name import com_google_fonts_check_152 as check
 
-  test_font = TTFont(
-      os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"))
+  test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
@@ -304,7 +306,7 @@ def test_check_163():
   """ Check font name is the same as family name. """
   from fontbakery.specifications.name import com_google_fonts_check_163 as check
   # Our reference Cabin Regular is known to be good
-  ttFont = TTFont("data/test/cabin/Cabin-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
   # So it must PASS the check:
   print ("Test PASS with a good font...")
@@ -357,11 +359,43 @@ def test_check_postscript_name_cff_vs_name():
   assert status == PASS
 
 
+def test_check_postscript_name_consistency():
+  from fontbakery.specifications.name import \
+    com_adobe_fonts_check_postscript_name_consistency as check
+
+  base_path = portable_path("data/test/source-sans-pro/TTF")
+  font_path = os.path.join(base_path, 'SourceSansPro-Regular.ttf')
+  test_font = TTFont(font_path)
+
+  # SourceSansPro-Regular only has one name ID 6 entry (for Windows),
+  # let's add another one for Mac that matches the Windows entry:
+  test_font['name'].setName(
+    'SourceSansPro-Regular',
+    NameID.POSTSCRIPT_NAME,
+    PlatformID.MACINTOSH,
+    WindowsEncodingID.UNICODE_BMP,
+    ENGLISH_LANG_ID
+  )
+  status, message = list(check(test_font))[-1]
+  assert status == PASS
+
+  # ...now let's change the Mac name ID 6 entry to something else:
+  test_font['name'].setName(
+    'YetAnotherFontName',
+    NameID.POSTSCRIPT_NAME,
+    PlatformID.MACINTOSH,
+    WindowsEncodingID.UNICODE_BMP,
+    ENGLISH_LANG_ID
+  )
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL
+
+
 def test_check_max_4_fonts_per_family_name():
   from fontbakery.specifications.name import \
     com_adobe_fonts_check_max_4_fonts_per_family_name as check
 
-  base_path = 'data/test/source-sans-pro/OTF/'
+  base_path = portable_path("data/test/source-sans-pro/OTF")
 
   font_names = [
     'SourceSansPro-Black.otf',
@@ -377,7 +411,7 @@ def test_check_max_4_fonts_per_family_name():
     'SourceSansPro-Semibold.otf',
     'SourceSansPro-SemiboldIt.otf']
 
-  font_paths = [base_path + n for n in font_names]
+  font_paths = [os.path.join(base_path, n) for n in font_names]
 
   test_fonts = [TTFont(x) for x in font_paths]
 

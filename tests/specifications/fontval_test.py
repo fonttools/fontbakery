@@ -1,5 +1,7 @@
 import os
 import pytest
+
+from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import ERROR
 
 
@@ -7,7 +9,7 @@ def test_check_037():
   """ MS Font Validator checks """
   from fontbakery.specifications.fontval import com_google_fonts_check_037 as check
 
-  font = "data/test/mada/Mada-Regular.ttf"
+  font = TEST_FILE("mada/Mada-Regular.ttf")
   # we want to run all FValidator checks only once,
   # so here we cache all results:
   fval_results = list(check(font))

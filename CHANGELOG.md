@@ -1,13 +1,26 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.6.13 (2019-??-??)
+## 0.6.13 (2019-Mar-18)
 ### Bug fixes
+  - **[com.google.fonts/check/canonical_filename]:** Distinguish static from varfont when reporting correctness of fontfile names. There are special naming rules for variable fonts. (issue #2396)
   - Fix bug in handling of `most_common_width` in `glyph_metrics_stats` which affected checking of monospaced metadata. (PR #2391)
   - Fix handling of `post.isFixedPitch` (accept any nonzero value). (PR #2392)
 
-### Other code changes
-  - Improve emoji output of `--ghmarkdown` option, so that actual emoji appear in text editors, rather than the previous emoji names
+### New checks
+  - **[com.adobe.fonts/check/postscript_name_consistency]:** "Name table ID 6 (PostScript name) must be consistent across platforms." (PR #2394)
+
+### Renamed numerical check-IDs:
+  - **[com.google.fonts/check/001]:** com.google.fonts/check/canonical_filename
+  - **[com.google.fonts/check/097]:** com.google.fonts/check/metadata/match_filename_postscript
+  - **[com.google.fonts/check/105]:** com.google.fonts/check/metadata/canonical_filename
+
+### Other important code-changes
+  - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817
+  - We're now using portable paths on the code-tests. (issue #2398)
+  - The Adobe Fonts profile now includes FontForge checks. (PR #2401)
+  - Improve emoji output of `--ghmarkdown` option, so that actual emoji appear in text editors, rather than the previous emoji names (PR #2395)
+
 
 ## 0.6.12 (2019-Mar-11)
 ### Bug fixes

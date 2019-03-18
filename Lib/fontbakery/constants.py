@@ -18,37 +18,47 @@ import enum
 # =====================================
 # GLOBAL CONSTANTS DEFINITIONS
 
-STYLE_NAMES = ["Thin",
-               "ExtraLight",
-               "Light",
-               "Regular",
-               "Medium",
-               "SemiBold",
-               "Bold",
-               "ExtraBold",
-               "Black",
-               "Thin Italic",
-               "ExtraLight Italic",
-               "Light Italic",
-               "Italic",
-               "Medium Italic",
-               "SemiBold Italic",
-               "Bold Italic",
-               "ExtraBold Italic",
-               "Black Italic"]
+# These variable font naming rules will soon change.
+# For more detail, see:
+# https://github.com/googlefonts/fontbakery/issues/2396#issuecomment-473250089
+VARFONT_SUFFIXES = [
+  "VF",
+  "Italic-VF",
+  "Roman-VF"]
 
-RIBBI_STYLE_NAMES = ["Regular",
-                     "Italic",
-                     "Bold",
-                     "BoldItalic",
-                     "Bold Italic"]  # <-- Do we really need this one?
+STATIC_STYLE_NAMES = [
+  "Thin",
+  "ExtraLight",
+  "Light",
+  "Regular",
+  "Medium",
+  "SemiBold",
+  "Bold",
+  "ExtraBold",
+  "Black",
+  "Thin Italic",
+  "ExtraLight Italic",
+  "Light Italic",
+  "Italic",
+  "Medium Italic",
+  "SemiBold Italic",
+  "Bold Italic",
+  "ExtraBold Italic",
+  "Black Italic"]
+
+RIBBI_STYLE_NAMES = [
+  "Regular",
+  "Italic",
+  "Bold",
+  "BoldItalic",
+  "Bold Italic"]  # <-- Do we really need this one?
 
 PLACEHOLDER_LICENSING_TEXT = {
-    'UFL.txt': 'Licensed under the Ubuntu Font Licence 1.0.',
-    'OFL.txt': 'This Font Software is licensed under the SIL Open Font '
-               'License, Version 1.1. This license is available with a FAQ '
-               'at: http://scripts.sil.org/OFL',
-    'LICENSE.txt': 'Licensed under the Apache License, Version 2.0'
+  'UFL.txt': 'Licensed under the Ubuntu Font Licence 1.0.',
+  'OFL.txt': 'This Font Software is licensed under the SIL Open Font '
+             'License, Version 1.1. This license is available with a FAQ '
+             'at: http://scripts.sil.org/OFL',
+  'LICENSE.txt': 'Licensed under the Apache License, Version 2.0'
 }
 
 # ANSI color codes for the helper logging class:
