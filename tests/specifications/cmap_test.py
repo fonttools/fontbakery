@@ -29,9 +29,9 @@ def mada_ttFonts():
   return [TTFont(path) for path in mada_fonts]
 
 
-def test_check_013(mada_ttFonts):
+def test_check_equal_unicode_encodings(mada_ttFonts):
   """ Fonts have equal unicode encodings ? """
-  from fontbakery.specifications.cmap import com_google_fonts_check_013 as check
+  from fontbakery.specifications.cmap import com_google_fonts_check_equal_unicode_encodings as check
   from fontbakery.constants import WindowsEncodingID
 
   print('Test PASS with good family.')

@@ -92,7 +92,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/panose_familytype'
       , 'com.google.fonts/check/equal_numbers_of_glyphs'
       , 'com.google.fonts/check/equal_glyph_names'
-      , 'com.google.fonts/check/013' # Fonts have equal unicode encodings?
+      , 'com.google.fonts/check/equal_unicode_encodings'
       , 'com.google.fonts/check/014' # Make sure all font files have the same version value.
       , 'com.google.fonts/check/015' # Font has post table version 2?
       , 'com.google.fonts/check/016' # Checking OS/2 fsType.

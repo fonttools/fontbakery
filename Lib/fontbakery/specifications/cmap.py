@@ -5,9 +5,9 @@ from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-imp
 
 
 @check(
-  id = 'com.google.fonts/check/013'
+  id = 'com.google.fonts/check/equal_unicode_encodings'
 )
-def com_google_fonts_check_013(ttFonts):
+def com_google_fonts_check_equal_unicode_encodings(ttFonts):
   """Fonts have equal unicode encodings?"""
   encoding = None
   failed = False

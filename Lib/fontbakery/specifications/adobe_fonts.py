@@ -26,7 +26,7 @@ expected_check_ids = [
     'com.google.fonts/check/underline_thickness',
     'com.google.fonts/check/panose_proportion',
     'com.google.fonts/check/panose_familytype',
-    'com.google.fonts/check/013',  # Fonts have equal unicode encodings?
+    'com.google.fonts/check/equal_unicode_encodings',
     'com.google.fonts/check/014',  # Make sure all font files have the same version value.
     'com.google.fonts/check/015',  # Font has post table version 2?
     'com.google.fonts/check/031',  # Description strings in the name table must not contain copyright info.
