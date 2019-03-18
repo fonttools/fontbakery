@@ -114,7 +114,12 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
             emoticon = EMOTICON[log["status"]]
             status = log["status"]
             message = html.escape(log["message"]).replace("\n", "<br/>")
-            return f"<li>{emoticon} <strong>{status}</strong> {message}</li>"
+            return (
+                "<li class='details_item'>"
+                f"<span class='details_indicator'>{emoticon} {status}</span>"
+                f"<span class='details_text'>{message}</span>"
+                "</li>"
+            )
         return ""
 
 
@@ -122,25 +127,56 @@ def html5_document(body_elements) -> str:
     """Return complete HTML5 document string."""
 
     style = """
-html {font-family: "Aktiv Grotesk", sans;}
-h2 { margin-top: 2em;}
-h3 { margin-bottom: 1px;}
-.details {text-indent: 1em;}
-ul {
-    margin-top: 0;
-    margin-left: 1em;
-}
-table {
-    border-collapse: collapse;
-}
-th, td {
-    border: 1px solid #ddd;
-    padding: 0.5em
-}
-tr:nth-child(even) {background-color: #f2f2f2;}
-tr {
-    text-align: left;
-}
+            html {
+                font-family: "Aktiv Grotesk", sans;
+            }
+
+            h2 {
+                margin-top: 2em;
+            }
+
+            h3 {
+                margin-bottom: 1px;
+            }
+
+            table {
+                border-collapse: collapse;
+            }
+
+            th,
+            td {
+                border: 1px solid #ddd;
+                padding: 0.5em
+            }
+
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            tr {
+                text-align: left;
+            }
+
+            ul {
+                margin-top: 0;
+            }
+
+            .details_item {
+                list-style: none;
+                display: flex;
+                align-items: baseline;
+            }
+
+            .details_indicator {
+                flex: 0 0 5em;
+                font-weight: bold;
+                padding-right: 0.5em;
+                text-align: right;
+            }
+
+            .details_text {
+                flex: 1 0;
+            }
             """
     body = "\n".join(body_elements)
     return f"""<!DOCTYPE html>
@@ -162,12 +198,7 @@ def html5_collapsible(summary, details) -> str:
     """Return nestable, collapsible <detail> tag for check grouping and sub-
     results."""
 
-    return (
-        "<details>"
-        f"<summary>{summary}</summary>"
-        f"<div class='details'>{details}</div>"
-        "</details>"
-    )
+    return f"<details><summary>{summary}</summary><div>{details}</div></details>"
 
 
 def summary_table(
