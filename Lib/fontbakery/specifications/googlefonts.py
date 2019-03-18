@@ -90,7 +90,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/underline_thickness'
       , 'com.google.fonts/check/panose_proportion'
       , 'com.google.fonts/check/panose_familytype'
-      , 'com.google.fonts/check/011' # Fonts have equal numbers of glyphs?
+      , 'com.google.fonts/check/equal_numbers_of_glyphs'
       , 'com.google.fonts/check/012' # Fonts have equal glyph names?
       , 'com.google.fonts/check/013' # Fonts have equal unicode encodings?
       , 'com.google.fonts/check/014' # Make sure all font files have the same version value.
@@ -505,11 +505,11 @@ def com_google_fonts_check_metadata_unknown_designer(family_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/011',
+  id = 'com.google.fonts/check/equal_numbers_of_glyphs',
   conditions = ['are_ttf',
                 'stylenames_are_canonical']
 )
-def com_google_fonts_check_011(ttFonts):
+def com_google_fonts_check_equal_numbers_of_glyphs(ttFonts):
   """Fonts have equal numbers of glyphs?"""
   # ttFonts is an iterator, so here we make a list from it
   # because we'll have to iterate twice in this check implementation:
