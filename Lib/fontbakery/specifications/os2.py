@@ -33,9 +33,9 @@ def com_google_fonts_check_panose_proportion(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/010'
+  id = 'com.google.fonts/check/panose_familytype'
 )
-def com_google_fonts_check_010(ttFonts):
+def com_google_fonts_check_panose_familytype(ttFonts):
   """Fonts have consistent PANOSE family type?"""
   failed = False
   familytype = None

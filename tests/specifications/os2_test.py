@@ -64,9 +64,9 @@ def test_check_panose_proportion(mada_ttFonts):
   assert status == FAIL
 
 
-def test_check_010(mada_ttFonts):
+def test_check_panose_familytype(mada_ttFonts):
   """ Fonts have consistent PANOSE family type ? """
-  from fontbakery.specifications.os2 import com_google_fonts_check_010 as check
+  from fontbakery.specifications.os2 import com_google_fonts_check_panose_familytype as check
 
   print('Test PASS with good family.')
   status, message = list(check(mada_ttFonts))[-1]
