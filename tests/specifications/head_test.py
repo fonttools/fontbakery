@@ -33,9 +33,9 @@ def mada_ttFonts():
   return [TTFont(path) for path in mada_fonts]
 
 
-def test_check_014(mada_ttFonts):
+def test_check_equal_font_versions(mada_ttFonts):
   """ Make sure all font files have the same version value. """
-  from fontbakery.specifications.head import com_google_fonts_check_014 as check
+  from fontbakery.specifications.head import com_google_fonts_check_equal_font_versions as check
 
   print('Test PASS with good family.')
   # our reference Mada family is know to be good here.
