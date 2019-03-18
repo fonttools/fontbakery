@@ -62,7 +62,7 @@ def test_get_family_checks():
         'com.google.fonts/check/underline_thickness',
         'com.google.fonts/check/panose_proportion',
         'com.google.fonts/check/panose_familytype',
-        'com.google.fonts/check/013',
+        'com.google.fonts/check/equal_unicode_encodings',
         'com.google.fonts/check/014',
         'com.google.fonts/check/040'
     }
