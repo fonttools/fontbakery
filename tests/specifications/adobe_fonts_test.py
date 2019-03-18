@@ -60,7 +60,7 @@ def test_get_family_checks():
         'com.adobe.fonts/check/consistent_upm',
         'com.adobe.fonts/check/max_4_fonts_per_family_name',
         'com.google.fonts/check/underline_thickness',
-        'com.google.fonts/check/009',
+        'com.google.fonts/check/panose_proportion',
         'com.google.fonts/check/010',
         'com.google.fonts/check/013',
         'com.google.fonts/check/014',

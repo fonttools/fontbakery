@@ -46,9 +46,9 @@ cabin_fonts = [
 ]
 
 
-def test_check_009(mada_ttFonts):
+def test_check_panose_proportion(mada_ttFonts):
   """ Fonts have consistent PANOSE proportion ? """
-  from fontbakery.specifications.os2 import com_google_fonts_check_009 as check
+  from fontbakery.specifications.os2 import com_google_fonts_check_panose_proportion as check
 
   print('Test PASS with good family.')
   status, message = list(check(mada_ttFonts))[-1]
