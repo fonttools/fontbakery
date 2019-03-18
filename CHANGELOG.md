@@ -20,6 +20,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - We're now using portable paths on the code-tests. (issue #2398)
   - The Adobe Fonts profile now includes FontForge checks. (PR #2401)
 
+### Miscellaneous
+  - The HTML reporter will now display check results more table-like, which makes multi-line check results look better.
 
 ## 0.6.12 (2019-Mar-11)
 ### Bug fixes
@@ -29,7 +31,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New features
   - We now have an Adobe collection of checks (specification). It will include more checks in future releases. (PR #2369)
-  - The `FontSpec` class now has a `get_family_checks()` method that returns a list of family-level checks. (PR #2380) 
+  - The `FontSpec` class now has a `get_family_checks()` method that returns a list of family-level checks. (PR #2380)
 
 ### New checks
   - **[com.adobe.fonts/check/bold_italic_unique_for_nameid1]:** "OS/2.fsSelection bold & italic are unique for each NameID1" (PR #2388)
