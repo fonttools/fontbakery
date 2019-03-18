@@ -91,7 +91,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/panose_proportion'
       , 'com.google.fonts/check/panose_familytype'
       , 'com.google.fonts/check/equal_numbers_of_glyphs'
-      , 'com.google.fonts/check/012' # Fonts have equal glyph names?
+      , 'com.google.fonts/check/equal_glyph_names'
       , 'com.google.fonts/check/013' # Fonts have equal unicode encodings?
       , 'com.google.fonts/check/014' # Make sure all font files have the same version value.
       , 'com.google.fonts/check/015' # Font has post table version 2?
@@ -554,10 +554,10 @@ def com_google_fonts_check_equal_numbers_of_glyphs(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/012',
+  id = 'com.google.fonts/check/equal_glyph_names',
   conditions = ['are_ttf']
 )
-def com_google_fonts_check_012(ttFonts):
+def com_google_fonts_check_equal_glyph_names(ttFonts):
   """Fonts have equal glyph names?"""
   fonts = list(ttFonts)
 

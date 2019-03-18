@@ -22,6 +22,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/009]:** com.google.fonts/check/panose_proportion
   - **[com.google.fonts/check/010]:** com.google.fonts/check/panose_familytype
   - **[com.google.fonts/check/011]:** com.google.fonts/check/equal_numbers_of_glyphs
+  - **[com.google.fonts/check/012]:** com.google.fonts/check/equal_glyph_names
   - **[com.google.fonts/check/035]:** com.google.fonts/check/ftxvalidator
   - **[com.google.fonts/check/036]:** com.google.fonts/check/ots
   - **[com.google.fonts/check/038]:** com.google.fonts/check/fontforge_stderr

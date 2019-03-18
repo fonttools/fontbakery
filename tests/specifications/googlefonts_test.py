@@ -327,9 +327,9 @@ def test_check_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
   assert status == FAIL
 
 
-def test_check_012(mada_ttFonts, cabin_ttFonts):
+def test_check_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
   """ Fonts have equal glyph names? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_012 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_equal_glyph_names as check
 
   print('Test PASS with good family.')
   # our reference Cabin family is know to be good here.
