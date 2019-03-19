@@ -39,7 +39,7 @@ expected_check_ids = [
     'com.google.fonts/check/fontforge_stderr',
     'com.google.fonts/check/fontforge',
     'com.google.fonts/check/win_ascent_and_descent',
-    'com.google.fonts/check/041',  # Checking Vertical Metric Linegaps.
+    'com.google.fonts/check/linegaps',
     'com.google.fonts/check/042',  # Checking OS/2 Metrics match hhea Metrics.
     'com.google.fonts/check/043',  # Checking unitsPerEm value is reasonable.
     'com.google.fonts/check/044',  # Checking font version fields.

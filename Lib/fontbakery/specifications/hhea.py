@@ -9,9 +9,9 @@ spec_imports = [
 ]
 
 @check(
-  id = 'com.google.fonts/check/041'
+  id = 'com.google.fonts/check/linegaps'
 )
-def com_google_fonts_check_041(ttFont):
+def com_google_fonts_check_linegaps(ttFont):
   """Checking Vertical Metric Linegaps."""
   if ttFont["hhea"].lineGap != 0:
     yield WARN, Message("hhea", "hhea lineGap is not equal to 0.")
