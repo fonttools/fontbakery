@@ -42,10 +42,10 @@ def test_check_varfont_regular_wght_coord():
   assert status == PASS
 
 
-def test_check_168():
+def test_check_varfont_regular_wdth_coord():
   """ The variable font 'wdth' (Width) axis coordinate
       must be 100 on the 'Regular' instance. """
-  from fontbakery.specifications.fvar import com_google_fonts_check_168 as check
+  from fontbakery.specifications.fvar import com_google_fonts_check_varfont_regular_wdth_coord as check
   from fontbakery.specifications.shared_conditions import regular_wdth_coord
 
   # Our reference varfont, CabinVFBeta.ttf, has

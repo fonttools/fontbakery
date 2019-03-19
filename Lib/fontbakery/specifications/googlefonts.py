@@ -166,7 +166,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/165' # Familyname must be unique according to namecheck.fontdata.com
       , 'com.google.fonts/check/fontv'
       , 'com.google.fonts/check/varfont/regular_wght_coord'
-      , 'com.google.fonts/check/168' # The variable font 'wdth' (Width) axis coordinate must be 100 on the 'Regular' instance.
+      , 'com.google.fonts/check/varfont/regular_wdth_coord'
       , 'com.google.fonts/check/169' # The variable font 'slnt' (Slant) axis coordinate must be zero on the 'Regular' instance.
       , 'com.google.fonts/check/170' # The variable font 'ital' (Italic) axis coordinate must be zero on the 'Regular' instance.
       , 'com.google.fonts/check/171' # The variable font 'opsz' (Optical Size) axis coordinate should be between 9 and 13 on the 'Regular' instance.

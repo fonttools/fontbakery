@@ -39,7 +39,7 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
 
 
 @check(
-  id = 'com.google.fonts/check/168',
+  id = 'com.google.fonts/check/varfont/regular_wdth_coord',
   rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'wdth' available at
@@ -54,7 +54,7 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
     'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
   }
 )
-def com_google_fonts_check_168(ttFont, regular_wdth_coord):
+def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord):
   """The variable font 'wdth' (Width) axis coordinate must be 100 on the
   'Regular' instance."""
 
