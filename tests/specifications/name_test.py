@@ -17,11 +17,11 @@ from fontbakery.checkrunner import (
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
-def test_check_031():
+def test_check_name_no_copyright_on_description():
   """ Description strings in the name table
       must not contain copyright info.
   """
-  from fontbakery.specifications.name import com_google_fonts_check_031 as check
+  from fontbakery.specifications.name import com_google_fonts_check_name_no_copyright_on_description as check
 
   print('Test PASS with a good font...')
   # Our reference Mada Regular is know to be good here.

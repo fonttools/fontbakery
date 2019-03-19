@@ -12,12 +12,12 @@ spec_imports = [
 ]
 
 @check(
-  id = 'com.google.fonts/check/031',
+  id = 'com.google.fonts/check/name/no_copyright_on_description',
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   }
 )
-def com_google_fonts_check_031(ttFont):
+def com_google_fonts_check_name_no_copyright_on_description(ttFont):
   """Description strings in the name table must not contain copyright info."""
   failed = False
   for name in ttFont['name'].names:
