@@ -15,9 +15,9 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 from fontTools.ttLib import TTFont
 
-def test_check_041():
+def test_check_linegaps():
   """ Checking Vertical Metric Linegaps. """
-  from fontbakery.specifications.hhea import com_google_fonts_check_041 as check
+  from fontbakery.specifications.hhea import com_google_fonts_check_linegaps as check
 
   print('Test FAIL with non-zero hhea.lineGap...')
   # Our reference Mada Regular is know to be bad here.

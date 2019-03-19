@@ -109,7 +109,7 @@ expected_check_ids = \
       , 'com.adobe.fonts/check/fsselection_matches_macstyle'
       , 'com.adobe.fonts/check/bold_italic_unique_for_nameid1'
       , 'com.google.fonts/check/win_ascent_and_descent'
-      , 'com.google.fonts/check/041' # Checking Vertical Metric Linegaps.
+      , 'com.google.fonts/check/linegaps'
       , 'com.google.fonts/check/042' # Checking OS/2 Metrics match hhea Metrics.
       , 'com.google.fonts/check/043' # Checking unitsPerEm value is reasonable.
       , 'com.google.fonts/check/044' # Checking font version fields.
