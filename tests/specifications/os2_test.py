@@ -82,9 +82,9 @@ def test_check_panose_familytype(mada_ttFonts):
   assert status == FAIL
 
 
-def test_check_034():
+def test_check_xavgcharwidth():
   """ Check if OS/2 xAvgCharWidth is correct. """
-  from fontbakery.specifications.os2 import com_google_fonts_check_034 as check
+  from fontbakery.specifications.os2 import com_google_fonts_check_xavgcharwidth as check
 
   test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
 

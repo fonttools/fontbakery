@@ -31,7 +31,7 @@ expected_check_ids = [
     'com.google.fonts/check/post_table_version',
     'com.google.fonts/check/name/no_copyright_on_description',
     'com.google.fonts/check/monospace',
-    'com.google.fonts/check/034',  # Check if OS/2 xAvgCharWidth is correct.
+    'com.google.fonts/check/xavgcharwidth',
     'com.adobe.fonts/check/fsselection_matches_macstyle',
     'com.adobe.fonts/check/bold_italic_unique_for_nameid1',
     'com.google.fonts/check/ftxvalidator',

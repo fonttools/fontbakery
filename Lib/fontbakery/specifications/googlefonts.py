@@ -105,7 +105,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/name/no_copyright_on_description'
       , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 200 characters.
       , 'com.google.fonts/check/monospace'
-      , 'com.google.fonts/check/034' # Check if OS/2 xAvgCharWidth is correct.
+      , 'com.google.fonts/check/xavgcharwidth'
       , 'com.adobe.fonts/check/fsselection_matches_macstyle'
       , 'com.adobe.fonts/check/bold_italic_unique_for_nameid1'
       , 'com.google.fonts/check/040' # Checking OS/2 usWinAscent & usWinDescent.
