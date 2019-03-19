@@ -94,7 +94,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/equal_glyph_names'
       , 'com.google.fonts/check/equal_unicode_encodings'
       , 'com.google.fonts/check/equal_font_versions'
-      , 'com.google.fonts/check/015' # Font has post table version 2?
+      , 'com.google.fonts/check/post_table_version'
       , 'com.google.fonts/check/016' # Checking OS/2 fsType.
       , 'com.google.fonts/check/018' # Checking OS/2 achVendID.
       , 'com.google.fonts/check/019' # Substitute copyright, registered and trademark symbols in name table entries.

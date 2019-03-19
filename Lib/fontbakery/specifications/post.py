@@ -48,9 +48,9 @@ def com_google_fonts_check_underline_thickness(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/015'
+  id = 'com.google.fonts/check/post_table_version'
 )
-def com_google_fonts_check_015(ttFont, is_ttf):
+def com_google_fonts_check_post_table_version(ttFont, is_ttf):
   """Font has correct post table version (2 for TTF, 3 for OTF)?"""
   formatType = ttFont['post'].formatType
   if is_ttf:

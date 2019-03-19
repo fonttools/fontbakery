@@ -58,9 +58,9 @@ def test_check_underline_thickness(mada_ttFonts):
   assert status == FAIL
 
 
-def test_check_015():
-  """ Font has post table version 2 ? """
-  from fontbakery.specifications.post import com_google_fonts_check_015 as check
+def test_check_post_table_version():
+  """ Font has correct post table version (2 for TTF, 3 for OTF)? """
+  from fontbakery.specifications.post import com_google_fonts_check_post_table_version as check
 
   print('Test PASS with good font.')
   # our reference Mada family is know to be good here.

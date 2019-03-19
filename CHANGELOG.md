@@ -25,6 +25,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/012]:** com.google.fonts/check/equal_glyph_names
   - **[com.google.fonts/check/013]:** com.google.fonts/check/equal_unicode_encodings
   - **[com.google.fonts/check/014]:** com.google.fonts/check/equal_font_versions
+  - **[com.google.fonts/check/015]:** com.google.fonts/check/post_table_version
   - **[com.google.fonts/check/035]:** com.google.fonts/check/ftxvalidator
   - **[com.google.fonts/check/036]:** com.google.fonts/check/ots
   - **[com.google.fonts/check/038]:** com.google.fonts/check/fontforge_stderr
