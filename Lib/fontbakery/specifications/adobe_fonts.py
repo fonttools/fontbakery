@@ -12,7 +12,7 @@ spec_imports = (
          'loca')
     ),
     ('fontbakery.specifications.googlefonts',
-        ('com_google_fonts_check_040' # Checking OS/2 usWinAscent & usWinDescent.
+        ('com_google_fonts_check_win_ascent_and_descent'
         ,'com_google_fonts_check_042' # Checking OS/2 Metrics match hhea Metrics.
         )
     ),
@@ -38,7 +38,7 @@ expected_check_ids = [
     'com.google.fonts/check/ots',
     'com.google.fonts/check/fontforge_stderr',
     'com.google.fonts/check/fontforge',
-    'com.google.fonts/check/040',  # Checking OS/2 usWinAscent & usWinDescent.
+    'com.google.fonts/check/win_ascent_and_descent',
     'com.google.fonts/check/041',  # Checking Vertical Metric Linegaps.
     'com.google.fonts/check/042',  # Checking OS/2 Metrics match hhea Metrics.
     'com.google.fonts/check/043',  # Checking unitsPerEm value is reasonable.

@@ -2611,9 +2611,9 @@ def DISABLED_test_check_varfont_has_MVAR():
   assert status == FAIL
 
 
-def test_check_040(mada_ttFonts):
+def test_check_win_ascent_and_descent(mada_ttFonts):
   """ Checking OS/2 usWinAscent & usWinDescent. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_040 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_win_ascent_and_descent as check
   from fontbakery.specifications.shared_conditions import vmetrics
 
   # Our reference Mada Regular is know to be bad here.
