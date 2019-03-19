@@ -97,7 +97,7 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
 
 
 @check(
-  id = 'com.google.fonts/check/170',
+  id = 'com.google.fonts/check/varfont/regular_ital_coord',
   rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'ital' available at
@@ -112,7 +112,7 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
     'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
   }
 )
-def com_google_fonts_check_170(ttFont, regular_ital_coord):
+def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord):
   """The variable font 'ital' (Italic) axis coordinate must be zero on the
   'Regular' instance."""
 
