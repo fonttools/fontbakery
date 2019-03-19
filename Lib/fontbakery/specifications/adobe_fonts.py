@@ -13,7 +13,7 @@ spec_imports = (
     ),
     ('fontbakery.specifications.googlefonts',
         ('com_google_fonts_check_win_ascent_and_descent'
-        ,'com_google_fonts_check_042' # Checking OS/2 Metrics match hhea Metrics.
+        ,'com_google_fonts_check_os2_metrics_match_hhea'
         )
     ),
 )
@@ -40,7 +40,7 @@ expected_check_ids = [
     'com.google.fonts/check/fontforge',
     'com.google.fonts/check/win_ascent_and_descent',
     'com.google.fonts/check/linegaps',
-    'com.google.fonts/check/042',  # Checking OS/2 Metrics match hhea Metrics.
+    'com.google.fonts/check/os2_metrics_match_hhea',
     'com.google.fonts/check/043',  # Checking unitsPerEm value is reasonable.
     'com.google.fonts/check/044',  # Checking font version fields.
     'com.google.fonts/check/dsig',

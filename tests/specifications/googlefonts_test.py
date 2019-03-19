@@ -2641,9 +2641,9 @@ def test_check_win_ascent_and_descent(mada_ttFonts):
   assert status == FAIL and message.code == "descent"
 
 
-def test_check_042(mada_ttFonts):
+def test_check_os2_metrics_match_hhea(mada_ttFonts):
   """ Checking OS/2 Metrics match hhea Metrics. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_042 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_os2_metrics_match_hhea as check
 
   # Our reference Mada Regular is know to be good here.
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
