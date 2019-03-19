@@ -12,10 +12,10 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 from fontTools.ttLib import TTFont
 
-def test_check_167():
+def test_check_varfont_regular_wght_coord():
   """ The variable font 'wght' (Weight) axis coordinate
       must be 400 on the 'Regular' instance. """
-  from fontbakery.specifications.fvar import com_google_fonts_check_167 as check
+  from fontbakery.specifications.fvar import com_google_fonts_check_varfont_regular_wght_coord as check
   from fontbakery.specifications.shared_conditions import regular_wght_coord
 
   # Our reference varfont, CabinVFBeta.ttf, has

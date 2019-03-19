@@ -165,7 +165,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/164' # Length of copyright notice must not exceed 500 characters.
       , 'com.google.fonts/check/165' # Familyname must be unique according to namecheck.fontdata.com
       , 'com.google.fonts/check/fontv'
-      , 'com.google.fonts/check/167' # The variable font 'wght' (Weight) axis coordinate must be 400 on the 'Regular' instance.
+      , 'com.google.fonts/check/varfont/regular_wght_coord'
       , 'com.google.fonts/check/168' # The variable font 'wdth' (Width) axis coordinate must be 100 on the 'Regular' instance.
       , 'com.google.fonts/check/169' # The variable font 'slnt' (Slant) axis coordinate must be zero on the 'Regular' instance.
       , 'com.google.fonts/check/170' # The variable font 'ital' (Italic) axis coordinate must be zero on the 'Regular' instance.
