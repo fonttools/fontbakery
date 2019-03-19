@@ -302,9 +302,9 @@ def test_check_152():
   assert status == WARN
 
 
-def test_check_163():
+def test_check_family_and_style_max_length():
   """ Check font name is the same as family name. """
-  from fontbakery.specifications.name import com_google_fonts_check_163 as check
+  from fontbakery.specifications.name import com_google_fonts_check_family_and_style_max_length as check
   # Our reference Cabin Regular is known to be good
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
