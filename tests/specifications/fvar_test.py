@@ -145,10 +145,10 @@ def test_check_varfont_regular_ital_coord():
   status, message = list(check(ttFont, regular_italic_coord))[-1]
   assert status == PASS
 
-def test_check_171():
+def test_check_varfont_regular_opsz_coord():
   """ The variable font 'opsz' (Optical Size) axis coordinate
       should be between 9 and 13 on the 'Regular' instance. """
-  from fontbakery.specifications.fvar import com_google_fonts_check_171 as check
+  from fontbakery.specifications.fvar import com_google_fonts_check_varfont_regular_opsz_coord as check
   from fontbakery.specifications.shared_conditions import regular_opsz_coord
   from fontTools.ttLib.tables._f_v_a_r import Axis
 

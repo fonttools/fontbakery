@@ -126,7 +126,7 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
 
 
 @check(
-  id = 'com.google.fonts/check/171',
+  id = 'com.google.fonts/check/varfont/regular_opsz_coord',
   rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'opsz' available at
@@ -141,7 +141,7 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
     'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
   }
 )
-def com_google_fonts_check_171(ttFont, regular_opsz_coord):
+def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord):
   """The variable font 'opsz' (Optical Size) axis coordinate should be between
   9 and 13 on the 'Regular' instance."""
 

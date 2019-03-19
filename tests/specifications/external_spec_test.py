@@ -26,7 +26,7 @@ def test_external_specification():
 
   # Probe some tests
   expected_tests = ["com.google.fonts/check/single_family_directory",
-                    "com.google.fonts/check/171"]
+                    "com.google.fonts/check/varfont/regular_opsz_coord"]
   specification.test_expected_checks(expected_tests)
 
   # Probe tests we don't want
