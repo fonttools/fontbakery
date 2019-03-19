@@ -68,7 +68,7 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
 
 
 @check(
-  id = 'com.google.fonts/check/169',
+  id = 'com.google.fonts/check/varfont/regular_slnt_coord',
   rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'slnt' available at
@@ -83,7 +83,7 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
     'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
   }
 )
-def com_google_fonts_check_169(ttFont, regular_slnt_coord):
+def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord):
   """The variable font 'slnt' (Slant) axis coordinate must be zero on the
   'Regular' instance."""
 
