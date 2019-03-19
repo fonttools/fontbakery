@@ -49,9 +49,9 @@ def results_contain(results, expected_status, expected_code):
   return False
 
 
-def test_check_033():
+def test_check_monospace():
   """ Checking correctness of monospaced metadata. """
-  from fontbakery.specifications.name import com_google_fonts_check_033 as check
+  from fontbakery.specifications.name import com_google_fonts_check_monospace as check
   from fontbakery.specifications.shared_conditions import glyph_metrics_stats
   from fontbakery.constants import (PANOSE_Proportion,
                                     IsFixedWidth)

@@ -30,7 +30,7 @@ expected_check_ids = [
     'com.google.fonts/check/equal_font_versions',
     'com.google.fonts/check/post_table_version',
     'com.google.fonts/check/031',  # Description strings in the name table must not contain copyright info.
-    'com.google.fonts/check/033',  # Checking correctness of monospaced metadata.
+    'com.google.fonts/check/monospace',
     'com.google.fonts/check/034',  # Check if OS/2 xAvgCharWidth is correct.
     'com.adobe.fonts/check/fsselection_matches_macstyle',
     'com.adobe.fonts/check/bold_italic_unique_for_nameid1',
