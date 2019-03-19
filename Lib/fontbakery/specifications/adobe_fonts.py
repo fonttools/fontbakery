@@ -56,7 +56,7 @@ expected_check_ids = [
     'com.google.fonts/check/059',  # Font contains unique glyph names?
     'com.google.fonts/check/063',  # Does GPOS table have kerning information?
     'com.google.fonts/check/ligature_carets',
-    'com.google.fonts/check/065',  # Is there kerning info for non-ligated sequences?
+    'com.google.fonts/check/kerning_for_non_ligated_sequences',
     'com.google.fonts/check/066',  # Is there a "kern" table declared in the font?
     'com.google.fonts/check/068',  # Does full font name begin with the font family name?
     'com.google.fonts/check/069',  # Is there any unused data at the end of the glyf table?
@@ -132,7 +132,7 @@ def com_adobe_fonts_check_consistent_upm(ttFonts):
 def check_skip_filter(checkid, font=None, **iterargs):
     if font and checkid in (
         'com.google.fonts/check/ligature_carets',
-        'com.google.fonts/check/065',  # Is there kerning info for non-ligated sequences?
+        'com.google.fonts/check/kerning_for_non_ligated_sequences',
         'com.google.fonts/check/163'   # Combined length of family and style must not exceed 20 characters.
     ):
         return False, None

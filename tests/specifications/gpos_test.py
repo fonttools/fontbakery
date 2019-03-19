@@ -60,10 +60,12 @@ def test_check_063():
   assert status == WARN
 
 
-def test_check_065():
+def test_check_kerning_for_non_ligated_sequences():
   """ Is there kerning info for non-ligated sequences ? """
-  from fontbakery.specifications.gpos import (com_google_fonts_check_065 as check,
-                                                     has_kerning_info)
+  from fontbakery.specifications.gpos import (
+    com_google_fonts_check_kerning_for_non_ligated_sequences as check,
+    has_kerning_info)
+
   from fontbakery.specifications.shared_conditions import ligatures
   # Our reference Mada Medium is known to be good
   ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))

@@ -41,7 +41,7 @@ def com_google_fonts_check_063(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/065',
+  id = 'com.google.fonts/check/kerning_for_non_ligated_sequences',
   rationale = """
     Fonts with ligatures should have kerning on the corresponding
     non-ligated sequences for text where ligatures aren't used
@@ -52,7 +52,7 @@ def com_google_fonts_check_063(ttFont):
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1145'
   })
-def com_google_fonts_check_065(ttFont, ligatures, has_kerning_info):
+def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, has_kerning_info):
   """Is there kerning info for non-ligated sequences?"""
 
   def look_for_nonligated_kern_info(table):
