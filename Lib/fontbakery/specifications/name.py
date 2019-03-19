@@ -330,7 +330,7 @@ def com_google_fonts_check_152(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/163',
+  id = 'com.google.fonts/check/family_and_style_max_length',
   rationale = """
     According to a Glyphs tutorial (available at
     https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances),
@@ -347,7 +347,7 @@ def com_google_fonts_check_152(ttFont):
     'request': 'https://github.com/googlefonts/fontbakery/issues/1488',
   }
 )
-def com_google_fonts_check_163(ttFont):
+def com_google_fonts_check_family_and_style_max_length(ttFont):
   """Combined length of family and style must not exceed 20 characters."""
   from unidecode import unidecode
   from fontbakery.utils import (get_name_entries,

@@ -161,7 +161,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/160' # Check name table: POSTSCRIPT_NAME entries.
       , 'com.google.fonts/check/161' # Check name table: TYPOGRAPHIC_FAMILY_NAME entries.
       , 'com.google.fonts/check/162' # Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries.
-      , 'com.google.fonts/check/163' # Combined length of family and style must not exceed 20 characters.
+      , 'com.google.fonts/check/family_and_style_max_length'
       , 'com.google.fonts/check/164' # Length of copyright notice must not exceed 500 characters.
       , 'com.google.fonts/check/165' # Familyname must be unique according to namecheck.fontdata.com
       , 'com.google.fonts/check/fontv'
