@@ -37,11 +37,11 @@ def com_google_fonts_check_031(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/033',
+  id = 'com.google.fonts/check/monospace',
   conditions = ['glyph_metrics_stats',
                 'is_ttf']
 )
-def com_google_fonts_check_033(ttFont, glyph_metrics_stats):
+def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
   """Checking correctness of monospaced metadata.
 
   There are various metadata in the OpenType spec to specify if

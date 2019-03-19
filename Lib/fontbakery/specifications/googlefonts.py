@@ -104,7 +104,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/030' # License URL matches License text on name table?
       , 'com.google.fonts/check/031' # Description strings in the name table must not contain copyright info.
       , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 200 characters.
-      , 'com.google.fonts/check/033' # Checking correctness of monospaced metadata.
+      , 'com.google.fonts/check/monospace'
       , 'com.google.fonts/check/034' # Check if OS/2 xAvgCharWidth is correct.
       , 'com.adobe.fonts/check/fsselection_matches_macstyle'
       , 'com.adobe.fonts/check/bold_italic_unique_for_nameid1'
@@ -3795,7 +3795,7 @@ def fontforge_skip_checks(font):
 def check_skip_filter(checkid, font=None, **iterargs):
   if font and is_librebarcode(font) and checkid in (
         # See: https://github.com/graphicore/librebarcode/issues/3
-        'com.google.fonts/check/033' # Checking correctness of monospaced metadata.
+        'com.google.fonts/check/monospace'
       , 'com.google.fonts/check/063' # Does GPOS table have kerning information?
       , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
       , 'com.google.fonts/check/049' # Whitespace glyphs have ink?
