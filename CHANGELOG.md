@@ -72,6 +72,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/155]:** com.google.fonts/check/metadata_nameid_copyright
   - **[com.google.fonts/check/163]:** com.google.fonts/check/family_and_style_max_length
   - **[com.google.fonts/check/166]:** com.google.fonts/check/fontv
+  - **[com.google.fonts/check/167]:** com.google.fonts/check/varfont/regular_wght_coord
 
 ### Other relevant code-changes
   - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817

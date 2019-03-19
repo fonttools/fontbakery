@@ -10,7 +10,7 @@ spec_imports = [
 ]
 
 @check(
-  id = 'com.google.fonts/check/167',
+  id = 'com.google.fonts/check/varfont/regular_wght_coord',
   rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'wght' available at
@@ -25,7 +25,7 @@ spec_imports = [
     'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
   }
 )
-def com_google_fonts_check_167(ttFont, regular_wght_coord):
+def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord):
   """The variable font 'wght' (Weight) axis coordinate must be 400 on the
   'Regular' instance."""
 
