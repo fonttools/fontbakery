@@ -57,10 +57,10 @@ def com_google_fonts_check_panose_familytype(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/034',
+  id = 'com.google.fonts/check/xavgcharwidth',
   conditions = ['is_ttf']
 )
-def com_google_fonts_check_034(ttFont):
+def com_google_fonts_check_xavgcharwidth(ttFont):
   """Check if OS/2 xAvgCharWidth is correct."""
   current_value = ttFont['OS/2'].xAvgCharWidth
   ACCEPTABLE_ERROR = 10  # Width deviation tolerance in font units
