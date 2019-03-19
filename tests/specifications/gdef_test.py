@@ -13,9 +13,9 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 from fontTools.ttLib import TTFont
 
-def test_check_064():
+def test_check_ligature_carets():
   """ Is there a caret position declared for every ligature ? """
-  from fontbakery.specifications.gdef import com_google_fonts_check_064 as check
+  from fontbakery.specifications.gdef import com_google_fonts_check_ligature_carets as check
   from fontbakery.specifications.shared_conditions import ligatures
 
   # Our reference Mada Medium is known to be bad

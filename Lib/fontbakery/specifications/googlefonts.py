@@ -130,7 +130,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/061' # EPAR table present in font?
       , 'com.google.fonts/check/062' # Is 'gasp' table correctly set?
       , 'com.google.fonts/check/063' # Does GPOS table have kerning information?
-      , 'com.google.fonts/check/064' # Is there a caret position declared for every ligature?
+      , 'com.google.fonts/check/ligature_carets'
       , 'com.google.fonts/check/065' # Is there kerning info for non-ligated sequences?
       , 'com.google.fonts/check/066' # Is there a "kern" table declared in the font?
       , 'com.google.fonts/check/067' # Make sure family name does not begin with a digit.
