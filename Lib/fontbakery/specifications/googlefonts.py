@@ -102,7 +102,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/028' # Check font has a license.
       , 'com.google.fonts/check/029' # Check copyright namerecords match license file.
       , 'com.google.fonts/check/030' # License URL matches License text on name table?
-      , 'com.google.fonts/check/031' # Description strings in the name table must not contain copyright info.
+      , 'com.google.fonts/check/name/no_copyright_on_description'
       , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 200 characters.
       , 'com.google.fonts/check/monospace'
       , 'com.google.fonts/check/034' # Check if OS/2 xAvgCharWidth is correct.
