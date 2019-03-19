@@ -72,10 +72,10 @@ def test_check_varfont_regular_wdth_coord():
   assert status == PASS
 
 
-def test_check_169():
+def test_check_varfont_regular_slnt_coord():
   """ The variable font 'slnt' (Slant) axis coordinate
       must be zero on the 'Regular' instance. """
-  from fontbakery.specifications.fvar import com_google_fonts_check_169 as check
+  from fontbakery.specifications.fvar import com_google_fonts_check_varfont/regular_slnt_coord as check
   from fontbakery.specifications.shared_conditions import regular_slnt_coord
   from fontTools.ttLib.tables._f_v_a_r import Axis
 
