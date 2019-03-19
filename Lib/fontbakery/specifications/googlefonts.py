@@ -110,7 +110,7 @@ expected_check_ids = \
       , 'com.adobe.fonts/check/bold_italic_unique_for_nameid1'
       , 'com.google.fonts/check/win_ascent_and_descent'
       , 'com.google.fonts/check/linegaps'
-      , 'com.google.fonts/check/042' # Checking OS/2 Metrics match hhea Metrics.
+      , 'com.google.fonts/check/os2_metrics_match_hhea'
       , 'com.google.fonts/check/043' # Checking unitsPerEm value is reasonable.
       , 'com.google.fonts/check/044' # Checking font version fields.
       , 'com.google.fonts/check/dsig'
@@ -3492,7 +3492,7 @@ def com_google_fonts_check_win_ascent_and_descent(ttFont, vmetrics):
 
 
 @check(
-  id = 'com.google.fonts/check/042',
+  id = 'com.google.fonts/check/os2_metrics_match_hhea',
   rationale = """When OS/2 and hhea vertical metrics match, the same
   linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018,
   Google Fonts has released many fonts with vertical metrics that don't match
@@ -3506,7 +3506,7 @@ def com_google_fonts_check_win_ascent_and_descent(ttFont, vmetrics):
   If users complain and prefer the old broken version, they are libre to take
   care of their own situation."""
 )
-def com_google_fonts_check_042(ttFont):
+def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
   """Checking OS/2 Metrics match hhea Metrics.
 
   OS/2 and hhea vertical metric values should match. This will produce
