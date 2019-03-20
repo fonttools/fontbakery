@@ -22,9 +22,9 @@ def com_google_fonts_check_linegaps(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/073'
+  id = 'com.google.fonts/check/maxadvancewidth'
 )
-def com_google_fonts_check_073(ttFont):
+def com_google_fonts_check_maxadvancewidth(ttFont):
   """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""
   hhea_advance_width_max = ttFont['hhea'].advanceWidthMax
   hmtx_advance_width_max = None

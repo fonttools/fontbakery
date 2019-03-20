@@ -43,9 +43,9 @@ def test_check_linegaps():
   assert status == PASS
 
 
-def test_check_073():
+def test_check_maxadvancewidth():
   """ MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables? """
-  from fontbakery.specifications.hhea import com_google_fonts_check_073 as check
+  from fontbakery.specifications.hhea import com_google_fonts_check_maxadvancewidth as check
 
   test_font = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
 
