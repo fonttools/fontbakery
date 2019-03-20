@@ -224,9 +224,9 @@ def test_check_whitespace_glyphnames():
   assert status == FAIL and message.code == "badA0"
 
 
-def test_check_049():
+def test_check_whitespace_ink():
   """ Whitespace glyphs have ink? """
-  from fontbakery.specifications.general import com_google_fonts_check_049 as check
+  from fontbakery.specifications.general import com_google_fonts_check_whitespace_ink as check
 
   test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
   status, _ = list(check(test_font))[-1]
