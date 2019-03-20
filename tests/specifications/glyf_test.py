@@ -17,9 +17,9 @@ from fontbakery.checkrunner import (
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 
-def test_check_069():
+def test_check_glyf_unused_data():
   """ Is there any unused data at the end of the glyf table? """
-  from fontbakery.specifications.glyf import com_google_fonts_check_069 as check
+  from fontbakery.specifications.glyf import com_google_fonts_check_glyf_unused_data as check
 
   test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
 
