@@ -7,9 +7,9 @@ from fontTools.ttLib import TTFont
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 
-def test_check_050():
+def test_check_whitespace_widths():
   """ Whitespace glyphs have coherent widths? """
-  from fontbakery.specifications.hmtx import com_google_fonts_check_050 as check
+  from fontbakery.specifications.hmtx import com_google_fonts_check_whitespace_widths as check
 
   test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
   status, _ = list(check(test_font))[-1]
