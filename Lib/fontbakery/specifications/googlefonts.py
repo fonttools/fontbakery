@@ -96,7 +96,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/equal_font_versions'
       , 'com.google.fonts/check/font_version'
       , 'com.google.fonts/check/post_table_version'
-      , 'com.google.fonts/check/016' # Checking OS/2 fsType.
+      , 'com.google.fonts/check/os2/fstype'
       , 'com.google.fonts/check/018' # Checking OS/2 achVendID.
       , 'com.google.fonts/check/019' # Substitute copyright, registered and trademark symbols in name table entries.
       , 'com.google.fonts/check/020' # Checking OS/2 usWeightClass.
@@ -595,9 +595,9 @@ def com_google_fonts_check_equal_glyph_names(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/016'
+  id = 'com.google.fonts/check/os2/fstype'
 )
-def com_google_fonts_check_016(ttFont):
+def com_google_fonts_check_os2_fstype(ttFont):
   """Checking OS/2 fsType.
 
   Fonts must have their fsType field set to zero.

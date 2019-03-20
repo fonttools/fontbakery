@@ -344,9 +344,9 @@ def test_check_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
   assert status == FAIL
 
 
-def test_check_016():
+def test_check_os2_fstype():
   """ Checking OS/2 fsType """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_016 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_os2_fstype as check
 
   print('Test PASS with good font without DRM.')
   # our reference Cabin family is know to be good here.
