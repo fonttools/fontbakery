@@ -52,7 +52,7 @@ expected_check_ids = [
     'com.google.fonts/check/required_tables',
     'com.google.fonts/check/unwanted_tables',
     'com.google.fonts/check/name_table_line_breaks',
-    'com.google.fonts/check/058',  # Glyph names are all valid?
+    'com.google.fonts/check/valid_glyphnames',
     'com.google.fonts/check/059',  # Font contains unique glyph names?
     'com.google.fonts/check/063',  # Does GPOS table have kerning information?
     'com.google.fonts/check/ligature_carets',
@@ -63,7 +63,6 @@ expected_check_ids = [
     'com.google.fonts/check/071',  # Font follows the family naming recommendations?
     'com.google.fonts/check/073',  # MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?
     'com.google.fonts/check/075',  # Check for points out of bounds.
-    # 'com.google.fonts/check/076',  # Check glyphs have unique unicode codepoints.
     'com.google.fonts/check/077',  # Check all glyphs have codepoints assigned.
     'com.google.fonts/check/079',  # Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth?
     'com.google.fonts/check/reserved_font_name',

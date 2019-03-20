@@ -615,7 +615,7 @@ def com_google_fonts_check_unwanted_tables(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/058',
+  id = 'com.google.fonts/check/valid_glyphnames',
   rationale = """Microsoft's recommendations for OpenType Fonts states the
   following, 'NOTE: The PostScript glyph name must be no longer than 31
   characters, include only uppercase or lowercase English letters, European
@@ -626,7 +626,7 @@ def com_google_fonts_check_unwanted_tables(ttFont):
   https://docs.microsoft.com/en-us/typography/opentype/spec/recom#post-table
   """
 )
-def com_google_fonts_check_058(ttFont):
+def com_google_fonts_check_valid_glyphnames(ttFont):
   """Glyph names are all valid?"""
   if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
       "post") and ttFont["post"].formatType == 3.0:
