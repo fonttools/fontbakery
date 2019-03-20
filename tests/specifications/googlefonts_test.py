@@ -1803,11 +1803,13 @@ def test_check_metadata_match_name_familyname():
   assert status == FAIL
 
 
-def test_check_111():
+def test_check_check_metadata_canonical_weight_value():
   """ METADATA.pb: Check that font weight has a canonical value. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_111 as check,
-                                                     family_metadata,
-                                                     font_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_canonical_weight_value as check,
+    family_metadata,
+    font_metadata)
+
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   family_directory = os.path.dirname(fontfile)
   family_meta = family_metadata(family_directory)

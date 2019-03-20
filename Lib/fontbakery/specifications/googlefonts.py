@@ -61,7 +61,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/normal_style'
       , 'com.google.fonts/check/metadata/fontname_not_camel_cased'
       , 'com.google.fonts/check/metadata/match_name_familyname'
-      , 'com.google.fonts/check/111' # METADATA.pb: Check that font weight has a canonical value.
+      , 'com.google.fonts/check/metadata/canonical_weight_value'
       , 'com.google.fonts/check/metadata/os2_weightclass'
       , 'com.google.fonts/check/metatada/canonical_style_names'
 ]
@@ -2231,10 +2231,10 @@ def com_google_fonts_check_metadata_match_name_familyname(family_metadata, font_
 
 
 @check(
-  id = 'com.google.fonts/check/111',
+  id = 'com.google.fonts/check/metadata/canonical_weight_value',
   conditions = ['font_metadata']
 )
-def com_google_fonts_check_111(font_metadata):
+def com_google_fonts_check_metadata_canonical_weight_value(font_metadata):
   """METADATA.pb: Check that font weight has a canonical value."""
   first_digit = font_metadata.weight / 100
   if (font_metadata.weight % 100) != 0 or \
