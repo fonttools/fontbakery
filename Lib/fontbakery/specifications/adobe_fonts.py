@@ -41,7 +41,7 @@ expected_check_ids = [
     'com.google.fonts/check/win_ascent_and_descent',
     'com.google.fonts/check/linegaps',
     'com.google.fonts/check/os2_metrics_match_hhea',
-    'com.google.fonts/check/043',  # Checking unitsPerEm value is reasonable.
+    'com.google.fonts/check/unitsperem',
     'com.google.fonts/check/044',  # Checking font version fields.
     'com.google.fonts/check/dsig',
     'com.google.fonts/check/046',  # Font contains the first few mandatory glyphs (.null or NULL, CR and space)?
