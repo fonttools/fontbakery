@@ -119,7 +119,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/whitespace_glyphnames'
       , 'com.google.fonts/check/whitespace_ink'
       , 'com.google.fonts/check/whitespace_widths'
-      , 'com.google.fonts/check/052' # Font contains all required tables?
+      , 'com.google.fonts/check/required_tables'
       , 'com.google.fonts/check/053' # Are there unwanted tables?
       , 'com.google.fonts/check/054' # Show hinting filesize impact.
       , 'com.google.fonts/check/055' # Version format is correct in 'name' table?

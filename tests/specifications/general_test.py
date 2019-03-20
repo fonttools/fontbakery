@@ -251,9 +251,9 @@ def test_check_whitespace_ink():
   assert status == FAIL
 
 
-def test_check_052():
+def test_check_required_tables():
   """ Font contains all required tables ? """
-  from fontbakery.specifications.general import com_google_fonts_check_052 as check
+  from fontbakery.specifications.general import com_google_fonts_check_required_tables as check
 
   required_tables = ["cmap", "head", "hhea", "hmtx",
                      "maxp", "name", "OS/2", "post"]

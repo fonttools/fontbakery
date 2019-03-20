@@ -527,7 +527,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 
 
 @check(
-  id='com.google.fonts/check/052',
+  id='com.google.fonts/check/required_tables',
   conditions=['is_ttf'],
   rationale="""Depending on the typeface and coverage of a font, certain
   tables are recommended for optimum quality. For example, the performance
@@ -537,10 +537,10 @@ def com_google_fonts_check_whitespace_ink(ttFont):
   is used under Windows. A DSIG table containing a digital signature helps
   ensure the integrity of the font file. Etc.
   """
-  # TODO: The rationale description above comes from FontValidator, check W0022.
-  #       We may want to improve it and/or rephrase it.
+  # FIXME: The rationale description above comes from FontValidator, check W0022.
+  #        We may want to improve it and/or rephrase it.
 )
-def com_google_fonts_check_052(ttFont):
+def com_google_fonts_check_required_tables(ttFont):
   """Font contains all required tables?"""
   REQUIRED_TABLES = {
       "cmap", "head", "hhea", "hmtx", "maxp", "name", "OS/2", "post"}

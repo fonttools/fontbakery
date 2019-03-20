@@ -50,7 +50,7 @@ def com_google_fonts_check_037(font):
     "The PostScript string is not present for both required platforms",
 
     # Font Bakery has got a native check for the xAvgCharWidth field
-    # which is: com.google.fonts/check/034
+    # which is: com.google.fonts/check/xavgcharwidth
     "The xAvgCharWidth field does not equal the calculated value",
 
     # The optimal ordering suggested by FVal check W0020 seems to only be
@@ -63,7 +63,7 @@ def com_google_fonts_check_037(font):
     "Tables are not in optimal order",
 
     # Font Bakery has its own check for required/optional tables:
-    # com.google.fonts/check/052 - "Font contains all required tables?"
+    # com.google.fonts/check/required_tables
     "Recommended table is missing"
   ]
 
