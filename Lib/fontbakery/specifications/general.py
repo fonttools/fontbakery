@@ -661,7 +661,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/059',
+  id = 'com.google.fonts/check/unique_glyphnames',
   rationale = """
     Duplicate glyph names prevent font installation on Mac OS X.
   """,
@@ -669,7 +669,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
     'affects': [('Mac', 'unspecified')]
   }
 )
-def com_google_fonts_check_059(ttFont):
+def com_google_fonts_check_unique_glyphnames(ttFont):
   """Font contains unique glyph names?"""
   if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
       "post") and ttFont["post"].formatType == 3.0:

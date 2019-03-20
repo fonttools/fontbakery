@@ -384,9 +384,9 @@ def test_check_valid_glyphnames():
   assert status == SKIP
 
 
-def test_check_059():
+def test_check_unique_glyphnames():
   """ Font contains unique glyph names? """
-  from fontbakery.specifications.general import com_google_fonts_check_059 as check
+  from fontbakery.specifications.general import com_google_fonts_check_unique_glyphnames as check
 
   test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
   test_font = TTFont(test_font_path)
