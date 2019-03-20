@@ -53,6 +53,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/052]:** com.google.fonts/check/required_tables
   - **[com.google.fonts/check/053]:** com.google.fonts/check/unwanted_tables
   - **[com.google.fonts/check/054]:** com.google.fonts/check/hinting_impact
+  - **[com.google.fonts/check/055]:** com.google.fonts/check/name/version_format
   - **[com.google.fonts/check/057]:** com.google.fonts/check/name_table_line_breaks
   - **[com.google.fonts/check/058]:** com.google.fonts/check/valid_glyphnames
   - **[com.google.fonts/check/059]:** com.google.fonts/check/unique_glyphnames
