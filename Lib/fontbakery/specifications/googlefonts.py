@@ -142,7 +142,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/073' # MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?
       , 'com.google.fonts/check/074' # Are there non-ASCII characters in ASCII-only NAME table entries?
       , 'com.google.fonts/check/075' # Check for points out of bounds.
-      , 'com.google.fonts/check/077' # Check all glyphs have codepoints assigned.
+      , 'com.google.fonts/check/all_glyphs_have_codepoints'
       #, 'com.google.fonts/check/078' # Check that glyph names do not exceed max length.
       , 'com.google.fonts/check/079' # Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth?
       , 'com.google.fonts/check/116' # Stricter unitsPerEm criteria for Google Fonts.

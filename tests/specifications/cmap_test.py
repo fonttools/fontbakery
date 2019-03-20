@@ -53,9 +53,9 @@ def test_check_equal_unicode_encodings(mada_ttFonts):
 
 
 # Note: I am not aware of any real-case of a font that FAILs this check.
-def test_check_077():
+def test_check_all_glyphs_have_codepoints():
   """ Check all glyphs have codepoints assigned. """
-  from fontbakery.specifications.cmap import com_google_fonts_check_077 as check
+  from fontbakery.specifications.cmap import com_google_fonts_check_all_glyphs_have_codepoints as check
 
   print('Test PASS with a good font.')
   # our reference Mada SemiBold is know to be good here.
