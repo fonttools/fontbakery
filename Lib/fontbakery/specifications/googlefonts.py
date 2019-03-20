@@ -172,7 +172,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/varfont/regular_opsz_coord'
       , 'com.google.fonts/check/varfont/bold_wght_coord'
       , 'com.google.fonts/check/174' # Check a static ttf can be generated from a variable font.
-      , 'com.google.fonts/check/180' # Does the number of glyphs in the loca table match the maxp table?
+      , 'com.google.fonts/check/loca/maxp_num_glyphs'
       , 'com.google.fonts/check/ttx-roundtrip'
       , 'com.google.fonts/check/has_ttfautohint_params'
       , 'com.google.fonts/check/vttclean'

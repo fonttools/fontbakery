@@ -78,6 +78,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/170]:** com.google.fonts/check/varfont/regular_ital_coord
   - **[com.google.fonts/check/171]:** com.google.fonts/check/varfont/regular_opsz_coord
   - **[com.google.fonts/check/172]:** com.google.fonts/check/varfont/bold_wght_coord
+  - **[com.google.fonts/check/180]:** com.google.fonts/check/loca/maxp_num_glyphs
 
 ### Other relevant code-changes
   - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817

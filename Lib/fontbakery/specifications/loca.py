@@ -8,10 +8,10 @@ spec_imports = (
 )
 
 @check(
-  id = 'com.google.fonts/check/180',
+  id = 'com.google.fonts/check/loca/maxp_num_glyphs',
   conditions = ['is_ttf']
 )
-def com_google_fonts_check_180(ttFont):
+def com_google_fonts_check_loca_maxp_num_glyphs(ttFont):
   """Does the number of glyphs in the loca table match the maxp table?"""
   if len(ttFont['loca']) < (ttFont['maxp'].numGlyphs + 1):
     yield FAIL, "Corrupt 'loca' table, or wrong numGlyphs in 'maxp' table."
