@@ -454,9 +454,9 @@ def test_check_019():
   assert status == PASS
 
 
-def test_check_020():
+def test_check_usweightclass():
   """ Checking OS/2 usWeightClass. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_020 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_usweightclass as check,
                                                      style)
   # Our reference Mada Regular is know to be bad here.
   font = TEST_FILE("mada/Mada-Regular.ttf")
