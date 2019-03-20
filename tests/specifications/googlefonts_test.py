@@ -498,9 +498,9 @@ def test_family_directory_condition():
                                               # are correctly detected on the current
                                               # working directory.
 
-def test_check_028():
+def test_check_has_license():
   """ Check font project has a license. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_028 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_has_license as check,
                                                      licenses)
 
   # The lines maked with 'hack' below are meant to
