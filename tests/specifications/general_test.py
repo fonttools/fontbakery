@@ -350,9 +350,9 @@ def test_check_unwanted_tables():
     assert status == FAIL
 
 
-def test_check_058():
+def test_check_valid_glyphnames():
   """ Glyph names are all valid? """
-  from fontbakery.specifications.general import com_google_fonts_check_058 as check
+  from fontbakery.specifications.general import com_google_fonts_check_valid_glyphnames as check
 
   test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
   test_font = TTFont(test_font_path)
