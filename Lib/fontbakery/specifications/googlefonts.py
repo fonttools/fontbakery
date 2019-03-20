@@ -60,9 +60,9 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/italic_style'
       , 'com.google.fonts/check/metadata/normal_style'
       , 'com.google.fonts/check/metadata/fontname_not_camel_cased'
-      , 'com.google.fonts/check/110' # METADATA.pb: Check font name is the same as family name.
+      , 'com.google.fonts/check/metadata/match_name_familyname'
       , 'com.google.fonts/check/111' # METADATA.pb: Check that font weight has a canonical value.
-      , 'com.google.fonts/check/metadata/os2_weightclass' # Checking OS/2 usWeightClass matches weight specified at METADATA.pb.
+      , 'com.google.fonts/check/metadata/os2_weightclass'
       , 'com.google.fonts/check/metatada/canonical_style_names'
 ]
 
@@ -2214,11 +2214,11 @@ def com_google_fonts_check_metadata_fontname_not_camel_cased(font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/110',
+  id = 'com.google.fonts/check/metadata/match_name_familyname',
   conditions = ['family_metadata',      # that's the family-wide metadata!
                 'font_metadata'] # and this one's specific to a single file
 )
-def com_google_fonts_check_110(family_metadata, font_metadata):
+def com_google_fonts_check_metadata_match_name_familyname(family_metadata, font_metadata):
   """METADATA.pb: Check font name is the same as family name."""
   if font_metadata.name != family_metadata.name:
     yield FAIL, ("METADATA.pb: {}: Family name \"{}\""
