@@ -64,7 +64,7 @@ expected_check_ids = [
     'com.google.fonts/check/073',  # MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?
     'com.google.fonts/check/points_out_of_bounds',
     'com.google.fonts/check/all_glyphs_have_codepoints',
-    'com.google.fonts/check/079',  # Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth?
+    'com.google.fonts/check/monospace_max_advancewidth',
     'com.google.fonts/check/reserved_font_name',
     'com.google.fonts/check/family_and_style_max_length',
     'com.google.fonts/check/varfont/regular_wght_coord',

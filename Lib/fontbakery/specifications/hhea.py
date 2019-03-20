@@ -44,10 +44,10 @@ def com_google_fonts_check_073(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/079',
+  id = 'com.google.fonts/check/monospace_max_advancewidth',
   conditions = ['glyph_metrics_stats']
 )
-def com_google_fonts_check_079(ttFont, glyph_metrics_stats):
+def com_google_fonts_check_monospace_max_advancewidth(ttFont, glyph_metrics_stats):
   """Monospace font has hhea.advanceWidthMax equal to each glyph's
   advanceWidth?"""
 
