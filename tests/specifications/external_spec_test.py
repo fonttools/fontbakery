@@ -134,14 +134,14 @@ def test_spec_imports():
       # that check from the googlefonts specific spec:
       ('fontbakery.specifications.googlefonts', (
           # "License URL matches License text on name table?"
-          'com_google_fonts_check_030',
+          'com_google_fonts_check_name_license_url',
           # This condition is a dependency of the check above:
           'familyname',
       ))
   ]
   # Probe some tests
   expected_tests = [
-      "com.google.fonts/check/030"  # in googlefonts
+      "com.google.fonts/check/name/license_url"  # in googlefonts
   ]
   expected_conditions = ('is_variable_font', 'regular_wght_coord',
         'regular_wdth_coord', 'regular_slnt_coord', 'regular_ital_coord',

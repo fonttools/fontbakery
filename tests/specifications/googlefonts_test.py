@@ -603,9 +603,9 @@ def test_check_032():
   assert status == WARN
 
 
-def test_check_054():
+def test_check_hinting_impact():
   """ Show hinting filesize impact. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_054 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_hinting_impact as check,
                                                      ttfautohint_stats)
   font = TEST_FILE("mada/Mada-Regular.ttf")
 
