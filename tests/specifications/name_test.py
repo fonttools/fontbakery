@@ -135,9 +135,9 @@ def test_check_monospace():
     assert results_contain(results, FAIL, "mono-bad-panose-proportion")
 
 
-def test_check_057():
+def test_check_name_table_line_breaks():
   """ Name table entries should not contain line-breaks. """
-  from fontbakery.specifications.name import com_google_fonts_check_057 as check
+  from fontbakery.specifications.name import com_google_fonts_check_name_table_line_breaks as check
 
   # Our reference Mada Regular font is good here:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))

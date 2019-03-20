@@ -156,9 +156,9 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
 
 
 @check(
-  id = 'com.google.fonts/check/057'
+  id = 'com.google.fonts/check/name_table_line_breaks'
 )
-def com_google_fonts_check_057(ttFont):
+def com_google_fonts_check_name_table_line_breaks(ttFont):
   """Name table entries should not contain line-breaks."""
   failed = False
   for name in ttFont["name"].names:
