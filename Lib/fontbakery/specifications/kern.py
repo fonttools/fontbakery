@@ -4,7 +4,7 @@ from fontbakery.checkrunner import INFO, PASS
 from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-import
 
 @check(
-  id = 'com.google.fonts/check/066',
+  id = 'com.google.fonts/check/kern_table',
   rationale = """
     Even though, all fonts should have their kerning implemented
     in the GPOS table, there may be kerning info at the kern table as well.
@@ -29,7 +29,7 @@ from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-imp
     'request': 'https://github.com/googlefonts/fontbakery/issues/1675'
   }
 )
-def com_google_fonts_check_066(ttFont):
+def com_google_fonts_check_kern_table(ttFont):
   """Is there a "kern" table declared in the font?"""
 
   if "kern" in ttFont:

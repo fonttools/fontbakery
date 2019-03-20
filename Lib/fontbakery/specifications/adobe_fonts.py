@@ -57,7 +57,7 @@ expected_check_ids = [
     'com.google.fonts/check/gpos_kerning_info',
     'com.google.fonts/check/ligature_carets',
     'com.google.fonts/check/kerning_for_non_ligated_sequences',
-    'com.google.fonts/check/066',  # Is there a "kern" table declared in the font?
+    'com.google.fonts/check/kern_table',
     'com.google.fonts/check/068',  # Does full font name begin with the font family name?
     'com.google.fonts/check/069',  # Is there any unused data at the end of the glyf table?
     'com.google.fonts/check/071',  # Font follows the family naming recommendations?
