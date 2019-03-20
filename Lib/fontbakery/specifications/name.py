@@ -211,9 +211,9 @@ def com_google_fonts_check_nameid_match_familyname_fullfont(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/071'
+  id = 'com.google.fonts/check/family_naming_recommendations'
 )
-def com_google_fonts_check_071(ttFont):
+def com_google_fonts_check_family_naming_recommendations(ttFont):
   """Font follows the family naming recommendations?"""
   # See http://forum.fontlab.com/index.php?topic=313.0
   import re

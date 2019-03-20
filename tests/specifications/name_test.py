@@ -204,9 +204,9 @@ def assert_name_table_check_result(ttFont, index, name, check, value, expected_r
   assert status == expected_result
 
 
-def test_check_071():
+def test_check_family_naming_recommendations():
   """ Font follows the family naming recommendations ? """
-  from fontbakery.specifications.name import com_google_fonts_check_071 as check
+  from fontbakery.specifications.name import com_google_fonts_check_family_naming_recommendations as check
   # Our reference Mada Medium is known to be good
   ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
 
