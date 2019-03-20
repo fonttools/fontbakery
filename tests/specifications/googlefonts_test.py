@@ -614,9 +614,9 @@ def test_check_hinting_impact():
   assert status == INFO
 
 
-def test_check_055():
+def test_check_name_version_format():
   """ Version format is correct in 'name' table ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_055 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_name_version_format as check
 
   # Our reference Mada Regular font is good here:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))

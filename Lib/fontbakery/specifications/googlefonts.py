@@ -122,7 +122,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/required_tables'
       , 'com.google.fonts/check/unwanted_tables'
       , 'com.google.fonts/check/hinting_impact'
-      , 'com.google.fonts/check/055' # Version format is correct in 'name' table?
+      , 'com.google.fonts/check/name/version_format'
       , 'com.google.fonts/check/056' # Font has old ttfautohint applied?
       , 'com.google.fonts/check/name_table_line_breaks'
       , 'com.google.fonts/check/valid_glyphnames'
@@ -1066,9 +1066,9 @@ def com_google_fonts_check_hinting_impact(font, ttfautohint_stats):
 
 
 @check(
-  id = 'com.google.fonts/check/055'
+  id = 'com.google.fonts/check/name/version_format'
 )
-def com_google_fonts_check_055(ttFont):
+def com_google_fonts_check_name_version_format(ttFont):
   """Version format is correct in 'name' table?"""
   from fontbakery.utils import get_name_entry_strings
   import re
