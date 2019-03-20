@@ -61,7 +61,7 @@ expected_check_ids = [
     'com.google.fonts/check/nameid/match_familyname_fullfont',
     'com.google.fonts/check/glyf_unused_data',
     'com.google.fonts/check/family_naming_recommendations',
-    'com.google.fonts/check/073',  # MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?
+    'com.google.fonts/check/maxadvancewidth',
     'com.google.fonts/check/points_out_of_bounds',
     'com.google.fonts/check/all_glyphs_have_codepoints',
     'com.google.fonts/check/monospace_max_advancewidth',
