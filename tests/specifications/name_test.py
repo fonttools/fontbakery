@@ -288,9 +288,9 @@ def test_check_071():
       name_test("A"*31, PASS)
 
 
-def test_check_152():
+def test_check_reserved_font_name():
   """ Name table strings must not contain 'Reserved Font Name'. """
-  from fontbakery.specifications.name import com_google_fonts_check_152 as check
+  from fontbakery.specifications.name import com_google_fonts_check_reserved_font_name as check
 
   test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
 

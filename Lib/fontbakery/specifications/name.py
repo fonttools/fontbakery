@@ -311,9 +311,9 @@ def com_google_fonts_check_071(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/152'
+  id = 'com.google.fonts/check/reserved_font_name'
 )
-def com_google_fonts_check_152(ttFont):
+def com_google_fonts_check_reserved_font_name(ttFont):
   """Name table strings must not contain the string 'Reserved Font Name'."""
   failed = False
   for entry in ttFont["name"].names:

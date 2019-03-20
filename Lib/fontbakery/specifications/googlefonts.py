@@ -151,7 +151,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/129' # Checking OS/2 fsSelection value.
       , 'com.google.fonts/check/130' # Checking post.italicAngle value.
       , 'com.google.fonts/check/131' # Checking head.macStyle value.
-      , 'com.google.fonts/check/152' # Name table strings must not contain 'Reserved Font Name'.
+      , 'com.google.fonts/check/reserved_font_name'
       , 'com.google.fonts/check/153' # Check if each glyph has the recommended amount of contours.
       , 'com.google.fonts/check/154' # Check font has same encoded glyphs as version hosted on fonts.google.com
       , 'com.google.fonts/check/156' # Font has all mandatory 'name' table entries ?

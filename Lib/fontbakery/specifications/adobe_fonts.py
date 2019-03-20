@@ -66,7 +66,7 @@ expected_check_ids = [
     # 'com.google.fonts/check/076',  # Check glyphs have unique unicode codepoints.
     'com.google.fonts/check/077',  # Check all glyphs have codepoints assigned.
     'com.google.fonts/check/079',  # Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth?
-    'com.google.fonts/check/152',  # Name table strings must not contain 'Reserved Font Name'.
+    'com.google.fonts/check/reserved_font_name',
     'com.google.fonts/check/family_and_style_max_length',
     'com.google.fonts/check/varfont/regular_wght_coord',
     'com.google.fonts/check/varfont/regular_wdth_coord',
