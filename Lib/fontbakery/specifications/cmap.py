@@ -34,12 +34,12 @@ def com_google_fonts_check_equal_unicode_encodings(ttFonts):
 # Mekkablue Preflight Checks available at:
 # https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
 @check(
-  id = 'com.google.fonts/check/077',
+  id = 'com.google.fonts/check/all_glyphs_have_codepoints',
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/735'
   }
 )
-def com_google_fonts_check_077(ttFont):
+def com_google_fonts_check_all_glyphs_have_codepoints(ttFont):
   """Check all glyphs have codepoints assigned."""
   failed = False
   for subtable in ttFont['cmap'].tables:
