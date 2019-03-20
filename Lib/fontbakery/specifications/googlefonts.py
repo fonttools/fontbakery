@@ -101,7 +101,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/019' # Substitute copyright, registered and trademark symbols in name table entries.
       , 'com.google.fonts/check/usweightclass'
       , 'com.google.fonts/check/has_license'
-      , 'com.google.fonts/check/029' # Check copyright namerecords match license file.
+      , 'com.google.fonts/check/nameid/license' # Check copyright namerecords match license file.
       , 'com.google.fonts/check/030' # License URL matches License text on name table?
       , 'com.google.fonts/check/name/no_copyright_on_description'
       , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 200 characters.
@@ -843,12 +843,12 @@ def com_google_fonts_check_has_license(licenses):
 
 
 @check(
-  id = 'com.google.fonts/check/029',
+  id = 'com.google.fonts/check/nameid/license',
   conditions = ['license'],
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   })
-def com_google_fonts_check_029(ttFont, license):
+def com_google_fonts_check_nameid_license(ttFont, license):
   """Check copyright namerecords match license file."""
   from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
   from unidecode import unidecode

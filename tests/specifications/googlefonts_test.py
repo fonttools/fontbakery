@@ -531,9 +531,9 @@ def test_check_has_license():
   assert status == PASS
 
 
-def test_check_029(mada_ttFonts):
+def test_check_nameid_license(mada_ttFonts):
   """ Check copyright namerecords match license file. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_029 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_nameid_license as check
 
   # Our reference Mada family has its copyright name records properly set
   # identifying it as being licensed under the Open Font License
