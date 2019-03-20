@@ -171,7 +171,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/varfont/regular_ital_coord'
       , 'com.google.fonts/check/varfont/regular_opsz_coord'
       , 'com.google.fonts/check/varfont/bold_wght_coord'
-      , 'com.google.fonts/check/174' # Check a static ttf can be generated from a variable font.
+      , 'com.google.fonts/check/varfont/generate_static'
       , 'com.google.fonts/check/loca/maxp_num_glyphs'
       , 'com.google.fonts/check/ttx-roundtrip'
       , 'com.google.fonts/check/has_ttfautohint_params'
@@ -3344,7 +3344,7 @@ def com_google_fonts_check_173(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/174',
+  id = 'com.google.fonts/check/varfont/generate_static',
   rationale = """
   Google Fonts may serve static fonts which have been generated
   from variable fonts.
@@ -3366,7 +3366,7 @@ def com_google_fonts_check_173(ttFont):
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1727'
   })
-def com_google_fonts_check_174(ttFont):
+def com_google_fonts_check_varfont_generate_static(ttFont):
   """ Check a static ttf can be generated from a variable font. """
   import tempfile
   from fontTools.varLib import mutator
