@@ -13,9 +13,9 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 from fontTools.ttLib import TTFont
 
-def test_check_063():
+def test_check_gpos_kerning_info():
   """ Does GPOS table have kerning information ? """
-  from fontbakery.specifications.gpos import com_google_fonts_check_063 as check
+  from fontbakery.specifications.gpos import com_google_fonts_check_gpos_kerning_info as check
 
   # Our reference Mada Regular is known to have kerning-info
   # exclusively on an extension subtable

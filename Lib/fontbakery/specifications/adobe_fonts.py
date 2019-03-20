@@ -54,7 +54,7 @@ expected_check_ids = [
     'com.google.fonts/check/name_table_line_breaks',
     'com.google.fonts/check/valid_glyphnames',
     'com.google.fonts/check/unique_glyphnames',
-    'com.google.fonts/check/063',  # Does GPOS table have kerning information?
+    'com.google.fonts/check/gpos_kerning_info',
     'com.google.fonts/check/ligature_carets',
     'com.google.fonts/check/kerning_for_non_ligated_sequences',
     'com.google.fonts/check/066',  # Is there a "kern" table declared in the font?

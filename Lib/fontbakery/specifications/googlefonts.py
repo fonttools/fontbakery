@@ -129,7 +129,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/unique_glyphnames'
       , 'com.google.fonts/check/061' # EPAR table present in font?
       , 'com.google.fonts/check/062' # Is 'gasp' table correctly set?
-      , 'com.google.fonts/check/063' # Does GPOS table have kerning information?
+      , 'com.google.fonts/check/gpos_kerning_info'
       , 'com.google.fonts/check/ligature_carets'
       , 'com.google.fonts/check/kerning_for_non_ligated_sequences'
       , 'com.google.fonts/check/066' # Is there a "kern" table declared in the font?
@@ -3796,9 +3796,9 @@ def check_skip_filter(checkid, font=None, **iterargs):
   if font and is_librebarcode(font) and checkid in (
         # See: https://github.com/graphicore/librebarcode/issues/3
         'com.google.fonts/check/monospace'
-      , 'com.google.fonts/check/063' # Does GPOS table have kerning information?
+      , 'com.google.fonts/check/gpos_kerning_info'
       , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
-      , 'com.google.fonts/check/049' # Whitespace glyphs have ink?
+      , 'com.google.fonts/check/whitespace_ink'
   ):
     return False, ('LibreBarcode is blacklisted for this check, see '
                   'https://github.com/graphicore/librebarcode/issues/3')

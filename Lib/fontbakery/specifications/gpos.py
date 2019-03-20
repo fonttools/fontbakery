@@ -30,9 +30,9 @@ def has_kerning_info(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/063'
+  id = 'com.google.fonts/check/gpos_kerning_info'
 )
-def com_google_fonts_check_063(ttFont):
+def com_google_fonts_check_gpos_kerning_info(ttFont):
   """Does GPOS table have kerning information?"""
   if not has_kerning_info(ttFont):
     yield WARN, "GPOS table lacks kerning information."
