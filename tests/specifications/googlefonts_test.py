@@ -2567,9 +2567,9 @@ def disabled_test_check_173():
   assert status == FAIL
 
 
-def test_check_174():
+def test_check_varfont_generate_static():
   """ Check a static ttf can be generated from a variable font. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_174 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_varfont_generate_static as check
 
   ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
   status, message = list(check(ttFont))[-1]
