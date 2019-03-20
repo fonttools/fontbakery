@@ -43,12 +43,12 @@ def com_google_fonts_check_glyf_unused_data(ttFont):
 # Mekkablue Preflight Checks available at:
 # https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
 @check(
-  id = 'com.google.fonts/check/075',
+  id = 'com.google.fonts/check/points_out_of_bounds',
   conditions = ['is_ttf'],
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/735'
   })
-def com_google_fonts_check_075(ttFont):
+def com_google_fonts_check_points_out_of_bounds(ttFont):
   """Check for points out of bounds."""
   failed = False
   out_of_bounds = []

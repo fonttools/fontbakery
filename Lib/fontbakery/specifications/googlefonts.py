@@ -141,7 +141,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/072' # Font enables smart dropout control in "prep" table instructions?
       , 'com.google.fonts/check/073' # MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?
       , 'com.google.fonts/check/074' # Are there non-ASCII characters in ASCII-only NAME table entries?
-      , 'com.google.fonts/check/075' # Check for points out of bounds.
+      , 'com.google.fonts/check/points_out_of_bounds'
       , 'com.google.fonts/check/all_glyphs_have_codepoints'
       #, 'com.google.fonts/check/078' # Check that glyph names do not exceed max length.
       , 'com.google.fonts/check/079' # Monospace font has hhea.advanceWidthMax equal to each glyph's advanceWidth?

@@ -49,9 +49,9 @@ def test_check_glyf_unused_data():
   assert message.code == "missing-data"
 
 
-def test_check_075():
+def test_check_points_out_of_bounds():
   """ Check for points out of bounds. """
-  from fontbakery.specifications.glyf import com_google_fonts_check_075 as check
+  from fontbakery.specifications.glyf import com_google_fonts_check_points_out_of_bounds as check
 
   test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
   status, _ = list(check(test_font))[-1]

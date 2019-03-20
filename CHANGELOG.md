@@ -56,6 +56,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/068]:** com.google.fonts/check/nameid/match_familyname_fullfont
   - **[com.google.fonts/check/069]:** com.google.fonts/check/glyf_unused_data
   - **[com.google.fonts/check/071]:** com.google.fonts/check/family_naming_recommendations
+  - **[com.google.fonts/check/075]:** com.google.fonts/check/points_out_of_bounds
   - **[com.google.fonts/check/077]:** com.google.fonts/check/all_glyphs_have_codepoints
   - **[com.google.fonts/check/082]:** com.google.fonts/check/metadata/listed_on_gfonts
   - **[com.google.fonts/check/083]:** com.google.fonts/check/metadata_unique_full_name_values
