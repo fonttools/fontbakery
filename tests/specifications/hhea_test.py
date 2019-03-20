@@ -57,10 +57,10 @@ def test_check_073():
   assert status == FAIL
 
 
-def test_check_079():
+def test_check_monospace_max_advancewidth():
   """ Monospace font has hhea.advanceWidthMax equal
       to each glyph's advanceWidth? """
-  from fontbakery.specifications.hhea import com_google_fonts_check_079 as check
+  from fontbakery.specifications.hhea import com_google_fonts_check_monospace_max_advancewidth as check
   from fontbakery.specifications.shared_conditions import glyph_metrics_stats
 
   test_font_path = TEST_FILE("cousine/Cousine-Regular.ttf")
