@@ -13,9 +13,9 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 from fontTools.ttLib import TTFont
 
-def test_check_066():
+def test_check_kern_table():
   """ Is there a "kern" table declared in the font ? """
-  from fontbakery.specifications.kern import com_google_fonts_check_066 as check
+  from fontbakery.specifications.kern import com_google_fonts_check_kern_table as check
 
   # Our reference Mada Regular is known to be good
   # (does not have a 'kern' table):

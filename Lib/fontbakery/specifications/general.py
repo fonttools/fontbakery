@@ -555,9 +555,9 @@ def com_google_fonts_check_required_tables(ttFont):
   # required tables above. Perhaps split it into individual checks
   # with the correspondent rationales for each subset of required tables.
   #
-  # check/066 (kern table) is a good example of a separate check for
-  # a specific table providing a detailed description of the rationale
-  # behind it.
+  # com.google.fonts/check/kern_table is a good example of a separate
+  # check for a specific table providing a detailed description of
+  # the rationale behind it.
 
   optional_tables = [opt for opt in OPTIONAL_TABLES if opt in ttFont.keys()]
   if optional_tables:
