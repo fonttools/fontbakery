@@ -441,9 +441,9 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/047'
+  id = 'com.google.fonts/check/whitespace_glyphs'
 )
-def com_google_fonts_check_047(ttFont, missing_whitespace_chars):
+def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
   """Font contains glyphs for whitespace characters?"""
   if missing_whitespace_chars != []:
     yield FAIL, ("Whitespace glyphs missing for"
