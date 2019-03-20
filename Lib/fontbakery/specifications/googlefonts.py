@@ -134,7 +134,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/kerning_for_non_ligated_sequences'
       , 'com.google.fonts/check/kern_table'
       , 'com.google.fonts/check/067' # Make sure family name does not begin with a digit.
-      , 'com.google.fonts/check/068' # Does full font name begin with the font family name?
+      , 'com.google.fonts/check/nameid/match_familyname_fullfont'
       , 'com.google.fonts/check/069' # Is there any unused data at the end of the glyf table?
       , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
       , 'com.google.fonts/check/071' # Font follows the family naming recommendations?

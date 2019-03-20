@@ -174,9 +174,9 @@ def com_google_fonts_check_name_table_line_breaks(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/068'
+  id = 'com.google.fonts/check/nameid/match_familyname_fullfont'
 )
-def com_google_fonts_check_068(ttFont):
+def com_google_fonts_check_nameid_match_familyname_fullfont(ttFont):
   """Does full font name begin with the font family name?"""
   from fontbakery.utils import get_name_entry_strings
   familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)

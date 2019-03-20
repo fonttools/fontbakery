@@ -156,9 +156,9 @@ def test_check_name_table_line_breaks():
     assert status == FAIL
 
 
-def test_check_068():
-  """ Does full font name begin with the font family name ? """
-  from fontbakery.specifications.name import com_google_fonts_check_068 as check
+def test_check_nameid_match_familyname_fullfont():
+  """ Does full font name begin with the font family name? """
+  from fontbakery.specifications.name import com_google_fonts_check_nameid_match_familyname_fullfont as check
   # Our reference Mada Regular is known to be good
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
