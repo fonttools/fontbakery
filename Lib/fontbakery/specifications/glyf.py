@@ -7,10 +7,10 @@ from fontbakery.fonts_spec import spec_factory # NOQA pylint: disable=unused-imp
 import fontTools.ttLib
 
 @check(
-  id = 'com.google.fonts/check/069',
+  id = 'com.google.fonts/check/glyf_unused_data',
   conditions = ['is_ttf']
 )
-def com_google_fonts_check_069(ttFont):
+def com_google_fonts_check_glyf_unused_data(ttFont):
   """Is there any unused data at the end of the glyf table?"""
   try:
     expected_glyphs = len(ttFont.getGlyphOrder())

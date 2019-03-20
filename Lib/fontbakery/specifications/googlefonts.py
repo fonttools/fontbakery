@@ -135,7 +135,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/kern_table'
       , 'com.google.fonts/check/067' # Make sure family name does not begin with a digit.
       , 'com.google.fonts/check/nameid/match_familyname_fullfont'
-      , 'com.google.fonts/check/069' # Is there any unused data at the end of the glyf table?
+      , 'com.google.fonts/check/glyf_unused_data'
       , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
       , 'com.google.fonts/check/071' # Font follows the family naming recommendations?
       , 'com.google.fonts/check/072' # Font enables smart dropout control in "prep" table instructions?
