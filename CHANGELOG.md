@@ -48,6 +48,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/053]:** com.google.fonts/check/unwanted_tables
   - **[com.google.fonts/check/057]:** com.google.fonts/check/name_table_line_breaks
   - **[com.google.fonts/check/058]:** com.google.fonts/check/valid_glyphnames
+  - **[com.google.fonts/check/059]:** com.google.fonts/check/unique_glyphnames
   - **[com.google.fonts/check/064]:** com.google.fonts/check/ligature_carets
   - **[com.google.fonts/check/065]:** com.google.fonts/check/kerning_for_non_ligated_sequences
   - **[com.google.fonts/check/082]:** com.google.fonts/check/metadata/listed_on_gfonts
