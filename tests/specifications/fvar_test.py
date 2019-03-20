@@ -191,10 +191,10 @@ def test_check_varfont_regular_opsz_coord():
     assert status == PASS
 
 
-def test_check_172():
+def test_check_varfont_bold_wght_coord():
   """ The variable font 'wght' (Weight) axis coordinate
       must be 700 on the 'Bold' instance. """
-  from fontbakery.specifications.fvar import com_google_fonts_check_172 as check
+  from fontbakery.specifications.fvar import com_google_fonts_check_varfont_bold_wght_coord as check
   from fontbakery.specifications.shared_conditions import bold_wght_coord
 
   # Our reference varfont, CabinVFBeta.ttf, has

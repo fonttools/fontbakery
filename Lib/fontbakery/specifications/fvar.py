@@ -157,7 +157,7 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
 
 
 @check(
-  id = 'com.google.fonts/check/172',
+  id = 'com.google.fonts/check/varfont/bold_wght_coord',
   rationale = """
     The Open-Type spec's registered
     design-variation tag 'wght' available at
@@ -172,7 +172,7 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
     'request': 'https://github.com/googlefonts/fontbakery/issues/1707'
   }
 )
-def com_google_fonts_check_172(ttFont, bold_wght_coord):
+def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
   """The variable font 'wght' (Weight) axis coordinate must be 700 on the
   'Bold' instance."""
 
