@@ -124,7 +124,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/054' # Show hinting filesize impact.
       , 'com.google.fonts/check/055' # Version format is correct in 'name' table?
       , 'com.google.fonts/check/056' # Font has old ttfautohint applied?
-      , 'com.google.fonts/check/057' # Name table entries should not contain line-breaks.
+      , 'com.google.fonts/check/name_table_line_breaks'
       , 'com.google.fonts/check/058' # Glyph names are all valid?
       , 'com.google.fonts/check/059' # Font contains unique glyph names?
       , 'com.google.fonts/check/061' # EPAR table present in font?
