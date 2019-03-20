@@ -581,12 +581,12 @@ def com_google_fonts_check_required_tables(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/053',
+  id = 'com.google.fonts/check/unwanted_tables',
   rationale = """Some font editors store source data in their own SFNT
   tables, and these can sometimes sneak into final release files,
   which should only have OpenType spec tables."""
 )
-def com_google_fonts_check_053(ttFont):
+def com_google_fonts_check_unwanted_tables(ttFont):
   """Are there unwanted tables?"""
   UNWANTED_TABLES = {
       'FFTM': '(from FontForge)',
