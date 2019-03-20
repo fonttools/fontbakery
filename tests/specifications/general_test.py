@@ -178,9 +178,9 @@ def test_check_whitespace_glyphs():
   assert status == FAIL
 
 
-def test_check_048():
+def test_check_whitespace_glyphnames():
   """ Font has **proper** whitespace glyph names ? """
-  from fontbakery.specifications.general import com_google_fonts_check_048 as check
+  from fontbakery.specifications.general import com_google_fonts_check_whitespace_glyphnames as check
 
   def deleteGlyphEncodings(font, cp):
     """ This routine is used on to introduce errors

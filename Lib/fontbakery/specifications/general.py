@@ -454,10 +454,10 @@ def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
 
 
 @check(
-  id = 'com.google.fonts/check/048',
+  id = 'com.google.fonts/check/whitespace_glyphnames',
   conditions = ['not missing_whitespace_chars']
 )
-def com_google_fonts_check_048(ttFont):
+def com_google_fonts_check_whitespace_glyphnames(ttFont):
   """Font has **proper** whitespace glyph names?"""
   from fontbakery.utils import get_glyph_name
 

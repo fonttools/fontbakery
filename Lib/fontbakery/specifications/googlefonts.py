@@ -116,7 +116,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/dsig'
       , 'com.google.fonts/check/mandatory_glyphs'
       , 'com.google.fonts/check/whitespace_glyphs'
-      , 'com.google.fonts/check/048' # Font has **proper** whitespace glyph names?
+      , 'com.google.fonts/check/whitespace_glyphnames'
       , 'com.google.fonts/check/049' # Whitespace glyphs have ink?
       , 'com.google.fonts/check/050' # Whitespace glyphs have coherent widths?
       , 'com.google.fonts/check/052' # Font contains all required tables?
