@@ -45,6 +45,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/049]:** com.google.fonts/check/whitespace_ink
   - **[com.google.fonts/check/050]:** com.google.fonts/check/whitespace_widths
   - **[com.google.fonts/check/052]:** com.google.fonts/check/required_tables
+  - **[com.google.fonts/check/053]:** com.google.fonts/check/unwanted_tables
   - **[com.google.fonts/check/064]:** com.google.fonts/check/ligature_carets
   - **[com.google.fonts/check/065]:** com.google.fonts/check/kerning_for_non_ligated_sequences
   - **[com.google.fonts/check/082]:** com.google.fonts/check/metadata/listed_on_gfonts

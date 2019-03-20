@@ -319,9 +319,9 @@ def test_check_required_tables():
     del ttFont.reader.tables[optional]
 
 
-def test_check_053():
+def test_check_unwanted_tables():
   """ Are there unwanted tables ? """
-  from fontbakery.specifications.general import com_google_fonts_check_053 as check
+  from fontbakery.specifications.general import com_google_fonts_check_unwanted_tables as check
 
   unwanted_tables = [
     "FFTM", # FontForge
