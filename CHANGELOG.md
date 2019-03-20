@@ -37,6 +37,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/041]:** com.google.fonts/check/linegaps
   - **[com.google.fonts/check/042]:** com.google.fonts/check/os2_metrics_match_hhea
   - **[com.google.fonts/check/043]:** com.google.fonts/check/unitsperem
+  - **[com.google.fonts/check/044]:** com.google.fonts/check/font_version
   - **[com.google.fonts/check/045]:** com.google.fonts/check/dsig
   - **[com.google.fonts/check/064]:** com.google.fonts/check/ligature_carets
   - **[com.google.fonts/check/065]:** com.google.fonts/check/kerning_for_non_ligated_sequences
