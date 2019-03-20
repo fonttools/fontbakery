@@ -45,7 +45,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/nameid/full_name'
       , 'com.google.fonts/check/metadata/nameid/family_and_full_names' #FIXME! This seems redundant!
       , 'com.google.fonts/check/metadata/nameid/copyright'
-      , 'com.google.fonts/check/095' # METADATA.pb font.name value should be same as the family name declared on the name table.
+      , 'com.google.fonts/check/metadata/nameid/font_name' # FIXME! This looks suspiciously similar to com.google.fonts/check/metadata/nameid/family_name
       , 'com.google.fonts/check/metadata/match_fullname_postscript'
       , 'com.google.fonts/check/metadata/match_filename_postscript'
       , 'com.google.fonts/check/metadata/match_weight_postscript'
@@ -1734,10 +1734,10 @@ def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/095',
+  id = 'com.google.fonts/check/metadata/nameid/font_name',
   conditions=['font_metadata', 'style']
 )
-def com_google_fonts_check_095(ttFont, style, font_metadata):
+def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadata):
   """METADATA.pb font.name value should be same as
      the family name declared on the name table.
   """
