@@ -29,6 +29,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/016]:** com.google.fonts/check/fstype
   - **[com.google.fonts/check/018]:** com.google.fonts/check/vendor_id
   - **[com.google.fonts/check/020]:** com.google.fonts/check/usweightclass
+  - **[com.google.fonts/check/028]:** com.google.fonts/check/has_license
   - **[com.google.fonts/check/031]:** com.google.fonts/check/name/no_copyright_on_description
   - **[com.google.fonts/check/033]:** com.google.fonts/check/monospace
   - **[com.google.fonts/check/034]:** com.google.fonts/check/xavgcharwidth
