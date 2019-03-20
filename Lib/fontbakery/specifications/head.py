@@ -34,7 +34,7 @@ def com_google_fonts_check_equal_font_versions(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/043',
+  id = 'com.google.fonts/check/unitsperem',
   rationale = """
   According to the OpenType spec:
 
@@ -50,7 +50,7 @@ def com_google_fonts_check_equal_font_versions(ttFonts):
   become increasingly more common on Variable Fonts.
   """
 )
-def com_google_fonts_check_043(ttFont):
+def com_google_fonts_check_unitsperem(ttFont):
   """Checking unitsPerEm value is reasonable."""
   upem = ttFont['head'].unitsPerEm
   target_upem = [2**i for i in range(4, 15)]

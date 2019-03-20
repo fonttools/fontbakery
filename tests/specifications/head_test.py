@@ -52,9 +52,9 @@ def test_check_equal_font_versions(mada_ttFonts):
   assert status == WARN
 
 
-def test_check_043():
+def test_check_unitsperem():
   """ Checking unitsPerEm value is reasonable. """
-  from fontbakery.specifications.head import com_google_fonts_check_043 as check
+  from fontbakery.specifications.head import com_google_fonts_check_unitsperem as check
 
   # In this test we'll forge several known-good and known-bad values.
   # We'll use Mada Regular to start with:
