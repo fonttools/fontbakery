@@ -40,6 +40,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/044]:** com.google.fonts/check/font_version
   - **[com.google.fonts/check/045]:** com.google.fonts/check/dsig
   - **[com.google.fonts/check/046]:** com.google.fonts/check/mandatory_glyphs
+  - **[com.google.fonts/check/047]:** com.google.fonts/check/whitespace_glyphs
   - **[com.google.fonts/check/064]:** com.google.fonts/check/ligature_carets
   - **[com.google.fonts/check/065]:** com.google.fonts/check/kerning_for_non_ligated_sequences
   - **[com.google.fonts/check/082]:** com.google.fonts/check/metadata/listed_on_gfonts

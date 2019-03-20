@@ -140,9 +140,9 @@ def test_check_mandatory_glyphs():
   assert status == WARN
 
 
-def test_check_047():
+def test_check_whitespace_glyphs():
   """ Font contains glyphs for whitespace characters ? """
-  from fontbakery.specifications.general import com_google_fonts_check_047 as check
+  from fontbakery.specifications.general import com_google_fonts_check_whitespace_glyphs as check
   from fontbakery.specifications.shared_conditions import missing_whitespace_chars
 
   # Our reference Mada Regular font is good here:
