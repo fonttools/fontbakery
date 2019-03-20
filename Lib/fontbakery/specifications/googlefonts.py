@@ -96,8 +96,8 @@ expected_check_ids = \
       , 'com.google.fonts/check/equal_font_versions'
       , 'com.google.fonts/check/font_version'
       , 'com.google.fonts/check/post_table_version'
-      , 'com.google.fonts/check/os2/fstype'
-      , 'com.google.fonts/check/018' # Checking OS/2 achVendID.
+      , 'com.google.fonts/check/fstype'
+      , 'com.google.fonts/check/vendor_id'
       , 'com.google.fonts/check/019' # Substitute copyright, registered and trademark symbols in name table entries.
       , 'com.google.fonts/check/020' # Checking OS/2 usWeightClass.
       , 'com.google.fonts/check/028' # Check font has a license.
@@ -595,9 +595,9 @@ def com_google_fonts_check_equal_glyph_names(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/os2/fstype'
+  id = 'com.google.fonts/check/fstype'
 )
-def com_google_fonts_check_os2_fstype(ttFont):
+def com_google_fonts_check_fstype(ttFont):
   """Checking OS/2 fsType.
 
   Fonts must have their fsType field set to zero.
@@ -683,10 +683,10 @@ def registered_vendor_ids():
 
 
 @check(
-  id = 'com.google.fonts/check/018',
+  id = 'com.google.fonts/check/vendor_id',
   conditions = ['registered_vendor_ids']
 )
-def com_google_fonts_check_018(ttFont, registered_vendor_ids):
+def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
   """Checking OS/2 achVendID."""
 
   SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (

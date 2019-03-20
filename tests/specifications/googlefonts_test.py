@@ -106,7 +106,7 @@ def test_example_checkrunner_based(cabin_regular_path):
   from fontbakery.checkrunner import CheckRunner
   from fontbakery.specifications.googlefonts import specification
   values = dict(fonts=[cabin_regular_path])
-  runner = CheckRunner(specification, values, explicit_checks=['com.google.fonts/check/018'])
+  runner = CheckRunner(specification, values, explicit_checks=['com.google.fonts/check/vendor_id'])
 
   # we could also reuse the `iterargs` that was assigned in the previous
   # for loop, but this here is more explicit
@@ -344,9 +344,9 @@ def test_check_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
   assert status == FAIL
 
 
-def test_check_os2_fstype():
+def test_check_fstype():
   """ Checking OS/2 fsType """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_os2_fstype as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_fstype as check
 
   print('Test PASS with good font without DRM.')
   # our reference Cabin family is know to be good here.
@@ -403,9 +403,9 @@ def test_condition__registered_vendor_ids():
   assert "????" not in registered_ids
 
 
-def test_check_018():
+def test_check_vendor_id():
   """ Checking OS/2 achVendID """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_018 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_vendor_id as check,
                                                      registered_vendor_ids)
   registered_ids = registered_vendor_ids()
 
