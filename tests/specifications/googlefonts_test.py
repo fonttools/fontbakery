@@ -1185,12 +1185,14 @@ def test_check_metadata_nameid_full_name():
   assert status == FAIL and message.code == "lacks-entry"
 
 
-def test_check_095():
+def test_check_metadata_nameid_font_name():
   """ METADATA.pb font.name value should be same as the family name declared on the name table. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_095 as check,
-                                                     family_metadata,
-                                                     font_metadata,
-                                                     style)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_nameid_font_name as check,
+    family_metadata,
+    font_metadata,
+    style)
+
   print('Test PASS with a good font...')
   # Our reference Merriweather-Regular is know to have good fullname metadata
   font = TEST_FILE("merriweather/Merriweather-Regular.ttf")

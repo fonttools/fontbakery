@@ -73,6 +73,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/092]:** com.google.fonts/check/metadata/nameid/family_name
   - **[com.google.fonts/check/093]:** com.google.fonts/check/metadata/nameid/post_script_name
   - **[com.google.fonts/check/094]:** com.google.fonts/check/metadata/nameid/full_name
+  - **[com.google.fonts/check/095]:** com.google.fonts/check/metadata/nameid/font_name
   - **[com.google.fonts/check/096]:** com.google.fonts/check/metadata/match_fullname_postscript
   - **[com.google.fonts/check/097]:** com.google.fonts/check/metadata/match_filename_postscript
   - **[com.google.fonts/check/098]:** com.google.fonts/check/metadata/valid_name_values
