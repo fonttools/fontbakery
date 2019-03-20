@@ -501,9 +501,9 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/049'
+  id = 'com.google.fonts/check/whitespace_ink'
 )
-def com_google_fonts_check_049(ttFont):
+def com_google_fonts_check_whitespace_ink(ttFont):
   """Whitespace glyphs have ink?"""
   from fontbakery.utils import get_glyph_name, glyph_has_ink
 
