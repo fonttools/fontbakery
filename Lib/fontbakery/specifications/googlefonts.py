@@ -121,7 +121,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/whitespace_widths'
       , 'com.google.fonts/check/required_tables'
       , 'com.google.fonts/check/unwanted_tables'
-      , 'com.google.fonts/check/054' # Show hinting filesize impact.
+      , 'com.google.fonts/check/hinting_impact'
       , 'com.google.fonts/check/055' # Version format is correct in 'name' table?
       , 'com.google.fonts/check/056' # Font has old ttfautohint applied?
       , 'com.google.fonts/check/name_table_line_breaks'
@@ -1028,11 +1028,11 @@ def ttfautohint_stats(font):
   }
 
 @check(
-  id = 'com.google.fonts/check/054',
+  id = 'com.google.fonts/check/hinting_impact',
   conditions = ['is_ttf',
                 'ttfautohint_stats']
 )
-def com_google_fonts_check_054(font, ttfautohint_stats):
+def com_google_fonts_check_hinting_impact(font, ttfautohint_stats):
   """Show hinting filesize impact.
 
      Current implementation simply logs useful info
