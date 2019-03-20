@@ -101,8 +101,8 @@ expected_check_ids = \
       , 'com.google.fonts/check/019' # Substitute copyright, registered and trademark symbols in name table entries.
       , 'com.google.fonts/check/usweightclass'
       , 'com.google.fonts/check/has_license'
-      , 'com.google.fonts/check/nameid/license' # Check copyright namerecords match license file.
-      , 'com.google.fonts/check/030' # License URL matches License text on name table?
+      , 'com.google.fonts/check/nameid/license'
+      , 'com.google.fonts/check/name/license_url'
       , 'com.google.fonts/check/name/no_copyright_on_description'
       , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 200 characters.
       , 'com.google.fonts/check/monospace'
@@ -892,13 +892,13 @@ def familyname(font):
 
 
 @check(
-  id = 'com.google.fonts/check/030',
+  id = 'com.google.fonts/check/name/license_url',
   conditions = ['familyname'],
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   }
 )
-def com_google_fonts_check_030(ttFont, familyname):
+def com_google_fonts_check_name_license_url(ttFont, familyname):
   """"License URL matches License text on name table?"""
   from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
   LEGACY_UFL_FAMILIES = ["Ubuntu", "UbuntuCondensed", "UbuntuMono"]

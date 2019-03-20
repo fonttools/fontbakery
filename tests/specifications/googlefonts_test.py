@@ -557,9 +557,9 @@ def test_check_nameid_license(mada_ttFonts):
     assert status == FAIL and message.code == 'missing'
 
 
-def NOT_IMPLEMENTED_test_check_030():
+def NOT_IMPLEMENTED_test_check_name_license_url():
   """ License URL matches License text on name table? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_030 as check
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_name_license_url as check
   # TODO: Implement-me!
   #
   # code-paths:
