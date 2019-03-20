@@ -48,7 +48,7 @@ expected_check_ids = [
     'com.google.fonts/check/whitespace_glyphs',
     'com.google.fonts/check/whitespace_glyphnames',
     'com.google.fonts/check/whitespace_ink',
-    'com.google.fonts/check/050',  # Whitespace glyphs have coherent widths?
+    'com.google.fonts/check/whitespace_widths',
     'com.google.fonts/check/052',  # Font contains all required tables?
     'com.google.fonts/check/053',  # Are there unwanted tables?
     'com.google.fonts/check/057',  # Name table entries should not contain line-breaks.
