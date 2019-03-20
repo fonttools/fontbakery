@@ -1777,11 +1777,13 @@ def test_check_metadata_fontname_not_camel_cased():
     assert status == PASS
 
 
-def test_check_110():
+def test_check_metadata_match_name_familyname():
   """ METADATA.pb: Check font name is the same as family name. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_110 as check,
-                                                     family_metadata,
-                                                     font_metadata)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_metadata_match_name_familyname as check,
+    family_metadata,
+    font_metadata)
+
   # Our reference Cabin Regular is known to be good
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   family_directory = os.path.dirname(fontfile)

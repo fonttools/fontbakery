@@ -87,6 +87,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/107]:** com.google.fonts/check/metadata/normal_style
   - **[com.google.fonts/check/108]:** com.google.fonts/check/metadata/nameid/family_and_full_names
   - **[com.google.fonts/check/109]:** com.google.fonts/check/metadata/fontname_not_camel_cased
+  - **[com.google.fonts/check/110]:** com.google.fonts/check/metadata/match_name_familyname
   - **[com.google.fonts/check/112]:** com.google.fonts/check/metadata/os2_weightclass
   - **[com.google.fonts/check/113]:** com.google.fonts/check/metadata/match_weight_postscript
   - **[com.google.fonts/check/115]:** com.google.fonts/check/metatada/canonical_style_names
