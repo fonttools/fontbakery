@@ -99,7 +99,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/fstype'
       , 'com.google.fonts/check/vendor_id'
       , 'com.google.fonts/check/019' # Substitute copyright, registered and trademark symbols in name table entries.
-      , 'com.google.fonts/check/020' # Checking OS/2 usWeightClass.
+      , 'com.google.fonts/check/usweightclass'
       , 'com.google.fonts/check/028' # Check font has a license.
       , 'com.google.fonts/check/029' # Check copyright namerecords match license file.
       , 'com.google.fonts/check/030' # License URL matches License text on name table?
@@ -737,10 +737,10 @@ def com_google_fonts_check_019(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/020',
+  id = 'com.google.fonts/check/usweightclass',
   conditions=['style']
 )
-def com_google_fonts_check_020(font, ttFont, style):
+def com_google_fonts_check_usweightclass(font, ttFont, style):
   """Checking OS/2 usWeightClass."""
   from fontbakery.specifications.shared_conditions import is_ttf
 
