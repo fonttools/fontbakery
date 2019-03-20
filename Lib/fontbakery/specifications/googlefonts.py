@@ -94,6 +94,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/equal_glyph_names'
       , 'com.google.fonts/check/equal_unicode_encodings'
       , 'com.google.fonts/check/equal_font_versions'
+      , 'com.google.fonts/check/font_version'
       , 'com.google.fonts/check/post_table_version'
       , 'com.google.fonts/check/016' # Checking OS/2 fsType.
       , 'com.google.fonts/check/018' # Checking OS/2 achVendID.
@@ -112,7 +113,6 @@ expected_check_ids = \
       , 'com.google.fonts/check/linegaps'
       , 'com.google.fonts/check/os2_metrics_match_hhea'
       , 'com.google.fonts/check/unitsperem'
-      , 'com.google.fonts/check/044' # Checking font version fields.
       , 'com.google.fonts/check/dsig'
       , 'com.google.fonts/check/046' # Font contains the first few mandatory glyphs (.null or NULL, CR and space)?
       , 'com.google.fonts/check/047' # Font contains glyphs for whitespace characters?

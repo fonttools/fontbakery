@@ -9,6 +9,7 @@ This has several subcommands, described in the help function:
     
     Run fontbakery subcommands:
         build-contributors
+        check-adobe-fonts
         check-collection
         check-fontval
         check-googlefonts
@@ -54,8 +55,8 @@ Run hand picked checks for all fonts in the `google/fonts` repository:
 
 
     $ fontbakery check-googlefonts \
-        -c com.google.fonts/check/034 \
-        -c com.google.fonts/check/044 \
+        -c com.google.fonts/check/xavgcharwidth \
+        -c com.google.fonts/check/font_version \
         -n -o "*check" -g "*check" \
         path/to/fonts/{apache,ofl,ufl}/*/*.ttf
 
@@ -132,7 +133,7 @@ Usage is similar to the check-googlefonts command described above.
 
 #### Old Command Line Tools
 
-Since November 2017 (v0.3.3) Font Bakery is solely focused checking fonts.
+Since November 2017 (v0.3.3) Font Bakery is solely focused on checking fonts.
 Before that (up to v0.3.2) it also provided some auxiliary scripts for fixing fonts. 
 
 Those tools are now a separate project, Google Fonts Tools, maintained at <https://github.com/googlefonts/tools> and packaged at <https://pypi.python.org/pypi/gftools>

@@ -105,9 +105,9 @@ def test_parse_version_string():
       parse_version_string(string)
 
 
-def test_check_044():
+def test_check_font_version():
   """ Checking font version fields. """
-  from fontbakery.specifications.head import com_google_fonts_check_044 as check
+  from fontbakery.specifications.head import com_google_fonts_check_font_version as check
 
   test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
   test_font = TTFont(test_font_path)

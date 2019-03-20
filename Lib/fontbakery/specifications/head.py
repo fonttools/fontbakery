@@ -101,9 +101,9 @@ def parse_version_string(name: str) -> Tuple[str, str]:
 
 
 @check(
-  id = 'com.google.fonts/check/044'
+  id = 'com.google.fonts/check/font_version'
 )
-def com_google_fonts_check_044(ttFont):
+def com_google_fonts_check_font_version(ttFont):
   """Checking font version fields (head and name table)."""
   from decimal import Decimal
   head_version = parse_version_string(str(Decimal(ttFont["head"].fontRevision).quantize(Decimal('1.000'))))
