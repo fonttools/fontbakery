@@ -123,10 +123,10 @@ def NOT_IMPLEMENTED_test_check_fontforge():
   # - FAIL, "Hints should NOT overlap!"
 
 
-def test_check_046():
+def test_check_mandatory_glyphs():
   """ Font contains the first few mandatory glyphs (.null or NULL, CR and
   space)? """
-  from fontbakery.specifications.general import com_google_fonts_check_046 as check
+  from fontbakery.specifications.general import com_google_fonts_check_mandatory_glyphs as check
 
   test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
   status, _ = list(check(test_font))[-1]

@@ -408,9 +408,9 @@ def com_google_fonts_check_fontforge(fontforge_check_results, fontforge_skip_che
 
 
 @check(
-  id = 'com.google.fonts/check/046'
+  id = 'com.google.fonts/check/mandatory_glyphs'
 )
-def com_google_fonts_check_046(ttFont):
+def com_google_fonts_check_mandatory_glyphs(ttFont):
   """Font contains .notdef as first glyph?
 
   The OpenType specification v1.8.2 recommends that the first glyph is the
