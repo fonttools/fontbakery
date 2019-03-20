@@ -73,7 +73,7 @@ expected_check_ids = [
     'com.google.fonts/check/varfont/regular_slnt_coord',
     'com.google.fonts/check/varfont/regular_ital_coord',
     'com.google.fonts/check/varfont/regular_opsz_coord',
-    'com.google.fonts/check/172',  # The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
+    'com.google.fonts/check/varfont/bold_wght_coord',
     'com.google.fonts/check/180',  # Does the number of glyphs in the loca table match the maxp table?
     'com.google.fonts/check/ttx-roundtrip',
     'com.google.fonts/check/fontbakery_version',
