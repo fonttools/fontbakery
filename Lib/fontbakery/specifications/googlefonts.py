@@ -1422,10 +1422,10 @@ def com_google_fonts_check_metadata_listed_on_gfonts(listed_on_gfonts_api):
 # https://github.com/googlefonts/fontbakery/issues/1728
 @disable
 @check(
-  id = 'com.google.fonts/check/082',
+  id = 'com.google.fonts/check/metadata/listed_on_gfonts',
   conditions = ['family_metadata']
 )
-def com_google_fonts_check_082(family_metadata):
+def com_google_fonts_check_metadata_listed_on_gfonts(family_metadata):
   """METADATA.pb: Designer exists in Google Fonts profiles.csv?"""
   PROFILES_GIT_URL = ("https://github.com/google/"
                       "fonts/blob/master/designers/profiles.csv")
