@@ -81,34 +81,11 @@ expected_check_ids = [
     'com.adobe.fonts/check/name/postscript_vs_cff',
     'com.adobe.fonts/check/name/postscript_name_consistency',
     'com.adobe.fonts/check/name/max_4_fonts_per_family_name',
-    'com.adobe.fonts/check/name/empty_records'
+    'com.adobe.fonts/check/name/empty_records',
     'com.adobe.fonts/check/consistent_upm'
 ]
 
 specification = spec_factory(default_section=Section("Adobe Fonts"))
-
-
-@check(
-    id='com.adobe.fonts/check/name/empty_records',
-    conditions=[],
-    rationale="""Check the name table for empty records,
-    as this can cause problems in Adobe apps."""
-)
-def com_adobe_fonts_check_name_empty_records(ttFont):
-    """Check name table for empty records."""
-    failed = False
-    for name_record in ttFont['name'].names:
-        name_string = name_record.toUnicode().strip()
-        if len(name_string) == 0:
-            failed = True
-            name_key = tuple([name_record.platformID, name_record.platEncID,
-                             name_record.langID, name_record.nameID])
-            yield FAIL, ("'name' table record with key={} is "
-                         "empty and should be removed."
-                         ).format(name_key)
-    if not failed:
-        yield PASS, ("No empty name table records found.")
-
 
 @check(
     id='com.adobe.fonts/check/consistent_upm',

@@ -11,6 +11,29 @@ spec_imports = [
     ('.shared_conditions', ('glyph_metrics_stats', ))
 ]
 
+
+@check(
+    id='com.adobe.fonts/check/name/empty_records',
+    conditions=[],
+    rationale="""Check the name table for empty records,
+    as this can cause problems in Adobe apps."""
+)
+def com_adobe_fonts_check_name_empty_records(ttFont):
+    """Check name table for empty records."""
+    failed = False
+    for name_record in ttFont['name'].names:
+        name_string = name_record.toUnicode().strip()
+        if len(name_string) == 0:
+            failed = True
+            name_key = tuple([name_record.platformID, name_record.platEncID,
+                             name_record.langID, name_record.nameID])
+            yield FAIL, ("'name' table record with key={} is "
+                         "empty and should be removed."
+                         ).format(name_key)
+    if not failed:
+        yield PASS, ("No empty name table records found.")
+
+
 @check(
   id = 'com.google.fonts/check/name/no_copyright_on_description',
   misc_metadata = {
