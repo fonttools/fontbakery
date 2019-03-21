@@ -140,7 +140,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/family_naming_recommendations'
       , 'com.google.fonts/check/smart_dropout'
       , 'com.google.fonts/check/maxadvancewidth'
-      , 'com.google.fonts/check/074' # Are there non-ASCII characters in ASCII-only NAME table entries?
+      , 'com.google.fonts/check/name/ascii_only_entries'
       , 'com.google.fonts/check/points_out_of_bounds'
       , 'com.google.fonts/check/all_glyphs_have_codepoints'
       #, 'com.google.fonts/check/078' # Check that glyph names do not exceed max length.
@@ -1347,7 +1347,7 @@ def com_google_fonts_check_currency_chars(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/074',
+  id = 'com.google.fonts/check/name/ascii_only_entries',
   rationale = """
     The OpenType spec requires ASCII for the POSTSCRIPT_NAME (nameID 6).
     For COPYRIGHT_NOTICE (nameID 0) ASCII is required because that
@@ -1363,7 +1363,7 @@ def com_google_fonts_check_currency_chars(ttFont):
     'request': 'https://github.com/googlefonts/fontbakery/issues/1663'
   }
 )
-def com_google_fonts_check_074(ttFont):
+def com_google_fonts_check_name_ascii_only_entries(ttFont):
   """Are there non-ASCII characters in ASCII-only NAME table entries?"""
   bad_entries = []
   for name in ttFont["name"].names:
