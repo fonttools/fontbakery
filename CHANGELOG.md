@@ -2,15 +2,32 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.7.0 (2019-Mar-21)
+### Major code-changes
+  - The term "specification" (including directory paths, class names and method names such as Spec, FontsSpec, etc) was replaced by "profile" throughout the codebase. The reason for this renaming was to avoid confusing with other uses of the term such as is "OpenType Specification".
+  - All numerical check-IDs were renamed to keyword-based IDs. We may still change them as we see fit and we plan to freeze the check-id naming when Font Bakery 1.0.0 is released.
+
 ### Bug fixes
   - **[com.google.fonts/check/canonical_filename]:** Distinguish static from varfont when reporting correctness of fontfile names. There are special naming rules for variable fonts. (issue #2396)
   - Fix bug in handling of `most_common_width` in `glyph_metrics_stats` which affected checking of monospaced metadata. (PR #2391)
   - Fix handling of `post.isFixedPitch` (accept any nonzero value). (PR #2392)
   - **[com.google.fonts/check/metadata/valid_copyright]:** Check was being skipped when run on upstream font repos which don't have a METADATA.pb file. This check will now only test METADATA.pb files. A new check has been added to check the copyright string in fonts.
 
+### Other relevant code-changes
+  - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817
+  - We are now using portable paths on the code-tests. (issue #2398)
+  - The Adobe Fonts profile now includes FontForge checks. (PR #2401)
+  - Improve emoji output of `--ghmarkdown` option, so that actual emoji appear in text editors, rather than the previous emoji names
+  - The HTML reporter will now display check results more table-like, which makes multi-line check results look better.
+
 ### New checks
   - **[com.google.fonts/check/font_copyright]: "Copyright notices match canonical pattern in fonts"**
   - **[com.adobe.fonts/check/postscript_name_consistency]:** "Name table ID 6 (PostScript name) must be consistent across platforms." (PR #2394)
+
+## Some check id renaming for better naming consistency:
+  - **[com.abobe.fonts/check/postscript_name_cff_vs_name]:** com.abobe.fonts/check/name/postscript_vs_cff
+  - **[com.adobe.fonts/check/postscript_name_consistency]:** com.adobe.fonts/check/name/postscript_name_consistency
+  - **[com.adobe.fonts/check/max_4_fonts_per_family_name]:** com.adobe.fonts/check/name/max_4_fonts_per_family_name
+  - **[com.adobe.fonts/check/name_empty_records]:** com.adobe.fonts/check/name/empty_records
 
 ### Renamed numerical check-IDs:
   - **[com.google.fonts/check/001]:** com.google.fonts/check/canonical_filename
@@ -144,19 +161,6 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/173]:** com.google.fonts/check/negative_advance_width
   - **[com.google.fonts/check/174]:** com.google.fonts/check/varfont/generate_static
   - **[com.google.fonts/check/180]:** com.google.fonts/check/loca/maxp_num_glyphs
-
-## Some check id renaming for better naming consistency:
-  - **[com.abobe.fonts/check/postscript_name_cff_vs_name]:** com.abobe.fonts/check/name/postscript_vs_cff
-  - **[com.adobe.fonts/check/postscript_name_consistency]:** com.adobe.fonts/check/name/postscript_name_consistency
-  - **[com.adobe.fonts/check/max_4_fonts_per_family_name]:** com.adobe.fonts/check/name/max_4_fonts_per_family_name
-  - **[com.adobe.fonts/check/name_empty_records]:** com.adobe.fonts/check/name/empty_records
-
-### Other relevant code-changes
-  - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817
-  - We are now using portable paths on the code-tests. (issue #2398)
-  - The Adobe Fonts profile now includes FontForge checks. (PR #2401)
-  - Improve emoji output of `--ghmarkdown` option, so that actual emoji appear in text editors, rather than the previous emoji names
-  - The HTML reporter will now display check results more table-like, which makes multi-line check results look better.
 
 
 ## 0.6.12 (2019-Mar-11)

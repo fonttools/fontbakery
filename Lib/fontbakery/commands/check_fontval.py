@@ -2,19 +2,19 @@
 import sys
 
 from functools import partial
-from fontbakery.specifications.fontval import specification
-from fontbakery.commands.check_specification import (
+from fontbakery.profiles.fontval import profile
+from fontbakery.commands.check_profile import (
     runner_factory as super_runner_factory, main as super_main)
 
 # runner_factory is used by the fontbakery dashboard.
 # It is here in order to have a single place from which
-# the spec is configured for the CLI and the worker.
+# the profile is configured for the CLI and the worker.
 def runner_factory(fonts):
     values = {}
     values['fonts'] = fonts
-    return super_runner_factory(specification, values=values)
+    return super_runner_factory(profile, values=values)
 
-main = partial(super_main, specification)
+main = partial(super_main, profile)
 
 
 if __name__ == '__main__':

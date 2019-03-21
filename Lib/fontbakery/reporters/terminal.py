@@ -8,7 +8,7 @@ While created specifically for checking fonts and font-families this
 module has no domain knowledge about fonts. It can be used for any kind
 of (document) checking. Please keep it so. It will be valuable for other
 domains as well.
-Domain specific knowledge should be encoded only in the Spec (Checks,
+Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
