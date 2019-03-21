@@ -644,9 +644,9 @@ def test_check_name_version_format():
   assert status == FAIL and message.code == "no-version-string"
 
 
-def NOT_IMPLEMENTED_test_check_056():
+def NOT_IMPLEMENTED_test_check_old_ttfautohint():
   """ Font has old ttfautohint applied? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_056 as check
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_old_ttfautohint as check
   # TODO: Implement-me!
   #
   # code-paths:
