@@ -147,7 +147,7 @@ expected_check_ids = \
       #, 'com.google.fonts/check/glyphnames_max_length'
       , 'com.google.fonts/check/monospace_max_advancewidth'
       , 'com.google.fonts/check/version_bump'
-      , 'com.google.fonts/check/118' # Glyphs are similiar to Google Fonts version?
+      , 'com.google.fonts/check/production_glyphs_similarity'
       , 'com.google.fonts/check/129' # Checking OS/2 fsSelection value.
       , 'com.google.fonts/check/130' # Checking post.italicAngle value.
       , 'com.google.fonts/check/131' # Checking head.macStyle value.
@@ -2555,10 +2555,10 @@ def com_google_fonts_check_version_bump(ttFont,
 
 
 @check(
-  id = 'com.google.fonts/check/118',
+  id = 'com.google.fonts/check/production_glyphs_similarity',
   conditions = ['api_gfonts_ttFont']
 )
-def com_google_fonts_check_118(ttFont, api_gfonts_ttFont):
+def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFont):
   """Glyphs are similiar to Google Fonts version?"""
 
   def glyphs_surface_area(ttFont):

@@ -1935,9 +1935,11 @@ def NOT_IMPLEMENTED_test_check_version_bump():
   # - PASS
 
 
-def NOT_IMPLEMENTED_test_check_118():
+def NOT_IMPLEMENTED_test_check_production_glyphs_similarity():
   """ Glyphs are similiar to Google Fonts version? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_118 as check
+  # from fontbakery.specifications.googlefonts import (
+  #   com_google_fonts_check_production_glyphs_similarity as check)
+  #
   # TODO: Implement-me!
   #
   # code-paths:
