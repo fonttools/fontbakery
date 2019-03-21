@@ -708,9 +708,9 @@ def NOT_IMPLEMENTED_test_check_gasp():
   # - FAIL, "Font is missing the GASP table."
 
 
-def test_check_067():
+def test_check_name_familyname_first_char():
   """ Make sure family name does not begin with a digit. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_067 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_name_familyname_first_char as check
 
   # Our reference Mada Regular is known to be good
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))

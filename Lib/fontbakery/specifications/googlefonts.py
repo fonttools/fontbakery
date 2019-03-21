@@ -133,7 +133,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/ligature_carets'
       , 'com.google.fonts/check/kerning_for_non_ligated_sequences'
       , 'com.google.fonts/check/kern_table'
-      , 'com.google.fonts/check/067' # Make sure family name does not begin with a digit.
+      , 'com.google.fonts/check/name/familyname_first_char'
       , 'com.google.fonts/check/nameid/match_familyname_fullfont'
       , 'com.google.fonts/check/glyf_unused_data'
       , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
@@ -1288,9 +1288,9 @@ def com_google_fonts_check_gasp(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/067'
+  id = 'com.google.fonts/check/name/familyname_first_char'
 )
-def com_google_fonts_check_067(ttFont):
+def com_google_fonts_check_name_familyname_first_char(ttFont):
   """Make sure family name does not begin with a digit.
 
      Font family names which start with a numeral are often not
