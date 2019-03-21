@@ -2404,10 +2404,11 @@ def test_check_name_typographicfamilyname():
   assert status == FAIL and message.code == "non-ribbi-lacks-entry"
 
 
-def test_check_162():
+def test_check_name_typographicsubfamilyname():
   """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_162 as check,
-                                                     style_with_spaces)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_name_typographicsubfamilyname as check,
+    style_with_spaces)
 
   # RIBBI fonts must not have a TYPOGRAPHIC_SUBFAMILY_NAME entry
   font = TEST_FILE("montserrat/Montserrat-BoldItalic.ttf")

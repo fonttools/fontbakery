@@ -127,7 +127,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/158]:** com.google.fonts/check/name/subfamilyname
   - **[com.google.fonts/check/159]:** com.google.fonts/check/name/fullfontname
   - **[com.google.fonts/check/160]:** com.google.fonts/check/name/postscriptname
-  - **[com.google.fonts/check/161]:** com.google.fonts/check/name_typographicfamilyname
+  - **[com.google.fonts/check/161]:** com.google.fonts/check/name/typographicfamilyname
+  - **[com.google.fonts/check/162]:** com.google.fonts/check/name/typographicsubfamilyname
   - **[com.google.fonts/check/163]:** com.google.fonts/check/family_and_style_max_length
   - **[com.google.fonts/check/164]:** com.google.fonts/check/name/copyright_length
   - **[com.google.fonts/check/165]:** com.google.fonts/check/fontdata_namecheck
