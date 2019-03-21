@@ -17,6 +17,27 @@ from fontbakery.checkrunner import (
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
+def test_check_name_empty_records():
+    from fontbakery.specifications.name import com_adobe_fonts_check_name_empty_records as check
+
+    font_path = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
+    test_font = TTFont(font_path)
+
+    # try a font with fully populated name records
+    status, message = list(check(test_font))[-1]
+    assert status == PASS
+
+    # now try a completely empty string
+    test_font['name'].names[3].string = b''
+    status, message = list(check(test_font))[-1]
+    assert status == FAIL
+
+    # now try a string that only has whitespace
+    test_font['name'].names[3].string = b' '
+    status, message = list(check(test_font))[-1]
+    assert status == FAIL
+
+
 def test_check_name_no_copyright_on_description():
   """ Description strings in the name table
       must not contain copyright info.
