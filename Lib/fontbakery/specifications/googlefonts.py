@@ -152,8 +152,8 @@ expected_check_ids = \
       , 'com.google.fonts/check/italic_angle'
       , 'com.google.fonts/check/mac_style'
       , 'com.google.fonts/check/reserved_font_name'
-      , 'com.google.fonts/check/contour_count' # Check if each glyph has the recommended amount of contours.
-      , 'com.google.fonts/check/154' # Check font has same encoded glyphs as version hosted on fonts.google.com
+      , 'com.google.fonts/check/contour_count'
+      , 'com.google.fonts/check/production_encoded_glyphs'
       , 'com.google.fonts/check/name/mandatory_entries'
       , 'com.google.fonts/check/157' # Check name table: FONT_FAMILY_NAME entries.
       , 'com.google.fonts/check/158' # Check name table: FONT_SUBFAMILY_NAME entries.
@@ -2810,10 +2810,10 @@ def com_google_fonts_check_contour_count(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/154',
+  id = 'com.google.fonts/check/production_encoded_glyphs',
   conditions = ['api_gfonts_ttFont']
 )
-def com_google_fonts_check_154(ttFont, api_gfonts_ttFont):
+def com_google_fonts_check_production_encoded_glyphs(ttFont, api_gfonts_ttFont):
   """Check font has same encoded glyphs as version hosted on
   fonts.google.com"""
   cmap = ttFont['cmap'].getcmap(3, 1).cmap
