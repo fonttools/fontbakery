@@ -694,9 +694,9 @@ def test_check_epar():
   assert status == PASS
 
 
-def NOT_IMPLEMENTED_test_check_062():
+def NOT_IMPLEMENTED_test_check_gasp():
   """ Is GASP table correctly set? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_062 as check
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_gasp as check
   # TODO: Implement-me!
   #
   # code-paths:

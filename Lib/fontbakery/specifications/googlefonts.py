@@ -128,7 +128,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/valid_glyphnames'
       , 'com.google.fonts/check/unique_glyphnames'
       , 'com.google.fonts/check/epar'
-      , 'com.google.fonts/check/062' # Is 'gasp' table correctly set?
+      , 'com.google.fonts/check/gasp'
       , 'com.google.fonts/check/gpos_kerning_info'
       , 'com.google.fonts/check/ligature_carets'
       , 'com.google.fonts/check/kerning_for_non_ligated_sequences'
@@ -1218,7 +1218,7 @@ def com_google_fonts_check_epar(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/062',
+  id = 'com.google.fonts/check/gasp',
   conditions = ['is_ttf'],
   rationale = """
   Traditionally version 0 'gasp' tables were set
@@ -1235,7 +1235,7 @@ def com_google_fonts_check_epar(ttFont):
   4 flags ON for all font sizes.
   """
 )
-def com_google_fonts_check_062(ttFont):
+def com_google_fonts_check_gasp(ttFont):
   """Is 'gasp' table set to optimize rendering?"""
 
   if "gasp" not in ttFont.keys():
