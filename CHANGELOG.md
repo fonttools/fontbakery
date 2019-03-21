@@ -123,6 +123,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/154]:** com.google.fonts/check/production_encoded_glyphs
   - **[com.google.fonts/check/155]:** com.google.fonts/check/metadata_nameid_copyright
   - **[com.google.fonts/check/156]:** com.google.fonts/check/name/mandatory_entries
+  - **[com.google.fonts/check/157]:** com.google.fonts/check/name/familyname
   - **[com.google.fonts/check/163]:** com.google.fonts/check/family_and_style_max_length
   - **[com.google.fonts/check/164]:** com.google.fonts/check/name/copyright_length
   - **[com.google.fonts/check/165]:** com.google.fonts/check/fontdata_namecheck

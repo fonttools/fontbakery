@@ -2175,10 +2175,10 @@ def test_check_name_mandatory_entries():
     assert status == FAIL
 
 
-def test_check_157():
+def test_check_name_familyname():
   """ Check name table: FONT_FAMILY_NAME entries. """
   from fontbakery.constants import PlatformID, NameID
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_157 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_name_familyname as check,
                                                      familyname,
                                                      familyname_with_spaces,
                                                      style)
