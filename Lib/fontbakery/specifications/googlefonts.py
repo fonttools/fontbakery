@@ -104,7 +104,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/nameid/license'
       , 'com.google.fonts/check/name/license_url'
       , 'com.google.fonts/check/name/no_copyright_on_description'
-      , 'com.google.fonts/check/032' # Description strings in the name table must not exceed 200 characters.
+      , 'com.google.fonts/check/name/description_max_length'
       , 'com.google.fonts/check/monospace'
       , 'com.google.fonts/check/xavgcharwidth'
       , 'com.adobe.fonts/check/fsselection_matches_macstyle'
@@ -973,7 +973,7 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
 
 
 @check(
-  id = 'com.google.fonts/check/032',
+  id = 'com.google.fonts/check/name/description_max_length',
   rationale = """
   An old FontLab version had a bug which caused it to store
   copyright notices in nameID 10 entries.
@@ -985,7 +985,7 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
   Longer strings are likely instances of the FontLab bug.
   """
 )
-def com_google_fonts_check_032(ttFont):
+def com_google_fonts_check_name_description_max_length(ttFont):
   """Description strings in the name table must not exceed 200 characters."""
   failed = False
   for name in ttFont['name'].names:

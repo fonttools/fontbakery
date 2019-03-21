@@ -33,6 +33,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/029]:** com.google.fonts/check/nameid/license
   - **[com.google.fonts/check/030]:** com.google.fonts/check/name/license_url
   - **[com.google.fonts/check/031]:** com.google.fonts/check/name/no_copyright_on_description
+  - **[com.google.fonts/check/032]:** com.google.fonts/check/name/description_max_length
   - **[com.google.fonts/check/033]:** com.google.fonts/check/monospace
   - **[com.google.fonts/check/034]:** com.google.fonts/check/xavgcharwidth
   - **[com.google.fonts/check/035]:** com.google.fonts/check/ftxvalidator
