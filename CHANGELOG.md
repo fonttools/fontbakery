@@ -142,7 +142,12 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/173]:** com.google.fonts/check/negative_advance_width
   - **[com.google.fonts/check/174]:** com.google.fonts/check/varfont/generate_static
   - **[com.google.fonts/check/180]:** com.google.fonts/check/loca/maxp_num_glyphs
+
+## Some check id renaming for better naming consistency:
   - **[com.abobe.fonts/check/postscript_name_cff_vs_name]:** com.abobe.fonts/check/name/postscript_vs_cff
+  - **[com.adobe.fonts/check/postscript_name_consistency]:** com.adobe.fonts/check/name/postscript_name_consistency
+  - **[com.adobe.fonts/check/max_4_fonts_per_family_name]:** com.adobe.fonts/check/name/max_4_fonts_per_family_name
+  - **[com.adobe.fonts/check/name_empty_records]:** com.adobe.fonts/check/name/empty_records
 
 ### Other relevant code-changes
   - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817
