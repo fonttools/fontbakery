@@ -79,9 +79,9 @@ expected_check_ids = [
     'com.google.fonts/check/ftxvalidator_is_available',
     'com.google.fonts/check/wght_valid_range',
     'com.adobe.fonts/check/name/postscript_vs_cff',
-    'com.adobe.fonts/check/postscript_name_consistency',
-    'com.adobe.fonts/check/max_4_fonts_per_family_name',
-    'com.adobe.fonts/check/name_empty_records',
+    'com.adobe.fonts/check/name/postscript_name_consistency',
+    'com.adobe.fonts/check/name/max_4_fonts_per_family_name',
+    'com.adobe.fonts/check/name/empty_records'
     'com.adobe.fonts/check/consistent_upm'
 ]
 
@@ -89,7 +89,7 @@ specification = spec_factory(default_section=Section("Adobe Fonts"))
 
 
 @check(
-    id='com.adobe.fonts/check/name_empty_records',
+    id='com.adobe.fonts/check/name/empty_records',
     conditions=[],
     rationale="""Check the name table for empty records,
     as this can cause problems in Adobe apps."""

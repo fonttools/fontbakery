@@ -101,8 +101,9 @@ NAME_TABLE_CHECKS = [
       , 'com.google.fonts/check/name/family_and_style_max_length'
       , 'com.google.fonts/check/name/copyright_length'
       , 'com.adobe.fonts/check/name/postscript_vs_cff'
-      , 'com.adobe.fonts/check/postscript_name_consistency'
-      , 'com.adobe.fonts/check/max_4_fonts_per_family_name'
+      , 'com.adobe.fonts/check/name/postscript_name_consistency'
+      , 'com.adobe.fonts/check/name/max_4_fonts_per_family_name'
+      , 'com.adobe.fonts/check/name/empty_records'
 ]
 
 expected_check_ids = \

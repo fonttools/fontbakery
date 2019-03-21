@@ -407,7 +407,7 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
 
 
 @check(
-  id='com.adobe.fonts/check/postscript_name_consistency',
+  id='com.adobe.fonts/check/name/postscript_name_consistency',
   conditions=['not is_cff'],  # e.g. TTF or CFF2
   rationale="""
   The PostScript name entries in the font's 'name' table should be
@@ -417,7 +417,7 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
   check.
   """,
 )
-def com_adobe_fonts_check_postscript_name_consistency(ttFont):
+def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
   """Name table ID 6 (PostScript name) must be consistent across platforms."""
   postscript_names = set()
   for entry in ttFont['name'].names:
@@ -435,12 +435,12 @@ def com_adobe_fonts_check_postscript_name_consistency(ttFont):
 
 
 @check(
-  id='com.adobe.fonts/check/max_4_fonts_per_family_name',
+  id='com.adobe.fonts/check/name/max_4_fonts_per_family_name',
   rationale="""Per the OpenType spec. 'The Font Family name ... should be
   shared among at most four fonts that differ only in weight or style ...'
   """,
 )
-def com_adobe_fonts_check_max_4_fonts_per_family_name(ttFonts):
+def com_adobe_fonts_check_name_max_4_fonts_per_family_name(ttFonts):
   """Verify that each group of fonts with the same nameID 1
   has maximum of 4 fonts"""
   from collections import Counter

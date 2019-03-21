@@ -58,7 +58,7 @@ def test_get_family_checks():
     expected_family_check_ids = {
         'com.adobe.fonts/check/bold_italic_unique_for_nameid1',
         'com.adobe.fonts/check/consistent_upm',
-        'com.adobe.fonts/check/max_4_fonts_per_family_name',
+        'com.adobe.fonts/check/name/max_4_fonts_per_family_name',
         'com.google.fonts/check/underline_thickness',
         'com.google.fonts/check/panose_proportion',
         'com.google.fonts/check/panose_familytype',

@@ -359,9 +359,9 @@ def test_check_name_postscript_vs_cff():
   assert status == PASS
 
 
-def test_check_postscript_name_consistency():
+def test_check_name_postscript_name_consistency():
   from fontbakery.specifications.name import \
-    com_adobe_fonts_check_postscript_name_consistency as check
+    com_adobe_fonts_check_name_postscript_name_consistency as check
 
   base_path = portable_path("data/test/source-sans-pro/TTF")
   font_path = os.path.join(base_path, 'SourceSansPro-Regular.ttf')
@@ -391,9 +391,9 @@ def test_check_postscript_name_consistency():
   assert status == FAIL
 
 
-def test_check_max_4_fonts_per_family_name():
+def test_check_name_max_4_fonts_per_family_name():
   from fontbakery.specifications.name import \
-    com_adobe_fonts_check_max_4_fonts_per_family_name as check
+    com_adobe_fonts_check_name_max_4_fonts_per_family_name as check
 
   base_path = portable_path("data/test/source-sans-pro/OTF")
 
