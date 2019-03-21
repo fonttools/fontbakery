@@ -158,7 +158,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/name/familyname'
       , 'com.google.fonts/check/name/subfamilyname'
       , 'com.google.fonts/check/name/fullfontname'
-      , 'com.google.fonts/check/160' # Check name table: POSTSCRIPT_NAME entries.
+      , 'com.google.fonts/check/name/postscriptname'
       , 'com.google.fonts/check/161' # Check name table: TYPOGRAPHIC_FAMILY_NAME entries.
       , 'com.google.fonts/check/162' # Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries.
       , 'com.google.fonts/check/family_and_style_max_length'
@@ -3080,13 +3080,13 @@ def com_google_fonts_check_name_fullfontname(ttFont,
 
 
 @check(
-  id = 'com.google.fonts/check/160',
+  id = 'com.google.fonts/check/name/postscriptname',
   conditions = ['style',
                 'familyname'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_160(ttFont, style, familyname):
+def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
   """ Check name table: POSTSCRIPT_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
