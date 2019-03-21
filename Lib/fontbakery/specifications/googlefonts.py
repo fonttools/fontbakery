@@ -136,7 +136,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/name/familyname_first_char'
       , 'com.google.fonts/check/nameid/match_familyname_fullfont'
       , 'com.google.fonts/check/glyf_unused_data'
-      , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
+      , 'com.google.fonts/check/currency_chars'
       , 'com.google.fonts/check/family_naming_recommendations'
       , 'com.google.fonts/check/072' # Font enables smart dropout control in "prep" table instructions?
       , 'com.google.fonts/check/maxadvancewidth'
@@ -1310,9 +1310,9 @@ def com_google_fonts_check_name_familyname_first_char(ttFont):
 
 # TODO: extend this to check for availability of all required currency symbols.
 @check(
-  id = 'com.google.fonts/check/070'
+  id = 'com.google.fonts/check/currency_chars'
 )
-def com_google_fonts_check_070(ttFont):
+def com_google_fonts_check_currency_chars(ttFont):
   """Font has all expected currency sign characters?"""
 
   def font_has_char(ttFont, codepoint):
