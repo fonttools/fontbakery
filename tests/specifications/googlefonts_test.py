@@ -2346,12 +2346,13 @@ def NOT_IMPLEMENTED_test_check_name_postscriptname():
   # - PASS
 
 
-def test_check_161():
+def test_check_name_typographicfamilyname():
   """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_161 as check,
-                                                     style,
-                                                     familyname,
-                                                     familyname_with_spaces)
+  from fontbakery.specifications.googlefonts import (
+    com_google_fonts_check_name_typographicfamilyname as check,
+    style,
+    familyname,
+    familyname_with_spaces)
 
   # RIBBI fonts must not have a TYPOGRAPHIC_FAMILY_NAME entry
   font = TEST_FILE("montserrat/Montserrat-BoldItalic.ttf")
