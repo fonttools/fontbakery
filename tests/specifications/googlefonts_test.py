@@ -2034,9 +2034,9 @@ def test_check_mac_style():
       assert_results_contain(results, FAIL, expected)
 
 
-def test_check_153(montserrat_ttFonts):
+def test_check_contour_count(montserrat_ttFonts):
   """Check glyphs contain the recommended contour count"""
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_153 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_contour_count as check
 
   # Montserrat should PASS this check since it was used to assemble the glyph data
   for ttFont in montserrat_ttFonts:
