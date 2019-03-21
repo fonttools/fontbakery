@@ -2482,9 +2482,9 @@ def test_check_164():
   assert status == FAIL
 
 
-def test_check_165():
+def test_check_fontdata_namecheck():
   """ Familyname is unique according to namecheck.fontdata.com """
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_165 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_fontdata_namecheck as check,
                                                      familyname)
 
   print('Test INFO with an already used name...')
