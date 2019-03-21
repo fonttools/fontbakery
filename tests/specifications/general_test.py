@@ -419,9 +419,9 @@ def test_check_unique_glyphnames():
   assert status == SKIP
 
 
-def DISABLED_test_check_078():
+def DISABLED_test_check_glyphnames_max_length():
   """ Check that glyph names do not exceed max length. """
-  from fontbakery.specifications.general import com_google_fonts_check_078 as check
+  from fontbakery.specifications.general import com_google_fonts_check_glyphnames_max_length as check
 
   # TTF
   test_font = defcon.Font(TEST_FILE("test.ufo"))
