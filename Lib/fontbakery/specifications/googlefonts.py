@@ -98,7 +98,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/post_table_version'
       , 'com.google.fonts/check/fstype'
       , 'com.google.fonts/check/vendor_id'
-      , 'com.google.fonts/check/019' # Substitute copyright, registered and trademark symbols in name table entries.
+      , 'com.google.fonts/check/name/unwanted_chars'
       , 'com.google.fonts/check/usweightclass'
       , 'com.google.fonts/check/has_license'
       , 'com.google.fonts/check/nameid/license'
@@ -713,9 +713,9 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
 
 
 @check(
-  id = 'com.google.fonts/check/019'
+  id = 'com.google.fonts/check/name/unwanted_chars'
 )
-def com_google_fonts_check_019(ttFont):
+def com_google_fonts_check_name_unwanted_chars(ttFont):
   """Substitute copyright, registered and trademark
      symbols in name table entries."""
   failed = False

@@ -436,10 +436,10 @@ def test_check_vendor_id():
   assert status == PASS
 
 
-def test_check_019():
+def test_check_name_unwanted_chars():
   """ Substitute copyright, registered and trademark
       symbols in name table entries. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_019 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_name_unwanted_chars as check
 
   print('Test FAIL with a bad font...')
   # Our reference Mada Regular is know to be bad here.
