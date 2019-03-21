@@ -2451,9 +2451,9 @@ def test_check_162():
   assert status == FAIL and message.code == "non-ribbi-lacks-entry"
 
 
-def test_check_164():
+def test_check_name_copyright_length():
   """ Length of copyright notice must not exceed 500 characters. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_164 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_name_copyright_length as check
 
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 

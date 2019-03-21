@@ -162,7 +162,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/161' # Check name table: TYPOGRAPHIC_FAMILY_NAME entries.
       , 'com.google.fonts/check/162' # Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries.
       , 'com.google.fonts/check/family_and_style_max_length'
-      , 'com.google.fonts/check/164' # Length of copyright notice must not exceed 500 characters.
+      , 'com.google.fonts/check/name/copyright_length'
       , 'com.google.fonts/check/fontdata_namecheck'
       , 'com.google.fonts/check/fontv'
       , 'com.google.fonts/check/varfont/regular_wght_coord'
@@ -3210,7 +3210,7 @@ def com_google_fonts_check_162(ttFont, style_with_spaces):
 
 
 @check(
-  id = 'com.google.fonts/check/164',
+  id = 'com.google.fonts/check/name/copyright_length',
   rationale = """
     This is an arbitrary max lentgh for the copyright notice field
     of the name table. We simply don't want such notices to be too long.
@@ -3220,7 +3220,7 @@ def com_google_fonts_check_162(ttFont, style_with_spaces):
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1603'
   })
-def com_google_fonts_check_164(ttFont):
+def com_google_fonts_check_name_copyright_length(ttFont):
   """ Length of copyright notice must not exceed 500 characters. """
   from unidecode import unidecode
   from fontbakery.utils import get_name_entries
