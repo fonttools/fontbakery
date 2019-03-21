@@ -2,6 +2,6 @@
 gdef
 ####
 
-.. automodule:: fontbakery.specifications.gdef
+.. automodule:: fontbakery.profiles.gdef
    :members:
    :undoc-members:

@@ -2,6 +2,6 @@
 loca
 ####
 
-.. automodule:: fontbakery.specifications.loca
+.. automodule:: fontbakery.profiles.loca
    :members:
    :undoc-members:

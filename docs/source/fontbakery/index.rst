@@ -13,11 +13,11 @@ A single-page index of all source modules is available in :ref:`modindex`.
    commands/index
    constants
    fonts_public_pb2
-   fonts_spec
+   fonts_profile
    glyphdata
    message
    reporters/index
-   specifications/index
+   profiles/index
    utils
 
 

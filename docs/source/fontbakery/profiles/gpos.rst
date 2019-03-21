@@ -2,6 +2,6 @@
 gpos
 ####
 
-.. automodule:: fontbakery.specifications.gpos
+.. automodule:: fontbakery.profiles.gpos
    :members:
    :undoc-members:

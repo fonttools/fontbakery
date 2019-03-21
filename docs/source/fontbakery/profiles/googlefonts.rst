@@ -2,6 +2,6 @@
 googlefonts
 ###########
 
-.. automodule:: fontbakery.specifications.googlefonts
+.. automodule:: fontbakery.profiles.googlefonts
    :members:
    :undoc-members:

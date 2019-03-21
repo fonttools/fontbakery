@@ -2,6 +2,6 @@
 head
 ####
 
-.. automodule:: fontbakery.specifications.head
+.. automodule:: fontbakery.profiles.head
    :members:
    :undoc-members:

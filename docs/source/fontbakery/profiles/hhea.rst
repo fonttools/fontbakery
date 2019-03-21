@@ -2,6 +2,6 @@
 hhea
 ####
 
-.. automodule:: fontbakery.specifications.hhea
+.. automodule:: fontbakery.profiles.hhea
    :members:
    :undoc-members:

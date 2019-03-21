@@ -2,6 +2,6 @@
 opentype
 ########
 
-.. automodule:: fontbakery.specifications.opentype
+.. automodule:: fontbakery.profiles.opentype
    :members:
    :undoc-members:

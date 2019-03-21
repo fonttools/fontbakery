@@ -2,6 +2,6 @@
 shared_conditions
 #################
 
-.. automodule:: fontbakery.specifications.cmap
+.. automodule:: fontbakery.profiles.shared_conditions
    :members:
    :undoc-members:

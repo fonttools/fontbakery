@@ -1,5 +1,5 @@
 ##############
-specifications
+profiles
 ##############
 
 .. toctree::
@@ -26,6 +26,6 @@ specifications
    ufo_sources
 
 
-.. automodule:: fontbakery.specifications
+.. automodule:: fontbakery.profiles
    :members:
    :undoc-members:

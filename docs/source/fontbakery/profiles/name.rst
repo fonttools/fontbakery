@@ -2,6 +2,6 @@
 name
 ####
 
-.. automodule:: fontbakery.specifications.name
+.. automodule:: fontbakery.profiles.name
    :members:
    :undoc-members:

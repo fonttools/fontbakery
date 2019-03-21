@@ -2,6 +2,6 @@
 fvar
 ####
 
-.. automodule:: fontbakery.specifications.fvar
+.. automodule:: fontbakery.profiles.fvar
    :members:
    :undoc-members:
