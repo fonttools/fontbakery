@@ -2676,9 +2676,9 @@ def test_check_os2_metrics_match_hhea(mada_ttFonts):
   assert status == FAIL and message.code == "descender"
 
 
-def test_check_072():
+def test_check_smart_dropout():
   """ Font enables smart dropout control in "prep" table instructions? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_072 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_smart_dropout as check
 
   test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
 
