@@ -97,6 +97,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/font_version'
       , 'com.google.fonts/check/post_table_version'
       , 'com.google.fonts/check/fstype'
+      , 'com.google.fonts/check/fsselection'
       , 'com.google.fonts/check/vendor_id'
       , 'com.google.fonts/check/name/unwanted_chars'
       , 'com.google.fonts/check/usweightclass'
@@ -148,7 +149,6 @@ expected_check_ids = \
       , 'com.google.fonts/check/monospace_max_advancewidth'
       , 'com.google.fonts/check/version_bump'
       , 'com.google.fonts/check/production_glyphs_similarity'
-      , 'com.google.fonts/check/129' # Checking OS/2 fsSelection value.
       , 'com.google.fonts/check/130' # Checking post.italicAngle value.
       , 'com.google.fonts/check/131' # Checking head.macStyle value.
       , 'com.google.fonts/check/reserved_font_name'
@@ -2602,10 +2602,10 @@ def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFon
 
 
 @check(
-  id = 'com.google.fonts/check/129',
+  id = 'com.google.fonts/check/fsselection',
   conditions = ['style']
 )
-def com_google_fonts_check_129(ttFont, style):
+def com_google_fonts_check_fsselection(ttFont, style):
   """Checking OS/2 fsSelection value."""
   from fontbakery.utils import check_bit_entry
   from fontbakery.constants import (STATIC_STYLE_NAMES,

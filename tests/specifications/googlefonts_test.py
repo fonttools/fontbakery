@@ -1947,9 +1947,9 @@ def NOT_IMPLEMENTED_test_check_production_glyphs_similarity():
   # - PASS, "Glyphs are similar"
 
 
-def NOT_IMPLEMENTED_test_check_129():
+def NOT_IMPLEMENTED_test_check_fsselection():
   """ Checking OS/2 fsSelection value. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_129 as check
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_fsselection as check
   # TODO: Implement-me!
   #
   # code-paths:
