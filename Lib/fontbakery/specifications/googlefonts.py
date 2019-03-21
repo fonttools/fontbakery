@@ -163,7 +163,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/162' # Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries.
       , 'com.google.fonts/check/family_and_style_max_length'
       , 'com.google.fonts/check/164' # Length of copyright notice must not exceed 500 characters.
-      , 'com.google.fonts/check/165' # Familyname must be unique according to namecheck.fontdata.com
+      , 'com.google.fonts/check/fontdata_namecheck'
       , 'com.google.fonts/check/fontv'
       , 'com.google.fonts/check/varfont/regular_wght_coord'
       , 'com.google.fonts/check/varfont/regular_wdth_coord'
@@ -3240,7 +3240,7 @@ def com_google_fonts_check_164(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/165',
+  id = 'com.google.fonts/check/fontdata_namecheck',
   rationale = """
       We need to check names are not already used, and today the best
       place to check that is http://namecheck.fontdata.com
@@ -3249,7 +3249,7 @@ def com_google_fonts_check_164(ttFont):
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/494'
   })
-def com_google_fonts_check_165(ttFont, familyname):
+def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
   """ Familyname must be unique according to namecheck.fontdata.com """
   FB_ISSUE_TRACKER = "https://github.com/googlefonts/fontbakery/issues"
   import requests
