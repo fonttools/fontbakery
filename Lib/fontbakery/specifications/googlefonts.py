@@ -123,7 +123,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/unwanted_tables'
       , 'com.google.fonts/check/hinting_impact'
       , 'com.google.fonts/check/name/version_format'
-      , 'com.google.fonts/check/056' # Font has old ttfautohint applied?
+      , 'com.google.fonts/check/old_ttfautohint'
       , 'com.google.fonts/check/name_table_line_breaks'
       , 'com.google.fonts/check/valid_glyphnames'
       , 'com.google.fonts/check/unique_glyphnames'
@@ -1129,10 +1129,10 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/056',
+  id = 'com.google.fonts/check/old_ttfautohint',
   conditions = ['is_ttf']
 )
-def com_google_fonts_check_056(ttFont, ttfautohint_stats):
+def com_google_fonts_check_old_ttfautohint(ttFont, ttfautohint_stats):
   """Font has old ttfautohint applied?
 
      1. find which version was used, by inspecting name table entries
