@@ -28,6 +28,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/015]:** com.google.fonts/check/post_table_version
   - **[com.google.fonts/check/016]:** com.google.fonts/check/fstype
   - **[com.google.fonts/check/018]:** com.google.fonts/check/vendor_id
+  - **[com.google.fonts/check/019]:** com.google.fonts/check/name/unwanted_chars
   - **[com.google.fonts/check/020]:** com.google.fonts/check/usweightclass
   - **[com.google.fonts/check/028]:** com.google.fonts/check/has_license
   - **[com.google.fonts/check/029]:** com.google.fonts/check/nameid/license
