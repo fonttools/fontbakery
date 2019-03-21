@@ -2291,9 +2291,9 @@ def test_check_name_subfamilyname():
   assert status == FAIL and message.code == "bad-familyname"
 
 
-def test_check_159():
+def test_check_name_fullfontname():
   """ Check name table: FULL_FONT_NAME entries. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_159 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_name_fullfontname as check
 
   # Our reference Cabin Regular is known to be good
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))

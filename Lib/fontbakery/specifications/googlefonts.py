@@ -157,7 +157,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/name/mandatory_entries'
       , 'com.google.fonts/check/name/familyname'
       , 'com.google.fonts/check/name/subfamilyname'
-      , 'com.google.fonts/check/159' # Check name table: FULL_FONT_NAME entries.
+      , 'com.google.fonts/check/name/fullfontname'
       , 'com.google.fonts/check/160' # Check name table: POSTSCRIPT_NAME entries.
       , 'com.google.fonts/check/161' # Check name table: TYPOGRAPHIC_FAMILY_NAME entries.
       , 'com.google.fonts/check/162' # Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries.
@@ -3039,15 +3039,15 @@ def com_google_fonts_check_name_subfamilyname(ttFont,
 
 
 @check(
-  id = 'com.google.fonts/check/159',
+  id = 'com.google.fonts/check/name/fullfontname',
   conditions = ['style_with_spaces',
                 'familyname_with_spaces'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_159(ttFont,
-                               style_with_spaces,
-                               familyname_with_spaces):
+def com_google_fonts_check_name_fullfontname(ttFont,
+                                             style_with_spaces,
+                                             familyname_with_spaces):
   """ Check name table: FULL_FONT_NAME entries. """
   from unidecode import unidecode
   from fontbakery.utils import name_entry_id
