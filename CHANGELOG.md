@@ -119,6 +119,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/130]:** com.google.fonts/check/italic_angle
   - **[com.google.fonts/check/131]:** com.google.fonts/check/mac_style
   - **[com.google.fonts/check/152]:** com.google.fonts/check/reserved_font_name
+  - **[com.google.fonts/check/153]:** com.google.fonts/check/contour_count
   - **[com.google.fonts/check/155]:** com.google.fonts/check/metadata_nameid_copyright
   - **[com.google.fonts/check/156]:** com.google.fonts/check/name/mandatory_entries
   - **[com.google.fonts/check/163]:** com.google.fonts/check/family_and_style_max_length

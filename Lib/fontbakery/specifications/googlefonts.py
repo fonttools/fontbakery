@@ -152,7 +152,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/italic_angle'
       , 'com.google.fonts/check/mac_style'
       , 'com.google.fonts/check/reserved_font_name'
-      , 'com.google.fonts/check/153' # Check if each glyph has the recommended amount of contours.
+      , 'com.google.fonts/check/contour_count' # Check if each glyph has the recommended amount of contours.
       , 'com.google.fonts/check/154' # Check font has same encoded glyphs as version hosted on fonts.google.com
       , 'com.google.fonts/check/name/mandatory_entries'
       , 'com.google.fonts/check/157' # Check name table: FONT_FAMILY_NAME entries.
@@ -2725,7 +2725,7 @@ def com_google_fonts_check_mac_style(ttFont, style):
 
 
 @check(
-  id = 'com.google.fonts/check/153',
+  id = 'com.google.fonts/check/contour_count',
   conditions = ['is_ttf',
                 'not is_variable_font'],
   rationale = """
@@ -2742,7 +2742,7 @@ def com_google_fonts_check_mac_style(ttFont, style):
     currently optimized for the typical construction of glyphs in static fonts.
   """
 )
-def com_google_fonts_check_153(ttFont):
+def com_google_fonts_check_contour_count(ttFont):
   """Check if each glyph has the recommended amount of contours.
 
   This check is useful to assure glyphs aren't incorrectly constructed.
