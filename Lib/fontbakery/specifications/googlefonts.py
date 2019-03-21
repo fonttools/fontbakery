@@ -73,7 +73,7 @@ DESCRIPTION_CHECKS = [
       , 'com.google.fonts/check/description/max_length'
 ]
 
-THIRDPARTY_CHECKS = [
+THIRD_PARTY_CHECKS = [
         'com.google.fonts/check/ftxvalidator_is_available'
       , 'com.google.fonts/check/ftxvalidator'
       , 'com.google.fonts/check/ots'
@@ -81,10 +81,35 @@ THIRDPARTY_CHECKS = [
       , 'com.google.fonts/check/fontforge'
 ]
 
+NAME_TABLE_CHECKS = [
+        'com.google.fonts/check/name/license'
+      , 'com.google.fonts/check/name/license_url'
+      , 'com.google.fonts/check/name/no_copyright_on_description'
+      , 'com.google.fonts/check/name/description_max_length'
+      , 'com.google.fonts/check/name/unwanted_chars'
+      , 'com.google.fonts/check/name/version_format'
+      , 'com.google.fonts/check/name/line_breaks'
+      , 'com.google.fonts/check/name/ascii_only_entries'
+      , 'com.google.fonts/check/name/mandatory_entries'
+      , 'com.google.fonts/check/name/familyname'
+      , 'com.google.fonts/check/name/subfamilyname'
+      , 'com.google.fonts/check/name/fullfontname'
+      , 'com.google.fonts/check/name/postscriptname'
+      , 'com.google.fonts/check/name/typographicfamilyname'
+      , 'com.google.fonts/check/name/typographicsubfamilyname'
+      , 'com.google.fonts/check/name/rfn'
+      , 'com.google.fonts/check/name/family_and_style_max_length'
+      , 'com.google.fonts/check/name/copyright_length'
+      , 'com.adobe.fonts/check/postscript_name_cff_vs_name'
+      , 'com.adobe.fonts/check/postscript_name_consistency'
+      , 'com.adobe.fonts/check/max_4_fonts_per_family_name'
+]
+
 expected_check_ids = \
     METADATA_CHECKS + \
     DESCRIPTION_CHECKS + \
-    THIRDPARTY_CHECKS + [
+    THIRD_PARTY_CHECKS + \
+    NAME_TABLE_CHECKS + [
         'com.google.fonts/check/canonical_filename'
       , 'com.google.fonts/check/single_family_directory'
       , 'com.google.fonts/check/underline_thickness'
@@ -99,13 +124,8 @@ expected_check_ids = \
       , 'com.google.fonts/check/fstype'
       , 'com.google.fonts/check/fsselection'
       , 'com.google.fonts/check/vendor_id'
-      , 'com.google.fonts/check/name/unwanted_chars'
       , 'com.google.fonts/check/usweightclass'
       , 'com.google.fonts/check/has_license'
-      , 'com.google.fonts/check/nameid/license'
-      , 'com.google.fonts/check/name/license_url'
-      , 'com.google.fonts/check/name/no_copyright_on_description'
-      , 'com.google.fonts/check/name/description_max_length'
       , 'com.google.fonts/check/monospace'
       , 'com.google.fonts/check/xavgcharwidth'
       , 'com.adobe.fonts/check/fsselection_matches_macstyle'
@@ -124,9 +144,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/required_tables'
       , 'com.google.fonts/check/unwanted_tables'
       , 'com.google.fonts/check/hinting_impact'
-      , 'com.google.fonts/check/name/version_format'
       , 'com.google.fonts/check/old_ttfautohint'
-      , 'com.google.fonts/check/name_table_line_breaks'
       , 'com.google.fonts/check/valid_glyphnames'
       , 'com.google.fonts/check/unique_glyphnames'
       , 'com.google.fonts/check/epar'
@@ -142,7 +160,6 @@ expected_check_ids = \
       , 'com.google.fonts/check/family_naming_recommendations'
       , 'com.google.fonts/check/smart_dropout'
       , 'com.google.fonts/check/maxadvancewidth'
-      , 'com.google.fonts/check/name/ascii_only_entries'
       , 'com.google.fonts/check/points_out_of_bounds'
       , 'com.google.fonts/check/all_glyphs_have_codepoints'
       #, 'com.google.fonts/check/glyphnames_max_length'
@@ -151,18 +168,8 @@ expected_check_ids = \
       , 'com.google.fonts/check/production_glyphs_similarity'
       , 'com.google.fonts/check/italic_angle'
       , 'com.google.fonts/check/mac_style'
-      , 'com.google.fonts/check/reserved_font_name'
       , 'com.google.fonts/check/contour_count'
       , 'com.google.fonts/check/production_encoded_glyphs'
-      , 'com.google.fonts/check/name/mandatory_entries'
-      , 'com.google.fonts/check/name/familyname'
-      , 'com.google.fonts/check/name/subfamilyname'
-      , 'com.google.fonts/check/name/fullfontname'
-      , 'com.google.fonts/check/name/postscriptname'
-      , 'com.google.fonts/check/name/typographicfamilyname'
-      , 'com.google.fonts/check/name/typographicsubfamilyname'
-      , 'com.google.fonts/check/family_and_style_max_length'
-      , 'com.google.fonts/check/name/copyright_length'
       , 'com.google.fonts/check/fontdata_namecheck'
       , 'com.google.fonts/check/fontv'
       , 'com.google.fonts/check/varfont/regular_wght_coord'
@@ -180,9 +187,6 @@ expected_check_ids = \
       #, 'com.google.fonts/check/varfont/has_MVAR'
       , 'com.google.fonts/check/fontbakery_version'
       , 'com.google.fonts/check/aat'
-      , 'com.adobe.fonts/check/postscript_name_cff_vs_name'
-      , 'com.adobe.fonts/check/postscript_name_consistency'
-      , 'com.adobe.fonts/check/max_4_fonts_per_family_name'
       , 'com.google.fonts/check/fvar_name_entries'
       , 'com.google.fonts/check/varfont_has_instances'
       , 'com.google.fonts/check/varfont_weight_instances'
@@ -843,12 +847,12 @@ def com_google_fonts_check_has_license(licenses):
 
 
 @check(
-  id = 'com.google.fonts/check/nameid/license',
+  id = 'com.google.fonts/check/name/license',
   conditions = ['license'],
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   })
-def com_google_fonts_check_nameid_license(ttFont, license):
+def com_google_fonts_check_name_license(ttFont, license):
   """Check copyright namerecords match license file."""
   from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
   from unidecode import unidecode

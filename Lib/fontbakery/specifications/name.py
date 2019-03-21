@@ -156,9 +156,9 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
 
 
 @check(
-  id = 'com.google.fonts/check/name_table_line_breaks'
+  id = 'com.google.fonts/check/name/line_breaks'
 )
-def com_google_fonts_check_name_table_line_breaks(ttFont):
+def com_google_fonts_check_name_line_breaks(ttFont):
   """Name table entries should not contain line-breaks."""
   failed = False
   for name in ttFont["name"].names:
@@ -311,9 +311,9 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/reserved_font_name'
+  id = 'com.google.fonts/check/name/rfn'
 )
-def com_google_fonts_check_reserved_font_name(ttFont):
+def com_google_fonts_check_name_rfn(ttFont):
   """Name table strings must not contain the string 'Reserved Font Name'."""
   failed = False
   for entry in ttFont["name"].names:
@@ -330,7 +330,7 @@ def com_google_fonts_check_reserved_font_name(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/family_and_style_max_length',
+  id = 'com.google.fonts/check/name/family_and_style_max_length',
   rationale = """
     According to a Glyphs tutorial (available at
     https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances),
@@ -347,7 +347,7 @@ def com_google_fonts_check_reserved_font_name(ttFont):
     'request': 'https://github.com/googlefonts/fontbakery/issues/1488',
   }
 )
-def com_google_fonts_check_family_and_style_max_length(ttFont):
+def com_google_fonts_check_name_family_and_style_max_length(ttFont):
   """Combined length of family and style must not exceed 20 characters."""
   from unidecode import unidecode
   from fontbakery.utils import (get_name_entries,

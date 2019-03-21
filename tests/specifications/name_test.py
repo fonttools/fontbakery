@@ -135,9 +135,9 @@ def test_check_monospace():
     assert results_contain(results, FAIL, "mono-bad-panose-proportion")
 
 
-def test_check_name_table_line_breaks():
+def test_check_name_line_breaks():
   """ Name table entries should not contain line-breaks. """
-  from fontbakery.specifications.name import com_google_fonts_check_name_table_line_breaks as check
+  from fontbakery.specifications.name import com_google_fonts_check_name_line_breaks as check
 
   # Our reference Mada Regular font is good here:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -288,9 +288,9 @@ def test_check_family_naming_recommendations():
       name_test("A"*31, PASS)
 
 
-def test_check_reserved_font_name():
+def test_check_name_rfn():
   """ Name table strings must not contain 'Reserved Font Name'. """
-  from fontbakery.specifications.name import com_google_fonts_check_reserved_font_name as check
+  from fontbakery.specifications.name import com_google_fonts_check_name_rfn as check
 
   test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
 
@@ -302,9 +302,9 @@ def test_check_reserved_font_name():
   assert status == WARN
 
 
-def test_check_family_and_style_max_length():
+def test_check_name_family_and_style_max_length():
   """ Check font name is the same as family name. """
-  from fontbakery.specifications.name import com_google_fonts_check_family_and_style_max_length as check
+  from fontbakery.specifications.name import com_google_fonts_check_name_family_and_style_max_length as check
   # Our reference Cabin Regular is known to be good
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 

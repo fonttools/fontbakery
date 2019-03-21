@@ -31,7 +31,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/019]:** com.google.fonts/check/name/unwanted_chars
   - **[com.google.fonts/check/020]:** com.google.fonts/check/usweightclass
   - **[com.google.fonts/check/028]:** com.google.fonts/check/has_license
-  - **[com.google.fonts/check/029]:** com.google.fonts/check/nameid/license
+  - **[com.google.fonts/check/029]:** com.google.fonts/check/name/license
   - **[com.google.fonts/check/030]:** com.google.fonts/check/name/license_url
   - **[com.google.fonts/check/031]:** com.google.fonts/check/name/no_copyright_on_description
   - **[com.google.fonts/check/032]:** com.google.fonts/check/name/description_max_length
@@ -58,7 +58,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/054]:** com.google.fonts/check/hinting_impact
   - **[com.google.fonts/check/055]:** com.google.fonts/check/name/version_format
   - **[com.google.fonts/check/056]:** com.google.fonts/check/old_ttfautohint
-  - **[com.google.fonts/check/057]:** com.google.fonts/check/name_table_line_breaks
+  - **[com.google.fonts/check/057]:** com.google.fonts/check/name/line_breaks
   - **[com.google.fonts/check/058]:** com.google.fonts/check/valid_glyphnames
   - **[com.google.fonts/check/059]:** com.google.fonts/check/unique_glyphnames
   - **[com.google.fonts/check/061]:** com.google.fonts/check/epar
@@ -129,7 +129,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/160]:** com.google.fonts/check/name/postscriptname
   - **[com.google.fonts/check/161]:** com.google.fonts/check/name/typographicfamilyname
   - **[com.google.fonts/check/162]:** com.google.fonts/check/name/typographicsubfamilyname
-  - **[com.google.fonts/check/163]:** com.google.fonts/check/family_and_style_max_length
+  - **[com.google.fonts/check/163]:** com.google.fonts/check/name/family_and_style_max_length
   - **[com.google.fonts/check/164]:** com.google.fonts/check/name/copyright_length
   - **[com.google.fonts/check/165]:** com.google.fonts/check/fontdata_namecheck
   - **[com.google.fonts/check/166]:** com.google.fonts/check/fontv
