@@ -3308,7 +3308,7 @@ def com_google_fonts_check_fontv(ttFont):
 # https://github.com/googlefonts/fontbakery/issues/1727
 @disable
 @check(
-  id = 'com.google.fonts/check/173',
+  id = 'com.google.fonts/check/negative_advance_width',
   rationale = """
     Advance width values in the Horizontal Metrics (htmx)
     table cannot be negative since they are encoded as unsigned
@@ -3328,7 +3328,7 @@ def com_google_fonts_check_fontv(ttFont):
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1720'
   })
-def com_google_fonts_check_173(ttFont):
+def com_google_fonts_check_negative_advance_width(ttFont):
   """ Check that advance widths cannot be inferred as negative. """
   failed = False
   for glyphName in ttFont["glyf"].glyphs:

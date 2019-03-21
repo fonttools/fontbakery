@@ -2532,15 +2532,15 @@ def test_check_fontv():
   assert status == PASS
 
 
-# Temporarily disabling this code-test since check/173 itself
+# Temporarily disabling this code-test since check/negative_advance_width itself
 # is disabled waiting for an implementation targetting the
 # actual root cause of the issue.
 #
 # See also comments at googlefons.py as well as at
 # https://github.com/googlefonts/fontbakery/issues/1727
-def disabled_test_check_173():
+def disabled_test_check_negative_advance_width():
   """ Check that advance widths cannot be inferred as negative. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_173 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_negative_advance_width as check
 
   # Our reference Cabin Regular is good
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
