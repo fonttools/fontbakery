@@ -112,6 +112,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/112]:** com.google.fonts/check/metadata/os2_weightclass
   - **[com.google.fonts/check/113]:** com.google.fonts/check/metadata/match_weight_postscript
   - **[com.google.fonts/check/115]:** com.google.fonts/check/metatada/canonical_style_names
+  - **[com.google.fonts/check/116]:** com.google.fonts/check/unitsperem_strict
   - **[com.google.fonts/check/152]:** com.google.fonts/check/reserved_font_name
   - **[com.google.fonts/check/155]:** com.google.fonts/check/metadata_nameid_copyright
   - **[com.google.fonts/check/163]:** com.google.fonts/check/family_and_style_max_length
