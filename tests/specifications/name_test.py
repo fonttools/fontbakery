@@ -331,8 +331,8 @@ def test_check_name_family_and_style_max_length():
   assert status == WARN
 
 
-def test_check_postscript_name_cff_vs_name():
-  from fontbakery.specifications.name import com_adobe_fonts_check_postscript_name_cff_vs_name as check
+def test_check_name_postscript_vs_cff():
+  from fontbakery.specifications.name import com_adobe_fonts_check_name_postscript_vs_cff as check
   test_font = TTFont()
   test_font['CFF '] = fontTools.ttLib.newTable('CFF ')
   test_font['CFF '].cff.fontNames = ['SomeFontName']

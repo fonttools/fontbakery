@@ -374,7 +374,7 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
 
 
 @check(
-  id='com.adobe.fonts/check/postscript_name_cff_vs_name',
+  id='com.adobe.fonts/check/name/postscript_vs_cff',
   conditions=['is_cff'],
   rationale="""
   The PostScript name entries in the font's 'name' table should match the
@@ -385,7 +385,7 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
   guarantee which table an app will get the data from.
   """,
 )
-def com_adobe_fonts_check_postscript_name_cff_vs_name(ttFont):
+def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
   """CFF table FontName must match name table ID 6 (PostScript name)."""
   failed = False
   cff_names = ttFont['CFF '].cff.fontNames

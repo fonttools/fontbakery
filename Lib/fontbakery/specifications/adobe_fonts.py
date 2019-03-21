@@ -78,7 +78,7 @@ expected_check_ids = [
     'com.google.fonts/check/fontbakery_version',
     'com.google.fonts/check/ftxvalidator_is_available',
     'com.google.fonts/check/wght_valid_range',
-    'com.adobe.fonts/check/postscript_name_cff_vs_name',
+    'com.adobe.fonts/check/name/postscript_vs_cff',
     'com.adobe.fonts/check/postscript_name_consistency',
     'com.adobe.fonts/check/max_4_fonts_per_family_name',
     'com.adobe.fonts/check/name_empty_records',
