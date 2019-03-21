@@ -2212,10 +2212,10 @@ def test_check_name_familyname():
     assert status == expected
 
 
-def test_check_158():
+def test_check_name_subfamilyname():
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
   from fontbakery.constants import PlatformID, NameID
-  from fontbakery.specifications.googlefonts import (com_google_fonts_check_158 as check,
+  from fontbakery.specifications.googlefonts import (com_google_fonts_check_name_subfamilyname as check,
                                                      familyname,
                                                      familyname_with_spaces,
                                                      style_with_spaces)
