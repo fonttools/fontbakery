@@ -2109,9 +2109,9 @@ def test_check_metadata_nameid_copyright():
   assert status == FAIL
 
 
-def test_check_156():
+def test_check_name_mandatory_entries():
   """ Font has all mandatory 'name' table entries ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_156 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_name_mandatory_entries as check
 
   # We'll check both RIBBI and non-RIBBI fonts
   # so that we cover both cases for FAIL/PASS scenarios
