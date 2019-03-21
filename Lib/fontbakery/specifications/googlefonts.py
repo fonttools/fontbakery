@@ -149,7 +149,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/monospace_max_advancewidth'
       , 'com.google.fonts/check/version_bump'
       , 'com.google.fonts/check/production_glyphs_similarity'
-      , 'com.google.fonts/check/130' # Checking post.italicAngle value.
+      , 'com.google.fonts/check/italic_angle' # Checking post.italicAngle value.
       , 'com.google.fonts/check/131' # Checking head.macStyle value.
       , 'com.google.fonts/check/reserved_font_name'
       , 'com.google.fonts/check/153' # Check if each glyph has the recommended amount of contours.
@@ -2638,7 +2638,7 @@ def com_google_fonts_check_fsselection(ttFont, style):
 
 
 @check(
-  id = 'com.google.fonts/check/130',
+  id = 'com.google.fonts/check/italic_angle',
   conditions = ['style'],
   rationale = """The 'post' table italicAngle property should be a
   reasonable amount, likely not more than -20°, never more than -30°,
@@ -2646,7 +2646,7 @@ def com_google_fonts_check_fsselection(ttFont, style):
   the value is negative for a lean rightwards.
   https://docs.microsoft.com/en-us/typography/opentype/spec/post"""
 )
-def com_google_fonts_check_130(ttFont, style):
+def com_google_fonts_check_italic_angle(ttFont, style):
   """Checking post.italicAngle value."""
   failed = False
   value = ttFont["post"].italicAngle
