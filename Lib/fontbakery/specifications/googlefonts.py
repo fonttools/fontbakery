@@ -146,7 +146,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/all_glyphs_have_codepoints'
       #, 'com.google.fonts/check/glyphnames_max_length'
       , 'com.google.fonts/check/monospace_max_advancewidth'
-      , 'com.google.fonts/check/117' # Version number has increased since previous release on Google Fonts?
+      , 'com.google.fonts/check/version_bump'
       , 'com.google.fonts/check/118' # Glyphs are similiar to Google Fonts version?
       , 'com.google.fonts/check/129' # Checking OS/2 fsSelection value.
       , 'com.google.fonts/check/130' # Checking post.italicAngle value.
@@ -2507,13 +2507,13 @@ def github_gfonts_ttFont(ttFont, license):
 
 
 @check(
-  id = 'com.google.fonts/check/117',
+  id = 'com.google.fonts/check/version_bump',
   conditions = ['api_gfonts_ttFont',
                 'github_gfonts_ttFont']
 )
-def com_google_fonts_check_117(ttFont,
-                               api_gfonts_ttFont,
-                               github_gfonts_ttFont):
+def com_google_fonts_check_version_bump(ttFont,
+                                        api_gfonts_ttFont,
+                                        github_gfonts_ttFont):
   """Version number has increased since previous release on Google Fonts?"""
   v_number = ttFont["head"].fontRevision
   api_gfonts_v_number = api_gfonts_ttFont["head"].fontRevision

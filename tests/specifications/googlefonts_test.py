@@ -1922,9 +1922,9 @@ def test_check_unitsperem_strict():
     assert status == FAIL
 
 
-def NOT_IMPLEMENTED_test_check_117():
+def NOT_IMPLEMENTED_test_check_version_bump():
   """ Version number has increased since previous release on Google Fonts? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_117 as check
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_version_bump as check
   # TODO: Implement-me!
   #
   # code-paths:
