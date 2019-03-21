@@ -2336,9 +2336,9 @@ def test_check_name_fullfontname():
       ttFont["name"].names[index].string = backup
 
 
-def NOT_IMPLEMENTED_test_check_160():
+def NOT_IMPLEMENTED_test_check_name_postscriptname():
   """ Check name table: POSTSCRIPT_NAME entries. """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_160 as check
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_name_postscriptname as check
   # TODO: Implement-me!
   #
   # code-paths:
