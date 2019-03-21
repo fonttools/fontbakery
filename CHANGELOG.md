@@ -74,6 +74,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/071]:** com.google.fonts/check/family_naming_recommendations
   - **[com.google.fonts/check/072]:** com.google.fonts/check/smart_dropout
   - **[com.google.fonts/check/073]:** com.google.fonts/check/maxadvancewidth
+  - **[com.google.fonts/check/074]:** com.google.fonts/check/name/ascii_only_entries
   - **[com.google.fonts/check/075]:** com.google.fonts/check/points_out_of_bounds
   - **[com.google.fonts/check/077]:** com.google.fonts/check/all_glyphs_have_codepoints
   - **[com.google.fonts/check/079]:** com.google.fonts/check/monospace_max_advancewidth

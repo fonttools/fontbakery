@@ -752,9 +752,9 @@ def test_check_currency_chars():
   assert status == FAIL
 
 
-def test_check_074():
+def test_check_name_ascii_only_entries():
   """ Are there non-ASCII characters in ASCII-only NAME table entries? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_074 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_name_ascii_only_entries as check
 
   # Our reference Merriweather Regular is known to be good
   ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
