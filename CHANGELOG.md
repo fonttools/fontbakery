@@ -67,6 +67,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/064]:** com.google.fonts/check/ligature_carets
   - **[com.google.fonts/check/065]:** com.google.fonts/check/kerning_for_non_ligated_sequences
   - **[com.google.fonts/check/066]:** com.google.fonts/check/kern_table
+  - **[com.google.fonts/check/067]:** com.google.fonts/check/name_familyname_first_char
   - **[com.google.fonts/check/068]:** com.google.fonts/check/nameid/match_familyname_fullfont
   - **[com.google.fonts/check/069]:** com.google.fonts/check/glyf_unused_data
   - **[com.google.fonts/check/071]:** com.google.fonts/check/family_naming_recommendations
