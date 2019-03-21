@@ -24,7 +24,7 @@ spec_imports = (
     ),
 )
 
-# this is from the output of
+# this was initially generated based on the output of
 # $ fontbakery check-specification  fontbakery.specifications.googlefonts -L
 
 METADATA_CHECKS = [
@@ -43,7 +43,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/nameid/family_name'
       , 'com.google.fonts/check/metadata/nameid/post_script_name'
       , 'com.google.fonts/check/metadata/nameid/full_name'
-      , 'com.google.fonts/check/metadata/nameid/family_and_full_names' #FIXME! This seems redundant!
+      , 'com.google.fonts/check/metadata/nameid/family_and_full_names' # FIXME! This seems redundant!
       , 'com.google.fonts/check/metadata/nameid/copyright'
       , 'com.google.fonts/check/metadata/nameid/font_name' # FIXME! This looks suspiciously similar to com.google.fonts/check/metadata/nameid/family_name
       , 'com.google.fonts/check/metadata/match_fullname_postscript'
@@ -154,7 +154,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/reserved_font_name'
       , 'com.google.fonts/check/153' # Check if each glyph has the recommended amount of contours.
       , 'com.google.fonts/check/154' # Check font has same encoded glyphs as version hosted on fonts.google.com
-      , 'com.google.fonts/check/156' # Font has all mandatory 'name' table entries ?
+      , 'com.google.fonts/check/name/mandatory_entries'
       , 'com.google.fonts/check/157' # Check name table: FONT_FAMILY_NAME entries.
       , 'com.google.fonts/check/158' # Check name table: FONT_SUBFAMILY_NAME entries.
       , 'com.google.fonts/check/159' # Check name table: FULL_FONT_NAME entries.
@@ -177,7 +177,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/has_ttfautohint_params'
       , 'com.google.fonts/check/vttclean'
       , 'com.google.fonts/check/varfont/has_HVAR'
-#      , 'com.google.fonts/check/varfont/has_MVAR'
+      #, 'com.google.fonts/check/varfont/has_MVAR'
       , 'com.google.fonts/check/fontbakery_version'
       , 'com.google.fonts/check/aat'
       , 'com.adobe.fonts/check/postscript_name_cff_vs_name'
@@ -195,7 +195,7 @@ specification = spec_factory(default_section=Section("Google Fonts"))
 
 
 # -------------------------------------------------------------------
-#FIXME! Redundant with @condition canonical_stylename(font)?
+# FIXME! Redundant with @condition canonical_stylename(font)?
 @condition
 def style(font):
   """Determine font style from canonical filename."""
@@ -2898,12 +2898,12 @@ def familyname_with_spaces(familyname):
 
 
 @check(
-  id = 'com.google.fonts/check/156',
+  id = 'com.google.fonts/check/name/mandatory_entries',
   conditions = ['style'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_156(ttFont, style):
+def com_google_fonts_check_name_mandatory_entries(ttFont, style):
   """Font has all mandatory 'name' table entries ?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import RIBBI_STYLE_NAMES
