@@ -3817,7 +3817,7 @@ def check_skip_filter(checkid, font=None, **iterargs):
         # See: https://github.com/graphicore/librebarcode/issues/3
         'com.google.fonts/check/monospace'
       , 'com.google.fonts/check/gpos_kerning_info'
-      , 'com.google.fonts/check/070' # Font has all expected currency sign characters?
+      , 'com.google.fonts/check/currency_chars'
       , 'com.google.fonts/check/whitespace_ink'
   ):
     return False, ('LibreBarcode is blacklisted for this check, see '

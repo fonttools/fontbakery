@@ -27,7 +27,7 @@ def test_command_check_googlefonts():
   test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
 
   subprocess.check_output([
-      "fontbakery", "check-googlefonts", "-c", "com.google.fonts/check/001",
+      "fontbakery", "check-googlefonts", "-c", "com.google.fonts/check/canonical_filename",
       test_font
   ])
 

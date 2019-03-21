@@ -236,7 +236,7 @@ def hello_world():
 # This is achieved via the iterag definition of font: fonts
 def has_cap_r_in_name(font):
   """Filename contains an "R"."""
-  # This test is not very useful again, but for each
+  # This check is not very useful again, but for each
   # input it can result in a PASS or a FAIL.
   if 'R' not in font:
     # This is our first check that can potentially fail.
@@ -250,7 +250,7 @@ def has_cap_r_in_name(font):
 
 
 # conditions are used for the dependency injection as arguments
-# and to decide if a test will be skipped
+# and to decide if a check will be skipped
 @condition
 # ttFont is a condition built into FontSpec
 # it returns an instance of fontTools.TTLib.TTFont
@@ -319,17 +319,15 @@ specification.merge_specification(os2_specification)
 
 ### Naming Things: check-ids
 
-Check IDs should be **globally and temporally unique**. This means we once assign them and we never change them again. This can then be used to keep track of the history of checks and check-results. We already rely on this feature for our tooling and we'll rely more on it in the future. within a specification a check id must be unique as well, to make sharing of checks and mixing of specifications easier. Globally unique names are a good thing.
+Check IDs should ideally be **globally and temporally unique**. This means we once assign them and we never change them again. We plan to start enforcing this after FontBakery version 1.0.0 is released. This can then be used to keep track of the history of checks and check-results. We already rely on this feature for our tooling and we'll rely more on it in the future. within a specification a check id must be unique as well, to make sharing of checks and mixing of specifications easier. Globally unique names are a good thing.
 
 We want to encourage authors to contribute their own checks to the Font Bakery collection, if they are generally useful and fit into it. Therefore an agreement on how to create check ids is needed to avoid id-collisions.
 
 [Reverse domain name notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation) has proven useful and a nice side effect is that contributors to Font Bakery will stay appreciated. Here are some examples:
 
-`com.google.fonts/check/154`: while totally valid, we now think that more descriptive ids will be very helpful for humans like spec authors and maintainers. Only numbering is just harder to work with.
-
 `com.daltonmaag/check/required-fields` and `de.graphicore.fontbakery/spec-examples/hello`: both examples are valid and more or less descriptive.
 
-Of course, after your personal prefix, organizing names is up to you. One proposal is e.g. for tests that are specific to certain tables, the table name could be used as part of the check id.
+Of course, after your personal prefix, organizing names is up to you. One proposal is e.g. for checks that are specific to certain tables, the table name could be used as part of the check id.
 
 
 
@@ -344,8 +342,8 @@ The dependency injection of the Font Bakery Check runner is a feature that makes
 
 ```py
 # example from fontbakery.specifications.post
-@check(id='com.google.fonts/check/015')
-def com_google_fonts_check_015(ttFont):
+@check(id='com.google.fonts/check/post_table_version')
+def com_google_fonts_check_post_table_version(ttFont):
   """Font has post table version 2?"""
   if ttFont['post'].formatType != 2:
     yield FAIL, ("Post table should be version 2 instead of {}."
