@@ -699,12 +699,12 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
 # Disabled until we know the rationale.
 @disable
 @check(
-  id = 'com.google.fonts/check/078',
+  id = 'com.google.fonts/check/glyphnames_max_length',
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/735'
   }
 )
-def com_google_fonts_check_078(ttFont):
+def com_google_fonts_check_glyphnames_max_length(ttFont):
   """Check that glyph names do not exceed max length."""
   if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
       "post") and ttFont["post"].formatType == 3.0:

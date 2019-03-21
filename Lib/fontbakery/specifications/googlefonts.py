@@ -143,7 +143,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/name/ascii_only_entries'
       , 'com.google.fonts/check/points_out_of_bounds'
       , 'com.google.fonts/check/all_glyphs_have_codepoints'
-      #, 'com.google.fonts/check/078' # Check that glyph names do not exceed max length.
+      #, 'com.google.fonts/check/glyphnames_max_length'
       , 'com.google.fonts/check/monospace_max_advancewidth'
       , 'com.google.fonts/check/116' # Stricter unitsPerEm criteria for Google Fonts.
       , 'com.google.fonts/check/117' # Version number has increased since previous release on Google Fonts?
