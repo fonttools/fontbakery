@@ -731,9 +731,9 @@ def test_check_name_familyname_first_char():
   assert status == FAIL
 
 
-def test_check_070():
+def test_check_currency_chars():
   """ Font has all expected currency sign characters ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_070 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_currency_chars as check
 
   # Our reference Mada Medium is known to be good
   ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
