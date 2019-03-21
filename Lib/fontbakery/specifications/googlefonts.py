@@ -155,7 +155,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/contour_count'
       , 'com.google.fonts/check/production_encoded_glyphs'
       , 'com.google.fonts/check/name/mandatory_entries'
-      , 'com.google.fonts/check/157' # Check name table: FONT_FAMILY_NAME entries.
+      , 'com.google.fonts/check/name/familyname'
       , 'com.google.fonts/check/158' # Check name table: FONT_SUBFAMILY_NAME entries.
       , 'com.google.fonts/check/159' # Check name table: FULL_FONT_NAME entries.
       , 'com.google.fonts/check/160' # Check name table: POSTSCRIPT_NAME entries.
@@ -2940,7 +2940,7 @@ def get_only_weight(value):
 
 
 @check(
-  id = 'com.google.fonts/check/157',
+  id = 'com.google.fonts/check/name/familyname',
   conditions = ['style',
                 'familyname_with_spaces'],
   rationale = """
@@ -2952,7 +2952,7 @@ def get_only_weight(value):
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_157(ttFont, style, familyname_with_spaces):
+def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces):
   """ Check name table: FONT_FAMILY_NAME entries. """
   from fontbakery.utils import name_entry_id
   failed = False
