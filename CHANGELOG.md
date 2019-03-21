@@ -139,6 +139,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/170]:** com.google.fonts/check/varfont/regular_ital_coord
   - **[com.google.fonts/check/171]:** com.google.fonts/check/varfont/regular_opsz_coord
   - **[com.google.fonts/check/172]:** com.google.fonts/check/varfont/bold_wght_coord
+  - **[com.google.fonts/check/173]:** com.google.fonts/check/negative_advance_width
   - **[com.google.fonts/check/174]:** com.google.fonts/check/varfont/generate_static
   - **[com.google.fonts/check/180]:** com.google.fonts/check/loca/maxp_num_glyphs
 
