@@ -5,9 +5,9 @@ from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import ERROR
 
 
-def test_check_037():
+def test_check_fontvalidator():
   """ MS Font Validator checks """
-  from fontbakery.specifications.fontval import com_google_fonts_check_037 as check
+  from fontbakery.specifications.fontval import com_google_fonts_check_fontvalidator as check
 
   font = TEST_FILE("mada/Mada-Regular.ttf")
   # we want to run all FValidator checks only once,

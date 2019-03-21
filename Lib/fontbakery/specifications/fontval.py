@@ -9,9 +9,9 @@ spec_imports = ['.shared_conditions']
 specification = spec_factory(default_section=Section("Checks inherited from Microsoft Font Validator"))
 
 @check(
-  id = 'com.google.fonts/check/037'
+  id = 'com.google.fonts/check/fontvalidator'
 )
-def com_google_fonts_check_037(font):
+def com_google_fonts_check_fontvalidator(font):
   """Checking with Microsoft Font Validator."""
 
   # In some cases we want to override the severity level of
