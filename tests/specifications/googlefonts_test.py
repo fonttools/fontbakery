@@ -1956,9 +1956,9 @@ def NOT_IMPLEMENTED_test_check_fsselection():
   # ...
 
 
-def test_check_130():
+def test_check_italic_angle():
   """ Checking post.italicAngle value. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_130 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_italic_angle as check
   from fontbakery.utils import assert_results_contain
 
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
