@@ -1995,9 +1995,9 @@ def test_check_italic_angle():
       assert status == PASS
 
 
-def test_check_131():
+def test_check_mac_style():
   """ Checking head.macStyle value. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_131 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_mac_style as check
   from fontbakery.utils import assert_results_contain
   from fontbakery.constants import MacStyle
 

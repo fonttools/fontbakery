@@ -149,8 +149,8 @@ expected_check_ids = \
       , 'com.google.fonts/check/monospace_max_advancewidth'
       , 'com.google.fonts/check/version_bump'
       , 'com.google.fonts/check/production_glyphs_similarity'
-      , 'com.google.fonts/check/italic_angle' # Checking post.italicAngle value.
-      , 'com.google.fonts/check/131' # Checking head.macStyle value.
+      , 'com.google.fonts/check/italic_angle'
+      , 'com.google.fonts/check/mac_style'
       , 'com.google.fonts/check/reserved_font_name'
       , 'com.google.fonts/check/153' # Check if each glyph has the recommended amount of contours.
       , 'com.google.fonts/check/154' # Check font has same encoded glyphs as version hosted on fonts.google.com
@@ -2695,7 +2695,7 @@ def com_google_fonts_check_italic_angle(ttFont, style):
 
 
 @check(
-  id = 'com.google.fonts/check/131',
+  id = 'com.google.fonts/check/mac_style',
   conditions = ['style'],
   rationale = """
   The values of the flags on the macStyle entry on the 'head' OpenType
@@ -2704,7 +2704,7 @@ def com_google_fonts_check_italic_angle(ttFont, style):
   by its filename.
   """
 )
-def com_google_fonts_check_131(ttFont, style):
+def com_google_fonts_check_mac_style(ttFont, style):
   """Checking head.macStyle value."""
   from fontbakery.utils import check_bit_entry
   from fontbakery.constants import MacStyle
