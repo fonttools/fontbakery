@@ -113,6 +113,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/linegaps'
       , 'com.google.fonts/check/os2_metrics_match_hhea'
       , 'com.google.fonts/check/unitsperem'
+      , 'com.google.fonts/check/unitsperem_strict'
       , 'com.google.fonts/check/dsig'
       , 'com.google.fonts/check/mandatory_glyphs'
       , 'com.google.fonts/check/whitespace_glyphs'
@@ -145,7 +146,6 @@ expected_check_ids = \
       , 'com.google.fonts/check/all_glyphs_have_codepoints'
       #, 'com.google.fonts/check/glyphnames_max_length'
       , 'com.google.fonts/check/monospace_max_advancewidth'
-      , 'com.google.fonts/check/116' # Stricter unitsPerEm criteria for Google Fonts.
       , 'com.google.fonts/check/117' # Version number has increased since previous release on Google Fonts?
       , 'com.google.fonts/check/118' # Glyphs are similiar to Google Fonts version?
       , 'com.google.fonts/check/129' # Checking OS/2 fsSelection value.
@@ -2372,7 +2372,7 @@ def com_google_fonts_check_metatada_canonical_style_names(ttFont, font_metadata)
 
 
 @check(
-  id = 'com.google.fonts/check/116',
+  id = 'com.google.fonts/check/unitsperem_strict',
   rationale = """
   Even though the OpenType spec allows unitsPerEm to
   be any value between 16 and 16384, the Google Fonts
@@ -2403,7 +2403,7 @@ def com_google_fonts_check_metatada_canonical_style_names(ttFont, font_metadata)
   added benefit.
   """
 )
-def com_google_fonts_check_116(ttFont):
+def com_google_fonts_check_unitsperem_strict(ttFont):
   """ Stricter unitsPerEm criteria for Google Fonts. """
   upm_height = ttFont["head"].unitsPerEm
   ACCEPTABLE = [16, 32, 64, 128, 256, 500,

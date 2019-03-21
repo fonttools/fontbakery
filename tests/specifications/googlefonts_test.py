@@ -1885,9 +1885,9 @@ def NOT_IMPLEMENTED_test_check_metatada_canonical_style_names():
   # - PASS, "Font styles are named canonically."
 
 
-def test_check_116():
+def test_check_unitsperem_strict():
   """ Stricter unitsPerEm criteria for Google Fonts. """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_116 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_unitsperem_strict as check
 
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   ttFont = TTFont(fontfile)
