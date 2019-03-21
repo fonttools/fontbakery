@@ -971,11 +971,10 @@ class Profile:
     numerical_check_ids = [c for c in registered_checks if is_numerical_id(c)]
     if numerical_check_ids:
       num = len(numerical_check_ids)
-      percentage = 100.0 * num / len(registered_checks)
-      print(f'\nThere still are {num} numerical check IDs. ({percentage:.2f}%)\n'
-             'They should all be renamed to keyword-based IDs.\n'
-             'See: https://github.com/googlefonts/fontbakery/issues/2238\n\n')
-      # assert(percentage == 0)
+      list_of_checks = "\t- " + "\n\t- ".join(numerical_check_ids)
+      raise SetupError(f'\n\nNumerical check IDs must be renamed to keyword-based IDs:\n'
+                       f'{list_of_checks}\n\n'
+                        'See also: https://github.com/googlefonts/fontbakery/issues/2238\n\n')
 
   def resolve_alias(self, original_name):
     name = original_name
