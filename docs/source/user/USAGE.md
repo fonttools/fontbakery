@@ -13,8 +13,7 @@ This has several subcommands, described in the help function:
         check-collection
         check-fontval
         check-googlefonts
-        check-noto-version
-        check-specification
+        check-profile
         generate-glyphdata
     
     Subcommands have their own help messages. These are usually 
@@ -36,7 +35,7 @@ This is the command used by foundries checking their projects for Google Fonts
 
 
 
-It runs the checks that we use in the [`specifications/googlefonts.py` Python script](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/specifications/googlefonts.py)
+It runs the checks that we use in the [`profiles/googlefonts.py` Python script](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/profiles/googlefonts.py)
 
 To run the checks on some fonts:
 

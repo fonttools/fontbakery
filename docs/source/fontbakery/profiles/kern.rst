@@ -2,6 +2,6 @@
 kern
 ####
 
-.. automodule:: fontbakery.specifications.kern
+.. automodule:: fontbakery.profiles.kern
    :members:
    :undoc-members:

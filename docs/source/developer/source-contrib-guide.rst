@@ -85,11 +85,11 @@ When your work is complete, deactivate the virtual environment with the followin
 
    $ deactivate  
 
-Custom Font Bakery Specifications
+Custom Font Bakery Profiles
 ---------------------------------
 
-Please see :doc:`writing-specifications` for instructions on how to
-write custom Font Bakery specifications.
+Please see :doc:`writing-profiles` for instructions on how to
+write custom Font Bakery profiles.
 
 Source Code Testing
 -------------------
