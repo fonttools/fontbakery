@@ -121,6 +121,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/152]:** com.google.fonts/check/reserved_font_name
   - **[com.google.fonts/check/155]:** com.google.fonts/check/metadata_nameid_copyright
   - **[com.google.fonts/check/163]:** com.google.fonts/check/family_and_style_max_length
+  - **[com.google.fonts/check/164]:** com.google.fonts/check/name/copyright_length
   - **[com.google.fonts/check/165]:** com.google.fonts/check/fontdata_namecheck
   - **[com.google.fonts/check/166]:** com.google.fonts/check/fontv
   - **[com.google.fonts/check/167]:** com.google.fonts/check/varfont/regular_wght_coord
