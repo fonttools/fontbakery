@@ -115,6 +115,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/116]:** com.google.fonts/check/unitsperem_strict
   - **[com.google.fonts/check/117]:** com.google.fonts/check/version_bump
   - **[com.google.fonts/check/118]:** com.google.fonts/check/production_glyphs_similarity
+  - **[com.google.fonts/check/129]:** com.google.fonts/check/fsselection
   - **[com.google.fonts/check/152]:** com.google.fonts/check/reserved_font_name
   - **[com.google.fonts/check/155]:** com.google.fonts/check/metadata_nameid_copyright
   - **[com.google.fonts/check/163]:** com.google.fonts/check/family_and_style_max_length
