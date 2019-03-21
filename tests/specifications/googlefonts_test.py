@@ -570,11 +570,11 @@ def NOT_IMPLEMENTED_test_check_name_license_url():
   # - PASS
 
 
-def test_check_032():
+def test_check_name_description_max_length():
   """ Description strings in the name table
       must not exceed 200 characters.
   """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_032 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_name_description_max_length as check
 
   print('Test PASS with a good font...')
   # Our reference Mada Regular is know to be good here.
