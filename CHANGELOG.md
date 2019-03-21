@@ -38,6 +38,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/034]:** com.google.fonts/check/xavgcharwidth
   - **[com.google.fonts/check/035]:** com.google.fonts/check/ftxvalidator
   - **[com.google.fonts/check/036]:** com.google.fonts/check/ots
+  - **[com.google.fonts/check/037]:** com.google.fonts/check/fontvalidator
   - **[com.google.fonts/check/038]:** com.google.fonts/check/fontforge_stderr
   - **[com.google.fonts/check/039]:** com.google.fonts/check/fontforge
   - **[com.google.fonts/check/040]:** com.google.fonts/check/win_ascent_and_descent

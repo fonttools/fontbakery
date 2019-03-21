@@ -7,7 +7,7 @@ def check_filter(item_type, item_id, item):
   if item_type == "check" and item_id in (
       "com.google.fonts/check/ftxvalidator",
       "com.google.fonts/check/ots",
-      "com.google.fonts/check/037",  # Font Validator
+      "com.google.fonts/check/fontvalidator",
       "com.google.fonts/check/fontforge_stderr",
       "com.google.fonts/check/fontforge",
   ):
