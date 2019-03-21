@@ -127,7 +127,7 @@ expected_check_ids = \
       , 'com.google.fonts/check/name_table_line_breaks'
       , 'com.google.fonts/check/valid_glyphnames'
       , 'com.google.fonts/check/unique_glyphnames'
-      , 'com.google.fonts/check/061' # EPAR table present in font?
+      , 'com.google.fonts/check/epar'
       , 'com.google.fonts/check/062' # Is 'gasp' table correctly set?
       , 'com.google.fonts/check/gpos_kerning_info'
       , 'com.google.fonts/check/ligature_carets'
@@ -1191,7 +1191,7 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
 
 
 @check(
-  id = 'com.google.fonts/check/061',
+  id = 'com.google.fonts/check/epar',
   rationale = """
     The EPAR table is/was a way of expressing common licensing permissions
     and restrictions in metadata; while almost nothing supported it,
@@ -1205,9 +1205,9 @@ def com_google_fonts_check_056(ttFont, ttfautohint_stats):
     'request': 'https://github.com/googlefonts/fontbakery/issues/226'
   }
 )
-def com_google_fonts_check_061(ttFont):
+def com_google_fonts_check_epar(ttFont):
   """EPAR table present in font?"""
-#  import ipdb; ipdb.set_trace()
+
   if "EPAR" not in ttFont:
     yield INFO, ("EPAR table not present in font."
                  " To learn more see"

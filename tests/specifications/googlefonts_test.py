@@ -674,9 +674,9 @@ def test_check_has_ttfautohint_params(expected_status, fontfile):
   assert status == expected_status
 
 
-def test_check_061():
+def test_check_epar():
   """ EPAR table present in font ? """
-  from fontbakery.specifications.googlefonts import com_google_fonts_check_061 as check
+  from fontbakery.specifications.googlefonts import com_google_fonts_check_epar as check
 
   # Our reference Mada Regular lacks an EPAR table:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
