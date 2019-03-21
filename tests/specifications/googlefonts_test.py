@@ -840,9 +840,9 @@ def test_check_metadata_listed_on_gfonts():
 # FIXME: This check is currently disabled:
 # - Review and re-enable.
 # - Implement the test.
-def NOT_IMPLEMENTED_test_check_metadata_listed_on_gfonts():
+def NOT_IMPLEMENTED_test_check_metadata_profiles_csv():
   """ METADATA.pb: Designer exists in Google Fonts profiles.csv? """
-  # from fontbakery.specifications.googlefonts import com_google_fonts_check_metadata_listed_on_gfonts as check
+  # from fontbakery.specifications.googlefonts import com_google_fonts_check_metadata_profiles_csv as check
   # TODO: Implement-me!
   #
   # code-paths:

@@ -100,7 +100,7 @@ NAME_TABLE_CHECKS = [
       , 'com.google.fonts/check/name/rfn'
       , 'com.google.fonts/check/name/family_and_style_max_length'
       , 'com.google.fonts/check/name/copyright_length'
-      , 'com.adobe.fonts/check/postscript_name_cff_vs_name'
+      , 'com.adobe.fonts/check/name/postscript_vs_cff'
       , 'com.adobe.fonts/check/postscript_name_consistency'
       , 'com.adobe.fonts/check/max_4_fonts_per_family_name'
 ]
@@ -1422,10 +1422,10 @@ def com_google_fonts_check_metadata_listed_on_gfonts(listed_on_gfonts_api):
 # https://github.com/googlefonts/fontbakery/issues/1728
 @disable
 @check(
-  id = 'com.google.fonts/check/metadata/listed_on_gfonts',
+  id = 'com.google.fonts/check/metadata/profiles_csv',
   conditions = ['family_metadata']
 )
-def com_google_fonts_check_metadata_listed_on_gfonts(family_metadata):
+def com_google_fonts_check_metadata_profiles_csv(family_metadata):
   """METADATA.pb: Designer exists in Google Fonts profiles.csv?"""
   PROFILES_GIT_URL = ("https://github.com/google/"
                       "fonts/blob/master/designers/profiles.csv")

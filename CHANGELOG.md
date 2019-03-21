@@ -79,7 +79,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/077]:** com.google.fonts/check/all_glyphs_have_codepoints
   - **[com.google.fonts/check/078]:** com.google.fonts/check/glyphnames_max_length
   - **[com.google.fonts/check/079]:** com.google.fonts/check/monospace_max_advancewidth
-  - **[com.google.fonts/check/082]:** com.google.fonts/check/metadata/listed_on_gfonts
+  - **[com.google.fonts/check/082]:** com.google.fonts/check/metadata/profiles_csv
   - **[com.google.fonts/check/083]:** com.google.fonts/check/metadata_unique_full_name_values
   - **[com.google.fonts/check/084]:** com.google.fonts/check/metadata/unique_weight_style_pairs
   - **[com.google.fonts/check/085]:** com.google.fonts/check/metadata/license
@@ -142,6 +142,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/173]:** com.google.fonts/check/negative_advance_width
   - **[com.google.fonts/check/174]:** com.google.fonts/check/varfont/generate_static
   - **[com.google.fonts/check/180]:** com.google.fonts/check/loca/maxp_num_glyphs
+  - **[com.abobe.fonts/check/postscript_name_cff_vs_name]:** com.abobe.fonts/check/name/postscript_vs_cff
 
 ### Other relevant code-changes
   - We temporarily disabled com.google.fonts/check/metadata/match_filename_postscript for variable fonts until we have a clear definition of the VF naming rules as discussed at https://github.com/google/fonts/issues/1817
