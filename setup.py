@@ -41,7 +41,7 @@ setup(
     package_dir={'': 'Lib'},
     packages=['fontbakery',
               'fontbakery.reporters',
-              'fontbakery.specifications',
+              'fontbakery.profiles',
               'fontbakery.commands'
               ],
     package_data={'fontbakery': ['data/*.cache']},

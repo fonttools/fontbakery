@@ -7,7 +7,7 @@ While created specifically for checking fonts and font-families this
 module has no domain knowledge about fonts. It can be used for any kind
 of (document) checking. Please keep it so. It will be valuable for other
 domains as well.
-Domain specific knowledge should be encoded only in the Spec (Checks,
+Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 from fontbakery.checkrunner import (
@@ -38,7 +38,7 @@ class SerializeReporter(FontbakeryReporter):
     self._doc = None
 
     # used when self._results_by is set
-    # this way we minimize our knowledge of the specification
+    # this way we minimize our knowledge of the profile
     self._max_cluster_by_index = None
     self._observed_checks = {}
 

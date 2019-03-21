@@ -7,7 +7,7 @@ While created specifically for running checks on fonts and font-families
 this module has no domain knowledge about fonts. It can be used for any
 kind of (document) checking. Please keep it so. It will be valuable for
 other domains as well.
-Domain specific knowledge should be encoded only in the Spec (Checks,
+Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
@@ -147,8 +147,8 @@ class FontBakeryCheck(FontbakeryCallable):
     eternity**. This is meant to provide a way to track
     burn-down or regressions in a project over time and maybe
     to identify changed/updated check implementations for partial
-    spec re-evaluation (in contrast to full spec evaluation) if
-    the spec/check changed but not the font.
+    profile re-evaluation (in contrast to full profile evaluation)
+    if the profile/check changed but not the font.
 
     description: text, used as one line short description
     read by humans
@@ -159,7 +159,7 @@ class FontBakeryCheck(FontbakeryCallable):
     conditions: a list of condition names that must be all true
     in order for this check to be executed. conditions are similar
     to checks, because they also inspect the check subject and they
-    also belong to the spec. However, they do not get reported
+    also belong to the profile. However, they do not get reported
     directly (there could be checks that report the result of a
     condition). Conditions are **probably** registered and
     referenced by name (like "isVariableFont"). We may accept a

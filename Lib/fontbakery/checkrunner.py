@@ -7,7 +7,7 @@ While created specifically for checking fonts and font-families this
 module has no domain knowledge about fonts. It can be used for any kind
 of (document) checking. Please keep it so. It will be valuable for other
 domains as well.
-Domain specific knowledge should be encoded only in the Spec (Checks,
+Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
@@ -125,7 +125,7 @@ FAIL = Status('FAIL', 5) # a FAIL is a problem detected in the font or family
 
 
 # Start of the suite of checks. Must be always the first message, even in async mode.
-# Message is the full execution order of the whole spec
+# Message is the full execution order of the whole profile
 START = Status('START', -6)
 # Only between START and END.
 # Message is the execution order of the section.
@@ -172,8 +172,8 @@ class FailedCheckError(FontBakeryRunnerError):
     super(FailedCheckError, self).__init__(message, *args)
 
 class FailedConditionError(FontBakeryRunnerError):
-  """ This is a serious problem with the check suite spec and it must
-  be solved.
+  """ This is a serious problem with the check suite profile
+  and it must be solved.
   """
   def __init__(self, condition, error, *args):
     message = 'The condition {} had an error: {}: {}'.format(condition, type(error).__name__, error)
@@ -183,8 +183,8 @@ class FailedConditionError(FontBakeryRunnerError):
     super(FailedConditionError, self).__init__(message, *args)
 
 class MissingConditionError(FontBakeryRunnerError):
-  """ This is a serious problem with the check suite spec and it must
-  be solved, most probably a typo.
+  """ This is a serious problem with the check suite profile
+  and it must be solved, most probably a typo.
   """
   def __init__(self, condition_name, error, *args):
     message = 'The condition named {} is missing: {}: {}'.format(
@@ -227,8 +227,8 @@ def is_negated(name):
   return False, stripped
 
 class CheckRunner:
-  def __init__(self, spec, values
-             , values_can_override_spec_names=True
+  def __init__(self, profile, values
+             , values_can_override_profile_names=True
              , custom_order=None
              , explicit_checks=None
              , exclude_checks=None
@@ -241,21 +241,21 @@ class CheckRunner:
     self._explicit_checks = explicit_checks
     self._exclude_checks = exclude_checks
     self._iterargs = OrderedDict()
-    for singular, plural in spec.iterargs.items():
+    for singular, plural in profile.iterargs.items():
       values[plural] = tuple(values[plural])
       self._iterargs[singular] = len(values[plural])
 
-    if not values_can_override_spec_names:
+    if not values_can_override_profile_names:
       for name in values:
-        if spec.has(name) and spec.get_type(name) != 'expected_values':
+        if profile.has(name) and profile.get_type(name) != 'expected_values':
                 # of course values can override expected_values, that's
                 # their purpose!.
-          raise SetupError('Values entry "{}" collides with spec '\
-                      'namespace as a {}'.format(name, spec.get_type(name)))
+          raise SetupError('Values entry "{}" collides with profile '\
+                      'namespace as a {}'.format(name, profile.get_type(name)))
 
-    self._spec = spec
-    self._spec.test_dependencies()
-    valid, message = self._spec.validate_values(values)
+    self._profile = profile
+    self._profile.test_dependencies()
+    valid, message = self._profile.validate_values(values)
     if not valid:
       raise ValueValidationError('Validation of expected values failed:'
                       '\n{}'.format(message))
@@ -271,13 +271,13 @@ class CheckRunner:
     """ uses the singular name as key """
     iterargs = OrderedDict()
     for name in self._iterargs:
-      plural = self._spec.iterargs[name]
+      plural = self._profile.iterargs[name]
       iterargs[name] = tuple(self._values[plural])
     return iterargs
 
   @property
-  def specification(self):
-    return self._spec
+  def profile(self):
+    return self._profile
 
   def _check_result(self, result):
     """ Check that the check returned a well formed result:
@@ -361,7 +361,7 @@ class CheckRunner:
     path.append(name)
 
     try:
-      condition = self._spec.conditions[name]
+      condition = self._profile.conditions[name]
     except KeyError as err:
       error = MissingConditionError(name, err)
       return error, None
@@ -381,14 +381,14 @@ class CheckRunner:
 
   def _filter_condition_used_iterargs(self, name, iterargs):
     allArgs = set()
-    names = list(self._spec.conditions[name].args)
+    names = list(self._profile.conditions[name].args)
     while(names):
       name = names.pop()
       if name in allArgs:
         continue
       allArgs.add(name)
-      if name in self._spec.conditions:
-        names += self._spec.conditions[name].args
+      if name in self._profile.conditions:
+        names += self._profile.conditions[name].args
     return tuple( (name, value) for name, value in iterargs
                                                   if name in allArgs)
 
@@ -410,7 +410,7 @@ class CheckRunner:
 
   def get_iterarg(self, name, index):
     """ Used by e.g. reporters """
-    plural = self._spec.iterargs[name]
+    plural = self._profile.iterargs[name]
     return self._values[plural][index]
 
   def _generate_iterargs(self, requirements):
@@ -426,8 +426,8 @@ class CheckRunner:
   def _derive_iterable_condition(self, name, simple=False, path=None):
     # returns a generator, which is better for memory critical situations
     # than a list containing all results of the used conditions
-    condition = self._spec.conditions[name]
-    iterargs = self._spec.get_iterargs(condition)
+    condition = self._profile.conditions[name]
+    iterargs = self._profile.get_iterargs(condition)
 
     if not iterargs:
       # without this, we would return just an empty tuple
@@ -456,25 +456,25 @@ class CheckRunner:
       return self._values[name]
 
     original_name = name
-    name = self._spec.resolve_alias(name)
+    name = self._profile.resolve_alias(name)
     if name != original_name and name in self._values:
       return self._values[name]
 
-    nametype = self._spec.get_type(name, None)
+    nametype = self._profile.get_type(name, None)
 
     if name in self._values:
       return self._values[name]
 
     if nametype == 'expected_values':
       # No need to validate
-      expected_value = self._spec.get(name)
+      expected_value = self._profile.get(name)
       if expected_value.has_default:
         # has no default: fallback or MissingValueError
         return expected_value.default
 
     if nametype == 'iterargs' and name in iterargsDict:
       index = iterargsDict[name]
-      plural = self._spec.get(name)
+      plural = self._profile.get(name)
       return self._values[plural][index]
 
     if nametype == 'conditions':
@@ -484,7 +484,7 @@ class CheckRunner:
       return value
 
     if nametype == 'derived_iterables':
-      condition_name, simple = self._spec.get(name)
+      condition_name, simple = self._profile.get(name)
       return self._derive_iterable_condition(condition_name, simple, path)
 
     if has_fallback:
@@ -545,14 +545,14 @@ class CheckRunner:
     # A check is more than just a function, it carries
     # a lot of meta-data for us, in this case we can use
     # meta-data to learn how to call the check (via
-    # configuration or inspection, where inspection would be
+    # configuration or inprofiletion, where inprofiletion would be
     # the default and configuration could be used to override
-    # inspection results).
+    # inprofiletion results).
 
     skipped = None
-    if self._spec.check_skip_filter:
+    if self._profile.check_skip_filter:
       iterargsDict = {key:self.get_iterarg(key, index) for key, index in iterargs}
-      accepted, message = self._spec.check_skip_filter(check.id, **iterargsDict)
+      accepted, message = self._profile.check_skip_filter(check.id, **iterargsDict)
       if not accepted:
         skipped = (SKIP, 'Filtered: {}'.format(message or '(no message)'))
 
@@ -597,10 +597,10 @@ class CheckRunner:
 
   # old, more straight forward, but without a point to extract the order
   # def run(self):
-  #   for section in self._spec.sections:
+  #   for section in self._profile.sections:
   #     yield STARTSECTION, section
   #     for check, iterargs in section.execution_order(self._iterargs
-  #                            , getConditionByName=self._spec.conditions.get):
+  #                            , getConditionByName=self._profile.conditions.get):
   #       for event in self._run_check(check, iterargs):
   #         yield event;
   #     yield ENDSECTION, None
@@ -611,7 +611,7 @@ class CheckRunner:
     if order is None:
       order = []
       # section, check, iterargs = identity
-      for identity in self._spec.execution_order(self._iterargs,
+      for identity in self._profile.execution_order(self._iterargs,
                                     custom_order=self._custom_order,
                                     explicit_checks=self._explicit_checks,
                                     exclude_checks=self._exclude_checks):
@@ -678,7 +678,7 @@ def distribute_generator(gen, targets_callbacks):
 class Section:
   """ An ordered set of checks.
 
-  Used to structure checks in a specification. A specification consists
+  Used to structure checks in a profile. A profile consists
   of one or more sections.
   """
   def __init__(self, name, checks=None, order=None, description=None):
@@ -758,7 +758,7 @@ class Section:
 
   def register_check(self, func):
     """
-    # register in `special_section`
+    # register in `profileial_section`
     @my_section.register_check
     @check(id='com.example.fontbakery/check/0')
     def my_check():
@@ -774,7 +774,7 @@ class Section:
       checks.append(f"{check.id} # {check.description}")
     return checks
 
-class Spec:
+class Profile:
   def __init__(self
              , sections=None
              , iterargs=None
@@ -798,7 +798,7 @@ class Spec:
           with all combination of it's iterargs.
           If simple is False, the result returns tuples of: (iterars, value)
           where iterargs is a tuple of ('iterargname', number index)
-          Especially for cases where only one iterarg is involved, simple
+          Eprofileially for cases where only one iterarg is involved, simple
           can be set to True and the result list will just contain the values.
           Example:
 
@@ -889,7 +889,7 @@ class Spec:
       registered_value = getattr(self, registered_type)[name]
       if type == registered_type and registered_value == value:
         # if the registered equals: skip silently. Registering the same
-        # value multiple times is allowed, so we can easily expand specifications
+        # value multiple times is allowed, so we can easily expand profiles
         # that define (partly) the same entries
         return
 
@@ -907,7 +907,7 @@ class Spec:
     target[name] = value
 
   def test_dependencies(self):
-    """ Raises SetupError if spec uses any names that are not declared
+    """ Raises SetupError if profile uses any names that are not declared
     in the its namespace.
     """
     seen = set()
@@ -932,19 +932,19 @@ class Spec:
           if condition is not None:
             dependencies += condition.args
     if len(failed):
-      raise SetupError('Spec uses names that are not declared in '
+      raise SetupError('Profile uses names that are not declared in '
                       'its namespace: {}.'.format(', '.join(failed)))
 
   def test_expected_checks(self, expected_check_ids, exclusive=False):
-    """ Self-test to make a sure spec maintainer is aware of changes in
-    the spec.
-    Raises SetupError if expected check ids are missing in the spec (removed)
+    """ Self-test to make a sure profile maintainer is aware of changes in
+    the profile.
+    Raises SetupError if expected check ids are missing in the profile (removed)
     If `exclusive=True` also raises SetupError if check ids are in the
-    spec that are not in expected_check_ids (newly added).
+    profile that are not in expected_check_ids (newly added).
 
-    This is handy if `spec.auto_register` is used and the spec maintainer
-    is looking for a high level of control over the spec contents,
-    especially for a warning when the spec contents have changed after an
+    This is handy if `profile.auto_register` is used and the profile maintainer
+    is looking for a high level of control over the profile contents,
+    eprofileially for a warning when the profile contents have changed after an
     update.
     """
     expected_check_ids = set(expected_check_ids)
@@ -959,7 +959,7 @@ class Spec:
     if unexpected_checks:
       message.append('unexpected checks: {};'.format(', '.join(unexpected_checks)))
     if message:
-      raise SetupError('Spec fails expected checks test:\n{}'.format(
+      raise SetupError('Profile fails expected checks test:\n{}'.format(
                                               '\n'.join(message)))
 
     def is_numerical_id(checkid):
@@ -995,7 +995,7 @@ class Spec:
     Validate values if they are registered as expected_values and present.
 
     * If they are not registered they shouldn't be used anywhere at all
-      because specification can self check (spec.check_dependencies) for
+      because profile can self check (profile.check_dependencies) for
       missing/undefined dependencies.
 
     * If they are not present in values but registered as expected_values
@@ -1300,13 +1300,13 @@ class Spec:
     """
     Usage:
     # register in default section
-    @spec.register_check
+    @profile.register_check
     @check(id='com.example.fontbakery/check/0')
     def my_check():
       yield PASS, 'example'
 
-    # register in `special_section` also register that section in the spec
-    @spec.register_check(special_section)
+    # register in `profileial_section` also register that section in the profile
+    @profile.register_check(profileial_section)
     @check(id='com.example.fontbakery/check/0')
     def my_check():
       yield PASS, 'example'
@@ -1328,14 +1328,14 @@ class Spec:
     """
     Usage:
 
-    @spec.register_condition
+    @profile.register_condition
     @condition
     def myCondition():
       return 123
 
     #or
 
-    @spec.register_condition(name='my_condition')
+    @profile.register_condition(name='my_condition')
     @condition
     def myCondition():
       return 123
@@ -1360,9 +1360,9 @@ class Spec:
       return None
     return name.rpartition('.')[0]
 
-  def _load_spec_imports(self, symbol_table):
+  def _load_profile_imports(self, symbol_table):
     """
-    spec_imports is a list of module names or tuples
+    profile_imports is a list of module names or tuples
     of (module_name, names to import)
     in the form of ('.', names) it behaces like:
     from . import name1, name2, name3
@@ -1372,13 +1372,13 @@ class Spec:
     i.e. "name" in names becomes ".name"
     """
     results = []
-    if 'spec_imports' not in symbol_table:
+    if 'profile_imports' not in symbol_table:
       return results
 
     package = self._get_package(symbol_table)
-    spec_imports = symbol_table['spec_imports']
+    profile_imports = symbol_table['profile_imports']
 
-    for item in spec_imports:
+    for item in profile_imports:
       if isinstance(item, str):
         # import the whole module
         module_name, names = (item, None)
@@ -1414,24 +1414,24 @@ class Spec:
               results.append(sub_module)
     return results
 
-  def auto_register(self, symbol_table, filter_func=None, spec_imports=None):
+  def auto_register(self, symbol_table, filter_func=None, profile_imports=None):
     """
-      Register items from `symbol_table` in the specification.
+      Register items from `symbol_table` in the profile.
 
-      Get all items from `symbol_table` dict and from `symbol_table.spec_imports`
+      Get all items from `symbol_table` dict and from `symbol_table.profile_imports`
       if it is present. If they an item is an instance of FontBakeryCheck,
       FontBakeryCondition or FontBakeryExpectedValue and register it in
       the default section.
-      If an item is a python module, try to get a spec using `get_module_specification(item)`
-      and then using `merge_specification`;
-      If the spec_imports kwarg is given, it is used instead of the one taken from
+      If an item is a python module, try to get a profile using `get_module_profile(item)`
+      and then using `merge_profile`;
+      If the profile_imports kwarg is given, it is used instead of the one taken from
       the module namespace.
 
       To register the current module use explicitly:
-        `specification.auto_register(globals())`
-        OR maybe: `specification.auto_register(sys.modules[__name__].__dict__)`
+        `profile.auto_register(globals())`
+        OR maybe: `profile.auto_register(sys.modules[__name__].__dict__)`
       To register an imported module explicitly:
-        `specification.auto_register(module.__dict__)`
+        `profile.auto_register(module.__dict__)`
 
       if filter_func is defined it is called like:
       filter_func(type, name_or_id, item)
@@ -1445,11 +1445,11 @@ class Spec:
       if filter_func returns a falsy value for an item, the item will
       not be registered.
     """
-    if spec_imports:
+    if profile_imports:
       symbol_table = symbol_table.copy()  # Avoid messing with original table
-      symbol_table['spec_imports'] = spec_imports
+      symbol_table['profile_imports'] = profile_imports
 
-    all_items = list(symbol_table.values()) + self._load_spec_imports(symbol_table)
+    all_items = list(symbol_table.values()) + self._load_profile_imports(symbol_table)
     namespace_types = (FontBakeryCondition, FontBakeryExpectedValue)
     namespace_items = []
 
@@ -1466,9 +1466,9 @@ class Spec:
       elif isinstance(item, types.ModuleType):
         if filter_func and not filter_func('module', item.__name__, item):
           continue
-        specification = get_module_specification(item)
-        if specification:
-          self.merge_specification(specification, filter_func=filter_func)
+        profile = get_module_profile(item)
+        if profile:
+          self.merge_profile(profile, filter_func=filter_func)
 
     for item in namespace_items:
       if isinstance(item, FontBakeryCondition):
@@ -1480,22 +1480,22 @@ class Spec:
           continue
         self.register_expected_value(item)
 
-  def merge_specification(self, specification, filter_func=None):
-    """Copy all namespace items from specification to self.
+  def merge_profile(self, profile, filter_func=None):
+    """Copy all namespace items from profile to self.
 
     Namespace items are: 'iterargs', 'derived_iterables', 'aliases',
                          'conditions', 'expected_values'
 
-    Don't change any contents of specification ever!
+    Don't change any contents of profile ever!
     That means sections are cloned not used directly
 
     filter_func: see description in auto_register
     """
     # 'iterargs', 'derived_iterables', 'aliases', 'conditions', 'expected_values'
     for ns_type in self._valid_namespace_types:
-      # this will raise a NamespaceError if an item of specification.{ns_type}
+      # this will raise a NamespaceError if an item of profile.{ns_type}
       # is already registered.
-      ns_dict = getattr(specification, ns_type)
+      ns_dict = getattr(profile, ns_type)
       if filter_func:
         ns_type_singular = self._valid_namespace_types[ns_type]
         ns_dict = {name:item for name,item in ns_dict.items()
@@ -1504,12 +1504,12 @@ class Spec:
 
     check_filter_func = None if not filter_func else \
                       lambda check: filter_func('check', check.id, check)
-    for section in specification.sections:
+    for section in profile.sections:
       my_section = self._sections.get(str(section), None)
       if not len(section.checks):
         continue
       if my_section is None:
-        # create a new section: don't change other module/specification contents
+        # create a new section: don't change other module/profile contents
         my_section = section.clone(check_filter_func)
         self.add_section(my_section)
       else:
@@ -1561,7 +1561,7 @@ class Spec:
         partial(json.dumps, separators=(',', ':'))
         # iterargs are sorted, because it doesn't matter for the result
         # but it gives more predictable keys.
-        # Though, arguably, the order generated by the spec is also good
+        # Though, arguably, the order generated by the profile is also good
         # and conveys insights on how the order came to be (clustering of
         # iterargs). `sorted(iterargs)` however is more robust over time,
         # the keys will be the same, even if the sorting order changes.
@@ -1585,7 +1585,7 @@ class Spec:
 
   def setup_argparse(self, argument_parser):
     """
-    Set up custom arguments needed for this spec.
+    Set up custom arguments needed for this profile.
     Return a list of keys that will be set to the `values` dictonary
     """
     pass
@@ -1623,37 +1623,37 @@ class Spec:
     return result
 
 
-def get_module_specification(module, name=None):
+def get_module_profile(module, name=None):
   """
-  Get or create a specification from a module and return it.
+  Get or create a profile from a module and return it.
 
-  If the name `module.specification` is present the value of that is returned.
-  Otherwise, if the name `module.spec_factory` is present, a new specification
-  is created using `module.spec_factory` and then `specification.auto_register`
+  If the name `module.profile` is present the value of that is returned.
+  Otherwise, if the name `module.profile_factory` is present, a new profile
+  is created using `module.profile_factory` and then `profile.auto_register`
   is called with the module namespace.
-  If neither name is defined, the module is not considered a specification-module
+  If neither name is defined, the module is not considered a profile-module
   and None is returned.
 
-  TODO: describe the `name` argument and better define the signature of `spec_factory`.
+  TODO: describe the `name` argument and better define the signature of `profile_factory`.
 
   The `module` argument is expected to behave like a python module.
-  The optional `name` argument is used when `spec_factory` is called to
-  give a name to the default section of the new spec. If name is not
+  The optional `name` argument is used when `profile_factory` is called to
+  give a name to the default section of the new profile. If name is not
   present `module.__name__` is the fallback.
 
-  `spec_factory` is called like this:
-      `specification = module.spec_factory(default_section=default_section)`
+  `profile_factory` is called like this:
+      `profile = module.profile_factory(default_section=default_section)`
 
   """
   try:
-    # if specification is defined we just use it
-    return module.specification
-  except AttributeError: # > 'module' object has no attribute 'specification'
+    # if profile is defined we just use it
+    return module.profile
+  except AttributeError: # > 'module' object has no attribute 'profile'
     # try to create one on the fly.
-    # e.g. module.__name__ == "fontbakery.specifications.cmap"
-    if 'spec_factory' not in module.__dict__:
+    # e.g. module.__name__ == "fontbakery.profiles.cmap"
+    if 'profile_factory' not in module.__dict__:
       return None
     default_section = Section(name or module.__name__)
-    specification = module.spec_factory(default_section=default_section)
-    specification.auto_register(module.__dict__)
-    return specification
+    profile = module.profile_factory(default_section=default_section)
+    profile.auto_register(module.__dict__)
+    return profile
