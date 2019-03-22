@@ -40,12 +40,12 @@ def fontforge_check_results(font):
 
 
 @check(
-  id = 'com.google.fonts/check/single_family_directory',
+  id = 'com.google.fonts/check/family/single_directory',
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   }
 )
-def com_google_fonts_check_single_family_directory(fonts):
+def com_google_fonts_check_family_single_directory(fonts):
   """Checking all files are in the same directory.
 
   If the set of font files passed in the command line is not all in the

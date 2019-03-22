@@ -1,7 +1,7 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.7.0 (2019-Mar-21)
+## 0.7.0 (2019-Mar-22)
 ### Major code-changes
   - The term "specification" (including directory paths, class names and method names such as Spec, FontsSpec, etc) was replaced by "profile" throughout the codebase. The reason for this renaming was to avoid confusing with other uses of the term such as is "OpenType Specification".
   - All numerical check-IDs were renamed to keyword-based IDs. We may still change them as we see fit and we plan to freeze the check-id naming when Font Bakery 1.0.0 is released.
@@ -24,32 +24,34 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/postscript_name_consistency]:** "Name table ID 6 (PostScript name) must be consistent across platforms." (PR #2394)
 
 ## Some check id renaming for better naming consistency:
+  - **[com.google.fonts/check/tnum_horizontal_metrics]:** com.google.fonts/check/family/tnum_horizontal_metrics
+  - **[com.adobe.fonts/check/bold_italic_unique_for_nameid1]:** com.adobe.fonts/check/family/bold_italic_unique_for_nameid1
+  - **[com.adobe.fonts/check/max_4_fonts_per_family_name]:** com.adobe.fonts/check/family/max_4_fonts_per_family_name
   - **[com.abobe.fonts/check/postscript_name_cff_vs_name]:** com.abobe.fonts/check/name/postscript_vs_cff
   - **[com.adobe.fonts/check/postscript_name_consistency]:** com.adobe.fonts/check/name/postscript_name_consistency
-  - **[com.adobe.fonts/check/max_4_fonts_per_family_name]:** com.adobe.fonts/check/name/max_4_fonts_per_family_name
   - **[com.adobe.fonts/check/name_empty_records]:** com.adobe.fonts/check/name/empty_records
 
 ### Renamed numerical check-IDs:
   - **[com.google.fonts/check/001]:** com.google.fonts/check/canonical_filename
-  - **[com.google.fonts/check/002]:** com.google.fonts/check/single_family_directory
+  - **[com.google.fonts/check/002]:** com.google.fonts/check/family/single_directory
   - **[com.google.fonts/check/003]:** com.google.fonts/check/description/broken_links
   - **[com.google.fonts/check/004]:** com.google.fonts/check/description/valid_html
   - **[com.google.fonts/check/005]:** com.google.fonts/check/description/min_length
   - **[com.google.fonts/check/006]:** com.google.fonts/check/description/max_length
   - **[com.google.fonts/check/007]:** com.google.fonts/check/metadata/unknown_designer
-  - **[com.google.fonts/check/008]:** com.google.fonts/check/underline_thickness
-  - **[com.google.fonts/check/009]:** com.google.fonts/check/panose_proportion
-  - **[com.google.fonts/check/010]:** com.google.fonts/check/panose_familytype
-  - **[com.google.fonts/check/011]:** com.google.fonts/check/equal_numbers_of_glyphs
-  - **[com.google.fonts/check/012]:** com.google.fonts/check/equal_glyph_names
-  - **[com.google.fonts/check/013]:** com.google.fonts/check/equal_unicode_encodings
-  - **[com.google.fonts/check/014]:** com.google.fonts/check/equal_font_versions
+  - **[com.google.fonts/check/008]:** com.google.fonts/check/family/underline_thickness
+  - **[com.google.fonts/check/009]:** com.google.fonts/check/family/panose_proportion
+  - **[com.google.fonts/check/010]:** com.google.fonts/check/family/panose_familytype
+  - **[com.google.fonts/check/011]:** com.google.fonts/check/family/equal_numbers_of_glyphs
+  - **[com.google.fonts/check/012]:** com.google.fonts/check/family/equal_glyph_names
+  - **[com.google.fonts/check/013]:** com.google.fonts/check/family/equal_unicode_encodings
+  - **[com.google.fonts/check/014]:** com.google.fonts/check/family/equal_font_versions
   - **[com.google.fonts/check/015]:** com.google.fonts/check/post_table_version
   - **[com.google.fonts/check/016]:** com.google.fonts/check/fstype
   - **[com.google.fonts/check/018]:** com.google.fonts/check/vendor_id
   - **[com.google.fonts/check/019]:** com.google.fonts/check/name/unwanted_chars
   - **[com.google.fonts/check/020]:** com.google.fonts/check/usweightclass
-  - **[com.google.fonts/check/028]:** com.google.fonts/check/has_license
+  - **[com.google.fonts/check/028]:** com.google.fonts/check/family/has_license
   - **[com.google.fonts/check/029]:** com.google.fonts/check/name/license
   - **[com.google.fonts/check/030]:** com.google.fonts/check/name/license_url
   - **[com.google.fonts/check/031]:** com.google.fonts/check/name/no_copyright_on_description
@@ -61,7 +63,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/037]:** com.google.fonts/check/fontvalidator
   - **[com.google.fonts/check/038]:** com.google.fonts/check/fontforge_stderr
   - **[com.google.fonts/check/039]:** com.google.fonts/check/fontforge
-  - **[com.google.fonts/check/040]:** com.google.fonts/check/win_ascent_and_descent
+  - **[com.google.fonts/check/040]:** com.google.fonts/check/family/win_ascent_and_descent
   - **[com.google.fonts/check/041]:** com.google.fonts/check/linegaps
   - **[com.google.fonts/check/042]:** com.google.fonts/check/os2_metrics_match_hhea
   - **[com.google.fonts/check/043]:** com.google.fonts/check/unitsperem
@@ -86,8 +88,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/064]:** com.google.fonts/check/ligature_carets
   - **[com.google.fonts/check/065]:** com.google.fonts/check/kerning_for_non_ligated_sequences
   - **[com.google.fonts/check/066]:** com.google.fonts/check/kern_table
-  - **[com.google.fonts/check/067]:** com.google.fonts/check/name_familyname_first_char
-  - **[com.google.fonts/check/068]:** com.google.fonts/check/nameid/match_familyname_fullfont
+  - **[com.google.fonts/check/067]:** com.google.fonts/check/name/familyname_first_char
+  - **[com.google.fonts/check/068]:** com.google.fonts/check/name/match_familyname_fullfont
   - **[com.google.fonts/check/069]:** com.google.fonts/check/glyf_unused_data
   - **[com.google.fonts/check/070]:** com.google.fonts/check/currency_chars
   - **[com.google.fonts/check/071]:** com.google.fonts/check/family_naming_recommendations

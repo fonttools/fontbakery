@@ -30,9 +30,9 @@ def mada_ttFonts():
   return [TTFont(path) for path in mada_fonts]
 
 
-def test_check_underline_thickness(mada_ttFonts):
+def test_check_family_underline_thickness(mada_ttFonts):
   """ Fonts have consistent underline thickness ? """
-  from fontbakery.profiles.post import com_google_fonts_check_underline_thickness as check
+  from fontbakery.profiles.post import com_google_fonts_check_family_underline_thickness as check
 
   # We start with our reference Mada font family,
   # which we know has the same value of post.underlineThickness

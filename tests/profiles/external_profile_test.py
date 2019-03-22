@@ -16,7 +16,7 @@ def check_filter(item_type, item_id, item):
   return True
 
 
-def test_external_profileification():
+def test_external_profile():
   """Test the creation of external profiles."""
   profile = profile_factory(default_section=Section("Dalton Maag OpenType"))
   profile.auto_register(
@@ -25,7 +25,7 @@ def test_external_profileification():
       filter_func=check_filter)
 
   # Probe some tests
-  expected_tests = ["com.google.fonts/check/single_family_directory",
+  expected_tests = ["com.google.fonts/check/family/single_directory",
                     "com.google.fonts/check/varfont/regular_opsz_coord"]
   profile.test_expected_checks(expected_tests)
 

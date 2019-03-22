@@ -311,9 +311,9 @@ def test_check_metadata_unknown_designer():
   assert status == FAIL
 
 
-def test_check_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
+def test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
   """ Fonts have equal numbers of glyphs? """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_equal_numbers_of_glyphs as check
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_family_equal_numbers_of_glyphs as check
 
   print('Test PASS with good family.')
   # our reference Cabin family is know to be good here.
@@ -327,9 +327,9 @@ def test_check_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
   assert status == FAIL
 
 
-def test_check_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
+def test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
   """ Fonts have equal glyph names? """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_equal_glyph_names as check
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_family_equal_glyph_names as check
 
   print('Test PASS with good family.')
   # our reference Cabin family is know to be good here.
@@ -498,10 +498,10 @@ def test_family_directory_condition():
                                               # are correctly detected on the current
                                               # working directory.
 
-def test_check_has_license():
+def test_check_family_has_license():
   """ Check font project has a license. """
-  from fontbakery.profiles.googlefonts import (com_google_fonts_check_has_license as check,
-                                                     licenses)
+  from fontbakery.profiles.googlefonts import (com_google_fonts_check_family_has_license as check,
+                                               licenses)
 
   # The lines maked with 'hack' below are meant to
   # not let fontbakery's own license to mess up
@@ -2643,9 +2643,9 @@ def DISABLED_test_check_varfont_has_MVAR():
   assert status == FAIL
 
 
-def test_check_win_ascent_and_descent(mada_ttFonts):
+def test_check_family_win_ascent_and_descent(mada_ttFonts):
   """ Checking OS/2 usWinAscent & usWinDescent. """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_win_ascent_and_descent as check
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_family_win_ascent_and_descent as check
   from fontbakery.profiles.shared_conditions import vmetrics
 
   # Our reference Mada Regular is know to be bad here.
@@ -2828,6 +2828,16 @@ def test_check_varfont_weight_instances():
   print ("Test PASS with a good font...")
   status, message = list(check(ttFont))[-1]
   assert status == PASS
+
+
+def NOT_IMPLEMENTED_test_check_family_tnum_horizontal_metrics():
+  """ All tabular figures must have the same width across the RIBBI-family. """
+  # from fontbakery.profiles.googlefonts import com_google_fonts_check_family_tnum_horizontal_metrics as check
+  # TODO: Implement-me!
+  #
+  # code-paths:
+  # - FAIL
+  # - PASS
 
 
 def test_check_integer_ppem_if_hinted():

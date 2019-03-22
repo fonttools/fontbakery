@@ -8,9 +8,9 @@ from fontbakery.constants import NameID
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
 @check(
-  id = 'com.google.fonts/check/equal_font_versions'
+  id = 'com.google.fonts/check/family/equal_font_versions'
 )
-def com_google_fonts_check_equal_font_versions(ttFonts):
+def com_google_fonts_check_family_equal_font_versions(ttFonts):
   """Make sure all font files have the same version value."""
   all_detected_versions = []
   fontfile_versions = {}

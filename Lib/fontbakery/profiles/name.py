@@ -197,9 +197,9 @@ def com_google_fonts_check_name_line_breaks(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/nameid/match_familyname_fullfont'
+  id = 'com.google.fonts/check/name/match_familyname_fullfont'
 )
-def com_google_fonts_check_nameid_match_familyname_fullfont(ttFont):
+def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
   """Does full font name begin with the font family name?"""
   from fontbakery.utils import get_name_entry_strings
   familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
@@ -458,12 +458,12 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
 
 
 @check(
-  id='com.adobe.fonts/check/name/max_4_fonts_per_family_name',
+  id='com.adobe.fonts/check/family/max_4_fonts_per_family_name',
   rationale="""Per the OpenType spec. 'The Font Family name ... should be
   shared among at most four fonts that differ only in weight or style ...'
   """,
 )
-def com_adobe_fonts_check_name_max_4_fonts_per_family_name(ttFonts):
+def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
   """Verify that each group of fonts with the same nameID 1
   has maximum of 4 fonts"""
   from collections import Counter

@@ -5,9 +5,9 @@ from fontbakery.checkrunner import (PASS, FAIL)
 from fontbakery.utils import TEST_FILE
 
 
-def test_check_consistent_upm():
+def test_check_family_consistent_upm():
     from fontbakery.profiles.adobe_fonts import (
-        com_adobe_fonts_check_consistent_upm as check)
+        com_adobe_fonts_check_family_consistent_upm as check)
 
     base_path = TEST_FILE("source-sans-pro/OTF")
 
@@ -35,14 +35,14 @@ def test_get_family_checks():
     family_checks = profile.get_family_checks()
     family_check_ids = {check.id for check in family_checks}
     expected_family_check_ids = {
-        'com.adobe.fonts/check/bold_italic_unique_for_nameid1',
-        'com.adobe.fonts/check/consistent_upm',
-        'com.adobe.fonts/check/name/max_4_fonts_per_family_name',
-        'com.google.fonts/check/underline_thickness',
-        'com.google.fonts/check/panose_proportion',
-        'com.google.fonts/check/panose_familytype',
-        'com.google.fonts/check/equal_unicode_encodings',
-        'com.google.fonts/check/equal_font_versions',
-        'com.google.fonts/check/win_ascent_and_descent'
+        'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1',
+        'com.adobe.fonts/check/family/consistent_upm',
+        'com.adobe.fonts/check/family/max_4_fonts_per_family_name',
+        'com.google.fonts/check/family/underline_thickness',
+        'com.google.fonts/check/family/panose_proportion',
+        'com.google.fonts/check/family/panose_familytype',
+        'com.google.fonts/check/family/equal_unicode_encodings',
+        'com.google.fonts/check/family/equal_font_versions',
+        'com.google.fonts/check/family/win_ascent_and_descent'
     }
     assert family_check_ids == expected_family_check_ids

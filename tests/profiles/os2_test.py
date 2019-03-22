@@ -46,9 +46,9 @@ cabin_fonts = [
 ]
 
 
-def test_check_panose_proportion(mada_ttFonts):
+def test_check_family_panose_proportion(mada_ttFonts):
   """ Fonts have consistent PANOSE proportion ? """
-  from fontbakery.profiles.os2 import com_google_fonts_check_panose_proportion as check
+  from fontbakery.profiles.os2 import com_google_fonts_check_family_panose_proportion as check
 
   print('Test PASS with good family.')
   status, message = list(check(mada_ttFonts))[-1]
@@ -64,9 +64,9 @@ def test_check_panose_proportion(mada_ttFonts):
   assert status == FAIL
 
 
-def test_check_panose_familytype(mada_ttFonts):
+def test_check_family_panose_familytype(mada_ttFonts):
   """ Fonts have consistent PANOSE family type ? """
-  from fontbakery.profiles.os2 import com_google_fonts_check_panose_familytype as check
+  from fontbakery.profiles.os2 import com_google_fonts_check_family_panose_familytype as check
 
   print('Test PASS with good family.')
   status, message = list(check(mada_ttFonts))[-1]
@@ -170,11 +170,11 @@ def test_check_fsselection_matches_macstyle():
   assert status == FAIL
 
 
-def test_check_bold_italic_unique_for_nameid1():
+def test_check_family_bold_italic_unique_for_nameid1():
   """Check that OS/2.fsSelection bold/italic settings are unique within each
   Compatible Family group (i.e. group of up to 4 with same NameID1)"""
   from fontbakery.profiles.os2 import \
-    com_adobe_fonts_check_bold_italic_unique_for_nameid1 as check
+    com_adobe_fonts_check_family_bold_italic_unique_for_nameid1 as check
   from fontbakery.constants import FsSelection
 
   base_path = portable_path("data/test/source-sans-pro/OTF")
