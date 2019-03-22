@@ -61,28 +61,29 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-03-11 05:28 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/c97e90c05c464565b11349b043e0139b76c6cd7e/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-03-18 05:08 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f0216771a8656ccce596a6dbf8fb0d7f5a707766/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2607" />
+<meta name="word_count" content="2620" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/15b8e1c6.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/991330b4.site-ltr.css ">
 
-	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/89eb8f33.conceptual.css ">
+	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f1e7d9d9.conceptual.css ">
 
 
 	<script>
 	var msDocs = {
-		data:{
+		data: {
+			timeOrigin: Date.now(),
 			azureHeaderLocale: 'en-us',
 			contentLocale: 'en-us',
 			contentDir: 'ltr',
@@ -120,7 +121,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/4f58cdc1.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a55db17d.index-docs.js"></script>
 
 </head>
 
@@ -592,6 +593,11 @@
 <tr>
 <td>ARPH</td>
 <td><a href="http://www.arphic.com" data-linktype="external">Arphic Technology Co.</a></td>
+</tr>
+
+<tr>
+<td>ARRW</td>
+<td><a href="https://arrowtype.com/" data-linktype="external">Arrow Type</a></td>
 </tr>
 
 <tr>
@@ -2788,6 +2794,11 @@
 </tr>
 
 <tr>
+<td>MTNT</td>
+<td><a href="https://mutant.tech/" data-linktype="external">Mutant Standard</a></td>
+</tr>
+
+<tr>
 <td>MTY</td>
 <td>Motoya Co. ,LTD.</td>
 </tr>
@@ -2889,6 +2900,11 @@
 <tr>
 <td>NN</td>
 <td><a href="http://www.nnstudio.pw" data-linktype="external">NN Type Foundry</a></td>
+</tr>
+
+<tr>
+<td>NONO</td>
+<td><a href="https://www.nouvellenoire.ch/" data-linktype="external">Nouvelle Noire Type Foundry</a></td>
 </tr>
 
 <tr>
@@ -3325,6 +3341,11 @@
 <tr>
 <td>RUDY</td>
 <td>RudynFluffy</td>
+</tr>
+
+<tr>
+<td>RXBN</td>
+<td><a href="http://roxaboxen.us/" data-linktype="external">Roxaboxen</a></td>
 </tr>
 
 <tr>
@@ -4349,7 +4370,6 @@ Would you like to provide feedback?		</p>
 		<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
     </ul>
 </footer>
-
 	</div>
 
 	<div class="action-panel has-default-focus"></div>
