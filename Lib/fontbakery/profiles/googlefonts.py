@@ -22,9 +22,9 @@ profile_imports = (
        'hhea', 'dsig', 'hmtx', 'gpos', 'gdef', 'kern', 'glyf',
        'fvar', 'shared_conditions', 'loca')
     ),
-#    ('fontbakery.profiles.adobefonts',
-#       ('com_adobe_fonts_check_family_consistent_upm')
-#    ),
+    ('fontbakery.profiles.adobefonts',
+       ('com_adobe_fonts_check_family_consistent_upm', )
+    ),
 )
 
 # this was initially generated based on the output of
@@ -124,7 +124,7 @@ FAMILY_CHECKS = [
       , 'com.google.fonts/check/family/win_ascent_and_descent'
       , 'com.adobe.fonts/check/family/max_4_fonts_per_family_name'
       , 'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1'
-#     , 'com.adobe.fonts/check/family/consistent_upm'
+      , 'com.adobe.fonts/check/family/consistent_upm'
 ]
 
 
