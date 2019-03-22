@@ -12,7 +12,7 @@ profile_imports = (
          'loca')
     ),
     ('fontbakery.profiles.googlefonts',
-        ('com_google_fonts_check_win_ascent_and_descent'
+        ('com_google_fonts_check_family_win_ascent_and_descent'
         ,'com_google_fonts_check_os2_metrics_match_hhea'
         )
     ),
@@ -22,24 +22,24 @@ profile_imports = (
 # then this list can be generated from the output of:
 # $ fontbakery check-profile fontbakery.profiles.adobe_fonts -L
 expected_check_ids = [
-    'com.google.fonts/check/single_family_directory',
-    'com.google.fonts/check/underline_thickness',
-    'com.google.fonts/check/panose_proportion',
-    'com.google.fonts/check/panose_familytype',
-    'com.google.fonts/check/equal_unicode_encodings',
-    'com.google.fonts/check/equal_font_versions',
+    'com.google.fonts/check/family/single_directory',
+    'com.google.fonts/check/family/underline_thickness',
+    'com.google.fonts/check/family/panose_proportion',
+    'com.google.fonts/check/family/panose_familytype',
+    'com.google.fonts/check/family/equal_unicode_encodings',
+    'com.google.fonts/check/family/equal_font_versions',
     'com.google.fonts/check/font_version',
     'com.google.fonts/check/post_table_version',
     'com.google.fonts/check/name/no_copyright_on_description',
     'com.google.fonts/check/monospace',
     'com.google.fonts/check/xavgcharwidth',
     'com.adobe.fonts/check/fsselection_matches_macstyle',
-    'com.adobe.fonts/check/bold_italic_unique_for_nameid1',
+    'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1',
     'com.google.fonts/check/ftxvalidator',
     'com.google.fonts/check/ots',
     'com.google.fonts/check/fontforge_stderr',
     'com.google.fonts/check/fontforge',
-    'com.google.fonts/check/win_ascent_and_descent',
+    'com.google.fonts/check/family/win_ascent_and_descent',
     'com.google.fonts/check/linegaps',
     'com.google.fonts/check/os2_metrics_match_hhea',
     'com.google.fonts/check/unitsperem',
@@ -58,7 +58,7 @@ expected_check_ids = [
     'com.google.fonts/check/ligature_carets',
     'com.google.fonts/check/kerning_for_non_ligated_sequences',
     'com.google.fonts/check/kern_table',
-    'com.google.fonts/check/nameid/match_familyname_fullfont',
+    'com.google.fonts/check/name/match_familyname_fullfont',
     'com.google.fonts/check/glyf_unused_data',
     'com.google.fonts/check/family_naming_recommendations',
     'com.google.fonts/check/maxadvancewidth',
@@ -80,20 +80,20 @@ expected_check_ids = [
     'com.google.fonts/check/wght_valid_range',
     'com.adobe.fonts/check/name/postscript_vs_cff',
     'com.adobe.fonts/check/name/postscript_name_consistency',
-    'com.adobe.fonts/check/name/max_4_fonts_per_family_name',
+    'com.adobe.fonts/check/family/max_4_fonts_per_family_name',
     'com.adobe.fonts/check/name/empty_records',
-    'com.adobe.fonts/check/consistent_upm'
+    'com.adobe.fonts/check/family/consistent_upm'
 ]
 
 profile = profile_factory(default_section=Section("Adobe Fonts"))
 
 @check(
-    id='com.adobe.fonts/check/consistent_upm',
+    id='com.adobe.fonts/check/family/consistent_upm',
     rationale="""While not required by the OpenType spec, we (Adobe) expect
     that a group of fonts designed & produced as a family have consistent
     units per em. """
 )
-def com_adobe_fonts_check_consistent_upm(ttFonts):
+def com_adobe_fonts_check_family_consistent_upm(ttFonts):
     """Fonts have consistent Units Per Em?"""
     upm_set = set()
     for ttFont in ttFonts:

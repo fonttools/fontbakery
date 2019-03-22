@@ -1,3 +1,5 @@
+import os
+
 from fontbakery.checkrunner import (
               INFO
             , WARN
@@ -7,8 +9,6 @@ from fontbakery.checkrunner import (
             , FAIL
             , Section
             )
-import os
-# from .shared_conditions import is_variable_font
 from fontbakery.callable import condition, check, disable
 from fontbakery.message import Message
 from fontbakery.constants import(PriorityLevel,
@@ -82,7 +82,10 @@ THIRD_PARTY_CHECKS = [
 ]
 
 NAME_TABLE_CHECKS = [
-        'com.google.fonts/check/name/license'
+        'com.adobe.fonts/check/name/postscript_vs_cff'
+      , 'com.adobe.fonts/check/name/postscript_name_consistency'
+      , 'com.adobe.fonts/check/name/empty_records'
+      , 'com.google.fonts/check/name/license'
       , 'com.google.fonts/check/name/license_url'
       , 'com.google.fonts/check/name/no_copyright_on_description'
       , 'com.google.fonts/check/name/description_max_length'
@@ -100,38 +103,44 @@ NAME_TABLE_CHECKS = [
       , 'com.google.fonts/check/name/rfn'
       , 'com.google.fonts/check/name/family_and_style_max_length'
       , 'com.google.fonts/check/name/copyright_length'
-      , 'com.adobe.fonts/check/name/postscript_vs_cff'
-      , 'com.adobe.fonts/check/name/postscript_name_consistency'
-      , 'com.adobe.fonts/check/name/max_4_fonts_per_family_name'
-      , 'com.adobe.fonts/check/name/empty_records'
+      , 'com.google.fonts/check/name/familyname_first_char'
+      , 'com.google.fonts/check/name/match_familyname_fullfont'
 ]
+
+FAMILY_CHECKS = [
+        'com.google.fonts/check/family/equal_numbers_of_glyphs'
+      , 'com.google.fonts/check/family/equal_glyph_names'
+      , 'com.google.fonts/check/family/has_license'
+      , 'com.google.fonts/check/family/tnum_horizontal_metrics'
+      , 'com.google.fonts/check/family/single_directory'
+      , 'com.google.fonts/check/family/underline_thickness'
+      , 'com.google.fonts/check/family/panose_proportion'
+      , 'com.google.fonts/check/family/panose_familytype'
+      , 'com.google.fonts/check/family/equal_unicode_encodings'
+      , 'com.google.fonts/check/family/equal_font_versions'
+      , 'com.google.fonts/check/family/win_ascent_and_descent'
+      , 'com.adobe.fonts/check/family/max_4_fonts_per_family_name'
+      , 'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1'
+#     , 'com.adobe.fonts/check/family/consistent_upm'
+]
+
 
 expected_check_ids = \
     METADATA_CHECKS + \
     DESCRIPTION_CHECKS + \
     THIRD_PARTY_CHECKS + \
-    NAME_TABLE_CHECKS + [
+    NAME_TABLE_CHECKS + \
+    FAMILY_CHECKS + [
         'com.google.fonts/check/canonical_filename'
-      , 'com.google.fonts/check/single_family_directory'
-      , 'com.google.fonts/check/underline_thickness'
-      , 'com.google.fonts/check/panose_proportion'
-      , 'com.google.fonts/check/panose_familytype'
-      , 'com.google.fonts/check/equal_numbers_of_glyphs'
-      , 'com.google.fonts/check/equal_glyph_names'
-      , 'com.google.fonts/check/equal_unicode_encodings'
-      , 'com.google.fonts/check/equal_font_versions'
       , 'com.google.fonts/check/font_version'
       , 'com.google.fonts/check/post_table_version'
       , 'com.google.fonts/check/fstype'
       , 'com.google.fonts/check/fsselection'
       , 'com.google.fonts/check/vendor_id'
       , 'com.google.fonts/check/usweightclass'
-      , 'com.google.fonts/check/has_license'
       , 'com.google.fonts/check/monospace'
       , 'com.google.fonts/check/xavgcharwidth'
       , 'com.adobe.fonts/check/fsselection_matches_macstyle'
-      , 'com.adobe.fonts/check/bold_italic_unique_for_nameid1'
-      , 'com.google.fonts/check/win_ascent_and_descent'
       , 'com.google.fonts/check/linegaps'
       , 'com.google.fonts/check/os2_metrics_match_hhea'
       , 'com.google.fonts/check/unitsperem'
@@ -154,8 +163,6 @@ expected_check_ids = \
       , 'com.google.fonts/check/ligature_carets'
       , 'com.google.fonts/check/kerning_for_non_ligated_sequences'
       , 'com.google.fonts/check/kern_table'
-      , 'com.google.fonts/check/name/familyname_first_char'
-      , 'com.google.fonts/check/nameid/match_familyname_fullfont'
       , 'com.google.fonts/check/glyf_unused_data'
       , 'com.google.fonts/check/currency_chars'
       , 'com.google.fonts/check/family_naming_recommendations'
@@ -192,9 +199,8 @@ expected_check_ids = \
       , 'com.google.fonts/check/varfont_has_instances'
       , 'com.google.fonts/check/varfont_weight_instances'
       , 'com.google.fonts/check/wght_valid_range'
-      , 'com.google.fonts/check/tnum_horizontal_metrics'
       , 'com.google.fonts/check/integer_ppem_if_hinted'
-      , 'com.google.fonts/check/font_copyright' # Copyright notice in font name table entries match canonical pattern?
+      , 'com.google.fonts/check/font_copyright'
 ]
 
 profile = profile_factory(default_section=Section("Google Fonts"))
@@ -511,11 +517,11 @@ def com_google_fonts_check_metadata_unknown_designer(family_metadata):
 
 
 @check(
-  id = 'com.google.fonts/check/equal_numbers_of_glyphs',
+  id = 'com.google.fonts/check/family/equal_numbers_of_glyphs',
   conditions = ['are_ttf',
                 'stylenames_are_canonical']
 )
-def com_google_fonts_check_equal_numbers_of_glyphs(ttFonts):
+def com_google_fonts_check_family_equal_numbers_of_glyphs(ttFonts):
   """Fonts have equal numbers of glyphs?"""
   # ttFonts is an iterator, so here we make a list from it
   # because we'll have to iterate twice in this check implementation:
@@ -560,10 +566,10 @@ def com_google_fonts_check_equal_numbers_of_glyphs(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/equal_glyph_names',
+  id = 'com.google.fonts/check/family/equal_glyph_names',
   conditions = ['are_ttf']
 )
-def com_google_fonts_check_equal_glyph_names(ttFonts):
+def com_google_fonts_check_family_equal_glyph_names(ttFonts):
   """Fonts have equal glyph names?"""
   fonts = list(ttFonts)
 
@@ -828,9 +834,9 @@ def license(license_path):
 
 
 @check(
-  id = 'com.google.fonts/check/has_license'
+  id = 'com.google.fonts/check/family/has_license'
 )
-def com_google_fonts_check_has_license(licenses):
+def com_google_fonts_check_family_has_license(licenses):
   """Check font has a license."""
   if len(licenses) > 1:
     yield FAIL, Message("multiple",
@@ -2897,7 +2903,7 @@ def familyname_with_spaces(familyname):
     result.append(c)
   result = ''.join(result).strip()
 
-  def of_profileial_case(s):
+  def of_special_case(s):
     """Special case for family names such as
        MountainsofChristmas which would need to
        have the "of" split apart from "Mountains".
@@ -2910,7 +2916,7 @@ def familyname_with_spaces(familyname):
     else:
       return s
 
-  result = " ".join(map(of_profileial_case, result.split(" ")))
+  result = " ".join(map(of_special_case, result.split(" ")))
 
   if result[-3:] == "S C":
     return result[:-3] + "SC"
@@ -3468,10 +3474,10 @@ def com_google_fonts_check_varfont_has_MVAR(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/win_ascent_and_descent',
+  id = 'com.google.fonts/check/family/win_ascent_and_descent',
   conditions = ['vmetrics']
 )
-def com_google_fonts_check_win_ascent_and_descent(ttFont, vmetrics):
+def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
   """Checking OS/2 usWinAscent & usWinDescent.
 
   A font's winAscent and winDescent values should be greater than the
@@ -3722,7 +3728,7 @@ def com_google_fonts_check_varfont_weight_instances(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/tnum_horizontal_metrics',
+  id = 'com.google.fonts/check/family/tnum_horizontal_metrics',
   rationale = """
     Tabular figures need to have the same metrics in all styles
     in order to allow tables to be set with proper
@@ -3736,7 +3742,7 @@ def com_google_fonts_check_varfont_weight_instances(ttFont):
     'request': 'https://github.com/googlefonts/fontbakery/issues/2278'
   }
 )
-def com_google_fonts_check_tnum_horizontal_metrics(fonts):
+def com_google_fonts_check_family_tnum_horizontal_metrics(fonts):
   """All tabular figures must have the same width across the RIBBI-family."""
   from fontbakery.constants import RIBBI_STYLE_NAMES
   from fontTools.ttLib import TTFont

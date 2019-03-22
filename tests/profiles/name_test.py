@@ -177,9 +177,9 @@ def test_check_name_line_breaks():
     assert status == FAIL
 
 
-def test_check_nameid_match_familyname_fullfont():
+def test_check_name_match_familyname_fullfont():
   """ Does full font name begin with the font family name? """
-  from fontbakery.profiles.name import com_google_fonts_check_nameid_match_familyname_fullfont as check
+  from fontbakery.profiles.name import com_google_fonts_check_name_match_familyname_fullfont as check
   # Our reference Mada Regular is known to be good
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
@@ -412,9 +412,9 @@ def test_check_name_postscript_name_consistency():
   assert status == FAIL
 
 
-def test_check_name_max_4_fonts_per_family_name():
+def test_check_family_max_4_fonts_per_family_name():
   from fontbakery.profiles.name import \
-    com_adobe_fonts_check_name_max_4_fonts_per_family_name as check
+    com_adobe_fonts_check_family_max_4_fonts_per_family_name as check
 
   base_path = portable_path("data/test/source-sans-pro/OTF")
 

@@ -4,7 +4,7 @@ from fontbakery.checkrunner import FAIL, PASS
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
 @check(
-  id = 'com.google.fonts/check/underline_thickness',
+  id = 'com.google.fonts/check/family/underline_thickness',
   rationale = """
   Dave C Lemon (Adobe Type Team) recommends setting the underline
   thickness to be consistent across the family.
@@ -18,7 +18,7 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
     'affects': [('InDesign', 'unspecified')]
   }
 )
-def com_google_fonts_check_underline_thickness(ttFonts):
+def com_google_fonts_check_family_underline_thickness(ttFonts):
   """Fonts have consistent underline thickness?"""
   underTs = {}
   underlineThickness = None

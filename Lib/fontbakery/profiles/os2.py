@@ -9,9 +9,9 @@ profile_imports = [
 ]
 
 @check(
-  id = 'com.google.fonts/check/panose_proportion'
+  id = 'com.google.fonts/check/family/panose_proportion'
 )
-def com_google_fonts_check_panose_proportion(ttFonts):
+def com_google_fonts_check_family_panose_proportion(ttFonts):
   """Fonts have consistent PANOSE proportion?"""
   failed = False
   proportion = None
@@ -33,9 +33,9 @@ def com_google_fonts_check_panose_proportion(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/panose_familytype'
+  id = 'com.google.fonts/check/family/panose_familytype'
 )
-def com_google_fonts_check_panose_familytype(ttFonts):
+def com_google_fonts_check_family_panose_familytype(ttFonts):
   """Fonts have consistent PANOSE family type?"""
   failed = False
   familytype = None
@@ -176,14 +176,14 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
 
 
 @check(
-  id = 'com.adobe.fonts/check/bold_italic_unique_for_nameid1',
+  id = 'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1',
   rationale = """Per the OpenType spec: name ID 1 'is used in combination with
   Font Subfamily name (name ID 2), and should be shared among at most four
   fonts that differ only in weight or style ... This four-way distinction
   should also be reflected in the OS/2.fsSelection field, using bits 0 and 5.' 
   """
 )
-def com_adobe_fonts_check_bold_italic_unique_for_nameid1(ttFonts):
+def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(ttFonts):
   """Check that OS/2.fsSelection bold & italic settings are unique
   for each NameID1"""
   from collections import Counter
