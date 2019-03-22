@@ -6,7 +6,7 @@ from fontbakery.utils import TEST_FILE
 
 
 def test_check_family_consistent_upm():
-    from fontbakery.profiles.adobe_fonts import (
+    from fontbakery.profiles.adobefonts import (
         com_adobe_fonts_check_family_consistent_upm as check)
 
     base_path = TEST_FILE("source-sans-pro/OTF")
@@ -31,7 +31,7 @@ def test_check_family_consistent_upm():
 
 
 def test_get_family_checks():
-    from fontbakery.profiles.adobe_fonts import profile
+    from fontbakery.profiles.adobefonts import profile
     family_checks = profile.get_family_checks()
     family_check_ids = {check.id for check in family_checks}
     expected_family_check_ids = {

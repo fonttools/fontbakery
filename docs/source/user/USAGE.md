@@ -9,7 +9,7 @@ This has several subcommands, described in the help function:
     
     Run fontbakery subcommands:
         build-contributors
-        check-adobe-fonts
+        check-adobefonts
         check-collection
         check-fontval
         check-googlefonts

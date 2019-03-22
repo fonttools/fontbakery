@@ -2,7 +2,7 @@
 import sys
 
 from functools import partial
-from fontbakery.profiles.adobe_fonts import profile
+from fontbakery.profiles.adobefonts import profile
 from fontbakery.commands.check_profile import (
     runner_factory as super_runner_factory, main as super_main)
 
