@@ -6,7 +6,7 @@ commands
    :maxdepth: 1
 
    build_contributors
-   check_adobe_fonts
+   check_adobefonts
    check_googlefonts
    check_opentype
    check_profile

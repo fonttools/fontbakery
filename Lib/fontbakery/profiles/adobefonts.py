@@ -20,7 +20,7 @@ profile_imports = (
 
 # If you comment out the call to profile.test_expected_checks(),
 # then this list can be generated from the output of:
-# $ fontbakery check-profile fontbakery.profiles.adobe_fonts -L
+# $ fontbakery check-profile fontbakery.profiles.adobefonts -L
 expected_check_ids = [
     'com.google.fonts/check/family/single_directory',
     'com.google.fonts/check/family/underline_thickness',

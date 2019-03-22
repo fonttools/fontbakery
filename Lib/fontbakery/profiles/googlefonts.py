@@ -22,6 +22,9 @@ profile_imports = (
        'hhea', 'dsig', 'hmtx', 'gpos', 'gdef', 'kern', 'glyf',
        'fvar', 'shared_conditions', 'loca')
     ),
+#    ('fontbakery.profiles.adobefonts',
+#       ('com_adobe_fonts_check_family_consistent_upm')
+#    ),
 )
 
 # this was initially generated based on the output of
