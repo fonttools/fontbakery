@@ -64,7 +64,8 @@ setup(
         'fontTools[ufo,lxml]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
         'lxml',
         'opentype-sanitizer',
-        'protobuf',
+        'protobuf>=3.7.0',  # 3.7.0 fixed a bug on parsing some METADATA.pb files
+                            # (see https://github.com/googlefonts/fontbakery/issues/2200)
         'requests',
         'ttfautohint-py',
         'ufolint',
