@@ -28,7 +28,7 @@ The project is licensed under the `Apache v2.0 license <https://github.com/googl
    :caption: Developer Documentation
 
    developer/contrib-getting-started
-   developer/writing-specifications
+   developer/writing-profiles
    developer/source-contrib-guide
    developer/doc-contrib-guide
 

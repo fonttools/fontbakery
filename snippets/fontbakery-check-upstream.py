@@ -1,4 +1,4 @@
-"""Run Fontbakery on an upstream repo using the googlefonts specification.
+"""Run Fontbakery on an upstream repo using the googlefonts profile.
 
 In order to post an issue back to the upstream repo, you will need to add
 a github access token.
