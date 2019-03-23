@@ -4,7 +4,7 @@ Writing a custom Font Bakery profile can be a good start to either ensure the qu
 
 Font Bakery comes with a set of checks that can be included into such a custom profile according to the requirements of the author. These checks are mainly organized in profile modules named after OpenType tables and can be found at [`fontbakery.profiles.*`](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/profiles). Naturally, when you are deciding to include a profile or just a single check into your custom profile, sooner or later you'll have to review it. Questions, remarks, improvements, additions, **more documentation** etc. are all welcome contributions. Please use our [issue tracker](https://github.com/googlefonts/fontbakery/issues) to contact us or send **pull requests**.
 
-A Font Bakery Specification (an instance of the type `fontbakery.checkrunner.Spec`) is a container for the checks you want to run on your files. Usually a profile lives inside of a python module: one module contains one profile. You can either use one of the profiles that come with Font Bakery directly, located in [`fontbakery.profiles.*`](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/profiles) or you can create a custom profile by writing your own checks and then optionally adding a selection of the other checks offered by Font Bakery.
+A Font Bakery Profile (an instance of the type `fontbakery.checkrunner.Profile`) is a container for the checks you want to run on your files. Usually a profile lives inside of a python module: one module contains one profile. You can either use one of the profiles that come with Font Bakery directly, located in [`fontbakery.profiles.*`](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/profiles) or you can create a custom profile by writing your own checks and then optionally adding a selection of the other checks offered by Font Bakery.
 
 [`fontbakery.profiles.googlefonts`](https://github.com/googlefonts/fontbakery/blob/master/Lib/fontbakery/profiles/googlefonts.py) is a custom profile and can be an interesting piece of code to inspect for some inspiration.
 
@@ -24,7 +24,7 @@ To get or create a profile from a module, the function `get_module_profile(modul
 Thus, the presence of the name `profile` disables the automatic use of `profile_factory` plus `profile.auto_register`. But you can consider calling `profile.auto_register(globals())` explicitly yourself near the end of your profile module or you can register the profile contents yourself.
 
 ```py
-# profile = Spec(...)
+# profile = Profile(...)
 # globals is a pythin builtin
 profile.auto_register(globals())
 ```
@@ -179,7 +179,7 @@ from fontbakery.checkrunner import (DEBUG, PASS,
                INFO, SKIP, WARN, FAIL, ERROR)
 # Used to inform get_module_profile whether and
 # how to create a profile. This
-# example will create an instance of `FontsSpec`.
+# example will create an instance of `FontsProfile`.
 # The comment at the end of the line disables flake8
 # and pylint to complain about unused imports.
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
@@ -252,7 +252,7 @@ def has_cap_r_in_name(font):
 # conditions are used for the dependency injection as arguments
 # and to decide if a check will be skipped
 @condition
-# ttFont is a condition built into FontSpec
+# ttFont is a condition built into FontProfile
 # it returns an instance of fontTools.TTLib.TTFont
 def is_ttf(ttFont):
    return 'glyf' in ttFont
@@ -355,12 +355,12 @@ def com_google_fonts_check_post_table_version(ttFont):
 
 To achieve this, Font Bakery uses inspection (meta programming) to get the parameter names of a check (or condition) and then resolves these dependencies using the matching definitions in the profile namespace.
 
-There's a collection of different types that together populate the profile namespace. We need almost all of them to make our example from above work. Yet in this case they are already predefined in `FontsSpec`, making this also a documentation of those.
+There's a collection of different types that together populate the profile namespace. We need almost all of them to make our example from above work. Yet in this case they are already predefined in `FontsProfile`, making this also a documentation of those.
 
 
 #### `fonts` Expected Value
 
-`FontSpec` also defines a command line argument `fonts`, which is then passed as a value to the check runner.
+`FontProfile` also defines a command line argument `fonts`, which is then passed as a value to the check runner.
 
 In order to to make the namespace aware of a value that's going to be provided when the check is executed, a `FontBakeryExpectedValue` is defined and added to the profile.
 
@@ -384,10 +384,10 @@ fonts_expected_value = FontBakeryExpectedValue(
 
 #### `font` Iterarg
 
-Iterargs (iterable arguments) are defined via the `Spec` constructor.
+Iterargs (iterable arguments) are defined via the `Profile` constructor.
 
 ```py
-profile = FontsSpec(
+profile = FontsProfile(
       ...,
       iterargs={'font': 'fonts'},
       ...
@@ -439,7 +439,7 @@ once_per_font( ttFont(...))
 Derived Iterables are not used in the example above, they however make it possible for a condition like `ttFont` to create an iterator for all of it values:
 
 ```py
-profile = FontsSpec(
+profile = FontsProfile(
       ...,
       derived_iterables={'ttFonts': ('ttFont', True)}
       ...
@@ -463,7 +463,7 @@ once_for_all_ttfonts([ttFont(font) for font in [
 Not used at the moment but meant to provide a mechanism to map existing names to new names. Maybe this feature will disappear again when we don't find a use case for it.
 
 ```py
-profile = FontsSpec(
+profile = FontsProfile(
       ...,
       aliases={'new_name': 'old_name'},
       ...

@@ -36,7 +36,7 @@ See the Font Bakery Installation Guide for your platform:
 
 Font Bakery is primarily a Terminal app, learn more in the [Command Line Usage Guide](https://font-bakery.readthedocs.io/en/latest/user/USAGE.html).
 
-If you write little Python scripts in your workflow, you can easily [write custom checks](https://font-bakery.readthedocs.io/en/latest/developer/writing-specifications.html).
+If you write little Python scripts in your workflow, you can easily [write custom checks](https://font-bakery.readthedocs.io/en/latest/developer/writing-profiles.html).
 
 For full developer documentation, check out [font-bakery.readthedocs.io](https://font-bakery.readthedocs.io) (a hosted and compiled copy of contents in the `/docs` directory.)
 
