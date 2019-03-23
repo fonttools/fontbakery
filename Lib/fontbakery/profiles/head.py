@@ -106,7 +106,8 @@ def parse_version_string(name: str) -> Tuple[str, str]:
 def com_google_fonts_check_font_version(ttFont):
   """Checking font version fields (head and name table)."""
   from decimal import Decimal
-  head_version = parse_version_string(str(Decimal(ttFont["head"].fontRevision).quantize(Decimal('1.000'))))
+  head_version_str = str(Decimal(ttFont["head"].fontRevision).quantize(Decimal('1.000')))
+  head_version = parse_version_string(head_version_str)
 
   # Compare the head version against the name ID 5 strings in all name records.
   name_id_5_records = [
@@ -121,16 +122,21 @@ def com_google_fonts_check_font_version(ttFont):
         name_version = parse_version_string(record.toUnicode())
         if name_version != head_version:
           failed = True
-          yield FAIL, Message(
-              "mismatch",
-              "head version is {}, name version string for platform {},"
-              " encoding {}, is {}".format(head_version, record.platformID,
-                                           record.platEncID, name_version))
+          yield FAIL, Message("mismatch",
+                              "head version is '{}' while name version string"
+                              " (for platform {}, encoding {}) is '{}'."
+                              "".format(head_version_str,
+                                        record.platformID,
+                                        record.platEncID,
+                                        record.toUnicode()))
       except ValueError:
         failed = True
-        yield FAIL, Message("parse", "name version string for platform {},"
-                            " encoding {}, could not be parsed".format(
-                                record.platformID, record.platEncID))
+        yield FAIL, Message("parse",
+                            "name version string for platform {},"
+                            " encoding {} ('{}'), could not be parsed."
+                            "".format(record.platformID,
+                                      record.platEncID,
+                                      record.toUnicode()))
   else:
     failed = True
     yield FAIL, Message("missing",
