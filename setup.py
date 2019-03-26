@@ -63,7 +63,8 @@ setup(
         'font-v',
         'fontTools[ufo,lxml]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
         'lxml',
-        'opentype-sanitizer',
+        'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
+                                      # (see https://github.com/khaledhosny/ots/pull/182)
         'protobuf>=3.7.0',  # 3.7.0 fixed a bug on parsing some METADATA.pb files
                             # (see https://github.com/googlefonts/fontbakery/issues/2200)
         'requests',
