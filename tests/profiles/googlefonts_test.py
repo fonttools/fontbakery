@@ -1502,6 +1502,30 @@ def test_check_metadata_valid_copyright():
   assert status == PASS
 
 
+def test_check_name_trailing_spaces():
+  """ Name table entries must not have trailing spaces. """
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_name_trailing_spaces as check
+  # Our reference Cabin Regular is known to be good:
+  fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
+  ttFont = TTFont(fontfile)
+
+  # So it must PASS the check:
+  print("Test PASS with a good font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  for i, entry in enumerate(ttFont['name'].names):
+    good_string = ttFont['name'].names[i].toUnicode()
+    bad_string = good_string + " "
+    print(f"Test FAIL with a bad name table entry ({i}: '{bad_string}')...")
+    ttFont['name'].names[i].string = bad_string.encode(entry.getEncoding())
+    status, message = list(check(ttFont))[-1]
+    assert status == FAIL
+
+    #restore good entry before moving to the next one:
+    ttFont['name'].names[i].string = good_string.encode(entry.getEncoding())
+
+
 def test_check_font_copyright():
   """Copyright notices match canonical pattern in fonts"""
   from fontbakery.profiles.googlefonts import com_google_fonts_check_font_copyright as check
