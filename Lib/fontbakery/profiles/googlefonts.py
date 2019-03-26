@@ -1000,8 +1000,12 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
       failed = True
       name_key = tuple([name_record.platformID, name_record.platEncID,
                        name_record.langID, name_record.nameID])
+      shortened_str = name_record.toUnicode()
+      if len(shortened_str) > 20:
+        shortened_str = shortened_str[:10] + "[...]" + shortened_str[-10:]
       yield FAIL, (f"Name table record with key = {name_key} has"
-                    " trailing spaces that must be removed.")
+                    " trailing spaces that must be removed:"
+                   f" '{shortened_str}'")
   if not failed:
     yield PASS, ("No trailing spaces on name table entries.")
 
