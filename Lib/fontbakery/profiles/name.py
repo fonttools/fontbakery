@@ -14,7 +14,6 @@ profile_imports = [
 
 @check(
     id='com.adobe.fonts/check/name/empty_records',
-    conditions=[],
     rationale="""Check the name table for empty records,
     as this can cause problems in Adobe apps."""
 )

@@ -88,6 +88,7 @@ NAME_TABLE_CHECKS = [
         'com.adobe.fonts/check/name/postscript_vs_cff'
       , 'com.adobe.fonts/check/name/postscript_name_consistency'
       , 'com.adobe.fonts/check/name/empty_records'
+      , 'com.google.fonts/check/name/trailing_spaces'
       , 'com.google.fonts/check/name/license'
       , 'com.google.fonts/check/name/license_url'
       , 'com.google.fonts/check/name/no_copyright_on_description'
@@ -985,6 +986,24 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                                         NameID.LICENSE_INFO_URL))
       else:
         yield PASS, "Font has a valid license URL in NAME table."
+
+
+@check(
+  id='com.google.fonts/check/name/trailing_spaces',
+)
+def com_google_fonts_check_name_trailing_spaces(ttFont):
+  """Name table records must not have trailing spaces."""
+  failed = False
+  for name_record in ttFont['name'].names:
+    name_string = name_record.toUnicode()
+    if name_string != name_string.strip():
+      failed = True
+      name_key = tuple([name_record.platformID, name_record.platEncID,
+                       name_record.langID, name_record.nameID])
+      yield FAIL, (f"Name table record with key = {name_key} has"
+                    " trailing spaces that must be removed.")
+  if not failed:
+    yield PASS, ("No trailing spaces on name table entries.")
 
 
 @check(

@@ -14,6 +14,7 @@ profile_imports = (
     ('fontbakery.profiles.googlefonts',
         ('com_google_fonts_check_family_win_ascent_and_descent'
         ,'com_google_fonts_check_os2_metrics_match_hhea'
+        ,'com_google_fonts_check_name_trailing_spaces'
         )
     ),
 )
@@ -30,6 +31,7 @@ expected_check_ids = [
     'com.google.fonts/check/family/equal_font_versions',
     'com.google.fonts/check/font_version',
     'com.google.fonts/check/post_table_version',
+    'com.google.fonts/check/name/trailing_spaces',
     'com.google.fonts/check/name/no_copyright_on_description',
     'com.google.fonts/check/monospace',
     'com.google.fonts/check/xavgcharwidth',
