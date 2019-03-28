@@ -1,6 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.7.1 (2019-???-??)
+### New checks
+  - **[com.adobe.fonts/check/cff_call_depth]: "Is the CFF subr/gsubr call depth > 10?" (PR #2425)
+  - **[com.adobe.fonts/check/cff2_call_depth]: "Is the CFF2 subr/gsubr call depth > 10?" (PR #2425)
+
 ## 0.7.0 (2019-Mar-22)
 ### Major code-changes
   - The term "specification" (including directory paths, class names and method names such as Spec, FontsSpec, etc) was replaced by "profile" throughout the codebase. The reason for this renaming was to avoid confusing with other uses of the term such as is "OpenType Specification".
