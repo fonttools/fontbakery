@@ -4,6 +4,7 @@ from fontbakery.checkrunner import Section
 OPENTYPE_PROFILE_IMPORTS = (
     ".",
     (
+        "cff",
         "cmap",
         "head",
         "os2",
