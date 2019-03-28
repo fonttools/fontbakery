@@ -1,34 +1,17 @@
 import os
 
-from fontbakery.checkrunner import (
-              INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
-            , FAIL
-            , Section
-            )
+from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
+from fontbakery.checkrunner import Section, INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.callable import condition, check, disable
 from fontbakery.message import Message
-from fontbakery.constants import(PriorityLevel,
-                                 NameID,
-                                 PlatformID,
-                                 WindowsEncodingID)
 from fontbakery.fonts_profile import profile_factory
+from fontbakery.constants import (PriorityLevel,
+                                  NameID,
+                                  PlatformID,
+                                  WindowsEncodingID)
 
-profile_imports = (
-    ('.', ('general', 'cmap', 'head', 'os2', 'post', 'name',
-       'hhea', 'dsig', 'hmtx', 'gpos', 'gdef', 'kern', 'glyf',
-       'fvar', 'shared_conditions', 'loca')
-    ),
-    ('fontbakery.profiles.adobefonts',
-       ('com_adobe_fonts_check_family_consistent_upm', )
-    ),
-)
-
-# this was initially generated based on the output of
-# $ fontbakery check-profile fontbakery.profiles.googlefonts -L
+profile_imports = ('fontbakery.profiles.universal',)
+profile = profile_factory(default_section=Section("Google Fonts"))
 
 METADATA_CHECKS = [
         'com.google.fonts/check/metadata/parses'
@@ -76,139 +59,74 @@ DESCRIPTION_CHECKS = [
       , 'com.google.fonts/check/description/max_length'
 ]
 
-THIRD_PARTY_CHECKS = [
-        'com.google.fonts/check/ftxvalidator_is_available'
-      , 'com.google.fonts/check/ftxvalidator'
-      , 'com.google.fonts/check/ots'
-      , 'com.google.fonts/check/fontforge_stderr'
-      , 'com.google.fonts/check/fontforge'
-]
-
-NAME_TABLE_CHECKS = [
-        'com.adobe.fonts/check/name/postscript_vs_cff'
-      , 'com.adobe.fonts/check/name/postscript_name_consistency'
-      , 'com.adobe.fonts/check/name/empty_records'
-      , 'com.google.fonts/check/name/trailing_spaces'
-      , 'com.google.fonts/check/name/license'
-      , 'com.google.fonts/check/name/license_url'
-      , 'com.google.fonts/check/name/no_copyright_on_description'
-      , 'com.google.fonts/check/name/description_max_length'
-      , 'com.google.fonts/check/name/unwanted_chars'
-      , 'com.google.fonts/check/name/version_format'
-      , 'com.google.fonts/check/name/line_breaks'
-      , 'com.google.fonts/check/name/ascii_only_entries'
-      , 'com.google.fonts/check/name/mandatory_entries'
-      , 'com.google.fonts/check/name/familyname'
-      , 'com.google.fonts/check/name/subfamilyname'
-      , 'com.google.fonts/check/name/fullfontname'
-      , 'com.google.fonts/check/name/postscriptname'
-      , 'com.google.fonts/check/name/typographicfamilyname'
-      , 'com.google.fonts/check/name/typographicsubfamilyname'
-      , 'com.google.fonts/check/name/rfn'
-      , 'com.google.fonts/check/name/family_and_style_max_length'
-      , 'com.google.fonts/check/name/copyright_length'
-      , 'com.google.fonts/check/name/familyname_first_char'
-      , 'com.google.fonts/check/name/match_familyname_fullfont'
-]
-
 FAMILY_CHECKS = [
         'com.google.fonts/check/family/equal_numbers_of_glyphs'
       , 'com.google.fonts/check/family/equal_glyph_names'
       , 'com.google.fonts/check/family/has_license'
-      , 'com.google.fonts/check/family/tnum_horizontal_metrics'
-      , 'com.google.fonts/check/family/single_directory'
-      , 'com.google.fonts/check/family/underline_thickness'
-      , 'com.google.fonts/check/family/panose_proportion'
-      , 'com.google.fonts/check/family/panose_familytype'
-      , 'com.google.fonts/check/family/equal_unicode_encodings'
-      , 'com.google.fonts/check/family/equal_font_versions'
-      , 'com.google.fonts/check/family/win_ascent_and_descent'
-      , 'com.adobe.fonts/check/family/max_4_fonts_per_family_name'
-      , 'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1'
-      , 'com.adobe.fonts/check/family/consistent_upm'
 ]
 
+NAME_TABLE_CHECKS = [
+   'com.google.fonts/check/name/unwanted_chars',
+   'com.google.fonts/check/name/license',
+   'com.google.fonts/check/name/license_url',
+   'com.google.fonts/check/name/family_and_style_max_length'
+]
 
-expected_check_ids = \
+FONT_FILE_CHECKS = [
+   'com.google.fonts/check/canonical_filename',
+   'com.google.fonts/check/usweightclass',
+   'com.google.fonts/check/fstype',
+   'com.google.fonts/check/vendor_id',
+   'com.google.fonts/check/ligature_carets',
+   'com.google.fonts/check/production_glyphs_similarity',
+   'com.google.fonts/check/fontv',
+   'com.google.fonts/check/production_encoded_glyphs',
+   'com.google.fonts/check/varfont/generate_static',
+   'com.google.fonts/check/kerning_for_non_ligated_sequences',
+   'com.google.fonts/check/name/description_max_length',
+   'com.google.fonts/check/fvar_name_entries',
+   'com.google.fonts/check/version_bump',
+   'com.google.fonts/check/epar',
+   'com.google.fonts/check/font_copyright',
+   'com.google.fonts/check/italic_angle',
+   'com.google.fonts/check/currency_chars',
+   'com.google.fonts/check/has_ttfautohint_params',
+   'com.google.fonts/check/name/version_format',
+   'com.google.fonts/check/name/familyname_first_char',
+   'com.google.fonts/check/hinting_impact',
+   'com.google.fonts/check/varfont/has_HVAR',
+   'com.google.fonts/check/name/typographicfamilyname',
+   'com.google.fonts/check/name/subfamilyname',
+   'com.google.fonts/check/name/typographicsubfamilyname',
+   'com.google.fonts/check/gasp',
+   'com.google.fonts/check/name/familyname',
+   'com.google.fonts/check/name/mandatory_entries',
+   'com.google.fonts/check/name/copyright_length',
+   'com.google.fonts/check/family/tnum_horizontal_metrics',
+   'com.google.fonts/check/fontdata_namecheck',
+   'com.google.fonts/check/name/ascii_only_entries',
+   'com.google.fonts/check/varfont_has_instances',
+   'com.google.fonts/check/varfont_weight_instances',
+   'com.google.fonts/check/old_ttfautohint',
+   'com.google.fonts/check/vttclean',
+   'com.google.fonts/check/name/postscriptname',
+   'com.google.fonts/check/aat',
+   'com.google.fonts/check/name/fullfontname',
+   'com.google.fonts/check/mac_style',
+   'com.google.fonts/check/fsselection',
+   'com.google.fonts/check/smart_dropout',
+   'com.google.fonts/check/integer_ppem_if_hinted',
+   'com.google.fonts/check/unitsperem_strict',
+   'com.google.fonts/check/contour_count'
+]
+
+GOOGLEFONTS_PROFILE_CHECKS = \
+    UNIVERSAL_PROFILE_CHECKS + \
     METADATA_CHECKS + \
     DESCRIPTION_CHECKS + \
-    THIRD_PARTY_CHECKS + \
+    FAMILY_CHECKS + \
     NAME_TABLE_CHECKS + \
-    FAMILY_CHECKS + [
-        'com.google.fonts/check/canonical_filename'
-      , 'com.google.fonts/check/font_version'
-      , 'com.google.fonts/check/post_table_version'
-      , 'com.google.fonts/check/fstype'
-      , 'com.google.fonts/check/fsselection'
-      , 'com.google.fonts/check/vendor_id'
-      , 'com.google.fonts/check/usweightclass'
-      , 'com.google.fonts/check/monospace'
-      , 'com.google.fonts/check/xavgcharwidth'
-      , 'com.adobe.fonts/check/fsselection_matches_macstyle'
-      , 'com.google.fonts/check/linegaps'
-      , 'com.google.fonts/check/os2_metrics_match_hhea'
-      , 'com.google.fonts/check/unitsperem'
-      , 'com.google.fonts/check/unitsperem_strict'
-      , 'com.google.fonts/check/dsig'
-      , 'com.google.fonts/check/mandatory_glyphs'
-      , 'com.google.fonts/check/whitespace_glyphs'
-      , 'com.google.fonts/check/whitespace_glyphnames'
-      , 'com.google.fonts/check/whitespace_ink'
-      , 'com.google.fonts/check/whitespace_widths'
-      , 'com.google.fonts/check/required_tables'
-      , 'com.google.fonts/check/unwanted_tables'
-      , 'com.google.fonts/check/hinting_impact'
-      , 'com.google.fonts/check/old_ttfautohint'
-      , 'com.google.fonts/check/valid_glyphnames'
-      , 'com.google.fonts/check/unique_glyphnames'
-      , 'com.google.fonts/check/epar'
-      , 'com.google.fonts/check/gasp'
-      , 'com.google.fonts/check/gpos_kerning_info'
-      , 'com.google.fonts/check/ligature_carets'
-      , 'com.google.fonts/check/kerning_for_non_ligated_sequences'
-      , 'com.google.fonts/check/kern_table'
-      , 'com.google.fonts/check/glyf_unused_data'
-      , 'com.google.fonts/check/currency_chars'
-      , 'com.google.fonts/check/family_naming_recommendations'
-      , 'com.google.fonts/check/smart_dropout'
-      , 'com.google.fonts/check/maxadvancewidth'
-      , 'com.google.fonts/check/points_out_of_bounds'
-      , 'com.google.fonts/check/all_glyphs_have_codepoints'
-      #, 'com.google.fonts/check/glyphnames_max_length'
-      , 'com.google.fonts/check/monospace_max_advancewidth'
-      , 'com.google.fonts/check/version_bump'
-      , 'com.google.fonts/check/production_glyphs_similarity'
-      , 'com.google.fonts/check/italic_angle'
-      , 'com.google.fonts/check/mac_style'
-      , 'com.google.fonts/check/contour_count'
-      , 'com.google.fonts/check/production_encoded_glyphs'
-      , 'com.google.fonts/check/fontdata_namecheck'
-      , 'com.google.fonts/check/fontv'
-      , 'com.google.fonts/check/varfont/regular_wght_coord'
-      , 'com.google.fonts/check/varfont/regular_wdth_coord'
-      , 'com.google.fonts/check/varfont/regular_slnt_coord'
-      , 'com.google.fonts/check/varfont/regular_ital_coord'
-      , 'com.google.fonts/check/varfont/regular_opsz_coord'
-      , 'com.google.fonts/check/varfont/bold_wght_coord'
-      , 'com.google.fonts/check/varfont/generate_static'
-      , 'com.google.fonts/check/loca/maxp_num_glyphs'
-      , 'com.google.fonts/check/ttx-roundtrip'
-      , 'com.google.fonts/check/has_ttfautohint_params'
-      , 'com.google.fonts/check/vttclean'
-      , 'com.google.fonts/check/varfont/has_HVAR'
-      #, 'com.google.fonts/check/varfont/has_MVAR'
-      , 'com.google.fonts/check/fontbakery_version'
-      , 'com.google.fonts/check/aat'
-      , 'com.google.fonts/check/fvar_name_entries'
-      , 'com.google.fonts/check/varfont_has_instances'
-      , 'com.google.fonts/check/varfont_weight_instances'
-      , 'com.google.fonts/check/wght_valid_range'
-      , 'com.google.fonts/check/integer_ppem_if_hinted'
-      , 'com.google.fonts/check/font_copyright'
-]
-
-profile = profile_factory(default_section=Section("Google Fonts"))
-
+    FONT_FILE_CHECKS
 
 # -------------------------------------------------------------------
 # FIXME! Redundant with @condition canonical_stylename(font)?
@@ -986,28 +904,6 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                                         NameID.LICENSE_INFO_URL))
       else:
         yield PASS, "Font has a valid license URL in NAME table."
-
-
-@check(
-  id='com.google.fonts/check/name/trailing_spaces',
-)
-def com_google_fonts_check_name_trailing_spaces(ttFont):
-  """Name table records must not have trailing spaces."""
-  failed = False
-  for name_record in ttFont['name'].names:
-    name_string = name_record.toUnicode()
-    if name_string != name_string.strip():
-      failed = True
-      name_key = tuple([name_record.platformID, name_record.platEncID,
-                       name_record.langID, name_record.nameID])
-      shortened_str = name_record.toUnicode()
-      if len(shortened_str) > 20:
-        shortened_str = shortened_str[:10] + "[...]" + shortened_str[-10:]
-      yield FAIL, (f"Name table record with key = {name_key} has"
-                    " trailing spaces that must be removed:"
-                   f" '{shortened_str}'")
-  if not failed:
-    yield PASS, ("No trailing spaces on name table entries.")
 
 
 @check(
@@ -3499,102 +3395,6 @@ def com_google_fonts_check_varfont_has_MVAR(ttFont):
                  " text-layout software depends on it.")
 
 
-@check(
-  id = 'com.google.fonts/check/family/win_ascent_and_descent',
-  conditions = ['vmetrics']
-)
-def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
-  """Checking OS/2 usWinAscent & usWinDescent.
-
-  A font's winAscent and winDescent values should be greater than the
-  head table's yMax, abs(yMin) values. If they are less than these
-  values, clipping can occur on Windows platforms,
-  https://github.com/RedHatBrand/Overpass/issues/33
-
-  If the font includes tall/deep writing systems such as Arabic or
-  Devanagari, the winAscent and winDescent can be greater than the yMax and
-  abs(yMin) to accommodate vowel marks.
-
-  When the win Metrics are significantly greater than the upm, the
-  linespacing can appear too loose. To counteract this, enabling the
-  OS/2 fsSelection bit 7 (Use_Typo_Metrics), will force Windows to use the
-  OS/2 typo values instead. This means the font developer can control the
-  linespacing with the typo values, whilst avoiding clipping by setting
-  the win values to values greater than the yMax and abs(yMin).
-  """
-  failed = False
-
-  # OS/2 usWinAscent:
-  if ttFont['OS/2'].usWinAscent < vmetrics['ymax']:
-    failed = True
-    yield FAIL, Message("ascent",
-                        ("OS/2.usWinAscent value"
-                         " should be equal or greater than {}, but got"
-                         " {} instead").format(vmetrics['ymax'],
-                                               ttFont['OS/2'].usWinAscent))
-  if ttFont['OS/2'].usWinAscent > vmetrics['ymax'] * 2:
-    failed = True
-    yield FAIL, Message(
-        "ascent", ("OS/2.usWinAscent value {} is too large."
-                   " It should be less than double the yMax."
-                   " Current yMax value is {}").format(ttFont['OS/2'].usWinDescent,
-                                                       vmetrics['ymax']))
-  # OS/2 usWinDescent:
-  if ttFont['OS/2'].usWinDescent < abs(vmetrics['ymin']):
-    failed = True
-    yield FAIL, Message(
-        "descent", ("OS/2.usWinDescent value"
-                    " should be equal or greater than {}, but got"
-                    " {} instead").format(
-                        abs(vmetrics['ymin']), ttFont['OS/2'].usWinDescent))
-
-  if ttFont['OS/2'].usWinDescent > abs(vmetrics['ymin']) * 2:
-    failed = True
-    yield FAIL, Message(
-        "descent", ("OS/2.usWinDescent value {} is too large."
-                    " It should be less than double the yMin."
-                    " Current absolute yMin value is {}").format(ttFont['OS/2'].usWinDescent,
-                                                                 abs(vmetrics['ymin'])))
-  if not failed:
-    yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
-
-
-@check(
-  id = 'com.google.fonts/check/os2_metrics_match_hhea',
-  rationale = """When OS/2 and hhea vertical metrics match, the same
-  linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018,
-  Google Fonts has released many fonts with vertical metrics that don't match
-  in this way. When we fix this issue in these existing families, we will
-  create a visible change in line/paragraph layout for either Windows or macOS
-  users, which will upset some of them.
-
-  But we have a duty to fix broken stuff, and inconsistent paragraph layout is
-  unacceptably broken when it is possible to avoid it.
-
-  If users complain and prefer the old broken version, they are libre to take
-  care of their own situation."""
-)
-def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
-  """Checking OS/2 Metrics match hhea Metrics.
-
-  OS/2 and hhea vertical metric values should match. This will produce
-  the same linespacing on Mac, GNU+Linux and Windows.
-
-  Mac OS X uses the hhea values.
-  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value.
-  """
-  # OS/2 sTypoAscender and sTypoDescender match hhea ascent and descent
-  if ttFont["OS/2"].sTypoAscender != ttFont["hhea"].ascent:
-    yield FAIL, Message("ascender",
-                        "OS/2 sTypoAscender and hhea ascent must be equal.")
-  elif ttFont["OS/2"].sTypoDescender != ttFont["hhea"].descent:
-    yield FAIL, Message("descender",
-                        "OS/2 sTypoDescender and hhea descent must be equal.")
-  else:
-    yield PASS, ("OS/2.sTypoAscender/Descender values"
-                 " match hhea.ascent/descent.")
-
-
 @condition
 def VTT_hinted(ttFont):
   # it seems that VTT is the only program that generates a TSI5 table
@@ -3837,6 +3637,160 @@ def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
                  " will be rounded into and integer value.")
 
 
+@check(
+  id = 'com.google.fonts/check/ligature_carets',
+  conditions = ['ligature_glyphs'],
+  rationale = """
+    All ligatures in a font must have corresponding caret (text cursor)
+    positions defined in the GDEF table, otherwhise, users may experience
+    issues with caret rendering.
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1225'
+  }
+)
+def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
+  """Are there caret positions declared for every ligature?"""
+  if ligature_glyphs == -1:
+    yield FAIL, Message("malformed", "Failed to lookup ligatures."
+                        " This font file seems to be malformed."
+                        " For more info, read:"
+                        " https://github.com"
+                        "/googlefonts/fontbakery/issues/1596")
+  elif "GDEF" not in ttFont:
+    yield WARN, Message("GDEF-missing",
+                        ("GDEF table is missing, but it is mandatory"
+                         " to declare it on fonts that provide ligature"
+                         " glyphs because the caret (text cursor)"
+                         " positioning for each ligature must be"
+                         " provided in this table."))
+  else:
+    lig_caret_list = ttFont["GDEF"].table.LigCaretList
+    if lig_caret_list is None:
+      missing = set(ligature_glyphs)
+    else:
+      missing = set(ligature_glyphs) - set(lig_caret_list.Coverage.glyphs)
+
+    if lig_caret_list is None or lig_caret_list.LigGlyphCount == 0:
+      yield WARN, Message("lacks-caret-pos",
+                          ("This font lacks caret position values for"
+                           " ligature glyphs on its GDEF table."))
+    elif missing:
+      missing = "\n\t- ".join(missing)
+      yield WARN, Message("incomplete-caret-pos-data",
+                          ("This font lacks caret positioning"
+                           " values for these ligature glyphs:"
+                           f"\n\t- {missing}\n\n  "))
+    else:
+      yield PASS, "Looks good!"
+
+
+@check(
+  id = 'com.google.fonts/check/kerning_for_non_ligated_sequences',
+  rationale = """
+    Fonts with ligatures should have kerning on the corresponding
+    non-ligated sequences for text where ligatures aren't used
+    (eg https://github.com/impallari/Raleway/issues/14).
+  """,
+  conditions = ['ligatures',
+                'has_kerning_info'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1145'
+  })
+def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, has_kerning_info):
+  """Is there kerning info for non-ligated sequences?"""
+
+  def look_for_nonligated_kern_info(table):
+    for pairpos in table.SubTable:
+      for i, glyph in enumerate(pairpos.Coverage.glyphs):
+        if not hasattr(pairpos, 'PairSet'):
+          continue
+        for pairvalue in pairpos.PairSet[i].PairValueRecord:
+          kern_pair = (glyph, pairvalue.SecondGlyph)
+          if kern_pair in ligature_pairs:
+            ligature_pairs.remove(kern_pair)
+
+  def ligatures_str(pairs):
+    result = [f"\t- {first} + {second}" for first, second in pairs]
+    return "\n".join(result)
+
+  if ligatures == -1:
+    yield FAIL, Message("malformed", "Failed to lookup ligatures."
+                        " This font file seems to be malformed."
+                        " For more info, read:"
+                        " https://github.com"
+                        "/googlefonts/fontbakery/issues/1596")
+  else:
+    ligature_pairs = []
+    for first, comp in ligatures.items():
+      for components in comp:
+        while components:
+          pair = (first, components[0])
+          if pair not in ligature_pairs:
+            ligature_pairs.append(pair)
+          first = components[0]
+          components.pop(0)
+
+    for record in ttFont["GSUB"].table.FeatureList.FeatureRecord:
+      if record.FeatureTag == 'kern':
+        for index in record.Feature.LookupListIndex:
+          lookup = ttFont["GSUB"].table.LookupList.Lookup[index]
+          look_for_nonligated_kern_info(lookup)
+
+    if ligature_pairs:
+      yield WARN, Message("lacks-kern-info",
+                          ("GPOS table lacks kerning info for the following"
+                           " non-ligated sequences:\n"
+                           "{}\n\n  ").format(ligatures_str(ligature_pairs)))
+    else:
+      yield PASS, ("GPOS table provides kerning info for "
+                   "all non-ligated sequences.")
+
+
+@check(
+  id = 'com.google.fonts/check/name/family_and_style_max_length',
+  rationale = """
+    According to a Glyphs tutorial (available at
+    https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances),
+    in order to make sure all versions of Windows recognize it as a valid
+    font file, we must make sure that the concatenated length of the
+    familyname (NameID.FONT_FAMILY_NAME) and style
+    (NameID.FONT_SUBFAMILY_NAME)
+    strings in the name table do not exceed 20 characters.
+    """,
+  misc_metadata = {
+    # Somebody with access to Windows should make some experiments
+    # and confirm that this is really the case.
+    'affects': [('Windows', 'unspecified')],
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1488',
+  }
+)
+def com_google_fonts_check_name_family_and_style_max_length(ttFont):
+  """Combined length of family and style must not exceed 20 characters."""
+  from unidecode import unidecode
+  from fontbakery.utils import (get_name_entries,
+                                get_name_entry_strings)
+  failed = False
+  for familyname in get_name_entries(ttFont,
+                                     NameID.FONT_FAMILY_NAME):
+    # we'll only match family/style name entries with the same platform ID:
+    plat = familyname.platformID
+    familyname_str = familyname.string.decode(familyname.getEncoding())
+    for stylename_str in get_name_entry_strings(ttFont,
+                                                NameID.FONT_SUBFAMILY_NAME,
+                                                platformID=plat):
+      if len(familyname_str + stylename_str) > 20:
+        failed = True
+        yield WARN, ("The combined length of family and style"
+                     " exceeds 20 chars in the following '{}' entries:"
+                     " FONT_FAMILY_NAME = '{}' / SUBFAMILY_NAME = '{}'"
+                     "").format(PlatformID(plat).name,
+                                unidecode(familyname_str),
+                                unidecode(stylename_str))
+  if not failed:
+    yield PASS, "All name entries are good."
+
+
 def is_librebarcode(font):
   font_filenames = [
     "LibreBarcode39-Regular.ttf",
@@ -3850,6 +3804,7 @@ def is_librebarcode(font):
     if font_filename in font:
       return True
 
+
 @condition(force=True)
 def fontforge_skip_checks(font):
   """Skip by fontforge reported issues for google fonts specific fonts."""
@@ -3859,6 +3814,7 @@ def fontforge_skip_checks(font):
     # 0x200: Font doesn't have invalid glyph names
     return 0x20 + 0x200
   return None
+
 
 def check_skip_filter(checkid, font=None, **iterargs):
   if font and is_librebarcode(font) and checkid in (
@@ -3873,7 +3829,5 @@ def check_skip_filter(checkid, font=None, **iterargs):
   return True, None
 
 profile.check_skip_filter = check_skip_filter
-
 profile.auto_register(globals())
-
-profile.test_expected_checks(expected_check_ids, exclusive=True)
+profile.test_expected_checks(GOOGLEFONTS_PROFILE_CHECKS, exclusive=True)

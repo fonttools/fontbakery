@@ -1,15 +1,161 @@
 import os
-from fontbakery.callable import check, condition, disable
-from fontbakery.checkrunner import ERROR, FAIL, INFO, PASS, SKIP, WARN
+
+from fontbakery.checkrunner import Section, PASS, FAIL
+from fontbakery.callable import condition, check, disable
 from fontbakery.constants import PriorityLevel
 from fontbakery.message import Message
-# used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
-from .shared_conditions import is_variable_font
+from fontbakery.fonts_profile import profile_factory
+from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
 
-profile_imports = [
-    ('.shared_conditions', ('missing_whitespace_chars', ))
+profile_imports = ('fontbakery.profiles.opentype',)
+profile = profile_factory(default_section=Section("Universal"))
+
+THIRDPARTY_CHECKS = [
+  'com.google.fonts/check/ots',
+  'com.google.fonts/check/ftxvalidator',
+  'com.google.fonts/check/fontforge',
+  'com.google.fonts/check/fontforge_stderr',
+  'com.google.fonts/check/ftxvalidator_is_available'
 ]
+
+UNIVERSAL_PROFILE_CHECKS = \
+  OPENTYPE_PROFILE_CHECKS + \
+  THIRDPARTY_CHECKS + [
+  'com.google.fonts/check/name/trailing_spaces',
+  'com.google.fonts/check/family/win_ascent_and_descent',
+  'com.google.fonts/check/os2_metrics_match_hhea',
+  'com.google.fonts/check/fontbakery_version',
+  'com.google.fonts/check/ttx-roundtrip',
+  'com.google.fonts/check/family/single_directory',
+  'com.google.fonts/check/mandatory_glyphs',
+  'com.google.fonts/check/whitespace_glyphs',
+  'com.google.fonts/check/whitespace_glyphnames',
+  'com.google.fonts/check/whitespace_ink',
+  'com.google.fonts/check/required_tables',
+  'com.google.fonts/check/unwanted_tables',
+  'com.google.fonts/check/valid_glyphnames',
+  'com.google.fonts/check/unique_glyphnames',
+#  'com.google.fonts/check/glyphnames_max_length',
+
+]
+
+@check(
+  id='com.google.fonts/check/name/trailing_spaces',
+)
+def com_google_fonts_check_name_trailing_spaces(ttFont):
+  """Name table records must not have trailing spaces."""
+  failed = False
+  for name_record in ttFont['name'].names:
+    name_string = name_record.toUnicode()
+    if name_string != name_string.strip():
+      failed = True
+      name_key = tuple([name_record.platformID, name_record.platEncID,
+                       name_record.langID, name_record.nameID])
+      shortened_str = name_record.toUnicode()
+      if len(shortened_str) > 20:
+        shortened_str = shortened_str[:10] + "[...]" + shortened_str[-10:]
+      yield FAIL, (f"Name table record with key = {name_key} has"
+                    " trailing spaces that must be removed:"
+                   f" '{shortened_str}'")
+  if not failed:
+    yield PASS, ("No trailing spaces on name table entries.")
+
+
+@check(
+  id = 'com.google.fonts/check/family/win_ascent_and_descent',
+  conditions = ['vmetrics']
+)
+def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
+  """Checking OS/2 usWinAscent & usWinDescent.
+
+  A font's winAscent and winDescent values should be greater than the
+  head table's yMax, abs(yMin) values. If they are less than these
+  values, clipping can occur on Windows platforms,
+  https://github.com/RedHatBrand/Overpass/issues/33
+
+  If the font includes tall/deep writing systems such as Arabic or
+  Devanagari, the winAscent and winDescent can be greater than the yMax and
+  abs(yMin) to accommodate vowel marks.
+
+  When the win Metrics are significantly greater than the upm, the
+  linespacing can appear too loose. To counteract this, enabling the
+  OS/2 fsSelection bit 7 (Use_Typo_Metrics), will force Windows to use the
+  OS/2 typo values instead. This means the font developer can control the
+  linespacing with the typo values, whilst avoiding clipping by setting
+  the win values to values greater than the yMax and abs(yMin).
+  """
+  failed = False
+
+  # OS/2 usWinAscent:
+  if ttFont['OS/2'].usWinAscent < vmetrics['ymax']:
+    failed = True
+    yield FAIL, Message("ascent",
+                        ("OS/2.usWinAscent value"
+                         " should be equal or greater than {}, but got"
+                         " {} instead").format(vmetrics['ymax'],
+                                               ttFont['OS/2'].usWinAscent))
+  if ttFont['OS/2'].usWinAscent > vmetrics['ymax'] * 2:
+    failed = True
+    yield FAIL, Message(
+        "ascent", ("OS/2.usWinAscent value {} is too large."
+                   " It should be less than double the yMax."
+                   " Current yMax value is {}").format(ttFont['OS/2'].usWinDescent,
+                                                       vmetrics['ymax']))
+  # OS/2 usWinDescent:
+  if ttFont['OS/2'].usWinDescent < abs(vmetrics['ymin']):
+    failed = True
+    yield FAIL, Message(
+        "descent", ("OS/2.usWinDescent value"
+                    " should be equal or greater than {}, but got"
+                    " {} instead").format(
+                        abs(vmetrics['ymin']), ttFont['OS/2'].usWinDescent))
+
+  if ttFont['OS/2'].usWinDescent > abs(vmetrics['ymin']) * 2:
+    failed = True
+    yield FAIL, Message(
+        "descent", ("OS/2.usWinDescent value {} is too large."
+                    " It should be less than double the yMin."
+                    " Current absolute yMin value is {}").format(ttFont['OS/2'].usWinDescent,
+                                                                 abs(vmetrics['ymin'])))
+  if not failed:
+    yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
+
+
+@check(
+  id = 'com.google.fonts/check/os2_metrics_match_hhea',
+  rationale = """When OS/2 and hhea vertical metrics match, the same
+  linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018,
+  Google Fonts has released many fonts with vertical metrics that don't match
+  in this way. When we fix this issue in these existing families, we will
+  create a visible change in line/paragraph layout for either Windows or macOS
+  users, which will upset some of them.
+
+  But we have a duty to fix broken stuff, and inconsistent paragraph layout is
+  unacceptably broken when it is possible to avoid it.
+
+  If users complain and prefer the old broken version, they are libre to take
+  care of their own situation."""
+)
+def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
+  """Checking OS/2 Metrics match hhea Metrics.
+
+  OS/2 and hhea vertical metric values should match. This will produce
+  the same linespacing on Mac, GNU+Linux and Windows.
+
+  Mac OS X uses the hhea values.
+  Windows uses OS/2 or Win, depending on the OS or fsSelection bit value.
+  """
+  # OS/2 sTypoAscender and sTypoDescender match hhea ascent and descent
+  if ttFont["OS/2"].sTypoAscender != ttFont["hhea"].ascent:
+    yield FAIL, Message("ascender",
+                        "OS/2 sTypoAscender and hhea ascent must be equal.")
+  elif ttFont["OS/2"].sTypoDescender != ttFont["hhea"].descent:
+    yield FAIL, Message("descender",
+                        "OS/2 sTypoDescender and hhea descent must be equal.")
+  else:
+    yield PASS, ("OS/2.sTypoAscender/Descender values"
+                 " match hhea.ascent/descent.")
+
 
 @condition
 def fontforge_check_results(font):
@@ -794,3 +940,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
   # and then we need to cleanup our mess...
   if os.path.exists(xml_file):
     os.remove(xml_file)
+
+
+profile.auto_register(globals())
+profile.test_expected_checks(UNIVERSAL_PROFILE_CHECKS, exclusive=True)
