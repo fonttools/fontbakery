@@ -947,6 +947,12 @@ class Profile:
     eprofileially for a warning when the profile contents have changed after an
     update.
     """
+    s = set()
+    duplicates = set(x for x in expected_check_ids if x in s or s.add(x))
+    if len(duplicates):
+      raise SetupError('Profile has duplicated entries in its list'
+                       ' of expected check IDs:\n' + '\n'.join(duplicates))
+
     expected_check_ids = set(expected_check_ids)
     registered_checks = set(self._check_registry.keys())
     missing_checks = expected_check_ids - registered_checks

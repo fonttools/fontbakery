@@ -352,50 +352,6 @@ def com_google_fonts_check_name_rfn(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/name/family_and_style_max_length',
-  rationale = """
-    According to a Glyphs tutorial (available at
-    https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances),
-    in order to make sure all versions of Windows recognize it as a valid
-    font file, we must make sure that the concatenated length of the
-    familyname (NameID.FONT_FAMILY_NAME) and style
-    (NameID.FONT_SUBFAMILY_NAME)
-    strings in the name table do not exceed 20 characters.
-    """,
-  misc_metadata = {
-    # Somebody with access to Windows should make some experiments
-    # and confirm that this is really the case.
-    'affects': [('Windows', 'unspecified')],
-    'request': 'https://github.com/googlefonts/fontbakery/issues/1488',
-  }
-)
-def com_google_fonts_check_name_family_and_style_max_length(ttFont):
-  """Combined length of family and style must not exceed 20 characters."""
-  from unidecode import unidecode
-  from fontbakery.utils import (get_name_entries,
-                                get_name_entry_strings)
-  failed = False
-  for familyname in get_name_entries(ttFont,
-                                     NameID.FONT_FAMILY_NAME):
-    # we'll only match family/style name entries with the same platform ID:
-    plat = familyname.platformID
-    familyname_str = familyname.string.decode(familyname.getEncoding())
-    for stylename_str in get_name_entry_strings(ttFont,
-                                                NameID.FONT_SUBFAMILY_NAME,
-                                                platformID=plat):
-      if len(familyname_str + stylename_str) > 20:
-        failed = True
-        yield WARN, ("The combined length of family and style"
-                     " exceeds 20 chars in the following '{}' entries:"
-                     " FONT_FAMILY_NAME = '{}' / SUBFAMILY_NAME = '{}'"
-                     "").format(PlatformID(plat).name,
-                                unidecode(familyname_str),
-                                unidecode(stylename_str))
-  if not failed:
-    yield PASS, "All name entries are good."
-
-
-@check(
   id='com.adobe.fonts/check/name/postscript_vs_cff',
   conditions=['is_cff'],
   rationale="""
