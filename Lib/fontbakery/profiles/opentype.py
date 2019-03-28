@@ -4,6 +4,7 @@ profile_imports = ((
     ".",
     (
         "general",
+        "cff",
         "cmap",
         "head",
         "os2",
