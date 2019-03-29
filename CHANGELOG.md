@@ -10,7 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New checks
   - **[com.adobe.fonts/check/cff_call_depth]: "Is the CFF subr/gsubr call depth > 10?" (PR #2425)
   - **[com.adobe.fonts/check/cff2_call_depth]: "Is the CFF2 subr/gsubr call depth > 10?" (PR #2425)
-
+  - **[com.google.fonts/check/control_chars]: "Are there unacceptable control characters in the font?" (PR #2430)
 
 ## 0.7.0 (2019-Mar-22)
 ### Major code-changes
