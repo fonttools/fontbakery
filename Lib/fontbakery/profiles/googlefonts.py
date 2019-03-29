@@ -3794,7 +3794,11 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
 
 @check(
     id='com.google.fonts/check/control_chars',
-    conditions=['are_ttf']
+    conditions=['are_ttf'],
+    rationale="""Use of some unacceptable control characters in the U+0000 - U+001F range  
+    can lead to rendering issues on some platforms.  Acceptable control characters are 
+    defined as .null (U+0000) and CR (U+000D) for this test.
+    """
 )
 def com_google_fonts_check_control_chars(ttFonts):
   """Does font file include unacceptable control character glyphs?"""
