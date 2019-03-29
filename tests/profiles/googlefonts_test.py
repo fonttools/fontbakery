@@ -2888,3 +2888,43 @@ def test_check_kerning_for_non_ligated_sequences():
   print ("Test WARN with a bad font...")
   status, message = list(check(ttFont, lig, has_kinfo))[-1]
   assert status == WARN and message.code == "lacks-kern-info"
+
+
+def test_check_has_unacceptable_control_characters():
+  """Are any unacceptable control characters present in font files?"""
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_has_unacceptable_control_chars as check
+  passing_file = TEST_FILE("bad_character_set/control_chars/FontbakeryTesterCCGood-Regular.ttf")
+  error_onebad_cc_file = TEST_FILE("bad_character_set/control_chars/FontbakeryTesterCCOneBad-Regular.ttf")
+  error_multibad_cc_file = TEST_FILE("bad_character_set/control_chars/FontbakeryTesterCCMultiBad-Regular.ttf")
+  # No unacceptable control characters should pass with one file
+  tt = TTFont(passing_file)
+  print("Test pass with one good font...")
+  status, message = list(check([tt]))[-1]
+  assert status == PASS
+
+  # No unacceptable control characters should pass with multiple good files
+  tt = TTFont(passing_file)
+  print("Test pass with multiple good fonts...")
+  status, message = list(check([tt, tt]))[-1]
+  assert status == PASS
+
+  # Unacceptable control chars should fail with one file x one bad char in font
+  tt = TTFont(error_onebad_cc_file)
+  print("Test fail with one bad font that has one bad char...")
+  status, message = list(check([tt]))[-1]
+  assert status == FAIL
+
+  # Unacceptable control chars should fail with one file x multiple bad char in font
+  tt = TTFont(error_multibad_cc_file)
+  print("Test fail with one bad font that has multiple bad char...")
+  status, message = list(check([tt]))[-1]
+  assert status == FAIL
+
+  # Unacceptable control chars should fail with multiple files x multiple bad chars in fonts
+  tt1 = TTFont(error_onebad_cc_file)
+  tt2 = TTFont(error_multibad_cc_file)
+  print("Test fail with multiple bad fonts that have multiple bad chars...")
+  status, message = list(check([tt1, tt2]))[-1]
+  assert status == FAIL
+
+
