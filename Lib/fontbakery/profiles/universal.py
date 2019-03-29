@@ -1,6 +1,6 @@
 import os
 
-from fontbakery.checkrunner import Section, PASS, FAIL
+from fontbakery.checkrunner import Section, PASS, FAIL, WARN, ERROR, INFO, SKIP
 from fontbakery.callable import condition, check, disable
 from fontbakery.constants import PriorityLevel
 from fontbakery.message import Message
@@ -688,6 +688,8 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 )
 def com_google_fonts_check_required_tables(ttFont):
   """Font contains all required tables?"""
+  from .shared_conditions import is_variable_font
+
   REQUIRED_TABLES = {
       "cmap", "head", "hhea", "hmtx", "maxp", "name", "OS/2", "post"}
   OPTIONAL_TABLES = {

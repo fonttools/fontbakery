@@ -323,35 +323,6 @@ def test_check_name_rfn():
   assert status == WARN
 
 
-def test_check_name_family_and_style_max_length():
-  """ Check font name is the same as family name. """
-  from fontbakery.profiles.name import com_google_fonts_check_name_family_and_style_max_length as check
-  # Our reference Cabin Regular is known to be good
-  ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-
-  # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
-
-  # Then we emit a WARNing with the long family/style names
-  # that were used as an example on the glyphs tutorial
-  # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances):
-  for index, name in enumerate(ttFont["name"].names):
-    if name.nameID == NameID.FONT_FAMILY_NAME:
-      ttFont["name"].names[index].string = "ImpossibleFamilyNameFont".encode(name.getEncoding())
-      break
-
-  for index, name in enumerate(ttFont["name"].names):
-    if name.nameID == NameID.FONT_SUBFAMILY_NAME:
-      ttFont["name"].names[index].string = "WithAVeryLongStyleName".encode(name.getEncoding())
-      break
-
-  print ("Test WARN with a bad font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == WARN
-
-
 def test_check_name_postscript_vs_cff():
   from fontbakery.profiles.name import com_adobe_fonts_check_name_postscript_vs_cff as check
   test_font = TTFont()

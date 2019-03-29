@@ -58,31 +58,3 @@ def test_check_gpos_kerning_info():
   print ("Test WARN with a font lacking a GPOS table...")
   status, message = list(check(ttFont))[-1]
   assert status == WARN
-
-
-def test_check_kerning_for_non_ligated_sequences():
-  """ Is there kerning info for non-ligated sequences ? """
-  from fontbakery.profiles.gpos import (
-    com_google_fonts_check_kerning_for_non_ligated_sequences as check,
-    has_kerning_info)
-
-  from fontbakery.profiles.shared_conditions import ligatures
-  # Our reference Mada Medium is known to be good
-  ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
-  lig = ligatures(ttFont)
-  has_kinfo = has_kerning_info(ttFont)
-
-  # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont, lig, has_kinfo))[-1]
-  assert status == PASS
-
-  # And Merriweather Regular is known to be bad
-  ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
-  lig = ligatures(ttFont)
-  has_kinfo = has_kerning_info(ttFont)
-
-  # So the check must emit a WARN in this testcase:
-  print ("Test WARN with a bad font...")
-  status, message = list(check(ttFont, lig, has_kinfo))[-1]
-  assert status == WARN and message.code == "lacks-kern-info"
