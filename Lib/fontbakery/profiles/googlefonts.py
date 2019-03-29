@@ -117,7 +117,8 @@ FONT_FILE_CHECKS = [
    'com.google.fonts/check/smart_dropout',
    'com.google.fonts/check/integer_ppem_if_hinted',
    'com.google.fonts/check/unitsperem_strict',
-   'com.google.fonts/check/contour_count'
+   'com.google.fonts/check/contour_count',
+   'com.google.fonts/check/has_unacceptable_control_chars'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -3789,6 +3790,83 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                                 unidecode(stylename_str))
   if not failed:
     yield PASS, "All name entries are good."
+
+
+@check(
+    id='com.google.fonts/check/has_unacceptable_control_chars',
+    conditions=['are_ttf']
+)
+def com_google_fonts_check_has_unacceptable_control_chars(ttFonts):
+  """Does font file include unacceptable control character glyphs?
+
+  Args:
+      ttFonts (list): list of one or more fontTools.ttLib.TTFont objects
+  """
+  # list of unacceptable control character glyph names
+  # definition includes the entire control character Unicode block except:
+  #    - .null (U+0000)
+  #    - CR (U+000D)
+  unacceptable_cc_list = [
+      "uni0001",
+      "uni0002",
+      "uni0003",
+      "uni0004",
+      "uni0005",
+      "uni0006",
+      "uni0007",
+      "uni0008",
+      "uni0009",
+      "uni000A",
+      "uni000B",
+      "uni000C",
+      "uni000E",
+      "uni000F",
+      "uni0010",
+      "uni0011",
+      "uni0012",
+      "uni0013",
+      "uni0014",
+      "uni0015",
+      "uni0016",
+      "uni0017",
+      "uni0018",
+      "uni0019",
+      "uni001A",
+      "uni001B",
+      "uni001C",
+      "uni001D",
+      "uni001E",
+      "uni001F"
+  ]
+
+  # a dict with key:value of font path that failed check : list of unacceptable glyph names
+  failed_font_dict = {}
+
+  for tt in ttFonts:
+    font_failed = False
+    unacceptable_glyphs_in_set = []  # a list of unacceptable glyph names identified
+    glyph_name_set = set(tt["glyf"].glyphs.keys())
+    fontname = tt.reader.file.name
+
+    for unacceptable_glyph_name in unacceptable_cc_list:
+      if unacceptable_glyph_name in glyph_name_set:
+        font_failed = True
+        unacceptable_glyphs_in_set.append(unacceptable_glyph_name)
+
+    if font_failed:
+        failed_font_dict[fontname] = unacceptable_glyphs_in_set
+
+  if len(failed_font_dict) > 0:
+    unacceptable_cc_report_string = "The following unacceptable control characters were identified:{}".format(
+        os.linesep
+    )
+    for fnt in failed_font_dict.keys():
+      unacceptable_cc_report_string += " {}: {}{}".format(
+          fnt, ", ".join(failed_font_dict[fnt]), os.linesep
+      )
+    yield FAIL, ("{}".format(unacceptable_cc_report_string))
+  else:
+    yield PASS, ("Unacceptable control characters were not identified.")
 
 
 def is_librebarcode(font):
