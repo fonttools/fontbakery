@@ -118,7 +118,7 @@ FONT_FILE_CHECKS = [
    'com.google.fonts/check/integer_ppem_if_hinted',
    'com.google.fonts/check/unitsperem_strict',
    'com.google.fonts/check/contour_count',
-   'com.google.fonts/check/has_unacceptable_control_chars'
+   'com.google.fonts/check/control_chars'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
