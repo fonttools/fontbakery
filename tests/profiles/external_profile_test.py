@@ -25,7 +25,7 @@ def test_external_profile():
       filter_func=check_filter)
 
   # Probe some tests
-  expected_tests = ["com.google.fonts/check/family/single_directory",
+  expected_tests = ["com.google.fonts/check/family/panose_proportion",
                     "com.google.fonts/check/varfont/regular_opsz_coord"]
   profile.test_expected_checks(expected_tests)
 
@@ -68,7 +68,6 @@ def test_profile_imports():
     (
         "fontbakery.profiles",
         (
-            "general",
             "cmap",
             "head",
             "os2",
@@ -78,7 +77,6 @@ def test_profile_imports():
             "dsig",
             "hmtx",
             "gpos",
-            "gdef",
             "kern",
             "glyf",
             "fvar",
@@ -97,7 +95,6 @@ def test_profile_imports():
   # make sure the suggested workaround still works:
   # https://github.com/googlefonts/fontbakery/issues/1886#issuecomment-392535435
   profile_imports = (
-      "fontbakery.profiles.general",
       "fontbakery.profiles.cmap",
       "fontbakery.profiles.head",
       "fontbakery.profiles.os2",
@@ -107,7 +104,6 @@ def test_profile_imports():
       "fontbakery.profiles.dsig",
       "fontbakery.profiles.hmtx",
       "fontbakery.profiles.gpos",
-      "fontbakery.profiles.gdef",
       "fontbakery.profiles.kern",
       "fontbakery.profiles.glyf",
       "fontbakery.profiles.fvar",

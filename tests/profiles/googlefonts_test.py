@@ -275,6 +275,37 @@ def test_check_description_max_length():
   assert status == PASS
 
 
+def test_check_name_family_and_style_max_length(): 
+  """ Check font name is the same as family name. """ 
+  from fontbakery.profiles.googlefonts import ( 
+    com_google_fonts_check_name_family_and_style_max_length as check) 
+ 
+  # Our reference Cabin Regular is known to be good 
+  ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf")) 
+ 
+  # So it must PASS the check: 
+  print ("Test PASS with a good font...") 
+  status, message = list(check(ttFont))[-1] 
+  assert status == PASS 
+ 
+  # Then we emit a WARNing with the long family/style names 
+  # that were used as an example on the glyphs tutorial 
+  # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances): 
+  for index, name in enumerate(ttFont["name"].names): 
+    if name.nameID == NameID.FONT_FAMILY_NAME: 
+      ttFont["name"].names[index].string = "ImpossibleFamilyNameFont".encode(name.getEncoding()) 
+      break 
+ 
+  for index, name in enumerate(ttFont["name"].names): 
+    if name.nameID == NameID.FONT_SUBFAMILY_NAME: 
+      ttFont["name"].names[index].string = "WithAVeryLongStyleName".encode(name.getEncoding()) 
+      break 
+ 
+  print ("Test WARN with a bad font...") 
+  status, message = list(check(ttFont))[-1] 
+  assert status == WARN 
+
+
 def test_check_metadata_parses():
   """ Check METADATA.pb parse correctly. """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_metadata_parses as check
@@ -1502,30 +1533,6 @@ def test_check_metadata_valid_copyright():
   assert status == PASS
 
 
-def test_check_name_trailing_spaces():
-  """ Name table entries must not have trailing spaces. """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_name_trailing_spaces as check
-  # Our reference Cabin Regular is known to be good:
-  fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-  ttFont = TTFont(fontfile)
-
-  # So it must PASS the check:
-  print("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
-
-  for i, entry in enumerate(ttFont['name'].names):
-    good_string = ttFont['name'].names[i].toUnicode()
-    bad_string = good_string + " "
-    print(f"Test FAIL with a bad name table entry ({i}: '{bad_string}')...")
-    ttFont['name'].names[i].string = bad_string.encode(entry.getEncoding())
-    status, message = list(check(ttFont))[-1]
-    assert status == FAIL
-
-    #restore good entry before moving to the next one:
-    ttFont['name'].names[i].string = good_string.encode(entry.getEncoding())
-
-
 def test_check_font_copyright():
   """Copyright notices match canonical pattern in fonts"""
   from fontbakery.profiles.googlefonts import com_google_fonts_check_font_copyright as check
@@ -2667,65 +2674,6 @@ def DISABLED_test_check_varfont_has_MVAR():
   assert status == FAIL
 
 
-def test_check_family_win_ascent_and_descent(mada_ttFonts):
-  """ Checking OS/2 usWinAscent & usWinDescent. """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_family_win_ascent_and_descent as check
-  from fontbakery.profiles.shared_conditions import vmetrics
-
-  # Our reference Mada Regular is know to be bad here.
-  vm = vmetrics(mada_ttFonts)
-  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-
-  # But we fix it first to test the PASS code-path:
-  print('Test PASS with a good font...')
-  ttFont['OS/2'].usWinAscent = vm['ymax']
-  ttFont['OS/2'].usWinDescent = abs(vm['ymin'])
-  status, message = list(check(ttFont, vm))[-1]
-  assert status == PASS
-
-  # Then we break it:
-  print('Test FAIL with a bad OS/2.usWinAscent...')
-  ttFont['OS/2'].usWinAscent = vm['ymax'] - 1
-  ttFont['OS/2'].usWinDescent = abs(vm['ymin'])
-  status, message = list(check(ttFont, vm))[-1]
-  assert status == FAIL and message.code == "ascent"
-
-  print('Test FAIL with a bad OS/2.usWinDescent...')
-  ttFont['OS/2'].usWinAscent = vm['ymax']
-  ttFont['OS/2'].usWinDescent = abs(vm['ymin']) - 1
-  status, message = list(check(ttFont, vm))[-1]
-  assert status == FAIL and message.code == "descent"
-
-
-def test_check_os2_metrics_match_hhea(mada_ttFonts):
-  """ Checking OS/2 Metrics match hhea Metrics. """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_os2_metrics_match_hhea as check
-
-  # Our reference Mada Regular is know to be good here.
-  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-
-  print("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
-
-  # Now we break it:
-  print('Test FAIL with a bad OS/2.sTypoAscender font...')
-  correct = ttFont['hhea'].ascent
-  ttFont['OS/2'].sTypoAscender = correct + 1
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "ascender"
-
-  # Restore good value:
-  ttFont['OS/2'].sTypoAscender = correct
-
-  # And break it again, now on sTypoDescender value:
-  print('Test FAIL with a bad OS/2.sTypoDescender font...')
-  correct = ttFont['hhea'].descent
-  ttFont['OS/2'].sTypoDescender = correct + 1
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "descender"
-
-
 def test_check_smart_dropout():
   """ Font enables smart dropout control in "prep" table instructions? """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_smart_dropout as check
@@ -2884,3 +2832,59 @@ def test_check_integer_ppem_if_hinted():
   print ("Test PASS with a good font...")
   status, message = list(check(ttFont))[-1]
   assert status == PASS
+
+
+def test_check_ligature_carets():
+  """ Is there a caret position declared for every ligature ? """
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_ligature_carets as check
+  from fontbakery.profiles.shared_conditions import ligatures
+
+  # Our reference Mada Medium is known to be bad
+  ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
+  lig = ligatures(ttFont)
+
+  # So it must emit a WARN:
+  print ("Test WARN with a bad font...")
+  status, message = list(check(ttFont, lig))[-1]
+  assert status == WARN and message.code == "lacks-caret-pos"
+
+  # And FamilySans Regular is known to be bad
+  ttFont = TTFont("data/test/familysans/FamilySans-Regular.ttf")
+  lig = ligatures(ttFont)
+
+  # So it must emit a WARN:
+  print ("Test WARN with a bad font...")
+  status, message = list(check(ttFont, lig))[-1]
+  assert status == WARN and message.code == "GDEF-missing"
+
+  # TODO: test the following code-paths:
+  # - WARN "incomplete-caret-pos-data"
+  # - FAIL "malformed"
+  # - PASS (We currently lack a reference family that PASSes this check!)
+
+
+def test_check_kerning_for_non_ligated_sequences():
+  """ Is there kerning info for non-ligated sequences ? """
+  from fontbakery.profiles.gpos import has_kerning_info
+  from fontbakery.profiles.googlefonts import (
+    com_google_fonts_check_kerning_for_non_ligated_sequences as check)
+  from fontbakery.profiles.shared_conditions import ligatures
+  # Our reference Mada Medium is known to be good
+  ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
+  lig = ligatures(ttFont)
+  has_kinfo = has_kerning_info(ttFont)
+
+  # So it must PASS the check:
+  print ("Test PASS with a good font...")
+  status, message = list(check(ttFont, lig, has_kinfo))[-1]
+  assert status == PASS
+
+  # And Merriweather Regular is known to be bad
+  ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+  lig = ligatures(ttFont)
+  has_kinfo = has_kerning_info(ttFont)
+
+  # So the check must emit a WARN in this testcase:
+  print ("Test WARN with a bad font...")
+  status, message = list(check(ttFont, lig, has_kinfo))[-1]
+  assert status == WARN and message.code == "lacks-kern-info"
