@@ -3842,11 +3842,11 @@ def com_google_fonts_check_control_chars(ttFonts):
   # a dict with key:value of font path that failed check : list of unacceptable glyph names
   failed_font_dict = {}
 
-  for tt in ttFonts:
+  for ttFont in ttFonts:
     font_failed = False
     unacceptable_glyphs_in_set = []  # a list of unacceptable glyph names identified
-    glyph_name_set = set(tt["glyf"].glyphs.keys())
-    fontname = tt.reader.file.name
+    glyph_name_set = set(ttFont["glyf"].glyphs.keys())
+    fontname = ttFont.reader.file.name
 
     for unacceptable_glyph_name in unacceptable_cc_list:
       if unacceptable_glyph_name in glyph_name_set:
