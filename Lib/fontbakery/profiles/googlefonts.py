@@ -3797,11 +3797,7 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
     conditions=['are_ttf']
 )
 def com_google_fonts_check_control_chars(ttFonts):
-  """Does font file include unacceptable control character glyphs?
-
-  Args:
-      ttFonts (list): list of one or more fontTools.ttLib.TTFont objects
-  """
+  """Does font file include unacceptable control character glyphs?"""
   # list of unacceptable control character glyph names
   # definition includes the entire control character Unicode block except:
   #    - .null (U+0000)
