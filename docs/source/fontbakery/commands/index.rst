@@ -11,4 +11,5 @@ commands
    check_opentype
    check_profile
    check_ufo_sources
+   check_universal
    generate_glyphdata

@@ -14,6 +14,7 @@ This has several subcommands, described in the help function:
         check-fontval
         check-googlefonts
         check-profile
+        check-universal
         generate-glyphdata
     
     Subcommands have their own help messages. These are usually 
@@ -28,6 +29,20 @@ This has several subcommands, described in the help function:
       --list-subcommands  print the list of subcommnds to stdout, separated 
                           by a space character. This is usually only used to 
                           generate the shell completion code.
+
+### fontbakery check-universal
+
+The "universal" profile contains checks for best practices agreed upon on the type design community.
+
+The initial set of checks was choses to be not only the full opentype profile but also those checks originally included in both `adobefonts` and `googlefonts` profiles.
+
+The goal is to keep the vendor-specific profiles with only the minimal set of checks that are really specific, while the shared ones are placed on the universal profile.
+
+We should always consider contributing new checks (or moving existing ones) to this universal profile, if appropriate.
+
+### fontbakery check-adobefonts
+
+Usage is analogous to the Google Fonts profile described below.
 
 ### fontbakery check-googlefonts
 
