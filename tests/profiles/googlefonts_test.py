@@ -2890,9 +2890,9 @@ def test_check_kerning_for_non_ligated_sequences():
   assert status == WARN and message.code == "lacks-kern-info"
 
 
-def test_check_has_unacceptable_control_characters():
+def test_check_control_chars():
   """Are any unacceptable control characters present in font files?"""
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_has_unacceptable_control_chars as check
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_control_chars as check
   passing_file = TEST_FILE("bad_character_set/control_chars/FontbakeryTesterCCGood-Regular.ttf")
   error_onebad_cc_file = TEST_FILE("bad_character_set/control_chars/FontbakeryTesterCCOneBad-Regular.ttf")
   error_multibad_cc_file = TEST_FILE("bad_character_set/control_chars/FontbakeryTesterCCMultiBad-Regular.ttf")

@@ -3793,10 +3793,10 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/has_unacceptable_control_chars',
+    id='com.google.fonts/check/control_chars',
     conditions=['are_ttf']
 )
-def com_google_fonts_check_has_unacceptable_control_chars(ttFonts):
+def com_google_fonts_check_control_chars(ttFonts):
   """Does font file include unacceptable control character glyphs?
 
   Args:
