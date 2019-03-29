@@ -3857,12 +3857,10 @@ def com_google_fonts_check_has_unacceptable_control_chars(ttFonts):
         failed_font_dict[fontname] = unacceptable_glyphs_in_set
 
   if len(failed_font_dict) > 0:
-    unacceptable_cc_report_string = "The following unacceptable control characters were identified:{}".format(
-        os.linesep
-    )
+    unacceptable_cc_report_string = "The following unacceptable control characters were identified:\n"
     for fnt in failed_font_dict.keys():
-      unacceptable_cc_report_string += " {}: {}{}".format(
-          fnt, ", ".join(failed_font_dict[fnt]), os.linesep
+      unacceptable_cc_report_string += " {}: {}\n".format(
+          fnt, ", ".join(failed_font_dict[fnt])
       )
     yield FAIL, ("{}".format(unacceptable_cc_report_string))
   else:
