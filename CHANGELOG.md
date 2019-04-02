@@ -2,8 +2,8 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.7.2 (2019-Apr-08)
-  - ...
-
+### Bug fixes
+  - **[com.adobe.fonts/check/cff_call_depth]: don't assume private subroutines in a CFF (PR #2437)
 
 ## 0.7.1 (2019-Apr-02)
 ### Major code-changes
