@@ -1,7 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.7.1 (2019-Apr-01)
+## 0.7.2 (2019-Apr-08)
+  - ...
+
+
+## 0.7.1 (2019-Apr-02)
 ### Major code-changes
   - The new "universal" profile contains checks for best practices agreed upon on the type design community. (issue #2426)
   - The initial set of checks will be not only the full opentype profile but also those checks original included in both adobefonts and googlefonts profiles.
