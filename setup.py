@@ -70,7 +70,6 @@ setup(
         'requests',
         'ttfautohint-py',
         'ufolint',
-        'Unidecode'
     ],
     extras_require={
         'docs': [

@@ -10,7 +10,6 @@ protobuf==3.7.1
 requests==2.21.0
 ttfautohint-py==0.4.2
 ufolint==0.3.5
-Unidecode==1.0.23
 -e .
 
 # This is only needed to run code-tests:

@@ -786,7 +786,6 @@ def com_google_fonts_check_family_has_license(licenses):
 def com_google_fonts_check_name_license(ttFont, license):
   """Check copyright namerecords match license file."""
   from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
-  from unidecode import unidecode
   failed = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
   entry_found = False
@@ -807,8 +806,8 @@ def com_google_fonts_check_name_license(ttFont, license):
                                         NameID.LICENSE_DESCRIPTION,
                                         nameRecord.platformID,
                                         PlatformID(nameRecord.platformID).name,
-                                        unidecode(value),
-                                        unidecode(placeholder)))
+                                        value,
+                                        placeholder))
   if not entry_found:
     yield FAIL, Message("missing", \
                         ("Font lacks NameID {} "
@@ -1932,12 +1931,11 @@ def com_google_fonts_check_font_copyright(ttFont):
 )
 def com_google_fonts_check_metadata_reserved_font_name(font_metadata):
   """Copyright notice on METADATA.pb should not contain 'Reserved Font Name'."""
-  from unidecode import unidecode
   if "Reserved Font Name" in font_metadata.copyright:
     yield WARN, ("METADATA.pb: copyright field (\"{}\")"
                  " contains \"Reserved Font Name\"."
                  " This is an error except in a few specific"
-                 " rare cases.").format(unidecode(font_metadata.copyright))
+                 " rare cases.").format(font_metadata.copyright)
   else:
     yield PASS, ("METADATA.pb copyright field"
                  " does not contain \"Reserved Font Name\".")
@@ -2787,7 +2785,6 @@ def com_google_fonts_check_production_encoded_glyphs(ttFont, api_gfonts_ttFont):
 def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
   """Copyright field for this font on METADATA.pb matches
      all copyright notice entries on the name table ?"""
-  from unidecode import unidecode
   failed = False
   for nameRecord in ttFont['name'].names:
     string = nameRecord.string.decode(nameRecord.getEncoding())
@@ -2798,7 +2795,7 @@ def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
                      " differs from a copyright notice entry"
                      " on the name table:"
                      " '{}'").format(font_metadata.copyright,
-                                     unidecode(string))
+                                     string)
   if not failed:
     yield PASS, ("Copyright field for this font on METADATA.pb matches"
                  " copyright notice entries on the name table.")
@@ -2999,7 +2996,6 @@ def com_google_fonts_check_name_fullfontname(ttFont,
                                              style_with_spaces,
                                              familyname_with_spaces):
   """ Check name table: FULL_FONT_NAME entries. """
-  from unidecode import unidecode
   from fontbakery.utils import name_entry_id
   failed = False
   for name in ttFont['name'].names:
@@ -3017,13 +3013,13 @@ def com_google_fonts_check_name_fullfontname(ttFont,
                        " Got '{}' which lacks 'Regular',"
                        " but it is probably OK in this case."
                        "").format(name_entry_id(name),
-                                  unidecode(string))
+                                  string)
         else:
           yield FAIL, ("Entry {} on the 'name' table: "
                        "Expected '{}' "
                        "but got '{}'.").format(name_entry_id(name),
                                                expected_value,
-                                               unidecode(string))
+                                               string)
 
   if not failed:
     yield PASS, "FULL_FONT_NAME entries are all good."
@@ -3038,7 +3034,6 @@ def com_google_fonts_check_name_fullfontname(ttFont,
   })
 def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
   """ Check name table: POSTSCRIPT_NAME entries. """
-  from unidecode import unidecode
   from fontbakery.utils import name_entry_id
 
   failed = False
@@ -3053,7 +3048,7 @@ def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
                      "Expected '{}' "
                      "but got '{}'.").format(name_entry_id(name),
                                              expected_value,
-                                             unidecode(string))
+                                             string)
   if not failed:
     yield PASS, "POSTCRIPT_NAME entries are all good."
 
@@ -3067,7 +3062,6 @@ def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
   })
 def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_with_spaces):
   """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
-  from unidecode import unidecode
   from fontbakery.utils import name_entry_id
 
   failed = False
@@ -3098,7 +3092,7 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
                                "Expected '{}' "
                                "but got '{}'.").format(name_entry_id(name),
                                                        expected_value,
-                                                       unidecode(string)))
+                                                       string))
     if not failed and not has_entry:
       failed = True
       yield FAIL, Message("non-ribbi-lacks-entry",
@@ -3117,7 +3111,6 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
   })
 def com_google_fonts_check_name_typographicsubfamilyname(ttFont, style_with_spaces):
   """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
-  from unidecode import unidecode
   from fontbakery.utils import name_entry_id
 
   failed = False
@@ -3148,7 +3141,7 @@ def com_google_fonts_check_name_typographicsubfamilyname(ttFont, style_with_spac
                                "Expected '{}' "
                                "but got '{}'.").format(name_entry_id(name),
                                                        expected_value,
-                                                       unidecode(string)))
+                                                       string))
     if not failed and not has_entry:
       failed = True
       yield FAIL, Message("non-ribbi-lacks-entry",
@@ -3172,7 +3165,6 @@ def com_google_fonts_check_name_typographicsubfamilyname(ttFont, style_with_spac
   })
 def com_google_fonts_check_name_copyright_length(ttFont):
   """ Length of copyright notice must not exceed 500 characters. """
-  from unidecode import unidecode
   from fontbakery.utils import get_name_entries
 
   failed = False
@@ -3183,7 +3175,7 @@ def com_google_fonts_check_name_copyright_length(ttFont):
         yield FAIL, ("The length of the following copyright notice ({})"
                      " exceeds 500 chars: '{}'"
                      "").format(len(notice_str),
-                                unidecode(notice_str))
+                                notice_str)
   if not failed:
     yield PASS, ("All copyright notice name entries on the"
                  " 'name' table are shorter than 500 characters.")
@@ -3768,7 +3760,6 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, 
 )
 def com_google_fonts_check_name_family_and_style_max_length(ttFont):
   """Combined length of family and style must not exceed 20 characters."""
-  from unidecode import unidecode
   from fontbakery.utils import (get_name_entries,
                                 get_name_entry_strings)
   failed = False
@@ -3786,8 +3777,8 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                      " exceeds 20 chars in the following '{}' entries:"
                      " FONT_FAMILY_NAME = '{}' / SUBFAMILY_NAME = '{}'"
                      "").format(PlatformID(plat).name,
-                                unidecode(familyname_str),
-                                unidecode(stylename_str))
+                                familyname_str,
+                                stylename_str)
   if not failed:
     yield PASS, "All name entries are good."
 
