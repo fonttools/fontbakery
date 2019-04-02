@@ -3,10 +3,10 @@ beautifulsoup4==4.7.1
 defcon==0.6.0
 defusedxml==0.5.0
 font-v==0.7.1
-fontTools[ufo,lxml]==3.38.0
-lxml==4.3.2
+fontTools[ufo,lxml]==3.39.0
+lxml==4.3.3
 opentype-sanitizer==7.1.9
-protobuf==3.7.0
+protobuf==3.7.1
 requests==2.21.0
 ttfautohint-py==0.4.2
 ufolint==0.3.5
@@ -15,4 +15,4 @@ Unidecode==1.0.23
 
 # This is only needed to run code-tests:
 #ufo2ft==2.7.0
-#pytest==4.3.0
+#pytest==4.4.0
