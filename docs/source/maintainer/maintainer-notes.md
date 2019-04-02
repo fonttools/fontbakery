@@ -31,6 +31,12 @@ git add -p
 # If something changed, commit it:
 git commit -m "Updating cache of vendor IDs list from Microsoft's website"
 
+# update the docs so that https://font-bakery.readthedocs.io/
+# displays the correct version number
+vim docs/source/conf.py
+git add -p
+git commit -m "update version on docs/source/conf.py"
+
 # create a fresh python virtual env
 virtualenv venv -ppython3
 . venv/bin/activate
