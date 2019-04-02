@@ -21,13 +21,13 @@ sys.path.insert(0, os.path.abspath("../Lib"))
 # -- Project information -----------------------------------------------------
 
 project = "Font Bakery"
-copyright = "2013 The Font Bakery Authors"
+copyright = "2019 The Font Bakery Authors"
 author = "The Font Bakery Authors"
 
 # The short X.Y version
-version = "0.6"
+version = "0.7"
 # The full version, including alpha/beta/rc tags
-release = "0.6.0"
+release = "0.7.1"
 
 
 # -- General configuration ---------------------------------------------------
