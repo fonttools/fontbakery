@@ -30,6 +30,7 @@
 
 
 
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual" lang="en-us" dir="ltr" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -61,21 +62,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-03-18 05:08 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f0216771a8656ccce596a6dbf8fb0d7f5a707766/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-03-29 05:00 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f63abfef9196e2a715512f0fdac756f5d98a425d/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2620" />
+<meta name="word_count" content="2633" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/991330b4.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/6e59f4a9.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f1e7d9d9.conceptual.css ">
 
@@ -99,9 +100,6 @@
 			feedbackGitHubRepo: 'MicrosoftDocs/typography-issues',
 			feedbackProductUrl: '',
 			contentGitUrl: 'https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md',
-			learnBannerDetails: {
-				learnBannerProducts: ''
-			}
 		},
 		functions:{},
 		settings:{
@@ -121,7 +119,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a55db17d.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/5f101b5d.index-docs.js"></script>
 
 </head>
 
@@ -132,7 +130,7 @@
 		</div>
 	<div class="content-header uhf-container has-padding has-default-focus" data-bi-name="content-header">
 		<nav class="has-padding-none-mobile" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
-		<ul class="breadcrumbs">
+		<ul id="page-breadcrumbs" class="breadcrumbs">
 		</ul>
 		</nav>
 		<div class="content-header-controls exit-focus">
@@ -401,6 +399,11 @@
 </tr>
 
 <tr>
+<td>AA</td>
+<td><a href="https://alirezaalipour.com/" data-linktype="external">Alireza Alipour</a></td>
+</tr>
+
+<tr>
 <td>AAT</td>
 <td><a href="http://www.ahmetaltuntype.com" data-linktype="external">AhmetAltunType</a></td>
 </tr>
@@ -473,6 +476,11 @@
 <tr>
 <td>AID</td>
 <td><a href="http://www.artisticimposter.com" data-linktype="external">Artistic Imposter Design</a></td>
+</tr>
+
+<tr>
+<td>AJL</td>
+<td><a href="https://alexjohnlucas.com/" data-linktype="external">Alex John Lucas</a></td>
 </tr>
 
 <tr>
@@ -1677,6 +1685,11 @@
 <tr>
 <td>GAF</td>
 <td><a href="http://www.glifoartfonts.com" data-linktype="external">Glifo Art Fonts Inc.</a></td>
+</tr>
+
+<tr>
+<td>GAKU</td>
+<td>Gakumon</td>
 </tr>
 
 <tr>
@@ -3334,6 +3347,11 @@
 </tr>
 
 <tr>
+<td>RSMS</td>
+<td><a href="https://rsms.me/" data-linktype="external">Rsms</a></td>
+</tr>
+
+<tr>
 <td>RST</td>
 <td><a href="http://www.rosettatype.com" data-linktype="external">Rosetta</a></td>
 </tr>
@@ -3936,6 +3954,11 @@
 </tr>
 
 <tr>
+<td>UBER</td>
+<td><a href="https://ubertype.de/" data-linktype="external">übertype</a></td>
+</tr>
+
+<tr>
 <td>UKUK</td>
 <td><a href="https://ultra-kuhl.com/" data-linktype="external">Ultra Kühl</a></td>
 </tr>
@@ -4209,17 +4232,15 @@
 	<h2 id="feedback">Feedback</h2>
 
 	<div class="alert choose-feedback-type">
-		<p>
-Would you like to provide feedback?		</p>
+		<p id="send-feedback-about">Send feedback about:</p>
 
 		<div class="choose-feedback-buttons">
 
 			<div class="field has-addons is-inline-flex has-margin-bottom-small">
 				<div class="control has-margin-top-none has-margin-bottom-none">
-					<button class="button feedback-sign-in-button has-text-wrap" data-bi-name="feedback-sign-in">
+					<button class="button feedback-sign-in-button has-text-wrap" aria-describedby="send-feedback-about" data-bi-name="feedback-sign-in">
 						<span class="icon docon docon-brand-github" aria-hidden="true"></span>
-						<span>
-							Sign in to give feedback						</span>
+						<span>This page</span>
 					</button>
 				</div>
 				<div class="control dropdown has-caret has-margin-top-none has-margin-bottom-none" auto-align>
@@ -4234,12 +4255,12 @@ Would you like to provide feedback?		</p>
 
 			<div class="field has-addons is-inline-flex has-margin-bottom-small" hidden>
 				<div class="control has-margin-top-none has-margin-bottom-none">
-					<button class="button feedback-form-toggle" aria-expanded="false" aria-controls="feedback-form"
+					<button class="button feedback-form-toggle" aria-describedby="send-feedback-about" aria-expanded="false" aria-controls="feedback-form"
 						data-bi-name="documentation-feedback">
-						Give feedback					</button>
+This page					</button>
 				</div>
 				<div class="control dropdown has-caret has-margin-top-none has-margin-bottom-none" auto-align>
-					<button class="button dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="fbm1"
+					<button class="button dropdown-trigger" aria-describedby="send-feedback-about" aria-haspopup="true" aria-expanded="false" aria-controls="fbm1"
 						aria-label="Liquid error: Can't find the localized string expandDocumentationFeedbackMenu for template Conceptual." data-bi-name="documentation-feedback-menu">
 						<span class="icon docon docon-chevron-down-light" aria-hidden="true"></span>
 					</button>
@@ -4248,7 +4269,6 @@ Would you like to provide feedback?		</p>
 				</div>
 			</div>
 		</div>
-		<p class="has-margin-top-none"><small>Our feedback system is built on GitHub Issues. Read more on <a href="https://docs.microsoft.com/teamblog/a-new-feedback-system-is-coming-to-docs">our blog</a>.</small></p>
 	</div>
 
 	<form class="feedback-form" id="feedback-form" accept-charset="UTF-8" autocomplete="off" action="javascript:" hidden>
