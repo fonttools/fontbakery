@@ -109,18 +109,24 @@ def com_adobe_fonts_check_cff2_call_depth(ttFont):
         global_subrs = top_dict.GlobalSubrs
         gsubr_bias = _get_subr_bias(len(global_subrs))
 
-        for font_dict in top_dict.FDArray:
-            subrs = font_dict.Private.Subrs
-            subr_bias = _get_subr_bias(len(subrs))
+        for fd_index, font_dict in enumerate(top_dict.FDArray):
+            if hasattr(font_dict, 'Private') and hasattr(font_dict.Private, 'Subrs'):
+                subrs = font_dict.Private.Subrs
+                subr_bias = _get_subr_bias(len(subrs))
+            else:
+                subrs = None
+                subr_bias = None
 
             char_list = char_strings.keys()
-            for key in char_list:
-                t2_char_string = char_strings[key]
+            for glyph_name in char_list:
+                t2_char_string, fd_select_index = char_strings.getItemAndSelector(glyph_name)
+                if fd_select_index is not None and fd_select_index != fd_index:
+                    continue
                 try:
                     t2_char_string.decompile()
                 except RecursionError:
                     yield FAIL, "Recursion error while " \
-                                "decompiling glyph '{}'.".format(key)
+                                "decompiling glyph '{}'.".format(glyph_name)
                     failed = True
                     continue
                 info = dict()
@@ -135,7 +141,7 @@ def com_adobe_fonts_check_cff2_call_depth(ttFont):
                 max_depth = info['max_depth']
                 if max_depth > 10:
                     yield FAIL, "Subroutine call depth exceeded " \
-                                "maximum of 10 for glyph '{}'.".format(key)
+                                "maximum of 10 for glyph '{}'.".format(glyph_name)
                     failed = True
     if not failed:
         yield PASS, 'Maximum call depth not exceeded.'
