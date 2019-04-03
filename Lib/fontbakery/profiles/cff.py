@@ -57,8 +57,12 @@ def com_adobe_fonts_check_cff_call_depth(ttFont):
         global_subrs = top_dict.GlobalSubrs
         gsubr_bias = _get_subr_bias(len(global_subrs))
 
-        subrs = top_dict.Private.Subrs
-        subr_bias = _get_subr_bias(len(subrs))
+        if hasattr(top_dict, 'Private') and hasattr(top_dict.Private, 'Subrs'):
+            subrs = top_dict.Private.Subrs
+            subr_bias = _get_subr_bias(len(subrs))
+        else:
+            subrs = None
+            subr_bias = None
 
         char_list = char_strings.keys()
         for key in char_list:
