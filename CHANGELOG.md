@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.7.2 (2019-Apr-08)
 ### Bug fixes
-  - **[com.adobe.fonts/check/cff_call_depth]: don't assume private subroutines in a CFF (PR #2437)
+  - **[com.adobe.fonts/check/cff_call_depth]:** don't assume private subroutines in a CFF (PR #2437)
+  - **[com.adobe.fonts/cff2_call_depth]:** fixed handling of font dicts (and private subroutines) in a CFF2 (PR #2441)
 
 ### Dependencies
   - Removed the unidecode dependency. It is better to read log messages with the actual unicode strings instead of transliterations of them.
