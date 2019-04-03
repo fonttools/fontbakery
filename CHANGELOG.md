@@ -5,6 +5,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bug fixes
   - **[com.adobe.fonts/check/cff_call_depth]: don't assume private subroutines in a CFF (PR #2437)
 
+### Dependencies
+  - Removed the unidecode dependency. It is better to read log messages with the actual unicode strings instead of transliterations of them.
+
+
 ## 0.7.1 (2019-Apr-02)
 ### Major code-changes
   - The new "universal" profile contains checks for best practices agreed upon on the type design community. (issue #2426)
@@ -12,9 +16,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - The goal is to keep the vendor-specific profiles with only the minimal set of checks that are really specific, while the shared ones are placed on the universal profile.
 
 ### New checks
-  - **[com.adobe.fonts/check/cff_call_depth]: "Is the CFF subr/gsubr call depth > 10?" (PR #2425)
-  - **[com.adobe.fonts/check/cff2_call_depth]: "Is the CFF2 subr/gsubr call depth > 10?" (PR #2425)
-  - **[com.google.fonts/check/family/control_chars]: "Are there unacceptable control characters in the font?" (PR #2430)
+  - **[com.adobe.fonts/check/cff_call_depth]:** "Is the CFF subr/gsubr call depth > 10?" (PR #2425)
+  - **[com.adobe.fonts/check/cff2_call_depth]:** "Is the CFF2 subr/gsubr call depth > 10?" (PR #2425)
+  - **[com.google.fonts/check/family/control_chars]:** "Are there unacceptable control characters in the font?" (PR #2430)
+
 
 ## 0.7.0 (2019-Mar-22)
 ### Major code-changes
