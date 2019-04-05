@@ -2,6 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.7.2 (2019-Apr-08)
+### Note-worthy code changes
+  - **[com.google.fonts/check/name/family_and_style_max_length]:** increased max length to 27 chars. After discussing the problem in more detail at issue #2179 we decided that allowing up to 27 chars would still be on the safe side. Please also see issue #2447
+
 ### Bug fixes
   - **[com.adobe.fonts/check/cff_call_depth]:** don't assume private subroutines in a CFF (PR #2437)
   - **[com.adobe.fonts/cff2_call_depth]:** fixed handling of font dicts (and private subroutines) in a CFF2 (PR #2441)

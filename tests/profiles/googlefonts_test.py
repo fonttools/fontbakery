@@ -288,17 +288,33 @@ def test_check_name_family_and_style_max_length():
   status, message = list(check(ttFont))[-1] 
   assert status == PASS 
  
-  # Then we emit a WARNing with the long family/style names 
-  # that were used as an example on the glyphs tutorial 
-  # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances): 
+  # Then we emit a WARNing with long family/style names 
+  # Originaly these were based on the example on the glyphs tutorial
+  # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances)
+  # but later we increased a bit the max allowed length.
+
+  # First we expect a WARN with a bad FAMILY NAME
   for index, name in enumerate(ttFont["name"].names): 
-    if name.nameID == NameID.FONT_FAMILY_NAME: 
-      ttFont["name"].names[index].string = "ImpossibleFamilyNameFont".encode(name.getEncoding()) 
+    if name.nameID == NameID.FONT_FAMILY_NAME:
+      # This has 28 chars, while the max currently allowed is 27.
+      bad = "AnAbsurdlyLongFamilyNameFont"
+      assert len(bad) == 28
+      ttFont["name"].names[index].string = bad.encode(name.getEncoding()) 
       break 
+
+  print ("Test WARN with a bad font...") 
+  status, message = list(check(ttFont))[-1] 
+  assert status == WARN 
+
+  # Now let's restore the good Cabin Regular...
+  ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf")) 
  
+  # ...and break the check again with a bad SUBFAMILY NAME:
   for index, name in enumerate(ttFont["name"].names): 
-    if name.nameID == NameID.FONT_SUBFAMILY_NAME: 
-      ttFont["name"].names[index].string = "WithAVeryLongStyleName".encode(name.getEncoding()) 
+    if name.nameID == NameID.FONT_SUBFAMILY_NAME:
+      bad = "WithAVeryLongAndBadStyleName"
+      assert len(bad) == 28
+      ttFont["name"].names[index].string = bad.encode(name.getEncoding()) 
       break 
  
   print ("Test WARN with a bad font...") 
