@@ -35,7 +35,7 @@ def main():
         parser.add_argument(
             '--list-subcommands',
             action='store_true',
-            help='print the list of subcommnds '
+            help='print the list of subcommands '
             'to stdout, separated by a space character. This is '
             'usually only used to generate the shell completion code.')
         parser.add_argument(
