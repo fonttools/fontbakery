@@ -3750,6 +3750,11 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, 
     familyname (NameID.FONT_FAMILY_NAME) and style
     (NameID.FONT_SUBFAMILY_NAME)
     strings in the name table do not exceed 20 characters.
+
+    After discussing the problem in more detail at
+    https://github.com/googlefonts/fontbakery/issues/2179
+    we decided to allowing up to 27 chars would still be
+    on the safe side, though.
     """,
   misc_metadata = {
     # Somebody with access to Windows should make some experiments
@@ -3759,7 +3764,7 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, 
   }
 )
 def com_google_fonts_check_name_family_and_style_max_length(ttFont):
-  """Combined length of family and style must not exceed 20 characters."""
+  """Combined length of family and style must not exceed 27 characters."""
   from fontbakery.utils import (get_name_entries,
                                 get_name_entry_strings)
   failed = False
@@ -3771,14 +3776,18 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
     for stylename_str in get_name_entry_strings(ttFont,
                                                 NameID.FONT_SUBFAMILY_NAME,
                                                 platformID=plat):
-      if len(familyname_str + stylename_str) > 20:
+      if len(familyname_str + stylename_str) > 27:
         failed = True
         yield WARN, ("The combined length of family and style"
-                     " exceeds 20 chars in the following '{}' entries:"
+                     " exceeds 27 chars in the following '{}' entries:"
                      " FONT_FAMILY_NAME = '{}' / SUBFAMILY_NAME = '{}'"
                      "").format(PlatformID(plat).name,
                                 familyname_str,
                                 stylename_str)
+        yield WARN, ("Please take a look at the conversation at"
+                     " https://github.com/googlefonts/fontbakery/issues/2179"
+                     " in order to understand the reasoning behing these"
+                     " name table records max-length criteria.")
   if not failed:
     yield PASS, "All name entries are good."
 
