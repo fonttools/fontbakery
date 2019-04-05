@@ -104,7 +104,8 @@ def glyph_contour_count(font, name):
         g = items.pop(0)
         if g.isComposite():
             for comp in g.components:
-                items.append(font['glyf'][comp.glyphName])
+                if comp.glyphName != ".ttfautohint":
+                    items.append(font['glyf'][comp.glyphName])
         if g.numberOfContours != -1:
             contour_count += g.numberOfContours
     return contour_count
