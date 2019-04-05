@@ -26,7 +26,7 @@ This has several subcommands, described in the help function:
     
     optional arguments:
       -h, --help          show this help message and exit
-      --list-subcommands  print the list of subcommnds to stdout, separated 
+      --list-subcommands  print the list of subcommands to stdout, separated 
                           by a space character. This is usually only used to 
                           generate the shell completion code.
 
