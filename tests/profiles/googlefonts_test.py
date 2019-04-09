@@ -432,12 +432,12 @@ def test_condition__registered_vendor_ids():
   print('"B&H ": "Bigelow & Holmes" is a valid vendor id that contains an ampersand.')
   assert "B&H " in registered_ids # Bigelow & Holmes
 
-  print('"AE  ": "AE Type" is a good vendor id with 2 letters and padded with spaces.')
-  assert "AE  " in registered_ids # AE Type
+  print('"MS  ": "Microsoft Corp." is a good vendor id with 2 letters and padded with spaces.')
+  assert "MS  " in registered_ids # Microsoft Corp.
 
   print('All vendor ids must be 4 chars long!')
   assert "GNU" not in registered_ids # 3 chars long is bad
-  assert "AE" not in registered_ids # 2 chars long is bad
+  assert "MS" not in registered_ids # 2 chars long is bad
   assert "H" not in registered_ids # 1 char long is bad
 
   print('"H   ": "Hurme Design" is a good vendor id with a single letter padded with spaces.')
