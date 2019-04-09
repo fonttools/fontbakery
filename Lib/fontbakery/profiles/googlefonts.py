@@ -509,22 +509,30 @@ def com_google_fonts_check_family_equal_glyph_names(ttFonts):
   failed = False
   for ttFont in fonts:
     fontname = ttFont.reader.file.name
-    stylename = style(fontname)
     these_ones = set(ttFont["glyf"].glyphs.keys())
     for glyphname in all_glyphnames:
       if glyphname not in these_ones:
         failed = True
-        missing[glyphname].append(stylename)
+        missing[glyphname].append(fontname)
       else:
-        available[glyphname].append(stylename)
+        available[glyphname].append(fontname)
 
   for gn in missing.keys():
     if missing[gn]:
-      yield FAIL, ("Glyphname '{}' is defined on {}"
-                   " but is missing on"
-                   " {}.").format(gn,
-                                  ', '.join(available[gn]),
-                                  ', '.join(missing[gn]))
+      available_styles = [style(k) for k in available[gn]]
+      missing_styles = [style(k) for k in missing[gn]]
+      if None not in available_styles + missing_styles:
+          # if possible, use stylenames in the log messages.
+          avail = ', '.join(available_styles)
+          miss = ', '.join(missing_styles)
+      else:
+          # otherwise, print filenames:
+          avail = ', '.join(available[gn])
+          miss = ', '.join(missing[gn])
+
+      yield FAIL, (f"Glyphname '{gn}' is defined on {avail}"
+                   f" but is missing on {miss}.")
+
   if not failed:
     yield PASS, "All font files have identical glyph names."
 
