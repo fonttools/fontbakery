@@ -5,6 +5,7 @@ Font Bakery comes with a minimal Bash completion script to help you to type the 
 There's no special completion support for the arguments of the subcommands yet.
 
 First, install `bash-completion` package. And then run:
+
     $ source path-to/fontbakery/bin/bash-completion
 
 To install it permanently, copy or symlink the `path-to/fontbakery/bin/bash_completion` file into your `bash_completion.d` directory as `fontbakery`.
