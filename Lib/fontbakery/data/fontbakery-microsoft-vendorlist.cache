@@ -62,15 +62,15 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-03-29 05:00 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f63abfef9196e2a715512f0fdac756f5d98a425d/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-04-05 05:56 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/6940f93de1f9d2138fc8bf7eeb785d068b59098d/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2633" />
+<meta name="word_count" content="2644" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
@@ -119,7 +119,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/5f101b5d.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/eed87319.index-docs.js"></script>
 
 </head>
 
@@ -134,15 +134,15 @@
 		</ul>
 		</nav>
 		<div class="content-header-controls exit-focus">
-			<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse">
+			<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
 				<span class="icon"><span class="docon docon-exit-mode"></span></span>
 				<span>Exit focus mode</span>
 			</button>
 			
 		</div>
 		<div class="content-header-controls">
-			<button type="button" class="contents-button button" data-bi-name="contents-expand">
-				<span class="icon"><span class="docon docon-menu"></span></span>
+			<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-controls="sidebar" aria-haspopup="true">
+				<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
 				<span>Contents</span>
 			</button>
 		</div>
@@ -245,6 +245,8 @@
 		</div>
 	</div>
 
+		<div id="banner-holder" class="has-default-focus has-overflow-hidden">
+		</div>
 
 	<div id="disclaimer-holder" class="has-overflow-hidden"></div>
 	</div>
@@ -255,6 +257,7 @@
 
 			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
 				<div class="columns has-large-gaps ">
+
 
 					<div id="page-actions" class="right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
 							<nav id="side-doc-outline" class="doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="On page navigation">
@@ -459,7 +462,7 @@
 </tr>
 
 <tr>
-<td>AE</td>
+<td>AES</td>
 <td><a href="http://www.aetype.com" data-linktype="external">AE Type</a></td>
 </tr>
 
@@ -2498,6 +2501,11 @@
 </tr>
 
 <tr>
+<td>LuAn</td>
+<td>Patrice Provost</td>
+</tr>
+
+<tr>
 <td>LUD</td>
 <td>Ludlow</td>
 </tr>
@@ -2525,6 +2533,11 @@
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     <tr>
+
+<tr>
+<td>M+F</td>
+<td><a href="http://measureandfit.co/" data-linktype="external">Measure + Fit</a></td>
+</tr>
 
 <tr>
 <td>MACR</td>
@@ -2907,7 +2920,7 @@
 
 <tr>
 <td>NM</td>
-<td><a href="http://www.kinetictypeface.com" data-linktype="external">NM type</a></td>
+<td><a href="http://www.nmtype.com/" data-linktype="external">NM type</a></td>
 </tr>
 
 <tr>
@@ -2992,6 +3005,16 @@
 <tr>
 <td>OKAY</td>
 <td><a href="http://www.okaytype.com" data-linktype="external">Okay Type</a></td>
+</tr>
+
+<tr>
+<td>OMNI</td>
+<td><a href="https://omnitype.ch/" data-linktype="external">Omnitype</a></td>
+</tr>
+
+<tr>
+<td>OMSE</td>
+<td><a href="https://omsetype.co/" data-linktype="external">OMSETYPE</a></td>
 </tr>
 
 <tr>
@@ -4244,12 +4267,11 @@
 					</button>
 				</div>
 				<div class="control dropdown has-caret has-margin-top-none has-margin-bottom-none" auto-align>
-					<button class="button dropdown-trigger is-full-height" aria-haspopup="true" aria-expanded="false" aria-controls="fbm0"
-						aria-label="Expand content feedback menu" data-bi-name="documentation-feedback-menu">
+					<button class="button dropdown-trigger is-full-height" aria-describedby="send-feedback-about" aria-haspopup="true" aria-expanded="false" aria-controls="fbm0" aria-label="Additional feedback options" data-bi-name="documentation-feedback-menu">
 						<span class="icon docon docon-chevron-down-light" aria-hidden="true"></span>
 					</button>
-					<div class="dropdown-menu documentation-feedback-menu" id="fbm0" role="menu">
-						You may also leave feedback <a data-bi-name="create-issue-on-github" href="{0}">directly on GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.					</div>
+					<div id="fbm0" class="dropdown-menu documentation-feedback-menu">
+						You may also leave feedback directly on <a data-bi-name="create-issue-on-github" href="{0}">GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.					</div>
 				</div>
 			</div>
 
@@ -4260,12 +4282,11 @@
 This page					</button>
 				</div>
 				<div class="control dropdown has-caret has-margin-top-none has-margin-bottom-none" auto-align>
-					<button class="button dropdown-trigger" aria-describedby="send-feedback-about" aria-haspopup="true" aria-expanded="false" aria-controls="fbm1"
-						aria-label="Liquid error: Can't find the localized string expandDocumentationFeedbackMenu for template Conceptual." data-bi-name="documentation-feedback-menu">
+					<button class="button dropdown-trigger" aria-describedby="send-feedback-about" aria-haspopup="true" aria-expanded="false" aria-controls="fbm1" aria-label="Additional feedback options" data-bi-name="documentation-feedback-menu">
 						<span class="icon docon docon-chevron-down-light" aria-hidden="true"></span>
 					</button>
-					<div class="dropdown-menu documentation-feedback-menu" id="fbm1" role="menu">
-						You may also leave feedback <a data-bi-name="create-issue-on-github" href="{0}">directly on GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.					</div>
+					<div id="fbm1" class="dropdown-menu documentation-feedback-menu">
+						You may also leave feedback directly on <a data-bi-name="create-issue-on-github" href="{0}">GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.					</div>
 				</div>
 			</div>
 		</div>
@@ -4353,7 +4374,7 @@ This page					</button>
 
 				<div id="left-container" class="left-container column is-one-third-tablet is-one-quarter-desktop">
 					<nav class="sidebar" id="sidebar" data-bi-name="left toc" role="navigation" aria-label="Main Navigation">
-						<button class="sidebar-header" type="button" aria-label="Close" data-bi-name="contents-collapse">
+						<button class="sidebar-header has-inner-focus" type="button" aria-label="Close" data-bi-name="contents-collapse">
 							<span>Contents</span>
 							<span class="docon docon-navigate-close" aria-hidden="true"></span>
 						</button>
@@ -4392,6 +4413,6 @@ This page					</button>
 </footer>
 	</div>
 
-	<div class="action-panel has-default-focus"></div>
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
 </body>
 </html>
