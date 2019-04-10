@@ -46,3 +46,23 @@ def test_get_family_checks():
         'com.google.fonts/check/family/win_ascent_and_descent'
     }
     assert family_check_ids == expected_family_check_ids
+
+
+def test_check_find_empty_letters():
+    from fontbakery.profiles.adobefonts import \
+        com_adobe_fonts_check_find_empty_letters as check
+
+    # this font has inked glyphs for all letters
+    font_path = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
+    test_font = TTFont(font_path)
+    status, message = list(check(test_font))[-1]
+    assert status == PASS
+
+    # this font has empty glyphs for several letters
+    font_path = TEST_FILE('familysans/FamilySans-Regular.ttf')
+    test_font = TTFont(font_path)
+
+    expected_message = "U+007A should be visible, but its glyph ('z') is empty."
+    status, message = list(check(test_font))[-1]
+    assert status == FAIL
+    assert message == expected_message
