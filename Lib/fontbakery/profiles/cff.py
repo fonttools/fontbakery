@@ -40,6 +40,50 @@ def _traverse_subr_call_tree(info, program, depth):
             _traverse_subr_call_tree(info, sub_program, depth + 1)
 
 
+def _check_call_depth(top_dict, private_dict, fd_index=0):
+    char_strings = top_dict.CharStrings
+
+    global_subrs = top_dict.GlobalSubrs
+    gsubr_bias = _get_subr_bias(len(global_subrs))
+
+    if private_dict is not None and hasattr(private_dict, 'Subrs'):
+        subrs = private_dict.Subrs
+        subr_bias = _get_subr_bias(len(subrs))
+    else:
+        subrs = None
+        subr_bias = None
+
+    char_list = char_strings.keys()
+    failed = False
+    for glyph_name in char_list:
+        t2_char_string, fd_select_index = char_strings.getItemAndSelector(
+            glyph_name)
+        if fd_select_index is not None and fd_select_index != fd_index:
+            continue
+        try:
+            t2_char_string.decompile()
+        except RecursionError:
+            yield FAIL, "Recursion error while " \
+                        "decompiling glyph '{}'.".format(glyph_name)
+            failed = True
+            continue
+        info = dict()
+        info['subrs'] = subrs
+        info['global_subrs'] = global_subrs
+        info['gsubr_bias'] = gsubr_bias
+        info['subr_bias'] = subr_bias
+        info['max_depth'] = 0
+        depth = 0
+        program = t2_char_string.program.copy()
+        _traverse_subr_call_tree(info, program, depth)
+        max_depth = info['max_depth']
+        if max_depth > 10:
+            yield FAIL, "Subroutine call depth exceeded " \
+                        "maximum of 10 for glyph '{}'.".format(glyph_name)
+            failed = True
+    return failed
+
+
 @check(
     id='com.adobe.fonts/check/cff_call_depth',
     conditions=['is_cff'],
@@ -48,47 +92,28 @@ def _traverse_subr_call_tree(info, program, depth):
 )
 def com_adobe_fonts_check_cff_call_depth(ttFont):
     """Is the CFF subr/gsubr call depth > 10?"""
-    failed = False
+    any_failures = False
     cff = ttFont['CFF '].cff
 
     for top_dict in cff.topDictIndex:
-        char_strings = top_dict.CharStrings
-
-        global_subrs = top_dict.GlobalSubrs
-        gsubr_bias = _get_subr_bias(len(global_subrs))
-
-        if hasattr(top_dict, 'Private') and hasattr(top_dict.Private, 'Subrs'):
-            subrs = top_dict.Private.Subrs
-            subr_bias = _get_subr_bias(len(subrs))
+        if hasattr(top_dict, 'FDArray'):
+            for fd_index, font_dict in enumerate(top_dict.FDArray):
+                if hasattr(font_dict, 'Private'):
+                    private_dict = font_dict.Private
+                else:
+                    private_dict = None
+                failed = yield from \
+                    _check_call_depth(top_dict, private_dict, fd_index)
+                any_failures = any_failures or failed
         else:
-            subrs = None
-            subr_bias = None
+            if hasattr(top_dict, 'Private'):
+                private_dict = top_dict.Private
+            else:
+                private_dict = None
+            failed = yield from _check_call_depth(top_dict, private_dict)
+            any_failures = any_failures or failed
 
-        char_list = char_strings.keys()
-        for key in char_list:
-            t2_char_string = char_strings[key]
-            try:
-                t2_char_string.decompile()
-            except RecursionError:
-                yield FAIL, "Recursion error while " \
-                            "decompiling glyph '{}'.".format(key)
-                failed = True
-                continue
-            info = dict()
-            info['subrs'] = subrs
-            info['global_subrs'] = global_subrs
-            info['gsubr_bias'] = gsubr_bias
-            info['subr_bias'] = subr_bias
-            info['max_depth'] = 0
-            depth = 0
-            program = t2_char_string.program.copy()
-            _traverse_subr_call_tree(info, program, depth)
-            max_depth = info['max_depth']
-            if max_depth > 10:
-                yield FAIL, "Subroutine call depth exceeded " \
-                            "maximum of 10 for glyph '{}'.".format(key)
-                failed = True
-    if not failed:
+    if not any_failures:
         yield PASS, 'Maximum call depth not exceeded.'
 
 
@@ -100,48 +125,18 @@ def com_adobe_fonts_check_cff_call_depth(ttFont):
 )
 def com_adobe_fonts_check_cff2_call_depth(ttFont):
     """Is the CFF2 subr/gsubr call depth > 10?"""
-    failed = False
+    any_failures = False
     cff = ttFont['CFF2'].cff
 
     for top_dict in cff.topDictIndex:
-        char_strings = top_dict.CharStrings
-
-        global_subrs = top_dict.GlobalSubrs
-        gsubr_bias = _get_subr_bias(len(global_subrs))
-
         for fd_index, font_dict in enumerate(top_dict.FDArray):
-            if hasattr(font_dict, 'Private') and hasattr(font_dict.Private, 'Subrs'):
-                subrs = font_dict.Private.Subrs
-                subr_bias = _get_subr_bias(len(subrs))
+            if hasattr(font_dict, 'Private'):
+                private_dict = font_dict.Private
             else:
-                subrs = None
-                subr_bias = None
+                private_dict = None
+            failed = yield from \
+                _check_call_depth(top_dict, private_dict, fd_index)
+            any_failures = any_failures or failed
 
-            char_list = char_strings.keys()
-            for glyph_name in char_list:
-                t2_char_string, fd_select_index = char_strings.getItemAndSelector(glyph_name)
-                if fd_select_index is not None and fd_select_index != fd_index:
-                    continue
-                try:
-                    t2_char_string.decompile()
-                except RecursionError:
-                    yield FAIL, "Recursion error while " \
-                                "decompiling glyph '{}'.".format(glyph_name)
-                    failed = True
-                    continue
-                info = dict()
-                info['subrs'] = subrs
-                info['global_subrs'] = global_subrs
-                info['gsubr_bias'] = gsubr_bias
-                info['subr_bias'] = subr_bias
-                info['max_depth'] = 0
-                depth = 0
-                program = t2_char_string.program.copy()
-                _traverse_subr_call_tree(info, program, depth)
-                max_depth = info['max_depth']
-                if max_depth > 10:
-                    yield FAIL, "Subroutine call depth exceeded " \
-                                "maximum of 10 for glyph '{}'.".format(glyph_name)
-                    failed = True
-    if not failed:
+    if not any_failures:
         yield PASS, 'Maximum call depth not exceeded.'
