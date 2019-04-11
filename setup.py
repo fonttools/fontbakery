@@ -61,7 +61,7 @@ setup(
         'defcon',
         'defusedxml',
         'font-v',
-        'fontTools[ufo,lxml]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
+        'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
         'lxml',
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
                                       # (see https://github.com/khaledhosny/ots/pull/182)

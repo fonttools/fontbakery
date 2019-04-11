@@ -2,12 +2,13 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.7.3 (2019-Apr-15)
-
 ### New checks
   - **[com.adobe.fonts/check/find_empty_letters]:** Letters in font have glyphs that are not empty? (PR #2460)
 
 ### Bug fixes
   - **[com.adobe.fonts/cff_call_depth]:** fixed handling of font dicts in a CFF (PR #2461)
+  - Declare fonttools' unicode extra-dependency on our rquirements.txt and setup.py so that unicodedata2 is properly installed. (issue #2462)
+
 
 ## 0.7.2 (2019-Apr-09)
 ### Note-worthy code changes
