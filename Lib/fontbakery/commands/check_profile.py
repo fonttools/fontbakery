@@ -221,11 +221,17 @@ def main(profile=None, values=None):
   args = argument_parser.parse_args()
 
   if args.list_checks:
-    print('Available checks')
-    for section_name, section in profile._sections.items():
-      checks = section.list_checks()
-      message = "# {}:\n  {}".format(section_name,"\n  ".join(checks))
-      print(message)
+    if args.loglevels == [PASS]: # if verbose:
+      from fontbakery.constants import WHITE_STR, CYAN_STR, BLUE_STR
+      for section in profile._sections.values():
+        print(WHITE_STR.format("\nSection:") + " " + section.name)
+        for check in section._checks:
+          print(CYAN_STR.format(check.id) + "\n" +
+                BLUE_STR.format(f'"{check.description}"') + "\n")
+    else:
+      for section_name, section in profile._sections.items():
+        for check in section._checks:
+          print(check.id)
     sys.exit()
 
   values_ = {}

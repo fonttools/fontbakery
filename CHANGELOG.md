@@ -2,6 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.7.3 (2019-Apr-15)
+### Note-worthy code changes
+  - Improved --list-checks output. Now uses colors for better legibility on the text terminal (issue #2457)
+
 ### New checks
   - **[com.adobe.fonts/check/find_empty_letters]:** Letters in font have glyphs that are not empty? (PR #2460)
 
