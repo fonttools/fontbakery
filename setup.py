@@ -80,5 +80,8 @@ setup(
     },
     entry_points={
         'console_scripts': ['fontbakery=fontbakery.cli:main'],
-    }
+    },
+    data_files=[
+        ('/etc/bash_completion.d', ['snippets/fontbakery.bash-completion']),
+    ]
 )

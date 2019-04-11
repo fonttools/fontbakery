@@ -12,6 +12,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bug fixes
   - **[com.adobe.fonts/cff_call_depth]:** fixed handling of font dicts in a CFF (PR #2461)
   - Declare fonttools' unicode extra-dependency on our rquirements.txt and setup.py so that unicodedata2 is properly installed. (issue #2462)
+  - Bash completion script is now installed by `pip install fontbakery` (issue #2457)
 
 
 ## 0.7.2 (2019-Apr-09)
