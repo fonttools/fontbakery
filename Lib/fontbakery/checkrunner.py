@@ -758,7 +758,7 @@ class Section:
 
   def register_check(self, func):
     """
-    # register in `profileial_section`
+    # register in `special_section`
     @my_section.register_check
     @check(id='com.example.fontbakery/check/0')
     def my_check():
@@ -768,11 +768,6 @@ class Section:
       raise SetupError(f'Can\'t add check {func} to section {self}.')
     return func
 
-  def list_checks(self):
-    checks = []
-    for check in self._checks:
-      checks.append(f"{check.id} # {check.description}")
-    return checks
 
 class Profile:
   def __init__(self
@@ -798,7 +793,7 @@ class Profile:
           with all combination of it's iterargs.
           If simple is False, the result returns tuples of: (iterars, value)
           where iterargs is a tuple of ('iterargname', number index)
-          Eprofileially for cases where only one iterarg is involved, simple
+          Especially for cases where only one iterarg is involved, simple
           can be set to True and the result list will just contain the values.
           Example:
 
@@ -944,7 +939,7 @@ class Profile:
 
     This is handy if `profile.auto_register` is used and the profile maintainer
     is looking for a high level of control over the profile contents,
-    eprofileially for a warning when the profile contents have changed after an
+    especially for a warning when the profile contents have changed after an
     update.
     """
     s = set()
@@ -1310,8 +1305,8 @@ class Profile:
     def my_check():
       yield PASS, 'example'
 
-    # register in `profileial_section` also register that section in the profile
-    @profile.register_check(profileial_section)
+    # register in `special_section` also register that section in the profile
+    @profile.register_check(special_section)
     @check(id='com.example.fontbakery/check/0')
     def my_check():
       yield PASS, 'example'
