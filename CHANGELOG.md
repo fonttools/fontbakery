@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.7.3 (2019-Apr-15)
 ### Note-worthy code changes
   - Improved --list-checks output. Now uses colors for better legibility on the text terminal (issue #2457)
+  - We now autocomplete check IDs on the command line (issue #2457)
 
 ### New checks
   - **[com.adobe.fonts/check/find_empty_letters]:** Letters in font have glyphs that are not empty? (PR #2460)

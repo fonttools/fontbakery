@@ -10,5 +10,10 @@ function _fontbakery {
         subcommands="$(fontbakery --list-subcommands)"
         COMPREPLY=( $(compgen -W "$subcommands" -- "$cur") )
     fi
+    if [ $prev == "-c" ] || [ $prev == "--checkid" ] || [ $prev == "-x" ] || [ $prev == "--exclude-checkid" ] ; then
+        profile=${COMP_WORDS[1]}
+        checks="$(fontbakery $profile --list-checks)"
+        COMPREPLY=( $(compgen -W "$checks" -- "$cur") )
+    fi
 } &&
 complete -o default -F _fontbakery fontbakery
