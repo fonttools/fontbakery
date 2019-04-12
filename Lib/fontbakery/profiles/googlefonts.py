@@ -73,6 +73,10 @@ NAME_TABLE_CHECKS = [
    'com.google.fonts/check/name/family_and_style_max_length'
 ]
 
+REPO_CHECKS = [
+   'com.google.fonts/check/repo/dirname_matches_nameid_1'
+]
+
 FONT_FILE_CHECKS = [
    'com.google.fonts/check/canonical_filename',
    'com.google.fonts/check/usweightclass',
@@ -127,6 +131,7 @@ GOOGLEFONTS_PROFILE_CHECKS = \
     DESCRIPTION_CHECKS + \
     FAMILY_CHECKS + \
     NAME_TABLE_CHECKS + \
+    REPO_CHECKS + \
     FONT_FILE_CHECKS
 
 # -------------------------------------------------------------------
@@ -3873,6 +3878,42 @@ def com_google_fonts_check_family_control_chars(ttFonts):
     yield FAIL, ("{}".format(unacceptable_cc_report_string))
   else:
     yield PASS, ("Unacceptable control characters were not identified.")
+
+
+@condition
+def gfonts_repo_structure(font):
+  """ The family at the given font path
+      follows the files and directory structure
+      typical of a font project hosted on
+      the Google Fonts repo on GitHub ? """
+
+  # FIXME: Improve this with more details
+  #        about the expected structure.
+  return font.split("/")[-3] in ["ufl", "ofl", "apache"]
+
+
+@check(
+  id = 'com.google.fonts/check/repo/dirname_matches_nameid_1',
+  conditions = ['gfonts_repo_structure'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2302'
+  }
+)
+def com_google_fonts_check_repo_dirname_match_nameid_1(font,
+                                                       gfonts_repo_structure):
+  """Directory name in GFonts repo structure must match NameID 1."""
+  from fontbakery.utils import get_name_entry_strings
+  from fontTools.ttLib import TTFont
+
+  entry = get_name_entry_strings(TTFont(font), NameID.FONT_FAMILY_NAME)[0]
+  expected = "".join(entry.lower().split())
+  license, familypath, filename = font.split("/")[-3:]
+  if familypath == expected:
+    yield PASS, "OK"
+  else:
+    yield FAIL, (f"Family name on the name table ('{entry}') does not match"
+                 f" directory name in the repo structure ('{familypath}')."
+                 f" Expected '{expected}'.")
 
 
 def is_librebarcode(font):
