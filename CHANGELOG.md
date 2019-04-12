@@ -1,13 +1,15 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+
 ## 0.7.3 (2019-Apr-15)
 ### Note-worthy code changes
   - Improved --list-checks output. Now uses colors for better legibility on the text terminal (issue #2457)
   - We now autocomplete check IDs on the command line (issue #2457)
 
 ### New checks
-  - **[com.adobe.fonts/check/find_empty_letters]:** Letters in font have glyphs that are not empty? (PR #2460)
+  - **[com.adobe.fonts/check/find_empty_letters]:** "Letters in font have glyphs that are not empty?" (PR #2460)
+  - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** "Directory name in GFonts repo structure must match NameID 1." (issue #2302)
 
 ### Bug fixes
   - **[com.adobe.fonts/cff_call_depth]:** fixed handling of font dicts in a CFF (PR #2461)
