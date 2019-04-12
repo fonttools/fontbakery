@@ -3906,7 +3906,9 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(font,
   from fontTools.ttLib import TTFont
 
   entry = get_name_entry_strings(TTFont(font), NameID.FONT_FAMILY_NAME)[0]
-  expected = "".join(entry.lower().split())
+  expected = entry.lower()
+  expected = "".join(expected.split(' '))
+  expected = "".join(expected.split('-'))
   license, familypath, filename = font.split("/")[-3:]
   if familypath == expected:
     yield PASS, "OK"
