@@ -3881,15 +3881,17 @@ def com_google_fonts_check_family_control_chars(ttFonts):
 
 
 @condition
-def gfonts_repo_structure(font):
+def gfonts_repo_structure(fonts):
   """ The family at the given font path
       follows the files and directory structure
       typical of a font project hosted on
       the Google Fonts repo on GitHub ? """
+  from fontbakery.utils import get_absolute_path
 
   # FIXME: Improve this with more details
   #        about the expected structure.
-  return font.split("/")[-3] in ["ufl", "ofl", "apache"]
+  abspath = get_absolute_path(fonts[0])
+  return abspath.split(os.path.sep)[-3] in ["ufl", "ofl", "apache"]
 
 
 @check(
@@ -3899,17 +3901,24 @@ def gfonts_repo_structure(font):
     'request': 'https://github.com/googlefonts/fontbakery/issues/2302'
   }
 )
-def com_google_fonts_check_repo_dirname_match_nameid_1(font,
+def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
                                                        gfonts_repo_structure):
-  """Directory name in GFonts repo structure must match NameID 1."""
-  from fontbakery.utils import get_name_entry_strings
+  """Directory name in GFonts repo structure must
+     match NameID 1 of the regular."""
   from fontTools.ttLib import TTFont
+  from fontbakery.utils import (get_name_entry_strings,
+                                get_absolute_path,
+                                get_regular)
+  regular = get_regular(fonts)
+  if not regular:
+    yield FAIL, "The font seems to lack a regular."
 
-  entry = get_name_entry_strings(TTFont(font), NameID.FONT_FAMILY_NAME)[0]
+  entry = get_name_entry_strings(TTFont(regular), NameID.FONT_FAMILY_NAME)[0]
   expected = entry.lower()
   expected = "".join(expected.split(' '))
   expected = "".join(expected.split('-'))
-  license, familypath, filename = font.split("/")[-3:]
+
+  license, familypath, filename = get_absolute_path(regular).split(os.path.sep)[-3:]
   if familypath == expected:
     yield PASS, "OK"
   else:
