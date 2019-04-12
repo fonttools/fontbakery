@@ -33,6 +33,21 @@ def pretty_print_list(values):
                              str(values[-1]))
 
 
+def get_regular(fonts):
+  # TODO: Maybe also support getting a regular instance from a variable font?
+  for font in fonts:
+    if "-Regular.ttf" in font:
+      return font
+
+
+def get_absolute_path(p):
+  if os.path.isabs(p):
+    abspath = p
+  else:
+    abspath = os.path.join(os.path.abspath('.'), p)
+  return abspath
+
+
 def get_bounding_box(font):
     """ Returns max and min bbox of given truetype font """
     ymin = 0
