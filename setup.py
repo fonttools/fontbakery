@@ -42,7 +42,8 @@ setup(
     packages=['fontbakery',
               'fontbakery.reporters',
               'fontbakery.profiles',
-              'fontbakery.commands'
+              'fontbakery.commands',
+              'fontbakery.sphinx_extensions'
               ],
     package_data={'fontbakery': ['data/*.cache']},
     classifiers=[
