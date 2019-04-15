@@ -39,7 +39,11 @@ needs_sphinx = "1.3"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode", "sphinx.ext.napoleon"]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.viewcode"
+            , "fontbakery.sphinx_extensions.linkcode" #was "sphinx.ext.linkcode"
+            , "fontbakery.sphinx_extensions.profile"
+            , "sphinx.ext.napoleon"
+            ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -155,3 +159,42 @@ texinfo_documents = [
 
 
 # -- Extension configuration -------------------------------------------------
+
+def linkcode_resolve(domain, info):
+    # hmmm: related https://github.com/sphinx-doc/sphinx/issues/1556
+    # ipdb> info
+    # {'module': 'fontbakery.callable', 'fullname': 'Disabled'}
+    # ipdb> domain
+    # 'py'
+
+    if domain != 'py':
+        return None
+    if not info['module']:
+        return None
+    filename = info['module'].replace('.', '/')
+    # We must get the "tree" part dynamically, best would be the release
+    # tag, if it is the same as the version that we are building at the
+    # moment. Second best probably a hash. The branch HEAD is only of
+    # limited usefulnes as the documentation will become out of sync.
+    #
+    # On GitHub
+    # The release tagged "v0.7.2" is at:
+    # short: bffe109
+    # long:  bffe10976dc641d63b0622f09627bd0136157f1e
+    # we can link to HEAD of a branch by branchname (here master):
+    # https://github.com/googlefonts/fontbakery/tree/master/Lib/fontbakery/profiles
+    # We can link to a commit hash tree
+    # short: https://github.com/googlefonts/fontbakery/tree/bffe109/Lib/fontbakery/profiles
+    # long: https://github.com/googlefonts/fontbakery/tree/bffe10976dc641d63b0622f09627bd0136157f1e/Lib/fontbakery/profiles
+    #
+    # AND We can link to a tag i.e. a release tag. This is awesome:
+    # tag is: "v0.7.2"
+    # https://github.com/googlefonts/fontbakery/tree/v0.7.2/Lib/fontbakery/profiles
+    tree = 'v0.7.2'
+    # It's not planned for us to get the line number :-(
+    # I had to hammer this data into the info.
+    lineno = f'#L{info["lineno"]}' if 'lineno' in info else ''
+    #if 'com_google' in info['fullname']:
+    #    import ipdb
+    #    ipdb.set_trace()
+    return f'https://github.com/googlefonts/fontbakery/tree/{tree}/Lib/{filename}.py{lineno}'
