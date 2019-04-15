@@ -13,7 +13,7 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 import inspect
 
-from functools import wraps
+from functools import wraps, update_wrapper
 
 def cached_getter(func):
   """Decorate a property by executing it at instatiation time and cache the
@@ -35,6 +35,10 @@ class FontbakeryCallable:
     self._optionalArgs = None
     # must be set by sub class
     self._func = func
+    # https://docs.python.org/2/library/functools.html#functools.update_wrapper
+    # Update a wrapper function to look like the wrapped function.
+    # ... assigns to the wrapper function’s __name__, __module__ and __doc__
+    update_wrapper(self, func)
 
   def __repr__(self):
     return'<{}:{}>'.format(type(self).__name__,
@@ -217,11 +221,11 @@ def condition(*args, **kwds):
   if len(args) == 1 and len(kwds) == 0 and callable(args[0]):
     # used as `@decorator`
     func = args[0]
-    return wraps(func)(FontBakeryCondition(func))
+    return FontBakeryCondition(func)
   else:
     # used as `@decorator()` maybe with args
     def wrapper(func):
-      return wraps(func)(FontBakeryCondition(func, *args, **kwds))
+      return FontBakeryCondition(func, *args, **kwds)
   return wrapper
 
 def check(*args, **kwds):
@@ -231,7 +235,7 @@ def check(*args, **kwds):
   which is passed via the decorator syntax.
   """
   def wrapper(checkfunc):
-    return wraps(checkfunc)(FontBakeryCheck(checkfunc, *args, **kwds))
+    return FontBakeryCheck(checkfunc, *args, **kwds)
   return wrapper
 
 # ExpectedValue is not a callable, but it belongs next to check and condition
