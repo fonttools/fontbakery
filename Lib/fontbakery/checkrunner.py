@@ -1415,8 +1415,7 @@ class Profile:
     return results
 
   def auto_register(self, symbol_table, filter_func=None, profile_imports=None):
-    """
-      Register items from `symbol_table` in the profile.
+    """Register items from `symbol_table` in the profile.
 
       Get all items from `symbol_table` dict and from `symbol_table.profile_imports`
       if it is present. If they an item is an instance of FontBakeryCheck,
