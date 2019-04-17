@@ -36,7 +36,7 @@ UNIVERSAL_PROFILE_CHECKS = \
   'com.google.fonts/check/valid_glyphnames',
   'com.google.fonts/check/unique_glyphnames',
 #  'com.google.fonts/check/glyphnames_max_length',
-  'com.google.fonts/check/family_has_same_vertical_metrics',
+  'com.google.fonts/check/family/vertical_metrics',
 ]
 
 @check(
@@ -945,13 +945,13 @@ def com_google_fonts_check_ttx_roundtrip(font):
 
 
 @check(
-  id = 'com.google.fonts/check/family_has_same_vertical_metrics',
+  id = 'com.google.fonts/check/family/vertical_metrics',
   rationale="""
   We want all fonts within a family to have the same vertical metrics so
   their line spacing is consistent across the family.
   """
 )
-def com_google_fonts_check_family_has_same_vertical_metrics(ttFonts):
+def com_google_fonts_check_family_vertical_metrics(ttFonts):
   """Each font in a family must have the same vertical metrics values."""
   failed = []
   vmetrics = {
