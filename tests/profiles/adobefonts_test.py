@@ -43,7 +43,8 @@ def test_get_family_checks():
         'com.google.fonts/check/family/panose_familytype',
         'com.google.fonts/check/family/equal_unicode_encodings',
         'com.google.fonts/check/family/equal_font_versions',
-        'com.google.fonts/check/family/win_ascent_and_descent'
+        'com.google.fonts/check/family/win_ascent_and_descent',
+        'com.google.fonts/check/family/vertical_metrics',
     }
     assert family_check_ids == expected_family_check_ids
 
