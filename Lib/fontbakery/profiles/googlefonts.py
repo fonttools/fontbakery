@@ -53,28 +53,29 @@ METADATA_CHECKS = [
 ]
 
 DESCRIPTION_CHECKS = [
-        'com.google.fonts/check/description/broken_links'
-      , 'com.google.fonts/check/description/valid_html'
-      , 'com.google.fonts/check/description/min_length'
-      , 'com.google.fonts/check/description/max_length'
+   'com.google.fonts/check/description/broken_links',
+   'com.google.fonts/check/description/valid_html',
+   'com.google.fonts/check/description/min_length',
+   'com.google.fonts/check/description/max_length',
 ]
 
 FAMILY_CHECKS = [
-        'com.google.fonts/check/family/equal_numbers_of_glyphs'
-      , 'com.google.fonts/check/family/equal_glyph_names'
-      , 'com.google.fonts/check/family/has_license'
-      , 'com.google.fonts/check/family/control_chars'
+   'com.google.fonts/check/family/equal_numbers_of_glyphs',
+   'com.google.fonts/check/family/equal_glyph_names',
+   'com.google.fonts/check/family/has_license',
+   'com.google.fonts/check/family/control_chars',
+   'com.google.fonts/check/family/tnum_horizontal_metrics',
 ]
 
 NAME_TABLE_CHECKS = [
    'com.google.fonts/check/name/unwanted_chars',
    'com.google.fonts/check/name/license',
    'com.google.fonts/check/name/license_url',
-   'com.google.fonts/check/name/family_and_style_max_length'
+   'com.google.fonts/check/name/family_and_style_max_length',
 ]
 
 REPO_CHECKS = [
-   'com.google.fonts/check/repo/dirname_matches_nameid_1'
+   'com.google.fonts/check/repo/dirname_matches_nameid_1',
 ]
 
 FONT_FILE_CHECKS = [
@@ -107,7 +108,6 @@ FONT_FILE_CHECKS = [
    'com.google.fonts/check/name/familyname',
    'com.google.fonts/check/name/mandatory_entries',
    'com.google.fonts/check/name/copyright_length',
-   'com.google.fonts/check/family/tnum_horizontal_metrics',
    'com.google.fonts/check/fontdata_namecheck',
    'com.google.fonts/check/name/ascii_only_entries',
    'com.google.fonts/check/varfont_has_instances',
@@ -123,7 +123,6 @@ FONT_FILE_CHECKS = [
    'com.google.fonts/check/integer_ppem_if_hinted',
    'com.google.fonts/check/unitsperem_strict',
    'com.google.fonts/check/contour_count',
-   'com.google.fonts/check/family_has_same_vertical_metrics',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -3964,49 +3963,6 @@ def check_skip_filter(checkid, font=None, **iterargs):
     return False, ('LibreBarcode is blacklisted for this check, see '
                   'https://github.com/graphicore/librebarcode/issues/3')
   return True, None
-
-@check(
-  id = 'com.google.fonts/check/family_has_same_vertical_metrics',
-  rationale="""
-  We want all fonts within a family to have the same vertical metrics so
-  their line spacing is consistent across the family.
-  """
-)
-def com_google_fonts_check_family_has_same_vertical_metrics(ttFonts):
-  """Each font in a family must have the same vertical metrics values."""
-  failed = []
-  vmetrics = {
-    "sTypoAscender": {},
-    "sTypoDescender": {},
-    "sTypoLineGap": {},
-    "usWinAscent": {},
-    "usWinDescent": {},
-    "ascent": {},
-    "descent": {}
-  }
-
-  for ttfont in ttFonts:
-      full_font_name = ttfont['name'].getName(4, 3, 1, 1033).toUnicode()
-      vmetrics['sTypoAscender'][full_font_name] = ttfont['OS/2'].sTypoAscender
-      vmetrics['sTypoDescender'][full_font_name] = ttfont['OS/2'].sTypoDescender
-      vmetrics['sTypoLineGap'][full_font_name] = ttfont['OS/2'].sTypoLineGap
-      vmetrics['usWinAscent'][full_font_name] = ttfont['OS/2'].usWinAscent
-      vmetrics['usWinDescent'][full_font_name] = ttfont['OS/2'].usWinDescent
-      vmetrics['ascent'][full_font_name] = ttfont['hhea'].ascent
-      vmetrics['descent'][full_font_name] = ttfont['hhea'].descent
-
-  for k, v in vmetrics.items():
-      metric_vals = set(vmetrics[k].values())
-      if len(metric_vals) != 1:
-          failed.append(k)
-
-  if failed:
-      for k in failed:
-        s = ["{}: {}".format(k, v) for k, v in vmetrics[k].items()]
-        yield FAIL, ("{} is not the same across the family:\n:"
-                     "{}".format(k, "\n".join(s)))
-  else:
-      yield PASS, "Vertical metrics are the same across the family"
 
 
 profile.check_skip_filter = check_skip_filter

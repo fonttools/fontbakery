@@ -2942,16 +2942,3 @@ def test_check_family_control_chars():
   print("Test fail with multiple bad fonts that have multiple bad chars...")
   status, message = list(check([tt1, tt2]))[-1]
   assert status == FAIL
-
-
-def test_check_family_has_same_vertical_metrics(montserrat_ttFonts):
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_family_has_same_vertical_metrics as check
-  print("Test pass with multiple good fonts...")
-  status, message = list(check(montserrat_ttFonts))[-1]
-  assert status == PASS
-
-  print("Test fail with one bad font that has one different vertical metric val...")
-  montserrat_ttFonts[0]['OS/2'].usWinAscent = 4000
-  status, message = list(check(montserrat_ttFonts))[-1]
-  assert status == FAIL
-
