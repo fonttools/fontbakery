@@ -245,7 +245,10 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(ttFonts):
 def com_google_fonts_check_code_pages(ttFont):
   """Check code page character ranges"""
 
-  if ttFont['OS/2'].ulCodePageRange1 == 0 and ttFont['OS/2'].ulCodePageRange2 == 0:
+  if not hasattr(ttFont['OS/2'], "ulCodePageRange1") or \
+     not hasattr(ttFont['OS/2'], "ulCodePageRange2") or \
+     (ttFont['OS/2'].ulCodePageRange1 == 0 and \
+      ttFont['OS/2'].ulCodePageRange2 == 0):
     yield FAIL, ("No code pages defined in the OS/2 table"
                  " ulCodePageRage1 and CodePageRage2 fields.")
   else:
