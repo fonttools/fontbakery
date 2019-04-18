@@ -200,6 +200,7 @@ class FontBakeryCheck(FontbakeryCallable):
     self.id = id
     self.name = checkfunc.__name__ if name is None else name
     self.conditions = conditions or []
+    self.rationale = rationale
     self.description, self.documentation = get_doc_desc(
                                       checkfunc, description, documentation)
     if not self.description:

@@ -348,9 +348,9 @@ class PyFontBakeryObject(PyObject):
     signode.attributes['lineno'] = lineno
 
 
-    sig_prefix = self.get_signature_prefix(sig)
-    if sig_prefix:
-      signode += addnodes.desc_annotation(sig_prefix, sig_prefix)
+    #sig_prefix = self.get_signature_prefix(sig)
+    #if sig_prefix:
+    #  signode += addnodes.desc_annotation(sig_prefix, sig_prefix)
 
 
     if prefix:
@@ -359,8 +359,9 @@ class PyFontBakeryObject(PyObject):
       if modname and modname != 'exceptions':
         # exceptions are a special case, since they are documented in the
         # 'exceptions' module.
-        nodetext = modname + ' ID: '
-        signode += addnodes.desc_addname(nodetext, nodetext)
+        #nodetext = modname + ' ID: '
+        #signode += addnodes.desc_addname(nodetext, nodetext)
+        pass
 
 
     signode += addnodes.desc_name(name, cid)
@@ -502,8 +503,8 @@ def setup(app):
 
 
   app.setup_extension('sphinx.ext.autodoc')
-  # app.connect('autodoc-process-docstring', _process_docstring)
-  # app.connect('autodoc-skip-member', _skip_member)
+  app.connect('autodoc-process-docstring', _process_docstring)
+  app.connect('autodoc-skip-member', _skip_member)
 
   #for name, (default, rebuild) in Config._config_values.items():
   #    app.add_config_value(name, default, rebuild)
@@ -547,78 +548,15 @@ def _skip_member(app, what, name, obj, skip, options):
       True if the member should be skipped during creation of the docs,
       False if it should be included in the docs.
   """
-  from time import sleep
-  if any(isinstance(obj, cls) for cls in (FontbakeryCallable, FontBakeryExpectedValue)):
-    print('what:', what)
-    print('name:', name)
-    print('obj:', obj)
-    print('skip:', skip)
-    print('options:', options)
-    print('...........obj.............')
-    print(f'{obj}')
-    print('^^^^^^^^^^^')
-    return False
-  # not sufficient!
-  #if name == '__module__' and obj.startswith('fontbakery.profiles.'):
-  #  print('GOT ONE:', name, what, obj)
-
-  if skip:
-    print('what:', what)
-    print('name:', name)
-    print('obj:', obj)
-    print('skip:', skip)
-    print('options:', options)
-    print('...........obj.............')
-    print(f'{obj}')
-    if what == 'module' and name == '__spec__' and obj.name.startswith('fontbakery.profiles.'):
-      print ('GOT ONE!')
-      # sleep(1)
-      return False
-    print('^^^^^^^^^^^')
-
-  return None
-
-
-
-  has_doc = getattr(obj, '__doc__', False)
-  is_member = (what == 'class' or what == 'exception' or what == 'module')
-  if name != '__weakref__' and has_doc and is_member:
-    cls_is_owner = False
-    if what == 'class' or what == 'exception':
-      qualname = getattr(obj, '__qualname__', '')
-      cls_path, _, _ = qualname.rpartition('.')
-      if cls_path:
-        try:
-          if '.' in cls_path:
-            import importlib
-            import functools
-            mod = importlib.import_module(obj.__module__)
-            mod_path = cls_path.split('.')
-            cls = functools.reduce(getattr, mod_path, mod)
-          else:
-            cls = obj.__globals__[cls_path]
-        except Exception:
-          cls_is_owner = False
-        else:
-          cls_is_owner = (cls and hasattr(cls, name) and  # type: ignore
-                              name in cls.__dict__)
-      else:
-        cls_is_owner = False
-
-    if what == 'module' or cls_is_owner:
-      is_init = (name == '__init__')
-      is_special = (not is_init and name.startswith('__') and
-                    name.endswith('__'))
-      is_private = (not is_init and not is_special and
-                    name.startswith('_'))
-      inc_init = app.config.napoleon_include_init_with_doc
-      inc_special = app.config.napoleon_include_special_with_doc
-      inc_private = app.config.napoleon_include_private_with_doc
-      if ((is_special and inc_special) or
-              (is_private and inc_private) or
-              (is_init and inc_init)):
-        return False
-  return None
+  if name in ['conditions',
+              'description',
+              'documentation',
+              'id',
+              'name',
+              'rationale']:
+    return True
+  else:
+    return None
 
 
 def _process_docstring(app, what, name, obj, options, lines):
@@ -653,26 +591,6 @@ def _process_docstring(app, what, name, obj, options, lines):
       .. note:: `lines` is modified *in place*
   """
 
-  if not any(isinstance(obj, cls) for cls in (FontbakeryCallable, FontBakeryExpectedValue)):
-    # not changing lines is not doing anything
-    # print(f'What the type! {what} {obj} {name} {type(obj)}')
-    return;
-
-  print(f'got: {obj}>>',  obj.description, '>>',  obj.documentation)
-  from time import sleep
-  sleep(1)
-
-
-  result_lines = [f'.. Warning::{obj}', f':.. Important: {obj.description}', f'.. Notes:{obj.documentation}']
-  lines[:] = result_lines[:]
-  # result_lines = lines
-  # docstring = None  # type: GoogleDocstring
-  # if app.config.napoleon_numpy_docstring:
-  #   docstring = NumpyDocstring(result_lines, app.config, app, what, name,
-  #                              obj, options)
-  #   result_lines = docstring.lines()
-  # if app.config.napoleon_google_docstring:
-  #   docstring = GoogleDocstring(result_lines, app.config, app, what, name,
-  #                               obj, options)
-  #   result_lines = docstring.lines()
-  # lines[:] = result_lines[:]
+  if hasattr(obj, 'rationale') and obj.rationale:
+    lines.append("**Rationale:**\n")
+    lines.append(obj.rationale)

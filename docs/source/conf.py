@@ -193,8 +193,11 @@ def linkcode_resolve(domain, info):
     tree = 'v0.7.2'
     # It's not planned for us to get the line number :-(
     # I had to hammer this data into the info.
-    lineno = f'#L{info["lineno"]}' if 'lineno' in info else ''
+    if 'lineno' in info:
+      lineno = '#L{}'.format(info["lineno"])
+    else:
+      lineno = ''
     #if 'com_google' in info['fullname']:
     #    import ipdb
     #    ipdb.set_trace()
-    return f'https://github.com/googlefonts/fontbakery/tree/{tree}/Lib/{filename}.py{lineno}'
+    return 'https://github.com/googlefonts/fontbakery/tree/{}/Lib/{}.py{}'.format(tree, filename, lineno)
