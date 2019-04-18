@@ -210,7 +210,7 @@ def test_check_code_pages():
   from fontbakery.profiles.os2 import com_google_fonts_check_code_pages as check
 
   print('Test PASS with good font.')
-  ttFont = TEST_FILE("merriweather/Merriweather-Regular.ttf")
+  ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
   status, message = list(check(ttFont))[-1]
   assert(ttFont['OS/2'].ulCodePageRange1 != 0 or
          ttFont['OS/2'].ulCodePageRange2 != 0) # It has got at least 1 code page range declared
