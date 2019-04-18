@@ -96,7 +96,7 @@ def formatStatus(status, text=None, color=False):
   except KeyError:
     return text
 
-UNICORN = r"""
+CUPCAKE = r"""
                            ,@.
                          ,@.@@,.
                    ,@@,.@@@.  @.@@@,.
@@ -175,7 +175,7 @@ class TerminalProgress(FontbakeryReporter):
                    , stdout=sys.stdout
                    , structure_threshold=None
                    , usecolor=True
-                   , unicorn=True
+                   , cupcake=True
                      # a tuple of structural statuses to be skipped
                      # e.g. (STARTSECTION, ENDSECTION)
                    , skip_status_report=None
@@ -193,7 +193,7 @@ class TerminalProgress(FontbakeryReporter):
       self.stdout = stdout
 
     self._progressbar = []
-    self._unicorn = unicorn
+    self._cupcake = cupcake
     self._skip_status_report = skip_status_report or tuple()
     if structure_threshold:
       self._structure_threshold = min(START.weight, structure_threshold)
@@ -239,12 +239,13 @@ class TerminalProgress(FontbakeryReporter):
       if self._print_progress:
         print(self._draw_progressbar())#.encode('utf-8'))
       print('')
-      if self._unicorn and len(self._order) \
-              and self._counter[ERROR.name] + self._counter[FAIL.name] == 0:
-        unicorn = UNICORN
+      if self._cupcake and len(self._order) \
+              and self._counter[ERROR.name] + self._counter[FAIL.name] == 0 \
+              and self._counter[PASS.name] > 20:
+        cupcake = CUPCAKE
         if self._use_color:
-          unicorn = MAGENTA_STR(UNICORN)
-        print(unicorn)
+          cupcake = MAGENTA_STR(CUPCAKE)
+        print(cupcake)
       print('DONE!')
     return output.getvalue()
 

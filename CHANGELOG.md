@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.7.3 (2019-Apr-18)
 ### Note-worthy code changes
+  - The cupcake artwork is not gone, but it is now much less likely to show up. You can't get a cupcake unless you really deserve it! (issue #2030)
   - Improved --list-checks output. Now uses colors for better legibility on the text terminal (issue #2457)
   - We now autocomplete check IDs on the command line (issue #2457)
 
