@@ -219,3 +219,34 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(ttFonts):
   if not failed:
     yield PASS, ("The OS/2.fsSelection bold & italic settings were unique "
                  "within each compatible family group.")
+
+
+@check(
+  id = 'com.google.fonts/check/code_pages',
+  rationale = """
+  At least some programs (such as Word and Sublime Text) under Windows 7
+  do not recognize fonts unless code page bits are properly set on the
+  ulCodePageRange1 (and/or ulCodePageRange2) fields of the OS/2 table.
+
+  More specifically, the fonts are selectable in the font menu, but
+  whichever Windows API these applications use considers them unsuitable
+  for any character set, so anything set in these fonts is rendered
+  with a fallback font of Arial.
+
+  This check currently does not identify which code pages should be set.
+  Auto-detecting coverage is not trivial since the OpenType specification
+  leaves the interpretation of whether a given code page is "functional"
+  or not open to the font developer to decide.
+
+  So here we simply detect as a FAIL when a given font has no code page
+  declared at all.
+  """
+)
+def com_google_fonts_check_code_pages(ttFont):
+  """Check code page character ranges"""
+
+  if not ttFont['OS/2'].getUnicodeRanges():
+    yield FAIL, ("No code pages defined in the OS/2 table"
+                 " ulCodePageRage1 and CodePageRage2 fields.")
+  else:
+    yield PASS, "At least one code page is defined."

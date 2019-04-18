@@ -203,3 +203,18 @@ def test_check_family_bold_italic_unique_for_nameid1():
                      "bold & italic settings: Bold=True, Italic=True"
   assert message == expected_message
   assert status == FAIL
+
+
+def test_check_code_pages():
+  """ Fonts have consistent PANOSE proportion ? """
+  from fontbakery.profiles.os2 import com_google_fonts_check_code_pages as check
+
+  print('Test PASS with good font.')
+  ttFont = TEST_FILE("mada/Mada-Regular.ttf")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  print('Test FAIL with a font with no code page declared.')
+  ttFont['OS/2'].setUnicodeRanges({})
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL

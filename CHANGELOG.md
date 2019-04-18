@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - We now autocomplete check IDs on the command line (issue #2457)
 
 ### New checks
+  - **[com.google.fonts/check/code_pages]:** Detects when no code page was declared on the OS/2 table, fields ulCodePageRange1 and ulCodePageRange2 (issue #2213)
   - **[com.adobe.fonts/check/find_empty_letters]:** "Letters in font have glyphs that are not empty?" (PR #2460)
   - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** "Directory name in GFonts repo structure must match NameID 1." (issue #2302)
   - **[com.google.fonts/check/family/vertical_metrics]:** "Each font in a family must have the same vertical metrics values." (PR #2468)
