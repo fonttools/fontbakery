@@ -25,7 +25,7 @@ def TEST_FILE(f):
   return portable_path("data/test/" + f)
 
 
-def pretty_print_list(values, shorten=None, glue="or"):
+def pretty_print_list(values, shorten=10, glue="and"):
   if len(values) == 1:
     return str(values[0])
 

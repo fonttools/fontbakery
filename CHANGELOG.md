@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.3 (2019-Apr-15)
+## 0.7.4 (2019-Apr-29)
+  ...
+
+
+## 0.7.3 (2019-Apr-18)
 ### Note-worthy code changes
   - Improved --list-checks output. Now uses colors for better legibility on the text terminal (issue #2457)
   - We now autocomplete check IDs on the command line (issue #2457)
@@ -16,6 +20,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/cff_call_depth]:** fixed handling of font dicts in a CFF (PR #2461)
   - Declare fonttools' unicode extra-dependency on our rquirements.txt and setup.py so that unicodedata2 is properly installed. (issue #2462)
   - Bash completion script is now installed by `pip install fontbakery` (issue #2457)
+  - Shorten too verbose log messages in a few checks. (issue #2436)
 
 
 ## 0.7.2 (2019-Apr-09)

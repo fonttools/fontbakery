@@ -2749,7 +2749,9 @@ def com_google_fonts_check_contour_count(ttFont):
                           "Contours detected: {}\t"
                           "Expected: {}").format(cmap[name],
                                                  count,
-                                                 pretty_print_list(expected))
+                                                 pretty_print_list(expected,
+                                                                   shorten=None,
+                                                                   glue="or"))
                          for name, count, expected in bad_glyphs]
       yield WARN, (("This check inspects the glyph outlines and detects the"
                     " total number of contours in each of them. The expected"
