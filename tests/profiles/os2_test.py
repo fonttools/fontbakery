@@ -203,3 +203,21 @@ def test_check_family_bold_italic_unique_for_nameid1():
                      "bold & italic settings: Bold=True, Italic=True"
   assert message == expected_message
   assert status == FAIL
+
+
+def test_check_code_pages():
+  """ Check code page character ranges """
+  from fontbakery.profiles.os2 import com_google_fonts_check_code_pages as check
+
+  print('Test PASS with good font.')
+  ttFont = TEST_FILE("merriweather/Merriweather-Regular.ttf")
+  status, message = list(check(ttFont))[-1]
+  assert(ttFont['OS/2'].ulCodePageRange1 != 0 or
+         ttFont['OS/2'].ulCodePageRange2 != 0) # It has got at least 1 code page range declared
+  assert status == PASS
+
+  print('Test FAIL with a font with no code page declared.')
+  ttFont['OS/2'].ulCodePageRange1 = 0 # remove all code pages to make the check FAIL
+  ttFont['OS/2'].ulCodePageRange2 = 0
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
