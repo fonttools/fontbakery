@@ -794,8 +794,9 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
     if len(bad_names) == 0:
       yield PASS, "Glyph names are all valid."
     else:
+      from fontbakery.utils import pretty_print_list
       yield FAIL, ("The following glyph names do not comply"
-                   " with naming conventions: {}"
+                   " with naming conventions: {}\n\n"
                    " A glyph name may be up to 31 characters in length,"
                    " must be entirely comprised of characters from"
                    " the following set:"
@@ -805,7 +806,10 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
                    " such as the special character \".notdef\"."
                    " The glyph names \"twocents\", \"a1\", and \"_\""
                    " are all valid, while \"2cents\""
-                   " and \".twocents\" are not.").format(bad_names)
+                   " and \".twocents\" are not."
+                   "").format(pretty_print_list(bad_names,
+                                                shorten=10,
+                                                glue="and"))
 
 
 @check(
