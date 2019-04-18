@@ -807,9 +807,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
                    " The glyph names \"twocents\", \"a1\", and \"_\""
                    " are all valid, while \"2cents\""
                    " and \".twocents\" are not."
-                   "").format(pretty_print_list(bad_names,
-                                                shorten=10,
-                                                glue="and"))
+                   "").format(pretty_print_list(bad_names))
 
 
 @check(

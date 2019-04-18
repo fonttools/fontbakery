@@ -50,6 +50,7 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
 def com_google_fonts_check_monospace_max_advancewidth(ttFont, glyph_metrics_stats):
   """Monospace font has hhea.advanceWidthMax equal to each glyph's
   advanceWidth?"""
+  from fontbakery.utils import pretty_print_list
 
   seems_monospaced = glyph_metrics_stats["seems_monospaced"]
   if not seems_monospaced:
@@ -73,20 +74,22 @@ def com_google_fonts_check_monospace_max_advancewidth(ttFont, glyph_metrics_stat
 
   if outliers:
     outliers_percentage = float(len(outliers)) / len(glyphSet)
-    yield WARN, Message(
-        "should-be-monospaced", "This seems to be a monospaced font,"
-        " so advanceWidth value should be the same"
-        " across all glyphs, but {}% of them"
-        " have a different value: {}"
-        "".format(round(100 * outliers_percentage, 2), ", ".join(outliers)))
+    yield WARN, Message("should-be-monospaced",
+                        "This seems to be a monospaced font,"
+                        " so advanceWidth value should be the same"
+                        " across all glyphs, but {}% of them"
+                        " have a different value: {}"
+                        "".format(round(100 * outliers_percentage, 2),
+                                  pretty_print_list(outliers)))
     if zero_or_double_width_outliers:
       yield WARN, Message("variable-monospaced",
                           "Double-width and/or zero-width glyphs"
                           " were detected. These glyphs should be set"
                           " to the same width as all others"
                           " and then add GPOS single pos lookups"
-                          " that zeros/doubles the widths as needed: {}".format(
-                              ", ".join(zero_or_double_width_outliers)))
+                          " that zeros/doubles the widths as needed:"
+                          " {}".format(pretty_print_list(
+                                         zero_or_double_width_outliers)))
   else:
     yield PASS, ("hhea.advanceWidthMax is equal"
                  " to all glyphs' advanceWidth in this monospaced font.")
