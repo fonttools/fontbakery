@@ -31,6 +31,9 @@
 
 
 
+
+
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual" lang="en-us" dir="ltr" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -39,9 +42,9 @@
 	<meta property="og:title" content="Registered typography vendors - Typography" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://docs.microsoft.com/en-us/typography/vendors/" />
-	<meta property="og:description" content="Vendors who have registered a unique &#x27Vendor ID&#x27 with Microsoft." />
-	<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
-	<meta property="og:image:alt" content="Microsoft Logo" />
+		<meta property="og:description" content="Vendors who have registered a unique &#x27Vendor ID&#x27 with Microsoft." />
+		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
+		<meta property="og:image:alt" content="Microsoft Logo" />
 
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:site" content="@docsmsft" />
@@ -62,21 +65,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-04-05 05:56 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/6940f93de1f9d2138fc8bf7eeb785d068b59098d/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-04-16 07:14 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/0bb9cdc5e0fd8fad3e129f1864d2790097dc7103/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2644" />
+<meta name="word_count" content="2649" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/6e59f4a9.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/9e6180ae.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f1e7d9d9.conceptual.css ">
 
@@ -116,10 +119,13 @@
 	if (typeof HTMLTemplateElement === 'undefined') {
 		document.write('<script src="https://static.docs.com/ui/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"><\/script>');
 	}
+	if (typeof URL !== 'function') {
+		document.write('<script src="https://static.docs.com/ui/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"><\/script>');
+	}
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/eed87319.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/29f79686.index-docs.js"></script>
 
 </head>
 
@@ -174,26 +180,38 @@
 						</a>
 						<div class="dropdown-menu" id="sharing-menu" role="menu">
 							<ul data-bi-name="share-links">
-								<li><a class="share-twitter" data-bi-name="twitter">
-									<span class="icon">
-										<span class="docon docon-brand-twitter" aria-hidden="true"></span>
-									</span>
-									<span>Twitter</span></a></li>
-								<li><a class="share-linkedin" data-bi-name="linkedin">
-									<span class="icon">
-										<span class="docon docon-brand-linkedin" aria-hidden="true"></span>
-									</span>
-									<span>LinkedIn</span></a></li>
-								<li><a class="share-facebook" data-bi-name="facebook">
-									<span class="icon">
-										<span class="docon docon-brand-facebook" aria-hidden="true"></span>
-									</span>
-									<span>Facebook</span></a></li>
-								<li><a class="share-email" data-bi-name="email">
-									<span class="icon">
-										<span class="docon docon-mail-message-fill" aria-hidden="true"></span>
-									</span>
-									<span>Email</span></a></li>
+								<li>
+									<a class="share-twitter" data-bi-name="twitter">
+										<span class="icon">
+											<span class="docon docon-brand-twitter" aria-hidden="true"></span>
+										</span>
+										<span>Twitter</span>
+									</a>
+								</li>
+								<li>
+									<a class="share-linkedin" data-bi-name="linkedin">
+										<span class="icon">
+											<span class="docon docon-brand-linkedin" aria-hidden="true"></span>
+										</span>
+										<span>LinkedIn</span>
+									</a>
+								</li>
+								<li>
+									<a class="share-facebook" data-bi-name="facebook">
+										<span class="icon">
+											<span class="docon docon-brand-facebook" aria-hidden="true"></span>
+										</span>
+										<span>Facebook</span>
+									</a>
+								</li>
+								<li>
+									<a class="share-email" data-bi-name="email">
+										<span class="icon">
+											<span class="docon docon-mail-message-fill" aria-hidden="true"></span>
+										</span>
+										<span>Email</span>
+									</a>
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -272,6 +290,7 @@
 
 
 
+
 						<h1 id="registered-typography-vendors" sourcefile="vendors/index.md" sourcestartlinenumber="15" sourceendlinenumber="15">Registered typography vendors</h1>
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
@@ -290,6 +309,7 @@
 							</li>
 
 						</ul>
+
 
 						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="On page navigation">
 							<h3>In this article</h3>
@@ -2014,6 +2034,11 @@
 </tr>
 
 <tr>
+<td>IINF</td>
+<td><a href="http://www.iinformatica.it" data-linktype="external">iInformatica Srls</a></td>
+</tr>
+
+<tr>
 <td>IKOF</td>
 <td><a href="http://www.ikoffice.de/fonts/" data-linktype="external">IKOffice GmbH</a></td>
 </tr>
@@ -2041,6 +2066,11 @@
 <tr>
 <td>INRA</td>
 <td><a href="http://www.inray.com/" data-linktype="external">INRAY Inc.</a></td>
+</tr>
+
+<tr>
+<td>INTF</td>
+<td><a href="http://www.interfont.net/" data-linktype="external">Interfont</a></td>
 </tr>
 
 <tr>
@@ -4252,6 +4282,7 @@
 
 
 <section class="feedback-section" data-bi-name="feedback-section">
+
 	<h2 id="feedback">Feedback</h2>
 
 	<div class="alert choose-feedback-type">
@@ -4313,7 +4344,7 @@ This page					</button>
 		</div>
 	</form>
 
-	<div class="feedback-status alert is-loading" role="alert">
+	<div class="feedback-status alert is-loading">
 		<p>Loading feedback...</p>
 	</div>
 
