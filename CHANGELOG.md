@@ -6,11 +6,12 @@ A more detailed list of changes is available in the corresponding milestones for
   ...
 
 
-## 0.7.3 (2019-Apr-18)
+## 0.7.3 (2019-Apr-19)
 ### Note-worthy code changes
   - The cupcake artwork is not gone, but it is now much less likely to show up. You can't get a cupcake unless you really deserve it! (issue #2030)
   - Improved --list-checks output. Now uses colors for better legibility on the text terminal (issue #2457)
   - We now autocomplete check IDs on the command line (issue #2457)
+  - Even though we trid to add an install-rule for the bash-completion script on setup.py, we ended up removing it because it was not yet done in a cross-platform compatible manner. We'll get back to it later. For now users will have to manually install the script if they want bash completion to work. On MacOS it should typically be saved on `/usr/local/etc/bash_completion.d` and on GNU+Linux a good target directory would typically be `/etc/bash_completion.d`. More info at issue #2465.
 
 ### New checks
   - **[com.google.fonts/check/code_pages]:** Detects when no code page was declared on the OS/2 table, fields ulCodePageRange1 and ulCodePageRange2 (issue #2474)
@@ -21,7 +22,6 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bug fixes
   - **[com.adobe.fonts/cff_call_depth]:** fixed handling of font dicts in a CFF (PR #2461)
   - Declare fonttools' unicode extra-dependency on our rquirements.txt and setup.py so that unicodedata2 is properly installed. (issue #2462)
-  - Bash completion script is now installed by `pip install fontbakery` (issue #2457)
   - Shorten too verbose log messages in a few checks. (issue #2436)
 
 
