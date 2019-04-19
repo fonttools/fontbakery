@@ -1,5 +1,5 @@
 # bash completion for fontbakery
-which fontbakery &&
+which fontbakery > /dev/null &&
 function _fontbakery {
     local  cur prev subcommands
     COMPREPLY=()
