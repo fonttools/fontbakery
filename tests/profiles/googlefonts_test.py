@@ -901,16 +901,14 @@ def test_check_metadata_listed_on_gfonts():
   print ("Test WARN with a family that is not listed on Google Fonts...")
   # Our reference FamilySans family is a just a generic example
   # and thus is not really hosted (nor will ever be hosted) at Google Fonts servers:
-  family_directory = portable_path("data/test/familysans")
-  listed = listed_on_gfonts_api(family_metadata(family_directory))
+  listed = listed_on_gfonts_api("Family Sans")
   # For that reason, we expect to get a WARN in this case:
   status, message = list(check(listed))[-1]
   assert status == WARN
 
   print ("Test PASS with a family that is available...")
   # Our reference Merriweather family is available on the Google Fonts collection:
-  family_directory = portable_path("data/test/merriweather")
-  listed = listed_on_gfonts_api(family_metadata(family_directory))
+  listed = listed_on_gfonts_api("Merriweather")
   # So it must PASS:
   status, message = list(check(listed))[-1]
   assert status == PASS
@@ -2160,7 +2158,7 @@ def test_check_production_encoded_glyphs(cabin_ttFonts):
     family_directory)
 
   family_meta = family_metadata(family_directory(cabin_fonts))
-  remote = remote_styles(family_meta)
+  remote = remote_styles(family_meta.name)
   if remote:
     for font in cabin_fonts:
       ttFont = TTFont(font)
