@@ -1371,13 +1371,13 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
 
 
 @condition
-def listed_on_gfonts_api(family_metadata):
-  if not family_metadata:
+def listed_on_gfonts_api(familyname):
+  if not familyname:
     return False
 
   import requests
   url = ('http://fonts.googleapis.com'
-         '/css?family={}').format(family_metadata.name.replace(' ', '+'))
+         '/css?family={}').format(familyname.replace(' ', '+'))
   r = requests.get(url)
   return r.status_code == 200
 
@@ -2421,17 +2421,17 @@ def com_google_fonts_check_unitsperem_strict(ttFont):
 
 
 @condition
-def remote_styles(family_metadata):
+def remote_styles(familyname_with_spaces):
   """Get a dictionary of TTFont objects of all font files of
      a given family as currently hosted at Google Fonts.
   """
 
-  def download_family_from_Google_Fonts(family_name):
+  def download_family_from_Google_Fonts(familyname):
     """Return a zipfile containing a font family hosted on fonts.google.com"""
     from zipfile import ZipFile
     from fontbakery.utils import download_file
     url_prefix = 'https://fonts.google.com/download?family='
-    url = '{}{}'.format(url_prefix, family_name.replace(' ', '+'))
+    url = '{}{}'.format(url_prefix, familyname.replace(' ', '+'))
     return ZipFile(download_file(url))
 
 
@@ -2446,11 +2446,10 @@ def remote_styles(family_metadata):
         fonts.append([file_name, TTFont(file_obj)])
     return fonts
 
-  if (not listed_on_gfonts_api(family_metadata) or
-      not family_metadata):
+  if not listed_on_gfonts_api(familyname_with_spaces):
     return None
 
-  remote_fonts_zip = download_family_from_Google_Fonts(family_metadata.name)
+  remote_fonts_zip = download_family_from_Google_Fonts(familyname_with_spaces)
   rstyles = {}
 
   for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
