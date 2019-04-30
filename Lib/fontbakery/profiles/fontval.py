@@ -143,10 +143,9 @@ def com_google_fonts_check_fontvalidator(font):
 
   grouped_msgs = {}
   with open(xml_report_file, "rb") as xml_report:
-    import defusedxml.lxml
-    doc = defusedxml.lxml.parse(xml_report)
-
-    for report in doc.iter('Report'):
+    from lxml import etree
+    doc = etree.fromstring(xml_report.read())
+    for report in doc.iterfind('.//Report'):
       msg = report.get("Message")
       details = report.get("Details")
 

@@ -319,12 +319,12 @@ def description(descfile):
 )
 def com_google_fonts_check_description_broken_links(description):
   """Does DESCRIPTION file contain broken links?"""
-  from lxml.html import HTMLParser
-  import defusedxml.lxml
   import requests
-  doc = defusedxml.lxml.fromstring(description, parser=HTMLParser())
+  from lxml import etree
+  doc = etree.fromstring("<html>" + description + "</html>")
   broken_links = []
-  for link in doc.xpath('//a/@href'):
+  for a_href in doc.iterfind('.//a[@href]'):
+    link = a_href.get("href")
     if link.startswith("mailto:") and \
        "@" in link and \
        "." in link.split("@")[1]:

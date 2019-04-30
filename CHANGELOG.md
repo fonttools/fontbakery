@@ -2,8 +2,8 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.4 (2019-Apr-29)
-  ...
+## 0.7.4 (2019-May-06)
+  - Removed defusedxml dependency. We were only using it for its `defused.lxml` module which is now deprecated (issue #2477)
 
 
 ## 0.7.3 (2019-Apr-19)
