@@ -345,7 +345,7 @@ def test_check_metadata_parses():
 def test_check_metadata_unknown_designer():
   """ Font designer field in METADATA.pb must not be 'unknown'. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_unknown_designer as check,
-                                                     family_metadata)
+                                               family_metadata)
   good = family_metadata(portable_path("data/test/merriweather"))
   print('Test PASS with a good METADATA.pb file...')
   status, message = list(check(good))[-1]
@@ -354,6 +354,29 @@ def test_check_metadata_unknown_designer():
   bad = family_metadata(portable_path("data/test/merriweather"))
   bad.designer = "unknown"
   print('Test FAIL with a bad METADATA.pb file...')
+  status, message = list(check(bad))[-1]
+  assert status == FAIL
+
+
+def test_check_metadata_designer_values():
+  """ Multiple values in font designer field in
+      METADATA.pb must be separated by commas. """
+  from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_designer_values as check,
+                                               family_metadata)
+  good = family_metadata(portable_path("data/test/merriweather"))
+  print('Test PASS with a good METADATA.pb file...')
+  status, message = list(check(good))[-1]
+  assert status == PASS
+
+  good.designer = "Pentagram, MCKL"
+  print('Test PASS with a good multiple-designers string...')
+  status, message = list(check(good))[-1]
+  assert status == PASS
+
+  bad = family_metadata(portable_path("data/test/merriweather"))
+  bad.designer = "Pentagram / MCKL" # This actually happened on an
+                                    # early version of the Red Hat Text family
+  print('Test FAIL with a bad multiple-designers string...')
   status, message = list(check(bad))[-1]
   assert status == FAIL
 
