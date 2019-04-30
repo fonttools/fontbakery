@@ -16,6 +16,7 @@ profile = profile_factory(default_section=Section("Google Fonts"))
 METADATA_CHECKS = [
         'com.google.fonts/check/metadata/parses'
       , 'com.google.fonts/check/metadata/unknown_designer'
+      , 'com.google.fonts/check/metadata/designer_values'
       , 'com.google.fonts/check/metadata/listed_on_gfonts'
       , 'com.google.fonts/check/metadata/unique_full_name_values'
       , 'com.google.fonts/check/metadata/unique_weight_style_pairs'
@@ -442,6 +443,29 @@ def com_google_fonts_check_metadata_unknown_designer(family_metadata):
     yield FAIL, f"Font designer field is '{family_metadata.designer}'."
   else:
     yield PASS, "Font designer field is not 'unknown'."
+
+
+@check(
+  id = 'com.google.fonts/check/metadata/designer_values',
+  conditions = ['family_metadata'],
+  rationale = """
+    We must use commas instead of forward slashes because the
+    fonts.google.com directory will segment string to list
+    on comma and display the first item in the list as the
+    "principal designer" and the other items as contributors.
+    See eg https://fonts.google.com/specimen/Rubik
+  """
+)
+def com_google_fonts_check_metadata_designer_values(family_metadata):
+  """Multiple values in font designer field in
+     METADATA.pb must be separated by commas."""
+
+  if '/' in family_metadata.designer:
+    yield FAIL, (f"Font designer field contains a forward slash"
+                  " '{family_metadata.designer}'."
+                  " Please use commas to separate multiple names instead.")
+  else:
+    yield PASS, "Looks good."
 
 
 @check(
