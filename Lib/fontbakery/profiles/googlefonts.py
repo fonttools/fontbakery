@@ -124,6 +124,7 @@ FONT_FILE_CHECKS = [
    'com.google.fonts/check/integer_ppem_if_hinted',
    'com.google.fonts/check/unitsperem_strict',
    'com.google.fonts/check/contour_count',
+   'com.google.fonts/check/vertical_metrics_regressions',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -3998,6 +3999,97 @@ def check_skip_filter(checkid, font=None, **iterargs):
     return False, ('LibreBarcode is blacklisted for this check, see '
                   'https://github.com/graphicore/librebarcode/issues/3')
   return True, None
+
+
+def typo_metrics_enabled(ttFont):
+    return ttFont['OS/2'].fsSelection & 0b10000000 > 0
+
+
+@check(
+  id = 'com.google.fonts/check/vertical_metrics_regressions',
+  conditions = ['remote_styles'],
+  rationale="""If the family already exists on Google Fonts, we need to
+  ensure that the checked family's vertical metrics are similar. This
+  check will test the following schema which was outlined in Fontbakery
+  issue 1162:
+  - The family should visually have the same vertical metrics as the
+    Regular style hosted on Google Fonts.
+  - If the family on Google Fonts has differing hhea and typo metrics,
+    the family being checked should use the typo metrics for both the
+    hhea and typo entries.
+  - If the family on Google Fonts has use typo metrics not enabled and the
+    family being checked has it enabled, the hhea and typo metrics
+    should use the family on Google Fonts winAscent and winDescent values.
+  - If the upms differ, the values must be scaled so the visual appearance
+    is the same.
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1162'
+  }
+)
+def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
+  """Check if the vertical metrics of a family are similar to the same
+  family hosted on Google Fonts."""
+  import math
+  failed = False
+
+  ttFonts = list(ttFonts)
+  if "Regular" in remote_styles:
+    gf_font = remote_styles["Regular"]
+  else:
+    gf_font = None
+    for style, font in remote_styles:
+      if is_variable_font(font):
+        if get_instance_axis_value(font, "Regular", "wght"):
+          gf_font = font
+  if not gf_font:
+    gf_font = remote_styles[0][1]
+
+  upm_scale = ttFonts[0]['head'].unitsPerEm / gf_font['head'].unitsPerEm
+
+  gf_has_typo_metrics = typo_metrics_enabled(gf_font)
+  fam_has_typo_metrics = typo_metrics_enabled(ttFonts[0])
+
+  if (gf_has_typo_metrics and fam_has_typo_metrics) or \
+  (not gf_has_typo_metrics and not fam_has_typo_metrics):
+    desired_ascender = math.ceil(gf_font['OS/2'].sTypoAscender * upm_scale)
+    desired_descender = math.ceil(gf_font['OS/2'].sTypoDescender * upm_scale)
+  else:
+    desired_ascender = math.ceil(gf_font["OS/2"].usWinAscent * upm_scale)
+    desired_descender = -math.ceil(gf_font["OS/2"].usWinDescent * upm_scale)
+
+  for ttFont in ttFonts:
+      full_font_name = ttFont['name'].getName(4, 3, 1, 1033).toUnicode()
+      typo_ascender = ttFont['OS/2'].sTypoAscender
+      typo_descender = ttFont['OS/2'].sTypoDescender
+      hhea_ascender = ttFont['hhea'].ascent
+      hhea_descender = ttFont['hhea'].descent
+      if typo_ascender != desired_ascender:
+        failed = True
+        yield FAIL, ("{}: OS/2 sTypoAscender is {} "
+                     "when it should be {}".format(full_font_name,
+                                                   typo_ascender,
+                                                   desired_ascender))
+      if typo_descender != desired_descender:
+        failed = True
+        yield FAIL, ("{}: OS/2 sTypoDescender is {} "
+                     "when it should be {}".format(full_font_name,
+                                                   typo_descender,
+                                                   desired_descender))
+      if hhea_ascender != desired_ascender:
+        failed = True
+        yield FAIL, ("{}: hhea Ascender is {} "
+                     "when it should be {}".format(full_font_name,
+                                                   hhea_ascender,
+                                                   desired_ascender))
+      if hhea_descender != desired_descender:
+        failed = True
+        yield FAIL, ("{}: hhea Descender is {} "
+                     "when it should be {}".format(full_font_name,
+                                                   hhea_descender,
+                                                   desired_descender))
+  if not failed:
+    yield PASS, "Vertical metrics have not regressed."
 
 
 profile.check_skip_filter = check_skip_filter
