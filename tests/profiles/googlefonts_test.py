@@ -2973,3 +2973,50 @@ def test_check_family_control_chars():
   print("Test fail with multiple bad fonts that have multiple bad chars...")
   status, message = list(check([tt1, tt2]))[-1]
   assert status == FAIL
+
+
+def test_check_vertical_metrics_regressions(cabin_ttFonts):
+  from fontbakery.profiles.googlefonts import (
+    com_google_fonts_check_vertical_metrics_regressions as check,
+    api_gfonts_ttFont,
+    style,
+    remote_styles,
+    family_metadata,
+    family_directory)
+  from copy import copy
+
+  family_meta = family_metadata(family_directory(cabin_fonts))
+  remote = remote_styles(family_meta.name)
+  if remote:
+    ttFonts = [TTFont(f) for f in cabin_fonts]
+    # Cabin test family should match by default
+    print("Test pass with a good family...")
+    status, message = list(check(ttFonts, remote))[-1]
+    assert status == PASS
+
+    print("Test fail with a family which has an incorrect typoAscender...")
+    ttFonts2 = copy(ttFonts)
+    for ttfont in ttFonts2:
+      ttfont['OS/2'].sTypoAscender = 0
+    status, message = list(check(ttFonts2, remote))[-1]
+    assert status == FAIL
+
+    print("Test fail with a remote family which does not have typo metrics enabled and the "
+          "fonts being checked don't take this fact into consideration...")
+    remote2 = copy(remote)
+    for key, ttfont in remote2.items():
+      ttfont["OS/2"].fsSelection = ttfont["OS/2"].fsSelection ^ 0b10000000
+    status, message = list(check(ttFonts, remote2))[-1]
+    assert status == FAIL
+
+    print("Test pass with a remote family which does not have typo metrics enabled but the "
+          "checked fonts vertical metrics have been set so its typo and hhea metrics match "
+          "the remote fonts win metrics.")
+    ttFonts3 = copy(ttFonts)
+    for ttfont in ttFonts3:
+      ttfont["OS/2"].sTypoAscender = 1139
+      ttfont["OS/2"].sTypoDescender = -314
+      ttfont["hhea"].ascent = 1139
+      ttfont["hhea"].descent = -314
+    status, message = list(check(ttFonts3, remote2))[-1]
+    assert status == PASS
