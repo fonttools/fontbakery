@@ -9,7 +9,6 @@ from fontbakery.constants import (PriorityLevel,
                                   NameID,
                                   PlatformID,
                                   WindowsEncodingID)
-from fontbakery.utils import pretty_print_list
 
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
@@ -799,6 +798,8 @@ def license(license_path):
 )
 def com_google_fonts_check_family_has_license(licenses):
   """Check font has a license."""
+  from fontbakery.utils import pretty_print_list
+
   if len(licenses) > 1:
     filenames = [os.path.basename(f) for f in licenses]
     yield FAIL, Message("multiple",
