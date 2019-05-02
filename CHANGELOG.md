@@ -11,6 +11,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bug fixes
   - **[com.google.fonts/check/name_version_format]:** Allow fonts to have version numbers less than v1.000.
+  - **[com.google.fonts/check/dsig]:** Mention which gftools script can fix the issue.
+  - **[com.google.fonts/check/family/has_license]:** Mention which licenses were found if multiple licenses exist.
 
 
 ## 0.7.3 (2019-Apr-19)

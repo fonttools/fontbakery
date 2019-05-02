@@ -13,4 +13,6 @@ def com_google_fonts_check_dsig(ttFont):
   else:
     yield FAIL, ("This font lacks a digital signature (DSIG table)."
                  " Some applications may require one (even if only a"
-                 " dummy placeholder) in order to work properly.")
+                 " dummy placeholder) in order to work properly. You"
+                 " can add a DSIG table by running the"
+                 " `gftools fix-dsig` script.")
