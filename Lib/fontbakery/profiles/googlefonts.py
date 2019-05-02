@@ -109,7 +109,7 @@ FONT_FILE_CHECKS = [
    'com.google.fonts/check/name/familyname',
    'com.google.fonts/check/name/mandatory_entries',
    'com.google.fonts/check/name/copyright_length',
-   'com.google.fonts/check/fontdata_namecheck',
+   # disabled: 'com.google.fonts/check/fontdata_namecheck', 
    'com.google.fonts/check/name/ascii_only_entries',
    'com.google.fonts/check/varfont_has_instances',
    'com.google.fonts/check/varfont_weight_instances',
@@ -3229,6 +3229,7 @@ def com_google_fonts_check_name_copyright_length(ttFont):
                  " 'name' table are shorter than 500 characters.")
 
 
+@disable # namecheck website is down. See: https://github.com/googlefonts/fontbakery/issues/2484
 @check(
   id = 'com.google.fonts/check/fontdata_namecheck',
   rationale = """
