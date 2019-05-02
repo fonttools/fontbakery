@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New checks
   - **[com.google.fonts/check/metadata/designer_values]:** We must use commas instead of forward slashes because the fonts.google.com directory will segment string to list on comma and display the first item in the list as the "principal designer" and the other items as contributors.
+  - **[com.google.fonts/check/vertical_metrics_regressions]:** If a family already exists on Google Fonts, the family being checked must have similar vertical metrics. (issue #1162)
 
 ### Bug fixes
   - **[com.google.fonts/check/dsig]:** Mention which gftools script can fix the issue.
