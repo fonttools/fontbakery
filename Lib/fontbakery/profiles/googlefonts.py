@@ -226,7 +226,7 @@ def canonical_stylename(font):
   """ Returns the canonical stylename of a given font. """
   from fontbakery.constants import (STATIC_STYLE_NAMES,
                                     VARFONT_SUFFIXES)
-  from fontbakery.profiles.shared_conditions import is_variable_font
+  from .shared_conditions import is_variable_font
   from fontTools.ttLib import TTFont
 
   # remove spaces in style names
