@@ -9,6 +9,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New checks
   - **[com.google.fonts/check/metadata/designer_values]:** We must use commas instead of forward slashes because the fonts.google.com directory will segment string to list on comma and display the first item in the list as the "principal designer" and the other items as contributors.
 
+### Temporarily disabled checks
+  - **[com.google.fonts/check/fontdata_namecheck]:** The web-service is down. (issue #2483)
+
 ### Bug fixes
   - **[com.google.fonts/check/name_version_format]:** Allow fonts to have version numbers less than v1.000.
   - **[com.google.fonts/check/dsig]:** Mention which gftools script can fix the issue.
