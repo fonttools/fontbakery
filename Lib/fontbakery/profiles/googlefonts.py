@@ -266,7 +266,7 @@ def com_google_fonts_check_canonical_filename(font):
        Familyname-Italic-VF.ttf
   """
   from fontTools.ttLib import TTFont
-  from fontbakery.profiles.shared_conditions import is_variable_font
+  from .shared_conditions import is_variable_font
   from fontbakery.constants import (STATIC_STYLE_NAMES,
                                     VARFONT_SUFFIXES)
   if canonical_stylename(font):
@@ -4031,6 +4031,7 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
   """Check if the vertical metrics of a family are similar to the same
   family hosted on Google Fonts."""
   import math
+  from .shared_conditions import is_variable_font
   failed = False
 
   ttFonts = list(ttFonts)
