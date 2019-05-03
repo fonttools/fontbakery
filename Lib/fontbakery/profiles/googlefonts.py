@@ -4031,7 +4031,8 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
   """Check if the vertical metrics of a family are similar to the same
   family hosted on Google Fonts."""
   import math
-  from .shared_conditions import is_variable_font
+  from .shared_conditions import (is_variable_font,
+                                  get_instance_axis_value)
   failed = False
 
   ttFonts = list(ttFonts)
