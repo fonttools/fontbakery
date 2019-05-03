@@ -18,7 +18,7 @@ from sphinx import addnodes
 from sphinx.errors import SphinxError
 from sphinx.locale import _
 
-if False:
+if False: #pylint: disable=using-constant-test
     # For type annotation
     from typing import Any, Dict, Set  # NOQA
     from sphinx.application import Sphinx  # NOQA
