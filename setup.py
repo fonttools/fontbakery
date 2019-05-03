@@ -70,14 +70,10 @@ setup(
         'requests',
         'ttfautohint-py',
         'ufolint',
+        'sphinx >= 1.4',
+        'sphinx_rtd_theme',
+        'recommonmark',
     ],
-    extras_require={
-        'docs': [
-            'sphinx >= 1.4',
-            'sphinx_rtd_theme',
-            'recommonmark',
-        ]
-    },
     entry_points={
         'console_scripts': ['fontbakery=fontbakery.cli:main'],
     },

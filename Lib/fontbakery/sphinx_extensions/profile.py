@@ -1,11 +1,12 @@
-from typing import cast
+from typing import Any, List, Tuple, Dict #cast
 
 from sphinx.application import Sphinx
-
-from sphinx.ext.autodoc import Documenter, ModuleLevelDocumenter
+# from sphinx.ext.autodoc import Documenter
+from sphinx.ext.autodoc import ModuleLevelDocumenter
 from sphinx.pycode import ModuleAnalyzer, PycodeError
-from sphinx.domains.python import PythonDomain, PyModulelevel, PyObject
-from sphinx.locale import _, __
+#from sphinx.domains.python import PythonDomain
+from sphinx.locale import __
+from sphinx.domains.python import PyObject
 from sphinx import addnodes
 from sphinx.util.inspect import Signature #, isdescriptor, safe_getmembers, \
     # safe_getattr, object_description, is_builtin_class_method, \
@@ -27,7 +28,7 @@ from fontbakery.callable import (
 
 # mute the style checks for unused names
 # will be removed eventually
-if False:
+if False: #pylint: disable=using-constant-test
   FontbakeryCallable
   FontBakeryCondition
   FontBakeryCheck
@@ -253,9 +254,6 @@ class PyFontBakeryObject(PyObject):
 
   allow_nesting = True
 
-  def __init__(self, *args):
-    super(PyObject, self).__init__(*args)
-
   @property
   def pretty_objtype(self):
     if self.objtype.startswith('fontbakery'):
@@ -402,8 +400,8 @@ class PyFontBakeryObject(PyObject):
                       else super().handle_signature(sig, signode)
     except Exception as e:
       print('!!!', e)
-      import ipdb
-      ipdb.set_trace()
+      # import ipdb
+      # ipdb.set_trace()
       raise e
     # finally:
       # print('<<<<<<<<<<<<<<<<<<result:', keepsig, sig, 'res', res, 'signode:', signode)
