@@ -80,6 +80,7 @@ REPO_CHECKS = [
 ]
 
 FONT_FILE_CHECKS = [
+   'com.google.fonts/check/glyph_coverage',
    'com.google.fonts/check/canonical_filename',
    'com.google.fonts/check/usweightclass',
    'com.google.fonts/check/fstype',
@@ -683,6 +684,33 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
                                     SUGGEST_MICROSOFT_VENDORLIST_WEBSITE)
   else:
     yield PASS, f"OS/2 VendorID '{vid}' looks good!"
+
+
+@check(
+  id = 'com.google.fonts/check/glyph_coverage',
+  rationale = """
+    Google Fonts expects that fonts support
+    at least the GF-latin-core glyph-set.
+  """
+)
+def com_google_fonts_check_glyph_coverage(ttFont):
+  """Check glyph coverage."""
+  from fontbakery.utils import pretty_print_list
+  from fontbakery.constants import GF_latin_core
+
+  font_codepoints = set()
+  for table in ttFont['cmap'].tables:
+    if (table.platformID == PlatformID.WINDOWS and
+        table.platEncID == WindowsEncodingID.UNICODE_BMP):
+      font_codepoints.update(table.cmap.keys())
+
+  required_codepoints = set(GF_latin_core.keys())
+  diff = required_codepoints - font_codepoints
+  if bool(diff):
+    missing = ['0x%04X (%s)' % (c, GF_latin_core[c][1]) for c in sorted(diff)]
+    yield FAIL, f"Missing required codepoints: {pretty_print_list(missing)}"
+  else:
+    yield PASS, "OK"
 
 
 @check(
