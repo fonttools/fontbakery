@@ -42,11 +42,13 @@ class GHMarkdownReporter(SerializeReporter):
 
   def check_md(self, check):
     checkid = check["key"][1].split(":")[1].split(">")[0]
+    profile = check["profile"]
 
     check["logs"].sort(key=lambda c: c["status"])
     logs = "".join(map(self.log_md, check["logs"]))
     github_search_url = (f"[{checkid}]"
-                         f"(https://github.com/googlefonts/fontbakery/search?q={checkid})")
+                          "(https://font-bakery.readthedocs.io/en/latest"
+                         f"/fontbakery/profiles/{profile}.html#{checkid})")
     return self.html5_collapsible("{} <b>{}:</b> {}".format(self.emoticon(check["result"]),
                                                             check["result"],
                                                             check["description"]),
@@ -54,6 +56,19 @@ class GHMarkdownReporter(SerializeReporter):
 
   def omit_loglevel(self, msg):
     return self.loglevels and (self.loglevels[0] > Status(msg))
+
+
+  def deduce_profile_from_section_name(self, section):
+    # This is very hacky!
+    # We should have a much better way of doing it...
+    if 'Google Fonts' in section: return 'googlefonts'
+    if 'Adobe' in section: return 'adobefonts'
+    if 'Universal' in section: return 'universal'
+    if 'Basic UFO checks' in section: return 'ufo_sources'
+    if 'Checks inherited from Microsoft Font Validator' in section: return 'fontval'
+    if 'fontbakery.profiles.' in section: return section.split('fontbakery.profiles.')[1].split('>')[0]
+    return section
+
 
   def get_markdown(self):
     checks = {}
@@ -69,6 +84,7 @@ class GHMarkdownReporter(SerializeReporter):
           if self.omit_loglevel(check["result"]):
             continue
 
+          check['profile'] = self.deduce_profile_from_section_name(section["key"][0])
           if "filename" not in check.keys():
             # That's a family check!
             family_checks.append(check)
