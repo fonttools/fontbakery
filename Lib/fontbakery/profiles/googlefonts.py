@@ -1076,13 +1076,7 @@ def com_google_fonts_check_name_version_format(ttFont):
   from fontbakery.utils import get_name_entry_strings
   import re
   def is_valid_version_format(value):
-    return re.match(r'Version\s0*[0-9]+\.\d+', value)
-
-  def is_valid_version_number(value):
-    version_number = re.search(r"[0-9]{1}\.[0-9]{3}", value)
-    if not version_number:
-      return False
-    return float(version_number.group(0)) >= 0.001
+    return re.match(r'Version\s0*[1-9]+\.\d+', value)
 
   failed = False
   version_entries = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
@@ -1092,12 +1086,12 @@ def com_google_fonts_check_name_version_format(ttFont):
                         ("Font lacks a NameID.VERSION_STRING (nameID={})"
                          " entry").format(NameID.VERSION_STRING))
   for ventry in version_entries:
-    if not is_valid_version_format(ventry) or not is_valid_version_number(ventry):
+    if not is_valid_version_format(ventry):
       failed = True
       yield FAIL, Message("bad-version-strings",
                           ("The NameID.VERSION_STRING (nameID={}) value must"
                            " follow the pattern \"Version X.Y\" with X.Y"
-                           " between 0.001 and 9.999."
+                           " between 1.000 and 9.999."
                            " Current version string is:"
                            " \"{}\"").format(NameID.VERSION_STRING,
                                              ventry))
