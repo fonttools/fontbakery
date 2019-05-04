@@ -71,7 +71,7 @@ register_check = profile.register_check
 register_condition = profile.register_condition
 # ----------------------------------------------------------------------------
 
-basic_checks = Section("Basic checks")
+basic_checks = Section("Basic UFO checks")
 
 
 @register_condition
