@@ -705,15 +705,6 @@ def test_check_name_version_format():
   status, message = list(check(ttFont))[-1]
   assert status == FAIL and message.code == "bad-version-strings"
 
-  # then we set the version string to lower than 0.001
-  print ("Test FAIL with fonts that have a version string lower than 0.001...")
-  for i, name in enumerate(ttFont["name"].names):
-    if name.nameID == NameID.VERSION_STRING:
-      invalid = "Version 0.000".encode(name.getEncoding())
-      ttFont["name"].names[i].string = invalid
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "bad-version-strings"
-
   # and finally we remove all version-string entries:
   print ("Test FAIL with font lacking version string entries in name table...")
   for i, name in enumerate(ttFont["name"].names):
