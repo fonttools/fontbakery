@@ -5,8 +5,11 @@ profiles
 .. toctree::
    :maxdepth: 1
 
+   adobefonts
+   cff
    cmap
    dsig
+   fontval
    fvar
    gdef
    general
@@ -24,6 +27,7 @@ profiles
    post
    shared_conditions
    ufo_sources
+   universal
 
 
 .. automodule:: fontbakery.profiles
