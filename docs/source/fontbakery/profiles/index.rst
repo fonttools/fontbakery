@@ -11,7 +11,6 @@ profiles
    dsig
    fontval
    fvar
-   gdef
    general
    glyf
    googlefonts
