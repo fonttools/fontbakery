@@ -14,14 +14,6 @@ You'll need Python 3.6 (or newer) to run FontBakery. Install with your GNU+Linux
 
 The following are optional dependencies that you can install to extend the functionality of Font Bakery.  Please note that some tests will not be executed if these optional dependencies are not present on your system.
 
-### FontForge
-
-From a PPA on Ubuntu:
-
-    sudo add-apt-repository --yes ppa:fontforge/fontforge;
-    sudo apt-get update -qq;
-    sudo apt-get install python-fontforge
-
 ### Microsoft Font Validator
 
 Font Validator has useful tests for a font's glyf table. We use [Hintak's fork](https://github.com/HinTak/Font-Validator).

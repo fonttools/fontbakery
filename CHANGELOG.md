@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Dependencies
   - Removed defusedxml dependency. We were only using it for its `defused.lxml` module which is now deprecated (issue #2477)
+  - Removed fontforge dependency.
 
 ### New checks
   - **[com.google.fonts/check/glyph_coverage]:** Google Fonts expects that fonts support at least the GF-latin-core glyph-set.
@@ -17,6 +18,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Temporarily disabled checks
   - **[com.google.fonts/check/fontdata_namecheck]:** The web-service is down. (issue #2483)
+
+### Deprecated checks
+  - **[com.google.fonts/check/fontforge_stderr]:** and **[com.google.fonts/check/fontforge]:** Fontforge does not support python 3. Well... it does, but it is a mess. We'll have to put significant effort if we ever bring back these checks.
 
 ### Bug fixes
   - **[com.google.fonts/check/dsig]:** Mention which gftools script can fix the issue.

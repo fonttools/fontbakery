@@ -13,9 +13,8 @@ branches:
   - /^v\d+\.\d+\.\d+/
 
 before_install:
-- if [ -z "$LINT_ONLY" ]; then sudo add-apt-repository --yes ppa:fontforge/fontforge; fi
 - if [ -z "$LINT_ONLY" ]; then sudo apt-get update -qq; fi
-- if [ -z "$LINT_ONLY" ]; then sudo apt-get -y install python-fontforge ttfautohint; fi
+- if [ -z "$LINT_ONLY" ]; then sudo apt-get -y install ttfautohint; fi
 - if [ -z "$LINT_ONLY" ]; then sudo apt-get install mono-runtime libmono-system-windows-forms4.0-cil; fi
 - pip install --upgrade pip
 

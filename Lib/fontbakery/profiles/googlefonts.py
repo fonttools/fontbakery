@@ -3999,17 +3999,6 @@ def is_librebarcode(font):
       return True
 
 
-@condition(force=True)
-def fontforge_skip_checks(font):
-  """Skip by fontforge reported issues for google fonts specific fonts."""
-  if is_librebarcode(font):
-    # see https://github.com/graphicore/librebarcode/issues/3
-    # 0x20: Glyphs have points at extremas
-    # 0x200: Font doesn't have invalid glyph names
-    return 0x20 + 0x200
-  return None
-
-
 def check_skip_filter(checkid, font=None, **iterargs):
   if font and is_librebarcode(font) and checkid in (
         # See: https://github.com/graphicore/librebarcode/issues/3
