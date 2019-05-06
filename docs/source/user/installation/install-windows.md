@@ -23,10 +23,6 @@ If this doesn't work for you, wait for the next release of FontBakery after 0.5.
 
 The following are optional dependencies that you can install to extend the functionality of Font Bakery.  Please note that some tests will not be executed if these optional dependencies are not present on your system.
 
-### FontForge
-
-1. Grab and install a Windows release from https://github.com/fontforge/fontforge/releases
-
 ### Microsoft Font Validator
 
 Font Validator has useful tests for a font's glyf table. We use [Hintak's fork](https://github.com/HinTak/Font-Validator).

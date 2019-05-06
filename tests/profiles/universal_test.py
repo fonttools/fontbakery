@@ -108,46 +108,6 @@ def test_check_ots():
   assert "Failed to sanitize file!" in output
 
 
-def NOT_IMPLEMENTED_test_check_fontforge_stderr():
-  """ FontForge validation outputs error messages? """
-  # from fontbakery.profiles.universal import com_google_fonts_check_fontforge_error_messages as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # WARN, "Fontforge printed messages to stderr."
-  # PASS, "Fontforge validation did not output any error message."
-
-
-def NOT_IMPLEMENTED_test_check_fontforge():
-  """ FontForge checks. """
-  # from fontbakery.profiles.universal import com_google_fonts_check_fontforge as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - PASS
-  # - SKIP
-  # - FAIL, "Contours are not closed!"
-  # - FAIL, "There are countour intersections!"
-  # - FAIL, "Contours have incorrect directions!"
-  # - FAIL, "References in the glyph have been flipped!"
-  # - FAIL, "Glyphs do not have points at extremas!"
-  # - FAIL, "Glyph names referred to from glyphs not present in the font!"
-  # - FAIL, "Points (or control points) are too far apart!"
-  # - FAIL, "There are glyphs with more than 1,500 points! Exceeds a PostScript limit."
-  # - FAIL, "Exceeds PostScript limit of 96 hints per glyph"
-  # - FAIL, "Font has invalid glyph names!"
-  # - FAIL, "Glyphs exceed allowed numbers of points defined in maxp"
-  # - FAIL, "Glyphs exceed allowed numbers of paths defined in maxp!"
-  # - FAIL, Composite glyphs exceed allowed numbers of points defined in maxp!"
-  # - FAIL, "Composite glyphs exceed allowed numbers of paths defined in maxp!"
-  # - FAIL, "Glyphs instructions have invalid lengths!"
-  # - FAIL, "Points in glyphs are not integer aligned!"
-  # - FAIL, "Glyphs do not have all required anchors!"
-  # - FAIL, "Glyph names are not unique!"
-  # - FAIL, "Unicode code points are not unique!"
-  # - FAIL, "Hints should NOT overlap!"
-
-
 def test_check_mandatory_glyphs():
   """ Font contains the first few mandatory glyphs (.null or NULL, CR and
   space)? """
@@ -625,46 +585,6 @@ def test_check_ots():
   assert status == FAIL
   assert "invalid version tag" in output
   assert "Failed to sanitize file!" in output
-
-
-def NOT_IMPLEMENTED_test_check_fontforge_stderr():
-  """ FontForge validation outputs error messages? """
-  # from fontbakery.profiles.universal import com_google_fonts_check_fontforge_error_messages as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # WARN, "Fontforge printed messages to stderr."
-  # PASS, "Fontforge validation did not output any error message."
-
-
-def NOT_IMPLEMENTED_test_check_fontforge():
-  """ FontForge checks. """
-  # from fontbakery.profiles.universal import com_google_fonts_check_fontforge as check
-  # TODO: Implement-me!
-  #
-  # code-paths:
-  # - PASS
-  # - SKIP
-  # - FAIL, "Contours are not closed!"
-  # - FAIL, "There are countour intersections!"
-  # - FAIL, "Contours have incorrect directions!"
-  # - FAIL, "References in the glyph have been flipped!"
-  # - FAIL, "Glyphs do not have points at extremas!"
-  # - FAIL, "Glyph names referred to from glyphs not present in the font!"
-  # - FAIL, "Points (or control points) are too far apart!"
-  # - FAIL, "There are glyphs with more than 1,500 points! Exceeds a PostScript limit."
-  # - FAIL, "Exceeds PostScript limit of 96 hints per glyph"
-  # - FAIL, "Font has invalid glyph names!"
-  # - FAIL, "Glyphs exceed allowed numbers of points defined in maxp"
-  # - FAIL, "Glyphs exceed allowed numbers of paths defined in maxp!"
-  # - FAIL, Composite glyphs exceed allowed numbers of points defined in maxp!"
-  # - FAIL, "Composite glyphs exceed allowed numbers of paths defined in maxp!"
-  # - FAIL, "Glyphs instructions have invalid lengths!"
-  # - FAIL, "Points in glyphs are not integer aligned!"
-  # - FAIL, "Glyphs do not have all required anchors!"
-  # - FAIL, "Glyph names are not unique!"
-  # - FAIL, "Unicode code points are not unique!"
-  # - FAIL, "Hints should NOT overlap!"
 
 
 def test_check_mandatory_glyphs():
