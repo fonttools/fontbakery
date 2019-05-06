@@ -34,7 +34,7 @@
 
 
 
-<html class="hasSidebar hasPageActions hasBreadcrumb conceptual" lang="en-us" dir="ltr" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
 	<meta charset="utf-8" />
@@ -65,21 +65,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-04-16 07:14 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/0bb9cdc5e0fd8fad3e129f1864d2790097dc7103/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-04-26 07:11 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/bbec0e2a4eb17546388374bc2d638e423504d30f/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2649" />
+<meta name="word_count" content="2656" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/9e6180ae.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cbb402e7.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f1e7d9d9.conceptual.css ">
 
@@ -125,7 +125,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/29f79686.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/4d2ee2a8.index-docs.js"></script>
 
 </head>
 
@@ -141,7 +141,7 @@
 		</nav>
 		<div class="content-header-controls exit-focus">
 			<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
-				<span class="icon"><span class="docon docon-exit-mode"></span></span>
+				<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
 				<span>Exit focus mode</span>
 			</button>
 			
@@ -155,7 +155,7 @@
 		<div class="action-bar">
 			<ul class="action-list">
 						<li>
-							<a href="#feedback" class="button is-text is-size-7 is-icon-only-touch" data-bi-name="comments">
+							<a href="#feedback" class="button is-text is-small is-icon-only-touch" data-bi-name="comments">
 								<span class="icon">
 									<span class="docon docon-comment-lines" aria-hidden="true"></span>
 								</span>
@@ -163,7 +163,7 @@
 							</a>
 						</li>
 							<li id="contenteditbtn" hidden>
-									<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"  class="button is-text is-icon-only-touch is-size-7" title="Edit This Document" data-bi-name="edit">
+									<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"  class="button is-text is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit">
 									<span class="icon">
 										<span class="docon docon-edit-outline" aria-hidden="true"></span>
 									</span>
@@ -172,7 +172,7 @@
 							</li>
 				<li>
 					<div class="sharing dropdown has-caret" auto-align>
-						<a href="#" class="dropdown-trigger button is-text is-size-7 is-icon-only-touch" aria-haspopup="true" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+						<a href="#" class="dropdown-trigger button is-text is-small is-icon-only-touch" aria-haspopup="true" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
 							<span class="icon">
 								<span class="docon docon-sharing" aria-hidden="true"></span>
 							</span>
@@ -216,20 +216,100 @@
 						</div>
 					</div>
 				</li>
-				<li>
-					<button class="toggle-theme button is-text is-size-7 is-icon-only-touch" aria-label="toggle-theme" data-bi-name="select-theme">
-						<span class="icon">
-							<span class="docon docon-sun"></span>
+				<li class="is-unstyle-action-list-item">
+<div class="dropdown has-caret" auto-align>
+	<button class="dropdown-trigger button is-text is-small is-icon-only-touch"
+		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span class="action-item-text">Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<div class="theme-selector has-padding-small">
+			<div class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
+					data-theme-to="light" role="menuitem">
+					<span class="theme-light">
+						<span
+							class="theme-selector-icon css-variable-support has-border is-inline-block has-margin-right-small has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
 						</span>
-						<span class="action-item-text">Theme</span>
-					</button>
-				</li>
+					</span>
+					<span>
+Light					</span>
+				</button>
+			</div>
+			<div class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
+					data-theme-to="dark" role="menuitem">
+					<span class="theme-dark">
+						<span
+							class="has-border theme-selector-icon css-variable-support is-inline-block has-margin-right-small has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span>
+Dark					</span>
+				</button>
+			</div>
+			<div class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
+					data-theme-to="high-contrast" role="menuitem">
+					<span class="theme-high-contrast">
+						<span
+							class="has-border theme-selector-icon css-variable-support is-inline-block has-margin-right-small has-body-background"
+							aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background" />
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary" />
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary" />
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary" />
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary" />
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary" />
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary" />
+							</svg>
+						</span>
+					</span>
+					<span>
+High contrast					</span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>				</li>
 				<li class="is-unstyled-action-list-item">
-					<a class="docs-sign-in auth-status-determined not-authenticated button is-text has-text-primary is-size-7" href="#">Sign in</a>
+					<a class="docs-sign-in auth-status-determined not-authenticated button is-text has-text-primary is-small" href="#">Sign in</a>
 					<div class="dropdown has-caret auth-status-determined authenticated" auto-align>
-						<button class="dropdown-trigger button is-text is-size-7 is-icon-only-touch has-inner-focus" aria-label="Your Account" aria-haspopup="true" aria-controls="user-menu" aria-expanded="false">
-							<span class="image icon" aria-hidden="true">
-								<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
+						<button class="dropdown-trigger button is-text is-small is-icon-only-touch has-inner-focus" aria-label="Your Account" aria-haspopup="true" aria-controls="user-menu" aria-expanded="false">
+							<span class="icon" aria-hidden="true">
+								<span class="image">
+									<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
+								</span>
 							</span>
 							<span class="is-truncated" data-profile-property="userName"></span>
 						</button>
@@ -241,7 +321,7 @@
 									</span>
 								</div>
 								<div class="media-content">
-									<p class="title has-margin-top-small">
+									<p class="title has-margin-top-small has-margin-bottom-small">
 										<span class="is-truncated" style="max-width: 200px" data-profile-property="userName"></span>
 									</p>
 									<p class="subtitle">
@@ -309,6 +389,7 @@
 							</li>
 
 						</ul>
+
 
 
 						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="On page navigation">
@@ -390,6 +471,11 @@
 <tr>
 <td>5PTS</td>
 <td><a href="http://www.fivepointstech.com/" data-linktype="external">Five Points Technology</a></td>
+</tr>
+
+<tr>
+<td>72PT</td>
+<td><a href="http://www.72puntos.com" data-linktype="external">72 Puntos</a></td>
 </tr>
 
 <tr>
@@ -2451,6 +2537,11 @@
 </tr>
 
 <tr>
+<td>LINK</td>
+<td><a href="http://www.linkpenfonts.co.uk" data-linktype="external">Linkpen Handwriting Fonts</a></td>
+</tr>
+
+<tr>
 <td>LING</td>
 <td><a href="http://www.linguistsoftware.com/" data-linktype="external">Linguist&#39;s Software</a></td>
 </tr>
@@ -4283,6 +4374,7 @@
 
 <section class="feedback-section" data-bi-name="feedback-section">
 
+
 	<h2 id="feedback">Feedback</h2>
 
 	<div class="alert choose-feedback-type">
@@ -4381,7 +4473,7 @@ This page					</button>
 						<div class="footerContainer is-visible-interactive has-default-focus ">
 <footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
 
-    <a data-mscc-ic="false" class="locale-selector-link" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-4 has-margin-right-small"></span><span class="local-selector-link-text"></span></a>
+    <a data-mscc-ic="false" class="locale-selector-link" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-4 has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
 
     <ul class="links" data-bi-name="footerlinks">
 		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
@@ -4430,7 +4522,7 @@ This page					</button>
 	<div class="footerContainer has-default-focus is-hidden-interactive ">
 <footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
 
-    <a data-mscc-ic="false" class="locale-selector-link" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-4 has-margin-right-small"></span><span class="local-selector-link-text"></span></a>
+    <a data-mscc-ic="false" class="locale-selector-link" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-4 has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
 
     <ul class="links" data-bi-name="footerlinks">
 		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
