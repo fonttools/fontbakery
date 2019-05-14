@@ -801,27 +801,6 @@ def test_check_name_familyname_first_char():
   assert status == FAIL
 
 
-def test_check_currency_chars():
-  """ Font has all expected currency sign characters ? """
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_currency_chars as check
-
-  # Our reference Mada Medium is known to be good
-  ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
-
-  # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
-
-  # And FamilySans Regular is known to be bad
-  ttFont = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
-
-  # So it must FAIL the check:
-  print ("Test FAIL with a bad font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL
-
-
 def test_check_name_ascii_only_entries():
   """ Are there non-ASCII characters in ASCII-only NAME table entries? """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_name_ascii_only_entries as check
