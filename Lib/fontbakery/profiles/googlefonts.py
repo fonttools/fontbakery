@@ -97,7 +97,6 @@ FONT_FILE_CHECKS = [
    'com.google.fonts/check/epar',
    'com.google.fonts/check/font_copyright',
    'com.google.fonts/check/italic_angle',
-   'com.google.fonts/check/currency_chars',
    'com.google.fonts/check/has_ttfautohint_params',
    'com.google.fonts/check/name/version_format',
    'com.google.fonts/check/name/familyname_first_char',
@@ -1309,44 +1308,6 @@ def com_google_fonts_check_name_familyname_first_char(ttFont):
       failed = True
   if failed is False:
     yield PASS, "Font family name first character is not a digit."
-
-
-# TODO: extend this to check for availability of all required currency symbols.
-@check(
-  id = 'com.google.fonts/check/currency_chars'
-)
-def com_google_fonts_check_currency_chars(ttFont):
-  """Font has all expected currency sign characters?"""
-
-  def font_has_char(ttFont, codepoint):
-    for subtable in ttFont['cmap'].tables:
-      if codepoint in subtable.cmap:
-        return True
-    #otherwise
-    return False
-
-  failed = False
-
-  OPTIONAL = {
-    #TODO: Do we want to check for this one?
-    #0x20A0: "EUROPEAN CURRENCY SIGN"
-  }
-  MANDATORY = {
-    0x20AC: "EURO SIGN"
-    # TODO: extend this list
-  }
-  for codepoint, charname in OPTIONAL.items():
-    if not font_has_char(ttFont, codepoint):
-      failed = True
-      yield WARN, f"Font lacks \"{charname}\" character (unicode: 0x{codepoint:04X})"
-
-  for codepoint, charname in MANDATORY.items():
-    if not font_has_char(ttFont, codepoint):
-      failed = True
-      yield FAIL, f"Font lacks \"{charname}\" character (unicode: 0x{codepoint:04X})"
-
-  if not failed:
-    yield PASS, "Font has all expected currency sign characters."
 
 
 @check(
