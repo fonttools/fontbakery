@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.5 (2019-May-20)
+### Note-worthy code changes
+  - The conditions from the googlefonts profile were split out into their own separate file
+
 ### Deprecated checks
   - **[com.google.fonts/check/currency_chars]:** we now have a much broader glyph coverage check: com.google.fonts/check/glyph_coverage (issue #2498)
 

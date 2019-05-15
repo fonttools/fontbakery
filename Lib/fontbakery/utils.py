@@ -18,8 +18,18 @@ import os
 from fontTools.ttLib import TTFont
 from typing import Text, Optional
 
+
+def suffix(font):
+  filename = os.path.basename(font)
+  basename = os.path.splitext(filename)[0]
+  s = basename.split('-')
+  s.pop(0)
+  return '-'.join(s)
+
+
 def portable_path(p):
   return os.path.join(*p.split('/'))
+
 
 def TEST_FILE(f):
   return portable_path("data/test/" + f)
