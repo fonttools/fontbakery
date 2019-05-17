@@ -128,7 +128,7 @@ def html5_document(body_elements) -> str:
 
     style = """
             html {
-                font-family: "Aktiv Grotesk", sans;
+                font-family: sans-serif;
             }
 
             h2 {
