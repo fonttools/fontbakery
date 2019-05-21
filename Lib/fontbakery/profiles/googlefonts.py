@@ -720,11 +720,16 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
       yield FAIL, Message("no-license-found",
                           ("A known license URL must be provided in the"
                            " NameID {} (LICENSE INFO URL) entry."
-                           " Currently accepted licenses are Apache or"
-                           " Open Font License. For a small set of legacy"
-                           " families the Ubuntu Font License may be"
-                           " acceptable as well."
-                           "").format(NameID.LICENSE_INFO_URL))
+                           " Currently accepted licenses are"
+                           " Apache: '{}' or Open Font License: '{}'\n"
+                           " For a small set of legacy families the Ubuntu"
+                           " Font License '{}' may be acceptable as well.\n"
+                           "When in doubt, please choose OFL"
+                           " for new font projects."
+                           "").format(NameID.LICENSE_INFO_URL,
+                                      LICENSE_URL['LICENSE.txt'],
+                                      LICENSE_URL['OFL.txt'],
+                                      LICENSE_URL['UFL.txt']))
     else:
       if failed:
         yield FAIL, Message("bad-entries",

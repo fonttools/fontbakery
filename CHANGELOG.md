@@ -14,7 +14,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bug fixes
   - The HTML report now actually defaults to "sans-serif" as the body font.
-  - Restrict com.google.fonts/check/repo/dirname_matches_nameid_1 to static fonts as the `fontbakery.util.get_regular` function does not support variable fonts yet. (issue #2509)
+  - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** Restrict it to static fonts as the `fontbakery.util.get_regular` function does not support variable fonts yet. (issue #2509)
+  - **[com.google.fonts/check/license_url]:** it now instructs the user which valid URL is actually expected (issue #2502)
 
 
 ## 0.7.4 (2019-May-06)
