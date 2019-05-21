@@ -3420,7 +3420,8 @@ def com_google_fonts_check_family_control_chars(ttFonts):
 
 @check(
   id = 'com.google.fonts/check/repo/dirname_matches_nameid_1',
-  conditions = ['gfonts_repo_structure'],
+  conditions = ['gfonts_repo_structure',
+                'not is_variable_font'],
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/2302'
   }
@@ -3436,6 +3437,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
   regular = get_regular(fonts)
   if not regular:
     yield FAIL, "The font seems to lack a regular."
+    return
 
   entry = get_name_entry_strings(TTFont(regular), NameID.FONT_FAMILY_NAME)[0]
   expected = entry.lower()
