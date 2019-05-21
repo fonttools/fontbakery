@@ -173,8 +173,8 @@ def get_module_from_file(filename):
   # filename = 'my/path/to/file.py'
   # module_name = 'file_module.file_py'
   module_name = 'file_module.{}'.format(os.path.basename(filename).replace('.', '_'))
-  profile = importlib.util.profile_from_file_location(module_name, filename)
-  module = importlib.util.module_from_profile(profile)
+  profile = importlib.util.spec_from_file_location(module_name, filename)
+  module = importlib.util.module_from_spec(profile)
   profile.loader.exec_module(module)
   return module
 
