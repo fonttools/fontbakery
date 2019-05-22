@@ -7,6 +7,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - fix bug in **points_out_of_bounds** check: The coordinates of a component multiplied by a scale factor result in floating-point values. These were causing false-FAILs because we were not rounding them before checking if they are within the glyph bounding-box. This was probably making points at extrema to fall slightly out of the bbox. (issue #2518)
   - also improved the readability of **com.google.fonts/check/points_out_of_bounds**
 
+### New Checks
+  - **[com.google.fonts/check/varfont_instance_coordinates]:** Check variable font instances have correct axis coordinates
+  - **[com.google.fonts/check/varfont_instance_names]:** Check variable font instances have correct names
+  - **[com.google.fonts/check/wdth_valid_range]:** Check variable font wdth axis has correct range
 
 ## 0.7.5 (2019-May-24)
 ### Note-worthy code changes

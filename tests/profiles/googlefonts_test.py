@@ -2,7 +2,10 @@ import pytest
 import os
 from fontTools.ttLib import TTFont
 
-from fontbakery.constants import NameID
+from fontbakery.constants import (NameID,
+                                  PlatformID,
+                                  WindowsEncodingID,
+                                  ENGLISH_LANG_ID)
 from fontbakery.utils import (portable_path,
                               TEST_FILE)
 
@@ -72,6 +75,12 @@ def montserrat_ttFonts():
     TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")
   ]
   return [TTFont(path) for path in paths]
+
+
+@pytest.fixture
+def vf_ttFont():
+  path = TEST_FILE("varfont/Oswald-VF.ttf")
+  return TTFont(path)
 
 
 def change_name_table_id(ttFont, nameID, newEntryString, platEncID=0):
@@ -2990,3 +2999,58 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
       ttfont["hhea"].descent = -314
     status, message = list(check(ttFonts3, remote2))[-1]
     assert status == PASS
+
+
+def test_check_varfont_instances_coordinates(vf_ttFont):
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instances_coordinates
+  from fontbakery.parse import instance_parse
+  instances = vf_ttFont['fvar'].instances
+  print("Test pass for a variable font which has correct instance coordinates")
+  for instance in instances:
+    name = vf_ttFont['name'].getName(instance.subfamilyNameID,
+                                     PlatformID.WINDOWS,
+                                     WindowsEncodingID.UNICODE_BMP,
+                                     ENGLISH_LANG_ID).toUnicode()
+    expected_instance = instance_parse(name)
+    for axis in instance.coordinates:
+      assert expected_instance.coordinates[axis] == instance.coordinates[axis]
+
+  print("Test fail for a variable font which does not have correct instance coordinates")
+  for instance in instances:
+    for axis in instance.coordinates:
+      instance.coordinates[axis] = -100
+      assert expected_instance.coordinates[axis] != instance.coordinates[axis]
+
+
+def test_check_varfont_instances_names(vf_ttFont):
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instances_names
+  from fontbakery.parse import instance_parse
+  instances = vf_ttFont["fvar"].instances
+  print("Test pass for a variable font which has correct instance names")
+  for instance in instances:
+    name = vf_ttFont['name'].getName(instance.subfamilyNameID,
+                                     PlatformID.WINDOWS,
+                                     WindowsEncodingID.UNICODE_BMP,
+                                     ENGLISH_LANG_ID).toUnicode()
+    expected_instance = instance_parse(name)
+    assert expected_instance.name == name
+  
+  print("Test fail for a variable font which does not have correct instance names")
+  for instance in instances:
+    name = vf_ttFont['name'].getName(instance.subfamilyNameID,
+                                     PlatformID.WINDOWS,
+                                     WindowsEncodingID.UNICODE_BMP,
+                                     ENGLISH_LANG_ID).toUnicode()
+    mod_name = "Some Generic Broken Name"
+    vf_ttFont['name'].setName(mod_name,
+                              instance.subfamilyNameID,
+                              PlatformID.WINDOWS,
+                              WindowsEncodingID.UNICODE_BMP,
+                              ENGLISH_LANG_ID)
+    mod_name = vf_ttFont['name'].getName(instance.subfamilyNameID,
+                                         PlatformID.WINDOWS,
+                                         WindowsEncodingID.UNICODE_BMP,
+                                         ENGLISH_LANG_ID).toUnicode()
+    expected_instance = instance_parse(name)
+    assert expected_instance.name != mod_name
+

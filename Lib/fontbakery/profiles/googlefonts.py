@@ -8,7 +8,8 @@ from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (PriorityLevel,
                                   NameID,
                                   PlatformID,
-                                  WindowsEncodingID)
+                                  WindowsEncodingID,
+                                  ENGLISH_LANG_ID)
 
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
@@ -127,6 +128,8 @@ FONT_FILE_CHECKS = [
    'com.google.fonts/check/unitsperem_strict',
    'com.google.fonts/check/contour_count',
    'com.google.fonts/check/vertical_metrics_regressions',
+   'com.google.fonts/check/varfont_instance_coordinates',
+   'com.google.fonts/check/varfont_instance_names',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -3548,6 +3551,60 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
                                                    desired_descender))
   if not failed:
     yield PASS, "Vertical metrics have not regressed."
+
+
+@check(
+  id = 'com.google.fonts/check/varfont_instance_coordinates',
+  rationale = """
+    Check variable fonts have correct instance coordinates
+  """,
+  conditions = ['is_variable_font'],
+)
+def com_google_fonts_check_varfont_instances_coordinates(ttFont):
+  """Check variable font instances have correct coordinate values"""
+  from fontbakery.parse import instance_parse
+  failed = False
+  for instance in ttFont['fvar'].instances:
+    name = ttFont['name'].getName(instance.subfamilyNameID,
+                                  PlatformID.WINDOWS,
+                                  WindowsEncodingID.UNICODE_BMP,
+                                  ENGLISH_LANG_ID).toUnicode()
+    expected_instance = instance_parse(name)
+    for axis in instance.coordinates:
+      if instance.coordinates[axis] != expected_instance.coordinates[axis]:
+        failed = True
+        yield FAIL, ('Instance "{}" {} value is "{}". '
+                     'It should be "{}"').format(name,
+                                                 axis,
+                                                 instance.coordinates[axis],
+                                                 expected_instance.coordinates[axis])
+  if not failed:
+    yield PASS, "Instances have correct coordinates"
+
+
+@check(
+  id = 'com.google.fonts/check/varfont_instance_names',
+  rationale = """Check variable font instances have correct names""",
+  conditions = ['is_variable_font'],
+)
+def com_google_fonts_check_varfont_instances_names(ttFont):
+  """Check variable font instances have correct names"""
+  from fontbakery.parse import instance_parse
+  failed = False
+  for instance in ttFont['fvar'].instances:
+    name = ttFont['name'].getName(instance.subfamilyNameID,
+                                  PlatformID.WINDOWS,
+                                  WindowsEncodingID.UNICODE_BMP,
+                                  ENGLISH_LANG_ID).toUnicode()
+    expected_instance = instance_parse(name)
+    expected_name = expected_instance.name
+
+    if name != expected_name:
+      failed = True
+      yield FAIL, ('Instance name "{}" is incorrect.'
+                     ' It should be "{}"').format(name, expected_name)
+  if not failed:
+    yield PASS, "Instances have correct names"
 
 
 ###############################################################################

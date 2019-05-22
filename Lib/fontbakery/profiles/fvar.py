@@ -215,3 +215,34 @@ def com_google_fonts_check_wght_valid_range(ttFont):
 
   if not Failed:
     yield PASS, ("OK")
+
+
+@check(
+  id = 'com.google.fonts/check/wdth_valid_range',
+  rationale = """
+    According to the Open-Type spec's registered
+    design-variation tag 'wdth' available at
+    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
+
+    On the 'wdth' (Width) axis, the valid coordinate range is 1-1000
+  """,
+  conditions = ['is_variable_font'],
+  misc_metadata = {
+  }
+)
+def com_google_fonts_check_wdth_valid_range(ttFont):
+  """The variable font 'wdth' (Weight) axis coordinate
+     must be within spec range of 1 to 1000 on all instances."""
+
+  Failed = False
+  for instance in ttFont['fvar'].instances:
+    if 'wdth' in instance.coordinates:
+      value = instance.coordinates['wdth']
+      if value < 1 or value > 1000:
+        Failed = True
+        yield FAIL, (f"Found a bad wdth coordinate with value '{value}'"
+                      " outside of the valid range from 1 to 1000.")
+        break
+
+  if not Failed:
+    yield PASS, ("OK")
