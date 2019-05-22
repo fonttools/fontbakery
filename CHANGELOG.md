@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Note-worthy code changes
   - The conditions from the googlefonts profile were split out into their own separate file
 
+### Dependencies
+  - Make docs building dependencies optional using "extras_require"
+
 ### Deprecated checks
   - **[com.google.fonts/check/currency_chars]:** we now have a much broader glyph coverage check: com.google.fonts/check/glyph_coverage (issue #2498)
 
