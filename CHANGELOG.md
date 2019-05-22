@@ -6,6 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bug fixes
   - ...
 
+### New Checks
+  - **[com.google.fonts/check/varfont_instance_coordinates]:** Check variable font instances have correct axis coordinates
+  - **[com.google.fonts/check/varfont_instance_names]:** Check variable font instances have correct names
+  - **[com.google.fonts/check/wdth_valid_range]:** Check variable font wdth axis has correct range
 
 ## 0.7.5 (2019-May-24)
 ### Note-worthy code changes
