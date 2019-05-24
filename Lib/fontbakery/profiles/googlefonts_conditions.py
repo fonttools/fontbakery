@@ -169,6 +169,8 @@ def registered_vendor_ids():
     for row in table.findAll('tr'):
       #print("ROW: '{}'".format(row))
       cells = row.findAll('td')
+      if not cells:
+        continue
       # pad the code to make sure it is a 4 char string,
       # otherwise eg "CF  " will not be matched to "CF"
       code = cells[0].string.strip()
