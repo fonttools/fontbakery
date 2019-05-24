@@ -65,21 +65,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-04-26 07:11 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/bbec0e2a4eb17546388374bc2d638e423504d30f/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-05-23 06:28 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/72a58f8cc476a422b3279b5fb926e5120fb40ad8/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2656" />
+<meta name="word_count" content="2669" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cbb402e7.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/9ba6ceb7.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f1e7d9d9.conceptual.css ">
 
@@ -125,7 +125,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/4d2ee2a8.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/c3cd35bf.index-docs.js"></script>
 
 </head>
 
@@ -353,15 +353,23 @@ High contrast					</span>
 
 		<div class="columns has-large-gaps ">
 
+			<div id="left-container" class="left-container column is-one-third-tablet is-one-quarter-desktop">
+				<nav class="sidebar" id="sidebar" data-bi-name="left toc" role="navigation" aria-label="Main Navigation">
+					<button class="sidebar-header has-inner-focus" type="button" aria-label="Close" data-bi-name="contents-collapse">
+						<span>Contents</span>
+						<span class="docon docon-navigate-close" aria-hidden="true"></span>
+					</button>
+					<div id="sidebarContent">
+						<div class="filterHolder">
+						</div>
+						<nav class="toc"></nav>
+						<div class="pdf-download-holder"></div>
+					</div>
+				</nav>
+			</div>
+
 			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
 				<div class="columns has-large-gaps ">
-
-
-					<div id="page-actions" class="right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
-							<nav id="side-doc-outline" class="doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="On page navigation">
-								<h3>In this article</h3>
-							</nav>
-					</div>
 
 
 				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
@@ -371,7 +379,7 @@ High contrast					</span>
 
 
 
-						<h1 id="registered-typography-vendors" sourcefile="vendors/index.md" sourcestartlinenumber="15" sourceendlinenumber="15">Registered typography vendors</h1>
+						<h1 id="registered-typography-vendors" sourcefile="vendors/index.md" sourcestartlinenumber="15">Registered typography vendors</h1>
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li class="displayDate loading">
@@ -399,3970 +407,3187 @@ High contrast					</span>
 
 						<!-- <content> -->
 							
-<p>The following is the list of registered vendor IDs, with links to vendor sites. All vendor IDs are unique to a single vendor. </p>
+<p>The following is the list of registered vendor IDs, with links to vendor sites. All vendor IDs are unique to a single vendor.</p>
 <p>To learn more about how to register a vendor ID or to update vendor details for a registered ID, please see <a href="register" data-linktype="relative-path">Register as a typography vendor</a>.</p>
 <h2 id="0-9-">[0-9, !$…]</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>!ETF</td>
 <td><a href="http://www.exclamachine.com" data-linktype="external">!Exclamachine Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>$pro</td>
 <td><a href="http://www.cheapprofonts.com/" data-linktype="external">CheapProFonts</a></td>
 </tr>
-
 <tr>
 <td>100</td>
 <td><a href="https://authentic.website" data-linktype="external">AUTHENTIC</a></td>
 </tr>
-
 <tr>
 <td>0264</td>
 <td>Patricia Lillie</td>
 </tr>
-
 <tr>
 <td>1ASC</td>
 <td><a href="http://www.monotypeimaging.com" data-linktype="external">Ascender Corporation</a></td>
 </tr>
-
 <tr>
 <td>1BOU</td>
 <td><a href="http://www.boutrosfonts.com" data-linktype="external">Boutros International</a></td>
 </tr>
-
 <tr>
 <td>1KTF</td>
 <td><a href="http://www.kieftype.com" data-linktype="external">Kief Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>2DLT</td>
 <td><a href="http://www.typo.2d.lviv.ua" data-linktype="external">2D Typo</a></td>
 </tr>
-
 <tr>
 <td>2REB</td>
 <td><a href="http://www.2rebels.com/" data-linktype="external">2Rebels</a></td>
 </tr>
-
 <tr>
 <td>39BC</td>
-<td><a href="http://www.carolinabarcode.com/" data-linktype="external">Finley&#39;s Barcode Fonts</a></td>
+<td><a href="http://www.carolinabarcode.com/" data-linktype="external">Finley's Barcode Fonts</a></td>
 </tr>
-
 <tr>
 <td>3ip</td>
 <td><a href="http://www.3ip.com/" data-linktype="external">Three Islands Press</a></td>
 </tr>
-
 <tr>
 <td>4FEB</td>
 <td><a href="http://www.myfonts.com/person/tkachenko/sergiy/" data-linktype="external">4th february</a></td>
 </tr>
-
 <tr>
 <td>5PTS</td>
 <td><a href="http://www.fivepointstech.com/" data-linktype="external">Five Points Technology</a></td>
 </tr>
-
 <tr>
 <td>72PT</td>
 <td><a href="http://www.72puntos.com" data-linktype="external">72 Puntos</a></td>
 </tr>
-
 <tr>
 <td>918</td>
 <td>RavenType</td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="a">A</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
-<td>A&amp;S</td>
-<td><a href="http://www.signfonts.com" data-linktype="external">Art&amp;Sign Studio</a></td>
+<td>A&S</td>
+<td><a href="http://www.signfonts.com" data-linktype="external">Art&Sign Studio</a></td>
 </tr>
-
 <tr>
 <td>A2</td>
 <td><a href="http://www.a2-type.co.uk" data-linktype="external">A2-Type</a></td>
 </tr>
-
 <tr>
 <td>aaff</td>
 <td><a href="http://www.foundry.astroacademia.com" data-linktype="external">AstroAcademia Font Foundry</a></td>
 </tr>
-
 <tr>
 <td>AA</td>
 <td><a href="https://alirezaalipour.com/" data-linktype="external">Alireza Alipour</a></td>
 </tr>
-
 <tr>
 <td>AAT</td>
 <td><a href="http://www.ahmetaltuntype.com" data-linktype="external">AhmetAltunType</a></td>
 </tr>
-
 <tr>
 <td>ABBO</td>
 <td><a href="http://www.geocities.com/bouhadjeraa/" data-linktype="external">Arabic Dictionary Lab</a></td>
 </tr>
-
 <tr>
 <td>ABC</td>
 <td><a href="http://www.barcodeman.com/" data-linktype="external">Altek Instruments</a></td>
 </tr>
-
 <tr>
 <td>ABCD</td>
 <td><a href="http://www.abcdinamo.com" data-linktype="external">Dinamo Typefoundry</a></td>
 </tr>
-
 <tr>
 <td>ABOU</td>
 <td><a href="http://www.aboutype.com/" data-linktype="external">Aboutype, Inc.</a></td>
 </tr>
-
 <tr>
 <td>ABYM</td>
 <td><a href="http://www.abyme.net" data-linktype="external">ABYME</a></td>
 </tr>
-
 <tr>
 <td>ACUT</td>
 <td>Acute Type</td>
 </tr>
-
 <tr>
 <td>Adam</td>
 <td><a href="http://www.adamjagosz.com" data-linktype="external">Adam Jagosz</a></td>
 </tr>
-
 <tr>
 <td>ADBE</td>
 <td><a href="http://www.adobe.com/type/" data-linktype="external">Adobe</a></td>
 </tr>
-
 <tr>
 <td>ADBO</td>
 <td><a href="http://www.adobe.com/type" data-linktype="external">Adobe</a></td>
 </tr>
-
 <tr>
 <td>ADG</td>
 <td><a href="http://www.apply.de" data-linktype="external">Apply Design Group</a></td>
 </tr>
-
 <tr>
 <td>AES</td>
 <td><a href="http://www.aetype.com" data-linktype="external">AE Type</a></td>
 </tr>
-
 <tr>
 <td>AEF</td>
 <td><a href="http://www.alteredegofonts.com/" data-linktype="external">Altered Ego Fonts</a></td>
 </tr>
-
 <tr>
 <td>AGFA</td>
 <td>Monotype Imaging (replaced by MONO)</td>
 </tr>
-
 <tr>
 <td>AID</td>
 <td><a href="http://www.artisticimposter.com" data-linktype="external">Artistic Imposter Design</a></td>
 </tr>
-
 <tr>
 <td>AJL</td>
 <td><a href="https://alexjohnlucas.com/" data-linktype="external">Alex John Lucas</a></td>
 </tr>
-
 <tr>
 <td>AJPT</td>
 <td><a href="http://www.prescottdesignshop.com" data-linktype="external">Alan Jay Prescott Typography</a></td>
 </tr>
-
 <tr>
 <td>AKOF</td>
 <td><a href="http://www.type.akofa.com" data-linktype="external">AKOFAType</a></td>
 </tr>
-
 <tr>
 <td>ALFA</td>
 <td><a href="http://www.alphabets.com/" data-linktype="external">Alphabets</a></td>
 </tr>
-
 <tr>
 <td>ALPH</td>
 <td><a href="http://www.alphameric.com/" data-linktype="external">Alphameric Broadcast Solutions Limited</a></td>
 </tr>
-
 <tr>
 <td>ALPN</td>
 <td>Alpona Portal</td>
 </tr>
-
 <tr>
 <td>AL</td>
 <td><a href="http://www.alessiolaiso.com" data-linktype="external">Alessio Laiso Type</a></td>
 </tr>
-
 <tr>
 <td>ALIF</td>
 <td><a href="https://github.com/alif-type" data-linktype="external">Alif Type</a></td>
 </tr>
-
 <tr>
 <td>ALS</td>
 <td><a href="http://www.artlebedev.com/" data-linktype="external">Art. Lebedev Studio</a></td>
 </tr>
-
 <tr>
 <td>alte</td>
 <td><a href="http://www.altemus.com/" data-linktype="external">Altemus</a></td>
 </tr>
-
 <tr>
 <td>ALTS</td>
 <td><a href="http://www.macromedia.com/" data-linktype="external">Altsys / Made with Fontographer</a></td>
 </tr>
-
 <tr>
 <td>amcs</td>
 <td>Amit soni</td>
 </tr>
-
 <tr>
 <td>AMUT</td>
 <td><a href="http://www.akofa.com" data-linktype="external">Kwesi Amuti</a></td>
 </tr>
-
 <tr>
 <td>ANDO</td>
 <td>Osam Ando</td>
 </tr>
-
 <tr>
 <td>ANRT</td>
 <td><a href="http://www.anrt-nancy.fr" data-linktype="external">Atelier National de Recherche Typographique</a></td>
 </tr>
-
 <tr>
 <td>anty</td>
 <td><a href="http://www.anatoletype.net" data-linktype="external">Anatoletype</a></td>
 </tr>
-
 <tr>
 <td>AOP</td>
 <td><a href="http://www.aopbv.nl" data-linktype="external">an Art Of Pengwyn</a></td>
 </tr>
-
 <tr>
 <td>APLY</td>
 <td><a href="http://www.apply-interactive.de/" data-linktype="external">Apply Interactive</a></td>
 </tr>
-
 <tr>
 <td>APOS</td>
 <td>Apostrophic Laboratories</td>
 </tr>
-
 <tr>
 <td>APPL</td>
 <td><a href="http://www.developer.apple.com/fonts/" data-linktype="external">Apple</a></td>
 </tr>
-
 <tr>
 <td>ARBX</td>
 <td><a href="http://www.arabetics.com" data-linktype="external">Arabetics</a></td>
 </tr>
-
 <tr>
 <td>ARCH</td>
 <td><a href="http://www.architext.com/" data-linktype="external">Architext</a></td>
 </tr>
-
 <tr>
 <td>ARIN</td>
 <td><a href="http://www.aringtypeface.com" data-linktype="external">Aring Typeface AB</a></td>
 </tr>
-
 <tr>
 <td>ARMA</td>
 <td><a href="http://www.armankhorramak.com" data-linktype="external">Arman Khorramak</a></td>
-&lt;/tr
-
+</tr>
 <tr>
 <td>ARPH</td>
 <td><a href="http://www.arphic.com" data-linktype="external">Arphic Technology Co.</a></td>
 </tr>
-
 <tr>
 <td>ARRW</td>
 <td><a href="https://arrowtype.com/" data-linktype="external">Arrow Type</a></td>
 </tr>
-
 <tr>
 <td>ARS</td>
 <td><a href="http://www.enars.sk/" data-linktype="external">EN ARS Ltd.</a></td>
 </tr>
-
 <tr>
 <td>ART</td>
 <td><a href="http://www.asr.me " data-linktype="external">Alex Rosario Type</a></td>
 </tr>
-
 <tr>
 <td>ARTE</td>
 <td><a href="http://www.artegradesign.com" data-linktype="external">Artegra</a></td>
 </tr>
-
 <tr>
 <td>ArTy</td>
 <td><a href="http://www.archivetype.com" data-linktype="external">Archive Type</a></td>
 </tr>
-
 <tr>
 <td>AS</td>
 <td><a href="http://www.behance.net/slobzheninov" data-linktype="external">Alex Slobzheninov</a></td>
 </tr>
-
 <tr>
 <td>ASL</td>
 <td><a href="http://www.graphicxtras.com/products/font1.htm" data-linktype="external">Abneil Software Ltd fonts</a></td>
 </tr>
-
 <tr>
 <td>ASSA</td>
 <td><a href="http://www.astype.de/" data-linktype="external">astype</a></td>
 </tr>
-
 <tr>
 <td>ASYM</td>
 <td><a href="http://www.appliedsymbols.com/" data-linktype="external">Applied Symbols</a></td>
 </tr>
-
 <tr>
 <td>ATEC</td>
 <td><a href="http://www.alltype.biz" data-linktype="external">Page Technology Marketing, Inc.</a></td>
 </tr>
-
 <tr>
 <td>ATF</td>
 <td><a href="http://www.atftype.com" data-linktype="external">American Type Founders Collection</a></td>
 </tr>
-
 <tr>
 <td>ATF1</td>
 <td><a href="http://www.atf.com.au" data-linktype="external">Australian Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>ATFS</td>
-<td><a href="http://www." data-linktype="external">Andrew Tyler&#39;s fonts</a></td>
+<td><a href="http://www." data-linktype="external">Andrew Tyler's fonts</a></td>
 </tr>
-
 <tr>
 <td>AUH</td>
 <td><a href="http://www.atelierheilig.ch" data-linktype="external">Atelier Ursula Heilig SGD</a></td>
 </tr>
-
 <tr>
 <td>AURE</td>
 <td><a href="http://www.aurefontdesign.com" data-linktype="external">Aure Font Design</a></td>
 </tr>
-
 <tr>
 <td>AUTO</td>
 <td><a href="http://www.autodidakt.se" data-linktype="external">Autodidakt</a></td>
 </tr>
-
 <tr>
 <td>AVFF</td>
 <td>Agustín Varela Font Factory</td>
 </tr>
-
 <tr>
 <td>AVP</td>
 <td><a href="http://www.codesign.co.uk" data-linktype="external">Aviation Partners</a></td>
 </tr>
-
 <tr>
 <td>AZLS</td>
 <td><a href="http://www.azalea.com/" data-linktype="external">Azalea Software, Inc.</a></td>
 </tr>
-
-</tr></tr></tr></table>
-
+</table>
 <h2 id="b">B</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
-<td>B&amp;H</td>
-<td>Bigelow &amp; Holmes</td>
+<td>B&H</td>
+<td>Bigelow & Holmes</td>
 </tr>
-
 <tr>
 <td>BARS</td>
 <td><a href="http://www.ciax.com/" data-linktype="external">CIA (BAR CODES) UK</a></td>
 </tr>
-
 <tr>
 <td>BASE</td>
 <td><a href="http://www.baselinefonts.com/" data-linktype="external">Baseline Fonts</a></td>
 </tr>
-
 <tr>
 <td>BAT</td>
 <td><a href="http://www.batfoundry.com" data-linktype="external">BUREAU DES AFFAIRES TYPOGRAPHIQUES</a></td>
 </tr>
-
 <tr>
 <td>BBTY</td>
 <td><a href="https://www.brunobernard.com/" data-linktype="external">Bruno Bernard Typographie</a></td>
 </tr>
-
 <tr>
 <td>BCP</td>
 <td><a href="http://www.expertlabels.co.uk" data-linktype="external">Expert Labels Ltd.</a></td>
 </tr>
-
 <tr>
 <td>BEN</td>
 <td><a href="http://benhodosi.com/" data-linktype="external">Ben Hodosi</a></td>
 </tr>
-
 <tr>
 <td>BERT</td>
 <td><a href="http://www.bertholdtypes.com/" data-linktype="external">Berthold</a></td>
 </tr>
-
 <tr>
 <td>BF</td>
 <td><a href="http://www.brass-fonts.de" data-linktype="external">BrassFonts</a></td>
 </tr>
-
 <tr>
 <td>bftr</td>
 <td><a href="http://www.bleed.com" data-linktype="external">Bleed Design Studio</a></td>
 </tr>
-
 <tr>
 <td>BGDN</td>
 <td><a href="http://www.ryanbugden.com" data-linktype="external">Ryan Bugden</a></td>
 </tr>
-
 <tr>
 <td>bgtl</td>
 <td><a href="http://www.bigital.com" data-linktype="external">bigital</a></td>
 </tr>
-
 <tr>
 <td>BIRD</td>
 <td><a href="http://www.magpiepaperworks.com/" data-linktype="external">Magpie Paper Works</a></td>
 </tr>
-
 <tr>
 <td>BITM</td>
 <td><a href="http://www.bitmap.nl/" data-linktype="external">Bitmap Software</a></td>
 </tr>
-
 <tr>
 <td>BITS</td>
 <td><a href="http://www.monotypeimaging.com" data-linktype="external">Bitstream</a></td>
 </tr>
-
 <tr>
 <td>bizf</td>
 <td><a href="http://www.bizfonts.com/" data-linktype="external">Bizfonts.com</a></td>
 </tr>
-
 <tr>
 <td>BL</td>
 <td><a href="http://www.binnenland.ch" data-linktype="external">Binnenland</a></td>
 </tr>
-
 <tr>
 <td>BLAB</td>
 <td><a href="http://www.baselab.casasin.com" data-linktype="external">BaseLab</a></td>
 </tr>
-
 <tr>
 <td>BLAH</td>
-<td>Mister Bla&#39;s Fontworx</td>
+<td>Mister Bla's Fontworx</td>
 </tr>
-
 <tr>
 <td>BLCK</td>
 <td><a href="http://www.black-foundry.com" data-linktype="external">Black Foundry</a></td>
 </tr>
-
 <tr>
 <td>BLI</td>
 <td><a href="http://www.blissym.com/" data-linktype="external">Blissym Language Institute</a></td>
 </tr>
-
 <tr>
 <td>BLV</td>
 <td><a href="http://www.letterbeeld.nl/" data-linktype="external">Bladvulling</a></td>
 </tr>
-
 <tr>
 <td>BLZT</td>
 <td><a href="http://www.blazetype.eu" data-linktype="external">Blaze Type</a></td>
 </tr>
-
 <tr>
 <td>BMD</td>
 <td>Brittney Murphy Design</td>
 </tr>
-
 <tr>
 <td>BNFF</td>
 <td><a href="http://www.bengalfonts.com/" data-linktype="external">BengalFonts</a></td>
 </tr>
-
 <tr>
 <td>BOLD</td>
 <td><a href="http://www.boldmonday.com" data-linktype="external">Bold Monday</a></td>
 </tr>
-
 <tr>
 <td>BORW</td>
 <td><a href="http://www.em2-solutions.com/" data-linktype="external">em2 Solutions</a></td>
 </tr>
-
 <tr>
 <td>BOYB</td>
 <td>BoyBeaver Fonts</td>
 </tr>
-
 <tr>
 <td>BRBT</td>
 <td><a href="http://www.bureaubrut.com" data-linktype="external">Bureau Brut</a></td>
 </tr>
-
 <tr>
 <td>BRDV</td>
 <td><a href="http://www.boardvantage.com" data-linktype="external">BoardVantage, Inc.</a></td>
 </tr>
-
 <tr>
 <td>BREM</td>
 <td><a href="http://www.markbremmer.com/pages2/typography.html" data-linktype="external">Mark Bremmer</a></td>
 </tr>
-
 <tr>
 <td>BROS</td>
 <td><a href="http://www.michaelbrosnan.com" data-linktype="external">Michael Brosnan</a></td>
 </tr>
-
 <tr>
 <td>BRTC</td>
 <td><a href="http://www.itscofonts.com/" data-linktype="external">ITSCO - Bar Code Fonts</a></td>
 </tr>
-
 <tr>
 <td>BS</td>
 <td><a href="http://www.barcode-soft.com" data-linktype="external">Barcodesoft</a></td>
 </tr>
-
 <tr>
 <td>BST</td>
 <td><a href="http://fonts.bolorsoft.com" data-linktype="external">Bolorsoft LLC</a></td>
 </tr>
-
 <tr>
 <td>BSTD</td>
 <td>Bastard Type Inc</td>
 </tr>
-
 <tr>
 <td>BSYV</td>
 <td><a href="http://www.bensyverson.com" data-linktype="external">Ben Syverson</a></td>
 </tr>
-
 <tr>
 <td>BUBU</td>
 <td><a href="http://www.bubulogix.fr" data-linktype="external">BUBULogix</a></td>
 </tr>
-
 <tr>
 <td>BWFW</td>
 <td><a href="http://www.blueknot.com/Fonts" data-linktype="external">B/W Fontworks</a></td>
 </tr>
-
 <tr>
 <td>BwT</td>
 <td><a href="http://www.brandingwithtype.com" data-linktype="external">Branding with Type</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="c">C</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
-<td>C&amp;B</td>
-<td><a href="http://www.coppersandbrasses.com" data-linktype="external">Coppers &amp; Brasses</a></td>
+<td>C&B</td>
+<td><a href="http://www.coppersandbrasses.com" data-linktype="external">Coppers & Brasses</a></td>
 </tr>
-
 <tr>
-<td>C&amp;C</td>
-<td><a href="http://www.carterandcone.com/" data-linktype="external">Carter &amp; Cone</a></td>
+<td>C&C</td>
+<td><a href="http://www.carterandcone.com/" data-linktype="external">Carter & Cone</a></td>
 </tr>
-
 <tr>
-<td>C&amp;G</td>
-<td><a href="http://www.c-and-g.co.jp/" data-linktype="external">C&amp;G Inc.</a></td>
+<td>C&G</td>
+<td><a href="http://www.c-and-g.co.jp/" data-linktype="external">C&G Inc.</a></td>
 </tr>
-
 <tr>
 <td>C21</td>
 <td><a href="http://www.typeclub.co.uk/" data-linktype="external">Club 21</a></td>
 </tr>
-
 <tr>
 <td>CAK</td>
 <td>pluginfonts.com</td>
 </tr>
-
 <tr>
 <td>CAM</td>
 <td><a href="http://www.camelot-typefaces.com" data-linktype="external">Camelot Typefaces</a></td>
 </tr>
-
 <tr>
 <td>camp</td>
 <td><a href="https://www.myfonts.com/foundry/AAWM/" data-linktype="external">Campotype</a></td>
 </tr>
-
 <tr>
 <td>CANO</td>
 <td><a href="http://www.canon.com/" data-linktype="external">Canon</a></td>
 </tr>
-
 <tr>
 <td>CASL</td>
-<td>H.W. Caslon &amp; Company Ltd.</td>
+<td>H.W. Caslon & Company Ltd.</td>
 </tr>
-
 <tr>
 <td>CATG</td>
 <td><a href="http://www.catfonts.de/" data-linktype="external">CAT-Fonts Germany</a></td>
 </tr>
-
 <tr>
 <td>CAVE</td>
 <td><a href="http://www.fonderiacavedoni.com/" data-linktype="external">Fonderia Cavedoni</a></td>
 </tr>
-
 <tr>
 <td>CB</td>
 <td><a href="http://www.christianbuening.de" data-linktype="external">Christian Büning</a></td>
 </tr>
-
 <tr>
 <td>CBDO</td>
-<td><a href="http://www.borgeslettering.com" data-linktype="external">Borges Lettering &amp; Design</a></td>
+<td><a href="http://www.borgeslettering.com" data-linktype="external">Borges Lettering & Design</a></td>
 </tr>
-
 <tr>
 <td>CDAC</td>
 <td><a href="http://www.cdac.org.in/" data-linktype="external">Centre for Development of Advanced Computing</a></td>
 </tr>
-
 <tr>
 <td>cdd</td>
 <td><a href="http://www.crazydiamond.co.uk" data-linktype="external">Crazy Diamond Design</a></td>
 </tr>
-
 <tr>
 <td>CDFP</td>
 <td><a href="http://www.vt2000.com" data-linktype="external">VT2000 Technical Services</a></td>
 </tr>
-
 <tr>
 <td>CELB</td>
 <td><a href="http://www.myfonts.com/foundry/Celebrity_Fontz/" data-linktype="external">Celebrity Fontz</a></td>
 </tr>
-
 <tr>
 <td>CF</td>
 <td><a href="http://www.colophon-foundry.org" data-linktype="external">Colophon Foundry</a></td>
 </tr>
-
 <tr>
 <td>CFA</td>
 <td>Computer Fonts Australia</td>
 </tr>
-
 <tr>
 <td>CFAB</td>
 <td><a href="https://www.creativefabrica.com" data-linktype="external">Creative Fabrica</a></td>
 </tr>
-
 <tr>
 <td>CFF</td>
 <td><a href="http://www.characters.nl/" data-linktype="external">Characters Font Foundry</a></td>
 </tr>
-
 <tr>
 <td>CJCJ</td>
 <td><a href="http://www.onelinefonts.com" data-linktype="external">Creative Juncture</a></td>
 </tr>
-
 <tr>
 <td>CJT</td>
 <td><a href="http://www.cjtype.com" data-linktype="external">CJ Type</a></td>
 </tr>
-
 <tr>
 <td>CKTP</td>
 <td><a href="http://www.caketype.com" data-linktype="external">CakeType</a></td>
 </tr>
-
 <tr>
 <td>CLM</td>
 <td><a href="http://www.culmus.sourceforge.net" data-linktype="external">Culmus Project</a></td>
 </tr>
-
 <tr>
 <td>CMJK</td>
 <td><a href="http://www.slantedhall.com/type" data-linktype="external">Slanted Hall</a></td>
 </tr>
-
 <tr>
 <td>COFO</td>
 <td><a href="http://www.contrastfoundry.com" data-linktype="external">Contrast Foundry</a></td>
 </tr>
-
 <tr>
 <td>COMI</td>
 <td><a href="https://www.comicbookfonts.com/Default.asp" data-linktype="external">Comicraft</a></td>
 </tr>
-
 <tr>
 <td>COMM</td>
 <td><a href="http://www.commercialtype.com" data-linktype="external">Commercial Type</a></td>
 </tr>
-
 <tr>
 <td>CONR</td>
 <td><a href="http://www.connare.com/" data-linktype="external">Connare.com</a></td>
 </tr>
-
 <tr>
 <td>COOL</td>
 <td><a href="http://www.cool-fonts.com/" data-linktype="external">Cool Fonts</a></td>
 </tr>
-
 <tr>
 <td>CORD</td>
 <td>corduroy</td>
 </tr>
-
 <tr>
 <td>CR8</td>
 <td><a href="http://www.cr8software.net" data-linktype="external">CR8 Software Solutions</a></td>
 </tr>
-
 <tr>
 <td>CRRT</td>
 <td><a href="http://www.carrottype.com" data-linktype="external">Carrot Type</a></td>
 </tr>
-
 <tr>
 <td>CT</td>
 <td><a href="http://www.castletype.com/" data-linktype="external">CastleType</a></td>
 </tr>
-
 <tr>
 <td>CTDL</td>
 <td><a href="http://www.agfamonotype.com/" data-linktype="external">China Type Designs Ltd.</a></td>
 </tr>
-
 <tr>
 <td>CTL</td>
 <td><a href="http://www.microsoft.com/typography/links/vendor.aspx?VID=CTL" data-linktype="external">Chaitanya Type Library</a></td>
 </tr>
-
 <tr>
 <td>cwwf</td>
 <td>Computers World Wide/AC Capital Funding</td>
 </tr>
-
 <tr>
 <td>CYPE</td>
 <td><a href="http://www.clubtype.co.uk/" data-linktype="external">Club Type</a></td>
 </tr>
-
 <tr>
 <td>CYRE</td>
 <td><a href="http://www.cyreal.org" data-linktype="external">Cyreal</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="d">D</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
-<td>D&amp;ST</td>
-<td><a href="http://www.dotsstripestype.com" data-linktype="external">Dots&amp;Stripes Type</a></td>
+<td>D&ST</td>
+<td><a href="http://www.dotsstripestype.com" data-linktype="external">Dots&Stripes Type</a></td>
 </tr>
-
 <tr>
 <td>DADA</td>
 <td><a href="http://www.dadastudio.pl" data-linktype="external">Dada Studio</a></td>
 </tr>
-
 <tr>
 <td>DAMA</td>
 <td><a href="http://www.daltonmaag.com/" data-linktype="external">Dalton Maag Limited</a></td>
 </tr>
-
 <tr>
 <td>DARK</td>
 <td>Out Of The Dark</td>
 </tr>
-
 <tr>
 <td>DB</td>
 <td><a href="http://www.danielbruce.se" data-linktype="external">Daniel Bruce</a></td>
 </tr>
-
 <tr>
 <td>DBFF</td>
 <td><a href="http://www.DesignBase.co.uk" data-linktype="external">DesignBase</a></td>
 </tr>
-
 <tr>
 <td>DD</td>
 <td><a href="http://www.devondelapp.com/design/type/" data-linktype="external">Devon DeLapp</a></td>
 </tr>
-
 <tr>
 <td>DDT</td>
 <td><a href="https://www.facebook.com/ddtype" data-linktype="external">DosDiez Type</a></td>
 </tr>
-
 <tr>
 <td>Deco</td>
 <td>DecoType (replaced by DT)</td>
 </tr>
-
 <tr>
 <td>DELV</td>
 <td><a href="http://www.delvefonts.com/" data-linktype="external">Delve Fonts</a></td>
 </tr>
-
 <tr>
 <td>dezc</td>
 <td><a href="http://www.dezcom.com" data-linktype="external">Dezcom</a></td>
 </tr>
-
 <tr>
 <td>DFS</td>
 <td><a href="http://www.datascan.co.uk/" data-linktype="external">Datascan Font Service Ltd</a></td>
 </tr>
-
 <tr>
 <td>DG</td>
 <td><a href="http://www.danielgrumer.com" data-linktype="external">Daniel Grumer</a></td>
 </tr>
-
 <tr>
 <td>DGL</td>
 <td>Digital Graphic Labs foundry</td>
 </tr>
-
 <tr>
 <td>DHRM</td>
 <td><a href="https://dharmatype.com/" data-linktype="external">Dharma Type</a></td>
 </tr>
-
 <tr>
 <td>DIFO</td>
 <td><a href="http://www.digitalfoundry.xyz" data-linktype="external">Digital Foundry</a></td>
 </tr>
-
 <tr>
 <td>djr</td>
 <td><a href="http://www.djr.com" data-linktype="external">DJR</a></td>
 </tr>
-
 <tr>
 <td>DNF</td>
 <td><a href="https://derangednekofoundry.design" data-linktype="external">Deranged Neko Foundry</a></td>
 </tr>
-
 <tr>
 <td>DOM</td>
 <td><a href="http://www.dukom.org" data-linktype="external">Dukom Design</a></td>
 </tr>
-
 <tr>
 <td>DR</td>
 <td><a href="http://www.rastvor.com.ua" data-linktype="external">Dmitry Rastvortsev</a></td>
 </tr>
-
 <tr>
 <td>DS</td>
 <td><a href="http://www.screen.co.jp/" data-linktype="external">Dainippon Screen Mfg. Co., Inc.</a></td>
 </tr>
-
 <tr>
 <td>DSBV</td>
 <td><a href="http://www.datascan.nl/" data-linktype="external">Datascan bv</a></td>
 </tr>
-
 <tr>
 <td>DSCI</td>
 <td><a href="http://www.dessci.com/" data-linktype="external">Design Science Inc.</a></td>
 </tr>
-
 <tr>
 <td>DSGN</td>
 <td><a href="http://www.dizajndesign.sk" data-linktype="external">DizajnDesign</a></td>
 </tr>
-
 <tr>
 <td>DSKY</td>
 <td><a href="http://www.myfonts.com" data-linktype="external">Jacek Dziubinski</a></td>
 </tr>
-
 <tr>
 <td>DSSR</td>
 <td><a href="http://www.DresserJohnson.com" data-linktype="external">Dresser Johnson</a></td>
 </tr>
-
 <tr>
 <td>DSST</td>
 <td>Dubina Nikolay</td>
 </tr>
-
 <tr>
 <td>DST</td>
 <td><a href="http://www.dstype.com" data-linktype="external">DSType</a></td>
 </tr>
-
 <tr>
 <td>DSTE</td>
 <td><a href="http://www.dieste.com" data-linktype="external">Dieste</a></td>
 </tr>
-
 <tr>
 <td>DT</td>
 <td>DecoType</td>
 </tr>
-
 <tr>
 <td>DTC</td>
 <td>Digital Typeface Corp.</td>
 </tr>
-
 <tr>
 <td>DTF</td>
 <td><a href="http://www.dunwichtype.com" data-linktype="external">Dunwich Type Founders</a></td>
 </tr>
-
 <tr>
 <td>DTIL</td>
 <td><a href="https://detail.tf" data-linktype="external">Detail Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>DTL</td>
 <td><a href="http://www.dutchtypelibrary.nl" data-linktype="external">Dutch Type Library</a></td>
 </tr>
-
 <tr>
 <td>DTPS</td>
 <td><a href="http://www.dtpsoft.de/" data-linktype="external">DTP-Software</a></td>
 </tr>
-
 <tr>
 <td>dtpT</td>
 <td><a href="http://www.dtptypes.com/" data-linktype="external">dtpTypes Limited</a></td>
 </tr>
-
 <tr>
 <td>DUXB</td>
 <td><a href="http://www.duxsys.com/" data-linktype="external">Duxbury Systems, Inc.</a></td>
 </tr>
-
 <tr>
 <td>DXTF</td>
 <td><a href="http://www.dxtypefoundry.ru/" data-linktype="external">DXTypefoundry</a></td>
 </tr>
-
 <tr>
 <td>DYNA</td>
 <td><a href="http://www.dynalab.com/" data-linktype="external">DynaComware</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="e">E</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>ECAL</td>
 <td><a href="http://www.ecal-typefaces.ch" data-linktype="external">ECAL Typefaces</a></td>
 </tr>
-
 <tr>
 <td>EDBI</td>
 <td><a href="http://www.edilbi.net" data-linktype="external">edilbiStudio</a></td>
 </tr>
-
 <tr>
 <td>EDGE</td>
 <td><a href="http://www.riversedge.com/" data-linktype="external">Rivers Edge Corp.</a></td>
 </tr>
-
 <tr>
 <td>EF</td>
 <td><a href="http://www.elsner-flake.com/" data-linktype="external">Elsner+Flake</a></td>
 </tr>
-
 <tr>
 <td>EFF</td>
 <td><a href="http://www.eff.co.uk" data-linktype="external">Electronic Font Foundry</a></td>
 </tr>
-
 <tr>
 <td>EFI</td>
 <td><a href="http://www.elfring.com" data-linktype="external">Elfring Fonts Inc.</a></td>
 </tr>
-
 <tr>
 <td>EFNT</td>
 <td>E Fonts L.L.C.</td>
 </tr>
-
 <tr>
 <td>EFWS</td>
 <td><a href="http://www.efilm.net.ru" data-linktype="external">eFilm World</a></td>
 </tr>
-
 <tr>
 <td>EKIO</td>
 <td><a href="http://www.ekioh.com" data-linktype="external">Ekioh</a></td>
 </tr>
-
 <tr>
 <td>ELSE</td>
 <td>Elseware</td>
 </tr>
-
 <tr>
 <td>EMGR</td>
 <td><a href="http://www.emigre.com/" data-linktype="external">Emigre</a></td>
 </tr>
-
 <tr>
 <td>EPSN</td>
 <td><a href="http://www.epson.co.jp/" data-linktype="external">Epson</a></td>
 </tr>
-
 <tr>
 <td>ESIG</td>
 <td><a href="http://www.e-signature.com/" data-linktype="external">E-Signature</a></td>
 </tr>
-
 <tr>
 <td>ETIO</td>
 <td><a href="http://www.ethiohahu.com" data-linktype="external">Ethiopian Font Foundry</a></td>
 </tr>
-
 <tr>
 <td>EVER</td>
 <td><a href="http://www.evertype.com/" data-linktype="external">Evertype</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="f">F</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>FA</td>
 <td><a href="http://www.fontarte.com" data-linktype="external">FontArte Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>FAFO</td>
 <td>FamiraFonts</td>
 </tr>
-
 <tr>
 <td>FAPA</td>
 <td><a href="http://www.familjenpangea.se" data-linktype="external">FamiljenPangea</a></td>
 </tr>
-
 <tr>
 <td>FAT</td>
 <td><a href="http://www.fatype.com" data-linktype="external">Fatype</a></td>
 </tr>
-
 <tr>
 <td>FBI</td>
 <td><a href="http://www.fontbureau.com/" data-linktype="external">The Font Bureau, Inc.</a></td>
 </tr>
-
 <tr>
 <td>FCAB</td>
 <td>The Font Cabinet</td>
 </tr>
-
 <tr>
 <td>FCAN</td>
 <td><a href="http://www.joanna.briggs.ca/" data-linktype="external">fontage canada</a></td>
 </tr>
-
 <tr>
 <td>FCTP</td>
 <td><a href="http://www.facetype.org" data-linktype="external">Facetype</a></td>
 </tr>
-
 <tr>
 <td>FDI</td>
 <td><a href="http://www.fonts.info/" data-linktype="external">FDI fonts.info</a></td>
 </tr>
-
 <tr>
 <td>FEED</td>
 <td><a href="http://www.feedtype.ca" data-linktype="external">Studio Feed Inc.</a></td>
 </tr>
-
 <tr>
 <td>FeoN</td>
 <td><a href="http://www.feorag.com/" data-linktype="external">Fe&ograve;rag N&igrave;cBhr&igrave;de</a></td>
 </tr>
-
 <tr>
 <td>FGOD</td>
 <td><a href="http://www.fontgod.com" data-linktype="external">FontGod</a></td>
 </tr>
-
 <tr>
 <td>FILI</td>
 <td><a href="http://www.louisefili.com" data-linktype="external">Louise Fili Ltd</a></td>
 </tr>
-
 <tr>
 <td>FIRA</td>
 <td>Firasoft Fonts</td>
 </tr>
-
 <tr>
 <td>FJR</td>
 <td>F.J.R. German Typeface</td>
 </tr>
-
 <tr>
 <td>FJTY</td>
-<td><a href="http://www.frankjonen.com/" data-linktype="external">Frank Jonen - Illustration &amp; Typography</a></td>
+<td><a href="http://www.frankjonen.com/" data-linktype="external">Frank Jonen - Illustration & Typography</a></td>
 </tr>
-
 <tr>
 <td>FMFO</td>
 <td><a href="http://www.be.net/davidlawless_misc" data-linktype="external">Fontmill Foundry</a></td>
 </tr>
-
 <tr>
 <td>FMST</td>
 <td><a href="http://www.formist.co" data-linktype="external">Formist</a></td>
 </tr>
-
 <tr>
 <td>FNSA</td>
 <td><a href="http://www.peterfonseca.gq" data-linktype="external">Fonseca Fonts</a></td>
 </tr>
-
 <tr>
 <td>FNTF</td>
 <td>Fontfoundry</td>
 </tr>
-
 <tr>
 <td>FoFa</td>
 <td><a href="http://www.fontfabrik.com/" data-linktype="external">FontFabrik</a></td>
 </tr>
-
 <tr>
 <td>FoHa</td>
 <td><a href="http://www.baronvonfonthausen.com/" data-linktype="external">The Fonthausen Font Foundry</a></td>
 </tr>
-
 <tr>
 <td>FONT</td>
 <td><a href="http://www.fontsource.com/" data-linktype="external">Font Source</a></td>
 </tr>
-
 <tr>
 <td>FORM</td>
 <td><a href="http://www.formationtype.com" data-linktype="external">Formation Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>FOSH</td>
 <td><a href="http://www.forgotten-shapes.com" data-linktype="external">Forgotten Shapes</a></td>
 </tr>
-
 <tr>
 <td>FOST</td>
 <td><a href="http://www.fostertype.com" data-linktype="external">Foster Type</a></td>
 </tr>
-
 <tr>
 <td>FOUN</td>
 <td><a href="http://www.foundrytypes.co.uk/" data-linktype="external">The Foundry</a></td>
 </tr>
-
 <tr>
 <td>FP</td>
 <td><a href="http://www.fontpad.co.uk" data-linktype="external">The Fontpad</a></td>
 </tr>
-
 <tr>
 <td>FRJN</td>
 <td><a href="http://www.frerejones.com" data-linktype="external">Frere-Jones Type</a></td>
 </tr>
-
 <tr>
 <td>FRML</td>
 <td><a href="http://www.formlos.net/" data-linktype="external">formlos</a></td>
 </tr>
-
 <tr>
 <td>FRNK</td>
 <td><a href="http://frankfonts.com" data-linktype="external">Frank Fonts</a></td>
 </tr>
-
 <tr>
 <td>FRNZ</td>
 <td><a href="http://www.franziskaweitgruber.com" data-linktype="external">Franziska Weitgruber</a></td>
 </tr>
-
 <tr>
 <td>FRTH</td>
 <td><a href="http://www.forthcome.fr" data-linktype="external">Forthcome</a></td>
 </tr>
-
 <tr>
 <td>FS</td>
 <td><a href="http://www.formula.co.uk/" data-linktype="external">Formula Solutions</a></td>
 </tr>
-
 <tr>
 <td>FSD</td>
 <td><a href="https://www.fsd.it" data-linktype="external">Fabrizio Schiavi Design</a></td>
 </tr>
-
 <tr>
 <td>FSE</td>
 <td>Font Source Europe</td>
 </tr>
-
 <tr>
 <td>FSI</td>
 <td><a href="http://www.monotypeimaging.com" data-linktype="external">FontShop International</a></td>
 </tr>
-
 <tr>
 <td>FSL</td>
 <td>FontSurfer Ltd</td>
 </tr>
-
 <tr>
 <td>FSLF</td>
 <td><a href="http://www.fontself.com" data-linktype="external">Fontself</a></td>
 </tr>
-
 <tr>
 <td>fsmi</td>
 <td><a href="http://www.fontsmith.com/" data-linktype="external">Fontsmith</a></td>
 </tr>
-
 <tr>
 <td>FSTR</td>
 <td><a href="http://www.fontstore.com" data-linktype="external">Fontstore Pte Ltd</a></td>
 </tr>
-
 <tr>
 <td>FTF</td>
 <td><a href="http://www.fontef.com" data-linktype="external">Fontef</a></td>
 </tr>
-
 <tr>
 <td>FTFT</td>
 <td><a href="http://www.fontfont.com/" data-linktype="external">FontFont</a></td>
 </tr>
-
 <tr>
 <td>FTGD</td>
 <td><a href="http://www.fontgarden.com/shop" data-linktype="external">Font Garden</a></td>
 </tr>
-
 <tr>
 <td>FTH</td>
 <td><a href="http://www.forthehearts.net/" data-linktype="external">For the Hearts</a></td>
 </tr>
-
 <tr>
 <td>FTN</td>
 <td><a href="http://www.fountain.nu/" data-linktype="external">Fountain</a></td>
 </tr>
-
 <tr>
 <td>FTPT</td>
 <td><a href="http://www.fontpartners.com" data-linktype="external">Fontpartners</a></td>
 </tr>
-
 <tr>
 <td>FWD</td>
 <td><a href="http://www.fontwright.com/" data-linktype="external">Fontwright Design</a></td>
 </tr>
-
 <tr>
 <td>FWKS</td>
 <td><a href="http://www.fontworks.co.jp/" data-linktype="external">Fontworks</a></td>
 </tr>
-
 <tr>
 <td>FWRE</td>
 <td><a href="http://www.fontware.com/" data-linktype="external">Fontware Limited</a></td>
 </tr>
-
 <tr>
 <td>FXTL</td>
 <td><a href="http://www.foxtailcollectif.com" data-linktype="external">Foxtail Collectif</a></td>
 </tr>
-
 <tr>
 <td>FY</td>
 <td><a href="http://www.fontyou.com" data-linktype="external">Fontyou</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="g">G</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>GAF</td>
 <td><a href="http://www.glifoartfonts.com" data-linktype="external">Glifo Art Fonts Inc.</a></td>
 </tr>
-
 <tr>
 <td>GAKU</td>
 <td>Gakumon</td>
 </tr>
-
 <tr>
 <td>GALA</td>
 <td>Galápagos Design Group, Inc.</td>
 </tr>
-
 <tr>
 <td>GALO</td>
 <td><a href="http://www.graphicsbygallo.com/" data-linktype="external">Gerald Gallo</a></td>
 </tr>
-
 <tr>
 <td>GARI</td>
 <td><a href="http://www.garyritchie.com/" data-linktype="external">Gary Ritchie</a></td>
 </tr>
-
 <tr>
 <td>GATF</td>
 <td><a href="http://www.gatf.wordpress.com" data-linktype="external">Greater Albion Typefounders</a></td>
 </tr>
-
 <tr>
 <td>GD</td>
 <td><a href="http://www.angelfire.com/va/grndino/index.html" data-linktype="external">GD Fonts</a></td>
 </tr>
-
 <tr>
 <td>Geez</td>
 <td>Beteseb Graphic Design</td>
 </tr>
-
 <tr>
 <td>GF</td>
 <td><a href="http://www.garagefonts.com/" data-linktype="external">GarageFonts</a></td>
 </tr>
-
 <tr>
 <td>GIA</td>
 <td>Georgian Internet Avenue</td>
 </tr>
-
 <tr>
 <td>GLCF</td>
 <td><a href="http://www.gilleslecorre.com/pages/fonts.html" data-linktype="external">GLC foundry</a></td>
 </tr>
-
 <tr>
 <td>GLYF</td>
 <td>Glyph Systems</td>
 </tr>
-
 <tr>
 <td>GNRL</td>
 <td><a href="http://www.generaltypestudio.com" data-linktype="external">General Type Studio</a></td>
 </tr>
-
 <tr>
 <td>GNU</td>
 <td><a href="http://www.gnu.org/" data-linktype="external">Free Software Foundation, Inc.</a></td>
 </tr>
-
 <tr>
 <td>GOAT</td>
 <td>Dingbat Dungeon</td>
 </tr>
-
 <tr>
 <td>GOGO</td>
 <td><a href="http://www.postmodernvillage.com/" data-linktype="external">Fonts-A-Go-Go</a></td>
 </tr>
-
 <tr>
 <td>GOHE</td>
 <td><a href="http://www.fontworld.com/" data-linktype="external">GoHebrew, division of GoME2.com Inc.</a></td>
 </tr>
-
 <tr>
 <td>GOOG</td>
 <td><a href="http://www.code.google.com/p/noto/" data-linktype="external">Google</a></td>
 </tr>
-
 <tr>
 <td>GPI</td>
 <td><a href="http://www.gammapro.com/" data-linktype="external">Gamma Productions, Inc.</a></td>
 </tr>
-
 <tr>
 <td>GRAF</td>
 <td><a href="http://www.grafikarna.si" data-linktype="external">Grafikarna d.o.o.</a></td>
 </tr>
-
 <tr>
 <td>GRCR</td>
 <td><a href="http://www.graphicore.de" data-linktype="external">Graphicore</a></td>
 </tr>
-
 <tr>
 <td>GREY</td>
 <td><a href="http://www.greyletter.com" data-linktype="external">Greyletter</a></td>
 </tr>
-
 <tr>
 <td>GRIL</td>
 <td><a href="http://www.grilledcheese.com/" data-linktype="external">Grilled cheese</a></td>
 </tr>
-
 <tr>
 <td>GRIM</td>
 <td><a href="http://www.otterstow.com" data-linktype="external">Legacy publishing</a></td>
 </tr>
-
 <tr>
 <td>grro</td>
 <td><a href="http://www.grafikk-roren.no/" data-linktype="external">grafikk RØren</a></td>
 </tr>
-
 <tr>
 <td>GS</td>
 <td><a href="http://www.grayscale.com.hk" data-linktype="external">Grayscale Limited</a></td>
 </tr>
-
 <tr>
 <td>GT</td>
 <td>Graphity!</td>
 </tr>
-
 <tr>
 <td>GTYP</td>
 <td><a href="http://www.g-type.com" data-linktype="external">G-Type</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="h">H</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>H</td>
 <td><a href="http://www.hurmedesign.fi" data-linktype="external">Hurme Design</a></td>
 </tr>
-
 <tr>
-<td>H&amp;FJ</td>
-<td><a href="http://www.typography.com/" data-linktype="external">Hoefler &amp; Frere-Jones</a></td>
+<td>H&FJ</td>
+<td><a href="http://www.typography.com/" data-linktype="external">Hoefler & Frere-Jones</a></td>
 </tr>
-
 <tr>
 <td>HA</td>
 <td><a href="http://www.hoboart.nl" data-linktype="external">HoboArt</a></td>
 </tr>
-
 <tr>
 <td>HAD</td>
 <td><a href="http://www.hoffmann-angelic.com" data-linktype="external">Hoffmann Angelic Design</a></td>
 </tr>
-
 <tr>
 <td>HAIL</td>
 <td><a href="http://www.haildesign.com.au/type.html" data-linktype="external">Hail Design</a></td>
 </tr>
-
 <tr>
 <td>HanS</td>
 <td><a href="http://www.HanStyle.kr" data-linktype="external">HanStyle</a></td>
 </tr>
-
 <tr>
 <td>HAUS</td>
 <td><a href="http://www.typehaus.com/" data-linktype="external">TypeHaus</a></td>
 </tr>
-
 <tr>
 <td>HEB</td>
 <td><a href="http://www.tau.ac.il/~stoledo/" data-linktype="external">Sivan Toledo</a></td>
 </tr>
-
 <tr>
 <td>HFJ</td>
-<td>Hoefler &amp; Frere-Jones (replaced by H&amp;FJ)</td>
+<td>Hoefler & Frere-Jones (replaced by H&FJ)</td>
 </tr>
-
 <tr>
 <td>HIH</td>
 <td><a href="http://www.hihretro.com/" data-linktype="external">HiH Retrofonts</a></td>
 </tr>
-
 <tr>
 <td>HILL</td>
 <td><a href="http://www.hill-systems.com/" data-linktype="external">Hill Systems</a></td>
 </tr>
-
 <tr>
 <td>HJZ</td>
 <td><a href="http://www.zinken.net" data-linktype="external">Hans J. Zinken</a></td>
 </tr>
-
 <tr>
 <td>HKSY</td>
 <td><a href="http://www.hakusyu.com/" data-linktype="external">HAKUSYUFONTS</a></td>
 </tr>
-
 <tr>
 <td>HL</td>
 <td><a href="http://www.high-logic.com/" data-linktype="external">High-Logic</a></td>
 </tr>
-
 <tr>
 <td>HM</td>
 <td><a href="http://www.haikumonkey.net" data-linktype="external">Haiku Monkey</a></td>
 </tr>
-
 <tr>
 <td>HoP</td>
 <td><a href="http://www.houseofpretty.com" data-linktype="external">House of Pretty</a></td>
 </tr>
-
 <tr>
 <td>HOUS</td>
 <td><a href="http://www.houseind.com/" data-linktype="external">House Industries</a></td>
 </tr>
-
 <tr>
 <td>HP</td>
 <td><a href="http://www.fonts.com/" data-linktype="external">Hewlett-Packard</a></td>
 </tr>
-
 <tr>
 <td>HS</td>
 <td><a href="http://www.hermessoft.com/" data-linktype="external">HermesSOFT Company</a></td>
 </tr>
-
 <tr>
 <td>HT</td>
 <td><a href="http://www.huertatipografica.com/" data-linktype="external">Huerta Tipográfica</a></td>
 </tr>
-
 <tr>
 <td>HTF</td>
 <td>The Hoefler Type Foundry, Inc.</td>
 </tr>
-
 <tr>
 <td>HU</td>
 <td><a href="http://www.hungarumlaut.com" data-linktype="external">Hungarumlaut</a></td>
 </tr>
-
 <tr>
 <td>HVD</td>
 <td><a href="http://www.hvdfonts.com" data-linktype="external">HVD Fonts GmbH</a></td>
 </tr>
-
 <tr>
 <td>HXTP</td>
 <td>Hexatype</td>
 </tr>
-
 <tr>
 <td>HY</td>
-<td><a href="http://www.hanyang.co.kr/" data-linktype="external">HanYang Information &amp; Communication</a></td>
+<td><a href="http://www.hanyang.co.kr/" data-linktype="external">HanYang Information & Communication</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="i">I</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>IBM</td>
 <td><a href="http://www.ibm.com/" data-linktype="external">IBM</a></td>
 </tr>
-
 <tr>
 <td>IC</td>
 <td><a href="http://www.ianjcox.com/" data-linktype="external">Ian J. Cox</a></td>
 </tr>
-
 <tr>
 <td>IDAU</td>
 <td><a href="http://www.idautomation.com/" data-linktype="external">IDAutomation.com, Inc.</a></td>
 </tr>
-
 <tr>
 <td>IDEA</td>
 <td><a href="http://www.ideacape.byethost32.com" data-linktype="external">Glenn Campbell t/a Idea Studio</a></td>
 </tr>
-
 <tr>
 <td>IDEE</td>
 <td>IDEE TYPOGRAFICA</td>
 </tr>
-
 <tr>
 <td>IDF</td>
 <td>International Digital Fonts</td>
 </tr>
-
 <tr>
 <td>IDMS</td>
 <td><a href="https://www.incstonedesign.com/" data-linktype="external">Incstone Design by Megami Studios</a></td>
 </tr>
-
 <tr>
 <td>Idt.</td>
 <td><a href="http://www.identitype.se/" data-linktype="external">Identitype</a></td>
 </tr>
-
 <tr>
 <td>IFF</td>
 <td>Indian Font Factory</td>
 </tr>
-
 <tr>
 <td>IINF</td>
 <td><a href="http://www.iinformatica.it" data-linktype="external">iInformatica Srls</a></td>
 </tr>
-
 <tr>
 <td>IKOF</td>
 <td><a href="http://www.ikoffice.de/fonts/" data-linktype="external">IKOffice GmbH</a></td>
 </tr>
-
 <tr>
 <td>ILP</td>
 <td>Indigenous Languages Project</td>
 </tr>
-
 <tr>
 <td>IMPR</td>
 <td><a href="http://www.impress.co.jp/" data-linktype="external">Impress</a></td>
 </tr>
-
 <tr>
 <td>INGA</td>
 <td><a href="http://www.ingaploennigs.com" data-linktype="external">Inga Type</a></td>
 </tr>
-
 <tr>
 <td>INGT</td>
 <td><a href="http://www.ingrimayne.com/fonts2/index.htm" data-linktype="external">Ingrimayne Type</a></td>
 </tr>
-
 <tr>
 <td>INRA</td>
 <td><a href="http://www.inray.com/" data-linktype="external">INRAY Inc.</a></td>
 </tr>
-
 <tr>
 <td>INTF</td>
 <td><a href="http://www.interfont.net/" data-linktype="external">Interfont</a></td>
 </tr>
-
 <tr>
 <td>INTR</td>
 <td><a href="http://www.interstitialentertainment.com" data-linktype="external">Interstitial Entertainment</a></td>
 </tr>
-
 <tr>
 <td>INVC</td>
 <td>Invoice Central</td>
 </tr>
-
 <tr>
 <td>INVD</td>
 <td><a href="http://www.type-invaders.com/" data-linktype="external">TYPE INVADERS</a></td>
 </tr>
-
 <tr>
 <td>INVT</td>
 <td><a href="http://www.itf.is" data-linktype="external">Invisible Type</a></td>
 </tr>
-
 <tr>
 <td>ISE</td>
 <td><a href="http://www.softfonts.com" data-linktype="external">ISE-Aditi Info. Pvt . Ltd.</a></td>
 </tr>
-
 <tr>
 <td>ITC</td>
 <td><a href="http://www.monotypeimaging.com" data-linktype="external">ITC</a></td>
 </tr>
-
 <tr>
 <td>ITF</td>
 <td><a href="http://www.roostertypes.com/" data-linktype="external">Red Rooster Collection (ITF, Inc.)</a></td>
 </tr>
-
 <tr>
 <td>ITFO</td>
 <td><a href="http://www.indiantypefoundry.com" data-linktype="external">Indian Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>ITSM</td>
 <td><a href="http://www.simonstratford.com" data-linktype="external">Simon Stratford</a></td>
 </tr>
-
 <tr>
 <td>IvyF</td>
 <td><a href="http://www.theivyfoundry.com" data-linktype="external">The Ivy Foundry</a></td>
 </tr>
-
 <tr>
 <td>IWA</td>
 <td><a href="http://www.iwatafont.co.jp/" data-linktype="external">Iwata Corporation</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="j">J</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>J23</td>
 <td>June 23</td>
 </tr>
-
 <tr>
 <td>JABM</td>
-<td><a href="http://www.miniussi.org" data-linktype="external">JAB&#39;M Foundry</a></td>
+<td><a href="http://www.miniussi.org" data-linktype="external">JAB'M Foundry</a></td>
 </tr>
-
 <tr>
 <td>JAF</td>
 <td><a href="http://www.justanotherfoundry.com/" data-linktype="external">Just Another Foundry</a></td>
 </tr>
-
 <tr>
 <td>JAKE</td>
 <td><a href="http://www.jaketilson.com" data-linktype="external">Jake Tilson Studio</a></td>
 </tr>
-
 <tr>
 <td>JBLT</td>
 <td><a href="http://www.jblt.co" data-linktype="external">JEAN-BAPTISTE LEV&#201;E TYPOGRAPHY</a></td>
 </tr>
-
 <tr>
 <td>JCT</td>
 <td><a href="http://www.jamieclarketype.com/fonts/" data-linktype="external">Jamie Clarke Type</a></td>
 </tr>
-
 <tr>
 <td>JDB</td>
 <td><a href="http://www.dafont.com/jeff-bensch.d1635" data-linktype="external">Jeff Bensch</a></td>
 </tr>
-
 <tr>
 <td>jeff</td>
 <td><a href="http://www.myfonts.com/foundry/Jeff_Levine/" data-linktype="external">jeff-levine</a></td>
 </tr>
-
 <tr>
 <td>JF</td>
 <td><a href="http://www.janfromm.de" data-linktype="external">Jan Fromm</a></td>
 </tr>
-
 <tr>
 <td>JHA</td>
 <td><a href="http://www.janhenrikarnold.de" data-linktype="external">Jan Henrik Arnold</a></td>
 </tr>
-
 <tr>
 <td>JHF</td>
 <td><a href="http://www.jh-fonts.com" data-linktype="external">JH Fonts</a></td>
 </tr>
-
 <tr>
 <td>JLIF</td>
 <td><a href="http://www.juliesoudanne.fr" data-linktype="external">jli Foundry – Julie Soudanne</a></td>
 </tr>
-
 <tr>
 <td>JOON</td>
 <td><a href="http://www.joonfont.com" data-linktype="external">JoonFont</a></td>
 </tr>
-
 <tr>
 <td>JP</td>
 <td><a href="http://www.jamra-patel.com" data-linktype="external">Jamra Patel</a></td>
 </tr>
-
 <tr>
 <td>JPTT</td>
 <td><a href="http://www.typography.net/" data-linktype="external">Jeremy Tankard Typography Ltd</a></td>
 </tr>
-
 <tr>
 <td>JRW</td>
 <td><a href="http://wrdingham.co.uk/" data-linktype="external">Richard Wordingham</a></td>
 </tr>
-
+<tr>
+<td>JUST</td>
+<td><a href="http://www.justintype.com/" data-linktype="external">Just in Type</a></td>
+</tr>
 <tr>
 <td>JWTM</td>
 <td><a href="http://www.typematters.de" data-linktype="external">Type Matters</a></td>
 </tr>
-
 <tr>
 <td>JY</td>
 <td><a href="http://www.jiyu-kobo.co.jp/" data-linktype="external">JIYUKOBO Ltd.</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="k">K</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>K</td>
 <td><a href="http://www.kvant.org" data-linktype="external">Kvant Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>ka</td>
 <td><a href="http://www.kloegarchitecture.com" data-linktype="external">kloeg architecture</a></td>
 </tr>
-
 <tr>
 <td>KAME</td>
 <td><a href="http://www.kamedesign.com" data-linktype="external">Kame Design</a></td>
 </tr>
-
 <tr>
 <td>KATF</td>
 <td>Kingsley/ATF</td>
 </tr>
-
 <tr>
 <td>KBNT</td>
 <td><a href="http://www.kombin.at" data-linktype="external">Kombinat-Typefounders</a></td>
 </tr>
-
 <tr>
 <td>KD</td>
 <td><a href="http://www.kassymkulov.com" data-linktype="external">Kassymkulov Design</a></td>
 </tr>
-
 <tr>
 <td>KDW</td>
 <td><a href="http://www.moji-sekkei.jp/" data-linktype="external">Kinuta Font Factory</a></td>
 </tr>
-
 <tr>
 <td>KF</td>
 <td><a href="http://www.karakta.com/" data-linktype="external">Karakta Fonthome</a></td>
 </tr>
-
 <tr>
 <td>KHTB</td>
 <td><a href="https://www.instagram.com/mokhatib/" data-linktype="external">Monkey Arts Ltd.</a></td>
 </tr>
-
 <tr>
 <td>KILO</td>
 <td><a href="http://www.kilotype.de" data-linktype="external">Kilotype</a></td>
 </tr>
-
 <tr>
 <td>KIRK</td>
 <td><a href="http://www.typekirk.com" data-linktype="external">Typekirk</a></td>
 </tr>
-
 <tr>
 <td>KLIM</td>
 <td><a href="http://www.klim.co.nz/" data-linktype="external">Klim Typographic Design</a></td>
 </tr>
-
 <tr>
 <td>KLTF</td>
 <td><a href="http://www.kltf.de/" data-linktype="external">Karsten Luecke</a></td>
 </tr>
-
 <tr>
 <td>KMRS</td>
-<td><a href="https://www.khemarasoft.com/font/" data-linktype="external">Mony Sath &amp; Chhit Wornnarith - KhemaraSoft</a></td>
+<td><a href="https://www.khemarasoft.com/font/" data-linktype="external">Mony Sath & Chhit Wornnarith - KhemaraSoft</a></td>
 </tr>
-
 <tr>
 <td>KNST</td>
 <td><a href="http://www.konst.ru/" data-linktype="external">Konst.ru</a></td>
 </tr>
-
 <tr>
 <td>KNTR</td>
 <td><a href="http://www.kontour.com/" data-linktype="external">Kontour</a></td>
 </tr>
-
 <tr>
 <td>KOP</td>
 <td><a href="http://www.leo-koppelkamm.de" data-linktype="external">Leo Koppelkamm</a></td>
 </tr>
-
 <tr>
 <td>KORK</td>
 <td><a href="http://www.korkork.com" data-linktype="external">Khork OÜ</a></td>
 </tr>
-
 <tr>
 <td>KOST</td>
 <td><a href="http://beta.kostictype.com/" data-linktype="external">Kostic Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>KOVL</td>
 <td><a href="http://www.koval.by" data-linktype="external">Koval Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>KrKo</td>
 <td><a href="http://www.kreativekorp.com" data-linktype="external">Kreative Software</a></td>
 </tr>
-
 <tr>
 <td>KRND</td>
 <td><a href="http://www.karandash.eu" data-linktype="external">Karandash Type &amp; Graphics Foundry</a></td>
 </tr>
-
 <tr>
 <td>KTF</td>
 <td><a href="http://www.kustomtype.com" data-linktype="external">Kustomtype</a></td>
 </tr>
-
 <tr>
 <td>KTRF</td>
 <td>Kazan Traditional Font</td>
 </tr>
-
 <tr>
 <td>KUBA</td>
 <td><a href="http://www.ifonty.pl" data-linktype="external">Kuba Tatarkiewicz</a></td>
 </tr>
-
 <tr>
 <td>KUSH</td>
 <td>KushJain</td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="l">L</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>L2M3</td>
 <td><a href="http://www.L2M3.com" data-linktype="external">L2M3 Kommunikationsdesign GmbH</a></td>
 </tr>
-
 <tr>
 <td>LA</td>
 <td><a href="http://www.large.la" data-linktype="external">Large</a></td>
 </tr>
-
 <tr>
 <td>LAIT</td>
 <td><a href="http://www.la-laiterie.com" data-linktype="external">la laiterie</a></td>
 </tr>
-
 <tr>
 <td>LAND</td>
 <td><a href="http://www.type.land" data-linktype="external">Typeland</a></td>
 </tr>
-
 <tr>
 <td>LANS</td>
 <td><a href="http://www.p22.com" data-linktype="external">Lanston Type Company</a></td>
 </tr>
-
 <tr>
 <td>LARA</td>
 <td><a href="http://www.LarabieFonts.com/" data-linktype="external">Larabiefonts</a></td>
 </tr>
-
 <tr>
 <td>LAUD</td>
 <td>Carolina Laudon</td>
 </tr>
-
 <tr>
 <td>LAYT</td>
 <td><a href="http://www.layoutltd.com" data-linktype="external">LAYOUT SARL</a></td>
 </tr>
-
 <tr>
 <td>LEAF</td>
 <td><a href="http://www.ileaf.com/" data-linktype="external">Interleaf, Inc.</a></td>
 </tr>
-
 <tr>
 <td>LETR</td>
 <td><a href="http://www.letraset.com/" data-linktype="external">Letraset</a></td>
 </tr>
-
 <tr>
 <td>lewd</td>
 <td><a href="http://www.letteringworld.com" data-linktype="external">Lettering World LLC</a></td>
 </tr>
-
 <tr>
 <td>LFS</td>
 <td><a href="http://www.lettersfromsweden.se" data-linktype="external">Letters from Sweden</a></td>
 </tr>
-
 <tr>
 <td>LGX</td>
 <td><a href="http://www.logix-press.com/" data-linktype="external">Logix Research Institute, Inc.</a></td>
 </tr>
-
 <tr>
 <td>LHF</td>
 <td><a href="http://www.letterheadfonts.com/" data-linktype="external">Letterhead Fonts</a></td>
 </tr>
-
 <tr>
 <td>LIND</td>
 <td><a href="http://www.lindenbergsoftware.com" data-linktype="external">Lindenberg Software LLC</a></td>
 </tr>
-
+<tr>
+<td>LING</td>
+<td><a href="http://www.linguistsoftware.com/" data-linktype="external">Linguist's Software</a></td>
+</tr>
 <tr>
 <td>LINK</td>
 <td><a href="http://www.linkpenfonts.co.uk" data-linktype="external">Linkpen Handwriting Fonts</a></td>
 </tr>
-
-<tr>
-<td>LING</td>
-<td><a href="http://www.linguistsoftware.com/" data-linktype="external">Linguist&#39;s Software</a></td>
-</tr>
-
 <tr>
 <td>LINO</td>
 <td><a href="http://www.monotypeimaging.com" data-linktype="external">Linotype GmbH</a></td>
 </tr>
-
 <tr>
 <td>LIVE</td>
 <td><a href="http://www.livedesign.com.ua/" data-linktype="external">Livedesign</a></td>
 </tr>
-
 <tr>
 <td>LJ</td>
 <td><a href="http://www.letterjuice.cat" data-linktype="external">Letterjuice</a></td>
 </tr>
-
 <tr>
 <td>LLDL</td>
 <td><a href="http://lalettredeluxe.com/" data-linktype="external">La Lettre de Luxe</a></td>
 </tr>
-
 <tr>
 <td>LNGU</td>
 <td><a href="http://www.langustefonts.com" data-linktype="external">LangusteFonts</a></td>
 </tr>
-
 <tr>
 <td>LNTO</td>
 <td><a href="http://www.lineto.com" data-linktype="external">Lineto</a></td>
 </tr>
-
 <tr>
 <td>lool</td>
 <td><a href="http://www.ty-index.design/" data-linktype="external">lo-ol Type</a></td>
 </tr>
-
 <tr>
 <td>LORO</td>
 <td><a href="http://www.loro-productions.com/" data-linktype="external">LoRo Productions</a></td>
 </tr>
-
 <tr>
 <td>LP</td>
 <td><a href="http://www.letterspace.com/" data-linktype="external">LetterPerfect Fonts</a></td>
 </tr>
-
 <tr>
 <td>LT</td>
 <td><a href="http://www.typophage.com/" data-linktype="external">Le Typophage</a></td>
 </tr>
-
 <tr>
 <td>LTF</td>
 <td>Liberty Type Foundry</td>
 </tr>
-
 <tr>
 <td>LTFD</td>
 <td>Linnea Type</td>
 </tr>
-
 <tr>
 <td>Ltrm</td>
 <td><a href="http://www.lettermin.com" data-linktype="external">Lettermin type and design</a></td>
 </tr>
-
 <tr>
 <td>LTRX</td>
 <td>Lighttracks</td>
 </tr>
-
 <tr>
 <td>LTTR</td>
 <td><a href="http://www.letterror.com/" data-linktype="external">LettError</a></td>
 </tr>
-
 <tr>
 <td>LuAn</td>
 <td>Patrice Provost</td>
 </tr>
-
 <tr>
 <td>LUD</td>
 <td>Ludlow</td>
 </tr>
-
 <tr>
 <td>LuFo</td>
 <td><a href="http://www.lucasfonts.com/" data-linktype="external">LucasFonts</a></td>
 </tr>
-
 <tr>
 <td>LUSH</td>
 <td><a href="http://www.lushtype.com" data-linktype="external">Lush Type</a></td>
 </tr>
-
 <tr>
 <td>LUV</td>
 <td><a href="http://www.nicksfonts.com" data-linktype="external">iLUVfonts</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="m">M</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>M+F</td>
 <td><a href="http://measureandfit.co/" data-linktype="external">Measure + Fit</a></td>
 </tr>
-
 <tr>
 <td>MACR</td>
 <td><a href="http://www.macromedia.com/" data-linktype="external">Macromedia / Made with Fontographer</a></td>
 </tr>
-
 <tr>
 <td>MADT</td>
 <td><a href="http://www.madtype.net/" data-linktype="external">MADType</a></td>
 </tr>
-
 <tr>
 <td>MagD</td>
 <td><a href="http://www.magusdigital.com" data-linktype="external">Magus Digital</a></td>
 </tr>
-
 <tr>
 <td>MANS</td>
 <td><a href="http://www.mansgreback.com" data-linktype="external">Mans Greback AB</a></td>
 </tr>
-
 <tr>
 <td>MAPS</td>
-<td><a href="http://www.mapsymbs.com" data-linktype="external">Tom Mouat&#39;s Map Symbol Fonts</a></td>
+<td><a href="http://www.mapsymbs.com" data-linktype="external">Tom Mouat's Map Symbol Fonts</a></td>
 </tr>
-
 <tr>
 <td>MATE</td>
 <td><a href="http://www.typemates.de" data-linktype="external">TypeMates</a></td>
 </tr>
-
 <tr>
 <td>MATS</td>
 <td><a href="http://www.matchfonts.com/" data-linktype="external">Match Fonts</a></td>
 </tr>
-
 <tr>
 <td>MC</td>
 <td>Cerajewski Computer Consulting</td>
 </tr>
-
 <tr>
 <td>MCHL</td>
 <td><a href="http://www.hagilda.com" data-linktype="external">Michal Sahar</a></td>
 </tr>
-
 <tr>
 <td>MCKL</td>
 <td><a href="http://www.mckltype.com" data-linktype="external">MCKL</a></td>
 </tr>
-
 <tr>
 <td>MCOW</td>
 <td><a href="http://www.mountaincow.com/" data-linktype="external">Mountaincow</a></td>
 </tr>
-
 <tr>
 <td>MDSN</td>
 <td><a href="http://www.moraitisdesign.com" data-linktype="external">Moraitis Design</a></td>
 </tr>
-
 <tr>
 <td>MEAP</td>
 <td><a href="https://www.MetaAppz.com" data-linktype="external">MetaAppz</a></td>
 </tr>
-
 <tr>
 <td>MEH</td>
 <td><a href="http://www.mehallo.com" data-linktype="external">Steve Mehallo</a></td>
 </tr>
-
 <tr>
 <td>MEIR</td>
 <td><a href="http://www.oketz.com/" data-linktype="external">Meir Sadan</a></td>
 </tr>
-
 <tr>
 <td>MESA</td>
 <td><a href="http://www.fontmesa.com/" data-linktype="external">FontMesa,</a></td>
 </tr>
-
 <tr>
 <td>MF</td>
 <td>Magic Fonts</td>
 </tr>
-
 <tr>
 <td>MFNT</td>
 <td><a href="http://www.masterfont.co.il/" data-linktype="external">Masterfont</a></td>
 </tr>
-
 <tr>
 <td>MG</td>
 <td><a href="http://www.milieugrotesque.com" data-linktype="external">Milieu Grotesque</a></td>
 </tr>
-
 <tr>
 <td>MGD</td>
 <td>Matt Grey Design</td>
 </tr>
-
 <tr>
 <td>MH</td>
 <td><a href="http://www.mistifonts.com" data-linktype="external">Misti’s Fonts</a></td>
 </tr>
-
 <tr>
 <td>MHTY</td>
 <td><a href="http://www.minjooham.com" data-linktype="external">Minjoo Ham</a></td>
 </tr>
-
 <tr>
 <td>MILL</td>
 <td><a href="http://www.millan.pp.se/" data-linktype="external">Millan</a></td>
 </tr>
-
 <tr>
 <td>MINT</td>
 <td><a href="http://www.minttype.com" data-linktype="external">Mint Type</a></td>
 </tr>
-
 <tr>
 <td>MISS</td>
 <td><a href="http://www.missymeyer.com" data-linktype="external">Missy Meyer</a></td>
 </tr>
-
 <tr>
 <td>MJ</td>
 <td>Majus Corporation</td>
 </tr>
-
 <tr>
 <td>MJR</td>
 <td><a href="http://www.majur.com/" data-linktype="external">Majur Inc.</a></td>
 </tr>
-
 <tr>
 <td>MLAG</td>
 <td><a href="https://michaellagattuta.com" data-linktype="external">Michael LaGattuta</a></td>
 </tr>
-
 <tr>
 <td>MLBU</td>
 <td><a href="http://www.malibudreamdesigns.com" data-linktype="external">Malibu Dream Designs, LLC</a></td>
 </tr>
-
 <tr>
 <td>MLGC</td>
 <td>Micrologic Software</td>
 </tr>
-
 <tr>
 <td>mlss</td>
 <td><a href="http://www.marksimonson.com" data-linktype="external">Mark Simonson Studio LLC</a></td>
 </tr>
-
 <tr>
 <td>MMFT</td>
 <td><a href="http://www.michelm.org/" data-linktype="external">Michel M.</a></td>
 </tr>
-
 <tr>
 <td>MMIK</td>
 <td><a href="http://www.monomonnik.nl" data-linktype="external">Monomonnik</a></td>
 </tr>
-
 <tr>
 <td>MNCK</td>
 <td><a href="http://www.minecreek.net" data-linktype="external">Mine Creek</a></td>
 </tr>
-
 <tr>
 <td>mnik</td>
 <td><a href="http://mooniak.com" data-linktype="external">Mooniak</a></td>
 </tr>
-
 <tr>
 <td>MNJU</td>
 <td>Manjunatha Bengaluru</td>
 </tr>
-
 <tr>
 <td>MNKR</td>
 <td><a href="http://www.monokrom.no" data-linktype="external">Monokrom Skriftforlag AS</a></td>
 </tr>
-
 <tr>
 <td>MODI</td>
 <td><a href="http://www.modular-infotech.com/" data-linktype="external">Modular Infotech Private Limited.</a></td>
 </tr>
-
 <tr>
 <td>MOHT</td>
 <td>Al Mohtaraf Assaudi Ltd</td>
 </tr>
-
 <tr>
 <td>MOJI</td>
 <td><a href="http://www.mojijuku.jp" data-linktype="external">Mojijuku</a></td>
 </tr>
-
 <tr>
 <td>MOMI</td>
 <td><a href="http://www.momentum18.com/typography.html" data-linktype="external">Momentum 18</a></td>
 </tr>
-
 <tr>
 <td>MONB</td>
 <td><a href="http://www.monib.com/" data-linktype="external">Monib</a></td>
 </tr>
-
 <tr>
 <td>MONE</td>
 <td><a href="http://www.metaone.co.uk/" data-linktype="external">Meta One Limited</a></td>
 </tr>
-
 <tr>
 <td>MONO</td>
 <td><a href="http://www.monotype.com" data-linktype="external">Monotype Imaging</a></td>
 </tr>
-
 <tr>
 <td>MOON</td>
 <td><a href="http://www.moonlighttype.com/" data-linktype="external">Moonlight Type and Technolog</a></td>
 </tr>
-
 <tr>
 <td>MOTA</td>
 <td><a href="http://www.motaitalic.com" data-linktype="external">Mota Italic</a></td>
 </tr>
-
 <tr>
 <td>MRSW</td>
-<td><a href="http://www.morisawa.co.jp/" data-linktype="external">Morisawa &amp; Company, Ltd.</a></td>
+<td><a href="http://www.morisawa.co.jp/" data-linktype="external">Morisawa & Company, Ltd.</a></td>
 </tr>
-
 <tr>
 <td>MRV</td>
 <td><a href="http://www.morovia.com/font/" data-linktype="external">Morovia Corporation</a></td>
 </tr>
-
 <tr>
 <td>MS</td>
 <td><a href="http://www.microsoft.com/typography/" data-linktype="external">Microsoft Corp.</a></td>
 </tr>
-
 <tr>
 <td>MSCH</td>
 <td><a href="http://www.guitar-injection.com" data-linktype="external">Guitar-Injection</a></td>
 </tr>
-
 <tr>
 <td>MSCR</td>
 <td>Majus Corporation</td>
 </tr>
-
 <tr>
 <td>MSE</td>
 <td><a href="http://www.mse-it.de/" data-linktype="external">MSE-iT</a></td>
 </tr>
-
 <tr>
 <td>MSTK</td>
 <td><a href="http://www.mastaka.net" data-linktype="external">Alex Serada</a></td>
 </tr>
-
 <tr>
 <td>MT</td>
 <td>Monotype Imaging (replaced by MONO)</td>
 </tr>
-
 <tr>
 <td>MTF</td>
 <td><a href="http://www.misstiina.com" data-linktype="external">Miss Tiina Fonts</a></td>
 </tr>
-
 <tr>
 <td>MTFO</td>
 <td><a href="http://www.musictypefoundry.com" data-linktype="external">Music Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>MTNT</td>
 <td><a href="https://mutant.tech/" data-linktype="external">Mutant Standard</a></td>
 </tr>
-
 <tr>
 <td>MTY</td>
 <td>Motoya Co. ,LTD.</td>
 </tr>
-
 <tr>
 <td>MUTF</td>
 <td><a href="http://www.murasu.com/" data-linktype="external">Murasu Systems Sdn. Bhd</a></td>
 </tr>
-
 <tr>
 <td>MVB</td>
 <td><a href="http://www.mvbfonts.com" data-linktype="external">MVB Fonts</a></td>
 </tr>
-
 <tr>
 <td>MVTP</td>
 <td><a href="http://www.mauvetype.com" data-linktype="external">Mauve Type</a></td>
 </tr>
-
 <tr>
 <td>MVty</td>
 <td>MV Typo</td>
 </tr>
-
 <tr>
 <td>MW</td>
 <td>Michael Want</td>
 </tr>
-
 <tr>
 <td>MYFO</td>
 <td><a href="http://www.myfonts.com/" data-linktype="external">MyFonts.com</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="n">N</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>NB</td>
 <td><a href="http://www.nobodoni.com/" data-linktype="external">No Bodoni Typography</a></td>
 </tr>
-
 <tr>
 <td>NBR</td>
 <td><a href="https://noirblancrouge.com" data-linktype="external">Noir Blanc Rouge</a></td>
 </tr>
-
 <tr>
 <td>ncnd</td>
-<td><a href="http://www.unix.temple.edu/~phanley/" data-linktype="external">&amp;cond</a></td>
+<td><a href="http://www.unix.temple.edu/~phanley/" data-linktype="external">&cond</a></td>
 </tr>
-
 <tr>
 <td>NDCT</td>
 <td><a href="http://www.neufville.com/" data-linktype="external">Neufville Digital Corporatype</a></td>
 </tr>
-
 <tr>
 <td>NDEF</td>
 <td><a href="http://www.notdef.com.br" data-linktype="external">Notdef Type</a></td>
 </tr>
-
 <tr>
 <td>NDTC</td>
 <td><a href="http://www.neufville.com/" data-linktype="external">Neufville Digital</a></td>
 </tr>
-
 <tr>
 <td>NEC</td>
 <td><a href="http://www.nec.co.jp/" data-linktype="external">NEC Corporation</a></td>
 </tr>
-
 <tr>
 <td>NEW</td>
 <td><a href="http://www.newlyn.com" data-linktype="external">Newlyn</a></td>
 </tr>
-
 <tr>
 <td>NICK</td>
-<td><a href="http://www.nicksfonts.com/" data-linktype="external">Nick&#39;s Fonts</a></td>
+<td><a href="http://www.nicksfonts.com/" data-linktype="external">Nick's Fonts</a></td>
 </tr>
-
 <tr>
 <td>NIS</td>
 <td><a href="http://www.nisfont.co.jp/" data-linktype="external">NIS Corporation</a></td>
 </tr>
-
 <tr>
 <td>NM</td>
 <td><a href="http://www.nmtype.com/" data-linktype="external">NM type</a></td>
 </tr>
-
 <tr>
 <td>NN</td>
 <td><a href="http://www.nnstudio.pw" data-linktype="external">NN Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>NONO</td>
 <td><a href="https://www.nouvellenoire.ch/" data-linktype="external">Nouvelle Noire Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>NOOT</td>
 <td><a href="http://www.nooty.pe" data-linktype="external">Nootype</a></td>
 </tr>
-
 <tr>
 <td>NOPN</td>
 <td><a href="http://noponies.com" data-linktype="external">Noponies</a></td>
 </tr>
-
 <tr>
 <td>NorB</td>
 <td><a href="https://norfonts.ma/" data-linktype="external">NorFonts.ma</a></td>
 </tr>
-
 <tr>
 <td>NORF</td>
 <td><a href="http://www.norfok.com/" data-linktype="external">Norfok Incredible Font Design</a></td>
 </tr>
-
 <tr>
 <td>NOVA</td>
 <td><a href="http://www.novatype.com" data-linktype="external">NOVATYPE</a></td>
 </tr>
-
 <tr>
 <td>NP</td>
 <td><a href="http://www.nipponia.in/blog/" data-linktype="external">Nipponia</a></td>
 </tr>
-
 <tr>
 <td>NVTF</td>
 <td><a href="http://www.novatypefoundry.com" data-linktype="external">Nova Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>NYM</td>
 <td><a href="https://www.nymarktype.co/" data-linktype="external">Nymark Type</a></td>
 </tr>
-
 <tr>
 <td>NYCM</td>
 <td><a href="https://www.nycmusicservices.com/" data-linktype="external">NYC Music Services</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="o">O</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>ODSR</td>
 <td><a href="http://www.oddsorts.com" data-linktype="external">Oddsorts</a></td>
 </tr>
-
 <tr>
 <td>OHG</td>
 <td><a href="http://www.ourhousegraphics.com" data-linktype="external">Our House Graphic Design</a></td>
 </tr>
-
 <tr>
 <td>OHNO</td>
 <td>OH no Type Company</td>
 </tr>
-
 <tr>
 <td>OKAY</td>
 <td><a href="http://www.okaytype.com" data-linktype="external">Okay Type</a></td>
 </tr>
-
 <tr>
 <td>OMNI</td>
 <td><a href="https://omnitype.ch/" data-linktype="external">Omnitype</a></td>
 </tr>
-
 <tr>
 <td>OMSE</td>
 <td><a href="https://omsetype.co/" data-linktype="external">OMSETYPE</a></td>
 </tr>
-
 <tr>
 <td>Once</td>
 <td>Michael T Neff</td>
 </tr>
-
 <tr>
 <td>OPTM</td>
 <td><a href="http://www.optimo.ch" data-linktype="external">Optimo</a></td>
 </tr>
-
 <tr>
 <td>OPTO</td>
 <td><a href="http://www.jblt.co" data-linktype="external">Opto</a></td>
 </tr>
-
 <tr>
 <td>OR</td>
 <td><a href="https://ortype.is" data-linktype="external">Or Type</a></td>
 </tr>
-
 <tr>
 <td>ORBI</td>
 <td><a href="http://www.digitize.com/" data-linktype="external">Orbit Enterprises, Inc.</a></td>
 </tr>
-
 <tr>
 <td>ORK1</td>
 <td>Ork1</td>
 </tr>
-
 <tr>
 <td>OSFC</td>
 <td><a href="http://www.outofstepfontco.com/" data-linktype="external">Out Of Step Font Company</a></td>
 </tr>
-
+<tr>
+<td>OST</td>
+<td><a href="http://www.orangeslicetype.nl" data-linktype="external">Orange Slice Type</a></td>
+</tr>
 <tr>
 <td>OURT</td>
 <td><a href="http://www.ourtype.com" data-linktype="external">Ourtype</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="p">P</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>P22</td>
 <td><a href="http://www.p22.com/" data-linktype="external">P22 Inc.</a></td>
 </tr>
-
 <tr>
 <td>PARA</td>
 <td><a href="http://www.paratype.com/" data-linktype="external">ParaType Inc.</a></td>
 </tr>
-
 <tr>
 <td>pbd0</td>
 <td><a href="https://www.peterbaindesign.com" data-linktype="external">Peter Bain</a></td>
 </tr>
-
 <tr>
 <td>PBL</td>
 <td><a href="https://publie.de/" data-linktype="external">Publié</a></td>
 </tr>
-
 <tr>
 <td>PDWX</td>
 <td><a href="http://www.nwlink.com/~carolynp/" data-linktype="external">Parsons Design Workx</a></td>
 </tr>
-
 <tr>
 <td>PEAC</td>
 <td><a href="https://www.peachcreme.com/collections/fonts" data-linktype="external">PeachCreme.com</a></td>
 </tr>
-
 <tr>
 <td>PECI</td>
 <td><a href="http://www.pecita.net" data-linktype="external">Pecita</a></td>
 </tr>
-
 <tr>
 <td>PETR</td>
 <td><a href="http://www.dariapetrova.com" data-linktype="external">Daria Petrova</a></td>
 </tr>
-
 <tr>
 <td>PF</td>
-<td><a href="http://www.philsfonts.com/" data-linktype="external">Phil&#39;s Fonts, Inc.</a></td>
+<td><a href="http://www.philsfonts.com/" data-linktype="external">Phil's Fonts, Inc.</a></td>
 </tr>
-
 <tr>
 <td>PHO</td>
 <td><a href="http://www.phospho.at" data-linktype="external">phospho type foundry</a></td>
 </tr>
-
 <tr>
 <td>PHTM</td>
 <td><a href="http://www.phantom-foundry.com" data-linktype="external">Phantom Foundry</a></td>
 </tr>
-
 <tr>
 <td>PINT</td>
 <td><a href="http://www.pintassilgoprints.com/" data-linktype="external">PintassilgoPrints</a></td>
 </tr>
-
 <tr>
 <td>PIXL</td>
 <td><a href="http://www.pixilate.com" data-linktype="external">Pixilate</a></td>
 </tr>
-
 <tr>
 <td>PKDD</td>
 <td><a href="http://www.pkfont.co.uk/" data-linktype="external">Philip Kelly Digital Design</a></td>
 </tr>
-
 <tr>
 <td>PLAT</td>
 <td><a href="http://www.ca.com/acq/platinum/" data-linktype="external">PLATINUM technology</a></td>
 </tr>
-
 <tr>
 <td>Plau</td>
 <td><a href="http://www.plau.co" data-linktype="external">Plau</a></td>
 </tr>
-
 <tr>
 <td>PLAY</td>
 <td><a href="http://www.playtype.com" data-linktype="external">Playtype</a></td>
 </tr>
-
+<tr>
+<td>PPPR</td>
+<td><a href="http://pprtype.com/" data-linktype="external">Pepper Type</a></td>
+</tr>
 <tr>
 <td>PRFS</td>
 <td><a href="http://www.ourworld.compuserve.com/homepages/profirst/" data-linktype="external">Production First Software</a></td>
 </tr>
-
 <tr>
 <td>PRGR</td>
 <td><a href="http://www.paragraph.com.au/" data-linktype="external">Paragraph</a></td>
 </tr>
-
 <tr>
 <td>PRLK</td>
 <td><a href="http://www.emreparlak.com" data-linktype="external">Emre Parlak</a></td>
 </tr>
-
 <tr>
 <td>PROD</td>
 <td><a href="http://www.productiontype.com" data-linktype="external">Production Type</a></td>
 </tr>
-
 <tr>
 <td>PROT</td>
 <td><a href="http://www.prototypo.io" data-linktype="external">PROTOTYPO</a></td>
 </tr>
-
 <tr>
 <td>Prox</td>
 <td><a href="http://proximasoftware.com/" data-linktype="external">Proxima Software</a></td>
 </tr>
-
 <tr>
 <td>PRTF</td>
 <td><a href="http://www.processtypefoundry.com" data-linktype="external">Process Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>PSIS</td>
 <td><a href="http://www.PhotoShopIsland.com" data-linktype="external">PhotoShopIsland.com</a></td>
 </tr>
-
 <tr>
 <td>pstu</td>
 <td><a href="http://www.pseudonym.no" data-linktype="external">Pseudonym Type Studio</a></td>
 </tr>
-
 <tr>
 <td>PSY</td>
 <td><a href="http://www.psyops.com/" data-linktype="external">PSY/OPS</a></td>
 </tr>
-
 <tr>
 <td>PT</td>
 <td><a href="http://www.playtype.com" data-linktype="external">Playtype</a></td>
 </tr>
-
 <tr>
 <td>PTF</td>
 <td><a href="http://www.typofonderie.com" data-linktype="external">Porchez Typofonderie</a></td>
 </tr>
-
 <tr>
 <td>PTMI</td>
 <td><a href="http://www.pagetech.com" data-linktype="external">Page Technology Marketing, Inc.</a></td>
 </tr>
-
 <tr>
 <td>PTYP</td>
 <td><a href="http://www.preusstype.com/" data-linktype="external">PreussType</a></td>
 </tr>
-
 <tr>
 <td>PYRS</td>
 <td><a href="http://www.pyrus.com/" data-linktype="external">PYRS   Fontlab Ltd. / Made with FontLab</a></td>
 </tr>
-
 <tr>
 <td>PYTE</td>
 <td><a href="http://www.thepytefoundry.net" data-linktype="external">The Pyte Foundry</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="q">Q</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>QMSI</td>
 <td><a href="http://www.qms.com/products/fontcenter/" data-linktype="external">QMS/Imagen</a></td>
 </tr>
-
 <tr>
 <td>QRAT</td>
 <td><a href="http://www.quadrat.com/" data-linktype="external">Quadrat Communications</a></td>
 </tr>
-
 <tr>
 <td>QTYP</td>
 <td><a href="http://www.qtypography.com" data-linktype="external">Qtypography</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="r">R</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>RARE</td>
 <td><a href="http://www.rarebirdfonts.com" data-linktype="external">Rare Bird Font Foundry</a></td>
 </tr>
-
 <tr>
 <td>RARI</td>
 <td><a href="http://www.rarillustrations.com" data-linktype="external">RAR Illustrations</a></td>
 </tr>
-
 <tr>
 <td>RDGR</td>
 <td><a href="http://www.philippneumeyer.com/" data-linktype="external">Rüdiger</a></td>
 </tr>
-
 <tr>
 <td>READ</td>
 <td><a href="http://www.readytype.com" data-linktype="external">ReadyType</a></td>
 </tr>
-
 <tr>
 <td>REAL</td>
 <td><a href="http://www.underware.nl/" data-linktype="external">Underware</a></td>
 </tr>
-
 <tr>
 <td>RES</td>
 <td><a href="http://www.resultat.nl/" data-linktype="external">Resultat</a></td>
 </tr>
-
 <tr>
 <td>RICK</td>
 <td><a href="http://www.ricknertype.com" data-linktype="external">Rickner Type</a></td>
 </tr>
-
 <tr>
 <td>RIXF</td>
 <td><a href="http://www.fontrix.co.kr" data-linktype="external">FONTRIX Inc.</a></td>
 </tr>
-
 <tr>
 <td>RJPS</td>
 <td><a href="http://www.reallgraphics.com/" data-linktype="external">Reall Graphics</a></td>
 </tr>
-
 <tr>
 <td>RJST</td>
 <td><a href="https://robjelinskistudios.com/Beth-Ellen/" data-linktype="external">Rob Jelinski Studios, llc.</a></td>
 </tr>
-
 <tr>
 <td>RKFN</td>
 <td>R K Fonts</td>
 </tr>
-
 <tr>
 <td>RL</td>
 <td><a href="http://www.dafont.com/ruben-holthuijsen.d2014" data-linktype="external">Ruben Holthuijsen</a></td>
 </tr>
-
 <tr>
 <td>RLTF</td>
 <td><a href="http://www.Rebeletter.com" data-linktype="external">Rebeletter Studios</a></td>
 </tr>
-
 <tr>
 <td>RMU</td>
 <td><a href="http://www.dtp-studio-unger.de" data-linktype="external">RMU TypeDesign</a></td>
 </tr>
-
 <tr>
 <td>ROB</td>
 <td><a href="https://robertjanes.com.au" data-linktype="external">Robert Janes</a></td>
 </tr>
-
 <tr>
 <td>robo</td>
 <td><a href="http://www.petr.nl/" data-linktype="external">Buro Petr van Blokland</a></td>
 </tr>
-
 <tr>
 <td>ROBU</td>
 <td><a href="http://www.robu.co" data-linktype="external">SC ROBU DESIGN S.R.L.</a></td>
 </tr>
-
 <tr>
 <td>ROHH</td>
 <td><a href="http://www.rohh.net" data-linktype="external">ROHH studio</a></td>
 </tr>
-
 <tr>
 <td>RPTR</td>
 <td><a href="http://www.rampageraptor.com" data-linktype="external">Rampage Raptor</a></td>
 </tr>
-
 <tr>
 <td>RRT</td>
 <td><a href="http://www.roostertypes.com/" data-linktype="external">Red Rooster Collection (ITF, Inc.)</a></td>
 </tr>
-
 <tr>
 <td>RSJ</td>
 <td><a href="http://www.rsj.de" data-linktype="external">RSJ Software</a></td>
 </tr>
-
 <tr>
 <td>RSMS</td>
 <td><a href="https://rsms.me/" data-linktype="external">Rsms</a></td>
 </tr>
-
 <tr>
 <td>RST</td>
 <td><a href="http://www.rosettatype.com" data-linktype="external">Rosetta</a></td>
 </tr>
-
 <tr>
 <td>RUDY</td>
 <td>RudynFluffy</td>
 </tr>
-
 <tr>
 <td>RXBN</td>
 <td><a href="http://roxaboxen.us/" data-linktype="external">Roxaboxen</a></td>
 </tr>
-
 <tr>
 <td>RYOB</td>
 <td>Ryobi Limited</td>
 </tr>
-
 <tr>
 <td>RYT</td>
-<td>Ra&#39;ey Type</td>
+<td>Ra'ey Type</td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="s">S</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>S4TF</td>
 <td>Sed4-Type Foundry</td>
 </tr>
-
 <tr>
 <td>SAJA</td>
 <td><a href="http://www.sajatypeworks.com" data-linktype="external">Saja Typeworks</a></td>
 </tr>
-
 <tr>
 <td>SALT</td>
 <td><a href="http://www.solonka.co" data-linktype="external">Solonka Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>SAND</td>
 <td><a href="http://www.sandolltype.com/" data-linktype="external">Sandoll</a></td>
 </tr>
-
 <tr>
 <td>SAPL</td>
 <td><a href="http://www.sansplomb.com" data-linktype="external">Fonderie sans plomb</a></td>
 </tr>
-
 <tr>
 <td>SATY</td>
 <td><a href="http://www.samuelstype.com" data-linktype="external">Samuelstype Design AB</a></td>
 </tr>
-
 <tr>
 <td>SAX</td>
 <td><a href="http://www.saxsoft.de/" data-linktype="external">s.a.x. Software gmbh</a></td>
 </tr>
-
 <tr>
 <td>SbB</td>
 <td><a href="http://www.sketchbookb.com" data-linktype="external">Sketchbook B</a></td>
 </tr>
-
 <tr>
 <td>SBT</td>
 <td><a href="http://www.selfbuildtype.com/" data-linktype="external">SelfBuild Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>SCTO</td>
 <td><a href="http://www.schick-toikka.com" data-linktype="external">Schick Toikka</a></td>
 </tr>
-
 <tr>
 <td>SE</td>
 <td><a href="http://www.stephaneelbaz.com" data-linktype="external">Stéphane Elbaz</a></td>
 </tr>
-
 <tr>
 <td>Sean</td>
 <td><a href="http://www.fontsite.com/" data-linktype="external">The FontSite</a></td>
 </tr>
-
 <tr>
 <td>SFS</td>
 <td>Sarumadhu Services Pvt. Ltd.</td>
 </tr>
-
 <tr>
 <td>SFUN</td>
 <td>Software Union</td>
 </tr>
-
 <tr>
 <td>SG</td>
 <td><a href="http://www.scootergraphics.com/" data-linktype="external">Scooter Graphics</a></td>
 </tr>
-
 <tr>
 <td>SHAM</td>
 <td><a href="http://www.shamrockfonts.com" data-linktype="external">ShamFonts / Shamrock Int.</a></td>
 </tr>
-
 <tr>
 <td>SHFT</td>
 <td><a href="http://www.shiftype.com/" data-linktype="external">Shift</a></td>
 </tr>
-
 <tr>
 <td>SHMI</td>
 <td><a href="http://www.sharanda.com" data-linktype="external">Sharanda</a></td>
 </tr>
-
 <tr>
 <td>SHOT</td>
 <td><a href="http://www.shotype.com" data-linktype="external">Shotype</a></td>
 </tr>
-
 <tr>
 <td>SHRP</td>
 <td><a href="http://www.sharptype.co" data-linktype="external">Sharp Type</a></td>
 </tr>
-
 <tr>
 <td>SHS</td>
 <td><a href="http://www.shahabsiavash.com/" data-linktype="external">Shahab Siavash Studio</a></td>
 </tr>
-
 <tr>
 <td>SHUB</td>
 <td><a href="http://www.the-software-hub.com" data-linktype="external">The Software Hub</a></td>
 </tr>
-
 <tr>
 <td>sic</td>
-<td><a href="https://www.font.jpn.com" data-linktype="external">Skill Information&quot;S&quot; Co., Ltd.</a></td>
+<td><a href="https://www.font.jpn.com" data-linktype="external">Skill Information"S" Co., Ltd.</a></td>
 </tr>
-
 <tr>
 <td>SIG</td>
 <td><a href="http://www.vletter.com" data-linktype="external">vLetter, Inc</a></td>
 </tr>
-
 <tr>
 <td>SIL</td>
 <td><a href="http://www.sil.org/" data-linktype="external">SIL International (SIL)</a></td>
 </tr>
-
 <tr>
 <td>SIT</td>
 <td><a href="http://www.summitindia.com/" data-linktype="external">Summit Information Technologies Pvt.Ltd,</a></td>
 </tr>
-
 <tr>
 <td>SKP</td>
 <td><a href="http://www.essque-productions.com" data-linktype="external">Essqu&#233; Productions</a></td>
 </tr>
-
 <tr>
 <td>skz</td>
-<td><a href="http://www.celticlady.com/celtshop/" data-linktype="external">Celtic Lady&#39;s Fonts</a></td>
+<td><a href="http://www.celticlady.com/celtshop/" data-linktype="external">Celtic Lady's Fonts</a></td>
 </tr>
-
 <tr>
 <td>SL</td>
 <td><a href="http://www.silesian.com/" data-linktype="external">Silesian Letters</a></td>
 </tr>
-
 <tr>
 <td>Slab</td>
 <td><a href="http://www.schriftlabor.at/" data-linktype="external">Schriftlabor</a></td>
 </tr>
-
 <tr>
 <td>SMC</td>
 <td><a href="http://www.smc.org.in/" data-linktype="external">Swathanthra Malayalam Computing</a></td>
 </tr>
-
 <tr>
 <td>SN</td>
 <td>SourceNet</td>
 </tr>
-
 <tr>
 <td>SOHO</td>
 <td><a href="http://www.softhorizons.net" data-linktype="external">Soft Horizons</a></td>
 </tr>
-
 <tr>
 <td>SOS</td>
 <td>Standing Ovations Software</td>
 </tr>
-
 <tr>
 <td>SOTY</td>
 <td><a href="https://so-type.com" data-linktype="external">So Type</a></td>
 </tr>
-
 <tr>
 <td>SPIR</td>
 <td>Spiratype</td>
 </tr>
-
 <tr>
 <td>SPRT</td>
 <td><a href="http://www.sportsfonts.com" data-linktype="external">Sports Fonts</a></td>
 </tr>
-
 <tr>
 <td>spty</td>
 <td><a href="http://www.supertype.de" data-linktype="external">supertype</a></td>
 </tr>
-
 <tr>
 <td>SRC</td>
 <td><a href="http://www.sourcefoundry.org" data-linktype="external">Source Foundry</a></td>
 </tr>
-
 <tr>
 <td>STC</td>
 <td><a href="http://www.eyebytes.com" data-linktype="external">Sorkin Type Co</a></td>
 </tr>
-
 <tr>
 <td>STF</td>
-<td><a href="http://www.briansooyco.com/" data-linktype="external">Brian Sooy &amp; Co + Sooy Type Foundry</a></td>
+<td><a href="http://www.briansooyco.com/" data-linktype="external">Brian Sooy & Co + Sooy Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>STFD</td>
 <td><a href="http://www.snuffletrumper.com/fonts" data-linktype="external">snuffletrumper</a></td>
 </tr>
-
 <tr>
 <td>Stor</td>
 <td><a href="http://www.stormtype.com/" data-linktype="external">Storm Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>STYP</td>
 <td><a href="http://www.stonetypefoundry.com/" data-linktype="external">Stone Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>SUNW</td>
 <td><a href="http://www.sunwalk.com/" data-linktype="external">sunwalk fontworks</a></td>
 </tr>
-
 <tr>
 <td>SVTD</td>
 <td><a href="http://www.typography.synthview.com" data-linktype="external">Synthview</a></td>
 </tr>
-
 <tr>
 <td>SWFT</td>
 <td>Swfte International</td>
 </tr>
-
 <tr>
 <td>SWTY</td>
 <td><a href="http://www.swisstypefaces.com" data-linktype="external">Swiss Typefaces</a></td>
 </tr>
-
 <tr>
 <td>SXRA</td>
 <td><a href="http://www.syxra.cz" data-linktype="external">Page42 Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>SYDA</td>
 <td><a href="http://www.siddhayoga.org" data-linktype="external">Shree Muktananda Ashram</a></td>
 </tr>
-
 <tr>
 <td>SYN</td>
 <td><a href="http://www.synfonts.com/" data-linktype="external">SynFonts</a></td>
 </tr>
-
 <tr>
 <td>SYRC</td>
 <td><a href="http://www.bethmardutho.org/" data-linktype="external">Syriac Computing Institute</a></td>
 </tr>
-
 <tr>
 <td>SYRF</td>
 <td><a href="https://www.facebook.com/muohammadalhaj/" data-linktype="external">Syrian Revolution font</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="t">T</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>TB</td>
 <td><a href="http://www.typebank.co.jp/" data-linktype="external">TypeBank Co.,Ltd</a></td>
 </tr>
-
 <tr>
 <td>TBFF</td>
 <td><a href="http://www.myfonts.com/foundry/trueblue/" data-linktype="external">TrueBlue Font Foundry</a></td>
 </tr>
-
 <tr>
 <td>TC</td>
 <td><a href="http://www.typeco.com/" data-linktype="external">Typeco</a></td>
 </tr>
-
 <tr>
 <td>TCH</td>
 <td>Darryl Cook</td>
 </tr>
-
 <tr>
 <td>TD</td>
 <td><a href="http://www.typedepot.com" data-linktype="external">Typedepot</a></td>
 </tr>
-
 <tr>
 <td>TDR</td>
-<td>Tansin A. Darcos &amp; Co.</td>
+<td>Tansin A. Darcos & Co.</td>
 </tr>
-
 <tr>
 <td>TERM</td>
 <td><a href="http://www.terminaldesign.com/" data-linktype="external">Terminal Design, Inc.</a></td>
 </tr>
-
 <tr>
 <td>TF</td>
 <td><a href="http://www.treacyfaces.com/" data-linktype="external">Treacyfaces / Headliners</a></td>
 </tr>
-
 <tr>
 <td>TF3D</td>
 <td><a href="http://www.tattoofont3d.com" data-linktype="external">TattooFont3D</a></td>
 </tr>
-
 <tr>
 <td>TFAC</td>
 <td><a href="http://www.typefactory.net" data-linktype="external">Typefactory</a></td>
 </tr>
-
 <tr>
 <td>TFND</td>
 <td><a href="http://www.typefounding.com" data-linktype="external">Typefounding</a></td>
 </tr>
-
 <tr>
 <td>TGHT</td>
 <td><a href="http://www.tightype.com" data-linktype="external">TIGHTYPE</a></td>
 </tr>
-
 <tr>
 <td>THIN</td>
 <td><a href="http://www.thinstroke.com" data-linktype="external">Thinstroke Design LLC</a></td>
 </tr>
-
 <tr>
 <td>TILD</td>
 <td><a href="http://www.tilde.lv/fonts/" data-linktype="external">Tilde, SIA</a></td>
 </tr>
-
 <tr>
 <td>TIMO</td>
 <td><a href="http://www.aimsdata.com/tim/" data-linktype="external">Tim Romano</a></td>
 </tr>
-
 <tr>
 <td>TIMR</td>
 <td><a href="http://www.timrolands.com/" data-linktype="external">Tim Rolands</a></td>
 </tr>
-
 <tr>
 <td>TINY</td>
 <td><a href="http://www.tinytype.co" data-linktype="external">Tiny Type Co.</a></td>
 </tr>
-
 <tr>
 <td>TIPO</td>
 <td><a href="http://www.tipo.net.ar" data-linktype="external">Tipo</a></td>
 </tr>
-
 <tr>
 <td>TIRO</td>
 <td><a href="http://www.tiro.com/" data-linktype="external">Tiro Typeworks</a></td>
 </tr>
-
 <tr>
 <td>TJS</td>
 <td><a href="http://www.typejockeys.com" data-linktype="external">Typejockeys</a></td>
 </tr>
-
 <tr>
 <td>TLIN</td>
 <td><a href="http://www.myfonts.com/foundry/Teeline_Fonts/" data-linktype="external">Teeline Fonts</a></td>
 </tr>
-
 <tr>
 <td>TM</td>
 <td><a href="http://www.typemafia.com" data-linktype="external">Type Mafia</a></td>
 </tr>
-
 <tr>
 <td>TMF</td>
 <td><a href="http://www.themicrofoundry.com/" data-linktype="external">The MicroFoundry</a></td>
 </tr>
-
 <tr>
 <td>TMT</td>
 <td><a href="http://www.typemytype.com" data-linktype="external">TypeMyType Comm. V.</a></td>
 </tr>
-
 <tr>
 <td>TNB</td>
 <td><a href="http://www.thenorthernblock.co.uk" data-linktype="external">The Northern Block</a></td>
 </tr>
-
 <tr>
 <td>TNTY</td>
 <td><a href="http://www.tntypography.com" data-linktype="external">tntypography</a></td>
 </tr>
-
 <tr>
 <td>TO</td>
 <td><a href="http://www.tondonero.com" data-linktype="external">Tondonero</a></td>
 </tr>
-
 <tr>
 <td>TOKO</td>
 <td><a href="https://www.tokotypefaces.com" data-linktype="external">Tokotype</a></td>
 </tr>
-
 <tr>
 <td>TOPP</td>
 <td><a href="http://www.toppan.co.jp/" data-linktype="external">Toppan Printing Co., Ltd.</a></td>
 </tr>
-
 <tr>
 <td>TPDP</td>
 <td><a href="http://www.typedepartment.de" data-linktype="external">Type Department</a></td>
 </tr>
-
 <tr>
 <td>TPMA</td>
 <td><a href="http://www.typoma.com" data-linktype="external">typoma</a></td>
 </tr>
-
 <tr>
 <td>TPOP</td>
 <td><a href="http://www.tipospereira.com" data-linktype="external">Tipos Pereira Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>TPSP</td>
 <td><a href="http://www.typesupply.com" data-linktype="external">Type Supply</a></td>
 </tr>
-
 <tr>
 <td>TPTA</td>
 <td><a href="http://www.tptq-arabic.com" data-linktype="external">TPTQ Arabic</a></td>
 </tr>
-
 <tr>
 <td>TPTC</td>
 <td><a href="http://www.testpilotcollective.com/" data-linktype="external">Test Pilot Collective</a></td>
 </tr>
-
 <tr>
 <td>TPTQ</td>
 <td><a href="http://www.typotheque.com/" data-linktype="external">Typotheque</a></td>
 </tr>
-
 <tr>
 <td>TR</td>
 <td>Type Revivals</td>
 </tr>
-
 <tr>
 <td>TRAF</td>
 <td><a href="http://www.traffictype.com" data-linktype="external">Traffictype</a></td>
 </tr>
-
 <tr>
 <td>TREE</td>
 <td><a href="http://www.simple.treeflow.com" data-linktype="external">Treeflow</a></td>
 </tr>
-
 <tr>
 <td>TS</td>
 <td><a href="http://www.tamilsoft.com/" data-linktype="external">TamilSoft Corporation</a></td>
 </tr>
-
 <tr>
 <td>TSPC</td>
 <td><a href="http://www.typespec.co.uk" data-linktype="external">Typespec Ltd</a></td>
 </tr>
-
 <tr>
 <td>TSTY</td>
 <td>Torleiv Georg Sverdrup</td>
 </tr>
-
 <tr>
 <td>TT</td>
 <td><a href="http://www.type-together.com" data-linktype="external">TypeTogether</a></td>
 </tr>
-
 <tr>
 <td>TTC</td>
 <td><a href="https://tribby.com/" data-linktype="external">Tribby Type Co.</a></td>
 </tr>
-
 <tr>
 <td>TTG</td>
 <td><a href="http://www.twardoch.com/" data-linktype="external">Twardoch Typography</a></td>
 </tr>
-
 <tr>
 <td>TTY</td>
 <td><a href="http://www.tipotype.com" data-linktype="external">Tipotype</a></td>
 </tr>
-
 <tr>
 <td>TY</td>
 <td><a href="http://www.typocalypse.com/" data-linktype="external">Typocalypse</a></td>
 </tr>
-
 <tr>
 <td>TYCU</td>
 <td><a href="http://www.typeculture.com/" data-linktype="external">TypeCulture</a></td>
 </tr>
-
 <tr>
 <td>TYFR</td>
 <td><a href="http://www.typographies.fr" data-linktype="external">typographies.fr</a></td>
 </tr>
-
 <tr>
 <td>TYME</td>
 <td><a href="http://www.typemefonts.com" data-linktype="external">type me! Font Foundry</a></td>
 </tr>
-
 <tr>
 <td>TYPA</td>
 <td><a href="http://www.typadelic.com/" data-linktype="external">Typadelic</a></td>
 </tr>
-
 <tr>
 <td>TYPB</td>
 <td><a href="http://www.typebrut.com" data-linktype="external">Type Brut</a></td>
 </tr>
-
 <tr>
 <td>TYPE</td>
 <td><a href="http://www.visiblelink.com.au/fonts.html" data-linktype="external">Type Associates Pty Ltd</a></td>
 </tr>
-
 <tr>
 <td>TYPO</td>
 <td><a href="http://www.typodermic.com/" data-linktype="external">Typodermic</a></td>
 </tr>
-
 <tr>
 <td>TYPR</td>
 <td><a href="http://www.typeproject.com/" data-linktype="external">Type Project</a></td>
 </tr>
-
 <tr>
 <td>TYRE</td>
 <td><a href="http://www.typerepublic.com/" data-linktype="external">typerepublic</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="u">U</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>UA</td>
 <td><a href="http://www.uatype.faithweb.com/" data-linktype="external">UnAuthorized Type</a></td>
 </tr>
-
 <tr>
 <td>UBER</td>
 <td><a href="https://ubertype.de/" data-linktype="external">übertype</a></td>
 </tr>
-
 <tr>
 <td>UKUK</td>
 <td><a href="https://ultra-kuhl.com/" data-linktype="external">Ultra Kühl</a></td>
 </tr>
-
 <tr>
 <td>ULA</td>
 <td><a href="http://www.zkysky.com.ar/" data-linktype="external">Montserrat Typeface</a></td>
 </tr>
-
 <tr>
 <td>UNDS</td>
 <td><a href="https://underscoretype.com" data-linktype="external">Underscore Type</a></td>
 </tr>
-
 <tr>
 <td>UNDT</td>
 <td>ÜNDT</td>
 </tr>
-
 <tr>
 <td>UNIC</td>
 <td><a href="https://www.unicode.org" data-linktype="external">Unicode Consortium</a></td>
 </tr>
-
 <tr>
 <td>URW</td>
 <td><a href="http://www.urwpp.de/" data-linktype="external">URW++</a></td>
 </tr>
-
 <tr>
 <td>UT</td>
 <td><a href="http://www.unitype.com/" data-linktype="external">Unitype Inc</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="v">V</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>VINT</td>
 <td><a href="http://www.vinterstille.dk" data-linktype="external">Vinterstille</a></td>
 </tr>
-
 <tr>
 <td>VJ</td>
 <td><a href="http://www.edesignzone.com" data-linktype="external">eDESIGNzone</a></td>
 </tr>
-
 <tr>
 <td>VKP</td>
 <td><a href="http://www.flash.net/~patelvk/indianfonts.html" data-linktype="external">Vijay K. Patel</a></td>
 </tr>
-
 <tr>
 <td>VLKF</td>
-<td><a href="http://www.visualogik.com/" data-linktype="external">Visualogik Technology &amp; Design</a></td>
+<td><a href="http://www.visualogik.com/" data-linktype="external">Visualogik Technology & Design</a></td>
 </tr>
-
 <tr>
 <td>VLNL</td>
 <td><a href="http://www.vetteletters.nl/" data-linktype="external">VetteLetters.nl</a></td>
 </tr>
-
 <tr>
 <td>VMT</td>
 <td><a href="http://www.vmtype.com" data-linktype="external">VMType</a></td>
 </tr>
-
 <tr>
 <td>VOG</td>
 <td><a href="http://www.martinvogel.de/" data-linktype="external">Martin Vogel</a></td>
 </tr>
-
 <tr>
 <td>VRED</td>
 <td><a href="http://www.vred.kz" data-linktype="external">Vred Letters</a></td>
 </tr>
-
 <tr>
 <td>VROM</td>
 <td>Vladimir Romanov</td>
 </tr>
-
 <tr>
 <td>VS</td>
 <td><a href="http://www.vorsicht.de/" data-linktype="external">VorSicht GmbH</a></td>
 </tr>
-
 <tr>
 <td>VT</td>
 <td><a href="http://www.visualtype.com/" data-linktype="external">VISUALTYPE SRL</a></td>
 </tr>
-
 <tr>
 <td>VTF</td>
 <td><a href="http://www.velvetyne.fr" data-linktype="external">Velvetyne Type Foundry</a></td>
 </tr>
-
 <tr>
 <td>VTP</td>
 <td><a href="https://www.viettelpay.vn/" data-linktype="external">Quang Manh Nguyen</a></td>
 </tr>
-
-
-</tr></tr></table>
-
+<tr>
+<td>VTYP</td>
+<td><a href="http://www.vtypo.com/" data-linktype="external">(v) design</a></td>
+</tr>
+</table>
 <h2 id="w">W</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>WAFO</td>
 <td><a href="http://www.waldenfont.com/" data-linktype="external">Walden Font Co.</a></td>
 </tr>
-
 <tr>
 <td>WALA</td>
 <td><a href="http://www.fontwala.com" data-linktype="external">Fontwala</a></td>
 </tr>
-
 <tr>
 <td>WASP</td>
 <td><a href="http://www.waspbarcode.com/" data-linktype="external">Wasp Barcode Technologies</a></td>
 </tr>
-
 <tr>
 <td>WEI</td>
 <td>Wei Huang</td>
 </tr>
-
 <tr>
 <td>WILL</td>
 <td><a href="http://www.willerstorfer.com" data-linktype="external">Willerstorfer Font Foundry</a></td>
 </tr>
-
 <tr>
 <td>WL</td>
 <td><a href="http://www.writlargefonts.com" data-linktype="external">Writ Large Fonts</a></td>
 </tr>
-
 <tr>
 <td>WM</td>
 <td>Webmakers India</td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="x">X</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>XFC</td>
 <td><a href="http://www.font.net/" data-linktype="external">Xerox Font Services</a></td>
 </tr>
-
 <tr>
 <td>XOTH</td>
 <td><a href="http://www.about.me/xoth" data-linktype="external">Xoth Morello</a></td>
 </tr>
-
 <tr>
 <td>XYZ</td>
 <td><a href="http://www.xyztype.com" data-linktype="external">XYZ Type LLC</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="y">Y</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
-<td>Y&amp;Y</td>
-<td>Y&amp;Y, Inc.</td>
+<td>Y&Y</td>
+<td>Y&Y, Inc.</td>
 </tr>
-
 <tr>
 <td>YDI</td>
 <td><a href="http://www.yoondesign.com" data-linktype="external">YOON Design Group</a></td>
 </tr>
-
 <tr>
 <td>YDS</td>
 <td><a href="http://www.yellowdesignstudio.com" data-linktype="external">Yellow Design Studio</a></td>
 </tr>
-
 <tr>
 <td>YN</td>
 <td><a href="http://www.yanone.de" data-linktype="external">Yanone</a></td>
 </tr>
-
 <tr>
 <td>YOFF</td>
 <td><a href="http://www.yourownfont.com" data-linktype="external">Your Own Font Foundry</a></td>
 </tr>
-
 <tr>
 <td>YOKO</td>
 <td><a href="http://www.yokokaku.jp/" data-linktype="external">Yokokaku</a></td>
 </tr>
-
 <tr>
 <td>YOUR</td>
 <td><a href="http://www.yourfonts.com" data-linktype="external">YourFonts.com</a></td>
 </tr>
-
 <tr>
 <td>YWFT</td>
 <td><a href="http://www.youworkforthem.com" data-linktype="external">YouWorkForThem</a></td>
 </tr>
-
-</tr></tr></table>
-
+</table>
 <h2 id="z">Z</h2>
 <table>
    <tr align="left">
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
-    <tr>
-
+    </tr>
 <tr>
 <td>ZANE</td>
 <td><a href="http://www.unrender.com/" data-linktype="external">Unrender</a></td>
 </tr>
-
 <tr>
 <td>ZeGr</td>
 <td><a href="http://www.ayz.com/zff/" data-linktype="external">Zebra Font Factory</a></td>
 </tr>
-
 <tr>
 <td>zeta</td>
 <td>Tangram Studio</td>
 </tr>
-
 <tr>
 <td>ZSFT</td>
 <td>Zsoft</td>
 </tr>
-
-
-</tr></tr></table>
-
+</table>
 <h2 id="external-links-disclaimer">External links disclaimer</h2>
-<p>External Web sites listed here are not under the control of Microsoft. Accordingly, Microsoft can make no representation concerning the content of these sites to you, nor can the fact that Microsoft has given you this listing serve as an endorsement by Microsoft of any of these sites. Microsoft is providing external links only as a convenience to you. This is to inform you that Microsoft has not tested any software found on these sites and therefore cannot make any representations regarding the quality, safety or suitability of any software found there. There are inherent dangers in the use of any software found on the Internet, and Microsoft cautions you to make sure that you completely understand the risks before retrieving any software on the Internet. </p>
+<p>External Web sites listed here are not under the control of Microsoft. Accordingly, Microsoft can make no representation concerning the content of these sites to you, nor can the fact that Microsoft has given you this listing serve as an endorsement by Microsoft of any of these sites. Microsoft is providing external links only as a convenience to you. This is to inform you that Microsoft has not tested any software found on these sites and therefore cannot make any representations regarding the quality, safety or suitability of any software found there. There are inherent dangers in the use of any software found on the Internet, and Microsoft cautions you to make sure that you completely understand the risks before retrieving any software on the Internet.</p>
 
 						<!-- </content> -->
 
@@ -4391,7 +3616,9 @@ High contrast					</span>
 				</div>
 				<div class="control dropdown has-caret has-margin-top-none has-margin-bottom-none" auto-align>
 					<button class="button dropdown-trigger is-full-height" aria-describedby="send-feedback-about" aria-haspopup="true" aria-expanded="false" aria-controls="fbm0" aria-label="Additional feedback options" data-bi-name="documentation-feedback-menu">
-						<span class="icon docon docon-chevron-down-light" aria-hidden="true"></span>
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-chevron-down-light expanded-indicator"></span>
+						</span>
 					</button>
 					<div id="fbm0" class="dropdown-menu documentation-feedback-menu">
 						You may also leave feedback directly on <a data-bi-name="create-issue-on-github" href="{0}">GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.					</div>
@@ -4406,7 +3633,9 @@ This page					</button>
 				</div>
 				<div class="control dropdown has-caret has-margin-top-none has-margin-bottom-none" auto-align>
 					<button class="button dropdown-trigger" aria-describedby="send-feedback-about" aria-haspopup="true" aria-expanded="false" aria-controls="fbm1" aria-label="Additional feedback options" data-bi-name="documentation-feedback-menu">
-						<span class="icon docon docon-chevron-down-light" aria-hidden="true"></span>
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-chevron-down-light expanded-indicator"></span>
+						</span>
 					</button>
 					<div id="fbm1" class="dropdown-menu documentation-feedback-menu">
 						You may also leave feedback directly on <a data-bi-name="create-issue-on-github" href="{0}">GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.					</div>
@@ -4424,7 +3653,7 @@ This page					</button>
 
 		<label>
 			<span class="visually-hidden">Issue Title</span>
-			<input class="input is-radiusless has-margin-bottom-small" name="title" type="text" placeholder="Issue Title" required pattern=".*\w.*">
+			<input class="input is-radiusless has-margin-bottom-small" name="title" type="text" placeholder="Issue Title" required pattern=".*[^\s]+.*">
 		</label>
 		<label>
 			<span class="visually-hidden">Leave a comment</span>
@@ -4488,27 +3717,17 @@ This page					</button>
 						</div>
 					</div>
 
-					<!--end of div.columns -->
+					<div id="page-actions" class="right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+							<nav id="side-doc-outline" class="doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="On page navigation">
+								<h3>In this article</h3>
+							</nav>
+					</div>
 
+					<!--end of div.columns -->
 				</div>
 
 			<!--end of .primary-holder -->
 			</section>
-
-				<div id="left-container" class="left-container column is-one-third-tablet is-one-quarter-desktop">
-					<nav class="sidebar" id="sidebar" data-bi-name="left toc" role="navigation" aria-label="Main Navigation">
-						<button class="sidebar-header has-inner-focus" type="button" aria-label="Close" data-bi-name="contents-collapse">
-							<span>Contents</span>
-							<span class="docon docon-navigate-close" aria-hidden="true"></span>
-						</button>
-						<div id="sidebarContent">
-							<div class="filterHolder">
-							</div>
-							<nav class="toc"></nav>
-							<div class="pdf-download-holder"></div>
-						</div>
-					</nav>
-				</div>
 
 			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
 			</aside>
