@@ -564,14 +564,14 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
 
 @check(
   id = 'com.google.fonts/check/usweightclass',
-  conditions=['style']
+  conditions=['expected_style']
 )
-def com_google_fonts_check_usweightclass(font, ttFont, style):
+def com_google_fonts_check_usweightclass(ttFont, expected_style):
   """Checking OS/2 usWeightClass."""
   from fontbakery.profiles.shared_conditions import is_ttf
-  from .googlefonts_conditions import expected_os2_weight
 
-  weight_name, expected_value = expected_os2_weight(style)
+  expected_value = expected_style.usWeightClass
+  weight_name = expected_style.name
   value = ttFont['OS/2'].usWeightClass
 
   if value != expected_value:

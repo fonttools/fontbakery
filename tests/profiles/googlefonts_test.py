@@ -526,34 +526,34 @@ def test_check_name_unwanted_chars():
 
 def test_check_usweightclass():
   """ Checking OS/2 usWeightClass. """
-  from fontbakery.profiles.googlefonts import (com_google_fonts_check_usweightclass as check,
-                                                     style)
+  from fontbakery.profiles.googlefonts import (com_google_fonts_check_usweightclass as check)
+  from fontbakery.profiles.googlefonts_conditions import expected_style
   # Our reference Mada Regular is know to be bad here.
   font = TEST_FILE("mada/Mada-Regular.ttf")
   print(f"Test FAIL with bad font '{font}' ...")
   ttFont = TTFont(font)
-  status, message = list(check(font, ttFont, style(font)))[-1]
+  status, message = list(check(ttFont, expected_style(ttFont)))[-1]
   assert status == FAIL
 
   # All fonts in our reference Cabin family are know to be good here.
   for font in cabin_fonts:
     print(f"Test PASS with good font '{font}' ...")
     ttFont = TTFont(font)
-    status, message = list(check(font, ttFont, style(font)))[-1]
+    status, message = list(check(ttFont, expected_style(ttFont)))[-1]
     assert status == PASS
 
   font = TEST_FILE("montserrat/Montserrat-Thin.ttf")
   ttFont = TTFont(font)
   ttFont["OS/2"].usWeightClass = 100
   print("Test WARN with a Thin:100 TTF...")
-  status, message = list(check(font, ttFont, style(font)))[-1]
+  status, message = list(check(ttFont, expected_style(ttFont)))[-1]
   assert status == WARN
 
   font = TEST_FILE("montserrat/Montserrat-ExtraLight.ttf")
   ttFont = TTFont(font)
   ttFont["OS/2"].usWeightClass = 200
   print("Test WARN with an ExtraLight:200 TTF...")
-  status, message = list(check(font, ttFont, style(font)))[-1]
+  status, message = list(check(ttFont, expected_style(ttFont)))[-1]
   assert status == WARN
 
   # TODO: test FAIL with a Thin:100 OTF
