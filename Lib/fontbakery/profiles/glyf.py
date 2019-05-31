@@ -50,26 +50,30 @@ def com_google_fonts_check_glyf_unused_data(ttFont):
   })
 def com_google_fonts_check_points_out_of_bounds(ttFont):
   """Check for points out of bounds."""
+  from fontbakery.utils import pretty_print_list
   failed = False
   out_of_bounds = []
   for glyphName in ttFont['glyf'].keys():
     glyph = ttFont['glyf'][glyphName]
     coords = glyph.getCoordinates(ttFont['glyf'])[0]
     for x, y in coords:
-      if x < glyph.xMin or x > glyph.xMax or \
-         y < glyph.yMin or y > glyph.yMax or \
+      if round(x) < glyph.xMin or round(x) > glyph.xMax or \
+         round(y) < glyph.yMin or round(y) > glyph.yMax or \
          abs(x) > 32766 or abs(y) > 32766:
         failed = True
         out_of_bounds.append((glyphName, x, y))
 
   if failed:
     yield WARN, ("The following glyphs have coordinates which are"
-                 " out of bounds:\n{}\nThis happens a lot when points"
+                 " out of bounds:\n\t* {}\nThis happens a lot when points"
                  " are not extremes, which is usually bad. However,"
                  " fixing this alert by adding points on extremes may"
                  " do more harm than good, especially with italics,"
                  " calligraphic-script, handwriting, rounded and"
                  " other fonts. So it is common to"
-                 " ignore this message".format(out_of_bounds))
+                 " ignore this message."
+		 "".format(pretty_print_list(out_of_bounds,
+                                             shorten=10,
+                                             sep="\n\t* ")))
   else:
     yield PASS, "All glyph paths have coordinates within bounds!"

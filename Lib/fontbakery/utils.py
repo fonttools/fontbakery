@@ -35,16 +35,16 @@ def TEST_FILE(f):
   return portable_path("data/test/" + f)
 
 
-def pretty_print_list(values, shorten=10, glue="and"):
+def pretty_print_list(values, shorten=10, sep=", ", glue="and"):
   if len(values) == 1:
     return str(values[0])
 
   if shorten and len(values) > shorten + 2:
-    return "{} {} {} more.".format(", ".join(map(str, values[:shorten])),
+    return "{} {} {} more.".format(sep.join(map(str, values[:shorten])),
                                    glue,
                                    len(values) - shorten)
   else:
-    return "{} {} {}".format(", ".join(map(str, values[:-1])),
+    return "{} {} {}".format(sep.join(map(str, values[:-1])),
                              glue,
                              str(values[-1]))
 

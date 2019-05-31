@@ -66,6 +66,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/all_glyphs_have_codepoints',
     'com.google.fonts/check/monospace_max_advancewidth',
     'com.google.fonts/check/wght_valid_range',
+    'com.google.fonts/check/wdth_valid_range',
     'com.google.fonts/check/code_pages',
 ]
 
