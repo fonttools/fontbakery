@@ -19,27 +19,25 @@ def test_check_varfont_regular_wght_coord():
   from fontbakery.profiles.shared_conditions import regular_wght_coord
 
   # Our reference varfont, CabinVFBeta.ttf, has
-  # a bad Regular:wght coordinate
+  # a good Regular:wght coordinate
   ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
   regular_weight_coord = regular_wght_coord(ttFont)
 
-  # So it must FAIL the test
-  print('Test FAIL with a bad Regular:wght coordinate...')
+  # So it must PASS the test
+  print('Test PASS with a good Regular:wght coordinate...')
   status, message = list(check(ttFont, regular_weight_coord))[-1]
-  assert status == FAIL
+  assert status == PASS
 
-  # We then fix the value:
-  ttFont["fvar"].instances[0].coordinates["wght"] = 400
-  # Note: I know the correct instance index for this hotfix because
-  # I inspected the our reference CabinVF using ttx
+  # We then change the value so it must FAIL:
+  ttFont["fvar"].instances[0].coordinates["wght"] = 0
 
   # Then re-read the coord:
   regular_weight_coord = regular_wght_coord(ttFont)
 
-  # and now this should PASS the test:
-  print('Test PASS with a good Regular:wght coordinate (400)...')
+  # and now this should FAIL the test:
+  print('Test FAIL with a bad Regular:wght coordinate (0)...')
   status, message = list(check(ttFont, regular_weight_coord))[-1]
-  assert status == PASS
+  assert status == FAIL
 
 
 def test_check_varfont_regular_wdth_coord():
@@ -49,27 +47,25 @@ def test_check_varfont_regular_wdth_coord():
   from fontbakery.profiles.shared_conditions import regular_wdth_coord
 
   # Our reference varfont, CabinVFBeta.ttf, has
-  # a bad Regular:wdth coordinate
+  # a good Regular:wdth coordinate
   ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
   regular_width_coord = regular_wdth_coord(ttFont)
 
-  # So it must FAIL the test
-  print('Test FAIL with a bad Regular:wdth coordinate...')
+  # So it must PASS the test
+  print('Test PASS with a good Regular:wdth coordinate...')
   status, message = list(check(ttFont, regular_width_coord))[-1]
-  assert status == FAIL
+  assert status == PASS
 
-  # We then fix the value:
-  ttFont["fvar"].instances[0].coordinates["wdth"] = 100
-  # Note: I know the correct instance index for this hotfix because
-  # I inspected the our reference CabinVF using ttx
+  # We then change the value so it must FAIL:
+  ttFont["fvar"].instances[0].coordinates["wdth"] = 0
 
   # Then re-read the coord:
   regular_width_coord = regular_wdth_coord(ttFont)
 
-  # and now this should PASS the test:
-  print('Test PASS with a good Regular:wdth coordinate (100)...')
+  # and now this should FAIL the test:
+  print('Test FAIL with a bad Regular:wdth coordinate (100)...')
   status, message = list(check(ttFont, regular_width_coord))[-1]
-  assert status == PASS
+  assert status == FAIL
 
 
 def test_check_varfont_regular_slnt_coord():
@@ -198,27 +194,25 @@ def test_check_varfont_bold_wght_coord():
   from fontbakery.profiles.shared_conditions import bold_wght_coord
 
   # Our reference varfont, CabinVFBeta.ttf, has
-  # a bad Bold:wght coordinate
+  # a good Bold:wght coordinate
   ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
   bold_weight_coord = bold_wght_coord(ttFont)
 
-  # So it must FAIL the test
-  print('Test FAIL with a bad Bold:wght coordinate...')
+  # So it must PASS the test
+  print('Test PASS with a bad Bold:wght coordinate...')
   status, message = list(check(ttFont, bold_weight_coord))[-1]
-  assert status == FAIL
+  assert status == PASS
 
-  # We then fix the value:
-  ttFont["fvar"].instances[3].coordinates["wght"] = 700
-  # Note: I know the correct instance index for this hotfix because
-  # I inspected the our reference CabinVF using ttx
+  # We then change the value so it must FAIL:
+  ttFont["fvar"].instances[3].coordinates["wght"] = 0
 
   # Then re-read the coord:
   bold_weight_coord = bold_wght_coord(ttFont)
 
-  # and now this should PASS the test:
-  print('Test PASS with a good Bold:wght coordinage (700)...')
+  # and now this should FAIL the test:
+  print('Test FAIL with a bad Bold:wght coordinage (700)...')
   status, message = list(check(ttFont, bold_weight_coord))[-1]
-  assert status == PASS
+  assert status == FAIL
 
 
 def test_check_wght_valid_range():
@@ -245,6 +239,37 @@ def test_check_wght_valid_range():
 
   # And yet another bad value:
   ttFont["fvar"].instances[0].coordinates["wght"] = 1001
+
+  # Should also FAIL:
+  print('Test FAIL with wght=1001...')
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
+
+
+def test_check_wdth_valid_range():
+  """ The variable font 'wdth' (Width) axis coordinate
+      must be within spec range of 1 to 1000 on all instances. """
+  from fontbakery.profiles.fvar import com_google_fonts_check_wdth_valid_range as check
+
+  # Our reference varfont, CabinVFBeta.ttf, has
+  # all instances within the 1-1000 range
+  ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+
+  # so it must PASS the test:
+  print('Test PASS with a good varfont...')
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  # We then introduce a bad value:
+  ttFont["fvar"].instances[0].coordinates["wdth"] = 0
+
+  # And it must FAIL the test
+  print('Test FAIL with wght=0...')
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL
+
+  # And yet another bad value:
+  ttFont["fvar"].instances[0].coordinates["wdth"] = 1001
 
   # Should also FAIL:
   print('Test FAIL with wght=1001...')
