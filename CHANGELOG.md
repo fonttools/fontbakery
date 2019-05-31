@@ -2,9 +2,10 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.6 (2019-Jun-??)
+## 0.7.6 (2019-Jun-10)
 ### Bug fixes
-  - ...
+  - fix bug in **points_out_of_bounds** check: The coordinates of a component multiplied by a scale factor result in floating-point values. These were causing false-FAILs because we were not rounding them before checking if they are within the glyph bounding-box. This was probably making points at extrema to fall slightly out of the bbox. (issue #2518)
+  - also improved the readability of **com.google.fonts/check/points_out_of_bounds**
 
 ### New Checks
   - **[com.google.fonts/check/varfont_instance_coordinates]:** Check variable font instances have correct axis coordinates
