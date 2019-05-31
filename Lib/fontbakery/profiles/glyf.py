@@ -57,8 +57,8 @@ def com_google_fonts_check_points_out_of_bounds(ttFont):
     glyph = ttFont['glyf'][glyphName]
     coords = glyph.getCoordinates(ttFont['glyf'])[0]
     for x, y in coords:
-      if x < glyph.xMin or x > glyph.xMax or \
-         y < glyph.yMin or y > glyph.yMax or \
+      if round(x) < glyph.xMin or round(x) > glyph.xMax or \
+         round(y) < glyph.yMin or round(y) > glyph.yMax or \
          abs(x) > 32766 or abs(y) > 32766:
         failed = True
         out_of_bounds.append((glyphName, x, y))
