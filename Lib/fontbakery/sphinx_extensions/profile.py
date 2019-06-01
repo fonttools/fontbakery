@@ -590,5 +590,7 @@ def _process_docstring(app, what, name, obj, options, lines):
   """
 
   if hasattr(obj, 'rationale') and obj.rationale:
-    lines.append("**Rationale:**\n")
-    lines.append(obj.rationale)
+    lines.append("**Rationale:**")
+
+    for line in obj.rationale.split('\n'):
+      lines.append(line)
