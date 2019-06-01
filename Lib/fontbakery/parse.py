@@ -64,7 +64,7 @@ def _re_string_tokenizer(string, mapping):
             found.append(v)
     if not found:
         return None
-    return sorted(found, key=lambda k: len(k), reverse=True)[0]
+    return sorted(found, key=len, reverse=True)[0]
 
 
 def _style_tokens(string):
@@ -142,7 +142,7 @@ def _style_parse(string):
                     win_typo_style_name=_win_typo_style_name(name),
                     fsSelection=_fsSelection(wght),
                     macStyle=_macStyle(wght),
-                    is_ribbi=True if name in RIBBI_STYLES else False,
+                    is_ribbi=name in RIBBI_STYLES,
                     filename=name.replace(" ", ""))
 
 
