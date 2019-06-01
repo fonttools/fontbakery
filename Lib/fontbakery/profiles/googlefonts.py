@@ -229,7 +229,20 @@ def com_google_fonts_check_description_broken_links(description):
 
 @check(
   id = 'com.google.fonts/check/description/git_url',
-  conditions = ['description']
+  conditions = ['description'],
+  rationale = """
+    The contents of the DESCRIPTION.en-us.html file are displayed
+    on the Google Fonts website in the about section of each font
+    family specimen page.
+
+    Since all of the Google Fonts collection is composed of
+    libre-licensed fonts, this check enforces a policy that there
+    must be a hypertext link in that page directing users to the
+    repository where the font project files are made available.
+
+    Such hosting is typically done on sites like Github, Gitlab,
+    GNU Savannah or any other git-based version control service.
+  """
 )
 def com_google_fonts_check_description_git_url(description):
   """Does DESCRIPTION file contain a upstream Git repo URL?"""
