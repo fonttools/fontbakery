@@ -61,6 +61,7 @@ DESCRIPTION_CHECKS = [
    'com.google.fonts/check/description/valid_html',
    'com.google.fonts/check/description/min_length',
    'com.google.fonts/check/description/max_length',
+   'com.google.fonts/check/description/git_url',
 ]
 
 FAMILY_CHECKS = [
@@ -224,6 +225,29 @@ def com_google_fonts_check_description_broken_links(description):
                  " '{}'").format("', '".join(broken_links))
   else:
     yield PASS, "All links in the DESCRIPTION file look good!"
+
+
+@check(
+  id = 'com.google.fonts/check/description/git_url',
+  conditions = ['description']
+)
+def com_google_fonts_check_description_git_url(description):
+  """Does DESCRIPTION file contain a upstream Git repo URL?"""
+  from lxml import etree
+  doc = etree.fromstring("<html>" + description + "</html>")
+  git_urls = []
+  for a_href in doc.iterfind('.//a[@href]'):
+    link = a_href.get("href")
+    if "://git" in link:
+      git_urls.append(link)
+      yield INFO, (f"Found a git repo URL: {link}")
+
+  if len(git_urls) > 0:
+    yield PASS, "Looks great!"
+  else:
+    yield FAIL, ("Please host your font project on a public Git repo"
+                 " (such as GitHub or GitLab) and place a link"
+                 " in the DESCRIPTION.en_us.html file.")
 
 
 @check(
