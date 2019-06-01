@@ -224,6 +224,29 @@ def test_check_description_broken_links():
   assert status == FAIL
 
 
+def test_check_description_git_url():
+  """ Does DESCRIPTION file contain an upstream Git repo URL? """
+  from fontbakery.profiles.googlefonts import (
+    com_google_fonts_check_description_git_url as check,
+    description,
+    descfile)
+
+  bad_desc = description(descfile(portable_path("data/test/cabin")))
+  print('Test FAIL with description file that has no git repo URLs...')
+  status, message = list(check(bad_desc))[-1]
+  assert status == FAIL
+
+  good_desc = ("<a href='https://github.com/uswds/public-sans'>Good URL</a>"
+               "<a href='https://gitlab.com/smc/fonts/uroob'>Another Good One</a>")
+  print('Test PASS with description file that has good links...')
+  status, message = list(check(good_desc))[-1]
+  assert status == PASS
+
+  bad_desc = "<a href='https://v2.designsystem.digital.gov'>Bad URL</a>"
+  print('Test FAIL with description file that has false git in URL...')
+  status, message = list(check(bad_desc))[-1]
+  assert status == FAIL
+
 def test_check_description_valid_html():
   """ DESCRIPTION file is a propper HTML snippet ? """
   from fontbakery.profiles.googlefonts import (
