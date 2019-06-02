@@ -55,31 +55,10 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
     # type: (Any, str, bool, Any) -> bool
     return isinstance(member, cls.can_doc_cls)
 
-#  def resolve_name(self, modname, parents, path, base):
-#    # type: (str, Any, str, Any) -> Tuple[str, List[str]]
-#    print(f'resolve_name {self.object}:', modname, parents, path, base, '=>', modname, parents + [base])
-#    # returns e.g.: 'fontbakery.profiles.googlefonts', ['com_google_fonts_check_varfont_generate_static']
-#    # and self.object is None yet, implying that resolve_name is really
-#    # early in the process and needed to load self.object eventually
-#    # in import_object (https://github.com/sphinx-doc/sphinx/blob/master/sphinx/ext/autodoc/__init__.py#L135)
-#    # which in turn is called in generate
-#    if modname is None:
-#      if path:
-#        modname = path.rstrip('.')
-#      else:
-#        # if documenting a toplevel object without explicit module,
-#        # it can be contained in another auto directive ...
-#        modname = self.env.temp_data.get('autodoc:module')
-#        # ... or in the scope of a module directive
-#        if not modname:
-#          modname = self.env.ref_context.get('py:module')
-#        # ... else, it stays None, which means invalid
-#    return modname, parents + [base]
-
-  def format_args(self):
+  def format_args(self): # pylint: disable=arguments-differ  # I am really not sure what went wrong here...
     # type: () -> str
     # We use the original signature from the wrapped _function
-    has_retval= isinstance(self.object, FontBakeryCondition)
+    has_retval = isinstance(self.object, FontBakeryCondition)
     sig = Signature(self.object._func, bound_method=False, has_retval=has_retval)
     args = sig.format_args()
     # escape backslashes for reST
@@ -400,19 +379,7 @@ class PyFontBakeryObject(PyObject):
                       else super().handle_signature(sig, signode)
     except Exception as e:
       print('!!!', e)
-      # import ipdb
-      # ipdb.set_trace()
       raise e
-    # finally:
-      # print('<<<<<<<<<<<<<<<<<<result:', keepsig, sig, 'res', res, 'signode:', signode)
-      # <<<<<<<<<<<<<<<<<<result: sigcom.google.fonts/check/all_glyphs_have_codepoints:::36:::com_google_fonts_check_all_glyphs_have_codepoints(ttFont) com_google_fonts_check_all_glyphs_have_codepoints(ttFont) res ('com.google.fonts/check/all_glyphs_have_codepoints', None) signode: <desc_signature class="" first="False" fullname="com_google_fonts_check_all_glyphs_have_codepoints" lineno="36" module="fontbakery.profiles.cmap"><desc_annotation xml:space="preserve">FontBakeryCheck </desc_annotation><desc_addname xml:space="preserve">fontbakery.profiles.cmap ID: </desc_addname><desc_name xml:space="preserve">com.google.fonts/check/all_glyphs_have_codepoints</desc_name><desc_parameterlist xml:space="preserve"><desc_parameter xml:space="preserve">ttFont</desc_parameter></desc_parameterlist></desc_signature>
-
-    #if cid:
-    #  import ipdb
-    #  ipdb.set_trace()
-    # res: ('com_daltonmaag_check_ufolint', None)
-    # signode: <desc_signature class="" first="False" fullname="com_daltonmaag_check_ufolint" module="fontbakery.profiles.ufo_sources"><desc_annotation xml:space="preserve">FontBakeryCheck </desc_annotation><desc_addname xml:space="preserve">fontbakery.profiles.ufo_sources.</desc_addname><desc_name xml:space="preserve">com_daltonmaag_check_ufolint</desc_name><desc_parameterlist xml:space="preserve"><desc_parameter xml:space="preserve">font</desc_parameter></desc_parameterlist></desc_signature>
-
 
     return res
 
@@ -552,7 +519,8 @@ def _skip_member(app, what, name, obj, skip, options):
               'id',
               'name',
               'rationale',
-              'check_skip_filter']:
+              'check_skip_filter',
+              'is_librebarcode']:
     return True
   else:
     return None

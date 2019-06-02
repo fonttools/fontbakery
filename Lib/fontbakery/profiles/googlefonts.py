@@ -705,7 +705,7 @@ def com_google_fonts_check_name_license(ttFont, license):
   }
 )
 def com_google_fonts_check_name_license_url(ttFont, familyname):
-  """"License URL matches License text on name table?"""
+  """License URL matches License text on name table?"""
   from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
   LEGACY_UFL_FAMILIES = ["Ubuntu", "UbuntuCondensed", "UbuntuMono"]
   LICENSE_URL = {
@@ -2454,7 +2454,7 @@ def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_name_mandatory_entries(ttFont, style):
-  """Font has all mandatory 'name' table entries ?"""
+  """Font has all mandatory 'name' table entries?"""
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.constants import RIBBI_STYLE_NAMES
 
@@ -2896,20 +2896,20 @@ def com_google_fonts_check_negative_advance_width(ttFont):
   id = 'com.google.fonts/check/varfont/generate_static',
   rationale = """
   Google Fonts may serve static fonts which have been generated
-  from variable fonts.
-
-  This test will attempt to generate a static ttf using fontTool's
-  varLib mutator.
+  from variable fonts. This test will attempt to generate
+  a static ttf using fontTool's varLib mutator.
 
   The target font will be the mean of each axis e.g:
 
-  VF font axes:
-  min weight, max weight = 400, 800
-  min width, max width = 50, 100
+  **VF font axes**
 
-  Target Instance:
-  weight = 600,
-  width = 75
+  - min weight, max weight = 400, 800
+  - min width, max width = 50, 100
+
+  **Target Instance**
+
+  - weight = 600
+  - width = 75
   """,
   conditions = ['is_variable_font'],
   misc_metadata = {
@@ -3053,12 +3053,13 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
 
 @check(
   id = 'com.google.fonts/check/aat',
-  rationale = """Apple's TrueType reference manual
-  (https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6.html)
-  describes SFNT tables not in the Microsoft OpenType specification
-  (https://docs.microsoft.com/en-us/typography/opentype/spec/)
+  rationale = """
+  Apple's `TrueType reference manual <https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6.html>`_
+  describes SFNT tables not in the Microsoft
+  `OpenType specification <https://docs.microsoft.com/en-us/typography/opentype/spec/>`_
   and these can sometimes sneak into final release files,
-  but Google Fonts should only have OpenType tables."""
+  but Google Fonts should only have OpenType tables.
+  """
 )
 def com_google_fonts_check_aat(ttFont):
   """Are there unwanted Apple tables?"""
@@ -3335,17 +3336,17 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, 
 @check(
   id = 'com.google.fonts/check/name/family_and_style_max_length',
   rationale = """
-    According to a Glyphs tutorial (available at
-    https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances),
+    According to a `GlyphsApp tutorial
+    <https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances>`_,
     in order to make sure all versions of Windows recognize it as a valid
     font file, we must make sure that the concatenated length of the
     familyname (NameID.FONT_FAMILY_NAME) and style
     (NameID.FONT_SUBFAMILY_NAME)
     strings in the name table do not exceed 20 characters.
 
-    After discussing the problem in more detail at
-    https://github.com/googlefonts/fontbakery/issues/2179
-    we decided to allowing up to 27 chars would still be
+    After discussing the problem in more detail at `FontBakery issue #2179
+    <https://github.com/googlefonts/fontbakery/issues/2179>`_
+    we decided that allowing up to 27 chars would still be
     on the safe side, though.
     """,
   misc_metadata = {
@@ -3497,10 +3498,12 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
 @check(
   id = 'com.google.fonts/check/vertical_metrics_regressions',
   conditions = ['remote_styles'],
-  rationale="""If the family already exists on Google Fonts, we need to
+  rationale="""
+  If the family already exists on Google Fonts, we need to
   ensure that the checked family's vertical metrics are similar. This
-  check will test the following schema which was outlined in Fontbakery
-  issue 1162:
+  check will test the following schema which was outlined in
+  `Fontbakery issue #1162 <https://github.com/googlefonts/fontbakery/issues/1162>`_:
+
   - The family should visually have the same vertical metrics as the
     Regular style hosted on Google Fonts.
   - If the family on Google Fonts has differing hhea and typo metrics,
@@ -3588,9 +3591,6 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
 
 @check(
   id = 'com.google.fonts/check/varfont_instance_coordinates',
-  rationale = """
-    Check variable fonts have correct instance coordinates
-  """,
   conditions = ['is_variable_font'],
 )
 def com_google_fonts_check_varfont_instances_coordinates(ttFont):
@@ -3617,7 +3617,6 @@ def com_google_fonts_check_varfont_instances_coordinates(ttFont):
 
 @check(
   id = 'com.google.fonts/check/varfont_instance_names',
-  rationale = """Check variable font instances have correct names""",
   conditions = ['is_variable_font'],
 )
 def com_google_fonts_check_varfont_instances_names(ttFont):
