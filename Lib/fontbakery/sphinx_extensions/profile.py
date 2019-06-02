@@ -551,7 +551,8 @@ def _skip_member(app, what, name, obj, skip, options):
               'documentation',
               'id',
               'name',
-              'rationale']:
+              'rationale',
+              'check_skip_filter']:
     return True
   else:
     return None

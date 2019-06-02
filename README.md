@@ -5,20 +5,16 @@
 
 # [![Font Bakery](data/logo.png)](https://fontbakery.com)
 
-Font Bakery is a command-line tool for checking the quality of font projects. 
-It currently comes with checks for OpenType files, at 3 levels: 
-Format specifications, distributor requirements, and custom checks.
+Font Bakery is a command-line tool for checking the quality of font projects.
 
-For a full introduction, [check out the Typecon 2018 presentation deck](https://docs.google.com/presentation/d/14dU3cUXelwvpVokhKYmJ6jT51AASDaOFyEUSdxb0RAg/).
+For a quick overview, check out the [list of checks](https://font-bakery.readthedocs.io/en/latest/fontbakery/profiles/index.html) currently offered.
+
+And for a full introduction [check out our documentation at Read The Docs.](https://font-bakery.readthedocs.io/en/latest)
 
 Font Bakery has an active community of contributors from foundries around the world, including Adobe Fonts, Dalton Maag, Type Network, and Google Fonts. Please join our developer chat channel at https://gitter.im/fontbakery/Lobby
 
 Font Bakery is not an official Google project, and Google provides no support for it.
 However, throughout 2018 the core project maintainers Felipe Corrêa da Silva Sanches <juca@members.fsf.org> and Lasse Fister <commander@graphicore.de> were funded by the Google Fonts team.
-
-## Docs
-
-Find the full docs at https://font-bakery.readthedocs.io
 
 ## License
 
@@ -56,7 +52,7 @@ Felipe has maintained the check contents since 2016.
 
 Lasse also began a sister project, [Font Bakery Dashboard](https://GitHub.com/GoogleFonts/Fontbakery-Dashboard):
 A UI and a cloud system that scales up for checking 1,000s of font files super fast and in parallel, by using 1,000s of "container" virtual machines.
-See his [TypoLabs 2018 talk on YouTube](https://www.youtube.com/watch?v=Kqhzg89zKYw).
+See his [TypoLabs 2018 talk on YouTube](https://www.youtube.com/watch?v=Kqhzg89zKYw) and its [presentation deck](https://docs.google.com/presentation/d/14dU3cUXelwvpVokhKYmJ6jT51AASDaOFyEUSdxb0RAg/).
 
 Most of the checks are for OpenType binary files, and project metadata files. 
 (Currently, the Google Fonts `METADATA.pb` files are supported.)
