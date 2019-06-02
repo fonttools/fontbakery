@@ -3158,17 +3158,13 @@ def com_google_fonts_check_varfont_weight_instances(ttFont):
     Here's a good explanation of this:
     https://www.typography.com/techniques/fonts-for-financials/#tabular-figs
   """,
+  conditions = ['RIBBI_ttFonts'],
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/2278'
   }
 )
-def com_google_fonts_check_family_tnum_horizontal_metrics(fonts):
+def com_google_fonts_check_family_tnum_horizontal_metrics(RIBBI_ttFonts):
   """All tabular figures must have the same width across the RIBBI-family."""
-  from fontbakery.constants import RIBBI_STYLE_NAMES
-  from fontTools.ttLib import TTFont
-  RIBBI_ttFonts = [TTFont(f)
-                   for f in fonts
-                   if style(f) in RIBBI_STYLE_NAMES]
   tnum_widths = {}
   for ttFont in RIBBI_ttFonts:
     glyphs = ttFont.getGlyphSet()

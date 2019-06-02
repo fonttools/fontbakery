@@ -18,6 +18,15 @@ def style(font):
 
 
 @condition
+def RIBBI_ttFonts(fonts):
+  from fontTools.ttLib import TTFont
+  from fontbakery.constants import RIBBI_STYLE_NAMES
+  return [TTFont(f)
+          for f in fonts
+          if style(f) in RIBBI_STYLE_NAMES]
+
+
+@condition
 def style_with_spaces(font):
   """Stylename with spaces (derived from a canonical filename)."""
   if style(font):

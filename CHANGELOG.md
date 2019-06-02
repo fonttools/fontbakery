@@ -4,6 +4,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.7.6 (2019-Jun-10)
 ### Bug fixes
+  - Render line-breaks on Read The Docs check rationales
+  - **[com.adobe.fonts/check/family/bold_italic_unique_for_nameid1]:** restrict check to RIBBI styles only (issue #2501)
   - fix bug in **points_out_of_bounds** check: The coordinates of a component multiplied by a scale factor result in floating-point values. These were causing false-FAILs because we were not rounding them before checking if they are within the glyph bounding-box. This was probably making points at extrema to fall slightly out of the bbox. (issue #2518)
   - also improved the readability of **com.google.fonts/check/points_out_of_bounds**
 
