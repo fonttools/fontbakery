@@ -5,7 +5,8 @@ from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
 profile_imports = [
-    ('.shared_conditions', ('vmetrics', ))
+    ('.shared_conditions', ('vmetrics', )),
+    ('.googlefonts_conditions', ('RIBBI_ttFonts', ))
 ]
 
 @check(
@@ -177,13 +178,17 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
 
 @check(
   id = 'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1',
-  rationale = """Per the OpenType spec: name ID 1 'is used in combination with
+  conditions=['RIBBI_ttFonts'],
+  rationale = """
+  Per the OpenType spec: name ID 1 'is used in combination with
   Font Subfamily name (name ID 2), and should be shared among at most four
-  fonts that differ only in weight or style ... This four-way distinction
-  should also be reflected in the OS/2.fsSelection field, using bits 0 and 5.' 
+  fonts that differ only in weight or style...
+
+  This four-way distinction should also be reflected in the
+  OS/2.fsSelection field, using bits 0 and 5.
   """
 )
-def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(ttFonts):
+def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
   """Check that OS/2.fsSelection bold & italic settings are unique
   for each NameID1"""
   from collections import Counter
@@ -192,7 +197,7 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(ttFonts):
 
   failed = False
   family_name_and_bold_italic = list()
-  for ttFont in ttFonts:
+  for ttFont in RIBBI_ttFonts:
     names_list = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
     # names_list will likely contain multiple entries, e.g. multiple copies
     # of the same name in the same language for different platforms, but

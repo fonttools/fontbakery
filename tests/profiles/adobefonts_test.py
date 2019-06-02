@@ -35,7 +35,7 @@ def test_get_family_checks():
     family_checks = profile.get_family_checks()
     family_check_ids = {check.id for check in family_checks}
     expected_family_check_ids = {
-        'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1',
+        # RIBBI: 'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1',
         'com.adobe.fonts/check/family/consistent_upm',
         'com.adobe.fonts/check/family/max_4_fonts_per_family_name',
         'com.google.fonts/check/family/underline_thickness',
