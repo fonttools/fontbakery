@@ -172,7 +172,8 @@ class PriorityLevel(enum.IntEnum):
   IMPORTANT = 1
   CRITICAL = 0  # ON FIRE! Must immediately fix!
 
-ENGLISH_LANG_ID = 0x0409
+WIN_ENGLISH_LANG_ID = 0x0409
+MAC_ROMAN_LANG_ID = 0x0
 
 GF_latin_core = {
   #  NULL

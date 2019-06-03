@@ -4,7 +4,7 @@ import fontTools.ttLib
 from fontTools.ttLib import TTFont
 
 from fontbakery.utils import TEST_FILE, portable_path
-from fontbakery.constants import NameID, PlatformID, WindowsEncodingID, ENGLISH_LANG_ID
+from fontbakery.constants import NameID, PlatformID, WindowsEncodingID, WIN_ENGLISH_LANG_ID
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -335,7 +335,7 @@ def test_check_name_postscript_vs_cff():
     NameID.POSTSCRIPT_NAME,
     PlatformID.WINDOWS,
     WindowsEncodingID.UNICODE_BMP,
-    ENGLISH_LANG_ID
+    WIN_ENGLISH_LANG_ID
   )
   status, message = list(check(test_font))[-1]
   assert status == FAIL
@@ -345,7 +345,7 @@ def test_check_name_postscript_vs_cff():
     NameID.POSTSCRIPT_NAME,
     PlatformID.WINDOWS,
     WindowsEncodingID.UNICODE_BMP,
-    ENGLISH_LANG_ID
+    WIN_ENGLISH_LANG_ID
   )
   status, message = list(check(test_font))[-1]
   assert status == PASS
@@ -366,7 +366,7 @@ def test_check_name_postscript_name_consistency():
     NameID.POSTSCRIPT_NAME,
     PlatformID.MACINTOSH,
     WindowsEncodingID.UNICODE_BMP,
-    ENGLISH_LANG_ID
+    WIN_ENGLISH_LANG_ID
   )
   status, message = list(check(test_font))[-1]
   assert status == PASS
@@ -377,7 +377,7 @@ def test_check_name_postscript_name_consistency():
     NameID.POSTSCRIPT_NAME,
     PlatformID.MACINTOSH,
     WindowsEncodingID.UNICODE_BMP,
-    ENGLISH_LANG_ID
+    WIN_ENGLISH_LANG_ID
   )
   status, message = list(check(test_font))[-1]
   assert status == FAIL

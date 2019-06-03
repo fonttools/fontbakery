@@ -8,8 +8,10 @@ from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (PriorityLevel,
                                   NameID,
                                   PlatformID,
+                                  UnicodeEncodingID,
                                   WindowsEncodingID,
-                                  ENGLISH_LANG_ID)
+                                  WIN_ENGLISH_LANG_ID,
+                                  MAC_ROMAN_LANG_ID)
 
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
@@ -2711,49 +2713,60 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
 
 @check(
   id = 'com.google.fonts/check/name/typographicsubfamilyname',
-  conditions=['style_with_spaces'],
+  conditions=['expected_style'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_name_typographicsubfamilyname(ttFont, style_with_spaces):
+def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style):
   """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
-  from fontbakery.utils import name_entry_id
-
   failed = False
-  if style_with_spaces in ['Regular',
-                           'Italic',
-                           'Bold',
-                           'Bold Italic']:
-    for name in ttFont['name'].names:
-      if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
-        failed = True
-        yield FAIL, Message("ribbi",
-                            ("Font style is '{}' and, for that reason,"
-                             " it is not expected to have a "
-                             "{} entry!").format(style_with_spaces,
-                                                 name_entry_id(name)))
-  else:
-    expected_value = style_with_spaces
-    has_entry = False
-    for name in ttFont['name'].names:
-      if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
-        string = name.string.decode(name.getEncoding()).strip()
-        if string == expected_value:
-          has_entry = True
-        else:
-          failed = True
-          yield FAIL, Message("non-ribbi-bad-value",
-                              ("Entry {} on the 'name' table: "
-                               "Expected '{}' "
-                               "but got '{}'.").format(name_entry_id(name),
-                                                       expected_value,
-                                                       string))
-    if not failed and not has_entry:
+  nametable = ttFont['name']
+  win_name = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
+                               PlatformID.WINDOWS,
+                               WindowsEncodingID.UNICODE_BMP,
+                               WIN_ENGLISH_LANG_ID)
+  mac_name = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
+                               PlatformID.MACINTOSH,
+                               UnicodeEncodingID.UNICODE_1_0,
+                               MAC_ROMAN_LANG_ID)
+
+  if all([win_name, mac_name]):
+    if win_name.toUnicode() != mac_name.toUnicode():
       failed = True
-      yield FAIL, Message("non-ribbi-lacks-entry",
-                          ("non-RIBBI fonts must have a"
-                           " TYPOGRAPHIC_SUBFAMILY_NAME entry"
-                           " on the name table."))
+      yield FAIL, ('TYPOGRAPHIC_SUBFAMILY_NAME entry for Win "{}"'
+                   ' and Mac "{}" do not match.'.format(win_name.toUnicode(),
+                                                        mac_name.toUnicode()))
+
+  if expected_style.is_ribbi:
+    if win_name and win_name.toUnicode() != expected_style.win_style_name:
+      failed = True
+      yield FAIL, ('TYPOGRAPHIC_SUBFAMILY_NAME entry for Win "{}"'
+                   ' must be "{}". Please note, since the font'
+                   ' style is RIBBI, this record can be safely'
+                   ' deleted.'.format(win_name.toUnicode(),
+                                      expected_style.win_style_name))
+    if mac_name and mac_name.toUnicode() != expected_style.mac_style_name:
+        failed = True
+        yield FAIL, ('TYPOGRAPHIC_SUBFAMILY_NAME entry for Mac "{}"'
+                     ' must be "{}". Please note, since the font'
+                     ' style is RIBBI, this record can be safely'
+                     ' deleted.'.format(mac_name.toUnicode(),
+                                        expected_style.win_style_name))
+
+  if expected_style.typo_style_name:
+    if not win_name:
+      failed = True
+      yield FAIL, ('TYPOGRAPHIC_SUBFAMILY_NAME for Win is missing. It'
+                   ' must be "{}".').format(expected_style.typo_style_name)
+    elif win_name.toUnicode() != expected_style.typo_style_name:
+      failed = True
+      yield FAIL, ('TYPOGRAPHIC_SUBFAMILY_NAME for Win is incorrect. It'
+                   ' must be "{}".').format(expected_style.typo_style_name)
+    if mac_name and mac_name.toUnicode() != expected_style.typo_style_name:
+      failed = True
+      yield FAIL, ('TYPOGRAPHIC_SUBFAMILY_NAME for Mac is incorrect. It'
+                   ' must be "{}". Please note, this record can be'
+                   ' safely deleted.').format(expected_style.typo_style_name)
   if not failed:
     yield PASS, "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good."
 
@@ -3601,7 +3614,7 @@ def com_google_fonts_check_varfont_instances_coordinates(ttFont):
     name = ttFont['name'].getName(instance.subfamilyNameID,
                                   PlatformID.WINDOWS,
                                   WindowsEncodingID.UNICODE_BMP,
-                                  ENGLISH_LANG_ID).toUnicode()
+                                  WIN_ENGLISH_LANG_ID).toUnicode()
     expected_instance = instance_parse(name)
     for axis in instance.coordinates:
       if instance.coordinates[axis] != expected_instance.coordinates[axis]:
@@ -3627,7 +3640,7 @@ def com_google_fonts_check_varfont_instances_names(ttFont):
     name = ttFont['name'].getName(instance.subfamilyNameID,
                                   PlatformID.WINDOWS,
                                   WindowsEncodingID.UNICODE_BMP,
-                                  ENGLISH_LANG_ID).toUnicode()
+                                  WIN_ENGLISH_LANG_ID).toUnicode()
     expected_instance = instance_parse(name)
     expected_name = expected_instance.name
 

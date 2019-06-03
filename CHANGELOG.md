@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.6 (2019-Jun-10)
+### Note-worthy code changes
+  - **[com.google.fonts/check/name/typographicsubfamilyname]:** has been refactored. It is now acceptable to have a typographic subfamily name if the font is RIBBI since it does not cause any issues
+
 ### Bug fixes
   - Render line-breaks on Read The Docs check rationales
   - **[com.adobe.fonts/check/family/bold_italic_unique_for_nameid1]:** restrict check to RIBBI styles only (issue #2501)
