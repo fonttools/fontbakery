@@ -4,8 +4,10 @@ from fontTools.ttLib import TTFont
 
 from fontbakery.constants import (NameID,
                                   PlatformID,
+                                  UnicodeEncodingID,
                                   WindowsEncodingID,
-                                  ENGLISH_LANG_ID)
+                                  WIN_ENGLISH_LANG_ID,
+                                  MAC_ROMAN_LANG_ID)
 from fontbakery.utils import (portable_path,
                               TEST_FILE)
 
@@ -2506,52 +2508,67 @@ def test_check_name_typographicfamilyname():
 def test_check_name_typographicsubfamilyname():
   """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
   from fontbakery.profiles.googlefonts import (
-    com_google_fonts_check_name_typographicsubfamilyname as check,
-    style_with_spaces)
+    com_google_fonts_check_name_typographicsubfamilyname as check)
+  from fontbakery.profiles.googlefonts_conditions import expected_style
 
-  # RIBBI fonts must not have a TYPOGRAPHIC_SUBFAMILY_NAME entry
   font = TEST_FILE("montserrat/Montserrat-BoldItalic.ttf")
   ttFont = TTFont(font)
-  print (f"Test PASS with a RIBBI without nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...")
-  status, message = list(check(ttFont,
-                               style_with_spaces(font)))[-1]
-  assert status == PASS
 
-  # so we add one and make sure is emits a FAIL:
-  ttFont['name'].names[5].nameID = NameID.TYPOGRAPHIC_SUBFAMILY_NAME # 5 is arbitrary here
+  # Add an incorrect TYPOGRAPHIC_SUBFAMILY_NAME to a RIBBI font
+  ttFont['name'].setName("Generic subfamily name",
+                         NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
+                         PlatformID.WINDOWS,
+                         WindowsEncodingID.UNICODE_BMP,
+                         WIN_ENGLISH_LANG_ID)
+  ttFont['name'].setName("Generic subfamily name",
+                         NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
+                         PlatformID.MACINTOSH,
+                         UnicodeEncodingID.UNICODE_1_0,
+                         MAC_ROMAN_LANG_ID)
   print (f"Test FAIL with a RIBBI that has got a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style_with_spaces(font)))[-1]
-  assert status == FAIL and message.code == "ribbi"
+                               expected_style(ttFont)))[-1]
+  assert status == FAIL
 
   # non-RIBBI fonts must have a TYPOGRAPHIC_SUBFAMILY_NAME entry
   font = TEST_FILE("montserrat/Montserrat-ExtraLight.ttf")
   ttFont = TTFont(font)
   print (f"Test PASS with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style_with_spaces(font)))[-1]
+                               expected_style(ttFont)))[-1]
   assert status == PASS
 
   # set bad values on all TYPOGRAPHIC_SUBFAMILY_NAME entries:
-  for i, name in enumerate(ttFont['name'].names):
-    if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
-      ttFont['name'].names[i].string = "foo".encode(name.getEncoding())
-
+  ttFont['name'].setName("Generic subfamily name",
+                         NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
+                         PlatformID.WINDOWS,
+                         WindowsEncodingID.UNICODE_BMP,
+                         WIN_ENGLISH_LANG_ID)
+  ttFont['name'].setName("Generic subfamily name",
+                         NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
+                         PlatformID.MACINTOSH,
+                         UnicodeEncodingID.UNICODE_1_0,
+                         MAC_ROMAN_LANG_ID)
   print (f"Test FAIL with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...")
   status, message = list(check(ttFont,
-                               style_with_spaces(font)))[-1]
-  assert status == FAIL and message.code == "non-ribbi-bad-value"
+                               expected_style(ttFont)))[-1]
+  assert status == FAIL
 
   # remove all TYPOGRAPHIC_SUBFAMILY_NAME entries
-  # by changing their nameid to something else:
-  for i, name in enumerate(ttFont['name'].names):
-    if name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
-      ttFont['name'].names[i].nameID = 255 # blah! :-)
-
+  win_name = ttFont['name'].getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
+                                    PlatformID.WINDOWS,
+                                    WindowsEncodingID.UNICODE_BMP,
+                                    WIN_ENGLISH_LANG_ID)
+  mac_name = ttFont['name'].getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
+                                    PlatformID.MACINTOSH,
+                                    UnicodeEncodingID.UNICODE_1_0,
+                                    MAC_ROMAN_LANG_ID)
+  win_name.nameID = 254
+  mac_name.nameID = 255
   print (f"Test FAIL with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...")
   status, message = list(check(ttFont,
-                               style_with_spaces(font)))[-1]
-  assert status == FAIL and message.code == "non-ribbi-lacks-entry"
+                               expected_style(ttFont)))[-1]
+  assert status == FAIL
 
 
 def test_check_name_copyright_length():
@@ -3033,7 +3050,7 @@ def test_check_varfont_instances_coordinates(vf_ttFont):
     name = vf_ttFont['name'].getName(instance.subfamilyNameID,
                                      PlatformID.WINDOWS,
                                      WindowsEncodingID.UNICODE_BMP,
-                                     ENGLISH_LANG_ID).toUnicode()
+                                     WIN_ENGLISH_LANG_ID).toUnicode()
     expected_instance = instance_parse(name)
     for axis in instance.coordinates:
       assert expected_instance.coordinates[axis] == instance.coordinates[axis]
@@ -3054,7 +3071,7 @@ def test_check_varfont_instances_names(vf_ttFont):
     name = vf_ttFont['name'].getName(instance.subfamilyNameID,
                                      PlatformID.WINDOWS,
                                      WindowsEncodingID.UNICODE_BMP,
-                                     ENGLISH_LANG_ID).toUnicode()
+                                     WIN_ENGLISH_LANG_ID).toUnicode()
     expected_instance = instance_parse(name)
     assert expected_instance.name == name
   
@@ -3063,17 +3080,17 @@ def test_check_varfont_instances_names(vf_ttFont):
     name = vf_ttFont['name'].getName(instance.subfamilyNameID,
                                      PlatformID.WINDOWS,
                                      WindowsEncodingID.UNICODE_BMP,
-                                     ENGLISH_LANG_ID).toUnicode()
+                                     WIN_ENGLISH_LANG_ID).toUnicode()
     mod_name = "Some Generic Broken Name"
     vf_ttFont['name'].setName(mod_name,
                               instance.subfamilyNameID,
                               PlatformID.WINDOWS,
                               WindowsEncodingID.UNICODE_BMP,
-                              ENGLISH_LANG_ID)
+                              WIN_ENGLISH_LANG_ID)
     mod_name = vf_ttFont['name'].getName(instance.subfamilyNameID,
                                          PlatformID.WINDOWS,
                                          WindowsEncodingID.UNICODE_BMP,
-                                         ENGLISH_LANG_ID).toUnicode()
+                                         WIN_ENGLISH_LANG_ID).toUnicode()
     expected_instance = instance_parse(name)
     assert expected_instance.name != mod_name
 

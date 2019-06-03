@@ -91,7 +91,7 @@ def _win_style_name(string):
     return string
 
 
-def _win_typo_style_name(string):
+def _typo_style_name(string):
     if string not in RIBBI_STYLES:
         return string
     return None
@@ -127,7 +127,7 @@ def _style_parse(string):
                           usWidthClass
                           win_style_name
                           mac_style_name
-                          win_typo_style_name
+                          typo_style_name
                           fsSelection
                           macStyle
                           is_ribbi
@@ -139,7 +139,7 @@ def _style_parse(string):
                     usWidthClass=_WIDTH_VALUES[wdth]["usWidthClass"],
                     win_style_name=_win_style_name(name),
                     mac_style_name=name,
-                    win_typo_style_name=_win_typo_style_name(name),
+                    typo_style_name=_typo_style_name(name),
                     fsSelection=_fsSelection(wght),
                     macStyle=_macStyle(wght),
                     is_ribbi=name in RIBBI_STYLES,
