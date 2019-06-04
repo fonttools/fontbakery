@@ -2316,10 +2316,8 @@ def test_check_name_familyname():
 def test_check_name_subfamilyname():
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
   from fontbakery.constants import PlatformID, NameID
-  from fontbakery.profiles.googlefonts import (com_google_fonts_check_name_subfamilyname as check,
-                                                     familyname,
-                                                     familyname_with_spaces,
-                                                     style_with_spaces)
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_name_subfamilyname as check
+  from fontbakery.profiles.googlefonts_conditions import expected_style
 
   PASS_test_cases = [
   #  filename                                                 mac_value             win_value
@@ -2358,37 +2356,37 @@ def test_check_name_subfamilyname():
 
       if name.nameID == NameID.FONT_SUBFAMILY_NAME:
           ttFont['name'].names[i].string = value.encode(name.getEncoding())
-    print (f"Test PASS with filename='{filename}', value='{value}', style_with_spaces='{style_with_spaces(filename)}'...")
+    style = expected_style(ttFont)
+    print (f"Test PASS with filename='{filename}', value='{value}', "
+           f"style_win='{style.win_style_name}', "
+           f"style_mac='{style.mac_style_name}'...")
     status, message = list(check(ttFont,
-                                 style_with_spaces(filename),
-                                 familyname_with_spaces(familyname(filename))))[-1]
+                                 expected_style(ttFont)))[-1]
     assert status == PASS
 
-  # - FAIL, "invalid-entry" - "Font should not have a certain name table entry."
+  # - FAIL, "bad-familyname" - "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
   filename = TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")
   print ("Test FAIL 'invalid-entry'...")
   ttFont = TTFont(filename)
   # We setup a bad entry:
-  ttFont["name"].names[0].nameID = NameID.FONT_SUBFAMILY_NAME
-  ttFont["name"].names[0].platformID = PlatformID.CUSTOM
+  ttFont["name"].setName("Not a proper style",
+                         NameID.FONT_SUBFAMILY_NAME,
+                         PlatformID.MACINTOSH,
+                         UnicodeEncodingID.UNICODE_1_0,
+                         MAC_ROMAN_LANG_ID)
   # And this should now FAIL:
   status, message = list(check(ttFont,
-                               style_with_spaces(filename),
-                               familyname_with_spaces(familyname(filename))))[-1]
-  assert status == FAIL and message.code == "invalid-entry"
-
-
-  # - FAIL, "bad-familyname" - "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
-  filename = TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")
-  print (f"Test FAIL 'bad-familyname' with filename='{filename}'...")
+                               expected_style(ttFont)))[-1]
+  assert status == FAIL and message.code == "bad-familyname"
+  # Repeat this for a Win subfamily name
   ttFont = TTFont(filename)
-  # We setup a bad familyname:
-  ttFont["name"].names[0].nameID = NameID.FONT_SUBFAMILY_NAME
-  ttFont["name"].names[0].string = "Foo".encode(ttFont["name"].names[0].getEncoding())
-  # And this should now FAIL:
+  ttFont["name"].setName("Not a proper style",
+                         NameID.FONT_SUBFAMILY_NAME,
+                         PlatformID.WINDOWS,
+                         WindowsEncodingID.UNICODE_BMP,
+                         WIN_ENGLISH_LANG_ID)
   status, message = list(check(ttFont,
-                               style_with_spaces(filename),
-                               familyname_with_spaces(familyname(filename))))[-1]
+                               expected_style(ttFont)))[-1]
   assert status == FAIL and message.code == "bad-familyname"
 
 

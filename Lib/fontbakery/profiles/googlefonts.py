@@ -2547,48 +2547,35 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
 
 @check(
   id = 'com.google.fonts/check/name/subfamilyname',
-  conditions = ['style_with_spaces',
-                'familyname_with_spaces'],
+  conditions = ['expected_style'],
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
-def com_google_fonts_check_name_subfamilyname(ttFont,
-                                              style_with_spaces,
-                                              familyname_with_spaces):
+def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
-  from fontbakery.utils import name_entry_id
-
   failed = False
-  for name in ttFont['name'].names:
-    if name.nameID == NameID.FONT_SUBFAMILY_NAME:
-      if name.platformID == PlatformID.MACINTOSH:
-        expected_value = style_with_spaces
+  nametable = ttFont['name']
+  win_name = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
+                               PlatformID.WINDOWS,
+                               WindowsEncodingID.UNICODE_BMP,
+                               WIN_ENGLISH_LANG_ID)
+  mac_name = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
+                               PlatformID.MACINTOSH,
+                               UnicodeEncodingID.UNICODE_1_0,
+                               MAC_ROMAN_LANG_ID)
 
-      elif name.platformID == PlatformID.WINDOWS:
-        if style_with_spaces in ["Bold", "Bold Italic"]:
-          expected_value = style_with_spaces
-        else:
-          if "Italic" in style_with_spaces:
-            expected_value = "Italic"
-          else:
-            expected_value = "Regular"
-      else:
-        yield FAIL, Message("invalid-entry",
-                            ("Font should not have a "
-                             "{} entry!").format(name_entry_id(name)))
-        failed = True
-        continue
-
-      string = name.string.decode(name.getEncoding()).strip()
-      if string != expected_value:
-        failed = True
-        yield FAIL, Message("bad-familyname",
-                            ("Entry {} on the 'name' table: "
-                             "Expected '{}' "
-                             "but got '{}'.").format(name_entry_id(name),
-                                                     expected_value,
-                                                     string))
-
+  if mac_name and mac_name.toUnicode() != expected_style.mac_style_name:
+    failed = True
+    yield FAIL, Message("bad-familyname",
+                        ('SUBFAMILY_NAME for Mac "{}"'
+                         ' must be "{}"'.format(mac_name.toUnicode(),
+                                                expected_style.mac_style_name)))
+  if win_name.toUnicode() != expected_style.win_style_name:
+    failed = True
+    yield FAIL, Message("bad-familyname",
+                        ('SUBFAMILY_NAME for Win "{}"'
+                         ' must be "{}"'.format(win_name.toUnicode(),
+                                                expected_style.win_style_name)))
   if not failed:
     yield PASS, "FONT_SUBFAMILY_NAME entries are all good."
 
