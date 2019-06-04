@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.7.6 (2019-Jun-10)
 ### Note-worthy code changes
+  - **[com.google.fonts/check/name/subfamilyname]:** has been refactored to use parse.style_parse.
   - **[com.google.fonts/check/name/typographicsubfamilyname]:** has been refactored. It is now acceptable to have a typographic subfamily name if the font is RIBBI since it does not cause any issues
 
 ### Bug fixes
