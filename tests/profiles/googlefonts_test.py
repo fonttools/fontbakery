@@ -204,7 +204,7 @@ def test_check_description_broken_links():
     description,
     descfile)
 
-  good_desc = description(descfile(portable_path("data/test/cabin")))
+  good_desc = description(descfile(TEST_FILE("cabin/Cabin-Regular.ttf")))
   print('Test PASS with description file that has no links...')
   status, message = list(check(good_desc))[-1]
   assert status == PASS
@@ -233,7 +233,7 @@ def test_check_description_git_url():
     description,
     descfile)
 
-  bad_desc = description(descfile(portable_path("data/test/cabin")))
+  bad_desc = description(descfile(TEST_FILE("cabin/Cabin-Regular.ttf")))
   print('Test FAIL with description file that has no git repo URLs...')
   status, message = list(check(bad_desc))[-1]
   assert status == FAIL
@@ -249,6 +249,26 @@ def test_check_description_git_url():
   status, message = list(check(bad_desc))[-1]
   assert status == FAIL
 
+
+def test_check_description_variable_font():
+  """ Does DESCRIPTION file mention when a family
+      is available as variable font? """
+  from fontbakery.profiles.googlefonts import (
+    com_google_fonts_check_description_variable_font as check,
+    description,
+    descfile)
+
+  bad_desc = description(descfile(TEST_FILE("varfont/Oswald-VF.ttf")))
+  print('Test FAIL when "variable font" is not present in DESC file...')
+  status, message = list(check(bad_desc))[-1]
+  assert status == FAIL
+
+  good_desc = description(descfile(TEST_FILE("cabinvfbeta/Cabin-VF.ttf")))
+  print('Test PASS with description file containing "variable font"...')
+  status, message = list(check(good_desc))[-1]
+  assert status == PASS
+
+
 def test_check_description_valid_html():
   """ DESCRIPTION file is a propper HTML snippet ? """
   from fontbakery.profiles.googlefonts import (
@@ -256,7 +276,7 @@ def test_check_description_valid_html():
     descfile,
     description)
 
-  good_descfile = descfile(portable_path("data/test/nunito"))
+  good_descfile = descfile(TEST_FILE("nunito/Nunito-Regular.ttf"))
   good_desc = description(good_descfile)
   print('Test PASS with description file that contains a good HTML snippet...')
   status, message = list(check(good_descfile, good_desc))[-1]
