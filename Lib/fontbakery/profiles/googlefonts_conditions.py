@@ -128,10 +128,11 @@ def family_directory(fonts):
 
 
 @condition
-def descfile(family_directory):
+def descfile(font):
   """Get the path of the DESCRIPTION file of a given font project."""
-  if family_directory:
-    descfilepath = os.path.join(family_directory, "DESCRIPTION.en_us.html")
+  if font:
+    directory = os.path.dirname(font)
+    descfilepath = os.path.join(directory, "DESCRIPTION.en_us.html")
     if os.path.exists(descfilepath):
       return descfilepath
 

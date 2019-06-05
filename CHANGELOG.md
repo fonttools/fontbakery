@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.6 (2019-Jun-10)
+## 0.7.6 (2019-Jun-07)
 ### Note-worthy code changes
   - **[com.google.fonts/check/name/subfamilyname]:** has been refactored to use parse.style_parse.
   - **[com.google.fonts/check/name/typographicsubfamilyname]:** has been refactored. It is now acceptable to have a typographic subfamily name if the font is RIBBI since it does not cause any issues
@@ -14,7 +14,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - also improved the readability of **com.google.fonts/check/points_out_of_bounds**
 
 ### New Checks
-  - **[com.google.fonts/check/description/git_url]:** Make sure all font families have an upstream git repo URL declared in the DESCRIPTION.en-us.html file
+  - **[com.google.fonts/check/description/variable_font]:** Ensure that variable fonts contain the following message in the DESCRIPTION.en-us.html file: `This family is available as a variable font.` (issue #2538)
+  - **[com.google.fonts/check/description/git_url]:** Make sure all font families have an upstream git repo URL declared in the DESCRIPTION.en-us.html file. (issue #2523)
   - **[com.google.fonts/check/varfont_instance_coordinates]:** Check variable font instances have correct axis coordinates
   - **[com.google.fonts/check/varfont_instance_names]:** Check variable font instances have correct names
   - **[com.google.fonts/check/wdth_valid_range]:** Check variable font wdth axis has correct range
