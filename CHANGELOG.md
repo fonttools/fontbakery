@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.6 (2019-Jun-07)
+## 0.7.6 (2019-Jun-10)
 ### Note-worthy code changes
   - **[com.google.fonts/check/name/subfamilyname]:** has been refactored to use parse.style_parse.
   - **[com.google.fonts/check/name/typographicsubfamilyname]:** has been refactored. It is now acceptable to have a typographic subfamily name if the font is RIBBI since it does not cause any issues
