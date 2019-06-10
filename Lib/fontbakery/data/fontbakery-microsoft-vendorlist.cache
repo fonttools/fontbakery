@@ -65,21 +65,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-05-23 06:28 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/72a58f8cc476a422b3279b5fb926e5120fb40ad8/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-06-07 09:58 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/7151acbc8acd27dd5c7b493f37339aceee411f93/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2669" />
+<meta name="word_count" content="2700" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/9ba6ceb7.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/74b419c1.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f1e7d9d9.conceptual.css ">
 
@@ -125,7 +125,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/c3cd35bf.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a6a150b8.index-docs.js"></script>
 
 </head>
 
@@ -353,19 +353,8 @@ High contrast					</span>
 
 		<div class="columns has-large-gaps ">
 
-			<div id="left-container" class="left-container column is-one-third-tablet is-one-quarter-desktop">
-				<nav class="sidebar" id="sidebar" data-bi-name="left toc" role="navigation" aria-label="Main Navigation">
-					<button class="sidebar-header has-inner-focus" type="button" aria-label="Close" data-bi-name="contents-collapse">
-						<span>Contents</span>
-						<span class="docon docon-navigate-close" aria-hidden="true"></span>
-					</button>
-					<div id="sidebarContent">
-						<div class="filterHolder">
-						</div>
-						<nav class="toc"></nav>
-						<div class="pdf-download-holder"></div>
-					</div>
-				</nav>
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<div id="affixed-left-container" class="is-fixed is-flex is-flex-column"></div>
 			</div>
 
 			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
@@ -1934,6 +1923,10 @@ High contrast					</span>
 <td><a href="http://www.justintype.com/" data-linktype="external">Just in Type</a></td>
 </tr>
 <tr>
+<td>JVRT</td>
+<td>Just van Rossum Type</td>
+</tr>
+<tr>
 <td>JWTM</td>
 <td><a href="http://www.typematters.de" data-linktype="external">Type Matters</a></td>
 </tr>
@@ -2092,6 +2085,10 @@ High contrast					</span>
 <td><a href="http://www.layoutltd.com" data-linktype="external">LAYOUT SARL</a></td>
 </tr>
 <tr>
+<td>LBV</td>
+<td>La Bolde Vita</td>
+</tr>
+<tr>
 <td>LEAF</td>
 <td><a href="http://www.ileaf.com/" data-linktype="external">Interleaf, Inc.</a></td>
 </tr>
@@ -2106,6 +2103,10 @@ High contrast					</span>
 <tr>
 <td>LFS</td>
 <td><a href="http://www.lettersfromsweden.se" data-linktype="external">Letters from Sweden</a></td>
+</tr>
+<tr>
+<td>LGFF</td>
+<td><a href="https://lipighor.com/" data-linktype="external">LIPIGHOR FONT FOUNDRY</a></td>
 </tr>
 <tr>
 <td>LGX</td>
@@ -2158,6 +2159,10 @@ High contrast					</span>
 <tr>
 <td>LORO</td>
 <td><a href="http://www.loro-productions.com/" data-linktype="external">LoRo Productions</a></td>
+</tr>
+<tr>
+<td>LOU</td>
+<td><a href="https://www.loutype.com/" data-linktype="external">Lou Type Foundry</a></td>
 </tr>
 <tr>
 <td>LP</td>
@@ -3045,6 +3050,10 @@ High contrast					</span>
 <td><a href="http://www.smc.org.in/" data-linktype="external">Swathanthra Malayalam Computing</a></td>
 </tr>
 <tr>
+<td>SMPJ</td>
+<td><a href="http://www.senamirmir.org/" data-linktype="external">Senamirmir Project</a></td>
+</tr>
+<tr>
 <td>SN</td>
 <td>SourceNet</td>
 </tr>
@@ -3442,6 +3451,14 @@ High contrast					</span>
 <td><a href="http://www.martinvogel.de/" data-linktype="external">Martin Vogel</a></td>
 </tr>
 <tr>
+<td>VOL</td>
+<td><a href="https://www.berndvolmer.com/" data-linktype="external">Bernd Volmer</a></td>
+</tr>
+<tr>
+<td>VOLT</td>
+<td><a href="http://www.volto.one/" data-linktype="external">volto.one</a></td>
+</tr>
+<tr>
 <td>VRED</td>
 <td><a href="http://www.vred.kz" data-linktype="external">Vred Letters</a></td>
 </tr>
@@ -3569,6 +3586,10 @@ High contrast					</span>
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
+<tr>
+<td>z01</td>
+<td><a href="https://f.ziti163.com/" data-linktype="external">Jiangxi ZoomlaCMS Soft Co. LTD</a></td>
+</tr>
 <tr>
 <td>ZANE</td>
 <td><a href="http://www.unrender.com/" data-linktype="external">Unrender</a></td>
@@ -3718,7 +3739,7 @@ This page					</button>
 					</div>
 
 					<div id="page-actions" class="right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
-							<nav id="side-doc-outline" class="doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="On page navigation">
+							<nav id="side-doc-outline" class="doc-outline is-fixed is-vertically-scrollable" data-bi-name="intopic toc" role="navigation" aria-label="On page navigation">
 								<h3>In this article</h3>
 							</nav>
 					</div>
