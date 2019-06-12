@@ -3,8 +3,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.7 (2019-Jun-17)
+### Note-worthy code changes
+  - **[com.google.fonts/check/family/has_license]:** only run check if the fonts are in a google/fonts repo.
+
 ### Bug fixes
- - fix crash on git_gfonts_ttFonts condition (return None when the font is not yet available on GitHub) (issue #2540)
+  - fix crash on git_gfonts_ttFonts condition (return None when the font is not yet available on GitHub) (issue #2540)
 
 
 ## 0.7.6 (2019-Jun-10)

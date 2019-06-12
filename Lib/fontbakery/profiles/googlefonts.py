@@ -661,7 +661,8 @@ def com_google_fonts_check_usweightclass(ttFont, expected_style):
 
 
 @check(
-  id = 'com.google.fonts/check/family/has_license'
+  id = 'com.google.fonts/check/family/has_license',
+  conditions=['gfonts_repo_structure'],
 )
 def com_google_fonts_check_family_has_license(licenses):
   """Check font has a license."""
