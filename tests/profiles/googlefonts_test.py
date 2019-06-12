@@ -512,6 +512,9 @@ def test_condition__registered_vendor_ids():
   print('"MS  ": "Microsoft Corp." is a good vendor id with 2 letters and padded with spaces.')
   assert "MS  " in registered_ids # Microsoft Corp.
 
+  print('"TT\0\0": we also accept vendor-IDs containing NULL-padding.')
+  assert "TT\0\0" in registered_ids # constains NULL bytes
+
   print('All vendor ids must be 4 chars long!')
   assert "GNU" not in registered_ids # 3 chars long is bad
   assert "MS" not in registered_ids # 2 chars long is bad
