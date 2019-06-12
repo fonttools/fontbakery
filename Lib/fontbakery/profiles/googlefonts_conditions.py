@@ -433,7 +433,7 @@ def github_gfonts_ttFont(ttFont, license):
      from Google Fonts git repository.
   """
   if not license:
-    return
+    return None
 
   from fontbakery.utils import download_file
   from fontTools.ttLib import TTFont
@@ -451,7 +451,8 @@ def github_gfonts_ttFont(ttFont, license):
                              filename)
   try:
     fontfile = download_file(url)
-    return TTFont(fontfile)
+    if fontfile:
+      return TTFont(fontfile)
   except HTTPError:
     return None
 
