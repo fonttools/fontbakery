@@ -186,12 +186,20 @@ def registered_vendor_ids():
       cells = row.findAll('td')
       if not cells:
         continue
+
+      labels = [label for label in cells[1].stripped_strings]
+
       # pad the code to make sure it is a 4 char string,
       # otherwise eg "CF  " will not be matched to "CF"
       code = cells[0].string.strip()
       code = code + (4 - len(code)) * ' '
-      labels = [label for label in cells[1].stripped_strings]
       registered_vendor_ids[code] = labels[0]
+
+      # Do the same with NULL-padding:
+      code = cells[0].string.strip()
+      code = code + (4 - len(code)) * chr(0)
+      registered_vendor_ids[code] = labels[0]
+
 
   return registered_vendor_ids
 
