@@ -9,6 +9,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bug fixes
   - fix crash on git_gfonts_ttFonts condition (return None when the font is not yet available on GitHub) (issue #2540)
 
+### New Checks
+ - **[com.google.fonts/check/metadata/broken_links]:** Ensure the copyright string in METADATA.pb files does not contain broken URLs. (issue #2550)
+
 
 ## 0.7.6 (2019-Jun-10)
 ### Note-worthy code changes

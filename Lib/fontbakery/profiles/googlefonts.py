@@ -56,6 +56,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/canonical_weight_value'
       , 'com.google.fonts/check/metadata/os2_weightclass'
       , 'com.google.fonts/check/metatada/canonical_style_names'
+      , 'com.google.fonts/check/metadata/broken_links'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -214,8 +215,7 @@ def com_google_fonts_check_description_broken_links(description):
       response = requests.head(link, allow_redirects=True, timeout=10)
       code = response.status_code
       if code != requests.codes.ok:
-        broken_links.append(("url: '{}' "
-                             "status code: '{}'").format(link, code))
+        broken_links.append("{} (status code: {})".format(link, code))
     except requests.exceptions.Timeout:
       yield WARN, ("Timedout while attempting to access: '{}'."
                    " Please verify if that's a broken link.").format(link)
@@ -224,8 +224,8 @@ def com_google_fonts_check_description_broken_links(description):
 
   if len(broken_links) > 0:
     yield FAIL, ("The following links are broken"
-                 " in the DESCRIPTION file:"
-                 " '{}'").format("', '".join(broken_links))
+                 " in the DESCRIPTION file:\n\t"
+                 "{}").format("\n\t".join(broken_links))
   else:
     yield PASS, "All links in the DESCRIPTION file look good!"
 
@@ -390,6 +390,48 @@ def com_google_fonts_check_metadata_designer_values(family_metadata):
                   " Please use commas to separate multiple names instead.")
   else:
     yield PASS, "Looks good."
+
+
+@check(
+  id = 'com.google.fonts/check/metadata/broken_links',
+  conditions = ['family_metadata']
+)
+def com_google_fonts_check_metadata_broken_links(family_metadata):
+  """Does METADATA.pb copyright field contain broken links?"""
+  import requests
+  broken_links = []
+  for font_metadata in family_metadata.fonts:
+    copyright = font_metadata.copyright
+    if "mailto:" in copyright:
+      yield INFO, (f"Found an email address: {copyright}")
+      continue
+
+    link = None
+    try:
+      if "http" in copyright:
+        link = "http" + copyright.split("http")[1]
+
+      for endchar in [' ', ')']:
+        if endchar in link:
+          link = link.split(endchar)[0]
+
+      if link:
+        response = requests.head(link, allow_redirects=True, timeout=10)
+        code = response.status_code
+        if code != requests.codes.ok:
+          broken_links.append(("{} (status code: {})").format(link, code))
+    except requests.exceptions.Timeout:
+      yield WARN, ("Timedout while attempting to access: '{}'."
+                   " Please verify if that's a broken link.").format(link)
+    except requests.exceptions.RequestException:
+      broken_links.append(link)
+
+  if len(broken_links) > 0:
+    yield FAIL, ("The following links are broken"
+                 " in the METADATA.pb file:\n\t"
+                 "{}").format("\n\t".join(broken_links))
+  else:
+    yield PASS, "All links in the METADATA.pb file look good!"
 
 
 @check(
