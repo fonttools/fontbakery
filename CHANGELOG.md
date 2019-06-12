@@ -2,6 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
+## 0.7.7 (2019-Jun-17)
+### Bug fixes
+ - fix crash on git_gfonts_ttFonts condition (return None when the font is not yet available on GitHub) (issue #2540)
+
+
 ## 0.7.6 (2019-Jun-10)
 ### Note-worthy code changes
   - **[com.google.fonts/check/name/subfamilyname]:** has been refactored to use parse.style_parse.
