@@ -65,21 +65,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-06-07 09:58 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/7151acbc8acd27dd5c7b493f37339aceee411f93/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-06-17 08:29 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/c6019bf23b822431d25cc507fbe0e473ef3be896/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2700" />
+<meta name="word_count" content="2713" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/74b419c1.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/66d0c5f8.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f1e7d9d9.conceptual.css ">
 
@@ -125,7 +125,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a6a150b8.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/4a103b52.index-docs.js"></script>
 
 </head>
 
@@ -139,18 +139,18 @@
 		<ul id="page-breadcrumbs" class="breadcrumbs">
 		</ul>
 		</nav>
+		<div class="content-header-controls">
+			<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-controls="sidebar" aria-haspopup="true">
+				<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+				<span>Contents</span>
+			</button>
+		</div>
 		<div class="content-header-controls exit-focus">
 			<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
 				<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
 				<span>Exit focus mode</span>
 			</button>
 			
-		</div>
-		<div class="content-header-controls">
-			<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-controls="sidebar" aria-haspopup="true">
-				<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
-				<span>Contents</span>
-			</button>
 		</div>
 		<div class="action-bar">
 			<ul class="action-list">
@@ -172,16 +172,16 @@
 							</li>
 				<li>
 					<div class="sharing dropdown has-caret" auto-align>
-						<a href="#" class="dropdown-trigger button is-text is-small is-icon-only-touch" aria-haspopup="true" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
-							<span class="icon">
-								<span class="docon docon-sharing" aria-hidden="true"></span>
+						<button class="dropdown-trigger button is-text is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+							<span class="icon" aria-hidden="true">
+								<span class="docon docon-sharing"></span>
 							</span>
 							<span class="action-item-text">Share</span>
-						</a>
+						</button>
 						<div class="dropdown-menu" id="sharing-menu" role="menu">
 							<ul data-bi-name="share-links">
 								<li>
-									<a class="share-twitter" data-bi-name="twitter">
+									<a role="menuitem" class="share-twitter" data-bi-name="twitter">
 										<span class="icon">
 											<span class="docon docon-brand-twitter" aria-hidden="true"></span>
 										</span>
@@ -189,7 +189,7 @@
 									</a>
 								</li>
 								<li>
-									<a class="share-linkedin" data-bi-name="linkedin">
+									<a role="menuitem" class="share-linkedin" data-bi-name="linkedin">
 										<span class="icon">
 											<span class="docon docon-brand-linkedin" aria-hidden="true"></span>
 										</span>
@@ -197,7 +197,7 @@
 									</a>
 								</li>
 								<li>
-									<a class="share-facebook" data-bi-name="facebook">
+									<a role="menuitem" class="share-facebook" data-bi-name="facebook">
 										<span class="icon">
 											<span class="docon docon-brand-facebook" aria-hidden="true"></span>
 										</span>
@@ -205,7 +205,7 @@
 									</a>
 								</li>
 								<li>
-									<a class="share-email" data-bi-name="email">
+									<a role="menuitem" class="share-email" data-bi-name="email">
 										<span class="icon">
 											<span class="docon docon-mail-message-fill" aria-hidden="true"></span>
 										</span>
@@ -346,7 +346,7 @@ High contrast					</span>
 		<div id="banner-holder" class="has-default-focus has-overflow-hidden">
 		</div>
 
-	<div id="disclaimer-holder" class="has-overflow-hidden"></div>
+	<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus"></div>
 	</div>
 
 	<div class="mainContainer uhf-container  has-top-padding  has-default-focus" data-bi-name="body">
@@ -354,7 +354,7 @@ High contrast					</span>
 		<div class="columns has-large-gaps ">
 
 			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
-				<div id="affixed-left-container" class="is-fixed is-flex is-flex-column"></div>
+				<nav id="affixed-left-container" class="is-fixed is-flex is-flex-column" role="navigation" aria-label="Primary"></nav>
 			</div>
 
 			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
@@ -379,8 +379,8 @@ High contrast					</span>
 								<span class="contributors-text">Contributors</span>
 								<ul class="contributors" data-bi-name="contributors">
 											<li><a href="https://github.com/mijacobs" title="Mike Jacobs" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/mijacobs.png?size=32" alt="Mike Jacobs"></a></li>
-											<li><a href="https://github.com/v-nihar" title="Nicholas Hart (Insight Global Inc)" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/v-nihar.png?size=32" alt="Nicholas Hart (Insight Global Inc)"></a></li>
 											<li><a href="https://github.com/alibasi" title="alibasi" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alibasi.png?size=32" alt="alibasi"></a></li>
+											<li><a href="https://github.com/v-nihar" title="Nicholas Hart (Insight Global Inc)" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/v-nihar.png?size=32" alt="Nicholas Hart (Insight Global Inc)"></a></li>
 											<li><a href="https://github.com/PeterCon" title="PeterCon" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/PeterCon.png?size=32" alt="PeterCon"></a></li>
 								</ul>
 							</li>
@@ -389,7 +389,7 @@ High contrast					</span>
 
 
 
-						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="On page navigation">
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
 							<h3>In this article</h3>
 						</nav>
 
@@ -514,6 +514,10 @@ High contrast					</span>
 <tr>
 <td>ACUT</td>
 <td>Acute Type</td>
+</tr>
+<tr>
+<td>ACW</td>
+<td><a href="http://www.babelstone.co.uk/Fonts/" data-linktype="external">Andrew Christopher West (BabelStone)</a></td>
 </tr>
 <tr>
 <td>Adam</td>
@@ -1056,6 +1060,10 @@ High contrast					</span>
 <tr>
 <td>CYRE</td>
 <td><a href="http://www.cyreal.org" data-linktype="external">Cyreal</a></td>
+</tr>
+<tr>
+<td>CZOO</td>
+<td><a href="https://czoo.dk/" data-linktype="external">Creative ZOO</a></td>
 </tr>
 </table>
 <h2 id="d">D</h2>
@@ -1643,6 +1651,10 @@ High contrast					</span>
 <tr>
 <td>HAD</td>
 <td><a href="http://www.hoffmann-angelic.com" data-linktype="external">Hoffmann Angelic Design</a></td>
+</tr>
+<tr>
+<td>Hafo</td>
+<td><a href="https://hafonton.co.il/" data-linktype="external">Hafonton</a></td>
 </tr>
 <tr>
 <td>HAIL</td>
@@ -2408,6 +2420,10 @@ High contrast					</span>
 <td><a href="http://www.motaitalic.com" data-linktype="external">Mota Italic</a></td>
 </tr>
 <tr>
+<td>MRSL</td>
+<td><a href="https://www.mrussell.co.uk" data-linktype="external">Mark Russell</a></td>
+</tr>
+<tr>
 <td>MRSW</td>
 <td><a href="http://www.morisawa.co.jp/" data-linktype="external">Morisawa & Company, Ltd.</a></td>
 </tr>
@@ -2939,7 +2955,7 @@ High contrast					</span>
 </tr>
 <tr>
 <td>SAND</td>
-<td><a href="http://www.sandolltype.com/" data-linktype="external">Sandoll</a></td>
+<td><a href="http://www.sandoll.co.kr/?lang=en_US" data-linktype="external">Sandoll</a></td>
 </tr>
 <tr>
 <td>SAPL</td>
@@ -3739,7 +3755,7 @@ This page					</button>
 					</div>
 
 					<div id="page-actions" class="right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
-							<nav id="side-doc-outline" class="doc-outline is-fixed is-vertically-scrollable" data-bi-name="intopic toc" role="navigation" aria-label="On page navigation">
+							<nav id="side-doc-outline" class="doc-outline is-fixed is-vertically-scrollable" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
 								<h3>In this article</h3>
 							</nav>
 					</div>
