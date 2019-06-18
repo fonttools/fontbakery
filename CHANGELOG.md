@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.7 (2019-Jun-17)
+## 0.7.8 (2019-Jun-24)
+  - ...
+
+
+## 0.7.7 (2019-Jun-18)
 ### Note-worthy code changes
   - **[com.google.fonts/check/family/has_license]:** only run check if the fonts are in a google/fonts repo.
   - **[com.google.fonts/check/vendor_id]:** accept NULL-padding on vendor-IDs (issue #2548)
