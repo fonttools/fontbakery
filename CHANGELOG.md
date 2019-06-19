@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.8 (2019-Jun-24)
-  - ...
+### Note-worthy code changes
+  - Add GlyphsApp hint to com.google.fonts/check/usweightclass (issue #2423)
 
 
 ## 0.7.7 (2019-Jun-18)
