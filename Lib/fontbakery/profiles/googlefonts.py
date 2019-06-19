@@ -695,9 +695,13 @@ def com_google_fonts_check_usweightclass(ttFont, expected_style):
                    " so that if OTFs are exported then it will not"
                    " blur on Windows.")
     else:
-      yield FAIL, ("OS/2 usWeightClass expected value for"
-                   " '{}' is {} but this font has"
-                   " {}.").format(weight_name, expected_value, value)
+      yield FAIL, (f"OS/2 usWeightClass expected value for"
+                   f" '{weight_name}' is {expected_value} but"
+                   f" this font has {value}.\n"
+                   f" GlyphsApp users should set a Custom Parameter"
+                   f" for 'Axis Location' in each master to ensure"
+                   f" that the information is accurately built into"
+                   f" variable fonts.")
   else:
     yield PASS, "OS/2 usWeightClass value looks good!"
 
