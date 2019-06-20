@@ -173,17 +173,18 @@ def test_check_canonical_filename():
   ]
 
   varfont_canonical_names = [
-    TEST_FILE("cabinvfbeta/Cabin-Italic-VF.ttf"),
-    TEST_FILE("cabinvfbeta/Cabin-Roman-VF.ttf"),
-    TEST_FILE("cabinvfbeta/Cabin-VF.ttf"),
+    TEST_FILE("cabinvfbeta/CabinVFBeta-Italic[wght].ttf"),
+    TEST_FILE("cabinvfbeta/CabinVFBeta[wdth][wght].ttf"), # axis tags are sorted
   ]
 
   non_canonical_names = [
-    TEST_FILE("montserrat/Montserrat/Montserrat.ttf"),
-    TEST_FILE("montserrat/Montserrat-semibold.ttf"),
     TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"),
     TEST_FILE("cabinvfbeta/Cabin-Italic.ttf"),
-    TEST_FILE("cabinvfbeta/Cabin-Roman.ttf")
+    TEST_FILE("cabinvfbeta/Cabin-Roman.ttf"),
+    TEST_FILE("cabinvfbeta/Cabin-Italic-VF.ttf"),
+    TEST_FILE("cabinvfbeta/Cabin-Roman-VF.ttf"),
+    TEST_FILE("cabinvfbeta/Cabin-VF.ttf"),
+    TEST_FILE("cabinvfbeta/CabinVFBeta[wght][wdth].ttf"), # axis tags are NOT sorted here
   ]
 
   for canonical in static_canonical_names + varfont_canonical_names:

@@ -159,38 +159,62 @@ def com_google_fonts_check_canonical_filename(font):
   A font's filename must be composed in the following manner:
   <familyname>-<stylename>.ttf
 
-  e.g. Nunito-Regular.ttf,
-       Oswald-BoldItalic.ttf
+  - Nunito-Regular.ttf,
+  - Oswald-BoldItalic.ttf
 
-  Variable fonts must use the "-VF" suffix:
+  Variable fonts must list the axis tags in alphabetical order in square brackets::
 
-  e.g. Roboto-VF.ttf,
-       Barlow-VF.ttf,
-       Example-Roman-VF.ttf,
-       Familyname-Italic-VF.ttf
+  - Roboto-CabinVFBeta[wdth][wght].ttf
+  - Familyname-Italic[wght].ttf
   """
   from fontTools.ttLib import TTFont
   from .shared_conditions import is_variable_font
   from .googlefonts_conditions import canonical_stylename
   from fontbakery.utils import suffix
   from fontbakery.constants import (STATIC_STYLE_NAMES,
-                                    VARFONT_SUFFIXES)
-  if canonical_stylename(font):
-    yield PASS, f"{font} is named canonically."
+                                    MacStyle)
+
+  def variable_font_filename(ttFont):
+    from fontbakery.utils import get_name_entry_strings
+    familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)[0]
+    familyname = "".join(familyname.split(' ')) #remove spaces
+    if bool(ttFont["head"].macStyle & MacStyle.ITALIC):
+      familyname+="-Italic"
+
+    tags = ttFont["fvar"].axes
+    tags = list(map(lambda t: t.axisTag, tags))
+    tags.sort()
+    tags = map("[{}]".format, tags)
+    tags = "".join(tags)
+    return f"{familyname}{tags}.ttf"
+
+  failed = False
+  ttFont = TTFont(font)
+  if is_variable_font(ttFont):
+    if suffix(font) in STATIC_STYLE_NAMES:
+      failed = True
+      yield FAIL, ("This is a variable font, but it is using"
+                   " a naming scheme typical of a static font.")
+
+    expected = variable_font_filename(ttFont)
+    font_filename = os.path.basename(font)
+    if font_filename != expected:
+      failed = True
+      yield FAIL, (f"The file '{font_filename}' must be renamed"
+                   f" to '{expected}' according to the"
+                   f" Google Fonts naming policy for variable fonts.")
+
   else:
-    if os.path.exists(font) and is_variable_font(TTFont(font)):
-      if suffix(font) in STATIC_STYLE_NAMES:
-        yield FAIL, (f'This is a variable font, but it is using'
-                      ' a naming scheme typical of a static font.')
-      yield FAIL, ('Please change the font filename to use one'
-                   ' of the following valid suffixes for variable fonts:'
-                  f' {", ".join(VARFONT_SUFFIXES)}')
-    else:
+    if not canonical_stylename(font):
+      failed = True
       style_names = '", "'.join(STATIC_STYLE_NAMES)
       yield FAIL, (f'Style name used in "{font}" is not canonical.'
-                    ' You should rebuild the font using'
-                    ' any of the following'
+                   f' You should rebuild the font using'
+                   f' any of the following'
                    f' style names: "{style_names}".')
+
+  if not failed:
+    yield PASS, f"{font} is named canonically."
 
 
 @check(

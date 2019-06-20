@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Note-worthy code changes
   - Add GlyphsApp hint to com.google.fonts/check/usweightclass (issue #2423)
 
+### Changes to checks
+  - **[com.google.fonts/check/canonical_filename]:**  update variable fonts naming scheme (issue #2549)
+
 
 ## 0.7.7 (2019-Jun-18)
 ### Note-worthy code changes
