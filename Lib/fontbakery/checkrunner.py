@@ -103,7 +103,7 @@ class Status:
 #
 # From all the statuses that can occur within a check, the "worst" one
 # is defining for the check overall status:
-# ERROR > FAIL > WARN > SKIP > INFO > PASS > DEBUG
+# ERROR > FAIL > WARN > INFO > SKIP > PASS > DEBUG
 # Anything from WARN to PASS does not make a check fail.
 # A result < PASS creates an ERROR. That means, DEBUG is not a valid
 # result of a check, nor is any of the structuring statuses.
@@ -112,16 +112,13 @@ class Status:
 # Log statuses
 # only between STARTCHECK and ENDCHECK:
 DEBUG = Status('DEBUG', 0) # Silent by default
-INFO = Status('INFO', 2)
-WARN = Status('WARN', 4) # A check that results in WARN may indicate a problem, but also may be OK
-ERROR = Status('ERROR', 6) #  something a programmer must fix
 PASS = Status('PASS', 1)
- # SKIP is heavier than PASS because it's likely more interesting to
- # see what got skipped, to reveal blind spots.
-SKIP = Status('SKIP', 3)
-FAIL = Status('FAIL', 5) # a FAIL is a problem detected in the font or family
-
-# a status of ERROR will make a check fail as well
+SKIP = Status('SKIP', 2) # SKIP is heavier than PASS because it's likely more interesting to
+                         # see what got skipped, to reveal blind spots.
+INFO = Status('INFO', 3)
+WARN = Status('WARN', 4) # A check that results in WARN may indicate a problem, but also may be OK.
+FAIL = Status('FAIL', 5) # A FAIL is a problem detected in the font or family.
+ERROR = Status('ERROR', 6) # Something a programmer must fix. It will make a check fail as well.
 
 
 # Start of the suite of checks. Must be always the first message, even in async mode.

@@ -6,6 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Note-worthy code changes
   - Add GlyphsApp hint to com.google.fonts/check/usweightclass (issue #2423)
   - Fix "metatada" typo on checkid: **com.google.fonts/check/metatada/canonical_style_names** (issue #2561)
+  - Reorder loglevels: INFO now has higher priority than SKIP (issue #2560)
 
 ### Changes to checks
   - **[com.google.fonts/check/canonical_filename]:**  update variable fonts naming scheme (issue #2549)
