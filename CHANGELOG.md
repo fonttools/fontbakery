@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.7.8 (2019-Jun-24)
 ### Note-worthy code changes
   - Add GlyphsApp hint to com.google.fonts/check/usweightclass (issue #2423)
+  - Fix "metatada" typo on checkid: **com.google.fonts/check/metatada/canonical_style_names** (issue #2561)
 
 ### Changes to checks
   - **[com.google.fonts/check/canonical_filename]:**  update variable fonts naming scheme (issue #2549)
