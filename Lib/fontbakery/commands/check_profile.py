@@ -34,7 +34,7 @@ log_levels =  OrderedDict((s.name,s) for s in sorted((
             , FAIL
             )))
 
-DEFAULT_LOG_LEVEL = WARN
+DEFAULT_LOG_LEVEL = INFO
 
 from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
