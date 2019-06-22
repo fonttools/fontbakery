@@ -1,8 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.7.9 (2019-Jul-01)
+  - ...
 
-## 0.7.8 (2019-Jun-24)
+
+## 0.7.8 (2019-Jun-22)
 ### Note-worthy code changes
   - Add GlyphsApp hint to com.google.fonts/check/usweightclass (issue #2423)
   - Fix "metatada" typo on checkid: **com.google.fonts/check/metatada/canonical_style_names** (issue #2561)
