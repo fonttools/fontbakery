@@ -34,6 +34,7 @@
 
 
 
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -65,23 +66,23 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-06-17 08:29 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/c6019bf23b822431d25cc507fbe0e473ef3be896/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-06-19 06:00 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/a44979ac9b9d6373ffdd88354cef626dbca1b9ca/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2713" />
+<meta name="word_count" content="2719" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/66d0c5f8.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/d756ef2f.site-ltr.css ">
 
-	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f1e7d9d9.conceptual.css ">
+	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cd54db8b.conceptual.css ">
 
 
 	<script>
@@ -125,7 +126,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/4a103b52.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/ecde0fcc.index-docs.js"></script>
 
 </head>
 
@@ -230,9 +231,9 @@
 			<div class="theme is-block">
 				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
 					data-theme-to="light" role="menuitem">
-					<span class="theme-light">
+					<span class="theme-light has-margin-right-small">
 						<span
-							class="theme-selector-icon css-variable-support has-border is-inline-block has-margin-right-small has-body-background"
+							class="theme-selector-icon css-variable-support has-border is-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -254,9 +255,9 @@ Light					</span>
 			<div class="theme is-block">
 				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
 					data-theme-to="dark" role="menuitem">
-					<span class="theme-dark">
+					<span class="theme-dark has-margin-right-small">
 						<span
-							class="has-border theme-selector-icon css-variable-support is-inline-block has-margin-right-small has-body-background"
+							class="has-border theme-selector-icon css-variable-support is-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -278,9 +279,9 @@ Dark					</span>
 			<div class="theme is-block">
 				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
 					data-theme-to="high-contrast" role="menuitem">
-					<span class="theme-high-contrast">
+					<span class="theme-high-contrast has-margin-right-small">
 						<span
-							class="has-border theme-selector-icon css-variable-support is-inline-block has-margin-right-small has-body-background"
+							class="has-border theme-selector-icon css-variable-support is-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -311,7 +312,7 @@ High contrast					</span>
 									<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
 								</span>
 							</span>
-							<span class="is-truncated" data-profile-property="userName"></span>
+							<span class="is-truncated has-margin-left-small" data-profile-property="userName"></span>
 						</button>
 						<div class="dropdown-menu box" id="user-menu" role="menu">
 							<div class="media is-user-dir">
@@ -379,8 +380,8 @@ High contrast					</span>
 								<span class="contributors-text">Contributors</span>
 								<ul class="contributors" data-bi-name="contributors">
 											<li><a href="https://github.com/mijacobs" title="Mike Jacobs" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/mijacobs.png?size=32" alt="Mike Jacobs"></a></li>
-											<li><a href="https://github.com/alibasi" title="alibasi" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alibasi.png?size=32" alt="alibasi"></a></li>
 											<li><a href="https://github.com/v-nihar" title="Nicholas Hart (Insight Global Inc)" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/v-nihar.png?size=32" alt="Nicholas Hart (Insight Global Inc)"></a></li>
+											<li><a href="https://github.com/alibasi" title="alibasi" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alibasi.png?size=32" alt="alibasi"></a></li>
 											<li><a href="https://github.com/PeterCon" title="PeterCon" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/PeterCon.png?size=32" alt="PeterCon"></a></li>
 								</ul>
 							</li>
@@ -3353,6 +3354,10 @@ High contrast					</span>
 <td><a href="http://www.typocalypse.com/" data-linktype="external">Typocalypse</a></td>
 </tr>
 <tr>
+<td>TYBY</td>
+<td><a href="http://www.typeby.com" data-linktype="external">TYPE TAILORS</a></td>
+</tr>
+<tr>
 <td>TYCU</td>
 <td><a href="http://www.typeculture.com/" data-linktype="external">TypeCulture</a></td>
 </tr>
@@ -3387,6 +3392,10 @@ High contrast					</span>
 <tr>
 <td>TYRE</td>
 <td><a href="http://www.typerepublic.com/" data-linktype="external">typerepublic</a></td>
+</tr>
+<tr>
+<td>TYTA</td>
+<td><a href="http://www.typetailors.com" data-linktype="external">TYPE TAILORS</a></td>
 </tr>
 </table>
 <h2 id="u">U</h2>
@@ -3640,13 +3649,13 @@ High contrast					</span>
 	<h2 id="feedback">Feedback</h2>
 
 	<div class="alert choose-feedback-type">
-		<p id="send-feedback-about">Send feedback about:</p>
+		<p id="send-feedback-about" aria-hidden="true">Send feedback about</p>
 
 		<div class="choose-feedback-buttons">
 
 			<div class="field has-addons is-inline-flex has-margin-bottom-small">
 				<div class="control has-margin-top-none has-margin-bottom-none">
-					<button class="button feedback-sign-in-button has-text-wrap" aria-describedby="send-feedback-about" data-bi-name="feedback-sign-in">
+					<button class="button feedback-sign-in-button has-text-wrap" aria-label="Send feedback about this page" data-bi-name="feedback-sign-in">
 						<span class="icon docon docon-brand-github" aria-hidden="true"></span>
 						<span>This page</span>
 					</button>
@@ -3709,11 +3718,10 @@ This page					</button>
 	<div class="feedback-tab-group tabGroup" data-tab-group-independent hidden>
 		<ul role="tablist">
 			<li role="presentation">
-				<a href="#tabpanel-issues-open" role="tab" aria-controls="tabpanel-issues-open" data-tab="issues-open" aria-label="Open Issues"></a>
+				<a href="#tabpanel-issues-open" role="tab" aria-controls="tabpanel-issues-open" data-tab="issues-open"></a>
 			</li>
 			<li role="presentation">
-				<a href="#tabpanel-issues-closed" role="tab" aria-controls="tabpanel-issues-closed" data-tab="issues-closed"
-				 aria-label="Closed Issues"></a>
+				<a href="#tabpanel-issues-closed" role="tab" aria-controls="tabpanel-issues-closed" data-tab="issues-closed"></a>
 			</li>
 		</ul>
 		<section id="tabpanel-issues-open" role="tabpanel" data-tab="issues-open">
@@ -3734,6 +3742,8 @@ This page					</button>
 		</a>
 	</div>
 </section>
+
+
 						<!-- end feedback section -->
 
 						<div class="footerContainer is-visible-interactive has-default-focus ">
