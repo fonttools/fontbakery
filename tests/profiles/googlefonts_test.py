@@ -436,7 +436,8 @@ def test_check_metadata_designer_values():
   assert status == FAIL
 
 
-def test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
+# TODO: re-enable after addressing issue #1998
+def DISABLED_test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
   """ Fonts have equal numbers of glyphs? """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_family_equal_numbers_of_glyphs as check
 
@@ -452,7 +453,8 @@ def test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
   assert status == FAIL
 
 
-def test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
+# TODO: re-enable after addressing issue #1998
+def DISABLED_test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
   """ Fonts have equal glyph names? """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_family_equal_glyph_names as check
 
