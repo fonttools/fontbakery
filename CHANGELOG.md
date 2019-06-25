@@ -3,6 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.7.9 (2019-Jul-01)
   - Disabled family checks: **com.google.fonts/check/family/equal_numbers_of_glyphs** and **com.google.fonts/check/family/equal_glyph_names** These will be reintroduced after known problems are addressed. (issue #2567)
+  - **[com.google.fonts/check/fontdata_namecheck]:** Web service is online again. (issue #2484)
 
 
 ## 0.7.8 (2019-Jun-22)
