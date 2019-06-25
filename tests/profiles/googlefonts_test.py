@@ -2626,8 +2626,7 @@ def test_check_name_copyright_length():
   assert status == FAIL
 
 
-# namecheck website is down. See: https://github.com/googlefonts/fontbakery/issues/2484
-def DISABLED_test_check_fontdata_namecheck():
+def test_check_fontdata_namecheck():
   """ Familyname is unique according to namecheck.fontdata.com """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_fontdata_namecheck as check,
                                                      familyname)
