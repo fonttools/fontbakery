@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.7.9 (2019-Jul-01)
-  - ...
+  - Disabled family checks: **com.google.fonts/check/family/equal_numbers_of_glyphs** and **com.google.fonts/check/family/equal_glyph_names** These will be reintroduced after known problems are addressed. (issue #2567)
 
 
 ## 0.7.8 (2019-Jun-22)

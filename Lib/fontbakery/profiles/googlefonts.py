@@ -69,8 +69,8 @@ DESCRIPTION_CHECKS = [
 ]
 
 FAMILY_CHECKS = [
-   'com.google.fonts/check/family/equal_numbers_of_glyphs',
-   'com.google.fonts/check/family/equal_glyph_names',
+#   'com.google.fonts/check/family/equal_numbers_of_glyphs',
+#   'com.google.fonts/check/family/equal_glyph_names',
    'com.google.fonts/check/family/has_license',
    'com.google.fonts/check/family/control_chars',
    'com.google.fonts/check/family/tnum_horizontal_metrics',
@@ -458,6 +458,7 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
     yield PASS, "All links in the METADATA.pb file look good!"
 
 
+@disable # TODO: re-enable after addressing issue #1998
 @check(
   id = 'com.google.fonts/check/family/equal_numbers_of_glyphs',
   conditions = ['are_ttf',
@@ -509,6 +510,7 @@ def com_google_fonts_check_family_equal_numbers_of_glyphs(ttFonts):
                  " an equal total ammount of glyphs.")
 
 
+@disable # TODO: re-enable after addressing issue #1998
 @check(
   id = 'com.google.fonts/check/family/equal_glyph_names',
   conditions = ['are_ttf']
