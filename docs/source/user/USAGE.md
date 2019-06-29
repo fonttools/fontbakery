@@ -10,7 +10,7 @@ This has several subcommands, described in the help function:
     Run fontbakery subcommands:
         build-contributors
         check-adobefonts
-        check-collection
+        check-cjk
         check-fontval
         check-googlefonts
         check-profile

@@ -9,6 +9,7 @@ profiles
    universal
    adobefonts
    googlefonts
+   cjk
    fontval
    shared_conditions
    ufo_sources

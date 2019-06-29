@@ -7,6 +7,7 @@ commands
 
    check_adobefonts
    check_googlefonts
+   check_cjk
    check_opentype
    check_profile
    check_ufo_sources
