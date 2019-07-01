@@ -307,9 +307,11 @@ def com_google_fonts_check_description_variable_font(description):
   """Does DESCRIPTION file mention when a family
      is available as variable font?"""
   if "variable font" not in description.lower():
-    yield FAIL, ("Please include the following sentence"
-                 " in the DESCRIPTION.en-us.html file:\n\n"
-                 "This family is available as a variable font.")
+    yield FAIL, ("Please mention in the DESCRIPTION.en-us.html"
+                 " that the family is a variable font. This check"
+                 " expects the words 'variable font' to be present"
+                 " in the text e.g 'This font is now available as"
+                 " a variable font.'")
   else:
     yield PASS, "Looks good!"
 
