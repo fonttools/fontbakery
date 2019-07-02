@@ -193,25 +193,28 @@ def com_google_fonts_check_canonical_filename(font):
   if is_variable_font(ttFont):
     if suffix(font) in STATIC_STYLE_NAMES:
       failed = True
-      yield FAIL, ("This is a variable font, but it is using"
-                   " a naming scheme typical of a static font.")
+      yield FAIL, Message("varfont-with-static-filename",
+                          ("This is a variable font, but it is using"
+                           " a naming scheme typical of a static font."))
 
     expected = variable_font_filename(ttFont)
     font_filename = os.path.basename(font)
     if font_filename != expected:
       failed = True
-      yield FAIL, (f"The file '{font_filename}' must be renamed"
-                   f" to '{expected}' according to the"
-                   f" Google Fonts naming policy for variable fonts.")
+      yield FAIL, Message("bad-varfont-filename",
+                          (f"The file '{font_filename}' must be renamed"
+                           f" to '{expected}' according to the"
+                           f" Google Fonts naming policy for variable fonts."))
 
   else:
     if not canonical_stylename(font):
       failed = True
       style_names = '", "'.join(STATIC_STYLE_NAMES)
-      yield FAIL, (f'Style name used in "{font}" is not canonical.'
-                   f' You should rebuild the font using'
-                   f' any of the following'
-                   f' style names: "{style_names}".')
+      yield FAIL, Message("bad-static-filename",
+                          (f'Style name used in "{font}" is not canonical.'
+                           f' You should rebuild the font using'
+                           f' any of the following'
+                           f' style names: "{style_names}".'))
 
   if not failed:
     yield PASS, f"{font} is named canonically."
@@ -232,7 +235,8 @@ def com_google_fonts_check_description_broken_links(description):
     if link.startswith("mailto:") and \
        "@" in link and \
        "." in link.split("@")[1]:
-      yield INFO, (f"Found an email address: {link}")
+      yield INFO, Message("email",
+                          f"Found an email address: {link}")
       continue
 
     try:
@@ -241,15 +245,17 @@ def com_google_fonts_check_description_broken_links(description):
       if code != requests.codes.ok:
         broken_links.append("{} (status code: {})".format(link, code))
     except requests.exceptions.Timeout:
-      yield WARN, ("Timedout while attempting to access: '{}'."
-                   " Please verify if that's a broken link.").format(link)
+      yield WARN, Message("timeout",
+                          ("Timedout while attempting to access: '{}'."
+                           " Please verify if that's a broken link.").format(link))
     except requests.exceptions.RequestException:
       broken_links.append(link)
 
   if len(broken_links) > 0:
-    yield FAIL, ("The following links are broken"
-                 " in the DESCRIPTION file:\n\t"
-                 "{}").format("\n\t".join(broken_links))
+    yield FAIL, Message("broken-links",
+                        ("The following links are broken"
+                         " in the DESCRIPTION file:\n\t"
+                         "{}").format("\n\t".join(broken_links)))
   else:
     yield PASS, "All links in the DESCRIPTION file look good!"
 
