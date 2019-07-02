@@ -195,7 +195,10 @@ def test_check_canonical_filename():
   for non_canonical in non_canonical_names:
     print(f'Test FAIL with "{non_canonical}" ...')
     status, message = list(check(non_canonical))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "bad-varfont-filename"
+
+  # TODO: FAIL, "bad-static-filename"
+  # TODO: FAIL, "varfont-with-static-filename"
 
 
 def test_check_description_broken_links():
@@ -217,14 +220,19 @@ def test_check_description_broken_links():
   assert status == PASS
 
   good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
-  print('Test FAIL with a description file containing a mailto links...')
+  print('Test INFO/PASS with a description file containing a mailto links...')
+  status, message = list(check(good_desc))[-2]
+  assert status == INFO and message.code == "email"
+
   status, message = list(check(good_desc))[-1]
   assert status == PASS
 
   bad_desc = good_desc + "<a href='http://thisisanexampleofabrokenurl.com/'>This is a Bad Link</a>"
   print('Test FAIL with a description file containing a known-bad URL...')
   status, message = list(check(bad_desc))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "broken-links"
+
+  #TODO: WARN, "timeout"
 
 
 def test_check_description_git_url():
