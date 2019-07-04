@@ -1,9 +1,10 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.7.9 (2019-Jul-01)
+## 0.7.9 (2019-Jul-03)
   - Disabled family checks: **com.google.fonts/check/family/equal_numbers_of_glyphs** and **com.google.fonts/check/family/equal_glyph_names** These will be reintroduced after known problems are addressed. (issue #2567)
   - **[com.google.fonts/check/fontdata_namecheck]:** Web service is online again. (issue #2484)
+  - update varfont naming scheme: use commas to separate axis tags (issue #2570)
 
 
 ## 0.7.8 (2019-Jun-22)

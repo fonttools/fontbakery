@@ -162,9 +162,10 @@ def com_google_fonts_check_canonical_filename(font):
   - Nunito-Regular.ttf,
   - Oswald-BoldItalic.ttf
 
-  Variable fonts must list the axis tags in alphabetical order in square brackets::
+  Variable fonts must list the axis tags in alphabetical order
+  in square brackets and separated by commas:
 
-  - Roboto-CabinVFBeta[wdth][wght].ttf
+  - Roboto-CabinVFBeta[wdth,wght].ttf
   - Familyname-Italic[wght].ttf
   """
   from fontTools.ttLib import TTFont
@@ -184,8 +185,7 @@ def com_google_fonts_check_canonical_filename(font):
     tags = ttFont["fvar"].axes
     tags = list(map(lambda t: t.axisTag, tags))
     tags.sort()
-    tags = map("[{}]".format, tags)
-    tags = "".join(tags)
+    tags = "[{}]".format(",".join(tags))
     return f"{familyname}{tags}.ttf"
 
   failed = False
