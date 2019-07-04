@@ -35,6 +35,7 @@
 
 
 
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -66,21 +67,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-06-19 06:00 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/a44979ac9b9d6373ffdd88354cef626dbca1b9ca/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-07-02 04:15 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/ccd9fff35fbe98546508dd4b4e7163541c717463/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2719" />
+<meta name="word_count" content="2733" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/d756ef2f.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/7c332e5e.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cd54db8b.conceptual.css ">
 
@@ -126,7 +127,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/ecde0fcc.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/dadc703f.index-docs.js"></script>
 
 </head>
 
@@ -141,7 +142,7 @@
 		</ul>
 		</nav>
 		<div class="content-header-controls">
-			<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-controls="sidebar" aria-haspopup="true">
+			<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
 				<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
 				<span>Contents</span>
 			</button>
@@ -160,7 +161,7 @@
 								<span class="icon">
 									<span class="docon docon-comment-lines" aria-hidden="true"></span>
 								</span>
-								<span class="action-item-text">Feedback</span>
+								<span class="action-item-text is-hidden-portrait">Feedback</span>
 							</a>
 						</li>
 							<li id="contenteditbtn" hidden>
@@ -168,7 +169,7 @@
 									<span class="icon">
 										<span class="docon docon-edit-outline" aria-hidden="true"></span>
 									</span>
-									<span class="action-item-text">Edit</span>
+									<span class="action-item-text is-hidden-portrait">Edit</span>
 								</a>
 							</li>
 				<li>
@@ -177,12 +178,12 @@
 							<span class="icon" aria-hidden="true">
 								<span class="docon docon-sharing"></span>
 							</span>
-							<span class="action-item-text">Share</span>
+							<span class="action-item-text is-hidden-portrait">Share</span>
 						</button>
-						<div class="dropdown-menu" id="sharing-menu" role="menu">
+						<div class="dropdown-menu" id="sharing-menu">
 							<ul data-bi-name="share-links">
 								<li>
-									<a role="menuitem" class="share-twitter" data-bi-name="twitter">
+									<a class="share-twitter" data-bi-name="twitter">
 										<span class="icon">
 											<span class="docon docon-brand-twitter" aria-hidden="true"></span>
 										</span>
@@ -190,7 +191,7 @@
 									</a>
 								</li>
 								<li>
-									<a role="menuitem" class="share-linkedin" data-bi-name="linkedin">
+									<a class="share-linkedin" data-bi-name="linkedin">
 										<span class="icon">
 											<span class="docon docon-brand-linkedin" aria-hidden="true"></span>
 										</span>
@@ -198,7 +199,7 @@
 									</a>
 								</li>
 								<li>
-									<a role="menuitem" class="share-facebook" data-bi-name="facebook">
+									<a class="share-facebook" data-bi-name="facebook">
 										<span class="icon">
 											<span class="docon docon-brand-facebook" aria-hidden="true"></span>
 										</span>
@@ -206,7 +207,7 @@
 									</a>
 								</li>
 								<li>
-									<a role="menuitem" class="share-email" data-bi-name="email">
+									<a class="share-email" data-bi-name="email">
 										<span class="icon">
 											<span class="docon docon-mail-message-fill" aria-hidden="true"></span>
 										</span>
@@ -224,7 +225,7 @@
 		<span class="icon">
 			<span class="docon docon-sun" aria-hidden="true"></span>
 		</span>
-		<span class="action-item-text">Theme</span>
+		<span class="action-item-text is-hidden-portrait">Theme</span>
 	</button>
 	<div class="dropdown-menu" id="theme-menu" role="menu">
 		<div class="theme-selector has-padding-small">
@@ -306,7 +307,7 @@ High contrast					</span>
 				<li class="is-unstyled-action-list-item">
 					<a class="docs-sign-in auth-status-determined not-authenticated button is-text has-text-primary is-small" href="#">Sign in</a>
 					<div class="dropdown has-caret auth-status-determined authenticated" auto-align>
-						<button class="dropdown-trigger button is-text is-small is-icon-only-touch has-inner-focus" aria-label="Your Account" aria-haspopup="true" aria-controls="user-menu" aria-expanded="false">
+						<button class="dropdown-trigger button is-text is-small is-icon-only-touch has-inner-focus" aria-label="Your Account" aria-controls="user-menu" aria-expanded="false">
 							<span class="icon" aria-hidden="true">
 								<span class="image">
 									<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
@@ -377,13 +378,14 @@ High contrast					</span>
 							</li>
 								<li class="readingTime">13 minutes to read</li>
 							<li class="contributors-holder">
-								<span class="contributors-text">Contributors</span>
-								<ul class="contributors" data-bi-name="contributors">
-											<li><a href="https://github.com/mijacobs" title="Mike Jacobs" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/mijacobs.png?size=32" alt="Mike Jacobs"></a></li>
-											<li><a href="https://github.com/v-nihar" title="Nicholas Hart (Insight Global Inc)" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/v-nihar.png?size=32" alt="Nicholas Hart (Insight Global Inc)"></a></li>
-											<li><a href="https://github.com/alibasi" title="alibasi" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alibasi.png?size=32" alt="alibasi"></a></li>
-											<li><a href="https://github.com/PeterCon" title="PeterCon" data-bi-name="contributorprofile"><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/PeterCon.png?size=32" alt="PeterCon"></a></li>
-								</ul>
+								<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="4 Contributors" aria-label="4 Contributors">
+									<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
+												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/mijacobs.png?size=32" role="presentation"/></li>
+												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
+												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alibasi.png?size=32" role="presentation"/></li>
+												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/PeterCon.png?size=32" role="presentation"/></li>
+									</ul>
+								</a>
 							</li>
 
 						</ul>
@@ -1005,6 +1007,10 @@ High contrast					</span>
 <tr>
 <td>CMJK</td>
 <td><a href="http://www.slantedhall.com/type" data-linktype="external">Slanted Hall</a></td>
+</tr>
+<tr>
+<td>CNTY</td>
+<td><a href="http://www.cntype.com/" data-linktype="external">CNTYPE</a></td>
 </tr>
 <tr>
 <td>COFO</td>
@@ -2166,6 +2172,14 @@ High contrast					</span>
 <td><a href="http://www.lineto.com" data-linktype="external">Lineto</a></td>
 </tr>
 <tr>
+<td>LOFF</td>
+<td>Logan Font Foundry</td>
+</tr>
+<tr>
+<td>Log9</td>
+<td>Log9 Foundry</td>
+</tr>
+<tr>
 <td>lool</td>
 <td><a href="http://www.ty-index.design/" data-linktype="external">lo-ol Type</a></td>
 </tr>
@@ -2532,6 +2546,10 @@ High contrast					</span>
 <td><a href="http://www.nec.co.jp/" data-linktype="external">NEC Corporation</a></td>
 </tr>
 <tr>
+<td>NERK</td>
+<td>Nermin Kahrimanovic</td>
+</tr>
+<tr>
 <td>NEW</td>
 <td><a href="http://www.newlyn.com" data-linktype="external">Newlyn</a></td>
 </tr>
@@ -2732,6 +2750,10 @@ High contrast					</span>
 <tr>
 <td>PLAY</td>
 <td><a href="http://www.playtype.com" data-linktype="external">Playtype</a></td>
+</tr>
+<tr>
+<td>POEM</td>
+<td><a href="http://www.poem-editions.com" data-linktype="external">Poem</a></td>
 </tr>
 <tr>
 <td>PPPR</td>
@@ -3661,7 +3683,7 @@ High contrast					</span>
 					</button>
 				</div>
 				<div class="control dropdown has-caret has-margin-top-none has-margin-bottom-none" auto-align>
-					<button class="button dropdown-trigger is-full-height" aria-describedby="send-feedback-about" aria-haspopup="true" aria-expanded="false" aria-controls="fbm0" aria-label="Additional feedback options" data-bi-name="documentation-feedback-menu">
+					<button class="button dropdown-trigger is-full-height" aria-describedby="send-feedback-about" aria-expanded="false" aria-controls="fbm0" aria-label="Additional feedback options" data-bi-name="documentation-feedback-menu">
 						<span class="icon" aria-hidden="true">
 							<span class="docon docon-chevron-down-light expanded-indicator"></span>
 						</span>
@@ -3678,7 +3700,7 @@ High contrast					</span>
 This page					</button>
 				</div>
 				<div class="control dropdown has-caret has-margin-top-none has-margin-bottom-none" auto-align>
-					<button class="button dropdown-trigger" aria-describedby="send-feedback-about" aria-haspopup="true" aria-expanded="false" aria-controls="fbm1" aria-label="Additional feedback options" data-bi-name="documentation-feedback-menu">
+					<button class="button dropdown-trigger" aria-describedby="send-feedback-about" aria-expanded="false" aria-controls="fbm1" aria-label="Additional feedback options" data-bi-name="documentation-feedback-menu">
 						<span class="icon" aria-hidden="true">
 							<span class="docon docon-chevron-down-light expanded-indicator"></span>
 						</span>
