@@ -18,6 +18,10 @@ class FontsProfile(Profile):
 
       fonts_to_check = []
       # use glob.glob to accept *.ttf
+      # but perform a hacky fixup to workaround the square-brackets naming scheme
+      # currently in use for varfonts in google fonts...
+      if '].ttf' in pattern:
+        pattern = "*.ttf".join(pattern.split('].ttf'))
 
       for fullpath in glob.glob(pattern):
         if fullpath.lower().rsplit(".", 1)[-1] in ("otf", "ttf"):
