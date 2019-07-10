@@ -335,6 +335,10 @@ def com_google_fonts_check_fontbakery_version():
                    f" while a newer {latest_str} is already available."
                     " Please upgrade it with 'pip install -U fontbakery'")
     yield INFO, pip_output.decode()
+  except Exception:
+    yield FAIL, ("Unable to detect what's the latest version of"
+                 " FontBakery available. Maybe we're offline?"
+                 " Please check Internet access and try again.")
   except subprocess.CalledProcessError as e:
     yield ERROR, ("Running 'pip search fontbakery' returned an error code."
                   " Output follows :\n\n{}\n").format(e.output.decode())
