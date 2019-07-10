@@ -96,7 +96,7 @@ FONT_FILE_CHECKS = [
    'com.google.fonts/check/ligature_carets',
    'com.google.fonts/check/production_glyphs_similarity',
    'com.google.fonts/check/fontv',
-   'com.google.fonts/check/production_encoded_glyphs',
+#DISABLED:   'com.google.fonts/check/production_encoded_glyphs',
    'com.google.fonts/check/varfont/generate_static',
    'com.google.fonts/check/kerning_for_non_ligated_sequences',
    'com.google.fonts/check/name/description_max_length',
@@ -2505,6 +2505,11 @@ def com_google_fonts_check_contour_count(ttFont):
       yield PASS, "All glyphs have the recommended amount of contours"
 
 
+# FIXME!
+# Temporarily disabled since GFonts hosted Cabin files seem to have changed in ways
+# that break some of the assumptions in the check implementation below.
+# More info at https://github.com/googlefonts/fontbakery/issues/2581
+@disable
 @check(
   id = 'com.google.fonts/check/production_encoded_glyphs',
   conditions = ['api_gfonts_ttFont']

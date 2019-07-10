@@ -2177,7 +2177,11 @@ def test_check_contour_count(montserrat_ttFonts):
     assert status == WARN
 
 
-def test_check_production_encoded_glyphs(cabin_ttFonts):
+# FIXME!
+# Temporarily disabled since GFonts hosted Cabin files seem to have changed in ways
+# that break some of the assumptions in the code-test below.
+# More info at https://github.com/googlefonts/fontbakery/issues/2581
+def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
   """Check glyphs are not missing when compared to version on fonts.google.com"""
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_production_encoded_glyphs as check,
