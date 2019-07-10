@@ -3,6 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.7.9 (2019-Jul-12)
   - Disabled family checks: **com.google.fonts/check/family/equal_numbers_of_glyphs** and **com.google.fonts/check/family/equal_glyph_names** These will be reintroduced after known problems are addressed. (issue #2567)
+  - Temporarily disabled **com.google.fonts/check/production_encoded_glyphs** since GFonts hosted Cabin files seem to have changed in ways that break some of the assumptions in its code-test. (issue #2581)
   - **[com.google.fonts/check/fontdata_namecheck]:** Web service is online again. (issue #2484)
   - update varfont naming scheme: use commas to separate axis tags (issue #2570)
   - **[com.google.fonts/check/fontbakery_version]:** FAIL if unable to detect latest available fontbakery version (issue #2579)
