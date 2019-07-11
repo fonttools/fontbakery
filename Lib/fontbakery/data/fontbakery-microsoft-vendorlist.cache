@@ -35,8 +35,7 @@
 
 
 
-
-<html class="hasSidebar hasPageActions hasBreadcrumb conceptual" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
 	<meta charset="utf-8" />
@@ -67,21 +66,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-07-02 04:15 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/ccd9fff35fbe98546508dd4b4e7163541c717463/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-07-09 05:19 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/d87322ab37b8b084c863facd61104443eaa4e972/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2733" />
+<meta name="word_count" content="2738" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/7c332e5e.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/adec96e7.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cd54db8b.conceptual.css ">
 
@@ -127,12 +126,13 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/dadc703f.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/ae52c0cf.index-docs.js"></script>
 
 </head>
 
 <body lang="en-us" dir="ltr">
-<div class="header-holder">
+<div class="header-holder has-default-focus">
+	<a href="#main" class="skip-to-main-link visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
 		<div id="headerAreaHolder" data-bi-name="header">
 			<div id="uhf-placeholder"></div>
 		</div>
@@ -323,18 +323,18 @@ High contrast					</span>
 									</span>
 								</div>
 								<div class="media-content">
-									<p class="title has-margin-top-small has-margin-bottom-small">
+									<p class="title">
 										<span class="is-truncated" style="max-width: 200px" data-profile-property="userName"></span>
 									</p>
-									<p class="subtitle">
+									<p class="subtitle has-margin-bottom-none">
 										<span class="is-truncated" style="max-width: 200px" data-profile-property="upn"></span>
 									</p>
+									<ul class="is-unstyled has-margin-none has-margin-top-small">
+										<li><a href="/profile" data-profile-property="profileUrl">Profile</a></li>
+										<li><a class="docs-sign-out" href="#">Sign out</a></li>
+									</ul>
 								</div>
 							</div>
-							<ul class="is-unstyled has-margin-none">
-								<li><a href="/profile" data-profile-property="profileUrl">Profile</a></li>
-								<li><a class="docs-sign-out" href="#">Sign out</a></li>
-							</ul>
 						</div>
 					</div>
 				</li>
@@ -381,15 +381,14 @@ High contrast					</span>
 								<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="4 Contributors" aria-label="4 Contributors">
 									<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/mijacobs.png?size=32" role="presentation"/></li>
-												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alibasi.png?size=32" role="presentation"/></li>
+												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/PeterCon.png?size=32" role="presentation"/></li>
 									</ul>
 								</a>
 							</li>
 
 						</ul>
-
 
 
 						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
@@ -1354,6 +1353,10 @@ High contrast					</span>
 <td><a href="http://www.feorag.com/" data-linktype="external">Fe&ograve;rag N&igrave;cBhr&igrave;de</a></td>
 </tr>
 <tr>
+<td>FeTy</td>
+<td><a href="http://www.felicianotypefoundry.com/" data-linktype="external">Feliciano Type</a></td>
+</tr>
+<tr>
 <td>FGOD</td>
 <td><a href="http://www.fontgod.com" data-linktype="external">FontGod</a></td>
 </tr>
@@ -1888,6 +1891,10 @@ High contrast					</span>
 <tr>
 <td>JAKE</td>
 <td><a href="http://www.jaketilson.com" data-linktype="external">Jake Tilson Studio</a></td>
+</tr>
+<tr>
+<td>JB</td>
+<td><a href="http://www.jetbrains.com" data-linktype="external">JetBrains</a></td>
 </tr>
 <tr>
 <td>JBLT</td>
@@ -3666,7 +3673,6 @@ High contrast					</span>
 
 
 <section class="feedback-section" data-bi-name="feedback-section">
-
 
 	<h2 id="feedback">Feedback</h2>
 
