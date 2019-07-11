@@ -432,25 +432,23 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
       yield INFO, (f"Found an email address: {copyright}")
       continue
 
-    link = None
-    try:
-      if "http" in copyright:
-        link = "http" + copyright.split("http")[1]
+    if "http" in copyright:
+      link = "http" + copyright.split("http")[1]
 
       for endchar in [' ', ')']:
         if endchar in link:
           link = link.split(endchar)[0]
 
-      if link:
+      try:
         response = requests.head(link, allow_redirects=True, timeout=10)
         code = response.status_code
         if code != requests.codes.ok:
           broken_links.append(("{} (status code: {})").format(link, code))
-    except requests.exceptions.Timeout:
-      yield WARN, ("Timedout while attempting to access: '{}'."
+      except requests.exceptions.Timeout:
+        yield WARN, ("Timedout while attempting to access: '{}'."
                    " Please verify if that's a broken link.").format(link)
-    except requests.exceptions.RequestException:
-      broken_links.append(link)
+      except requests.exceptions.RequestException:
+        broken_links.append(link)
 
   if len(broken_links) > 0:
     yield FAIL, ("The following links are broken"

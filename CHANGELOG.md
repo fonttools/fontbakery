@@ -1,6 +1,12 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+
+## 0.7.10 (2019-Jul-22)
+### Bug fixes
+  - fix ERROR on check/metadata/broken_links (issue #2585)
+
+
 ## 0.7.9 (2019-Jul-11)
 ### Note-worthy code changes
   - update varfont naming scheme: use commas to separate axis tags (issue #2570)
