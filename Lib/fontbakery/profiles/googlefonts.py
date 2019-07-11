@@ -3739,6 +3739,10 @@ def com_google_fonts_check_varfont_instances_names(ttFont):
                      ' It should be "{}"').format(name, expected_name)
   if not failed:
     yield PASS, "Instances have correct names"
+  else:
+    yield FAIL, ("This will cause problems with some of the Google Fonts"
+                 " systems that look up fonts by their style names."
+                 " This must be fixed!")
 
 
 ###############################################################################

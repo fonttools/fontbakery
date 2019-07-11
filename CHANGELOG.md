@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.10 (2019-Jul-22)
+### Note-worthy code changes
+  - Make sure canonical style name checks are strongly enforced. Improve wording of FAIL log message on check/varfont_instance_names (issue #2573)
+
 ### Bug fixes
   - fix ERROR on check/metadata/broken_links (issue #2585)
 
