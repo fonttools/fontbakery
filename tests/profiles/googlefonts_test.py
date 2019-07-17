@@ -242,10 +242,12 @@ def test_check_description_git_url():
     description,
     descfile)
 
+  # TODO: test INFO "url-found"
+
   bad_desc = description(descfile(TEST_FILE("cabin/Cabin-Regular.ttf")))
   print('Test FAIL with description file that has no git repo URLs...')
   status, message = list(check(bad_desc))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "lacks-git-url"
 
   good_desc = ("<a href='https://github.com/uswds/public-sans'>Good URL</a>"
                "<a href='https://gitlab.com/smc/fonts/uroob'>Another Good One</a>")
@@ -256,7 +258,7 @@ def test_check_description_git_url():
   bad_desc = "<a href='https://v2.designsystem.digital.gov'>Bad URL</a>"
   print('Test FAIL with description file that has false git in URL...')
   status, message = list(check(bad_desc))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "lacks-git-url"
 
 
 def test_check_description_variable_font():
@@ -270,7 +272,7 @@ def test_check_description_variable_font():
   bad_desc = description(descfile(TEST_FILE("varfont/Oswald-VF.ttf")))
   print('Test FAIL when "variable font" is not present in DESC file...')
   status, message = list(check(bad_desc))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "should-mention-varfonts"
 
   good_desc = description(descfile(TEST_FILE("cabinvfbeta/Cabin-VF.ttf")))
   print('Test PASS with description file containing "variable font"...')
@@ -295,7 +297,7 @@ def test_check_description_valid_html():
   bad_desc = description(bad_descfile)
   print('Test FAIL with a known-bad file (a txt file without HTML snippets)...')
   status, message = list(check(bad_descfile, bad_desc))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "bad-html"
 
 
 def test_check_description_min_length():
@@ -305,12 +307,12 @@ def test_check_description_min_length():
   bad_length = 'a' * 199
   print('Test FAIL with 199-byte buffer...')
   status, message = list(check(bad_length))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "too-short"
 
   bad_length = 'a' * 200
   print('Test FAIL with 200-byte buffer...')
   status, message = list(check(bad_length))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "too-short"
 
   good_length = 'a' * 201
   print('Test PASS with 201-byte buffer...')
@@ -325,12 +327,12 @@ def test_check_description_max_length():
   bad_length = 'a' * 1001
   print('Test FAIL with 1001-byte buffer...')
   status, message = list(check(bad_length))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "too-long"
 
   bad_length = 'a' * 1000
   print('Test FAIL with 1000-byte buffer...')
   status, message = list(check(bad_length))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "too-long"
 
   good_length = 'a' * 999
   print('Test PASS with 999-byte buffer...')
@@ -402,7 +404,7 @@ def test_check_metadata_parses():
   bad = portable_path("data/test/broken_metadata")
   print('Test FAIL with a bad METADATA.pb file...')
   status, message = list(check(bad))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "parsing-error"
 
 
 def test_check_metadata_unknown_designer():
@@ -418,7 +420,7 @@ def test_check_metadata_unknown_designer():
   bad.designer = "unknown"
   print('Test FAIL with a bad METADATA.pb file...')
   status, message = list(check(bad))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "unknown-designer"
 
 
 def test_check_metadata_designer_values():
@@ -441,7 +443,17 @@ def test_check_metadata_designer_values():
                                     # early version of the Red Hat Text family
   print('Test FAIL with a bad multiple-designers string...')
   status, message = list(check(bad))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "slash"
+
+
+def test_check_metadata_broken_links():
+  """ Does DESCRIPTION file contain broken links ? """
+  from fontbakery.profiles.googlefonts import (
+    com_google_fonts_check_metadata_broken_links as check)
+  # TODO: Implement-me!
+  # INFO, "email"
+  # WARN, "timeout"
+  # FAIL, "broken-links"
 
 
 # TODO: re-enable after addressing issue #1998
