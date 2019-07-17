@@ -286,14 +286,16 @@ def com_google_fonts_check_description_git_url(description):
     link = a_href.get("href")
     if "://git" in link:
       git_urls.append(link)
-      yield INFO, (f"Found a git repo URL: {link}")
+      yield INFO, Message("url-found",
+                          f"Found a git repo URL: {link}")
 
   if len(git_urls) > 0:
     yield PASS, "Looks great!"
   else:
-    yield FAIL, ("Please host your font project on a public Git repo"
-                 " (such as GitHub or GitLab) and place a link"
-                 " in the DESCRIPTION.en_us.html file.")
+    yield FAIL, Message("lacks-git-url",
+                        "Please host your font project on a public Git repo"
+                        " (such as GitHub or GitLab) and place a link"
+                        " in the DESCRIPTION.en_us.html file.")
 
 
 @check(
@@ -313,11 +315,12 @@ def com_google_fonts_check_description_variable_font(description):
   """Does DESCRIPTION file mention when a family
      is available as variable font?"""
   if "variable font" not in description.lower():
-    yield FAIL, ("Please mention in the DESCRIPTION.en-us.html"
-                 " that the family is a variable font. This check"
-                 " expects the words 'variable font' to be present"
-                 " in the text e.g 'This font is now available as"
-                 " a variable font.'")
+    yield FAIL, Message("should-mention-varfonts",
+                        ("Please mention in the DESCRIPTION.en-us.html"
+                         " that the family is a variable font. This check"
+                         " expects the words 'variable font' to be present"
+                         " in the text e.g 'This font is now available as"
+                         " a variable font.'"))
   else:
     yield PASS, "Looks good!"
 
@@ -335,7 +338,8 @@ def com_google_fonts_check_description_valid_html(descfile, description):
   This file needs to either be replaced with an existing description file
   or edited by hand."""
   if "<p>" not in description or "</p>" not in description:
-    yield FAIL, f"{descfile} does not look like a propper HTML snippet."
+    yield FAIL, Message("bad-html",
+                        f"{descfile} does not look like a propper HTML snippet.")
   else:
     yield PASS, f"{descfile} is a propper HTML file."
 
@@ -347,8 +351,9 @@ def com_google_fonts_check_description_valid_html(descfile, description):
 def com_google_fonts_check_description_min_length(description):
   """DESCRIPTION.en_us.html must have more than 200 bytes."""
   if len(description) <= 200:
-    yield FAIL, ("DESCRIPTION.en_us.html must"
-                 " have size larger than 200 bytes.")
+    yield FAIL, Message("too-short",
+                        ("DESCRIPTION.en_us.html must"
+                         " have size larger than 200 bytes."))
   else:
     yield PASS, "DESCRIPTION.en_us.html is larger than 200 bytes."
 
@@ -360,8 +365,9 @@ def com_google_fonts_check_description_min_length(description):
 def com_google_fonts_check_description_max_length(description):
   """DESCRIPTION.en_us.html must have less than 1000 bytes."""
   if len(description) >= 1000:
-    yield FAIL, ("DESCRIPTION.en_us.html must"
-                 " have size smaller than 1000 bytes.")
+    yield FAIL, Message("too-long",
+                        ("DESCRIPTION.en_us.html must"
+                         " have size smaller than 1000 bytes."))
   else:
     yield PASS, "DESCRIPTION.en_us.html is smaller than 1000 bytes."
 
@@ -383,8 +389,9 @@ def com_google_fonts_check_metadata_parses(family_directory):
     get_FamilyProto_Message(pb_file)
     yield PASS, "METADATA.pb parsed successfuly."
   except text_format.ParseError as e:
-    yield FAIL, (f"Family metadata at {family_directory} failed to parse.\n"
-                 f"TRACEBACK:\n{e}")
+    yield FAIL, Message("parsing-error",
+                        (f"Family metadata at {family_directory} failed to parse.\n"
+                         f"TRACEBACK:\n{e}"))
   except FileNotFoundError:
     yield SKIP, f"Font family at '{family_directory}' lacks a METADATA.pb file."
 
@@ -396,7 +403,8 @@ def com_google_fonts_check_metadata_parses(family_directory):
 def com_google_fonts_check_metadata_unknown_designer(family_metadata):
   """Font designer field in METADATA.pb must not be 'unknown'."""
   if family_metadata.designer.lower() == 'unknown':
-    yield FAIL, f"Font designer field is '{family_metadata.designer}'."
+    yield FAIL, Message("unknown-designer",
+                        f"Font designer field is '{family_metadata.designer}'.")
   else:
     yield PASS, "Font designer field is not 'unknown'."
 
@@ -417,9 +425,10 @@ def com_google_fonts_check_metadata_designer_values(family_metadata):
      METADATA.pb must be separated by commas."""
 
   if '/' in family_metadata.designer:
-    yield FAIL, (f"Font designer field contains a forward slash"
-                  " '{family_metadata.designer}'."
-                  " Please use commas to separate multiple names instead.")
+    yield FAIL, Message("slash",
+                        (f"Font designer field contains a forward slash"
+                         " '{family_metadata.designer}'."
+                         " Please use commas to separate multiple names instead."))
   else:
     yield PASS, "Looks good."
 
@@ -435,7 +444,8 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
   for font_metadata in family_metadata.fonts:
     copyright = font_metadata.copyright
     if "mailto:" in copyright:
-      yield INFO, (f"Found an email address: {copyright}")
+      yield INFO, Message("email",
+                          f"Found an email address: {copyright}")
       continue
 
     if "http" in copyright:
@@ -451,15 +461,17 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
         if code != requests.codes.ok:
           broken_links.append(("{} (status code: {})").format(link, code))
       except requests.exceptions.Timeout:
-        yield WARN, ("Timedout while attempting to access: '{}'."
-                   " Please verify if that's a broken link.").format(link)
+        yield WARN, Message("timeout",
+                            ("Timed out while attempting to access: '{}'."
+                             " Please verify if that's a broken link.").format(link))
       except requests.exceptions.RequestException:
         broken_links.append(link)
 
   if len(broken_links) > 0:
-    yield FAIL, ("The following links are broken"
-                 " in the METADATA.pb file:\n\t"
-                 "{}").format("\n\t".join(broken_links))
+    yield FAIL, Message("broken-links",
+                        ("The following links are broken"
+                         " in the METADATA.pb file:\n\t"
+                         "{}").format("\n\t".join(broken_links)))
   else:
     yield PASS, "All links in the METADATA.pb file look good!"
 
