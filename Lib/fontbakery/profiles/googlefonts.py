@@ -519,10 +519,11 @@ def com_google_fonts_check_family_equal_numbers_of_glyphs(ttFonts):
       else:
         diff = ", ".join(list(diff)[:10]) + " (and more)"
 
-      yield FAIL, (f"{stylename} has {this_count} glyphs while"
-                   f" {max_stylename} has {max_count} glyphs."
-                   f" There are {diff_count} different glyphs"
-                   f" among them: {diff}")
+      yield FAIL, Message("glyph-count-diverges",
+                          (f"{stylename} has {this_count} glyphs while"
+                           f" {max_stylename} has {max_count} glyphs."
+                           f" There are {diff_count} different glyphs"
+                           f" among them: {diff}"))
   if not failed:
     yield PASS, ("All font files in this family have"
                  " an equal total ammount of glyphs.")
@@ -573,8 +574,9 @@ def com_google_fonts_check_family_equal_glyph_names(ttFonts):
           avail = ', '.join(available[gn])
           miss = ', '.join(missing[gn])
 
-      yield FAIL, (f"Glyphname '{gn}' is defined on {avail}"
-                   f" but is missing on {miss}.")
+      yield FAIL, Message("missing-glyph",
+                          (f"Glyphname '{gn}' is defined on {avail}"
+                           f" but is missing on {miss}."))
 
   if not failed:
     yield PASS, "All font files have identical glyph names."
@@ -617,19 +619,20 @@ def com_google_fonts_check_fstype(ttFont):
       restrictions += ("* There are reserved bits set,"
                        " which indicates an invalid setting.")
 
-    yield FAIL, ("OS/2 fsType is a legacy DRM-related field.\n"
-                 "In this font it is set to {} meaning that:\n"
-                 "{}\n"
-                 "No such DRM restrictions can be enabled on the"
-                 " Google Fonts collection, so the fsType field"
-                 " must be set to zero (Installable Embedding) instead.\n"
-                 "Fonts with this setting indicate that they may be embedded"
-                 " and permanently installed on the remote system"
-                 " by an application.\n\n"
-                 " More detailed info is available at:\n"
-                 " https://docs.microsoft.com/en-us"
-                 "/typography/opentype/spec/os2#fstype"
-                 "").format(value, restrictions)
+    yield FAIL, Message("drm",
+                        ("OS/2 fsType is a legacy DRM-related field.\n"
+                         "In this font it is set to {} meaning that:\n"
+                         "{}\n"
+                         "No such DRM restrictions can be enabled on the"
+                         " Google Fonts collection, so the fsType field"
+                         " must be set to zero (Installable Embedding) instead.\n"
+                         "Fonts with this setting indicate that they may be embedded"
+                         " and permanently installed on the remote system"
+                         " by an application.\n\n"
+                         " More detailed info is available at:\n"
+                         " https://docs.microsoft.com/en-us"
+                         "/typography/opentype/spec/os2#fstype"
+                         "").format(value, restrictions))
   else:
     yield PASS, ("OS/2 fsType is properly set to zero.")
 
@@ -706,9 +709,10 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
     for mark, ascii_repl in replacement_map:
       new_string = string.replace(mark, ascii_repl)
       if string != new_string:
-        yield FAIL, ("NAMEID #{} contains symbol that should be"
-                     " replaced by '{}'.").format(name.nameID,
-                                                  ascii_repl)
+        yield FAIL, Message("unwanted-chars",
+                            (f"NAMEID #{name.nameID} contains"
+                             f" symbol that should be"
+                             f" replaced by '{ascii_repl}'."))
         failed = True
   if not failed:
     yield PASS, ("No need to substitute copyright, registered and"
@@ -732,20 +736,23 @@ def com_google_fonts_check_usweightclass(ttFont, expected_style):
     if is_ttf(ttFont) and \
        (weight_name == 'Thin' and value == 100) or \
        (weight_name == 'ExtraLight' and value == 200):
-      yield WARN, ("{}:{} is OK on TTFs, but OTF files with those values"
-                   " will cause bluring on Windows."
-                   " GlyphsApp users must set a Instance Custom Parameter"
-                   " for the Thin and ExtraLight styles to 250 and 275,"
-                   " so that if OTFs are exported then it will not"
-                   " blur on Windows.")
+      yield WARN, Message("blur-on-windows",
+                          (f"{weight_name}:{value} is OK on TTFs, but"
+                           f" OTF files with those values will cause"
+                           f" bluring on Windows."
+                           f" GlyphsApp users must set an Instance"
+                           f" Custom Parameter for the Thin and ExtraLight"
+                           f" styles to 250 and 275, so that if OTFs are"
+                           f" exported then it will not blur on Windows."))
     else:
-      yield FAIL, (f"OS/2 usWeightClass expected value for"
-                   f" '{weight_name}' is {expected_value} but"
-                   f" this font has {value}.\n"
-                   f" GlyphsApp users should set a Custom Parameter"
-                   f" for 'Axis Location' in each master to ensure"
-                   f" that the information is accurately built into"
-                   f" variable fonts.")
+      yield FAIL, Message("bad-value",
+                          (f"OS/2 usWeightClass expected value for"
+                           f" '{weight_name}' is {expected_value} but"
+                           f" this font has {value}.\n"
+                           f" GlyphsApp users should set a Custom Parameter"
+                           f" for 'Axis Location' in each master to ensure"
+                           f" that the information is accurately built into"
+                           f" variable fonts."))
   else:
     yield PASS, "OS/2 usWeightClass value looks good!"
 
@@ -3491,16 +3498,17 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                                                 platformID=plat):
       if len(familyname_str + stylename_str) > 27:
         failed = True
-        yield WARN, ("The combined length of family and style"
-                     " exceeds 27 chars in the following '{}' entries:"
-                     " FONT_FAMILY_NAME = '{}' / SUBFAMILY_NAME = '{}'"
-                     "").format(PlatformID(plat).name,
-                                familyname_str,
-                                stylename_str)
-        yield WARN, ("Please take a look at the conversation at"
-                     " https://github.com/googlefonts/fontbakery/issues/2179"
-                     " in order to understand the reasoning behing these"
-                     " name table records max-length criteria.")
+        yield WARN, Message("too-long",
+                            ("The combined length of family and style"
+                             " exceeds 27 chars in the following"
+                            f" '{PlatformID(plat).name}' entries:"
+                            f" FONT_FAMILY_NAME = '{familyname_str}' /"
+                            f" SUBFAMILY_NAME = '{stylename_str}'"
+                             "Please take a look at the conversation at"
+                             " https://github.com/googlefonts/fontbakery/"
+                             "issues/2179 in order to understand the"
+                             " reasoning behing these name table records"
+                             " max-length criteria."))
   if not failed:
     yield PASS, "All name entries are good."
 

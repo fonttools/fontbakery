@@ -341,7 +341,7 @@ def test_check_description_max_length():
 
 
 def test_check_name_family_and_style_max_length(): 
-  """ Check font name is the same as family name. """ 
+  """ Combined length of family and style must not exceed 27 characters. """
   from fontbakery.profiles.googlefonts import ( 
     com_google_fonts_check_name_family_and_style_max_length as check) 
  
@@ -369,7 +369,7 @@ def test_check_name_family_and_style_max_length():
 
   print ("Test WARN with a bad font...") 
   status, message = list(check(ttFont))[-1] 
-  assert status == WARN 
+  assert status == WARN and message.code == "too-long"
 
   # Now let's restore the good Cabin Regular...
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf")) 
@@ -384,7 +384,7 @@ def test_check_name_family_and_style_max_length():
  
   print ("Test WARN with a bad font...") 
   status, message = list(check(ttFont))[-1] 
-  assert status == WARN 
+  assert status == WARN and message.code == "too-long"
 
 
 def test_check_metadata_parses():
@@ -470,7 +470,7 @@ def DISABLED_test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFon
   # our reference Mada family is bad here with 407 glyphs on most font files
   # except the Black and the Medium, that both have 408 glyphs.
   status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "glyph-count-diverges"
 
 
 # TODO: re-enable after addressing issue #1998
@@ -488,7 +488,7 @@ def DISABLED_test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
   # except the Black and the Medium, that both have 408 glyphs (that extra glyph
   # causes the check to fail).
   status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "missing-glyph"
 
 
 def test_check_fstype():
@@ -506,7 +506,7 @@ def test_check_fstype():
 
   print('Test FAIL with fonts that enable DRM restrictions via non-zero fsType bits.')
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "drm"
 
 
 def test_condition__registered_vendor_ids():
@@ -595,7 +595,7 @@ def test_check_name_unwanted_chars():
   # Our reference Mada Regular is know to be bad here.
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "unwanted-chars"
 
   print('Test PASS with a good font...')
   # Our reference Cabin Regular is know to be good here.
@@ -613,7 +613,7 @@ def test_check_usweightclass():
   print(f"Test FAIL with bad font '{font}' ...")
   ttFont = TTFont(font)
   status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "bad-value"
 
   # All fonts in our reference Cabin family are know to be good here.
   for font in cabin_fonts:
@@ -627,17 +627,17 @@ def test_check_usweightclass():
   ttFont["OS/2"].usWeightClass = 100
   print("Test WARN with a Thin:100 TTF...")
   status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-  assert status == WARN
+  assert status == WARN and message.code == "blur-on-windows"
 
   font = TEST_FILE("montserrat/Montserrat-ExtraLight.ttf")
   ttFont = TTFont(font)
   ttFont["OS/2"].usWeightClass = 200
   print("Test WARN with an ExtraLight:200 TTF...")
   status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-  assert status == WARN
+  assert status == WARN and message.code == "blur-on-windows"
 
-  # TODO: test FAIL with a Thin:100 OTF
-  # TODO: test FAIL with an ExtraLight:200 OTF
+  # TODO: test FAIL, "bad-value" with a Thin:100 OTF
+  # TODO: test FAIL, "bad-value" with an ExtraLight:200 OTF
 
 
 def test_family_directory_condition():
