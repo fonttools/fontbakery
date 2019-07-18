@@ -750,7 +750,7 @@ def test_check_name_description_max_length():
 
   print('Test WARN with a too long description string...')
   status, message = list(check(ttFont))[-1]
-  assert status == WARN
+  assert status == WARN and message.code == "too-long"
 
 
 def test_check_hinting_impact():
@@ -761,7 +761,7 @@ def test_check_hinting_impact():
 
   print('Test this check always emits an INFO result...')
   status, message = list(check(TTFont(font), ttfautohint_stats(font)))[-1]
-  assert status == INFO
+  assert status == INFO and message.code == "size-impact"
 
 
 def test_check_name_version_format():
@@ -801,31 +801,35 @@ def NOT_IMPLEMENTED_test_check_old_ttfautohint():
   #
   # code-paths:
   # - FAIL, code="lacks-version-strings"
-  # - INFO, "Could not detect which version of ttfautohint was used in this font."
-  # - WARN, "detected an old ttfa version"
+  # - INFO, code="version-not-detected"		"Could not detect which version of ttfautohint was used in this font."
+  # - WARN, code="old-ttfa"			"detected an old ttfa version"
   # - PASS
   # - FAIL, code="parse-error"
 
 
-@pytest.mark.parametrize("expected_status,fontfile",[
+@pytest.mark.parametrize("expected_status,expected_keyword,fontfile",[
   # Font is lacking ttfautohint params on its version strings on the name table.
-  (FAIL, TEST_FILE("coveredbyyourgrace/CoveredByYourGrace.ttf")),
+  (FAIL, "lacks-ttfa-params",
+   TEST_FILE("coveredbyyourgrace/CoveredByYourGrace.ttf")),
 
   # Font appears to our heuristic as not hinted using ttfautohint.
-  (SKIP, TEST_FILE("mada/Mada-Regular.ttf")),
+  (SKIP, "not-hinted",
+   TEST_FILE("mada/Mada-Regular.ttf")),
 
-  # Font has ttfautohint params (-l 6 -r 36 -G 0 -x 10 -H 350 -D latn -f cyrl -w "" -X "")
-  (PASS, TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+  # Font has ttfautohint params
+  # (-l 6 -r 36 -G 0 -x 10 -H 350 -D latn -f cyrl -w "" -X "")
+  (PASS, "ok",
+   TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 ])
-def test_check_has_ttfautohint_params(expected_status, fontfile):
+def test_check_has_ttfautohint_params(expected_status, expected_keyword, fontfile):
   """ Font has ttfautohint params? """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_has_ttfautohint_params as check
-  status, _ = list(check(TTFont(fontfile)))[-1]
-  assert status == expected_status
+  status, message = list(check(TTFont(fontfile)))[-1]
+  assert status == expected_status and message.code == expected_keyword
 
 
 def test_check_epar():
-  """ EPAR table present in font ? """
+  """ EPAR table present in font? """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_epar as check
 
   # Our reference Mada Regular lacks an EPAR table:
