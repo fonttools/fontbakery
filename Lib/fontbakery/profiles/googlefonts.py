@@ -931,14 +931,15 @@ def com_google_fonts_check_name_description_max_length(ttFont):
       break
 
   if failed:
-    yield WARN, ("A few name table entries with ID={} (NameID.DESCRIPTION)"
-                 " are longer than 200 characters."
-                 " Please check whether those entries are copyright notices"
-                 " mistakenly stored in the description string entries by"
-                 " a bug in an old FontLab version."
-                 " If that's the case, then such copyright notices must be"
-                 " removed from these entries."
-                 "").format(NameID.DESCRIPTION)
+    yield WARN, Message("too-long",
+                        ("A few name table entries with ID="
+                        f"{NameID.DESCRIPTION} (NameID.DESCRIPTION) are"
+                         " longer than 200 characters."
+                         " Please check whether those entries are copyright"
+                         " notices mistakenly stored in the description"
+                         " string entries by a bug in an old FontLab version."
+                         " If that's the case, then such copyright notices"
+                         " must be removed from these entries."))
   else:
     yield PASS, "All description name records have reasonably small lengths."
 
@@ -978,7 +979,7 @@ def com_google_fonts_check_hinting_impact(font, ttfautohint_stats):
   results_table += f"| Hinted Size | {hinted_size} |\n"
   results_table += f"| Increase | {increase} |\n"
   results_table += f"| Change   | {change:.1f} % |\n"
-  yield INFO, results_table
+  yield INFO, Message("size-impact", results_table)
 
 
 @check(
@@ -1034,14 +1035,18 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
     if values:
       ttfa_version, params = values
       if params:
-        yield PASS, f"Font has ttfautohint params ({params})"
+        yield PASS, Message("ok", f"Font has ttfautohint params ({params})")
         failed = False
     else:
-        yield SKIP, "Font appears to our heuristic as not hinted using ttfautohint."
+        yield SKIP, Message("not-hinted",
+                            ("Font appears to our heuristic as not"
+                             " hinted using ttfautohint."))
         failed = False
 
   if failed:
-    yield FAIL, "Font is lacking ttfautohint params on its version strings on the name table."
+    yield FAIL, Message("lacks-ttfa-params",
+                        ("Font is lacking ttfautohint params on its"
+                         " version strings on the name table."))
 
 
 @check(
@@ -1070,7 +1075,7 @@ def com_google_fonts_check_old_ttfautohint(ttFont, ttfautohint_stats):
     return installed > used
 
   if not ttfautohint_stats:
-    yield ERROR, "ttfautohint is not available."
+    yield ERROR, Message("not-available", "ttfautohint is not available.")
     return
 
   version_strings = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
@@ -1080,12 +1085,13 @@ def com_google_fonts_check_old_ttfautohint(ttFont, ttfautohint_stats):
                         "This font file lacks mandatory "
                         "version strings in its name table.")
   elif ttfa_version is None:
-    yield INFO, ("Could not detect which version of"
-                 " ttfautohint was used in this font."
-                 " It is typically specified as a comment"
-                 " in the font version entries of the 'name' table."
-                 " Such font version strings are currently:"
-                 " {}").format(version_strings)
+    yield INFO, Message("version-not-detected",
+                        ("Could not detect which version of"
+                         " ttfautohint was used in this font."
+                         " It is typically specified as a comment"
+                         " in the font version entries of the 'name' table."
+                         " Such font version strings are currently:"
+                        f" {version_strings}"))
   else:
     installed_ttfa = ttfautohint_stats["version"]
     try:
