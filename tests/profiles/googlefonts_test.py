@@ -839,7 +839,7 @@ def test_check_epar():
   # to learn more about it:
   print ("Test INFO with a font lacking an EPAR table...")
   status, message = list(check(ttFont))[-1]
-  assert status == INFO
+  assert status == INFO and message.code == "lacks-EPAR"
 
   print ("Test PASS with a good font...")
   # add a fake EPAR table to validate the PASS code-path:
@@ -854,12 +854,14 @@ def NOT_IMPLEMENTED_test_check_gasp():
   # TODO: Implement-me!
   #
   # code-paths:
-  # - FAIL, "GASP.gaspRange method value have wrong type."
-  # - FAIL, "GASP does not have 0xFFFF gaspRange."
-  # - FAIL, "GASP should only have 0xFFFF gaspRange, but another one was also found."
-  # - WARN, "All flags in GASP range 0xFFFF (i.e. all font sizes) must be set to 1"
-  # - PASS, "GASP table is correctly set."
-  # - FAIL, "Font is missing the GASP table."
+  # - FAIL, "lacks-gasp"		"Font is missing the gasp table."
+  # - FAIL, "empty"			"The gasp table has no values."
+  # - FAIL, "lacks-ffff-range"		"The gasp table does not have a 0xFFFF gasp range."
+  # - INFO, "ranges"			"These are the ppm ranges declared on the gasp table:"
+  # - WARN, "non-ffff-range"		"The gasp table has a range that may be unneccessary."
+  # - WARN, "unset-flags"		"All flags in gasp range 0xFFFF (i.e. all font sizes) must be set to 1"
+  # - PASS				"The gasp table is correctly set."
+
 
 
 def test_check_name_familyname_first_char():
@@ -882,7 +884,7 @@ def test_check_name_familyname_first_char():
   # and make sure the check FAILs:
   print ("Test FAIL with a font in which the family name begins with a digit...")
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "begins-with-digit"
 
 
 def test_check_name_ascii_only_entries():

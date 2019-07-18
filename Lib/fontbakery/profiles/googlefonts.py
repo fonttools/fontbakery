@@ -1131,10 +1131,11 @@ def com_google_fonts_check_epar(ttFont):
   """EPAR table present in font?"""
 
   if "EPAR" not in ttFont:
-    yield INFO, ("EPAR table not present in font."
-                 " To learn more see"
-                 " https://github.com/googlefonts/"
-                 "fontbakery/issues/818")
+    yield INFO, Message("lacks-EPAR",
+                        ("EPAR table not present in font."
+                         " To learn more see"
+                         " https://github.com/googlefonts/"
+                         "fontbakery/issues/818"))
   else:
     yield PASS, "EPAR table present in font."
 
@@ -1158,22 +1159,28 @@ def com_google_fonts_check_epar(ttFont):
   """
 )
 def com_google_fonts_check_gasp(ttFont):
-  """Is 'gasp' table set to optimize rendering?"""
+  """Is the Grid-fitting and Scan-conversion Procedure ('gasp') table
+     set to optimize rendering?"""
 
   if "gasp" not in ttFont.keys():
-    yield FAIL, ("Font is missing the 'gasp' table."
-                 " Try exporting the font with autohinting enabled.")
+    yield FAIL, Message("lacks-gasp",
+                        ("Font is missing the 'gasp' table."
+                         " Try exporting the font with autohinting enabled."))
   else:
     if not isinstance(ttFont["gasp"].gaspRange, dict):
-      yield FAIL, "'gasp' table has no values."
+      yield FAIL, Message("empty",
+                          "The 'gasp' table has no values.")
     else:
       failed = False
       if 0xFFFF not in ttFont["gasp"].gaspRange:
-        yield WARN, ("'gasp' table does not have an entry for all"
-                     " font sizes (gaspRange 0xFFFF).")
+        yield WARN, Message("lacks-ffff-range",
+                            ("The 'gasp' table does not have an entry that"
+                             " applies for all font sizes."
+                             " The gaspRange value for such entry should"
+                             " be set to 0xFFFF."))
       else:
         gasp_meaning = {
-          0x01: "- Use gridfitting",
+          0x01: "- Use grid-fitting",
           0x02: "- Use grayscale rendering",
           0x04: "- Use gridfitting with ClearType symmetric smoothing",
           0x08: "- Use smoothing along multiple axes with ClearType®"
@@ -1190,22 +1197,26 @@ def com_google_fonts_check_gasp(ttFont):
           table.append(f"PPM <= {key}:\n\tflag = 0x{value:02X}\n\t{meaning}")
 
         table = "\n".join(table)
-        yield INFO, ("These are the ppm ranges declared on the"
-                    f" gasp table:\n\n{table}\n")
+        yield INFO, Message("ranges",
+                            ("These are the ppm ranges declared on the"
+                            f" gasp table:\n\n{table}\n"))
 
         for key in ttFont["gasp"].gaspRange.keys():
           if key != 0xFFFF:
-            yield WARN, ("'gasp' table has a gaspRange of {} that"
-                         " may be unneccessary.").format(key)
+            yield WARN, Message("non-ffff-range",
+                                (f"The gasp table has a range of {key}"
+                                  " that may be unneccessary."))
             failed = True
           else:
             value = ttFont["gasp"].gaspRange[0xFFFF]
             if value != 0x0F:
               failed = True
-              yield WARN, (f"gaspRange 0xFFFF value 0x{value:02X}"
-                            " should be set to 0x0F.")
+              yield WARN, Message("unset-flags",
+                                  ("The gasp range 0xFFFF value"
+                                  f" 0x{value:02X}"
+                                   " should be set to 0x0F."))
         if not failed:
-          yield PASS, ("'gasp' table is correctly set, with one "
+          yield PASS, ("The 'gasp' table is correctly set, with one "
                        "gaspRange:value of 0xFFFF:0x0F.")
 
 
@@ -1223,8 +1234,9 @@ def com_google_fonts_check_name_familyname_first_char(ttFont):
   for familyname in get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME):
     digits = map(str, range(0, 10))
     if familyname[0] in digits:
-      yield FAIL, ("Font family name '{}'"
-                   " begins with a digit!").format(familyname)
+      yield FAIL, Message("begins-with-digit",
+                          (f"Font family name '{familyname}'"
+                            " begins with a digit!"))
       failed = True
   if failed is False:
     yield PASS, "Font family name first character is not a digit."
