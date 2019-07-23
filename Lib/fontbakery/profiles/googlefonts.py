@@ -3364,9 +3364,25 @@ def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
   if ttFont["head"].flags & (1 << 3):
     yield PASS, "OK"
   else:
-    yield FAIL, ("This is a hinted font, so it must have bit 3 set"
-                 " on the flags of the head table, so that PPEM values"
-                 " will be rounded into and integer value.")
+    yield FAIL,\
+          Message("bad-flags",
+                  ("This is a hinted font, so it must have bit 3 set"
+                   " on the flags of the head table, so that"
+                   " PPEM values will be rounded into an integer"
+                   " value.\n"
+                   "\n"
+                   "This can be accomplished by using the"
+                   " 'gftools fix-hinting' command.\n"
+                   "\n"
+                   "# create virtualenv"
+                   "python3 -m venv venv"
+                   "\n"
+                   "# activate virtualenv"
+                   "source venv/bin/activate"
+                   "\n"
+                   "# install gftools"
+                   "pip install git+https://www.github.com"
+                   "/googlefonts/tools"))
 
 
 @check(

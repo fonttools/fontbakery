@@ -2943,7 +2943,7 @@ def test_check_integer_ppem_if_hinted():
   # So it must FAIL the check:
   print ("Test FAIL with a bad font...")
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "bad-flags"
 
   # hotfixing it should make it PASS:
   ttFont["head"].flags |= (1 << 3)
