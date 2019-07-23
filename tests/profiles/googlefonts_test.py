@@ -910,10 +910,10 @@ def test_check_name_ascii_only_entries():
     if name.nameID == NameID.POSTSCRIPT_NAME:
       ttFont['name'].names[i].string = "Infração".encode(encoding="utf-8")
   results = list(check(ttFont))
-  info_status, message = results[-2]
-  final_status, message = results[-1]
-  assert info_status == INFO
-  assert final_status == FAIL
+  info_status, info_message = results[-2]
+  final_status, final_message = results[-1]
+  assert info_status == INFO and info_message.code == "bad-string"
+  assert final_status == FAIL and final_message.code == "non-ascii-strings"
 
   # Then reload the good font
   ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
@@ -924,10 +924,10 @@ def test_check_name_ascii_only_entries():
     if name.nameID == NameID.COPYRIGHT_NOTICE:
       ttFont['name'].names[i].string = "Infração".encode(encoding="utf-8")
   results = list(check(ttFont))
-  info_status, message = results[-2]
-  final_status, message = results[-1]
-  assert info_status == INFO
-  assert final_status == FAIL
+  info_status, info_message = results[-2]
+  final_status, final_message = results[-1]
+  assert info_status == INFO and info_message.code == "bad-string"
+  assert final_status == FAIL and final_message.code == "non-ascii-strings"
 
   # Reload the good font once more:
   ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))

@@ -1270,17 +1270,18 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
         string.encode('ascii')
       except:
         bad_entries.append(name)
-        yield INFO, ("Bad string at"
-                     " [nameID {}, '{}']:"
-                     " '{}'"
-                     "").format(name.nameID,
-                                name.getEncoding(),
-                                string.encode("ascii",
-                                              errors='xmlcharrefreplace'))
+        badstring = string.encode("ascii",
+                                  errors='xmlcharrefreplace')
+        yield INFO, Message("bad-string",
+                            (f"Bad string at"
+                             f" [nameID {name.nameID}, "
+                             f"'{name.getEncoding()}']:"
+                             f" '{badstring}'"))
   if len(bad_entries) > 0:
-    yield FAIL, ("There are {} strings containing"
-                 " non-ASCII characters in the ASCII-only"
-                 " NAME table entries.").format(len(bad_entries))
+    yield FAIL, Message("non-ascii-strings",
+                        (f"There are {len(bad_entries)} strings containing"
+                          " non-ASCII characters in the ASCII-only"
+                          " NAME table entries."))
   else:
     yield PASS, ("None of the ASCII-only NAME table entries"
                  " contain non-ASCII characteres.")
