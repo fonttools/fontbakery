@@ -1294,7 +1294,7 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
 def com_google_fonts_check_metadata_listed_on_gfonts(listed_on_gfonts_api):
   """METADATA.pb: Fontfamily is listed on Google Fonts API?"""
   if not listed_on_gfonts_api:
-    yield WARN, "Family not found via Google Fonts API."
+    yield WARN, Message("not-found", "Family not found via Google Fonts API.")
   else:
     yield PASS, "Font is properly listed via Google Fonts API."
 
