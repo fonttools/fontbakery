@@ -756,7 +756,7 @@ def test_check_name_description_max_length():
 def test_check_hinting_impact():
   """ Show hinting filesize impact. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_hinting_impact as check,
-                                                     ttfautohint_stats)
+                                               ttfautohint_stats)
   font = TEST_FILE("mada/Mada-Regular.ttf")
 
   print('Test this check always emits an INFO result...')
@@ -2121,9 +2121,9 @@ def test_check_italic_angle():
   test_cases = [
     [1, "Italic", FAIL, "positive"],
     [0, "Regular", PASS, None], # This must PASS as it is a non-italic
-    [-21, "ThinItalic", WARN, "over -20 degrees"],
-    [-30, "ThinItalic", WARN, "over -20 degrees"],
-    [-31, "ThinItalic", FAIL, "over -30 degrees"],
+    [-21, "ThinItalic", WARN, "over-minus20-degrees"],
+    [-30, "ThinItalic", WARN, "over-minus20-degrees"],
+    [-31, "ThinItalic", FAIL, "over-minus30-degrees"],
     [0, "Italic", FAIL, "zero-italic"],
     [-1,"ExtraBold", FAIL, "non-zero-normal"]
   ]
