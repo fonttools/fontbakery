@@ -960,7 +960,7 @@ def test_check_metadata_listed_on_gfonts():
   listed = listed_on_gfonts_api("Family Sans")
   # For that reason, we expect to get a WARN in this case:
   status, message = list(check(listed))[-1]
-  assert status == WARN
+  assert status == WARN and message.code == "not-found"
 
   print ("Test PASS with a family that is available...")
   # Our reference Merriweather family is available on the Google Fonts collection:
