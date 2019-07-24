@@ -2,6 +2,7 @@ from fontTools import ttLib
 import sys
 
 unicodeRanges = {
+    28: 'Hangul Jamo',
     48: 'CJK Symbols And Punctuation',
     49: 'Hiragana',
     50: 'Katakana',
