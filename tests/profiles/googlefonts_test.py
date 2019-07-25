@@ -586,6 +586,24 @@ def test_check_vendor_id():
   assert status == PASS
 
 
+def NOT_IMPLEMENTED__test_check_glyph_coverage():
+  """ Check glyph coverage. """
+  #from fontbakery.profiles.googlefonts import com_google_fonts_check_glyph_coverage as check
+  #TODO: Implement-me!
+
+  #print('Test FAIL with a bad font...')
+  ## Our reference Mada Regular is know to be bad here.
+  #ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+  #status, message = list(check(ttFont))[-1]
+  #assert status == FAIL and message.code == "missing-codepoints"
+
+  #print('Test PASS with a good font...')
+  ## Our reference Cabin Regular is know to be good here.
+  #ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+  #status, message = list(check(ttFont))[-1]
+  #assert status == PASS
+
+
 def test_check_name_unwanted_chars():
   """ Substitute copyright, registered and trademark
       symbols in name table entries. """
@@ -979,7 +997,10 @@ def NOT_IMPLEMENTED_test_check_metadata_profiles_csv():
   # TODO: Implement-me!
   #
   # code-paths:
-  # ...
+  # FAIL, "empty"
+  # SKIP, "multiple"
+  # WARN, "not-listed"
+  # WARN, "csv-not-fetched"
 
 
 def test_check_metadata_unique_full_name_values():
@@ -996,7 +1017,7 @@ def test_check_metadata_unique_full_name_values():
   # then duplicate a full_name entry to make it FAIL:
   md.fonts[0].full_name = md.fonts[1].full_name
   status, message = list(check(md))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "duplicated"
 
 
 def test_check_metadata_unique_weight_style_pairs():
@@ -1014,14 +1035,14 @@ def test_check_metadata_unique_weight_style_pairs():
   md.fonts[0].style = md.fonts[1].style
   md.fonts[0].weight = md.fonts[1].weight
   status, message = list(check(md))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "duplicated"
 
 
 def test_check_metadata_license():
   """ METADATA.pb license is "APACHE2", "UFL" or "OFL"? """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_license as check,
-                                                     family_directory,
-                                                     family_metadata)
+                                               family_directory,
+                                               family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
   fonts = [TEST_FILE("familysans/FamilySans-Regular.ttf")]
@@ -1040,13 +1061,13 @@ def test_check_metadata_license():
     print(f"Test FAIL: {bad}")
     md.license = bad
     status, message = list(check(md))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "bad-license"
 
 
 def test_check_metadata_menu_and_latin():
   """ METADATA.pb should contain at least "menu" and "latin" subsets. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_menu_and_latin as check,
-                                                     family_metadata)
+                                               family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
   family_directory = portable_path("data/test/familysans")
@@ -1077,13 +1098,13 @@ def test_check_metadata_menu_and_latin():
     del md.subsets[:]
     md.subsets.extend(bad)
     status, message = list(check(md))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "missing"
 
 
 def test_check_metadata_subsets_order():
   """ METADATA.pb subsets should be alphabetically ordered. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_subsets_order as check,
-                                                     family_metadata)
+                                               family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
   family_directory = portable_path("data/test/familysans")
@@ -1113,7 +1134,7 @@ def test_check_metadata_subsets_order():
     del md.subsets[:]
     md.subsets.extend(bad)
     status, message = list(check(md))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "not-sorted"
 
 
 def test_check_metadata_copyright():
@@ -1136,7 +1157,7 @@ def test_check_metadata_copyright():
   # And now the check must FAIL:
   print("Test FAIL: With diverging copyright notice strings...")
   status, message = list(check(md))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "inconsistency"
 
 
 def test_check_metadata_familyname():
@@ -1159,7 +1180,7 @@ def test_check_metadata_familyname():
   # And now the check must FAIL:
   print("Test FAIL: With diverging Family name metadata entries...")
   status, message = list(check(md))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "inconsistency"
 
 
 def test_check_metadata_has_regular():
@@ -1184,7 +1205,7 @@ def test_check_metadata_has_regular():
   # and make sure the check now FAILs:
   print("Test FAIL: METADATA.pb without a regular...")
   status, message = list(check(md))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "lacks-regular"
 
 
 def test_check_metadata_regular_is_400():
@@ -1207,9 +1228,9 @@ def test_check_metadata_regular_is_400():
       md.fonts[i].weight = 500
 
   # and make sure the check now FAILs:
-  print("Test FAIL: METADATA.pb without a regular...")
+  print("Test FAIL: METADATA.pb with a regular=500...")
   status, message = list(check(md))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "not-400"
 
 
 def test_check_metadata_nameid_family_name():
@@ -1385,7 +1406,7 @@ def test_check_metadata_match_fullname_postscript():
   #       post_script_name: "Merriweather-Regular"
   #       full_name:        "Merriweather"
   status, message = list(check(regular_meta))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "mismatch"
 
 
   # fix the regular metadata:
@@ -1409,7 +1430,7 @@ def test_check_metadata_match_fullname_postscript():
   #       post_script_name: "Merriweather-Regular"
   #       full_name:        "MistakenFont Regular"
   status, message = list(check(regular_meta))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "mismatch"
 
 
 def NOT_IMPLEMENTED_test_check_match_filename_postscript():
@@ -1419,7 +1440,7 @@ def NOT_IMPLEMENTED_test_check_match_filename_postscript():
   # TODO: Implement-me!
   #
   # code-paths:
-  # - FAIL, "METADATA.pb filename does not match post_script_name"
+  # - FAIL, "mismatch"		"METADATA.pb filename does not match post_script_name"
   # - PASS
 
 
@@ -1447,7 +1468,7 @@ MONTSERRAT_NON_RIBBI = [
 ]
 
 def test_check_metadata_valid_name_values():
-  """ METADATA.pb font.name field contains font name in right format ? """
+  """ METADATA.pb font.name field contains font name in right format? """
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_metadata_valid_name_values as check,
     style,
@@ -1475,7 +1496,7 @@ def test_check_metadata_valid_name_values():
     font_fnames = ["WrongFamilyName"]
     print (f"Test FAIL with a bad RIBBI font ({fontfile})...")
     status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "mismatch"
 
   #we do the same for NON-RIBBI styles:
   for fontfile in MONTSERRAT_NON_RIBBI:
@@ -1496,7 +1517,7 @@ def test_check_metadata_valid_name_values():
     font_tfnames = ["WrongFamilyName"]
     print (f"Test FAIL with a bad NON_RIBBI font ({fontfile})...")
     status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "mismatch"
 
 
 def test_check_metadata_valid_full_name_values():
@@ -1573,7 +1594,7 @@ def test_check_metadata_valid_filename_values():
       font.filename = "WrongFileName"
     print (f"Test FAIL with a bad font ({fontfile})...")
     status, message = list(check(fontfile, meta))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "bad-field"
 
 
 def test_check_metadata_valid_post_script_name_values():
@@ -1602,7 +1623,7 @@ def test_check_metadata_valid_post_script_name_values():
     font_meta.post_script_name = "WrongPSName"
     print (f"Test FAIL with a bad font ({fontfile})...")
     status, message = list(check(font_meta, font_fnames))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "mismatch"
 
 
 def test_check_metadata_valid_copyright():
@@ -1623,7 +1644,7 @@ def test_check_metadata_valid_copyright():
   # So it must FAIL the check:
   print("Test FAIL with a bad copyright notice string...")
   status, message = list(check(font_meta))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "bad-notice-format"
 
   # Then we change it into a good string (example extracted from Archivo Black):
   # note: the check does not actually verify that the project name is correct.
@@ -1646,7 +1667,7 @@ def test_check_font_copyright():
   # So it must FAIL the check:
   print("Test FAIL with a bad copyright notice string...")
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "bad-notice-format"
 
   # Then we change it into a good string (example extracted from Archivo Black):
   # note: the check does not actually verify that the project name is correct.
@@ -1680,7 +1701,7 @@ def test_check_metadata_reserved_font_name():
 
   print ("Test WARN with a notice containing 'Reserved Font Name'...")
   status, message = list(check(font_meta))[-1]
-  assert status == WARN
+  assert status == WARN and message.code == "rfn"
 
 
 def test_check_metadata_copyright_max_length():
@@ -1703,49 +1724,52 @@ def test_check_metadata_copyright_max_length():
   print ("Test FAIL with a 501-char copyright notice string...")
   font_meta.copyright = 501 * "x"
   status, message = list(check(font_meta))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "max-length"
 
 
-def test_check_metadata_canonical_filename():
+# temporarily disabled.
+# See: https://github.com/googlefonts/fontbakery/issues/2597
+def DISABLED_test_check_metadata_canonical_filename():
   """ METADATA.pb: Filename is set canonically? """
   from fontbakery.profiles.shared_conditions import is_variable_font
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_canonical_filename as check,
-                                                     family_metadata,
-                                                     font_metadata,
-                                                     canonical_filename)
+                                               family_metadata,
+                                               font_metadata,
+                                               canonical_filename)
   fontfile = TEST_FILE("montserrat/Montserrat-Regular.ttf")
   family_directory = os.path.dirname(fontfile)
   family_meta = family_metadata(family_directory)
   font_meta = font_metadata(family_meta, fontfile)
 
   test_cases = [
-  #expected, weight, style,    filename
-    [PASS,   100,    "normal", TEST_FILE("montserrat/Montserrat-Thin.ttf")],
-    [PASS,   100,    "italic", TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")],
-    [PASS,   200,    "normal", TEST_FILE("montserrat/Montserrat-ExtraLight.ttf")],
-    [PASS,   200,    "italic", TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf")],
-    [PASS,   300,    "normal", TEST_FILE("montserrat/Montserrat-Light.ttf")],
-    [PASS,   300,    "italic", TEST_FILE("montserrat/Montserrat-LightItalic.ttf")],
-    [PASS,   400,    "normal", TEST_FILE("montserrat/Montserrat-Regular.ttf")],
-    [PASS,   400,    "italic", TEST_FILE("montserrat/Montserrat-Italic.ttf")],
-    [FAIL,   400,    "italic", TEST_FILE("montserrat/Montserrat-RegularItalic.ttf")],
-    [PASS,   500,    "normal", TEST_FILE("montserrat/Montserrat-Medium.ttf")],
-    [PASS,   500,    "italic", TEST_FILE("montserrat/Montserrat-MediumItalic.ttf")],
-    [PASS,   600,    "normal", TEST_FILE("montserrat/Montserrat-SemiBold.ttf")],
-    [PASS,   600,    "italic", TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf")],
-    [PASS,   700,    "normal", TEST_FILE("montserrat/Montserrat-Bold.ttf")],
-    [PASS,   700,    "italic", TEST_FILE("montserrat/Montserrat-BoldItalic.ttf")],
-    [PASS,   800,    "normal", TEST_FILE("montserrat/Montserrat-ExtraBold.ttf")],
-    [PASS,   800,    "italic", TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf")],
-    [PASS,   900,    "normal", TEST_FILE("montserrat/Montserrat-Black.ttf")],
-    [PASS,   900,    "italic", TEST_FILE("montserrat/Montserrat-BlackItalic.ttf")]
+     #expected,             weight, style,    filename
+    [PASS, "ok",            100,    "normal", TEST_FILE("montserrat/Montserrat-Thin.ttf")],
+    [PASS, "ok",            100,    "italic", TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")],
+    [PASS, "ok",            200,    "normal", TEST_FILE("montserrat/Montserrat-ExtraLight.ttf")],
+    [PASS, "ok",            200,    "italic", TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf")],
+    [PASS, "ok",            300,    "normal", TEST_FILE("montserrat/Montserrat-Light.ttf")],
+    [PASS, "ok",            300,    "italic", TEST_FILE("montserrat/Montserrat-LightItalic.ttf")],
+    [PASS, "ok",            400,    "normal", TEST_FILE("montserrat/Montserrat-Regular.ttf")],
+    [PASS, "ok",            400,    "italic", TEST_FILE("montserrat/Montserrat-Italic.ttf")],
+    [FAIL, "non-canonical", 400,    "italic", TEST_FILE("montserrat/Montserrat-RegularItalic.ttf")],
+    [PASS, "ok",            500,    "normal", TEST_FILE("montserrat/Montserrat-Medium.ttf")],
+    [PASS, "ok",            500,    "italic", TEST_FILE("montserrat/Montserrat-MediumItalic.ttf")],
+    [PASS, "ok",            600,    "normal", TEST_FILE("montserrat/Montserrat-SemiBold.ttf")],
+    [PASS, "ok",            600,    "italic", TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf")],
+    [PASS, "ok",            700,    "normal", TEST_FILE("montserrat/Montserrat-Bold.ttf")],
+    [PASS, "ok",            700,    "italic", TEST_FILE("montserrat/Montserrat-BoldItalic.ttf")],
+    [PASS, "ok",            800,    "normal", TEST_FILE("montserrat/Montserrat-ExtraBold.ttf")],
+    [PASS, "ok",            800,    "italic", TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf")],
+    [PASS, "ok",            900,    "normal", TEST_FILE("montserrat/Montserrat-Black.ttf")],
+    [PASS, "ok",            900,    "italic", TEST_FILE("montserrat/Montserrat-BlackItalic.ttf")]
   ]
   # FIXME: There should also be samples of good and bad variable fonts in this code-test.
 
-  for expected, weight, style, filename in test_cases:
+  for expected_status, expected_code, weight, style, filename in test_cases:
     is_var = os.path.exists(filename) and is_variable_font(TTFont(filename))
-    print (("Test {} with style:'{}',"
-            " weight:{}, filename:'{}', varfont:'{}'...").format(expected,
+    print (("Test {} '{}' with style:'{}',"
+            " weight:{}, filename:'{}', varfont:'{}'...").format(expected_status,
+                                                                 expected_code,
                                                                  style,
                                                                  weight,
                                                                  filename,
@@ -1757,7 +1781,7 @@ def test_check_metadata_canonical_filename():
     status, message = list(check(font_meta,
                                  canonical_filename(font_meta),
                                  is_var))[-1]
-    assert status == expected
+    assert status == expected_status and message.code == expected_code
 
 
 def test_check_metadata_italic_style():
@@ -1921,7 +1945,7 @@ def test_check_metadata_fontname_not_camel_cased():
   font_meta.name = "GollyGhost"
   print ("Test FAIL with a bad font (CamelCased font name)...")
   status, message = list(check(font_meta))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "camelcase"
 
   # And we also make sure the check PASSes with a few known good names:
   good_names = ["VT323", "PT Sans", "Amatic SC"]
