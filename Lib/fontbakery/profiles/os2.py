@@ -255,6 +255,6 @@ def com_google_fonts_check_code_pages(ttFont):
      (ttFont['OS/2'].ulCodePageRange1 == 0 and \
       ttFont['OS/2'].ulCodePageRange2 == 0):
     yield FAIL, ("No code pages defined in the OS/2 table"
-                 " ulCodePageRage1 and CodePageRage2 fields.")
+                 " ulCodePageRange1 and CodePageRange2 fields.")
   else:
     yield PASS, "At least one code page is defined."
