@@ -97,7 +97,11 @@ def is_kth_bit_set(j, k):
 
 @condition
 def is_cjk_font(ttFont):
-    """Test font object to confirm that it meets our definition of a CJK font file."""
+    """Test font object to confirm that it meets our definition of a CJK font file.
+    The definition is met if any of the following conditions are True:
+       1. The font has a CJK code page bit set in the OS/2 table
+       2. The font has a CJK Unicode range bit set in the OS/2 table
+       3. The font has any CJK Unicode code points defined in the cmap table"""
     os2 = ttFont["OS/2"]
 
     # OS/2 code page checks
