@@ -33,8 +33,6 @@
 
 
 
-
-
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -66,21 +64,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-07-09 05:19 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/d87322ab37b8b084c863facd61104443eaa4e972/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-08-02 09:58 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/8822b93a13d3191aeb697eb47353ec6c86a611f0/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2738" />
+<meta name="word_count" content="2746" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/adec96e7.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/c6e3e0f.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cd54db8b.conceptual.css ">
 
@@ -108,7 +106,6 @@
 		functions:{},
 		settings:{
 			extendBreadcrumb: true,
-			enableUHFPPE: false
 		}
 	};
 	if (!('Promise' in window && 'resolve' in window.Promise && 'reject' in window.Promise && 'all' in window.Promise && 'race' in window.Promise)) {
@@ -126,7 +123,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/ae52c0cf.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/5402a53e.index-docs.js"></script>
 
 </head>
 
@@ -138,8 +135,8 @@
 		</div>
 	<div class="content-header uhf-container has-padding has-default-focus" data-bi-name="content-header">
 		<nav class="has-padding-none-mobile" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
-		<ul id="page-breadcrumbs" class="breadcrumbs">
-		</ul>
+			<ul id="page-breadcrumbs" class="breadcrumbs">
+			</ul>
 		</nav>
 		<div class="content-header-controls">
 			<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
@@ -152,80 +149,78 @@
 				<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
 				<span>Exit focus mode</span>
 			</button>
-			
 		</div>
-		<div class="action-bar">
-			<ul class="action-list">
+		<div id="page-actions" class="is-flex-touch has-flex-justify-content-space-between-touch has-padding-none has-padding-none-mobile">
+			<ul class="action-list has-flex-justify-content-start-mobile is-flex is-flex-row">
 						<li>
-							<a href="#feedback" class="button is-text is-small is-icon-only-touch" data-bi-name="comments">
+							<a href="#feedback" class="button is-text has-inner-focus is-small is-icon-only-touch" data-bi-name="comments">
 								<span class="icon">
 									<span class="docon docon-comment-lines" aria-hidden="true"></span>
 								</span>
-								<span class="action-item-text is-hidden-portrait">Feedback</span>
+								<span class="is-visually-hidden-touch is-hidden-portrait">Feedback</span>
 							</a>
 						</li>
 							<li id="contenteditbtn" hidden>
-									<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"  class="button is-text is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit">
+									<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"  class="button is-text has-inner-focus is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit">
 									<span class="icon">
 										<span class="docon docon-edit-outline" aria-hidden="true"></span>
 									</span>
-									<span class="action-item-text is-hidden-portrait">Edit</span>
+									<span class="is-visually-hidden-touch is-hidden-portrait">Edit</span>
 								</a>
 							</li>
 				<li>
-					<div class="sharing dropdown has-caret" auto-align>
-						<button class="dropdown-trigger button is-text is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
-							<span class="icon" aria-hidden="true">
-								<span class="docon docon-sharing"></span>
-							</span>
-							<span class="action-item-text is-hidden-portrait">Share</span>
-						</button>
-						<div class="dropdown-menu" id="sharing-menu">
-							<ul data-bi-name="share-links">
-								<li>
-									<a class="share-twitter" data-bi-name="twitter">
-										<span class="icon">
-											<span class="docon docon-brand-twitter" aria-hidden="true"></span>
-										</span>
-										<span>Twitter</span>
-									</a>
-								</li>
-								<li>
-									<a class="share-linkedin" data-bi-name="linkedin">
-										<span class="icon">
-											<span class="docon docon-brand-linkedin" aria-hidden="true"></span>
-										</span>
-										<span>LinkedIn</span>
-									</a>
-								</li>
-								<li>
-									<a class="share-facebook" data-bi-name="facebook">
-										<span class="icon">
-											<span class="docon docon-brand-facebook" aria-hidden="true"></span>
-										</span>
-										<span>Facebook</span>
-									</a>
-								</li>
-								<li>
-									<a class="share-email" data-bi-name="email">
-										<span class="icon">
-											<span class="docon docon-mail-message-fill" aria-hidden="true"></span>
-										</span>
-										<span>Email</span>
-									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</li>
-				<li class="is-unstyle-action-list-item">
+<div class="sharing dropdown has-caret" auto-align>
+	<button class="dropdown-trigger button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-twitter" data-bi-name="twitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-facebook" data-bi-name="facebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-email" data-bi-name="email">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>				</li>
+				<li>
 <div class="dropdown has-caret" auto-align>
-	<button class="dropdown-trigger button is-text is-small is-icon-only-touch"
+	<button class="dropdown-trigger button is-text is-small is-icon-only-touch has-inner-focus"
 		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
 		<span class="icon">
 			<span class="docon docon-sun" aria-hidden="true"></span>
 		</span>
-		<span class="action-item-text is-hidden-portrait">Theme</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Theme</span>
 	</button>
 	<div class="dropdown-menu" id="theme-menu" role="menu">
 		<div class="theme-selector has-padding-small">
@@ -304,10 +299,10 @@ High contrast					</span>
 		</div>
 	</div>
 </div>				</li>
-				<li class="is-unstyled-action-list-item">
-					<a class="docs-sign-in auth-status-determined not-authenticated button is-text has-text-primary is-small" href="#">Sign in</a>
+				<li>
+					<a class="docs-sign-in auth-status-determined not-authenticated button is-text has-inner-focus has-text-primary is-small" href="#">Sign in</a>
 					<div class="dropdown has-caret auth-status-determined authenticated" auto-align>
-						<button class="dropdown-trigger button is-text is-small is-icon-only-touch has-inner-focus" aria-label="Your Account" aria-controls="user-menu" aria-expanded="false">
+						<button class="dropdown-trigger button is-text has-inner-focus is-small is-icon-only-touch has-inner-focus" aria-label="Your Account" aria-controls="user-menu" aria-expanded="false">
 							<span class="icon" aria-hidden="true">
 								<span class="image">
 									<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
@@ -339,8 +334,11 @@ High contrast					</span>
 					</div>
 				</li>
 			</ul>
-			<button type="button" class="contents-button" aria-label="Contents" data-bi-name="contents-expand-">
-				<span class="docon docon-editor-list-bullet"></span><span>Contents</span>
+			<button type="button" class="contents-button button is-small is-text is-hidden-tablet has-inner-focus is-hidden-tablet" aria-label="Contents" data-bi-name="contents-expand-">
+				<span class="icon">
+					<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+				</span>
+				<span>Contents</span>
 			</button>
 		</div>
 	</div>
@@ -351,7 +349,7 @@ High contrast					</span>
 	<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus"></div>
 	</div>
 
-	<div class="mainContainer uhf-container  has-top-padding  has-default-focus" data-bi-name="body">
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
 
 		<div class="columns has-large-gaps ">
 
@@ -369,7 +367,6 @@ High contrast					</span>
 
 
 
-
 						<h1 id="registered-typography-vendors" sourcefile="vendors/index.md" sourcestartlinenumber="15">Registered typography vendors</h1>
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
@@ -381,15 +378,14 @@ High contrast					</span>
 								<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="4 Contributors" aria-label="4 Contributors">
 									<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/mijacobs.png?size=32" role="presentation"/></li>
-												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alibasi.png?size=32" role="presentation"/></li>
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
+												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alibasi.png?size=32" role="presentation"/></li>
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/PeterCon.png?size=32" role="presentation"/></li>
 									</ul>
 								</a>
 							</li>
 
 						</ul>
-
 
 						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
 							<h3>In this article</h3>
@@ -1278,6 +1274,10 @@ High contrast					</span>
 <td><a href="http://www.ekioh.com" data-linktype="external">Ekioh</a></td>
 </tr>
 <tr>
+<td>EKTF</td> 
+<td>EK TYPE</td>
+</tr>
+<tr>
 <td>ELSE</td>
 <td>Elseware</td>
 </tr>
@@ -1844,6 +1844,10 @@ High contrast					</span>
 <tr>
 <td>ISE</td>
 <td><a href="http://www.softfonts.com" data-linktype="external">ISE-Aditi Info. Pvt . Ltd.</a></td>
+</tr>
+<tr>
+<td>it*</td>
+<td><a href="https://indestructibletype.com/" data-linktype="external">indestructible type*</a></td>
 </tr>
 <tr>
 <td>ITC</td>
@@ -2949,6 +2953,10 @@ High contrast					</span>
 <td><a href="http://www.rosettatype.com" data-linktype="external">Rosetta</a></td>
 </tr>
 <tr>
+<td>rthy</td>
+<td><a href="http://arthy.id/" data-linktype="external">Arthy</a></td>
+</tr>
+<tr>
 <td>RUDY</td>
 <td>RudynFluffy</td>
 </tr>
@@ -3668,6 +3676,38 @@ High contrast					</span>
 
 						</main>
 
+						<!-- rating mobile section -->
+								<div class="is-hidden-desktop has-border-top has-margin-top-large has-padding-top-small">
+<div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
+	<div class="binary-rating">
+		<div class="binary-rating-buttons">
+			<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+			<div>
+				<button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" data-bi-sat="1">
+					<span class="icon docon docon-like" aria-hidden="true"></span><span>Yes</span>
+				</button>
+				<button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-haspopup="true" aria-controls="rating-feedback">
+					<span class="icon docon docon-dislike" aria-hidden="true"></span><span>No</span>
+				</button>
+			</div>
+		</div>
+		<form class="feedback-verbatim-form is-hidden">
+			<div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
+				<label for="rating-feedback-mobile" class="visually-hidden">Any additional feedback?</label>
+				<textarea id="rating-feedback-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
+			</div>
+			<div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
+				<button class="skip-rating button is-text is-link is-small" type="button">Skip</button>
+				<button disabled class="submit-rating button is-primary is-small" type="submit" data-bi-name="rating-verbatim">Submit</button>
+			</div>
+		</form>
+	</div>
+	<div class="thankyou-rating is-hidden">
+		<p>Thank you.</p>
+	</div>
+</div>								</div>
+						<!-- end rating mobile section -->
+
 						<!-- feedback section -->
 
 
@@ -3793,9 +3833,38 @@ This page					</button>
 					</div>
 
 					<div id="page-actions" class="right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
-							<nav id="side-doc-outline" class="doc-outline is-fixed is-vertically-scrollable" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
-								<h3>In this article</h3>
-							</nav>
+							<div id="affixed-right-container" class="doc-outline is-fixed is-vertically-scrollable">
+<div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
+	<div class="binary-rating">
+		<div class="binary-rating-buttons">
+			<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+			<div>
+				<button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" data-bi-sat="1">
+					<span class="icon docon docon-like" aria-hidden="true"></span><span>Yes</span>
+				</button>
+				<button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-haspopup="true" aria-controls="rating-feedback">
+					<span class="icon docon docon-dislike" aria-hidden="true"></span><span>No</span>
+				</button>
+			</div>
+		</div>
+		<form class="feedback-verbatim-form is-hidden">
+			<div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
+				<label for="rating-feedback-mobile" class="visually-hidden">Any additional feedback?</label>
+				<textarea id="rating-feedback-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
+			</div>
+			<div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
+				<button class="skip-rating button is-text is-link is-small" type="button">Skip</button>
+				<button disabled class="submit-rating button is-primary is-small" type="submit" data-bi-name="rating-verbatim">Submit</button>
+			</div>
+		</form>
+	</div>
+	<div class="thankyou-rating is-hidden">
+		<p>Thank you.</p>
+	</div>
+</div>								<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+									<h3>In this article</h3>
+								</nav>
+							</div>
 					</div>
 
 					<!--end of div.columns -->
