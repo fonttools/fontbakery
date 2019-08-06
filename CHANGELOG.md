@@ -2,7 +2,12 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.10 (2019-Aug-02)
+## 0.7.11 (2019-Aug-16)
+### Note-worthy code changes
+  - ...
+
+
+## 0.7.10 (2019-Aug-06)
 ### Note-worthy code changes
   - Added keywords for non-PASS log messages of a very large set of checks. At some point this will be mandatory for all checks. (issue #2558)
   - Make sure canonical style name checks are strongly enforced. Improve wording of FAIL log message on check/varfont_instance_names (issue #2573)
