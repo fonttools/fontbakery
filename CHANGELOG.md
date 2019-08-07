@@ -5,6 +5,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.7.11 (2019-Aug-16)
 ### Note-worthy code changes
   - ...
+### New checks
+  - **[com.google.fonts/check/metadata/undeclared_fonts]:** "Ensure METADATA.pb lists all font binaries" (issue #2575)
 
 
 ## 0.7.10 (2019-Aug-06)

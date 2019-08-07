@@ -447,13 +447,40 @@ def test_check_metadata_designer_values():
 
 
 def test_check_metadata_broken_links():
-  """ Does DESCRIPTION file contain broken links ? """
+  """ Does DESCRIPTION file contain broken links? """
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_metadata_broken_links as check)
   # TODO: Implement-me!
   # INFO, "email"
   # WARN, "timeout"
   # FAIL, "broken-links"
+
+
+def test_check_metadata_undeclared_fonts():
+  """ Ensure METADATA.pb lists all font binaries. """
+  from fontbakery.profiles.googlefonts_conditions import family_metadata
+  from fontbakery.profiles.googlefonts import (
+    com_google_fonts_check_metadata_undeclared_fonts as check)
+
+  # Our reference Nunito family is know to be good here.
+  family_dir = portable_path("data/test/nunito")
+  status, message = list(check(family_metadata(family_dir), family_dir))[-1]
+  assert status == PASS
+
+  # Our reference Cabin family has files that are not declared in its METADATA.pb:
+  # - CabinCondensed-Medium.ttf
+  # - CabinCondensed-SemiBold.ttf
+  # - CabinCondensed-Regular.ttf
+  # - CabinCondensed-Bold.ttf
+  family_dir = portable_path("data/test/cabin")
+  status, message = list(check(family_metadata(family_dir), family_dir))[-1]
+  assert status == FAIL and message.code == "file-not-declared"
+
+  # We placed an additional file on a subdirectory of our reference
+  # OverpassMono family with the name "another_directory/ThisShouldNotBeHere.otf"
+  family_dir = portable_path("data/test/overpassmono")
+  status, message = list(check(family_metadata(family_dir), family_dir))[-1]
+  assert status == WARN and message.code == "font-on-subdir"
 
 
 # TODO: re-enable after addressing issue #1998
