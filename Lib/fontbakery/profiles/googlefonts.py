@@ -57,6 +57,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/os2_weightclass'
       , 'com.google.fonts/check/metadata/canonical_style_names'
       , 'com.google.fonts/check/metadata/broken_links'
+      , 'com.google.fonts/check/metadata/undeclared_fonts'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -494,6 +495,63 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
                   f"{broken_links_list}")
   else:
     yield PASS, "All links in the METADATA.pb file look good!"
+
+
+@check(
+  id = 'com.google.fonts/check/metadata/undeclared_fonts',
+  conditions = ['family_metadata'],
+  rationale = """
+    The set of font binaries available must match exactly
+    those declared on the METADATA.pb file.
+
+    Also, to avoid confusion we expect that font files
+    are not placed on subdirectories.
+  """
+)
+def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_directory):
+  """ Ensure METADATA.pb lists all font binaries """
+
+  pb_binaries = []
+  for font_metadata in family_metadata.fonts:
+    pb_binaries.append(font_metadata.filename)
+
+  passed = True
+  binaries = []
+  for entry in os.listdir(family_directory):
+    if os.path.isdir(os.path.join(family_directory, entry)):
+      for filename in os.listdir(os.path.join(family_directory, entry)):
+        if filename[-4:] in [".ttf", ".otf"]:
+          path = os.path.join(family_directory, entry, filename)
+          passed = False
+          yield WARN,\
+                Message("font-on-subdir",
+                        f'The file "{path}" is a font binary'
+                        f' in a subdirectory.\n'
+                        f'Please keep all font files directly'
+                        f' on the root directory side-by-side'
+                        f' with its corresponding METADATA.pb file.')
+    else:
+      if entry[-4:] in [".ttf", ".otf"]:
+        binaries.append(entry)
+
+
+  for filename in set(pb_binaries) - set(binaries):
+    passed = False
+    yield FAIL,\
+          Message("file-missing",
+                  f'The file "{filename}" declared on METADATA.pb'
+                  f' is not available in this directory.')
+
+
+  for filename in set(binaries) - set(pb_binaries):
+    passed = False
+    yield FAIL,\
+          Message("file-not-declared",
+                  f'The file "{filename}" is not declared on METADATA.pb')
+
+  if passed:
+    yield PASS, "OK"
+
 
 
 @disable # TODO: re-enable after addressing issue #1998
