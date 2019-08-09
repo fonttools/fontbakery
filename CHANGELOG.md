@@ -10,6 +10,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/undeclared_fonts]:** "Ensure METADATA.pb lists all font binaries" (issue #2575)
   - **[com.google.fonts/check/varfont/slnt_range:]** "The variable font 'slnt' (Slant) axis coordinate specifies positive values in its range?" (issue #2572)
 
+### Renamed check IDs:
+  - **[com.google.fonts/check/wdth_valid_range]** => com.google.fonts/check/varfont/wdth_valid_range
+  - **[com.google.fonts/check/wght_valid_range]** => com.google.fonts/check/varfont/wght_valid_range
+
 
 ## 0.7.10 (2019-Aug-06)
 ### Note-worthy code changes
