@@ -216,10 +216,10 @@ def test_check_varfont_bold_wght_coord():
   assert status == FAIL and message.code == "not-700"
 
 
-def test_check_wght_valid_range():
+def test_check_varfont_wght_valid_range():
   """ The variable font 'wght' (Weight) axis coordinate
       must be within spec range of 1 to 1000 on all instances. """
-  from fontbakery.profiles.fvar import com_google_fonts_check_wght_valid_range as check
+  from fontbakery.profiles.fvar import com_google_fonts_check_varfont_wght_valid_range as check
 
   # Our reference varfont, CabinVFBeta.ttf, has
   # all instances within the 1-1000 range
@@ -247,10 +247,10 @@ def test_check_wght_valid_range():
   assert status == FAIL and message.code == "out-of-range"
 
 
-def test_check_wdth_valid_range():
+def test_check_varfont_wdth_valid_range():
   """ The variable font 'wdth' (Width) axis coordinate
       must be within spec range of 1 to 1000 on all instances. """
-  from fontbakery.profiles.fvar import com_google_fonts_check_wdth_valid_range as check
+  from fontbakery.profiles.fvar import com_google_fonts_check_varfont_wdth_valid_range as check
 
   # Our reference varfont, CabinVFBeta.ttf, has
   # all instances within the 1-1000 range
@@ -278,7 +278,7 @@ def test_check_wdth_valid_range():
   assert status == FAIL and message.code == "out-of-range"
 
 
-def test_check_slnt_range():
+def test_check_varfont_slnt_range():
   """ The variable font 'slnt' (Slant) axis coordinate
       specifies positive values in its range? """
   from fontbakery.profiles.fvar import com_google_fonts_check_varfont_slnt_range as check

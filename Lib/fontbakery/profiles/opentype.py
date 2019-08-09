@@ -46,6 +46,8 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/varfont/regular_opsz_coord',
     'com.google.fonts/check/varfont/bold_wght_coord',
     'com.google.fonts/check/varfont/slnt_range',
+    'com.google.fonts/check/varfont/wght_valid_range',
+    'com.google.fonts/check/varfont/wdth_valid_range',
     'com.google.fonts/check/loca/maxp_num_glyphs',
     'com.adobe.fonts/check/cff2_call_depth',
     'com.adobe.fonts/check/cff_call_depth',
@@ -66,8 +68,6 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/points_out_of_bounds',
     'com.google.fonts/check/all_glyphs_have_codepoints',
     'com.google.fonts/check/monospace_max_advancewidth',
-    'com.google.fonts/check/wght_valid_range',
-    'com.google.fonts/check/wdth_valid_range',
     'com.google.fonts/check/code_pages',
 ]
 

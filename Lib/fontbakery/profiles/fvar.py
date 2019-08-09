@@ -192,7 +192,7 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
 
 
 @check(
-  id = 'com.google.fonts/check/wght_valid_range',
+  id = 'com.google.fonts/check/varfont/wght_valid_range',
   rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'wght' available at
@@ -205,7 +205,7 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
     'request': 'https://github.com/googlefonts/fontbakery/issues/2264'
   }
 )
-def com_google_fonts_check_wght_valid_range(ttFont):
+def com_google_fonts_check_varfont_wght_valid_range(ttFont):
   """The variable font 'wght' (Weight) axis coordinate
      must be within spec range of 1 to 1000 on all instances."""
 
@@ -226,7 +226,7 @@ def com_google_fonts_check_wght_valid_range(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/wdth_valid_range',
+  id = 'com.google.fonts/check/varfont/wdth_valid_range',
   rationale = """
     According to the Open-Type spec's registered
     design-variation tag 'wdth' available at
@@ -238,7 +238,7 @@ def com_google_fonts_check_wght_valid_range(ttFont):
   misc_metadata = {
   }
 )
-def com_google_fonts_check_wdth_valid_range(ttFont):
+def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
   """The variable font 'wdth' (Weight) axis coordinate
      must be within spec range of 1 to 1000 on all instances."""
 
