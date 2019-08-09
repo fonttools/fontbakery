@@ -45,6 +45,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/varfont/regular_ital_coord',
     'com.google.fonts/check/varfont/regular_opsz_coord',
     'com.google.fonts/check/varfont/bold_wght_coord',
+    'com.google.fonts/check/varfont/slnt_range',
     'com.google.fonts/check/loca/maxp_num_glyphs',
     'com.adobe.fonts/check/cff2_call_depth',
     'com.adobe.fonts/check/cff_call_depth',
