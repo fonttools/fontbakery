@@ -276,3 +276,26 @@ def test_check_wdth_valid_range():
   print('Test FAIL with wght=1001...')
   status, message = list(check(ttFont))[-1]
   assert status == FAIL and message.code == "out-of-range"
+
+
+def test_check_slnt_range():
+  """ The variable font 'slnt' (Slant) axis coordinate
+      specifies positive values in its range? """
+  from fontbakery.profiles.fvar import com_google_fonts_check_varfont_slnt_range as check
+  from fontbakery.profiles.shared_conditions import slnt_axis
+
+  # Our reference Inter varfont has a bad slnt range
+  ttFont = TTFont("data/test/varfont/inter/Inter[slnt,wght].ttf")
+  status, message = list(check(ttFont, slnt_axis(ttFont)))[-1]
+  assert status == WARN and message.code == "unusual-range"
+
+  # We then fix the font-bug by flipping the slnt axis range:
+  for i, axis in enumerate(ttFont["fvar"].axes):
+    if axis.axisTag == "slnt":
+      minValue, maxValue = axis.minValue, axis.maxValue
+      ttFont["fvar"].axes[i].minValue = -maxValue
+      ttFont["fvar"].axes[i].maxValue = -minValue
+
+  # And it must now PASS
+  status, message = list(check(ttFont, slnt_axis(ttFont)))[-1]
+  assert status == PASS

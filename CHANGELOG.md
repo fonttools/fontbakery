@@ -4,9 +4,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.7.11 (2019-Aug-16)
 ### Note-worthy code changes
-  - ...
+  - Add a few more keywords to log-messages (issue #2558)
+
 ### New checks
   - **[com.google.fonts/check/metadata/undeclared_fonts]:** "Ensure METADATA.pb lists all font binaries" (issue #2575)
+  - **[com.google.fonts/check/varfont/slnt_range:]** "The variable font 'slnt' (Slant) axis coordinate specifies positive values in its range?" (issue #2572)
 
 
 ## 0.7.10 (2019-Aug-06)

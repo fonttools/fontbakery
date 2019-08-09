@@ -256,3 +256,38 @@ def com_google_fonts_check_wdth_valid_range(ttFont):
 
   if not Failed:
     yield PASS, ("OK")
+
+
+@check(
+  id = 'com.google.fonts/check/varfont/slnt_range',
+  rationale = """
+    The OpenType spec says at
+    https://docs.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_slnt that:
+
+    [...] the scale for the Slant axis is interpreted as the angle of slant in
+    counter-clockwise degrees from upright. This means that a typical, right-leaning
+    oblique design will have a negative slant value. This matches the scale used for
+    the italicAngle field in the post table.
+  """,
+  conditions = ['is_variable_font',
+                'slnt_axis'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2572'
+  }
+)
+def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
+  """ The variable font 'slnt' (Slant) axis coordinate
+      specifies positive values in its range? """
+
+  if slnt_axis.minValue < 0 and slnt_axis.maxValue >= 0:
+    yield PASS, "Looks good!"
+  else:
+    yield WARN,\
+          Message("unusual-range",
+                  f'The range of values for the "slnt" axis in'
+                  f' this font only allows positive coordinates'
+                  f' (from {slnt_axis.minValue} to {slnt_axis.maxValue}),'
+                  f' indicating that this may be a back slanted design,'
+                  f' which is rare. If that\'s not the case, then'
+                  f' the "slant" axis should be a range of'
+                  f' negative values instead.')
