@@ -1,5 +1,6 @@
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
+from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
@@ -32,10 +33,11 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
   if regular_wght_coord == 400:
     yield PASS, "Regular:wght is 400."
   else:
-    yield FAIL, ("The 'wght' axis coordinate of"
-                 " the 'Regular' instance must be 400."
-                 " Got a '{}' coordinate instead."
-                 "").format(regular_wght_coord)
+    yield FAIL,\
+          Message("not-400",
+                  f'The "wght" axis coordinate of'
+                  f' the "Regular" instance must be 400.'
+                  f' Got {regular_wght_coord} instead.')
 
 
 @check(
@@ -61,10 +63,11 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
   if regular_wdth_coord == 100:
     yield PASS, "Regular:wdth is 100."
   else:
-    yield FAIL, ("The 'wdth' coordinate of"
-                 " the 'Regular' instance must be 100."
-                 " Got {} as a default value instead."
-                 "").format(regular_wdth_coord)
+    yield FAIL,\
+          Message("not-100",
+                  f'The "wdth" coordinate of'
+                  f' the "Regular" instance must be 100.'
+                  f' Got {regular_wdth_coord} as a default value instead.')
 
 
 @check(
@@ -90,10 +93,11 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
   if regular_slnt_coord == 0:
     yield PASS, "Regular:slnt is zero."
   else:
-    yield FAIL, ("The 'slnt' coordinate of"
-                 " the 'Regular' instance must be zero."
-                 " Got {} as a default value instead."
-                 "").format(regular_slnt_coord)
+    yield FAIL,\
+          Message("non-zero",
+                  f'The "slnt" coordinate of'
+                  f' the "Regular" instance must be zero.'
+                  f' Got {regular_slnt_coord} as a default value instead.')
 
 
 @check(
@@ -119,10 +123,11 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
   if regular_ital_coord == 0:
     yield PASS, "Regular:ital is zero."
   else:
-    yield FAIL, ("The 'ital' coordinate of"
-                 " the 'Regular' instance must be zero."
-                 " Got {} as a default value instead."
-                 "").format(regular_ital_coord)
+    yield FAIL,\
+          Message("non-zero",
+                  f'The "ital" coordinate of'
+                  f' the "Regular" instance must be zero.'
+                  f' Got {regular_ital_coord} as a default value instead.')
 
 
 @check(
@@ -146,14 +151,14 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
   9 and 13 on the 'Regular' instance."""
 
   if regular_opsz_coord >= 9 and regular_opsz_coord <= 13:
-    yield PASS, ("Regular:opsz coordinate ({})"
-                 " looks good.").format(regular_opsz_coord)
+    yield PASS, ("Regular:opsz coordinate ({regular_opsz_coord}) looks good.")
   else:
-    yield WARN, ("The 'opsz' (Optical Size) coordinate"
-                 " on the 'Regular' instance is recommended"
-                 " to be a value in the range 9 to 13."
-                 " Got a '{}' coordinate instead."
-                 "").format(regular_opsz_coord)
+    yield WARN,\
+          Message("out-of-range",
+                  f'The "opsz" (Optical Size) coordinate'
+                  f' on the "Regular" instance is recommended'
+                  f' to be a value in the range 9 to 13.'
+                  f' Got {regular_opsz_coord} instead.')
 
 
 @check(
@@ -179,10 +184,11 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
   if bold_wght_coord == 700:
     yield PASS, "Bold:wght is 700."
   else:
-    yield FAIL, ("The 'wght' axis coordinate of"
-                 " the 'Bold' instance must be 700."
-                 " Got a '{}' coordinate instead."
-                 "").format(bold_wght_coord)
+    yield FAIL,\
+          Message("not-700",
+                  f'The "wght" axis coordinate of'
+                  f' the "Bold" instance must be 700.'
+                  f' Got {bold_wght_coord} instead.')
 
 
 @check(
@@ -209,8 +215,10 @@ def com_google_fonts_check_wght_valid_range(ttFont):
       value = instance.coordinates['wght']
       if value < 1 or value > 1000:
         Failed = True
-        yield FAIL, (f"Found a bad wght coordinate with value '{value}'"
-                      " outside of the valid range from 1 to 1000.") 
+        yield FAIL,\
+              Message("out-of-range",
+                      f'Found a bad "wght" coordinate with value {value}'
+                      f' outside of the valid range from 1 to 1000.')
         break
 
   if not Failed:
@@ -240,8 +248,10 @@ def com_google_fonts_check_wdth_valid_range(ttFont):
       value = instance.coordinates['wdth']
       if value < 1 or value > 1000:
         Failed = True
-        yield FAIL, (f"Found a bad wdth coordinate with value '{value}'"
-                      " outside of the valid range from 1 to 1000.")
+        yield FAIL,\
+              Message("out-of-range",
+                      f'Found a bad "wdth" coordinate with value {value}'
+                      f' outside of the valid range from 1 to 1000.')
         break
 
   if not Failed:
