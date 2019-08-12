@@ -25,10 +25,12 @@ def com_google_fonts_check_family_equal_font_versions(ttFonts):
     for v in fontfile_versions.keys():
       versions_list += "* {}: {}\n".format(v.reader.file.name,
                                            fontfile_versions[v])
-    yield WARN, ("version info differs among font"
-                 " files of the same font project.\n"
-                 "These were the version values found:\n"
-                 "{}").format(versions_list)
+    yield WARN,\
+          Message("mismatch",
+                  f"Version info differs among font"
+                  f" files of the same font project.\n"
+                  f"These were the version values found:\n"
+                  f"{versions_list}")
   else:
     yield PASS, "All font files have the same version."
 
@@ -57,20 +59,24 @@ def com_google_fonts_check_unitsperem(ttFont):
   target_upem.append(1000)
   target_upem.append(2000)
   if upem < 16 or upem > 16384:
-    yield FAIL, ("The value of unitsPerEm at the head table"
-                 " must be a value between 16 and 16384."
-                 " Got '{}' instead.").format(upem)
+    yield FAIL,\
+          Message("out-of-range",
+                  f"The value of unitsPerEm at the head table"
+                  f" must be a value between 16 and 16384."
+                  f" Got {upem} instead.")
   elif upem not in target_upem:
-    yield WARN, ("In order to optimize performance on some"
-                 " legacy renderers, the value of unitsPerEm"
-                 " at the head table should idealy be"
-                 " a power of between 16 to 16384."
-                 " And values of 1000 and 2000 are also"
-                 " common and may be just fine as well."
-                 " But we got upm={} instead.").format(upem)
+    yield WARN,\
+          Message("suboptimal",
+                  f"In order to optimize performance on some"
+                  f" legacy renderers, the value of unitsPerEm"
+                  f" at the head table should idealy be"
+                  f" a power of between 16 to 16384."
+                  f" And values of 1000 and 2000 are also"
+                  f" common and may be just fine as well."
+                  f" But we got {upem} instead.")
   else:
-    yield PASS, ("unitsPerEm value ({}) on the 'head' table"
-                 " is reasonable.").format(upem)
+    yield PASS, (f"The unitsPerEm value ({upem}) on"
+                 f" the 'head' table is reasonable.")
 
 
 def parse_version_string(name: str) -> Tuple[str, str]:
@@ -122,25 +128,27 @@ def com_google_fonts_check_font_version(ttFont):
         name_version = parse_version_string(record.toUnicode())
         if name_version != head_version:
           failed = True
-          yield FAIL, Message("mismatch",
-                              "head version is '{}' while name version string"
-                              " (for platform {}, encoding {}) is '{}'."
-                              "".format(head_version_str,
-                                        record.platformID,
-                                        record.platEncID,
-                                        record.toUnicode()))
+          yield FAIL,\
+                Message("mismatch",
+                        f'head version is "{head_version_str}"'
+                        f' while name version string (for'
+                        f' platform {record.platformID},'
+                        f' encoding {record.platEncID}) is'
+                        f' "{record.toUnicode()}".')
       except ValueError:
         failed = True
-        yield FAIL, Message("parse",
-                            "name version string for platform {},"
-                            " encoding {} ('{}'), could not be parsed."
-                            "".format(record.platformID,
-                                      record.platEncID,
-                                      record.toUnicode()))
+        yield FAIL,\
+              Message("parse",
+                      f'name version string for'
+                      f' platform {record.platformID},'
+                      f' encoding {record.platEncID}'
+                      f' ("{record.toUnicode()}"),'
+                      f' could not be parsed.')
   else:
     failed = True
-    yield FAIL, Message("missing",
-                        "There is no name ID 5 (version string) in the font.")
+    yield FAIL,\
+          Message("missing",
+                  "There is no name ID 5 (version string) in the font.")
 
   if not failed:
     yield PASS, "All font version fields match."

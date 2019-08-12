@@ -26,9 +26,10 @@ def com_adobe_fonts_check_name_empty_records(ttFont):
             failed = True
             name_key = tuple([name_record.platformID, name_record.platEncID,
                              name_record.langID, name_record.nameID])
-            yield FAIL, ("'name' table record with key={} is "
-                         "empty and should be removed."
-                         ).format(name_key)
+            yield FAIL,\
+                  Message("empty-record",
+                          f'"name" table record with key={name_key} is'
+                          f' empty and should be removed.')
     if not failed:
         yield PASS, ("No empty name table records found.")
 
@@ -48,11 +49,14 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
       failed = True
 
   if failed:
-    yield FAIL, ("Namerecords with ID={} (NameID.DESCRIPTION)"
-                 " should be removed (perhaps these were added by"
-                 " a longstanding FontLab Studio 5.x bug that"
-                 " copied copyright notices to them.)"
-                 "").format(NameID.DESCRIPTION)
+    yield FAIL,\
+          Message("copyright-on-description",
+                  f"Some namerecords with"
+                  f" ID={NameID.DESCRIPTION} (NameID.DESCRIPTION)"
+                  f" containing copyright info should be removed"
+                  f" (perhaps these were added by a longstanding"
+                  f" FontLab Studio 5.x bug that copied"
+                  f" copyright notices to them.)")
   else:
     yield PASS, ("Description strings in the name table"
                  " do not contain any copyright string.")
@@ -108,30 +112,30 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
 
   if ttFont['hhea'].advanceWidthMax != width_max:
     failed = True
-    yield FAIL, Message("bad-advanceWidthMax",
-                        ("Value of hhea.advanceWidthMax"
-                         " should be set to {} but got"
-                         " {} instead."
-                         "").format(width_max, ttFont['hhea'].advanceWidthMax))
+    yield FAIL,\
+          Message("bad-advanceWidthMax",
+                  f"Value of hhea.advanceWidthMax"
+                  f" should be set to {width_max}"
+                  f" but got {ttFont['hhea'].advanceWidthMax} instead.")
   if seems_monospaced:
     if ttFont['post'].isFixedPitch == IsFixedWidth.NOT_MONOSPACED:
       failed = True
-      yield FAIL, Message("mono-bad-post-isFixedPitch",
-                          ("On monospaced fonts, the value of"
-                           " post.isFixedPitch must be set to a non-zero value"
-                           " (meaning 'fixed width monospaced'),"
-                           " but got {} instead."
-                           "").format(ttFont['post'].isFixedPitch))
+      yield FAIL,\
+            Message("mono-bad-post-isFixedPitch",
+                    f"On monospaced fonts, the value of post.isFixedPitch"
+                    f" must be set to a non-zero value"
+                    f" (meaning 'fixed width monospaced'),"
+                    f" but got {ttFont['post'].isFixedPitch} instead.")
 
     if ttFont['OS/2'].panose.bProportion != PANOSE_Proportion.MONOSPACED:
       failed = True
-      yield FAIL, Message("mono-bad-panose-proportion",
-                          ("On monospaced fonts, the value of"
-                           " OS/2.panose.bProportion must be set to {}"
-                           " (proportion: monospaced), but got"
-                           " {} instead."
-                           "").format(PANOSE_Proportion.MONOSPACED,
-                                      ttFont['OS/2'].panose.bProportion))
+      yield FAIL,\
+            Message("mono-bad-panose-proportion",
+                    f"On monospaced fonts, the value of"
+                    f" OS/2.panose.bProportion"
+                    f" must be set to {PANOSE_Proportion.MONOSPACED}"
+                    f" (proportion: monospaced),"
+                    f" but got {ttFont['OS/2'].panose.bProportion} instead.")
 
     num_glyphs = len(ttFont['glyf'].glyphs)
     unusually_spaced_glyphs = [
@@ -142,39 +146,44 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
     outliers_ratio = float(len(unusually_spaced_glyphs)) / num_glyphs
     if outliers_ratio > 0:
       failed = True
-      yield WARN, Message("mono-outliers",
-                          ("Font is monospaced but {} glyphs"
-                           " ({}%) have a different width."
-                           " You should check the widths of:"
-                           " {}").format(
-                               len(unusually_spaced_glyphs),
-                               100.0 * outliers_ratio, unusually_spaced_glyphs))
+      yield WARN,\
+            Message("mono-outliers",
+                    f"Font is monospaced"
+                    f" but {len(unusually_spaced_glyphs)} glyphs"
+                    f" ({100.0 * outliers_ratio}%)"
+                    f" have a different width."
+                    f" You should check the widths of:"
+                    f" {unusually_spaced_glyphs}")
     if not failed:
-      yield PASS, Message("mono-good", ("Font is monospaced and all"
-                                        " related metadata look good."))
+      yield PASS,\
+            Message("mono-good",
+                    "Font is monospaced and all related metadata look good.")
   else:
     # it is a non-monospaced font, so lets make sure
     # that all monospace-related metadata is properly unset.
 
     if ttFont['post'].isFixedPitch != IsFixedWidth.NOT_MONOSPACED:
       failed = True
-      yield FAIL, Message("bad-post-isFixedPitch",
-                          ("On non-monospaced fonts, the"
-                           " post.isFixedPitch value must be set to {}"
-                           " (not monospaced), but got {} instead."
-                           "").format(IsFixedWidth.NOT_MONOSPACED,
-                                      ttFont['post'].isFixedPitch))
+      yield FAIL,\
+            Message("bad-post-isFixedPitch",
+                    f"On non-monospaced fonts,"
+                    f" the post.isFixedPitch value must be set to"
+                    f" {IsFixedWidth.NOT_MONOSPACED} (not monospaced),"
+                    f" but got {ttFont['post'].isFixedPitch} instead.")
 
     if ttFont['OS/2'].panose.bProportion == PANOSE_Proportion.MONOSPACED:
       failed = True
-      yield FAIL, Message("bad-panose-proportion",
-                          ("On non-monospaced fonts, the"
-                           " OS/2.panose.bProportion value can be set to "
-                           " any value except 9 (proportion: monospaced)"
-                           " which is the bad value we got in this font."))
+      yield FAIL,\
+            Message("bad-panose-proportion",
+                    f"On non-monospaced fonts,"
+                    f" the OS/2.panose.bProportion value can be set to"
+                    f" any value except 9 (proportion: monospaced)"
+                    f" which is the bad value we got in this font.")
     if not failed:
-      yield PASS, Message("good", ("Font is not monospaced and"
-                                   " all related metadata look good."))
+      yield PASS,\
+            Message("good",
+                    "Font is not monospaced and"
+                    " all related metadata look good.")
 
 
 @check(
@@ -187,9 +196,11 @@ def com_google_fonts_check_name_line_breaks(ttFont):
     string = name.string.decode(name.getEncoding())
     if "\n" in string:
       failed = True
-      yield FAIL, ("Name entry {} on platform {} contains"
-                   " a line-break.").format(NameID(name.nameID).name,
-                                            PlatformID(name.platformID).name)
+      yield FAIL,\
+            Message("line-break",
+                    f"Name entry {NameID(name.nameID).name}"
+                    f" on platform {PlatformID(name.platformID).name}"
+                    f" contains a line-break.")
   if not failed:
     yield PASS, ("Name table entries are all single-line"
                  " (no line-breaks found).")
@@ -205,13 +216,15 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
   fullfontname = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
 
   if len(familyname) == 0:
-    yield FAIL, Message("no-font-family-name",
-                        ("Font lacks a NameID.FONT_FAMILY_NAME"
-                         " entry in the 'name' table."))
+    yield FAIL,\
+          Message("no-font-family-name",
+                  "Font lacks a NameID.FONT_FAMILY_NAME"
+                  " entry in the 'name' table.")
   elif len(fullfontname) == 0:
-    yield FAIL, Message("no-full-font-name",
-                        ("Font lacks a NameID.FULL_FONT_NAME"
-                         " entry in the 'name' table."))
+    yield FAIL,\
+          Message("no-full-font-name",
+                  "Font lacks a NameID.FULL_FONT_NAME"
+                  " entry in the 'name' table.")
   else:
     # we probably should check all found values are equivalent.
     # and, in that case, then performing the rest of the check
@@ -221,13 +234,14 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
     familyname = familyname[0]
 
     if not fullfontname.startswith(familyname):
-      yield FAIL, Message(
-          "does-not", (" On the 'name' table, the full font name"
-                       " (NameID {} - FULL_FONT_NAME: '{}')"
-                       " does not begin with font family name"
-                       " (NameID {} - FONT_FAMILY_NAME:"
-                       " '{}')".format(NameID.FULL_FONT_NAME, familyname,
-                                       NameID.FONT_FAMILY_NAME, fullfontname)))
+      yield FAIL,\
+            Message("does-not",
+                    f"On the 'name' table, the full font name"
+                    f" (NameID {NameID.FULL_FONT_NAME}"
+                    f" - FULL_FONT_NAME: '{familyname}')"
+                    f" does not begin with font family name"
+                    f" (NameID {NameID.FONT_FAMILY_NAME}"
+                    f" - FONT_FAMILY_NAME: '{fullfontname}')")
     else:
       yield PASS, "Full font name begins with the font family name."
 
@@ -325,9 +339,12 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
       table += "| {} | {} | {} |\n".format(bad["field"],
                                            bad["value"],
                                            bad["rec"])
-    yield INFO, ("Font does not follow "
-                 "some family naming recommendations:\n\n"
-                 "{}").format(table)
+    yield INFO,\
+          Message("bad-entries",
+                  f"Font does not follow "
+                  f"some family naming recommendations:\n"
+                  f"\n"
+                  f"{table}")
   else:
     yield PASS, "Font follows the family naming recommendations."
 
@@ -341,14 +358,15 @@ def com_google_fonts_check_name_rfn(ttFont):
   for entry in ttFont["name"].names:
     string = entry.toUnicode()
     if "reserved font name" in string.lower():
-      yield WARN, ("Name table entry (\"{}\")"
-                   " contains \"Reserved Font Name\"."
-                   " This is an error except in a few specific"
-                   " rare cases.").format(string)
+      yield WARN,\
+            Message("rfn",
+                    f'Name table entry ("{string}")'
+                    f' contains "Reserved Font Name".'
+                    f' This is an error except in a few specific rare cases.')
       failed = True
   if not failed:
-    yield PASS, ("None of the name table strings"
-                 " contain \"Reserved Font Name\".")
+    yield PASS, ('None of the name table strings'
+                 ' contain "Reserved Font Name".')
 
 
 @check(
@@ -365,22 +383,24 @@ def com_google_fonts_check_name_rfn(ttFont):
 )
 def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
   """CFF table FontName must match name table ID 6 (PostScript name)."""
-  failed = False
   cff_names = ttFont['CFF '].cff.fontNames
   if len(cff_names) != 1:
     yield ERROR, ("Unexpected number of font names in CFF table.")
     return
+
+  passed = True
   cff_name = cff_names[0]
   for entry in ttFont['name'].names:
     if entry.nameID == NameID.POSTSCRIPT_NAME:
-        postscript_name = entry.toUnicode()
-        if postscript_name != cff_name:
-          yield FAIL, ("Name table PostScript name '{}' "
-                       "does not match CFF table FontName '{}'."
-                       .format(postscript_name, cff_name))
-          failed = True
+      postscript_name = entry.toUnicode()
+      if postscript_name != cff_name:
+        passed = False
+        yield FAIL,\
+              Message("mismatch",
+                      f"Name table PostScript name '{postscript_name}' "
+                      f"does not match CFF table FontName '{cff_name}'.")
 
-  if not failed:
+  if passed:
     yield PASS, ("Name table PostScript name matches CFF table FontName.")
 
 
@@ -404,12 +424,14 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
       postscript_names.add(postscript_name)
 
   if len(postscript_names) > 1:
-    yield FAIL, ("Entries in the 'name' table for ID 6 (PostScript name) are "
-                 "not consistent. Names found: {}."
-                 .format(sorted(postscript_names)))
+    yield FAIL,\
+          Message("inconsistency",
+                  f'Entries in the "name" table for ID 6'
+                  f' (PostScript name) are not consistent.'
+                  f' Names found: {sorted(postscript_names)}.')
   else:
-    yield PASS, ("Entries in the 'name' table for ID 6 "
-                 "(PostScript name) are consistent.")
+    yield PASS, ('Entries in the "name" table for ID 6 '
+                 '(PostScript name) are consistent.')
 
 
 @check(
@@ -424,7 +446,6 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
   from collections import Counter
   from fontbakery.utils import get_name_entry_strings
 
-  failed = False
   family_names = list()
   for ttFont in ttFonts:
     names_list = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
@@ -435,11 +456,15 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
     # used for a given font
     names_set = set(names_list)
     family_names.extend(names_set)
+
+  passed = True
   counter = Counter(family_names)
   for family_name, count in counter.items():
     if count > 4:
-      failed = True
-      yield FAIL, ("Family '{}' has {} fonts (should be 4 or fewer)."
-                   ).format(family_name, count)
-  if not failed:
+      passed = False
+      yield FAIL,\
+            Message("too-many",
+                    f"Family '{family_name}' has {count} fonts"
+                    f" (should be 4 or fewer).")
+  if passed:
     yield PASS, ("There were no more than 4 fonts per family name.")

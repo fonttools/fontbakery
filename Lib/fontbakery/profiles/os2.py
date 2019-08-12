@@ -14,21 +14,21 @@ profile_imports = [
 )
 def com_google_fonts_check_family_panose_proportion(ttFonts):
   """Fonts have consistent PANOSE proportion?"""
-  failed = False
+  passed = True
   proportion = None
   for ttFont in ttFonts:
     if proportion is None:
       proportion = ttFont['OS/2'].panose.bProportion
     if proportion != ttFont['OS/2'].panose.bProportion:
-      failed = True
+      passed = False
 
-  if failed:
-    yield FAIL, ("PANOSE proportion is not"
-                 " the same accross this family."
-                 " In order to fix this,"
-                 " please make sure that the panose.bProportion value"
-                 " is the same in the OS/2 table of all of this family"
-                 " font files.")
+  if not passed:
+    yield FAIL,\
+          Message("inconsistency",
+                  "PANOSE proportion is not the same accross this family."
+                  " In order to fix this, please make sure that"
+                  " the panose.bProportion value is the same"
+                  " in the OS/2 table of all of this family font files.")
   else:
     yield PASS, "Fonts have consistent PANOSE proportion."
 
@@ -38,21 +38,21 @@ def com_google_fonts_check_family_panose_proportion(ttFonts):
 )
 def com_google_fonts_check_family_panose_familytype(ttFonts):
   """Fonts have consistent PANOSE family type?"""
-  failed = False
+  passed = True
   familytype = None
   for ttfont in ttFonts:
     if familytype is None:
       familytype = ttfont['OS/2'].panose.bFamilyType
     if familytype != ttfont['OS/2'].panose.bFamilyType:
-      failed = True
+      passed = False
 
-  if failed:
-    yield FAIL, ("PANOSE family type is not"
-                 " the same accross this family."
-                 " In order to fix this,"
-                 " please make sure that the panose.bFamilyType value"
-                 " is the same in the OS/2 table of all of this family"
-                 " font files.")
+  if not passed:
+    yield FAIL,\
+          Message("inconsistency",
+                  "PANOSE family type is not the same accross this family."
+                  " In order to fix this, please make sure that"
+                  " the panose.bFamilyType value is the same"
+                  " in the OS/2 table of all of this family font files.")
   else:
     yield PASS, "Fonts have consistent PANOSE family type."
 
@@ -70,8 +70,9 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
   if ttFont['OS/2'].version >= 3:
     calculation_rule = "the average of the widths of all glyphs in the font"
     if not ttFont['hmtx'].metrics:  # May contain just '.notdef', which is valid.
-      yield FAIL, Message("missing-glyphs",
-                          "CRITICAL: Found no glyph width data in the hmtx table!")
+      yield FAIL,\
+            Message("missing-glyphs",
+                    "CRITICAL: Found no glyph width data in the hmtx table!")
       return
 
     width_sum = 0
@@ -119,9 +120,10 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
     }
     glyph_order = ttFont.getGlyphOrder()
     if not all(character in glyph_order for character in weightFactors):
-      yield FAIL, Message("missing-glyphs",
-                          "Font is missing the required latin lowercase "
-                          "letters and/or space.")
+      yield FAIL,\
+            Message("missing-glyphs",
+                    "Font is missing the required"
+                    " latin lowercase letters and/or space.")
       return
 
     width_sum = 0
@@ -139,12 +141,12 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
   elif difference < ACCEPTABLE_ERROR:
     yield INFO, (f"OS/2 xAvgCharWidth is {current_value} but it should be"
                  f" {expected_value} which corresponds to {calculation_rule}."
-                  " These are similar values, which"
-                  " may be a symptom of the slightly different"
-                  " calculation of the xAvgCharWidth value in"
-                  " font editors. There's further discussion on"
-                  " this at https://github.com/googlefonts/fontbakery"
-                  "/issues/1622")
+                 f" These are similar values, which"
+                 f" may be a symptom of the slightly different"
+                 f" calculation of the xAvgCharWidth value in"
+                 f" font editors. There's further discussion on"
+                 f" this at https://github.com/googlefonts/fontbakery"
+                 f"/issues/1622")
   else:
     yield WARN, (f"OS/2 xAvgCharWidth is {current_value} but it should be"
                  f" {expected_value} which corresponds to {calculation_rule}.")

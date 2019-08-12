@@ -14,7 +14,7 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 from fontTools.ttLib import TTFont
 
 def test_check_gpos_kerning_info():
-  """ Does GPOS table have kerning information ? """
+  """ Does GPOS table have kerning information? """
   from fontbakery.profiles.gpos import com_google_fonts_check_gpos_kerning_info as check
 
   # Our reference Mada Regular is known to have kerning-info
@@ -44,7 +44,7 @@ def test_check_gpos_kerning_info():
 
   print ("Test WARN with a font lacking kerning info...")
   status, message = list(check(ttFont))[-1]
-  assert status == WARN
+  assert status == WARN and message.code == "lacks-kern-info"
 
   # setup a fake type=2 Pair Adjustment lookup
   ttFont["GPOS"].table.LookupList.Lookup[0].LookupType = 2
@@ -57,4 +57,4 @@ def test_check_gpos_kerning_info():
   del ttFont["GPOS"]
   print ("Test WARN with a font lacking a GPOS table...")
   status, message = list(check(ttFont))[-1]
-  assert status == WARN
+  assert status == WARN and message.code == "lacks-kern-info"

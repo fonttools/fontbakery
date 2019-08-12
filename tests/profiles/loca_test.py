@@ -22,5 +22,5 @@ def test_check_loca_maxp_num_glyphs():
   test_file = io.BytesIO()
   test_font.save(test_file)
   test_font = TTFont(test_file)
-  status, _ = list(check(test_font))[-1]
-  assert status == FAIL
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL and message.code == "corrupt"

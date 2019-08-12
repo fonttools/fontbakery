@@ -14,9 +14,13 @@ profile_imports = [
 def com_google_fonts_check_linegaps(ttFont):
   """Checking Vertical Metric Linegaps."""
   if ttFont["hhea"].lineGap != 0:
-    yield WARN, Message("hhea", "hhea lineGap is not equal to 0.")
+    yield WARN,\
+          Message("hhea",
+                  "hhea lineGap is not equal to 0.")
   elif ttFont["OS/2"].sTypoLineGap != 0:
-    yield WARN, Message("OS/2", "OS/2 sTypoLineGap is not equal to 0.")
+    yield WARN,\
+          Message("OS/2",
+                  "OS/2 sTypoLineGap is not equal to 0.")
   else:
     yield PASS, "OS/2 sTypoLineGap and hhea lineGap are both 0."
 
@@ -35,9 +39,11 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
       hmtx_advance_width_max = max(g[0], hmtx_advance_width_max)
 
   if hmtx_advance_width_max != hhea_advance_width_max:
-    yield FAIL, ("AdvanceWidthMax mismatch: expected {} (from hmtx);"
-                 " got {} (from hhea)").format(hmtx_advance_width_max,
-                                               hhea_advance_width_max)
+    yield FAIL,\
+          Message("mismatch",
+                  f"AdvanceWidthMax mismatch:"
+                  f" expected {hmtx_advance_width_max} (from hmtx);"
+                  f" got {hhea_advance_width_max} (from hhea)")
   else:
     yield PASS, ("MaxAdvanceWidth is consistent"
                  " with values in the Hmtx and Hhea tables.")
@@ -74,22 +80,24 @@ def com_google_fonts_check_monospace_max_advancewidth(ttFont, glyph_metrics_stat
 
   if outliers:
     outliers_percentage = float(len(outliers)) / len(glyphSet)
-    yield WARN, Message("should-be-monospaced",
-                        "This seems to be a monospaced font,"
-                        " so advanceWidth value should be the same"
-                        " across all glyphs, but {}% of them"
-                        " have a different value: {}"
-                        "".format(round(100 * outliers_percentage, 2),
-                                  pretty_print_list(outliers)))
+    yield WARN,\
+          Message("should-be-monospaced",
+                  "This seems to be a monospaced font,"
+                  " so advanceWidth value should be the same"
+                  " across all glyphs, but {}% of them"
+                  " have a different value: {}"
+                  "".format(round(100 * outliers_percentage, 2),
+                            pretty_print_list(outliers)))
     if zero_or_double_width_outliers:
-      yield WARN, Message("variable-monospaced",
-                          "Double-width and/or zero-width glyphs"
-                          " were detected. These glyphs should be set"
-                          " to the same width as all others"
-                          " and then add GPOS single pos lookups"
-                          " that zeros/doubles the widths as needed:"
-                          " {}".format(pretty_print_list(
-                                         zero_or_double_width_outliers)))
+      yield WARN,\
+            Message("variable-monospaced",
+                    "Double-width and/or zero-width glyphs"
+                    " were detected. These glyphs should be set"
+                    " to the same width as all others"
+                    " and then add GPOS single pos lookups"
+                    " that zeros/doubles the widths as needed:"
+                    " {}".format(pretty_print_list(
+                                 zero_or_double_width_outliers)))
   else:
     yield PASS, ("hhea.advanceWidthMax is equal"
                  " to all glyphs' advanceWidth in this monospaced font.")

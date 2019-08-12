@@ -1,5 +1,6 @@
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS
+from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
@@ -63,8 +64,10 @@ def _check_call_depth(top_dict, private_dict, fd_index=0):
         try:
             t2_char_string.decompile()
         except RecursionError:
-            yield FAIL, "Recursion error while " \
-                        "decompiling glyph '{}'.".format(glyph_name)
+            yield FAIL,\
+                  Message("recursion-error",
+                          f'Recursion error while decompiling'
+                          f' glyph "{glyph_name}".')
             failed = True
             continue
         info = dict()
@@ -78,8 +81,10 @@ def _check_call_depth(top_dict, private_dict, fd_index=0):
         _traverse_subr_call_tree(info, program, depth)
         max_depth = info['max_depth']
         if max_depth > 10:
-            yield FAIL, "Subroutine call depth exceeded " \
-                        "maximum of 10 for glyph '{}'.".format(glyph_name)
+            yield FAIL,\
+                  Message("max-depth",
+                          f'Subroutine call depth exceeded'
+                          f' maximum of 10 for glyph "{glyph_name}".')
             failed = True
     return failed
 
@@ -87,8 +92,10 @@ def _check_call_depth(top_dict, private_dict, fd_index=0):
 @check(
     id='com.adobe.fonts/check/cff_call_depth',
     conditions=['is_cff'],
-    rationale="""Per "The Type 2 Charstring Format, Technical Note #5177",
-    the "Subr nesting, stack limit" is 10."""
+    rationale="""
+      Per "The Type 2 Charstring Format, Technical Note #5177",
+      the "Subr nesting, stack limit" is 10.
+    """
 )
 def com_adobe_fonts_check_cff_call_depth(ttFont):
     """Is the CFF subr/gsubr call depth > 10?"""
@@ -120,8 +127,10 @@ def com_adobe_fonts_check_cff_call_depth(ttFont):
 @check(
     id='com.adobe.fonts/check/cff2_call_depth',
     conditions=['is_cff2'],
-    rationale="""Per "The CFF2 CharString Format",
-    the "Subr nesting, stack limit" is 10."""
+    rationale="""
+      Per "The CFF2 CharString Format",
+      the "Subr nesting, stack limit" is 10.
+    """
 )
 def com_adobe_fonts_check_cff2_call_depth(ttFont):
     """Is the CFF2 subr/gsubr call depth > 10?"""

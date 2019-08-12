@@ -49,7 +49,7 @@ def test_check_family_equal_font_versions(mada_ttFonts):
 
   print('Test WARN with fonts that diverge on the fontRevision field value.')
   status, message = list(check(bad_ttFonts))[-1]
-  assert status == WARN
+  assert status == WARN and message.code == "mismatch"
 
 
 def test_check_unitsperem():
@@ -70,15 +70,15 @@ def test_check_unitsperem():
   for warn_value in [20, 50, 100, 500, 4000]:
     print(f"Test WARN with a value of unitsPerEm = {warn_value} ...")
     ttFont['head'].unitsPerEm = warn_value
-    status, _ = list(check(ttFont))[-1]
-    assert status == WARN
+    status, message = list(check(ttFont))[-1]
+    assert status == WARN and message.code == "suboptimal"
 
   # These are arbitrarily chosen bad values:
   for bad_value in [0, 1, 2, 4, 8, 10, 15, 16385, 32768]:
     print(f"Test FAIL with a bad value of unitsPerEm = {bad_value} ...")
     ttFont['head'].unitsPerEm = bad_value
     status, message = list(check(ttFont))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "out-of-range"
 
 
 def test_parse_version_string():

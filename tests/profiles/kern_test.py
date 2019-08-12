@@ -32,4 +32,4 @@ def test_check_kern_table():
   # and make sure the check emits an INFO message:
   print ("Test INFO with a font containing a 'kern' table...")
   status, message = list(check(ttFont))[-1]
-  assert status == INFO
+  assert status == INFO and message.code == "kern-found"

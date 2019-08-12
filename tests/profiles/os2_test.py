@@ -61,7 +61,7 @@ def test_check_family_panose_proportion(mada_ttFonts):
 
   print('Test FAIL with inconsistent family.')
   status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "inconsistency"
 
 
 def test_check_family_panose_familytype(mada_ttFonts):
@@ -79,7 +79,7 @@ def test_check_family_panose_familytype(mada_ttFonts):
 
   print('Test FAIL with inconsistent family.')
   status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "inconsistency"
 
 
 def test_check_xavgcharwidth():

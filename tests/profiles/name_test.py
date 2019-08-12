@@ -30,12 +30,12 @@ def test_check_name_empty_records():
     # now try a completely empty string
     test_font['name'].names[3].string = b''
     status, message = list(check(test_font))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "empty-record"
 
     # now try a string that only has whitespace
     test_font['name'].names[3].string = b' '
     status, message = list(check(test_font))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "empty-record"
 
 
 def test_check_name_no_copyright_on_description():
@@ -57,7 +57,7 @@ def test_check_name_no_copyright_on_description():
 
   print('Test FAIL with a bad font...')
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "copyright-on-description"
 
 
 # If we ever reuse this helper function,
@@ -174,7 +174,7 @@ def test_check_name_line_breaks():
     encoding = ttFont["name"].names[i].getEncoding()
     ttFont["name"].names[i].string = "bad\nstring".encode(encoding)
     status, message = list(check(ttFont))[-1]
-    assert status == FAIL
+    assert status == FAIL and message.code == "line-break"
 
 
 def test_check_name_match_familyname_fullfont():
@@ -214,7 +214,7 @@ def test_check_name_match_familyname_fullfont():
   status, message = list(check(ttFont))[-1]
   assert status == FAIL and message.code == "no-font-family-name"
 
-def assert_name_table_check_result(ttFont, index, name, check, value, expected_result):
+def assert_name_table_check_result(ttFont, index, name, check, value, expected_result, expected_keyword=None):
   backup = name.string
   # set value
   ttFont["name"].names[index].string = value.encode(name.getEncoding())
@@ -223,6 +223,8 @@ def assert_name_table_check_result(ttFont, index, name, check, value, expected_r
   # restore value
   ttFont["name"].names[index].string = backup
   assert status == expected_result
+  if expected_keyword:
+    assert message.code == expected_keyword
 
 
 def test_check_family_naming_recommendations():
@@ -239,15 +241,15 @@ def test_check_family_naming_recommendations():
   # We'll test rule violations in all entries one-by-one
   for index, name in enumerate(ttFont["name"].names):
     # and we'll test all INFO/PASS code-paths for each of the rules:
-    def name_test(value, expected):
-      assert_name_table_check_result(ttFont, index, name, check, value, expected) #pylint: disable=cell-var-from-loop
+    def name_test(value, expected, keyword=None):
+      assert_name_table_check_result(ttFont, index, name, check, value, expected, keyword) #pylint: disable=cell-var-from-loop
 
     if name.nameID == NameID.POSTSCRIPT_NAME:
       print ("== NameID.POST_SCRIPT_NAME ==")
 
       print ("Test INFO: May contain only a-zA-Z0-9 characters and an hyphen...")
       # The '@' and '!' chars here are the expected rule violations:
-      name_test("B@zinga!", INFO)
+      name_test("B@zinga!", INFO, "bad-entries")
 
       print ("Test PASS: A name with a single hyphen is OK...")
       # A single hypen in the name is OK:
@@ -255,10 +257,10 @@ def test_check_family_naming_recommendations():
 
       print ("Test INFO: May not contain more than a single hyphen...")
       # The second hyphen char here is the expected rule violation:
-      name_test("Big-Bang-Theory", INFO)
+      name_test("Big-Bang-Theory", INFO, "bad-entries")
 
       print ("Test INFO: Exceeds max length (29)...")
-      name_test("A"*30, INFO)
+      name_test("A"*30, INFO, "bad-entries")
 
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*29, PASS)
@@ -267,7 +269,7 @@ def test_check_family_naming_recommendations():
       print ("== NameID.FULL_FONT_NAME ==")
 
       print ("Test INFO: Exceeds max length (63)...")
-      name_test("A"*64, INFO)
+      name_test("A"*64, INFO, "bad-entries")
 
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*63, PASS)
@@ -276,7 +278,7 @@ def test_check_family_naming_recommendations():
       print ("== NameID.FONT_FAMILY_NAME ==")
 
       print ("Test INFO: Exceeds max length (31)...")
-      name_test("A"*32, INFO)
+      name_test("A"*32, INFO, "bad-entries")
 
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*31, PASS)
@@ -285,7 +287,7 @@ def test_check_family_naming_recommendations():
       print ("== NameID.FONT_SUBFAMILY_NAME ==")
 
       print ("Test INFO: Exceeds max length (31)...")
-      name_test("A"*32, INFO)
+      name_test("A"*32, INFO, "bad-entries")
 
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*31, PASS)
@@ -294,7 +296,7 @@ def test_check_family_naming_recommendations():
       print ("== NameID.TYPOGRAPHIC_FAMILY_NAME ==")
 
       print ("Test INFO: Exceeds max length (31)...")
-      name_test("A"*32, INFO)
+      name_test("A"*32, INFO, "bad-entries")
 
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*31, PASS)
@@ -303,7 +305,7 @@ def test_check_family_naming_recommendations():
       print ("== NameID.FONT_TYPOGRAPHIC_SUBFAMILY_NAME ==")
 
       print ("Test INFO: Exceeds max length (31)...")
-      name_test("A"*32, INFO)
+      name_test("A"*32, INFO, "bad-entries")
 
       print ("Test PASS: Does not exceeds max length...")
       name_test("A"*31, PASS)
@@ -319,8 +321,8 @@ def test_check_name_rfn():
   assert status == PASS
 
   test_font["name"].setName("Bla Reserved Font Name", 5, 3, 1, 0x409)
-  status, _ = list(check(test_font))[-1]
-  assert status == WARN
+  status, message = list(check(test_font))[-1]
+  assert status == WARN and message.code == "rfn"
 
 
 def test_check_name_postscript_vs_cff():
@@ -338,7 +340,7 @@ def test_check_name_postscript_vs_cff():
     WIN_ENGLISH_LANG_ID
   )
   status, message = list(check(test_font))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "mismatch"
 
   test_font['name'].setName(
     'SomeFontName',
@@ -380,7 +382,7 @@ def test_check_name_postscript_name_consistency():
     WIN_ENGLISH_LANG_ID
   )
   status, message = list(check(test_font))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "inconsistency"
 
 
 def test_check_family_max_4_fonts_per_family_name():
@@ -420,4 +422,4 @@ def test_check_family_max_4_fonts_per_family_name():
         name_record.string = 'foobar'.encode('utf-16be')
 
   status, message = list(check(test_fonts))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "too-many"

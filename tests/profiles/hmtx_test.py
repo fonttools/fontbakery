@@ -16,5 +16,5 @@ def test_check_whitespace_widths():
   assert status == PASS
 
   test_font["hmtx"].metrics["space"] = (0, 1)
-  status, _ = list(check(test_font))[-1]
-  assert status == FAIL
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL and message.code == "different-widths"

@@ -1,5 +1,6 @@
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS
+from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
@@ -25,7 +26,9 @@ def com_google_fonts_check_family_equal_unicode_encodings(ttFonts):
     if encoding != cmap.platEncID:
       failed = True
   if failed:
-    yield FAIL, "Fonts have different unicode encodings."
+    yield FAIL,\
+          Message("mismatch",
+                  "Fonts have different unicode encodings.")
   else:
     yield PASS, "Fonts have equal unicode encodings."
 
@@ -48,7 +51,9 @@ def com_google_fonts_check_all_glyphs_have_codepoints(ttFont):
         codepoint = item[0]
         if codepoint is None:
           failed = True
-          yield FAIL, ("Glyph {} lacks a unicode"
-                       " codepoint assignment").format(codepoint)
+          yield FAIL,\
+                Message("glyph-lacks-codepoint",
+                        f"Glyph {codepoint} lacks a unicode"
+                        f" codepoint assignment.")
   if not failed:
     yield PASS, "All glyphs have a codepoint value assigned."
