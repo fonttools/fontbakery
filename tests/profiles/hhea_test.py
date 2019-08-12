@@ -53,8 +53,8 @@ def test_check_maxadvancewidth():
   assert status == PASS
 
   test_font["hmtx"].metrics["A"] = (1234567, 1234567)
-  status, _ = list(check(test_font))[-1]
-  assert status == FAIL
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL and message.code == "mismatch"
 
 
 def test_check_monospace_max_advancewidth():

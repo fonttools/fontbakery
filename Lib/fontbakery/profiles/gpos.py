@@ -1,5 +1,6 @@
 from fontbakery.callable import check, condition
 from fontbakery.checkrunner import PASS, WARN
+from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
@@ -31,6 +32,8 @@ def has_kerning_info(ttFont):
 def com_google_fonts_check_gpos_kerning_info(ttFont):
   """Does GPOS table have kerning information?"""
   if not has_kerning_info(ttFont):
-    yield WARN, "GPOS table lacks kerning information."
+    yield WARN,\
+          Message("lacks-kern-info",
+                  "GPOS table lacks kerning information.")
   else:
     yield PASS, "GPOS table has got kerning information."

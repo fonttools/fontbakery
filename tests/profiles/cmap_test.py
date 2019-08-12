@@ -49,7 +49,7 @@ def test_check_family_equal_unicode_encodings(mada_ttFonts):
 
   print('Test FAIL with fonts that diverge on unicode encoding.')
   status, message = list(check(bad_ttFonts))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "mismatch"
 
 
 # Note: I am not aware of any real-case of a font that FAILs this check.
@@ -69,4 +69,4 @@ def test_check_all_glyphs_have_codepoints():
 
   print('Test FAIL with a bad font.')
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL # "A glyph lacks a unicode codepoint assignment."
+  assert status == FAIL and message.code == "glyph-lacks-codepoint" # "A glyph lacks a unicode codepoint assignment."

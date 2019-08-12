@@ -22,11 +22,14 @@ def test_check_cff_call_depth():
         'subr_test_fonts/subr_test_font_infinite_recursion.otf')
     test_font = TTFont(test_font_path)
     results = list(check(test_font))
-    expected_results = [
-        (FAIL, "Subroutine call depth exceeded maximum of 10 for glyph 'D'."),
-        (FAIL, "Subroutine call depth exceeded maximum of 10 for glyph 'E'."),
-        (FAIL, "Recursion error while decompiling glyph 'F'.")]
-    assert results == expected_results
+
+    EXPECTED_RESULTS = [
+        (FAIL, "max-depth", 'Subroutine call depth exceeded maximum of 10 for glyph "D".'),
+        (FAIL, "max-depth", 'Subroutine call depth exceeded maximum of 10 for glyph "E".'),
+        (FAIL, "recursion-error", 'Recursion error while decompiling glyph "F".')]
+
+    for status, msg in results:
+      assert (status, msg.code, msg.message) in EXPECTED_RESULTS
 
 
 def test_check_cff2_call_depth():
@@ -45,8 +48,11 @@ def test_check_cff2_call_depth():
         'subr_test_fonts/var_subr_test_font_infinite_recursion.otf')
     test_font = TTFont(test_font_path)
     results = list(check(test_font))
-    expected_results = [
-        (FAIL, "Subroutine call depth exceeded maximum of 10 for glyph 'D'."),
-        (FAIL, "Subroutine call depth exceeded maximum of 10 for glyph 'E'."),
-        (FAIL, "Recursion error while decompiling glyph 'F'.")]
-    assert results == expected_results
+
+    EXPECTED_RESULTS = [
+        (FAIL, "max-depth", 'Subroutine call depth exceeded maximum of 10 for glyph "D".'),
+        (FAIL, "max-depth", 'Subroutine call depth exceeded maximum of 10 for glyph "E".'),
+        (FAIL, "recursion-error", 'Recursion error while decompiling glyph "F".')]
+
+    for status, msg in results:
+      assert (status, msg.code, msg.message) in EXPECTED_RESULTS

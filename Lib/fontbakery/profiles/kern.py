@@ -1,5 +1,6 @@
 from fontbakery.callable import check
 from fontbakery.checkrunner import INFO, PASS
+from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
@@ -33,10 +34,12 @@ def com_google_fonts_check_kern_table(ttFont):
   """Is there a "kern" table declared in the font?"""
 
   if "kern" in ttFont:
-    yield INFO, ("Only a few programs may require the kerning"
-                 " info that this font provides on its \"kern\" table.")
+    yield INFO,\
+          Message("kern-found",
+                  'Only a few programs may require the kerning'
+                  ' info that this font provides on its "kern" table.')
     # TODO: perhaps we should add code here to detect and emit an ERROR
     #       if the kern table and subtable version and format are not zero,
     #       as mentioned in the rationale above.
   else:
-    yield PASS, "Font does not declare an optional \"kern\" table."
+    yield PASS, 'Font does not declare an optional "kern" table.'

@@ -4,7 +4,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.7.11 (2019-Aug-16)
 ### Note-worthy code changes
-  - Add a few more keywords to log-messages (issue #2558)
+  - Adding yet a whole bunch more keywords to log-messages (issue #2558)
+
+### Bug Fixes
+  - Avoid crash on static fonts by safeguarding the `slnt_axis` condition.
 
 ### New checks
   - **[com.google.fonts/check/metadata/undeclared_fonts]:** "Ensure METADATA.pb lists all font binaries" (issue #2575)

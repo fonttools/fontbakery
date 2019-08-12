@@ -54,8 +54,8 @@ def test_check_points_out_of_bounds():
   from fontbakery.profiles.glyf import com_google_fonts_check_points_out_of_bounds as check
 
   test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-  status, _ = list(check(test_font))[-1]
-  assert status == WARN
+  status, message = list(check(test_font))[-1]
+  assert status == WARN and message.code == "points-out-of-bounds"
 
   test_font2 = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
   status, _ = list(check(test_font2))[-1]

@@ -29,4 +29,4 @@ def test_check_dsig():
   print ("Test FAIL with a font lacking a DSIG table...")
   del ttFont['DSIG']
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "lacks-signature"

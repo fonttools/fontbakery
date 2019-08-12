@@ -1,5 +1,6 @@
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS
+from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
@@ -22,8 +23,10 @@ def com_google_fonts_check_dsig(ttFont):
   if "DSIG" in ttFont:
     yield PASS, "Digital Signature (DSIG) exists."
   else:
-    yield FAIL, ("This font lacks a digital signature (DSIG table)."
-                 " Some applications may require one (even if only a"
-                 " dummy placeholder) in order to work properly. You"
-                 " can add a DSIG table by running the"
-                 " `gftools fix-dsig` script.")
+    yield FAIL,\
+          Message("lacks-signature",
+                  "This font lacks a digital signature (DSIG table)."
+                  " Some applications may require one (even if only a"
+                  " dummy placeholder) in order to work properly. You"
+                  " can add a DSIG table by running the"
+                  " `gftools fix-dsig` script.")
