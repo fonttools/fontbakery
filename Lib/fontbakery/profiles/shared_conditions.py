@@ -131,9 +131,10 @@ def is_variable_font(ttFont):
 
 @condition
 def slnt_axis(ttFont):
-  for axis in ttFont["fvar"].axes:
-    if axis.axisTag == "slnt":
-      return axis
+  if "fvar" in ttFont:
+    for axis in ttFont["fvar"].axes:
+      if axis.axisTag == "slnt":
+        return axis
 
 
 def get_instance_axis_value(ttFont, instance_name, axis_tag):
