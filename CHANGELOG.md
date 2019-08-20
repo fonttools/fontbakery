@@ -2,16 +2,16 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.12 (2019-Aug-23)
-### Bug fixes
-  - **[com.adobe.fonts/check/family/max_4_fonts_per_family_name]:**  Only run on Win name records (issue #2613)
+## 0.7.12 (2019-Sep-13)
+  - ...
 
 
-## 0.7.11 (2019-Aug-16)
+## 0.7.11 (2019-Aug-21)
 ### Note-worthy code changes
   - Adding yet a whole bunch more keywords to log-messages (issue #2558)
 
 ### Bug Fixes
+  - **[com.adobe.fonts/check/family/max_4_fonts_per_family_name]:**  Only run on Win name records (issue #2613)
   - Avoid crash on static fonts by safeguarding the `slnt_axis` condition.
 
 ### New checks
