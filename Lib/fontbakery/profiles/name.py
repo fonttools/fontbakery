@@ -448,7 +448,7 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
 
   family_names = list()
   for ttFont in ttFonts:
-    names_list = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+    names_list = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME, langID=1033)
     # names_list will likely contain multiple entries, e.g. multiple copies
     # of the same name in the same language for different platforms, but
     # also different names in different languages, we use set() below
