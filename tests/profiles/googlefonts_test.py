@@ -3197,8 +3197,8 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
   #  TODO: There should be a warning message here
 
 
-def test_check_varfont_instances_coordinates(vf_ttFont):
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instances_coordinates as check
+def test_check_varfont_instance_coordinates(vf_ttFont):
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instance_coordinates as check
   from fontbakery.parse import instance_parse
   instances = vf_ttFont['fvar'].instances
   print("Test pass for a variable font which has correct instance coordinates")
