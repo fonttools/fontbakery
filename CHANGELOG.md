@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.7.11 (2019-Aug-21)
 ### Note-worthy code changes
   - Adding yet a whole bunch more keywords to log-messages (issue #2558)
+  - Refactored EncodingID/LanguageID classes for Mac & Windows name table entries
 
 ### Bug Fixes
   - **[com.adobe.fonts/check/family/max_4_fonts_per_family_name]:**  Only run on Win name records (issue #2613)
