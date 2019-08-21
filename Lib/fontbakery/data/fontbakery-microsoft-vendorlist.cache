@@ -64,21 +64,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-08-12 05:44 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/c2aff9343fd12f27f49cfd278be97092b58e0ebc/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-08-21 07:21 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/597bd68d8774b3239a51c9091e393f0a885aa36c/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2755" />
+<meta name="word_count" content="2768" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/d588f6ab.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/37545739.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cd54db8b.conceptual.css ">
 
@@ -123,7 +123,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/302e7af0.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a847b61e.index-docs.js"></script>
 
 </head>
 
@@ -560,6 +560,10 @@ High contrast					</span>
 <tr>
 <td>AKOF</td>
 <td><a href="http://www.type.akofa.com" data-linktype="external">AKOFAType</a></td>
+</tr>
+<tr>
+<td>ALEF</td>
+<td><a href="http://www.aleftype.com/" data-linktype="external">ALEF</a></td>
 </tr>
 <tr>
 <td>ALFA</td>
@@ -1032,6 +1036,10 @@ High contrast					</span>
 <td>corduroy</td>
 </tr>
 <tr>
+<td>COTF</td>
+<td><a href="https://www.cotypefoundry.com/" data-linktype="external">CoType Foundry</a></td>
+</tr>
+<tr>
 <td>CR8</td>
 <td><a href="http://www.cr8software.net" data-linktype="external">CR8 Software Solutions</a></td>
 </tr>
@@ -1323,6 +1331,10 @@ High contrast					</span>
 <tr>
 <td>FAT</td>
 <td><a href="http://www.fatype.com" data-linktype="external">Fatype</a></td>
+</tr>
+<tr>
+<td>FAUX</td>
+<td><a href="https://www.fauxfoundry.com" data-linktype="external">FauxFoundry</a></td>
 </tr>
 <tr>
 <td>FBI</td>
@@ -3489,6 +3501,10 @@ High contrast					</span>
 <td>UT</td>
 <td><a href="http://www.unitype.com/" data-linktype="external">Unitype Inc</a></td>
 </tr>
+<tr>
+<td>UTF</td>
+<td>Undercase Type Foundry</td>
+</tr>
 </table>
 <h2 id="v">V</h2>
 <table>
@@ -3594,6 +3610,10 @@ High contrast					</span>
 <tr>
 <td>WM</td>
 <td>Webmakers India</td>
+</tr>
+<tr>
+<td>WNK</td>
+<td><a href="http://www.wearewanaka.com/" data-linktype="external">Wanaka</a></td>
 </tr>
 </table>
 <h2 id="x">X</h2>
