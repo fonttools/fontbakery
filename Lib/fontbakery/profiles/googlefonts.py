@@ -4006,7 +4006,7 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
   id = 'com.google.fonts/check/varfont_instance_coordinates',
   conditions = ['is_variable_font'],
 )
-def com_google_fonts_check_varfont_instances_coordinates(ttFont):
+def com_google_fonts_check_varfont_instance_coordinates(ttFont):
   """Check variable font instances have correct coordinate values"""
   from fontbakery.parse import instance_parse
   failed = False
