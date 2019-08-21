@@ -8,10 +8,10 @@ from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (PriorityLevel,
                                   NameID,
                                   PlatformID,
-                                  UnicodeEncodingID,
                                   WindowsEncodingID,
-                                  WIN_ENGLISH_LANG_ID,
-                                  MAC_ROMAN_LANG_ID)
+                                  WindowsLanguageID,
+                                  MachintoshEncodingID,
+                                  MachintoshLanguageID)
 
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
@@ -2890,11 +2890,11 @@ def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
   win_name = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
                                PlatformID.WINDOWS,
                                WindowsEncodingID.UNICODE_BMP,
-                               WIN_ENGLISH_LANG_ID)
+                               WindowsLanguageID.ENGLISH_USA)
   mac_name = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
                                PlatformID.MACINTOSH,
-                               UnicodeEncodingID.UNICODE_1_0,
-                               MAC_ROMAN_LANG_ID)
+                               MachintoshEncodingID.ROMAN,
+                               MachintoshLanguageID.ENGLISH)
 
   if mac_name and mac_name.toUnicode() != expected_style.mac_style_name:
     failed = True
@@ -3041,11 +3041,11 @@ def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style)
   win_name = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                                PlatformID.WINDOWS,
                                WindowsEncodingID.UNICODE_BMP,
-                               WIN_ENGLISH_LANG_ID)
+                               WindowsLanguageID.ENGLISH_USA)
   mac_name = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                                PlatformID.MACINTOSH,
-                               UnicodeEncodingID.UNICODE_1_0,
-                               MAC_ROMAN_LANG_ID)
+                               MachintoshEncodingID.ROMAN,
+                               MachintoshLanguageID.ENGLISH)
 
   if all([win_name, mac_name]):
     if win_name.toUnicode() != mac_name.toUnicode():
@@ -4014,7 +4014,7 @@ def com_google_fonts_check_varfont_instances_coordinates(ttFont):
     name = ttFont['name'].getName(instance.subfamilyNameID,
                                   PlatformID.WINDOWS,
                                   WindowsEncodingID.UNICODE_BMP,
-                                  WIN_ENGLISH_LANG_ID).toUnicode()
+                                  WindowsLanguageID.ENGLISH_USA).toUnicode()
     expected_instance = instance_parse(name)
     for axis in instance.coordinates:
       if instance.coordinates[axis] != expected_instance.coordinates[axis]:
@@ -4040,7 +4040,7 @@ def com_google_fonts_check_varfont_instances_names(ttFont):
     name = ttFont['name'].getName(instance.subfamilyNameID,
                                   PlatformID.WINDOWS,
                                   WindowsEncodingID.UNICODE_BMP,
-                                  WIN_ENGLISH_LANG_ID).toUnicode()
+                                  WindowsLanguageID.ENGLISH_USA).toUnicode()
     expected_instance = instance_parse(name)
     expected_name = expected_instance.name
 
