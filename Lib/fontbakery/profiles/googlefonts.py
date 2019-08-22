@@ -2665,14 +2665,35 @@ def com_google_fonts_check_contour_count(ttFont):
   from fontbakery.glyphdata import desired_glyph_data as glyph_data
   from fontbakery.utils import (get_font_glyph_data,
                                 pretty_print_list)
+
+  def in_PUA_range(codepoint):
+    """
+      In Unicode, a Private Use Area (PUA) is a range of code points that,
+      by definition, will not be assigned characters by the Unicode Consortium.
+      Three private use areas are defined:
+        one in the Basic Multilingual Plane (U+E000–U+F8FF),
+        and one each in, and nearly covering, planes 15 and 16
+        (U+F0000–U+FFFFD, U+100000–U+10FFFD).
+    """
+    return (codepoint >= 0xE000 and codepoint <= 0xF8FF) or \
+           (codepoint >= 0xF0000 and codepoint <= 0xFFFFD) or \
+           (codepoint >= 0x100000 and codepoint <= 0x10FFFD)
+
   # rearrange data structure:
-  desired_glyph_data = {}
+  desired_glyph_data_by_codepoint = {}
+  desired_glyph_data_by_glyphname = {}
   for glyph in glyph_data:
-    desired_glyph_data[glyph['unicode']] = glyph
+    desired_glyph_data_by_glyphname[glyph['name']] = glyph
+    # since the glyph in PUA ranges have unspecified meaning,
+    # it doesnt make sense for us to have an expected contour cont for them
+    if not in_PUA_range(glyph['unicode']):
+      desired_glyph_data_by_codepoint[glyph['unicode']] = glyph
 
   bad_glyphs = []
-  desired_glyph_contours = {f: desired_glyph_data[f]['contours']
-                            for f in desired_glyph_data}
+  desired_glyph_contours_by_codepoint = {f: desired_glyph_data_by_codepoint[f]['contours']
+                                         for f in desired_glyph_data_by_codepoint}
+  desired_glyph_contours_by_glyphname = {f: desired_glyph_data_by_glyphname[f]['contours']
+                                         for f in desired_glyph_data_by_glyphname}
 
   font_glyph_data = get_font_glyph_data(ttFont)
 
@@ -2681,15 +2702,26 @@ def com_google_fonts_check_contour_count(ttFont):
           Message("lacks-cmap",
                   "This font lacks cmap data.")
   else:
-    font_glyph_contours = {f['unicode']: list(f['contours'])[0]
-                           for f in font_glyph_data}
+    font_glyph_contours_by_codepoint = {f['unicode']: list(f['contours'])[0]
+                                        for f in font_glyph_data}
+    font_glyph_contours_by_glyphname = {f['name']: list(f['contours'])[0]
+                                        for f in font_glyph_data}
 
-    shared_glyphs = set(desired_glyph_contours) & set(font_glyph_contours)
-    for glyph in shared_glyphs:
-      if font_glyph_contours[glyph] not in desired_glyph_contours[glyph]:
+    shared_glyphs_by_codepoint = set(desired_glyph_contours_by_codepoint) & \
+                                 set(font_glyph_contours_by_codepoint)
+    for glyph in shared_glyphs_by_codepoint:
+      if font_glyph_contours_by_codepoint[glyph] not in desired_glyph_contours_by_codepoint[glyph]:
         bad_glyphs.append([glyph,
-                           font_glyph_contours[glyph],
-                           desired_glyph_contours[glyph]])
+                           font_glyph_contours_by_codepoint[glyph],
+                           desired_glyph_contours_by_codepoint[glyph]])
+
+    shared_glyphs_by_glyphname = set(desired_glyph_contours_by_glyphname) & \
+                                 set(font_glyph_contours_by_glyphname)
+    for glyph in shared_glyphs_by_glyphname:
+      if font_glyph_contours_by_glyphname[glyph] not in desired_glyph_contours_by_glyphname[glyph]:
+        bad_glyphs.append([glyph,
+                           font_glyph_contours_by_glyphname[glyph],
+                           desired_glyph_contours_by_glyphname[glyph]])
 
     if len(bad_glyphs) > 0:
       cmap = ttFont['cmap'].getcmap(PlatformID.WINDOWS,
@@ -2699,6 +2731,7 @@ def com_google_fonts_check_contour_count(ttFont):
         f"Contours detected: {count}\t"
         f"Expected: {pretty_print_list(expected, shorten=None, glue='or')}"
         for name, count, expected in bad_glyphs
+        if name in cmap
       ]
       bad_glyphs_name = '\n'.join(bad_glyphs_name)
       yield WARN,\

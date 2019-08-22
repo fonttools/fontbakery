@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.12 (2019-Sep-13)
-  - ...
+### Note-worthy code changes
+  - **[com.google.fonts/check/contour_count]:** ignore PUA codepoints (issue #2612)
+  - **[com.google.fonts/check/contour_count]:** detect glyphs by both glyphnames and codepoints (issue #2612)
 
 
 ## 0.7.11 (2019-Aug-21)
