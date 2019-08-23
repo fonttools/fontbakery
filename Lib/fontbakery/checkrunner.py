@@ -13,7 +13,7 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 import types
 from collections import OrderedDict, Counter
-from functools import partial
+from functools import partial, wraps
 from itertools import chain
 import importlib
 import traceback
@@ -26,6 +26,7 @@ from fontbakery.callable import ( FontbakeryCallable
                                 , FontBakeryCondition
                                 , FontBakeryExpectedValue
                                 )
+from fontbakery.message import Message
 
 class Status:
   """ If you create a custom Status symbol, please keep in mind that
@@ -764,6 +765,111 @@ class Section:
     if not self.add_check(func):
       raise SetupError(f'Can\'t add check {func} to section {self}.')
     return func
+
+def _check_log_override(overrides, status, message):
+  result_status = status
+  result_message = message
+  override = False
+  for override_target, new_status, new_message_string in overrides:
+    if (
+            # Override by matching Status, bad style but possible (should we???).
+            # Some checks do not define Messages with a code.
+            isinstance(override_target, Status) and result_status == override_target
+          ) \
+          or \
+          (
+            # Override by matching message.code, good style.
+            hasattr(result_message, 'code') and result_message.code == override_target
+          ):
+      override = True
+      # Break the for loop, we had a successful override.
+      break
+
+  if override:
+    if new_status is not None:
+      result_status = new_status
+    if new_message_string  is not None:
+      # If it looks like an instance of Message we reuse the code,
+      # as it is the same condition this makes totally sense.
+      result_message = Message(result_message.code, new_message_string) \
+            if hasattr(result_message, 'code') \
+            else new_message_string
+  return override, result_status, result_message
+
+def check_log_override(check, new_id, overrides, reason=None):
+  """ Returns a new FontBakeryCheck that is decorating (wrapping) check,
+    but with overrides applied to returned statuses when they match.
+
+    The new FontBakeryCheck is always a generator check, even if the old
+    check is just a normal function that returns (instead of yields)
+    its result. Also, the new check yields an INFO Status for each
+    overridden original status.
+
+    Arguments:
+
+    check: the FontBakeryCheck to be decorated
+    new_id: string, must be unique of course and should not(!) be check.id
+            as we essentially create a new, different check.
+    overrides: a tuple of override triple-tuples
+               ((override_target, new_status, new_message_string), ...)
+               override_target: Status or string, specific Message.code
+               new_status: Status or None, keep old status
+               new_message_string: string or None, keep old message
+  """
+  @wraps(check) # defines __wrapped__
+  def override_wrapper(*args, **kwds):
+    # A check can be either a normal function that returns one Status or a
+    # generator that yields one or more. The latter will return a generator
+    # object that we can detect with types.GeneratorType.
+    result = check(*args, **kwds)  # Might raise.
+    if not isinstance(result, types.GeneratorType):
+      # Now it iterates
+      # make these always iterators, it's nicer to handle
+      # also we can mix-in new status messages
+      result = (result, )
+    # Iterate over sub-results one-by-one, list(result) would abort on
+    # encountering the first exception.
+    for (status, message) in result:  # Might raise.
+      overriden, result_status, result_message = \
+                            _check_log_override(overrides, status, message)
+      if overriden:
+        # nothing changed (despite of a match in override rules)
+        if result_status == status and result_message == message:
+          yield INFO, ('A check status override rule matched but did not '
+                      'change the resulting status.')
+        # Both changed
+        elif result_status != status and result_message != message:
+          yield INFO, ('Overridden check status and message, original:'
+                       f' {status} {message}')
+        # Only status changed
+        elif result_status != status and result_message == message:
+          yield INFO, f'Overridden check status, original: {status}'
+        # Only message changed
+        elif result_status == status and result_message != message:
+          yield INFO, f'Overridden check message, original: {message}'
+
+      yield result_status, result_message
+
+  # Make the callable here and return that.
+  new_check = FontBakeryCheck(
+      override_wrapper
+    , new_id
+      # Untouched, the reason for this checks existence stays the same!
+    , rationale = check.rationale
+      # the "Derived ..." part should be prominent, so we always see it
+    , description = f'{check.description} (derived from {check.id})'
+      # ONLY if there's a reason for derivation, otherwise will take
+      # the documentation from the __doc__ string of check.
+    , documentation = f'{reason}\n\n{check.documentation}'
+          if reason and check.documentation \
+          else (reason or check.documentation or None)
+  )
+
+  # reconstruct a proper doc string from the changes we made.
+  # This is really backwards! But, it's so fundamental how python doc
+  # strings work, that I think it's solid enough.
+  new_check.__doc__ = f'{new_check.description}\n\n{new_check.documentation}'
+  return new_check
 
 
 class Profile:
