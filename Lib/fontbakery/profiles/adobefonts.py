@@ -122,7 +122,7 @@ com_google_fonts_check_dsig_adobefonts = profile.check_log_override(
   , reason='For Adobe this issue is not as severe '\
             + 'as assessed in the original check.'
   , overrides = (
-        (   FAIL # override_target -> Status or a specific Message.code (string)
+        (   'lacks-signature' # override_target -> Status or a specific Message.code (string)
           , WARN # new_status -> None: keep old status
           , None # new_message_string -> None: keep old message
           )
@@ -131,12 +131,12 @@ com_google_fonts_check_dsig_adobefonts = profile.check_log_override(
 
 com_google_fonts_check_whitespace_glyphs_adobefonts = profile.check_log_override(
     'com.google.fonts/check/whitespace_glyphs'
-  , overrides = ((FAIL, WARN, None),)
+  , overrides = (('missing-whitespace-glyphs', WARN, None),)
 )
 
 com_google_fonts_check_valid_glyphnames_adobefonts = profile.check_log_override(
     'com.google.fonts/check/valid_glyphnames'
-  , overrides = ((FAIL, WARN, None),)
+  , overrides = (('found-invalid-names', WARN, None),)
 )
 
 profile.test_expected_checks(ADOBEFONTS_PROFILE_CHECKS, exclusive=True)

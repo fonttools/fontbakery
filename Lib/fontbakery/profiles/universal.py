@@ -291,7 +291,7 @@ def is_up_to_date(installed, latest):
   has_githash = ".dev" in installed
   installed = installed.split(".dev")[0]
 
-  # Maybe the installed version is even newer than the 
+  # Maybe the installed version is even newer than the
   # released one (such as during development on git).
   # That's what we're trying to detect here:
   installed = installed.split('.')
@@ -386,9 +386,10 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
 def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
   """Font contains glyphs for whitespace characters?"""
   if missing_whitespace_chars != []:
-    yield FAIL, ("Whitespace glyphs missing for"
-                 " the following codepoints:"
-                 " {}.").format(", ".join(missing_whitespace_chars))
+    yield FAIL, Message("missing-whitespace-glyphs",
+                    ("Whitespace glyphs missing for"
+                     " the following codepoints:"
+                     " {}.").format(", ".join(missing_whitespace_chars)))
   else:
     yield PASS, "Font contains glyphs for whitespace characters."
 
@@ -594,7 +595,8 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
       yield PASS, "Glyph names are all valid."
     else:
       from fontbakery.utils import pretty_print_list
-      yield FAIL, ("The following glyph names do not comply"
+      yield FAIL, Message("found-invalid-names",
+                  ("The following glyph names do not comply"
                    " with naming conventions: {}\n\n"
                    " A glyph name may be up to 31 characters in length,"
                    " must be entirely comprised of characters from"
@@ -606,7 +608,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
                    " The glyph names \"twocents\", \"a1\", and \"_\""
                    " are all valid, while \"2cents\""
                    " and \".twocents\" are not."
-                   "").format(pretty_print_list(bad_names))
+                   "").format(pretty_print_list(bad_names)))
 
 
 @check(
