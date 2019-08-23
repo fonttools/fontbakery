@@ -683,6 +683,7 @@ class Section:
     self.name = name
     self.description = description
     self._add_check_callback = None
+    self._remove_check_callback = None
     self._checks = [] if checks is None else list(checks)
     self._checkid2index = {check.id:i for i, check in enumerate(self._checks)}
     # a list of iterarg-names
@@ -727,6 +728,14 @@ class Section:
       raise Exception(f'{self} already has an on_add_check callback')
     self._add_check_callback = callback
 
+  def on_remove_check(self, callback):
+    if self._remove_check_callback is not None:
+      # allow only one, otherwise, skipping un-registration in
+      # remove_check becomes problematic, can't skip just for some
+      # callbacks.
+      raise Exception(f'{self} already has an on_add_check callback')
+    self._remove_check_callback = callback
+
   def add_check(self, check):
     """
     Please use rather `register_check` as a decorator.
@@ -738,6 +747,42 @@ class Section:
 
     self._checkid2index[check.id] = len(self._checks)
     self._checks.append(check)
+    return True
+
+  def remove_check(self, check_id):
+    index = self._checkid2index[check_id]
+    if self._remove_check_callback is not None:
+      if not self._remove_check_callback(self, check_id):
+        # rejected, skip!
+        return False
+    del self._checks[index]
+    # Fixing the index, maybe an ordered dict would work here the same
+    # but simpler. Could also rebuild the entire index.
+    del self._checkid2index[check_id]
+    for cid, idx in self._checkid2index.items():
+      if idx > index:
+        self._checkid2index[cid] = idx - 1
+    return True
+
+  def replace_check(self, override_check_id, new_check):
+    index = self._checkid2index[override_check_id]
+    if self._remove_check_callback is not None:
+      if not self._remove_check_callback(self, override_check_id):
+        # rejected, skip!
+        return False
+
+    if self._add_check_callback is not None:
+      if not self._add_check_callback(self, new_check):
+        # rejected, skip!
+        # But first restore the old check registration.
+        # Maybe a resource manager would be nice here.
+        # Also, raising and failing could be an option.
+        self._add_check_callback(self, self.get_check(override_check_id))
+        return False
+
+    del self._checkid2index[override_check_id]
+    self._checkid2index[new_check.id] = index
+    self._checks[index] = new_check
     return True
 
   def merge_section(self, section, filter_func=None):
@@ -1374,6 +1419,23 @@ class Profile:
     self._check_registry[func.id] = section
     return True
 
+  def _unregister_check(self, section, check_id):
+    assert section == self._check_registry[check_id], 'Registered section must match'
+    del self._check_registry[check_id]
+    return True
+
+  def remove_check(self, check_id):
+    section = self._check_registry[check_id]
+    section.remove_check(check_id)
+
+  def check_log_override(self, override_check_id
+        # see def check_log_override
+      , *args, **kwds):
+    old_check, section = self.get_check(override_check_id)
+    new_check = check_log_override(old_check, *args, **kwds)
+    section.replace_check(override_check_id, new_check)
+    return new_check
+
   def get_check(self, check_id):
     section = self._check_registry[check_id]
     return section.get_check(check_id), section
@@ -1388,6 +1450,8 @@ class Profile:
       return
     self._sections[key] = section
     section.on_add_check(self._register_check)
+    section.on_remove_check(self._unregister_check)
+
     for check in section.checks:
       self._register_check(section, check)
 
