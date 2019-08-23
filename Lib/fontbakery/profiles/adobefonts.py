@@ -122,7 +122,7 @@ com_google_fonts_check_dsig_adobefonts = profile.check_log_override(
   , reason='For Adobe this issue is not as severe '\
             + 'as assessed in the original check.'
   , overrides = (
-        (   'lacks-signature' # override_target -> Status or a specific Message.code (string)
+        (   'lacks-signature' # override_target -> a specific Message.code (string)
           , WARN # new_status -> None: keep old status
           , None # new_message_string -> None: keep old message
           )
