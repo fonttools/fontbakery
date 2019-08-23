@@ -20,6 +20,7 @@ import traceback
 import json
 import logging
 from typing import Dict, Any, Iterable
+import re
 
 from fontbakery.callable import ( FontbakeryCallable
                                 , FontBakeryCheck
@@ -916,7 +917,8 @@ class Profile:
              , aliases=None
              , expected_values=None
              , default_section=None
-             , check_skip_filter=None):
+             , check_skip_filter=None
+             , profile_tag=None):
     '''
       sections: a list of sections, which are ideally ordered sets of
           individual checks.
@@ -993,6 +995,11 @@ class Profile:
       default_section = sections[0] if sections and len(sections) else Section('Default')
     self._default_section = default_section
     self.add_section(self._default_section)
+
+    # currently only used for new check ids in self.check_log_override
+    # only a-z everything else is deleted
+    self.profile_tag = re.sub(r'[^a-z]','',
+                    (profile_tag or self._default_section.name).lower())
 
     self._check_skip_filter = check_skip_filter
 
@@ -1421,8 +1428,9 @@ class Profile:
   def check_log_override(self, override_check_id
         # see def check_log_override
       , *args, **kwds):
+    new_id = f'{override_check_id}:{self.profile_tag}'
     old_check, section = self.get_check(override_check_id)
-    new_check = check_log_override(old_check, *args, **kwds)
+    new_check = check_log_override(old_check, new_id, *args, **kwds)
     section.replace_check(override_check_id, new_check)
     return new_check
 
