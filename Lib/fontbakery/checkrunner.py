@@ -816,29 +816,19 @@ def _check_log_override(overrides, status, message):
   result_message = message
   override = False
   for override_target, new_status, new_message_string in overrides:
-    if (
-            # Override by matching Status, bad style but possible (should we???).
-            # Some checks do not define Messages with a code.
-            isinstance(override_target, Status) and result_status == override_target
-          ) \
-          or \
-          (
-            # Override by matching message.code, good style.
-            hasattr(result_message, 'code') and result_message.code == override_target
-          ):
-      override = True
-      # Break the for loop, we had a successful override.
-      break
-
-  if override:
+    # Override is only possible by matching message.code
+    if not hasattr(result_message, 'code')\
+                            or result_message.code != override_target:
+      continue
+    override = True
     if new_status is not None:
       result_status = new_status
     if new_message_string  is not None:
       # If it looks like an instance of Message we reuse the code,
       # as it is the same condition this makes totally sense.
-      result_message = Message(result_message.code, new_message_string) \
-            if hasattr(result_message, 'code') \
-            else new_message_string
+      result_message = Message(result_message.code, new_message_string)
+    # Break the for loop, we had a successful override.
+    break
   return override, result_status, result_message
 
 def check_log_override(check, new_id, overrides, reason=None):
@@ -857,7 +847,7 @@ def check_log_override(check, new_id, overrides, reason=None):
             as we essentially create a new, different check.
     overrides: a tuple of override triple-tuples
                ((override_target, new_status, new_message_string), ...)
-               override_target: Status or string, specific Message.code
+               override_target: string, specific Message.code
                new_status: Status or None, keep old status
                new_message_string: string or None, keep old message
   """
