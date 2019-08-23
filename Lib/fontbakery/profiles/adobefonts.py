@@ -14,10 +14,7 @@ profile = profile_factory(default_section=Section("Adobe Fonts"))
 ADOBEFONTS_PROFILE_CHECKS = \
     UNIVERSAL_PROFILE_CHECKS + [
         'com.adobe.fonts/check/family/consistent_upm',
-        'com.adobe.fonts/check/find_empty_letters',
-        'com.adobe.fonts/check/dsig',
-        'com.adobe.fonts/check/whitespace_glyphs',
-        'com.adobe.fonts/check/valid_glyphnames',
+        'com.adobe.fonts/check/find_empty_letters'
     ]
 
 OVERRIDDEN_CHECKS = [
@@ -25,6 +22,8 @@ OVERRIDDEN_CHECKS = [
         'com.google.fonts/check/whitespace_glyphs',
         'com.google.fonts/check/valid_glyphnames',
         ]
+ADOBEFONTS_PROFILE_CHECKS += [f'{cid}:{profile.profile_tag}' for cid in OVERRIDDEN_CHECKS]
+
 ADOBEFONTS_PROFILE_CHECKS[:] = [cid for cid in ADOBEFONTS_PROFILE_CHECKS
                                             if cid not in OVERRIDDEN_CHECKS]
 
@@ -118,9 +117,8 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
 
 profile.auto_register(globals())
 
-com_adobe_fonts_check_dsig = profile.check_log_override(
+com_google_fonts_check_dsig_adobefonts = profile.check_log_override(
     'com.google.fonts/check/dsig'
-  , 'com.adobe.fonts/check/dsig'
   , reason='For Adobe this issue is not as severe '\
             + 'as assessed in the original check.'
   , overrides = (
@@ -131,15 +129,13 @@ com_adobe_fonts_check_dsig = profile.check_log_override(
     ,)
 )
 
-com_adobe_fonts_check_whitespace_glyphs = profile.check_log_override(
+com_google_fonts_check_whitespace_glyphs_adobefonts = profile.check_log_override(
     'com.google.fonts/check/whitespace_glyphs'
-  , 'com.adobe.fonts/check/whitespace_glyphs'
   , overrides = ((FAIL, WARN, None),)
 )
 
-com_adobe_fonts_check_valid_glyphnames = profile.check_log_override(
+com_google_fonts_check_valid_glyphnames_adobefonts = profile.check_log_override(
     'com.google.fonts/check/valid_glyphnames'
-  , 'com.adobe.fonts/check/valid_glyphnames'
   , overrides = ((FAIL, WARN, None),)
 )
 
