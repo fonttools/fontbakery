@@ -880,18 +880,18 @@ def check_log_override(check, new_id, overrides, reason=None):
       if overriden:
         # nothing changed (despite of a match in override rules)
         if result_status == status and result_message == message:
-          yield INFO, ('A check status override rule matched but did not '
+          yield DEBUG, ('A check status override rule matched but did not '
                       'change the resulting status.')
         # Both changed
         elif result_status != status and result_message != message:
-          yield INFO, ('Overridden check status and message, original:'
+          yield DEBUG, ('Overridden check status and message, original:'
                        f' {status} {message}')
         # Only status changed
         elif result_status != status and result_message == message:
-          yield INFO, f'Overridden check status, original: {status}'
+          yield DEBUG, f'Overridden check status, original: {status}'
         # Only message changed
         elif result_status == status and result_message != message:
-          yield INFO, f'Overridden check message, original: {message}'
+          yield DEBUG, f'Overridden check message, original: {message}'
 
       yield result_status, result_message
 
