@@ -147,7 +147,7 @@ def test_check_whitespace_glyphs():
 
   missing = missing_whitespace_chars(ttFont)
   status, message = list(check(ttFont, missing))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "missing-whitespace-glyphs"
 
   # restore original Mada Regular font:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -160,7 +160,7 @@ def test_check_whitespace_glyphs():
 
   missing = missing_whitespace_chars(ttFont)
   status, message = list(check(ttFont, missing))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "missing-whitespace-glyphs"
 
 
 def test_check_whitespace_glyphnames():
@@ -354,11 +354,11 @@ def test_check_valid_glyphnames():
   test_font.glyphOrder[4] = bad_name3
   test_font.glyphOrder[5] = good_name1
   status, message = list(check(test_font))[-1]
-  assert status == FAIL
-  assert bad_name1 in message
-  assert bad_name2 in message
-  assert bad_name3 in message
-  assert good_name1 not in message
+  assert status == FAIL and message.code == "found-invalid-names"
+  assert bad_name1 in message.message
+  assert bad_name2 in message.message
+  assert bad_name3 in message.message
+  assert good_name1 not in message.message
 
   # Upgrade to post format 3.0 and roundtrip data to update TTF object.
   test_font = TTFont(test_font_path)
@@ -626,7 +626,7 @@ def test_check_whitespace_glyphs():
 
   missing = missing_whitespace_chars(ttFont)
   status, message = list(check(ttFont, missing))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "missing-whitespace-glyphs"
 
   # restore original Mada Regular font:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -639,7 +639,7 @@ def test_check_whitespace_glyphs():
 
   missing = missing_whitespace_chars(ttFont)
   status, message = list(check(ttFont, missing))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "missing-whitespace-glyphs"
 
 
 def test_check_whitespace_glyphnames():
