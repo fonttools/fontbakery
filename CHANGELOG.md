@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/contour_count]:** ignore PUA codepoints (issue #2612)
   - **[com.google.fonts/check/contour_count]:** detect glyphs by both glyphnames and codepoints (issue #2612)
 
+### Changes to checks
+  - **[com.google.fonts/check/unwanted_tables]:** Add MVAR table (Issue #2599) and improve FAIL message
+
 
 ## 0.7.11 (2019-Aug-21)
 ### Note-worthy code changes
@@ -24,9 +27,6 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Renamed check IDs:
   - **[com.google.fonts/check/wdth_valid_range]** => com.google.fonts/check/varfont/wdth_valid_range
   - **[com.google.fonts/check/wght_valid_range]** => com.google.fonts/check/varfont/wght_valid_range
-
-### Changes to checks
-  - **[com.google.fonts/check/unwanted_tables]:** Add MVAR table (Issue #2599) and improve FAIL message
 
 
 ## 0.7.10 (2019-Aug-06)
