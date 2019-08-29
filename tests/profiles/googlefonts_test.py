@@ -4,10 +4,10 @@ from fontTools.ttLib import TTFont
 
 from fontbakery.constants import (NameID,
                                   PlatformID,
-                                  UnicodeEncodingID,
                                   WindowsEncodingID,
-                                  WIN_ENGLISH_LANG_ID,
-                                  MAC_ROMAN_LANG_ID)
+                                  WindowsLanguageID,
+                                  MachintoshEncodingID,
+                                  MachintoshLanguageID)
 from fontbakery.utils import (portable_path,
                               TEST_FILE)
 
@@ -2391,7 +2391,6 @@ def test_check_name_mandatory_entries():
 
 def test_check_name_familyname():
   """ Check name table: FONT_FAMILY_NAME entries. """
-  from fontbakery.constants import PlatformID, NameID
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_name_familyname as check,
                                                familyname,
                                                familyname_with_spaces,
@@ -2431,7 +2430,6 @@ def test_check_name_familyname():
 
 def test_check_name_subfamilyname():
   """ Check name table: FONT_SUBFAMILY_NAME entries. """
-  from fontbakery.constants import PlatformID, NameID
   from fontbakery.profiles.googlefonts import com_google_fonts_check_name_subfamilyname as check
   from fontbakery.profiles.googlefonts_conditions import expected_style
 
@@ -2488,8 +2486,8 @@ def test_check_name_subfamilyname():
   ttFont["name"].setName("Not a proper style",
                          NameID.FONT_SUBFAMILY_NAME,
                          PlatformID.MACINTOSH,
-                         UnicodeEncodingID.UNICODE_1_0,
-                         MAC_ROMAN_LANG_ID)
+                         MachintoshEncodingID.ROMAN,
+                         MachintoshLanguageID.ENGLISH)
   # And this should now FAIL:
   status, message = list(check(ttFont,
                                expected_style(ttFont)))[-1]
@@ -2500,7 +2498,7 @@ def test_check_name_subfamilyname():
                          NameID.FONT_SUBFAMILY_NAME,
                          PlatformID.WINDOWS,
                          WindowsEncodingID.UNICODE_BMP,
-                         WIN_ENGLISH_LANG_ID)
+                         WindowsLanguageID.ENGLISH_USA)
   status, message = list(check(ttFont,
                                expected_style(ttFont)))[-1]
   assert status == FAIL and message.code == "bad-familyname"
@@ -2635,12 +2633,12 @@ def test_check_name_typographicsubfamilyname():
                          NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                          PlatformID.WINDOWS,
                          WindowsEncodingID.UNICODE_BMP,
-                         WIN_ENGLISH_LANG_ID)
+                         WindowsLanguageID.ENGLISH_USA)
   ttFont['name'].setName("BAR",
                          NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                          PlatformID.MACINTOSH,
-                         UnicodeEncodingID.UNICODE_1_0,
-                         MAC_ROMAN_LANG_ID)
+                         MachintoshEncodingID.ROMAN,
+                         MachintoshLanguageID.ENGLISH)
   print (f"Test FAIL with a RIBBI that has got incorrect nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...")
   results = list(check(ttFont,
                        expected_style(ttFont)))
@@ -2666,7 +2664,7 @@ def test_check_name_typographicsubfamilyname():
                          NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                          PlatformID.WINDOWS,
                          WindowsEncodingID.UNICODE_BMP,
-                         WIN_ENGLISH_LANG_ID)
+                         WindowsLanguageID.ENGLISH_USA)
   print (f"Test FAIL with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...")
   status, message = list(check(ttFont,
                                expected_style(ttFont)))[-1]
@@ -2678,8 +2676,8 @@ def test_check_name_typographicsubfamilyname():
   ttFont['name'].setName("Generic subfamily name",
                          NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                          PlatformID.MACINTOSH,
-                         UnicodeEncodingID.UNICODE_1_0,
-                         MAC_ROMAN_LANG_ID)
+                         MachintoshEncodingID.ROMAN,
+                         MachintoshLanguageID.ENGLISH)
   print (f"Test FAIL with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...")
   status, message = list(check(ttFont,
                                expected_style(ttFont)))[-1]
@@ -2691,11 +2689,11 @@ def test_check_name_typographicsubfamilyname():
   win_name = ttFont['name'].getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                                     PlatformID.WINDOWS,
                                     WindowsEncodingID.UNICODE_BMP,
-                                    WIN_ENGLISH_LANG_ID)
+                                    WindowsLanguageID.ENGLISH_USA)
   mac_name = ttFont['name'].getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                                     PlatformID.MACINTOSH,
-                                    UnicodeEncodingID.UNICODE_1_0,
-                                    MAC_ROMAN_LANG_ID)
+                                    MachintoshEncodingID.ROMAN,
+                                    MachintoshLanguageID.ENGLISH)
   win_name.nameID = 254
   if mac_name:
     mac_name.nameID = 255
@@ -3199,8 +3197,8 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
   #  TODO: There should be a warning message here
 
 
-def test_check_varfont_instances_coordinates(vf_ttFont):
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instances_coordinates as check
+def test_check_varfont_instance_coordinates(vf_ttFont):
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instance_coordinates as check
   from fontbakery.parse import instance_parse
   instances = vf_ttFont['fvar'].instances
   print("Test pass for a variable font which has correct instance coordinates")
@@ -3208,7 +3206,7 @@ def test_check_varfont_instances_coordinates(vf_ttFont):
     name = vf_ttFont['name'].getName(instance.subfamilyNameID,
                                      PlatformID.WINDOWS,
                                      WindowsEncodingID.UNICODE_BMP,
-                                     WIN_ENGLISH_LANG_ID).toUnicode()
+                                     WindowsLanguageID.ENGLISH_USA).toUnicode()
     expected_instance = instance_parse(name)
     for axis in instance.coordinates:
       assert expected_instance.coordinates[axis] == instance.coordinates[axis]
@@ -3225,8 +3223,8 @@ def test_check_varfont_instances_coordinates(vf_ttFont):
   #     - FAIL, "bad-coordinate"
 
 
-def test_check_varfont_instances_names(vf_ttFont):
-  from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instances_names as check
+def test_check_varfont_instance_names(vf_ttFont):
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instance_names as check
   from fontbakery.parse import instance_parse
   instances = vf_ttFont["fvar"].instances
   print("Test pass for a variable font which has correct instance names")
@@ -3234,7 +3232,7 @@ def test_check_varfont_instances_names(vf_ttFont):
     name = vf_ttFont['name'].getName(instance.subfamilyNameID,
                                      PlatformID.WINDOWS,
                                      WindowsEncodingID.UNICODE_BMP,
-                                     WIN_ENGLISH_LANG_ID).toUnicode()
+                                     WindowsLanguageID.ENGLISH_USA).toUnicode()
     expected_instance = instance_parse(name)
     assert expected_instance.name == name
   
@@ -3243,17 +3241,17 @@ def test_check_varfont_instances_names(vf_ttFont):
     name = vf_ttFont['name'].getName(instance.subfamilyNameID,
                                      PlatformID.WINDOWS,
                                      WindowsEncodingID.UNICODE_BMP,
-                                     WIN_ENGLISH_LANG_ID).toUnicode()
+                                     WindowsLanguageID.ENGLISH_USA).toUnicode()
     mod_name = "Some Generic Broken Name"
     vf_ttFont['name'].setName(mod_name,
                               instance.subfamilyNameID,
                               PlatformID.WINDOWS,
                               WindowsEncodingID.UNICODE_BMP,
-                              WIN_ENGLISH_LANG_ID)
+                              WindowsLanguageID.ENGLISH_USA)
     mod_name = vf_ttFont['name'].getName(instance.subfamilyNameID,
                                          PlatformID.WINDOWS,
                                          WindowsEncodingID.UNICODE_BMP,
-                                         WIN_ENGLISH_LANG_ID).toUnicode()
+                                         WindowsLanguageID.ENGLISH_USA).toUnicode()
     expected_instance = instance_parse(name)
     assert expected_instance.name != mod_name
 

@@ -4,18 +4,16 @@ import fontTools.ttLib
 from fontTools.ttLib import TTFont
 
 from fontbakery.utils import TEST_FILE, portable_path
-from fontbakery.constants import NameID, PlatformID, WindowsEncodingID, WIN_ENGLISH_LANG_ID
-from fontbakery.checkrunner import (
-              DEBUG
-            , INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
-            , FAIL
-            )
+from fontbakery.constants import (NameID,
+                                  PlatformID,
+                                  WindowsEncodingID,
+                                  WindowsLanguageID,
+                                  MachintoshEncodingID,
+                                  MachintoshLanguageID)
+from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
+
 
 def test_check_name_empty_records():
     from fontbakery.profiles.name import com_adobe_fonts_check_name_empty_records as check
@@ -337,7 +335,7 @@ def test_check_name_postscript_vs_cff():
     NameID.POSTSCRIPT_NAME,
     PlatformID.WINDOWS,
     WindowsEncodingID.UNICODE_BMP,
-    WIN_ENGLISH_LANG_ID
+    WindowsLanguageID.ENGLISH_USA
   )
   status, message = list(check(test_font))[-1]
   assert status == FAIL and message.code == "mismatch"
@@ -347,7 +345,7 @@ def test_check_name_postscript_vs_cff():
     NameID.POSTSCRIPT_NAME,
     PlatformID.WINDOWS,
     WindowsEncodingID.UNICODE_BMP,
-    WIN_ENGLISH_LANG_ID
+    WindowsLanguageID.ENGLISH_USA
   )
   status, message = list(check(test_font))[-1]
   assert status == PASS
@@ -367,8 +365,8 @@ def test_check_name_postscript_name_consistency():
     'SourceSansPro-Regular',
     NameID.POSTSCRIPT_NAME,
     PlatformID.MACINTOSH,
-    WindowsEncodingID.UNICODE_BMP,
-    WIN_ENGLISH_LANG_ID
+    MachintoshEncodingID.ROMAN,
+    MachintoshLanguageID.ENGLISH
   )
   status, message = list(check(test_font))[-1]
   assert status == PASS
@@ -378,8 +376,8 @@ def test_check_name_postscript_name_consistency():
     'YetAnotherFontName',
     NameID.POSTSCRIPT_NAME,
     PlatformID.MACINTOSH,
-    WindowsEncodingID.UNICODE_BMP,
-    WIN_ENGLISH_LANG_ID
+    MachintoshEncodingID.ROMAN,
+    MachintoshLanguageID.ENGLISH
   )
   status, message = list(check(test_font))[-1]
   assert status == FAIL and message.code == "inconsistency"

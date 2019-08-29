@@ -145,17 +145,24 @@ class UnicodeEncodingID(enum.IntEnum):
   UNICODE_1_0 = 0
   UNICODE_1_1 = 1
   ISO_IEC_10646 = 2
-  UNICODE_2_0_BMP_ONLY = 3
+  UNICODE_2_0_BMP_ONLY = 3 # Basic Multilingual Plane
   UNICODE_2_0_FULL = 4
   UNICODE_VARIATION_SEQUENCES = 5
   UNICODE_FULL = 6
+
+class MachintoshEncodingID(enum.IntEnum):
+  """ Encoding IDs defined for use
+      with the Macintosh platform
+      (when platID = 1)
+  """
+  ROMAN = 0
 
 class WindowsEncodingID(enum.IntEnum):
   """ Windows platform-specific encoding IDs
       (when platID == 3)
   """
   SYMBOL = 0
-  UNICODE_BMP = 1
+  UNICODE_BMP = 1 # Basic Multilingual Plane
   SHIFTJIS = 2
   PRC = 3
   BIG5 = 4
@@ -163,6 +170,19 @@ class WindowsEncodingID(enum.IntEnum):
   JOHAB = 6
   # IDs 7, 8 and 9 are reserved.
   UNICODE_FULL_REPERTOIRE = 10
+
+class MachintoshLanguageID(enum.IntEnum):
+  """ Platform-specific Language IDs
+      assigned by Apple
+  """
+  ENGLISH = 0
+
+class WindowsLanguageID(enum.IntEnum):
+  """ Platform-specific Language IDs
+      assigned by Microsoft
+  """
+  ENGLISH_USA = 0x0409
+
 
 class PriorityLevel(enum.IntEnum):
   """ Check priority levels """
@@ -172,8 +192,6 @@ class PriorityLevel(enum.IntEnum):
   IMPORTANT = 1
   CRITICAL = 0  # ON FIRE! Must immediately fix!
 
-WIN_ENGLISH_LANG_ID = 0x0409
-MAC_ROMAN_LANG_ID = 0x0
 
 GF_latin_core = {
   #  NULL
