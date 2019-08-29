@@ -17,6 +17,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/wdth_valid_range]** => com.google.fonts/check/varfont/wdth_valid_range
   - **[com.google.fonts/check/wght_valid_range]** => com.google.fonts/check/varfont/wght_valid_range
 
+### Changes to checks
+  - **[com.google.fonts/check/unwanted_tables]:** Add MVAR table (Issue #2599) and improve FAIL message
+
 
 ## 0.7.10 (2019-Aug-06)
 ### Note-worthy code changes
