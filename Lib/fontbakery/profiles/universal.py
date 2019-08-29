@@ -532,27 +532,32 @@ def com_google_fonts_check_required_tables(ttFont):
 def com_google_fonts_check_unwanted_tables(ttFont):
   """Are there unwanted tables?"""
   UNWANTED_TABLES = {
-      'FFTM': '(from FontForge)',
-      'TTFA': '(from TTFAutohint)',
-      'TSI0': '(from VTT)',
-      'TSI1': '(from VTT)',
-      'TSI2': '(from VTT)',
-      'TSI3': '(from VTT)',
-      'TSI5': '(from VTT)',
-      'prop': '' # FIXME: why is this one unwanted?
+      'FFTM': 'Table contains redundant FontForge timestamp info',
+      'TTFA': 'Redundant TTFAutohint table',
+      'TSI0': 'Table contains data only used in VTT',
+      'TSI1': 'Table contains data only used in VTT',
+      'TSI2': 'Table contains data only used in VTT',
+      'TSI3': 'Table contains data only used in VTT',
+      'TSI5': 'Table contains data only used in VTT',
+      'prop': '', # FIXME: why is this one unwanted?
+      # Marc Foley found that VFs containing a MVAR table have very
+      # loose vertical metrics, even if the MVAR table hasn't adjusted
+      # any vertical metric values.
+      'MVAR': ('Produces a bug in DirectWrite which causes'
+               ' https://bugzilla.mozilla.org/show_bug.cgi?id=1492477,'
+               ' https://github.com/google/fonts/issues/2085')
   }
   unwanted_tables_found = []
   for table in ttFont.keys():
     if table in UNWANTED_TABLES.keys():
       info = UNWANTED_TABLES[table]
-      unwanted_tables_found.append(f"{table} {info}")
+      unwanted_tables_found.append(f'Table: {table}\nReason: {info}\n')
 
   if len(unwanted_tables_found) > 0:
-    yield FAIL, ("Unwanted tables were found"
-                 " in the font and should be removed, either by"
-                 " fonttools/ttx or by editing them using the tool"
-                 " they are from:"
-                 " {}").format(", ".join(unwanted_tables_found))
+    yield FAIL, ("The following unwanted font tables were found:\n"
+                 "{}\n"
+                 "They can be removed by using fonttools/ttx."
+                 ).format("\n".join(unwanted_tables_found))
   else:
     yield PASS, "There are no unwanted tables."
 
