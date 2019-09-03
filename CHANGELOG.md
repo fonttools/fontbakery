@@ -6,6 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Note-worthy code changes
   - **[com.google.fonts/check/contour_count]:** ignore PUA codepoints (issue #2612)
   - **[com.google.fonts/check/contour_count]:** detect glyphs by both glyphnames and codepoints (issue #2612)
+  - **[com.google.fonts/check/canonical_filename]:** Use Typographic Family Name if it exists in the nametable
 
 ### Changes to checks
   - **[com.google.fonts/check/unwanted_tables]:** Add MVAR table (Issue #2599) and improve FAIL message
