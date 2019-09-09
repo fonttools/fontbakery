@@ -4083,6 +4083,10 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
             Message("bad-name",
                     f'Instance name "{name}" is incorrect.'
                     f' It should be "{expected_name}"')
+    if "Text" in name or 'Display' in name:
+        yield WARN, ("VF instance string '{}' contains the word 'Text' or"
+                     " 'Display'. We prefer optical sizes to use"
+                     " pt sizes e.g '16pt {}'.".format(name, expected_name))
   if not failed:
     yield PASS, "Instances have correct names"
   else:
