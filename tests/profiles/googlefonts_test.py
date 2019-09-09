@@ -81,7 +81,7 @@ def montserrat_ttFonts():
 
 @pytest.fixture
 def vf_ttFont():
-  path = TEST_FILE("varfont/Oswald-VF.ttf")
+  path = TEST_FILE("varfont/OpenSans-Roman-VF.ttf")
   return TTFont(path)
 
 
@@ -3200,63 +3200,37 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
 def test_check_varfont_instance_coordinates(vf_ttFont):
   from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instance_coordinates as check
   from fontbakery.parse import instance_parse
-  instances = vf_ttFont['fvar'].instances
+  from copy import copy
+
+  # OpenSans-Roman-VF is correct
   print("Test pass for a variable font which has correct instance coordinates")
-  for instance in instances:
-    name = vf_ttFont['name'].getName(instance.subfamilyNameID,
-                                     PlatformID.WINDOWS,
-                                     WindowsEncodingID.UNICODE_BMP,
-                                     WindowsLanguageID.ENGLISH_USA).toUnicode()
-    expected_instance = instance_parse(name)
-    for axis in instance.coordinates:
-      assert expected_instance.coordinates[axis] == instance.coordinates[axis]
+  status, message = list(check(vf_ttFont))[-1]
+  assert status == PASS
 
   print("Test fail for a variable font which does not have correct instance coordinates")
-  for instance in instances:
-    for axis in instance.coordinates:
-      instance.coordinates[axis] = -100
-      assert expected_instance.coordinates[axis] != instance.coordinates[axis]
-
-  # TODO: actually invoke the check and ensure it results in:
-  #
-  #     - PASS
-  #     - FAIL, "bad-coordinate"
+  vf_ttFont2 = copy(vf_ttFont)
+  for instance in vf_ttFont2['fvar'].instances:
+      for axis in instance.coordinates.keys():
+          instance.coordinates[axis] = 0
+  status, message = list(check(vf_ttFont2))[-1]
+  assert status == FAIL
 
 
 def test_check_varfont_instance_names(vf_ttFont):
   from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instance_names as check
   from fontbakery.parse import instance_parse
-  instances = vf_ttFont["fvar"].instances
-  print("Test pass for a variable font which has correct instance names")
-  for instance in instances:
-    name = vf_ttFont['name'].getName(instance.subfamilyNameID,
-                                     PlatformID.WINDOWS,
-                                     WindowsEncodingID.UNICODE_BMP,
-                                     WindowsLanguageID.ENGLISH_USA).toUnicode()
-    expected_instance = instance_parse(name)
-    assert expected_instance.name == name
-  
-  print("Test fail for a variable font which does not have correct instance names")
-  for instance in instances:
-    name = vf_ttFont['name'].getName(instance.subfamilyNameID,
-                                     PlatformID.WINDOWS,
-                                     WindowsEncodingID.UNICODE_BMP,
-                                     WindowsLanguageID.ENGLISH_USA).toUnicode()
-    mod_name = "Some Generic Broken Name"
-    vf_ttFont['name'].setName(mod_name,
-                              instance.subfamilyNameID,
-                              PlatformID.WINDOWS,
-                              WindowsEncodingID.UNICODE_BMP,
-                              WindowsLanguageID.ENGLISH_USA)
-    mod_name = vf_ttFont['name'].getName(instance.subfamilyNameID,
-                                         PlatformID.WINDOWS,
-                                         WindowsEncodingID.UNICODE_BMP,
-                                         WindowsLanguageID.ENGLISH_USA).toUnicode()
-    expected_instance = instance_parse(name)
-    assert expected_instance.name != mod_name
+  from copy import copy
 
-  # TODO: actually invoke the check and ensure it results in:
-  #
-  #     - PASS
-  #     - FAIL, "bad-name"
-  #     - FAIL, "bad-instance-names"
+  print("Test pass for a variable font which has correct instance names")
+  status, message = list(check(vf_ttFont))[-1]
+  assert status == PASS
+
+  print("Test fail for a variable font which does not have correct instance names")
+  vf_ttFont2 = copy(vf_ttFont)
+  for instance in vf_ttFont2['fvar'].instances:
+      instance.subfamilyNameID = 300
+  broken_name ="Some Generic Broken Name"
+  vf_ttFont2['name'].setName(broken_name, 300, 1, 0, 0)
+  vf_ttFont2['name'].setName(broken_name, 300, 3, 1, 1033)
+  status, message = list(check(vf_ttFont2))[-1]
+  assert status == FAIL
