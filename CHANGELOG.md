@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/contour_count]:** ignore PUA codepoints (issue #2612)
   - **[com.google.fonts/check/contour_count]:** detect glyphs by both glyphnames and codepoints (issue #2612)
 
+### Bugfixes
+  - fix crash on html/markdown reporters by declaring DEBUG log-level (issue #2631)
+
 ### Changes to checks
   - **[com.google.fonts/check/unwanted_tables]:** Add MVAR table (Issue #2599) and improve FAIL message
 
