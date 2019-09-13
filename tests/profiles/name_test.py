@@ -8,8 +8,8 @@ from fontbakery.constants import (NameID,
                                   PlatformID,
                                   WindowsEncodingID,
                                   WindowsLanguageID,
-                                  MachintoshEncodingID,
-                                  MachintoshLanguageID)
+                                  MacintoshEncodingID,
+                                  MacintoshLanguageID)
 from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
@@ -365,8 +365,8 @@ def test_check_name_postscript_name_consistency():
     'SourceSansPro-Regular',
     NameID.POSTSCRIPT_NAME,
     PlatformID.MACINTOSH,
-    MachintoshEncodingID.ROMAN,
-    MachintoshLanguageID.ENGLISH
+    MacintoshEncodingID.ROMAN,
+    MacintoshLanguageID.ENGLISH
   )
   status, message = list(check(test_font))[-1]
   assert status == PASS
@@ -376,8 +376,8 @@ def test_check_name_postscript_name_consistency():
     'YetAnotherFontName',
     NameID.POSTSCRIPT_NAME,
     PlatformID.MACINTOSH,
-    MachintoshEncodingID.ROMAN,
-    MachintoshLanguageID.ENGLISH
+    MacintoshEncodingID.ROMAN,
+    MacintoshLanguageID.ENGLISH
   )
   status, message = list(check(test_font))[-1]
   assert status == FAIL and message.code == "inconsistency"

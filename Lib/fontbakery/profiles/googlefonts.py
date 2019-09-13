@@ -10,8 +10,8 @@ from fontbakery.constants import (PriorityLevel,
                                   PlatformID,
                                   WindowsEncodingID,
                                   WindowsLanguageID,
-                                  MachintoshEncodingID,
-                                  MachintoshLanguageID)
+                                  MacintoshEncodingID,
+                                  MacintoshLanguageID)
 
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
@@ -2928,8 +2928,8 @@ def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
                                WindowsLanguageID.ENGLISH_USA)
   mac_name = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
                                PlatformID.MACINTOSH,
-                               MachintoshEncodingID.ROMAN,
-                               MachintoshLanguageID.ENGLISH)
+                               MacintoshEncodingID.ROMAN,
+                               MacintoshLanguageID.ENGLISH)
 
   if mac_name and mac_name.toUnicode() != expected_style.mac_style_name:
     failed = True
@@ -3079,8 +3079,8 @@ def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style)
                                WindowsLanguageID.ENGLISH_USA)
   mac_name = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                                PlatformID.MACINTOSH,
-                               MachintoshEncodingID.ROMAN,
-                               MachintoshLanguageID.ENGLISH)
+                               MacintoshEncodingID.ROMAN,
+                               MacintoshLanguageID.ENGLISH)
 
   if all([win_name, mac_name]):
     if win_name.toUnicode() != mac_name.toUnicode():
