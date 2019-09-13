@@ -291,7 +291,7 @@ def is_up_to_date(installed, latest):
   has_githash = ".dev" in installed
   installed = installed.split(".dev")[0]
 
-  # Maybe the installed version is even newer than the 
+  # Maybe the installed version is even newer than the
   # released one (such as during development on git).
   # That's what we're trying to detect here:
   installed = installed.split('.')
@@ -386,9 +386,10 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
 def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
   """Font contains glyphs for whitespace characters?"""
   if missing_whitespace_chars != []:
-    yield FAIL, ("Whitespace glyphs missing for"
-                 " the following codepoints:"
-                 " {}.").format(", ".join(missing_whitespace_chars))
+    yield FAIL, Message("missing-whitespace-glyphs",
+                    ("Whitespace glyphs missing for"
+                     " the following codepoints:"
+                     " {}.").format(", ".join(missing_whitespace_chars)))
   else:
     yield PASS, "Font contains glyphs for whitespace characters."
 
@@ -531,27 +532,32 @@ def com_google_fonts_check_required_tables(ttFont):
 def com_google_fonts_check_unwanted_tables(ttFont):
   """Are there unwanted tables?"""
   UNWANTED_TABLES = {
-      'FFTM': '(from FontForge)',
-      'TTFA': '(from TTFAutohint)',
-      'TSI0': '(from VTT)',
-      'TSI1': '(from VTT)',
-      'TSI2': '(from VTT)',
-      'TSI3': '(from VTT)',
-      'TSI5': '(from VTT)',
-      'prop': '' # FIXME: why is this one unwanted?
+      'FFTM': 'Table contains redundant FontForge timestamp info',
+      'TTFA': 'Redundant TTFAutohint table',
+      'TSI0': 'Table contains data only used in VTT',
+      'TSI1': 'Table contains data only used in VTT',
+      'TSI2': 'Table contains data only used in VTT',
+      'TSI3': 'Table contains data only used in VTT',
+      'TSI5': 'Table contains data only used in VTT',
+      'prop': '', # FIXME: why is this one unwanted?
+      # Marc Foley found that VFs containing a MVAR table have very
+      # loose vertical metrics, even if the MVAR table hasn't adjusted
+      # any vertical metric values.
+      'MVAR': ('Produces a bug in DirectWrite which causes'
+               ' https://bugzilla.mozilla.org/show_bug.cgi?id=1492477,'
+               ' https://github.com/google/fonts/issues/2085')
   }
   unwanted_tables_found = []
   for table in ttFont.keys():
     if table in UNWANTED_TABLES.keys():
       info = UNWANTED_TABLES[table]
-      unwanted_tables_found.append(f"{table} {info}")
+      unwanted_tables_found.append(f'Table: {table}\nReason: {info}\n')
 
   if len(unwanted_tables_found) > 0:
-    yield FAIL, ("Unwanted tables were found"
-                 " in the font and should be removed, either by"
-                 " fonttools/ttx or by editing them using the tool"
-                 " they are from:"
-                 " {}").format(", ".join(unwanted_tables_found))
+    yield FAIL, ("The following unwanted font tables were found:\n"
+                 "{}\n"
+                 "They can be removed by using fonttools/ttx."
+                 ).format("\n".join(unwanted_tables_found))
   else:
     yield PASS, "There are no unwanted tables."
 
@@ -589,7 +595,8 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
       yield PASS, "Glyph names are all valid."
     else:
       from fontbakery.utils import pretty_print_list
-      yield FAIL, ("The following glyph names do not comply"
+      yield FAIL, Message("found-invalid-names",
+                  ("The following glyph names do not comply"
                    " with naming conventions: {}\n\n"
                    " A glyph name may be up to 31 characters in length,"
                    " must be entirely comprised of characters from"
@@ -601,7 +608,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
                    " The glyph names \"twocents\", \"a1\", and \"_\""
                    " are all valid, while \"2cents\""
                    " and \".twocents\" are not."
-                   "").format(pretty_print_list(bad_names))
+                   "").format(pretty_print_list(bad_names)))
 
 
 @check(

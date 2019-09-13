@@ -13,19 +13,21 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 import types
 from collections import OrderedDict, Counter
-from functools import partial
+from functools import partial, wraps
 from itertools import chain
 import importlib
 import traceback
 import json
 import logging
 from typing import Dict, Any, Iterable
+import re
 
 from fontbakery.callable import ( FontbakeryCallable
                                 , FontBakeryCheck
                                 , FontBakeryCondition
                                 , FontBakeryExpectedValue
                                 )
+from fontbakery.message import Message
 
 class Status:
   """ If you create a custom Status symbol, please keep in mind that
@@ -682,6 +684,7 @@ class Section:
     self.name = name
     self.description = description
     self._add_check_callback = None
+    self._remove_check_callback = None
     self._checks = [] if checks is None else list(checks)
     self._checkid2index = {check.id:i for i, check in enumerate(self._checks)}
     # a list of iterarg-names
@@ -726,6 +729,14 @@ class Section:
       raise Exception(f'{self} already has an on_add_check callback')
     self._add_check_callback = callback
 
+  def on_remove_check(self, callback):
+    if self._remove_check_callback is not None:
+      # allow only one, otherwise, skipping un-registration in
+      # remove_check becomes problematic, can't skip just for some
+      # callbacks.
+      raise Exception(f'{self} already has an on_add_check callback')
+    self._remove_check_callback = callback
+
   def add_check(self, check):
     """
     Please use rather `register_check` as a decorator.
@@ -737,6 +748,42 @@ class Section:
 
     self._checkid2index[check.id] = len(self._checks)
     self._checks.append(check)
+    return True
+
+  def remove_check(self, check_id):
+    index = self._checkid2index[check_id]
+    if self._remove_check_callback is not None:
+      if not self._remove_check_callback(self, check_id):
+        # rejected, skip!
+        return False
+    del self._checks[index]
+    # Fixing the index, maybe an ordered dict would work here the same
+    # but simpler. Could also rebuild the entire index.
+    del self._checkid2index[check_id]
+    for cid, idx in self._checkid2index.items():
+      if idx > index:
+        self._checkid2index[cid] = idx - 1
+    return True
+
+  def replace_check(self, override_check_id, new_check):
+    index = self._checkid2index[override_check_id]
+    if self._remove_check_callback is not None:
+      if not self._remove_check_callback(self, override_check_id):
+        # rejected, skip!
+        return False
+
+    if self._add_check_callback is not None:
+      if not self._add_check_callback(self, new_check):
+        # rejected, skip!
+        # But first restore the old check registration.
+        # Maybe a resource manager would be nice here.
+        # Also, raising and failing could be an option.
+        self._add_check_callback(self, self.get_check(override_check_id))
+        return False
+
+    del self._checkid2index[override_check_id]
+    self._checkid2index[new_check.id] = index
+    self._checks[index] = new_check
     return True
 
   def merge_section(self, section, filter_func=None):
@@ -765,6 +812,101 @@ class Section:
       raise SetupError(f'Can\'t add check {func} to section {self}.')
     return func
 
+def _check_log_override(overrides, status, message):
+  result_status = status
+  result_message = message
+  override = False
+  for override_target, new_status, new_message_string in overrides:
+    # Override is only possible by matching message.code
+    if not hasattr(result_message, 'code')\
+                            or result_message.code != override_target:
+      continue
+    override = True
+    if new_status is not None:
+      result_status = new_status
+    if new_message_string  is not None:
+      # If it looks like an instance of Message we reuse the code,
+      # as it is the same condition this makes totally sense.
+      result_message = Message(result_message.code, new_message_string)
+    # Break the for loop, we had a successful override.
+    break
+  return override, result_status, result_message
+
+def check_log_override(check, new_id, overrides, reason=None):
+  """ Returns a new FontBakeryCheck that is decorating (wrapping) check,
+    but with overrides applied to returned statuses when they match.
+
+    The new FontBakeryCheck is always a generator check, even if the old
+    check is just a normal function that returns (instead of yields)
+    its result. Also, the new check yields an INFO Status for each
+    overridden original status.
+
+    Arguments:
+
+    check: the FontBakeryCheck to be decorated
+    new_id: string, must be unique of course and should not(!) be check.id
+            as we essentially create a new, different check.
+    overrides: a tuple of override triple-tuples
+               ((override_target, new_status, new_message_string), ...)
+               override_target: string, specific Message.code
+               new_status: Status or None, keep old status
+               new_message_string: string or None, keep old message
+  """
+  @wraps(check) # defines __wrapped__
+  def override_wrapper(*args, **kwds):
+    # A check can be either a normal function that returns one Status or a
+    # generator that yields one or more. The latter will return a generator
+    # object that we can detect with types.GeneratorType.
+    result = check(*args, **kwds)  # Might raise.
+    if not isinstance(result, types.GeneratorType):
+      # Now it iterates
+      # make these always iterators, it's nicer to handle
+      # also we can mix-in new status messages
+      result = (result, )
+    # Iterate over sub-results one-by-one, list(result) would abort on
+    # encountering the first exception.
+    for (status, message) in result:  # Might raise.
+      overriden, result_status, result_message = \
+                            _check_log_override(overrides, status, message)
+      if overriden:
+        # nothing changed (despite of a match in override rules)
+        if result_status == status and result_message == message:
+          yield DEBUG, ('A check status override rule matched but did not '
+                      'change the resulting status.')
+        # Both changed
+        elif result_status != status and result_message != message:
+          yield DEBUG, ('Overridden check status and message, original:'
+                       f' {status} {message}')
+        # Only status changed
+        elif result_status != status and result_message == message:
+          yield DEBUG, f'Overridden check status, original: {status}'
+        # Only message changed
+        elif result_status == status and result_message != message:
+          yield DEBUG, f'Overridden check message, original: {message}'
+
+      yield result_status, result_message
+
+  # Make the callable here and return that.
+  new_check = FontBakeryCheck(
+      override_wrapper
+    , new_id
+      # Untouched, the reason for this checks existence stays the same!
+    , rationale = check.rationale
+      # the "Derived ..." part should be prominent, so we always see it
+    , description = f'{check.description} (derived from {check.id})'
+      # ONLY if there's a reason for derivation, otherwise will take
+      # the documentation from the __doc__ string of check.
+    , documentation = f'{reason}\n\n{check.documentation}'
+          if reason and check.documentation \
+          else (reason or check.documentation or None)
+  )
+
+  # reconstruct a proper doc string from the changes we made.
+  # This is really backwards! But, it's so fundamental how python doc
+  # strings work, that I think it's solid enough.
+  new_check.__doc__ = f'{new_check.description}\n\n{new_check.documentation}'
+  return new_check
+
 
 class Profile:
   def __init__(self
@@ -775,7 +917,8 @@ class Profile:
              , aliases=None
              , expected_values=None
              , default_section=None
-             , check_skip_filter=None):
+             , check_skip_filter=None
+             , profile_tag=None):
     '''
       sections: a list of sections, which are ideally ordered sets of
           individual checks.
@@ -852,6 +995,11 @@ class Profile:
       default_section = sections[0] if sections and len(sections) else Section('Default')
     self._default_section = default_section
     self.add_section(self._default_section)
+
+    # currently only used for new check ids in self.check_log_override
+    # only a-z everything else is deleted
+    self.profile_tag = re.sub(r'[^a-z]','',
+                    (profile_tag or self._default_section.name).lower())
 
     self._check_skip_filter = check_skip_filter
 
@@ -1268,6 +1416,24 @@ class Profile:
     self._check_registry[func.id] = section
     return True
 
+  def _unregister_check(self, section, check_id):
+    assert section == self._check_registry[check_id], 'Registered section must match'
+    del self._check_registry[check_id]
+    return True
+
+  def remove_check(self, check_id):
+    section = self._check_registry[check_id]
+    section.remove_check(check_id)
+
+  def check_log_override(self, override_check_id
+        # see def check_log_override
+      , *args, **kwds):
+    new_id = f'{override_check_id}:{self.profile_tag}'
+    old_check, section = self.get_check(override_check_id)
+    new_check = check_log_override(old_check, new_id, *args, **kwds)
+    section.replace_check(override_check_id, new_check)
+    return new_check
+
   def get_check(self, check_id):
     section = self._check_registry[check_id]
     return section.get_check(check_id), section
@@ -1282,6 +1448,8 @@ class Profile:
       return
     self._sections[key] = section
     section.on_add_check(self._register_check)
+    section.on_remove_check(self._unregister_check)
+
     for check in section.checks:
       self._register_check(section, check)
 

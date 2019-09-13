@@ -3,7 +3,7 @@ from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.checkrunner import Status
 from fontbakery import __version__ as version
 
-LOGLEVELS=["ERROR","FAIL","WARN","SKIP","INFO","PASS"]
+LOGLEVELS=["ERROR","FAIL","WARN","SKIP","INFO","PASS","DEBUG"]
 
 
 class GHMarkdownReporter(SerializeReporter):
@@ -20,7 +20,8 @@ class GHMarkdownReporter(SerializeReporter):
       'WARN':  "\U000026A0", # ⚠️  :warning:
       'INFO':  "\U00002139", # ℹ️  :information_source:
       'SKIP':  "\U0001F4A4", # 💤  :zzz:
-      'PASS':  "\U0001F35E", # 🍞  :bread:
+      'PASS':  "\U0001F35E", # 🍞  :bread
+      'DEBUG': "\U0001F50E", # 🔎 :mag_right:
     }[name]
 
 
@@ -111,10 +112,10 @@ class GHMarkdownReporter(SerializeReporter):
     if num_checks != 0:
       summary_table = "### Summary\n\n" + \
                       ("| {} " + " | {} ".join(LOGLEVELS) + " |\n").format(*[self.emoticon(k) for k in LOGLEVELS]) + \
-                      ("|:-----:|:----:|:----:|:----:|:----:|:----:|\n"
-                       "| {} | {} | {} | {} | {} | {} |\n"
+                      ("|:-----:|:----:|:----:|:----:|:----:|:----:|:----:|\n"
+                       "| {} | {} | {} | {} | {} | {} | {} |\n"
                        "").format(*[data["result"][k] for k in LOGLEVELS]) +\
-                      ("| {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% |\n"
+                      ("| {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% |\n"
                        "").format(*[100*data["result"][k]/num_checks for k in LOGLEVELS])
       md += "\n" + summary_table
 

@@ -7923,13 +7923,6 @@ desired_glyph_data = \
         ]
     }, 
     {
-        "name": "uniE0FF", 
-        "unicode": 57599, 
-        "contours": [
-            7
-        ]
-    }, 
-    {
         "name": "uni2102", 
         "unicode": 8450, 
         "contours": [
@@ -8112,13 +8105,6 @@ desired_glyph_data = \
         "unicode": 294, 
         "contours": [
             2
-        ]
-    }, 
-    {
-        "name": "uniE000", 
-        "unicode": 57344, 
-        "contours": [
-            1
         ]
     }, 
     {
@@ -9766,13 +9752,6 @@ desired_glyph_data = \
         ]
     }, 
     {
-        "name": "uniEE01", 
-        "unicode": 60929, 
-        "contours": [
-            2
-        ]
-    }, 
-    {
         "name": "uni21F5", 
         "unicode": 8693, 
         "contours": [
@@ -10874,21 +10853,6 @@ desired_glyph_data = \
         ]
     }, 
     {
-        "name": "uniEFFD", 
-        "unicode": 61437, 
-        "contours": [
-            9, 
-            7
-        ]
-    }, 
-    {
-        "name": "uniF000", 
-        "unicode": 61440, 
-        "contours": [
-            14
-        ]
-    }, 
-    {
         "name": "fi", 
         "unicode": 61441, 
         "contours": [
@@ -10921,20 +10885,6 @@ desired_glyph_data = \
         "unicode": 8901, 
         "contours": [
             1
-        ]
-    }, 
-    {
-        "name": "uniF0FF", 
-        "unicode": 61695, 
-        "contours": [
-            7
-        ]
-    }, 
-    {
-        "name": "ubuntu", 
-        "unicode": 61952, 
-        "contours": [
-            14
         ]
     }, 
     {
@@ -10991,13 +10941,6 @@ desired_glyph_data = \
         "unicode": 7681, 
         "contours": [
             4
-        ]
-    }, 
-    {
-        "name": "uniEE02", 
-        "unicode": 60930, 
-        "contours": [
-            2
         ]
     }, 
     {
@@ -11482,20 +11425,6 @@ desired_glyph_data = \
         ]
     }, 
     {
-        "name": "uniF6D7", 
-        "unicode": 63191, 
-        "contours": [
-            3
-        ]
-    }, 
-    {
-        "name": "uniF6D8", 
-        "unicode": 63192, 
-        "contours": [
-            3
-        ]
-    }, 
-    {
         "name": "uniA924", 
         "unicode": 43300, 
         "contours": [
@@ -11852,14 +11781,6 @@ desired_glyph_data = \
         "name": "uni097F", 
         "unicode": 2431, 
         "contours": [
-            3
-        ]
-    }, 
-    {
-        "name": "uniF8FF", 
-        "unicode": 63743, 
-        "contours": [
-            2, 
             3
         ]
     }, 

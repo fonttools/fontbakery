@@ -41,6 +41,7 @@ from fontbakery.checkrunner import (  # NOQA
             , ENDSECTION
             , START
             , END
+            , DEBUG
             , Status
             )
 
@@ -57,6 +58,7 @@ statuses = (
             , ENDSECTION
             , START
             , END
+            , DEBUG
             )
 # these are displayed in the result counters
 check_statuses = [ERROR, FAIL, SKIP, PASS, WARN, INFO]

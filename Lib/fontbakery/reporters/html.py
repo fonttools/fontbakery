@@ -7,7 +7,7 @@ from typing import List, Dict
 import fontbakery.checkrunner
 import fontbakery.reporters.serialize
 
-LOGLEVELS = ["ERROR", "FAIL", "WARN", "SKIP", "INFO", "PASS"]
+LOGLEVELS = ["ERROR", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]
 EMOTICON = {
     "ERROR": "💥",
     "FAIL": "🔥",
@@ -15,6 +15,7 @@ EMOTICON = {
     "INFO": "ℹ️",
     "SKIP": "⏩",
     "PASS": "✔️",
+    "DEBUG": "🔎"
 }
 ISSUE_URL = "https://github.com/googlefonts/fontbakery/issues"
 
@@ -202,10 +203,11 @@ def html5_collapsible(summary, details) -> str:
 
 
 def summary_table(
-    errors: int, fails: int, warns: int, skips: int, infos: int, passes: int, total: int
+    errors: int, fails: int, warns: int, skips: int, infos: int, passes: int, debugs: int, total: int
 ) -> str:
     """Return summary table with statistics."""
 
+    # DEBUG messages are omitted for now...
     return f"""<h2>Summary</h2>
             <table>
             <tr>

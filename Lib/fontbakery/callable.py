@@ -34,7 +34,10 @@ class FontbakeryCallable:
     self._mandatoryArgs = None
     self._optionalArgs = None
     # must be set by sub class
-    self._func = func
+
+    # this is set by update_wrapper
+    # self.__wrapped__ = func
+
     # https://docs.python.org/2/library/functools.html#functools.update_wrapper
     # Update a wrapper function to look like the wrapped function.
     # ... assigns to the wrapper function’s __name__, __module__ and __doc__
@@ -55,24 +58,45 @@ class FontbakeryCallable:
   @property
   @cached_getter
   def mandatoryArgs(self):
-    argspec = inspect.getfullargspec(self._func)
-    args = argspec.args[:-len(argspec.defaults)] \
-             if argspec.defaults is not None else argspec.args
-
+    args = list()
+    # make follow_wrapped=True explicit, even though it is the default!
+    sig = inspect.signature(self, follow_wrapped=True)
+    for name, param in sig.parameters.items():
+      if param.default is not inspect.Parameter.empty\
+            or param.kind not in (
+                  inspect.Parameter.POSITIONAL_OR_KEYWORD
+                , inspect.Parameter.POSITIONAL_ONLY):
+        # has a default i.e. not mandatory or not positional of any kind
+        print(f'{param.default is inspect.Parameter.empty} param.kind: {param.kind} param.default: {param.default} BREAK')
+        break
+      args.append(name)
     return tuple(args)
 
   @property
   @cached_getter
   def optionalArgs(self):
-    argspec = inspect.getfullargspec(self._func)
-    return tuple(argspec.args[-len(argspec.defaults):] \
-             if argspec.defaults is not None else [])
+    args = list()
+    # make follow_wrapped=True explicit, even though it is the default!
+    sig = inspect.signature(self, follow_wrapped=True)
+    for name, param in sig.parameters.items():
+      if param.default is inspect.Parameter.empty:
+        # is a mandatory
+        continue
+
+      if param.kind not in (
+                  inspect.Parameter.POSITIONAL_OR_KEYWORD
+                , inspect.Parameter.POSITIONAL_ONLY):
+        # no more positional of any kind
+        print(f'{param.default is inspect.Parameter.empty} param.kind: {param.kind} param.default: {param.default} BREAK')
+        break
+      args.append(name)
+    return tuple(args)
 
   def __call__(self, *args, **kwds):
     """ Each call to __call__ with the same arguments must return
     the same result.
     """
-    return self._func(*args, **kwds)
+    return self.__wrapped__(*args, **kwds)
 
 def get_doc_desc(func, description, documentation):
   doc = inspect.getdoc(func) or ""

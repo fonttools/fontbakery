@@ -4,7 +4,7 @@ Checks for Adobe Fonts (formerly known as Typekit).
 import unicodedata
 
 from fontbakery.callable import check
-from fontbakery.checkrunner import Section, PASS, FAIL
+from fontbakery.checkrunner import Section, PASS, FAIL, WARN
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 
@@ -16,6 +16,16 @@ ADOBEFONTS_PROFILE_CHECKS = \
         'com.adobe.fonts/check/family/consistent_upm',
         'com.adobe.fonts/check/find_empty_letters'
     ]
+
+OVERRIDDEN_CHECKS = [
+        'com.google.fonts/check/dsig',
+        'com.google.fonts/check/whitespace_glyphs',
+        'com.google.fonts/check/valid_glyphnames',
+        ]
+ADOBEFONTS_PROFILE_CHECKS += [f'{cid}:{profile.profile_tag}' for cid in OVERRIDDEN_CHECKS]
+
+ADOBEFONTS_PROFILE_CHECKS[:] = [cid for cid in ADOBEFONTS_PROFILE_CHECKS
+                                            if cid not in OVERRIDDEN_CHECKS]
 
 
 @check(
@@ -106,4 +116,27 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
 # ToDo: add many more checks...
 
 profile.auto_register(globals())
+
+com_google_fonts_check_dsig_adobefonts = profile.check_log_override(
+    'com.google.fonts/check/dsig'
+  , reason='For Adobe this issue is not as severe '\
+            + 'as assessed in the original check.'
+  , overrides = (
+        (   'lacks-signature' # override_target -> a specific Message.code (string)
+          , WARN # new_status -> None: keep old status
+          , None # new_message_string -> None: keep old message
+          )
+    ,)
+)
+
+com_google_fonts_check_whitespace_glyphs_adobefonts = profile.check_log_override(
+    'com.google.fonts/check/whitespace_glyphs'
+  , overrides = (('missing-whitespace-glyphs', WARN, None),)
+)
+
+com_google_fonts_check_valid_glyphnames_adobefonts = profile.check_log_override(
+    'com.google.fonts/check/valid_glyphnames'
+  , overrides = (('found-invalid-names', WARN, None),)
+)
+
 profile.test_expected_checks(ADOBEFONTS_PROFILE_CHECKS, exclusive=True)

@@ -3,7 +3,9 @@ from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN, INFO
 from fontbakery.message import Message
 from fontbakery.constants import (PriorityLevel,
                                   NameID,
-                                  PlatformID)
+                                  PlatformID,
+                                  WindowsEncodingID,
+                                  WindowsLanguageID)
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
@@ -436,8 +438,10 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
 
 @check(
   id='com.adobe.fonts/check/family/max_4_fonts_per_family_name',
-  rationale="""Per the OpenType spec. 'The Font Family name ... should be
-  shared among at most four fonts that differ only in weight or style ...'
+  rationale="""
+    Per the OpenType spec:
+    'The Font Family name ... should be shared among
+     at most four fonts that differ only in weight or style ...'
   """,
 )
 def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
@@ -448,12 +452,14 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
 
   family_names = list()
   for ttFont in ttFonts:
-    names_list = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
-    # names_list will likely contain multiple entries, e.g. multiple copies
-    # of the same name in the same language for different platforms, but
-    # also different names in different languages, we use set() below
-    # to remove the duplicates and only store the unique family name(s)
-    # used for a given font
+    names_list = get_name_entry_strings(ttFont,
+                                        NameID.FONT_FAMILY_NAME,
+                                        PlatformID.WINDOWS,
+                                        WindowsEncodingID.UNICODE_BMP,
+                                        WindowsLanguageID.ENGLISH_USA)
+    # names_list may contain multiple entries.
+    # We use set() below to remove the duplicates and only store
+    # the unique family name(s) used for a given font
     names_set = set(names_list)
     family_names.extend(names_set)
 
