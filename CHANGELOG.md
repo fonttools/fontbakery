@@ -7,6 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Added 'opsz' axis to fontbakery.parse
   - **[com.google.fonts/check/contour_count]:** ignore PUA codepoints (issue #2612)
   - **[com.google.fonts/check/contour_count]:** detect glyphs by both glyphnames and codepoints (issue #2612)
+  - **[com.google.fonts/check/canonical_filename]:** Use Typographic Family Name if it exists in the nametable
   - **[com.google.fonts/check/varfont_instance_names]:** warn user if "Text" or "Display" have been used in a varfont instance name. We would prefer point size to be used instead.
 
 ### Bugfixes

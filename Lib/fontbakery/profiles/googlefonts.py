@@ -179,6 +179,8 @@ def com_google_fonts_check_canonical_filename(font):
   def variable_font_filename(ttFont):
     from fontbakery.utils import get_name_entry_strings
     familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)[0]
+    typo_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+    familyname = typo_familynames[0] if typo_familynames else familyname
     familyname = "".join(familyname.split(' ')) #remove spaces
     if bool(ttFont["head"].macStyle & MacStyle.ITALIC):
       familyname+="-Italic"
