@@ -39,11 +39,23 @@ def test_name():
     style = _style_parse("UltCndExtBdIt")
     assert style.name =="UltraCondensed ExtraBold Italic"
 
+    style = _style_parse("Regular Italic 18pt")
+    assert style.name == "18pt Italic"
+
+    style = _style_parse("Condensed Italic 10pt ExtraBold")
+    assert style.name == "10pt Condensed ExtraBold Italic"
+
 
 def test_fvar_coordinates():
     style = instance_parse("Condensed Regular")
-    assert style.coordinates == {"wght": 400.0, 'wdth': 75.0}
+    assert style.coordinates == {"wght": 400.0, 'wdth': 75.0, "opsz": 0.0}
 
     style = instance_parse("UltraCondensed Black Italic")
-    assert style.coordinates == {"wght": 900.0, 'wdth': 50.0}
+    assert style.coordinates == {"wght": 900.0, 'wdth': 50.0, "opsz": 0.0}
+
+    style = instance_parse("10pt Regular")
+    assert style.coordinates == {"wght": 400.0, "wdth": 100.0, "opsz": 10.0}
+
+    style = instance_parse("18pt Expanded Italic")
+    assert style.coordinates == {"wght": 400.0, "wdth": 125.0, "opsz": 18.0}
 
