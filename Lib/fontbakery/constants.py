@@ -150,7 +150,7 @@ class UnicodeEncodingID(enum.IntEnum):
   UNICODE_VARIATION_SEQUENCES = 5
   UNICODE_FULL = 6
 
-class MachintoshEncodingID(enum.IntEnum):
+class MacintoshEncodingID(enum.IntEnum):
   """ Encoding IDs defined for use
       with the Macintosh platform
       (when platID = 1)
@@ -171,7 +171,7 @@ class WindowsEncodingID(enum.IntEnum):
   # IDs 7, 8 and 9 are reserved.
   UNICODE_FULL_REPERTOIRE = 10
 
-class MachintoshLanguageID(enum.IntEnum):
+class MacintoshLanguageID(enum.IntEnum):
   """ Platform-specific Language IDs
       assigned by Apple
   """

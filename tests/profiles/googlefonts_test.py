@@ -6,8 +6,8 @@ from fontbakery.constants import (NameID,
                                   PlatformID,
                                   WindowsEncodingID,
                                   WindowsLanguageID,
-                                  MachintoshEncodingID,
-                                  MachintoshLanguageID)
+                                  MacintoshEncodingID,
+                                  MacintoshLanguageID)
 from fontbakery.utils import (portable_path,
                               TEST_FILE)
 
@@ -2486,8 +2486,8 @@ def test_check_name_subfamilyname():
   ttFont["name"].setName("Not a proper style",
                          NameID.FONT_SUBFAMILY_NAME,
                          PlatformID.MACINTOSH,
-                         MachintoshEncodingID.ROMAN,
-                         MachintoshLanguageID.ENGLISH)
+                         MacintoshEncodingID.ROMAN,
+                         MacintoshLanguageID.ENGLISH)
   # And this should now FAIL:
   status, message = list(check(ttFont,
                                expected_style(ttFont)))[-1]
@@ -2637,8 +2637,8 @@ def test_check_name_typographicsubfamilyname():
   ttFont['name'].setName("BAR",
                          NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                          PlatformID.MACINTOSH,
-                         MachintoshEncodingID.ROMAN,
-                         MachintoshLanguageID.ENGLISH)
+                         MacintoshEncodingID.ROMAN,
+                         MacintoshLanguageID.ENGLISH)
   print (f"Test FAIL with a RIBBI that has got incorrect nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...")
   results = list(check(ttFont,
                        expected_style(ttFont)))
@@ -2676,8 +2676,8 @@ def test_check_name_typographicsubfamilyname():
   ttFont['name'].setName("Generic subfamily name",
                          NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                          PlatformID.MACINTOSH,
-                         MachintoshEncodingID.ROMAN,
-                         MachintoshLanguageID.ENGLISH)
+                         MacintoshEncodingID.ROMAN,
+                         MacintoshLanguageID.ENGLISH)
   print (f"Test FAIL with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...")
   status, message = list(check(ttFont,
                                expected_style(ttFont)))[-1]
@@ -2692,8 +2692,8 @@ def test_check_name_typographicsubfamilyname():
                                     WindowsLanguageID.ENGLISH_USA)
   mac_name = ttFont['name'].getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
                                     PlatformID.MACINTOSH,
-                                    MachintoshEncodingID.ROMAN,
-                                    MachintoshLanguageID.ENGLISH)
+                                    MacintoshEncodingID.ROMAN,
+                                    MacintoshLanguageID.ENGLISH)
   win_name.nameID = 254
   if mac_name:
     mac_name.nameID = 255
@@ -3230,7 +3230,15 @@ def test_check_varfont_instance_names(vf_ttFont):
   for instance in vf_ttFont2['fvar'].instances:
       instance.subfamilyNameID = 300
   broken_name ="Some Generic Broken Name"
-  vf_ttFont2['name'].setName(broken_name, 300, 1, 0, 0)
-  vf_ttFont2['name'].setName(broken_name, 300, 3, 1, 1033)
+  vf_ttFont2['name'].setName(broken_name,
+                             300,
+                             PlatformID.MACINTOSH,
+                             MacintoshEncodingID.ROMAN,
+                             MacintoshLanguageID.ENGLISH)
+  vf_ttFont2['name'].setName(broken_name,
+                             300,
+                             PlatformID.WINDOWS,
+                             WindowsEncodingID.UNICODE_BMP,
+                             WindowsLanguageID.ENGLISH_USA)
   status, message = list(check(vf_ttFont2))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "bad-instance-names"
