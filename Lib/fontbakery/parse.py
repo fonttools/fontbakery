@@ -67,18 +67,34 @@ def _re_string_tokenizer(string, mapping):
     return sorted(found, key=len, reverse=True)[0]
 
 
+def _get_opsz_token(string):
+    result = re.search(r"[0-9]{1,4}pt", string)
+    if result:
+        return result.group(0)
+    return None
+
+
+def _opsz_values(string):
+    if not string:
+        return 0.
+    return float(string.replace("pt", ""))
+
+
 def _style_tokens(string):
     string = re.sub(r"\W", "", string)
+    opsz = _get_opsz_token(string) or ""
     wdth = _re_string_tokenizer(string, _WIDTH_NAMES) or ""
     wght = _re_string_tokenizer(string, _WEIGHT_NAMES) or ""
     ital = _re_string_tokenizer(string, _ITALIC_NAMES) or ""
-    return wdth, wght, ital
+    return opsz, wdth, wght, ital
 
 
-def _parse_name(wdth, wght, ital):
+def _parse_name(opsz, wdth, wght, ital):
     if wght == "Regular" and ital == "Italic":
-        return ital
-    return "{} {} {}".format(wdth, wght, ital).lstrip().rstrip()
+        wght = ""
+    result = "{} {} {} {}".format(opsz, wdth, wght, ital).lstrip().rstrip()
+    # replace multiple whitespace characters with a single space"
+    return re.sub(r"\W+", " ", result)
 
 
 def _win_style_name(string):
@@ -132,8 +148,8 @@ def _style_parse(string):
                           macStyle
                           is_ribbi
                           filename""")
-    wdth, wght, ital = _style_tokens(string)
-    name = _parse_name(wdth, wght, ital)
+    opsz, wdth, wght, ital = _style_tokens(string)
+    name = _parse_name(opsz, wdth, wght, ital)
     return _GFStyle(name=name,
                     usWeightClass=_WEIGHT_VALUES[wght]['usWeightClass'],
                     usWidthClass=_WIDTH_VALUES[wdth]["usWidthClass"],
@@ -169,9 +185,11 @@ def instance_parse(string):
     _GFInstance = namedtuple("GFStyle",
                              """name
                              coordinates""")
-    wdth, wght, ital = _style_tokens(string)
-    name = _parse_name(wdth, wght, ital)
-    return _GFInstance(name=name,
-                       coordinates={'wght': _WEIGHT_VALUES[wght]['fvar'],
-                                    'wdth': _WIDTH_VALUES[wdth]['fvar']})
+    opsz, wdth, wght, ital = _style_tokens(string)
+    name = _parse_name(opsz, wdth, wght, ital)
+    return _GFInstance(name=name, coordinates={
+        "opsz": _opsz_values(opsz),
+        "wdth": _WIDTH_VALUES[wdth]['fvar'],
+        "wght": _WEIGHT_VALUES[wght]['fvar'],
+    })
 

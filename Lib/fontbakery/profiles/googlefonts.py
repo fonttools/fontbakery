@@ -1086,7 +1086,7 @@ def com_google_fonts_check_name_version_format(ttFont):
   from fontbakery.utils import get_name_entry_strings
   import re
   def is_valid_version_format(value):
-    return re.match(r'Version\s0*[1-9]+\.\d+', value)
+    return re.match(r'Version\s0*[1-9][0-9]*\.\d+', value)
 
   failed = False
   version_entries = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
@@ -1104,7 +1104,7 @@ def com_google_fonts_check_name_version_format(ttFont):
                     f'The NameID.VERSION_STRING'
                     f' (nameID={NameID.VERSION_STRING}) value must'
                     f' follow the pattern "Version X.Y" with X.Y'
-                    f' between 1.000 and 9.999.'
+                    f' greater than or equal to 1.000.'
                     f' Current version string is: "{ventry}"')
   if not failed:
     yield PASS, "Version format in NAME table entries is correct."
@@ -4085,6 +4085,10 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
             Message("bad-name",
                     f'Instance name "{name}" is incorrect.'
                     f' It should be "{expected_name}"')
+    if "Text" in name or 'Display' in name:
+        yield WARN, ("VF instance string '{}' contains the word 'Text' or"
+                     " 'Display'. We prefer optical sizes to use"
+                     " pt sizes e.g '16pt {}'.".format(name, expected_name))
   if not failed:
     yield PASS, "Instances have correct names"
   else:
