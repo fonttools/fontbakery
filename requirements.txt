@@ -2,20 +2,20 @@
 beautifulsoup4==4.8.0
 defcon==0.6.0
 font-v==0.7.1
-fontTools[ufo,lxml,unicode]==3.44.0
+fontTools[ufo,lxml,unicode]==4.0.1
 lxml==4.4.1
 opentype-sanitizer==7.1.9
 protobuf==3.9.1
 requests==2.22.0
 ttfautohint-py==0.4.3
-ufolint==0.3.5
+ufolint==0.4.1
 -e .
 
 # This is only needed to generate docs:
-# sphinx==2.1.2
+# sphinx==2.2.0
 # sphinx_rtd_theme==0.4.3
 # recommonmark==0.6.0
 
 # This is only needed to run code-tests:
 # ufo2ft==2.9.1
-# pytest==5.0.1
+# pytest==5.1.2
