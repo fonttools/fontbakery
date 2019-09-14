@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.12 (2019-Sep-13)
+## 0.7.13 (2019-Sep-20)
+  - ...
+
+
+## 0.7.12 (2019-Sep-14)
 ### Note-worthy code changes
   - Added 'opsz' axis to fontbakery.parse
   - **[com.google.fonts/check/contour_count]:** ignore PUA codepoints (issue #2612)
