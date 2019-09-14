@@ -33,7 +33,7 @@
 
 
 
-<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
 	<meta charset="utf-8" />
@@ -64,21 +64,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-08-21 07:21 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/597bd68d8774b3239a51c9091e393f0a885aa36c/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-09-13 07:06 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/d50f95cd829bed3018dd8a63935eeac339dd2a76/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2768" />
+<meta name="word_count" content="2803" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/37545739.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/94d1b781.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cd54db8b.conceptual.css ">
 
@@ -105,6 +105,7 @@
 		},
 		functions:{},
 		settings:{
+			auth: 'v2',
 			extendBreadcrumb: true,
 		}
 	};
@@ -123,7 +124,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a847b61e.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/e03cf277.index-docs.js"></script>
 
 </head>
 
@@ -131,9 +132,26 @@
 <div class="header-holder has-default-focus">
 	<a href="#main" class="skip-to-main-link visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
 		<div id="headerAreaHolder" data-bi-name="header">
-			<div id="uhf-placeholder"></div>
-		</div>
-	<div class="content-header uhf-container has-padding has-default-focus" data-bi-name="content-header">
+<header class="nav-bar" role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<button class="nav-bar-burger" aria-label="Global navigation" aria-controls="nav-bar-mobile-nav" aria-expanded="false">
+		<span></span>
+		<span></span>
+		<span></span>
+	</button>
+	<nav class="nav-bar-mobile-nav" role="navigation" id="nav-bar-mobile-nav" aria-label="Global" hidden="">
+	</nav>
+	<a class="nav-bar-button" itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft">
+		<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+		<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+	</a>
+	<nav class="nav-bar-nav" role="navigation" aria-label="Global">
+	</nav>
+	<span class="nav-bar-spacer"></span>
+	<div class="nav-bar-item is-invisible"> <!-- For Forums mobile layout rendering -->
+		<button id="form-expander" class="nav-bar-button has-hover-underline has-margin-left-extra-small"></button>
+	</div>
+</header>		</div>
+		<div class="content-header uhf-container has-padding has-default-focus" data-bi-name="content-header">
 		<nav class="has-padding-none-mobile" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
 			<ul id="page-breadcrumbs" class="breadcrumbs">
 			</ul>
@@ -373,7 +391,7 @@ High contrast					</span>
 							<li class="displayDate loading">
 								<time role="presentation" datetime="2018-07-31T00:00:00.000Z" data-article-date-source="ms.date">7/31/2018</time>
 							</li>
-								<li class="readingTime">13 minutes to read</li>
+								<li class="readingTime">14 minutes to read</li>
 							<li class="contributors-holder">
 								<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="4 Contributors" aria-label="4 Contributors">
 									<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
@@ -563,7 +581,7 @@ High contrast					</span>
 </tr>
 <tr>
 <td>ALEF</td>
-<td><a href="http://www.aleftype.com/" data-linktype="external">ALEF</a></td>
+<td><a href="http://www.aleftype.com/" data-linktype="external">Alef Type</a></td>
 </tr>
 <tr>
 <td>ALFA</td>
@@ -761,6 +779,10 @@ High contrast					</span>
 <td><a href="http://www.expertlabels.co.uk" data-linktype="external">Expert Labels Ltd.</a></td>
 </tr>
 <tr>
+<td>BEAR</td>
+<td><a href="https://kara-lynn.info/pages/topo-typo.html" data-linktype="external">Topography Typography</a></td>
+</tr>
+<tr>
 <td>BEN</td>
 <td><a href="http://benhodosi.com/" data-linktype="external">Ben Hodosi</a></td>
 </tr>
@@ -835,6 +857,10 @@ High contrast					</span>
 <tr>
 <td>BNFF</td>
 <td><a href="http://www.bengalfonts.com/" data-linktype="external">BengalFonts</a></td>
+</tr>
+<tr>
+<td>BOGS</td>
+<td><a href="http://www.bogstav.com" data-linktype="external">Bogstav</a></td>
 </tr>
 <tr>
 <td>BOLD</td>
@@ -1286,6 +1312,10 @@ High contrast					</span>
 <td>EK TYPE</td>
 </tr>
 <tr>
+<td>ELEO</td>
+<td><a href="http://idee-sree.com/" data-linktype="external">Enliteleo</a></td>
+</tr>
+<tr>
 <td>ELSE</td>
 <td>Elseware</td>
 </tr>
@@ -1300,6 +1330,10 @@ High contrast					</span>
 <tr>
 <td>ESIG</td>
 <td><a href="http://www.e-signature.com/" data-linktype="external">E-Signature</a></td>
+</tr>
+<tr>
+<td>ESTF</td>
+<td><a href="https://extraset.ch/" data-linktype="external">Extraset</a></td>
 </tr>
 <tr>
 <td>ETIO</td>
@@ -1391,6 +1425,10 @@ High contrast					</span>
 <tr>
 <td>FJTY</td>
 <td><a href="http://www.frankjonen.com/" data-linktype="external">Frank Jonen - Illustration & Typography</a></td>
+</tr>
+<tr>
+<td>FK</td>
+<td><a href="https://fonts.floriankarsten.com/" data-linktype="external">Florian Karsten Typefaces</a></td>
 </tr>
 <tr>
 <td>FMFO</td>
@@ -2080,6 +2118,10 @@ High contrast					</span>
 <td><a href="http://www.kustomtype.com" data-linktype="external">Kustomtype</a></td>
 </tr>
 <tr>
+<td>KTKM</td>
+<td><a href="https://www.ktkm.se/" data-linktype="external">KTKM</a></td>
+</tr>
+<tr>
 <td>KTRF</td>
 <td>Kazan Traditional Font</td>
 </tr>
@@ -2306,6 +2348,10 @@ High contrast					</span>
 <td><a href="http://www.matchfonts.com/" data-linktype="external">Match Fonts</a></td>
 </tr>
 <tr>
+<td>MAXN</td>
+<td>MaxnorType</td>
+</tr>
+<tr>
 <td>MC</td>
 <td>Cerajewski Computer Consulting</td>
 </tr>
@@ -2462,6 +2508,10 @@ High contrast					</span>
 <td><a href="http://www.motaitalic.com" data-linktype="external">Mota Italic</a></td>
 </tr>
 <tr>
+<td>MRF</td>
+<td><a href="http://www.macrhino.com" data-linktype="external">Mac Rhino Fonts</a></td>
+</tr>
+<tr>
 <td>MRSL</td>
 <td><a href="https://www.mrussell.co.uk" data-linktype="external">Mark Russell</a></td>
 </tr>
@@ -2593,6 +2643,10 @@ High contrast					</span>
 <td><a href="http://www.nmtype.com/" data-linktype="external">NM type</a></td>
 </tr>
 <tr>
+<td>NMRK</td>
+<td><a href="https://www.nymarktype.co/" data-linktype="external">Nymark Type</a></td>
+</tr>
+<tr>
 <td>NN</td>
 <td><a href="http://www.nnstudio.pw" data-linktype="external">NN Type Foundry</a></td>
 </tr>
@@ -2629,10 +2683,6 @@ High contrast					</span>
 <td><a href="http://www.novatypefoundry.com" data-linktype="external">Nova Type Foundry</a></td>
 </tr>
 <tr>
-<td>NYM</td>
-<td><a href="https://www.nymarktype.co/" data-linktype="external">Nymark Type</a></td>
-</tr>
-<tr>
 <td>NYCM</td>
 <td><a href="https://www.nycmusicservices.com/" data-linktype="external">NYC Music Services</a></td>
 </tr>
@@ -2666,10 +2716,6 @@ High contrast					</span>
 <tr>
 <td>OMNY</td>
 <td><a href="https://omnytype.com/" data-linktype="external">OMNY TYPE</a></td>
-</tr>
-<tr>
-<td>OMSE</td>
-<td><a href="https://omsetype.co/" data-linktype="external">OMSETYPE</a></td>
 </tr>
 <tr>
 <td>Once</td>
@@ -2765,6 +2811,10 @@ High contrast					</span>
 <tr>
 <td>PIXL</td>
 <td><a href="http://www.pixilate.com" data-linktype="external">Pixilate</a></td>
+</tr>
+<tr>
+<td>PIZZ</td>
+<td><a href="http://www.pizzadude.dk" data-linktype="external">pizzadude.dk</a></td>
 </tr>
 <tr>
 <td>PKDD</td>
@@ -3494,8 +3544,12 @@ High contrast					</span>
 <td><a href="https://www.unicode.org" data-linktype="external">Unicode Consortium</a></td>
 </tr>
 <tr>
+<td>UPUP</td>
+<td><a href="https://www.upupcreative.com/" data-linktype="external">Up Up Creative</a></td>
+</tr>
+<tr>
 <td>URW</td>
-<td><a href="http://www.urwpp.de/" data-linktype="external">URW++</a></td>
+<td><a href="http://www.urwpp.de/" data-linktype="external">URW Type Foundry GmbH</a></td>
 </tr>
 <tr>
 <td>UT</td>
@@ -3512,6 +3566,10 @@ High contrast					</span>
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
+<tr>
+<td>VEZ</td>
+<td>Victoria Eloise Zunhiga</td>
+</tr>
 <tr>
 <td>VINT</td>
 <td><a href="http://www.vinterstille.dk" data-linktype="external">Vinterstille</a></td>
@@ -3629,6 +3687,10 @@ High contrast					</span>
 <tr>
 <td>XOTH</td>
 <td><a href="http://www.about.me/xoth" data-linktype="external">Xoth Morello</a></td>
+</tr>
+<tr>
+<td>XT</td>
+<td><a href="http://x-type.co/" data-linktype="external">X-Type</a></td>
 </tr>
 <tr>
 <td>XYZ</td>
@@ -3767,7 +3829,7 @@ High contrast					</span>
 						</span>
 					</button>
 					<div id="fbm0" class="dropdown-menu documentation-feedback-menu">
-						You may also leave feedback directly on <a data-bi-name="create-issue-on-github" href="{0}">GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.					</div>
+						You may also leave feedback directly on <a data-bi-name="create-issue-on-github">GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.					</div>
 				</div>
 			</div>
 
@@ -3784,7 +3846,7 @@ This page					</button>
 						</span>
 					</button>
 					<div id="fbm1" class="dropdown-menu documentation-feedback-menu">
-						You may also leave feedback directly on <a data-bi-name="create-issue-on-github" href="{0}">GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.					</div>
+						You may also leave feedback directly on <a data-bi-name="create-issue-on-github">GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.					</div>
 				</div>
 			</div>
 		</div>
