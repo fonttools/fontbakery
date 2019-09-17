@@ -1268,16 +1268,24 @@ def com_google_fonts_check_gasp(ttFont):
   """Is the Grid-fitting and Scan-conversion Procedure ('gasp') table
      set to optimize rendering?"""
 
+  NON_HINTING_MESSAGE = ("If you are dealing with an unhinted font,"
+                         " it can be fixed by running the fonts through"
+                         " the command 'gftools fix-nonhinting'\n"
+                         "GFTools is available at"
+                         " https://pypi.org/project/gftools/")
+
   if "gasp" not in ttFont.keys():
     yield FAIL,\
           Message("lacks-gasp",
                   "Font is missing the 'gasp' table."
-                  " Try exporting the font with autohinting enabled.")
+                  " Try exporting the font with autohinting enabled.\n" + \
+                  NON_HINTING_MESSAGE)
   else:
     if not isinstance(ttFont["gasp"].gaspRange, dict):
       yield FAIL,\
             Message("empty",
-                    "The 'gasp' table has no values.")
+                    "The 'gasp' table has no values.\n" + \
+                    NON_HINTING_MESSAGE)
     else:
       failed = False
       if 0xFFFF not in ttFont["gasp"].gaspRange:

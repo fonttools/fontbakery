@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.13 (2019-Sep-20)
-  - ...
+### Changes to checks
+  - com.google.fonts/check/gasp: mention how to fix if font is unhinted (issue #2636)
 
 
 ## 0.7.12 (2019-Sep-14)
