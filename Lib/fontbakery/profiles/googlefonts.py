@@ -3132,14 +3132,16 @@ def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style)
       failed = True
       yield FAIL,\
             Message("bad-typo-win",
-                    f'TYPOGRAPHIC_SUBFAMILY_NAME for Win is incorrect.'
+                    f'TYPOGRAPHIC_SUBFAMILY_NAME for Win'
+                    f' "{win_name.toUnicode()}" is incorrect.'
                     f' It must be "{expected_style.typo_style_name}".')
 
     if mac_name and mac_name.toUnicode() != expected_style.typo_style_name:
       failed = True
       yield FAIL,\
             Message("bad-typo-mac",
-                    f'TYPOGRAPHIC_SUBFAMILY_NAME for Mac is incorrect.'
+                    f'TYPOGRAPHIC_SUBFAMILY_NAME for Mac'
+                    f' "{mac_name.toUnicode()}" is incorrect.'
                     f' It must be "{expected_style.typo_style_name}".'
                     f' Please note, this record can be safely deleted.')
 
