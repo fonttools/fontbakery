@@ -2,8 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.13 (2019-Sep-20)
+## 0.7.13 (2019-Sep-30)
 ### Changes to checks
+  - com.google.fonts/check/canonical_filename: filenames with underscore characters are considered invalid. (issue #2615)
   - com.google.fonts/check/gasp: mention how to fix if font is unhinted (issue #2636)
 
 

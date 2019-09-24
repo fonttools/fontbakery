@@ -197,6 +197,10 @@ def test_check_canonical_filename():
     status, message = list(check(non_canonical))[-1]
     assert status == FAIL and message.code == "bad-varfont-filename"
 
+  print(f'Test FAIL with filename containing an underscore...')
+  status, message = list(check(TEST_FILE("Bad_Name.ttf")))[-1]
+  assert status == FAIL and message.code == "invalid-char"
+
   # TODO: FAIL, "bad-static-filename"
   # TODO: FAIL, "varfont-with-static-filename"
 
