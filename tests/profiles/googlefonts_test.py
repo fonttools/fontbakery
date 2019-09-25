@@ -1761,61 +1761,9 @@ def test_check_metadata_copyright_max_length():
   assert status == FAIL and message.code == "max-length"
 
 
-# temporarily disabled.
-# See: https://github.com/googlefonts/fontbakery/issues/2597
-def DISABLED_test_check_metadata_canonical_filename():
-  """ METADATA.pb: Filename is set canonically? """
-  from fontbakery.profiles.shared_conditions import is_variable_font
-  from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_canonical_filename as check,
-                                               family_metadata,
-                                               font_metadata,
-                                               canonical_filename)
-  fontfile = TEST_FILE("montserrat/Montserrat-Regular.ttf")
-  family_directory = os.path.dirname(fontfile)
-  family_meta = family_metadata(family_directory)
-  font_meta = font_metadata(family_meta, fontfile)
-
-  test_cases = [
-     #expected,             weight, style,    filename
-    [PASS, "ok",            100,    "normal", TEST_FILE("montserrat/Montserrat-Thin.ttf")],
-    [PASS, "ok",            100,    "italic", TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")],
-    [PASS, "ok",            200,    "normal", TEST_FILE("montserrat/Montserrat-ExtraLight.ttf")],
-    [PASS, "ok",            200,    "italic", TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf")],
-    [PASS, "ok",            300,    "normal", TEST_FILE("montserrat/Montserrat-Light.ttf")],
-    [PASS, "ok",            300,    "italic", TEST_FILE("montserrat/Montserrat-LightItalic.ttf")],
-    [PASS, "ok",            400,    "normal", TEST_FILE("montserrat/Montserrat-Regular.ttf")],
-    [PASS, "ok",            400,    "italic", TEST_FILE("montserrat/Montserrat-Italic.ttf")],
-    [FAIL, "non-canonical", 400,    "italic", TEST_FILE("montserrat/Montserrat-RegularItalic.ttf")],
-    [PASS, "ok",            500,    "normal", TEST_FILE("montserrat/Montserrat-Medium.ttf")],
-    [PASS, "ok",            500,    "italic", TEST_FILE("montserrat/Montserrat-MediumItalic.ttf")],
-    [PASS, "ok",            600,    "normal", TEST_FILE("montserrat/Montserrat-SemiBold.ttf")],
-    [PASS, "ok",            600,    "italic", TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf")],
-    [PASS, "ok",            700,    "normal", TEST_FILE("montserrat/Montserrat-Bold.ttf")],
-    [PASS, "ok",            700,    "italic", TEST_FILE("montserrat/Montserrat-BoldItalic.ttf")],
-    [PASS, "ok",            800,    "normal", TEST_FILE("montserrat/Montserrat-ExtraBold.ttf")],
-    [PASS, "ok",            800,    "italic", TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf")],
-    [PASS, "ok",            900,    "normal", TEST_FILE("montserrat/Montserrat-Black.ttf")],
-    [PASS, "ok",            900,    "italic", TEST_FILE("montserrat/Montserrat-BlackItalic.ttf")]
-  ]
-  # FIXME: There should also be samples of good and bad variable fonts in this code-test.
-
-  for expected_status, expected_code, weight, style, filename in test_cases:
-    is_var = os.path.exists(filename) and is_variable_font(TTFont(filename))
-    print (("Test {} '{}' with style:'{}',"
-            " weight:{}, filename:'{}', varfont:'{}'...").format(expected_status,
-                                                                 expected_code,
-                                                                 style,
-                                                                 weight,
-                                                                 filename,
-                                                                 is_var))
-    filename = os.path.basename(filename)
-    font_meta.style = style
-    font_meta.weight = weight
-    font_meta.filename = filename
-    status, message = list(check(font_meta,
-                                 canonical_filename(font_meta),
-                                 is_var))[-1]
-    assert status == expected_status and message.code == expected_code
+def test_check_metadata_filenames():
+  """ METADATA.pb: Font filenames match font.filename entries? """
+  # TODO: Implement-me!
 
 
 def test_check_metadata_italic_style():

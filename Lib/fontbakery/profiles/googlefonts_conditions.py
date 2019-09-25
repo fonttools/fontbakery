@@ -341,33 +341,6 @@ def font_familyname(font_familynames):
   return font_familynames[0]
 
 
-@condition
-def canonical_filename(font_metadata):
-  if not font_metadata:
-    return
-  style_names = {
-    "normal": "",
-    "italic": "Italic"
-  }
-  WEIGHT_VALUE_TO_NAME = {
-    100: "Thin",
-    200: "ExtraLight",
-    300: "Light",
-    400: "",
-    500: "Medium",
-    600: "SemiBold",
-    700: "Bold",
-    800: "ExtraBold",
-    900: "Black"
-  }
-  familyname = font_metadata.name.replace(" ", "")
-  style_weight = "{}{}".format(WEIGHT_VALUE_TO_NAME.get(font_metadata.weight),
-                               style_names.get(font_metadata.style))
-  if style_weight == "":
-    style_weight = "Regular"
-  return f"{familyname}-{style_weight}.ttf"
-
-
 # TODO: Design special case handling for whitelists/blacklists
 # https://github.com/googlefonts/fontbakery/issues/1540
 @condition

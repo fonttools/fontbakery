@@ -3,9 +3,12 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.13 (2019-Sep-30)
+### New checks
+  - **[com.google.fonts/check/metadata/filenames]:** "METADATA.pb: Font filenames match font.filename entries?" (issue #2597)
+
 ### Changes to checks
-  - com.google.fonts/check/canonical_filename: filenames with underscore characters are considered invalid. (issue #2615)
-  - com.google.fonts/check/gasp: mention how to fix if font is unhinted (issue #2636)
+  - **[com.google.fonts/check/canonical_filename]:** filenames with underscore characters are considered invalid. (issue #2615)
+  - **[com.google.fonts/check/gasp]:** mention how to fix if font is unhinted (issue #2636)
 
 
 ## 0.7.12 (2019-Sep-14)
