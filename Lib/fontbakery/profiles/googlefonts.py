@@ -48,7 +48,7 @@ METADATA_CHECKS = [
       , 'com.google.fonts/check/metadata/valid_copyright'
       , 'com.google.fonts/check/metadata/reserved_font_name'
       , 'com.google.fonts/check/metadata/copyright_max_length'
-# temporarily disabled:      , 'com.google.fonts/check/metadata/canonical_filename'
+      , 'com.google.fonts/check/metadata/filenames'
       , 'com.google.fonts/check/metadata/italic_style'
       , 'com.google.fonts/check/metadata/normal_style'
       , 'com.google.fonts/check/metadata/fontname_not_camel_cased'
@@ -2036,33 +2036,35 @@ def com_google_fonts_check_metadata_copyright_max_length(font_metadata):
     yield PASS, "Copyright notice string is shorter than 500 chars."
 
 
-@disable # See: https://github.com/googlefonts/fontbakery/issues/2597
 @check(
-  id = 'com.google.fonts/check/metadata/canonical_filename',
-  conditions = ['font_metadata',
-                'canonical_filename']
+  id = 'com.google.fonts/check/metadata/filenames',
+  conditions = ['family_metadata']
 )
-def com_google_fonts_check_metadata_canonical_filename(font_metadata,
-                                                       canonical_filename,
-                                                       is_variable_font):
-  """METADATA.pb: Filename is set canonically?"""
+def com_google_fonts_check_metadata_filenames(fonts, family_metadata):
+  """METADATA.pb: Font filenames match font.filename entries?"""
 
-  if is_variable_font:
-    valid_varfont_suffixes = [
-      ("Roman-VF", "Regular"),
-      ("Italic-VF", "Italic"),
-    ]
-    for valid_suffix, style in valid_varfont_suffixes:
-      if style in canonical_filename:
-        canonical_filename = valid_suffix.join(canonical_filename.split(style))
+  passed = True
+  metadata_filenames = []
+  font_filenames = [os.path.split(f)[1] for f in fonts]
+  for font_metadata in family_metadata.fonts:
+    if font_metadata.filename not in font_filenames:
+      passed = False
+      yield FAIL,\
+            Message("file-not-found",
+                    f'Filename "{font_metadata.filename}" is listed on'
+                    f' METADATA.pb but an actual font file'
+                    f' with that name was not found.')
+    metadata_filenames.append(font_metadata.filename)
 
-  if canonical_filename != font_metadata.filename:
-    yield FAIL,\
-          Message("non-canonical",
-                  f'METADATA.pb: filename field ("{font_metadata.filename}")'
-                  f' does not match canonical name "{canonical_filename}".')
-  else:
-    yield PASS, "Filename in METADATA.pb is set canonically."
+  for font in font_filenames:
+    if font not in metadata_filenames:
+      passed = False
+      yield FAIL,\
+            Message("file-not-declared",
+                    f'Filename "{font}" is not declared'
+                    f' on METADATA.pb as a font.filename entry.')
+  if passed:
+    yield PASS, "Filenames in METADATA.pb look good."
 
 
 @check(
