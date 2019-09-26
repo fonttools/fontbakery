@@ -49,6 +49,13 @@ cabin_fonts = [
   TEST_FILE("cabin/Cabin-SemiBold.ttf")
 ]
 
+cabin_condensed_fonts = [
+  TEST_FILE("cabin/CabinCondensed-Regular.ttf"),
+  TEST_FILE("cabin/CabinCondensed-Medium.ttf"),
+  TEST_FILE("cabin/CabinCondensed-Bold.ttf"),
+  TEST_FILE("cabin/CabinCondensed-SemiBold.ttf")
+]
+
 @pytest.fixture
 def cabin_ttFonts():
   return [TTFont(path) for path in cabin_fonts]
@@ -1763,15 +1770,36 @@ def test_check_metadata_copyright_max_length():
 
 def test_check_metadata_filenames():
   """ METADATA.pb: Font filenames match font.filename entries? """
-  # TODO: Implement-me!
+  from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_filenames as check,
+                                               family_metadata)
+  family_meta = family_metadata(portable_path('data/test/cabin/'))
+
+  # When passing only the Cabin-*.ttf files, the check must PASS
+  print ("Test PASS with a good set of fonts...")
+  status, message = list(check(cabin_fonts, family_meta))[-1]
+  assert status == PASS
+
+  # But if all TTFs are passed, then the check must FAIL
+  # since the condensed ones are not listed on METADATA.pb
+  print ("Test FAIL with some additional font files...")
+  status, message = list(check(cabin_fonts + cabin_condensed_fonts,
+                               family_meta))[-1]
+  assert status == FAIL and message.code == "file-not-declared"
+
+  # And finally we make sure missing files are also detected by the check:
+  print ("Test FAIL with missing font files...")
+  fonts = cabin_fonts
+  fonts.pop()
+  status, message = list(check(fonts, family_meta))[-1]
+  assert status == FAIL and message.code == "file-not-found"
 
 
 def test_check_metadata_italic_style():
   """ METADATA.pb font.style "italic" matches font internals ? """
   from fontbakery.constants import MacStyle
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_italic_style as check,
-                                                     family_metadata,
-                                                     font_metadata)
+                                               family_metadata,
+                                               font_metadata)
   # Our reference Merriweather Italic is known to good
   fontfile = TEST_FILE("merriweather/Merriweather-Italic.ttf")
   ttFont = TTFont(fontfile)
