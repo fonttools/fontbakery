@@ -1399,7 +1399,7 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
         bad_entries.append(name)
         badstring = string.encode("ascii",
                                   errors='xmlcharrefreplace')
-        yield INFO,\
+        yield FAIL,\
               Message("bad-string",
                       (f"Bad string at"
                        f" [nameID {name.nameID}, '{name.getEncoding()}']:"

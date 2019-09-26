@@ -968,7 +968,7 @@ def test_check_name_ascii_only_entries():
   results = list(check(ttFont))
   info_status, info_message = results[-2]
   final_status, final_message = results[-1]
-  assert info_status == INFO and info_message.code == "bad-string"
+  assert info_status == FAIL and info_message.code == "bad-string"
   assert final_status == FAIL and final_message.code == "non-ascii-strings"
 
   # Then reload the good font
@@ -982,7 +982,7 @@ def test_check_name_ascii_only_entries():
   results = list(check(ttFont))
   info_status, info_message = results[-2]
   final_status, final_message = results[-1]
-  assert info_status == INFO and info_message.code == "bad-string"
+  assert info_status == FAIL and info_message.code == "bad-string"
   assert final_status == FAIL and final_message.code == "non-ascii-strings"
 
   # Reload the good font once more:
