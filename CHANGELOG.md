@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New checks
   - **[com.google.fonts/check/metadata/filenames]:** "METADATA.pb: Font filenames match font.filename entries?" (issue #2597)
 
+### Bugfixes
+  - **[com.google.fonts/check/usweightclass]:** Italics should not affect the results. (issue #2650)
+
 ### Changes to checks
   - **[com.google.fonts/check/canonical_filename]:** filenames with underscore characters are considered invalid. (issue #2615)
   - **[com.google.fonts/check/gasp]:** mention how to fix if font is unhinted (issue #2636)
