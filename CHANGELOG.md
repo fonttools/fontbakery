@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to checks
   - **[com.google.fonts/check/canonical_filename]:** filenames with underscore characters are considered invalid. (issue #2615)
+  - **[com.google.fonts/check/family/win_ascent_and_descent]:** Inform which glyphs are risking clipping (#2652)
   - **[com.google.fonts/check/gasp]:** mention how to fix if font is unhinted (issue #2636)
 
 

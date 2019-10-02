@@ -82,40 +82,60 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
   linespacing with the typo values, whilst avoiding clipping by setting
   the win values to values greater than the yMax and abs(yMin).
   """
-  failed = False
+  from fontbakery.utils import pretty_print_list
+  passed = True
 
   # OS/2 usWinAscent:
   if ttFont['OS/2'].usWinAscent < vmetrics['ymax']:
-    failed = True
-    yield FAIL, Message("ascent",
-                        ("OS/2.usWinAscent value"
-                         " should be equal or greater than {}, but got"
-                         " {} instead").format(vmetrics['ymax'],
-                                               ttFont['OS/2'].usWinAscent))
+    passed = False
+    yield FAIL,\
+          Message("ascent",
+                  f"OS/2.usWinAscent value"
+                  f" should be equal or greater than {vmetrics['ymax']},"
+                  f" but got {ttFont['OS/2'].usWinAscent} instead")
+    ascents_may_clip = set()
+    for g in ttFont['glyf'].glyphs:
+      char = ttFont['glyf'][g]
+      if hasattr(char, 'yMax') and char.yMax > ttFont['OS/2'].usWinAscent:
+        ascents_may_clip.add(g)
+    yield INFO, (f"These are some glyphs with ascents that may clip:\n"
+                 f" {pretty_print_list(list(ascents_may_clip), shorten=10)}")
+
   if ttFont['OS/2'].usWinAscent > vmetrics['ymax'] * 2:
-    failed = True
-    yield FAIL, Message(
-        "ascent", ("OS/2.usWinAscent value {} is too large."
-                   " It should be less than double the yMax."
-                   " Current yMax value is {}").format(ttFont['OS/2'].usWinDescent,
-                                                       vmetrics['ymax']))
+    passed = False
+    yield FAIL,\
+          Message("double-ymax",
+                  f"OS/2.usWinAscent value"
+                  f" {ttFont['OS/2'].usWinDescent} is too large."
+                  f" It should be less than double the yMax."
+                  f" Current yMax value is {vmetrics['ymax']}")
+
   # OS/2 usWinDescent:
   if ttFont['OS/2'].usWinDescent < abs(vmetrics['ymin']):
-    failed = True
-    yield FAIL, Message(
-        "descent", ("OS/2.usWinDescent value"
-                    " should be equal or greater than {}, but got"
-                    " {} instead").format(
-                        abs(vmetrics['ymin']), ttFont['OS/2'].usWinDescent))
+    passed = False
+    yield FAIL,\
+          Message("descent",
+                  f"OS/2.usWinDescent value should be equal or greater"
+                  f" than {abs(vmetrics['ymin'])}, but got"
+                  f" {ttFont['OS/2'].usWinDescent} instead")
+    descents_may_clip = set()
+    for g in ttFont['glyf'].glyphs:
+      char = ttFont['glyf'][g]
+      if hasattr(char, 'yMin') and char.yMin < 0 and abs(char.yMin) > ttFont['OS/2'].usWinDescent:
+        descents_may_clip.add(g)
+    yield INFO, (f"These are some glyphs with descents that may clip:\n"
+                 f" {pretty_print_list(list(descents_may_clip), shorten=10)}")
 
   if ttFont['OS/2'].usWinDescent > abs(vmetrics['ymin']) * 2:
-    failed = True
-    yield FAIL, Message(
-        "descent", ("OS/2.usWinDescent value {} is too large."
-                    " It should be less than double the yMin."
-                    " Current absolute yMin value is {}").format(ttFont['OS/2'].usWinDescent,
-                                                                 abs(vmetrics['ymin'])))
-  if not failed:
+    passed = False
+    yield FAIL,\
+          Message("double-ymin",
+                  f"OS/2.usWinDescent value"
+                  f" {ttFont['OS/2'].usWinDescent} is too large."
+                  f" It should be less than double the yMin."
+                  f" Current absolute yMin value is {abs(vmetrics['ymin'])}")
+
+  if passed:
     yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
 
 
