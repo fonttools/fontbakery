@@ -832,8 +832,8 @@ def com_google_fonts_check_usweightclass(ttFont, expected_style):
   if value != expected_value:
 
     if is_ttf(ttFont) and \
-       (weight_name == 'Thin' and value == 100) or \
-       (weight_name == 'ExtraLight' and value == 200):
+       (weight_name in ['Thin', 'Thin Italic'] and value == 100) or \
+       (weight_name in ['ExtraLight', 'ExtraLight Italic'] and value == 200):
       yield WARN,\
             Message("blur-on-windows",
                     f"{weight_name}:{value} is OK on TTFs, but"

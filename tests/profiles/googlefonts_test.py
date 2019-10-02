@@ -694,7 +694,8 @@ def test_check_usweightclass():
 
   # TODO: test FAIL, "bad-value" with a Thin:100 OTF
   # TODO: test FAIL, "bad-value" with an ExtraLight:200 OTF
-
+  # TODO: test italic variants to ensure we do not get regressions of
+  #       this bug: https://github.com/googlefonts/fontbakery/issues/2650
 
 def test_family_directory_condition():
   from fontbakery.profiles.googlefonts import family_directory
