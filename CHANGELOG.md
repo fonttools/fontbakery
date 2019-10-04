@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.13 (2019-Sep-30)
+## 0.7.14 (2019-Oct-11)
+  - ...
+
+
+## 0.7.13 (2019-Oct-04)
 ### New checks
   - **[com.google.fonts/check/metadata/filenames]:** "METADATA.pb: Font filenames match font.filename entries?" (issue #2597)
 
