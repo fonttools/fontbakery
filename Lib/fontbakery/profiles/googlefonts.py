@@ -192,12 +192,12 @@ def com_google_fonts_check_canonical_filename(font):
     return f"{familyname}{tags}.ttf"
 
   failed = False
-  if "_" in font:
+  if "_" in os.path.basename(font):
     failed = True
     yield FAIL,\
           Message("invalid-char",
-                  'font filename "{font}" is invalid.'
-                  ' It must not contain underscore characters!')
+                  f'font filename "{font}" is invalid.'
+                  f' It must not contain underscore characters!')
     return
 
   ttFont = TTFont(font)

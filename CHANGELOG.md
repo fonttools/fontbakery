@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - **[com.google.fonts/check/usweightclass]:** Italics should not affect the results. (issue #2650)
+  - **[com.google.fonts/check/canonical_filename]:** Fix f-string syntax and only check filename (not full path) (issue #2649)
 
 ### Changes to checks
   - **[com.google.fonts/check/canonical_filename]:** filenames with underscore characters are considered invalid. (issue #2615)
