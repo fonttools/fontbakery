@@ -64,23 +64,23 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-09-13 07:06 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/d50f95cd829bed3018dd8a63935eeac339dd2a76/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-09-23 08:48 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f0a45b4ab24a6a331b41c3dfc967b555e86c5749/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2803" />
+<meta name="word_count" content="2809" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/94d1b781.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/6918100c.site-ltr.css ">
 
-	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cd54db8b.conceptual.css ">
+	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/b8d322.conceptual.css ">
 
 
 	<script>
@@ -102,12 +102,10 @@
 			feedbackGitHubRepo: 'MicrosoftDocs/typography-issues',
 			feedbackProductUrl: '',
 			contentGitUrl: 'https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md',
-		},
-		functions:{},
-		settings:{
-			auth: 'v2',
 			extendBreadcrumb: true,
-		}
+			auth: 'v2',
+		},
+		functions:{}
 	};
 	if (!('Promise' in window && 'resolve' in window.Promise && 'reject' in window.Promise && 'all' in window.Promise && 'race' in window.Promise)) {
 		document.write('<script src="https://static.docs.com/ui/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"><\/script>');
@@ -124,7 +122,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/e03cf277.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/25a80ddb.index-docs.js"></script>
 
 </head>
 
@@ -1357,6 +1355,10 @@ High contrast					</span>
 <tr>
 <td>FAFO</td>
 <td>FamiraFonts</td>
+</tr>
+<tr>
+<td>FAM</td>
+<td><a href="http://familytype.co/" data-linktype="external">Family Type</a></td>
 </tr>
 <tr>
 <td>FAPA</td>
@@ -2975,6 +2977,10 @@ High contrast					</span>
 <td>R K Fonts</td>
 </tr>
 <tr>
+<td>RKRD</td>
+<td><a href="https://rekord.cc" data-linktype="external">REKORD</a></td>
+</tr>
+<tr>
 <td>RL</td>
 <td><a href="http://www.dafont.com/ruben-holthuijsen.d2014" data-linktype="external">Ruben Holthuijsen</a></td>
 </tr>
@@ -3689,10 +3695,6 @@ High contrast					</span>
 <td><a href="http://www.about.me/xoth" data-linktype="external">Xoth Morello</a></td>
 </tr>
 <tr>
-<td>XT</td>
-<td><a href="http://x-type.co/" data-linktype="external">X-Type</a></td>
-</tr>
-<tr>
 <td>XYZ</td>
 <td><a href="http://www.xyztype.com" data-linktype="external">XYZ Type LLC</a></td>
 </tr>
@@ -3730,6 +3732,10 @@ High contrast					</span>
 <tr>
 <td>YOUR</td>
 <td><a href="http://www.yourfonts.com" data-linktype="external">YourFonts.com</a></td>
+</tr>
+<tr>
+<td>YT</td>
+<td><a href="https://www.behance.net/yurlick" data-linktype="external">YT Foundry</a></td>
 </tr>
 <tr>
 <td>YWFT</td>
@@ -3771,35 +3777,6 @@ High contrast					</span>
 						</main>
 
 						<!-- rating mobile section -->
-								<div class="is-hidden-desktop has-border-top has-margin-top-large has-padding-top-small">
-<div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
-	<div class="binary-rating">
-		<div class="binary-rating-buttons">
-			<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
-			<div>
-				<button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" data-bi-sat="1">
-					<span class="icon docon docon-like" aria-hidden="true"></span><span>Yes</span>
-				</button>
-				<button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-haspopup="true" aria-controls="rating-feedback">
-					<span class="icon docon docon-dislike" aria-hidden="true"></span><span>No</span>
-				</button>
-			</div>
-		</div>
-		<form class="feedback-verbatim-form is-hidden">
-			<div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
-				<label for="rating-feedback-mobile" class="visually-hidden">Any additional feedback?</label>
-				<textarea id="rating-feedback-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
-			</div>
-			<div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
-				<button class="skip-rating button is-text is-link is-small" type="button">Skip</button>
-				<button disabled class="submit-rating button is-primary is-small" type="submit" data-bi-name="rating-verbatim">Submit</button>
-			</div>
-		</form>
-	</div>
-	<div class="thankyou-rating is-hidden">
-		<p>Thank you.</p>
-	</div>
-</div>								</div>
 						<!-- end rating mobile section -->
 
 						<!-- feedback section -->
@@ -3860,8 +3837,8 @@ This page					</button>
 		</h3>
 
 		<label>
-			<span class="visually-hidden">Issue Title</span>
-			<input class="input is-radiusless has-margin-bottom-small" name="title" type="text" placeholder="Issue Title" required pattern=".*[^\s]+.*">
+			<span class="visually-hidden">Title</span>
+			<input class="input is-radiusless has-margin-bottom-small" name="title" type="text" placeholder="Title" required pattern=".*[^\s]+.*">
 		</label>
 		<label>
 			<span class="visually-hidden">Leave a comment</span>
