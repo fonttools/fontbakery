@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.14 (2019-Oct-11)
-  - ...
+### Bugfixes
+  - **[com.google.fonts/check/contour_count]:** Fix listing of glyphnames with unexpected contour counts. (issue #2647)
 
 
 ## 0.7.13 (2019-Oct-04)

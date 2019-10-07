@@ -2746,12 +2746,18 @@ def com_google_fonts_check_contour_count(ttFont):
     if len(bad_glyphs) > 0:
       cmap = ttFont['cmap'].getcmap(PlatformID.WINDOWS,
                                     WindowsEncodingID.UNICODE_BMP).cmap
+
+      def _glyph_name(cmap, name):
+        if name in cmap:
+          return cmap[name]
+        else:
+          return name
+
       bad_glyphs_name = [
-        f"Glyph name: {cmap[name]}\t"
+        f"Glyph name: {_glyph_name(cmap, name)}\t"
         f"Contours detected: {count}\t"
         f"Expected: {pretty_print_list(expected, shorten=None, glue='or')}"
         for name, count, expected in bad_glyphs
-        if name in cmap
       ]
       bad_glyphs_name = '\n'.join(bad_glyphs_name)
       yield WARN,\
