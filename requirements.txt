@@ -1,11 +1,11 @@
 --index-url https://pypi.python.org/simple/
-beautifulsoup4==4.8.0
+beautifulsoup4==4.8.1
 defcon==0.6.0
 font-v==0.7.1
-fontTools[ufo,lxml,unicode]==4.0.1
+fontTools[ufo,lxml,unicode]==4.0.2
 lxml==4.4.1
 opentype-sanitizer==7.1.9
-protobuf==3.9.1
+protobuf==3.10.0
 requests==2.22.0
 ttfautohint-py==0.4.3
 ufolint==0.4.1
@@ -18,4 +18,4 @@ ufolint==0.4.1
 
 # This is only needed to run code-tests:
 # ufo2ft==2.9.1
-# pytest==5.1.2
+# pytest==5.2.1
