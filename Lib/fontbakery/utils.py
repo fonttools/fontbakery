@@ -194,7 +194,7 @@ def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
     if expected:
       expected_str = "set"
     else:
-      expected_str = "reset"
+      expected_str = "unset"
     return FAIL, Message(f"bad-{bitname}",
                          f"{name_str} should be {expected_str}.")
 
