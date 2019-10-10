@@ -6,6 +6,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bugfixes
   - **[com.google.fonts/check/glyph_coverage]:** display full list of missing required codepoints in INFO log message (issue #2690)
 
+### New checks
+  - **[com.google.fonts/check/repo/vf_has_static_fonts]:** Check VF family dirs in google/fonts contain static fonts (issue #2654)
 
 ## 0.7.15 (2019-Nov-03)
 ### Note-worthy changes

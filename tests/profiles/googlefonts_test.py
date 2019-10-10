@@ -3123,6 +3123,36 @@ def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
 #  assert status == PASS
 
 
+def test_check_repo_vf_has_static_fonts():
+  """Check VF family dirs in google/fonts contain static fonts"""
+  from fontbakery.profiles.googlefonts import (
+    com_google_fonts_check_repo_vf_has_static_fonts as check,
+    family_directory)
+  import tempfile
+  import shutil
+  # in order for this check to work, we need to mimmic the folder structure of
+  # the Google Fonts repository
+  with tempfile.TemporaryDirectory() as tmp_gf_dir:
+      family_dir = os.path.join(tmp_gf_dir, "ofl", "testfamily")
+      src_family = os.path.join("data", "test", "varfont")
+      shutil.copytree(src_family, family_dir)
+
+      print("Test fail for a vf family which does not has a static dir.")
+      status, message = list(check(family_dir))[-1]
+      assert status == FAIL
+      print("Test fail for a vf family which has a static dir but no fonts in the static dir.")
+      static_dir = os.path.join(family_dir, "static")
+      os.mkdir(static_dir)
+      status, message = list(check(family_dir))[-1]
+      assert status == FAIL
+      print("Test pass for a vf family which has a static dir and static fonts")
+      static_fonts = os.path.join("data", "test", "cabin")
+      shutil.rmtree(static_dir)
+      shutil.copytree(static_fonts, static_dir)
+      status, message = list(check(family_dir))[-1]
+      assert status == PASS
+
+
 def test_check_vertical_metrics_regressions(cabin_ttFonts):
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_vertical_metrics_regressions as check,

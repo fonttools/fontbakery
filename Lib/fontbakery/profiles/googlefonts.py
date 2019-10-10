@@ -86,6 +86,7 @@ NAME_TABLE_CHECKS = [
 
 REPO_CHECKS = [
   'com.google.fonts/check/repo/dirname_matches_nameid_1',
+  'com.google.fonts/check/repo/vf_has_static_fonts',
 ]
 
 FONT_FILE_CHECKS = [
@@ -3859,6 +3860,31 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
                   f"Family name on the name table ('{entry}') does not match"
                   f" directory name in the repo structure ('{familypath}')."
                   f" Expected '{expected}'.")
+
+
+@check(
+  id = 'com.google.fonts/check/repo/vf_has_static_fonts',
+  conditions = ['family_directory', 'is_variable_font'],
+  rationale="""
+  For VF family directories which are kept in the google/fonts repo, they
+  must include a static dir which contains static fonts.
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2654'
+  }
+)
+def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
+  """A static fonts directory with at least two fonts must accompany variable fonts"""
+  static_dir = os.path.join(family_directory, 'static')
+  if os.path.exists(static_dir):
+      has_static_fonts = any([f for f in os.listdir(static_dir)
+                              if f.endswith('.ttf')])
+      if has_static_fonts:
+          yield PASS, 'OK'
+      else:
+          yield FAIL, 'Static dir is empty'
+  else:
+      yield FAIL, 'Please make a static dir and include fonts'
 
 
 @check(
