@@ -2,11 +2,16 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
+## 0.7.15 (2019-Oct-18)
+  - ...
+
+
 ## 0.7.14 (2019-Oct-11)
 ### Bugfixes
   - **[com.google.fonts/check/contour_count]:** Fix listing of glyphnames with unexpected contour counts. (issue #2647)
   - rewording: bit should be... "reset" => "unset" (issue #2648)
   - **[com.google.fonts/check/os2_metrics_match_hhea]:** Display the actual mismatching values. (issue #2653)
+
 
 ## 0.7.13 (2019-Oct-04)
 ### New checks
