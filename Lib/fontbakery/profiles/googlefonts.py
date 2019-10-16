@@ -3209,22 +3209,28 @@ def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
   """ Familyname must be unique according to namecheck.fontdata.com """
   FB_ISSUE_TRACKER = "https://github.com/googlefonts/fontbakery/issues"
   import requests
-  url = f"http://namecheck.fontdata.com/?q={familyname}"
+  URL = f"http://namecheck.fontdata.com"
   try:
-    response = requests.get(url, timeout=10)
+    # Since October 2019, it seems that we need to fake our user-agent
+    # in order to get correct query results
+    FAKE = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1)'
+    response = requests.post(URL,
+                             params={'q': familyname},
+                             headers={'User-Agent': FAKE},
+                             timeout=10)
     data = response.content.decode("utf-8")
     if "fonts by that exact name" in data:
       yield INFO,\
             Message("name-collision",
                     f'The family name "{familyname}" seems'
                     f' to be already in use.\n'
-                    f'Please visit {url} for more info.')
+                    f'Please visit {URL} for more info.')
     else:
       yield PASS, "Font familyname seems to be unique."
   except:
     yield ERROR,\
           Message("namecheck-service",
-                  f"Failed to access: {url}.\n"
+                  f"Failed to access: {URL}.\n"
                   f"Please report this issue at: {FB_ISSUE_TRACKER}")
 
 
