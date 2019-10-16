@@ -64,21 +64,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-10-10 11:21 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/cef45252cefa42c49cb04a5620862ad08bb9918c/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-10-14 08:39 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/d4966164fd0090a2c5a08b1954cb538658c25968/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2816" />
+<meta name="word_count" content="2821" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/15289695.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/9d6300df.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/b8d322.conceptual.css ">
 
@@ -121,7 +121,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/6f2a5b02.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/9baca273.index-docs.js"></script>
 
 </head>
 
@@ -167,6 +167,14 @@
 		</div>
 		<div id="page-actions" class="is-flex-touch has-flex-justify-content-space-between-touch has-padding-none has-padding-none-mobile">
 			<ul class="action-list has-flex-justify-content-start-mobile is-flex is-flex-row has-flex-wrap">
+				<li>
+					<button type="button" class="bookmark button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="bookmarks">
+						<span class="icon" aria-hidden="true">
+							<span class="docon docon-single-bookmark"></span>
+						</span>
+						<span class="bookmark-status is-visually-hidden-touch is-hidden-portrait">Bookmark</span>
+					</button>
+				</li>
 						<li>
 							<a href="#feedback" class="button is-text has-inner-focus is-small is-icon-only-touch" data-bi-name="comments">
 								<span class="icon">
@@ -842,6 +850,10 @@ High contrast					</span>
 <tr>
 <td>BLI</td>
 <td><a href="http://www.blissym.com/" data-linktype="external">Blissym Language Institute</a></td>
+</tr>
+<tr>
+<td>BLTS</td>
+<td><a href="https://www.blancoletters.com/" data-linktype="external">Blancoletters</a></td>
 </tr>
 <tr>
 <td>BLV</td>
@@ -1772,6 +1784,10 @@ High contrast					</span>
 <tr>
 <td>HM</td>
 <td><a href="http://www.haikumonkey.net" data-linktype="external">Haiku Monkey</a></td>
+</tr>
+<tr>
+<td>HOOL</td>
+<td><a href="http://hooloovoo.studio/" data-linktype="external">Hooloovoo Studio</a></td>
 </tr>
 <tr>
 <td>HoP</td>
