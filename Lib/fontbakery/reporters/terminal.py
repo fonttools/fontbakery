@@ -450,6 +450,10 @@ class TerminalReporter(TerminalProgress):
       print('  ',
         highlight(MAGENTA_STR, check.description, use_color=self._use_color))
 
+      if check.rationale:
+        print('  ',
+          highlight(WHITE_STR, check.rationale, use_color=self._use_color))
+
     # Log statuses have weights >= 0
     # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
     if status.weight >= self._log_threshold:

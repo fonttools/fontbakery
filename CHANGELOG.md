@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.15 (2019-Oct-25)
-  - ...
+### New features
+  - Print rationale of checks (if available) on terminal output (issue #2531)
 
 
 ## 0.7.14 (2019-Oct-16)
