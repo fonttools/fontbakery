@@ -50,10 +50,15 @@ class GHMarkdownReporter(SerializeReporter):
     github_search_url = (f"[{checkid}]"
                           "(https://font-bakery.readthedocs.io/en/latest"
                          f"/fontbakery/profiles/{profile}.html#{checkid})")
+
+    if not "rationale" in check:
+      rationale = ""
+    else:
+      rationale = f"<pre>--- Rationale ---\n{check['rationale'].strip()}</pre>\n"
     return self.html5_collapsible("{} <b>{}:</b> {}".format(self.emoticon(check["result"]),
                                                             check["result"],
                                                             check["description"]),
-                                  f"\n* {github_search_url}\n{logs}")
+                                  f"\n* {github_search_url}\n{rationale}\n{logs}")
 
   def omit_loglevel(self, msg):
     return self.loglevels and (self.loglevels[0] > Status(msg))
