@@ -7,15 +7,11 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 @check(
   id = 'com.google.fonts/check/dsig',
   rationale = """
-    Some programs expect fonts to have a digital signature
-    declared in their DSIG table in order to work properly.
+    Some programs expect fonts to have a digital signature declared in their DSIG table in order to work properly.
 
     This checks verifies that such signature is available in the font.
 
-    Typically, even a fake signature would be enough to make the
-    fonts work. If needed, such dummy-placeholder can be added to
-    the font by using the `gftools fix-dsig` script available at
-    https://github.com/googlefonts/gftools
+    Typically, even a fake signature would be enough to make the fonts work. If needed, such dummy-placeholder can be added to the font by using the `gftools fix-dsig` script available at https://github.com/googlefonts/gftools
   """
 )
 def com_google_fonts_check_dsig(ttFont):

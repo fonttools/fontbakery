@@ -90,12 +90,11 @@ def _check_call_depth(top_dict, private_dict, fd_index=0):
 
 
 @check(
-    id='com.adobe.fonts/check/cff_call_depth',
-    conditions=['is_cff'],
-    rationale="""
-      Per "The Type 2 Charstring Format, Technical Note #5177",
-      the "Subr nesting, stack limit" is 10.
-    """
+  id = 'com.adobe.fonts/check/cff_call_depth',
+  conditions = ['is_cff'],
+  rationale = """
+    Per "The Type 2 Charstring Format, Technical Note #5177", the "Subr nesting, stack limit" is 10.
+  """
 )
 def com_adobe_fonts_check_cff_call_depth(ttFont):
     """Is the CFF subr/gsubr call depth > 10?"""
@@ -125,12 +124,11 @@ def com_adobe_fonts_check_cff_call_depth(ttFont):
 
 
 @check(
-    id='com.adobe.fonts/check/cff2_call_depth',
-    conditions=['is_cff2'],
-    rationale="""
-      Per "The CFF2 CharString Format",
-      the "Subr nesting, stack limit" is 10.
-    """
+  id = 'com.adobe.fonts/check/cff2_call_depth',
+  conditions = ['is_cff2'],
+  rationale = """
+    Per "The CFF2 CharString Format", the "Subr nesting, stack limit" is 10.
+  """
 )
 def com_adobe_fonts_check_cff2_call_depth(ttFont):
     """Is the CFF2 subr/gsubr call depth > 10?"""

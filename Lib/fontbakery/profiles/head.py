@@ -38,18 +38,13 @@ def com_google_fonts_check_family_equal_font_versions(ttFonts):
 @check(
   id = 'com.google.fonts/check/unitsperem',
   rationale = """
-  According to the OpenType spec:
+    According to the OpenType spec:
 
-  The value of unitsPerEm at the head table must be
-  a value between 16 and 16384. Any value in this
-  range is valid.
+    The value of unitsPerEm at the head table must be a value between 16 and 16384. Any value in this range is valid.
 
-  In fonts that have TrueType outlines, a power of 2
-  is recommended as this allows performance
-  optimizations in some rasterizers.
+    In fonts that have TrueType outlines, a power of 2 is recommended as this allows performance optimizations in some rasterizers.
 
-  But 1000 is a commonly used value. And 2000 may
-  become increasingly more common on Variable Fonts.
+    But 1000 is a commonly used value. And 2000 may become increasingly more common on Variable Fonts.
   """
 )
 def com_google_fonts_check_unitsperem(ttFont):

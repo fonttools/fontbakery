@@ -38,7 +38,7 @@ UNIVERSAL_PROFILE_CHECKS = \
 ]
 
 @check(
-  id='com.google.fonts/check/name/trailing_spaces',
+  id = 'com.google.fonts/check/name/trailing_spaces',
 )
 def com_google_fonts_check_name_trailing_spaces(ttFont):
   """Name table records must not have trailing spaces."""
@@ -61,27 +61,17 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
 
 @check(
   id = 'com.google.fonts/check/family/win_ascent_and_descent',
-  conditions = ['vmetrics']
+  conditions = ['vmetrics'],
+  rationale = """
+    A font's winAscent and winDescent values should be greater than the head table's yMax, abs(yMin) values. If they are less than these values, clipping can occur on Windows platforms (https://github.com/RedHatBrand/Overpass/issues/33).
+
+    If the font includes tall/deep writing systems such as Arabic or Devanagari, the winAscent and winDescent can be greater than the yMax and abs(yMin) to accommodate vowel marks.
+
+    When the win Metrics are significantly greater than the upm, the linespacing can appear too loose. To counteract this, enabling the OS/2 fsSelection bit 7 (Use_Typo_Metrics), will force Windows to use the OS/2 typo values instead. This means the font developer can control the linespacing with the typo values, whilst avoiding clipping by setting the win values to values greater than the yMax and abs(yMin).
+  """
 )
 def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
-  """Checking OS/2 usWinAscent & usWinDescent.
-
-  A font's winAscent and winDescent values should be greater than the
-  head table's yMax, abs(yMin) values. If they are less than these
-  values, clipping can occur on Windows platforms,
-  https://github.com/RedHatBrand/Overpass/issues/33
-
-  If the font includes tall/deep writing systems such as Arabic or
-  Devanagari, the winAscent and winDescent can be greater than the yMax and
-  abs(yMin) to accommodate vowel marks.
-
-  When the win Metrics are significantly greater than the upm, the
-  linespacing can appear too loose. To counteract this, enabling the
-  OS/2 fsSelection bit 7 (Use_Typo_Metrics), will force Windows to use the
-  OS/2 typo values instead. This means the font developer can control the
-  linespacing with the typo values, whilst avoiding clipping by setting
-  the win values to values greater than the yMax and abs(yMin).
-  """
+  """Checking OS/2 usWinAscent & usWinDescent."""
   failed = False
 
   # OS/2 usWinAscent:
@@ -121,18 +111,13 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
 
 @check(
   id = 'com.google.fonts/check/os2_metrics_match_hhea',
-  rationale = """When OS/2 and hhea vertical metrics match, the same
-  linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018,
-  Google Fonts has released many fonts with vertical metrics that don't match
-  in this way. When we fix this issue in these existing families, we will
-  create a visible change in line/paragraph layout for either Windows or macOS
-  users, which will upset some of them.
+  rationale = """
+    When OS/2 and hhea vertical metrics match, the same linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018, Google Fonts has released many fonts with vertical metrics that don't match in this way. When we fix this issue in these existing families, we will create a visible change in line/paragraph layout for either Windows or macOS users, which will upset some of them.
 
-  But we have a duty to fix broken stuff, and inconsistent paragraph layout is
-  unacceptably broken when it is possible to avoid it.
+    But we have a duty to fix broken stuff, and inconsistent paragraph layout is unacceptably broken when it is possible to avoid it.
 
-  If users complain and prefer the old broken version, they are libre to take
-  care of their own situation."""
+    If users complain and prefer the old broken version, they have the freedom to take care of their own situation.
+  """
 )
 def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
   """Checking OS/2 Metrics match hhea Metrics.
@@ -163,19 +148,15 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
 
 @check(
   id = 'com.google.fonts/check/family/single_directory',
+  rationale = """
+    If the set of font files passed in the command line is not all in the same directory, then we warn the user since the tool will interpret the set of files as belonging to a single family (and it is unlikely that the user would store the files from a single family spreaded in several separate directories).
+  """,
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   }
 )
 def com_google_fonts_check_family_single_directory(fonts):
-  """Checking all files are in the same directory.
-
-  If the set of font files passed in the command line is not all in the
-  same directory, then we warn the user since the tool will interpret
-  the set of files as belonging to a single family (and it is unlikely
-  that the user would store the files from a single family spreaded in
-  several separate directories).
-  """
+  """Checking all files are in the same directory."""
 
   directories = []
   for target_file in fonts:
@@ -204,20 +185,16 @@ def ftxvalidator_is_available():
 @check(
   id = 'com.google.fonts/check/ftxvalidator_is_available',
   rationale = """
-    There's no reasonable (and legal) way to run the command `ftxvalidator`
-    of the Apple Font Tool Suite on a non-macOS machine. I.e. on GNU+Linux
-    or Windows etc.
+    There's no reasonable (and legal) way to run the command `ftxvalidator` of the Apple Font Tool Suite on a non-macOS machine. I.e. on GNU+Linux or Windows etc.
 
-    If Font Bakery is not running on an OSX machine, the machine running
-    Font Bakery could access `ftxvalidator` on OSX, e.g. via ssh or a
-    remote procedure call (rpc).
+    If Font Bakery is not running on an OSX machine, the machine running Font Bakery could access `ftxvalidator` on OSX, e.g. via ssh or a remote procedure call (rpc).
 
     There's an ssh example implementation at:
     https://github.com/googlefonts/fontbakery/blob/master/prebuilt/workarounds/ftxvalidator/ssh-implementation/ftxvalidator
-
-    This check was suggested and requested at:
-    https://github.com/googlefonts/fontbakery/issues/2184
-  """
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2184'
+  }
 )
 def com_google_fonts_check_ftxvalidator_is_available(ftxvalidator_is_available):
   """Is the command `ftxvalidator` (Apple Font Tool Suite) available?"""
@@ -354,19 +331,17 @@ def com_google_fonts_check_fontbakery_version():
 
 
 @check(
-  id = 'com.google.fonts/check/mandatory_glyphs'
+  id = 'com.google.fonts/check/mandatory_glyphs',
+  rationale = """
+    The OpenType specification v1.8.2 recommends that the first glyph is the .notdef glyph without a codepoint assigned and with a drawing.
+
+    https://docs.microsoft.com/en-us/typography/opentype/spec/recom#glyph-0-the-notdef-glyph
+
+    Pre-v1.8, it was recommended that a font should also contain a .null, CR and space glyph. This might have been relevant for applications on MacOS 9.
+  """
 )
 def com_google_fonts_check_mandatory_glyphs(ttFont):
-  """Font contains .notdef as first glyph?
-
-  The OpenType specification v1.8.2 recommends that the first glyph is the
-  .notdef glyph without a codepoint assigned and with a drawing.
-
-  https://docs.microsoft.com/en-us/typography/opentype/spec/recom#glyph-0-the-notdef-glyph
-
-  Pre-v1.8, it was recommended that a font should also contain a .null, CR and
-  space glyph. This might have been relevant for applications on MacOS 9.
-  """
+  """Font contains .notdef as first glyph?"""
   from fontbakery.utils import glyph_has_ink
 
   if (
@@ -456,10 +431,10 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 
   # code-points for all "whitespace" chars:
   WHITESPACE_CHARACTERS = [
-      0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020, 0x0085, 0x00A0, 0x1680,
-      0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
-      0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0x180E, 0x200B,
-      0x2060, 0xFEFF
+    0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020, 0x0085, 0x00A0, 0x1680,
+    0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
+    0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0x180E, 0x200B,
+    0x2060, 0xFEFF
   ]
   failed = False
   for codepoint in WHITESPACE_CHARACTERS:
@@ -475,17 +450,13 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 
 @check(
   id='com.google.fonts/check/required_tables',
-  conditions=['is_ttf'],
-  rationale="""Depending on the typeface and coverage of a font, certain
-  tables are recommended for optimum quality. For example, the performance
-  of a non-linear font is improved if the VDMX, LTSH, and hdmx tables are
-  present. Non-monospaced Latin fonts should have a kern table. A gasp table
-  is necessary if a designer wants to influence the sizes at which grayscaling
-  is used under Windows. A DSIG table containing a digital signature helps
-  ensure the integrity of the font file. Etc.
+  conditions = ['is_ttf'],
+  rationale = """
+    Depending on the typeface and coverage of a font, certain tables are recommended for optimum quality. For example, the performance of a non-linear font is improved if the VDMX, LTSH, and hdmx tables are present. Non-monospaced Latin fonts should have a kern table. A gasp table is necessary if a designer wants to influence the sizes at which grayscaling is used under Windows. A DSIG table containing a digital signature helps ensure the integrity of the font file. Etc.
   """
-  # FIXME: The rationale description above comes from FontValidator, check W0022.
-  #        We may want to improve it and/or rephrase it.
+  # FIXME:
+  # The rationale description above comes from FontValidator, check W0022.
+  # We may want to improve it and/or rephrase it.
 )
 def com_google_fonts_check_required_tables(ttFont):
   """Font contains all required tables?"""
@@ -531,27 +502,27 @@ def com_google_fonts_check_required_tables(ttFont):
 
 @check(
   id = 'com.google.fonts/check/unwanted_tables',
-  rationale = """Some font editors store source data in their own SFNT
-  tables, and these can sometimes sneak into final release files,
-  which should only have OpenType spec tables."""
+  rationale = """
+    Some font editors store source data in their own SFNT tables, and these can sometimes sneak into final release files, which should only have OpenType spec tables.
+  """
 )
 def com_google_fonts_check_unwanted_tables(ttFont):
   """Are there unwanted tables?"""
   UNWANTED_TABLES = {
-      'FFTM': 'Table contains redundant FontForge timestamp info',
-      'TTFA': 'Redundant TTFAutohint table',
-      'TSI0': 'Table contains data only used in VTT',
-      'TSI1': 'Table contains data only used in VTT',
-      'TSI2': 'Table contains data only used in VTT',
-      'TSI3': 'Table contains data only used in VTT',
-      'TSI5': 'Table contains data only used in VTT',
-      'prop': '', # FIXME: why is this one unwanted?
+    'FFTM': 'Table contains redundant FontForge timestamp info',
+    'TTFA': 'Redundant TTFAutohint table',
+    'TSI0': 'Table contains data only used in VTT',
+    'TSI1': 'Table contains data only used in VTT',
+    'TSI2': 'Table contains data only used in VTT',
+    'TSI3': 'Table contains data only used in VTT',
+    'TSI5': 'Table contains data only used in VTT',
+    'prop': '', # FIXME: why is this one unwanted?
       # Marc Foley found that VFs containing a MVAR table have very
       # loose vertical metrics, even if the MVAR table hasn't adjusted
       # any vertical metric values.
-      'MVAR': ('Produces a bug in DirectWrite which causes'
-               ' https://bugzilla.mozilla.org/show_bug.cgi?id=1492477,'
-               ' https://github.com/google/fonts/issues/2085')
+    'MVAR': ('Produces a bug in DirectWrite which causes'
+             ' https://bugzilla.mozilla.org/show_bug.cgi?id=1492477,'
+             ' https://github.com/google/fonts/issues/2085')
   }
   unwanted_tables_found = []
   for table in ttFont.keys():
@@ -570,14 +541,12 @@ def com_google_fonts_check_unwanted_tables(ttFont):
 
 @check(
   id = 'com.google.fonts/check/valid_glyphnames',
-  rationale = """Microsoft's recommendations for OpenType Fonts states the
-  following, 'NOTE: The PostScript glyph name must be no longer than 31
-  characters, include only uppercase or lowercase English letters, European
-  digits, the period or the underscore, i.e. from the set [A-Za-z0-9_.] and
-  should start with a letter, except the special glyph name ".notdef" which
-  starts with a period.'
+  rationale = """
+    Microsoft's recommendations for OpenType Fonts states the following:
+    
+    'NOTE: The PostScript glyph name must be no longer than 31 characters, include only uppercase or lowercase English letters, European digits, the period or the underscore, i.e. from the set [A-Za-z0-9_.] and should start with a letter, except the special glyph name ".notdef" which starts with a period.'
 
-  https://docs.microsoft.com/en-us/typography/opentype/spec/recom#post-table
+    https://docs.microsoft.com/en-us/typography/opentype/spec/recom#post-table
   """
 )
 def com_google_fonts_check_valid_glyphnames(ttFont):
@@ -622,7 +591,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
   rationale = """
     Duplicate glyph names prevent font installation on Mac OS X.
   """,
-  misc_metadata={
+  misc_metadata = {
     'affects': [('Mac', 'unspecified')]
   }
 )
@@ -756,8 +725,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
 @check(
   id = 'com.google.fonts/check/family/vertical_metrics',
   rationale="""
-  We want all fonts within a family to have the same vertical metrics so
-  their line spacing is consistent across the family.
+    We want all fonts within a family to have the same vertical metrics so their line spacing is consistent across the family.
   """
 )
 def com_google_fonts_check_family_vertical_metrics(ttFonts):

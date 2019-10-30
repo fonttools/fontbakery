@@ -6,13 +6,12 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 @check(
   id = 'com.google.fonts/check/family/underline_thickness',
   rationale = """
-  Dave C Lemon (Adobe Type Team) recommends setting the underline
-  thickness to be consistent across the family.
+    Dave C Lemon (Adobe Type Team) recommends setting the underline thickness to be consistent across the family.
 
-  If thicknesses are not family consistent, words set on the same line which
-  have different styles look strange.
+    If thicknesses are not family consistent, words set on the same line which have different styles look strange.
 
-  See also: https://twitter.com/typenerd1/status/690361887926697986
+    See also:
+    https://twitter.com/typenerd1/status/690361887926697986
   """,
   misc_metadata = {
     'affects': [('InDesign', 'unspecified')]

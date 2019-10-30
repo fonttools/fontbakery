@@ -13,12 +13,9 @@ profile_imports = [
 @check(
   id = 'com.google.fonts/check/varfont/regular_wght_coord',
   rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'wght' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
+    According to the Open-Type spec's registered design-variation tag 'wght' available at https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
 
-    If a variable font has a 'wght' (Weight) axis, then the coordinate
-    of its 'Regular' instance is required to be 400.
+    If a variable font has a 'wght' (Weight) axis, then the coordinate of its 'Regular' instance is required to be 400.
   """,
   conditions = ['is_variable_font',
                 'regular_wght_coord'],
@@ -43,12 +40,9 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
 @check(
   id = 'com.google.fonts/check/varfont/regular_wdth_coord',
   rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'wdth' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
+    According to the Open-Type spec's registered design-variation tag 'wdth' available at https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
 
-    If a variable font has a 'wdth' (Width) axis, then the coordinate
-    of its 'Regular' instance is required to be 100.
+    If a variable font has a 'wdth' (Width) axis, then the coordinate of its 'Regular' instance is required to be 100.
   """,
   conditions = ['is_variable_font',
                 'regular_wdth_coord'],
@@ -73,12 +67,9 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
 @check(
   id = 'com.google.fonts/check/varfont/regular_slnt_coord',
   rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'slnt' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_slnt
+    According to the Open-Type spec's registered design-variation tag 'slnt' available at https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_slnt
 
-    If a variable font has a 'slnt' (Slant) axis, then the coordinate
-    of its 'Regular' instance is required to be zero.
+    If a variable font has a 'slnt' (Slant) axis, then the coordinate of its 'Regular' instance is required to be zero.
   """,
   conditions = ['is_variable_font',
                 'regular_slnt_coord'],
@@ -103,12 +94,9 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
 @check(
   id = 'com.google.fonts/check/varfont/regular_ital_coord',
   rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'ital' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_ital
+    According to the Open-Type spec's registered design-variation tag 'ital' available at https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_ital
 
-    If a variable font has a 'ital' (Italic) axis, then the coordinate
-    of its 'Regular' instance is required to be zero.
+    If a variable font has a 'ital' (Italic) axis, then the coordinate of its 'Regular' instance is required to be zero.
   """,
   conditions = ['is_variable_font',
                 'regular_ital_coord'],
@@ -133,12 +121,9 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
 @check(
   id = 'com.google.fonts/check/varfont/regular_opsz_coord',
   rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'opsz' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_opsz
+    According to the Open-Type spec's registered design-variation tag 'opsz' available at https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_opsz
 
-    If a variable font has a 'opsz' (Optical Size) axis, then the coordinate
-    of its 'Regular' instance is recommended to be a value in the range 9 to 13.
+    If a variable font has a 'opsz' (Optical Size) axis, then the coordinate of its 'Regular' instance is recommended to be a value in the range 9 to 13.
   """,
   conditions = ['is_variable_font',
                 'regular_opsz_coord'],
@@ -164,12 +149,9 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
 @check(
   id = 'com.google.fonts/check/varfont/bold_wght_coord',
   rationale = """
-    The Open-Type spec's registered
-    design-variation tag 'wght' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
-    does not specify a required value for the 'Bold' instance of a variable font.
-    But Dave Crossland suggested that we should enforce a
-    required value of 700 in this case.
+    The Open-Type spec's registered design-variation tag 'wght' available at https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght does not specify a required value for the 'Bold' instance of a variable font.
+
+    But Dave Crossland suggested that we should enforce a required value of 700 in this case.
   """,
   conditions = ['is_variable_font',
                 'bold_wght_coord'],
@@ -194,9 +176,7 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
 @check(
   id = 'com.google.fonts/check/varfont/wght_valid_range',
   rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'wght' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
+    According to the Open-Type spec's registered design-variation tag 'wght' available at https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
 
     On the 'wght' (Weight) axis, the valid coordinate range is 1-1000.
   """,
@@ -228,9 +208,7 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
 @check(
   id = 'com.google.fonts/check/varfont/wdth_valid_range',
   rationale = """
-    According to the Open-Type spec's registered
-    design-variation tag 'wdth' available at
-    https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
+    According to the Open-Type spec's registered design-variation tag 'wdth' available at https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
 
     On the 'wdth' (Width) axis, the valid coordinate range is 1-1000
   """,
@@ -261,13 +239,9 @@ def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
 @check(
   id = 'com.google.fonts/check/varfont/slnt_range',
   rationale = """
-    The OpenType spec says at
-    https://docs.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_slnt that:
+    The OpenType spec says at https://docs.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_slnt that:
 
-    [...] the scale for the Slant axis is interpreted as the angle of slant in
-    counter-clockwise degrees from upright. This means that a typical, right-leaning
-    oblique design will have a negative slant value. This matches the scale used for
-    the italicAngle field in the post table.
+    [...] the scale for the Slant axis is interpreted as the angle of slant in counter-clockwise degrees from upright. This means that a typical, right-leaning oblique design will have a negative slant value. This matches the scale used for the italicAngle field in the post table.
   """,
   conditions = ['is_variable_font',
                 'slnt_axis'],
