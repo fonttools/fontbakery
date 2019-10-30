@@ -19,156 +19,155 @@ profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
 
 METADATA_CHECKS = [
-        'com.google.fonts/check/metadata/parses'
-      , 'com.google.fonts/check/metadata/unknown_designer'
-      , 'com.google.fonts/check/metadata/designer_values'
-      , 'com.google.fonts/check/metadata/listed_on_gfonts'
-      , 'com.google.fonts/check/metadata/unique_full_name_values'
-      , 'com.google.fonts/check/metadata/unique_weight_style_pairs'
-      , 'com.google.fonts/check/metadata/license'
-      , 'com.google.fonts/check/metadata/menu_and_latin'
-      , 'com.google.fonts/check/metadata/subsets_order'
-      , 'com.google.fonts/check/metadata/copyright'
-      , 'com.google.fonts/check/metadata/familyname'
-      , 'com.google.fonts/check/metadata/has_regular'
-      , 'com.google.fonts/check/metadata/regular_is_400'
-      , 'com.google.fonts/check/metadata/nameid/family_name'
-      , 'com.google.fonts/check/metadata/nameid/post_script_name'
-      , 'com.google.fonts/check/metadata/nameid/full_name'
-      , 'com.google.fonts/check/metadata/nameid/family_and_full_names' # FIXME! This seems redundant!
-      , 'com.google.fonts/check/metadata/nameid/copyright'
-      , 'com.google.fonts/check/metadata/nameid/font_name' # FIXME! This looks suspiciously similar to com.google.fonts/check/metadata/nameid/family_name
-      , 'com.google.fonts/check/metadata/match_fullname_postscript'
-      , 'com.google.fonts/check/metadata/match_filename_postscript'
-      , 'com.google.fonts/check/metadata/match_weight_postscript'
-      , 'com.google.fonts/check/metadata/valid_name_values'
-      , 'com.google.fonts/check/metadata/valid_full_name_values'
-      , 'com.google.fonts/check/metadata/valid_filename_values'
-      , 'com.google.fonts/check/metadata/valid_post_script_name_values'
-      , 'com.google.fonts/check/metadata/valid_copyright'
-      , 'com.google.fonts/check/metadata/reserved_font_name'
-      , 'com.google.fonts/check/metadata/copyright_max_length'
-      , 'com.google.fonts/check/metadata/filenames'
-      , 'com.google.fonts/check/metadata/italic_style'
-      , 'com.google.fonts/check/metadata/normal_style'
-      , 'com.google.fonts/check/metadata/fontname_not_camel_cased'
-      , 'com.google.fonts/check/metadata/match_name_familyname'
-      , 'com.google.fonts/check/metadata/canonical_weight_value'
-      , 'com.google.fonts/check/metadata/os2_weightclass'
-      , 'com.google.fonts/check/metadata/canonical_style_names'
-      , 'com.google.fonts/check/metadata/broken_links'
-      , 'com.google.fonts/check/metadata/undeclared_fonts'
+  'com.google.fonts/check/metadata/parses',
+  'com.google.fonts/check/metadata/unknown_designer',
+  'com.google.fonts/check/metadata/designer_values',
+  'com.google.fonts/check/metadata/listed_on_gfonts',
+  'com.google.fonts/check/metadata/unique_full_name_values',
+  'com.google.fonts/check/metadata/unique_weight_style_pairs',
+  'com.google.fonts/check/metadata/license',
+  'com.google.fonts/check/metadata/menu_and_latin',
+  'com.google.fonts/check/metadata/subsets_order',
+  'com.google.fonts/check/metadata/copyright',
+  'com.google.fonts/check/metadata/familyname',
+  'com.google.fonts/check/metadata/has_regular',
+  'com.google.fonts/check/metadata/regular_is_400',
+  'com.google.fonts/check/metadata/nameid/family_name',
+  'com.google.fonts/check/metadata/nameid/post_script_name',
+  'com.google.fonts/check/metadata/nameid/full_name',
+  'com.google.fonts/check/metadata/nameid/family_and_full_names', # FIXME! This seems redundant!
+  'com.google.fonts/check/metadata/nameid/copyright',
+  'com.google.fonts/check/metadata/nameid/font_name', # FIXME! This looks suspiciously similar to com.google.fonts/check/metadata/nameid/family_name
+  'com.google.fonts/check/metadata/match_fullname_postscript',
+  'com.google.fonts/check/metadata/match_filename_postscript',
+  'com.google.fonts/check/metadata/match_weight_postscript',
+  'com.google.fonts/check/metadata/valid_name_values',
+  'com.google.fonts/check/metadata/valid_full_name_values',
+  'com.google.fonts/check/metadata/valid_filename_values',
+  'com.google.fonts/check/metadata/valid_post_script_name_values',
+  'com.google.fonts/check/metadata/valid_copyright',
+  'com.google.fonts/check/metadata/reserved_font_name',
+  'com.google.fonts/check/metadata/copyright_max_length',
+  'com.google.fonts/check/metadata/filenames',
+  'com.google.fonts/check/metadata/italic_style',
+  'com.google.fonts/check/metadata/normal_style',
+  'com.google.fonts/check/metadata/fontname_not_camel_cased',
+  'com.google.fonts/check/metadata/match_name_familyname',
+  'com.google.fonts/check/metadata/canonical_weight_value',
+  'com.google.fonts/check/metadata/os2_weightclass',
+  'com.google.fonts/check/metadata/canonical_style_names',
+  'com.google.fonts/check/metadata/broken_links',
+  'com.google.fonts/check/metadata/undeclared_fonts'
 ]
 
 DESCRIPTION_CHECKS = [
-   'com.google.fonts/check/description/broken_links',
-   'com.google.fonts/check/description/valid_html',
-   'com.google.fonts/check/description/min_length',
-   'com.google.fonts/check/description/max_length',
-   'com.google.fonts/check/description/git_url',
-   'com.google.fonts/check/description/variable_font'
+  'com.google.fonts/check/description/broken_links',
+  'com.google.fonts/check/description/valid_html',
+  'com.google.fonts/check/description/min_length',
+  'com.google.fonts/check/description/max_length',
+  'com.google.fonts/check/description/git_url',
+  'com.google.fonts/check/description/variable_font'
 ]
 
 FAMILY_CHECKS = [
-#   'com.google.fonts/check/family/equal_numbers_of_glyphs',
-#   'com.google.fonts/check/family/equal_glyph_names',
-   'com.google.fonts/check/family/has_license',
-   'com.google.fonts/check/family/control_chars',
-   'com.google.fonts/check/family/tnum_horizontal_metrics',
+#  'com.google.fonts/check/family/equal_numbers_of_glyphs',
+#  'com.google.fonts/check/family/equal_glyph_names',
+  'com.google.fonts/check/family/has_license',
+  'com.google.fonts/check/family/control_chars',
+  'com.google.fonts/check/family/tnum_horizontal_metrics',
 ]
 
 NAME_TABLE_CHECKS = [
-   'com.google.fonts/check/name/unwanted_chars',
-   'com.google.fonts/check/name/license',
-   'com.google.fonts/check/name/license_url',
-   'com.google.fonts/check/name/family_and_style_max_length',
+  'com.google.fonts/check/name/unwanted_chars',
+  'com.google.fonts/check/name/license',
+  'com.google.fonts/check/name/license_url',
+  'com.google.fonts/check/name/family_and_style_max_length',
 ]
 
 REPO_CHECKS = [
-   'com.google.fonts/check/repo/dirname_matches_nameid_1',
+  'com.google.fonts/check/repo/dirname_matches_nameid_1',
 ]
 
 FONT_FILE_CHECKS = [
-   'com.google.fonts/check/glyph_coverage',
-   'com.google.fonts/check/canonical_filename',
-   'com.google.fonts/check/usweightclass',
-   'com.google.fonts/check/fstype',
-   'com.google.fonts/check/vendor_id',
-   'com.google.fonts/check/ligature_carets',
-   'com.google.fonts/check/production_glyphs_similarity',
-   'com.google.fonts/check/fontv',
+  'com.google.fonts/check/glyph_coverage',
+  'com.google.fonts/check/canonical_filename',
+  'com.google.fonts/check/usweightclass',
+  'com.google.fonts/check/fstype',
+  'com.google.fonts/check/vendor_id',
+  'com.google.fonts/check/ligature_carets',
+  'com.google.fonts/check/production_glyphs_similarity',
+  'com.google.fonts/check/fontv',
 #DISABLED:   'com.google.fonts/check/production_encoded_glyphs',
-   'com.google.fonts/check/varfont/generate_static',
-   'com.google.fonts/check/kerning_for_non_ligated_sequences',
-   'com.google.fonts/check/name/description_max_length',
-   'com.google.fonts/check/fvar_name_entries',
-   'com.google.fonts/check/version_bump',
-   'com.google.fonts/check/epar',
-   'com.google.fonts/check/font_copyright',
-   'com.google.fonts/check/italic_angle',
-   'com.google.fonts/check/has_ttfautohint_params',
-   'com.google.fonts/check/name/version_format',
-   'com.google.fonts/check/name/familyname_first_char',
-   'com.google.fonts/check/hinting_impact',
-   'com.google.fonts/check/varfont/has_HVAR',
-   'com.google.fonts/check/name/typographicfamilyname',
-   'com.google.fonts/check/name/subfamilyname',
-   'com.google.fonts/check/name/typographicsubfamilyname',
-   'com.google.fonts/check/gasp',
-   'com.google.fonts/check/name/familyname',
-   'com.google.fonts/check/name/mandatory_entries',
-   'com.google.fonts/check/name/copyright_length',
-   'com.google.fonts/check/fontdata_namecheck', 
-   'com.google.fonts/check/name/ascii_only_entries',
-   'com.google.fonts/check/varfont_has_instances',
-   'com.google.fonts/check/varfont_weight_instances',
-   'com.google.fonts/check/old_ttfautohint',
-   'com.google.fonts/check/vttclean',
-   'com.google.fonts/check/name/postscriptname',
-   'com.google.fonts/check/aat',
-   'com.google.fonts/check/name/fullfontname',
-   'com.google.fonts/check/mac_style',
-   'com.google.fonts/check/fsselection',
-   'com.google.fonts/check/smart_dropout',
-   'com.google.fonts/check/integer_ppem_if_hinted',
-   'com.google.fonts/check/unitsperem_strict',
-   'com.google.fonts/check/contour_count',
-   'com.google.fonts/check/vertical_metrics_regressions',
-   'com.google.fonts/check/varfont_instance_coordinates',
-   'com.google.fonts/check/varfont_instance_names',
+  'com.google.fonts/check/varfont/generate_static',
+  'com.google.fonts/check/kerning_for_non_ligated_sequences',
+  'com.google.fonts/check/name/description_max_length',
+  'com.google.fonts/check/fvar_name_entries',
+  'com.google.fonts/check/version_bump',
+  'com.google.fonts/check/epar',
+  'com.google.fonts/check/font_copyright',
+  'com.google.fonts/check/italic_angle',
+  'com.google.fonts/check/has_ttfautohint_params',
+  'com.google.fonts/check/name/version_format',
+  'com.google.fonts/check/name/familyname_first_char',
+  'com.google.fonts/check/hinting_impact',
+  'com.google.fonts/check/varfont/has_HVAR',
+  'com.google.fonts/check/name/typographicfamilyname',
+  'com.google.fonts/check/name/subfamilyname',
+  'com.google.fonts/check/name/typographicsubfamilyname',
+  'com.google.fonts/check/gasp',
+  'com.google.fonts/check/name/familyname',
+  'com.google.fonts/check/name/mandatory_entries',
+  'com.google.fonts/check/name/copyright_length',
+  'com.google.fonts/check/fontdata_namecheck', 
+  'com.google.fonts/check/name/ascii_only_entries',
+  'com.google.fonts/check/varfont_has_instances',
+  'com.google.fonts/check/varfont_weight_instances',
+  'com.google.fonts/check/old_ttfautohint',
+  'com.google.fonts/check/vttclean',
+  'com.google.fonts/check/name/postscriptname',
+  'com.google.fonts/check/aat',
+  'com.google.fonts/check/name/fullfontname',
+  'com.google.fonts/check/mac_style',
+  'com.google.fonts/check/fsselection',
+  'com.google.fonts/check/smart_dropout',
+  'com.google.fonts/check/integer_ppem_if_hinted',
+  'com.google.fonts/check/unitsperem_strict',
+  'com.google.fonts/check/contour_count',
+  'com.google.fonts/check/vertical_metrics_regressions',
+  'com.google.fonts/check/varfont_instance_coordinates',
+  'com.google.fonts/check/varfont_instance_names',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
-    UNIVERSAL_PROFILE_CHECKS + \
-    METADATA_CHECKS + \
-    DESCRIPTION_CHECKS + \
-    FAMILY_CHECKS + \
-    NAME_TABLE_CHECKS + \
-    REPO_CHECKS + \
-    FONT_FILE_CHECKS
+  UNIVERSAL_PROFILE_CHECKS + \
+  METADATA_CHECKS + \
+  DESCRIPTION_CHECKS + \
+  FAMILY_CHECKS + \
+  NAME_TABLE_CHECKS + \
+  REPO_CHECKS + \
+  FONT_FILE_CHECKS
 
 
 @check(
   id = 'com.google.fonts/check/canonical_filename',
+  rationale = """
+    A font's filename must be composed in the following manner:
+    <familyname>-<stylename>.ttf
+
+    - Nunito-Regular.ttf,
+    - Oswald-BoldItalic.ttf
+
+    Variable fonts must list the axis tags in alphabetical order in square brackets and separated by commas:
+  
+    - Roboto[wdth,wght].ttf
+    - Familyname-Italic[wght].ttf
+  """,
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   }
 )
 def com_google_fonts_check_canonical_filename(font):
-  """Checking file is named canonically.
-
-  A font's filename must be composed in the following manner:
-  <familyname>-<stylename>.ttf
-
-  - Nunito-Regular.ttf,
-  - Oswald-BoldItalic.ttf
-
-  Variable fonts must list the axis tags in alphabetical order
-  in square brackets and separated by commas:
-
-  - Roboto-CabinVFBeta[wdth,wght].ttf
-  - Familyname-Italic[wght].ttf
-  """
+  """Checking file is named canonically."""
   from fontTools.ttLib import TTFont
   from .shared_conditions import is_variable_font
   from .googlefonts_conditions import canonical_stylename
@@ -236,7 +235,10 @@ def com_google_fonts_check_canonical_filename(font):
 
 @check(
   id = 'com.google.fonts/check/description/broken_links',
-  conditions = ['description']
+  conditions = ['description'],
+  rationale = """
+    The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font family webpage on the Google Fonts website. For that reason, all hyperlinks in it must be properly working. 
+  """
 )
 def com_google_fonts_check_description_broken_links(description):
   """Does DESCRIPTION file contain broken links?"""
@@ -282,17 +284,11 @@ def com_google_fonts_check_description_broken_links(description):
   id = 'com.google.fonts/check/description/git_url',
   conditions = ['description'],
   rationale = """
-    The contents of the DESCRIPTION.en-us.html file are displayed
-    on the Google Fonts website in the about section of each font
-    family specimen page.
+    The contents of the DESCRIPTION.en-us.html file are displayed on the Google Fonts website in the about section of each font family specimen page.
 
-    Since all of the Google Fonts collection is composed of
-    libre-licensed fonts, this check enforces a policy that there
-    must be a hypertext link in that page directing users to the
-    repository where the font project files are made available.
+    Since all of the Google Fonts collection is composed of libre-licensed fonts, this check enforces a policy that there must be a hypertext link in that page directing users to the repository where the font project files are made available.
 
-    Such hosting is typically done on sites like Github, Gitlab,
-    GNU Savannah or any other git-based version control service.
+    Such hosting is typically done on sites like Github, Gitlab, GNU Savannah or any other git-based version control service.
   """
 )
 def com_google_fonts_check_description_git_url(description):
@@ -323,12 +319,7 @@ def com_google_fonts_check_description_git_url(description):
   conditions = ['is_variable_font',
                 'description'],
   rationale = """
-    Families with variable fonts do not always mention that
-    in their descriptions.
-
-    Therefore, this check ensures that a standard boilerplate
-    sentence is present in the DESCRIPTION files for all
-    those families which are available as variable fonts.
+    Families with variable fonts do not always mention that in their descriptions. Therefore, this check ensures that a standard boilerplate sentence is present in the DESCRIPTION.en_us.html files for all those families which are available as variable fonts.
   """
 )
 def com_google_fonts_check_description_variable_font(description):
@@ -348,16 +339,15 @@ def com_google_fonts_check_description_variable_font(description):
 
 @check(
   id = 'com.google.fonts/check/description/valid_html',
-  conditions = ['descfile']
+  conditions = ['descfile'],
+  rationale = """
+    When packaging families for being pushed to the `google/fonts` git repo, if there is no DESCRIPTION.en_us.html file, some older versions of the `add_font.py` tool insert a dummy description file which contains invalid html.
+
+    This file needs to either be replaced with an existing description file or edited by hand.
+  """
 )
 def com_google_fonts_check_description_valid_html(descfile, description):
-  """Is this a proper HTML snippet?
-
-  When packaging families for google/fonts, if there is no
-  DESCRIPTION.en_us.html file, the add_font.py metageneration tool will
-  insert a dummy description file which contains invalid html.
-  This file needs to either be replaced with an existing description file
-  or edited by hand."""
+  """Is this a proper HTML snippet?"""
   if "<p>" not in description or "</p>" not in description:
     yield FAIL,\
           Message("bad-html",
@@ -400,12 +390,11 @@ def com_google_fonts_check_description_max_length(description):
   id = 'com.google.fonts/check/metadata/parses',
   conditions = ['family_directory'],
   rationale = """
-  The purpose of this check is to ensure that
-  the METADATA.pb file is not malformed.
+    The purpose of this check is to ensure that the METADATA.pb file is not malformed.
   """
 )
 def com_google_fonts_check_metadata_parses(family_directory):
-  """ Check METADATA.pb parse correctly. """
+  """Check METADATA.pb parse correctly."""
   from google.protobuf import text_format
   from fontbakery.utils import get_FamilyProto_Message
   try:
@@ -439,10 +428,8 @@ def com_google_fonts_check_metadata_unknown_designer(family_metadata):
   id = 'com.google.fonts/check/metadata/designer_values',
   conditions = ['family_metadata'],
   rationale = """
-    We must use commas instead of forward slashes because the
-    fonts.google.com directory will segment string to list
-    on comma and display the first item in the list as the
-    "principal designer" and the other items as contributors.
+    We must use commas instead of forward slashes because the server-side code at the fonts.google.com directory will segment the string on the commas into a list of names and display the first item in the list as the "principal designer" while the remaining names are identified as "contributors".
+   
     See eg https://fonts.google.com/specimen/Rubik
   """
 )
@@ -511,15 +498,13 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
   id = 'com.google.fonts/check/metadata/undeclared_fonts',
   conditions = ['family_metadata'],
   rationale = """
-    The set of font binaries available must match exactly
-    those declared on the METADATA.pb file.
+    The set of font binaries available must match exactly those declared on the METADATA.pb file.
 
-    Also, to avoid confusion we expect that font files
-    are not placed on subdirectories.
+    Also, to avoid confusion, we expect that font files are not placed on subdirectories.
   """
 )
 def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_directory):
-  """ Ensure METADATA.pb lists all font binaries """
+  """Ensure METADATA.pb lists all font binaries."""
 
   pb_binaries = []
   for font_metadata in family_metadata.fonts:
@@ -673,18 +658,16 @@ def com_google_fonts_check_family_equal_glyph_names(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/fstype'
+  id = 'com.google.fonts/check/fstype',
+  rationale = """
+    The fsType in the OS/2 table is a legacy DRM-related field. Fonts in the Google Fonts collection must have it set to zero (also known as "Installable Embedding"). This setting indicates that the fonts can be embedded in documents and permanently installed by applications on remote systems.
+
+    More detailed info is available at:
+    https://docs.microsoft.com/en-us/typography/opentype/spec/os2#fstype
+  """
 )
 def com_google_fonts_check_fstype(ttFont):
-  """Checking OS/2 fsType.
-
-  Fonts must have their fsType field set to zero.
-  This setting is known as Installable Embedding, meaning
-  that none of the DRM restrictions are enabled on the fonts.
-
-  More info available at:
-  https://docs.microsoft.com/en-us/typography/opentype/spec/os2#fstype
-  """
+  """Checking OS/2 fsType does not impose restrictions."""
   value = ttFont['OS/2'].fsType
   if value != 0:
     FSTYPE_RESTRICTIONS = {
@@ -711,20 +694,12 @@ def com_google_fonts_check_fstype(ttFont):
 
     yield FAIL,\
           Message("drm",
-                  f"OS/2 fsType is a legacy DRM-related field.\n"
-                  f"In this font it is set to {value} meaning that:\n"
+                  f"In this font fsType is set to {value} meaning that:\n"
                   f"{restrictions}\n"
                   f"\n"
                   f"No such DRM restrictions can be enabled on the"
                   f" Google Fonts collection, so the fsType field"
-                  f" must be set to zero (Installable Embedding) instead.\n"
-                  f"Fonts with this setting indicate that they may be embedded"
-                  f" and permanently installed on the remote system"
-                  f" by an application.\n"
-                  f"\n"
-                  f"More detailed info is available at:\n"
-                  f"https://docs.microsoft.com/en-us"
-                  f"/typography/opentype/spec/os2#fstype")
+                  f" must be set to zero (Installable Embedding) instead.")
   else:
     yield PASS, "OS/2 fsType is properly set to zero."
 
@@ -765,12 +740,11 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
 @check(
   id = 'com.google.fonts/check/glyph_coverage',
   rationale = """
-    Google Fonts expects that fonts support
-    at least the GF-latin-core glyph-set.
+    Google Fonts expects that fonts in its collection support at least the minimal set of characters defined in the `GF-latin-core` glyph-set.
   """
 )
 def com_google_fonts_check_glyph_coverage(ttFont):
-  """Check glyph coverage."""
+  """Check `Google Fonts Latin Core` glyph coverage."""
   from fontbakery.utils import pretty_print_list
   from fontbakery.constants import GF_latin_core
 
@@ -1013,14 +987,11 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
 @check(
   id = 'com.google.fonts/check/name/description_max_length',
   rationale = """
-  An old FontLab version had a bug which caused it to store
-  copyright notices in nameID 10 entries.
+    An old FontLab version had a bug which caused it to store copyright notices in nameID 10 entries.
 
-  In order to detect those and distinguish them from actual
-  legitimate usage of this name table entry, we expect that
-  such strings do not exceed a reasonable length of 200 chars.
+    In order to detect those and distinguish them from actual legitimate usage of this name table entry, we expect that such strings do not exceed a reasonable length of 200 chars.
 
-  Longer strings are likely instances of the FontLab bug.
+    Longer strings are likely instances of the FontLab bug.
   """
 )
 def com_google_fonts_check_name_description_max_length(ttFont):
@@ -1049,14 +1020,13 @@ def com_google_fonts_check_name_description_max_length(ttFont):
 @check(
   id = 'com.google.fonts/check/hinting_impact',
   conditions = ['is_ttf',
-                'ttfautohint_stats']
+                'ttfautohint_stats'],
+  rationale = """
+    This check is merely informative, displaying and useful comparison of filesizes after ttfautohint usage versus unhinted font files.
+  """
 )
 def com_google_fonts_check_hinting_impact(font, ttfautohint_stats):
-  """Show hinting filesize impact.
-
-     Current implementation simply logs useful info
-     but there's no fail scenario for this checker."""
-
+  """Show hinting filesize impact."""
   hinted = ttfautohint_stats["hinted_size"]
   dehinted = ttfautohint_stats["dehinted_size"]
   increase = hinted - dehinted
@@ -1122,7 +1092,7 @@ def com_google_fonts_check_name_version_format(ttFont):
   id = 'com.google.fonts/check/has_ttfautohint_params',
 )
 def com_google_fonts_check_has_ttfautohint_params(ttFont):
-  """ Font has ttfautohint params? """
+  """Font has ttfautohint params?"""
   from fontbakery.utils import get_name_entry_strings
 
   def ttfautohint_version(value):
@@ -1160,15 +1130,13 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
 
 @check(
   id = 'com.google.fonts/check/old_ttfautohint',
-  conditions = ['is_ttf']
+  conditions = ['is_ttf'],
+  rationale = """
+    This check finds which version of ttfautohint was used, by inspecting name table entries and then finds which version of ttfautohint is currently installed in the system.
+  """
 )
 def com_google_fonts_check_old_ttfautohint(ttFont, ttfautohint_stats):
-  """Font has old ttfautohint applied?
-
-     1. find which version was used, by inspecting name table entries
-
-     2. find which version of ttfautohint is installed
-  """
+  """Font has old ttfautohint applied?"""
   from fontbakery.utils import get_name_entry_strings
 
   def ttfautohint_version(values):
@@ -1230,10 +1198,7 @@ def com_google_fonts_check_old_ttfautohint(ttFont, ttfautohint_stats):
 @check(
   id = 'com.google.fonts/check/epar',
   rationale = """
-    The EPAR table is/was a way of expressing common licensing permissions
-    and restrictions in metadata; while almost nothing supported it,
-    Dave Crossland wonders that adding it to everything in Google Fonts
-    could help make it more popular.
+    The EPAR table is/was a way of expressing common licensing permissions and restrictions in metadata; while almost nothing supported it, Dave Crossland wonders that adding it to everything in Google Fonts could help make it more popular.
 
     More info is available at:
     https://davelab6.github.io/epar/
@@ -1258,18 +1223,9 @@ def com_google_fonts_check_epar(ttFont):
   id = 'com.google.fonts/check/gasp',
   conditions = ['is_ttf'],
   rationale = """
-  Traditionally version 0 'gasp' tables were set
-  so that font sizes below 8 ppem had no grid
-  fitting but did have antialiasing. From 9-16
-  ppem, just grid fitting. And fonts above
-  17ppem had both antialiasing and grid fitting
-  toggled on. The use of accelerated graphics
-  cards and higher resolution screens make this
-  approach obsolete. Microsoft's DirectWrite
-  pushed this even further with much improved
-  rendering built into the OS and apps. In this
-  scenario it makes sense to simply toggle all
-  4 flags ON for all font sizes.
+    Traditionally version 0 'gasp' tables were set so that font sizes below 8 ppem had no grid fitting but did have antialiasing. From 9-16 ppem, just grid fitting. And fonts above 17ppem had both antialiasing and grid fitting toggled on. The use of accelerated graphics cards and higher resolution screens make this approach obsolete. Microsoft's DirectWrite pushed this even further with much improved rendering built into the OS and apps.
+   
+    In this scenario it makes sense to simply toggle all 4 flags ON for all font sizes.
   """
 )
 def com_google_fonts_check_gasp(ttFont):
@@ -1348,14 +1304,13 @@ def com_google_fonts_check_gasp(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/name/familyname_first_char'
+  id = 'com.google.fonts/check/name/familyname_first_char',
+  rationale = """
+    Font family names which start with a numeral are often not discoverable in Windows applications.
+  """
 )
 def com_google_fonts_check_name_familyname_first_char(ttFont):
-  """Make sure family name does not begin with a digit.
-
-     Font family names which start with a numeral are often not
-     discoverable in Windows applications.
-  """
+  """Make sure family name does not begin with a digit."""
   from fontbakery.utils import get_name_entry_strings
   failed = False
   for familyname in get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME):
@@ -1373,14 +1328,11 @@ def com_google_fonts_check_name_familyname_first_char(ttFont):
   id = 'com.google.fonts/check/name/ascii_only_entries',
   rationale = """
     The OpenType spec requires ASCII for the POSTSCRIPT_NAME (nameID 6).
-    For COPYRIGHT_NOTICE (nameID 0) ASCII is required because that
-    string should be the same in CFF fonts which also have this
-    requirement in the OpenType spec.
+   
+    For COPYRIGHT_NOTICE (nameID 0) ASCII is required because that string should be the same in CFF fonts which also have this requirement in the OpenType spec.
 
     Note:
-    A common place where we find non-ASCII strings is on name table
-    entries with NameID > 18, which are expressly for localising
-    the ASCII-only IDs into Hindi / Arabic / etc.
+    A common place where we find non-ASCII strings is on name table entries with NameID > 18, which are expressly for localising the ASCII-only IDs into Hindi / Arabic / etc.
   """,
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1663'
@@ -2375,33 +2327,17 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
 @check(
   id = 'com.google.fonts/check/unitsperem_strict',
   rationale = """
-  Even though the OpenType spec allows unitsPerEm to
-  be any value between 16 and 16384, the Google Fonts
-  project aims at a narrower set of reasonable values.
+    Even though the OpenType spec allows unitsPerEm to be any value between 16 and 16384, the Google Fonts project aims at a narrower set of reasonable values.
 
-  The spec suggests usage of powers of two in order
-  to get some performance improvements on legacy
-  renderers, so those values are acceptable.
+    The spec suggests usage of powers of two in order to get some performance improvements on legacy renderers, so those values are acceptable.
 
-  But value of 500 or 1000 are also acceptable, with
-  the added benefit that it makes upm math easier for
-  designers, while the performance hit of not using
-  a power of two is most likely negligible nowadays.
+    But value of 500 or 1000 are also acceptable, with the added benefit that it makes upm math easier for designers, while the performance hit of not using a power of two is most likely negligible nowadays.
 
-  Another acceptable value is 2000.
-  Since TT outlines are all integers (no floats),
-  then instances in a VF suffer rounding compromises,
-  and therefore a 1000 UPM is to small because it
-  forces too many such compromises.
-  Therefore 2000 is a good 'new VF standard',
-  because 2000 is a simple 2x conversion from existing
-  fonts drawn on a 1000 UPM, and anyone who knows
-  what 10 units can do for 1000 UPM will know what
-  20 units does too.
+    Another acceptable value is 2000. Since TT outlines are all integers (no floats), then instances in a VF suffer rounding compromises, and therefore a 1000 UPM is to small because it forces too many such compromises.
+   
+    Therefore 2000 is a good 'new VF standard', because 2000 is a simple 2x conversion from existing fonts drawn on a 1000 UPM, and anyone who knows what 10 units can do for 1000 UPM will know what 20 units does too.
 
-  Additionally, values above 2048 would
-  result in filesize increases with not much
-  added benefit.
+    Additionally, values above 2048 would result in filesize increases with not much added benefit.
   """
 )
 def com_google_fonts_check_unitsperem_strict(ttFont):
@@ -2565,11 +2501,11 @@ def com_google_fonts_check_fsselection(ttFont, style):
 @check(
   id = 'com.google.fonts/check/italic_angle',
   conditions = ['style'],
-  rationale = """The 'post' table italicAngle property should be a
-  reasonable amount, likely not more than -20°, never more than -30°,
-  and never greater than 0°. Note that in the OpenType specification,
-  the value is negative for a lean rightwards.
-  https://docs.microsoft.com/en-us/typography/opentype/spec/post"""
+  rationale = """
+    The 'post' table italicAngle property should be a reasonable amount, likely not more than -20°, never more than -30°, and never greater than 0°. Note that in the OpenType specification, the value is negative for a lean rightwards.
+
+    https://docs.microsoft.com/en-us/typography/opentype/spec/post
+  """
 )
 def com_google_fonts_check_italic_angle(ttFont, style):
   """Checking post.italicAngle value."""
@@ -2626,10 +2562,7 @@ def com_google_fonts_check_italic_angle(ttFont, style):
   id = 'com.google.fonts/check/mac_style',
   conditions = ['style'],
   rationale = """
-  The values of the flags on the macStyle entry on the 'head' OpenType
-  table that describe whether a font is bold and/or italic
-  must be coherent with the actual style of the font as inferred
-  by its filename.
+    The values of the flags on the macStyle entry on the 'head' OpenType table that describe whether a font is bold and/or italic must be coherent with the actual style of the font as inferred by its filename.
   """
 )
 def com_google_fonts_check_mac_style(ttFont, style):
@@ -2657,17 +2590,11 @@ def com_google_fonts_check_mac_style(ttFont, style):
   conditions = ['is_ttf',
                 'not is_variable_font'],
   rationale = """
-    Visually QAing thousands of glyphs by hand is tiring. Most glyphs can only
-    be constructured in a handful of ways. This means a glyph's contour count
-    will only differ slightly amongst different fonts, e.g a 'g' could either
-    be 2 or 3 contours, depending on whether its double story or single story.
-    However, a quotedbl should have 2 contours, unless the font belongs to a
-    display family.
+    Visually QAing thousands of glyphs by hand is tiring. Most glyphs can only be constructured in a handful of ways. This means a glyph's contour count will only differ slightly amongst different fonts, e.g a 'g' could either be 2 or 3 contours, depending on whether its double story or single story.
 
-    This check currently does not cover variable fonts because there's plenty
-    of alternative ways of constructing glyphs with multiple outlines for each
-    feature in a VarFont. The expected contour count data for this check is
-    currently optimized for the typical construction of glyphs in static fonts.
+    However, a quotedbl should have 2 contours, unless the font belongs to a display family.
+
+    This check currently does not cover variable fonts because there's plenty of alternative ways of constructing glyphs with multiple outlines for each feature in a VarFont. The expected contour count data for this check is currently optimized for the typical construction of glyphs in static fonts.
   """
 )
 def com_google_fonts_check_contour_count(ttFont):
@@ -2865,24 +2792,18 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
     yield PASS, "Font contains values for all mandatory name table entries."
 
 
-
-
-
 @check(
   id = 'com.google.fonts/check/name/familyname',
   conditions = ['style',
                 'familyname_with_spaces'],
   rationale = """
-    Checks that the family name infered from the font filename
-    matches the string at nameID 1 (NAMEID_FONT_FAMILY_NAME)
-    if it conforms to RIBBI and otherwise checks that nameID 1
-    is the family name + the style name.
+    Checks that the family name infered from the font filename matches the string at nameID 1 (NAMEID_FONT_FAMILY_NAME) if it conforms to RIBBI and otherwise checks that nameID 1 is the family name + the style name.
   """,
   misc_metadata = {
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces):
-  """ Check name table: FONT_FAMILY_NAME entries. """
+  """Check name table: FONT_FAMILY_NAME entries."""
   from fontbakery.utils import name_entry_id
 
   def get_only_weight(value):
@@ -2943,7 +2864,7 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
-  """ Check name table: FONT_SUBFAMILY_NAME entries. """
+  """Check name table: FONT_SUBFAMILY_NAME entries."""
   failed = False
   nametable = ttFont['name']
   win_name = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
@@ -2981,7 +2902,7 @@ def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
 def com_google_fonts_check_name_fullfontname(ttFont,
                                              style_with_spaces,
                                              familyname_with_spaces):
-  """ Check name table: FULL_FONT_NAME entries. """
+  """Check name table: FULL_FONT_NAME entries."""
   from fontbakery.utils import name_entry_id
   failed = False
   for name in ttFont['name'].names:
@@ -3018,7 +2939,7 @@ def com_google_fonts_check_name_fullfontname(ttFont,
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
-  """ Check name table: POSTSCRIPT_NAME entries. """
+  """Check name table: POSTSCRIPT_NAME entries."""
   from fontbakery.utils import name_entry_id
 
   failed = False
@@ -3046,7 +2967,7 @@ def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_with_spaces):
-  """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
+  """Check name table: TYPOGRAPHIC_FAMILY_NAME entries."""
   from fontbakery.utils import name_entry_id
 
   failed = False
@@ -3094,7 +3015,7 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
     'priority': PriorityLevel.IMPORTANT
   })
 def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style):
-  """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
+  """Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries."""
   failed = False
   nametable = ttFont['name']
   win_name = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
@@ -3168,16 +3089,13 @@ def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style)
 @check(
   id = 'com.google.fonts/check/name/copyright_length',
   rationale = """
-    This is an arbitrary max lentgh for the copyright notice field
-    of the name table. We simply don't want such notices to be too long.
-    Typically such notices are actually much shorter than this with
-    a lenghth of roughtly 70 or 80 characters.
+    This is an arbitrary max lentgh for the copyright notice field of the name table. We simply don't want such notices to be too long. Typically such notices are actually much shorter than this with a lenghth of roughtly 70 or 80 characters.
   """,
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1603'
   })
 def com_google_fonts_check_name_copyright_length(ttFont):
-  """ Length of copyright notice must not exceed 500 characters. """
+  """Length of copyright notice must not exceed 500 characters."""
   from fontbakery.utils import get_name_entries
 
   failed = False
@@ -3198,15 +3116,14 @@ def com_google_fonts_check_name_copyright_length(ttFont):
 @check(
   id = 'com.google.fonts/check/fontdata_namecheck',
   rationale = """
-      We need to check names are not already used, and today the best
-      place to check that is http://namecheck.fontdata.com
+    We need to check names are not already used, and today the best place to check that is http://namecheck.fontdata.com
   """,
   conditions = ["familyname"],
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/494'
   })
 def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
-  """ Familyname must be unique according to namecheck.fontdata.com """
+  """Familyname must be unique according to namecheck.fontdata.com"""
   FB_ISSUE_TRACKER = "https://github.com/googlefonts/fontbakery/issues"
   import requests
   URL = f"http://namecheck.fontdata.com"
@@ -3237,17 +3154,13 @@ def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
 @check(
   id = 'com.google.fonts/check/fontv',
   rationale = """
-    The git sha1 tagging and dev/release features of Source Foundry font-v
-     tool are awesome and we would love to consider upstreaming the approach
-     into fontmake someday. For now we only emit a WARN if a given font does
-     not yet follow the experimental versioning style, but at some point we
-     may start enforcing it.
+    The git sha1 tagging and dev/release features of Source Foundry `font-v` tool are awesome and we would love to consider upstreaming the approach into fontmake someday. For now we only emit a WARN if a given font does not yet follow the experimental versioning style, but at some point we may start enforcing it.
   """,
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1563'
   })
 def com_google_fonts_check_fontv(ttFont):
-  """ Check for font-v versioning """
+  """Check for font-v versioning."""
   from fontv.libfv import FontVersion
 
   fv = FontVersion(ttFont)
@@ -3274,26 +3187,20 @@ def com_google_fonts_check_fontv(ttFont):
 @check(
   id = 'com.google.fonts/check/negative_advance_width',
   rationale = """
-    Advance width values in the Horizontal Metrics (htmx)
-    table cannot be negative since they are encoded as unsigned
-    16-bit values. But some programs may infer and report
-    a negative advance by looking up the x-coordinates of
-    the glyphs directly on the glyf table.
+    Advance width values in the Horizontal Metrics (htmx) table cannot be negative since they are encoded as unsigned 16-bit values. But some programs may infer and report a negative advance by looking up the x-coordinates of the glyphs directly on the glyf table.
 
-    There are reports of broken versions of Glyphs.app causing
-    this kind of problem as reported at
+    There are reports of broken versions of Glyphs.app causing this kind of problem as reported at
     https://github.com/googlefonts/fontbakery/issues/1720 and
     https://github.com/fonttools/fonttools/pull/1198
 
-    This check detects and reports such malformed
-    glyf table entries.
+    This check detects and reports such malformed glyf table entries.
   """,
   conditions = ['is_ttf'],
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1720'
   })
 def com_google_fonts_check_negative_advance_width(ttFont):
-  """ Check that advance widths cannot be inferred as negative. """
+  """Check that advance widths cannot be inferred as negative."""
   failed = False
   for glyphName in ttFont["glyf"].glyphs:
     coords = ttFont["glyf"][glyphName].coordinates
@@ -3314,28 +3221,26 @@ def com_google_fonts_check_negative_advance_width(ttFont):
 @check(
   id = 'com.google.fonts/check/varfont/generate_static',
   rationale = """
-  Google Fonts may serve static fonts which have been generated
-  from variable fonts. This test will attempt to generate
-  a static ttf using fontTool's varLib mutator.
+    Google Fonts may serve static fonts which have been generated from variable fonts. This test will attempt to generate a static ttf using fontTool's varLib mutator.
 
-  The target font will be the mean of each axis e.g:
+    The target font will be the mean of each axis e.g:
 
-  **VF font axes**
+    **VF font axes**
 
-  - min weight, max weight = 400, 800
-  - min width, max width = 50, 100
+    - min weight, max weight = 400, 800
+    - min width, max width = 50, 100
 
-  **Target Instance**
+    **Target Instance**
 
-  - weight = 600
-  - width = 75
+    - weight = 600
+    - width = 75
   """,
   conditions = ['is_variable_font'],
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1727'
   })
 def com_google_fonts_check_varfont_generate_static(ttFont):
-  """ Check a static ttf can be generated from a variable font. """
+  """Check a static ttf can be generated from a variable font."""
   import tempfile
   from fontTools.varLib import mutator
 
@@ -3358,15 +3263,12 @@ def com_google_fonts_check_varfont_generate_static(ttFont):
 @check(
   id = 'com.google.fonts/check/varfont/has_HVAR',
   rationale = """
-  Not having a HVAR table can lead to costly
-  text-layout operations on some platforms,
-  which we want to avoid.
+    Not having a HVAR table can lead to costly text-layout operations on some platforms, which we want to avoid.
 
-  So, all variable fonts on the Google Fonts
-  collection should have an HVAR with valid values.
+    So, all variable fonts on the Google Fonts collection should have an HVAR with valid values.
 
-  More info on the HVAR table can be found at:
-  https://docs.microsoft.com/en-us/typography/opentype/spec/otvaroverview#variation-data-tables-and-miscellaneous-requirements
+    More info on the HVAR table can be found at:
+    https://docs.microsoft.com/en-us/typography/opentype/spec/otvaroverview#variation-data-tables-and-miscellaneous-requirements
   """, # FIX-ME: We should clarify which are these
        #         platforms in which there can be issues
        #         with costly text-layout operations
@@ -3376,7 +3278,7 @@ def com_google_fonts_check_varfont_generate_static(ttFont):
     'request': 'https://github.com/googlefonts/fontbakery/issues/2119'
   })
 def com_google_fonts_check_varfont_has_HVAR(ttFont):
-  """ Check that variable fonts have an HVAR table. """
+  """Check that variable fonts have an HVAR table."""
   if "HVAR" in ttFont.keys():
     yield PASS, ("This variable font contains an HVAR table.")
   else:
@@ -3394,15 +3296,9 @@ def com_google_fonts_check_varfont_has_HVAR(ttFont):
 @check(
   id = 'com.google.fonts/check/varfont/has_MVAR',
   rationale = """
-  Per the OpenType spec, the MVAR tables contain
-  variation data for metadata otherwise in tables
-  such as OS/2 and hhea; if not present, then
-  the default values in those tables will apply
-  to all instances, which can effect text layout.
+    Per the OpenType spec, the MVAR tables contain variation data for metadata otherwise in tables such as OS/2 and hhea; if not present, then the default values in those tables will apply to all instances, which can effect text layout.
 
-  Thus, MVAR tables should be present and correct
-  in all variable fonts since text layout software
-  depends on these values.
+    Thus, MVAR tables should be present and correct in all variable fonts since text layout software depends on these values.
   """, # FIX-ME: Clarify this rationale text.
        #         See: https://github.com/googlefonts/fontbakery/issues/2118#issuecomment-432108560
   conditions = ['is_variable_font'],
@@ -3410,7 +3306,7 @@ def com_google_fonts_check_varfont_has_HVAR(ttFont):
     'request': 'https://github.com/googlefonts/fontbakery/issues/2118'
   })
 def com_google_fonts_check_varfont_has_MVAR(ttFont):
-  """ Check that variable fonts have an MVAR table. """
+  """Check that variable fonts have an MVAR table."""
   if "MVAR" in ttFont.keys():
     yield PASS, ("This variable font contains an MVAR table.")
   else:
@@ -3424,30 +3320,35 @@ def com_google_fonts_check_varfont_has_MVAR(ttFont):
 @check(
   id = 'com.google.fonts/check/smart_dropout',
   conditions = ['is_ttf',
-                'not VTT_hinted']
+                'not VTT_hinted'],
+  rationale = """
+    This setup is meant to ensure consistent rendering quality for fonts across all devices (with different rendering/hinting capabilities).
+
+    Below is the snippet of instructions we expect to see in the fonts:
+    B8 01 FF    PUSHW 0x01FF
+    85          SCANCTRL (unconditinally turn on
+                          dropout control mode)
+    B0 04       PUSHB 0x04
+    8D          SCANTYPE (enable smart dropout control)
+
+    "Smart dropout control" means activating rules 1, 2 and 5:
+    Rule 1: If a pixel's center falls within the glyph outline,
+            that pixel is turned on.
+    Rule 2: If a contour falls exactly on a pixel's center,
+            that pixel is turned on.
+    Rule 5: If a scan line between two adjacent pixel centers
+            (either vertical or horizontal) is intersected
+            by both an on-Transition contour and an off-Transition
+            contour and neither of the pixels was already turned on
+            by rules 1 and 2, turn on the pixel which is closer to
+            the midpoint between the on-Transition contour and
+            off-Transition contour. This is "Smart" dropout control.
+
+    For more detailed info (such as other rules not enabled in this snippet), please refer to the TrueType Instruction Set documentation.
+  """
 )
 def com_google_fonts_check_smart_dropout(ttFont):
-  """Font enables smart dropout control in "prep" table instructions?
-
-  B8 01 FF    PUSHW 0x01FF
-  85          SCANCTRL (unconditinally turn on
-                        dropout control mode)
-  B0 04       PUSHB 0x04
-  8D          SCANTYPE (enable smart dropout control)
-
-  Smart dropout control means activating rules 1, 2 and 5:
-  Rule 1: If a pixel's center falls within the glyph outline,
-          that pixel is turned on.
-  Rule 2: If a contour falls exactly on a pixel's center,
-          that pixel is turned on.
-  Rule 5: If a scan line between two adjacent pixel centers
-          (either vertical or horizontal) is intersected
-          by both an on-Transition contour and an off-Transition
-          contour and neither of the pixels was already turned on
-          by rules 1 and 2, turn on the pixel which is closer to
-          the midpoint between the on-Transition contour and
-          off-Transition contour. This is "Smart" dropout control.
-  """
+  """Font enables smart dropout control in "prep" table instructions?"""
   INSTRUCTIONS = b"\xb8\x01\xff\x85\xb0\x04\x8d"
 
   if ("prep" in ttFont and
@@ -3465,7 +3366,12 @@ def com_google_fonts_check_smart_dropout(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/vttclean'
+  id = 'com.google.fonts/check/vttclean',
+  rationale = """
+    The goal here is to reduce filesizes and improve pageloading when dealing with webfonts.
+
+    The VTT Talk sources are not necessary at runtime and endup being just dead weight when left embedded in the font binaries. The sources should be kept on the project files but stripped out when building release binaries.
+  """
 )
 def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
   """There must not be VTT Talk sources in the font."""
@@ -3484,11 +3390,10 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
 @check(
   id = 'com.google.fonts/check/aat',
   rationale = """
-  Apple's `TrueType reference manual <https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6.html>`_
-  describes SFNT tables not in the Microsoft
-  `OpenType specification <https://docs.microsoft.com/en-us/typography/opentype/spec/>`_
-  and these can sometimes sneak into final release files,
-  but Google Fonts should only have OpenType tables.
+    Apple's TrueType reference manual [1] describes SFNT tables not in the Microsoft OpenType specification [2] and these can sometimes sneak into final release files, but Google Fonts should only have OpenType tables.
+
+    [1] https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6.html
+    [2] https://docs.microsoft.com/en-us/typography/opentype/spec/
   """
 )
 def com_google_fonts_check_aat(ttFont):
@@ -3520,9 +3425,7 @@ def com_google_fonts_check_aat(ttFont):
   id = 'com.google.fonts/check/fvar_name_entries',
   conditions = ['is_variable_font'],
   rationale = """
-  The purpose of this check is to make sure that all
-  name entries referenced by variable font instances
-  do exist in the name table.
+    The purpose of this check is to make sure that all name entries referenced by variable font instances do exist in the name table.
   """
 )
 def com_google_fonts_check_fvar_name_entries(ttFont):
@@ -3549,7 +3452,7 @@ def com_google_fonts_check_fvar_name_entries(ttFont):
   id = 'com.google.fonts/check/varfont_has_instances',
   conditions = ['is_variable_font'],
   rationale = """
-  Named instances must be present in all variable fonts.
+    Named instances must be present in all variable fonts in order not to frustrate the users' typical expectations of a traditional static font workflow.
   """
 )
 def com_google_fonts_check_varfont_has_instances(ttFont):
@@ -3568,8 +3471,7 @@ def com_google_fonts_check_varfont_has_instances(ttFont):
   id = 'com.google.fonts/check/varfont_weight_instances',
   conditions = ['is_variable_font'],
   rationale = """
-  The named instances on the weight axis of a variable font
-  must have coordinates that are multiples of 100 on the design space.
+    The named instances on the weight axis of a variable font must have coordinates that are multiples of 100 on the design space.
   """
 )
 def com_google_fonts_check_varfont_weight_instances(ttFont):
@@ -3591,16 +3493,13 @@ def com_google_fonts_check_varfont_weight_instances(ttFont):
 
 @check(
   id = 'com.google.fonts/check/family/tnum_horizontal_metrics',
+  conditions = ['RIBBI_ttFonts'],
   rationale = """
-    Tabular figures need to have the same metrics in all styles
-    in order to allow tables to be set with proper
-    typographic control, but to maintain the placement of
-    decimals and numeric columns between rows.
+    Tabular figures need to have the same metrics in all styles in order to allow tables to be set with proper typographic control, but to maintain the placement of decimals and numeric columns between rows.
 
     Here's a good explanation of this:
     https://www.typography.com/techniques/fonts-for-financials/#tabular-figs
   """,
-  conditions = ['RIBBI_ttFonts'],
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/2278'
   }
@@ -3644,9 +3543,7 @@ def com_google_fonts_check_family_tnum_horizontal_metrics(RIBBI_ttFonts):
   rationale = """
     Hinted fonts must have head table flag bit 3 set.
 
-    Per https://docs.microsoft.com/en-us/typography/opentype/spec/head,
-    bit 3 of Head::flags decides whether PPEM should be rounded.
-    This bit should always be set for hinted fonts.
+    Per https://docs.microsoft.com/en-us/typography/opentype/spec/head, bit 3 of Head::flags decides whether PPEM should be rounded. This bit should always be set for hinted fonts.
 
     Note:
     Bit 3 = Force ppem to integer values for all internal scaler math;
@@ -3687,9 +3584,7 @@ def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
   id = 'com.google.fonts/check/ligature_carets',
   conditions = ['ligature_glyphs'],
   rationale = """
-    All ligatures in a font must have corresponding caret (text cursor)
-    positions defined in the GDEF table, otherwhise, users may experience
-    issues with caret rendering.
+    All ligatures in a font must have corresponding caret (text cursor) positions defined in the GDEF table, otherwhise, users may experience issues with caret rendering.
   """,
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1225'
@@ -3737,13 +3632,11 @@ def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
 
 @check(
   id = 'com.google.fonts/check/kerning_for_non_ligated_sequences',
-  rationale = """
-    Fonts with ligatures should have kerning on the corresponding
-    non-ligated sequences for text where ligatures aren't used
-    (eg https://github.com/impallari/Raleway/issues/14).
-  """,
   conditions = ['ligatures',
                 'has_kerning_info'],
+  rationale = """
+    Fonts with ligatures should have kerning on the corresponding non-ligated sequences for text where ligatures aren't used (eg https://github.com/impallari/Raleway/issues/14).
+  """,
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1145'
   })
@@ -3802,19 +3695,13 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, 
 @check(
   id = 'com.google.fonts/check/name/family_and_style_max_length',
   rationale = """
-    According to a `GlyphsApp tutorial
-    <https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances>`_,
-    in order to make sure all versions of Windows recognize it as a valid
-    font file, we must make sure that the concatenated length of the
-    familyname (NameID.FONT_FAMILY_NAME) and style
-    (NameID.FONT_SUBFAMILY_NAME)
-    strings in the name table do not exceed 20 characters.
+    According to a GlyphsApp tutorial [1], in order to make sure all versions of Windows recognize it as a valid font file, we must make sure that the concatenated length of the familyname (NameID.FONT_FAMILY_NAME) and style (NameID.FONT_SUBFAMILY_NAME) strings in the name table do not exceed 20 characters.
 
-    After discussing the problem in more detail at `FontBakery issue #2179
-    <https://github.com/googlefonts/fontbakery/issues/2179>`_
-    we decided that allowing up to 27 chars would still be
-    on the safe side, though.
-    """,
+    After discussing the problem in more detail at `FontBakery issue #2179 [2] we decided that allowing up to 27 chars would still be on the safe side, though.
+
+    [1] https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances
+    [2] https://github.com/googlefonts/fontbakery/issues/2179
+  """,
   misc_metadata = {
     # Somebody with access to Windows should make some experiments
     # and confirm that this is really the case.
@@ -3854,12 +3741,13 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/family/control_chars',
-    conditions=['are_ttf'],
-    rationale="""Use of some unacceptable control characters in the U+0000 - U+001F range  
-    can lead to rendering issues on some platforms.  Acceptable control characters are 
-    defined as .null (U+0000) and CR (U+000D) for this test.
-    """
+  id='com.google.fonts/check/family/control_chars',
+  conditions=['are_ttf'],
+  rationale="""
+    Use of some unacceptable control characters in the U+0000 - U+001F range can lead to rendering issues on some platforms.
+   
+    Acceptable control characters are defined as .null (U+0000) and CR (U+000D) for this test.
+  """
 )
 def com_google_fonts_check_family_control_chars(ttFonts):
   """Does font file include unacceptable control character glyphs?"""
@@ -3868,36 +3756,36 @@ def com_google_fonts_check_family_control_chars(ttFonts):
   #    - .null (U+0000)
   #    - CR (U+000D)
   unacceptable_cc_list = [
-      "uni0001",
-      "uni0002",
-      "uni0003",
-      "uni0004",
-      "uni0005",
-      "uni0006",
-      "uni0007",
-      "uni0008",
-      "uni0009",
-      "uni000A",
-      "uni000B",
-      "uni000C",
-      "uni000E",
-      "uni000F",
-      "uni0010",
-      "uni0011",
-      "uni0012",
-      "uni0013",
-      "uni0014",
-      "uni0015",
-      "uni0016",
-      "uni0017",
-      "uni0018",
-      "uni0019",
-      "uni001A",
-      "uni001B",
-      "uni001C",
-      "uni001D",
-      "uni001E",
-      "uni001F"
+    "uni0001",
+    "uni0002",
+    "uni0003",
+    "uni0004",
+    "uni0005",
+    "uni0006",
+    "uni0007",
+    "uni0008",
+    "uni0009",
+    "uni000A",
+    "uni000B",
+    "uni000C",
+    "uni000E",
+    "uni000F",
+    "uni0010",
+    "uni0011",
+    "uni0012",
+    "uni0013",
+    "uni0014",
+    "uni0015",
+    "uni0016",
+    "uni0017",
+    "uni0018",
+    "uni0019",
+    "uni001A",
+    "uni001B",
+    "uni001C",
+    "uni001D",
+    "uni001E",
+    "uni001F"
   ]
 
   # a dict with key:value of font path that failed check : list of unacceptable glyph names
@@ -3971,21 +3859,20 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
   id = 'com.google.fonts/check/vertical_metrics_regressions',
   conditions = ['remote_styles'],
   rationale="""
-  If the family already exists on Google Fonts, we need to
-  ensure that the checked family's vertical metrics are similar. This
-  check will test the following schema which was outlined in
-  `Fontbakery issue #1162 <https://github.com/googlefonts/fontbakery/issues/1162>`_:
+    If the family already exists on Google Fonts, we need to ensure that the checked family's vertical metrics are similar. This check will test the following schema which was outlined in Fontbakery issue #1162 [1]:
 
-  - The family should visually have the same vertical metrics as the
-    Regular style hosted on Google Fonts.
-  - If the family on Google Fonts has differing hhea and typo metrics,
-    the family being checked should use the typo metrics for both the
-    hhea and typo entries.
-  - If the family on Google Fonts has use typo metrics not enabled and the
-    family being checked has it enabled, the hhea and typo metrics
-    should use the family on Google Fonts winAscent and winDescent values.
-  - If the upms differ, the values must be scaled so the visual appearance
-    is the same.
+    - The family should visually have the same vertical metrics as the
+      Regular style hosted on Google Fonts.
+    - If the family on Google Fonts has differing hhea and typo metrics,
+      the family being checked should use the typo metrics for both the
+      hhea and typo entries.
+    - If the family on Google Fonts has use typo metrics not enabled and the
+      family being checked has it enabled, the hhea and typo metrics
+      should use the family on Google Fonts winAscent and winDescent values.
+    - If the upms differ, the values must be scaled so the visual appearance
+      is the same.
+
+    [1] https://github.com/googlefonts/fontbakery/issues/1162
   """,
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1162'
@@ -3999,7 +3886,7 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
                                   get_instance_axis_value)
 
   def typo_metrics_enabled(ttFont):
-      return ttFont['OS/2'].fsSelection & 0b10000000 > 0
+    return ttFont['OS/2'].fsSelection & 0b10000000 > 0
 
   failed = False
   ttFonts = list(ttFonts)
@@ -4149,14 +4036,14 @@ def is_librebarcode(font):
 
 def check_skip_filter(checkid, font=None, **iterargs):
   if font and is_librebarcode(font) and checkid in (
-        # See: https://github.com/graphicore/librebarcode/issues/3
-        'com.google.fonts/check/monospace'
-      , 'com.google.fonts/check/gpos_kerning_info'
-      , 'com.google.fonts/check/currency_chars'
-      , 'com.google.fonts/check/whitespace_ink'
+    # See: https://github.com/graphicore/librebarcode/issues/3
+    'com.google.fonts/check/monospace',
+    'com.google.fonts/check/gpos_kerning_info',
+    'com.google.fonts/check/currency_chars',
+    'com.google.fonts/check/whitespace_ink'
   ):
     return False, ('LibreBarcode is blacklisted for this check, see '
-                  'https://github.com/graphicore/librebarcode/issues/3')
+                   'https://github.com/graphicore/librebarcode/issues/3')
   return True, None
 
 

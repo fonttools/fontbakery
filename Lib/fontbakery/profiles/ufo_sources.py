@@ -106,14 +106,14 @@ def com_daltonmaag_check_ufolint(font):
 
 @register_check(section=basic_checks)
 @check(
-  id = 'com.daltonmaag/check/ufo-required-fields'
-)
-def com_daltonmaag_check_required_fields(ufo_font):
-  """Check that required fields are present in the UFO fontinfo.
-
+  id = 'com.daltonmaag/check/ufo-required-fields',
+  rationale = """
     ufo2ft requires these info fields to compile a font binary:
     unitsPerEm, ascender, descender, xHeight, capHeight and familyName.
-    """
+  """
+)
+def com_daltonmaag_check_required_fields(ufo_font):
+  """Check that required fields are present in the UFO fontinfo."""
   recommended_fields = []
 
   for field in [
@@ -131,13 +131,13 @@ def com_daltonmaag_check_required_fields(ufo_font):
 
 @register_check(section=basic_checks)
 @check(
-  id = 'com.daltonmaag/check/ufo-recommended-fields'
+  id = 'com.daltonmaag/check/ufo-recommended-fields',
+  rationale = """
+    This includes fields that should be in any production font.
+  """
 )
 def com_daltonmaag_check_recommended_fields(ufo_font):
-  """Check that recommended fields are present in the UFO fontinfo.
-
-    This includes fields that should be in any production font.
-    """
+  """Check that recommended fields are present in the UFO fontinfo."""
   recommended_fields = []
 
   for field in [
@@ -156,11 +156,8 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
 
 @register_check(section=basic_checks)
 @check(
-  id = 'com.daltonmaag/check/ufo-unnecessary-fields'
-)
-def com_daltonmaag_check_unnecessary_fields(ufo_font):
-  """Check that no unnecessary fields are present in the UFO fontinfo.
-
+  id = 'com.daltonmaag/check/ufo-unnecessary-fields',
+  rationale = """
     ufo2ft will generate these.
 
     openTypeOS2UnicodeRanges and openTypeOS2CodePageRanges are exempted
@@ -168,7 +165,10 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
     region are present.
 
     year is deprecated since UFO v2.
-    """
+  """
+)
+def com_daltonmaag_check_unnecessary_fields(ufo_font):
+  """Check that no unnecessary fields are present in the UFO fontinfo."""
   unnecessary_fields = []
 
   for field in [

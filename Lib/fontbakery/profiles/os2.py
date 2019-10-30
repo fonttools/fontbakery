@@ -154,8 +154,9 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
 
 @check(
   id = 'com.adobe.fonts/check/fsselection_matches_macstyle',
-  rationale = """The bold and italic bits in OS/2.fsSelection must match the
-  bold and italic bits in head.macStyle per the OpenType spec."""
+  rationale = """
+    The bold and italic bits in OS/2.fsSelection must match the bold and italic bits in head.macStyle per the OpenType spec.
+  """
 )
 def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
   """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
@@ -182,12 +183,9 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
   id = 'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1',
   conditions=['RIBBI_ttFonts'],
   rationale = """
-  Per the OpenType spec: name ID 1 'is used in combination with
-  Font Subfamily name (name ID 2), and should be shared among at most four
-  fonts that differ only in weight or style...
+    Per the OpenType spec: name ID 1 'is used in combination with Font Subfamily name (name ID 2), and should be shared among at most four fonts that differ only in weight or style...
 
-  This four-way distinction should also be reflected in the
-  OS/2.fsSelection field, using bits 0 and 5.
+    This four-way distinction should also be reflected in the OS/2.fsSelection field, using bits 0 and 5.
   """
 )
 def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
@@ -231,22 +229,13 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
 @check(
   id = 'com.google.fonts/check/code_pages',
   rationale = """
-  At least some programs (such as Word and Sublime Text) under Windows 7
-  do not recognize fonts unless code page bits are properly set on the
-  ulCodePageRange1 (and/or ulCodePageRange2) fields of the OS/2 table.
+    At least some programs (such as Word and Sublime Text) under Windows 7 do not recognize fonts unless code page bits are properly set on the ulCodePageRange1 (and/or ulCodePageRange2) fields of the OS/2 table.
 
-  More specifically, the fonts are selectable in the font menu, but
-  whichever Windows API these applications use considers them unsuitable
-  for any character set, so anything set in these fonts is rendered
-  with a fallback font of Arial.
+    More specifically, the fonts are selectable in the font menu, but whichever Windows API these applications use considers them unsuitable for any character set, so anything set in these fonts is rendered with a fallback font of Arial.
 
-  This check currently does not identify which code pages should be set.
-  Auto-detecting coverage is not trivial since the OpenType specification
-  leaves the interpretation of whether a given code page is "functional"
-  or not open to the font developer to decide.
+    This check currently does not identify which code pages should be set. Auto-detecting coverage is not trivial since the OpenType specification leaves the interpretation of whether a given code page is "functional" or not open to the font developer to decide.
 
-  So here we simply detect as a FAIL when a given font has no code page
-  declared at all.
+    So here we simply detect as a FAIL when a given font has no code page declared at all.
   """
 )
 def com_google_fonts_check_code_pages(ttFont):

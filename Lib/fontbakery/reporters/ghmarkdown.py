@@ -40,6 +40,39 @@ class GHMarkdownReporter(SerializeReporter):
     else:
       return ""
 
+  def render_rationale(self, check, checkid):
+    if not "rationale" in check:
+      return ""
+
+    # Ideally we'll at some point invoke a proper markdown
+    # parser here. But for now, let's simply paginate the raw
+    # content into an 80-column block of text and output it
+    # enclosed in <pre></pre> tags...
+
+    rendered = ""
+    for line in check['rationale'].split("\n"):
+      if line.strip() == "":
+        rendered += "\n"
+        continue
+
+      if line[:4].strip() != "":
+        import sys
+        sys.exit(f"FATAL ERROR: The rationale metadata on '{checkid}' must be indented by 4 spaces!")
+
+      # all lines are assumed to be indented by 4 spaces
+      line = line[4:]
+
+      words = line.split(" ")
+      while words:
+        this_line = words.pop(0)
+        while words and (len(this_line) + 1 + len(words[0]) < 80 or
+                         len(words[0]) >= 80):
+          this_line += " " + words.pop(0)
+        rendered += this_line + "\n"
+
+    import html
+    rendered = html.escape(rendered.strip())
+    return f"<pre>--- Rationale ---\n{rendered}</pre>\n"
 
   def check_md(self, check):
     checkid = check["key"][1].split(":")[1].split(">")[0]
@@ -51,10 +84,8 @@ class GHMarkdownReporter(SerializeReporter):
                           "(https://font-bakery.readthedocs.io/en/latest"
                          f"/fontbakery/profiles/{profile}.html#{checkid})")
 
-    if not "rationale" in check:
-      rationale = ""
-    else:
-      rationale = f"<pre>--- Rationale ---\n{check['rationale'].strip()}</pre>\n"
+    rationale = self.render_rationale(check, checkid)
+
     return self.html5_collapsible("{} <b>{}:</b> {}".format(self.emoticon(check["result"]),
                                                             check["result"],
                                                             check["description"]),

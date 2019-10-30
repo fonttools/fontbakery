@@ -29,10 +29,10 @@ ADOBEFONTS_PROFILE_CHECKS[:] = [cid for cid in ADOBEFONTS_PROFILE_CHECKS
 
 
 @check(
-    id='com.adobe.fonts/check/family/consistent_upm',
-    rationale="""While not required by the OpenType spec, we (Adobe) expect
-    that a group of fonts designed & produced as a family have consistent
-    units per em. """
+  id = 'com.adobe.fonts/check/family/consistent_upm',
+  rationale = """
+    While not required by the OpenType spec, we (Adobe) expect that a group of fonts designed & produced as a family have consistent units per em.
+  """
 )
 def com_adobe_fonts_check_family_consistent_upm(ttFonts):
     """Fonts have consistent Units Per Em?"""
@@ -74,19 +74,12 @@ def _quick_and_dirty_glyph_is_empty(font, glyph_name):
 
 
 @check(
-    id='com.adobe.fonts/check/find_empty_letters',
-    rationale="""Font language, script, and character set tagging approaches
-    typically have an underlying assumption that letters (i.e. characters with
-    Unicode general category 'Ll', 'Lm', 'Lo', 'Lt', or 'Lu', which includes
-    CJK ideographs and Hangul syllables) with entries in the 'cmap' table have
-    glyphs with ink (with a few exceptions, notably the Hangul "filler"
-    characters).
+  id = 'com.adobe.fonts/check/find_empty_letters',
+  rationale = """
+    Font language, script, and character set tagging approaches typically have an underlying assumption that letters (i.e. characters with Unicode general category 'Ll', 'Lm', 'Lo', 'Lt', or 'Lu', which includes CJK ideographs and Hangul syllables) with entries in the 'cmap' table have glyphs with ink (with a few exceptions, notably the Hangul "filler" characters).
 
-    This check is intended to identify fonts in which such letters have been
-    mapped to empty glyphs (typically done as a form of subsetting). Letters
-    with empty glyphs should have their entries removed from the 'cmap' table,
-    even if the empty glyphs are left in place (e.g. for CID consistency).
-    """
+    This check is intended to identify fonts in which such letters have been mapped to empty glyphs (typically done as a form of subsetting). Letters with empty glyphs should have their entries removed from the 'cmap' table, even if the empty glyphs are left in place (e.g. for CID consistency).
+  """
 )
 def com_adobe_fonts_check_find_empty_letters(ttFont):
     """Letters in font have glyphs that are not empty?"""
