@@ -2,7 +2,15 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.15 (2019-Oct-25)
+## 0.7.16 (2019-Nov-08)
+### Note-worthy changes
+  - ...
+
+
+## 0.7.15 (2019-Oct-30)
+### Note-worthy changes
+  - **Rationale cleanup & render:** Reviewed all rationale metadata entries and added code to properly format them on the github markdown output. The same still need to be done for the text terminal output. And later we should properly parse markdown everywhere. (issue #2681)
+
 ### New features
   - Print rationale of checks (if available) on terminal output (issue #2531)
   - Display rationale text on the github markdown output (when it is available) (issue #2531)
