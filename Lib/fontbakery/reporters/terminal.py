@@ -442,28 +442,31 @@ class TerminalReporter(TerminalProgress):
       # Omit printing of iterargs when there's none of them:
       with_string = ""
       if formatted_iterargs != ():
-        with_string = f" with {formatted_iterargs}"
+        with_string = f" with {formatted_iterargs[0][1]}"
 
-      print('>> {}{}'.format(
+      print(' >> {}{}'.format(
         highlight(CYAN_STR, check.id, use_color=self._use_color), with_string))
 
-      print('  ',
+      print('   ',
         highlight(MAGENTA_STR, check.description, use_color=self._use_color))
 
       if check.rationale:
-        print('  ',
-          highlight(WHITE_STR, check.rationale, use_color=self._use_color))
+        print('\n    {}{}'.format(
+          highlight(CYAN_STR, "Rationale: ", use_color=self._use_color),
+          highlight(WHITE_STR, check.rationale.strip(), use_color=self._use_color)))
+
+      print("\n")
 
     # Log statuses have weights >= 0
     # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
     if status.weight >= self._log_threshold:
-      print(' * {}: {}'.format(formatStatus(status, color=self._use_color)
-                                               , message))#.encode('utf-8'))
+      print('    * {}: {}'.format(formatStatus(status, color=self._use_color),
+                                  message))
       if hasattr(message, 'traceback'):
         print('        ','\n         '.join(message.traceback.split('\n')))
 
     if status == ENDCHECK:
-      print('\n   Result: {}\n'.format(formatStatus(message, color=self._use_color)))
+      print('\n    Result: {}\n'.format(formatStatus(message, color=self._use_color)))
 
     if status == ENDSECTION:
       print('')
