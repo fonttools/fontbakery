@@ -33,6 +33,7 @@
 
 
 
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -64,21 +65,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-10-14 08:39 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/d4966164fd0090a2c5a08b1954cb538658c25968/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-10-29 04:18 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/b06d5a171311424680149b8c61b4e01f6cbcea79/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2821" />
+<meta name="word_count" content="2836" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/9d6300df.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/81fc6699.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/b8d322.conceptual.css ">
 
@@ -98,6 +99,7 @@
 
 			},
 			hasComments: true,
+			enableTutorialFeedback: false,
 			feedbackSystem: 'GitHub',
 			feedbackGitHubRepo: 'MicrosoftDocs/typography-issues',
 			feedbackProductUrl: '',
@@ -121,7 +123,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/9baca273.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/390f5ef9.index-docs.js"></script>
 
 </head>
 
@@ -168,7 +170,7 @@
 		<div id="page-actions" class="is-flex-touch has-flex-justify-content-space-between-touch has-padding-none has-padding-none-mobile">
 			<ul class="action-list has-flex-justify-content-start-mobile is-flex is-flex-row has-flex-wrap">
 				<li>
-					<button type="button" class="bookmark button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="bookmarks">
+					<button type="button" class="bookmark button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="bookmarks" data-bi-name="bookmark">
 						<span class="icon" aria-hidden="true">
 							<span class="docon docon-single-bookmark"></span>
 						</span>
@@ -331,7 +333,7 @@ High contrast					</span>
 									<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
 								</span>
 							</span>
-							<span class="is-truncated has-margin-left-small" data-profile-property="userName"></span>
+							<span class="is-inline-truncated has-margin-left-small" data-profile-property="userName"></span>
 						</button>
 						<div class="dropdown-menu box" id="user-menu" role="menu">
 							<div class="media is-user-dir">
@@ -342,13 +344,14 @@ High contrast					</span>
 								</div>
 								<div class="media-content">
 									<p class="title">
-										<span class="is-truncated" style="max-width: 200px" data-profile-property="userName"></span>
+										<span class="is-inline-truncated has-max-width-200" data-profile-property="userName"></span>
 									</p>
 									<p class="subtitle has-margin-bottom-none">
-										<span class="is-truncated" style="max-width: 200px" data-profile-property="upn"></span>
+										<span class="is-inline-truncated has-max-width-200" data-profile-property="upn"></span>
 									</p>
 									<ul class="is-unstyled has-margin-none has-margin-top-small">
 										<li><a href="/profile" data-profile-property="profileUrl">Profile</a></li>
+										<li><a href="/profile" data-profile-property="bookmarksUrl">Bookmarks</a></li>
 										<li><a class="docs-sign-out" href="#">Sign out</a></li>
 									</ul>
 								</div>
@@ -460,6 +463,10 @@ High contrast					</span>
 <tr>
 <td>2REB</td>
 <td><a href="http://www.2rebels.com/" data-linktype="external">2Rebels</a></td>
+</tr>
+<tr>
+<td>3270</td>
+<td><a href="https://github.com/rbanffy/3270font" data-linktype="external">Ricardo Bánffy</a></td>
 </tr>
 <tr>
 <td>39BC</td>
@@ -1096,7 +1103,7 @@ High contrast					</span>
 </tr>
 <tr>
 <td>CTL</td>
-<td><a href="http://www.microsoft.com/typography/links/vendor.aspx?VID=CTL" data-linktype="external">Chaitanya Type Library</a></td>
+<td>Chaitanya Type Library</td>
 </tr>
 <tr>
 <td>cwwf</td>
@@ -1343,6 +1350,10 @@ High contrast					</span>
 <tr>
 <td>ESIG</td>
 <td><a href="http://www.e-signature.com/" data-linktype="external">E-Signature</a></td>
+</tr>
+<tr>
+<td>ETCO</td>
+<td><a href="https://www.etc.supply/" data-linktype="external">Etcetera Type Company</a></td>
 </tr>
 <tr>
 <td>ESTF</td>
@@ -2550,7 +2561,7 @@ High contrast					</span>
 </tr>
 <tr>
 <td>MS</td>
-<td><a href="http://www.microsoft.com/typography/" data-linktype="external">Microsoft Corp.</a></td>
+<td><a href="https://docs.microsoft.com/typography/" data-linktype="external">Microsoft Corp.</a></td>
 </tr>
 <tr>
 <td>MSCH</td>
@@ -2956,6 +2967,10 @@ High contrast					</span>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>RAIN</td>
+<td><a href="https://www.jasonrainbird.com" data-linktype="external">Rainbird</a></td>
+</tr>
+<tr>
 <td>RARE</td>
 <td><a href="http://www.rarebirdfonts.com" data-linktype="external">Rare Bird Font Foundry</a></td>
 </tr>
@@ -3109,6 +3124,10 @@ High contrast					</span>
 <tr>
 <td>SbB</td>
 <td><a href="http://www.sketchbookb.com" data-linktype="external">Sketchbook B</a></td>
+</tr>
+<tr>
+<td>SBFY</td>
+<td>Somebay Foundry</td>
 </tr>
 <tr>
 <td>SBT</td>
@@ -3687,6 +3706,10 @@ High contrast					</span>
 <td>Wei Huang</td>
 </tr>
 <tr>
+<td>WF</td>
+<td><a href="http://www.walkingfearless.com" data-linktype="external">Walking Fearless</a></td>
+</tr>
+<tr>
 <td>WILL</td>
 <td><a href="http://www.willerstorfer.com" data-linktype="external">Willerstorfer Font Foundry</a></td>
 </tr>
@@ -3800,6 +3823,35 @@ High contrast					</span>
 						</main>
 
 						<!-- rating mobile section -->
+								<div class="is-hidden-desktop has-border-top has-margin-top-large has-padding-top-small">
+<div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
+	<div class="binary-rating">
+		<div class="binary-rating-buttons">
+			<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+			<div>
+				<button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" data-bi-sat="1">
+					<span class="icon docon docon-like" aria-hidden="true"></span><span>Yes</span>
+				</button>
+				<button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-haspopup="true" aria-controls="rating-feedback">
+					<span class="icon docon docon-dislike" aria-hidden="true"></span><span>No</span>
+				</button>
+			</div>
+		</div>
+		<form class="feedback-verbatim-form is-hidden">
+			<div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
+				<label for="rating-feedback-mobile" class="visually-hidden">Any additional feedback?</label>
+				<textarea id="rating-feedback-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
+			</div>
+			<div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
+				<button class="skip-rating button is-text is-link is-small" type="button">Skip</button>
+				<button disabled class="submit-rating button is-primary is-small" type="submit" data-bi-name="rating-verbatim">Submit</button>
+			</div>
+		</form>
+	</div>
+	<div class="thankyou-rating is-hidden">
+		<p>Thank you.</p>
+	</div>
+</div>								</div>
 						<!-- end rating mobile section -->
 
 						<!-- feedback section -->
@@ -3927,7 +3979,7 @@ This page					</button>
 					</div>
 
 					<div id="page-actions" class="right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
-							<div id="affixed-right-container" class="doc-outline is-fixed is-vertically-scrollable">
+						<div id="affixed-right-container" class="doc-outline is-fixed is-vertically-scrollable">
 <div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
 	<div class="binary-rating">
 		<div class="binary-rating-buttons">
@@ -3955,10 +4007,10 @@ This page					</button>
 	<div class="thankyou-rating is-hidden">
 		<p>Thank you.</p>
 	</div>
-</div>								<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
-									<h3>In this article</h3>
-								</nav>
-							</div>
+</div>							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+								<h3>In this article</h3>
+							</nav>
+						</div>
 					</div>
 
 					<!--end of div.columns -->
