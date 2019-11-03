@@ -3089,7 +3089,7 @@ def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style)
 @check(
   id = 'com.google.fonts/check/name/copyright_length',
   rationale = """
-    This is an arbitrary max lentgh for the copyright notice field of the name table. We simply don't want such notices to be too long. Typically such notices are actually much shorter than this with a lenghth of roughtly 70 or 80 characters.
+    This is an arbitrary max length for the copyright notice field of the name table. We simply don't want such notices to be too long. Typically such notices are actually much shorter than this with a length of roughly 70 or 80 characters.
   """,
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1603'
