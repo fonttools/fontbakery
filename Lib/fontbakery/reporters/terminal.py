@@ -442,20 +442,26 @@ class TerminalReporter(TerminalProgress):
       # Omit printing of iterargs when there's none of them:
       with_string = ""
       if formatted_iterargs != ():
-        with_string = f" with {formatted_iterargs[0][1]}"
+        with_string = f"with {formatted_iterargs[0][1]}"
 
-      print(' >> {}{}'.format(
-        highlight(CYAN_STR, check.id, use_color=self._use_color), with_string))
-
-      print('   ',
-        highlight(MAGENTA_STR, check.description, use_color=self._use_color))
+      print((' >> {}\n'
+             '    {}\n'
+             '    {}\n').format(
+        highlight(CYAN_STR, check.id, use_color=self._use_color),
+        highlight(MAGENTA_STR, check.description, use_color=self._use_color),
+        with_string))
 
       if check.rationale:
-        print('\n    {}{}'.format(
-          highlight(CYAN_STR, "Rationale: ", use_color=self._use_color),
-          highlight(WHITE_STR, check.rationale.strip(), use_color=self._use_color)))
-
-      print("\n")
+        from fontbakery.utils import text_flow, unindent_rationale
+        content = unindent_rationale(check.rationale).strip()
+        print('    ' + highlight(CYAN_STR, "  Rationale:" + " " * 64,
+                                 use_color=self._use_color) + '\n'
+              + text_flow(content,
+                          width=76,
+                          indent=4,
+                          left_margin=2,
+                          space_padding=True,
+                          text_color=WHITE_STR))
 
     # Log statuses have weights >= 0
     # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)

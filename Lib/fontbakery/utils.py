@@ -18,6 +18,45 @@ import os
 from fontTools.ttLib import TTFont
 from typing import Text, Optional
 
+def text_flow(content, width=80, indent=0, left_margin=0,
+              space_padding=False, text_color="{}".format):
+  result = ""
+  for line in content.split("\n"):
+    if line.strip() == "":
+      if space_padding:
+        result += " " * indent + text_color(" " * width)
+      result += "\n"
+      continue
+
+    words = line.split(" ")
+    while words:
+      this_line = " " * left_margin + words.pop(0)
+      while words and (len(this_line) + 1 + len(words[0]) < width or
+                       len(words[0]) >= width):
+        this_line += " " + words.pop(0)
+
+      if space_padding:
+        # pad the line with spaces to fit the block width:
+        this_line += " " * (width - len(this_line))
+      result += " " * indent + text_color(this_line) + "\n"
+  return result
+
+
+def unindent_rationale(rationale, checkid=None):
+  content = ""
+  for line in rationale.split("\n"):
+    if line.strip() == "":
+      content += "\n"
+      continue
+
+    if checkid and line[:4].strip() != "":
+      import sys
+      sys.exit(f"FATAL ERROR: The rationale metadata on '{checkid}' must be indented by 4 spaces!")
+
+    # all lines are assumed to be indented by 4 spaces
+    content += line[4:] + "\n"
+  return content
+
 
 def suffix(font):
   filename = os.path.basename(font)
