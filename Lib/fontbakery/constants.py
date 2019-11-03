@@ -195,7 +195,7 @@ class PriorityLevel(enum.IntEnum):
 
 GF_latin_core = {
   #  NULL
-  0x000D: (None, "CARRIAGE RETURN"),
+  # 0x000D: (None, "CARRIAGE RETURN"),
   0x0020: (" ", "SPACE"),
   0x0021: ("!", "EXCLAMATION MARK"),
   0x0022: ("\"", "QUOTATION MARK"),
