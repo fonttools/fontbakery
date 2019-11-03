@@ -52,7 +52,7 @@
 		<meta name="author" content="mijacobs" />
 <meta name="ms.author" content="mijacobs" />
 <meta name="breadcrumb_path" content="/typography/breadcrumbs/toc.json" />
-<meta name="ms.date" content="7/31/2018" />
+<meta name="ms.date" content="11/01/2019" />
 <meta name="ms.prod" content="typography" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
 <meta name="description" content="Vendors who have registered a unique &amp;#x27Vendor ID&amp;#x27 with Microsoft." />
@@ -65,21 +65,21 @@
 <meta name="site_name" content="Docs" />
 <meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-10-29 04:18 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/b06d5a171311424680149b8c61b4e01f6cbcea79/typographydocs/vendors/index.md" />
+<meta name="updated_at" content="2019-11-01 05:40 PM" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/5c8da9f25811ccfba5dcda3b2e9eb1f9993620e0/typographydocs/vendors/index.md" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../TOC.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2836" />
+<meta name="word_count" content="2842" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/81fc6699.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cf17124f.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/b8d322.conceptual.css ">
 
@@ -123,7 +123,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/390f5ef9.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a0abe7be.index-docs.js"></script>
 
 </head>
 
@@ -352,6 +352,7 @@ High contrast					</span>
 									<ul class="is-unstyled has-margin-none has-margin-top-small">
 										<li><a href="/profile" data-profile-property="profileUrl">Profile</a></li>
 										<li><a href="/profile" data-profile-property="bookmarksUrl">Bookmarks</a></li>
+										<li><a href="/profile" data-profile-property="collectionsUrl">Collections</a></li>
 										<li><a class="docs-sign-out" href="#">Sign out</a></li>
 									</ul>
 								</div>
@@ -397,7 +398,7 @@ High contrast					</span>
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li class="displayDate loading">
-								<time role="presentation" datetime="2018-07-31T00:00:00.000Z" data-article-date-source="ms.date">7/31/2018</time>
+								<time role="presentation" datetime="2019-11-01T00:00:00.000Z" data-article-date-source="ms.date">11/01/2019</time>
 							</li>
 								<li class="readingTime">14 minutes to read</li>
 							<li class="contributors-holder">
@@ -1342,6 +1343,10 @@ High contrast					</span>
 <tr>
 <td>EMGR</td>
 <td><a href="http://www.emigre.com/" data-linktype="external">Emigre</a></td>
+</tr>
+<tr>
+<td>EMPH</td>
+<td><a href="http://emphase.ch/" data-linktype="external">Emphase</a></td>
 </tr>
 <tr>
 <td>EPSN</td>
@@ -2631,6 +2636,10 @@ High contrast					</span>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>NAUM</td>
+<td><a href="https://naumtype.com/" data-linktype="external">Naumtype</a></td>
+</tr>
+<tr>
 <td>NB</td>
 <td><a href="http://www.nobodoni.com/" data-linktype="external">No Bodoni Typography</a></td>
 </tr>
@@ -2705,6 +2714,10 @@ High contrast					</span>
 <tr>
 <td>NORF</td>
 <td><a href="http://www.norfok.com/" data-linktype="external">Norfok Incredible Font Design</a></td>
+</tr>
+<tr>
+<td>NOS</td>
+<td><a href="https://www.nos.black" data-linktype="external">NOS</a></td>
 </tr>
 <tr>
 <td>NOVA</td>
