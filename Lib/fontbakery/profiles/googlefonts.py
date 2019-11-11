@@ -761,7 +761,13 @@ def com_google_fonts_check_glyph_coverage(ttFont):
     yield FAIL,\
           Message("missing-codepoints",
                   f"Missing required codepoints:"
-                  f" {pretty_print_list(missing)}")
+                  f" {pretty_print_list(missing, shorten=4)}")
+    if len(missing) > 4:
+      missing_list = "\n\t\t".join(missing)
+      yield INFO,\
+            Message("missing-codepoints-verbose",
+                    f"Here's the full list of required codepoints"
+                    f" still missing:\n\t\t{missing_list}")
   else:
     yield PASS, "OK"
 

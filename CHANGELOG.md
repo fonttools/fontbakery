@@ -3,8 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.16 (2019-Nov-15)
-### Note-worthy changes
-  - ...
+### Bugfixes
+  - **[com.google.fonts/check/glyph_coverage]:** display full list of missing required codepoints in INFO log message (issue #2690)
 
 
 ## 0.7.15 (2019-Nov-03)
