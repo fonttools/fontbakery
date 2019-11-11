@@ -4,18 +4,9 @@ defcon==0.6.0
 font-v==0.7.1
 fontTools[ufo,lxml,unicode]==4.0.2
 lxml==4.4.1
-opentype-sanitizer==7.1.9
+opentype-sanitizer==8.0.0.post2
 protobuf==3.10.0
 requests==2.22.0
 ttfautohint-py==0.4.3
 ufolint==0.4.1
 -e .
-
-# This is only needed to generate docs:
-# sphinx==2.2.0
-# sphinx_rtd_theme==0.4.3
-# recommonmark==0.6.0
-
-# This is only needed to run code-tests:
-# ufo2ft==2.9.1
-# pytest==5.2.1
