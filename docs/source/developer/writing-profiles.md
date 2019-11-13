@@ -25,7 +25,7 @@ Thus, the presence of the name `profile` disables the automatic use of `profile_
 
 ```py
 # profile = Profile(...)
-# globals is a pythin builtin
+# globals is a Python builtin
 profile.auto_register(globals())
 ```
 
