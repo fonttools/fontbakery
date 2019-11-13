@@ -291,6 +291,50 @@ def ttf_glyph_has_ink(font: TTFont, name: Text) -> bool:
   return False
 
 
+def unicoderange_bit_name(bit):
+  from fontbakery.constants import UNICODERANGE_DATA
+  return UNICODERANGE_DATA[bit][0][1]
+
+
+def get_preferred_cmap(ttFont):
+  cmaps = {}
+  for table in ttFont["cmap"].tables:
+    cmaps[table.format] = table.cmap
+
+  if 12 in cmaps:
+    return cmaps[12]
+
+  elif 4 in cmaps:
+    return cmaps[4]
+
+  else:
+    return None
+
+
+def chars_in_range(ttFont, bit):
+  from fontbakery.constants import UNICODERANGE_DATA
+  cmap = get_preferred_cmap(ttFont)
+  chars = []
+  for c in sorted(cmap):
+    for entry in UNICODERANGE_DATA[bit]:
+      if c >= entry[2] and c <= entry[3]:
+        chars.append(c)
+  return chars
+
+
+def compute_unicoderange_bits(ttFont):
+  from fontbakery.constants import UNICODERANGE_DATA
+  cmap = get_preferred_cmap(ttFont)
+  result = 0
+  for c in sorted(cmap):
+    for bit in range(len(UNICODERANGE_DATA)):
+      for entry in UNICODERANGE_DATA[bit]:
+        bit = entry[0]
+        if c >= entry[2] and c <= entry[3]:
+          result |= (1 << bit)
+  return result
+
+
 def glyph_has_ink(font: TTFont, name: Text) -> bool:
   """Checks if specified glyph has any ink.
 

@@ -193,6 +193,21 @@ def vtt_talk_sources(ttFont) -> List[str]:
 
 
 @condition
+def preferred_cmap(ttFont):
+  from fontbakery.utils import get_preferred_cmap
+  return get_preferred_cmap(ttFont)
+
+
+@condition
+def unicoderange(ttFont):
+  """Get an integer bitmap representing the UnicodeRange fields in the os/2 table."""
+  os2 = ttFont['OS/2']
+  return (os2.ulUnicodeRange1 |
+          os2.ulUnicodeRange2 << 32 |
+          os2.ulUnicodeRange3 << 64 |
+          os2.ulUnicodeRange4 << 96)
+
+@condition
 def is_cjk_font(ttFont):
   """Test font object to confirm that it meets our definition of a CJK font file.
     The definition is met if any of the following conditions are True:
