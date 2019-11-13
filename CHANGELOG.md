@@ -2,12 +2,18 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.16 (2019-Nov-15)
+## 0.7.16 (2019-Dec-06)
+### Note-worthy changes
+  - New experimental notofonts profile. Some checks from this profile may be promoted into the universal profile later (issue #2676)
+
 ### Bugfixes
   - **[com.google.fonts/check/glyph_coverage]:** display full list of missing required codepoints in INFO log message (issue #2690)
 
 ### New checks
   - **[com.google.fonts/check/repo/vf_has_static_fonts]:** Check VF family dirs in google/fonts contain static fonts (issue #2654)
+  - **[com.google.fonts/check/unicode_range_bits]:** Ensure UnicodeRange bits are properly set.
+  - **[com.google.fonts/check/cmap/unexpected_subtables]:** Ensure all cmap subtables are the typical types expected in a font.
+
 
 ## 0.7.15 (2019-Nov-03)
 ### Note-worthy changes

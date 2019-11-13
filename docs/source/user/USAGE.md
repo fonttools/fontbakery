@@ -13,6 +13,7 @@ This has several subcommands, described in the help function:
         check-collection
         check-fontval
         check-googlefonts
+        check-notofonts
         check-profile
         check-universal
         generate-glyphdata
