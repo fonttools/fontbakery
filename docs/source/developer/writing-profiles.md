@@ -10,7 +10,7 @@ A Font Bakery Profile (an instance of the type `fontbakery.checkrunner.Profile`)
 
 ## From automatic discovery to full control
 
-To create your own profile we added tools that reduce boilerplate code to a minimum. These tools are fully optional. But it is possible to use them if you need more control over the creation of a profile. This automatic discovery can be enabledor disabled based on the presence (and value) of some special names in the module of the profile:
+To create your own profile we added tools that reduce boilerplate code to a minimum. These tools are fully optional. But it is possible to use them if you need more control over the creation of a profile. This automatic discovery can be enabled or disabled based on the presence (and value) of some special names in the module of the profile:
 
 * `profile`
 * `profile_factory`
