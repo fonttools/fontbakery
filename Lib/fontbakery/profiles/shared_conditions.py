@@ -190,3 +190,46 @@ def vtt_talk_sources(ttFont) -> List[str]:
   VTT_SOURCE_TABLES = {'TSI0', 'TSI1', 'TSI2', 'TSI3', 'TSI5'}
   tables_found = [tag for tag in ttFont.keys() if tag in VTT_SOURCE_TABLES]
   return tables_found
+
+
+@condition
+def is_cjk_font(ttFont):
+  """Test font object to confirm that it meets our definition of a CJK font file.
+    The definition is met if any of the following conditions are True:
+       1. The font has a CJK code page bit set in the OS/2 table
+       2. The font has a CJK Unicode range bit set in the OS/2 table
+       3. The font has any CJK Unicode code points defined in the cmap table
+  """
+  from fontbakery.constants import (CJK_CODEPAGE_BITS,
+                                    CJK_UNICODE_RANGE_BITS,
+                                    CJK_UNICODE_RANGES)
+  os2 = ttFont["OS/2"]
+
+  # OS/2 code page checks
+  for _, bit in CJK_CODEPAGE_BITS.items():
+    if os2.ulCodePageRange1 & (1 << bit):
+      return True
+
+  # OS/2 Unicode range checks
+  for _, bit in CJK_UNICODE_RANGE_BITS.items():
+    if bit in range(0, 32):
+      if os2.ulUnicodeRange1 & (1 << bit):
+        return True
+
+    elif bit in range(32, 64):
+      if os2.ulUnicodeRange2 & (1 << (bit-32)):
+        return True
+
+    elif bit in range(64, 96):
+      if os2.ulUnicodeRange3 & (1 << (bit-64)):
+        return True
+
+  # defined CJK Unicode code point in cmap table checks
+  cmap = ttFont.getBestCmap()
+  for unicode_range in CJK_UNICODE_RANGES:
+    for x in range(unicode_range[0], unicode_range[1]+1):
+      if int(x) in cmap:
+        return True
+
+  # default, return False if the above checks did not identify a CJK font
+  return False
