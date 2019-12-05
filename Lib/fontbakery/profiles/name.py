@@ -281,11 +281,11 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
 
   for string in get_name_entry_strings(ttFont,
                                        NameID.POSTSCRIPT_NAME):
-    if len(string) >= 30:
+    if len(string) >= 64:
       bad_entries.append({
           'field': 'PostScript Name',
           'value': string,
-          'rec': 'exceeds max length (29)'
+          'rec': 'exceeds max length (63)'
       })
 
   for string in get_name_entry_strings(ttFont,
