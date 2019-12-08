@@ -3,10 +3,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.17 (2020-Jan-??)
-  - ...
+### Changes to existing checks
+- **[com.google.fonts/check/family_naming_recommendation]:** Increase acceptable characters in nameID 6 string to 63 from 29
 
 
-## 0.7.16 (2019-Dec-11)
+## 0.7.16 (2019-Dec-06)
 ### Note-worthy changes
   - New experimental notofonts profile. Some checks from this profile may be promoted into the universal profile later (issue #2676)
 
