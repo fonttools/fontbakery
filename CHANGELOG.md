@@ -2,6 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
+## 0.7.17 (2019-Dec-13)
+### New checks
+  - **[com.google.fonts/check/glyf_non_transformed_duplicate_components]:** Check glyphs do not have duplicate components which have the same x,y coordinates.
 ## 0.7.16 (2019-Dec-06)
 ### Note-worthy changes
   - New experimental notofonts profile. Some checks from this profile may be promoted into the universal profile later (issue #2676)

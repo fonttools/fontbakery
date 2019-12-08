@@ -66,6 +66,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/family_naming_recommendations',
     'com.google.fonts/check/maxadvancewidth',
     'com.google.fonts/check/points_out_of_bounds',
+    'com.google.fonts/check/glyf_non_transformed_duplicate_components',
     'com.google.fonts/check/all_glyphs_have_codepoints',
     'com.google.fonts/check/monospace_max_advancewidth',
     'com.google.fonts/check/code_pages',

@@ -82,3 +82,39 @@ def com_google_fonts_check_points_out_of_bounds(ttFont):
                   f" other fonts. So it is common to ignore this message.")
   else:
     yield PASS, "All glyph paths have coordinates within bounds!"
+
+
+@check(
+  id = 'com.google.fonts/check/glyf_non_transformed_duplicate_components',
+  conditions = ['is_ttf']
+)
+def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
+    """Check glyphs do not have duplicate components which have the same
+    x,y coordinates."""
+    from fontbakery.utils import pretty_print_list
+    failed = []
+    for glyph_name in ttFont['glyf'].keys():
+        glyph = ttFont['glyf'][glyph_name]
+        if not glyph.isComposite():
+            continue
+        seen = []
+        for comp in glyph.components:
+            comp_info = {
+                "glyph": glyph_name,
+                "component": comp.glyphName,
+                "x": comp.x,
+                "y": comp.y
+            }
+            if comp_info in seen:
+                failed.append(comp_info)
+            else:
+                seen.append(comp_info)
+    if failed:
+        formatted_list = "\t* " + pretty_print_list(failed,
+                                                shorten=10,
+                                                sep="\n\t* ")
+        yield FAIL, (f"The following glyphs have duplicate components which"
+                     f" have the same x,y coordinates:\n{formatted_list}")
+    else:
+        yield PASS, ("Glyphs do not contain duplicate components which have"
+                     " the same x,y coordinates.")
