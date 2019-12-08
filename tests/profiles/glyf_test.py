@@ -60,3 +60,19 @@ def test_check_points_out_of_bounds():
   test_font2 = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
   status, _ = list(check(test_font2))[-1]
   assert status == PASS
+
+def test_check_glyf_non_transformed_duplicate_components():
+  """Check glyphs do not have duplicate components which have the same x,y coordinates."""
+  from fontbakery.profiles.glyf import com_google_fonts_check_glyf_non_transformed_duplicate_components as check
+
+  test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+  status, message = list(check(test_font))[-1]
+  assert status == PASS
+
+  # Set qutodbl's components to have the same x,y values
+  glyph = test_font['glyf']['quotedbl'].components[0].x = 0
+  glyph = test_font['glyf']['quotedbl'].components[1].x = 0
+  glyph = test_font['glyf']['quotedbl'].components[0].y = 0
+  glyph = test_font['glyf']['quotedbl'].components[1].y = 0
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL
