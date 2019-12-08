@@ -257,11 +257,11 @@ def test_check_family_naming_recommendations():
       # The second hyphen char here is the expected rule violation:
       name_test("Big-Bang-Theory", INFO, "bad-entries")
 
-      print ("Test INFO: Exceeds max length (29)...")
-      name_test("A"*30, INFO, "bad-entries")
+      print ("Test INFO: Exceeds max length (63)...")
+      name_test("A"*64, INFO, "bad-entries")
 
-      print ("Test PASS: Does not exceeds max length...")
-      name_test("A"*29, PASS)
+      print ("Test PASS: Does not exceed max length...")
+      name_test("A"*63, PASS)
 
     elif name.nameID == NameID.FULL_FONT_NAME:
       print ("== NameID.FULL_FONT_NAME ==")
