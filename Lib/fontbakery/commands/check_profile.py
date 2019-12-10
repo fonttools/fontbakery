@@ -163,11 +163,9 @@ def ArgumentParser(profile, profile_arg=True):
                       )
   return argument_parser, values_keys
 
+
 class ArgumentParserError(Exception): pass
 
-class ThrowingArgumentParser(argparse.ArgumentParser):
-    def error(self, message):
-        raise ArgumentParserError(message)
 
 def get_module_from_file(filename):
   # filename = 'my/path/to/file.py'
@@ -192,11 +190,14 @@ def get_module(name):
 
 def get_profile():
   """ Prefetch the profile module, to fill some holes in the help text."""
-  argument_parser = ThrowingArgumentParser(add_help=False)
-  argument_parser.add_argument('profile')
+  argument_parser, _ = ArgumentParser(Profile(), profile_arg=True)
+  # monkey patching will do here
+  def error(message): raise ArgumentParserError(message)
+  argument_parser.error = error
+
   try:
     args, _ = argument_parser.parse_known_args()
-  except ArgumentParserError:
+  except ArgumentParserError as e:
     # silently fails, the main parser will show usage string.
     return Profile()
   imported = get_module(args.profile)
