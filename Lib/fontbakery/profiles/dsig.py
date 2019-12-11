@@ -7,11 +7,13 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 @check(
   id = 'com.google.fonts/check/dsig',
   rationale = """
-    Some programs expect fonts to have a digital signature declared in their DSIG table in order to work properly.
+    Microsoft Office 2013 and below products expect fonts to have a digital signature declared in a DSIG table in order to implement OpenType features. The EOL date for Microsoft Office 2013 products is 4/11/2023. This issue does not impact Microsoft Office 2016 and above products. 
 
-    This checks verifies that such signature is available in the font.
+    This checks verifies that this signature is available in the font.
 
-    Typically, even a fake signature would be enough to make the fonts work. If needed, such dummy-placeholder can be added to the font by using the `gftools fix-dsig` script available at https://github.com/googlefonts/gftools
+    A fake signature is enough to address this issue. If needed, a dummy table can be added to the font with the `gftools fix-dsig` script available at https://github.com/googlefonts/gftools
+
+    Reference: https://github.com/googlefonts/fontbakery/issues/1845
   """
 )
 def com_google_fonts_check_dsig(ttFont):
