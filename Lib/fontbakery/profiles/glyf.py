@@ -86,35 +86,43 @@ def com_google_fonts_check_points_out_of_bounds(ttFont):
 
 @check(
   id = 'com.google.fonts/check/glyf_non_transformed_duplicate_components',
+  rationale = """
+    There has been cases in which fonts had faulty double quote marks, with each of them containing two single quote marks as components with the same x, y coordinates which makes them visually look like single quote marks.
+
+    This check ensures that glyphs do not contain duplicate components which have the same x,y coordinates.
+  """,
   conditions = ['is_ttf']
 )
 def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
-    """Check glyphs do not have duplicate components which have the same
-    x,y coordinates."""
-    from fontbakery.utils import pretty_print_list
-    failed = []
-    for glyph_name in ttFont['glyf'].keys():
-        glyph = ttFont['glyf'][glyph_name]
-        if not glyph.isComposite():
-            continue
-        seen = []
-        for comp in glyph.components:
-            comp_info = {
-                "glyph": glyph_name,
-                "component": comp.glyphName,
-                "x": comp.x,
-                "y": comp.y
-            }
-            if comp_info in seen:
-                failed.append(comp_info)
-            else:
-                seen.append(comp_info)
-    if failed:
-        formatted_list = "\t* " + pretty_print_list(failed,
+  """Check glyphs do not have duplicate components which have the same x,y coordinates."""
+  from fontbakery.utils import pretty_print_list
+  failed = []
+  for glyph_name in ttFont['glyf'].keys():
+    glyph = ttFont['glyf'][glyph_name]
+    if not glyph.isComposite():
+      continue
+
+    seen = []
+    for comp in glyph.components:
+      comp_info = {
+       "glyph": glyph_name,
+        "component": comp.glyphName,
+        "x": comp.x,
+        "y": comp.y
+      }
+      if comp_info in seen:
+        failed.append(comp_info)
+      else:
+        seen.append(comp_info)
+  if failed:
+    formatted_list = "\t* " + pretty_print_list(failed,
                                                 shorten=10,
                                                 sep="\n\t* ")
-        yield FAIL, (f"The following glyphs have duplicate components which"
-                     f" have the same x,y coordinates:\n{formatted_list}")
-    else:
-        yield PASS, ("Glyphs do not contain duplicate components which have"
-                     " the same x,y coordinates.")
+    yield FAIL, \
+          Message('found-duplicates',
+                  f"The following glyphs have duplicate components which"
+                  f" have the same x,y coordinates:\n"
+                  f"{formatted_list}")
+  else:
+    yield PASS, ("Glyphs do not contain duplicate components which have"
+                 " the same x,y coordinates.")
