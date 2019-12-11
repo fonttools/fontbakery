@@ -3,16 +3,19 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.17 (2020-Jan-??)
-### Changes to existing checks
-- **[com.google.fonts/check/family_naming_recommendation]:** Increase acceptable characters in nameID 6 string to 63 from 29
+  - ...
 
 
-## 0.7.16 (2019-Dec-06)
+## 0.7.16 (2019-Dec-11)
 ### Note-worthy changes
   - New experimental notofonts profile. Some checks from this profile may be promoted into the universal profile later (issue #2676)
+  - New code snippet: An exemple of a custom fontbakery profile (with support for universal profile checks, check filters, and custom checks) has been provided by Chris Simpkins at snippets/check-custom.py (PR #2714)
 
 ### Bugfixes
   - **[com.google.fonts/check/glyph_coverage]:** display full list of missing required codepoints in INFO log message (issue #2690)
+
+### Changes to existing checks
+- **[com.google.fonts/check/family_naming_recommendation]:** Increase acceptable characters in nameID 6 string to 63 from 29 (PR #2707)
 
 ### New checks
   - **[com.google.fonts/check/glyf_non_transformed_duplicate_components]:** Check glyphs do not have duplicate components which have the same x,y coordinates.
