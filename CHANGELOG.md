@@ -2,10 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.17 (2019-Dec-13)
-### New checks
-  - **[com.google.fonts/check/glyf_non_transformed_duplicate_components]:** Check glyphs do not have duplicate components which have the same x,y coordinates.
-## 0.7.16 (2019-Dec-06)
+## 0.7.17 (2020-Jan-??)
+  - ...
+
+
+## 0.7.16 (2019-Dec-11)
 ### Note-worthy changes
   - New experimental notofonts profile. Some checks from this profile may be promoted into the universal profile later (issue #2676)
 
@@ -13,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/glyph_coverage]:** display full list of missing required codepoints in INFO log message (issue #2690)
 
 ### New checks
+  - **[com.google.fonts/check/glyf_non_transformed_duplicate_components]:** Check glyphs do not have duplicate components which have the same x,y coordinates.
   - **[com.google.fonts/check/repo/vf_has_static_fonts]:** Check VF family dirs in google/fonts contain static fonts (issue #2654)
   - **[com.google.fonts/check/unicode_range_bits]:** Ensure UnicodeRange bits are properly set.
   - **[com.google.fonts/check/cmap/unexpected_subtables]:** Ensure all cmap subtables are the typical types expected in a font.
