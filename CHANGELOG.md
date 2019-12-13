@@ -6,7 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
-## 0.7.16 (2019-Dec-11)
+## 0.7.16 (2019-Dec-13)
 ### Note-worthy changes
   - New experimental notofonts profile. Some checks from this profile may be promoted into the universal profile later (issue #2676)
   - New code snippet: An exemple of a custom fontbakery profile (with support for universal profile checks, check filters, and custom checks) has been provided by Chris Simpkins at snippets/check-custom.py (PR #2714)
