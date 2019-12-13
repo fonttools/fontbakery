@@ -42,7 +42,7 @@
 	<meta property="og:title" content="Registered typography vendors - Typography" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://docs.microsoft.com/en-us/typography/vendors/" />
-		<meta property="og:description" content="Vendors who have registered a unique &#x27Vendor ID&#x27 with Microsoft." />
+		<meta property="og:description" content="Vendors who have registered a unique &#x27;Vendor ID&#x27; with Microsoft." />
 		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
 		<meta property="og:image:alt" content="Microsoft Logo" />
 
@@ -50,36 +50,36 @@
 	<meta name="twitter:site" content="@docsmsft" />
 
 		<meta name="author" content="mijacobs" />
-<meta name="ms.author" content="mijacobs" />
 <meta name="breadcrumb_path" content="/typography/breadcrumbs/toc.json" />
-<meta name="ms.date" content="11/01/2019" />
-<meta name="ms.prod" content="typography" />
-<meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="description" content="Vendors who have registered a unique &amp;#x27Vendor ID&amp;#x27 with Microsoft." />
-<meta name="keywords" content="typography" />
-<meta name="ms.topic" content="article" />
-<meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
-<meta name="search.ms_sitename" content="Docs" />
-<meta name="search.ms_docsetname" content="typography" />
-<meta name="locale" content="en-us" />
-<meta name="site_name" content="Docs" />
-<meta name="search.ms_product" content="Win" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="updated_at" content="2019-11-01 05:40 PM" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/5c8da9f25811ccfba5dcda3b2e9eb1f9993620e0/typographydocs/vendors/index.md" />
-<meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
+<meta name="description" content="Vendors who have registered a unique &amp;#x27;Vendor ID&amp;#x27; with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/ef21fc1aa1187566c91ba880eec88108f72f0ba2/typographydocs/vendors/index.md" />
+<meta name="keywords" content="typography" />
+<meta name="locale" content="en-us" />
+<meta name="ms.author" content="mijacobs" />
+<meta name="ms.date" content="11/01/2019" />
+<meta name="ms.prod" content="typography" />
+<meta name="ms.topic" content="article" />
+<meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
+<meta name="search.ms_docsetname" content="typography" />
+<meta name="search.ms_product" content="Win" />
+<meta name="search.ms_sitename" content="Docs" />
+<meta name="site_name" content="Docs" />
+<meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
+<meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
+<meta name="updated_at" content="2019-12-12 04:39 PM" />
 <meta name="page_type" content="conceptual" />
-<meta name="toc_rel" content="../TOC.json" />
+<meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2842" />
+<meta name="word_count" content="2908" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/cf17124f.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/c414977a.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/b8d322.conceptual.css ">
 
@@ -99,6 +99,7 @@
 
 			},
 			hasComments: true,
+			showFeedbackReport: false,
 			enableTutorialFeedback: false,
 			feedbackSystem: 'GitHub',
 			feedbackGitHubRepo: 'MicrosoftDocs/typography-issues',
@@ -123,7 +124,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a0abe7be.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d428e9b6.index-docs.js"></script>
 
 </head>
 
@@ -167,8 +168,8 @@
 				<span>Exit focus mode</span>
 			</button>
 		</div>
-		<div id="page-actions" class="is-flex-touch has-flex-justify-content-space-between-touch has-padding-none has-padding-none-mobile">
-			<ul class="action-list has-flex-justify-content-start-mobile is-flex is-flex-row has-flex-wrap">
+		<div class="is-size-7 is-flex-touch has-flex-justify-content-space-between-touch has-padding-none has-padding-none-mobile">
+			<ul class="action-list has-flex-justify-content-start-mobile is-flex is-flex-row has-flex-wrap is-unstyled">
 				<li>
 					<button type="button" class="bookmark button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="bookmarks" data-bi-name="bookmark">
 						<span class="icon" aria-hidden="true">
@@ -248,10 +249,10 @@
 		<span class="is-visually-hidden-touch is-hidden-portrait">Theme</span>
 	</button>
 	<div class="dropdown-menu" id="theme-menu" role="menu">
-		<div class="theme-selector has-padding-small">
-			<div class="theme is-block">
+		<ul class="theme-selector has-padding-small">
+			<li class="theme is-block">
 				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
-					data-theme-to="light" role="menuitem">
+					data-theme-to="light">
 					<span class="theme-light has-margin-right-small">
 						<span
 							class="theme-selector-icon css-variable-support has-border is-inline-block has-body-background"
@@ -269,13 +270,13 @@
 							</svg>
 						</span>
 					</span>
-					<span>
+					<span role="menuitem">
 Light					</span>
 				</button>
-			</div>
-			<div class="theme is-block">
+			</li>
+			<li class="theme is-block">
 				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
-					data-theme-to="dark" role="menuitem">
+					data-theme-to="dark">
 					<span class="theme-dark has-margin-right-small">
 						<span
 							class="has-border theme-selector-icon css-variable-support is-inline-block has-body-background"
@@ -293,13 +294,13 @@ Light					</span>
 							</svg>
 						</span>
 					</span>
-					<span>
+					<span role="menuitem">
 Dark					</span>
 				</button>
-			</div>
-			<div class="theme is-block">
+			</li>
+			<li class="theme is-block">
 				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
-					data-theme-to="high-contrast" role="menuitem">
+					data-theme-to="high-contrast">
 					<span class="theme-high-contrast has-margin-right-small">
 						<span
 							class="has-border theme-selector-icon css-variable-support is-inline-block has-body-background"
@@ -317,11 +318,11 @@ Dark					</span>
 							</svg>
 						</span>
 					</span>
-					<span>
+					<span role="menuitem">
 High contrast					</span>
 				</button>
-			</div>
-		</div>
+			</li>
+		</ul>
 	</div>
 </div>				</li>
 				<li>
@@ -394,7 +395,7 @@ High contrast					</span>
 
 
 
-						<h1 id="registered-typography-vendors" sourcefile="vendors/index.md" sourcestartlinenumber="15">Registered typography vendors</h1>
+						<h1 id="registered-typography-vendors">Registered typography vendors</h1>
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li class="displayDate loading">
@@ -402,11 +403,12 @@ High contrast					</span>
 							</li>
 								<li class="readingTime">14 minutes to read</li>
 							<li class="contributors-holder">
-								<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="4 Contributors" aria-label="4 Contributors">
+								<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="5 Contributors" aria-label="5 Contributors">
 									<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/mijacobs.png?size=32" role="presentation"/></li>
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
-												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alibasi.png?size=32" role="presentation"/></li>
+												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/VSC-Service-Account.png?size=32" role="presentation"/></li>
+												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alib-ms.png?size=32" role="presentation"/></li>
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/PeterCon.png?size=32" role="presentation"/></li>
 									</ul>
 								</a>
@@ -429,6 +431,10 @@ High contrast					</span>
     <th width="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
+<tr>
+<td>!666</td>
+<td><a href="https://www.agyei.design" data-linktype="external">Agyei Archer</a></td>
+</tr>
 <tr>
 <td>!ETF</td>
 <td><a href="http://www.exclamachine.com" data-linktype="external">!Exclamachine Type Foundry</a></td>
@@ -514,7 +520,7 @@ High contrast					</span>
 </tr>
 <tr>
 <td>AA</td>
-<td><a href="https://alirezaalipour.com/" data-linktype="external">Alireza Alipour</a></td>
+<td><a href="https://alirezaalipour.ir" data-linktype="external">Alireza Alipour</a></td>
 </tr>
 <tr>
 <td>AAT</td>
@@ -631,6 +637,10 @@ High contrast					</span>
 <tr>
 <td>amcs</td>
 <td>Amit soni</td>
+</tr>
+<tr>
+<td>amin</td>
+<td>fontamin</td>
 </tr>
 <tr>
 <td>AMUT</td>
@@ -788,6 +798,10 @@ High contrast					</span>
 <td><a href="http://www.batfoundry.com" data-linktype="external">BUREAU DES AFFAIRES TYPOGRAPHIQUES</a></td>
 </tr>
 <tr>
+<td>BB</td>
+<td><a href="https://benbusby.com/" data-linktype="external">Ben Busby</a></td>
+</tr>
+<tr>
 <td>BBTY</td>
 <td><a href="https://www.brunobernard.com/" data-linktype="external">Bruno Bernard Typographie</a></td>
 </tr>
@@ -854,6 +868,10 @@ High contrast					</span>
 <tr>
 <td>BLCK</td>
 <td><a href="http://www.black-foundry.com" data-linktype="external">Black Foundry</a></td>
+</tr>
+<tr>
+<td>BLFF</td>
+<td>Bongolipi Font Foundry</td>
 </tr>
 <tr>
 <td>BLI</td>
@@ -1051,6 +1069,10 @@ High contrast					</span>
 <td><a href="http://www.culmus.sourceforge.net" data-linktype="external">Culmus Project</a></td>
 </tr>
 <tr>
+<td>CLT</td>
+<td><a href="http://www.collletttivo.it/" data-linktype="external">Collletttivo</a></td>
+</tr>
+<tr>
 <td>CMJK</td>
 <td><a href="http://www.slantedhall.com/type" data-linktype="external">Slanted Hall</a></td>
 </tr>
@@ -1085,6 +1107,10 @@ High contrast					</span>
 <tr>
 <td>COTF</td>
 <td><a href="https://www.cotypefoundry.com/" data-linktype="external">CoType Foundry</a></td>
+</tr>
+<tr>
+<td>CP</td>
+<td>Constructive Projects Ltd</td>
 </tr>
 <tr>
 <td>CR8</td>
@@ -1464,6 +1490,10 @@ High contrast					</span>
 <td><a href="https://fonts.floriankarsten.com/" data-linktype="external">Florian Karsten Typefaces</a></td>
 </tr>
 <tr>
+<td>FM</td>
+<td><a href="https://fontmo.com/" data-linktype="external">FontMo</a></td>
+</tr>
+<tr>
 <td>FMFO</td>
 <td><a href="http://www.be.net/davidlawless_misc" data-linktype="external">Fontmill Foundry</a></td>
 </tr>
@@ -1649,6 +1679,10 @@ High contrast					</span>
 <tr>
 <td>GF</td>
 <td><a href="http://www.garagefonts.com/" data-linktype="external">GarageFonts</a></td>
+</tr>
+<tr>
+<td>GFNT</td>
+<td><a href="https://graffont.com/" data-linktype="external">Graffont</a></td>
 </tr>
 <tr>
 <td>GIA</td>
@@ -2099,6 +2133,10 @@ High contrast					</span>
 <td><a href="http://www.karakta.com/" data-linktype="external">Karakta Fonthome</a></td>
 </tr>
 <tr>
+<td>KH</td>
+<td><a href="https://fontbundles.net/kristyhatswell" data-linktype="external">Kristy Hatswell</a></td>
+</tr>
+<tr>
 <td>KHTB</td>
 <td><a href="https://www.instagram.com/mokhatib/" data-linktype="external">Monkey Arts Ltd.</a></td>
 </tr>
@@ -2226,6 +2264,10 @@ High contrast					</span>
 <td><a href="http://www.letraset.com/" data-linktype="external">Letraset</a></td>
 </tr>
 <tr>
+<td>Leah</td>
+<td><a href="http://www.leahlackey.com" data-linktype="external">Leah Lackey</a></td>
+</tr>
+<tr>
 <td>lewd</td>
 <td><a href="http://www.letteringworld.com" data-linktype="external">Lettering World LLC</a></td>
 </tr>
@@ -2244,6 +2286,10 @@ High contrast					</span>
 <tr>
 <td>LHF</td>
 <td><a href="http://www.letterheadfonts.com/" data-linktype="external">Letterhead Fonts</a></td>
+</tr>
+<tr>
+<td>LIAM</td>
+<td><a href="https://iamli.am/" data-linktype="external">Liam Spradlin</a></td>
 </tr>
 <tr>
 <td>LIND</td>
@@ -2407,6 +2453,10 @@ High contrast					</span>
 <tr>
 <td>MCOW</td>
 <td><a href="http://www.mountaincow.com/" data-linktype="external">Mountaincow</a></td>
+</tr>
+<tr>
+<td>MD</td>
+<td><a href="https://mass-driver.com/" data-linktype="external">Mass-Driver</a></td>
 </tr>
 <tr>
 <td>MDSN</td>
@@ -2618,7 +2668,7 @@ High contrast					</span>
 </tr>
 <tr>
 <td>MVty</td>
-<td>MV Typo</td>
+<td><a href="https://www.martinvalerio.com/mvtypo_home.html" data-linktype="external">MV Typo</a></td>
 </tr>
 <tr>
 <td>MW</td>
@@ -2672,8 +2722,16 @@ High contrast					</span>
 <td>Nermin Kahrimanovic</td>
 </tr>
 <tr>
+<td>NEUE</td>
+<td><a href="http://www.neuefoundry.com/" data-linktype="external">Neue Foundry</a></td>
+</tr>
+<tr>
 <td>NEW</td>
 <td><a href="http://www.newlyn.com" data-linktype="external">Newlyn</a></td>
+</tr>
+<tr>
+<td>NICE</td>
+<td><a href="https://nicetotype.de/" data-linktype="external">nice to type</a></td>
 </tr>
 <tr>
 <td>NICK</td>
@@ -2735,6 +2793,10 @@ High contrast					</span>
 <td>NYCM</td>
 <td><a href="https://www.nycmusicservices.com/" data-linktype="external">NYC Music Services</a></td>
 </tr>
+<tr>
+<td>NYPE</td>
+<td><a href="http://www.naipe.xyz/" data-linktype="external">Naipe Foundry</a></td>
+</tr>
 </table>
 <h2 id="o">O</h2>
 <table>
@@ -2789,6 +2851,10 @@ High contrast					</span>
 <tr>
 <td>ORK1</td>
 <td>Ork1</td>
+</tr>
+<tr>
+<td>ORTY</td>
+<td><a href="https://originaltype.com" data-linktype="external">Original Type</a></td>
 </tr>
 <tr>
 <td>OSFC</td>
@@ -3159,6 +3225,10 @@ High contrast					</span>
 <td><a href="http://www.fontsite.com/" data-linktype="external">The FontSite</a></td>
 </tr>
 <tr>
+<td>SfC</td>
+<td><a href="https://www.shapesforcash.com/" data-linktype="external">Shapes for Cash</a></td>
+</tr>
+<tr>
 <td>SFS</td>
 <td>Sarumadhu Services Pvt. Ltd.</td>
 </tr>
@@ -3378,6 +3448,10 @@ High contrast					</span>
 <td><a href="http://www.typefounding.com" data-linktype="external">Typefounding</a></td>
 </tr>
 <tr>
+<td>TG</td>
+<td><a href="https://tomgrace.ch/" data-linktype="external">Tom Grace</a></td>
+</tr>
+<tr>
 <td>TGHT</td>
 <td><a href="http://www.tightype.com" data-linktype="external">TIGHTYPE</a></td>
 </tr>
@@ -3581,10 +3655,6 @@ High contrast					</span>
 <td><a href="http://www.uatype.faithweb.com/" data-linktype="external">UnAuthorized Type</a></td>
 </tr>
 <tr>
-<td>UBER</td>
-<td><a href="https://ubertype.de/" data-linktype="external">übertype</a></td>
-</tr>
-<tr>
 <td>UKUK</td>
 <td><a href="https://ultra-kuhl.com/" data-linktype="external">Ultra Kühl</a></td>
 </tr>
@@ -3650,6 +3720,10 @@ High contrast					</span>
 <tr>
 <td>VLNL</td>
 <td><a href="http://www.vetteletters.nl/" data-linktype="external">VetteLetters.nl</a></td>
+</tr>
+<tr>
+<td>VLQN</td>
+<td><a href="https://fonts.volqanic.org" data-linktype="external">VLQNC Font Foundry</a></td>
 </tr>
 <tr>
 <td>VMT</td>
@@ -3719,6 +3793,10 @@ High contrast					</span>
 <td>Wei Huang</td>
 </tr>
 <tr>
+<td>WERK</td>
+<td><a href="http://www.fontwerk.com/" data-linktype="external">Fontwerk</a></td>
+</tr>
+<tr>
 <td>WF</td>
 <td><a href="http://www.walkingfearless.com" data-linktype="external">Walking Fearless</a></td>
 </tr>
@@ -3775,6 +3853,10 @@ High contrast					</span>
 <tr>
 <td>YDS</td>
 <td><a href="http://www.yellowdesignstudio.com" data-linktype="external">Yellow Design Studio</a></td>
+</tr>
+<tr>
+<td>YFFI</td>
+<td><a href="http://yfficient.com/" data-linktype="external">Yfficient Graphic Design and Marketing</a></td>
 </tr>
 <tr>
 <td>YN</td>
@@ -3837,6 +3919,7 @@ High contrast					</span>
 
 						<!-- rating mobile section -->
 								<div class="is-hidden-desktop has-border-top has-margin-top-large has-padding-top-small">
+									
 <div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
 	<div class="binary-rating">
 		<div class="binary-rating-buttons">
@@ -3852,8 +3935,8 @@ High contrast					</span>
 		</div>
 		<form class="feedback-verbatim-form is-hidden">
 			<div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
-				<label for="rating-feedback-mobile" class="visually-hidden">Any additional feedback?</label>
-				<textarea id="rating-feedback-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
+				<label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
+				<textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
 			</div>
 			<div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
 				<button class="skip-rating button is-text is-link is-small" type="button">Skip</button>
@@ -3970,8 +4053,10 @@ This page					</button>
 	</div>
 </section>
 
-
 						<!-- end feedback section -->
+
+						<!-- feedback report section -->
+						<!-- end feedback report section -->
 
 						<div class="footerContainer is-visible-interactive has-default-focus ">
 <footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
@@ -3991,8 +4076,9 @@ This page					</button>
 						</div>
 					</div>
 
-					<div id="page-actions" class="right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+					<div class="is-size-7 right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
 						<div id="affixed-right-container" class="doc-outline is-fixed is-vertically-scrollable">
+								
 <div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
 	<div class="binary-rating">
 		<div class="binary-rating-buttons">
@@ -4008,8 +4094,8 @@ This page					</button>
 		</div>
 		<form class="feedback-verbatim-form is-hidden">
 			<div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
-				<label for="rating-feedback-mobile" class="visually-hidden">Any additional feedback?</label>
-				<textarea id="rating-feedback-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
+				<label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
+				<textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
 			</div>
 			<div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
 				<button class="skip-rating button is-text is-link is-small" type="button">Skip</button>
