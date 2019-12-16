@@ -139,8 +139,8 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
     yield FAIL,\
           Message("descender",
                   f"OS/2 sTypoDescender ({ttFont['OS/2'].sTypoDescender})"
-                  f"and hhea descent ({ttFont['hhea'].descent})"
-                  f"must be equal.")
+                  f" and hhea descent ({ttFont['hhea'].descent})"
+                  f" must be equal.")
   else:
     yield PASS, ("OS/2.sTypoAscender/Descender values"
                  " match hhea.ascent/descent.")
