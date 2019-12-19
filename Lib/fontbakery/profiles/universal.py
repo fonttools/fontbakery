@@ -533,7 +533,7 @@ def com_google_fonts_check_unwanted_tables(ttFont):
   if len(unwanted_tables_found) > 0:
     yield FAIL, ("The following unwanted font tables were found:\n"
                  "{}\n"
-                 "They can be removed by using fonttools/ttx."
+                 "They can be removed with the gftools fix-unwanted-tables script."
                  ).format("\n".join(unwanted_tables_found))
   else:
     yield PASS, "There are no unwanted tables."
