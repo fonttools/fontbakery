@@ -17,17 +17,11 @@ import os
 import subprocess
 from collections import Counter
 from functools import partial
-
-# using this to override print function somewhere
-import builtins
-
-# Python 1/3
+import builtins # using this to override print function somewhere
 from io import StringIO
-
 from time import time
 
 from fontbakery.reporters import FontbakeryReporter
-
 from fontbakery.checkrunner import (  # NOQA
               INFO
             , WARN
@@ -64,37 +58,14 @@ statuses = (
 check_statuses = [ERROR, FAIL, SKIP, PASS, WARN, INFO]
 check_statuses.sort(key=lambda s:s.weight, reverse=True)
 
-RED_STR =        '\033[1;31;40m{}\033[0m'.format
-RED_BACKGROUND = '\033[1;37;41m{}\033[0m'.format
-GREEN_STR =      '\033[1;32;40m{}\033[0m'.format
-YELLOW_STR =     '\033[1;33;40m{}\033[0m'.format
-BLUE_STR =       '\033[1;34;40m{}\033[0m'.format
-MAGENTA_STR =    '\033[1;35;40m{}\033[0m'.format
-CYAN_STR =       '\033[1;36;40m{}\033[0m'.format
-WHITE_STR =      '\033[1;37;40m{}\033[0m'.format
 
-def highlight(color, text, use_color=False):
-  if use_color:
-    return color(text)
-  else:
-    return text
-
-def formatStatus(status, text=None, color=False):
+def formatStatus(theme, status, text=None):
   # status can be a status or a string
   name = getattr(status, 'name', status)
   if text is None:
     text = name
-  if not color:
-    return text
   try:
-    return {
-      INFO.name: CYAN_STR
-    , WARN.name: YELLOW_STR
-    , ERROR.name: RED_BACKGROUND
-    , SKIP.name: BLUE_STR
-    , PASS.name: GREEN_STR
-    , FAIL.name: RED_STR
-    }[name](text)
+    return theme[name](text)
   except KeyError:
     return text
 
@@ -172,11 +143,14 @@ class ThrottledOut:
     self._current_ticks = 0
     self._last_flush_time = time()
 
+
+from fontbakery.constants import DARK_THEME
+
 class TerminalProgress(FontbakeryReporter):
   def __init__(self, print_progress=True
                    , stdout=sys.stdout
                    , structure_threshold=None
-                   , usecolor=True
+                   , theme=DARK_THEME
                    , cupcake=True
                      # a tuple of structural statuses to be skipped
                      # e.g. (STARTSECTION, ENDSECTION)
@@ -184,8 +158,7 @@ class TerminalProgress(FontbakeryReporter):
                    , **kwd):
     super(TerminalProgress, self).__init__(**kwd)
 
-    # must be a tty for this!
-    self._use_color = usecolor
+    self.theme = theme
     self._print_progress = stdout.isatty() and print_progress
 
     if self._print_progress:
@@ -244,10 +217,7 @@ class TerminalProgress(FontbakeryReporter):
       if self._cupcake and len(self._order) \
               and self._counter[ERROR.name] + self._counter[FAIL.name] == 0 \
               and self._counter[PASS.name] > 20:
-        cupcake = CUPCAKE
-        if self._use_color:
-          cupcake = MAGENTA_STR(CUPCAKE)
-        print(cupcake)
+        print(self.theme["cupcake"](CUPCAKE))
       print('DONE!')
     return output.getvalue()
 
@@ -262,9 +232,9 @@ class TerminalProgress(FontbakeryReporter):
   def _set_progress_event(self, event):
       _, status, identity = event
       index = self._get_index(identity)
-      self._progressbar[index] = formatStatus(status,
-                                              status.name[0],
-                                              color=self._use_color)
+      self._progressbar[index] = formatStatus(self.theme,
+                                              status,
+                                              status.name[0])
 
   def _get_index(self, identity):
     index = super(TerminalProgress, self)._get_index(identity)
@@ -335,18 +305,17 @@ class TerminalProgress(FontbakeryReporter):
     # just take the length of `spinner`.
     # 1 for the spinner + 1 for the separating space
     progressbar = self._draw_progressbar(columns, len_prefix=2)
-    counter = _render_results_counter(self._counter, color=self._use_color)
+    counter = _render_results_counter(self.theme, self._counter)
 
     spinnerstates = ' ░▒▓█▓▒░'
     spinner = spinnerstates[self._tick % len(spinnerstates)]
-    if self._use_color:
-      spinner = GREEN_STR(spinner)
+    spinner = self.theme["spinner"](spinner)
 
     rendered = f'\n{counter}\n\n{spinner} {progressbar}\n'
     num_linebeaks = rendered.count('\n')
     return rendered, self._reset_progress(num_linebeaks)
 
-def _render_results_counter(counter,color=False):
+def _render_results_counter(theme, counter):
   format = '    {}: {}'.format
   result = []
 
@@ -354,13 +323,13 @@ def _render_results_counter(counter,color=False):
   for s in check_statuses:
     name = s.name
     seen.add(name)
-    result.append(format(formatStatus(s, color=color), counter[name]))
+    result.append(format(formatStatus(theme, s), counter[name]))
 
   # there may be custom statuses
   for name in counter:
     if name not in seen:
       seen.add(name)
-      result.append(format(formatStatus(name,color=color), counter[name]))
+      result.append(format(formatStatus(theme, name), counter[name]))
   return '\n'.join(result)
 
 class TerminalReporter(TerminalProgress):
@@ -447,38 +416,37 @@ class TerminalReporter(TerminalProgress):
       print((' >> {}\n'
              '    {}\n'
              '    {}\n').format(
-        highlight(CYAN_STR, check.id, use_color=self._use_color),
-        highlight(MAGENTA_STR, check.description, use_color=self._use_color),
+        self.theme["check-id"](check.id),
+        self.theme["description"](check.description),
         with_string))
 
       if check.rationale:
         from fontbakery.utils import text_flow, unindent_rationale
         content = unindent_rationale(check.rationale).strip()
-        print('    ' + highlight(CYAN_STR, "  Rationale:" + " " * 64,
-                                 use_color=self._use_color) + '\n'
+        print('    ' + self.theme["rationale-title"]("  Rationale:" + " " * 64) + '\n'
               + text_flow(content,
                           width=76,
                           indent=4,
                           left_margin=2,
                           space_padding=True,
-                          text_color=WHITE_STR))
+                          text_color=self.theme["rationale-text"]))
 
     # Log statuses have weights >= 0
     # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
     if status.weight >= self._log_threshold:
-      print('    * {}: {}'.format(formatStatus(status, color=self._use_color),
+      print('    * {}: {}'.format(formatStatus(self.theme, status),
                                   message))
       if hasattr(message, 'traceback'):
         print('        ','\n         '.join(message.traceback.split('\n')))
 
     if status == ENDCHECK:
-      print('\n    Result: {}\n'.format(formatStatus(message, color=self._use_color)))
+      print('\n    Result: {}\n'.format(formatStatus(self.theme, message)))
 
     if status == ENDSECTION:
       print('')
       print('Section results:')
       print('')
-      print(_render_results_counter(message, color=self._use_color))
+      print(_render_results_counter(self.theme, message))
       print('')
       print ('='*8, f'END {section}','='*8)
 
@@ -496,13 +464,12 @@ class TerminalReporter(TerminalProgress):
           else:
             val = f'(not using "{self.results_by}")'
           print(f'{self.results_by}: {val}')
-          print(_render_results_counter(self._collected_results[key],
-                                                color=self._use_color))
+          print(_render_results_counter(self.theme, self._collected_results[key]))
           print('')
 
       print('Total:')
       print('')
-      print(_render_results_counter(message, color=self._use_color))
+      print(_render_results_counter(self.theme, message))
       print('')
 
       # same end message as parent
