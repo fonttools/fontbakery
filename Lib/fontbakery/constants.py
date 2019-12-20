@@ -62,12 +62,54 @@ PLACEHOLDER_LICENSING_TEXT = {
 }
 
 # ANSI color codes for the helper logging class:
-RED_STR = '\033[1;31;40m{}\033[0m'
-GREEN_STR = '\033[1;32;40m{}\033[0m'
-YELLOW_STR = '\033[1;33;40m{}\033[0m'
-BLUE_STR = '\033[1;34;40m{}\033[0m'
-CYAN_STR = '\033[1;36;40m{}\033[0m'
-WHITE_STR = '\033[1;37;40m{}\033[0m'
+RED =     '\033[1;31;40m{}\033[0m'.format
+RED_BG =  '\033[1;37;41m{}\033[0m'.format
+GREEN =   '\033[1;32;40m{}\033[0m'.format
+YELLOW =  '\033[1;33;40m{}\033[0m'.format
+BLUE =    '\033[1;34;40m{}\033[0m'.format
+MAGENTA = '\033[1;35;40m{}\033[0m'.format
+CYAN =    '\033[1;36;40m{}\033[0m'.format
+WHITE =   '\033[1;37;40m{}\033[0m'.format
+
+def no_color(s):
+  return s
+
+DARK_THEME = {
+  "check-id": CYAN,
+  "description": MAGENTA,
+  "rationale-title": CYAN,
+  "rationale-text": WHITE,
+  "INFO": CYAN,
+  "WARN": YELLOW,
+  "ERROR": RED_BG,
+  "SKIP": BLUE,
+  "PASS": GREEN,
+  "FAIL": RED,
+  "cupcake": MAGENTA,
+  "spinner": GREEN,
+  "list-checks: section": WHITE,
+  "list-checks: check-id": CYAN,
+  "list-checks: description": BLUE
+}
+
+NO_COLORS_THEME = {
+  "check-id": no_color,
+  "description": no_color,
+  "rationale-title": no_color,
+  "rationale-text": no_color,
+  "INFO": no_color,
+  "WARN": no_color,
+  "ERROR": no_color,
+  "SKIP": no_color,
+  "PASS": no_color,
+  "FAIL": no_color,
+  "cupcake": no_color,
+  "spinner": no_color,
+  "list-checks: section": no_color,
+  "list-checks: check-id": no_color,
+  "list-checks: description": no_color
+}
+
 
 class NameID(enum.IntEnum):
   """ nameID definitions for the name table """

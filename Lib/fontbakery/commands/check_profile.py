@@ -221,14 +221,27 @@ def main(profile=None, values=None):
   argument_parser, values_keys = ArgumentParser(profile, profile_arg=add_profile_arg)
   args = argument_parser.parse_args()
 
+  # The default Windows Terminal just displays the escape codes. The argument
+  # parser above therefore has these options disabled.
+  if sys.platform == "win32":
+    args.no_progress = True
+    args.no_colors = True
+
+  from fontbakery.constants import NO_COLORS_THEME, DARK_THEME
+  if args.no_colors:
+    theme = NO_COLORS_THEME
+  else:
+    theme = DARK_THEME
+  # TODO: Add a new command line option to select a LIGHT_THEME
+
+
   if args.list_checks:
     if args.loglevels == [PASS]: # if verbose:
-      from fontbakery.constants import WHITE_STR, CYAN_STR, BLUE_STR
       for section in profile._sections.values():
-        print(WHITE_STR.format("\nSection:") + " " + section.name)
+        print(theme["list-checks: section"]("\nSection:") + " " + section.name)
         for check in section._checks:
-          print(CYAN_STR.format(check.id) + "\n" +
-                BLUE_STR.format(f'"{check.description}"') + "\n")
+          print(theme["list-checks: check-id"](check.id) + "\n" +
+                theme["list-checks: description"](f'"{check.description}"') + "\n")
     else:
       for section_name, section in profile._sections.items():
         for check in section._checks:
@@ -258,19 +271,13 @@ def main(profile=None, values=None):
     argument_parser.print_usage()
     sys.exit(1)
 
-  # The default Windows Terminal just displays the escape codes. The argument
-  # parser above therefore has these options disabled.
-  if sys.platform == "win32":
-    args.no_progress = True
-    args.no_colors = True
-
   # the most verbose loglevel wins
   loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
   tr = TerminalReporter(runner=runner, is_async=False
                        , print_progress=not args.no_progress
                        , check_threshold=loglevel
                        , log_threshold=args.loglevel_messages or loglevel
-                       , usecolor=not args.no_colors
+                       , theme=theme
                        , collect_results_by=args.gather_by
                        , skip_status_report=None if args.show_sections\
                                                       else (STARTSECTION, ENDSECTION)
