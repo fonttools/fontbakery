@@ -144,13 +144,13 @@ class ThrottledOut:
     self._last_flush_time = time()
 
 
-from fontbakery.constants import DARK_THEME
+from fontbakery.constants import LIGHT_THEME
 
 class TerminalProgress(FontbakeryReporter):
   def __init__(self, print_progress=True
                    , stdout=sys.stdout
                    , structure_threshold=None
-                   , theme=DARK_THEME
+                   , theme=LIGHT_THEME
                    , cupcake=True
                      # a tuple of structural statuses to be skipped
                      # e.g. (STARTSECTION, ENDSECTION)

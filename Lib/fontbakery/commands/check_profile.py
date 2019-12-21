@@ -227,12 +227,12 @@ def main(profile=None, values=None):
     args.no_progress = True
     args.no_colors = True
 
-  from fontbakery.constants import NO_COLORS_THEME, DARK_THEME
+  from fontbakery.constants import NO_COLORS_THEME, LIGHT_THEME
   if args.no_colors:
     theme = NO_COLORS_THEME
   else:
-    theme = DARK_THEME
-  # TODO: Add a new command line option to select a LIGHT_THEME
+    theme = LIGHT_THEME
+  # TODO: Add a new command line option to select a DARK_THEME
 
 
   if args.list_checks:
