@@ -62,76 +62,84 @@ PLACEHOLDER_LICENSING_TEXT = {
 }
 
 # ANSI color codes for the helper logging class:
-def color(bg, fg):
-  # FIXME: I am still not sure if this is the proper way
-  #        of encoding ANSI color commands:
-  return ('\033[1;3{};4{}m'.format(bg, fg) + '{}\033[0m').format
+def color(bg, fg, bold=False):
+  bold_bit = 0
+  if bold:
+    bold_bit = 1
+  return ('\033[{};{};{}m'.format(bold_bit, bg, fg+10) + '{}\033[0m').format
 
 def no_color(s):
   return s
 
-BLACK = 0
-RED = 1
-GREEN = 2
-YELLOW = 3
-BLUE = 4
-MAGENTA = 5
-CYAN = 6
-GRAY = 7
-WHITE = 8
+BLACK = 30
+RED = 31
+GREEN = 32
+YELLOW = 33
+BLUE = 34
+MAGENTA = 35
+CYAN = 36
+WHITE = 37
+BRIGHT_BLACK = 90
+BRIGHT_RED = 91
+BRIGHT_GREEN = 92
+BRIGHT_YELLOW = 93
+BRIGHT_BLUE = 94
+BRIGHT_MAGENTA = 95
+BRIGHT_CYAN = 96
+BRIGHT_WHITE = 97
 
 NO_COLORS_THEME = {
-  "check-id": no_color,
-  "description": no_color,
-  "rationale-title": no_color,
-  "rationale-text": no_color,
-  "INFO": no_color,
-  "WARN": no_color,
-  "ERROR": no_color,
-  "SKIP": no_color,
-  "PASS": no_color,
-  "FAIL": no_color,
-  "cupcake": no_color,
-  "spinner": no_color,
-  "list-checks: section": no_color,
-  "list-checks: check-id": no_color,
+                  "check-id": no_color,
+               "description": no_color,
+           "rationale-title": no_color,
+            "rationale-text": no_color,
+                      "INFO": no_color,
+                      "WARN": no_color,
+                     "ERROR": no_color,
+                      "SKIP": no_color,
+                      "PASS": no_color,
+                      "FAIL": no_color,
+                   "cupcake": no_color,
+                   "spinner": no_color,
+      "list-checks: section": no_color,
+     "list-checks: check-id": no_color,
   "list-checks: description": no_color
 }
 
-DARK_THEME = {
-  "check-id": color(CYAN, BLACK),
-  "description": color(MAGENTA, BLACK),
-  "rationale-title": color(CYAN, BLACK),
-  "rationale-text": color(WHITE, BLACK),
-  "INFO": color(CYAN, BLACK),
-  "WARN": color(YELLOW, BLACK),
-  "ERROR": color(WHITE, RED),
-  "SKIP": color(BLUE, BLACK),
-  "PASS": color(GREEN, BLACK),
-  "FAIL": color(RED, BLACK),
-  "cupcake": color(MAGENTA, BLACK),
-  "spinner": color(GREEN, BLACK),
-  "list-checks: section": color(WHITE, BLACK),
-  "list-checks: check-id": color(CYAN, BLACK),
-  "list-checks: description": color(BLUE, BLACK)
+DARK_THEME = {                #     Foreground    Background
+                  "check-id": color(CYAN,         BLACK,        bold=True),
+               "description": color(MAGENTA,      BLACK),
+           "rationale-title": color(BRIGHT_CYAN,  BRIGHT_BLACK, bold=True),
+            "rationale-text": color(WHITE,        BLACK),
+                      "INFO": color(CYAN,         BLACK),
+                      "WARN": color(YELLOW,       BLACK),
+                     "ERROR": color(BRIGHT_WHITE, RED),
+                      "SKIP": color(BLUE,         BLACK),
+                      "PASS": color(GREEN,        BLACK),
+                      "FAIL": color(RED,          BLACK),
+                   "cupcake": color(MAGENTA,      BLACK),
+                   "spinner": color(GREEN,        BLACK),
+      "list-checks: section": color(WHITE,        BLACK),
+     "list-checks: check-id": color(CYAN,         BLACK),
+  "list-checks: description": color(BLUE,         BLACK)
 }
 
-LIGHT_THEME = {
-  "check-id": color(MAGENTA, WHITE),
-  "description": color(CYAN, WHITE),
-  "rationale-title": color(MAGENTA, WHITE),
-  "rationale-text": color(WHITE, WHITE),
-  "INFO": color(CYAN, WHITE),
-  "WARN": color(YELLOW, WHITE),
-  "ERROR": color(GRAY, RED),
-  "SKIP": color(BLUE, WHITE),
-  "PASS": color(GREEN, WHITE),
-  "FAIL": color(RED, WHITE),
-  "cupcake": color(MAGENTA, WHITE),
-  "spinner": color(GREEN, WHITE),
-  "list-checks: section": color(WHITE, WHITE),
-  "list-checks: check-id": color(CYAN, WHITE),
-  "list-checks: description": color(BLUE, WHITE)
+LIGHT_THEME = {               #     Foreground     Background
+                  "check-id": color(MAGENTA,       BRIGHT_WHITE,  bold=True),
+               "description": color(CYAN,          BRIGHT_WHITE),
+           "rationale-title": color(MAGENTA,       BRIGHT_WHITE,  bold=True),
+            "rationale-text": color(BLACK,         BRIGHT_WHITE),
+                      "INFO": color(CYAN,          BRIGHT_WHITE),
+                      "WARN": color(BLACK,         BRIGHT_YELLOW, bold=True),
+                     "ERROR": color(BRIGHT_WHITE,  BRIGHT_RED,    bold=True),
+                      "SKIP": color(BLUE,          BRIGHT_WHITE),
+                      "PASS": color(GREEN,  BRIGHT_WHITE),
+                      "FAIL": color(BRIGHT_RED,    BRIGHT_WHITE,  bold=True),
+                   "cupcake": color(MAGENTA,       BRIGHT_WHITE),
+                   "spinner": color(GREEN,         BRIGHT_WHITE),
+      "list-checks: section": color(WHITE,         BRIGHT_WHITE,  bold=True),
+     "list-checks: check-id": color(CYAN,          BRIGHT_WHITE,  bold=True),
+  "list-checks: description": color(BLUE,          BRIGHT_WHITE)
 }
 
 
