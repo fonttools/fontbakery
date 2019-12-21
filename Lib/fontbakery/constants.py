@@ -133,7 +133,7 @@ LIGHT_THEME = {               #     Foreground     Background
                       "WARN": color(BLACK,         BRIGHT_YELLOW, bold=True),
                      "ERROR": color(BRIGHT_WHITE,  BRIGHT_RED,    bold=True),
                       "SKIP": color(BLUE,          BRIGHT_WHITE),
-                      "PASS": color(GREEN,  BRIGHT_WHITE),
+                      "PASS": color(GREEN,         BRIGHT_WHITE),
                       "FAIL": color(BRIGHT_RED,    BRIGHT_WHITE,  bold=True),
                    "cupcake": color(MAGENTA,       BRIGHT_WHITE),
                    "spinner": color(GREEN,         BRIGHT_WHITE),
