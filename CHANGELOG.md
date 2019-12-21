@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.17 (2020-Jan-??)
-  - ...
+### New features
+  - Add support for color themes. (issue #2031)
+  - Auto-select default color theme based on operating system in use. The vast majority of MacOS users seem to use a light-background on the text terminal. For orther systems like GNU+Linux and Windows, a dark terminal seems to be more common.
 
 
 ## 0.7.16 (2019-Dec-13)
