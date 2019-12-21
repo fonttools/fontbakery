@@ -227,12 +227,18 @@ def main(profile=None, values=None):
     args.no_progress = True
     args.no_colors = True
 
-  from fontbakery.constants import NO_COLORS_THEME, LIGHT_THEME
+  from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
   if args.no_colors:
     theme = NO_COLORS_THEME
   else:
-    theme = LIGHT_THEME
-  # TODO: Add a new command line option to select a DARK_THEME
+    if sys.platform == "darwin":
+      # The vast majority of MacOS users seem to use a light-background on the text terminal
+      theme = LIGHT_THEME
+    else:
+      # For orther systems like GNU+Linux and Windows, a dark terminal seems to be more common.
+      theme = DARK_THEME
+
+  # TODO: Add a new command line option to explicitely select a color theme
 
 
   if args.list_checks:
