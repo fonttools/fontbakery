@@ -62,35 +62,23 @@ PLACEHOLDER_LICENSING_TEXT = {
 }
 
 # ANSI color codes for the helper logging class:
-RED =     '\033[1;31;40m{}\033[0m'.format
-RED_BG =  '\033[1;37;41m{}\033[0m'.format
-GREEN =   '\033[1;32;40m{}\033[0m'.format
-YELLOW =  '\033[1;33;40m{}\033[0m'.format
-BLUE =    '\033[1;34;40m{}\033[0m'.format
-MAGENTA = '\033[1;35;40m{}\033[0m'.format
-CYAN =    '\033[1;36;40m{}\033[0m'.format
-WHITE =   '\033[1;37;40m{}\033[0m'.format
+def color(bg, fg):
+  # FIXME: I am still not sure if this is the proper way
+  #        of encoding ANSI color commands:
+  return ('\033[1;3{};4{}m'.format(bg, fg) + '{}\033[0m').format
 
 def no_color(s):
   return s
 
-DARK_THEME = {
-  "check-id": CYAN,
-  "description": MAGENTA,
-  "rationale-title": CYAN,
-  "rationale-text": WHITE,
-  "INFO": CYAN,
-  "WARN": YELLOW,
-  "ERROR": RED_BG,
-  "SKIP": BLUE,
-  "PASS": GREEN,
-  "FAIL": RED,
-  "cupcake": MAGENTA,
-  "spinner": GREEN,
-  "list-checks: section": WHITE,
-  "list-checks: check-id": CYAN,
-  "list-checks: description": BLUE
-}
+BLACK = 0
+RED = 1
+GREEN = 2
+YELLOW = 3
+BLUE = 4
+MAGENTA = 5
+CYAN = 6
+GRAY = 7
+WHITE = 8
 
 NO_COLORS_THEME = {
   "check-id": no_color,
@@ -108,6 +96,42 @@ NO_COLORS_THEME = {
   "list-checks: section": no_color,
   "list-checks: check-id": no_color,
   "list-checks: description": no_color
+}
+
+DARK_THEME = {
+  "check-id": color(CYAN, BLACK),
+  "description": color(MAGENTA, BLACK),
+  "rationale-title": color(CYAN, BLACK),
+  "rationale-text": color(WHITE, BLACK),
+  "INFO": color(CYAN, BLACK),
+  "WARN": color(YELLOW, BLACK),
+  "ERROR": color(WHITE, RED),
+  "SKIP": color(BLUE, BLACK),
+  "PASS": color(GREEN, BLACK),
+  "FAIL": color(RED, BLACK),
+  "cupcake": color(MAGENTA, BLACK),
+  "spinner": color(GREEN, BLACK),
+  "list-checks: section": color(WHITE, BLACK),
+  "list-checks: check-id": color(CYAN, BLACK),
+  "list-checks: description": color(BLUE, BLACK)
+}
+
+LIGHT_THEME = {
+  "check-id": color(MAGENTA, WHITE),
+  "description": color(CYAN, WHITE),
+  "rationale-title": color(MAGENTA, WHITE),
+  "rationale-text": color(WHITE, WHITE),
+  "INFO": color(CYAN, WHITE),
+  "WARN": color(YELLOW, WHITE),
+  "ERROR": color(GRAY, RED),
+  "SKIP": color(BLUE, WHITE),
+  "PASS": color(GREEN, WHITE),
+  "FAIL": color(RED, WHITE),
+  "cupcake": color(MAGENTA, WHITE),
+  "spinner": color(GREEN, WHITE),
+  "list-checks: section": color(WHITE, WHITE),
+  "list-checks: check-id": color(CYAN, WHITE),
+  "list-checks: description": color(BLUE, WHITE)
 }
 
 
