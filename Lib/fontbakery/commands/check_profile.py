@@ -116,6 +116,12 @@ def ArgumentParser(profile, profile_arg=True):
   argument_parser.add_argument('-L', '--list-checks', default=False, action='store_true',
                       help='List the checks available in the selected profile.')
 
+  argument_parser.add_argument('--dark-theme', default=False, action='store_true',
+                      help='Use a color theme with dark colors.')
+
+  argument_parser.add_argument('--light-theme', default=False, action='store_true',
+                      help='Use a color theme with light colors.')
+
   argument_parser.add_argument('--json', default=False, type=argparse.FileType('w'),
                       metavar= 'JSON_FILE',
                       help='Write a json formatted report to JSON_FILE.')
@@ -231,14 +237,16 @@ def main(profile=None, values=None):
   if args.no_colors:
     theme = NO_COLORS_THEME
   else:
-    if sys.platform == "darwin":
+    if args.light_theme:
+      theme = LIGHT_THEME
+    elif args.dark_theme:
+      theme = DARK_THEME
+    elif sys.platform == "darwin":
       # The vast majority of MacOS users seem to use a light-background on the text terminal
       theme = LIGHT_THEME
     else:
       # For orther systems like GNU+Linux and Windows, a dark terminal seems to be more common.
       theme = DARK_THEME
-
-  # TODO: Add a new command line option to explicitely select a color theme
 
 
   if args.list_checks:

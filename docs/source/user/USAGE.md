@@ -111,6 +111,8 @@ Here's the output of `fontbakery check-googlefonts -h`:
                             (default: LOGLEVEL)
       -n, --no-progress     In a tty as stdout, don't render the progress indicators.
       -C, --no-colors       No colors for tty output
+      --dark-theme          Use a color theme with dark colors.
+      --light-theme         Use a color theme with dark colors.
       --json JSON_FILE      Write a json formatted report to JSON_FILE.
       -g ITERATED_ARG, --gather-by ITERATED_ARG
                             Optional: collect results by ITERATED_ARG
