@@ -34,6 +34,8 @@
 
 
 
+
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -42,7 +44,7 @@
 	<meta property="og:title" content="Registered typography vendors - Typography" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://docs.microsoft.com/en-us/typography/vendors/" />
-		<meta property="og:description" content="Vendors who have registered a unique &#x27;Vendor ID&#x27; with Microsoft." />
+			<meta property="og:description" content="Vendors who have registered a unique &#x27;Vendor ID&#x27; with Microsoft." />
 		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
 		<meta property="og:image:alt" content="Microsoft Logo" />
 
@@ -55,7 +57,7 @@
 <meta name="description" content="Vendors who have registered a unique &amp;#x27;Vendor ID&amp;#x27; with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/ef21fc1aa1187566c91ba880eec88108f72f0ba2/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f7a2f22eefec08aa8605185fa56f6cf2e876ea4e/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="mijacobs" />
@@ -69,19 +71,19 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2019-12-12 04:39 PM" />
+<meta name="updated_at" content="2020-01-15 07:14 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2908" />
+<meta name="word_count" content="2949" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/c414977a.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/181aec65.site-ltr.css ">
 
-	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/b8d322.conceptual.css ">
+	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/2488a4dd.conceptual.css ">
 
 
 	<script>
@@ -100,6 +102,7 @@
 			},
 			hasComments: true,
 			showFeedbackReport: false,
+			binaryRatingUpdate : false,
 			enableTutorialFeedback: false,
 			feedbackSystem: 'GitHub',
 			feedbackGitHubRepo: 'MicrosoftDocs/typography-issues',
@@ -124,7 +127,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d428e9b6.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/edfc8243.index-docs.js"></script>
 
 </head>
 
@@ -171,7 +174,7 @@
 		<div class="is-size-7 is-flex-touch has-flex-justify-content-space-between-touch has-padding-none has-padding-none-mobile">
 			<ul class="action-list has-flex-justify-content-start-mobile is-flex is-flex-row has-flex-wrap is-unstyled">
 				<li>
-					<button type="button" class="bookmark button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="bookmarks" data-bi-name="bookmark">
+					<button type="button" class="bookmark button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="bookmarks" data-bi-name="bookmark" title="Bookmark this page">
 						<span class="icon" aria-hidden="true">
 							<span class="docon docon-single-bookmark"></span>
 						</span>
@@ -179,7 +182,7 @@
 					</button>
 				</li>
 						<li>
-							<a href="#feedback" class="button is-text has-inner-focus is-small is-icon-only-touch" data-bi-name="comments">
+							<a href="#feedback" class="button is-text has-inner-focus is-small is-icon-only-touch" data-bi-name="comments" title="Send feedback about this page">
 								<span class="icon">
 									<span class="docon docon-comment-lines" aria-hidden="true"></span>
 								</span>
@@ -331,7 +334,7 @@ High contrast					</span>
 						<button class="dropdown-trigger button is-text has-inner-focus is-small is-icon-only-touch has-inner-focus" aria-label="Your Account" aria-controls="user-menu" aria-expanded="false">
 							<span class="icon" aria-hidden="true">
 								<span class="image">
-									<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
+									<img class="has-body-background-medium is-rounded" data-profile-property="avatarThumbnailUrl">
 								</span>
 							</span>
 							<span class="is-inline-truncated has-margin-left-small" data-profile-property="userName"></span>
@@ -403,13 +406,14 @@ High contrast					</span>
 							</li>
 								<li class="readingTime">14 minutes to read</li>
 							<li class="contributors-holder">
-								<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="5 Contributors" aria-label="5 Contributors">
+								<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="6 Contributors" aria-label="6 Contributors">
 									<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/mijacobs.png?size=32" role="presentation"/></li>
+												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/WorkNihar.png?size=32" role="presentation"/></li>
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/VSC-Service-Account.png?size=32" role="presentation"/></li>
 												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/alib-ms.png?size=32" role="presentation"/></li>
-												<li><img src="https://docs.microsoft.com/_themes/docs.theme/master/en-us/_themes/images/contributor.svg" data-src="https://github.com/PeterCon.png?size=32" role="presentation"/></li>
+										<li><span class="is-size-8 has-text-subtle">+1</span></li>
 									</ul>
 								</a>
 							</li>
@@ -804,6 +808,10 @@ High contrast					</span>
 <tr>
 <td>BBTY</td>
 <td><a href="https://www.brunobernard.com/" data-linktype="external">Bruno Bernard Typographie</a></td>
+</tr>
+<tr>
+<td>BCHN</td>
+<td><a href="http://studiobuchanan.xyz/" data-linktype="external">Studio Buchanan</a></td>
 </tr>
 <tr>
 <td>BCP</td>
@@ -1535,7 +1543,7 @@ High contrast					</span>
 </tr>
 <tr>
 <td>FOUN</td>
-<td><a href="http://www.foundrytypes.co.uk/" data-linktype="external">The Foundry</a></td>
+<td><a href="http://www.thefoundrytypes.com/" data-linktype="external">The Foundry</a></td>
 </tr>
 <tr>
 <td>FP</td>
@@ -1689,6 +1697,10 @@ High contrast					</span>
 <td>Georgian Internet Avenue</td>
 </tr>
 <tr>
+<td>GIFT</td>
+<td><a href="https://souvenirtypefaces.xyz/" data-linktype="external">Souvenir Typefaces</a></td>
+</tr>
+<tr>
 <td>GLCF</td>
 <td><a href="http://www.gilleslecorre.com/pages/fonts.html" data-linktype="external">GLC foundry</a></td>
 </tr>
@@ -1792,6 +1804,10 @@ High contrast					</span>
 <td><a href="http://www.haildesign.com.au/type.html" data-linktype="external">Hail Design</a></td>
 </tr>
 <tr>
+<td>HAMZ</td>
+<td><a href="https://www.hamzehnaghdi.com/" data-linktype="external">Hamzeh Naghdi</a></td>
+</tr>
+<tr>
 <td>hano</td>
 <td><a href="https://www.hanodedfonts.com" data-linktype="external">Hanoded Fonts</a></td>
 </tr>
@@ -1887,6 +1903,10 @@ High contrast					</span>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>IAMT</td>
+<td><a href="https://www.i-am-tiago.com/" data-linktype="external">IamTiago</a></td>
+</tr>
+<tr>
 <td>IBM</td>
 <td><a href="http://www.ibm.com/" data-linktype="external">IBM</a></td>
 </tr>
@@ -1909,6 +1929,10 @@ High contrast					</span>
 <tr>
 <td>IDF</td>
 <td>International Digital Fonts</td>
+</tr>
+<tr>
+<td>IDKB</td>
+<td><a href="http://www.kostasbartsokas.com/" data-linktype="external">Kostas Bartsokas</a></td>
 </tr>
 <tr>
 <td>IDMS</td>
@@ -2403,6 +2427,10 @@ High contrast					</span>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>M</td>
+<td><a href="https://www.marsnev.com/" data-linktype="external">MARSNEV</a></td>
+</tr>
+<tr>
 <td>M+F</td>
 <td><a href="http://measureandfit.co/" data-linktype="external">Measure + Fit</a></td>
 </tr>
@@ -2595,6 +2623,10 @@ High contrast					</span>
 <td><a href="http://www.moonlighttype.com/" data-linktype="external">Moonlight Type and Technolog</a></td>
 </tr>
 <tr>
+<td>MORN</td>
+<td><a href="http://morningtype.com/" data-linktype="external">Morning Type</a></td>
+</tr>
+<tr>
 <td>MOTA</td>
 <td><a href="http://www.motaitalic.com" data-linktype="external">Mota Italic</a></td>
 </tr>
@@ -2686,6 +2718,10 @@ High contrast					</span>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>NaN</td>
+<td><a href="http://www.nan.xyz/" data-linktype="external">NaN</a></td>
+</tr>
+<tr>
 <td>NAUM</td>
 <td><a href="https://naumtype.com/" data-linktype="external">Naumtype</a></td>
 </tr>
@@ -2716,6 +2752,10 @@ High contrast					</span>
 <tr>
 <td>NEC</td>
 <td><a href="http://www.nec.co.jp/" data-linktype="external">NEC Corporation</a></td>
+</tr>
+<tr>
+<td>NEEC</td>
+<td><a href="https://www.netvarec.ooo" data-linktype="external">Netvarec</a></td>
 </tr>
 <tr>
 <td>NERK</td>
@@ -2982,6 +3022,10 @@ High contrast					</span>
 <tr>
 <td>PRTF</td>
 <td><a href="http://www.processtypefoundry.com" data-linktype="external">Process Type Foundry</a></td>
+</tr>
+<tr>
+<td>PRTP</td>
+<td><a href="https://github.com/Protype-Foundry" data-linktype="external">Protype Foundry</a></td>
 </tr>
 <tr>
 <td>PSIS</td>
@@ -3369,6 +3413,10 @@ High contrast					</span>
 <td><a href="http://www.typography.synthview.com" data-linktype="external">Synthview</a></td>
 </tr>
 <tr>
+<td>SWEL</td>
+<td><a href="https://www.swelltype.com/" data-linktype="external">Swell Type</a></td>
+</tr>
+<tr>
 <td>SWFT</td>
 <td>Swfte International</td>
 </tr>
@@ -3446,6 +3494,10 @@ High contrast					</span>
 <tr>
 <td>TFND</td>
 <td><a href="http://www.typefounding.com" data-linktype="external">Typefounding</a></td>
+</tr>
+<tr>
+<td>TFTS</td>
+<td><a href="http://www.thefoundrytypes.com/" data-linktype="external">The Foundry Types</a></td>
 </tr>
 <tr>
 <td>TG</td>
@@ -3640,6 +3692,14 @@ High contrast					</span>
 <td><a href="http://www.typerepublic.com/" data-linktype="external">typerepublic</a></td>
 </tr>
 <tr>
+<td>TYSL</td>
+<td><a href="http://type-salon.com/" data-linktype="external">Type Salon</a></td>
+</tr>
+<tr>
+<td>TYSO</td>
+<td><a href="https://tyso.co/" data-linktype="external">TYSO Type</a></td>
+</tr>
+<tr>
 <td>TYTA</td>
 <td><a href="http://www.typetailors.com" data-linktype="external">TYPE TAILORS</a></td>
 </tr>
@@ -3728,6 +3788,10 @@ High contrast					</span>
 <tr>
 <td>VMT</td>
 <td><a href="http://www.vmtype.com" data-linktype="external">VMType</a></td>
+</tr>
+<tr>
+<td>VO</td>
+<td><a href="https://violetoffice.com/" data-linktype="external">Violet Office</a></td>
 </tr>
 <tr>
 <td>VOG</td>
@@ -3828,6 +3892,10 @@ High contrast					</span>
 <td><a href="http://www.font.net/" data-linktype="external">Xerox Font Services</a></td>
 </tr>
 <tr>
+<td>XGTF</td>
+<td><a href="https://xeroxgraph.com/" data-linktype="external">Xeroxgraph</a></td>
+</tr>
+<tr>
 <td>XOTH</td>
 <td><a href="http://www.about.me/xoth" data-linktype="external">Xoth Morello</a></td>
 </tr>
@@ -3917,6 +3985,14 @@ High contrast					</span>
 
 						</main>
 
+						<!-- recommended content page section -->
+
+							<nav data-bi-name="recommendation-bottom" hidden id="recommended-content-center" class="is-hidden-desktop" aria-labelledby="recommended-content-center-title">
+								<h3 id="recommended-content-center-title" class="is-size-2 has-margin-top-large has-margin-bottom-small">Recommended Content</h3>
+							</nav>
+
+						<!-- end recommended content page section -->
+
 						<!-- rating mobile section -->
 								<div class="is-hidden-desktop has-border-top has-margin-top-large has-padding-top-small">
 									
@@ -4004,7 +4080,7 @@ This page					</button>
 		<h3 class="feedback-form-heading current-user">
 			<img class="avatar" alt="Avatar" width="36" height="36" aria-hidden="true">
 			<span class="username" aria-hidden="true"></span>
-			<span class="visually-hidden">Liquid error: Can't find the localized string giveDocumentationFeedback for template Conceptual.</span>
+			<span class="visually-hidden">Send feedback about this page</span>
 		</h3>
 
 		<label>
@@ -4106,7 +4182,10 @@ This page					</button>
 	<div class="thankyou-rating is-hidden">
 		<p>Thank you.</p>
 	</div>
-</div>							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+</div>								<nav data-bi-name="recommendation-sidebar" hidden id="recommended-content-nav" role="navigation" aria-labelledby="recommended-content-nav-title">
+									<h3 id="recommended-content-nav-title">Recommended Content</h3>
+								</nav>
+							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
 								<h3>In this article</h3>
 							</nav>
 						</div>
