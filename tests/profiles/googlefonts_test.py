@@ -8,7 +8,8 @@ from fontbakery.constants import (NameID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
-from fontbakery.utils import (portable_path,
+from fontbakery.utils import (assert_results_contain,
+                              portable_path,
                               TEST_FILE)
 
 from fontbakery.checkrunner import (
@@ -754,14 +755,14 @@ def test_check_name_license(mada_ttFonts):
 
   print('Test FAIL with wrong entry values ...')
   for ttFont in mada_ttFonts:
-    status, message = list(check(ttFont, wrong_license))[-1]
-    assert status == FAIL and message.code == 'wrong'
+    assert_results_contain(check(ttFont, wrong_license),
+                           FAIL, 'wrong')
 
   print('Test FAIL with missing copyright namerecords ...')
   for ttFont in mada_ttFonts:
     delete_name_table_id(ttFont, NameID.LICENSE_DESCRIPTION)
-    status, message = list(check(ttFont, license))[-1]
-    assert status == FAIL and message.code == 'missing'
+    assert_results_contain(check(ttFont, wrong_license),
+                           FAIL, 'missing')
 
 
 def NOT_IMPLEMENTED_test_check_name_license_url():
@@ -2147,7 +2148,6 @@ def NOT_IMPLEMENTED_test_check_fsselection():
 def test_check_italic_angle():
   """ Checking post.italicAngle value. """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_italic_angle as check
-  from fontbakery.utils import assert_results_contain
 
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   ttFont = TTFont(fontfile)
@@ -2165,7 +2165,6 @@ def test_check_italic_angle():
 
   for value, style, expected_result, expected_msg in test_cases:
     ttFont["post"].italicAngle = value
-    results = list(check(ttFont, style))
 
     if expected_result != PASS:
       print (("Test {} '{}' with"
@@ -2173,20 +2172,19 @@ def test_check_italic_angle():
                                                      expected_msg,
                                                      value,
                                                      style))
-      assert_results_contain(results,
+      assert_results_contain(check(ttFont, style),
                              expected_result,
                              expected_msg)
     else:
       print (("Test PASS with"
               " italic-angle:{} style:{}...").format(value, style))
-      status, message = results[-1]
+      status, message = list(check(ttFont, style))[-1]
       assert status == PASS
 
 
 def test_check_mac_style():
   """ Checking head.macStyle value. """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_mac_style as check
-  from fontbakery.utils import assert_results_contain
   from fontbakery.constants import MacStyle
 
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
@@ -2206,13 +2204,13 @@ def test_check_mac_style():
 
   for macStyle_value, style, expected in test_cases:
     ttFont["head"].macStyle = macStyle_value
-    results = list(check(ttFont, style))
+    results = check(ttFont, style)
 
     if expected == PASS:
       print (("Test PASS with"
               " macStyle:{} style:{}...").format(macStyle_value,
                                                  style))
-      status, message = results[-1]
+      status, message = list(results)[-1]
       assert status == PASS
     else:
       print (("Test FAIL '{}' with"

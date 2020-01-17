@@ -874,12 +874,20 @@ def com_google_fonts_check_name_license(ttFont, license):
   """Check copyright namerecords match license file."""
   from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
   failed = False
+  http_warn = False
   placeholder = PLACEHOLDER_LICENSING_TEXT[license]
   entry_found = False
   for i, nameRecord in enumerate(ttFont["name"].names):
     if nameRecord.nameID == NameID.LICENSE_DESCRIPTION:
       entry_found = True
       value = nameRecord.toUnicode()
+      if "http://" in value:
+        yield WARN,\
+              Message("http-in-description",
+                      f'"{value}"')
+        value = "https://".join(value.split("http://"))
+        http_warn = True
+
       if value != placeholder:
         failed = True
         yield FAIL,\
@@ -892,6 +900,9 @@ def com_google_fonts_check_name_license(ttFont, license):
                       f' is not specified for that.'
                       f' Value was: "{value}"'
                       f' Must be changed to "{placeholder}"')
+  if http_warn:
+    yield WARN, f"For now we're still accepting http URLs, but you should consider using https instead.\n"
+
   if not entry_found:
     yield FAIL,\
           Message("missing", \
@@ -914,8 +925,8 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
   from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
   LEGACY_UFL_FAMILIES = ["Ubuntu", "UbuntuCondensed", "UbuntuMono"]
   LICENSE_URL = {
-    'OFL.txt': 'http://scripts.sil.org/OFL',
-    'LICENSE.txt': 'http://www.apache.org/licenses/LICENSE-2.0',
+    'OFL.txt': 'https://scripts.sil.org/OFL',
+    'LICENSE.txt': 'https://www.apache.org/licenses/LICENSE-2.0',
     'UFL.txt': 'https://www.ubuntu.com/legal/terms-and-policies/font-licence'
   }
   LICENSE_NAME = {
@@ -924,14 +935,22 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
     'UFL.txt': 'Ubuntu Font License'
   }
   detected_license = False
+  http_warn = False
   for license in ['OFL.txt', 'LICENSE.txt', 'UFL.txt']:
     placeholder = PLACEHOLDER_LICENSING_TEXT[license]
     for nameRecord in ttFont['name'].names:
       string = nameRecord.string.decode(nameRecord.getEncoding())
-      if nameRecord.nameID == NameID.LICENSE_DESCRIPTION and\
-         string == placeholder:
-        detected_license = license
-        break
+      if nameRecord.nameID == NameID.LICENSE_DESCRIPTION:
+        if "http://" in string:
+          yield WARN,\
+                Message("http-in-description",
+                        f'"{string}"')
+          string = "https://".join(string.split("http://"))
+          http_warn = True
+
+        if string == placeholder:
+          detected_license = license
+          break
 
   if detected_license == "UFL.txt" and familyname not in LEGACY_UFL_FAMILIES:
     yield FAIL,\
@@ -949,6 +968,11 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
       for nameRecord in ttFont['name'].names:
         if nameRecord.nameID == NameID.LICENSE_INFO_URL:
           string = nameRecord.string.decode(nameRecord.getEncoding())
+          if "http://" in string:
+            yield WARN,\
+                  Message("http-in-license-info",
+                          f'"{string}"')
+            string = "https://".join(string.split("http://"))
           if string == expected:
             found_good_entry = True
           else:
@@ -962,6 +986,9 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                           f" but NameID={NameID.LICENSE_INFO_URL}"
                           f" (LICENSE URL) has '{string}'."
                           f" Expected: '{expected}'")
+    if http_warn:
+      yield WARN, f"For now we're still accepting http URLs, but you should consider using https instead.\n"
+
     if not found_good_entry:
       yield FAIL,\
             Message("no-license-found",
