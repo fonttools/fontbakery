@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.18 (2020-Jan-??)
-  - ...
+### Changes to existing checks
+  - **[com.google.fonts/check/name/license]** and **[com.google.fonts/check/name/license_url]**: Accept http URLs but warn that those should ideally be updated to HTTPS. (issue #2731)
 
 
 ## 0.7.17 (2020-Jan-15)

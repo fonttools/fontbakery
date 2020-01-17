@@ -57,7 +57,7 @@ PLACEHOLDER_LICENSING_TEXT = {
   'UFL.txt': 'Licensed under the Ubuntu Font Licence 1.0.',
   'OFL.txt': 'This Font Software is licensed under the SIL Open Font '
              'License, Version 1.1. This license is available with a FAQ '
-             'at: http://scripts.sil.org/OFL',
+             'at: https://scripts.sil.org/OFL',
   'LICENSE.txt': 'Licensed under the Apache License, Version 2.0'
 }
 
