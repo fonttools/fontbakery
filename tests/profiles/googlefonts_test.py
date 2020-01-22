@@ -494,6 +494,12 @@ def test_check_metadata_undeclared_fonts():
   status, message = list(check(family_metadata(family_dir), family_dir))[-1]
   assert status == WARN and message.code == "font-on-subdir"
 
+  # We do accept statics folder though!
+  # Jura is an example:
+  family_dir = portable_path("data/test/varfont/jura")
+  status, message = list(check(family_metadata(family_dir), family_dir))[-1]
+  assert status == PASS
+
 
 # TODO: re-enable after addressing issue #1998
 def DISABLED_test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
