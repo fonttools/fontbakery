@@ -1,0 +1,1 @@
+Jura-Regular.txt here is simply a copy of the VF, not an actual static Regular. This is just a file for the purpose of testing com.google.fonts/check/metadata/undeclared_fonts

@@ -501,7 +501,7 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
   rationale = """
     The set of font binaries available must match exactly those declared on the METADATA.pb file.
 
-    Also, to avoid confusion, we expect that font files are not placed on subdirectories.
+    Also, to avoid confusion, we expect that font files (other than statics) are not placed on subdirectories.
   """
 )
 def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_directory):
@@ -514,7 +514,7 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
   passed = True
   binaries = []
   for entry in os.listdir(family_directory):
-    if os.path.isdir(os.path.join(family_directory, entry)):
+    if entry != "static" and os.path.isdir(os.path.join(family_directory, entry)):
       for filename in os.listdir(os.path.join(family_directory, entry)):
         if filename[-4:] in [".ttf", ".otf"]:
           path = os.path.join(family_directory, entry, filename)
@@ -523,7 +523,7 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
                 Message("font-on-subdir",
                         f'The file "{path}" is a font binary'
                         f' in a subdirectory.\n'
-                        f'Please keep all font files directly'
+                        f'Please keep all font files (except VF statics) directly'
                         f' on the root directory side-by-side'
                         f' with its corresponding METADATA.pb file.')
     else:
