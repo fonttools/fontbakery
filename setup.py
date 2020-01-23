@@ -72,7 +72,7 @@ setup(
         'ufolint',
 
     ],
-    extras_requires={
+    extras_require={
         'docs': [
             'sphinx >= 1.4',
             'sphinx_rtd_theme',
