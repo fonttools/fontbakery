@@ -7,6 +7,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/name/license]** and **[com.google.fonts/check/name/license_url]**: Accept http URLs but warn that those should ideally be updated to HTTPS. (issue #2731)
   - **[com.google.fonts/check/metadata/undeclared_fonts]**: Accept "static/" subdirs (issue #2737)
 
+### Bugfixes
+  - Add Thomas Phinney's comment on rationale of check **com.google.fonts/check/monospace** (issue #2729)
 
 ## 0.7.17 (2020-Jan-15)
 ### New features

@@ -88,7 +88,10 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
       "OS/2.xAverageWidth IS used when rendering monospaced fonts, at least by Windows GDI"
       http://typedrawers.com/discussion/comment/15397/#Comment_15397
 
-    Also we should report an error for glyphs not of average width
+    Also we should report an error for glyphs not of average width.
+
+    Please also note:
+    Thomas Phinney told us that a few years ago (as of December 2019), if you gave a font a monospace flag in Panose, Microsoft Word would ignore the actual advance widths and treat it as monospaced. Source: https://typedrawers.com/discussion/comment/45140/#Comment_45140
   """
 )
 def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
