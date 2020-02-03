@@ -867,6 +867,22 @@ def com_google_fonts_check_family_has_license(licenses):
 @check(
   id = 'com.google.fonts/check/name/license',
   conditions = ['license'],
+  rationale = """
+    A known licensing description must be provided in the NameID 14 (LICENSE DESCRIPTION) entries of the name table.
+
+    The source of truth for this check (to determine which license is in use) is a file placed side-by-side to your font project including the licensing terms.
+
+    Depending on the chosen license, one of the following string snippets is expected to be found on the NameID 13 (LICENSE DESCRIPTION) entries of the name table:
+    - "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
+    - "Licensed under the Apache License, Version 2.0"
+    - "Licensed under the Ubuntu Font Licence 1.0."
+
+
+    Currently accepted licenses are Apache or Open Font License.
+    For a small set of legacy families the Ubuntu Font License may be acceptable as well.
+
+    When in doubt, please choose OFL for new font projects.
+  """,
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
   })
@@ -884,7 +900,7 @@ def com_google_fonts_check_name_license(ttFont, license):
       if "http://" in value:
         yield WARN,\
               Message("http-in-description",
-                      f'"{value}"')
+                      f'Please consider using HTTPS URLs at name table entry [plat={nameRecord.platformID}, enc={nameRecord.platEncID}, name={nameRecord.nameID}]')
         value = "https://".join(value.split("http://"))
         http_warn = True
 
