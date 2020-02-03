@@ -9,6 +9,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - Add Thomas Phinney's comment on rationale of check **com.google.fonts/check/monospace** (issue #2729)
+  - **[com.google.fonts/check/name/license_url]:** Added rationale and improved working of log messages. (issue #2666)
+
 
 ## 0.7.17 (2020-Jan-15)
 ### New features
