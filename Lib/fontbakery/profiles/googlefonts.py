@@ -915,6 +915,22 @@ def com_google_fonts_check_name_license(ttFont, license):
 
 @check(
   id = 'com.google.fonts/check/name/license_url',
+  rationale = """
+    A known license URL must be provided in the NameID 14 (LICENSE INFO URL) entry of the name table.
+
+    The source of truth for this check is the licensing text found on the NameID 13 entry (LICENSE DESCRIPTION).
+
+    The string snippets used for detecting licensing terms are:
+    - "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
+    - "Licensed under the Apache License, Version 2.0"
+    - "Licensed under the Ubuntu Font Licence 1.0."
+
+
+    Currently accepted licenses are Apache or Open Font License.
+    For a small set of legacy families the Ubuntu Font License may be acceptable as well.
+
+    When in doubt, please choose OFL for new font projects.
+  """,
   conditions = ['familyname'],
   misc_metadata = {
     'priority': PriorityLevel.CRITICAL
@@ -944,7 +960,7 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
         if "http://" in string:
           yield WARN,\
                 Message("http-in-description",
-                        f'"{string}"')
+                        f'Please consider using HTTPS URLs at name table entry [plat={nameRecord.platformID}, enc={nameRecord.platEncID}, name={nameRecord.nameID}]')
           string = "https://".join(string.split("http://"))
           http_warn = True
 
@@ -962,7 +978,11 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                   " Open Font License.")
   else:
     found_good_entry = False
-    if detected_license:
+    if not detected_license:
+      yield SKIP, ("Could not infer the font license."
+                   " Please ensure NameID 13 (LICENSE DESCRIPTION) is properly set.")
+      return
+    else:
       failed = False
       expected = LICENSE_URL[detected_license]
       for nameRecord in ttFont['name'].names:
@@ -971,7 +991,7 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
           if "http://" in string:
             yield WARN,\
                   Message("http-in-license-info",
-                          f'"{string}"')
+                          f'Please consider using HTTPS URLs at name table entry [plat={nameRecord.platformID}, enc={nameRecord.platEncID}, name={nameRecord.nameID}]')
             string = "https://".join(string.split("http://"))
           if string == expected:
             found_good_entry = True
