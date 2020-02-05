@@ -499,7 +499,7 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
   id = 'com.google.fonts/check/metadata/undeclared_fonts',
   conditions = ['family_metadata'],
   rationale = """
-    The set of font binaries available must match exactly those declared on the METADATA.pb file.
+    The set of font binaries available, except the ones on a "static" subdir, must match exactly those declared on the METADATA.pb file.
 
     Also, to avoid confusion, we expect that font files (other than statics) are not placed on subdirectories.
   """
@@ -527,6 +527,7 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
                         f' on the root directory side-by-side'
                         f' with its corresponding METADATA.pb file.')
     else:
+      # Note: This does not include any font binaries placed in a "static" subdir!
       if entry[-4:] in [".ttf", ".otf"]:
         binaries.append(entry)
 
