@@ -25,6 +25,8 @@
 
 
 
+	
+
 
 
 
@@ -44,7 +46,7 @@
 	<meta property="og:title" content="Registered typography vendors - Typography" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://docs.microsoft.com/en-us/typography/vendors/" />
-			<meta property="og:description" content="Vendors who have registered a unique &#x27;Vendor ID&#x27; with Microsoft." />
+			<meta property="og:description" content="Vendors who have registered a unique &#39;Vendor ID&#39; with Microsoft." />
 		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
 		<meta property="og:image:alt" content="Microsoft Logo" />
 
@@ -54,10 +56,10 @@
 		<meta name="author" content="mijacobs" />
 <meta name="breadcrumb_path" content="/typography/breadcrumbs/toc.json" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="description" content="Vendors who have registered a unique &amp;#x27;Vendor ID&amp;#x27; with Microsoft." />
+<meta name="description" content="Vendors who have registered a unique &#39;Vendor ID&#39; with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f7a2f22eefec08aa8605185fa56f6cf2e876ea4e/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/2c493f015d94a7f2989f63062a9270d9b0ab43bb/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="mijacobs" />
@@ -71,17 +73,17 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-01-15 07:14 PM" />
+<meta name="updated_at" content="2020-02-03 09:37 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2949" />
+<meta name="word_count" content="2973" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/181aec65.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/feb02e3b.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/2488a4dd.conceptual.css ">
 
@@ -116,7 +118,7 @@
 		document.write('<script src="https://static.docs.com/ui/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"><\/script>');
 	}
 	if (typeof fetch !== 'function') {
-		document.write('<script src="https://static.docs.com/ui/third-party/fetch/2.0.3/fetch.min.js" integrity="sha384-H3LQq82b6Mm80GYRHtRSlTwO9DoXctmYCVEYk9M8mp97lRzs6DuSrHVUg3SBP9w0" crossorigin="anonymous"><\/script>');
+		document.write('<script src="https://static.docs.com/ui/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"><\/script>');
 	}
 	if (typeof HTMLTemplateElement === 'undefined') {
 		document.write('<script src="https://static.docs.com/ui/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"><\/script>');
@@ -127,7 +129,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/edfc8243.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/c533ddaa.index-docs.js"></script>
 
 </head>
 
@@ -135,30 +137,32 @@
 <div class="header-holder has-default-focus">
 	<a href="#main" class="skip-to-main-link visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
 		<div id="headerAreaHolder" data-bi-name="header">
-<header class="nav-bar" role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
-	<button class="nav-bar-burger" aria-label="Global navigation" aria-controls="nav-bar-mobile-nav" aria-expanded="false">
-		<span></span>
-		<span></span>
-		<span></span>
-	</button>
-	<nav class="nav-bar-mobile-nav" role="navigation" id="nav-bar-mobile-nav" aria-label="Global" hidden="">
-	</nav>
-	<a class="nav-bar-button" itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft">
-		<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
-		<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
-	</a>
-	<nav class="nav-bar-nav" role="navigation" aria-label="Global">
-	</nav>
-	<span class="nav-bar-spacer"></span>
-	<div class="nav-bar-item is-invisible"> <!-- For Forums mobile layout rendering -->
-		<button id="form-expander" class="nav-bar-button has-hover-underline has-margin-left-extra-small"></button>
+<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+	<div class="nav-bar">
+		<button class="nav-bar-burger" aria-label="Global navigation" aria-controls="nav-bar-mobile-nav" aria-expanded="false">
+			<span></span>
+			<span></span>
+			<span></span>
+		</button>
+		<nav class="nav-bar-mobile-nav" role="navigation" id="nav-bar-mobile-nav" aria-label="Global" hidden="">
+		</nav>
+		<a class="nav-bar-button" itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft">
+			<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+		</a>
+		<nav class="nav-bar-nav" role="navigation" aria-label="Global">
+		</nav>
+		<span class="nav-bar-spacer"></span>
+		<div class="nav-bar-item is-invisible"> <!-- For Forums mobile layout rendering -->
+			<button id="form-expander" class="nav-bar-button has-hover-underline has-margin-left-extra-small"></button>
+		</div>
 	</div>
 </header>		</div>
 		<div class="content-header uhf-container has-padding has-default-focus" data-bi-name="content-header">
-		<nav class="has-padding-none-mobile" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
-			<ul id="page-breadcrumbs" class="breadcrumbs">
-			</ul>
-		</nav>
+			<nav class="has-padding-none-mobile has-flex-grow" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+				<ul id="page-breadcrumbs" class="breadcrumbs">
+				</ul>
+			</nav>
 		<div class="content-header-controls">
 			<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
 				<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
@@ -171,8 +175,8 @@
 				<span>Exit focus mode</span>
 			</button>
 		</div>
-		<div class="is-size-7 is-flex-touch has-flex-justify-content-space-between-touch has-padding-none has-padding-none-mobile">
-			<ul class="action-list has-flex-justify-content-start-mobile is-flex is-flex-row has-flex-wrap is-unstyled">
+		<div class="is-size-7 is-flex-touch has-flex-justify-content-space-between-touch has-flex-grow has-padding-none has-padding-none-mobile">
+			<ul class="action-list has-flex-justify-content-start has-flex-justify-content-end-tablet is-flex is-flex-row has-flex-wrap has-flex-grow is-unstyled">
 				<li>
 					<button type="button" class="bookmark button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="bookmarks" data-bi-name="bookmark" title="Bookmark this page">
 						<span class="icon" aria-hidden="true">
@@ -442,6 +446,10 @@ High contrast					</span>
 <tr>
 <td>!ETF</td>
 <td><a href="http://www.exclamachine.com" data-linktype="external">!Exclamachine Type Foundry</a></td>
+</tr>
+<tr>
+<td>!YNE</td>
+<td><a href="https://yne.fr/picon/" data-linktype="external">Yne</a></td>
 </tr>
 <tr>
 <td>$pro</td>
@@ -1478,6 +1486,10 @@ High contrast					</span>
 <td><a href="http://www.fontgod.com" data-linktype="external">FontGod</a></td>
 </tr>
 <tr>
+<td>FHF</td>
+<td><a href="http://www.fannyhmln.xyz/" data-linktype="external">Fanny Hamelin</a></td>
+</tr>
+<tr>
 <td>FILI</td>
 <td><a href="http://www.louisefili.com" data-linktype="external">Louise Fili Ltd</a></td>
 </tr>
@@ -2086,6 +2098,10 @@ High contrast					</span>
 <td><a href="http://www.juliesoudanne.fr" data-linktype="external">jli Foundry – Julie Soudanne</a></td>
 </tr>
 <tr>
+<td>JMN</td>
+<td><a href="https://napadow.com/" data-linktype="external">Jeff Napadow</a></td>
+</tr>
+<tr>
 <td>JOON</td>
 <td><a href="http://www.joonfont.com" data-linktype="external">JoonFont</a></td>
 </tr>
@@ -2151,6 +2167,10 @@ High contrast					</span>
 <tr>
 <td>KDW</td>
 <td><a href="http://www.moji-sekkei.jp/" data-linktype="external">Kinuta Font Factory</a></td>
+</tr>
+<tr>
+<td>KERN</td>
+<td>Machine Kerning</td>
 </tr>
 <tr>
 <td>KF</td>
@@ -2250,6 +2270,10 @@ High contrast					</span>
 <tr>
 <td>LA</td>
 <td><a href="http://www.large.la" data-linktype="external">Large</a></td>
+</tr>
+<tr>
+<td>LaG</td>
+<td><a href="http://www.mattlag.com/type/" data-linktype="external">Matt LaGrandeur</a></td>
 </tr>
 <tr>
 <td>LAIT</td>
@@ -2402,6 +2426,10 @@ High contrast					</span>
 <tr>
 <td>LuAn</td>
 <td>Patrice Provost</td>
+</tr>
+<tr>
+<td>LuRa</td>
+<td><a href="https://lillypip.co.uk/fonts" data-linktype="external">Lucid Rabbit Productions</a></td>
 </tr>
 <tr>
 <td>LUD</td>
@@ -2722,6 +2750,10 @@ High contrast					</span>
 <td><a href="http://www.nan.xyz/" data-linktype="external">NaN</a></td>
 </tr>
 <tr>
+<td>NASK</td>
+<td><a href="http://www.naske.studio/" data-linktype="external">Naske Studio</a></td>
+</tr>
+<tr>
 <td>NAUM</td>
 <td><a href="https://naumtype.com/" data-linktype="external">Naumtype</a></td>
 </tr>
@@ -2776,6 +2808,10 @@ High contrast					</span>
 <tr>
 <td>NICK</td>
 <td><a href="http://www.nicksfonts.com/" data-linktype="external">Nick's Fonts</a></td>
+</tr>
+<tr>
+<td>NICO</td>
+<td><a href="https://www.nico.works/" data-linktype="external">NW digital type foundry</a></td>
 </tr>
 <tr>
 <td>NIS</td>
@@ -3890,10 +3926,6 @@ High contrast					</span>
 <tr>
 <td>XFC</td>
 <td><a href="http://www.font.net/" data-linktype="external">Xerox Font Services</a></td>
-</tr>
-<tr>
-<td>XGTF</td>
-<td><a href="https://xeroxgraph.com/" data-linktype="external">Xeroxgraph</a></td>
 </tr>
 <tr>
 <td>XOTH</td>
