@@ -4,7 +4,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.7.19 (2020-Feb-??)
 ### Changes to existing checks
-  - **[com.google.fonts/check/metadata/undeclared_fonts]**: clarify rationale (issue #2751)
+  - **[com.google.fonts/check/metadata/undeclared_fonts]**: Clarify rationale (issue #2751)
+  - **[com.google.fonts/check/metadata/filenames]**: Add rationale (issue #2751)
 
 
 ## 0.7.18 (2020-Feb-05)
