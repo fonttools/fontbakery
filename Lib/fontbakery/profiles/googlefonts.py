@@ -2061,6 +2061,16 @@ def com_google_fonts_check_metadata_copyright_max_length(font_metadata):
 
 @check(
   id = 'com.google.fonts/check/metadata/filenames',
+  rationale = """
+    Note:
+    This check only looks for files in the current directory.
+
+    Font files in subdirectories are checked by these other two checks:
+     - com.google.fonts/check/metadata/undeclared_fonts
+     - com.google.fonts/check/repo/vf_has_static_fonts
+
+    We may want to merge them all into a single check.
+  """,
   conditions = ['family_metadata']
 )
 def com_google_fonts_check_metadata_filenames(fonts, family_metadata):
