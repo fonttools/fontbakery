@@ -2073,12 +2073,12 @@ def com_google_fonts_check_metadata_copyright_max_length(font_metadata):
   """,
   conditions = ['family_metadata']
 )
-def com_google_fonts_check_metadata_filenames(fonts, family_metadata):
+def com_google_fonts_check_metadata_filenames(fonts, family_directory, family_metadata):
   """METADATA.pb: Font filenames match font.filename entries?"""
 
   passed = True
   metadata_filenames = []
-  font_filenames = [os.path.split(f)[1] for f in fonts]
+  font_filenames = [f for f in os.listdir(family_directory) if f[-4:] in [".ttf", ".otf"]]
   for font_metadata in family_metadata.fonts:
     if font_metadata.filename not in font_filenames:
       passed = False

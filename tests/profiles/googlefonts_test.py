@@ -57,34 +57,34 @@ cabin_condensed_fonts = [
   TEST_FILE("cabin/CabinCondensed-SemiBold.ttf")
 ]
 
-@pytest.fixture
-def cabin_ttFonts():
-  return [TTFont(path) for path in cabin_fonts]
-
+montserrat_fonts = [
+  TEST_FILE("montserrat/Montserrat-Black.ttf"),
+  TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-Bold.ttf"),
+  TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"),
+  TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"),
+  TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-Italic.ttf"),
+  TEST_FILE("montserrat/Montserrat-Light.ttf"),
+  TEST_FILE("montserrat/Montserrat-LightItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-Medium.ttf"),
+  TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-Regular.ttf"),
+  TEST_FILE("montserrat/Montserrat-SemiBold.ttf"),
+  TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"),
+  TEST_FILE("montserrat/Montserrat-Thin.ttf"),
+  TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")
+]
 
 @pytest.fixture
 def montserrat_ttFonts():
-  paths = [
-    TEST_FILE("montserrat/Montserrat-Black.ttf"),
-    TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Bold.ttf"),
-    TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Italic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Light.ttf"),
-    TEST_FILE("montserrat/Montserrat-LightItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Medium.ttf"),
-    TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Regular.ttf"),
-    TEST_FILE("montserrat/Montserrat-SemiBold.ttf"),
-    TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Thin.ttf"),
-    TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")
-  ]
-  return [TTFont(path) for path in paths]
+  return [TTFont(path) for path in montserrat_fonts]
+
+@pytest.fixture
+def cabin_ttFonts():
+  return [TTFont(path) for path in cabin_fonts]
 
 
 @pytest.fixture
@@ -1780,26 +1780,36 @@ def test_check_metadata_filenames():
   """ METADATA.pb: Font filenames match font.filename entries? """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_filenames as check,
                                                family_metadata)
-  family_meta = family_metadata(portable_path('data/test/cabin/'))
+  family_dir = portable_path('data/test/montserrat/')
+  family_meta = family_metadata(family_dir)
 
-  # When passing only the Cabin-*.ttf files, the check must PASS
-  print ("Test PASS with a good set of fonts...")
-  status, message = list(check(cabin_fonts, family_meta))[-1]
+  # test PASS:
+  print ("Test PASS with matching list of font files...")
+  fonts = montserrat_fonts
+  status, message = list(check(fonts, family_dir, family_meta))[-1]
   assert status == PASS
 
-  # But if all TTFs are passed, then the check must FAIL
-  # since the condensed ones are not listed on METADATA.pb
-  print ("Test FAIL with some additional font files...")
-  status, message = list(check(cabin_fonts + cabin_condensed_fonts,
+  # make sure missing files are detected by the check:
+  print ("Test FAIL with missing font files...")
+  fonts = montserrat_fonts
+  original_name = fonts[0]
+  os.rename(original_name, "font.tmp") # rename one font file in order to trigger the FAIL
+  status, message = list(check(fonts, family_dir, family_meta))[-1]
+  assert status == FAIL and message.code == "file-not-found"
+  os.rename("font.tmp", original_name) # restore filename
+
+
+  family_dir = portable_path('data/test/cabin/')
+  family_meta = family_metadata(family_dir)
+
+  # From all TTFs in Cabin's directory, the condensed ones are not
+  # listed on METADATA.pb, so the check must FAIL, even if we do not
+  # explicitely include them in the set of files to be checked:
+  print ("Test FAIL with some font files not declared...")
+  status, message = list(check(cabin_fonts,
+                               family_dir,
                                family_meta))[-1]
   assert status == FAIL and message.code == "file-not-declared"
-
-  # And finally we make sure missing files are also detected by the check:
-  print ("Test FAIL with missing font files...")
-  fonts = cabin_fonts
-  fonts.pop()
-  status, message = list(check(fonts, family_meta))[-1]
-  assert status == FAIL and message.code == "file-not-found"
 
 
 def test_check_metadata_italic_style():
