@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.18 (2020-Jan-??)
+## 0.7.19 (2020-Feb-??)
+  - ...
+
+
+## 0.7.18 (2020-Feb-05)
 ### Changes to existing checks
   - **[com.google.fonts/check/name/license]** and **[com.google.fonts/check/name/license_url]**: Accept http URLs but warn that those should ideally be updated to HTTPS. (issue #2731)
   - **[com.google.fonts/check/metadata/undeclared_fonts]**: Accept "static/" subdirs (issue #2737)
