@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.19 (2020-Feb-??)
+### Deprecated checks
+  - **[com.google.fonts/check/monospace_max_advancewidth]**: (issue #2749)
+
 ### Changes to existing checks
   - **[com.google.fonts/check/metadata/undeclared_fonts]**: Clarify rationale (issue #2751)
   - **[com.google.fonts/check/metadata/filenames]**: Add rationale (issue #2751)
