@@ -1704,6 +1704,18 @@ def test_check_metadata_valid_copyright():
   status, message = list(check(font_meta))[-1]
   assert status == PASS
 
+  # We also ignore case, so these should also PASS:
+  font_meta.copyright = good_string.upper()
+  print("Test PASS with all uppercase...")
+  status, message = list(check(font_meta))[-1]
+  assert status == PASS
+
+  font_meta.copyright = good_string.lower()
+  print("Test PASS with all lowercase...")
+  status, message = list(check(font_meta))[-1]
+  assert status == PASS
+
+
 
 def test_check_font_copyright():
   """Copyright notices match canonical pattern in fonts"""
