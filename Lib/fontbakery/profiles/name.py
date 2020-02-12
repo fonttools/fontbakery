@@ -72,9 +72,9 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
   rationale = """
     There are various metadata in the OpenType spec to specify if a font is monospaced or not. If the font is not trully monospaced, then no monospaced metadata should be set (as sometimes they mistakenly are...)
 
-    Monospace fonts must:
+    Requirements for monospace fonts:
 
-    * post.isFixedPitch"Set to 0 if the font is proportionally spaced, non-zero if the font is not proportionally spaced (monospaced)"
+    * post.isFixedPitch - "Set to 0 if the font is proportionally spaced, non-zero if the font is not proportionally spaced (monospaced)"
       www.microsoft.com/typography/otspec/post.htm
 
     * hhea.advanceWidthMax must be correct, meaning no glyph's width value is greater.
@@ -85,7 +85,7 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
       monotypecom-test.monotype.de/services/pan2
 
     * OS/2.xAvgCharWidth must be set accurately.
-      "OS/2.xAvgCharWidth IS used when rendering monospaced fonts, at least by Windows GDI"
+      "OS/2.xAvgCharWidth is used when rendering monospaced fonts, at least by Windows GDI"
       http://typedrawers.com/discussion/comment/15397/#Comment_15397
 
     Also we should report an error for glyphs not of average width.
