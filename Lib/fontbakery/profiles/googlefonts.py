@@ -1979,13 +1979,23 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
 
 @check(
   id = 'com.google.fonts/check/metadata/valid_copyright',
-  conditions = ['font_metadata']
+  conditions = ['font_metadata'],
+  rationale = """
+  The expected pattern for the copyright string adheres to the following rules:
+  * It must say "Copyright" followed by a 4 digit year
+  * Then it must say "The <familyname> Project Authors"
+  * And within parentheses, a URL for a git repository must be provided
+  * The check is case insensitive and does not validate whether the familyname is correct, even though we'd expect it is (and we may soon update the check to validate that aspect as well!)
+
+  Here is an example of a valid copyright string:
+  "Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)"
+  """
 )
 def com_google_fonts_check_metadata_valid_copyright(font_metadata):
   """Copyright notices match canonical pattern in METADATA.pb"""
   import re
-  string = font_metadata.copyright
-  does_match = re.search(r'Copyright [0-9]{4} The .* Project Authors \([^\@]*\)',
+  string = font_metadata.copyright.lower()
+  does_match = re.search(r'copyright [0-9]{4} the .* project authors \([^\@]*\)',
                            string)
   if does_match:
     yield PASS, "METADATA.pb copyright string is good"
@@ -1994,7 +2004,7 @@ def com_google_fonts_check_metadata_valid_copyright(font_metadata):
           Message("bad-notice-format",
                   f'METADATA.pb: Copyright notices should match'
                   f' a pattern similar to:\n'
-                  f' "Copyright 2019 The Familyname Project Authors (git url)"'
+                  f' "Copyright 2020 The Familyname Project Authors (git url)"'
                   f'\n'
                   f'But instead we have got:\n"{string}"')
 
