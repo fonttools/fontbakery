@@ -44,7 +44,8 @@ def test_get_family_checks():
         'com.google.fonts/check/family/equal_unicode_encodings',
         'com.google.fonts/check/family/equal_font_versions',
         'com.google.fonts/check/family/win_ascent_and_descent',
-        'com.google.fonts/check/family/vertical_metrics',
+        # 'com.google.fonts/check/superfamily/vertical_metrics', # should it be included here?
+                                                                 # or should we have a get_superfamily_checks() method?
     }
     assert family_check_ids == expected_family_check_ids
 
