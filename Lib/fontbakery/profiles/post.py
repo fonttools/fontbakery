@@ -34,7 +34,7 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
 
   if failed:
     msg = ("Thickness of the underline is not"
-           " the same accross this family. In order to fix this,"
+           " the same across this family. In order to fix this,"
            " please make sure that the underlineThickness value"
            " is the same in the 'post' table of all of this family"
            " font files.\n"
