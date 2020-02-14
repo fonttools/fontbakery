@@ -36,7 +36,7 @@ def test_check_family_underline_thickness(mada_ttFonts):
 
   # We start with our reference Mada font family,
   # which we know has the same value of post.underlineThickness
-  # accross all of its font files, based on our inspection
+  # across all of its font files, based on our inspection
   # of the file contents using TTX.
   #
   # So the check should PASS in this case:

@@ -25,7 +25,7 @@ def com_google_fonts_check_family_panose_proportion(ttFonts):
   if not passed:
     yield FAIL,\
           Message("inconsistency",
-                  "PANOSE proportion is not the same accross this family."
+                  "PANOSE proportion is not the same across this family."
                   " In order to fix this, please make sure that"
                   " the panose.bProportion value is the same"
                   " in the OS/2 table of all of this family font files.")
@@ -49,7 +49,7 @@ def com_google_fonts_check_family_panose_familytype(ttFonts):
   if not passed:
     yield FAIL,\
           Message("inconsistency",
-                  "PANOSE family type is not the same accross this family."
+                  "PANOSE family type is not the same across this family."
                   " In order to fix this, please make sure that"
                   " the panose.bFamilyType value is the same"
                   " in the OS/2 table of all of this family font files.")
