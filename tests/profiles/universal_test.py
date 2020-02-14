@@ -624,13 +624,13 @@ def test_check_os2_metrics_match_hhea(mada_ttFonts):
   assert status == FAIL and message.code == "descender"
 
 
-def test_check_family_vertical_metrics(montserrat_ttFonts):
-  from fontbakery.profiles.universal import com_google_fonts_check_family_vertical_metrics as check
+def test_check_superfamily_vertical_metrics(montserrat_ttFonts):
+  from fontbakery.profiles.universal import com_google_fonts_check_superfamily_vertical_metrics as check
   print("Test pass with multiple good fonts...")
-  status, message = list(check(montserrat_ttFonts))[-1]
+  status, message = list(check([montserrat_ttFonts]))[-1]
   assert status == PASS
 
   print("Test fail with one bad font that has one different vertical metric val...")
   montserrat_ttFonts[0]['OS/2'].usWinAscent = 4000
-  status, message = list(check(montserrat_ttFonts))[-1]
+  status, message = list(check([montserrat_ttFonts]))[-1]
   assert status == FAIL
