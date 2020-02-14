@@ -3,10 +3,17 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.19 (2020-Feb-??)
+### Note-worthy code changes
+  - Add support for super-family checks! (issue #1487)
+
+### New checks
+  - **[[com.google.fonts/check/superfamily/list]]**: A simple & merely informative check that lists detected sibling family directories (issue #1487)
+
 ### Deprecated checks
   - **[com.google.fonts/check/monospace_max_advancewidth]**: (issue #2749)
 
 ### Changes to existing checks
+  - **[[com.google.fonts/check/family/vertical_metrics]]**: Updated to check accross sibling families. Check was also renamed to **com.google.fonts/check/superfamily/vertical_metrics** (issue #1487)
   - **[[com.google.fonts/check/metadata/valid_copyright]]**: Add rationale and make it case insensitive (issue #2736)
   - **[com.google.fonts/check/metadata/undeclared_fonts]**: Clarify rationale (issue #2751)
   - **[com.google.fonts/check/metadata/filenames]**: Add rationale (issue #2751)

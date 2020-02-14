@@ -18,6 +18,66 @@ def style(font):
 
 
 @condition
+def sibling_directories(family_directory):
+  """
+  Given a directory, this function tries to figure out where else in the filesystem
+  other related "sibling" families might be located.
+  This is guesswork and may not be able to find font files in other folders not yet
+  covered by this routine. We may improve this in the future by adding other
+  smarter filesystem lookup procedures or even by letting the user feed explicit
+  sibling family paths.
+
+  This function returs a list of paths to directories where related font files were detected.
+  """
+  SIBLING_SUFFIXES = ["sans",
+                      "sc",
+                      "narrow",
+                      "text",
+                      "display"]
+
+  base_family_dir = family_directory
+  for suffix in SIBLING_SUFFIXES:
+    if family_directory.endswith(suffix):
+      candidate = family_directory[:-len(suffix)]
+      if os.path.isdir(candidate):
+        base_family_dir = candidate
+        break
+
+  directories = [base_family_dir]
+  for suffix in SIBLING_SUFFIXES:
+    candidate = base_family_dir + suffix
+    if os.path.isdir(candidate):
+      directories.append(candidate)
+
+  return directories
+
+
+@condition
+def superfamily(sibling_directories):
+  """
+  Given a list of directories, this functions looks for font files
+  and returs a list of lists of the detected filepaths.
+  """
+  result = []
+  for family_dir in sibling_directories:
+    filepaths = []
+    for entry in os.listdir(family_dir):
+      if entry[-4:] in [".otf", ".ttf"]:
+        filepaths.append(os.path.join(family_dir, entry))
+    result.append(filepaths)
+  return result
+
+
+@condition
+def superfamily_ttFonts(superfamily):
+  from fontTools.ttLib import TTFont
+  result = []
+  for family in superfamily:
+    result.append([TTFont(f) for f in family])
+  return result
+
+
+@condition
 def RIBBI_ttFonts(fonts):
   from fontTools.ttLib import TTFont
   from fontbakery.constants import RIBBI_STYLE_NAMES

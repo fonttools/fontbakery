@@ -34,7 +34,7 @@ UNIVERSAL_PROFILE_CHECKS = \
   'com.google.fonts/check/valid_glyphnames',
   'com.google.fonts/check/unique_glyphnames',
 #  'com.google.fonts/check/glyphnames_max_length',
-  'com.google.fonts/check/family/vertical_metrics',
+  'com.google.fonts/check/superfamily/vertical_metrics',
 ]
 
 @check(
@@ -723,12 +723,15 @@ def com_google_fonts_check_ttx_roundtrip(font):
 
 
 @check(
-  id = 'com.google.fonts/check/family/vertical_metrics',
-  rationale="""
-    We want all fonts within a family to have the same vertical metrics so their line spacing is consistent across the family.
-  """
+  id = 'com.google.fonts/check/superfamily/vertical_metrics',
+  rationale = """
+    We want all fonts within a family (and eventual sibling families) to have the same vertical metrics so their line spacing is consistent across the (super-)family.
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/1487'
+  }
 )
-def com_google_fonts_check_family_vertical_metrics(ttFonts):
+def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
   """Each font in a family must have the same vertical metrics values."""
   failed = []
   vmetrics = {
@@ -741,28 +744,35 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
     "descent": {}
   }
 
-  for ttfont in ttFonts:
-      full_font_name = ttfont['name'].getName(4, 3, 1, 1033).toUnicode()
-      vmetrics['sTypoAscender'][full_font_name] = ttfont['OS/2'].sTypoAscender
-      vmetrics['sTypoDescender'][full_font_name] = ttfont['OS/2'].sTypoDescender
-      vmetrics['sTypoLineGap'][full_font_name] = ttfont['OS/2'].sTypoLineGap
-      vmetrics['usWinAscent'][full_font_name] = ttfont['OS/2'].usWinAscent
-      vmetrics['usWinDescent'][full_font_name] = ttfont['OS/2'].usWinDescent
-      vmetrics['ascent'][full_font_name] = ttfont['hhea'].ascent
-      vmetrics['descent'][full_font_name] = ttfont['hhea'].descent
+  for family_ttFonts in superfamily_ttFonts:
+    for ttFont in family_ttFonts:
+      full_font_name = ttFont['name'].getName(4, 3, 1, 1033).toUnicode()
+      vmetrics['sTypoAscender'][full_font_name] = ttFont['OS/2'].sTypoAscender
+      vmetrics['sTypoDescender'][full_font_name] = ttFont['OS/2'].sTypoDescender
+      vmetrics['sTypoLineGap'][full_font_name] = ttFont['OS/2'].sTypoLineGap
+      vmetrics['usWinAscent'][full_font_name] = ttFont['OS/2'].usWinAscent
+      vmetrics['usWinDescent'][full_font_name] = ttFont['OS/2'].usWinDescent
+      vmetrics['ascent'][full_font_name] = ttFont['hhea'].ascent
+      vmetrics['descent'][full_font_name] = ttFont['hhea'].descent
 
   for k, v in vmetrics.items():
-      metric_vals = set(vmetrics[k].values())
-      if len(metric_vals) != 1:
-          failed.append(k)
+    metric_vals = set(vmetrics[k].values())
+    if len(metric_vals) != 1:
+      failed.append(k)
+
+  if len(family_ttFonts) > 1:
+    family_str = "super-family"
+  else:
+    family_str = "family"
 
   if failed:
-      for k in failed:
-        s = ["{}: {}".format(k, v) for k, v in vmetrics[k].items()]
-        yield FAIL, ("{} is not the same across the family:\n:"
-                     "{}".format(k, "\n".join(s)))
+    for k in failed:
+      s = ["{}: {}".format(k, v) for k, v in vmetrics[k].items()]
+      s = "\n".join(s)
+      yield FAIL, (f"{k} is not the same across the {family_str}:\n"
+                   f"{s}")
   else:
-      yield PASS, "Vertical metrics are the same across the family"
+    yield PASS, f"Vertical metrics are the same across the {family_str}"
 
 
 profile.auto_register(globals())
