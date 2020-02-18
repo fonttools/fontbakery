@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/monospace_max_advancewidth]**: (issue #2749)
 
 ### Changes to existing checks
+  - **[[com.google.fonts/check/post_table_version]]**: Support CFF2 OTF Variable Fonts and add rationale (issue #2638)
   - **[[com.google.fonts/check/family/vertical_metrics]]**: Updated to check across sibling families. Check was also renamed to **com.google.fonts/check/superfamily/vertical_metrics** (issue #1487)
   - **[[com.google.fonts/check/metadata/valid_copyright]]**: Add rationale and make it case insensitive (issue #2736)
   - **[com.google.fonts/check/metadata/undeclared_fonts]**: Clarify rationale (issue #2751)
