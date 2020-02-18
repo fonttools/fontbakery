@@ -50,9 +50,11 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
   id = 'com.google.fonts/check/post_table_version'
 )
 def com_google_fonts_check_post_table_version(ttFont, is_ttf):
-  """Font has correct post table version (2 for TTF, 3 for OTF)?"""
+  """Font has correct post table version (2 for TTF or OTF CFF2 Variable fonts, 3 for OTF)?"""
   formatType = ttFont['post'].formatType
-  if is_ttf:
+  is_var = "fvar" in ttFont.keys()
+  is_cff2 = "CFF2" in ttFont.keys()
+  if is_ttf or (is_var and is_cff2):
     expected = 2
   else:
     expected = 3
