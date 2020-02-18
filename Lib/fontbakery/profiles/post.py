@@ -47,10 +47,26 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
 
 
 @check(
-  id = 'com.google.fonts/check/post_table_version'
+  id = 'com.google.fonts/check/post_table_version',
+  rationale = """
+    Apple recommends against using 'post' table format 3 under most circumstances, as it can create problems with some printer drivers and PDF documents. The savings in disk space usually does not justify the potential loss in functionality.
+    Source: https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6post.html
+
+    The CFF2 table does not contain glyph names, so variable OTFs should be allowed to use post table version 2.
+
+    This check expects:
+    - Version 2 for TTF or OTF CFF2 Variable fonts
+    - Version 3 for OTF
+  """,
+  misc_metadata = {
+    'request': [
+      'https://github.com/google/fonts/issues/215',
+      'https://github.com/googlefonts/fontbakery/issues/2638'
+    ]
+  }
 )
 def com_google_fonts_check_post_table_version(ttFont, is_ttf):
-  """Font has correct post table version (2 for TTF or OTF CFF2 Variable fonts, 3 for OTF)?"""
+  """Font has correct post table version?"""
   formatType = ttFont['post'].formatType
   is_var = "fvar" in ttFont.keys()
   is_cff2 = "CFF2" in ttFont.keys()
@@ -59,8 +75,7 @@ def com_google_fonts_check_post_table_version(ttFont, is_ttf):
   else:
     expected = 3
   if formatType != expected:
-    yield FAIL, ("Post table should be version {} instead of {}."
-                 " More info at https://github.com/google/fonts/"
-                 "issues/215").format(expected, formatType)
+    yield FAIL, (f"Post table should be version {expected}"
+                 f" instead of {formatType}.")
   else:
     yield PASS, f"Font has post table version {expected}."
