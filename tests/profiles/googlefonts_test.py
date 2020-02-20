@@ -705,7 +705,7 @@ def test_check_usweightclass():
   #       this bug: https://github.com/googlefonts/fontbakery/issues/2650
 
 def test_family_directory_condition():
-  from fontbakery.profiles.googlefonts import family_directory
+  from fontbakery.profiles.shared_conditions import family_directory
   assert family_directory("some_directory/Foo.ttf") == "some_directory"
   assert family_directory("some_directory/subdir/Foo.ttf") == "some_directory/subdir"
   assert family_directory("Foo.ttf") == "." # This is meant to ensure license files
@@ -1052,7 +1052,7 @@ def NOT_IMPLEMENTED_test_check_metadata_profiles_csv():
 def test_check_metadata_unique_full_name_values():
   """ METADATA.pb: check if fonts field only has unique "full_name" values. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_unique_full_name_values as check,
-                                                     family_metadata)
+                                               family_metadata)
   print ("Test PASS with a good family...")
   # Our reference FamilySans family is good:
   family_directory = portable_path("data/test/familysans")
@@ -1069,7 +1069,7 @@ def test_check_metadata_unique_full_name_values():
 def test_check_metadata_unique_weight_style_pairs():
   """ METADATA.pb: check if fonts field only contains unique style:weight pairs. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_unique_weight_style_pairs as check,
-                                                     family_metadata)
+                                               family_metadata)
   print ("Test PASS with a good family...")
   # Our reference FamilySans family is good:
   family_directory = portable_path("data/test/familysans")
@@ -1086,8 +1086,8 @@ def test_check_metadata_unique_weight_style_pairs():
 
 def test_check_metadata_license():
   """ METADATA.pb license is "APACHE2", "UFL" or "OFL"? """
+  from fontbakery.profiles.shared_conditions import family_directory
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_license as check,
-                                               family_directory,
                                                family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
@@ -1186,7 +1186,7 @@ def test_check_metadata_subsets_order():
 def test_check_metadata_copyright():
   """ METADATA.pb: Copyright notice is the same in all fonts? """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_copyright as check,
-                                                     family_metadata)
+                                               family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
   family_directory = portable_path("data/test/familysans")
@@ -1232,7 +1232,7 @@ def test_check_metadata_familyname():
 def test_check_metadata_has_regular():
   """ METADATA.pb: According Google Fonts standards, families should have a Regular style. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_has_regular as check,
-                                                     family_metadata)
+                                               family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
   family_directory = portable_path("data/test/familysans")
@@ -1257,7 +1257,7 @@ def test_check_metadata_has_regular():
 def test_check_metadata_regular_is_400():
   """ METADATA.pb: Regular should be 400. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_regular_is_400 as check,
-                                                     family_metadata)
+                                               family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
   family_directory = portable_path("data/test/familysans")
@@ -2273,13 +2273,13 @@ def test_check_contour_count(montserrat_ttFonts):
 # More info at https://github.com/googlefonts/fontbakery/issues/2581
 def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
   """Check glyphs are not missing when compared to version on fonts.google.com"""
+  from fontbakery.profiles.shared_conditions import family_directory
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_production_encoded_glyphs as check,
     api_gfonts_ttFont,
     style,
     remote_styles,
-    family_metadata,
-    family_directory)
+    family_metadata)
 
   family_meta = family_metadata(family_directory(cabin_fonts[0]))
   remote = remote_styles(family_meta.name)
@@ -3151,8 +3151,8 @@ def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
 
 def test_check_repo_vf_has_static_fonts():
   """Check VF family dirs in google/fonts contain static fonts"""
-  from fontbakery.profiles.googlefonts import (family_directory,
-                                               com_google_fonts_check_repo_vf_has_static_fonts as check)
+  from fontbakery.profiles.shared_conditions import family_directory
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_vf_has_static_fonts as check
   import tempfile
   import shutil
   # in order for this check to work, we need to mimmic the folder structure of
@@ -3181,13 +3181,13 @@ def test_check_repo_vf_has_static_fonts():
 
 
 def test_check_vertical_metrics_regressions(cabin_ttFonts):
+  from fontbakery.profiles.shared_conditions import family_directory
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_vertical_metrics_regressions as check,
     api_gfonts_ttFont,
     style,
     remote_styles,
-    family_metadata,
-    family_directory)
+    family_metadata)
   from copy import copy
 
   family_meta = family_metadata(family_directory(cabin_fonts[0]))

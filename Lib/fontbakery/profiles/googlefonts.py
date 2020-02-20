@@ -18,10 +18,6 @@ from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-w
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
 
-SUPERFAMILY_CHECKS = [
-  'com.google.fonts/check/superfamily/list'
-]
-
 METADATA_CHECKS = [
   'com.google.fonts/check/metadata/parses',
   'com.google.fonts/check/metadata/unknown_designer',
@@ -148,7 +144,6 @@ GOOGLEFONTS_PROFILE_CHECKS = \
   UNIVERSAL_PROFILE_CHECKS + \
   METADATA_CHECKS + \
   DESCRIPTION_CHECKS + \
-  SUPERFAMILY_CHECKS + \
   FAMILY_CHECKS + \
   NAME_TABLE_CHECKS + \
   REPO_CHECKS + \
@@ -4164,21 +4159,6 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
                   "This will cause problems with some of the Google Fonts"
                   " systems that look up fonts by their style names."
                   " This must be fixed!")
-
-
-@check(
-  id = 'com.google.fonts/check/superfamily/list',
-  rationale = """
-    This is a merely informative check that lists all sibling families detected by fontbakery.
-
-    Only the fontfiles in these directories will be considered in superfamily-level checks.
-  """
-)
-def com_google_fonts_check_superfamily_list(superfamily):
-  """List all superfamily filepaths"""
-  for family in superfamily:
-    yield INFO,\
-          Message("family-path", os.path.split(family[0])[0])
 
 
 ###############################################################################
