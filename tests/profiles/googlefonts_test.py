@@ -706,11 +706,11 @@ def test_check_usweightclass():
 
 def test_family_directory_condition():
   from fontbakery.profiles.googlefonts import family_directory
-  assert family_directory(["some_directory/Foo.ttf"]) == "some_directory"
-  assert family_directory(["some_directory/subdir/Foo.ttf"]) == "some_directory/subdir"
-  assert family_directory(["Foo.ttf"]) == "." # This is meant to ensure license files
-                                              # are correctly detected on the current
-                                              # working directory.
+  assert family_directory("some_directory/Foo.ttf") == "some_directory"
+  assert family_directory("some_directory/subdir/Foo.ttf") == "some_directory/subdir"
+  assert family_directory("Foo.ttf") == "." # This is meant to ensure license files
+                                            # are correctly detected on the current
+                                            # working directory.
 
 def test_check_family_has_license():
   """ Check font project has a license. """
@@ -1015,8 +1015,8 @@ def test_check_name_ascii_only_entries():
 def test_check_metadata_listed_on_gfonts():
   """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_listed_on_gfonts as check,
-                                                     listed_on_gfonts_api,
-                                                     family_metadata)
+                                               listed_on_gfonts_api,
+                                               family_metadata)
 
   print ("Test WARN with a family that is not listed on Google Fonts...")
   # Our reference FamilySans family is a just a generic example
@@ -1091,8 +1091,8 @@ def test_check_metadata_license():
                                                family_metadata)
 
   # Let's start with the METADATA.pb file from our reference FamilySans family:
-  fonts = [TEST_FILE("familysans/FamilySans-Regular.ttf")]
-  md = family_metadata(family_directory(fonts))
+  font = TEST_FILE("familysans/FamilySans-Regular.ttf")
+  md = family_metadata(family_directory(font))
 
   good_licenses = ["APACHE2", "UFL", "OFL"]
   some_bad_values = ["APACHE", "Apache", "Ufl", "Ofl", "Open Font License"]
@@ -2281,7 +2281,7 @@ def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
     family_metadata,
     family_directory)
 
-  family_meta = family_metadata(family_directory(cabin_fonts))
+  family_meta = family_metadata(family_directory(cabin_fonts[0]))
   remote = remote_styles(family_meta.name)
   if remote:
     for font in cabin_fonts:
@@ -3190,7 +3190,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     family_directory)
   from copy import copy
 
-  family_meta = family_metadata(family_directory(cabin_fonts))
+  family_meta = family_metadata(family_directory(cabin_fonts[0]))
   remote = remote_styles(family_meta.name)
   if remote:
     ttFonts = [TTFont(f) for f in cabin_fonts]
