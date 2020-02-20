@@ -45,6 +45,33 @@ def montserrat_ttFonts():
   return [TTFont(path) for path in paths]
 
 
+cabin_fonts = [
+  TEST_FILE("cabin/Cabin-BoldItalic.ttf"),
+  TEST_FILE("cabin/Cabin-Bold.ttf"),
+  TEST_FILE("cabin/Cabin-Italic.ttf"),
+  TEST_FILE("cabin/Cabin-MediumItalic.ttf"),
+  TEST_FILE("cabin/Cabin-Medium.ttf"),
+  TEST_FILE("cabin/Cabin-Regular.ttf"),
+  TEST_FILE("cabin/Cabin-SemiBoldItalic.ttf"),
+  TEST_FILE("cabin/Cabin-SemiBold.ttf")
+]
+
+cabin_condensed_fonts = [
+  TEST_FILE("cabin/CabinCondensed-Regular.ttf"),
+  TEST_FILE("cabin/CabinCondensed-Medium.ttf"),
+  TEST_FILE("cabin/CabinCondensed-Bold.ttf"),
+  TEST_FILE("cabin/CabinCondensed-SemiBold.ttf")
+]
+
+@pytest.fixture
+  def cabin_ttFonts():
+    return [TTFont(path) for path in cabin_fonts]
+
+@pytest.fixture
+  def cabin_condensed_ttFonts():
+    return [TTFont(path) for path in cabin_condensed_fonts]
+
+
 def test_check_valid_glyphnames():
   """ Glyph names are all valid? """
   import io
@@ -624,13 +651,26 @@ def test_check_os2_metrics_match_hhea(mada_ttFonts):
   assert status == FAIL and message.code == "descender"
 
 
-def test_check_superfamily_vertical_metrics(montserrat_ttFonts):
-  from fontbakery.profiles.universal import com_google_fonts_check_superfamily_vertical_metrics as check
+def test_check_family_vertical_metrics(montserrat_ttFonts):
+  from fontbakery.profiles.universal import com_google_fonts_check_family_vertical_metrics as check
   print("Test pass with multiple good fonts...")
-  status, message = list(check([montserrat_ttFonts]))[-1]
+  status, message = list(check(montserrat_ttFonts))[-1]
   assert status == PASS
 
   print("Test fail with one bad font that has one different vertical metric val...")
   montserrat_ttFonts[0]['OS/2'].usWinAscent = 4000
-  status, message = list(check([montserrat_ttFonts]))[-1]
+  status, message = list(check(montserrat_ttFonts))[-1]
+  assert status == FAIL
+
+
+def test_check_superfamily_vertical_metrics(montserrat_ttFonts, cabin_ttFonts, cabin_condensed_ttFonts):
+  from fontbakery.profiles.universal import com_google_fonts_check_superfamily_vertical_metrics as check
+  print("Test pass with multiple good families...")
+  status, message = list(check([montserrat_ttFonts,
+                                montserrat_ttFonts]))[-1]
+  assert status == PASS
+
+  print("Test fail with families that diverge on vertical metric values...")
+  status, message = list(check([cabin_ttFonts,
+                                cabin_condensed_ttFonts]))[-1]
   assert status == FAIL
