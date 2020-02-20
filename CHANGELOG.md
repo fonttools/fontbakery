@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New checks
   - **[[com.google.fonts/check/superfamily/list]]**: A simple & merely informative check that lists detected sibling family directories (issue #1487)
+  - **[[com.google.fonts/check/superfamily/vertical_metrics]]**: Experimental extended version of **family/vertical_checks**, but only emitting WARNs for now (issues #1487 and #2431)
   - **[[com.google.fonts/check/metadata/multiple_designers]]**: Ensure explicit designer names are mentioned on METADATA.pb (issue #2766)
 
 ### Deprecated checks
@@ -18,7 +19,6 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
   - **[[com.google.fonts/check/post_table_version]]**: Support CFF2 OTF Variable Fonts and add rationale (issue #2638)
-  - **[[com.google.fonts/check/family/vertical_metrics]]**: Updated to check across sibling families. Check was also renamed to **com.google.fonts/check/superfamily/vertical_metrics** (issue #1487)
   - **[[com.google.fonts/check/metadata/valid_copyright]]**: Add rationale and make it case insensitive (issue #2736)
   - **[com.google.fonts/check/metadata/undeclared_fonts]**: Clarify rationale (issue #2751)
   - **[com.google.fonts/check/metadata/filenames]**: Add rationale (issue #2751)
