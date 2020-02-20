@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New checks
   - **[[com.google.fonts/check/superfamily/list]]**: A simple & merely informative check that lists detected sibling family directories (issue #1487)
+  - **[[com.google.fonts/check/metadata/multiple_designers]]**: Ensure explicit designer names are mentioned on METADATA.pb (issue #2766)
 
 ### Deprecated checks
   - **[com.google.fonts/check/monospace_max_advancewidth]**: (issue #2749)
