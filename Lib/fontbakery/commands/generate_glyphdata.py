@@ -37,13 +37,15 @@ def collate_fonts_data(fonts_data):
     glyphs = {}
 
     for family in fonts_data:
+        if not family:
+            continue
         for glyph in family:
             if glyph['unicode'] not in glyphs:
                 glyphs[glyph['unicode']] = glyph
             else:
                 c = glyphs[glyph['unicode']]['contours']
                 glyphs[glyph['unicode']]['contours'] = c | glyph['contours']
-    return glyphs.values()
+    return list(glyphs.values())
 
 
 def main():
