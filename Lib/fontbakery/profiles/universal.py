@@ -17,9 +17,15 @@ THIRDPARTY_CHECKS = [
   'com.google.fonts/check/ftxvalidator_is_available'
 ]
 
+SUPERFAMILY_CHECKS = [
+  'com.google.fonts/check/superfamily/list',
+  'com.google.fonts/check/superfamily/vertical_metrics',
+]
+
 UNIVERSAL_PROFILE_CHECKS = \
   OPENTYPE_PROFILE_CHECKS + \
-  THIRDPARTY_CHECKS + [
+  THIRDPARTY_CHECKS + \
+  SUPERFAMILY_CHECKS + [
   'com.google.fonts/check/name/trailing_spaces',
   'com.google.fonts/check/family/win_ascent_and_descent',
   'com.google.fonts/check/os2_metrics_match_hhea',
@@ -36,7 +42,6 @@ UNIVERSAL_PROFILE_CHECKS = \
   'com.google.fonts/check/unique_glyphnames',
 #  'com.google.fonts/check/glyphnames_max_length',
   'com.google.fonts/check/family/vertical_metrics',
-  'com.google.fonts/check/superfamily/vertical_metrics',
 ]
 
 @check(
@@ -734,7 +739,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
   }
 )
 def com_google_fonts_check_family_vertical_metrics(ttFonts):
-  """Each font in a family must have the same vertical metrics values."""
+  """Each font in a family must have the same set of vertical metrics values."""
   failed = []
   vmetrics = {
     "sTypoAscender": {},
@@ -772,6 +777,21 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
 
 
 @check(
+  id = 'com.google.fonts/check/superfamily/list',
+  rationale = """
+    This is a merely informative check that lists all sibling families detected by fontbakery.
+
+    Only the fontfiles in these directories will be considered in superfamily-level checks.
+  """
+)
+def com_google_fonts_check_superfamily_list(superfamily):
+  """List all superfamily filepaths"""
+  for family in superfamily:
+    yield INFO,\
+          Message("family-path", os.path.split(family[0])[0])
+
+
+@check(
   id = 'com.google.fonts/check/superfamily/vertical_metrics',
   rationale = """
     We may want all fonts within a super-family (all sibling families) to have the same vertical metrics so their line spacing is consistent across the super-family.
@@ -783,7 +803,7 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
   }
 )
 def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
-  """Each font in a family must have the same vertical metrics values."""
+  """Each font in set of sibling families must have the same set of vertical metrics values."""
   if len(superfamily_ttFonts) < 2:
     yield SKIP, "Sibling families were not detected."
     return
@@ -816,7 +836,7 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
       warn.append(k)
 
   if warn:
-    for k in failed:
+    for k in warn:
       s = ["{}: {}".format(k, v) for k, v in vmetrics[k].items()]
       s = "\n".join(s)
       yield WARN, (f"{k} is not the same across the super-family:\n"

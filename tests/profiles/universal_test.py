@@ -64,12 +64,12 @@ cabin_condensed_fonts = [
 ]
 
 @pytest.fixture
-  def cabin_ttFonts():
-    return [TTFont(path) for path in cabin_fonts]
+def cabin_ttFonts():
+  return [TTFont(path) for path in cabin_fonts]
 
 @pytest.fixture
-  def cabin_condensed_ttFonts():
-    return [TTFont(path) for path in cabin_condensed_fonts]
+def cabin_condensed_ttFonts():
+  return [TTFont(path) for path in cabin_condensed_fonts]
 
 
 def test_check_valid_glyphnames():
@@ -666,11 +666,11 @@ def test_check_family_vertical_metrics(montserrat_ttFonts):
 def test_check_superfamily_vertical_metrics(montserrat_ttFonts, cabin_ttFonts, cabin_condensed_ttFonts):
   from fontbakery.profiles.universal import com_google_fonts_check_superfamily_vertical_metrics as check
   print("Test pass with multiple good families...")
-  status, message = list(check([montserrat_ttFonts,
-                                montserrat_ttFonts]))[-1]
+  status, message = list(check([cabin_ttFonts,
+                                cabin_condensed_ttFonts]))[-1]
   assert status == PASS
 
   print("Test fail with families that diverge on vertical metric values...")
   status, message = list(check([cabin_ttFonts,
-                                cabin_condensed_ttFonts]))[-1]
-  assert status == FAIL
+                                montserrat_ttFonts]))[-1]
+  assert status == WARN
