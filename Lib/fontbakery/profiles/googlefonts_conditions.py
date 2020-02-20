@@ -178,10 +178,10 @@ def canonical_stylename(font):
 
 
 @condition
-def family_directory(fonts):
+def family_directory(font):
   """Get the path of font project directory."""
-  if fonts:
-    dirname = os.path.dirname(fonts[0])
+  if font:
+    dirname = os.path.dirname(font)
     if dirname == '':
       dirname = '.'
     return dirname
