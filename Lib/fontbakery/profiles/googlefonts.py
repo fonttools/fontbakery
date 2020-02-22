@@ -88,6 +88,7 @@ NAME_TABLE_CHECKS = [
 REPO_CHECKS = [
   'com.google.fonts/check/repo/dirname_matches_nameid_1',
   'com.google.fonts/check/repo/vf_has_static_fonts',
+  'com.google.fonts/check/license/OFL_copyright'
 ]
 
 FONT_FILE_CHECKS = [
@@ -884,6 +885,28 @@ def com_google_fonts_check_family_has_license(licenses):
                   " there is a temporary license file in the same folder.")
   else:
     yield PASS, "Found license at '{}'".format(licenses[0])
+
+
+@check(
+  id = 'com.google.fonts/check/license/OFL_copyright',
+  conditions = ['license_contents'],
+  rationale = """
+    An OFL.txt file's first line should be the font copyright e.g:
+    "Copyright 2019 The Montserrat Project Authors (https://github.com/julietaula/montserrat)"
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2764'
+  })
+def com_google_fonts_check_license_OFL_copyright(license_contents):
+  """Check license file has good copyright string."""
+  import re
+  string = license_contents.strip().split('\n')[0].lower()
+  does_match = re.search(r'copyright [0-9]{4} the .* project authors \([^\@]*\)', string)
+  if does_match:
+    yield PASS, "looks good"
+  else:
+    yield FAIL, (f'First line in license file does not match expected format:'
+                 f' "{string}"')
 
 
 @check(
