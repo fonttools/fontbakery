@@ -2,11 +2,16 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.19 (2020-Feb-??)
+## 0.7.20 (2020-Mar-??)
+  - ...
+
+
+## 0.7.19 (2020-Feb-22)
 ### Note-worthy code changes
   - Add support for super-family checks! (issue #1487)
 
 ### New checks
+  - **[[com.google.fonts/check/license/OFL_copyright]]**: Check if license file first line contains copyright string (issue #2764)
   - **[[com.google.fonts/check/superfamily/list]]**: A simple & merely informative check that lists detected sibling family directories (issue #1487)
   - **[[com.google.fonts/check/superfamily/vertical_metrics]]**: Experimental extended version of **family/vertical_checks**, but only emitting WARNs for now (issues #1487 and #2431)
   - **[[com.google.fonts/check/metadata/multiple_designers]]**: Ensure explicit designer names are mentioned on METADATA.pb (issue #2766)

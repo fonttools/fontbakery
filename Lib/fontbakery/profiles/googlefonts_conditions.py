@@ -236,6 +236,12 @@ def licenses(family_directory):
 
 
 @condition
+def license_contents(license_path):
+  if license_path:
+    return open(license_path).read()
+
+
+@condition
 def license_path(licenses):
   """Get license path."""
   # return license if there is exactly one license
