@@ -24,7 +24,6 @@
 
 
 
-
 	
 
 
@@ -59,7 +58,7 @@
 <meta name="description" content="Vendors who have registered a unique &#39;Vendor ID&#39; with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/2c493f015d94a7f2989f63062a9270d9b0ab43bb/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/e74deca2c7e672635c4aca6801a3879d2259c21a/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="mijacobs" />
@@ -73,17 +72,17 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-02-03 09:37 PM" />
+<meta name="updated_at" content="2020-02-21 10:15 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2973" />
+<meta name="word_count" content="2997" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/feb02e3b.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/899394fa.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/2488a4dd.conceptual.css ">
 
@@ -104,7 +103,6 @@
 			},
 			hasComments: true,
 			showFeedbackReport: false,
-			binaryRatingUpdate : false,
 			enableTutorialFeedback: false,
 			feedbackSystem: 'GitHub',
 			feedbackGitHubRepo: 'MicrosoftDocs/typography-issues',
@@ -129,7 +127,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/c533ddaa.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/19101f96.index-docs.js"></script>
 
 </head>
 
@@ -378,8 +376,8 @@ High contrast					</span>
 		</div>
 	</div>
 
-		<div id="banner-holder" class="has-default-focus has-overflow-hidden">
-		</div>
+	<div id="banner-holder" class="has-default-focus has-overflow-hidden">
+	</div>
 
 	<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus"></div>
 	</div>
@@ -1236,6 +1234,10 @@ High contrast					</span>
 <td><a href="http://www.digitalfoundry.xyz" data-linktype="external">Digital Foundry</a></td>
 </tr>
 <tr>
+<td>DIMK</td>
+<td><a href="https://www.dimka.com/fonts/" data-linktype="external">Dimka Fonts</a></td>
+</tr>
+<tr>
 <td>djr</td>
 <td><a href="http://www.djr.com" data-linktype="external">DJR</a></td>
 </tr>
@@ -1482,6 +1484,10 @@ High contrast					</span>
 <td><a href="http://www.felicianotypefoundry.com/" data-linktype="external">Feliciano Type</a></td>
 </tr>
 <tr>
+<td>FFFF</td>
+<td><a href="https://www.fabiola-mejia.com/" data-linktype="external">Fabiola Mejía</a></td>
+</tr>
+<tr>
 <td>FGOD</td>
 <td><a href="http://www.fontgod.com" data-linktype="external">FontGod</a></td>
 </tr>
@@ -1496,6 +1502,10 @@ High contrast					</span>
 <tr>
 <td>FIRA</td>
 <td>Firasoft Fonts</td>
+</tr>
+<tr>
+<td>FIRE</td>
+<td><a href="http://youbringfire.com/" data-linktype="external">youbringfire</a></td>
 </tr>
 <tr>
 <td>FJR</td>
@@ -1687,6 +1697,10 @@ High contrast					</span>
 <tr>
 <td>GATF</td>
 <td><a href="http://www.gatf.wordpress.com" data-linktype="external">Greater Albion Typefounders</a></td>
+</tr>
+<tr>
+<td>Gco</td>
+<td><a href="https://glyph.co/" data-linktype="external">Glyph Co</a></td>
 </tr>
 <tr>
 <td>GD</td>
@@ -2062,6 +2076,10 @@ High contrast					</span>
 <td><a href="http://www.jaketilson.com" data-linktype="external">Jake Tilson Studio</a></td>
 </tr>
 <tr>
+<td>JAN</td>
+<td><a href="https://www.futurefonts.xyz/jan-sindler" data-linktype="external">Jan Šindler</a></td>
+</tr>
+<tr>
 <td>JB</td>
 <td><a href="http://www.jetbrains.com" data-linktype="external">JetBrains</a></td>
 </tr>
@@ -2080,6 +2098,10 @@ High contrast					</span>
 <tr>
 <td>jeff</td>
 <td><a href="http://www.myfonts.com/foundry/Jeff_Levine/" data-linktype="external">jeff-levine</a></td>
+</tr>
+<tr>
+<td>JENS</td>
+<td><a href="https://www.kutilek.de/" data-linktype="external">Jens Kutilek</a></td>
 </tr>
 <tr>
 <td>JF</td>
@@ -2633,6 +2655,10 @@ High contrast					</span>
 <tr>
 <td>MOMI</td>
 <td><a href="http://www.momentum18.com/typography.html" data-linktype="external">Momentum 18</a></td>
+</tr>
+<tr>
+<td>MONI</td>
+<td><a href="https://monitorstudio.co.uk/" data-linktype="external">monitor</a></td>
 </tr>
 <tr>
 <td>MONB</td>
@@ -3190,6 +3216,10 @@ High contrast					</span>
 <td><a href="http://www.dtp-studio-unger.de" data-linktype="external">RMU TypeDesign</a></td>
 </tr>
 <tr>
+<td>RNDY</td>
+<td>randytype</td>
+</tr>
+<tr>
 <td>ROB</td>
 <td><a href="https://robertjanes.com.au" data-linktype="external">Robert Janes</a></td>
 </tr>
@@ -3224,6 +3254,10 @@ High contrast					</span>
 <tr>
 <td>RST</td>
 <td><a href="http://www.rosettatype.com" data-linktype="external">Rosetta</a></td>
+</tr>
+<tr>
+<td>RSZ</td>
+<td><a href="https://www.resistenza.es/" data-linktype="external">Resistenza Type Foundry</a></td>
 </tr>
 <tr>
 <td>rthy</td>
@@ -3751,6 +3785,10 @@ High contrast					</span>
 <td><a href="http://www.uatype.faithweb.com/" data-linktype="external">UnAuthorized Type</a></td>
 </tr>
 <tr>
+<td>UCT</td>
+<td><a href="https://www.undercase.xyz/" data-linktype="external">Undercase Type</a></td>
+</tr>
+<tr>
 <td>UKUK</td>
 <td><a href="https://ultra-kuhl.com/" data-linktype="external">Ultra Kühl</a></td>
 </tr>
@@ -3781,10 +3819,6 @@ High contrast					</span>
 <tr>
 <td>UT</td>
 <td><a href="http://www.unitype.com/" data-linktype="external">Unitype Inc</a></td>
-</tr>
-<tr>
-<td>UTF</td>
-<td>Undercase Type Foundry</td>
 </tr>
 </table>
 <h2 id="v">V</h2>
@@ -4020,7 +4054,7 @@ High contrast					</span>
 						<!-- recommended content page section -->
 
 							<nav data-bi-name="recommendation-bottom" hidden id="recommended-content-center" class="is-hidden-desktop" aria-labelledby="recommended-content-center-title">
-								<h3 id="recommended-content-center-title" class="is-size-2 has-margin-top-large has-margin-bottom-small">Recommended Content</h3>
+								<h3 id="recommended-content-center-title" class="is-size-2 has-margin-top-large has-margin-bottom-small">Related Articles</h3>
 							</nav>
 
 						<!-- end recommended content page section -->
@@ -4215,7 +4249,7 @@ This page					</button>
 		<p>Thank you.</p>
 	</div>
 </div>								<nav data-bi-name="recommendation-sidebar" hidden id="recommended-content-nav" role="navigation" aria-labelledby="recommended-content-nav-title">
-									<h3 id="recommended-content-nav-title">Recommended Content</h3>
+									<h3 id="recommended-content-nav-title">Related Articles</h3>
 								</nav>
 							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
 								<h3>In this article</h3>
