@@ -2,8 +2,13 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.20 (2020-Mar-??)
+## 0.7.21 (2020-Mar-??)
   - ...
+
+
+## 0.7.20 (2020-Feb-24)
+### Emergency bugfix release!
+  - FATAL ERROR by adding proper indentation to rationale string on com.google.fonts/check/metadata/valid_copyright (issue #2772)
 
 
 ## 0.7.19 (2020-Feb-22)

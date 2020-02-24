@@ -2025,14 +2025,14 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
   id = 'com.google.fonts/check/metadata/valid_copyright',
   conditions = ['font_metadata'],
   rationale = """
-  The expected pattern for the copyright string adheres to the following rules:
-  * It must say "Copyright" followed by a 4 digit year
-  * Then it must say "The <familyname> Project Authors"
-  * And within parentheses, a URL for a git repository must be provided
-  * The check is case insensitive and does not validate whether the familyname is correct, even though we'd expect it is (and we may soon update the check to validate that aspect as well!)
+    The expected pattern for the copyright string adheres to the following rules:
+    * It must say "Copyright" followed by a 4 digit year
+    * Then it must say "The <familyname> Project Authors"
+    * And within parentheses, a URL for a git repository must be provided
+    * The check is case insensitive and does not validate whether the familyname is correct, even though we'd expect it is (and we may soon update the check to validate that aspect as well!)
 
-  Here is an example of a valid copyright string:
-  "Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)"
+    Here is an example of a valid copyright string:
+    "Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)"
   """
 )
 def com_google_fonts_check_metadata_valid_copyright(font_metadata):
