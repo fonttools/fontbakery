@@ -25,7 +25,7 @@ _WIDTH_NAMES = {
     r"Co?n?d?e?n?s?e?d": "Condensed",
     r"Se?m?i?Co?n?d?e?n?s?e?d": "SemiCondensed",
     r"Se?m?i?Exp?a?n?d?e?d": "SemiExpanded",
-    r"Exp?a?n?d?e?d|E?x?t?e?n?d?e?d": "Expanded",
+    r"Exp?a?n?d?e?d|Extended": "Expanded",
     r"Ext?r?a?Exp?a?n?d?e?d": "ExtraExpanded",
     r"Ult?r?a?Exp?a?n?d?e?d": "UltraExpanded",
 }
@@ -184,12 +184,48 @@ def instance_parse(string):
     """Derive instance properties from a string."""
     _GFInstance = namedtuple("GFStyle",
                              """name
-                             coordinates""")
+                             coordinates
+                             unparsable_tokens
+                             raw_token_order
+                             expected_token_order""")
     opsz, wdth, wght, ital = _style_tokens(string)
+    if not wght:
+        wght = "Regular"
     name = _parse_name(opsz, wdth, wght, ital)
-    return _GFInstance(name=name, coordinates={
-        "opsz": _opsz_values(opsz),
-        "wdth": _WIDTH_VALUES[wdth]['fvar'],
-        "wght": _WEIGHT_VALUES[wght]['fvar'],
-    })
+    coords = {}
+    if opsz:
+        coords['opsz'] = _opsz_values(opsz)
+    if wdth:
+        coords['wdth'] = _WIDTH_VALUES[wdth]['fvar']
+    if wght:
+        coords['wght'] = _WEIGHT_VALUES[wght]['fvar']
+    return _GFInstance(
+        name=name,
+        coordinates=coords,
+        unparsable_tokens=_unparsable_tokens(string),
+        raw_token_order=_token_order(string),
+        expected_token_order=_token_order(name))
+
+
+def _unparsable_tokens(string):
+    string = string.split()
+    results = []
+    for word in string:
+        if not any(_style_tokens(word)):
+            results.append(word)
+    return results
+
+
+def _token_order(string):
+    tokens = string.split()
+    results = []
+    for token in tokens:
+        width_token = _re_string_tokenizer(token, _WIDTH_NAMES)
+        if _get_opsz_token(token):
+            results.append('opsz')
+        elif _re_string_tokenizer(token, _WEIGHT_NAMES):
+            results.append('wght')
+        elif width_token and _WIDTH_VALUES[width_token] != 100:
+            results.append("wdth")
+    return results
 

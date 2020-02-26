@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.21 (2020-Mar-??)
-  - ...
+### Changes to existing checks
+  - **[[com.google.fonts/check/varfont_instance_*]]**: Clean up output and ensure that unregistered axes produce a warning
 
 
 ## 0.7.20 (2020-Feb-24)

@@ -48,14 +48,29 @@ def test_name():
 
 def test_fvar_coordinates():
     style = instance_parse("Condensed Regular")
-    assert style.coordinates == {"wght": 400.0, 'wdth': 75.0, "opsz": 0.0}
+    assert style.coordinates == {"wght": 400.0, 'wdth': 75.0}
 
     style = instance_parse("UltraCondensed Black Italic")
-    assert style.coordinates == {"wght": 900.0, 'wdth': 50.0, "opsz": 0.0}
+    assert style.coordinates == {"wght": 900.0, 'wdth': 50.0}
 
     style = instance_parse("10pt Regular")
-    assert style.coordinates == {"wght": 400.0, "wdth": 100.0, "opsz": 10.0}
+    assert style.coordinates == {"wght": 400.0, "opsz": 10.0}
 
     style = instance_parse("18pt Expanded Italic")
     assert style.coordinates == {"wght": 400.0, "wdth": 125.0, "opsz": 18.0}
+
+
+def test_unparsable_tokens():
+    # https://github.com/googlefonts/fontbakery/issues/2701#issuecomment-585870359
+    style = instance_parse("144 G100 Thin")
+    assert style.unparsable_tokens == ["144", "G100"]
+
+    style = instance_parse("Loud Thin Italic")
+    assert style.unparsable_tokens == ["Loud"]
+
+
+def test_token_order():
+    style = instance_parse("Black 100pt ExtraCondensed")
+    assert style.raw_token_order == ["wght", "opsz", "wdth"]
+    assert style.expected_token_order == ["opsz", "wdth", "wght"]
 

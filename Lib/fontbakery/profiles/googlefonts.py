@@ -4129,23 +4129,29 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
 def com_google_fonts_check_varfont_instance_coordinates(ttFont):
   """Check variable font instances have correct coordinate values"""
   from fontbakery.parse import instance_parse
+  from fontbakery.constants import SHOW_GF_DOCS_MSG
   failed = False
   for instance in ttFont['fvar'].instances:
-    name = ttFont['name'].getName(instance.subfamilyNameID,
-                                  PlatformID.WINDOWS,
-                                  WindowsEncodingID.UNICODE_BMP,
-                                  WindowsLanguageID.ENGLISH_USA).toUnicode()
+    name = ttFont['name'].getName(
+      instance.subfamilyNameID,
+      PlatformID.WINDOWS,
+      WindowsEncodingID.UNICODE_BMP,
+      WindowsLanguageID.ENGLISH_USA
+    ).toUnicode()
     expected_instance = instance_parse(name)
     for axis in instance.coordinates:
-      if instance.coordinates[axis] != expected_instance.coordinates[axis]:
+      if axis in expected_instance.coordinates and \
+        instance.coordinates[axis] != expected_instance.coordinates[axis]:
+        yield FAIL, \
+          Message("bad-coordinate",
+            f'Instance "{name}" {axis} value '
+            f'is "{instance.coordinates[axis]}". '
+            f'It should be "{expected_instance.coordinates[axis]}"')
         failed = True
-        yield FAIL,\
-              Message("bad-coordinate",
-                      f'Instance "{name}" {axis} value'
-                      f' is "{instance.coordinates[axis]}".'
-                      f' It should be "{expected_instance.coordinates[axis]}"')
-  if not failed:
-    yield PASS, "Instances have correct coordinates"
+  if failed:
+    yield FAIL, SHOW_GF_DOCS_MSG
+  else:
+    yield PASS, "Instance coordinates are correct"
 
 
 @check(
@@ -4155,33 +4161,61 @@ def com_google_fonts_check_varfont_instance_coordinates(ttFont):
 def com_google_fonts_check_varfont_instance_names(ttFont):
   """Check variable font instances have correct names"""
   from fontbakery.parse import instance_parse
-  failed = False
+  from fontbakery.constants import SHOW_GF_DOCS_MSG
+  show_docs, failed = False, False
   for instance in ttFont['fvar'].instances:
-    name = ttFont['name'].getName(instance.subfamilyNameID,
-                                  PlatformID.WINDOWS,
-                                  WindowsEncodingID.UNICODE_BMP,
-                                  WindowsLanguageID.ENGLISH_USA).toUnicode()
+    name = ttFont['name'].getName(
+      instance.subfamilyNameID,
+      PlatformID.WINDOWS,
+      WindowsEncodingID.UNICODE_BMP,
+      WindowsLanguageID.ENGLISH_USA
+    ).toUnicode()
     expected_instance = instance_parse(name)
-    expected_name = expected_instance.name
+    if expected_instance.unparsable_tokens:
+      yield WARN, (
+        f'Instance "{name}": contains the following unparsable tokens '
+        f'"{expected_instance.unparsable_tokens}"'
+      )
+      show_docs = True
+    # Check if name tokens are missing
+    missing_tokens = set(expected_instance.expected_token_order) - \
+                     set(expected_instance.raw_token_order)
+    if missing_tokens:
+      missing_tokens = ", ".join(missing_tokens)
+      yield FAIL, (
+        f'Instance "{name}": is missing the following name tokens '
+        f'[{missing_tokens}]'
+      )
+      show_docs, failed = True, True
+    # Check if name tokens are ordered correctly
+    elif expected_instance.raw_token_order != expected_instance.expected_token_order:
+      yield FAIL, (
+        f'Instance "{name}": token ordering is incorrect '
+        f'"{expected_instance.raw_token_order}". It should be '
+        f'"{expected_instance.expected_token_order}"'
+      )
+      show_docs, failed = True, True
+    # Check if name matches predicted name
+    if not expected_instance.unparsable_tokens:
+      if expected_instance.name != name:
+        yield FAIL, \
+          Message("bad-name",
+            f'Instance name "{name}" is incorrect. '
+            f'It should be "{expected_instance.name}"')
+        show_docs, failed = True, True
+    else:
+      yield WARN, (
+        f'Instance "{name}": cannot determine instance name due to '
+        f'unparsable tokens'
+      )
+      show_docs = True
 
-    if name != expected_name:
-      failed = True
-      yield FAIL,\
-            Message("bad-name",
-                    f'Instance name "{name}" is incorrect.'
-                    f' It should be "{expected_name}"')
-    if "Text" in name or 'Display' in name:
-        yield WARN, ("VF instance string '{}' contains the word 'Text' or"
-                     " 'Display'. We prefer optical sizes to use"
-                     " pt sizes e.g '16pt {}'.".format(name, expected_name))
-  if not failed:
-    yield PASS, "Instances have correct names"
+  if show_docs and failed:
+    yield FAIL, Message("bad-instance-names", SHOW_GF_DOCS_MSG)
+  elif show_docs and not failed:
+    yield WARN, SHOW_GF_DOCS_MSG
   else:
-    yield FAIL,\
-          Message("bad-instance-names",
-                  "This will cause problems with some of the Google Fonts"
-                  " systems that look up fonts by their style names."
-                  " This must be fixed!")
+    yield PASS, "Instance names are correct"
 
 
 ###############################################################################
