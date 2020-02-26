@@ -61,6 +61,12 @@ PLACEHOLDER_LICENSING_TEXT = {
   'LICENSE.txt': 'Licensed under the Apache License, Version 2.0'
 }
 
+SHOW_GF_DOCS_MSG = (
+  "Check has either failed or produced a warning. See our wip spec for "
+  "further info https://gist.github.com/m4rc1e/"
+  "8f4c4498519e8a36cd54e16a004275cb"
+)
+
 # ANSI color codes for the helper logging class:
 def color(bg, fg, bold=False):
   bold_bit = 0
