@@ -121,7 +121,7 @@ FONT_FILE_CHECKS = [
   'com.google.fonts/check/name/familyname',
   'com.google.fonts/check/name/mandatory_entries',
   'com.google.fonts/check/name/copyright_length',
-  'com.google.fonts/check/fontdata_namecheck', 
+  'com.google.fonts/check/fontdata_namecheck',
   'com.google.fonts/check/name/ascii_only_entries',
   'com.google.fonts/check/varfont_has_instances',
   'com.google.fonts/check/varfont_weight_instances',
@@ -3259,14 +3259,14 @@ def com_google_fonts_check_name_copyright_length(ttFont):
   })
 def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
   """Familyname must be unique according to namecheck.fontdata.com"""
-  FB_ISSUE_TRACKER = "https://github.com/googlefonts/fontbakery/issues"
   import requests
-  URL = f"http://namecheck.fontdata.com"
+  FB_ISSUE_TRACKER = "https://github.com/googlefonts/fontbakery/issues"
+  NAMECHECK_URL = "http://namecheck.fontdata.com"
   try:
     # Since October 2019, it seems that we need to fake our user-agent
     # in order to get correct query results
     FAKE = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1)'
-    response = requests.post(URL,
+    response = requests.post(NAMECHECK_URL,
                              params={'q': familyname},
                              headers={'User-Agent': FAKE},
                              timeout=10)
@@ -3276,14 +3276,29 @@ def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
             Message("name-collision",
                     f'The family name "{familyname}" seems'
                     f' to be already in use.\n'
-                    f'Please visit {URL} for more info.')
+                    f'Please visit {NAMECHECK_URL} for more info.')
     else:
       yield PASS, "Font familyname seems to be unique."
   except:
+    import sys
     yield ERROR,\
           Message("namecheck-service",
-                  f"Failed to access: {URL}.\n"
-                  f"Please report this issue at: {FB_ISSUE_TRACKER}")
+                  f"Failed to access: {NAMECHECK_URL}.\n"
+                  f"\t\tThis check relies on the external service"
+                  f" http://namecheck.fontdata.com via the internet."
+                  f" While the service cannot be reached or does not"
+                  f" respond this check is broken.\n"
+                  f"\n"
+                  f"\t\tYou can exclude this check with the command line"
+                  f" option:\n"
+                  f"\t\t-x com.google.fonts/check/fontdata_namecheck\n"
+                  f"\n"
+                  f"\t\tOr you can wait until the service is available again.\n"
+                  f"\t\tIf the problem persists please report this issue"
+                  f" at: {FB_ISSUE_TRACKER}\n"
+                  f"\n"
+                  f"\t\tOriginal error message:\n"
+                  f"\t\t{sys.exc_info()[0]}")
 
 
 @check(
