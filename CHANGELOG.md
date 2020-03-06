@@ -3,6 +3,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.21 (2020-Mar-06)
+### Note-worthy changes
+  - The snippet for checking collections is just an example shell script and it is specific to the directory structure of the Google Fonts git repo. We've made this clearer by renaming the script to **snippets/fontbakery-check-gfonts-collection.sh** (issue #2740)
+  - The script was also fixed to run properly on MacOS, as it was originally only working on GNU+Linux.
+
 ### Changes to existing checks
   - **[[com.google.fonts/check/varfont_instance_*]]**: Clean up output and ensure that unregistered axes produce a warning
   - **[[com.google.fonts/check/fontdata_namecheck]]**: improve log messages when query fails (issue #2719)
