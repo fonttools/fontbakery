@@ -2,13 +2,16 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.21 (2020-Mar-??)
+## 0.7.21 (2020-Mar-06)
 ### Changes to existing checks
   - **[[com.google.fonts/check/varfont_instance_*]]**: Clean up output and ensure that unregistered axes produce a warning
   - **[[com.google.fonts/check/fontdata_namecheck]]**: improve log messages when query fails (issue #2719)
+  - **[[com.google.fonts/check/name/rfn]]**: Add rationale and make it a **FAIL** as it is a strong requirement for Google Fonts that families do not use a "Reserved Font Name" (issue #2779)
+  - **[[com.google.fonts/check/name/line_breaks]]**: Add rationale (issue #2778)
 
 ### Migration of checks between profiles
-  - **[[com.google.fonts/check/name/line_breaks]]**: move it from `opentype` to `googlefonts` profile as it is a vendor-specific policy rather than an OpenType spec requirement. (issue #2778)
+  - **[[com.google.fonts/check/name/line_breaks]]**: From `opentype` to `googlefonts` profile as it is a vendor-specific policy rather than an OpenType spec requirement. (issue #2778)
+  - **[[com.google.fonts/check/name/rfn]]**: From `opentype` to `googlefonts` profile (issue #2779)
 
 
 ## 0.7.20 (2020-Feb-24)
