@@ -399,6 +399,27 @@ def test_check_name_family_and_style_max_length():
   assert status == WARN and message.code == "too-long"
 
 
+def test_check_name_line_breaks():
+  """ Name table entries should not contain line-breaks. """
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_name_line_breaks as check
+
+  # Our reference Mada Regular font is good here:
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+
+  # So it must PASS the check:
+  print ("Test PASS with a good font...")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  print ("Test FAIL with name entries containing a linebreak...")
+  for i in range(len(ttFont["name"].names)):
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+    encoding = ttFont["name"].names[i].getEncoding()
+    ttFont["name"].names[i].string = "bad\nstring".encode(encoding)
+    status, message = list(check(ttFont))[-1]
+    assert status == FAIL and message.code == "line-break"
+
+
 def test_check_metadata_parses():
   """ Check METADATA.pb parse correctly. """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_metadata_parses as check

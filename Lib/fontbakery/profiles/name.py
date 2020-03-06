@@ -182,26 +182,6 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
 
 
 @check(
-  id = 'com.google.fonts/check/name/line_breaks'
-)
-def com_google_fonts_check_name_line_breaks(ttFont):
-  """Name table entries should not contain line-breaks."""
-  failed = False
-  for name in ttFont["name"].names:
-    string = name.string.decode(name.getEncoding())
-    if "\n" in string:
-      failed = True
-      yield FAIL,\
-            Message("line-break",
-                    f"Name entry {NameID(name.nameID).name}"
-                    f" on platform {PlatformID(name.platformID).name}"
-                    f" contains a line-break.")
-  if not failed:
-    yield PASS, ("Name table entries are all single-line"
-                 " (no line-breaks found).")
-
-
-@check(
   id = 'com.google.fonts/check/name/match_familyname_fullfont'
 )
 def com_google_fonts_check_name_match_familyname_fullfont(ttFont):

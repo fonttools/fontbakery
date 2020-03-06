@@ -83,6 +83,7 @@ NAME_TABLE_CHECKS = [
   'com.google.fonts/check/name/license',
   'com.google.fonts/check/name/license_url',
   'com.google.fonts/check/name/family_and_style_max_length',
+  'com.google.fonts/check/name/line_breaks',
 ]
 
 REPO_CHECKS = [
@@ -3888,6 +3889,31 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                       f" name table records max-length criteria.")
   if not failed:
     yield PASS, "All name entries are good."
+
+
+@check(
+  id = 'com.google.fonts/check/name/line_breaks',
+  rationale = """
+    There are some entries on the name table that may include more than one line of text. The Google Fonts team, though, prefers to keep the name table entries short and simple without line breaks.
+
+    For instance, some designers like to include the full text of a font license in the "copyright notice" entry, but for the GFonts collection this entry should only mention year, author and other basic info in a manner enforced by com.google.fonts/check/font_copyright
+  """
+)
+def com_google_fonts_check_name_line_breaks(ttFont):
+  """Name table entries should not contain line-breaks."""
+  failed = False
+  for name in ttFont["name"].names:
+    string = name.string.decode(name.getEncoding())
+    if "\n" in string:
+      failed = True
+      yield FAIL,\
+            Message("line-break",
+                    f"Name entry {NameID(name.nameID).name}"
+                    f" on platform {PlatformID(name.platformID).name}"
+                    f" contains a line-break.")
+  if not failed:
+    yield PASS, ("Name table entries are all single-line"
+                 " (no line-breaks found).")
 
 
 @check(
