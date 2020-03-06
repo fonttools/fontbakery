@@ -10,7 +10,6 @@ This has several subcommands, described in the help function:
     Run fontbakery subcommands:
         build-contributors
         check-adobefonts
-        check-collection
         check-fontval
         check-googlefonts
         check-notofonts
@@ -136,9 +135,11 @@ Here's the output of `fontbakery check-googlefonts -h`:
 
 Note: on Windows, color and progress bar output is disabled because the standard Windows terminal displays the escape characters instead. Pull Requests to fix this are welcome.
 
-If you need to generate a list of all issues in a font family collection, such as the Google Fonts collection, checkout that repo and then run:
+If you need to generate a list of all issues in a font family collection, the FontBakery repo has a small script to do so for the Google Fonts collection. Feel free to use that snippet and adapt it to the directory structure of your collection.
 
-    sh bin/fontbakery-check-collection.sh path-to-collection-directory
+For checking the GFonts collection the script is used like this:
+
+    sh snippets/fontbakery-check-gfonts-collection.sh path-to-collection-directory
 
 This will create a folder called `check_results/` then run the `check-googlefonts` subcommand on every family, saving individual per-family reports in json format into subdirectories.
 
