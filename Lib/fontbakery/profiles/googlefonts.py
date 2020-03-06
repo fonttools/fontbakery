@@ -84,6 +84,7 @@ NAME_TABLE_CHECKS = [
   'com.google.fonts/check/name/license_url',
   'com.google.fonts/check/name/family_and_style_max_length',
   'com.google.fonts/check/name/line_breaks',
+  'com.google.fonts/check/name/rfn',
 ]
 
 REPO_CHECKS = [
@@ -3914,6 +3915,32 @@ def com_google_fonts_check_name_line_breaks(ttFont):
   if not failed:
     yield PASS, ("Name table entries are all single-line"
                  " (no line-breaks found).")
+
+
+@check(
+  id = 'com.google.fonts/check/name/rfn',
+  rationale = """
+    Some designers adopt the "Reserved Font Name" clause of the OFL license. This means that the original author reserves the rights to the family name and other people can only distribute modified versions using a different family name.
+
+    Google Fonts published updates to the fonts in the collection in order to fix issues and/or implement further improvements to the fonts. It is important to keep the family name so that users of the webfonts can benefit from the updates. Since it would forbid such usage scenario, all families in the GFonts collection are required to not adopt the RFN clause.
+
+    This check ensures "Reserved Font Name" is not mentioned in the name table.
+  """
+)
+def com_google_fonts_check_name_rfn(ttFont):
+  """Name table strings must not contain the string 'Reserved Font Name'."""
+  failed = False
+  for entry in ttFont["name"].names:
+    string = entry.toUnicode()
+    if "reserved font name" in string.lower():
+      yield FAIL,\
+            Message("rfn",
+                    f'Name table entry ("{string}")'
+                    f' contains "Reserved Font Name".'
+                    f' This is an error except in a few specific rare cases.')
+      failed = True
+  if not failed:
+    yield PASS, 'None of the name table strings contain "Reserved Font Name".'
 
 
 @check(

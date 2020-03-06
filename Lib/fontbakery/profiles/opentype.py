@@ -36,7 +36,6 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.adobe.fonts/check/name/postscript_name_consistency',
     'com.adobe.fonts/check/name/empty_records',
     'com.google.fonts/check/name/no_copyright_on_description',
-    'com.google.fonts/check/name/rfn',
     'com.google.fonts/check/name/match_familyname_fullfont',
     'com.google.fonts/check/varfont/regular_wght_coord',
     'com.google.fonts/check/varfont/regular_wdth_coord',

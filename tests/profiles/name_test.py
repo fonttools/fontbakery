@@ -288,20 +288,6 @@ def test_check_family_naming_recommendations():
       name_test("A"*31, PASS)
 
 
-def test_check_name_rfn():
-  """ Name table strings must not contain 'Reserved Font Name'. """
-  from fontbakery.profiles.name import com_google_fonts_check_name_rfn as check
-
-  test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-
-  status, _ = list(check(test_font))[-1]
-  assert status == PASS
-
-  test_font["name"].setName("Bla Reserved Font Name", 5, 3, 1, 0x409)
-  status, message = list(check(test_font))[-1]
-  assert status == WARN and message.code == "rfn"
-
-
 def test_check_name_postscript_vs_cff():
   from fontbakery.profiles.name import com_adobe_fonts_check_name_postscript_vs_cff as check
   test_font = TTFont()

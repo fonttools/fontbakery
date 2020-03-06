@@ -420,6 +420,20 @@ def test_check_name_line_breaks():
     assert status == FAIL and message.code == "line-break"
 
 
+def test_check_name_rfn():
+  """ Name table strings must not contain 'Reserved Font Name'. """
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_name_rfn as check
+
+  test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  test_font["name"].setName("Bla Reserved Font Name", 5, 3, 1, 0x409)
+  status, message = list(check(test_font))[-1]
+  assert status == FAIL and message.code == "rfn"
+
+
 def test_check_metadata_parses():
   """ Check METADATA.pb parse correctly. """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_metadata_parses as check

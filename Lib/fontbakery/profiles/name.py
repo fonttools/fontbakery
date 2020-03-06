@@ -325,26 +325,6 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/name/rfn'
-)
-def com_google_fonts_check_name_rfn(ttFont):
-  """Name table strings must not contain the string 'Reserved Font Name'."""
-  failed = False
-  for entry in ttFont["name"].names:
-    string = entry.toUnicode()
-    if "reserved font name" in string.lower():
-      yield WARN,\
-            Message("rfn",
-                    f'Name table entry ("{string}")'
-                    f' contains "Reserved Font Name".'
-                    f' This is an error except in a few specific rare cases.')
-      failed = True
-  if not failed:
-    yield PASS, ('None of the name table strings'
-                 ' contain "Reserved Font Name".')
-
-
-@check(
   id = 'com.adobe.fonts/check/name/postscript_vs_cff',
   conditions = ['is_cff'],
   rationale = """
