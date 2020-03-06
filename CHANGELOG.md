@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[[com.google.fonts/check/varfont_instance_*]]**: Clean up output and ensure that unregistered axes produce a warning
   - **[[com.google.fonts/check/fontdata_namecheck]]**: improve log messages when query fails (issue #2719)
 
+### Migration of checks between profiles
+  - **[[com.google.fonts/check/name/line_breaks]]**: move it from `opentype` to `googlefonts` profile as it is a vendor-specific policy rather than an OpenType spec requirement. (issue #2778)
+
 
 ## 0.7.20 (2020-Feb-24)
 ### Emergency bugfix release!

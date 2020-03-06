@@ -154,27 +154,6 @@ def test_check_monospace():
     assert results_contain(results, FAIL, "mono-bad-panose-proportion")
 
 
-def test_check_name_line_breaks():
-  """ Name table entries should not contain line-breaks. """
-  from fontbakery.profiles.name import com_google_fonts_check_name_line_breaks as check
-
-  # Our reference Mada Regular font is good here:
-  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-
-  # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
-
-  print ("Test FAIL with name entries containing a linebreak...")
-  for i in range(len(ttFont["name"].names)):
-    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    encoding = ttFont["name"].names[i].getEncoding()
-    ttFont["name"].names[i].string = "bad\nstring".encode(encoding)
-    status, message = list(check(ttFont))[-1]
-    assert status == FAIL and message.code == "line-break"
-
-
 def test_check_name_match_familyname_fullfont():
   """ Does full font name begin with the font family name? """
   from fontbakery.profiles.name import com_google_fonts_check_name_match_familyname_fullfont as check
