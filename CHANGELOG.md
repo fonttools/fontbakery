@@ -8,7 +8,12 @@ A more detailed list of changes is available in the corresponding milestones for
   - The script was also fixed to run properly on MacOS, as it was originally only working on GNU+Linux.
 
 ### Changes to existing checks
-  - **[[com.google.fonts/check/varfont_instance_*]]**: Clean up output and ensure that unregistered axes produce a warning
+  - **[[com.google.fonts/check/varfont_instance_*]]**: Clean up output and ensure that unregistered axes produce a warning. (issue #2701) Output will now display the following:
+    - WARN if instance names are not fully parsable. It will also output the unparsable tokens.
+    - FAIL if instance coordinates are incorrect for known axes.
+    - FAIL if the fvar contains known axes and they're not mentioned in instance names.
+    - FAIL if instance name tokens are incorrectly ordered
+    - Provide link to our documentation if these checks FAIL or WARN
   - **[[com.google.fonts/check/fontdata_namecheck]]**: improve log messages when query fails (issue #2719)
   - **[[com.google.fonts/check/name/rfn]]**: Add rationale and make it a **FAIL** as it is a strong requirement for Google Fonts that families do not use a "Reserved Font Name" (issue #2779)
   - **[[com.google.fonts/check/name/line_breaks]]**: Add rationale (issue #2778)
