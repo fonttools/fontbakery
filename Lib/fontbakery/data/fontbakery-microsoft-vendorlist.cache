@@ -37,6 +37,7 @@
 
 
 
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -58,7 +59,7 @@
 <meta name="description" content="Vendors who have registered a unique &#39;Vendor ID&#39; with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/e74deca2c7e672635c4aca6801a3879d2259c21a/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/63c8c918cfc08b3ec8c61023236d9dc8764b4d31/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="mijacobs" />
@@ -72,19 +73,19 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-02-21 10:15 PM" />
+<meta name="updated_at" content="2020-03-05 08:31 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="2997" />
+<meta name="word_count" content="3024" />
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered typography vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/899394fa.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/d1b9af57.site-ltr.css ">
 
-	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/2488a4dd.conceptual.css ">
+	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/672b4bb0.conceptual.css ">
 
 
 	<script>
@@ -101,7 +102,8 @@
 			context: {
 
 			},
-			hasComments: true,
+			hasBinaryRating: true,
+			hasGithubIssues: true,
 			showFeedbackReport: false,
 			enableTutorialFeedback: false,
 			feedbackSystem: 'GitHub',
@@ -127,7 +129,7 @@
 	</script>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/19101f96.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/7ab493c2.index-docs.js"></script>
 
 </head>
 
@@ -183,14 +185,14 @@
 						<span class="bookmark-status is-visually-hidden-touch is-hidden-portrait">Bookmark</span>
 					</button>
 				</li>
-						<li>
-							<a href="#feedback" class="button is-text has-inner-focus is-small is-icon-only-touch" data-bi-name="comments" title="Send feedback about this page">
-								<span class="icon">
-									<span class="docon docon-comment-lines" aria-hidden="true"></span>
-								</span>
-								<span class="is-visually-hidden-touch is-hidden-portrait">Feedback</span>
-							</a>
-						</li>
+					<li>
+						<a href="#feedback" class="button is-text has-inner-focus is-small is-icon-only-touch" data-bi-name="comments" title="Send feedback about this page">
+							<span class="icon">
+								<span class="docon docon-comment-lines" aria-hidden="true"></span>
+							</span>
+							<span class="is-visually-hidden-touch is-hidden-portrait">Feedback</span>
+						</a>
+					</li>
 							<li id="contenteditbtn" hidden>
 									<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"  class="button is-text has-inner-focus is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit">
 									<span class="icon">
@@ -330,7 +332,7 @@ High contrast					</span>
 		</ul>
 	</div>
 </div>				</li>
-				<li>
+				<li id="docs-sign-in-container-item">
 					<a class="docs-sign-in auth-status-determined not-authenticated button is-text has-inner-focus has-text-primary is-small" href="#">Sign in</a>
 					<div class="dropdown has-caret auth-status-determined authenticated">
 						<button class="dropdown-trigger button is-text has-inner-focus is-small is-icon-only-touch has-inner-focus" aria-label="Your Account" aria-controls="user-menu" aria-expanded="false">
@@ -406,7 +408,7 @@ High contrast					</span>
 							<li class="displayDate loading">
 								<time role="presentation" datetime="2019-11-01T00:00:00.000Z" data-article-date-source="ms.date">11/01/2019</time>
 							</li>
-								<li class="readingTime">14 minutes to read</li>
+								<li class="readingTime">15 minutes to read</li>
 							<li class="contributors-holder">
 								<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="6 Contributors" aria-label="6 Contributors">
 									<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
@@ -910,6 +912,10 @@ High contrast					</span>
 <tr>
 <td>BNFF</td>
 <td><a href="http://www.bengalfonts.com/" data-linktype="external">BengalFonts</a></td>
+</tr>
+<tr>
+<td>BNT</td>
+<td><a href="https://www.brandnewtype.com/" data-linktype="external">Brand New Type</a></td>
 </tr>
 <tr>
 <td>BOGS</td>
@@ -1759,6 +1765,10 @@ High contrast					</span>
 <td><a href="http://www.code.google.com/p/noto/" data-linktype="external">Google</a></td>
 </tr>
 <tr>
+<td>Goss</td>
+<td><a href="https://www.goss.com/" data-linktype="external">Goss Typography</a></td>
+</tr>
+<tr>
 <td>GPI</td>
 <td><a href="http://www.gammapro.com/" data-linktype="external">Gamma Productions, Inc.</a></td>
 </tr>
@@ -1890,6 +1900,10 @@ High contrast					</span>
 <td><a href="http://www.houseind.com/" data-linktype="external">House Industries</a></td>
 </tr>
 <tr>
+<td>HoX</td>
+<td><a href="https://houseofx.com.br/" data-linktype="external">House of X</a></td>
+</tr>
+<tr>
 <td>HP</td>
 <td><a href="http://www.fonts.com/" data-linktype="external">Hewlett-Packard</a></td>
 </tr>
@@ -1920,6 +1934,10 @@ High contrast					</span>
 <tr>
 <td>HY</td>
 <td><a href="http://www.hanyang.co.kr/" data-linktype="external">HanYang Information & Communication</a></td>
+</tr>
+<tr>
+<td>HZ</td>
+<td><a href="https://zasepa.com/" data-linktype="external">Hubert Zasępa</a></td>
 </tr>
 </table>
 <h2 id="i">I</h2>
@@ -2251,6 +2269,10 @@ High contrast					</span>
 <td><a href="http://www.koval.by" data-linktype="external">Koval Type Foundry</a></td>
 </tr>
 <tr>
+<td>KP</td>
+<td><a href="https://www.kontrapunkt.com/" data-linktype="external">Kontrapunkt</a></td>
+</tr>
+<tr>
 <td>KrKo</td>
 <td><a href="http://www.kreativekorp.com" data-linktype="external">Kreative Software</a></td>
 </tr>
@@ -2503,6 +2525,10 @@ High contrast					</span>
 <tr>
 <td>MAPS</td>
 <td><a href="http://www.mapsymbs.com" data-linktype="external">Tom Mouat's Map Symbol Fonts</a></td>
+</tr>
+<tr>
+<td>MARK</td>
+<td><a href="https://markfromberg.com" data-linktype="external">Mark Frömberg</a></td>
 </tr>
 <tr>
 <td>MATE</td>
@@ -2982,6 +3008,10 @@ High contrast					</span>
 <td><a href="http://www.p22.com/" data-linktype="external">P22 Inc.</a></td>
 </tr>
 <tr>
+<td>PAAT</td>
+<td><a href="https://www.cloud9.fi/" data-linktype="external">Paavola Type</a></td>
+</tr>
+<tr>
 <td>PARA</td>
 <td><a href="http://www.paratype.com/" data-linktype="external">ParaType Inc.</a></td>
 </tr>
@@ -3272,6 +3302,10 @@ High contrast					</span>
 <td><a href="http://roxaboxen.us/" data-linktype="external">Roxaboxen</a></td>
 </tr>
 <tr>
+<td>RYHG</td>
+<td><a href="http://www.ryufont.com/" data-linktype="external">Yanghee Ryu</a></td>
+</tr>
+<tr>
 <td>RYOB</td>
 <td>Ryobi Limited</td>
 </tr>
@@ -3437,6 +3471,10 @@ High contrast					</span>
 <tr>
 <td>SOTY</td>
 <td><a href="https://so-type.com" data-linktype="external">So Type</a></td>
+</tr>
+<tr>
+<td>SPFO</td>
+<td><a href="https://sproets.nl/" data-linktype="external">SproetS</a></td>
 </tr>
 <tr>
 <td>SPIR</td>
@@ -4059,43 +4097,43 @@ High contrast					</span>
 
 						<!-- end recommended content page section -->
 
-						<!-- rating mobile section -->
+						<!-- page rating section -->
 								<div class="is-hidden-desktop has-border-top has-margin-top-large has-padding-top-small">
 									
-<div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
-	<div class="binary-rating">
-		<div class="binary-rating-buttons">
-			<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
-			<div>
-				<button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" data-bi-sat="1">
-					<span class="icon docon docon-like" aria-hidden="true"></span><span>Yes</span>
-				</button>
-				<button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-haspopup="true" aria-controls="rating-feedback">
-					<span class="icon docon docon-dislike" aria-hidden="true"></span><span>No</span>
-				</button>
-			</div>
-		</div>
-		<form class="feedback-verbatim-form is-hidden">
-			<div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
-				<label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
-				<textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
-			</div>
-			<div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
-				<button class="skip-rating button is-text is-link is-small" type="button">Skip</button>
-				<button disabled class="submit-rating button is-primary is-small" type="submit" data-bi-name="rating-verbatim">Submit</button>
-			</div>
-		</form>
-	</div>
-	<div class="thankyou-rating is-hidden">
-		<p>Thank you.</p>
-	</div>
+<div aria-live="polite" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+            <h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+            <div>
+                <button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="feedbackVerbatimForm">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="feedbackVerbatimForm">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="feedbackVerbatimForm">
+            <div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
+                <label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
+            </div>
+            <div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
+                <button class="skip-rating button is-text is-link is-small" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden">
+        <p>Thank you.</p>
+    </div>
 </div>								</div>
-						<!-- end rating mobile section -->
+						<!-- end page rating section -->
+
 
 						<!-- feedback section -->
-
-
-
 <section class="feedback-section" data-bi-name="feedback-section">
 
 	<h2 id="feedback">Feedback</h2>
@@ -4213,6 +4251,7 @@ This page					</button>
 		<li><a data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 		<li><a data-mscc-ic="false" href="https://aka.ms/sitefeedback" data-bi-name="feedback">Site Feedback</a></li>
 		<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2020</li>
     </ul>
 </footer>
 						</div>
@@ -4221,33 +4260,35 @@ This page					</button>
 					<div class="is-size-7 right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
 						<div id="affixed-right-container" class="doc-outline is-fixed is-vertically-scrollable">
 								
-<div data-bi-name="rating" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small">
-	<div class="binary-rating">
-		<div class="binary-rating-buttons">
-			<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
-			<div>
-				<button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" data-bi-sat="1">
-					<span class="icon docon docon-like" aria-hidden="true"></span><span>Yes</span>
-				</button>
-				<button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-haspopup="true" aria-controls="rating-feedback">
-					<span class="icon docon docon-dislike" aria-hidden="true"></span><span>No</span>
-				</button>
-			</div>
-		</div>
-		<form class="feedback-verbatim-form is-hidden">
-			<div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
-				<label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
-				<textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
-			</div>
-			<div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
-				<button class="skip-rating button is-text is-link is-small" type="button">Skip</button>
-				<button disabled class="submit-rating button is-primary is-small" type="submit" data-bi-name="rating-verbatim">Submit</button>
-			</div>
-		</form>
-	</div>
-	<div class="thankyou-rating is-hidden">
-		<p>Thank you.</p>
-	</div>
+<div aria-live="polite" class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
+    <div class="binary-rating">
+        <div class="binary-rating-buttons">
+            <h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+            <div>
+                <button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="feedbackVerbatimForm">
+                    <span aria-hidden="true" class="icon docon docon-like"></span>
+                    <span>Yes</span>
+                </button>
+                <button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="feedbackVerbatimForm">
+                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
+                    <span>No</span>
+                </button>
+            </div>
+        </div>
+        <form class="feedback-verbatim-form is-hidden" id="feedbackVerbatimForm">
+            <div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-8">
+                <label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
+            </div>
+            <div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
+                <button class="skip-rating button is-text is-link is-small" type="button">Skip</button>
+                <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="thankyou-rating is-hidden">
+        <p>Thank you.</p>
+    </div>
 </div>								<nav data-bi-name="recommendation-sidebar" hidden id="recommended-content-nav" role="navigation" aria-labelledby="recommended-content-nav-title">
 									<h3 id="recommended-content-nav-title">Related Articles</h3>
 								</nav>
@@ -4285,6 +4326,7 @@ This page					</button>
 		<li><a data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 		<li><a data-mscc-ic="false" href="https://aka.ms/sitefeedback" data-bi-name="feedback">Site Feedback</a></li>
 		<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2020</li>
     </ul>
 </footer>
 	</div>
