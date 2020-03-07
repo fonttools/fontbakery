@@ -2,6 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
+## 0.7.22 (2020-Mar-??)
+### documentation
+  - clarify that Xcode version can be 9 or later (issue #2784)
+
+
 ## 0.7.21 (2020-Mar-06)
 ### Note-worthy changes
   - The snippet for checking collections is just an example shell script and it is specific to the directory structure of the Google Fonts git repo. We've made this clearer by renaming the script to **snippets/fontbakery-check-gfonts-collection.sh** (issue #2740)
