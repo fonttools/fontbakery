@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.22 (2020-Mar-??)
+### Note-worthy changes
+  - Updated function to extract a font family name from a font filename. Code taken from gftools.util.google_fonts.FamilyName
+
 ### documentation
   - clarify that Xcode version can be 9 or later (issue #2784)
 

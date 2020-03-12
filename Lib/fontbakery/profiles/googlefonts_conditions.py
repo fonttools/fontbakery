@@ -1,4 +1,5 @@
 import os
+import re
 
 from fontbakery.callable import condition
 from fontbakery.constants import NameID
@@ -436,25 +437,19 @@ def github_gfonts_ttFont(ttFont, license):
 
 @condition
 def familyname_with_spaces(familyname):
-  FAMILY_WITH_SPACES_EXCEPTIONS = {'VT323': 'VT323',
-                                   'K2D': 'K2D',
-                                   'PressStart2P': 'Press Start 2P',
-                                   'ABeeZee': 'ABeeZee',
-                                   'IBMPlexMono': 'IBM Plex Mono',
-                                   'IBMPlexSans': 'IBM Plex Sans',
-                                   'IBMPlexSerif': 'IBM Plex Serif'}
-  if not familyname:
-    return None
-
-  if familyname in FAMILY_WITH_SPACES_EXCEPTIONS.keys():
-    return FAMILY_WITH_SPACES_EXCEPTIONS[familyname]
-
-  result = []
-  for c in familyname:
-    if c.isupper():
-      result.append(" ")
-    result.append(c)
-  result = ''.join(result).strip()
+  """Attempts to build family name from font name.
+  For example, HPSimplifiedSans => HP Simplified Sans.
+  Args:
+    familyname: The name of a font.
+  Returns:
+    The name of the family that should be in this font.
+  """
+  # SomethingUpper => Something Upper
+  familyname = re.sub('(.)([A-Z][a-z]+)', r'\1 \2', familyname)
+  # Font3 => Font 3
+  familyname = re.sub('([a-z])([0-9]+)', r'\1 \2', familyname)
+  # lookHere => look Here
+  familyname = re.sub('([a-z0-9])([A-Z])', r'\1 \2', familyname)
 
   def of_special_case(s):
     """Special case for family names such as
@@ -464,17 +459,15 @@ def familyname_with_spaces(familyname):
        See also: https://github.com/googlefonts/fontbakery/issues/1489
        "Failure to handle font family with 3 words in it"
     """
+    # TODO (M Foley) this case is insane. We should just fix the fonts
+    # and drop this function
     if s[-2:] == "of":
       return s[:-2] + " of"
     else:
       return s
 
-  result = " ".join(map(of_special_case, result.split(" ")))
-
-  if result[-3:] == "S C":
-    return result[:-3] + "SC"
-  else:
-    return result
+  familyname = " ".join(map(of_special_case, familyname.split(" ")))
+  return familyname
 
 
 @condition
