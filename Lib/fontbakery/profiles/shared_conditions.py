@@ -340,3 +340,8 @@ def is_cjk_font(ttFont):
 
   # default, return False if the above checks did not identify a CJK font
   return False
+
+
+@condition
+def typo_metrics_enabled(ttFont):
+  return ttFont['OS/2'].fsSelection & 0b10000000 > 0

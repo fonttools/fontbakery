@@ -141,6 +141,7 @@ FONT_FILE_CHECKS = [
   'com.google.fonts/check/unitsperem_strict',
   'com.google.fonts/check/contour_count',
   'com.google.fonts/check/vertical_metrics_regressions',
+  'com.google.fonts/check/cjk_vertical_metrics',
   'com.google.fonts/check/varfont_instance_coordinates',
   'com.google.fonts/check/varfont_instance_names',
   'com.google.fonts/check/varfont/consistent_axes',
@@ -4329,10 +4330,9 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
   family hosted on Google Fonts."""
   import math
   from .shared_conditions import (is_variable_font,
-                                  get_instance_axis_value)
+                                  get_instance_axis_value,
+                                  typo_metrics_enabled)
 
-  def typo_metrics_enabled(ttFont):
-    return ttFont['OS/2'].fsSelection & 0b10000000 > 0
 
   failed = False
   ttFonts = list(ttFonts)
@@ -4400,6 +4400,83 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
                     f" when it should be {expected_descender}")
   if not failed:
     yield PASS, "Vertical metrics have not regressed."
+
+
+@check(
+  id = 'com.google.fonts/check/cjk_vertical_metrics',
+  conditions = ['is_cjk_font',
+                'not remote_styles'],
+  rationale="""
+    CJK fonts have different vertical metrics when compared to Latin fonts. We follow the schema developed by dr Ken Lunde for Source Han Sans and the Noto CJK fonts.
+
+    Our documentation includes further information: https://github.com/googlefonts/gf-docs/tree/master/Spec#cjk-vertical-metrics
+  """
+)
+def com_google_fonts_check_cjk_vertical_metrics(ttFont):
+  """Check font follows the Google Fonts CJK vertical metric schema"""
+  from .shared_conditions import is_cjk_font, typo_metrics_enabled
+  font_upm = ttFont['head'].unitsPerEm
+
+  font_metrics = {
+    'OS/2.sTypoAscender': ttFont['OS/2'].sTypoAscender,
+    'OS/2.sTypoDescender': ttFont['OS/2'].sTypoDescender,
+    'OS/2.sTypoLineGap': ttFont['OS/2'].sTypoLineGap,
+    'hhea.ascent': ttFont['hhea'].ascent,
+    'hhea.descent': ttFont['hhea'].descent,
+    'hhea.lineGap': ttFont['hhea'].lineGap,
+    'OS/2.usWinAscent': ttFont['OS/2'].usWinAscent,
+    'OS/2.usWinDescent': ttFont['OS/2'].usWinDescent
+  }
+
+  expected_metrics = {
+    'OS/2.sTypoAscender': font_upm * 0.88,
+    'OS/2.sTypoDescender': font_upm * -0.12,
+    'OS/2.sTypoLineGap': 0,
+    'hhea.lineGap': 0,
+  }
+
+  failed, warn = False, False
+  # Check fsSelection bit 7 is not enabled
+  if typo_metrics_enabled(ttFont):
+    failed = True
+    yield FAIL, \
+          Message('bad-fselection-bit7',
+                  'OS/2 fsSelection bit 7 must be disabled')
+
+  # Check typo metrics and hhea lineGap match our expected values
+  for k in expected_metrics:
+    if font_metrics[k] != expected_metrics[k]:
+      failed = True
+      yield FAIL, \
+            Message(f'bad-{k}',
+                    f'{k} is "{font_metrics[k]}" it should be {expected_metrics[k]}')
+
+  # Check hhea and win values match
+  if font_metrics['hhea.ascent'] != font_metrics['OS/2.usWinAscent']:
+      failed = True
+      yield FAIL, \
+            Message('ascent-mismatch',
+                    'hhea.ascent must match OS/2.usWinAscent')
+
+  if abs(font_metrics['hhea.descent']) != font_metrics['OS/2.usWinDescent']:
+      failed = True
+      yield FAIL, \
+            Message('descent-mismatch',
+                    'hhea.descent must match absolute value of OS/2.usWinDescent')
+
+  # Check the sum of the hhea metrics is between 1.1-1.5x of the font's upm
+  hhea_sum = (font_metrics['hhea.ascent'] +
+              abs(font_metrics['hhea.descent']) +
+              font_metrics['hhea.lineGap']) / font_upm
+  if not failed and not 1.1 < hhea_sum <= 1.5:
+    warn = True
+    yield WARN, \
+          Message('bad-hhea-range',
+                  f"We recommend the absolute sum of the hhea metrics should be"
+                  f" between 1.1-1.4x of the font's upm. This font has {hhea_sum}x")
+
+  if not failed and not warn:
+    yield PASS, 'Vertical metrics are good'
 
 
 @check(

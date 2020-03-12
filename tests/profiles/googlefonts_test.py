@@ -78,6 +78,9 @@ montserrat_fonts = [
   TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")
 ]
 
+cjk_font = TEST_FILE("cjk/SourceHanSans-Regular.otf")
+
+
 @pytest.fixture
 def montserrat_ttFonts():
   return [TTFont(path) for path in montserrat_fonts]
@@ -85,7 +88,6 @@ def montserrat_ttFonts():
 @pytest.fixture
 def cabin_ttFonts():
   return [TTFont(path) for path in cabin_fonts]
-
 
 @pytest.fixture
 def vf_ttFont():
@@ -3413,6 +3415,64 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
   #
   #else:
   #  TODO: There should be a warning message here
+
+
+def test_check_cjk_vertical_metrics():
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_cjk_vertical_metrics as check
+
+  print("Test pass for Source Han Sans")
+  ttFont = TTFont(cjk_font)
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+
+  print("Test fail for font where OS/2 fsSelection bit 7 is enabled")
+  ttFont = TTFont(cjk_font)
+  ttFont['OS/2'].fsSelection |= (1 << 7)
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-fselection-bit7')
+
+  print("Test fail for font with bad OS/2.sTypoAscender")
+  ttFont = TTFont(cjk_font)
+  ttFont['OS/2'].sTypoAscender = float('inf')
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-OS/2.sTypoAscender')
+
+  print("Test fail for font with bad OS/2.sTypoDescender")
+  ttFont = TTFont(cjk_font)
+  ttFont['OS/2'].sTypoDescender = float('inf')
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-OS/2.sTypoDescender')
+
+  print("Test fail for font where linegaps have been set (OS/2 table)")
+  ttFont = TTFont(cjk_font)
+  ttFont['OS/2'].sTypoLineGap = float('inf')
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-OS/2.sTypoLineGap')
+
+  print("Test fail for font where linegaps have been set (hhea table)")
+  ttFont = TTFont(cjk_font)
+  ttFont['hhea'].lineGap = float('inf')
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-hhea.lineGap')
+
+  print("Test fail for a font where typo ascender != 0.88 * upm")
+  ttFont = TTFont(cjk_font)
+  ttFont['OS/2'].usWinAscent = float('inf')
+  assert_results_contain(check(ttFont),
+                         FAIL, 'ascent-mismatch')
+
+  print("Test fail for a font where typo descender != 0.12 * upm")
+  ttFont = TTFont(cjk_font)
+  ttFont['OS/2'].usWinDescent = -float('inf')
+  assert_results_contain(check(ttFont),
+                         FAIL, 'descent-mismatch')
+
+  print("Test warn if font hhea and win metrics are greater than 1.5 * upm")
+  ttFont = TTFont(cjk_font)
+  ttFont['OS/2'].usWinAscent = float('inf')
+  ttFont['hhea'].ascent = float('inf')
+  assert_results_contain(check(ttFont),
+                         WARN, 'bad-hhea-range')
 
 
 def test_check_varfont_instance_coordinates(vf_ttFont):
