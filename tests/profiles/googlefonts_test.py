@@ -78,6 +78,9 @@ montserrat_fonts = [
   TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")
 ]
 
+cjk_font = TEST_FILE("cjk/SourceHanSans-Regular.otf")
+
+
 @pytest.fixture
 def montserrat_ttFonts():
   return [TTFont(path) for path in montserrat_fonts]
@@ -91,6 +94,11 @@ def cabin_ttFonts():
 def vf_ttFont():
   path = TEST_FILE("varfont/OpenSans[wdth,wght].ttf")
   return TTFont(path)
+
+
+@pytest.fixture
+def cjk_ttFont():
+  return TTFont(cjk_font)
 
 
 def change_name_table_id(ttFont, nameID, newEntryString, platEncID=0):
@@ -3407,6 +3415,53 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
   #
   #else:
   #  TODO: There should be a warning message here
+
+
+def test_check_cjk_vertical_metrics(cjk_ttFont):
+  from copy import deepcopy as copy
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_cjk_vertical_metrics as check
+
+  print("Test pass for Source Han Sans")
+  status, message = list(check(cjk_ttFont))[-1]
+  assert status == PASS
+
+  print("Test fail for font when hhea metrics do not match win metrics")
+  cjk_ttFont2 = copy(cjk_ttFont)
+  cjk_ttFont2['hhea'].ascent = float('inf')
+  status, message = list(check(cjk_ttFont2))[-1]
+  assert status == FAIL and message.code == "hhea-win-mismatch"
+
+  print("Test fail for a font where typo ascender != 0.88 * upm")
+  cjk_ttFont3 = copy(cjk_ttFont)
+  cjk_ttFont3['OS/2'].sTypoAscender = float('inf')
+  status, message = list(check(cjk_ttFont3))[-1]
+  assert status == FAIL and message.code == "bad-value"
+
+  print("Test fail for a font where typo descender != 0.12 * upm")
+  cjk_ttFont4 = copy(cjk_ttFont)
+  cjk_ttFont4['OS/2'].sTypoDescender = -float('inf')
+  status, message = list(check(cjk_ttFont4))[-1]
+  assert status == FAIL and message.code == "bad-value"
+
+  print("Test fail for font where linegaps have been set")
+  cjk_ttFont5 = copy(cjk_ttFont)
+  cjk_ttFont5['OS/2'].sTypoLineGap = float('inf')
+  cjk_ttFont5['hhea'].lineGap = float('inf')
+  status, message = list(check(cjk_ttFont5))[-1]
+  assert status == FAIL and message.code == "bad-value"
+
+  print("Test warn if font hhea and win metrics are greater than 1.5 * upm")
+  cjk_ttFont6 = copy(cjk_ttFont)
+  cjk_ttFont6['OS/2'].usWinAscent = float('inf')
+  cjk_ttFont6['hhea'].ascent = float('inf')
+  status, message = list(check(cjk_ttFont6))[-1]
+  assert status == WARN and message.code == "bad-hhea-range"
+
+  print("Test fail for font where OS/2 fsSelection bit 7 is enabled")
+  cjk_ttFont7 = copy(cjk_ttFont)
+  cjk_ttFont7['OS/2'].fsSelection |= (1 << 7)
+  status, message = list(check(cjk_ttFont7))[-1]
+  assert status == FAIL and message.code == "bit-7"
 
 
 def test_check_varfont_instance_coordinates(vf_ttFont):
