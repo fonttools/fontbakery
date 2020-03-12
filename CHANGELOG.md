@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New checks
   - **[com.google.fonts/check/repo/fb_report]**: WARN when upstream repo has fb report files (issue #2888)
   - **[com.google.fonts/check/repo/zip_files]**: FAIL when upstream repo has ZIP files (issue #2903)
+  - **[[com_google_fonts_check_cjk_vertical_metrics]]**: Check cjk fonts follow our cjk metric schema
 
 ### Changes to existing checks
   - **[com.google.fonts/check/metadata/os2_weightclass]**: Check will now work correctly for variable fonts (issue #2683)

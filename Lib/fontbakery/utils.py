@@ -396,10 +396,15 @@ def assert_results_contain(check_results, expected_status, expected_msgcode=None
   order among other log messages.
   """
   found = False
-  for status, message in list(check_results):
+  check_results = list(check_results)
+  for status, message in check_results:
     if status == expected_status and message.code == expected_msgcode:
       found = True
       break
+  if not found:
+    print(f"Expected to find {expected_status}, [code: {expected_msgcode}]\n"
+          f"But did not find it in:\n"
+          f"{check_results}")
   assert(found)
 
 
