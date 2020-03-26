@@ -265,24 +265,61 @@ def familyname(font):
 
 
 @condition
-def ttfautohint_stats(font):
+def hinting_stats(font):
+  """
+  Return file size differences for a hinted font compared to an dehinted version of same file
+  """
   from ttfautohint import ttfautohint, libttfautohint
   from io import BytesIO
   from fontTools.ttLib import TTFont
+  from fontTools.subset import main as pyftsubset
   from fontbakery.profiles.shared_conditions import is_ttf
+  from fontbakery.profiles.shared_conditions import is_cff
+  from fontbakery.profiles.shared_conditions import is_cff2
 
-  if not is_ttf(TTFont(font)):
+  if is_ttf(TTFont(font)):
+    original_buffer = BytesIO()
+    TTFont(font).save(original_buffer)
+    dehinted_buffer = ttfautohint(in_buffer=original_buffer.getvalue(),
+                                  dehint=True)
+    dehinted_size = len(dehinted_buffer)
+    version = libttfautohint.version_string
+
+  elif is_cff(TTFont(font)) or is_cff2(TTFont(font)):
+    original_buffer = BytesIO()
+    TTFont(font).save(original_buffer)
+
+    ext = os.path.splitext(font)[1]
+    tmp = font.replace(ext, "-tmp-dehinted%s" % ext)
+    args = [font,
+            "--no-hinting",
+            "--glyphs=*",
+            "--ignore-missing-glyphs",
+            "--no-notdef-glyph",
+            "--no-recommended-glyphs",
+            "--no-layout-closure",
+            "--layout-features=*",
+            "--no-desubroutinize",
+            "--name-languages=*",
+            "--glyph-names",
+            "--no-prune-unicode-ranges",
+            "--output-file=%s" % tmp]
+    pyftsubset(args)
+
+    dehinted_size = os.stat(tmp).st_size
+    version = "" # TODO If there is a way, extract the psautohint version used?
+    os.remove(tmp)
+  
+  else:
     return None
 
-  original_buffer = BytesIO()
-  TTFont(font).save(original_buffer)
-  dehinted_buffer = ttfautohint(in_buffer=original_buffer.getvalue(),
-                                dehint=True)
   return {
-    "dehinted_size": len(dehinted_buffer),
+    "dehinted_size": dehinted_size,
     "hinted_size": os.stat(font).st_size,
-    "version": libttfautohint.version_string
+    "version": version
   }
+
+
 
 
 @condition
