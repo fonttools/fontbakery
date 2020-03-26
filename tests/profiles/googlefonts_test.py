@@ -855,11 +855,13 @@ def test_check_name_description_max_length():
 def test_check_hinting_impact():
   """ Show hinting filesize impact. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_hinting_impact as check,
-                                               ttfautohint_stats)
+                                               hinting_stats)
+  # TODO: test the CFF code-path
+
   font = TEST_FILE("mada/Mada-Regular.ttf")
 
   print('Test this check always emits an INFO result...')
-  status, message = list(check(TTFont(font), ttfautohint_stats(font)))[-1]
+  status, message = list(check(TTFont(font), hinting_stats(font)))[-1]
   assert status == INFO and message.code == "size-impact"
 
 
