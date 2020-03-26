@@ -10,7 +10,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - clarify that Xcode version can be 9 or later (issue #2784)
 
 ### Changes to existing checks
-  - **[[com.google.fonts/check/hinting_impact]]**: Add support for CFF hints (#2802)
+  - **[[com.google.fonts/check/hinting_impact]]**: Add support for CFF hints (issue #2802)
+  - **[[com.google.fonts/check/varfont_instance_names]]**: Add ExtraBlack 1000 weight support (issue #2803)
+  - **[[com.google.fonts/check/varfont_instance_coordinates]]**: Add ExtraBlack 1000 weight support (issue #2804)
 
 
 ## 0.7.21 (2020-Mar-06)
