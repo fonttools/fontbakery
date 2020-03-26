@@ -1136,16 +1136,15 @@ def com_google_fonts_check_name_description_max_length(ttFont):
 
 @check(
   id = 'com.google.fonts/check/hinting_impact',
-  conditions = ['is_ttf',
-                'ttfautohint_stats'],
+  conditions = ['hinting_stats'],
   rationale = """
-    This check is merely informative, displaying and useful comparison of filesizes after ttfautohint usage versus unhinted font files.
+    This check is merely informative, displaying and useful comparison of filesizes of hinted versus unhinted font files.
   """
 )
-def com_google_fonts_check_hinting_impact(font, ttfautohint_stats):
+def com_google_fonts_check_hinting_impact(font, hinting_stats):
   """Show hinting filesize impact."""
-  hinted = ttfautohint_stats["hinted_size"]
-  dehinted = ttfautohint_stats["dehinted_size"]
+  hinted = hinting_stats["hinted_size"]
+  dehinted = hinting_stats["dehinted_size"]
   increase = hinted - dehinted
   change = (float(hinted)/dehinted - 1) * 100
 
@@ -1165,12 +1164,12 @@ def com_google_fonts_check_hinting_impact(font, ttfautohint_stats):
         Message("size-impact",
                 f"Hinting filesize impact:\n"
                 f"\n"
-                f"|  | {font} |\n"
-                f"|:--- | ---:|\n"
-                f"| Dehinted Size | {dehinted_size} |\n"
-                f"| Hinted Size | {hinted_size} |\n"
-                f"| Increase | {increase} |\n"
-                f"| Change   | {change:.1f} % |\n")
+                f"\t|  | {font} |\n"
+                f"\t|:--- | ---:|\n"
+                f"\t| Dehinted Size | {dehinted_size} |\n"
+                f"\t| Hinted Size | {hinted_size} |\n"
+                f"\t| Increase | {increase} |\n"
+                f"\t| Change   | {change:.1f} % |\n")
 
 
 @check(
@@ -1252,7 +1251,7 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
     This check finds which version of ttfautohint was used, by inspecting name table entries and then finds which version of ttfautohint is currently installed in the system.
   """
 )
-def com_google_fonts_check_old_ttfautohint(ttFont, ttfautohint_stats):
+def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats):
   """Font has old ttfautohint applied?"""
   from fontbakery.utils import get_name_entry_strings
 
@@ -1268,7 +1267,7 @@ def com_google_fonts_check_old_ttfautohint(ttFont, ttfautohint_stats):
     used = list(map(int, used.split(".")))
     return installed > used
 
-  if not ttfautohint_stats:
+  if not hinting_stats:
     yield ERROR,\
           Message("not-available",
                   "ttfautohint is not available.")
