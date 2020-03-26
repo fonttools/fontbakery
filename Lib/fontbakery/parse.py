@@ -10,14 +10,15 @@ RIBBI_STYLES = ["Regular", "Italic", "Bold", "Bold Italic"]
 
 _WEIGHT_NAMES = {
     r"Th?i?n|wt100": "Thin",
-    r"Ext?r?a?Li?g?h?t|wt200": "ExtraLight", 
+    r"Ext?r?a?Li?g?h?t|wt200": "ExtraLight",
     r"Li?g?h?t|wt300": "Light",
-    r"Re?gu?l?a?r?|wt400": "Regular", 
-    r"Me?di?u?m?|wt500":"Medium", 
+    r"Re?gu?l?a?r?|wt400": "Regular",
+    r"Me?di?u?m?|wt500":"Medium",
     r"Se?m?i?Bo?l?d|wt600": "SemiBold",
-    r"Bo?l?d|wt700": "Bold", 
-    r"Ext?r?a?Bo?l?d|wt800": "ExtraBold", 
-    r"Bla?c?k|wt900": "Black", 
+    r"Bo?l?d|wt700": "Bold",
+    r"Ext?r?a?Bo?l?d|wt800": "ExtraBold",
+    r"Bla?c?k|wt900": "Black",
+    r"Ext?r?a?Bla?c?k|wt1000": "ExtraBlack"
 }
 _WIDTH_NAMES = {
     r"Ult?r?a?Co?n?d?e?n?s?e?d": "UltraCondensed",
@@ -43,6 +44,7 @@ _WEIGHT_VALUES = {
     "Bold": {"usWeightClass": 700, "fvar": 700.0},
     "ExtraBold": {"usWeightClass": 800, "fvar": 800.0},
     "Black": {"usWeightClass": 900, "fvar": 900.0},
+    "ExtraBlack": {"usWeightClass": 1000, "fvar": 1000.0},
 }
 _WIDTH_VALUES = {
     "UltraCondensed": {"usWidthClass": 1, "fvar": 50.0},
