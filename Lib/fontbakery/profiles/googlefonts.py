@@ -1263,6 +1263,11 @@ def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats):
         return results.group(1)
 
   def installed_version_is_newer(installed, used):
+    # development versions may include a git commit hash
+    # for now we will simply ignore it:
+    installed = installed.split("-")[0]
+    used = used.split("-")[0]
+
     installed = list(map(int, installed.split(".")))
     used = list(map(int, used.split(".")))
     return installed > used
@@ -1290,7 +1295,7 @@ def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats):
                   f" Such font version strings are currently:"
                   f" {version_strings}")
   else:
-    installed_ttfa = ttfautohint_stats["version"]
+    installed_ttfa = hinting_stats["version"]
     try:
       if installed_version_is_newer(installed_ttfa,
                                     ttfa_version):

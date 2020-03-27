@@ -2,12 +2,19 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.22 (2020-Mar-??)
+## 0.7.23 (2020-Apr-??)
+  - ...
+
+
+## 0.7.22 (2020-Mar-27)
 ### Note-worthy changes
   - Updated function to extract a font family name from a font filename. Code taken from gftools.util.google_fonts.FamilyName
 
 ### documentation
   - clarify that Xcode version can be 9 or later (issue #2784)
+
+### bugfixes
+  - Ignore git commit hash on ttfautohint version string (issue #2790)
 
 ### Changes to existing checks
   - **[[com.google.fonts/check/hinting_impact]]**: Add support for CFF hints (issue #2802)
