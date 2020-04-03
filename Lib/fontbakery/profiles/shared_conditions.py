@@ -201,6 +201,11 @@ def vmetrics(ttFonts):
 def is_variable_font(ttFont):
   return "fvar" in ttFont.keys()
 
+@condition
+def VFs(ttFonts):
+  """Returns a list of font files which are recognized as variable fonts"""
+  return [ttFont for ttFont in ttFonts
+          if is_variable_font(ttFont)]
 
 @condition
 def slnt_axis(ttFont):

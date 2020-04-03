@@ -141,6 +141,7 @@ FONT_FILE_CHECKS = [
   'com.google.fonts/check/vertical_metrics_regressions',
   'com.google.fonts/check/varfont_instance_coordinates',
   'com.google.fonts/check/varfont_instance_names',
+  'com.google.fonts/check/varfont/consistent_axes'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -3372,6 +3373,47 @@ def com_google_fonts_check_negative_advance_width(ttFont):
                     f' interpreted as a negative value ({advwidth}).')
   if not failed:
     yield PASS, "The x-coordinates of all glyphs look good."
+
+
+@check(
+  id = 'com.google.fonts/check/varfont/consistent_axes',
+  rationale = """
+    In order to facilitate the construction of intuitive and friendly user interfaces, all variable font files in a given family should have the same set of variation axes. Also, each axis must have a consistent setting of min/max value ranges accross all the files.
+  """,
+  conditions = ['VFs'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2810'
+  })
+def com_google_fonts_check_varfont_consistent_axes(VFs):
+  """Ensure that all variable font files have the same set of axes and axis ranges."""
+  ref_ranges = {}
+  for vf in VFs:
+    ref_ranges.update({k.axisTag: (k.minValue, k.maxValue)
+                       for k in vf['fvar'].axes})
+
+  passed = True
+  for vf in VFs:
+    for axis in ref_ranges:
+      if axis not in map(lambda x: x.axisTag, vf['fvar'].axes):
+        passed = False
+        yield FAIL, \
+              Message("missing-axis",
+                      f"{os.path.basename(vf.reader.file.name)}: lacks a '{axis}' variation axis.")
+
+  expected_ranges = {axis: {(vf['fvar'].axes[vf['fvar'].axes.index(axis)].minValue,
+                             vf['fvar'].axes[vf['fvar'].axes.index(axis)].maxValue) for vf in VFs}
+                     for axis in ref_ranges
+                     if axis in vf['fvar'].axes}
+
+  for axis, ranges in expected_ranges:
+    if len(ranges) > 1:
+      passed = False
+      yield FAIL, \
+            Message("inconsistent-axis-range",
+                    "Axis 'axis' has diverging ranges accross the family: {ranges}.")
+
+  if passed:
+    yield PASS, "All looks good!"
 
 
 @check(
