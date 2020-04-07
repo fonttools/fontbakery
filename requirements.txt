@@ -1,12 +1,12 @@
 --index-url https://pypi.python.org/simple/
-beautifulsoup4==4.8.1
+beautifulsoup4==4.9.0
 defcon==0.6.0
-font-v==0.7.1
-fontTools[ufo,lxml,unicode]==4.0.2
-lxml==4.4.1
+font-v==1.0.2
+fontTools[ufo,lxml,unicode]==4.7.0
+lxml==4.5.0
 opentype-sanitizer==8.0.0.post2
-protobuf==3.10.0
-requests==2.22.0
+protobuf==3.11.3
+requests==2.23.0
 ttfautohint-py==0.4.3
-ufolint==0.4.1
+ufolint==1.0.0
 -e .
