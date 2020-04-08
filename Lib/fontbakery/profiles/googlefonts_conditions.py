@@ -262,6 +262,9 @@ def familyname(font):
   filename_base = os.path.splitext(filename)[0]
   if '-' in filename_base:
     return filename_base.split('-')[0]
+  # Handle VFs e.g Inconsolata[wdth,wght] --> Inconsolata
+  if "[" in filename_base:
+    return filename_base.split("[")[0]
 
 
 @condition

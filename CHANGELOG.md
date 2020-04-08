@@ -6,6 +6,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
   - **[com.google.fonts/check/varfont/consistent_axes]**: Ensure that all variable font files have the same set of axes and axis ranges. (issue #2810)
 
+### bugfixes
+  - profiles.googlefonts_conditions.familyname now works on variable fonts.
 
 ## 0.7.22 (2020-Mar-27)
 ### Note-worthy changes
