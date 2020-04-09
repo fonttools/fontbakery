@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - profiles.googlefonts_conditions.familyname now works on variable fonts.
 
 ### documentation
+  - Documentation at ReadTheDocs should default to stable (last release on PyPI) instead of latest (development on master branch). (issue #2819)
   - Clearly mention the list of checks on the top of the documentation front-page. (issue #2814)
 
 
