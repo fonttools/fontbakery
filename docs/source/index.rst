@@ -7,6 +7,12 @@ Welcome to the Font Bakery Documentation!
 
 Font Bakery is command-line tool for checking the quality of font projects.  
 
+.. raw:: html
+
+    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; height: auto;">
+        <iframe src="https://www.youtube.com/embed/vFjQEkJv9BQ" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+    </div>
+
 The project is licensed under the `Apache v2.0 license <https://github.com/googlefonts/fontbakery/blob/master/LICENSE.txt>`_ and the source is available at https://github.com/googlefonts/fontbakery.
 
 .. toctree::
