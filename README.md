@@ -7,9 +7,9 @@
 
 Font Bakery is a command-line tool for checking the quality of font projects.
 
-For a quick overview, check out the [list of checks](https://font-bakery.readthedocs.io/en/latest/fontbakery/profiles/index.html) currently offered.
+For a quick overview, check out the [list of checks](https://font-bakery.readthedocs.io/en/stable/fontbakery/profiles/index.html) currently offered.
 
-And for a full introduction [check out our documentation at Read The Docs.](https://font-bakery.readthedocs.io/en/latest)
+And for a full introduction [check out our documentation at Read The Docs.](https://font-bakery.readthedocs.io/en/stable)
 
 Font Bakery has an active community of contributors from foundries around the world, including Adobe Fonts, Dalton Maag, Type Network, and Google Fonts. Please join our developer chat channel at https://gitter.im/fontbakery/Lobby
 
@@ -24,21 +24,21 @@ Font Bakery is available under the Apache 2.0 license.
 
 See the Font Bakery Installation Guide for your platform:
 
-- [GNU + Linux](https://font-bakery.readthedocs.io/en/latest/user/installation/install-gnu-linux.html)
-- [macOS](https://font-bakery.readthedocs.io/en/latest/user/installation/install-macos.html)
-- [Windows](https://font-bakery.readthedocs.io/en/latest/user/installation/install-windows.html)
+- [GNU + Linux](https://font-bakery.readthedocs.io/en/stable/user/installation/install-gnu-linux.html)
+- [macOS](https://font-bakery.readthedocs.io/en/stable/user/installation/install-macos.html)
+- [Windows](https://font-bakery.readthedocs.io/en/stable/user/installation/install-windows.html)
 
 ## Usage
 
-Font Bakery is primarily a Terminal app, learn more in the [Command Line Usage Guide](https://font-bakery.readthedocs.io/en/latest/user/USAGE.html).
+Font Bakery is primarily a Terminal app, learn more in the [Command Line Usage Guide](https://font-bakery.readthedocs.io/en/stable/user/USAGE.html).
 
-If you write little Python scripts in your workflow, you can easily [write custom checks](https://font-bakery.readthedocs.io/en/latest/developer/writing-profiles.html).
+If you write little Python scripts in your workflow, you can easily [write custom checks](https://font-bakery.readthedocs.io/en/stable/developer/writing-profiles.html).
 
 For full developer documentation, check out [font-bakery.readthedocs.io](https://font-bakery.readthedocs.io) (a hosted and compiled copy of contents in the `/docs` directory.)
 
 ## Contributing
 
-See the guide to [Getting Started as a Contributor](https://font-bakery.readthedocs.io/en/latest/developer/contrib-getting-started.html).
+See the guide to [Getting Started as a Contributor](https://font-bakery.readthedocs.io/en/stable/developer/contrib-getting-started.html).
 
 ## Web Dashboard
 
