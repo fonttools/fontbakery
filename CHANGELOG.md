@@ -2,12 +2,16 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.23 (2020-Apr-03)
+## 0.7.23 (2020-Apr-??)
 ### New Checks
   - **[com.google.fonts/check/varfont/consistent_axes]**: Ensure that all variable font files have the same set of axes and axis ranges. (issue #2810)
 
 ### bugfixes
   - profiles.googlefonts_conditions.familyname now works on variable fonts.
+
+### documentation
+  - Clearly mention the list of checks on the top of the documentation front-page. (issue #2814)
+
 
 ## 0.7.22 (2020-Mar-27)
 ### Note-worthy changes
