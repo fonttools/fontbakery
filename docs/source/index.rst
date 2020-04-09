@@ -7,6 +7,8 @@ Welcome to the Font Bakery Documentation!
 
 Font Bakery is command-line tool for checking the quality of font projects.  
 
+**For a quick overview, check out the `list of checks <https://font-bakery.readthedocs.io/en/stable/fontbakery/profiles/index.html>`_ currently offered.**
+
 .. raw:: html
 
     <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; height: auto;">
