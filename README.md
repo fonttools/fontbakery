@@ -3,7 +3,7 @@
 [![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg)](https://github.com/googlefonts/fontbakery/blob/master/LICENSE.txt)
 
-# [![Font Bakery](data/logo.png)](https://fontbakery.com)
+# [![Font Bakery](data/logo.png)](http://fontbakery.com)
 
 Font Bakery is a command-line tool for checking the quality of font projects.
 
