@@ -77,26 +77,45 @@ def test_check_valid_glyphnames():
   import io
   from fontbakery.profiles.universal import com_google_fonts_check_valid_glyphnames as check
 
+  # We start with a good font file:
   test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
   test_font = TTFont(test_font_path)
   status, _ = list(check(test_font))[-1]
   assert status == PASS
 
-  bad_name1 = "a" * 32
+  # There used to be a 31 char max-length limit.
+  # This was good:
+  test_font.glyphOrder[2] = "a" * 31
+  status, _ = list(check(test_font))[-1]
+  assert status == PASS
+
+  # And this was bad:
+  legacy_too_long = "a" * 32
+  test_font.glyphOrder[2] = legacy_too_long
+  status, msg = list(check(test_font))[-1]
+  assert status == WARN and msg.code == "legacy-long-names"
+  assert legacy_too_long in msg.message
+
+  # Nowadays, it seems most implementations can deal with
+  # up to 63 char glyph names:
+  good_name = "b" * 63
+  bad_name1 = "a" * 64
   bad_name2 = "3cents"
   bad_name3 = ".threecents"
-  good_name1 = "b" * 31
   test_font.glyphOrder[2] = bad_name1
   test_font.glyphOrder[3] = bad_name2
   test_font.glyphOrder[4] = bad_name3
-  test_font.glyphOrder[5] = good_name1
-  status, message = list(check(test_font))[-1]
-  assert status == FAIL and message.code == "found-invalid-names"
-  assert bad_name1 in message.message
-  assert bad_name2 in message.message
-  assert bad_name3 in message.message
-  assert good_name1 not in message.message
+  test_font.glyphOrder[5] = good_name
+  status, msg = list(check(test_font))[-1]
+  assert status == FAIL and msg.code == "found-invalid-names"
+  assert good_name not in msg.message
+  assert bad_name1 in msg.message
+  assert bad_name2 in msg.message
+  assert bad_name3 in msg.message
 
+  # TrueType fonts with a format 3.0 post table contain
+  # no glyph names, so the check must be SKIP'd in that case.
+  #
   # Upgrade to post format 3.0 and roundtrip data to update TTF object.
   test_font = TTFont(test_font_path)
   test_font["post"].formatType = 3.0

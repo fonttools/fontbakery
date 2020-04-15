@@ -554,10 +554,21 @@ def com_google_fonts_check_unwanted_tables(ttFont):
     'NOTE: The PostScript glyph name must be no longer than 31 characters, include only uppercase or lowercase English letters, European digits, the period or the underscore, i.e. from the set [A-Za-z0-9_.] and should start with a letter, except the special glyph name ".notdef" which starts with a period.'
 
     https://docs.microsoft.com/en-us/typography/opentype/spec/recom#post-table
-  """
+
+
+    In practice, though, particularly in modern environments, glyph names can be as long as 63 characters.
+    According to the "Adobe Glyph List Specification" available at:
+
+    https://github.com/adobe-type-tools/agl-specification
+  """,
+  misc_metadata = {
+    'requested': "https://github.com/googlefonts/fontbakery/issues/2832" # increase limit to 63 chars
+  }
 )
 def com_google_fonts_check_valid_glyphnames(ttFont):
   """Glyph names are all valid?"""
+  from fontbakery.utils import pretty_print_list
+
   if ttFont.sfntVersion == b'\x00\x01\x00\x00' and ttFont.get(
       "post") and ttFont["post"].formatType == 3.0:
     yield SKIP, ("TrueType fonts with a format 3.0 post table contain no"
@@ -565,32 +576,37 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
   else:
     import re
     bad_names = []
+    warn_names = []
     for _, glyphName in enumerate(ttFont.getGlyphOrder()):
       if glyphName in [".null", ".notdef", ".ttfautohint"]:
         # These 2 names are explicit exceptions
         # in the glyph naming rules
         continue
-      if not re.match(r'^(?![.0-9])[a-zA-Z._0-9]{1,31}$', glyphName):
+      if not re.match(r'^(?![.0-9])[a-zA-Z._0-9]{1,63}$', glyphName):
         bad_names.append(glyphName)
+      if len(glyphName) > 31 and len(glyphName) <= 63:
+        warn_names.append(glyphName)
 
     if len(bad_names) == 0:
-      yield PASS, "Glyph names are all valid."
+      if len(warn_names) == 0:
+        yield PASS, "Glyph names are all valid."
+      else:
+        yield WARN,\
+              Message('legacy-long-names',
+                      ("The following glyph names may be too"
+                       " long for some legacy systems which may"
+                       " expect a maximum 31-char length limit:\n"
+                       "{}").format(pretty_print_list(warn_names)))
     else:
-      from fontbakery.utils import pretty_print_list
-      yield FAIL, Message("found-invalid-names",
-                  ("The following glyph names do not comply"
-                   " with naming conventions: {}\n\n"
-                   " A glyph name may be up to 31 characters in length,"
-                   " must be entirely comprised of characters from"
-                   " the following set:"
-                   " A-Z a-z 0-9 .(period) _(underscore). and must not"
-                   " start with a digit or period."
-                   " There are a few exceptions"
-                   " such as the special character \".notdef\"."
-                   " The glyph names \"twocents\", \"a1\", and \"_\""
-                   " are all valid, while \"2cents\""
-                   " and \".twocents\" are not."
-                   "").format(pretty_print_list(bad_names)))
+      yield FAIL,\
+            Message('found-invalid-names',
+                    ("The following glyph names do not comply"
+                     " with naming conventions: {}\n\n"
+                     " such as the special character \".notdef\"."
+                     " The glyph names \"twocents\", \"a1\", and \"_\""
+                     " are all valid, while \"2cents\""
+                     " and \".twocents\" are not."
+                     "").format(pretty_print_list(bad_names)))
 
 
 @check(
