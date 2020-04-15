@@ -6,10 +6,13 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
   - **[com.google.fonts/check/varfont/consistent_axes]**: Ensure that all variable font files have the same set of axes and axis ranges. (issue #2810)
 
-### bugfixes
+### Changes to existing checks
+  - **[com.google.fonts/check/valid_glyphnames]**: Increase glyphname max-length to 63 chars. (issue #2832)
+
+### Bugfixes
   - profiles.googlefonts_conditions.familyname now works on variable fonts.
 
-### documentation
+### Documentation
   - Documentation at ReadTheDocs should default to stable (last release on PyPI) instead of latest (development on master branch). (issue #2819)
   - Clearly mention the list of checks on the top of the documentation front-page. (issue #2814)
 
@@ -18,10 +21,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Note-worthy changes
   - Updated function to extract a font family name from a font filename. Code taken from gftools.util.google_fonts.FamilyName
 
-### documentation
+### Documentation
   - clarify that Xcode version can be 9 or later (issue #2784)
 
-### bugfixes
+### Bugfixes
   - Ignore git commit hash on ttfautohint version string (issue #2790)
 
 ### Changes to existing checks
