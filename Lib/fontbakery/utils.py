@@ -31,6 +31,25 @@ def text_flow(content, width=80, indent=0, left_margin=0,
     words = line.split(" ")
     while words:
       this_line = " " * left_margin + words.pop(0)
+
+      if len(this_line) > width:
+        # let's see what we can do to make it fit
+        if "/" in this_line:
+          # here we feed-back chunks of a URL
+          # into words if it overflows the block
+          chunks = this_line.split('/')
+          new_line = chunks.pop(0)
+          while chunks:
+            if len(new_line) + 1 + len(chunks[0]) >= width: break
+            new_line += "/" + chunks.pop(0)
+          this_line = new_line
+          words.insert(0, "/" + "/".join(chunks))
+        else:
+          # not sure what else to do,
+          # so we'll simply cut the long word
+          words.insert(0, this_line[width:])
+          this_line = this_line[:width]
+
       while words and (len(this_line) + 1 + len(words[0]) < width or
                        len(words[0]) >= width):
         this_line += " " + words.pop(0)
