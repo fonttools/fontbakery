@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - profiles.googlefonts_conditions.familyname now works on variable fonts.
+  - Invoke ftxvalidator binary from path detected by shutil.which (issue #2791)
 
 ### Documentation
   - Documentation at ReadTheDocs should default to stable (last release on PyPI) instead of latest (development on master branch). (issue #2819)

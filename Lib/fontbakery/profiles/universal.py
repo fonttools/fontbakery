@@ -183,10 +183,10 @@ def com_google_fonts_check_family_single_directory(fonts):
 
 
 @condition
-def ftxvalidator_is_available():
+def ftxvalidator_cmd():
   """ Test if `ftxvalidator` is a command; i.e. an executable with a path."""
   import shutil
-  return shutil.which('ftxvalidator') is not None
+  return shutil.which('ftxvalidator')
 
 
 @check(
@@ -203,25 +203,25 @@ def ftxvalidator_is_available():
     'request': 'https://github.com/googlefonts/fontbakery/issues/2184'
   }
 )
-def com_google_fonts_check_ftxvalidator_is_available(ftxvalidator_is_available):
+def com_google_fonts_check_ftxvalidator_is_available(ftxvalidator_cmd):
   """Is the command `ftxvalidator` (Apple Font Tool Suite) available?"""
-  if ftxvalidator_is_available:
-    return PASS, "ftxvalidator is available."
+  if ftxvalidator_cmd:
+    yield PASS, f"ftxvalidator is available at {ftxvalidator_cmd}"
   else:
-    return WARN, "ftxvalidator is not available."
+    yield WARN, "Could not find ftxvalidator."
 
 
 @check(
   id = 'com.google.fonts/check/ftxvalidator',
-  conditions = ['ftxvalidator_is_available']
+  conditions = ['ftxvalidator_cmd']
 )
-def com_google_fonts_check_ftxvalidator(font):
+def com_google_fonts_check_ftxvalidator(font, ftxvalidator_cmd):
   """Checking with ftxvalidator."""
   import plistlib
   try:
     import subprocess
     ftx_cmd = [
-        "ftxvalidator",
+        ftxvalidator_cmd,
         "-t",
         "all",  # execute all checks
         font
@@ -235,7 +235,7 @@ def com_google_fonts_check_ftxvalidator(font):
       yield PASS, "ftxvalidator passed this file"
     else:
       ftx_cmd = [
-          "ftxvalidator",
+          ftxvalidator_cmd,
           "-T",  # Human-readable output
           "-r",  # Generate a full report
           "-t",
@@ -248,8 +248,6 @@ def com_google_fonts_check_ftxvalidator(font):
   except subprocess.CalledProcessError as e:
     yield ERROR, ("ftxvalidator returned an error code. Output follows:"
                  "\n\n{}\n").format(e.output.decode('utf-8'))
-  except OSError:
-    yield ERROR, "ftxvalidator is not available!"
 
 
 @check(
