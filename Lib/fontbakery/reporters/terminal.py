@@ -477,6 +477,28 @@ class TerminalReporter(TerminalProgress):
       if text:
         print(text)
 
+      print(f"    {self.theme['header']('Meaning of check results:')}\n"
+            f"\n"
+            f"    An {formatStatus(self.theme, 'ERROR')} is something"
+            f" wrong with FontBakery itself, possibly a bug.\n"
+            f"    A {formatStatus(self.theme, 'FAIL')} is a problem"
+            f" with the font that must be fixed.\n"
+            f"    A {formatStatus(self.theme, 'WARN')} is something"
+            f" that you should consider addressing.\n"
+            f"    An {formatStatus(self.theme, 'INFO')} result simply"
+            f" prints something useful. Typically stats.\n"
+            f"    A {formatStatus(self.theme, 'PASS')} means the font looks good"
+            f" for the given checking routine.\n"
+            f"    And a {formatStatus(self.theme, 'SKIP')} happens when the check"
+            f" does not apply to the given font.\n"
+            f"\n"
+            f"    If you get {formatStatus(self.theme, 'ERROR')}s,"
+            f" please help us improve the tool by reporting them at\n"
+            f"    {self.theme['url']('https://github.com/googlefonts/fontbakery/issues')}\n"
+            f"\n"
+            f"    (but other kinds of bug reports and/or\n"
+            f"     feature requests are also always welcome, of course!)\n")
+
     if status not in statuses:
       print('-'*8, status , '-'*8)
 
