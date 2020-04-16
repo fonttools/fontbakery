@@ -95,6 +95,8 @@ BRIGHT_CYAN = 96
 BRIGHT_WHITE = 97
 
 NO_COLORS_THEME = {
+                    "header": no_color,
+                       "url": no_color,
                   "check-id": no_color,
                "description": no_color,
            "rationale-title": no_color,
@@ -113,6 +115,8 @@ NO_COLORS_THEME = {
 }
 
 DARK_THEME = {                #     Foreground    Background
+                    "header": color(WHITE,        BLACK,        bold=True),
+                       "url": color(CYAN,         BLACK,        bold=True),
                   "check-id": color(CYAN,         BLACK,        bold=True),
                "description": color(MAGENTA,      BLACK),
            "rationale-title": color(BRIGHT_CYAN,  BRIGHT_BLACK, bold=True),
@@ -131,6 +135,8 @@ DARK_THEME = {                #     Foreground    Background
 }
 
 LIGHT_THEME = {               #     Foreground     Background
+                    "header": color(BLACK,         BRIGHT_WHITE,  bold=True),
+                       "url": color(CYAN,          BRIGHT_WHITE,  bold=True),
                   "check-id": color(MAGENTA,       BRIGHT_WHITE,  bold=True),
                "description": color(CYAN,          BRIGHT_WHITE),
            "rationale-title": color(MAGENTA,       BRIGHT_WHITE,  bold=True),
