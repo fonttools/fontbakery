@@ -304,16 +304,13 @@ def test_check_ftxvalidator_is_available():
   """ Is the command `ftxvalidator` (Apple Font Tool Suite) available? """
   from fontbakery.profiles.universal import com_google_fonts_check_ftxvalidator_is_available as check
 
-  # code-paths:
-  # - PASS, "ftxvalidator is available."
-  # - WARN, "ftxvalidator is not available."
-  status, output = check(True)
+  status, output = list(check("/usr/local/bin/ftxvalidator"))[-1]
   assert status == PASS
   assert "is available" in output
 
-  status, output = check(False)
+  status, output = list(check(None))[-1]
   assert status == WARN
-  assert "is not available" in output
+  assert "Could not find" in output
 
 
 def NOT_IMPLEMENTED_test_check_ftxvalidator():
