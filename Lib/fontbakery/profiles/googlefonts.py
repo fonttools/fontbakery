@@ -2496,7 +2496,7 @@ def com_google_fonts_check_unitsperem_strict(ttFont):
                   f" Variable Fonts)."
                   f" The acceptable values for unitsPerEm,"
                   f" though, are: {ACCEPTABLE}.")
-  elif upm_height != 2000:
+  elif upm_height < 2000:
     yield WARN,\
           Message("legacy-value",
                   f"Even though unitsPerEm ({upm_height}) in"
@@ -2506,7 +2506,7 @@ def com_google_fonts_check_unitsperem_strict(ttFont):
                   f" Variable Fonts by avoiding excessive"
                   f" rounding of coordinates on interpolations.")
   else:
-    yield PASS, "Font em size is good (unitsPerEm = 2000)."
+    yield PASS, f"Font em size is good (unitsPerEm = {upm_height})."
 
 
 @check(

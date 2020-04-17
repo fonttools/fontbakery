@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
   - **[com.google.fonts/check/valid_glyphnames]**: Increase glyphname max-length to 63 chars. (issue #2832)
+  - **[com.google.fonts/check/unitsperem_strict]:** Do not WARN for upem=2048 (issue #2827)
 
 ### Bugfixes
   - profiles.googlefonts_conditions.familyname now works on variable fonts.
