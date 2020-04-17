@@ -2146,9 +2146,7 @@ def test_check_unitsperem_strict():
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   ttFont = TTFont(fontfile)
 
-  PASS_VALUES = [2000] # The potential "New Standard" for Variable Fonts!
-
-  WARN_VALUES = [16, 32, 64, 128, 256, 512, 1024, 2048] # Good for better performance on legacy renderers
+  WARN_VALUES = [16, 32, 64, 128, 256, 512, 1024] # Good for better performance on legacy renderers
   WARN_VALUES.extend([500, 1000]) # or common typical values
 
   # and finally the bad ones, including:
@@ -2156,6 +2154,9 @@ def test_check_unitsperem_strict():
   FAIL_VALUES.extend([100, 2500]) # suboptimal (uncommon and not power of two)
   FAIL_VALUES.extend([4096, 8192, 16384]) # and valid ones suggested by the opentype spec,
                                           # but too large, causing undesireable filesize bloat.
+
+  PASS_VALUES = [2000, # The potential "New Standard" for Variable Fonts!
+                 2048] # A power of two but higher than 2000, so no need to warn about excessive rounding.
 
   for pass_value in PASS_VALUES:
     print (f"Test PASS with unitsPerEm = {pass_value}...")
