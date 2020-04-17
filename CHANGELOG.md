@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.23 (2020-Apr-??)
+## 0.7.24 (2020-Apr-??)
+  - ...
+
+
+## 0.7.23 (2020-Apr-17)
 ### Note-worthy changes
   - We now tell users on the text terminal what each of the check results mean. (issue #2823)
 
