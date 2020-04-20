@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.24 (2020-Apr-??)
-  - ...
+### Changes to existing checks
+  - **[com.google.fonts/check/whitespace_widths]]**: Provide instructions on how to fix the problem at Glyphs App source files (PR #2843)
 
 
 ## 0.7.23 (2020-Apr-17)
