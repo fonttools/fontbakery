@@ -12,7 +12,7 @@ profile_imports = [('.shared_conditions', ('missing_whitespace_chars',))]
   conditions = ['not missing_whitespace_chars']
 )
 def com_google_fonts_check_whitespace_widths(ttFont):
-  """Whitespace and non-breaking space have the same width?"""
+  """Space and non-breaking space have the same width?"""
   from fontbakery.utils import get_glyph_name
 
   space_name = get_glyph_name(ttFont, 0x0020)
@@ -22,13 +22,17 @@ def com_google_fonts_check_whitespace_widths(ttFont):
   nbsp_width = ttFont['hmtx'][nbsp_name][0]
 
   if space_width > 0 and space_width == nbsp_width:
-    yield PASS, "Whitespace and non-breaking space have the same width."
+    yield PASS, "Space and non-breaking space have the same width."
   else:
     yield FAIL,\
           Message("different-widths",
-                  f"Whitespace and non-breaking space have differing width:"
-                  f" Whitespace ({space_name})"
+                  f"Space and non-breaking space have differing width:"
+                  f" The space glyph named {space_name}"
                   f" is {space_width} font units wide,"
-                  f" non-breaking space ({nbsp_name})"
-                  f" is {nbsp_width} font units wide."
-                  f" Both should be positive and the same.")
+                  f" non-breaking space named ({nbsp_name})"
+                  f" is {nbsp_width} font units wide, and"
+                  f" both should be positive and the same."
+                  f" GlyphsApp has \"Sidebearing arithmetic\""
+                  f" (https://glyphsapp.com/tutorials/spacing)"
+                  f" which allows you to set the non-breaking"
+                  f" space width to always equal the space width.")
