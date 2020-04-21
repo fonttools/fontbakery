@@ -2,7 +2,14 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.24 (2020-Apr-??)
+## 0.7.25 (2020-May-??)
+  - ...
+
+
+## 0.7.24 (2020-Apr-21)
+### Note-worthy changes
+  - Fixed rendering of markdown on our read-the-docs documentation (#2819)
+
 ### Changes to existing checks
   - **[com.google.fonts/check/whitespace_widths]]**: Provide instructions on how to fix the problem at Glyphs App source files (PR #2843)
 
