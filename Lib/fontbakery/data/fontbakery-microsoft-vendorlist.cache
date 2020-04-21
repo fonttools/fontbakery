@@ -71,7 +71,7 @@
 <meta name="description" content="Vendors who have registered a unique &#39;Vendor ID&#39; with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/c0e5fc560d610d42af588b0eca606a25c5a8c6d6/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/973354aac5642f254daa278d9049da6b81bb362a/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
@@ -85,18 +85,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-04-16 05:56 PM" />
+<meta name="updated_at" content="2020-04-20 10:15 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3113" />
+<meta name="word_count" content="3120" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/3cd4a9d2.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/44250784.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/672b4bb0.conceptual.css ">
 
@@ -147,7 +147,7 @@
 	</script>
 
 	<script src="/static/third-party/jquery/3.3.1/jquery.min.js" integrity="sha384-Q4GEli30r5Awgb/ITt925nE8buHKjVWM/x3DX8t5JwRLT9P/C2r7u7XzNwvpTTGw" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/dfc8719c.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a683a268.index-docs.js"></script>
 
 </head>
 
@@ -1825,6 +1825,10 @@
 <td><a href="http://www.hoboart.nl" data-linktype="external">HoboArt</a></td>
 </tr>
 <tr>
+<td>HACO</td>
+<td><a href="https://www.hacollective.com/" data-linktype="external">HACOLLECTIVE</a></td>
+</tr>
+<tr>
 <td>HAD</td>
 <td><a href="http://www.hoffmann-angelic.com" data-linktype="external">Hoffmann Angelic Design</a></td>
 </tr>
@@ -2815,6 +2819,10 @@
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>N&G</td>
+<td>Nikish</td>
+</tr>
+<tr>
 <td>NaN</td>
 <td><a href="http://www.nan.xyz/" data-linktype="external">NaN</a></td>
 </tr>
@@ -2968,6 +2976,10 @@
 <tr>
 <td>OKAY</td>
 <td><a href="http://www.okaytype.com" data-linktype="external">Okay Type</a></td>
+</tr>
+<tr>
+<td>OMAR</td>
+<td><a href="http://www.omar-type.com/" data-linktype="external">omar-type foundry</a></td>
 </tr>
 <tr>
 <td>OMNI</td>
@@ -3838,7 +3850,7 @@
 </tr>
 <tr>
 <td>TYPO</td>
-<td><a href="http://www.typodermic.com/" data-linktype="external">Typodermic</a></td>
+<td><a href="https://typodermicfonts.com/" data-linktype="external">Typodermic</a></td>
 </tr>
 <tr>
 <td>TYPR</td>
