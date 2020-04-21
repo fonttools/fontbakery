@@ -2,7 +2,7 @@
 beautifulsoup4==4.9.0
 defcon==0.6.0
 font-v==1.0.2
-fontTools[ufo,lxml,unicode]==4.7.0
+fontTools[ufo,lxml,unicode]==4.8.1
 lxml==4.5.0
 opentype-sanitizer==8.0.0.post2
 protobuf==3.11.3
