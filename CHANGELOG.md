@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
   - **[com.google.fonts/check/unitsperem_strict]**: update requirements on upm values; 2000 is a minimum for VF because lower than that creates less smooth interpolation; and larger than 2048 causes a filesize increase. (issue #2827)
 
+### Bug Fixes
+  - Family names with more than a single word were not being properly detected when querying GFonts API (issue #2848)
+
 
 ## 0.7.24 (2020-Apr-21)
 ### Note-worthy changes

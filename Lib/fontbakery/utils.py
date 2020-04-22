@@ -77,6 +77,22 @@ def unindent_rationale(rationale, checkid=None):
   return content
 
 
+def split_camel_case(camelcase):
+  result = []
+  word = ""
+  for char in camelcase:
+    if char.isupper():
+      if word != "":
+        result.append(word)
+      word = char
+    else:
+      word += char
+
+  if word != "":
+    result.append(word)
+  return " ".join(result)
+
+
 def suffix(font):
   filename = os.path.basename(font)
   basename = os.path.splitext(filename)[0]

@@ -1049,24 +1049,47 @@ def test_check_name_ascii_only_entries():
   assert status == PASS
 
 
+def test_split_camel_case_condition():
+  from fontbakery.utils import split_camel_case
+  assert split_camel_case("Lobster") == "Lobster"
+  assert split_camel_case("LibreCaslonText") == "Libre Caslon Text"
+
+
 def test_check_metadata_listed_on_gfonts():
   """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
-  from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_listed_on_gfonts as check,
-                                               listed_on_gfonts_api,
-                                               family_metadata)
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_metadata_listed_on_gfonts as check
+  from fontbakery.profiles.googlefonts_conditions import (familyname,
+                                                          listed_on_gfonts_api,
+                                                          family_metadata)
 
-  print ("Test WARN with a family that is not listed on Google Fonts...")
+  filename = "familysans/FamilySans-Regular.ttf"
+  print (f"Test WARN with '{filename}', a family that's not listed on GFonts...")
   # Our reference FamilySans family is a just a generic example
   # and thus is not really hosted (nor will ever be hosted) at Google Fonts servers:
-  listed = listed_on_gfonts_api("Family Sans")
+  listed = listed_on_gfonts_api(familyname(filename))
   # For that reason, we expect to get a WARN in this case:
   status, message = list(check(listed))[-1]
   assert status == WARN and message.code == "not-found"
 
-  print ("Test PASS with a family that is available...")
+  filename = "merryweather/Merriweather-Regular.ttf"
+  print (f"Test PASS with '{filename}', a family that is available...")
   # Our reference Merriweather family is available on the Google Fonts collection:
-  listed = listed_on_gfonts_api("Merriweather")
+  listed = listed_on_gfonts_api(familyname(filename))
   # So it must PASS:
+  status, message = list(check(listed))[-1]
+  assert status == PASS
+
+  filename = "abeezee/ABeeZee-Regular.ttf"
+  print (f"Test PASS with '{filename}', available and with a camel-cased name...")
+  # This is to ensure the code handles well camel-cased familynames.
+  listed = listed_on_gfonts_api(familyname(filename))
+  status, message = list(check(listed))[-1]
+  assert status == PASS
+
+  filename = "librecaslontext/LibreCaslonText[wght].ttf"
+  print (f"Test PASS with '{filename}', available and with a space-separated name...")
+  # And the check should also properly handle space-separated multi-word familynames.
+  listed = listed_on_gfonts_api(familyname(filename))
   status, message = list(check(listed))[-1]
   assert status == PASS
 
@@ -2794,7 +2817,7 @@ def test_check_name_copyright_length():
 def test_check_fontdata_namecheck():
   """ Familyname is unique according to namecheck.fontdata.com """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_fontdata_namecheck as check,
-                                                     familyname)
+                                               familyname)
 
   print('Test INFO with an already used name...')
   # We dont FAIL because this is meant as a merely informative check
