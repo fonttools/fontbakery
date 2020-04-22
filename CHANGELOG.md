@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.25 (2020-May-??)
-  - ...
+### Changes to existing checks
+  - **[com.google.fonts/check/unitsperem_strict]**: update requirements on upm values; 2000 is a minimum for VF because lower than that creates less smooth interpolation; and larger than 2048 causes a filesize increase. (issue #2827)
 
 
 ## 0.7.24 (2020-Apr-21)
