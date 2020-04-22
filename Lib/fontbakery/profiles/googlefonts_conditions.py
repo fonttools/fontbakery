@@ -263,8 +263,10 @@ def familyname(font):
   if '-' in filename_base:
     return filename_base.split('-')[0]
   # Handle VFs e.g Inconsolata[wdth,wght] --> Inconsolata
-  if "[" in filename_base:
+  elif "[" in filename_base:
     return filename_base.split("[")[0]
+  else:
+    return filename_base
 
 
 @condition
@@ -320,18 +322,26 @@ def hinting_stats(font):
   }
 
 
-
-
 @condition
 def listed_on_gfonts_api(familyname):
+  from fontbakery.utils import split_camel_case
   if not familyname:
     return False
 
-  import requests
-  url = ('http://fonts.googleapis.com'
-         '/css?family={}').format(familyname.replace(' ', '+'))
-  r = requests.get(url)
-  return r.status_code == 200
+  def query_gfonts(fname):
+    import requests
+    queryname = fname.replace(' ', '+')
+    url = ('http://fonts.googleapis.com'
+         '/css?family={}').format(queryname)
+    r = requests.get(url)
+    return r.status_code == 200
+
+  if query_gfonts(familyname): return True
+
+  # else...
+  # Some families such as "Libre Calson Text" have camelcased filenames ("LibreCalsonText-Regular.ttf")
+  # and require us to split in order to properly form a good query URL:
+  return query_gfonts(split_camel_case(familyname))
 
 
 @condition
