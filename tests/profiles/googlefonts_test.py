@@ -2146,14 +2146,19 @@ def test_check_unitsperem_strict():
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   ttFont = TTFont(fontfile)
 
-  WARN_VALUES = [16, 32, 64, 128, 256, 512, 1024] # Good for better performance on legacy renderers
-  WARN_VALUES.extend([500, 1000]) # or common typical values
+  WARN_LEGACY_VALUES = [16, 32, 64, 128, 256, 512, 1024] # Good for better performance on legacy renderers
+  WARN_LEGACY_VALUES.extend([500, 1000]) # or common typical values
+
+  WARN_LARGE_VALUES = [2500, 4000, 4096] # uncommon and large,
+                                         # but we've seen legitimate cases such as the
+                                         # Big Shoulders Family which uses 4000 since it needs more details.
 
   # and finally the bad ones, including:
   FAIL_VALUES = [0, 1, 2, 4, 8, 15, 16385] # simply invalid
-  FAIL_VALUES.extend([100, 2500]) # suboptimal (uncommon and not power of two)
-  FAIL_VALUES.extend([4096, 8192, 16384]) # and valid ones suggested by the opentype spec,
-                                          # but too large, causing undesireable filesize bloat.
+  FAIL_VALUES.extend([100, 1500, 5000]) # suboptimal (uncommon and not power of two)
+  FAIL_VALUES.extend([8192, 16384]) # and valid ones suggested by the opentype spec,
+                                    # but too large, causing undesireable filesize bloat.
+
 
   PASS_VALUES = [2000, # The potential "New Standard" for Variable Fonts!
                  2048] # A power of two but higher than 2000, so no need to warn about excessive rounding.
@@ -2164,14 +2169,20 @@ def test_check_unitsperem_strict():
     status, message = list(check(ttFont))[-1]
     assert status == PASS
 
-  for warn_value in WARN_VALUES:
-    print (f"Test WARN with unitsPerEm = {warn_value}...")
+  for warn_value in WARN_LEGACY_VALUES:
+    print (f"Test WARN 'legacy-value' with unitsPerEm = {warn_value}...")
     ttFont["head"].unitsPerEm = warn_value
     status, message = list(check(ttFont))[-1]
     assert status == WARN and message.code == "legacy-value"
 
+  for warn_value in WARN_LARGE_VALUES:
+    print (f"Test WARN 'large-value' with unitsPerEm = {warn_value}...")
+    ttFont["head"].unitsPerEm = warn_value
+    status, message = list(check(ttFont))[-1]
+    assert status == WARN and message.code == "large-value"
+
   for fail_value in FAIL_VALUES:
-    print (f"Test FAIL with unitsPerEm = {fail_value}...")
+    print (f"Test FAIL 'bad-value' with unitsPerEm = {fail_value}...")
     ttFont["head"].unitsPerEm = fail_value
     status, message = list(check(ttFont))[-1]
     assert status == FAIL and message.code == "bad-value"

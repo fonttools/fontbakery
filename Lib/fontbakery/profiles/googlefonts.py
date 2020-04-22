@@ -2487,15 +2487,22 @@ def com_google_fonts_check_unitsperem_strict(ttFont):
   upm_height = ttFont["head"].unitsPerEm
   ACCEPTABLE = [16, 32, 64, 128, 256, 500,
                 512, 1000, 1024, 2000, 2048]
-  if upm_height not in ACCEPTABLE:
+  if upm_height > 2048 and upm_height <= 4096:
+    yield WARN,\
+          Message("large-value",
+                  f"Font em size (unitsPerEm) is {upm_height}"
+                  f" which may be too large (causing filesize bloat),"
+                  f" unless you are sure that the detail level"
+                  f" in this font requires that much precision.")
+  elif upm_height not in ACCEPTABLE:
     yield FAIL,\
           Message("bad-value",
                   f"Font em size (unitsPerEm) is {upm_height}."
                   f" If possible, please consider using 1000"
                   f" or even 2000 (which is ideal for"
                   f" Variable Fonts)."
-                  f" The acceptable values for unitsPerEm,"
-                  f" though, are: {ACCEPTABLE}.")
+                  f" Good values for unitsPerEm,"
+                  f" though, are typically these: {ACCEPTABLE}.")
   elif upm_height < 2000:
     yield WARN,\
           Message("legacy-value",
