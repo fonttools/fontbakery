@@ -379,7 +379,7 @@ def test_check_whitespace_glyphs():
 
   missing = missing_whitespace_chars(ttFont)
   status, message = list(check(ttFont, missing))[-1]
-  assert status == FAIL and message.code == "missing-whitespace-glyphs"
+  assert status == FAIL and message.code == "missing-whitespace-glyph-0x00A0"
 
   # restore original Mada Regular font:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -387,12 +387,12 @@ def test_check_whitespace_glyphs():
   # And finally remove the space character (0x0020) to get another FAIL:
   print ("Test FAIL with a font lacking a space (0x0020)...")
   for table in ttFont['cmap'].tables:
-    if 0x00A0 in table.cmap:
-      del table.cmap[0x00A0]
+    if 0x0020 in table.cmap:
+      del table.cmap[0x0020]
 
   missing = missing_whitespace_chars(ttFont)
   status, message = list(check(ttFont, missing))[-1]
-  assert status == FAIL and message.code == "missing-whitespace-glyphs"
+  assert status == FAIL and message.code == "missing-whitespace-glyph-0x0020"
 
 
 def test_check_whitespace_glyphnames():

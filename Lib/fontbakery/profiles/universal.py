@@ -371,12 +371,13 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
 )
 def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
   """Font contains glyphs for whitespace characters?"""
-  if missing_whitespace_chars != []:
-    yield FAIL, Message("missing-whitespace-glyphs",
-                    ("Whitespace glyphs missing for"
-                     " the following codepoints:"
-                     " {}.").format(", ".join(missing_whitespace_chars)))
-  else:
+  failed = False
+  for wsc in missing_whitespace_chars:
+    failed = True
+    yield FAIL, Message(f"missing-whitespace-glyph-{wsc}",
+                        (f"Whitespace glyph missing for codepoint {wsc}."))
+
+  if not failed:
     yield PASS, "Font contains glyphs for whitespace characters."
 
 
