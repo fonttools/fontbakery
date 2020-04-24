@@ -122,9 +122,11 @@ com_google_fonts_check_dsig_adobefonts = profile.check_log_override(
     ,)
 )
 
-com_google_fonts_check_whitespace_glyphs_adobefonts = profile.check_log_override(
-    'com.google.fonts/check/whitespace_glyphs'
-  , overrides = (('missing-whitespace-glyphs', WARN, None),)
+com_google_fonts_check_whitespace_glyph_nbsp = profile.check_log_override(
+    'com.google.fonts/check/whitespace_glyphs',
+    reason='For Adobe, this is not as severe '\
+           + 'as assessed in the original check for 0x00A0.',
+    overrides = (('missing-whitespace-glyph-0x00A0', WARN, None),)
 )
 
 com_google_fonts_check_valid_glyphnames_adobefonts = profile.check_log_override(

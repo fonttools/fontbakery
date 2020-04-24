@@ -1,7 +1,7 @@
 import os
 
 from fontTools.ttLib import TTFont
-from fontbakery.checkrunner import (PASS, FAIL)
+from fontbakery.checkrunner import (PASS, WARN, FAIL)
 from fontbakery.utils import TEST_FILE
 
 
@@ -69,3 +69,25 @@ def test_check_find_empty_letters():
     status, message = list(check(test_font))[-1]
     assert status == FAIL
     assert message == expected_message
+
+
+def test_check_missing_whitespace():
+    """
+    Check that overridden test for nbsp yields WARN rather than FAIL.
+    """
+    from fontbakery.profiles.adobefonts import \
+        com_google_fonts_check_whitespace_glyph_nbsp as check
+    from fontbakery.profiles.shared_conditions import missing_whitespace_chars
+
+    font_path = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
+    test_font = TTFont(font_path)
+    missing = missing_whitespace_chars(test_font)
+    status, message = list(check(test_font, missing))[-1]
+    assert status == PASS
+
+    # remove U+00A0, status should be WARN (standard check would be FAIL)
+    for subtable in test_font['cmap'].tables:
+        subtable.cmap.pop(0x00A0, None)
+    missing = missing_whitespace_chars(test_font)
+    status, message = list(check(test_font, missing))[-1]
+    assert status == WARN
