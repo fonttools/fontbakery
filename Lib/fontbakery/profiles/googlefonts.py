@@ -4114,6 +4114,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
 @check(
   id = 'com.google.fonts/check/repo/vf_has_static_fonts',
   conditions = ['family_directory',
+                'gfonts_repo_structure',
                 'is_variable_font'],
   rationale="""
     Variable font family directories kept in the google/fonts git repo must include a static/ subdir containing static fonts.
