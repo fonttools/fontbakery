@@ -965,7 +965,10 @@ def com_google_fonts_check_name_license(ttFont, license):
                       f' Value was: "{value}"'
                       f' Must be changed to "{placeholder}"')
   if http_warn:
-    yield WARN, f"For now we're still accepting http URLs, but you should consider using https instead.\n"
+    yield WARN,\
+          Message("http",
+                  "For now we're still accepting http URLs,"
+                  " but you should consider using https instead.\n")
 
   if not entry_found:
     yield FAIL,\
@@ -1071,7 +1074,10 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                           f" (LICENSE URL) has '{string}'."
                           f" Expected: '{expected}'")
     if http_warn:
-      yield WARN, f"For now we're still accepting http URLs, but you should consider using https instead.\n"
+      yield WARN,\
+            Message("http",
+                    "For now we're still accepting http URLs,"
+                    " but you should consider using https instead.\n")
 
     if not found_good_entry:
       yield FAIL,\

@@ -788,7 +788,7 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
       yield FAIL, (f"{k} is not the same across the family:\n"
                    f"{s}")
   else:
-    yield PASS, f"Vertical metrics are the same across the family."
+    yield PASS, "Vertical metrics are the same across the family."
 
 
 @check(
@@ -857,7 +857,7 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
       yield WARN, (f"{k} is not the same across the super-family:\n"
                    f"{s}")
   else:
-    yield PASS, f"Vertical metrics are the same across the super-family."
+    yield PASS, "Vertical metrics are the same across the super-family."
 
 
 profile.auto_register(globals())

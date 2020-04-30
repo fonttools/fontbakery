@@ -170,10 +170,10 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
       failed = True
       yield FAIL,\
             Message("bad-panose-proportion",
-                    f"On non-monospaced fonts,"
-                    f" the OS/2.panose.bProportion value can be set to"
-                    f" any value except 9 (proportion: monospaced)"
-                    f" which is the bad value we got in this font.")
+                    "On non-monospaced fonts,"
+                    " the OS/2.panose.bProportion value can be set to"
+                    " any value except 9 (proportion: monospaced)"
+                    " which is the bad value we got in this font.")
     if not failed:
       yield PASS,\
             Message("good",
