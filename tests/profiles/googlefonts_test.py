@@ -805,6 +805,9 @@ def test_check_name_license(mada_ttFonts):
     assert_results_contain(check(ttFont, wrong_license),
                            FAIL, 'missing')
 
+  # TODO:
+  # WARN, "http" / "http-in-description"
+
 
 def NOT_IMPLEMENTED_test_check_name_license_url():
   """ License URL matches License text on name table? """
@@ -816,6 +819,8 @@ def NOT_IMPLEMENTED_test_check_name_license_url():
   # - FAIL, code="licensing-inconsistency"
   # - FAIL, code="no-license-found"
   # - FAIL, code="bad-entries"
+  # - WARN, code="http-in-description"
+  # - WARN, code="http"
   # - PASS
 
 
