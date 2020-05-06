@@ -174,11 +174,12 @@ def style_parse(ttFont):
             if instance.coordinates == dflt_instance_coords:
                 name = ttFont['name'].getName(instance.subfamilyNameID, 3, 1, 1033).toUnicode()
                 return _style_parse(name)
-    filename = ttFont.reader.file.name
+    import os
+    filename = os.path.basename(ttFont.reader.file.name)
     if len(filename.split("-")) != 2:
         style = "Regular"
     else:
-        style = filename.split("-")[1].replace(".ttf", "")
+        style = filename.split("-")[1].split(".")[0]
     return _style_parse(style)
 
 

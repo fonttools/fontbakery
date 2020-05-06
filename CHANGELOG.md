@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bug Fixes
   - Family names with more than a single word were not being properly detected when querying GFonts API (issue #2848)
+  - fix style_parse handling of file paths containing a "-" char. (issue #2867)
 
 
 ## 0.7.24 (2020-Apr-21)
