@@ -7,6 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **com.google.fonts/check/vendor_id**
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/vendor_id]**: improve wording of warning messages (issue #2855)
   - **[com.google.fonts/check/repo/vf_has_static_fonts]**: only run this check if the project follows the Google Fonts repo structure layout. (#2853)
   - **[com.google.fonts/check/unitsperem_strict]**: update requirements on upm values; 2000 is a minimum for VF because lower than that creates less smooth interpolation; and larger than 2048 causes a filesize increase. (issue #2827)
   - **[com.google.fonts/check/whitespace_glyphs]**: yield one unique message (and `message.code`) per missing whitespace case to enable selective overrides based on individual message codes

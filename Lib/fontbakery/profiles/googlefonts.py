@@ -750,9 +750,10 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
   """Checking OS/2 achVendID."""
 
   SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
-    "You should set it to your own 4 character code,"
-    " and register that code with Microsoft at"
-    " https://www.microsoft.com/typography/links/vendorlist.aspx")
+    "If you registered it recently, then it's safe to ignore this warning message."
+    " Otherwise, you should set it to your own unique 4 character code,"
+    " and register it with Microsoft at"
+    " https://www.microsoft.com/typography/links/vendorlist.aspx\n")
 
   vid = ttFont['OS/2'].achVendID
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
@@ -769,7 +770,7 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
   elif vid not in registered_vendor_ids.keys():
     yield WARN,\
           Message("unknown",
-                  f"OS/2 VendorID value '{vid}' is not a known registered id."
+                  f"OS/2 VendorID value '{vid}' is not yet recognized."
                   f" {SUGGEST_MICROSOFT_VENDORLIST_WEBSITE}")
   else:
     yield PASS, f"OS/2 VendorID '{vid}' looks good!"
