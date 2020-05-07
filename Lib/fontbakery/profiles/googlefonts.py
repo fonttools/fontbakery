@@ -733,7 +733,18 @@ def com_google_fonts_check_fstype(ttFont):
 
 @check(
   id = 'com.google.fonts/check/vendor_id',
-  conditions = ['registered_vendor_ids']
+  conditions = ['registered_vendor_ids'],
+  rationale = """
+    Microsoft keeps a list of font vendors and their respective contact info. This list is updated regularly and is indexed by a 4-char "Vendor ID" which is stored in the achVendID field of the OS/2 table.
+
+    Registering your ID is not mandatory, but it is a good practice since some applications may display the type designer / type foundry contact info on some dialog and also because that info will be visible on Microsoft's website:
+
+    https://docs.microsoft.com/en-us/typography/vendors/
+
+    This check verifies whether or not a given font's vendor ID is registered in that list or if it has some of the default values used by the most common font editors.
+
+    Each new FontBakery release includes a cached copy of that list of vendor IDs. If you registered recently, you're safe to ignore warnings emitted by this check, since your ID will soon be included in one of our upcoming releases.
+  """
 )
 def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
   """Checking OS/2 achVendID."""
