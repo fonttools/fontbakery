@@ -49,6 +49,8 @@
 
 
 
+
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -71,7 +73,7 @@
 <meta name="description" content="Vendors who have registered a unique &#39;Vendor ID&#39; with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/973354aac5642f254daa278d9049da6b81bb362a/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f1ef8ed490244c022970d87b01b7daad409991b0/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
@@ -85,20 +87,20 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-04-20 10:15 PM" />
+<meta name="updated_at" content="2020-04-27 07:41 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3120" />
+<meta name="word_count" content="3124" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/44250784.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/3556b809.site-ltr.css ">
 
-	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/672b4bb0.conceptual.css ">
+	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f7aab81a.conceptual.css ">
 
 
 	<script>
@@ -132,28 +134,21 @@
 		},
 		functions:{}
 	};
-	if (!('Promise' in window && 'resolve' in window.Promise && 'reject' in window.Promise && 'all' in window.Promise && 'race' in window.Promise)) {
-		document.write('<script src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"><\/script>');
-	}
-	if (typeof fetch !== 'function') {
-		document.write('<script src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"><\/script>');
-	}
-	if (typeof HTMLTemplateElement === 'undefined') {
-		document.write('<script src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"><\/script>');
-	}
-	if (typeof URL !== 'function') {
-		document.write('<script src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"><\/script>');
-	}
 	</script>
-
+	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
+	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
+	<script nomodule src="/_themes/docs.theme/master/en-us/_themes/scripts/3d316e17.index-polyfills.js"></script>
 	<script src="/static/third-party/jquery/3.3.1/jquery.min.js" integrity="sha384-Q4GEli30r5Awgb/ITt925nE8buHKjVWM/x3DX8t5JwRLT9P/C2r7u7XzNwvpTTGw" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a683a268.index-docs.js"></script>
-
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/cd9a3607.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
 <div class="header-holder has-default-focus">
 	<a href="#main" class="skip-to-main-link visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+	<div id="build-banner-holder" class="has-default-focus has-overflow-hidden">
+	</div>
 		<div id="headerAreaHolder" data-bi-name="header">
 <header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
 	<div class="nav-bar">
@@ -322,7 +317,9 @@
 			<div class="is-invisible"></div>
 			<div class="is-hidden-tablet level-item is-flexible level-right">
 				<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus has-border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
-					<span aria-hidden="true">. . .</span>
+					<span class="icon">
+						<span class="docon docon-more-vertical" aria-hidden="true"></span>
+					</span>
 				</button>
 			</div>
 		</div>
@@ -355,23 +352,22 @@
 						<h1 id="registered-font-vendors">Registered font vendors</h1>
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
-							<li class="displayDate loading">
-								<time role="presentation" datetime="2019-11-01T00:00:00.000Z" data-article-date-source="ms.date">11/01/2019</time>
+							<li>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2019-11-01T00:00:00.000Z" data-article-date-source="ms.date">11/01/2019</time>
 							</li>
 								<li class="readingTime">15 minutes to read</li>
-							<li class="contributors-holder">
-								<a class="has-inner-focus" href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="6 Contributors" aria-label="6 Contributors">
-									<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
-												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/alib-ms.png?size=32" role="presentation"/></li>
-												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/WorkNihar.png?size=32" role="presentation"/></li>
-												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/mijacobs.png?size=32" role="presentation"/></li>
-												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
-												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/VSC-Service-Account.png?size=32" role="presentation"/></li>
-										<li><span class="is-size-8 has-text-subtle">+1</span></li>
-									</ul>
-								</a>
-							</li>
-
+								<li class="contributors-holder">
+									<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="6 Contributors" aria-label="6 Contributors">
+										<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
+													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/alib-ms.png?size=32" role="presentation"/></li>
+													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/WorkNihar.png?size=32" role="presentation"/></li>
+													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/mijacobs.png?size=32" role="presentation"/></li>
+													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
+													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/VSC-Service-Account.png?size=32" role="presentation"/></li>
+											<li><span class="is-size-8 has-text-subtle">+1</span></li>
+										</ul>
+									</a>
+								</li>
 						</ul>
 
 						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
@@ -2461,6 +2457,10 @@
 <td><a href="http://www.letterspace.com/" data-linktype="external">LetterPerfect Fonts</a></td>
 </tr>
 <tr>
+<td>LS</td>
+<td><a href="https://www.lettersoup.de/" data-linktype="external">lettersoup</a></td>
+</tr>
+<tr>
 <td>LT</td>
 <td><a href="http://www.typophage.com/" data-linktype="external">Le Typophage</a></td>
 </tr>
@@ -4069,6 +4069,10 @@
 <td><a href="http://www.about.me/xoth" data-linktype="external">Xoth Morello</a></td>
 </tr>
 <tr>
+<td>XSCR</td>
+<td><a href="http://xeroscript.com/" data-linktype="external">Xeroscript</a></td>
+</tr>
+<tr>
 <td>XYZ</td>
 <td><a href="http://www.xyztype.com" data-linktype="external">XYZ Type LLC</a></td>
 </tr>
@@ -4293,10 +4297,10 @@ This page                        <span aria-hidden="true" class="icon">
 <footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
 
     <div class="is-flex is-full-height has-padding-right-extra-large-desktop">
-		<a data-mscc-ic="false" class="locale-selector-link has-flex-shrink-none" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-4 has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+			<a data-mscc-ic="false" class="locale-selector-link has-flex-shrink-none" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-4 has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
 		<div class="has-margin-left-medium has-margin-right-medium has-flex-shrink-none">
 <div class="dropdown has-caret-up">
-	<button class="dropdown-trigger button is-text is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
 		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
 		<span class="icon">
 			<span class="docon docon-sun" aria-hidden="true"></span>
@@ -4386,10 +4390,10 @@ High contrast					</span>
 		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
 		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
 		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
-			<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
 		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 		<li><a data-mscc-ic="false" href="https://aka.ms/sitefeedback" data-bi-name="feedback">Site Feedback</a></li>
-		<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+			<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
 		<li>&copy; Microsoft 2020</li>
     </ul>
 </footer>
@@ -4457,10 +4461,10 @@ High contrast					</span>
 <footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
 
     <div class="is-flex is-full-height has-padding-right-extra-large-desktop">
-		<a data-mscc-ic="false" class="locale-selector-link has-flex-shrink-none" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-4 has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+			<a data-mscc-ic="false" class="locale-selector-link has-flex-shrink-none" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-4 has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
 		<div class="has-margin-left-medium has-margin-right-medium has-flex-shrink-none">
 <div class="dropdown has-caret-up">
-	<button class="dropdown-trigger button is-text is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
+	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
 		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
 		<span class="icon">
 			<span class="docon docon-sun" aria-hidden="true"></span>
@@ -4549,10 +4553,10 @@ High contrast					</span>
 		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
 		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
 		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
-			<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
 		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 		<li><a data-mscc-ic="false" href="https://aka.ms/sitefeedback" data-bi-name="feedback">Site Feedback</a></li>
-		<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+			<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
 		<li>&copy; Microsoft 2020</li>
     </ul>
 </footer>
