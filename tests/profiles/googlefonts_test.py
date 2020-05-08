@@ -2473,6 +2473,12 @@ def test_check_name_mandatory_entries():
     assert status == FAIL and message.code == "missing-entry"
 
 
+def test_condition_familyname_with_spaces():
+  from fontbakery.profiles.googlefonts_conditions import familyname_with_spaces
+  assert familyname_with_spaces("OverpassMono") == "Overpass Mono"
+  assert familyname_with_spaces("BodoniModa11") == "Bodoni Moda 11"
+
+
 def test_check_name_familyname():
   """ Check name table: FONT_FAMILY_NAME entries. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_name_familyname as check,
