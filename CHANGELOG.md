@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.25 (2020-May-??)
+### New checks
+  - **[com.google.fonts/check/varfont/unsupported_axes]**: Ensure VFs do not contain opsz or ital axes. (issue #2866)
+
 ### Added rationale metadata to these checks
   - **com.google.fonts/check/vendor_id**
 

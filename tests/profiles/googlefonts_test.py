@@ -3376,3 +3376,32 @@ def test_check_varfont_instance_names(vf_ttFont):
   status, message = list(check(vf_ttFont3))[-1]
   assert status == WARN
 
+
+def test_check_varfont_unsupported_axes():
+  """Ensure VFs do not contain opsz or ital axes."""
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_unsupported_axes as check
+  from fontbakery.profiles.shared_conditions import slnt_axis, ital_axis
+  from fontTools.ttLib.tables._f_v_a_r import Axis
+
+  # Our reference varfont, CabinVFBeta.ttf, lacks 'ital' and 'opsz' variation axes.
+  # So, should pass the check:
+  ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
+  
+  # If we add 'ital' it must FAIL:
+  new_axis = Axis()
+  new_axis.axisTag = "ital"
+  ttFont["fvar"].axes.append(new_axis)
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL and message.code == "unsupported-ital"
+
+  # Then we reload the font and add 'opsz'
+  # so it must also FAIL:
+  ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+  new_axis = Axis()
+  new_axis.axisTag = "opsz"
+  ttFont["fvar"].axes.append(new_axis)
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL and message.code == "unsupported-opsz"
+

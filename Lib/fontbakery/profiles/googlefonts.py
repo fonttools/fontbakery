@@ -141,7 +141,8 @@ FONT_FILE_CHECKS = [
   'com.google.fonts/check/vertical_metrics_regressions',
   'com.google.fonts/check/varfont_instance_coordinates',
   'com.google.fonts/check/varfont_instance_names',
-  'com.google.fonts/check/varfont/consistent_axes'
+  'com.google.fonts/check/varfont/consistent_axes',
+  'com.google.fonts/check/varfont/unsupported_axes'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -4356,6 +4357,36 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
     yield WARN, SHOW_GF_DOCS_MSG
   else:
     yield PASS, "Instance names are correct"
+
+
+@check(
+  id = 'com.google.fonts/check/varfont/unsupported_axes',
+  rationale = """
+    The 'ital' axis is not supported yet in Google Chrome. The 'opsz' axis also has patchy support.
+
+    For the time being, we need to ensure that VFs do not contain either of these axes. Once browser support is better, we can deprecate this check.
+
+    For more info regarding ital and opsz browser support, see:
+    https://arrowtype.github.io/vf-slnt-test/
+  """,
+  conditions = ['is_variable_font'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2866'
+  }
+)
+def com_google_fonts_check_varfont_unsupported_axes(ttFont):
+  """ Ensure VFs do not contain opsz or ital axes. """
+  from fontbakery.profiles.shared_conditions import opsz_axis, ital_axis
+  if ital_axis(ttFont):
+    yield FAIL,\
+          Message("unsupported-ital",
+                  'The "ital" axis is not yet well supported on Google Chrome.')
+  elif opsz_axis(ttFont):
+    yield FAIL,\
+          Message("unsupported-opsz",
+                  'The "opsz" axis is not yet well supported on Google Chrome.')
+  else:
+    yield PASS, "Looks good!"
 
 
 ###############################################################################
