@@ -214,6 +214,20 @@ def slnt_axis(ttFont):
       if axis.axisTag == "slnt":
         return axis
 
+@condition
+def opsz_axis(ttFont):
+  if "fvar" in ttFont:
+    for axis in ttFont["fvar"].axes:
+      if axis.axisTag == "opsz":
+        return axis
+
+@condition
+def ital_axis(ttFont):
+  if "fvar" in ttFont:
+    for axis in ttFont["fvar"].axes:
+      if axis.axisTag == "ital":
+        return axis
+
 
 def get_instance_axis_value(ttFont, instance_name, axis_tag):
   if not is_variable_font(ttFont):
