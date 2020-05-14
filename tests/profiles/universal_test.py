@@ -690,3 +690,13 @@ def test_check_superfamily_vertical_metrics(montserrat_ttFonts, cabin_ttFonts, c
   status, message = list(check([cabin_ttFonts,
                                 montserrat_ttFonts]))[-1]
   assert status == WARN
+
+def test_check_STAT_strings():
+  from fontbakery.profiles.universal import com_google_fonts_check_STAT_strings as check
+  print("Test pass...")
+  status, message = list(check(TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Roman.ttf"))))[-1]
+  assert status == PASS
+
+  print("Test fail...")
+  status, message = list(check(TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Italic.ttf"))))[-1]
+  assert status == FAIL
