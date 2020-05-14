@@ -801,3 +801,6 @@ CJK_UNICODE_RANGES = [
   [0xA000, 0xA48F],  # Yi Syllables
   [0xA490, 0xA4CF],  # Yi Radicals
 ]
+
+
+GDEF_MARK_GLYPH_CLASS = 3
