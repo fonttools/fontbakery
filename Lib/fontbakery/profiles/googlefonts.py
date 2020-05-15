@@ -2518,7 +2518,7 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
 
     But value of 500 or 1000 are also acceptable, with the added benefit that it makes upm math easier for designers, while the performance hit of not using a power of two is most likely negligible nowadays.
 
-    Another acceptable value is 2000. Since TT outlines are all integers (no floats), then instances in a VF suffer rounding compromises, and therefore a 1000 UPM is to small because it forces too many such compromises.
+    Another acceptable value is 2000. Since TT outlines are all integers (no floats), then instances in a VF suffer rounding compromises, and therefore a 1000 UPM is too small because it forces too many such compromises.
    
     Therefore 2000 is a good 'new VF standard', because 2000 is a simple 2x conversion from existing fonts drawn on a 1000 UPM, and anyone who knows what 10 units can do for 1000 UPM will know what 20 units does too.
 
