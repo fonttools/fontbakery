@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.26 (2020-May-??)
-  - ...
+  - **[com.google.fonts/check/gdef_spacing_marks]**: warn when glyphs in the GDEF mark glyph class should be non-spacing (issue #2877).
+  - **[com.google.fonts/check/gdef_non_mark_chars]**: fails when glyphs mapped to non-mark characters are in the GDEF mark glyph class (issue #2877)
+  - **[com.google.fonts/check/gdef_mark_chars]**: warns when glyphs mapped to mark characters are not in the GDEF mark glyph class. (issue #2877)
 
 
 ## 0.7.25 (2020-May-15)
