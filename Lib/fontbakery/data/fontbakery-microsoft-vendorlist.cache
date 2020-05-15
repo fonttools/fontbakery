@@ -23,7 +23,6 @@
 
 
 
-
 	
 
 
@@ -73,7 +72,7 @@
 <meta name="description" content="Vendors who have registered a unique &#39;Vendor ID&#39; with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f1ef8ed490244c022970d87b01b7daad409991b0/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/0205139430a246784fa965393187223e2b1c02a3/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
@@ -87,18 +86,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-04-27 07:41 PM" />
+<meta name="updated_at" content="2020-05-08 10:03 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3124" />
+<meta name="word_count" content="3129" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/3556b809.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f747b1a9.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f7aab81a.conceptual.css ">
 
@@ -139,9 +138,9 @@
 	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
-	<script nomodule src="/_themes/docs.theme/master/en-us/_themes/scripts/3d316e17.index-polyfills.js"></script>
+	<script nomodule src="/_themes/docs.theme/master/en-us/_themes/scripts/e482e449.index-polyfills.js"></script>
 	<script src="/static/third-party/jquery/3.3.1/jquery.min.js" integrity="sha384-Q4GEli30r5Awgb/ITt925nE8buHKjVWM/x3DX8t5JwRLT9P/C2r7u7XzNwvpTTGw" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/cd9a3607.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/5d77f964.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -323,9 +322,6 @@
 				</button>
 			</div>
 		</div>
-	</div>
-
-	<div id="banner-holder" class="has-default-focus has-overflow-hidden">
 	</div>
 
 	<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus"></div>
@@ -1527,6 +1523,10 @@
 <td>Fontfoundry</td>
 </tr>
 <tr>
+<td>FNTP</td>
+<td>FansyType</td>
+</tr>
+<tr>
 <td>FoFa</td>
 <td><a href="http://www.fontfabrik.com/" data-linktype="external">FontFabrik</a></td>
 </tr>
@@ -1784,6 +1784,10 @@
 <tr>
 <td>GRIM</td>
 <td><a href="http://www.otterstow.com" data-linktype="external">Legacy publishing</a></td>
+</tr>
+<tr>
+<td>GRPS</td>
+<td><a href="https://gurupstudyo.com/" data-linktype="external">Gurup Stüdyo</a></td>
 </tr>
 <tr>
 <td>grro</td>
@@ -4301,13 +4305,13 @@ This page                        <span aria-hidden="true" class="icon">
 		<div class="has-margin-left-medium has-margin-right-medium has-flex-shrink-none">
 <div class="dropdown has-caret-up">
 	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
-		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
 		<span class="icon">
 			<span class="docon docon-sun" aria-hidden="true"></span>
 		</span>
 		<span>Theme</span>
 	</button>
-	<div class="dropdown-menu" id="theme-menu" role="menu">
+	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
 		<ul class="theme-selector has-padding-small">
 			<li class="theme is-block">
 				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start"
