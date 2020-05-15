@@ -6,6 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New checks
   - **[com.google.fonts/check/varfont/unsupported_axes]**: Ensure VFs do not contain opsz or ital axes. (issue #2866)
   - **[com.google.fonts/check/STAT_strings]**: Check correctness of name table strings referenced by STAT table. (issue #2863)
+  - **[com.google.fonts/check/description/eof_linebreak]**: DESCRIPTION.en_us.html should end in a linebreak. (issue #2879)
 
 ### Added rationale metadata to these checks
   - **com.google.fonts/check/vendor_id**
