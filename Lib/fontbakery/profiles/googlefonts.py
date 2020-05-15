@@ -67,7 +67,8 @@ DESCRIPTION_CHECKS = [
   'com.google.fonts/check/description/min_length',
   'com.google.fonts/check/description/max_length',
   'com.google.fonts/check/description/git_url',
-  'com.google.fonts/check/description/variable_font'
+  'com.google.fonts/check/description/variable_font',
+  'com.google.fonts/check/description/eof_linebreak'
 ]
 
 FAMILY_CHECKS = [
@@ -391,6 +392,29 @@ def com_google_fonts_check_description_max_length(description):
                   " have size smaller than 1000 bytes.")
   else:
     yield PASS, "DESCRIPTION.en_us.html is smaller than 1000 bytes."
+
+
+@check(
+  id = 'com.google.fonts/check/description/eof_linebreak',
+  conditions = ['description'],
+  rationale = """
+    Some older text-handling tools sometimes misbehave if the last line of data in a text file is not terminated with a newline character (also known as '\\n').
+
+    We know that this is a very small detail, but for the sake of keeping all DESCRIPTION.en_us.html files uniformly formatted throughout the GFonts collection, we chose to adopt the practice of placing this final linebreak char on them.
+""",
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2879'
+  }
+)
+def com_google_fonts_check_description_eof_linebreak(description):
+  """DESCRIPTION.en_us.html should end in a linebreak."""
+  if description[-1] != '\n':
+    yield WARN,\
+          Message("missing-eof-linebreak",
+                  "The last characther on DESCRIPTION.en_us.html"
+                  " is not a line-break. Please add it.")
+  else:
+    yield PASS, ":-)"
 
 
 @check(

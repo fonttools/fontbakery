@@ -352,6 +352,24 @@ def test_check_description_max_length():
   assert status == PASS
 
 
+def test_check_description_eof_linebreak():
+  """ DESCRIPTION.en_us.html should end in a linebreak. """
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_description_eof_linebreak as check
+
+  bad = ("We want to avoid description files\n"
+         "without an end-of-file linebreak\n"
+         "like this one.")
+  print('Test WARN when we lack an end-of-file linebreak...')
+  status, message = list(check(bad))[-1]
+  assert status == WARN and message.code == "missing-eof-linebreak"
+
+  good = ("On the other hand, this one\n"
+          "is good enough.\n")
+  print('Test PASS when we add one...')
+  status, message = list(check(good))[-1]
+  assert status == PASS
+
+
 def test_check_name_family_and_style_max_length(): 
   """ Combined length of family and style must not exceed 27 characters. """
   from fontbakery.profiles.googlefonts import ( 
