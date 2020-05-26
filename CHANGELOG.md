@@ -2,7 +2,18 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.26 (2020-May-??)
+## 0.7.27 (2020-Jun-??)
+  - ...
+
+
+## 0.7.26 (2020-May-26)
+### Noteworthy code-changes
+  - update gfonts protobuf schema, in sync with GFTools (https://github.com/googlefonts/gftools/issues/202) (#issue #2886)
+
+### Bugfixes
+  - fix ERROR on com.google.fonts/check/STAT_strings (issue #2889)
+
+### New checks
   - **[com.google.fonts/check/gdef_spacing_marks]**: warn when glyphs in the GDEF mark glyph class should be non-spacing (issue #2877).
   - **[com.google.fonts/check/gdef_non_mark_chars]**: fails when glyphs mapped to non-mark characters are in the GDEF mark glyph class (issue #2877)
   - **[com.google.fonts/check/gdef_mark_chars]**: warns when glyphs mapped to mark characters are not in the GDEF mark glyph class. (issue #2877)
