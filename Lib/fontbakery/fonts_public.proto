@@ -19,6 +19,8 @@ message FamilyProto {
   repeated string subsets = 8;
   optional string ttf_autohint_args = 9;
   repeated AxisProto axes = 10;
+  map<string, float> api_default_overrides = 11;
+  optional SourceProto source = 12;
 };
 
 message FontProto {
@@ -37,3 +39,8 @@ message AxisProto {
   optional float default_value = 3;
   optional float max_value = 4;
 };
+
+message SourceProto {
+  optional string repository_url = 1;
+  optional string commit = 2;
+}
