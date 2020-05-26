@@ -571,8 +571,9 @@ def com_google_fonts_check_STAT_strings(ttFont):
       break
 
   nameIDs = []
-  for value in ttFont["STAT"].table.AxisValueArray.AxisValue:
-    if value.AxisIndex != ital_axis_index: nameIDs.append(value.ValueNameID)
+  if ttFont["STAT"].table.AxisValueArray:
+    for value in ttFont["STAT"].table.AxisValueArray.AxisValue:
+      if value.AxisIndex != ital_axis_index: nameIDs.append(value.ValueNameID)
 
   bad_values = []
   for name in ttFont['name'].names:
