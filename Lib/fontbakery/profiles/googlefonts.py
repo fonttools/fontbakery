@@ -941,7 +941,7 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
   """Check license file has good copyright string."""
   import re
   string = license_contents.strip().split('\n')[0].lower()
-  does_match = re.search(r'copyright [0-9]{4} the .* project authors \([^\@]*\)', string)
+  does_match = re.search(r'copyright [0-9]{4}(\-[0-9]{4})? the .* project authors \([^\@]*\)', string)
   if does_match:
     yield PASS, "looks good"
   else:
@@ -2076,7 +2076,7 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
   conditions = ['font_metadata'],
   rationale = """
     The expected pattern for the copyright string adheres to the following rules:
-    * It must say "Copyright" followed by a 4 digit year
+    * It must say "Copyright" followed by a 4 digit year (optionally followed by a hyphen and another 4 digit year)
     * Then it must say "The <familyname> Project Authors"
     * And within parentheses, a URL for a git repository must be provided
     * The check is case insensitive and does not validate whether the familyname is correct, even though we'd expect it is (and we may soon update the check to validate that aspect as well!)
@@ -2089,7 +2089,7 @@ def com_google_fonts_check_metadata_valid_copyright(font_metadata):
   """Copyright notices match canonical pattern in METADATA.pb"""
   import re
   string = font_metadata.copyright.lower()
-  does_match = re.search(r'copyright [0-9]{4} the .* project authors \([^\@]*\)',
+  does_match = re.search(r'copyright [0-9]{4}(\-[0-9]{4})? the .* project authors \([^\@]*\)',
                            string)
   if does_match:
     yield PASS, "METADATA.pb copyright string is good"
@@ -2113,7 +2113,7 @@ def com_google_fonts_check_font_copyright(ttFont):
 
   failed = False
   for string in get_name_entry_strings(ttFont, NameID.COPYRIGHT_NOTICE):
-    does_match = re.search(r'Copyright [0-9]{4} The .* Project Authors \([^\@]*\)',
+    does_match = re.search(r'Copyright [0-9]{4}(\-[0-9]{4})? The .* Project Authors \([^\@]*\)',
                            string)
     if does_match:
       yield PASS, ("Name Table entry: Copyright field '{}'"
