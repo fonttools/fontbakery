@@ -1,16 +1,13 @@
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.message import Message
-from fontbakery.utils import pretty_print_list
 
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
-from fontTools import unicodedata
-from fontbakery.constants import GDEF_MARK_GLYPH_CLASS
-
 
 def _is_non_mark_char(charcode):
+  from fontTools import unicodedata
   category = unicodedata.category(chr(charcode))
   if category.startswith("C"):
     # skip control characters
@@ -21,12 +18,13 @@ def _is_non_mark_char(charcode):
 
 
 def _get_mark_class_glyphs(ttFont):
+  from fontbakery.constants import GDEF_MARK_GLYPH_CLASS
   class_defs = ttFont["GDEF"].table.GlyphClassDef.classDefs.items()
   return {name for (name, value) in class_defs
           if value == GDEF_MARK_GLYPH_CLASS}
 
 
-@ check(
+@check(
   id = 'com.google.fonts/check/gdef_spacing_marks',
   rationale = """
     Glyphs in the GDEF mark glyph class should be non-spacing.
@@ -37,6 +35,8 @@ def _get_mark_class_glyphs(ttFont):
 )
 def com_google_fonts_check_gdef_spacing_marks(ttFont):
   """Check mark characters are in GDEF mark glyph class)"""
+  from fontbakery.utils import pretty_print_list
+
   if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
     spacing_glyphs = {name for (name, value) in ttFont["hmtx"].metrics.items()
                       if value}
@@ -48,17 +48,16 @@ def com_google_fonts_check_gdef_spacing_marks(ttFont):
                           shorten=10,
                           sep=", ")
       yield WARN,\
-        Message('spacing-mark-glyphs',
-        f"The following spacing glyphs may be in the GDEF mark glyph "
-        f"class by mistake:\n"
-        f"{formatted_list}")
+            Message('spacing-mark-glyphs',
+                    f"The following spacing glyphs may be in"
+                    f" the GDEF mark glyph class by mistake:\n"
+                    f"{formatted_list}")
     else:
-      yield PASS,\
-        'Font does not has spacing glyphs in the GDEF mark glyph class.'
+      yield PASS, ('Font does not has spacing glyphs'
+                   ' in the GDEF mark glyph class.')
   else:
-    yield (PASS,
-      'Font does not declare an optional "GDEF" table or has '
-      'any GDEF glyph class definition.')
+    yield PASS, ('Font does not declare an optional "GDEF" table'
+                 ' or has any GDEF glyph class definition.')
 
 
 @check(
@@ -69,6 +68,7 @@ def com_google_fonts_check_gdef_spacing_marks(ttFont):
 )
 def com_google_fonts_check_gdef_mark_chars(ttFont):
   """Check mark characters are in GDEF mark glyph class"""
+  from fontbakery.utils import pretty_print_list
 
   if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
     cmap = ttFont.getBestCmap()
@@ -85,18 +85,16 @@ def com_google_fonts_check_gdef_mark_chars(ttFont):
                           shorten=None,
                           sep=", ")
       yield WARN,\
-          Message('mark-chars',
-                  f"The following mark characters could be in the GDEF mark"
-                  f" glyph class:\n"
-                  f"{formatted_marks}")
+            Message('mark-chars',
+                    f"The following mark characters could be"
+                    f" in the GDEF mark glyph class:\n"
+                    f"{formatted_marks}")
     else:
-      yield (PASS,
-             'Font does not have mark characters not in '
-             'the GDEF mark glyph class.')
+      yield PASS, ('Font does not have mark characters'
+                   ' not in the GDEF mark glyph class.')
   else:
-    yield (PASS,
-           'Font does not declare an optional "GDEF" table or has '
-           'any GDEF glyph class definition.')
+    yield PASS, ('Font does not declare an optional "GDEF" table'
+                 ' or has any GDEF glyph class definition.')
 
 
 @check(
@@ -110,6 +108,7 @@ def com_google_fonts_check_gdef_mark_chars(ttFont):
 )
 def com_google_fonts_check_gdef_non_mark_chars(ttFont):
   """Check GDEF mark glyph class doesn't have characters that are not marks)"""
+  from fontbakery.utils import pretty_print_list
 
   if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
     cmap = ttFont.getBestCmap()
@@ -139,15 +138,13 @@ def com_google_fonts_check_gdef_non_mark_chars(ttFont):
                           shorten=None,
                           sep=", ")
       yield WARN,\
-          Message('non-mark-chars',
-                  f"The following non-mark characters should not be in "
-                  f"the GDEF mark glyph class:\n"
-                  f"{formatted_nonmarks}")
+            Message('non-mark-chars',
+                    f"The following non-mark characters should"
+                    f" not be in the GDEF mark glyph class:\n"
+                    f"{formatted_nonmarks}")
     else:
-      yield (PASS,
-             'Font does not have non-mark characters in '
-             'the GDEF mark glyph class.')
+      yield PASS, ('Font does not have non-mark characters'
+                   ' in the GDEF mark glyph class.')
   else:
-    yield (PASS,
-           'Font does not declare an optional "GDEF" table or has '
-           'any GDEF glyph class definition.')
+    yield PASS, ('Font does not declare an optional "GDEF" table'
+                 ' or has any GDEF glyph class definition.')
