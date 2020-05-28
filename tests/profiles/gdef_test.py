@@ -100,7 +100,7 @@ def test_check_gdef_non_mark_chars():
 
   add_gdef_table(test_font, {'acute': 3, 'acutecomb': 3})
   status, message = list(check(test_font))[-1]
-  assert status == WARN
+  assert status == WARN and message.code == "non-mark-chars"
   msg = str(message)
   assert msg.split(":")[0], msg.split(":")[1].strip() == (
     'The following non-mark characters should not be in '\
