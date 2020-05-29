@@ -23,9 +23,8 @@
 
 
 
+
 	
-
-
 
 
 
@@ -69,10 +68,10 @@
 	<meta name="author" content="alib-ms" />
 <meta name="breadcrumb_path" content="/typography/breadcrumbs/toc.json" />
 <meta name="depot_name" content="Win.typography" />
-<meta name="description" content="Vendors who have registered a unique &#39;Vendor ID&#39; with Microsoft." />
+<meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/0205139430a246784fa965393187223e2b1c02a3/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/64255082901e16beb82fc16c4b9089f52c5438f4/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
@@ -86,18 +85,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-05-08 10:03 PM" />
+<meta name="updated_at" content="2020-05-18 09:41 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3129" />
+<meta name="word_count" content="3131" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f747b1a9.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/e4e978d0.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f7aab81a.conceptual.css ">
 
@@ -106,7 +105,6 @@
 	var msDocs = {
 		data: {
 			timeOrigin: Date.now(),
-			azureHeaderLocale: 'en-us',
 			contentLocale: 'en-us',
 			contentDir: 'ltr',
 			userLocale: 'en-us',
@@ -139,8 +137,7 @@
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
 	<script nomodule src="/_themes/docs.theme/master/en-us/_themes/scripts/e482e449.index-polyfills.js"></script>
-	<script src="/static/third-party/jquery/3.3.1/jquery.min.js" integrity="sha384-Q4GEli30r5Awgb/ITt925nE8buHKjVWM/x3DX8t5JwRLT9P/C2r7u7XzNwvpTTGw" crossorigin="anonymous"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/5d77f964.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/f0073812.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -3821,6 +3818,10 @@
 <td><a href="http://www.tipotype.com" data-linktype="external">Tipotype</a></td>
 </tr>
 <tr>
+<td>TUDO</td>
+<td><a href="http://walkingfearless.com/" data-linktype="external">tudotype</a></td>
+</tr>
+<tr>
 <td>TY</td>
 <td><a href="http://www.typocalypse.com/" data-linktype="external">Typocalypse</a></td>
 </tr>
@@ -4208,86 +4209,27 @@
 
 
 						<!-- feedback section -->
-<section class="feedback-section" data-bi-name="feedback-section">
+<section class="feedback-section is-relative" data-bi-name="feedback-section">
 
-    <h2 id="feedback">Feedback</h2>
+    <h2 id="feedback" class="is-size-2 has-margin-top-large">Feedback</h2>
 
-    <div class="alert choose-feedback-type">
-        <p aria-hidden="true" id="send-feedback-about">Send feedback about</p>
+    <div class="alert choose-feedback-type has-margin-top-small has-margin-bottom-none">
+        <p aria-hidden="true" id="send-feedback-about" class="has-margin-top-none has-margin-bottom-none">Submit and view feedback for</p>
 
-        <div class="choose-feedback-buttons">
+        <div class="choose-feedback-buttons has-margin-top-large has-margin-bottom-none">
 
-            <div class="field is-inline-flex has-margin-bottom-small">
-                <div class="control has-margin-top-none has-margin-bottom-none">
-                    <button class="button feedback-sign-in-button has-text-wrap" aria-label="Send feedback about this page" data-bi-name="feedback-sign-in">
-                        <span aria-hidden="true" class="icon docon docon-brand-github"></span>
-                        <span>This page</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="field is-inline-flex has-margin-bottom-small" hidden>
-                <div class="control has-margin-top-none has-margin-bottom-none">
-                    <button aria-controls="feedback-form" aria-describedby="send-feedback-about" aria-expanded="false" class="button feedback-form-toggle" data-bi-name="documentation-feedback">
-                        <span aria-hidden="true" class="icon docon docon-brand-github"></span>
-This page                        <span aria-hidden="true" class="icon">
-                            <span class="expanded-indicator docon docon-chevron-down-light"></span>
-                        </span>
-                    </button>
-                </div>
-            </div>
-            <p>You may also leave feedback directly on <a data-bi-name="create-issue-on-github" class="github-link">GitHub <span class="docon docon-navigate-external" aria-hidden="true"></span></a>.</p>
+			<a class="button feedback-type-product has-margin-bottom-small github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
+				<span aria-hidden="true" class="docon docon-brand-github has-padding-right-extra-small"></span>
+				<span>This page</span>
+			</a>
         </div>
     </div>
 
-    <form accept-charset="UTF-8" action="javascript:" autocomplete="off" class="feedback-form" hidden id="feedback-form">
-        <h3 class="feedback-form-heading current-user">
-            <img class="avatar" alt="Avatar" width="36" height="36" aria-hidden="true">
-            <span aria-hidden="true" class="username"></span>
-            <span class="visually-hidden">Send feedback about this page</span>
-        </h3>
-
-        <label>
-            <span class="visually-hidden">Title</span>
-            <input class="input is-radiusless has-margin-bottom-small" name="title" type="text" placeholder="Title" required pattern=".*[^\s]+.*">
-        </label>
-        <label>
-            <span class="visually-hidden">Leave a comment</span>
-            <textarea name="body" placeholder="Leave a comment" class="textarea is-radiusless" required></textarea>
-        </label>
-
-        <div class="action-container">
-            <button class="button is-primary" name="submit" type="submit">Submit feedback</button>
-        </div>
-    </form>
-
-    <div class="feedback-status alert is-loading">
-        <p>Loading feedback...</p>
-    </div>
-
-    <div class="feedback-tab-group tabGroup" data-tab-group-independent hidden>
-        <ul role="tablist">
-            <li role="presentation">
-                <a aria-controls="tabpanel-issues-open" data-tab="issues-open" href="#tabpanel-issues-open" role="tab"></a>
-            </li>
-            <li role="presentation">
-                <a aria-controls="tabpanel-issues-closed" data-tab="issues-closed" href="#tabpanel-issues-closed" role="tab"></a>
-            </li>
-        </ul>
-        <section data-tab="issues-open" id="tabpanel-issues-open" role="tabpanel">
-            <div class="no-issues-placeholder">There are no open issues</div>
-            <ul class="github-issues-list" aria-label="Open Issues"></ul>
-        </section>
-        <section data-tab="issues-closed" id="tabpanel-issues-closed" role="tabpanel">
-            <div class="no-issues-placeholder">There are no closed issues</div>
-            <ul class="github-issues-list" aria-label="Closed Issues"></ul>
-        </section>
-    </div>
-    <div class="action-container">
-        <a class="view-on-github" data-bi-name="view-on-github" hidden href="https://github.com/MicrosoftDocs/typography-issues/issues">
+    <div class="action-container is-flex has-flex-justify-content-end has-margin-top-small has-margin-bottom-small">
+        <a class="view-on-github" data-bi-name="view-on-github" href="https://github.com/MicrosoftDocs/typography-issues/issues">
             <span aria-hidden="true" class="docon docon-brand-github"></span>
-            <span>View on GitHub</span>
-            <span aria-hidden="true" class="docon docon-navigate-external"></span>
+            <span>View all page feedback</span>
+            <span aria-hidden="true" class="icon docon docon-navigate-external is-size-3"></span>
         </a>
     </div>
 </section>
