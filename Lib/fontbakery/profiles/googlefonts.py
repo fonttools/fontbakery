@@ -67,7 +67,6 @@ DESCRIPTION_CHECKS = [
   'com.google.fonts/check/description/min_length',
   'com.google.fonts/check/description/max_length',
   'com.google.fonts/check/description/git_url',
-  'com.google.fonts/check/description/variable_font',
   'com.google.fonts/check/description/eof_linebreak'
 ]
 
@@ -320,29 +319,6 @@ def com_google_fonts_check_description_git_url(description):
                   "Please host your font project on a public Git repo"
                   " (such as GitHub or GitLab) and place a link"
                   " in the DESCRIPTION.en_us.html file.")
-
-
-@check(
-  id = 'com.google.fonts/check/description/variable_font',
-  conditions = ['is_variable_font',
-                'description'],
-  rationale = """
-    Families with variable fonts do not always mention that in their descriptions. Therefore, this check ensures that a standard boilerplate sentence is present in the DESCRIPTION.en_us.html files for all those families which are available as variable fonts.
-  """
-)
-def com_google_fonts_check_description_variable_font(description):
-  """Does DESCRIPTION file mention when a family
-     is available as variable font?"""
-  if "variable font" not in description.lower():
-    yield FAIL,\
-          Message("should-mention-varfonts",
-                  "Please mention in the DESCRIPTION.en-us.html"
-                  " that the family is a variable font. This check"
-                  " expects the words 'variable font' to be present"
-                  " in the text e.g 'This font is now available as"
-                  " a variable font.'")
-  else:
-    yield PASS, "Looks good!"
 
 
 @check(
