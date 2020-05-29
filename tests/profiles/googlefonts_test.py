@@ -273,25 +273,6 @@ def test_check_description_git_url():
   assert status == FAIL and message.code == "lacks-git-url"
 
 
-def test_check_description_variable_font():
-  """ Does DESCRIPTION file mention when a family
-      is available as variable font? """
-  from fontbakery.profiles.googlefonts import (
-    com_google_fonts_check_description_variable_font as check,
-    description,
-    descfile)
-
-  bad_desc = description(descfile(TEST_FILE("varfont/Oswald-VF.ttf")))
-  print('Test FAIL when "variable font" is not present in DESC file...')
-  status, message = list(check(bad_desc))[-1]
-  assert status == FAIL and message.code == "should-mention-varfonts"
-
-  good_desc = description(descfile(TEST_FILE("cabinvfbeta/Cabin-VF.ttf")))
-  print('Test PASS with description file containing "variable font"...')
-  status, message = list(check(good_desc))[-1]
-  assert status == PASS
-
-
 def test_check_description_valid_html():
   """ DESCRIPTION file is a propper HTML snippet ? """
   from fontbakery.profiles.googlefonts import (
