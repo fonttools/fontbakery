@@ -199,6 +199,14 @@ class MacStyle(enum.IntEnum):
   BOLD   = (1 << 0)
   ITALIC = (1 << 1)
 
+class PANOSE_FamilyKind(enum.IntEnum):
+  ANY = 0
+  NO_FIT = 1
+  LATIN_TEXT = 2
+  LATIN_HAND_WRITTEN = 3
+  LATIN_DECORATIVE = 4
+  LATIN_SYMBOL = 5
+
 class PANOSE_Proportion(enum.IntEnum):
   ANY = 0
   NO_FIT = 1

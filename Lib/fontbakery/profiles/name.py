@@ -97,6 +97,7 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
 def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
   """Checking correctness of monospaced metadata."""
   from fontbakery.constants import (IsFixedWidth,
+                                    PANOSE_FamilyKind,
                                     PANOSE_Proportion)
   failed = False
   # Note: These values are read from the dict here only to
@@ -122,7 +123,8 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
                     f" (meaning 'fixed width monospaced'),"
                     f" but got {ttFont['post'].isFixedPitch} instead.")
 
-    if ttFont['OS/2'].panose.bProportion != PANOSE_Proportion.MONOSPACED:
+    if ttFont['OS/2'].panose.bFamilyType == PANOSE_FamilyKind.LATIN_TEXT and \
+       ttFont['OS/2'].panose.bProportion != PANOSE_Proportion.MONOSPACED:
       failed = True
       yield FAIL,\
             Message("mono-bad-panose-proportion",
