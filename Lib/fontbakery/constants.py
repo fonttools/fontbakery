@@ -582,8 +582,8 @@ UNICODERANGE_DATA = [
   [(26, "Georgian",                                0x010A0, 0x010FF),
    (26, "Georgian Supplement",                     0x02D00, 0x02D2F)],
 
-  [(27, "Balinese",                                 0x01B00, 0x01B7F),
-   (28, "Hangul Jamo",                              0x01100, 0x011FF)],
+  [(27, "Balinese",                                 0x01B00, 0x01B7F)],
+  [(28, "Hangul Jamo",                              0x01100, 0x011FF)],
 
   [(29, "Latin Extended Additional",               0x01E00, 0x01EFF),
    (29, "Latin Extended-C",                        0x02C60, 0x02C7F),
@@ -621,10 +621,13 @@ UNICODERANGE_DATA = [
   [(47, "Dingbats",                                 0x02700, 0x027BF)],
   [(48, "CJK Symbols And Punctuation",              0x03000, 0x0303F)],
   [(49, "Hiragana",                                 0x03040, 0x0309F)],
-  [(50, "Katakana",                                 0x030A0, 0x030FF)],
-  [(50, "Katakana Phonetic Extensions",             0x031F0, 0x031FF)],
-  [(51, "Bopomofo",                                 0x03100, 0x0312F)],
-  [(51, "Bopomofo Extended",                        0x031A0, 0x031BF)],
+
+  [(50, "Katakana",                                0x030A0, 0x030FF),
+   (50, "Katakana Phonetic Extensions",            0x031F0, 0x031FF)],
+
+  [(51, "Bopomofo",                                0x03100, 0x0312F),
+   (51, "Bopomofo Extended",                       0x031A0, 0x031BF)],
+
   [(52, "Hangul Compatibility Jamo",                0x03130, 0x0318F)],
   [(53, "Phags-pa",                                 0x0A840, 0x0A87F)],
   [(54, "Enclosed CJK Letters And Months",          0x03200, 0x032FF)],
