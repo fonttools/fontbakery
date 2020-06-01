@@ -2359,11 +2359,25 @@ def com_google_fonts_check_metadata_canonical_weight_value(font_metadata):
 
 @check(
   id = 'com.google.fonts/check/metadata/os2_weightclass',
-  conditions = ['font_metadata']
+  rationale =  """
+    Check METADATA.pb font weights are correct.
+
+    For static fonts, the metadata weight should be the same
+    as the static font's OS/2 usWeightClass.
+
+    For variable fonts, the weight value should be 400 if the
+    font's wght axis range includes 400, otherwise it should be the
+    value closest to 400.
+  """,
+  conditions = ['font_metadata'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2683'
+  }
 )
 def com_google_fonts_check_metadata_os2_weightclass(ttFont,
                                                     font_metadata):
-  """Checking OS/2 usWeightClass matches weight specified at METADATA.pb."""
+  """Check METADATA.pb font weights are correct."""
+  from .shared_conditions import is_variable_font
   # Weight name to value mapping:
   GF_API_WEIGHT_NAMES = {250: "Thin",
                          275: "ExtraLight",
@@ -2385,7 +2399,26 @@ def com_google_fonts_check_metadata_os2_weightclass(ttFont,
     800: "ExtraBold",
     900: "Black"
   }
-  gf_weight = GF_API_WEIGHT_NAMES.get(ttFont["OS/2"].usWeightClass,
+  if is_variable_font(ttFont):
+    axes = {f.axisTag: f for f in ttFont["fvar"].axes}
+    # if there isn't a wght axis, use the OS/2.usWeightClass
+    if 'wght' not in axes:
+      font_weight = f['OS/2'].usWeightClass
+    # if the wght range includes 400, use 400
+    else:
+      wght_includes_400 = axes['wght'].minValue <= 400 and axes['wght'].maxValue >= 400
+      if wght_includes_400:
+        font_weight = 400
+      # if 400 isn't in the wght axis range, use the value closest to 400
+      elif not wght_includes_400:
+        if abs(axes['wght'].minValue - 400) < abs(axes['wght'].maxValue - 400):
+          font_weight = axes['wght'].minValue
+        else:
+          font_weight = axes['wght'].maxValue
+  else:
+    font_weight = ttFont["OS/2"].usWeightClass
+
+  gf_weight = GF_API_WEIGHT_NAMES.get(font_weight,
                                       "bad Google Fonts API weight value")
   css_weight = CSS_WEIGHT_NAMES.get(font_metadata.weight,
                                     "bad CSS weight value")
@@ -2397,16 +2430,17 @@ def com_google_fonts_check_metadata_os2_weightclass(ttFont,
                   f' does not match weight specified'
                   f' at METADATA.pb ({font_metadata.weight}:"{css_weight}").')
   else:
-    yield PASS, ("OS/2 usWeightClass matches"
+    yield PASS, ("OS/2 usWeightClass or wght axis value matches"
                  " weight specified at METADATA.pb")
 
 
 @check(
   id = 'com.google.fonts/check/metadata/match_weight_postscript',
-  conditions = ['font_metadata']
+  conditions = ['font_metadata',
+                'not is_variable_font']
 )
 def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
-  """METADATA.pb weight matches postScriptName."""
+  """METADATA.pb weight matches postScriptName for static fonts."""
   WEIGHTS = {
     "Thin": 100,
     "ThinItalic": 100,

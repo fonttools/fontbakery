@@ -5,6 +5,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.8.0 (2020-Jun-??)
   - ...
 
+### Modified checks
+- **[com.google.fonts/check/metadata/os2_weightclass]**: Check will now work correctly for variable fonts (issue #2683)
+- **[com.google.fonts/check/metadata/match_weight_postscript]**: Disabled for variable fonts
+
 
 ## 0.7.26 (2020-May-29)
 ### Noteworthy code-changes
