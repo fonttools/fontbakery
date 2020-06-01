@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.8.0 (2020-Jun-??)
 ### New checks
   - **[com.google.fonts/check/repo/fb_report]**: WARN when upstream repo has fb report files (issue #2888)
+  - **[com.google.fonts/check/repo/zip_files]**: FAIL when upstream repo has ZIP files (issue #2903)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/metadata/os2_weightclass]**: Check will now work correctly for variable fonts (issue #2683)

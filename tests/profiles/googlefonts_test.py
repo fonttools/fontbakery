@@ -3325,6 +3325,35 @@ def test_check_repo_fb_report():
     assert status == WARN and message.code == "fb-report"
 
 
+def test_check_repo_zip_files():
+  """ A font repository should not include ZIP files """
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_zip_files as check
+  import tempfile
+  import shutil
+  with tempfile.TemporaryDirectory() as tmp_dir:
+    family_dir = portable_path(tmp_dir)
+    src_family = portable_path("data/test/varfont")
+    shutil.copytree(src_family, family_dir)
+
+    print("Test PASS for a repo without ZIP files.")
+    status, message = list(check(family_dir))[-1]
+    assert status == PASS
+
+    for ext in ["zip", "rar", "7z"]:
+      print(f"Test FAIL when a {ext} file is found.")
+      # ZIP files must be detected even if placed on subdirectories:
+      filepath = os.path.join(family_dir,
+                              f"jura",
+                              f"static",
+                              f"fonts-release.{ext}")
+      #create an empty file. The check won't care about the contents:
+      open(filepath, "w+")
+      status, message = list(check(family_dir))[-1]
+      assert status == FAIL and message.code == "zip-files"
+      # remove the file before testing the next one ;-)
+      os.remove(filepath)
+
+
 def test_check_vertical_metrics_regressions(cabin_ttFonts):
   from fontbakery.profiles.shared_conditions import family_directory
   from fontbakery.profiles.googlefonts import (

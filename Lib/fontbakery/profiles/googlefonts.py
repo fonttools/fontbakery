@@ -91,6 +91,7 @@ REPO_CHECKS = [
   'com.google.fonts/check/repo/dirname_matches_nameid_1',
   'com.google.fonts/check/repo/vf_has_static_fonts',
   'com.google.fonts/check/repo/fb_report',
+  'com.google.fonts/check/repo/zip_files',
   'com.google.fonts/check/license/OFL_copyright'
 ]
 
@@ -4221,6 +4222,42 @@ def com_google_fonts_check_repo_fb_report(family_directory):
                   "There's no need to keep a copy of Font Bakery reports in the repository,"
                   " since they are ephemeral; FB has a 'github markdown' output mode"
                   " to make it easy to file reports as issues.")
+
+
+@check(
+  id = 'com.google.fonts/check/repo/zip_files',
+  conditions = ['family_directory'],
+  rationale="""
+    Sometimes people check in ZIPs into their font project repositories. While we accept the practice of checking in binaries, we believe that a ZIP is a step too far ;)
+
+    Note: a source purist position is that only source files and build scripts should be checked in. 
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2903'
+  }
+)
+def com_google_fonts_check_repo_zip_files(family_directory):
+  """A font repository should not include ZIP files"""
+  from fontbakery.utils import (filenames_ending_in,
+                                pretty_print_list)
+
+  COMMON_ZIP_EXTENSIONS = [".zip", ".7z", ".rar"]
+  zip_files = []
+  for ext in COMMON_ZIP_EXTENSIONS:
+    zip_files.extend(filenames_ending_in(ext, family_directory))
+
+  if not zip_files:
+    yield PASS, 'OK'
+  else:
+    files_list = pretty_print_list(zip_files,
+                                   shorten=None,
+                                   sep='\n\t* ')
+    yield FAIL, \
+          Message("zip-files",
+                  f"Please do not host ZIP files on the project repository."
+                  f" These files were detected:\n"
+                  f"\t* {files_list}")
+
 
 @check(
   id = 'com.google.fonts/check/vertical_metrics_regressions',
