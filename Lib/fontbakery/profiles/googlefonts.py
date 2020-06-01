@@ -90,6 +90,7 @@ NAME_TABLE_CHECKS = [
 REPO_CHECKS = [
   'com.google.fonts/check/repo/dirname_matches_nameid_1',
   'com.google.fonts/check/repo/vf_has_static_fonts',
+  'com.google.fonts/check/repo/fb_report',
   'com.google.fonts/check/license/OFL_copyright'
 ]
 
@@ -4195,6 +4196,31 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
                   'Please create a subdirectory called "static/"'
                   ' and include in it static font files.')
 
+
+@check(
+  id = 'com.google.fonts/check/repo/fb_report',
+  conditions = ['family_directory'],
+  rationale="""
+    A FontBakery report is ephemeral and so should be used for posting issues on a bug-tracker instead of being hosted in the font project repository.
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2888'
+  }
+)
+def com_google_fonts_check_repo_fb_report(family_directory):
+  """A font repository should not include fontbakery report files"""
+  from fontbakery.utils import filenames_ending_in
+
+  has_report_files = any([f for f in filenames_ending_in(".json", family_directory)
+                          if '"result"' in open(f).read()])
+  if not has_report_files:
+    yield PASS, 'OK'
+  else:
+    yield WARN, \
+          Message("fb-report",
+                  "There's no need to keep a copy of Font Bakery reports in the repository,"
+                  " since they are ephemeral; FB has a 'github markdown' output mode"
+                  " to make it easy to file reports as issues.")
 
 @check(
   id = 'com.google.fonts/check/vertical_metrics_regressions',

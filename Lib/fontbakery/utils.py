@@ -401,3 +401,18 @@ def assert_results_contain(check_results, expected_status, expected_msgcode=None
       found = True
       break
   assert(found)
+
+
+def filenames_ending_in(suffix, root):
+  '''
+  Returns a list of the filenames of all files in a given directory subtree
+  that have the given filename suffix. Example: List all ".json" files.
+  '''
+  filenames = []
+  for f in os.listdir(root):
+    fullpath = os.path.join(root, f)
+    if f.endswith(suffix):
+      filenames.append(fullpath)
+    if os.path.isdir(fullpath):
+      filenames.extend(filenames_ending_in(suffix, fullpath))
+  return filenames
