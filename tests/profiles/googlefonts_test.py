@@ -2118,6 +2118,28 @@ def test_check_metadata_os2_weightclass():
     family_metadata,
     font_metadata)
 
+  # VF
+  # Our reference Jura is known to be good
+  fontfile = portable_path("data/test/varfont/jura/Jura[wght].ttf")
+  ttFont = TTFont(fontfile)
+  family_directory = os.path.dirname(fontfile)
+  family_meta = family_metadata(family_directory)
+  font_meta = font_metadata(family_meta, fontfile)
+
+  # So it must PASS the check:
+  print (f"Test PASS with a good font ({fontfile})...")
+  status, message = list(check(ttFont, font_meta))[-1]
+  assert status == PASS
+
+  # And fail if it finds a bad weight value:
+  good_value = font_meta.weight
+  bad_value = good_value + 100
+  font_meta.weight = bad_value
+  print (f"Test FAIL with a bad font ({fontfile})...")
+  status, message = list(check(ttFont, font_meta))[-1]
+  assert status == FAIL and message.code == "mismatch"
+
+  # Static
   # Our reference Montserrat family is a good 18-styles family:
   for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
     ttFont = TTFont(fontfile)
