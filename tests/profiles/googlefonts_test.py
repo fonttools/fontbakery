@@ -3255,7 +3255,6 @@ def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
 
 def test_check_repo_vf_has_static_fonts():
   """Check VF family dirs in google/fonts contain static fonts"""
-  from fontbakery.profiles.shared_conditions import family_directory
   from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_vf_has_static_fonts as check
   import tempfile
   import shutil
@@ -3282,6 +3281,48 @@ def test_check_repo_vf_has_static_fonts():
     shutil.copytree(static_fonts, static_dir)
     status, message = list(check(family_dir))[-1]
     assert status == PASS
+
+
+def test_check_repo_fb_report():
+  """ A font repository should not include fontbakery report files """
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_fb_report as check
+  import tempfile
+  import shutil
+  with tempfile.TemporaryDirectory() as tmp_dir:
+    family_dir = portable_path(tmp_dir)
+    src_family = portable_path("data/test/varfont")
+    shutil.copytree(src_family, family_dir)
+
+    print("Test PASS for a repo without FB report files.")
+    status, message = list(check(family_dir))[-1]
+    assert status == PASS
+
+    print("Test PASS with a json file that is not a FB report.")
+    status, message = list(check(family_dir))[-1]
+    assert status == PASS
+    # Add a json file that is not a FB report
+    open(os.path.join(family_dir, "something_else.json"), "w+").write("this is not a FB report")
+
+    print("Test WARN with an actual snippet of a report.")
+    FB_REPORT_SNIPPET = """
+{
+    "result": {
+        "INFO": 8,
+        "PASS": 81,
+        "SKIP": 74,
+        "WARN": 4
+    },
+    "sections": [
+    """
+    # Report files must be detected even if placed on subdirectories
+    # and the check code shuld not rely only on filename (such as "Jura-Regular.fb-report.json")
+    # but should instead inspect the contents of the file:
+    open(os.path.join(family_dir,
+                      "jura",
+                      "static",
+                      "my_fontfamily_name.json"), "w+").write(FB_REPORT_SNIPPET)
+    status, message = list(check(family_dir))[-1]
+    assert status == WARN and message.code == "fb-report"
 
 
 def test_check_vertical_metrics_regressions(cabin_ttFonts):
