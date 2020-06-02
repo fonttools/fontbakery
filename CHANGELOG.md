@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bugfixes
   - Corrections to UNICODERANGE_DATA constant. Contributed by Bob Hallissy @bobh0303 (PR #2901)
   - Fix implementation of GDEF mark/nonmark checks (issues #2904 and #2877)
+  - Ftxvalidator check now treats stderr separately and emits it as a WARN to avoid corrupting plist data and thus breaking its parsing. (issue #2801)
 
 
 ## 0.7.26 (2020-May-29)
