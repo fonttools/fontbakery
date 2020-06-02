@@ -227,7 +227,16 @@ def com_google_fonts_check_ftxvalidator(font, ftxvalidator_cmd):
         "all",  # execute all checks
         font
     ]
-    ftx_output = subprocess.check_output(ftx_cmd, stderr=subprocess.STDOUT)
+    # here we capture stdout and stderr separately to avoid
+    # corrupting the plist data to be parsed a bit later:
+    pipes = subprocess.Popen(ftx_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ftx_output, ftx_err = pipes.communicate()
+
+    if len(ftx_err):
+      yield WARN, \
+            Message('stderr',
+                    f"stderr output from ftxvalidator:\n{ftx_err}")
+
     ftx_data = plistlib.loads(ftx_output)
     # we accept kATSFontTestSeverityInformation
     # and kATSFontTestSeverityMinorError
@@ -243,6 +252,7 @@ def com_google_fonts_check_ftxvalidator(font, ftxvalidator_cmd):
           "all",  # execute all checks
           font
       ]
+      # Here, stdout and stderr are mixed:
       ftx_output = subprocess.check_output(ftx_cmd, stderr=subprocess.STDOUT)
       yield FAIL, f"ftxvalidator output follows:\n\n{ftx_output}\n"
 
