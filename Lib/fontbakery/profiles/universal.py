@@ -227,7 +227,7 @@ def com_google_fonts_check_ftxvalidator(font, ftxvalidator_cmd):
         "all",  # execute all checks
         font
     ]
-    ftx_output = subprocess.check_output(ftx_cmd, stderr=subprocess.STDOUT)
+    ftx_output = subprocess.check_output(ftx_cmd)
     ftx_data = plistlib.loads(ftx_output)
     # we accept kATSFontTestSeverityInformation
     # and kATSFontTestSeverityMinorError
