@@ -70,7 +70,7 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
   conditions = ['glyph_metrics_stats',
                 'is_ttf'],
   rationale = """
-    There are various metadata in the OpenType spec to specify if a font is monospaced or not. If the font is not trully monospaced, then no monospaced metadata should be set (as sometimes they mistakenly are...)
+    There are various metadata in the OpenType spec to specify if a font is monospaced or not. If the font is not truly monospaced, then no monospaced metadata should be set (as sometimes they mistakenly are...)
 
     Requirements for monospace fonts:
 
