@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - Corrections to UNICODERANGE_DATA constant. Contributed by Bob Hallissy @bobh0303 (PR #2901)
+  - Fix implementation of GDEF mark/nonmark checks (issue #2904)
 
 
 ## 0.7.26 (2020-May-29)
