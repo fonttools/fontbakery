@@ -183,6 +183,12 @@ class NameID(enum.IntEnum):
   LIGHT_BACKGROUND_PALETTE = 23
   DARK_BACKGROUD_PALETTE = 24
 
+class GlyphClass(enum.IntEnum):
+  BASE = 1
+  LIGATURE = 2
+  MARK = 3
+  COMPONENT = 4
+
 class FsSelection(enum.IntEnum):
   ITALIC         = (1 << 0)
   UNDERSCORE     = (1 << 1)
@@ -804,6 +810,3 @@ CJK_UNICODE_RANGES = [
   [0xA000, 0xA48F],  # Yi Syllables
   [0xA490, 0xA4CF],  # Yi Radicals
 ]
-
-
-GDEF_MARK_GLYPH_CLASS = 3
