@@ -823,7 +823,23 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
     "descent": {}
   }
 
+  missing_tables = False
   for ttFont in ttFonts:
+    filename = os.path.basename(ttFont.reader.file.name)
+    if 'OS/2' not in ttFont:
+      missing_tables = True
+      yield FAIL, \
+            Message('lacks-OS/2',
+                    f"{filename} lacks an 'OS/2' table.")
+      continue
+
+    if 'hhea' not in ttFont:
+      missing_tables = True
+      yield FAIL, \
+            Message('lacks-hhea',
+                    f"{filename} lacks a 'hhea' table.")
+      continue
+
     full_font_name = ttFont['name'].getName(4, 3, 1, 1033).toUnicode()
     vmetrics['sTypoAscender'][full_font_name] = ttFont['OS/2'].sTypoAscender
     vmetrics['sTypoDescender'][full_font_name] = ttFont['OS/2'].sTypoDescender
@@ -833,19 +849,26 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
     vmetrics['ascent'][full_font_name] = ttFont['hhea'].ascent
     vmetrics['descent'][full_font_name] = ttFont['hhea'].descent
 
-  for k, v in vmetrics.items():
-    metric_vals = set(vmetrics[k].values())
-    if len(metric_vals) != 1:
-      failed.append(k)
 
-  if failed:
-    for k in failed:
-      s = ["{}: {}".format(k, v) for k, v in vmetrics[k].items()]
-      s = "\n".join(s)
-      yield FAIL, (f"{k} is not the same across the family:\n"
-                   f"{s}")
-  else:
-    yield PASS, "Vertical metrics are the same across the family."
+  if not missing_tables:
+    # It is important to first ensure all font files have OS/2 and hhea tables
+    # before performing the rest of the check routine.
+
+    for k, v in vmetrics.items():
+      metric_vals = set(vmetrics[k].values())
+      if len(metric_vals) != 1:
+        failed.append(k)
+
+    if failed:
+      for k in failed:
+        s = ["{}: {}".format(k, v) for k, v in vmetrics[k].items()]
+        s = "\n".join(s)
+        yield FAIL, \
+              Message(f'{k}-mismatch',
+                      (f"{k} is not the same across the family:\n"
+                       f"{s}"))
+    else:
+      yield PASS, "Vertical metrics are the same across the family."
 
 
 @check(

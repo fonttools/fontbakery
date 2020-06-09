@@ -676,7 +676,12 @@ def test_check_family_vertical_metrics(montserrat_ttFonts):
   print("Test fail with one bad font that has one different vertical metric val...")
   montserrat_ttFonts[0]['OS/2'].usWinAscent = 4000
   status, message = list(check(montserrat_ttFonts))[-1]
-  assert status == FAIL
+  assert status == FAIL and message.code == "usWinAscent-mismatch"
+
+  # TODO: Also test these code-paths:
+  # FAIL, "mismatch-<other values>"
+  # FAIL, "lacks-OS/2"
+  # FAIL, "lacks-hhea"
 
 
 def test_check_superfamily_vertical_metrics(montserrat_ttFonts, cabin_ttFonts, cabin_condensed_ttFonts):
