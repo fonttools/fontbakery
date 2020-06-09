@@ -96,6 +96,11 @@ def ArgumentParser(profile, profile_arg=True):
                             '(default: LOGLEVEL)'
                             ).format(', '.join(log_levels.keys())))
 
+  argument_parser.add_argument('--succinct',
+                               action='store_true',
+                               help=('This is a slightly more compact and succint'
+                                     ' output layout for the text terminal.'))
+
   if sys.platform != "win32":
     argument_parser.add_argument(
         '-n',
@@ -289,6 +294,7 @@ def main(profile=None, values=None):
   loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
   tr = TerminalReporter(runner=runner, is_async=False
                        , print_progress=not args.no_progress
+                       , succinct=args.succinct
                        , check_threshold=loglevel
                        , log_threshold=args.loglevel_messages or loglevel
                        , theme=theme

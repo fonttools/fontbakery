@@ -151,6 +151,7 @@ class TerminalProgress(FontbakeryReporter):
                    , stdout=sys.stdout
                    , structure_threshold=None
                    , theme=LIGHT_THEME
+                   , succinct=None
                    , cupcake=True
                      # a tuple of structural statuses to be skipped
                      # e.g. (STARTSECTION, ENDSECTION)
@@ -159,6 +160,7 @@ class TerminalProgress(FontbakeryReporter):
     super(TerminalProgress, self).__init__(**kwd)
 
     self.theme = theme
+    self.succinct = succinct
     self._print_progress = stdout.isatty() and print_progress
 
     if self._print_progress:
@@ -408,39 +410,55 @@ class TerminalReporter(TerminalProgress):
       else:
         formatted_iterargs = iterargs
 
-      # Omit printing of iterargs when there's none of them:
-      with_string = ""
-      if formatted_iterargs != ():
-        with_string = f"with {formatted_iterargs[0][1]}"
+      if self.succinct:
+        with_string = "All fonts"
+        if formatted_iterargs != ():
+          with_string = os.path.basename(f"{formatted_iterargs[0][1]}")
 
-      print((' >> {}\n'
-             '    {}\n'
-             '    {}\n').format(
-        self.theme["check-id"](check.id),
-        self.theme["description"](check.description),
-        with_string))
+        print((" >> Check:   {}\n"
+               "    Desc:    {}\n"
+               "    Files:   {}").format(
+          self.theme["check-id"](check.id),
+          self.theme["description"](check.description),
+          with_string))
 
-      if check.rationale:
-        from fontbakery.utils import text_flow, unindent_rationale
-        content = unindent_rationale(check.rationale).strip()
-        print('    ' + self.theme["rationale-title"]("  Rationale:" + " " * 64) + '\n'
-              + text_flow(content,
-                          width=76,
-                          indent=4,
-                          left_margin=2,
-                          space_padding=True,
-                          text_color=self.theme["rationale-text"]))
+      else:
+        # Omit printing of iterargs when there's none of them:
+        with_string = ""
+        if formatted_iterargs != ():
+          with_string = f"with {formatted_iterargs[0][1]}"
+
+        print((' >> {}\n'
+               '    {}\n'
+               '    {}\n').format(
+          self.theme["check-id"](check.id),
+          self.theme["description"](check.description),
+          with_string))
+
+        if check.rationale:
+          from fontbakery.utils import text_flow, unindent_rationale
+          content = unindent_rationale(check.rationale).strip()
+          print('    ' + self.theme["rationale-title"]("  Rationale:" + " " * 64) + '\n'
+                + text_flow(content,
+                            width=76,
+                            indent=4,
+                            left_margin=2,
+                            space_padding=True,
+                            text_color=self.theme["rationale-text"]))
 
     # Log statuses have weights >= 0
     # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
     if status.weight >= self._log_threshold:
       print('    * {}: {}'.format(formatStatus(self.theme, status),
-                                  message))
+                                    message))
       if hasattr(message, 'traceback'):
         print('        ','\n         '.join(message.traceback.split('\n')))
 
+
     if status == ENDCHECK:
-      print('\n    Result: {}\n'.format(formatStatus(self.theme, message)))
+      if not self.succinct:
+        print('\n')
+      print('    Result: {}\n'.format(formatStatus(self.theme, message)))
 
     if status == ENDSECTION:
       print('')
