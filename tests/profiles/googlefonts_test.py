@@ -719,22 +719,28 @@ def test_check_usweightclass():
     status, message = list(check(ttFont, expected_style(ttFont)))[-1]
     assert status == PASS
 
-  font = TEST_FILE("montserrat/Montserrat-Thin.ttf")
+  # Check otf Thin == 250 and ExtraLight == 275
+  font = TEST_FILE("rokkitt/Rokkitt-Thin.otf")
+  print(f"Test FAIL with bad font '{font}' ...")
   ttFont = TTFont(font)
-  ttFont["OS/2"].usWeightClass = 100
-  print("Test WARN with a Thin:100 TTF...")
   status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-  assert status == WARN and message.code == "blur-on-windows"
+  assert status == FAIL
 
-  font = TEST_FILE("montserrat/Montserrat-ExtraLight.ttf")
+  print(f"Test PASS with good font '{font}' ...")
+  ttFont['OS/2'].usWeightClass = 250
+  status, message = list(check(ttFont, expected_style(ttFont)))[-1]
+  assert status == PASS
+
+  font = TEST_FILE("rokkitt/Rokkitt-ExtraLight.otf")
+  print(f"Test FAIL with bad font '{font}' ...")
   ttFont = TTFont(font)
-  ttFont["OS/2"].usWeightClass = 200
-  print("Test WARN with an ExtraLight:200 TTF...")
   status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-  assert status == WARN and message.code == "blur-on-windows"
+  assert status == FAIL
 
-  # TODO: test FAIL, "bad-value" with a Thin:100 OTF
-  # TODO: test FAIL, "bad-value" with an ExtraLight:200 OTF
+  print(f"Test PASS with good font '{font}' ...")
+  ttFont['OS/2'].usWeightClass = 275
+  status, message = list(check(ttFont, expected_style(ttFont)))[-1]
+  assert status == PASS
   # TODO: test italic variants to ensure we do not get regressions of
   #       this bug: https://github.com/googlefonts/fontbakery/issues/2650
 

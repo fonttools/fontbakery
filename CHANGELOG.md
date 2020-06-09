@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
   - **[com.google.fonts/check/metadata/os2_weightclass]**: Check will now work correctly for variable fonts (issue #2683)
   - **[com.google.fonts/check/metadata/match_weight_postscript]**: Disabled for variable fonts
+  - **[com.google.fonts/check/usweightclass]**: Check will now work properly for variable fonts and otf fonts
 
 ### Bugfixes
   - Corrections to UNICODERANGE_DATA constant. Contributed by Bob Hallissy @bobh0303 (PR #2901)
