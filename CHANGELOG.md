@@ -20,6 +20,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix implementation of GDEF mark/nonmark checks (issues #2904 and #2877)
   - Ftxvalidator check now treats stderr separately and emits it as a WARN to avoid corrupting plist data and thus breaking its parsing. (issue #2801)
   - Fix crash on **com.google.fonts/check/family/vertical_metrics**. Thanks for reporting, @drj11 (issue #2917)
+  - Fix crash on **com.google.fonts/check/family/os2_metrics_match_hhea** (issue #2921)
 
 
 ## 0.7.26 (2020-May-29)

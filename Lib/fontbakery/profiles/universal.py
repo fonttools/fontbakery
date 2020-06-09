@@ -136,6 +136,23 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
   Mac OS X uses the hhea values.
   Windows uses OS/2 or Win, depending on the OS or fsSelection bit value.
   """
+
+  filename = os.path.basename(ttFont.reader.file.name)
+
+  # Check both OS/2 and hhea are present.
+  missing_tables = False
+
+  required = ["OS/2", "hhea"]
+  for key in required:
+      if key not in ttFont:
+          missing_tables = True
+          yield FAIL,\
+                  Message(f'lacks-{key}',
+                          f"{filename} lacks a '{key}' table.")
+
+  if missing_tables:
+      return
+
   # OS/2 sTypoAscender and sTypoDescender match hhea ascent and descent
   if ttFont["OS/2"].sTypoAscender != ttFont["hhea"].ascent:
     yield FAIL,\
