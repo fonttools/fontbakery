@@ -22,6 +22,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Ftxvalidator check now treats stderr separately and emits it as a WARN to avoid corrupting plist data and thus breaking its parsing. (issue #2801)
   - Fix crash on **com.google.fonts/check/family/vertical_metrics**. Thanks for reporting, @drj11 (issue #2917)
   - Fix crash on **com.google.fonts/check/family/os2_metrics_match_hhea** (issue #2921)
+  - Fix several crashes when OS/2 table is missing: In **com.google.fonts/check/family/panose_proportion**, **com.google.fonts/check/family/panose_familytype**, **com.google.fonts/check/xavgcharwidth**, **com.adobe.fonts/check/fsselection_matches_macstyle**, **com.google.fonts/check/code_pages**, **com.google.fonts/check/family/panose_proportion**, **com.google.fonts/check/family/win_ascent_and_descent**. Contributed by @drj11
 
 
 ## 0.7.26 (2020-May-29)
