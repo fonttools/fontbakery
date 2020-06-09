@@ -841,42 +841,84 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
 
 @check(
   id = 'com.google.fonts/check/usweightclass',
-  conditions=['expected_style']
+  conditions=['expected_style'],
+  rationale = """
+    Google Fonts expects variable fonts, static ttfs and static otfs to have differing OS/2 usWeightClass values.
+
+    For Variable Fonts, Thin-Black must be 100-900
+    For static ttfs, Thin-Black can be 100-900 or 250-900
+    For static otfs, Thin-Black must be 250-900
+
+    If static otfs are set lower than 250, text may appear blurry in legacy Windows applications.
+
+    Glyphsapp users can change the usWeightClass value of an instance by adding a 'weightClass' customParameter.
+  """
 )
 def com_google_fonts_check_usweightclass(ttFont, expected_style):
   """Checking OS/2 usWeightClass."""
-  from fontbakery.profiles.shared_conditions import is_ttf
+  from fontbakery.profiles.shared_conditions import (
+    is_ttf,
+    is_cff,
+    is_variable_font
+  )
 
+  failed = False
   expected_value = expected_style.usWeightClass
   weight_name = expected_style.name
   value = ttFont['OS/2'].usWeightClass
+  has_expected_value = value == expected_value
+  fail_message = \
+    "OS/2 usWeightClass is '{}' when it should be '{}'."
 
-  if value != expected_value:
+  if is_variable_font(ttFont):
+    if not has_expected_value:
+      failed = True
+      yield FAIL, Message(
+        "bad-value",
+        fail_message.format(value, expected_value)
+      )
+  # overrides for static Thin and ExtaLight fonts
+  # for static ttfs, we don't mind if Thin is 250 and ExtraLight is 275.
+  # However, if the values are incorrect we will recommend they set Thin
+  # to 100 and ExtraLight to 250.
+  # for static otfs, Thin must be 250 and ExtraLight must be 275
+  elif "Thin" in weight_name:
+    if is_ttf(ttFont) and value not in [100, 250]:
+      failed = True
+      yield FAIL, Message(
+        "bad-value",
+        fail_message.format(value, expected_value)
+      )
+    if is_cff(ttFont) and value != 250:
+      failed = True
+      yield FAIL, Message(
+        "bad-value",
+        fail_message.format(value, 250)
+      )
 
-    if is_ttf(ttFont) and \
-       (weight_name in ['Thin', 'Thin Italic'] and value == 100) or \
-       (weight_name in ['ExtraLight', 'ExtraLight Italic'] and value == 200):
-      yield WARN,\
-            Message("blur-on-windows",
-                    f"{weight_name}:{value} is OK on TTFs, but"
-                    f" OTF files with those values will cause"
-                    f" bluring on Windows."
-                    f" GlyphsApp users must set an Instance"
-                    f" Custom Parameter for the Thin and ExtraLight"
-                    f" styles to 250 and 275, so that if OTFs are"
-                    f" exported then it will not blur on Windows.")
-    else:
-      yield FAIL,\
-            Message("bad-value",
-                    f"OS/2 usWeightClass expected value for"
-                    f" '{weight_name}' is {expected_value} but"
-                    f" this font has {value}.\n"
-                    f" GlyphsApp users should set a Custom Parameter"
-                    f" for 'Axis Location' in each master to ensure"
-                    f" that the information is accurately built into"
-                    f" variable fonts.")
-  else:
-    yield PASS, "OS/2 usWeightClass value looks good!"
+  elif "ExtraLight" in weight_name:
+    if is_ttf(ttFont) and value not in [200, 275]:
+      failed = True
+      yield FAIL, Message(
+        "bad-value",
+        fail_message.format(value, expected_value)
+      )
+    if is_cff(ttFont) and value != 275:
+      failed = True
+      yield FAIL, Message(
+        "bad-value",
+        fail_message.format(value, 275)
+      )
+
+  elif not has_expected_value:
+    failed = True
+    yield FAIL, Message(
+      "bad-value",
+      fail_message.format(value, expected_value)
+    )
+
+  if not failed:
+    yield PASS, "OS/2 usWeightClass is good"
 
 
 @check(

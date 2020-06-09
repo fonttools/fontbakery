@@ -34,8 +34,8 @@ _ITALIC_NAMES = {
     r"Ita?l?i?c?|Obli?q?u?e?": "Italic" 
 }
 _WEIGHT_VALUES = {
-    "Thin": {"usWeightClass": 250, "fvar": 100.0},
-    "ExtraLight": {"usWeightClass": 275, "fvar": 200.0},
+    "Thin": {"usWeightClass": 100, "fvar": 100.0},
+    "ExtraLight": {"usWeightClass": 200, "fvar": 200.0},
     "Light": {"usWeightClass": 300, "fvar": 300.0},
     "Regular": {"usWeightClass": 400, "fvar": 400.0},
     "": {"usWeightClass": 400, "fvar": 400.0},
