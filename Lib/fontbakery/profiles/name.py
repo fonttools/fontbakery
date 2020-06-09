@@ -105,6 +105,19 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
   most_common_width = glyph_metrics_stats["most_common_width"]
   width_max = glyph_metrics_stats['width_max']
 
+  # Check for missing tables before indexing them
+  missing_tables = False
+  required = ["glyf", "hhea", "hmtx", "OS/2", "post"]
+  for key in required:
+    if key not in ttFont:
+      missing_tables = True
+      yield FAIL,\
+            Message(f'lacks-{key}',
+                    f"Font file lacks a '{key}' table.")
+
+  if missing_tables:
+    return
+
   if ttFont['hhea'].advanceWidthMax != width_max:
     failed = True
     yield FAIL,\

@@ -80,6 +80,12 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
 )
 def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
   """Checking OS/2 usWinAscent & usWinDescent."""
+
+  if "OS/2" not in ttFont:
+    yield FAIL, Message("lacks-OS/2",
+                        "Font file lacks OS/2 table")
+    return
+
   failed = False
 
   # OS/2 usWinAscent:

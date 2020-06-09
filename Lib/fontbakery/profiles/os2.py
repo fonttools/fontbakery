@@ -16,11 +16,21 @@ def com_google_fonts_check_family_panose_proportion(ttFonts):
   """Fonts have consistent PANOSE proportion?"""
   passed = True
   proportion = None
+  missing = False
   for ttFont in ttFonts:
+    if "OS/2" not in ttFont:
+      missing = True
+      passed = False
+      continue
     if proportion is None:
       proportion = ttFont['OS/2'].panose.bProportion
     if proportion != ttFont['OS/2'].panose.bProportion:
       passed = False
+
+  if missing:
+    yield FAIL,\
+          Message("lacks-OS/2",
+                  "One or more fonts lack the required OS/2 table.")
 
   if not passed:
     yield FAIL,\
@@ -40,11 +50,22 @@ def com_google_fonts_check_family_panose_familytype(ttFonts):
   """Fonts have consistent PANOSE family type?"""
   passed = True
   familytype = None
+  missing = False
+
   for ttfont in ttFonts:
+    if "OS/2" not in ttfont:
+      passed = False
+      missing = True
+      continue
     if familytype is None:
       familytype = ttfont['OS/2'].panose.bFamilyType
     if familytype != ttfont['OS/2'].panose.bFamilyType:
       passed = False
+
+  if missing:
+    yield FAIL,\
+          Message("lacks-OS/2",
+                  "One or more fonts lack the required OS/2 table.")
 
   if not passed:
     yield FAIL,\
@@ -63,6 +84,13 @@ def com_google_fonts_check_family_panose_familytype(ttFonts):
 )
 def com_google_fonts_check_xavgcharwidth(ttFont):
   """Check if OS/2 xAvgCharWidth is correct."""
+
+  if "OS/2" not in ttFont:
+    yield FAIL,\
+          Message("lacks-OS/2",
+                  "Required OS/2 table is missing.")
+    return
+
   current_value = ttFont['OS/2'].xAvgCharWidth
   ACCEPTABLE_ERROR = 10  # Width deviation tolerance in font units
 
@@ -160,6 +188,20 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
 )
 def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
   """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
+
+  # Check both OS/2 and head are present.
+  missing_tables = False
+
+  required = ["OS/2", "head"]
+  for key in required:
+      if key not in ttFont:
+          missing_tables = True
+          yield FAIL,\
+                  Message(f'lacks-{key}',
+                          f"The '{key}' table is missing.")
+  if missing_tables:
+    return
+
   from fontbakery.constants import FsSelection, MacStyle
   failed = False
   head_bold = (ttFont['head'].macStyle & MacStyle.BOLD) != 0
@@ -240,6 +282,10 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
 )
 def com_google_fonts_check_code_pages(ttFont):
   """Check code page character ranges"""
+
+  if "OS/2" not in ttFont:
+    yield FAIL, Message("lacks-OS/2", "The required OS/2 table is missing.")
+    return
 
   if not hasattr(ttFont['OS/2'], "ulCodePageRange1") or \
      not hasattr(ttFont['OS/2'], "ulCodePageRange2") or \
