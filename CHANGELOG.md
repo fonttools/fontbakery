@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.8.0 (2020-Jun-??)
+### Note-worthy code changes
+  - Add a `--succinct` mode. This is a slightly more compact and succint output layout for the text terminal. As requested by @m4rc1e (issue #2915)
+
 ### New checks
   - **[com.google.fonts/check/repo/fb_report]**: WARN when upstream repo has fb report files (issue #2888)
   - **[com.google.fonts/check/repo/zip_files]**: FAIL when upstream repo has ZIP files (issue #2903)
