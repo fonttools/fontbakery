@@ -4415,8 +4415,22 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
 def com_google_fonts_check_cjk_vertical_metrics(ttFont):
   """Check font follows the Google Fonts CJK vertical metric schema"""
   from .shared_conditions import is_cjk_font, typo_metrics_enabled
-  font_upm = ttFont['head'].unitsPerEm
+  filename = os.path.basename(ttFont.reader.file.name)
 
+  # Check necessary tables are present.
+  missing_tables = False
+  required = ["OS/2", "hhea", "head"]
+  for key in required:
+    if key not in ttFont:
+      missing_tables = True
+      yield FAIL,\
+            Message(f'lacks-{key}',
+                    f"{filename} lacks a '{key}' table.")
+
+  if missing_tables:
+    return
+
+  font_upm = ttFont['head'].unitsPerEm
   font_metrics = {
     'OS/2.sTypoAscender': ttFont['OS/2'].sTypoAscender,
     'OS/2.sTypoDescender': ttFont['OS/2'].sTypoDescender,
@@ -4427,7 +4441,6 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     'OS/2.usWinAscent': ttFont['OS/2'].usWinAscent,
     'OS/2.usWinDescent': ttFont['OS/2'].usWinDescent
   }
-
   expected_metrics = {
     'OS/2.sTypoAscender': font_upm * 0.88,
     'OS/2.sTypoDescender': font_upm * -0.12,
@@ -4435,7 +4448,9 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     'hhea.lineGap': 0,
   }
 
-  failed, warn = False, False
+  failed = False
+  warn = False
+
   # Check fsSelection bit 7 is not enabled
   if typo_metrics_enabled(ttFont):
     failed = True
