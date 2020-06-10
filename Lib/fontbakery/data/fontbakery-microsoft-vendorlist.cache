@@ -57,7 +57,7 @@
 	<meta property="og:title" content="Registered font vendors - Typography" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://docs.microsoft.com/en-us/typography/vendors/" />
-			<meta property="og:description" content="Vendors who have registered a unique &#39;Vendor ID&#39; with Microsoft." />
+			<meta property="og:description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
 		<meta property="og:image:alt" content="Microsoft Logo" />
 
@@ -71,7 +71,7 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/64255082901e16beb82fc16c4b9089f52c5438f4/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/6e9dc2ad75727bbcddeb3c5ec43dde9ada18bf6d/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
@@ -85,20 +85,20 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-05-18 09:41 PM" />
+<meta name="updated_at" content="2020-06-09 01:06 AM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3131" />
+<meta name="word_count" content="3155" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/e4e978d0.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/591b291d.site-ltr.css ">
 
-	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f7aab81a.conceptual.css ">
+	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/5a8a71c1.conceptual.css ">
 
 
 	<script>
@@ -136,15 +136,13 @@
 	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
-	<script nomodule src="/_themes/docs.theme/master/en-us/_themes/scripts/e482e449.index-polyfills.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/f0073812.index-docs.js"></script>
+	<script nomodule src="/_themes/docs.theme/master/en-us/_themes/scripts/7501e2bd.index-polyfills.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2ac2eb3d.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
 <div class="header-holder has-default-focus">
-	<a href="#main" class="skip-to-main-link visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
-	<div id="build-banner-holder" class="has-default-focus has-overflow-hidden">
-	</div>
+	<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
 		<div id="headerAreaHolder" data-bi-name="header">
 <header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
 	<div class="nav-bar">
@@ -349,18 +347,6 @@
 								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2019-11-01T00:00:00.000Z" data-article-date-source="ms.date">11/01/2019</time>
 							</li>
 								<li class="readingTime">15 minutes to read</li>
-								<li class="contributors-holder">
-									<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="6 Contributors" aria-label="6 Contributors">
-										<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
-													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/alib-ms.png?size=32" role="presentation"/></li>
-													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/WorkNihar.png?size=32" role="presentation"/></li>
-													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/mijacobs.png?size=32" role="presentation"/></li>
-													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
-													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/VSC-Service-Account.png?size=32" role="presentation"/></li>
-											<li><span class="is-size-8 has-text-subtle">+1</span></li>
-										</ul>
-									</a>
-								</li>
 						</ul>
 
 						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
@@ -368,13 +354,12 @@
 						</nav>
 
 						<!-- <content> -->
-							
-<p>The following is the list of registered vendor IDs, with links to vendor sites. All vendor IDs are unique to a single vendor.</p>
+							<p>The following is the list of registered vendor IDs, with links to vendor sites. All vendor IDs are unique to a single vendor.</p>
 <p>To learn more about how to register a vendor ID or to update vendor details for a registered ID, please see <a href="register" data-linktype="relative-path">Register as a typography vendor</a>.</p>
 <h2 id="0-9-">[0-9, !$…]</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -453,7 +438,7 @@
 <h2 id="a">A</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -732,7 +717,7 @@
 <h2 id="b">B</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -860,6 +845,10 @@
 <td>Brittney Murphy Design</td>
 </tr>
 <tr>
+<td>BNDR</td>
+<td>Ori Ben-Dor</td>
+</tr>
+<tr>
 <td>BNFF</td>
 <td><a href="http://www.bengalfonts.com/" data-linktype="external">BengalFonts</a></td>
 </tr>
@@ -943,7 +932,7 @@
 <h2 id="c">C</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -1123,6 +1112,10 @@
 <td><a href="http://www.cyreal.org" data-linktype="external">Cyreal</a></td>
 </tr>
 <tr>
+<td>CYTY</td>
+<td><a href="http://cybertype.co.uk/" data-linktype="external">Cybertype</a></td>
+</tr>
+<tr>
 <td>CZOO</td>
 <td><a href="https://czoo.dk/" data-linktype="external">Creative ZOO</a></td>
 </tr>
@@ -1130,7 +1123,7 @@
 <h2 id="d">D</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -1234,6 +1227,10 @@
 <td><a href="http://www.screen.co.jp/" data-linktype="external">Dainippon Screen Mfg. Co., Inc.</a></td>
 </tr>
 <tr>
+<td>dsbn</td>
+<td><a href="https://designbundles.net/" data-linktype="external">Design Bundles</a></td>
+</tr>
+<tr>
 <td>DSBV</td>
 <td><a href="http://www.datascan.nl/" data-linktype="external">Datascan bv</a></td>
 </tr>
@@ -1309,7 +1306,7 @@
 <h2 id="e">E</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -1400,7 +1397,7 @@
 <h2 id="f">F</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -1450,6 +1447,10 @@
 <tr>
 <td>FDI</td>
 <td><a href="http://www.fonts.info/" data-linktype="external">FDI fonts.info</a></td>
+</tr>
+<tr>
+<td>FeCo</td>
+<td><a href="https://fercozzi.com/" data-linktype="external">FerCozzi.</a></td>
 </tr>
 <tr>
 <td>FEED</td>
@@ -1663,7 +1664,7 @@
 <h2 id="g">G</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -1672,7 +1673,7 @@
 </tr>
 <tr>
 <td>GAKU</td>
-<td>Gakumon</td>
+<td>Gakumon</a></td>
 </tr>
 <tr>
 <td>GALA</td>
@@ -1799,6 +1800,10 @@
 <td>Graphity!</td>
 </tr>
 <tr>
+<td>GTF</td>
+<td><a href="https://www.grillitype.com/" data-linktype="external">Grilli Type</a></td>
+</tr>
+<tr>
 <td>GTYP</td>
 <td><a href="http://www.g-type.com" data-linktype="external">G-Type</a></td>
 </tr>
@@ -1806,7 +1811,7 @@
 <h2 id="h">H</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -1856,6 +1861,10 @@
 <tr>
 <td>HBT</td>
 <td><a href="https://www.harbortype.com/" data-linktype="external">Harbor Type</a></td>
+</tr>
+<tr>
+<td>HDCO</td>
+<td><a href="https://hanken.co/" data-linktype="external">Hanken Design Co.</a></td>
 </tr>
 <tr>
 <td>HEB</td>
@@ -1949,7 +1958,7 @@
 <h2 id="i">I</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2084,7 +2093,7 @@
 <h2 id="j">J</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2187,7 +2196,7 @@
 <h2 id="k">K</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2252,7 +2261,7 @@
 </tr>
 <tr>
 <td>KMRS</td>
-<td><a href="https://www.khemarasoft.com/font/" data-linktype="external">Mony Sath & Chhit Wornnarith - KhemaraSoft</a></td>
+<td><a href="https://www.khemarasoft.com/font/" data-linktype="external">Mony Sath & Chhit Wornnarith - KhemaraSoft</td>
 </tr>
 <tr>
 <td>KNST</td>
@@ -2308,13 +2317,13 @@
 </tr>
 <tr>
 <td>KUSH</td>
-<td>KushJain</td>
+<td>KushJain</a></td>
 </tr>
 </table>
 <h2 id="l">L</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2355,7 +2364,7 @@
 </tr>
 <tr>
 <td>LBV</td>
-<td>La Bolde Vita</td>
+<td>La Bolde Vita</a></td>
 </tr>
 <tr>
 <td>LEAF</td>
@@ -2513,7 +2522,7 @@
 <h2 id="m">M</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2559,6 +2568,10 @@
 <tr>
 <td>MAW</td>
 <td><a href="https://www.matthewwills.one/" data-linktype="external">Matthew Willsone</a></td>
+</tr>
+<tr>
+<td>MAXI</td>
+<td><a href="http://www.maxitype.com/" data-linktype="external">MaxiType</a></td>
 </tr>
 <tr>
 <td>MAXN</td>
@@ -2750,7 +2763,7 @@
 </tr>
 <tr>
 <td>MS</td>
-<td><a href="https://docs.microsoft.com/typography/" data-linktype="external">Microsoft Corp.</a></td>
+<td><a href="/en-us/typography/" data-linktype="absolute-path">Microsoft Corp.</a></td>
 </tr>
 <tr>
 <td>MSCH</td>
@@ -2816,7 +2829,7 @@
 <h2 id="n">N</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2830,6 +2843,10 @@
 <tr>
 <td>NASK</td>
 <td><a href="http://www.naske.studio/" data-linktype="external">Naske Studio</a></td>
+</tr>
+<tr>
+<td>NASR</td>
+<td><a href="https://www.myfonts.com/foundry/nasir-udin/" data-linktype="external">Nasir Udin</a></td>
 </tr>
 <tr>
 <td>NAUM</td>
@@ -2959,7 +2976,7 @@
 <h2 id="o">O</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -2968,7 +2985,7 @@
 </tr>
 <tr>
 <td>OHG</td>
-<td><a href="http://www.ourhousegraphics.com" data-linktype="external">Our House Graphic Design</a></td>
+<td><a href="http://www.ourhousegraphics.com" data-linktype="external">Our House Graphics Inc.</a></td>
 </tr>
 <tr>
 <td>OHNO</td>
@@ -3034,7 +3051,7 @@
 <h2 id="p">P</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -3080,6 +3097,10 @@
 <tr>
 <td>PF</td>
 <td><a href="http://www.philsfonts.com/" data-linktype="external">Phil's Fonts, Inc.</a></td>
+</tr>
+<tr>
+<td>PFRM</td>
+<td><a href="https://punchform.com/" data-linktype="external">Punchform</a></td>
 </tr>
 <tr>
 <td>PHO</td>
@@ -3201,7 +3222,7 @@
 <h2 id="q">Q</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -3220,7 +3241,7 @@
 <h2 id="r">R</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -3363,7 +3384,7 @@
 <h2 id="s">S</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -3528,7 +3549,7 @@
 </tr>
 <tr>
 <td>SPIR</td>
-<td>Spiratype</td>
+<td>Spiratype</a></td>
 </tr>
 <tr>
 <td>SPRT</td>
@@ -3614,7 +3635,7 @@
 <h2 id="t">T</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -3881,7 +3902,7 @@
 <h2 id="u">U</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -3932,7 +3953,7 @@
 <h2 id="v">V</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -4015,7 +4036,7 @@
 <h2 id="w">W</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -4032,7 +4053,7 @@
 </tr>
 <tr>
 <td>WEI</td>
-<td>Wei Huang</td>
+<td>Wei Huang</a></td>
 </tr>
 <tr>
 <td>WERK</td>
@@ -4062,7 +4083,7 @@
 <h2 id="x">X</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -4085,7 +4106,7 @@
 <h2 id="y">Y</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
@@ -4132,7 +4153,7 @@
 <h2 id="z">Z</h2>
 <table>
    <tr align="left">
-    <th width="50">ID</th>
+    <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
