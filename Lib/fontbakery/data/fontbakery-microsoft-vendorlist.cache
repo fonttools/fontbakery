@@ -71,11 +71,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/6e9dc2ad75727bbcddeb3c5ec43dde9ada18bf6d/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/832510127945f07f5e8067d0c318a18ffcd24eaf/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="11/01/2019" />
+<meta name="ms.date" content="06/10/2020" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -85,11 +85,11 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-06-09 01:06 AM" />
+<meta name="updated_at" content="2020-06-10 06:19 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3155" />
+<meta name="word_count" content="3166" />
 
 
 	<meta name="scope" content="typography" />
@@ -344,7 +344,7 @@
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li>
-								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2019-11-01T00:00:00.000Z" data-article-date-source="ms.date">11/01/2019</time>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-06-10T00:00:00.000Z" data-article-date-source="ms.date">06/10/2020</time>
 							</li>
 								<li class="readingTime">15 minutes to read</li>
 						</ul>
@@ -397,6 +397,10 @@
 <tr>
 <td>1KTF</td>
 <td><a href="http://www.kieftype.com" data-linktype="external">Kief Type Foundry</a></td>
+</tr>
+<tr>
+<td>1UKR</td>
+<td>AndrijType</td>
 </tr>
 <tr>
 <td>2DLT</td>
@@ -687,7 +691,11 @@
 </tr>
 <tr>
 <td>ATFS</td>
-<td><a href="http://www." data-linktype="external">Andrew Tyler's fonts</a></td>
+<td>Andrew Tyler's fonts</td>
+</tr>
+<tr>
+<td>ATYP</td>
+<td><a href="https://attype.com/" data-linktype="external">Attype Studio</a></td>
 </tr>
 <tr>
 <td>AUH</td>
@@ -2618,6 +2626,10 @@
 <td><a href="http://www.fontmesa.com/" data-linktype="external">FontMesa,</a></td>
 </tr>
 <tr>
+<td>METZ</td>
+<td><a href="https://nathanmetzler.com/" data-linktype="external">Nathan Metzler</a></td>
+</tr>
+<tr>
 <td>MF</td>
 <td>Magic Fonts</td>
 </tr>
@@ -3749,6 +3761,10 @@
 <tr>
 <td>TNB</td>
 <td><a href="http://www.thenorthernblock.co.uk" data-linktype="external">The Northern Block</a></td>
+</tr>
+<tr>
+<td>TNOF</td>
+<td>Takayuki Nishida</td>
 </tr>
 <tr>
 <td>TNTY</td>
