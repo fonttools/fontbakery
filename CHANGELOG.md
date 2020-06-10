@@ -3,6 +3,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.8.0 (2020-Jun-??)
+  - ...
+
+
+## 0.7.27 (2020-Jun-10)
 ### Note-worthy code changes
   - Add a `--succinct` mode. This is a slightly more compact and succint output layout for the text terminal. As requested by @m4rc1e (issue #2915)
 
@@ -14,7 +18,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
   - **[com.google.fonts/check/metadata/os2_weightclass]**: Check will now work correctly for variable fonts (issue #2683)
   - **[com.google.fonts/check/metadata/match_weight_postscript]**: Disabled for variable fonts
-  - **[com.google.fonts/check/usweightclass]**: Check will now work properly for variable fonts and otf fonts
+  - **[com.google.fonts/check/usweightclass]**: Check will now work properly for variable fonts and otf fonts (#2788)
 
 ### Bugfixes
   - Corrections to UNICODERANGE_DATA constant. Contributed by Bob Hallissy @bobh0303 (PR #2901)
