@@ -544,9 +544,9 @@ class CheckRunner:
     # A check is more than just a function, it carries
     # a lot of meta-data for us, in this case we can use
     # meta-data to learn how to call the check (via
-    # configuration or inprofiletion, where inprofiletion would be
+    # configuration or inspection, where inspection would be
     # the default and configuration could be used to override
-    # inprofiletion results).
+    # inspection results).
 
     skipped = None
     if self._profile.check_skip_filter:
