@@ -133,7 +133,7 @@ def com_google_fonts_check_font_version(ttFont):
           failed = True
           yield FAIL,\
                 Message("mismatch",
-                        f'head version is "{head_version}"'
+                        f'head version is "{float(head_version):.5f}"'
                         f' while name version string (for'
                         f' platform {record.platformID},'
                         f' encoding {record.platEncID}) is'
@@ -141,7 +141,7 @@ def com_google_fonts_check_font_version(ttFont):
         elif abs(name_version - head_version) > warn_tolerance:
           yield WARN,\
                 Message("near-mismatch",
-                        f'head version is "{head_version}"'
+                        f'head version is "{float(head_version):.5f}"'
                         f' while name version string (for'
                         f' platform {record.platformID},'
                         f' encoding {record.platEncID}) is'
