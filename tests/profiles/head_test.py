@@ -84,16 +84,17 @@ def test_check_unitsperem():
 def test_parse_version_string():
   """ Checking font version fields. """
   from fontbakery.profiles.head import parse_version_string
+  import fractions
 
-  version_tests_good = {"Version 01.234": ("1", "234"),
-    "1.234": ("1", "234"),
-    "01.234; afjidfkdf 5.678": ("1", "234"),
-    "1.3": ("1", "300"),
-    "1.003": ("1", "003"),
-    "1.0": ("1", "000"),
-    "1.000": ("1", "000"),
-    "3.000;NeWT;Nunito-Regular": ("3", "000"),
-    "Something Regular Italic Version 1.234": ("1", "234")}
+  version_tests_good = {"Version 01.234": fractions.Fraction("1.234"),
+    "1.234": fractions.Fraction("1.234"),
+    "01.234; afjidfkdf 5.678": fractions.Fraction("1.234"),
+    "1.3": fractions.Fraction("1.300"),
+    "1.003": fractions.Fraction("1.003"),
+    "1.0": fractions.Fraction(1),
+    "1.000": fractions.Fraction(1),
+    "3.000;NeWT;Nunito-Regular": fractions.Fraction("3"),
+    "Something Regular Italic Version 1.234": fractions.Fraction("1.234")}
 
   version_tests_bad = ["Version 0x.234", "x", "212122;asdf 01.234"]
 

@@ -1,3 +1,4 @@
+import fractions
 from typing import Tuple
 from fontbakery.callable import check
 from fontbakery.checkrunner import FAIL, PASS, WARN
@@ -74,12 +75,14 @@ def com_google_fonts_check_unitsperem(ttFont):
                  f" the 'head' table is reasonable.")
 
 
-def parse_version_string(name: str) -> Tuple[str, str]:
-  """Parse a version string (name ID 5) and return (major, minor) strings.
+def parse_version_string(name: str) -> float:
+  """Parse a version string (name ID 5) as a decimal and
+  return as fractions.Fraction.
 
   Example of the expected format: 'Version 01.003; Comments'. Version
-  strings like "Version 1.3" will be post-processed into ("1", "300").
-  The parsed version numbers will therefore match in spirit, but not
+  strings like "Version 1.300" will be post-processed into
+  Fraction(13, 10).
+  The parsed version numbers will therefore match as numbers, but not
   necessarily in string form.
   """
   import re
@@ -95,10 +98,7 @@ def parse_version_string(name: str) -> Tuple[str, str]:
     raise ValueError("The version string didn't contain a number of the format"
                      " major.minor.")
 
-  major, minor = version_string.group(1).split('.')
-  major = str(int(major))  # "01.123" -> "1.123"
-  minor = minor.ljust(3, '0')  # "3.0" -> "3.000", but "3.123" -> "3.123"
-  return major, minor
+  return fractions.Fraction(version_string.group(1))
 
 
 @check(
@@ -106,9 +106,17 @@ def parse_version_string(name: str) -> Tuple[str, str]:
 )
 def com_google_fonts_check_font_version(ttFont):
   """Checking font version fields (head and name table)."""
-  from decimal import Decimal
-  head_version_str = str(Decimal(ttFont["head"].fontRevision).quantize(Decimal('1.000')))
-  head_version = parse_version_string(head_version_str)
+
+  # Get font version from the head table as an exact Fraction.
+  head_version = fractions.Fraction(ttFont["head"].fontRevision)
+
+  # 0.5/0x10000 is the best achievable when converting a decimal
+  # to 16.16 Fixed point.
+  warn_tolerance = 0.5/0x10000
+  # Some tools aren't that accurate and only care to do a
+  # conversion to 3 decimal places.
+  # 1/2000 is the tolerance for accepting equality to 3 decimal places.
+  fail_tolerance = fractions.Fraction(1, 2000)
 
   # Compare the head version against the name ID 5 strings in all name records.
   name_id_5_records = [
@@ -121,15 +129,25 @@ def com_google_fonts_check_font_version(ttFont):
     for record in name_id_5_records:
       try:
         name_version = parse_version_string(record.toUnicode())
-        if name_version != head_version:
+        if abs(name_version - head_version) > fail_tolerance:
           failed = True
           yield FAIL,\
                 Message("mismatch",
-                        f'head version is "{head_version_str}"'
+                        f'head version is "{head_version}"'
                         f' while name version string (for'
                         f' platform {record.platformID},'
                         f' encoding {record.platEncID}) is'
                         f' "{record.toUnicode()}".')
+        elif abs(name_version - head_version) > warn_tolerance:
+          yield WARN,\
+                Message("near-mismatch",
+                        f'head version is "{head_version}"'
+                        f' while name version string (for'
+                        f' platform {record.platformID},'
+                        f' encoding {record.platEncID}) is'
+                        f' "{record.toUnicode()}".'
+                        f' This matches to 3 decimal places, but'
+                        f' is not as accurate as possible.')
       except ValueError:
         failed = True
         yield FAIL,\
