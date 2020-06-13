@@ -122,6 +122,21 @@ def test_check_font_version():
   test_font["head"].fontRevision = 1.00099
   test_font["name"].setName("Version 1.001", 5, 1, 0, 0x0)
   test_font["name"].setName("Version 1.001", 5, 3, 1, 0x409)
+  check_results = list(check(test_font))
+  # There should be at least one WARN...
+  assert WARN in [r[0] for r in check_results]
+  # But final result is a PASS.
+  final_status, message = check_results[-1]
+  assert final_status == PASS
+
+  # Test that having more than 3 decimal places in the version
+  # in the Name table is acceptable.
+  # See https://github.com/googlefonts/fontbakery/issues/2928
+  test_font = TTFont(test_font_path)
+  # This is the nearest multiple of 1/65536 to 2020.0613
+  test_font["head"].fontRevision = 2020.061294555664
+  test_font["name"].setName("Version 2020.0613", 5, 1, 0, 0x0)
+  test_font["name"].setName("Version 2020.0613", 5, 3, 1, 0x409)
   status, message = list(check(test_font))[-1]
   assert status == PASS
 
