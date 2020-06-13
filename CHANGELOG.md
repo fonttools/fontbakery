@@ -4,6 +4,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.0 (2020-Jun-??)
   - ...
+### Changes to existing checks
+  - **[com.google.fonts/check/font_version]**: Check now allows more than 3 decimal places to be matched (issue #2928)
 
 
 ## 0.7.27 (2020-Jun-10)
