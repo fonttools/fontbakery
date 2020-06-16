@@ -3546,7 +3546,7 @@ def test_check_varfont_unsupported_axes():
   from fontbakery.profiles.shared_conditions import slnt_axis, ital_axis
   from fontTools.ttLib.tables._f_v_a_r import Axis
 
-  # Our reference varfont, CabinVFBeta.ttf, lacks 'ital' and 'opsz' variation axes.
+  # Our reference varfont, CabinVFBeta.ttf, lacks 'ital' and 'slnt' variation axes.
   # So, should pass the check:
   ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
   status, message = list(check(ttFont))[-1]
@@ -3563,8 +3563,8 @@ def test_check_varfont_unsupported_axes():
   # so it must also FAIL:
   ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
   new_axis = Axis()
-  new_axis.axisTag = "opsz"
+  new_axis.axisTag = "slnt"
   ttFont["fvar"].axes.append(new_axis)
   status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "unsupported-opsz"
+  assert status == FAIL and message.code == "unsupported-slnt"
 
