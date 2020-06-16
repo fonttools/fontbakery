@@ -84,16 +84,17 @@ def test_check_unitsperem():
 def test_parse_version_string():
   """ Checking font version fields. """
   from fontbakery.profiles.head import parse_version_string
+  import fractions
 
-  version_tests_good = {"Version 01.234": ("1", "234"),
-    "1.234": ("1", "234"),
-    "01.234; afjidfkdf 5.678": ("1", "234"),
-    "1.3": ("1", "300"),
-    "1.003": ("1", "003"),
-    "1.0": ("1", "000"),
-    "1.000": ("1", "000"),
-    "3.000;NeWT;Nunito-Regular": ("3", "000"),
-    "Something Regular Italic Version 1.234": ("1", "234")}
+  version_tests_good = {"Version 01.234": fractions.Fraction("1.234"),
+    "1.234": fractions.Fraction("1.234"),
+    "01.234; afjidfkdf 5.678": fractions.Fraction("1.234"),
+    "1.3": fractions.Fraction("1.300"),
+    "1.003": fractions.Fraction("1.003"),
+    "1.0": fractions.Fraction(1),
+    "1.000": fractions.Fraction(1),
+    "3.000;NeWT;Nunito-Regular": fractions.Fraction("3"),
+    "Something Regular Italic Version 1.234": fractions.Fraction("1.234")}
 
   version_tests_bad = ["Version 0x.234", "x", "212122;asdf 01.234"]
 
@@ -121,6 +122,21 @@ def test_check_font_version():
   test_font["head"].fontRevision = 1.00099
   test_font["name"].setName("Version 1.001", 5, 1, 0, 0x0)
   test_font["name"].setName("Version 1.001", 5, 3, 1, 0x409)
+  check_results = list(check(test_font))
+  # There should be at least one WARN...
+  assert WARN in [r[0] for r in check_results]
+  # But final result is a PASS.
+  final_status, message = check_results[-1]
+  assert final_status == PASS
+
+  # Test that having more than 3 decimal places in the version
+  # in the Name table is acceptable.
+  # See https://github.com/googlefonts/fontbakery/issues/2928
+  test_font = TTFont(test_font_path)
+  # This is the nearest multiple of 1/65536 to 2020.0613
+  test_font["head"].fontRevision = 2020.061294555664
+  test_font["name"].setName("Version 2020.0613", 5, 1, 0, 0x0)
+  test_font["name"].setName("Version 2020.0613", 5, 3, 1, 0x409)
   status, message = list(check(test_font))[-1]
   assert status == PASS
 
