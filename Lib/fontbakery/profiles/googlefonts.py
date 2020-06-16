@@ -4606,16 +4606,16 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
   }
 )
 def com_google_fonts_check_varfont_unsupported_axes(ttFont):
-  """ Ensure VFs do not contain opsz or ital axes. """
-  from fontbakery.profiles.shared_conditions import opsz_axis, ital_axis
+  """ Ensure VFs do not contain slnt or ital axes. """
+  from fontbakery.profiles.shared_conditions import slnt_axis, ital_axis
   if ital_axis(ttFont):
     yield FAIL,\
           Message("unsupported-ital",
                   'The "ital" axis is not yet well supported on Google Chrome.')
-  elif opsz_axis(ttFont):
+  elif slnt_axis(ttFont):
     yield FAIL,\
-          Message("unsupported-opsz",
-                  'The "opsz" axis is not yet well supported on Google Chrome.')
+          Message("unsupported-slnt",
+                  'The "slnt" axis is not yet well supported on Google Chrome.')
   else:
     yield PASS, "Looks good!"
 
