@@ -7,6 +7,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/font_version]**: Check now allows more than 3 decimal places to be matched (issue #2928)
   - **[com.google.fonts/check/varfont/unsupported_axes]**: Removed opsz axis and added slnt axis (issue #2866)
 
+### Bugfixes
+  - **[com.google.fonts/check/valid_glyphnames]**: Improve broken text in the FAIL message (PR #2939)
 
 ## 0.7.27 (2020-Jun-10)
 ### Note-worthy code changes
