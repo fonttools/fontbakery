@@ -398,6 +398,17 @@ def test_check_whitespace_glyphnames():
             if codepoint != cp
         }
 
+  def editCmap(font, cp, name):
+    """ Corrupt the cmap by changing the glyph name
+        for a given code point.
+    """
+    for subtable in font['cmap'].tables:
+      if subtable.isUnicode():
+        # Copy the map
+        subtable.cmap = subtable.cmap.copy()
+        # edit it
+        subtable.cmap[cp] = name
+
   # Our reference Mada Regular font is good here:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
@@ -426,6 +437,24 @@ def test_check_whitespace_glyphnames():
                          FAIL, 'badA0',
                          'with bad glyph name for char 0x00A0 ...')
 
+  # restore the original font object in preparation for the next test-case:
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+
+  # See https://github.com/googlefonts/fontbakery/issues/2624
+  print("Test FAIL for naming 0x00A0 nbsp (it's not AGL-complient) ...")
+  editCmap(ttFont, 0x00A0, "nbsp")
+  status, message = list(check(ttFont))[-1]
+  assert status == FAIL and message.code == "badA0"
+
+  print("Test WARN for naming 0x00A0 nbspace ...")
+  editCmap(ttFont, 0x00A0, "nbspace")
+  status, message = list(check(ttFont))[-1]
+  assert status == WARN and message.code == "badA0"
+
+  print("Test PASS for naming 0x00A0 uni00A0 ...")
+  editCmap(ttFont, 0x00A0, "uni00A0")
+  status, message = list(check(ttFont))[-1]
+  assert status == PASS
 
 def test_check_whitespace_ink():
   """ Whitespace glyphs have ink? """

@@ -423,43 +423,55 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
   """Font has **proper** whitespace glyph names?"""
   from fontbakery.utils import get_glyph_name
 
-  def getGlyphEncodings(font, names):
-    result = set()
-    for subtable in font['cmap'].tables:
-      if subtable.isUnicode():
-        for codepoint, name in subtable.cmap.items():
-          if name in names:
-            result.add(codepoint)
-    return result
-
   if ttFont['post'].formatType == 3.0:
     yield SKIP, "Font has version 3 post table."
   else:
-    failed = False
-    space_enc = getGlyphEncodings(ttFont, ["uni0020", "space"])
-    nbsp_enc = getGlyphEncodings(
-        ttFont, ["uni00A0", "nonbreakingspace", "nbspace", "nbsp"])
+    passed = True
+
+    # AGL recommended names, according to Adobe Glyph List For New Fonts.
+    space_names_pass = {"space"}
+    # AGL compliant names, but not recommended for new fonts.
+    space_names_warn = {"uni0020", "u0020", "u00020", "u000020"}
     space = get_glyph_name(ttFont, 0x0020)
-    if 0x0020 not in space_enc:
-      failed = True
+    if space in space_names_pass:
+      pass
+    elif space in space_names_warn:
+      passed = False
+      yield WARN, Message("bad20", ("Glyph 0x0020 is called \"{}\":"
+                                    " Change to \"space\"").format(space))
+    else:
+      passed = False
       yield FAIL, Message("bad20", ("Glyph 0x0020 is called \"{}\":"
-                                    " Change to \"space\""
-                                    " or \"uni0020\"").format(space))
+                                    " Change to \"space\"").format(space))
 
+    # Valid names for U+00A0; "space" is in this set because
+    # some fonts use the same glyph for U+0020 and U+00A0
+    # (and including it here removes a warning when U+0020
+    # is wrong, but U+00A0 is okay).
+    nbsp_names_pass = {"uni00A0", "space"}
+    nbsp_names_warn = {"nonbreakingspace", "nbspace",
+                       "u00A0", "u000A0", "u0000A0"}
     nbsp = get_glyph_name(ttFont, 0x00A0)
-    if 0x00A0 not in nbsp_enc:
-      if 0x00A0 in space_enc:
-        # This is OK.
-        # Some fonts use the same glyph for both space and nbsp.
-        pass
-      else:
-        failed = True
-        yield FAIL, Message("badA0", ("Glyph 0x00A0 is called \"{}\":"
-                                      " Change to \"nbsp\""
-                                      " or \"uni00A0\"").format(nbsp))
 
-    if failed is False:
-      yield PASS, "Font has **proper** whitespace glyph names."
+    if nbsp == space:
+      # This is OK.
+      # Some fonts use the same glyph for both space and nbsp.
+      pass
+    elif nbsp in nbsp_names_pass:
+      pass
+    elif nbsp in nbsp_names_warn:
+      passed = False
+      yield WARN, Message("badA0", ("Glyph 0x00A0 is called \"{}\":"
+                                    " Change to"
+                                    " \"uni00A0\"").format(nbsp))
+    else:
+      passed = False
+      yield FAIL, Message("badA0", ("Glyph 0x00A0 is called \"{}\":"
+                                    " Change to"
+                                    " \"uni00A0\"").format(nbsp))
+
+    if passed:
+      yield PASS, "Font has **AGL recommended** names for whitespace glyphs."
 
 
 @check(
