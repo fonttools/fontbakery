@@ -290,9 +290,19 @@ def com_google_fonts_check_description_broken_links(description):
     yield PASS, "All links in the DESCRIPTION file look good!"
 
 
+@condition
+def description_html (description):
+  from lxml import etree
+  try:
+    html = etree.fromstring("<html>" + description + "</html>")
+    return html
+  except:
+    return None
+
+
 @check(
   id = 'com.google.fonts/check/description/git_url',
-  conditions = ['description'],
+  conditions = ['description_html'],
   rationale = """
     The contents of the DESCRIPTION.en-us.html file are displayed on the Google Fonts website in the about section of each font family specimen page.
 
@@ -301,12 +311,10 @@ def com_google_fonts_check_description_broken_links(description):
     Such hosting is typically done on sites like Github, Gitlab, GNU Savannah or any other git-based version control service.
   """
 )
-def com_google_fonts_check_description_git_url(description):
+def com_google_fonts_check_description_git_url(description_html):
   """Does DESCRIPTION file contain a upstream Git repo URL?"""
-  from lxml import etree
-  doc = etree.fromstring("<html>" + description + "</html>")
   git_urls = []
-  for a_href in doc.iterfind('.//a[@href]'):
+  for a_href in description_html.iterfind('.//a[@href]'):
     link = a_href.get("href")
     if "://git" in link:
       git_urls.append(link)
@@ -326,20 +334,50 @@ def com_google_fonts_check_description_git_url(description):
 
 @check(
   id = 'com.google.fonts/check/description/valid_html',
-  conditions = ['descfile'],
+  conditions = ['description'],
   rationale = """
-    When packaging families for being pushed to the `google/fonts` git repo, if there is no DESCRIPTION.en_us.html file, some older versions of the `add_font.py` tool insert a dummy description file which contains invalid html.
-
-    This file needs to either be replaced with an existing description file or edited by hand.
-  """
+    Sometimes people write malformed HTML markup. This check should ensure the file is good.
+ 
+    Additionally, when packaging families for being pushed to the `google/fonts` git repo, if there is no DESCRIPTION.en_us.html file, some older versions of the `add_font.py` tool insert a dummy description file which contains invalid html. This file needs to either be replaced with an existing description file or edited by hand.
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2664'
+  }
 )
 def com_google_fonts_check_description_valid_html(descfile, description):
   """Is this a proper HTML snippet?"""
-  if "<p>" not in description or "</p>" not in description:
+  passed = True
+
+  if "<html>" in description or "</html>" in description:
     yield FAIL,\
-          Message("bad-html",
-                  f"{descfile} does not look like a propper HTML snippet.")
-  else:
+          Message("html-tag",
+                  (f"{descfile} should not have an <html> tag,"
+                   f" since it should only be a snippet that will"
+                   f" later be included in the Google Fonts"
+                   f" font family specimen webpage."))
+
+  from lxml import etree
+  try:
+    html = etree.fromstring("<html>" + description + "</html>")
+  except Exception as e:
+    passed = False
+    yield FAIL,\
+          Message("malformed-snippet",
+                  f"{descfile} does not look like a propper HTML snippet."
+                  f" Please look for syntax errors."
+                  f" Maybe the following parser error message can help"
+                  f" you find what's wrong:\n"
+                  f"----------------\n"
+                  f"{e}\n"
+                  f"----------------\n")
+
+  if "<p>" not in description or "</p>" not in description:
+    passed = False
+    yield FAIL,\
+          Message("lacks-paragraph",
+                  f"{descfile} does not include an HTML <p> tag.")
+
+  if passed:
     yield PASS, f"{descfile} is a propper HTML file."
 
 

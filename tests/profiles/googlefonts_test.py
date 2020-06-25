@@ -9,6 +9,7 @@ from fontbakery.constants import (NameID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
 from fontbakery.utils import (assert_results_contain,
+                              assert_PASS,
                               portable_path,
                               TEST_FILE)
 
@@ -254,25 +255,25 @@ def test_check_description_git_url():
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_description_git_url as check,
     description,
+    description_html,
     descfile)
 
   # TODO: test INFO "url-found"
 
   bad_desc = description(descfile(TEST_FILE("cabin/Cabin-Regular.ttf")))
   print('Test FAIL with description file that has no git repo URLs...')
-  status, message = list(check(bad_desc))[-1]
-  assert status == FAIL and message.code == "lacks-git-url"
+  assert_results_contain(check(description_html(bad_desc)),
+                         FAIL, 'lacks-git-url')
 
   good_desc = ("<a href='https://github.com/uswds/public-sans'>Good URL</a>"
                "<a href='https://gitlab.com/smc/fonts/uroob'>Another Good One</a>")
   print('Test PASS with description file that has good links...')
-  status, message = list(check(good_desc))[-1]
-  assert status == PASS
+  assert_PASS(check(description_html(good_desc)))
 
   bad_desc = "<a href='https://v2.designsystem.digital.gov'>Bad URL</a>"
   print('Test FAIL with description file that has false git in URL...')
-  status, message = list(check(bad_desc))[-1]
-  assert status == FAIL and message.code == "lacks-git-url"
+  assert_results_contain(check(description_html(bad_desc)),
+                         FAIL, 'lacks-git-url')
 
 
 def test_check_description_valid_html():
@@ -290,9 +291,22 @@ def test_check_description_valid_html():
 
   bad_descfile = TEST_FILE("cabin/FONTLOG.txt") # :-)
   bad_desc = description(bad_descfile)
-  print('Test FAIL with a known-bad file (a txt file without HTML snippets)...')
-  status, message = list(check(bad_descfile, bad_desc))[-1]
-  assert status == FAIL and message.code == "bad-html"
+  print('Test FAIL with a known-bad file (without HTML paragraph tags)...')
+  assert_results_contain(check(bad_descfile, bad_desc),
+                         FAIL, 'lacks-paragraph')
+
+  bad_desc = f"<html>{description}</html>"
+  print('Test FAIL with description file that contains the <html> tag...')
+  assert_results_contain(check(bad_descfile, bad_desc),
+                         FAIL, 'html-tag')
+
+  bad_desc = ("<p>This example has the & caracter,"
+              " but does not escape it with an HTML entity code."
+              " It should use &amp; instead."
+              "</p>")
+  print('Test FAIL with a known-bad file (not using HTML entity syntax)...')
+  assert_results_contain(check(bad_descfile, bad_desc),
+                         FAIL, 'malformed-snippet')
 
 
 def test_check_description_min_length():

@@ -389,6 +389,12 @@ def glyph_has_ink(font: TTFont, name: Text) -> bool:
     raise Exception("Could not find 'glyf', 'CFF ', or 'CFF2' table.")
 
 
+def assert_PASS(check_results):
+  from fontbakery.checkrunner import PASS
+  status, message = list(check_results)[-1]
+  assert status == PASS
+
+
 def assert_results_contain(check_results, expected_status, expected_msgcode=None):
   """
   This helper function is useful when we want to make sure that
