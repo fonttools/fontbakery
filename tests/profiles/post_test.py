@@ -1,6 +1,5 @@
 import pytest
 
-from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -10,6 +9,9 @@ from fontbakery.checkrunner import (
             , PASS
             , FAIL
             )
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
+                              assert_results_contain)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -40,9 +42,8 @@ def test_check_family_underline_thickness(mada_ttFonts):
   # of the file contents using TTX.
   #
   # So the check should PASS in this case:
-  print('Test PASS with a good family.')
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == PASS
+  assert_PASS(check(mada_ttFonts),
+              'with a good family.')
 
   # Then we introduce the issue by setting a
   # different underlineThickness value in just
@@ -53,24 +54,26 @@ def test_check_family_underline_thickness(mada_ttFonts):
 
   # And now re-running the check on the modified
   # family should result in a FAIL:
-  print('Test FAIL with an inconsistent family.')
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL
+  assert_results_contain(check(mada_ttFonts),
+                         FAIL, None, # FIXME: This needs a message keyword!
+                         'with an inconsistent family.')
 
 
 def test_check_post_table_version():
   """ Font has correct post table version (2 for TTF, 3 for OTF)? """
   from fontbakery.profiles.post import com_google_fonts_check_post_table_version as check
 
-  print('Test PASS with good font.')
   # our reference Mada family is know to be good here.
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-  status, message = list(check(ttFont, 'glyf' in ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont,
+                    'glyf' in ttFont),
+              'with good font.')
 
   # modify the post table version
   ttFont['post'].formatType = 3
 
-  print('Test FAIL with fonts that diverge on the fontRevision field value.')
-  status, message = list(check(ttFont, 'glyf' in ttFont))[-1]
-  assert status == FAIL
+  assert_results_contain(check(ttFont,
+                               'glyf' in ttFont),
+                         FAIL, None, # FIXME: This needs a message keyword!
+                         'with fonts that diverge on the fontRevision field value.')
+

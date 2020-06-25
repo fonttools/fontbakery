@@ -1,7 +1,9 @@
 import pytest
 from fontTools.ttLib import TTFont
 
-from fontbakery.utils import TEST_FILE
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
+                              assert_results_contain)
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -34,10 +36,9 @@ def test_check_family_equal_unicode_encodings(mada_ttFonts):
   from fontbakery.profiles.cmap import com_google_fonts_check_family_equal_unicode_encodings as check
   from fontbakery.constants import WindowsEncodingID
 
-  print('Test PASS with good family.')
   # our reference Mada family is know to be good here.
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == PASS
+  assert_PASS(check(mada_ttFonts),
+              'with good family.')
 
   bad_ttFonts = mada_ttFonts
   # introduce mismatching encodings into the first 2 font files:
@@ -47,9 +48,9 @@ def test_check_family_equal_unicode_encodings(mada_ttFonts):
       if table.format == 4:
         table.platEncID = encoding
 
-  print('Test FAIL with fonts that diverge on unicode encoding.')
-  status, message = list(check(bad_ttFonts))[-1]
-  assert status == FAIL and message.code == "mismatch"
+  assert_results_contain(check(bad_ttFonts),
+                         FAIL, 'mismatch',
+                         'with fonts that diverge on unicode encoding.')
 
 
 # Note: I am not aware of any real-case of a font that FAILs this check.
@@ -57,16 +58,17 @@ def test_check_all_glyphs_have_codepoints():
   """ Check all glyphs have codepoints assigned. """
   from fontbakery.profiles.cmap import com_google_fonts_check_all_glyphs_have_codepoints as check
 
-  print('Test PASS with a good font.')
   # our reference Mada SemiBold is know to be good here.
   ttFont = TTFont(TEST_FILE("mada/Mada-SemiBold.ttf"))
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font.')
 
   # This is a silly way to break the font.
   # A much better test would rather use a real font file that has the problem.
   ttFont['cmap'].tables[0].cmap[None] = "foo"
 
-  print('Test FAIL with a bad font.')
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "glyph-lacks-codepoint" # "A glyph lacks a unicode codepoint assignment."
+  assert_results_contain(check(ttFont),
+                         FAIL, 'glyph-lacks-codepoint',
+                         'with a font in which a glyph'
+                         ' lacks a unicode codepoint assignment.')
+

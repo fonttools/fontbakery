@@ -3,7 +3,6 @@ import os
 import fontTools.ttLib
 from fontTools.ttLib import TTFont
 
-from fontbakery.utils import TEST_FILE, portable_path
 from fontbakery.constants import (NameID,
                                   PlatformID,
                                   WindowsEncodingID,
@@ -11,6 +10,10 @@ from fontbakery.constants import (NameID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
 from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
+                              assert_results_contain,
+                              portable_path)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -21,19 +24,18 @@ def test_check_name_empty_records():
     font_path = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
     test_font = TTFont(font_path)
 
-    # try a font with fully populated name records
-    status, message = list(check(test_font))[-1]
-    assert status == PASS
+    assert_PASS(check(test_font),
+                'with a font with fully populated name records.')
 
-    # now try a completely empty string
     test_font['name'].names[3].string = b''
-    status, message = list(check(test_font))[-1]
-    assert status == FAIL and message.code == "empty-record"
+    assert_results_contain(check(test_font),
+                           FAIL, 'empty-record',
+                           'with a completely empty string.')
 
-    # now try a string that only has whitespace
     test_font['name'].names[3].string = b' '
-    status, message = list(check(test_font))[-1]
-    assert status == FAIL and message.code == "empty-record"
+    assert_results_contain(check(test_font),
+                           FAIL, 'empty-record',
+                           'with a string that only has whitespace.')
 
 
 def test_check_name_no_copyright_on_description():
@@ -42,30 +44,19 @@ def test_check_name_no_copyright_on_description():
   """
   from fontbakery.profiles.name import com_google_fonts_check_name_no_copyright_on_description as check
 
-  print('Test PASS with a good font...')
   # Our reference Mada Regular is know to be good here.
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
   # here we add a "Copyright" string to a NameID.DESCRIPTION
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NameID.DESCRIPTION:
       ttFont['name'].names[i].string = "Copyright".encode(name.getEncoding())
 
-  print('Test FAIL with a bad font...')
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "copyright-on-description"
-
-
-# If we ever reuse this helper function,
-# then move it into fontbakery.utils:
-def results_contain(results, expected_status, expected_code):
-  for status, message in results:
-    if status == expected_status and message.code == expected_code:
-      return True
-  # else
-  return False
+  assert_results_contain(check(ttFont),
+                         FAIL, 'copyright-on-description',
+                         'with a bad font...')
 
 
 def test_check_monospace():
@@ -82,28 +73,30 @@ def test_check_monospace():
   # Starting with non-monospaced code-paths:
   # --------------------------------------------
 
-  print('Test PASS with a good non-monospace font...')
   # Our reference Mada Regular is a non-monospace font
   # know to have good metadata for this check.
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
   stats = glyph_metrics_stats(ttFont)
-  status, message = list(check(ttFont, stats))[-1]
-  assert status == PASS and message.code == "good"
+  assert_results_contain(check(ttFont, stats),
+                         PASS, "good",
+                         'with a good non-monospace font...')
 
   # We'll mark it as monospaced on the post table and make sure it fails:
-  print('Test FAIL with a non-monospaced font with bad post.isFixedPitch value ...')
   ttFont["post"].isFixedPitch = 42 # *any* non-zero value means monospaced
-  status, message = list(check(ttFont, stats))[-1]
-  assert status == FAIL and message.code == "bad-post-isFixedPitch"
+  assert_results_contain(check(ttFont, stats),
+                         FAIL, 'bad-post-isFixedPitch',
+                         'with a non-monospaced font with bad'
+                         ' post.isFixedPitch value ...')
 
   # restore good value:
   ttFont["post"].isFixedPitch = IsFixedWidth.NOT_MONOSPACED
 
   # Now we mark it as monospaced on the OS/2 and it should also fail:
-  print('Test FAIL with a non-monospaced font with bad OS/2.panose.bProportion value (MONOSPACED) ...')
   ttFont["OS/2"].panose.bProportion = PANOSE_Proportion.MONOSPACED
-  status, message = list(check(ttFont, stats))[-1]
-  assert status == FAIL and message.code == "bad-panose-proportion"
+  assert_results_contain(check(ttFont, stats),
+                         FAIL, 'bad-panose-proportion',
+                         'with a non-monospaced font with bad'
+                         ' OS/2.panose.bProportion value (MONOSPACED) ...')
 
   # --------------------------------------------
   # And now we test the monospaced code-paths:
@@ -123,13 +116,14 @@ def test_check_monospace():
          (status == PASS and message.code == "mono-good")
 
   # Let's incorrectly mark it as a non-monospaced on the post table and it should fail:
-  print('Test FAIL with a monospaced font with bad post.isFixedPitch value ...')
   ttFont["post"].isFixedPitch = IsFixedWidth.NOT_MONOSPACED
   # here we search for the expected FAIL among all results
   # instead of simply looking at the last one
   # because we may also get an outliers WARN in some cases:
-  results = list(check(ttFont, stats))
-  assert results_contain(results, FAIL, "mono-bad-post-isFixedPitch")
+  assert_results_contain(check(ttFont, stats),
+                         FAIL, 'mono-bad-post-isFixedPitch',
+                         'with a monospaced font with'
+                         ' bad post.isFixedPitch value ...')
 
   # There are several bad panose proportion values for a monospaced font.
   # Only PANOSE_Proportion.MONOSPACED would be valid.
@@ -147,11 +141,12 @@ def test_check_monospace():
   ]
   good_value = ttFont["OS/2"].panose.bProportion
   for bad_value in bad_monospaced_panose_values:
-    print(f'Test FAIL with a monospaced font with bad OS/2.panose.bProportion value ({bad_value}) ...')
     ttFont["OS/2"].panose.bProportion = bad_value
     # again, we search the expected FAIL because we may algo get an outliers WARN here:
-    results = list(check(ttFont, stats))
-    assert results_contain(results, FAIL, "mono-bad-panose-proportion")
+    assert_results_contain(check(ttFont, stats),
+                           FAIL, 'mono-bad-panose-proportion',
+                           f'Test FAIL with a monospaced font with bad'
+                           f' OS/2.panose.bProportion value ({bad_value}) ...')
 
 
 def test_check_name_match_familyname_fullfont():
@@ -161,9 +156,8 @@ def test_check_name_match_familyname_fullfont():
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
   # alter the full-font-name prepending a bad prefix:
   for i, name in enumerate(ttFont["name"].names):
@@ -171,25 +165,27 @@ def test_check_name_match_familyname_fullfont():
       ttFont["name"].names[i].string = "bad-prefix".encode(name.getEncoding())
 
   # and make sure the check FAILs:
-  print ("Test FAIL with a font in which the family name begins with a digit...")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "does-not"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'does-not',
+                         'with a font in which the family name'
+                         ' begins with a digit...')
 
-  print ("Test FAIL with no FULL_FONT_NAME entries...")
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NameID.FULL_FONT_NAME:
       del ttFont["name"].names[i]
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "no-full-font-name"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'no-full-font-name',
+                         'with no FULL_FONT_NAME entries...')
 
-  print ("Test FAIL with no FONT_FAMILY_NAME entries...")
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NameID.FONT_FAMILY_NAME:
       del ttFont["name"].names[i]
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "no-font-family-name"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'no-font-family-name',
+                         'with no FONT_FAMILY_NAME entries...')
+
 
 def assert_name_table_check_result(ttFont, index, name, check, value, expected_result, expected_keyword=None):
   backup = name.string
@@ -211,9 +207,8 @@ def test_check_family_naming_recommendations():
   ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
   # We'll test rule violations in all entries one-by-one
   for index, name in enumerate(ttFont["name"].names):
@@ -302,8 +297,8 @@ def test_check_name_postscript_vs_cff():
     WindowsEncodingID.UNICODE_BMP,
     WindowsLanguageID.ENGLISH_USA
   )
-  status, message = list(check(test_font))[-1]
-  assert status == FAIL and message.code == "mismatch"
+  assert_results_contain(check(test_font),
+                         FAIL, 'mismatch')
 
   test_font['name'].setName(
     'SomeFontName',
@@ -312,8 +307,7 @@ def test_check_name_postscript_vs_cff():
     WindowsEncodingID.UNICODE_BMP,
     WindowsLanguageID.ENGLISH_USA
   )
-  status, message = list(check(test_font))[-1]
-  assert status == PASS
+  assert_PASS(check(test_font))
 
 
 def test_check_name_postscript_name_consistency():
@@ -333,8 +327,7 @@ def test_check_name_postscript_name_consistency():
     MacintoshEncodingID.ROMAN,
     MacintoshLanguageID.ENGLISH
   )
-  status, message = list(check(test_font))[-1]
-  assert status == PASS
+  assert_PASS(check(test_font))
 
   # ...now let's change the Mac name ID 6 entry to something else:
   test_font['name'].setName(
@@ -344,8 +337,8 @@ def test_check_name_postscript_name_consistency():
     MacintoshEncodingID.ROMAN,
     MacintoshLanguageID.ENGLISH
   )
-  status, message = list(check(test_font))[-1]
-  assert status == FAIL and message.code == "inconsistency"
+  assert_results_contain(check(test_font),
+                         FAIL, 'inconsistency')
 
 
 def test_check_family_max_4_fonts_per_family_name():
@@ -373,8 +366,7 @@ def test_check_family_max_4_fonts_per_family_name():
   test_fonts = [TTFont(x) for x in font_paths]
 
   # try fonts with correct family name grouping
-  status, message = list(check(test_fonts))[-1]
-  assert status == PASS
+  assert_PASS(check(test_fonts))
 
   # now set 5 of the fonts to have the same family name
   for font in test_fonts[:5]:
@@ -384,5 +376,6 @@ def test_check_family_max_4_fonts_per_family_name():
         # print(repr(name_record.string))
         name_record.string = 'foobar'.encode('utf-16be')
 
-  status, message = list(check(test_fonts))[-1]
-  assert status == FAIL and message.code == "too-many"
+  assert_results_contain(check(test_fonts),
+                         FAIL, 'too-many')
+

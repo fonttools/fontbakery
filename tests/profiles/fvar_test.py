@@ -7,6 +7,8 @@ from fontbakery.checkrunner import (
             , PASS
             , FAIL
             )
+from fontbakery.utils import (assert_PASS,
+                              assert_results_contain)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -24,9 +26,8 @@ def test_check_varfont_regular_wght_coord():
   regular_weight_coord = regular_wght_coord(ttFont)
 
   # So it must PASS the test
-  print('Test PASS with a good Regular:wght coordinate...')
-  status, message = list(check(ttFont, regular_weight_coord))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, regular_weight_coord),
+              'with a good Regular:wght coordinate...')
 
   # We then change the value so it must FAIL:
   ttFont["fvar"].instances[0].coordinates["wght"] = 500
@@ -35,9 +36,10 @@ def test_check_varfont_regular_wght_coord():
   regular_weight_coord = regular_wght_coord(ttFont)
 
   # and now this should FAIL the test:
-  print('Test FAIL with a bad Regular:wght coordinate (500)...')
-  status, message = list(check(ttFont, regular_weight_coord))[-1]
-  assert status == FAIL and message.code == "not-400"
+  assert_results_contain(check(ttFont,
+                               regular_weight_coord),
+                         FAIL, 'not-400',
+                         'with a bad Regular:wght coordinate (500)...')
 
 
 def test_check_varfont_regular_wdth_coord():
@@ -52,9 +54,9 @@ def test_check_varfont_regular_wdth_coord():
   regular_width_coord = regular_wdth_coord(ttFont)
 
   # So it must PASS the test
-  print('Test PASS with a good Regular:wdth coordinate...')
-  status, message = list(check(ttFont, regular_width_coord))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont,
+                    regular_width_coord),
+              'with a good Regular:wdth coordinate...')
 
   # We then change the value so it must FAIL:
   ttFont["fvar"].instances[0].coordinates["wdth"] = 0
@@ -63,9 +65,10 @@ def test_check_varfont_regular_wdth_coord():
   regular_width_coord = regular_wdth_coord(ttFont)
 
   # and now this should FAIL the test:
-  print('Test FAIL with a bad Regular:wdth coordinate (0)...')
-  status, message = list(check(ttFont, regular_width_coord))[-1]
-  assert status == FAIL and message.code == "not-100"
+  assert_results_contain(check(ttFont,
+                               regular_width_coord),
+                         FAIL, 'not-100',
+                         'with a bad Regular:wdth coordinate (0)...')
 
 
 def test_check_varfont_regular_slnt_coord():
@@ -92,17 +95,18 @@ def test_check_varfont_regular_slnt_coord():
   regular_slant_coord = regular_slnt_coord(ttFont)
 
   # And with this the test must FAIL
-  print('Test FAIL with a bad Regular:slnt coordinate (12)...')
-  status, message = list(check(ttFont, regular_slant_coord))[-1]
-  assert status == FAIL and message.code == "non-zero"
+  assert_results_contain(check(ttFont,
+                               regular_slant_coord),
+                         FAIL, 'non-zero',
+                         'with a bad Regular:slnt coordinate (12)...')
 
   # We then fix the Regular:slnt coordinate value:
   regular_slant_coord = 0
 
   # and now this should PASS the test:
-  print('Test PASS with a good Regular:slnt coordinate (zero)...')
-  status, message = list(check(ttFont, regular_slant_coord))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont,
+                    regular_slant_coord),
+              'with a good Regular:slnt coordinate (zero)...')
 
 
 def test_check_varfont_regular_ital_coord():
@@ -129,17 +133,18 @@ def test_check_varfont_regular_ital_coord():
   regular_italic_coord = regular_ital_coord(ttFont)
 
   # So it must FAIL the test
-  print('Test FAIL with a bad Regular:ital coordinate (123)...')
-  status, message = list(check(ttFont, regular_italic_coord))[-1]
-  assert status == FAIL and message.code == "non-zero"
+  assert_results_contain(check(ttFont,
+                               regular_italic_coord),
+                         FAIL, 'non-zero',
+                         'with a bad Regular:ital coordinate (123)...')
 
   # We then fix the Regular:ital coordinate:
   regular_italic_coord = 0
 
   # and now this should PASS the test:
-  print('Test PASS with a good Regular:ital coordinate (zero)...')
-  status, message = list(check(ttFont, regular_italic_coord))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont,
+                    regular_italic_coord),
+              'with a good Regular:ital coordinate (zero)...')
 
 
 def test_check_varfont_regular_opsz_coord():
@@ -166,26 +171,27 @@ def test_check_varfont_regular_opsz_coord():
   regular_opticalsize_coord = regular_opsz_coord(ttFont)
 
   # And it must WARN the test
-  print('Test WARN with a bad Regular:opsz coordinate (8)...')
-  status, message = list(check(ttFont, regular_opticalsize_coord))[-1]
-  assert status == WARN and message.code == "out-of-range"
+  assert_results_contain(check(ttFont,
+                               regular_opticalsize_coord),
+                         WARN, 'out-of-range',
+                         'with a bad Regular:opsz coordinate (8)...')
 
   # We try yet another bad value
   regualr_opticalsize_coord = 14
 
   # And it must also WARN the test
-  print('Test WARN with another bad Regular:opsz value (14)...')
-  status, message = list(check(ttFont, regular_opticalsize_coord))[-1]
-  assert status == WARN and message.code == "out-of-range"
+  assert_results_contain(check(ttFont, regular_opticalsize_coord),
+                         WARN, 'out-of-range',
+                         'with another bad Regular:opsz value (14)...')
 
   # We then test with good default opsz values:
   for value in [9, 10, 11, 12, 13]:
     regular_opticalsize_coord = value
 
     # and now this should PASS the test:
-    print(f'Test PASS with a good Regular:opsz coordinate ({value})...')
-    status, message = list(check(ttFont, regular_opticalsize_coord))[-1]
-    assert status == PASS
+    assert_PASS(check(ttFont,
+                      regular_opticalsize_coord),
+                f'with a good Regular:opsz coordinate ({value})...')
 
 
 def test_check_varfont_bold_wght_coord():
@@ -200,9 +206,9 @@ def test_check_varfont_bold_wght_coord():
   bold_weight_coord = bold_wght_coord(ttFont)
 
   # So it must PASS the test
-  print('Test PASS with a bad Bold:wght coordinate...')
-  status, message = list(check(ttFont, bold_weight_coord))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont,
+                    bold_weight_coord),
+              'with a bad Bold:wght coordinate...')
 
   # We then change the value so it must FAIL:
   ttFont["fvar"].instances[3].coordinates["wght"] = 600
@@ -211,9 +217,10 @@ def test_check_varfont_bold_wght_coord():
   bold_weight_coord = bold_wght_coord(ttFont)
 
   # and now this should FAIL the test:
-  print('Test FAIL with a bad Bold:wght coordinage (600)...')
-  status, message = list(check(ttFont, bold_weight_coord))[-1]
-  assert status == FAIL and message.code == "not-700"
+  assert_results_contain(check(ttFont,
+                               bold_weight_coord),
+                         FAIL, 'not-700',
+                         'with a bad Bold:wght coordinage (600)...')
 
 
 def test_check_varfont_wght_valid_range():
@@ -226,25 +233,24 @@ def test_check_varfont_wght_valid_range():
   ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
 
   # so it must PASS the test:
-  print('Test PASS with a good varfont...')
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good varfont...')
 
   # We then introduce a bad value:
   ttFont["fvar"].instances[0].coordinates["wght"] = 0
 
   # And it must FAIL the test
-  print('Test FAIL with wght=0...')
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "out-of-range"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'out-of-range',
+                         'with wght=0...')
 
   # And yet another bad value:
   ttFont["fvar"].instances[0].coordinates["wght"] = 1001
 
   # Should also FAIL:
-  print('Test FAIL with wght=1001...')
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "out-of-range"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'out-of-range',
+                         'with wght=1001...')
 
 
 def test_check_varfont_wdth_valid_range():
@@ -257,25 +263,24 @@ def test_check_varfont_wdth_valid_range():
   ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
 
   # so it must PASS the test:
-  print('Test PASS with a good varfont...')
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good varfont...')
 
   # We then introduce a bad value:
   ttFont["fvar"].instances[0].coordinates["wdth"] = 0
 
   # And it must FAIL the test
-  print('Test FAIL with wght=0...')
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "out-of-range"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'out-of-range',
+                         'with wght=0...')
 
   # And yet another bad value:
   ttFont["fvar"].instances[0].coordinates["wdth"] = 1001
 
   # Should also FAIL:
-  print('Test FAIL with wght=1001...')
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "out-of-range"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'out-of-range',
+                         'with wght=1001...')
 
 
 def test_check_varfont_slnt_range():
@@ -286,8 +291,10 @@ def test_check_varfont_slnt_range():
 
   # Our reference Inter varfont has a bad slnt range
   ttFont = TTFont("data/test/varfont/inter/Inter[slnt,wght].ttf")
-  status, message = list(check(ttFont, slnt_axis(ttFont)))[-1]
-  assert status == WARN and message.code == "unusual-range"
+  assert_results_contain(check(ttFont,
+                               slnt_axis(ttFont)),
+                         WARN, 'unusual-range',
+                         'with a varfont that has a bad "slnt" range.')
 
   # We then fix the font-bug by flipping the slnt axis range:
   for i, axis in enumerate(ttFont["fvar"].axes):
@@ -297,5 +304,6 @@ def test_check_varfont_slnt_range():
       ttFont["fvar"].axes[i].maxValue = -minValue
 
   # And it must now PASS
-  status, message = list(check(ttFont, slnt_axis(ttFont)))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont,
+                    slnt_axis(ttFont)))
+

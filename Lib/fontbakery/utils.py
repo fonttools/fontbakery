@@ -389,29 +389,48 @@ def glyph_has_ink(font: TTFont, name: Text) -> bool:
     raise Exception("Could not find 'glyf', 'CFF ', or 'CFF2' table.")
 
 
-def assert_PASS(check_results):
+def assert_PASS(check_results, reason="with a good font..."):
   from fontbakery.checkrunner import PASS
+  print(f"Test PASS {reason}")
   status, message = list(check_results)[-1]
   assert status == PASS
+  return str(message)
 
 
-def assert_results_contain(check_results, expected_status, expected_msgcode=None):
+def assert_SKIP(check_results, reason=""):
+  from fontbakery.checkrunner import SKIP
+  print(f"Test SKIP {reason}")
+  status, message = list(check_results)[-1]
+  assert status == SKIP
+  return str(message)
+
+
+def assert_results_contain(check_results, expected_status, expected_msgcode=None, reason=None):
   """
   This helper function is useful when we want to make sure that
   a certain log message is emited by a check but it can be in any
   order among other log messages.
   """
-  found = False
+  from fontbakery.message import Message
+  if not reason:
+    reason = f"[{expected_msgcode}]"
+
+  print(f"Test {expected_status} {reason}")
   check_results = list(check_results)
-  for status, message in check_results:
-    if status == expected_status and message.code == expected_msgcode:
-      found = True
-      break
-  if not found:
-    print(f"Expected to find {expected_status}, [code: {expected_msgcode}]\n"
-          f"But did not find it in:\n"
-          f"{check_results}")
-  assert(found)
+  for status, msg in check_results:
+    if (status == expected_status and
+        expected_msgcode == None or
+        (isinstance(msg, Message) and msg.code == expected_msgcode)): # At some point we will make
+                                                                      # message keywords mandatory!
+      if isinstance(msg, Message):
+        return msg.message
+      else:
+        return msg # It is probably a plain python string
+
+  #if not found:
+  raise Exception(f"Expected to find {expected_status}, [code: {expected_msgcode}]\n"
+                  f"But did not find it in:\n"
+                  f"{check_results}")
 
 
 def filenames_ending_in(suffix, root):

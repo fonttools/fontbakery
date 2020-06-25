@@ -1,4 +1,7 @@
-from fontbakery.utils import TEST_FILE
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
+                              assert_results_contain)
+
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -21,12 +24,11 @@ def test_check_dsig():
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
   # Then we remove the DSIG table so that we get a FAIL:
-  print ("Test FAIL with a font lacking a DSIG table...")
   del ttFont['DSIG']
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "lacks-signature"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'lacks-signature',
+                         'with a font lacking a DSIG table...')
