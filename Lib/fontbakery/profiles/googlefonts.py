@@ -455,7 +455,9 @@ def com_google_fonts_check_metadata_parses(family_directory):
                   f"Family metadata at {family_directory} failed to parse.\n"
                   f"TRACEBACK:\n{e}")
   except FileNotFoundError:
-    yield SKIP, f"Font family at '{family_directory}' lacks a METADATA.pb file."
+    yield SKIP,\
+          Message("file-not-found",
+                  f"Font family at '{family_directory}' lacks a METADATA.pb file.")
 
 
 @check(
@@ -801,7 +803,7 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   if vid is None:
     yield WARN,\
-          Message("not set",
+          Message("not-set",
                   f"OS/2 VendorID is not set."
                   f" {SUGGEST_MICROSOFT_VENDORLIST_WEBSITE}")
   elif vid in bad_vids:

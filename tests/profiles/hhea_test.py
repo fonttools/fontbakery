@@ -1,6 +1,5 @@
 import os
 
-from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -10,6 +9,9 @@ from fontbakery.checkrunner import (
             , PASS
             , FAIL
             )
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
+                              assert_results_contain)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -27,20 +29,19 @@ def test_check_linegaps():
   # the values we're checking for:
   ttFont['hhea'].lineGap = 1
   ttFont['OS/2'].sTypoLineGap = 0
-  status, message = list(check(ttFont))[-1]
-  assert status == WARN and message.code == "hhea"
+  assert_results_contain(check(ttFont),
+                         WARN, 'hhea')
 
   # Then we run the check with a non-zero OS/2.sTypoLineGap:
   ttFont['hhea'].lineGap = 0
   ttFont['OS/2'].sTypoLineGap = 1
-  status, message = list(check(ttFont))[-1]
-  assert status == WARN and message.code == "OS/2"
+  assert_results_contain(check(ttFont),
+                         WARN, 'OS/2')
 
   # And finaly we fix it by making both values equal to zero:
   ttFont['hhea'].lineGap = 0
   ttFont['OS/2'].sTypoLineGap = 0
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont))
 
 
 def test_check_maxadvancewidth():
@@ -49,9 +50,9 @@ def test_check_maxadvancewidth():
 
   test_font = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
 
-  status, _ = list(check(test_font))[-1]
-  assert status == PASS
+  assert_PASS(check(test_font))
 
   test_font["hmtx"].metrics["A"] = (1234567, 1234567)
-  status, message = list(check(test_font))[-1]
-  assert status == FAIL and message.code == "mismatch"
+  assert_results_contain(check(test_font),
+                         FAIL, 'mismatch')
+

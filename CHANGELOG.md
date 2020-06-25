@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.8.0 (2020-Jun-??)
+### Note-worthy code changes
+  - Major improvement to code-testing framework by adopting the `assert_PASS` and `assert_results_contain` helper methods (issue #2943)
+
 ### Changes to existing checks
   - **[com.google.fonts/check/font_version]**: Check now allows more than 3 decimal places to be matched (issue #2928)
   - **[com.google.fonts/check/varfont/unsupported_axes]**: Removed opsz axis and added slnt axis (issue #2866)

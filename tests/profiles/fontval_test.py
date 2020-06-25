@@ -1,7 +1,8 @@
 import os
 import pytest
 
-from fontbakery.utils import TEST_FILE
+from fontbakery.utils import (TEST_FILE,
+                              assert_results_contain)
 from fontbakery.checkrunner import ERROR
 
 
@@ -10,19 +11,17 @@ def test_check_fontvalidator():
   from fontbakery.profiles.fontval import com_google_fonts_check_fontvalidator as check
 
   font = TEST_FILE("mada/Mada-Regular.ttf")
-  # we want to run all FValidator checks only once,
-  # so here we cache all results:
-  fval_results = list(check(font))
 
   # Then we make sure that there wasn't an ERROR
   # which would mean FontValidator is not properly installed:
-  for status, message in fval_results:
+  for status, message in check(font):
     assert status != ERROR
 
   # Simulate FontVal missing.
   old_path = os.environ["PATH"]
   os.environ["PATH"] = ""
   with pytest.raises(OSError) as _:
-    status, message = list(check(font))[-1]
-    assert status == ERROR
+    assert_results_contain(check(font),
+                           ERROR, None) # FIXME: This needs a message keyword!
   os.environ["PATH"] = old_path
+

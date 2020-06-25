@@ -194,11 +194,11 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
 
   required = ["OS/2", "head"]
   for key in required:
-      if key not in ttFont:
-          missing_tables = True
-          yield FAIL,\
-                  Message(f'lacks-{key}',
-                          f"The '{key}' table is missing.")
+    if key not in ttFont:
+      missing_tables = True
+      yield FAIL,\
+            Message(f'lacks-{key}',
+                    f"The '{key}' table is missing.")
   if missing_tables:
     return
 

@@ -3,7 +3,6 @@ import os
 
 import pytest
 
-from fontbakery.utils import TEST_FILE, portable_path
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -13,6 +12,10 @@ from fontbakery.checkrunner import (
             , PASS
             , FAIL
             )
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
+                              assert_results_contain,
+                              portable_path)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -50,36 +53,34 @@ def test_check_family_panose_proportion(mada_ttFonts):
   """ Fonts have consistent PANOSE proportion ? """
   from fontbakery.profiles.os2 import com_google_fonts_check_family_panose_proportion as check
 
-  print('Test PASS with good family.')
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == PASS
+  assert_PASS(check(mada_ttFonts),
+              'with good family.')
 
   # introduce a wrong value in one of the font files:
   value = mada_ttFonts[0]['OS/2'].panose.bProportion
   incorrect_value = value + 1
   mada_ttFonts[0]['OS/2'].panose.bProportion = incorrect_value
 
-  print('Test FAIL with inconsistent family.')
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL and message.code == "inconsistency"
+  assert_results_contain(check(mada_ttFonts),
+                         FAIL, 'inconsistency',
+                         'with inconsistent family.')
 
 
 def test_check_family_panose_familytype(mada_ttFonts):
   """ Fonts have consistent PANOSE family type ? """
   from fontbakery.profiles.os2 import com_google_fonts_check_family_panose_familytype as check
 
-  print('Test PASS with good family.')
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == PASS
+  assert_PASS(check(mada_ttFonts),
+              'with good family.')
 
   # introduce a wrong value in one of the font files:
   value = mada_ttFonts[0]['OS/2'].panose.bFamilyType
   incorrect_value = value + 1
   mada_ttFonts[0]['OS/2'].panose.bFamilyType = incorrect_value
 
-  print('Test FAIL with inconsistent family.')
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL and message.code == "inconsistency"
+  assert_results_contain(check(mada_ttFonts),
+                         FAIL, 'inconsistency',
+                         'with inconsistent family.')
 
 
 def test_check_xavgcharwidth():
@@ -89,16 +90,15 @@ def test_check_xavgcharwidth():
   test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
 
   test_font = TTFont(test_font_path)
-  status, message = list(check(test_font))[-1]
-  assert status == PASS
+  assert_PASS(check(test_font))
 
   test_font['OS/2'].xAvgCharWidth = 556
-  status, message = list(check(test_font))[-1]
-  assert status == INFO
+  assert_results_contain(check(test_font),
+                         INFO, None) # FIXME: This needs a message keyword!
 
   test_font['OS/2'].xAvgCharWidth = 500
-  status, message = list(check(test_font))[-1]
-  assert status == WARN
+  assert_results_contain(check(test_font),
+                         WARN, None) # FIXME: This needs a message keyword
 
   test_font = TTFont()
   test_font['OS/2'] = fontTools.ttLib.newTable('OS/2')
@@ -108,37 +108,40 @@ def test_check_xavgcharwidth():
   test_font['glyf'].glyphs = {}
   test_font['hmtx'] = fontTools.ttLib.newTable('hmtx')
   test_font['hmtx'].metrics = {}
-  status, message = list(check(test_font))[-1]
-  assert status == FAIL
-  assert message.code == "missing-glyphs"
+  assert_results_contain(check(test_font),
+                         FAIL, 'missing-glyphs')
 
   test_font = TTFont(test_font_path)
   subsetter = fontTools.subset.Subsetter()
-  subsetter.populate(glyphs=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'space'])
+  subsetter.populate(glyphs=['a', 'b', 'c', 'd', 'e', 'f', 'g',
+                             'h', 'i', 'j', 'k', 'l', 'm', 'n',
+                             'o', 'p', 'q', 'r', 's', 't', 'u',
+                             'v', 'w', 'x', 'y', 'z', 'space'])
   subsetter.subset(test_font)
   test_font['OS/2'].xAvgCharWidth = 447
   test_font['OS/2'].version = 2
   temp_file = io.BytesIO()
   test_font.save(temp_file)
   test_font = TTFont(temp_file)
-  status, message = list(check(test_font))[-1]
-  assert status == PASS
+  assert_PASS(check(test_font))
 
   test_font['OS/2'].xAvgCharWidth = 450
-  status, message = list(check(test_font))[-1]
-  assert status == INFO
+  assert_results_contain(check(test_font),
+                         INFO, None) # FIXME: This needs a message keyword
 
   test_font['OS/2'].xAvgCharWidth = 500
-  status, message = list(check(test_font))[-1]
-  assert status == WARN
+  assert_results_contain(check(test_font),
+                         WARN, None) # FIXME: This needs a message keyword
 
   test_font = TTFont(temp_file)
   subsetter = fontTools.subset.Subsetter()
-  subsetter.populate(glyphs=['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'space'])
+  subsetter.populate(glyphs=['b', 'c', 'd', 'e', 'f', 'g', 'h',
+                             'i', 'j', 'k', 'l', 'm', 'n', 'o',
+                             'p', 'q', 'r', 's', 't', 'u', 'v',
+                             'w', 'x', 'y', 'z', 'space'])
   subsetter.subset(test_font)
-  status, message = list(check(test_font))[-1]
-  assert status == FAIL
-  assert message.code == "missing-glyphs"
+  assert_results_contain(check(test_font),
+                         FAIL, 'missing-glyphs')
 
 
 def test_check_fsselection_matches_macstyle():
@@ -151,23 +154,22 @@ def test_check_fsselection_matches_macstyle():
 
   # try a regular (not bold, not italic) font
   test_font = TTFont(test_font_path)
-  status, message = list(check(test_font))[-1]
-  assert status == PASS
+  assert_PASS(check(test_font))
 
   # now turn on bold in OS/2.fsSelection, but not in head.macStyle
   test_font['OS/2'].fsSelection |= FsSelection.BOLD
-  status, message = list(check(test_font))[-1]
+  message = assert_results_contain(check(test_font),
+                                   FAIL, None) # FIXME: This needs a message keyword!
   assert 'bold' in message
-  assert status == FAIL
 
   # now turn off bold in OS/2.fsSelection so we can focus on italic
   test_font['OS/2'].fsSelection &= ~FsSelection.BOLD
 
   # now turn on italic in OS/2.fsSelection, but not in head.macStyle
   test_font['OS/2'].fsSelection |= FsSelection.ITALIC
-  status, message = list(check(test_font))[-1]
+  message = assert_results_contain(check(test_font),
+                                   FAIL, None) # FIXME: This needs a message keyword!
   assert 'italic' in message
-  assert status == FAIL
 
 
 def test_check_family_bold_italic_unique_for_nameid1():
@@ -186,38 +188,35 @@ def test_check_family_bold_italic_unique_for_nameid1():
                 'SourceSansPro-BoldIt.otf']
 
   font_paths = [os.path.join(base_path, n) for n in font_names]
-
   test_fonts = [TTFont(x) for x in font_paths]
 
   # the family should be correctly constructed
-  status, message = list(check(test_fonts))[-1]
-  assert status == PASS
+  assert_PASS(check(test_fonts))
 
   # now hack the italic font to also have the bold bit set
   test_fonts[2]['OS/2'].fsSelection |= FsSelection.BOLD
 
   # we should get a failure due to two fonts with both bold & italic set
-  status, message = list(check(test_fonts))[-1]
-  expected_message = "Family 'Source Sans Pro' has 2 fonts (should be no " \
-                     "more than 1) with the same OS/2.fsSelection " \
-                     "bold & italic settings: Bold=True, Italic=True"
-  assert message == expected_message
-  assert status == FAIL
+  message = assert_results_contain(check(test_fonts),
+                                   FAIL, None) # FIXME: This needs a message keyword!
+  assert message == ("Family 'Source Sans Pro' has 2 fonts (should be no"
+                     " more than 1) with the same OS/2.fsSelection"
+                     " bold & italic settings: Bold=True, Italic=True")
 
 
 def test_check_code_pages():
   """ Check code page character ranges """
   from fontbakery.profiles.os2 import com_google_fonts_check_code_pages as check
 
-  print('Test PASS with good font.')
   ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
-  status, message = list(check(ttFont))[-1]
   assert(ttFont['OS/2'].ulCodePageRange1 != 0 or
          ttFont['OS/2'].ulCodePageRange2 != 0) # It has got at least 1 code page range declared
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with good font.')
 
-  print('Test FAIL with a font with no code page declared.')
   ttFont['OS/2'].ulCodePageRange1 = 0 # remove all code pages to make the check FAIL
   ttFont['OS/2'].ulCodePageRange2 = 0
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL
+  assert_results_contain(check(ttFont),
+                         FAIL, None, # FIXME: This needs a message keyword!
+                         'with a font with no code page declared.')
+

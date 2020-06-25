@@ -3,8 +3,10 @@ import os
 
 from fontTools.ttLib import TTFont
 
-from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import PASS, FAIL
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
+                              assert_results_contain)
 
 
 def test_check_loca_maxp_num_glyphs():
@@ -14,13 +16,13 @@ def test_check_loca_maxp_num_glyphs():
   test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
 
   test_font = TTFont(test_font_path)
-  status, _ = list(check(test_font))[-1]
-  assert status == PASS
+  assert_PASS(check(test_font))
 
   test_font = TTFont(test_font_path)
   test_font["loca"].locations.pop()
   test_file = io.BytesIO()
   test_font.save(test_file)
   test_font = TTFont(test_file)
-  status, message = list(check(test_font))[-1]
-  assert status == FAIL and message.code == "corrupt"
+  assert_results_contain(check(test_font),
+                         FAIL, 'corrupt')
+

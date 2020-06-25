@@ -2,8 +2,9 @@ import os
 
 from fontTools.ttLib import TTFont
 from fontbakery.checkrunner import (PASS, WARN, FAIL)
-from fontbakery.utils import TEST_FILE
-
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
+                              assert_results_contain)
 
 def test_check_family_consistent_upm():
     from fontbakery.profiles.adobefonts import (
@@ -21,13 +22,12 @@ def test_check_family_consistent_upm():
     test_fonts = [TTFont(x) for x in font_paths]
 
     # try fonts with consistent UPM (i.e. 1000)
-    status, message = list(check(test_fonts))[-1]
-    assert status == PASS
+    assert_PASS(check(test_fonts))
 
     # now try with one font with a different UPM (i.e. 2048)
     test_fonts[1]['head'].unitsPerEm = 2048
-    status, message = list(check(test_fonts))[-1]
-    assert status == FAIL
+    assert_results_contain(check(test_fonts),
+                           FAIL, None) # FIXME: This needs a message keyword
 
 
 def test_get_family_checks():
@@ -58,17 +58,17 @@ def test_check_find_empty_letters():
     # this font has inked glyphs for all letters
     font_path = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
     test_font = TTFont(font_path)
-    status, message = list(check(test_font))[-1]
-    assert status == PASS
+    assert_PASS(check(test_font))
 
-    # this font has empty glyphs for several letters
+    # this font has empty glyphs for several letters,
+    # the first of which is 'B' (U+0042)
     font_path = TEST_FILE('familysans/FamilySans-Regular.ttf')
     test_font = TTFont(font_path)
 
-    expected_message = "U+007A should be visible, but its glyph ('z') is empty."
-    status, message = list(check(test_font))[-1]
-    assert status == FAIL
-    assert message == expected_message
+    message = assert_results_contain(check(test_font),
+                                     FAIL, None) # FIXME:
+                                                 # This needs a message keyword
+    assert message == "U+0042 should be visible, but its glyph ('B') is empty."
 
 
 def test_check_missing_whitespace():
@@ -82,12 +82,12 @@ def test_check_missing_whitespace():
     font_path = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
     test_font = TTFont(font_path)
     missing = missing_whitespace_chars(test_font)
-    status, message = list(check(test_font, missing))[-1]
-    assert status == PASS
+    assert_PASS(check(test_font, missing))
 
     # remove U+00A0, status should be WARN (standard check would be FAIL)
     for subtable in test_font['cmap'].tables:
         subtable.cmap.pop(0x00A0, None)
     missing = missing_whitespace_chars(test_font)
-    status, message = list(check(test_font, missing))[-1]
-    assert status == WARN
+    assert_results_contain(check(test_font, missing),
+                           WARN, None) # FIXME: This needs a message keyword
+

@@ -1,4 +1,3 @@
-from fontbakery.utils import TEST_FILE
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -8,6 +7,9 @@ from fontbakery.checkrunner import (
             , PASS
             , FAIL
             )
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
+                              assert_results_contain)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -22,14 +24,14 @@ def test_check_kern_table():
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a font without a 'kern' table...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a font without a "kern" table...')
 
   # add a fake 'kern' table:
   ttFont["kern"] = "foo"
 
   # and make sure the check emits an INFO message:
-  print ("Test INFO with a font containing a 'kern' table...")
-  status, message = list(check(ttFont))[-1]
-  assert status == INFO and message.code == "kern-found"
+  assert_results_contain(check(ttFont),
+                         INFO, 'kern-found',
+                         'with a font containing a "kern" table...')
+

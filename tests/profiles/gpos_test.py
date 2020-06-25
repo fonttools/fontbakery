@@ -1,4 +1,7 @@
-from fontbakery.utils import TEST_FILE
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
+                              assert_results_contain)
+
 from fontbakery.checkrunner import (
               DEBUG
             , INFO
@@ -23,9 +26,8 @@ def test_check_gpos_kerning_info():
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a font that has got kerning info...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a font that has got kerning info...')
 
   # delete all Pair Adjustment lookups:
   while True:
@@ -42,19 +44,19 @@ def test_check_gpos_kerning_info():
     if not found:
       break
 
-  print ("Test WARN with a font lacking kerning info...")
-  status, message = list(check(ttFont))[-1]
-  assert status == WARN and message.code == "lacks-kern-info"
+  assert_results_contain(check(ttFont),
+                         WARN, 'lacks-kern-info',
+                         'with a font lacking kerning info...')
 
   # setup a fake type=2 Pair Adjustment lookup
   ttFont["GPOS"].table.LookupList.Lookup[0].LookupType = 2
   # and make sure the check emits a PASS result:
-  print ("Test PASS with kerning info on a type=2 lookup...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with kerning info on a type=2 lookup...')
 
   # remove the GPOS table and make sure to get a WARN:
   del ttFont["GPOS"]
-  print ("Test WARN with a font lacking a GPOS table...")
-  status, message = list(check(ttFont))[-1]
-  assert status == WARN and message.code == "lacks-kern-info"
+  assert_results_contain(check(ttFont),
+                          WARN, 'lacks-kern-info',
+                         'with a font lacking a GPOS table...')
+

@@ -199,21 +199,20 @@ def test_check_canonical_filename():
   ]
 
   for canonical in static_canonical_names + varfont_canonical_names:
-    print(f'Test PASS with "{canonical}" ...')
-    status, message = list(check(canonical))[-1]
-    assert status == PASS
+    assert_PASS(check(canonical),
+                f'with "{canonical}" ...')
 
   for non_canonical in non_canonical_names:
-    print(f'Test FAIL with "{non_canonical}" ...')
-    status, message = list(check(non_canonical))[-1]
-    assert status == FAIL and message.code == "bad-varfont-filename"
+    assert_results_contain(check(non_canonical),
+                           FAIL, 'bad-varfont-filename',
+                           f'with "{non_canonical}" ...')
 
-  print(f'Test FAIL with filename containing an underscore...')
-  status, message = list(check(TEST_FILE("Bad_Name.ttf")))[-1]
-  assert status == FAIL and message.code == "invalid-char"
+  assert_results_contain(check(TEST_FILE("Bad_Name.ttf")),
+                         FAIL, 'invalid-char',
+                         'with filename containing an underscore...')
 
-  # TODO: FAIL, "bad-static-filename"
-  # TODO: FAIL, "varfont-with-static-filename"
+  # TODO: FAIL, 'bad-static-filename'
+  # TODO: FAIL, 'varfont-with-static-filename'
 
 
 def test_check_description_broken_links():
@@ -224,30 +223,28 @@ def test_check_description_broken_links():
     descfile)
 
   good_desc = description(descfile(TEST_FILE("cabin/Cabin-Regular.ttf")))
-  print('Test PASS with description file that has no links...')
-  status, message = list(check(good_desc))[-1]
-  assert status == PASS
+  assert_PASS(check(good_desc),
+              'with description file that has no links...')
 
   good_desc += ("<a href='http://example.com'>Good Link</a>"
                 "<a href='http://fonts.google.com'>Another Good One</a>")
-  print('Test PASS with description file that has good links...')
-  status, message = list(check(good_desc))[-1]
-  assert status == PASS
+  assert_PASS(check(good_desc),
+              'with description file that has good links...')
 
   good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
-  print('Test INFO/PASS with a description file containing a mailto links...')
-  status, message = list(check(good_desc))[-2]
-  assert status == INFO and message.code == "email"
+  assert_results_contain(check(good_desc),
+                         INFO, "email",
+                         'with a description file containing "mailto" links...')
 
-  status, message = list(check(good_desc))[-1]
-  assert status == PASS
+  assert_PASS(check(good_desc),
+              'with a description file containing "mailto" links...')
 
   bad_desc = good_desc + "<a href='http://thisisanexampleofabrokenurl.com/'>This is a Bad Link</a>"
-  print('Test FAIL with a description file containing a known-bad URL...')
-  status, message = list(check(bad_desc))[-1]
-  assert status == FAIL and message.code == "broken-links"
+  assert_results_contain(check(bad_desc),
+                         FAIL, 'broken-links',
+                         'with a description file containing a known-bad URL...')
 
-  #TODO: WARN, "timeout"
+  #TODO: WARN, 'timeout'
 
 
 def test_check_description_git_url():
@@ -258,22 +255,22 @@ def test_check_description_git_url():
     description_html,
     descfile)
 
-  # TODO: test INFO "url-found"
+  # TODO: test INFO 'url-found'
 
   bad_desc = description(descfile(TEST_FILE("cabin/Cabin-Regular.ttf")))
-  print('Test FAIL with description file that has no git repo URLs...')
   assert_results_contain(check(description_html(bad_desc)),
-                         FAIL, 'lacks-git-url')
+                         FAIL, 'lacks-git-url',
+                         'with description file that has no git repo URLs...')
 
   good_desc = ("<a href='https://github.com/uswds/public-sans'>Good URL</a>"
                "<a href='https://gitlab.com/smc/fonts/uroob'>Another Good One</a>")
-  print('Test PASS with description file that has good links...')
-  assert_PASS(check(description_html(good_desc)))
+  assert_PASS(check(description_html(good_desc)),
+              'with description file that has good links...')
 
   bad_desc = "<a href='https://v2.designsystem.digital.gov'>Bad URL</a>"
-  print('Test FAIL with description file that has false git in URL...')
   assert_results_contain(check(description_html(bad_desc)),
-                         FAIL, 'lacks-git-url')
+                         FAIL, 'lacks-git-url',
+                         'with description file that has false git in URL...')
 
 
 def test_check_description_valid_html():
@@ -285,28 +282,27 @@ def test_check_description_valid_html():
 
   good_descfile = descfile(TEST_FILE("nunito/Nunito-Regular.ttf"))
   good_desc = description(good_descfile)
-  print('Test PASS with description file that contains a good HTML snippet...')
-  status, message = list(check(good_descfile, good_desc))[-1]
-  assert status == PASS
+  assert_PASS(check(good_descfile, good_desc),
+              'with description file that contains a good HTML snippet...')
 
   bad_descfile = TEST_FILE("cabin/FONTLOG.txt") # :-)
   bad_desc = description(bad_descfile)
-  print('Test FAIL with a known-bad file (without HTML paragraph tags)...')
   assert_results_contain(check(bad_descfile, bad_desc),
-                         FAIL, 'lacks-paragraph')
+                         FAIL, 'lacks-paragraph',
+                         'with a known-bad file (without HTML paragraph tags)...')
 
   bad_desc = f"<html>{description}</html>"
-  print('Test FAIL with description file that contains the <html> tag...')
   assert_results_contain(check(bad_descfile, bad_desc),
-                         FAIL, 'html-tag')
+                         FAIL, 'html-tag',
+                         'with description file that contains the <html> tag...')
 
   bad_desc = ("<p>This example has the & caracter,"
               " but does not escape it with an HTML entity code."
               " It should use &amp; instead."
               "</p>")
-  print('Test FAIL with a known-bad file (not using HTML entity syntax)...')
   assert_results_contain(check(bad_descfile, bad_desc),
-                         FAIL, 'malformed-snippet')
+                         FAIL, 'malformed-snippet',
+                         'with a known-bad file (not using HTML entity syntax)...')
 
 
 def test_check_description_min_length():
@@ -314,19 +310,18 @@ def test_check_description_min_length():
   from fontbakery.profiles.googlefonts import com_google_fonts_check_description_min_length as check
 
   bad_length = 'a' * 199
-  print('Test FAIL with 199-byte buffer...')
-  status, message = list(check(bad_length))[-1]
-  assert status == FAIL and message.code == "too-short"
+  assert_results_contain(check(bad_length),
+                         FAIL, 'too-short',
+                         'with 199-byte buffer...')
 
   bad_length = 'a' * 200
-  print('Test FAIL with 200-byte buffer...')
-  status, message = list(check(bad_length))[-1]
-  assert status == FAIL and message.code == "too-short"
+  assert_results_contain(check(bad_length),
+                         FAIL, 'too-short',
+                         'with 200-byte buffer...')
 
   good_length = 'a' * 201
-  print('Test PASS with 201-byte buffer...')
-  status, message = list(check(good_length))[-1]
-  assert status == PASS
+  assert_PASS(check(good_length),
+              'with 201-byte buffer...')
 
 
 def test_check_description_max_length():
@@ -334,19 +329,18 @@ def test_check_description_max_length():
   from fontbakery.profiles.googlefonts import com_google_fonts_check_description_max_length as check
 
   bad_length = 'a' * 1001
-  print('Test FAIL with 1001-byte buffer...')
-  status, message = list(check(bad_length))[-1]
-  assert status == FAIL and message.code == "too-long"
+  assert_results_contain(check(bad_length),
+                         FAIL, "too-long",
+                         'with 1001-byte buffer...')
 
   bad_length = 'a' * 1000
-  print('Test FAIL with 1000-byte buffer...')
-  status, message = list(check(bad_length))[-1]
-  assert status == FAIL and message.code == "too-long"
+  assert_results_contain(check(bad_length),
+                         FAIL, "too-long",
+                         'with 1000-byte buffer...')
 
   good_length = 'a' * 999
-  print('Test PASS with 999-byte buffer...')
-  status, message = list(check(good_length))[-1]
-  assert status == PASS
+  assert_PASS(check(good_length),
+              'with 999-byte buffer...')
 
 
 def test_check_description_eof_linebreak():
@@ -356,15 +350,14 @@ def test_check_description_eof_linebreak():
   bad = ("We want to avoid description files\n"
          "without an end-of-file linebreak\n"
          "like this one.")
-  print('Test WARN when we lack an end-of-file linebreak...')
-  status, message = list(check(bad))[-1]
-  assert status == WARN and message.code == "missing-eof-linebreak"
+  assert_results_contain(check(bad),
+                         WARN, "missing-eof-linebreak",
+                         'when we lack an end-of-file linebreak...')
 
   good = ("On the other hand, this one\n"
           "is good enough.\n")
-  print('Test PASS when we add one...')
-  status, message = list(check(good))[-1]
-  assert status == PASS
+  assert_PASS(check(good),
+              'when we add one...')
 
 
 def test_check_name_family_and_style_max_length(): 
@@ -375,10 +368,9 @@ def test_check_name_family_and_style_max_length():
   # Our reference Cabin Regular is known to be good 
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf")) 
  
-  # So it must PASS the check: 
-  print ("Test PASS with a good font...") 
-  status, message = list(check(ttFont))[-1] 
-  assert status == PASS 
+  # So it must PASS the check:
+  assert_PASS(check(ttFont),
+              'with a good font...')
  
   # Then we emit a WARNing with long family/style names 
   # Originaly these were based on the example on the glyphs tutorial
@@ -392,26 +384,24 @@ def test_check_name_family_and_style_max_length():
       bad = "AnAbsurdlyLongFamilyNameFont"
       assert len(bad) == 28
       ttFont["name"].names[index].string = bad.encode(name.getEncoding()) 
-      break 
-
-  print ("Test WARN with a bad font...") 
-  status, message = list(check(ttFont))[-1] 
-  assert status == WARN and message.code == "too-long"
+      break
+  assert_results_contain(check(ttFont),
+                         WARN, 'too-long',
+                         'with a bad font...')
 
   # Now let's restore the good Cabin Regular...
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf")) 
- 
+
   # ...and break the check again with a bad SUBFAMILY NAME:
   for index, name in enumerate(ttFont["name"].names): 
     if name.nameID == NameID.FONT_SUBFAMILY_NAME:
       bad = "WithAVeryLongAndBadStyleName"
       assert len(bad) == 28
       ttFont["name"].names[index].string = bad.encode(name.getEncoding()) 
-      break 
- 
-  print ("Test WARN with a bad font...") 
-  status, message = list(check(ttFont))[-1] 
-  assert status == WARN and message.code == "too-long"
+      break
+  assert_results_contain(check(ttFont),
+                         WARN, 'too-long',
+                         'with a bad font...')
 
 
 def test_check_name_line_breaks():
@@ -422,17 +412,17 @@ def test_check_name_line_breaks():
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
-  print ("Test FAIL with name entries containing a linebreak...")
-  for i in range(len(ttFont["name"].names)):
+  num_entries = len(ttFont["name"].names)
+  for i in range(num_entries):
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     encoding = ttFont["name"].names[i].getEncoding()
     ttFont["name"].names[i].string = "bad\nstring".encode(encoding)
-    status, message = list(check(ttFont))[-1]
-    assert status == FAIL and message.code == "line-break"
+    assert_results_contain(check(ttFont),
+                           FAIL, 'line-break',
+                           f'with name entries containing a linebreak ({i}/{num_entries})...')
 
 
 def test_check_name_rfn():
@@ -440,13 +430,12 @@ def test_check_name_rfn():
   from fontbakery.profiles.googlefonts import com_google_fonts_check_name_rfn as check
 
   test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-
-  status, _ = list(check(test_font))[-1]
-  assert status == PASS
+  assert_PASS(check(test_font))
 
   test_font["name"].setName("Bla Reserved Font Name", 5, 3, 1, 0x409)
-  status, message = list(check(test_font))[-1]
-  assert status == FAIL and message.code == "rfn"
+  assert_results_contain(check(test_font),
+                         FAIL, 'rfn',
+                         'with "Reserved Font Name" on a name table entry...')
 
 
 def test_check_metadata_parses():
@@ -454,19 +443,18 @@ def test_check_metadata_parses():
   from fontbakery.profiles.googlefonts import com_google_fonts_check_metadata_parses as check
 
   good = portable_path("data/test/merriweather")
-  print('Test PASS with a good METADATA.pb file...')
-  status, message = list(check(good))[-1]
-  assert status == PASS
+  assert_PASS(check(good),
+              'with a good METADATA.pb file...')
 
   skip = portable_path("data/test/slabo")
-  print('Test SKIP with a missing METADATA.pb file...')
-  status, message = list(check(skip))[-1]
-  assert status == SKIP
+  assert_results_contain(check(skip),
+                         SKIP, 'file-not-found',
+                         'with a missing METADATA.pb file...')
 
   bad = portable_path("data/test/broken_metadata")
-  print('Test FAIL with a bad METADATA.pb file...')
-  status, message = list(check(bad))[-1]
-  assert status == FAIL and message.code == "parsing-error"
+  assert_results_contain(check(bad),
+                         FAIL, 'parsing-error',
+                         'with a bad METADATA.pb file...')
 
 
 def test_check_metadata_unknown_designer():
@@ -474,15 +462,14 @@ def test_check_metadata_unknown_designer():
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_unknown_designer as check,
                                                family_metadata)
   good = family_metadata(portable_path("data/test/merriweather"))
-  print('Test PASS with a good METADATA.pb file...')
-  status, message = list(check(good))[-1]
-  assert status == PASS
+  assert_PASS(check(good),
+              'with a good METADATA.pb file...')
 
   bad = family_metadata(portable_path("data/test/merriweather"))
   bad.designer = "unknown"
-  print('Test FAIL with a bad METADATA.pb file...')
-  status, message = list(check(bad))[-1]
-  assert status == FAIL and message.code == "unknown-designer"
+  assert_results_contain(check(bad),
+                         FAIL, 'unknown-designer',
+                         'with a bad METADATA.pb file...')
 
 
 def test_check_metadata_designer_values():
@@ -491,21 +478,20 @@ def test_check_metadata_designer_values():
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_designer_values as check,
                                                family_metadata)
   good = family_metadata(portable_path("data/test/merriweather"))
-  print('Test PASS with a good METADATA.pb file...')
-  status, message = list(check(good))[-1]
-  assert status == PASS
+  assert_PASS(check(good),
+              'with a good METADATA.pb file...')
 
   good.designer = "Pentagram, MCKL"
-  print('Test PASS with a good multiple-designers string...')
-  status, message = list(check(good))[-1]
-  assert status == PASS
+  assert_PASS(check(good),
+              'with a good multiple-designers string...')
 
   bad = family_metadata(portable_path("data/test/merriweather"))
   bad.designer = "Pentagram / MCKL" # This actually happened on an
                                     # early version of the Red Hat Text family
-  print('Test FAIL with a bad multiple-designers string...')
-  status, message = list(check(bad))[-1]
-  assert status == FAIL and message.code == "slash"
+  assert_results_contain(check(bad),
+                         FAIL, 'slash',
+                         'with a bad multiple-designers string'
+                         ' (names separated by a slash char)...')
 
 
 def test_check_metadata_broken_links():
@@ -526,8 +512,7 @@ def test_check_metadata_undeclared_fonts():
 
   # Our reference Nunito family is know to be good here.
   family_dir = portable_path("data/test/nunito")
-  status, message = list(check(family_metadata(family_dir), family_dir))[-1]
-  assert status == PASS
+  assert_PASS(check(family_metadata(family_dir), family_dir))
 
   # Our reference Cabin family has files that are not declared in its METADATA.pb:
   # - CabinCondensed-Medium.ttf
@@ -535,20 +520,19 @@ def test_check_metadata_undeclared_fonts():
   # - CabinCondensed-Regular.ttf
   # - CabinCondensed-Bold.ttf
   family_dir = portable_path("data/test/cabin")
-  status, message = list(check(family_metadata(family_dir), family_dir))[-1]
-  assert status == FAIL and message.code == "file-not-declared"
+  assert_results_contain(check(family_metadata(family_dir), family_dir),
+                         FAIL, 'file-not-declared')
 
   # We placed an additional file on a subdirectory of our reference
   # OverpassMono family with the name "another_directory/ThisShouldNotBeHere.otf"
   family_dir = portable_path("data/test/overpassmono")
-  status, message = list(check(family_metadata(family_dir), family_dir))[-1]
-  assert status == WARN and message.code == "font-on-subdir"
+  assert_results_contain(check(family_metadata(family_dir), family_dir),
+                         WARN, 'font-on-subdir')
 
   # We do accept statics folder though!
   # Jura is an example:
   family_dir = portable_path("data/test/varfont/jura")
-  status, message = list(check(family_metadata(family_dir), family_dir))[-1]
-  assert status == PASS
+  assert_PASS(check(family_metadata(family_dir), family_dir))
 
 
 # TODO: re-enable after addressing issue #1998
@@ -556,16 +540,15 @@ def DISABLED_test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFon
   """ Fonts have equal numbers of glyphs? """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_family_equal_numbers_of_glyphs as check
 
-  print('Test PASS with good family.')
   # our reference Cabin family is know to be good here.
-  status, message = list(check(cabin_ttFonts))[-1]
-  assert status == PASS
+  assert_PASS(check(cabin_ttFonts),
+              'with a good family.')
 
-  print('Test FAIL with fonts that diverge on number of glyphs.')
   # our reference Mada family is bad here with 407 glyphs on most font files
   # except the Black and the Medium, that both have 408 glyphs.
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL and message.code == "glyph-count-diverges"
+  asser_results_contain(check(mada_ttFonts),
+                        FAIL, 'glyph-count-diverges',
+                        'with fonts that diverge on number of glyphs.')
 
 
 # TODO: re-enable after addressing issue #1998
@@ -573,35 +556,32 @@ def DISABLED_test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
   """ Fonts have equal glyph names? """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_family_equal_glyph_names as check
 
-  print('Test PASS with good family.')
   # our reference Cabin family is know to be good here.
-  status, message = list(check(cabin_ttFonts))[-1]
-  assert status == PASS
+  assert_PASS(check(cabin_ttFonts),
+              'with a good family.')
 
-  print('Test FAIL with fonts that diverge on number of glyphs.')
   # our reference Mada family is bad here with 407 glyphs on most font files
   # except the Black and the Medium, that both have 408 glyphs (that extra glyph
   # causes the check to fail).
-  status, message = list(check(mada_ttFonts))[-1]
-  assert status == FAIL and message.code == "missing-glyph"
-
+  assert_results_contain(check(mada_ttFonts),
+                         FAIL, 'missing-glyph',
+                         'with fonts that diverge on number of glyphs.')
 
 def test_check_fstype():
   """ Checking OS/2 fsType """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_fstype as check
 
-  print('Test PASS with good font without DRM.')
   # our reference Cabin family is know to be good here.
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font without DRM.')
 
   # modify the OS/2 fsType value to something different than zero:
   ttFont['OS/2'].fsType = 1
 
-  print('Test FAIL with fonts that enable DRM restrictions via non-zero fsType bits.')
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "drm"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'drm',
+                         'with fonts that enable DRM restrictions via non-zero fsType bits.')
 
 
 def test_condition__registered_vendor_ids():
@@ -657,28 +637,27 @@ def test_check_vendor_id():
   # Let's start with our reference Merriweather Regular
   ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
-  print('Test WARN with bad vid.')
   bad_vids = ['UKWN', 'ukwn', 'PfEd']
   for bad_vid in bad_vids:
     ttFont['OS/2'].achVendID = bad_vid
-    status, message = list(check(ttFont, registered_ids))[-1]
-    assert status == WARN and message.code == "bad"
+    assert_results_contain(check(ttFont, registered_ids),
+                           WARN, 'bad',
+                           f'with bad vid "{bad_vid}".')
 
-  print('Test FAIL with font missing vendor id info.')
   ttFont['OS/2'].achVendID = None
-  status, message = list(check(ttFont, registered_ids))[-1]
-  assert status == WARN and message.code == "not set"
+  assert_results_contain(check(ttFont, registered_ids),
+                         WARN, 'not-set',
+                         'with font missing vendor id info.')
 
-  print('Test WARN with unknwon vendor id.')
   ttFont['OS/2'].achVendID = "????"
-  status, message = list(check(ttFont, registered_ids))[-1]
-  assert status == WARN and message.code == "unknown"
+  assert_results_contain(check(ttFont, registered_ids),
+                         WARN, 'unknown',
+                         'with unknwon vendor id.')
 
-  print('Test PASS with good font.')
   # we now change the fields into a known good vendor id:
   ttFont['OS/2'].achVendID = "APPL"
-  status, message = list(check(ttFont, registered_ids))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, registered_ids),
+              'with a good font.')
 
 
 def NOT_IMPLEMENTED__test_check_glyph_coverage():
@@ -686,17 +665,16 @@ def NOT_IMPLEMENTED__test_check_glyph_coverage():
   #from fontbakery.profiles.googlefonts import com_google_fonts_check_glyph_coverage as check
   #TODO: Implement-me!
 
-  #print('Test FAIL with a bad font...')
   ## Our reference Mada Regular is know to be bad here.
   #ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-  #status, message = list(check(ttFont))[-1]
-  #assert status == FAIL and message.code == "missing-codepoints"
+  #assert_results_contain(check(ttFont),
+  #                       FAIL, 'missing-codepoints',
+  #                       'with a bad font...')
 
-  #print('Test PASS with a good font...')
   ## Our reference Cabin Regular is know to be good here.
   #ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-  #status, message = list(check(ttFont))[-1]
-  #assert status == PASS
+  #assert_PASS(check(ttFont),
+  #            'with a good font...')
 
 
 def test_check_name_unwanted_chars():
@@ -704,61 +682,64 @@ def test_check_name_unwanted_chars():
       symbols in name table entries. """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_name_unwanted_chars as check
 
-  print('Test FAIL with a bad font...')
   # Our reference Mada Regular is know to be bad here.
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "unwanted-chars"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'unwanted-chars',
+                         'with a bad font...')
 
-  print('Test PASS with a good font...')
   # Our reference Cabin Regular is know to be good here.
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
 
 def test_check_usweightclass():
   """ Checking OS/2 usWeightClass. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_usweightclass as check)
   from fontbakery.profiles.googlefonts_conditions import expected_style
+
   # Our reference Mada Regular is know to be bad here.
   font = TEST_FILE("mada/Mada-Regular.ttf")
-  print(f"Test FAIL with bad font '{font}' ...")
   ttFont = TTFont(font)
-  status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-  assert status == FAIL and message.code == "bad-value"
+  expected = expected_style(ttFont)
+  assert_results_contain(check(ttFont, expected),
+                         FAIL, 'bad-value',
+                         f'with bad font "{font}" ...')
 
   # All fonts in our reference Cabin family are know to be good here.
   for font in cabin_fonts:
-    print(f"Test PASS with good font '{font}' ...")
     ttFont = TTFont(font)
-    status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-    assert status == PASS
+    expected = expected_style(ttFont)
+    assert_PASS(check(ttFont, expected),
+                f'with good font "{font}" ...')
 
   # Check otf Thin == 250 and ExtraLight == 275
   font = TEST_FILE("rokkitt/Rokkitt-Thin.otf")
-  print(f"Test FAIL with bad font '{font}' ...")
   ttFont = TTFont(font)
-  status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-  assert status == FAIL
+  assert_results_contain(check(ttFont, expected_style(ttFont)),
+                         FAIL, None, #FIXME! We need a message keyword here
+                         f'with bad font "{font}" ...')
 
-  print(f"Test PASS with good font '{font}' ...")
   ttFont['OS/2'].usWeightClass = 250
-  status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-  assert status == PASS
+  expected = expected_style(ttFont)
+  assert_PASS(check(ttFont, expected),
+              f"with good font '{font}' ...")
 
   font = TEST_FILE("rokkitt/Rokkitt-ExtraLight.otf")
-  print(f"Test FAIL with bad font '{font}' ...")
   ttFont = TTFont(font)
-  status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-  assert status == FAIL
+  assert_results_contain(check(ttFont, expected_style(ttFont)),
+                         FAIL, None, #FIXME! We need a message keyword here
+                         f'with bad font "{font}" ...')
 
-  print(f"Test PASS with good font '{font}' ...")
   ttFont['OS/2'].usWeightClass = 275
-  status, message = list(check(ttFont, expected_style(ttFont)))[-1]
-  assert status == PASS
+  expected = expected_style(ttFont)
+  assert_PASS(check(ttFont, expected),
+              f'with good font "{font}" ...')
+
   # TODO: test italic variants to ensure we do not get regressions of
   #       this bug: https://github.com/googlefonts/fontbakery/issues/2650
+
 
 def test_family_directory_condition():
   from fontbakery.profiles.shared_conditions import family_directory
@@ -776,29 +757,27 @@ def test_check_family_has_license():
   # The lines maked with 'hack' below are meant to
   # not let fontbakery's own license to mess up
   # this code test.
-  print('Test FAIL with multiple licenses...')
   detected_licenses = licenses(portable_path("data/test/028/multiple"))
   detected_licenses.pop(-1) # hack
-  status, message = list(check(detected_licenses))[-1]
-  assert status == FAIL and message.code == "multiple"
+  assert_results_contain(check(detected_licenses),
+                         FAIL, 'multiple',
+                         'with multiple licenses...')
 
-  print('Test FAIL with no license...')
   detected_licenses = licenses(portable_path("data/test/028/none"))
   detected_licenses.pop(-1) # hack
-  status, message = list(check(detected_licenses))[-1]
-  assert status == FAIL and message.code == "no-license"
+  assert_results_contain(check(detected_licenses),
+                         FAIL, 'no-license',
+                         'with no license...')
 
-  print('Test PASS with a single OFL license...')
   detected_licenses = licenses(portable_path("data/test/028/pass_ofl"))
   detected_licenses.pop(-1) # hack
-  status, message = list(check(detected_licenses))[-1]
-  assert status == PASS
+  assert_PASS(check(detected_licenses),
+              'with a single OFL license...')
 
-  print('Test PASS with a single Apache license...')
   detected_licenses = licenses(portable_path("data/test/028/pass_apache"))
   detected_licenses.pop(-1) # hack
-  status, message = list(check(detected_licenses))[-1]
-  assert status == PASS
+  assert_PASS(check(detected_licenses),
+              'with a single Apache license...')
 
 
 def test_check_name_license(mada_ttFonts):
@@ -810,21 +789,20 @@ def test_check_name_license(mada_ttFonts):
   license = 'OFL.txt'
   wrong_license = 'LICENSE.txt' # Apache
 
-  print('Test PASS with good fonts ...')
   for ttFont in mada_ttFonts:
-    status, message = list(check(ttFont, license))[-1]
-    assert status == PASS
+    assert_PASS(check(ttFont, license),
+                'with good fonts ...')
 
-  print('Test FAIL with wrong entry values ...')
   for ttFont in mada_ttFonts:
     assert_results_contain(check(ttFont, wrong_license),
-                           FAIL, 'wrong')
+                           FAIL, 'wrong',
+                           'with wrong entry values ...')
 
-  print('Test FAIL with missing copyright namerecords ...')
   for ttFont in mada_ttFonts:
     delete_name_table_id(ttFont, NameID.LICENSE_DESCRIPTION)
     assert_results_contain(check(ttFont, wrong_license),
-                           FAIL, 'missing')
+                           FAIL, 'missing',
+                           'with missing copyright namerecords ...')
 
   # TODO:
   # WARN, "http" / "http-in-description"
@@ -851,31 +829,27 @@ def test_check_name_description_max_length():
   """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_name_description_max_length as check
 
-  print('Test PASS with a good font...')
   # Our reference Mada Regular is know to be good here.
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')  
 
   # Here we add strings to NameID.DESCRIPTION with exactly 100 chars,
   # so it should still PASS:
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NameID.DESCRIPTION:
       ttFont['name'].names[i].string = ('a' * 200).encode(name.getEncoding())
-
-  print('Test PASS with a 200 char string...')
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a 200 char string...')
 
   # And here we make the strings longer than 200 chars
   # in order to make the check emit a WARN:
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NameID.DESCRIPTION:
       ttFont['name'].names[i].string = ('a' * 201).encode(name.getEncoding())
-
-  print('Test WARN with a too long description string...')
-  status, message = list(check(ttFont))[-1]
-  assert status == WARN and message.code == "too-long"
+  assert_results_contain(check(ttFont),
+                         WARN, 'too-long',
+                         'with a too long description string...')
 
 
 def test_check_hinting_impact():
@@ -885,10 +859,9 @@ def test_check_hinting_impact():
   # TODO: test the CFF code-path
 
   font = TEST_FILE("mada/Mada-Regular.ttf")
-
-  print('Test this check always emits an INFO result...')
-  status, message = list(check(TTFont(font), hinting_stats(font)))[-1]
-  assert status == INFO and message.code == "size-impact"
+  assert_results_contain(check(TTFont(font), hinting_stats(font)),
+                         INFO, 'size-impact',
+                         'this check always emits an INFO result...')
 
 
 def test_check_name_version_format():
@@ -899,26 +872,25 @@ def test_check_name_version_format():
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
   # then we introduce bad strings in all version-string entries:
-  print ("Test FAIL with bad version format in name table...")
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NameID.VERSION_STRING:
       invalid = "invalid-version-string".encode(name.getEncoding())
       ttFont["name"].names[i].string = invalid
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "bad-version-strings"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-version-strings',
+                         'with bad version format in name table...')
 
   # and finally we remove all version-string entries:
-  print ("Test FAIL with font lacking version string entries in name table...")
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NameID.VERSION_STRING:
       del ttFont["name"].names[i]
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "no-version-string"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'no-version-string',
+                         'with font lacking version string entries in name table...')
 
 
 def NOT_IMPLEMENTED_test_check_old_ttfautohint():
@@ -934,25 +906,26 @@ def NOT_IMPLEMENTED_test_check_old_ttfautohint():
   # - FAIL, code="parse-error"
 
 
-@pytest.mark.parametrize("expected_status,expected_keyword,fontfile",[
-  # Font is lacking ttfautohint params on its version strings on the name table.
+@pytest.mark.parametrize("expected_status,expected_keyword,reason,fontfile",[
   (FAIL, "lacks-ttfa-params",
+   'with a font lacking ttfautohint params on its version strings on the name table.',
    TEST_FILE("coveredbyyourgrace/CoveredByYourGrace.ttf")),
 
-  # Font appears to our heuristic as not hinted using ttfautohint.
   (SKIP, "not-hinted",
+   'with a font which appears to our heuristic as not hinted using ttfautohint.',
    TEST_FILE("mada/Mada-Regular.ttf")),
 
-  # Font has ttfautohint params
-  # (-l 6 -r 36 -G 0 -x 10 -H 350 -D latn -f cyrl -w "" -X "")
   (PASS, "ok",
+   'with a font that has ttfautohint params'
+   ' (-l 6 -r 36 -G 0 -x 10 -H 350 -D latn -f cyrl -w "" -X "")',
    TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 ])
-def test_check_has_ttfautohint_params(expected_status, expected_keyword, fontfile):
+def test_check_has_ttfautohint_params(expected_status, expected_keyword, reason, fontfile):
   """ Font has ttfautohint params? """
   from fontbakery.profiles.googlefonts import com_google_fonts_check_has_ttfautohint_params as check
-  status, message = list(check(TTFont(fontfile)))[-1]
-  assert status == expected_status and message.code == expected_keyword
+  assert_results_contain(check(TTFont(fontfile)),
+                         expected_status, expected_keyword,
+                         reason)
 
 
 def test_check_epar():
@@ -964,15 +937,14 @@ def test_check_epar():
 
   # So it must emit an INFO message inviting the designers
   # to learn more about it:
-  print ("Test INFO with a font lacking an EPAR table...")
-  status, message = list(check(ttFont))[-1]
-  assert status == INFO and message.code == "lacks-EPAR"
+  assert_results_contain(check(ttFont),
+                         INFO, 'lacks-EPAR',
+                         'with a font lacking an EPAR table...')
 
-  print ("Test PASS with a good font...")
   # add a fake EPAR table to validate the PASS code-path:
   ttFont["EPAR"] = "foo"
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
 
 def NOT_IMPLEMENTED_test_check_gasp():
@@ -999,9 +971,8 @@ def test_check_name_familyname_first_char():
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
   # alter the family-name prepending a digit:
   for i, name in enumerate(ttFont["name"].names):
@@ -1009,9 +980,9 @@ def test_check_name_familyname_first_char():
       ttFont["name"].names[i].string = "1badname".encode(name.getEncoding())
 
   # and make sure the check FAILs:
-  print ("Test FAIL with a font in which the family name begins with a digit...")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "begins-with-digit"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'begins-with-digit',
+                         'with a font in which the family name begins with a digit...')
 
 
 def test_check_name_ascii_only_entries():
@@ -1022,9 +993,8 @@ def test_check_name_ascii_only_entries():
   ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
   #  The OpenType spec requires ASCII for the POSTSCRIPT_NAME (nameID 6).
   #  For COPYRIGHT_NOTICE (nameID 0) ASCII is required because that
@@ -1032,29 +1002,33 @@ def test_check_name_ascii_only_entries():
   #  requirement in the OpenType spec.
 
   # Let's check detection of both. First nameId 6:
-  print ("Test FAIL with non-ascii on nameID 6 entry (Postscript name)...")
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NameID.POSTSCRIPT_NAME:
       ttFont['name'].names[i].string = "Infração".encode(encoding="utf-8")
-  results = list(check(ttFont))
-  info_status, info_message = results[-2]
-  final_status, final_message = results[-1]
-  assert info_status == FAIL and info_message.code == "bad-string"
-  assert final_status == FAIL and final_message.code == "non-ascii-strings"
+
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-string',
+                         'with non-ascii on nameID 6 entry (Postscript name)...')
+
+  assert_results_contain(check(ttFont),
+                         FAIL, 'non-ascii-strings',
+                         'with non-ascii on nameID 6 entry (Postscript name)...')
 
   # Then reload the good font
   ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
   # And check detection of a problem on nameId 0:
-  print ("Test FAIL with non-ascii on nameID 0 entry (Copyright notice)...")
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NameID.COPYRIGHT_NOTICE:
       ttFont['name'].names[i].string = "Infração".encode(encoding="utf-8")
-  results = list(check(ttFont))
-  info_status, info_message = results[-2]
-  final_status, final_message = results[-1]
-  assert info_status == FAIL and info_message.code == "bad-string"
-  assert final_status == FAIL and final_message.code == "non-ascii-strings"
+
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-string',
+                         'with non-ascii on nameID 0 entry (Copyright notice)...')
+
+  assert_results_contain(check(ttFont),
+                         FAIL, 'non-ascii-strings',
+                         'with non-ascii on nameID 0 entry (Copyright notice)...')
 
   # Reload the good font once more:
   ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
@@ -1068,11 +1042,10 @@ def test_check_name_ascii_only_entries():
   # Choose an arbitrary name entry to mess up with:
   index = 5
 
-  print ("Test PASS with non-ascii on entries with nameId > 18...")
   ttFont['name'].names[index].nameID = 19
   ttFont['name'].names[index].string = "Fantástico!".encode(encoding="utf-8")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with non-ascii on entries with nameId > 18...')
 
 
 def test_split_camel_case_condition():
@@ -1087,37 +1060,35 @@ def test_check_metadata_listed_on_gfonts():
   from fontbakery.profiles.googlefonts_conditions import (familyname,
                                                           listed_on_gfonts_api,
                                                           family_metadata)
-
   filename = "familysans/FamilySans-Regular.ttf"
-  print (f"Test WARN with '{filename}', a family that's not listed on GFonts...")
   # Our reference FamilySans family is a just a generic example
   # and thus is not really hosted (nor will ever be hosted) at Google Fonts servers:
   listed = listed_on_gfonts_api(familyname(filename))
   # For that reason, we expect to get a WARN in this case:
-  status, message = list(check(listed))[-1]
-  assert status == WARN and message.code == "not-found"
+  assert_results_contain(check(listed),
+                         WARN, 'not-found',
+                         f'with "{filename}", a family that\'s'
+                         f' not listed on GFonts...')
 
   filename = "merryweather/Merriweather-Regular.ttf"
-  print (f"Test PASS with '{filename}', a family that is available...")
   # Our reference Merriweather family is available on the Google Fonts collection:
   listed = listed_on_gfonts_api(familyname(filename))
   # So it must PASS:
-  status, message = list(check(listed))[-1]
-  assert status == PASS
+  assert_PASS(check(listed),
+              f'with "{filename}", a family that is'
+              f' listed on Google Fonts API...')
 
   filename = "abeezee/ABeeZee-Regular.ttf"
-  print (f"Test PASS with '{filename}', available and with a camel-cased name...")
   # This is to ensure the code handles well camel-cased familynames.
   listed = listed_on_gfonts_api(familyname(filename))
-  status, message = list(check(listed))[-1]
-  assert status == PASS
+  assert_PASS(check(listed),
+              f'with "{filename}", listeed and with a camel-cased name...')
 
   filename = "librecaslontext/LibreCaslonText[wght].ttf"
-  print (f"Test PASS with '{filename}', available and with a space-separated name...")
   # And the check should also properly handle space-separated multi-word familynames.
   listed = listed_on_gfonts_api(familyname(filename))
-  status, message = list(check(listed))[-1]
-  assert status == PASS
+  assert_PASS(check(listed),
+              f'with "{filename}", available and with a space-separated name...')
 
 
 # FIXME: This check is currently disabled:
@@ -1139,35 +1110,36 @@ def test_check_metadata_unique_full_name_values():
   """ METADATA.pb: check if fonts field only has unique "full_name" values. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_unique_full_name_values as check,
                                                family_metadata)
-  print ("Test PASS with a good family...")
+
   # Our reference FamilySans family is good:
   family_directory = portable_path("data/test/familysans")
   md = family_metadata(family_directory)
-  status, message = list(check(md))[-1]
-  assert status == PASS
+  assert_PASS(check(md),
+              'with a good family...')
 
   # then duplicate a full_name entry to make it FAIL:
   md.fonts[0].full_name = md.fonts[1].full_name
-  status, message = list(check(md))[-1]
-  assert status == FAIL and message.code == "duplicated"
+  assert_results_contain(check(md),
+                         FAIL, 'duplicated',
+                         'with a duplicated full_name entry.')
 
 
 def test_check_metadata_unique_weight_style_pairs():
   """ METADATA.pb: check if fonts field only contains unique style:weight pairs. """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_unique_weight_style_pairs as check,
                                                family_metadata)
-  print ("Test PASS with a good family...")
   # Our reference FamilySans family is good:
   family_directory = portable_path("data/test/familysans")
   md = family_metadata(family_directory)
-  status, message = list(check(md))[-1]
-  assert status == PASS
+  assert_PASS(check(md),
+              'with a good family...')
 
   # then duplicate a pair of style & weight entries to make it FAIL:
   md.fonts[0].style = md.fonts[1].style
   md.fonts[0].weight = md.fonts[1].weight
-  status, message = list(check(md))[-1]
-  assert status == FAIL and message.code == "duplicated"
+  assert_results_contain(check(md),
+                         FAIL, 'duplicated',
+                         'with a duplicated pair of style & weight entries')
 
 
 def test_check_metadata_license():
@@ -1184,16 +1156,15 @@ def test_check_metadata_license():
   some_bad_values = ["APACHE", "Apache", "Ufl", "Ofl", "Open Font License"]
 
   for good in good_licenses:
-    print(f"Test PASS: {good}")
     md.license = good
-    status, message = list(check(md))[-1]
-    assert status == PASS
+    assert_PASS(check(md),
+                f': {good}')
 
   for bad in some_bad_values:
-    print(f"Test FAIL: {bad}")
     md.license = bad
-    status, message = list(check(md))[-1]
-    assert status == FAIL and message.code == "bad-license"
+    assert_results_contain(check(md),
+                           FAIL, 'bad-license',
+                           f': {bad}')
 
 
 def test_check_metadata_menu_and_latin():
@@ -1219,18 +1190,17 @@ def test_check_metadata_menu_and_latin():
   ]
 
   for good in good_cases:
-    print(f"Test PASS: {good}")
     del md.subsets[:]
     md.subsets.extend(good)
-    status, message = list(check(md))[-1]
-    assert status == PASS
+    assert_PASS(check(md),
+                f'with subsets = {good}')
 
   for bad in bad_cases:
-    print(f"Test FAIL: {bad}")
     del md.subsets[:]
     md.subsets.extend(bad)
-    status, message = list(check(md))[-1]
-    assert status == FAIL and message.code == "missing"
+    assert_results_contain(check(md),
+                           FAIL, 'missing',
+                           f'with subsets = {bad}')
 
 
 def test_check_metadata_subsets_order():
@@ -1255,18 +1225,17 @@ def test_check_metadata_subsets_order():
   ]
 
   for good in good_cases:
-    print(f"Test PASS: {good}")
     del md.subsets[:]
     md.subsets.extend(good)
-    status, message = list(check(md))[-1]
-    assert status == PASS
+    assert_PASS(check(md),
+                f'with subsets = {good}')
 
   for bad in bad_cases:
-    print(f"Test FAIL: {bad}")
     del md.subsets[:]
     md.subsets.extend(bad)
-    status, message = list(check(md))[-1]
-    assert status == FAIL and message.code == "not-sorted"
+    assert_results_contain(check(md),
+                           FAIL, 'not-sorted',
+                           f'with subsets = {bad}')
 
 
 def test_check_metadata_copyright():
@@ -1278,18 +1247,17 @@ def test_check_metadata_copyright():
   family_directory = portable_path("data/test/familysans")
   md = family_metadata(family_directory)
 
-  # We know its copyright notices are consistent, so the check should PASS:
-  print("Test PASS: Consistent copyright notices on FamilySans...")
-  status, message = list(check(md))[-1]
-  assert status == PASS
+  # We know its copyright notices are consistent:
+  assert_PASS(check(md),
+              'with consistent copyright notices on FamilySans...')
 
   # Now we make them diverge:
   md.fonts[1].copyright = md.fonts[0].copyright + " arbitrary suffix!" # to make it different
 
   # And now the check must FAIL:
-  print("Test FAIL: With diverging copyright notice strings...")
-  status, message = list(check(md))[-1]
-  assert status == FAIL and message.code == "inconsistency"
+  assert_results_contain(check(md),
+                         FAIL, 'inconsistency',
+                         'with diverging copyright notice strings...')
 
 
 def test_check_metadata_familyname():
@@ -1301,18 +1269,17 @@ def test_check_metadata_familyname():
   family_directory = portable_path("data/test/familysans")
   md = family_metadata(family_directory)
 
-  # We know its family name entries on METADATA.pb are consistent, so the check should PASS:
-  print("Test PASS: Consistent family name...")
-  status, message = list(check(md))[-1]
-  assert status == PASS
+  # We know its family name entries on METADATA.pb are consistent:
+  assert_PASS(check(md),
+              'with consistent family name...')
 
   # Now we make them diverge:
   md.fonts[1].name = md.fonts[0].name + " arbitrary suffix!" # to make it different
 
   # And now the check must FAIL:
-  print("Test FAIL: With diverging Family name metadata entries...")
-  status, message = list(check(md))[-1]
-  assert status == FAIL and message.code == "inconsistency"
+  assert_results_contain(check(md),
+                         FAIL, 'inconsistency',
+                         'With diverging Family name metadata entries...')
 
 
 def test_check_metadata_has_regular():
@@ -1324,10 +1291,9 @@ def test_check_metadata_has_regular():
   family_directory = portable_path("data/test/familysans")
   md = family_metadata(family_directory)
 
-  # We know that Family Sans has got a regular declares in its METADATA.pb file, so the check should PASS:
-  print("Test PASS: Family Sans has regular style...")
-  status, message = list(check(md))[-1]
-  assert status == PASS
+  # We know that Family Sans has got a regular declares in its METADATA.pb file:
+  assert_PASS(check(md),
+              'with Family Sans, a family with a regular style...')
 
   # We remove the regular:
   for i, font in enumerate(md.fonts):
@@ -1335,9 +1301,9 @@ def test_check_metadata_has_regular():
       del md.fonts[i]
 
   # and make sure the check now FAILs:
-  print("Test FAIL: METADATA.pb without a regular...")
-  status, message = list(check(md))[-1]
-  assert status == FAIL and message.code == "lacks-regular"
+  assert_results_contain(check(md),
+                         FAIL, 'lacks-regular',
+                         'with a METADATA.pb file without a regular...')
 
 
 def test_check_metadata_regular_is_400():
@@ -1350,9 +1316,8 @@ def test_check_metadata_regular_is_400():
   md = family_metadata(family_directory)
 
   # We know that Family Sans' Regular has a weight value equal to 400, so the check should PASS:
-  print("Test PASS: Family Sans has regular=400...")
-  status, message = list(check(md))[-1]
-  assert status == PASS
+  assert_PASS(check(md),
+              'with Family Sans, a family with regular=400...')
 
   # The we change the value for its regular:
   for i, font in enumerate(md.fonts):
@@ -1360,9 +1325,9 @@ def test_check_metadata_regular_is_400():
       md.fonts[i].weight = 500
 
   # and make sure the check now FAILs:
-  print("Test FAIL: METADATA.pb with a regular=500...")
-  status, message = list(check(md))[-1]
-  assert status == FAIL and message.code == "not-400"
+  assert_results_contain(check(md),
+                         FAIL, 'not-400',
+                         'with METADATA.pb with regular=500...')
 
 
 def test_check_metadata_nameid_family_name():
@@ -1381,15 +1346,12 @@ def test_check_metadata_nameid_family_name():
   ttFont = TTFont(font)
 
   # We know that Family Sans Regular is good here:
-  print("Test PASS...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, font_meta))
 
   # Then cause it to fail:
   font_meta.name = "Foo"
-  print("Test FAIL...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == FAIL and message.code == "mismatch"
+  assert_results_contain(check(ttFont, font_meta),
+                         FAIL, "mismatch")
 
   # TODO: the failure-mode below seems more generic than the scope
   #       of this individual check. This could become a check by itself!
@@ -1414,15 +1376,12 @@ def test_check_metadata_nameid_post_script_name():
   ttFont = TTFont(font)
 
   # We know that Family Sans Regular is good here:
-  print("Test PASS...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, font_meta))
 
   # Then cause it to fail:
   font_meta.post_script_name = "Foo"
-  print("Test FAIL...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == FAIL and message.code == "mismatch"
+  assert_results_contain(check(ttFont, font_meta),
+                         FAIL, 'mismatch')
 
   # TODO: the failure-mode below seems more generic than the scope
   #       of this individual check. This could become a check by itself!
@@ -1446,29 +1405,28 @@ def test_check_metadata_nameid_full_name():
   font_meta = font_metadata(family_meta, font)
   ttFont = TTFont(font)
 
-  print('Test PASS with a good font...')
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, font_meta),
+              'with a good font...')
 
-  print('Test FAIL with mismatching fullname values...')
-  good = font_meta.full_name
   # here we change the font.fullname on the METADATA.pb
   # to introduce a "mismatch" error condition:
+  good = font_meta.full_name
   font_meta.full_name = good + "bad-suffix"
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == FAIL and message.code == "mismatch"
+  assert_results_contain(check(ttFont, font_meta),
+                         FAIL, 'mismatch',
+                         'with mismatching fullname values...')
 
   # and restore the good value prior to the next test case:
   font_meta.full_name = good
 
-  print('Test FAIL when a font lacks FULL_FONT_NAME entries in its name table...')
   # And here we remove all FULL_FONT_NAME entries
   # in order to get a "lacks-entry" error condition:
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NameID.FULL_FONT_NAME:
       del ttFont["name"].names[i]
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == FAIL and message.code == "lacks-entry"
+  assert_results_contain(check(ttFont, font_meta),
+                         FAIL, 'lacks-entry',
+                         'when a font lacks FULL_FONT_NAME entries in its name table...')
 
 
 def test_check_metadata_nameid_font_name():
@@ -1482,7 +1440,6 @@ def test_check_metadata_nameid_font_name():
   # TODO:
   # FAIL, "lacks-entry"
 
-  print('Test PASS with a good font...')
   # Our reference Merriweather-Regular is know to have good fullname metadata
   font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
   ttFont = TTFont(font)
@@ -1490,16 +1447,17 @@ def test_check_metadata_nameid_font_name():
   family_meta = family_metadata(family_directory)
   font_meta = font_metadata(family_meta, font)
   font_style = style(font)
-  status, message = list(check(ttFont, font_style, font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, font_style, font_meta),
+              'with a good font...')
+
 
   for i, name in enumerate(ttFont["name"].names):
     if name.nameID == NameID.FONT_FAMILY_NAME:
       good = name.string.decode(name.getEncoding()) # keep a copy of the good value
-      print("Test FAIL with a bad FULL_FONT_NAME entry...")
       ttFont["name"].names[i].string = (good + "bad-suffix").encode(name.getEncoding())
-      status, message = list(check(ttFont, font_style, font_meta))[-1]
-      assert status == FAIL and message.code == "mismatch"
+      assert_results_contain(check(ttFont, font_style, font_meta),
+                             FAIL, 'mismatch',
+                             f'with a bad FULL_FONT_NAME entry ({i})...')
       ttFont["name"].names[i].string = good # restore good value
 
 
@@ -1518,13 +1476,10 @@ def test_check_metadata_match_fullname_postscript():
   regular_meta = font_metadata(family_meta, regular_font)
   lightitalic_meta = font_metadata(family_meta, lightitalic_font)
 
-  print('Test PASS with good entries (Merriweather-LightItalic)...')
-  # Note:
-  #       post_script_name: "Merriweather-LightItalic"
-  #       full_name:        "Merriweather Light Italic"
-  status, message = list(check(lightitalic_meta))[-1]
-  assert status == PASS
-
+  assert_PASS(check(lightitalic_meta),
+              'with good entries (Merriweather-LightItalic)...')
+  #            post_script_name: "Merriweather-LightItalic"
+  #            full_name:        "Merriweather Light Italic"
 
   # TODO: Verify why/whether "Regular" cannot be omited on font.full_name
   #       There's some relevant info at:
@@ -1536,36 +1491,29 @@ def test_check_metadata_match_fullname_postscript():
   #        to be strictly identical. So it seems that the test below is
   #        actually wrong (as well as the current implementation):
   #
-  print('Test FAIL with bad entries (Merriweather-Regular)...')
-  # Note:
-  #       post_script_name: "Merriweather-Regular"
-  #       full_name:        "Merriweather"
-  status, message = list(check(regular_meta))[-1]
-  assert status == FAIL and message.code == "mismatch"
-
+  assert_results_contain(check(regular_meta),
+                         FAIL, 'mismatch',
+                         'with bad entries (Merriweather-Regular)...')
+  #                       post_script_name: "Merriweather-Regular"
+  #                       full_name:        "Merriweather"
 
   # fix the regular metadata:
   regular_meta.full_name = "Merriweather Regular"
 
-
-  print('Test PASS with good entries (Merriweather-Regular after full_name fix)...')
-  # Note:
-  #       post_script_name: "Merriweather-Regular"
-  #       full_name:        "Merriweather Regular"
-  status, message = list(check(regular_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(regular_meta),
+              'with good entries (Merriweather-Regular after full_name fix)...')
+  #            post_script_name: "Merriweather-Regular"
+  #            full_name:        "Merriweather Regular"
 
 
   # introduce an error in the metadata:
   regular_meta.full_name = "MistakenFont Regular"
 
-
-  print('Test FAIL with a mismatch...')
-  # Note:
-  #       post_script_name: "Merriweather-Regular"
-  #       full_name:        "MistakenFont Regular"
-  status, message = list(check(regular_meta))[-1]
-  assert status == FAIL and message.code == "mismatch"
+  assert_results_contain(check(regular_meta),
+                         FAIL, 'mismatch',
+                         'with a mismatch...')
+  #                       post_script_name: "Merriweather-Regular"
+  #                       full_name:        "MistakenFont Regular"
 
 
 def NOT_IMPLEMENTED_test_check_match_filename_postscript():
@@ -1623,15 +1571,14 @@ def test_check_metadata_valid_name_values():
     font_tfnames = []
 
     # So it must PASS the check:
-    print (f"Test PASS with a good RIBBI font ({fontfile})...")
-    status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
-    assert status == PASS
+    assert_PASS(check(font_style, font_meta, font_fnames, font_tfnames),
+                f'with a good RIBBI font ({fontfile})...')
 
     # And fail if it finds a bad font_familyname:
     font_fnames = ["WrongFamilyName"]
-    print (f"Test FAIL with a bad RIBBI font ({fontfile})...")
-    status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
-    assert status == FAIL and message.code == "mismatch"
+    assert_results_contain(check(font_style, font_meta, font_fnames, font_tfnames),
+                           FAIL, 'mismatch',
+                           f'with a bad RIBBI font ({fontfile})...')
 
   #we do the same for NON-RIBBI styles:
   for fontfile in MONTSERRAT_NON_RIBBI:
@@ -1644,15 +1591,17 @@ def test_check_metadata_valid_name_values():
     font_tfnames = typographic_familynames(ttFont)
 
     # So it must PASS the check:
-    print (f"Test PASS with a good NON-RIBBI font ({fontfile})...")
-    status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
-    assert status == PASS
+    assert_PASS(check(font_style,
+                      font_meta,
+                      font_fnames,
+                      font_tfnames),
+                'with a good NON-RIBBI font ({fontfile})...')
 
     # And fail if it finds a bad font_familyname:
     font_tfnames = ["WrongFamilyName"]
-    print (f"Test FAIL with a bad NON_RIBBI font ({fontfile})...")
-    status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
-    assert status == FAIL and message.code == "mismatch"
+    assert_results_contain(check(font_style, font_meta, font_fnames, font_tfnames),
+                           FAIL, 'mismatch',
+                           f'with a bad NON_RIBBI font ({fontfile})...')
 
 
 def test_check_metadata_valid_full_name_values():
@@ -1676,15 +1625,14 @@ def test_check_metadata_valid_full_name_values():
     font_tfnames = []
 
     # So it must PASS the check:
-    print (f"Test PASS with a good RIBBI font ({fontfile})...")
-    status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
-    assert status == PASS
+    assert_PASS(check(font_style, font_meta, font_fnames, font_tfnames),
+                'with a good RIBBI font ({fontfile})...')
 
     # And fail if it finds a bad font_familyname:
     font_fnames = ["WrongFamilyName"]
-    print (f"Test FAIL with a bad RIBBI font ({fontfile})...")
-    status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
-    assert status == FAIL and message.code == "mismatch"
+    assert_results_contain(check(font_style, font_meta, font_fnames, font_tfnames),
+                           FAIL, 'mismatch',
+                           f'with a bad RIBBI font ({fontfile})...')
 
   #we do the same for NON-RIBBI styles:
   for fontfile in MONTSERRAT_NON_RIBBI:
@@ -1697,15 +1645,14 @@ def test_check_metadata_valid_full_name_values():
     font_tfnames = typographic_familynames(ttFont)
 
     # So it must PASS the check:
-    print (f"Test PASS with a good NON-RIBBI font ({fontfile})...")
-    status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
-    assert status == PASS
+    assert_PASS(check(font_style, font_meta, font_fnames, font_tfnames),
+                f'with a good NON-RIBBI font ({fontfile})...')
 
     # And fail if it finds a bad font_familyname:
     font_tfnames = ["WrongFamilyName"]
-    print (f"Test FAIL with a bad NON_RIBBI font ({fontfile})...")
-    status, message = list(check(font_style, font_meta, font_fnames, font_tfnames))[-1]
-    assert status == FAIL and message.code == "mismatch"
+    assert_results_contain(check(font_style, font_meta, font_fnames, font_tfnames),
+                           FAIL, 'mismatch',
+                           f'with a bad NON_RIBBI font ({fontfile})...')
 
 
 def test_check_metadata_valid_filename_values():
@@ -1720,16 +1667,15 @@ def test_check_metadata_valid_filename_values():
     meta = family_metadata(family_directory)
 
     # So it must PASS the check:
-    print (f"Test PASS with a good font ({fontfile})...")
-    status, message = list(check(fontfile, meta))[-1]
-    assert status == PASS
+    assert_PASS(check(fontfile, meta),
+                f"with a good font ({fontfile})...")
 
     # And fail if it finds a bad filename:
     for font in meta.fonts:
       font.filename = "WrongFileName"
-    print (f"Test FAIL with a bad font ({fontfile})...")
-    status, message = list(check(fontfile, meta))[-1]
-    assert status == FAIL and message.code == "bad-field"
+    assert_results_contain(check(fontfile, meta),
+                           FAIL, 'bad-field',
+                           f'with a bad font ({fontfile})...')
 
 
 def test_check_metadata_valid_post_script_name_values():
@@ -1750,15 +1696,14 @@ def test_check_metadata_valid_post_script_name_values():
     font_fnames = font_familynames(ttFont)
 
     # So it must PASS the check:
-    print (f"Test PASS with a good font ({fontfile})...")
-    status, message = list(check(font_meta, font_fnames))[-1]
-    assert status == PASS
+    assert_PASS(check(font_meta, font_fnames),
+                f"with a good font ({fontfile})...")
 
     # And fail if it finds a bad filename:
     font_meta.post_script_name = "WrongPSName"
-    print (f"Test FAIL with a bad font ({fontfile})...")
-    status, message = list(check(font_meta, font_fnames))[-1]
-    assert status == FAIL and message.code == "mismatch"
+    assert_results_contain(check(font_meta, font_fnames),
+                           FAIL, 'mismatch',
+                           f'with a bad font ({fontfile})...')
 
 
 def test_check_metadata_valid_copyright():
@@ -1777,30 +1722,26 @@ def test_check_metadata_valid_copyright():
   font_meta = font_metadata(family_meta, fontfile)
 
   # So it must FAIL the check:
-  print("Test FAIL with a bad copyright notice string...")
-  status, message = list(check(font_meta))[-1]
-  assert status == FAIL and message.code == "bad-notice-format"
+  assert_results_contain(check(font_meta),
+                         FAIL, 'bad-notice-format',
+                         'with a bad copyright notice string...')
 
   # Then we change it into a good string (example extracted from Archivo Black):
   # note: the check does not actually verify that the project name is correct.
   #       It only focuses on the string format.
   good_string = "Copyright 2017 The Archivo Black Project Authors (https://github.com/Omnibus-Type/ArchivoBlack)"
   font_meta.copyright = good_string
-  print("Test PASS with a good copyright notice string...")
-  status, message = list(check(font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(font_meta),
+              'with a good copyright notice string...')
 
   # We also ignore case, so these should also PASS:
   font_meta.copyright = good_string.upper()
-  print("Test PASS with all uppercase...")
-  status, message = list(check(font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(font_meta),
+              'with all uppercase...')
 
   font_meta.copyright = good_string.lower()
-  print("Test PASS with all lowercase...")
-  status, message = list(check(font_meta))[-1]
-  assert status == PASS
-
+  assert_PASS(check(font_meta),
+              'with all lowercase...')
 
 
 def test_check_font_copyright():
@@ -1812,9 +1753,9 @@ def test_check_font_copyright():
   ttFont = TTFont(fontfile)
 
   # So it must FAIL the check:
-  print("Test FAIL with a bad copyright notice string...")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "bad-notice-format"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-notice-format',
+                         'with a bad copyright notice string...')
 
   # Then we change it into a good string (example extracted from Archivo Black):
   # note: the check does not actually verify that the project name is correct.
@@ -1823,8 +1764,8 @@ def test_check_font_copyright():
   for i, entry in enumerate(ttFont['name'].names):
     if entry.nameID == NameID.COPYRIGHT_NOTICE:
       ttFont['name'].names[i].string = good_string.encode(entry.getEncoding())
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with good strings...')
 
 
 def test_check_metadata_reserved_font_name():
@@ -1839,16 +1780,15 @@ def test_check_metadata_reserved_font_name():
   family_meta = family_metadata(family_directory)
   font_meta = font_metadata(family_meta, fontfile)
 
-  print ("Test PASS with a good copyright notice string...")
-  status, message = list(check(font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(font_meta),
+              'with a good copyright notice string...')
 
   # Then we make it bad:
   font_meta.copyright += "Reserved Font Name"
 
-  print ("Test WARN with a notice containing 'Reserved Font Name'...")
-  status, message = list(check(font_meta))[-1]
-  assert status == WARN and message.code == "rfn"
+  assert_results_contain(check(font_meta),
+                         WARN, 'rfn',
+                         'with a notice containing "Reserved Font Name"...')
 
 
 def test_check_metadata_copyright_max_length():
@@ -1863,15 +1803,14 @@ def test_check_metadata_copyright_max_length():
   family_meta = family_metadata(family_directory)
   font_meta = font_metadata(family_meta, fontfile)
 
-  print ("Test PASS with a 500-char copyright notice string...")
   font_meta.copyright = 500 * "x"
-  status, message = list(check(font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(font_meta),
+              'with a 500-char copyright notice string...')
 
-  print ("Test FAIL with a 501-char copyright notice string...")
   font_meta.copyright = 501 * "x"
-  status, message = list(check(font_meta))[-1]
-  assert status == FAIL and message.code == "max-length"
+  assert_results_contain(check(font_meta),
+                         FAIL, 'max-length',
+                         'with a 501-char copyright notice string...')
 
 
 def test_check_metadata_filenames():
@@ -1882,18 +1821,17 @@ def test_check_metadata_filenames():
   family_meta = family_metadata(family_dir)
 
   # test PASS:
-  print ("Test PASS with matching list of font files...")
   fonts = montserrat_fonts
-  status, message = list(check(fonts, family_dir, family_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(fonts, family_dir, family_meta),
+              'with matching list of font files...')
 
   # make sure missing files are detected by the check:
-  print ("Test FAIL with missing font files...")
   fonts = montserrat_fonts
   original_name = fonts[0]
   os.rename(original_name, "font.tmp") # rename one font file in order to trigger the FAIL
-  status, message = list(check(fonts, family_dir, family_meta))[-1]
-  assert status == FAIL and message.code == "file-not-found"
+  assert_results_contain(check(fonts, family_dir, family_meta),
+                         FAIL, 'file-not-found',
+                         'with missing font files...')
   os.rename("font.tmp", original_name) # restore filename
 
 
@@ -1903,11 +1841,11 @@ def test_check_metadata_filenames():
   # From all TTFs in Cabin's directory, the condensed ones are not
   # listed on METADATA.pb, so the check must FAIL, even if we do not
   # explicitely include them in the set of files to be checked:
-  print ("Test FAIL with some font files not declared...")
-  status, message = list(check(cabin_fonts,
+  assert_results_contain(check(cabin_fonts,
                                family_dir,
-                               family_meta))[-1]
-  assert status == FAIL and message.code == "file-not-declared"
+                               family_meta),
+                         FAIL, 'file-not-declared',
+                         'with some font files not declared...')
 
 
 def test_check_metadata_italic_style():
@@ -1924,9 +1862,8 @@ def test_check_metadata_italic_style():
   font_meta = font_metadata(family_meta, fontfile)
 
   # So it must PASS:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, font_meta),
+              'with a good font...')
 
   # now let's introduce issues on the FULL_FONT_NAME entries
   # to test the "bad-fullfont-name" codepath:
@@ -1934,18 +1871,18 @@ def test_check_metadata_italic_style():
     if name.nameID == NameID.FULL_FONT_NAME:
       backup = name.string
       ttFont['name'].names[i].string = "BAD VALUE".encode(name.getEncoding())
-      print ("Test FAIL with a bad NameID.FULL_FONT_NAME entry...")
-      status, message = list(check(ttFont, font_meta))[-1]
-      assert status == FAIL and message.code == "bad-fullfont-name"
+      assert_results_contain(check(ttFont, font_meta),
+                             FAIL, 'bad-fullfont-name',
+                             'with a bad NameID.FULL_FONT_NAME entry...')
       # and restore the good value:
       ttFont['name'].names[i].string = backup
 
   # And, finally, let's flip off that italic bit
   # and get a "bad-macstyle" FAIL (so much fun!):
-  print ("Test FAIL with bad macstyle bit value...")
   ttFont['head'].macStyle &= ~MacStyle.ITALIC
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == FAIL and message.code == "bad-macstyle"
+  assert_results_contain(check(ttFont, font_meta),
+                         FAIL, 'bad-macstyle',
+                         'with bad macstyle bit value...')
 
 
 def test_check_metadata_normal_style():
@@ -1965,9 +1902,8 @@ def test_check_metadata_normal_style():
   font_meta = font_metadata(family_meta, fontfile)
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, font_meta),
+              'with a good font...')
 
   # now we sadically insert brokenness into
   # each occurrence of the FONT_FAMILY_NAME nameid:
@@ -1975,9 +1911,9 @@ def test_check_metadata_normal_style():
     if name.nameID == NameID.FONT_FAMILY_NAME:
       backup = name.string
       ttFont['name'].names[i].string = "Merriweather-Italic".encode(name.getEncoding())
-      print ("Test FAIL with a non-italic font that has a '-Italic' in FONT_FAMILY_NAME...")
-      status, message = list(check(ttFont, font_meta))[-1]
-      assert status == FAIL and message.code == "familyname-italic"
+      assert_results_contain(check(ttFont, font_meta),
+                             FAIL, 'familyname-italic',
+                             'with a non-italic font that has a "-Italic" in FONT_FAMILY_NAME...')
       # and restore the good value:
       ttFont['name'].names[i].string = backup
 
@@ -1987,22 +1923,21 @@ def test_check_metadata_normal_style():
     if name.nameID == NameID.FULL_FONT_NAME:
       backup = name.string
       ttFont['name'].names[i].string = "Merriweather-Italic".encode(name.getEncoding())
-      print ("Test FAIL with a non-italic font that has a '-Italic' in FULL_FONT_NAME...")
-      status, message = list(check(ttFont, font_meta))[-1]
-      assert status == FAIL and message.code == "fullfont-italic"
+      assert_results_contain(check(ttFont, font_meta),
+                             FAIL, 'fullfont-italic',
+                             'with a non-italic font that has a "-Italic" in FULL_FONT_NAME...')
       # and restore the good value:
       ttFont['name'].names[i].string = backup
 
-  # And, finally, again, we flip a bit and
-  # get a "bad-macstyle" error:
-  print ("Test FAIL with bad macstyle bit value...")
-  # But this time the boolean logic is the quite opposite in
-  # comparison to test_check_106 above. Here we have to set the
-  # bit back to 1 to get a wrongful "this font is an italic" setting:
+  # And, finally, again, we flip a bit and...
+  #
+  # Note: This time the boolean logic is the quite opposite in comparison
+  # to the test for com.google.fonts/check/metadata/italic_style above.
+  # Here we have to set the bit back to 1 to get a wrongful "this font is an italic" setting:
   ttFont['head'].macStyle |= MacStyle.ITALIC
-  status, message = list(check(ttFont, font_meta))[-1]
-  # Not it's not! FAIL! :-D
-  assert status == FAIL and message.code == "bad-macstyle"
+  assert_results_contain(check(ttFont, font_meta),
+                         FAIL, 'bad-macstyle',
+                         'with bad macstyle bit value...')
 
 
 def test_check_metadata_nameid_family_and_full_names():
@@ -2020,9 +1955,8 @@ def test_check_metadata_nameid_family_and_full_names():
   font_meta = font_metadata(family_meta, fontfile)
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, font_meta),
+              'with a good font...')
 
   # There we go again:
   # breaking FULL_FONT_NAME entries
@@ -2031,9 +1965,9 @@ def test_check_metadata_nameid_family_and_full_names():
     if name.nameID == NameID.FULL_FONT_NAME:
       backup = name.string
       ttFont['name'].names[i].string = "This is utterly wrong!".encode(name.getEncoding())
-      print ("Test FAIL with a METADATA.pb / FULL_FONT_NAME mismatch...")
-      status, message = list(check(ttFont, font_meta))[-1]
-      assert status == FAIL and message.code == "fullname-mismatch"
+      assert_results_contain(check(ttFont, font_meta),
+                             FAIL, 'fullname-mismatch',
+                             'with a METADATA.pb / FULL_FONT_NAME mismatch...')
       # and restore the good value:
       ttFont['name'].names[i].string = backup
 
@@ -2041,10 +1975,10 @@ def test_check_metadata_nameid_family_and_full_names():
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NameID.FONT_FAMILY_NAME:
       backup = name.string
-      ttFont['name'].names[i].string = "I'm listening to deadmau5 :-)".encode(name.getEncoding())
-      print ("Test FAIL with a METADATA.pb / FONT_FAMILY_NAME mismatch...")
-      status, message = list(check(ttFont, font_meta))[-1]
-      assert status == FAIL and message.code == "familyname-mismatch"
+      ttFont['name'].names[i].string = "I'm listening some 80s citypop :-)".encode(name.getEncoding())
+      assert_results_contain(check(ttFont, font_meta),
+                             FAIL, 'familyname-mismatch',
+                             'with a METADATA.pb / FONT_FAMILY_NAME mismatch...')
       # and restore the good value:
       ttFont['name'].names[i].string = backup
 
@@ -2063,23 +1997,21 @@ def test_check_metadata_fontname_not_camel_cased():
   font_meta = font_metadata(family_meta, fontfile)
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(font_meta),
+              'with a good font...')
 
   # Then we FAIL with a CamelCased name:
   font_meta.name = "GollyGhost"
-  print ("Test FAIL with a bad font (CamelCased font name)...")
-  status, message = list(check(font_meta))[-1]
-  assert status == FAIL and message.code == "camelcase"
+  assert_results_contain(check(font_meta),
+                         FAIL, 'camelcase',
+                         'with a bad font (CamelCased font name)...')
 
   # And we also make sure the check PASSes with a few known good names:
   good_names = ["VT323", "PT Sans", "Amatic SC"]
   for good_name in good_names:
     font_meta.name = good_name
-    print (f"Test PASS with a good font name '{good_name}'...")
-    status, message = list(check(font_meta))[-1]
-    assert status == PASS
+    assert_PASS(check(font_meta),
+                f'with a good font name "{good_name}"...')
 
 
 def test_check_metadata_match_name_familyname():
@@ -2096,16 +2028,15 @@ def test_check_metadata_match_name_familyname():
   font_meta = font_metadata(family_meta, fontfile)
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(family_meta, font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(family_meta, font_meta),
+              'with a good font...')
 
   # Then we FAIL with mismatching names:
   family_meta.name = "Some Fontname"
   font_meta.name = "Something Else"
-  print ("Test FAIL with a bad font...")
-  status, message = list(check(family_meta, font_meta))[-1]
-  assert status == FAIL and message.code == "mismatch"
+  assert_results_contain(check(family_meta, font_meta),
+                         FAIL, 'mismatch',
+                         'with a bad font...')
 
 
 def test_check_check_metadata_canonical_weight_value():
@@ -2121,16 +2052,15 @@ def test_check_check_metadata_canonical_weight_value():
   font_meta = font_metadata(family_meta, fontfile)
 
   for w in [100, 200, 300, 400, 500, 600, 700, 800, 900]:
-    print (f"Test PASS with a good weight value ({w})...")
     font_meta.weight = w
-    status, message = list(check(font_meta))[-1]
-    assert status == PASS
+    assert_PASS(check(font_meta),
+                f'with a good weight value ({w})...')
 
   for w in [150, 250, 350, 450, 550, 650, 750, 850]:
-    print (f"Test FAIL with a bad weight value ({w})...")
     font_meta.weight = w
-    status, message = list(check(font_meta))[-1]
-    assert status == FAIL and message.code == "bad-weight"
+    assert_results_contain(check(font_meta),
+                           FAIL, 'bad-weight',
+                           'with a bad weight value ({w})...')
 
 
 def test_check_metadata_os2_weightclass():
@@ -2149,17 +2079,16 @@ def test_check_metadata_os2_weightclass():
   font_meta = font_metadata(family_meta, fontfile)
 
   # So it must PASS the check:
-  print (f"Test PASS with a good font ({fontfile})...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, font_meta),
+              f'with a good font ({fontfile})...')
 
   # And fail if it finds a bad weight value:
   good_value = font_meta.weight
   bad_value = good_value + 100
   font_meta.weight = bad_value
-  print (f"Test FAIL with a bad font ({fontfile})...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == FAIL and message.code == "mismatch"
+  assert_results_contain(check(ttFont, font_meta),
+                         FAIL, 'mismatch',
+                         f'with a bad font ({fontfile})...')
 
   # Static
   # Our reference Montserrat family is a good 18-styles family:
@@ -2170,17 +2099,16 @@ def test_check_metadata_os2_weightclass():
     font_meta = font_metadata(family_meta, fontfile)
 
     # So it must PASS the check:
-    print (f"Test PASS with a good font ({fontfile})...")
-    status, message = list(check(ttFont, font_meta))[-1]
-    assert status == PASS
+    assert_PASS(check(ttFont, font_meta),
+                f'with a good font ({fontfile})...')
 
     # And fail if it finds a bad weight value:
     good_value = font_meta.weight
     bad_value = good_value + 50
     font_meta.weight = bad_value
-    print (f"Test FAIL with a bad font ({fontfile})...")
-    status, message = list(check(ttFont, font_meta))[-1]
-    assert status == FAIL and message.code == "mismatch"
+    assert_results_contain(check(ttFont, font_meta),
+                           FAIL, 'mismatch',
+                           f'with a bad font ({fontfile})...')
 
     # If font is Thin or ExtraLight, ensure that this check can
     # accept both 100, 250 for Thin and 200, 275 for ExtraLight
@@ -2188,23 +2116,22 @@ def test_check_metadata_os2_weightclass():
     font_meta = font_metadata(family_meta, fontfile)
     if "Thin" in fontfile:
         ttFont["OS/2"].usWeightClass = 100
-        print (f"Test PASS with a good font ({fontfile})...")
-        status, message = list(check(ttFont, font_meta))[-1]
-        assert status == PASS
+        assert_PASS(check(ttFont, font_meta),
+                    f'with a good font ({fontfile})...')
+
         ttFont["OS/2"].usWeightClass = 250
-        print (f"Test PASS with a good font ({fontfile})...")
-        status, message = list(check(ttFont, font_meta))[-1]
-        assert status == PASS
+        assert_PASS(check(ttFont, font_meta),
+                    f'with a good font ({fontfile})...')
 
     if "ExtraLight" in fontfile:
         ttFont["OS/2"].usWeightClass = 200
-        print (f"Test PASS with a good font ({fontfile})...")
-        status, message = list(check(ttFont, font_meta))[-1]
-        assert status == PASS
+        assert_PASS(check(ttFont, font_meta),
+                    f'with a good font ({fontfile})...')
+
         ttFont["OS/2"].usWeightClass = 275
-        print (f"Test PASS with a good font ({fontfile})...")
-        status, message = list(check(ttFont, font_meta))[-1]
-        assert status == PASS
+        assert_PASS(check(ttFont, font_meta),
+                    f'with a good font ({fontfile})...')
+
 
 def NOT_IMPLEMENTED_test_check_metadata_match_weight_postscript():
   """ METADATA.pb: Metadata weight matches postScriptName. """
@@ -2258,28 +2185,27 @@ def test_check_unitsperem_strict():
                  2048] # A power of two but higher than 2000, so no need to warn about excessive rounding.
 
   for pass_value in PASS_VALUES:
-    print (f"Test PASS with unitsPerEm = {pass_value}...")
     ttFont["head"].unitsPerEm = pass_value
-    status, message = list(check(ttFont))[-1]
-    assert status == PASS
+    assert_PASS(check(ttFont),
+                f'with unitsPerEm = {pass_value}...')
 
   for warn_value in WARN_LEGACY_VALUES:
-    print (f"Test WARN 'legacy-value' with unitsPerEm = {warn_value}...")
     ttFont["head"].unitsPerEm = warn_value
-    status, message = list(check(ttFont))[-1]
-    assert status == WARN and message.code == "legacy-value"
+    assert_results_contain(check(ttFont),
+                           WARN, 'legacy-value',
+                           f'with unitsPerEm = {warn_value}...')
 
   for warn_value in WARN_LARGE_VALUES:
-    print (f"Test WARN 'large-value' with unitsPerEm = {warn_value}...")
     ttFont["head"].unitsPerEm = warn_value
-    status, message = list(check(ttFont))[-1]
-    assert status == WARN and message.code == "large-value"
+    assert_results_contain(check(ttFont),
+                           WARN, 'large-value',
+                           f'with unitsPerEm = {warn_value}...')
 
   for fail_value in FAIL_VALUES:
-    print (f"Test FAIL 'bad-value' with unitsPerEm = {fail_value}...")
     ttFont["head"].unitsPerEm = fail_value
-    status, message = list(check(ttFont))[-1]
-    assert status == FAIL and message.code == "bad-value"
+    assert_results_contain(check(ttFont),
+                           FAIL, 'bad-value',
+                           f'with unitsPerEm = {fail_value}...')
 
 
 def NOT_IMPLEMENTED_test_check_version_bump():
@@ -2338,19 +2264,13 @@ def test_check_italic_angle():
     ttFont["post"].italicAngle = value
 
     if expected_result != PASS:
-      print (("Test {} '{}' with"
-              " italic-angle:{} style:{}...").format(expected_result,
-                                                     expected_msg,
-                                                     value,
-                                                     style))
       assert_results_contain(check(ttFont, style),
                              expected_result,
-                             expected_msg)
+                             expected_msg,
+                             f"with italic-angle:{value} style:{style}...")
     else:
-      print (("Test PASS with"
-              " italic-angle:{} style:{}...").format(value, style))
-      status, message = list(check(ttFont, style))[-1]
-      assert status == PASS
+      assert_PASS(check(ttFont, style),
+                  f'with italic-angle:{value} style:{style}...')
 
 
 def test_check_mac_style():
@@ -2378,17 +2298,12 @@ def test_check_mac_style():
     results = check(ttFont, style)
 
     if expected == PASS:
-      print (("Test PASS with"
-              " macStyle:{} style:{}...").format(macStyle_value,
-                                                 style))
-      status, message = list(results)[-1]
-      assert status == PASS
+      assert_PASS(results,
+                  'with macStyle:{macStyle_value} style:{style}...')
     else:
-      print (("Test FAIL '{}' with"
-              " macStyle:{} style:{}...").format(expected,
-                                                 macStyle_value,
-                                                 style))
-      assert_results_contain(results, FAIL, expected)
+      assert_results_contain(results,
+                             FAIL, expected,
+                             f"with macStyle:{macStyle_value} style:{style}...")
 
 
 def test_check_contour_count(montserrat_ttFonts):
@@ -2398,17 +2313,15 @@ def test_check_contour_count(montserrat_ttFonts):
   # TODO: FAIL, "lacks-cmap"
 
 
-  # Montserrat should PASS this check since it was used to assemble the glyph data
   for ttFont in montserrat_ttFonts:
-    status, message = list(check(ttFont))[-1]
-    assert status == PASS
+    assert_PASS(check(ttFont),
+                'Montserrat which was used to assemble the glyph data...')
 
-  # Lets swap the glyf a (2 contours) with glyf c (1 contour)
+  # Lets swap the glyf 'a' (2 contours) with glyf 'c' (1 contour)
   for ttFont in montserrat_ttFonts:
     ttFont['glyf']['a'] = ttFont['glyf']['c']
-    status, message = list(check(ttFont))[-1]
-    assert status == WARN and message.code == "contour-count"
-
+    assert_results_contain(check(ttFont),
+                           WARN, 'contour-count')
 
 # FIXME!
 # Temporarily disabled since GFonts hosted Cabin files seem to have changed in ways
@@ -2433,15 +2346,14 @@ def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
 
       # Cabin font hosted on fonts.google.com contains
       # all the glyphs for the font in data/test/cabin
-      status, message = list(check(ttFont, gfont))[-1]
-      assert status == PASS
+      assert_PASS(check(ttFont, gfont),
+                  f"with '{font}'")
 
       # Take A glyph out of font
       ttFont['cmap'].getcmap(3, 1).cmap.pop(ord('A'))
       ttFont['glyf'].glyphs.pop('A')
-
-      status, message = list(check(ttFont, gfont))[-1]
-      assert status == FAIL and message.code == "lost-glyphs"
+      assert_results_contain(check(ttFont, gfont),
+                             FAIL, 'lost-glyphs')
   else:
     print (f"Warning: Seems to have failed to download remote font files: {cabin_ttFonts}.")
 
@@ -2463,16 +2375,15 @@ def test_check_metadata_nameid_copyright():
   font_meta = font_metadata(family_meta, fontfile)
 
   # So it must PASS the check:
-  print ("Test PASS with a good METADATA.pb for this font...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, font_meta),
+              "with a good METADATA.pb for this font...")
 
   # Then we FAIL with mismatching names:
   good_value = get_name_entry_strings(ttFont, NameID.COPYRIGHT_NOTICE)[0]
   font_meta.copyright = good_value + "something bad"
-  print ("Test FAIL with a bad METADATA.pb (with a copyright string not matching this font)...")
-  status, message = list(check(ttFont, font_meta))[-1]
-  assert status == FAIL and message.code == "mismatch"
+  assert_results_contain(check(ttFont, font_meta),
+                         FAIL, 'mismatch',
+                         'with a bad METADATA.pb (with a copyright string not matching this font)...')
 
 
 def test_check_name_mandatory_entries():
@@ -2488,9 +2399,8 @@ def test_check_name_mandatory_entries():
   style = "Regular"
 
   # So it must PASS the check:
-  print ("Test PASS with a good RIBBI font...")
-  status, message = list(check(ttFont, style))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, style),
+              "with a good RIBBI font...")
 
   mandatory_entries = [NameID.FONT_FAMILY_NAME,
                        NameID.FONT_SUBFAMILY_NAME,
@@ -2505,9 +2415,9 @@ def test_check_name_mandatory_entries():
         ttFont['name'].names[i].nameID = 0 # not really removing it, but replacing it
                                            # by something else completely irrelevant
                                            # for the purposes of this specific check
-    print (f"Test FAIL with a missing madatory (RIBBI) name entry (id={mandatory})...")
-    status, message = list(check(ttFont, style))[-1]
-    assert status == FAIL and message.code == "missing-entry"
+    assert_results_contain(check(ttFont, style),
+                           FAIL, 'missing-entry',
+                           f'with a missing madatory (RIBBI) name entry (id={mandatory})...')
 
   #And now a non-RIBBI font:
   # Our reference Merriweather Black is known to be good
@@ -2515,9 +2425,8 @@ def test_check_name_mandatory_entries():
   style = "Black"
 
   # So it must PASS the check:
-  print ("Test PASS with a good non-RIBBI font...")
-  status, message = list(check(ttFont, style))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, style),
+              "with a good non-RIBBI font...")
 
   mandatory_entries = [NameID.FONT_FAMILY_NAME,
                        NameID.FONT_SUBFAMILY_NAME,
@@ -2534,9 +2443,9 @@ def test_check_name_mandatory_entries():
         ttFont['name'].names[i].nameID = 0 # not really removing it, but replacing it
                                            # by something else completely irrelevant
                                            # for the purposes of this specific check
-    print ("Test FAIL with a missing madatory (non-RIBBI) name entry (id={mandatory})...")
-    status, message = list(check(ttFont, style))[-1]
-    assert status == FAIL and message.code == "missing-entry"
+    assert_results_contain(check(ttFont, style),
+                           FAIL, 'missing-entry',
+                           'with a missing madatory (non-RIBBI) name entry (id={mandatory})...')
 
 
 def test_condition_familyname_with_spaces():
@@ -2551,7 +2460,6 @@ def test_check_name_familyname():
                                                familyname,
                                                familyname_with_spaces,
                                                style)
-
   # TODO: FAIL, "lacks-name"
 
   test_cases = [
@@ -2577,11 +2485,12 @@ def test_check_name_familyname():
 
       if name.nameID == NameID.FONT_FAMILY_NAME:
           ttFont['name'].names[i].string = value.encode(name.getEncoding())
-    print (f"Test {expected} with filename='{filename}', value='{value}', style='{style(filename)}'...")
-    status, message = list(check(ttFont,
+    assert_results_contain(check(ttFont,
                                  style(filename),
-                                 familyname_with_spaces(familyname(filename))))[-1]
-    assert status == expected and message.code == keyword
+                                 familyname_with_spaces(familyname(filename))),
+                                 expected, keyword,
+                                 f'with filename="{filename}",'
+                                 f' value="{value}", style="{style(filename)}"...')
 
 
 def test_check_name_subfamilyname():
@@ -2626,17 +2535,15 @@ def test_check_name_subfamilyname():
 
       if name.nameID == NameID.FONT_SUBFAMILY_NAME:
           ttFont['name'].names[i].string = value.encode(name.getEncoding())
+
     style = expected_style(ttFont)
-    print (f"Test PASS with filename='{filename}', value='{value}', "
-           f"style_win='{style.win_style_name}', "
-           f"style_mac='{style.mac_style_name}'...")
-    status, message = list(check(ttFont,
-                                 expected_style(ttFont)))[-1]
-    assert status == PASS
+    assert_PASS(check(ttFont, expected_style(ttFont)),
+                f"with filename='{filename}', value='{value}', "
+                f"style_win='{style.win_style_name}', "
+                f"style_mac='{style.mac_style_name}'...")
 
   # - FAIL, "bad-familyname" - "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
   filename = TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")
-  print ("Test FAIL 'invalid-entry'...")
   ttFont = TTFont(filename)
   # We setup a bad entry:
   ttFont["name"].setName("Not a proper style",
@@ -2644,10 +2551,12 @@ def test_check_name_subfamilyname():
                          PlatformID.MACINTOSH,
                          MacintoshEncodingID.ROMAN,
                          MacintoshLanguageID.ENGLISH)
+
   # And this should now FAIL:
-  status, message = list(check(ttFont,
-                               expected_style(ttFont)))[-1]
-  assert status == FAIL and message.code == "bad-familyname"
+  assert_results_contain(check(ttFont,
+                               expected_style(ttFont)),
+                         FAIL, 'bad-familyname')
+
   # Repeat this for a Win subfamily name
   ttFont = TTFont(filename)
   ttFont["name"].setName("Not a proper style",
@@ -2655,9 +2564,9 @@ def test_check_name_subfamilyname():
                          PlatformID.WINDOWS,
                          WindowsEncodingID.UNICODE_BMP,
                          WindowsLanguageID.ENGLISH_USA)
-  status, message = list(check(ttFont,
-                               expected_style(ttFont)))[-1]
-  assert status == FAIL and message.code == "bad-familyname"
+  assert_results_contain(check(ttFont,
+                               expected_style(ttFont)),
+                         FAIL, 'bad-familyname')
 
 
 def test_check_name_fullfontname():
@@ -2668,9 +2577,8 @@ def test_check_name_fullfontname():
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good Regular font...")
-  status, message = list(check(ttFont, "Regular", "Cabin"))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, "Regular", "Cabin"),
+              "with a good Regular font...")
 
   # Let's now test the Regular exception
   # ('Regular' can be optionally ommited on the FULL_FONT_NAME entry):
@@ -2678,9 +2586,9 @@ def test_check_name_fullfontname():
     if name.nameID == NameID.FULL_FONT_NAME:
       backup = name.string
       ttFont["name"].names[index].string = "Cabin".encode(name.getEncoding())
-      print ("Test WARN with a good Regular font that omits 'Regular' on FULL_FONT_NAME...")
-      status, message = list(check(ttFont, "Regular", "Cabin"))[-1]
-      assert status == WARN and message.code == "lacks-regular"
+      assert_results_contain(check(ttFont, "Regular", "Cabin"),
+                             WARN, 'lacks-regular',
+                             'with a good Regular font that omits "Regular" on FULL_FONT_NAME...')
       # restore it:
       ttFont["name"].names[index].string = backup
 
@@ -2689,18 +2597,17 @@ def test_check_name_fullfontname():
   ttFont = TTFont(TEST_FILE("cabin/Cabin-BoldItalic.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good Bold Italic font...")
-  status, message = list(check(ttFont, "Bold Italic", "Cabin"))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, "Bold Italic", "Cabin"),
+              "with a good Bold Italic font...")
 
   # And here we test the FAIL codepath:
   for index, name in enumerate(ttFont["name"].names):
     if name.nameID == NameID.FULL_FONT_NAME:
       backup = name.string
       ttFont["name"].names[index].string = "MAKE IT FAIL".encode(name.getEncoding())
-      print ("Test FAIL with a bad FULL_FONT_NAME entry...")
-      status, message = list(check(ttFont, "Bold Italic", "Cabin"))[-1]
-      assert status == FAIL and message.code == "bad-entry"
+      assert_results_contain(check(ttFont, "Bold Italic", "Cabin"),
+                             FAIL, 'bad-entry',
+                             'with a bad FULL_FONT_NAME entry...')
       # restore it:
       ttFont["name"].names[index].string = backup
 
@@ -2726,39 +2633,37 @@ def test_check_name_typographicfamilyname():
   # RIBBI fonts must not have a TYPOGRAPHIC_FAMILY_NAME entry
   font = TEST_FILE("montserrat/Montserrat-BoldItalic.ttf")
   ttFont = TTFont(font)
-  print (f"Test PASS with a RIBBI without nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
-  status, message = list(check(ttFont,
-                               style(font),
-                               familyname_with_spaces(familyname(font))))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont,
+                    style(font),
+                    familyname_with_spaces(familyname(font))),
+              f"with a RIBBI without nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
 
   # so we add one and make sure is emits a FAIL:
   ttFont['name'].names[5].nameID = NameID.TYPOGRAPHIC_FAMILY_NAME # 5 is arbitrary here
-  print (f"Test FAIL with a RIBBI that has got a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
-  status, message = list(check(ttFont,
+  assert_results_contain(check(ttFont,
                                style(font),
-                               familyname_with_spaces(familyname(font))))[-1]
-  assert status == FAIL and message.code == "ribbi"
+                               familyname_with_spaces(familyname(font))),
+                         FAIL, 'ribbi',
+                         f'with a RIBBI that has got a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...')
 
   # non-RIBBI fonts must have a TYPOGRAPHIC_FAMILY_NAME entry
   font = TEST_FILE("montserrat/Montserrat-ExtraLight.ttf")
   ttFont = TTFont(font)
-  print (f"Test PASS with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
-  status, message = list(check(ttFont,
-                               style(font),
-                               familyname_with_spaces(familyname(font))))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont,
+              style(font),
+              familyname_with_spaces(familyname(font))),
+              f"with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
 
   # set bad values on all TYPOGRAPHIC_FAMILY_NAME entries:
   for i, name in enumerate(ttFont['name'].names):
     if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
       ttFont['name'].names[i].string = "foo".encode(name.getEncoding())
 
-  print (f"Test FAIL with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entries...")
-  status, message = list(check(ttFont,
+  assert_results_contain(check(ttFont,
                                style(font),
-                               familyname_with_spaces(familyname(font))))[-1]
-  assert status == FAIL and message.code == "non-ribbi-bad-value"
+                               familyname_with_spaces(familyname(font))),
+                         FAIL, 'non-ribbi-bad-value',
+                         'with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entries...')
 
   # remove all TYPOGRAPHIC_FAMILY_NAME entries
   # by changing their nameid to something else:
@@ -2766,11 +2671,11 @@ def test_check_name_typographicfamilyname():
     if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
       ttFont['name'].names[i].nameID = 255 # blah! :-)
 
-  print (f"Test FAIL with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
-  status, message = list(check(ttFont,
+  assert_results_contain(check(ttFont,
                                style(font),
-                               familyname_with_spaces(familyname(font))))[-1]
-  assert status == FAIL and message.code == "non-ribbi-lacks-entry"
+                               familyname_with_spaces(familyname(font))),
+                         FAIL, 'non-ribbi-lacks-entry',
+                         f'with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...')
 
 
 def test_check_name_typographicsubfamilyname():
@@ -2781,7 +2686,6 @@ def test_check_name_typographicsubfamilyname():
 
   RIBBI = "montserrat/Montserrat-BoldItalic.ttf"
   NON_RIBBI = "montserrat/Montserrat-ExtraLight.ttf"
-
 
   # Add incorrect TYPOGRAPHIC_SUBFAMILY_NAME entries to a RIBBI font
   ttFont = TTFont(TEST_FILE(RIBBI))
@@ -2795,24 +2699,23 @@ def test_check_name_typographicsubfamilyname():
                          PlatformID.MACINTOSH,
                          MacintoshEncodingID.ROMAN,
                          MacintoshLanguageID.ENGLISH)
-  print (f"Test FAIL with a RIBBI that has got incorrect nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...")
-  results = list(check(ttFont,
-                       expected_style(ttFont)))
-  status, message = results[-3]
-  assert status == FAIL and message.code == "mismatch"
-  status, message = results[-2]
-  assert status == FAIL and message.code in ["bad-win-name", "bad-mac-name"]
-  status, message = results[-1]
-  assert status == FAIL and message.code in ["bad-win-name", "bad-mac-name"]
-
+  assert_results_contain(check(ttFont,
+                               expected_style(ttFont)),
+                         FAIL, 'mismatch',
+                         f'with a RIBBI that has got incorrect'
+                         f' nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...')
+  assert_results_contain(check(ttFont,
+                               expected_style(ttFont)),
+                         FAIL, 'bad-win-name')
+  assert_results_contain(check(ttFont,
+                               expected_style(ttFont)),
+                         FAIL, 'bad-mac-name')
 
   # non-RIBBI fonts must have a TYPOGRAPHIC_SUBFAMILY_NAME entry
   ttFont = TTFont(TEST_FILE(NON_RIBBI))
-  print (f"Test PASS with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...")
-  status, message = list(check(ttFont,
-                               expected_style(ttFont)))[-1]
-  assert status == PASS
-
+  assert_PASS(check(ttFont,
+                    expected_style(ttFont)),
+              f'with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...')
 
   # set bad values on the win TYPOGRAPHIC_SUBFAMILY_NAME entry:
   ttFont = TTFont(TEST_FILE(NON_RIBBI))
@@ -2821,11 +2724,10 @@ def test_check_name_typographicsubfamilyname():
                          PlatformID.WINDOWS,
                          WindowsEncodingID.UNICODE_BMP,
                          WindowsLanguageID.ENGLISH_USA)
-  print (f"Test FAIL with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...")
-  status, message = list(check(ttFont,
-                               expected_style(ttFont)))[-1]
-  assert status == FAIL and message.code == "bad-typo-win"
-
+  assert_results_contain(check(ttFont,
+                               expected_style(ttFont)),
+                         FAIL, 'bad-typo-win',
+                         f'with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...')
 
   # set bad values on the mac TYPOGRAPHIC_SUBFAMILY_NAME entry:
   ttFont = TTFont(TEST_FILE(NON_RIBBI))
@@ -2834,10 +2736,10 @@ def test_check_name_typographicsubfamilyname():
                          PlatformID.MACINTOSH,
                          MacintoshEncodingID.ROMAN,
                          MacintoshLanguageID.ENGLISH)
-  print (f"Test FAIL with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...")
-  status, message = list(check(ttFont,
-                               expected_style(ttFont)))[-1]
-  assert status == FAIL and message.code == "bad-typo-mac"
+  assert_results_contain(check(ttFont,
+                               expected_style(ttFont)),
+                         FAIL, 'bad-typo-mac',
+                         f'with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...')
 
 
   # remove all TYPOGRAPHIC_SUBFAMILY_NAME entries
@@ -2853,11 +2755,12 @@ def test_check_name_typographicsubfamilyname():
   win_name.nameID = 254
   if mac_name:
     mac_name.nameID = 255
-  print (f"Test FAIL with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...")
-  status, message = list(check(ttFont,
-                               expected_style(ttFont)))[-1]
-  assert status == FAIL and message.code == "missing-typo-win" # note: the check must not complain
-                                                               #       about the lack of a mac entry!
+  assert_results_contain(check(ttFont,
+                               expected_style(ttFont)),
+                         FAIL, 'missing-typo-win',
+                         f'with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...')
+                         # note: the check must not complain
+                         #       about the lack of a mac entry!
 
 
 def test_check_name_copyright_length():
@@ -2866,29 +2769,27 @@ def test_check_name_copyright_length():
 
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
-  print('Test PASS with 499-byte copyright notice string...')
   good_entry = 'a' * 499
   for i, entry in enumerate(ttFont['name'].names):
     if entry.nameID == NameID.COPYRIGHT_NOTICE:
       ttFont['name'].names[i].string = good_entry.encode(entry.getEncoding())
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with 499-byte copyright notice string...')
 
-  print('Test PASS with 500-byte copyright notice string...')
   good_entry = 'a' * 500
   for i, entry in enumerate(ttFont['name'].names):
     if entry.nameID == NameID.COPYRIGHT_NOTICE:
       ttFont['name'].names[i].string = good_entry.encode(entry.getEncoding())
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with 500-byte copyright notice string...')
 
-  print('Test FAIL with 501-byte copyright notice string...')
   bad_entry = 'a' * 501
   for i, entry in enumerate(ttFont['name'].names):
     if entry.nameID == NameID.COPYRIGHT_NOTICE:
       ttFont['name'].names[i].string = bad_entry.encode(entry.getEncoding())
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "too-long"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'too-long',
+                         'with 501-byte copyright notice string...')
 
 
 def test_check_fontdata_namecheck():
@@ -2896,23 +2797,22 @@ def test_check_fontdata_namecheck():
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_fontdata_namecheck as check,
                                                familyname)
 
-  print('Test INFO with an already used name...')
   # We dont FAIL because this is meant as a merely informative check
   # There may be frequent cases when fonts are being updated and thus
   # already have a public family name registered on the
   # namecheck.fontdata.com database.
   font = TEST_FILE("cabin/Cabin-Regular.ttf")
   ttFont = TTFont(font)
-  status, message = list(check(ttFont, familyname(font)))[-1]
-  assert status == INFO and message.code == "name-collision"
+  assert_results_contain(check(ttFont, familyname(font)),
+                         INFO, 'name-collision',
+                         'with an already used name...')
 
-  print('Test PASS with a unique family name...')
   # Here we know that FamilySans has not been (and will not be)
   # registered as a real family.
   font = TEST_FILE("familysans/FamilySans-Regular.ttf")
   ttFont = TTFont(font)
-  status, message = list(check(ttFont, familyname(font)))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, familyname(font)),
+              'with a unique family name...')
 
 
 def test_check_fontv():
@@ -2920,21 +2820,20 @@ def test_check_fontv():
   from fontbakery.profiles.googlefonts import com_google_fonts_check_fontv as check
   from fontv.libfv import FontVersion
 
-  print('Test INFO for font that does not follow'
-        ' the suggested font-v versioning scheme ...')
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-  status, message = list(check(ttFont))[-1]
-  assert status == INFO and message.code == "bad-format"
+  assert_results_contain(check(ttFont),
+                         INFO, 'bad-format',
+                         'with a font that does not follow'
+                         ' the suggested font-v versioning scheme ...')
 
-  print('Test PASS with one that follows the suggested scheme ...')
   fv = FontVersion(ttFont)
   fv.set_state_git_commit_sha1(development=True)
   version_string = fv.get_name_id5_version_string()
   for record in ttFont['name'].names:
     if record.nameID == NameID.VERSION_STRING:
       record.string = version_string
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with one that follows the suggested scheme ...')
 
 
 # Temporarily disabling this code-test since check/negative_advance_width itself
@@ -2951,9 +2850,8 @@ def disabled_test_check_negative_advance_width():
   ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
   # So it must PASS
-  print('Test PASS with a good font...')
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
   # We then change values in an arbitrary glyph
   # in the glyf table in order to cause the problem:
@@ -2973,9 +2871,9 @@ def disabled_test_check_negative_advance_width():
   ttFont["glyf"].glyphs[glyphName].coordinates = coords
 
   # and now this should FAIL:
-  print('Test FAIL with bad coordinates on the glyf table...')
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "bad-coordinates"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-coordinates',
+                         'with bad coordinates on the glyf table...')
 
 
 def test_check_varfont_generate_static():
@@ -2983,13 +2881,12 @@ def test_check_varfont_generate_static():
   from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_generate_static as check
 
   ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont))
 
   # Removing a table to deliberately break variable font
   del ttFont['fvar']
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "varlib-mutator"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'varlib-mutator')
 
 
 def test_check_varfont_has_HVAR():
@@ -3000,13 +2897,12 @@ def test_check_varfont_has_HVAR():
   ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
 
   # So the check must PASS.
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont))
 
   # Introduce the problem by removing the HVAR table:
   del ttFont['HVAR']
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "lacks-HVAR"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'lacks-HVAR')
 
 
 # temporarily disabled.
@@ -3019,13 +2915,12 @@ def DISABLED_test_check_varfont_has_MVAR():
   ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
 
   # So the check must PASS.
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont))
 
   # Introduce the problem by removing the MVAR table:
   del ttFont['MVAR']
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "lacks-MVAR"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'lacks-MVAR')
 
 
 def test_check_smart_dropout():
@@ -3036,15 +2931,14 @@ def test_check_smart_dropout():
 
   # - PASS, "Program at 'prep' table contains instructions enabling smart dropout control."
   test_font = TTFont(test_font_path)
-  status, _ = list(check(test_font))[-1]
-  assert status == PASS
+  assert_PASS(check(test_font))
 
   # - FAIL, "Font does not contain TrueType instructions enabling
   #          smart dropout control in the 'prep' table program."
   import array
   test_font["prep"].program.bytecode = array.array('B', [0])
-  status, message = list(check(test_font))[-1]
-  assert status == FAIL and message.code == "lacks-smart-dropout"
+  assert_results_contain(check(test_font),
+                         FAIL, 'lacks-smart-dropout')
 
 
 def test_check_vtt_clean():
@@ -3053,13 +2947,11 @@ def test_check_vtt_clean():
   from fontbakery.profiles.shared_conditions import vtt_talk_sources
 
   good_font = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+  assert_PASS(check(good_font, vtt_talk_sources(good_font)))
+
   bad_font = TTFont(TEST_FILE("hinting/Roboto-VF.ttf"))
-
-  status, _ = list(check(good_font, vtt_talk_sources(good_font)))[-1]
-  assert status == PASS
-
-  status, message = list(check(bad_font, vtt_talk_sources(bad_font)))[-1]
-  assert status == FAIL and message.code == "has-vtt-sources"
+  assert_results_contain(check(bad_font, vtt_talk_sources(bad_font)),
+                         FAIL, 'has-vtt-sources')
 
 
 def test_check_aat():
@@ -3076,17 +2968,16 @@ def test_check_aat():
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
   # We now add unwanted tables one-by-one to validate the FAIL code-path:
   for unwanted in unwanted_tables:
-    print (f"Test FAIL with unwanted table {unwanted} ...")
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     ttFont.reader.tables[unwanted] = "foo"
-    status, message = list(check(ttFont))[-1]
-    assert status == FAIL and message.code == "has-unwanted-tables"
+    assert_results_contain(check(ttFont),
+                           FAIL, 'has-unwanted-tables',
+                           f'with unwanted table {unwanted} ...')
 
 
 def test_check_fvar_name_entries():
@@ -3097,18 +2988,17 @@ def test_check_fvar_name_entries():
   ttFont = TTFont(TEST_FILE("broken_expletus_vf/ExpletusSansBeta-VF.ttf"))
 
   # So it must FAIL the check:
-  print ("Test FAIL with a bad font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "missing-name"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'missing-name',
+                         'with a bad font...')
 
   # If we add the name entry with id=265 (which was the one missing)
   # then the check must now PASS:
   from fontTools.ttLib.tables._n_a_m_e import makeName
   ttFont["name"].names.append(makeName("Foo", 265, 1, 0, 0))
 
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
 
 def test_check_varfont_has_instances():
@@ -3121,17 +3011,16 @@ def test_check_varfont_has_instances():
   ttFont = TTFont(TEST_FILE("broken_expletus_vf/ExpletusSansBeta-VF.ttf"))
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
   # If we delete all instances, then it must FAIL:
   while len(ttFont["fvar"].instances):
     del ttFont["fvar"].instances[0]
 
-  print ("Test FAIL with a bad font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "lacks-named-instances"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'lacks-named-instances',
+                         'with a bad font...')
 
 
 def test_check_varfont_weight_instances():
@@ -3143,17 +3032,16 @@ def test_check_varfont_weight_instances():
   ttFont = TTFont(TEST_FILE("broken_markazitext/MarkaziText-VF.ttf"))
 
   # So it must FAIL the check:
-  print ("Test FAIL with a bad font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "bad-coordinate"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-coordinate',
+                         'with a bad font...')
 
   # Let's then change the weight coordinates to make it PASS the check:
   for i, instance in enumerate(ttFont["fvar"].instances):
     ttFont["fvar"].instances[i].coordinates['wght'] -= instance.coordinates['wght'] % 100
 
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
 
 def NOT_IMPLEMENTED_test_check_family_tnum_horizontal_metrics():
@@ -3176,16 +3064,15 @@ def test_check_integer_ppem_if_hinted():
   ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
   # So it must FAIL the check:
-  print ("Test FAIL with a bad font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "bad-flags"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'bad-flags',
+                         'with a bad font...')
 
   # hotfixing it should make it PASS:
   ttFont["head"].flags |= (1 << 3)
 
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'with a good font...')
 
 
 def test_check_ligature_carets():
@@ -3198,18 +3085,18 @@ def test_check_ligature_carets():
   lig = ligatures(ttFont)
 
   # So it must emit a WARN:
-  print ("Test WARN with a bad font...")
-  status, message = list(check(ttFont, lig))[-1]
-  assert status == WARN and message.code == "lacks-caret-pos"
+  assert_results_contain(check(ttFont, lig),
+                         WARN, 'lacks-caret-pos',
+                         'with a bad font...')
 
   # And FamilySans Regular is known to be bad
   ttFont = TTFont("data/test/familysans/FamilySans-Regular.ttf")
   lig = ligatures(ttFont)
 
   # So it must emit a WARN:
-  print ("Test WARN with a bad font...")
-  status, message = list(check(ttFont, lig))[-1]
-  assert status == WARN and message.code == "GDEF-missing"
+  assert_results_contain(check(ttFont, lig),
+                         WARN, 'GDEF-missing',
+                         'with a bad font...')
 
   # TODO: test the following code-paths:
   # - WARN "incomplete-caret-pos-data"
@@ -3229,9 +3116,8 @@ def test_check_kerning_for_non_ligated_sequences():
   has_kinfo = has_kerning_info(ttFont)
 
   # So it must PASS the check:
-  print ("Test PASS with a good font...")
-  status, message = list(check(ttFont, lig, has_kinfo))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont, lig, has_kinfo),
+              'with a good font...')
 
   # And Merriweather Regular is known to be bad
   ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
@@ -3239,9 +3125,9 @@ def test_check_kerning_for_non_ligated_sequences():
   has_kinfo = has_kerning_info(ttFont)
 
   # So the check must emit a WARN in this testcase:
-  print ("Test WARN with a bad font...")
-  status, message = list(check(ttFont, lig, has_kinfo))[-1]
-  assert status == WARN and message.code == "lacks-kern-info"
+  assert_results_contain(check(ttFont, lig, has_kinfo),
+                         WARN, 'lacks-kern-info',
+                         'with a bad font...')
 
 
 def test_check_family_control_chars():
@@ -3250,36 +3136,35 @@ def test_check_family_control_chars():
   passing_file = TEST_FILE("bad_character_set/control_chars/FontbakeryTesterCCGood-Regular.ttf")
   error_onebad_cc_file = TEST_FILE("bad_character_set/control_chars/FontbakeryTesterCCOneBad-Regular.ttf")
   error_multibad_cc_file = TEST_FILE("bad_character_set/control_chars/FontbakeryTesterCCMultiBad-Regular.ttf")
+
   # No unacceptable control characters should pass with one file
   tt = TTFont(passing_file)
-  print("Test pass with one good font...")
-  status, message = list(check([tt]))[-1]
-  assert status == PASS
+  assert_PASS(check([tt]),
+              'with one good font...')
 
   # No unacceptable control characters should pass with multiple good files
   tt = TTFont(passing_file)
-  print("Test pass with multiple good fonts...")
-  status, message = list(check([tt, tt]))[-1]
-  assert status == PASS
+  assert_PASS(check([tt, tt]),
+              'with multiple good fonts...')
 
   # Unacceptable control chars should fail with one file x one bad char in font
   tt = TTFont(error_onebad_cc_file)
-  print("Test fail with one bad font that has one bad char...")
-  status, message = list(check([tt]))[-1]
-  assert status == FAIL and message.code == "unacceptable"
+  assert_results_contain(check([tt]),
+                         FAIL, 'unacceptable',
+                         'with one bad font that has one bad char...')
 
   # Unacceptable control chars should fail with one file x multiple bad char in font
   tt = TTFont(error_multibad_cc_file)
-  print("Test fail with one bad font that has multiple bad char...")
-  status, message = list(check([tt]))[-1]
-  assert status == FAIL and message.code == "unacceptable"
+  assert_results_contain(check([tt]),
+                         FAIL, 'unacceptable',
+                         'with one bad font that has multiple bad char...')
 
   # Unacceptable control chars should fail with multiple files x multiple bad chars in fonts
   tt1 = TTFont(error_onebad_cc_file)
   tt2 = TTFont(error_multibad_cc_file)
-  print("Test fail with multiple bad fonts that have multiple bad chars...")
-  status, message = list(check([tt1, tt2]))[-1]
-  assert status == FAIL and message.code == "unacceptable"
+  assert_results_contain(check([tt1, tt2]),
+                         FAIL, 'unacceptable',
+                         'with multiple bad fonts that have multiple bad chars...')
 
 
 def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
@@ -3293,9 +3178,8 @@ def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
 #  from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_dirname_match_nameid_1 as check
 #  passing_file = TEST_FILE(".../.ttf")
 #  ttFont = TTFont(passing_file)
-#  print("Test pass with one good font...")
-#  status, message = list(check([ttFont]))[-1]
-#  assert status == PASS
+#  assert_PASS(check([ttFont]),
+#              'with one good font...')
 
 
 def test_check_repo_vf_has_static_fonts():
@@ -3310,22 +3194,21 @@ def test_check_repo_vf_has_static_fonts():
     src_family = portable_path("data/test/varfont")
     shutil.copytree(src_family, family_dir)
 
-    print("Test FAIL for a vf family which does not has a static dir.")
-    status, message = list(check(family_dir))[-1]
-    assert status == FAIL and message.code == "missing"
+    assert_results_contain(check(family_dir),
+                           FAIL, 'missing',
+                           'for a VF family which does not has a static dir.')
 
-    print("Test FAIL for a vf family which has a static dir but no fonts in the static dir.")
     static_dir = portable_path(family_dir + "/static")
     os.mkdir(static_dir)
-    status, message = list(check(family_dir))[-1]
-    assert status == FAIL and message.code == "empty"
+    assert_results_contain(check(family_dir),
+                           FAIL, 'empty',
+                           'for a VF family which has a static dir but no fonts in the static dir.')
 
-    print("Test PASS for a vf family which has a static dir and static fonts")
     static_fonts = portable_path("data/test/cabin")
     shutil.rmtree(static_dir)
     shutil.copytree(static_fonts, static_dir)
-    status, message = list(check(family_dir))[-1]
-    assert status == PASS
+    assert_PASS(check(family_dir),
+                'for a VF family which has a static dir and static fonts')
 
 
 def test_check_repo_fb_report():
@@ -3338,17 +3221,15 @@ def test_check_repo_fb_report():
     src_family = portable_path("data/test/varfont")
     shutil.copytree(src_family, family_dir)
 
-    print("Test PASS for a repo without FB report files.")
-    status, message = list(check(family_dir))[-1]
-    assert status == PASS
+    assert_PASS(check(family_dir),
+                'for a repo without Font Bakery report files.')
 
-    print("Test PASS with a json file that is not a FB report.")
-    status, message = list(check(family_dir))[-1]
-    assert status == PASS
+    assert_PASS(check(family_dir),
+                'with a json file that is not a Font Bakery report.')
+
     # Add a json file that is not a FB report
     open(os.path.join(family_dir, "something_else.json"), "w+").write("this is not a FB report")
 
-    print("Test WARN with an actual snippet of a report.")
     FB_REPORT_SNIPPET = """
 {
     "result": {
@@ -3366,8 +3247,9 @@ def test_check_repo_fb_report():
                       "jura",
                       "static",
                       "my_fontfamily_name.json"), "w+").write(FB_REPORT_SNIPPET)
-    status, message = list(check(family_dir))[-1]
-    assert status == WARN and message.code == "fb-report"
+    assert_results_contain(check(family_dir),
+                           WARN, 'fb-report',
+                           'with an actual snippet of a report.')
 
 
 def test_check_repo_zip_files():
@@ -3380,12 +3262,10 @@ def test_check_repo_zip_files():
     src_family = portable_path("data/test/varfont")
     shutil.copytree(src_family, family_dir)
 
-    print("Test PASS for a repo without ZIP files.")
-    status, message = list(check(family_dir))[-1]
-    assert status == PASS
+    assert_PASS(check(family_dir),
+                'for a repo without ZIP files.')
 
     for ext in ["zip", "rar", "7z"]:
-      print(f"Test FAIL when a {ext} file is found.")
       # ZIP files must be detected even if placed on subdirectories:
       filepath = os.path.join(family_dir,
                               f"jura",
@@ -3393,8 +3273,9 @@ def test_check_repo_zip_files():
                               f"fonts-release.{ext}")
       #create an empty file. The check won't care about the contents:
       open(filepath, "w+")
-      status, message = list(check(family_dir))[-1]
-      assert status == FAIL and message.code == "zip-files"
+      assert_results_contain(check(family_dir),
+                             FAIL, 'zip-files',
+                             f"when a {ext} file is found.")
       # remove the file before testing the next one ;-)
       os.remove(filepath)
 
@@ -3414,41 +3295,41 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
   if remote:
     ttFonts = [TTFont(f) for f in cabin_fonts]
     # Cabin test family should match by default
-    print("Test pass with a good family...")
-    status, message = list(check(ttFonts, remote))[-1]
-    assert status == PASS
+    assert_PASS(check(ttFonts, remote),
+                'with a good family...')
 
-    print("Test fail with a family which has an incorrect typoAscender...")
     ttFonts2 = copy(ttFonts)
     for ttfont in ttFonts2:
       ttfont['OS/2'].sTypoAscender = 0
-    status, message = list(check(ttFonts2, remote))[-1]
-    assert status == FAIL and message.code == "bad-typo-ascender"
+    assert_results_contain(check(ttFonts2, remote),
+                           FAIL, 'bad-typo-ascender',
+                           'with a family which has an incorrect typoAscender...')
+
     # TODO:
     #   FAIL, "bad-typo-descender"
     #   FAIL, "bad-hhea-ascender"
     #   FAIL, "bad-hhea-descender"
 
-    print("Test fail with a remote family which does not have typo metrics enabled and the"
-          " fonts being checked don't take this fact into consideration...")
     remote2 = copy(remote)
     for key, ttfont in remote2.items():
       ttfont["OS/2"].fsSelection = ttfont["OS/2"].fsSelection ^ 0b10000000
-    status, message = list(check(ttFonts, remote2))[-1]
-    assert status == FAIL # TODO: what is the expected message.code in here?
+    assert_results_contain(check(ttFonts, remote2),
+                           FAIL, None, # FIXME: This needs a message keyword!
+                           'with a remote family which does not have'
+                           ' typo metrics enabled and the fonts being checked'
+                           ' don\'t take this fact into consideration...')
 
-
-    print("Test pass with a remote family which does not have typo metrics enabled but the"
-          " checked fonts vertical metrics have been set so its typo and hhea metrics match"
-          " the remote fonts win metrics.")
     ttFonts3 = copy(ttFonts)
     for ttfont in ttFonts3:
       ttfont["OS/2"].sTypoAscender = 1139
       ttfont["OS/2"].sTypoDescender = -314
       ttfont["hhea"].ascent = 1139
       ttfont["hhea"].descent = -314
-    status, message = list(check(ttFonts3, remote2))[-1]
-    assert status == PASS
+    assert_PASS(check(ttFonts3, remote2),
+                'with a remote family which does not have typo metrics'
+                ' enabled but the checked fonts vertical metrics have been'
+                ' set so its typo and hhea metrics match the remote'
+                ' fonts win metrics.')
   #
   #else:
   #  TODO: There should be a warning message here
@@ -3457,59 +3338,58 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
 def test_check_cjk_vertical_metrics():
   from fontbakery.profiles.googlefonts import com_google_fonts_check_cjk_vertical_metrics as check
 
-  print("Test pass for Source Han Sans")
   ttFont = TTFont(cjk_font)
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              'for Source Han Sans')
 
-  print("Test fail for font where OS/2 fsSelection bit 7 is enabled")
   ttFont = TTFont(cjk_font)
   ttFont['OS/2'].fsSelection |= (1 << 7)
   assert_results_contain(check(ttFont),
-                         FAIL, 'bad-fselection-bit7')
+                         FAIL, 'bad-fselection-bit7',
+                         'for font where OS/2 fsSelection bit 7 is enabled')
 
-  print("Test fail for font with bad OS/2.sTypoAscender")
   ttFont = TTFont(cjk_font)
   ttFont['OS/2'].sTypoAscender = float('inf')
   assert_results_contain(check(ttFont),
-                         FAIL, 'bad-OS/2.sTypoAscender')
+                         FAIL, 'bad-OS/2.sTypoAscender',
+                         'for font with bad OS/2.sTypoAscender')
 
-  print("Test fail for font with bad OS/2.sTypoDescender")
   ttFont = TTFont(cjk_font)
   ttFont['OS/2'].sTypoDescender = float('inf')
   assert_results_contain(check(ttFont),
-                         FAIL, 'bad-OS/2.sTypoDescender')
+                         FAIL, 'bad-OS/2.sTypoDescender',
+                         'for font with bad OS/2.sTypoDescender')
 
-  print("Test fail for font where linegaps have been set (OS/2 table)")
   ttFont = TTFont(cjk_font)
   ttFont['OS/2'].sTypoLineGap = float('inf')
   assert_results_contain(check(ttFont),
-                         FAIL, 'bad-OS/2.sTypoLineGap')
+                         FAIL, 'bad-OS/2.sTypoLineGap',
+                         'for font where linegaps have been set (OS/2 table)')
 
-  print("Test fail for font where linegaps have been set (hhea table)")
   ttFont = TTFont(cjk_font)
   ttFont['hhea'].lineGap = float('inf')
   assert_results_contain(check(ttFont),
-                         FAIL, 'bad-hhea.lineGap')
+                         FAIL, 'bad-hhea.lineGap',
+                         'for font where linegaps have been set (hhea table)')
 
-  print("Test fail for a font where typo ascender != 0.88 * upm")
   ttFont = TTFont(cjk_font)
   ttFont['OS/2'].usWinAscent = float('inf')
   assert_results_contain(check(ttFont),
-                         FAIL, 'ascent-mismatch')
+                         FAIL, 'ascent-mismatch',
+                         'for a font where typo ascender != 0.88 * upm')
 
-  print("Test fail for a font where typo descender != 0.12 * upm")
   ttFont = TTFont(cjk_font)
   ttFont['OS/2'].usWinDescent = -float('inf')
   assert_results_contain(check(ttFont),
-                         FAIL, 'descent-mismatch')
+                         FAIL, 'descent-mismatch',
+                         'for a font where typo descender != 0.12 * upm')
 
-  print("Test warn if font hhea and win metrics are greater than 1.5 * upm")
   ttFont = TTFont(cjk_font)
   ttFont['OS/2'].usWinAscent = float('inf')
   ttFont['hhea'].ascent = float('inf')
   assert_results_contain(check(ttFont),
-                         WARN, 'bad-hhea-range')
+                         WARN, 'bad-hhea-range',
+                         'if font hhea and win metrics are greater than 1.5 * upm')
 
 
 def test_check_varfont_instance_coordinates(vf_ttFont):
@@ -3518,17 +3398,17 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
   from copy import copy
 
   # OpenSans-Roman-VF is correct
-  print("Test pass for a variable font which has correct instance coordinates")
-  status, message = list(check(vf_ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(vf_ttFont),
+              'for a variable font which has correct instance coordinates')
 
-  print("Test fail for a variable font which does not have correct instance coordinates")
   vf_ttFont2 = copy(vf_ttFont)
   for instance in vf_ttFont2['fvar'].instances:
       for axis in instance.coordinates.keys():
           instance.coordinates[axis] = 0
-  status, message = list(check(vf_ttFont2))[-1]
-  assert status == FAIL
+  assert_results_contain(check(vf_ttFont2),
+                         FAIL, None, # FIXME: This needs a message keyword
+                         'for a variable font which does not have'
+                         ' correct instance coordinates.')
 
 
 def test_check_varfont_instance_names(vf_ttFont):
@@ -3536,11 +3416,9 @@ def test_check_varfont_instance_names(vf_ttFont):
   from fontbakery.parse import instance_parse
   from copy import copy
 
-  print("Test pass for a variable font which has correct instance names")
-  status, message = list(check(vf_ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(vf_ttFont),
+              "with a variable font which has correct instance names.")
 
-  print("Test fail for a variable font which does not have correct instance names")
   vf_ttFont2 = copy(vf_ttFont)
   for instance in vf_ttFont2['fvar'].instances:
       instance.subfamilyNameID = 300
@@ -3555,10 +3433,11 @@ def test_check_varfont_instance_names(vf_ttFont):
                              PlatformID.WINDOWS,
                              WindowsEncodingID.UNICODE_BMP,
                              WindowsLanguageID.ENGLISH_USA)
-  status, message = list(check(vf_ttFont2))[-1]
-  assert status == FAIL and message.code == "bad-instance-names"
+  assert_results_contain(check(vf_ttFont2),
+                         FAIL, 'bad-instance-names',
+                         'with a variable font which does not'
+                         ' have correct instance names.')
 
-  print("Test warn for a variable font which has unparsable tokens")
   vf_ttFont3 = copy(vf_ttFont)
   for instance in vf_ttFont3['fvar'].instances:
       instance.subfamilyNameID = 300
@@ -3573,8 +3452,9 @@ def test_check_varfont_instance_names(vf_ttFont):
                              PlatformID.WINDOWS,
                              WindowsEncodingID.UNICODE_BMP,
                              WindowsLanguageID.ENGLISH_USA)
-  status, message = list(check(vf_ttFont3))[-1]
-  assert status == WARN
+  assert_results_contain(check(vf_ttFont3),
+                         WARN, None, # FIXME: This needs a message keyword!
+                         'for a variable font which has unparsable tokens.')
 
 
 def test_check_varfont_unsupported_axes():
@@ -3586,15 +3466,14 @@ def test_check_varfont_unsupported_axes():
   # Our reference varfont, CabinVFBeta.ttf, lacks 'ital' and 'slnt' variation axes.
   # So, should pass the check:
   ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
-  
+  assert_PASS(check(ttFont))
+
   # If we add 'ital' it must FAIL:
   new_axis = Axis()
   new_axis.axisTag = "ital"
   ttFont["fvar"].axes.append(new_axis)
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "unsupported-ital"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'unsupported-ital')
 
   # Then we reload the font and add 'opsz'
   # so it must also FAIL:
@@ -3602,6 +3481,6 @@ def test_check_varfont_unsupported_axes():
   new_axis = Axis()
   new_axis.axisTag = "slnt"
   ttFont["fvar"].axes.append(new_axis)
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "unsupported-slnt"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'unsupported-slnt')
 
