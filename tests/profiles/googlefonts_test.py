@@ -2182,6 +2182,29 @@ def test_check_metadata_os2_weightclass():
     status, message = list(check(ttFont, font_meta))[-1]
     assert status == FAIL and message.code == "mismatch"
 
+    # If font is Thin or ExtraLight, ensure that this check can
+    # accept both 100, 250 for Thin and 200, 275 for ExtraLight
+    font_meta.weight = good_value
+    font_meta = font_metadata(family_meta, fontfile)
+    if "Thin" in fontfile:
+        ttFont["OS/2"].usWeightClass = 100
+        print (f"Test PASS with a good font ({fontfile})...")
+        status, message = list(check(ttFont, font_meta))[-1]
+        assert status == PASS
+        ttFont["OS/2"].usWeightClass = 250
+        print (f"Test PASS with a good font ({fontfile})...")
+        status, message = list(check(ttFont, font_meta))[-1]
+        assert status == PASS
+
+    if "ExtraLight" in fontfile:
+        ttFont["OS/2"].usWeightClass = 200
+        print (f"Test PASS with a good font ({fontfile})...")
+        status, message = list(check(ttFont, font_meta))[-1]
+        assert status == PASS
+        ttFont["OS/2"].usWeightClass = 275
+        print (f"Test PASS with a good font ({fontfile})...")
+        status, message = list(check(ttFont, font_meta))[-1]
+        assert status == PASS
 
 def NOT_IMPLEMENTED_test_check_metadata_match_weight_postscript():
   """ METADATA.pb: Metadata weight matches postScriptName. """

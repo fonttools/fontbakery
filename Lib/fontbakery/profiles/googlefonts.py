@@ -2462,8 +2462,10 @@ def com_google_fonts_check_metadata_os2_weightclass(ttFont,
   """Check METADATA.pb font weights are correct."""
   from .shared_conditions import is_variable_font
   # Weight name to value mapping:
-  GF_API_WEIGHT_NAMES = {250: "Thin",
-                         275: "ExtraLight",
+  GF_API_WEIGHT_NAMES = {100: "Thin",
+                         200: "ExtraLight",
+                         250: "Thin", # Legacy. Pre-vf epoch
+                         275: "ExtraLight", # Legacy. Pre-vf epoch
                          300: "Light",
                          400: "Regular",
                          500: "Medium",
