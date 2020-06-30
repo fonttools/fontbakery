@@ -20,16 +20,6 @@ _WEIGHT_NAMES = {
     r"Bla?c?k|wt900": "Black",
     r"Ext?r?a?Bla?c?k|wt1000": "ExtraBlack"
 }
-_WIDTH_NAMES = {
-    r"Ult?r?a?Co?n?d?e?n?s?e?d": "UltraCondensed",
-    r"Ext?r?a?Co?n?d?e?n?s?e?d": "ExtraCondensed",
-    r"Co?n?d?e?n?s?e?d": "Condensed",
-    r"Se?m?i?Co?n?d?e?n?s?e?d": "SemiCondensed",
-    r"Se?m?i?Exp?a?n?d?e?d": "SemiExpanded",
-    r"Exp?a?n?d?e?d|Extended": "Expanded",
-    r"Ext?r?a?Exp?a?n?d?e?d": "ExtraExpanded",
-    r"Ult?r?a?Exp?a?n?d?e?d": "UltraExpanded",
-}
 _ITALIC_NAMES = {
     r"Ita?l?i?c?|Obli?q?u?e?": "Italic" 
 }
@@ -46,17 +36,6 @@ _WEIGHT_VALUES = {
     "Black": {"usWeightClass": 900, "fvar": 900.0},
     "ExtraBlack": {"usWeightClass": 1000, "fvar": 1000.0},
 }
-_WIDTH_VALUES = {
-    "UltraCondensed": {"usWidthClass": 1, "fvar": 50.0},
-    "ExtraCondensed": {"usWidthClass": 2, "fvar": 62.5},
-    "Condensed": {"usWidthClass": 3, "fvar": 75.0},
-    "SemiCondensed": {"usWidthClass": 4, "fvar": 87.5},
-    "": {"usWidthClass": 5, "fvar": 100.0},
-    "SemiExpanded": {"usWidthClass": 6, "fvar": 112.5},
-    "Expanded": {"usWidthClass": 7, "fvar": 125.0},
-    "ExtraExpanded": {"usWidthClass": 8, "fvar": 150.0},
-    "UltraExpanded": {"usWidthClass": 9, "fvar": 200.0},
-}
 
 def _re_string_tokenizer(string, mapping):
     found = []
@@ -69,32 +48,17 @@ def _re_string_tokenizer(string, mapping):
     return sorted(found, key=len, reverse=True)[0]
 
 
-def _get_opsz_token(string):
-    result = re.search(r"[0-9]{1,4}pt", string)
-    if result:
-        return result.group(0)
-    return None
-
-
-def _opsz_values(string):
-    if not string:
-        return 0.
-    return float(string.replace("pt", ""))
-
-
 def _style_tokens(string):
     string = re.sub(r"\W", "", string)
-    opsz = _get_opsz_token(string) or ""
-    wdth = _re_string_tokenizer(string, _WIDTH_NAMES) or ""
     wght = _re_string_tokenizer(string, _WEIGHT_NAMES) or ""
     ital = _re_string_tokenizer(string, _ITALIC_NAMES) or ""
-    return opsz, wdth, wght, ital
+    return wght, ital
 
 
-def _parse_name(opsz, wdth, wght, ital):
+def _parse_name(wght, ital):
     if wght == "Regular" and ital == "Italic":
         wght = ""
-    result = "{} {} {} {}".format(opsz, wdth, wght, ital).lstrip().rstrip()
+    result = "{} {}".format(wght, ital).lstrip().rstrip()
     # replace multiple whitespace characters with a single space"
     return re.sub(r"\W+", " ", result)
 
@@ -142,7 +106,6 @@ def _style_parse(string):
     _GFStyle = namedtuple("GFStyle",
                           """name
                           usWeightClass
-                          usWidthClass
                           win_style_name
                           mac_style_name
                           typo_style_name
@@ -150,11 +113,10 @@ def _style_parse(string):
                           macStyle
                           is_ribbi
                           filename""")
-    opsz, wdth, wght, ital = _style_tokens(string)
-    name = _parse_name(opsz, wdth, wght, ital)
+    wght, ital = _style_tokens(string)
+    name = _parse_name(wght, ital)
     return _GFStyle(name=name,
                     usWeightClass=_WEIGHT_VALUES[wght]['usWeightClass'],
-                    usWidthClass=_WIDTH_VALUES[wdth]["usWidthClass"],
                     win_style_name=_win_style_name(name),
                     mac_style_name=name,
                     typo_style_name=_typo_style_name(name),
@@ -191,17 +153,11 @@ def instance_parse(string):
                              unparsable_tokens
                              raw_token_order
                              expected_token_order""")
-    opsz, wdth, wght, ital = _style_tokens(string)
+    wght, ital = _style_tokens(string)
     if not wght:
         wght = "Regular"
-    name = _parse_name(opsz, wdth, wght, ital)
-    coords = {}
-    if opsz:
-        coords['opsz'] = _opsz_values(opsz)
-    if wdth:
-        coords['wdth'] = _WIDTH_VALUES[wdth]['fvar']
-    if wght:
-        coords['wght'] = _WEIGHT_VALUES[wght]['fvar']
+    name = _parse_name(wght, ital)
+    coords = {"wght": _WEIGHT_VALUES[wght]['fvar']}
     return _GFInstance(
         name=name,
         coordinates=coords,
@@ -223,12 +179,9 @@ def _token_order(string):
     tokens = string.split()
     results = []
     for token in tokens:
-        width_token = _re_string_tokenizer(token, _WIDTH_NAMES)
-        if _get_opsz_token(token):
-            results.append('opsz')
-        elif _re_string_tokenizer(token, _WEIGHT_NAMES):
+        if _re_string_tokenizer(token, _WEIGHT_NAMES):
             results.append('wght')
-        elif width_token and _WIDTH_VALUES[width_token] != 100:
-            results.append("wdth")
+        if "Italic" == token:
+            results.append('ital')
     return results
 

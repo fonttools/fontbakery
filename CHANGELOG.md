@@ -11,6 +11,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/unsupported_axes]**: Removed opsz axis and added slnt axis (issue #2866)
   - **[com.google.fonts/check/description/valid_html]**: Verify that html snippets parse correctly (issue #2664)
   - **[com.google.fonts/check/metadata/os2_weightclass]**: Check now allows Thin to have 100, 250 and ExtraLight to have 200, 275 (issue #2947)
+  - **[com.google.fonts/check/varfont_instance_names]**: Check will now only allow 18 named instances (Thin-Black + Italics). This was decided in a Friday team meeting on the 2020/06/26. Changes also reflect the updated spec, https://github.com/googlefonts/gf-docs/tree/master/Spec#fvar-instances.
+
 
 ### Bugfixes
   - **[com.google.fonts/check/valid_glyphnames]**: Improve broken text in the FAIL message (PR #2939)
