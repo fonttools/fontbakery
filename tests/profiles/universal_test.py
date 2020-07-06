@@ -441,20 +441,19 @@ def test_check_whitespace_glyphnames():
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   # See https://github.com/googlefonts/fontbakery/issues/2624
-  print("Test FAIL for naming 0x00A0 nbsp (it's not AGL-complient) ...")
+  # nbsp is not Adobe Glyph List compliant.
   editCmap(ttFont, 0x00A0, "nbsp")
-  status, message = list(check(ttFont))[-1]
-  assert status == FAIL and message.code == "badA0"
+  assert_results_contain(check(ttFont), FAIL, 'badA0',
+                         'with bad glyph name for char 0x00A0 ...')
 
-  print("Test WARN for naming 0x00A0 nbspace ...")
   editCmap(ttFont, 0x00A0, "nbspace")
-  status, message = list(check(ttFont))[-1]
-  assert status == WARN and message.code == "badA0"
+  assert_results_contain(check(ttFont), WARN, 'badA0',
+                         "for naming 0x00A0 nbspace ...")
 
-  print("Test PASS for naming 0x00A0 uni00A0 ...")
   editCmap(ttFont, 0x00A0, "uni00A0")
-  status, message = list(check(ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(ttFont),
+              "for naming 0x00A0 uni00A0 ...")
+
 
 def test_check_whitespace_ink():
   """ Whitespace glyphs have ink? """
