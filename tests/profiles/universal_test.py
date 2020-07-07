@@ -398,6 +398,17 @@ def test_check_whitespace_glyphnames():
             if codepoint != cp
         }
 
+  def editCmap(font, cp, name):
+    """ Corrupt the cmap by changing the glyph name
+        for a given code point.
+    """
+    for subtable in font['cmap'].tables:
+      if subtable.isUnicode():
+        # Copy the map
+        subtable.cmap = subtable.cmap.copy()
+        # edit it
+        subtable.cmap[cp] = name
+
   # Our reference Mada Regular font is good here:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
@@ -415,16 +426,41 @@ def test_check_whitespace_glyphnames():
 
   deleteGlyphEncodings(ttFont, 0x0020)
   assert_results_contain(check(ttFont),
-                         FAIL, 'bad20',
-                         'with bad glyph name for char 0x0020 ...')
+                         FAIL, 'missing-0020',
+                         'with missing glyph name for char 0x0020 ...')
 
   # restore the original font object in preparation for the next test-case:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   deleteGlyphEncodings(ttFont, 0x00A0)
   assert_results_contain(check(ttFont),
-                         FAIL, 'badA0',
-                         'with bad glyph name for char 0x00A0 ...')
+                         FAIL, 'missing-00a0',
+                         'with missing glyph name for char 0x00A0 ...')
+
+  # restore the original font object in preparation for the next test-case:
+  ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+
+  # See https://github.com/googlefonts/fontbakery/issues/2624
+  # nbsp is not Adobe Glyph List compliant.
+  editCmap(ttFont, 0x00A0, "nbsp")
+  assert_results_contain(check(ttFont), FAIL, 'non-compliant-00a0',
+                         'with not AGL-compliant glyph name "nbsp" for char 0x00A0...')
+
+  editCmap(ttFont, 0x00A0, "nbspace")
+  assert_results_contain(check(ttFont), WARN, 'not-recommended-00a0',
+                         'for naming 0x00A0 "nbspace"...')
+
+  editCmap(ttFont, 0x0020, "foo")
+  assert_results_contain(check(ttFont), FAIL, 'non-compliant-0020',
+                         'with not AGL-compliant glyph name "foo" for char 0x0020...')
+
+  editCmap(ttFont, 0x0020, "uni0020")
+  assert_results_contain(check(ttFont), WARN, 'not-recommended-0020',
+                         'for naming 0x0020 "uni0020"...')
+
+  editCmap(ttFont, 0x0020, "space")
+  editCmap(ttFont, 0x00A0, "uni00A0")
+  assert_PASS(check(ttFont))
 
 
 def test_check_whitespace_ink():
@@ -436,12 +472,12 @@ def test_check_whitespace_ink():
 
   test_font["cmap"].tables[0].cmap[0x0020] = "uni1E17"
   assert_results_contain(check(test_font),
-                         FAIL, None, # FIXME: This needs a message keyword
+                         FAIL, 'has-ink',
                          'for whitespace character having composites (with ink).')
 
   test_font["cmap"].tables[0].cmap[0x0020] = "scedilla"
   assert_results_contain(check(test_font),
-                         FAIL, None, # FIXME: This needs a message keyword
+                         FAIL, 'has-ink',
                          'for whitespace character having outlines (with ink).')
 
   import fontTools.pens.ttGlyphPen
@@ -449,7 +485,7 @@ def test_check_whitespace_ink():
   pen.addComponent("space", (1, 0, 0, 1, 0, 0))
   test_font["glyf"].glyphs["uni200B"] = pen.glyph()
   assert_results_contain(check(test_font),
-                         FAIL, None, # FIXME: This needs a message keyword
+                         FAIL, 'has-ink', # should we give is a separate keyword? This looks wrong.
                          'for whitespace character having composites (without ink).')
 
 
