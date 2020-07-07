@@ -479,9 +479,10 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
 )
 def com_google_fonts_check_whitespace_ink(ttFont):
   """Whitespace glyphs have ink?"""
-  from fontbakery.utils import get_glyph_name, glyph_has_ink
+  from fontbakery.utils import (get_glyph_name,
+                                glyph_has_ink)
 
-  # This tests that certain glyphs are empty.
+  # This checks that certain glyphs are empty.
   # Some, but not all, are Unicode whitespace.
 
   # code-points for all Unicode whitespace chars
@@ -503,15 +504,16 @@ def com_google_fonts_check_whitespace_ink(ttFont):
   # a whitespace that should have a drawing.
   NON_DRAWING = WHITESPACE_CHARACTERS | EXTRA_NON_DRAWING - {0x1680}
 
-  failed = False
+  passed = True
   for codepoint in sorted(NON_DRAWING):
     g = get_glyph_name(ttFont, codepoint)
     if g is not None and glyph_has_ink(ttFont, g):
-      failed = True
-      yield FAIL, ("Glyph \"{}\" has ink."
-                   " It needs to be replaced by"
-                   " an empty glyph.").format(g)
-  if not failed:
+      passed = False
+      yield FAIL,\
+            Message('has-ink',
+                    f'Glyph "{g}" has ink.'
+                    f' It needs to be replaced by an empty glyph.')
+  if passed:
     yield PASS, "There is no whitespace glyph with ink."
 
 

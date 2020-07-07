@@ -464,12 +464,12 @@ def test_check_whitespace_ink():
 
   test_font["cmap"].tables[0].cmap[0x0020] = "uni1E17"
   assert_results_contain(check(test_font),
-                         FAIL, None, # FIXME: This needs a message keyword
+                         FAIL, 'has-ink',
                          'for whitespace character having composites (with ink).')
 
   test_font["cmap"].tables[0].cmap[0x0020] = "scedilla"
   assert_results_contain(check(test_font),
-                         FAIL, None, # FIXME: This needs a message keyword
+                         FAIL, 'has-ink',
                          'for whitespace character having outlines (with ink).')
 
   import fontTools.pens.ttGlyphPen
@@ -477,7 +477,7 @@ def test_check_whitespace_ink():
   pen.addComponent("space", (1, 0, 0, 1, 0, 0))
   test_font["glyf"].glyphs["uni200B"] = pen.glyph()
   assert_results_contain(check(test_font),
-                         FAIL, None, # FIXME: This needs a message keyword
+                         FAIL, 'has-ink', # should we give is a separate keyword? This looks wrong.
                          'for whitespace character having composites (without ink).')
 
 
