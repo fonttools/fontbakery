@@ -426,16 +426,16 @@ def test_check_whitespace_glyphnames():
 
   deleteGlyphEncodings(ttFont, 0x0020)
   assert_results_contain(check(ttFont),
-                         FAIL, 'bad20',
-                         'with bad glyph name for char 0x0020 ...')
+                         FAIL, 'missing-0020',
+                         'with missing glyph name for char 0x0020 ...')
 
   # restore the original font object in preparation for the next test-case:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
   deleteGlyphEncodings(ttFont, 0x00A0)
   assert_results_contain(check(ttFont),
-                         FAIL, 'badA0',
-                         'with bad glyph name for char 0x00A0 ...')
+                         FAIL, 'missing-00a0',
+                         'with missing glyph name for char 0x00A0 ...')
 
   # restore the original font object in preparation for the next test-case:
   ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -443,16 +443,24 @@ def test_check_whitespace_glyphnames():
   # See https://github.com/googlefonts/fontbakery/issues/2624
   # nbsp is not Adobe Glyph List compliant.
   editCmap(ttFont, 0x00A0, "nbsp")
-  assert_results_contain(check(ttFont), FAIL, 'badA0',
-                         'with bad glyph name for char 0x00A0 ...')
+  assert_results_contain(check(ttFont), FAIL, 'non-compliant-00a0',
+                         'with not AGL-compliant glyph name "nbsp" for char 0x00A0...')
 
   editCmap(ttFont, 0x00A0, "nbspace")
-  assert_results_contain(check(ttFont), WARN, 'badA0',
-                         "for naming 0x00A0 nbspace ...")
+  assert_results_contain(check(ttFont), WARN, 'not-recommended-00a0',
+                         'for naming 0x00A0 "nbspace"...')
 
+  editCmap(ttFont, 0x0020, "foo")
+  assert_results_contain(check(ttFont), FAIL, 'non-compliant-0020',
+                         'with not AGL-compliant glyph name "foo" for char 0x0020...')
+
+  editCmap(ttFont, 0x0020, "uni0020")
+  assert_results_contain(check(ttFont), WARN, 'not-recommended-0020',
+                         'for naming 0x0020 "uni0020"...')
+
+  editCmap(ttFont, 0x0020, "space")
   editCmap(ttFont, 0x00A0, "uni00A0")
-  assert_PASS(check(ttFont),
-              "for naming 0x00A0 uni00A0 ...")
+  assert_PASS(check(ttFont))
 
 
 def test_check_whitespace_ink():
