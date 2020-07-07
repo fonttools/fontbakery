@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/unsupported_axes]**: Removed opsz axis and added slnt axis (issue #2866)
   - **[com.google.fonts/check/description/valid_html]**: Verify that html snippets parse correctly (issue #2664)
   - **[com.google.fonts/check/metadata/os2_weightclass]**: Check now allows Thin to have 100, 250 and ExtraLight to have 200, 275 (issue #2947)
+  - **[com.google.fonts/check/whitespace_ink]**: Removed OGHAM SPACE MARK U+1680 as it is a whitespace that should have a drawing. (PR #2297 contributed by @drj11)
 
 ### Bugfixes
   - **[com.google.fonts/check/valid_glyphnames]**: Improve broken text in the FAIL message (PR #2939)
