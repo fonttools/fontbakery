@@ -5,7 +5,7 @@ import argparse
 import importlib.util
 import os
 import sys
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 
 from fontbakery.checkrunner import (
               distribute_generator
@@ -22,6 +22,9 @@ from fontbakery.checkrunner import (
             , FAIL
             , STARTSECTION
             , ENDSECTION
+            , START
+            , END
+            , ENDCHECK
             )
 
 log_levels =  OrderedDict((s.name,s) for s in sorted((
@@ -40,6 +43,11 @@ from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.ghmarkdown import GHMarkdownReporter
 from fontbakery.reporters.html import HTMLReporter
+from fontbakery.reporters.multiprocessing import (
+              WorkerToQueueReporter
+            , deserialize_queue_check
+            )
+from multiprocessing import Process, Queue
 
 def ArgumentParser(profile, profile_arg=True):
   argument_parser = argparse.ArgumentParser(description="Check TTF files"
@@ -172,6 +180,14 @@ def ArgumentParser(profile, profile_arg=True):
                       'collection against a selection of checks picked with `--checkid`.'
                       ''.format(', '.join(iterargs))
                       )
+
+  argument_parser.add_argument('-M','--multiprocessing', default=0, type=int,
+                      help=f'Use multi-processing to run the checks. The argument '
+                           'is the number of worker processes. Use -1  to specify'
+                           f'{os.cpu_count()} (the number returned '
+                           'by os.cpu_count()). Use 0 (default) to run in '
+                           'single-processing mode.'
+                      )
   return argument_parser, values_keys
 
 
@@ -216,6 +232,89 @@ def get_profile():
   if not profile:
     raise Exception(f"Can't get a profile from {imported}.")
   return profile
+
+def multiprocessing_worker(jobs_queue, results_queue, profile, runner_kwds):
+  runner = CheckRunner(profile, **runner_kwds)
+  while True:
+    # Note: ticks to flush must be 1 in this case, where we
+    # use the reporter once per check! Maybe even delete the
+    # ticks_to_flush option id it stays implemented this way.
+    #
+    # It would perhaps be nicer to set everything up and then call
+    # something like "runner.call_one_check(check).
+    check = jobs_queue.get()
+    reporter = WorkerToQueueReporter( results_queue
+                                    , profile=profile
+                                    , runner=runner
+                                    , ticks_to_flush=1
+                                    )
+    order = profile.deserialize_order([check])
+    reporter.run(order)
+
+def multiprocessing_run(multiprocessing, runner, runner_kwds):
+  # multiprocessing is an int, never 0 at this point
+  assert multiprocessing != 0
+  process_count = os.cpu_count() if multiprocessing < 0 else multiprocessing
+
+  profile = runner.profile
+  jobs = Queue()
+  results = Queue()
+  processes = []
+
+  joblist = list(profile.serialize_order(runner.order))
+  for check in joblist:
+    jobs.put(check)
+
+  checkrun_summary = Counter()
+  yield START, runner.order, (None, None, None)
+  try:
+    for _ in range(process_count):
+      p = Process(target=multiprocessing_worker,
+                              # NOTE: profile is pickled here, but that
+                              # seems to be no problem. The other
+                              # arguments are easy (easier) to serialize.
+                              args=(jobs, results, profile, runner_kwds))
+      processes.append(p)
+      p.start()
+
+    current_section = None
+    count_results = 0
+    while True:
+      result_list = results.get()
+      for key, data in result_list:
+        if key == 'DEBUG':
+          yield DEBUG, data
+          continue
+        count_results += 1
+        for event in deserialize_queue_check(profile, key, data):
+          status, message, (section, _check, _iterargs) = event
+          if current_section and current_section != section:
+            # end old
+            yield ENDSECTION, section_summary, (current_section, None, None)
+            current_section = None
+            checkrun_summary.update(section_summary)
+          if not current_section and section:
+            # start new
+            current_section = section
+            section_summary = Counter()
+            section_order = [] # don't know!!!
+            yield STARTSECTION, section_order, (section, None, None)
+          yield event
+          if status == ENDCHECK:
+            # message is the summary_status of the check when status is ENDCHECK
+            section_summary[message.name] += 1
+      if count_results == len(joblist):
+        if current_section:
+          yield ENDSECTION, section_summary, (current_section, None, None)
+          current_section = None
+          checkrun_summary.update(section_summary)
+        break
+  finally:
+    for p in processes:
+      p.terminate()
+      p.join()
+
+  yield END, checkrun_summary, (None, None, None)
 
 # This stub or alias is kept for compatibility (e.g. check-commands, FontBakery
 # Dashboard). The function of the same name previously only passed on all parameters to
@@ -278,21 +377,23 @@ def main(profile=None, values=None):
       if hasattr(args, key):
         values_[key] = getattr(args, key)
 
+  runner_kwds = dict( values=values_
+                    , custom_order=args.order
+                    , explicit_checks=args.checkid
+                    , exclude_checks=args.exclude_checkid
+                    )
   try:
-    runner = CheckRunner(profile
-                        , values=values_
-                        , custom_order=args.order
-                        , explicit_checks=args.checkid
-                        , exclude_checks=args.exclude_checkid
-                        )
+    runner = CheckRunner(profile, **runner_kwds)
   except ValueValidationError as e:
     print(e)
     argument_parser.print_usage()
     sys.exit(1)
 
+  is_async = args.multiprocessing in (0, 1)
+
   # the most verbose loglevel wins
   loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
-  tr = TerminalReporter(runner=runner, is_async=False
+  tr = TerminalReporter(runner=runner, is_async=is_async
                        , print_progress=not args.no_progress
                        , succinct=args.succinct
                        , check_threshold=loglevel
@@ -321,7 +422,12 @@ def main(profile=None, values=None):
                       collect_results_by=args.gather_by)
     reporters.append(hr.receive)
 
-  distribute_generator(runner.run(), reporters)
+  if args.multiprocessing == 0:
+    status_generator = runner.run()
+  else:
+    status_generator = multiprocessing_run(args.multiprocessing, runner, runner_kwds)
+
+  distribute_generator(status_generator, reporters)
 
   if args.json:
     import json
