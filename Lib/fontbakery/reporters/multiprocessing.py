@@ -31,7 +31,7 @@ from fontbakery.message import Message
 name2status = {status.name:status for status in (
                             DEBUG, PASS, SKIP, INFO, WARN, FAIL, ERROR)}
 
-# somehowsimilar to DashbordWorkerReporter of Font Bakery Dashboard
+# Similar to DashbordWorkerReporter of Font Bakery Dashboard.
 class WorkerToQueueReporter(FontbakeryReporter):
   def __init__(self, queue, profile, ticks_to_flush = None, **kwd):
     super().__init__(**kwd)
@@ -114,6 +114,7 @@ class WorkerToQueueReporter(FontbakeryReporter):
     self._collectedChecks = None
 
 
+# Putting this in here, because it's the inverse of the above serialization
 def deserialize_queue_check(profile, key, check_data):
   identity = profile.deserialize_identity(key)
   yield STARTCHECK, None, identity  ## = event
