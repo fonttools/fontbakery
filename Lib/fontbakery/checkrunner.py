@@ -1733,19 +1733,19 @@ class Profile:
     )
     return '{{"section":{},"check":{},"iterargs":{}}}'.format(*values)
 
+  def deserialize_identity(self, key):
+    item = json.loads(key)
+    section = self._get_section(item['section'])
+    check, _ = self.get_check(item['check'])
+    # tuple of tuples instead list of lists
+    iterargs = tuple(tuple(item) for item in item['iterargs'])
+    return section, check, iterargs
+
   def serialize_order(self, order):
     return map(self.serialize_identity, order)
 
   def deserialize_order(self, serialized_order):
-    result = []
-    for item in serialized_order:
-      item = json.loads(item)
-      section = self._get_section(item['section'])
-      check, _ = self.get_check(item['check'])
-      # tuple of tuples instead list of lists
-      iterargs = tuple(tuple(item) for item in item['iterargs'])
-      result.append((section, check, iterargs))
-    return tuple(result)
+    return tuple(self.deserialize_identity(item) for item in serialized_order)
 
   def setup_argparse(self, argument_parser):
     """
