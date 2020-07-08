@@ -240,8 +240,12 @@ def multiprocessing_worker(jobs_queue, results_queue, profile, runner_kwds):
     # use the reporter once per check! Maybe even delete the
     # ticks_to_flush option id it stays implemented this way.
     #
+    # FIXME:
     # It would perhaps be nicer to set everything up and then call
     # something like "runner.call_one_check(check).
+    #
+    # Reminds me also of a unit testing helper I wanted to do,
+    # see my comments in #2363
     check = jobs_queue.get()
     reporter = WorkerToQueueReporter( results_queue
                                     , profile=profile
@@ -251,7 +255,7 @@ def multiprocessing_worker(jobs_queue, results_queue, profile, runner_kwds):
     order = profile.deserialize_order([check])
     reporter.run(order)
 
-def multiprocessing_run(multiprocessing, runner, runner_kwds):
+def multiprocessing_runner(multiprocessing, runner, runner_kwds):
   # multiprocessing is an int, never 0 at this point
   assert multiprocessing != 0
   process_count = os.cpu_count() if multiprocessing < 0 else multiprocessing
@@ -265,7 +269,6 @@ def multiprocessing_run(multiprocessing, runner, runner_kwds):
   for check in joblist:
     jobs.put(check)
 
-  checkrun_summary = Counter()
   yield START, runner.order, (None, None, None)
   try:
     for _ in range(process_count):
@@ -277,8 +280,8 @@ def multiprocessing_run(multiprocessing, runner, runner_kwds):
       processes.append(p)
       p.start()
 
-    current_section = None
     count_results = 0
+    sections = OrderedDict()
     while True:
       result_list = results.get()
       for key, data in result_list:
@@ -287,33 +290,33 @@ def multiprocessing_run(multiprocessing, runner, runner_kwds):
           continue
         count_results += 1
         for event in deserialize_queue_check(profile, key, data):
-          status, message, (section, _check, _iterargs) = event
-          if current_section and current_section != section:
-            # end old
-            yield ENDSECTION, section_summary, (current_section, None, None)
-            current_section = None
-            checkrun_summary.update(section_summary)
-          if not current_section and section:
-            # start new
-            current_section = section
-            section_summary = Counter()
-            section_order = [] # don't know!!!
-            yield STARTSECTION, section_order, (section, None, None)
+          status, message, (section, check, iterargs) = event
           yield event
           if status == ENDCHECK:
+            section_key = str(section)
+            # collected until all checks are done, because checks
+            # come in async and not ordered by section
+            if section_key not in sections:
+              sections[section_key] = ([], Counter(), section)
+            section_order, section_summary, _ = sections[section_key]
+            section_order.append((check, iterargs))
             # message is the summary_status of the check when status is ENDCHECK
             section_summary[message.name] += 1
       if count_results == len(joblist):
-        if current_section:
-          yield ENDSECTION, section_summary, (current_section, None, None)
-          current_section = None
-          checkrun_summary.update(section_summary)
         break
   finally:
     for p in processes:
       p.terminate()
       p.join()
 
+  # This is not ideal, because we don't have check statuses between sections,
+  # but at least, we have the correct numbers for the STARTSECTION/ENDSECTION
+  # events. The issue comes from the async nature of multiprocessing.
+  checkrun_summary = Counter()
+  for _, (section_order, section_summary, section) in sections.items():
+    yield STARTSECTION, section_order, (section, None, None)
+    yield ENDSECTION, section_summary, (section, None, None)
+    checkrun_summary.update(section_summary)
   yield END, checkrun_summary, (None, None, None)
 
 # This stub or alias is kept for compatibility (e.g. check-commands, FontBakery
@@ -425,7 +428,7 @@ def main(profile=None, values=None):
   if args.multiprocessing == 0:
     status_generator = runner.run()
   else:
-    status_generator = multiprocessing_run(args.multiprocessing, runner, runner_kwds)
+    status_generator = multiprocessing_runner(args.multiprocessing, runner, runner_kwds)
 
   distribute_generator(status_generator, reporters)
 
