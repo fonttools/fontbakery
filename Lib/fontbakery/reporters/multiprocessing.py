@@ -36,7 +36,7 @@ class WorkerToQueueReporter(FontbakeryReporter):
   def __init__(self, queue, profile, ticks_to_flush = None, **kwd):
     super().__init__(**kwd)
     self._queue = queue
-    self._profile = profile;
+    self._profile = profile
     self.ticks_to_flush = ticks_to_flush or 1
 
     self._current = None
