@@ -185,7 +185,7 @@ def ArgumentParser(profile, profile_arg=True):
                       help=f'Use multi-processing to run the checks. The argument is the \n'
                       f'number of worker processes. Use -1 to specify the number returned \n'
                       f'by os.cpu_count()( = {os.cpu_count()}). Use 0 to run in single-processing mode \n'
-                      '(default %(default)s) .'
+                      '(default %(default)s).'
                       )
   return argument_parser, values_keys
 
