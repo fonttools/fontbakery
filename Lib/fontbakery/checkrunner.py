@@ -525,7 +525,23 @@ class CheckRunner:
       if err:
         status = (ERROR, err)
         return (status, None)
-      if not val:
+
+      # An annoying FutureWarning here (Python 3.8.3) on stderr:
+      #     "FutureWarning: The behavior of this method will change in future
+      #      versions. Use specific 'len(elem)' or 'elem is not None' test instead."
+      # Actually not shure how to tackle this, since val is very unspecific
+      # here intentionally. Where is the documentation for the change?
+      if val is None:
+        bool_val = False
+      else:
+        try:
+          _len = len(val)
+          bool_val = False if _len == 0 else True
+        except TypeError:
+          # TypeError: object of type 'bool' has no len()
+          bool_val = bool(val)
+
+      if not bool_val:
         unfulfilled_conditions.append(condition)
     if unfulfilled_conditions:
       # This will make the check neither pass nor fail
