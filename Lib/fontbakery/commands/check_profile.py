@@ -48,6 +48,7 @@ from fontbakery.reporters.multiprocessing import (
             , deserialize_queue_check
             )
 from multiprocessing import Process, Queue
+import queue
 
 def ArgumentParser(profile, profile_arg=True):
   argument_parser = argparse.ArgumentParser(description="Check TTF files"
@@ -234,25 +235,29 @@ def get_profile():
 
 def multiprocessing_worker(jobs_queue, results_queue, profile, runner_kwds):
   runner = CheckRunner(profile, **runner_kwds)
-  while True:
-    # Note: ticks to flush must be 1 in this case, where we
-    # use the reporter once per check! Maybe even delete the
-    # ticks_to_flush option id it stays implemented this way.
-    #
-    # FIXME:
-    # It would perhaps be nicer to set everything up and then call
-    # something like "runner.call_one_check(check).
-    #
-    # Reminds me also of a unit testing helper I wanted to do,
-    # see my comments in #2363
-    check = jobs_queue.get()
-    reporter = WorkerToQueueReporter( results_queue
-                                    , profile=profile
-                                    , runner=runner
-                                    , ticks_to_flush=1
-                                    )
-    order = profile.deserialize_order([check])
-    reporter.run(order)
+  reporter = WorkerToQueueReporter( results_queue
+                                  , profile=profile
+                                  , runner=runner
+                                  , ticks_to_flush=5
+                                  )
+  def get_next_check():
+    try:
+      check = jobs_queue.get(False)
+    except queue.Empty:
+      # This removes a race condition.
+      # The queue looks empty, apparently that must not be the actual case,
+      # but since the parent process is counting results to decide when
+      # it's done, we flush here, besides the value of ticks_to_flush.
+      # before.
+      reporter.flush()
+      # No held back results anymore, so parent process has complete control
+      # and we won't block it in blocking waiting mode.
+      check = jobs_queue.get(True)
+    return profile.deserialize_identity(check)
+
+  runner.run_external(reporter.receive, get_next_check)
+
+
 
 def multiprocessing_runner(multiprocessing, runner, runner_kwds):
   # multiprocessing is an int, never 0 at this point
