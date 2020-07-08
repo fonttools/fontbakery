@@ -273,6 +273,10 @@ def multiprocessing_runner(multiprocessing, runner, runner_kwds):
   for check in joblist:
     jobs.put(check)
 
+  # NOTE: it is VERY interesting how this actually replicates the
+  # check runner protocol, makes me think that it should perhaps not
+  # actually be an inherent part of CheckRunner at all.
+
   yield START, runner.order, (None, None, None)
   try:
     for _ in range(process_count):
@@ -318,8 +322,8 @@ def multiprocessing_runner(multiprocessing, runner, runner_kwds):
   # events. The issue comes from the async nature of multiprocessing.
   checkrun_summary = Counter()
   for _, (section_order, section_summary, section) in sections.items():
-    yield STARTSECTION, section_order, (section, None, None)
-    yield ENDSECTION, section_summary, (section, None, None)
+    yield STARTSECTION, section_order, (section, None, None) # should be removed
+    yield ENDSECTION, section_summary, (section, None, None) # should be SECTIONSUMMARY
     checkrun_summary.update(section_summary)
   yield END, checkrun_summary, (None, None, None)
 
