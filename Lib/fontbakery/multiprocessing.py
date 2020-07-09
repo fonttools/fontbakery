@@ -8,7 +8,13 @@ Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
+import os
 from collections import OrderedDict
+from contextlib import contextmanager
+from functools import partial
+from multiprocessing import Process, Queue
+import queue
+
 from fontbakery.reporters import FontbakeryReporter
 from fontbakery.checkrunner import (  # NOQA
               INFO
@@ -25,8 +31,16 @@ from fontbakery.checkrunner import (  # NOQA
             , END
             , DEBUG
 #            , Status
+            , CheckRunner
+            , session_protocol_generator
+            , drive_session_protocol
             )
 from fontbakery.message import Message
+
+
+################
+# WORKER/CHILD #
+################
 
 name2status = {status.name:status for status in (
                             DEBUG, PASS, SKIP, INFO, WARN, FAIL, ERROR)}
@@ -113,9 +127,9 @@ class WorkerToQueueReporter(FontbakeryReporter):
       self._queue.put(tuple(self._collectedChecks.items()))
     self._collectedChecks = None
 
-
-# Putting this in here, because it's the inverse of the above serialization
-def deserialize_queue_check(profile, key, check_data):
+#This is the inverse of the serialization in WorkerToQueueReporter
+def check_protocol_from_worker_data(profile, key_check_data):
+  key, check_data = key_check_data
   identity = profile.deserialize_identity(key)
   yield STARTCHECK, None, identity  ## = event
 
@@ -133,3 +147,82 @@ def deserialize_queue_check(profile, key, check_data):
 
   status = name2status[check_data['result']]
   yield ENDCHECK, status, identity ## = event
+
+def _worker_jobs_generator(jobs_queue, profile, reporter):
+  while True:
+    try:
+      job = jobs_queue.get(False)
+    except queue.Empty:
+      # This removes a race condition.
+      # The queue looks empty, apparently that must not be the actual case,
+      # but since the parent process is counting results to decide when
+      # it's done, we flush here, besides the value of ticks_to_flush.
+      # before.
+      reporter.flush()
+      # No held back results anymore, so parent process has complete control
+      # and we won't block it in blocking waiting mode.
+      job = jobs_queue.get(True)
+    yield profile.deserialize_identity(job)
+
+def multiprocessing_worker(jobs_queue, results_queue, profile, runner_kwds):
+  runner = CheckRunner(profile, **runner_kwds)
+  reporter = WorkerToQueueReporter( results_queue
+                                  , profile=profile
+                                  , runner=runner
+                                  , ticks_to_flush=5
+                                  )
+
+  next_check_gen = _worker_jobs_generator(jobs_queue, profile, reporter)
+  runner.run_externally_controlled(reporter.receive, next_check_gen)
+
+#####################
+# DISPATCHER/PARENT #
+#####################
+
+def _results_generator(results_queue, len_results):
+  count_results = 0
+  while True:
+    result_list = results_queue.get()
+    for result in result_list:
+      yield result
+      count_results += 1
+    if count_results >= len_results:
+      return
+
+@contextmanager
+def _multiprocessing_checkrunner(jobs, process_count, *args):
+  jobs_queue = Queue()
+  results_queue = Queue()
+  for job in jobs:
+      jobs_queue.put(job)
+  len_jobs = len(jobs)
+
+  try:
+    processes = []
+    for _ in range(process_count):
+      p = Process(target=multiprocessing_worker,
+                              # NOTE: e.g. profile is pickled here, but
+                              # that seems to be no problem. The other
+                              # arguments seem easier to serialize.
+                              args=(jobs_queue, results_queue, *args))
+      processes.append(p)
+      p.start()
+    yield _results_generator(results_queue, len_jobs) # next_check_gen
+  finally:
+    for p in processes:
+      p.terminate()
+      p.join()
+
+def multiprocessing_runner(multiprocessing, runner, runner_kwds):
+  # multiprocessing is an int, never 0 at this point
+  assert multiprocessing != 0
+  process_count = os.cpu_count() if multiprocessing < 0 else multiprocessing
+  profile = runner.profile
+  joblist = list(profile.serialize_order(runner.order))
+
+  session_gen = session_protocol_generator(
+                      partial(check_protocol_from_worker_data, profile),
+                      runner.order)
+  with _multiprocessing_checkrunner(joblist, process_count, profile,
+                                          runner_kwds) as next_check_gen:
+    yield from drive_session_protocol(session_gen, next_check_gen)

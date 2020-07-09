@@ -644,7 +644,7 @@ class CheckRunner:
         raise ValueError(f'Order item {item} not found.')
     return order
 
-  def run(self, order=None):
+  def old_run(self, order=None):
     checkrun_summary = Counter()
 
     if order is not None:
@@ -685,52 +685,79 @@ class CheckRunner:
       checkrun_summary.update(section_summary)
     yield END, checkrun_summary, (None, None, None)
 
-  def run_session(self):
-    #init
+  def _check_protocol_generator(self, next_check_identity):
+    section , check, iterargs = next_check_identity
+    for status, message in self._run_check(check, iterargs):
+      yield status, message, (section, check, iterargs)
 
-    # Could use self.order, but the truth is, we don't know.
-    # However, self.order still should contain each check_identity
-    # just to make sure we can actually run the check!
-    # Let's just assume that _run_check will fail otherwise...
-    section_summaries = OrderedDict()
-    order = []
-    next_check_identity = yield START, order, (None, None, None)
-    while next_check_identity:
-      section , check, iterargs = next_check_identity
-      for status, message in self._run_check(check, iterargs):
-        # send(check_identity) always after ENDCHECK
-        next_check_identity = yield status, message, (section, check, iterargs)
-      # after _run_check the last status must be ENDCHECK
-      assert status == ENDCHECK
-      # message is the summary_status of the check when status is ENDCHECK
-      section_key = str(section)
-      section_summary = section_summaries.get(section_key, None)
-      if section_summary is None:
-        section_summary = section_summaries[section_key] = Counter()
-      section_summary[message.name] += 1
+  def session_protocol_generator(self, order=None):
+    order = order if order is not None else self.order
+    yield from session_protocol_generator(self._check_protocol_generator, order)
 
-    # finalize
-    for _, section_summary in section_summaries.items():
-      yield STARTSECTION # should be removed
-      yield ENDESECTION, section_summary # should be SECTIONSUMMARY
-      checkrun_summary.update(section_summary)
+  def run(self, order=None):
+    order = order if order is not None else self.order
+    session_gen = self.session_protocol_generator(order)
+    next_check_gen = iter(order)
+    yield from drive_session_protocol(session_gen, next_check_gen)
 
-    yield END, checkrun_summary, (None, None, None)
+  def run_externally_controlled(self, receive_result_fn, next_check_gen, order=None):
+    order = order if order is not None else self.order
+    session_gen = self.session_protocol_generator(order)
+    for result in drive_session_protocol(session_gen, next_check_gen):
+      receive_result_fn(result)
 
-  def run_external(self, receive_result_fn, next_check_fn):
-    gen = self.run_session()
+def drive_session_protocol(session_gen, next_check_gen):
     # can't send anything but None on first iteration
     value = None
     try:
       while True:
-        result = gen.send(value)
-        receive_result_fn(result)
+        result = session_gen.send(value)
+        yield result
         value = None
         if result[0] in (START, ENDCHECK):
           # get the next check, if None protocol will wrap up
-          value = next_check_fn()
+          value = next(next_check_gen, None)
     except StopIteration:
       pass
+
+def session_protocol_generator(check_protocol_generator, order):
+  #init
+
+  # Could use self.order, but the truth is, we don't know.
+  # However, self.order still should contain each check_identity
+  # just to make sure we can actually run the check!
+  # Let's just assume that _run_check will fail otherwise...
+  sections = OrderedDict()
+  next_check_identity = yield START, order, (None, None, None)
+  while next_check_identity:
+
+    for event in check_protocol_generator(next_check_identity):
+      # send(check_identity) always after ENDCHECK
+      next_check_identity = yield event
+    # after _run_check the last status must be ENDCHECK
+    status, message, (section, check, iterargs) = event
+    event = None
+    assert status == ENDCHECK
+
+    # message is the summary_status of the check when status is ENDCHECK
+    section_key = str(section)
+    if section_key not in sections:
+      sections[section_key] = ([], Counter(), section)
+    section_order, section_summary, _ = sections[section_key]
+    section_order.append((check, iterargs))
+    # message is the summary_status of the check when status is ENDCHECK
+    section_summary[message.name] += 1
+
+  # finalize
+  # This is not ideal, because we don't have check statuses between sections,
+  # but at least, we have the correct numbers for the STARTSECTION/ENDSECTION
+  # events.
+  checkrun_summary = Counter()
+  for _, (section_order, section_summary, section) in sections.items():
+    yield STARTSECTION, section_order, (section, None, None) # should be removed
+    yield ENDSECTION, section_summary, (section, None, None) # should be SECTIONSUMMARY
+    checkrun_summary.update(section_summary)
+  yield END, checkrun_summary, (None, None, None)
 
 def distribute_generator(gen, targets_callbacks):
   for item in gen:
