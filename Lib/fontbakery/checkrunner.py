@@ -536,7 +536,7 @@ class CheckRunner:
       else:
         try:
           _len = len(val)
-          bool_val = False if _len == 0 else True
+          bool_val = not _len == 0
         except TypeError:
           # TypeError: object of type 'bool' has no len()
           bool_val = bool(val)
