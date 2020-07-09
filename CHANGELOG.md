@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.8.0 (2020-Jul-??)
-  - ...
+
+### Bugfixes
+  - **com.google.fonts/check/description/broken_links**: Skip when html does not parse. (issue #2664)
 
 
 ## 0.7.28 (2020-Jul-09)

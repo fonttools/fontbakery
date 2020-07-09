@@ -220,27 +220,28 @@ def test_check_description_broken_links():
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_description_broken_links as check,
     description,
+    description_html,
     descfile)
 
   good_desc = description(descfile(TEST_FILE("cabin/Cabin-Regular.ttf")))
-  assert_PASS(check(good_desc),
+  assert_PASS(check(description_html(good_desc)),
               'with description file that has no links...')
 
   good_desc += ("<a href='http://example.com'>Good Link</a>"
                 "<a href='http://fonts.google.com'>Another Good One</a>")
-  assert_PASS(check(good_desc),
+  assert_PASS(check(description_html(good_desc)),
               'with description file that has good links...')
 
   good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
-  assert_results_contain(check(good_desc),
+  assert_results_contain(check(description_html(good_desc)),
                          INFO, "email",
                          'with a description file containing "mailto" links...')
 
-  assert_PASS(check(good_desc),
+  assert_PASS(check(description_html(good_desc)),
               'with a description file containing "mailto" links...')
 
   bad_desc = good_desc + "<a href='http://thisisanexampleofabrokenurl.com/'>This is a Bad Link</a>"
-  assert_results_contain(check(bad_desc),
+  assert_results_contain(check(description_html(bad_desc)),
                          FAIL, 'broken-links',
                          'with a description file containing a known-bad URL...')
 
