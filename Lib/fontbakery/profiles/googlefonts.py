@@ -245,16 +245,16 @@ def com_google_fonts_check_canonical_filename(font):
 
 @check(
   id = 'com.google.fonts/check/description/broken_links',
-  conditions = ['description'],
+  conditions = ['description_html'],
   rationale = """
-    The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font family webpage on the Google Fonts website. For that reason, all hyperlinks in it must be properly working. 
+    The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font family webpage on the Google Fonts website. For that reason, all hyperlinks in it must be properly working.
   """
 )
-def com_google_fonts_check_description_broken_links(description):
+def com_google_fonts_check_description_broken_links(description_html):
   """Does DESCRIPTION file contain broken links?"""
   import requests
   from lxml import etree
-  doc = etree.fromstring("<html>" + description + "</html>")
+  doc = description_html
   broken_links = []
   for a_href in doc.iterfind('.//a[@href]'):
     link = a_href.get("href")
