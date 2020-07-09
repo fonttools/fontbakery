@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.8.0 (2020-Jun-??)
+## 0.8.0 (2020-Jul-??)
+  - ...
+
+
+## 0.7.28 (2020-Jul-09)
 ### Note-worthy code changes
   - Major improvement to code-testing framework by adopting the `assert_PASS` and `assert_results_contain` helper methods (issue #2943)
 
@@ -17,6 +21,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - **[com.google.fonts/check/valid_glyphnames]**: Improve broken text in the FAIL message (PR #2939)
+
 
 ## 0.7.27 (2020-Jun-10)
 ### Note-worthy code changes
