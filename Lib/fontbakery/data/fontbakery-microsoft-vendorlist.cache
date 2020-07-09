@@ -23,7 +23,6 @@
 
 
 
-
 	
 
 
@@ -71,11 +70,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/832510127945f07f5e8067d0c318a18ffcd24eaf/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/b680bb02590e9c252037919e0e322187a61e8633/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="06/10/2020" />
+<meta name="ms.date" content="06/29/2020" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -85,18 +84,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-06-10 06:19 PM" />
+<meta name="updated_at" content="2020-07-07 02:01 AM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3166" />
+<meta name="word_count" content="3195" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/591b291d.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f716a721.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/5a8a71c1.conceptual.css ">
 
@@ -137,7 +136,7 @@
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
 	<script nomodule src="/_themes/docs.theme/master/en-us/_themes/scripts/7501e2bd.index-polyfills.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2ac2eb3d.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/c36c3f6e.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -146,25 +145,27 @@
 		<div id="headerAreaHolder" data-bi-name="header">
 <header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
 	<div class="nav-bar">
-		<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button has-padding-left-medium-mobile">
+		<div class="nav-bar-brand">
+			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
 			<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
 			<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
 		</a>
+		</div>
 		<div class="nav-bar-item is-hidden-tablet">
-			<button class="nav-bar-button is-size-5 is-text has-body-background has-padding-none" title="Global navigation">
-				<span class="has-text-weight-semibold has-padding-left-small has-padding-bottom-extra-small"></span>
-				<div class="nav-bar-burger has-padding-none has-height-zero">
+			<button class="nav-bar-button nav-bar-menu" title="Global navigation">
+				<span class="nav-bar-menu-title"></span>
+				<div class="nav-bar-burger">
 					<span></span>
 					<span></span>
 					<span></span>
-					<span class="is-visually-hidden">Global navigation</span>
+					<span class="nav-bar-burger-label">Global navigation</span>
 				</div>
 			</button>
 		</div>
 		<nav class="nav-bar-nav" role="navigation" aria-label="Global">
 			<ul class="nav-bar-nav-list">
-				<li class="nav-bar-item is-category has-spacing">
-					<a class="nav-bar-button title has-hover-underline is-4" itemprop="url" href="/en-us/">
+				<li class="nav-bar-item is-category">
+					<a class="nav-bar-button is-title has-hover-underline" itemprop="url" href="/en-us/">
 						<span>Docs</span>
 					</a>
 				</li>
@@ -204,13 +205,13 @@
 				</li>
 			</ul>
 		</nav>
-		<span class="nav-bar-spacer is-hidden-mobile"></span>
-		<div class="nav-bar-item has-flex-grow-mobile has-flex-shrink-mobile">
+		<span class="nav-bar-spacer"></span>
+		<div class="nav-bar-item">
 		</div>
 		<div class="nav-bar-item is-size-7 is-hidden-mobile">
 		</div>
 	</div>
-	<div class="nav-bar is-content is-hidden-mobile has-border-top">
+	<div class="nav-bar is-content">
 	</div>
 </header>		</div>
 		<div class="content-header uhf-container has-padding has-default-focus has-border-bottom-none" data-bi-name="content-header">
@@ -221,10 +222,8 @@
 		<div class="content-header-controls">
 			<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
 				<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
-				<span>Contents</span>
+				<span class="contents-expand-title">Contents</span>
 			</button>
-		</div>
-		<div class="content-header-controls exit-focus">
 			<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
 				<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
 				<span>Exit focus mode</span>
@@ -306,7 +305,7 @@
 				<span class="icon">
 					<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
 				</span>
-				<span>Table of contents</span>
+				<span class="contents-expand-title">Table of contents</span>
 			</button>
 			<div class="is-invisible"></div>
 			<div class="is-hidden-tablet level-item is-flexible level-right">
@@ -344,9 +343,20 @@
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li>
-								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-06-10T00:00:00.000Z" data-article-date-source="ms.date">06/10/2020</time>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-06-29T00:00:00.000Z" data-article-date-source="ms.date">06/29/2020</time>
 							</li>
 								<li class="readingTime">15 minutes to read</li>
+								<li class="contributors-holder">
+									<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" title="5 Contributors" aria-label="5 Contributors">
+										<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
+													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/alib-ms.png?size=32" role="presentation"/></li>
+													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/WorkNihar.png?size=32" role="presentation"/></li>
+													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/mijacobs.png?size=32" role="presentation"/></li>
+													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
+													<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/VSC-Service-Account.png?size=32" role="presentation"/></li>
+										</ul>
+									</a>
+								</li>
 						</ul>
 
 						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
@@ -401,6 +411,10 @@
 <tr>
 <td>1UKR</td>
 <td>AndrijType</td>
+</tr>
+<tr>
+<td>205</td>
+<td><a href="https://www.205.tf/" data-linktype="external">205TF</a></td>
 </tr>
 <tr>
 <td>2DLT</td>
@@ -755,6 +769,10 @@
 <tr>
 <td>BBTY</td>
 <td><a href="https://www.brunobernard.com/" data-linktype="external">Bruno Bernard Typographie</a></td>
+</tr>
+<tr>
+<td>BCHF</td>
+<td><a href="https://slipsong.com/" data-linktype="external">Blake Hodgetts Fonts</a></td>
 </tr>
 <tr>
 <td>BCHN</td>
@@ -1392,6 +1410,10 @@
 <tr>
 <td>ESTF</td>
 <td><a href="https://extraset.ch/" data-linktype="external">Extraset Typefoundry</a></td>
+</tr>
+<tr>
+<td>ET</td>
+<td><a href="https://esintype.com/" data-linktype="external">Esintype</a></td>
 </tr>
 <tr>
 <td>ETIO</td>
@@ -2121,6 +2143,10 @@
 <td><a href="http://www.jaketilson.com" data-linktype="external">Jake Tilson Studio</a></td>
 </tr>
 <tr>
+<td>JAM</td>
+<td><a href="http://www.jamtype.com" data-linktype="external">JAM Type</a></td>
+</tr>
+<tr>
 <td>JANS</td>
 <td><a href="https://www.futurefonts.xyz/jan-sindler" data-linktype="external">Jan Šindler</a></td>
 </tr>
@@ -2389,6 +2415,10 @@
 <tr>
 <td>Leah</td>
 <td><a href="http://www.leahlackey.com" data-linktype="external">Leah Lackey</a></td>
+</tr>
+<tr>
+<td>Lev</td>
+<td><a href="https://www.myfonts.com/person/Lev_Rastvortsev/" data-linktype="external">Lev Rastvortsev</a></td>
 </tr>
 <tr>
 <td>lewd</td>
@@ -2754,6 +2784,10 @@
 <td><a href="http://morningtype.com/" data-linktype="external">Morning Type</a></td>
 </tr>
 <tr>
+<td>MOSH</td>
+<td><a href="https://moshik.net/" data-linktype="external">Moshik Nadav Typography</a></td>
+</tr>
+<tr>
 <td>MOTA</td>
 <td><a href="http://www.motaitalic.com" data-linktype="external">Mota Italic</a></td>
 </tr>
@@ -2975,6 +3009,10 @@
 <tr>
 <td>NVTF</td>
 <td><a href="http://www.novatypefoundry.com" data-linktype="external">Nova Type Foundry</a></td>
+</tr>
+<tr>
+<td>NWGH</td>
+<td><a href="https://beta.newglyph.com/" data-linktype="external">newglyph</a></td>
 </tr>
 <tr>
 <td>NYCM</td>
@@ -3341,6 +3379,10 @@
 <td><a href="http://www.rohh.net" data-linktype="external">ROHH studio</a></td>
 </tr>
 <tr>
+<td>ROMA</td>
+<td><a href="https://romanee.nl/" data-linktype="external">Romanée Type Foundry</a></td>
+</tr>
+<tr>
 <td>RPTR</td>
 <td><a href="http://www.rampageraptor.com" data-linktype="external">Rampage Raptor</a></td>
 </tr>
@@ -3363,6 +3405,10 @@
 <tr>
 <td>RSZ</td>
 <td><a href="https://www.resistenza.es/" data-linktype="external">Resistenza Type Foundry</a></td>
+</tr>
+<tr>
+<td>RT</td>
+<td><a href="https://ritmoritmo.com/" data-linktype="external">Ritmo</a></td>
 </tr>
 <tr>
 <td>rthy</td>
@@ -3713,6 +3759,10 @@
 <tr>
 <td>THIN</td>
 <td><a href="http://www.thinstroke.com" data-linktype="external">Thinstroke Design LLC</a></td>
+</tr>
+<tr>
+<td>THYH</td>
+<td><a href="http://www.thy-ha.com" data-linktype="external">Thy Hà</a></td>
 </tr>
 <tr>
 <td>TILD</td>
@@ -4546,5 +4596,6 @@ High contrast					</span>
 	</div>
 
 	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+	<span id="adobe-target-experiment-container" hidden></span>
 </body>
 </html>
