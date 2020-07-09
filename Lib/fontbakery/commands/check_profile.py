@@ -5,7 +5,7 @@ import argparse
 import importlib.util
 import os
 import sys
-from collections import OrderedDict, Counter
+from collections import OrderedDict
 
 from fontbakery.checkrunner import (
               distribute_generator
@@ -27,6 +27,8 @@ from fontbakery.checkrunner import (
             , ENDCHECK
             )
 
+from fontbakery.multiprocessing import multiprocessing_runner
+
 log_levels =  OrderedDict((s.name,s) for s in sorted((
               DEBUG
             , INFO
@@ -43,12 +45,6 @@ from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.ghmarkdown import GHMarkdownReporter
 from fontbakery.reporters.html import HTMLReporter
-from fontbakery.reporters.multiprocessing import (
-              WorkerToQueueReporter
-            , deserialize_queue_check
-            )
-from multiprocessing import Process, Queue
-import queue
 
 def ArgumentParser(profile, profile_arg=True):
   argument_parser = argparse.ArgumentParser(description="Check TTF files"
@@ -232,100 +228,6 @@ def get_profile():
   if not profile:
     raise Exception(f"Can't get a profile from {imported}.")
   return profile
-
-def multiprocessing_worker(jobs_queue, results_queue, profile, runner_kwds):
-  runner = CheckRunner(profile, **runner_kwds)
-  reporter = WorkerToQueueReporter( results_queue
-                                  , profile=profile
-                                  , runner=runner
-                                  , ticks_to_flush=5
-                                  )
-  def get_next_check():
-    try:
-      check = jobs_queue.get(False)
-    except queue.Empty:
-      # This removes a race condition.
-      # The queue looks empty, apparently that must not be the actual case,
-      # but since the parent process is counting results to decide when
-      # it's done, we flush here, besides the value of ticks_to_flush.
-      # before.
-      reporter.flush()
-      # No held back results anymore, so parent process has complete control
-      # and we won't block it in blocking waiting mode.
-      check = jobs_queue.get(True)
-    return profile.deserialize_identity(check)
-
-  runner.run_external(reporter.receive, get_next_check)
-
-
-
-def multiprocessing_runner(multiprocessing, runner, runner_kwds):
-  # multiprocessing is an int, never 0 at this point
-  assert multiprocessing != 0
-  process_count = os.cpu_count() if multiprocessing < 0 else multiprocessing
-
-  profile = runner.profile
-  jobs = Queue()
-  results = Queue()
-  processes = []
-
-  joblist = list(profile.serialize_order(runner.order))
-  for check in joblist:
-    jobs.put(check)
-
-  # NOTE: it is VERY interesting how this actually replicates the
-  # check runner protocol, makes me think that it should perhaps not
-  # actually be an inherent part of CheckRunner at all.
-
-  yield START, runner.order, (None, None, None)
-  try:
-    for _ in range(process_count):
-      p = Process(target=multiprocessing_worker,
-                              # NOTE: profile is pickled here, but that
-                              # seems to be no problem. The other
-                              # arguments are easy (easier) to serialize.
-                              args=(jobs, results, profile, runner_kwds))
-      processes.append(p)
-      p.start()
-
-    count_results = 0
-    sections = OrderedDict()
-    while True:
-      result_list = results.get()
-      for key, data in result_list:
-        if key == 'DEBUG':
-          yield DEBUG, data
-          continue
-        count_results += 1
-        for event in deserialize_queue_check(profile, key, data):
-          status, message, (section, check, iterargs) = event
-          yield event
-          if status == ENDCHECK:
-            section_key = str(section)
-            # collected until all checks are done, because checks
-            # come in async and not ordered by section
-            if section_key not in sections:
-              sections[section_key] = ([], Counter(), section)
-            section_order, section_summary, _ = sections[section_key]
-            section_order.append((check, iterargs))
-            # message is the summary_status of the check when status is ENDCHECK
-            section_summary[message.name] += 1
-      if count_results == len(joblist):
-        break
-  finally:
-    for p in processes:
-      p.terminate()
-      p.join()
-
-  # This is not ideal, because we don't have check statuses between sections,
-  # but at least, we have the correct numbers for the STARTSECTION/ENDSECTION
-  # events. The issue comes from the async nature of multiprocessing.
-  checkrun_summary = Counter()
-  for _, (section_order, section_summary, section) in sections.items():
-    yield STARTSECTION, section_order, (section, None, None) # should be removed
-    yield ENDSECTION, section_summary, (section, None, None) # should be SECTIONSUMMARY
-    checkrun_summary.update(section_summary)
-  yield END, checkrun_summary, (None, None, None)
 
 # This stub or alias is kept for compatibility (e.g. check-commands, FontBakery
 # Dashboard). The function of the same name previously only passed on all parameters to
