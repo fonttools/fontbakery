@@ -722,3 +722,24 @@ def test_check_STAT_strings():
   assert_results_contain(check(bad),
                          FAIL, None) # FIXME: This needs a message keyword
 
+
+def test_check_rupee():
+  """ Ensure indic fonts have the Indian Rupee Sign glyph. """
+  from fontbakery.profiles.universal import com_google_fonts_check_rupee as check
+  from fontbakery.profiles.shared_conditions import is_indic_font
+
+  # This one is good:
+  ttFont = TTFont("data/test/indic-font-with-rupee-sign/NotoSerifDevanagari-Regular.ttf")
+  assert_PASS(check(ttFont),
+              "with a sample font that has the Indian Rupee Sign.")
+
+  # But this one lacks the glyph:
+  ttFont = TTFont("data/test/indic-font-without-rupee-sign/NotoSansOlChiki-Regular.ttf")
+  assert_results_contain(check(ttFont),
+                         FAIL, "missing-rupee",
+                         "with a sample font missing it.")
+
+  print("Ensure the check will SKIP when dealing with a non-indic font...")
+  non_indic = TTFont("data/test/mada/Mada-Regular.ttf")
+  assert is_indic_font(non_indic) == False
+
