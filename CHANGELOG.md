@@ -2,7 +2,19 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.8.0 (2020-Jun-??)
+## 0.8.0 (2020-Jul-??)
+### Bugfixes
+  - **[com.google.fonts/check/description/broken_links]**: Skip when html does not parse. (issue #2664)
+  - Checks if GSUB lookup format is 1 for ligature collection in `profiles/shared_conditions.py`; format 1 is the only significant one for `ligatures()` and `ligature_glyphs()`)
+
+### New Checks
+  - **[universal: com.google.fonts/check/rupee]**: Ensure indic fonts have the Indian Rupee Sign glyph (issue #2967)
+
+### Changes to existing checks
+  - **[com.google.fonts/check/varfont_instance_names]**: Check will now only allow 18 named instances (Thin-Black + Italics). This was decided in a Friday team meeting on the 2020/06/26. Changes also reflect the updated spec, https://github.com/googlefonts/gf-docs/tree/master/Spec#fvar-instances.
+
+
+## 0.7.28 (2020-Jul-09)
 ### Note-worthy code changes
   - Major improvement to code-testing framework by adopting the `assert_PASS` and `assert_results_contain` helper methods (issue #2943)
 
@@ -11,11 +23,13 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/unsupported_axes]**: Removed opsz axis and added slnt axis (issue #2866)
   - **[com.google.fonts/check/description/valid_html]**: Verify that html snippets parse correctly (issue #2664)
   - **[com.google.fonts/check/metadata/os2_weightclass]**: Check now allows Thin to have 100, 250 and ExtraLight to have 200, 275 (issue #2947)
-  - **[com.google.fonts/check/varfont_instance_names]**: Check will now only allow 18 named instances (Thin-Black + Italics). This was decided in a Friday team meeting on the 2020/06/26. Changes also reflect the updated spec, https://github.com/googlefonts/gf-docs/tree/master/Spec#fvar-instances.
-
+  - **[com.google.fonts/check/whitespace_glyphnames]**: Report names that are not Adobe Glyph List compliant (issue #2624)
+  - **[com.google.fonts/check/whitespace_glyphnames]**: Reviewed and updated keywords so that they more precisely indicate which specific FAIL or WARN causes a check failure.
+  - **[com.google.fonts/check/whitespace_ink]**: Removed OGHAM SPACE MARK U+1680 as it is a whitespace that should have a drawing. (PR #2297 contributed by @drj11)
 
 ### Bugfixes
   - **[com.google.fonts/check/valid_glyphnames]**: Improve broken text in the FAIL message (PR #2939)
+
 
 ## 0.7.27 (2020-Jun-10)
 ### Note-worthy code changes

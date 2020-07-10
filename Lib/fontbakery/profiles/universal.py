@@ -42,7 +42,8 @@ UNIVERSAL_PROFILE_CHECKS = \
   'com.google.fonts/check/unique_glyphnames',
 #  'com.google.fonts/check/glyphnames_max_length',
   'com.google.fonts/check/family/vertical_metrics',
-  'com.google.fonts/check/STAT_strings'
+  'com.google.fonts/check/STAT_strings',
+  'com.google.fonts/check/rupee'
 ]
 
 @check(
@@ -417,49 +418,91 @@ def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
 
 @check(
   id = 'com.google.fonts/check/whitespace_glyphnames',
-  conditions = ['not missing_whitespace_chars']
+  conditions = ['not missing_whitespace_chars'],
+  rationale = """
+    This check enforces adherence to recommended whitespace (codepoints 0020 and 00A0) glyph names according to the Adobe Glyph List.
+  """
 )
 def com_google_fonts_check_whitespace_glyphnames(ttFont):
   """Font has **proper** whitespace glyph names?"""
   from fontbakery.utils import get_glyph_name
 
-  def getGlyphEncodings(font, names):
-    result = set()
-    for subtable in font['cmap'].tables:
-      if subtable.isUnicode():
-        for codepoint, name in subtable.cmap.items():
-          if name in names:
-            result.add(codepoint)
-    return result
+  # AGL recommended names, according to Adobe Glyph List for new fonts:
+  AGL_RECOMMENDED_0020 = {'space'}
+  AGL_RECOMMENDED_00A0 = {"uni00A0", "space"}  # "space" is in this set because some fonts
+                                               # use the same glyph for U+0020 and U+00A0
+                                               # Including it here also removes a warning
+                                               # when U+0020 is wrong, but U+00A0 is okay.
+
+  # AGL compliant names, but not recommended for new fonts:
+  AGL_COMPLIANT_BUT_NOT_RECOMMENDED_0020 = {'uni0020',
+                                            'u0020',
+                                            'u00020',
+                                            'u000020'}
+  AGL_COMPLIANT_BUT_NOT_RECOMMENDED_00A0 = {'nonbreakingspace',
+                                            'nbspace',
+                                            'u00A0',
+                                            'u000A0',
+                                            'u0000A0'}
 
   if ttFont['post'].formatType == 3.0:
     yield SKIP, "Font has version 3 post table."
   else:
-    failed = False
-    space_enc = getGlyphEncodings(ttFont, ["uni0020", "space"])
-    nbsp_enc = getGlyphEncodings(
-        ttFont, ["uni00A0", "nonbreakingspace", "nbspace", "nbsp"])
+    passed = True
+
     space = get_glyph_name(ttFont, 0x0020)
-    if 0x0020 not in space_enc:
-      failed = True
-      yield FAIL, Message("bad20", ("Glyph 0x0020 is called \"{}\":"
-                                    " Change to \"space\""
-                                    " or \"uni0020\"").format(space))
+    if not space:
+      passed = False
+      yield FAIL,\
+            Message('missing-0020',
+                    'Glyph 0x0020 is missing a glyph name!')
+
+    elif space in AGL_RECOMMENDED_0020:
+      pass
+
+    elif space in AGL_COMPLIANT_BUT_NOT_RECOMMENDED_0020:
+      passed = False
+      yield WARN,\
+            Message('not-recommended-0020',
+                    f'Glyph 0x0020 is called "{space}":'
+                    f' Change to "space"')
+    else:
+      passed = False
+      yield FAIL,\
+            Message('non-compliant-0020',
+                    f'Glyph 0x0020 is called "{space}":'
+                    f' Change to "space"')
+
 
     nbsp = get_glyph_name(ttFont, 0x00A0)
-    if 0x00A0 not in nbsp_enc:
-      if 0x00A0 in space_enc:
-        # This is OK.
-        # Some fonts use the same glyph for both space and nbsp.
-        pass
-      else:
-        failed = True
-        yield FAIL, Message("badA0", ("Glyph 0x00A0 is called \"{}\":"
-                                      " Change to \"nbsp\""
-                                      " or \"uni00A0\"").format(nbsp))
+    if not nbsp:
+      yield FAIL,\
+            Message('missing-00a0',
+                    'Glyph 0x00A0 is missing a glyph name!')
 
-    if failed is False:
-      yield PASS, "Font has **proper** whitespace glyph names."
+    elif nbsp == space:
+      # This is OK.
+      # Some fonts use the same glyph for both space and nbsp.
+      pass
+
+    elif nbsp in AGL_RECOMMENDED_00A0:
+      pass
+
+    elif nbsp in AGL_COMPLIANT_BUT_NOT_RECOMMENDED_00A0:
+      passed = False
+      yield WARN,\
+            Message('not-recommended-00a0',
+                    f'Glyph 0x00A0 is called "{nbsp}":'
+                    f' Change to "uni00A0"')
+    else:
+      passed = False
+      yield FAIL,\
+            Message('non-compliant-00a0',
+                    f'Glyph 0x00A0 is called "{nbsp}":'
+                    f' Change to "uni00A0"')
+
+    if passed:
+      yield PASS, "Font has **AGL recommended** names for whitespace glyphs."
 
 
 @check(
@@ -467,24 +510,41 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
 )
 def com_google_fonts_check_whitespace_ink(ttFont):
   """Whitespace glyphs have ink?"""
-  from fontbakery.utils import get_glyph_name, glyph_has_ink
+  from fontbakery.utils import (get_glyph_name,
+                                glyph_has_ink)
 
-  # code-points for all "whitespace" chars:
-  WHITESPACE_CHARACTERS = [
+  # This checks that certain glyphs are empty.
+  # Some, but not all, are Unicode whitespace.
+
+  # code-points for all Unicode whitespace chars
+  # (according to Unicode 11.0 property list):
+  WHITESPACE_CHARACTERS = {
     0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020, 0x0085, 0x00A0, 0x1680,
     0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
-    0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000, 0x180E, 0x200B,
-    0x2060, 0xFEFF
-  ]
-  failed = False
-  for codepoint in WHITESPACE_CHARACTERS:
+    0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000
+  }
+
+  # Code-points that do not have whitespace property, but
+  # should not have a drawing.
+  EXTRA_NON_DRAWING = {
+    0x180E, 0x200B, 0x2060, 0xFEFF
+  }
+
+  # Make the set of non drawing characters.
+  # OGHAM SPACE MARK U+1680 is removed as it is
+  # a whitespace that should have a drawing.
+  NON_DRAWING = WHITESPACE_CHARACTERS | EXTRA_NON_DRAWING - {0x1680}
+
+  passed = True
+  for codepoint in sorted(NON_DRAWING):
     g = get_glyph_name(ttFont, codepoint)
     if g is not None and glyph_has_ink(ttFont, g):
-      failed = True
-      yield FAIL, ("Glyph \"{}\" has ink."
-                   " It needs to be replaced by"
-                   " an empty glyph.").format(g)
-  if not failed:
+      passed = False
+      yield FAIL,\
+            Message('has-ink',
+                    f'Glyph "{g}" has ink.'
+                    f' It needs to be replaced by an empty glyph.')
+  if passed:
     yield PASS, "There is no whitespace glyph with ink."
 
 
@@ -967,6 +1027,26 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
                    f"{s}")
   else:
     yield PASS, "Vertical metrics are the same across the super-family."
+
+
+@check(
+  id = 'com.google.fonts/check/rupee',
+  rationale = """
+    Per Bureau of Indian Standards every font supporting one of the official Indian languages needs to include Unicode Character “₹” (U+20B9) Indian Rupee Sign.
+  """,
+  conditions = ['is_indic_font'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2967'
+  }
+)
+def com_google_fonts_check_rupee(ttFont):
+  """ Ensure indic fonts have the Indian Rupee Sign glyph. """
+  if 0x20B9 not in ttFont['cmap'].getBestCmap().keys():
+    yield FAIL,\
+          Message("missing-rupee",
+                  'Please add a glyph for Indian Rupee Sign “₹” at codepoint U+20B9.')
+  else:
+    yield PASS, "Looks good!"
 
 
 profile.auto_register(globals())
