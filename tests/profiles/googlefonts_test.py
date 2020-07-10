@@ -3400,7 +3400,7 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
 
   # OpenSans-Roman-VF is correct
   assert_PASS(check(vf_ttFont),
-              'for a variable font which has correct instance coordinates')
+              'with a variable font which has correct instance coordinates.')
 
   vf_ttFont2 = copy(vf_ttFont)
   for instance in vf_ttFont2['fvar'].instances:
@@ -3408,7 +3408,7 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
           instance.coordinates[axis] = 0
   assert_results_contain(check(vf_ttFont2),
                          FAIL, None, # FIXME: This needs a message keyword
-                         'for a variable font which does not have'
+                         'with a variable font which does not have'
                          ' correct instance coordinates.')
 
 
@@ -3418,7 +3418,7 @@ def test_check_varfont_instance_names(vf_ttFont):
   from copy import copy
 
   assert_PASS(check(vf_ttFont),
-              'for a variable font which has correct instance names')
+              'with a variable font which has correct instance names.')
 
   vf_ttFont2 = copy(vf_ttFont)
   for instance in vf_ttFont2['fvar'].instances:
@@ -3436,7 +3436,7 @@ def test_check_varfont_instance_names(vf_ttFont):
                              WindowsLanguageID.ENGLISH_USA)
   assert_results_contain(check(vf_ttFont2),
                          FAIL, 'bad-instance-names',
-                         'for a variable font which does not have correct instance names')
+                         'with a variable font which does not have correct instance names.')
 
 
 def test_check_varfont_unsupported_axes():
