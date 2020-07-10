@@ -4544,6 +4544,7 @@ def com_google_fonts_check_varfont_instance_coordinates(ttFont):
   """Check variable font instances have correct coordinate values"""
   from fontbakery.parse import instance_parse
   from fontbakery.constants import SHOW_GF_DOCS_MSG
+
   failed = False
   for instance in ttFont['fvar'].instances:
     name = ttFont['name'].getName(
@@ -4582,6 +4583,7 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
   # earlier than or equal to ca71d787eb2b8b5a9b111884080dde5d45f5579f
   from fontbakery.parse import instance_parse
   from fontbakery.constants import SHOW_GF_DOCS_MSG
+
   failed = []
   for instance in ttFont['fvar'].instances:
     name = ttFont['name'].getName(
@@ -4591,16 +4593,18 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
       WindowsLanguageID.ENGLISH_USA
     ).toUnicode()
     expected_instance = instance_parse(name)
+
     # Check if name matches predicted name
     if expected_instance.name != name:
       failed.append(name)
+
   if failed:
     failed_instances = "\n\t- ".join([""] + failed)
-    yield FAIL, Message(
-      "bad-instance-names",
-      (f"Following instances are not supported: {failed_instances}\n\n"
-       f"{SHOW_GF_DOCS_MSG}#fvar-instances")
-    )
+    yield FAIL,\
+          Message('bad-instance-names',
+                  f'Following instances are not supported: {failed_instances}\n'
+                  f'\n'
+                  f'{SHOW_GF_DOCS_MSG}#fvar-instances')
   else:
     yield PASS, "Instance names are correct"
 
