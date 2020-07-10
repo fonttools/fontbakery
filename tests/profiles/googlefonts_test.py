@@ -3417,11 +3417,9 @@ def test_check_varfont_instance_names(vf_ttFont):
   from fontbakery.parse import instance_parse
   from copy import copy
 
-  print("Test pass for a variable font which has correct instance names")
-  status, message = list(check(vf_ttFont))[-1]
-  assert status == PASS
+  assert_PASS(check(vf_ttFont),
+              'for a variable font which has correct instance names')
 
-  print("Test fail for a variable font which does not have correct instance names")
   vf_ttFont2 = copy(vf_ttFont)
   for instance in vf_ttFont2['fvar'].instances:
       instance.subfamilyNameID = 300
@@ -3436,8 +3434,9 @@ def test_check_varfont_instance_names(vf_ttFont):
                              PlatformID.WINDOWS,
                              WindowsEncodingID.UNICODE_BMP,
                              WindowsLanguageID.ENGLISH_USA)
-  status, message = list(check(vf_ttFont2))[-1]
-  assert status == FAIL and message.code == "bad-instance-names"
+  assert_results_contain(check(vf_ttFont2),
+                         FAIL, 'bad-instance-names',
+                         'for a variable font which does not have correct instance names')
 
 
 def test_check_varfont_unsupported_axes():
