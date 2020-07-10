@@ -42,7 +42,8 @@ UNIVERSAL_PROFILE_CHECKS = \
   'com.google.fonts/check/unique_glyphnames',
 #  'com.google.fonts/check/glyphnames_max_length',
   'com.google.fonts/check/family/vertical_metrics',
-  'com.google.fonts/check/STAT_strings'
+  'com.google.fonts/check/STAT_strings',
+  'com.google.fonts/check/rupee'
 ]
 
 @check(
@@ -1026,6 +1027,26 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
                    f"{s}")
   else:
     yield PASS, "Vertical metrics are the same across the super-family."
+
+
+@check(
+  id = 'com.google.fonts/check/rupee',
+  rationale = """
+    Per Bureau of Indian Standards every font supporting one of the official Indian languages needs to include Unicode Character “₹” (U+20B9) Indian Rupee Sign.
+  """,
+  conditions = ['is_indic_font'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2967'
+  }
+)
+def com_google_fonts_check_rupee(ttFont):
+  """ Ensure indic fonts have the Indian Rupee Sign glyph. """
+  if 0x20B9 not in ttFont['cmap'].getBestCmap().keys():
+    yield FAIL,\
+          Message("missing-rupee",
+                  'Please add a glyph for Indian Rupee Sign “₹” at codepoint U+20B9.')
+  else:
+    yield PASS, "Looks good!"
 
 
 profile.auto_register(globals())

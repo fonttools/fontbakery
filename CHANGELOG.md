@@ -8,7 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Checks if GSUB lookup format is 1 for ligature collection in `profiles/shared_conditions.py`; format 1 is the only significant one for `ligatures()` and `ligature_glyphs()`)
 
 ### New Checks
-  - **[com.google.fonts/check/rupee]**: Ensure indic fonts have the Indian Rupee Sign glyph (issue #2967)
+  - **[universal: com.google.fonts/check/rupee]**: Ensure indic fonts have the Indian Rupee Sign glyph (issue #2967)
 
 
 ## 0.7.28 (2020-Jul-09)
