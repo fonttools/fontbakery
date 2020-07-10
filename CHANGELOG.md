@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/description/broken_links]**: Skip when html does not parse. (issue #2664)
   - Checks if GSUB lookup format is 1 for ligature collection in `profiles/shared_conditions.py`; format 1 is the only significant one for `ligatures()` and `ligature_glyphs()`)
 
+### New Checks
+  - **[com.google.fonts/check/rupee]**: Ensure indic fonts have the Indian Rupee Sign glyph (issue #2967)
+
 
 ## 0.7.28 (2020-Jul-09)
 ### Note-worthy code changes
