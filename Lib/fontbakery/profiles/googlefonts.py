@@ -145,7 +145,8 @@ FONT_FILE_CHECKS = [
   'com.google.fonts/check/varfont_instance_coordinates',
   'com.google.fonts/check/varfont_instance_names',
   'com.google.fonts/check/varfont/consistent_axes',
-  'com.google.fonts/check/varfont/unsupported_axes'
+  'com.google.fonts/check/varfont/unsupported_axes',
+  'com.google.fonts/check/rupee'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -4658,6 +4659,51 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
     yield FAIL,\
           Message("unsupported-slnt",
                   'The "slnt" axis is not yet well supported on Google Chrome.')
+  else:
+    yield PASS, "Looks good!"
+
+
+@condition
+def is_indic_font(ttFont):
+  INDIC_FONT_DETECTION_CODEPOINTS = [
+    0x0988, # Bengali
+    0x0908, # Devanagari
+    0x0A88, # Gujarati
+    0x0A08, # Gurmukhi
+    0x0D08, # Kannada
+    0x0B08, # Malayalam
+    0xABC8, # Meetei Mayek
+    0x1C58, # OlChiki
+    0x0B08, # Oriya
+    0x0B88, # Tamil
+    0x0C08, # Telugu
+  ]
+
+  font_codepoints = ttFont['cmap'].getBestCmap().keys()
+  for codepoint in INDIC_FONT_DETECTION_CODEPOINTS:
+    if codepoint in font_codepoints:
+      return True
+
+  #otherwise:
+  return False
+
+
+@check(
+  id = 'com.google.fonts/check/rupee',
+  rationale = """
+    Per Bureau of Indian Standards every font supporting one of the official Indian languages needs to include Unicode Character “₹” (U+20B9) Indian Rupee Sign.
+  """,
+  conditions = ['is_indic_font'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2967'
+  }
+)
+def com_google_fonts_check_rupee(ttFont):
+  """ Ensure indic fonts have the Indian Rupee Sign glyph. """
+  if 0x20B9 not in ttFont['cmap'].getBestCmap().keys():
+    yield FAIL,\
+          Message("missing-rupee",
+                  'Please add a glyph for Indian Rupee Sign “₹” at codepoint U+20B9.')
   else:
     yield PASS, "Looks good!"
 
