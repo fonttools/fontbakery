@@ -92,7 +92,7 @@ def cabin_ttFonts():
 
 @pytest.fixture
 def vf_ttFont():
-  path = TEST_FILE("varfont/OpenSans[wdth,wght].ttf")
+  path = TEST_FILE("varfont/Oswald-VF.ttf")
   return TTFont(path)
 
 
@@ -3400,7 +3400,7 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
 
   # OpenSans-Roman-VF is correct
   assert_PASS(check(vf_ttFont),
-              'for a variable font which has correct instance coordinates')
+              'with a variable font which has correct instance coordinates.')
 
   vf_ttFont2 = copy(vf_ttFont)
   for instance in vf_ttFont2['fvar'].instances:
@@ -3408,7 +3408,7 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
           instance.coordinates[axis] = 0
   assert_results_contain(check(vf_ttFont2),
                          FAIL, None, # FIXME: This needs a message keyword
-                         'for a variable font which does not have'
+                         'with a variable font which does not have'
                          ' correct instance coordinates.')
 
 
@@ -3418,7 +3418,7 @@ def test_check_varfont_instance_names(vf_ttFont):
   from copy import copy
 
   assert_PASS(check(vf_ttFont),
-              "with a variable font which has correct instance names.")
+              'with a variable font which has correct instance names.')
 
   vf_ttFont2 = copy(vf_ttFont)
   for instance in vf_ttFont2['fvar'].instances:
@@ -3436,26 +3436,7 @@ def test_check_varfont_instance_names(vf_ttFont):
                              WindowsLanguageID.ENGLISH_USA)
   assert_results_contain(check(vf_ttFont2),
                          FAIL, 'bad-instance-names',
-                         'with a variable font which does not'
-                         ' have correct instance names.')
-
-  vf_ttFont3 = copy(vf_ttFont)
-  for instance in vf_ttFont3['fvar'].instances:
-      instance.subfamilyNameID = 300
-  broken_name = "144 G100 Thin"
-  vf_ttFont3['name'].setName(broken_name,
-                             300,
-                             PlatformID.MACINTOSH,
-                             MacintoshEncodingID.ROMAN,
-                             MacintoshLanguageID.ENGLISH)
-  vf_ttFont3['name'].setName(broken_name,
-                             300,
-                             PlatformID.WINDOWS,
-                             WindowsEncodingID.UNICODE_BMP,
-                             WindowsLanguageID.ENGLISH_USA)
-  assert_results_contain(check(vf_ttFont3),
-                         WARN, None, # FIXME: This needs a message keyword!
-                         'for a variable font which has unparsable tokens.')
+                         'with a variable font which does not have correct instance names.')
 
 
 def test_check_varfont_unsupported_axes():

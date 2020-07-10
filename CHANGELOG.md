@@ -10,6 +10,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
   - **[universal: com.google.fonts/check/rupee]**: Ensure indic fonts have the Indian Rupee Sign glyph (issue #2967)
 
+### Changes to existing checks
+  - **[com.google.fonts/check/varfont_instance_names]**: Check will now only allow 18 named instances (Thin-Black + Italics). This was decided in a Friday team meeting on the 2020/06/26. Changes also reflect the updated spec, https://github.com/googlefonts/gf-docs/tree/master/Spec#fvar-instances.
+
 
 ## 0.7.28 (2020-Jul-09)
 ### Note-worthy code changes

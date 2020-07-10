@@ -4544,6 +4544,7 @@ def com_google_fonts_check_varfont_instance_coordinates(ttFont):
   """Check variable font instances have correct coordinate values"""
   from fontbakery.parse import instance_parse
   from fontbakery.constants import SHOW_GF_DOCS_MSG
+
   failed = False
   for instance in ttFont['fvar'].instances:
     name = ttFont['name'].getName(
@@ -4562,8 +4563,9 @@ def com_google_fonts_check_varfont_instance_coordinates(ttFont):
             f'is "{instance.coordinates[axis]}". '
             f'It should be "{expected_instance.coordinates[axis]}"')
         failed = True
+
   if failed:
-    yield FAIL, SHOW_GF_DOCS_MSG
+    yield FAIL, f"{SHOW_GF_DOCS_MSG}#axes"
   else:
     yield PASS, "Instance coordinates are correct"
 
@@ -4574,9 +4576,15 @@ def com_google_fonts_check_varfont_instance_coordinates(ttFont):
 )
 def com_google_fonts_check_varfont_instance_names(ttFont):
   """Check variable font instances have correct names"""
+  # This check and the fontbakery.parse module used to be more complicated.
+  # On 2020-06-26, we decided to only allow Thin-Black + Italic instances.
+  # If we decide to add more particles to instance names, It's worthwhile
+  # revisiting our previous implementation which can be found in commits
+  # earlier than or equal to ca71d787eb2b8b5a9b111884080dde5d45f5579f
   from fontbakery.parse import instance_parse
   from fontbakery.constants import SHOW_GF_DOCS_MSG
-  show_docs, failed = False, False
+
+  failed = []
   for instance in ttFont['fvar'].instances:
     name = ttFont['name'].getName(
       instance.subfamilyNameID,
@@ -4585,49 +4593,18 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
       WindowsLanguageID.ENGLISH_USA
     ).toUnicode()
     expected_instance = instance_parse(name)
-    if expected_instance.unparsable_tokens:
-      yield WARN, (
-        f'Instance "{name}": contains the following unparsable tokens '
-        f'"{expected_instance.unparsable_tokens}"'
-      )
-      show_docs = True
-    # Check if name tokens are missing
-    missing_tokens = set(expected_instance.expected_token_order) - \
-                     set(expected_instance.raw_token_order)
-    if missing_tokens:
-      missing_tokens = ", ".join(missing_tokens)
-      yield FAIL, (
-        f'Instance "{name}": is missing the following name tokens '
-        f'[{missing_tokens}]'
-      )
-      show_docs, failed = True, True
-    # Check if name tokens are ordered correctly
-    elif expected_instance.raw_token_order != expected_instance.expected_token_order:
-      yield FAIL, (
-        f'Instance "{name}": token ordering is incorrect '
-        f'"{expected_instance.raw_token_order}". It should be '
-        f'"{expected_instance.expected_token_order}"'
-      )
-      show_docs, failed = True, True
-    # Check if name matches predicted name
-    if not expected_instance.unparsable_tokens:
-      if expected_instance.name != name:
-        yield FAIL, \
-          Message("bad-name",
-            f'Instance name "{name}" is incorrect. '
-            f'It should be "{expected_instance.name}"')
-        show_docs, failed = True, True
-    else:
-      yield WARN, (
-        f'Instance "{name}": cannot determine instance name due to '
-        f'unparsable tokens'
-      )
-      show_docs = True
 
-  if show_docs and failed:
-    yield FAIL, Message("bad-instance-names", SHOW_GF_DOCS_MSG)
-  elif show_docs and not failed:
-    yield WARN, SHOW_GF_DOCS_MSG
+    # Check if name matches predicted name
+    if expected_instance.name != name:
+      failed.append(name)
+
+  if failed:
+    failed_instances = "\n\t- ".join([""] + failed)
+    yield FAIL,\
+          Message('bad-instance-names',
+                  f'Following instances are not supported: {failed_instances}\n'
+                  f'\n'
+                  f'{SHOW_GF_DOCS_MSG}#fvar-instances')
   else:
     yield PASS, "Instance names are correct"
 
