@@ -58,7 +58,8 @@ METADATA_CHECKS = [
   'com.google.fonts/check/metadata/os2_weightclass',
   'com.google.fonts/check/metadata/canonical_style_names',
   'com.google.fonts/check/metadata/broken_links',
-  'com.google.fonts/check/metadata/undeclared_fonts'
+  'com.google.fonts/check/metadata/undeclared_fonts',
+  'com.google.fonts/check/metadata/category'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -618,6 +619,37 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
   if passed:
     yield PASS, "OK"
 
+
+@check(
+  id = 'com.google.fonts/check/metadata/category',
+  conditions = ['family_metadata'],
+  rationale = """
+    There are only five acceptable values for the category field in a METADATA.pb file:
+    - MONOSPACE
+    - SANS_SERIF
+    - SERIF
+    - DISPLAY
+    - HANDWRITING
+
+    This check is meant to avoid typos in this field.
+  """,
+  misc_metadata = {
+    'request': "https://github.com/googlefonts/fontbakery/issues/2972"
+  }
+)
+def com_google_fonts_check_metadata_category(family_metadata):
+  """Ensure METADATA.pb category field is valid."""
+  if family_metadata.category not in ["MONOSPACE",
+                                      "SANS_SERIF",
+                                      "SERIF",
+                                      "DISPLAY",
+                                      "HANDWRITING"]:
+    yield FAIL,\
+          Message('bad-value',
+                  f'The field category has "{family_metadata.category}"'
+                  f' which is not valid.')
+  else:
+    yield PASS, "OK!"
 
 
 @disable # TODO: re-enable after addressing issue #1998
