@@ -2361,7 +2361,7 @@ def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
 
 def test_check_metadata_nameid_copyright():
   """ Copyright field for this font on METADATA.pb matches
-      all copyright notice entries on the name table ? """
+      all copyright notice entries on the name table? """
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_metadata_nameid_copyright as check,
@@ -2385,6 +2385,41 @@ def test_check_metadata_nameid_copyright():
   assert_results_contain(check(ttFont, font_meta),
                          FAIL, 'mismatch',
                          'with a bad METADATA.pb (with a copyright string not matching this font)...')
+
+
+def test_check_metadata_category():
+  """ Category field for this font on METADATA.pb is valid? """
+  from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_category as check,
+                                               family_metadata)
+  # Our reference Cabin family...
+  fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
+  family_directory = os.path.dirname(fontfile)
+  metadata = family_metadata(family_directory)
+  assert metadata.category == "SANS_SERIF" # ...is known to be good ;-)
+
+  # So it must PASS the check:
+  assert_PASS(check(metadata),
+              "with a good METADATA.pb...")
+
+  # Then we report a problem with this sample of bad values:
+  for bad_value in ["SAN_SERIF",
+                    "MONO_SPACE",
+                    "sans_serif",
+                    "monospace"]:
+    metadata.category = bad_value
+    assert_results_contain(check(metadata),
+                           FAIL, 'bad-value',
+                           f'with a bad category "{bad_value}"...')
+
+  # And we accept the good ones:
+  for good_value in ["MONOSPACE",
+                     "SANS_SERIF",
+                     "SERIF",
+                     "DISPLAY",
+                     "HANDWRITING"]:
+    metadata.category = good_value
+    assert_PASS(check(metadata),
+                f'with "{good_value}"...')
 
 
 def test_check_name_mandatory_entries():
