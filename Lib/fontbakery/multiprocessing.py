@@ -213,10 +213,9 @@ def _multiprocessing_checkrunner(jobs, process_count, *args):
       p.terminate()
       p.join()
 
-def multiprocessing_runner(multiprocessing, runner, runner_kwds):
-  # multiprocessing is an int, never 0 at this point
-  assert multiprocessing != 0
-  process_count = os.cpu_count() if multiprocessing < 0 else multiprocessing
+def multiprocessing_runner(process_count, runner, runner_kwds):
+  # process_count is a positive int, never 0 at this point
+  assert process_count > 0
   profile = runner.profile
   joblist = list(profile.serialize_order(runner.order))
 
