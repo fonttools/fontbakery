@@ -257,8 +257,14 @@ def com_google_fonts_check_description_broken_links(description_html):
   from lxml import etree
   doc = description_html
   broken_links = []
+  unique_links = []
   for a_href in doc.iterfind('.//a[@href]'):
     link = a_href.get("href")
+
+    # avoid requesting the same URL more then once
+    if link in unique_links:
+      continue
+
     if link.startswith("mailto:") and \
        "@" in link and \
        "." in link.split("@")[1]:
@@ -267,6 +273,7 @@ def com_google_fonts_check_description_broken_links(description_html):
                     f"Found an email address: {link}")
       continue
 
+    unique_links.append(link)
     try:
       response = requests.head(link, allow_redirects=True, timeout=10)
       code = response.status_code
@@ -526,9 +533,15 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
   """Does METADATA.pb copyright field contain broken links?"""
   import requests
   broken_links = []
+  unique_links = []
   for font_metadata in family_metadata.fonts:
     copyright = font_metadata.copyright
     if "mailto:" in copyright:
+      # avoid reporting more then once
+      if copyright in unique_links:
+        continue
+
+      unique_links.append(copyright)
       yield INFO,\
             Message("email",
                     f"Found an email address: {copyright}")
@@ -541,6 +554,11 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
         if endchar in link:
           link = link.split(endchar)[0]
 
+      # avoid requesting the same URL more then once
+      if link in unique_links:
+        continue
+
+      unique_links.append(link)
       try:
         response = requests.head(link, allow_redirects=True, timeout=10)
         code = response.status_code

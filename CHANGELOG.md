@@ -12,6 +12,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[googlefonts: com.google.fonts/check/metadata/category]**: Ensure category field is valid in METADATA.pb file (issue #2972)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/metadata/broken_links]**: request URLs only once (issue #2974)
+  - **[com.google.fonts/check/description/broken_links]**: request URLs only once (issue #2974)
   - **[com.google.fonts/check/varfont_instance_names]**: Check will now only allow 18 named instances (Thin-Black + Italics). This was decided in a Friday team meeting on the 2020/06/26. Changes also reflect the updated spec, https://github.com/googlefonts/gf-docs/tree/master/Spec#fvar-instances.
 
 
