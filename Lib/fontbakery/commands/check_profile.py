@@ -178,11 +178,18 @@ def ArgumentParser(profile, profile_arg=True):
                       ''.format(', '.join(iterargs))
                       )
 
-  argument_parser.add_argument('-M','--multiprocessing', default=0, type=int,
-                      help=f'Use multi-processing to run the checks. The argument is the \n'
-                      f'number of worker processes. Use -1 to specify the number returned \n'
-                      f'by os.cpu_count()( = {os.cpu_count()}). Use 0 to run in single-processing mode \n'
-                      '(default %(default)s).'
+  def positive_int(value):
+    int_value = int(value)
+    if int_value < 0:
+        raise argparse.ArgumentTypeError(f'Invalid value "{value}" '
+                            'must be zero or a positive integer value.')
+    return int_value
+  argument_parser.add_argument('-j','--jobs', default=0, const=os.cpu_count(), type=positive_int,
+                      nargs='?', metavar='JOBS', dest='multiprocessing',
+                      help='Use multi-processing to run the checks. The argument is the\n'
+                      'number of worker processes. Without argument, cpu count auto\n'
+                      'detection is used( = %(const)s). Use 0 to run in single-processing \n'
+                      'mode (default %(default)s).'
                       )
   return argument_parser, values_keys
 
