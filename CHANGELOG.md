@@ -12,6 +12,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[googlefonts: com.google.fonts/check/metadata/category]**: Ensure category field is valid in METADATA.pb file (issue #2972)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/ligature_carets]**: updating units per em criteria because the assumptions behind our previous "upm=2000 for VFs" suggestion were not really correct. (issue #2791)
   - **[com.google.fonts/check/ligature_carets]**: Add GlyphsApp instructions for fixing ligature caret WARNs (issue #2955)
   - **[com.google.fonts/check/metadata/broken_links]**: request URLs only once and accept status 429 - "too many requests" (issue #2974)
   - **[com.google.fonts/check/description/broken_links]**: request URLs only once and accept status 429 - "too many requests" (issue #2974)

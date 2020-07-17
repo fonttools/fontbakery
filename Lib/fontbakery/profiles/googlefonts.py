@@ -2671,13 +2671,9 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
 
     The spec suggests usage of powers of two in order to get some performance improvements on legacy renderers, so those values are acceptable.
 
-    But value of 500 or 1000 are also acceptable, with the added benefit that it makes upm math easier for designers, while the performance hit of not using a power of two is most likely negligible nowadays.
+    But values of 500 or 1000 are also acceptable, with the added benefit that it makes upm math easier for designers, while the performance hit of not using a power of two is most likely negligible nowadays.
 
-    Another acceptable value is 2000. Since TT outlines are all integers (no floats), then instances in a VF suffer rounding compromises, and therefore a 1000 UPM is too small because it forces too many such compromises.
-   
-    Therefore 2000 is a good 'new VF standard', because 2000 is a simple 2x conversion from existing fonts drawn on a 1000 UPM, and anyone who knows what 10 units can do for 1000 UPM will know what 20 units does too.
-
-    Additionally, values above 2048 would result in filesize increases with not much added benefit.
+    Additionally, values above 2048 would likely result in unreasonable filesize increases.
   """
 )
 def com_google_fonts_check_unitsperem_strict(ttFont):
@@ -2696,20 +2692,9 @@ def com_google_fonts_check_unitsperem_strict(ttFont):
     yield FAIL,\
           Message("bad-value",
                   f"Font em size (unitsPerEm) is {upm_height}."
-                  f" If possible, please consider using 1000"
-                  f" or even 2000 (which is ideal for"
-                  f" Variable Fonts)."
+                  f" If possible, please consider using 1000."
                   f" Good values for unitsPerEm,"
                   f" though, are typically these: {ACCEPTABLE}.")
-  elif upm_height < 2000:
-    yield WARN,\
-          Message("legacy-value",
-                  f"Even though unitsPerEm ({upm_height}) in"
-                  f" this font is reasonable. It is strongly"
-                  f" advised to consider changing it to 2000,"
-                  f" since it will likely improve the quality of"
-                  f" Variable Fonts by avoiding excessive"
-                  f" rounding of coordinates on interpolations.")
   else:
     yield PASS, f"Font em size is good (unitsPerEm = {upm_height})."
 

@@ -2168,8 +2168,9 @@ def test_check_unitsperem_strict():
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   ttFont = TTFont(fontfile)
 
-  WARN_LEGACY_VALUES = [16, 32, 64, 128, 256, 512, 1024] # Good for better performance on legacy renderers
-  WARN_LEGACY_VALUES.extend([500, 1000]) # or common typical values
+  PASS_VALUES = [16, 32, 64, 128, 256, 512, 1024] # Good for better performance on legacy renderers
+  PASS_VALUES.extend([500, 1000]) # or common typical values
+  PASS_VALUES.extend([2000, 2048]) # not so common, but still ok
 
   WARN_LARGE_VALUES = [2500, 4000, 4096] # uncommon and large,
                                          # but we've seen legitimate cases such as the
@@ -2182,19 +2183,11 @@ def test_check_unitsperem_strict():
                                     # but too large, causing undesireable filesize bloat.
 
 
-  PASS_VALUES = [2000, # The potential "New Standard" for Variable Fonts!
-                 2048] # A power of two but higher than 2000, so no need to warn about excessive rounding.
-
   for pass_value in PASS_VALUES:
     ttFont["head"].unitsPerEm = pass_value
     assert_PASS(check(ttFont),
                 f'with unitsPerEm = {pass_value}...')
 
-  for warn_value in WARN_LEGACY_VALUES:
-    ttFont["head"].unitsPerEm = warn_value
-    assert_results_contain(check(ttFont),
-                           WARN, 'legacy-value',
-                           f'with unitsPerEm = {warn_value}...')
 
   for warn_value in WARN_LARGE_VALUES:
     ttFont["head"].unitsPerEm = warn_value
