@@ -8,7 +8,6 @@ Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
-import os
 from collections import OrderedDict
 from contextlib import contextmanager
 from functools import partial
@@ -20,17 +19,13 @@ from fontbakery.checkrunner import (  # NOQA
               INFO
             , WARN
             , ERROR
-#            , STARTSECTION
             , STARTCHECK
             , SKIP
             , PASS
             , FAIL
             , ENDCHECK
-#            , ENDSECTION
-#            , START
             , END
             , DEBUG
-#            , Status
             , CheckRunner
             , session_protocol_generator
             , drive_session_protocol
