@@ -277,7 +277,11 @@ def com_google_fonts_check_description_broken_links(description_html):
     try:
       response = requests.head(link, allow_redirects=True, timeout=10)
       code = response.status_code
-      if code != requests.codes.ok:
+      # Status 429: "Too Many Requests" is acceptable
+      # because it means the website is probably ok and
+      # we're just perhaps being too agressive in probing the server!
+      if code not in [requests.codes.ok,
+                      requests.codes.too_many_requests]:
         broken_links.append(f"{link} (status code: {code})")
     except requests.exceptions.Timeout:
       yield WARN,\
@@ -562,7 +566,11 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
       try:
         response = requests.head(link, allow_redirects=True, timeout=10)
         code = response.status_code
-        if code != requests.codes.ok:
+        # Status 429: "Too Many Requests" is acceptable
+        # because it means the website is probably ok and
+        # we're just perhaps being too agressive in probing the server!
+        if code not in [requests.codes.ok,
+                        requests.codes.too_many_requests]:
           broken_links.append(("{} (status code: {})").format(link, code))
       except requests.exceptions.Timeout:
         yield WARN,\
