@@ -12,8 +12,7 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 from fontbakery.checkrunner import (
               DEBUG
-            , STARTSECTION
-            , ENDSECTION
+            , SECTIONSUMMARY
             , ENDCHECK
             , START
             , END
@@ -66,7 +65,7 @@ class SerializeReporter(FontbakeryReporter):
           # give the consumer a clue that/how the sections
           # are structured differently.
           item['clusteredBy'] = self._results_by
-      if status in (STARTSECTION, ENDSECTION):
+      if status == SECTIONSUMMARY:
         item.update(dict(key=key, result=None, checks=[]))
       if check:
         item.update(dict(key=key, result=None, logs=[]))
@@ -103,8 +102,10 @@ class SerializeReporter(FontbakeryReporter):
       if item["key"][2] != ():
         item['filename'] = self.runner.get_iterarg(*item["key"][2][0])
 
-    if status in (END, ENDSECTION):
+    if status == END:
       item['result'] = message # is a Counter
+    if status == SECTIONSUMMARY:
+      _, item['result'] = message # message[1] is a Counter
     if status == ENDCHECK:
       item['result'] = message.name # is a Status
     if status >= DEBUG:
@@ -122,7 +123,6 @@ class SerializeReporter(FontbakeryReporter):
       return self._doc
     doc = self._items[self._get_key((None, None, None))]
     seen = set()
-    sectionorder = []
     # this puts all in the original order
     for identity in self._order:
       key = self._get_key(identity)

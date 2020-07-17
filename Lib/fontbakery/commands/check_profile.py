@@ -20,8 +20,7 @@ from fontbakery.checkrunner import (
             , SKIP
             , PASS
             , FAIL
-            , STARTSECTION
-            , ENDSECTION
+            , SECTIONSUMMARY
             , START
             , END
             , ENDCHECK
@@ -120,8 +119,7 @@ def ArgumentParser(profile, profile_arg=True):
         help='No colors for tty output.')
 
   argument_parser.add_argument('-S', '--show-sections', default=False, action='store_true',
-                      help='Show section start and end info plus summary.')
-
+                      help='Show section summaries.')
 
   argument_parser.add_argument('-L', '--list-checks', default=False, action='store_true',
                       help='List the checks available in the selected profile.')
@@ -321,7 +319,7 @@ def main(profile=None, values=None):
                        , theme=theme
                        , collect_results_by=args.gather_by
                        , skip_status_report=None if args.show_sections\
-                                                      else (STARTSECTION, ENDSECTION)
+                                                      else (SECTIONSUMMARY, )
 
                        )
   reporters = [tr.receive]

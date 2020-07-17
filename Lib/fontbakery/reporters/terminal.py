@@ -26,13 +26,12 @@ from fontbakery.checkrunner import (  # NOQA
               INFO
             , WARN
             , ERROR
-            , STARTSECTION
             , STARTCHECK
             , SKIP
             , PASS
             , FAIL
             , ENDCHECK
-            , ENDSECTION
+            , SECTIONSUMMARY
             , START
             , END
             , DEBUG
@@ -43,13 +42,12 @@ statuses = (
               INFO
             , WARN
             , ERROR
-            , STARTSECTION
             , STARTCHECK
             , SKIP
             , PASS
             , FAIL
             , ENDCHECK
-            , ENDSECTION
+            , SECTIONSUMMARY
             , START
             , END
             , DEBUG
@@ -154,7 +152,7 @@ class TerminalProgress(FontbakeryReporter):
                    , succinct=None
                    , cupcake=True
                      # a tuple of structural statuses to be skipped
-                     # e.g. (STARTSECTION, ENDSECTION)
+                     # e.g. (SECTIONSUMMARY, )
                    , skip_status_report=None
                    , **kwd):
     super(TerminalProgress, self).__init__(**kwd)
@@ -395,13 +393,6 @@ class TerminalReporter(TerminalProgress):
       if text:
         self.stdout.write(text)
 
-    if status == STARTSECTION:
-      order = message
-      print('='*8, str(section),'='*8)
-      print('{} {} in section'.format(len(order)
-                          , len(order) == 1 and 'check' or 'checks' ))
-      print('')
-
     if status == STARTCHECK:
       if self.runner:
         formatted_iterargs = tuple(
@@ -460,13 +451,14 @@ class TerminalReporter(TerminalProgress):
         print('\n')
       print('    Result: {}\n'.format(formatStatus(self.theme, message)))
 
-    if status == ENDSECTION:
+    if status == SECTIONSUMMARY:
+      order, counter = message
       print('')
-      print('Section results:')
+      print('='*8, f'Section results: {section}','='*8)
+      print('{} {} in section'.format(len(order)
+                          , len(order) == 1 and 'check' or 'checks' ))
       print('')
-      print(_render_results_counter(self.theme, message))
-      print('')
-      print ('='*8, f'END {section}','='*8)
+      print(_render_results_counter(self.theme, counter))
 
     if status == END:
       print('')
@@ -531,19 +523,18 @@ class TerminalReporter(TerminalProgress):
         , 'logs': []
         , 'end': None
       }
-    if status is STARTSECTION:
-      self._render_event_sync(print, event)
-    # (STARTSECTION), STARTCHECK
-    elif status.weight < 0 and status.weight % 2 == 0 :
+
+    # STARTCHECK
+    if status.weight < 0 and status.weight % 2 == 0 :
       logs['start'] = event
-    # ENDCHECK, ENDSECTION
+    # ENDCHECK, SECTIONSUMMARY
     elif status.weight < 0 and status.weight % 2 == 1 :
       logs['end'] = event
     else:
       logs['logs'].append(event)
 
     if status == ENDCHECK and message.weight >= self._check_threshold \
-          or status == ENDSECTION:
+          or status == SECTIONSUMMARY:
       for e in [logs['start']] + logs['logs'] + [logs['end']]:
         if e is not None:
           self._render_event_sync(print, e)

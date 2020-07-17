@@ -122,26 +122,26 @@ WARN = Status('WARN', 4) # A check that results in WARN may indicate a problem, 
 FAIL = Status('FAIL', 5) # A FAIL is a problem detected in the font or family.
 ERROR = Status('ERROR', 6) # Something a programmer must fix. It will make a check fail as well.
 
-
 # Start of the suite of checks. Must be always the first message, even in async mode.
 # Message is the full execution order of the whole profile
 START = Status('START', -6)
-# Only between START and END.
-# Message is the execution order of the section.
-STARTSECTION = Status('STARTSECTION', -4)
-# Only between STARTSECTION and ENDSECTION.
+# Only between START and before the first SECTIONSUMMARY and END
 # Message is None.
 STARTCHECK = Status('STARTCHECK', -2)
 # Ends the last check started by STARTCHECK.
 # Message the the result status of the whole check, one of PASS, SKIP, FAIL, ERROR.
 ENDCHECK = Status('ENDCHECK', -1)
-# Ends the last section started by STARTSECTION.
-# Message is a Counter dictionary where the keys are Status.name of
-# the ENDCHECK message. If serialized, some existing statuses may not be
-# in the counter because they never occured in the section.
-ENDSECTION = Status('ENDSECTION', -3)
+# After the last ENDCHECK one SECTIONSUMMARY for each section before END.
+# Message is a tuple of:
+#   * the actual execution order of the section in the check runner session
+#     as reported. Especially in async mode, the order can differ significantly
+#     from the actual order of checks in the session.
+#   * a Counter dictionary where the keys are Status.name of
+#     the ENDCHECK message. If serialized, some existing statuses may not be
+#     in the counter because they never occurred in the section.
+SECTIONSUMMARY = Status('SECTIONSUMMARY', -3)
 # End of the suite of checks. Must be always the last message, even in async mode.
-# Message is a counter as described in ENDSECTION, but with the collected
+# Message is a counter as described in SECTIONSUMMARY, but with the collected
 # results of all checks in all sections.
 END = Status('END', -5)
 
@@ -610,16 +610,6 @@ class CheckRunner:
 
     yield ENDCHECK, summary_status
 
-  # old, more straight forward, but without a point to extract the order
-  # def run(self):
-  #   for section in self._profile.sections:
-  #     yield STARTSECTION, section
-  #     for check, iterargs in section.execution_order(self._iterargs
-  #                            , getConditionByName=self._profile.conditions.get):
-  #       for event in self._run_check(check, iterargs):
-  #         yield event;
-  #     yield ENDSECTION, None
-
   @property
   def order(self):
     order = self._cache.get('order', None)
@@ -643,47 +633,6 @@ class CheckRunner:
       if item not in own_order:
         raise ValueError(f'Order item {item} not found.')
     return order
-
-  def old_run(self, order=None):
-    checkrun_summary = Counter()
-
-    if order is not None:
-      order = self.check_order(order)
-    else:
-      order = self.order
-
-    # prepare: we'll have less ENDSECTION code in the actual run
-    # also, we can prepare section_order tuples
-    section = None
-    oldsection = None
-    section_order = None
-    section_orders = []
-    for section, check, iterargs in order:
-      if oldsection != section:
-        if oldsection is not None:
-          section_orders.append((oldsection, tuple(section_order)))
-        oldsection = section
-        section_order = []
-      section_order.append((check, iterargs))
-    if section is not None:
-      section_orders.append((section, tuple(section_order)))
-
-    # run
-    yield START, order, (None, None, None)
-    section = None
-    for section, section_order in section_orders:
-      section_summary = Counter()
-      yield STARTSECTION, section_order, (section, None, None)
-      for check, iterargs in section_order:
-        for status, message in self._run_check(check, iterargs):
-          yield status, message, (section, check, iterargs)
-        # after _run_check the last status must be ENDCHECK
-        assert status == ENDCHECK
-        # message is the summary_status of the check when status is ENDCHECK
-        section_summary[message.name] += 1
-      yield ENDSECTION, section_summary, (section, None, None)
-      checkrun_summary.update(section_summary)
-    yield END, checkrun_summary, (None, None, None)
 
   def _check_protocol_generator(self, next_check_identity):
     section , check, iterargs = next_check_identity
@@ -748,14 +697,9 @@ def session_protocol_generator(check_protocol_generator, order):
     # message is the summary_status of the check when status is ENDCHECK
     section_summary[message.name] += 1
 
-  # finalize
-  # This is not ideal, because we don't have check statuses between sections,
-  # but at least, we have the correct numbers for the STARTSECTION/ENDSECTION
-  # events.
   checkrun_summary = Counter()
   for _, (section_order, section_summary, section) in sections.items():
-    yield STARTSECTION, section_order, (section, None, None) # should be removed
-    yield ENDSECTION, section_summary, (section, None, None) # should be SECTIONSUMMARY
+    yield SECTIONSUMMARY, (section_order, section_summary), (section, None, None)
     checkrun_summary.update(section_summary)
   yield END, checkrun_summary, (None, None, None)
 
