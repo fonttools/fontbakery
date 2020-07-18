@@ -306,16 +306,6 @@ class WindowsLanguageID(enum.IntEnum):
   """
   ENGLISH_USA = 0x0409
 
-
-class PriorityLevel(enum.IntEnum):
-  """ Check priority levels """
-  TRIVIAL = 4
-  LOW = 3
-  NORMAL = 2
-  IMPORTANT = 1
-  CRITICAL = 0  # ON FIRE! Must immediately fix!
-
-
 GF_latin_core = {
   #  NULL
   # 0x000D: (None, "CARRIAGE RETURN"),

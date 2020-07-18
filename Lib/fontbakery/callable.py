@@ -160,7 +160,6 @@ class FontBakeryCheck(FontbakeryCallable):
        #              # This is typically a github issue tracker URL.
        #example_failures=None, # A reference to some font or family that originally failed due to
        #                       # the problems that this check tries to detect and report.
-       #priority=None
        ):
     """This is the base class for all checks. It will usually
     not be used directly to create check instances, rather
@@ -216,9 +215,6 @@ class FontBakeryCheck(FontbakeryCallable):
       advancedMessageSetup would know how to fix an issue by
       looking at an advancedMessage.
     TODO: The naming is a bit odd.
-
-    priority: inherited from our legacy checks. Need to see if we
-    use this at all now.
     """
     super(FontBakeryCheck, self).__init__(checkfunc)
     self.id = id
