@@ -2,7 +2,6 @@ import os
 
 from fontbakery.checkrunner import Section, PASS, FAIL, WARN, ERROR, INFO, SKIP
 from fontbakery.callable import condition, check, disable
-from fontbakery.constants import PriorityLevel
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
@@ -182,10 +181,7 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
   id = 'com.google.fonts/check/family/single_directory',
   rationale = """
     If the set of font files passed in the command line is not all in the same directory, then we warn the user since the tool will interpret the set of files as belonging to a single family (and it is unlikely that the user would store the files from a single family spreaded in several separate directories).
-  """,
-  misc_metadata = {
-    'priority': PriorityLevel.CRITICAL
-  }
+  """
 )
 def com_google_fonts_check_family_single_directory(fonts):
   """Checking all files are in the same directory."""

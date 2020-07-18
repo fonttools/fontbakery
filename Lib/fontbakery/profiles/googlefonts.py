@@ -5,8 +5,7 @@ from fontbakery.checkrunner import Section, INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.callable import check, disable
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
-from fontbakery.constants import (PriorityLevel,
-                                  NameID,
+from fontbakery.constants import (NameID,
                                   PlatformID,
                                   WindowsEncodingID,
                                   WindowsLanguageID,
@@ -172,10 +171,7 @@ GOOGLEFONTS_PROFILE_CHECKS = \
   
     - Roboto[wdth,wght].ttf
     - Familyname-Italic[wght].ttf
-  """,
-  misc_metadata = {
-    'priority': PriorityLevel.CRITICAL
-  }
+  """
 )
 def com_google_fonts_check_canonical_filename(font):
   """Checking file is named canonically."""
@@ -1086,10 +1082,8 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
     For a small set of legacy families the Ubuntu Font License may be acceptable as well.
 
     When in doubt, please choose OFL for new font projects.
-  """,
-  misc_metadata = {
-    'priority': PriorityLevel.CRITICAL
-  })
+  """
+)
 def com_google_fonts_check_name_license(ttFont, license):
   """Check copyright namerecords match license file."""
   from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
@@ -1154,10 +1148,7 @@ def com_google_fonts_check_name_license(ttFont, license):
 
     When in doubt, please choose OFL for new font projects.
   """,
-  conditions = ['familyname'],
-  misc_metadata = {
-    'priority': PriorityLevel.CRITICAL
-  }
+  conditions = ['familyname']
 )
 def com_google_fonts_check_name_license_url(ttFont, familyname):
   """License URL matches License text on name table?"""
@@ -3095,10 +3086,8 @@ def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
 
 @check(
   id = 'com.google.fonts/check/name/mandatory_entries',
-  conditions = ['style'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+  conditions = ['style']
+)
 def com_google_fonts_check_name_mandatory_entries(ttFont, style):
   """Font has all mandatory 'name' table entries?"""
   from fontbakery.utils import get_name_entry_strings
@@ -3130,10 +3119,8 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
                 'familyname_with_spaces'],
   rationale = """
     Checks that the family name infered from the font filename matches the string at nameID 1 (NAMEID_FONT_FAMILY_NAME) if it conforms to RIBBI and otherwise checks that nameID 1 is the family name + the style name.
-  """,
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+  """
+)
 def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces):
   """Check name table: FONT_FAMILY_NAME entries."""
   from fontbakery.utils import name_entry_id
@@ -3191,10 +3178,8 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
 
 @check(
   id = 'com.google.fonts/check/name/subfamilyname',
-  conditions = ['expected_style'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+  conditions = ['expected_style']
+)
 def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
   """Check name table: FONT_SUBFAMILY_NAME entries."""
   failed = False
@@ -3227,10 +3212,8 @@ def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
 @check(
   id = 'com.google.fonts/check/name/fullfontname',
   conditions = ['style_with_spaces',
-                'familyname_with_spaces'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+                'familyname_with_spaces']
+)
 def com_google_fonts_check_name_fullfontname(ttFont,
                                              style_with_spaces,
                                              familyname_with_spaces):
@@ -3266,10 +3249,8 @@ def com_google_fonts_check_name_fullfontname(ttFont,
 @check(
   id = 'com.google.fonts/check/name/postscriptname',
   conditions = ['style',
-                'familyname'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+                'familyname']
+)
 def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
   """Check name table: POSTSCRIPT_NAME entries."""
   from fontbakery.utils import name_entry_id
@@ -3294,10 +3275,8 @@ def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
 @check(
   id = 'com.google.fonts/check/name/typographicfamilyname',
   conditions = ['style',
-                'familyname_with_spaces'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+                'familyname_with_spaces']
+)
 def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_with_spaces):
   """Check name table: TYPOGRAPHIC_FAMILY_NAME entries."""
   from fontbakery.utils import name_entry_id
@@ -3342,10 +3321,8 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
 
 @check(
   id = 'com.google.fonts/check/name/typographicsubfamilyname',
-  conditions=['expected_style'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+  conditions=['expected_style']
+)
 def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style):
   """Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries."""
   failed = False

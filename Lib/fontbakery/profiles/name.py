@@ -1,8 +1,7 @@
 from fontbakery.callable import check
 from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN, INFO
 from fontbakery.message import Message
-from fontbakery.constants import (PriorityLevel,
-                                  NameID,
+from fontbakery.constants import (NameID,
                                   PlatformID,
                                   WindowsEncodingID,
                                   WindowsLanguageID)
@@ -38,10 +37,7 @@ def com_adobe_fonts_check_name_empty_records(ttFont):
 
 
 @check(
-  id = 'com.google.fonts/check/name/no_copyright_on_description',
-  misc_metadata = {
-    'priority': PriorityLevel.CRITICAL
-  }
+  id = 'com.google.fonts/check/name/no_copyright_on_description'
 )
 def com_google_fonts_check_name_no_copyright_on_description(ttFont):
   """Description strings in the name table must not contain copyright info."""
