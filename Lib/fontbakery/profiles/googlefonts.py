@@ -144,6 +144,7 @@ FONT_FILE_CHECKS = [
   'com.google.fonts/check/cjk_vertical_metrics',
   'com.google.fonts/check/varfont_instance_coordinates',
   'com.google.fonts/check/varfont_instance_names',
+  'com.google.fonts/check/varfont_duplicate_instance_names',
   'com.google.fonts/check/varfont/consistent_axes',
   'com.google.fonts/check/varfont/unsupported_axes'
 ]
@@ -4625,6 +4626,47 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
     yield FAIL,\
           Message('bad-instance-names',
                   f'Following instances are not supported: {failed_instances}\n'
+                  f'\n'
+                  f'{SHOW_GF_DOCS_MSG}#fvar-instances')
+  else:
+    yield PASS, "Instance names are correct"
+
+@check(
+  id = 'com.google.fonts/check/varfont_duplicate_instance_names',
+  conditions = ['is_variable_font'],
+)
+def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
+  """Check variable font instances don't have duplicate names"""
+  # This check and the fontbakery.parse module used to be more complicated.
+  # On 2020-06-26, we decided to only allow Thin-Black + Italic instances.
+  # If we decide to add more particles to instance names, It's worthwhile
+  # revisiting our previous implementation which can be found in commits
+  # earlier than or equal to ca71d787eb2b8b5a9b111884080dde5d45f5579f
+  from fontbakery.parse import instance_parse
+  from fontbakery.constants import SHOW_GF_DOCS_MSG
+
+  seen = []
+  duplicate = []
+
+  for instance in ttFont['fvar'].instances:
+    name = ttFont['name'].getName(
+      instance.subfamilyNameID,
+      PlatformID.WINDOWS,
+      WindowsEncodingID.UNICODE_BMP,
+      WindowsLanguageID.ENGLISH_USA
+    ).toUnicode()
+    
+    if name in seen:
+      duplicate.append(name)
+
+    if not name in seen:
+      seen.append(name)
+
+  if duplicate:
+    duplicate_instances = "\n\t- ".join([""] + duplicate)
+    yield FAIL,\
+          Message('duplicate-instance-names',
+                  f'Following instances names are duplicate: {duplicate_instances}\n'
                   f'\n'
                   f'{SHOW_GF_DOCS_MSG}#fvar-instances')
   else:
