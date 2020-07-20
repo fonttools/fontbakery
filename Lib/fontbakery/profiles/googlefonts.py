@@ -4651,7 +4651,6 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
   # If we decide to add more particles to instance names, It's worthwhile
   # revisiting our previous implementation which can be found in commits
   # earlier than or equal to ca71d787eb2b8b5a9b111884080dde5d45f5579f
-  from fontbakery.parse import instance_parse
   from fontbakery.constants import SHOW_GF_DOCS_MSG
 
   seen = []

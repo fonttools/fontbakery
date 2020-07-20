@@ -3469,7 +3469,6 @@ def test_check_varfont_instance_names(vf_ttFont):
 
 def test_check_varfont_duplicate_instance_names(vf_ttFont):
   from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_duplicate_instance_names as check
-  from fontbakery.parse import instance_parse
   from copy import copy
 
   assert_PASS(check(vf_ttFont),
