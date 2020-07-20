@@ -3467,6 +3467,30 @@ def test_check_varfont_instance_names(vf_ttFont):
                          'with a variable font which does not have correct instance names.')
 
 
+def test_check_varfont_duplicate_instance_names(vf_ttFont):
+  from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_duplicate_instance_names as check
+  from fontbakery.parse import instance_parse
+  from copy import copy
+
+  assert_PASS(check(vf_ttFont),
+              'with a variable font which has correct instance names.')
+
+  vf_ttFont2 = copy(vf_ttFont)
+  duplicate_instance_name = vf_ttFont2['name'].getName(
+      vf_ttFont2['fvar'].instances[0].subfamilyNameID,
+      PlatformID.WINDOWS,
+      WindowsEncodingID.UNICODE_BMP,
+      WindowsLanguageID.ENGLISH_USA
+  ).toUnicode()
+  vf_ttFont2['name'].setName(string=duplicate_instance_name, 
+                            nameID=vf_ttFont2['fvar'].instances[1].subfamilyNameID,
+                            platformID=PlatformID.WINDOWS,
+                            platEncID=WindowsEncodingID.UNICODE_BMP,
+                            langID=WindowsLanguageID.ENGLISH_USA)
+  assert_results_contain(check(vf_ttFont2),
+                         FAIL, 'duplicate-instance-names')
+
+
 def test_check_varfont_unsupported_axes():
   """Ensure VFs do not contain opsz or ital axes."""
   from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_unsupported_axes as check
