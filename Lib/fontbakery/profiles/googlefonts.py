@@ -4663,7 +4663,6 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
       WindowsEncodingID.UNICODE_BMP,
       WindowsLanguageID.ENGLISH_USA
     ).toUnicode()
-    print(name)
     
     if name in seen:
       duplicate.append(name)
