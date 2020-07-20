@@ -4634,6 +4634,9 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
 @check(
   id = 'com.google.fonts/check/varfont_duplicate_instance_names',
   conditions = ['is_variable_font'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/gf-docs/tree/master/Spec#fvar-instances'
+  }
 )
 def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
   """Check variable font instances don't have duplicate names"""
@@ -4655,6 +4658,7 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
       WindowsEncodingID.UNICODE_BMP,
       WindowsLanguageID.ENGLISH_USA
     ).toUnicode()
+    print(name)
     
     if name in seen:
       duplicate.append(name)
@@ -4663,7 +4667,7 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
       seen.append(name)
 
   if duplicate:
-    duplicate_instances = "\n\t- ".join([""] + duplicate)
+    duplicate_instances = "\n\t- ".join([""] + seen)
     yield FAIL,\
           Message('duplicate-instance-names',
                   f'Following instances names are duplicate: {duplicate_instances}\n'
