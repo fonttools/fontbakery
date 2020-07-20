@@ -4667,7 +4667,7 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
       seen.append(name)
 
   if duplicate:
-    duplicate_instances = "\n\t- ".join([""] + seen)
+    duplicate_instances = "\n\t- ".join([""] + duplicate)
     yield FAIL,\
           Message('duplicate-instance-names',
                   f'Following instances names are duplicate: {duplicate_instances}\n'
