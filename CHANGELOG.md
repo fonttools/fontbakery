@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.0 (2020-Jul-??)
   - Checks if GSUB lookup format is 1 for ligature collection in `profiles/shared_conditions.py`; format 1 is the only significant one for `ligatures()` and `ligature_glyphs()`)
+  - Added **[com.google.fonts/check/varfont_duplicate_instance_names]**: Avoid duplicate instance names
   - ...
 
 
