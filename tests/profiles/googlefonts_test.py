@@ -92,7 +92,7 @@ def cabin_ttFonts():
 
 @pytest.fixture
 def vf_ttFont():
-  path = TEST_FILE("varfont/OpenSans[wdth,wght].ttf")
+  path = TEST_FILE("varfont/Oswald-VF.ttf")
   return TTFont(path)
 
 
@@ -220,27 +220,28 @@ def test_check_description_broken_links():
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_description_broken_links as check,
     description,
+    description_html,
     descfile)
 
   good_desc = description(descfile(TEST_FILE("cabin/Cabin-Regular.ttf")))
-  assert_PASS(check(good_desc),
+  assert_PASS(check(description_html(good_desc)),
               'with description file that has no links...')
 
   good_desc += ("<a href='http://example.com'>Good Link</a>"
                 "<a href='http://fonts.google.com'>Another Good One</a>")
-  assert_PASS(check(good_desc),
+  assert_PASS(check(description_html(good_desc)),
               'with description file that has good links...')
 
   good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
-  assert_results_contain(check(good_desc),
+  assert_results_contain(check(description_html(good_desc)),
                          INFO, "email",
                          'with a description file containing "mailto" links...')
 
-  assert_PASS(check(good_desc),
+  assert_PASS(check(description_html(good_desc)),
               'with a description file containing "mailto" links...')
 
   bad_desc = good_desc + "<a href='http://thisisanexampleofabrokenurl.com/'>This is a Bad Link</a>"
-  assert_results_contain(check(bad_desc),
+  assert_results_contain(check(description_html(bad_desc)),
                          FAIL, 'broken-links',
                          'with a description file containing a known-bad URL...')
 
@@ -2167,8 +2168,9 @@ def test_check_unitsperem_strict():
   fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
   ttFont = TTFont(fontfile)
 
-  WARN_LEGACY_VALUES = [16, 32, 64, 128, 256, 512, 1024] # Good for better performance on legacy renderers
-  WARN_LEGACY_VALUES.extend([500, 1000]) # or common typical values
+  PASS_VALUES = [16, 32, 64, 128, 256, 512, 1024] # Good for better performance on legacy renderers
+  PASS_VALUES.extend([500, 1000]) # or common typical values
+  PASS_VALUES.extend([2000, 2048]) # not so common, but still ok
 
   WARN_LARGE_VALUES = [2500, 4000, 4096] # uncommon and large,
                                          # but we've seen legitimate cases such as the
@@ -2181,19 +2183,11 @@ def test_check_unitsperem_strict():
                                     # but too large, causing undesireable filesize bloat.
 
 
-  PASS_VALUES = [2000, # The potential "New Standard" for Variable Fonts!
-                 2048] # A power of two but higher than 2000, so no need to warn about excessive rounding.
-
   for pass_value in PASS_VALUES:
     ttFont["head"].unitsPerEm = pass_value
     assert_PASS(check(ttFont),
                 f'with unitsPerEm = {pass_value}...')
 
-  for warn_value in WARN_LEGACY_VALUES:
-    ttFont["head"].unitsPerEm = warn_value
-    assert_results_contain(check(ttFont),
-                           WARN, 'legacy-value',
-                           f'with unitsPerEm = {warn_value}...')
 
   for warn_value in WARN_LARGE_VALUES:
     ttFont["head"].unitsPerEm = warn_value
@@ -2360,7 +2354,7 @@ def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
 
 def test_check_metadata_nameid_copyright():
   """ Copyright field for this font on METADATA.pb matches
-      all copyright notice entries on the name table ? """
+      all copyright notice entries on the name table? """
   from fontbakery.utils import get_name_entry_strings
   from fontbakery.profiles.googlefonts import (
     com_google_fonts_check_metadata_nameid_copyright as check,
@@ -2384,6 +2378,41 @@ def test_check_metadata_nameid_copyright():
   assert_results_contain(check(ttFont, font_meta),
                          FAIL, 'mismatch',
                          'with a bad METADATA.pb (with a copyright string not matching this font)...')
+
+
+def test_check_metadata_category():
+  """ Category field for this font on METADATA.pb is valid? """
+  from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_category as check,
+                                               family_metadata)
+  # Our reference Cabin family...
+  fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
+  family_directory = os.path.dirname(fontfile)
+  metadata = family_metadata(family_directory)
+  assert metadata.category == "SANS_SERIF" # ...is known to be good ;-)
+
+  # So it must PASS the check:
+  assert_PASS(check(metadata),
+              "with a good METADATA.pb...")
+
+  # Then we report a problem with this sample of bad values:
+  for bad_value in ["SAN_SERIF",
+                    "MONO_SPACE",
+                    "sans_serif",
+                    "monospace"]:
+    metadata.category = bad_value
+    assert_results_contain(check(metadata),
+                           FAIL, 'bad-value',
+                           f'with a bad category "{bad_value}"...')
+
+  # And we accept the good ones:
+  for good_value in ["MONOSPACE",
+                     "SANS_SERIF",
+                     "SERIF",
+                     "DISPLAY",
+                     "HANDWRITING"]:
+    metadata.category = good_value
+    assert_PASS(check(metadata),
+                f'with "{good_value}"...')
 
 
 def test_check_name_mandatory_entries():
@@ -3399,7 +3428,7 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
 
   # OpenSans-Roman-VF is correct
   assert_PASS(check(vf_ttFont),
-              'for a variable font which has correct instance coordinates')
+              'with a variable font which has correct instance coordinates.')
 
   vf_ttFont2 = copy(vf_ttFont)
   for instance in vf_ttFont2['fvar'].instances:
@@ -3407,7 +3436,7 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
           instance.coordinates[axis] = 0
   assert_results_contain(check(vf_ttFont2),
                          FAIL, None, # FIXME: This needs a message keyword
-                         'for a variable font which does not have'
+                         'with a variable font which does not have'
                          ' correct instance coordinates.')
 
 
@@ -3417,7 +3446,7 @@ def test_check_varfont_instance_names(vf_ttFont):
   from copy import copy
 
   assert_PASS(check(vf_ttFont),
-              "with a variable font which has correct instance names.")
+              'with a variable font which has correct instance names.')
 
   vf_ttFont2 = copy(vf_ttFont)
   for instance in vf_ttFont2['fvar'].instances:
@@ -3435,26 +3464,7 @@ def test_check_varfont_instance_names(vf_ttFont):
                              WindowsLanguageID.ENGLISH_USA)
   assert_results_contain(check(vf_ttFont2),
                          FAIL, 'bad-instance-names',
-                         'with a variable font which does not'
-                         ' have correct instance names.')
-
-  vf_ttFont3 = copy(vf_ttFont)
-  for instance in vf_ttFont3['fvar'].instances:
-      instance.subfamilyNameID = 300
-  broken_name = "144 G100 Thin"
-  vf_ttFont3['name'].setName(broken_name,
-                             300,
-                             PlatformID.MACINTOSH,
-                             MacintoshEncodingID.ROMAN,
-                             MacintoshLanguageID.ENGLISH)
-  vf_ttFont3['name'].setName(broken_name,
-                             300,
-                             PlatformID.WINDOWS,
-                             WindowsEncodingID.UNICODE_BMP,
-                             WindowsLanguageID.ENGLISH_USA)
-  assert_results_contain(check(vf_ttFont3),
-                         WARN, None, # FIXME: This needs a message keyword!
-                         'for a variable font which has unparsable tokens.')
+                         'with a variable font which does not have correct instance names.')
 
 
 def test_check_varfont_unsupported_axes():

@@ -122,26 +122,26 @@ WARN = Status('WARN', 4) # A check that results in WARN may indicate a problem, 
 FAIL = Status('FAIL', 5) # A FAIL is a problem detected in the font or family.
 ERROR = Status('ERROR', 6) # Something a programmer must fix. It will make a check fail as well.
 
-
 # Start of the suite of checks. Must be always the first message, even in async mode.
 # Message is the full execution order of the whole profile
 START = Status('START', -6)
-# Only between START and END.
-# Message is the execution order of the section.
-STARTSECTION = Status('STARTSECTION', -4)
-# Only between STARTSECTION and ENDSECTION.
+# Only between START and before the first SECTIONSUMMARY and END
 # Message is None.
 STARTCHECK = Status('STARTCHECK', -2)
 # Ends the last check started by STARTCHECK.
 # Message the the result status of the whole check, one of PASS, SKIP, FAIL, ERROR.
 ENDCHECK = Status('ENDCHECK', -1)
-# Ends the last section started by STARTSECTION.
-# Message is a Counter dictionary where the keys are Status.name of
-# the ENDCHECK message. If serialized, some existing statuses may not be
-# in the counter because they never occured in the section.
-ENDSECTION = Status('ENDSECTION', -3)
+# After the last ENDCHECK one SECTIONSUMMARY for each section before END.
+# Message is a tuple of:
+#   * the actual execution order of the section in the check runner session
+#     as reported. Especially in async mode, the order can differ significantly
+#     from the actual order of checks in the session.
+#   * a Counter dictionary where the keys are Status.name of
+#     the ENDCHECK message. If serialized, some existing statuses may not be
+#     in the counter because they never occurred in the section.
+SECTIONSUMMARY = Status('SECTIONSUMMARY', -3)
 # End of the suite of checks. Must be always the last message, even in async mode.
-# Message is a counter as described in ENDSECTION, but with the collected
+# Message is a counter as described in SECTIONSUMMARY, but with the collected
 # results of all checks in all sections.
 END = Status('END', -5)
 
@@ -525,7 +525,23 @@ class CheckRunner:
       if err:
         status = (ERROR, err)
         return (status, None)
-      if not val:
+
+      # An annoying FutureWarning here (Python 3.8.3) on stderr:
+      #     "FutureWarning: The behavior of this method will change in future
+      #      versions. Use specific 'len(elem)' or 'elem is not None' test instead."
+      # Actually not shure how to tackle this, since val is very unspecific
+      # here intentionally. Where is the documentation for the change?
+      if val is None:
+        bool_val = False
+      else:
+        try:
+          _len = len(val)
+          bool_val = not _len == 0
+        except TypeError:
+          # TypeError: object of type 'bool' has no len()
+          bool_val = bool(val)
+
+      if not bool_val:
         unfulfilled_conditions.append(condition)
     if unfulfilled_conditions:
       # This will make the check neither pass nor fail
@@ -594,16 +610,6 @@ class CheckRunner:
 
     yield ENDCHECK, summary_status
 
-  # old, more straight forward, but without a point to extract the order
-  # def run(self):
-  #   for section in self._profile.sections:
-  #     yield STARTSECTION, section
-  #     for check, iterargs in section.execution_order(self._iterargs
-  #                            , getConditionByName=self._profile.conditions.get):
-  #       for event in self._run_check(check, iterargs):
-  #         yield event;
-  #     yield ENDSECTION, None
-
   @property
   def order(self):
     order = self._cache.get('order', None)
@@ -628,46 +634,74 @@ class CheckRunner:
         raise ValueError(f'Order item {item} not found.')
     return order
 
+  def _check_protocol_generator(self, next_check_identity):
+    section , check, iterargs = next_check_identity
+    for status, message in self._run_check(check, iterargs):
+      yield status, message, (section, check, iterargs)
+
+  def session_protocol_generator(self, order=None):
+    order = order if order is not None else self.order
+    yield from session_protocol_generator(self._check_protocol_generator, order)
+
   def run(self, order=None):
-    checkrun_summary = Counter()
+    order = order if order is not None else self.order
+    session_gen = self.session_protocol_generator(order)
+    next_check_gen = iter(order)
+    yield from drive_session_protocol(session_gen, next_check_gen)
 
-    if order is not None:
-      order = self.check_order(order)
-    else:
-      order = self.order
+  def run_externally_controlled(self, receive_result_fn, next_check_gen, order=None):
+    order = order if order is not None else self.order
+    session_gen = self.session_protocol_generator(order)
+    for result in drive_session_protocol(session_gen, next_check_gen):
+      receive_result_fn(result)
 
-    # prepare: we'll have less ENDSECTION code in the actual run
-    # also, we can prepare section_order tuples
-    section = None
-    oldsection = None
-    section_order = None
-    section_orders = []
-    for section, check, iterargs in order:
-      if oldsection != section:
-        if oldsection is not None:
-          section_orders.append((oldsection, tuple(section_order)))
-        oldsection = section
-        section_order = []
-      section_order.append((check, iterargs))
-    if section is not None:
-      section_orders.append((section, tuple(section_order)))
+def drive_session_protocol(session_gen, next_check_gen):
+    # can't send anything but None on first iteration
+    value = None
+    try:
+      while True:
+        result = session_gen.send(value)
+        yield result
+        value = None
+        if result[0] in (START, ENDCHECK):
+          # get the next check, if None protocol will wrap up
+          value = next(next_check_gen, None)
+    except StopIteration:
+      pass
 
-    # run
-    yield START, order, (None, None, None)
-    section = None
-    for section, section_order in section_orders:
-      section_summary = Counter()
-      yield STARTSECTION, section_order, (section, None, None)
-      for check, iterargs in section_order:
-        for status, message in self._run_check(check, iterargs):
-          yield status, message, (section, check, iterargs)
-        # after _run_check the last status must be ENDCHECK
-        assert status == ENDCHECK
-        # message is the summary_status of the check when status is ENDCHECK
-        section_summary[message.name] += 1
-      yield ENDSECTION, section_summary, (section, None, None)
-      checkrun_summary.update(section_summary)
-    yield END, checkrun_summary, (None, None, None)
+def session_protocol_generator(check_protocol_generator, order):
+  #init
+
+  # Could use self.order, but the truth is, we don't know.
+  # However, self.order still should contain each check_identity
+  # just to make sure we can actually run the check!
+  # Let's just assume that _run_check will fail otherwise...
+  sections = OrderedDict()
+  next_check_identity = yield START, order, (None, None, None)
+  while next_check_identity:
+
+    for event in check_protocol_generator(next_check_identity):
+      # send(check_identity) always after ENDCHECK
+      next_check_identity = yield event
+    # after _run_check the last status must be ENDCHECK
+    status, message, (section, check, iterargs) = event
+    event = None
+    assert status == ENDCHECK
+
+    # message is the summary_status of the check when status is ENDCHECK
+    section_key = str(section)
+    if section_key not in sections:
+      sections[section_key] = ([], Counter(), section)
+    section_order, section_summary, _ = sections[section_key]
+    section_order.append((check, iterargs))
+    # message is the summary_status of the check when status is ENDCHECK
+    section_summary[message.name] += 1
+
+  checkrun_summary = Counter()
+  for _, (section_order, section_summary, section) in sections.items():
+    yield SECTIONSUMMARY, (section_order, section_summary), (section, None, None)
+    checkrun_summary.update(section_summary)
+  yield END, checkrun_summary, (None, None, None)
 
 def distribute_generator(gen, targets_callbacks):
   for item in gen:
@@ -1733,19 +1767,19 @@ class Profile:
     )
     return '{{"section":{},"check":{},"iterargs":{}}}'.format(*values)
 
+  def deserialize_identity(self, key):
+    item = json.loads(key)
+    section = self._get_section(item['section'])
+    check, _ = self.get_check(item['check'])
+    # tuple of tuples instead list of lists
+    iterargs = tuple(tuple(item) for item in item['iterargs'])
+    return section, check, iterargs
+
   def serialize_order(self, order):
     return map(self.serialize_identity, order)
 
   def deserialize_order(self, serialized_order):
-    result = []
-    for item in serialized_order:
-      item = json.loads(item)
-      section = self._get_section(item['section'])
-      check, _ = self.get_check(item['check'])
-      # tuple of tuples instead list of lists
-      iterargs = tuple(tuple(item) for item in item['iterargs'])
-      result.append((section, check, iterargs))
-    return tuple(result)
+    return tuple(self.deserialize_identity(item) for item in serialized_order)
 
   def setup_argparse(self, argument_parser):
     """

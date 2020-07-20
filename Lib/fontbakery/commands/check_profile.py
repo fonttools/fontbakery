@@ -20,9 +20,13 @@ from fontbakery.checkrunner import (
             , SKIP
             , PASS
             , FAIL
-            , STARTSECTION
-            , ENDSECTION
+            , SECTIONSUMMARY
+            , START
+            , END
+            , ENDCHECK
             )
+
+from fontbakery.multiprocessing import multiprocessing_runner
 
 log_levels =  OrderedDict((s.name,s) for s in sorted((
               DEBUG
@@ -115,8 +119,7 @@ def ArgumentParser(profile, profile_arg=True):
         help='No colors for tty output.')
 
   argument_parser.add_argument('-S', '--show-sections', default=False, action='store_true',
-                      help='Show section start and end info plus summary.')
-
+                      help='Show section summaries.')
 
   argument_parser.add_argument('-L', '--list-checks', default=False, action='store_true',
                       help='List the checks available in the selected profile.')
@@ -171,6 +174,20 @@ def ArgumentParser(profile, profile_arg=True):
                       'A common use case is `-o "*check"` when checking the whole \n'
                       'collection against a selection of checks picked with `--checkid`.'
                       ''.format(', '.join(iterargs))
+                      )
+
+  def positive_int(value):
+    int_value = int(value)
+    if int_value < 0:
+        raise argparse.ArgumentTypeError(f'Invalid value "{value}" '
+                            'must be zero or a positive integer value.')
+    return int_value
+  argument_parser.add_argument('-j','--jobs', default=0, const=os.cpu_count(), type=positive_int,
+                      nargs='?', metavar='JOBS', dest='multiprocessing',
+                      help='Use multi-processing to run the checks. The argument is the\n'
+                      'number of worker processes. Without argument, cpu count auto\n'
+                      'detection is used( = %(const)s). Use 0 to run in single-processing \n'
+                      'mode (default %(default)s).'
                       )
   return argument_parser, values_keys
 
@@ -278,21 +295,23 @@ def main(profile=None, values=None):
       if hasattr(args, key):
         values_[key] = getattr(args, key)
 
+  runner_kwds = dict( values=values_
+                    , custom_order=args.order
+                    , explicit_checks=args.checkid
+                    , exclude_checks=args.exclude_checkid
+                    )
   try:
-    runner = CheckRunner(profile
-                        , values=values_
-                        , custom_order=args.order
-                        , explicit_checks=args.checkid
-                        , exclude_checks=args.exclude_checkid
-                        )
+    runner = CheckRunner(profile, **runner_kwds)
   except ValueValidationError as e:
     print(e)
     argument_parser.print_usage()
     sys.exit(1)
 
+  is_async = args.multiprocessing in (0, 1)
+
   # the most verbose loglevel wins
   loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
-  tr = TerminalReporter(runner=runner, is_async=False
+  tr = TerminalReporter(runner=runner, is_async=is_async
                        , print_progress=not args.no_progress
                        , succinct=args.succinct
                        , check_threshold=loglevel
@@ -300,7 +319,7 @@ def main(profile=None, values=None):
                        , theme=theme
                        , collect_results_by=args.gather_by
                        , skip_status_report=None if args.show_sections\
-                                                      else (STARTSECTION, ENDSECTION)
+                                                      else (SECTIONSUMMARY, )
 
                        )
   reporters = [tr.receive]
@@ -321,7 +340,12 @@ def main(profile=None, values=None):
                       collect_results_by=args.gather_by)
     reporters.append(hr.receive)
 
-  distribute_generator(runner.run(), reporters)
+  if args.multiprocessing == 0:
+    status_generator = runner.run()
+  else:
+    status_generator = multiprocessing_runner(args.multiprocessing, runner, runner_kwds)
+
+  distribute_generator(status_generator, reporters)
 
   if args.json:
     import json

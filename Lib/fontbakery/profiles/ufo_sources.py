@@ -3,7 +3,6 @@ import os
 from fontbakery.callable import check, condition
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN, Section, Profile
-from fontbakery.constants import PriorityLevel
 
 
 class UFOProfile(Profile):
@@ -83,10 +82,7 @@ def ufo_font(font):
 
 @register_check(section=basic_checks)
 @check(
-  id = 'com.daltonmaag/check/ufolint',
-  misc_metadata = {
-    'priority': PriorityLevel.CRITICAL
-  }
+  id = 'com.daltonmaag/check/ufolint'
 )
 def com_daltonmaag_check_ufolint(font):
   """Run ufolint on UFO source directory."""

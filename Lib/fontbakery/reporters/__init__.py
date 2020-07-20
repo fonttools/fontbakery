@@ -14,13 +14,12 @@ from fontbakery.checkrunner import (
             , INFO
             , WARN
             , ERROR
-            , STARTSECTION
             , STARTCHECK
             , SKIP
             , PASS
             , FAIL
             , ENDCHECK
-            , ENDSECTION
+            , SECTIONSUMMARY
             , START
             , END
             , ProtocolViolationError

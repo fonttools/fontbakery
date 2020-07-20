@@ -347,3 +347,29 @@ def is_cjk_font(ttFont):
 @condition
 def typo_metrics_enabled(ttFont):
   return ttFont['OS/2'].fsSelection & 0b10000000 > 0
+
+
+@condition
+def is_indic_font(ttFont):
+  INDIC_FONT_DETECTION_CODEPOINTS = [
+    0x0988, # Bengali
+    0x0908, # Devanagari
+    0x0A88, # Gujarati
+    0x0A08, # Gurmukhi
+    0x0D08, # Kannada
+    0x0B08, # Malayalam
+    0xABC8, # Meetei Mayek
+    0x1C58, # OlChiki
+    0x0B08, # Oriya
+    0x0B88, # Tamil
+    0x0C08, # Telugu
+  ]
+
+  font_codepoints = ttFont['cmap'].getBestCmap().keys()
+  for codepoint in INDIC_FONT_DETECTION_CODEPOINTS:
+    if codepoint in font_codepoints:
+      return True
+
+  #otherwise:
+  return False
+

@@ -5,8 +5,7 @@ from fontbakery.checkrunner import Section, INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.callable import check, disable
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
-from fontbakery.constants import (PriorityLevel,
-                                  NameID,
+from fontbakery.constants import (NameID,
                                   PlatformID,
                                   WindowsEncodingID,
                                   WindowsLanguageID,
@@ -58,7 +57,8 @@ METADATA_CHECKS = [
   'com.google.fonts/check/metadata/os2_weightclass',
   'com.google.fonts/check/metadata/canonical_style_names',
   'com.google.fonts/check/metadata/broken_links',
-  'com.google.fonts/check/metadata/undeclared_fonts'
+  'com.google.fonts/check/metadata/undeclared_fonts',
+  'com.google.fonts/check/metadata/category'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -171,10 +171,7 @@ GOOGLEFONTS_PROFILE_CHECKS = \
   
     - Roboto[wdth,wght].ttf
     - Familyname-Italic[wght].ttf
-  """,
-  misc_metadata = {
-    'priority': PriorityLevel.CRITICAL
-  }
+  """
 )
 def com_google_fonts_check_canonical_filename(font):
   """Checking file is named canonically."""
@@ -245,19 +242,25 @@ def com_google_fonts_check_canonical_filename(font):
 
 @check(
   id = 'com.google.fonts/check/description/broken_links',
-  conditions = ['description'],
+  conditions = ['description_html'],
   rationale = """
-    The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font family webpage on the Google Fonts website. For that reason, all hyperlinks in it must be properly working. 
+    The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font family webpage on the Google Fonts website. For that reason, all hyperlinks in it must be properly working.
   """
 )
-def com_google_fonts_check_description_broken_links(description):
+def com_google_fonts_check_description_broken_links(description_html):
   """Does DESCRIPTION file contain broken links?"""
   import requests
   from lxml import etree
-  doc = etree.fromstring("<html>" + description + "</html>")
+  doc = description_html
   broken_links = []
+  unique_links = []
   for a_href in doc.iterfind('.//a[@href]'):
     link = a_href.get("href")
+
+    # avoid requesting the same URL more then once
+    if link in unique_links:
+      continue
+
     if link.startswith("mailto:") and \
        "@" in link and \
        "." in link.split("@")[1]:
@@ -266,10 +269,15 @@ def com_google_fonts_check_description_broken_links(description):
                     f"Found an email address: {link}")
       continue
 
+    unique_links.append(link)
     try:
       response = requests.head(link, allow_redirects=True, timeout=10)
       code = response.status_code
-      if code != requests.codes.ok:
+      # Status 429: "Too Many Requests" is acceptable
+      # because it means the website is probably ok and
+      # we're just perhaps being too agressive in probing the server!
+      if code not in [requests.codes.ok,
+                      requests.codes.too_many_requests]:
         broken_links.append(f"{link} (status code: {code})")
     except requests.exceptions.Timeout:
       yield WARN,\
@@ -525,9 +533,15 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
   """Does METADATA.pb copyright field contain broken links?"""
   import requests
   broken_links = []
+  unique_links = []
   for font_metadata in family_metadata.fonts:
     copyright = font_metadata.copyright
     if "mailto:" in copyright:
+      # avoid reporting more then once
+      if copyright in unique_links:
+        continue
+
+      unique_links.append(copyright)
       yield INFO,\
             Message("email",
                     f"Found an email address: {copyright}")
@@ -540,10 +554,19 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
         if endchar in link:
           link = link.split(endchar)[0]
 
+      # avoid requesting the same URL more then once
+      if link in unique_links:
+        continue
+
+      unique_links.append(link)
       try:
         response = requests.head(link, allow_redirects=True, timeout=10)
         code = response.status_code
-        if code != requests.codes.ok:
+        # Status 429: "Too Many Requests" is acceptable
+        # because it means the website is probably ok and
+        # we're just perhaps being too agressive in probing the server!
+        if code not in [requests.codes.ok,
+                        requests.codes.too_many_requests]:
           broken_links.append(("{} (status code: {})").format(link, code))
       except requests.exceptions.Timeout:
         yield WARN,\
@@ -618,6 +641,37 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
   if passed:
     yield PASS, "OK"
 
+
+@check(
+  id = 'com.google.fonts/check/metadata/category',
+  conditions = ['family_metadata'],
+  rationale = """
+    There are only five acceptable values for the category field in a METADATA.pb file:
+    - MONOSPACE
+    - SANS_SERIF
+    - SERIF
+    - DISPLAY
+    - HANDWRITING
+
+    This check is meant to avoid typos in this field.
+  """,
+  misc_metadata = {
+    'request': "https://github.com/googlefonts/fontbakery/issues/2972"
+  }
+)
+def com_google_fonts_check_metadata_category(family_metadata):
+  """Ensure METADATA.pb category field is valid."""
+  if family_metadata.category not in ["MONOSPACE",
+                                      "SANS_SERIF",
+                                      "SERIF",
+                                      "DISPLAY",
+                                      "HANDWRITING"]:
+    yield FAIL,\
+          Message('bad-value',
+                  f'The field category has "{family_metadata.category}"'
+                  f' which is not valid.')
+  else:
+    yield PASS, "OK!"
 
 
 @disable # TODO: re-enable after addressing issue #1998
@@ -1028,10 +1082,8 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
     For a small set of legacy families the Ubuntu Font License may be acceptable as well.
 
     When in doubt, please choose OFL for new font projects.
-  """,
-  misc_metadata = {
-    'priority': PriorityLevel.CRITICAL
-  })
+  """
+)
 def com_google_fonts_check_name_license(ttFont, license):
   """Check copyright namerecords match license file."""
   from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
@@ -1096,10 +1148,7 @@ def com_google_fonts_check_name_license(ttFont, license):
 
     When in doubt, please choose OFL for new font projects.
   """,
-  conditions = ['familyname'],
-  misc_metadata = {
-    'priority': PriorityLevel.CRITICAL
-  }
+  conditions = ['familyname']
 )
 def com_google_fonts_check_name_license_url(ttFont, familyname):
   """License URL matches License text on name table?"""
@@ -2613,13 +2662,9 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
 
     The spec suggests usage of powers of two in order to get some performance improvements on legacy renderers, so those values are acceptable.
 
-    But value of 500 or 1000 are also acceptable, with the added benefit that it makes upm math easier for designers, while the performance hit of not using a power of two is most likely negligible nowadays.
+    But values of 500 or 1000 are also acceptable, with the added benefit that it makes upm math easier for designers, while the performance hit of not using a power of two is most likely negligible nowadays.
 
-    Another acceptable value is 2000. Since TT outlines are all integers (no floats), then instances in a VF suffer rounding compromises, and therefore a 1000 UPM is too small because it forces too many such compromises.
-   
-    Therefore 2000 is a good 'new VF standard', because 2000 is a simple 2x conversion from existing fonts drawn on a 1000 UPM, and anyone who knows what 10 units can do for 1000 UPM will know what 20 units does too.
-
-    Additionally, values above 2048 would result in filesize increases with not much added benefit.
+    Additionally, values above 2048 would likely result in unreasonable filesize increases.
   """
 )
 def com_google_fonts_check_unitsperem_strict(ttFont):
@@ -2638,20 +2683,9 @@ def com_google_fonts_check_unitsperem_strict(ttFont):
     yield FAIL,\
           Message("bad-value",
                   f"Font em size (unitsPerEm) is {upm_height}."
-                  f" If possible, please consider using 1000"
-                  f" or even 2000 (which is ideal for"
-                  f" Variable Fonts)."
+                  f" If possible, please consider using 1000."
                   f" Good values for unitsPerEm,"
                   f" though, are typically these: {ACCEPTABLE}.")
-  elif upm_height < 2000:
-    yield WARN,\
-          Message("legacy-value",
-                  f"Even though unitsPerEm ({upm_height}) in"
-                  f" this font is reasonable. It is strongly"
-                  f" advised to consider changing it to 2000,"
-                  f" since it will likely improve the quality of"
-                  f" Variable Fonts by avoiding excessive"
-                  f" rounding of coordinates on interpolations.")
   else:
     yield PASS, f"Font em size is good (unitsPerEm = {upm_height})."
 
@@ -3052,10 +3086,8 @@ def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
 
 @check(
   id = 'com.google.fonts/check/name/mandatory_entries',
-  conditions = ['style'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+  conditions = ['style']
+)
 def com_google_fonts_check_name_mandatory_entries(ttFont, style):
   """Font has all mandatory 'name' table entries?"""
   from fontbakery.utils import get_name_entry_strings
@@ -3087,10 +3119,8 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
                 'familyname_with_spaces'],
   rationale = """
     Checks that the family name infered from the font filename matches the string at nameID 1 (NAMEID_FONT_FAMILY_NAME) if it conforms to RIBBI and otherwise checks that nameID 1 is the family name + the style name.
-  """,
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+  """
+)
 def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces):
   """Check name table: FONT_FAMILY_NAME entries."""
   from fontbakery.utils import name_entry_id
@@ -3148,10 +3178,8 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
 
 @check(
   id = 'com.google.fonts/check/name/subfamilyname',
-  conditions = ['expected_style'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+  conditions = ['expected_style']
+)
 def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
   """Check name table: FONT_SUBFAMILY_NAME entries."""
   failed = False
@@ -3184,10 +3212,8 @@ def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
 @check(
   id = 'com.google.fonts/check/name/fullfontname',
   conditions = ['style_with_spaces',
-                'familyname_with_spaces'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+                'familyname_with_spaces']
+)
 def com_google_fonts_check_name_fullfontname(ttFont,
                                              style_with_spaces,
                                              familyname_with_spaces):
@@ -3223,10 +3249,8 @@ def com_google_fonts_check_name_fullfontname(ttFont,
 @check(
   id = 'com.google.fonts/check/name/postscriptname',
   conditions = ['style',
-                'familyname'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+                'familyname']
+)
 def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
   """Check name table: POSTSCRIPT_NAME entries."""
   from fontbakery.utils import name_entry_id
@@ -3251,10 +3275,8 @@ def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
 @check(
   id = 'com.google.fonts/check/name/typographicfamilyname',
   conditions = ['style',
-                'familyname_with_spaces'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+                'familyname_with_spaces']
+)
 def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_with_spaces):
   """Check name table: TYPOGRAPHIC_FAMILY_NAME entries."""
   from fontbakery.utils import name_entry_id
@@ -3299,10 +3321,8 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
 
 @check(
   id = 'com.google.fonts/check/name/typographicsubfamilyname',
-  conditions=['expected_style'],
-  misc_metadata = {
-    'priority': PriorityLevel.IMPORTANT
-  })
+  conditions=['expected_style']
+)
 def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style):
   """Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries."""
   failed = False
@@ -3930,6 +3950,8 @@ def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
   conditions = ['ligature_glyphs'],
   rationale = """
     All ligatures in a font must have corresponding caret (text cursor) positions defined in the GDEF table, otherwhise, users may experience issues with caret rendering.
+
+    If using GlyphsApp, ligature carets can be set directly on canvas by accessing the `Glyph -> Set Anchors` menu option or by pressing the `Cmd+U` keyboard shortcut.
   """,
   misc_metadata = {
     'request': 'https://github.com/googlefonts/fontbakery/issues/1225'
@@ -4544,6 +4566,7 @@ def com_google_fonts_check_varfont_instance_coordinates(ttFont):
   """Check variable font instances have correct coordinate values"""
   from fontbakery.parse import instance_parse
   from fontbakery.constants import SHOW_GF_DOCS_MSG
+
   failed = False
   for instance in ttFont['fvar'].instances:
     name = ttFont['name'].getName(
@@ -4562,8 +4585,9 @@ def com_google_fonts_check_varfont_instance_coordinates(ttFont):
             f'is "{instance.coordinates[axis]}". '
             f'It should be "{expected_instance.coordinates[axis]}"')
         failed = True
+
   if failed:
-    yield FAIL, SHOW_GF_DOCS_MSG
+    yield FAIL, f"{SHOW_GF_DOCS_MSG}#axes"
   else:
     yield PASS, "Instance coordinates are correct"
 
@@ -4574,9 +4598,15 @@ def com_google_fonts_check_varfont_instance_coordinates(ttFont):
 )
 def com_google_fonts_check_varfont_instance_names(ttFont):
   """Check variable font instances have correct names"""
+  # This check and the fontbakery.parse module used to be more complicated.
+  # On 2020-06-26, we decided to only allow Thin-Black + Italic instances.
+  # If we decide to add more particles to instance names, It's worthwhile
+  # revisiting our previous implementation which can be found in commits
+  # earlier than or equal to ca71d787eb2b8b5a9b111884080dde5d45f5579f
   from fontbakery.parse import instance_parse
   from fontbakery.constants import SHOW_GF_DOCS_MSG
-  show_docs, failed = False, False
+
+  failed = []
   for instance in ttFont['fvar'].instances:
     name = ttFont['name'].getName(
       instance.subfamilyNameID,
@@ -4585,49 +4615,18 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
       WindowsLanguageID.ENGLISH_USA
     ).toUnicode()
     expected_instance = instance_parse(name)
-    if expected_instance.unparsable_tokens:
-      yield WARN, (
-        f'Instance "{name}": contains the following unparsable tokens '
-        f'"{expected_instance.unparsable_tokens}"'
-      )
-      show_docs = True
-    # Check if name tokens are missing
-    missing_tokens = set(expected_instance.expected_token_order) - \
-                     set(expected_instance.raw_token_order)
-    if missing_tokens:
-      missing_tokens = ", ".join(missing_tokens)
-      yield FAIL, (
-        f'Instance "{name}": is missing the following name tokens '
-        f'[{missing_tokens}]'
-      )
-      show_docs, failed = True, True
-    # Check if name tokens are ordered correctly
-    elif expected_instance.raw_token_order != expected_instance.expected_token_order:
-      yield FAIL, (
-        f'Instance "{name}": token ordering is incorrect '
-        f'"{expected_instance.raw_token_order}". It should be '
-        f'"{expected_instance.expected_token_order}"'
-      )
-      show_docs, failed = True, True
-    # Check if name matches predicted name
-    if not expected_instance.unparsable_tokens:
-      if expected_instance.name != name:
-        yield FAIL, \
-          Message("bad-name",
-            f'Instance name "{name}" is incorrect. '
-            f'It should be "{expected_instance.name}"')
-        show_docs, failed = True, True
-    else:
-      yield WARN, (
-        f'Instance "{name}": cannot determine instance name due to '
-        f'unparsable tokens'
-      )
-      show_docs = True
 
-  if show_docs and failed:
-    yield FAIL, Message("bad-instance-names", SHOW_GF_DOCS_MSG)
-  elif show_docs and not failed:
-    yield WARN, SHOW_GF_DOCS_MSG
+    # Check if name matches predicted name
+    if expected_instance.name != name:
+      failed.append(name)
+
+  if failed:
+    failed_instances = "\n\t- ".join([""] + failed)
+    yield FAIL,\
+          Message('bad-instance-names',
+                  f'Following instances are not supported: {failed_instances}\n'
+                  f'\n'
+                  f'{SHOW_GF_DOCS_MSG}#fvar-instances')
   else:
     yield PASS, "Instance names are correct"
 

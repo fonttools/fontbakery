@@ -2,7 +2,6 @@ import os
 
 from fontbakery.checkrunner import Section, PASS, FAIL, WARN, ERROR, INFO, SKIP
 from fontbakery.callable import condition, check, disable
-from fontbakery.constants import PriorityLevel
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
@@ -42,7 +41,8 @@ UNIVERSAL_PROFILE_CHECKS = \
   'com.google.fonts/check/unique_glyphnames',
 #  'com.google.fonts/check/glyphnames_max_length',
   'com.google.fonts/check/family/vertical_metrics',
-  'com.google.fonts/check/STAT_strings'
+  'com.google.fonts/check/STAT_strings',
+  'com.google.fonts/check/rupee'
 ]
 
 @check(
@@ -181,10 +181,7 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
   id = 'com.google.fonts/check/family/single_directory',
   rationale = """
     If the set of font files passed in the command line is not all in the same directory, then we warn the user since the tool will interpret the set of files as belonging to a single family (and it is unlikely that the user would store the files from a single family spreaded in several separate directories).
-  """,
-  misc_metadata = {
-    'priority': PriorityLevel.CRITICAL
-  }
+  """
 )
 def com_google_fonts_check_family_single_directory(fonts):
   """Checking all files are in the same directory."""
@@ -1026,6 +1023,26 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
                    f"{s}")
   else:
     yield PASS, "Vertical metrics are the same across the super-family."
+
+
+@check(
+  id = 'com.google.fonts/check/rupee',
+  rationale = """
+    Per Bureau of Indian Standards every font supporting one of the official Indian languages needs to include Unicode Character “₹” (U+20B9) Indian Rupee Sign.
+  """,
+  conditions = ['is_indic_font'],
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2967'
+  }
+)
+def com_google_fonts_check_rupee(ttFont):
+  """ Ensure indic fonts have the Indian Rupee Sign glyph. """
+  if 0x20B9 not in ttFont['cmap'].getBestCmap().keys():
+    yield FAIL,\
+          Message("missing-rupee",
+                  'Please add a glyph for Indian Rupee Sign “₹” at codepoint U+20B9.')
+  else:
+    yield PASS, "Looks good!"
 
 
 profile.auto_register(globals())
