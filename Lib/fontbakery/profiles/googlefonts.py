@@ -4634,9 +4634,6 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
 @check(
   id = 'com.google.fonts/check/varfont_duplicate_instance_names',
   conditions = ['is_variable_font'],
-  misc_metadata = {
-    'request': 'https://github.com/googlefonts/gf-docs/tree/master/Spec#fvar-instances'
-  }
 )
 def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
   """Check variable font instances don't have duplicate names"""
