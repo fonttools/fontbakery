@@ -28,6 +28,7 @@ METADATA_CHECKS = [
   'com.google.fonts/check/metadata/license',
   'com.google.fonts/check/metadata/menu_and_latin',
   'com.google.fonts/check/metadata/subsets_order',
+  'com.google.fonts/check/metadata/includes_production_subsets',
   'com.google.fonts/check/metadata/copyright',
   'com.google.fonts/check/metadata/familyname',
   'com.google.fonts/check/metadata/has_regular',
@@ -1808,6 +1809,35 @@ def com_google_fonts_check_metadata_subsets_order(family_metadata):
                               "', '".join(expected)))
   else:
     yield PASS, "METADATA.pb subsets are sorted in alphabetical order."
+
+
+@check(
+  id = 'com.google.fonts/check/metadata/includes_production_subsets',
+  conditions = ['family_metadata',
+                'production_metadata',
+                'listed_on_gfonts_api'],
+  rationale = """
+    Check METADATA.pb file includes the same subsets as the family in production.
+  """,
+  misc_metadata = {
+    'request': 'https://github.com/googlefonts/fontbakery/issues/2989'
+  }
+)
+def com_google_fonts_check_metadata_includes_production_subsets(family_metadata, production_metadata):
+  """Check METADATA.pb includes production subsets."""
+  prod_families_metadata = {i['family']: i for i in production_metadata["familyMetadataList"]}
+  prod_family_metadata = prod_families_metadata[family_metadata.name]
+
+  prod_subsets = set(prod_family_metadata["subsets"])
+  local_subsets = set(family_metadata.subsets)
+  missing_subsets = prod_subsets - local_subsets
+  if len(missing_subsets) > 0:
+    yield FAIL, Message(
+      "missing-subsets",
+      f"The following subsets are missing [{', '.join(missing_subsets)}]"
+    )
+  else:
+    yield PASS, "No missing subsets"
 
 
 @check(
