@@ -4,7 +4,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.0 (2020-Jul-??)
 ### Note-worthy code changes
-  - remove PriorityLevel class as it makes classifying checks by priority more complicated then necessary! (issue #2981)
+  - Remove PriorityLevel class as it makes classifying checks by priority more complicated then necessary! (issue #2981)
+  - Use the http://fonts.google.com/metadata/fonts endpoint to determine if a font is listed in Google Fonts. (issue #2991)
 
 ### New Checks
   - **[com.google.fonts/check/varfont_duplicate_instance_names]**: Avoid duplicate instance names in variable fonts (issue #2986)
