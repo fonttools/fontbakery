@@ -4646,11 +4646,6 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
 )
 def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
   """Check variable font instances don't have duplicate names"""
-  # This check and the fontbakery.parse module used to be more complicated.
-  # On 2020-06-26, we decided to only allow Thin-Black + Italic instances.
-  # If we decide to add more particles to instance names, It's worthwhile
-  # revisiting our previous implementation which can be found in commits
-  # earlier than or equal to ca71d787eb2b8b5a9b111884080dde5d45f5579f
   from fontbakery.constants import SHOW_GF_DOCS_MSG
 
   seen = []
