@@ -1083,7 +1083,7 @@ def test_check_metadata_listed_on_gfonts():
   # This is to ensure the code handles well camel-cased familynames.
   listed = listed_on_gfonts_api(familyname(filename))
   assert_PASS(check(listed),
-              f'with "{filename}", listeed and with a camel-cased name...')
+              f'with "{filename}", listed and with a camel-cased name...')
 
   filename = "librecaslontext/LibreCaslonText[wght].ttf"
   # And the check should also properly handle space-separated multi-word familynames.

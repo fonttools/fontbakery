@@ -324,24 +324,21 @@ def hinting_stats(font):
 
 @condition
 def listed_on_gfonts_api(familyname):
-  from fontbakery.utils import split_camel_case
   if not familyname:
     return False
 
-  def query_gfonts(fname):
-    import requests
-    queryname = fname.replace(' ', '+')
-    url = ('http://fonts.googleapis.com'
-         '/css?family={}').format(queryname)
-    r = requests.get(url)
-    return r.status_code == 200
+  from fontbakery.utils import split_camel_case
+  # Some families such as "Libre Calson Text" have camelcased filenames
+  # ("LibreCalsonText-Regular.ttf") and require us to split in order
+  # to find it in the GFonts metadata:
+  from_camelcased_name = split_camel_case(familyname)
 
-  if query_gfonts(familyname): return True
+  for item in production_metadata()["familyMetadataList"]:
+    if item["family"] == familyname or \
+       item["family"] == from_camelcased_name:
+      return True
 
-  # else...
-  # Some families such as "Libre Calson Text" have camelcased filenames ("LibreCalsonText-Regular.ttf")
-  # and require us to split in order to properly form a good query URL:
-  return query_gfonts(split_camel_case(familyname))
+  return False
 
 
 @condition
