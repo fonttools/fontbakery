@@ -4635,11 +4635,10 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
 @check(
   id = 'com.google.fonts/check/varfont_duplicate_instance_names',
   rationale = """
-    According to Google Font’s specs (as of 2020-06-26), only weight and italic tokens are allowed in instance names (= "ExtraBold Italic").
+    Repeating instance names may be the result of instances for several VF axes defined in `fvar`, but since 
+    currently only weight+italic tokens are allowed in instance names as per GF specs, they ended up repeating.
 
-    This variable font contains duplicate instance names, suggesting that instances are defined for more then one axis.
-
-    Instead, only a base set of fonts for the most general representation of the family can be defined through instances in the `fvar` table,
+    Instead, only a base set of fonts for the most default representation of the family can be defined through instances in the `fvar` table,
     all other instances will have to be left to access through the `STAT` table.
   """,
   conditions = ['is_variable_font'],
