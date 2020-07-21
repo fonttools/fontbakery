@@ -4635,7 +4635,7 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
 @check(
   id = 'com.google.fonts/check/varfont_duplicate_instance_names',
   rationale = """
-    This check's purpose is to detect duplicate named instance names in a given variable font.
+    This check's purpose is to detect duplicate named instances names in a given variable font.
 
     Repeating instance names may be the result of instances for several VF axes defined in `fvar`, but since 
     currently only weight+italic tokens are allowed in instance names as per GF specs, they ended up repeating.
