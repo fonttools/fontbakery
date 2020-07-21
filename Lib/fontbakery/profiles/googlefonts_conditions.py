@@ -540,3 +540,13 @@ def gfonts_repo_structure(fonts):
   #        about the expected structure.
   abspath = get_absolute_path(fonts[0])
   return abspath.split(os.path.sep)[-3] in ["ufl", "ofl", "apache"]
+
+
+@condition
+def production_metadata():
+  """Get the Google Fonts production metadata"""
+  import json
+  import requests
+  meta_url = "http://fonts.google.com/metadata/fonts"
+  # can't do requests.get("url").json() since request text starts with ")]}'"
+  return json.loads(requests.get(meta_url).text[5:])

@@ -1239,6 +1239,29 @@ def test_check_metadata_subsets_order():
                            f'with subsets = {bad}')
 
 
+def test_check_metadata_includes_production_subsets():
+  """Check METADATA.pb has production subsets."""
+  from fontbakery.profiles.googlefonts import (
+    com_google_fonts_check_metadata_includes_production_subsets as check,
+  )
+  from fontbakery.profiles.googlefonts_conditions import production_metadata, family_metadata
+  from fontbakery.profiles.shared_conditions import family_directory
+
+  # We need to use a family that is already in production
+  # Our reference Cabin is known to be good
+  family_meta = family_metadata(family_directory(cabin_fonts[0]))
+
+  # So it must PASS the check:
+  assert_PASS(check(family_meta, production_metadata()),
+              "with a good METADATA.pb for this family...")
+
+  # Then we FAIL the check by removing a subset:
+  family_meta.subsets.pop()
+  assert_results_contain(check(family_meta, production_metadata()),
+                         FAIL, 'missing-subsets',
+                         'with a bad METADATA.pb (last subset has been removed)...')
+
+
 def test_check_metadata_copyright():
   """ METADATA.pb: Copyright notice is the same in all fonts? """
   from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_copyright as check,
