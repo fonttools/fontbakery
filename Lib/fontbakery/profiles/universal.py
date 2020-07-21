@@ -659,23 +659,30 @@ def com_google_fonts_check_STAT_strings(ttFont):
       ital_axis_index = index
       break
 
-  nameIDs = []
+  nameIDs = set()
   if ttFont["STAT"].table.AxisValueArray:
     for value in ttFont["STAT"].table.AxisValueArray.AxisValue:
-      if value.AxisIndex != ital_axis_index: nameIDs.append(value.ValueNameID)
+      if hasattr(value, "AxisIndex"):
+        if value.AxisIndex != ital_axis_index:
+          nameIDs.add(value.ValueNameID)
 
-  bad_values = []
+      if hasattr(value, "AxisValueRecord"):
+        for record in value.AxisValueRecord:
+          if record.AxisIndex != ital_axis_index:
+            nameIDs.add(value.ValueNameID)
+
+  bad_values = set()
   for name in ttFont['name'].names:
     if name.nameID in nameIDs and "italic" in name.toUnicode().lower():
       passed = False
-      bad_values.append(name.toUnicode())
+      bad_values.add(f"nameID {name.nameID}: {name.toUnicode()}")
 
   if bad_values:
     yield FAIL,\
           Message("bad-italic",
                   f'The following AxisValue entries on the STAT table'
                   f' should not contain "Italic":\n'
-                  f' {bad_values}')
+                  f' {list(bad_values)}')
 
   if passed:
     yield PASS, "Looks good!"
