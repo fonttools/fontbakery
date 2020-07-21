@@ -4634,7 +4634,7 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
 
 @check(
   id = 'com.google.fonts/check/varfont_duplicate_instance_names',
-  rationale = f"""
+  rationale = """
     According to Google Font’s specs (as of 2020-06-26), only weight and italic tokens are allowed in instance names (= "ExtraBold Italic").
 
     This variable font contains duplicate instance names, suggesting that instances are defined for more then one axis.
