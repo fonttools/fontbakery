@@ -3472,7 +3472,7 @@ def test_check_varfont_duplicate_instance_names(vf_ttFont):
   from copy import copy
 
   assert_PASS(check(vf_ttFont),
-              'with a variable font which has correct instance names.')
+              'with a variable font which has unique instance names.')
 
   vf_ttFont2 = copy(vf_ttFont)
   duplicate_instance_name = vf_ttFont2['name'].getName(
