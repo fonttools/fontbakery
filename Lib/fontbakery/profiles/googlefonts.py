@@ -144,6 +144,7 @@ FONT_FILE_CHECKS = [
   'com.google.fonts/check/cjk_vertical_metrics',
   'com.google.fonts/check/varfont_instance_coordinates',
   'com.google.fonts/check/varfont_instance_names',
+  'com.google.fonts/check/varfont_duplicate_instance_names',
   'com.google.fonts/check/varfont/consistent_axes',
   'com.google.fonts/check/varfont/unsupported_axes'
 ]
@@ -4629,6 +4630,49 @@ def com_google_fonts_check_varfont_instance_names(ttFont):
                   f'{SHOW_GF_DOCS_MSG}#fvar-instances')
   else:
     yield PASS, "Instance names are correct"
+
+
+@check(
+  id = 'com.google.fonts/check/varfont_duplicate_instance_names',
+  rationale = """
+    This check's purpose is to detect duplicate named instances names in a given variable font.
+
+    Repeating instance names may be the result of instances for several VF axes defined in `fvar`, but since 
+    currently only weight+italic tokens are allowed in instance names as per GF specs, they ended up repeating.
+
+    Instead, only a base set of fonts for the most default representation of the family can be defined through instances in the `fvar` table,
+    all other instances will have to be left to access through the `STAT` table.
+  """,
+  conditions = ['is_variable_font'],
+)
+def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
+  """Check variable font instances don't have duplicate names"""
+  from fontbakery.constants import SHOW_GF_DOCS_MSG
+
+  seen = []
+  duplicate = []
+
+  for instance in ttFont['fvar'].instances:
+    name = ttFont['name'].getName(
+      instance.subfamilyNameID,
+      PlatformID.WINDOWS,
+      WindowsEncodingID.UNICODE_BMP,
+      WindowsLanguageID.ENGLISH_USA
+    ).toUnicode()
+    
+    if name in seen:
+      duplicate.append(name)
+
+    if not name in seen:
+      seen.append(name)
+
+  if duplicate:
+    duplicate_instances = "\n\t- ".join([""] + duplicate)
+    yield FAIL,\
+          Message('duplicate-instance-names',
+                  f'Following instances names are duplicate: {duplicate_instances}\n')
+  else:
+    yield PASS, "Instance names are unique"
 
 
 @check(
