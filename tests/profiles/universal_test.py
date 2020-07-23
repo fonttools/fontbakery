@@ -1,4 +1,5 @@
 import pytest
+import io
 import os
 from fontTools.ttLib import TTFont
 

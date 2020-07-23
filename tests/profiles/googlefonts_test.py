@@ -547,7 +547,7 @@ def DISABLED_test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFon
 
   # our reference Mada family is bad here with 407 glyphs on most font files
   # except the Black and the Medium, that both have 408 glyphs.
-  asser_results_contain(check(mada_ttFonts),
+  assert_results_contain(check(mada_ttFonts),
                         FAIL, 'glyph-count-diverges',
                         'with fonts that diverge on number of glyphs.')
 
