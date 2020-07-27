@@ -4,6 +4,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.0 (2020-Jul-??)
 ### Note-worthy code changes
+  - Adopted 4-spaces indentation. We're changing our codestyle to facilitate collaboration from people who also work with the fontTools and AFDKO codebases. (issue 2997)
+  - All rationale text needs to have 8 indentation spaces (because this indentation on the source should not show up on the user-interface when rationale text is printed on the text terminal)
   - Remove PriorityLevel class as it makes classifying checks by priority more complicated then necessary! (issue #2981)
   - Use the http://fonts.google.com/metadata/fonts endpoint to determine if a font is listed in Google Fonts. (issue #2991)
 

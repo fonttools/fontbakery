@@ -17,9 +17,9 @@ import os
 from setuptools import setup
 
 try:
-  readme = open('README.md').read()
+    readme = open('README.md').read()
 except IOError:
-  readme = ''
+    readme = ''
 
 setup(
     name="fontbakery",
@@ -70,7 +70,6 @@ setup(
         'requests',
         'ttfautohint-py',
         'ufolint',
-
     ],
     extras_require={
         'docs': [
