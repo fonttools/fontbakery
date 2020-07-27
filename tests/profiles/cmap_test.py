@@ -17,58 +17,58 @@ from fontbakery.checkrunner import (
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 mada_fonts = [
-  TEST_FILE("mada/Mada-Black.ttf"),
-  TEST_FILE("mada/Mada-ExtraLight.ttf"),
-  TEST_FILE("mada/Mada-Medium.ttf"),
-  TEST_FILE("mada/Mada-SemiBold.ttf"),
-  TEST_FILE("mada/Mada-Bold.ttf"),
-  TEST_FILE("mada/Mada-Light.ttf"),
-  TEST_FILE("mada/Mada-Regular.ttf")
+    TEST_FILE("mada/Mada-Black.ttf"),
+    TEST_FILE("mada/Mada-ExtraLight.ttf"),
+    TEST_FILE("mada/Mada-Medium.ttf"),
+    TEST_FILE("mada/Mada-SemiBold.ttf"),
+    TEST_FILE("mada/Mada-Bold.ttf"),
+    TEST_FILE("mada/Mada-Light.ttf"),
+    TEST_FILE("mada/Mada-Regular.ttf")
 ]
 
 @pytest.fixture
 def mada_ttFonts():
-  return [TTFont(path) for path in mada_fonts]
+    return [TTFont(path) for path in mada_fonts]
 
 
 def test_check_family_equal_unicode_encodings(mada_ttFonts):
-  """ Fonts have equal unicode encodings ? """
-  from fontbakery.profiles.cmap import com_google_fonts_check_family_equal_unicode_encodings as check
-  from fontbakery.constants import WindowsEncodingID
+    """ Fonts have equal unicode encodings ? """
+    from fontbakery.profiles.cmap import com_google_fonts_check_family_equal_unicode_encodings as check
+    from fontbakery.constants import WindowsEncodingID
 
-  # our reference Mada family is know to be good here.
-  assert_PASS(check(mada_ttFonts),
-              'with good family.')
+    # our reference Mada family is know to be good here.
+    assert_PASS(check(mada_ttFonts),
+                'with good family.')
 
-  bad_ttFonts = mada_ttFonts
-  # introduce mismatching encodings into the first 2 font files:
-  for i, encoding in enumerate([WindowsEncodingID.SYMBOL,
-                                WindowsEncodingID.UNICODE_BMP]):
-    for table in bad_ttFonts[i]['cmap'].tables:
-      if table.format == 4:
-        table.platEncID = encoding
+    bad_ttFonts = mada_ttFonts
+    # introduce mismatching encodings into the first 2 font files:
+    for i, encoding in enumerate([WindowsEncodingID.SYMBOL,
+                                  WindowsEncodingID.UNICODE_BMP]):
+        for table in bad_ttFonts[i]['cmap'].tables:
+            if table.format == 4:
+                table.platEncID = encoding
 
-  assert_results_contain(check(bad_ttFonts),
-                         FAIL, 'mismatch',
-                         'with fonts that diverge on unicode encoding.')
+    assert_results_contain(check(bad_ttFonts),
+                           FAIL, 'mismatch',
+                           'with fonts that diverge on unicode encoding.')
 
 
 # Note: I am not aware of any real-case of a font that FAILs this check.
 def test_check_all_glyphs_have_codepoints():
-  """ Check all glyphs have codepoints assigned. """
-  from fontbakery.profiles.cmap import com_google_fonts_check_all_glyphs_have_codepoints as check
+    """ Check all glyphs have codepoints assigned. """
+    from fontbakery.profiles.cmap import com_google_fonts_check_all_glyphs_have_codepoints as check
 
-  # our reference Mada SemiBold is know to be good here.
-  ttFont = TTFont(TEST_FILE("mada/Mada-SemiBold.ttf"))
-  assert_PASS(check(ttFont),
-              'with a good font.')
+    # our reference Mada SemiBold is know to be good here.
+    ttFont = TTFont(TEST_FILE("mada/Mada-SemiBold.ttf"))
+    assert_PASS(check(ttFont),
+                'with a good font.')
 
-  # This is a silly way to break the font.
-  # A much better test would rather use a real font file that has the problem.
-  ttFont['cmap'].tables[0].cmap[None] = "foo"
+    # This is a silly way to break the font.
+    # A much better test would rather use a real font file that has the problem.
+    ttFont['cmap'].tables[0].cmap[None] = "foo"
 
-  assert_results_contain(check(ttFont),
-                         FAIL, 'glyph-lacks-codepoint',
-                         'with a font in which a glyph'
-                         ' lacks a unicode codepoint assignment.')
+    assert_results_contain(check(ttFont),
+                           FAIL, 'glyph-lacks-codepoint',
+                           'with a font in which a glyph'
+                           ' lacks a unicode codepoint assignment.')
 

@@ -26,96 +26,96 @@ from fontbakery.checkrunner import (
             )
 
 class FontbakeryReporter:
-  def __init__(self, is_async=False, runner=None):
-    self._started = None
-    self._ended = None
-    self._order = None
-    self._results = [] # ENDCHECK events in order of appearance
-    self._indexes = {}
-    self._tick = 0
-    self._counter = Counter()
+    def __init__(self, is_async=False, runner=None):
+        self._started = None
+        self._ended = None
+        self._order = None
+        self._results = [] # ENDCHECK events in order of appearance
+        self._indexes = {}
+        self._tick = 0
+        self._counter = Counter()
 
-    # Runner should know if it is async!
-    self.is_async = is_async
-    self.runner = runner
+        # Runner should know if it is async!
+        self.is_async = is_async
+        self.runner = runner
 
-    self._worst_check_status = None
+        self._worst_check_status = None
 
-  def run(self, order=None):
-    """
-    self.runner must be present
-    """
-    for event in self.runner.run(order=order):
-      self.receive(event)
+    def run(self, order=None):
+        """
+        self.runner must be present
+        """
+        for event in self.runner.run(order=order):
+            self.receive(event)
 
-  @property
-  def order(self):
-    return self._order
+    @property
+    def order(self):
+        return self._order
 
-  def _get_key(self, identity):
-    section, check, iterargs = identity
-    return (str(section) if section else section
-          , str(check) if check else check
-          , iterargs
-          )
+    def _get_key(self, identity):
+        section, check, iterargs = identity
+        return (str(section) if section else section
+              , str(check) if check else check
+              , iterargs
+              )
 
-  def _get_index(self, identity):
-    key = self._get_key(identity)
-    try:
-      return self._indexes[key]
-    except KeyError:
-      self._indexes[key] = len(self._indexes)
-      return self._indexes[key]
+    def _get_index(self, identity):
+        key = self._get_key(identity)
+        try:
+            return self._indexes[key]
+        except KeyError:
+            self._indexes[key] = len(self._indexes)
+            return self._indexes[key]
 
-  def _set_order(self, order):
-    self._order = tuple(order)
-    length = len(self._order)
-    self._counter['(not finished)'] = length - len(self._results)
-    self._indexes = dict(zip(map(self._get_key, self._order), range(length)))
+    def _set_order(self, order):
+        self._order = tuple(order)
+        length = len(self._order)
+        self._counter['(not finished)'] = length - len(self._results)
+        self._indexes = dict(zip(map(self._get_key, self._order), range(length)))
 
-  def _cleanup(self, event):
-    pass
+    def _cleanup(self, event):
+        pass
 
-  def _output(self, event):
-    pass
+    def _output(self, event):
+        pass
 
-  def _register(self, event):
-    status, message, identity = event
-    self._tick += 1
-    if status == START:
-      self._set_order(message)
-      self._started = event
+    def _register(self, event):
+        status, message, identity = event
+        self._tick += 1
+        if status == START:
+            self._set_order(message)
+            self._started = event
 
-    if status == END:
-      self._ended = event
+        if status == END:
+            self._ended = event
 
-    if status == ENDCHECK:
-      self._results.append(event)
-      self._counter[message.name] += 1
-      self._counter['(not finished)'] -= 1
+        if status == ENDCHECK:
+            self._results.append(event)
+            self._counter[message.name] += 1
+            self._counter['(not finished)'] -= 1
 
-  @property
-  def worst_check_status(self):
-    """ Returns a status or None if there was no check result """
-    return self._worst_check_status
+    @property
+    def worst_check_status(self):
+        """ Returns a status or None if there was no check result """
+        return self._worst_check_status
 
-  def receive(self, event):
-    status, message, identity = event
-    if self._started is None and status != START:
-      raise ProtocolViolationError('Received Event before status START: '\
-                                      ' {} {}.'.format(status, message))
-    if self._ended:
-      status, message, identity = event
-      raise ProtocolViolationError('Received Event after status END: '\
-                                        '{} {}.'.format(status, message))
+    def receive(self, event):
+        status, message, identity = event
+        if self._started is None and status != START:
+            raise ProtocolViolationError(f'Received Event before status START:'
+                                         f' {status} {message}.')
+        if self._ended:
+            status, message, identity = event
+            raise ProtocolViolationError(f'Received Event after status END:'
+                                         f' {status} {message}.')
 
-    if status is ENDCHECK and (self._worst_check_status is None \
-                           or self._worst_check_status < message):
-      # we only record ENDCHECK, because check runner may in the future
-      # have tools to upgrade/downgrade the actually worst status
-      # this should be future proof.
-      self._worst_check_status = message
+        if status is ENDCHECK and (self._worst_check_status is None \
+                                   or self._worst_check_status < message):
+            # we only record ENDCHECK, because check runner may in the future
+            # have tools to upgrade/downgrade the actually worst status
+            # this should be future proof.
+            self._worst_check_status = message
 
-    self._register(event)
-    self._cleanup(event)
-    self._output(event)
+        self._register(event)
+        self._cleanup(event)
+        self._output(event)
