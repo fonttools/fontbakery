@@ -182,12 +182,17 @@ def ArgumentParser(profile, profile_arg=True):
         raise argparse.ArgumentTypeError(f'Invalid value "{value}" '
                             'must be zero or a positive integer value.')
     return int_value
-  argument_parser.add_argument('-j','--jobs', default=0, const=os.cpu_count(), type=positive_int,
-                      nargs='?', metavar='JOBS', dest='multiprocessing',
-                      help='Use multi-processing to run the checks. The argument is the\n'
-                      'number of worker processes. Without argument, cpu count auto\n'
-                      'detection is used( = %(const)s). Use 0 to run in single-processing \n'
-                      'mode (default %(default)s).'
+  argument_parser.add_argument('-J','--jobs', default=0, type=positive_int,
+                      metavar='JOBS', dest='multiprocessing',
+                      help=f'Use multi-processing to run the checks. The argument is the number\n'
+                      'of worker processes. A sensible number is the cpu count of your\n'
+                      f'system, detected: {os.cpu_count()}. As an automated shortcut see -j/--auto-jobs.\n'
+                      'Use 0 to run in single-processing mode (default %(default)s).'
+                      )
+  argument_parser.add_argument('-j','--auto-jobs', const=os.cpu_count(),
+                      action='store_const', dest='multiprocessing',
+                      help='Use the auto detected cpu count (= %(const)s) as number of worker processes\n'
+                      'in multi-processing. This is equivalent to : `--jobs %(const)s`'
                       )
   return argument_parser, values_keys
 
@@ -307,7 +312,7 @@ def main(profile=None, values=None):
     argument_parser.print_usage()
     sys.exit(1)
 
-  is_async = args.multiprocessing in (0, 1)
+  is_async = args.multiprocessing != 0
 
   # the most verbose loglevel wins
   loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
