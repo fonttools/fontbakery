@@ -11,6 +11,7 @@ Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
+import os
 import types
 from collections import OrderedDict, Counter
 from functools import partial, wraps
@@ -21,6 +22,7 @@ import json
 import logging
 from typing import Dict, Any, Iterable
 import re
+import inspect
 
 from fontbakery.callable import ( FontbakeryCallable
                                 , FontBakeryCheck
@@ -952,7 +954,8 @@ class Profile:
              , expected_values=None
              , default_section=None
              , check_skip_filter=None
-             , profile_tag=None):
+             , profile_tag=None
+             , module_spec=None):
     '''
       sections: a list of sections, which are ideally ordered sets of
           individual checks.
@@ -1036,6 +1039,41 @@ class Profile:
                     (profile_tag or self._default_section.name).lower())
 
     self._check_skip_filter = check_skip_filter
+
+    # Used in multiprocessing because pickling the profiles fail on
+    # Mac and Windows. See: googlefonts/fontbakery#2982
+    # module_locator can actually a module.__spec__ but also just a dict
+    # self.module_locator will always be just a dict
+    if module_spec is None:
+      # This is a bit of a hack, but the idea is to reduce boilerplate
+      # when writing modules that directly define a profile.
+      try:
+        frame = inspect.currentframe().f_back
+        while frame:
+          # Note, if __spec__ is a local variable we shpuld be at a
+          # module top level. It should also be the correct ModuleSpec
+          # according to how we do this "usually" (as documented and
+          # practiced as far as I'm aware of), e.g. the profile module
+          # defines a profile object directly by calling a Profile constructor
+          # (e.g. profies.ufo_sources) or indirectly via a profile_factory
+          # (e.g. profiles.google_fonts). Otherwise, if this fails
+          # or finds a wrong ModuleSpec, there's still the option to
+          # pass module_spec as an argument (module.__spec__), which is
+          # actually demonstrated in get_module_profile.
+          if '__spec__' in frame.f_locals:
+            module_spec = frame.f_locals['__spec__']
+            if module_spec and isinstance(module_spec, importlib.machinery.ModuleSpec):
+              break
+            module_spec = None # reset
+          frame = frame.f_back
+      finally:
+        del frame
+
+    # If not module_spec: this is only a problem in multiprocessing, in
+    # that case we'll be failing to access this with an AttributeError.
+    if module_spec is not None:
+      self.module_locator = dict(name=module_spec.name, origin=module_spec.origin)
+
 
   _valid_namespace_types = { 'iterargs': 'iterarg'
                            , 'derived_iterables': 'derived_iterable'
@@ -1820,6 +1858,26 @@ class Profile:
         result.append(check)
     return result
 
+FILE_MODULE_NAME_PREFIX = 'fontbakery.__file_modules.'
+def get_module_from_file(filename):
+  # filename = 'my/path/to/file.py'
+  # module_name = 'file_module.file_py'
+  module_name = f"{FILE_MODULE_NAME_PREFIX}{format(os.path.basename(filename).replace('.', '_'))}"
+  module_spec = importlib.util.spec_from_file_location(module_name, filename)
+  module = importlib.util.module_from_spec(module_spec)
+  module_spec.loader.exec_module(module)
+  # assert module.__file__ == filename
+  return module
+
+def _get_module_from_locator(module_locator):
+  if module_locator['name'].startswith(FILE_MODULE_NAME_PREFIX):
+    return get_module_from_file(module_locator['origin'])
+  # Fails with an appropriate ImportError.
+  return importlib.import_module(module_locator['name'], package=None)
+
+def get_profile_from_module_locator(module_locator):
+  module = _get_module_from_locator(module_locator)
+  return get_module_profile(module)
 
 def get_module_profile(module, name=None):
   """
@@ -1852,6 +1910,7 @@ def get_module_profile(module, name=None):
     if 'profile_factory' not in module.__dict__:
       return None
     default_section = Section(name or module.__name__)
-    profile = module.profile_factory(default_section=default_section)
+    profile = module.profile_factory(default_section=default_section
+                                   , module_spec=module.__spec__)
     profile.auto_register(module.__dict__)
     return profile
