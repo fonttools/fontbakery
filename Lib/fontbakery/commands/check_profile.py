@@ -2,7 +2,7 @@
 # usage:
 # $ fontbakery check-profile fontbakery.profiles.googlefonts -h
 import argparse
-import importlib.util
+from importlib import import_module
 import os
 import sys
 from collections import OrderedDict
@@ -13,6 +13,7 @@ from fontbakery.checkrunner import (
             , ValueValidationError
             , Profile
             , get_module_profile
+            , get_module_from_file
             , DEBUG
             , INFO
             , WARN
@@ -199,16 +200,6 @@ def ArgumentParser(profile, profile_arg=True):
 
 class ArgumentParserError(Exception): pass
 
-
-def get_module_from_file(filename):
-  # filename = 'my/path/to/file.py'
-  # module_name = 'file_module.file_py'
-  module_name = 'file_module.{}'.format(os.path.basename(filename).replace('.', '_'))
-  profile = importlib.util.spec_from_file_location(module_name, filename)
-  module = importlib.util.module_from_spec(profile)
-  profile.loader.exec_module(module)
-  return module
-
 def get_module(name):
   if os.path.isfile(name):
     # This name could also be the name of a module, but if there's a
@@ -216,7 +207,6 @@ def get_module(name):
     # possible to change the directory
     imported = get_module_from_file(name)
   else:
-    from importlib import import_module
     # Fails with an appropriate ImportError.
     imported = import_module(name, package=None)
   return imported

@@ -29,6 +29,7 @@ from fontbakery.checkrunner import (  # NOQA
             , CheckRunner
             , session_protocol_generator
             , drive_session_protocol
+            , get_profile_from_module_locator
             )
 from fontbakery.message import Message
 
@@ -159,7 +160,9 @@ def _worker_jobs_generator(jobs_queue, profile, reporter):
       job = jobs_queue.get(True)
     yield profile.deserialize_identity(job)
 
-def multiprocessing_worker(jobs_queue, results_queue, profile, runner_kwds):
+def multiprocessing_worker(jobs_queue, results_queue, profile_module_locator
+                         , runner_kwds):
+  profile = get_profile_from_module_locator(profile_module_locator)
   runner = CheckRunner(profile, **runner_kwds)
   reporter = WorkerToQueueReporter( results_queue
                                   , profile=profile
@@ -196,9 +199,12 @@ def _multiprocessing_checkrunner(jobs, process_count, *args):
     processes = []
     for _ in range(process_count):
       p = Process(target=multiprocessing_worker,
-                              # NOTE: e.g. profile is pickled here, but
-                              # that seems to be no problem. The other
-                              # arguments seem easier to serialize.
+                              # NOTE: stuff is pickled here, but that
+                              # seems to be no problem despite of
+                              # e.g. pickling a profile (see #2982),
+                              # which was fixed by using profile.module_locator
+                              # instead. The other arguments seem easier
+                              # to pickle.
                               args=(jobs_queue, results_queue, *args))
       processes.append(p)
       p.start()
@@ -217,6 +223,6 @@ def multiprocessing_runner(process_count, runner, runner_kwds):
   session_gen = session_protocol_generator(
                       partial(check_protocol_from_worker_data, profile),
                       runner.order)
-  with _multiprocessing_checkrunner(joblist, process_count, profile,
+  with _multiprocessing_checkrunner(joblist, process_count, profile.module_locator,
                                           runner_kwds) as next_check_gen:
     yield from drive_session_protocol(session_gen, next_check_gen)
