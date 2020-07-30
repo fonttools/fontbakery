@@ -139,7 +139,6 @@ def test_check_monospace():
         PANOSE_Proportion.VERY_EXTENDED,
         PANOSE_Proportion.VERY_CONDENSED,
     ]
-    good_value = ttFont["OS/2"].panose.bProportion
     for bad_value in bad_monospaced_panose_values:
         ttFont["OS/2"].panose.bProportion = bad_value
         # again, we search the expected FAIL because we may algo get an outliers WARN here:

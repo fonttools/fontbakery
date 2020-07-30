@@ -68,10 +68,10 @@ def test_check_glyf_non_transformed_duplicate_components():
     assert_PASS(check(test_font))
 
     # Set qutodbl's components to have the same x,y values
-    glyph = test_font['glyf']['quotedbl'].components[0].x = 0
-    glyph = test_font['glyf']['quotedbl'].components[1].x = 0
-    glyph = test_font['glyf']['quotedbl'].components[0].y = 0
-    glyph = test_font['glyf']['quotedbl'].components[1].y = 0
+    test_font['glyf']['quotedbl'].components[0].x = 0
+    test_font['glyf']['quotedbl'].components[1].x = 0
+    test_font['glyf']['quotedbl'].components[0].y = 0
+    test_font['glyf']['quotedbl'].components[1].y = 0
     assert_results_contain(check(test_font),
                            FAIL, 'found-duplicates')
 
