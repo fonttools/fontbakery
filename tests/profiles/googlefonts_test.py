@@ -1742,7 +1742,6 @@ def test_check_metadata_valid_copyright():
     # Our reference Cabin Regular is known to be bad
     # Since it provides an email instead of a git URL:
     fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    ttFont = TTFont(fontfile)
     family_directory = os.path.dirname(fontfile)
     family_meta = family_metadata(family_directory)
     font_meta = font_metadata(family_meta, fontfile)

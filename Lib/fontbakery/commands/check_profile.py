@@ -225,7 +225,7 @@ def get_profile():
 
     try:
         args, _ = argument_parser.parse_known_args()
-    except ArgumentParserError as e:
+    except ArgumentParserError:
         # silently fails, the main parser will show usage string.
         return Profile()
     imported = get_module(args.profile)

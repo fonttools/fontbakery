@@ -177,7 +177,7 @@ def test_check_varfont_regular_opsz_coord():
                            'with a bad Regular:opsz coordinate (8)...')
 
     # We try yet another bad value
-    regualr_opticalsize_coord = 14
+    regular_opticalsize_coord = 14
 
     # And it must also WARN the test
     assert_results_contain(check(ttFont, regular_opticalsize_coord),

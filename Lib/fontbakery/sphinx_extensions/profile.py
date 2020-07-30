@@ -365,8 +365,6 @@ class PyFontBakeryObject(PyObject):
         # print('>>>>>>>>>>>>>>>>>handle_signature:', sig, signode)
         # > >>>>>>>>>>>>>>>>>handle_signature: com.google.fonts/check/all_glyphs_have_codepoints:::36:::com_google_fonts_check_all_glyphs_have_codepoints(ttFont) <desc_signature first="False"/>
 
-        keepsig = f'sig{sig}'
-
         cid = None
         if ':::' in sig:
             cid, lineno, sig = sig.split(':::')

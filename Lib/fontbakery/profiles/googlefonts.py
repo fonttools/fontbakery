@@ -368,7 +368,7 @@ def com_google_fonts_check_description_valid_html(descfile, description):
 
     from lxml import etree
     try:
-        html = etree.fromstring("<html>" + description + "</html>")
+        etree.fromstring("<html>" + description + "</html>")
     except Exception as e:
         passed = False
         yield FAIL,\

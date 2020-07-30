@@ -1220,7 +1220,6 @@ class Profile:
                 return False
         numerical_check_ids = [c for c in registered_checks if is_numerical_id(c)]
         if numerical_check_ids:
-            num = len(numerical_check_ids)
             list_of_checks = "\t- " + "\n\t- ".join(numerical_check_ids)
             raise SetupError(f'\n'
                              f'\n'
