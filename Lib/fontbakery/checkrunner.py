@@ -249,6 +249,7 @@ class CheckRunner:
                , custom_order=None
                , explicit_checks=None
                , exclude_checks=None
+               , use_cache=True
                ):
         # TODO: transform all iterables that are list like to tuples
         # to make sure that they won't change anymore.
@@ -278,10 +279,15 @@ class CheckRunner:
                                        f'{message}')
         self._values = values
 
+        self.use_cache = use_cache
         self._cache = {
             'conditions': {}
           , 'order': None
         }
+
+    def clearCache(self):
+        # no need to clear 'order' cache IMO
+        self._cache['conditions'] = {}
 
     @property
     def iterargs(self):
@@ -413,12 +419,11 @@ class CheckRunner:
 
     def _get_condition(self, name, iterargs, path=None):
         # conditions are evaluated lazily
-        usecache = True #False
         used_iterargs = self._filter_condition_used_iterargs(name, iterargs)
         key = (name, used_iterargs)
-        if not usecache or key not in self._cache['conditions']:
+        if not self.use_cache or key not in self._cache['conditions']:
             err, val = self._evaluate_condition(name, used_iterargs, path)
-            if usecache:
+            if self.use_cache:
                 self._cache['conditions'][key] = err, val
         else:
             err, val = self._cache['conditions'][key]
