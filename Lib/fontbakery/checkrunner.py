@@ -735,6 +735,31 @@ def distribute_generator(gen, targets_callbacks):
         for target in targets_callbacks:
             target(item)
 
+# for code testing
+def execute_check_once(module_or_profile, check_id, values, condition_overrides=None):
+    """ Run a check in the profile once and return a list of its result statuses.
+
+        This is a helper function intended for code testing only. as such
+        it is a bit crude. Don't use it as a general API. Don't consider it
+        mature.
+    """
+    profile = module_or_profile if isinstance(module_or_profile, Profile) \
+                                else get_module_profile(module_or_profile)
+    runner = CheckRunner(profile, values, explicit_checks=[check_id])
+    for check_identity in runner.order:
+        _, check, iterargs = check_identity
+        if check.id != check_id:
+            continue
+        for name, value in condition_overrides.items():
+            # write the conditions directly to the iterargs of the check identity
+            used_iterargs = runner._filter_condition_used_iterargs(name, iterargs)
+            key = (name, used_iterargs)
+            # error, value
+            runner._cache['conditions'][key] = None, value
+        # removes STARTCHECK and ENDCHECK
+        return list(runner._run_check(check, iterargs))[1:-1]
+    raise KeyError('Check with id "{check_id}" not found.')
+
 class Section:
     """ An ordered set of checks.
 
