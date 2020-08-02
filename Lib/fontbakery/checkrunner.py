@@ -750,12 +750,13 @@ def execute_check_once(module_or_profile, check_id, values, condition_overrides=
         _, check, iterargs = check_identity
         if check.id != check_id:
             continue
-        for name, value in condition_overrides.items():
-            # write the conditions directly to the iterargs of the check identity
-            used_iterargs = runner._filter_condition_used_iterargs(name, iterargs)
-            key = (name, used_iterargs)
-            # error, value
-            runner._cache['conditions'][key] = None, value
+        if condition_overrides:
+            for name, value in condition_overrides.items():
+                # write the conditions directly to the iterargs of the check identity
+                used_iterargs = runner._filter_condition_used_iterargs(name, iterargs)
+                key = (name, used_iterargs)
+                # error, value
+                runner._cache['conditions'][key] = None, value
         # removes STARTCHECK and ENDCHECK
         return list(runner._run_check(check, iterargs))[1:-1]
     raise KeyError('Check with id "{check_id}" not found.')
