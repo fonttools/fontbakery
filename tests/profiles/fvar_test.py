@@ -1,14 +1,7 @@
-from fontbakery.checkrunner import (
-              DEBUG
-            , INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
-            , FAIL
-            )
-from fontbakery.utils import (assert_PASS,
-                              assert_results_contain)
+from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR,
+                                    SKIP, PASS, FAIL)
+from fontbakery.codetesting import (assert_PASS,
+                                    assert_results_contain)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 

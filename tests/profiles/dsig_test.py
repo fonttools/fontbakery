@@ -1,6 +1,6 @@
-from fontbakery.utils import (TEST_FILE,
-                              assert_PASS,
-                              assert_results_contain)
+from fontbakery.codetesting import (TEST_FILE,
+                                    assert_PASS,
+                                    assert_results_contain)
 
 from fontbakery.checkrunner import (
               DEBUG

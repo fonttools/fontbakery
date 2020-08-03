@@ -759,7 +759,7 @@ def execute_check_once(module_or_profile, check_id, values, condition_overrides=
                 runner._cache['conditions'][key] = None, value
         # removes STARTCHECK and ENDCHECK
         return list(runner._run_check(check, iterargs))[1:-1]
-    raise KeyError('Check with id "{check_id}" not found.')
+    raise KeyError(f'Check with id "{check_id}" not found.')
 
 class Section:
     """ An ordered set of checks.

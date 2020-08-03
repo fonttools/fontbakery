@@ -1,18 +1,10 @@
 import pytest
 from fontTools.ttLib import TTFont
 
-from fontbakery.utils import (TEST_FILE,
-                              assert_PASS,
-                              assert_results_contain)
-from fontbakery.checkrunner import (
-              DEBUG
-            , INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
-            , FAIL
-            )
+from fontbakery.codetesting import (TEST_FILE,
+                                    assert_PASS,
+                                    assert_results_contain)
+from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 

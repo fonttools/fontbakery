@@ -8,22 +8,14 @@ from fontbakery.constants import (NameID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
-from fontbakery.utils import (assert_results_contain,
-                              assert_PASS,
-                              portable_path,
-                              TEST_FILE)
-
-from fontbakery.profiles import googlefonts
-from fontbakery.checkrunner import (
-              DEBUG
-            , INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
-            , FAIL
-            , ENDCHECK
-            )
+from fontbakery.codetesting import (get_check,
+                                    assert_results_contain,
+                                    assert_PASS,
+                                    portable_path,
+                                    TEST_FILE)
+from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR,
+                                    SKIP, PASS, FAIL, ENDCHECK)
+from fontbakery.profiles import googlefonts as googlefonts_profile
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -631,21 +623,10 @@ def test_condition__registered_vendor_ids():
     assert "????" not in registered_ids
 
 
-def get_check(profile, checkid):
-    def _checker(value):
-        from fontbakery.fonts_profile import execute_check_once
-        if isinstance(value, str):
-            return execute_check_once(profile, checkid, value)
-
-        elif isinstance(value, TTFont):
-            return execute_check_once(profile, checkid, value.reader.file.name,
-                                      {'ttFont': value})
-    return _checker
-
-
 def test_check_vendor_id():
     """ Checking OS/2 achVendID """
-    check = get_check(googlefonts, "com.google.fonts/check/vendor_id")
+    check = get_check(googlefonts_profile,
+                      "com.google.fonts/check/vendor_id")
 
     # Let's start with our reference Merriweather Regular
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
@@ -709,7 +690,8 @@ def test_check_name_unwanted_chars():
 
 def test_check_usweightclass():
     """ Checking OS/2 usWeightClass. """
-    check = get_check(googlefonts, "com.google.fonts/check/usweightclass")
+    check = get_check(googlefonts_profile,
+                      "com.google.fonts/check/usweightclass")
 
     # Our reference Mada Regular is know to be bad here.
     font = TEST_FILE("mada/Mada-Regular.ttf")
@@ -862,7 +844,8 @@ def test_check_name_description_max_length():
 
 def test_check_hinting_impact():
     """ Show hinting filesize impact. """
-    check = get_check(googlefonts, "com.google.fonts/check/hinting_impact")
+    check = get_check(googlefonts_profile,
+                      "com.google.fonts/check/hinting_impact")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_results_contain(check(font),
@@ -873,7 +856,8 @@ def test_check_hinting_impact():
 
 def test_check_name_version_format():
     """ Version format is correct in 'name' table ? """
-    check = get_check(googlefonts, "com.google.fonts/check/name/version_format")
+    check = get_check(googlefonts_profile,
+                      "com.google.fonts/check/name/version_format")
 
     # Our reference Mada Regular font is good here:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -930,7 +914,9 @@ def NOT_IMPLEMENTED_test_check_old_ttfautohint():
 ])
 def test_check_has_ttfautohint_params(expected_status, expected_keyword, reason, fontfile):
     """ Font has ttfautohint params? """
-    check = get_check(googlefonts, "com.google.fonts/check/has_ttfautohint_params")
+    check = get_check(googlefonts_profile,
+                      "com.google.fonts/check/has_ttfautohint_params")
+
     assert_results_contain(check(TTFont(fontfile)),
                            expected_status, expected_keyword,
                            reason)
@@ -938,7 +924,8 @@ def test_check_has_ttfautohint_params(expected_status, expected_keyword, reason,
 
 def test_check_epar():
     """ EPAR table present in font? """
-    check = get_check(googlefonts, "com.google.fonts/check/epar")
+    check = get_check(googlefonts_profile,
+                      "com.google.fonts/check/epar")
 
     # Our reference Mada Regular lacks an EPAR table:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -972,7 +959,8 @@ def NOT_IMPLEMENTED_test_check_gasp():
 
 def test_check_name_familyname_first_char():
     """ Make sure family name does not begin with a digit. """
-    check = get_check(googlefonts, "com.google.fonts/check/name/familyname_first_char")
+    check = get_check(googlefonts_profile,
+                      "com.google.fonts/check/name/familyname_first_char")
 
     # Our reference Mada Regular is known to be good
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -1063,7 +1051,8 @@ def test_split_camel_case_condition():
 
 def test_check_metadata_listed_on_gfonts():
     """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
-    check = get_check(googlefonts, "com.google.fonts/check/metadata/listed_on_gfonts")
+    check = get_check(googlefonts_profile,
+                      "com.google.fonts/check/metadata/listed_on_gfonts")
     
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
     # Our reference FamilySans family is a just a generic example
@@ -1455,7 +1444,8 @@ def test_check_metadata_nameid_full_name():
 
 def test_check_metadata_nameid_font_name():
     """ METADATA.pb font.name value should be same as the family name declared on the name table. """
-    check = get_check(googlefonts, "com.google.fonts/check/metadata/nameid/font_name")
+    check = get_check(googlefonts_profile,
+                      "com.google.fonts/check/metadata/nameid/font_name")
 
     # Our reference Merriweather-Regular is know to have good fullname metadata
     font = TEST_FILE("merriweather/Merriweather-Regular.ttf")

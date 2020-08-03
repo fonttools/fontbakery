@@ -1,8 +1,8 @@
 import os
 import pytest
 
-from fontbakery.utils import (TEST_FILE,
-                              assert_results_contain)
+from fontbakery.codetesting import (TEST_FILE,
+                                    assert_results_contain)
 from fontbakery.checkrunner import ERROR
 
 

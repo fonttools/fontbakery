@@ -2,9 +2,12 @@ import os
 
 from fontTools.ttLib import TTFont
 from fontbakery.checkrunner import (PASS, WARN, FAIL)
-from fontbakery.utils import (TEST_FILE,
-                              assert_PASS,
-                              assert_results_contain)
+from fontbakery.codetesting import (get_check,
+                                    portable_path,
+                                    TEST_FILE,
+                                    assert_PASS,
+                                    assert_results_contain)
+from fontbakery.profiles import adobefonts as adobefonts_profile
 
 def test_check_family_consistent_upm():
     from fontbakery.profiles.adobefonts import (
@@ -30,6 +33,28 @@ def test_check_family_consistent_upm():
                            FAIL, None) # FIXME: This needs a message keyword
 
 
+# TODO:
+#
+#def test_check_family_consistent_upm():
+#    check = get_check(adobefonts_profile,
+#                      "com.adobe.fonts/check/family/consistent_upm")
+#
+#    # these fonts have a consistent unitsPerEm of 1000:
+#    filenames = ['SourceSansPro-Regular.otf',
+#                 'SourceSansPro-Bold.otf',
+#                 'SourceSansPro-It.otf']
+#    fonts = [os.path.join(portable_path("data/test/source-sans-pro/OTF"), filename)
+#             for filename in filenames]
+#    ttFonts = [TTFont(font) for font in fonts]
+#
+#    # try fonts with consistent UPM (i.e. 1000)
+#    assert_PASS(check(ttFonts))
+#
+#    # now try with one font with a different UPM (i.e. 2048)
+#    ttFonts[1]['head'].unitsPerEm = 2048
+#    assert_results_contain(check(ttFonts),
+#                           FAIL, None) # FIXME: This needs a message keyword
+
 def test_get_family_checks():
     from fontbakery.profiles.adobefonts import profile
     family_checks = profile.get_family_checks()
@@ -46,48 +71,41 @@ def test_get_family_checks():
         'com.google.fonts/check/family/win_ascent_and_descent',
         'com.google.fonts/check/family/vertical_metrics',
         # 'com.google.fonts/check/superfamily/vertical_metrics', # should it be included here?
-                                                                 # or should we have a get_superfamily_checks() method?
+                                                                 # or should we have
+                                                                 # a get_superfamily_checks() method?
     }
     assert family_check_ids == expected_family_check_ids
 
 
 def test_check_find_empty_letters():
-    from fontbakery.profiles.adobefonts import \
-        com_adobe_fonts_check_find_empty_letters as check
+    check = get_check(adobefonts_profile,
+                      "com.adobe.fonts/check/find_empty_letters")
 
     # this font has inked glyphs for all letters
-    font_path = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
-    test_font = TTFont(font_path)
-    assert_PASS(check(test_font))
+    font = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
+    assert_PASS(check(font))
 
     # this font has empty glyphs for several letters,
     # the first of which is 'B' (U+0042)
-    font_path = TEST_FILE('familysans/FamilySans-Regular.ttf')
-    test_font = TTFont(font_path)
-
-    message = assert_results_contain(check(test_font),
+    font = TEST_FILE('familysans/FamilySans-Regular.ttf')
+    message = assert_results_contain(check(font),
                                      FAIL, None) # FIXME:
                                                  # This needs a message keyword
     assert message == "U+0042 should be visible, but its glyph ('B') is empty."
 
 
 def test_check_missing_whitespace():
-    """
-    Check that overridden test for nbsp yields WARN rather than FAIL.
-    """
-    from fontbakery.profiles.adobefonts import \
-        com_google_fonts_check_whitespace_glyph_nbsp as check
-    from fontbakery.profiles.shared_conditions import missing_whitespace_chars
+    """ Check that overridden test for nbsp yields WARN rather than FAIL. """
+    check = get_check(adobefonts_profile,
+                      "com.google.fonts/check/whitespace_glyphs:adobefonts")
 
-    font_path = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
-    test_font = TTFont(font_path)
-    missing = missing_whitespace_chars(test_font)
-    assert_PASS(check(test_font, missing))
+    font = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
+    ttFont = TTFont(font)
+    assert_PASS(check(ttFont))
 
     # remove U+00A0, status should be WARN (standard check would be FAIL)
-    for subtable in test_font['cmap'].tables:
+    for subtable in ttFont['cmap'].tables:
         subtable.cmap.pop(0x00A0, None)
-    missing = missing_whitespace_chars(test_font)
-    assert_results_contain(check(test_font, missing),
+    assert_results_contain(check(ttFont),
                            WARN, None) # FIXME: This needs a message keyword
 
