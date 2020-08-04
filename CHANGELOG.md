@@ -13,6 +13,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont_duplicate_instance_names]**: Avoid duplicate instance names in variable fonts (issue #2986)
   - **[com.google.fonts/check/metadata/includes_production_subsets]**: ensure METADATA.pb files include production subsets. (issue #2989)
 
+### Changes to existing checks
+  - **[com.google.fonts/check/font_version]**: fixed tolerance for warnings (PR #3009)
+
 ### Bugfixes
   - Fix ERROR in com.google.fonts/check/STAT_strings (issue #2992)
 

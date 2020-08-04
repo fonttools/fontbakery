@@ -122,7 +122,7 @@ def test_check_font_version():
     # See more detailed discussion at:
     # https://github.com/googlefonts/fontbakery/issues/2006
     test_font = TTFont(test_font_path)
-    test_font["head"].fontRevision = 1.00099
+    test_font["head"].fontRevision = 1.00098
     test_font["name"].setName("Version 1.001", 5, 1, 0, 0x0)
     test_font["name"].setName("Version 1.001", 5, 3, 1, 0x409)
 

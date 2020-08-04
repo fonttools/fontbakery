@@ -110,9 +110,9 @@ def com_google_fonts_check_font_version(ttFont):
     # Get font version from the head table as an exact Fraction.
     head_version = fractions.Fraction(ttFont["head"].fontRevision)
 
-    # 0.5/0x10000 is the best achievable when converting a decimal
+    # 1/0x10000 is the best achievable when converting a decimal
     # to 16.16 Fixed point.
-    warn_tolerance = 0.5/0x10000
+    warn_tolerance = 1/0x10000
     # Some tools aren't that accurate and only care to do a
     # conversion to 3 decimal places.
     # 1/2000 is the tolerance for accepting equality to 3 decimal places.
