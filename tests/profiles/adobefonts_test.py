@@ -33,27 +33,27 @@ def test_check_family_consistent_upm():
                            FAIL, None) # FIXME: This needs a message keyword
 
 
-# TODO:
-#
-#def test_check_family_consistent_upm():
-#    check = get_check(adobefonts_profile,
-#                      "com.adobe.fonts/check/family/consistent_upm")
-#
-#    # these fonts have a consistent unitsPerEm of 1000:
-#    filenames = ['SourceSansPro-Regular.otf',
-#                 'SourceSansPro-Bold.otf',
-#                 'SourceSansPro-It.otf']
-#    fonts = [os.path.join(portable_path("data/test/source-sans-pro/OTF"), filename)
-#             for filename in filenames]
-#    ttFonts = [TTFont(font) for font in fonts]
-#
-#    # try fonts with consistent UPM (i.e. 1000)
-#    assert_PASS(check(ttFonts))
-#
-#    # now try with one font with a different UPM (i.e. 2048)
-#    ttFonts[1]['head'].unitsPerEm = 2048
-#    assert_results_contain(check(ttFonts),
-#                           FAIL, None) # FIXME: This needs a message keyword
+def test_check_family_consistent_upm_new_style():
+    # these fonts have a consistent unitsPerEm of 1000:
+    filenames = ['SourceSansPro-Regular.otf',
+                 'SourceSansPro-Bold.otf',
+                 'SourceSansPro-It.otf']
+    fonts = [os.path.join(portable_path("data/test/source-sans-pro/OTF"), filename)
+                 for filename in filenames]
+    from fontbakery.codetesting import FontsTestingContext
+    check = FontsTestingContext(adobefonts_profile,
+                      'com.adobe.fonts/check/family/consistent_upm',
+                      fonts)
+
+
+    # try fonts with consistent UPM (i.e. 1000)
+    assert_PASS(check())
+
+    ttFonts = check.args['ttFonts']
+    # now try with one font with a different UPM (i.e. 2048)
+    ttFonts[1]['head'].unitsPerEm = 2048
+    assert_results_contain(check(),
+                           FAIL, None) # FIXME: This needs a message keyword
 
 def test_get_family_checks():
     from fontbakery.profiles.adobefonts import profile

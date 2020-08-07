@@ -1405,27 +1405,22 @@ def test_check_metadata_nameid_post_script_name():
 
 def test_check_metadata_nameid_full_name():
     """ METADATA.pb font.fullname value matches fullname declared on the name table ? """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_nameid_full_name as check,
-                font_metadata,
-                family_metadata)
-    import os
 
-    # Our reference Merriweather-Regular is know to be good here
-    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    family_directory = os.path.dirname(font)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, font)
-    ttFont = TTFont(font)
+    from fontbakery.codetesting import FontsTestingContext
+    check = FontsTestingContext(googlefonts_profile,
+                      'com.google.fonts/check/metadata/nameid/full_name',
+                      TEST_FILE("merriweather/Merriweather-Regular.ttf")
+                      )
 
-    assert_PASS(check(ttFont, font_meta),
-                'with a good font...')
+    assert_PASS(check(), 'with a good font...')
 
     # here we change the font.fullname on the METADATA.pb
     # to introduce a "mismatch" error condition:
+    font_meta = check.args['font_metadata']
     good = font_meta.full_name
     font_meta.full_name = good + "bad-suffix"
-    assert_results_contain(check(ttFont, font_meta),
+
+    assert_results_contain(check(),
                            FAIL, 'mismatch',
                            'with mismatching fullname values...')
 
@@ -1434,10 +1429,11 @@ def test_check_metadata_nameid_full_name():
 
     # And here we remove all FULL_FONT_NAME entries
     # in order to get a "lacks-entry" error condition:
+    ttFont = check.args['ttFont']
     for i, name in enumerate(ttFont["name"].names):
         if name.nameID == NameID.FULL_FONT_NAME:
             del ttFont["name"].names[i]
-    assert_results_contain(check(ttFont, font_meta),
+    assert_results_contain(check(),
                            FAIL, 'lacks-entry',
                            'when a font lacks FULL_FONT_NAME entries in its name table...')
 
