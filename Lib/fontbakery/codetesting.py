@@ -82,6 +82,98 @@ def get_check(profile, checkid):
 #                                          {'ttFonts': value})
     return _checker
 
+class TestingContext:
+    """ CAUTION: this uses a lot of "private" methods and properties
+    of CheckRunner, in order to make unit testing different cases simpler.
+
+    This is not intended to run in production, however, if that is desired
+    we may or may not find inspiration here on how to implement a proper
+    public CheckRunner API.
+
+    Not build for performance either!
+
+    The idea is that we can run a check again and again, but change it's
+    arguments as we go. So we can test different conditions.
+
+    An initial run can be with unaltered arguments, as CheckRunner would
+    produce itself.
+
+
+    Example:
+    > import fontbakery.profiles.googlefonts as googlefonts_profile
+    > check = TestingContext(googlefonts_profile,
+            'com.google.fonts/check/some_id',
+            {'fonts': ['path/to/font.ttf']})
+    > first_result = check(initialTTFont) # can be called with overrides
+    > check.args['ttFont'] = modifidTTFont
+    > second_result = check()
+
+    """
+    def __init__(self, module_or_profile, check_id, values):
+        self.profile = module_or_profile if isinstance(module_or_profile, Profile) \
+                                else get_module_profile(module_or_profile)
+        self.runner = CheckRunner(self.profile, values, explicit_checks=[check_id])
+        self.check_identity = None
+        self.check_section = None
+        self.check = None
+        self.check_iterargs = None
+
+        for check_identity in self.runner.order:
+            _, check, _ = check_identity
+            if check.id != check_id:
+                continue
+            self.check_identity = check_identity
+            self.check_section, self.check, self.check_iterargs = check_identity
+            break
+        if self.check_identity is None:
+            raise KeyError(f'Check with id "{check_id}" not found.')
+        self.args = None
+
+    def get_args(self, condition_overrides=None):
+        """ This clears the checkrunner cache when called!
+        """
+        self.runner.clearCache()
+        if condition_overrides is not None:
+            for name_key, value in condition_overrides.items():
+                if isinstance(name_key, str):
+                    # this is a simplified form of a cache key:
+                    # write the conditions directly to the iterargs of the check identity
+                    used_iterargs = self.runner._filter_condition_used_iterargs(name_key, self.check_iterargs)
+                    key = (name_key, used_iterargs)
+                else:
+                    # Full control for the caller, who has to inspect how
+                    # the desired key needs to be set up.
+                    key = name_key
+                # error, value
+                self.runner._cache['conditions'][key] = None, value
+        args = self.runner._get_args(self.check, self.check_iterargs)
+        # args that are derived iterables are generators that must be
+        # converted to lists, otherwise we end up with exhausted
+        # generators after the first check execution.
+        for k in args:
+            if self.profile.get_type(k, None) == 'derived_iterables':
+                args[k] = list(args[k])
+        return args
+
+    def __call__(self,**condition_overrides):
+        if len(condition_overrides) or self.args is None:
+            args = self.get_args(condition_overrides=condition_overrides)
+        else:
+            # will use self.args
+            args = None
+        return self.call(args)
+
+    def call(self, args=None):
+        if args is not None:
+            self.args = args
+        return list(self.runner._exec_check(self.check, self.args))
+
+class FontsTestingContext(TestingContext):
+    def __init__(self, profile, check_id, fonts):
+        if isinstance(fonts, str):
+            fonts = [fonts]
+        values = {'fonts': fonts}
+        super().__init__(profile, check_id, values)
 
 def portable_path(p):
     import os
