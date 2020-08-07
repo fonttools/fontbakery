@@ -14,25 +14,71 @@
 # limitations under the License.
 #
 
+from fontbakery.checkrunner import CheckRunner, Profile, get_module_profile
+
+
+def execute_check_once(module_or_profile, check_id, values, condition_overrides=None):
+    """ Run a check in the profile once and return a list of its result statuses.
+
+        This is a helper function intended for code testing only. as such
+        it is a bit crude. Don't use it as a general API. Don't consider it
+        mature.
+    """
+    profile = module_or_profile if isinstance(module_or_profile, Profile) \
+                                else get_module_profile(module_or_profile)
+    runner = CheckRunner(profile, values, explicit_checks=[check_id])
+    for check_identity in runner.order:
+        _, check, iterargs = check_identity
+        if check.id != check_id:
+            continue
+
+        if condition_overrides:
+            for name, value in condition_overrides.items():
+                # write the conditions directly to the iterargs of the check identity
+                used_iterargs = runner._filter_condition_used_iterargs(name, iterargs)
+                key = (name, used_iterargs)
+                # error, value
+                runner._cache['conditions'][key] = None, value
+        # removes STARTCHECK and ENDCHECK
+        return list(runner._run_check(check, iterargs))[1:-1]
+    raise KeyError(f'Check with id "{check_id}" not found.')
+
+# for code testing
+def execute_check_once_fonts(module_or_profile, check_id, font, condition_overrides=None):
+    """Run a check of profile once, with font (file path) as value and/or
+    with condition_overrides.
+
+    Example that doesn't use `font`:
+
+    > from fontbakery.fonts_profile import execute_check_once
+    > from fontbakery.profiles import gdef
+    > from fontTools.ttLib.ttFont import TTFont
+    > ttf = TTFont('/path/to/Family-Regular.ttf')
+    > execute_check_once(gdef, 'com.google.fonts/check/gdef_spacing_marks', 'not a file', {'ttFont': ttf})
+    [(<Status PASS>,
+          'Font does not has spacing glyphs in the GDEF mark glyph class.')]
+    """
+    values = {'fonts': [font]}
+    return execute_check_once(module_or_profile, check_id, values, condition_overrides)
+
 def get_check(profile, checkid):
     def _checker(value):
         from fontTools.ttLib import TTFont
-        from fontbakery.fonts_profile import execute_check_once
         if isinstance(value, str):
-            return execute_check_once(profile, checkid, value)
+            return execute_check_once_fonts(profile, checkid, value)
 
         elif isinstance(value, TTFont):
-            return execute_check_once(profile, checkid, value.reader.file.name,
+            return execute_check_once_fonts(profile, checkid, value.reader.file.name,
                                       {'ttFont': value})
 #
 # TODO: I am not sure how to properly handle these cases:
 #
 #        elif isinstance(value, list):
 #            if isinstance(value[0], str):
-#                return execute_check_once(profile, checkid, value)
+#                return execute_check_once_fonts(profile, checkid, value)
 #
 #            elif isinstance(value[0], TTFont):
-#                return execute_check_once(profile, checkid, "",
+#                return execute_check_once_fonts(profile, checkid, "",
 #                                          {'ttFonts': value})
     return _checker
 

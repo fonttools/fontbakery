@@ -4,7 +4,6 @@ Font Bakery CheckRunner is the driver of a font bakery suite of checks.
 
 """
 from fontbakery.checkrunner import Profile
-from fontbakery.checkrunner import execute_check_once as _execute_check_once
 
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 
@@ -62,24 +61,6 @@ fonts_expected_value = ExpectedValue(
     , validator=lambda fonts: (True, None) if len(fonts) \
                                            else (False, 'Value is empty.')
 )
-
-# for code testing
-def execute_check_once(module_or_profile, check_id, font, condition_overrides=None):
-    """Run a check of profile once, with font (file path) as value and/or
-    with condition_overrides.
-
-    Example that doesn't use `font`:
-
-    > from fontbakery.fonts_profile import execute_check_once
-    > from fontbakery.profiles import gdef
-    > from fontTools.ttLib.ttFont import TTFont
-    > ttf = TTFont('/path/to/Family-Regular.ttf')
-    > execute_check_once(gdef, 'com.google.fonts/check/gdef_spacing_marks', 'not a file', {'ttFont': ttf})
-    [(<Status PASS>,
-          'Font does not has spacing glyphs in the GDEF mark glyph class.')]
-    """
-    values = {'fonts': [font]}
-    return _execute_check_once(module_or_profile, check_id, values, condition_overrides)
 
 def profile_factory(**kwds):
     from fontbakery.profiles.shared_conditions import ttFont
