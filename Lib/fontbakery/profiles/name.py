@@ -9,7 +9,7 @@ from fontbakery.constants import (NameID,
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
 profile_imports = [
-    ('.shared_conditions', ('glyph_metrics_stats', ))
+    ('.shared_conditions', ('glyph_metrics_stats', 'is_ttf', 'is_cff'))
 ]
 
 
