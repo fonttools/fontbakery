@@ -352,6 +352,10 @@ def com_google_fonts_check_fontbakery_version():
                 latest_str = line.split('LATEST')[1].strip()
             if '(latest)' in line:
                 is_latest = True
+            if 'DEPRECATION' in line:
+              pip_cmd = ["pip3", "search", "fontbakery"]
+              pip_output = subprocess.check_output(pip_cmd, stderr=subprocess.STDOUT)
+              break
 
         if not (is_latest or is_up_to_date(installed_str, latest_str)):
             failed = True
