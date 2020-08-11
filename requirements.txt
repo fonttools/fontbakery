@@ -5,6 +5,7 @@ font-v==1.0.2
 fontTools[ufo,lxml,unicode]==4.11.0
 lxml==4.5.1
 opentype-sanitizer==8.0.0.post2
+pip-api==0.0.14
 protobuf==3.12.2
 requests==2.23.0
 ttfautohint-py==0.4.3

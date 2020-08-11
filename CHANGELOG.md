@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.8.0 (2020-Jul-??)
+## 0.7.30 (2020-Aug-??)
 ### Note-worthy code changes
   - Adopted 4-spaces indentation. We're changing our codestyle to facilitate collaboration from people who also work with the fontTools and AFDKO codebases. (issue 2997)
   - All rationale text needs to have 8 indentation spaces (because this indentation on the source should not show up on the user-interface when rationale text is printed on the text terminal)
@@ -15,6 +15,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
   - **[com.google.fonts/check/font_version]**: fixed tolerance for warnings (PR #3009)
+  - **[com.google.fonts/check/fontbakery_version]**: use pip_api module and PyPI JSON API instead of invoking command-line pip/pip3 via subprocess (#2966)
 
 ### Bugfixes
   - Fix ERROR in com.google.fonts/check/STAT_strings (issue #2992)
