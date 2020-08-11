@@ -65,6 +65,7 @@ setup(
         'lxml',
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
                                       # (see https://github.com/khaledhosny/ots/pull/182)
+        'pip-api',
         'protobuf>=3.7.0',  # 3.7.0 fixed a bug on parsing some METADATA.pb files
                             # (see https://github.com/googlefonts/fontbakery/issues/2200)
         'requests',

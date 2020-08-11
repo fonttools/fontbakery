@@ -336,38 +336,19 @@ def is_up_to_date(installed, latest):
 )
 def com_google_fonts_check_fontbakery_version():
     """Do we have the latest version of FontBakery installed?"""
+    import json
+    import requests
+    import pip_api
 
-    try:
-        import subprocess
-        installed_str = None
-        latest_str = None
-        is_latest = False
-        failed = False
-        pip_cmd = ["pip", "search", "fontbakery"]
-        pip_output = subprocess.check_output(pip_cmd, stderr=subprocess.STDOUT)
-        for line in pip_output.decode().split('\n'):
-            if 'INSTALLED' in line:
-                installed_str = line.split('INSTALLED')[1].strip()
-            if 'LATEST' in line:
-                latest_str = line.split('LATEST')[1].strip()
-            if '(latest)' in line:
-                is_latest = True
+    pypi_data = requests.get('https://pypi.org/pypi/fontbakery/json')
+    latest = json.loads(pypi_data.content)["info"]["version"]
+    installed = str(pip_api.installed_distributions()["fontbakery"].version)
 
-        if not (is_latest or is_up_to_date(installed_str, latest_str)):
-            failed = True
-            yield FAIL, (f"Current Font Bakery version is {installed_str},"
-                         f" while a newer {latest_str} is already available."
-                         f" Please upgrade it with 'pip install -U fontbakery'")
-        yield INFO, pip_output.decode()
-    except Exception:
-        yield FAIL, ("Unable to detect what's the latest version of"
-                     " FontBakery available. Maybe we're offline?"
-                     " Please check Internet access and try again.")
-    except subprocess.CalledProcessError as e:
-        yield ERROR, ("Running 'pip search fontbakery' returned an error code."
-                      " Output follows :\n\n{}\n").format(e.output.decode())
-
-    if not failed:
+    if not is_up_to_date(installed, latest):
+        yield FAIL, (f"Current Font Bakery version is {installed},"
+                     f" while a newer {latest} is already available."
+                     f" Please upgrade it with 'pip install -U fontbakery'")
+    else:
         yield PASS, "Font Bakery is up-to-date"
 
 
