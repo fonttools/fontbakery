@@ -7,7 +7,8 @@ from fontbakery.checkrunner import (
             , PASS
             , FAIL
             )
-from fontbakery.utils import (assert_PASS,
+from fontbakery.utils import (TEST_FILE,
+                              assert_PASS,
                               assert_results_contain)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
@@ -18,18 +19,18 @@ def test_check_varfont_stat_axis_record_for_each_axis():
     """ Check the STAT table has an Axis Record for every axis in the font. """
     from fontbakery.profiles.stat import com_google_fonts_check_varfont_stat_axis_record_for_each_axis as check
 
-    # Our reference varfont, Cabin[wdth,wght].ttf, has
-    # all necessary Axis Records
-    ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
+    # Our reference Cabin[wdth,wght].ttf variable font
+    # has all necessary Axis Records
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
 
-    # So it must PASS the test
+    # So the check must PASS
     assert_PASS(check(ttFont),
                 'with all necessary Axis Records...')
 
-    # We then remove the wdth Axis Record so it must FAIL:
+    # We then remove its first Axis Record (`wdth`):
     ttFont['STAT'].table.DesignAxisRecord.Axis.pop(0)
 
-    # and now this should FAIL the test:
+    # And now the problem should be detected::
     assert_results_contain(check(ttFont),
                            FAIL, 'missing-axis-records',
                            'with a missing Axis Record: (wght)...')

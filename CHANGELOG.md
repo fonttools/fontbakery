@@ -12,7 +12,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
   - **[com.google.fonts/check/varfont_duplicate_instance_names]**: Avoid duplicate instance names in variable fonts (issue #2986)
   - **[com.google.fonts/check/metadata/includes_production_subsets]**: ensure METADATA.pb files include production subsets. (issue #2989)
-  - **[com.google.fonts/check/varfont/stat_axis_record_for_each_axis]**: ensure the STAT table has an Axis Record for every axis in the font
+  - **[com.google.fonts/check/varfont/stat_axis_record_for_each_axis]**: ensure the STAT table has an Axis Record for every axis in the font (PR #3017)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/font_version]**: fixed tolerance for warnings (PR #3009)
