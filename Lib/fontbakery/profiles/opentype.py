@@ -19,6 +19,7 @@ OPENTYPE_PROFILE_IMPORTS = (
         "kern",
         "glyf",
         "fvar",
+        "stat",
         "shared_conditions",
     ),
 )
@@ -47,6 +48,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/varfont/slnt_range',
     'com.google.fonts/check/varfont/wght_valid_range',
     'com.google.fonts/check/varfont/wdth_valid_range',
+    'com.google.fonts/check/varfont/stat_axis_record_for_each_axis',
     'com.google.fonts/check/loca/maxp_num_glyphs',
     'com.adobe.fonts/check/cff2_call_depth',
     'com.adobe.fonts/check/cff_call_depth',
