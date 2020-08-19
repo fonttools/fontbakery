@@ -31,7 +31,7 @@ class SerializeReporter(FontbakeryReporter):
 
     def __init__(self, collect_results_by=None
                      , **kwd):
-        super(SerializeReporter, self).__init__(**kwd)
+        super().__init__(**kwd)
         self._results_by = collect_results_by
         self._items = {}
         self._doc = None
@@ -49,7 +49,7 @@ class SerializeReporter(FontbakeryReporter):
         pass
 
     def _register(self, event):
-        super(SerializeReporter, self)._register(event)
+        super()._register(event)
         status, message, identity = event
         section, check, iterargs = identity
         key = self._get_key(identity)

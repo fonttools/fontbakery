@@ -9,7 +9,7 @@ LOGLEVELS=["ERROR","FAIL","WARN","SKIP","INFO","PASS","DEBUG"]
 class GHMarkdownReporter(SerializeReporter):
 
     def __init__(self, loglevels, **kwd):
-        super(GHMarkdownReporter, self).__init__(**kwd)
+        super().__init__(**kwd)
         self.loglevels = loglevels
 
 

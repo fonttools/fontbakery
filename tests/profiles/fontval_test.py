@@ -4,6 +4,7 @@ import pytest
 from fontbakery.codetesting import (TEST_FILE,
                                     assert_results_contain)
 from fontbakery.checkrunner import ERROR
+from fontbakery.profiles import fontval as fontval_profile
 
 
 def test_check_fontvalidator():

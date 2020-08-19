@@ -2,7 +2,7 @@ import os
 
 from fontTools.ttLib import TTFont
 from fontbakery.checkrunner import (PASS, WARN, FAIL)
-from fontbakery.codetesting import (get_check,
+from fontbakery.codetesting import (TestingContext,
                                     portable_path,
                                     TEST_FILE,
                                     assert_PASS,
@@ -10,8 +10,8 @@ from fontbakery.codetesting import (get_check,
 from fontbakery.profiles import adobefonts as adobefonts_profile
 
 def test_check_family_consistent_upm():
-    from fontbakery.profiles.adobefonts import (
-        com_adobe_fonts_check_family_consistent_upm as check)
+    check = TestingContext(adobefonts_profile,
+                           "com.adobe.fonts/check/family/consistent_upm")
 
     base_path = TEST_FILE("source-sans-pro/OTF")
 
@@ -35,25 +35,25 @@ def test_check_family_consistent_upm():
 
 def test_check_family_consistent_upm_new_style():
     # these fonts have a consistent unitsPerEm of 1000:
+    from fontbakery.codetesting import TestingContext
+    check = TestingContext(adobefonts_profile,
+                           'com.adobe.fonts/check/family/consistent_upm')
+
     filenames = ['SourceSansPro-Regular.otf',
                  'SourceSansPro-Bold.otf',
                  'SourceSansPro-It.otf']
     fonts = [os.path.join(portable_path("data/test/source-sans-pro/OTF"), filename)
                  for filename in filenames]
-    from fontbakery.codetesting import FontsTestingContext
-    check = FontsTestingContext(adobefonts_profile,
-                      'com.adobe.fonts/check/family/consistent_upm',
-                      fonts)
-
 
     # try fonts with consistent UPM (i.e. 1000)
-    assert_PASS(check())
+    assert_PASS(check(fonts))
 
-    ttFonts = check.args['ttFonts']
+    ttFonts = check['ttFonts']
     # now try with one font with a different UPM (i.e. 2048)
     ttFonts[1]['head'].unitsPerEm = 2048
-    assert_results_contain(check(),
+    assert_results_contain(check(ttFonts),
                            FAIL, None) # FIXME: This needs a message keyword
+
 
 def test_get_family_checks():
     from fontbakery.profiles.adobefonts import profile
@@ -78,8 +78,8 @@ def test_get_family_checks():
 
 
 def test_check_find_empty_letters():
-    check = get_check(adobefonts_profile,
-                      "com.adobe.fonts/check/find_empty_letters")
+    check = TestingContext(adobefonts_profile,
+                           "com.adobe.fonts/check/find_empty_letters")
 
     # this font has inked glyphs for all letters
     font = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
@@ -96,8 +96,8 @@ def test_check_find_empty_letters():
 
 def test_check_missing_whitespace():
     """ Check that overridden test for nbsp yields WARN rather than FAIL. """
-    check = get_check(adobefonts_profile,
-                      "com.google.fonts/check/whitespace_glyphs:adobefonts")
+    check = TestingContext(adobefonts_profile,
+                           "com.google.fonts/check/whitespace_glyphs:adobefonts")
 
     font = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
     ttFont = TTFont(font)

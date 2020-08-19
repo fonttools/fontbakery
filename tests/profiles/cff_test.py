@@ -3,7 +3,7 @@ from fontTools.ttLib import TTFont
 from fontbakery.codetesting import (TEST_FILE,
                                     assert_PASS,
                                     assert_results_contain,
-                                    get_check)
+                                    TestingContext)
 from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
 from fontbakery.profiles import cff as cff_profile
 
@@ -11,8 +11,8 @@ check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 
 def test_check_cff_call_depth():
-    check = get_check(cff_profile,
-                      "com.adobe.fonts/check/cff_call_depth")
+    check = TestingContext(cff_profile,
+                           "com.adobe.fonts/check/cff_call_depth")
 
     # this font's CFF subr call depths should all be <= 10:
     font = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
@@ -38,8 +38,8 @@ def test_check_cff_call_depth():
 
 
 def test_check_cff2_call_depth():
-    check = get_check(cff_profile,
-                      "com.adobe.fonts/check/cff2_call_depth")
+    check = TestingContext(cff_profile,
+                           "com.adobe.fonts/check/cff2_call_depth")
 
     # this font's CFF subr call depths should all be <= 10:
     font = TEST_FILE('source-sans-pro/VAR/SourceSansVariable-Roman.otf')

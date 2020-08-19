@@ -17,122 +17,47 @@
 from fontbakery.checkrunner import CheckRunner, Profile, get_module_profile
 
 
-def execute_check_once(module_or_profile, check_id, values, condition_overrides=None):
-    """ Run a check in the profile once and return a list of its result statuses.
-
-        This is a helper function intended for code testing only. as such
-        it is a bit crude. Don't use it as a general API. Don't consider it
-        mature.
-    """
-    profile = module_or_profile if isinstance(module_or_profile, Profile) \
-                                else get_module_profile(module_or_profile)
-    runner = CheckRunner(profile, values, explicit_checks=[check_id])
-    for check_identity in runner.order:
-        _, check, iterargs = check_identity
-        if check.id != check_id:
-            continue
-
-        if condition_overrides:
-            for name, value in condition_overrides.items():
-                # write the conditions directly to the iterargs of the check identity
-                used_iterargs = runner._filter_condition_used_iterargs(name, iterargs)
-                key = (name, used_iterargs)
-                # error, value
-                runner._cache['conditions'][key] = None, value
-        # removes STARTCHECK and ENDCHECK
-        return list(runner._run_check(check, iterargs))[1:-1]
-    raise KeyError(f'Check with id "{check_id}" not found.')
-
-# for code testing
-def execute_check_once_fonts(module_or_profile, check_id, font, condition_overrides=None):
-    """Run a check of profile once, with font (file path) as value and/or
-    with condition_overrides.
-
-    Example that doesn't use `font`:
-
-    > from fontbakery.fonts_profile import execute_check_once
-    > from fontbakery.profiles import gdef
-    > from fontTools.ttLib.ttFont import TTFont
-    > ttf = TTFont('/path/to/Family-Regular.ttf')
-    > execute_check_once(gdef, 'com.google.fonts/check/gdef_spacing_marks', 'not a file', {'ttFont': ttf})
-    [(<Status PASS>,
-          'Font does not has spacing glyphs in the GDEF mark glyph class.')]
-    """
-    values = {'fonts': [font]}
-    return execute_check_once(module_or_profile, check_id, values, condition_overrides)
-
-def get_check(profile, checkid):
-    def _checker(value):
-        from fontTools.ttLib import TTFont
-        if isinstance(value, str):
-            return execute_check_once_fonts(profile, checkid, value)
-
-        elif isinstance(value, TTFont):
-            return execute_check_once_fonts(profile, checkid, value.reader.file.name,
-                                      {'ttFont': value})
-#
-# TODO: I am not sure how to properly handle these cases:
-#
-#        elif isinstance(value, list):
-#            if isinstance(value[0], str):
-#                return execute_check_once_fonts(profile, checkid, value)
-#
-#            elif isinstance(value[0], TTFont):
-#                return execute_check_once_fonts(profile, checkid, "",
-#                                          {'ttFonts': value})
-    return _checker
-
 class TestingContext:
     """ CAUTION: this uses a lot of "private" methods and properties
     of CheckRunner, in order to make unit testing different cases simpler.
 
-    This is not intended to run in production, however, if that is desired
+    This is not intended to run in production. However, if that is desired
     we may or may not find inspiration here on how to implement a proper
     public CheckRunner API.
 
-    Not build for performance either!
+    Not built for performance either!
 
-    The idea is that we can run a check again and again, but change it's
-    arguments as we go. So we can test different conditions.
+    The idea is that we can let this class take care of computing
+    the dependencies of a check for us. And we can also optionaly "fake"
+    some of them in order to create useful testing scenarios for the checks.
 
     An initial run can be with unaltered arguments, as CheckRunner would
-    produce itself.
-
+    produce them by itself. And subsequent calls can reuse some of them.
 
     Example:
     > import fontbakery.profiles.googlefonts as googlefonts_profile
     > check = TestingContext(googlefonts_profile,
-            'com.google.fonts/check/some_id',
-            {'fonts': ['path/to/font.ttf']})
+                             'com.google.fonts/check/some_id')
     > first_result = check(initialTTFont) # can be called with overrides
-    > check.args['ttFont'] = modifidTTFont
-    > second_result = check()
-
+    > modifiedTTFont = check['ttFont']
+    > mofifiedTTFont[opentype_table].some_field = some_value
+    > second_result = check(modifiedTTFont)
+    > overriden_value = check['some_dependency']
+    > overriden_value.change_something()
+    > another_result = check(modifiedTTFont, {'some_dependency': overriden_value})
     """
-    def __init__(self, module_or_profile, check_id, values):
-        self.profile = module_or_profile if isinstance(module_or_profile, Profile) \
-                                else get_module_profile(module_or_profile)
-        self.runner = CheckRunner(self.profile, values, explicit_checks=[check_id])
+    def __init__(self, module_or_profile, check_id):
+        self.profile = module_or_profile \
+                       if isinstance(module_or_profile, Profile) \
+                       else get_module_profile(module_or_profile)
+        self.check_id = check_id
         self.check_identity = None
         self.check_section = None
         self.check = None
         self.check_iterargs = None
+        self._args = None
 
-        for check_identity in self.runner.order:
-            _, check, _ = check_identity
-            if check.id != check_id:
-                continue
-            self.check_identity = check_identity
-            self.check_section, self.check, self.check_iterargs = check_identity
-            break
-        if self.check_identity is None:
-            raise KeyError(f'Check with id "{check_id}" not found.')
-        self.args = None
-
-    def get_args(self, condition_overrides=None):
-        """ This clears the checkrunner cache when called!
-        """
-        self.runner.clearCache()
+    def _get_args(self, condition_overrides=None):
         if condition_overrides is not None:
             for name_key, value in condition_overrides.items():
                 if isinstance(name_key, str):
@@ -144,36 +69,57 @@ class TestingContext:
                     # Full control for the caller, who has to inspect how
                     # the desired key needs to be set up.
                     key = name_key
-                # error, value
+                #                                      error, value
                 self.runner._cache['conditions'][key] = None, value
         args = self.runner._get_args(self.check, self.check_iterargs)
         # args that are derived iterables are generators that must be
         # converted to lists, otherwise we end up with exhausted
-        # generators after the first check execution.
+        # generators after their first consumption.
         for k in args:
             if self.profile.get_type(k, None) == 'derived_iterables':
                 args[k] = list(args[k])
         return args
 
-    def __call__(self,**condition_overrides):
-        if len(condition_overrides) or self.args is None:
-            args = self.get_args(condition_overrides=condition_overrides)
-        else:
-            # will use self.args
-            args = None
-        return self.call(args)
+    def __getitem__(self, key):
+        if key in self._args:
+            return self._args[key]
 
-    def call(self, args=None):
-        if args is not None:
-            self.args = args
-        return list(self.runner._exec_check(self.check, self.args))
+        used_iterargs = self.runner._filter_condition_used_iterargs(key, self.check_iterargs)
+        key = (key, used_iterargs)
+        if key in self.runner._cache['conditions']:
+            return self.runner._cache['conditions'][key][1]
 
-class FontsTestingContext(TestingContext):
-    def __init__(self, profile, check_id, fonts):
-        if isinstance(fonts, str):
-            fonts = [fonts]
-        values = {'fonts': fonts}
-        super().__init__(profile, check_id, values)
+    def __call__(self, values, condition_overrides={}):
+        from fontTools.ttLib import TTFont
+        if isinstance(values, str):
+            values = {'font': values,
+                      'fonts': [values]}
+        elif isinstance(values, TTFont):
+            values = {'font': values.reader.file.name,
+                      'fonts': [values.reader.file.name],
+                      'ttFont': values,
+                      'ttFonts': [values]}
+        elif isinstance(values, list):
+            if isinstance(values[0], str):
+                values = {'fonts': values}
+            elif isinstance(values[0], TTFont):
+                values = {'fonts': [v.reader.file.name for v in values],
+                          'ttFonts': values}
+
+        self.runner = CheckRunner(self.profile, values, explicit_checks=[self.check_id])
+        for check_identity in self.runner.order:
+            _, check, _ = check_identity
+            if check.id != self.check_id:
+                continue
+            self.check_identity = check_identity
+            self.check_section, self.check, self.check_iterargs = check_identity
+            break
+        if self.check_identity is None:
+            raise KeyError(f'Check with id "{self.check_id}" not found.')
+
+        self._args = self._get_args(condition_overrides)
+        return list(self.runner._exec_check(self.check, self._args))
+
 
 def portable_path(p):
     import os

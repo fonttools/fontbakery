@@ -160,13 +160,13 @@ class APIViolationError(FontBakeryRunnerError):
     def __init__(self, message, result, *args):
         self.message = message
         self.result = result
-        super(APIViolationError, self).__init__(message, *args)
+        super().__init__(message, *args)
 
 
 class ProtocolViolationError(FontBakeryRunnerError):
     def __init__(self, message, *args):
         self.message = message
-        super(ProtocolViolationError, self).__init__(message, *args)
+        super().__init__(message, *args)
 
 
 class FailedCheckError(FontBakeryRunnerError):
@@ -174,7 +174,7 @@ class FailedCheckError(FontBakeryRunnerError):
         message = f'Failed with {type(error).__name__}: {error}'
         self.error = error
         self.traceback = "".join(traceback.format_tb(error.__traceback__))
-        super(FailedCheckError, self).__init__(message, *args)
+        super().__init__(message, *args)
 
 
 class FailedConditionError(FontBakeryRunnerError):
@@ -187,7 +187,7 @@ class FailedConditionError(FontBakeryRunnerError):
         self.condition = condition
         self.error = error
         self.traceback = "".join(traceback.format_tb(error.__traceback__))
-        super(FailedConditionError, self).__init__(message, *args)
+        super().__init__(message, *args)
 
 
 class MissingConditionError(FontBakeryRunnerError):
@@ -199,7 +199,7 @@ class MissingConditionError(FontBakeryRunnerError):
                    f' {type(error).__name__}: {error}')
         self.error = error
         self.traceback = "".join(traceback.format_tb(error.__traceback__))
-        super(MissingConditionError, self).__init__(message, *args)
+        super().__init__(message, *args)
 
 
 class FailedDependenciesError(FontBakeryRunnerError):
@@ -209,7 +209,7 @@ class FailedDependenciesError(FontBakeryRunnerError):
         self.check = check
         self.error = error
         self.traceback = "".join(traceback.format_tb(error.__traceback__))
-        super(FailedDependenciesError, self).__init__(message, *args)
+        super().__init__(message, *args)
 
 
 class SetupError(FontBakeryRunnerError):

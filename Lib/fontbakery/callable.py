@@ -45,10 +45,9 @@ class FontbakeryCallable:
 
     def __repr__(self):
         return'<{}:{}>'.format(type(self).__name__,
-                    getattr(self, 'id',
-                      getattr(self, 'name',
-                        super(FontbakeryCallable, self).__repr__()
-              )))
+                               getattr(self, 'id',
+                                       getattr(self, 'name',
+                                               super().__repr__() )))
 
     @property
     @cached_getter
@@ -133,7 +132,7 @@ class FontBakeryCondition(FontbakeryCallable):
                  description = None, # short text
                  documentation=None, # long text, markdown?
                  force=False):
-        super(FontBakeryCondition, self).__init__(func)
+        super().__init__(func)
         # self.id = id
         self.name = func.__name__ if name is None else name
         self.description, self.documentation = get_doc_desc(func,
@@ -218,7 +217,7 @@ class FontBakeryCheck(FontbakeryCallable):
           looking at an advancedMessage.
         TODO: The naming is a bit odd.
         """
-        super(FontBakeryCheck, self).__init__(checkfunc)
+        super().__init__(checkfunc)
         self.id = id
         self.name = checkfunc.__name__ if name is None else name
         self.conditions = conditions or []
