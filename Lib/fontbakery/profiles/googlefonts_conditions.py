@@ -2,19 +2,38 @@ import os
 import re
 
 from fontbakery.callable import condition
-from fontbakery.constants import NameID
+from fontbakery.constants import (NameID,
+                                  PlatformID,
+                                  WindowsEncodingID,
+                                  WindowsLanguageID)
+from fontbakery.profiles.shared_conditions import is_variable_font
 
 # -------------------------------------------------------------------
 # FIXME! Redundant with @condition canonical_stylename(font)?
 @condition
-def style(font):
-    """Determine font style from canonical filename."""
+def style(ttFont):
+    """Determine font style from canonical filename for static fonts.
+    For variable fonts, use either the Typographic Subfamilyname or
+    the Subfamily name."""
     from fontbakery.constants import STATIC_STYLE_NAMES
-    filename = os.path.basename(font)
+    filename = os.path.basename(ttFont.reader.file.name)
     if '-' in filename:
         stylename = os.path.splitext(filename)[0].split('-')[1]
-        if stylename in [name.replace(' ', '') for name in STATIC_STYLE_NAMES]:
-            return stylename
+    elif is_variable_font(ttFont):
+        typo_stylename = ttFont['name'].getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
+                                                PlatformID.WINDOWS,
+                                                WindowsEncodingID.UNICODE_BMP,
+                                                WindowsLanguageID.ENGLISH_USA)
+        stylename = ttFont['name'].getName(NameID.FONT_SUBFAMILY_NAME,
+                                           PlatformID.WINDOWS,
+                                           WindowsEncodingID.UNICODE_BMP,
+                                           WindowsLanguageID.ENGLISH_USA)
+        # if font has typographic subfamily is should take presedence over the
+        # subfamily name.
+        stylename = typo_stylename or stylename
+        stylename = stylename.toUnicode()
+    if stylename in [name.replace(' ', '') for name in STATIC_STYLE_NAMES]:
+        return stylename
     return None
 
 
@@ -102,7 +121,6 @@ def canonical_stylename(font):
     from fontbakery.utils import suffix
     from fontbakery.constants import (STATIC_STYLE_NAMES,
                                       VARFONT_SUFFIXES)
-    from .shared_conditions import is_variable_font
     from fontTools.ttLib import TTFont
 
     # remove spaces in style names

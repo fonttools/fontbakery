@@ -1473,7 +1473,7 @@ def test_check_metadata_nameid_font_name():
     family_directory = os.path.dirname(font)
     family_meta = family_metadata(family_directory)
     font_meta = font_metadata(family_meta, font)
-    font_style = style(font)
+    font_style = style(ttFont)
     assert_PASS(check(ttFont, font_style, font_meta),
                 'with a good font...')
 
@@ -1590,7 +1590,7 @@ def test_check_metadata_valid_name_values():
     # Our reference Montserrat family is a good 18-styles family:
     for fontfile in MONTSERRAT_RIBBI:
         ttFont = TTFont(fontfile)
-        font_style = style(fontfile)
+        font_style = style(ttFont)
         family_directory = os.path.dirname(fontfile)
         family_meta = family_metadata(family_directory)
         font_meta = font_metadata(family_meta, fontfile)
@@ -1610,7 +1610,7 @@ def test_check_metadata_valid_name_values():
     #we do the same for NON-RIBBI styles:
     for fontfile in MONTSERRAT_NON_RIBBI:
         ttFont = TTFont(fontfile)
-        font_style = style(fontfile)
+        font_style = style(ttFont)
         family_directory = os.path.dirname(fontfile)
         family_meta = family_metadata(family_directory)
         font_meta = font_metadata(family_meta, fontfile)
@@ -1644,7 +1644,7 @@ def test_check_metadata_valid_full_name_values():
     # Our reference Montserrat family is a good 18-styles family:
     for fontfile in MONTSERRAT_RIBBI:
         ttFont = TTFont(fontfile)
-        font_style = style(fontfile)
+        font_style = style(ttFont)
         family_directory = os.path.dirname(fontfile)
         family_meta = family_metadata(family_directory)
         font_meta = font_metadata(family_meta, fontfile)
@@ -1664,7 +1664,7 @@ def test_check_metadata_valid_full_name_values():
     #we do the same for NON-RIBBI styles:
     for fontfile in MONTSERRAT_NON_RIBBI:
         ttFont = TTFont(fontfile)
-        font_style = style(fontfile)
+        font_style = style(ttFont)
         family_directory = os.path.dirname(fontfile)
         family_meta = family_metadata(family_directory)
         font_meta = font_metadata(family_meta, fontfile)
@@ -2363,7 +2363,7 @@ def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
     if remote:
         for font in cabin_fonts:
             ttFont = TTFont(font)
-            gfont = api_gfonts_ttFont(style(font), remote)
+            gfont = api_gfonts_ttFont(style(ttFont), remote)
 
             # Cabin font hosted on fonts.google.com contains
             # all the glyphs for the font in data/test/cabin
@@ -2542,11 +2542,11 @@ def test_check_name_familyname():
             if name.nameID == NameID.FONT_FAMILY_NAME:
                 ttFont['name'].names[i].string = value.encode(name.getEncoding())
         assert_results_contain(check(ttFont,
-                                     style(filename),
+                                     style(ttFont),
                                      familyname_with_spaces(familyname(filename))),
                                      expected, keyword,
                                      f'with filename="{filename}",'
-                                     f' value="{value}", style="{style(filename)}"...')
+                                     f' value="{value}", style="{style(ttFont)}"...')
 
 
 def test_check_name_subfamilyname():
@@ -2690,14 +2690,14 @@ def test_check_name_typographicfamilyname():
     font = TEST_FILE("montserrat/Montserrat-BoldItalic.ttf")
     ttFont = TTFont(font)
     assert_PASS(check(ttFont,
-                      style(font),
+                      style(ttFont),
                       familyname_with_spaces(familyname(font))),
                 f"with a RIBBI without nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
 
     # so we add one and make sure is emits a FAIL:
     ttFont['name'].names[5].nameID = NameID.TYPOGRAPHIC_FAMILY_NAME # 5 is arbitrary here
     assert_results_contain(check(ttFont,
-                                 style(font),
+                                 style(ttFont),
                                  familyname_with_spaces(familyname(font))),
                            FAIL, 'ribbi',
                            f'with a RIBBI that has got a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...')
@@ -2706,7 +2706,7 @@ def test_check_name_typographicfamilyname():
     font = TEST_FILE("montserrat/Montserrat-ExtraLight.ttf")
     ttFont = TTFont(font)
     assert_PASS(check(ttFont,
-                style(font),
+                style(ttFont),
                 familyname_with_spaces(familyname(font))),
                 f"with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
 
@@ -2716,7 +2716,7 @@ def test_check_name_typographicfamilyname():
             ttFont['name'].names[i].string = "foo".encode(name.getEncoding())
 
     assert_results_contain(check(ttFont,
-                                 style(font),
+                                 style(ttFont),
                                  familyname_with_spaces(familyname(font))),
                            FAIL, 'non-ribbi-bad-value',
                            'with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entries...')
@@ -2728,7 +2728,7 @@ def test_check_name_typographicfamilyname():
             ttFont['name'].names[i].nameID = 255 # blah! :-)
 
     assert_results_contain(check(ttFont,
-                                 style(font),
+                                 style(ttFont),
                                  familyname_with_spaces(familyname(font))),
                            FAIL, 'non-ribbi-lacks-entry',
                            f'with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...')
