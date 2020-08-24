@@ -2254,13 +2254,59 @@ def NOT_IMPLEMENTED_test_check_production_glyphs_similarity():
     # - PASS, "Glyphs are similar"
 
 
-def NOT_IMPLEMENTED_test_check_fsselection():
+def test_check_fsselection():
     """ Checking OS/2 fsSelection value. """
-    # from fontbakery.profiles.googlefonts import com_google_fonts_check_fsselection as check
-    # TODO: Implement-me!
-    #
-    # code-paths:
-    # ...
+    from fontbakery.profiles.googlefonts import com_google_fonts_check_fsselection as check
+    from fontbakery.profiles.googlefonts_conditions import style
+    from fontbakery.constants import FsSelection, RIBBI_STYLE_NAMES
+
+    # Our reference family Montserrat is known to be good
+    montserrat_fontfiles = MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI
+
+    for fontfile in montserrat_fontfiles:
+        ttFont = TTFont(fontfile)
+        font_style = style(ttFont)
+
+        # all font should pass this since the family is good
+        assert_PASS(check(ttFont, font_style),
+                    f'with a good fsSelection font ({fontfile})...')
+
+        # Check REGULAR bit. All non-RIBBI style must also have this bit enabled
+        if font_style == "Regular" or font_style not in RIBBI_STYLE_NAMES:
+            # Fail if REGULAR is not set
+            ttFont['OS/2'].fsSelection = ttFont['OS/2'].fsSelection ^ FsSelection.REGULAR
+            assert_results_contain(check(ttFont, font_style),
+                                   FAIL, 'bad-REGULAR',
+                                   f'with a bad fsSelection font ({fontfile})...')
+        # Check BOLD bit
+        if font_style == "Bold" or "BoldItalic":
+            # Fail if BOLD is not set
+            ttFont['OS/2'].fsSelection = ttFont['OS/2'].fsSelection ^ FsSelection.BOLD
+            assert_results_contain(check(ttFont, font_style),
+                                   FAIL, 'bad-BOLD',
+                                   f'with a bad fsSelection font ({fontfile})...')
+        # Check ITALIC bit
+        if "Italic" in font_style:
+            ttFont['OS/2'].fsSelection = ttFont['OS/2'].fsSelection ^ FsSelection.ITALIC
+            # Fail if ITALIC is not set
+            assert_results_contain(check(ttFont, font_style),
+                                   FAIL, 'bad-ITALIC',
+                                   f'with a bad fsSelection font ({fontfile})...')
+
+    fontfile = TEST_FILE("varfont/OpenSans[wdth,wght].ttf")
+    ttFont = TTFont(fontfile)
+
+    # Check USE_TYPO_METRICS is set for variable fonts
+    # Our reference file Open Sans VF is known to be good
+    font_style = style(ttFont)
+    assert_PASS(check(ttFont, font_style),
+                f'with a good fsSelection font ({fontfile})...')
+
+    # And fail if the value is not USE_TYPO_METRICS
+    ttFont['OS/2'].fsSelection = ttFont['OS/2'].fsSelection ^ FsSelection.USETYPOMETRICS
+    assert_results_contain(check(ttFont, font_style),
+                           FAIL, 'bad-USE_TYPO_METRICS',
+                           f'with a bad fsSelection font ({fontfile})...')
 
 
 def test_check_italic_angle():

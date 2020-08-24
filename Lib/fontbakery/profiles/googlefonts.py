@@ -2843,6 +2843,14 @@ def com_google_fonts_check_fsselection(ttFont, style):
                           bitmask=FsSelection.BOLD,
                           bitname="BOLD")
 
+    # Checking fsSelection bit 7 is enabled for variable fonts:
+    if is_variable_font(ttFont):
+        yield check_bit_entry(ttFont, "OS/2", "fsSelection",
+                              True,
+                              bitmask=FsSelection.USETYPOMETRICS,
+                              bitname="USE_TYPO_METRICS")
+
+
 
 @check(
     id = 'com.google.fonts/check/italic_angle',

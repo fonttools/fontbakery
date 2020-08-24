@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - All rationale text needs to have 8 indentation spaces (because this indentation on the source should not show up on the user-interface when rationale text is printed on the text terminal)
   - Remove PriorityLevel class as it makes classifying checks by priority more complicated then necessary! (issue #2981)
   - Use the http://fonts.google.com/metadata/fonts endpoint to determine if a font is listed in Google Fonts. (issue #2991)
+  - Style condition will now work on variable fonts. Since the style name cannot be inferred from the filename for a variable font, we have to use the Typographic Subfamily name or Subfamily name instead.
 
 ### New Checks
   - **[com.google.fonts/check/varfont_duplicate_instance_names]**: Avoid duplicate instance names in variable fonts (issue #2986)
@@ -17,6 +18,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
   - **[com.google.fonts/check/font_version]**: fixed tolerance for warnings (PR #3009)
   - **[com.google.fonts/check/fontbakery_version]**: use pip_api module and PyPI JSON API instead of invoking command-line pip/pip3 via subprocess (#2966)
+  - **[com.google.fonts/check/fsselection]**: Ensure fsSelection bit 7 (USE_TYPO_METRICS) is enabled for variable fonts.
 
 ### Bugfixes
   - Fix ERROR in com.google.fonts/check/STAT_strings (issue #2992)
