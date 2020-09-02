@@ -19,6 +19,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/fontbakery_version]**: use pip_api module and PyPI JSON API instead of invoking command-line pip/pip3 via subprocess (#2966)
 
 ### Bugfixes
+  - Update vertical metric values in test_check_vertical_metrics_regressions. Cabin had recently been updated in Google Fonts and the family now has different vertical metric values (issue #3026)
   - Fix ERROR in com.google.fonts/check/STAT_strings (issue #2992)
 
 

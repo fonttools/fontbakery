@@ -3384,10 +3384,10 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
 
         ttFonts3 = copy(ttFonts)
         for ttfont in ttFonts3:
-            ttfont["OS/2"].sTypoAscender = 1139
-            ttfont["OS/2"].sTypoDescender = -314
-            ttfont["hhea"].ascent = 1139
-            ttfont["hhea"].descent = -314
+            ttfont["OS/2"].sTypoAscender = 1150
+            ttfont["OS/2"].sTypoDescender = -315
+            ttfont["hhea"].ascent = 1150
+            ttfont["hhea"].descent = -315
         assert_PASS(check(ttFonts3, remote2),
                     'with a remote family which does not have typo metrics'
                     ' enabled but the checked fonts vertical metrics have been'
