@@ -5,6 +5,9 @@ from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
+profile_imports = [
+    ('.shared_conditions', ('is_cff', 'is_cff2'))
+]
 
 def _get_subr_bias(count):
     if count < 1240:

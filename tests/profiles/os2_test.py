@@ -3,25 +3,18 @@ import os
 
 import pytest
 
-from fontbakery.checkrunner import (
-              DEBUG
-            , INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
-            , FAIL
-            )
-from fontbakery.utils import (TEST_FILE,
-                              assert_PASS,
-                              assert_results_contain,
-                              portable_path)
+from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
+from fontbakery.codetesting import (TEST_FILE,
+                                    assert_PASS,
+                                    assert_results_contain,
+                                    portable_path)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 import fontTools.ttLib
 from fontTools.ttLib import TTFont
 import fontTools.subset
+
 
 mada_fonts = [
     TEST_FILE("mada/Mada-Black.ttf"),

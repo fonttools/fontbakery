@@ -3,6 +3,10 @@ from fontbakery.checkrunner import FAIL, PASS
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
+profile_imports = [
+    ('.shared_conditions', ('is_ttf', ))
+]
+
 @check(
     id = 'com.google.fonts/check/family/underline_thickness',
     rationale = """
