@@ -4,23 +4,13 @@ import os
 from fontTools.ttLib import TTFont
 
 from fontbakery.constants import NameID
-from fontbakery.utils import (TEST_FILE,
-                              assert_PASS,
-                              assert_SKIP,
-                              assert_results_contain,
-                              portable_path)
-
-
-from fontbakery.checkrunner import (
-              DEBUG
-            , INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
-            , FAIL
-            , ENDCHECK
-            )
+from fontbakery.codetesting import (TEST_FILE,
+                                    assert_PASS,
+                                    assert_SKIP,
+                                    assert_results_contain,
+                                    portable_path)
+from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR,
+                                    SKIP, PASS, FAIL, ENDCHECK)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 

@@ -2,23 +2,15 @@ import io
 import os
 
 import pytest
+from fontTools.ttLib import TTFont
 
-from fontbakery.checkrunner import (
-              DEBUG
-            , INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
-            , FAIL
-            )
-from fontbakery.utils import (TEST_FILE,
-                              assert_PASS,
-                              assert_results_contain)
+from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
+from fontbakery.codetesting import (TEST_FILE,
+                                    assert_PASS,
+                                    assert_results_contain)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
-from fontTools.ttLib import TTFont
 
 mada_fonts = [
     TEST_FILE("mada/Mada-Black.ttf"),

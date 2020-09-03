@@ -24,7 +24,7 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
     """Renders a report as a HTML document."""
 
     def __init__(self, loglevels, **kwd):
-        super(HTMLReporter, self).__init__(**kwd)
+        super().__init__(**kwd)
         self.loglevels = loglevels
 
     def get_html(self) -> str:

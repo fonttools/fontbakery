@@ -4,6 +4,7 @@ Font Bakery CheckRunner is the driver of a font bakery suite of checks.
 
 """
 from fontbakery.checkrunner import Profile
+
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 
 class FontsProfile(Profile):

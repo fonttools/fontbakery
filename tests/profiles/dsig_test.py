@@ -1,24 +1,17 @@
-from fontbakery.utils import (TEST_FILE,
-                              assert_PASS,
-                              assert_results_contain)
-
-from fontbakery.checkrunner import (
-              DEBUG
-            , INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
-            , FAIL
-            )
-
-check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
+from fontbakery.codetesting import (TEST_FILE,
+                                    assert_PASS,
+                                    assert_results_contain)
+from fontbakery.codetesting import TestingContext
+from fontbakery.checkrunner import FAIL
+from fontbakery.profiles import opentype as opentype_profile
 
 from fontTools.ttLib import TTFont
 
+
 def test_check_dsig():
     """ Does the font have a DSIG table ? """
-    from fontbakery.profiles.dsig import com_google_fonts_check_dsig as check
+    check = TestingContext(opentype_profile,
+                           "com.google.fonts/check/dsig")
 
     # Our reference Cabin Regular font is good (theres a DSIG table declared):
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))

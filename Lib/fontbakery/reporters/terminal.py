@@ -155,7 +155,7 @@ class TerminalProgress(FontbakeryReporter):
                        # e.g. (SECTIONSUMMARY, )
                      , skip_status_report=None
                      , **kwd):
-        super(TerminalProgress, self).__init__(**kwd)
+        super().__init__(**kwd)
 
         self.theme = theme
         self.succinct = succinct
@@ -179,13 +179,13 @@ class TerminalProgress(FontbakeryReporter):
             self._structure_threshold -= 1
 
     def _register(self, event):
-        super(TerminalProgress, self)._register(event)
+        super()._register(event)
         status, message, identity = event
         if status == ENDCHECK and self._print_progress:
             self._set_progress_event(event)
 
     def _output(self, event):
-        super(TerminalProgress, self)._output(event)
+        super()._output(event)
         text = self._render_event(event)
         if text:
             self.stdout.write(text)
@@ -222,7 +222,7 @@ class TerminalProgress(FontbakeryReporter):
         return output.getvalue()
 
     def _set_order(self, order):
-        super(TerminalProgress, self)._set_order(order)
+        super()._set_order(order)
         if self._print_progress:
             # set/reset
             self._progressbar = list('.'*len(order))
@@ -237,7 +237,7 @@ class TerminalProgress(FontbakeryReporter):
                                                 status.name[0])
 
     def _get_index(self, identity):
-        index = super(TerminalProgress, self)._get_index(identity)
+        index = super()._get_index(identity)
         if self._print_progress and len(self._indexes) < len(self._progressbar):
             self._progressbar.append('.')
         return index
@@ -341,7 +341,7 @@ class TerminalReporter(TerminalProgress):
                      , check_threshold=None
                      , log_threshold=None
                      , **kwd):
-        super(TerminalReporter, self).__init__(**kwd)
+        super().__init__(**kwd)
         self.results_by = collect_results_by
         self._collected_results = {}
         self._event_buffers = {}
@@ -370,7 +370,7 @@ class TerminalReporter(TerminalProgress):
         self._render_async = self.is_async or check_threshold is not None
 
     def _register(self, event):
-        super(TerminalReporter, self)._register(event)
+        super()._register(event)
         status, message, (section, check, iterargs) = event
 
         if self.results_by and status == ENDCHECK:
@@ -389,7 +389,7 @@ class TerminalReporter(TerminalProgress):
             return
 
         if status == START:
-            text = super(TerminalReporter, self)._render_event(event)
+            text = super()._render_event(event)
             if text:
                 self.stdout.write(text)
 
@@ -483,7 +483,7 @@ class TerminalReporter(TerminalProgress):
             print('')
 
             # same end message as parent
-            text = super(TerminalReporter, self)._render_event(event)
+            text = super()._render_event(event)
             if text:
                 print(text)
 

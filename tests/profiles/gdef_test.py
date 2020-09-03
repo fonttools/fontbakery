@@ -1,10 +1,10 @@
 from fontTools.ttLib import TTFont, newTable
 from fontTools.ttLib.tables import otTables
 from fontbakery.checkrunner import (WARN, PASS, SKIP)
-from fontbakery.utils import (TEST_FILE,
-                              assert_PASS,
-                              assert_SKIP,
-                              assert_results_contain)
+from fontbakery.codetesting import (TEST_FILE,
+                                    assert_PASS,
+                                    assert_SKIP,
+                                    assert_results_contain)
 
 
 def get_test_font():

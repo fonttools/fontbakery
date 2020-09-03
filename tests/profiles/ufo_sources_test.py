@@ -4,8 +4,8 @@ import defcon
 import pytest
 
 from fontbakery.checkrunner import (DEBUG, ERROR, FAIL, INFO, PASS, SKIP, WARN)
-from fontbakery.utils import (assert_PASS,
-                              assert_results_contain)
+from fontbakery.codetesting import (assert_PASS,
+                                    assert_results_contain)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 

@@ -1,19 +1,12 @@
-from fontbakery.checkrunner import (
-              DEBUG
-            , INFO
-            , WARN
-            , ERROR
-            , SKIP
-            , PASS
-            , FAIL
-            )
-from fontbakery.utils import (TEST_FILE,
-                              assert_PASS,
-                              assert_results_contain)
+from fontTools.ttLib import TTFont
+
+from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
+from fontbakery.codetesting import (TEST_FILE,
+                                    assert_PASS,
+                                    assert_results_contain)
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
-from fontTools.ttLib import TTFont
 
 def test_check_kern_table():
     """ Is there a "kern" table declared in the font ? """
