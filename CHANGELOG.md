@@ -1,6 +1,10 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.7.31 (2020-Sep-??)
+### Note-worthy code changes
+  - Renamed `multiprocessing.py` to `multiproc.py` to avoid conflict with Python
+    stdlib module of the same name in some configurations.
 
 ## 0.7.30 (2020-Aug-??)
 ### Note-worthy code changes

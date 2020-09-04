@@ -27,7 +27,7 @@ from fontbakery.checkrunner import (
             , ENDCHECK
             )
 
-from fontbakery.multiprocessing import multiprocessing_runner
+from fontbakery.multiproc import multiprocessing_runner
 
 log_levels =  OrderedDict((s.name, s) \
                           for s in sorted((
