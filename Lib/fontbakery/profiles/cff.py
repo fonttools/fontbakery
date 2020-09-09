@@ -10,12 +10,12 @@ profile_imports = [
 ]
 
 class CFFAnalysis:
-  def __init__(self):
-    self.glyphs_dotsection = []
-    self.glyphs_endchar_seac = []
-    self.glyphs_seac = []
-    self.glyphs_exceed_max = []
-    self.glyphs_recursion_errors = []
+    def __init__(self):
+        self.glyphs_dotsection = []
+        self.glyphs_endchar_seac = []
+        self.glyphs_seac = []
+        self.glyphs_exceed_max = []
+        self.glyphs_recursion_errors = []
 
 def _get_subr_bias(count):
     if count < 1240:
@@ -106,38 +106,38 @@ def _analyze_cff(analysis, top_dict, private_dict, fd_index=0):
 @condition
 def cff_analysis(ttFont):
 
-  analysis = CFFAnalysis()
+    analysis = CFFAnalysis()
 
-  if 'CFF ' in ttFont:
-    cff = ttFont['CFF '].cff
+    if 'CFF ' in ttFont:
+        cff = ttFont['CFF '].cff
 
-    for top_dict in cff.topDictIndex:
-        if hasattr(top_dict, 'FDArray'):
+        for top_dict in cff.topDictIndex:
+            if hasattr(top_dict, 'FDArray'):
+                for fd_index, font_dict in enumerate(top_dict.FDArray):
+                    if hasattr(font_dict, 'Private'):
+                        private_dict = font_dict.Private
+                    else:
+                        private_dict = None
+                    _analyze_cff(analysis, top_dict, private_dict, fd_index)
+            else:
+                if hasattr(top_dict, 'Private'):
+                    private_dict = top_dict.Private
+                else:
+                    private_dict = None
+                _analyze_cff(analysis, top_dict, private_dict)
+
+    elif 'CFF2' in ttFont:
+        cff = ttFont['CFF2'].cff
+
+        for top_dict in cff.topDictIndex:
             for fd_index, font_dict in enumerate(top_dict.FDArray):
                 if hasattr(font_dict, 'Private'):
                     private_dict = font_dict.Private
                 else:
                     private_dict = None
                 _analyze_cff(analysis, top_dict, private_dict, fd_index)
-        else:
-            if hasattr(top_dict, 'Private'):
-                private_dict = top_dict.Private
-            else:
-                private_dict = None
-            _analyze_cff(analysis, top_dict, private_dict)
 
-  elif 'CFF2' in ttFont:
-    cff = ttFont['CFF2'].cff
-
-    for top_dict in cff.topDictIndex:
-        for fd_index, font_dict in enumerate(top_dict.FDArray):
-            if hasattr(font_dict, 'Private'):
-                private_dict = font_dict.Private
-            else:
-                private_dict = None
-            _analyze_cff(analysis, top_dict, private_dict, fd_index)
-
-  return analysis
+    return analysis
 
 @check(
     id = 'com.adobe.fonts/check/cff_call_depth',
@@ -152,11 +152,11 @@ def com_adobe_fonts_check_cff_call_depth(cff_analysis):
     any_failures = False
 
     if cff_analysis.glyphs_exceed_max or cff_analysis.glyphs_recursion_errors:
-      any_failures = True
-      for gn in cff_analysis.glyphs_exceed_max:
-        yield FAIL, Message('max-depth', f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
-      for gn in cff_analysis.glyphs_recursion_errors:
-        yield FAIL, Message('recursion-error', f'Recursion error while decompiling glyph "{gn}".')
+        any_failures = True
+        for gn in cff_analysis.glyphs_exceed_max:
+            yield FAIL, Message('max-depth', f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
+        for gn in cff_analysis.glyphs_recursion_errors:
+            yield FAIL, Message('recursion-error', f'Recursion error while decompiling glyph "{gn}".')
 
     if not any_failures:
         yield PASS, 'Maximum call depth not exceeded.'
@@ -175,11 +175,11 @@ def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
     any_failures = False
 
     if cff_analysis.glyphs_exceed_max or cff_analysis.glyphs_recursion_errors:
-      any_failures = True
-      for gn in cff_analysis.glyphs_exceed_max:
-        yield FAIL, Message('max-depth', f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
-      for gn in cff_analysis.glyphs_recursion_errors:
-        yield FAIL, Message('recursion-error', f'Recursion error while decompiling glyph "{gn}".')
+        any_failures = True
+        for gn in cff_analysis.glyphs_exceed_max:
+            yield FAIL, Message('max-depth', f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
+        for gn in cff_analysis.glyphs_recursion_errors:
+            yield FAIL, Message('recursion-error', f'Recursion error while decompiling glyph "{gn}".')
 
     if not any_failures:
         yield PASS, 'Maximum call depth not exceeded.'
@@ -200,13 +200,13 @@ def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
     any_failures = False
 
     if cff_analysis.glyphs_dotsection or cff_analysis.glyphs_endchar_seac or cff_analysis.glyphs_seac:
-      any_failures = True
-      for gn in cff_analysis.glyphs_dotsection:
-        yield WARN, Message('deprecated-operator-dotsection', f'Glyph "{gn}" uses deprecated "dotsection" operator.')
-      for gn in cff_analysis.glyphs_endchar_seac:
-        yield FAIL, Message('deprecated-operator-seac', f'Glyph "{gn}" uses deprecated "seac" (endchar) operator.')
-      for gn in cff_analysis.glyphs_seac:
-        yield FAIL, Message('deprecated-operator-seac', f'Glyph "{gn}" uses deprecated "seac" operator.')
+        any_failures = True
+        for gn in cff_analysis.glyphs_dotsection:
+            yield WARN, Message('deprecated-operator-dotsection', f'Glyph "{gn}" uses deprecated "dotsection" operator.')
+        for gn in cff_analysis.glyphs_endchar_seac:
+            yield FAIL, Message('deprecated-operator-seac', f'Glyph "{gn}" uses deprecated "seac" (endchar) operator.')
+        for gn in cff_analysis.glyphs_seac:
+            yield FAIL, Message('deprecated-operator-seac', f'Glyph "{gn}" uses deprecated "seac" operator.')
 
     if not any_failures:
         yield PASS, 'No deprecated CFF operators used.'
