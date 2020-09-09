@@ -2,12 +2,12 @@ import pytest
 
 from fontTools.ttLib import TTFont
 
-from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
-from fontbakery.codetesting import (TEST_FILE,
-                                    assert_PASS,
-                                    assert_results_contain)
-
-check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
+from fontbakery.checkrunner import WARN, FAIL
+from fontbakery.codetesting import (assert_PASS,
+                                    assert_results_contain,
+                                    CheckTester,
+                                    TEST_FILE)
+from fontbakery.profiles import opentype as opentype_profile
 
 
 mada_fonts = [
@@ -27,7 +27,8 @@ def mada_ttFonts():
 
 def test_check_family_underline_thickness(mada_ttFonts):
     """ Fonts have consistent underline thickness ? """
-    from fontbakery.profiles.post import com_google_fonts_check_family_underline_thickness as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/family/underline_thickness")
 
     # We start with our reference Mada font family,
     # which we know has the same value of post.underlineThickness
@@ -54,6 +55,8 @@ def test_check_family_underline_thickness(mada_ttFonts):
 
 def test_check_post_table_version():
     """ Font has correct post table version (2 for TTF, 3 for OTF)? """
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/post_table_version")
     from fontbakery.profiles.post import com_google_fonts_check_post_table_version as check
 
     # our reference Mada family is know to be good here.

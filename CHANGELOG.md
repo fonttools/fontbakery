@@ -1,8 +1,14 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.7.30 (2020-Sept-someday)
+
+## 0.7.31 (2020-Oct-??)
+  - ...
+
+
+## 0.7.30 (2020-Sept-24)
 ### Note-worthy code changes
+  - The vast majority of code-tests now use our new style which is less errorprone, using the helper CheckTester class. (PR #3035)
   - Adopted 4-spaces indentation. We're changing our codestyle to facilitate collaboration from people who also work with the fontTools and AFDKO codebases. (issue 2997)
   - All rationale text needs to have 8 indentation spaces (because this indentation on the source should not show up on the user-interface when rationale text is printed on the text terminal)
   - Remove PriorityLevel class as it makes classifying checks by priority more complicated then necessary! (issue #2981)

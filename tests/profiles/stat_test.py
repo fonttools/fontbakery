@@ -1,15 +1,17 @@
-from fontbakery.checkrunner import PASS, FAIL
-from fontbakery.codetesting import (TEST_FILE,
-                                    assert_PASS,
-                                    assert_results_contain)
-
 from fontTools.ttLib import TTFont
+
+from fontbakery.checkrunner import FAIL
+from fontbakery.codetesting import (assert_PASS,
+                                    assert_results_contain,
+                                    CheckTester,
+                                    TEST_FILE)
+from fontbakery.profiles import opentype as opentype_profile
 
 
 def test_check_varfont_stat_axis_record_for_each_axis():
     """ Check the STAT table has an Axis Record for every axis in the font. """
-    from fontbakery.profiles.stat \
-        import com_google_fonts_check_varfont_stat_axis_record_for_each_axis as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/varfont/stat_axis_record_for_each_axis")
 
     # Our reference Cabin[wdth,wght].ttf variable font
     # has all necessary Axis Records

@@ -17,8 +17,12 @@
 from fontbakery.checkrunner import CheckRunner, Profile, get_module_profile
 
 
-class TestingContext:
-    """ CAUTION: this uses a lot of "private" methods and properties
+class CheckTester:
+    """
+    This class offers a bit of automation to aid in the implementation of
+    code-tests to validade the proper behaviour of FontBakery checks.
+
+    !!!CAUTION: this uses a lot of "private" methods and properties
     of CheckRunner, in order to make unit testing different cases simpler.
 
     This is not intended to run in production. However, if that is desired
@@ -33,18 +37,6 @@ class TestingContext:
 
     An initial run can be with unaltered arguments, as CheckRunner would
     produce them by itself. And subsequent calls can reuse some of them.
-
-    Example:
-    > import fontbakery.profiles.googlefonts as googlefonts_profile
-    > check = TestingContext(googlefonts_profile,
-                             'com.google.fonts/check/some_id')
-    > first_result = check(initialTTFont) # can be called with overrides
-    > modifiedTTFont = check['ttFont']
-    > mofifiedTTFont[opentype_table].some_field = some_value
-    > second_result = check(modifiedTTFont)
-    > overriden_value = check['some_dependency']
-    > overriden_value.change_something()
-    > another_result = check(modifiedTTFont, {'some_dependency': overriden_value})
     """
     def __init__(self, module_or_profile, check_id):
         self.profile = module_or_profile \

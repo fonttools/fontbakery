@@ -1,69 +1,72 @@
 import io
-import os
 
 from fontTools.ttLib import TTFont
 
-from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
-from fontbakery.codetesting import (TEST_FILE,
-                                    assert_PASS,
-                                    assert_results_contain)
-
-check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
+from fontbakery.checkrunner import (WARN, FAIL)
+from fontbakery.codetesting import (assert_PASS,
+                                    assert_results_contain,
+                                    CheckTester,
+                                    TEST_FILE)
+from fontbakery.profiles import opentype as opentype_profile
 
 
 def test_check_glyf_unused_data():
     """ Is there any unused data at the end of the glyf table? """
-    from fontbakery.profiles.glyf import com_google_fonts_check_glyf_unused_data as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/glyf_unused_data")
 
-    test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
-
-    test_font = TTFont(test_font_path)
-    assert_PASS(check(test_font))
+    font = TEST_FILE("nunito/Nunito-Regular.ttf")
+    ttFont = TTFont(font)
+    assert_PASS(check(ttFont))
 
     # Always start with a fresh copy, as fT works lazily. Accessing certain data
     # can prevent the test from working because we rely on uninitialized
     # behavior.
-    test_font = TTFont(test_font_path)
-    test_font["loca"].locations.pop()
-    test_file = io.BytesIO()
-    test_font.save(test_file)
-    test_font = TTFont(test_file)
-    assert_results_contain(check(test_font),
+    ttFont = TTFont(font)
+    ttFont["loca"].locations.pop()
+    _file = io.BytesIO()
+    ttFont.save(_file)
+    ttFont = TTFont(_file)
+    ttFont.reader.file.name = font
+    assert_results_contain(check(ttFont),
                            FAIL, 'unreachable-data')
 
-    test_font = TTFont(test_font_path)
-    test_font["loca"].locations.append(50000)
-    test_file = io.BytesIO()
-    test_font.save(test_file)
-    test_font = TTFont(test_file)
-    assert_results_contain(check(test_font),
+    ttFont = TTFont(font)
+    ttFont["loca"].locations.append(50000)
+    _file = io.BytesIO()
+    ttFont.save(_file)
+    ttFont = TTFont(_file)
+    ttFont.reader.file.name = font
+    assert_results_contain(check(ttFont),
                            FAIL, 'missing-data')
 
 
 def test_check_points_out_of_bounds():
     """ Check for points out of bounds. """
-    from fontbakery.profiles.glyf import com_google_fonts_check_points_out_of_bounds as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/points_out_of_bounds")
 
-    test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert_results_contain(check(test_font),
+    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+    assert_results_contain(check(ttFont),
                            WARN, 'points-out-of-bounds')
 
-    test_font2 = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
-    assert_PASS(check(test_font2))
+    ttFont = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
+    assert_PASS(check(ttFont))
 
 
 def test_check_glyf_non_transformed_duplicate_components():
     """Check glyphs do not have duplicate components which have the same x,y coordinates."""
-    from fontbakery.profiles.glyf import com_google_fonts_check_glyf_non_transformed_duplicate_components as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/glyf_non_transformed_duplicate_components")
 
-    test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert_PASS(check(test_font))
+    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+    assert_PASS(check(ttFont))
 
     # Set qutodbl's components to have the same x,y values
-    test_font['glyf']['quotedbl'].components[0].x = 0
-    test_font['glyf']['quotedbl'].components[1].x = 0
-    test_font['glyf']['quotedbl'].components[0].y = 0
-    test_font['glyf']['quotedbl'].components[1].y = 0
-    assert_results_contain(check(test_font),
+    ttFont['glyf']['quotedbl'].components[0].x = 0
+    ttFont['glyf']['quotedbl'].components[1].x = 0
+    ttFont['glyf']['quotedbl'].components[0].y = 0
+    ttFont['glyf']['quotedbl'].components[1].y = 0
+    assert_results_contain(check(ttFont),
                            FAIL, 'found-duplicates')
 

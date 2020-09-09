@@ -1,10 +1,10 @@
 import pytest
 from fontTools.ttLib import TTFont
 
-from fontbakery.codetesting import (TestingContext,
-                                    TEST_FILE,
-                                    assert_PASS,
-                                    assert_results_contain)
+from fontbakery.codetesting import (assert_PASS,
+                                    assert_results_contain,
+                                    CheckTester,
+                                    TEST_FILE)
 from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
 from fontbakery.profiles import opentype as opentype_profile
 
@@ -27,8 +27,8 @@ def mada_ttFonts():
 
 def test_check_family_equal_unicode_encodings(mada_ttFonts):
     """ Fonts have equal unicode encodings ? """
-    check = TestingContext(opentype_profile,
-                           "com.google.fonts/check/family/equal_unicode_encodings")
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/family/equal_unicode_encodings")
 
     from fontbakery.constants import WindowsEncodingID
 
@@ -52,8 +52,8 @@ def test_check_family_equal_unicode_encodings(mada_ttFonts):
 # Note: I am not aware of any real-case of a font that FAILs this check.
 def test_check_all_glyphs_have_codepoints():
     """ Check all glyphs have codepoints assigned. """
-    check = TestingContext(opentype_profile,
-                           "com.google.fonts/check/all_glyphs_have_codepoints")
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/all_glyphs_have_codepoints")
 
     # our reference Mada SemiBold is know to be good here.
     ttFont = TTFont(TEST_FILE("mada/Mada-SemiBold.ttf"))

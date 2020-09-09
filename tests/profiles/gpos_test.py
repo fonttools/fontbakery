@@ -2,15 +2,16 @@ from fontTools.ttLib import TTFont
 
 from fontbakery.codetesting import (TEST_FILE,
                                     assert_PASS,
-                                    assert_results_contain)
-from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
-
-check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
+                                    assert_results_contain,
+                                    CheckTester)
+from fontbakery.checkrunner import WARN
+from fontbakery.profiles import opentype as opentype_profile
 
 
 def test_check_gpos_kerning_info():
     """ Does GPOS table have kerning information? """
-    from fontbakery.profiles.gpos import com_google_fonts_check_gpos_kerning_info as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/gpos_kerning_info")
 
     # Our reference Mada Regular is known to have kerning-info
     # exclusively on an extension subtable

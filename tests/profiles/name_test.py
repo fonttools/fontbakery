@@ -9,17 +9,18 @@ from fontbakery.constants import (NameID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
-from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
-from fontbakery.codetesting import (TEST_FILE,
-                                    assert_PASS,
+from fontbakery.checkrunner import (INFO, WARN, PASS, FAIL)
+from fontbakery.codetesting import (assert_PASS,
                                     assert_results_contain,
-                                    portable_path)
-
-check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
+                                    CheckTester,
+                                    portable_path,
+                                    TEST_FILE)
+from fontbakery.profiles import opentype as opentype_profile
 
 
 def test_check_name_empty_records():
-    from fontbakery.profiles.name import com_adobe_fonts_check_name_empty_records as check
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/name/empty_records")
 
     font_path = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
     test_font = TTFont(font_path)
@@ -42,7 +43,8 @@ def test_check_name_no_copyright_on_description():
     """ Description strings in the name table
         must not contain copyright info.
     """
-    from fontbakery.profiles.name import com_google_fonts_check_name_no_copyright_on_description as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/name/no_copyright_on_description")
 
     # Our reference Mada Regular is know to be good here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -61,8 +63,8 @@ def test_check_name_no_copyright_on_description():
 
 def test_check_monospace():
     """ Checking correctness of monospaced metadata. """
-    from fontbakery.profiles.name import com_google_fonts_check_monospace as check
-    from fontbakery.profiles.shared_conditions import glyph_metrics_stats
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/monospace")
     from fontbakery.constants import (PANOSE_Proportion,
                                       IsFixedWidth)
 
@@ -76,14 +78,13 @@ def test_check_monospace():
     # Our reference Mada Regular is a non-monospace font
     # know to have good metadata for this check.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    stats = glyph_metrics_stats(ttFont)
-    assert_results_contain(check(ttFont, stats),
+    assert_results_contain(check(ttFont),
                            PASS, "good",
                            'with a good non-monospace font...')
 
     # We'll mark it as monospaced on the post table and make sure it fails:
     ttFont["post"].isFixedPitch = 42 # *any* non-zero value means monospaced
-    assert_results_contain(check(ttFont, stats),
+    assert_results_contain(check(ttFont),
                            FAIL, 'bad-post-isFixedPitch',
                            'with a non-monospaced font with bad'
                            ' post.isFixedPitch value ...')
@@ -93,7 +94,7 @@ def test_check_monospace():
 
     # Now we mark it as monospaced on the OS/2 and it should also fail:
     ttFont["OS/2"].panose.bProportion = PANOSE_Proportion.MONOSPACED
-    assert_results_contain(check(ttFont, stats),
+    assert_results_contain(check(ttFont),
                            FAIL, 'bad-panose-proportion',
                            'with a non-monospaced font with bad'
                            ' OS/2.panose.bProportion value (MONOSPACED) ...')
@@ -107,9 +108,7 @@ def test_check_monospace():
     # a monospaced font with good metadata here.
     ttFont = TTFont(TEST_FILE("overpassmono/OverpassMono-Regular.ttf"))
 
-    stats = glyph_metrics_stats(ttFont)
-    assert stats['most_common_width'] == 616
-    status, message = list(check(ttFont, stats))[-1]
+    status, message = check(ttFont)[-1]
     # WARN is emitted when there's at least one outlier.
     # I don't see a good reason to be picky and also test that one separately here...
     assert (status == WARN and message.code == "mono-outliers") or \
@@ -120,7 +119,7 @@ def test_check_monospace():
     # here we search for the expected FAIL among all results
     # instead of simply looking at the last one
     # because we may also get an outliers WARN in some cases:
-    assert_results_contain(check(ttFont, stats),
+    assert_results_contain(check(ttFont),
                            FAIL, 'mono-bad-post-isFixedPitch',
                            'with a monospaced font with'
                            ' bad post.isFixedPitch value ...')
@@ -142,7 +141,7 @@ def test_check_monospace():
     for bad_value in bad_monospaced_panose_values:
         ttFont["OS/2"].panose.bProportion = bad_value
         # again, we search the expected FAIL because we may algo get an outliers WARN here:
-        assert_results_contain(check(ttFont, stats),
+        assert_results_contain(check(ttFont),
                                FAIL, 'mono-bad-panose-proportion',
                                f'Test FAIL with a monospaced font with bad'
                                f' OS/2.panose.bProportion value ({bad_value}) ...')
@@ -150,7 +149,8 @@ def test_check_monospace():
 
 def test_check_name_match_familyname_fullfont():
     """ Does full font name begin with the font family name? """
-    from fontbakery.profiles.name import com_google_fonts_check_name_match_familyname_fullfont as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/name/match_familyname_fullfont")
     # Our reference Mada Regular is known to be good
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 

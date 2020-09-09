@@ -4,12 +4,12 @@ import os
 import pytest
 from fontTools.ttLib import TTFont
 
-from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
-from fontbakery.codetesting import (TEST_FILE,
-                                    assert_PASS,
-                                    assert_results_contain)
-
-check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
+from fontbakery.checkrunner import (WARN, FAIL)
+from fontbakery.codetesting import (assert_PASS,
+                                    assert_results_contain,
+                                    CheckTester,
+                                    TEST_FILE)
+from fontbakery.profiles import opentype as opentype_profile
 
 
 mada_fonts = [
@@ -29,7 +29,8 @@ def mada_ttFonts():
 
 def test_check_family_equal_font_versions(mada_ttFonts):
     """ Make sure all font files have the same version value. """
-    from fontbakery.profiles.head import com_google_fonts_check_family_equal_font_versions as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/family/equal_font_versions")
 
     # our reference Mada family is know to be good here.
     assert_PASS(check(mada_ttFonts),
@@ -47,7 +48,8 @@ def test_check_family_equal_font_versions(mada_ttFonts):
 
 def test_check_unitsperem():
     """ Checking unitsPerEm value is reasonable. """
-    from fontbakery.profiles.head import com_google_fonts_check_unitsperem as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/unitsperem")
 
     # In this test we'll forge several known-good and known-bad values.
     # We'll use Mada Regular to start with:
@@ -104,7 +106,8 @@ def test_parse_version_string():
 
 def test_check_font_version():
     """ Checking font version fields. """
-    from fontbakery.profiles.head import com_google_fonts_check_font_version as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/font_version")
 
     test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
     test_font = TTFont(test_font_path)
