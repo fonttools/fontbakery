@@ -2,16 +2,16 @@ import os
 
 from fontTools.ttLib import TTFont
 from fontbakery.checkrunner import (PASS, WARN, FAIL)
-from fontbakery.codetesting import (TestingContext,
+from fontbakery.codetesting import (assert_PASS,
+                                    assert_results_contain,
+                                    CheckTester,
                                     portable_path,
-                                    TEST_FILE,
-                                    assert_PASS,
-                                    assert_results_contain)
+                                    TEST_FILE)
 from fontbakery.profiles import adobefonts as adobefonts_profile
 
 def test_check_family_consistent_upm():
-    check = TestingContext(adobefonts_profile,
-                           "com.adobe.fonts/check/family/consistent_upm")
+    check = CheckTester(adobefonts_profile,
+                        "com.adobe.fonts/check/family/consistent_upm")
 
     base_path = TEST_FILE("source-sans-pro/OTF")
 
@@ -35,9 +35,8 @@ def test_check_family_consistent_upm():
 
 def test_check_family_consistent_upm_new_style():
     # these fonts have a consistent unitsPerEm of 1000:
-    from fontbakery.codetesting import TestingContext
-    check = TestingContext(adobefonts_profile,
-                           'com.adobe.fonts/check/family/consistent_upm')
+    check = CheckTester(adobefonts_profile,
+                        "com.adobe.fonts/check/family/consistent_upm")
 
     filenames = ['SourceSansPro-Regular.otf',
                  'SourceSansPro-Bold.otf',
@@ -78,8 +77,8 @@ def test_get_family_checks():
 
 
 def test_check_find_empty_letters():
-    check = TestingContext(adobefonts_profile,
-                           "com.adobe.fonts/check/find_empty_letters")
+    check = CheckTester(adobefonts_profile,
+                        "com.adobe.fonts/check/find_empty_letters")
 
     # this font has inked glyphs for all letters
     font = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
@@ -96,8 +95,8 @@ def test_check_find_empty_letters():
 
 def test_check_missing_whitespace():
     """ Check that overridden test for nbsp yields WARN rather than FAIL. """
-    check = TestingContext(adobefonts_profile,
-                           "com.google.fonts/check/whitespace_glyphs:adobefonts")
+    check = CheckTester(adobefonts_profile,
+                        "com.google.fonts/check/whitespace_glyphs:adobefonts")
 
     font = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')
     ttFont = TTFont(font)

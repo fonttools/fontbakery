@@ -8,7 +8,7 @@ from fontbakery.codetesting import (assert_results_contain,
                                     assert_PASS,
                                     portable_path,
                                     TEST_FILE,
-                                    TestingContext)
+                                    CheckTester)
 from fontbakery.constants import (NameID,
                                   PlatformID,
                                   WindowsEncodingID,
@@ -45,10 +45,10 @@ cabin_fonts = [
 ]
 
 cabin_condensed_fonts = [
-    TEST_FILE("cabin/CabinCondensed-Regular.ttf"),
-    TEST_FILE("cabin/CabinCondensed-Medium.ttf"),
-    TEST_FILE("cabin/CabinCondensed-Bold.ttf"),
-    TEST_FILE("cabin/CabinCondensed-SemiBold.ttf")
+    TEST_FILE("cabincondensed/CabinCondensed-Regular.ttf"),
+    TEST_FILE("cabincondensed/CabinCondensed-Medium.ttf"),
+    TEST_FILE("cabincondensed/CabinCondensed-Bold.ttf"),
+    TEST_FILE("cabincondensed/CabinCondensed-SemiBold.ttf")
 ]
 
 montserrat_fonts = [
@@ -153,8 +153,8 @@ def test_example_checkrunner_based(cabin_regular_path):
 
 def test_check_canonical_filename():
     """ Files are named canonically. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/canonical_filename")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/canonical_filename")
 
     static_canonical_names = [
         TEST_FILE("montserrat/Montserrat-Thin.ttf"),
@@ -211,8 +211,8 @@ def test_check_canonical_filename():
 
 def test_check_description_broken_links():
     """ Does DESCRIPTION file contain broken links ? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/description/broken_links")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/description/broken_links")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(font),
@@ -242,8 +242,8 @@ def test_check_description_broken_links():
 
 def test_check_description_git_url():
     """ Does DESCRIPTION file contain an upstream Git repo URL? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/description/git_url")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/description/git_url")
 
     # TODO: test INFO 'url-found'
 
@@ -265,8 +265,8 @@ def test_check_description_git_url():
 
 def test_check_description_valid_html():
     """ DESCRIPTION file is a propper HTML snippet ? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/description/valid_html")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/description/valid_html")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
     assert_PASS(check(font),
@@ -293,8 +293,8 @@ def test_check_description_valid_html():
 
 def test_check_description_min_length():
     """ DESCRIPTION.en_us.html must have more than 200 bytes. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/description/min_length")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/description/min_length")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
 
@@ -315,8 +315,8 @@ def test_check_description_min_length():
 
 def test_check_description_max_length():
     """ DESCRIPTION.en_us.html must have less than 1000 bytes. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/description/max_length")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/description/max_length")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
 
@@ -337,8 +337,8 @@ def test_check_description_max_length():
 
 def test_check_description_eof_linebreak():
     """ DESCRIPTION.en_us.html should end in a linebreak. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/description/eof_linebreak")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/description/eof_linebreak")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
 
@@ -355,13 +355,13 @@ def test_check_description_eof_linebreak():
                 'when we add one...')
 
 
-def test_check_name_family_and_style_max_length(): 
+def test_check_name_family_and_style_max_length():
     """ Combined length of family and style must not exceed 27 characters. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/name/family_and_style_max_length")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/family_and_style_max_length")
 
     # Our reference Cabin Regular is known to be good 
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf")) 
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
     # So it must PASS the check:
     assert_PASS(check(ttFont),
@@ -373,26 +373,26 @@ def test_check_name_family_and_style_max_length():
     # but later we increased a bit the max allowed length.
 
     # First we expect a WARN with a bad FAMILY NAME
-    for index, name in enumerate(ttFont["name"].names): 
+    for index, name in enumerate(ttFont["name"].names):
         if name.nameID == NameID.FONT_FAMILY_NAME:
             # This has 28 chars, while the max currently allowed is 27.
             bad = "AnAbsurdlyLongFamilyNameFont"
             assert len(bad) == 28
-            ttFont["name"].names[index].string = bad.encode(name.getEncoding()) 
+            ttFont["name"].names[index].string = bad.encode(name.getEncoding())
             break
     assert_results_contain(check(ttFont),
                            WARN, 'too-long',
                            'with a bad font...')
 
     # Now let's restore the good Cabin Regular...
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf")) 
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
     # ...and break the check again with a bad SUBFAMILY NAME:
-    for index, name in enumerate(ttFont["name"].names): 
+    for index, name in enumerate(ttFont["name"].names):
         if name.nameID == NameID.FONT_SUBFAMILY_NAME:
             bad = "WithAVeryLongAndBadStyleName"
             assert len(bad) == 28
-            ttFont["name"].names[index].string = bad.encode(name.getEncoding()) 
+            ttFont["name"].names[index].string = bad.encode(name.getEncoding())
             break
     assert_results_contain(check(ttFont),
                            WARN, 'too-long',
@@ -401,8 +401,8 @@ def test_check_name_family_and_style_max_length():
 
 def test_check_name_line_breaks():
     """ Name table entries should not contain line-breaks. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/name/line_breaks")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/line_breaks")
 
     # Our reference Mada Regular font is good here:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -423,8 +423,8 @@ def test_check_name_line_breaks():
 
 def test_check_name_rfn():
     """ Name table strings must not contain 'Reserved Font Name'. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/name/rfn")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/rfn")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))
@@ -437,8 +437,8 @@ def test_check_name_rfn():
 
 def test_check_metadata_parses():
     """ Check METADATA.pb parse correctly. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/metadata/parses")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/parses")
 
     good = TEST_FILE("merriweather/Merriweather-Regular.ttf")
     assert_PASS(check(good),
@@ -457,8 +457,8 @@ def test_check_metadata_parses():
 
 def test_check_metadata_unknown_designer():
     """ Font designer field in METADATA.pb must not be 'unknown'. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/metadata/unknown_designer")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/unknown_designer")
 
     font = TEST_FILE("merriweather/Merriweather.ttf")
     assert_PASS(check(font),
@@ -474,9 +474,9 @@ def test_check_metadata_unknown_designer():
 def test_check_metadata_designer_values():
     """ Multiple values in font designer field in
         METADATA.pb must be separated by commas. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/metadata/designer_values")
-    
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/designer_values")
+
     font = TEST_FILE("merriweather/Merriweather.ttf")
     assert_PASS(check(font),
                 'with a good METADATA.pb file...')
@@ -496,8 +496,8 @@ def test_check_metadata_designer_values():
 
 def test_check_metadata_broken_links():
     """ Does DESCRIPTION file contain broken links? """
-    #check = TestingContext(googlefonts_profile,
-    #                       "com.google.fonts/check/metadata/broken_links")
+    #check = CheckTester(googlefonts_profile,
+    #                    "com.google.fonts/check/metadata/broken_links")
     # TODO: Implement-me!
     # INFO, "email"
     # WARN, "timeout"
@@ -506,8 +506,8 @@ def test_check_metadata_broken_links():
 
 def test_check_metadata_undeclared_fonts():
     """ Ensure METADATA.pb lists all font binaries. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/metadata/undeclared_fonts")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/undeclared_fonts")
 
     # Our reference Nunito family is know to be good here.
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
@@ -537,8 +537,8 @@ def test_check_metadata_undeclared_fonts():
 # TODO: re-enable after addressing issue #1998
 def DISABLED_test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
     """ Fonts have equal numbers of glyphs? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/family/equal_numbers_of_glyphs")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/family/equal_numbers_of_glyphs")
 
     # our reference Cabin family is know to be good here.
     assert_PASS(check(cabin_ttFonts),
@@ -554,8 +554,8 @@ def DISABLED_test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFon
 # TODO: re-enable after addressing issue #1998
 def DISABLED_test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
     """ Fonts have equal glyph names? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/family/equal_glyph_names")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/family/equal_glyph_names")
 
     # our reference Cabin family is know to be good here.
     assert_PASS(check(cabin_ttFonts),
@@ -570,8 +570,8 @@ def DISABLED_test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
 
 def test_check_fstype():
     """ Checking OS/2 fsType """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/fstype")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/fstype")
 
     # our reference Cabin family is know to be good here.
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
@@ -633,8 +633,8 @@ def test_condition__registered_vendor_ids():
 
 def test_check_vendor_id():
     """ Checking OS/2 achVendID """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/vendor_id")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/vendor_id")
 
     # Let's start with our reference Merriweather Regular
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
@@ -664,8 +664,8 @@ def test_check_vendor_id():
 
 def NOT_IMPLEMENTED__test_check_glyph_coverage():
     """ Check glyph coverage. """
-    #check = TestingContext(googlefonts_profile,
-    #                       "com.google.fonts/check/glyph_coverage")
+    #check = CheckTester(googlefonts_profile,
+    #                    "com.google.fonts/check/glyph_coverage")
     #TODO: Implement-me!
 
     ## Our reference Mada Regular is know to be bad here.
@@ -683,8 +683,8 @@ def NOT_IMPLEMENTED__test_check_glyph_coverage():
 def test_check_name_unwanted_chars():
     """ Substitute copyright, registered and trademark
         symbols in name table entries. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/name/unwanted_chars")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/unwanted_chars")
 
     # Our reference Mada Regular is know to be bad here.
     font = TEST_FILE("mada/Mada-Regular.ttf")
@@ -700,8 +700,8 @@ def test_check_name_unwanted_chars():
 
 def test_check_usweightclass():
     """ Checking OS/2 usWeightClass. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/usweightclass")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/usweightclass")
 
     # Our reference Mada Regular is know to be bad here.
     font = TEST_FILE("mada/Mada-Regular.ttf")
@@ -810,8 +810,8 @@ def test_check_name_license(mada_ttFonts):
 
 def NOT_IMPLEMENTED_test_check_name_license_url():
     """ License URL matches License text on name table? """
-    # check = TestingContext(googlefonts_profile,
-    #                       "com.google.fonts/check/name/license_url")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/name/license_url")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -828,13 +828,13 @@ def test_check_name_description_max_length():
     """ Description strings in the name table
         must not exceed 200 characters.
     """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/name/description_max_length")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/description_max_length")
 
     # Our reference Mada Regular is know to be good here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     assert_PASS(check(ttFont),
-                'with a good font...')  
+                'with a good font...')
 
     # Here we add strings to NameID.DESCRIPTION with exactly 100 chars,
     # so it should still PASS:
@@ -856,8 +856,8 @@ def test_check_name_description_max_length():
 
 def test_check_hinting_impact():
     """ Show hinting filesize impact. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/hinting_impact")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/hinting_impact")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_results_contain(check(font),
@@ -868,8 +868,8 @@ def test_check_hinting_impact():
 
 def test_check_name_version_format():
     """ Version format is correct in 'name' table ? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/name/version_format")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/version_format")
 
     # Our reference Mada Regular font is good here:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -898,8 +898,8 @@ def test_check_name_version_format():
 
 def NOT_IMPLEMENTED_test_check_old_ttfautohint():
     """ Font has old ttfautohint applied? """
-    # check = TestingContext(googlefonts_profile,
-    #                        'com.google.fonts/check/old_ttfautohint')
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/old_ttfautohint")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -927,8 +927,8 @@ def NOT_IMPLEMENTED_test_check_old_ttfautohint():
 ])
 def test_check_has_ttfautohint_params(expected_status, expected_keyword, reason, font):
     """ Font has ttfautohint params? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/has_ttfautohint_params")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/has_ttfautohint_params")
 
     assert_results_contain(check(font),
                            expected_status, expected_keyword,
@@ -937,8 +937,8 @@ def test_check_has_ttfautohint_params(expected_status, expected_keyword, reason,
 
 def test_check_epar():
     """ EPAR table present in font? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/epar")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/epar")
 
     # Our reference Mada Regular lacks an EPAR table:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -957,8 +957,8 @@ def test_check_epar():
 
 def NOT_IMPLEMENTED_test_check_gasp():
     """ Is GASP table correctly set? """
-    # check = TestingContext(googlefonts_profile,
-    #                        "com.google.fonts/check/gasp")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/gasp")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -973,8 +973,8 @@ def NOT_IMPLEMENTED_test_check_gasp():
 
 def test_check_name_familyname_first_char():
     """ Make sure family name does not begin with a digit. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/name/familyname_first_char")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/familyname_first_char")
 
     # Our reference Mada Regular is known to be good
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -996,8 +996,8 @@ def test_check_name_familyname_first_char():
 
 def test_check_name_ascii_only_entries():
     """ Are there non-ASCII characters in ASCII-only NAME table entries? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/name/ascii_only_entries")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/ascii_only_entries")
 
     # Our reference Merriweather Regular is known to be good
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
@@ -1066,9 +1066,9 @@ def test_split_camel_case_condition():
 
 def test_check_metadata_listed_on_gfonts():
     """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/metadata/listed_on_gfonts")
-    
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/listed_on_gfonts")
+
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
     # Our reference FamilySans family is a just a generic example
     # and thus is not really hosted (nor will ever be hosted) at Google Fonts servers:
@@ -1099,8 +1099,8 @@ def test_check_metadata_listed_on_gfonts():
 # - Implement the test.
 def NOT_IMPLEMENTED_test_check_metadata_profiles_csv():
     """ METADATA.pb: Designer exists in Google Fonts profiles.csv? """
-    # check = TestingContext(googlefonts_profile,
-    #                        'com.google.fonts/check/metadata/profiles_csv')
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/metadata/profiles_csv")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -1112,8 +1112,8 @@ def NOT_IMPLEMENTED_test_check_metadata_profiles_csv():
 
 def test_check_metadata_unique_full_name_values():
     """ METADATA.pb: check if fonts field only has unique "full_name" values. """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/unique_full_name_values')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/unique_full_name_values")
 
     # Our reference FamilySans family is good:
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1130,8 +1130,8 @@ def test_check_metadata_unique_full_name_values():
 
 def test_check_metadata_unique_weight_style_pairs():
     """ METADATA.pb: check if fonts field only contains unique style:weight pairs. """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/unique_weight_style_pairs')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/unique_weight_style_pairs")
 
     # Our reference FamilySans family is good:
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1149,8 +1149,8 @@ def test_check_metadata_unique_weight_style_pairs():
 
 def test_check_metadata_license():
     """ METADATA.pb license is "APACHE2", "UFL" or "OFL"? """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/license')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/license")
 
     # Let's start with our reference FamilySans family:
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1174,8 +1174,8 @@ def test_check_metadata_license():
 
 def test_check_metadata_menu_and_latin():
     """ METADATA.pb should contain at least "menu" and "latin" subsets. """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/menu_and_latin')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/menu_and_latin")
 
     # Let's start with our reference FamilySans family:
     fonts = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1211,8 +1211,8 @@ def test_check_metadata_menu_and_latin():
 
 def test_check_metadata_subsets_order():
     """ METADATA.pb subsets should be alphabetically ordered. """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/subsets_order')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/subsets_order")
 
     # Let's start with our reference FamilySans family:
     fonts = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1248,8 +1248,8 @@ def test_check_metadata_subsets_order():
 
 def test_check_metadata_includes_production_subsets():
     """Check METADATA.pb has production subsets."""
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/includes_production_subsets')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/includes_production_subsets")
 
     # We need to use a family that is already in production
     # Our reference Cabin is known to be good
@@ -1269,8 +1269,8 @@ def test_check_metadata_includes_production_subsets():
 
 def test_check_metadata_copyright():
     """ METADATA.pb: Copyright notice is the same in all fonts? """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/copyright')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/copyright")
 
     # Let's start with our reference FamilySans family:
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1291,8 +1291,8 @@ def test_check_metadata_copyright():
 
 def test_check_metadata_familyname():
     """ Check that METADATA.pb family values are all the same. """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/familyname')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/familyname")
 
     # Let's start with our reference FamilySans family:
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1313,8 +1313,8 @@ def test_check_metadata_familyname():
 
 def test_check_metadata_has_regular():
     """ METADATA.pb: According Google Fonts standards, families should have a Regular style. """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/has_regular')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/has_regular")
 
     # Let's start with our reference FamilySans family:
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1338,8 +1338,8 @@ def test_check_metadata_has_regular():
 
 def test_check_metadata_regular_is_400():
     """ METADATA.pb: Regular should be 400. """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/regular_is_400')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/regular_is_400")
 
     # Let's start with the METADATA.pb file from our reference FamilySans family:
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1363,8 +1363,8 @@ def test_check_metadata_regular_is_400():
 def test_check_metadata_nameid_family_name():
     """ Checks METADATA.pb font.name field matches
         family name declared on the name table. """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/nameid/family_name')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/nameid/family_name")
 
     # Let's start with the METADATA.pb file from our reference FamilySans family:
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1388,8 +1388,8 @@ def test_check_metadata_nameid_family_name():
 def test_check_metadata_nameid_post_script_name():
     """ Checks METADATA.pb font.post_script_name matches
         postscript name declared on the name table. """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/nameid/post_script_name')
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/nameid/post_script_name")
 
     # Let's start with the METADATA.pb file from our reference FamilySans family:
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
@@ -1412,9 +1412,9 @@ def test_check_metadata_nameid_post_script_name():
 
 def test_check_metadata_nameid_full_name():
     """ METADATA.pb font.fullname value matches fullname declared on the name table ? """
-    check = TestingContext(googlefonts_profile,
-                           'com.google.fonts/check/metadata/nameid/full_name')
-    
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/nameid/full_name")
+
     font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
 
     assert_PASS(check(font),
@@ -1446,8 +1446,8 @@ def test_check_metadata_nameid_full_name():
 
 def test_check_metadata_nameid_font_name():
     """ METADATA.pb font.name value should be same as the family name declared on the name table. """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/metadata/nameid/font_name")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/nameid/font_name")
 
     # Our reference Merriweather-Regular is know to have good fullname metadata
     font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
@@ -1471,8 +1471,8 @@ def test_check_metadata_nameid_font_name():
 def test_check_metadata_match_fullname_postscript():
     """ METADATA.pb family.full_name and family.post_script_name
         fields have equivalent values ? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/metadata/match_fullname_postscript")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/match_fullname_postscript")
 
     regular_font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
     lightitalic_font = TEST_FILE("merriweather/Merriweather-LightItalic.ttf")
@@ -1521,8 +1521,8 @@ def test_check_metadata_match_fullname_postscript():
 def NOT_IMPLEMENTED_test_check_match_filename_postscript():
     """ METADATA.pb family.filename and family.post_script_name
         fields have equivalent values? """
-    # check = TestingContext(googlefonts_profile,
-    #                        "com.google.fonts/check/match_filename_postscript")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/match_filename_postscript")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -1555,8 +1555,8 @@ MONTSERRAT_NON_RIBBI = [
 
 def test_check_metadata_valid_name_values():
     """ METADATA.pb font.name field contains font name in right format? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/metadata/valid_name_values")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/valid_name_values")
 
     # Our reference Montserrat family is a good 18-styles family:
     for font in MONTSERRAT_RIBBI:
@@ -1584,8 +1584,8 @@ def test_check_metadata_valid_name_values():
 
 def test_check_metadata_valid_full_name_values():
     """ METADATA.pb font.full_name field contains font name in right format? """
-    check = TestingContext(googlefonts_profile,
-                           "com.google.fonts/check/metadata/valid_full_name_values")
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/valid_full_name_values")
 
     # Our reference Montserrat family is a good 18-styles family:
     # properly described in its METADATA.pb file:
@@ -1616,6 +1616,7 @@ def test_check_metadata_valid_full_name_values():
 
 def test_check_metadata_valid_filename_values():
     """ METADATA.pb font.filename field contains font name in right format? """
+    # FIXME: CheckTester
     from fontbakery.profiles.googlefonts \
         import (com_google_fonts_check_metadata_valid_filename_values as check,
                 family_metadata)
@@ -1639,47 +1640,32 @@ def test_check_metadata_valid_filename_values():
 
 def test_check_metadata_valid_post_script_name_values():
     """ METADATA.pb font.post_script_name field contains font name in right format? """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_valid_post_script_name_values as check,
-                family_metadata,
-                font_metadata,
-                font_familynames)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/valid_post_script_name_values")
 
     # Our reference Montserrat family is a good 18-styles family:
     for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
-        family_directory = os.path.dirname(fontfile)
-        family_meta = family_metadata(family_directory)
-        font_meta = font_metadata(family_meta, fontfile)
-        ttFont = TTFont(fontfile)
-        font_fnames = font_familynames(ttFont)
-
         # So it must PASS the check:
-        assert_PASS(check(font_meta, font_fnames),
+        assert_PASS(check(fontfile),
                     f"with a good font ({fontfile})...")
 
         # And fail if it finds a bad filename:
-        font_meta.post_script_name = "WrongPSName"
-        assert_results_contain(check(font_meta, font_fnames),
+        md = check["font_metadata"]
+        md.post_script_name = "WrongPSName"
+        assert_results_contain(check(fontfile, {"font_metadata": md}),
                                FAIL, 'mismatch',
                                f'with a bad font ({fontfile})...')
 
 
 def test_check_metadata_valid_copyright():
     """ Copyright notice on METADATA.pb matches canonical pattern ? """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_valid_copyright as check,
-                family_metadata,
-                font_metadata)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/valid_copyright")
 
     # Our reference Cabin Regular is known to be bad
     # Since it provides an email instead of a git URL:
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
-
-    # So it must FAIL the check:
-    assert_results_contain(check(font_meta),
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_results_contain(check(font),
                            FAIL, 'bad-notice-format',
                            'with a bad copyright notice string...')
 
@@ -1688,34 +1674,34 @@ def test_check_metadata_valid_copyright():
     #       It only focuses on the string format.
     good_string = ("Copyright 2017 The Archivo Black Project Authors"
                    " (https://github.com/Omnibus-Type/ArchivoBlack)")
-    font_meta.copyright = good_string
-    assert_PASS(check(font_meta),
+    md = check["font_metadata"]
+    md.copyright = good_string
+    assert_PASS(check(font, {"font_metadata": md}),
                 'with a good copyright notice string...')
 
     # We also ignore case, so these should also PASS:
-    font_meta.copyright = good_string.upper()
-    assert_PASS(check(font_meta),
+    md.copyright = good_string.upper()
+    assert_PASS(check(font, {"font_metadata": md}),
                 'with all uppercase...')
 
-    font_meta.copyright = good_string.lower()
-    assert_PASS(check(font_meta),
+    md.copyright = good_string.lower()
+    assert_PASS(check(font, {"font_metadata": md}),
                 'with all lowercase...')
 
 
 def test_check_font_copyright():
     """Copyright notices match canonical pattern in fonts"""
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_font_copyright as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/font_copyright")
+
     # Our reference Cabin Regular is known to be bad
     # Since it provides an email instead of a git URL:
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    ttFont = TTFont(fontfile)
-
-    # So it must FAIL the check:
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
     assert_results_contain(check(ttFont),
                            FAIL, 'bad-notice-format',
                            'with a bad copyright notice string...')
 
-    # Then we change it into a good string (example extracted from Archivo Black):
+    # We change it into a good string (example extracted from Archivo Black):
     # note: the check does not actually verify that the project name is correct.
     #       It only focuses on the string format.
     good_string = ("Copyright 2017 The Archivo Black Project Authors"
@@ -1729,45 +1715,36 @@ def test_check_font_copyright():
 
 def test_check_metadata_reserved_font_name():
     """ Copyright notice on METADATA.pb should not contain Reserved Font Name. """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_reserved_font_name as check,
-                family_metadata,
-                font_metadata)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/reserved_font_name")
 
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
-
-    assert_PASS(check(font_meta),
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(font),
                 'with a good copyright notice string...')
 
     # Then we make it bad:
-    font_meta.copyright += "Reserved Font Name"
-
-    assert_results_contain(check(font_meta),
+    md = check["font_metadata"]
+    md.copyright += "Reserved Font Name"
+    assert_results_contain(check(font, {"font_metadata": md}),
                            WARN, 'rfn',
                            'with a notice containing "Reserved Font Name"...')
 
 
 def test_check_metadata_copyright_max_length():
     """ METADATA.pb: Copyright notice shouldn't exceed 500 chars. """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_copyright_max_length as check,
-                family_metadata,
-                font_metadata)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/copyright_max_length")
 
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    check(font)
+    md = check["font_metadata"]
 
-    font_meta.copyright = 500 * "x"
-    assert_PASS(check(font_meta),
+    md.copyright = 500 * "x"
+    assert_PASS(check(font, {"font_metadata": md}),
                 'with a 500-char copyright notice string...')
 
-    font_meta.copyright = 501 * "x"
-    assert_results_contain(check(font_meta),
+    md.copyright = 501 * "x"
+    assert_results_contain(check(font, {"font_metadata": md}),
                            FAIL, 'max-length',
                            'with a 501-char copyright notice string...')
 
@@ -1810,18 +1787,12 @@ def test_check_metadata_filenames():
 def test_check_metadata_italic_style():
     """ METADATA.pb font.style "italic" matches font internals ? """
     from fontbakery.constants import MacStyle
-    from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_italic_style as check,
-                                                 family_metadata,
-                                                 font_metadata)
-    # Our reference Merriweather Italic is known to good
-    fontfile = TEST_FILE("merriweather/Merriweather-Italic.ttf")
-    ttFont = TTFont(fontfile)
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/italic_style")
 
-    # So it must PASS:
-    assert_PASS(check(ttFont, font_meta),
+    # Our reference Merriweather Italic is known to good
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Italic.ttf"))
+    assert_PASS(check(ttFont),
                 'with a good font...')
 
     # now let's introduce issues on the FULL_FONT_NAME entries
@@ -1830,7 +1801,7 @@ def test_check_metadata_italic_style():
         if name.nameID == NameID.FULL_FONT_NAME:
             backup = name.string
             ttFont['name'].names[i].string = "BAD VALUE".encode(name.getEncoding())
-            assert_results_contain(check(ttFont, font_meta),
+            assert_results_contain(check(ttFont),
                                    FAIL, 'bad-fullfont-name',
                                    'with a bad NameID.FULL_FONT_NAME entry...')
             # and restore the good value:
@@ -1839,29 +1810,23 @@ def test_check_metadata_italic_style():
     # And, finally, let's flip off that italic bit
     # and get a "bad-macstyle" FAIL (so much fun!):
     ttFont['head'].macStyle &= ~MacStyle.ITALIC
-    assert_results_contain(check(ttFont, font_meta),
+    assert_results_contain(check(ttFont),
                            FAIL, 'bad-macstyle',
                            'with bad macstyle bit value...')
 
 
 def test_check_metadata_normal_style():
     """ METADATA.pb font.style "normal" matches font internals ? """
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/normal_style")
     from fontbakery.constants import MacStyle
-    from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_normal_style as check,
-                                                 family_metadata,
-                                                 font_metadata)
+
     # This one is pretty similar to check/metadata/italic_style
     # You may want to take a quick look above...
 
     # Our reference Merriweather Regular is known to be good here.
-    fontfile = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    ttFont = TTFont(fontfile)
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
-
-    # So it must PASS the check:
-    assert_PASS(check(ttFont, font_meta),
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+    assert_PASS(check(ttFont),
                 'with a good font...')
 
     # now we sadically insert brokenness into
@@ -1870,7 +1835,7 @@ def test_check_metadata_normal_style():
         if name.nameID == NameID.FONT_FAMILY_NAME:
             backup = name.string
             ttFont['name'].names[i].string = "Merriweather-Italic".encode(name.getEncoding())
-            assert_results_contain(check(ttFont, font_meta),
+            assert_results_contain(check(ttFont),
                                    FAIL, 'familyname-italic',
                                    'with a non-italic font that has a "-Italic" in FONT_FAMILY_NAME...')
             # and restore the good value:
@@ -1882,7 +1847,7 @@ def test_check_metadata_normal_style():
         if name.nameID == NameID.FULL_FONT_NAME:
             backup = name.string
             ttFont['name'].names[i].string = "Merriweather-Italic".encode(name.getEncoding())
-            assert_results_contain(check(ttFont, font_meta),
+            assert_results_contain(check(ttFont),
                                    FAIL, 'fullfont-italic',
                                    'with a non-italic font that has a "-Italic" in FULL_FONT_NAME...')
             # and restore the good value:
@@ -1894,37 +1859,28 @@ def test_check_metadata_normal_style():
     # to the test for com.google.fonts/check/metadata/italic_style above.
     # Here we have to set the bit back to 1 to get a wrongful "this font is an italic" setting:
     ttFont['head'].macStyle |= MacStyle.ITALIC
-    assert_results_contain(check(ttFont, font_meta),
+    assert_results_contain(check(ttFont),
                            FAIL, 'bad-macstyle',
                            'with bad macstyle bit value...')
 
 
 def test_check_metadata_nameid_family_and_full_names():
     """ METADATA.pb font.name and font.full_name fields match the values declared on the name table? """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_nameid_family_and_full_names as check,
-                family_metadata,
-                font_metadata)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/nameid/family_and_full_names")
 
     # Our reference Merriweather Regular is known to be good here.
-    fontfile = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    ttFont = TTFont(fontfile)
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
-
-    # So it must PASS the check:
-    assert_PASS(check(ttFont, font_meta),
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+    assert_PASS(check(ttFont),
                 'with a good font...')
 
-    # There we go again:
-    # breaking FULL_FONT_NAME entries
-    # one by one:
+    # There we go again!
+    # Breaking FULL_FONT_NAME entries one by one:
     for i, name in enumerate(ttFont['name'].names):
         if name.nameID == NameID.FULL_FONT_NAME:
             backup = name.string
             ttFont['name'].names[i].string = "This is utterly wrong!".encode(name.getEncoding())
-            assert_results_contain(check(ttFont, font_meta),
+            assert_results_contain(check(ttFont),
                                    FAIL, 'fullname-mismatch',
                                    'with a METADATA.pb / FULL_FONT_NAME mismatch...')
             # and restore the good value:
@@ -1935,8 +1891,8 @@ def test_check_metadata_nameid_family_and_full_names():
         if name.nameID == NameID.FONT_FAMILY_NAME:
             backup = name.string
             ttFont['name'].names[i].string = ("I'm listening to"
-                                              " Wes Montgomery live 1965").encode(name.getEncoding())
-            assert_results_contain(check(ttFont, font_meta),
+                                              " The Players with Hiromasa Suzuki - Galaxy (1979)").encode(name.getEncoding())
+            assert_results_contain(check(ttFont),
                                    FAIL, 'familyname-mismatch',
                                    'with a METADATA.pb / FONT_FAMILY_NAME mismatch...')
             # and restore the good value:
@@ -1945,158 +1901,133 @@ def test_check_metadata_nameid_family_and_full_names():
 
 def test_check_metadata_fontname_not_camel_cased():
     """ METADATA.pb: Check if fontname is not camel cased. """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_fontname_not_camel_cased as check,
-                family_metadata,
-                font_metadata)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/fontname_not_camel_cased")
 
     # Our reference Cabin Regular is known to be good
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
-
-    # So it must PASS the check:
-    assert_PASS(check(font_meta),
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(font),
                 'with a good font...')
 
     # Then we FAIL with a CamelCased name:
-    font_meta.name = "GollyGhost"
-    assert_results_contain(check(font_meta),
+    md = check["font_metadata"]
+    md.name = "GollyGhost"
+    assert_results_contain(check(font, {"font_metadata": md}),
                            FAIL, 'camelcase',
-                           'with a bad font (CamelCased font name)...')
+                           'with a bad font name (CamelCased)...')
 
     # And we also make sure the check PASSes with a few known good names:
-    good_names = ["VT323", "PT Sans", "Amatic SC"]
-    for good_name in good_names:
-        font_meta.name = good_name
-        assert_PASS(check(font_meta),
+    for good_name in ["VT323",
+                      "PT Sans",
+                      "Amatic SC"]:
+        md.name = good_name
+        assert_PASS(check(font, {"font_metadata": md}),
                     f'with a good font name "{good_name}"...')
 
 
 def test_check_metadata_match_name_familyname():
     """ METADATA.pb: Check font name is the same as family name. """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_match_name_familyname as check,
-                family_metadata,
-                font_metadata)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/match_name_familyname")
 
     # Our reference Cabin Regular is known to be good
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
-
-    # So it must PASS the check:
-    assert_PASS(check(family_meta, font_meta),
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(font),
                 'with a good font...')
 
     # Then we FAIL with mismatching names:
-    family_meta.name = "Some Fontname"
-    font_meta.name = "Something Else"
-    assert_results_contain(check(family_meta, font_meta),
+    family_md = check["family_metadata"]
+    font_md = check["font_metadata"]
+    family_md.name = "Some Fontname"
+    font_md.name = "Something Else"
+    assert_results_contain(check(font, {"family_metadata": family_md,
+                                        "font_metadata": font_md}),
                            FAIL, 'mismatch',
-                           'with a bad font...')
+                           'with bad font/family name metadata...')
 
 
 def test_check_check_metadata_canonical_weight_value():
     """ METADATA.pb: Check that font weight has a canonical value. """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_canonical_weight_value as check,
-                family_metadata,
-                font_metadata)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/canonical_weight_value")
 
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    check(font)
+    md = check["font_metadata"]
 
     for w in [100, 200, 300, 400, 500, 600, 700, 800, 900]:
-        font_meta.weight = w
-        assert_PASS(check(font_meta),
+        md.weight = w
+        assert_PASS(check(font, {"font_metadata": md}),
                     f'with a good weight value ({w})...')
 
     for w in [150, 250, 350, 450, 550, 650, 750, 850]:
-        font_meta.weight = w
-        assert_results_contain(check(font_meta),
+        md.weight = w
+        assert_results_contain(check(font, {"font_metadata": md}),
                                FAIL, 'bad-weight',
                                'with a bad weight value ({w})...')
 
 
 def test_check_metadata_os2_weightclass():
     """ Checking OS/2 usWeightClass matches weight specified at METADATA.pb """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_os2_weightclass as check,
-                family_metadata,
-                font_metadata)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/os2_weightclass")
 
-    # VF
+    # === test cases for Variable Fonts ===
     # Our reference Jura is known to be good
-    fontfile = portable_path("data/test/varfont/jura/Jura[wght].ttf")
-    ttFont = TTFont(fontfile)
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
+    ttFont = TTFont(TEST_FILE("varfont/jura/Jura[wght].ttf"))
+    assert_PASS(check(ttFont),
+                f'with a good metadata...')
 
-    # So it must PASS the check:
-    assert_PASS(check(ttFont, font_meta),
-                f'with a good font ({fontfile})...')
-
-    # And fail if it finds a bad weight value:
-    good_value = font_meta.weight
+    # Should report if a bad weight value is ifound though:
+    md = check["font_metadata"]
+    good_value = md.weight
     bad_value = good_value + 100
-    font_meta.weight = bad_value
-    assert_results_contain(check(ttFont, font_meta),
+    md.weight = bad_value
+    assert_results_contain(check(ttFont, {"font_metadata": md}),
                            FAIL, 'mismatch',
-                           f'with a bad font ({fontfile})...')
+                           f'with a bad metadata...')
 
-    # Static
+    # === test cases for Static Fonts ===
     # Our reference Montserrat family is a good 18-styles family:
     for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
         ttFont = TTFont(fontfile)
-        family_directory = os.path.dirname(fontfile)
-        family_meta = family_metadata(family_directory)
-        font_meta = font_metadata(family_meta, fontfile)
-
-        # So it must PASS the check:
-        assert_PASS(check(ttFont, font_meta),
+        assert_PASS(check(ttFont),
                     f'with a good font ({fontfile})...')
 
-        # And fail if it finds a bad weight value:
-        good_value = font_meta.weight
+        # but should report bad weight values:
+        md = check["font_metadata"]
+        good_value = md.weight
         bad_value = good_value + 50
-        font_meta.weight = bad_value
-        assert_results_contain(check(ttFont, font_meta),
+        md.weight = bad_value
+        assert_results_contain(check(ttFont, {"font_metadata": md}),
                                FAIL, 'mismatch',
-                               f'with a bad font ({fontfile})...')
+                               f'with bad metadata for {fontfile}...')
 
         # If font is Thin or ExtraLight, ensure that this check can
         # accept both 100, 250 for Thin and 200, 275 for ExtraLight
-        font_meta.weight = good_value
-        font_meta = font_metadata(family_meta, fontfile)
         if "Thin" in fontfile:
             ttFont["OS/2"].usWeightClass = 100
-            assert_PASS(check(ttFont, font_meta),
-                        f'with a good font ({fontfile})...')
+            assert_PASS(check(ttFont),
+                        f'with weightclass 100 on ({fontfile})...')
 
             ttFont["OS/2"].usWeightClass = 250
-            assert_PASS(check(ttFont, font_meta),
-                        f'with a good font ({fontfile})...')
+            assert_PASS(check(ttFont),
+                        f'with weightclass 250 on ({fontfile})...')
 
         if "ExtraLight" in fontfile:
             ttFont["OS/2"].usWeightClass = 200
-            assert_PASS(check(ttFont, font_meta),
-                        f'with a good font ({fontfile})...')
+            assert_PASS(check(ttFont),
+                        f'with weightClass 200 on ({fontfile})...')
 
             ttFont["OS/2"].usWeightClass = 275
-            assert_PASS(check(ttFont, font_meta),
-                        f'with a good font ({fontfile})...')
+            assert_PASS(check(ttFont),
+                        f'with weightClass 275 on ({fontfile})...')
 
 
 def NOT_IMPLEMENTED_test_check_metadata_match_weight_postscript():
     """ METADATA.pb: Metadata weight matches postScriptName. """
-    # check = TestingContext(googlefonts_profile,
-    #                        "com.google.fonts/check/metadata/match_weight_postscript")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/metadata/match_weight_postscript")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2107,8 +2038,8 @@ def NOT_IMPLEMENTED_test_check_metadata_match_weight_postscript():
 
 def NOT_IMPLEMENTED_test_check_metadata_canonical_style_names():
     """ METADATA.pb: Font styles are named canonically? """
-    # check = TestingContext(googlefonts_profile,
-    #                        "com.google.fonts/check/metadata/canonical_style_names")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/metadata/canonical_style_names")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2120,10 +2051,10 @@ def NOT_IMPLEMENTED_test_check_metadata_canonical_style_names():
 
 def test_check_unitsperem_strict():
     """ Stricter unitsPerEm criteria for Google Fonts. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_unitsperem_strict as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/unitsperem_strict")
 
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    ttFont = TTFont(fontfile)
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
     PASS_VALUES = [16, 32, 64, 128, 256, 512, 1024] # Good for better performance on legacy renderers
     PASS_VALUES.extend([500, 1000]) # or common typical values
@@ -2161,8 +2092,8 @@ def test_check_unitsperem_strict():
 
 def NOT_IMPLEMENTED_test_check_version_bump():
     """ Version number has increased since previous release on Google Fonts? """
-    # check = TestingContext(googlefonts_profile,
-    #                        "com.google.fonts/check/version_bump")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/version_bump")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2175,8 +2106,8 @@ def NOT_IMPLEMENTED_test_check_version_bump():
 
 def NOT_IMPLEMENTED_test_check_production_glyphs_similarity():
     """ Glyphs are similiar to Google Fonts version? """
-    # check = TestingContext(googlefonts_profile,
-    #                        "com.google.fonts/check/production_glyphs_similarity")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/production_glyphs_similarity")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2186,8 +2117,8 @@ def NOT_IMPLEMENTED_test_check_production_glyphs_similarity():
 
 def NOT_IMPLEMENTED_test_check_fsselection():
     """ Checking OS/2 fsSelection value. """
-    # check = TestingContext(googlefonts_profile,
-    #                        "com.google.fonts/check/fsselection")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/fsselection")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2196,10 +2127,10 @@ def NOT_IMPLEMENTED_test_check_fsselection():
 
 def test_check_italic_angle():
     """ Checking post.italicAngle value. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_italic_angle as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/italic_angle")
 
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    ttFont = TTFont(fontfile)
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
     # italic-angle, style, fail_message
     test_cases = [
@@ -2216,22 +2147,22 @@ def test_check_italic_angle():
         ttFont["post"].italicAngle = value
 
         if expected_result != PASS:
-            assert_results_contain(check(ttFont, style),
+            assert_results_contain(check(ttFont, {"style": style}),
                                    expected_result,
                                    expected_msg,
                                    f"with italic-angle:{value} style:{style}...")
         else:
-            assert_PASS(check(ttFont, style),
+            assert_PASS(check(ttFont, {"style": style}),
                         f'with italic-angle:{value} style:{style}...')
 
 
 def test_check_mac_style():
     """ Checking head.macStyle value. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_mac_style as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/mac_style")
     from fontbakery.constants import MacStyle
 
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    ttFont = TTFont(fontfile)
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
     # macStyle-value, style, expected
     test_cases = [
@@ -2247,23 +2178,21 @@ def test_check_mac_style():
 
     for macStyle_value, style, expected in test_cases:
         ttFont["head"].macStyle = macStyle_value
-        results = check(ttFont, style)
 
         if expected == PASS:
-            assert_PASS(results,
+            assert_PASS(check(ttFont, {"style": style}),
                         'with macStyle:{macStyle_value} style:{style}...')
         else:
-            assert_results_contain(results,
+            assert_results_contain(check(ttFont, {"style": style}),
                                    FAIL, expected,
                                    f"with macStyle:{macStyle_value} style:{style}...")
 
 
 def test_check_contour_count(montserrat_ttFonts):
     """Check glyphs contain the recommended contour count"""
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_contour_count as check
-
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/contour_count")
     # TODO: FAIL, "lacks-cmap"
-
 
     for ttFont in montserrat_ttFonts:
         assert_PASS(check(ttFont),
@@ -2281,6 +2210,9 @@ def test_check_contour_count(montserrat_ttFonts):
 # More info at https://github.com/googlefonts/fontbakery/issues/2581
 def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
     """Check glyphs are not missing when compared to version on fonts.google.com"""
+    # FIXME:
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/production_encoded_glyphs")
     from fontbakery.profiles.shared_conditions import family_directory
     from fontbakery.profiles.googlefonts \
         import (com_google_fonts_check_production_encoded_glyphs as check,
@@ -2313,52 +2245,44 @@ def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
 def test_check_metadata_nameid_copyright():
     """ Copyright field for this font on METADATA.pb matches
         all copyright notice entries on the name table? """
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/nameid/copyright")
     from fontbakery.utils import get_name_entry_strings
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_nameid_copyright as check,
-                family_metadata,
-                font_metadata)
 
     # Our reference Cabin Regular is known to be good
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    ttFont = TTFont(fontfile)
-    family_directory = os.path.dirname(fontfile)
-    family_meta = family_metadata(family_directory)
-    font_meta = font_metadata(family_meta, fontfile)
-
-    # So it must PASS the check:
-    assert_PASS(check(ttFont, font_meta),
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    assert_PASS(check(ttFont),
                 "with a good METADATA.pb for this font...")
 
-    # Then we FAIL with mismatching names:
+    # But the check must report when mismatching names are found:
     good_value = get_name_entry_strings(ttFont, NameID.COPYRIGHT_NOTICE)[0]
-    font_meta.copyright = good_value + "something bad"
-    assert_results_contain(check(ttFont, font_meta),
+    md = check["font_metadata"]
+    md.copyright = good_value + "something bad"
+    assert_results_contain(check(ttFont, {"font_metadata": md}),
                            FAIL, 'mismatch',
                            'with a bad METADATA.pb (with a copyright string not matching this font)...')
 
 
 def test_check_metadata_category():
     """ Category field for this font on METADATA.pb is valid? """
-    from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_category as check,
-                                                 family_metadata)
-    # Our reference Cabin family...
-    fontfile = TEST_FILE("cabin/Cabin-Regular.ttf")
-    family_directory = os.path.dirname(fontfile)
-    metadata = family_metadata(family_directory)
-    assert metadata.category == "SANS_SERIF" # ...is known to be good ;-)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/category")
 
-    # So it must PASS the check:
-    assert_PASS(check(metadata),
+    # Our reference Cabin family...
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    check(font)
+    md = check["family_metadata"]
+    assert md.category == "SANS_SERIF" # ...is known to be good ;-)
+    assert_PASS(check(font),
                 "with a good METADATA.pb...")
 
-    # Then we report a problem with this sample of bad values:
+    # We then report a problem with this sample of bad values:
     for bad_value in ["SAN_SERIF",
                       "MONO_SPACE",
                       "sans_serif",
                       "monospace"]:
-        metadata.category = bad_value
-        assert_results_contain(check(metadata),
+        md.category = bad_value
+        assert_results_contain(check(font, {"family_metadata": md}),
                                FAIL, 'bad-value',
                                f'with a bad category "{bad_value}"...')
 
@@ -2368,25 +2292,23 @@ def test_check_metadata_category():
                        "SERIF",
                        "DISPLAY",
                        "HANDWRITING"]:
-        metadata.category = good_value
-        assert_PASS(check(metadata),
+        md.category = good_value
+        assert_PASS(check(font, {"family_metadata": md}),
                     f'with "{good_value}"...')
 
 
 def test_check_name_mandatory_entries():
     """ Font has all mandatory 'name' table entries ? """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_name_mandatory_entries as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/mandatory_entries")
 
     # We'll check both RIBBI and non-RIBBI fonts
     # so that we cover both cases for FAIL/PASS scenarios
 
-    #First with a RIBBI font:
+    # === First with a RIBBI font: ===
     # Our reference Cabin Regular is known to be good
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-    style = "Regular"
-
-    # So it must PASS the check:
-    assert_PASS(check(ttFont, style),
+    assert_PASS(check(ttFont),
                 "with a good RIBBI font...")
 
     mandatory_entries = [NameID.FONT_FAMILY_NAME,
@@ -2402,17 +2324,14 @@ def test_check_name_mandatory_entries():
                 ttFont['name'].names[i].nameID = 0 # not really removing it, but replacing it
                                                    # by something else completely irrelevant
                                                    # for the purposes of this specific check
-        assert_results_contain(check(ttFont, style),
+        assert_results_contain(check(ttFont),
                                FAIL, 'missing-entry',
                                f'with a missing madatory (RIBBI) name entry (id={mandatory})...')
 
-    #And now a non-RIBBI font:
+    # === And now a non-RIBBI font: ===
     # Our reference Merriweather Black is known to be good
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Black.ttf"))
-    style = "Black"
-
-    # So it must PASS the check:
-    assert_PASS(check(ttFont, style),
+    assert_PASS(check(ttFont),
                 "with a good non-RIBBI font...")
 
     mandatory_entries = [NameID.FONT_FAMILY_NAME,
@@ -2430,7 +2349,7 @@ def test_check_name_mandatory_entries():
                 ttFont['name'].names[i].nameID = 0 # not really removing it, but replacing it
                                                    # by something else completely irrelevant
                                                    # for the purposes of this specific check
-        assert_results_contain(check(ttFont, style),
+        assert_results_contain(check(ttFont),
                                FAIL, 'missing-entry',
                                'with a missing madatory (non-RIBBI) name entry (id={mandatory})...')
 
@@ -2443,10 +2362,9 @@ def test_condition_familyname_with_spaces():
 
 def test_check_name_familyname():
     """ Check name table: FONT_FAMILY_NAME entries. """
-    from fontbakery.profiles.googlefonts import (com_google_fonts_check_name_familyname as check,
-                                                 familyname,
-                                                 familyname_with_spaces,
-                                                 style)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/familyname")
+
     # TODO: FAIL, "lacks-name"
 
     test_cases = [
@@ -2472,18 +2390,16 @@ def test_check_name_familyname():
 
             if name.nameID == NameID.FONT_FAMILY_NAME:
                 ttFont['name'].names[i].string = value.encode(name.getEncoding())
-        assert_results_contain(check(ttFont,
-                                     style(filename),
-                                     familyname_with_spaces(familyname(filename))),
+        assert_results_contain(check(ttFont),
                                      expected, keyword,
                                      f'with filename="{filename}",'
-                                     f' value="{value}", style="{style(filename)}"...')
+                                     f' value="{value}", style="{check["style"]}"...')
 
 
 def test_check_name_subfamilyname():
     """ Check name table: FONT_SUBFAMILY_NAME entries. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_name_subfamilyname as check
-    from fontbakery.profiles.googlefonts_conditions import expected_style
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/subfamilyname")
 
     PASS_test_cases = [
         #          filename                                       mac_value             win_value
@@ -2523,8 +2439,9 @@ def test_check_name_subfamilyname():
             if name.nameID == NameID.FONT_SUBFAMILY_NAME:
                 ttFont['name'].names[i].string = value.encode(name.getEncoding())
 
-        style = expected_style(ttFont)
-        assert_PASS(check(ttFont, expected_style(ttFont)),
+        results = check(ttFont)
+        style = check["expected_style"]
+        assert_PASS(results,
                     f"with filename='{filename}', value='{value}', "
                     f"style_win='{style.win_style_name}', "
                     f"style_mac='{style.mac_style_name}'...")
@@ -2540,8 +2457,7 @@ def test_check_name_subfamilyname():
                            MacintoshLanguageID.ENGLISH)
 
     # And this should now FAIL:
-    assert_results_contain(check(ttFont,
-                                 expected_style(ttFont)),
+    assert_results_contain(check(ttFont),
                            FAIL, 'bad-familyname')
 
     # Repeat this for a Win subfamily name
@@ -2551,20 +2467,18 @@ def test_check_name_subfamilyname():
                            PlatformID.WINDOWS,
                            WindowsEncodingID.UNICODE_BMP,
                            WindowsLanguageID.ENGLISH_USA)
-    assert_results_contain(check(ttFont,
-                                 expected_style(ttFont)),
+    assert_results_contain(check(ttFont),
                            FAIL, 'bad-familyname')
 
 
 def test_check_name_fullfontname():
     """ Check name table: FULL_FONT_NAME entries. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_name_fullfontname as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/fullfontname")
 
     # Our reference Cabin Regular is known to be good
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-
-    # So it must PASS the check:
-    assert_PASS(check(ttFont, "Regular", "Cabin"),
+    assert_PASS(check(ttFont),
                 "with a good Regular font...")
 
     # Let's now test the Regular exception
@@ -2573,7 +2487,7 @@ def test_check_name_fullfontname():
         if name.nameID == NameID.FULL_FONT_NAME:
             backup = name.string
             ttFont["name"].names[index].string = "Cabin".encode(name.getEncoding())
-            assert_results_contain(check(ttFont, "Regular", "Cabin"),
+            assert_results_contain(check(ttFont),
                                    WARN, 'lacks-regular',
                                    'with a good Regular font that omits "Regular" on FULL_FONT_NAME...')
             # restore it:
@@ -2582,9 +2496,7 @@ def test_check_name_fullfontname():
     # Let's also make sure our good reference Cabin BoldItalic PASSes the check.
     # This also tests the splitting of filename infered style with a space char
     ttFont = TTFont(TEST_FILE("cabin/Cabin-BoldItalic.ttf"))
-
-    # So it must PASS the check:
-    assert_PASS(check(ttFont, "Bold Italic", "Cabin"),
+    assert_PASS(check(ttFont),
                 "with a good Bold Italic font...")
 
     # And here we test the FAIL codepath:
@@ -2592,7 +2504,7 @@ def test_check_name_fullfontname():
         if name.nameID == NameID.FULL_FONT_NAME:
             backup = name.string
             ttFont["name"].names[index].string = "MAKE IT FAIL".encode(name.getEncoding())
-            assert_results_contain(check(ttFont, "Bold Italic", "Cabin"),
+            assert_results_contain(check(ttFont),
                                    FAIL, 'bad-entry',
                                    'with a bad FULL_FONT_NAME entry...')
             # restore it:
@@ -2601,8 +2513,8 @@ def test_check_name_fullfontname():
 
 def NOT_IMPLEMENTED_test_check_name_postscriptname():
     """ Check name table: POSTSCRIPT_NAME entries. """
-    # check = TestingContext(googlefonts_profile,
-    #                        "com.google.fonts/check/name/postscriptname")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/name/postscriptname")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -2612,34 +2524,23 @@ def NOT_IMPLEMENTED_test_check_name_postscriptname():
 
 def test_check_name_typographicfamilyname():
     """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_name_typographicfamilyname as check,
-                style,
-                familyname,
-                familyname_with_spaces)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/typographicfamilyname")
 
     # RIBBI fonts must not have a TYPOGRAPHIC_FAMILY_NAME entry
-    font = TEST_FILE("montserrat/Montserrat-BoldItalic.ttf")
-    ttFont = TTFont(font)
-    assert_PASS(check(ttFont,
-                      style(font),
-                      familyname_with_spaces(familyname(font))),
+    ttFont = TTFont(TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"))
+    assert_PASS(check(ttFont),
                 f"with a RIBBI without nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
 
-    # so we add one and make sure is emits a FAIL:
+    # so we add one and make sure the check reports the problem:
     ttFont['name'].names[5].nameID = NameID.TYPOGRAPHIC_FAMILY_NAME # 5 is arbitrary here
-    assert_results_contain(check(ttFont,
-                                 style(font),
-                                 familyname_with_spaces(familyname(font))),
+    assert_results_contain(check(ttFont),
                            FAIL, 'ribbi',
                            f'with a RIBBI that has got a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...')
 
     # non-RIBBI fonts must have a TYPOGRAPHIC_FAMILY_NAME entry
-    font = TEST_FILE("montserrat/Montserrat-ExtraLight.ttf")
-    ttFont = TTFont(font)
-    assert_PASS(check(ttFont,
-                style(font),
-                familyname_with_spaces(familyname(font))),
+    ttFont = TTFont(TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"))
+    assert_PASS(check(ttFont),
                 f"with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
 
     # set bad values on all TYPOGRAPHIC_FAMILY_NAME entries:
@@ -2647,9 +2548,7 @@ def test_check_name_typographicfamilyname():
         if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
             ttFont['name'].names[i].string = "foo".encode(name.getEncoding())
 
-    assert_results_contain(check(ttFont,
-                                 style(font),
-                                 familyname_with_spaces(familyname(font))),
+    assert_results_contain(check(ttFont),
                            FAIL, 'non-ribbi-bad-value',
                            'with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entries...')
 
@@ -2659,18 +2558,15 @@ def test_check_name_typographicfamilyname():
         if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
             ttFont['name'].names[i].nameID = 255 # blah! :-)
 
-    assert_results_contain(check(ttFont,
-                                 style(font),
-                                 familyname_with_spaces(familyname(font))),
+    assert_results_contain(check(ttFont),
                            FAIL, 'non-ribbi-lacks-entry',
                            f'with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...')
 
 
 def test_check_name_typographicsubfamilyname():
     """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
-    from fontbakery.profiles.googlefonts_conditions import expected_style
-    from fontbakery.profiles.googlefonts \
-        import com_google_fonts_check_name_typographicsubfamilyname as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/typographicsubfamilyname")
 
     RIBBI = "montserrat/Montserrat-BoldItalic.ttf"
     NON_RIBBI = "montserrat/Montserrat-ExtraLight.ttf"
@@ -2687,22 +2583,18 @@ def test_check_name_typographicsubfamilyname():
                            PlatformID.MACINTOSH,
                            MacintoshEncodingID.ROMAN,
                            MacintoshLanguageID.ENGLISH)
-    assert_results_contain(check(ttFont,
-                                 expected_style(ttFont)),
+    assert_results_contain(check(ttFont),
                            FAIL, 'mismatch',
                            f'with a RIBBI that has got incorrect'
                            f' nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...')
-    assert_results_contain(check(ttFont,
-                                 expected_style(ttFont)),
+    assert_results_contain(check(ttFont),
                            FAIL, 'bad-win-name')
-    assert_results_contain(check(ttFont,
-                                 expected_style(ttFont)),
+    assert_results_contain(check(ttFont),
                            FAIL, 'bad-mac-name')
 
     # non-RIBBI fonts must have a TYPOGRAPHIC_SUBFAMILY_NAME entry
     ttFont = TTFont(TEST_FILE(NON_RIBBI))
-    assert_PASS(check(ttFont,
-                      expected_style(ttFont)),
+    assert_PASS(check(ttFont),
                 f'with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...')
 
     # set bad values on the win TYPOGRAPHIC_SUBFAMILY_NAME entry:
@@ -2712,8 +2604,7 @@ def test_check_name_typographicsubfamilyname():
                            PlatformID.WINDOWS,
                            WindowsEncodingID.UNICODE_BMP,
                            WindowsLanguageID.ENGLISH_USA)
-    assert_results_contain(check(ttFont,
-                                 expected_style(ttFont)),
+    assert_results_contain(check(ttFont),
                            FAIL, 'bad-typo-win',
                            f'with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...')
 
@@ -2724,8 +2615,7 @@ def test_check_name_typographicsubfamilyname():
                            PlatformID.MACINTOSH,
                            MacintoshEncodingID.ROMAN,
                            MacintoshLanguageID.ENGLISH)
-    assert_results_contain(check(ttFont,
-                                 expected_style(ttFont)),
+    assert_results_contain(check(ttFont),
                            FAIL, 'bad-typo-mac',
                            f'with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...')
 
@@ -2743,8 +2633,7 @@ def test_check_name_typographicsubfamilyname():
     win_name.nameID = 254
     if mac_name:
         mac_name.nameID = 255
-    assert_results_contain(check(ttFont,
-                                 expected_style(ttFont)),
+    assert_results_contain(check(ttFont),
                            FAIL, 'missing-typo-win',
                            f'with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...')
                            # note: the check must not complain
@@ -2753,7 +2642,8 @@ def test_check_name_typographicsubfamilyname():
 
 def test_check_name_copyright_length():
     """ Length of copyright notice must not exceed 500 characters. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_name_copyright_length as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/copyright_length")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
@@ -2782,31 +2672,29 @@ def test_check_name_copyright_length():
 
 def test_check_fontdata_namecheck():
     """ Familyname is unique according to namecheck.fontdata.com """
-    from fontbakery.profiles.googlefonts import (com_google_fonts_check_fontdata_namecheck as check,
-                                                 familyname)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/fontdata_namecheck")
 
     # We dont FAIL because this is meant as a merely informative check
     # There may be frequent cases when fonts are being updated and thus
     # already have a public family name registered on the
     # namecheck.fontdata.com database.
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    ttFont = TTFont(font)
-    assert_results_contain(check(ttFont, familyname(font)),
+    assert_results_contain(check(font),
                            INFO, 'name-collision',
                            'with an already used name...')
 
     # Here we know that FamilySans has not been (and will not be)
     # registered as a real family.
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
-    ttFont = TTFont(font)
-    assert_PASS(check(ttFont, familyname(font)),
+    assert_PASS(check(font),
                 'with a unique family name...')
 
 
 def test_check_fontv():
     """ Check for font-v versioning """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_fontv as check
-    from fontv.libfv import FontVersion
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/fontv")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
     assert_results_contain(check(ttFont),
@@ -2814,6 +2702,7 @@ def test_check_fontv():
                            'with a font that does not follow'
                            ' the suggested font-v versioning scheme ...')
 
+    from fontv.libfv import FontVersion
     fv = FontVersion(ttFont)
     fv.set_state_git_commit_sha1(development=True)
     version_string = fv.get_name_id5_version_string()
@@ -2832,7 +2721,8 @@ def test_check_fontv():
 # https://github.com/googlefonts/fontbakery/issues/1727
 def disabled_test_check_negative_advance_width():
     """ Check that advance widths cannot be inferred as negative. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_negative_advance_width as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/negative_advance_width")
 
     # Our reference Cabin Regular is good
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
@@ -2866,7 +2756,8 @@ def disabled_test_check_negative_advance_width():
 
 def test_check_varfont_generate_static():
     """ Check a static ttf can be generated from a variable font. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_generate_static as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/varfont/generate_static")
 
     ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
     assert_PASS(check(ttFont))
@@ -2879,7 +2770,8 @@ def test_check_varfont_generate_static():
 
 def test_check_varfont_has_HVAR():
     """ Check that variable fonts have an HVAR table. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_has_HVAR as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/varfont/has_HVAR")
 
     # Our reference Cabin Variable Font contains an HVAR table.
     ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
@@ -2897,7 +2789,8 @@ def test_check_varfont_has_HVAR():
 # See: https://github.com/googlefonts/fontbakery/issues/2118#issuecomment-432283698
 def DISABLED_test_check_varfont_has_MVAR():
     """ Check that variable fonts have an MVAR table. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_has_MVAR as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/varfont/has_MVAR")
 
     # Our reference Cabin Variable Font contains an MVAR table.
     ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
@@ -2913,38 +2806,40 @@ def DISABLED_test_check_varfont_has_MVAR():
 
 def test_check_smart_dropout():
     """ Font enables smart dropout control in "prep" table instructions? """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_smart_dropout as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/smart_dropout")
 
-    test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
+    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
 
-    # - PASS, "Program at 'prep' table contains instructions enabling smart dropout control."
-    test_font = TTFont(test_font_path)
-    assert_PASS(check(test_font))
+    # "Program at 'prep' table contains
+    #  instructions enabling smart dropout control."
+    assert_PASS(check(ttFont))
 
-    # - FAIL, "Font does not contain TrueType instructions enabling
-    #          smart dropout control in the 'prep' table program."
+    # "Font does not contain TrueType instructions enabling
+    #  smart dropout control in the 'prep' table program."
     import array
-    test_font["prep"].program.bytecode = array.array('B', [0])
-    assert_results_contain(check(test_font),
+    ttFont["prep"].program.bytecode = array.array('B', [0])
+    assert_results_contain(check(ttFont),
                            FAIL, 'lacks-smart-dropout')
 
 
-def test_check_vtt_clean():
+def test_check_vttclean():
     """ There must not be VTT Talk sources in the font. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_vtt_clean as check
-    from fontbakery.profiles.shared_conditions import vtt_talk_sources
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/vttclean")
 
-    good_font = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    assert_PASS(check(good_font, vtt_talk_sources(good_font)))
+    good_font = TEST_FILE("mada/Mada-Regular.ttf")
+    assert_PASS(check(good_font))
 
-    bad_font = TTFont(TEST_FILE("hinting/Roboto-VF.ttf"))
-    assert_results_contain(check(bad_font, vtt_talk_sources(bad_font)),
+    bad_font = TEST_FILE("hinting/Roboto-VF.ttf")
+    assert_results_contain(check(bad_font),
                            FAIL, 'has-vtt-sources')
 
 
 def test_check_aat():
     """ Are there unwanted Apple tables ? """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_aat as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/aat")
 
     unwanted_tables = [
         'EBSC', 'Zaph', 'acnt', 'ankr', 'bdat', 'bhed', 'bloc',
@@ -2970,7 +2865,8 @@ def test_check_aat():
 
 def test_check_fvar_name_entries():
     """ All name entries referenced by fvar instances exist on the name table? """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_fvar_name_entries as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/fvar_name_entries")
 
     # This broken version of the Expletus variable font, was where this kind of problem was first observed:
     ttFont = TTFont(TEST_FILE("broken_expletus_vf/ExpletusSansBeta-VF.ttf"))
@@ -2991,7 +2887,8 @@ def test_check_fvar_name_entries():
 
 def test_check_varfont_has_instances():
     """ A variable font must have named instances. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_has_instances as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/varfont_has_instances")
 
     # ExpletusVF does have instances.
     # Note: The "broken" in the path name refers to something else.
@@ -3013,7 +2910,8 @@ def test_check_varfont_has_instances():
 
 def test_check_varfont_weight_instances():
     """ Variable font weight coordinates must be multiples of 100. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_weight_instances as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/varfont_weight_instances")
 
     # This copy of Markazi Text has an instance with
     # a 491 'wght' coordinate instead of 500.
@@ -3034,8 +2932,8 @@ def test_check_varfont_weight_instances():
 
 def NOT_IMPLEMENTED_test_check_family_tnum_horizontal_metrics():
     """ All tabular figures must have the same width across the RIBBI-family. """
-    # check = TestingContext(googlefonts_profile,
-    #                        "com.google.fonts/check/family/tnum_horizontal_metrics")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/family/tnum_horizontal_metrics")
     # TODO: Implement-me!
     #
     # code-paths:
@@ -3045,7 +2943,8 @@ def NOT_IMPLEMENTED_test_check_family_tnum_horizontal_metrics():
 
 def test_check_integer_ppem_if_hinted():
     """ PPEM must be an integer on hinted fonts. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_integer_ppem_if_hinted as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/integer_ppem_if_hinted")
 
     # Our reference Merriweather Regular is hinted, but does not set
     # the "rounded PPEM" flag (bit 3 on the head table flags) as
@@ -3066,24 +2965,18 @@ def test_check_integer_ppem_if_hinted():
 
 def test_check_ligature_carets():
     """ Is there a caret position declared for every ligature? """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_ligature_carets as check
-    from fontbakery.profiles.shared_conditions import ligatures
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/ligature_carets")
 
     # Our reference Mada Medium is known to be bad
     ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
-    lig = ligatures(ttFont)
-
-    # So it must emit a WARN:
-    assert_results_contain(check(ttFont, lig),
+    assert_results_contain(check(ttFont),
                            WARN, 'lacks-caret-pos',
                            'with a bad font...')
 
-    # And FamilySans Regular is known to be bad
+    # And FamilySans Regular is also bad
     ttFont = TTFont("data/test/familysans/FamilySans-Regular.ttf")
-    lig = ligatures(ttFont)
-
-    # So it must emit a WARN:
-    assert_results_contain(check(ttFont, lig),
+    assert_results_contain(check(ttFont),
                            WARN, 'GDEF-missing',
                            'with a bad font...')
 
@@ -3095,76 +2988,68 @@ def test_check_ligature_carets():
 
 def test_check_kerning_for_non_ligated_sequences():
     """ Is there kerning info for non-ligated sequences ? """
-    from fontbakery.profiles.googlefonts \
-        import com_google_fonts_check_kerning_for_non_ligated_sequences as check
-    from fontbakery.profiles.gpos import has_kerning_info
-    from fontbakery.profiles.shared_conditions import ligatures
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/kerning_for_non_ligated_sequences")
 
     # Our reference Mada Medium is known to be good
     ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
-    lig = ligatures(ttFont)
-    has_kinfo = has_kerning_info(ttFont)
-
-    # So it must PASS the check:
-    assert_PASS(check(ttFont, lig, has_kinfo),
+    assert_PASS(check(ttFont),
                 'with a good font...')
 
     # And Merriweather Regular is known to be bad
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
-    lig = ligatures(ttFont)
-    has_kinfo = has_kerning_info(ttFont)
-
-    # So the check must emit a WARN in this testcase:
-    assert_results_contain(check(ttFont, lig, has_kinfo),
+    assert_results_contain(check(ttFont),
                            WARN, 'lacks-kern-info',
                            'with a bad font...')
 
 
 def test_check_family_control_chars():
     """Are any unacceptable control characters present in font files?"""
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_family_control_chars as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/family/control_chars")
 
-    passing_file = TEST_FILE("bad_character_set/control_chars/"
-                             "FontbakeryTesterCCGood-Regular.ttf")
-    error_onebad_cc_file = TEST_FILE("bad_character_set/control_chars/"
-                                     "FontbakeryTesterCCOneBad-Regular.ttf")
-    error_multibad_cc_file = TEST_FILE("bad_character_set/control_chars/"
-                                       "FontbakeryTesterCCMultiBad-Regular.ttf")
+    good_font = TEST_FILE("bad_character_set/control_chars/"
+                          "FontbakeryTesterCCGood-Regular.ttf")
+    onebad_cc_font = TEST_FILE("bad_character_set/control_chars/"
+                               "FontbakeryTesterCCOneBad-Regular.ttf")
+    multibad_cc_font = TEST_FILE("bad_character_set/control_chars/"
+                                 "FontbakeryTesterCCMultiBad-Regular.ttf")
 
     # No unacceptable control characters should pass with one file
-    tt = TTFont(passing_file)
-    assert_PASS(check([tt]),
+    fonts = [good_font]
+    assert_PASS(check(fonts),
                 'with one good font...')
 
     # No unacceptable control characters should pass with multiple good files
-    tt = TTFont(passing_file)
-    assert_PASS(check([tt, tt]),
+    fonts = [good_font,
+             good_font]
+    assert_PASS(check(fonts),
                 'with multiple good fonts...')
 
     # Unacceptable control chars should fail with one file x one bad char in font
-    tt = TTFont(error_onebad_cc_file)
-    assert_results_contain(check([tt]),
+    fonts = [onebad_cc_font]
+    assert_results_contain(check(fonts),
                            FAIL, 'unacceptable',
                            'with one bad font that has one bad char...')
 
     # Unacceptable control chars should fail with one file x multiple bad char in font
-    tt = TTFont(error_multibad_cc_file)
-    assert_results_contain(check([tt]),
+    fonts = [multibad_cc_font]
+    assert_results_contain(check(fonts),
                            FAIL, 'unacceptable',
                            'with one bad font that has multiple bad char...')
 
     # Unacceptable control chars should fail with multiple files x multiple bad chars in fonts
-    tt1 = TTFont(error_onebad_cc_file)
-    tt2 = TTFont(error_multibad_cc_file)
-    assert_results_contain(check([tt1, tt2]),
+    fonts = [onebad_cc_font,
+             multibad_cc_font]
+    assert_results_contain(check(fonts),
                            FAIL, 'unacceptable',
                            'with multiple bad fonts that have multiple bad chars...')
 
 
 def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
     """Are any unacceptable control characters present in font files?"""
-    # check = TestingContext(googlefonts_profile,
-    #                        "com.google.fonts/check/repo_dirname_match_nameid_1")
+    # check = CheckTester(googlefonts_profile,
+    #                     "com.google.fonts/check/repo_dirname_match_nameid_1")
     # TODO: Implement-me!
     #
     # PASS
@@ -3172,8 +3057,8 @@ def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
     # FAIL, "mismatch"
     #
     #  passing_file = TEST_FILE(".../.ttf")
-    #  ttFont = TTFont(passing_file)
-    #  assert_PASS(check([ttFont]),
+    #  fonts = [passing_file]
+    #  assert_PASS(check(fonts),
     #              'with one good font...')
 
 
@@ -3182,8 +3067,8 @@ def test_check_repo_vf_has_static_fonts():
     from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_vf_has_static_fonts as check
     import tempfile
     import shutil
-    # in order for this check to work, we need to mimmic the folder structure of
-    # the Google Fonts repository
+    # in order for this check to work, we need to
+    # mimic the folder structure of the Google Fonts repository
     with tempfile.TemporaryDirectory() as tmp_gf_dir:
         family_dir = portable_path(tmp_gf_dir + "/ofl/testfamily")
         src_family = portable_path("data/test/varfont")
@@ -3331,7 +3216,8 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
 
 
 def test_check_cjk_vertical_metrics():
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_cjk_vertical_metrics as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/cjk_vertical_metrics")
 
     ttFont = TTFont(cjk_font)
     assert_PASS(check(ttFont),
@@ -3388,14 +3274,14 @@ def test_check_cjk_vertical_metrics():
 
 
 def test_check_varfont_instance_coordinates(vf_ttFont):
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instance_coordinates as check
-    from fontbakery.parse import instance_parse
-    from copy import copy
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/varfont_instance_coordinates")
 
     # OpenSans-Roman-VF is correct
     assert_PASS(check(vf_ttFont),
                 'with a variable font which has correct instance coordinates.')
 
+    from copy import copy
     vf_ttFont2 = copy(vf_ttFont)
     for instance in vf_ttFont2['fvar'].instances:
         for axis in instance.coordinates.keys():
@@ -3407,13 +3293,13 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
 
 
 def test_check_varfont_instance_names(vf_ttFont):
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_instance_names as check
-    from fontbakery.parse import instance_parse
-    from copy import copy
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/varfont_instance_names")
 
     assert_PASS(check(vf_ttFont),
                 'with a variable font which has correct instance names.')
 
+    from copy import copy
     vf_ttFont2 = copy(vf_ttFont)
     for instance in vf_ttFont2['fvar'].instances:
         instance.subfamilyNameID = 300
@@ -3434,13 +3320,13 @@ def test_check_varfont_instance_names(vf_ttFont):
 
 
 def test_check_varfont_duplicate_instance_names(vf_ttFont):
-    from fontbakery.profiles.googlefonts \
-        import com_google_fonts_check_varfont_duplicate_instance_names as check
-    from copy import copy
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/varfont_duplicate_instance_names")
 
     assert_PASS(check(vf_ttFont),
                 'with a variable font which has unique instance names.')
 
+    from copy import copy
     vf_ttFont2 = copy(vf_ttFont)
     duplicate_instance_name = vf_ttFont2['name'].getName(
         vf_ttFont2['fvar'].instances[0].subfamilyNameID,
@@ -3448,7 +3334,7 @@ def test_check_varfont_duplicate_instance_names(vf_ttFont):
         WindowsEncodingID.UNICODE_BMP,
         WindowsLanguageID.ENGLISH_USA
     ).toUnicode()
-    vf_ttFont2['name'].setName(string=duplicate_instance_name, 
+    vf_ttFont2['name'].setName(string=duplicate_instance_name,
                                nameID=vf_ttFont2['fvar'].instances[1].subfamilyNameID,
                                platformID=PlatformID.WINDOWS,
                                platEncID=WindowsEncodingID.UNICODE_BMP,
@@ -3459,16 +3345,16 @@ def test_check_varfont_duplicate_instance_names(vf_ttFont):
 
 def test_check_varfont_unsupported_axes():
     """Ensure VFs do not contain opsz or ital axes."""
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_varfont_unsupported_axes as check
-    from fontbakery.profiles.shared_conditions import slnt_axis, ital_axis
-    from fontTools.ttLib.tables._f_v_a_r import Axis
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/varfont/unsupported_axes")
 
     # Our reference varfont, CabinVFBeta.ttf, lacks 'ital' and 'slnt' variation axes.
     # So, should pass the check:
-    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+    ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
     assert_PASS(check(ttFont))
 
     # If we add 'ital' it must FAIL:
+    from fontTools.ttLib.tables._f_v_a_r import Axis
     new_axis = Axis()
     new_axis.axisTag = "ital"
     ttFont["fvar"].axes.append(new_axis)

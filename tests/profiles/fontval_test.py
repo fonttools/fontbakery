@@ -1,4 +1,3 @@
-import os
 import pytest
 
 from fontbakery.codetesting import (TEST_FILE,
@@ -9,7 +8,9 @@ from fontbakery.profiles import fontval as fontval_profile
 
 def test_check_fontvalidator():
     """ MS Font Validator checks """
-    from fontbakery.profiles.fontval import com_google_fonts_check_fontvalidator as check
+    # check = CheckTester(fontval_profile,
+    #                     "com.google.fonts/check/fontvalidator")
+    check = fontval_profile.com_google_fonts_check_fontvalidator
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
 
@@ -19,6 +20,7 @@ def test_check_fontvalidator():
         assert status != ERROR
 
     # Simulate FontVal missing.
+    import os
     old_path = os.environ["PATH"]
     os.environ["PATH"] = ""
     with pytest.raises(OSError) as _:

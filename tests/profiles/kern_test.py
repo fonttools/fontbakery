@@ -1,16 +1,18 @@
 from fontTools.ttLib import TTFont
 
-from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
-from fontbakery.codetesting import (TEST_FILE,
-                                    assert_PASS,
-                                    assert_results_contain)
+from fontbakery.checkrunner import INFO
+from fontbakery.codetesting import (assert_PASS,
+                                    assert_results_contain,
+                                    CheckTester,
+                                    TEST_FILE)
 
-check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
+from fontbakery.profiles import opentype as opentype_profile
 
 
 def test_check_kern_table():
-    """ Is there a "kern" table declared in the font ? """
-    from fontbakery.profiles.kern import com_google_fonts_check_kern_table as check
+    """ Is there a "kern" table declared in the font? """
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/kern_table")
 
     # Our reference Mada Regular is known to be good
     # (does not have a 'kern' table):

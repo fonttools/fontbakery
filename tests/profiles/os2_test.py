@@ -1,19 +1,18 @@
 import io
 import os
-
 import pytest
-
-from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL)
-from fontbakery.codetesting import (TEST_FILE,
-                                    assert_PASS,
-                                    assert_results_contain,
-                                    portable_path)
-
-check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 import fontTools.ttLib
 from fontTools.ttLib import TTFont
 import fontTools.subset
+
+from fontbakery.checkrunner import (INFO, WARN, FAIL)
+from fontbakery.codetesting import (assert_PASS,
+                                    assert_results_contain,
+                                    CheckTester,
+                                    portable_path,
+                                    TEST_FILE)
+from fontbakery.profiles import opentype as opentype_profile
 
 
 mada_fonts = [
@@ -44,7 +43,8 @@ cabin_fonts = [
 
 def test_check_family_panose_proportion(mada_ttFonts):
     """ Fonts have consistent PANOSE proportion ? """
-    from fontbakery.profiles.os2 import com_google_fonts_check_family_panose_proportion as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/family/panose_proportion")
 
     assert_PASS(check(mada_ttFonts),
                 'with good family.')
@@ -61,7 +61,8 @@ def test_check_family_panose_proportion(mada_ttFonts):
 
 def test_check_family_panose_familytype(mada_ttFonts):
     """ Fonts have consistent PANOSE family type ? """
-    from fontbakery.profiles.os2 import com_google_fonts_check_family_panose_familytype as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/family/panose_familytype")
 
     assert_PASS(check(mada_ttFonts),
                 'with good family.')
@@ -78,7 +79,8 @@ def test_check_family_panose_familytype(mada_ttFonts):
 
 def test_check_xavgcharwidth():
     """ Check if OS/2 xAvgCharWidth is correct. """
-    from fontbakery.profiles.os2 import com_google_fonts_check_xavgcharwidth as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/xavgcharwidth")
 
     test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
 
@@ -93,7 +95,9 @@ def test_check_xavgcharwidth():
     assert_results_contain(check(test_font),
                            WARN, None) # FIXME: This needs a message keyword
 
-    test_font = TTFont()
+    del test_font['OS/2']
+    del test_font['glyf']
+    del test_font['hmtx']
     test_font['OS/2'] = fontTools.ttLib.newTable('OS/2')
     test_font['OS/2'].version = 4
     test_font['OS/2'].xAvgCharWidth = 1000
@@ -116,6 +120,7 @@ def test_check_xavgcharwidth():
     temp_file = io.BytesIO()
     test_font.save(temp_file)
     test_font = TTFont(temp_file)
+    test_font.reader.file.name = "foo.ttf"
     assert_PASS(check(test_font))
 
     test_font['OS/2'].xAvgCharWidth = 450
@@ -127,6 +132,7 @@ def test_check_xavgcharwidth():
                            WARN, None) # FIXME: This needs a message keyword
 
     test_font = TTFont(temp_file)
+    test_font.reader.file.name = "foo.ttf"
     subsetter = fontTools.subset.Subsetter()
     subsetter.populate(glyphs=['b', 'c', 'd', 'e', 'f', 'g', 'h',
                                'i', 'j', 'k', 'l', 'm', 'n', 'o',
@@ -139,8 +145,8 @@ def test_check_xavgcharwidth():
 
 def test_check_fsselection_matches_macstyle():
     """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
-    from fontbakery.profiles.os2 import \
-      com_adobe_fonts_check_fsselection_matches_macstyle as check
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/fsselection_matches_macstyle")
     from fontbakery.constants import FsSelection
 
     test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
@@ -168,6 +174,9 @@ def test_check_fsselection_matches_macstyle():
 def test_check_family_bold_italic_unique_for_nameid1():
     """Check that OS/2.fsSelection bold/italic settings are unique within each
     Compatible Family group (i.e. group of up to 4 with same NameID1)"""
+    # FIXME: This should work:
+    # check = CheckTester(opentype_profile,
+    #                     "com.adobe.fonts/check/family/bold_italic_unique_for_nameid1")
     from fontbakery.profiles.os2 import \
       com_adobe_fonts_check_family_bold_italic_unique_for_nameid1 as check
     from fontbakery.constants import FsSelection
@@ -181,16 +190,16 @@ def test_check_family_bold_italic_unique_for_nameid1():
                   'SourceSansPro-BoldIt.otf']
 
     font_paths = [os.path.join(base_path, n) for n in font_names]
-    test_fonts = [TTFont(x) for x in font_paths]
+    ttFonts = [TTFont(x) for x in font_paths]
 
     # the family should be correctly constructed
-    assert_PASS(check(test_fonts))
+    assert_PASS(check(ttFonts))
 
     # now hack the italic font to also have the bold bit set
-    test_fonts[2]['OS/2'].fsSelection |= FsSelection.BOLD
+    ttFonts[2]['OS/2'].fsSelection |= FsSelection.BOLD
 
     # we should get a failure due to two fonts with both bold & italic set
-    message = assert_results_contain(check(test_fonts),
+    message = assert_results_contain(check(ttFonts),
                                      FAIL, None) # FIXME: This needs a message keyword!
     assert message == ("Family 'Source Sans Pro' has 2 fonts (should be no"
                        " more than 1) with the same OS/2.fsSelection"
@@ -199,7 +208,8 @@ def test_check_family_bold_italic_unique_for_nameid1():
 
 def test_check_code_pages():
     """ Check code page character ranges """
-    from fontbakery.profiles.os2 import com_google_fonts_check_code_pages as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/code_pages")
 
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
     assert(ttFont['OS/2'].ulCodePageRange1 != 0 or
