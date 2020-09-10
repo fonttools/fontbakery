@@ -13,7 +13,6 @@ class CFFAnalysis:
     def __init__(self):
         self.glyphs_dotsection = []
         self.glyphs_endchar_seac = []
-        self.glyphs_seac = []
         self.glyphs_exceed_max = []
         self.glyphs_recursion_errors = []
 
@@ -40,8 +39,6 @@ def _traverse_subr_call_tree(info, program, depth):
     if depth > 10:
         return
 
-    if 'seac' in program:
-        info['saw_seac'] = True
     if len(program) >=5 and program[-1] == 'endchar' and all([isinstance(a, int) for a in program[-5:-1]]):
         info['saw_endchar_seac'] = True
     if 'ignore' in program:  # decompiler expresses 'dotsection' as 'ignore'
@@ -96,8 +93,6 @@ def _analyze_cff(analysis, top_dict, private_dict, fd_index=0):
 
         if max_depth > 10:
             analysis.glyphs_exceed_max.append(glyph_name)
-        if info.get('saw_seac'):
-            analysis.glyphs_seac.append(glyph_name)
         if info.get('saw_endchar_seac'):
             analysis.glyphs_endchar_seac.append(glyph_name)
         if info.get('saw_dotsection'):
@@ -154,9 +149,13 @@ def com_adobe_fonts_check_cff_call_depth(cff_analysis):
     if cff_analysis.glyphs_exceed_max or cff_analysis.glyphs_recursion_errors:
         any_failures = True
         for gn in cff_analysis.glyphs_exceed_max:
-            yield FAIL, Message('max-depth', f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
+            yield FAIL, \
+                  Message('max-depth',
+                          f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
         for gn in cff_analysis.glyphs_recursion_errors:
-            yield FAIL, Message('recursion-error', f'Recursion error while decompiling glyph "{gn}".')
+            yield FAIL, \
+                  Message('recursion-error',
+                          f'Recursion error while decompiling glyph "{gn}".')
 
     if not any_failures:
         yield PASS, 'Maximum call depth not exceeded.'
@@ -177,9 +176,13 @@ def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
     if cff_analysis.glyphs_exceed_max or cff_analysis.glyphs_recursion_errors:
         any_failures = True
         for gn in cff_analysis.glyphs_exceed_max:
-            yield FAIL, Message('max-depth', f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
+            yield FAIL, \
+                  Message('max-depth',
+                          f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
         for gn in cff_analysis.glyphs_recursion_errors:
-            yield FAIL, Message('recursion-error', f'Recursion error while decompiling glyph "{gn}".')
+            yield FAIL, \
+                  Message('recursion-error',
+                          f'Recursion error while decompiling glyph "{gn}".')
 
     if not any_failures:
         yield PASS, 'Maximum call depth not exceeded.'
@@ -189,24 +192,29 @@ def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
     id = 'com.adobe.fonts/check/cff_deprecated_operators',
     conditions = ['ttFont', 'is_cff', 'cff_analysis'],
     rationale = """
-        The 'dotsection' and 'seac' operators (including the use of 'endchar' as
-        implied 'seac') are deprecated in CFF. Adobe recommends repairing any
-        fonts that use them, especially 'seac', which can result in incorrect
-        rendering in some applications.
+        The 'dotsection' operator and the use of 'endchar' to build accented
+        characters from the Adobe Standard Encoding Character Set ("seac") are
+        deprecated in CFF. Adobe recommends repairing any fonts that use these,
+        especially endchar-as-seac, because a rendering issue was discovered in
+        Microsoft Word with a font that makes use of this operation. The check
+        treats that useage as a FAIL. There are no known ill effects of using
+        dotsection, so that check is a WARN.
     """
 )
 def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
-    """Does the font use deprecated CFF operators?"""
+    """Does the font use deprecated CFF operators or operations?"""
     any_failures = False
 
-    if cff_analysis.glyphs_dotsection or cff_analysis.glyphs_endchar_seac or cff_analysis.glyphs_seac:
+    if cff_analysis.glyphs_dotsection or cff_analysis.glyphs_endchar_seac:
         any_failures = True
         for gn in cff_analysis.glyphs_dotsection:
-            yield WARN, Message('deprecated-operator-dotsection', f'Glyph "{gn}" uses deprecated "dotsection" operator.')
+            yield WARN, \
+                  Message('deprecated-operator-dotsection',
+                          f'Glyph "{gn}" uses deprecated "dotsection" operator.')
         for gn in cff_analysis.glyphs_endchar_seac:
-            yield FAIL, Message('deprecated-operator-seac', f'Glyph "{gn}" uses deprecated "seac" (endchar) operator.')
-        for gn in cff_analysis.glyphs_seac:
-            yield FAIL, Message('deprecated-operator-seac', f'Glyph "{gn}" uses deprecated "seac" operator.')
+            yield FAIL, \
+                  Message('deprecated-operation-endchar-seac',
+                          f'Glyph "{gn}" has deprecated use of "endchar" operator to build accented characters (seac).')
 
     if not any_failures:
         yield PASS, 'No deprecated CFF operators used.'

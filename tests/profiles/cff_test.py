@@ -74,8 +74,8 @@ def test_check_cff_deprecated_operators():
                            WARN, 'deprecated-operator-dotsection',
                            'Glyph "i" uses deprecated "dotsection" operator.')
 
-    # this font uses the deprecated 'seac' operator (special case of 'endchar')
-    font = TEST_FILE('deprecated_operators/cff1_seac.otf')
+    # this font uses the 'endchar' operator in a manner that is deprecated ("seac")
+    font = TEST_FILE('deprecated_operators/cff1_endchar_seac.otf')
     assert_results_contain(check(font),
-                           FAIL, 'deprecated-operator-seac',
-                           'Glyph "Aacute" uses deprecated "seac" (endchar) operator.')
+                           FAIL, 'deprecated-operation-endchar-seac',
+                           'Glyph "Agrave" has deprecated use of "endchar" operator to build accented characters (seac).')
