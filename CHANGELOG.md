@@ -5,6 +5,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Note-worthy code changes
   - Renamed `multiprocessing.py` to `multiproc.py` to avoid conflict with Python
     stdlib module of the same name in some configurations.
+  - Re-worked `cff.py` checks using `@condition` to avoid repeated iterations
+    over the glyph set.
+  - Added checks for deprecated CFF operators `dotsection` and `seac` including
+    "implied" `seac` that uses extra arguments to `endchar`.
 
 ## 0.7.30 (2020-Aug-??)
 ### Note-worthy code changes
