@@ -1,17 +1,18 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.7.31 (2020-Sep-??)
-### Note-worthy code changes
-  - Renamed `multiprocessing.py` to `multiproc.py` to avoid conflict with Python
-    stdlib module of the same name in some configurations.
-
-## 0.7.30 (2020-Aug-??)
+## 0.7.30 (2020-Sept-someday)
 ### Note-worthy code changes
   - Adopted 4-spaces indentation. We're changing our codestyle to facilitate collaboration from people who also work with the fontTools and AFDKO codebases. (issue 2997)
   - All rationale text needs to have 8 indentation spaces (because this indentation on the source should not show up on the user-interface when rationale text is printed on the text terminal)
   - Remove PriorityLevel class as it makes classifying checks by priority more complicated then necessary! (issue #2981)
   - Use the http://fonts.google.com/metadata/fonts endpoint to determine if a font is listed in Google Fonts. (issue #2991)
+  - Renamed `multiprocessing.py` to `multiproc.py` to avoid conflict with Python
+    stdlib module of the same name in some configurations.
+  - Re-worked `cff.py` checks using `@condition` to avoid repeated iterations
+    over the glyph set.
+  - Added checks for deprecated CFF operator `dotsection` and deprecated use of
+    `endchar` operator to build accented characters (`seac`).
 
 ### New Checks
   - **[com.google.fonts/check/varfont_duplicate_instance_names]**: Avoid duplicate instance names in variable fonts (issue #2986)

@@ -1,5 +1,5 @@
-from fontbakery.callable import check
-from fontbakery.checkrunner import FAIL, PASS
+from fontbakery.callable import check, condition
+from fontbakery.checkrunner import FAIL, PASS, WARN
 from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
@@ -8,6 +8,13 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 profile_imports = [
     ('.shared_conditions', ('is_cff', 'is_cff2'))
 ]
+
+class CFFAnalysis:
+    def __init__(self):
+        self.glyphs_dotsection = []
+        self.glyphs_endchar_seac = []
+        self.glyphs_exceed_max = []
+        self.glyphs_recursion_errors = []
 
 def _get_subr_bias(count):
     if count < 1240:
@@ -32,6 +39,11 @@ def _traverse_subr_call_tree(info, program, depth):
     if depth > 10:
         return
 
+    if len(program) >=5 and program[-1] == 'endchar' and all([isinstance(a, int) for a in program[-5:-1]]):
+        info['saw_endchar_seac'] = True
+    if 'ignore' in program:  # decompiler expresses 'dotsection' as 'ignore'
+        info['saw_dotsection'] = True
+
     while program:
         x = program.pop()
         if x == 'callgsubr':
@@ -44,9 +56,8 @@ def _traverse_subr_call_tree(info, program, depth):
             _traverse_subr_call_tree(info, sub_program, depth + 1)
 
 
-def _check_call_depth(top_dict, private_dict, fd_index=0):
+def _analyze_cff(analysis, top_dict, private_dict, fd_index=0):
     char_strings = top_dict.CharStrings
-
     global_subrs = top_dict.GlobalSubrs
     gsubr_bias = _get_subr_bias(len(global_subrs))
 
@@ -58,7 +69,7 @@ def _check_call_depth(top_dict, private_dict, fd_index=0):
         subr_bias = None
 
     char_list = char_strings.keys()
-    failed = False
+
     for glyph_name in char_list:
         t2_char_string, fd_select_index = char_strings.getItemAndSelector(
             glyph_name)
@@ -67,11 +78,7 @@ def _check_call_depth(top_dict, private_dict, fd_index=0):
         try:
             t2_char_string.decompile()
         except RecursionError:
-            yield FAIL,\
-                  Message("recursion-error",
-                          f'Recursion error while decompiling'
-                          f' glyph "{glyph_name}".')
-            failed = True
+            analysis.glyphs_recursion_errors.append(glyph_name)
             continue
         info = dict()
         info['subrs'] = subrs
@@ -83,44 +90,72 @@ def _check_call_depth(top_dict, private_dict, fd_index=0):
         program = t2_char_string.program.copy()
         _traverse_subr_call_tree(info, program, depth)
         max_depth = info['max_depth']
+
         if max_depth > 10:
-            yield FAIL,\
-                  Message("max-depth",
-                          f'Subroutine call depth exceeded'
-                          f' maximum of 10 for glyph "{glyph_name}".')
-            failed = True
-    return failed
+            analysis.glyphs_exceed_max.append(glyph_name)
+        if info.get('saw_endchar_seac'):
+            analysis.glyphs_endchar_seac.append(glyph_name)
+        if info.get('saw_dotsection'):
+            analysis.glyphs_dotsection.append(glyph_name)
 
+@condition
+def cff_analysis(ttFont):
 
-@check(
-    id = 'com.adobe.fonts/check/cff_call_depth',
-    conditions = ['is_cff'],
-    rationale = """
-        Per "The Type 2 Charstring Format, Technical Note #5177", the "Subr nesting, stack limit" is 10.
-    """
-)
-def com_adobe_fonts_check_cff_call_depth(ttFont):
-    """Is the CFF subr/gsubr call depth > 10?"""
-    any_failures = False
-    cff = ttFont['CFF '].cff
+    analysis = CFFAnalysis()
 
-    for top_dict in cff.topDictIndex:
-        if hasattr(top_dict, 'FDArray'):
+    if 'CFF ' in ttFont:
+        cff = ttFont['CFF '].cff
+
+        for top_dict in cff.topDictIndex:
+            if hasattr(top_dict, 'FDArray'):
+                for fd_index, font_dict in enumerate(top_dict.FDArray):
+                    if hasattr(font_dict, 'Private'):
+                        private_dict = font_dict.Private
+                    else:
+                        private_dict = None
+                    _analyze_cff(analysis, top_dict, private_dict, fd_index)
+            else:
+                if hasattr(top_dict, 'Private'):
+                    private_dict = top_dict.Private
+                else:
+                    private_dict = None
+                _analyze_cff(analysis, top_dict, private_dict)
+
+    elif 'CFF2' in ttFont:
+        cff = ttFont['CFF2'].cff
+
+        for top_dict in cff.topDictIndex:
             for fd_index, font_dict in enumerate(top_dict.FDArray):
                 if hasattr(font_dict, 'Private'):
                     private_dict = font_dict.Private
                 else:
                     private_dict = None
-                failed = yield from \
-                    _check_call_depth(top_dict, private_dict, fd_index)
-                any_failures = any_failures or failed
-        else:
-            if hasattr(top_dict, 'Private'):
-                private_dict = top_dict.Private
-            else:
-                private_dict = None
-            failed = yield from _check_call_depth(top_dict, private_dict)
-            any_failures = any_failures or failed
+                _analyze_cff(analysis, top_dict, private_dict, fd_index)
+
+    return analysis
+
+@check(
+    id = 'com.adobe.fonts/check/cff_call_depth',
+    conditions = ['ttFont', 'is_cff', 'cff_analysis'],
+    rationale = """
+        Per "The Type 2 Charstring Format, Technical Note #5177", the "Subr nesting, stack limit" is 10.
+    """
+)
+def com_adobe_fonts_check_cff_call_depth(cff_analysis):
+    """Is the CFF subr/gsubr call depth > 10?"""
+
+    any_failures = False
+
+    if cff_analysis.glyphs_exceed_max or cff_analysis.glyphs_recursion_errors:
+        any_failures = True
+        for gn in cff_analysis.glyphs_exceed_max:
+            yield FAIL, \
+                  Message('max-depth',
+                          f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
+        for gn in cff_analysis.glyphs_recursion_errors:
+            yield FAIL, \
+                  Message('recursion-error',
+                          f'Recursion error while decompiling glyph "{gn}".')
 
     if not any_failures:
         yield PASS, 'Maximum call depth not exceeded.'
@@ -128,25 +163,58 @@ def com_adobe_fonts_check_cff_call_depth(ttFont):
 
 @check(
     id = 'com.adobe.fonts/check/cff2_call_depth',
-    conditions = ['is_cff2'],
+    conditions = ['ttFont', 'is_cff2', 'cff_analysis'],
     rationale = """
         Per "The CFF2 CharString Format", the "Subr nesting, stack limit" is 10.
     """
 )
-def com_adobe_fonts_check_cff2_call_depth(ttFont):
+def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
     """Is the CFF2 subr/gsubr call depth > 10?"""
-    any_failures = False
-    cff = ttFont['CFF2'].cff
 
-    for top_dict in cff.topDictIndex:
-        for fd_index, font_dict in enumerate(top_dict.FDArray):
-            if hasattr(font_dict, 'Private'):
-                private_dict = font_dict.Private
-            else:
-                private_dict = None
-            failed = yield from \
-                _check_call_depth(top_dict, private_dict, fd_index)
-            any_failures = any_failures or failed
+    any_failures = False
+
+    if cff_analysis.glyphs_exceed_max or cff_analysis.glyphs_recursion_errors:
+        any_failures = True
+        for gn in cff_analysis.glyphs_exceed_max:
+            yield FAIL, \
+                  Message('max-depth',
+                          f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
+        for gn in cff_analysis.glyphs_recursion_errors:
+            yield FAIL, \
+                  Message('recursion-error',
+                          f'Recursion error while decompiling glyph "{gn}".')
 
     if not any_failures:
         yield PASS, 'Maximum call depth not exceeded.'
+
+
+@check(
+    id = 'com.adobe.fonts/check/cff_deprecated_operators',
+    conditions = ['ttFont', 'is_cff', 'cff_analysis'],
+    rationale = """
+        The 'dotsection' operator and the use of 'endchar' to build accented
+        characters from the Adobe Standard Encoding Character Set ("seac") are
+        deprecated in CFF. Adobe recommends repairing any fonts that use these,
+        especially endchar-as-seac, because a rendering issue was discovered in
+        Microsoft Word with a font that makes use of this operation. The check
+        treats that useage as a FAIL. There are no known ill effects of using
+        dotsection, so that check is a WARN.
+    """
+)
+def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
+    """Does the font use deprecated CFF operators or operations?"""
+    any_failures = False
+
+    if cff_analysis.glyphs_dotsection or cff_analysis.glyphs_endchar_seac:
+        any_failures = True
+        for gn in cff_analysis.glyphs_dotsection:
+            yield WARN, \
+                  Message('deprecated-operator-dotsection',
+                          f'Glyph "{gn}" uses deprecated "dotsection" operator.')
+        for gn in cff_analysis.glyphs_endchar_seac:
+            yield FAIL, \
+                  Message('deprecated-operation-endchar-seac',
+                          f'Glyph "{gn}" has deprecated use of "endchar" operator to build accented characters (seac).')
+
+    if not any_failures:
+        yield PASS, 'No deprecated CFF operators used.'

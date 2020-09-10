@@ -21,7 +21,7 @@ def test_check_cff_call_depth():
     # in this font, glyphs D & E exceed max call depth,
     # and glyph F calls a subroutine that calls itself
     font = TEST_FILE('subr_test_fonts/subr_test_font_infinite_recursion.otf')
-    
+
     assert_results_contain(check(font),
                            FAIL, 'max-depth',
                            '- Subroutine call depth exceeded'
@@ -62,3 +62,20 @@ def test_check_cff2_call_depth():
     assert_results_contain(check(font),
                            FAIL, 'recursion-error',
                            'Recursion error while decompiling glyph "F".')
+
+
+def test_check_cff_deprecated_operators():
+    check = TestingContext(cff_profile,
+                           "com.adobe.fonts/check/cff_deprecated_operators")
+
+    # this font uses the deprecated 'dotsection' operator
+    font = TEST_FILE('deprecated_operators/cff1_dotsection.otf')
+    assert_results_contain(check(font),
+                           WARN, 'deprecated-operator-dotsection',
+                           'Glyph "i" uses deprecated "dotsection" operator.')
+
+    # this font uses the 'endchar' operator in a manner that is deprecated ("seac")
+    font = TEST_FILE('deprecated_operators/cff1_endchar_seac.otf')
+    assert_results_contain(check(font),
+                           FAIL, 'deprecated-operation-endchar-seac',
+                           'Glyph "Agrave" has deprecated use of "endchar" operator to build accented characters (seac).')

@@ -52,6 +52,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/loca/maxp_num_glyphs',
     'com.adobe.fonts/check/cff2_call_depth',
     'com.adobe.fonts/check/cff_call_depth',
+    'com.adobe.fonts/check/cff_deprecated_operators',
     'com.google.fonts/check/font_version',
     'com.google.fonts/check/post_table_version',
     'com.google.fonts/check/monospace',
