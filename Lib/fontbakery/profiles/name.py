@@ -148,6 +148,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
         unusually_spaced_glyphs = [
             g for g in ttFont['glyf'].glyphs
             if g not in ['.notdef', '.null', 'NULL'] and
+            ttFont['hmtx'].metrics[g][0] != 0 and
             ttFont['hmtx'].metrics[g][0] != most_common_width
         ]
         outliers_ratio = float(len(unusually_spaced_glyphs)) / num_glyphs
