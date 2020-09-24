@@ -3,7 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.31 (2020-Oct-??)
-  - ...
+  - Updated `com.google.fonts/check/monospace` to not report zero width (mark) glyphs
 
 
 ## 0.7.30 (2020-Sept-24)
