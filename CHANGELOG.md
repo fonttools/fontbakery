@@ -26,6 +26,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/stat_axis_record_for_each_axis]**: ensure the STAT table has an Axis Record for every axis in the font (PR #3017)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/monospace]**: Updated to not report zero width (mark) glyphs (issue #3036)
   - **[com.google.fonts/check/font_version]**: fixed tolerance for warnings (PR #3009)
   - **[com.google.fonts/check/fontbakery_version]**: use pip_api module and PyPI JSON API instead of invoking command-line pip/pip3 via subprocess (#2966)
 
