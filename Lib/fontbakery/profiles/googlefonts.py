@@ -1821,7 +1821,7 @@ def com_google_fonts_check_metadata_subsets_order(family_metadata):
                   'production_metadata',
                   'listed_on_gfonts_api'],
     rationale = """
-      Check METADATA.pb file includes the same subsets as the family in production.
+        Check METADATA.pb file includes the same subsets as the family in production.
     """,
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/2989'
