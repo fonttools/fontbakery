@@ -626,7 +626,7 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
                 binaries.append(entry)
 
 
-    for filename in set(pb_binaries) - set(binaries):
+    for filename in sorted(set(pb_binaries) - set(binaries)):
         passed = False
         yield FAIL,\
               Message("file-missing",
@@ -634,7 +634,7 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
                       f' is not available in this directory.')
 
 
-    for filename in set(binaries) - set(pb_binaries):
+    for filename in sorted(set(binaries) - set(pb_binaries)):
         passed = False
         yield FAIL,\
               Message("file-not-declared",
@@ -724,7 +724,7 @@ def com_google_fonts_check_family_equal_numbers_of_glyphs(ttFonts):
                           f"{stylename} has {this_count} glyphs while"
                           f" {max_stylename} has {max_count} glyphs."
                           f" There are {diff_count} different glyphs"
-                          f" among them: {diff}")
+                          f" among them: {sorted(diff)}")
     if not failed:
         yield PASS, ("All font files in this family have"
                      " an equal total ammount of glyphs.")
@@ -762,18 +762,18 @@ def com_google_fonts_check_family_equal_glyph_names(ttFonts):
             else:
                 available[glyphname].append(fontname)
 
-    for gn in missing.keys():
+    for gn in sorted(missing.keys()):
         if missing[gn]:
             available_styles = [style(k) for k in available[gn]]
             missing_styles = [style(k) for k in missing[gn]]
             if None not in available_styles + missing_styles:
                 # if possible, use stylenames in the log messages.
-                avail = ', '.join(available_styles)
-                miss = ', '.join(missing_styles)
+                avail = ', '.join(sorted(vailable_styles))
+                miss = ', '.join(sorted(missing_styles))
             else:
                 # otherwise, print filenames:
-                avail = ', '.join(available[gn])
-                miss = ', '.join(missing[gn])
+                avail = ', '.join(sorted(available[gn]))
+                miss = ', '.join(sorted(missing[gn]))
 
             yield FAIL,\
                   Message("missing-glyph",
@@ -1838,7 +1838,7 @@ def com_google_fonts_check_metadata_includes_production_subsets(family_metadata,
     if len(missing_subsets) > 0:
         yield FAIL,\
               Message("missing-subsets",
-                      f"The following subsets are missing [{', '.join(missing_subsets)}]")
+                      f"The following subsets are missing [{', '.join(sorted(missing_subsets))}]")
     else:
         yield PASS, "No missing subsets"
 
@@ -2802,7 +2802,7 @@ def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFon
 
     if bad_glyphs:
         yield WARN, ("Following glyphs differ greatly from"
-                     " Google Fonts version: [{}]").format(", ".join(bad_glyphs))
+                     " Google Fonts version: [{}]").format(", ".join(sorted(bad_glyphs)))
     else:
         yield PASS, ("Glyphs are similar in"
                      " comparison to the Google Fonts version.")
@@ -3002,7 +3002,7 @@ def com_google_fonts_check_contour_count(ttFont):
 
         shared_glyphs_by_codepoint = set(desired_glyph_contours_by_codepoint) & \
                                      set(font_glyph_contours_by_codepoint)
-        for glyph in shared_glyphs_by_codepoint:
+        for glyph in sorted(shared_glyphs_by_codepoint):
             if font_glyph_contours_by_codepoint[glyph] not in desired_glyph_contours_by_codepoint[glyph]:
                 bad_glyphs.append([glyph,
                                    font_glyph_contours_by_codepoint[glyph],
@@ -3010,7 +3010,7 @@ def com_google_fonts_check_contour_count(ttFont):
 
         shared_glyphs_by_glyphname = set(desired_glyph_contours_by_glyphname) & \
                                      set(font_glyph_contours_by_glyphname)
-        for glyph in shared_glyphs_by_glyphname:
+        for glyph in sorted(shared_glyphs_by_glyphname):
             if font_glyph_contours_by_glyphname[glyph] not in desired_glyph_contours_by_glyphname[glyph]:
                 bad_glyphs.append([glyph,
                                    font_glyph_contours_by_glyphname[glyph],
@@ -3073,7 +3073,7 @@ def com_google_fonts_check_production_encoded_glyphs(ttFont, api_gfonts_ttFont):
 
     if missing_codepoints:
         hex_codepoints = ['0x' + hex(c).upper()[2:].zfill(4) for c
-                          in missing_codepoints]
+                          in sorted(missing_codepoints)]
         yield FAIL,\
               Message("lost-glyphs",
                       f"Font is missing the following glyphs"
@@ -4019,7 +4019,7 @@ def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
                           "This font lacks caret position values"
                           " for ligature glyphs on its GDEF table.")
         elif missing:
-            missing = "\n\t- ".join(missing)
+            missing = "\n\t- ".join(sorted(missing))
             yield WARN,\
                   Message("incomplete-caret-pos-data",
                           f"This font lacks caret positioning"
