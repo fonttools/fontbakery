@@ -68,11 +68,6 @@ def unindent_rationale(rationale, checkid=None):
             content += "\n"
             continue
 
-        if checkid and line[:8].strip() != "":
-            import sys
-            sys.exit(f"FATAL ERROR: The rationale metadata"
-                     f" on '{checkid}' must be indented by 8 spaces!")
-
         # all lines are assumed to be indented by 8 spaces
         content += line[8:] + "\n"
     return content
