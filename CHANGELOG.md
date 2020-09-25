@@ -2,8 +2,13 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.31 (2020-Oct-??)
+## 0.7.32 (2020-Oct-??)
+  - ...
+
+
+## 0.7.31 (2020-Sept-24)
 ### Note-worthy code changes
+  - This is a quick new release to address a silly but fatal crash (issue #3044)
   - We normalized the ordering of log messages of some checks. To avoid imprevisibility of python set iteration, we sort them before printing. This helps to reduce diffs for people that compare subsequent runs of fontbakery on automated AQ setups (issue #3038)
 
 
