@@ -538,15 +538,15 @@ def com_google_fonts_check_required_tables(ttFont):
     """Font contains all required tables?"""
     from .shared_conditions import is_variable_font
 
-    REQUIRED_TABLES = {"cmap", "head", "hhea", "hmtx",
-                       "maxp", "name", "OS/2", "post"}
+    REQUIRED_TABLES = ["cmap", "head", "hhea", "hmtx",
+                       "maxp", "name", "OS/2", "post"]
 
-    OPTIONAL_TABLES = {"cvt ", "fpgm", "loca", "prep",
+    OPTIONAL_TABLES = ["cvt ", "fpgm", "loca", "prep",
                        "VORG", "EBDT", "EBLC", "EBSC",
                        "BASE", "GPOS", "GSUB", "JSTF",
                        "DSIG", "gasp", "hdmx", "LTSH",
                        "PCLT", "VDMX", "vhea", "vmtx",
-                       "kern"}
+                       "kern"]
     # See https://github.com/googlefonts/fontbakery/issues/617
     #
     # We should collect the rationale behind the need for each of the
@@ -565,7 +565,7 @@ def com_google_fonts_check_required_tables(ttFont):
     if is_variable_font(ttFont):
         # According to https://github.com/googlefonts/fontbakery/issues/1671
         # STAT table is required on WebKit on MacOS 10.12 for variable fonts.
-        REQUIRED_TABLES.add("STAT")
+        REQUIRED_TABLES.append("STAT")
 
     missing_tables = [req for req in REQUIRED_TABLES
                       if req not in ttFont.keys()]
@@ -665,7 +665,7 @@ def com_google_fonts_check_STAT_strings(ttFont):
               Message("bad-italic",
                       f'The following AxisValue entries on the STAT table'
                       f' should not contain "Italic":\n'
-                      f' {list(bad_values)}')
+                      f' {list(sorted(bad_values))}')
 
     if passed:
         yield PASS, "Looks good!"

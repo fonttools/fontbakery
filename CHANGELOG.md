@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.31 (2020-Oct-??)
-  - ...
+### Note-worthy code changes
+  - We normalized the ordering of log messages of some checks. To avoid imprevisibility of python set iteration, we sort them before printing. This helps to reduce diffs for people that compare subsequent runs of fontbakery on automated AQ setups (issue #3038)
 
 
 ## 0.7.30 (2020-Sept-24)
