@@ -547,3 +547,12 @@ def production_metadata():
     meta_url = "http://fonts.google.com/metadata/fonts"
     # can't do requests.get("url").json() since request text starts with ")]}'"
     return json.loads(requests.get(meta_url).text[5:])
+
+
+@condition
+def gfaxisregistry(production_metadata):
+  registry = {}
+  for entry in production_metadata['axisRegistry']:
+    registry[entry["tag"]] = entry
+  return registry
+

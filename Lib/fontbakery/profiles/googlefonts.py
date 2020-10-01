@@ -59,7 +59,9 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/canonical_style_names',
     'com.google.fonts/check/metadata/broken_links',
     'com.google.fonts/check/metadata/undeclared_fonts',
-    'com.google.fonts/check/metadata/category'
+    'com.google.fonts/check/metadata/category',
+    'com.google.fonts/check/metadata/gf-axisregistry_valid_tags',
+    'com.google.fonts/check/metadata/gf-axisregistry_bounds'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -4725,6 +4727,67 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
                       'The "slnt" axis is not yet well supported on Google Chrome.')
     else:
         yield PASS, "Looks good!"
+
+
+@check(
+    id = 'com.google.fonts/check/metadata/gf-axisregistry_bounds',
+    rationale = """
+        Each axis range in a METADATA.pb file must be registered, and within the bounds of the axis definition in the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
+    """,
+    conditions = ['is_variable_font',
+                  'gfaxisregistry'],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3010'
+    }
+)
+def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, gfaxisregistry):
+    """ Validate METADATA.pb axes values are within gf-axisregistry bounds. """
+    passed = True
+    for axis in family_metadata.axes:
+        if axis.tag in gfaxisregistry.keys():
+            expected = gfaxisregistry[axis.tag]
+            if axis.min_value < expected["min"] or axis.max_value > expected["max"]:
+                passed = False
+                yield FAIL,\
+                      Message('bad-axis-range',
+                              f"The range in the font variation axis '{axis.tag}' ({expected['displayName']}"
+                              f" min:{axis.min_value} max:{axis.max_value})"
+                              f" does not comply with the expected maximum range, as defined on"
+                              f" gf-axisregistry (min:{expected['min']} max:{expected['max']}).")
+    if passed:
+        yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/metadata/gf-axisregistry_valid_tags',
+    rationale = """
+        Ensure all axes in a METADATA.pb file are registered in the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
+
+        Why does Google Fonts have its own Axis Registry?
+
+        We support a superset of the OpenType axis registry axis set, and use additional metadata for each axis. Axes present in a font file but not in this registry will not function via our API. No variable font is expected to support all of the axes here.
+
+        Any font foundry or distributor library that offers variable fonts has a implicit, latent, de-facto axis registry, which can be extracted by scanning the library for axes' tags, labels, and min/def/max values. While in 2016 Microsoft originally offered to include more axes in the OpenType 1.8 specification (github.com/microsoft/OpenTypeDesignVariationAxisTags), as of August 2020, this effort has stalled. We hope more foundries and distributors will publish documents like this that make their axes explicit, to encourage of adoption of variable fonts throughout the industry, and provide source material for a future update to the OpenType specification's axis registry.
+    """,
+    conditions = ['is_variable_font',
+                  'gfaxisregistry'],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3022'
+    }
+)
+def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, gfaxisregistry):
+    """ Validate METADATA.pb axes tags are defined in gf-axisregistry. """
+    passed = True
+    for axis in family_metadata.axes:
+        if axis.tag not in gfaxisregistry.keys():
+            passed = False
+            yield FAIL,\
+                  Message('bad-axis-tag',
+                          f"The font variation axis '{axis.tag}'"
+                          f" is not yet registered on GF Axis Registry.")
+
+    if passed:
+        yield PASS, "OK"
 
 
 ###############################################################################
