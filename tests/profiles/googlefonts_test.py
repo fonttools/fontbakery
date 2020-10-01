@@ -3370,3 +3370,41 @@ def test_check_varfont_unsupported_axes():
     assert_results_contain(check(ttFont),
                            FAIL, 'unsupported-slnt')
 
+
+def test_check_gfaxisregistry_bounds():
+    """Validate METADATA.pb axes values are within gf-axisregistry bounds."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/gf-axisregistry_bounds")
+    # Our reference varfont, CabinVF, has good axes bounds:
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    assert_PASS(check(ttFont))
+
+    # The first axis declared in this family is 'wdth' (Width)
+    # And the GF Axis Registry expects this axis to have a range
+    # not broader than min: 50 / max: 200
+    # So...
+    md = check["family_metadata"]
+    md.axes[0].min_value = 30
+    assert_results_contain(check(ttFont, {"family_metadata": md}),
+                           FAIL, "bad-axis-range")
+
+    md.axes[0].min_value = 50
+    md.axes[0].max_value = 250
+    assert_results_contain(check(ttFont, {"family_metadata": md}),
+                           FAIL, "bad-axis-range")
+
+
+def test_check_gf_axisregistry_valid_tags():
+    """Validate METADATA.pb axes tags are defined in gf-axisregistry."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/gf-axisregistry_valid_tags")
+    # The axis tags in our reference varfont, CabinVF,
+    # are properly defined in the registry:
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    assert_PASS(check(ttFont))
+
+    md = check["family_metadata"]
+    md.axes[0].tag = "crap" # I'm pretty sure this one wont ever be included in the registry
+    assert_results_contain(check(ttFont, {"family_metadata": md}),
+                           FAIL, "bad-axis-tag")
+

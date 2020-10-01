@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.32 (2020-Oct-??)
-  - ...
+### New checks
+  - **[com.google.fonts/check/metadata/gf-axisregistry_valid_tags]:** VF axis tags are registered on GF Axis Registry (issue #3010)
+  - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** VF axes have ranges compliant to the bounds specified on the GF Axis Registry (issue #3022)
 
 
 ## 0.7.31 (2020-Sept-24)
