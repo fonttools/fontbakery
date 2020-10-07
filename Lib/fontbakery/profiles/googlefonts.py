@@ -4735,25 +4735,25 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
         Each axis range in a METADATA.pb file must be registered, and within the bounds of the axis definition in the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
     """,
     conditions = ['is_variable_font',
-                  'gfaxisregistry'],
+                  'GFAxisRegistry'],
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/3010'
     }
 )
-def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, gfaxisregistry):
+def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, GFAxisRegistry):
     """ Validate METADATA.pb axes values are within gf-axisregistry bounds. """
     passed = True
     for axis in family_metadata.axes:
-        if axis.tag in gfaxisregistry.keys():
-            expected = gfaxisregistry[axis.tag]
-            if axis.min_value < expected["min"] or axis.max_value > expected["max"]:
+        if axis.tag in GFAxisRegistry.keys():
+            expected = GFAxisRegistry[axis.tag]
+            if axis.min_value < expected.min_value or axis.max_value > expected.max_value:
                 passed = False
                 yield FAIL,\
                       Message('bad-axis-range',
-                              f"The range in the font variation axis '{axis.tag}' ({expected['displayName']}"
+                              f"The range in the font variation axis '{axis.tag}' ({expected.display_name}"
                               f" min:{axis.min_value} max:{axis.max_value})"
                               f" does not comply with the expected maximum range, as defined on"
-                              f" gf-axisregistry (min:{expected['min']} max:{expected['max']}).")
+                              f" Google Fonts Axis Registry (min:{expected.min_value} max:{expected.max_value}).")
     if passed:
         yield PASS, "OK"
 
@@ -4770,21 +4770,21 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, gfaxisregistr
         Any font foundry or distributor library that offers variable fonts has a implicit, latent, de-facto axis registry, which can be extracted by scanning the library for axes' tags, labels, and min/def/max values. While in 2016 Microsoft originally offered to include more axes in the OpenType 1.8 specification (github.com/microsoft/OpenTypeDesignVariationAxisTags), as of August 2020, this effort has stalled. We hope more foundries and distributors will publish documents like this that make their axes explicit, to encourage of adoption of variable fonts throughout the industry, and provide source material for a future update to the OpenType specification's axis registry.
     """,
     conditions = ['is_variable_font',
-                  'gfaxisregistry'],
+                  'GFAxisRegistry'],
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/3022'
     }
 )
-def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, gfaxisregistry):
+def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, GFAxisRegistry):
     """ Validate METADATA.pb axes tags are defined in gf-axisregistry. """
     passed = True
     for axis in family_metadata.axes:
-        if axis.tag not in gfaxisregistry.keys():
+        if axis.tag not in GFAxisRegistry.keys():
             passed = False
             yield FAIL,\
                   Message('bad-axis-tag',
                           f"The font variation axis '{axis.tag}'"
-                          f" is not yet registered on GF Axis Registry.")
+                          f" is not yet registered on Google Fonts Axis Registry.")
 
     if passed:
         yield PASS, "OK"
