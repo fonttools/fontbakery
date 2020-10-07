@@ -550,9 +550,26 @@ def production_metadata():
 
 
 @condition
-def gfaxisregistry(production_metadata):
-  registry = {}
-  for entry in production_metadata['axisRegistry']:
-    registry[entry["tag"]] = entry
-  return registry
+def GFAxisRegistry():
+    from fontbakery.axes_pb2 import AxisProto
+    from fontbakery.utils import get_Protobuf_Message
+    from pkg_resources import resource_filename
 
+    registry = {}
+    def append_AxisMessage(path):
+        message = get_Protobuf_Message(AxisProto, path)
+        registry[message.tag] = message
+
+    for axis in ["casual.textproto",
+                 "cursive.textproto",
+                 "grade.textproto",
+                 "italic.textproto",
+                 "monospace.textproto",
+                 "optical_size.textproto",
+                 "slant.textproto",
+                 "softness.textproto",
+                 "weight.textproto",
+                 "width.textproto",
+                 "wonkiness.textproto"]:
+        append_AxisMessage(resource_filename('fontbakery', 'data/' + axis))
+    return registry

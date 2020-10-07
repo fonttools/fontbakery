@@ -45,7 +45,8 @@ setup(
               'fontbakery.commands',
               'fontbakery.sphinx_extensions'
               ],
-    package_data={'fontbakery': ['data/*.cache']},
+    package_data={'fontbakery': ['data/*.cache',
+                                 'data/*.textproto']},
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Developers',

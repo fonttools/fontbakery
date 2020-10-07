@@ -235,15 +235,16 @@ def get_font_glyph_data(font):
             })
     return font_data
 
-
-def get_FamilyProto_Message(path):
-    from fontbakery.fonts_public_pb2 import FamilyProto
+def get_Protobuf_Message(klass, path):
     from google.protobuf import text_format
-    message = FamilyProto()
+    message = klass()
     text_data = open(path, "rb").read()
     text_format.Merge(text_data, message)
     return message
 
+def get_FamilyProto_Message(path):
+    from fontbakery.fonts_public_pb2 import FamilyProto
+    return get_Protobuf_Message(FamilyProto, path)
 
 def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
     from fontbakery.message import Message
