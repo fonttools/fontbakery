@@ -149,7 +149,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/varfont_instance_names',
     'com.google.fonts/check/varfont_duplicate_instance_names',
     'com.google.fonts/check/varfont/consistent_axes',
-    'com.google.fonts/check/varfont/unsupported_axes'
+    'com.google.fonts/check/varfont/unsupported_axes',
+    'com.google.fonts/check/STAT/gf-axisregistry'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -4786,6 +4787,55 @@ def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, GFAxisReg
                           f"The font variation axis '{axis.tag}'"
                           f" is not yet registered on Google Fonts Axis Registry.")
 
+    if passed:
+        yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/STAT/gf-axisregistry',
+    rationale = """
+        Check that particle names and values on STAT table match the fallback names in each axis registry at the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
+    """,
+    conditions = ['is_variable_font',
+                  'GFAxisRegistry'],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3022'
+    }
+)
+def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
+    """ Validate STAT particle names and values match the fallback names in GFAxisRegistry. """
+    passed = True
+    for axis_value in ttFont['STAT'].table.AxisValueArray.AxisValue:
+        axis = ttFont['STAT'].table.DesignAxisRecord.Axis[axis_value.AxisIndex]
+        if axis.AxisTag in GFAxisRegistry.keys():
+            expected = GFAxisRegistry[axis.AxisTag]
+            expected_names = [fb.name for fb in expected.fallback]
+            for name_entry in ttFont['name'].names:
+                if name_entry.nameID == axis_value.ValueNameID:
+                    # Here "name_entry" has the user-friendly name of the current AxisValue
+                    # We want to ensure that this string shows up as a "fallback" name
+                    # on the GF Axis Registry for this specific variation axis tag.
+                    found_fallback = False
+                    for fb in expected.fallback:
+                        if name_entry.toUnicode() == fb.name:
+                            found_fallback = True
+                            if axis_value.Value != fb.value:
+                                yield FAIL, \
+                                      Message("bad-coordinate",
+                                              (f"Axis Value for '{fb.name}' is expected to be 'fb.value'"
+                                               f" but this font has '{fb.name}'='{axis_value.Value}'."))
+                            break
+
+                    if not found_fallback:
+                        passed = False
+                        yield FAIL, \
+                              Message('invalid-name',
+                                      f"The name '{name_entry.toUnicode()}' is not among the expected ones"
+                                      f" according to the Google Fonts Axis Registry:"
+                                      f" {expected_names}")
+                    break # Here we assume that it is enough to check for only the first occurence of a given nameID
+                          # It is up to other checks to ensure all different platform/encoding entries with a given nameID
+                          # are consistent in the name table.
     if passed:
         yield PASS, "OK"
 
