@@ -555,10 +555,16 @@ def GFAxisRegistry():
     from fontbakery.utils import get_Protobuf_Message
     from pkg_resources import resource_filename
 
+    def normalize_name(name):
+        return ''.join(name.split(' '))
+
     registry = {}
     def append_AxisMessage(path):
-        message = get_Protobuf_Message(AxisProto, path)
-        registry[message.tag] = message
+        axis_dict = {"message": get_Protobuf_Message(AxisProto, path),
+                     "fallbacks": {}}
+        for fb in axis_dict["message"].fallback:
+            axis_dict["fallbacks"][normalize_name(fb.name)] = fb.value
+        registry[axis_dict["message"].tag] = axis_dict
 
     for axis in ["casual.textproto",
                  "cursive.textproto",
