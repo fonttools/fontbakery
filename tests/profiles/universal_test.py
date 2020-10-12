@@ -323,7 +323,7 @@ def test_check_ots():
     bogus_font = TEST_FILE("README.txt")
     message = assert_results_contain(check(bogus_font),
                                      FAIL, None) # FIXME: This needs a message keyword
-    assert "invalid version tag" in message
+    assert "invalid sfntVersion" in message
     assert "Failed to sanitize file!" in message
 
 
