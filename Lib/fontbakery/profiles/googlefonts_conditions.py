@@ -562,12 +562,14 @@ def GFAxisRegistry():
 
     for axis in ["casual.textproto",
                  "cursive.textproto",
+                 "flair.textproto",
                  "grade.textproto",
                  "italic.textproto",
                  "monospace.textproto",
                  "optical_size.textproto",
                  "slant.textproto",
                  "softness.textproto",
+                 "volume.textproto",
                  "weight.textproto",
                  "width.textproto",
                  "wonkiness.textproto"]:
