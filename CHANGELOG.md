@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.7.32 (2020-Oct-??)
 ### Note-worthy code changes
   - We now keep a local copy of the Google Fonts Axis Registry textproto files so that the checks do not need to keep always fetch them online at runtime. These files should not change too often, but we should be careful to check for updates on our FontBakery releases. (issue #3022)
+  - Now Travis is configured to use pinned versions of dependencies as described on requirements.txt (issue #3058)
 
 ### New checks
   - **[com.google.fonts/check/metadata/gf-axisregistry_valid_tags]:** VF axis tags are registered on GF Axis Registry (issue #3010)
