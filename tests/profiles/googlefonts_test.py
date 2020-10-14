@@ -3408,3 +3408,25 @@ def test_check_gf_axisregistry_valid_tags():
     assert_results_contain(check(ttFont, {"family_metadata": md}),
                            FAIL, "bad-axis-tag")
 
+
+def test_check_STAT_gf_axisregistry():
+    """Validate STAT particle names and values match the fallback names in GFAxisRegistry."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/STAT/gf-axisregistry")
+    # Our reference varfont, CabinVF,
+    # has "Regular", instead of "Roman" in its 'ital' axis on the STAT table:
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    assert_results_contain(check(ttFont),
+                           FAIL, "invalid-name")
+
+    # LibreCaslonText is good though:
+    ttFont = TTFont(TEST_FILE("librecaslontext/LibreCaslonText[wght].ttf"))
+    assert_PASS(check(ttFont))
+
+    # Finally, we'll break it by setting an invalid coordinate for "Bold":
+    assert ttFont['STAT'].table.AxisValueArray.AxisValue[3].ValueNameID == ttFont['name'].names[4].nameID
+    assert ttFont['name'].names[4].toUnicode() == "Bold"
+    ttFont['STAT'].table.AxisValueArray.AxisValue[3].Value = 800 # instead of the expected 700
+    # Note: I know it is AxisValue[3] and names[4] because I inspected the font using ttx.
+    assert_results_contain(check(ttFont),
+                           FAIL, "bad-coordinate")
