@@ -159,7 +159,7 @@ def glyph_metrics_stats(ttFont):
     ascii_glyph_names = [ttFont.getBestCmap()[c] for c in range(32, 128)
                          if c in ttFont.getBestCmap()]
     ascii_widths = [adv for name, (adv, lsb) in glyph_metrics.items()
-                    if name in ascii_glyph_names]
+                    if name in ascii_glyph_names and adv != 0]
     ascii_width_count = Counter(ascii_widths)
     ascii_most_common_width = ascii_width_count.most_common(1)[0][1]
     seems_monospaced = ascii_most_common_width >= len(ascii_widths) * 0.8
