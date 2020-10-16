@@ -3987,6 +3987,8 @@ def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
         All ligatures in a font must have corresponding caret (text cursor) positions defined in the GDEF table, otherwhise, users may experience issues with caret rendering.
 
         If using GlyphsApp, ligature carets can be set directly on canvas by accessing the `Glyph -> Set Anchors` menu option or by pressing the `Cmd+U` keyboard shortcut.
+
+        If designing with UFOs, (as of Oct 2020) ligature carets are not yet compiled by ufo2ft, and therefore will not build via FontMake. See googlefonts/ufo2ft/issues/329
     """,
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/1225'
