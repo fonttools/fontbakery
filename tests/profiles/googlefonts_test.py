@@ -3430,3 +3430,22 @@ def test_check_STAT_gf_axisregistry():
     # Note: I know it is AxisValue[3] and names[4] because I inspected the font using ttx.
     assert_results_contain(check(ttFont),
                            FAIL, "bad-coordinate")
+
+
+def test_check_metadata_consistent_axis_enumeration():
+    """Validate VF axes match the ones declared on METADATA.pb."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/consistent_axis_enumeration")
+    # The axis tags of CabinVF,
+    # are properly declared on its METADATA.pb:
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    assert_PASS(check(ttFont))
+
+    md = check["family_metadata"]
+    md.axes[1].tag = "wdth" # this effectively removes the "wght" axis while not adding an extra one
+    assert_results_contain(check(ttFont, {"family_metadata": md}),
+                           FAIL, "missing-axes")
+
+    md.axes[1].tag = "ouch" # and this is an unwanted extra axis
+    assert_results_contain(check(ttFont, {"family_metadata": md}),
+                           FAIL, "extra-axes")
