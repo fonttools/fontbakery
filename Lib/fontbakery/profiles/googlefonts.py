@@ -61,7 +61,8 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/undeclared_fonts',
     'com.google.fonts/check/metadata/category',
     'com.google.fonts/check/metadata/gf-axisregistry_valid_tags',
-    'com.google.fonts/check/metadata/gf-axisregistry_bounds'
+    'com.google.fonts/check/metadata/gf-axisregistry_bounds',
+    'com.google.fonts/check/metadata/consistent_axis_enumeration'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -4845,6 +4846,43 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
                                f" expected to be 'fallbacks[name_entry.toUnicode()]'"
                                f" but this font has '{name_entry.toUnicode()}'='{axis_value.Value}'."))
 
+    if passed:
+        yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/metadata/consistent_axis_enumeration',
+    rationale = """
+        All font variation axes present in the font files must be properly declared on METADATA.pb so that they can be served by the GFonts API.
+    """,
+    conditions = ['is_variable_font'],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3051'
+    }
+)
+def com_google_fonts_check_metadata_consistent_axis_enumeration(family_metadata, ttFont):
+    """ Validate VF axes match the ones declared on METADATA.pb. """
+    from fontbakery.utils import pretty_print_list
+
+    passed = True
+    md_axes = set(axis.tag for axis in family_metadata.axes)
+    fvar_axes = set(axis.axisTag for axis in ttFont['fvar'].axes)
+    missing = sorted(fvar_axes - md_axes)
+    extra = sorted(md_axes - fvar_axes)
+
+    if missing:
+        passed = False
+        yield FAIL,\
+              Message('missing-axes',
+                      f"The font variation axes {pretty_print_list(missing)}"
+                      f" are present in the font's fvar table but are not"
+                      f" declared on the METADATA.pb file.")
+    if extra:
+        passed = False
+        yield FAIL,\
+              Message('extra-axes',
+                      f"The METADATA.pb file lists font variation axes that"
+                      f" are not supported but this family: {pretty_print_list(extra)}")
     if passed:
         yield PASS, "OK"
 
