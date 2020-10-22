@@ -18,8 +18,8 @@ message FamilyProto {
   repeated string aliases = 7;
   repeated string subsets = 8;
   optional string ttf_autohint_args = 9;
-  repeated AxisProto axes = 10;
-  map<string, float> api_default_overrides = 11;
+  repeated AxisSegmentProto axes = 10;
+  map<string, float> registry_default_overrides = 11;
   optional SourceProto source = 12;
 };
 
@@ -33,10 +33,11 @@ message FontProto {
   optional string copyright = 7;
 };
 
-message AxisProto {
+message AxisSegmentProto {
   optional string tag = 1;
   optional float min_value = 2;
-  optional float default_value = 3;
+  reserved 3;
+  reserved "default_value";
   optional float max_value = 4;
 };
 
