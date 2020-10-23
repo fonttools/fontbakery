@@ -62,7 +62,8 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/category',
     'com.google.fonts/check/metadata/gf-axisregistry_valid_tags',
     'com.google.fonts/check/metadata/gf-axisregistry_bounds',
-    'com.google.fonts/check/metadata/consistent_axis_enumeration'
+    'com.google.fonts/check/metadata/consistent_axis_enumeration',
+    'com.google.fonts/check/metadata/escaped_strings'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -4934,6 +4935,34 @@ def com_google_fonts_check_STAT_axis_order(fonts):
                   f"\n"
                   f"\tAnd these are the most common STAT axis orderings:\n"
                   f"\t{report}")
+
+
+@check(
+    id = 'com.google.fonts/check/metadata/escaped_strings',
+    rationale = """
+        In some cases we've seen designer names and other fields with escaped strings in METADATA files.
+        Nowadays the strings can be full unicode strings and do not need escaping.
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/2932'
+    }
+)
+def com_google_fonts_check_metadata_escaped_strings(metadata_file):
+    """Ensure METADATA.pb does not use escaped strings."""
+    passed = True
+    for line in open(metadata_file, "r").readlines():
+        for quote_char in ["'", "\""]:
+            segments = line.split(quote_char)
+            if len(segments) >= 3:
+                a_string = segments[1]
+                if "\\" in a_string:
+                    passed = False
+                    yield FAIL,\
+                          Message('escaped-strings',
+                                  f"Found escaped chars at '{a_string}'."
+                                  f" Please use an unicode string instead.")
+    if passed:
+        yield PASS, "OK"
 
 
 ###############################################################################

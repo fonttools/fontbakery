@@ -138,17 +138,20 @@ def description(descfile):
 
 
 @condition
-def family_metadata(family_directory):
+def metadata_file(family_directory):
+    if family_directory:
+        pb_file = os.path.join(family_directory, "METADATA.pb")
+        if os.path.exists(pb_file):
+            return pb_file
+
+@condition
+def family_metadata(metadata_file):
     from google.protobuf import text_format
     from fontbakery.utils import get_FamilyProto_Message
-
-    if family_directory:
-        try:
-            pb_file = os.path.join(family_directory, "METADATA.pb")
-            if os.path.exists(pb_file):
-                return get_FamilyProto_Message(pb_file)
-        except text_format.ParseError:
-            return None
+    try:
+        return get_FamilyProto_Message(metadata_file)
+    except text_format.ParseError:
+        return None
 
 
 @condition

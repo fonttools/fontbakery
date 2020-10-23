@@ -1619,12 +1619,13 @@ def test_check_metadata_valid_filename_values():
     # FIXME: CheckTester
     from fontbakery.profiles.googlefonts \
         import (com_google_fonts_check_metadata_valid_filename_values as check,
+                metadata_file,
                 family_metadata)
 
     # Our reference Montserrat family is a good 18-styles family:
     for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
         family_directory = os.path.dirname(fontfile)
-        meta = family_metadata(family_directory)
+        meta = family_metadata(metadata_file(family_directory))
 
         # So it must PASS the check:
         assert_PASS(check(fontfile, meta),
@@ -1752,9 +1753,10 @@ def test_check_metadata_copyright_max_length():
 def test_check_metadata_filenames():
     """ METADATA.pb: Font filenames match font.filename entries? """
     from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_filenames as check,
+                                                 metadata_file,
                                                  family_metadata)
     family_dir = portable_path('data/test/montserrat/')
-    family_meta = family_metadata(family_dir)
+    family_meta = family_metadata(metadata_file(family_dir))
 
     # test PASS:
     fonts = montserrat_fonts
@@ -1772,7 +1774,7 @@ def test_check_metadata_filenames():
 
 
     family_dir = portable_path('data/test/cabin/')
-    family_meta = family_metadata(family_dir)
+    family_meta = family_metadata(metadata_file(family_dir))
 
     # From all TTFs in Cabin's directory, the condensed ones are not
     # listed on METADATA.pb, so the check must FAIL, even if we do not
@@ -2219,9 +2221,10 @@ def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
                 api_gfonts_ttFont,
                 style,
                 remote_styles,
+                metadata_file,
                 family_metadata)
 
-    family_meta = family_metadata(family_directory(cabin_fonts[0]))
+    family_meta = family_metadata(metadata_file(family_directory(cabin_fonts[0])))
     remote = remote_styles(family_meta.name)
     if remote:
         for font in cabin_fonts:
@@ -3167,10 +3170,11 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
                 api_gfonts_ttFont,
                 style,
                 remote_styles,
+                metadata_file,
                 family_metadata)
     from copy import copy
 
-    family_meta = family_metadata(family_directory(cabin_fonts[0]))
+    family_meta = family_metadata(metadata_file(family_directory(cabin_fonts[0])))
     remote = remote_styles(family_meta.name)
     if remote:
         ttFonts = [TTFont(f) for f in cabin_fonts]
@@ -3469,3 +3473,16 @@ def test_check_STAT_axis_order():
     fonts = [TEST_FILE("merriweather/METADATA.pb")]
     assert_results_contain(check(fonts),
                            ERROR, "bad-font")
+
+
+def test_check_metadata_escaped_strings():
+    """Ensure METADATA.pb does not use escaped strings."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/escaped_strings")
+
+    good = TEST_FILE("issue_2932/good/SomeFont-Regular.ttf")
+    assert_PASS(check(good))
+
+    bad = TEST_FILE("issue_2932/bad/SomeFont-Regular.ttf")
+    assert_results_contain(check(bad),
+                           FAIL, "escaped-strings")
