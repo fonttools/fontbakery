@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Now Travis is configured to use pinned versions of dependencies as described on requirements.txt (issue #3058)
 
 ### New checks
+  - **[com.google.fonts/check/STAT/axis_order]:** INFO-level check to gather stats on usage of the STAT table AxisOrdering field. May be updated in the future to enforce some ordering scheme yet to be defined. (issue #3049)
   - **[com.google.fonts/check/metadata/consistent_axis_enumeration]:** Validate VF axes on the 'fvar' table match the ones declared on METADATA.pb (issue #3051)
   - **[com.google.fonts/check/metadata/gf-axisregistry_valid_tags]:** VF axis tags are registered on GF Axis Registry (issue #3010)
   - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** VF axes have ranges compliant to the bounds specified on the GF Axis Registry (issue #3022)

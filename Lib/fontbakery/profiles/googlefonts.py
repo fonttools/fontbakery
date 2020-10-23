@@ -151,7 +151,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/varfont_duplicate_instance_names',
     'com.google.fonts/check/varfont/consistent_axes',
     'com.google.fonts/check/varfont/unsupported_axes',
-    'com.google.fonts/check/STAT/gf-axisregistry'
+    'com.google.fonts/check/STAT/gf-axisregistry',
+    'com.google.fonts/check/STAT/axis_order'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -4885,6 +4886,54 @@ def com_google_fonts_check_metadata_consistent_axis_enumeration(family_metadata,
                       f" are not supported but this family: {pretty_print_list(extra)}")
     if passed:
         yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/STAT/axis_order',
+    rationale = """
+        This is (for now) a merely informative check to detect what's the axis ordering declared on the STAT table of fonts in the Google Fonts collection.
+
+        We may later update this to enforce some unified axis ordering scheme, yet to be determined.
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3049'
+    }
+)
+def com_google_fonts_check_STAT_axis_order(fonts):
+    """ Check axis ordering on the STAT table. """
+    from collections import Counter
+    from fontTools.ttLib import TTFont
+
+    no_stat = 0
+    summary = []
+    for font in fonts:
+        try:
+            ttFont = TTFont(font)
+            if 'STAT' in ttFont:
+                order = {}
+                for axis in ttFont['STAT'].table.DesignAxisRecord.Axis:
+                    order[axis.AxisTag] = axis.AxisOrdering
+
+                summary.append('-'.join(sorted(order.keys(), key=order.get)))
+            else:
+                no_stat += 1
+                yield SKIP,\
+                      Message('missing-STAT',
+                              f"This font does not have a STAT table: {font}")
+        except:
+            yield INFO,\
+                  Message('bad-font',
+                          f"Something wrong with {font}")
+
+    report = "\n\t".join(map(str, Counter(summary).most_common()))
+    yield INFO,\
+          Message('summary',
+                  f"From a total of {len(fonts)} font files,"
+                  f" {no_stat} of them ({100.0*no_stat/len(fonts):.2f}%)"
+                  f" lack a STAT table.\n"
+                  f"\n"
+                  f"\tAnd these are the most common STAT axis orderings:\n"
+                  f"\t{report}")
 
 
 ###############################################################################

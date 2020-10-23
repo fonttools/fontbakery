@@ -3449,3 +3449,23 @@ def test_check_metadata_consistent_axis_enumeration():
     md.axes[1].tag = "ouch" # and this is an unwanted extra axis
     assert_results_contain(check(ttFont, {"family_metadata": md}),
                            FAIL, "extra-axes")
+
+
+def test_check_STAT_axis_order():
+    """Check axis ordering on the STAT table."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/STAT/axis_order")
+
+    fonts = [TEST_FILE("cabinvf/Cabin[wdth,wght].ttf")]
+    assert_results_contain(check(fonts),
+                           INFO, "summary")
+
+    fonts = [TEST_FILE("merriweather/Merriweather-Regular.ttf")]
+    assert_results_contain(check(fonts),
+                           SKIP, "missing-STAT")
+
+    # A real-world case here would be a corrupted TTF file.
+    # This clearly is not a TTF, but is good enough for testing:
+    fonts = [TEST_FILE("merriweather/METADATA.pb")]
+    assert_results_contain(check(fonts),
+                           ERROR, "bad-font")
