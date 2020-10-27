@@ -30,10 +30,10 @@ def has_kerning_info(ttFont):
     id = 'com.google.fonts/check/gpos_kerning_info'
 )
 def com_google_fonts_check_gpos_kerning_info(ttFont):
-    """Does GPOS table have kerning information?"""
-    if not has_kerning_info(ttFont):
-        yield WARN,\
-              Message("lacks-kern-info",
-                      "GPOS table lacks kerning information.")
+    """Does GPOS table have kerning information?
+    This check skips monospaced fonts as defined by post.isFixedPitch value
+    """
+    if ttFont["post"].isFixedPitch == 0 and not has_kerning_info(ttFont):
+        yield WARN, Message("lacks-kern-info", "GPOS table lacks kerning information.")
     else:
-        yield PASS, "GPOS table has got kerning information."
+        yield PASS, "GPOS table check for kerning information passed."
