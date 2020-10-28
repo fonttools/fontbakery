@@ -56,13 +56,13 @@ def test_check_gpos_kerning_info():
 
 
 def test_check_gpos_kerning_info_monospaced_font():
-    """ Does GPOS table have kerning information in
-    a monospaced font? 
+    """Does GPOS table have kerning information in
+    a monospaced font?
     """
     check = CheckTester(opentype_profile, "com.google.fonts/check/gpos_kerning_info")
     # Our reference Overpass Mono lacks kerning info
     # but it is a monospaced font and this is expected
-    ttFont = TTFont(TEST_FILE("overpassmono/OverpassMono-Regular.ttf"))
+    ttFont = TTFont(TEST_FILE("overpassmono/OverpassMono-Regular-post-edit.subset.ttf"))
 
     # So it must PASS the check:
     assert_PASS(
