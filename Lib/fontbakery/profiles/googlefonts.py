@@ -4845,7 +4845,7 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
                 yield FAIL, \
                       Message("bad-coordinate",
                               (f"Axis Value for '{axis.AxisTag}':'{name_entry.toUnicode()}' is"
-                               f" expected to be 'fallbacks[name_entry.toUnicode()]'"
+                               f" expected to be '{fallbacks[name_entry.toUnicode()]}'"
                                f" but this font has '{name_entry.toUnicode()}'='{axis_value.Value}'."))
 
     if passed:
