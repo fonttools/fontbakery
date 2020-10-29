@@ -4832,6 +4832,10 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
             # on the GF Axis Registry for this specific variation axis tag.
             name = normalize_name(name_entry.toUnicode())
             expected_names = [normalize_name(n) for n in fallbacks.keys()]
+            if hasattr(axis_value, 'Value'): # Format 1 & 3
+                is_value = axis_value.Value
+            elif hasattr(axis_value, 'NominalValue'): # Format 2
+                is_value = axis_value.NominalValue
             if name not in expected_names:
                 expected_names = ", ".join(expected_names)
                 passed = False
@@ -4840,7 +4844,7 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
                               f"On the font variation axis '{axis.AxisTag}', the name '{name_entry.toUnicode()}'"
                               f" is not among the expected ones ({expected_names}) according"
                               f" to the Google Fonts Axis Registry.")
-            elif axis_value.Value != fallbacks[name_entry.toUnicode()]:
+            elif is_value != fallbacks[name_entry.toUnicode()]:
                 passed = False
                 yield FAIL, \
                       Message("bad-coordinate",
