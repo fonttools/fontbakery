@@ -127,3 +127,36 @@ def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
     else:
         yield PASS, ("Glyphs do not contain duplicate components which have"
                      " the same x,y coordinates.")
+
+@check(
+    id = 'com.google.fonts/check/glyf_nested_components',
+    rationale = """
+        There have been bugs rendering variable fonts with nested components.
+        Additionally, some static fonts with nested components have been
+        reported to have rendering and printing issues. (See
+        googlefonts/fontbakery#2961 and arrowtype/recursive#412.)
+    """,
+    conditions = ['is_ttf']
+)
+def com_google_fonts_check_glyf_nested_components(ttFont):
+    """Check glyphs do not have components which are themselves components."""
+    from fontbakery.utils import pretty_print_list
+    failed = []
+    for glyph_name in ttFont['glyf'].keys():
+        glyph = ttFont['glyf'][glyph_name]
+        if not glyph.isComposite():
+            continue
+        for comp in glyph.components:
+            if ttFont['glyf'][comp.glyphName].isComposite():
+                failed.append(glyph_name)
+    if failed:
+        formatted_list = "\t* " + pretty_print_list(failed,
+                                                    shorten=10,
+                                                    sep="\n\t* ")
+        yield FAIL, \
+              Message('found-nested-components',
+                      f"The following glyphs have components which"
+                      f" themselves are component glyphs:\n"
+                      f"{formatted_list}")
+    else:
+        yield PASS, ("Glyphs do not contain nested components.")

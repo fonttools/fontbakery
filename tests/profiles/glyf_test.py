@@ -70,3 +70,15 @@ def test_check_glyf_non_transformed_duplicate_components():
     assert_results_contain(check(ttFont),
                            FAIL, 'found-duplicates')
 
+
+def test_check_glyf_nested_components():
+    """Check glyphs do not have nested components."""
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/glyf_nested_components")
+
+    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+    assert_PASS(check(ttFont))
+
+    ttFont['glyf']['quotedbl'].components[0].glyphName = "second"
+    assert_results_contain(check(ttFont),
+                           FAIL, 'found-duplicates')
