@@ -34,6 +34,8 @@ def com_google_fonts_check_gpos_kerning_info(ttFont):
     This check skips monospaced fonts as defined by post.isFixedPitch value
     """
     if ttFont["post"].isFixedPitch == 0 and not has_kerning_info(ttFont):
-        yield WARN, Message("lacks-kern-info", "GPOS table lacks kerning information.")
+        yield WARN,\
+              Message("lacks-kern-info",
+                      "GPOS table lacks kerning information.")
     else:
         yield PASS, "GPOS table check for kerning information passed."
