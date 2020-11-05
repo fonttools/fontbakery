@@ -16,6 +16,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/STAT/gf-axisregistry]:** Check that particle names and values on STAT table match the fallback names in each axis registry at the Google Fonts Axis Registry (issue #3022)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/family/win_ascent_and_descent]**: Skip if font is cjk
+  - **[com.google.fonts/check/os2_metrics_match_hhea]**: Skip if font is cjk
   - **[com.google.fonts/check/monospace]**: Ignore zero advance-width glyphs (issue #3053)
 
 
