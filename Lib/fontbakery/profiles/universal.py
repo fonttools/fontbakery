@@ -71,7 +71,7 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
 
 @check(
     id = 'com.google.fonts/check/family/win_ascent_and_descent',
-    conditions = ['vmetrics'],
+    conditions = ['vmetrics', 'not is_cjk_font'],
     rationale = """
         A font's winAscent and winDescent values should be greater than the head table's yMax, abs(yMin) values. If they are less than these values, clipping can occur on Windows platforms (https://github.com/RedHatBrand/Overpass/issues/33).
 
@@ -130,6 +130,7 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
 
 @check(
     id = 'com.google.fonts/check/os2_metrics_match_hhea',
+    conditions = ['not is_cjk_font'],
     rationale = """
         When OS/2 and hhea vertical metrics match, the same linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018, Google Fonts has released many fonts with vertical metrics that don't match in this way. When we fix this issue in these existing families, we will create a visible change in line/paragraph layout for either Windows or macOS users, which will upset some of them.
 
