@@ -130,13 +130,11 @@ def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
 
 @check(
     id = 'com.google.fonts/check/glyf_nested_components',
-    rationale = """
-        There have been bugs rendering variable fonts with nested components.
-        Additionally, some static fonts with nested components have been
-        reported to have rendering and printing issues. (See
-        googlefonts/fontbakery#2961 and arrowtype/recursive#412.)
-    """,
-    conditions = ['is_ttf']
+    rationale = "There have been bugs rendering variable fonts with nested components. Additionally, some static fonts with nested components have been reported to have rendering and printing issues. (See googlefonts/fontbakery#2961 and arrowtype/recursive#412.)",
+    conditions = ['is_ttf'],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/2961'
+    }
 )
 def com_google_fonts_check_glyf_nested_components(ttFont):
     """Check glyphs do not have components which are themselves components."""
