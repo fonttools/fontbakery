@@ -79,6 +79,9 @@ def test_check_glyf_nested_components():
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))
 
+    # We need to create a nested component. "second" has components, so setting
+    # one of "quotedbl"'s components to "second" should do it.
     ttFont['glyf']['quotedbl'].components[0].glyphName = "second"
+
     assert_results_contain(check(ttFont),
                            FAIL, 'found-duplicates')
