@@ -246,6 +246,13 @@ def get_FamilyProto_Message(path):
     from fontbakery.fonts_public_pb2 import FamilyProto
     return get_Protobuf_Message(FamilyProto, path)
 
+def get_DesignerInfoProto_Message(text_data):
+    from fontbakery.designers_pb2 import DesignerInfoProto
+    from google.protobuf import text_format
+    message = DesignerInfoProto()
+    text_format.Merge(text_data, message)
+    return message
+
 def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
     from fontbakery.message import Message
     from fontbakery.checkrunner import (PASS, FAIL)

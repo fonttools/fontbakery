@@ -153,7 +153,6 @@ def family_metadata(metadata_file):
     except text_format.ParseError:
         return None
 
-
 @condition
 def registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""

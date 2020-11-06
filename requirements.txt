@@ -10,4 +10,5 @@ protobuf==3.13.0
 requests==2.24.0
 ttfautohint-py==0.4.3
 ufolint==1.0.1
+unidecode==1.1.1
 -e .
