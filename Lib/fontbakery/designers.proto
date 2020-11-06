@@ -1,0 +1,19 @@
+syntax = "proto2";
+// GF Designer Profile Protos
+
+// A designer listed on the catalog:
+message DesignerInfoProto {
+  // Designer or typefoundry name:
+  optional string designer = 1;
+
+  // URL for more info on this designer:
+  optional string link = 2;
+
+  // Photo or logo:
+  optional AvatarProto avatar = 3;
+}
+
+message AvatarProto {
+  optional string file_name = 1;
+}
+

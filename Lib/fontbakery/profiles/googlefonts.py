@@ -63,7 +63,8 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/gf-axisregistry_valid_tags',
     'com.google.fonts/check/metadata/gf-axisregistry_bounds',
     'com.google.fonts/check/metadata/consistent_axis_enumeration',
-    'com.google.fonts/check/metadata/escaped_strings'
+    'com.google.fonts/check/metadata/escaped_strings',
+    'com.google.fonts/check/metadata/designer_profiles'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -1666,53 +1667,6 @@ def com_google_fonts_check_metadata_listed_on_gfonts(listed_on_gfonts_api):
                       "Family not found via Google Fonts API.")
     else:
         yield PASS, "Font is properly listed via Google Fonts API."
-
-
-# Temporarily disabled as requested at
-# https://github.com/googlefonts/fontbakery/issues/1728
-@disable
-@check(
-    id = 'com.google.fonts/check/metadata/profiles_csv',
-    conditions = ['family_metadata']
-)
-def com_google_fonts_check_metadata_profiles_csv(family_metadata):
-    """METADATA.pb: Designer exists in Google Fonts profiles.csv?"""
-    PROFILES_GIT_URL = ("https://github.com/google/"
-                        "fonts/blob/master/designers/profiles.csv")
-    PROFILES_RAW_URL = ("https://raw.githubusercontent.com/google/"
-                        "fonts/master/designers/profiles.csv")
-    if family_metadata.designer == "":
-        yield FAIL,\
-              Message("empty",
-                      'METADATA.pb field "designer" MUST NOT be empty!')
-    elif family_metadata.designer == "Multiple Designers":
-        yield SKIP,\
-              Message("multiple",
-                      'Found "Multiple Designers" at METADATA.pb, which'
-                      ' is OK, so we won\'t look for it at profiles.csv')
-    else:
-        from urllib import request
-        import csv
-        try:
-            handle = request.urlopen(PROFILES_RAW_URL)
-            designers = []
-            for row in csv.reader(handle):
-                if not row:
-                    continue
-                designers.append(row[0].decode("utf-8"))
-            if family_metadata.designer not in designers:
-                yield WARN,\
-                      Message("not-listed",
-                              f'METADATA.pb:'
-                              f' Designer "{family_metadata.designer}" is'
-                              f' not listed in CSV file at {PROFILES_GIT_URL}')
-            else:
-                yield PASS, ('Found designer "{family_metadata.designer}"'
-                             ' at profiles.csv')
-        except:
-            yield WARN,\
-                  Message("csv-not-fetched",
-                          f'Could not fetch "{PROFILES_RAW_URL}"')
 
 
 @check(
@@ -4968,6 +4922,73 @@ def com_google_fonts_check_metadata_escaped_strings(metadata_file):
     if passed:
         yield PASS, "OK"
 
+
+@check(
+    id = 'com.google.fonts/check/metadata/designer_profiles',
+    conditions = ['family_metadata']
+)
+def com_google_fonts_check_metadata_designer_profiles(family_metadata):
+    """METADATA.pb: Designer is listed with the correct name on
+       the Google Fonts catalog of designers?"""
+    DESIGNER_INFO_RAW_URL = ("https://raw.githubusercontent.com/google/"
+                             "fonts/master/catalog/designers/{}/")
+    from fontbakery.utils import get_DesignerInfoProto_Message
+    from unidecode import unidecode
+    import requests
+
+    passed = True
+    for designer in family_metadata.designer.split(','):
+        normalized_name = unidecode(''.join(designer.strip().lower().split()))
+        url = DESIGNER_INFO_RAW_URL.format(normalized_name) + "info.pb"
+        response = requests.get(url)
+        if response.status_code != requests.codes.OK:
+            passed = False
+            yield WARN, \
+                  Message("profile-not-found",
+                          f"It seems that {designer} is still not listed on"
+                          f" the designers catalog. Please submit a photo and"
+                          f" a link to a webpage where people can learn more"
+                          f" about the work of this designer/typefoundry.")
+            continue
+
+        info = get_DesignerInfoProto_Message(response.content)
+        if info.designer != designer.strip():
+            passed = False
+            yield FAIL, \
+                  Message("mismatch",
+                          f"Designer name at METADATA.pb ({designer})"
+                          f" is not the same as listed on the designers"
+                          f" catalog ({info.designer}) available at {url}")
+
+        if not info.avatar.file_name:
+            passed = False
+            yield FAIL, \
+                  Message("missing-link",
+                          f"Designer {designer} still does not have a webpage link on the catalog. Please provide one.")
+        else:
+            response = requests.get(info.link)
+            if response.status_code != requests.codes.OK:
+                passed = False
+                yield FAIL, \
+                      Message("broken-link",
+                              f"The webpage link provided seems to be broken ({info.link})")
+
+        if not info.avatar.file_name:
+            passed = False
+            yield FAIL, \
+                  Message("missing-avatar",
+                          f"Designer {designer} still does not have an avatar image. Please provide one.")
+        else:
+            avatar_url = DESIGNER_INFO_RAW_URL.format(normalized_name) + info.avatar.file_name
+            response = requests.get(avatar_url)
+            if response.status_code != requests.codes.OK:
+                passed = False
+                yield FAIL, \
+                      Message("bad-avatar",
+                              f"The avatar filename provided seems to be incorrect ({avatar_url})")
+
+    if passed:
+        yield PASS, "OK"
 
 ###############################################################################
 

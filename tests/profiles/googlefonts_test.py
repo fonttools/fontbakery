@@ -3486,3 +3486,37 @@ def test_check_metadata_escaped_strings():
     bad = TEST_FILE("issue_2932/bad/SomeFont-Regular.ttf")
     assert_results_contain(check(bad),
                            FAIL, "escaped-strings")
+
+def test_check_metadata_designer_profiles():
+    """"""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/designer_profiles")
+
+    #TODO: Montserrat's designer, Julieta Ulanovsky, provided a Google Plus page.
+    #      Unfortunately that service is deprecated nowadays, so we need to update
+    #      this link to point to some webpage currently online.
+    #
+    #      font = TEST_FILE("montserrat/Montserrat-Regular.ttf")
+    #      assert_results_contain(check(font),
+    #                             FAIL, "google-plus")
+
+    #TODO: Cabin's designer, Khaled Hosny, used a Google Profiles page,
+    #      which is also deprecated and nowadays is called Google Workspace,
+    #      but seems to at least require logging in to see the page contents,
+    #      so that's not acceptable for serving a public portifolio webpage.
+    #
+    #      font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    #      assert_results_contain(check(font),
+    #                             FAIL, "google-profiles")
+
+    # LibreCaslon's designer, Pablo Impallari, has a good profile ;-)
+    font = TEST_FILE("librecaslontext/LibreCaslonText-Regular.ttf")
+    assert_PASS(check(font))
+
+    # TODO: WARN, "profile-not-found"
+    # TODO: FAIL, "mismatch"
+    # TODO: FAIL, "missing-link"
+    # TODO: FAIL, "broken-link"
+    # TODO: FAIL, "missing-avatar"
+    # TODO: FAIL, "bad-avatar"
+
