@@ -11,15 +11,15 @@ import math
 
 
 ALIGNMENT_MISS_EPSILON = 2  # Two point lee-way on alignment misses
-SHORT_PATH_EPSILON = 0.006  # <0.6% of total path length makes a short segment
-SHORT_PATH_ABSOLUTE_EPSILON = 3  # 3 units is a small path
+SHORT_PATH_EPSILON = 0.006  # <0.6% of total outline length makes a short segment
+SHORT_PATH_ABSOLUTE_EPSILON = 3  # 3 units is a small outline
 COLINEAR_EPSILON = 0.1  # Radians
-JAG_AREA_EPSILON = 0.05  # <5% of total path area makes a jaggy segment
+JAG_AREA_EPSILON = 0.05  # <5% of total outline area makes a jaggy segment
 JAG_ANGLE = 0.25  # Radians
 
 
 @condition
-def paths_dict(ttFont):
+def outlines_dict(ttFont):
     return {g: BezierPath.fromFonttoolsGlyph(ttFont, g) for g in ttFont.getGlyphOrder()}
 
 
@@ -31,8 +31,8 @@ def close_but_not_on(yExpected, yTrue, tolerance):
     return False
 
 
-@check(id="com.google.fonts/check/path_alignment_miss", conditions=["paths_dict"])
-def com_google_fonts_check_path_alignment_miss(ttFont, paths_dict):
+@check(id="com.google.fonts/check/outline_alignment_miss", conditions=["outlines_dict"])
+def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
     """Are there any misaligned on-curve points?"""
     alignments = {
         "baseline": 0,
@@ -42,8 +42,8 @@ def com_google_fonts_check_path_alignment_miss(ttFont, paths_dict):
         "descender": ttFont["OS/2"].sTypoDescender,
     }
     warnings = []
-    for glyphname, paths in paths_dict.items():
-        for p in paths:
+    for glyphname, outlines in outlines_dict.items():
+        for p in outlines:
             for node in p.asNodelist():
                 if node.type == "offcurve":
                     continue
@@ -71,15 +71,15 @@ def com_google_fonts_check_path_alignment_miss(ttFont, paths_dict):
 
 
 @check(
-    id="com.google.fonts/check/path_short_segments",
-    conditions=["paths_dict", "is_not_variable_font"],
+    id="com.google.fonts/check/outline_short_segments",
+    conditions=["outlines_dict", "is_not_variable_font"],
 )
-def com_google_fonts_check_path_short_segments(ttFont, paths_dict):
+def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
     """Are any segments inordinately short?"""
     warnings = []
-    for glyphname, paths in paths_dict.items():
-        for p in paths:
-            path_length = p.length
+    for glyphname, outlines in outlines_dict.items():
+        for p in outlines:
+            outline_length = p.length
             segments = p.asSegments()
             if not segments:
                 continue
@@ -87,7 +87,7 @@ def com_google_fonts_check_path_short_segments(ttFont, paths_dict):
             for seg in p.asSegments():
                 if (
                     seg.length < SHORT_PATH_ABSOLUTE_EPSILON
-                    or seg.length < SHORT_PATH_EPSILON * path_length
+                    or seg.length < SHORT_PATH_EPSILON * outline_length
                 ) and (prev_was_line or len(seg) > 2):
                     warnings.append(f"{glyphname} contains a short segment {seg}")
                 prev_was_line = len(seg) == 2
@@ -103,14 +103,14 @@ def com_google_fonts_check_path_short_segments(ttFont, paths_dict):
 
 
 @check(
-    id="com.google.fonts/check/path_colinear_vectors",
-    conditions=["paths_dict", "is_not_variable_font"],
+    id="com.google.fonts/check/outline_colinear_vectors",
+    conditions=["outlines_dict", "is_not_variable_font"],
 )
-def com_google_fonts_check_path_colinear_vectors(ttFont, paths_dict):
+def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
     """Do any segments have colinear vectors?"""
     warnings = []
-    for glyphname, paths in paths_dict.items():
-        for p in paths:
+    for glyphname, outlines in outlines_dict.items():
+        for p in outlines:
             segments = p.asSegments()
             if not segments:
                 continue
@@ -135,16 +135,16 @@ def com_google_fonts_check_path_colinear_vectors(ttFont, paths_dict):
 
 
 @check(
-    id="com.google.fonts/check/path_jaggy_segments",
-    conditions=["paths_dict", "is_not_variable_font"],
+    id="com.google.fonts/check/outline_jaggy_segments",
+    conditions=["outlines_dict", "is_not_variable_font"],
 )
-def com_google_fonts_check_path_jaggy_segments(ttFont, paths_dict):
-    """Do paths contain any jaggy segments?"""
+def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
+    """Do outlines contain any jaggy segments?"""
     warnings = []
-    for glyphname, paths in paths_dict.items():
-        for p in paths:
+    for glyphname, outlines in outlines_dict.items():
+        for p in outlines:
             segments = p.asSegments()
-            path_area = None
+            outline_area = None
             if not segments:
                 continue
             for i in range(0, len(segments)):
@@ -178,16 +178,16 @@ def com_google_fonts_check_path_jaggy_segments(ttFont, paths_dict):
 
 
 @check(
-    id="com.google.fonts/check/path_semi_vertical",
-    conditions=["paths_dict", "is_not_variable_font"],
+    id="com.google.fonts/check/outline_semi_vertical",
+    conditions=["outlines_dict", "is_not_variable_font"],
 )
-def com_google_fonts_check_path_semi_vertical(ttFont, paths_dict):
-    """Do paths contain any semi-vertical or semi-horizontal lines?"""
+def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
+    """Do outlines contain any semi-vertical or semi-horizontal lines?"""
     warnings = []
-    for glyphname, paths in paths_dict.items():
-        for p in paths:
+    for glyphname, outlines in outlines_dict.items():
+        for p in outlines:
             segments = p.asSegments()
-            path_area = None
+            outline_area = None
             if not segments:
                 continue
             for s in segments:
@@ -216,11 +216,11 @@ PATH_PROFILE_IMPORTS = (
 profile_imports = (PATH_PROFILE_IMPORTS,)
 profile = profile_factory(default_section=Section("Path Correctness Checks"))
 PATH_PROFILE_CHECKS = [
-    "com.google.fonts/check/path_alignment_miss",
-    "com.google.fonts/check/path_short_segments",
-    "com.google.fonts/check/path_colinear_vectors",
-    "com.google.fonts/check/path_jaggy_segments",
-    "com.google.fonts/check/path_semi_vertical",
+    "com.google.fonts/check/outline_alignment_miss",
+    "com.google.fonts/check/outline_short_segments",
+    "com.google.fonts/check/outline_colinear_vectors",
+    "com.google.fonts/check/outline_jaggy_segments",
+    "com.google.fonts/check/outline_semi_vertical",
 ]
 
 profile.auto_register(globals())
