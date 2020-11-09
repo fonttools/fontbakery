@@ -13,7 +13,7 @@ import math
 ALIGNMENT_MISS_EPSILON = 2  # Two point lee-way on alignment misses
 SHORT_PATH_EPSILON = 0.006  # <0.6% of total path length makes a short segment
 SHORT_PATH_ABSOLUTE_EPSILON = 3  # 3 units is a small path
-COLINEAR_EPISON = 0.1  # Radians
+COLINEAR_EPSILON = 0.1  # Radians
 JAG_AREA_EPSILON = 0.05  # <5% of total path area makes a jaggy segment
 JAG_ANGLE = 0.25  # Radians
 
@@ -120,9 +120,9 @@ def com_google_fonts_check_path_colinear_vectors(ttFont, paths_dict):
                 if len(prev) == 2 and len(this) == 2:
                     if (
                         abs(prev.tangentAtTime(0).angle - this.tangentAtTime(0).angle)
-                        < COLINEAR_EPISON
+                        < COLINEAR_EPSILON
                     ):
-                        warnings.append(glyphname)
+                        warnings.append(f"{glyphname}: {prev} -> {this}")
 
     if warnings:
         formatted_list = "\t* " + pretty_print_list(list(set(warnings)), sep="\n\t* ")
