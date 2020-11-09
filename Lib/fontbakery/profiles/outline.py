@@ -125,7 +125,7 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
                         warnings.append(f"{glyphname}: {prev} -> {this}")
 
     if warnings:
-        formatted_list = "\t* " + pretty_print_list(list(set(warnings)), sep="\n\t* ")
+        formatted_list = "\t* " + pretty_print_list(sorted(set(warnings)), sep="\n\t* ")
         yield WARN, Message(
             "found-colinear-vectors",
             f"The following glyphs have colinear vectors:\n" f"{formatted_list}",
