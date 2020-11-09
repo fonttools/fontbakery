@@ -144,7 +144,6 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
     for glyphname, outlines in outlines_dict.items():
         for p in outlines:
             segments = p.asSegments()
-            outline_area = None
             if not segments:
                 continue
             for i in range(0, len(segments)):
@@ -187,7 +186,6 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
     for glyphname, outlines in outlines_dict.items():
         for p in outlines:
             segments = p.asSegments()
-            outline_area = None
             if not segments:
                 continue
             for s in segments:
