@@ -11,7 +11,8 @@ import math
 
 
 ALIGNMENT_MISS_EPSILON = 2  # Two point lee-way on alignment misses
-SHORT_PATH_EPSILON = 0.01  # <1% of total path length makes a short segment
+SHORT_PATH_EPSILON = 0.006  # <0.6% of total path length makes a short segment
+SHORT_PATH_ABSOLUTE_EPSILON = 3  # 3 units is a small path
 COLINEAR_EPISON = 0.1  # Radians
 JAG_AREA_EPSILON = 0.05  # <5% of total path area makes a jaggy segment
 JAG_ANGLE = 0.25  # Radians
@@ -84,9 +85,10 @@ def com_google_fonts_check_path_short_segments(ttFont, paths_dict):
                 continue
             prev_was_line = len(segments[-1]) == 2
             for seg in p.asSegments():
-                if seg.length < SHORT_PATH_EPSILON * path_length and (
-                    prev_was_line or len(seg) > 2
-                ):
+                if (
+                    seg.length < SHORT_PATH_ABSOLUTE_EPSILON
+                    or seg.length < SHORT_PATH_EPSILON * path_length
+                ) and (prev_was_line or len(seg) > 2):
                     warnings.append(f"{glyphname} contains a short segment {seg}")
                 prev_was_line = len(seg) == 2
     if warnings:
