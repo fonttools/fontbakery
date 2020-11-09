@@ -205,6 +205,10 @@ def is_variable_font(ttFont):
     return "fvar" in ttFont.keys()
 
 @condition
+def is_not_variable_font(ttFont):
+    return "fvar" not in ttFont.keys()
+
+@condition
 def VFs(ttFonts):
     """Returns a list of font files which are recognized as variable fonts"""
     return [ttFont for ttFont in ttFonts
