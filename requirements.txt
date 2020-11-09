@@ -11,4 +11,5 @@ requests==2.24.0
 ttfautohint-py==0.4.3
 ufolint==1.0.1
 unidecode==1.1.1
+beziers==0.1.0
 -e .
