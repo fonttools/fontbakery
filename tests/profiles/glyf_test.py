@@ -84,4 +84,4 @@ def test_check_glyf_nested_components():
     ttFont['glyf']['quotedbl'].components[0].glyphName = "second"
 
     assert_results_contain(check(ttFont),
-                           FAIL, 'found-duplicates')
+                           FAIL, 'found-nested-components')
