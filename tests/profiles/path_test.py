@@ -30,7 +30,7 @@ def test_check_path_short_segments():
     assert_results_contain(results,
                            WARN, 'found-short-segments')
     messages = "".join([m[1].message for m in results])
-    assert "* E" in messages
+    assert "D contains a short segment L<<180.0,68.0>--<173.0,71.0>>" in messages
 
 
 def test_check_path_colinear_vectors():
