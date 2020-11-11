@@ -264,7 +264,7 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
             f"{formatted_list}",
         )
     else:
-        yield PASS, ("No jaggy segments found.")
+        yield PASS, ("No semi-horizontal/semi-vertical lines found.")
 
 
 PATH_PROFILE_IMPORTS = (
