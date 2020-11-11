@@ -200,26 +200,21 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
             for i in range(0, len(segments)):
                 prev = segments[i - 1]
                 this = segments[i]
-                magnitude = (prev.start - prev.end).magnitude * (
-                    this.end - this.start
-                ).magnitude
-                if magnitude == 0:
-                    # That's a problem for other reasons, but short-segments
-                    # should catch it
+                in_vector = prev.tangentAtTime(1) * -1
+                out_vector = this.tangentAtTime(0)
+                if not (in_vector.magnitude * out_vector.magnitude):
                     continue
-                angle = ((prev.start - prev.end) @ (this.end - this.start)) / magnitude
+                angle = (in_vector @ out_vector) / (
+                    in_vector.magnitude * out_vector.magnitude
+                )
                 if not (-1 <= angle <= 1):
                     continue
                 jag_angle = math.acos(angle)
-                if abs(jag_angle) > JAG_ANGLE:
+                if abs(jag_angle) > JAG_ANGLE or jag_angle == 0:
                     continue
-                jag_area = (
-                    ((prev.start.x * prev.end.y) - (prev.start.y * prev.end.x))
-                    + ((this.start.x * this.end.y) - (this.start.y * this.end.x))
-                    + ((prev.start.x * this.end.y) - (prev.start.y * this.end.x))
+                warnings.append(
+                    f"{glyphname}: {prev}/{this} = {math.degrees(jag_angle)}"
                 )
-                if jag_area < JAG_AREA_EPSILON * p.area:
-                    warnings.append(f"{glyphname}: {prev}/{this}")
 
     if warnings:
         formatted_list = "\t* " + pretty_print_list(list(set(warnings)), sep="\n\t* ")
