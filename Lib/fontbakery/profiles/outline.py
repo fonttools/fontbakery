@@ -16,6 +16,7 @@ SHORT_PATH_ABSOLUTE_EPSILON = 3  # 3 units is a small outline
 COLINEAR_EPSILON = 0.1  # Radians
 JAG_AREA_EPSILON = 0.05  # <5% of total outline area makes a jaggy segment
 JAG_ANGLE = 0.25  # Radians
+FALSE_POSITIVE_CUTOFF = 100  # More than this and we don't make a report
 
 
 @condition
@@ -31,7 +32,22 @@ def close_but_not_on(yExpected, yTrue, tolerance):
     return False
 
 
-@check(id="com.google.fonts/check/outline_alignment_miss", conditions=["outlines_dict"])
+@check(
+    id="com.google.fonts/check/outline_alignment_miss",
+    rationale=f"""
+    This test heuristically looks for on-curve points which are close to, but do
+    not sit on, significant boundary coordinates. For example, a point which
+    has a Y-coordinate of 1 or -1 might be a misplaced baseline point. As well
+    as the baseline, the test also checks for points near the x-height (but only
+    for lower case Latin letters), cap-height, ascender and descender Y coordinates.
+
+    Not all such misaligned curve points are a mistake, and sometimes the design
+    may call for points in locations near the boundaries. As this test is liable
+    to generate significant numbers of false positives, the test will pass if
+    there are more than {FALSE_POSITIVE_CUTOFF} reported misalignments.
+""",
+    conditions=["outlines_dict"],
+)
 def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
     """Are there any misaligned on-curve points?"""
     alignments = {
@@ -57,6 +73,12 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
                         warnings.append(
                             f"{glyphname}: X={node.x},Y={node.y} (should be at {line} {yExpected}?)"
                         )
+        if len(warnings) > FALSE_POSITIVE_CUTOFF:
+            # Let's not waste time.
+            yield PASS, (
+                "So many Y-coordinates of points were close to boundaries that this was probably by design."
+            )
+            return
 
     if warnings:
         formatted_list = "\t* " + pretty_print_list(warnings, sep="\n\t* ")
@@ -72,6 +94,15 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
 
 @check(
     id="com.google.fonts/check/outline_short_segments",
+    rationale=f"""
+    This test looks for outline segments which seem particularly short (less than
+    {SHORT_PATH_EPSILON}%% of the overall path length).
+
+    This test is not run for variable fonts, as they may legitimately have short
+    segments. As this test is liable to generate significant numbers of false
+    positives, the test will pass if there are more than {FALSE_POSITIVE_CUTOFF}
+    reported short segments.
+""",
     conditions=["outlines_dict", "is_not_variable_font"],
 )
 def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
@@ -85,12 +116,20 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
                 continue
             prev_was_line = len(segments[-1]) == 2
             for seg in p.asSegments():
-                if (
+                if math.isclose(seg.length, 0):  # That's definitely wrong
+                    warnings.append(f"{glyphname} contains a short segment {seg}")
+                elif (
                     seg.length < SHORT_PATH_ABSOLUTE_EPSILON
                     or seg.length < SHORT_PATH_EPSILON * outline_length
                 ) and (prev_was_line or len(seg) > 2):
                     warnings.append(f"{glyphname} contains a short segment {seg}")
                 prev_was_line = len(seg) == 2
+        if len(warnings) > FALSE_POSITIVE_CUTOFF:
+            yield PASS, (
+                "So many short segments were found that this was probably by design."
+            )
+            return
+
     if warnings:
         formatted_list = "\t* " + pretty_print_list(warnings, sep="\n\t* ")
         yield WARN, Message(
@@ -104,6 +143,12 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
 
 @check(
     id="com.google.fonts/check/outline_colinear_vectors",
+    rationale=f"""
+    This test looks for consecutive line segments which have the same angle.
+    This normally happens if an outline point has been added by accident.
+
+    This test is not run for variable fonts, as they may legitimately have
+    colinear vectors.""",
     conditions=["outlines_dict", "is_not_variable_font"],
 )
 def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
@@ -136,6 +181,12 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
 
 @check(
     id="com.google.fonts/check/outline_jaggy_segments",
+    rationale="""
+        This test heuristically detects outline segments which form a particularly
+        small angle, indicative of an outline error. This may cause false positives
+        in cases such as extreme ink traps, so should be regarded as advisory and
+        backed up by manual inspection.
+    """,
     conditions=["outlines_dict", "is_not_variable_font"],
 )
 def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
@@ -149,13 +200,17 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
             for i in range(0, len(segments)):
                 prev = segments[i - 1]
                 this = segments[i]
-                jag_angle = math.acos(
-                    ((prev.start - prev.end) @ (this.end - this.start))
-                    / (
-                        (prev.start - prev.end).magnitude
-                        * (this.end - this.start).magnitude
-                    )
-                )
+                magnitude = (prev.start - prev.end).magnitude * (
+                    this.end - this.start
+                ).magnitude
+                if magnitude == 0:
+                    # That's a problem for other reasons, but short-segments
+                    # should catch it
+                    continue
+                angle = ((prev.start - prev.end) @ (this.end - this.start)) / magnitude
+                if not (-1 <= angle <= 1):
+                    continue
+                jag_angle = math.acos(angle)
                 if abs(jag_angle) > JAG_ANGLE:
                     continue
                 jag_area = (
@@ -178,6 +233,11 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
 
 @check(
     id="com.google.fonts/check/outline_semi_vertical",
+    rationale="""
+        This test detects line segments which are nearly, but not quite,
+        exactly horizontal or vertical. Sometimes such lines are created by
+        design, but often they are indicative of a design error.
+    """,
     conditions=["outlines_dict", "is_not_variable_font"],
 )
 def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
