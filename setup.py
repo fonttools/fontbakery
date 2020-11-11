@@ -73,7 +73,7 @@ setup(
         'ttfautohint-py',
         'ufolint',
         'unidecode',
-        'beziers>=0.1.0'
+        'beziers'
     ],
     extras_require={
         'docs': [
