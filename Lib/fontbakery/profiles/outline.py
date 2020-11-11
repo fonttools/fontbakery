@@ -168,6 +168,11 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
                         < COLINEAR_EPSILON
                     ):
                         warnings.append(f"{glyphname}: {prev} -> {this}")
+        if len(warnings) > FALSE_POSITIVE_CUTOFF:
+            yield PASS, (
+                "So many colinear vectors were found that this was probably by design."
+            )
+            return
 
     if warnings:
         formatted_list = "\t* " + pretty_print_list(sorted(set(warnings)), sep="\n\t* ")
