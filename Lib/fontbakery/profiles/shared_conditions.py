@@ -379,3 +379,13 @@ def is_indic_font(ttFont):
     #otherwise:
     return False
 
+
+@condition
+def is_italic(ttFont):
+    return ttFont["OS/2"].fsSelection & 0x1 or \
+      ("post" in ttFont and ttFont["post"].italicAngle) or \
+      ttFont["head"].macStyle & 0x2
+
+@condition
+def is_not_italic(ttFont):
+    return not is_italic(ttFont)

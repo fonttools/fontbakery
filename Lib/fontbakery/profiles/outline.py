@@ -232,8 +232,11 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
         This test detects line segments which are nearly, but not quite,
         exactly horizontal or vertical. Sometimes such lines are created by
         design, but often they are indicative of a design error.
+
+        This test is disabled for italic styles, which often contain
+        nearly-upright lines.
     """,
-    conditions=["outlines_dict", "is_not_variable_font"],
+    conditions=["outlines_dict", "is_not_variable_font", "is_not_italic"],
 )
 def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
     """Do outlines contain any semi-vertical or semi-horizontal lines?"""
