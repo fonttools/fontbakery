@@ -145,7 +145,7 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
 
 @check(
     id="com.google.fonts/check/outline_colinear_vectors",
-    rationale=f"""
+    rationale="""
     This test looks for consecutive line segments which have the same angle.
     This normally happens if an outline point has been added by accident.
 
