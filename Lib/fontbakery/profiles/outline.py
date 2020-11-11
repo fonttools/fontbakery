@@ -35,16 +35,18 @@ def close_but_not_on(yExpected, yTrue, tolerance):
 @check(
     id="com.google.fonts/check/outline_alignment_miss",
     rationale=f"""
-    This test heuristically looks for on-curve points which are close to, but do
-    not sit on, significant boundary coordinates. For example, a point which
-    has a Y-coordinate of 1 or -1 might be a misplaced baseline point. As well
-    as the baseline, the test also checks for points near the x-height (but only
-    for lower case Latin letters), cap-height, ascender and descender Y coordinates.
+        This test heuristically looks for on-curve points which are close to,
+        but do not sit on, significant boundary coordinates. For example, a
+        point which has a Y-coordinate of 1 or -1 might be a misplaced
+        baseline point. As well as the baseline, the test also checks for
+        points near the x-height (but only for lower case Latin letters),
+        cap-height, ascender and descender Y coordinates.
 
-    Not all such misaligned curve points are a mistake, and sometimes the design
-    may call for points in locations near the boundaries. As this test is liable
-    to generate significant numbers of false positives, the test will pass if
-    there are more than {FALSE_POSITIVE_CUTOFF} reported misalignments.
+        Not all such misaligned curve points are a mistake, and sometimes the
+        design may call for points in locations near the boundaries. As this
+        test is liable to generate significant numbers of false positives, the
+        test will pass if there are more than {FALSE_POSITIVE_CUTOFF} reported
+        misalignments.
 """,
     conditions=["outlines_dict"],
 )
