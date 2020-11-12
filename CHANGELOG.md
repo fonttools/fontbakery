@@ -15,6 +15,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** VF axes have ranges compliant to the bounds specified on the GF Axis Registry (issue #3022)
   - **[com.google.fonts/check/STAT/gf-axisregistry]:** Check that particle names and values on STAT table match the fallback names in each axis registry at the Google Fonts Axis Registry (issue #3022)
   - **[com.google.fonts/check/glyf_nested_components]:** Check that components do not reference glyphs which are themselves compontents (issue #2961)
+  - **[com.google.fonts/check/outline_alignment_miss]:** Check for outline points near to, but not on, significant Y-axis boundaries.
+  - **[com.google.fonts/check/outline_short_segments]:** Check for outline segments which are suspiciously short.
+  - **[com.google.fonts/check/outline_colinear_vectors]:** Check for colinear segments in outlines.
+  - **[com.google.fonts/check/outline_jaggy_segments]:** Check for segments with a particularly small angle. (issue #3064)
+  - **[com.google.fonts/check/outline_semi_vertical]:** Check for semi-vertical and semi-horizontal lines.
 
 ### Changes to existing checks
   - **[com.google.fonts/check/family/win_ascent_and_descent]**: Skip if font is cjk
