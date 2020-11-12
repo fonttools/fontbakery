@@ -5,8 +5,10 @@ from fontbakery.callable import condition, check, disable
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
+from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 
 profile_imports = ('fontbakery.profiles.opentype',
+                   'fontbakery.profiles.outline',
                    '.shared_conditions')
 profile = profile_factory(default_section=Section("Universal"))
 
@@ -23,6 +25,7 @@ SUPERFAMILY_CHECKS = [
 
 UNIVERSAL_PROFILE_CHECKS = \
     OPENTYPE_PROFILE_CHECKS + \
+    OUTLINE_PROFILE_CHECKS + \
     THIRDPARTY_CHECKS + \
     SUPERFAMILY_CHECKS + [
         'com.google.fonts/check/name/trailing_spaces',
