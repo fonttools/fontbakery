@@ -4936,9 +4936,25 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
     from unidecode import unidecode
     import requests
 
+    def normalize(name):
+        """ Restrict the designer name to lowercase a-z """
+        normalized_name = ""
+        for c in unidecode(name).lower():
+            if c >= 'a' and c <= 'z':
+                normalized_name += c
+        return normalized_name
+
     passed = True
     for designer in family_metadata.designer.split(','):
-        normalized_name = unidecode(''.join(designer.strip().lower().split()))
+        designer = designer.strip()
+        normalized_name = normalize(designer)
+        if normalized_name == "multipledesigners":
+            yield FAIL,\
+                  Message("multiple-designers",
+                          f"Font family {family_metadata.name} does not explicitely"
+                          f" mention the names of its designers on its METADATA.pb file.")
+            continue
+
         url = DESIGNER_INFO_RAW_URL.format(normalized_name) + "info.pb"
         response = requests.get(url)
         if response.status_code != requests.codes.OK:
@@ -4960,11 +4976,21 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
                           f" is not the same as listed on the designers"
                           f" catalog ({info.designer}) available at {url}")
 
-        if not info.avatar.file_name:
+        if not info.link:
             passed = False
             yield FAIL, \
                   Message("missing-link",
                           f"Designer {designer} still does not have a webpage link on the catalog. Please provide one.")
+        elif 'plus.google.com' in info.link:
+            passed = False
+            yield FAIL, \
+                  Message("google-plus",
+                          f"Designer {designer} listed a Google Plus link on the catalog, but that service is not available anymore. Please update the webpage link.")
+        elif 'profiles.google.com' in info.link:
+            passed = False
+            yield FAIL, \
+                  Message("google-profiles",
+                          f"Designer {designer} listed a Google Profiles link on the catalog, but that service is not available anymore. Please update the webpage link.")
         else:
             response = requests.get(info.link)
             if response.status_code != requests.codes.OK:
@@ -4984,7 +5010,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
             if response.status_code != requests.codes.OK:
                 passed = False
                 yield FAIL, \
-                      Message("bad-avatar",
+                      Message("bad-avatar-filename",
                               f"The avatar filename provided seems to be incorrect ({avatar_url})")
 
     if passed:

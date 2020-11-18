@@ -148,10 +148,11 @@ def metadata_file(family_directory):
 def family_metadata(metadata_file):
     from google.protobuf import text_format
     from fontbakery.utils import get_FamilyProto_Message
-    try:
-        return get_FamilyProto_Message(metadata_file)
-    except text_format.ParseError:
-        return None
+    if metadata_file:
+      try:
+          return get_FamilyProto_Message(metadata_file)
+      except text_format.ParseError:
+          return None
 
 @condition
 def registered_vendor_ids():
