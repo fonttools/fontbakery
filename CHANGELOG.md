@@ -2,10 +2,14 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.32 (2020-Nov-12)
+## 0.7.32 (2020-Dec-??)
+  - ...
+
+
+## 0.7.32 (2020-Nov-19)
 ### Note-worthy code changes
+  - We now use GitHub Actions to run code-tests and linting (still under tox, so the same can be easily executed locally).
   - We now keep a local copy of the Google Fonts Axis Registry textproto files so that the checks do not need to keep always fetch them online at runtime. These files should not change too often, but we should be careful to check for updates on our FontBakery releases. (issue #3022)
-  - Now Travis is configured to use pinned versions of dependencies as described on requirements.txt (issue #3058)
 
 ### New checks
   - **[com.google.fonts/check/metadata/escaped_strings]:** Ensure fields in METADATA.pb do not use escaped strings (issue #2932)
@@ -20,6 +24,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/outline_colinear_vectors]:** Check for colinear segments in outlines. (PR #3088)
   - **[com.google.fonts/check/outline_jaggy_segments]:** Check for segments with a particularly small angle. (issue #3064)
   - **[com.google.fonts/check/outline_semi_vertical]:** Check for semi-vertical and semi-horizontal lines. (PR #3088)
+  - **[com.google.fonts/check/metadata/designer_profiles]:** Ensure that the entries in the Designers Catalog are good (PR #3093)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/family/win_ascent_and_descent]**: Skip if font is cjk
