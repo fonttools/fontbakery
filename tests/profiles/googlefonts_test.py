@@ -3501,18 +3501,30 @@ def test_check_metadata_designer_profiles():
     assert_results_contain(check(font),
                            FAIL, "google-plus")
 
-    # Cabin's designer, Khaled Hosny, used a Google Profiles page,
+    # TODO:
+    # Designer foo used a Google Profiles page,
     # which is also deprecated and nowadays is called Google Workspace,
     # but seems to at least require logging in to see the page contents,
     # so that's not acceptable for serving a public portifolio webpage.
-    #
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    assert_results_contain(check(font),
-                           FAIL, "google-profiles")
+    # font = TEST_FILE("?/?-Regular.ttf")
+    # assert_results_contain(check(font),
+    #                        FAIL, "google-profiles")
 
-    # TODO: PASS
-    # TODO: WARN, "profile-not-found"
-    # TODO: FAIL, "multiple-designers"
+    # Delve Withrington is still not listed on the designers catalog.
+    font = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
+    assert_results_contain(check(font),
+                           WARN, "profile-not-found")
+
+    # Cousine lists designers: "Multiple Designers"
+    font = TEST_FILE("cousine/Cousine-Regular.ttf")
+    assert_results_contain(check(font),
+                           FAIL, "multiple-designers")
+
+    # This reference Cabin font family lists "Impallary Type" in its METADATA.pb file.
+    # And this foundry has a good profile on the catalog.
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(font))
+
     # TODO: FAIL, "mismatch"
     # TODO: FAIL, "missing-link"
     # TODO: FAIL, "broken-link"
