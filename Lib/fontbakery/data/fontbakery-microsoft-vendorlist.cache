@@ -48,6 +48,7 @@
 
 
 
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -70,11 +71,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/3d84605baa96362fe6aad348515bdaf6dc98c7b6/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/1cca3f313bca05ba0e585934fa7f13d7fc490d2f/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="09/16/2020" />
+<meta name="ms.date" content="11/16/2020" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -84,20 +85,20 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-09-23 10:26 PM" />
+<meta name="updated_at" content="2020-11-16 10:11 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3248" />
+<meta name="word_count" content="3367" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/b322764f.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/ed5848c8.site-ltr.css ">
 
-	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/2e5ce4ab.conceptual.css ">
+	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/55917fe3.conceptual.css ">
 
 
 	<script>
@@ -135,17 +136,15 @@
 	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
-	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/49757a8e.index-polyfills.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b45749a1.index-docs.js"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/298d06f8.index-polyfills.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b5e14169.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
 <div class="header-holder has-default-focus">
 	<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
-	
-	<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden">
-	</div>
-
+	<div hidden id="cookie-consent-holder"></div>
+	<!-- liquid-tag banners global -->
 	<div id="headerAreaHolder" data-bi-name="header">
 <header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
 	<div class="nav-bar">
@@ -156,8 +155,7 @@
 			</a>
 		</div>
 	</div>
-	<div class="nav-bar has-border-top is-hidden-mobile">
-	</div>
+	<div class="nav-bar has-border-top is-hidden-mobile"></div>
 </header>	</div>
 
 				<div class="content-header uhf-container has-padding has-default-focus has-border-bottom-none" data-bi-name="content-header">
@@ -266,7 +264,9 @@
 
 
 
-	<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus"></div>
+	<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+		<!-- liquid-tag banners sectional -->
+	</div>
 	</div>
 
 	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
@@ -291,9 +291,9 @@
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li>
-								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-09-16T00:00:00.000Z" data-article-date-source="ms.date">09/16/2020</time>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-11-16T00:00:00.000Z" data-article-date-source="ms.date">11/16/2020</time>
 							</li>
-								<li class="readingTime">16 minutes to read</li>
+									<li class="readingTime">16 minutes to read</li>
 								<li class="contributors-holder">
 									<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
 												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/alib-ms.png?size=32" role="presentation"/></li>
@@ -349,6 +349,10 @@
 <tr>
 <td>1BOU</td>
 <td><a href="http://www.boutrosfonts.com" data-linktype="external">Boutros International</a></td>
+</tr>
+<tr>
+<td>1FAN</td>
+<td><a href="https://www.hoochalaffa.com/one-fan-foundry/" data-linktype="external">One Fan Foundry</a></td>
 </tr>
 <tr>
 <td>1KTF</td>
@@ -410,6 +414,10 @@
 <td><a href="http://www.signfonts.com" data-linktype="external">Art&Sign Studio</a></td>
 </tr>
 <tr>
+<td>A70</td>
+<td><a href="https://autumnseventy.com/" data-linktype="external">AutumnSeventy</a></td>
+</tr>
+<tr>
 <td>A2</td>
 <td><a href="http://www.a2-type.co.uk" data-linktype="external">A2-Type</a></td>
 </tr>
@@ -458,8 +466,12 @@
 <td><a href="http://www.babelstone.co.uk/Fonts/" data-linktype="external">Andrew Christopher West (BabelStone)</a></td>
 </tr>
 <tr>
+<td>Ad56</td>
+<td><a href="https://advaita56.weebly.com/" data-linktype="external">Devotees of Sri Sri Ravi Shankar Ashram</a></td>
+</tr>
+<tr>
 <td>Adam</td>
-<td><a href="http://www.adamjagosz.com" data-linktype="external">Adam Jagosz</a></td>
+<td><a href="https://www.adamjagosz.com/" data-linktype="external">Adam Jagosz</a></td>
 </tr>
 <tr>
 <td>ADBE</td>
@@ -506,6 +518,10 @@
 <td><a href="http://www.type.akofa.com" data-linktype="external">AKOFAType</a></td>
 </tr>
 <tr>
+<td>AKRU</td>
+<td><a href="http://foundry.akuru.space/" data-linktype="external">Akuru Foundry</a></td>
+</tr>
+<tr>
 <td>ALEF</td>
 <td><a href="http://www.aleftype.com/" data-linktype="external">Alef Type</a></td>
 </tr>
@@ -548,6 +564,10 @@
 <tr>
 <td>amin</td>
 <td><a href="http://fontamin.com/" data-linktype="external">fontamin</a></td>
+</tr>
+<tr>
+<td>AMUN</td>
+<td><a href="https://alannamunro.com/" data-linktype="external">Alanna Munro Type</a></td>
 </tr>
 <tr>
 <td>AMUT</td>
@@ -801,6 +821,10 @@
 <td><a href="http://www.black-foundry.com" data-linktype="external">Black Foundry</a></td>
 </tr>
 <tr>
+<td>BLF</td>
+<td>Bangla Lipikar Font Foundry</td>
+</tr>
+<tr>
 <td>BLFF</td>
 <td>Bongolipi Font Foundry</td>
 </tr>
@@ -1028,6 +1052,10 @@
 <td><a href="http://www.culmus.sourceforge.net" data-linktype="external">Culmus Project</a></td>
 </tr>
 <tr>
+<td>CLP </td>
+<td><a href="https://gutenberg.osdn.jp/" data-linktype="external">Gutenberg Labo</a></td>
+</tr>
+<tr>
 <td>CLT</td>
 <td><a href="http://www.collletttivo.it/" data-linktype="external">Collletttivo</a></td>
 </tr>
@@ -1064,8 +1092,16 @@
 <td>corduroy</td>
 </tr>
 <tr>
+<td>corm</td>
+<td><a href="https://github.com/cormullion/juliamono/" data-linktype="external">Cormullion Foundry</a></td>
+</tr>
+<tr>
 <td>COTF</td>
 <td><a href="https://www.cotypefoundry.com/" data-linktype="external">CoType Foundry</a></td>
+</tr>
+<tr>
+<td>COTY</td>
+<td><a href="http://www.cocijotype.com/" data-linktype="external">CocijoType</a></td>
 </tr>
 <tr>
 <td>CP</td>
@@ -1334,6 +1370,10 @@
 <td><a href="http://www.efilm.net.ru" data-linktype="external">eFilm World</a></td>
 </tr>
 <tr>
+<td>EINW</td>
+<td><a href="https://deinwaller.com/" data-linktype="external">David Einwaller</a></td>
+</tr>
+<tr>
 <td>EKIO</td>
 <td><a href="http://www.ekioh.com" data-linktype="external">Ekioh</a></td>
 </tr>
@@ -1501,6 +1541,10 @@
 <td><a href="https://fonts.floriankarsten.com/" data-linktype="external">Florian Karsten Typefaces</a></td>
 </tr>
 <tr>
+<td>FKAI</td>
+<td><a href="https://font-kai.jp/" data-linktype="external">Font-Kai</a></td>
+</tr>
+<tr>
 <td>FM</td>
 <td><a href="https://fontmo.com/" data-linktype="external">FontMo</a></td>
 </tr>
@@ -1541,6 +1585,10 @@
 <td><a href="http://www.fontsource.com/" data-linktype="external">Font Source</a></td>
 </tr>
 <tr>
+<td>FONZ</td>
+<td><a href="http://zone108.main.jp" data-linktype="external">Font Zone 108</a></td>
+</tr>
+<tr>
 <td>FORM</td>
 <td><a href="http://www.formationtype.com" data-linktype="external">Formation Type Foundry</a></td>
 </tr>
@@ -1563,6 +1611,10 @@
 <tr>
 <td>FPPL</td>
 <td><a href="https://fontpeople.co.uk/" data-linktype="external">FontPeople</a></td>
+</tr>
+<tr>
+<td>frag</td>
+<td><a href="https://fragtypefoundry.xyz/" data-linktype="external">fragTYPE</a></td>
 </tr>
 <tr>
 <td>FRJN</td>
@@ -1619,6 +1671,10 @@
 <tr>
 <td>FSTR</td>
 <td><a href="http://www.fontstore.com" data-linktype="external">Fontstore Pte Ltd</a></td>
+</tr>
+<tr>
+<td>FTDS</td>
+<td><a href="https://fontdasu.com/" data-linktype="external">FONTDASU</a></td>
 </tr>
 <tr>
 <td>FTF</td>
@@ -1808,6 +1864,10 @@
 <td><a href="https://www.grillitype.com/" data-linktype="external">Grilli Type</a></td>
 </tr>
 <tr>
+<td>GTL</td>
+<td><a href="https://gtl.world/" data-linktype="external">GTL Type Label</a></td>
+</tr>
+<tr>
 <td>GTYP</td>
 <td><a href="http://www.g-type.com" data-linktype="external">G-Type</a></td>
 </tr>
@@ -1927,6 +1987,10 @@
 <td><a href="http://www.hermessoft.com/" data-linktype="external">HermesSOFT Company</a></td>
 </tr>
 <tr>
+<td>HSH</td>
+<td><a>Hassan Shebli</a></td>
+</tr>
+<tr>
 <td>HT</td>
 <td><a href="http://www.huertatipografica.com/" data-linktype="external">Huerta Tipográfica</a></td>
 </tr>
@@ -1953,6 +2017,10 @@
 <tr>
 <td>HYPE</td>
 <td><a href="http://hypertype.xyz/" data-linktype="external">HyperType</a></td>
+</tr>
+<tr>
+<td>HYPN</td>
+<td><a href="https://www.heypentype.com" data-linktype="external">Heypentype</a></td>
 </tr>
 <tr>
 <td>HZ</td>
@@ -2260,6 +2328,10 @@
 <td><a href="http://www.typekirk.com" data-linktype="external">Typekirk</a></td>
 </tr>
 <tr>
+<td>KK95</td>
+<td>Kuirnovi Kether</td>
+</tr>
+<tr>
 <td>KLIM</td>
 <td><a href="http://www.klim.co.nz/" data-linktype="external">Klim Typographic Design</a></td>
 </tr>
@@ -2465,6 +2537,10 @@
 <tr>
 <td>Log9</td>
 <td>Log9 Foundry</td>
+</tr>
+<tr>
+<td>LOMT</td>
+<td><a href="https://www.theleagueofmoveabletype.com/" data-linktype="external">The League of Moveable Type</a></td>
 </tr>
 <tr>
 <td>lool</td>
@@ -2684,6 +2760,10 @@
 <tr>
 <td>MJR</td>
 <td><a href="http://www.majur.com/" data-linktype="external">Majur Inc.</a></td>
+</tr>
+<tr>
+<td>MKSD</td>
+<td><a href="https://mksd.jp" data-linktype="external">Maniackers Design</a></td>
 </tr>
 <tr>
 <td>MLAG</td>
@@ -2913,6 +2993,10 @@
 <td><a href="http://www.neufville.com/" data-linktype="external">Neufville Digital</a></td>
 </tr>
 <tr>
+<td>NEAT</td>
+<td><a href="https://neatnik.net/" data-linktype="external">Neatnik</a></td>
+</tr>
+<tr>
 <td>NEC</td>
 <td><a href="http://www.nec.co.jp/" data-linktype="external">NEC Corporation</a></td>
 </tr>
@@ -2933,6 +3017,10 @@
 <td><a href="http://www.newlyn.com" data-linktype="external">Newlyn</a></td>
 </tr>
 <tr>
+<td>NGMK</td>
+<td>Kousuke Nagai</td>
+</tr>
+<tr>
 <td>NICE</td>
 <td><a href="https://nicetotype.de/" data-linktype="external">nice to type</a></td>
 </tr>
@@ -2951,6 +3039,10 @@
 <tr>
 <td>NIS</td>
 <td><a href="http://www.nisfont.co.jp/" data-linktype="external">NIS Corporation</a></td>
+</tr>
+<tr>
+<td>nkan</td>
+<td><a href="https://nonty.net/" data-linktype="external">Nontynet</a></td>
 </tr>
 <tr>
 <td>NM</td>
@@ -3235,12 +3327,20 @@
 <td><a href="http://www.PhotoShopIsland.com" data-linktype="external">PhotoShopIsland.com</a></td>
 </tr>
 <tr>
+<td>PSTP</td>
+<td><a href="https://positype.com" data-linktype="external">Positype</a></td>
+</tr>
+<tr>
 <td>pstu</td>
 <td><a href="http://www.pseudonym.no" data-linktype="external">Pseudonym Type Studio</a></td>
 </tr>
 <tr>
 <td>PSY</td>
 <td><a href="http://www.psyops.com/" data-linktype="external">PSY/OPS</a></td>
+</tr>
+<tr>
+<td>PSYM</td>
+<td><a href="http://www.psymon.com/" data-linktype="external">Psymon</a></td>
 </tr>
 <tr>
 <td>PT</td>
@@ -3492,8 +3592,16 @@
 <td><a href="http://www.selfbuildtype.com/" data-linktype="external">SelfBuild Type Foundry</a></td>
 </tr>
 <tr>
+<td>SBYA</td>
+<td><a href="https://www.shibuyafont.jp/" data-linktype="external">Shibuya Font</a></td>
+</tr>
+<tr>
 <td>SCTO</td>
 <td><a href="http://www.schick-toikka.com" data-linktype="external">Schick Toikka</a></td>
+</tr>
+<tr>
+<td>Sdtp</td>
+<td><a href="https://sudetype.com" data-linktype="external">Sudetype</a></td>
 </tr>
 <tr>
 <td>SE</td>
@@ -3707,6 +3815,10 @@
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>tanu</td>
+<td><a href="https://tanukifont.com/" data-linktype="external">Tanuki Font</a></td>
+</tr>
+<tr>
 <td>TB</td>
 <td><a href="http://www.typebank.co.jp/" data-linktype="external">TypeBank Co.,Ltd</a></td>
 </tr>
@@ -3729,6 +3841,10 @@
 <tr>
 <td>TDR</td>
 <td>Tansin A. Darcos & Co.</td>
+</tr>
+<tr>
+<td>TDFF</td>
+<td><a href="http://www.tourdefonts.com/" data-linktype="external">Tour de Force Font Foundry</a></td>
 </tr>
 <tr>
 <td>TERM</td>
@@ -3915,6 +4031,10 @@
 <td><a href="http://www.twardoch.com/" data-linktype="external">Twardoch Typography</a></td>
 </tr>
 <tr>
+<td>TTNC</td>
+<td><a href="http://typetanicfonts.com" data-linktype="external">Typetanic Fonts</a></td>
+</tr>
+<tr>
 <td>TTY</td>
 <td><a href="http://www.tipotype.com" data-linktype="external">Tipotype</a></td>
 </tr>
@@ -3998,6 +4118,10 @@
 <td><a href="https://dn-works.com/ufas/" data-linktype="external">Unicode Fonts for Ancient Scripts</a></td>
 </tr>
 <tr>
+<td>UFDN</td>
+<td><a href="http://underforest.com" data-linktype="external">UNDERFOREST DESIGN</a></td>
+</tr>
+<tr>
 <td>UKUK</td>
 <td><a href="https://ultra-kuhl.com/" data-linktype="external">Ultra Kühl</a></td>
 </tr>
@@ -4018,6 +4142,10 @@
 <td><a href="https://www.unicode.org" data-linktype="external">Unicode Consortium</a></td>
 </tr>
 <tr>
+<td>UNTP</td>
+<td>Untype</td>
+</tr>
+<tr>
 <td>UPUP</td>
 <td><a href="https://www.upupcreative.com/" data-linktype="external">Up Up Creative</a></td>
 </tr>
@@ -4028,6 +4156,10 @@
 <tr>
 <td>UT</td>
 <td><a href="http://www.unitype.com/" data-linktype="external">Unitype Inc</a></td>
+</tr>
+<tr>
+<td>UTF</td>
+<td><a href="https://undercase.xyz/" data-linktype="external">Undercase Type Foundry</a></td>
 </tr>
 </table>
 <h2 id="v">V</h2>
@@ -4132,8 +4264,12 @@
 <td><a href="http://www.waspbarcode.com/" data-linktype="external">Wasp Barcode Technologies</a></td>
 </tr>
 <tr>
+<td>WBHE</td>
+<td><a href="https://webhance.net/" data-linktype="external">Webhance</a></td>
+</tr>
+<tr>
 <td>WEI</td>
-<td>Wei Huang</a></td>
+<td>Wei Huang</td>
 </tr>
 <tr>
 <td>WERK</td>
@@ -4148,6 +4284,10 @@
 <td><a href="http://www.willerstorfer.com" data-linktype="external">Willerstorfer Font Foundry</a></td>
 </tr>
 <tr>
+<td>WISH</td>
+<td><a href="https://willieshaw.com/" data-linktype="external">Willie Shaw</a></td>
+</tr>
+<tr>
 <td>WL</td>
 <td><a href="http://www.writlargefonts.com" data-linktype="external">Writ Large Fonts</a></td>
 </tr>
@@ -4158,6 +4298,10 @@
 <tr>
 <td>WNK</td>
 <td><a href="http://www.wearewanaka.com/" data-linktype="external">Wanaka</a></td>
+</tr>
+<tr>
+<td>WS</td>
+<td><a href="https://wienerschriften.at/" data-linktype="external">WS · Schriftmanufaktur</a></td>
 </tr>
 </table>
 <h2 id="x">X</h2>
@@ -4181,6 +4325,10 @@
 <tr>
 <td>XSCR</td>
 <td><a href="http://xeroscript.com/" data-linktype="external">Xeroscript</a></td>
+</tr>
+<tr>
+<td>XTMS</td>
+<td><a href="https://extumus.net/" data-linktype="external">Extumus</a></td>
 </tr>
 <tr>
 <td>XYZ</td>
@@ -4251,6 +4399,10 @@
 <tr>
 <td>ZeGr</td>
 <td><a href="http://www.ayz.com/zff/" data-linktype="external">Zebra Font Factory</a></td>
+</tr>
+<tr>
+<td>ZEN!</td>
+<td><a href="https://zenfont.jp/" data-linktype="external">A-1 Corp.</a></td>
 </tr>
 <tr>
 <td>ZERO</td>
@@ -4436,6 +4588,7 @@ High contrast					</span>
 </div>		</div>
 	</div>
     <ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
 			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
 			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
 			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
@@ -4599,6 +4752,7 @@ High contrast					</span>
 </div>		</div>
 	</div>
     <ul class="links" data-bi-name="footerlinks">
+		<li class="manage-cookies-holder" hidden></li>
 			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
 			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
 			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
