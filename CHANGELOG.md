@@ -2,8 +2,16 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.32 (2020-Dec-??)
+## 0.7.34 (2020-Dec-??)
   - ...
+
+
+## 0.7.33 (2020-Nov-24)
+### Release note
+  - This is a quick single bug-fix release because the problem below was disrupting the continuous integration setup of several users.
+
+### changes to checks
+  - **[com.google.fonts/check/metadata/escaped_strings]:** Add "metadata_file" as a condition for the check in order to avoid an ERROR whenever the file is not available (issue #3095)
 
 
 ## 0.7.32 (2020-Nov-19)

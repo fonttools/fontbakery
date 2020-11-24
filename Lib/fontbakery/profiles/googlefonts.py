@@ -4901,6 +4901,7 @@ def com_google_fonts_check_STAT_axis_order(fonts):
         In some cases we've seen designer names and other fields with escaped strings in METADATA files.
         Nowadays the strings can be full unicode strings and do not need escaping.
     """,
+    conditions = ["metadata_file"],
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/2932'
     }
