@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.7.33 (2020-Nov-24)
 ### Release note
   - This is a quick single bug-fix release because the problem below was disrupting the continuous integration setup of several users.
+  - It also includes a small routine update on the cached vendor IDs list fetched from Microsoft's website (as we always do at every new FontBakery release).
 
 ### changes to checks
   - **[com.google.fonts/check/metadata/escaped_strings]:** Add "metadata_file" as a condition for the check in order to avoid an ERROR whenever the file is not available (issue #3095)
