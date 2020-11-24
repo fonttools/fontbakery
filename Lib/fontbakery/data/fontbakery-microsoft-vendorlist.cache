@@ -71,11 +71,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/1cca3f313bca05ba0e585934fa7f13d7fc490d2f/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/bdd2720e324b01abe0a6785d85f94192be90ccf2/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="11/16/2020" />
+<meta name="ms.date" content="11/23/2020" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -85,18 +85,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-11-16 10:11 PM" />
+<meta name="updated_at" content="2020-11-23 08:52 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3367" />
+<meta name="word_count" content="3373" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/ed5848c8.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/e21f92b6.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/55917fe3.conceptual.css ">
 
@@ -136,8 +136,8 @@
 	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
-	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/298d06f8.index-polyfills.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b5e14169.index-docs.js"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8edb7104.index-polyfills.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/5f68bf7a.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -291,7 +291,7 @@
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li>
-								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-11-16T00:00:00.000Z" data-article-date-source="ms.date">11/16/2020</time>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-11-23T00:00:00.000Z" data-article-date-source="ms.date">11/23/2020</time>
 							</li>
 									<li class="readingTime">16 minutes to read</li>
 								<li class="contributors-holder">
@@ -1733,7 +1733,7 @@
 </tr>
 <tr>
 <td>GAKU</td>
-<td>Gakumon</td>
+<td>Gakumon</a></td>
 </tr>
 <tr>
 <td>GALA</td>
@@ -2080,6 +2080,10 @@
 <tr>
 <td>IINF</td>
 <td><a href="http://www.iinformatica.it" data-linktype="external">iInformatica Srls</a></td>
+</tr>
+<tr>
+<td>IKMJ</td>
+<td>Ikimoji</td>
 </tr>
 <tr>
 <td>IKOF</td>
@@ -2691,7 +2695,7 @@
 </tr>
 <tr>
 <td>MDIV</td>
-<td>Dhivehi Type Foundry</td>
+<td>Dhivehi Type Foundry</a></td>
 </tr>
 <tr>
 <td>MDSN</td>
@@ -3612,6 +3616,10 @@
 <td><a href="http://www.fontsite.com/" data-linktype="external">The FontSite</a></td>
 </tr>
 <tr>
+<td>SERP</td>
+<td><a href="https://www.serpentype.com/" data-linktype="external">Serpentype</a></td>
+</tr>
+<tr>
 <td>SfC</td>
 <td><a href="https://www.shapesforcash.com/" data-linktype="external">Shapes for Cash</a></td>
 </tr>
@@ -3758,6 +3766,10 @@
 <tr>
 <td>Stor</td>
 <td><a href="http://www.stormtype.com/" data-linktype="external">Storm Type Foundry</a></td>
+</tr>
+<tr>
+<td>STYK</td>
+<td><a href="https://satsuyako.com/" data-linktype="external">Satsuyako</a></td>
 </tr>
 <tr>
 <td>STYP</td>
