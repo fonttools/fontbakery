@@ -154,7 +154,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/varfont/consistent_axes',
     'com.google.fonts/check/varfont/unsupported_axes',
     'com.google.fonts/check/STAT/gf-axisregistry',
-    'com.google.fonts/check/STAT/axis_order'
+    'com.google.fonts/check/STAT/axis_order',
+    'com.google.fonts/check/mandatory_avar_table'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -5016,6 +5017,29 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
 
     if passed:
         yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/mandatory_avar_table',
+    rationale = """
+        All high quality variable fonts include an avar table to correctly define axes progression rates.
+
+        For example, a weight axis from 0% to 100% doesn't map directly to 100 to 1000, because a 10% progression from 0% may be too much to define the 200, while 90% may be too little to define the 900.
+    """,
+    conditions = ["is_variable_font"],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3100'
+    }
+)
+def com_google_fonts_check_mandatory_avar_table(ttFont):
+    """Ensure variable fonts include an avar table."""
+    if "avar" not in ttFont:
+        yield FAIL,\
+              Message('missing-avar',
+                      "This variable font does not have an avar table.")
+    else:
+        yield PASS, "OK"
+
 
 ###############################################################################
 

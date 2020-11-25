@@ -3531,3 +3531,15 @@ def test_check_metadata_designer_profiles():
     # TODO: FAIL, "missing-avatar"
     # TODO: FAIL, "bad-avatar-filename"
 
+def test_check_mandatory_avar_table():
+    """Ensure variable fonts include an avar table."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/mandatory_avar_table")
+
+    ttFont = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Roman.ttf"))
+    assert_PASS(check(ttFont))
+
+    del ttFont["avar"]
+    assert_results_contain(check(ttFont),
+                           FAIL, "missing-avar")
+

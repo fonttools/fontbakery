@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.34 (2020-Dec-??)
-  - ...
+### New checks
+  - **[com.google.fonts/check/mandatory_avar_table]:** Require variable fonts to include an avar table (issue #3100)
 
 
 ## 0.7.33 (2020-Nov-24)
