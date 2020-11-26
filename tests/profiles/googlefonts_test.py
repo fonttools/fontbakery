@@ -3078,7 +3078,7 @@ def test_check_repo_vf_has_static_fonts():
         shutil.copytree(src_family, family_dir)
 
         assert_results_contain(check(family_dir),
-                               FAIL, 'missing',
+                               WARN, 'missing',
                                'for a VF family which does not has a static dir.')
 
         static_dir = portable_path(family_dir + "/static")
