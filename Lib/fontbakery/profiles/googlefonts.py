@@ -4275,7 +4275,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
                   'gfonts_repo_structure',
                   'is_variable_font'],
     rationale="""
-        Variable font family directories kept in the google/fonts git repo must include a static/ subdir containing static fonts.
+        Variable font family directories kept in the google/fonts git repo may include a static/ subdir containing static fonts.
         These files are meant to be served for users that still lack support for variable fonts in their web browsers.
     """,
     misc_metadata = {
@@ -4293,12 +4293,13 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
         else:
             yield FAIL, \
                   Message("empty",
-                          'Static dir is empty')
+                          'There is a "static" dir but it is empty.'
+                          ' Either add static fonts or delete the directory.')
     else:
-        yield FAIL, \
+        yield WARN, \
               Message("missing",
-                      'Please create a subdirectory called "static/"'
-                      ' and include in it static font files.')
+                      'Please consider adding a subdirectory called "static/"'
+                      ' and including in it static font files.')
 
 
 @check(
