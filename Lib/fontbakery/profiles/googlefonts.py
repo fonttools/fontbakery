@@ -4697,6 +4697,7 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
         Each axis range in a METADATA.pb file must be registered, and within the bounds of the axis definition in the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
     """,
     conditions = ['is_variable_font',
+                  'family_metadata',
                   'GFAxisRegistry'],
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/3010'

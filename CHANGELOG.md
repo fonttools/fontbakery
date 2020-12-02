@@ -9,6 +9,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
   - **[com.google.fonts/check/repo/vf_has_static_fonts]:** Downgrade it to WARN-level. (issue #3099)
 
+### Bugfixes
+  - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3104)
+
 
 ## 0.7.33 (2020-Nov-24)
 ### Release note
