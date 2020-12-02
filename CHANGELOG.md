@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3104)
+  - **[com.google.fonts/check/metadata/gf-axisregistry_valid_tags]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3105)
 
 
 ## 0.7.33 (2020-Nov-24)
