@@ -4733,6 +4733,7 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, GFAxisRegistr
         Any font foundry or distributor library that offers variable fonts has a implicit, latent, de-facto axis registry, which can be extracted by scanning the library for axes' tags, labels, and min/def/max values. While in 2016 Microsoft originally offered to include more axes in the OpenType 1.8 specification (github.com/microsoft/OpenTypeDesignVariationAxisTags), as of August 2020, this effort has stalled. We hope more foundries and distributors will publish documents like this that make their axes explicit, to encourage of adoption of variable fonts throughout the industry, and provide source material for a future update to the OpenType specification's axis registry.
     """,
     conditions = ['is_variable_font',
+                  'family_metadata',
                   'GFAxisRegistry'],
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/3022'
