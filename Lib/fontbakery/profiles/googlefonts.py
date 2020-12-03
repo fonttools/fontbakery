@@ -4664,11 +4664,11 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
 @check(
     id = 'com.google.fonts/check/varfont/unsupported_axes',
     rationale = """
-        The 'ital' axis is not supported yet in Google Chrome. The 'opsz' axis also has patchy support.
+        The 'ital' and 'slnt' axes are not supported yet in Google Chrome.
 
         For the time being, we need to ensure that VFs do not contain either of these axes. Once browser support is better, we can deprecate this check.
 
-        For more info regarding ital and opsz browser support, see:
+        For more info regarding browser support, see:
         https://arrowtype.github.io/vf-slnt-test/
     """,
     conditions = ['is_variable_font'],
