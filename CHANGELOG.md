@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
   - **[com.google.fonts/check/repo/vf_has_static_fonts]:** Downgrade it to WARN-level. (issue #3099)
+  - **[com.google.fonts/check/varfont/unsupported_axes]**: Update rationale that was confusing and outdated (issues #3108 and #2866)
 
 ### Bugfixes
   - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3104)
