@@ -4773,6 +4773,7 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
 
     passed = True
     for axis_value in ttFont['STAT'].table.AxisValueArray.AxisValue:
+        import ipdb; ipdb.set_trace()
         axis = ttFont['STAT'].table.DesignAxisRecord.Axis[axis_value.AxisIndex]
         if axis.AxisTag in GFAxisRegistry.keys():
             fallbacks = GFAxisRegistry[axis.AxisTag]["fallbacks"]
