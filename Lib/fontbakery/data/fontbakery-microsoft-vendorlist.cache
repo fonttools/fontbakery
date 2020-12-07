@@ -49,6 +49,8 @@
 
 
 
+
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -71,11 +73,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/bdd2720e324b01abe0a6785d85f94192be90ccf2/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/84113518820c2e97aaa255845562f1177de7e584/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="11/23/2020" />
+<meta name="ms.date" content="12/01/2020" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -85,18 +87,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-11-23 08:52 PM" />
+<meta name="updated_at" content="2020-12-01 04:19 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3373" />
+<meta name="word_count" content="3411" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/e21f92b6.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/2dc4f037.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/55917fe3.conceptual.css ">
 
@@ -127,17 +129,26 @@
 			hideViewSource: false,
 			hasPageActions: true,
 			hasBookmark: true,
-			hasShare: true
+			hasShare: true,
+			hasRecommendations: false,
+			contributors: [
+						{ name: "Basit Ali", url: "https://github.com/alib-ms" },
+						{ name: "WorkNihar", url: "https://github.com/WorkNihar" },
+						{ name: "Mike Jacobs", url: "https://github.com/mijacobs" },
+						{ name: "v-nihar", url: "https://github.com/v-nihar" },
+						{ name: "VSC-Service-Account", url: "https://github.com/VSC-Service-Account" }
+],
 		},
 		functions:{}
 	};
 	</script>
+	<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script>
 	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
 	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8edb7104.index-polyfills.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/5f68bf7a.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d7272e97.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -291,16 +302,46 @@
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li>
-								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-11-23T00:00:00.000Z" data-article-date-source="ms.date">11/23/2020</time>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-12-01T00:00:00.000Z" data-article-date-source="ms.date">12/01/2020</time>
 							</li>
-									<li class="readingTime">16 minutes to read</li>
+									<li class="readingTime">17 minutes to read</li>
 								<li class="contributors-holder">
-									<ul class="contributors" data-bi-name="contributors" aria-hidden="true">
-												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/alib-ms.png?size=32" role="presentation"/></li>
-												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/WorkNihar.png?size=32" role="presentation"/></li>
-												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/mijacobs.png?size=32" role="presentation"/></li>
-												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/v-nihar.png?size=32" role="presentation"/></li>
-												<li><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNMsAcAAQUAoVnxsV8AAAAASUVORK5CYII=" data-src="https://github.com/VSC-Service-Account.png?size=32" role="presentation"/></li>
+									<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
+														<li class="facepile-item">
+															<a href="https://github.com/alib-ms" title="Basit Ali" aria-label="Basit AliGithub profile" data-src="https://github.com/alib-ms.png?size=32" data-contributor-name="Basit Ali" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/alib-ms.png?size=32" role="presentation" onerror="this.hidden=true; this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">B</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/WorkNihar" title="WorkNihar" aria-label="WorkNiharGithub profile" data-src="https://github.com/WorkNihar.png?size=32" data-contributor-name="WorkNihar" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/WorkNihar.png?size=32" role="presentation" onerror="this.hidden=true; this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">W</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/mijacobs" title="Mike Jacobs" aria-label="Mike JacobsGithub profile" data-src="https://github.com/mijacobs.png?size=32" data-contributor-name="Mike Jacobs" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mijacobs.png?size=32" role="presentation" onerror="this.hidden=true; this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">M</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/v-nihar" title="v-nihar" aria-label="v-niharGithub profile" data-src="https://github.com/v-nihar.png?size=32" data-contributor-name="v-nihar" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/v-nihar.png?size=32" role="presentation" onerror="this.hidden=true; this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">v</span>
+															</a>
+														</li>
+														<li class="facepile-item">
+															<a href="https://github.com/VSC-Service-Account" title="VSC-Service-Account" aria-label="VSC-Service-AccountGithub profile" data-src="https://github.com/VSC-Service-Account.png?size=32" data-contributor-name="VSC-Service-Account" class="facepile-item-coin"
+															>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/VSC-Service-Account.png?size=32" role="presentation" onerror="this.hidden=true; this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">V</span>
+															</a>
+														</li>
 									</ul>
 								</li>
 						</ul>
@@ -680,6 +721,10 @@
 <tr>
 <td>ATFS</td>
 <td>Andrew Tyler's fonts</td>
+</tr>
+<tr>
+<td>ATKN</td>
+<td><a href="https://twitter.com/artakana" data-linktype="external">aratakana</a></td>
 </tr>
 <tr>
 <td>ATYP</td>
@@ -1251,6 +1296,10 @@
 <td><a href="http://www.rastvor.com.ua" data-linktype="external">Dmitry Rastvortsev</a></td>
 </tr>
 <tr>
+<td>DRFN</td>
+<td>DR Fonts</td>
+</tr>
+<tr>
 <td>DS</td>
 <td><a href="http://www.screen.co.jp/" data-linktype="external">Dainippon Screen Mfg. Co., Inc.</a></td>
 </tr>
@@ -1701,6 +1750,10 @@
 <td><a href="http://www.fontpartners.com" data-linktype="external">Fontpartners</a></td>
 </tr>
 <tr>
+<td>FUNA</td>
+<td><a href="https://mt-funa.com/" data-linktype="external">Mt. Funa Design Office</a></td>
+</tr>
+<tr>
 <td>FWD</td>
 <td><a href="http://www.fontwright.com/" data-linktype="external">Fontwright Design</a></td>
 </tr>
@@ -1762,6 +1815,10 @@
 <tr>
 <td>Geez</td>
 <td>Beteseb Graphic Design</td>
+</tr>
+<tr>
+<td>GenT</td>
+<td><a href="https://www.generaltitles.com" data-linktype="external">General Titles</a></td>
 </tr>
 <tr>
 <td>GF</td>
@@ -2403,6 +2460,10 @@
 <td>KUSH</td>
 <td>KushJain</a></td>
 </tr>
+<tr>
+<td>KWKK</td>
+<td><a href="http://kiwi-kawagoto.com/" data-linktype="external">キウイ皮ごと齧る</a></td>
+</tr>
 </table>
 <h2 id="l">L</h2>
 <table>
@@ -2453,6 +2514,10 @@
 <tr>
 <td>LBV</td>
 <td>La Bolde Vita</a></td>
+</tr>
+<tr>
+<td>LCMT</td>
+<td><a href="https://locomotype.com/" data-linktype="external">Locomotype</a></td>
 </tr>
 <tr>
 <td>LEAF</td>
@@ -2642,6 +2707,10 @@
 <td><a href="http://www.magusdigital.com" data-linktype="external">Magus Digital</a></td>
 </tr>
 <tr>
+<td>MANC</td>
+<td><a href="https://www.manchestertype.com" data-linktype="external">Manchester Type</a></td>
+</tr>
+<tr>
 <td>MANS</td>
 <td><a href="http://www.mansgreback.com" data-linktype="external">Mans Greback AB</a></td>
 </tr>
@@ -2764,6 +2833,10 @@
 <tr>
 <td>MJR</td>
 <td><a href="http://www.majur.com/" data-linktype="external">Majur Inc.</a></td>
+</tr>
+<tr>
+<td>MJWK</td>
+<td><a href="https://moji-waku.com" data-linktype="external">もじワク研究</a></td>
 </tr>
 <tr>
 <td>MKSD</td>
@@ -3122,6 +3195,10 @@
 <tr>
 <td>ODSR</td>
 <td><a href="http://www.oddsorts.com" data-linktype="external">Oddsorts</a></td>
+</tr>
+<tr>
+<td>OFTY</td>
+<td><a href="http://officefortypography.ch/" data-linktype="external">Office for Typography</a></td>
 </tr>
 <tr>
 <td>OHG</td>
@@ -4473,6 +4550,9 @@
 						<!-- end page rating section -->
 
 
+						<!-- recommendations section -->
+						<!-- end recommendations section -->
+
 						<!-- feedback section -->
 <section class="feedback-section is-relative" data-bi-name="feedback-section">
 
@@ -4498,7 +4578,6 @@
         </a>
     </div>
 </section>
-
 						<!-- end feedback section -->
 
 						<!-- feedback report section -->
