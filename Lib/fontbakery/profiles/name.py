@@ -158,7 +158,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
                   Message("mono-outliers",
                           f"Font is monospaced"
                           f" but {len(unusually_spaced_glyphs)} glyphs"
-                          f" ({100.0 * outliers_ratio}%)"
+                          f" ({100.0 * outliers_ratio:.2f}%)"
                           f" have a different width."
                           f" You should check the widths of:"
                           f" {unusually_spaced_glyphs}")

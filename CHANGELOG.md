@@ -7,8 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/mandatory_avar_table]:** Require variable fonts to include an avar table (issue #3100)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/monospace]:** fix formatting of percentage to only display up to 2 decimals (issue #3117)
   - **[com.google.fonts/check/repo/vf_has_static_fonts]:** Downgrade it to WARN-level. (issue #3099)
-  - **[com.google.fonts/check/varfont/unsupported_axes]**: Update rationale that was confusing and outdated (issues #3108 and #2866)
+  - **[com.google.fonts/check/varfont/unsupported_axes]:** Update rationale that was confusing and outdated (issues #3108 and #2866)
 
 ### Bugfixes
   - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3104)
