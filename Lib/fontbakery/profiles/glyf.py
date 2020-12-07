@@ -88,7 +88,7 @@ def com_google_fonts_check_points_out_of_bounds(ttFont):
 @check(
     id = 'com.google.fonts/check/glyf_non_transformed_duplicate_components',
     rationale = """
-        There has been cases in which fonts had faulty double quote marks, with each of them containing two single quote marks as components with the same x, y coordinates which makes them visually look like single quote marks.
+        There have been cases in which fonts had faulty double quote marks, with each of them containing two single quote marks as components with the same x, y coordinates which makes them visually look like single quote marks.
 
         This check ensures that glyphs do not contain duplicate components which have the same x,y coordinates.
     """,
@@ -130,7 +130,13 @@ def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
 
 @check(
     id = 'com.google.fonts/check/glyf_nested_components',
-    rationale = "There have been bugs rendering variable fonts with nested components. Additionally, some static fonts with nested components have been reported to have rendering and printing issues. (See googlefonts/fontbakery#2961 and arrowtype/recursive#412.)",
+    rationale = """
+        There have been bugs rendering variable fonts with nested components. Additionally, some static fonts with nested components have been reported to have rendering and printing issues.
+
+        For more info, see:
+        * https://github.com/googlefonts/fontbakery/issues/2961
+        * https://github.com/arrowtype/recursive/issues/412
+    """,
     conditions = ['is_ttf'],
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/2961'
