@@ -594,6 +594,9 @@ def test_condition__registered_vendor_ids():
     print('As of July 2018, "MLAG": "Michael LaGattuta" must show up in the list...')
     assert "MLAG" in registered_ids # Michael LaGattuta
 
+    print('As of December 2020, "GOOG": "Google" must show up in the list...')
+    assert "GOOG" in registered_ids # Google
+
     print('"CFA ": "Computer Fonts Australia" is a good vendor id, lacking a URL')
     assert "CFA " in registered_ids # Computer Fonts Australia
 
