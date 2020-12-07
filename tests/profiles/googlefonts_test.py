@@ -664,6 +664,11 @@ def test_check_vendor_id():
     assert_PASS(check(ttFont),
                 'with a good font.')
 
+    # And let's also make sure it works here:
+    ttFont['OS/2'].achVendID = "GOOG"
+    assert_PASS(check(ttFont),
+                'with a good font.')
+
 
 def NOT_IMPLEMENTED__test_check_glyph_coverage():
     """ Check glyph coverage. """
