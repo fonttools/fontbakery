@@ -12,6 +12,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/unsupported_axes]:** Update rationale that was confusing and outdated (issues #3108 and #2866)
 
 ### Bugfixes
+  - **[com.google.fonts/check/metadata/consistent_axis_enumeration]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3122)
   - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3104)
   - **[com.google.fonts/check/metadata/gf-axisregistry_valid_tags]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3105)
 
