@@ -4819,7 +4819,8 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
     rationale = """
         All font variation axes present in the font files must be properly declared on METADATA.pb so that they can be served by the GFonts API.
     """,
-    conditions = ['is_variable_font'],
+    conditions = ['is_variable_font',
+                  'family_metadata'],
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/3051'
     }
