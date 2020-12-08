@@ -359,26 +359,39 @@ def com_google_fonts_check_fontbakery_version():
 @check(
     id = 'com.google.fonts/check/mandatory_glyphs',
     rationale = """
-        The OpenType specification v1.8.2 recommends that the first glyph is the .notdef glyph without a codepoint assigned and with a drawing.
+        The OpenType specification v1.8.2 recommends that the first glyph is the '.notdef' glyph without a codepoint assigned and with a drawing.
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/recom#glyph-0-the-notdef-glyph
 
-        Pre-v1.8, it was recommended that a font should also contain a .null, CR and space glyph. This might have been relevant for applications on MacOS 9.
+        Pre-v1.8, it was recommended that fonts should also contain 'space', 'CR' and '.null' glyphs. This might have been relevant for MacOS 9 applications.
     """
 )
 def com_google_fonts_check_mandatory_glyphs(ttFont):
-    """Font contains .notdef as first glyph?"""
+    """Font contains '.notdef' as its first glyph?"""
     from fontbakery.utils import glyph_has_ink
 
-    if (ttFont.getGlyphOrder()[0] == ".notdef"
-        and ".notdef" not in ttFont.getBestCmap().values()
-        and glyph_has_ink(ttFont, ".notdef")):
-        yield PASS, ("Font contains the .notdef glyph as the first glyph, it does "
-                     "not have a Unicode value assigned and contains a drawing.")
-    else:
-        yield WARN, ("Font should contain the .notdef glyph as the first glyph, "
-                     "it should not have a Unicode value assigned and should "
-                     "contain a drawing.")
+    passed = True
+    if ttFont.getGlyphOrder()[0] != ".notdef":
+        passed = False
+        yield WARN,\
+              Message('first-glyph',
+                      "Font should contain the .notdef glyph as the first glyph.")
+
+    if ".notdef" in ttFont.getBestCmap().values():
+        passed = False
+        yield WARN,\
+              Message('codepoint',
+                      f"Glyph '.notdef' should not have a Unicode codepoint value assigned,"
+                      f" but got 0x{ttFont.getBestCmap().values()['.notdef']:04X}.")
+
+    if not glyph_has_ink(ttFont, ".notdef"):
+        passed = False
+        yield WARN,\
+              Message('empty',
+                      "Glyph '.notdef' should contain a drawing, but it is empty.")
+
+    if passed:
+        yield PASS, "OK"
 
 
 @check(

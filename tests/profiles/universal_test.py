@@ -339,8 +339,15 @@ def test_check_mandatory_glyphs():
     subsetter = fontTools.subset.Subsetter()
     subsetter.populate(glyphs="n")  # Arbitrarily remove everything except n.
     subsetter.subset(ttFont)
+    # So the check should complaing that the 1st glyph isnt '.notdef':
     assert_results_contain(check(ttFont),
-                           WARN, None) # FIXME: This needs a message keyword
+                           WARN, 'first-glyph')
+
+    # TODO: assert_results_contain(check(ttFont),
+    #                              WARN, 'codepoint')
+
+    # TODO: assert_results_contain(check(ttFont),
+    #                              WARN, 'empty')
 
 
 def test_check_whitespace_glyphs():
