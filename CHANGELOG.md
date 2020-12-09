@@ -16,6 +16,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/consistent_axis_enumeration]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3122)
   - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3104)
   - **[com.google.fonts/check/metadata/gf-axisregistry_valid_tags]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3105)
+  - **[com.google.fonts/check/STAT/gf-axisregistry]:** Ignore format-4 entries on STAT table because the GF Axis Registry does not list any multi-axis fallback name which is what such entries are designed to describe (issue #3106)
 
 
 ## 0.7.33 (2020-Nov-24)
