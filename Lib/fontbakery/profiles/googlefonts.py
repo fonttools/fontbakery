@@ -4757,7 +4757,7 @@ def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, GFAxisReg
 @check(
     id = 'com.google.fonts/check/STAT/gf-axisregistry',
     rationale = """
-        Check that particle names and values on STAT table match the fallback names in each axis registry at the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
+        Check that particle names and values on STAT table match the fallback names in each axis entry at the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
     """,
     conditions = ['is_variable_font',
                   'GFAxisRegistry'],
@@ -4772,7 +4772,25 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
         return ''.join(name.split(' '))
 
     passed = True
+    format4_entries = False
     for axis_value in ttFont['STAT'].table.AxisValueArray.AxisValue:
+        if axis_value.Format == 4:
+            coords = []
+            for record in axis_value.AxisValueRecord:
+                axis = ttFont['STAT'].table.DesignAxisRecord.Axis[record.AxisIndex]
+                coords.append(f"{axis.AxisTag}:{record.Value}")
+            coords = ", ".join(coords)
+
+            name_entry = ttFont['name'].getName(axis_value.ValueNameID,
+                                                PlatformID.WINDOWS,
+                                                WindowsEncodingID.UNICODE_BMP,
+                                                WindowsLanguageID.ENGLISH_USA)
+            format4_entries = True
+            yield INFO,\
+                  Message("format-4",
+                          f"'{name_entry.toUnicode()}' at ({coords})")
+            continue
+
         axis = ttFont['STAT'].table.DesignAxisRecord.Axis[axis_value.AxisIndex]
         if axis.AxisTag in GFAxisRegistry.keys():
             fallbacks = GFAxisRegistry[axis.AxisTag]["fallbacks"]
@@ -4809,6 +4827,14 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
                               (f"Axis Value for '{axis.AxisTag}':'{name_entry.toUnicode()}' is"
                                f" expected to be '{fallbacks[name_entry.toUnicode()]}'"
                                f" but this font has '{name_entry.toUnicode()}'='{axis_value.Value}'."))
+
+    if format4_entries:
+        yield INFO,\
+              Message("format-4",
+                      "The GF Axis Registry does not currently contain fallback names"
+                      " for the combination of values for more than a single axis,"
+                      " which is what these 'format 4' entries are designed to describe,"
+                      " so this check will ignore them for now.")
 
     if passed:
         yield PASS, "OK"
