@@ -73,11 +73,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/84113518820c2e97aaa255845562f1177de7e584/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/b7a26615d04ffd7b909c929a2eefb25450cbd048/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="12/01/2020" />
+<meta name="ms.date" content="12/17/2020" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -87,23 +87,23 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-12-01 04:19 PM" />
+<meta name="updated_at" content="2020-12-18 03:46 AM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3411" />
+<meta name="word_count" content="3453" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/2dc4f037.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/b415dab4.site-ltr.css ">
 
 	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/55917fe3.conceptual.css ">
 
 
-	<script>
+	<script id="msdocs-script">
 	var msDocs = {
 		data: {
 			timeOrigin: Date.now(),
@@ -132,9 +132,9 @@
 			hasShare: true,
 			hasRecommendations: false,
 			contributors: [
-						{ name: "Basit Ali", url: "https://github.com/alib-ms" },
+						{ name: "alib-ms", url: "https://github.com/alib-ms" },
 						{ name: "WorkNihar", url: "https://github.com/WorkNihar" },
-						{ name: "Mike Jacobs", url: "https://github.com/mijacobs" },
+						{ name: "mijacobs", url: "https://github.com/mijacobs" },
 						{ name: "v-nihar", url: "https://github.com/v-nihar" },
 						{ name: "VSC-Service-Account", url: "https://github.com/VSC-Service-Account" }
 ],
@@ -142,18 +142,21 @@
 		functions:{}
 	};
 	</script>
+	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
 	<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script>
 	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
-	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8edb7104.index-polyfills.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d7272e97.index-docs.js"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/f0a172e9.index-polyfills.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/c66344e6.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
 <div class="header-holder has-default-focus">
 	<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+	<div id="learn-together-banner-holder" class="has-default-focus has-overflow-hidden">
+	</div>
 	<div hidden id="cookie-consent-holder"></div>
 	<!-- liquid-tag banners global -->
 	<div id="headerAreaHolder" data-bi-name="header">
@@ -302,43 +305,43 @@
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li>
-								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-12-01T00:00:00.000Z" data-article-date-source="ms.date">12/01/2020</time>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-12-17T00:00:00.000Z" data-article-date-source="ms.date">12/17/2020</time>
 							</li>
 									<li class="readingTime">17 minutes to read</li>
 								<li class="contributors-holder">
 									<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
 														<li class="facepile-item">
-															<a href="https://github.com/alib-ms" title="Basit Ali" aria-label="Basit AliGithub profile" data-src="https://github.com/alib-ms.png?size=32" data-contributor-name="Basit Ali" class="facepile-item-coin"
+															<a href="https://github.com/alib-ms" title="alib-ms" aria-label="alib-msGithub profile" data-src="https://github.com/alib-ms.png?size=32" data-contributor-name="alib-ms" class="facepile-item-coin"
 															>
-																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/alib-ms.png?size=32" role="presentation" onerror="this.hidden=true; this.className='facepile-item-coin-image durable-image has-error';"/>
-																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">B</span>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/alib-ms.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">a</span>
 															</a>
 														</li>
 														<li class="facepile-item">
 															<a href="https://github.com/WorkNihar" title="WorkNihar" aria-label="WorkNiharGithub profile" data-src="https://github.com/WorkNihar.png?size=32" data-contributor-name="WorkNihar" class="facepile-item-coin"
 															>
-																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/WorkNihar.png?size=32" role="presentation" onerror="this.hidden=true; this.className='facepile-item-coin-image durable-image has-error';"/>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/WorkNihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
 																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">W</span>
 															</a>
 														</li>
 														<li class="facepile-item">
-															<a href="https://github.com/mijacobs" title="Mike Jacobs" aria-label="Mike JacobsGithub profile" data-src="https://github.com/mijacobs.png?size=32" data-contributor-name="Mike Jacobs" class="facepile-item-coin"
+															<a href="https://github.com/mijacobs" title="mijacobs" aria-label="mijacobsGithub profile" data-src="https://github.com/mijacobs.png?size=32" data-contributor-name="mijacobs" class="facepile-item-coin"
 															>
-																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mijacobs.png?size=32" role="presentation" onerror="this.hidden=true; this.className='facepile-item-coin-image durable-image has-error';"/>
-																<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">M</span>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mijacobs.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">m</span>
 															</a>
 														</li>
 														<li class="facepile-item">
 															<a href="https://github.com/v-nihar" title="v-nihar" aria-label="v-niharGithub profile" data-src="https://github.com/v-nihar.png?size=32" data-contributor-name="v-nihar" class="facepile-item-coin"
 															>
-																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/v-nihar.png?size=32" role="presentation" onerror="this.hidden=true; this.className='facepile-item-coin-image durable-image has-error';"/>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/v-nihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
 																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">v</span>
 															</a>
 														</li>
 														<li class="facepile-item">
 															<a href="https://github.com/VSC-Service-Account" title="VSC-Service-Account" aria-label="VSC-Service-AccountGithub profile" data-src="https://github.com/VSC-Service-Account.png?size=32" data-contributor-name="VSC-Service-Account" class="facepile-item-coin"
 															>
-																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/VSC-Service-Account.png?size=32" role="presentation" onerror="this.hidden=true; this.className='facepile-item-coin-image durable-image has-error';"/>
+																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/VSC-Service-Account.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
 																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">V</span>
 															</a>
 														</li>
@@ -495,6 +498,10 @@
 <td><a href="http://www.aboutype.com/" data-linktype="external">Aboutype, Inc.</a></td>
 </tr>
 <tr>
+<td>ABTS</td>
+<td><a href="http://www.alphabeet.at/" data-linktype="external">alphabeet, Type Studio</a></td>
+</tr>
+<tr>
 <td>ABYM</td>
 <td><a href="http://www.abyme.net" data-linktype="external">ABYME</a></td>
 </tr>
@@ -584,7 +591,7 @@
 </tr>
 <tr>
 <td>ALIF</td>
-<td><a href="https://github.com/alif-type" data-linktype="external">Alif Type</a></td>
+<td><a href="https://aliftype.com/" data-linktype="external">Alif Type</a></td>
 </tr>
 <tr>
 <td>ALS</td>
@@ -749,6 +756,10 @@
 <tr>
 <td>AVP</td>
 <td><a href="http://www.codesign.co.uk" data-linktype="external">Aviation Partners</a></td>
+</tr>
+<tr>
+<td>AYRE</td>
+<td><a href="http://www.ayres.org.uk/" data-linktype="external">AYRES FONTS</a></td>
 </tr>
 <tr>
 <td>AZLS</td>
@@ -1368,6 +1379,10 @@
 <td><a href="http://www.dtptypes.com/" data-linktype="external">dtpTypes Limited</a></td>
 </tr>
 <tr>
+<td>DTZM</td>
+<td>Dotzeem</td>
+</tr>
+<tr>
 <td>DUXB</td>
 <td><a href="http://www.duxsys.com/" data-linktype="external">Duxbury Systems, Inc.</a></td>
 </tr>
@@ -1494,6 +1509,10 @@
 <td><a href="http://www.fontarte.com" data-linktype="external">FontArte Type Foundry</a></td>
 </tr>
 <tr>
+<td>FA37</td>
+<td><a href="https://f37foundry.com/" data-linktype="external">F37 Foundry</a></td>
+</tr>
+<tr>
 <td>FAFO</td>
 <td>FamiraFonts</td>
 </tr>
@@ -1604,6 +1623,10 @@
 <tr>
 <td>FMST</td>
 <td><a href="http://www.formist.co" data-linktype="external">Formist</a></td>
+</tr>
+<tr>
+<td>FNBD</td>
+<td><a href="https://fontbd.com" data-linktype="external">FontBD Type Foundry</a></td>
 </tr>
 <tr>
 <td>FNKI</td>
@@ -2524,6 +2547,10 @@
 <td><a href="http://www.ileaf.com/" data-linktype="external">Interleaf, Inc.</a></td>
 </tr>
 <tr>
+<td>LECH</td>
+<td><a href="http://antoniolechuga.com/" data-linktype="external">Antonio Lechuga</a></td>
+</tr>
+<tr>
 <td>Lee</td>
 <td>Lee Mounsey</td>
 </tr>
@@ -2811,6 +2838,10 @@
 <td><a href="http://www.mistifonts.com" data-linktype="external">Misti’s Fonts</a></td>
 </tr>
 <tr>
+<td>MHMD</td>
+<td><a href="https://www.instagram.com/mr.melikaei/" data-linktype="external">Mohammad Elikaei</a></td>
+</tr>
+<tr>
 <td>MHTY</td>
 <td><a href="http://www.minjooham.com" data-linktype="external">Minjoo Ham</a></td>
 </tr>
@@ -2993,6 +3024,10 @@
 <tr>
 <td>MTY</td>
 <td>Motoya Co. ,LTD.</td>
+</tr>
+<tr>
+<td>MULT</td>
+<td><a href="https://mulat.org/" data-linktype="external">mulat</a></td>
 </tr>
 <tr>
 <td>MUTF</td>
@@ -3263,6 +3298,10 @@
 <tr>
 <td>OST</td>
 <td><a href="http://www.orangeslicetype.nl" data-linktype="external">Orange Slice Type</a></td>
+</tr>
+<tr>
+<td>OTYP</td>
+<td><a href="http://o-type.co/" data-linktype="external">O-Type</a></td>
 </tr>
 <tr>
 <td>OURT</td>
@@ -3745,6 +3784,10 @@
 <td><a href="http://www.the-software-hub.com" data-linktype="external">The Software Hub</a></td>
 </tr>
 <tr>
+<td>SHYF</td>
+<td><a href="https://www.shyfoundry.com" data-linktype="external">ShyFoundry Fonts</a></td>
+</tr>
+<tr>
 <td>sic</td>
 <td><a href="https://www.font.jpn.com" data-linktype="external">Skill Information"S" Co., Ltd.</a></td>
 </tr>
@@ -3841,6 +3884,10 @@
 <td><a href="http://www.snuffletrumper.com/fonts" data-linktype="external">snuffletrumper</a></td>
 </tr>
 <tr>
+<td>STIX</td>
+<td><a href="https://www.stixfonts.org/" data-linktype="external">The STI Pub Companies</a></td>
+</tr>
+<tr>
 <td>Stor</td>
 <td><a href="http://www.stormtype.com/" data-linktype="external">Storm Type Foundry</a></td>
 </tr>
@@ -3912,6 +3959,10 @@
 <td><a href="http://www.typebank.co.jp/" data-linktype="external">TypeBank Co.,Ltd</a></td>
 </tr>
 <tr>
+<td>TAFT</td>
+<td><a href="https://taft.work/" data-linktype="external">Tural Alisoy Font</a></td>
+</tr>
+<tr>
 <td>TBFF</td>
 <td><a href="http://www.myfonts.com/foundry/trueblue/" data-linktype="external">TrueBlue Font Foundry</a></td>
 </tr>
@@ -3974,6 +4025,10 @@
 <tr>
 <td>THIN</td>
 <td><a href="http://www.thinstroke.com" data-linktype="external">Thinstroke Design LLC</a></td>
+</tr>
+<tr>
+<td>THNA</td>
+<td><a href="https://thaana.com/" data-linktype="external">Thaana Type Foundry</a></td>
 </tr>
 <tr>
 <td>THYH</td>
@@ -4857,6 +4912,5 @@ High contrast					</span>
 	</div>
 
 	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
-	<span id="adobe-target-experiment-container" hidden></span>
 </body>
 </html>
