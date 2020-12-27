@@ -1,8 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.7.35 (2021-Jan-??)
+  - ...
 
-## 0.7.34 (2020-Dec-??)
+
+## 0.7.34 (2020-Dec-27)
 ### New checks
   - **[com.google.fonts/check/mandatory_avar_table]:** Require variable fonts to include an avar table (issue #3100)
 
