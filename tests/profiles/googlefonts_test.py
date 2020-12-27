@@ -3393,14 +3393,14 @@ def test_check_gfaxisregistry_bounds():
 
     # The first axis declared in this family is 'wdth' (Width)
     # And the GF Axis Registry expects this axis to have a range
-    # not broader than min: 50 / max: 200
+    # not broader than min: 25 / max: 200
     # So...
     md = check["family_metadata"]
-    md.axes[0].min_value = 30
+    md.axes[0].min_value = 20
     assert_results_contain(check(ttFont, {"family_metadata": md}),
                            FAIL, "bad-axis-range")
 
-    md.axes[0].min_value = 50
+    md.axes[0].min_value = 25
     md.axes[0].max_value = 250
     assert_results_contain(check(ttFont, {"family_metadata": md}),
                            FAIL, "bad-axis-range")
