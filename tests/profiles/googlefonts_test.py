@@ -3528,11 +3528,18 @@ def test_check_metadata_designer_profiles():
     assert_results_contain(check(font),
                            FAIL, "multiple-designers")
 
-    # This reference Cabin font family lists "Impallary Type" in its METADATA.pb file.
+    # This reference Merriweather font family lists "Sorkin Type" in its METADATA.pb file.
     # And this foundry has a good profile on the catalog.
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
     assert_PASS(check(font))
 
+    # TODO: # Twitter URLs are tricky because they seem to always result in an HTTP 400 error
+    # TODO: # We should have a code-test to ensure valid twitter user profile URLs are accepted as valid.
+    # TODO: # This reference Cabin font family lists "Impallary Type" in its METADATA.pb file.
+    # TODO: # And this foundry has a twitter user profile listed on the catalog.
+    # TODO: font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    # TODO: assert_PASS(check(font))
+    #
     # TODO: FAIL, "mismatch"
     # TODO: FAIL, "missing-link"
     # TODO: FAIL, "broken-link"
