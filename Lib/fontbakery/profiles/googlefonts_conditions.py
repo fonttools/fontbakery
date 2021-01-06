@@ -581,6 +581,6 @@ def GFAxisRegistry():
                  "volume.textproto",
                  "weight.textproto",
                  "width.textproto",
-                 "wonkiness.textproto"]:
+                 "wonky.textproto"]:
         append_AxisMessage(resource_filename('fontbakery', 'data/' + axis))
     return registry
