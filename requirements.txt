@@ -4,8 +4,8 @@ defcon==0.7.2
 font-v==1.0.5
 fontTools[ufo,lxml,unicode]==4.18.2
 lxml==4.6.2
-opentype-sanitizer==8.1.2.post3
-pip-api==0.0.17
+opentype-sanitizer==8.1.3.post1
+pip-api==0.0.18
 protobuf==3.14.0
 requests==2.25.1
 ttfautohint-py==0.4.3
