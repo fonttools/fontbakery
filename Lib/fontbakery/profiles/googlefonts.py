@@ -153,6 +153,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/varfont_duplicate_instance_names',
     'com.google.fonts/check/varfont/consistent_axes',
     'com.google.fonts/check/varfont/unsupported_axes',
+    'com.google.fonts/check/gf-axisregistry/fvar_axis_defaults',
     'com.google.fonts/check/STAT/gf-axisregistry',
     'com.google.fonts/check/STAT/axis_order',
     'com.google.fonts/check/mandatory_avar_table'
@@ -4750,6 +4751,36 @@ def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, GFAxisReg
                           f"The font variation axis '{axis.tag}'"
                           f" is not yet registered on Google Fonts Axis Registry.")
 
+    if passed:
+        yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/gf-axisregistry/fvar_axis_defaults',
+    rationale = """
+        Check that axis defaults have a corresponding fallback name registered at the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
+    """,
+    conditions = ['is_variable_font',
+                  'GFAxisRegistry'],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3141'
+    }
+)
+def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegistry):
+    """ Validate defaults on fvar table match registered fallback names in GFAxisRegistry. """
+
+    passed = True
+    for axis in ttFont['fvar'].axes:
+        fallbacks = GFAxisRegistry[axis.axisTag]["fallbacks"]
+        if axis.defaultValue not in fallbacks.values():
+            passed = False
+            yield FAIL, \
+                  message('not-registered',
+                          f"The defaul value {axis.axisTag}:{axis.defaultValue} is not"
+                          f" registered as an axis fallback name on the Google Axis Registry.\n"
+                          f"\tYou should consider suggesting the addition of this value to the registry"
+                          f" or adopted one of the existing fallback names for this axis:\n"
+                          f"\t{fallbacks}")
     if passed:
         yield PASS, "OK"
 

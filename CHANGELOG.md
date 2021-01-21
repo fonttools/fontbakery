@@ -5,6 +5,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Profile
   - new Type Network profile for checking some of their new axis proposals (issue #3130)
 
+### New Checks
+  - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults']:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
+
 
 ## 0.7.34 (2021-Jan-06)
 ### New checks
