@@ -4775,7 +4775,7 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegi
         if axis.defaultValue not in fallbacks.values():
             passed = False
             yield FAIL, \
-                  message('not-registered',
+                  Message('not-registered',
                           f"The defaul value {axis.axisTag}:{axis.defaultValue} is not"
                           f" registered as an axis fallback name on the Google Axis Registry.\n"
                           f"\tYou should consider suggesting the addition of this value to the registry"
