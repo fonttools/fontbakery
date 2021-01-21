@@ -3421,6 +3421,21 @@ def test_check_gf_axisregistry_valid_tags():
                            FAIL, "bad-axis-tag")
 
 
+def test_check_gf_axisregistry_fvar_axis_defaults():
+    """Validate METADATA.pb axes tags are defined in gf-axisregistry."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/gf-axisregistry/fvar_axis_defaults")
+    # The default value for the axes in this reference varfont
+    # are properly registered in the registry:
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    assert_PASS(check(ttFont))
+
+    # And this value surely doen't map to a fallback name in the registry
+    ttFont['fvar'].axes[0].defaultValue = 123
+    assert_results_contain(check(ttFont),
+                           FAIL, "not-registered")
+
+
 def test_check_STAT_gf_axisregistry():
     """Validate STAT particle names and values match the fallback names in GFAxisRegistry."""
     check = CheckTester(googlefonts_profile,
