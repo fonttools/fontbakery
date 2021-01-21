@@ -2,7 +2,8 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.7.35 (2021-Jan-??)
-  - ...
+### New Profile
+  - new Type Network profile for checking some of their new axis proposals (issue #3130)
 
 
 ## 0.7.34 (2021-Jan-06)
