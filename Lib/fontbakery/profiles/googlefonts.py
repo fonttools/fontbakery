@@ -4759,6 +4759,14 @@ def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, GFAxisReg
     id = 'com.google.fonts/check/gf-axisregistry/fvar_axis_defaults',
     rationale = """
         Check that axis defaults have a corresponding fallback name registered at the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
+
+        This is necessary for the following reasons:
+
+        To get ZIP files downloads on Google Fonts to be accurate — otherwise the chosen default font is not generated. The Newsreader family, for instance, has a default value on the 'opsz' axis of 16pt. If 16pt was not a registered fallback position, then the ZIP file would instead include another position as default (such as 14pt).
+
+        For the Variable fonts to display the correct location on the specimen page.
+
+        For VF with no weight axis to be displayed at all. For instance, Ballet, which has no weight axis, was not appearing in sandbox because default position on 'opsz' axis was 16pt, and it was not yet a registered fallback positon.
     """,
     conditions = ['is_variable_font',
                   'GFAxisRegistry'],
