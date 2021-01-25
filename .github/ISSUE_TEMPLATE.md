@@ -8,4 +8,4 @@
 
 ## Resources and exact process needed to replicate
 
-(Please provide here an URL to a font file that appears to cause the issue, and the exact steps from updating to the latest code on the `master` branch to reproduce the Observed Behaviour. We need this in for replicating the issue and fixing it :)
+(Please provide here an URL to a font file that appears to cause the issue, and the exact steps from updating to the latest code on the `main` branch to reproduce the Observed Behaviour. We need this in for replicating the issue and fixing it :)

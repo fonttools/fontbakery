@@ -38,7 +38,7 @@ ChangeLog
 - Completed initial design in VBF format, Latin-1 encoding
 
 29 September 2012 (Andreas Eigendorf) ABeeZee v. 1.001
-- Completed mastering for initial release, Latin-1 encoding
+- Completed font finalization for initial release, Latin-1 encoding
 
 
 If you make modifications be sure to add your name (N), 

@@ -156,11 +156,11 @@ Community Guidelines
 --------------------
 
 This project follows `Google's Open Source Community Guidelines <https://opensource.google.com/conduct/>`_ and 
-the Font Bakery `Code of Conduct <https://github.com/googlefonts/fontbakery/blob/master/CODE_OF_CONDUCT.md>`_.
+the Font Bakery `Code of Conduct <https://github.com/googlefonts/fontbakery/blob/main/CODE_OF_CONDUCT.md>`_.
 
 
 License
 -------
 
 The source code is licensed under the `Apache v2.0
-License <https://github.com/googlefonts/fontbakery/blob/master/LICENSE.txt>`__.
+License <https://github.com/googlefonts/fontbakery/blob/main/LICENSE.txt>`__.

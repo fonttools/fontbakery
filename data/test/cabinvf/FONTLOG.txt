@@ -59,7 +59,7 @@ If you make modifications be sure to add your name (N), email (E), web-address
 N: Kalapi Gajjar-Bordawekar
 E: hello@kalapigajjar.com
 W: http://www.kalapigajjar.com
-D: Drawing fixes, character-set expansion, and font mastering
+D: Drawing fixes, character-set expansion, and font finalization
 
 N: Igino Marini
 E: mail@iginomarini.com
