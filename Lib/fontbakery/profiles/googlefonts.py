@@ -3928,13 +3928,13 @@ def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
                        "This can be accomplished by using the"
                        " 'gftools fix-hinting' command.\n"
                        "\n"
-                       "# create virtualenv"
+                       "# create virtualenv\n"
                        "python3 -m venv venv"
                        "\n"
-                       "# activate virtualenv"
+                       "# activate virtualenv\n"
                        "source venv/bin/activate"
                        "\n"
-                       "# install gftools"
+                       "# install gftools\n"
                        "pip install git+https://www.github.com"
                        "/googlefonts/tools"))
 
