@@ -15,7 +15,7 @@ For a quick overview, check out the `list of checks <https://font-bakery.readthe
         <iframe src="https://www.youtube.com/embed/vFjQEkJv9BQ" frameborder="0" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
     </div>
 
-The project is licensed under the `Apache v2.0 license <https://github.com/googlefonts/fontbakery/blob/master/LICENSE.txt>`_ and the source is available at https://github.com/googlefonts/fontbakery.
+The project is licensed under the `Apache v2.0 license <https://github.com/googlefonts/fontbakery/blob/main/LICENSE.txt>`_ and the source is available at https://github.com/googlefonts/fontbakery.
 
 .. toctree::
    :maxdepth: 2
@@ -74,4 +74,4 @@ Indices
 
 .. |License| image:: https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg
    :alt: License
-   :target: https://github.com/googlefonts/fontbakery/blob/master/LICENSE.txt
+   :target: https://github.com/googlefonts/fontbakery/blob/main/LICENSE.txt

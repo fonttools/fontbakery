@@ -42,9 +42,9 @@ submitted one (even if it was for a different project), you probably
 don’t need to do it again.
 
 After your contribution is included, you will be listed in the
-`CONTRIBUTORS.txt <https://github.com/googlefonts/fontbakery/blob/master/CONTRIBUTORS.txt>`__
+`CONTRIBUTORS.txt <https://github.com/googlefonts/fontbakery/blob/main/CONTRIBUTORS.txt>`__
 and/or
-`AUTHORS.txt <https://github.com/googlefonts/fontbakery/blob/master/AUTHORS.txt>`__
+`AUTHORS.txt <https://github.com/googlefonts/fontbakery/blob/main/AUTHORS.txt>`__
 files. ``CONTRIBUTORS.txt`` is the official list of people who can
 contribute (and typically have contributed) code to this repository,
 while the ``AUTHORS.txt`` file lists the copyright holders.

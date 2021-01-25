@@ -227,7 +227,7 @@ def ftxvalidator_cmd():
         If Font Bakery is not running on an OSX machine, the machine running Font Bakery could access `ftxvalidator` on OSX, e.g. via ssh or a remote procedure call (rpc).
 
         There's an ssh example implementation at:
-        https://github.com/googlefonts/fontbakery/blob/master/prebuilt/workarounds/ftxvalidator/ssh-implementation/ftxvalidator
+        https://github.com/googlefonts/fontbakery/blob/main/prebuilt/workarounds/ftxvalidator/ssh-implementation/ftxvalidator
     """,
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/2184'

@@ -113,7 +113,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/ligature_carets]**: Add GlyphsApp instructions for fixing ligature caret WARNs (issue #2955)
   - **[com.google.fonts/check/metadata/broken_links]**: request URLs only once and accept status 429 - "too many requests" (issue #2974)
   - **[com.google.fonts/check/description/broken_links]**: request URLs only once and accept status 429 - "too many requests" (issue #2974)
-  - **[com.google.fonts/check/varfont_instance_names]**: Check will now only allow 18 named instances (Thin-Black + Italics). This was decided in a Friday team meeting on the 2020/06/26. Changes also reflect the updated spec, https://github.com/googlefonts/gf-docs/tree/master/Spec#fvar-instances.
+  - **[com.google.fonts/check/varfont_instance_names]**: Check will now only allow 18 named instances (Thin-Black + Italics). This was decided in a Friday team meeting on the 2020/06/26. Changes also reflect the updated spec, https://github.com/googlefonts/gf-docs/tree/main/Spec#fvar-instances.
 
 
 ## 0.7.28 (2020-Jul-09)
@@ -221,7 +221,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Split too long lines in rationale text such as long URLs (issue #2835)
 
 ### Documentation
-  - Documentation at ReadTheDocs should default to stable (last release on PyPI) instead of latest (development on master branch). (issue #2819)
+  - Documentation at ReadTheDocs should default to stable (last release on PyPI) instead of latest (development on 'main' branch). (issue #2819)
   - Clearly mention the list of checks on the top of the documentation front-page. (issue #2814)
 
 
@@ -928,7 +928,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Bump up requests version to mitigate CVE
   - [googlefonts.py] modify ttfa param testing string literal. See https://github.com/googlefonts/fontbakery/pull/2116#issuecomment-431725719
   - Do not check the ttfautohint params if font is not hinted. Skip the com.google.fonts/check/has_ttfautohint_params test if the font is not hinted using ttfautohint
-  - fix implementation of blacklisting of FontVal checks (follow up for PRs #2102 and #2104)
+  - fix implementation of blocklisting of FontVal checks (follow up for PRs #2102 and #2104)
   - Add comments to fontval check downgrades and silencing and also fix the implementation of silencing them. (issue #2102)
   - com.google.fonts/check/037: Downgrade missing Mac name table records to warn. Fontmake does not generate mac name table records. Apparently, they're not needed, https://github.com/googlei18n/fontmake/issues/414
   - Decode ufolint output for better text display
@@ -1108,7 +1108,7 @@ More info on MFDOS is available at: https://github.com/davelab6/mfdos
     - as well as the aforementioned **(iv)** checks for UFO sources.
   - Lasse Fister (`@graphicore`) improved the check-runner to enable easier customization of specs, with tools to remove boilerplate
     from specifications and to make maintenance easier. He also wrote technical documentation
-    (available at https://github.com/googlefonts/fontbakery/blob/master/docs/writing-specifications.md)
+    (available at https://github.com/googlefonts/fontbakery/blob/main/docs/writing-specifications.md)
     describing how to create Font Bakery specs with a customized set of checks.
 
 ### Code-Test coverage
@@ -1265,7 +1265,7 @@ More info on MFDOS is available at: https://github.com/davelab6/mfdos
   - overall refactoring of all check implementations so that they're all self-contained
   - updated prebuilt FVal binary (built from proper sources)
   - Added APIs used by the web dashboard and report documents
-  - whitelist: a few legacy CamelCased familynames (check/109)
+  - allowlist: a few legacy CamelCased familynames (check/109)
   - Added VTT-related tables to the list of unwanted tables (check/053)
   - fixed computation of font_metadata condition
   - fixed crash on fontbakery-check-font-version.py
