@@ -8,6 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults']:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
 
+### Changes to existing checks
+  - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.
+
 
 ## 0.7.34 (2021-Jan-06)
 ### New checks
