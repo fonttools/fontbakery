@@ -1906,7 +1906,7 @@ class Profile:
         return result
 
 
-FILE_MODULE_NAME_PREFIX = 'fontbakery.__file_modules.'
+FILE_MODULE_NAME_PREFIX = '.'
 def get_module_from_file(filename):
     # filename = 'my/path/to/file.py'
     # module_name = 'file_module.file_py'
