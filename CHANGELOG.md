@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.7.35 (2021-Jan-??)
 ### New Profile
   - new Type Network profile for checking some of their new axis proposals (issue #3130)
+  - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
 
 ### New Checks
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults']:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
