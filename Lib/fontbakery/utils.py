@@ -161,12 +161,13 @@ def pretty_print_list(config, values, shorten=10, sep=", ", glue="and"):
         return f"{sep} {glue} {str(values[-1])}"
 
 
-def bullet_list(config, values, bullet="-", shorten=10):
-    return f" {bullet} " + pretty_print_list(config,
-                                             values,
-                                             shorten=shorten,
-                                             sep=f"\n {bullet} ",
-                                             glue=f"\n {bullet} And")
+def bullet_list(config, items, bullet="-", indentation="\t"):
+    return f"{indentation}{bullet} " +\
+           pretty_print_list(config,
+                             items,
+                             sep=f"\n{indentation}{bullet} ",
+                             glue=f"\n{indentation}{bullet} And")
+
 
 def get_regular(fonts):
     # TODO: Maybe also support getting a regular instance from a variable font?
