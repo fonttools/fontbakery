@@ -1,7 +1,16 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.8.5 (2021-Dec-??)
+## 0.8.6 (2022-Feb-??)
+### New Checks
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/designspace_has_sources]:** Check that all sources in a designspace can be loaded successfully. (PR #3168)
+  - **[com.google.fonts/check/designspace_has_default_master]:** Check that a default master is defined. (PR #3168)
+  - **[com.google.fonts/check/designspace_has_consistent_glyphset]:** Check that non-default masters do not contain glyphs not found in the default master. (PR #3168)
+  - **[com.google.fonts/check/designspace_has_consistent_codepoints]:** Check that Unicode assignments are consistent between masters. (PR #3168)
+
+
+## 0.8.5 (2022-Jan-13)
 ### Noteworthy code-changes
   - New command line flag: `-F, --full-list` to print full lists (`pretty_print_list` method) even when the total number of items exceeds a certain threashold. (issues #3173 and #3512)
   - Included a few of the more recently added profiles that were still missing on our online docs (issue #3518)

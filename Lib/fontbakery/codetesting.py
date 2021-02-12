@@ -95,6 +95,8 @@ class CheckTester:
                 values = {'readme_md': values}
             elif values.endswith('.ufo'):
                 values = {'ufo': values}
+            elif values.endswith('.designspace'):
+                values = {'designspace': values}
             elif values.endswith('METADATA.pb'):
                 fonts = [os.path.join(os.path.dirname(values), f.filename)
                          for f in family_metadata(values).fonts]
