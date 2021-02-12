@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<designspace format="4.1">
+  <axes>
+    <axis tag="wght" name="weight" minimum="1" maximum="1000" default="400"/>
+  </axes>
+  <sources>
+    <source filename="Stupid Font Bold.ufo" stylename="Regular">
+      <location>
+        <dimension name="weight" xvalue="700"/>
+      </location>
+    </source>
+    <source filename="Stupid Font Regular.ufo" stylename="Regular">
+      <location>
+        <dimension name="weight" xvalue="400"/>
+      </location>
+    </source>
+  </sources>
+</designspace>
