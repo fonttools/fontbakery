@@ -31,7 +31,7 @@ git add -p
 # If something changed, commit it:
 git commit -m "Updating cache of vendor IDs list from Microsoft's website"
 
-# Check for updates on the Google Fonts Axis Registry textproto files at https://github.com/google/fonts/tree/master/axisregistry
+# Check for updates on the Google Fonts Axis Registry textproto files at https://github.com/google/fonts/tree/main/axisregistry
 # Newest files must be copied and committed at Lib/fontbakery/data/*.textproto
 
 # update the docs so that https://font-bakery.readthedocs.io/

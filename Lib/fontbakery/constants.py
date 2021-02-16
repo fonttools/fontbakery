@@ -63,7 +63,7 @@ PLACEHOLDER_LICENSING_TEXT = {
 
 SHOW_GF_DOCS_MSG = (
     "Further info can be found in our spec "
-    "https://github.com/googlefonts/gf-docs/tree/master/Spec"
+    "https://github.com/googlefonts/gf-docs/tree/main/Spec"
 )
 
 # ANSI color codes for the helper logging class:

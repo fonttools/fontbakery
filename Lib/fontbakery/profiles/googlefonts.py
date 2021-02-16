@@ -4463,7 +4463,7 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
     rationale="""
         CJK fonts have different vertical metrics when compared to Latin fonts. We follow the schema developed by dr Ken Lunde for Source Han Sans and the Noto CJK fonts.
 
-        Our documentation includes further information: https://github.com/googlefonts/gf-docs/tree/master/Spec#cjk-vertical-metrics
+        Our documentation includes further information: https://github.com/googlefonts/gf-docs/tree/main/Spec#cjk-vertical-metrics
     """
 )
 def com_google_fonts_check_cjk_vertical_metrics(ttFont):
@@ -4695,7 +4695,7 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
 @check(
     id = 'com.google.fonts/check/metadata/gf-axisregistry_bounds',
     rationale = """
-        Each axis range in a METADATA.pb file must be registered, and within the bounds of the axis definition in the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
+        Each axis range in a METADATA.pb file must be registered, and within the bounds of the axis definition in the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/main/axisregistry
     """,
     conditions = ['is_variable_font',
                   'family_metadata',
@@ -4725,7 +4725,7 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, GFAxisRegistr
 @check(
     id = 'com.google.fonts/check/metadata/gf-axisregistry_valid_tags',
     rationale = """
-        Ensure all axes in a METADATA.pb file are registered in the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
+        Ensure all axes in a METADATA.pb file are registered in the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/main/axisregistry
 
         Why does Google Fonts have its own Axis Registry?
 
@@ -4758,7 +4758,7 @@ def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, GFAxisReg
 @check(
     id = 'com.google.fonts/check/gf-axisregistry/fvar_axis_defaults',
     rationale = """
-        Check that axis defaults have a corresponding fallback name registered at the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
+        Check that axis defaults have a corresponding fallback name registered at the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/main/axisregistry
 
         This is necessary for the following reasons:
 
@@ -4796,7 +4796,7 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegi
 @check(
     id = 'com.google.fonts/check/STAT/gf-axisregistry',
     rationale = """
-        Check that particle names and values on STAT table match the fallback names in each axis entry at the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/master/axisregistry
+        Check that particle names and values on STAT table match the fallback names in each axis entry at the Google Fonts Axis Registry, available at https://github.com/google/fonts/tree/main/axisregistry
     """,
     conditions = ['is_variable_font',
                   'GFAxisRegistry'],
@@ -5002,7 +5002,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
     """METADATA.pb: Designer is listed with the correct name on
        the Google Fonts catalog of designers?"""
     DESIGNER_INFO_RAW_URL = ("https://raw.githubusercontent.com/google/"
-                             "fonts/master/catalog/designers/{}/")
+                             "fonts/main/catalog/designers/{}/")
     from fontbakery.utils import get_DesignerInfoProto_Message
     from unidecode import unidecode
     import requests

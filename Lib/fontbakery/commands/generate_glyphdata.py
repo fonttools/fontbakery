@@ -49,9 +49,9 @@ def collate_fonts_data(fonts_data):
 
 
 def main():
-    git_ofl_prefix = 'http://github.com/google/fonts/raw/master/ofl/'
-    git_ufl_prefix = 'http://github.com/google/fonts/raw/master/ufl/'
-    git_apache_prefix = 'http://github.com/google/fonts/raw/master/apache/'
+    git_ofl_prefix = 'http://github.com/google/fonts/raw/main/ofl/'
+    git_ufl_prefix = 'http://github.com/google/fonts/raw/main/ufl/'
+    git_apache_prefix = 'http://github.com/google/fonts/raw/main/apache/'
 
     fonts_urls = [
         git_ofl_prefix + 'sourceserifpro/SourceSerifPro-Bold.ttf',
