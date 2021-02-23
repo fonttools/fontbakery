@@ -470,7 +470,7 @@ def github_gfonts_ttFont(ttFont, license):
     }
     filename = os.path.basename(ttFont.reader.file.name)
     fontname = filename.split('-')[0].lower()
-    url = ("https://github.com/google/fonts/raw/master"
+    url = ("https://github.com/google/fonts/raw/main"
            "/{}/{}/{}").format(LICENSE_DIRECTORY[license],
                                fontname,
                                filename)
