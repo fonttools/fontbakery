@@ -5002,7 +5002,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
     """METADATA.pb: Designer is listed with the correct name on
        the Google Fonts catalog of designers?"""
     DESIGNER_INFO_RAW_URL = ("https://raw.githubusercontent.com/google/"
-                             "fonts/main/catalog/designers/{}/")
+                             "fonts/master/catalog/designers/{}/")
     from fontbakery.utils import get_DesignerInfoProto_Message
     from unidecode import unidecode
     import requests
