@@ -2,6 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.7.35 (2021-Jan-??)
+### Release note
+  - Axis Registry has been updated to commit https://github.com/google/fonts/tree/6418bd97834330f245cce4131ec3b8b98cb333be which includes changes to the `opsz` axis.
+
 ### New Profile
   - new Type Network profile for checking some of their new axis proposals (issue #3130)
   - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
