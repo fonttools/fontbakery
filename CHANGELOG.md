@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.
+  - **[com.google.fonts/check/STAT/gf-axisregistry]:** Ensure that STAT tables contain Axis Values
 
 
 ## 0.7.34 (2021-Jan-06)

@@ -4812,7 +4812,13 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
 
     passed = True
     format4_entries = False
-    for axis_value in ttFont['STAT'].table.AxisValueArray.AxisValue:
+    axis_value_array = ttFont['STAT'].table.AxisValueArray
+    if not axis_value_array:
+        yield FAIL, Message("missing-axis-values",
+                            "STAT table is missing Axis Value Records")
+        return
+
+    for axis_value in axis_value_array.AxisValue:
         if axis_value.Format == 4:
             coords = []
             for record in axis_value.AxisValueRecord:

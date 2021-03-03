@@ -3450,13 +3450,19 @@ def test_check_STAT_gf_axisregistry():
     ttFont = TTFont(TEST_FILE("librecaslontext/LibreCaslonText[wght].ttf"))
     assert_PASS(check(ttFont))
 
-    # Finally, we'll break it by setting an invalid coordinate for "Bold":
+    # Let's break it by setting an invalid coordinate for "Bold":
     assert ttFont['STAT'].table.AxisValueArray.AxisValue[3].ValueNameID == ttFont['name'].names[4].nameID
     assert ttFont['name'].names[4].toUnicode() == "Bold"
     ttFont['STAT'].table.AxisValueArray.AxisValue[3].Value = 800 # instead of the expected 700
     # Note: I know it is AxisValue[3] and names[4] because I inspected the font using ttx.
     assert_results_contain(check(ttFont),
                            FAIL, "bad-coordinate")
+
+    # Let's remove all Axis Values. This will fail since we Google Fonts
+    # requires them.
+    ttFont['STAT'].table.AxisValueArray = None
+    assert_results_contain(check(ttFont),
+                           FAIL, "missing-axis-values")
 
 
 def test_check_metadata_consistent_axis_enumeration():
