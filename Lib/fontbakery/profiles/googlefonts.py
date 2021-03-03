@@ -157,7 +157,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/gf-axisregistry/fvar_axis_defaults',
     'com.google.fonts/check/STAT/gf-axisregistry',
     'com.google.fonts/check/STAT/axis_order',
-    'com.google.fonts/check/mandatory_avar_table'
+    'com.google.fonts/check/mandatory_avar_table',
+    'com.google.fonts/check/missing_small_caps_glyphs'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -5159,6 +5160,39 @@ def com_google_fonts_check_description_family_update(description, github_gfonts_
                       "Please consider mentioning note-worthy improvements made"
                       " to the family recently.")
     else:
+        yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/missing_small_caps_glyphs',
+    rationale = """
+        Ensure small caps glyphs are available if a font declares smcp or c2sc OT features
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3154'
+    }
+)
+def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
+    """Check small caps glyphs are available"""
+
+    passed = True
+    if 'GSUB' in ttFont and ttFont['GSUB'].table.FeatureList is not None:
+        llist = ttFont['GSUB'].table.LookupList
+        for record in range(ttFont['GSUB'].table.FeatureList.FeatureCount):
+            feature = ttFont['GSUB'].table.FeatureList.FeatureRecord[record]
+            tag = feature.FeatureTag
+            if tag == 'smcp':
+                for index in feature.Feature.LookupListIndex:
+                    smcp_glyphs = set(llist.Lookup[index].SubTable[0].mapping.values())
+                    missing = smcp_glyphs - set(ttFont.getGlyphNames())
+                    if missing:
+                        passed = False
+                        yield FAIL,\
+                              Message('missing-scmp-glyphs',
+                                      f"{missing}")
+                break
+
+    if passed:
         yield PASS, "OK"
 
 
