@@ -360,14 +360,14 @@ def test_check_name_family_and_style_max_length():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/name/family_and_style_max_length")
 
-    # Our reference Cabin Regular is known to be good 
+    # Our reference Cabin Regular is known to be good
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
     # So it must PASS the check:
     assert_PASS(check(ttFont),
                 'with a good font...')
 
-    # Then we emit a WARNing with long family/style names 
+    # Then we emit a WARNing with long family/style names
     # Originaly these were based on the example on the glyphs tutorial
     # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances)
     # but later we increased a bit the max allowed length.
@@ -3579,3 +3579,14 @@ def test_check_mandatory_avar_table():
     assert_results_contain(check(ttFont),
                            FAIL, "missing-avar")
 
+def test_check_grade_axis_same_spacing():
+    """Ensure variable fonts include an avar table."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/grade_axis_same_spacing")
+
+    good_font = TTFont(TEST_FILE("varfont/GoodGrades-VF.ttf"))
+    assert_PASS(check(good_font))
+
+    bad_font = TTFont(TEST_FILE("varfont/BadGrades-VF.ttf"))
+    assert_results_contain(check(bad_font),
+                           FAIL, "GRAD-changes-spacing")

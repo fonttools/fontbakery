@@ -156,7 +156,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/gf-axisregistry/fvar_axis_defaults',
     'com.google.fonts/check/STAT/gf-axisregistry',
     'com.google.fonts/check/STAT/axis_order',
-    'com.google.fonts/check/mandatory_avar_table'
+    'com.google.fonts/check/mandatory_avar_table',
+    'com.google.fonts/check/grade_axis_same_spacing',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -179,7 +180,7 @@ GOOGLEFONTS_PROFILE_CHECKS = \
         - Oswald-BoldItalic.ttf
 
         Variable fonts must list the axis tags in alphabetical order in square brackets and separated by commas:
-  
+
         - Roboto[wdth,wght].ttf
         - Familyname-Italic[wght].ttf
     """
@@ -356,7 +357,7 @@ def com_google_fonts_check_description_git_url(description_html):
     conditions = ['description'],
     rationale = """
         Sometimes people write malformed HTML markup. This check should ensure the file is good.
- 
+
         Additionally, when packaging families for being pushed to the `google/fonts` git repo, if there is no DESCRIPTION.en_us.html file, some older versions of the `add_font.py` tool insert a dummy description file which contains invalid html. This file needs to either be replaced with an existing description file or edited by hand.
     """,
     misc_metadata = {
@@ -518,7 +519,7 @@ def com_google_fonts_check_metadata_multiple_designers(family_metadata):
     conditions = ['family_metadata'],
     rationale = """
         We must use commas instead of forward slashes because the server-side code at the fonts.google.com directory will segment the string on the commas into a list of names and display the first item in the list as the "principal designer" while the remaining names are identified as "contributors".
-   
+
         See eg https://fonts.google.com/specimen/Rubik
     """
 )
@@ -1514,7 +1515,7 @@ def com_google_fonts_check_epar(ttFont):
     conditions = ['is_ttf'],
     rationale = """
         Traditionally version 0 'gasp' tables were set so that font sizes below 8 ppem had no grid fitting but did have antialiasing. From 9-16 ppem, just grid fitting. And fonts above 17ppem had both antialiasing and grid fitting toggled on. The use of accelerated graphics cards and higher resolution screens make this approach obsolete. Microsoft's DirectWrite pushed this even further with much improved rendering built into the OS and apps.
-   
+
         In this scenario it makes sense to simply toggle all 4 flags ON for all font sizes.
     """
 )
@@ -1618,7 +1619,7 @@ def com_google_fonts_check_name_familyname_first_char(ttFont):
     id = 'com.google.fonts/check/name/ascii_only_entries',
     rationale = """
         The OpenType spec requires ASCII for the POSTSCRIPT_NAME (nameID 6).
-   
+
         For COPYRIGHT_NOTICE (nameID 0) ASCII is required because that string should be the same in CFF fonts which also have this requirement in the OpenType spec.
 
         Note:
@@ -4160,7 +4161,7 @@ def com_google_fonts_check_name_rfn(ttFont):
     conditions=['are_ttf'],
     rationale="""
         Use of some unacceptable control characters in the U+0000 - U+001F range can lead to rendering issues on some platforms.
-   
+
         Acceptable control characters are defined as .null (U+0000) and CR (U+000D) for this test.
     """
 )
@@ -4335,7 +4336,7 @@ def com_google_fonts_check_repo_fb_report(family_directory):
     rationale="""
         Sometimes people check in ZIPs into their font project repositories. While we accept the practice of checking in binaries, we believe that a ZIP is a step too far ;)
 
-        Note: a source purist position is that only source files and build scripts should be checked in. 
+        Note: a source purist position is that only source files and build scripts should be checked in.
     """,
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/2903'
@@ -5112,6 +5113,44 @@ def com_google_fonts_check_mandatory_avar_table(ttFont):
         yield FAIL,\
               Message('missing-avar',
                       "This variable font does not have an avar table.")
+    else:
+        yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/grade_axis_same_spacing',
+    rationale = """
+        A grade axis should not change the spacing of a font.
+    """,
+    conditions = ["is_ttf", "GRAD_axis"],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3100'
+    }
+)
+def com_google_fonts_check_grade_axis_same_spacing(ttFont):
+    """Ensure a grade axis does not change the spacing."""
+
+    gvar = ttFont["gvar"]
+    offended_glyphs = set()
+    for glyph, deltas in gvar.variations.items():
+        for delta in deltas:
+            if "GRAD" not in delta.axes:
+                continue
+            # In TTFs, the last four points of a glyph are special "phantom points",
+            # where changes translate to different horizontal and vertical advance
+            # widths. We check that if the delta is not None (meaning that it's a
+            # value inferred by varLib.iup, which infers phantom points to be
+            # (0, 0)), it is at least explicitly (0, 0), meaning no change.
+            if any(c is not None and c != (0, 0) for c in delta.coordinates[-4:]):
+                offended_glyphs.add(glyph)
+                break
+
+    if offended_glyphs:
+        offended_glyphs_str = "\n".join(offended_glyphs)
+        yield FAIL,\
+              Message('GRAD-changes-spacing',
+                      "The following glyphs have their spacing changed by the GRAD axis:"
+                      f"\n{offended_glyphs_str}")
     else:
         yield PASS, "OK"
 

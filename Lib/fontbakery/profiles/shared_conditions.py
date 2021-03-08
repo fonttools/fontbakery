@@ -235,6 +235,12 @@ def ital_axis(ttFont):
             if axis.axisTag == "ital":
                 return axis
 
+@condition
+def GRAD_axis(ttFont):
+    if "fvar" in ttFont:
+        for axis in ttFont["fvar"].axes:
+            if axis.axisTag == "GRAD":
+                return axis
 
 def get_instance_axis_value(ttFont, instance_name, axis_tag):
     if not is_variable_font(ttFont):
