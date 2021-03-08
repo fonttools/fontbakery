@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New Checks
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults']:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
+  - **[com.google.fonts/check/grade_axis_same_spacing']:** a grade axis does not change the spacing (issue #3187)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.
