@@ -3579,3 +3579,19 @@ def test_check_mandatory_avar_table():
     assert_results_contain(check(ttFont),
                            FAIL, "missing-avar")
 
+
+def test_check_description_family_update():
+    """On a family update, the DESCRIPTION.en_us.html file should ideally also be updated."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/description/family_update")
+
+    font = TEST_FILE("abeezee/ABeeZee-Regular.ttf")
+    ABEEZEE_DESC = ('https://raw.githubusercontent.com/google/fonts/'
+                    'main/ofl/abeezee/DESCRIPTION.en_us.html')
+    import requests
+    desc = requests.get(ABEEZEE_DESC).text
+    assert_results_contain(check(font, {'description': desc}),
+                           FAIL, "description-not-updated")
+
+    assert_PASS(check(font, {'description': desc + '\nSomething else...'}))
+
