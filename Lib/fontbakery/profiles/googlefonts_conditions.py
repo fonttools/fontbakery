@@ -248,8 +248,10 @@ def license_contents(license_path):
 @condition
 def license_path(licenses):
     """Get license path."""
-    # return license if there is exactly one license
-    return licenses[0] if len(licenses) == 1 else None
+    # This assumes that a repo can have multiple license files
+    # and they're all the same.
+    # FIXME: We should have a fontbakery check for that, though!
+    return licenses[0]
 
 
 @condition
