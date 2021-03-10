@@ -248,8 +248,10 @@ def license_contents(license_path):
 @condition
 def license_path(licenses):
     """Get license path."""
-    # return license if there is exactly one license
-    return licenses[0] if len(licenses) == 1 else None
+    # This assumes that a repo can have multiple license files
+    # and they're all the same.
+    # FIXME: We should have a fontbakery check for that, though!
+    return licenses[0]
 
 
 @condition
@@ -469,15 +471,41 @@ def github_gfonts_ttFont(ttFont, license):
         "LICENSE.txt": "apache"
     }
     filename = os.path.basename(ttFont.reader.file.name)
-    fontname = filename.split('-')[0].lower()
-    url = ("https://github.com/google/fonts/raw/main"
-           "/{}/{}/{}").format(LICENSE_DIRECTORY[license],
-                               fontname,
-                               filename)
+    familyname = filename.split('-')[0].lower()
+    url = (f"https://github.com/google/fonts/raw/main"
+           f"/{LICENSE_DIRECTORY[license]}/{familyname}/{filename}")
     try:
         fontfile = download_file(url)
         if fontfile:
             return TTFont(fontfile)
+    except HTTPError:
+        return None
+
+
+@condition
+def github_gfonts_description(ttFont, license):
+    """Get the contents of the DESCRIPTION.en_us.html file
+       from the google/fonts github repository corresponding
+       to a given ttFont.
+    """
+    if not license:
+        return None
+
+    from fontbakery.utils import download_file
+    from urllib.request import HTTPError
+    LICENSE_DIRECTORY = {
+        "OFL.txt": "ofl",
+        "UFL.txt": "ufl",
+        "LICENSE.txt": "apache"
+    }
+    filename = os.path.basename(ttFont.reader.file.name)
+    familyname = filename.split('-')[0].lower()
+    url = (f"https://github.com/google/fonts/raw/main"
+           f"/{LICENSE_DIRECTORY[license]}/{familyname}/DESCRIPTION.en_us.html")
+    try:
+        descfile = download_file(url)
+        if descfile:
+            return descfile.read().decode('UTF-8')
     except HTTPError:
         return None
 

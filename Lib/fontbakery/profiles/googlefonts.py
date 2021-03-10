@@ -73,7 +73,8 @@ DESCRIPTION_CHECKS = [
     'com.google.fonts/check/description/min_length',
     'com.google.fonts/check/description/max_length',
     'com.google.fonts/check/description/git_url',
-    'com.google.fonts/check/description/eof_linebreak'
+    'com.google.fonts/check/description/eof_linebreak',
+    'com.google.fonts/check/description/family_update'
 ]
 
 FAMILY_CHECKS = [
@@ -5112,6 +5113,33 @@ def com_google_fonts_check_mandatory_avar_table(ttFont):
         yield FAIL,\
               Message('missing-avar',
                       "This variable font does not have an avar table.")
+    else:
+        yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/description/family_update',
+    rationale = """
+        We want to ensure that any significant changes to the font family are properly mentioned in the DESCRIPTION file.
+
+        In general, it means that the contents of the DESCRIPTION.en_us.html file will typically change if when font files are updated. Please treat this check as a reminder to do so whenever appropriate!
+    """,
+    conditions = ["description",
+                  "github_gfonts_description"],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3182'
+    }
+)
+def com_google_fonts_check_description_family_update(description, github_gfonts_description):
+    """On a family update, the DESCRIPTION.en_us.html file should ideally also be updated."""
+    if github_gfonts_description == description:
+        yield WARN,\
+              Message('description-not-updated',
+                      "The DESCRIPTION.en_us.html file in this family has not changed"
+                      " in comparison to the latest font release on the"
+                      " google/fonts github repo.\n"
+                      "Please consider mentioning note-worthy improvements made"
+                      " to the family recently.")
     else:
         yield PASS, "OK"
 
