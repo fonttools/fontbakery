@@ -440,10 +440,17 @@ class TerminalReporter(TerminalProgress):
         # Log statuses have weights >= 0
         # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
         if status.weight >= self._log_threshold:
-            print('    * {}: {}'.format(formatStatus(self.theme, status),
-                                        message))
+            from fontbakery.utils import text_flow
+            status_name = getattr(status, 'name', status)
+            formated_msg = '{} {}'.format(formatStatus(self.theme, status), message)
             if hasattr(message, 'traceback'):
-                print('        ','\n         '.join(message.traceback.split('\n')))
+                formated_msg += '\n' + '\n  ↳ '.join(message.traceback.split('\n'))
+            print(text_flow(formated_msg,
+                            width=76,
+                            indent=4,
+                            first_line_indent=-1 -len(status_name),
+                            left_margin=6,
+                            space_padding=True))
 
 
         if status == ENDCHECK:

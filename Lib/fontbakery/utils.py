@@ -18,9 +18,11 @@ import os
 from fontTools.ttLib import TTFont
 from typing import Text, Optional
 
-def text_flow(content, width=80, indent=0, left_margin=0,
+
+def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
               space_padding=False, text_color="{}".format):
     result = ""
+    line_num = 0
     for line in content.split("\n"):
         if line.strip() == "":
             if space_padding:
@@ -30,7 +32,13 @@ def text_flow(content, width=80, indent=0, left_margin=0,
 
         words = line.split(" ")
         while words:
-            this_line = " " * left_margin + words.pop(0)
+            line_num += 1
+            if line_num == 1:
+                size = left_margin + first_line_indent
+                inside_indent = " " * size
+            else:
+                inside_indent = " " * left_margin
+            this_line = inside_indent + words.pop(0)
 
             if len(this_line) > width:
                 # let's see what we can do to make it fit
