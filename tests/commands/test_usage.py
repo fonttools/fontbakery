@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 import re
 import pytest
 
@@ -35,6 +36,7 @@ def test_command_check_googlefonts():
         subprocess.check_output(["fontbakery", "check-googlefonts"])
 
 
+@pytest.mark.skipif(sys.version_info < (3, 7), reason="requires python3.7 or higher")
 def test_status_log_is_indented():
     """Test if statuses are printed in a limited boundary."""
     test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")

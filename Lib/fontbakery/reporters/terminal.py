@@ -448,7 +448,7 @@ class TerminalReporter(TerminalProgress):
             print(text_flow(formated_msg,
                             width=76,
                             indent=4,
-                            first_line_indent=-1 -len(status_name),
+                            first_line_indent=-1-len(status_name),
                             left_margin=6,
                             space_padding=True))
 
