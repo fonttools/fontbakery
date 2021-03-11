@@ -1861,6 +1861,8 @@ def com_google_fonts_check_metadata_has_regular(family_metadata):
 
     if has_regular_style(family_metadata):
         yield PASS, "Family has a Regular style."
+    elif family_metadata.name.endswith(" One") and not has_regular_style(family_metadata):
+        yield PASS, "Family is single-weight non-regular ('One' appended to family name)."
     else:
         yield FAIL,\
               Message("lacks-regular",
