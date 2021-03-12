@@ -1854,7 +1854,7 @@ def com_google_fonts_check_metadata_familyname(family_metadata):
     conditions = ['family_metadata']
 )
 def com_google_fonts_check_metadata_has_regular(family_metadata):
-    """METADATA.pb: According Google Fonts standards,
+    """METADATA.pb: According to Google Fonts standards,
        families should have a Regular style.
     """
     from .googlefonts_conditions import has_regular_style
