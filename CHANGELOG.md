@@ -20,7 +20,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.
   - **[com.google.fonts/check/STAT/gf-axisregistry]:** Ensure that STAT tables contain Axis Values
-  - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** Use first findable font to check in case family is single-weight non-regular ("One" appended to family name)
+  - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** Added hints to GF specs for single-weight families to FAIL output
 
 
 ## 0.7.34 (2021-Jan-06)

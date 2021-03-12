@@ -4248,24 +4248,22 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
     from fontbakery.utils import (get_name_entry_strings,
                                   get_absolute_path,
                                   get_regular)
-    font = get_regular(fonts)
-    if not font:
-        # Family is a single-weight non-regular font, family name has appended "One"
-        if "One-" in fonts[0]:
-            font = fonts[0]
-        # No regular found
-        else:
-            yield FAIL,\
-                Message("lacks-regular",
-                        "The font seems to lack a regular.")
-            return
+    regular = get_regular(fonts)
+    if not regular:
+        yield FAIL,\
+              Message("lacks-regular",
+                      "The font seems to lack a regular."
+                      " If family consists of a single-weight non-Regular style only,"
+                      " consider the Google Fonts specs for this case:"
+                      " https://github.com/googlefonts/gf-docs/tree/main/Spec#single-weight-families")
+        return
 
-    entry = get_name_entry_strings(TTFont(font), NameID.FONT_FAMILY_NAME)[0]
+    entry = get_name_entry_strings(TTFont(regular), NameID.FONT_FAMILY_NAME)[0]
     expected = entry.lower()
     expected = "".join(expected.split(' '))
     expected = "".join(expected.split('-'))
 
-    license, familypath, filename = get_absolute_path(font).split(os.path.sep)[-3:]
+    license, familypath, filename = get_absolute_path(regular).split(os.path.sep)[-3:]
     if familypath == expected:
         yield PASS, "OK"
     else:
