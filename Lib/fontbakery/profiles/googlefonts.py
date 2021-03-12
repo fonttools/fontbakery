@@ -1867,7 +1867,6 @@ def com_google_fonts_check_metadata_has_regular(family_metadata):
                       "This family lacks a Regular"
                       " (style: normal and weight: 400)"
                       " as required by Google Fonts standards."
-                      " "
                       " If family consists of a single-weight non-Regular style only,"
                       " consider the Google Fonts specs for this case:"
                       " https://github.com/googlefonts/gf-docs/tree/main/Spec#single-weight-families")
