@@ -21,6 +21,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.
   - **[com.google.fonts/check/STAT/gf-axisregistry]:** Ensure that STAT tables contain Axis Values
+  - **[com.google.fonts/check/gdef_mark_chars]:** Do not consider chars with Unicode category Mc, Spacing_Marks as (non spacing) mark class glyphs.
+  - **[com.google.fonts/check/gdef_non_mark_chars]:** Same as com.google.fonts/check/gdef_mark_chars.
 
 ## 0.7.34 (2021-Jan-06)
 ### New checks
