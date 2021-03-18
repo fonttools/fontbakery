@@ -12,6 +12,13 @@ class GHMarkdownReporter(SerializeReporter):
         super().__init__(**kwd)
         self.loglevels = loglevels
 
+    def write(self):
+        fh = open(self.output_file, "w")
+        fh.write(self.get_markdown())
+        print(f'A report in GitHub Markdown format which can be useful\n'
+              f' for posting issues on a GitHub issue tracker has been\n'
+              f' saved to "{self.output_file}"')
+
 
     def emoticon(self, name):
         return {

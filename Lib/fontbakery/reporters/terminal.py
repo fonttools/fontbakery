@@ -369,6 +369,9 @@ class TerminalReporter(TerminalProgress):
         # status after ENDCHECK.
         self._render_async = self.is_async or check_threshold is not None
 
+    def write(self):
+        pass
+
     def _register(self, event):
         super()._register(event)
         status, message, (section, check, iterargs) = event

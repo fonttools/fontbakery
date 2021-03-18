@@ -148,3 +148,10 @@ class SerializeReporter(FontbakeryReporter):
                 doc['sections'].append(sectionDoc)
         self._doc = doc
         return doc
+
+    def write(self):
+        import json
+        fh = open(self.output_file, "w")
+        json.dump(self.getdoc(), fh, sort_keys=True, indent=4)
+        print(f'A report in JSON format has been saved to "{self.output_file}"')
+

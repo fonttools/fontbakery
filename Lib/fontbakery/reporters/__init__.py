@@ -26,7 +26,7 @@ from fontbakery.checkrunner import (
             )
 
 class FontbakeryReporter:
-    def __init__(self, is_async=False, runner=None):
+    def __init__(self, is_async=False, runner=None, output_file=None, loglevels=None):
         self._started = None
         self._ended = None
         self._order = None
@@ -34,12 +34,14 @@ class FontbakeryReporter:
         self._indexes = {}
         self._tick = 0
         self._counter = Counter()
+        self.loglevels = loglevels
 
         # Runner should know if it is async!
         self.is_async = is_async
         self.runner = runner
 
         self._worst_check_status = None
+        self.output_file = output_file
 
     def run(self, order=None):
         """
