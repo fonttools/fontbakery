@@ -49,7 +49,7 @@ HTML_HEADER = """
             html { font-family: sans-serif; }
             h2 { background: #77f; color: #fafafa; padding: 12px; }
             pre { font-size: 1.2rem; }
-            li { font-size: 1.2rem; }
+            li { font-size: 1.2rem; border-top: 1px solid #ddd; padding: 12px; margin-top: 12px; }
             svg { height: 100px; margin:10px; transform: matrix(1, 0, 0, -1, 0, 0); }
         </style>
     </head>
