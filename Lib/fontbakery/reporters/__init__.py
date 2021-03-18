@@ -54,6 +54,14 @@ class FontbakeryReporter:
     def order(self):
         return self._order
 
+    def write(self):
+        if self.output_file is not None:
+            raise NotImplementedError(
+                f'{type(self)} does not implement the "write" method, '
+                'but it has an "output_file".'
+            )
+        # reporters without an output file do nothing here
+
     def _get_key(self, identity):
         section, check, iterargs = identity
         return (str(section) if section else section
