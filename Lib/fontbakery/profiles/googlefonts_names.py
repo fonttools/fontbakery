@@ -216,8 +216,8 @@ class GFSpec:
         name_axes = [v for k, v in self.axis_tokens.items() if k not in fvar_axes]
         name = self.existing_family_name
         if not name_axes:
-            return f"{name}[{','.join(fvar_axes)}].ttf".replace(" ", "")
-        return f"{name}-{''.join(name_axes)}[{','.join(sorted(fvar_axes))}].ttf".replace(
+            return f"{name}[{','.join(sorted(fvar_axes))}].ttf".replace(" ", "")
+        return f"{name}-{''.join(sorted(name_axes))}[{','.join(sorted(fvar_axes))}].ttf".replace(
             " ", ""
         )
 

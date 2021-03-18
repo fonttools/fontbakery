@@ -5,7 +5,7 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    "font_path,family_name,subfamily_name,typo_family_name,typo_subfamily_name",
+    "font_path,family_name,subfamily_name,typo_family_name,typo_subfamily_name,filename",
     [
         # Montserrat static fonts. We know this family is correct
         (
@@ -14,6 +14,7 @@ import pytest
             "Regular",
             "Montserrat",
             "Black",
+            "Montserrat-Black.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"),
@@ -21,14 +22,23 @@ import pytest
             "Italic",
             "Montserrat",
             "Black Italic",
+            "Montserrat-BlackItalic.ttf",
         ),
-        (TEST_FILE("montserrat/Montserrat-Bold.ttf"), "Montserrat", "Bold", None, None),
+        (
+            TEST_FILE("montserrat/Montserrat-Bold.ttf"),
+            "Montserrat",
+            "Bold",
+            None,
+            None,
+            "Montserrat-Bold.ttf",
+        ),
         (
             TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"),
             "Montserrat",
             "Bold Italic",
             None,
             None,
+            "Montserrat-BoldItalic.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"),
@@ -36,6 +46,7 @@ import pytest
             "Regular",
             "Montserrat",
             "ExtraBold",
+            "Montserrat-ExtraBold.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"),
@@ -43,6 +54,7 @@ import pytest
             "Italic",
             "Montserrat",
             "ExtraBold Italic",
+            "Montserrat-ExtraBoldItalic.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"),
@@ -50,6 +62,7 @@ import pytest
             "Regular",
             "Montserrat",
             "ExtraLight",
+            "Montserrat-ExtraLight.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"),
@@ -57,6 +70,7 @@ import pytest
             "Italic",
             "Montserrat",
             "ExtraLight Italic",
+            "Montserrat-ExtraLightItalic.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-Italic.ttf"),
@@ -64,6 +78,7 @@ import pytest
             "Italic",
             None,
             None,
+            "Montserrat-Italic.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-Light.ttf"),
@@ -71,6 +86,7 @@ import pytest
             "Regular",
             "Montserrat",
             "Light",
+            "Montserrat-Light.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-LightItalic.ttf"),
@@ -78,6 +94,7 @@ import pytest
             "Italic",
             "Montserrat",
             "Light Italic",
+            "Montserrat-LightItalic.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-Medium.ttf"),
@@ -85,6 +102,7 @@ import pytest
             "Regular",
             "Montserrat",
             "Medium",
+            "Montserrat-Medium.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"),
@@ -92,6 +110,7 @@ import pytest
             "Italic",
             "Montserrat",
             "Medium Italic",
+            "Montserrat-MediumItalic.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-Regular.ttf"),
@@ -99,6 +118,7 @@ import pytest
             "Regular",
             None,
             None,
+            "Montserrat-Regular.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-SemiBold.ttf"),
@@ -106,6 +126,7 @@ import pytest
             "Regular",
             "Montserrat",
             "SemiBold",
+            "Montserrat-SemiBold.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"),
@@ -113,6 +134,7 @@ import pytest
             "Italic",
             "Montserrat",
             "SemiBold Italic",
+            "Montserrat-SemiBoldItalic.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-Thin.ttf"),
@@ -120,6 +142,7 @@ import pytest
             "Regular",
             "Montserrat",
             "Thin",
+            "Montserrat-Thin.ttf",
         ),
         (
             TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"),
@@ -127,6 +150,7 @@ import pytest
             "Italic",
             "Montserrat",
             "Thin Italic",
+            "Montserrat-ThinItalic.ttf",
         ),
         # Recursive static fonts are good and contain interesting combinations
         (
@@ -135,6 +159,7 @@ import pytest
             "Regular",
             "Recursive Monospace",
             "SemiBold",
+            "RecursiveMonospace-SemiBold.ttf",
         ),
         (
             TEST_FILE("recursive/Recursive_Monospace,Casual-ExtraBold.ttf"),
@@ -142,11 +167,63 @@ import pytest
             "Regular",
             "Recursive Monospace Casual",
             "ExtraBold",
+            "RecursiveMonospaceCasual-ExtraBold.ttf",
+        ),
+        # Let's check some variable fonts
+        (
+            # Open Sans fvar dflts: wght=300, wdth=75
+            TEST_FILE("varfont/OpenSans[wdth,wght].ttf"),
+            "Open Sans Condensed Light",
+            "Regular",
+            "Open Sans",
+            "Condensed Light",
+            "OpenSans[wdth,wght].ttf",
+        ),
+        (
+            # Oswald fvar dflts: wght=400
+            TEST_FILE("varfont/Oswald-VF.ttf"),
+            "Oswald",
+            "Regular",
+            None,
+            None,
+            "Oswald[wght].ttf",
+        ),
+        (
+            # Jura fvar dflts: wght=333
+            TEST_FILE("varfont/jura/Jura[wght].ttf"),
+            "Jura Light",
+            "Regular",
+            "Jura",
+            "Light",
+            "Jura[wght].ttf",
+        ),
+        (
+            # Newsreader fvar dflts: wght: 400, opsz: 18
+            TEST_FILE("varfont/Newsreader[opsz,wght].ttf"),
+            "Newsreader 18pt",
+            "Regular",
+            "Newsreader",
+            "18pt Regular",
+            "Newsreader[opsz,wght].ttf",
+        ),
+        (
+            # Newsreader fvar dflts: wght: 400, opsz: 18
+            TEST_FILE("varfont/Newsreader-Italic[opsz,wght].ttf"),
+            "Newsreader 18pt",
+            "Italic",
+            "Newsreader",
+            "18pt Italic",
+            "Newsreader-Italic[opsz,wght].ttf",
         ),
     ],
 )
 def test_names_for_correct_fonts(
-    font_path, family_name, subfamily_name, typo_family_name, typo_subfamily_name
+    font_path,
+    family_name,
+    subfamily_name,
+    typo_family_name,
+    typo_subfamily_name,
+    filename,
 ):
     ttFont = TTFont(font_path)
     gfspec = GFSpec(ttFont)
@@ -154,3 +231,4 @@ def test_names_for_correct_fonts(
     assert subfamily_name == gfspec.subFamily
     assert typo_family_name == gfspec.typoFamily
     assert typo_subfamily_name == gfspec.typoSubFamily
+    assert filename == gfspec.filename
