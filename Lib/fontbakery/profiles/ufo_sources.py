@@ -6,7 +6,7 @@ from fontbakery.status import ERROR, FAIL, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.profile import Profile
 
-BLACKLISTS = {}
+BLOCKLISTS = {}
 
 class UFOProfile(Profile):
 
