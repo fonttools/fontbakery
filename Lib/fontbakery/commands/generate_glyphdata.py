@@ -19,8 +19,9 @@ import json
 import os
 import sys
 
-from fontbakery.utils import download_file, get_font_glyph_data
 from fontTools.ttLib import TTFont
+
+from fontbakery.utils import download_file, get_font_glyph_data
 
 
 class JsonSetEncoder(json.JSONEncoder):
