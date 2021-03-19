@@ -23,7 +23,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.
   - **[com.google.fonts/check/STAT/gf-axisregistry]:** Ensure that STAT tables contain Axis Values
-  - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** Added hints to GF specs for single-weight families to FAIL output
+  - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** Added hints to GF specs for single-weight families to FAIL output (PR #3196)
+  - **[com.google.fonts/check/metadata/has_regular]:** Added hints to GF specs for single-weight families to FAIL output (PR #3197)
   - **[com.google.fonts/check/gdef_mark_chars]:** Do not consider chars with Unicode category Mc, Spacing_Marks as (non spacing) mark class glyphs.
   - **[com.google.fonts/check/gdef_non_mark_chars]:** Same as com.google.fonts/check/gdef_mark_chars.
 
