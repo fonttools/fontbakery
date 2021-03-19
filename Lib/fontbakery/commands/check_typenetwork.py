@@ -2,24 +2,21 @@
 import sys
 
 from functools import partial
-from fontbakery.profiles.typenetwork import profile
+from fontbakery.profiles.typenetwork import profile, BLACKLISTS
 from fontbakery.commands.check_profile import (
     runner_factory as super_runner_factory, main as super_main)
-
-TYPE_NETWORK_SPECIFICS = {}
-
 
 # runner_factory is used by the fontbakery dashboard.
 # It is here in order to have a single place from which
 # the profile is configured for the CLI and the worker.
 def runner_factory(fonts):
     values = {}
-    values.update(TYPE_NETWORK_SPECIFICS)
+    values.update(BLACKLISTS)
     values['fonts'] = fonts
     return super_runner_factory(profile, values=values)
 
 
-main = partial(super_main, profile, values=TYPE_NETWORK_SPECIFICS)
+main = partial(super_main, profile, values=BLACKLISTS)
 
 
 if __name__ == '__main__':

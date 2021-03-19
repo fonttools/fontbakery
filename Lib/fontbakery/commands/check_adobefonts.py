@@ -2,15 +2,9 @@
 import sys
 
 from functools import partial
-from fontbakery.profiles.adobefonts import profile
+from fontbakery.profiles.adobefonts import profile, BLACKLISTS
 from fontbakery.commands.check_profile import (
     runner_factory as super_runner_factory, main as super_main)
-
-# The values dict will probably get one or more specific blacklists
-# for the google font project. It would be good if it was not necessary
-# to copy paste this kind of configuration, thus a central init for
-# the google/fonts repository is good.
-ADOBE_FONTS_SPECIFICS = {}
 
 
 # runner_factory is used by the fontbakery dashboard.
@@ -18,12 +12,12 @@ ADOBE_FONTS_SPECIFICS = {}
 # the profile is configured for the CLI and the worker.
 def runner_factory(fonts):
     values = {}
-    values.update(ADOBE_FONTS_SPECIFICS)
+    values.update(BLACKLISTS)
     values['fonts'] = fonts
     return super_runner_factory(profile, values=values)
 
 
-main = partial(super_main, profile, values=ADOBE_FONTS_SPECIFICS)
+main = partial(super_main, profile, values=BLACKLISTS)
 
 
 if __name__ == '__main__':

@@ -48,6 +48,8 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/rupee'
     ]
 
+BLACKLISTS = {}
+
 @check(
     id = 'com.google.fonts/check/name/trailing_spaces',
 )
