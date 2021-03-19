@@ -16,6 +16,7 @@ TYPENETWORK_PROFILE_CHECKS = \
         'io.github.abysstypeco/check/ytlc_sanity'
     ]
 
+BLACKLISTS = {}
 
 @check(
     id='io.github.abysstypeco/check/ytlc_sanity',

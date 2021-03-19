@@ -29,6 +29,7 @@ NOTOFONTS_PROFILE_CHECKS = \
     CMAP_TABLE_CHECKS + \
     OS2_TABLE_CHECKS
 
+BLACKLISTS = {}
 
 @check(
     id = 'com.google.fonts/check/cmap/unexpected_subtables',

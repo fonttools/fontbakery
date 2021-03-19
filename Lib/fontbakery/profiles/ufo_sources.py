@@ -4,6 +4,7 @@ from fontbakery.callable import check, condition
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN, Section, Profile
 
+BLACKLISTS = {}
 
 class UFOProfile(Profile):
 
