@@ -269,19 +269,11 @@ def main(profile=None, values=None):
         args.no_colors = True
 
     theme = get_theme(args)
+    # the most verbose loglevel wins
+    loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
 
     if args.list_checks:
-        if args.loglevels == [PASS]: # if verbose:
-            for section in profile._sections.values():
-                print(theme["list-checks: section"]("\nSection:") + " " + section.name)
-                for check in section._checks:
-                    print(theme["list-checks: check-id"](check.id) + "\n" +
-                          theme["list-checks: description"](f'"{check.description}"') + "\n")
-        else:
-            for section_name, section in profile._sections.items():
-                for check in section._checks:
-                    print(check.id)
-        sys.exit()
+        list_checks(profile, theme, verbose=loglevel > DEFAULT_LOG_LEVEL)
 
     values_ = {}
     if values is not None:
@@ -308,8 +300,6 @@ def main(profile=None, values=None):
 
     is_async = args.multiprocessing != 0
 
-    # the most verbose loglevel wins
-    loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
     tr = TerminalReporter(runner=runner, is_async=is_async
                          , print_progress=not args.no_progress
                          , succinct=args.succinct
@@ -343,6 +333,21 @@ def main(profile=None, values=None):
 
     # Fail and error let the command fail
     return 1 if tr.worst_check_status in (ERROR, FAIL) else 0
+
+
+def list_checks(profile, theme, verbose=False):
+    if verbose:
+        for section in profile._sections.values():
+            print(theme["list-checks: section"]("\nSection:") + " " + section.name)
+            for check in section._checks:
+                print(theme["list-checks: check-id"](check.id) + "\n" +
+                      theme["list-checks: description"](f'"{check.description}"') + "\n")
+    else:
+        for section_name, section in profile._sections.items():
+            for check in section._checks:
+                print(check.id)
+    sys.exit()
+
 
 if __name__ == '__main__':
     sys.exit(main())
