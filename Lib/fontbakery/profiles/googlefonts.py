@@ -3204,46 +3204,24 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
 
 @check(
     id = 'com.google.fonts/check/name/familyname',
-    conditions = ['style',
-                  'familyname_with_spaces'],
+    conditions = ['gfnames'],
     rationale = """
         Checks that the family name infered from the font filename matches the string at nameID 1 (NAMEID_FONT_FAMILY_NAME) if it conforms to RIBBI and otherwise checks that nameID 1 is the family name + the style name.
     """,
     proposal = 'legacy:check/157'
 )
-def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces):
+def com_google_fonts_check_name_familyname(ttFont, gfnames):
     """Check name table: FONT_FAMILY_NAME entries."""
     from fontbakery.utils import name_entry_id
-
-    def get_only_weight(value):
-        onlyWeight = {"BlackItalic": "Black",
-                      "BoldItalic": "",
-                      "ExtraBold": "ExtraBold",
-                      "ExtraBoldItalic": "ExtraBold",
-                      "ExtraLightItalic": "ExtraLight",
-                      "LightItalic": "Light",
-                      "MediumItalic": "Medium",
-                      "SemiBoldItalic": "SemiBold",
-                      "ThinItalic": "Thin"}
-        return onlyWeight.get(value, value)
-
     failed = False
-    only_weight = get_only_weight(style)
     for name in ttFont['name'].names:
         if name.nameID == NameID.FONT_FAMILY_NAME:
 
             if name.platformID == PlatformID.MACINTOSH:
-                expected_value = familyname_with_spaces
+                expected_value = gfnames.family
 
             elif name.platformID == PlatformID.WINDOWS:
-                if style in ['Regular',
-                             'Italic',
-                             'Bold',
-                             'Bold Italic']:
-                    expected_value = familyname_with_spaces
-                else:
-                    expected_value = " ".join([familyname_with_spaces,
-                                               only_weight]).strip()
+                expected_value = gfnames.family
             else:
                 failed = True
                 yield FAIL,\
@@ -3252,7 +3230,7 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
                               f"{name_entry_id(name)} entry!")
                 continue
 
-            string = name.string.decode(name.getEncoding()).strip()
+            string = name.toUnicode()
             if string != expected_value:
                 failed = True
                 yield FAIL,\
@@ -3268,10 +3246,10 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
 
 @check(
     id = 'com.google.fonts/check/name/subfamilyname',
-    conditions = ['expected_style'],
+    conditions = ['gfnames'],
     proposal = 'legacy:check/158'
 )
-def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
+def com_google_fonts_check_name_subfamilyname(ttFont, gfnames):
     """Check name table: FONT_SUBFAMILY_NAME entries."""
     failed = False
     nametable = ttFont['name']
@@ -3284,18 +3262,18 @@ def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
                                  MacintoshEncodingID.ROMAN,
                                  MacintoshLanguageID.ENGLISH)
 
-    if mac_name and mac_name.toUnicode() != expected_style.mac_style_name:
+    if mac_name and mac_name.toUnicode() != gfnames.macSubFamily:
         failed = True
         yield FAIL,\
               Message("bad-familyname",
                       f'SUBFAMILY_NAME for Mac "{mac_name.toUnicode()}"'
-                      f' must be "{expected_style.mac_style_name}"')
-    if win_name.toUnicode() != expected_style.win_style_name:
+                      f' must be "{gfnames.macSubFamily}"')
+    if win_name.toUnicode() != gfnames.subFamily:
         failed = True
         yield FAIL,\
               Message("bad-familyname",
                       f'SUBFAMILY_NAME for Win "{win_name.toUnicode()}"'
-                      f' must be "{expected_style.win_style_name}"')
+                      f' must be "{gfnames.subFamily}"')
     if not failed:
         yield PASS, "FONT_SUBFAMILY_NAME entries are all good."
 
@@ -3376,19 +3354,16 @@ def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
     rationale = """
         Requirements for the TYPOGRAPHIC_FAMILY_NAME entries in the 'name' table.
     """,
-    conditions = ['style',
+    conditions = ['gfnames',
                   'familyname_with_spaces'],
     proposal = 'legacy:check/161'
 )
-def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_with_spaces):
+def com_google_fonts_check_name_typographicfamilyname(ttFont, gfnames):
     """Check name table: TYPOGRAPHIC_FAMILY_NAME entries."""
     from fontbakery.utils import name_entry_id
 
     failed = False
-    if style in ['Regular',
-                 'Italic',
-                 'Bold',
-                 'BoldItalic']:
+    if gfnames.isRibbi:
         for name in ttFont['name'].names:
             if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
                 failed = True
@@ -3398,7 +3373,7 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
                                f' it is not expected to have a '
                                f'{name_entry_id(name)} entry!'))
     else:
-        expected_value = familyname_with_spaces
+        expected_value = gfnames.typoFamily
         has_entry = False
         for name in ttFont['name'].names:
             if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
@@ -3427,10 +3402,10 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
     rationale = """
         Requirements for the TYPOGRAPHIC_SUBFAMILY_NAME entries in the 'name' table.
     """,
-    conditions = ['expected_style'],
+    conditions=['expected_style', 'gfnames'],
     proposal = 'legacy:check/162'
 )
-def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style):
+def com_google_fonts_check_name_typographicsubfamilyname(ttFont, gfnames):
     """Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries."""
     failed = False
     nametable = ttFont['name']
@@ -3452,50 +3427,50 @@ def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style)
                           f' for Win "{win_name.toUnicode()}"'
                           f' and Mac "{mac_name.toUnicode()}" do not match.')
 
-    if expected_style.is_ribbi:
-        if win_name and win_name.toUnicode() != expected_style.win_style_name:
+    if gfnames.isRibbi:
+        if win_name and win_name.toUnicode() != gfnames.subFamily:
             failed = True
             yield FAIL,\
                   Message("bad-win-name",
                           f'TYPOGRAPHIC_SUBFAMILY_NAME entry'
                           f' for Win "{win_name.toUnicode()}"'
-                          f' must be "{expected_style.win_style_name}".'
+                          f' must be "{gfnames.subFamily}".'
                           f' Please note, since the font style is RIBBI,'
                           f' this record can be safely deleted.')
 
-        if mac_name and mac_name.toUnicode() != expected_style.mac_style_name:
+        if mac_name and mac_name.toUnicode() != gfnames.typoSubFamily:
             failed = True
             yield FAIL,\
                   Message("bad-mac-name",
                           f'TYPOGRAPHIC_SUBFAMILY_NAME entry'
                           f' for Mac "{mac_name.toUnicode()}"'
-                          f' must be "{expected_style.mac_style_name}".'
+                          f' must be "{gfnames.typoSubFamily}".'
                           f' Please note, since the font style is RIBBI,'
                           f' this record can be safely deleted.')
 
-    if expected_style.typo_style_name:
+    if gfnames.typoSubFamily:
         if not win_name:
             failed = True
             yield FAIL,\
                   Message("missing-typo-win",
                           f'TYPOGRAPHIC_SUBFAMILY_NAME for Win is missing.'
-                          f' It must be "{expected_style.typo_style_name}".')
+                          f' It must be "{gfnames.typoSubFamily}".')
 
-        elif win_name.toUnicode() != expected_style.typo_style_name:
+        elif win_name.toUnicode() != gfnames.typoSubFamily:
             failed = True
             yield FAIL,\
                   Message("bad-typo-win",
                           f'TYPOGRAPHIC_SUBFAMILY_NAME for Win'
                           f' "{win_name.toUnicode()}" is incorrect.'
-                          f' It must be "{expected_style.typo_style_name}".')
+                          f' It must be "{gfnames.typoSubFamily}".')
 
-        if mac_name and mac_name.toUnicode() != expected_style.typo_style_name:
+        if mac_name and mac_name.toUnicode() != gfnames.typoSubFamily:
             failed = True
             yield FAIL,\
                   Message("bad-typo-mac",
                           f'TYPOGRAPHIC_SUBFAMILY_NAME for Mac'
                           f' "{mac_name.toUnicode()}" is incorrect.'
-                          f' It must be "{expected_style.typo_style_name}".'
+                          f' It must be "{gfnames.typoSubFamily}".'
                           f' Please note, this record can be safely deleted.')
 
     if not failed:

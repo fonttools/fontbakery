@@ -11,6 +11,10 @@ from fontbakery.constants import (
 )
 from fontbakery.profiles.googlefonts_names import GFNameData
 
+@condition
+def gfnames(ttFont):
+    return GFNameData(ttFont)
+
 # -------------------------------------------------------------------
 # FIXME! Redundant with @condition canonical_stylename(font)?
 @condition

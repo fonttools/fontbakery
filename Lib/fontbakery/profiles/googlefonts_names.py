@@ -35,14 +35,14 @@ class GFNameData:
         we map the default axis values to the Google Fonts Axis Registry
         e.g:
 
-        fvar = {"wght": 200, "wdth": 75, "ital": "Italic}
+        fvar_dflts = {"wght": 200, "wdth": 75, "ital": "Italic}
         Style name will be: "Condensed ExtraLight Italic"
 
         GF Axis Reg: https://github.com/google/fonts/tree/main/axisregistry
         """
         self.ttFont = ttFont
         self.nametable = self.ttFont["name"]
-        self.axis_reg = GFAxisRegistry()
+        self.axis_reg = AxisRegistry()
         self.unregistered_tokens = set()
         self.axis_tokens = {}
 
@@ -63,7 +63,7 @@ class GFNameData:
             self.build_vf_names()
         else:
             self.build_static_names()
-        self.isRibbi = not hasattr(self, "typoSubFamily")
+        self.isRibbi = self.typoSubFamily is None
 
     def build_static_names(self):
         self._get_nametable_tokens()
@@ -73,6 +73,12 @@ class GFNameData:
         self.subFamily = self._build_subfamily_name()
         self.typoSubFamily = self._build_static_typosubfamily_name()
         self.filename = self._build_static_filename()
+        self.macFamily = self.typoFamily or self.family
+        self.macSubFamily = self.typoSubFamily or self.subFamily
+        self.fsSelection = None
+        self.macStyle = None
+        self.usWeightClass = None
+        self.usWidthClass = None
 
     def build_vf_names(self):
         self._get_fvar_tokens()
@@ -84,6 +90,11 @@ class GFNameData:
         self.subFamily = self._build_subfamily_name()
         self.typoSubFamily = self._build_vf_typosubfamily_name()
         self.filename = self._build_vf_filename()
+        self.macFamily = self.typoFamily or self.family
+        self.macSubFamily = self.typoSubFamily or self.subFamily
+        self.fsSelection = None
+        self.macStyle = None
+        self.usWeightClass = None
 
     def _get_fvar_tokens(self):
         found = False
@@ -123,7 +134,7 @@ class GFNameData:
             axis_tag = self._fallback_name_to_axis_tag(token)
             if not axis_tag:
                 log.warning(f'"{token}" is not a fallback in the GF Axis Registry')
-                self.unregistered_tokens.append(token)
+                self.unregistered_tokens.add(token)
                 continue
             if axis_tag in self.axis_tokens:
                 continue
@@ -142,7 +153,7 @@ class GFNameData:
                 axis_tag = self._fallback_name_to_axis_tag(token)
                 if not axis_tag:
                     log.warning(f'"{token} is not a fallback in the GF Axis Registry')
-                    self.unregistered_tokens.append(token)
+                    self.unregistered_tokens.add(token)
                     continue
                 if axis_tag in self.axis_tokens:
                     continue
