@@ -1,6 +1,6 @@
 import os
 
-from fontbakery.checkrunner import PASS, FAIL, WARN, ERROR, INFO, SKIP
+from fontbakery.status import PASS, FAIL, WARN, ERROR, INFO, SKIP
 from fontbakery.section import Section
 from fontbakery.callable import condition, check, disable
 from fontbakery.message import Message

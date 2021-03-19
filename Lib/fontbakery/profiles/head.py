@@ -1,7 +1,7 @@
 import fractions
 from typing import Tuple
 from fontbakery.callable import check
-from fontbakery.checkrunner import FAIL, PASS, WARN
+from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 from fontbakery.constants import NameID
 

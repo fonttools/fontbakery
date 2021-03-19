@@ -1,7 +1,8 @@
 import os
 
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
-from fontbakery.checkrunner import Section, WARN, PASS #, INFO, ERROR, SKIP, FAIL
+from fontbakery.section import Section
+from fontbakery.status import WARN, PASS #, INFO, ERROR, SKIP, FAIL
 from fontbakery.callable import check #, disable
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory

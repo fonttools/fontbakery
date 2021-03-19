@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN, INFO
+from fontbakery.status import ERROR, FAIL, PASS, WARN, INFO
 from fontbakery.message import Message
 from fontbakery.constants import (NameID,
                                   PlatformID,

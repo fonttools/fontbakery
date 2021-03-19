@@ -1,7 +1,7 @@
 from beziers.path import BezierPath
 
 from fontbakery.callable import condition, check
-from fontbakery.checkrunner import FAIL, PASS, WARN
+from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 from fontbakery.message import Message

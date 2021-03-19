@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.checkrunner import PASS, FAIL
+from fontbakery.status import PASS, FAIL
 from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import

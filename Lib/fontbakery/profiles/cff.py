@@ -1,5 +1,5 @@
 from fontbakery.callable import check, condition
-from fontbakery.checkrunner import FAIL, PASS, WARN
+from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
