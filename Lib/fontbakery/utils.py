@@ -14,9 +14,11 @@
 # limitations under the License.
 #
 import os
+import sys
 
 from fontTools.ttLib import TTFont
 from typing import Text, Optional
+from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
 
 
 def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
@@ -74,6 +76,20 @@ def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
                 this_line += " " * (_width - len(this_line))
             result.append(" " * _indent + text_color(this_line))
     return "\n".join(result)
+
+
+def get_theme(args):
+    if args.no_colors:
+        return NO_COLORS_THEME
+    if args.light_theme:
+        return LIGHT_THEME
+    if args.dark_theme:
+        return DARK_THEME
+    if sys.platform == "darwin":
+        # The vast majority of MacOS users seem to use a light-background on the text terminal
+        return LIGHT_THEME
+    # For orther systems like GNU+Linux and Windows, a dark terminal seems to be more common.
+    return DARK_THEME
 
 
 def unindent_rationale(rationale, checkid=None):
