@@ -9,12 +9,13 @@ import types
 import json
 import logging
 
-from fontbakery.errors import (NamespaceError, SetupError, CircularAliasError)
-from fontbakery.callable import ( FontbakeryCallable
-                                , FontBakeryCheck
-                                , FontBakeryCondition
-                                , FontBakeryExpectedValue
-                                )
+from fontbakery.errors import NamespaceError, SetupError, CircularAliasError
+from fontbakery.callable import (
+    FontbakeryCallable,
+    FontBakeryCheck,
+    FontBakeryCondition,
+    FontBakeryExpectedValue,
+)
 from fontbakery.message import Message
 from fontbakery.section import Section
 from fontbakery.utils import is_negated
@@ -46,30 +47,34 @@ def get_module_profile(module, name=None):
     try:
         # if profile is defined we just use it
         return module.profile
-    except AttributeError: # > 'module' object has no attribute 'profile'
+    except AttributeError:  # > 'module' object has no attribute 'profile'
         # try to create one on the fly.
         # e.g. module.__name__ == "fontbakery.profiles.cmap"
-        if 'profile_factory' not in module.__dict__:
+        if "profile_factory" not in module.__dict__:
             return None
         default_section = Section(name or module.__name__)
-        profile = module.profile_factory(default_section=default_section
-                                       , module_spec=module.__spec__)
+        profile = module.profile_factory(
+            default_section=default_section, module_spec=module.__spec__
+        )
         profile.auto_register(module.__dict__)
         return profile
 
+
 class Profile:
-    def __init__(self
-               , sections=None
-               , iterargs=None
-               , derived_iterables=None
-               , conditions=None
-               , aliases=None
-               , expected_values=None
-               , default_section=None
-               , check_skip_filter=None
-               , profile_tag=None
-               , module_spec=None):
-        '''
+    def __init__(
+        self,
+        sections=None,
+        iterargs=None,
+        derived_iterables=None,
+        conditions=None,
+        aliases=None,
+        expected_values=None,
+        default_section=None,
+        check_skip_filter=None,
+        profile_tag=None,
+        module_spec=None,
+    ):
+        """
           sections: a list of sections, which are ideally ordered sets of
               individual checks.
               It makes no sense to have checks repeatedly, they yield the same
@@ -112,28 +117,28 @@ class Profile:
           a) get all needed values/variable names from here
           b) add some validation, so that we know the values match
              our expectations! These values must be treated as user input!
-        '''
+        """
         self._namespace = {}
 
         self.iterargs = {}
         if iterargs:
-            self._add_dict_to_namespace('iterargs', iterargs)
+            self._add_dict_to_namespace("iterargs", iterargs)
 
         self.derived_iterables = {}
         if derived_iterables:
-            self._add_dict_to_namespace('derived_iterables', derived_iterables)
+            self._add_dict_to_namespace("derived_iterables", derived_iterables)
 
         self.aliases = {}
         if aliases:
-            self._add_dict_to_namespace('aliases', aliases)
+            self._add_dict_to_namespace("aliases", aliases)
 
         self.conditions = {}
         if conditions:
-            self._add_dict_to_namespace('conditions', conditions)
+            self._add_dict_to_namespace("conditions", conditions)
 
         self.expected_values = {}
         if expected_values:
-            self._add_dict_to_namespace('expected_values', expected_values)
+            self._add_dict_to_namespace("expected_values", expected_values)
 
         self._check_registry = {}
         self._sections = OrderedDict()
@@ -142,18 +147,17 @@ class Profile:
                 self.add_section(section)
 
         if not default_section:
-            default_section = sections[0] \
-                              if sections and len(sections) \
-                              else Section('Default')
+            default_section = (
+                sections[0] if sections and len(sections) else Section("Default")
+            )
         self._default_section = default_section
         self.add_section(self._default_section)
 
         # currently only used for new check ids in self.check_log_override
         # only a-z everything else is deleted
-        self.profile_tag = re.sub(r'[^a-z]',
-                                  '',
-                                  (profile_tag or \
-                                   self._default_section.name).lower())
+        self.profile_tag = re.sub(
+            r"[^a-z]", "", (profile_tag or self._default_section.name).lower()
+        )
 
         self._check_skip_filter = check_skip_filter
 
@@ -177,12 +181,13 @@ class Profile:
                     # or finds a wrong ModuleSpec, there's still the option to
                     # pass module_spec as an argument (module.__spec__), which is
                     # actually demonstrated in get_module_profile.
-                    if '__spec__' in frame.f_locals:
-                        module_spec = frame.f_locals['__spec__']
-                        if module_spec and isinstance(module_spec,
-                                                      importlib.machinery.ModuleSpec):
+                    if "__spec__" in frame.f_locals:
+                        module_spec = frame.f_locals["__spec__"]
+                        if module_spec and isinstance(
+                            module_spec, importlib.machinery.ModuleSpec
+                        ):
                             break
-                        module_spec = None # reset
+                        module_spec = None  # reset
                     frame = frame.f_back
             finally:
                 del frame
@@ -190,15 +195,15 @@ class Profile:
         # If not module_spec: this is only a problem in multiprocessing, in
         # that case we'll be failing to access this with an AttributeError.
         if module_spec is not None:
-            self.module_locator = dict(name=module_spec.name,
-                                       origin=module_spec.origin)
+            self.module_locator = dict(name=module_spec.name, origin=module_spec.origin)
 
-    _valid_namespace_types = { 'iterargs': 'iterarg'
-                             , 'derived_iterables': 'derived_iterable'
-                             , 'aliases': 'alias'
-                             , 'conditions': 'condition'
-                             , 'expected_values': 'expected_value'
-                             }
+    _valid_namespace_types = {
+        "iterargs": "iterarg",
+        "derived_iterables": "derived_iterable",
+        "aliases": "alias",
+        "conditions": "condition",
+        "expected_values": "expected_value",
+    }
 
     @property
     def sections(self):
@@ -206,13 +211,14 @@ class Profile:
 
     def _add_dict_to_namespace(self, type, data):
         for key, value in data.items():
-            self.add_to_namespace(type, key, value, force=getattr(value, 'force', False))
+            self.add_to_namespace(
+                type, key, value, force=getattr(value, "force", False)
+            )
 
     def add_to_namespace(self, type, name, value, force=False):
         if type not in self._valid_namespace_types:
-            valid_types = ', '.join(self._valid_namespace_types)
-            raise TypeError(f'Unknow type "{type}"'
-                            f' Valid types are: {valid_types}')
+            valid_types = ", ".join(self._valid_namespace_types)
+            raise TypeError(f'Unknow type "{type}"' f" Valid types are: {valid_types}")
 
         if name in self._namespace:
             registered_type = self._namespace[name]
@@ -224,9 +230,11 @@ class Profile:
                 return
 
             if not force:
-                msg = (f'Name "{name}" is already registered'
-                       f' in "{registered_type}" (value: {registered_value}).'
-                       f' Requested registering in "{type}" (value: {value}).')
+                msg = (
+                    f'Name "{name}" is already registered'
+                    f' in "{registered_type}" (value: {registered_value}).'
+                    f' Requested registering in "{type}" (value: {value}).'
+                )
                 raise NamespaceError(msg)
             else:
                 # clean the old type up
@@ -237,7 +245,7 @@ class Profile:
         target[name] = value
 
     def test_dependencies(self):
-        """ Raises SetupError if profile uses any names that are not declared
+        """Raises SetupError if profile uses any names that are not declared
         in the its namespace.
         """
         seen = set()
@@ -246,9 +254,10 @@ class Profile:
         for section_name, section in self._sections.items():
             for check in section.checks:
                 dependencies = list(check.args)
-                if hasattr(check, 'conditions'):
-                    dependencies += [name for negated, name\
-                                          in map(is_negated, check.conditions)]
+                if hasattr(check, "conditions"):
+                    dependencies += [
+                        name for negated, name in map(is_negated, check.conditions)
+                    ]
 
                 while dependencies:
                     name = dependencies.pop()
@@ -263,12 +272,14 @@ class Profile:
                     if condition is not None:
                         dependencies += condition.args
         if len(failed):
-            comma_separated = ', '.join(failed)
-            raise SetupError(f'Profile uses names that are not declared'
-                             f' in its namespace: {comma_separated}.')
+            comma_separated = ", ".join(failed)
+            raise SetupError(
+                f"Profile uses names that are not declared"
+                f" in its namespace: {comma_separated}."
+            )
 
     def test_expected_checks(self, expected_check_ids, exclusive=False):
-        """ Self-test to make a sure profile maintainer is aware of changes in
+        """Self-test to make a sure profile maintainer is aware of changes in
         the profile.
         Raises SetupError if expected check ids are missing in the profile (removed)
         If `exclusive=True` also raises SetupError if check ids are in the
@@ -282,8 +293,10 @@ class Profile:
         s = set()
         duplicates = set(x for x in expected_check_ids if x in s or s.add(x))
         if len(duplicates):
-            raise SetupError('Profile has duplicated entries in its list'
-                             ' of expected check IDs:\n' + '\n'.join(duplicates))
+            raise SetupError(
+                "Profile has duplicated entries in its list"
+                " of expected check IDs:\n" + "\n".join(duplicates)
+            )
 
         expected_check_ids = set(expected_check_ids)
         registered_checks = set(self._check_registry.keys())
@@ -293,29 +306,35 @@ class Profile:
             unexpected_checks = registered_checks - expected_check_ids
         message = []
         if missing_checks:
-            message.append('missing checks: {};'.format(', '.join(missing_checks)))
+            message.append("missing checks: {};".format(", ".join(missing_checks)))
         if unexpected_checks:
-            message.append('unexpected checks: {};'.format(', '.join(unexpected_checks)))
+            message.append(
+                "unexpected checks: {};".format(", ".join(unexpected_checks))
+            )
         if message:
-            raise SetupError('Profile fails expected checks test:\n' + \
-                             '\n'.join(message))
+            raise SetupError(
+                "Profile fails expected checks test:\n" + "\n".join(message)
+            )
 
         def is_numerical_id(checkid):
             try:
-                int(checkid.split('/')[-1])
+                int(checkid.split("/")[-1])
                 return True
             except:
                 return False
+
         numerical_check_ids = [c for c in registered_checks if is_numerical_id(c)]
         if numerical_check_ids:
             list_of_checks = "\t- " + "\n\t- ".join(numerical_check_ids)
-            raise SetupError(f'\n'
-                             f'\n'
-                             f'Numerical check IDs must be renamed to keyword-based IDs:\n'
-                             f'{list_of_checks}\n'
-                             f'\n'
-                             f'See also: https://github.com/googlefonts/fontbakery/issues/2238\n'
-                             f'\n')
+            raise SetupError(
+                f"\n"
+                f"\n"
+                f"Numerical check IDs must be renamed to keyword-based IDs:\n"
+                f"{list_of_checks}\n"
+                f"\n"
+                f"See also: https://github.com/googlefonts/fontbakery/issues/2238\n"
+                f"\n"
+            )
 
     def resolve_alias(self, original_name):
         name = original_name
@@ -323,9 +342,11 @@ class Profile:
         path = []
         while name in self.aliases:
             if name in seen:
-                names = ' -> '.join(path)
-                raise CircularAliasError(f'Alias for "{original_name}" has'
-                                         f' a circular reference in {names}')
+                names = " -> ".join(path)
+                raise CircularAliasError(
+                    f'Alias for "{original_name}" has'
+                    f" a circular reference in {names}"
+                )
             seen.add(name)
             path.append(name)
             name = self.aliases[name]
@@ -351,9 +372,9 @@ class Profile:
             valid, message = self.expected_values[name].validate(value)
             if valid:
                 continue
-            messages.append(f'{name}: {message} (value: {value})')
+            messages.append(f"{name}: {message} (value: {value})")
         if len(messages):
-            return False, '\n'.join(messages)
+            return False, "\n".join(messages)
         return True, None
 
     def get_type(self, name, *args):
@@ -394,15 +415,15 @@ class Profile:
 
     def _get_aggregate_args(self, item, key):
         """
-          Get all arguments or mandatory arguments of the item.
+        Get all arguments or mandatory arguments of the item.
 
-          Item is a check or a condition, which means it can be dependent on
-          more conditions, this climbs down all the way.
+        Item is a check or a condition, which means it can be dependent on
+        more conditions, this climbs down all the way.
         """
-        if not key in ('args', 'mandatoryArgs'):
+        if not key in ("args", "mandatoryArgs"):
             raise TypeError(f'key must be "args" or "mandatoryArgs", got {key}')
         dependencies = list(getattr(item, key))
-        if hasattr(item, 'conditions'):
+        if hasattr(item, "conditions"):
             dependencies += [name for negated, name in map(is_negated, item.conditions)]
         args = set()
         while dependencies:
@@ -414,8 +435,9 @@ class Profile:
             c = self.conditions.get(name, None)
             if c is None:
                 continue
-            dependencies += [dependency for dependency in getattr(c, key)
-                                        if dependency not in args]
+            dependencies += [
+                dependency for dependency in getattr(c, key) if dependency not in args
+            ]
         return args
 
     def get_iterargs(self, item):
@@ -423,19 +445,22 @@ class Profile:
         # iterargs should always be mandatory, unless there's a good reason
         # not to, which I can't think of right now.
 
-        args = self._get_aggregate_args(item, 'mandatoryArgs')
+        args = self._get_aggregate_args(item, "mandatoryArgs")
         return tuple(sorted([arg for arg in args if arg in self.iterargs]))
 
     def _analyze_checks(self, all_args, checks):
         args = list(all_args)
         args.reverse()
-                  #(check, signature, scope)
+        # (check, signature, scope)
         scopes = [(check, tuple(), tuple()) for check in checks]
         aggregatedArgs = {
-            'args': {check.name:self._get_aggregate_args(check, 'args')
-                     for check in checks}
-          , 'mandatoryArgs': {check.name: self._get_aggregate_args(check, 'mandatoryArgs')
-                              for check in checks}
+            "args": {
+                check.name: self._get_aggregate_args(check, "args") for check in checks
+            },
+            "mandatoryArgs": {
+                check.name: self._get_aggregate_args(check, "mandatoryArgs")
+                for check in checks
+            },
         }
         saturated = []
         while args:
@@ -444,18 +469,21 @@ class Profile:
             args_set = set(args)
             arg = args.pop()
             for check, signature, scope in scopes:
-                if not len(aggregatedArgs['args'][check.name] & args_set):
+                if not len(aggregatedArgs["args"][check.name] & args_set):
                     # there's no args no more or no arguments of check are
                     # in args
                     target = saturated
-                elif arg == '*check' or arg in aggregatedArgs['mandatoryArgs'][check.name]:
-                    signature += (1, )
-                    scope += (arg, )
+                elif (
+                    arg == "*check"
+                    or arg in aggregatedArgs["mandatoryArgs"][check.name]
+                ):
+                    signature += (1,)
+                    scope += (arg,)
                     target = new_scopes
                 else:
                     # there's still a tail of args and check requires one of the
                     # args in tail but not the current arg
-                    signature += (0, )
+                    signature += (0,)
                     target = new_scopes
                 target.append((check, signature, scope))
             scopes = new_scopes
@@ -470,7 +498,7 @@ class Profile:
             # no sectioning on this level
             for item in self._execute_scopes(iterargs, items):
                 yield item
-        elif section[1] == '*check':
+        elif section[1] == "*check":
             # enforce sectioning by check
             for section_item in items:
                 for item in self._execute_scopes(iterargs, [section_item]):
@@ -501,13 +529,16 @@ class Profile:
             else:
                 current_section = None
 
-            assert current_section not in seen,\
-                   f'Scopes are badly sorted. {current_section} in {seen}'
+            assert (
+                current_section not in seen
+            ), f"Scopes are badly sorted. {current_section} in {seen}"
 
             if current_section != last_section:
                 if len(items):
                     # flush items
-                    generators.append(self._execute_section(iterargs, last_section, items))
+                    generators.append(
+                        self._execute_section(iterargs, last_section, items)
+                    )
                     items = []
                     seen.add(last_section)
                 last_section = current_section
@@ -519,25 +550,29 @@ class Profile:
         for item in chain(*generators):
             yield item
 
-    def _section_execution_order(self, section, iterargs
-                               , reverse=False
-                               , custom_order=None
-                               , explicit_checks: Iterable = None
-                               , exclude_checks: Iterable = None):
+    def _section_execution_order(
+        self,
+        section,
+        iterargs,
+        reverse=False,
+        custom_order=None,
+        explicit_checks: Iterable = None,
+        exclude_checks: Iterable = None,
+    ):
         """
-          order must:
-            a) contain all variable args (we're appending missing ones)
-            b) not contian duplictates (we're removing repeated items)
+        order must:
+          a) contain all variable args (we're appending missing ones)
+          b) not contian duplictates (we're removing repeated items)
 
-          order may contain *iterargs otherwise it is appended
-          to the end
+        order may contain *iterargs otherwise it is appended
+        to the end
 
-          order may contain "*check" otherwise, it is like *check is appended
-          to the end (Not done explicitly though).
+        order may contain "*check" otherwise, it is like *check is appended
+        to the end (Not done explicitly though).
         """
         stack = list(custom_order) if custom_order is not None else list(section.order)
-        if '*iterargs' not in stack:
-            stack.append('*iterargs')
+        if "*iterargs" not in stack:
+            stack.append("*iterargs")
         stack.reverse()
 
         full_order = []
@@ -547,7 +582,7 @@ class Profile:
             if item in seen:
                 continue
             seen.add(item)
-            if item == '*iterargs':
+            if item == "*iterargs":
                 all_iterargs = list(iterargs.keys())
                 # assuming there is a meaningful order
                 all_iterargs.reverse()
@@ -562,17 +597,21 @@ class Profile:
         checks = section.checks
         if explicit_checks:
             checks = [
-                check for check in checks
+                check
+                for check in checks
                 if any(include_string in check.id for include_string in explicit_checks)
             ]
         if exclude_checks:
             checks = [
-                check for check in checks
-                if not any(exclude_string in check.id for exclude_string in exclude_checks)
+                check
+                for check in checks
+                if not any(
+                    exclude_string in check.id for exclude_string in exclude_checks
+                )
             ]
 
         scopes = self._analyze_checks(full_order, checks)
-        key = lambda item: item[1] # check, signature, scope = item
+        key = lambda item: item[1]  # check, signature, scope = item
         scopes.sort(key=key, reverse=reverse)
 
         for check, args in self._execute_scopes(iterargs, scopes):
@@ -582,18 +621,19 @@ class Profile:
             # defined order, by clustering.
             yield check, tuple(args)
 
-    def execution_order(self, iterargs
-                        , custom_order=None
-                        , explicit_checks=None
-                        , exclude_checks=None):
+    def execution_order(
+        self, iterargs, custom_order=None, explicit_checks=None, exclude_checks=None
+    ):
         # TODO: a custom_order per section may become necessary one day
         explicit_checks = set() if not explicit_checks else set(explicit_checks)
         for _, section in self._sections.items():
-            for check, section_iterargs in \
-                self._section_execution_order(section, iterargs
-                                            , custom_order=custom_order
-                                            , explicit_checks=explicit_checks
-                                            , exclude_checks=exclude_checks):
+            for check, section_iterargs in self._section_execution_order(
+                section,
+                iterargs,
+                custom_order=custom_order,
+                explicit_checks=explicit_checks,
+                exclude_checks=exclude_checks,
+            ):
                 yield (section, check, section_iterargs)
 
     def _register_check(self, section, func):
@@ -602,20 +642,26 @@ class Profile:
             other_check = other_section.get_check(func.id)
             if other_check is func:
                 if other_section is not section:
-                    logging.debug('Check {} is already registered in {}, skipping '
-                                  'register in {}.'.format(func, other_section, section))
-                return False # skipped
+                    logging.debug(
+                        "Check {} is already registered in {}, skipping "
+                        "register in {}.".format(func, other_section, section)
+                    )
+                return False  # skipped
             else:
-                raise SetupError(f'Check id "{func}" is not unique!'
-                                 f' It is already registered in {other_section} and'
-                                 f' registration for that id is now requested in {section}.'
-                                 f' BUT the current check is a different object than'
-                                 f' the registered check.')
+                raise SetupError(
+                    f'Check id "{func}" is not unique!'
+                    f" It is already registered in {other_section} and"
+                    f" registration for that id is now requested in {section}."
+                    f" BUT the current check is a different object than"
+                    f" the registered check."
+                )
         self._check_registry[func.id] = section
         return True
 
     def _unregister_check(self, section, check_id):
-        assert section == self._check_registry[check_id], 'Registered section must match'
+        assert (
+            section == self._check_registry[check_id]
+        ), "Registered section must match"
         del self._check_registry[check_id]
         return True
 
@@ -623,10 +669,15 @@ class Profile:
         section = self._check_registry[check_id]
         section.remove_check(check_id)
 
-    def check_log_override(self, override_check_id
-                           # see def check_log_override
-                           , *args, **kwds):
-        new_id = f'{override_check_id}:{self.profile_tag}'
+    def check_log_override(
+        self,
+        override_check_id
+        # see def check_log_override
+        ,
+        *args,
+        **kwds,
+    ):
+        new_id = f"{override_check_id}:{self.profile_tag}"
         old_check, section = self.get_check(override_check_id)
         new_check = check_log_override(old_check, new_id, *args, **kwds)
         section.replace_check(override_check_id, new_check)
@@ -642,7 +693,7 @@ class Profile:
             # the string representation of a section must be unique.
             # string representations of section and check will be used as unique keys
             if self._sections[key] is not section:
-                raise SetupError(f'A section with key {section} is already registered')
+                raise SetupError(f"A section with key {section} is already registered")
             return
         self._sections[key] = section
         section.on_add_check(self._register_check)
@@ -683,10 +734,9 @@ class Profile:
             return partial(self._add_check, section)
 
     def _add_condition(self, condition, name=None):
-        self.add_to_namespace('conditions',
-                              name or condition.name,
-                              condition,
-                              force=condition.force)
+        self.add_to_namespace(
+            "conditions", name or condition.name, condition, force=condition.force
+        )
         return condition
 
     def register_condition(self, *args, **kwds):
@@ -712,20 +762,19 @@ class Profile:
 
     def register_expected_value(self, expected_value, name=None):
         name = name or expected_value.name
-        self.add_to_namespace('expected_values',
-                              name,
-                              expected_value,
-                              force=expected_value.force)
+        self.add_to_namespace(
+            "expected_values", name, expected_value, force=expected_value.force
+        )
         return True
 
     def _get_package(self, symbol_table):
-        package = symbol_table.get('__package__', None)
+        package = symbol_table.get("__package__", None)
         if package is not None:
             return package
-        name = symbol_table.get('__name__', None)
-        if name is None or not '.' in name:
+        name = symbol_table.get("__name__", None)
+        if name is None or not "." in name:
             return None
-        return name.rpartition('.')[0]
+        return name.rpartition(".")[0]
 
     def _load_profile_imports(self, symbol_table):
         """
@@ -739,11 +788,11 @@ class Profile:
         i.e. "name" in names becomes ".name"
         """
         results = []
-        if 'profile_imports' not in symbol_table:
+        if "profile_imports" not in symbol_table:
             return results
 
         package = self._get_package(symbol_table)
-        profile_imports = symbol_table['profile_imports']
+        profile_imports = symbol_table["profile_imports"]
 
         for item in profile_imports:
             if isinstance(item, str):
@@ -754,10 +803,10 @@ class Profile:
                 # import only the names from the module
                 module_name, names = item
 
-            if '.' in module_name and len(set(module_name)) == 1  and names is not None:
+            if "." in module_name and len(set(module_name)) == 1 and names is not None:
                 # if you execute `from . import mod` from a module in the pkg package
                 # then you will end up importing pkg.mod
-                module_names = [f'{module_name}{name}' for name in names]
+                module_names = [f"{module_name}{name}" for name in names]
                 names = None
             else:
                 module_names = [module_name]
@@ -776,46 +825,50 @@ class Profile:
                             results.append(getattr(module, name))
                         except AttributeError:
                             # attempt to import a submodule with that name
-                            sub_module_name = '.'.join([module_name, name])
-                            sub_module = importlib.import_module(sub_module_name, package=package)
+                            sub_module_name = ".".join([module_name, name])
+                            sub_module = importlib.import_module(
+                                sub_module_name, package=package
+                            )
                             results.append(sub_module)
         return results
 
     def auto_register(self, symbol_table, filter_func=None, profile_imports=None):
         """Register items from `symbol_table` in the profile.
 
-          Get all items from `symbol_table` dict and from `symbol_table.profile_imports`
-          if it is present. If they an item is an instance of FontBakeryCheck,
-          FontBakeryCondition or FontBakeryExpectedValue and register it in
-          the default section.
-          If an item is a python module, try to get a profile using `get_module_profile(item)`
-          and then using `merge_profile`;
-          If the profile_imports kwarg is given, it is used instead of the one taken from
-          the module namespace.
+        Get all items from `symbol_table` dict and from `symbol_table.profile_imports`
+        if it is present. If they an item is an instance of FontBakeryCheck,
+        FontBakeryCondition or FontBakeryExpectedValue and register it in
+        the default section.
+        If an item is a python module, try to get a profile using `get_module_profile(item)`
+        and then using `merge_profile`;
+        If the profile_imports kwarg is given, it is used instead of the one taken from
+        the module namespace.
 
-          To register the current module use explicitly:
-            `profile.auto_register(globals())`
-            OR maybe: `profile.auto_register(sys.modules[__name__].__dict__)`
-          To register an imported module explicitly:
-            `profile.auto_register(module.__dict__)`
+        To register the current module use explicitly:
+          `profile.auto_register(globals())`
+          OR maybe: `profile.auto_register(sys.modules[__name__].__dict__)`
+        To register an imported module explicitly:
+          `profile.auto_register(module.__dict__)`
 
-          if filter_func is defined it is called like:
-          filter_func(type, name_or_id, item)
-          where
-          type: one of "check", "module", "condition", "expected_value", "iterarg",
-                "derived_iterable", "alias"
-          name_or_id: the name at which the item will be registered.
-                if type == 'check': the check.id
-                if type == 'module': the module name (module.__name__)
-          item: the item to be registered
-          if filter_func returns a falsy value for an item, the item will
-          not be registered.
+        if filter_func is defined it is called like:
+        filter_func(type, name_or_id, item)
+        where
+        type: one of "check", "module", "condition", "expected_value", "iterarg",
+              "derived_iterable", "alias"
+        name_or_id: the name at which the item will be registered.
+              if type == 'check': the check.id
+              if type == 'module': the module name (module.__name__)
+        item: the item to be registered
+        if filter_func returns a falsy value for an item, the item will
+        not be registered.
         """
         if profile_imports:
             symbol_table = symbol_table.copy()  # Avoid messing with original table
-            symbol_table['profile_imports'] = profile_imports
+            symbol_table["profile_imports"] = profile_imports
 
-        all_items = list(symbol_table.values()) + self._load_profile_imports(symbol_table)
+        all_items = list(symbol_table.values()) + self._load_profile_imports(
+            symbol_table
+        )
         namespace_types = (FontBakeryCondition, FontBakeryExpectedValue)
         namespace_items = []
 
@@ -826,11 +879,11 @@ class Profile:
                 # previously by modules.
                 namespace_items.append(item)
             elif isinstance(item, FontBakeryCheck):
-                if filter_func and not filter_func('check', item.id, item):
+                if filter_func and not filter_func("check", item.id, item):
                     continue
                 self.register_check(item)
             elif isinstance(item, types.ModuleType):
-                if filter_func and not filter_func('module', item.__name__, item):
+                if filter_func and not filter_func("module", item.__name__, item):
                     continue
                 profile = get_module_profile(item)
                 if profile:
@@ -838,11 +891,11 @@ class Profile:
 
         for item in namespace_items:
             if isinstance(item, FontBakeryCondition):
-                if filter_func and not filter_func('condition', item.name, item):
+                if filter_func and not filter_func("condition", item.name, item):
                     continue
                 self.register_condition(item)
             elif isinstance(item, FontBakeryExpectedValue):
-                if filter_func and not filter_func('expected_value', item.name, item):
+                if filter_func and not filter_func("expected_value", item.name, item):
                     continue
                 self.register_expected_value(item)
 
@@ -864,12 +917,18 @@ class Profile:
             ns_dict = getattr(profile, ns_type)
             if filter_func:
                 ns_type_singular = self._valid_namespace_types[ns_type]
-                ns_dict = {name:item for name,item in ns_dict.items()
-                                     if filter_func(ns_type_singular, name, item)}
+                ns_dict = {
+                    name: item
+                    for name, item in ns_dict.items()
+                    if filter_func(ns_type_singular, name, item)
+                }
             self._add_dict_to_namespace(ns_type, ns_dict)
 
-        check_filter_func = None if not filter_func else \
-                            lambda check: filter_func('check', check.id, check)
+        check_filter_func = (
+            None
+            if not filter_func
+            else lambda check: filter_func("check", check.id, check)
+        )
         for section in profile.sections:
             my_section = self._sections.get(str(section), None)
             if not len(section.checks):
@@ -914,7 +973,7 @@ class Profile:
         self._check_skip_filter = check_skip_filter
 
     def serialize_identity(self, identity):
-        """ Return a json string that can also  be used as a key.
+        """Return a json string that can also  be used as a key.
 
         The JSON is explicitly unambiguous in the item order
         entries (dictionaries are not ordered usually)
@@ -924,23 +983,24 @@ class Profile:
         values = map(
             # separators are without space, which is the default in JavaScript;
             # just in case we need to make these keys in JS.
-            partial(json.dumps, separators=(',', ':'))
+            partial(json.dumps, separators=(",", ":"))
             # iterargs are sorted, because it doesn't matter for the result
             # but it gives more predictable keys.
             # Though, arguably, the order generated by the profile is also good
             # and conveys insights on how the order came to be (clustering of
             # iterargs). `sorted(iterargs)` however is more robust over time,
             # the keys will be the same, even if the sorting order changes.
-          , [str(section), check.id, sorted(iterargs)]
+            ,
+            [str(section), check.id, sorted(iterargs)],
         )
         return '{{"section":{},"check":{},"iterargs":{}}}'.format(*values)
 
     def deserialize_identity(self, key):
         item = json.loads(key)
-        section = self._get_section(item['section'])
-        check, _ = self.get_check(item['check'])
+        section = self._get_section(item["section"])
+        check, _ = self.get_check(item["check"])
         # tuple of tuples instead list of lists
-        iterargs = tuple(tuple(item) for item in item['iterargs'])
+        iterargs = tuple(tuple(item) for item in item["iterargs"])
         return section, check, iterargs
 
     def serialize_order(self, order):
@@ -959,9 +1019,10 @@ class Profile:
     def get_deep_check_dependencies(self, check):
         seen = set()
         dependencies = list(check.args)
-        if hasattr(check, 'conditions'):
-            dependencies += [name for negated, name in
-                             map(is_negated, check.conditions)]
+        if hasattr(check, "conditions"):
+            dependencies += [
+                name for negated, name in map(is_negated, check.conditions)
+            ]
         while dependencies:
             name = dependencies.pop()
             if name in seen:
@@ -983,8 +1044,9 @@ class Profile:
         result = []
         for check in self.checks:
             check_deps = self.get_deep_check_dependencies(check)
-            if (subset and deps.issubset(check_deps)) \
-              or (not subset and len(deps.intersection(check_deps))):
+            if (subset and deps.issubset(check_deps)) or (
+                not subset and len(deps.intersection(check_deps))
+            ):
                 result.append(check)
         return result
 
@@ -995,13 +1057,15 @@ def _check_log_override(overrides, status, message):
     override = False
     for override_target, new_status, new_message_string in overrides:
         # Override is only possible by matching message.code
-        if (not hasattr(result_message, 'code') or
-            result_message.code != override_target):
+        if (
+            not hasattr(result_message, "code")
+            or result_message.code != override_target
+        ):
             continue
         override = True
         if new_status is not None:
             result_status = new_status
-        if new_message_string  is not None:
+        if new_message_string is not None:
             # If it looks like an instance of Message we reuse the code,
             # as it is the same condition this makes totally sense.
             result_message = Message(result_message.code, new_message_string)
@@ -1009,27 +1073,29 @@ def _check_log_override(overrides, status, message):
         break
     return override, result_status, result_message
 
+
 def check_log_override(check, new_id, overrides, reason=None):
-    """ Returns a new FontBakeryCheck that is decorating (wrapping) check,
-      but with overrides applied to returned statuses when they match.
+    """Returns a new FontBakeryCheck that is decorating (wrapping) check,
+    but with overrides applied to returned statuses when they match.
 
-      The new FontBakeryCheck is always a generator check, even if the old
-      check is just a normal function that returns (instead of yields)
-      its result. Also, the new check yields an INFO Status for each
-      overridden original status.
+    The new FontBakeryCheck is always a generator check, even if the old
+    check is just a normal function that returns (instead of yields)
+    its result. Also, the new check yields an INFO Status for each
+    overridden original status.
 
-      Arguments:
+    Arguments:
 
-      check: the FontBakeryCheck to be decorated
-      new_id: string, must be unique of course and should not(!) be check.id
-              as we essentially create a new, different check.
-      overrides: a tuple of override triple-tuples
-                 ((override_target, new_status, new_message_string), ...)
-                 override_target: string, specific Message.code
-                 new_status: Status or None, keep old status
-                 new_message_string: string or None, keep old message
+    check: the FontBakeryCheck to be decorated
+    new_id: string, must be unique of course and should not(!) be check.id
+            as we essentially create a new, different check.
+    overrides: a tuple of override triple-tuples
+               ((override_target, new_status, new_message_string), ...)
+               override_target: string, specific Message.code
+               new_status: Status or None, keep old status
+               new_message_string: string or None, keep old message
     """
-    @wraps(check) # defines __wrapped__
+
+    @wraps(check)  # defines __wrapped__
     def override_wrapper(*args, **kwds):
         # A check can be either a normal function that returns one Status or a
         # generator that yields one or more. The latter will return a generator
@@ -1039,54 +1105,55 @@ def check_log_override(check, new_id, overrides, reason=None):
             # Now it iterates
             # make these always iterators, it's nicer to handle
             # also we can mix-in new status messages
-            result = (result, )
+            result = (result,)
         # Iterate over sub-results one-by-one, list(result) would abort on
         # encountering the first exception.
         for (status, message) in result:  # Might raise.
-            overriden, result_status, result_message = \
-                _check_log_override(overrides, status, message)
+            overriden, result_status, result_message = _check_log_override(
+                overrides, status, message
+            )
             if overriden:
                 # nothing changed (despite of a match in override rules)
                 if result_status == status and result_message == message:
-                    yield DEBUG, ('A check status override rule matched but'
-                                  ' did not change the resulting status.')
+                    yield DEBUG, (
+                        "A check status override rule matched but"
+                        " did not change the resulting status."
+                    )
                 # Both changed
                 elif result_status != status and result_message != message:
-                    yield DEBUG, (f'Overridden check status and message,'
-                                  f' original: {status} {message}')
+                    yield DEBUG, (
+                        f"Overridden check status and message,"
+                        f" original: {status} {message}"
+                    )
                 # Only status changed
                 elif result_status != status and result_message == message:
-                    yield DEBUG, f'Overridden check status, original: {status}'
+                    yield DEBUG, f"Overridden check status, original: {status}"
                 # Only message changed
                 elif result_status == status and result_message != message:
-                    yield DEBUG, f'Overridden check message, original: {message}'
+                    yield DEBUG, f"Overridden check message, original: {message}"
 
             yield result_status, result_message
 
     # Make the callable here and return that.
     new_check = FontBakeryCheck(
-        override_wrapper
-      , new_id
+        override_wrapper,
+        new_id
         # Untouched, the reason for this checks existence stays the same!
-      , rationale = check.rationale
+        ,
+        rationale=check.rationale
         # the "Derived ..." part should be prominent, so we always see it
-      , description = f'{check.description} (derived from {check.id})'
+        ,
+        description=f"{check.description} (derived from {check.id})"
         # ONLY if there's a reason for derivation, otherwise will take
         # the documentation from the __doc__ string of check.
-      , documentation = (f'{reason}\n'
-                         f'\n'
-                         f'{check.documentation}')
-                        if reason and check.documentation \
-                        else (reason or
-                              check.documentation or
-                              None)
+        ,
+        documentation=(f"{reason}\n" f"\n" f"{check.documentation}")
+        if reason and check.documentation
+        else (reason or check.documentation or None),
     )
 
     # reconstruct a proper doc string from the changes we made.
     # This is really backwards! But, it's so fundamental how python doc
     # strings work, that I think it's solid enough.
-    new_check.__doc__ = (f'{new_check.description}\n'
-                         f'\n'
-                         f'{new_check.documentation}')
+    new_check.__doc__ = f"{new_check.description}\n" f"\n" f"{new_check.documentation}"
     return new_check
-
