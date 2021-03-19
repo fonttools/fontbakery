@@ -1,11 +1,13 @@
 import pytest
+import shutil
 
 from fontbakery.codetesting import (TEST_FILE,
                                     assert_results_contain)
 from fontbakery.checkrunner import ERROR
 from fontbakery.profiles import fontval as fontval_profile
 
-
+@pytest.mark.skipif(not shutil.which("FontValidator"),
+  reason="FontValidator is not installed on your system")
 def test_check_fontvalidator():
     """ MS Font Validator checks """
     # check = CheckTester(fontval_profile,
