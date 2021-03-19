@@ -18,7 +18,7 @@ from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-w
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
 
-BLACKLISTS = {}
+BLOCKLISTS = {}
 
 METADATA_CHECKS = [
     'com.google.fonts/check/metadata/parses',

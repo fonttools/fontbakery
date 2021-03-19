@@ -12,7 +12,7 @@ from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Adobe Fonts"))
 
-BLACKLISTS = {}
+BLOCKLISTS = {}
 
 ADOBEFONTS_PROFILE_CHECKS = \
     UNIVERSAL_PROFILE_CHECKS + [

@@ -2,7 +2,7 @@
 import sys
 
 from functools import partial
-from fontbakery.profiles.googlefonts import profile, BLACKLISTS
+from fontbakery.profiles.googlefonts import profile, BLOCKLISTS
 from fontbakery.commands.check_profile import (
     runner_factory as super_runner_factory, main as super_main)
 
@@ -11,11 +11,11 @@ from fontbakery.commands.check_profile import (
 # the profile is configured for the CLI and the worker.
 def runner_factory(fonts):
     values = {}
-    values.update(BLACKLISTS)
+    values.update(BLOCKLISTS)
     values['fonts'] = fonts
     return super_runner_factory(profile, values=values)
 
-main = partial(super_main, profile, values=BLACKLISTS)
+main = partial(super_main, profile, values=BLOCKLISTS)
 
 
 if __name__ == '__main__':
