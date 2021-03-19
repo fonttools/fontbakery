@@ -46,6 +46,8 @@ from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.ghmarkdown import GHMarkdownReporter
 from fontbakery.reporters.html import HTMLReporter
+from fontbakery.utils import get_theme
+
 
 class AddReporterAction(argparse.Action):
      def __init__(self, option_strings, dest, nargs=None, **kwargs):
@@ -266,21 +268,7 @@ def main(profile=None, values=None):
         args.no_progress = True
         args.no_colors = True
 
-    from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
-    if args.no_colors:
-        theme = NO_COLORS_THEME
-    else:
-        if args.light_theme:
-            theme = LIGHT_THEME
-        elif args.dark_theme:
-            theme = DARK_THEME
-        elif sys.platform == "darwin":
-            # The vast majority of MacOS users seem to use a light-background on the text terminal
-            theme = LIGHT_THEME
-        else:
-            # For orther systems like GNU+Linux and Windows, a dark terminal seems to be more common.
-            theme = DARK_THEME
-
+    theme = get_theme(args)
 
     if args.list_checks:
         if args.loglevels == [PASS]: # if verbose:
