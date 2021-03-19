@@ -1,5 +1,3 @@
-import os
-
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.section import Section
 from fontbakery.status import WARN, PASS #, INFO, ERROR, SKIP, FAIL

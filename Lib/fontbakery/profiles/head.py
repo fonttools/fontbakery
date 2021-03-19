@@ -1,5 +1,4 @@
 import fractions
-from typing import Tuple
 from fontbakery.callable import check
 from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
