@@ -251,7 +251,8 @@ def license_path(licenses):
     # This assumes that a repo can have multiple license files
     # and they're all the same.
     # FIXME: We should have a fontbakery check for that, though!
-    return licenses[0]
+    if licenses and len(licenses) > 0:
+        return licenses[0]
 
 
 @condition

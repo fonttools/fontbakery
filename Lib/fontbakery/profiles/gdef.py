@@ -6,14 +6,19 @@ from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
 
-def _is_non_mark_char(charcode):
+def _is_non_spacing_mark_char(charcode):
     from fontTools import unicodedata
     category = unicodedata.category(chr(charcode))
     if category.startswith("C"):
         # skip control characters
         return None
     else:
-        return not category.startswith("M")
+        # Non spacing marks either have the Unicode General_category:
+        # Mn, Nonspacing_Mark
+        # Me, Enclosing_Mark
+        # Characters with the category Mc, Spacing_Mark should not be considered
+        # as non spacing marks.
+        return category in ("Mn", "Me")
 
 
 def _get_mark_class_glyphnames(ttFont):
@@ -79,7 +84,7 @@ def com_google_fonts_check_gdef_mark_chars(ttFont):
         mark_class_glyphnames = _get_mark_class_glyphnames(ttFont)
         mark_chars_not_in_mark_class = {
             charcode for charcode in cmap
-            if _is_non_mark_char(charcode) is False and
+            if _is_non_spacing_mark_char(charcode) is True and
                cmap[charcode] not in mark_class_glyphnames
         }
 
@@ -120,7 +125,7 @@ def com_google_fonts_check_gdef_non_mark_chars(ttFont):
         cmap = ttFont.getBestCmap()
         nonmark_chars = {
             charcode for charcode in cmap
-            if _is_non_mark_char(charcode) is True
+            if _is_non_spacing_mark_char(charcode) is False
         }
         nonmark_char_glyphnames = {cmap[c] for c in nonmark_chars}
         glyphname_to_char_mapping = dict()

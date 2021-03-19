@@ -382,7 +382,7 @@ class TerminalReporter(TerminalProgress):
             self._collected_results[key][message.name] += 1
 
     def _render_event_sync(self, print, event):
-        status, message, (section, check, iterargs) = event
+        status, msg, (section, check, iterargs) = event
 
         if not status.weight >= self._structure_threshold \
            or status in self._skip_status_report:
@@ -440,19 +440,34 @@ class TerminalReporter(TerminalProgress):
         # Log statuses have weights >= 0
         # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
         if status.weight >= self._log_threshold:
-            print('    * {}: {}'.format(formatStatus(self.theme, status),
-                                        message))
-            if hasattr(message, 'traceback'):
-                print('        ','\n         '.join(message.traceback.split('\n')))
+            print('')
 
+            from fontbakery.utils import text_flow
+            status_name = getattr(status, 'name', status)
+            try:
+                message = (f"{msg.message}\n"
+                           f"[code: {msg.code}]")
+            except:
+                message = str(msg)
+
+            if hasattr(msg, 'traceback'):
+                message += '\n' + '\n  ↳ '.join(message.traceback.split('\n'))
+
+            logmsg = text_flow(message,
+                               width=76,
+                               indent=4,
+                               first_line_indent=-len(status_name)-1,
+                               left_margin=len(status_name)+1,
+                               space_padding=True)
+            print('    {} {}'.format(formatStatus(self.theme, status), logmsg))
 
         if status == ENDCHECK:
             if not self.succinct:
                 print('\n')
-            print('    Result: {}\n'.format(formatStatus(self.theme, message)))
+            print('    Result: {}\n'.format(formatStatus(self.theme, msg)))
 
         if status == SECTIONSUMMARY:
-            order, counter = message
+            order, counter = msg
             print('')
             print('='*8, f'Section results: {section}','='*8)
             print('{} {} in section'.format(len(order)
@@ -479,7 +494,7 @@ class TerminalReporter(TerminalProgress):
 
             print('Total:')
             print('')
-            print(_render_results_counter(self.theme, message))
+            print(_render_results_counter(self.theme, msg))
             print('')
 
             # same end message as parent
