@@ -4264,7 +4264,10 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
     if not regular:
         yield FAIL,\
               Message("lacks-regular",
-                      "The font seems to lack a regular.")
+                      "The font seems to lack a regular."
+                      " If family consists of a single-weight non-Regular style only,"
+                      " consider the Google Fonts specs for this case:"
+                      " https://github.com/googlefonts/gf-docs/tree/main/Spec#single-weight-families")
         return
 
     entry = get_name_entry_strings(TTFont(regular), NameID.FONT_FAMILY_NAME)[0]
