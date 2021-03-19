@@ -17,11 +17,12 @@ from collections import OrderedDict, Counter
 import importlib
 from typing import Dict, Any
 
-from fontbakery.callable import ( FontbakeryCallable
-                                , FontBakeryCheck
-                                , FontBakeryCondition
-                                , FontBakeryExpectedValue
-                                )
+from fontbakery.callable import (
+    FontbakeryCallable,
+    FontBakeryCheck,
+    FontBakeryCondition,
+    FontBakeryExpectedValue,
+)
 from fontbakery.message import Message
 from fontbakery.profile import Profile, get_module_profile
 from fontbakery.utils import is_negated
@@ -56,13 +57,16 @@ from fontbakery.status import (
 
 
 class CheckRunner:
-    def __init__(self, profile, values
-               , values_can_override_profile_names=True
-               , custom_order=None
-               , explicit_checks=None
-               , exclude_checks=None
-               , use_cache=True
-               ):
+    def __init__(
+        self,
+        profile,
+        values,
+        values_can_override_profile_names=True,
+        custom_order=None,
+        explicit_checks=None,
+        exclude_checks=None,
+        use_cache=True,
+    ):
         # TODO: transform all iterables that are list like to tuples
         # to make sure that they won't change anymore.
         # Also remove duplicates from list like iterables
@@ -77,29 +81,29 @@ class CheckRunner:
 
         if not values_can_override_profile_names:
             for name in values:
-                if profile.has(name) and profile.get_type(name) != 'expected_values':
+                if profile.has(name) and profile.get_type(name) != "expected_values":
                     # Of course values can override
                     # expected_values, that's their purpose!
-                    raise SetupError(f'Values entry "{name}" collides with profile'
-                                     f' namespace as a {profile.get_type(name)}')
+                    raise SetupError(
+                        f'Values entry "{name}" collides with profile'
+                        f" namespace as a {profile.get_type(name)}"
+                    )
 
         self._profile = profile
         self._profile.test_dependencies()
         valid, message = self._profile.validate_values(values)
         if not valid:
-            raise ValueValidationError(f'Validation of expected values failed:\n'
-                                       f'{message}')
+            raise ValueValidationError(
+                f"Validation of expected values failed:\n" f"{message}"
+            )
         self._values = values
 
         self.use_cache = use_cache
-        self._cache = {
-            'conditions': {}
-          , 'order': None
-        }
+        self._cache = {"conditions": {}, "order": None}
 
     def clearCache(self):
         # no need to clear 'order' cache IMO
-        self._cache['conditions'] = {}
+        self._cache["conditions"] = {}
 
     @property
     def iterargs(self):
@@ -115,23 +119,23 @@ class CheckRunner:
         return self._profile
 
     def _check_result(self, result):
-        """ Check that the check returned a well formed result:
-            A tuple (<Status>, message)
+        """Check that the check returned a well formed result:
+        A tuple (<Status>, message)
 
-            A boolean Status is allowd and will be transformed to:
-            True <Status: PASS>, False <Status: FAIL>
+        A boolean Status is allowd and will be transformed to:
+        True <Status: PASS>, False <Status: FAIL>
 
-            Checks will be implemented by other parties. This is to
-            help implementors creating good checks, to spot erroneous
-            implementations early and to make it easier to handle
-            the results tuple.
+        Checks will be implemented by other parties. This is to
+        help implementors creating good checks, to spot erroneous
+        implementations early and to make it easier to handle
+        the results tuple.
         """
         if not isinstance(result, tuple):
-            msg = f'Result must be a tuple but it is {type(result)}.'
+            msg = f"Result must be a tuple but it is {type(result)}."
             return (FAIL, APIViolationError(msg, result))
 
         if len(result) != 2:
-            msg = f'Result must have 2 items, but it has {len(result)}.'
+            msg = f"Result must have 2 items, but it has {len(result)}."
             return (FAIL, APIViolationError(msg, result))
 
         status, message = result
@@ -142,14 +146,16 @@ class CheckRunner:
             result = (status, message)
 
         if not isinstance(status, Status):
-            msg = (f'Result item `status` must be an instance of Status,'
-                   f' but it is {status} and its type is {type(status)}.')
+            msg = (
+                f"Result item `status` must be an instance of Status,"
+                f" but it is {status} and its type is {type(status)}."
+            )
             return (FAIL, APIViolationError(msg, result))
 
         return result
 
     def _exec_check(self, check: FontbakeryCallable, args: Dict[str, Any]):
-        """ Yields check sub results.
+        """Yields check sub results.
 
         Each check result is a tuple of: (<Status>, mixed message)
         `status`: must be an instance of Status.
@@ -190,8 +196,7 @@ class CheckRunner:
             path = []
         if name in path:
             dependencies = " -> ".join(path)
-            msg = (f'Condition "{name}" is'
-                   f' a circular dependency in {dependencies}')
+            msg = f'Condition "{name}" is' f" a circular dependency in {dependencies}"
             raise CircularDependencyError(msg)
 
         path.append(name)
@@ -218,27 +223,25 @@ class CheckRunner:
     def _filter_condition_used_iterargs(self, name, iterargs):
         allArgs = set()
         names = list(self._profile.conditions[name].args)
-        while(names):
+        while names:
             name = names.pop()
             if name in allArgs:
                 continue
             allArgs.add(name)
             if name in self._profile.conditions:
                 names += self._profile.conditions[name].args
-        return tuple((name, value)
-                     for name, value in iterargs
-                     if name in allArgs)
+        return tuple((name, value) for name, value in iterargs if name in allArgs)
 
     def _get_condition(self, name, iterargs, path=None):
         # conditions are evaluated lazily
         used_iterargs = self._filter_condition_used_iterargs(name, iterargs)
         key = (name, used_iterargs)
-        if not self.use_cache or key not in self._cache['conditions']:
+        if not self.use_cache or key not in self._cache["conditions"]:
             err, val = self._evaluate_condition(name, used_iterargs, path)
             if self.use_cache:
-                self._cache['conditions'][key] = err, val
+                self._cache["conditions"][key] = err, val
         else:
-            err, val = self._cache['conditions'][key]
+            err, val = self._cache["conditions"][key]
         return err, val
 
     def get(self, key, iterargs, *args):
@@ -257,7 +260,7 @@ class CheckRunner:
         for index in range(length):
             current = (name, index)
             for tail in self._generate_iterargs(requirements[1:]):
-                yield (current, ) + tail
+                yield (current,) + tail
 
     def _derive_iterable_condition(self, name, simple=False, path=None):
         # returns a generator, which is better for memory critical situations
@@ -270,8 +273,7 @@ class CheckRunner:
             raise TypeError(f'Condition "{name}" uses no iterargs.')
 
         # like [('font', 10), ('other', 22)]
-        requirements = [(singular, self._iterargs[singular])
-                        for singular in iterargs]
+        requirements = [(singular, self._iterargs[singular]) for singular in iterargs]
         for iterargs in self._generate_iterargs(requirements):
             error, value = self._get_condition(name, iterargs, path)
             if error:
@@ -301,25 +303,25 @@ class CheckRunner:
         if name in self._values:
             return self._values[name]
 
-        if nametype == 'expected_values':
+        if nametype == "expected_values":
             # No need to validate
             expected_value = self._profile.get(name)
             if expected_value.has_default:
                 # has no default: fallback or MissingValueError
                 return expected_value.default
 
-        if nametype == 'iterargs' and name in iterargsDict:
+        if nametype == "iterargs" and name in iterargsDict:
             index = iterargsDict[name]
             plural = self._profile.get(name)
             return self._values[plural][index]
 
-        if nametype == 'conditions':
+        if nametype == "conditions":
             error, value = self._get_condition(name, iterargs, path)
             if error:
                 raise error
             return value
 
-        if nametype == 'derived_iterables':
+        if nametype == "derived_iterables":
             condition_name, simple = self._profile.get(name)
             return self._derive_iterable_condition(condition_name, simple, path)
 
@@ -330,7 +332,7 @@ class CheckRunner:
             report_name = f'"{original_name}" as "{name}"'
         else:
             report_name = f'"{name}"'
-        raise MissingValueError(f'Value {report_name} is undefined.')
+        raise MissingValueError(f"Value {report_name} is undefined.")
 
     def _get_args(self, item, iterargs, path=None):
         # iterargs can't be optional arguments yet, we wouldn't generate
@@ -382,8 +384,8 @@ class CheckRunner:
                 unfulfilled_conditions.append(condition)
         if unfulfilled_conditions:
             # This will make the check neither pass nor fail
-            comma_separated = ', '.join(unfulfilled_conditions)
-            status = (SKIP, f'Unfulfilled Conditions: {comma_separated}')
+            comma_separated = ", ".join(unfulfilled_conditions)
+            status = (SKIP, f"Unfulfilled Conditions: {comma_separated}")
             return (status, None)
 
         try:
@@ -403,10 +405,14 @@ class CheckRunner:
 
         skipped = None
         if self._profile.check_skip_filter:
-            iterargsDict = {key:self.get_iterarg(key, index) for key, index in iterargs}
-            accepted, message = self._profile.check_skip_filter(check.id, **iterargsDict)
+            iterargsDict = {
+                key: self.get_iterarg(key, index) for key, index in iterargs
+            }
+            accepted, message = self._profile.check_skip_filter(
+                check.id, **iterargsDict
+            )
             if not accepted:
-                skipped = (SKIP, 'Filtered: {}'.format(message or '(no message)'))
+                skipped = (SKIP, "Filtered: {}".format(message or "(no message)"))
 
         if not skipped:
             skipped, args = self._get_check_dependencies(check, iterargs)
@@ -438,43 +444,46 @@ class CheckRunner:
             # We can also use it to display status updates to the user.
         if summary_status is None:
             summary_status = ERROR
-            yield ERROR, (f'The check {check} did not yield any status')
+            yield ERROR, (f"The check {check} did not yield any status")
         elif summary_status < PASS:
             summary_status = ERROR
             # got to yield it,so we can see it in the report
-            yield ERROR, (f'The most significant status of {check}'
-                          f' was only {summary_status} but'
-                          f' the minimum is {PASS}')
+            yield ERROR, (
+                f"The most significant status of {check}"
+                f" was only {summary_status} but"
+                f" the minimum is {PASS}"
+            )
 
         yield ENDCHECK, summary_status
 
     @property
     def order(self):
-        order = self._cache.get('order', None)
+        order = self._cache.get("order", None)
         if order is None:
             order = []
             # section, check, iterargs = identity
-            for identity in \
-                self._profile.execution_order(self._iterargs,
-                                              custom_order=self._custom_order,
-                                              explicit_checks=self._explicit_checks,
-                                              exclude_checks=self._exclude_checks):
+            for identity in self._profile.execution_order(
+                self._iterargs,
+                custom_order=self._custom_order,
+                explicit_checks=self._explicit_checks,
+                exclude_checks=self._exclude_checks,
+            ):
                 order.append(identity)
-            self._cache['order'] = order = tuple(order)
+            self._cache["order"] = order = tuple(order)
         return order
 
     def check_order(self, order):
         """
-          order must be a subset of self.order
+        order must be a subset of self.order
         """
         own_order = self.order
         for item in order:
             if item not in own_order:
-                raise ValueError(f'Order item {item} not found.')
+                raise ValueError(f"Order item {item} not found.")
         return order
 
     def _check_protocol_generator(self, next_check_identity):
-        section , check, iterargs = next_check_identity
+        section, check, iterargs = next_check_identity
         for status, message in self._run_check(check, iterargs):
             yield status, message, (section, check, iterargs)
 
@@ -494,6 +503,7 @@ class CheckRunner:
         for result in drive_session_protocol(session_gen, next_check_gen):
             receive_result_fn(result)
 
+
 def drive_session_protocol(session_gen, next_check_gen):
     # can't send anything but None on first iteration
     value = None
@@ -508,8 +518,9 @@ def drive_session_protocol(session_gen, next_check_gen):
     except StopIteration:
         pass
 
+
 def session_protocol_generator(check_protocol_generator, order):
-    #init
+    # init
 
     # Could use self.order, but the truth is, we don't know.
     # However, self.order still should contain each check_identity
@@ -542,12 +553,16 @@ def session_protocol_generator(check_protocol_generator, order):
         checkrun_summary.update(section_summary)
     yield END, checkrun_summary, (None, None, None)
 
+
 def distribute_generator(gen, targets_callbacks):
     for item in gen:
         for target in targets_callbacks:
             target(item)
 
-FILE_MODULE_NAME_PREFIX = '.'
+
+FILE_MODULE_NAME_PREFIX = "."
+
+
 def get_module_from_file(filename):
     # filename = 'my/path/to/file.py'
     # module_name = 'file_module.file_py'
@@ -558,14 +573,14 @@ def get_module_from_file(filename):
     # assert module.__file__ == filename
     return module
 
+
 def _get_module_from_locator(module_locator):
-    if module_locator['name'].startswith(FILE_MODULE_NAME_PREFIX):
-        return get_module_from_file(module_locator['origin'])
+    if module_locator["name"].startswith(FILE_MODULE_NAME_PREFIX):
+        return get_module_from_file(module_locator["origin"])
     # Fails with an appropriate ImportError.
-    return importlib.import_module(module_locator['name'], package=None)
+    return importlib.import_module(module_locator["name"], package=None)
+
 
 def get_profile_from_module_locator(module_locator):
     module = _get_module_from_locator(module_locator)
     return get_module_profile(module)
-
-
