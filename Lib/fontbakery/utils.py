@@ -21,26 +21,34 @@ from typing import Text, Optional
 
 def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
               space_padding=False, text_color="{}".format):
-    result = ""
+    result = []
     line_num = 0
     for line in content.split("\n"):
+        line_num += 1
+        if line_num == 1:
+            _indent = indent + first_line_indent
+            _width = width + first_line_indent
+        else:
+            _indent = indent
+            _width = width
+
         if line.strip() == "":
             if space_padding:
-                result += " " * indent + text_color(" " * width)
-            result += "\n"
+                result.append(" " * _indent + text_color(" " * _width))
             continue
 
         words = line.split(" ")
         while words:
-            line_num += 1
             if line_num == 1:
-                size = left_margin + first_line_indent
-                inside_indent = " " * size
+                if left_margin > -first_line_indent:
+                    inside_indent = " " * (left_margin + first_line_indent)
+                else:
+                    inside_indent = ""
             else:
                 inside_indent = " " * left_margin
             this_line = inside_indent + words.pop(0)
 
-            if len(this_line) > width:
+            if len(this_line) > _width:
                 # let's see what we can do to make it fit
                 if "/" in this_line:
                     # here we feed-back chunks of a URL
@@ -48,25 +56,24 @@ def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
                     chunks = this_line.split('/')
                     new_line = chunks.pop(0)
                     while chunks:
-                        if len(new_line) + 1 + len(chunks[0]) >= width: break
+                        if len(new_line) + 1 + len(chunks[0]) >= _width: break
                         new_line += "/" + chunks.pop(0)
                     this_line = new_line
                     words.insert(0, "/" + "/".join(chunks))
                 else:
                     # not sure what else to do,
                     # so we'll simply cut the long word
-                    words.insert(0, this_line[width:])
-                    this_line = this_line[:width]
+                    words.insert(0, this_line[_width:])
+                    this_line = this_line[:_width]
 
-            while words and (len(this_line) + 1 + len(words[0]) < width or
-                             len(words[0]) >= width):
+            while words and (len(this_line) + 1 + len(words[0]) <= width):
                 this_line += " " + words.pop(0)
 
             if space_padding:
                 # pad the line with spaces to fit the block width:
-                this_line += " " * (width - len(this_line))
-            result += " " * indent + text_color(this_line) + "\n"
-    return result
+                this_line += " " * (_width - len(this_line))
+            result.append(" " * _indent + text_color(this_line))
+    return "\n".join(result)
 
 
 def unindent_rationale(rationale, checkid=None):
@@ -118,6 +125,12 @@ def pretty_print_list(values, shorten=10, sep=", ", glue="and"):
                                  glue,
                                  str(values[-1]))
 
+
+def bullet_list(values, bullet="-"):
+    return f" {bullet} " + pretty_print_list(values,
+                                             shorten=False,
+                                             sep=f"\n {bullet} ",
+                                             glue=f"\n {bullet}")
 
 def get_regular(fonts):
     # TODO: Maybe also support getting a regular instance from a variable font?

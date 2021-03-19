@@ -554,6 +554,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 def com_google_fonts_check_required_tables(ttFont):
     """Font contains all required tables?"""
     from .shared_conditions import is_variable_font
+    from fontbakery.utils import bullet_list
 
     REQUIRED_TABLES = ["cmap", "head", "hhea", "hmtx",
                        "maxp", "name", "OS/2", "post"]
@@ -576,8 +577,8 @@ def com_google_fonts_check_required_tables(ttFont):
 
     optional_tables = [opt for opt in OPTIONAL_TABLES if opt in ttFont.keys()]
     if optional_tables:
-        yield INFO, ("This font contains the following"
-                     " optional tables [{}]").format(", ".join(optional_tables))
+        yield INFO, (f"This font contains the following optional tables:\n"
+                     f"{bullet_list(optional_tables)}")
 
     if is_variable_font(ttFont):
         # According to https://github.com/googlefonts/fontbakery/issues/1671
@@ -590,8 +591,8 @@ def com_google_fonts_check_required_tables(ttFont):
         missing_tables.append("CFF ' or 'glyf")
 
     if missing_tables:
-        yield FAIL, ("This font is missing the following required tables:"
-                     " ['{}']").format("', '".join(missing_tables))
+        yield FAIL, (f"This font is missing the following required tables:\n"
+                     f"{bullet_list(missing_tables)}")
     else:
         yield PASS, "Font contains all required tables."
 
