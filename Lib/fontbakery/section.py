@@ -1,3 +1,6 @@
+from fontbakery.errors import SetupError
+
+
 class Section:
     """ An ordered set of checks.
 

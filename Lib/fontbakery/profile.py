@@ -6,13 +6,16 @@ import re
 import importlib
 import inspect
 import types
+import json
+import logging
 
-from fontbakery.errors import (NamespaceError, SetupError)
+from fontbakery.errors import (NamespaceError, SetupError, CircularAliasError)
 from fontbakery.callable import ( FontbakeryCallable
                                 , FontBakeryCheck
                                 , FontBakeryCondition
                                 , FontBakeryExpectedValue
                                 )
+from fontbakery.message import Message
 from fontbakery.section import Section
 from fontbakery.utils import is_negated
 from fontbakery.status import DEBUG

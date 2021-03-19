@@ -15,8 +15,6 @@ import os
 import types
 from collections import OrderedDict, Counter
 import importlib
-import json
-import logging
 from typing import Dict, Any
 
 from fontbakery.callable import ( FontbakeryCallable
@@ -25,13 +23,14 @@ from fontbakery.callable import ( FontbakeryCallable
                                 , FontBakeryExpectedValue
                                 )
 from fontbakery.message import Message
-from fontbakery.profile import Profile
+from fontbakery.profile import Profile, get_module_profile
 from fontbakery.utils import is_negated
 from fontbakery.errors import (
     APIViolationError,
     CircularDependencyError,
     FailedCheckError,
     FailedConditionError,
+    FailedDependenciesError,
     MissingConditionError,
     SetupError,
     MissingValueError,
