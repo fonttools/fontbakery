@@ -304,7 +304,7 @@ def get_DesignerInfoProto_Message(text_data):
 
 def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
     from fontbakery.message import Message
-    from fontbakery.checkrunner import (PASS, FAIL)
+    from fontbakery.status import (PASS, FAIL)
     value = getattr(ttFont[table], attr)
     name_str = f"{table} {attr} {bitname} bit"
     if bool(value & bitmask) == expected:
