@@ -1,5 +1,5 @@
 from fontbakery.fonts_profile import profile_factory  # NOQA pylint: disable=unused-import
-from fontbakery.checkrunner import Section
+from fontbakery.section import Section
 
 OPENTYPE_PROFILE_IMPORTS = (
     ".",

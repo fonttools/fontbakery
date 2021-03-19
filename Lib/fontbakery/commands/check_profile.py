@@ -10,8 +10,6 @@ from collections import OrderedDict
 from fontbakery.checkrunner import (
               distribute_generator
             , CheckRunner
-            , Profile
-            , get_module_profile
             , get_module_from_file
             , DEBUG
             , INFO
@@ -25,6 +23,7 @@ from fontbakery.checkrunner import (
             , END
             , ENDCHECK
             )
+from fontbakery.profile import (Profile, get_module_profile)
 
 from fontbakery.errors import ValueValidationError
 from fontbakery.multiproc import multiprocessing_runner

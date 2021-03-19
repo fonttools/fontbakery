@@ -1,6 +1,7 @@
 import os
 from fontbakery.callable import check
-from fontbakery.checkrunner import ERROR, FAIL, INFO, PASS, WARN, Section
+from fontbakery.checkrunner import ERROR, FAIL, INFO, PASS, WARN
+from fontbakery.section import Section
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 from .shared_conditions import is_variable_font

@@ -1,6 +1,7 @@
 import os
 
-from fontbakery.checkrunner import Section, PASS, FAIL, WARN, ERROR, INFO, SKIP
+from fontbakery.checkrunner import PASS, FAIL, WARN, ERROR, INFO, SKIP
+from fontbakery.section import Section
 from fontbakery.callable import condition, check, disable
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
@@ -695,7 +696,7 @@ def com_google_fonts_check_STAT_strings(ttFont):
     id = 'com.google.fonts/check/valid_glyphnames',
     rationale = """
         Microsoft's recommendations for OpenType Fonts states the following:
-    
+
         'NOTE: The PostScript glyph name must be no longer than 31 characters, include only uppercase or lowercase English letters, European digits, the period or the underscore, i.e. from the set [A-Za-z0-9_.] and should start with a letter, except the special glyph name ".notdef" which starts with a period.'
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/recom#post-table

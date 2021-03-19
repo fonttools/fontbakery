@@ -1,4 +1,4 @@
-from fontbakery.checkrunner import Section
+from fontbakery.section import Section
 from fontbakery.fonts_profile import profile_factory
 
 
