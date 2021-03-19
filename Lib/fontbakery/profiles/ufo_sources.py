@@ -2,7 +2,7 @@ import os
 
 from fontbakery.callable import check, condition
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
-from fontbakery.checkrunner import ERROR, FAIL, PASS, WARN
+from fontbakery.status import ERROR, FAIL, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.profile import Profile
 

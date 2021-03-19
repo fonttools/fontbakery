@@ -4,7 +4,7 @@ Checks for Adobe Fonts (formerly known as Typekit).
 import unicodedata
 
 from fontbakery.callable import check
-from fontbakery.checkrunner import PASS, FAIL, WARN
+from fontbakery.status import PASS, FAIL, WARN
 from fontbakery.section import Section
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
