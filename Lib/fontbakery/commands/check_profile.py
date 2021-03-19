@@ -10,7 +10,6 @@ from collections import OrderedDict
 from fontbakery.checkrunner import (
               distribute_generator
             , CheckRunner
-            , ValueValidationError
             , Profile
             , get_module_profile
             , get_module_from_file
@@ -27,6 +26,7 @@ from fontbakery.checkrunner import (
             , ENDCHECK
             )
 
+from fontbakery.errors import ValueValidationError
 from fontbakery.multiproc import multiprocessing_runner
 
 log_levels =  OrderedDict((s.name, s) \

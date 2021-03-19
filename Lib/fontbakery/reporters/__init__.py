@@ -22,8 +22,8 @@ from fontbakery.checkrunner import (
             , SECTIONSUMMARY
             , START
             , END
-            , ProtocolViolationError
             )
+from fontbakery.errors import ProtocolViolationError
 
 class FontbakeryReporter:
     def __init__(self, is_async=False, runner=None, output_file=None, loglevels=None):
