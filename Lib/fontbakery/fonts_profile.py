@@ -3,18 +3,19 @@ Font Bakery CheckRunner is the driver of a font bakery suite of checks.
 
 
 """
-from fontbakery.profile import Profile
+import glob
+import logging
+import argparse
 
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
+from fontbakery.profile import Profile
+from fontbakery.profiles.shared_conditions import ttFont
 
 class FontsProfile(Profile):
     def setup_argparse(self, argument_parser):
         """
         Set up custom arguments needed for this profile.
         """
-        import glob
-        import logging
-        import argparse
         def get_fonts(pattern):
 
             fonts_to_check = []
@@ -63,7 +64,6 @@ fonts_expected_value = ExpectedValue(
 )
 
 def profile_factory(**kwds):
-    from fontbakery.profiles.shared_conditions import ttFont
     profile = FontsProfile(
         iterargs={'font': 'fonts'}
       , conditions={ttFont.name: ttFont}

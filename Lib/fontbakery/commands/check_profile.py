@@ -19,14 +19,17 @@ from fontbakery.checkrunner import (
             , PASS
             , FAIL
             , SECTIONSUMMARY
-            , START
-            , END
-            , ENDCHECK
             )
 from fontbakery.profile import (Profile, get_module_profile)
 
 from fontbakery.errors import ValueValidationError
 from fontbakery.multiproc import multiprocessing_runner
+from fontbakery.reporters.terminal import TerminalReporter
+from fontbakery.reporters.serialize import SerializeReporter
+from fontbakery.reporters.ghmarkdown import GHMarkdownReporter
+from fontbakery.reporters.html import HTMLReporter
+from fontbakery.utils import get_theme
+
 
 log_levels =  OrderedDict((s.name, s) \
                           for s in sorted((
@@ -40,12 +43,6 @@ log_levels =  OrderedDict((s.name, s) \
             )))
 
 DEFAULT_LOG_LEVEL = INFO
-
-from fontbakery.reporters.terminal import TerminalReporter
-from fontbakery.reporters.serialize import SerializeReporter
-from fontbakery.reporters.ghmarkdown import GHMarkdownReporter
-from fontbakery.reporters.html import HTMLReporter
-from fontbakery.utils import get_theme
 
 
 class AddReporterAction(argparse.Action):
@@ -342,7 +339,7 @@ def list_checks(profile, theme, verbose=False):
                 print(theme["list-checks: check-id"](check.id) + "\n" +
                       theme["list-checks: description"](f'"{check.description}"') + "\n")
     else:
-        for section_name, section in profile._sections.items():
+        for _, section in profile._sections.items():
             for check in section._checks:
                 print(check.id)
     sys.exit()
