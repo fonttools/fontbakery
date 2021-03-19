@@ -17,7 +17,6 @@ from collections import OrderedDict, Counter
 from functools import partial, wraps
 from itertools import chain
 import importlib
-import traceback
 import json
 import logging
 from typing import Dict, Any, Iterable
@@ -30,6 +29,19 @@ from fontbakery.callable import ( FontbakeryCallable
                                 , FontBakeryExpectedValue
                                 )
 from fontbakery.message import Message
+from fontbakery.errors import (
+    APIViolationError,
+    CircularDependencyError,
+    FailedCheckError,
+    FailedConditionError,
+    MissingConditionError,
+    SetupError,
+    MissingValueError,
+    CircularAliasError,
+    NamespaceError,
+    ValueValidationError
+)
+
 
 class Status:
     """ If you create a custom Status symbol, please keep in mind that
@@ -146,90 +158,6 @@ SECTIONSUMMARY = Status('SECTIONSUMMARY', -3)
 # Message is a counter as described in SECTIONSUMMARY, but with the collected
 # results of all checks in all sections.
 END = Status('END', -5)
-
-
-class FontBakeryRunnerError(Exception):
-    pass
-
-
-class CircularDependencyError(FontBakeryRunnerError):
-    pass
-
-
-class APIViolationError(FontBakeryRunnerError):
-    def __init__(self, message, result, *args):
-        self.message = message
-        self.result = result
-        super().__init__(message, *args)
-
-
-class ProtocolViolationError(FontBakeryRunnerError):
-    def __init__(self, message, *args):
-        self.message = message
-        super().__init__(message, *args)
-
-
-class FailedCheckError(FontBakeryRunnerError):
-    def __init__(self, error, *args):
-        message = f'Failed with {type(error).__name__}: {error}'
-        self.error = error
-        self.traceback = "".join(traceback.format_tb(error.__traceback__))
-        super().__init__(message, *args)
-
-
-class FailedConditionError(FontBakeryRunnerError):
-    """ This is a serious problem with the check suite profile
-    and it must be solved.
-    """
-    def __init__(self, condition, error, *args):
-        message = (f'The condition {condition} had an error:'
-                   f' {type(error).__name__}: {error}')
-        self.condition = condition
-        self.error = error
-        self.traceback = "".join(traceback.format_tb(error.__traceback__))
-        super().__init__(message, *args)
-
-
-class MissingConditionError(FontBakeryRunnerError):
-    """ This is a serious problem with the check suite profile
-    and it must be solved, most probably a typo.
-    """
-    def __init__(self, condition_name, error, *args):
-        message = (f'The condition named {condition_name} is missing:'
-                   f' {type(error).__name__}: {error}')
-        self.error = error
-        self.traceback = "".join(traceback.format_tb(error.__traceback__))
-        super().__init__(message, *args)
-
-
-class FailedDependenciesError(FontBakeryRunnerError):
-    def __init__(self, check, error, *args):
-        message = (f'The check {check} had an error:'
-                   f' {type(error).__name__}: {error}')
-        self.check = check
-        self.error = error
-        self.traceback = "".join(traceback.format_tb(error.__traceback__))
-        super().__init__(message, *args)
-
-
-class SetupError(FontBakeryRunnerError):
-    pass
-
-
-class MissingValueError(FontBakeryRunnerError):
-    pass
-
-
-class CircularAliasError(FontBakeryRunnerError):
-    pass
-
-
-class NamespaceError(FontBakeryRunnerError):
-    pass
-
-
-class ValueValidationError(FontBakeryRunnerError):
-    pass
 
 
 # TODO: this should be part of FontBakeryCheck and check.conditions
