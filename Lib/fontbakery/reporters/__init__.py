@@ -26,7 +26,7 @@ from fontbakery.checkrunner import (
             )
 
 class FontbakeryReporter:
-    def __init__(self, is_async=False, runner=None):
+    def __init__(self, is_async=False, runner=None, output_file=None, loglevels=None):
         self._started = None
         self._ended = None
         self._order = None
@@ -34,12 +34,14 @@ class FontbakeryReporter:
         self._indexes = {}
         self._tick = 0
         self._counter = Counter()
+        self.loglevels = loglevels
 
         # Runner should know if it is async!
         self.is_async = is_async
         self.runner = runner
 
         self._worst_check_status = None
+        self.output_file = output_file
 
     def run(self, order=None):
         """
@@ -51,6 +53,14 @@ class FontbakeryReporter:
     @property
     def order(self):
         return self._order
+
+    def write(self):
+        if self.output_file is not None:
+            raise NotImplementedError(
+                f'{type(self)} does not implement the "write" method, '
+                'but it has an "output_file".'
+            )
+        # reporters without an output file do nothing here
 
     def _get_key(self, identity):
         section, check, iterargs = identity

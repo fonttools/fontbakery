@@ -241,7 +241,7 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
                         warnings.append(f"{glyphname}: {s}")
 
     if warnings:
-        formatted_list = "\t* " + pretty_print_list(sorted(warnings), sep="\n\t* ")
+        formatted_list = " * " + pretty_print_list(sorted(warnings), sep="\n * ")
         yield WARN,\
              Message("found-semi-vertical",
                      f"The following glyphs have semi-vertical/semi-horizontal lines:\n"

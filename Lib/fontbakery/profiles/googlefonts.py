@@ -1334,12 +1334,12 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
           Message("size-impact",
                   f"Hinting filesize impact:\n"
                   f"\n"
-                  f"\t|  | {font} |\n"
-                  f"\t|:--- | ---:|\n"
-                  f"\t| Dehinted Size | {dehinted_size} |\n"
-                  f"\t| Hinted Size | {hinted_size} |\n"
-                  f"\t| Increase | {increase} |\n"
-                  f"\t| Change   | {change:.1f} % |\n")
+                  f" |               | {font}          |\n"
+                  f" |:------------- | ---------------:|\n"
+                  f" | Dehinted Size | {dehinted_size} |\n"
+                  f" | Hinted Size   | {hinted_size}   |\n"
+                  f" | Increase      | {increase}      |\n"
+                  f" | Change        | {change:.1f} %  |\n")
 
 
 @check(
@@ -3197,6 +3197,9 @@ def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
 
 @check(
     id = 'com.google.fonts/check/name/fullfontname',
+    rationale = """
+        Requirements for the FULL_FONT_NAME entries in the 'name' table.
+    """,
     conditions = ['style_with_spaces',
                   'familyname_with_spaces']
 )
@@ -3219,21 +3222,24 @@ def com_google_fonts_check_name_fullfontname(ttFont,
                    and string == familyname_with_spaces:
                     yield WARN,\
                           Message("lacks-regular",
-                                  f'Entry {name_entry_id(name)} on the "name" table:'
-                                  f' Got "{string}" which lacks "Regular",'
+                                  f'{name_entry_id(name)}\n'
+                                  f'Got "{string}" which lacks "Regular",'
                                   f' but it is probably OK in this case.')
                 else:
                     yield FAIL,\
                           Message("bad-entry",
-                                  f'Entry {name_entry_id(name)} on the "name" table:'
-                                  f' Expected "{expected_value}" '
-                                  f' but got "{string}".')
+                                  f'{name_entry_id(name)}\n'
+                                  f'Expected: "{expected_value}"\n'
+                                  f'But got:  "{string}"')
     if not failed:
         yield PASS, "FULL_FONT_NAME entries are all good."
 
 
 @check(
     id = 'com.google.fonts/check/name/postscriptname',
+    rationale = """
+        Requirements for the POSTSCRIPT_NAME entries in the 'name' table.
+    """,
     conditions = ['style',
                   'familyname']
 )
@@ -3251,15 +3257,18 @@ def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
                 failed = True
                 yield FAIL,\
                       Message("bad-entry",
-                              f'Entry {name_entry_id(name)} on the "name" table:'
-                              f' Expected "{expected_value}"'
-                              f' but got "{string}".')
+                              f'{name_entry_id(name)}\n'
+                              f'Expected: "{expected_value}"\n'
+                              f'But got:  "{string}"')
     if not failed:
         yield PASS, "POSTCRIPT_NAME entries are all good."
 
 
 @check(
     id = 'com.google.fonts/check/name/typographicfamilyname',
+    rationale = """
+        Requirements for the TYPOGRAPHIC_FAMILY_NAME entries in the 'name' table.
+    """,
     conditions = ['style',
                   'familyname_with_spaces']
 )
@@ -3292,9 +3301,9 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
                     failed = True
                     yield FAIL,\
                           Message("non-ribbi-bad-value",
-                                  (f'Entry {name_entry_id(name)} on the "name" table:'
-                                   f' Expected "{expected_value}"'
-                                   f' but got "{string}".'))
+                                  (f'{name_entry_id(name)}\n'
+                                   f'Expected: "{expected_value}"\n'
+                                   f'But got:  "{string}".'))
         if not failed and not has_entry:
             failed = True
             yield FAIL,\
@@ -3307,6 +3316,9 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
 
 @check(
     id = 'com.google.fonts/check/name/typographicsubfamilyname',
+    rationale = """
+        Requirements for the TYPOGRAPHIC_SUBFAMILY_NAME entries in the 'name' table.
+    """,
     conditions=['expected_style']
 )
 def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style):

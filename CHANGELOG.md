@@ -1,9 +1,12 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+
 ## 0.7.35 (2021-Mar-??)
 ### Release note
   - Axis Registry has been updated to commit https://github.com/google/fonts/tree/6418bd97834330f245cce4131ec3b8b98cb333be which includes changes to the `opsz` axis.
+  - Format status output to improve readability. (issue #2052)
+  - Move reporter-specific write logic to reporters, simplify argparse (PR #3206)
 
 ### New Profile
   - new Type Network profile for checking some of their new axis proposals (issue #3130)
@@ -11,16 +14,18 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - **license** condition now assumes that all license files in a given project repo are identical if more than one is found. With that some checks wont be skipped. We should have a fontbakery check to ensuring that assumption is valid, though. (issue #3172)
+  - **license_path** condition: do not cause an ERROR on families lacking a license file. (issue #3201)
 
 ### New Checks
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
   - **[com.google.fonts/check/description/family_update]:** On a family update, the DESCRIPTION.en_us.html file should ideally also be updated. (issue #3182)
 
-
 ### Changes to existing checks
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.
   - **[com.google.fonts/check/STAT/gf-axisregistry]:** Ensure that STAT tables contain Axis Values
   - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** Added hints to GF specs for single-weight families to FAIL output
+  - **[com.google.fonts/check/gdef_mark_chars]:** Do not consider chars with Unicode category Mc, Spacing_Marks as (non spacing) mark class glyphs.
+  - **[com.google.fonts/check/gdef_non_mark_chars]:** Same as com.google.fonts/check/gdef_mark_chars.
 
 
 ## 0.7.34 (2021-Jan-06)

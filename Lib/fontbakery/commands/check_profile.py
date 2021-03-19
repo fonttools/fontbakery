@@ -47,6 +47,18 @@ from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.ghmarkdown import GHMarkdownReporter
 from fontbakery.reporters.html import HTMLReporter
 
+class AddReporterAction(argparse.Action):
+     def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        self.cls = kwargs["cls"]
+        del kwargs["cls"]
+        super().__init__(option_strings, dest, **kwargs)
+
+     def __call__(self, parser, namespace, values, option_string=None):
+        if not hasattr(namespace, "reporters"):
+            namespace.reporters = []
+        namespace.reporters.append((self.cls, values))
+
+
 def ArgumentParser(profile, profile_arg=True):
     argument_parser = \
         argparse.ArgumentParser(description="Check TTF files against a profile.",
@@ -137,16 +149,15 @@ def ArgumentParser(profile, profile_arg=True):
     argument_parser.add_argument('--light-theme', default=False, action='store_true',
                                  help='Use a color theme with light colors.')
 
-    argument_parser.add_argument('--json', default=False, type=argparse.FileType('w'),
+    argument_parser.add_argument('--json', default=False, action=AddReporterAction, cls=SerializeReporter,
                                  metavar= 'JSON_FILE',
                                  help='Write a json formatted report to JSON_FILE.')
 
-    argument_parser.add_argument('--ghmarkdown', default=False, type=argparse.FileType('w'),
+    argument_parser.add_argument('--ghmarkdown', default=False, action=AddReporterAction, cls=GHMarkdownReporter,
                                  metavar= 'MD_FILE',
                                  help='Write a GitHub-Markdown formatted report to MD_FILE.')
 
-    argument_parser.add_argument('--html', default=False,
-                                 type=argparse.FileType('w', encoding="utf-8"),
+    argument_parser.add_argument('--html', default=False,action=AddReporterAction, cls=HTMLReporter,
                                  metavar= 'HTML_FILE',
                                  help='Write a HTML report to HTML_FILE.')
 
@@ -321,46 +332,26 @@ def main(profile=None, values=None):
                          , skip_status_report=None if args.show_sections \
                                                    else (SECTIONSUMMARY, )
                          )
-    reporters = [tr.receive]
+    reporters = [tr]
+    if "reporters" not in args:
+        args.reporters = []
 
-    if args.json:
-        sr = SerializeReporter(runner=runner, collect_results_by=args.gather_by)
-        reporters.append(sr.receive)
-
-    if args.ghmarkdown:
-        mdr = GHMarkdownReporter(loglevels=args.loglevels,
-                                 runner=runner,
-                                 collect_results_by=args.gather_by)
-        reporters.append(mdr.receive)
-
-    if args.html:
-        hr = HTMLReporter(loglevels=args.loglevels,
-                          runner=runner,
-                          collect_results_by=args.gather_by)
-        reporters.append(hr.receive)
+    for reporter_class, output_file in args.reporters:
+        reporters.append(reporter_class(loglevels=args.loglevels,
+                             runner=runner,
+                             collect_results_by=args.gather_by,
+                             output_file=output_file
+                         ))
 
     if args.multiprocessing == 0:
         status_generator = runner.run()
     else:
         status_generator = multiprocessing_runner(args.multiprocessing, runner, runner_kwds)
 
-    distribute_generator(status_generator, reporters)
+    distribute_generator(status_generator, [reporter.receive for reporter in reporters])
 
-    if args.json:
-        import json
-        json.dump(sr.getdoc(), args.json, sort_keys=True, indent=4)
-        print(f'A report in JSON format has been'
-              f' saved to "{args.json.name}"')
-
-    if args.ghmarkdown:
-        args.ghmarkdown.write(mdr.get_markdown())
-        print(f'A report in GitHub Markdown format which can be useful\n'
-              f' for posting issues on a GitHub issue tracker has been\n'
-              f' saved to "{args.ghmarkdown.name}"')
-
-    if args.html:
-        args.html.write(hr.get_html())
-        print(f'A report in HTML format has been saved to "{args.html.name}"')
+    for reporter in reporters:
+        reporter.write()
 
     # Fail and error let the command fail
     return 1 if tr.worst_check_status in (ERROR, FAIL) else 0
