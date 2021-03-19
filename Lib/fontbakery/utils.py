@@ -21,6 +21,18 @@ from typing import Text, Optional
 from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
 
 
+
+# TODO: this should be part of FontBakeryCheck and check.conditions
+# should be a tuple (negated, name)
+def is_negated(name):
+    stripped = name.strip()
+    if stripped.startswith('not '):
+        return True, stripped[4:].strip()
+    if stripped.startswith('!'):
+        return True, stripped[1:].strip()
+    return False, stripped
+
+
 def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
               space_padding=False, text_color="{}".format):
     result = []

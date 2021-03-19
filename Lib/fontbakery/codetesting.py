@@ -14,7 +14,8 @@
 # limitations under the License.
 #
 
-from fontbakery.checkrunner import CheckRunner, Profile, get_module_profile
+from fontbakery.checkrunner import CheckRunner
+from fontbakery.profile import Profile, get_module_profile
 
 
 class CheckTester:
