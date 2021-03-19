@@ -1,4 +1,4 @@
-from fontbakery.profiles.googlefonts_conditions import GFAxisRegistry
+from fontbakery.profiles.googlefonts_axis_registry import AxisRegistry
 from fontbakery.constants import (
     RIBBI_STYLE_NAMES,
     NameID,
@@ -63,6 +63,7 @@ class GFNameData:
             self.build_vf_names()
         else:
             self.build_static_names()
+        self.isRibbi = not hasattr(self, "typoSubFamily")
 
     def build_static_names(self):
         self._get_nametable_tokens()
