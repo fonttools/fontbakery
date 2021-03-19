@@ -9,7 +9,6 @@ import argparse
 
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.profile import Profile
-from fontbakery.profiles.shared_conditions import ttFont
 
 class FontsProfile(Profile):
     def setup_argparse(self, argument_parser):
@@ -64,6 +63,7 @@ fonts_expected_value = ExpectedValue(
 )
 
 def profile_factory(**kwds):
+    from fontbakery.profiles.shared_conditions import ttFont
     profile = FontsProfile(
         iterargs={'font': 'fonts'}
       , conditions={ttFont.name: ttFont}
