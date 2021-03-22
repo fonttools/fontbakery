@@ -195,16 +195,19 @@ def test_check_canonical_filename():
         TEST_FILE("cabinvfbeta/CabinVFBeta[wght,wdth].ttf"), # axis tags are NOT sorted here
     ]
 
-    for canonical in static_canonical_names + varfont_canonical_names:
-        assert_PASS(check(canonical),
-                    f'with "{canonical}" ...')
+    for path in static_canonical_names + varfont_canonical_names:
+        ttFont = TTFont(path)
+        assert_PASS(check(ttFont),
+                    f'with "{ttFont.reader.file.name}" ...')
 
     for non_canonical in non_canonical_names:
         assert_results_contain(check(non_canonical),
                                FAIL, 'bad-varfont-filename',
                                f'with "{non_canonical}" ...')
 
-    assert_results_contain(check(TEST_FILE("Bad_Name.ttf")),
+    bad_font = TTFont(TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"))
+    bad_font.reader.file.name = "Bad_Font.ttf"
+    assert_results_contain(check(bad_font),
                            FAIL, 'invalid-char',
                            'with filename containing an underscore...')
 
