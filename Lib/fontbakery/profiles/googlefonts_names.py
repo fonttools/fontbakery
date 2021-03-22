@@ -72,6 +72,8 @@ class GFNameData:
         self.typoFamily = self._build_static_typo_family_name()
         self.subFamily = self._build_subfamily_name()
         self.typoSubFamily = self._build_static_typosubfamily_name()
+        self.fullName = self._build_full_name()
+        self.postscript = self._build_postscript_name()
         self.filename = self._build_static_filename()
         self.macFamily = self.typoFamily or self.family
         self.macSubFamily = self.typoSubFamily or self.subFamily
@@ -89,6 +91,8 @@ class GFNameData:
         self.typoFamily = self._build_vf_typo_family_name()
         self.subFamily = self._build_subfamily_name()
         self.typoSubFamily = self._build_vf_typosubfamily_name()
+        self.postscript = self._build_postscript_name()
+        self.fullName = self._build_full_name()
         self.filename = self._build_vf_filename()
         self.macFamily = self.typoFamily or self.family
         self.macSubFamily = self.typoSubFamily or self.subFamily
@@ -284,3 +288,14 @@ class GFNameData:
         if self.typoFamily:
             return f"{self.typoFamily}-{self.typoSubFamily}.ttf".replace(" ", "")
         return f"{self.family}-{self.subFamily}.ttf".replace(" ", "")
+
+    def _build_full_name(self):
+        best_family_name = self.typoFamily or self.family
+        best_style_name = self.typoSubFamily or self.subFamily
+        return f"{best_family_name} {best_style_name}"
+
+    def _build_postscript_name(self):
+        best_family_name = (self.typoFamily or self.family).replace(" ", "")
+        best_style_name = (self.typoSubFamily or self.subFamily).replace(" ", "")
+        return f"{best_family_name}-{best_style_name}"
+

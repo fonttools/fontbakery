@@ -3270,27 +3270,23 @@ def com_google_fonts_check_name_subfamilyname(ttFont, gfnames):
     rationale = """
         Requirements for the FULL_FONT_NAME entries in the 'name' table.
     """,
-    conditions = ['style_with_spaces',
-                  'familyname_with_spaces'],
+    conditions = ['familyname_with_spaces',
+                  'gfnames'],
     proposal = 'legacy:check/159'
 )
-def com_google_fonts_check_name_fullfontname(ttFont,
-                                             style_with_spaces,
-                                             familyname_with_spaces):
+def com_google_fonts_check_name_fullfontname(ttFont, gfnames):
     """Check name table: FULL_FONT_NAME entries."""
     from fontbakery.utils import name_entry_id
     failed = False
     for name in ttFont['name'].names:
         if name.nameID == NameID.FULL_FONT_NAME:
-            expected_value = "{} {}".format(familyname_with_spaces,
-                                            style_with_spaces)
-            string = name.string.decode(name.getEncoding()).strip()
+            expected_value = gfnames.fullName
+            string = name.toUnicode()
             if string != expected_value:
                 failed = True
                 # special case
                 # see https://github.com/googlefonts/fontbakery/issues/1436
-                if style_with_spaces == "Regular" \
-                   and string == familyname_with_spaces:
+                if string == expected_value.replace("Regular", "").strip():
                     yield WARN,\
                           Message("lacks-regular",
                                   f'{name_entry_id(name)}\n'
@@ -3312,26 +3308,27 @@ def com_google_fonts_check_name_fullfontname(ttFont,
         Requirements for the POSTSCRIPT_NAME entries in the 'name' table.
     """,
     conditions = ['style',
-                  'familyname'],
+                  'familyname',
+                  'gfnames'],
     proposal = 'legacy:check/160'
 )
-def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
+def com_google_fonts_check_name_postscriptname(ttFont, gfnames):
     """Check name table: POSTSCRIPT_NAME entries."""
     from fontbakery.utils import name_entry_id
 
     failed = False
+    expected = gfnames.postscript
     for name in ttFont['name'].names:
         if name.nameID == NameID.POSTSCRIPT_NAME:
-            expected_value = f"{familyname}-{style}"
 
             string = name.string.decode(name.getEncoding()).strip()
-            if string != expected_value:
+            if string != expected:
                 failed = True
                 yield FAIL,\
                       Message("bad-entry",
-                              f'{name_entry_id(name)}\n'
-                              f'Expected: "{expected_value}"\n'
-                              f'But got:  "{string}"')
+                              f'Entry {name_entry_id(name)} on the "name" table:'
+                              f' Expected "{expected}"'
+                              f' but got "{string}".')
     if not failed:
         yield PASS, "POSTCRIPT_NAME entries are all good."
 
