@@ -351,6 +351,20 @@ def is_cjk_font(ttFont):
 
 
 @condition
+def get_cjk_glyphs(ttFont):
+    """Return all glyphs which belong to a CJK unicode block"""
+    from fontbakery.constants import CJK_UNICODE_RANGES
+    results = []
+    cjk_unicodes = set()
+    for start, end in CJK_UNICODE_RANGES:
+        cjk_unicodes |= set(u for u in range(start, end+1))
+    for uni, glyph_name in ttFont.getBestCmap().items():
+        if uni in cjk_unicodes:
+            results.append(glyph_name)
+    return results
+
+
+@condition
 def typo_metrics_enabled(ttFont):
     return ttFont['OS/2'].fsSelection & 0b10000000 > 0
 

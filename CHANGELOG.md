@@ -17,6 +17,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **license_path** condition: do not cause an ERROR on families lacking a license file. (issue #3201)
 
 ### New Checks
+  - **[com.google.fonts/check/cjk_sparse_glyphs]:** Warn users if there are less than 40 CJK glyphs in a font.
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
   - **[com.google.fonts/check/description/family_update]:** On a family update, the DESCRIPTION.en_us.html file should ideally also be updated. (issue #3182)
   - **[com.google.fonts/check/missing_small_caps_glyphs]:** Check small caps glyphs are available (issue #3154)

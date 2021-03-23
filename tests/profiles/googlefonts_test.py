@@ -3285,6 +3285,26 @@ def test_check_cjk_vertical_metrics():
                            'if font hhea and win metrics are greater than 1.5 * upm')
 
 
+def test_check_cjk_sparse_glyphs():
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/cjk_sparse_glyphs")
+    ttFont = TTFont(cjk_font)
+    assert_PASS(check(ttFont),
+                'for Source Han Sans')
+
+    ttFont = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
+    assert_PASS(check(ttFont),
+                'for Montserrat')
+
+    # Let's modify Montserrat's cmap so there's a cjk glyph
+    cmap = ttFont['cmap'].getcmap(3,1)
+    # Add first character of the CJK unified Ideographs
+    cmap.cmap[0x4E00] = "A"
+    assert_results_contain(check(ttFont),
+                           WARN, "cjk-sparse-glyphs",
+                           "There are only 1 CJK glyphs")
+
+
 def test_check_varfont_instance_coordinates(vf_ttFont):
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/varfont_instance_coordinates")
