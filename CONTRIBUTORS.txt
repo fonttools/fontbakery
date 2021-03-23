@@ -32,5 +32,6 @@ Lasse Fister <commander@graphicore.de>
 Marc Foley <m.foley.88@gmail.com>
 Mikhail Kashkin <mkashkin@gmail.com>
 Raph Levien <raph.levien@gmail.com>
+Simon Cozens <simon@simon-cozens.org>
 Robert Martinez <mail@robertmartinez.de>
 Vitaly Volkov <hash.3g@gmail.com>
