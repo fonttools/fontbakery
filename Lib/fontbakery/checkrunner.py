@@ -39,6 +39,7 @@ from fontbakery.errors import (
     NamespaceError,
     ValueValidationError,
 )
+from fontbakery.section import Section
 from fontbakery.status import (
     Status,
     DEBUG,
