@@ -18,7 +18,8 @@ import sys
 import textwrap
 from pathlib import Path
 from fontbakery.callable import check, condition
-from fontbakery.checkrunner import FAIL, PASS, SKIP, Section
+from fontbakery.checkrunner import FAIL, PASS, SKIP
+from fontbakery.section import Section
 from fontbakery.fonts_profile import profile_factory
 from vharfbuzz import Vharfbuzz
 from os.path import basename, relpath
@@ -37,60 +38,42 @@ PROFILE_CHECKS = [
     "com.google.fonts/check/shaping/collides",
 ]
 
-HTML_HEADER = """
-<!doctype html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Shaping Report</title>
-        <style type="text/css">
-            @font-face {font-family: "TestFont"; src: url(%s);}
-            .tf { font-family: "TestFont"; }
-            html { font-family: sans-serif; }
-            h2 { background: #77f; color: #fafafa; padding: 12px; }
-            pre { font-size: 1.2rem; }
-            li { font-size: 1.2rem; border-top: 1px solid #ddd; padding: 12px; margin-top: 12px; }
-            svg { height: 100px; margin:10px; transform: matrix(1, 0, 0, -1, 0, 0); }
-        </style>
-    </head>
-    <body>
+STYLESHEET = """
+<style type="text/css">
+    @font-face {font-family: "TestFont"; src: url(%s);}
+    .tf { font-family: "TestFont"; }
+    html { font-family: sans-serif; }
+    h2 { background: #77f; color: #fafafa; padding: 12px; }
+    pre { font-size: 1.2rem; }
+    li { font-size: 1.2rem; border-top: 1px solid #ddd; padding: 12px; margin-top: 12px; }
+    svg { height: 100px; margin:10px; transform: matrix(1, 0, 0, -1, 0, 0); }
+</style>
 """
 
-html_file = None
-
-
-def ensure_html_report_started(vharfbuzz):
-    global html_file
-    if html_file:
-        return
-    html_file = open(shaping_basedir / "report.html", "w")
+def get_stylesheet(vharfbuzz):
     filename = Path(vharfbuzz.filename)
-    html_file.write(HTML_HEADER % relpath(filename, shaping_basedir))
+    return STYLESHEET % relpath(filename, shaping_basedir)
 
 
-def report_to_html(vharfbuzz, message, text=None, buf1=None, buf2=None, type="item", extra_data=None):
-    ensure_html_report_started(vharfbuzz)
-    global html_file
+def create_report_item(vharfbuzz, message, text=None, buf1=None, buf2=None, type="item", extra_data=None):
     if text:
         message = message + ': <span class="tf">%s</span>' % text
 
     if type == "item":
-        message = "<li>%s</li>" % message
+        message = "* %s\n" % message
     if type == "header":
-        message = "<h2>%s</h2>" % message
-    html_file.write(message + "\n")
+        message = get_stylesheet(vharfbuzz) + "\n### %s\n" % message
     if extra_data:
-        html_file.write("<pre>%s</pre>" % extra_data)
+        message = message + ("\n\n<pre>%s</pre>\n\n" % extra_data)
     if buf1:
-        html_file.write("<pre>Got     : %s</pre>" % vharfbuzz.serialize_buf(buf1))
+        message = message + ("\n\n<pre>Got     : %s</pre>\n\n" % vharfbuzz.serialize_buf(buf1))
     if buf2:
-        html_file.write("<pre>Expected: %s</pre>" % vharfbuzz.serialize_buf(buf2))
+        message = message + ("\n\n<pre>Expected: %s</pre>\n\n" % vharfbuzz.serialize_buf(buf2))
     if buf1:
-        html_file.write("Got:")
-        html_file.write(vharfbuzz.buf_to_svg(buf1))
+        message = message + "\nGot:\n\n" + vharfbuzz.buf_to_svg(buf1) + "\n\n"
     if buf2:
-        html_file.write("Expected:")
-        html_file.write(vharfbuzz.buf_to_svg(buf2))
+        message = message + "\nExpected:\n\n" + vharfbuzz.buf_to_svg(buf2) + "\n\n"
+    return message
 
 
 def get_from_test_with_default(test, configuration, el, default=None):
@@ -202,7 +185,7 @@ def run_shaping_regression(
 def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_tests):
     report_items = []
     header = f"{shaping_file}: Expected and actual shaping not matching"
-    report_to_html(vharfbuzz, header, type="header")
+    report_items.append(create_report_item(vharfbuzz, header, type="header"))
     for test, expected, output_buf, output_serialized in failed_tests:
         extra_data = {k:test[k] for k in ["script", "language", "direction", "features"]
             if k in test
@@ -211,20 +194,14 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_tests):
         buf2 = None
         if "=" in expected:
             buf2 = vharfbuzz.buf_from_string(expected)
-        report_to_html(
+        report_items.append(create_report_item(
             vharfbuzz,
             "Shaping did not match",
             text=test["input"],
             buf1=output_buf,
             buf2=buf2,
             extra_data=extra_data
-        )
-        report_items.append(
-            f" * Input '{test['input']} {extra_data or ''}'\n"
-            f"   expected: {expected}\n"
-            f"   got: {output_serialized}"
-        )
-
+        ))
     yield FAIL, (header + "\n" + "\n".join(report_items))
 
 
@@ -271,14 +248,10 @@ def run_forbidden_glyph_test(
 def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_tests):
     report_items = []
     msg = f"{shaping_file}: Forbidden glyphs found while shaping"
-    report_to_html(vharfbuzz, msg, type="header")
+    report_items.append(create_report_item(vharfbuzz, msg, type="header"))
     for shaping_text, buf, forbidden in failed_tests:
         msg = f"{shaping_text} produced '{forbidden}'"
-        report_to_html(vharfbuzz, msg, text=shaping_text, buf1=buf)
-        # Make HTML report here.
-        report_items.append(
-            f"      * {msg}\n       {vharfbuzz.serialize_buf(buf, glyphsonly=True)}"
-        )
+        report_items.append(create_report_item(vharfbuzz, msg, text=shaping_text, buf1=buf))
 
     yield FAIL, (msg + ".\n" + "\n".join(report_items))
 
@@ -348,21 +321,17 @@ def collides_glyph_test_results(vharfbuzz, shaping_file, failed_tests):
     report_items = []
     seen_bumps = {}
     msg = f"{shaping_file}: %i collisions found while shaping" % len(failed_tests)
-    report_to_html(vharfbuzz, msg, type="header")
+    report_items.append(create_report_item(vharfbuzz, msg, type="header"))
     for shaping_text, bumps, draw, buf in failed_tests:
         # Make HTML report here.
         if tuple(bumps) in seen_bumps:
             continue
         seen_bumps[tuple(bumps)] = True
-        report_to_html(
+        report_items.append(create_report_item(
             vharfbuzz,
             f"{',' .join(bumps)} collision found in e.g. <span class='tf'>{shaping_text}</span> <div>{draw}</div>",
             buf1=buf,
-        )
-        report_items.append(
-            f"      * {',' .join(bumps)} collision found in e.g. '{shaping_text}'"
-        )
-
+        ))
     yield FAIL, (msg + ".\n" + "\n".join(report_items))
 
 
