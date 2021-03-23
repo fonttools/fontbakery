@@ -120,9 +120,7 @@ def run_a_set_of_tests(
         for test in shaping_tests:
             if not test_filter(test, configuration):
                 continue
-            try:
-                shaping_text = test["input"]
-            except KeyError as e:
+            if not "input" in test:
                 yield FAIL, (f"{shaping_file}: 'input' key dict is missing from test.")
                 return
 
