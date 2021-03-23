@@ -3,6 +3,7 @@
 import collections
 import html
 from typing import List, Dict
+import markdown
 
 import fontbakery.checkrunner
 import fontbakery.reporters.serialize
@@ -119,7 +120,7 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
         if not self.omit_loglevel(log["status"]):
             emoticon = EMOTICON[log["status"]]
             status = log["status"]
-            message = html.escape(log["message"]).replace("\n", "<br/>")
+            message = markdown.markdown(log["message"])
             return (
                 "<li class='details_item'>"
                 f"<span class='details_indicator'>{emoticon} {status}</span>"
