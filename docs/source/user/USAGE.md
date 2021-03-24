@@ -95,9 +95,15 @@ Here's the output of `fontbakery check-googlefonts -h`:
 
     optional arguments:
       -h, --help            show this help message and exit
+      --configuration CONFIGFILE
+                            Read configuration file (TOML/YAML).
       -c CHECKID, --checkid CHECKID
                             Explicit check-ids to be executed.
                             Use this option multiple times to select multiple checks.
+      -x EXCLUDE_CHECKID, --exclude-checkid EXCLUDE_CHECKID
+                            Exclude check-ids (or parts of their name) from
+                            execution. Use this option multiple times to
+                            exclude multiple checks.
       -v, --verbose         Shortcut for `-l PASS`.
       -l LOGLEVEL, --loglevel LOGLEVEL
                             Report checks with a result of this status or higher.
@@ -149,6 +155,32 @@ This will create a folder called `check_results/` then run the `check-googlefont
 This is a wrapper around the Microsoft Font Validator.
 
 Usage is similar to the check-googlefonts command described above.
+
+### Configuration file
+
+Some command-line parameters can be configured in a configuration file.
+This may be in TOML or YAML format, and the name of this file is passed in
+on the fontbakery command line with the `--configuration` parameter.
+(`--config` for short.)
+
+Currently, the following command-line parameters can be specified in the
+configuration file:
+
+- Instead of using `-c` to specify checks, a list of checks can be provided using the `explicit_checks` key:
+
+```
+explicit_checks = [
+    'com.google.fonts/check/family/underline_thickness',
+    'com.google.fonts/check/family/panose_proportion',
+    'com.google.fonts/check/family/panose_familytype',
+]
+```
+
+- Instead of using `-x` to exclude checks, a list of checks to exclude can be provided using the `exclude_checks` key.
+
+- Instead of using `--order` to specify the check order, a list of checks can be provided using the `custom_order` key.
+
+Individual checks and profiles may give semantics to additional configuration values; the whole configuration file is passed to checks which request access to it.
 
 #### Old Command Line Tools
 

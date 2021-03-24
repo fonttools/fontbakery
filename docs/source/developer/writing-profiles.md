@@ -472,6 +472,11 @@ profile = FontsProfile(
       )
 ```
 
+#### Access to the configuration object
+
+You can also inject the `config` parameter into your checks in order to gain
+access to any configuration file passed in by the user. The `config` parameter
+will contain a dictionary with the parsed configuration file.
 
 #### Explicit Namespace Overrides `force=True`
 
