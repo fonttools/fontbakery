@@ -62,19 +62,17 @@ class CheckRunner:
         self,
         profile,
         values,
+        config,
         values_can_override_profile_names=True,
-        custom_order=None,
-        explicit_checks=None,
-        exclude_checks=None,
         use_cache=True,
     ):
         # TODO: transform all iterables that are list like to tuples
         # to make sure that they won't change anymore.
         # Also remove duplicates from list like iterables
 
-        self._custom_order = custom_order
-        self._explicit_checks = explicit_checks
-        self._exclude_checks = exclude_checks
+        self._custom_order = config["custom_order"]
+        self._explicit_checks = config["explicit_checks"]
+        self._exclude_checks = config["exclude_checks"]
         self._iterargs = OrderedDict()
         for singular, plural in profile.iterargs.items():
             values[plural] = tuple(values[plural])

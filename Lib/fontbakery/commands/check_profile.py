@@ -20,6 +20,7 @@ from fontbakery.checkrunner import (
             , FAIL
             , SECTIONSUMMARY
             )
+from fontbakery.configuration import Configuration
 from fontbakery.profile import (Profile, get_module_profile)
 
 from fontbakery.errors import ValueValidationError
@@ -277,11 +278,12 @@ def main(profile=None, values=None):
             if hasattr(args, key):
                 values_[key] = getattr(args, key)
 
-    runner_kwds = dict( values=values_
-                      , custom_order=args.order
-                      , explicit_checks=args.checkid
-                      , exclude_checks=args.exclude_checkid
-                      )
+    configuration = Configuration(
+      custom_order=args.order,
+      explicit_checks=args.checkid,
+      exclude_checks=args.exclude_checkid
+    )
+    runner_kwds = dict(values=values_, config=configuration)
     try:
         runner = CheckRunner(profile, **runner_kwds)
     except ValueValidationError as e:

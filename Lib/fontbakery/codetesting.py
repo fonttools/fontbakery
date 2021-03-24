@@ -15,6 +15,7 @@
 #
 
 from fontbakery.checkrunner import CheckRunner
+from fontbakery.configuration import Configuration
 from fontbakery.profile import Profile, get_module_profile
 
 
@@ -99,7 +100,7 @@ class CheckTester:
                 values = {'fonts': [v.reader.file.name for v in values],
                           'ttFonts': values}
 
-        self.runner = CheckRunner(self.profile, values, explicit_checks=[self.check_id])
+        self.runner = CheckRunner(self.profile, values, Configuration(explicit_checks=[self.check_id]))
         for check_identity in self.runner.order:
             _, check, _ = check_identity
             if check.id != self.check_id:
