@@ -2,19 +2,9 @@
 import sys
 from functools import partial
 
-from fontbakery.commands.check_profile import (
-    runner_factory as super_runner_factory, main as super_main)
+from fontbakery.commands.check_profile import main as super_main
 from fontbakery.profiles.ufo_sources import profile, BLOCKLISTS
 
-
-# runner_factory is used by the fontbakery dashboard.
-# It is here in order to have a single place from which
-# the profile is configured for the CLI and the worker.
-def runner_factory(fonts):
-    values = {}
-    values.update(BLOCKLISTS)
-    values['fonts'] = fonts
-    return super_runner_factory(profile, values=values)
 
 
 main = partial(super_main, profile, values=BLOCKLISTS)
