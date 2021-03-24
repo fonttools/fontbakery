@@ -6,8 +6,6 @@ from fontbakery.status import ERROR, FAIL, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.profile import Profile
 
-BLOCKLISTS = {}
-
 class UFOProfile(Profile):
 
     def setup_argparse(self, argument_parser):
