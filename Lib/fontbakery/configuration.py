@@ -20,3 +20,8 @@ class Configuration(dict):
             raise Exception(f"Can't understand config file {imported}.")
         return cls(**config)
 
+    def maybe_override(self, other):
+        for key, value in other.items():
+            if value is not None:
+                self[key] = value
+

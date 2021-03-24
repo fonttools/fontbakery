@@ -71,6 +71,10 @@ def ArgumentParser(profile, profile_arg=True):
 
     values_keys = profile.setup_argparse(argument_parser)
 
+    argument_parser.add_argument('--configuration',
+                                 dest='configfile',
+                                 help='Read configuration file (TOML/YAML).\n')
+
     argument_parser.add_argument(
         "-c",
         "--checkid",
@@ -278,11 +282,17 @@ def main(profile=None, values=None):
             if hasattr(args, key):
                 values_[key] = getattr(args, key)
 
-    configuration = Configuration(
+    if args.configfile:
+        configuration = Configuration.from_config_file(args.configfile)
+    else:
+        configuration = Configuration()
+
+    # Command line args overrides config, but only if given
+    configuration.maybe_override(Configuration(
       custom_order=args.order,
       explicit_checks=args.checkid,
       exclude_checks=args.exclude_checkid
-    )
+    ))
     runner_kwds = dict(values=values_, config=configuration)
     try:
         runner = CheckRunner(profile, **runner_kwds)
