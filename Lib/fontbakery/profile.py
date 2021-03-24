@@ -119,7 +119,7 @@ class Profile:
              our expectations! These values must be treated as user input!
         """
         self._namespace = {
-          "config": "config"  # Filled in by checkrunner
+            "config": "config"  # Filled in by checkrunner
         }
 
         self.iterargs = {}
