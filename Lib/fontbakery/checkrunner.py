@@ -69,7 +69,7 @@ class CheckRunner:
         # TODO: transform all iterables that are list like to tuples
         # to make sure that they won't change anymore.
         # Also remove duplicates from list like iterables
-
+        self.config = config
         self._custom_order = config["custom_order"]
         self._explicit_checks = config["explicit_checks"]
         self._exclude_checks = config["exclude_checks"]
@@ -323,6 +323,9 @@ class CheckRunner:
         if nametype == "derived_iterables":
             condition_name, simple = self._profile.get(name)
             return self._derive_iterable_condition(condition_name, simple, path)
+
+        if nametype == "config":
+            return self.config
 
         if has_fallback:
             return fallback
