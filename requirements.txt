@@ -12,5 +12,5 @@ ttfautohint-py==0.4.3
 ufolint==1.2.0
 unidecode==1.1.2
 beziers==0.1.0
-markdown==3.3.3
+cmarkgfm==0.5.3
 -e .

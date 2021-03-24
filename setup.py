@@ -74,7 +74,7 @@ setup(
         'ufolint',
         'unidecode',
         'beziers',
-        'markdown'
+        'cmarkgfm'
     ],
     extras_require={
         'docs': [
