@@ -4803,6 +4803,8 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegi
 
     passed = True
     for axis in ttFont['fvar'].axes:
+        if axis.axisTag not in GFAxisRegistry:
+            continue
         fallbacks = GFAxisRegistry[axis.axisTag]["fallbacks"]
         if axis.defaultValue not in fallbacks.values():
             passed = False
