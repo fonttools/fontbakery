@@ -118,7 +118,9 @@ class Profile:
           b) add some validation, so that we know the values match
              our expectations! These values must be treated as user input!
         """
-        self._namespace = {}
+        self._namespace = {
+          "config": "config"  # Filled in by checkrunner
+        }
 
         self.iterargs = {}
         if iterargs:
