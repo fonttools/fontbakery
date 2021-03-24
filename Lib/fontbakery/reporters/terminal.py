@@ -451,7 +451,7 @@ class TerminalReporter(TerminalProgress):
                 message = str(msg)
 
             if hasattr(msg, 'traceback'):
-                message += '\n' + '\n  ↳ '.join(message.traceback.split('\n'))
+                message += '\n' + '\n  ↳ '.join(msg.traceback.split('\n'))
 
             logmsg = text_flow(message,
                                width=76,
