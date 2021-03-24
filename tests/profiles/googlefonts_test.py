@@ -3285,9 +3285,9 @@ def test_check_cjk_vertical_metrics():
                            'if font hhea and win metrics are greater than 1.5 * upm')
 
 
-def test_check_cjk_sparse_glyphs():
+def test_check_cjk_not_enough_glyphs():
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/cjk_sparse_glyphs")
+                        "com.google.fonts/check/cjk_not_enough_glyphs")
     ttFont = TTFont(cjk_font)
     assert_PASS(check(ttFont),
                 'for Source Han Sans')
@@ -3301,8 +3301,13 @@ def test_check_cjk_sparse_glyphs():
     # Add first character of the CJK unified Ideographs
     cmap.cmap[0x4E00] = "A"
     assert_results_contain(check(ttFont),
-                           WARN, "cjk-sparse-glyphs",
-                           "There are only 1 CJK glyphs")
+                           WARN, "cjk-not-enough-glyphs",
+                           "There is only 1 CJK glyphs")
+    # Add second character of the CJK unified Ideographs
+    cmap.cmap[0x4E01] = "B"
+    assert_results_contain(check(ttFont),
+                           WARN, "cjk-not-enough-glyphs",
+                           "There are only 2 CJK glyphs")
 
 
 def test_check_varfont_instance_coordinates(vf_ttFont):

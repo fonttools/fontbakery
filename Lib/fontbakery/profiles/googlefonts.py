@@ -152,7 +152,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/contour_count',
     'com.google.fonts/check/vertical_metrics_regressions',
     'com.google.fonts/check/cjk_vertical_metrics',
-    'com.google.fonts/check/cjk_sparse_glyphs',
+    'com.google.fonts/check/cjk_not_enough_glyphs',
     'com.google.fonts/check/varfont_instance_coordinates',
     'com.google.fonts/check/varfont_instance_names',
     'com.google.fonts/check/varfont_duplicate_instance_names',
@@ -4574,18 +4574,24 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/cjk_sparse_glyphs',
+    id = 'com.google.fonts/check/cjk_not_enough_glyphs',
     conditions = ['is_cjk_font'],
-    description = """Hangul has 40 characters and it's the smallest CJK writing system. If a font contains less CJK glyphs than this writing system, raise a warn and inform the user that some glyphs may be encoded incorrectly."""
+    rationale = """
+        Hangul has 40 characters and it's the smallest CJK writing system. If a font contains less CJK glyphs than this writing system, raise a warn and inform the user that some glyphs may be encoded incorrectly."""
 )
-def com_google_fonts_check_cjk_sparse_glyphs(ttFont):
+def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
+    """Does the font contain less than 40 CJK characters?"""
     from .shared_conditions import get_cjk_glyphs
     cjk_glyphs = get_cjk_glyphs(ttFont)
     cjk_glyph_count = len(cjk_glyphs)
     if cjk_glyph_count < 40:
+        if cjk_glyph_count == 1:
+            first_line = f"There is only {cjk_glyph_count} CJK glyph when there needs "
+        else:
+            first_line = f"There are only {cjk_glyph_count} CJK glyphs when there needs "
         yield WARN, \
-              Message('cjk-sparse-glyphs',
-                      f"There are only {cjk_glyph_count} CJK glyphs when there needs "
+              Message('cjk-not-enough-glyphs',
+                      first_line + \
                       f"to be at least 40 in order to support the smallest CJK writing "
                       f"system, Hangul. The following CJK glyphs were found "
                       f"{cjk_glyphs}. Please check that these "
