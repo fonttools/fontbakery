@@ -3,6 +3,7 @@ import subprocess
 import sys
 import re
 import pytest
+import tempfile
 
 
 def test_list_subcommands_has_all_scripts():
@@ -92,3 +93,36 @@ def test_command_check_ufo_sources():
 
     with pytest.raises(subprocess.CalledProcessError):
         subprocess.check_output(["fontbakery", "check-ufo-sources"])
+
+def test_command_config_file():
+    """Test if we can set checks using a config file."""
+    config = tempfile.NamedTemporaryFile(delete=False)
+    config.write(b"explicit_checks = ['com.adobe.fonts/check/name/empty_records']")
+    config.close()
+    test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+    result = subprocess.run(["fontbakery", "check-googlefonts",
+        "--config", config.name,
+        test_font], capture_output=True)
+    stdout = result.stdout.decode()
+    assert "running 1 individual check" in stdout
+    os.unlink(config.name)
+
+
+def test_command_config_file_injection():
+    """Test if we can inject a config variable into a check."""
+    config = tempfile.NamedTemporaryFile(delete=False)
+    config.write(b"""
+[a_test_profile]
+OK = 123
+""")
+    config.close()
+    test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
+    test_profile = os.path.join("tests", "profiles", "a_test_profile.py")
+    result = subprocess.run(["fontbakery", "check-profile",
+        "-C",
+        "--config", config.name,
+        test_profile,
+        test_font], capture_output=True)
+    stdout = result.stdout.decode()
+    assert "FAIL: 0" in stdout
+    os.unlink(config.name)
