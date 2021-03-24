@@ -289,9 +289,9 @@ def main(profile=None, values=None):
 
     # Command line args overrides config, but only if given
     configuration.maybe_override(Configuration(
-      custom_order=args.order,
-      explicit_checks=args.checkid,
-      exclude_checks=args.exclude_checkid
+        custom_order=args.order,
+        explicit_checks=args.checkid,
+        exclude_checks=args.exclude_checkid
     ))
     runner_kwds = dict(values=values_, config=configuration)
     try:
