@@ -60,6 +60,8 @@ setup(
     setup_requires=['setuptools_scm'],
     install_requires=[
         'beautifulsoup4',
+        'toml',
+        'PyYAML',
         'defcon',
         'font-v',
         'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
