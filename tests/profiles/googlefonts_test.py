@@ -9,6 +9,7 @@ from fontbakery.codetesting import (assert_results_contain,
                                     portable_path,
                                     TEST_FILE,
                                     CheckTester)
+from fontbakery.configuration import Configuration
 from fontbakery.constants import (NameID,
                                   PlatformID,
                                   WindowsEncodingID,
@@ -121,7 +122,7 @@ def test_example_checkrunner_based(cabin_regular_path):
     from fontbakery.checkrunner import CheckRunner
     from fontbakery.profiles.googlefonts import profile
     values = dict(fonts=[cabin_regular_path])
-    runner = CheckRunner(profile, values, explicit_checks=['com.google.fonts/check/vendor_id'])
+    runner = CheckRunner(profile, values, Configuration(explicit_checks=['com.google.fonts/check/vendor_id']))
 
     # we could also reuse the `iterargs` that was assigned in the previous
     # for loop, but this here is more explicit
