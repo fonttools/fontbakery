@@ -4561,7 +4561,7 @@ def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
     from .shared_conditions import get_cjk_glyphs
     cjk_glyphs = get_cjk_glyphs(ttFont)
     cjk_glyph_count = len(cjk_glyphs)
-    if cjk_glyph_count < 40:
+    if cjk_glyph_count > 0 and cjk_glyph_count < 40:
         if cjk_glyph_count == 1:
             N_CJK_glyphs = "There is only one CJK glyph"
         else:
