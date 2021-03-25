@@ -7,6 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Axis Registry has been updated to commit https://github.com/google/fonts/tree/6418bd97834330f245cce4131ec3b8b98cb333be which includes changes to the `opsz` axis.
   - Format status output to improve readability. (issue #2052)
   - Move reporter-specific write logic to reporters, simplify argparse (PR #3206)
+  - Profile-specific `fontbakery.commands.check_...` removed and replaced with a call to `check_profile` with the appropriate profile. (PR #3218)
 
 ### New Profile
   - new Type Network profile for checking some of their new axis proposals (issue #3130)
