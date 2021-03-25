@@ -4549,7 +4549,12 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     id = 'com.google.fonts/check/cjk_not_enough_glyphs',
     conditions = ['is_cjk_font'],
     rationale = """
-        Hangul has 40 characters and it's the smallest CJK writing system. If a font contains less CJK glyphs than this writing system, raise a warn and inform the user that some glyphs may be encoded incorrectly."""
+        Hangul has 40 characters and it's the smallest CJK writing system.
+        If a font contains less CJK glyphs than this writing system, we inform the user that some glyphs may be encoded incorrectly.
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/3214'
+    }
 )
 def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
     """Does the font contain less than 40 CJK characters?"""
