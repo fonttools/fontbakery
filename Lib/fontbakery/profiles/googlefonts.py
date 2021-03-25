@@ -4586,17 +4586,19 @@ def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
     cjk_glyph_count = len(cjk_glyphs)
     if cjk_glyph_count < 40:
         if cjk_glyph_count == 1:
-            first_line = f"There is only {cjk_glyph_count} CJK glyph when there needs "
+            N_CJK_glyphs = f"There is only one CJK glyph"
         else:
-            first_line = f"There are only {cjk_glyph_count} CJK glyphs when there needs "
+            N_CJK_glyphs = f"There are only {cjk_glyph_count} CJK glyphs"
+
         yield WARN, \
               Message('cjk-not-enough-glyphs',
-                      first_line + \
-                      f"to be at least 40 in order to support the smallest CJK writing "
-                      f"system, Hangul. The following CJK glyphs were found "
-                      f"{cjk_glyphs}. Please check that these "
-                      f"glyphs have the correct unicodes.")
-    yield PASS, "Font has the correct quantity of CJK glyphs"
+                      f"{N_CJK_glyphs} when there needs to be at least 40"
+                      f" in order to support the smallest CJK writing system, Hangul.\n"
+                      f"The following CJK glyphs were found:\n"
+                      f"{cjk_glyphs}\n"
+                      f"Please check that these glyphs have the correct unicodes.")
+    else:
+        yield PASS, "Font has the correct quantity of CJK glyphs"
 
 
 @check(
