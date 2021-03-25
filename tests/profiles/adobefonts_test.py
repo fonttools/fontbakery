@@ -9,35 +9,12 @@ from fontbakery.codetesting import (assert_PASS,
                                     TEST_FILE)
 from fontbakery.profiles import adobefonts as adobefonts_profile
 
+
 def test_check_family_consistent_upm():
     check = CheckTester(adobefonts_profile,
                         "com.adobe.fonts/check/family/consistent_upm")
 
-    base_path = TEST_FILE("source-sans-pro/OTF")
-
     # these fonts have a consistent unitsPerEm of 1000:
-    font_names = ['SourceSansPro-Regular.otf',
-                  'SourceSansPro-Bold.otf',
-                  'SourceSansPro-It.otf']
-
-    font_paths = [os.path.join(base_path, n) for n in font_names]
-
-    test_fonts = [TTFont(x) for x in font_paths]
-
-    # try fonts with consistent UPM (i.e. 1000)
-    assert_PASS(check(test_fonts))
-
-    # now try with one font with a different UPM (i.e. 2048)
-    test_fonts[1]['head'].unitsPerEm = 2048
-    assert_results_contain(check(test_fonts),
-                           FAIL, None) # FIXME: This needs a message keyword
-
-
-def test_check_family_consistent_upm_new_style():
-    # these fonts have a consistent unitsPerEm of 1000:
-    check = CheckTester(adobefonts_profile,
-                        "com.adobe.fonts/check/family/consistent_upm")
-
     filenames = ['SourceSansPro-Regular.otf',
                  'SourceSansPro-Bold.otf',
                  'SourceSansPro-It.otf']

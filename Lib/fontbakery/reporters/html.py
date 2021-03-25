@@ -3,6 +3,9 @@
 import collections
 import html
 from typing import List, Dict
+import cmarkgfm
+from cmarkgfm.cmark import Options as cmarkgfmOptions
+
 
 import fontbakery.checkrunner
 import fontbakery.reporters.serialize
@@ -119,7 +122,9 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
         if not self.omit_loglevel(log["status"]):
             emoticon = EMOTICON[log["status"]]
             status = log["status"]
-            message = html.escape(log["message"]).replace("\n", "<br/>")
+            message = cmarkgfm.github_flavored_markdown_to_html(
+                log["message"], options=cmarkgfmOptions.CMARK_OPT_UNSAFE
+            )
             return (
                 "<li class='details_item'>"
                 f"<span class='details_indicator'>{emoticon} {status}</span>"
