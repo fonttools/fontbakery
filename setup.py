@@ -73,7 +73,8 @@ setup(
         'ttfautohint-py',
         'ufolint',
         'unidecode',
-        'beziers'
+        'beziers',
+        'cmarkgfm'
     ],
     extras_require={
         'docs': [

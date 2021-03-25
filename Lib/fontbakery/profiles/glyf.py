@@ -6,6 +6,7 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 
 import fontTools.ttLib
 
+
 @check(
     id = 'com.google.fonts/check/glyf_unused_data',
     conditions = ['is_ttf']
@@ -127,6 +128,7 @@ def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
     else:
         yield PASS, ("Glyphs do not contain duplicate components which have"
                      " the same x,y coordinates.")
+
 
 @check(
     id = 'com.google.fonts/check/glyf_nested_components',
