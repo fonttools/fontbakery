@@ -8,21 +8,25 @@ A more detailed list of changes is available in the corresponding milestones for
   - Format status output to improve readability. (issue #2052)
   - Move reporter-specific write logic to reporters, simplify argparse (PR #3206)
   - Profile-specific `fontbakery.commands.check_...` removed and replaced with a call to `check_profile` with the appropriate profile. (PR #3218)
+  - HTML reporter parses and renders markdown. (PR #3212)
 
 ### New Profile
-  - new Type Network profile for checking some of their new axis proposals (issue #3130)
-  - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
+  - Created a Type Network profile for checking some of their new axis proposals (issue #3130)
 
 ### Bugfixes
   - **license** condition now assumes that all license files in a given project repo are identical if more than one is found. With that some checks wont be skipped. We should have a fontbakery check to ensuring that assumption is valid, though. (issue #3172)
   - **license_path** condition: do not cause an ERROR on families lacking a license file. (issue #3201)
 
 ### New Checks
+  - **[com.google.fonts/check/cjk_not_enough_glyphs]:** Warn users if there are less than 40 CJK glyphs in a font. (PR #3214)
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
   - **[com.google.fonts/check/description/family_update]:** On a family update, the DESCRIPTION.en_us.html file should ideally also be updated. (issue #3182)
   - **[com.google.fonts/check/missing_small_caps_glyphs]:** Check small caps glyphs are available (issue #3154)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
+  - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Only check axes which are in the GF Axis Registry (PR #3217)
+  - **[com.google.fonts/check/mandatory_avar_table]:** Update rationale to mention that this check may be ignored if axis progressions are linear.
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.
   - **[com.google.fonts/check/STAT/gf-axisregistry]:** Ensure that STAT tables contain Axis Values
   - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** Added hints to GF specs for single-weight families to FAIL output (PR #3196)

@@ -136,6 +136,11 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
     id = 'com.google.fonts/check/os2_metrics_match_hhea',
     conditions = ['not is_cjk_font'],
     rationale = """
+        OS/2 and hhea vertical metric values should match. This will produce the same linespacing on Mac, GNU+Linux and Windows.
+
+        - Mac OS X uses the hhea values.
+        - Windows uses OS/2 or Win, depending on the OS or fsSelection bit value.
+
         When OS/2 and hhea vertical metrics match, the same linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018, Google Fonts has released many fonts with vertical metrics that don't match in this way. When we fix this issue in these existing families, we will create a visible change in line/paragraph layout for either Windows or macOS users, which will upset some of them.
 
         But we have a duty to fix broken stuff, and inconsistent paragraph layout is unacceptably broken when it is possible to avoid it.
@@ -144,14 +149,7 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
     """
 )
 def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
-    """Checking OS/2 Metrics match hhea Metrics.
-
-    OS/2 and hhea vertical metric values should match. This will produce
-    the same linespacing on Mac, GNU+Linux and Windows.
-
-    Mac OS X uses the hhea values.
-    Windows uses OS/2 or Win, depending on the OS or fsSelection bit value.
-    """
+    """Checking OS/2 Metrics match hhea Metrics."""
 
     filename = os.path.basename(ttFont.reader.file.name)
 

@@ -109,7 +109,7 @@ def com_daltonmaag_check_ufolint(font):
 )
 def com_daltonmaag_check_required_fields(ufo_font):
     """Check that required fields are present in the UFO fontinfo."""
-    recommended_fields = []
+    required_fields = []
 
     for field in ["unitsPerEm",
                   "ascender",
@@ -118,10 +118,10 @@ def com_daltonmaag_check_required_fields(ufo_font):
                   "capHeight",
                   "familyName"]:
         if ufo_font.info.__dict__.get("_" + field) is None:
-            recommended_fields.append(field)
+            required_fields.append(field)
 
-    if recommended_fields:
-        yield FAIL, f"Required field(s) missing: {recommended_fields}"
+    if required_fields:
+        yield FAIL, f"Required field(s) missing: {required_fields}"
     else:
         yield PASS, "Required fields present."
 

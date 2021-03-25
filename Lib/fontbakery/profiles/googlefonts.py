@@ -150,6 +150,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/contour_count',
     'com.google.fonts/check/vertical_metrics_regressions',
     'com.google.fonts/check/cjk_vertical_metrics',
+    'com.google.fonts/check/cjk_not_enough_glyphs',
     'com.google.fonts/check/varfont_instance_coordinates',
     'com.google.fonts/check/varfont_instance_names',
     'com.google.fonts/check/varfont_duplicate_instance_names',
@@ -3667,34 +3668,6 @@ def com_google_fonts_check_varfont_has_HVAR(ttFont):
                       " certain platforms.")
 
 
-# Temporarily disabled.
-# See: https://github.com/googlefonts/fontbakery/issues/2118#issuecomment-432283698
-@disable
-@check(
-    id = 'com.google.fonts/check/varfont/has_MVAR',
-    rationale = """
-        Per the OpenType spec, the MVAR tables contain variation data for metadata otherwise in tables such as OS/2 and hhea; if not present, then the default values in those tables will apply to all instances, which can effect text layout.
-
-        Thus, MVAR tables should be present and correct in all variable fonts since text layout software depends on these values.
-    """, # FIX-ME: Clarify this rationale text.
-         #         See: https://github.com/googlefonts/fontbakery/issues/2118#issuecomment-432108560
-    conditions = ['is_variable_font'],
-    misc_metadata = {
-        'request': 'https://github.com/googlefonts/fontbakery/issues/2118'
-    }
-)
-def com_google_fonts_check_varfont_has_MVAR(ttFont):
-    """Check that variable fonts have an MVAR table."""
-    if "MVAR" in ttFont.keys():
-        yield PASS, ("This variable font contains an MVAR table.")
-    else:
-        yield FAIL,\
-              Message("lacks-MVAR",
-                      "All variable fonts on the Google Fonts collection"
-                      " must have a properly set MVAR table because"
-                      " text-layout software depends on it.")
-
-
 @check(
     id = 'com.google.fonts/check/smart_dropout',
     conditions = ['is_ttf',
@@ -4297,7 +4270,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
     conditions = ['family_directory',
                   'gfonts_repo_structure',
                   'is_variable_font'],
-    rationale="""
+    rationale = """
         Variable font family directories kept in the google/fonts git repo may include a static/ subdir containing static fonts.
         These files are meant to be served for users that still lack support for variable fonts in their web browsers.
     """,
@@ -4571,6 +4544,39 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
 
 
 @check(
+    id = 'com.google.fonts/check/cjk_not_enough_glyphs',
+    conditions = ['is_cjk_font'],
+    rationale = """
+        Hangul has 40 characters and it's the smallest CJK writing system.
+        If a font contains less CJK glyphs than this writing system, we inform the user that some glyphs may be encoded incorrectly.
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/3214'
+    }
+)
+def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
+    """Does the font contain less than 40 CJK characters?"""
+    from .shared_conditions import get_cjk_glyphs
+    cjk_glyphs = get_cjk_glyphs(ttFont)
+    cjk_glyph_count = len(cjk_glyphs)
+    if cjk_glyph_count > 0 and cjk_glyph_count < 40:
+        if cjk_glyph_count == 1:
+            N_CJK_glyphs = "There is only one CJK glyph"
+        else:
+            N_CJK_glyphs = f"There are only {cjk_glyph_count} CJK glyphs"
+
+        yield WARN, \
+              Message('cjk-not-enough-glyphs',
+                      f"{N_CJK_glyphs} when there needs to be at least 40"
+                      f" in order to support the smallest CJK writing system, Hangul.\n"
+                      f"The following CJK glyphs were found:\n"
+                      f"{cjk_glyphs}\n"
+                      f"Please check that these glyphs have the correct unicodes.")
+    else:
+        yield PASS, "Font has the correct quantity of CJK glyphs"
+
+
+@check(
     id = 'com.google.fonts/check/varfont_instance_coordinates',
     conditions = ['is_variable_font'],
 )
@@ -4801,6 +4807,8 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegi
 
     passed = True
     for axis in ttFont['fvar'].axes:
+        if axis.axisTag not in GFAxisRegistry:
+            continue
         fallbacks = GFAxisRegistry[axis.axisTag]["fallbacks"]
         if axis.defaultValue not in fallbacks.values():
             passed = False
@@ -5084,12 +5092,14 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
             passed = False
             yield FAIL, \
                   Message("google-plus",
-                          f"Designer {designer} listed a Google Plus link on the catalog, but that service is not available anymore. Please update the webpage link.")
+                          f"Designer {designer} listed a Google Plus link on the catalog,"
+                          f" but that service is not available anymore. Please update the webpage link.")
         elif 'profiles.google.com' in info.link:
             passed = False
             yield FAIL, \
                   Message("google-profiles",
-                          f"Designer {designer} listed a Google Profiles link on the catalog, but that service is not available anymore. Please update the webpage link.")
+                          f"Designer {designer} listed a Google Profiles link on the catalog,"
+                          f" but that service is not available anymore. Please update the webpage link.")
         else:
             response = requests.get(info.link)
             if response.status_code != requests.codes.OK:
@@ -5119,9 +5129,11 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
 @check(
     id = 'com.google.fonts/check/mandatory_avar_table',
     rationale = """
-        All high quality variable fonts include an avar table to correctly define axes progression rates.
+        Most variable fonts should include an avar table to correctly define axes progression rates.
 
         For example, a weight axis from 0% to 100% doesn't map directly to 100 to 1000, because a 10% progression from 0% may be too much to define the 200, while 90% may be too little to define the 900.
+        
+        If the progression rates of axes is linear, this check can be ignored. Fontmake will also skip adding an avar table if the progression rates are linear. However, we still recommend designers visually proof each instance is at the desired weight, width etc.
     """,
     conditions = ["is_variable_font"],
     misc_metadata = {
