@@ -20,6 +20,28 @@ class GFNameData:
     # TODO: Add more
     AXIS_ORDER = ["GRAD", "opsz", "wdth", "wght", "ital"]
 
+    GF_WEIGHTS = {
+        "Thin": 100,
+        "ExtraLight": 200,
+        "Light": 300,
+        "Regular": 400,
+        "Medium": 500,
+        "SemiBold": 600,
+        "Bold": 700,
+        "ExtraBold": 800,
+        "Black": 900,
+        # Italics
+        "Thin Italic": 100,
+        "ExtraLight Italic": 200,
+        "Light Italic": 300,
+        "Italic": 400,
+        "Medium Italic": 500,
+        "SemiBold Italic": 600,
+        "Bold Italic": 700,
+        "ExtraBold Italic": 800,
+        "Black Italic": 900,
+    }
+
     def __init__(self, ttFont):
         """Infer font names and related properties from a TTFont instance.
 
@@ -41,6 +63,7 @@ class GFNameData:
         GF Axis Reg: https://github.com/google/fonts/tree/main/axisregistry
         """
         self.ttFont = ttFont
+        self.filename = self.ttFont.reader.file.name
         self.nametable = self.ttFont["name"]
         self.axis_reg = AxisRegistry()
         self.unregistered_tokens = set()
@@ -79,7 +102,7 @@ class GFNameData:
         self.macSubFamily = self.typoSubFamily or self.subFamily
         self.fsSelection = None
         self.macStyle = None
-        self.usWeightClass = None
+        self.usWeightClass = self._build_weight_class()
         self.usWidthClass = None
 
     def build_vf_names(self):
@@ -98,7 +121,7 @@ class GFNameData:
         self.macSubFamily = self.typoSubFamily or self.subFamily
         self.fsSelection = None
         self.macStyle = None
-        self.usWeightClass = None
+        self.usWeightClass = self._build_weight_class()
 
     def _get_fvar_tokens(self):
         found = False
@@ -289,13 +312,37 @@ class GFNameData:
             return f"{self.typoFamily}-{self.typoSubFamily}.ttf".replace(" ", "")
         return f"{self.family}-{self.subFamily}.ttf".replace(" ", "")
 
+    @property
+    def menu_family_name(self):
+        return self.typoFamily or self.family
+
+    @property
+    def menu_subFamily_name(self):
+        return self.typoSubFamily or self.subFamily
+
+    @property
+    def isTTF(self):
+        return self.filename.endswith(".ttf")
+
     def _build_full_name(self):
-        best_family_name = self.typoFamily or self.family
-        best_style_name = self.typoSubFamily or self.subFamily
-        return f"{best_family_name} {best_style_name}"
+        return f"{self.menu_family_name} {self.menu_subFamily_name}"
 
     def _build_postscript_name(self):
-        best_family_name = (self.typoFamily or self.family).replace(" ", "")
-        best_style_name = (self.typoSubFamily or self.subFamily).replace(" ", "")
-        return f"{best_family_name}-{best_style_name}"
+        return f"{self.menu_family_name}-{self.menu_subFamily_name}".replace(" ", "")
+
+    def _build_weight_class(self):
+        found_value = None
+        for name, weight_val in sorted(self.GF_WEIGHTS.items(), key=lambda k: len(k[0]), reverse=True):
+            if name in self.menu_subFamily_name:
+                found_value = weight_val
+                break
+        # override usWeightClass values for Thin and ExtraLight if font is an otf
+        if not self.isTTF and found_value == 100:
+            return 250
+        if not self.isTTF and found_value == 200:
+            return 275
+        if not found_value:
+            import pdb
+            pdb.set_trace()
+        return found_value
 
