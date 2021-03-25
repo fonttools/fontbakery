@@ -13,6 +13,7 @@ CLI_PROFILES = [
     "googlefonts",
     "notofonts",
     "opentype",
+    "typenetwork",
     "ufo_sources",
     "universal",
 ]
