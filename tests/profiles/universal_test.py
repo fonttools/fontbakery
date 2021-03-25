@@ -354,7 +354,7 @@ def test_check_mandatory_glyphs():
 
 
 def test_check_whitespace_glyphs():
-    """ Font contains glyphs for whitespace characters ? """
+    """ Font contains glyphs for whitespace characters? """
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/whitespace_glyphs")
 
@@ -386,7 +386,7 @@ def test_check_whitespace_glyphs():
 
 
 def test_check_whitespace_glyphnames():
-    """ Font has **proper** whitespace glyph names ? """
+    """ Font has **proper** whitespace glyph names? """
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/whitespace_glyphnames")
 

@@ -20,6 +20,9 @@ def test_check_outline_alignment_miss():
     messages = "".join([m[1].message for m in results])
     assert "A: X=3.0,Y=-2.0 (should be at baseline 0?)" in messages
 
+    # TODO: PASS
+
+
 def test_check_outline_short_segments():
     """ Check for short segments. """
     check = CheckTester(outline_profile,
@@ -31,6 +34,8 @@ def test_check_outline_short_segments():
                            WARN, 'found-short-segments')
     messages = "".join([m[1].message for m in results])
     assert "D contains a short segment L<<180.0,68.0>--<173.0,71.0>>" in messages
+
+    # TODO: PASS
 
 
 def test_check_outline_colinear_vectors():
@@ -48,6 +53,9 @@ def test_check_outline_colinear_vectors():
     assert "C" in messages
     assert "E" in messages
     assert ".notdef" in messages
+
+    # TODO: PASS
+
 
 def test_check_outline_jaggy_segments():
     """ Check for jaggy segments. """
@@ -80,3 +88,5 @@ def test_check_outline_semi_vertical():
     messages = "".join([m[1].message for m in results])
     assert "* B" in messages
     assert "* E" not in messages
+
+    # TODO: PASS

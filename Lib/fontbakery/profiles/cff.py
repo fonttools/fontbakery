@@ -192,13 +192,7 @@ def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
     id = 'com.adobe.fonts/check/cff_deprecated_operators',
     conditions = ['ttFont', 'is_cff', 'cff_analysis'],
     rationale = """
-        The 'dotsection' operator and the use of 'endchar' to build accented
-        characters from the Adobe Standard Encoding Character Set ("seac") are
-        deprecated in CFF. Adobe recommends repairing any fonts that use these,
-        especially endchar-as-seac, because a rendering issue was discovered in
-        Microsoft Word with a font that makes use of this operation. The check
-        treats that useage as a FAIL. There are no known ill effects of using
-        dotsection, so that check is a WARN.
+        The 'dotsection' operator and the use of 'endchar' to build accented characters from the Adobe Standard Encoding Character Set ("seac") are deprecated in CFF. Adobe recommends repairing any fonts that use these, especially endchar-as-seac, because a rendering issue was discovered in Microsoft Word with a font that makes use of this operation. The check treats that useage as a FAIL. There are no known ill effects of using dotsection, so that check is a WARN.
     """
 )
 def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
