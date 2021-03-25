@@ -208,17 +208,17 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
     os2_bold = (ttFont['OS/2'].fsSelection & FsSelection.BOLD) != 0
     if head_bold != os2_bold:
         failed = True
-        yield FAIL, "The OS/2.fsSelection and head.macStyle " \
-                    "bold settings do not match."
+        yield FAIL, ("The OS/2.fsSelection and head.macStyle "
+                     "bold settings do not match.") # FIXME: Needs a keyword
     head_italic = (ttFont['head'].macStyle & MacStyle.ITALIC) != 0
     os2_italic = (ttFont['OS/2'].fsSelection & FsSelection.ITALIC) != 0
     if head_italic != os2_italic:
         failed = True
-        yield FAIL, "The OS/2.fsSelection and head.macStyle " \
-                    "italic settings do not match."
+        yield FAIL, ("The OS/2.fsSelection and head.macStyle "
+                     "italic settings do not match.") # FIXME: Needs a keyword
     if not failed:
-        yield PASS, "The OS/2.fsSelection and head.macStyle " \
-                    "bold and italic settings match."
+        yield PASS, ("The OS/2.fsSelection and head.macStyle "
+                     "bold and italic settings match.")
 
 
 @check(
