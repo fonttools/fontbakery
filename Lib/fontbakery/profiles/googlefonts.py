@@ -3669,34 +3669,6 @@ def com_google_fonts_check_varfont_has_HVAR(ttFont):
                       " certain platforms.")
 
 
-# Temporarily disabled.
-# See: https://github.com/googlefonts/fontbakery/issues/2118#issuecomment-432283698
-@disable
-@check(
-    id = 'com.google.fonts/check/varfont/has_MVAR',
-    rationale = """
-        Per the OpenType spec, the MVAR tables contain variation data for metadata otherwise in tables such as OS/2 and hhea; if not present, then the default values in those tables will apply to all instances, which can effect text layout.
-
-        Thus, MVAR tables should be present and correct in all variable fonts since text layout software depends on these values.
-    """, # FIX-ME: Clarify this rationale text.
-         #         See: https://github.com/googlefonts/fontbakery/issues/2118#issuecomment-432108560
-    conditions = ['is_variable_font'],
-    misc_metadata = {
-        'request': 'https://github.com/googlefonts/fontbakery/issues/2118'
-    }
-)
-def com_google_fonts_check_varfont_has_MVAR(ttFont):
-    """Check that variable fonts have an MVAR table."""
-    if "MVAR" in ttFont.keys():
-        yield PASS, ("This variable font contains an MVAR table.")
-    else:
-        yield FAIL,\
-              Message("lacks-MVAR",
-                      "All variable fonts on the Google Fonts collection"
-                      " must have a properly set MVAR table because"
-                      " text-layout software depends on it.")
-
-
 @check(
     id = 'com.google.fonts/check/smart_dropout',
     conditions = ['is_ttf',
@@ -4299,7 +4271,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
     conditions = ['family_directory',
                   'gfonts_repo_structure',
                   'is_variable_font'],
-    rationale="""
+    rationale = """
         Variable font family directories kept in the google/fonts git repo may include a static/ subdir containing static fonts.
         These files are meant to be served for users that still lack support for variable fonts in their web browsers.
     """,
@@ -5086,12 +5058,14 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
             passed = False
             yield FAIL, \
                   Message("google-plus",
-                          f"Designer {designer} listed a Google Plus link on the catalog, but that service is not available anymore. Please update the webpage link.")
+                          f"Designer {designer} listed a Google Plus link on the catalog,"
+                          f" but that service is not available anymore. Please update the webpage link.")
         elif 'profiles.google.com' in info.link:
             passed = False
             yield FAIL, \
                   Message("google-profiles",
-                          f"Designer {designer} listed a Google Profiles link on the catalog, but that service is not available anymore. Please update the webpage link.")
+                          f"Designer {designer} listed a Google Profiles link on the catalog,"
+                          f" but that service is not available anymore. Please update the webpage link.")
         else:
             response = requests.get(info.link)
             if response.status_code != requests.codes.OK:

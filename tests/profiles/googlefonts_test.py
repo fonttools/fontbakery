@@ -534,8 +534,8 @@ def test_check_metadata_undeclared_fonts():
     assert_PASS(check(font))
 
 
-# TODO: re-enable after addressing issue #1998
-def DISABLED_test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
+@pytest.mark.skip(reason="re-enable after addressing issue #1998")
+def test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
     """ Fonts have equal numbers of glyphs? """
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/family/equal_numbers_of_glyphs")
@@ -551,8 +551,8 @@ def DISABLED_test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFon
                            'with fonts that diverge on number of glyphs.')
 
 
-# TODO: re-enable after addressing issue #1998
-def DISABLED_test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
+@pytest.mark.skip(reason="re-enable after addressing issue #1998")
+def test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
     """ Fonts have equal glyph names? """
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/family/equal_glyph_names")
@@ -567,6 +567,7 @@ def DISABLED_test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
     assert_results_contain(check(mada_ttFonts),
                            FAIL, 'missing-glyph',
                            'with fonts that diverge on number of glyphs.')
+
 
 def test_check_fstype():
     """ Checking OS/2 fsType """
@@ -1100,22 +1101,6 @@ def test_check_metadata_listed_on_gfonts():
     # And the check should also properly handle space-separated multi-word familynames.
     assert_PASS(check(font),
                 f'with "{font}", available and with a space-separated family name...')
-
-
-# FIXME: This check is currently disabled:
-# - Review and re-enable.
-# - Implement the test.
-def NOT_IMPLEMENTED_test_check_metadata_profiles_csv():
-    """ METADATA.pb: Designer exists in Google Fonts profiles.csv? """
-    # check = CheckTester(googlefonts_profile,
-    #                     "com.google.fonts/check/metadata/profiles_csv")
-    # TODO: Implement-me!
-    #
-    # code-paths:
-    # FAIL, "empty"
-    # SKIP, "multiple"
-    # WARN, "not-listed"
-    # WARN, "csv-not-fetched"
 
 
 def test_check_metadata_unique_full_name_values():
@@ -2214,11 +2199,13 @@ def test_check_contour_count(montserrat_ttFonts):
         assert_results_contain(check(ttFont),
                                WARN, 'contour-count')
 
+
 # FIXME!
-# Temporarily disabled since GFonts hosted Cabin files seem to have changed in ways
+# GFonts hosted Cabin files seem to have changed in ways
 # that break some of the assumptions in the code-test below.
 # More info at https://github.com/googlefonts/fontbakery/issues/2581
-def DISABLED_test_check_production_encoded_glyphs(cabin_ttFonts):
+@pytest.mark.xfail(strict=True)
+def test_check_production_encoded_glyphs(cabin_ttFonts):
     """Check glyphs are not missing when compared to version on fonts.google.com"""
     # FIXME:
     # check = CheckTester(googlefonts_profile,
@@ -2681,6 +2668,9 @@ def test_check_name_copyright_length():
                            'with 501-byte copyright notice string...')
 
 
+# TODO: Maybe skip this code-test if the service is offline?
+# we could use pytest.mak.skipif here together with a piece of code that
+# verifies whether or not the namecheck.fontdata.com website is online at the moment
 def test_check_fontdata_namecheck():
     """ Familyname is unique according to namecheck.fontdata.com """
     check = CheckTester(googlefonts_profile,
@@ -2794,25 +2784,6 @@ def test_check_varfont_has_HVAR():
     del ttFont['HVAR']
     assert_results_contain(check(ttFont),
                            FAIL, 'lacks-HVAR')
-
-
-# temporarily disabled.
-# See: https://github.com/googlefonts/fontbakery/issues/2118#issuecomment-432283698
-def DISABLED_test_check_varfont_has_MVAR():
-    """ Check that variable fonts have an MVAR table. """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont/has_MVAR")
-
-    # Our reference Cabin Variable Font contains an MVAR table.
-    ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
-
-    # So the check must PASS.
-    assert_PASS(check(ttFont))
-
-    # Introduce the problem by removing the MVAR table:
-    del ttFont['MVAR']
-    assert_results_contain(check(ttFont),
-                           FAIL, 'lacks-MVAR')
 
 
 def test_check_smart_dropout():
