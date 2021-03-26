@@ -12,8 +12,6 @@ from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Adobe Fonts"))
 
-BLOCKLISTS = {}
-
 ADOBEFONTS_PROFILE_CHECKS = \
     UNIVERSAL_PROFILE_CHECKS + [
         'com.adobe.fonts/check/family/consistent_upm',

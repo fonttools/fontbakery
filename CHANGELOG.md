@@ -7,11 +7,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - Axis Registry has been updated to commit https://github.com/google/fonts/tree/6418bd97834330f245cce4131ec3b8b98cb333be which includes changes to the `opsz` axis.
   - Format status output to improve readability. (issue #2052)
   - Move reporter-specific write logic to reporters, simplify argparse (PR #3206)
+  - Profile-specific `fontbakery.commands.check_...` removed and replaced with a call to `check_profile` with the appropriate profile. (PR #3218)
   - HTML reporter parses and renders markdown. (PR #3212)
 
 ### New Profile
-  - new Type Network profile for checking some of their new axis proposals (issue #3130)
-  - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
+  - Created a Type Network profile for checking some of their new axis proposals (issue #3130)
 
 ### Bugfixes
   - **license** condition now assumes that all license files in a given project repo are identical if more than one is found. With that some checks wont be skipped. We should have a fontbakery check to ensuring that assumption is valid, though. (issue #3172)
@@ -24,6 +24,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/missing_small_caps_glyphs]:** Check small caps glyphs are available (issue #3154)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Only check axes which are in the GF Axis Registry (PR #3217)
   - **[com.google.fonts/check/mandatory_avar_table]:** Update rationale to mention that this check may be ignored if axis progressions are linear.
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.

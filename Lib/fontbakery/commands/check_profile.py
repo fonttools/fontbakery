@@ -243,11 +243,6 @@ def get_profile():
         raise Exception(f"Can't get a profile from {imported}.")
     return profile
 
-# This stub or alias is kept for compatibility (e.g. check-commands, FontBakery
-# Dashboard). The function of the same name previously only passed on all parameters to
-# CheckRunner.
-runner_factory = CheckRunner
-
 def main(profile=None, values=None):
     # profile can be injected by e.g. check-googlefonts injects it's own profile
     add_profile_arg = False

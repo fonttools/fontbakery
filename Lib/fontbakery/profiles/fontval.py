@@ -9,8 +9,6 @@ from .shared_conditions import is_variable_font
 profile_imports = ['.shared_conditions']
 profile = profile_factory(default_section=Section("Checks inherited from Microsoft Font Validator"))
 
-BLOCKLISTS = {}
-
 @check(
     id = 'com.google.fonts/check/fontvalidator'
 )
