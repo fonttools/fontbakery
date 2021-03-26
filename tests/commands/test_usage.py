@@ -102,7 +102,7 @@ def test_command_config_file():
     test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
     result = subprocess.run(["fontbakery", "check-googlefonts",
         "--config", config.name,
-        test_font], capture_output=True)
+        test_font], stdout=subprocess.PIPE)
     stdout = result.stdout.decode()
     assert "running 1 individual check" in stdout
     os.unlink(config.name)
@@ -122,7 +122,7 @@ OK = 123
         "-C",
         "--config", config.name,
         test_profile,
-        test_font], capture_output=True)
+        test_font], stdout=subprocess.PIPE)
     stdout = result.stdout.decode()
     assert "FAIL: 0" in stdout
     os.unlink(config.name)
