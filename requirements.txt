@@ -16,6 +16,6 @@ unidecode==1.1.2
 beziers==0.1.0
 cmarkgfm==0.5.3
 vharfbuzz==0.1.0
-collidoscope==0.0.5
+collidoscope==0.0.6
 stringbrewer==0.0.1
 -e .
