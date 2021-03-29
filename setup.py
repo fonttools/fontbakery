@@ -21,6 +21,16 @@ try:
 except IOError:
     readme = ''
 
+thelibFolder = os.path.dirname(os.path.realpath(__file__))
+requirementPath = thelibFolder + '/requirements.txt'
+install_requires = []
+if os.path.isfile(requirementPath):
+    with open(requirementPath) as f:
+        for line in f.read().splitlines():
+          if not line.startswith("-"):
+            install_requires.append(line)
+
+
 setup(
     name="fontbakery",
     use_scm_version={"write_to": "Lib/fontbakery/_version.py"},
@@ -58,26 +68,7 @@ setup(
     ],
     python_requires='>=3.6',
     setup_requires=['setuptools_scm'],
-    install_requires=[
-        'beautifulsoup4',
-        'toml',
-        'PyYAML',
-        'defcon',
-        'font-v',
-        'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
-        'lxml',
-        'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
-                                      # (see https://github.com/khaledhosny/ots/pull/182)
-        'pip-api',
-        'protobuf>=3.7.0',  # 3.7.0 fixed a bug on parsing some METADATA.pb files
-                            # (see https://github.com/googlefonts/fontbakery/issues/2200)
-        'requests',
-        'ttfautohint-py',
-        'ufolint',
-        'unidecode',
-        'beziers',
-        'cmarkgfm'
-    ],
+    install_requires=install_requires,
     extras_require={
         'docs': [
             'sphinx >= 1.4',
