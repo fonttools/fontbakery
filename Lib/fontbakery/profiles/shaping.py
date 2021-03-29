@@ -28,7 +28,6 @@ from collidoscope import Collidoscope
 
 shaping_basedir = Path("qa", "shaping_tests")
 
-
 profile_imports = ()
 profile = profile_factory(default_section=Section("Shaping Checks"))
 
@@ -91,14 +90,21 @@ def get_shaping_parameters(test, configuration):
 # This is a very generic "do something with shaping" test runner.
 # It'll be given concrete meaning later.
 def run_a_set_of_tests(
-    ttFont, run_a_test, test_filter, generate_report, preparation=None
+    config, ttFont, run_a_test, test_filter, generate_report, preparation=None
 ):
     filename = Path(ttFont.reader.file.name)
     vharfbuzz = Vharfbuzz(filename)
     shaping_file_found = False
     ran_a_test = False
     extra_data = None
-    for shaping_file in shaping_basedir.glob("*.json"):
+    if "com.google.fonts/check/shaping" not in config:
+      yield SKIP, "Shaping test directory not defined in configuration file"
+      return
+    shaping_basedir = config["com.google.fonts/check/shaping"].get("test_directory")
+    if not shaping_basedir:
+      yield SKIP, "Shaping test directory not defined in configuration file"
+      return
+    for shaping_file in Path(shaping_basedir).glob("*.json"):
         shaping_file_found = True
         try:
             shaping_input_doc = json.loads(shaping_file.read_text())
@@ -153,9 +159,10 @@ def run_a_set_of_tests(
 
 
 @check(id="com.google.fonts/check/shaping/regression")
-def com_google_fonts_check_shaping_regression(ttFont):
+def com_google_fonts_check_shaping_regression(config, ttFont):
     """Check that texts shape as per expectation"""
     yield from run_a_set_of_tests(
+        config,
         ttFont,
         run_shaping_regression,
         lambda test, configuration: "expectation" in test,
@@ -207,9 +214,10 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_tests):
 
 
 @check(id="com.google.fonts/check/shaping/forbidden")
-def com_google_fonts_check_shaping_forbidden(ttFont):
+def com_google_fonts_check_shaping_forbidden(config, ttFont):
     """Check that no forbidden glyphs are found while shaping"""
     yield from run_a_set_of_tests(
+        config,
         ttFont,
         run_forbidden_glyph_test,
         lambda test, configuration: "forbidden_glyphs" in configuration,
@@ -258,9 +266,10 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_tests):
 
 
 @check(id="com.google.fonts/check/shaping/collides")
-def com_google_fonts_check_shaping_collides(ttFont):
+def com_google_fonts_check_shaping_collides(config, ttFont):
     """Check that no collisions are found while shaping"""
     yield from run_a_set_of_tests(
+        config,
         ttFont,
         run_collides_glyph_test,
         lambda test, configuration: "collidoscope" in test
