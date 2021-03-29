@@ -76,7 +76,10 @@ setup(
         'ufolint',
         'unidecode',
         'beziers',
-        'cmarkgfm'
+        'cmarkgfm',
+        'vharfbuzz',
+        'collidoscope',
+        'stringbrewer'
     ],
     extras_require={
         'docs': [
