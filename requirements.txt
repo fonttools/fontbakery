@@ -17,5 +17,5 @@ beziers==0.1.0
 cmarkgfm==0.5.3
 vharfbuzz==0.1.0
 collidoscope==0.0.5
-stringbrewer=0.0.1
+stringbrewer==0.0.1
 -e .
