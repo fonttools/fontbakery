@@ -66,9 +66,11 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
             shortened_str = name_record.toUnicode()
             if len(shortened_str) > 20:
                 shortened_str = shortened_str[:10] + "[...]" + shortened_str[-10:]
-            yield FAIL, (f"Name table record with key = {name_key} has"
-                         f" trailing spaces that must be removed:"
-                         f" '{shortened_str}'")
+            yield FAIL, \
+                  Message("trailing-space",
+                          f"Name table record with key = {name_key} has"
+                          f" trailing spaces that must be removed:"
+                          f" '{shortened_str}'")
     if not failed:
         yield PASS, ("No trailing spaces on name table entries.")
 
@@ -203,12 +205,14 @@ def com_google_fonts_check_family_single_directory(fonts):
     if len(directories) == 1:
         yield PASS, "All files are in the same directory."
     else:
-        yield FAIL, (f"Not all fonts passed in the command line"
-                     f" are in the same directory. This may lead to"
-                     f" bad results as the tool will interpret all"
-                     f" font files as belonging to a single"
-                     f" font family. The detected directories are:"
-                     f" {directories}")
+        yield FAIL, \
+              Message("single-directory",
+                      f"Not all fonts passed in the command line"
+                      f" are in the same directory. This may lead to"
+                      f" bad results as the tool will interpret all"
+                      f" font files as belonging to a single"
+                      f" font family. The detected directories are:"
+                      f" {directories}")
 
 
 @condition
@@ -237,7 +241,9 @@ def com_google_fonts_check_ftxvalidator_is_available(ftxvalidator_cmd):
     if ftxvalidator_cmd:
         yield PASS, f"ftxvalidator is available at {ftxvalidator_cmd}"
     else:
-        yield WARN, "Could not find ftxvalidator."
+        yield WARN, \
+              Message("ftxvalidator-available",
+                      "Could not find ftxvalidator.")
 
 
 @check(
@@ -299,14 +305,19 @@ def com_google_fonts_check_ots(font):
     try:
         process = ots.sanitize(font, check=True, capture_output=True)
     except ots.CalledProcessError as e:
-        yield FAIL, (
-            "ots-sanitize returned an error code ({}). Output follows:\n\n{}{}"
-        ).format(e.returncode, e.stderr.decode(), e.stdout.decode())
+        yield FAIL, \
+              Message("ots-sanitize-error",
+                ("ots-sanitize returned an error code ({}). Output follows:\n\n{}{}"
+                ).format(e.returncode, e.stderr.decode(), e.stdout.decode())
+              )
     else:
         if process.stderr:
-            yield WARN, (
-                "ots-sanitize passed this file, however warnings were printed:\n\n{}"
-            ).format(process.stderr.decode())
+            yield WARN, \
+                  Message("ots-sanitize-warn",
+                          ("ots-sanitize passed this file, "
+                          "however warnings were printed:\n\n{}"
+                          ).format(process.stderr.decode())
+                  )
         else:
             yield PASS, "ots-sanitize passed this file"
 
@@ -576,8 +587,11 @@ def com_google_fonts_check_required_tables(ttFont):
 
     optional_tables = [opt for opt in OPTIONAL_TABLES if opt in ttFont.keys()]
     if optional_tables:
-        yield INFO, (f"This font contains the following optional tables:\n"
-                     f"{bullet_list(optional_tables)}")
+        yield INFO, \
+              Message("required-tables",
+                      f"This font contains the following optional tables:\n"
+                      f"{bullet_list(optional_tables)}"
+                     )
 
     if is_variable_font(ttFont):
         # According to https://github.com/googlefonts/fontbakery/issues/1671
@@ -590,8 +604,10 @@ def com_google_fonts_check_required_tables(ttFont):
         missing_tables.append("CFF ' or 'glyf")
 
     if missing_tables:
-        yield FAIL, (f"This font is missing the following required tables:\n"
-                     f"{bullet_list(missing_tables)}")
+        yield FAIL, \
+              Message("required-tables",
+                      f"This font is missing the following required tables:\n"
+                      f"{bullet_list(missing_tables)}")
     else:
         yield PASS, "Font contains all required tables."
 
@@ -627,10 +643,13 @@ def com_google_fonts_check_unwanted_tables(ttFont):
             unwanted_tables_found.append(f'Table: {table}\nReason: {info}\n')
 
     if len(unwanted_tables_found) > 0:
-        yield FAIL, ("The following unwanted font tables were found:\n"
+        yield FAIL, \
+              Message("unwanted-tables",
+                     ("The following unwanted font tables were found:\n"
                      "{}\n"
                      "They can be removed with the gftools fix-unwanted-tables script."
                      ).format("\n".join(unwanted_tables_found))
+                     )
     else:
         yield PASS, "There are no unwanted tables."
 
@@ -788,8 +807,10 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
         if len(duplicated_glyphIDs) == 0:
             yield PASS, "Font contains unique glyph names."
         else:
-            yield FAIL, (f"The following glyph names"
-                         f" occur twice: {duplicated_glyphIDs}")
+            yield FAIL, \
+                  Message("duplicated-glyph-names",
+                          "The following glyph names occur twice: "
+                          f"{duplicated_glyphIDs}")
 
 
 # This check was originally ported from
@@ -815,7 +836,9 @@ def com_google_fonts_check_glyphnames_max_length(ttFont):
         for name in ttFont.getGlyphOrder():
             if len(name) > 109:
                 failed = True
-                yield FAIL, f"Glyph name is too long: '{name}'"
+                yield FAIL, \
+                    Message("glyphname-too-long",
+                            f"Glyph name is too long: '{name}'")
         if not failed:
             yield PASS, "No glyph names exceed max allowed length."
 
@@ -1031,8 +1054,10 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
         for k in warn:
             s = ["{}: {}".format(k, v) for k, v in vmetrics[k].items()]
             s = "\n".join(s)
-            yield WARN, (f"{k} is not the same across the super-family:\n"
-                         f"{s}")
+            yield WARN, \
+                  Message("superfamily-vertical-metrics",
+                          f"{k} is not the same across the super-family:\n"
+                          f"{s}")
     else:
         yield PASS, "Vertical metrics are the same across the super-family."
 

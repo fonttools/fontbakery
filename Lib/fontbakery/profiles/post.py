@@ -1,5 +1,6 @@
 from fontbakery.callable import check
 from fontbakery.status import FAIL, PASS
+from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
@@ -45,7 +46,7 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
                "Detected underlineThickness values are:\n")
         for style in underTs.keys():
             msg += f"\t{style}: {underTs[style]}\n"
-        yield FAIL, msg
+        yield FAIL, Message("inconsistent-underline-thickness", msg)
     else:
         yield PASS, "Fonts have consistent underline thickness."
 
@@ -79,7 +80,9 @@ def com_google_fonts_check_post_table_version(ttFont, is_ttf):
     else:
         expected = 3
     if formatType != expected:
-        yield FAIL, (f"Post table should be version {expected}"
-                     f" instead of {formatType}.")
+        yield FAIL, \
+              Message("post-table-version",
+                      f"Post table should be version {expected}"
+                      f" instead of {formatType}.")
     else:
         yield PASS, f"Font has post table version {expected}."

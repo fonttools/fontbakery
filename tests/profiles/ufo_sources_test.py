@@ -27,7 +27,7 @@ def test_check_ufolint(empty_ufo_font):
 
     os.remove(os.path.join(ufo_path, "metainfo.plist"))
     assert_results_contain(check(ufo_path),
-                           FAIL, None, # FIXME: This needs a message keyword!
+                           FAIL, "ufolint-fail",
                            'with maimed UFO.')
 
 
@@ -36,7 +36,7 @@ def test_check_required_fields(empty_ufo_font):
     ufo, _ = empty_ufo_font
 
     assert_results_contain(check(ufo),
-                           FAIL, None, # FIXME: This needs a message keyword!
+                           FAIL, "missing-required-fields",
                            'with an empty UFO.')
 
     ufo.info.unitsPerEm = 1000
@@ -56,7 +56,7 @@ def test_check_recommended_fields(empty_ufo_font):
     ufo, _ = empty_ufo_font
 
     assert_results_contain(check(ufo),
-                           WARN, None, # FIXME: This needs a message keyword!
+                           WARN, "missing-recommended-fields",
                            'with an empty UFO.')
 
     ufo.info.postscriptUnderlineThickness = 1000
@@ -84,6 +84,6 @@ def test_check_unnecessary_fields(empty_ufo_font):
     ufo.info.year = 2018
 
     assert_results_contain(check(ufo),
-                           WARN, None, # FIXME: This needs a message keyword!
+                           WARN, "unnecessary-fields",
                            'with unnecessary fields in UFO.')
 

@@ -49,7 +49,7 @@ def test_check_family_underline_thickness(mada_ttFonts):
     # And now re-running the check on the modified
     # family should result in a FAIL:
     assert_results_contain(check(mada_ttFonts),
-                           FAIL, None, # FIXME: This needs a message keyword!
+                           FAIL, "inconsistent-underline-thickness",
                            'with an inconsistent family.')
 
 
@@ -70,6 +70,6 @@ def test_check_post_table_version():
 
     assert_results_contain(check(ttFont,
                                  'glyf' in ttFont),
-                           FAIL, None, # FIXME: This needs a message keyword!
+                           FAIL, "post-table-version",
                            'with fonts that diverge on the fontRevision field value.')
 

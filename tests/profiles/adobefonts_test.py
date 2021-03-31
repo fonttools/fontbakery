@@ -28,7 +28,7 @@ def test_check_family_consistent_upm():
     # now try with one font with a different UPM (i.e. 2048)
     ttFonts[1]['head'].unitsPerEm = 2048
     assert_results_contain(check(ttFonts),
-                           FAIL, None) # FIXME: This needs a message keyword
+                           FAIL, "inconsistent-upem")
 
 
 def test_get_family_checks():
@@ -65,8 +65,7 @@ def test_check_find_empty_letters():
     # the first of which is 'B' (U+0042)
     font = TEST_FILE('familysans/FamilySans-Regular.ttf')
     message = assert_results_contain(check(font),
-                                     FAIL, None) # FIXME:
-                                                 # This needs a message keyword
+                                     FAIL, "empty-letter")
     assert message == "U+0042 should be visible, but its glyph ('B') is empty."
 
 
@@ -83,5 +82,5 @@ def test_check_missing_whitespace():
     for subtable in ttFont['cmap'].tables:
         subtable.cmap.pop(0x00A0, None)
     assert_results_contain(check(ttFont),
-                           WARN, None) # FIXME: This needs a message keyword
+                           WARN, "missing-whitespace-glyph-0x00A0")
 

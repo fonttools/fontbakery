@@ -4,6 +4,7 @@ from fontbakery.callable import check, condition
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.status import ERROR, FAIL, PASS, WARN
 from fontbakery.section import Section
+from fontbakery.message import Message
 from fontbakery.profile import Profile
 
 class UFOProfile(Profile):
@@ -91,10 +92,14 @@ def com_daltonmaag_check_ufolint(font):
     try:
         subprocess.check_output(ufolint_cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        yield FAIL, ("ufolint failed the UFO source. Output follows :"
-                     "\n\n{}\n").format(e.output.decode())
+        yield FAIL, \
+              Message("ufolint-fail",
+                      ("ufolint failed the UFO source. Output follows :"
+                      "\n\n{}\n").format(e.output.decode()))
     except OSError:
-        yield ERROR, "ufolint is not available!"
+        yield ERROR, \
+              Message("ufolint-unavailable",
+                      "ufolint is not available!")
     else:
         yield PASS, "ufolint passed the UFO source."
 
@@ -121,7 +126,9 @@ def com_daltonmaag_check_required_fields(ufo_font):
             required_fields.append(field)
 
     if required_fields:
-        yield FAIL, f"Required field(s) missing: {required_fields}"
+        yield FAIL, \
+              Message("missing-required-fields",
+                      f"Required field(s) missing: {required_fields}")
     else:
         yield PASS, "Required fields present."
 
@@ -148,7 +155,9 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
             recommended_fields.append(field)
 
     if recommended_fields:
-        yield WARN, f"Recommended field(s) missing: {recommended_fields}"
+        yield WARN, \
+              Message("missing-recommended-fields",
+                      f"Recommended field(s) missing: {recommended_fields}")
     else:
         yield PASS, "Recommended fields present."
 
@@ -176,7 +185,9 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
             unnecessary_fields.append(field)
 
     if unnecessary_fields:
-        yield WARN, f"Unnecessary field(s) present: {unnecessary_fields}"
+        yield WARN, \
+              Message("unnecessary-fields",
+                      f"Unnecessary field(s) present: {unnecessary_fields}")
     else:
         yield PASS, "Unnecessary fields omitted."
 

@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Profile-specific `fontbakery.commands.check_...` removed and replaced with a call to `check_profile` with the appropriate profile. (PR #3218)
   - HTML reporter parses and renders markdown. (PR #3212)
   - You can now pass (some) options to fontbakery using a configuration file, with the `--configuration` command line parameter. This configuration file is available to check code using the `config` parameter. (PR #3219)
+  - All failing tests are now *required* to return a `Message` object containing a message code. (PR #3226)
 
 ### New Profile
   - Created a Type Network profile for checking some of their new axis proposals (issue #3130)

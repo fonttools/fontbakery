@@ -8,6 +8,7 @@ from fontbakery.status import PASS, FAIL, WARN
 from fontbakery.section import Section
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
+from fontbakery.message import Message
 
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Adobe Fonts"))
@@ -41,7 +42,9 @@ def com_adobe_fonts_check_family_consistent_upm(ttFonts):
     for ttFont in ttFonts:
         upm_set.add(ttFont['head'].unitsPerEm)
     if len(upm_set) > 1:
-        yield FAIL, f"Fonts have different units per em: {sorted(upm_set)}."
+        yield FAIL,\
+              Message("inconsistent-upem",
+                      f"Fonts have different units per em: {sorted(upm_set)}.")
     else:
         yield PASS, "Fonts have consistent units per em."
 
@@ -99,8 +102,9 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
                 and (category in letter_categories) \
                 and (unicode_val not in invisible_letters):
             yield FAIL, \
-                ("U+%04X should be visible, but its glyph ('%s') is empty."
-                 % (unicode_val, glyph_name))
+                Message("empty-letter",
+                  "U+%04X should be visible, but its glyph ('%s') is empty."
+                   % (unicode_val, glyph_name))
             passed = False
     if passed:
         yield PASS, "No empty glyphs for letters found."

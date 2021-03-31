@@ -730,7 +730,7 @@ def test_check_usweightclass():
     font = TEST_FILE("rokkitt/Rokkitt-Thin.otf")
     ttFont = TTFont(font)
     assert_results_contain(check(ttFont),
-                           FAIL, None, #FIXME! We need a message keyword here
+                           FAIL, "bad-value",
                            f'with bad font "{font}"...')
 
     ttFont['OS/2'].usWeightClass = 250
@@ -740,7 +740,7 @@ def test_check_usweightclass():
     font = TEST_FILE("rokkitt/Rokkitt-ExtraLight.otf")
     ttFont = TTFont(font)
     assert_results_contain(check(ttFont),
-                           FAIL, None, #FIXME! We need a message keyword here
+                           FAIL, "bad-value",
                            f'with bad font "{font}" ...')
 
     ttFont['OS/2'].usWeightClass = 275
@@ -3178,7 +3178,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
         for key, ttfont in remote2.items():
             ttfont["OS/2"].fsSelection = ttfont["OS/2"].fsSelection ^ 0b10000000
         assert_results_contain(check(ttFonts, remote2),
-                               FAIL, None, # FIXME: This needs a message keyword!
+                               FAIL, "bad-typo-ascender",
                                'with a remote family which does not have'
                                ' typo metrics enabled and the fonts being checked'
                                ' don\'t take this fact into consideration...')
@@ -3296,7 +3296,7 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
         for axis in instance.coordinates.keys():
             instance.coordinates[axis] = 0
     assert_results_contain(check(vf_ttFont2),
-                           FAIL, None, # FIXME: This needs a message keyword
+                           FAIL, "bad-coordinate",
                            'with a variable font which does not have'
                            ' correct instance coordinates.')
 

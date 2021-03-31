@@ -147,16 +147,25 @@ def assert_results_contain(check_results, expected_status, expected_msgcode=None
     order among other log messages.
     """
     from fontbakery.message import Message
+    from fontbakery.checkrunner import PASS, DEBUG
     if not reason:
         reason = f"[{expected_msgcode}]"
+    if not expected_msgcode:
+      raise Exception("Test must expect a message code")
 
     print(f"Test {expected_status} {reason}")
     check_results = list(check_results)
     for status, msg in check_results:
+        if status not in [PASS, DEBUG] and not isinstance(msg, Message):
+            raise Exception(f"Bare Python strings no longer supported in result values.\n"
+                f"Please use the Message class to wrap strings and to give them"
+                f" a keyword useful for identifying them (on bug reports as well as"
+                f" in the implementation of reliable code-tests).\n"
+                f"(Bare string: '{msg}')")
+
         if (status == expected_status and
             expected_msgcode == None or
-            (isinstance(msg, Message) and msg.code == expected_msgcode)): # At some point we will make
-                                                                          # message keywords mandatory!
+            (isinstance(msg, Message) and msg.code == expected_msgcode)):
             if isinstance(msg, Message):
                 return msg.message
             else:
