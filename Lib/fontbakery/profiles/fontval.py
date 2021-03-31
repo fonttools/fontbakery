@@ -2,6 +2,7 @@ import os
 from fontbakery.callable import check
 from fontbakery.status import ERROR, FAIL, INFO, PASS, WARN
 from fontbakery.section import Section
+from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 from .shared_conditions import is_variable_font
@@ -109,11 +110,15 @@ def com_google_fonts_check_fontvalidator(font):
                     disable_it = True
             if not disable_it:
                 filtered_msgs += line + "\n"
-        yield INFO, ("Microsoft Font Validator returned an error code."
-                     " Output follows :\n\n{}\n").format(filtered_msgs)
+        yield INFO, \
+              Message("fontval-returned-error",
+                      ("Microsoft Font Validator returned an error code."
+                      " Output follows :\n\n{}\n").format(filtered_msgs))
     except (OSError, IOError) as error:
-        yield ERROR, ("Mono runtime and/or "
-                      "Microsoft Font Validator are not available!")
+        yield ERROR, \
+          Message("fontval-not-available",
+                  "Mono runtime and/or Microsoft Font Validator"
+                  " are not available!")
         raise error
 
     def report_message(msg, details):
@@ -210,12 +215,12 @@ def com_google_fonts_check_fontvalidator(font):
             for substring in downgrade_to_warn:
                 if substring in msg:
                     status = WARN
-            yield status, report_message(msg, data["details"])
+            yield status, Message("fontval-error", report_message(msg, data["details"]))
 
         elif data["errortype"] == "W":
-            yield WARN, report_message(msg, data["details"])
+            yield WARN, Message("fontval-warn", report_message(msg, data["details"]))
 
         else:
-            yield INFO, report_message(msg, data["details"])
+            yield INFO, Message("fontval-info", report_message(msg, data["details"]))
 
 profile.auto_register(globals())

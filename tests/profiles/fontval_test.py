@@ -27,6 +27,6 @@ def test_check_fontvalidator():
     os.environ["PATH"] = ""
     with pytest.raises(OSError) as _:
         assert_results_contain(check(font),
-                               ERROR, None) # FIXME: This needs a message keyword!
+                               ERROR, "fontval-not-available")
     os.environ["PATH"] = old_path
 
