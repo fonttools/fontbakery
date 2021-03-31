@@ -123,7 +123,7 @@ def test_check_font_version():
 
     # There should be at least one WARN...
     assert_results_contain(check(test_font),
-                           WARN, None) # FIXME: This needs a message keyword!
+                           WARN, "near-mismatch")
 
     # But final result is a PASS:
     assert_PASS(check(test_font))

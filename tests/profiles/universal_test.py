@@ -138,7 +138,7 @@ def test_check_unique_glyphnames():
     ttFont.save(_file)
     ttFont = TTFont(_file)
     message = assert_results_contain(check(ttFont),
-                                     FAIL, None) # FIXME: This needs a message keyword
+                                     FAIL, "duplicated-glyph-names")
     assert "space" in message
 
     # Upgrade to post format 3.0 and roundtrip data to update TTF object.
@@ -172,7 +172,7 @@ def DISABLED_test_check_glyphnames_max_length():
     test_font.insertGlyph(test_glyph)
     ttFont = ufo2ft.compileTTF(test_font, useProductionNames=False)
     assert_results_contain(check(ttFont),
-                           FAIL, None) # FIXME: This needs a message keyword
+                           FAIL, "glyphname-too-long")
 
 
     ttFont = ufo2ft.compileTTF(test_font, useProductionNames=True)
@@ -198,7 +198,7 @@ def DISABLED_test_check_glyphnames_max_length():
     test_font.insertGlyph(test_glyph)
     ttFont = ufo2ft.compileOTF(test_font, useProductionNames=False)
     assert_results_contain(check(ttFont),
-                           FAIL, None) # FIXME: This needs a message keyword
+                           FAIL, "glyphname-too-long")
 
     ttFont = ufo2ft.compileOTF(test_font, useProductionNames=True)
     assert_PASS(check(ttFont))
@@ -257,7 +257,7 @@ def test_check_name_trailing_spaces():
         bad_string = good_string + " "
         ttFont['name'].names[i].string = bad_string.encode(entry.getEncoding())
         assert_results_contain(check(ttFont),
-                               FAIL, None, # FIXME: This needs a message keyword
+                               FAIL, "trailing-space",
                                f'with a bad name table entry ({i}: "{bad_string}")...')
 
         #restore good entry before moving to the next one:
@@ -281,7 +281,7 @@ def test_check_family_single_directory():
                 f'with same dir: {same_dir}')
 
     assert_results_contain(check(multiple_dirs),
-                           FAIL, None, # FIXME: This needs a message keyword
+                           FAIL, "single-directory",
                            f'with multiple dirs: {multiple_dirs}')
 
 
@@ -295,7 +295,7 @@ def test_check_ftxvalidator_is_available():
     assert "is available" in message
 
     message = assert_results_contain(check(font, {'ftxvalidator_cmd': None}),
-                                     WARN, None) # FIXME: This needs a message keyword
+                                     WARN, "ftxvalidator-available")
     assert "Could not find" in message
 
 
@@ -322,7 +322,7 @@ def test_check_ots():
 
     bogus_font = TEST_FILE("README.txt")
     message = assert_results_contain(check(bogus_font),
-                                     FAIL, None) # FIXME: This needs a message keyword
+                                     FAIL, "ots-sanitize-error")
     assert "invalid sfntVersion" in message
     assert "Failed to sanitize file!" in message
 
@@ -534,7 +534,7 @@ def test_check_required_tables():
     #       message to the users regarding that...
     ttFont.reader.tables["fvar"] = "foo"
     assert_results_contain(check(ttFont),
-                           FAIL, None, # FIXME: This needs a message keyword
+                           FAIL, "required-tables",
                            'with fvar but no STAT...')
 
     del ttFont.reader.tables["fvar"]
@@ -550,7 +550,7 @@ def test_check_required_tables():
         if required in ttFont.reader.tables:
             del ttFont.reader.tables[required]
         assert_results_contain(check(ttFont),
-                               FAIL, None, # FIXME: This needs a message keyword
+                               FAIL, "required-tables",
                                f'with missing mandatory table {required} ...')
     # Then, in preparation for the next step, we make sure
     # there's no optional table (by removing them all):
@@ -564,7 +564,7 @@ def test_check_required_tables():
         # and ensure that the second to last logged message is an
         # INFO status informing the user about it:
         assert_results_contain(check(ttFont),
-                               INFO, None, # FIXME: This needs a message keyword
+                               INFO, "required-tables",
                                f'with optional table {required} ...')
         # remove the one we've just inserted before trying the next one:
         del ttFont.reader.tables[optional]
@@ -598,7 +598,7 @@ def test_check_unwanted_tables():
         ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
         ttFont.reader.tables[unwanted] = "foo"
         assert_results_contain(check(ttFont),
-                               FAIL, None, # FIXME: This needs a message keyword
+                               FAIL, "unwanted-tables",
                                f'with unwanted table {unwanted} ...')
 
 
@@ -729,7 +729,7 @@ def test_check_superfamily_vertical_metrics(montserrat_ttFonts, cabin_ttFonts, c
 
     assert_results_contain(check([cabin_ttFonts,
                                   montserrat_ttFonts]),
-                           WARN, None, # FIXME: This needs a message keyword
+                           WARN, "superfamily-vertical-metrics",
                            'with families that diverge on vertical metric values...')
     # FIXME:
     # check = CheckTester(universal_profile,
@@ -752,7 +752,7 @@ def test_check_STAT_strings():
 
     bad = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Italic.ttf"))
     assert_results_contain(check(bad),
-                           FAIL, None) # FIXME: This needs a message keyword
+                           FAIL, "bad-italic")
 
 
 def test_check_rupee():

@@ -89,11 +89,11 @@ def test_check_xavgcharwidth():
 
     test_font['OS/2'].xAvgCharWidth = 556
     assert_results_contain(check(test_font),
-                           INFO, None) # FIXME: This needs a message keyword!
+                           INFO, "xAvgCharWidth-close")
 
     test_font['OS/2'].xAvgCharWidth = 500
     assert_results_contain(check(test_font),
-                           WARN, None) # FIXME: This needs a message keyword
+                           WARN, "xAvgCharWidth-wrong") # FIXME: This needs a message keyword
 
     del test_font['OS/2']
     del test_font['glyf']
@@ -125,11 +125,11 @@ def test_check_xavgcharwidth():
 
     test_font['OS/2'].xAvgCharWidth = 450
     assert_results_contain(check(test_font),
-                           INFO, None) # FIXME: This needs a message keyword
+                           INFO, "xAvgCharWidth-close")
 
     test_font['OS/2'].xAvgCharWidth = 500
     assert_results_contain(check(test_font),
-                           WARN, None) # FIXME: This needs a message keyword
+                           WARN, "xAvgCharWidth-wrong")
 
     test_font = TTFont(temp_file)
     test_font.reader.file.name = "foo.ttf"
@@ -158,7 +158,7 @@ def test_check_fsselection_matches_macstyle():
     # now turn on bold in OS/2.fsSelection, but not in head.macStyle
     test_font['OS/2'].fsSelection |= FsSelection.BOLD
     message = assert_results_contain(check(test_font),
-                                     FAIL, None) # FIXME: This needs a message keyword!
+                                     FAIL, "fsselection-macstyle-bold")
     assert 'bold' in message
 
     # now turn off bold in OS/2.fsSelection so we can focus on italic
@@ -167,7 +167,7 @@ def test_check_fsselection_matches_macstyle():
     # now turn on italic in OS/2.fsSelection, but not in head.macStyle
     test_font['OS/2'].fsSelection |= FsSelection.ITALIC
     message = assert_results_contain(check(test_font),
-                                     FAIL, None) # FIXME: This needs a message keyword!
+                                     FAIL, "fsselection-macstyle-italic")
     assert 'italic' in message
 
 
@@ -200,7 +200,7 @@ def test_check_family_bold_italic_unique_for_nameid1():
 
     # we should get a failure due to two fonts with both bold & italic set
     message = assert_results_contain(check(ttFonts),
-                                     FAIL, None) # FIXME: This needs a message keyword!
+                                     FAIL, "unique-fsselection")
     assert message == ("Family 'Source Sans Pro' has 2 fonts (should be no"
                        " more than 1) with the same OS/2.fsSelection"
                        " bold & italic settings: Bold=True, Italic=True")
@@ -220,6 +220,6 @@ def test_check_code_pages():
     ttFont['OS/2'].ulCodePageRange1 = 0 # remove all code pages to make the check FAIL
     ttFont['OS/2'].ulCodePageRange2 = 0
     assert_results_contain(check(ttFont),
-                           FAIL, None, # FIXME: This needs a message keyword!
+                           FAIL, "no-code-pages",
                            'with a font with no code page declared.')
 
