@@ -81,7 +81,10 @@ def create_report_item(
     if buf1:
         message = message + "\nGot: " + fix_svg(vharfbuzz.buf_to_svg(buf1))
     if buf2:
-        message = message + " Expected: " + fix_svg(vharfbuzz.buf_to_svg(buf2))
+        try:
+            message = message + " Expected: " + fix_svg(vharfbuzz.buf_to_svg(buf2))
+        except KeyError:
+            pass
     return message + "\n\n</div>"
 
 
