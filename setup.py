@@ -80,6 +80,7 @@ setup(
         'vharfbuzz',
         'collidoscope',
         'stringbrewer'
+        'rich>=3.7.4'
     ],
     extras_require={
         'docs': [
