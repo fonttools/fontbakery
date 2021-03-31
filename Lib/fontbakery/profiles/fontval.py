@@ -116,9 +116,9 @@ def com_google_fonts_check_fontvalidator(font):
                       " Output follows :\n\n{}\n").format(filtered_msgs))
     except (OSError, IOError) as error:
         yield ERROR, \
-          Message("fontval-not-available",
-                  "Mono runtime and/or Microsoft Font Validator"
-                  " are not available!")
+              Message("fontval-not-available",
+                      "Mono runtime and/or Microsoft Font Validator"
+                      " are not available!")
         raise error
 
     def report_message(msg, details):
