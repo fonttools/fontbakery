@@ -628,7 +628,7 @@ UNICODERANGE_DATA = [
     [(54, "Enclosed CJK Letters And Months",          0x03200, 0x032FF)],
     [(55, "CJK Compatibility",                        0x03300, 0x033FF)],
     [(56, "Hangul Syllables",                         0x0AC00, 0x0D7AF)],
-    [(57, "Non-Plane 0 *",                            0x0D800, 0x0DFFF)],
+    [(57, "Non-Plane 0 *",                            0x10000, 0x10FFFF)],
     [(58, "Phoenician",                               0x10900, 0x1091F)],
 
     [(59, "CJK Unified Ideographs",                  0x04E00, 0x09FFF),
