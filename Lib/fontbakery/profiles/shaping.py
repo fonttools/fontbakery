@@ -41,38 +41,48 @@ STYLESHEET = """
 <style type="text/css">
     @font-face {font-family: "TestFont"; src: url(%s);}
     .tf { font-family: "TestFont"; }
-    html { font-family: sans-serif; }
-    h2 { background: #77f; color: #fafafa; padding: 12px; }
-    pre { font-size: 1.2rem; }
-    li { font-size: 1.2rem; border-top: 1px solid #ddd; padding: 12px; margin-top: 12px; }
-    svg { height: 100px; margin:10px; transform: matrix(1, 0, 0, -1, 0, 0); }
+    .shaping pre { font-size: 1.2rem; }
+    .shaping li { font-size: 1.2rem; border-top: 1px solid #ddd; padding: 12px; margin-top: 12px; }
+    .shaping-svg { height: 100px; margin:10px; transform: matrix(1, 0, 0, -1, 0, 0); }
 </style>
 """
+
 
 def get_stylesheet(vharfbuzz):
     filename = Path(vharfbuzz.filename)
     return STYLESHEET % relpath(filename, shaping_basedir)
 
 
-def create_report_item(vharfbuzz, message, text=None, buf1=None, buf2=None, type="item", extra_data=None):
+def fix_svg(svg):
+    return svg.replace("<svg", '<svg class="shaping-svg"')
+
+
+def create_report_item(
+    vharfbuzz, message, text=None, buf1=None, buf2=None, type="item", extra_data=None
+):
+    message = f'<div class="shaping">\n\n{message}\n'
     if text:
         message = message + ': <span class="tf">%s</span>' % text
 
     if type == "item":
-        message = "* %s\n" % message
+        message = "<li> %s</li>\n" % message
     if type == "header":
-        message = get_stylesheet(vharfbuzz) + "\n### %s\n" % message
+        message = get_stylesheet(vharfbuzz) + "\n<h4> %s</h4>\n" % message
     if extra_data:
         message = message + ("\n\n<pre>%s</pre>\n\n" % extra_data)
     if buf1:
-        message = message + ("\n\n<pre>Got     : %s</pre>\n\n" % vharfbuzz.serialize_buf(buf1))
+        message = message + (
+            "\n\n<pre>Got     : %s</pre>\n\n" % vharfbuzz.serialize_buf(buf1)
+        )
     if buf2:
-        message = message + ("\n\n<pre>Expected: %s</pre>\n\n" % vharfbuzz.serialize_buf(buf2))
+        message = message + (
+            "\n\n<pre>Expected: %s</pre>\n\n" % vharfbuzz.serialize_buf(buf2)
+        )
     if buf1:
-        message = message + "\nGot:\n\n" + vharfbuzz.buf_to_svg(buf1) + "\n\n"
+        message = message + "\nGot: " + fix_svg(vharfbuzz.buf_to_svg(buf1))
     if buf2:
-        message = message + "\nExpected:\n\n" + vharfbuzz.buf_to_svg(buf2) + "\n\n"
-    return message
+        message = message + " Expected: " + fix_svg(vharfbuzz.buf_to_svg(buf2))
+    return message + "\n\n</div>"
 
 
 def get_from_test_with_default(test, configuration, el, default=None):
@@ -98,12 +108,12 @@ def run_a_set_of_tests(
     ran_a_test = False
     extra_data = None
     if "com.google.fonts/check/shaping" not in config:
-      yield SKIP, "Shaping test directory not defined in configuration file"
-      return
+        yield SKIP, "Shaping test directory not defined in configuration file"
+        return
     shaping_basedir = config["com.google.fonts/check/shaping"].get("test_directory")
     if not shaping_basedir:
-      yield SKIP, "Shaping test directory not defined in configuration file"
-      return
+        yield SKIP, "Shaping test directory not defined in configuration file"
+        return
     for shaping_file in Path(shaping_basedir).glob("*.json"):
         shaping_file_found = True
         try:
@@ -192,21 +202,25 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_tests):
     header = f"{shaping_file}: Expected and actual shaping not matching"
     report_items.append(create_report_item(vharfbuzz, header, type="header"))
     for test, expected, output_buf, output_serialized in failed_tests:
-        extra_data = {k:test[k] for k in ["script", "language", "direction", "features"]
+        extra_data = {
+            k: test[k]
+            for k in ["script", "language", "direction", "features"]
             if k in test
         }
         # Make HTML report here.
         buf2 = None
         if "=" in expected:
             buf2 = vharfbuzz.buf_from_string(expected)
-        report_items.append(create_report_item(
-            vharfbuzz,
-            "Shaping did not match",
-            text=test["input"],
-            buf1=output_buf,
-            buf2=buf2,
-            extra_data=extra_data
-        ))
+        report_items.append(
+            create_report_item(
+                vharfbuzz,
+                "Shaping did not match",
+                text=test["input"],
+                buf1=output_buf,
+                buf2=buf2,
+                extra_data=extra_data,
+            )
+        )
     yield FAIL, (header + "\n" + "\n".join(report_items))
 
 
@@ -257,7 +271,9 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_tests):
     report_items.append(create_report_item(vharfbuzz, msg, type="header"))
     for shaping_text, buf, forbidden in failed_tests:
         msg = f"{shaping_text} produced '{forbidden}'"
-        report_items.append(create_report_item(vharfbuzz, msg, text=shaping_text, buf1=buf))
+        report_items.append(
+            create_report_item(vharfbuzz, msg, text=shaping_text, buf1=buf)
+        )
 
     yield FAIL, (msg + ".\n" + "\n".join(report_items))
 
@@ -319,7 +335,7 @@ def run_collides_glyph_test(
         bumps = [f"{c.glyph1}/{c.glyph2}" for c in collisions]
         bumps = [b for b in bumps if b not in allowed_collisions]
         if bumps:
-            draw = col.draw_overlaps(glyphs, collisions)
+            draw = fix_svg(col.draw_overlaps(glyphs, collisions))
 
             failed_tests.append((shaping_text, bumps, draw, output_buf))
 
@@ -334,11 +350,13 @@ def collides_glyph_test_results(vharfbuzz, shaping_file, failed_tests):
         if tuple(bumps) in seen_bumps:
             continue
         seen_bumps[tuple(bumps)] = True
-        report_items.append(create_report_item(
-            vharfbuzz,
-            f"{',' .join(bumps)} collision found in e.g. <span class='tf'>{shaping_text}</span> <div>{draw}</div>",
-            buf1=buf,
-        ))
+        report_items.append(
+            create_report_item(
+                vharfbuzz,
+                f"{',' .join(bumps)} collision found in e.g. <span class='tf'>{shaping_text}</span> <div>{draw}</div>",
+                buf1=buf,
+            )
+        )
     yield FAIL, (msg + ".\n" + "\n".join(report_items))
 
 
