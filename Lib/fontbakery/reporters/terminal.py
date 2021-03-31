@@ -444,6 +444,7 @@ class TerminalReporter(TerminalProgress):
 
             from fontbakery.utils import text_flow
             status_name = getattr(status, 'name', status)
+
             try:
                 message = (f"{msg.message}\n"
                            f"[code: {msg.code}]")
@@ -453,13 +454,18 @@ class TerminalReporter(TerminalProgress):
             if hasattr(msg, 'traceback'):
                 message += '\n' + '\n  ↳ '.join(msg.traceback.split('\n'))
 
-            logmsg = text_flow(message,
-                               width=76,
-                               indent=4,
-                               first_line_indent=-len(status_name)-1,
-                               left_margin=len(status_name)+1,
-                               space_padding=True)
-            print('    {} {}'.format(formatStatus(self.theme, status), logmsg))
+            formated_msg = '{} {}'.format(formatStatus(self.theme, status), message)
+            formated_msg += '\nabc *def*\n**ghi** jkl'
+            formated_msg = parse_md(formated_msg)
+            if hasattr(message, 'traceback'):
+                formated_msg += '\n' + '\n  ↳ '.join(message.traceback.split('\n'))
+            print(text_flow(formated_msg,
+                            width=76,
+                            indent=4,
+                            first_line_indent=-1-len(status_name),
+                            left_margin=6,
+                            text_color=self.theme["rationale-text"],
+                            space_padding=True))
 
         if status == ENDCHECK:
             if not self.succinct:
@@ -569,3 +575,41 @@ class TerminalReporter(TerminalProgress):
             self._render_event_sync(print, event)
 
         return output.getvalue()
+
+def parse_md(md):
+    from rich.console import Console
+    from rich.markdown import Markdown
+    import re
+    orig_md = md
+    md = re.sub(r'^[\t ]*\|', r'|', md, flags=re.MULTILINE)
+    md = re.sub(r'\|[\t ]*$', r'|', md, flags=re.MULTILINE)
+    md = re.sub(r'([^|]\n)((?:^\|[^\n]*\|\n)+)^([^|])', parse_md_table, md, flags=re.MULTILINE|re.S)
+    console = Console()
+    with console.capture() as capture:
+        console.print(Markdown(md), soft_wrap=True)
+    formated_text = capture.get()
+    return 'Debug MD:\n' + orig_md +'\n==================\n'+ \
+          re.sub(r'<br/>', r'\n', formated_text)
+
+def parse_md_table(match):
+    import re
+    table = split_md_table(match.group(2))
+    ascii = ''
+    for row in table:
+        ascii += '{ ' + ' }{ '.join(row) + ' }<br/>'
+    return match.group(1) + ascii + match.group(3)
+
+def split_md_table(md_table):
+    import re
+    md_table = re.sub(r'^\||\|$', '', md_table, flags=re.MULTILINE)
+    return list(
+        filter(
+            lambda row:
+                not re.match(r'^\s*:?-+:?\s*$', row[0]),
+            map(
+                lambda row:
+                    list(map(lambda cell: cell.strip(), row.split('|'))),
+                md_table.strip().split('\n')
+            )
+        )
+    )
