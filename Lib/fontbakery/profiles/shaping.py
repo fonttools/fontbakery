@@ -103,7 +103,7 @@ def get_shaping_parameters(test, configuration):
 
 # This is a very generic "do something with shaping" test runner.
 # It'll be given concrete meaning later.
-def run_a_set_of_tests(
+def run_a_set_of_shaping_tests(
     config, ttFont, run_a_test, test_filter, generate_report, preparation=None
 ):
     filename = Path(ttFont.reader.file.name)
@@ -141,7 +141,7 @@ def run_a_set_of_tests(
         if preparation:
             extra_data = preparation(ttFont, configuration)
 
-        failed_tests = []
+        failed_shaping_tests = []
         for test in shaping_tests:
             if not test_filter(test, configuration):
                 continue
@@ -161,15 +161,15 @@ def run_a_set_of_tests(
                 continue
 
             run_a_test(
-                filename, vharfbuzz, test, configuration, failed_tests, extra_data
+                filename, vharfbuzz, test, configuration, failed_shaping_tests, extra_data
             )
             ran_a_test = True
 
         if ran_a_test:
-            if not failed_tests:
+            if not failed_shaping_tests:
                 yield PASS, f"{shaping_file}: No regression detected"
             else:
-                yield from generate_report(vharfbuzz, shaping_file, failed_tests)
+                yield from generate_report(vharfbuzz, shaping_file, failed_shaping_tests)
 
     if not shaping_file_found:
         yield SKIP, "No test files found."
@@ -180,21 +180,14 @@ def run_a_set_of_tests(
 @check(
     id="com.google.fonts/check/shaping/regression",
     rationale="""
-        Fonts with complex layout rules can benefit from regression tests
-        to ensure that the rules are behaving as designed. This checks runs
-        a test suite and compares expected shaping against actual shaping,
-        reporting any differences.
-
-        Test suites should be written by the font engineer and referenced in
-        the fontbakery configuration file. For more information about write
-        test files and how to configure fontbakery to read the test suites,
-        see https://simoncozens.github.io/tdd-for-otl/
+        Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and compares expected shaping against actual shaping, reporting any differences.
+        Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
     misc_metadata={"request": "https://github.com/googlefonts/fontbakery/pull/3223"},
 )
 def com_google_fonts_check_shaping_regression(config, ttFont):
     """Check that texts shape as per expectation"""
-    yield from run_a_set_of_tests(
+    yield from run_a_set_of_shaping_tests(
         config,
         ttFont,
         run_shaping_regression,
@@ -204,7 +197,7 @@ def com_google_fonts_check_shaping_regression(config, ttFont):
 
 
 def run_shaping_regression(
-    filename, vharfbuzz, test, configuration, failed_tests, extra_data
+    filename, vharfbuzz, test, configuration, failed_shaping_tests, extra_data
 ):
     shaping_text = test["input"]
     parameters = get_shaping_parameters(test, configuration)
@@ -217,14 +210,14 @@ def run_shaping_regression(
     )
 
     if output_serialized != expectation:
-        failed_tests.append((test, expectation, output_buf, output_serialized))
+        failed_shaping_tests.append((test, expectation, output_buf, output_serialized))
 
 
-def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_tests):
+def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
     header = f"{shaping_file}: Expected and actual shaping not matching"
     report_items.append(create_report_item(vharfbuzz, header, type="header"))
-    for test, expected, output_buf, output_serialized in failed_tests:
+    for test, expected, output_buf, output_serialized in failed_shaping_tests:
         extra_data = {
             k: test[k]
             for k in ["script", "language", "direction", "features"]
@@ -250,23 +243,14 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_tests):
 @check(
     id="com.google.fonts/check/shaping/forbidden",
     rationale="""
-        Fonts with complex layout rules can benefit from regression tests
-        to ensure that the rules are behaving as designed. This checks runs
-        a test suite and reports if any glyphs are generated in the shaping which
-        should not be produced. (For example, .notdef glyphs, visible viramas,
-        etc.)
-
-        Test suites should be written by the font engineer and referenced in
-        the fontbakery configuration file. For more information about write
-        test files and how to configure fontbakery to read the test suites,
-        see https://simoncozens.github.io/tdd-for-otl/
+        Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and reports if any glyphs are generated in the shaping which should not be produced. (For example, .notdef glyphs, visible viramas, etc.)
+        Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
     misc_metadata={"request": "https://github.com/googlefonts/fontbakery/pull/3223"},
 )
-@check(id="com.google.fonts/check/shaping/forbidden")
 def com_google_fonts_check_shaping_forbidden(config, ttFont):
     """Check that no forbidden glyphs are found while shaping"""
-    yield from run_a_set_of_tests(
+    yield from run_a_set_of_shaping_tests(
         config,
         ttFont,
         run_forbidden_glyph_test,
@@ -276,7 +260,7 @@ def com_google_fonts_check_shaping_forbidden(config, ttFont):
 
 
 def run_forbidden_glyph_test(
-    filename, vharfbuzz, test, configuration, failed_tests, extra_data
+    filename, vharfbuzz, test, configuration, failed_shaping_tests, extra_data
 ):
     is_stringbrewer = (
         get_from_test_with_default(test, configuration, "input_type", "string")
@@ -298,14 +282,14 @@ def run_forbidden_glyph_test(
         glyph_names = output_serialized.split("|")
         for forbidden in forbidden_glyphs:
             if forbidden in glyph_names:
-                failed_tests.append((shaping_text, output_buf, forbidden))
+                failed_shaping_tests.append((shaping_text, output_buf, forbidden))
 
 
-def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_tests):
+def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
     msg = f"{shaping_file}: Forbidden glyphs found while shaping"
     report_items.append(create_report_item(vharfbuzz, msg, type="header"))
-    for shaping_text, buf, forbidden in failed_tests:
+    for shaping_text, buf, forbidden in failed_shaping_tests:
         msg = f"{shaping_text} produced '{forbidden}'"
         report_items.append(
             create_report_item(vharfbuzz, msg, text=shaping_text, buf1=buf)
@@ -317,21 +301,14 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_tests):
 @check(
     id="com.google.fonts/check/shaping/collides",
     rationale="""
-        Fonts with complex layout rules can benefit from regression tests
-        to ensure that the rules are behaving as designed. This checks runs
-        a test suite and reports instances where the glyphs collide in
-        unexpected ways.
-
-        Test suites should be written by the font engineer and referenced in
-        the fontbakery configuration file. For more information about write
-        test files and how to configure fontbakery to read the test suites,
-        see https://simoncozens.github.io/tdd-for-otl/
+        Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and reports instances where the glyphs collide in unexpected ways.
+        Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
     misc_metadata={"request": "https://github.com/googlefonts/fontbakery/pull/3223"},
 )
 def com_google_fonts_check_shaping_collides(config, ttFont):
     """Check that no collisions are found while shaping"""
-    yield from run_a_set_of_tests(
+    yield from run_a_set_of_shaping_tests(
         config,
         ttFont,
         run_collides_glyph_test,
@@ -356,7 +333,7 @@ def setup_glyph_collides(ttFont, configuration):
 
 
 def run_collides_glyph_test(
-    filename, vharfbuzz, test, configuration, failed_tests, extra_data
+    filename, vharfbuzz, test, configuration, failed_shaping_tests, extra_data
 ):
     col = extra_data["collidoscope"]
     is_stringbrewer = (
@@ -384,15 +361,15 @@ def run_collides_glyph_test(
         if bumps:
             draw = fix_svg(col.draw_overlaps(glyphs, collisions))
 
-            failed_tests.append((shaping_text, bumps, draw, output_buf))
+            failed_shaping_tests.append((shaping_text, bumps, draw, output_buf))
 
 
-def collides_glyph_test_results(vharfbuzz, shaping_file, failed_tests):
+def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
     seen_bumps = {}
-    msg = f"{shaping_file}: %i collisions found while shaping" % len(failed_tests)
+    msg = f"{shaping_file}: %i collisions found while shaping" % len(failed_shaping_tests)
     report_items.append(create_report_item(vharfbuzz, msg, type="header"))
-    for shaping_text, bumps, draw, buf in failed_tests:
+    for shaping_text, bumps, draw, buf in failed_shaping_tests:
         # Make HTML report here.
         if tuple(bumps) in seen_bumps:
             continue
