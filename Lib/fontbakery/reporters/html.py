@@ -122,7 +122,7 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
         if not self.omit_loglevel(log["status"]):
             emoticon = EMOTICON[log["status"]]
             status = log["status"]
-            message = cmarkgfm.github_flavored_markdown_to_html(
+            message = cmarkgfm.markdown_to_html(
                 log["message"], options=cmarkgfmOptions.CMARK_OPT_UNSAFE
             )
             return (
