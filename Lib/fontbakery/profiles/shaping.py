@@ -20,6 +20,7 @@ from pathlib import Path
 from fontbakery.callable import check, condition
 from fontbakery.checkrunner import FAIL, PASS, SKIP
 from fontbakery.section import Section
+from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from vharfbuzz import Vharfbuzz
 from os.path import basename, relpath
@@ -122,14 +123,19 @@ def run_a_set_of_tests(
         try:
             shaping_input_doc = json.loads(shaping_file.read_text())
         except Exception as e:
-            yield FAIL, (f"{shaping_file}: Invalid JSON: {e}.")
+            yield FAIL, Message(
+                "shaping-invalid-json", f"{shaping_file}: Invalid JSON: {e}."
+            )
             return
 
         configuration = shaping_input_doc.get("configuration", {})
         try:
             shaping_tests = shaping_input_doc["tests"]
         except KeyError:
-            yield FAIL, (f"{shaping_file}: Must have an 'tests' key dict.")
+            yield FAIL, Message(
+                "shaping-missing-tests",
+                f"{shaping_file}: JSON file must have a 'tests' key.",
+            )
             return
 
         if preparation:
@@ -140,7 +146,10 @@ def run_a_set_of_tests(
             if not test_filter(test, configuration):
                 continue
             if not "input" in test:
-                yield FAIL, (f"{shaping_file}: 'input' key dict is missing from test.")
+                yield FAIL, Message(
+                    "shaping-missing-input",
+                    f"{shaping_file}: test is missing an input key.",
+                )
                 return
 
             exclude_fonts = test.get("exclude", [])
@@ -168,10 +177,21 @@ def run_a_set_of_tests(
         yield SKIP, "No applicable tests ran."
 
 
-# Do shaping results match expectations?
+@check(
+    id="com.google.fonts/check/shaping/regression",
+    rationale="""
+        Fonts with complex layout rules can benefit from regression tests
+        to ensure that the rules are behaving as designed. This checks runs
+        a test suite and compares expected shaping against actual shaping,
+        reporting any differences.
 
-
-@check(id="com.google.fonts/check/shaping/regression")
+        Test suites should be written by the font engineer and referenced in
+        the fontbakery configuration file. For more information about write
+        test files and how to configure fontbakery to read the test suites,
+        see https://simoncozens.github.io/tdd-for-otl/
+    """,
+    misc_metadata={"request": "https://github.com/googlefonts/fontbakery/pull/3223"},
+)
 def com_google_fonts_check_shaping_regression(config, ttFont):
     """Check that texts shape as per expectation"""
     yield from run_a_set_of_tests(
@@ -224,12 +244,25 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_tests):
                 extra_data=extra_data,
             )
         )
-    yield FAIL, (header + "\n" + "\n".join(report_items))
+    yield FAIL, Message("shaping-regression", header + "\n" + "\n".join(report_items))
 
 
-# Are there any naughty glyphs?
+@check(
+    id="com.google.fonts/check/shaping/forbidden",
+    rationale="""
+        Fonts with complex layout rules can benefit from regression tests
+        to ensure that the rules are behaving as designed. This checks runs
+        a test suite and reports if any glyphs are generated in the shaping which
+        should not be produced. (For example, .notdef glyphs, visible viramas,
+        etc.)
 
-
+        Test suites should be written by the font engineer and referenced in
+        the fontbakery configuration file. For more information about write
+        test files and how to configure fontbakery to read the test suites,
+        see https://simoncozens.github.io/tdd-for-otl/
+    """,
+    misc_metadata={"request": "https://github.com/googlefonts/fontbakery/pull/3223"},
+)
 @check(id="com.google.fonts/check/shaping/forbidden")
 def com_google_fonts_check_shaping_forbidden(config, ttFont):
     """Check that no forbidden glyphs are found while shaping"""
@@ -278,13 +311,24 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_tests):
             create_report_item(vharfbuzz, msg, text=shaping_text, buf1=buf)
         )
 
-    yield FAIL, (msg + ".\n" + "\n".join(report_items))
+    yield FAIL, Message("shaping-forbidden", msg + ".\n" + "\n".join(report_items))
 
 
-# Are there any collisions?
+@check(
+    id="com.google.fonts/check/shaping/collides",
+    rationale="""
+        Fonts with complex layout rules can benefit from regression tests
+        to ensure that the rules are behaving as designed. This checks runs
+        a test suite and reports instances where the glyphs collide in
+        unexpected ways.
 
-
-@check(id="com.google.fonts/check/shaping/collides")
+        Test suites should be written by the font engineer and referenced in
+        the fontbakery configuration file. For more information about write
+        test files and how to configure fontbakery to read the test suites,
+        see https://simoncozens.github.io/tdd-for-otl/
+    """,
+    misc_metadata={"request": "https://github.com/googlefonts/fontbakery/pull/3223"},
+)
 def com_google_fonts_check_shaping_collides(config, ttFont):
     """Check that no collisions are found while shaping"""
     yield from run_a_set_of_tests(
@@ -360,7 +404,7 @@ def collides_glyph_test_results(vharfbuzz, shaping_file, failed_tests):
                 buf1=buf,
             )
         )
-    yield FAIL, (msg + ".\n" + "\n".join(report_items))
+    yield FAIL, Message("shaping-collides", msg + ".\n" + "\n".join(report_items))
 
 
 profile.auto_register(globals())

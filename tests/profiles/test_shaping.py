@@ -42,7 +42,7 @@ def test_check_shaping_regression():
 
         ttFont = TTFont(TEST_FILE("slabo/Slabo13px.ttf"))
         assert_results_contain(
-            check(wrap_args(config, ttFont)), FAIL, None, "Slabo: A!=664,V!=691"
+            check(wrap_args(config, ttFont)), FAIL, "shaping-regression", "Slabo: A!=664,V!=691"
         )
 
 
@@ -65,7 +65,7 @@ def test_check_shaping_forbidden():
 
         ttFont = TTFont(TEST_FILE("slabo/Slabo13px.ttf"))
         assert_results_contain(
-            check(wrap_args(config, ttFont)), FAIL, None, "Slabo shapes .notdef for CJK"
+            check(wrap_args(config, ttFont)), FAIL, "shaping-forbidden", "Slabo shapes .notdef for CJK"
         )
 
 
@@ -88,5 +88,5 @@ def test_check_shaping_collides():
 
         ttFont = TTFont(TEST_FILE("nunito/Nunito-Black.ttf"))
         assert_results_contain(
-            check(wrap_args(config, ttFont)), FAIL, None, "ïï collides in Nunito"
+            check(wrap_args(config, ttFont)), FAIL, "shaping-collides", "ïï collides in Nunito"
         )
