@@ -164,6 +164,12 @@ def registered_vendor_ids():
     CACHED = resource_filename('fontbakery',
                                'data/fontbakery-microsoft-vendorlist.cache')
     content = open(CACHED, encoding='utf-8').read()
+    # Strip all <A> HTML tags from the raw HTML. The current page contains a
+    # closing </A> for which no opening <A> is present, which causes
+    # beautifulsoup to silently stop processing that section from the error
+    # onwards. We're not using the href's anyway.
+    content = re.sub("<a[^>]*>", "", content)
+    content = re.sub("</a>", "", content)
     soup = BeautifulSoup(content, 'html.parser')
 
     IDs = [chr(c + ord('a')) for c in range(ord('z') - ord('a') + 1)]
