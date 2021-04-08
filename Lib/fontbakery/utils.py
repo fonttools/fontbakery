@@ -33,18 +33,17 @@ def is_negated(name):
     return False, stripped
 
 
+def colorless_len(str):
+    import re
+    return len(re.sub('\x1b\\[[0-9;]+m', '', str))
+
 def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
               space_padding=False, text_color="{}".format):
     result = []
     line_num = 0
     for line in content.split("\n"):
-        line_num += 1
-        if line_num == 1:
-            _indent = indent + first_line_indent
-            _width = width + first_line_indent
-        else:
-            _indent = indent
-            _width = width
+        _indent = indent
+        _width = width
 
         if line.strip() == "":
             if space_padding:
@@ -53,6 +52,7 @@ def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
 
         words = line.split(" ")
         while words:
+            line_num += 1
             if line_num == 1:
                 if left_margin > -first_line_indent:
                     inside_indent = " " * (left_margin + first_line_indent)
@@ -62,7 +62,7 @@ def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
                 inside_indent = " " * left_margin
             this_line = inside_indent + words.pop(0)
 
-            if len(this_line) > _width:
+            if colorless_len(this_line) > _width:
                 # let's see what we can do to make it fit
                 if "/" in this_line:
                     # here we feed-back chunks of a URL
@@ -70,7 +70,8 @@ def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
                     chunks = this_line.split('/')
                     new_line = chunks.pop(0)
                     while chunks:
-                        if len(new_line) + 1 + len(chunks[0]) >= _width: break
+                        next_len = colorless_len(new_line) + 1 + colorless_len(chunks[0])
+                        if next_len >= _width: break
                         new_line += "/" + chunks.pop(0)
                     this_line = new_line
                     words.insert(0, "/" + "/".join(chunks))
@@ -80,12 +81,12 @@ def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
                     words.insert(0, this_line[_width:])
                     this_line = this_line[:_width]
 
-            while words and (len(this_line) + 1 + len(words[0]) <= width):
+            while words and (colorless_len(this_line) + 1 + colorless_len(words[0]) <= width):
                 this_line += " " + words.pop(0)
 
             if space_padding:
                 # pad the line with spaces to fit the block width:
-                this_line += " " * (_width - len(this_line))
+                this_line += " " * (_width - colorless_len(this_line))
             result.append(" " * _indent + text_color(this_line))
     return "\n".join(result)
 
