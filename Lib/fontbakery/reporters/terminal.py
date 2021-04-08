@@ -455,7 +455,6 @@ class TerminalReporter(TerminalProgress):
                 message += '\n' + '\n  ↳ '.join(msg.traceback.split('\n'))
 
             formated_msg = '{} {}'.format(formatStatus(self.theme, status), message)
-            formated_msg += '\nabc *def*\n**ghi** jkl'
             formated_msg = parse_md(formated_msg)
             if hasattr(message, 'traceback'):
                 formated_msg += '\n' + '\n  ↳ '.join(message.traceback.split('\n'))
@@ -464,7 +463,6 @@ class TerminalReporter(TerminalProgress):
                             indent=4,
                             first_line_indent=-1-len(status_name),
                             left_margin=6,
-                            text_color=self.theme["rationale-text"],
                             space_padding=True))
 
         if status == ENDCHECK:
@@ -583,33 +581,63 @@ def parse_md(md):
     orig_md = md
     md = re.sub(r'^[\t ]*\|', r'|', md, flags=re.MULTILINE)
     md = re.sub(r'\|[\t ]*$', r'|', md, flags=re.MULTILINE)
-    md = re.sub(r'([^|]\n)((?:^\|[^\n]*\|\n)+)^([^|])', parse_md_table, md, flags=re.MULTILINE|re.S)
+    md = re.sub(r'(^|[^|]\n)((?:^\|[^\n]*\|\n)+)^([^|]|$)', parse_md_table, md, flags=re.MULTILINE|re.S)
     console = Console()
     with console.capture() as capture:
         console.print(Markdown(md), soft_wrap=True)
     formated_text = capture.get()
-    return 'Debug MD:\n' + orig_md +'\n==================\n'+ \
-          re.sub(r'<br/>', r'\n', formated_text)
+    return re.sub(r'<br/>', r'\n', formated_text)
 
 def parse_md_table(match):
+    from rich.console import Console
+    from rich.table import Table
+    from rich.style import Style
+    from rich import box
     import re
-    table = split_md_table(match.group(2))
-    ascii = ''
-    for row in table:
-        ascii += '{ ' + ' }{ '.join(row) + ' }<br/>'
-    return match.group(1) + ascii + match.group(3)
+    [table_header, table_body] = split_md_table(match.group(2))
+    b = box.Box('    \n    \n══╪═\n    \n┈┈┼┈\n┈┈┼┈\n    \n    ')
+    table = Table(box=b, show_header=False, show_edge=False, border_style=Style(color='#222222'))
+    sty_header = Style(bgcolor='blue', color='#000000', bold=True)
+    sty_odd = Style(bgcolor="#111111", color='white')
+    sty_even = Style(bgcolor="#222222", color='white')
+    for row in table_header:
+        table.add_row(*row, style=sty_header)
+    num = 0
+    for row in table_body:
+        num += 1
+        style = sty_even if (num % 2 == 0) else sty_odd
+        table.add_row(*row, style=style)
+
+    console = Console(width=70)
+    with console.capture() as capture:
+        console.print(table)
+    formated_text = '<br/>'.join( capture.get().split('\n')[0:-1] )
+
+    before = '\n\n' if match.group(1) == '\n\n' else match.group(1) + '<br/>'
+    after = '\n\n' if match.group(3) == '\n\n' else '<br/>' + match.group(3)
+    return before + formated_text + after
 
 def split_md_table(md_table):
     import re
     md_table = re.sub(r'^\||\|$', '', md_table, flags=re.MULTILINE)
-    return list(
-        filter(
-            lambda row:
-                not re.match(r'^\s*:?-+:?\s*$', row[0]),
-            map(
-                lambda row:
-                    list(map(lambda cell: cell.strip(), row.split('|'))),
-                md_table.strip().split('\n')
-            )
-        )
-    )
+    table_header = []
+    table_body = []
+    table = list(map(
+        lambda row:
+            list(map(lambda cell: cell.strip(), row.split('|'))),
+        md_table.strip().split('\n')
+    ))
+    has_header = False
+    for row in table:
+        if re.match(r'^\s*:?-+:?\s*$', row[0]):
+            has_header = True
+    in_header = has_header
+    for row in table:
+        if in_header:
+            if re.match(r'^\s*:?-+:?\s*$', row[0]):
+                in_header = False
+            else:
+                table_header.append(row)
+        else:
+            table_body.append(row)
+    return [table_header, table_body]
