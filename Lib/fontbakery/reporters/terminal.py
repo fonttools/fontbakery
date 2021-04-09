@@ -583,7 +583,8 @@ def parse_md(md):
     md = re.sub(r'^[\t ]*\|', r'|', md, flags=re.MULTILINE)
     md = re.sub(r'\|[\t ]*$', r'|', md, flags=re.MULTILINE)
     tables = []
-    md = re.sub(table_re, lambda match: parse_md_table(match, tables), md, flags=re.MULTILINE|re.S)
+    md = re.sub(table_re, lambda match: parse_md_table(match, tables), md,
+                flags=re.MULTILINE | re.S)
     console = Console(width=70)
     with console.capture() as capture:
         console.print(Markdown(md))
