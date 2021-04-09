@@ -578,10 +578,10 @@ def parse_md(md):
     from rich.console import Console
     from rich.markdown import Markdown
     import re
-    orig_md = md
+    table_re = r'(^|[^|]\n)((?:^\|[^\n]*\|(?:\n|$))+)([^|]|$)'
     md = re.sub(r'^[\t ]*\|', r'|', md, flags=re.MULTILINE)
     md = re.sub(r'\|[\t ]*$', r'|', md, flags=re.MULTILINE)
-    md = re.sub(r'(^|[^|]\n)((?:^\|[^\n]*\|\n)+)^([^|]|$)', parse_md_table, md, flags=re.MULTILINE|re.S)
+    md = re.sub(table_re, parse_md_table, md, flags=re.MULTILINE|re.S)
     console = Console()
     with console.capture() as capture:
         console.print(Markdown(md), soft_wrap=True)
@@ -592,15 +592,19 @@ def parse_md_table(match):
     from rich.console import Console
     from rich.table import Table
     from rich.style import Style
+    from rich.align import Align
     from rich import box
     import re
-    [table_header, table_body] = split_md_table(match.group(2))
+    [table_header, table_body, columns] = split_md_table(match.group(2))
     b = box.Box('    \n    \n══╪═\n    \n┈┈┼┈\n┈┈┼┈\n    \n    ')
     table = Table(box=b, show_header=False, show_edge=False, border_style=Style(color='#222222'))
+    for col_align in columns:
+        table.add_column(None, justify=col_align)
     sty_header = Style(bgcolor='blue', color='#000000', bold=True)
     sty_odd = Style(bgcolor="#111111", color='white')
     sty_even = Style(bgcolor="#222222", color='white')
     for row in table_header:
+        row = map(lambda cell: Align.center(cell), row)
         table.add_row(*row, style=sty_header)
     num = 0
     for row in table_body:
@@ -617,11 +621,20 @@ def parse_md_table(match):
     after = '\n\n' if match.group(3) == '\n\n' else '<br/>' + match.group(3)
     return before + formated_text + after
 
+def map_md_table_align_col(cell):
+    import re
+    if re.match(r'^\s*:-+:\s*$', cell):
+        return 'center'
+    if re.match(r'^\s*-+:\s*$', cell):
+        return 'right'
+    return 'left'
+
 def split_md_table(md_table):
     import re
     md_table = re.sub(r'^\||\|$', '', md_table, flags=re.MULTILINE)
     table_header = []
     table_body = []
+    columns = []
     table = list(map(
         lambda row:
             list(map(lambda cell: cell.strip(), row.split('|'))),
@@ -636,8 +649,9 @@ def split_md_table(md_table):
         if in_header:
             if re.match(r'^\s*:?-+:?\s*$', row[0]):
                 in_header = False
+                columns = map(map_md_table_align_col, row)
             else:
                 table_header.append(row)
         else:
             table_body.append(row)
-    return [table_header, table_body]
+    return [table_header, table_body, columns]
