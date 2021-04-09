@@ -579,16 +579,20 @@ def parse_md(md):
     from rich.markdown import Markdown
     import re
     table_re = r'(^|[^|]\n)((?:^\|[^\n]*\|(?:\n|$))+)([^|]|$)'
+    md = re.sub(r'\n([\r\t ]*\n)+', r'\n\n', md, flags=re.MULTILINE)
     md = re.sub(r'^[\t ]*\|', r'|', md, flags=re.MULTILINE)
     md = re.sub(r'\|[\t ]*$', r'|', md, flags=re.MULTILINE)
-    md = re.sub(table_re, parse_md_table, md, flags=re.MULTILINE|re.S)
-    console = Console()
+    tables = []
+    md = re.sub(table_re, lambda match: parse_md_table(match, tables), md, flags=re.MULTILINE|re.S)
+    console = Console(width=70)
     with console.capture() as capture:
-        console.print(Markdown(md), soft_wrap=True)
+        console.print(Markdown(md))
     formated_text = capture.get()
-    return re.sub(r'<br/>', r'\n', formated_text)
+    for i in range(len(tables)):
+        formated_text = re.sub('<#MD-TABLE-'+str(i)+'#>', tables[i], formated_text)
+    return re.sub(r'<br/?>', r'\n', formated_text).strip()
 
-def parse_md_table(match):
+def parse_md_table(match, tables_memo):
     from rich.console import Console
     from rich.table import Table
     from rich.style import Style
@@ -615,11 +619,13 @@ def parse_md_table(match):
     console = Console(width=70)
     with console.capture() as capture:
         console.print(table)
-    formated_text = '<br/>'.join( capture.get().split('\n')[0:-1] )
-
-    before = '\n\n' if match.group(1) == '\n\n' else match.group(1) + '<br/>'
-    after = '\n\n' if match.group(3) == '\n\n' else '<br/>' + match.group(3)
-    return before + formated_text + after
+    formated_text = '\n'.join(capture.get().split('\n')[0:-1])
+    before = '' if match.group(1) == '\n\n' else '\n'
+    after = '  ' if match.group(3) == '\n' else '  \n'
+    tables_memo.append(before + formated_text)
+    return match.group(1) + \
+           '<#MD-TABLE-'+str(len(tables_memo)-1)+'#>' + after + \
+           match.group(3)
 
 def map_md_table_align_col(cell):
     import re
