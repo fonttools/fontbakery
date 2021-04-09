@@ -96,7 +96,7 @@ def get_from_test_with_default(test, configuration, el, default=None):
 
 def get_shaping_parameters(test, configuration):
     params = {}
-    for el in ["script", "language", "direction", "features"]:
+    for el in ["script", "language", "direction", "features", "shaper"]:
         params[el] = get_from_test_with_default(test, configuration, el)
     return params
 
