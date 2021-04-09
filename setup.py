@@ -79,8 +79,8 @@ setup(
         'cmarkgfm',
         'vharfbuzz',
         'collidoscope',
-        'stringbrewer'
-        'rich>=3.7.4'
+        'stringbrewer',
+        'rich'
     ],
     extras_require={
         'docs': [

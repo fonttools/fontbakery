@@ -18,4 +18,5 @@ cmarkgfm==0.5.3
 vharfbuzz==0.1.1
 collidoscope==0.0.6
 stringbrewer==0.0.1
+rich==10.0.1
 -e .
