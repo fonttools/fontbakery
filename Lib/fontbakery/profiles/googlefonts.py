@@ -1748,11 +1748,8 @@ def com_google_fonts_check_metadata_unique_weight_style_pairs(family_metadata):
     """METADATA.pb: check if fonts field
        only contains unique style:weight pairs.
     """
-    pairs = {}
-    for f in family_metadata.fonts:
-        styleweight = f"{f.style}:{f.weight}"
-        pairs[styleweight] = 1
-    if len(set(pairs.keys())) != len(family_metadata.fonts):
+    style_weights = set(f"{f.style}:{f.weight}" for f in family_metadata.fonts)
+    if len(style_weights) != len(family_metadata.fonts):
         yield FAIL,\
               Message("duplicated",
                       "Found duplicated style:weight pair"
