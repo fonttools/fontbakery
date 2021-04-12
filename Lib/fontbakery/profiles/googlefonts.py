@@ -2032,33 +2032,25 @@ def com_google_fonts_check_metadata_nameid_font_name(ttFont, gfnames, font_metad
     """METADATA.pb font.name value should be same as
        the family name declared on the name table.
     """
-    pass # XXX
-#    from fontbakery.utils import get_name_entry_strings
-#    from fontbakery.constants import RIBBI_STYLE_NAMES
-#
-#    if style in RIBBI_STYLE_NAMES:
-#        font_familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
-#        nameid = NameID.FONT_FAMILY_NAME
-#    else:
-#        font_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
-#        nameid = NameID.TYPOGRAPHIC_FAMILY_NAME
-#
-#    if len(font_familynames) == 0:
-#        yield FAIL,\
-#              Message("lacks-entry",
-#                      f"This font lacks a {NameID(nameid).name} entry"
-#                      f" (nameID = {nameid}) in the name table.")
-#    else:
-#        for font_familyname in font_familynames:
-#            if font_familyname != font_metadata.name:
-#                yield FAIL,\
-#                      Message("mismatch",
-#                              f'Unmatched familyname in font:'
-#                              f' TTF has familyname = "{font_familyname}" while'
-#                              f' METADATA.pb has font.name = "{font_metadata.name}".')
-#            else:
-#                yield PASS, (f'OK: Family name "{font_metadata.name}" is identical'
-#                             f' in METADATA.pb and on the TTF file.')
+    from fontbakery.utils import get_name_entry_strings
+    from fontbakery.constants import RIBBI_STYLE_NAMES
+
+    family_name = gfnames.typoFamily or gfnames.family
+    if not family_name:
+        yield FAIL,\
+              Message("lacks-entry",
+                      f"This font lacks a {NameID(nameid).name} entry"
+                      f" (nameID = {nameid}) in the name table.")
+    else:
+        if family_name != font_metadata.name:
+            yield FAIL,\
+                  Message("mismatch",
+                          f'Unmatched familyname in font:'
+                          f' TTF has familyname = "{font_familyname}" while'
+                          f' METADATA.pb has font.name = "{font_metadata.name}".')
+        else:
+            yield PASS, (f'OK: Family name "{font_metadata.name}" is identical'
+                         f' in METADATA.pb and on the TTF file.')
 
 
 @check(
