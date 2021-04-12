@@ -1864,13 +1864,8 @@ def com_google_fonts_check_metadata_includes_production_subsets(family_metadata,
 )
 def com_google_fonts_check_metadata_copyright(family_metadata):
     """METADATA.pb: Copyright notice is the same in all fonts?"""
-    copyright = None
-    fail = False
-    for f in family_metadata.fonts:
-        if copyright and f.copyright != copyright:
-            fail = True
-        copyright = f.copyright
-    if fail:
+    copyright_names = [f.copyright for f in family_metadata.fonts]
+    if not all(copyright_names):
         yield FAIL,\
               Message("inconsistency",
                       "METADATA.pb: Copyright field value"
@@ -1886,8 +1881,8 @@ def com_google_fonts_check_metadata_copyright(family_metadata):
 )
 def com_google_fonts_check_metadata_familyname(family_metadata):
     """Check that METADATA.pb family values are all the same."""
-    familynames = [f.name for f in family_metadata.fonts]
-    if not all(familynames):
+    family_names = [f.name for f in family_metadata.fonts]
+    if not all(family_names):
         yield FAIL,\
               Message("inconsistency",
                       'METADATA.pb: Family name is not the same'
