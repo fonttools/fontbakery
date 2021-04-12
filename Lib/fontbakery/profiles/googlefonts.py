@@ -2175,28 +2175,17 @@ def com_google_fonts_check_metadata_valid_full_name_values(gfnames,
                                                            font_metadata):
     """METADATA.pb font.full_name field contains font name in right format?"""
     from fontbakery.constants import RIBBI_STYLE_NAMES
-    style = gfnames.subFamily
-    if style in RIBBI_STYLE_NAMES:
-        familynames = font_familynames
-        if familynames == []:
-            yield SKIP, "No FONT_FAMILYNAME"
+    if gfnames.fullName != font_metadata.full_name:
+        yield FAIL,\
+              Message("mismatch",
+                      f'METADATA.pb font.full_name field'
+                      f' ("{font_metadata.full_name}")'
+                      f' does not match correct font name format'
+                      f' ("{font_familyname}").')
     else:
-        familynames = typographic_familynames
-        if familynames == []:
-            yield SKIP, "No TYPOGRAPHIC_FAMILYNAME"
-
-    for font_familyname in familynames:
-        if font_familyname in font_metadata.full_name:
-            yield PASS, (f'METADATA.pb font.full_name field contains'
-                         f' font name in right format.'
-                         f' ("{font_familyname}" in "{font_metadata.full_name}")')
-        else:
-            yield FAIL,\
-                  Message("mismatch",
-                          f'METADATA.pb font.full_name field'
-                          f' ("{font_metadata.full_name}")'
-                          f' does not match correct font name format'
-                          f' ("{font_familyname}").')
+        yield PASS, (f'METADATA.pb font.full_name field contains'
+                     f' font name in right format.'
+                     f' ("{font_familyname}" in "{font_metadata.full_name}")')
 
 
 @check(
