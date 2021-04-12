@@ -1790,17 +1790,11 @@ def com_google_fonts_check_metadata_license(family_metadata):
 )
 def com_google_fonts_check_metadata_menu_and_latin(family_metadata):
     """METADATA.pb should contain at least "menu" and "latin" subsets."""
-    missing = []
-    for s in ["menu", "latin"]:
-        if s not in list(family_metadata.subsets):
-            missing.append(s)
+    subsets = set(family_metadata.subsets)
+    required = set(['menu', 'latin'])
 
-    if missing != []:
-        if len(missing) == 2:
-            missing = "both"
-        else:
-            missing = f'"{missing[0]}"'
-
+    if not subsets.issuperset(required):
+        missing = required - subsets
         yield FAIL,\
               Message("missing",
                       f'Subsets "menu" and "latin" are mandatory,'
