@@ -1727,11 +1727,9 @@ def com_google_fonts_check_metadata_unique_full_name_values(family_metadata):
     """METADATA.pb: check if fonts field only has
        unique "full_name" values.
     """
-    fonts = {}
-    for f in family_metadata.fonts:
-        fonts[f.full_name] = f
+    full_names = set(f.full_name for f in family_metadata.fonts)
 
-    if len(set(fonts.keys())) != len(family_metadata.fonts):
+    if len(full_names) != len(family_metadata.fonts):
         yield FAIL,\
               Message("duplicated",
                       'Found duplicated "full_name" values'
