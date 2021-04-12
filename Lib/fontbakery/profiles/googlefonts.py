@@ -756,52 +756,53 @@ def com_google_fonts_check_family_equal_numbers_of_glyphs(ttFonts):
 )
 def com_google_fonts_check_family_equal_glyph_names(ttFonts):
     """Fonts have equal glyph names?"""
-    from .googlefonts_conditions import style
-
-    fonts = list(ttFonts)
-
-    all_glyphnames = set()
-    for ttFont in fonts:
-        all_glyphnames |= set(ttFont["glyf"].glyphs.keys())
-
-    missing = {}
-    available = {}
-    for glyphname in all_glyphnames:
-        missing[glyphname] = []
-        available[glyphname] = []
-
-    failed = False
-    for ttFont in fonts:
-        fontname = ttFont.reader.file.name
-        these_ones = set(ttFont["glyf"].glyphs.keys())
-        for glyphname in all_glyphnames:
-            if glyphname not in these_ones:
-                failed = True
-                missing[glyphname].append(fontname)
-            else:
-                available[glyphname].append(fontname)
-
-    for gn in sorted(missing.keys()):
-        if missing[gn]:
-            available_styles = [style(k) for k in available[gn]]
-            missing_styles = [style(k) for k in missing[gn]]
-            if None not in available_styles + missing_styles:
-                # if possible, use stylenames in the log messages.
-                avail = ', '.join(sorted(vailable_styles))
-                miss = ', '.join(sorted(missing_styles))
-            else:
-                # otherwise, print filenames:
-                avail = ', '.join(sorted(available[gn]))
-                miss = ', '.join(sorted(missing[gn]))
-
-            yield FAIL,\
-                  Message("missing-glyph",
-                          f"Glyphname '{gn}' is defined on {avail}"
-                          f" but is missing on {miss}.")
-
-    if not failed:
-        yield PASS, "All font files have identical glyph names."
-
+    pass # XXX
+#    from .googlefonts_conditions import style
+#
+#    fonts = list(ttFonts)
+#
+#    all_glyphnames = set()
+#    for ttFont in fonts:
+#        all_glyphnames |= set(ttFont["glyf"].glyphs.keys())
+#
+#    missing = {}
+#    available = {}
+#    for glyphname in all_glyphnames:
+#        missing[glyphname] = []
+#        available[glyphname] = []
+#
+#    failed = False
+#    for ttFont in fonts:
+#        fontname = ttFont.reader.file.name
+#        these_ones = set(ttFont["glyf"].glyphs.keys())
+#        for glyphname in all_glyphnames:
+#            if glyphname not in these_ones:
+#                failed = True
+#                missing[glyphname].append(fontname)
+#            else:
+#                available[glyphname].append(fontname)
+#
+#    for gn in sorted(missing.keys()):
+#        if missing[gn]:
+#            available_styles = [style(k) for k in available[gn]]
+#            missing_styles = [style(k) for k in missing[gn]]
+#            if None not in available_styles + missing_styles:
+#                # if possible, use stylenames in the log messages.
+#                avail = ', '.join(sorted(vailable_styles))
+#                miss = ', '.join(sorted(missing_styles))
+#            else:
+#                # otherwise, print filenames:
+#                avail = ', '.join(sorted(available[gn]))
+#                miss = ', '.join(sorted(missing[gn]))
+#
+#            yield FAIL,\
+#                  Message("missing-glyph",
+#                          f"Glyphname '{gn}' is defined on {avail}"
+#                          f" but is missing on {miss}.")
+#
+#    if not failed:
+#        yield PASS, "All font files have identical glyph names."
+#
 
 @check(
     id = 'com.google.fonts/check/fstype',
@@ -961,7 +962,7 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
 
 @check(
     id = 'com.google.fonts/check/usweightclass',
-    conditions = ['expected_style'],
+    conditions = ['gfnames'],
     rationale = """
         Google Fonts expects variable fonts, static ttfs and static otfs to have differing OS/2 usWeightClass values.
 
@@ -975,7 +976,7 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
     """,
     proposal = 'legacy:check/020'
 )
-def com_google_fonts_check_usweightclass(ttFont, expected_style):
+def com_google_fonts_check_usweightclass(ttFont, gfnames):
     """Checking OS/2 usWeightClass."""
     from fontbakery.profiles.shared_conditions import (
         is_ttf,
@@ -984,8 +985,8 @@ def com_google_fonts_check_usweightclass(ttFont, expected_style):
     )
 
     failed = False
-    expected_value = expected_style.usWeightClass
-    weight_name = expected_style.name
+    expected_value = gfnames.usWeightClass
+    weight_name = gfnames.menu_subFamily_name
     value = ttFont['OS/2'].usWeightClass
     has_expected_value = value == expected_value
     fail_message = \
@@ -2045,39 +2046,40 @@ def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
 @check(
     id = 'com.google.fonts/check/metadata/nameid/font_name',
     conditions = ['font_metadata',
-                  'style'],
+                  'gfnames'],
     proposal = 'legacy:check/095'
 )
-def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadata):
+def com_google_fonts_check_metadata_nameid_font_name(ttFont, gfnames, font_metadata):
     """METADATA.pb font.name value should be same as
        the family name declared on the name table.
     """
-    from fontbakery.utils import get_name_entry_strings
-    from fontbakery.constants import RIBBI_STYLE_NAMES
-
-    if style in RIBBI_STYLE_NAMES:
-        font_familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
-        nameid = NameID.FONT_FAMILY_NAME
-    else:
-        font_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
-        nameid = NameID.TYPOGRAPHIC_FAMILY_NAME
-
-    if len(font_familynames) == 0:
-        yield FAIL,\
-              Message("lacks-entry",
-                      f"This font lacks a {NameID(nameid).name} entry"
-                      f" (nameID = {nameid}) in the name table.")
-    else:
-        for font_familyname in font_familynames:
-            if font_familyname != font_metadata.name:
-                yield FAIL,\
-                      Message("mismatch",
-                              f'Unmatched familyname in font:'
-                              f' TTF has familyname = "{font_familyname}" while'
-                              f' METADATA.pb has font.name = "{font_metadata.name}".')
-            else:
-                yield PASS, (f'OK: Family name "{font_metadata.name}" is identical'
-                             f' in METADATA.pb and on the TTF file.')
+    pass # XXX
+#    from fontbakery.utils import get_name_entry_strings
+#    from fontbakery.constants import RIBBI_STYLE_NAMES
+#
+#    if style in RIBBI_STYLE_NAMES:
+#        font_familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+#        nameid = NameID.FONT_FAMILY_NAME
+#    else:
+#        font_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+#        nameid = NameID.TYPOGRAPHIC_FAMILY_NAME
+#
+#    if len(font_familynames) == 0:
+#        yield FAIL,\
+#              Message("lacks-entry",
+#                      f"This font lacks a {NameID(nameid).name} entry"
+#                      f" (nameID = {nameid}) in the name table.")
+#    else:
+#        for font_familyname in font_familynames:
+#            if font_familyname != font_metadata.name:
+#                yield FAIL,\
+#                      Message("mismatch",
+#                              f'Unmatched familyname in font:'
+#                              f' TTF has familyname = "{font_familyname}" while'
+#                              f' METADATA.pb has font.name = "{font_metadata.name}".')
+#            else:
+#                yield PASS, (f'OK: Family name "{font_metadata.name}" is identical'
+#                             f' in METADATA.pb and on the TTF file.')
 
 
 @check(
@@ -2132,47 +2134,48 @@ def com_google_fonts_check_metadata_match_filename_postscript(font_metadata):
 
 @check(
     id = 'com.google.fonts/check/metadata/valid_name_values',
-    conditions = ['style',
+    conditions = ['gfnames',
                   'font_metadata'],
     proposal = 'legacy:check/098'
 )
-def com_google_fonts_check_metadata_valid_name_values(style,
+def com_google_fonts_check_metadata_valid_name_values(gfnames,
                                                       font_metadata,
                                                       font_familynames,
                                                       typographic_familynames):
     """METADATA.pb font.name field contains font name in right format?"""
     from fontbakery.constants import RIBBI_STYLE_NAMES
-    if style in RIBBI_STYLE_NAMES:
-        familynames = font_familynames
-    else:
-        familynames = typographic_familynames
+    pass # XXX
 
-    failed = False
-    for font_familyname in familynames:
-        if font_familyname not in font_metadata.name:
-            failed = True
-            yield FAIL,\
-                  Message("mismatch",
-                          f'METADATA.pb font.name field ("{font_metadata.name}")'
-                          f' does not match'
-                          f' correct font name format ("{font_familyname}").')
-    if not failed:
-        yield PASS, ("METADATA.pb font.name field contains"
-                     " font name in right format.")
+#    if style in RIBBI_STYLE_NAMES:
+#        familynames = font_familynames
+#    else:
+#        familynames = typographic_familynames
+#
+#    failed = False
+#    for font_familyname in familynames:
+#        if font_familyname not in font_metadata.name:
+#            failed = True
+#            yield FAIL,\
+#                  Message("mismatch",
+#                          f'METADATA.pb font.name field ("{font_metadata.name}")'
+#                          f' does not match'
+#                          f' correct font name format ("{font_familyname}").')
+#    if not failed:
+#        yield PASS, ("METADATA.pb font.name field contains"
+#                     " font name in right format.")
 
 
 @check(
     id = 'com.google.fonts/check/metadata/valid_full_name_values',
-    conditions = ['style',
+    conditions = ['gfnames',
                   'font_metadata'],
     proposal = 'legacy:check/099'
 )
-def com_google_fonts_check_metadata_valid_full_name_values(style,
-                                                           font_metadata,
-                                                           font_familynames,
-                                                           typographic_familynames):
+def com_google_fonts_check_metadata_valid_full_name_values(gfnames,
+                                                           font_metadata):
     """METADATA.pb font.full_name field contains font name in right format?"""
     from fontbakery.constants import RIBBI_STYLE_NAMES
+    style = gfnames.subFamily
     if style in RIBBI_STYLE_NAMES:
         familynames = font_familynames
         if familynames == []:
@@ -2198,7 +2201,7 @@ def com_google_fonts_check_metadata_valid_full_name_values(style,
 
 @check(
     id = 'com.google.fonts/check/metadata/valid_filename_values',
-    conditions = ['style', # This means the font filename
+    conditions = ['gfnames', # This means the font filename
                            # (source of truth here) is good
                   'family_metadata'],
     proposal = 'legacy:check/100'
@@ -2856,10 +2859,10 @@ def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFon
 
 @check(
     id = 'com.google.fonts/check/fsselection',
-    conditions = ['style'],
+    conditions = ['gfnames'],
     proposal = 'legacy:check/129'
 )
-def com_google_fonts_check_fsselection(ttFont, style):
+def com_google_fonts_check_fsselection(ttFont, gfnames):
     """Checking OS/2 fsSelection value."""
     from fontbakery.utils import check_bit_entry
     from fontbakery.constants import (STATIC_STYLE_NAMES,
@@ -2867,24 +2870,24 @@ def com_google_fonts_check_fsselection(ttFont, style):
                                       FsSelection)
 
     # Checking fsSelection REGULAR bit:
-    expected = "Regular" in style or \
-               (style in STATIC_STYLE_NAMES and
-                style not in RIBBI_STYLE_NAMES and
-                "Italic" not in style)
+    expected = "Regular" in gfnames.subFamily or \
+               (gfnames.subFamily in STATIC_STYLE_NAMES and
+                gfnames.subFamily not in RIBBI_STYLE_NAMES and
+                "Italic" not in gfnames.subFamily)
     yield check_bit_entry(ttFont, "OS/2", "fsSelection",
                           expected,
                           bitmask=FsSelection.REGULAR,
                           bitname="REGULAR")
 
     # Checking fsSelection ITALIC bit:
-    expected = "Italic" in style
+    expected = "Italic" in gfnames.subFamily
     yield check_bit_entry(ttFont, "OS/2", "fsSelection",
                           expected,
                           bitmask=FsSelection.ITALIC,
                           bitname="ITALIC")
 
     # Checking fsSelection BOLD bit:
-    expected = style in ["Bold", "BoldItalic"]
+    expected = gfnames.subFamily in ["Bold", "BoldItalic"]
     yield check_bit_entry(ttFont, "OS/2", "fsSelection",
                           expected,
                           bitmask=FsSelection.BOLD,
@@ -2893,7 +2896,7 @@ def com_google_fonts_check_fsselection(ttFont, style):
 
 @check(
     id = 'com.google.fonts/check/italic_angle',
-    conditions = ['style'],
+    conditions = ['gfnames'],
     rationale = """
         The 'post' table italicAngle property should be a reasonable amount, likely not more than -20°, never more than -30°, and never greater than 0°. Note that in the OpenType specification, the value is negative for a lean rightwards.
 
@@ -2901,7 +2904,7 @@ def com_google_fonts_check_fsselection(ttFont, style):
     """,
     proposal = 'legacy:check/130'
 )
-def com_google_fonts_check_italic_angle(ttFont, style):
+def com_google_fonts_check_italic_angle(ttFont, gfnames):
     """Checking post.italicAngle value."""
     failed = False
     value = ttFont["post"].italicAngle
@@ -2932,7 +2935,7 @@ def com_google_fonts_check_italic_angle(ttFont, style):
 
 
     # Checking if italicAngle matches font style:
-    if "Italic" in style:
+    if "Italic" in gfnames.subFamily:
         if ttFont['post'].italicAngle == 0:
             failed = True
             yield FAIL,\
@@ -2949,31 +2952,31 @@ def com_google_fonts_check_italic_angle(ttFont, style):
 
     if not failed:
         yield PASS, (f'Value of post.italicAngle is {value}'
-                     f' with style="{style}".')
+                     f' with style="{gfnames.subFamily}".')
 
 
 @check(
     id = 'com.google.fonts/check/mac_style',
-    conditions = ['style'],
+    conditions = ['gfnames'],
     rationale = """
         The values of the flags on the macStyle entry on the 'head' OpenType table that describe whether a font is bold and/or italic must be coherent with the actual style of the font as inferred by its filename.
     """,
     proposal = 'legacy:check/131'
 )
-def com_google_fonts_check_mac_style(ttFont, style):
+def com_google_fonts_check_mac_style(ttFont, gfnames):
     """Checking head.macStyle value."""
     from fontbakery.utils import check_bit_entry
     from fontbakery.constants import MacStyle
 
     # Checking macStyle ITALIC bit:
-    expected = "Italic" in style
+    expected = "Italic" in gfnames.subFamily
     yield check_bit_entry(ttFont, "head", "macStyle",
                           expected,
                           bitmask=MacStyle.ITALIC,
                           bitname="ITALIC")
 
     # Checking macStyle BOLD bit:
-    expected = style in ["Bold", "BoldItalic"]
+    expected = gfnames.subFamily in ["Bold", "BoldItalic"]
     yield check_bit_entry(ttFont, "head", "macStyle",
                           expected,
                           bitmask=MacStyle.BOLD,
@@ -3161,10 +3164,10 @@ def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
 
 @check(
     id = 'com.google.fonts/check/name/mandatory_entries',
-    conditions = ['style'],
+    conditions = ['gfnames'],
     proposal = 'legacy:check/156'
 )
-def com_google_fonts_check_name_mandatory_entries(ttFont, style):
+def com_google_fonts_check_name_mandatory_entries(ttFont, gfnames):
     """Font has all mandatory 'name' table entries?"""
     from fontbakery.utils import get_name_entry_strings
     from fontbakery.constants import RIBBI_STYLE_NAMES
@@ -3173,7 +3176,7 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
                         NameID.FONT_SUBFAMILY_NAME,
                         NameID.FULL_FONT_NAME,
                         NameID.POSTSCRIPT_NAME]
-    if style not in RIBBI_STYLE_NAMES:
+    if not gfnames.isRibbi:
         required_nameIDs += [NameID.TYPOGRAPHIC_FAMILY_NAME,
                              NameID.TYPOGRAPHIC_SUBFAMILY_NAME]
     passed = True
@@ -3353,7 +3356,7 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, gfnames):
                 failed = True
                 yield FAIL,\
                       Message("ribbi",
-                              (f'Font style is "{style}" and, for that reason,'
+                              (f'Font style is "{gfnames.subFamily}" and, for that reason,'
                                f' it is not expected to have a '
                                f'{name_entry_id(name)} entry!'))
     else:
