@@ -2139,30 +2139,19 @@ def com_google_fonts_check_metadata_match_filename_postscript(font_metadata):
     proposal = 'legacy:check/098'
 )
 def com_google_fonts_check_metadata_valid_name_values(gfnames,
-                                                      font_metadata,
-                                                      font_familynames,
-                                                      typographic_familynames):
+                                                      font_metadata):
     """METADATA.pb font.name field contains font name in right format?"""
     from fontbakery.constants import RIBBI_STYLE_NAMES
-    pass # XXX
-
-#    if style in RIBBI_STYLE_NAMES:
-#        familynames = font_familynames
-#    else:
-#        familynames = typographic_familynames
-#
-#    failed = False
-#    for font_familyname in familynames:
-#        if font_familyname not in font_metadata.name:
-#            failed = True
-#            yield FAIL,\
-#                  Message("mismatch",
-#                          f'METADATA.pb font.name field ("{font_metadata.name}")'
-#                          f' does not match'
-#                          f' correct font name format ("{font_familyname}").')
-#    if not failed:
-#        yield PASS, ("METADATA.pb font.name field contains"
-#                     " font name in right format.")
+    familyname = gfnames.typoFamily or gfnames.family
+    if familyname != font_metadata.name:
+        yield FAIL,\
+              Message("mismatch",
+                      f'METADATA.pb font.name field ("{font_metadata.name}")'
+                      f' does not match'
+                      f' correct font name format ("{font_familyname}").')
+    else:
+        yield PASS, ("METADATA.pb font.name field contains"
+                     " font name in right format.")
 
 
 @check(
