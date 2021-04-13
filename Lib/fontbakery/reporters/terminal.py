@@ -609,7 +609,7 @@ def parse_md_table(match, tables_memo):
     sty_odd = Style(bgcolor="#111111", color='white')
     sty_even = Style(bgcolor="#222222", color='white')
     for row in table_header:
-        row = map(lambda cell: Align.center(cell), row)
+        row = map(Align.center, row)
         table.add_row(*row, style=sty_header)
     num = 0
     for row in table_body:
