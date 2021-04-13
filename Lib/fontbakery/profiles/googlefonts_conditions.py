@@ -17,12 +17,8 @@ def gfnames(ttFont):
 
 
 @condition
-def RIBBI_ttFonts(fonts):
-    from fontTools.ttLib import TTFont
-    from fontbakery.constants import RIBBI_STYLE_NAMES
-    return [TTFont(f)
-            for f in fonts
-            if style(f) in RIBBI_STYLE_NAMES]
+def RIBBI_ttFonts(ttFonts):
+    return [f for f in ttFonts if gfnames(f).isRibbi]
 
 
 @condition

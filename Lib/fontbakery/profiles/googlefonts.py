@@ -52,7 +52,7 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/filenames',
     'com.google.fonts/check/metadata/italic_style',
     'com.google.fonts/check/metadata/normal_style',
-    'com.google.fonts/check/metadata/fontname_not_camel_cased',
+#    'com.google.fonts/check/metadata/fontname_not_camel_cased',
     'com.google.fonts/check/metadata/match_name_familyname',
     'com.google.fonts/check/metadata/canonical_weight_value',
     'com.google.fonts/check/metadata/os2_weightclass',
@@ -2462,24 +2462,23 @@ def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_me
                      " match corresponding name table entries.")
 
 
-@check(
-    id = 'com.google.fonts/check/metadata/fontname_not_camel_cased',
-    conditions = ['font_metadata',
-                  'not whitelist_camelcased_familyname'],
-    proposal = 'legacy:check/109'
-)
-def com_google_fonts_check_metadata_fontname_not_camel_cased(font_metadata):
-    """METADATA.pb: Check if fontname is not camel cased."""
-    import re
-    if bool(re.match(r'([A-Z][a-z]+){2,}', font_metadata.name)):
-        yield FAIL,\
-              Message("camelcase",
-                      f'METADATA.pb: "{font_metadata.name}" is a CamelCased name.'
-                      f' To solve this, simply use spaces'
-                      f' instead in the font name.')
-    else:
-        yield PASS, "Font name is not camel-cased."
-
+# @check(
+#     id = 'com.google.fonts/check/metadata/fontname_not_camel_cased',
+#     conditions = ['font_metadata',
+#                   'not whitelist_camelcased_familyname']
+# )
+# def com_google_fonts_check_metadata_fontname_not_camel_cased(font_metadata):
+#     """METADATA.pb: Check if fontname is not camel cased."""
+#     import re
+#     if bool(re.match(r'([A-Z][a-z]+){2,}', font_metadata.name)):
+#         yield FAIL,\
+#               Message("camelcase",
+#                       f'METADATA.pb: "{font_metadata.name}" is a CamelCased name.'
+#                       f' To solve this, simply use spaces'
+#                       f' instead in the font name.')
+#     else:
+#         yield PASS, "Font name is not camel-cased."
+# 
 
 @check(
     id = 'com.google.fonts/check/metadata/match_name_familyname',
