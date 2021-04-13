@@ -3156,7 +3156,7 @@ def com_google_fonts_check_name_familyname(ttFont, gfnames):
         if name.nameID == NameID.FONT_FAMILY_NAME:
 
             if name.platformID == PlatformID.MACINTOSH:
-                expected_value = gfnames.family
+                expected_value = gfnames.macFamily
 
             elif name.platformID == PlatformID.WINDOWS:
                 expected_value = gfnames.family
