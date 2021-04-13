@@ -1,0 +1,33 @@
+{
+  "tests": [
+    {
+      "input": "fi",
+      "expectation": "f_i",
+      "comment": "A simple test with only glyph names, not positions"
+    },
+    {
+      "input": "pi",
+      "features": { "smcp": true },
+      "expectation": "p.sc|i.sc",
+      "comment": "Features may be specified using the features key"
+    },
+    {
+      "input": "pi",
+      "features": { "smcp": true },
+      "language": "tr",
+      "expectation": "p.sc|i.sc.loclTRK",
+      "comment": "Languages may be specified using the language key"
+    },
+    {
+      "input": "AVḲ",
+      "expectation": "A=0+679|V=1+676|K=2+707|dotbelowcomb.case=2@-250,0+0",
+      "comment": "Expected positions may be specified using Harfbuzz hb-shape syntax"
+    }
+    {
+      "input": "AVḲ",
+      "expectation": "A=0+679|V=1+676|K=2+707|dotbelowcomb.case=2@-250,0+0",
+      "shaper": "coretext",
+      "comment": "If your uharfbuzz is compiled with other subshapers, these can be accessed through the shaper key."
+    }
+  ]
+}
