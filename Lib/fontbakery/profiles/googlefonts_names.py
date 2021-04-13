@@ -19,6 +19,7 @@ log = logging.Logger(__name__)
 class GFNameData:
     # TODO: Add more
     AXIS_ORDER = ["GRAD", "opsz", "wdth", "wght", "ital"]
+    FONT_FORMATS = ['\x00\x01\x00\x00', "OTTO"]
 
     GF_WEIGHTS = {
         "Thin": 100,
@@ -63,7 +64,9 @@ class GFNameData:
         GF Axis Reg: https://github.com/google/fonts/tree/main/axisregistry
         """
         self.ttFont = ttFont
-        self.filename = self.ttFont.reader.file.name
+        font_format = self.ttFont.sfntVersion
+        if font_format not in self.FONT_FORMATS:
+            raise ValueError(f"Font format {font_format} not supported")
         self.nametable = self.ttFont["name"]
         self.axis_reg = AxisRegistry()
         self.unregistered_tokens = set()
@@ -309,8 +312,12 @@ class GFNameData:
 
     def _build_static_filename(self):
         if self.typoFamily:
-            return f"{self.typoFamily}-{self.typoSubFamily}.ttf".replace(" ", "")
-        return f"{self.family}-{self.subFamily}.ttf".replace(" ", "")
+            filename = f"{self.typoFamily}-{self.typoSubFamily}".replace(" ", "")
+        else:
+            filename = f"{self.family}-{self.subFamily}.ttf".replace(" ", "")
+        if self.isTTF:
+            return f"{filename}.ttf"
+        return f"{filename}.otf"
 
     @property
     def menu_family_name(self):
@@ -322,7 +329,9 @@ class GFNameData:
 
     @property
     def isTTF(self):
-        return self.filename.endswith(".ttf")
+        if self.ttFont.sfntVersion == "\x00\x01\x00\x00":
+            return True
+        return False
 
     def _build_full_name(self):
         return f"{self.menu_family_name} {self.menu_subFamily_name}"

@@ -198,16 +198,8 @@ def is_ofl(license):
 
 
 @condition
-def familyname(font):
-    filename = os.path.basename(font)
-    filename_base = os.path.splitext(filename)[0]
-    if '-' in filename_base:
-        return filename_base.split('-')[0]
-    # Handle VFs e.g Inconsolata[wdth,wght] --> Inconsolata
-    elif "[" in filename_base:
-        return filename_base.split("[")[0]
-    else:
-        return filename_base
+def familyname(gfnames):
+    return gfnames.typoFamily or gfnames.family
 
 
 @condition
@@ -359,7 +351,7 @@ def whitelist_camelcased_familyname(font):
 
 
 @condition
-def remote_styles(familyname_with_spaces):
+def remote_styles(familyname):
     """Get a dictionary of TTFont objects of all font files of
        a given family as currently hosted at Google Fonts.
     """
@@ -384,16 +376,15 @@ def remote_styles(familyname_with_spaces):
                 fonts.append([file_name, TTFont(file_obj)])
         return fonts
 
-    if not listed_on_gfonts_api(familyname_with_spaces):
+    if not listed_on_gfonts_api(familyname):
         return None
 
-    remote_fonts_zip = download_family_from_Google_Fonts(familyname_with_spaces)
+    remote_fonts_zip = download_family_from_Google_Fonts(familyname)
     rstyles = {}
 
     for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
-        remote_style = os.path.splitext(remote_filename)[0]
-        if '-' in remote_style:
-            remote_style = remote_style.split('-')[1]
+        remote_names = GFNameData(remote_font)
+        remote_style = (remote_names.typoSubFamily or remote_names.subFamily).replace(" ", "")
         rstyles[remote_style] = remote_font
     return rstyles
 
@@ -442,6 +433,7 @@ def api_gfonts_ttFont(style, remote_styles):
        corresponding to the given TTFont object of
        a local font being checked.
     """
+    style = (gfnames.typoSubFamily or gfnames.subFamily).replace(" ", "")
     if remote_styles and gfnames.subFamily in remote_styles: # XXX
         return remote_styles[style]
 
