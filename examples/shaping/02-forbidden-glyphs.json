@@ -1,0 +1,16 @@
+{
+  "configuration": {
+    "forbidden_glyphs": [".notdef", "uni25CC"]
+  },
+  "tests": [
+    {
+      "input": "fi",
+      "expectation": "f_i",
+      "comment": "Ordinary tests will be run as before..."
+    },
+    {
+      "input": "世界",
+      "comment": "...but now any test (even without an expectation) which shapes a .notdef will fail"
+    }
+  ]
+}
