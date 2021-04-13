@@ -2696,8 +2696,8 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
 def com_google_fonts_check_unitsperem_strict(ttFont):
     """ Stricter unitsPerEm criteria for Google Fonts. """
     upm_height = ttFont["head"].unitsPerEm
-    ACCEPTABLE = [16, 32, 64, 128, 256, 500,
-                  512, 1000, 1024, 2000, 2048]
+    ACCEPTABLE = frozenset([16, 32, 64, 128, 256, 500,
+                  512, 1000, 1024, 2000, 2048])
     if upm_height > 2048 and upm_height <= 4096:
         yield WARN,\
               Message("large-value",
