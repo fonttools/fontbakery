@@ -150,6 +150,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/contour_count',
     'com.google.fonts/check/vertical_metrics_regressions',
     'com.google.fonts/check/cjk_vertical_metrics',
+    'com.google.fonts/check/cjk_vertical_metrics_regressions',
     'com.google.fonts/check/cjk_not_enough_glyphs',
     'com.google.fonts/check/varfont_instance_coordinates',
     'com.google.fonts/check/varfont_instance_names',
@@ -4359,7 +4360,7 @@ def com_google_fonts_check_repo_zip_files(family_directory):
 
 @check(
     id = 'com.google.fonts/check/vertical_metrics_regressions',
-    conditions = ['remote_styles'],
+    conditions = ['regular_remote_style', 'not is_cjk_font'],
     rationale="""
         If the family already exists on Google Fonts, we need to ensure that the checked family's vertical metrics are similar. This check will test the following schema which was outlined in Fontbakery issue #1162 [1]:
 
@@ -4374,36 +4375,39 @@ def com_google_fonts_check_repo_zip_files(family_directory):
         'request': 'https://github.com/googlefonts/fontbakery/issues/1162'
     }
 )
-def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
+def com_google_fonts_check_vertical_metrics_regressions(ttFonts, regular_remote_style):
     """Check if the vertical metrics of a family are similar to the same
     family hosted on Google Fonts."""
     import math
     from .shared_conditions import (is_variable_font,
                                     get_instance_axis_value,
                                     typo_metrics_enabled)
-    failed = False
-    ttFonts = list(ttFonts)
-    if "Regular" in remote_styles:
-        gf_font = remote_styles["Regular"]
-    else:
-        gf_font = None
-        for style, font in remote_styles:
-            if is_variable_font(font):
-                if get_instance_axis_value(font, "Regular", "wght"):
-                    gf_font = font
-    if not gf_font:
-        gf_font = remote_styles[0][1]
 
-    upm_scale = ttFonts[0]['head'].unitsPerEm / gf_font['head'].unitsPerEm
+
+    gf_font = regular_remote_style
+    ttFonts = list(ttFonts)
+    ttFont = ttFonts[0]
+
+    upm_scale = ttFont['head'].unitsPerEm / gf_font['head'].unitsPerEm
 
     gf_has_typo_metrics = typo_metrics_enabled(gf_font)
-    fam_has_typo_metrics = typo_metrics_enabled(ttFonts[0])
+    fam_has_typo_metrics = typo_metrics_enabled(ttFont)
 
-    if (gf_has_typo_metrics and fam_has_typo_metrics) or \
-       (not gf_has_typo_metrics and not fam_has_typo_metrics):
+    failed = False
+    if gf_has_typo_metrics:
+        if not fam_has_typo_metrics:
+            failed = True
+            yield FAIL, "Enable typo metrics"
+            fam_has_typo_metrics = True
         expected_ascender = math.ceil(gf_font['OS/2'].sTypoAscender * upm_scale)
         expected_descender = math.ceil(gf_font['OS/2'].sTypoDescender * upm_scale)
     else:
+        if (gf_font['OS/2'].usWinAscent, gf_font['OS/2'].usWinDescent) != \
+           (ttFont['OS/2'].usWinAscent, ttFont['OS/2'].usWinDescent):
+               if not fam_has_typo_metrics:
+                   failed = True
+                   yield FAIL, "Enable typo metrics since win metrics have changed"
+                   fam_has_typo_metrics = True
         expected_ascender = math.ceil(gf_font["OS/2"].usWinAscent * upm_scale)
         expected_descender = -math.ceil(gf_font["OS/2"].usWinDescent * upm_scale)
 
@@ -4539,6 +4543,46 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
 
     if not failed and not warn:
         yield PASS, 'Vertical metrics are good'
+
+
+@check(
+    id = 'com.google.fonts/check/cjk_vertical_metrics_regressions',
+    conditions = ['is_cjk_font',
+                  'remote_styles'],
+    rationale="""
+        Check CJK family has the same vertical metrics as the same family hosted on Google Fonts.
+    """
+)
+def com_google_fonts_check_cjk_vertical_metrics_regressions(ttFonts, regular_remote_style):
+    """Check CJK font vertical metrics haven't regressed"""
+    import math
+    gf_font = regular_remote_style
+    ttFonts = list(ttFonts)
+    ttFont = ttFonts[0]
+
+    upm_scale = ttFont['head'].unitsPerEm / gf_font['head'].unitsPerEm
+
+    failed = False
+    for tbl, attrib in [
+        ("OS/2", "sTypoAscender"),
+        ("OS/2", "sTypoDescender"),
+        ("OS/2", "sTypoLineGap"),
+        ("OS/2", "usWinAscent"),
+        ("OS/2", "usWinDescent"),
+        ("hhea", "ascent"),
+        ("hhea", "descent"),
+        ("hhea", "lineGap"),
+        ]:
+        gf_val = math.ceil(getattr(gf_font[tbl], attrib) * upm_scale)
+        f_val = math.ceil(getattr(ttFont[tbl], attrib) * upm_scale)
+        if gf_val != f_val:
+            failed = True
+            yield FAIL,\
+                  Message("bad-typo-descender",
+                          f" {tbl} {attrib} is {f_val}"
+                          f" when it should be {gf_val}")
+        if not failed:
+            yield PASS, "CJK vertical metrics are good"
 
 
 @check(
