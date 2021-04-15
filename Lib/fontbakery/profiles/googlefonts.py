@@ -4382,7 +4382,8 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
     import math
     from .shared_conditions import (is_variable_font,
                                     get_instance_axis_value,
-                                    typo_metrics_enabled)
+                                    typo_metrics_enabled,
+                                    is_cjk_font)
     failed = False
     ttFonts = list(ttFonts)
     if "Regular" in remote_styles:
@@ -4400,9 +4401,29 @@ def com_google_fonts_check_vertical_metrics_regressions(ttFonts, remote_styles):
 
     gf_has_typo_metrics = typo_metrics_enabled(gf_font)
     fam_has_typo_metrics = typo_metrics_enabled(ttFonts[0])
+    is_cjk = is_cjk_font(ttFonts[0])
 
-    if (gf_has_typo_metrics and fam_has_typo_metrics) or \
-       (not gf_has_typo_metrics and not fam_has_typo_metrics):
+    if not fam_has_typo_metrics and not is_cjk:
+        if gf_has_typo_metrics:
+            failed = True
+            yield FAIL, Message(
+                "bad-fselection-bit7",
+                "Family on Google Fonts has OS/2 fsSelection bit 7 enabled. "
+                "Please enable it for this family."
+            )
+        if (ttFonts[0]["OS/2"].usWinAscent, ttFonts[0]["OS/2"].usWinDescent) != \
+           (gf_font["OS/2"].usWinAscent, gf_font["OS/2"].usWinDescent):
+            failed = True
+            yield FAIL, Message(
+                "bad-fselection-bit7",
+                "Family already exists on Google Fonts and Win metrics have "
+                "changed so it must have OS/2 fsSelection bit 7 enabled.",
+            )
+        # pretend bit 7 is enabled so we can see what metric values need
+        # changing once the user has updated the bit
+        fam_has_typo_metrics = True
+
+    if gf_has_typo_metrics and fam_has_typo_metrics:
         expected_ascender = math.ceil(gf_font['OS/2'].sTypoAscender * upm_scale)
         expected_descender = math.ceil(gf_font['OS/2'].sTypoDescender * upm_scale)
     else:

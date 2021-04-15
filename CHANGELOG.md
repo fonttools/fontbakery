@@ -29,6 +29,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/shaping/collides]:** Check that OpenType shaping does not produce glyphs which collide with one another (e.g. `ïï`).
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/vertical_metrics_regressions]:** Raise a fail if a non-CJK family's win metrics have changed and fsSelection bit 7 hasn't been enabled, or the fonts currently served on Google Fonts already have the bit enabled.
   - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Only check axes which are in the GF Axis Registry (PR #3217)
   - **[com.google.fonts/check/mandatory_avar_table]:** Update rationale to mention that this check may be ignored if axis progressions are linear.

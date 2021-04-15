@@ -3176,7 +3176,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
 
         remote2 = copy(remote)
         for key, ttfont in remote2.items():
-            ttfont["OS/2"].fsSelection = ttfont["OS/2"].fsSelection ^ 0b10000000
+            ttfont["OS/2"].fsSelection &= ~(1 << 7)
         assert_results_contain(check(ttFonts, remote2),
                                FAIL, "bad-typo-ascender",
                                'with a remote family which does not have'
@@ -3194,6 +3194,14 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
                     ' enabled but the checked fonts vertical metrics have been'
                     ' set so its typo and hhea metrics match the remote'
                     ' fonts win metrics.')
+
+        ttFonts4 = copy(ttFonts)
+        for ttFont in ttFonts4:
+            ttFont['OS/2'].fsSelection &= ~(1 << 7)
+        assert_results_contain(check(ttFonts4, remote),
+                               PASS, "bad-fselection-bit7",
+                               'it must have OS/2 fsSelection bit 7 enabled.')
+
     #
     #else:
     #  TODO: There should be a warning message here
