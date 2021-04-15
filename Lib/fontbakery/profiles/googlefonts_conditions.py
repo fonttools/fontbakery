@@ -452,6 +452,20 @@ def remote_styles(familyname_with_spaces):
 
 
 @condition
+def regular_remote_style(remote_styles):
+    if not remote_styles:
+        return None
+    if "Regular" in remote_styles:
+        return remote_styles["Regular"]
+
+    for style, font in remote_styles.items():
+        if is_variable_font(font):
+            if get_instance_axis_value(font, "Regular", "wght"):
+                return font
+    return list(remote_styles.items())[0][1]
+
+
+@condition
 def api_gfonts_ttFont(style, remote_styles):
     """Get a TTFont object of a font downloaded from Google Fonts
        corresponding to the given TTFont object of
