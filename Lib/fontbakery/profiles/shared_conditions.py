@@ -109,6 +109,8 @@ def superfamily_ttFonts(superfamily):
 
 @condition
 def ligatures(ttFont):
+    from fontTools.ttLib.tables.otTables import LigatureSubst
+
     all_ligatures = {}
     try:
         if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
@@ -117,7 +119,7 @@ def ligatures(ttFont):
                     for index in record.Feature.LookupListIndex:
                         lookup = ttFont["GSUB"].table.LookupList.Lookup[index]
                         for subtable in lookup.SubTable:
-                            if subtable.Format == 1:
+                            if isinstance(subtable, LigatureSubst):
                                 for firstGlyph in subtable.ligatures.keys():
                                     all_ligatures[firstGlyph] = []
                                     for lig in subtable.ligatures[firstGlyph]:
@@ -130,6 +132,8 @@ def ligatures(ttFont):
 
 @condition
 def ligature_glyphs(ttFont):
+    from fontTools.ttLib.tables.otTables import LigatureSubst
+
     all_ligature_glyphs = []
     try:
         if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
@@ -138,7 +142,7 @@ def ligature_glyphs(ttFont):
                     for index in record.Feature.LookupListIndex:
                         lookup = ttFont["GSUB"].table.LookupList.Lookup[index]
                         for subtable in lookup.SubTable:
-                            if subtable.Format == 1:
+                            if isinstance(subtable, LigatureSubst):
                                 for firstGlyph in subtable.ligatures.keys():
                                     for lig in subtable.ligatures[firstGlyph]:
                                         if lig.LigGlyph not in all_ligature_glyphs:
