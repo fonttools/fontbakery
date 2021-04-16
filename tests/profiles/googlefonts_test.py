@@ -17,6 +17,7 @@ from fontbakery.constants import (NameID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
 from fontbakery.profiles import googlefonts as googlefonts_profile
+import math
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -3156,8 +3157,6 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
                 family_metadata)
     from copy import deepcopy
 
-    family_meta = family_metadata(metadata_file(family_directory(cabin_fonts[0])))
-
     remote = regular_ttFont([TTFont(f) for f in cabin_fonts])
     ttFont = regular_ttFont([TTFont(f) for f in cabin_fonts])
 
@@ -3208,7 +3207,6 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     remote5 = deepcopy(remote)
     ttFont5 = deepcopy(ttFont)
 
-    import math
     remote5["OS/2"].fsSelection &= ~(1 << 7)
     remote5["head"].unitsPerEm = 2000
     # divide by 2 since we've doubled the upm
@@ -3217,10 +3215,10 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     ttFont5["hhea"].ascent = math.ceil(remote5["OS/2"].usWinAscent / 2)
     ttFont5["hhea"].descent = math.ceil(-remote5["OS/2"].usWinDescent / 2)
     assert_PASS(check(ttFont5, remote5),
-                'with a remote family which does not have typo metrics'
-                ' enabled but the checked fonts vertical metrics have been'
-                ' set so its typo and hhea metrics match the remote'
-                ' fonts win metrics.')
+                'with a remote family which does not have typo metrics '
+                'enabled but the checked fonts vertical metrics have been '
+                'set so its typo and hhea metrics match the remote '
+                'fonts win metrics.')
 
 
     remote6 = deepcopy(remote)
@@ -3307,8 +3305,6 @@ def test_check_cjk_vertical_metrics():
 
 def test_check_cjk_vertical_metrics_regressions():
     from copy import deepcopy
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_cjk_vertical_metrics_regressions as check
-
 
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/cjk_vertical_metrics_regressions")
@@ -3316,7 +3312,7 @@ def test_check_cjk_vertical_metrics_regressions():
     ttFont = TTFont(cjk_font)
     regular_remote_style = deepcopy(ttFont)
 
-    # Check on copy
+    # Check on duplicate
     regular_remote_style = deepcopy(ttFont)
     assert_PASS(check(ttFont, {"regular_remote_style": regular_remote_style}),
                 'for Source Han Sans')
@@ -3325,15 +3321,15 @@ def test_check_cjk_vertical_metrics_regressions():
     ttFont2 = deepcopy(ttFont)
     ttFont2['hhea'].ascent = 0
     assert_results_contain(check(ttFont2, {"regular_remote_style": regular_remote_style}),
-                            FAIL, "cjk-metric-regression",
-                            'hhea ascent is 0 when it should be 880')
+                           FAIL, "cjk-metric-regression",
+                           'hhea ascent is 0 when it should be 880')
 
     # Change upm of font being checked
     ttFont3 = deepcopy(ttFont)
     ttFont3['head'].unitsPerEm = 2000
     assert_results_contain(check(ttFont3, {"regular_remote_style": regular_remote_style}),
-                            FAIL, "cjk-metric-regression",
-                            'upm is 2000 and vert metrics values are not updated')
+                           FAIL, "cjk-metric-regression",
+                           'upm is 2000 and vert metrics values are not updated')
 
     # Change upm of checked font and update vert metrics
     ttFont4 = deepcopy(ttFont)

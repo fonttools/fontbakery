@@ -453,6 +453,7 @@ def remote_styles(familyname_with_spaces):
 
 @condition
 def regular_remote_style(remote_styles):
+    from .shared_conditions import is_variable_font, get_instance_axis_value
     if not remote_styles:
         return None
     if "Regular" in remote_styles:
@@ -467,13 +468,14 @@ def regular_remote_style(remote_styles):
 
 @condition
 def regular_ttFont(ttFonts):
-    from .shared_conditions import is_variable_font
+    from .shared_conditions import is_variable_font, get_instance_axis_value
     for ttFont in ttFonts:
         if "-Regular." in os.path.basename(ttFont.reader.file.name):
             return ttFont
         nametable = ttFont['name']
         # Some static fonts may not have Regular in their stylenames.
-        if nametable.getName(2, 3, 1, 0x409).toUnicode() == "Regular" and nametable.getName(17, 3, 1, 0x409) == None:
+        if nametable.getName(2, 3, 1, 0x409).toUnicode() == "Regular" and \
+           nametable.getName(17, 3, 1, 0x409) == None:
             return ttFont
         if is_variable_font(ttFont):
             if get_instance_axis_value(ttFont, "Regular", "wght"):
