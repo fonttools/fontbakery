@@ -3154,53 +3154,94 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
                 regular_remote_style,
                 metadata_file,
                 family_metadata)
-    from copy import copy
+    from copy import deepcopy
 
     family_meta = family_metadata(metadata_file(family_directory(cabin_fonts[0])))
-    remote = regular_remote_style(remote_styles(family_meta.name))
-    if remote:
-        ttFont = regular_ttFont([TTFont(f) for f in cabin_fonts])
-        # Cabin test family should match by default
-        assert_PASS(check(ttFont, remote),
-                    'with a good family...')
 
-        ttFont2 = copy(ttFont)
-        ttFont2['OS/2'].sTypoAscender = 0
-        assert_results_contain(check(ttFont2, remote),
-                               FAIL, 'bad-typo-ascender',
-                               'with a family which has an incorrect typoAscender...')
+    remote = regular_ttFont([TTFont(f) for f in cabin_fonts])
+    ttFont = regular_ttFont([TTFont(f) for f in cabin_fonts])
 
-        # TODO:
-        #   FAIL, "bad-typo-descender"
-        #   FAIL, "bad-hhea-ascender"
-        #   FAIL, "bad-hhea-descender"
+    # Cabin test family should match by default
+    assert_PASS(check(ttFont, remote),
+                'with a good family...')
 
-        remote2 = copy(remote)
-        remote2["OS/2"].fsSelection &= ~(1 << 7)
-        assert_results_contain(check(ttFont, remote2),
-                               FAIL, "bad-typo-ascender",
-                               'with a remote family which does not have'
-                               ' typo metrics enabled and the fonts being checked'
-                               ' don\'t take this fact into consideration...')
+    # FAIL with a changed vertical metric value
+    remote2 = deepcopy(remote)
+    ttFont2 = deepcopy(ttFont)
+    ttFont2['OS/2'].sTypoAscender = 0
+    assert_results_contain(check(ttFont2, remote2),
+                           FAIL, 'bad-typo-ascender',
+                           'with a family which has an incorrect typoAscender...')
 
-        ttFont3 = copy(ttFont)
-        ttFont3["OS/2"].sTypoAscender = 1150
-        ttFont3["OS/2"].sTypoDescender = -315
-        ttFont3["hhea"].ascent = 1150
-        ttFont3["hhea"].descent = -315
-        assert_PASS(check(ttFont3, remote2),
-                    'with a remote family which does not have typo metrics'
-                    ' enabled but the checked fonts vertical metrics have been'
-                    ' set so its typo and hhea metrics match the remote'
-                    ' fonts win metrics.')
+    # TODO:
+    #   FAIL, "bad-typo-descender"
+    #   FAIL, "bad-hhea-ascender"
+    #   FAIL, "bad-hhea-descender"
 
-#        ttFonts4 = copy(ttFonts)
-#        for ttFont in ttFonts4:
-#            ttFont['OS/2'].fsSelection &= ~(1 << 7)
-#        assert_results_contain(check(ttFonts4, remote),
-#                               PASS, "bad-fselection-bit7",
-#                               'it must have OS/2 fsSelection bit 7 enabled.')
-#
+
+    # Fail if family on Google Fonts has fsSelection bit 7 enabled but checked fonts don't
+    remote3 = deepcopy(remote)
+    ttFont3 = deepcopy(ttFont)
+    ttFont3["OS/2"].fsSelection &= ~(1 << 7)
+    assert_results_contain(check(ttFont3, remote3),
+                           FAIL, "bad-fsselection-bit7",
+                           "with a remote family which has typo metrics "
+                           "enabled and the fonts being checked don't.")
+
+    # Pass if family on Google Fonts doesn't have fsSelection bit 7 enabled but checked
+    # fonts has taken this into consideration
+    remote4 = deepcopy(remote)
+    ttFont4 = deepcopy(ttFont)
+
+    remote4["OS/2"].fsSelection &= ~(1 << 7)
+    ttFont4["OS/2"].sTypoAscender = remote4["OS/2"].usWinAscent
+    ttFont4["OS/2"].sTypoDescender = -remote4["OS/2"].usWinDescent
+    ttFont4["hhea"].ascent = remote4["OS/2"].usWinAscent
+    ttFont4["hhea"].descent = -remote4["OS/2"].usWinDescent
+    assert_PASS(check(ttFont4, remote4),
+                'with a remote family which does not have typo metrics'
+                ' enabled but the checked fonts vertical metrics have been'
+                ' set so its typo and hhea metrics match the remote'
+                ' fonts win metrics.')
+
+    # Same as previous check but using a remote font which has a different upm
+    remote5 = deepcopy(remote)
+    ttFont5 = deepcopy(ttFont)
+
+    import math
+    remote5["OS/2"].fsSelection &= ~(1 << 7)
+    remote5["head"].unitsPerEm = 2000
+    # divide by 2 since we've doubled the upm
+    ttFont5["OS/2"].sTypoAscender = math.ceil(remote5["OS/2"].usWinAscent / 2)
+    ttFont5["OS/2"].sTypoDescender = math.ceil(-remote5["OS/2"].usWinDescent / 2)
+    ttFont5["hhea"].ascent = math.ceil(remote5["OS/2"].usWinAscent / 2)
+    ttFont5["hhea"].descent = math.ceil(-remote5["OS/2"].usWinDescent / 2)
+    assert_PASS(check(ttFont5, remote5),
+                'with a remote family which does not have typo metrics'
+                ' enabled but the checked fonts vertical metrics have been'
+                ' set so its typo and hhea metrics match the remote'
+                ' fonts win metrics.')
+
+
+    remote6 = deepcopy(remote)
+    ttFont6 = deepcopy(ttFont)
+    ttFont6['OS/2'].fsSelection &= ~(1 << 7)
+    assert_results_contain(check(ttFont6, remote6),
+                           FAIL, "bad-fsselection-bit7",
+                           'OS/2 fsSelection bit 7 must be enabled.')
+
+
+    # Disable bit 7 in both fonts but change win metrics of ttFont
+    ttFont7 = deepcopy(remote)
+    remote7 = deepcopy(remote)
+
+    remote7["OS/2"].fsSelection &= ~(1 << 7)
+    ttFont7["OS/2"].fsSelection &= ~(1 << 7)
+    ttFont7["OS/2"].usWinAscent = 2500
+    assert_results_contain(check(ttFont7, remote7),
+                           FAIL, "bad-fsselection-bit7",
+                           'OS/2 fsSelection bit 7 must be enabled.')
+
     #
     #else:
     #  TODO: There should be a warning message here
@@ -3287,7 +3328,7 @@ def test_check_cjk_vertical_metrics_regressions():
                             FAIL, "cjk-metric-regression",
                             'hhea ascent is 0 when it should be 880')
 
-    # Change upm of checked font
+    # Change upm of font being checked
     ttFont3 = deepcopy(ttFont)
     ttFont3['head'].unitsPerEm = 2000
     assert_results_contain(check(ttFont3, {"regular_remote_style": regular_remote_style}),
