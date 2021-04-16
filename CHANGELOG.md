@@ -46,6 +46,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/gdef_non_mark_chars]:** Same as com.google.fonts/check/gdef_mark_chars.
   - **[com.google.fonts/check/kerning_for_non_ligated_sequences]:** Change 'ligatures' condition to match changes in fontTools 4.22.0.
 a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condition to match changes in fontTools 4.22.0. Updated rationale because fontmake 2.4.0 can compile ligature carets.
+  - **[com.google.fonts/check/monospace]:** Changed conditions of seems_monospaced returned by glyph_metrics_stats(), if less than 80% of ASCII characters are in the font then it seems monospaced when all glyphs have one of two widths, excluding control character glyphs, mark glyphs and zero-width glyphs, instead of always 80% of ASCII glyphs having the same width.
 
 
 ## 0.7.34 (2021-Jan-06)
