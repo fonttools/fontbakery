@@ -3150,22 +3150,23 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
                 api_gfonts_ttFont,
                 style,
                 remote_styles,
+                regular_ttFont,
+                regular_remote_style,
                 metadata_file,
                 family_metadata)
     from copy import copy
 
     family_meta = family_metadata(metadata_file(family_directory(cabin_fonts[0])))
-    remote = remote_styles(family_meta.name)
+    remote = regular_remote_style(remote_styles(family_meta.name))
     if remote:
-        ttFonts = [TTFont(f) for f in cabin_fonts]
+        ttFont = regular_ttFont([TTFont(f) for f in cabin_fonts])
         # Cabin test family should match by default
-        assert_PASS(check(ttFonts, remote),
+        assert_PASS(check(ttFont, remote),
                     'with a good family...')
 
-        ttFonts2 = copy(ttFonts)
-        for ttfont in ttFonts2:
-            ttfont['OS/2'].sTypoAscender = 0
-        assert_results_contain(check(ttFonts2, remote),
+        ttFont2 = copy(ttFont)
+        ttFont2['OS/2'].sTypoAscender = 0
+        assert_results_contain(check(ttFont2, remote),
                                FAIL, 'bad-typo-ascender',
                                'with a family which has an incorrect typoAscender...')
 
@@ -3175,25 +3176,31 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
         #   FAIL, "bad-hhea-descender"
 
         remote2 = copy(remote)
-        for key, ttfont in remote2.items():
-            ttfont["OS/2"].fsSelection = ttfont["OS/2"].fsSelection ^ 0b10000000
-        assert_results_contain(check(ttFonts, remote2),
+        remote2["OS/2"].fsSelection &= ~(1 << 7)
+        assert_results_contain(check(ttFont, remote2),
                                FAIL, "bad-typo-ascender",
                                'with a remote family which does not have'
                                ' typo metrics enabled and the fonts being checked'
                                ' don\'t take this fact into consideration...')
 
-        ttFonts3 = copy(ttFonts)
-        for ttfont in ttFonts3:
-            ttfont["OS/2"].sTypoAscender = 1150
-            ttfont["OS/2"].sTypoDescender = -315
-            ttfont["hhea"].ascent = 1150
-            ttfont["hhea"].descent = -315
-        assert_PASS(check(ttFonts3, remote2),
+        ttFont3 = copy(ttFont)
+        ttFont3["OS/2"].sTypoAscender = 1150
+        ttFont3["OS/2"].sTypoDescender = -315
+        ttFont3["hhea"].ascent = 1150
+        ttFont3["hhea"].descent = -315
+        assert_PASS(check(ttFont3, remote2),
                     'with a remote family which does not have typo metrics'
                     ' enabled but the checked fonts vertical metrics have been'
                     ' set so its typo and hhea metrics match the remote'
                     ' fonts win metrics.')
+
+#        ttFonts4 = copy(ttFonts)
+#        for ttFont in ttFonts4:
+#            ttFont['OS/2'].fsSelection &= ~(1 << 7)
+#        assert_results_contain(check(ttFonts4, remote),
+#                               PASS, "bad-fselection-bit7",
+#                               'it must have OS/2 fsSelection bit 7 enabled.')
+#
     #
     #else:
     #  TODO: There should be a warning message here
@@ -3255,6 +3262,55 @@ def test_check_cjk_vertical_metrics():
     assert_results_contain(check(ttFont),
                            WARN, 'bad-hhea-range',
                            'if font hhea and win metrics are greater than 1.5 * upm')
+
+
+def test_check_cjk_vertical_metrics_regressions():
+    from copy import deepcopy
+    from fontbakery.profiles.googlefonts import com_google_fonts_check_cjk_vertical_metrics_regressions as check
+
+
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/cjk_vertical_metrics_regressions")
+
+    ttFont = TTFont(cjk_font)
+    regular_remote_style = deepcopy(ttFont)
+
+    # Check on copy
+    regular_remote_style = deepcopy(ttFont)
+    assert_PASS(check(ttFont, {"regular_remote_style": regular_remote_style}),
+                'for Source Han Sans')
+
+    # Change a single metric
+    ttFont2 = deepcopy(ttFont)
+    ttFont2['hhea'].ascent = 0
+    assert_results_contain(check(ttFont2, {"regular_remote_style": regular_remote_style}),
+                            FAIL, "cjk-metric-regression",
+                            'hhea ascent is 0 when it should be 880')
+
+    # Change upm of checked font
+    ttFont3 = deepcopy(ttFont)
+    ttFont3['head'].unitsPerEm = 2000
+    assert_results_contain(check(ttFont3, {"regular_remote_style": regular_remote_style}),
+                            FAIL, "cjk-metric-regression",
+                            'upm is 2000 and vert metrics values are not updated')
+
+    # Change upm of checked font and update vert metrics
+    ttFont4 = deepcopy(ttFont)
+    ttFont4['head'].unitsPerEm = 2000
+    for tbl, attrib in [
+        ("OS/2", "sTypoAscender"),
+        ("OS/2", "sTypoDescender"),
+        ("OS/2", "sTypoLineGap"),
+        ("OS/2", "usWinAscent"),
+        ("OS/2", "usWinDescent"),
+        ("hhea", "ascent"),
+        ("hhea", "descent"),
+        ("hhea", "lineGap"),
+        ]:
+        current_val = getattr(ttFont4[tbl], attrib)
+        setattr(ttFont4[tbl], attrib, current_val * 2)
+    assert_PASS(check(ttFont4, {"regular_remote_style": regular_remote_style}),
+                'for Source Han Sans with doubled upm and doubled vert metrics')
 
 
 def test_check_cjk_not_enough_glyphs():

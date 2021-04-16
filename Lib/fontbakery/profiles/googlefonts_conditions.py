@@ -466,6 +466,22 @@ def regular_remote_style(remote_styles):
 
 
 @condition
+def regular_ttFont(ttFonts):
+    from .shared_conditions import is_variable_font
+    for ttFont in ttFonts:
+        if "-Regular." in os.path.basename(ttFont.reader.file.name):
+            return ttFont
+        nametable = ttFont['name']
+        # Some static fonts may not have Regular in their stylenames.
+        if nametable.getName(2, 3, 1, 0x409).toUnicode() == "Regular" and nametable.getName(17, 3, 1, 0x409) == None:
+            return ttFont
+        if is_variable_font(ttFont):
+            if get_instance_axis_value(ttFont, "Regular", "wght"):
+                return ttFont
+    return None
+
+
+@condition
 def api_gfonts_ttFont(style, remote_styles):
     """Get a TTFont object of a font downloaded from Google Fonts
        corresponding to the given TTFont object of
