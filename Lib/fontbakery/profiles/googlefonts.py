@@ -4395,16 +4395,24 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
     if gf_has_typo_metrics:
         if not ttFont_has_typo_metrics:
             failed = True
-            yield FAIL, "Enable typo metrics"
+            yield FAIL, Message("bad-fsselection-bit7",
+                                "fsSelection bit 7 needs to be enabled because "
+                                "the family on Google Fonts has it enabled.")
+            # faux enable it so we can see which metrics also need changing
             ttFont_has_typo_metrics = True
         expected_ascender = math.ceil(gf_font['OS/2'].sTypoAscender * upm_scale)
         expected_descender = math.ceil(gf_font['OS/2'].sTypoDescender * upm_scale)
     else:
-        if (gf_font['OS/2'].usWinAscent, gf_font['OS/2'].usWinDescent) != \
-           (ttFont['OS/2'].usWinAscent, ttFont['OS/2'].usWinDescent):
+        if (math.ceil(gf_font['OS/2'].usWinAscent * upm_scale),
+            math.ceil(gf_font['OS/2'].usWinDescent * upm_scale)) != \
+           (math.ceil(ttFont['OS/2'].usWinAscent),
+            math.ceil(ttFont['OS/2'].usWinDescent)):
                if not ttFont_has_typo_metrics:
                    failed = True
-                   yield FAIL, "Enable typo metrics since win metrics have changed"
+                   yield FAIL, Message("bad-fsselection-bit7",
+                                       "fsSelection bit 7 needs to be enabled "
+                                       "because the win metrics differ from "
+                                       "the family on Google Fonts.")
                    ttFont_has_typo_metrics = True
         expected_ascender = math.ceil(gf_font["OS/2"].usWinAscent * upm_scale)
         expected_descender = -math.ceil(gf_font["OS/2"].usWinDescent * upm_scale)
