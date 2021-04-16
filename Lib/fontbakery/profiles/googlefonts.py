@@ -4383,12 +4383,12 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
                                     get_instance_axis_value,
                                     typo_metrics_enabled)
 
-    gf_font = regular_remote_style
+    gf_ttFont = regular_remote_style
     ttFont = regular_ttFont
 
-    upm_scale = ttFont['head'].unitsPerEm / gf_font['head'].unitsPerEm
+    upm_scale = ttFont['head'].unitsPerEm / gf_ttFont['head'].unitsPerEm
 
-    gf_has_typo_metrics = typo_metrics_enabled(gf_font)
+    gf_has_typo_metrics = typo_metrics_enabled(gf_ttFont)
     ttFont_has_typo_metrics = typo_metrics_enabled(ttFont)
 
     failed = False
@@ -4400,11 +4400,13 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
                                 "the family on Google Fonts has it enabled.")
             # faux enable it so we can see which metrics also need changing
             ttFont_has_typo_metrics = True
-        expected_ascender = math.ceil(gf_font['OS/2'].sTypoAscender * upm_scale)
-        expected_descender = math.ceil(gf_font['OS/2'].sTypoDescender * upm_scale)
+        expected_ascender = math.ceil(gf_ttFont['OS/2'].sTypoAscender * upm_scale)
+        expected_descender = math.ceil(gf_ttFont['OS/2'].sTypoDescender * upm_scale)
     else:
-        if (math.ceil(gf_font['OS/2'].usWinAscent * upm_scale),
-            math.ceil(gf_font['OS/2'].usWinDescent * upm_scale)) != \
+        # if the win metrics have changed, the updated fonts must have bit 7
+        # enabled
+        if (math.ceil(gf_ttFont['OS/2'].usWinAscent * upm_scale),
+            math.ceil(gf_ttFont['OS/2'].usWinDescent * upm_scale)) != \
            (math.ceil(ttFont['OS/2'].usWinAscent),
             math.ceil(ttFont['OS/2'].usWinDescent)):
                if not ttFont_has_typo_metrics:
@@ -4414,8 +4416,8 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
                                        "because the win metrics differ from "
                                        "the family on Google Fonts.")
                    ttFont_has_typo_metrics = True
-        expected_ascender = math.ceil(gf_font["OS/2"].usWinAscent * upm_scale)
-        expected_descender = -math.ceil(gf_font["OS/2"].usWinDescent * upm_scale)
+        expected_ascender = math.ceil(gf_ttFont["OS/2"].usWinAscent * upm_scale)
+        expected_descender = -math.ceil(gf_ttFont["OS/2"].usWinDescent * upm_scale)
 
     full_font_name = ttFont['name'].getName(4, 3, 1, 1033).toUnicode()
     typo_ascender = ttFont['OS/2'].sTypoAscender
@@ -4561,10 +4563,10 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(regular_ttFont, regu
     """Check if the vertical metrics of a CJK family are similar to the same
     family hosted on Google Fonts."""
     import math
-    gf_font = regular_remote_style
+    gf_ttFont = regular_remote_style
     ttFont = regular_ttFont
 
-    upm_scale = ttFont['head'].unitsPerEm / gf_font['head'].unitsPerEm
+    upm_scale = ttFont['head'].unitsPerEm / gf_ttFont['head'].unitsPerEm
 
     failed = False
     for tbl, attrib in [
@@ -4577,7 +4579,7 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(regular_ttFont, regu
         ("hhea", "descent"),
         ("hhea", "lineGap"),
         ]:
-        gf_val = math.ceil(getattr(gf_font[tbl], attrib) * upm_scale)
+        gf_val = math.ceil(getattr(gf_ttFont[tbl], attrib) * upm_scale)
         f_val = math.ceil(getattr(ttFont[tbl], attrib))
         if gf_val != f_val:
             failed = True
