@@ -38,6 +38,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/has_regular]:** Added hints to GF specs for single-weight families to FAIL output (PR #3197)
   - **[com.google.fonts/check/gdef_mark_chars]:** Do not consider chars with Unicode category Mc, Spacing_Marks as (non spacing) mark class glyphs.
   - **[com.google.fonts/check/gdef_non_mark_chars]:** Same as com.google.fonts/check/gdef_mark_chars.
+  - **[com.google.fonts/check/kerning_for_non_ligated_sequences]:** Change 'ligatures' condition to match changes in fontTools 4.22.0.
+a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condition to match changes in fontTools 4.22.0. Updated rationale because fontmake 2.4.0 can compile ligature carets.
 
 
 ## 0.7.34 (2021-Jan-06)
