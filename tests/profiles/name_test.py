@@ -93,11 +93,26 @@ def test_check_monospace():
     ttFont["post"].isFixedPitch = IsFixedWidth.NOT_MONOSPACED
 
     # Now we mark it as monospaced on the OS/2 and it should also fail:
+    original_proportion = ttFont["OS/2"].panose.bProportion
     ttFont["OS/2"].panose.bProportion = PANOSE_Proportion.MONOSPACED
     assert_results_contain(check(ttFont),
                            FAIL, 'bad-panose-proportion',
                            'with a non-monospaced font with bad'
                            ' OS/2.panose.bProportion value (MONOSPACED) ...')
+
+    # restore good value
+    ttFont["OS/2"].panose.bProportion = original_proportion
+
+    # Now we try with very little ASCII characters in the font
+    cmap = ttFont["cmap"]
+    for subtable in list(cmap.tables):
+        # Remove A-Z, a-z from cmap
+        for code in list(range(0x41, 0x5B)) + list(range(0x61, 0x7B)):
+            if subtable.cmap.get(code):
+                del subtable.cmap[code]
+    assert_results_contain(check(ttFont),
+                           PASS, "good",
+                           'with a good non-monospace font...')
 
     # --------------------------------------------
     # And now we test the monospaced code-paths:
@@ -145,6 +160,24 @@ def test_check_monospace():
                                FAIL, 'mono-bad-panose-proportion',
                                f'Test FAIL with a monospaced font with bad'
                                f' OS/2.panose.bProportion value ({bad_value}) ...')
+
+    # restore good values
+    ttFont["post"].isFixedPitch = 1
+    ttFont["OS/2"].panose.bProportion = PANOSE_Proportion.MONOSPACED
+
+    # Now we try with very little ASCII characters in the font
+    cmap = ttFont["cmap"]
+    for subtable in list(cmap.tables):
+        # Remove A-Z, a-z from cmap
+        for code in list(range(0x41, 0x5B)) + list(range(0x61, 0x7B)):
+            if subtable.cmap.get(code):
+                del subtable.cmap[code]
+
+    status, message = check(ttFont)[-1]
+    # WARN is emitted when there's at least one outlier.
+    # I don't see a good reason to be picky and also test that one separately here...
+    assert (status == WARN and message.code == "mono-outliers") or \
+           (status == PASS and message.code == "mono-good")
 
 
 def test_check_name_match_familyname_fullfont():
