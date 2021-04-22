@@ -49,8 +49,6 @@
 
 
 
-
-
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -66,6 +64,8 @@
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:site" content="@docsmsft" />
 
+	<meta name="color-scheme" content="light dark">
+
 
 	<meta name="author" content="alib-ms" />
 <meta name="breadcrumb_path" content="/typography/breadcrumbs/toc.json" />
@@ -73,11 +73,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/b7a26615d04ffd7b909c929a2eefb25450cbd048/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/77aff6a1f941f96f7714ec4f06b7a40489900cc3/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="12/17/2020" />
+<meta name="ms.date" content="04/13/2021" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -87,20 +87,20 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2020-12-18 03:46 AM" />
+<meta name="updated_at" content="2021-04-13 06:54 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3453" />
+<meta name="word_count" content="3567" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/b415dab4.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/c4d75c2f.site-ltr.css ">
 
-	<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/55917fe3.conceptual.css ">
+	
 
 
 	<script id="msdocs-script">
@@ -143,23 +143,27 @@
 	};
 	</script>
 	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
-	<script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script>
+	<script src="https://js.monitor.azure.com/next/1/ms.jsll-3.js"></script>
+	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
 	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
-	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/f0a172e9.index-polyfills.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/c66344e6.index-docs.js"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/f8642e01.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
-<div class="header-holder has-default-focus">
-	<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
-	<div id="learn-together-banner-holder" class="has-default-focus has-overflow-hidden">
-	</div>
-	<div hidden id="cookie-consent-holder"></div>
-	<!-- liquid-tag banners global -->
-	<div id="headerAreaHolder" data-bi-name="header">
+	<div class="header-holder has-default-focus">
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		
+		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		
+		<div hidden id="cookie-consent-holder"></div>
+		<!-- liquid-tag banners global -->
+		<div id="headerAreaHolder" data-bi-name="header">
 <header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
 	<div class="nav-bar">
 		<div class="nav-bar-brand">
@@ -170,50 +174,50 @@
 		</div>
 	</div>
 	<div class="nav-bar has-border-top is-hidden-mobile"></div>
-</header>	</div>
+</header>		</div>
 
-				<div class="content-header uhf-container has-padding has-default-focus has-border-bottom-none" data-bi-name="content-header">
-				<nav class="has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop has-flex-grow" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
-					<ul id="page-breadcrumbs" class="breadcrumbs">
-					</ul>
-				</nav>
-			<div class="content-header-controls">
-				<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
-					<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
-					<span class="contents-expand-title">Contents</span>
-				</button>
-				<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
-					<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
-					<span>Exit focus mode</span>
-				</button>
-			</div>
-			<div class="has-padding-none-tablet has-padding-medium is-size-small is-flex-touch has-flex-justify-content-space-between-touch has-flex-grow">
-				<ul class="is-hidden-mobile action-list has-flex-justify-content-start has-flex-justify-content-end-tablet is-flex is-flex-row has-flex-wrap has-flex-grow is-unstyled">
-					<li>
-						<button type="button" class="bookmark button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="bookmarks" data-bi-name="bookmark" title="Bookmark this page">
-							<span class="icon" aria-hidden="true">
-								<span class="docon docon-single-bookmark"></span>
-							</span>
-							<span class="bookmark-status is-visually-hidden-touch is-hidden-portrait">Bookmark</span>
-						</button>
-					</li>
-						<li id="feedback-section-link">
-							<a href="#feedback" class="button is-text has-inner-focus is-small is-icon-only-touch" data-bi-name="comments" title="Send feedback about this page">
+						<div class="content-header uhf-container has-padding has-default-focus has-border-bottom-none" data-bi-name="content-header">
+					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop has-flex-grow" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+						<ul id="page-breadcrumbs" class="breadcrumbs">
+						</ul>
+					</nav>
+				<div class="content-header-controls">
+					<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">Contents</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+				<div class="has-padding-none-tablet has-padding-medium is-size-small is-flex-touch has-flex-justify-content-space-between-touch has-flex-grow page-action-holder">
+					<ul class="is-hidden-mobile action-list has-flex-justify-content-start has-flex-justify-content-end-tablet is-flex is-flex-row has-flex-wrap has-flex-grow is-unstyled">
+						<li>
+							<button type="button" class="bookmark button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="bookmarks" data-bi-name="bookmark" title="Bookmark this page">
 								<span class="icon" aria-hidden="true">
-									<span class="docon docon-comment-lines"></span>
+									<span class="docon docon-single-bookmark"></span>
 								</span>
-								<span class="is-visually-hidden-touch is-hidden-portrait">Feedback</span>
-							</a>
+								<span class="bookmark-status is-visually-hidden-touch is-hidden-portrait">Bookmark</span>
+							</button>
 						</li>
-							<li id="contenteditbtn" hidden>
-								<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"  class="button is-text has-inner-focus is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit">
-								<span class="icon" aria-hidden="true">
-									<span class="docon docon-edit-outline"></span>
-								</span>
-								<span class="is-visually-hidden-touch is-hidden-portrait">Edit</span>
-							</a>
-						</li>
-					<li>
+							<li id="feedback-section-link">
+								<a href="#feedback" class="button is-text has-inner-focus is-small is-icon-only-touch" data-bi-name="comments" title="Send feedback about this page">
+									<span class="icon" aria-hidden="true">
+										<span class="docon docon-comment-lines"></span>
+									</span>
+									<span class="is-visually-hidden-touch is-hidden-portrait">Feedback</span>
+								</a>
+							</li>
+								<li id="contenteditbtn" hidden>
+									<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"  class="button is-text has-inner-focus is-icon-only-touch is-small" title="Edit This Document" data-bi-name="edit">
+									<span class="icon" aria-hidden="true">
+										<span class="docon docon-edit-outline"></span>
+									</span>
+									<span class="is-visually-hidden-touch is-hidden-portrait">Edit</span>
+								</a>
+							</li>
+						<li>
 <div class="sharing dropdown has-caret">
 	<button class="dropdown-trigger button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
 		<span class="icon" aria-hidden="true">
@@ -257,30 +261,30 @@
 			</li>
 		</ul>
 	</div>
-</div>					</li>
-				</ul>
-				<button type="button" class="has-border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
-					<span class="icon">
-						<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
-					</span>
-					<span class="contents-expand-title">Table of contents</span>
-				</button>
-				<div class="is-invisible"></div>
-				<div class="is-hidden-tablet level-item is-flexible level-right">
-					<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus has-border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+</div>						</li>
+					</ul>
+					<button type="button" class="has-border contents-button button is-small is-text is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand">
 						<span class="icon">
-							<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
 						</span>
+						<span class="contents-expand-title">Table of contents</span>
 					</button>
+					<div class="is-invisible"></div>
+					<div class="is-hidden-tablet level-item is-flexible level-right">
+						<button type="button" class="page-actions-button button is-small is-text is-hidden-tablet has-inner-focus has-border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<span class="icon">
+								<span class="docon docon-more-vertical" aria-hidden="true"></span>
+							</span>
+						</button>
+					</div>
 				</div>
 			</div>
+
+
+
+		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<!-- liquid-tag banners sectional -->
 		</div>
-
-
-
-	<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
-		<!-- liquid-tag banners sectional -->
-	</div>
 	</div>
 
 	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
@@ -305,7 +309,7 @@
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li>
-								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2020-12-17T00:00:00.000Z" data-article-date-source="ms.date">12/17/2020</time>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-04-13T00:00:00.000Z" data-article-date-source="ms.date">04/13/2021</time>
 							</li>
 									<li class="readingTime">17 minutes to read</li>
 								<li class="contributors-holder">
@@ -368,7 +372,7 @@
 </tr>
 <tr>
 <td>!ETF</td>
-<td><a href="http://www.exclamachine.com" data-linktype="external">!Exclamachine Type Foundry</a></td>
+<td>!xclamachine Type Foundry</td>
 </tr>
 <tr>
 <td>!YNE</td>
@@ -385,6 +389,10 @@
 <tr>
 <td>0264</td>
 <td>Patricia Lillie</td>
+</tr>
+<tr>
+<td>1206</td>
+<td><a href="https://www.yayoyuyue.com/" data-linktype="external">yayoyuyue</a></td>
 </tr>
 <tr>
 <td>1ASC</td>
@@ -504,6 +512,10 @@
 <tr>
 <td>ABYM</td>
 <td><a href="http://www.abyme.net" data-linktype="external">ABYME</a></td>
+</tr>
+<tr>
+<td>AC</td>
+<td><a href="http://www.allcapstype.com/" data-linktype="external">AllCaps</a></td>
 </tr>
 <tr>
 <td>ACUT</td>
@@ -637,6 +649,11 @@
 <td>AOP</td>
 <td><a href="http://www.aopbv.nl" data-linktype="external">an Art Of Pengwyn</a></td>
 </tr>
+	
+<tr>
+<td>APCX</td>
+<td><a href="https://www.anotherplanet.io" data-linktype="external">Another Planet Font Foundry</a></td>
+</tr>
 <tr>
 <td>APLY</td>
 <td><a href="http://www.apply-interactive.de/" data-linktype="external">Apply Interactive</a></td>
@@ -714,6 +731,10 @@
 <td><a href="http://www.appliedsymbols.com/" data-linktype="external">Applied Symbols</a></td>
 </tr>
 <tr>
+<td>At</td>
+<td><a href="https://arillatype.studio" data-linktype="external">Arilla Type Studio</a></td>
+</tr>
+<tr>
 <td>ATEC</td>
 <td><a href="http://www.alltype.biz" data-linktype="external">Page Technology Marketing, Inc.</a></td>
 </tr>
@@ -772,6 +793,10 @@
     <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
+<tr>
+<td>b52</td>
+<td><a href="https://borno52.com/" data-linktype="external">Borno52 Font Foundry</a></td>
+</tr>
 <tr>
 <td>B&H</td>
 <td>Bigelow & Holmes</td>
@@ -845,6 +870,14 @@
 <td><a href="http://www.bigital.com" data-linktype="external">bigital</a></td>
 </tr>
 <tr>
+<td>BHRT</td>
+<td>Biharat</td>
+</tr>
+<tr>
+<td>BIJU</td>
+<td><a href="http://bijoutype.com/" data-linktype="external">Bijou Type</a></td>
+</tr>
+<tr>
 <td>BIRD</td>
 <td><a href="http://www.magpiepaperworks.com/" data-linktype="external">Magpie Paper Works</a></td>
 </tr>
@@ -893,8 +926,20 @@
 <td><a href="https://blackletra.com/" data-linktype="external">Blackletra Type Foundry</a></td>
 </tr>
 <tr>
+<td>BLOM</td>
+<td><a href="https://bloomtype.com" data-linktype="external">Bloom Type</a></td>
+</tr>
+<tr>
+<td>BLST</td>
+<td>Blast Foundry</td>
+</tr>
+<tr>
 <td>BLTS</td>
 <td><a href="https://www.blancoletters.com/" data-linktype="external">Blancoletters</a></td>
+</tr>
+<tr>
+<td>BLUE</td>
+<td><a href="http://blueshell.xyz/" data-linktype="external">Blue Shell</a></td>
 </tr>
 <tr>
 <td>BLV</td>
@@ -1020,6 +1065,10 @@
 <td><a href="http://www.typeclub.co.uk/" data-linktype="external">Club 21</a></td>
 </tr>
 <tr>
+<td>CAFE</td>
+<td><a href="https://fonts.cafe24.com/" data-linktype="external">Cafe24 Corp.</a></td>
+</tr>
+<tr>
 <td>CAK</td>
 <td>pluginfonts.com</td>
 </tr>
@@ -1030,6 +1079,10 @@
 <tr>
 <td>camp</td>
 <td><a href="https://www.myfonts.com/foundry/AAWM/" data-linktype="external">Campotype</a></td>
+</tr>
+<tr>
+<td>CANA</td>
+<td><a href="https://canadatype.com/" data-linktype="external">Canada Type</a></td>
 </tr>
 <tr>
 <td>CANO</td>
@@ -1279,6 +1332,10 @@
 <td><a href="https://dharmatype.com/" data-linktype="external">Dharma Type</a></td>
 </tr>
 <tr>
+<td>DICO</td>
+<td><a href="http://www.dicotype.com" data-linktype="external">Dicotype</a></td>
+</tr>
+<tr>
 <td>DIFO</td>
 <td><a href="http://www.digitalfoundry.xyz" data-linktype="external">Digital Foundry</a></td>
 </tr>
@@ -1301,6 +1358,10 @@
 <tr>
 <td>DOM</td>
 <td><a href="http://www.dukom.org" data-linktype="external">Dukom Design</a></td>
+</tr>
+<tr>
+<td>DP</td>
+<td><a href="https://displaay.net" data-linktype="external">Displaay</a></td>
 </tr>
 <tr>
 <td>DR</td>
@@ -1402,6 +1463,10 @@
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>EAFN</td>
+<td><a href="https://eafonts.com/" data-linktype="external">EA FONTS</a></td>
+</tr>
+<tr>
 <td>ECAL</td>
 <td><a href="http://www.ecal-typefaces.ch" data-linktype="external">ECAL Typefaces</a></td>
 </tr>
@@ -1448,6 +1513,10 @@
 <tr>
 <td>ELEO</td>
 <td><a href="http://idee-sree.com/" data-linktype="external">Enliteleo</a></td>
+</tr>
+<tr>
+<td>ELLR</td>
+<td><a href="https://emersoneller.com/" data-linktype="external">Eller Type</a></td>
 </tr>
 <tr>
 <td>ELSE</td>
@@ -1519,10 +1588,6 @@
 <tr>
 <td>FAM</td>
 <td><a href="http://familytype.co/" data-linktype="external">Family Type</a></td>
-</tr>
-<tr>
-<td>FAPA</td>
-<td><a href="http://www.familjenpangea.se" data-linktype="external">FamiljenPangea</a></td>
 </tr>
 <tr>
 <td>FAT</td>
@@ -1597,6 +1662,10 @@
 <td><a href="http://youbringfire.com/" data-linktype="external">youbringfire</a></td>
 </tr>
 <tr>
+<td>FJ</td>
+<td><a href="http://frncojonas.com/" data-linktype="external">frncojonas</a></td>
+</tr>
+<tr>
 <td>FJR</td>
 <td>F.J.R. German Typeface</td>
 </tr>
@@ -1619,6 +1688,10 @@
 <tr>
 <td>FMFO</td>
 <td><a href="http://www.be.net/davidlawless_misc" data-linktype="external">Fontmill Foundry</a></td>
+</tr>
+<tr>
+<td>FMLJ</td>
+<td><a href="https://familjen.se/" data-linktype="external">Familjen</a></td>
 </tr>
 <tr>
 <td>FMST</td>
@@ -1649,6 +1722,10 @@
 <td><a href="http://www.fontfabrik.com/" data-linktype="external">FontFabrik</a></td>
 </tr>
 <tr>
+<td>FOGC</td>
+<td><a href="https://fogcitygothic.com" data-linktype="external">Fog City Type</a></td>
+</tr>
+<tr>
 <td>FoHa</td>
 <td><a href="http://www.baronvonfonthausen.com/" data-linktype="external">The Fonthausen Font Foundry</a></td>
 </tr>
@@ -1659,6 +1736,10 @@
 <tr>
 <td>FONZ</td>
 <td><a href="http://zone108.main.jp" data-linktype="external">Font Zone 108</a></td>
+</tr>
+<tr>
+<td>FOR</td>
+<td><a href="https://formagari.com/" data-linktype="external">Formagari</a></td>
 </tr>
 <tr>
 <td>FORM</td>
@@ -1854,6 +1935,10 @@
 <tr>
 <td>GFT</td>
 <td>Geez Font Types</td>
+</tr>
+<tr>
+<td>GGWA</td>
+<td><a href="https://www.grenz-gaenger.com/" data-linktype="external">Grenzgänger</a></td>
 </tr>
 <tr>
 <td>GIA</td>
@@ -2178,6 +2263,10 @@
 <td><a href="http://www.impress.co.jp/" data-linktype="external">Impress</a></td>
 </tr>
 <tr>
+<td>INDG</td>
+<td>Indigo+Indigo</td>
+</tr>
+<tr>
 <td>INGA</td>
 <td><a href="http://www.ingaploennigs.com" data-linktype="external">Inga Type</a></td>
 </tr>
@@ -2337,6 +2426,10 @@
 <td><a href="http://wrdingham.co.uk/" data-linktype="external">Richard Wordingham</a></td>
 </tr>
 <tr>
+<td>JSTN</td>
+<td><a href="https://justinpenner.ca" data-linktype="external">Justin Penner</a></td>
+</tr>
+<tr>
 <td>JUST</td>
 <td><a href="http://www.justintype.com/" data-linktype="external">Just in Type</a></td>
 </tr>
@@ -2370,6 +2463,10 @@
 <tr>
 <td>KAME</td>
 <td><a href="http://www.kamedesign.com" data-linktype="external">Kame Design</a></td>
+</tr>
+<tr>
+<td>KAPT</td>
+<td>Kaptype</td>
 </tr>
 <tr>
 <td>KATF</td>
@@ -2499,6 +2596,10 @@
 <td><a href="http://www.L2M3.com" data-linktype="external">L2M3 Kommunikationsdesign GmbH</a></td>
 </tr>
 <tr>
+<td>L52</td>
+<td><a href="https://lipika52.com/" data-linktype="external">Lipika52 Type Foundry</a></td>
+</tr>
+<tr>
 <td>LA</td>
 <td><a href="http://www.large.la" data-linktype="external">Large</a></td>
 </tr>
@@ -2541,6 +2642,10 @@
 <tr>
 <td>LCMT</td>
 <td><a href="https://locomotype.com/" data-linktype="external">Locomotype</a></td>
+</tr>
+<tr>
+<td>LDTP</td>
+<td><a href="https://home.leedotype.com/" data-linktype="external">Leedotype</a></td>
 </tr>
 <tr>
 <td>LEAF</td>
@@ -2617,6 +2722,10 @@
 <tr>
 <td>LLDL</td>
 <td><a href="http://lalettredeluxe.com/" data-linktype="external">La Lettre de Luxe</a></td>
+</tr>
+<tr>
+<td>LLP</td>
+<td><a href="http://www.lenalepommelet.com/" data-linktype="external">Léna Le Pommelet</a></td>
 </tr>
 <tr>
 <td>LNGU</td>
@@ -2822,6 +2931,10 @@
 <td>Magic Fonts</td>
 </tr>
 <tr>
+<td>MFCF</td>
+<td><a href="https://makefuncreating.com/" data-linktype="external">Make Fun Creating Fonts</a></td>
+</tr>
+<tr>
 <td>MFNT</td>
 <td><a href="http://www.masterfont.co.il/" data-linktype="external">Masterfont</a></td>
 </tr>
@@ -2902,6 +3015,10 @@
 <td><a href="http://www.minecreek.net" data-linktype="external">Mine Creek</a></td>
 </tr>
 <tr>
+<td>MNIC</td>
+<td>manic type</td>
+</tr>
+<tr>
 <td>mnik</td>
 <td><a href="http://mooniak.com" data-linktype="external">Mooniak</a></td>
 </tr>
@@ -2968,6 +3085,10 @@
 <tr>
 <td>MOTA</td>
 <td><a href="http://www.motaitalic.com" data-linktype="external">Mota Italic</a></td>
+</tr>
+<tr>
+<td>MPTG</td>
+<td><a href="https://www.typogama.com/" data-linktype="external">Typogama</a></td>
 </tr>
 <tr>
 <td>MRF</td>
@@ -3201,6 +3322,10 @@
 <td><a href="http://www.nipponia.in/blog/" data-linktype="external">Nipponia</a></td>
 </tr>
 <tr>
+<td>NPD</td>
+<td><a href="https://www.pitscheider.net/" data-linktype="external">Nick Pitscheider</a></td>
+</tr>
+<tr>
 <td>NRON</td>
 <td>neurontype</td>
 </tr>
@@ -3333,6 +3458,10 @@
 <tr>
 <td>PBL</td>
 <td><a href="https://publie.de/" data-linktype="external">Publié</a></td>
+</tr>
+<tr>
+<td>PBNG</td>
+<td><a href="https://github.com/playbeing" data-linktype="external">Playbeing</a></td>
 </tr>
 <tr>
 <td>PCJ</td>
@@ -3605,6 +3734,10 @@
 <td><a href="https://romanee.nl/" data-linktype="external">Romanée Type Foundry</a></td>
 </tr>
 <tr>
+<td>ROST</td>
+<td><a href="https://robertstrauch.de" data-linktype="external">Robert Strauch</a></td>
+</tr>
+<tr>
 <td>RPTR</td>
 <td><a href="http://www.rampageraptor.com" data-linktype="external">Rampage Raptor</a></td>
 </tr>
@@ -3736,6 +3869,10 @@
 <td><a href="https://www.serpentype.com/" data-linktype="external">Serpentype</a></td>
 </tr>
 <tr>
+<td>SF</td>
+<td><a href="http://sansfontieres.com/" data-linktype="external">Sans Fontières</a></td>
+</tr>
+<tr>
 <td>SfC</td>
 <td><a href="https://www.shapesforcash.com/" data-linktype="external">Shapes for Cash</a></td>
 </tr>
@@ -3832,6 +3969,10 @@
 <td>SourceNet</td>
 </tr>
 <tr>
+<td>SOBF</td>
+<td><a href="https://sorenbakholfonts.blogspot.com/" data-linktype="external">Soren Bakhol Fonts</a></td>
+</tr>
+<tr>
 <td>SOHO</td>
 <td><a href="http://www.softhorizons.net" data-linktype="external">Soft Horizons</a></td>
 </tr>
@@ -3868,8 +4009,16 @@
 <td><a href="http://www.sourcefoundry.org" data-linktype="external">Source Foundry</a></td>
 </tr>
 <tr>
+<td>SRCE</td>
+<td><a href="https://www.sourcetype.com/" data-linktype="external">Source Type</a></td>
+</tr>
+<tr>
 <td>SSFD</td>
 <td>Stefan Stoychev</td>
+</tr>
+<tr>
+<td>ST</td>
+<td>SocioType</td>
 </tr>
 <tr>
 <td>STC</td>
@@ -4187,6 +4336,10 @@
 <td><a href="http://walkingfearless.com/" data-linktype="external">tudotype</a></td>
 </tr>
 <tr>
+<td>TWK</td>
+<td>TYPE.WELTKERN®</td>
+</tr>
+<tr>
 <td>TY</td>
 <td><a href="http://www.typocalypse.com/" data-linktype="external">Typocalypse</a></td>
 </tr>
@@ -4216,7 +4369,7 @@
 </tr>
 <tr>
 <td>TYPE</td>
-<td><a href="http://www.visiblelink.com.au/fonts.html" data-linktype="external">Type Associates Pty Ltd</a></td>
+<td><a href="https://typeassociates.com" data-linktype="external">Type Associates Pty Ltd</a></td>
 </tr>
 <tr>
 <td>TYPO</td>
@@ -4377,6 +4530,10 @@
 <td><a href="http://www.visualtype.com/" data-linktype="external">VISUALTYPE SRL</a></td>
 </tr>
 <tr>
+<td>VTC</td>
+<td><a href="https://www.vocaltype.co/" data-linktype="external">Vocal Type Co.</a></td>
+</tr>
+<tr>
 <td>VTF</td>
 <td><a href="http://www.velvetyne.fr" data-linktype="external">Velvetyne Type Foundry</a></td>
 </tr>
@@ -4525,6 +4682,10 @@
 <td>YWFT</td>
 <td><a href="http://www.youworkforthem.com" data-linktype="external">YouWorkForThem</a></td>
 </tr>
+<tr>
+<td>YYYY</td>
+<td><a href="https://yellowtype.com/" data-linktype="external">Yellow Type Foundry</a></td>
+</tr>
 </table>
 <h2 id="z">Z</h2>
 <table>
@@ -4569,28 +4730,30 @@
 						</main>
 
 						<!-- page rating section -->
-								<div class="is-hidden-desktop has-border-top has-margin-top-large has-padding-top-small">
+								<div class="is-hidden-desktop has-border-top has-margin-top-large has-padding-top-large binary-rating-holder">
 									
-									
-<div class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
+	
+	
+
+	<div class="feedback-verbatim has-border-bottom has-padding-bottom-large has-margin-bottom-small" data-bi-name="rating">
     <div class="binary-rating">
         <div class="binary-rating-buttons">
-            <h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
-            <div>
-                <button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-mobile">
+				<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small is-size-h4 has-margin-bottom-medium">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-desktop">
                     <span aria-hidden="true" class="icon docon docon-like"></span>
                     <span>Yes</span>
                 </button>
-                <button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-mobile">
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-desktop">
                     <span aria-hidden="true" class="icon docon docon-dislike"></span>
                     <span>No</span>
                 </button>
             </div>
         </div>
-        <form class="feedback-verbatim-form is-hidden" id="rating-container-mobile">
-            <div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-extra-small">
-                <label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
-                <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-desktop">
+            <div class="verbatim-textarea box is-relative box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-extra-small">
+                <label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none box-shadow-none has-inner-focus"></textarea>
             </div>
             <div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
                 <button class="skip-rating button is-transparent has-text-primary is-small has-border-none" type="button">Skip</button>
@@ -4601,7 +4764,7 @@
     <div class="thankyou-rating is-hidden" tabindex="-1">
         <p>Thank you.</p>
     </div>
-</div>								</div>
+</div>									</div>
 						<!-- end page rating section -->
 
 
@@ -4626,10 +4789,9 @@
     </div>
 
     <div class="action-container is-flex has-flex-justify-content-end has-margin-top-small has-margin-bottom-small">
-        <a class="view-on-github" data-bi-name="view-on-github" href="https://github.com/MicrosoftDocs/typography-issues/issues">
+        <a class="view-on-github has-external-link-indicator" data-bi-name="view-on-github" href="https://github.com/MicrosoftDocs/typography-issues/issues">
             <span aria-hidden="true" class="docon docon-brand-github"></span>
             <span>View all page feedback</span>
-            <span aria-hidden="true" class="icon docon docon-navigate-external is-size-h5"></span>
         </a>
     </div>
 </section>
@@ -4643,8 +4805,7 @@
 
 
 	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
-
-    <div class="is-flex is-full-height has-padding-right-extra-large-desktop">
+	<div class="is-flex is-full-height has-padding-right-extra-large-desktop">
 			<a data-mscc-ic="false" class="locale-selector-link has-flex-shrink-none" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-large has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
 		<div class="has-margin-left-medium has-margin-right-medium has-flex-shrink-none">
 <div class="dropdown has-caret-up">
@@ -4733,17 +4894,16 @@ High contrast					</span>
 	</div>
 </div>		</div>
 	</div>
-    <ul class="links" data-bi-name="footerlinks">
+	<ul class="links" data-bi-name="footerlinks">
 		<li class="manage-cookies-holder" hidden></li>
-			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
-			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
-			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
-				<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
-			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
-				<li><a data-mscc-ic="false" href="https://aka.ms/sitefeedback" data-bi-name="feedback">Site Feedback</a></li>
-			<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
-		<li>&copy; Microsoft 2020</li>
-    </ul>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
 </footer>
 						</div>
 					</div>
@@ -4751,26 +4911,29 @@ High contrast					</span>
 					<div class="is-size-small right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
 						<div id="affixed-right-container" class="doc-outline is-fixed is-vertically-scrollable">
 								
-								
-<div class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
+	
+	
+
+	<div class="feedback-verbatim has-border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
     <div class="binary-rating">
         <div class="binary-rating-buttons">
-            <h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
-            <div>
-                <button class="thumb-rating like has-inner-focus has-padding-left-extra-small has-padding-right-extra-small" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-desktop">
+
+				<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+			<div>
+                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-mobile">
                     <span aria-hidden="true" class="icon docon docon-like"></span>
                     <span>Yes</span>
                 </button>
-                <button class="thumb-rating dislike has-inner-focus has-padding-none has-padding-right-extra-small" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-desktop">
+                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-mobile">
                     <span aria-hidden="true" class="icon docon docon-dislike"></span>
                     <span>No</span>
                 </button>
             </div>
         </div>
-        <form class="feedback-verbatim-form is-hidden" id="rating-container-desktop">
-            <div class="verbatim-textarea box is-relative has-box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-extra-small">
-                <label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
-                <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none has-box-shadow-none has-inner-focus"></textarea>
+        <form class="feedback-verbatim-form is-hidden" id="rating-container-mobile">
+            <div class="verbatim-textarea box is-relative box-shadow-none has-border has-margin-top-small has-padding-extra-small is-size-extra-small">
+                <label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
+                <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea has-border-none box-shadow-none has-inner-focus"></textarea>
             </div>
             <div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
                 <button class="skip-rating button is-transparent has-text-primary is-small has-border-none" type="button">Skip</button>
@@ -4800,15 +4963,12 @@ High contrast					</span>
 		<!--end of .mainContainer -->
 	</div>
 
-	<div id="openFeedbackContainer" class="openfeedback-container"></div>
-
 	<div class="footerContainer has-default-focus is-hidden-interactive ">
 
 
 
 	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
-
-    <div class="is-flex is-full-height has-padding-right-extra-large-desktop">
+	<div class="is-flex is-full-height has-padding-right-extra-large-desktop">
 			<a data-mscc-ic="false" class="locale-selector-link has-flex-shrink-none" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-large has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
 		<div class="has-margin-left-medium has-margin-right-medium has-flex-shrink-none">
 <div class="dropdown has-caret-up">
@@ -4897,17 +5057,16 @@ High contrast					</span>
 	</div>
 </div>		</div>
 	</div>
-    <ul class="links" data-bi-name="footerlinks">
+	<ul class="links" data-bi-name="footerlinks">
 		<li class="manage-cookies-holder" hidden></li>
-			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
-			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
-			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
-				<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
-			<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
-				<li><a data-mscc-ic="false" href="https://aka.ms/sitefeedback" data-bi-name="feedback">Site Feedback</a></li>
-			<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
-		<li>&copy; Microsoft 2020</li>
-    </ul>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+		<li>&copy; Microsoft 2021</li>
+	</ul>
 </footer>
 	</div>
 
