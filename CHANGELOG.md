@@ -21,6 +21,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **license_path** condition: do not cause an ERROR on families lacking a license file. (issue #3201)
 
 ### New Checks
+  - **[com.google.fonts/check/cjk_vertical_metrics_regressions]:** Check CJK family has the same vertical metrics as the same family hosted on Google Fonts (issue #3242)
   - **[com.google.fonts/check/cjk_not_enough_glyphs]:** Warn users if there are less than 40 CJK glyphs in a font. (PR #3214)
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
   - **[com.google.fonts/check/description/family_update]:** On a family update, the DESCRIPTION.en_us.html file should ideally also be updated. (issue #3182)
@@ -31,6 +32,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/iso15008_proportions]:** Check that fonts designed for use in in-car environments have suitable proportions (issue #3250)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/vertical_metrics_regressions]:** Skip check if fonts are CJK (issue #3242) and refactor fsSelection bit 7 requirements (issue #3241).
   - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Only check axes which are in the GF Axis Registry (PR #3217)
   - **[com.google.fonts/check/mandatory_avar_table]:** Update rationale to mention that this check may be ignored if axis progressions are linear.
