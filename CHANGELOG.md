@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New Profile
   - Created a Type Network profile for checking some of their new axis proposals (issue #3130)
+  - Created an ISO15008 profile for checking suitability for use in in-car display environments (issue #1832)
 
 ### Bugfixes
   - **license** condition now assumes that all license files in a given project repo are identical if more than one is found. With that some checks wont be skipped. We should have a fontbakery check to ensuring that assumption is valid, though. (issue #3172)
@@ -27,6 +28,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/shaping/regression]:** Check that OpenType shaping produces results consistent with predefined expectations.
   - **[com.google.fonts/check/shaping/forbidden]:** Check that OpenType shaping does not produce "forbidden" glyphs (e.g. `.notdef`, visible virama, etc.).
   - **[com.google.fonts/check/shaping/collides]:** Check that OpenType shaping does not produce glyphs which collide with one another (e.g. `ïï`).
+  - **[com.google.fonts/check/iso15008_proportions]:** Check that fonts designed for use in in-car environments have suitable proportions (issue #3250)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
