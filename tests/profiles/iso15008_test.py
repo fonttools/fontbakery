@@ -10,7 +10,7 @@ from fontbakery.profiles import iso15008
 from fontTools.ttLib import TTFont
 
 
-def test_check_dsig():
+def test_check_iso15008_proportions():
     """Check if 0.65 => (H width / H height) => 0.80"""
     check = CheckTester(iso15008, "com.google.fonts/check/iso15008_proportions")
 
