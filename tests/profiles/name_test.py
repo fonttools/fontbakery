@@ -65,6 +65,7 @@ def test_check_monospace():
     """ Checking correctness of monospaced metadata. """
     check = CheckTester(opentype_profile,
                         "com.google.fonts/check/monospace")
+    import string
     from fontbakery.constants import (PANOSE_Proportion,
                                       IsFixedWidth)
 
@@ -107,7 +108,7 @@ def test_check_monospace():
     cmap = ttFont["cmap"]
     for subtable in list(cmap.tables):
         # Remove A-Z, a-z from cmap
-        for code in list(range(0x41, 0x5B)) + list(range(0x61, 0x7B)):
+        for code in list(map(ord, string.ascii_letters)):
             if subtable.cmap.get(code):
                 del subtable.cmap[code]
     assert_results_contain(check(ttFont),
@@ -169,7 +170,7 @@ def test_check_monospace():
     cmap = ttFont["cmap"]
     for subtable in list(cmap.tables):
         # Remove A-Z, a-z from cmap
-        for code in list(range(0x41, 0x5B)) + list(range(0x61, 0x7B)):
+        for code in list(map(ord, string.ascii_letters)):
             if subtable.cmap.get(code):
                 del subtable.cmap[code]
 
