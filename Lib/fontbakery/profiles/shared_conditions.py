@@ -158,9 +158,9 @@ def glyph_metrics_stats(ttFont):
     what's the maximum glyph width and what's the most common width.
 
     For a font to be considered monospaced, if at least 80% of ASCII
-    characters have glyphs, then at least 80% of must have the same width,
-    otherwise all glyphs of printable characters must have one of two widths
-    or be zero-width.
+    characters have glyphs, then at least 80% of those must have the same
+    width, otherwise all glyphs of printable characters must have one of
+    two widths or be zero-width.
     """
     glyph_metrics = ttFont['hmtx'].metrics
     ascii_glyph_names = [ttFont.getBestCmap()[c] for c in range(32, 127)
