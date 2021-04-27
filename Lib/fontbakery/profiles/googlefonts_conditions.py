@@ -423,7 +423,7 @@ def remote_styles(familyname_with_spaces):
         from fontbakery.utils import download_file
         url_prefix = 'https://fonts.google.com/download?family='
         url = '{}{}'.format(url_prefix, familyname.replace(' ', '+'))
-        return ZipFile(download_file(url))
+        return ZipFile(download_file(url))  # pylint: disable=R1732
 
 
     def fonts_from_zip(zipfile):
