@@ -4419,7 +4419,12 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
         expected_ascender = math.ceil(gf_ttFont["OS/2"].usWinAscent * upm_scale)
         expected_descender = -math.ceil(gf_ttFont["OS/2"].usWinDescent * upm_scale)
 
-    full_font_name = ttFont['name'].getName(4, 3, 1, 1033).toUnicode()
+    full_font_name = ttFont['name'].getName(
+        NameID.FULL_FONT_NAME,
+        PlatformID.WINDOWS,
+        UnicodeEncodingID.UNICODE_1_1,
+        WindowsLanguageID.ENGLISH_USA
+    ).toUnicode()
     typo_ascender = ttFont['OS/2'].sTypoAscender
     typo_descender = ttFont['OS/2'].sTypoDescender
     hhea_ascender = ttFont['hhea'].ascent

@@ -3164,7 +3164,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     assert_PASS(check(ttFont, remote),
                 'with a good family...')
 
-    # FAIL with a changed vertical metric value
+    # FAIL with a changed vertical metric values
     remote2 = deepcopy(remote)
     ttFont2 = deepcopy(ttFont)
     ttFont2['OS/2'].sTypoAscender = 0
@@ -3172,11 +3172,20 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
                            FAIL, 'bad-typo-ascender',
                            'with a family which has an incorrect typoAscender...')
 
-    # TODO:
-    #   FAIL, "bad-typo-descender"
-    #   FAIL, "bad-hhea-ascender"
-    #   FAIL, "bad-hhea-descender"
+    ttFont2['OS/2'].sTypoDescender = 0
+    assert_results_contain(check(ttFont2, remote2),
+                           FAIL, 'bad-typo-descender',
+                           'with a family which has an incorrect typoDescender...')
 
+    ttFont2['hhea'].ascent = 0
+    assert_results_contain(check(ttFont2, remote2),
+                           FAIL, 'bad-hhea-ascender',
+                           'with a family which has an incorrect hhea ascender...')
+
+    ttFont2['hhea'].descent = 0
+    assert_results_contain(check(ttFont2, remote2),
+                           FAIL, 'bad-hhea-descender',
+                           'with a family which has an incorrect hhea descender...')
 
     # Fail if family on Google Fonts has fsSelection bit 7 enabled but checked fonts don't
     remote3 = deepcopy(remote)
