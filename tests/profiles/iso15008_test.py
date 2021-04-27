@@ -35,3 +35,28 @@ def test_check_iso15008_proportions():
         "invalid-proportion",
         "The proportion of H width to H height",
     )
+
+def test_check_iso15008_stem_width():
+    """Check if 0.10 <= (stem width / ascender) <= 0.82"""
+    check = CheckTester(iso15008, "com.google.fonts/check/iso15008_stem_width")
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-SemiBold.ttf"))
+    assert_PASS(check(ttFont), "with a good font...")
+
+    # Wonky Paths doesn't have a l
+    ttFont = TTFont(TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf"))
+    assert_results_contain(
+        check(ttFont),
+        FAIL,
+        "no-stem-width",
+        "Could not determine",
+    )
+
+    # Cabin Regular is actually slightly too thin for displays
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    assert_results_contain(
+        check(ttFont),
+        FAIL,
+        "invalid-proportion",
+        "The proportion of stem width to ascender",
+    )
