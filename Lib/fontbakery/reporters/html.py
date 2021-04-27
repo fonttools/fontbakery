@@ -30,8 +30,8 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
         super().__init__(**kwd)
 
     def write(self):
-        fh = open(self.output_file, "w", encoding="utf-8")
-        fh.write(self.get_html())
+        with open(self.output_file, "w", encoding="utf-8") as fh:
+            fh.write(self.get_html())
         print(f'A report in HTML format has been saved to "{self.output_file}"')
 
 

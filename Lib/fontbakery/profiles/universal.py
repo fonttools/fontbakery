@@ -266,8 +266,10 @@ def com_google_fonts_check_ftxvalidator(font, ftxvalidator_cmd):
         ]
         # here we capture stdout and stderr separately to avoid
         # corrupting the plist data to be parsed a bit later:
-        pipes = subprocess.Popen(ftx_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        ftx_output, ftx_err = pipes.communicate()
+        with subprocess.Popen(
+            ftx_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        ) as pipes:
+            ftx_output, ftx_err = pipes.communicate()
 
         if len(ftx_err):
             yield WARN, \
