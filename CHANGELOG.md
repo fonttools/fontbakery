@@ -29,6 +29,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/shaping/forbidden]:** Check that OpenType shaping does not produce "forbidden" glyphs (e.g. `.notdef`, visible virama, etc.).
   - **[com.google.fonts/check/shaping/collides]:** Check that OpenType shaping does not produce glyphs which collide with one another (e.g. `ïï`).
   - **[com.google.fonts/check/iso15008_proportions]:** Check that fonts designed for use in in-car environments have suitable proportions (issue #3250)
+  - **[com.google.fonts/check/iso15008_stem_width]:** Check that fonts designed for use in in-car environments have suitable weight (issue #3251)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
