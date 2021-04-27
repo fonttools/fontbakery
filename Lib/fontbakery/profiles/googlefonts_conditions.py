@@ -2,7 +2,12 @@ import os
 import re
 
 from fontbakery.callable import condition
-from fontbakery.constants import NameID
+from fontbakery.constants import (
+    NameID,
+    PlatformID,
+    UnicodeEncodingID,
+    WindowsLanguageID
+)
 
 # -------------------------------------------------------------------
 # FIXME! Redundant with @condition canonical_stylename(font)?
@@ -473,9 +478,15 @@ def regular_ttFont(ttFonts):
         if "-Regular." in os.path.basename(ttFont.reader.file.name):
             return ttFont
         nametable = ttFont['name']
-        # Some static fonts may not have Regular in their stylenames.
-        if nametable.getName(2, 3, 1, 0x409).toUnicode() == "Regular" and \
-           nametable.getName(17, 3, 1, 0x409) == None:
+        sub_family = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
+                                       PlatformID.WINDOWS,
+                                       UnicodeEncodingID.UNICODE_1_1,
+                                       WindowsLanguageID.ENGLISH_USA)
+        typo_sub_family = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
+                                            PlatformID.WINDOWS,
+                                            UnicodeEncodingID.UNICODE_1_1,
+                                            WindowsLanguageID.ENGLISH_USA)
+        if sub_family and sub_family.toUnicode() == "Regular" and not typo_sub_family:
             return ttFont
         if is_variable_font(ttFont):
             if get_instance_axis_value(ttFont, "Regular", "wght"):
