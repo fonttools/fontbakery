@@ -32,6 +32,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/iso15008_stem_width]:** Check that fonts designed for use in in-car environments have suitable weight (issue #3251)
   - **[com.google.fonts/check/iso15008_intercharacter_spacing]:** Check that fonts designed for use in in-car environments have suitable intercharacter spacing (issue #3252)
   - **[com.google.fonts/check/iso15008_interword_spacing]:** Check that fonts designed for use in in-car environments have suitable interword spacing (issue #3253)
+  - **[com.google.fonts/check/iso15008_interline_spacing]:** Check that fonts designed for use in in-car environments have suitable interline spacing (issue #3254)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.

@@ -26,6 +26,7 @@ CHECKS = [
     "com.google.fonts/check/iso15008_stem_width",
     "com.google.fonts/check/iso15008_intercharacter_spacing",
     "com.google.fonts/check/iso15008_interword_spacing",
+    "com.google.fonts/check/iso15008_interline_spacing",
 ]
 
 
@@ -262,6 +263,51 @@ def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
             "bad-interword-spacing",
             f"The interword space ({space_width}) was outside the recommended range ({l_m*2.5}-{l_m*3.0})",
         )
+
+
+@check(
+    id="com.google.fonts/check/iso15008_interline_spacing",
+    rationale="""
+        According to ISO 15008, fonts used for in-car displays should not be too narrow or too wide.
+        To ensure legibility of this font on in-car information systems it is recommended that  the vertical metrics be set to a minimum at least one stem width between the bottom of the descender and the top of the ascender."""
+    + DISCLAIMER,
+)
+def com_google_fonts_check_iso15008_interline_spacing(ttFont):
+    """Check if spacing between lines is adequate for display use"""
+    glyphset = ttFont.getGlyphSet()
+    if "h" not in glyphset or "g" not in glyphset:
+        yield FAIL, Message(
+            "glyph-not-present",
+            "There was no 'g'/'h' glyph in the font, so the spacing could not be tested",
+        )
+        return
+
+    h_glyph = glyphset["h"]
+    pen = BoundsPen(glyphset)
+    h_glyph._glyph.draw(pen, ttFont.get("glyf"))
+    (_, _, _, h_yMax) = pen.bounds
+
+    g_glyph = glyphset["g"]
+    pen = BoundsPen(glyphset)
+    g_glyph._glyph.draw(pen, ttFont.get("glyf"))
+    (_, g_yMin, _, _) = pen.bounds
+
+    linegap = (
+        (g_yMin - ttFont["OS/2"].sTypoDescender)
+        + ttFont["OS/2"].sTypoLineGap
+        + (ttFont["OS/2"].sTypoAscender - h_yMax)
+    )
+    width = stem_width(ttFont)
+    if width is None:
+        yield FAIL, Message("no-stem-width", "Could not determine stem width")
+        return
+    if linegap < width:
+        yield FAIL, Message(
+            "bad-interline-spacing",
+            f"The interline space {linegap} should be more than the stem width {width}",
+        )
+        return
+    yield PASS, "Amount of interline space was adequate"
 
 
 profile.auto_register(globals())

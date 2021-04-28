@@ -116,3 +116,21 @@ def test_check_iso15008_interword_spacing():
         "bad-interword-spacing",
         "The interword space",
     )
+
+
+def test_check_iso15008_interline_spacing():
+    """Check if spacing between lines is adequate for display use"""
+    check = CheckTester(iso15008, "com.google.fonts/check/iso15008_interline_spacing")
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    assert_PASS(check(ttFont), "with a good font...")
+
+    ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
+    # 39 units at bottom of g + 49 units at top of h + no typolinegap = 88
+    # stem width = 147
+    assert_results_contain(
+        check(ttFont),
+        FAIL,
+        "bad-interline-spacing",
+        "The interline space",
+    )
