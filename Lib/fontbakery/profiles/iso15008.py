@@ -25,6 +25,7 @@ CHECKS = [
     "com.google.fonts/check/iso15008_proportions",
     "com.google.fonts/check/iso15008_stem_width",
     "com.google.fonts/check/iso15008_intercharacter_spacing",
+    "com.google.fonts/check/iso15008_interword_spacing",
 ]
 
 
@@ -215,6 +216,51 @@ def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
         yield FAIL, Message(
             "bad-diagonal-diagonal-spacing",
             "Diagonal strokes (vv) were touching",
+        )
+
+
+@check(
+    id="com.google.fonts/check/iso15008_interword_spacing",
+    rationale="""
+        According to ISO 15008, fonts used for in-car displays should not be too narrow or too wide.
+        To ensure legibility of this font on in-car information systems it is recommended that the space character should have advance width between 250% and 300% of the space between the letters l and m."""
+    + DISCLAIMER,
+)
+def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
+    """Check if spacing between words is adequate for display use"""
+    l_intersections = xheight_intersections(ttFont, "l")
+    if len(l_intersections) < 2:
+        yield FAIL, Message(
+            "glyph-not-present",
+            "There was no 'l' glyph in the font, so the spacing could not be tested",
+        )
+        return
+
+    l_advance = ttFont["hmtx"]["l"][0]
+    l_rsb = l_advance - l_intersections[-1].point.x
+
+    glyphset = ttFont.getGlyphSet()
+    h_glyph = glyphset["m"]
+    pen = BoundsPen(glyphset)
+    h_glyph._glyph.draw(pen, ttFont.get("glyf"))
+    (xMin, yMin, xMax, yMax) = pen.bounds
+    m_advance = ttFont["hmtx"]["m"][0]
+    m_lsb = xMin
+    m_rsb = m_advance - (m_lsb + xMax - xMin)
+
+    n_lsb = ttFont["hmtx"]["n"][1]
+
+    l_m = l_rsb + pair_kerning(font, "l", "m") + m_lsb
+    space_width = ttFont["hmtx"]["space"][0]
+    # Add spacing caused by normal sidebearings
+    space_width += m_rsb + n_lsb
+
+    if 2.50 <= space_width / l_m <= 3.0:
+        yield PASS, "Advance width of interword space was adequate"
+    else:
+        yield FAIL, Message(
+            "bad-interword-spacing",
+            f"The interword space ({space_width}) was outside the recommended range ({l_m*2.5}-{l_m*3.0})",
         )
 
 
