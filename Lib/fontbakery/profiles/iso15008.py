@@ -26,7 +26,6 @@ CHECKS = [
 ]
 
 
-@condition
 def stem_width(ttFont):
     glyphset = ttFont.getGlyphSet()
     if "l" not in glyphset:
@@ -92,7 +91,6 @@ def com_google_fonts_check_iso15008_proportions(ttFont):
 def com_google_fonts_check_iso15008_stem_width(ttFont):
     """Check if 0.10 <= (stem width / ascender) <= 0.82"""
     width = stem_width(ttFont)
-    print("Stem width", width)
     if width is None:
         yield FAIL, Message("no-stem-width", "Could not determine stem width")
         return
