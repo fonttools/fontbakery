@@ -12,6 +12,7 @@ from beziers.path import BezierPath
 from beziers.line import Line
 from beziers.point import Point
 import beziers
+import uharfbuzz as hb
 
 
 profile = profile_factory(default_section=Section("Suitability for In-Car Display"))
@@ -23,16 +24,18 @@ DISCLAIMER = """
 CHECKS = [
     "com.google.fonts/check/iso15008_proportions",
     "com.google.fonts/check/iso15008_stem_width",
+    "com.google.fonts/check/iso15008_intercharacter_spacing",
 ]
 
 
-def stem_width(ttFont):
+def xheight_intersections(ttFont, glyph):
     glyphset = ttFont.getGlyphSet()
-    if "l" not in glyphset:
-        return None
-    paths = BezierPath.fromFonttoolsGlyph(ttFont, "l")
+    if glyph not in glyphset:
+        return []
+
+    paths = BezierPath.fromFonttoolsGlyph(ttFont, glyph)
     if len(paths) != 1:
-        return None
+        return []
     path = paths[0]
 
     xheight = ttFont["OS/2"].sxHeight
@@ -43,11 +46,40 @@ def stem_width(ttFont):
     intersections = []
     for seg in path.asSegments():
         intersections.extend(seg.intersections(ray))
+    return sorted(intersections, key=lambda i: i.point.x)
 
+
+def stem_width(ttFont):
+    glyphset = ttFont.getGlyphSet()
+    if "l" not in glyphset:
+        return None
+
+    intersections = xheight_intersections(ttFont, "l")
     if len(intersections) != 2:
         return None
     (i1, i2) = intersections[0:2]
     return abs(i1.point.x - i2.point.x)
+
+
+def pair_kerning(font, left, right):
+    """The kerning between two glyphs (specified by name), in font units."""
+    with open(font, "rb") as fontfile:
+        fontdata = fontfile.read()
+    face = hb.Face(fontdata)
+    font = hb.Font(face)
+    scale = face.upem
+    font.scale = (scale, scale)
+    buf = hb.Buffer()
+    buf.add_str(left + right)
+    buf.guess_segment_properties()
+    hb.shape(font, buf, {"kern": True})
+    pos = buf.glyph_positions[0].x_advance
+    buf = hb.Buffer()
+    buf.add_str(left + right)
+    buf.guess_segment_properties()
+    hb.shape(font, buf, {"kern": False})
+    pos2 = buf.glyph_positions[0].x_advance
+    return pos - pos2
 
 
 @check(
@@ -103,6 +135,86 @@ def com_google_fonts_check_iso15008_stem_width(ttFont):
             "invalid-proportion",
             f"The proportion of stem width to ascender ({proportion})"
             f"does not conform to the expected range of 0.10-0.20",
+        )
+
+
+@check(
+    id="com.google.fonts/check/iso15008_intercharacter_spacing",
+    rationale="""
+        According to ISO 15008, fonts used for in-car displays should not be too narrow or too wide.
+        To ensure legibility of this font on in-car information systems it is recommended that the spacing falls within the following values:
+        * space between vertical strokes (e.g. "ll") should be 150%-240% of the stem width.
+        * space between diagonals and verticals (e.g. "vl") should be at least 85% of the stem width.
+        * diagonal characters should not touch (e.g. "vv")."""
+    + DISCLAIMER,
+)
+def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
+    """Check if spacing between characters is adequate for display use"""
+    width = stem_width(ttFont)
+
+    # Because an l can have a curly tail, we don't want the *glyph* sidebearings;
+    # we want the sidebearings measured using a line at Y=x-height.
+    l_intersections = xheight_intersections(ttFont, "l")
+    if width is None or len(l_intersections) < 2:
+        yield FAIL, Message("no-stem-width", "Could not determine stem width")
+        return
+
+    l_lsb = l_intersections[0].point.x
+    l_advance = ttFont["hmtx"]["l"][0]
+    l_rsb = l_advance - l_intersections[-1].point.x
+
+    l_l = l_rsb + pair_kerning(font, "l", "l") + l_lsb
+    if l_l is None:
+        yield FAIL, Message(
+            "glyph-not-present",
+            "There was no 'l' glyph in the font, so the spacing could not be tested",
+        )
+        return
+    if 1.5 <= (l_l / width) <= 2.4:
+        yield PASS, "Distance between vertical strokes was adequate"
+    else:
+        yield FAIL, Message(
+            "bad-vertical-vertical-spacing",
+            f"The space between vertical strokes ({l_l}) "
+            f"does not conform to the expected range of {width * 1.5}-{width * 2.4}",
+        )
+
+    # For v, however, a simple LSB/RSB is adequate.
+    glyphset = ttFont.getGlyphSet()
+    h_glyph = glyphset["v"]
+    pen = BoundsPen(glyphset)
+    h_glyph._glyph.draw(pen, ttFont.get("glyf"))
+    (xMin, yMin, xMax, yMax) = pen.bounds
+    v_advance = ttFont["hmtx"]["v"][0]
+
+    v_lsb = xMin
+    v_rsb = v_advance - (v_lsb + xMax - xMin)
+
+    l_v = l_rsb + pair_kerning(font, "l", "v") + v_lsb
+
+    if l_v is None:
+        yield FAIL, Message(
+            "glyph-not-present",
+            "There was no 'v' glyph in the font, so the spacing could not be tested",
+        )
+        return
+
+    if (l_v / width) > 0.85:
+        yield PASS, "Distance between vertical and diagonal strokes was adequate"
+    else:
+        yield FAIL, Message(
+            "bad-vertical-diagonal-spacing",
+            f"The space between vertical and diagonal strokes ({l_v}) "
+            f"was less than the expected value of {width * 0.85}",
+        )
+
+    v_v = v_rsb + pair_kerning(font, "v", "v") + v_lsb
+    if v_v > 0:
+        yield PASS, "Distance between diagonal strokes was adequate"
+    else:
+        yield FAIL, Message(
+            "bad-diagonal-diagonal-spacing",
+            "Diagonal strokes (vv) were touching",
         )
 
 
