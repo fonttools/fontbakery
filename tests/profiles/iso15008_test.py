@@ -98,3 +98,21 @@ def test_check_iso15008_intercharacter_spacing():
         "bad-diagonal-diagonal-spacing",
         "Diagonal strokes (vv) were touching",
     )
+
+
+def test_check_iso15008_interword_spacing():
+    """Check if spacing between words is adequate for display use"""
+    check = CheckTester(iso15008, "com.google.fonts/check/iso15008_interword_spacing")
+
+    ttFont = TTFont(TEST_FILE("cabin/CabinCondensed-Bold.ttf"))
+    # lm space is 112; m+space+l space is 286; 286/112 = 255%
+    assert_PASS(check(ttFont), "with a good font...")
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    # lm space is 147; m+space+l space is 341; 341/147 = 232%
+    assert_results_contain(
+        check(ttFont),
+        FAIL,
+        "bad-interword-spacing",
+        "The interword space",
+    )
