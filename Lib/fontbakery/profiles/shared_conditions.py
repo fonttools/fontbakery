@@ -163,6 +163,9 @@ def glyph_metrics_stats(ttFont):
     two widths or be zero-width.
     """
     glyph_metrics = ttFont['hmtx'].metrics
+    # NOTE: `range(a, b)` includes `a` and does not include `b`.
+    #       Here we don't include 0-31 as well as 127
+    #       because these are control characters.
     ascii_glyph_names = [ttFont.getBestCmap()[c] for c in range(32, 127)
                          if c in ttFont.getBestCmap()]
 
