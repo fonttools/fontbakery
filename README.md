@@ -1,6 +1,6 @@
 [![Latest PyPI Version](https://img.shields.io/pypi/v/fontbakery.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
 [![Python](https://img.shields.io/pypi/pyversions/fontbakery.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
-[![Travis Build Status](https://travis-ci.org/googlefonts/fontbakery.svg)](https://travis-ci.org/googlefonts/fontbakery)
+[![Build Status](https://github.com/googlefonts/fontbakery/actions/workflows/tox.yml/badge.svg)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg)](https://github.com/googlefonts/fontbakery/blob/main/LICENSE.txt)
 
 # [![Font Bakery](data/logo.png)](http://fontbakery.com)
@@ -14,7 +14,7 @@ And for a full introduction [check out our documentation at Read The Docs.](http
 Font Bakery has an active community of contributors from foundries around the world, including Adobe Fonts, Dalton Maag, Type Network, and Google Fonts. Please join our developer chat channel at https://gitter.im/fontbakery/Lobby
 
 Font Bakery is not an official Google project, and Google provides no support for it.
-However, throughout 2018, 2019 and 2020 the core project maintainers Felipe Corrêa da Silva Sanches <juca@members.fsf.org> and Lasse Fister <commander@graphicore.de> are commissioned by the Google Fonts team to maintain it.
+However, throughout 2018-2021 the core project maintainers Felipe Corrêa da Silva Sanches <juca@members.fsf.org> and Lasse Fister <commander@graphicore.de> are commissioned by the Google Fonts team to maintain it.
 
 ## License
 
