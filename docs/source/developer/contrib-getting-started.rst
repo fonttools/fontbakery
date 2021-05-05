@@ -12,9 +12,6 @@ The project is run on Github, in the
 accept your patches and contributions to this project. There are a few
 guidelines you need to follow to make that happen.
 
-Our production vision and high level requirements are explained in 
-:doc:`../user/BRIEF`.
-
 We use Github’s Issue Tracker to report and track bugs, map out future
 improvements, set priorities and assign people to them. We only assign
 an issue to someone when they are going to work on that issue soon. We
