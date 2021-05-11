@@ -63,6 +63,7 @@ setup(
         'toml',
         'PyYAML',
         'defcon',
+        'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
         'font-v',
         'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
         'lxml',
@@ -72,7 +73,6 @@ setup(
         'protobuf>=3.7.0',  # 3.7.0 fixed a bug on parsing some METADATA.pb files
                             # (see https://github.com/googlefonts/fontbakery/issues/2200)
         'requests',
-        'ttfautohint-py',
         'ufolint',
         'unidecode',
         'beziers',

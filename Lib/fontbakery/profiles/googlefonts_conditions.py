@@ -291,23 +291,23 @@ def hinting_stats(font):
     """
     Return file size differences for a hinted font compared to an dehinted version of same file
     """
-    from ttfautohint import ttfautohint, libttfautohint
     from io import BytesIO
+    from dehinter.font import dehint
     from fontTools.ttLib import TTFont
     from fontTools.subset import main as pyftsubset
     from fontbakery.profiles.shared_conditions import (is_ttf,
                                                        is_cff,
                                                        is_cff2)
 
-    if is_ttf(TTFont(font)):
-        original_buffer = BytesIO()
-        TTFont(font).save(original_buffer)
-        dehinted_buffer = ttfautohint(in_buffer=original_buffer.getvalue(),
-                                      dehint=True)
-        dehinted_size = len(dehinted_buffer)
-        version = libttfautohint.version_string
-
-    elif is_cff(TTFont(font)) or is_cff2(TTFont(font)):
+    ttFont = TTFont(font)
+    if is_ttf(ttFont):
+        version = "" # TODO
+        dehinted_buffer = BytesIO()
+        dehint(ttFont, verbose=False)
+        ttFont.save(dehinted_buffer)
+        dehinted_buffer.seek(0)
+        dehinted_size = len(dehinted_buffer.read())
+    elif is_cff(ttFont) or is_cff2(ttFont):
         ext = os.path.splitext(font)[1]
         tmp = font.replace(ext, "-tmp-dehinted%s" % ext)
         args = [font,
