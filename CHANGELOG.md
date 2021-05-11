@@ -19,6 +19,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bugfixes
   - **license** condition now assumes that all license files in a given project repo are identical if more than one is found. With that some checks wont be skipped. We should have a fontbakery check to ensuring that assumption is valid, though. (issue #3172)
   - **license_path** condition: do not cause an ERROR on families lacking a license file. (issue #3201)
+  - use Chris Simpkins' dehinter instead of ttfautohint-py to dehint font files while computing the file-size impact of hinting. (issue #3229)
 
 ### New Checks
   - **[com.google.fonts/check/cjk_vertical_metrics_regressions]:** Check CJK family has the same vertical metrics as the same family hosted on Google Fonts (issue #3242)
