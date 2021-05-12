@@ -189,7 +189,7 @@ def glyph_metrics_stats(ttFont):
                 relevant_glyph_names.add(name)
         # Remove character glyphs that are mark glyphs.
         gdef = ttFont.get("GDEF")
-        if gdef:
+        if gdef and gdef.table.GlyphClassDef:
             marks = {name
                      for name, c in gdef.table.GlyphClassDef.classDefs.items()
                      if c == 3
