@@ -207,7 +207,10 @@ def test_check_canonical_filename():
                            FAIL, 'invalid-char',
                            'with filename containing an underscore...')
 
-    # TODO: FAIL, 'unknown-name'
+    assert_results_contain(check(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf")),
+                           FAIL, 'unknown-name',
+                           'with a variable font that lacks some important name table entries...')
+
     # TODO: FAIL, 'bad-static-filename'
     # TODO: FAIL, 'varfont-with-static-filename'
 
