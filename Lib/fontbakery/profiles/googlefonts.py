@@ -223,7 +223,7 @@ def com_google_fonts_check_canonical_filename(font):
             yield FAIL,\
                   Message("unknown-name",
                           "FontBakery was unable to figure out which"
-                          " filename to expected for this variable font.\n"
+                          " filename to expect for this variable font.\n"
                           "This most likely means that the name table entries"
                           " used as reference such as FONT_FAMILY_NAME may"
                           " not be properly set.\n"
