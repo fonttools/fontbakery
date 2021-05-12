@@ -2,9 +2,12 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.36 (2021-Jun-??)
+## 0.7.36 (2021-May-14?)
 ### Release notes
-  - ...
+  - bugfixing quick release
+
+### Bug Fixes
+  - fix crash on *glyph_metrics_stats* condition (issue #3273)
 
 
 ## 0.7.35 (2021-May-12)
