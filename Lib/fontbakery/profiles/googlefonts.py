@@ -193,26 +193,11 @@ GOOGLEFONTS_PROFILE_CHECKS = \
 def com_google_fonts_check_canonical_filename(font):
     """Checking file is named canonically."""
     from fontTools.ttLib import TTFont
-    from .shared_conditions import is_variable_font
+    from .shared_conditions import (is_variable_font,
+                                    variable_font_filename)
     from .googlefonts_conditions import canonical_stylename
     from fontbakery.utils import suffix
-    from fontbakery.constants import (STATIC_STYLE_NAMES,
-                                      MacStyle)
-
-    def variable_font_filename(ttFont):
-        from fontbakery.utils import get_name_entry_strings
-        familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)[0]
-        typo_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
-        familyname = typo_familynames[0] if typo_familynames else familyname
-        familyname = "".join(familyname.split(' ')) #remove spaces
-        if bool(ttFont["head"].macStyle & MacStyle.ITALIC):
-            familyname+="-Italic"
-
-        tags = ttFont["fvar"].axes
-        tags = list(map(lambda t: t.axisTag, tags))
-        tags.sort()
-        tags = "[{}]".format(",".join(tags))
-        return f"{familyname}{tags}.ttf"
+    from fontbakery.constants import STATIC_STYLE_NAMES
 
     failed = False
     if "_" in os.path.basename(font):
@@ -233,6 +218,18 @@ def com_google_fonts_check_canonical_filename(font):
                           " a naming scheme typical of a static font.")
 
         expected = variable_font_filename(ttFont)
+        if expected is None:
+            failed = True
+            yield FAIL,\
+                  Message("unknown-name",
+                          "FontBakery was unable to figure out which"
+                          " filename to expected for this variable font.\n"
+                          "This most likely means that the name table entries"
+                          " used as reference such as FONT_FAMILY_NAME may"
+                          " not be properly set.\n"
+                          "Please review the name table entries.")
+            return
+
         font_filename = os.path.basename(font)
         if font_filename != expected:
             failed = True

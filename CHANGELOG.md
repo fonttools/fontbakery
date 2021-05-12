@@ -9,6 +9,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bug Fixes
   - fix crash on *glyph_metrics_stats* condition (issue #3273)
 
+### Changes to existing checks
+  - **[com.google.fonts/check/canonical_filename]:** Split out `variable_font_filename` into a reusable condition (issue #3274)
+
 
 ## 0.7.35 (2021-May-12)
 ### Release notes

@@ -207,6 +207,7 @@ def test_check_canonical_filename():
                            FAIL, 'invalid-char',
                            'with filename containing an underscore...')
 
+    # TODO: FAIL, 'unknown-name'
     # TODO: FAIL, 'bad-static-filename'
     # TODO: FAIL, 'varfont-with-static-filename'
 
