@@ -37,6 +37,28 @@ def is_cff2(ttFont):
 
 
 @condition
+def variable_font_filename(ttFont):
+    from fontbakery.utils import get_name_entry_strings
+    from fontbakery.constants import (MacStyle,
+                                      NameID)
+    familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+    typo_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+    if familynames == []:
+        return None
+
+    familyname = typo_familynames[0] if typo_familynames else familynames[0]
+    familyname = "".join(familyname.split(' ')) #remove spaces
+    if bool(ttFont["head"].macStyle & MacStyle.ITALIC):
+        familyname+="-Italic"
+
+    tags = ttFont["fvar"].axes
+    tags = list(map(lambda t: t.axisTag, tags))
+    tags.sort()
+    tags = "[{}]".format(",".join(tags))
+    return f"{familyname}{tags}.ttf"
+
+
+@condition
 def family_directory(font):
     """Get the path of font project directory."""
     if font:
