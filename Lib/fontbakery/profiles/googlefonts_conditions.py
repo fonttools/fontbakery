@@ -287,6 +287,22 @@ def familyname(font):
 
 
 @condition
+def installed_ttfa():
+   import subprocess
+   ttfa_cmd = ["ttfautohint",
+               "-V"]  # print version info
+   try:
+       ttfa_output = subprocess.check_output(ttfa_cmd,
+                                             stderr=subprocess.STDOUT)
+   except FileNotFoundError:
+       return None
+
+   installed = re.search(r'ttfautohint ([^-\n]*)(-.*)?\n',
+                         ttfa_output.decode('utf-8')).group(1)
+   return installed
+
+
+@condition
 def hinting_stats(font):
     """
     Return file size differences for a hinted font compared to an dehinted version of same file
@@ -299,9 +315,10 @@ def hinting_stats(font):
                                                        is_cff,
                                                        is_cff2)
 
+    hinted_size = os.stat(font).st_size
     ttFont = TTFont(font)
+
     if is_ttf(ttFont):
-        version = "" # TODO
         dehinted_buffer = BytesIO()
         dehint(ttFont, verbose=False)
         ttFont.save(dehinted_buffer)
@@ -326,7 +343,6 @@ def hinting_stats(font):
         pyftsubset(args)
 
         dehinted_size = os.stat(tmp).st_size
-        version = "" # TODO If there is a way, extract the psautohint version used?
         os.remove(tmp)
 
     else:
@@ -334,8 +350,7 @@ def hinting_stats(font):
 
     return {
         "dehinted_size": dehinted_size,
-        "hinted_size": os.stat(font).st_size,
-        "version": version
+        "hinted_size": hinted_size,
     }
 
 

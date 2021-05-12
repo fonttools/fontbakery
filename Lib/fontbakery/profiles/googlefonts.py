@@ -1426,7 +1426,7 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
         This check finds which version of ttfautohint was used, by inspecting name table entries and then finds which version of ttfautohint is currently installed in the system.
     """
 )
-def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats):
+def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats, installed_ttfa):
     """Font has old ttfautohint applied?"""
     from fontbakery.utils import get_name_entry_strings
 
@@ -1447,7 +1447,7 @@ def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats):
         used = list(map(int, used.split(".")))
         return installed > used
 
-    if not hinting_stats:
+    if not installed_ttfa:
         yield ERROR,\
               Message("not-available",
                       "ttfautohint is not available.")
@@ -1470,7 +1470,6 @@ def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats):
                       f" Such font version strings are currently:"
                       f" {version_strings}")
     else:
-        installed_ttfa = hinting_stats["version"]
         try:
             if installed_version_is_newer(installed_ttfa,
                                           ttfa_version):
