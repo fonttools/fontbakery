@@ -1,3 +1,5 @@
+(**NOTE:** If your issue is related to a specific check, please consider mentioning its check-id on the issue title.)
+
 ## Observed behaviour
 
 (Describe here what was the result that you are commenting on)
