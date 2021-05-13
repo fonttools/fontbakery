@@ -670,7 +670,7 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
         This check is meant to avoid typos in this field.
     """,
     misc_metadata = {
-        'request': "https://github.com/googlefonts/fontbakery/issues/2972"
+        'request': 'https://github.com/googlefonts/fontbakery/issues/2972'
     }
 )
 def com_google_fonts_check_metadata_category(family_metadata):
