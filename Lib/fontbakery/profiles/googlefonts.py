@@ -4555,10 +4555,14 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
 
 @check(
     id = 'com.google.fonts/check/cjk_vertical_metrics_regressions',
-    conditions = ['is_cjk_font', 'regular_remote_style'],
-    rationale="""
+    conditions = ['is_cjk_font',
+                  'regular_remote_style'],
+    rationale = """
         Check CJK family has the same vertical metrics as the same family hosted on Google Fonts.
-    """
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/3244'
+    }
 )
 def com_google_fonts_check_cjk_vertical_metrics_regressions(regular_ttFont, regular_remote_style):
     """Check if the vertical metrics of a CJK family are similar to the same
