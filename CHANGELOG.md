@@ -2,7 +2,12 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.36 (2021-May-14?)
+## 0.7.37 (2021-May-??)
+### Release notes
+  - ...
+
+
+## 0.7.36 (2021-May-14)
 ### Release notes
   - bugfixing quick release
 
