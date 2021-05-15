@@ -99,7 +99,7 @@
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/19b56c3d.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/460989f1.site-ltr.css ">
 
 	
 
@@ -144,7 +144,7 @@
 	};
 	</script>
 	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
-	<script src="https://js.monitor.azure.com/next/1/ms.jsll-3.js"></script>
+	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
 	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
 	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
@@ -153,12 +153,12 @@
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
 	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
 
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/29d7e284.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/63764076.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
 	<div class="header-holder has-default-focus">
-		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
 		
 		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
 		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
@@ -193,7 +193,7 @@
 						<span>Exit focus mode</span>
 					</button>
 				</div>
-				<div class="has-padding-none-tablet has-padding-medium is-size-small display-flex justify-content-space-between flex-grow-1 page-action-holder">
+				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
 					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
 						<li hidden>
 							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
@@ -202,13 +202,7 @@
 							</a>
 						</li>
 						<li>
-							<button type="button" class="is-hidden bookmark button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="bookmarks" data-bi-name="bookmark" title="Bookmark this page">
-								<span class="icon" aria-hidden="true">
-									<span class="docon docon-single-bookmark"></span>
-								</span>
-								<span class="bookmark-status is-visually-hidden-touch is-hidden-portrait">Bookmark</span>
-							</button>
-							<button type="button" class="is-hidden collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+							<button type="button" class="collection button is-text has-inner-focus is-small is-icon-only-touch" data-list-type="collection" data-bi-name="collection" title="Add to collection">
 								<span class="icon" aria-hidden="true">
 									<span class="docon docon-circle-addition has-text-primary"></span>
 								</span>
@@ -306,7 +300,7 @@
 		<div class="columns has-large-gaps is-gapless-mobile ">
 
 			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
-				<nav id="affixed-left-container" class="is-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
 			</div>
 
 			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
@@ -4812,7 +4806,7 @@
 	<div class="feedback-verbatim border-bottom has-padding-bottom-large has-margin-bottom-small" data-bi-name="rating">
     <div class="binary-rating">
         <div class="binary-rating-buttons">
-				<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small is-size-h4 has-margin-bottom-medium">Is this page helpful?</h3>
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small font-size-h4 has-margin-bottom-medium">Is this page helpful?</h3>
 			<div>
                 <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-desktop">
                     <span aria-hidden="true" class="icon docon docon-like"></span>
@@ -4825,7 +4819,7 @@
             </div>
         </div>
         <form class="feedback-verbatim-form is-hidden" id="rating-container-desktop">
-            <div class="verbatim-textarea box is-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
                 <label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
                 <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
 		    </div>
@@ -4847,7 +4841,7 @@
 						<!-- end recommendations section -->
 
 						<!-- feedback section -->
-<section class="feedback-section is-relative" data-bi-name="feedback-section">
+<section class="feedback-section position-relative" data-bi-name="feedback-section">
 
     <h2 id="feedback" class="title is-3 has-margin-top-large">Feedback</h2>
 
@@ -4881,7 +4875,7 @@
 
 	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
 	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
-			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-large has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
 		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
 <div class="dropdown has-caret-up">
 	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
@@ -4982,9 +4976,9 @@ High contrast					</span>
 </footer>
 						</div>
 					</div>
-
-					<div class="is-size-small right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
-						<div id="affixed-right-container" class="doc-outline is-fixed is-vertically-scrollable">
+					
+					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
 								
 	
 	
@@ -4993,7 +4987,7 @@ High contrast					</span>
     <div class="binary-rating">
         <div class="binary-rating-buttons">
 
-				<h3 class="has-text-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
+				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
 			<div>
                 <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-mobile">
                     <span aria-hidden="true" class="icon docon docon-like"></span>
@@ -5006,7 +5000,7 @@ High contrast					</span>
             </div>
         </div>
         <form class="feedback-verbatim-form is-hidden" id="rating-container-mobile">
-            <div class="verbatim-textarea box is-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
+            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
                 <label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
                 <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
 		    </div>
@@ -5045,7 +5039,7 @@ High contrast					</span>
 
 	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
 	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
-			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world is-size-large has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
+			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
 		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
 <div class="dropdown has-caret-up">
 	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
