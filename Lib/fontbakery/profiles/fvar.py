@@ -120,7 +120,7 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
     rationale = """
         According to the Open-Type spec's registered design-variation tag 'opsz' available at https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_opsz
 
-        If a variable font has a 'opsz' (Optical Size) axis, then the coordinate of its 'Regular' instance is recommended to be a value in the range 9 to 13.
+        If a variable font has an 'opsz' (Optical Size) axis, then the coordinate of its 'Regular' instance is recommended to be a value in the range 10 to 16.
     """,
     conditions = ['is_variable_font',
                   'regular_opsz_coord'],
@@ -129,16 +129,16 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
     }
 )
 def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord):
-    """The variable font 'opsz' (Optical Size) axis coordinate should be between 9 and 13 on the 'Regular' instance."""
+    """The variable font 'opsz' (Optical Size) axis coordinate should be between 10 and 16 on the 'Regular' instance."""
 
-    if regular_opsz_coord >= 9 and regular_opsz_coord <= 13:
+    if regular_opsz_coord >= 10 and regular_opsz_coord <= 16:
         yield PASS, ("Regular:opsz coordinate ({regular_opsz_coord}) looks good.")
     else:
         yield WARN,\
               Message("out-of-range",
                       f'The "opsz" (Optical Size) coordinate'
                       f' on the "Regular" instance is recommended'
-                      f' to be a value in the range 9 to 13.'
+                      f' to be a value in the range 10 to 16.'
                       f' Got {regular_opsz_coord} instead.')
 
 

@@ -109,7 +109,7 @@ def test_check_varfont_regular_ital_coord():
 
 def test_check_varfont_regular_opsz_coord():
     """ The variable font 'opsz' (Optical Size) axis coordinate
-        should be between 9 and 13 on the 'Regular' instance. """
+        should be between 10 and 16 on the 'Regular' instance. """
     check = CheckTester(opentype_profile,
                         "com.google.fonts/check/varfont/regular_opsz_coord")
     from fontTools.ttLib.tables._f_v_a_r import Axis
@@ -134,12 +134,12 @@ def test_check_varfont_regular_opsz_coord():
 
     # We try yet another bad value
     # and the check should detect the problem:
-    assert_results_contain(check(ttFont, {"regular_opsz_coord": 14}),
+    assert_results_contain(check(ttFont, {"regular_opsz_coord": 20}),
                            WARN, 'out-of-range',
-                           'with another bad Regular:opsz value (14)...')
+                           'with another bad Regular:opsz value (20)...')
 
     # We then test with good default opsz values:
-    for value in [9, 10, 11, 12, 13]:
+    for value in [10, 11, 12, 13, 14, 15, 16]:
         assert_PASS(check(ttFont, {"regular_opsz_coord": value}),
                     f'with a good Regular:opsz coordinate ({value})...')
 
