@@ -123,14 +123,14 @@ def test_check_varfont_regular_opsz_coord():
     ttFont["fvar"].axes.append(new_axis)
 
     # and specify a bad coordinate for the Regular:
-    ttFont["fvar"].instances[0].coordinates["opsz"] = 8
+    ttFont["fvar"].instances[0].coordinates["opsz"] = 9
     # Note: I know the correct instance index for this hotfix because
     # I inspected the our reference CabinVF using ttx
 
     # Then we ensure the problem is detected:
     assert_results_contain(check(ttFont),
                            WARN, 'out-of-range',
-                           'with a bad Regular:opsz coordinate (8)...')
+                           'with a bad Regular:opsz coordinate (9)...')
 
     # We try yet another bad value
     # and the check should detect the problem:
