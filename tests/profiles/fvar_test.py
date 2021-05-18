@@ -134,9 +134,9 @@ def test_check_varfont_regular_opsz_coord():
 
     # We try yet another bad value
     # and the check should detect the problem:
-    assert_results_contain(check(ttFont, {"regular_opsz_coord": 20}),
+    assert_results_contain(check(ttFont, {"regular_opsz_coord": 17}),
                            WARN, 'out-of-range',
-                           'with another bad Regular:opsz value (20)...')
+                           'with another bad Regular:opsz value (17)...')
 
     # We then test with good default opsz values:
     for value in [10, 11, 12, 13, 14, 15, 16]:
