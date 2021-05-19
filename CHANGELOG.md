@@ -4,7 +4,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.7.37 (2021-May-??)
 ### Release notes
-  - ...
+
+
+### Changes to existing checks
+  - **[com.google.fonts/check/varfont/regular_opsz_coord]:** update the "Regular" instance opsz axis range  guidance to 10 - 16 from 9 - 13 according to updated [OT spec](https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_opsz) (PR #3292)
 
 
 ## 0.7.36 (2021-May-14)
