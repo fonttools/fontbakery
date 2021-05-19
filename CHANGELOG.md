@@ -3,11 +3,12 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.7.37 (2021-May-??)
-### Release notes
-
+### Bug Fixes
+  - fix crash on **com.google.fonts/check/missing_small_caps_glyphs** (issue #3294)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/varfont/regular_opsz_coord]:** update the "Regular" instance opsz axis range  guidance to 10 - 16 from 9 - 13 according to updated [OT spec](https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_opsz) (PR #3292)
+  - **[com.google.fonts/check/missing_small_caps_glyphs]:** Also look for missing 'c2sc' glyphs (issue #3294)
 
 
 ## 0.7.36 (2021-May-14)
