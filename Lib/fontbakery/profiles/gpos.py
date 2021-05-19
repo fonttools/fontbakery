@@ -9,7 +9,7 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 @condition
 def has_kerning_info(ttFont):
     """A font has kerning info if it has a GPOS table containing at least one
-    Pair Adjustment lookup (eigther directly or through an extension
+    Pair Adjustment lookup (either directly or through an extension
     subtable)."""
     if "GPOS" not in ttFont:
         return False
