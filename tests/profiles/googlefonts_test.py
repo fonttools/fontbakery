@@ -3698,3 +3698,17 @@ def test_check_description_family_update():
 
     assert_PASS(check(font, {'description': desc + '\nSomething else...'}))
 
+
+def test_check_missing_small_caps_glyphs():
+    """Check small caps glyphs are available."""
+    #check = CheckTester(googlefonts_profile,
+    #                    "com.google.fonts/check/missing_small_caps_glyphs")
+    # TODO: Implement-me!
+
+
+def test_check_stylisticset_description():
+    """Ensure Stylistic Sets have description."""
+    #check = CheckTester(googlefonts_profile,
+    #                    "com.google.fonts/check/stylisticset_description")
+    # TODO: Implement-me!
+

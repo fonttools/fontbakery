@@ -5240,7 +5240,7 @@ def com_google_fonts_check_description_family_update(description, github_gfonts_
     }
 )
 def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
-    """Check small caps glyphs are available"""
+    """Check small caps glyphs are available."""
 
     passed = True
     if 'GSUB' in ttFont and ttFont['GSUB'].table.FeatureList is not None:
@@ -5248,14 +5248,22 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
         for record in range(ttFont['GSUB'].table.FeatureList.FeatureCount):
             feature = ttFont['GSUB'].table.FeatureList.FeatureRecord[record]
             tag = feature.FeatureTag
-            if tag == 'smcp':
+            if tag in ['smcp', 'c2sc']:
                 for index in feature.Feature.LookupListIndex:
-                    smcp_glyphs = set(llist.Lookup[index].SubTable[0].mapping.values())
+                    subtable = llist.Lookup[index].SubTable[0]
+                    if subtable.LookupType == 7:
+                        # This is an Extension lookup
+                        # used for reaching 32-bit offsets
+                        # within the GSUB table.
+                        subtable = subtable.ExtSubTable
+                    smcp_glyphs = set(subtable.mapping.values())
                     missing = smcp_glyphs - set(ttFont.getGlyphNames())
                     if missing:
                         passed = False
+                        missing = "\n\t - " + "\n\t - ".join(missing)
                         yield FAIL,\
-                              Message('missing-scmp-glyphs',
+                              Message('missing-glyphs',
+                                      f"These '{tag}' glyphs are missing:\n"
                                       f"{missing}")
                 break
 
