@@ -5274,7 +5274,7 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
 @check(
     id = 'com.google.fonts/check/stylisticset_description',
     rationale = """
-        Stylistic sets must provide description text. Programs such as InDesign, TextEdit and Inkscape use that info to display to the users so that they know what a given stylistic set offers.
+        Stylistic sets should provide description text. Programs such as InDesign, TextEdit and Inkscape use that info to display to the users so that they know what a given stylistic set offers.
     """,
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/3155'
@@ -5296,13 +5296,14 @@ def com_google_fonts_check_stylisticset_description(ttFont):
             if tag in SSETS:
                 if feature.Feature.FeatureParams == None:
                     passed = False
-                    yield FAIL,\
+                    yield WARN,\
                           Message('missing-description',
-                                  f"The stylistic set {tag} lacks a description string on the 'name' table.")
+                                  f"The stylistic set {tag} lacks"
+                                  f" a description string on the 'name' table.")
                 else:
-                    pass # TODO: maybe here we can add code to make sure that the referenced nameid does exist in the name table.
-                break
-
+                    pass # TODO: Maybe here we can add code to make sure
+                         #       that the referenced nameid does exist
+                         #       in the name table.
     if passed:
         yield PASS, "OK"
 
