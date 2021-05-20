@@ -2,6 +2,10 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
+## 0.7.38 (2021-May-??)
+  - ...
+
+
 ## 0.7.37 (2021-May-20)
 ### Bug Fixes
   - fix crash on **com.google.fonts/check/missing_small_caps_glyphs** (issue #3294)
