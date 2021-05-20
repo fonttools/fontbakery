@@ -73,11 +73,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/8c0cb0c1f6cc26aa91f614bb0b000a024418df3e/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/d0e052067bfe970dfd4dab9be270e459415f8024/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="05/10/2021" />
+<meta name="ms.date" content="05/18/2021" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -88,18 +88,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2021-05-11 12:11 AM" />
+<meta name="updated_at" content="2021-05-18 10:49 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3611" />
+<meta name="word_count" content="3621" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/460989f1.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f0c8a4b1.site-ltr.css ">
 
 	
 
@@ -153,7 +153,7 @@
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
 	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
 
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/63764076.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/5da56fbe.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -317,7 +317,7 @@
 
 						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 							<li>
-								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-05-10T00:00:00.000Z" data-article-date-source="ms.date">05/10/2021</time>
+								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-05-18T00:00:00.000Z" data-article-date-source="ms.date">05/18/2021</time>
 							</li>
 									<li class="readingTime">18 minutes to read</li>
 								<li class="contributors-holder">
@@ -1058,6 +1058,10 @@
 <td><a href="http://www.bubulogix.fr" data-linktype="external">BUBULogix</a></td>
 </tr>
 <tr>
+<td>BVH</td>
+<td><a href="http://bvhtype.com/" data-linktype="external">BVH Type Foundry</a></td>
+</tr>
+<tr>
 <td>BWFW</td>
 <td><a href="http://www.blueknot.com/Fonts" data-linktype="external">B/W Fontworks</a></td>
 </tr>
@@ -1259,6 +1263,10 @@
 <tr>
 <td>CTL</td>
 <td>Chaitanya Type Library</td>
+</tr>
+<tr>
+<td>CTYP</td>
+<td><a href="www.countertype.co.uk" data-linktype="relative-path">Countertype</a></td>
 </tr>
 <tr>
 <td>cwwf</td>
@@ -3252,6 +3260,11 @@
 <td>NBR</td>
 <td><a href="https://noirblancrouge.com" data-linktype="external">Noir Blanc Rouge</a></td>
 </tr>
+		
+<tr>
+<td>NBTF</td>
+<td><a href="https://norbergtypefoundry.com/" data-linktype="external">Norberg Type Foundry</a></td>
+</tr>
 <tr>
 <td>ncnd</td>
 <td><a href="http://www.unix.temple.edu/~phanley/" data-linktype="external">&cond</a></td>
@@ -4824,7 +4837,7 @@
                 <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
 		    </div>
 			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
-            <div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
                 <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
                 <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
             </div>
@@ -4848,7 +4861,7 @@
     <div class="alert choose-feedback-type">
         <p aria-hidden="true" id="send-feedback-about">Submit and view feedback for</p>
 
-        <div class="choose-feedback-buttons has-margin-top-medium">
+        <div class="choose-feedback-buttons margin-top-xs">
 
 			<a class="button feedback-type-product has-margin-bottom-small github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
 				<span aria-hidden="true" class="docon docon-brand-github has-padding-right-extra-small"></span>
@@ -5005,7 +5018,7 @@ High contrast					</span>
                 <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
 		    </div>
 			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
-            <div class="buttons is-right has-margin-top-medium has-margin-right-extra-small">
+            <div class="buttons is-right margin-top-xs has-margin-right-extra-small">
                 <button class="skip-rating button is-transparent has-text-primary is-small border-none" type="button">Skip</button>
                 <button class="submit-rating button is-primary is-small" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
             </div>
