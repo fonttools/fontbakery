@@ -1,0 +1,40 @@
+name: Plot number of checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Install dependencies
+      run: |
+        pip install plotly pandas psutil
+        sudo apt-get install xvfb
+
+    - name: Compute stats
+      run: sh project-stats.sh
+
+    - name: Re-checkout
+      uses: actions/checkout@v1
+
+    - name: Plot chart
+      run: xvfb-run --auto-servernum python plot-project-stats.py
+
+    - name: Deploy chart
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        keep_files: true
+        publish_branch: repostats
