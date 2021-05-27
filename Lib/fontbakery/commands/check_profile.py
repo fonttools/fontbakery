@@ -172,10 +172,10 @@ def ArgumentParser(profile, profile_arg=True):
                                  metavar= 'ITERATED_ARG',
                                  choices=gather_by_choices,
                                  type=str,
-                                 help='Optional: collect results by ITERATED_ARG\n'
-                                      'In terminal output: create a summary counter for each ITERATED_ARG.\n'
-                                      'In json output: structure the document by ITERATED_ARG.\n'
-                                      'One of: {comma_separated}')
+                                 help=f'Optional: collect results by ITERATED_ARG\n'
+                                      f'In terminal output: create a summary counter for each ITERATED_ARG.\n'
+                                      f'In json output: structure the document by ITERATED_ARG.\n'
+                                      f'One of: {comma_separated}')
 
     def parse_order(arg):
         order = filter(len, [n.strip() for n in arg.split(',')])
@@ -190,7 +190,7 @@ def ArgumentParser(profile, profile_arg=True):
                                       f'Despite the ITERATED_ARGS there are two special\n'
                                       f'values available:\n'
                                       f'"*iterargs" -- all remainig ITERATED_ARGS\n'
-                                      f'"*check"     -- order by check\n'
+                                      f'"*check"    -- order by check\n'
                                       f'ITERATED_ARGS: {comma_separated}\n'
                                       f'A sections default is equivalent to: "*iterargs, *check".\n'
                                       f'A common use case is `-o "*check"` when checking the whole \n'
