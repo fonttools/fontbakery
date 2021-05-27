@@ -3700,6 +3700,27 @@ def test_check_description_family_update():
     assert_PASS(check(font, {'description': desc + '\nSomething else...'}))
 
 
+def test_check_os2_fsselectionbit7_set():
+    """All fonts checked with the googlefonts profile should have OS/2.fsSelection
+    bit 7 (USE TYPO METRICS) set."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/os2/fsselectionbit7")
+    tt_pass = TTFont(TEST_FILE("abeezee/ABeeZee-Regular.ttf"))
+    tt_fail = TTFont(TEST_FILE("abeezee/ABeeZee-Regular.ttf"))
+
+    fs_selection = 0
+
+    # make sure that bit 7 is clear in failing font
+    tt_fail["OS/2"].fsSelection = fs_selection
+    # set bit 7 in passing font
+    tt_pass["OS/2"].fsSelection = fs_selection | (1 << 7)
+    
+    assert_PASS(check(tt_pass))
+    assert_results_contain(check(tt_fail),
+                           FAIL, 'missing-os2-fsselection-bit7')
+
+
+
 def test_check_missing_small_caps_glyphs():
     """Check small caps glyphs are available."""
     #check = CheckTester(googlefonts_profile,
