@@ -14,6 +14,8 @@ This has several subcommands, described in the help function:
         check-googlefonts
         check-notofonts
         check-profile
+        check-typenetwork
+        check-ufo-sources
         check-universal
         generate-glyphdata
     
@@ -82,44 +84,49 @@ Run hand picked checks for all fonts in the `google/fonts` repository:
 Here's the output of `fontbakery check-googlefonts -h`:
 
     $ fontbakery check-googlefonts -h
-    usage: fontbakery-check-googlefonts.py [-h] [-c CHECKID] [-v] [-l LOGLEVEL]
-                                           [-m LOGLEVEL_MESSAGES] [-n] [-C]
-                                           [--json JSON_FILE] [-g ITERATED_ARG]
-                                           [-o ORDER]
-                                           arg_filepaths [arg_filepaths ...]
+    usage: fontbakery check-googlefonts [-h] [--configuration CONFIGFILE]
+                                        [-c CHECKID] [-x EXCLUDE_CHECKID] [-v]
+                                        [-l LOGLEVEL] [-m LOGLEVEL_MESSAGES]
+                                        [--succinct] [-n] [-C] [-S] [-L]
+                                        [--dark-theme] [--light-theme]
+                                        [--json JSON_FILE] [--ghmarkdown MD_FILE]
+                                        [--html HTML_FILE] [-g ITERATED_ARG]
+                                        [-o ORDER] [-J JOBS] [-j]
+                                        [fonts [fonts ...]]
 
-    Check TTF files for common issues.
+    Check TTF files against a profile.
 
     positional arguments:
-      arg_filepaths         font file path(s) to check. Wildcards like *.ttf are allowed.
+      fonts                 font file path(s) to check. Wildcards like *.ttf are allowed.
 
     optional arguments:
       -h, --help            show this help message and exit
       --configuration CONFIGFILE
                             Read configuration file (TOML/YAML).
       -c CHECKID, --checkid CHECKID
-                            Explicit check-ids to be executed.
-                            Use this option multiple times to select multiple checks.
+                            Explicit check-ids (or parts of their name) to be executed. Use this option multiple times to select multiple checks.
       -x EXCLUDE_CHECKID, --exclude-checkid EXCLUDE_CHECKID
-                            Exclude check-ids (or parts of their name) from
-                            execution. Use this option multiple times to
-                            exclude multiple checks.
+                            Exclude check-ids (or parts of their name) from execution. Use this option multiple times to exclude multiple checks.
       -v, --verbose         Shortcut for `-l PASS`.
       -l LOGLEVEL, --loglevel LOGLEVEL
                             Report checks with a result of this status or higher.
-                            One of: DEBUG, PASS, INFO, SKIP, WARN, FAIL, ERROR.
-                            (default: WARN)
+                            One of: DEBUG, PASS, SKIP, INFO, WARN, FAIL, ERROR.
+                            (default: INFO)
       -m LOGLEVEL_MESSAGES, --loglevel-messages LOGLEVEL_MESSAGES
                             Report log messages of this status or higher.
                             Messages are all status lines within a check.
-                            One of: DEBUG, PASS, INFO, SKIP, WARN, FAIL, ERROR.
+                            One of: DEBUG, PASS, SKIP, INFO, WARN, FAIL, ERROR.
                             (default: LOGLEVEL)
       --succinct            This is a slightly more compact and succint output layout for the text terminal.
       -n, --no-progress     In a tty as stdout, don't render the progress indicators.
-      -C, --no-colors       No colors for tty output
+      -C, --no-colors       No colors for tty output.
+      -S, --show-sections   Show section summaries.
+      -L, --list-checks     List the checks available in the selected profile.
       --dark-theme          Use a color theme with dark colors.
       --light-theme         Use a color theme with light colors.
       --json JSON_FILE      Write a json formatted report to JSON_FILE.
+      --ghmarkdown MD_FILE  Write a GitHub-Markdown formatted report to MD_FILE.
+      --html HTML_FILE      Write a HTML report to HTML_FILE.
       -g ITERATED_ARG, --gather-by ITERATED_ARG
                             Optional: collect results by ITERATED_ARG
                             In terminal output: create a summary counter for each ITERATED_ARG.
@@ -134,11 +141,18 @@ Here's the output of `fontbakery check-googlefonts -h`:
                             Despite the ITERATED_ARGS there are two special
                             values available:
                             "*iterargs" -- all remainig ITERATED_ARGS
-                            "*check"     -- order by check
+                            "*check"    -- order by check
                             ITERATED_ARGS: font
                             A sections default is equivalent to: "*iterargs, *check".
                             A common use case is `-o "*check"` when checking the whole
                             collection against a selection of checks picked with `--checkid`.
+      -J JOBS, --jobs JOBS  Use multi-processing to run the checks. The argument is the number
+                            of worker processes. A sensible number is the cpu count of your
+                            system, detected: 2. As an automated shortcut see -j/--auto-jobs.
+                            Use 0 to run in single-processing mode (default 0).
+      -j, --auto-jobs       Use the auto detected cpu count (= 2) as number of worker processes
+                            in multi-processing. This is equivalent to : `--jobs 2`
+
 
 Note: on Windows, color and progress bar output is disabled because the standard Windows terminal displays the escape characters instead. Pull Requests to fix this are welcome.
 
