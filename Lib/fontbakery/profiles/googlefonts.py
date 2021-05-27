@@ -162,7 +162,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/STAT/axis_order',
     'com.google.fonts/check/mandatory_avar_table',
     'com.google.fonts/check/missing_small_caps_glyphs',
-    'com.google.fonts/check/stylisticset_description'
+    'com.google.fonts/check/stylisticset_description',
+    'com.google.fonts/check/os2/fsselectionbit7',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -5306,6 +5307,39 @@ def com_google_fonts_check_stylisticset_description(ttFont):
                          #       in the name table.
     if passed:
         yield PASS, "OK"
+
+
+@check(
+    id="com.google.fonts/check/os2/fsselectionbit7",
+    rationale="""
+    All fonts should have OS/2.fsSelection bit 7 (USE_TYPO_METRICS) set \
+    so that they use typo vertical metrics instead of Win vertical metrics.
+    """,
+)
+def com_google_fonts_check_os2_fsselectionbit7(ttFonts):
+    """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts"""
+
+    found_fail = False
+    fail_list = []
+    for tt in ttFonts:
+        fsselection_int = tt["OS/2"].fsSelection
+        if ((fsselection_int & (1 << 7)) != 0) is True:
+            pass
+        else:
+            found_fail = True
+            fail_list.append(tt.reader.file.name)
+
+    if found_fail:
+        yield (
+            FAIL,
+            Message(
+                'missing-os2-fsselection-bit7',
+                f"OS/2.fsSelection bit 7 (USE_TYPO_METRICS) was NOT set "
+                f"in the following fonts: {fail_list}."
+            ),
+        )
+    else:
+        yield PASS, "OS/2.fsSelection bit 7 (USE_TYPO_METRICS) was set in all fonts."
 
 
 ###############################################################################
