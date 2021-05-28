@@ -3700,11 +3700,11 @@ def test_check_description_family_update():
     assert_PASS(check(font, {'description': desc + '\nSomething else...'}))
 
 
-def test_check_os2_fsselectionbit7_set():
+def test_check_os2_use_typo_metrics():
     """All fonts checked with the googlefonts profile should have OS/2.fsSelection
     bit 7 (USE TYPO METRICS) set."""
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/os2/fsselectionbit7")
+                        "com.google.fonts/check/os2/use_typo_metrics")
     tt_pass = TTFont(TEST_FILE("abeezee/ABeeZee-Regular.ttf"))
     tt_fail = TTFont(TEST_FILE("abeezee/ABeeZee-Regular.ttf"))
 
