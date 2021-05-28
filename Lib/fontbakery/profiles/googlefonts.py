@@ -5314,10 +5314,13 @@ def com_google_fonts_check_stylisticset_description(ttFont):
     rationale="""
         All fonts should have OS/2.fsSelection bit 7 (USE_TYPO_METRICS) set so that they use typo vertical metrics instead of Win vertical metrics.
     """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3241'
+    }
 )
 def com_google_fonts_check_os2_fsselectionbit7(ttFonts):
     """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts"""
-    
+
     fail_list = []
     for tt in ttFonts:
         if tt["OS/2"].fsSelection & (1 << 7):
