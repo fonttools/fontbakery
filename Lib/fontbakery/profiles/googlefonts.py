@@ -5321,8 +5321,7 @@ def com_google_fonts_check_os2_fsselectionbit7(ttFonts):
     found_fail = False
     fail_list = []
     for tt in ttFonts:
-        fsselection_int = tt["OS/2"].fsSelection
-        if ((fsselection_int & (1 << 7)) != 0) is True:
+        if tt["OS/2"].fsSelection & (1 << 7):
             pass
         else:
             found_fail = True
