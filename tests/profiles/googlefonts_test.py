@@ -6,6 +6,7 @@ from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR,
                                     SKIP, PASS, FAIL, ENDCHECK)
 from fontbakery.codetesting import (assert_results_contain,
                                     assert_PASS,
+                                    assert_SKIP,
                                     portable_path,
                                     TEST_FILE,
                                     CheckTester)
@@ -3701,7 +3702,7 @@ def test_check_description_family_update():
 
 
 def test_check_os2_use_typo_metrics():
-    """All fonts checked with the googlefonts profile should have OS/2.fsSelection
+    """All non-CJK fonts checked with the googlefonts profile should have OS/2.fsSelection
     bit 7 (USE TYPO METRICS) set."""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/os2/use_typo_metrics")
@@ -3718,6 +3719,25 @@ def test_check_os2_use_typo_metrics():
     assert_PASS(check(tt_pass))
     assert_results_contain(check(tt_fail),
                            FAIL, 'missing-os2-fsselection-bit7')
+
+
+def test_check_os2_use_typo_metrics_with_cjk():
+    """All CJK fonts checked with the googlefonts profile should skip this check"""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/os2/use_typo_metrics")
+    tt_pass_clear = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))
+    tt_pass_set = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))
+
+    fs_selection = 0
+
+    # test skip with font that contains cleared bit
+    tt_pass_clear["OS/2"].fsSelection = fs_selection
+    # test skip with font that contains set bit
+    tt_pass_set["OS/2"].fsSelection = fs_selection | (1 << 7)
+
+    assert_SKIP(check(tt_pass_clear))
+    assert_SKIP(check(tt_pass_set))
+
 
 
 
