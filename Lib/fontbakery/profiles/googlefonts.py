@@ -5317,17 +5317,15 @@ def com_google_fonts_check_stylisticset_description(ttFont):
 )
 def com_google_fonts_check_os2_fsselectionbit7(ttFonts):
     """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts"""
-
-    found_fail = False
+    
     fail_list = []
     for tt in ttFonts:
         if tt["OS/2"].fsSelection & (1 << 7):
             pass
         else:
-            found_fail = True
             fail_list.append(tt.reader.file.name)
 
-    if found_fail:
+    if fail_list:
         yield (
             FAIL,
             Message(
