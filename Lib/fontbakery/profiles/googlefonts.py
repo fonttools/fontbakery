@@ -163,7 +163,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/mandatory_avar_table',
     'com.google.fonts/check/missing_small_caps_glyphs',
     'com.google.fonts/check/stylisticset_description',
-    'com.google.fonts/check/os2/fsselectionbit7',
+    'com.google.fonts/check/os2/use_typo_metrics',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -5310,7 +5310,7 @@ def com_google_fonts_check_stylisticset_description(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/os2/fsselectionbit7",
+    id="com.google.fonts/check/os2/use_typo_metrics",
     rationale="""
     All fonts should have OS/2.fsSelection bit 7 (USE_TYPO_METRICS) set \
     so that they use typo vertical metrics instead of Win vertical metrics.
