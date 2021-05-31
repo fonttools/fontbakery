@@ -2063,7 +2063,8 @@ def test_check_unitsperem_strict():
 
     WARN_LARGE_VALUES = [2500, 4000, 4096] # uncommon and large,
                                            # but we've seen legitimate cases such as the
-                                           # Big Shoulders Family which uses 4000 since it needs more details.
+                                           # Big Shoulders Family which uses 4000 since
+                                           # it needs more details.
 
     # and finally the bad ones, including:
     FAIL_VALUES = [0, 1, 2, 4, 8, 15, 16385] # simply invalid
