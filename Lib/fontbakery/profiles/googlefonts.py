@@ -3571,7 +3571,7 @@ def com_google_fonts_check_varfont_consistent_axes(VFs):
         for axis in ref_ranges:
             if axis not in map(lambda x: x.axisTag, vf['fvar'].axes):
                 passed = False
-                yield FAIL, \
+                yield FAIL,\
                       Message("missing-axis",
                               f"{os.path.basename(vf.reader.file.name)}:"
                               f" lacks a '{axis}' variation axis.")
@@ -3584,7 +3584,7 @@ def com_google_fonts_check_varfont_consistent_axes(VFs):
     for axis, ranges in expected_ranges:
         if len(ranges) > 1:
             passed = False
-            yield FAIL, \
+            yield FAIL,\
                   Message("inconsistent-axis-range",
                           "Axis 'axis' has diverging ranges accross the family: {ranges}.")
 
@@ -4283,7 +4283,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
         if has_static_fonts:
             yield PASS, 'OK'
         else:
-            yield FAIL, \
+            yield FAIL,\
                   Message("empty",
                           'There is a "static" dir but it is empty.'
                           ' Either add static fonts or delete the directory.')
@@ -4348,7 +4348,7 @@ def com_google_fonts_check_repo_zip_files(family_directory):
         files_list = pretty_print_list(zip_files,
                                        shorten=None,
                                        sep='\n\t* ')
-        yield FAIL, \
+        yield FAIL,\
               Message("zip-files",
                       f"Please do not host ZIP files on the project repository."
                       f" These files were detected:\n"
@@ -4514,7 +4514,7 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     # Check fsSelection bit 7 is not enabled
     if typo_metrics_enabled(ttFont):
         failed = True
-        yield FAIL, \
+        yield FAIL,\
               Message('bad-fselection-bit7',
                       'OS/2 fsSelection bit 7 must be disabled')
 
@@ -4522,20 +4522,20 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     for k in expected_metrics:
         if font_metrics[k] != expected_metrics[k]:
             failed = True
-            yield FAIL, \
+            yield FAIL,\
                   Message(f'bad-{k}',
                           f'{k} is "{font_metrics[k]}" it should be {expected_metrics[k]}')
 
     # Check hhea and win values match
     if font_metrics['hhea.ascent'] != font_metrics['OS/2.usWinAscent']:
         failed = True
-        yield FAIL, \
+        yield FAIL,\
               Message('ascent-mismatch',
                       'hhea.ascent must match OS/2.usWinAscent')
 
     if abs(font_metrics['hhea.descent']) != font_metrics['OS/2.usWinDescent']:
         failed = True
-        yield FAIL, \
+        yield FAIL,\
               Message('descent-mismatch',
                       'hhea.descent must match absolute value of OS/2.usWinDescent')
 
@@ -4866,7 +4866,7 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegi
         fallbacks = GFAxisRegistry[axis.axisTag]["fallbacks"]
         if axis.defaultValue not in fallbacks.values():
             passed = False
-            yield FAIL, \
+            yield FAIL,\
                   Message('not-registered',
                           f"The defaul value {axis.axisTag}:{axis.defaultValue} is not"
                           f" registered as an axis fallback name on the Google Axis Registry.\n"
@@ -4944,14 +4944,14 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
             if name not in expected_names:
                 expected_names = ", ".join(expected_names)
                 passed = False
-                yield FAIL, \
+                yield FAIL,\
                       Message('invalid-name',
                               f"On the font variation axis '{axis.AxisTag}', the name '{name_entry.toUnicode()}'"
                               f" is not among the expected ones ({expected_names}) according"
                               f" to the Google Fonts Axis Registry.")
             elif is_value != fallbacks[name_entry.toUnicode()]:
                 passed = False
-                yield FAIL, \
+                yield FAIL,\
                       Message("bad-coordinate",
                               (f"Axis Value for '{axis.AxisTag}':'{name_entry.toUnicode()}' is"
                                f" expected to be '{fallbacks[name_entry.toUnicode()]}'"
@@ -5131,7 +5131,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
         info = get_DesignerInfoProto_Message(response.content)
         if info.designer != designer.strip():
             passed = False
-            yield FAIL, \
+            yield FAIL,\
                   Message("mismatch",
                           f"Designer name at METADATA.pb ({designer})"
                           f" is not the same as listed on the designers"
@@ -5139,18 +5139,18 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
 
         if not info.link:
             passed = False
-            yield FAIL, \
+            yield FAIL,\
                   Message("missing-link",
                           f"Designer {designer} still does not have a webpage link on the catalog. Please provide one.")
         elif 'plus.google.com' in info.link:
             passed = False
-            yield FAIL, \
+            yield FAIL,\
                   Message("google-plus",
                           f"Designer {designer} listed a Google Plus link on the catalog,"
                           f" but that service is not available anymore. Please update the webpage link.")
         elif 'profiles.google.com' in info.link:
             passed = False
-            yield FAIL, \
+            yield FAIL,\
                   Message("google-profiles",
                           f"Designer {designer} listed a Google Profiles link on the catalog,"
                           f" but that service is not available anymore. Please update the webpage link.")
@@ -5158,23 +5158,24 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
             response = requests.get(info.link)
             if response.status_code != requests.codes.OK:
                 passed = False
-                yield FAIL, \
+                yield FAIL,\
                       Message("broken-link",
                               f"The webpage link provided seems to be broken ({info.link})")
 
         if not info.avatar.file_name:
             passed = False
-            yield FAIL, \
+            yield FAIL,\
                   Message("missing-avatar",
-                          f"Designer {designer} still does not have an avatar image. Please provide one.")
+                          f"Designer {designer} still does not have an avatar image. "
+                          f"Please provide one.")
         else:
             avatar_url = DESIGNER_INFO_RAW_URL.format(normalized_name) + info.avatar.file_name
             response = requests.get(avatar_url)
             if response.status_code != requests.codes.OK:
                 passed = False
-                yield FAIL, \
+                yield FAIL,\
                       Message("bad-avatar-filename",
-                              f"The avatar filename provided seems to be incorrect ({avatar_url})")
+                              f"The avatar filename provided seems to be incorrect: ({avatar_url})")
 
     if passed:
         yield PASS, "OK"
@@ -5234,7 +5235,7 @@ def com_google_fonts_check_description_family_update(description, github_gfonts_
 @check(
     id = 'com.google.fonts/check/missing_small_caps_glyphs',
     rationale = """
-        Ensure small caps glyphs are available if a font declares smcp or c2sc OT features
+        Ensure small caps glyphs are available if a font declares smcp or c2sc OT features.
     """,
     misc_metadata = {
         'request': 'https://github.com/googlefonts/fontbakery/issues/3154'
@@ -5310,8 +5311,8 @@ def com_google_fonts_check_stylisticset_description(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/os2/use_typo_metrics",
-    rationale="""
+    id = "com.google.fonts/check/os2/use_typo_metrics",
+    rationale = """
         All fonts should have OS/2.fsSelection bit 7 (USE_TYPO_METRICS) set so that they use typo vertical metrics instead of Win vertical metrics.
     """,
     conditions = ['not is_cjk_font'],
@@ -5320,26 +5321,20 @@ def com_google_fonts_check_stylisticset_description(ttFont):
     }
 )
 def com_google_fonts_check_os2_fsselectionbit7(ttFonts):
-    """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts"""
+    """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts."""
 
-    fail_list = []
-    for tt in ttFonts:
-        if tt["OS/2"].fsSelection & (1 << 7):
-            pass
-        else:
-            fail_list.append(tt.reader.file.name)
+    bad_fonts = []
+    for ttFont in ttFonts:
+        if not ttFont["OS/2"].fsSelection & (1 << 7):
+            bad_fonts.append(ttFont.reader.file.name)
 
-    if fail_list:
-        yield (
-            FAIL,
-            Message(
-                'missing-os2-fsselection-bit7',
-                f"OS/2.fsSelection bit 7 (USE_TYPO_METRICS) was NOT set "
-                f"in the following fonts: {fail_list}."
-            ),
-        )
+    if bad_fonts:
+        yield FAIL,\
+              Message('missing-os2-fsselection-bit7',
+                      f"OS/2.fsSelection bit 7 (USE_TYPO_METRICS) was"
+                      f"NOT set in the following fonts: {bad_fonts}.")
     else:
-        yield PASS, "OS/2.fsSelection bit 7 (USE_TYPO_METRICS) was set in all fonts."
+        yield PASS, "OK"
 
 
 ###############################################################################
