@@ -2,12 +2,12 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.7.38 (2021-May-??)
-  - ...
-
-  ### New Checks
-
+## 0.7.38 (2021-Jun-??)
+### New Checks
   - **[com.google.fonts/check/os2/use_typo_metrics]:** Confirm that OS/2.fsSelection bit 7 (USE TYPO METRICS) is set (PR #3314)
+
+### Dependencies
+  - Drop again the usage of unidecode due to licensing policies (issue #3316).
 
 
 ## 0.7.37 (2021-May-20)

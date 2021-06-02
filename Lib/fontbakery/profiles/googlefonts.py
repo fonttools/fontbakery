@@ -5094,15 +5094,39 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
     DESIGNER_INFO_RAW_URL = ("https://raw.githubusercontent.com/google/"
                              "fonts/master/catalog/designers/{}/")
     from fontbakery.utils import get_DesignerInfoProto_Message
-    from unidecode import unidecode
     import requests
 
+    # NOTE: See issue #3316
+    TRANSLATE = {
+        'á': 'a',
+        'é': 'e',
+        'í': 'i',
+        'ó': 'o',
+        'ú': 'u',
+        'à': 'a',
+        'è': 'e',
+        'ì': 'i',
+        'ò': 'o',
+        'ù': 'u',
+        'ń': 'n',
+        'ø': 'o',
+        'ř': 'r',
+        'ś': 's',
+        'ß': 'ss',
+        'ł': 'l',
+        'ã': 'a',
+        'ı': 'i',
+        'ü': 'ue'
+    }
     def normalize(name):
-        """ Restrict the designer name to lowercase a-z """
+        """ Restrict the designer name to lowercase a-z and numbers"""
+        import string
         normalized_name = ""
-        for c in unidecode(name).lower():
-            if c >= 'a' and c <= 'z':
+        for c in name.lower():
+            if c in string.ascii_letters or c in "0123456789":
                 normalized_name += c
+            elif c in TRANSLATE.keys():
+                normalized_name += TRANSLATE[c]
         return normalized_name
 
     passed = True
