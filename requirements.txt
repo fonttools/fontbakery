@@ -12,7 +12,6 @@ pip-api==0.0.20
 protobuf==3.17.0
 requests==2.25.1
 ufolint==1.2.0
-unidecode==1.2.0
 beziers==0.3.1
 cmarkgfm==0.5.3
 vharfbuzz==0.1.1

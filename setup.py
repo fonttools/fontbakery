@@ -74,7 +74,6 @@ setup(
                             # (see https://github.com/googlefonts/fontbakery/issues/2200)
         'requests',
         'ufolint',
-        'unidecode',
         'beziers',
         'cmarkgfm',
         'vharfbuzz',
