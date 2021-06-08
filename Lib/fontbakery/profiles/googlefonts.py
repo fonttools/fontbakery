@@ -5337,7 +5337,14 @@ def com_google_fonts_check_stylisticset_description(ttFont):
 @check(
     id = "com.google.fonts/check/os2/use_typo_metrics",
     rationale = """
-        All fonts should have OS/2.fsSelection bit 7 (USE_TYPO_METRICS) set so that they use typo vertical metrics instead of Win vertical metrics.
+        All fonts on the Google Fonts collection should have OS/2.fsSelection bit 7 (USE_TYPO_METRICS) set. This requirement is part of the vertical metrics scheme established as a Google Fonts policy aiming at a common ground supported by all major font rendering environments.
+
+        For more details, read:
+        https://github.com/googlefonts/gf-docs/blob/main/VerticalMetrics/README.md
+
+        Below is the portion of that document that is most relevant to this check:
+
+        Use_Typo_Metrics must be enabled. This will force MS Applications to use the OS/2 Typo values instead of the Win values. By doing this, we can freely set the Win values to avoid clipping and control the line height with the typo values. It has the added benefit of future line height compatibility. When a new script is added, we simply change the Win values to the new yMin and yMax, without needing to worry if the line height have changed.
     """,
     conditions = ['not is_cjk_font'],
     misc_metadata = {
