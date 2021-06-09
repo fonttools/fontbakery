@@ -4,11 +4,13 @@ Checks for Adobe Fonts (formerly known as Typekit).
 import unicodedata
 
 from fontbakery.callable import check
-from fontbakery.status import PASS, FAIL, WARN
-from fontbakery.section import Section
 from fontbakery.fonts_profile import profile_factory
-from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.message import Message
+from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
+from fontbakery.section import Section
+from fontbakery.status import PASS, FAIL, WARN
+from fontbakery.utils import add_check_overrides
+
 
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Adobe Fonts"))
@@ -24,10 +26,6 @@ OVERRIDDEN_CHECKS = [
     'com.google.fonts/check/whitespace_glyphs',
     'com.google.fonts/check/valid_glyphnames',
 ]
-ADOBEFONTS_PROFILE_CHECKS += [f'{cid}:{profile.profile_tag}' for cid in OVERRIDDEN_CHECKS]
-
-ADOBEFONTS_PROFILE_CHECKS[:] = [cid for cid in ADOBEFONTS_PROFILE_CHECKS
-                                            if cid not in OVERRIDDEN_CHECKS]
 
 
 @check(
@@ -137,5 +135,10 @@ com_google_fonts_check_valid_glyphnames_adobefonts = profile.check_log_override(
     'com.google.fonts/check/valid_glyphnames'
   , overrides = (('found-invalid-names', WARN, None),)
 )
+
+ADOBEFONTS_PROFILE_CHECKS = \
+    add_check_overrides(ADOBEFONTS_PROFILE_CHECKS,
+                        profile.profile_tag,
+                        OVERRIDDEN_CHECKS)
 
 profile.test_expected_checks(ADOBEFONTS_PROFILE_CHECKS, exclusive=True)

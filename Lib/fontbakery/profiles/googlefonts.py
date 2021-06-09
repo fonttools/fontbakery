@@ -13,7 +13,6 @@ from fontbakery.constants import (NameID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
 
-
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
