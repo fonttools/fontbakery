@@ -12,10 +12,12 @@ from fontbakery.constants import (NameID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
+from fontbakery.utils import add_check_overrides
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
+
 
 METADATA_CHECKS = [
     'com.google.fonts/check/metadata/parses',
@@ -173,6 +175,10 @@ GOOGLEFONTS_PROFILE_CHECKS = \
     NAME_TABLE_CHECKS + \
     REPO_CHECKS + \
     FONT_FILE_CHECKS
+
+OVERRIDDEN_CHECKS = [
+    'com.google.fonts/check/unitsperem',
+]
 
 
 @check(
@@ -2654,7 +2660,7 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
 
 
 @check(
-    id = 'com.google.fonts/check/unitsperem_strict',
+    id = 'com.google.fonts/check/unitsperem',
     rationale = """
         Even though the OpenType spec allows unitsPerEm to be any value between 16 and 16384, the Google Fonts project aims at a narrower set of reasonable values.
 
@@ -2665,7 +2671,7 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
         Additionally, values above 2048 would likely result in unreasonable filesize increases.
     """
 )
-def com_google_fonts_check_unitsperem_strict(ttFont):
+def com_google_fonts_check_unitsperem(ttFont):
     """ Stricter unitsPerEm criteria for Google Fonts. """
     upm_height = ttFont["head"].unitsPerEm
     ACCEPTABLE = [16, 32, 64, 128, 256, 500,
@@ -5395,6 +5401,11 @@ def check_skip_filter(checkid, font=None, **iterargs):
                        'https://github.com/graphicore/librebarcode/issues/3')
     return True, None
 
+
+GOOGLEFONTS_PROFILE_CHECKS = \
+    add_check_overrides(GOOGLEFONTS_PROFILE_CHECKS,
+                        profile.profile_tag,
+                        OVERRIDDEN_CHECKS)
 
 profile.check_skip_filter = check_skip_filter
 profile.auto_register(globals())

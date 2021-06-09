@@ -2051,10 +2051,10 @@ def NOT_IMPLEMENTED_test_check_metadata_canonical_style_names():
     # - PASS		"Font styles are named canonically."
 
 
-def test_check_unitsperem_strict():
+def test_check_unitsperem():
     """ Stricter unitsPerEm criteria for Google Fonts. """
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/unitsperem_strict")
+                        "com.google.fonts/check/unitsperem")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
