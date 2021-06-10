@@ -321,25 +321,25 @@ def test_check_description_min_length():
 
 
 def test_check_description_max_length():
-    """ DESCRIPTION.en_us.html must have less than 1000 bytes. """
+    """ DESCRIPTION.en_us.html must have less than 2000 bytes. """
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/description/max_length")
 
     font = TEST_FILE("nunito/Nunito-Regular.ttf")
 
-    bad_length = 'a' * 1001
+    bad_length = 'a' * 2001
     assert_results_contain(check(font, {"description": bad_length}),
                            FAIL, "too-long",
-                           'with 1001-byte buffer...')
+                           'with 2001-byte buffer...')
 
-    bad_length = 'a' * 1000
+    bad_length = 'a' * 2000
     assert_results_contain(check(font, {"description": bad_length}),
                            FAIL, "too-long",
-                           'with 1000-byte buffer...')
+                           'with 2000-byte buffer...')
 
-    good_length = 'a' * 999
+    good_length = 'a' * 1999
     assert_PASS(check(font, {"description": good_length}),
-                'with 999-byte buffer...')
+                'with 1999-byte buffer...')
 
 
 def test_check_description_eof_linebreak():

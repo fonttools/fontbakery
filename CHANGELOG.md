@@ -7,7 +7,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/os2/use_typo_metrics]:** Confirm that OS/2.fsSelection bit 7 (USE TYPO METRICS) is set (PR #3314, issue #3241)
 
 ### Dependencies
-  - Drop again the usage of unidecode due to licensing policies (issue #3316).
+  - Drop again the usage of unidecode due to licensing policies (issue #3316)
+
+### Changes to existing checks
+  - **[com.google.fonts/check/description/max_length]:** nowadays the Google Fonts specimen pages allow for longer texts without upsetting the balance of the page. So the new limit is 2,000 characters. (PR #3337)
 
 
 ## 0.7.37 (2021-May-20)
