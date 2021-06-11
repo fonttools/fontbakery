@@ -5354,6 +5354,7 @@ def com_google_fonts_check_stylisticset_description(ttFont):
     """,
     conditions = ['not is_cjk_font'],
     misc_metadata = {
+        'severity': 10,
         'request': 'https://github.com/googlefonts/fontbakery/issues/3241'
     }
 )
