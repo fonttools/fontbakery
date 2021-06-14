@@ -9,6 +9,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Dependencies
   - Drop again the usage of unidecode due to licensing policies (issue #3316)
 
+### Bug Fixes
+  - Fixed a bug in check/whitespace_ink affecting Ogham Space Mark. The set of codepoints was created incorrectly because we forgot to use parentheses in the expression, which resulted in the set of non-drawing codepoints to still include the ogham space mark codepoint (quite the opposite of what the comment said we were doing there :-P) Now the check handles it properly and I also added a test case to ensure we do not reintroduce the bug. (issue #3345)
+
 ### Changes to existing checks
   - **[com.google.fonts/check/description/max_length]:** nowadays the Google Fonts specimen pages allow for longer texts without upsetting the balance of the page. So the new limit is 2,000 characters. (PR #3337)
 

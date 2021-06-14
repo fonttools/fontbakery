@@ -541,7 +541,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
     # Make the set of non drawing characters.
     # OGHAM SPACE MARK U+1680 is removed as it is
     # a whitespace that should have a drawing.
-    NON_DRAWING = WHITESPACE_CHARACTERS | EXTRA_NON_DRAWING - {0x1680}
+    NON_DRAWING = (WHITESPACE_CHARACTERS | EXTRA_NON_DRAWING) - {0x1680}
 
     passed = True
     for codepoint in sorted(NON_DRAWING):
