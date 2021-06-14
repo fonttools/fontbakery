@@ -1125,7 +1125,7 @@ def com_google_fonts_check_name_license(ttFont, license):
             if value != placeholder:
                 failed = True
                 yield FAIL,\
-                      Message("wrong", \
+                      Message("wrong",
                               f'License file {license} exists but'
                               f' NameID {NameID.LICENSE_DESCRIPTION}'
                               f' (LICENSE DESCRIPTION) value on platform'
@@ -1142,7 +1142,7 @@ def com_google_fonts_check_name_license(ttFont, license):
 
     if not entry_found:
         yield FAIL,\
-              Message("missing", \
+              Message("missing",
                       f"Font lacks NameID {NameID.LICENSE_DESCRIPTION}"
                       f" (LICENSE DESCRIPTION). A proper licensing"
                       f" entry must be set.")
@@ -4151,9 +4151,9 @@ def com_google_fonts_check_name_rfn(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/family/control_chars',
-    conditions=['are_ttf'],
-    rationale="""
+    id = 'com.google.fonts/check/family/control_chars',
+    conditions = ['are_ttf'],
+    rationale = """
         Use of some unacceptable control characters in the U+0000 - U+001F range can lead to rendering issues on some platforms.
 
         Acceptable control characters are defined as .null (U+0000) and CR (U+000D) for this test.
@@ -4295,7 +4295,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
                           'There is a "static" dir but it is empty.'
                           ' Either add static fonts or delete the directory.')
     else:
-        yield WARN, \
+        yield WARN,\
               Message("missing",
                       'Please consider adding a subdirectory called "static/"'
                       ' and including in it static font files.')
@@ -4304,7 +4304,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
 @check(
     id = 'com.google.fonts/check/repo/fb_report',
     conditions = ['family_directory'],
-    rationale="""
+    rationale = """
         A FontBakery report is ephemeral and so should be used for posting issues on a bug-tracker instead of being hosted in the font project repository.
     """,
     misc_metadata = {
@@ -4320,7 +4320,7 @@ def com_google_fonts_check_repo_fb_report(family_directory):
     if not has_report_files:
         yield PASS, 'OK'
     else:
-        yield WARN, \
+        yield WARN,\
               Message("fb-report",
                       "There's no need to keep a copy of Font Bakery reports in the repository,"
                       " since they are ephemeral; FB has a 'github markdown' output mode"
@@ -4330,9 +4330,13 @@ def com_google_fonts_check_repo_fb_report(family_directory):
 @check(
     id = "com.google/fonts/check/repo/upstream_yaml_has_required_fields",
     rationale = """
-        If a family has been pushed using the gftools packager, we must check that all the required fields in the upstream.yaml file have been populated
-""",
-    conditions = ["upstream_yaml"]
+        If a family has been pushed using the gftools packager, we must check that all the required fields in the upstream.yaml file have been populated.
+    """,
+    conditions = ["upstream_yaml"],
+    misc_metadata = {
+        'severity': 10,
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3338'
+    }
 )
 def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml):
     """Check upstream.yaml file contains all required fields"""
@@ -4341,8 +4345,10 @@ def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml)
 
     missing_fields = required_fields - upstream_fields
     if missing_fields:
-        yield FAIL, Message('missing-fields',
-        f"The upstream.yaml file is missing the following fields: {list(missing_fields)}")
+        yield FAIL,\
+              Message('missing-fields',
+                      f"The upstream.yaml file is missing the following fields:"
+                      f" {list(missing_fields)}")
     else:
         yield PASS, "The upstream.yaml file contains all necessary fields"
 
@@ -4350,7 +4356,7 @@ def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml)
 @check(
     id = 'com.google.fonts/check/repo/zip_files',
     conditions = ['family_directory'],
-    rationale="""
+    rationale = """
         Sometimes people check in ZIPs into their font project repositories. While we accept the practice of checking in binaries, we believe that a ZIP is a step too far ;)
 
         Note: a source purist position is that only source files and build scripts should be checked in.
@@ -4385,7 +4391,7 @@ def com_google_fonts_check_repo_zip_files(family_directory):
 @check(
     id = 'com.google.fonts/check/vertical_metrics_regressions',
     conditions = ['regular_remote_style', 'not is_cjk_font'],
-    rationale="""
+    rationale = """
         If the family already exists on Google Fonts, we need to ensure that the checked family's vertical metrics are similar. This check will test the following schema which was outlined in Fontbakery issue #1162 [1]:
 
         - The family should visually have the same vertical metrics as the Regular style hosted on Google Fonts.
@@ -4493,7 +4499,7 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
     id = 'com.google.fonts/check/cjk_vertical_metrics',
     conditions = ['is_cjk_font',
                   'not remote_styles'],
-    rationale="""
+    rationale = """
         CJK fonts have different vertical metrics when compared to Latin fonts. We follow the schema developed by dr Ken Lunde for Source Han Sans and the Noto CJK fonts.
 
         Our documentation includes further information: https://github.com/googlefonts/gf-docs/tree/main/Spec#cjk-vertical-metrics
@@ -4572,7 +4578,7 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
                 font_metrics['hhea.lineGap']) / font_upm
     if not failed and not 1.1 < hhea_sum <= 1.5:
         warn = True
-        yield WARN, \
+        yield WARN,\
               Message('bad-hhea-range',
                       f"We recommend the absolute sum of the hhea metrics should be"
                       f" between 1.1-1.4x of the font's upm. This font has {hhea_sum}x")
@@ -4646,7 +4652,7 @@ def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
         else:
             N_CJK_glyphs = f"There are only {cjk_glyph_count} CJK glyphs"
 
-        yield WARN, \
+        yield WARN,\
               Message('cjk-not-enough-glyphs',
                       f"{N_CJK_glyphs} when there needs to be at least 40"
                       f" in order to support the smallest CJK writing system, Hangul.\n"
@@ -5171,7 +5177,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
         response = requests.get(url)
         if response.status_code != requests.codes.OK:
             passed = False
-            yield WARN, \
+            yield WARN,\
                   Message("profile-not-found",
                           f"It seems that {designer} is still not listed on"
                           f" the designers catalog. Please submit a photo and"
