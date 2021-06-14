@@ -485,6 +485,10 @@ def test_check_whitespace_ink():
     test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(test_font))
 
+    test_font["cmap"].tables[0].cmap[0x1680] = "a"
+    assert_PASS(check(test_font),
+                'because Ogham space mark does have ink.')
+
     test_font["cmap"].tables[0].cmap[0x0020] = "uni1E17"
     assert_results_contain(check(test_font),
                            FAIL, 'has-ink',
