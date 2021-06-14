@@ -3081,6 +3081,25 @@ def test_check_repo_vf_has_static_fonts():
                     'for a VF family which has a static dir and static fonts')
 
 
+def test_check_repo_upstream_yaml_has_required_fields():
+    """Check upstream.yaml has all required fields"""
+    from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_upstream_yaml_has_required_fields as check
+    upstream_yaml = {
+        "branch": "main",
+        "repository_url": "https://www.github.com/googlefonts/testFamily",
+        "files": {"TestFamily-Regular.ttf": "TestFamily-Regular.ttf"}
+    }
+    # Pass if upstream.yaml file contains all fields
+    assert_PASS(check(upstream_yaml),
+                'for an upstream.yaml which contains all fields')
+
+    # Fail if it doesn't
+    upstream_yaml.pop("repository_url")
+    assert_results_contain(check(upstream_yaml),
+                           FAIL, "missing-fields",
+                           "for an upsream.yaml which doesn't contain all fields")
+
+
 def test_check_repo_fb_report():
     """ A font repository should not include fontbakery report files """
     from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_fb_report as check
