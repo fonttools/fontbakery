@@ -1,5 +1,6 @@
 import os
 import re
+import yaml
 
 from fontbakery.callable import condition
 from fontbakery.constants import (
@@ -679,3 +680,11 @@ def GFAxisRegistry():
                  "wonky.textproto"]:
         append_AxisMessage(resource_filename('fontbakery', 'data/' + axis))
     return registry
+
+
+@condition
+def upstream_yaml(family_directory):
+    fp = os.path.join(family_directory, "upstream.yaml")
+    if not os.path.isfile(fp):
+        return None
+    return yaml.load(open(fp, "r"), yaml.FullLoader)

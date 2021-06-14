@@ -97,6 +97,7 @@ NAME_TABLE_CHECKS = [
 REPO_CHECKS = [
     'com.google.fonts/check/repo/dirname_matches_nameid_1',
     'com.google.fonts/check/repo/vf_has_static_fonts',
+    'com.google/fonts/check/repo/upstream_yaml_has_required_fields',
     'com.google.fonts/check/repo/fb_report',
     'com.google.fonts/check/repo/zip_files',
     'com.google.fonts/check/license/OFL_copyright'
@@ -4324,6 +4325,26 @@ def com_google_fonts_check_repo_fb_report(family_directory):
                       "There's no need to keep a copy of Font Bakery reports in the repository,"
                       " since they are ephemeral; FB has a 'github markdown' output mode"
                       " to make it easy to file reports as issues.")
+
+
+@check(
+    id = "com.google/fonts/check/repo/upstream_yaml_has_required_fields",
+    rationale = """
+        If a family has been pushed using the gftools packager, we must check that all the required fields in the upstream.yaml file have been populated
+""",
+    conditions = ["upstream_yaml"]
+)
+def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml):
+    """Check upstream.yaml file contains all required fields"""
+    required_fields = set(["branch", "files", "repository_url"])
+    upstream_fields = set(upstream_yaml.keys())
+
+    missing_fields = required_fields - upstream_fields
+    if missing_fields:
+        yield FAIL, Message('missing-fields',
+        f"The upstream.yaml file is missing the following fields: {list(missing_fields)}")
+    else:
+        yield PASS, "The upstream.yaml file contains all necessary fields"
 
 
 @check(
