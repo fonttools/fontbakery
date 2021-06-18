@@ -11,10 +11,16 @@ For a quick overview, check out the [list of checks](https://font-bakery.readthe
 
 And for a full introduction [check out our documentation at Read The Docs.](https://font-bakery.readthedocs.io/en/stable)
 
+A recording of the [ATypI 2020 FontBakery presentation](https://www.youtube.com/watch?v=6OKE6p9E0eY) is also available.
+
 Font Bakery has an active community of contributors from foundries around the world, including Adobe Fonts, Dalton Maag, Type Network, and Google Fonts. Please join our developer chat channel at https://gitter.im/fontbakery/Lobby
 
 Font Bakery is not an official Google project, and Google provides no support for it.
 However, throughout 2018-2021 the core project maintainers Felipe Corrêa da Silva Sanches <juca@members.fsf.org> and Lasse Fister <commander@graphicore.de> are commissioned by the Google Fonts team to maintain it.
+
+## Run Font Bakery automatically on Github Actions
+
+Simon Cozens prepared a [template git repo](https://github.com/googlefonts/Unified-Font-Repository) that makes it easy to build, check and proof fonts. He's also prepared a nice [1 minute video](https://twitter.com/simoncozens/status/1405267459028905984) showcasing it.
 
 ## License
 
