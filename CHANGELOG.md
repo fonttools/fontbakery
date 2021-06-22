@@ -6,6 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Check if the font contains any invalid feature tags. (PR #3359, issue #3355)
   - **[com.google.fonts/check/layout_valid_script_tags]:** Check if the font contains any invalid script tags. (PR #3359, issue #3355)
   - **[com.google.fonts/check/layout_valid_language_tags]:** Check if the font contains any invalid language tags. (PR #3359, issue #3355)
+  - **[com.google.fonts/check/meta/script_lang_tags]:** Ensure fonts have ScriptLangTags declared on the 'meta' table. (issue #3349)
 
 
 ## 0.7.38 (2021-Jun-23)

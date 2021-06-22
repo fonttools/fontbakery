@@ -3797,3 +3797,26 @@ def test_check_stylisticset_description():
     #                    "com.google.fonts/check/stylisticset_description")
     # TODO: Implement-me!
 
+
+def test_check_meta_script_lang_tags():
+    """Ensure font has ScriptLangTags in the 'meta' table."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/meta/script_lang_tags")
+
+    # This sample font from the Noto project declares
+    # the script/lang tags in the meta table correctly:
+    ttFont = TTFont(TEST_FILE("meta_tag/NotoSansPhagsPa-Regular-with-meta.ttf"))
+    assert_results_contain(check(ttFont), INFO, 'dlng-tag')
+    assert_results_contain(check(ttFont), INFO, 'slng-tag')
+
+    del ttFont["meta"].data['dlng']
+    assert_results_contain(check(ttFont),
+                           FAIL, 'missing-dlng-tag')
+
+    del ttFont["meta"].data['slng']
+    assert_results_contain(check(ttFont),
+                           FAIL, 'missing-slng-tag')
+
+    del ttFont["meta"]
+    assert_results_contain(check(ttFont),
+                           WARN, 'lacks-meta-table')
