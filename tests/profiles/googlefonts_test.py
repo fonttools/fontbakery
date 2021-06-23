@@ -798,16 +798,21 @@ def test_check_family_has_license():
 
 def test_check_license_ofl_body_text():
     """Check OFL.txt contains correct body text."""
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_license_OFL_body_text as check
-    from fontbakery.constants import OFL_BODY_TEXT
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/license/OFL_body_text")
 
-    copyright = "Copyright 2020 The Font Project Authors (www.github.com/googlefonts/font-project-authors)\n\n"
-    good_license = copyright + OFL_BODY_TEXT
-    assert_PASS(check(good_license),
+    # Our reference Montserrat family is know to have
+    # a proper OFL.txt license file.
+    font = TEST_FILE("montserrat/Montserrat-Regular.ttf")
+    ttFont = TTFont(font)
+
+    assert_PASS(check(ttFont),
                 'with a good OFL.txt license')
 
-    bad_license = copyright + OFL_BODY_TEXT[100:]
-    assert_results_contain(check(bad_license),
+    # modify a tiny bit of the license text, to trigger the FAIL:
+    bad_license = check["license_contents"].replace("SIL OPEN FONT LICENSE Version 1.1",
+                                                    "SOMETHING ELSE :-P Version Foo")
+    assert_results_contain(check(ttFont, {'license_contents': bad_license}),
                            FAIL, "incorrect-ofl-body-text",
                            "with incorrect ofl body text")
 
