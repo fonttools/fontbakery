@@ -273,6 +273,10 @@ def license(license_path):
     if license_path:
         return os.path.basename(license_path)
 
+@condition
+def is_ofl(license):
+    return "OFL" in license
+
 
 @condition
 def familyname(font):

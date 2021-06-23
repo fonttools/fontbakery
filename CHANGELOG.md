@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.7.38 (2021-Jun-??)
 ### New Checks
   - **[com.google/fonts/check/repo/upstream_yaml_has_required_fields]:** Check upstream.yaml file contains all required fields (PR #3344, issue #3338)
+  - **[com.google.fonts/check/license/OFL_body_text]:** Check OFL.txt body text is correct (PR #3353, issue #3352)
   - **[com.google.fonts/check/os2/use_typo_metrics]:** Confirm that OS/2.fsSelection bit 7 (USE TYPO METRICS) is set (PR #3314, issue #3241)
 
 ### Dependencies
