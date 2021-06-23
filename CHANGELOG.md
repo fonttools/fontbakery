@@ -1,8 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## 0.7.38 (2021-Jul-??)
+  - ...
 
-## 0.7.38 (2021-Jun-??)
+
+## 0.7.38 (2021-Jun-23)
 ### New Checks
   - **[com.google/fonts/check/repo/upstream_yaml_has_required_fields]:** Check upstream.yaml file contains all required fields (PR #3344, issue #3338)
   - **[com.google.fonts/check/license/OFL_body_text]:** Check OFL.txt body text is correct (PR #3353, issue #3352)
@@ -12,7 +15,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Drop again the usage of unidecode due to licensing policies (issue #3316)
 
 ### Bug Fixes
-  - Fixed a bug in check/whitespace_ink affecting Ogham Space Mark. The set of codepoints was created incorrectly because we forgot to use parentheses in the expression, which resulted in the set of non-drawing codepoints to still include the ogham space mark codepoint (quite the opposite of what the comment said we were doing there :-P) Now the check handles it properly and I also added a test case to ensure we do not reintroduce the bug. (issue #3345)
+  - **[com.google/fonts/check/whitespace_ink]:** Fixed a bug affecting Ogham Space Mark. The set of codepoints was created incorrectly because we forgot to use parentheses in the expression, which resulted in the set of non-drawing codepoints to still include the ogham space mark codepoint (quite the opposite of what the comment said we were doing there :-P) Now the check handles it properly and I also added a test case to ensure we do not reintroduce the bug. (issue #3345)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/description/max_length]:** nowadays the Google Fonts specimen pages allow for longer texts without upsetting the balance of the page. So the new limit is 2,000 characters. (PR #3337)
