@@ -959,7 +959,7 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
 
 @check(
     id = 'com.google.fonts/check/usweightclass',
-    conditions=['expected_style'],
+    conditions = ['expected_style'],
     rationale = """
         Google Fonts expects variable fonts, static ttfs and static otfs to have differing OS/2 usWeightClass values.
 
@@ -1035,7 +1035,7 @@ def com_google_fonts_check_usweightclass(ttFont, expected_style):
 
 @check(
     id = 'com.google.fonts/check/family/has_license',
-    conditions=['gfonts_repo_structure'],
+    conditions = ['gfonts_repo_structure'],
 )
 def com_google_fonts_check_family_has_license(licenses):
     """Check font has a license."""
@@ -1067,6 +1067,7 @@ def com_google_fonts_check_family_has_license(licenses):
         "Copyright 2019 The Montserrat Project Authors (https://github.com/julietaula/montserrat)"
     """,
     misc_metadata = {
+        'severity': '10', # max severity because licensing mistakes can cause legal problems.
         'request': 'https://github.com/googlefonts/fontbakery/issues/2764'
     }
 )
@@ -1084,11 +1085,13 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
 
 @check(
     id = 'com.google.fonts/check/license/OFL_body_text',
-    conditions = ['is_ofl', 'license_contents'],
+    conditions = ['is_ofl',
+                  'license_contents'],
     rationale = """
         Check OFL body text is correct. Often users will accidently delete parts of the body text.
     """,
     misc_metadata = {
+        'severity': '10', # max severity because licensing mistakes can cause legal problems.
         'request': 'https://github.com/googlefonts/fontbakery/issues/3352'
     }
 )
@@ -1096,10 +1099,11 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
     """Check OFL body text is correct.""" 
     from fontbakery.constants import OFL_BODY_TEXT
     if not OFL_BODY_TEXT in license_contents:
-        yield FAIL, Message("incorrect-ofl-body-text",
-                            ("The OFL.txt body text is incorrect. Please use "
-                             "https://github.com/google/fonts/blob/main/ofl/montserrat/OFL.txt "
-                             "as a template. You should only modify the first line."))
+        yield FAIL, \
+              Message("incorrect-ofl-body-text",
+                      "The OFL.txt body text is incorrect. Please use"
+                      " https://github.com/google/fonts/blob/main/ofl/montserrat/OFL.txt"
+                      " as a template. You should only modify the first line.")
     else:
         yield PASS, "OFL license body text is correct"
 
@@ -1926,7 +1930,7 @@ def com_google_fonts_check_metadata_regular_is_400(family_metadata):
 
 @check(
     id = 'com.google.fonts/check/metadata/nameid/family_name',
-    conditions=['font_metadata']
+    conditions = ['font_metadata']
 )
 def com_google_fonts_check_metadata_nameid_family_name(ttFont, font_metadata):
     """Checks METADATA.pb font.name field matches
@@ -2019,7 +2023,8 @@ def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
 
 @check(
     id = 'com.google.fonts/check/metadata/nameid/font_name',
-    conditions=['font_metadata', 'style']
+    conditions = ['font_metadata',
+                  'style']
 )
 def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadata):
     """METADATA.pb font.name value should be same as
@@ -2489,7 +2494,7 @@ def com_google_fonts_check_metadata_fontname_not_camel_cased(font_metadata):
 
 @check(
     id = 'com.google.fonts/check/metadata/match_name_familyname',
-    conditions = ['family_metadata',      # that's the family-wide metadata!
+    conditions = ['family_metadata', # that's the family-wide metadata!
                   'font_metadata'] # and this one's specific to a single file
 )
 def com_google_fonts_check_metadata_match_name_familyname(family_metadata, font_metadata):
@@ -3354,7 +3359,7 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_
     rationale = """
         Requirements for the TYPOGRAPHIC_SUBFAMILY_NAME entries in the 'name' table.
     """,
-    conditions=['expected_style']
+    conditions = ['expected_style']
 )
 def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style):
     """Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries."""
@@ -4413,7 +4418,8 @@ def com_google_fonts_check_repo_zip_files(family_directory):
 
 @check(
     id = 'com.google.fonts/check/vertical_metrics_regressions',
-    conditions = ['regular_remote_style', 'not is_cjk_font'],
+    conditions = ['regular_remote_style',
+                  'not is_cjk_font'],
     rationale = """
         If the family already exists on Google Fonts, we need to ensure that the checked family's vertical metrics are similar. This check will test the following schema which was outlined in Fontbakery issue #1162 [1]:
 
