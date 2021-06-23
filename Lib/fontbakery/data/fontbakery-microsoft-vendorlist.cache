@@ -73,11 +73,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/d0e052067bfe970dfd4dab9be270e459415f8024/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/fc0787b670c4fddb7d07f0b5b24901910a6ac90c/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="05/18/2021" />
+<meta name="ms.date" content="06/14/2021" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -88,18 +88,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2021-05-18 10:49 PM" />
+<meta name="updated_at" content="2021-06-18 06:12 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3621" />
+<meta name="word_count" content="3660" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f0c8a4b1.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/72013dd7.site-ltr.css ">
 
 	
 
@@ -131,7 +131,7 @@
 			hasPageActions: true,
 			hasBookmark: true,
 			hasShare: true,
-			hasRecommendations: false,
+			hasRecommendations: true,
 			contributors: [
 						{ name: "alib-ms", url: "https://github.com/alib-ms" },
 						{ name: "WorkNihar", url: "https://github.com/WorkNihar" },
@@ -151,17 +151,14 @@
 	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
-	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/8a64e446.index-polyfills.js"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2c6911d0.index-polyfills.js"></script>
 
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/5da56fbe.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b3009df7.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
 	<div class="header-holder has-default-focus">
-		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
-		
-		<div id="ignite-banner-holder" class="has-default-focus has-overflow-hidden"></div>
-		<div id="build-banner-holder" class="has-default-focus has-overflow-hidden"></div>
+		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 padding-xs has-text-centered has-body-background" tabindex="1">Skip to main content</a>
 		
 		<div hidden id="cookie-consent-holder"></div>
 		<!-- liquid-tag banners global -->
@@ -193,7 +190,7 @@
 						<span>Exit focus mode</span>
 					</button>
 				</div>
-				<div class="has-padding-none-tablet has-padding-medium font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+				<div class="has-padding-none-tablet padding-xs font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
 					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
 						<li hidden>
 							<a id="lang-link" class="button is-text has-inner-focus is-small is-icon-only-touch" title="Read in English" data-bi-name="language-toggle">
@@ -303,70 +300,73 @@
 				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
 			</div>
 
+			<!-- .primary-holder -->
 			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<!--div.columns -->
 				<div class="columns is-gapless-mobile has-large-gaps ">
 
 
-				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+					<div id="main-column" class="column  is-full is-four-fifths-desktop ">
 
-					<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
+						<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
 
 
 
-						<h1 id="registered-font-vendors">Registered font vendors</h1>
+							<h1 id="registered-font-vendors">Registered font vendors</h1>
 
-						<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
-							<li>
-								<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-05-18T00:00:00.000Z" data-article-date-source="ms.date">05/18/2021</time>
-							</li>
-									<li class="readingTime">18 minutes to read</li>
-								<li class="contributors-holder">
-									<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
-														<li class="facepile-item">
-															<a href="https://github.com/alib-ms" title="alib-ms" aria-label="alib-msGithub profile" data-src="https://github.com/alib-ms.png?size=32" data-contributor-name="alib-ms" class="facepile-item-coin"
-															>
-																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/alib-ms.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">a</span>
-															</a>
-														</li>
-														<li class="facepile-item">
-															<a href="https://github.com/WorkNihar" title="WorkNihar" aria-label="WorkNiharGithub profile" data-src="https://github.com/WorkNihar.png?size=32" data-contributor-name="WorkNihar" class="facepile-item-coin"
-															>
-																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/WorkNihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">W</span>
-															</a>
-														</li>
-														<li class="facepile-item">
-															<a href="https://github.com/mijacobs" title="mijacobs" aria-label="mijacobsGithub profile" data-src="https://github.com/mijacobs.png?size=32" data-contributor-name="mijacobs" class="facepile-item-coin"
-															>
-																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mijacobs.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">m</span>
-															</a>
-														</li>
-														<li class="facepile-item">
-															<a href="https://github.com/v-nihar" title="v-nihar" aria-label="v-niharGithub profile" data-src="https://github.com/v-nihar.png?size=32" data-contributor-name="v-nihar" class="facepile-item-coin"
-															>
-																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/v-nihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">v</span>
-															</a>
-														</li>
-														<li class="facepile-item">
-															<a href="https://github.com/VSC-Service-Account" title="VSC-Service-Account" aria-label="VSC-Service-AccountGithub profile" data-src="https://github.com/VSC-Service-Account.png?size=32" data-contributor-name="VSC-Service-Account" class="facepile-item-coin"
-															>
-																<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/VSC-Service-Account.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">V</span>
-															</a>
-														</li>
-									</ul>
-								</li>
-						</ul>
+								<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+									<li>
+										<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-06-14T00:00:00.000Z" data-article-date-source="ms.date">06/14/2021</time>
+									</li>
+											<li class="readingTime">18 minutes to read</li>
+										<li class="contributors-holder">
+											<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
+																<li class="facepile-item">
+																	<a href="https://github.com/alib-ms" title="alib-ms" aria-label="alib-msGithub profile" data-src="https://github.com/alib-ms.png?size=32" data-contributor-name="alib-ms" class="facepile-item-coin"
+																	>
+																		<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/alib-ms.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																		<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">a</span>
+																	</a>
+																</li>
+																<li class="facepile-item">
+																	<a href="https://github.com/WorkNihar" title="WorkNihar" aria-label="WorkNiharGithub profile" data-src="https://github.com/WorkNihar.png?size=32" data-contributor-name="WorkNihar" class="facepile-item-coin"
+																	>
+																		<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/WorkNihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																		<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">W</span>
+																	</a>
+																</li>
+																<li class="facepile-item">
+																	<a href="https://github.com/mijacobs" title="mijacobs" aria-label="mijacobsGithub profile" data-src="https://github.com/mijacobs.png?size=32" data-contributor-name="mijacobs" class="facepile-item-coin"
+																	>
+																		<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mijacobs.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																		<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">m</span>
+																	</a>
+																</li>
+																<li class="facepile-item">
+																	<a href="https://github.com/v-nihar" title="v-nihar" aria-label="v-niharGithub profile" data-src="https://github.com/v-nihar.png?size=32" data-contributor-name="v-nihar" class="facepile-item-coin"
+																	>
+																		<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/v-nihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																		<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">v</span>
+																	</a>
+																</li>
+																<li class="facepile-item">
+																	<a href="https://github.com/VSC-Service-Account" title="VSC-Service-Account" aria-label="VSC-Service-AccountGithub profile" data-src="https://github.com/VSC-Service-Account.png?size=32" data-contributor-name="VSC-Service-Account" class="facepile-item-coin"
+																	>
+																		<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/VSC-Service-Account.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																		<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">V</span>
+																	</a>
+																</li>
+											</ul>
+										</li>
+								</ul>
 
-						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
-							<h3>In this article</h3>
-						</nav>
+								<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+									<h3>In this article</h3>
+								</nav>
 
-						<!-- <content> -->
-							<p>The following is the list of registered vendor IDs, with links to vendor sites. All vendor IDs are unique to a single vendor.</p>
+
+							<!-- <content> -->
+								<p>The following is the list of registered vendor IDs, with links to vendor sites. All vendor IDs are unique to a single vendor.</p>
 <p>To learn more about how to register a vendor ID or to update vendor details for a registered ID, please see <a href="register" data-linktype="relative-path">Register as a typography vendor</a>.</p>
 <h2 id="0-9-">[0-9, !$…]</h2>
 <table>
@@ -486,6 +486,10 @@
 <td><a href="http://www.a2-type.co.uk" data-linktype="external">A2-Type</a></td>
 </tr>
 <tr>
+<td>AAA</td>
+<td><a href="https://alefalefalef.co.il/en/" data-linktype="external">AlefAlefAlef</a></td>
+</tr>
+<tr>
 <td>aaff</td>
 <td><a href="http://www.foundry.astroacademia.com" data-linktype="external">AstroAcademia Font Foundry</a></td>
 </tr>
@@ -496,6 +500,10 @@
 <tr>
 <td>AAT</td>
 <td><a href="http://www.ahmetaltuntype.com" data-linktype="external">AhmetAltunType</a></td>
+</tr>
+<tr>
+<td>AATF</td>
+<td>Abstract Animal Type Foundry</td>
 </tr>
 <tr>
 <td>ABBO</td>
@@ -576,6 +584,10 @@
 <tr>
 <td>AID</td>
 <td><a href="http://www.artisticimposter.com" data-linktype="external">Artistic Imposter Design</a></td>
+</tr>
+<tr>
+<td>aide</td>
+<td>Aiolfi.design</td>
 </tr>
 <tr>
 <td>AJL</td>
@@ -1038,6 +1050,10 @@
 <td><a href="http://www.itscofonts.com/" data-linktype="external">ITSCO - Bar Code Fonts</a></td>
 </tr>
 <tr>
+<td>BRTE</td>
+<td><a href="https://ryuldavidson.com/" data-linktype="external">Brenners Template</a></td>
+</tr>
+<tr>
 <td>BS</td>
 <td><a href="http://www.barcode-soft.com" data-linktype="external">Barcodesoft</a></td>
 </tr>
@@ -1266,7 +1282,7 @@
 </tr>
 <tr>
 <td>CTYP</td>
-<td><a href="www.countertype.co.uk" data-linktype="relative-path">Countertype</a></td>
+<td>Countertype</td>
 </tr>
 <tr>
 <td>cwwf</td>
@@ -1390,6 +1406,10 @@
 <tr>
 <td>DnGr</td>
 <td>DevnGraphics</td>
+</tr>
+<tr>
+<td>DOCS</td>
+<td><a href="http://dcmts.co" data-linktype="external">Documents Inc.</a></td>
 </tr>
 <tr>
 <td>DOM</td>
@@ -1894,6 +1914,10 @@
 <td><a href="https://mt-funa.com/" data-linktype="external">Mt. Funa Design Office</a></td>
 </tr>
 <tr>
+<td>FVL</td>
+<td>Font Viet Linh</td>
+</tr>
+<tr>
 <td>FWD</td>
 <td><a href="http://www.fontwright.com/" data-linktype="external">Fontwright Design</a></td>
 </tr>
@@ -2135,10 +2159,15 @@
 <td>HEB</td>
 <td><a href="http://www.tau.ac.il/~stoledo/" data-linktype="external">Sivan Toledo</a></td>
 </tr>
-<tr><tr>
+<tr>
+<td>HEX</td>
+<td><a href="https://hex.xyz/" data-linktype="external">HEX Projects</a></td>
+</tr>
+<tr>
 <td>HEYP</td>
 <td><a href="https://www.heyporterposter.com/" data-linktype="external">HEY PORTER!</a></td>
 </tr>
+<tr>
 <td>HFJ</td>
 <td>Hoefler & Frere-Jones (replaced by H&FJ)</td>
 </tr>
@@ -2882,6 +2911,10 @@
 <td><a href="http://www.macromedia.com/" data-linktype="external">Macromedia / Made with Fontographer</a></td>
 </tr>
 <tr>
+<td>MADE</td>
+<td><a href="https://www.marmitedefontes.com/" data-linktype="external">Marmite Defontes</a></td>
+</tr>
+<tr>
 <td>MADT</td>
 <td><a href="http://www.madtype.net/" data-linktype="external">MADType</a></td>
 </tr>
@@ -2996,6 +3029,10 @@
 <tr>
 <td>MH</td>
 <td><a href="http://www.mistifonts.com" data-linktype="external">Misti’s Fonts</a></td>
+</tr>
+<tr>
+<td>MHED</td>
+<td><a href="https://www.mheducation.com/" data-linktype="external">McGraw-Hill Education</a></td>
 </tr>
 <tr>
 <td>MHMD</td>
@@ -3714,6 +3751,10 @@
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>R777</td>
+<td>Rouge</td>
+</tr>
+<tr>
 <td>RAIN</td>
 <td><a href="https://www.jasonrainbird.com" data-linktype="external">Rainbird</a></td>
 </tr>
@@ -3740,6 +3781,10 @@
 <tr>
 <td>RES</td>
 <td><a href="http://www.resultat.nl/" data-linktype="external">Resultat</a></td>
+</tr>
+<tr>
+<td>REZ</td>
+<td><a href="https://reztype.com/" data-linktype="external">Reztype</a></td>
 </tr>
 <tr>
 <td>RICK</td>
@@ -4085,6 +4130,10 @@
 <td>Stefan Stoychev</td>
 </tr>
 <tr>
+<td>ssm0</td>
+<td><a href="https://www.siryali-studios.com/" data-linktype="external">Siryali Studios</a></td>
+</tr>
+<tr>
 <td>ST</td>
 <td>SocioType</td>
 </tr>
@@ -4172,6 +4221,10 @@
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>TAFT</td>
+<td><a href="https://taft.work/" data-linktype="external">Tural Alisoy Font</a></td>
+</tr>
+<tr>
 <td>tanu</td>
 <td><a href="https://tanukifont.com/" data-linktype="external">Tanuki Font</a></td>
 </tr>
@@ -4179,13 +4232,14 @@
 <td>TB</td>
 <td><a href="http://www.typebank.co.jp/" data-linktype="external">TypeBank Co.,Ltd</a></td>
 </tr>
-<tr>
-<td>TAFT</td>
-<td><a href="https://taft.work/" data-linktype="external">Tural Alisoy Font</a></td>
-</tr>
+	
 <tr>
 <td>TBFF</td>
 <td><a href="http://www.myfonts.com/foundry/trueblue/" data-linktype="external">TrueBlue Font Foundry</a></td>
+</tr>
+<tr>
+<td>TBTF</td>
+<td><a href="https://www.typobaaz.com/" data-linktype="external">TypoBaaz Type Foundry</a></td>
 </tr>
 <tr>
 <td>TC</td>
@@ -4200,12 +4254,12 @@
 <td><a href="http://www.typedepot.com" data-linktype="external">Typedepot</a></td>
 </tr>
 <tr>
-<td>TDR</td>
-<td>Tansin A. Darcos & Co.</td>
-</tr>
-<tr>
 <td>TDFF</td>
 <td><a href="http://www.tourdefonts.com/" data-linktype="external">Tour de Force Font Foundry</a></td>
+</tr>
+<tr>
+<td>TDR</td>
+<td>Tansin A. Darcos & Co.</td>
 </tr>
 <tr>
 <td>TERM</td>
@@ -4236,12 +4290,12 @@
 <td><a href="https://tomgrace.ch/" data-linktype="external">Tom Grace</a></td>
 </tr>
 <tr>
-<td>TGHT</td>
-<td><a href="http://www.tightype.com" data-linktype="external">TIGHTYPE</a></td>
-</tr>
-<tr>
 <td>TGD</td>
 <td><a href="https://typographicdesign.de/" data-linktype="external">Typo Graphic Design ■ Manuel Viergutz</a></td>
+</tr>
+<tr>
+<td>TGHT</td>
+<td><a href="http://www.tightype.com" data-linktype="external">TIGHTYPE</a></td>
 </tr>
 <tr>
 <td>THIN</td>
@@ -4806,7 +4860,7 @@
 <h2 id="external-links-disclaimer">External links disclaimer</h2>
 <p>External Web sites listed here are not under the control of Microsoft. Accordingly, Microsoft can make no representation concerning the content of these sites to you, nor can the fact that Microsoft has given you this listing serve as an endorsement by Microsoft of any of these sites. Microsoft is providing external links only as a convenience to you. This is to inform you that Microsoft has not tested any software found on these sites and therefore cannot make any representations regarding the quality, safety or suitability of any software found there. There are inherent dangers in the use of any software found on the Internet, and Microsoft cautions you to make sure that you completely understand the risks before retrieving any software on the Internet.</p>
 
-						<!-- </content> -->
+							<!-- </content> -->
 
 						</main>
 
@@ -4819,7 +4873,7 @@
 	<div class="feedback-verbatim border-bottom has-padding-bottom-large has-margin-bottom-small" data-bi-name="rating">
     <div class="binary-rating">
         <div class="binary-rating-buttons">
-				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small font-size-h4 has-margin-bottom-medium">Is this page helpful?</h3>
+				<h3 class="font-weight-semibold has-margin-top-none font-size-h4 margin-bottom-xs">Is this page helpful?</h3>
 			<div>
                 <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-desktop">
                     <span aria-hidden="true" class="icon docon docon-like"></span>
@@ -4851,6 +4905,7 @@
 
 
 						<!-- recommendations section -->
+							<section id="recommendations-section" data-bi-name="recommendations"></section>
 						<!-- end recommendations section -->
 
 						<!-- feedback section -->
@@ -4882,14 +4937,14 @@
 						<!-- feedback report section -->
 						<!-- end feedback report section -->
 
-						<div class="has-border-top is-visible-interactive has-default-focus has-margin-top-large ">
+						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
 
 
 
 	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
 	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
 			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
-		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+		<div class="margin-inline-xs flex-shrink-0">
 <div class="dropdown has-caret-up">
 	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
 		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
@@ -4990,9 +5045,9 @@ High contrast					</span>
 						</div>
 					</div>
 					
-					<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
-						<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
-								
+						<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+							<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
+									
 	
 	
 
@@ -5027,33 +5082,35 @@ High contrast					</span>
     <div class="thankyou-rating is-hidden" tabindex="-1">
         <p>Thank you.</p>
     </div>
-</div>							<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
-								<h3>In this article</h3>
-							</nav>
+</div>								<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+									<h3>In this article</h3>
+								</nav>
+							</div>
 						</div>
-					</div>
 
-					<!--end of div.columns -->
 				</div>
+				<!--end of div.columns -->
 
-			<!--end of .primary-holder -->
 			</section>
+			<!--end of .primary-holder -->
 
+			<!-- interactive container -->
 			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
 			</aside>
+			<!-- end of interactive container -->
 		</div>
 
-		<!--end of .mainContainer -->
 	</div>
+	<!--end of .mainContainer -->
 
-	<section class="has-border-top has-default-focus is-hidden-interactive has-margin-top-large ">
+	<section class="border-top has-default-focus is-hidden-interactive has-margin-top-large ">
 
 
 
 	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
 	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
 			<a data-mscc-ic="false" class="locale-selector-link flex-shrink-0" href="#" data-bi-name="select-locale"><span class="icon docon docon-world font-size-l has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text"></span></a>
-		<div class="has-margin-left-medium has-margin-right-medium flex-shrink-0">
+		<div class="margin-inline-xs flex-shrink-0">
 <div class="dropdown has-caret-up">
 	<button class="dropdown-trigger button is-transparent is-small is-icon-only-touch has-inner-focus theme-dropdown-trigger"
 		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
