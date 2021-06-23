@@ -100,7 +100,8 @@ REPO_CHECKS = [
     'com.google/fonts/check/repo/upstream_yaml_has_required_fields',
     'com.google.fonts/check/repo/fb_report',
     'com.google.fonts/check/repo/zip_files',
-    'com.google.fonts/check/license/OFL_copyright'
+    'com.google.fonts/check/license/OFL_copyright',
+    'com.google.fonts/check/license/OFL_body_text'
 ]
 
 FONT_FILE_CHECKS = [
@@ -1079,6 +1080,28 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
     else:
         yield FAIL, (f'First line in license file does not match expected format:'
                      f' "{string}"')
+
+
+@check(
+    id = 'com.google.fonts/check/license/OFL_body_text',
+    conditions = ['is_ofl', 'license_contents'],
+    rationale = """
+        Check OFL body text is correct. Often users will accidently delete parts of the body text.
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/3352'
+    }
+)
+def com_google_fonts_check_license_OFL_body_text(license_contents):
+    """Check OFL body text is correct.""" 
+    from fontbakery.constants import OFL_BODY_TEXT
+    if not OFL_BODY_TEXT in license_contents:
+        yield FAIL, Message("incorrect-ofl-body-text",
+                            ("The OFL.txt body text is incorrect. Please use "
+                             "https://github.com/google/fonts/blob/main/ofl/montserrat/OFL.txt "
+                             "as a template. You should only modify the first line."))
+    else:
+        yield PASS, "OFL license body text is correct"
 
 
 @check(

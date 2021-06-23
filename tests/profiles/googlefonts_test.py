@@ -796,6 +796,22 @@ def test_check_family_has_license():
                 'with a single Apache license...')
 
 
+def test_check_license_ofl_body_text():
+    """Check OFL.txt contains correct body text."""
+    from fontbakery.profiles.googlefonts import com_google_fonts_check_license_OFL_body_text as check
+    from fontbakery.constants import OFL_BODY_TEXT
+
+    copyright = "Copyright 2020 The Font Project Authors (www.github.com/googlefonts/font-project-authors)\n\n"
+    good_license = copyright + OFL_BODY_TEXT
+    assert_PASS(check(good_license),
+                'with a good OFL.txt license')
+
+    bad_license = copyright + OFL_BODY_TEXT[100:]
+    assert_results_contain(check(bad_license),
+                           FAIL, "incorrect-ofl-body-text",
+                           "with incorrect ofl body text")
+
+
 def test_check_name_license(mada_ttFonts):
     """ Check copyright namerecords match license file. """
     from fontbakery.profiles.googlefonts import com_google_fonts_check_name_license as check
