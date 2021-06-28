@@ -79,7 +79,8 @@ setup(
         'vharfbuzz',
         'collidoscope',
         'stringbrewer',
-        'rich'
+        'rich',
+        'opentypespec'
     ],
     extras_require={
         'docs': [
