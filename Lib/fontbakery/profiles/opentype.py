@@ -20,6 +20,7 @@ OPENTYPE_PROFILE_IMPORTS = (
         "glyf",
         "fvar",
         "stat",
+        "layout",
         "shared_conditions",
     ),
 )
@@ -75,6 +76,9 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/glyf_nested_components',
     'com.google.fonts/check/all_glyphs_have_codepoints',
     'com.google.fonts/check/code_pages',
+    'com.google.fonts/check/layout_valid_feature_tags',
+    'com.google.fonts/check/layout_valid_script_tags',
+    'com.google.fonts/check/layout_valid_language_tags',
 ]
 
 profile.auto_register(globals())
