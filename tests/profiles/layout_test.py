@@ -13,12 +13,12 @@ def test_check_layout_valid_feature_tags():
     check = CheckTester(layout_profile,
                         "com.google.fonts/check/layout_valid_feature_tags")
 
-    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert_PASS(check(ttFont))
+    font = TEST_FILE("nunito/Nunito-Regular.ttf")
+    assert_PASS(check(font))
 
 
-    ttFont = TTFont(TEST_FILE("rosarivo/Rosarivo-Regular.ttf"))
-    assert_results_contain(check(ttFont),
+    font = TEST_FILE("rosarivo/Rosarivo-Regular.ttf")
+    assert_results_contain(check(font),
                            FAIL, 'bad-feature-tags')
 
 
@@ -27,12 +27,12 @@ def test_check_layout_valid_script_tags():
     check = CheckTester(layout_profile,
                         "com.google.fonts/check/layout_valid_script_tags")
 
-    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert_PASS(check(ttFont))
+    font = TEST_FILE("nunito/Nunito-Regular.ttf")
+    assert_PASS(check(font))
 
 
-    ttFont = TTFont(TEST_FILE("rosarivo/Rosarivo-Regular.ttf"))
-    assert_results_contain(check(ttFont),
+    font = TEST_FILE("rosarivo/Rosarivo-Regular.ttf")
+    assert_results_contain(check(font),
                            FAIL, 'bad-script-tags')
 
 
@@ -41,10 +41,10 @@ def test_check_layout_valid_language_tags():
     check = CheckTester(layout_profile,
                         "com.google.fonts/check/layout_valid_language_tags")
 
-    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert_PASS(check(ttFont))
+    font = TEST_FILE("nunito/Nunito-Regular.ttf")
+    assert_PASS(check(font))
 
 
-    ttFont = TTFont(TEST_FILE("rosarivo/Rosarivo-Regular.ttf"))
-    assert_results_contain(check(ttFont),
+    font = TEST_FILE("rosarivo/Rosarivo-Regular.ttf")
+    assert_results_contain(check(font),
                            FAIL, 'bad-language-tags')

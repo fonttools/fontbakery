@@ -21,6 +21,7 @@ The checks of the `opentype` profile are separated in one sub-profile for each o
    name
    os2
    post
+   layout
 
 .. automodule:: fontbakery.profiles.opentype
    :members:
