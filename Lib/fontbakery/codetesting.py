@@ -124,12 +124,16 @@ def TEST_FILE(f):
     return portable_path("data/test/" + f)
 
 
-def assert_PASS(check_results, reason="with a good font..."):
-    from fontbakery.checkrunner import PASS
+def assert_PASS(check_results, reason="with a good font...", ignore_error=None):
+    from fontbakery.checkrunner import PASS, ERROR
     print(f"Test PASS {reason}")
     status, message = list(check_results)[-1]
-    assert status == PASS
-    return str(message)
+    if ignore_error and status == ERROR:
+        print(ignore_error)
+        return None
+    else:
+        assert status == PASS
+        return str(message)
 
 
 def assert_SKIP(check_results, reason=""):
@@ -140,14 +144,18 @@ def assert_SKIP(check_results, reason=""):
     return str(message)
 
 
-def assert_results_contain(check_results, expected_status, expected_msgcode=None, reason=None):
+def assert_results_contain(check_results,
+                           expected_status,
+                           expected_msgcode=None,
+                           reason=None,
+                           ignore_error=None):
     """
     This helper function is useful when we want to make sure that
     a certain log message is emited by a check but it can be in any
     order among other log messages.
     """
     from fontbakery.message import Message
-    from fontbakery.checkrunner import PASS, DEBUG
+    from fontbakery.checkrunner import PASS, DEBUG, ERROR
     if not reason:
         reason = f"[{expected_msgcode}]"
     if not expected_msgcode:
@@ -155,6 +163,12 @@ def assert_results_contain(check_results, expected_status, expected_msgcode=None
 
     print(f"Test {expected_status} {reason}")
     check_results = list(check_results)
+
+    for status, _ in check_results:
+        if ignore_error and status == ERROR:
+            print(ignore_error)
+            return None
+
     for status, msg in check_results:
         if status not in [PASS, DEBUG] and not isinstance(msg, Message):
             raise Exception(f"Bare Python strings no longer supported in result values.\n"
