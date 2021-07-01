@@ -8,6 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/layout_valid_language_tags]:** Check if the font contains any invalid language tags. (PR #3359, issue #3355)
   - **[com.google.fonts/check/meta/script_lang_tags]:** Ensure fonts have ScriptLangTags declared on the 'meta' table. (issue #3349)
 
+### Bug Fixes
+  - Add a code-testing mechanism to ignore spurious ERRORs and use it for not letting the namecheck timeouts break our CI builds. (issue #3366)
+
 
 ## 0.7.38 (2021-Jun-23)
 ### New Checks
