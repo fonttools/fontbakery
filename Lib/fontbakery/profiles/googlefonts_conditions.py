@@ -432,6 +432,7 @@ def whitelist_camelcased_familyname(font):
         "UnifrakturMaguntia"
         "MonteCarlo"
         "WindSong"
+        "RUSerius"
     ]
     for familyname in familynames:
         if familyname in font:
