@@ -60,33 +60,33 @@ setup(
     setup_requires=['setuptools_scm'],
     install_requires=[
         'beautifulsoup4',
-        'toml',
-        'PyYAML',
+        'beziers',
+        'cmarkgfm',
+        'collidoscope',
         'defcon',
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
-        'font-v',
         'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
+        'font-v',
         'lxml',
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
                                       # (see https://github.com/khaledhosny/ots/pull/182)
+        'opentypespec',
         'pip-api',
         'protobuf>=3.7.0',  # 3.7.0 fixed a bug on parsing some METADATA.pb files
                             # (see https://github.com/googlefonts/fontbakery/issues/2200)
+        'PyYAML',
         'requests',
-        'ufolint',
-        'beziers',
-        'cmarkgfm',
-        'vharfbuzz',
-        'collidoscope',
-        'stringbrewer',
         'rich',
-        'opentypespec'
+        'stringbrewer',
+        'toml',
+        'ufolint',
+        'vharfbuzz',
     ],
     extras_require={
         'docs': [
+            'recommonmark',
             'sphinx >= 1.4',
             'sphinx_rtd_theme',
-            'recommonmark',
         ],
     },
     entry_points={
