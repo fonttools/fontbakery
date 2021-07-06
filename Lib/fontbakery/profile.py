@@ -1054,6 +1054,10 @@ class Profile:
 
 
 def _check_log_override(overrides, status, message):
+    # These constants are merely meant to be used
+    # so that the check_override declarations are more readable:
+    from fontbakery.message import (KEEP_ORIGINAL_STATUS,
+                                    KEEP_ORIGINAL_MESSAGE)
     result_status = status
     result_message = message
     override = False
@@ -1065,9 +1069,9 @@ def _check_log_override(overrides, status, message):
         ):
             continue
         override = True
-        if new_status is not None:
+        if new_status is not KEEP_ORIGINAL_STATUS:
             result_status = new_status
-        if new_message_string is not None:
+        if new_message_string is not KEEP_ORIGINAL_MESSAGE:
             # If it looks like an instance of Message we reuse the code,
             # as it is the same condition this makes totally sense.
             result_message = Message(result_message.code, new_message_string)

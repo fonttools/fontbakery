@@ -5,7 +5,8 @@ import unicodedata
 
 from fontbakery.callable import check
 from fontbakery.fonts_profile import profile_factory
-from fontbakery.message import Message
+from fontbakery.message import (Message,
+                                KEEP_ORIGINAL_MESSAGE)
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.section import Section
 from fontbakery.status import PASS, FAIL, WARN
@@ -108,33 +109,39 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
         yield PASS, "No empty glyphs for letters found."
 
 
-# ToDo: add many more checks...
-
 profile.auto_register(globals())
 
-com_google_fonts_check_dsig_adobefonts = profile.check_log_override(
-    'com.google.fonts/check/dsig'
-  , reason='For Adobe this issue is not as severe '\
-            + 'as assessed in the original check.'
-  , overrides = (
-        (   'lacks-signature' # override_target -> a specific Message.code (string)
-          , WARN # new_status -> None: keep old status
-          , None # new_message_string -> None: keep old message
-          )
+
+profile.check_log_override(
+    # from `opentype` profile:
+    'com.google.fonts/check/dsig',
+    reason = 'For Adobe this issue is not as severe ' \
+           + 'as assessed in the original check.',
+    overrides = (
+        ('lacks-signature', WARN, KEEP_ORIGINAL_MESSAGE)
     ,)
 )
 
-com_google_fonts_check_whitespace_glyph_nbsp = profile.check_log_override(
+
+profile.check_log_override(
+    # from `universal` profile:
     'com.google.fonts/check/whitespace_glyphs',
-    reason='For Adobe, this is not as severe '\
+    reason = 'For Adobe, this is not as severe ' \
            + 'as assessed in the original check for 0x00A0.',
-    overrides = (('missing-whitespace-glyph-0x00A0', WARN, None),)
+    overrides = (
+        ('missing-whitespace-glyph-0x00A0', WARN, KEEP_ORIGINAL_MESSAGE)
+    ,)
 )
 
-com_google_fonts_check_valid_glyphnames_adobefonts = profile.check_log_override(
-    'com.google.fonts/check/valid_glyphnames'
-  , overrides = (('found-invalid-names', WARN, None),)
+
+profile.check_log_override(
+    # from `universal` profile:
+    'com.google.fonts/check/valid_glyphnames',
+    overrides = (
+        ('found-invalid-names', WARN, KEEP_ORIGINAL_MESSAGE)
+    ,)
 )
+
 
 ADOBEFONTS_PROFILE_CHECKS = \
     add_check_overrides(ADOBEFONTS_PROFILE_CHECKS,

@@ -1,3 +1,9 @@
+# These constants are merely meant to be used
+# so that the check_override declarations are more readable:
+KEEP_ORIGINAL_STATUS = None
+KEEP_ORIGINAL_MESSAGE = None
+
+
 class Message:
     """Status messages to be yielded by FontBakeryCheck"""
     def __init__(self, code, message):
