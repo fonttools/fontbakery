@@ -7,7 +7,7 @@ from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
 from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
-from fontbakery.profiles.shaping import PROFILE_CHECKS as SHAPING_PROFILE_CHECKS
+from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
 
 profile_imports = ('fontbakery.profiles.opentype',
                    'fontbakery.profiles.outline',
