@@ -5,7 +5,7 @@ PyYAML==5.4.1
 defcon==0.8.1
 dehinter==3.1.0
 font-v==1.0.5
-fontTools[ufo,lxml,unicode]==4.24.4
+fontTools[ufo,lxml,unicode]==4.25.0
 lxml==4.6.3
 opentype-sanitizer==8.1.4.post2
 pip-api==0.0.20
@@ -13,10 +13,10 @@ protobuf==3.17.3
 requests==2.25.1
 ufolint==1.2.0
 beziers==0.3.1
-cmarkgfm==0.5.3
+cmarkgfm==0.6.0
 vharfbuzz==0.1.1
 collidoscope==0.0.6
 stringbrewer==0.0.1
-rich==10.4.0
+rich==10.5.0
 opentypespec==1.8.4
 -e .
