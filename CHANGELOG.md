@@ -159,7 +159,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 
 ## 0.7.30 (2020-Sept-24)
 ### Note-worthy code changes
-  - The vast majority of code-tests now use our new style which is less errorprone, using the helper CheckTester class. (PR #3035)
+  - The vast majority of code-tests now use our new style which is less error prone, using the helper CheckTester class. (PR #3035)
   - Adopted 4-spaces indentation. We're changing our codestyle to facilitate collaboration from people who also work with the fontTools and AFDKO codebases. (issue 2997)
   - All rationale text needs to have 8 indentation spaces (because this indentation on the source should not show up on the user-interface when rationale text is printed on the text terminal)
   - Remove PriorityLevel class as it makes classifying checks by priority more complicated then necessary! (issue #2981)
@@ -168,13 +168,12 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
     stdlib module of the same name in some configurations.
   - Re-worked `cff.py` checks using `@condition` to avoid repeated iterations
     over the glyph set.
-  - Added checks for deprecated CFF operator `dotsection` and deprecated use of
-    `endchar` operator to build accented characters (`seac`).
 
 ### New Checks
   - **[com.google.fonts/check/varfont_duplicate_instance_names]**: Avoid duplicate instance names in variable fonts (issue #2986)
   - **[com.google.fonts/check/metadata/includes_production_subsets]**: ensure METADATA.pb files include production subsets. (issue #2989)
   - **[com.google.fonts/check/varfont/stat_axis_record_for_each_axis]**: ensure the STAT table has an Axis Record for every axis in the font (PR #3017)
+  - **[com.adobe.fonts/check/cff_deprecated_operators]**: check for deprecated CFF operator `dotsection` and deprecated use of `endchar` operator to build accented characters (`seac`). (PR #3033)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/monospace]**: Updated to not report zero width (mark) glyphs (issue #3036)
@@ -634,7 +633,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 
 ## 0.7.0 (2019-Mar-22)
 ### Major code-changes
-  - The term "specification" (including directory paths, class names and method names such as Spec, FontsSpec, etc) was replaced by "profile" throughout the codebase. The reason for this renaming was to avoid confusing with other uses of the term such as is "OpenType Specification".
+  - The term "specification" (including directory paths, class names and method names such as Spec, FontsSpec, etc) was replaced by "profile" throughout the codebase. The reason for this renaming was to avoid confusing with other uses of the term such as in "OpenType Specification".
   - All numerical check-IDs were renamed to keyword-based IDs. We may still change them as we see fit and we plan to freeze the check-id naming when Font Bakery 1.0.0 is released.
 
 ### Bug fixes
@@ -967,7 +966,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 
 ## 0.6.1 (2018-Nov-11)
 ### New checks
-  - **['com.google.fonts/check/aat']:** "Are there unwanted Apple tables?"
+  - **['com.google.fonts/check/aat']:** "Are there unwanted Apple tables?" (PR #2190)
 
 ### Bug fixes
   - **[com.google.fonts/check/fontbakery_version]:** Fix crash
@@ -975,6 +974,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 
 ### Changes to existing checks
   - **[com.google.fonts/check/053]**: Clarify unwanted tables
+
 
 ## 0.6.0 (2018-Nov-08)
 ### Noteworthy changes
@@ -1070,6 +1070,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - [INSTALL.md] added removal steps for ots zip archive file and archive directory
   - [INSTALL.md] modify ots-sanitize installation approach (issue #2041)
 
+
 ## 0.5.1 (2018-Aug-31)
 This release-cycle focused on addressing the issues brought up by attendees at the MFDOS - Multiple Font Distributors Onboarding Summit- an event organized by Dave Crossland during TypeCon 2018 in Portland, Oregon.
 
@@ -1112,6 +1113,7 @@ More info on MFDOS is available at: https://github.com/davelab6/mfdos
 ### Code-Test coverage
   - We currently have code-tests covering 59% of Font Bakery's codebase.
 
+
 ## 0.5.0 (2018-Jul-31)
 ### Release highlights & new features
   - focused on overall bugfixing and improving codebase test-coverage.
@@ -1148,6 +1150,7 @@ More info on MFDOS is available at: https://github.com/davelab6/mfdos
 ### Code-Test coverage
   - We currently have code-tests covering 59% of Font Bakery's codebase.
 
+
 ## 0.4.1 (2018-May-30)
 ### Release highlights & new features
   - Added shorthand for running checks on the opentype specification with `fontbakery check-opentype`.
@@ -1175,6 +1178,7 @@ More info on MFDOS is available at: https://github.com/davelab6/mfdos
   - fix GHMarkdown reporter when using clustered checks (issue #1870).
   - Added loca table tests to the opentype specification.
   - General improvements to the checkrunner infrastructure.
+
 
 ## 0.4.0 (2018-May-16)
 ### Thanks!

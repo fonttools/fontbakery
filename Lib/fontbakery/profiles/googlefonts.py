@@ -3779,7 +3779,10 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
 
         [1] https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6.html
         [2] https://docs.microsoft.com/en-us/typography/opentype/spec/
-    """
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/2190'
+    }
 )
 def com_google_fonts_check_aat(ttFont):
     """Are there unwanted Apple tables?"""

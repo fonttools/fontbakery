@@ -136,10 +136,15 @@ def cff_analysis(ttFont):
 
 @check(
     id = 'com.adobe.fonts/check/cff_call_depth',
-    conditions = ['ttFont', 'is_cff', 'cff_analysis'],
+    conditions = ['ttFont',
+                  'is_cff',
+                  'cff_analysis'],
     rationale = """
         Per "The Type 2 Charstring Format, Technical Note #5177", the "Subr nesting, stack limit" is 10.
-    """
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/2425'
+    }
 )
 def com_adobe_fonts_check_cff_call_depth(cff_analysis):
     """Is the CFF subr/gsubr call depth > 10?"""
@@ -166,7 +171,10 @@ def com_adobe_fonts_check_cff_call_depth(cff_analysis):
     conditions = ['ttFont', 'is_cff2', 'cff_analysis'],
     rationale = """
         Per "The CFF2 CharString Format", the "Subr nesting, stack limit" is 10.
-    """
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/2425'
+    }
 )
 def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
     """Is the CFF2 subr/gsubr call depth > 10?"""
@@ -190,10 +198,15 @@ def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
 
 @check(
     id = 'com.adobe.fonts/check/cff_deprecated_operators',
-    conditions = ['ttFont', 'is_cff', 'cff_analysis'],
+    conditions = ['ttFont',
+                  'is_cff',
+                  'cff_analysis'],
     rationale = """
         The 'dotsection' operator and the use of 'endchar' to build accented characters from the Adobe Standard Encoding Character Set ("seac") are deprecated in CFF. Adobe recommends repairing any fonts that use these, especially endchar-as-seac, because a rendering issue was discovered in Microsoft Word with a font that makes use of this operation. The check treats that useage as a FAIL. There are no known ill effects of using dotsection, so that check is a WARN.
-    """
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/3033'
+    }
 )
 def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
     """Does the font use deprecated CFF operators or operations?"""
