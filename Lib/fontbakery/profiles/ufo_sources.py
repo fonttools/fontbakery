@@ -65,22 +65,17 @@ profile = UFOProfile(
     iterargs={'font': 'fonts'},
     derived_iterables={'ufo_fonts': ('ufo_font', True)},
     expected_values={fonts_expected_value.name: fonts_expected_value})
-
-register_check = profile.register_check
-register_condition = profile.register_condition
 # ----------------------------------------------------------------------------
 
-basic_checks = Section("Basic UFO checks")
 
-
-@register_condition
 @condition
 def ufo_font(font):
-    import defcon
-    return defcon.Font(font)
+    try:
+        import defcon
+        return defcon.Font(font)
+    except:
+        return None
 
-
-@register_check(section=basic_checks)
 @check(
     id = 'com.daltonmaag/check/ufolint'
 )
@@ -104,9 +99,9 @@ def com_daltonmaag_check_ufolint(font):
         yield PASS, "ufolint passed the UFO source."
 
 
-@register_check(section=basic_checks)
 @check(
     id = 'com.daltonmaag/check/ufo-required-fields',
+    conditions = ['ufo_font'],
     rationale = """
         ufo2ft requires these info fields to compile a font binary:
         unitsPerEm, ascender, descender, xHeight, capHeight and familyName.
@@ -133,9 +128,9 @@ def com_daltonmaag_check_required_fields(ufo_font):
         yield PASS, "Required fields present."
 
 
-@register_check(section=basic_checks)
 @check(
     id = 'com.daltonmaag/check/ufo-recommended-fields',
+    conditions = ['ufo_font'],
     rationale = """
         This includes fields that should be in any production font.
     """
@@ -162,9 +157,9 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
         yield PASS, "Recommended fields present."
 
 
-@register_check(section=basic_checks)
 @check(
     id = 'com.daltonmaag/check/ufo-unnecessary-fields',
+    conditions = ['ufo_font'],
     rationale = """
         ufo2ft will generate these.
 
