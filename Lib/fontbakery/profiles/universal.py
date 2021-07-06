@@ -728,6 +728,7 @@ def com_google_fonts_check_STAT_strings(ttFont):
         https://github.com/adobe-type-tools/agl-specification
     """,
     misc_metadata = {
+        # TODO: when was this check first requested / added?
         'requested': "https://github.com/googlefonts/fontbakery/issues/2832" # increase limit to 63 chars
     }
 )

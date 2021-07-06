@@ -188,7 +188,10 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
     id = 'com.adobe.fonts/check/fsselection_matches_macstyle',
     rationale = """
         The bold and italic bits in OS/2.fsSelection must match the bold and italic bits in head.macStyle per the OpenType spec.
-    """
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/2382'
+    }
 )
 def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
     """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
@@ -236,7 +239,10 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
         Per the OpenType spec: name ID 1 'is used in combination with Font Subfamily name (name ID 2), and should be shared among at most four fonts that differ only in weight or style...
 
         This four-way distinction should also be reflected in the OS/2.fsSelection field, using bits 0 and 5.
-    """
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/2388'
+    }
 )
 def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
     """Check that OS/2.fsSelection bold & italic settings are unique
