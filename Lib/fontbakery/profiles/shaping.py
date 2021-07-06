@@ -32,7 +32,7 @@ shaping_basedir = Path("qa", "shaping_tests")
 profile_imports = ()
 profile = profile_factory(default_section=Section("Shaping Checks"))
 
-PROFILE_CHECKS = [
+SHAPING_PROFILE_CHECKS = [
     "com.google.fonts/check/shaping/regression",
     "com.google.fonts/check/shaping/forbidden",
     "com.google.fonts/check/shaping/collides",
@@ -385,4 +385,4 @@ def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
 
 
 profile.auto_register(globals())
-profile.test_expected_checks(PROFILE_CHECKS, exclusive=True)
+profile.test_expected_checks(SHAPING_PROFILE_CHECKS, exclusive=True)
