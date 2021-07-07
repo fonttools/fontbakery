@@ -9,31 +9,28 @@ from fontbakery.constants import (PlatformID,
                                   UnicodeEncodingID,
                                   MacintoshEncodingID)
 
-
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 profile_imports = ('fontbakery.profiles.universal',) # Maybe this should be .googlefonts instead...
 profile = profile_factory(default_section=Section("Noto Fonts"))
 
-CMAP_TABLE_CHECKS = [
-    'com.google.fonts/check/cmap/unexpected_subtables',
-]
-
-OS2_TABLE_CHECKS = [
-    'com.google.fonts/check/unicode_range_bits',
-]
 
 # Maybe this should be GOOGLEFONTS_PROFILE_CHECKS instead...
 NOTOFONTS_PROFILE_CHECKS = \
-    UNIVERSAL_PROFILE_CHECKS + \
-    CMAP_TABLE_CHECKS + \
-    OS2_TABLE_CHECKS
+    UNIVERSAL_PROFILE_CHECKS + [
+    'com.google.fonts/check/cmap/unexpected_subtables',
+    'com.google.fonts/check/unicode_range_bits',
+]
+
 
 @check(
     id = 'com.google.fonts/check/cmap/unexpected_subtables',
     rationale = """
         There are just a few typical types of cmap subtables that are used in fonts.
         If anything different is declared in a font, it will be treated as a FAIL.
-    """
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/2676'
+    }
 )
 def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
     """Ensure all cmap subtables are the typical types expected in a font."""
@@ -91,7 +88,10 @@ def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
         When the UnicodeRange bits on the OS/2 table are not properly set, some programs running on Windows may not recognize the font and use a system fallback font instead. For that reason, this check calculates the proper settings by inspecting the glyphs declared on the cmap table and then ensures that their corresponding ranges are enabled.
     """,
     conditions = ["unicoderange",
-                  "preferred_cmap"]
+                  "preferred_cmap"],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/2676'
+    }
 )
 def com_google_fonts_check_unicode_range_bits(ttFont, unicoderange, preferred_cmap):
     """Ensure UnicodeRange bits are properly set."""

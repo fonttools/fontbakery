@@ -295,7 +295,10 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
         This check currently does not identify which code pages should be set. Auto-detecting coverage is not trivial since the OpenType specification leaves the interpretation of whether a given code page is "functional" or not open to the font developer to decide.
 
         So here we simply detect as a FAIL when a given font has no code page declared at all.
-    """
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/2474'
+    }
 )
 def com_google_fonts_check_code_pages(ttFont):
     """Check code page character ranges"""
