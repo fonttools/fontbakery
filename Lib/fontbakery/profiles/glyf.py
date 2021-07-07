@@ -93,7 +93,10 @@ def com_google_fonts_check_points_out_of_bounds(ttFont):
 
         This check ensures that glyphs do not contain duplicate components which have the same x,y coordinates.
     """,
-    conditions = ['is_ttf']
+    conditions = ['is_ttf'],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/2709'
+    }
 )
 def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
     """Check glyphs do not have duplicate components which have the same x,y coordinates."""

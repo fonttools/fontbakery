@@ -207,7 +207,10 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
 
         On the 'wdth' (Width) axis, the valid coordinate range is 1-1000
     """,
-    conditions = ['is_variable_font']
+    conditions = ['is_variable_font'],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/pull/2520'
+    }
 )
 def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
     """The variable font 'wdth' (Weight) axis coordinate

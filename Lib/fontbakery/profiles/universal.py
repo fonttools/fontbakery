@@ -54,6 +54,9 @@ UNIVERSAL_PROFILE_CHECKS = \
 
 @check(
     id = 'com.google.fonts/check/name/trailing_spaces',
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/2417'
+    }
 )
 def com_google_fonts_check_name_trailing_spaces(ttFont):
     """Name table records must not have trailing spaces."""
@@ -194,7 +197,10 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
     id = 'com.google.fonts/check/family/single_directory',
     rationale = """
         If the set of font files passed in the command line is not all in the same directory, then we warn the user since the tool will interpret the set of files as belonging to a single family (and it is unlikely that the user would store the files from a single family spreaded in several separate directories).
-    """
+    """,
+    misc_metadata = {
+        # FIXME: 'request': 'check/002'
+    }
 )
 def com_google_fonts_check_family_single_directory(fonts):
     """Checking all files are in the same directory."""
@@ -351,7 +357,15 @@ def is_up_to_date(installed, latest):
 
 
 @check(
-    id = 'com.google.fonts/check/fontbakery_version'
+    id = 'com.google.fonts/check/fontbakery_version',
+    rationale = """
+        Running old versions of FontBakery can lead to a poor report which may include false WARNs and FAILs due do bugs, as well as outdated quality assurance criteria.
+
+        Older versions will also not report problems that are detected by new checks added to the tool in more recent updates.
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/2093'
+    }
 )
 def com_google_fonts_check_fontbakery_version():
     """Do we have the latest version of FontBakery installed?"""
@@ -851,7 +865,10 @@ def com_google_fonts_check_glyphnames_max_length(ttFont):
 
 @check(
     id = 'com.google.fonts/check/ttx-roundtrip',
-    conditions = ["not vtt_talk_sources"]
+    conditions = ["not vtt_talk_sources"],
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/1763'
+    }
 )
 def com_google_fonts_check_ttx_roundtrip(font):
     """Checking with fontTools.ttx"""
@@ -1002,7 +1019,10 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
         This is a merely informative check that lists all sibling families detected by fontbakery.
 
         Only the fontfiles in these directories will be considered in superfamily-level checks.
-    """
+    """,
+    misc_metadata = {
+        'request': 'https://github.com/googlefonts/fontbakery/issues/1487'
+    }
 )
 def com_google_fonts_check_superfamily_list(superfamily):
     """List all superfamily filepaths"""

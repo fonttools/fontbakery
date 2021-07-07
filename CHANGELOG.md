@@ -69,6 +69,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - use Chris Simpkins' dehinter instead of ttfautohint-py to dehint font files while computing the file-size impact of hinting. (issue #3229)
 
 ### New Checks
+  - **[io.github.abysstypeco/check/ytlc_sanity]:** Check if ytlc values are sane in a varfont (issue #3130)
   - **[com.google.fonts/check/cjk_vertical_metrics_regressions]:** Check CJK family has the same vertical metrics as the same family hosted on Google Fonts (issue #3242)
   - **[com.google.fonts/check/cjk_not_enough_glyphs]:** Warn users if there are less than 40 CJK glyphs in a font. (PR #3214)
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
@@ -84,8 +85,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/iso15008_interline_spacing]:** Check that fonts designed for use in in-car environments have suitable interline spacing (issue #3254)
 
 ### Changes to existing checks
-  - **[com.google.fonts/check/vertical_metrics_regressions]:** Skip check if fonts are CJK (issue #3242) and refactor fsSelection bit 7 requirements (issue #3241).
-  - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present.
+  - **[com.google.fonts/check/vertical_metrics_regressions]:** Skip check if fonts are CJK (issue #3242) and refactor fsSelection bit 7 requirements (issue #3241)
+  - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present (issue #3148)
   - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Only check axes which are in the GF Axis Registry (PR #3217)
   - **[com.google.fonts/check/mandatory_avar_table]:** Update rationale to mention that this check may be ignored if axis progressions are linear.
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.
@@ -143,7 +144,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - **[com.google.fonts/check/outline_colinear_vectors]:** Check for colinear segments in outlines. (PR #3088)
   - **[com.google.fonts/check/outline_jaggy_segments]:** Check for segments with a particularly small angle. (issue #3064)
   - **[com.google.fonts/check/outline_semi_vertical]:** Check for semi-vertical and semi-horizontal lines. (PR #3088)
-  - **[com.google.fonts/check/metadata/designer_profiles]:** Ensure that the entries in the Designers Catalog are good (PR #3093)
+  - **[com.google.fonts/check/metadata/designer_profiles]:** Ensure that the entries in the Designers Catalog are good (issue #3083)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/family/win_ascent_and_descent]**: Skip if font is cjk
@@ -229,7 +230,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 ### New checks
   - **[com.google.fonts/check/repo/fb_report]**: WARN when upstream repo has fb report files (issue #2888)
   - **[com.google.fonts/check/repo/zip_files]**: FAIL when upstream repo has ZIP files (issue #2903)
-  - **[[com_google_fonts_check_cjk_vertical_metrics]]**: Check cjk fonts follow our cjk metric schema
+  - **[com.google.fonts/check/cjk_vertical_metrics]**: Check cjk fonts follow our cjk metric schema (PR #2797)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/metadata/os2_weightclass]**: Check will now work correctly for variable fonts (issue #2683)
@@ -290,7 +291,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - Fixed rendering of markdown on our read-the-docs documentation (#2819)
 
 ### Changes to existing checks
-  - **[com.google.fonts/check/whitespace_widths]]**: Provide instructions on how to fix the problem at Glyphs App source files (PR #2843)
+  - **[com.google.fonts/check/whitespace_widths]**: Provide instructions on how to fix the problem at Glyphs App source files (PR #2843)
 
 
 ## 0.7.23 (2020-Apr-17)
@@ -325,9 +326,9 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - Ignore git commit hash on ttfautohint version string (issue #2790)
 
 ### Changes to existing checks
-  - **[[com.google.fonts/check/hinting_impact]]**: Add support for CFF hints (issue #2802)
-  - **[[com.google.fonts/check/varfont_instance_names]]**: Add ExtraBlack 1000 weight support (issue #2803)
-  - **[[com.google.fonts/check/varfont_instance_coordinates]]**: Add ExtraBlack 1000 weight support (issue #2804)
+  - **[com.google.fonts/check/hinting_impact]**: Add support for CFF hints (issue #2802)
+  - **[com.google.fonts/check/varfont_instance_names]**: Add ExtraBlack 1000 weight support (issue #2803)
+  - **[com.google.fonts/check/varfont_instance_coordinates]**: Add ExtraBlack 1000 weight support (issue #2804)
 
 
 ## 0.7.21 (2020-Mar-06)
@@ -336,19 +337,19 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - The script was also fixed to run properly on MacOS, as it was originally only working on GNU+Linux.
 
 ### Changes to existing checks
-  - **[[com.google.fonts/check/varfont_instance_*]]**: Clean up output and ensure that unregistered axes produce a warning. (issue #2701) Output will now display the following:
+  - **[com.google.fonts/check/varfont_instance_*]**: Clean up output and ensure that unregistered axes produce a warning. (issue #2701) Output will now display the following:
     - WARN if instance names are not fully parsable. It will also output the unparsable tokens.
     - FAIL if instance coordinates are incorrect for known axes.
     - FAIL if the fvar contains known axes and they're not mentioned in instance names.
     - FAIL if instance name tokens are incorrectly ordered
     - Provide link to our documentation if these checks FAIL or WARN
-  - **[[com.google.fonts/check/fontdata_namecheck]]**: improve log messages when query fails (issue #2719)
-  - **[[com.google.fonts/check/name/rfn]]**: Add rationale and make it a **FAIL** as it is a strong requirement for Google Fonts that families do not use a "Reserved Font Name" (issue #2779)
-  - **[[com.google.fonts/check/name/line_breaks]]**: Add rationale (issue #2778)
+  - **[com.google.fonts/check/fontdata_namecheck]**: improve log messages when query fails (issue #2719)
+  - **[com.google.fonts/check/name/rfn]**: Add rationale and make it a **FAIL** as it is a strong requirement for Google Fonts that families do not use a "Reserved Font Name" (issue #2779)
+  - **[com.google.fonts/check/name/line_breaks]**: Add rationale (issue #2778)
 
 ### Migration of checks between profiles
-  - **[[com.google.fonts/check/name/line_breaks]]**: From `opentype` to `googlefonts` profile as it is a vendor-specific policy rather than an OpenType spec requirement. (issue #2778)
-  - **[[com.google.fonts/check/name/rfn]]**: From `opentype` to `googlefonts` profile (issue #2779)
+  - **[com.google.fonts/check/name/line_breaks]**: From `opentype` to `googlefonts` profile as it is a vendor-specific policy rather than an OpenType spec requirement. (issue #2778)
+  - **[com.google.fonts/check/name/rfn]**: From `opentype` to `googlefonts` profile (issue #2779)
 
 
 ## 0.7.20 (2020-Feb-24)
@@ -361,10 +362,10 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - Add support for super-family checks! (issue #1487)
 
 ### New checks
-  - **[[com.google.fonts/check/license/OFL_copyright]]**: Check if license file first line contains copyright string (issue #2764)
-  - **[[com.google.fonts/check/superfamily/list]]**: A simple & merely informative check that lists detected sibling family directories (issue #1487)
-  - **[[com.google.fonts/check/superfamily/vertical_metrics]]**: Experimental extended version of **family/vertical_checks**, but only emitting WARNs for now (issues #1487 and #2431)
-  - **[[com.google.fonts/check/metadata/multiple_designers]]**: Ensure explicit designer names are mentioned on METADATA.pb (issue #2766)
+  - **[com.google.fonts/check/license/OFL_copyright]**: Check if license file first line contains copyright string (issue #2764)
+  - **[com.google.fonts/check/superfamily/list]**: A simple & merely informative check that lists detected sibling family directories (issue #1487)
+  - **[com.google.fonts/check/superfamily/vertical_metrics]**: Experimental extended version of **family/vertical_checks**, but only emitting WARNs for now (issues #1487 and #2431)
+  - **[com.google.fonts/check/metadata/multiple_designers]**: Ensure explicit designer names are mentioned on METADATA.pb (issue #2766)
 
 ### Deprecated checks
   - **[com.google.fonts/check/monospace_max_advancewidth]**: (issue #2749)
@@ -373,8 +374,8 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - fix generate-glyphdata command (python 3 support) (issue #2765)
 
 ### Changes to existing checks
-  - **[[com.google.fonts/check/post_table_version]]**: Support CFF2 OTF Variable Fonts and add rationale (issue #2638)
-  - **[[com.google.fonts/check/metadata/valid_copyright]]**: Add rationale and make it case insensitive (issue #2736)
+  - **[com.google.fonts/check/post_table_version]**: Support CFF2 OTF Variable Fonts and add rationale (issue #2638)
+  - **[com.google.fonts/check/metadata/valid_copyright]**: Add rationale and make it case insensitive (issue #2736)
   - **[com.google.fonts/check/metadata/undeclared_fonts]**: Clarify rationale (issue #2751)
   - **[com.google.fonts/check/metadata/filenames]**: Add rationale (issue #2751)
   - **[com.google.fonts/check/metadata/filenames]**: Consider all files from a directory (issue #2751)
@@ -409,10 +410,10 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 - **[com.google.fonts/check/family_naming_recommendation]:** Increase acceptable characters in nameID 6 string to 63 from 29 (PR #2707)
 
 ### New checks
-  - **[com.google.fonts/check/glyf_non_transformed_duplicate_components]:** Check glyphs do not have duplicate components which have the same x,y coordinates.
+  - **[com.google.fonts/check/glyf_non_transformed_duplicate_components]:** Check glyphs do not have duplicate components which have the same x,y coordinates (PR #2709)
   - **[com.google.fonts/check/repo/vf_has_static_fonts]:** Check VF family dirs in google/fonts contain static fonts (issue #2654)
-  - **[com.google.fonts/check/unicode_range_bits]:** Ensure UnicodeRange bits are properly set.
-  - **[com.google.fonts/check/cmap/unexpected_subtables]:** Ensure all cmap subtables are the typical types expected in a font.
+  - **[com.google.fonts/check/unicode_range_bits]:** Ensure UnicodeRange bits are properly set (issue #2676)
+  - **[com.google.fonts/check/cmap/unexpected_subtables]:** Ensure all cmap subtables are the typical types expected in a font (issue #2676)
 
 
 ## 0.7.15 (2019-Nov-03)
@@ -540,9 +541,9 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 ### New Checks
   - **[com.google.fonts/check/description/variable_font]:** Ensure that variable fonts contain the following message in the DESCRIPTION.en-us.html file: `This family is available as a variable font.` (issue #2538)
   - **[com.google.fonts/check/description/git_url]:** Make sure all font families have an upstream git repo URL declared in the DESCRIPTION.en-us.html file. (issue #2523)
-  - **[com.google.fonts/check/varfont_instance_coordinates]:** Check variable font instances have correct axis coordinates
-  - **[com.google.fonts/check/varfont_instance_names]:** Check variable font instances have correct names
-  - **[com.google.fonts/check/wdth_valid_range]:** Check variable font wdth axis has correct range
+  - **[com.google.fonts/check/varfont_instance_coordinates]:** Check variable font instances have correct axis coordinates (PR #2520)
+  - **[com.google.fonts/check/varfont_instance_names]:** Check variable font instances have correct names (PR #2520)
+  - **[com.google.fonts/check/wdth_valid_range]:** Check variable font wdth axis has correct range (PR #2520)
 
 
 ## 0.7.5 (2019-May-24)
@@ -571,9 +572,9 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - Removed fontforge dependency.
 
 ### New checks
-  - **[com.google.fonts/check/glyph_coverage]:** Google Fonts expects that fonts support at least the GF-latin-core glyph-set.
-  - **[com.google.fonts/check/metadata/designer_values]:** We must use commas instead of forward slashes because the fonts.google.com directory will segment string to list on comma and display the first item in the list as the "principal designer" and the other items as contributors.
-  - **[com.google.fonts/check/vertical_metrics_regressions]:** If a family already exists on Google Fonts, the family being checked must have similar vertical metrics. (issue #1162)
+  - **[com.google.fonts/check/glyph_coverage]:** Google Fonts expects that fonts support at least the GF-latin-core glyph-set (PR #2488)
+  - **[com.google.fonts/check/metadata/designer_values]:** We must use commas instead of forward slashes because the fonts.google.com directory will segment string to list on comma and display the first item in the list as the "principal designer" and the other items as contributors (issue #2479)
+  - **[com.google.fonts/check/vertical_metrics_regressions]:** If a family already exists on Google Fonts, the family being checked must have similar vertical metrics (issue #1162)
 
 ### Temporarily disabled checks
   - **[com.google.fonts/check/fontdata_namecheck]:** The web-service is down. (issue #2483)
@@ -629,6 +630,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - **[com.adobe.fonts/check/cff_call_depth]:** "Is the CFF subr/gsubr call depth > 10?" (PR #2425)
   - **[com.adobe.fonts/check/cff2_call_depth]:** "Is the CFF2 subr/gsubr call depth > 10?" (PR #2425)
   - **[com.google.fonts/check/family/control_chars]:** "Are there unacceptable control characters in the font?" (PR #2430)
+  - **[com.google.fonts/check/name/trailing_spaces]:** "Name table records must not have trailing spaces." (issue #2417)
 
 
 ## 0.7.0 (2019-Mar-22)
@@ -650,7 +652,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - The HTML reporter will now display check results more table-like, which makes multi-line check results look better.
 
 ### New checks
-  - **[com.google.fonts/check/font_copyright]: "Copyright notices match canonical pattern in fonts"**
+  - **[com.google.fonts/check/font_copyright]: "Copyright notices match canonical pattern in fonts"** (PR #2409)
   - **[com.adobe.fonts/check/postscript_name_consistency]:** "Name table ID 6 (PostScript name) must be consistent across platforms." (PR #2394)
 
 ## Some check id renaming for better naming consistency:
@@ -1006,8 +1008,8 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - Disable FontVal E4012 (GDEF header v1.3 not yet recognized) (issue #2131)
   - skip check/072 if font is VTT hinted (issue #2139)
   - do not run check/046 on CFF fonts because the helper method `glyph_has_ink` directly references `glyf`. In the future we may refactor it to also deal with CFF fonts. (issue #1994)
-  - com_google_fonts_check_018: Downgrade archVendID to WARN
-  - com.google.fonts/check/042 Add rationale. Fixes https://github.com/googlefonts/fontbakery/issues/2157
+  - com.google.fonts/check/018: Downgrade archVendID to WARN
+  - com.google.fonts/check/042: Add rationale. (issue #2157)
 
 ### Much more funky details...
   This is just a copy of several git log messages. Ideally I shuld clean these up for the sake of clarity...
@@ -1090,7 +1092,7 @@ More info on MFDOS is available at: https://github.com/davelab6/mfdos
   - A system-wide install of ttfautohint is not needed anymore. The ttfautohint-py package from PyPI includes its own ttfautohint together with the python wrapper.
 
 ### New checks
-  - **[com.google.fonts/check/has_ttfautohint_params]:** "Font has ttfautohint parameters."
+  - **[com.google.fonts/check/has_ttfautohint_params]:** "Font has ttfautohint parameters." (issue #1773)
 
 ### Deprecated checks:
   - **[com.google.fonts/check/080]** METADATA.pb: Ensure designer simple short name.
@@ -1121,7 +1123,7 @@ More info on MFDOS is available at: https://github.com/davelab6/mfdos
   - We've got a cupcake ASCII art by Tony de Marco! Cheers!!!
 
 ### New checks
-  - **[com.google.fonts/check/ttx-roundtrip]:** Make sure the font roundtrips nicely on the TTX tool.
+  - **[com.google.fonts/check/ttx-roundtrip]:** Make sure the font roundtrips nicely on the TTX tool (issue #1763)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/001]:** Added support for canonical variable font filenames
