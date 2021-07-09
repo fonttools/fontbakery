@@ -1103,7 +1103,7 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
         yield FAIL,\
               Message("incorrect-ofl-body-text",
                       "The OFL.txt body text is incorrect. Please use"
-                      " https://github.com/google/fonts/blob/main/ofl/montserrat/OFL.txt"
+                      " https://github.com/googlefonts/Unified-Font-Repository/blob/main/OFL.txt"
                       " as a template. You should only modify the first line.")
     else:
         yield PASS, "OFL license body text is correct"
