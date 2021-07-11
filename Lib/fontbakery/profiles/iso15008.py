@@ -90,8 +90,8 @@ def pair_kerning(font, left, right):
         According to ISO 15008, fonts used for in-car displays should not be too narrow or too wide.
         To ensure legibility of this font on in-car information systems, it is recommended that the ratio of H width to H height is between 0.65 and 0.80."""
     + DISCLAIMER,
-    request = ['https://github.com/googlefonts/fontbakery/issues/1832',
-               'https://github.com/googlefonts/fontbakery/issues/3250']
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/1832',
+                'https://github.com/googlefonts/fontbakery/issues/3250']
 )
 def com_google_fonts_check_iso15008_proportions(ttFont):
     """Check if 0.65 => (H width / H height) => 0.80"""
@@ -122,8 +122,8 @@ def com_google_fonts_check_iso15008_proportions(ttFont):
         According to ISO 15008, fonts used for in-car displays should not be too light or too bold.
         To ensure legibility of this font on in-car information systems, it is recommended that the ratio of stem width to ascender height is between 0.10 and 0.20."""
     + DISCLAIMER,
-    request = ['https://github.com/googlefonts/fontbakery/issues/1832',
-               'https://github.com/googlefonts/fontbakery/issues/3251']
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/1832',
+                'https://github.com/googlefonts/fontbakery/issues/3251']
 )
 def com_google_fonts_check_iso15008_stem_width(ttFont):
     """Check if 0.10 <= (stem width / ascender) <= 0.82"""
@@ -153,8 +153,8 @@ def com_google_fonts_check_iso15008_stem_width(ttFont):
         * space between diagonals and verticals (e.g. "vl") should be at least 85% of the stem width.
         * diagonal characters should not touch (e.g. "vv")."""
     + DISCLAIMER,
-    request = ['https://github.com/googlefonts/fontbakery/issues/1832',
-               'https://github.com/googlefonts/fontbakery/issues/3252']
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/1832',
+                'https://github.com/googlefonts/fontbakery/issues/3252']
 )
 def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
     """Check if spacing between characters is adequate for display use"""
@@ -231,8 +231,8 @@ def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
         According to ISO 15008, fonts used for in-car displays should not be too narrow or too wide.
         To ensure legibility of this font on in-car information systems it is recommended that the space character should have advance width between 250% and 300% of the space between the letters l and m."""
     + DISCLAIMER,
-    request = ['https://github.com/googlefonts/fontbakery/issues/1832',
-               'https://github.com/googlefonts/fontbakery/issues/3253']
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/1832',
+                'https://github.com/googlefonts/fontbakery/issues/3253']
 )
 def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
     """Check if spacing between words is adequate for display use"""
@@ -278,8 +278,8 @@ def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
         According to ISO 15008, fonts used for in-car displays should not be too narrow or too wide.
         To ensure legibility of this font on in-car information systems it is recommended that  the vertical metrics be set to a minimum at least one stem width between the bottom of the descender and the top of the ascender."""
     + DISCLAIMER,
-    request = ['https://github.com/googlefonts/fontbakery/issues/1832',
-               'https://github.com/googlefonts/fontbakery/issues/3254']
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/1832',
+                'https://github.com/googlefonts/fontbakery/issues/3254']
 )
 def com_google_fonts_check_iso15008_interline_spacing(ttFont):
     """Check if spacing between lines is adequate for display use"""

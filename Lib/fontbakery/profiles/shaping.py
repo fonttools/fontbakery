@@ -183,7 +183,7 @@ def run_a_set_of_shaping_tests(
         Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and compares expected shaping against actual shaping, reporting any differences.
         Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/3223'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3223'
 )
 def com_google_fonts_check_shaping_regression(config, ttFont):
     """Check that texts shape as per expectation"""
@@ -246,7 +246,7 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_te
         Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and reports if any glyphs are generated in the shaping which should not be produced. (For example, .notdef glyphs, visible viramas, etc.)
         Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/3223'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3223'
 )
 def com_google_fonts_check_shaping_forbidden(config, ttFont):
     """Check that no forbidden glyphs are found while shaping"""
@@ -304,7 +304,7 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
         Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and reports instances where the glyphs collide in unexpected ways.
         Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/3223'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3223'
 )
 def com_google_fonts_check_shaping_collides(config, ttFont):
     """Check that no collisions are found while shaping"""

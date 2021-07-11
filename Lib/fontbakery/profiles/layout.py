@@ -24,7 +24,7 @@ DEPRECATED_TAGS = ["hngl", "opbd", "size"]
     rationale = """
         Incorrect tags can be indications of typos, leftover debugging code or questionable approaches, or user error in the font editor. Such typos can cause features and language support to fail to work as intended.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/issues/3355',
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3355',
     severity = 8
 )
 def com_google_fonts_check_layout_valid_feature_tags(ttFont):
@@ -56,7 +56,7 @@ def script_tags(ttFont):
     rationale = """
         Incorrect script tags can be indications of typos, leftover debugging code or questionable approaches, or user error in the font editor. Such typos can cause features and language support to fail to work as intended.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/issues/3355',
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3355',
     severity = 8
 )
 def com_google_fonts_check_layout_valid_script_tags(ttFont):
@@ -89,7 +89,7 @@ def language_tags(ttFont):
     rationale = """
         Incorrect language tags can be indications of typos, leftover debugging code or questionable approaches, or user error in the font editor. Such typos can cause features and language support to fail to work as intended.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/issues/3355',
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3355',
     severity = 8
 )
 def com_google_fonts_check_layout_valid_language_tags(ttFont):

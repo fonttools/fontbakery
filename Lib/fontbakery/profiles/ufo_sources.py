@@ -78,7 +78,7 @@ def ufo_font(font):
 
 @check(
     id = 'com.daltonmaag/check/ufolint',
-    request = 'https://github.com/googlefonts/fontbakery/pull/1736'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/1736'
 )
 def com_daltonmaag_check_ufolint(font):
     """Run ufolint on UFO source directory."""
@@ -107,7 +107,7 @@ def com_daltonmaag_check_ufolint(font):
         ufo2ft requires these info fields to compile a font binary:
         unitsPerEm, ascender, descender, xHeight, capHeight and familyName.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/1736'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/1736'
 )
 def com_daltonmaag_check_required_fields(ufo_font):
     """Check that required fields are present in the UFO fontinfo."""
@@ -136,7 +136,7 @@ def com_daltonmaag_check_required_fields(ufo_font):
     rationale = """
         This includes fields that should be in any production font.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/1736'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/1736'
 )
 def com_daltonmaag_check_recommended_fields(ufo_font):
     """Check that recommended fields are present in the UFO fontinfo."""
@@ -170,7 +170,7 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
 
         year is deprecated since UFO v2.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/1736'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/1736'
 )
 def com_daltonmaag_check_unnecessary_fields(ufo_font):
     """Check that no unnecessary fields are present in the UFO fontinfo."""

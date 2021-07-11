@@ -18,7 +18,7 @@ profile_imports = [
     rationale = """
         Check the name table for empty records, as this can cause problems in Adobe apps.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/2369'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/2369'
 )
 def com_adobe_fonts_check_name_empty_records(ttFont):
     """Check name table for empty records."""
@@ -40,7 +40,8 @@ def com_adobe_fonts_check_name_empty_records(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/name/no_copyright_on_description'
+    id = 'com.google.fonts/check/name/no_copyright_on_description',
+    proposal = 'legacy:check/031'
 )
 def com_google_fonts_check_name_no_copyright_on_description(ttFont):
     """Description strings in the name table must not contain copyright info."""
@@ -91,7 +92,8 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
 
         Please also note:
         Thomas Phinney told us that a few years ago (as of December 2019), if you gave a font a monospace flag in Panose, Microsoft Word would ignore the actual advance widths and treat it as monospaced. Source: https://typedrawers.com/discussion/comment/45140/#Comment_45140
-    """
+    """,
+    proposal = 'legacy:check/033'
 )
 def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
     """Checking correctness of monospaced metadata."""
@@ -196,7 +198,8 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
 
 
 @check(
-    id = 'com.google.fonts/check/name/match_familyname_fullfont'
+    id = 'com.google.fonts/check/name/match_familyname_fullfont',
+    proposal = 'legacy:check/068'
 )
 def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
     """Does full font name begin with the font family name?"""
@@ -236,7 +239,8 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/family_naming_recommendations'
+    id = 'com.google.fonts/check/family_naming_recommendations',
+    proposal = 'legacy:check/071'
 )
 def com_google_fonts_check_family_naming_recommendations(ttFont):
     """Font follows the family naming recommendations?"""
@@ -344,7 +348,7 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
 
         The 'CFF ' table has a lot of information that is duplicated in other tables. This information should be consistent across tables, because there's no guarantee which table an app will get the data from.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/2229'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/2229'
 )
 def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
     """CFF table FontName must match name table ID 6 (PostScript name)."""
@@ -377,7 +381,7 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
 
         This is the TTF/CFF2 equivalent of the CFF 'name/postscript_vs_cff' check.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/2394'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/2394'
 )
 def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
     """Name table ID 6 (PostScript name) must be consistent across platforms."""

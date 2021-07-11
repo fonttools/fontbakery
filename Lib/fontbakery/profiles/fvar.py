@@ -19,7 +19,7 @@ profile_imports = [
     """,
     conditions = ['is_variable_font',
                   'regular_wght_coord'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord):
     """The variable font 'wght' (Weight) axis coordinate must be 400 on the
@@ -44,7 +44,7 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
     """,
     conditions = ['is_variable_font',
                   'regular_wdth_coord'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord):
     """The variable font 'wdth' (Width) axis coordinate must be 100 on the 'Regular' instance."""
@@ -68,7 +68,7 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
     """,
     conditions = ['is_variable_font',
                   'regular_slnt_coord'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord):
     """The variable font 'slnt' (Slant) axis coordinate must be zero on the 'Regular' instance."""
@@ -92,7 +92,7 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
     """,
     conditions = ['is_variable_font',
                   'regular_ital_coord'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord):
     """The variable font 'ital' (Italic) axis coordinate must be zero on the 'Regular' instance."""
@@ -116,7 +116,7 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
     """,
     conditions = ['is_variable_font',
                   'regular_opsz_coord'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord):
     """The variable font 'opsz' (Optical Size) axis coordinate should be between 10 and 16 on the 'Regular' instance."""
@@ -141,7 +141,7 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
     """,
     conditions = ['is_variable_font',
                   'bold_wght_coord'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
     """The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold' instance."""
@@ -164,7 +164,7 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
         On the 'wght' (Weight) axis, the valid coordinate range is 1-1000.
     """,
     conditions = ['is_variable_font'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/2264'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2264'
 )
 def com_google_fonts_check_varfont_wght_valid_range(ttFont):
     """The variable font 'wght' (Weight) axis coordinate
@@ -194,7 +194,7 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
         On the 'wdth' (Width) axis, the valid coordinate range is 1-1000
     """,
     conditions = ['is_variable_font'],
-    request = 'https://github.com/googlefonts/fontbakery/pull/2520'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/2520'
 )
 def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
     """The variable font 'wdth' (Weight) axis coordinate
@@ -225,7 +225,7 @@ def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
     """,
     conditions = ['is_variable_font',
                   'slnt_axis'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/2572'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2572'
 )
 def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
     """ The variable font 'slnt' (Slant) axis coordinate

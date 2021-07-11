@@ -150,8 +150,8 @@ class FontBakeryCheck(FontbakeryCallable):
                  conditions=None,
                  rationale=None, # long text explaining why this check is needed.
                                  # Using markdown, perhaps?
-                 request=None, # An URL to the original request for implementation of this check.
-                               # This is typically a github issue tracker URL.
+                 proposal=None, # An URL to the original proposal for this check.
+                                # This is typically a github issue or pull request.
                  severity=None, # numeric value from 1=min to 10=max, denoting check severity
                  misc_metadata=None, # Miscelaneous free-form metadata fields
                                      # Some of them may be promoted to 1st-class metadata fields
@@ -208,7 +208,7 @@ class FontBakeryCheck(FontbakeryCallable):
         self.description, self.documentation = get_doc_desc(checkfunc,
                                                             description,
                                                             documentation)
-        self.request = request
+        self.proposal = proposal
         self.severity = severity
         if not self.description:
             raise TypeError('{} needs a description.'.format(type(self).__name__))

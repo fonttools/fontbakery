@@ -6,7 +6,8 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 
 
 @check(
-    id = 'com.google.fonts/check/family/equal_unicode_encodings'
+    id = 'com.google.fonts/check/family/equal_unicode_encodings',
+    proposal = 'legacy:check/013'
 )
 def com_google_fonts_check_family_equal_unicode_encodings(ttFonts):
     """Fonts have equal unicode encodings?"""
@@ -33,12 +34,9 @@ def com_google_fonts_check_family_equal_unicode_encodings(ttFonts):
         yield PASS, "Fonts have equal unicode encodings."
 
 
-# This check was originally ported from
-# Mekkablue Preflight Checks available at:
-# https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
 @check(
     id = 'com.google.fonts/check/all_glyphs_have_codepoints',
-    request = 'https://github.com/googlefonts/fontbakery/issues/735'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/735'
 )
 def com_google_fonts_check_all_glyphs_have_codepoints(ttFont):
     """Check all glyphs have codepoints assigned."""

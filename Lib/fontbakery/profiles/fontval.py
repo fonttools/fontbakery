@@ -11,7 +11,8 @@ profile_imports = ['.shared_conditions']
 profile = profile_factory(default_section=Section("Checks inherited from Microsoft Font Validator"))
 
 @check(
-    id = 'com.google.fonts/check/fontvalidator'
+    id = 'com.google.fonts/check/fontvalidator',
+    proposal = 'legacy:check/037'
 )
 def com_google_fonts_check_fontvalidator(font):
     """Checking with Microsoft Font Validator."""

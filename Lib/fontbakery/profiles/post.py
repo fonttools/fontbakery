@@ -18,6 +18,7 @@ profile_imports = [
         See also:
         https://twitter.com/typenerd1/status/690361887926697986
     """,
+    proposal = 'legacy:check/008',
     misc_metadata = {
         'affects': [('InDesign', 'unspecified')]
     }
@@ -63,8 +64,9 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
         - Version 2 for TTF or OTF CFF2 Variable fonts
         - Version 3 for OTF
     """,
-    request = ['https://github.com/google/fonts/issues/215',
-               'https://github.com/googlefonts/fontbakery/issues/2638']
+    proposal = ['legacy:check/015',
+                'https://github.com/google/fonts/issues/215',
+                'https://github.com/googlefonts/fontbakery/issues/2638']
 )
 def com_google_fonts_check_post_table_version(ttFont, is_ttf):
     """Font has correct post table version?"""

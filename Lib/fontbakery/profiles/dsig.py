@@ -14,7 +14,8 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
         A fake signature is enough to address this issue. If needed, a dummy table can be added to the font with the `gftools fix-dsig` script available at https://github.com/googlefonts/gftools
 
         Reference: https://github.com/googlefonts/fontbakery/issues/1845
-    """
+    """,
+    proposal = 'legacy:check/045'
 )
 def com_google_fonts_check_dsig(ttFont):
     """Does the font have a DSIG table?"""

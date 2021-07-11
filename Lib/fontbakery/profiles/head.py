@@ -8,7 +8,8 @@ from fontbakery.constants import NameID
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
 @check(
-    id = 'com.google.fonts/check/family/equal_font_versions'
+    id = 'com.google.fonts/check/family/equal_font_versions',
+    proposal = 'legacy:check/014'
 )
 def com_google_fonts_check_family_equal_font_versions(ttFonts):
     """Make sure all font files have the same version value."""
@@ -45,7 +46,8 @@ def com_google_fonts_check_family_equal_font_versions(ttFonts):
         In fonts that have TrueType outlines, a power of 2 is recommended as this allows performance optimizations in some rasterizers.
 
         But 1000 is a commonly used value. And 2000 may become increasingly more common on Variable Fonts.
-    """
+    """,
+    proposal = 'legacy:check/043'
 )
 def com_google_fonts_check_unitsperem(ttFont):
     """Checking unitsPerEm value is reasonable."""
@@ -101,7 +103,8 @@ def parse_version_string(name: str) -> float:
 
 
 @check(
-    id = 'com.google.fonts/check/font_version'
+    id = 'com.google.fonts/check/font_version',
+    proposal = 'legacy:check/044'
 )
 def com_google_fonts_check_font_version(ttFont):
     """Checking font version fields (head and name table)."""

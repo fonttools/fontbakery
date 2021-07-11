@@ -27,7 +27,8 @@ def has_kerning_info(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/gpos_kerning_info'
+    id = 'com.google.fonts/check/gpos_kerning_info',
+    proposal = 'legacy:check/063'
 )
 def com_google_fonts_check_gpos_kerning_info(ttFont):
     """Does GPOS table have kerning information?

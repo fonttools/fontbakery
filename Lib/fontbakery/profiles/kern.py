@@ -17,8 +17,9 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 
         Given all of the above, we currently treat kerning on a v0 kern table as a good-to-have (but optional) feature.
     """,
-    request = ['https://github.com/googlefonts/fontbakery/issues/1675',
-               'https://github.com/googlefonts/fontbakery/issues/3148']
+    proposal = ['legacy:check/066',
+                'https://github.com/googlefonts/fontbakery/issues/1675',
+                'https://github.com/googlefonts/fontbakery/issues/3148']
 )
 def com_google_fonts_check_kern_table(ttFont):
     """Is there a usable "kern" table declared in the font?"""

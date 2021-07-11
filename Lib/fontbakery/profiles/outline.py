@@ -39,7 +39,7 @@ def close_but_not_on(yExpected, yTrue, tolerance):
         Not all such misaligned curve points are a mistake, and sometimes the design may call for points in locations near the boundaries. As this check is liable to generate significant numbers of false positives, it will pass if there are more than {FALSE_POSITIVE_CUTOFF} reported misalignments.
     """,
     conditions = ["outlines_dict"],
-    request = 'https://github.com/googlefonts/fontbakery/pull/3088'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3088'
 )
 def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
     """Are there any misaligned on-curve points?"""
@@ -91,7 +91,7 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
     """,
     conditions = ["outlines_dict",
                   "is_not_variable_font"],
-    request = 'https://github.com/googlefonts/fontbakery/pull/3088'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3088'
 )
 def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
     """Are any segments inordinately short?"""
@@ -136,7 +136,7 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
     """,
     conditions = ["outlines_dict",
                   "is_not_variable_font"],
-    request = 'https://github.com/googlefonts/fontbakery/pull/3088'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3088'
 )
 def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
     """Do any segments have colinear vectors?"""
@@ -177,7 +177,7 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
     """,
     conditions = ["outlines_dict",
                   "is_not_variable_font"],
-    request = 'https://github.com/googlefonts/fontbakery/issues/3064'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3064'
 )
 def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
     """Do outlines contain any jaggy segments?"""
@@ -225,7 +225,7 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
     conditions = ["outlines_dict",
                   "is_not_variable_font",
                   "is_not_italic"],
-    request = 'https://github.com/googlefonts/fontbakery/pull/3088'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3088'
 )
 def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
     """Do outlines contain any semi-vertical or semi-horizontal lines?"""

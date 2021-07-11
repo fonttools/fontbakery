@@ -23,7 +23,7 @@ TYPENETWORK_PROFILE_CHECKS = \
         This check follows the proposed values of the ytlc axis proposed by font bureau at the site url. add more later.
     """,
     conditions=["is_variable_font"],
-    request = 'https://github.com/googlefonts/fontbakery/issues/3130'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3130'
 )
 def io_github_abysstypeco_check_ytlc_sanity(ttFont):
     """Check if ytlc values are sane in vf"""

@@ -9,7 +9,8 @@ import fontTools.ttLib
 
 @check(
     id = 'com.google.fonts/check/glyf_unused_data',
-    conditions = ['is_ttf']
+    conditions = ['is_ttf'],
+    proposal = 'legacy:check/069'
 )
 def com_google_fonts_check_glyf_unused_data(ttFont):
     """Is there any unused data at the end of the glyf table?"""
@@ -41,13 +42,10 @@ def com_google_fonts_check_glyf_unused_data(ttFont):
             raise Exception("Bug: Unexpected fontTools exception.")
 
 
-# This check was originally ported from
-# Mekkablue Preflight Checks available at:
-# https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
 @check(
     id = 'com.google.fonts/check/points_out_of_bounds',
     conditions = ['is_ttf'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/735'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/735'
 )
 def com_google_fonts_check_points_out_of_bounds(ttFont):
     """Check for points out of bounds."""
@@ -92,7 +90,7 @@ def com_google_fonts_check_points_out_of_bounds(ttFont):
         This check ensures that glyphs do not contain duplicate components which have the same x,y coordinates.
     """,
     conditions = ['is_ttf'],
-    request = 'https://github.com/googlefonts/fontbakery/pull/2709'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/2709'
 )
 def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
     """Check glyphs do not have duplicate components which have the same x,y coordinates."""
@@ -139,7 +137,7 @@ def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
         * https://github.com/arrowtype/recursive/issues/412
     """,
     conditions = ['is_ttf'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/2961'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2961'
 )
 def com_google_fonts_check_glyf_nested_components(ttFont):
     """Check glyphs do not have components which are themselves components."""
