@@ -47,9 +47,7 @@ def com_google_fonts_check_glyf_unused_data(ttFont):
 @check(
     id = 'com.google.fonts/check/points_out_of_bounds',
     conditions = ['is_ttf'],
-    misc_metadata = {
-        'request': 'https://github.com/googlefonts/fontbakery/issues/735'
-    }
+    request = 'https://github.com/googlefonts/fontbakery/issues/735'
 )
 def com_google_fonts_check_points_out_of_bounds(ttFont):
     """Check for points out of bounds."""
@@ -94,9 +92,7 @@ def com_google_fonts_check_points_out_of_bounds(ttFont):
         This check ensures that glyphs do not contain duplicate components which have the same x,y coordinates.
     """,
     conditions = ['is_ttf'],
-    misc_metadata = {
-        'request': 'https://github.com/googlefonts/fontbakery/pull/2709'
-    }
+    request = 'https://github.com/googlefonts/fontbakery/pull/2709'
 )
 def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
     """Check glyphs do not have duplicate components which have the same x,y coordinates."""
@@ -143,9 +139,7 @@ def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
         * https://github.com/arrowtype/recursive/issues/412
     """,
     conditions = ['is_ttf'],
-    misc_metadata = {
-        'request': 'https://github.com/googlefonts/fontbakery/issues/2961'
-    }
+    request = 'https://github.com/googlefonts/fontbakery/issues/2961'
 )
 def com_google_fonts_check_glyf_nested_components(ttFont):
     """Check glyphs do not have components which are themselves components."""

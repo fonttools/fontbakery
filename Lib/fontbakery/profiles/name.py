@@ -18,9 +18,7 @@ profile_imports = [
     rationale = """
         Check the name table for empty records, as this can cause problems in Adobe apps.
     """,
-    misc_metadata = {
-        'request': 'https://github.com/googlefonts/fontbakery/pull/2369'
-    }
+    request = 'https://github.com/googlefonts/fontbakery/pull/2369'
 )
 def com_adobe_fonts_check_name_empty_records(ttFont):
     """Check name table for empty records."""
@@ -346,9 +344,7 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
 
         The 'CFF ' table has a lot of information that is duplicated in other tables. This information should be consistent across tables, because there's no guarantee which table an app will get the data from.
     """,
-    misc_metadata = {
-        'request': 'https://github.com/googlefonts/fontbakery/pull/2229'
-    }
+    request = 'https://github.com/googlefonts/fontbakery/pull/2229'
 )
 def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
     """CFF table FontName must match name table ID 6 (PostScript name)."""
@@ -381,9 +377,7 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
 
         This is the TTF/CFF2 equivalent of the CFF 'name/postscript_vs_cff' check.
     """,
-    misc_metadata = {
-        'request': 'https://github.com/googlefonts/fontbakery/pull/2394'
-    }
+    request = 'https://github.com/googlefonts/fontbakery/pull/2394'
 )
 def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
     """Name table ID 6 (PostScript name) must be consistent across platforms."""

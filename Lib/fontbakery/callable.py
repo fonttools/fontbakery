@@ -144,23 +144,25 @@ class FontBakeryCheck(FontbakeryCallable):
     def __init__(self,
                  checkfunc,
                  id,
-                 advancedMessageSetup=None,
                  description=None, # short text, this is mandatory
                  documentation=None,
-                 name = None, # very short text
+                 name=None, # very short text
                  conditions=None,
-                 # arguments_setup=None,
-                 rationale=None, # long text explaining why this check is needed. Using markdown, perhaps?
-                 misc_metadata=None, # miscelaneous free-form metadata fields
-                                     # some of them may be promoted to first-class metadata fields
+                 rationale=None, # long text explaining why this check is needed.
+                                 # Using markdown, perhaps?
+                 request=None, # An URL to the original request for implementation of this check.
+                               # This is typically a github issue tracker URL.
+                 severity=None, # numeric value from 1=min to 10=max, denoting check severity
+                 misc_metadata=None, # Miscelaneous free-form metadata fields
+                                     # Some of them may be promoted to 1st-class metadata fields
                                      # if they start being used by the check-runner.
                                      # Below are a few candidates for that:
-                 #affects=None, # A list of tuples each indicating Browser/OS/Application
-                 #              # and the affected versions range.
-                 #request=None, # An URL to the original request for implementation of this check.
-                 #              # This is typically a github issue tracker URL.
-                 #example_failures=None, # A reference to some font or family that originally failed due to
-                 #                       # the problems that this check tries to detect and report.
+
+                 # affects=None, # A list of tuples each indicating Browser/OS/Application
+                 #               # and the affected versions range.
+                 # example_failures=None, # A reference to some font or family that
+                 #                        # originally failed due to the problems
+                 #                        # that this check tries to detect and report.
                 ):
         """This is the base class for all checks. It will usually
         not be used directly to create check instances, rather
@@ -189,33 +191,14 @@ class FontBakeryCheck(FontbakeryCallable):
         to checks, because they also inspect the check subject and they
         also belong to the profile. However, they do not get reported
         directly (there could be checks that report the result of a
-        condition). Conditions are **probably** registered and
-        referenced by name (like "isVariableFont"). We may accept a
-        python function for combining or negating a condition. It
-        receives the condition values as arguments, queried by name
+        condition). Conditions are registered and referenced by name
+        (like "isVariableFont").
+        We may accept a python function for combining or negating a condition.
+        It receives the condition values as arguments, queried by name
         via inspection, and returns True or False.
-        TODO: flesh out the format.
 
-        NOTE: `arguments_setup` is postponed until we have a case where it's needed.
-        arguments_setup: describes the arguments and position/keyword
-        of arguments `checkfunc` expects. Used to override any arguments
-        inferred via inspection of `checkfunc`.
-        `CheckRunner._get_check_dependencies` will use this information
-        to prepare the arguments for this check.
-        TODO: flesh out the format.
-
-        documentation: text, used as a detailed documentation,
-        read by humans(I suggest to make it markdown formatted).
-
-        advancedMessageSetup: depending on the instance of
-        AdvancedMessageType returned by the check, this is the
-        counterpart for it. Needed to make sense/use of an
-        advancedMessage.
-        TODO: Make a proposal for this.
-        TODO: This would be used to fix/hotfix issues etc. that means,
-          advancedMessageSetup would know how to fix an issue by
-          looking at an advancedMessage.
-        TODO: The naming is a bit odd.
+        documentation: text used as a detailed documentation to
+        be read by humans (in markdown format).
         """
         super().__init__(checkfunc)
         self.id = id
@@ -225,11 +208,10 @@ class FontBakeryCheck(FontbakeryCallable):
         self.description, self.documentation = get_doc_desc(checkfunc,
                                                             description,
                                                             documentation)
+        self.request = request
+        self.severity = severity
         if not self.description:
             raise TypeError('{} needs a description.'.format(type(self).__name__))
-        # self._arguments_setup = arguments_setup
-        # self._conditions_setup = conditions_setup
-        self._advancedMessageSetup = advancedMessageSetup
 
     # This was problematic. See: https://github.com/googlefonts/fontbakery/issues/2194
     # def __str__(self):
