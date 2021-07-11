@@ -10,7 +10,8 @@ profile_imports = [
 ]
 
 @check(
-    id = 'com.google.fonts/check/family/panose_proportion'
+    id = 'com.google.fonts/check/family/panose_proportion',
+    proposal = 'legacy:check/009'
 )
 def com_google_fonts_check_family_panose_proportion(ttFonts):
     """Fonts have consistent PANOSE proportion?"""
@@ -44,7 +45,8 @@ def com_google_fonts_check_family_panose_proportion(ttFonts):
 
 
 @check(
-    id = 'com.google.fonts/check/family/panose_familytype'
+    id = 'com.google.fonts/check/family/panose_familytype',
+    proposal = 'legacy:check/010'
 )
 def com_google_fonts_check_family_panose_familytype(ttFonts):
     """Fonts have consistent PANOSE family type?"""
@@ -80,7 +82,8 @@ def com_google_fonts_check_family_panose_familytype(ttFonts):
 
 @check(
     id = 'com.google.fonts/check/xavgcharwidth',
-    conditions = ['is_ttf']
+    conditions = ['is_ttf'],
+    proposal = 'legacy:check/034'
 )
 def com_google_fonts_check_xavgcharwidth(ttFont):
     """Check if OS/2 xAvgCharWidth is correct."""
@@ -189,7 +192,7 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
     rationale = """
         The bold and italic bits in OS/2.fsSelection must match the bold and italic bits in head.macStyle per the OpenType spec.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/2382'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/2382'
 )
 def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
     """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
@@ -238,7 +241,7 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
 
         This four-way distinction should also be reflected in the OS/2.fsSelection field, using bits 0 and 5.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/pull/2388'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/2388'
 )
 def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
     """Check that OS/2.fsSelection bold & italic settings are unique
@@ -292,7 +295,7 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
 
         So here we simply detect as a FAIL when a given font has no code page declared at all.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/issues/2474'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2474'
 )
 def com_google_fonts_check_code_pages(ttFont):
     """Check code page character ranges"""

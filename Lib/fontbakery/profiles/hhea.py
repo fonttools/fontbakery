@@ -9,7 +9,8 @@ profile_imports = [
 ]
 
 @check(
-    id = 'com.google.fonts/check/linegaps'
+    id = 'com.google.fonts/check/linegaps',
+    proposal = 'legacy:check/041'
 )
 def com_google_fonts_check_linegaps(ttFont):
     """Checking Vertical Metric Linegaps."""
@@ -26,7 +27,8 @@ def com_google_fonts_check_linegaps(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/maxadvancewidth'
+    id = 'com.google.fonts/check/maxadvancewidth',
+    proposal = 'legacy:check/073'
 )
 def com_google_fonts_check_maxadvancewidth(ttFont):
     """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""

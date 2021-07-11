@@ -10,7 +10,8 @@ profile_imports = (
 
 @check(
     id = 'com.google.fonts/check/loca/maxp_num_glyphs',
-    conditions = ['is_ttf']
+    conditions = ['is_ttf'],
+    proposal = 'legacy:check/180'
 )
 def com_google_fonts_check_loca_maxp_num_glyphs(ttFont):
     """Does the number of glyphs in the loca table match the maxp table?"""

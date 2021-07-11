@@ -9,7 +9,8 @@ profile_imports = [('.shared_conditions', ('missing_whitespace_chars',))]
 
 @check(
     id = 'com.google.fonts/check/whitespace_widths',
-    conditions = ['not missing_whitespace_chars']
+    conditions = ['not missing_whitespace_chars'],
+    proposal = 'legacy:check/050'
 )
 def com_google_fonts_check_whitespace_widths(ttFont):
     """Space and non-breaking space have the same width?"""

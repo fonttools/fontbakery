@@ -16,7 +16,7 @@ profile_imports = [
       https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-records
     """,
     conditions = ['is_variable_font'],
-    request = 'https://github.com/googlefonts/fontbakery/pull/3017'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3017'
 )
 def com_google_fonts_check_varfont_stat_axis_record_for_each_axis(ttFont):
     """ All fvar axes have a correspondent Axis Record on STAT table? """

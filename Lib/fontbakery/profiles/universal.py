@@ -54,7 +54,7 @@ UNIVERSAL_PROFILE_CHECKS = \
 
 @check(
     id = 'com.google.fonts/check/name/trailing_spaces',
-    request = 'https://github.com/googlefonts/fontbakery/issues/2417'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2417'
 )
 def com_google_fonts_check_name_trailing_spaces(ttFont):
     """Name table records must not have trailing spaces."""
@@ -81,14 +81,16 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
 
 @check(
     id = 'com.google.fonts/check/family/win_ascent_and_descent',
-    conditions = ['vmetrics', 'not is_cjk_font'],
+    conditions = ['vmetrics',
+                  'not is_cjk_font'],
     rationale = """
         A font's winAscent and winDescent values should be greater than the head table's yMax, abs(yMin) values. If they are less than these values, clipping can occur on Windows platforms (https://github.com/RedHatBrand/Overpass/issues/33).
 
         If the font includes tall/deep writing systems such as Arabic or Devanagari, the winAscent and winDescent can be greater than the yMax and abs(yMin) to accommodate vowel marks.
 
         When the win Metrics are significantly greater than the upm, the linespacing can appear too loose. To counteract this, enabling the OS/2 fsSelection bit 7 (Use_Typo_Metrics), will force Windows to use the OS/2 typo values instead. This means the font developer can control the linespacing with the typo values, whilst avoiding clipping by setting the win values to values greater than the yMax and abs(yMin).
-    """
+    """,
+    proposal = 'legacy:check/040'
 )
 def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
     """Checking OS/2 usWinAscent & usWinDescent."""
@@ -152,7 +154,8 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
         But we have a duty to fix broken stuff, and inconsistent paragraph layout is unacceptably broken when it is possible to avoid it.
 
         If users complain and prefer the old broken version, they have the freedom to take care of their own situation.
-    """
+    """,
+    proposal = 'legacy:check/042'
 )
 def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
     """Checking OS/2 Metrics match hhea Metrics."""
@@ -196,7 +199,7 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
     rationale = """
         If the set of font files passed in the command line is not all in the same directory, then we warn the user since the tool will interpret the set of files as belonging to a single family (and it is unlikely that the user would store the files from a single family spreaded in several separate directories).
     """,
-    request = 'legacy:check/002'
+    proposal = 'legacy:check/002'
 )
 def com_google_fonts_check_family_single_directory(fonts):
     """Checking all files are in the same directory."""
@@ -237,7 +240,7 @@ def ftxvalidator_cmd():
         There's an ssh example implementation at:
         https://github.com/googlefonts/fontbakery/blob/main/prebuilt/workarounds/ftxvalidator/ssh-implementation/ftxvalidator
     """,
-    request = 'https://github.com/googlefonts/fontbakery/issues/2184'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2184'
 )
 def com_google_fonts_check_ftxvalidator_is_available(ftxvalidator_cmd):
     """Is the command `ftxvalidator` (Apple Font Tool Suite) available?"""
@@ -251,7 +254,8 @@ def com_google_fonts_check_ftxvalidator_is_available(ftxvalidator_cmd):
 
 @check(
     id = 'com.google.fonts/check/ftxvalidator',
-    conditions = ['ftxvalidator_cmd']
+    conditions = ['ftxvalidator_cmd'],
+    proposal = 'legacy:check/035'
 )
 def com_google_fonts_check_ftxvalidator(font, ftxvalidator_cmd):
     """Checking with ftxvalidator."""
@@ -301,7 +305,8 @@ def com_google_fonts_check_ftxvalidator(font, ftxvalidator_cmd):
 
 
 @check(
-    id = 'com.google.fonts/check/ots'
+    id = 'com.google.fonts/check/ots',
+    proposal = 'legacy:check/036'
 )
 def com_google_fonts_check_ots(font):
     """Checking with ots-sanitize."""
@@ -357,7 +362,7 @@ def is_up_to_date(installed, latest):
 
         Older versions will also not report problems that are detected by new checks added to the tool in more recent updates.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/issues/2093'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2093'
 )
 def com_google_fonts_check_fontbakery_version():
     """Do we have the latest version of FontBakery installed?"""
@@ -385,7 +390,8 @@ def com_google_fonts_check_fontbakery_version():
         https://docs.microsoft.com/en-us/typography/opentype/spec/recom#glyph-0-the-notdef-glyph
 
         Pre-v1.8, it was recommended that fonts should also contain 'space', 'CR' and '.null' glyphs. This might have been relevant for MacOS 9 applications.
-    """
+    """,
+    proposal = 'legacy:check/046'
 )
 def com_google_fonts_check_mandatory_glyphs(ttFont):
     """Font contains '.notdef' as its first glyph?"""
@@ -416,7 +422,8 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/whitespace_glyphs'
+    id = 'com.google.fonts/check/whitespace_glyphs',
+    proposal = 'legacy:check/047'
 )
 def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
     """Font contains glyphs for whitespace characters?"""
@@ -435,7 +442,8 @@ def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
     conditions = ['not missing_whitespace_chars'],
     rationale = """
         This check enforces adherence to recommended whitespace (codepoints 0020 and 00A0) glyph names according to the Adobe Glyph List.
-    """
+    """,
+    proposal = 'legacy:check/048'
 )
 def com_google_fonts_check_whitespace_glyphnames(ttFont):
     """Font has **proper** whitespace glyph names?"""
@@ -520,7 +528,8 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/whitespace_ink'
+    id = 'com.google.fonts/check/whitespace_ink',
+    proposal = 'legacy:check/049'
 )
 def com_google_fonts_check_whitespace_ink(ttFont):
     """Whitespace glyphs have ink?"""
@@ -567,10 +576,11 @@ def com_google_fonts_check_whitespace_ink(ttFont):
     conditions = ['is_ttf'],
     rationale = """
         Depending on the typeface and coverage of a font, certain tables are recommended for optimum quality. For example, the performance of a non-linear font is improved if the VDMX, LTSH, and hdmx tables are present. Non-monospaced Latin fonts should have a kern table. A gasp table is necessary if a designer wants to influence the sizes at which grayscaling is used under Windows. A DSIG table containing a digital signature helps ensure the integrity of the font file. Etc.
-    """
+    """,
     # FIXME:
     # The rationale description above comes from FontValidator, check W0022.
     # We may want to improve it and/or rephrase it.
+    proposal = 'legacy:check/052'
 )
 def com_google_fonts_check_required_tables(ttFont):
     """Font contains all required tables?"""
@@ -627,7 +637,8 @@ def com_google_fonts_check_required_tables(ttFont):
     id = 'com.google.fonts/check/unwanted_tables',
     rationale = """
         Some font editors store source data in their own SFNT tables, and these can sometimes sneak into final release files, which should only have OpenType spec tables.
-    """
+    """,
+    proposal = 'legacy:check/053'
 )
 def com_google_fonts_check_unwanted_tables(ttFont):
     """Are there unwanted tables?"""
@@ -676,7 +687,7 @@ def STAT_table(ttFont):
     rationale = """
         On the STAT table, the "Italic" keyword must not be used on AxisValues for variation axes other than 'ital'.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/issues/2863'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2863'
 )
 def com_google_fonts_check_STAT_strings(ttFont):
     """ Check correctness of STAT table strings """
@@ -731,8 +742,9 @@ def com_google_fonts_check_STAT_strings(ttFont):
 
         https://github.com/adobe-type-tools/agl-specification
     """,
-    request = ['legacy:check/058',
-               'https://github.com/googlefonts/fontbakery/issues/2832'] # increase limit to 63 chars
+    proposal = ['legacy:check/058',
+                'https://github.com/googlefonts/fontbakery/issues/2832'] # increase limit
+                                                                         # to 63 chars
 )
 def com_google_fonts_check_valid_glyphnames(ttFont):
     """Glyph names are all valid?"""
@@ -790,6 +802,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
     rationale = """
         Duplicate glyph names prevent font installation on Mac OS X.
     """,
+    proposal = 'legacy:check/059',
     misc_metadata = {
         'affects': [('Mac', 'unspecified')]
     }
@@ -821,14 +834,10 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
                           f"{duplicated_glyphIDs}")
 
 
-# This check was originally ported from
-# Mekkablue Preflight Checks available at:
-# https://github.com/mekkablue/Glyphs-Scripts/blob/master/Test/Preflight%20Font.py
-# Disabled until we know the rationale.
-@disable
+@disable # until we know the rationale.
 @check(
     id = 'com.google.fonts/check/glyphnames_max_length',
-    request = 'https://github.com/googlefonts/fontbakery/issues/735'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/735'
 )
 def com_google_fonts_check_glyphnames_max_length(ttFont):
     """Check that glyph names do not exceed max length."""
@@ -852,7 +861,7 @@ def com_google_fonts_check_glyphnames_max_length(ttFont):
 @check(
     id = 'com.google.fonts/check/ttx-roundtrip',
     conditions = ["not vtt_talk_sources"],
-    request = 'https://github.com/googlefonts/fontbakery/issues/1763'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/1763'
 )
 def com_google_fonts_check_ttx_roundtrip(font):
     """Checking with fontTools.ttx"""
@@ -932,7 +941,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
     rationale = """
         We want all fonts within a family to have the same vertical metrics so their line spacing is consistent across the family.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/issues/1487'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/1487'
 )
 def com_google_fonts_check_family_vertical_metrics(ttFonts):
     """Each font in a family must have the same set of vertical metrics values."""
@@ -1002,7 +1011,7 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
 
         Only the fontfiles in these directories will be considered in superfamily-level checks.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/issues/1487'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/1487'
 )
 def com_google_fonts_check_superfamily_list(superfamily):
     """List all superfamily filepaths"""
@@ -1017,9 +1026,9 @@ def com_google_fonts_check_superfamily_list(superfamily):
     rationale = """
         We may want all fonts within a super-family (all sibling families) to have the same vertical metrics so their line spacing is consistent across the super-family.
 
-        This is an experimental extended version of com.google.fonts/check/superfamily/vertical_metrics and for now it will only result in WARNs.
+        This is an experimental extended version of com.google.fonts/check/family/vertical_metrics and for now it will only result in WARNs.
     """,
-    request = 'https://github.com/googlefonts/fontbakery/issues/1487'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/1487'
 )
 def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
     """Each font in set of sibling families must have the same set of vertical metrics values."""
@@ -1072,7 +1081,7 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
         Per Bureau of Indian Standards every font supporting one of the official Indian languages needs to include Unicode Character “₹” (U+20B9) Indian Rupee Sign.
     """,
     conditions = ['is_indic_font'],
-    request = 'https://github.com/googlefonts/fontbakery/issues/2967'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2967'
 )
 def com_google_fonts_check_rupee(ttFont):
     """ Ensure indic fonts have the Indian Rupee Sign glyph. """
