@@ -63,12 +63,8 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
         - Version 2 for TTF or OTF CFF2 Variable fonts
         - Version 3 for OTF
     """,
-    misc_metadata = {
-        'request': [
-            'https://github.com/google/fonts/issues/215',
-            'https://github.com/googlefonts/fontbakery/issues/2638'
-        ]
-    }
+    request = ['https://github.com/google/fonts/issues/215',
+               'https://github.com/googlefonts/fontbakery/issues/2638']
 )
 def com_google_fonts_check_post_table_version(ttFont, is_ttf):
     """Font has correct post table version?"""

@@ -28,9 +28,7 @@ NOTOFONTS_PROFILE_CHECKS = \
         There are just a few typical types of cmap subtables that are used in fonts.
         If anything different is declared in a font, it will be treated as a FAIL.
     """,
-    misc_metadata = {
-        'request': 'https://github.com/googlefonts/fontbakery/issues/2676'
-    }
+    request = 'https://github.com/googlefonts/fontbakery/issues/2676'
 )
 def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
     """Ensure all cmap subtables are the typical types expected in a font."""
@@ -89,9 +87,7 @@ def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
     """,
     conditions = ["unicoderange",
                   "preferred_cmap"],
-    misc_metadata = {
-        'request': 'https://github.com/googlefonts/fontbakery/issues/2676'
-    }
+    request = 'https://github.com/googlefonts/fontbakery/issues/2676'
 )
 def com_google_fonts_check_unicode_range_bits(ttFont, unicoderange, preferred_cmap):
     """Ensure UnicodeRange bits are properly set."""
