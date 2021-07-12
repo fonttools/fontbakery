@@ -18,6 +18,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/license/OFL_body_text]:** Check OFL.txt body text is correct (PR #3353, issue #3352)
   - **[com.google.fonts/check/os2/use_typo_metrics]:** Confirm that OS/2.fsSelection bit 7 (USE TYPO METRICS) is set (PR #3314, issue #3241)
 
+### Bug Fixes
+  - Log levels are now correctly honored when using the HTML reporter (issue #3225)
+
 ### Dependencies
   - Drop again the usage of unidecode due to licensing policies (issue #3316)
 
