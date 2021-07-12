@@ -28,6 +28,7 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
 
     def __init__(self, loglevels, **kwd):
         super().__init__(**kwd)
+        self.loglevels = loglevels
 
     def write(self):
         with open(self.output_file, "w", encoding="utf-8") as fh:
@@ -47,6 +48,8 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
             section_stati_of_note = (
                 e for e in section["result"].elements() if e != "PASS"
             )
+            if all([self.omit_loglevel(s) for s in section["result"].elements()]):
+                continue
             section_stati = "".join(
                 EMOTICON[s] for s in sorted(section_stati_of_note, key=LOGLEVELS.index)
             )
@@ -63,10 +66,14 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
                 for check in cluster:
                     checks_by_id[check["key"][1]].append(check)
             for check, results in checks_by_id.items():
+                if all([self.omit_loglevel(result['result']) for result in results]):
+                    continue
                 check_name = html.escape(check)
                 body_elements.append(f"<h3>{results[0]['description']}</h3>")
                 body_elements.append(f"<div>Check ID: {check_name}</div>")
                 for result in results:
+                    if self.omit_loglevel(result['result']):
+                        continue
                     if "filename" in result:
                         body_elements.append(
                             html5_collapsible(
