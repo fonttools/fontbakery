@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
   - **[com.google.fonts/check/os2/use_typo_metrics]:** Confirm that OS/2.fsSelection bit 7 (USE TYPO METRICS) is set (PR #3314, issue #3241)
 
+### Bug Fixes
+  - Log levels are now correctly honored when using the HTML reporter (issue #3225)
+
 ### Dependencies
   - Drop again the usage of unidecode due to licensing policies (issue #3316)
 
