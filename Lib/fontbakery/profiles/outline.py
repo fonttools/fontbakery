@@ -85,7 +85,7 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
 @check(
     id = "com.google.fonts/check/outline_short_segments",
     rationale = f"""
-        This check looks for outline segments which seem particularly short (less than {SHORT_PATH_EPSILON}%% of the overall path length).
+        This check looks for outline segments which seem particularly short (less than {SHORT_PATH_EPSILON:.1%} of the overall path length).
 
         This check is not run for variable fonts, as they may legitimately have short segments. As this check is liable to generate significant numbers of false positives, it will pass if there are more than {FALSE_POSITIVE_CUTOFF} reported short segments.
     """,
