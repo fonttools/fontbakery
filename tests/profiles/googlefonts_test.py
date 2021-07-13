@@ -3826,3 +3826,15 @@ def test_check_meta_script_lang_tags():
     del ttFont["meta"]
     assert_results_contain(check(ttFont),
                            WARN, 'lacks-meta-table')
+
+
+def test_check_no_debugging_tables():
+    """Ensure fonts do not contain any preproduction tables."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/no_debugging_tables")
+
+    ttFont = TTFont(TEST_FILE("overpassmono/OverpassMono-Regular.ttf"))
+    assert_results_contain(check(ttFont), WARN, 'has-debugging-tables')
+
+    del ttFont["FFTM"]
+    assert_PASS(check(ttFont))

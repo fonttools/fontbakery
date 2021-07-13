@@ -166,6 +166,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/stylisticset_description',
     'com.google.fonts/check/os2/use_typo_metrics',
     'com.google.fonts/check/meta/script_lang_tags',
+    'com.google.fonts/check/no_debugging_tables',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -5497,6 +5498,31 @@ def com_google_fonts_check_meta_script_lang_tags(ttFont):
             yield INFO,\
                   Message('slng-tag',
                           f"{ttFont['meta'].data['slng']}")
+
+
+@check(
+    id="com.google.fonts/check/no_debugging_tables",
+    rationale="""
+        Tables such as `Debg` are useful in the pre-production stages of font
+        development, but add unnecessary bloat to a production font and should
+        be removed before release.
+    """,
+    severity=6,
+    proposal="https://github.com/googlefonts/fontbakery/issues/3357",
+)
+def com_google_fonts_check_no_debugging_tables(ttFont):
+    """Ensure fonts do not contain any preproduction tables."""
+
+    DEBUGGING_TABLES = ["Debg", "FFTM"]
+    found = [t for t in DEBUGGING_TABLES if t in ttFont]
+    if found:
+        yield WARN, Message(
+            "has-debugging-tables",
+            "This font file contains the following pre-production tables:"
+            + ", ".join(found),
+        )
+    else:
+        yield PASS, "OK"
 
 
 ###############################################################################
