@@ -13,6 +13,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bug Fixes
   - Add a code-testing mechanism to ignore spurious ERRORs and use it for not letting the namecheck timeouts break our CI builds. (issue #3366)
 
+### Changes to existing checks
+  - **[com.google.fonts/check/license/OFL_body_text]**: Silently tolerate usage of "http://" on the OFL.txt file. (issue #3372)
+
 
 ## 0.7.38 (2021-Jun-23)
 ### New Checks

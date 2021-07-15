@@ -803,11 +803,20 @@ def test_check_license_ofl_body_text():
 
     # Our reference Montserrat family is know to have
     # a proper OFL.txt license file.
+    # NOTE: This is currently considered good
+    #       even though it uses an "http://" URL
     font = TEST_FILE("montserrat/Montserrat-Regular.ttf")
     ttFont = TTFont(font)
 
     assert_PASS(check(ttFont),
-                'with a good OFL.txt license')
+                'with a good OFL.txt license with "http://" url.')
+
+
+    # using "https://" is also considered good:
+    good_license = check["license_contents"].replace("http://", "https://")
+    assert_PASS(check(ttFont, {'license_contents': good_license}),
+                'with a good OFL.txt license with "https://" url.')
+
 
     # modify a tiny bit of the license text, to trigger the FAIL:
     bad_license = check["license_contents"].replace("SIL OPEN FONT LICENSE Version 1.1",

@@ -1111,12 +1111,14 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
 def com_google_fonts_check_license_OFL_body_text(license_contents):
     """Check OFL body text is correct.""" 
     from fontbakery.constants import OFL_BODY_TEXT
-    if not OFL_BODY_TEXT in license_contents:
+
+    if not OFL_BODY_TEXT in license_contents.replace("http://", "https://"):
         yield FAIL,\
               Message("incorrect-ofl-body-text",
                       "The OFL.txt body text is incorrect. Please use"
-                      " https://github.com/googlefonts/Unified-Font-Repository/blob/main/OFL.txt"
-                      " as a template. You should only modify the first line.")
+                      " https://github.com/googlefonts/Unified-Font-Repository"
+                      "/blob/main/OFL.txt as a template."
+                      " You should only modify the first line.")
     else:
         yield PASS, "OFL license body text is correct"
 
