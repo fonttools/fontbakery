@@ -3063,6 +3063,50 @@ def test_check_family_control_chars():
                            'with multiple bad fonts that have multiple bad chars...')
 
 
+def test_check_family_italics_have_roman_counterparts():
+    """Ensure Italic styles have Roman counterparts."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/family/italics_have_roman_counterparts")
+
+    # The path used here, "some-crazy.path/", is meant to ensure
+    # that the parsing code does not get lost when trying to
+    # extract the style of a font file.
+    fonts = ['some-crazy.path/merriweather/Merriweather-BlackItalic.ttf',
+             'some-crazy.path/merriweather/Merriweather-Black.ttf',
+             'some-crazy.path/merriweather/Merriweather-BoldItalic.ttf',
+             'some-crazy.path/merriweather/Merriweather-Bold.ttf',
+             'some-crazy.path/merriweather/Merriweather-Italic.ttf',
+             'some-crazy.path/merriweather/Merriweather-LightItalic.ttf',
+             'some-crazy.path/merriweather/Merriweather-Light.ttf',
+             'some-crazy.path/merriweather/Merriweather-Regular.ttf']
+
+    assert_PASS(check(fonts),
+                'with a good family...')
+
+    fonts.pop(-1) # remove the last one, which is the Regular
+    assert 'some-crazy.path/merriweather/Merriweather-Regular.ttf' not in fonts
+    assert 'some-crazy.path/merriweather/Merriweather-Italic.ttf' in fonts
+    assert_results_contain(check(fonts),
+                           FAIL, 'missing-roman',
+                           'with a family that has an Italic but lacks a Regular.')
+
+    fonts.append('some-crazy.path/merriweather/MerriweatherItalic.ttf')
+    assert_results_contain(check(fonts),
+                           WARN, 'bad-filename',
+                           'with a family that has a non-canonical italic filename.')
+
+    # This check must also be able to deal with variable fonts!
+    fonts = ["cabinvfbeta/CabinVFBeta-Italic[wdth,wght].ttf",
+             "cabinvfbeta/CabinVFBeta[wdth,wght].ttf"]
+    assert_PASS(check(fonts),
+                'with a good set of varfonts...')
+
+    fonts = ["cabinvfbeta/CabinVFBeta-Italic[wdth,wght].ttf"]
+    assert_results_contain(check(fonts),
+                           FAIL, 'missing-roman',
+                           'with an Italic varfont that lacks a Roman counterpart.')
+
+
 def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
     """Are any unacceptable control characters present in font files?"""
     # check = CheckTester(googlefonts_profile,

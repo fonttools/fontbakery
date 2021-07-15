@@ -1,8 +1,9 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.7.39 (2021-Jul-??)
+## 0.8.0 (2021-Jul-??)
 ### New Checks
+  - **[com.google.fonts/check/family/italics_have_roman_counterparts]:** Ensure Italic styles have Roman counterparts. (issue #1733)
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Check if the font contains any invalid feature tags. (PR #3359, issue #3355)
   - **[com.google.fonts/check/layout_valid_script_tags]:** Check if the font contains any invalid script tags. (PR #3359, issue #3355)
   - **[com.google.fonts/check/layout_valid_language_tags]:** Check if the font contains any invalid language tags. (PR #3359, issue #3355)
