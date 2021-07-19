@@ -27,6 +27,7 @@ from fontbakery.errors import ValueValidationError
 from fontbakery.multiproc import multiprocessing_runner
 from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
+from fontbakery.reporters.badge import BadgeReporter
 from fontbakery.reporters.ghmarkdown import GHMarkdownReporter
 from fontbakery.reporters.html import HTMLReporter
 from fontbakery.utils import get_theme
@@ -155,6 +156,10 @@ def ArgumentParser(profile, profile_arg=True):
     argument_parser.add_argument('--json', default=False, action=AddReporterAction, cls=SerializeReporter,
                                  metavar= 'JSON_FILE',
                                  help='Write a json formatted report to JSON_FILE.')
+
+    argument_parser.add_argument('--badgejson', default=False, action=AddReporterAction, cls=BadgeReporter,
+                                 metavar= 'JSON_FILE',
+                                 help='Write a shields.io endpoint to JSON_FILE.')
 
     argument_parser.add_argument('--ghmarkdown', default=False, action=AddReporterAction, cls=GHMarkdownReporter,
                                  metavar= 'MD_FILE',

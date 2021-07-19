@@ -99,6 +99,8 @@ class SerializeReporter(FontbakeryReporter):
             item['description'] = check.description
             if check.rationale:
                 item['rationale'] = check.rationale
+            if check.severity:
+                item['severity'] = check.severity
             if item["key"][2] != ():
                 item['filename'] = self.runner.get_iterarg(*item["key"][2][0])
 
