@@ -157,9 +157,9 @@ def ArgumentParser(profile, profile_arg=True):
                                  metavar= 'JSON_FILE',
                                  help='Write a json formatted report to JSON_FILE.')
 
-    argument_parser.add_argument('--badgejson', default=False, action=AddReporterAction, cls=BadgeReporter,
-                                 metavar= 'JSON_FILE',
-                                 help='Write a shields.io endpoint to JSON_FILE.')
+    argument_parser.add_argument('--badges', default=False, action=AddReporterAction, cls=BadgeReporter,
+                                 metavar= 'DIRECTORY',
+                                 help='Write a set of shields.io badge files to DIRECTORY.')
 
     argument_parser.add_argument('--ghmarkdown', default=False, action=AddReporterAction, cls=GHMarkdownReporter,
                                  metavar= 'MD_FILE',
