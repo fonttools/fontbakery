@@ -103,10 +103,10 @@ class GFNameData:
         self.filename = self._build_static_filename()
         self.macFamily = self.typoFamily or self.family
         self.macSubFamily = self.typoSubFamily or self.subFamily
-        self.fsSelection = None
-        self.macStyle = None
+        self.fsSelection = self._build_fs_selection()
+        self.macStyle = self._build_mac_style()
         self.usWeightClass = self._build_weight_class()
-        self.usWidthClass = None
+        self.usWidthClass = self._build_width_class()
 
     def build_vf_names(self):
         self._get_fvar_tokens()
@@ -122,9 +122,10 @@ class GFNameData:
         self.filename = self._build_vf_filename()
         self.macFamily = self.typoFamily or self.family
         self.macSubFamily = self.typoSubFamily or self.subFamily
-        self.fsSelection = None
-        self.macStyle = None
+        self.fsSelection = self._build_fs_selection()
+        self.macStyle = self._build_mac_style()
         self.usWeightClass = self._build_weight_class()
+        self.usWidthClass = self._build_width_class()
 
     def _get_fvar_tokens(self):
         found = False
@@ -350,8 +351,41 @@ class GFNameData:
             return 250
         if not self.isTTF and found_value == 200:
             return 275
-        if not found_value:
-            import pdb
-            pdb.set_trace()
         return found_value
 
+    def _build_width_class(self):
+        # Value must be 100 for static fonts since the GF static api can only
+        # serve these.
+        if "fvar" not in self.ttFont or "wdth" not in self.axis_tokens:
+            return 100
+        wdth_name = self.axis_tokens['wdth']
+        return self.axis_reg['wdth']['fallbacks'][wdth_name]
+
+    def _build_fs_selection(self):
+        existing = self.ttFont['OS/2'].fsSelection
+        # Keep fsSelection bit 7 if enabled. Others we don't care about
+        new = existing & (1 << 7)
+        modified = False
+        # Enable Bold bit
+        if self.ttFont['OS/2'].usWeightClass == 700:
+            modified = True
+            new |= (1 << 5)
+        # Enable Italic bit
+        if self.ttFont['post'].italicAngle != 0:
+            modified = True
+            new |= (1 << 0)
+        if not modified:
+            new |= (1 << 6)
+        return new
+
+    def _build_mac_style(self):
+        existing = self.ttFont['head'].macStyle
+        new = 0
+        for bit in [(1 << 2), (1 << 3), (1 << 4)]:
+            new |= existing & bit
+        if self.ttFont['OS/2'].usWeightClass == 700:
+            new |= (1 << 0)
+        if self.ttFont['post'].italicAngle != 0:
+            new |= (1 << 1)
+        # TODO what about extended and condensed bits?
+        return new
