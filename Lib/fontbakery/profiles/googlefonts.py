@@ -3221,8 +3221,7 @@ def com_google_fonts_check_name_subfamilyname(ttFont, gfnames):
     rationale = """
         Requirements for the FULL_FONT_NAME entries in the 'name' table.
     """,
-    conditions = ['familyname_with_spaces',
-                  'gfnames'],
+    conditions = ['gfnames'],
     proposal = 'legacy:check/159'
 )
 def com_google_fonts_check_name_fullfontname(ttFont, gfnames):
@@ -3258,8 +3257,7 @@ def com_google_fonts_check_name_fullfontname(ttFont, gfnames):
     rationale = """
         Requirements for the POSTSCRIPT_NAME entries in the 'name' table.
     """,
-    conditions = ['style',
-                  'familyname',
+    conditions = ['familyname',
                   'gfnames'],
     proposal = 'legacy:check/160'
 )
@@ -3289,8 +3287,7 @@ def com_google_fonts_check_name_postscriptname(ttFont, gfnames):
     rationale = """
         Requirements for the TYPOGRAPHIC_FAMILY_NAME entries in the 'name' table.
     """,
-    conditions = ['gfnames',
-                  'familyname_with_spaces'],
+    conditions = ['gfnames'],
     proposal = 'legacy:check/161'
 )
 def com_google_fonts_check_name_typographicfamilyname(ttFont, gfnames):
@@ -3337,7 +3334,7 @@ def com_google_fonts_check_name_typographicfamilyname(ttFont, gfnames):
     rationale = """
         Requirements for the TYPOGRAPHIC_SUBFAMILY_NAME entries in the 'name' table.
     """,
-    conditions=['expected_style', 'gfnames'],
+    conditions=['gfnames'],
     proposal = 'legacy:check/162'
 )
 def com_google_fonts_check_name_typographicsubfamilyname(ttFont, gfnames):

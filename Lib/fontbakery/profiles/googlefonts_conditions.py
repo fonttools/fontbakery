@@ -428,7 +428,7 @@ def regular_ttFont(ttFonts):
 
 
 @condition
-def api_gfonts_ttFont(style, remote_styles):
+def api_gfonts_ttFont(gfnames, remote_styles):
     """Get a TTFont object of a font downloaded from Google Fonts
        corresponding to the given TTFont object of
        a local font being checked.
