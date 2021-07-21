@@ -73,11 +73,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/fc0787b670c4fddb7d07f0b5b24901910a6ac90c/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/7b718dbb070659d16ba17b89e51e416311a5b55c/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="06/14/2021" />
+<meta name="ms.date" content="07/07/2021" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -88,18 +88,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2021-06-18 06:12 PM" />
+<meta name="updated_at" content="2021-07-07 04:44 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3660" />
+<meta name="word_count" content="3671" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/72013dd7.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/e6141ec8.site-ltr.css ">
 
 	
 
@@ -153,7 +153,7 @@
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
 	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2c6911d0.index-polyfills.js"></script>
 
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b3009df7.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/9c90920f.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -316,7 +316,7 @@
 
 								<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 									<li>
-										<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-06-14T00:00:00.000Z" data-article-date-source="ms.date">06/14/2021</time>
+										<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-07-07T00:00:00.000Z" data-article-date-source="ms.date">07/07/2021</time>
 									</li>
 											<li class="readingTime">18 minutes to read</li>
 										<li class="contributors-holder">
@@ -1778,6 +1778,10 @@
 <td><a href="http://www.fontfabrik.com/" data-linktype="external">FontFabrik</a></td>
 </tr>
 <tr>
+<td>fofm</td>
+<td>Font FM</td>
+</tr>
+<tr>
 <td>FOGC</td>
 <td><a href="https://fogcitygothic.com" data-linktype="external">Fog City Type</a></td>
 </tr>
@@ -2800,6 +2804,10 @@
 <td><a href="http://lalettredeluxe.com/" data-linktype="external">La Lettre de Luxe</a></td>
 </tr>
 <tr>
+<td>LLGW</td>
+<td><a href="https://lauraworthingtondesign.com/" data-linktype="external">Laura Worthington Design</a></td>
+</tr>
+<tr>
 <td>LLP</td>
 <td><a href="http://www.lenalepommelet.com/" data-linktype="external">Léna Le Pommelet</a></td>
 </tr>
@@ -2957,6 +2965,10 @@
 <tr>
 <td>MAXN</td>
 <td>MaxnorType</td>
+</tr>
+<tr>
+<td>MBF</td>
+<td><a href="https://themoonbandit.com/" data-linktype="external">Moonbandit font foundry</a></td>
 </tr>
 <tr>
 <td>MC</td>
@@ -3752,7 +3764,7 @@
     </tr>
 <tr>
 <td>R777</td>
-<td>Rouge</td>
+<td>Sanslit</td>
 </tr>
 <tr>
 <td>RAIN</td>
