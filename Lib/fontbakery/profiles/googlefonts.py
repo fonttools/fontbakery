@@ -3257,8 +3257,7 @@ def com_google_fonts_check_name_fullfontname(ttFont, gfnames):
     rationale = """
         Requirements for the POSTSCRIPT_NAME entries in the 'name' table.
     """,
-    conditions = ['familyname',
-                  'gfnames'],
+    conditions = ['gfnames'],
     proposal = 'legacy:check/160'
 )
 def com_google_fonts_check_name_postscriptname(ttFont, gfnames):
@@ -3270,7 +3269,7 @@ def com_google_fonts_check_name_postscriptname(ttFont, gfnames):
     for name in ttFont['name'].names:
         if name.nameID == NameID.POSTSCRIPT_NAME:
 
-            string = name.string.decode(name.getEncoding()).strip()
+            string = name.toUnicode()
             if string != expected:
                 failed = True
                 yield FAIL,\
