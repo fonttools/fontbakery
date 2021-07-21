@@ -211,8 +211,9 @@ def test_check_canonical_filename():
                            FAIL, 'invalid-char',
                            'with filename containing an underscore...')
 
-    assert_results_contain(check(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf")),
-                           FAIL, 'unknown-name',
+    bad_font = TTFont(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf"))
+    assert_results_contain(check(bad_font),
+                           FAIL, 'bad-varfont-filename',
                            'with a variable font that lacks some important name table entries...')
 
     # TODO: FAIL, 'bad-static-filename'
@@ -3256,13 +3257,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     from fontbakery.profiles.shared_conditions import family_directory
     from fontbakery.profiles.googlefonts \
         import (com_google_fonts_check_vertical_metrics_regressions as check,
-                api_gfonts_ttFont,
-                style,
-                remote_styles,
-                regular_ttFont,
-                regular_remote_style,
-                metadata_file,
-                family_metadata)
+                regular_ttFont)
     from copy import deepcopy
 
     remote = regular_ttFont([TTFont(f) for f in cabin_fonts])
