@@ -2,6 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.8.0 (2021-Jul-??)
+### New Reporter
+  - A reporter for `shields.io` badges, as discussed in https://github.com/googlefonts/Unified-Font-Repository/issues/14. It adds all the severity scores (with a default severity of 5 for those not yet providing a severity score) and uses this to generate a percentage. The JSON file it emits separates each profile into a separate badge.
+
 ### New Checks
   - **[com.google.fonts/check/family/italics_have_roman_counterparts]:** Ensure Italic styles have Roman counterparts. (issue #1733)
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Check if the font contains any invalid feature tags. (PR #3359, issue #3355)
