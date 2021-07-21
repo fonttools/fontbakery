@@ -315,7 +315,7 @@ class GFNameData:
         if self.typoFamily:
             filename = f"{self.typoFamily}-{self.typoSubFamily}".replace(" ", "")
         else:
-            filename = f"{self.family}-{self.subFamily}.ttf".replace(" ", "")
+            filename = f"{self.family}-{self.subFamily}".replace(" ", "")
         if self.isTTF:
             return f"{filename}.ttf"
         return f"{filename}.otf"
