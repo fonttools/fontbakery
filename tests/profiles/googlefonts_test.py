@@ -2405,6 +2405,7 @@ def test_condition_familyname_with_spaces():
 
 def test_check_name_familyname():
     """ Check name table: FONT_FAMILY_NAME entries. """
+    from fontbakery.profiles.googlefonts_conditions import gfnames
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/name/familyname")
 
@@ -2433,10 +2434,10 @@ def test_check_name_familyname():
 
             if name.nameID == NameID.FONT_FAMILY_NAME:
                 ttFont['name'].names[i].string = value.encode(name.getEncoding())
-        assert_results_contain(check(ttFont),
+        assert_results_contain(check(ttFont, {"gfnames": gfnames(ttFont)}),
                                      expected, keyword,
                                      f'with filename="{filename}",'
-                                     f' value="{value}", style="{check["style"]}"...')
+                                     f' value="{value}", style="{check["gfnames"].subFamily}"...')
 
 
 def test_check_name_subfamilyname():
