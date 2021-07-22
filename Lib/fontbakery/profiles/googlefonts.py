@@ -2924,7 +2924,7 @@ def com_google_fonts_check_mac_style(ttFont, gfnames):
                           bitname="ITALIC")
 
     # Checking macStyle BOLD bit:
-    expected = gfnames.subFamily in ["Bold", "BoldItalic"]
+    expected = gfnames.subFamily in ["Bold", "Bold Italic"]
     yield check_bit_entry(ttFont, "head", "macStyle",
                           expected,
                           bitmask=MacStyle.BOLD,

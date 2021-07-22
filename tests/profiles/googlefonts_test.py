@@ -2197,6 +2197,7 @@ def test_check_mac_style():
     """ Checking head.macStyle value. """
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/mac_style")
+    from fontbakery.profiles.googlefonts_conditions import gfnames
     from fontbakery.constants import MacStyle
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
@@ -2210,17 +2211,19 @@ def test_check_mac_style():
         [MacStyle.ITALIC, "Thin", "bad-ITALIC"],
         [MacStyle.BOLD, "Bold", PASS],
         [MacStyle.BOLD, "Thin", "bad-BOLD"],
-        [MacStyle.BOLD | MacStyle.ITALIC, "BoldItalic", PASS]
+        [MacStyle.BOLD | MacStyle.ITALIC, "Bold Italic", PASS]
     ]
 
     for macStyle_value, style, expected in test_cases:
         ttFont["head"].macStyle = macStyle_value
+        ttFont['name'].setName(style, 2, 3, 1, 0x409)
+        ttFont['name'].setName(style, 17, 3, 1, 0x409)
 
         if expected == PASS:
-            assert_PASS(check(ttFont, {"style": style}),
+            assert_PASS(check(ttFont, {"gfnames": gfnames(ttFont)}),
                         'with macStyle:{macStyle_value} style:{style}...')
         else:
-            assert_results_contain(check(ttFont, {"style": style}),
+            assert_results_contain(check(ttFont, {"gfnames": gfnames(ttFont)}),
                                    FAIL, expected,
                                    f"with macStyle:{macStyle_value} style:{style}...")
 
