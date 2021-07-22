@@ -2164,6 +2164,7 @@ def NOT_IMPLEMENTED_test_check_fsselection():
 
 def test_check_italic_angle():
     """ Checking post.italicAngle value. """
+    from fontbakery.profiles.googlefonts_conditions import gfnames
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/italic_angle")
 
@@ -2182,14 +2183,16 @@ def test_check_italic_angle():
 
     for value, style, expected_result, expected_msg in test_cases:
         ttFont["post"].italicAngle = value
+        ttFont['name'].setName(style, 2, 3, 1, 0x409)
+        ttFont['name'].setName(style, 17, 3, 1, 0x409)
 
         if expected_result != PASS:
-            assert_results_contain(check(ttFont, {"style": style}),
+            assert_results_contain(check(ttFont, {"gfnames": gfnames(ttFont)}),
                                    expected_result,
                                    expected_msg,
                                    f"with italic-angle:{value} style:{style}...")
         else:
-            assert_PASS(check(ttFont, {"style": style}),
+            assert_PASS(check(ttFont, {"gfnames": gfnames(ttFont)}),
                         f'with italic-angle:{value} style:{style}...')
 
 
