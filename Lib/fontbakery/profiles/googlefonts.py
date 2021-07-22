@@ -1871,7 +1871,7 @@ def com_google_fonts_check_metadata_copyright(family_metadata):
 def com_google_fonts_check_metadata_familyname(family_metadata):
     """Check that METADATA.pb family values are all the same."""
     family_names = [f.name for f in family_metadata.fonts]
-    if not all(family_names):
+    if not len(set(family_names)) == 1:
         yield FAIL,\
               Message("inconsistency",
                       'METADATA.pb: Family name is not the same'
