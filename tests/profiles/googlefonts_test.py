@@ -1599,7 +1599,9 @@ def test_check_metadata_valid_name_values():
                     f'with a good RIBBI font ({font})...')
 
         # And fail if it finds a bad font_familyname:
-        assert_results_contain(check(font, {"font_familynames": ["WrongFamilyName"]}),
+        md = check['font_metadata']
+        md.name = "A bad family name"
+        assert_results_contain(check(font, {"font_metadata": md}),
                                FAIL, 'mismatch',
                                f'with a bad RIBBI font ({font})...')
 
@@ -1609,9 +1611,11 @@ def test_check_metadata_valid_name_values():
         # So it must PASS the check:
         assert_PASS(check(font),
                     'with a good NON-RIBBI font ({fontfile})...')
-
+        
         # And fail if it finds a bad font_familyname:
-        assert_results_contain(check(font, {"typographic_familynames": ["WrongFamilyName"]}),
+        md = check['font_metadata']
+        md.name = "A bad family name"
+        assert_results_contain(check(font, {"font_metadata": md}),
                                FAIL, 'mismatch',
                                f'with a bad NON-RIBBI font ({font})...')
 
@@ -1631,10 +1635,11 @@ def test_check_metadata_valid_full_name_values():
 
         # And fail if the full familyname in METADATA.pb diverges
         # from the name inferred from the name table:
-        assert_results_contain(check(font, {"font_familynames": ["WrongFamilyName"]}),
+        md = check['font_metadata']
+        md.full_name = "Bad full name"
+        assert_results_contain(check(font, {"font_metadata": md}),
                                FAIL, 'mismatch',
                                f'with a bad RIBBI font ({font})...')
-
     # We do the same for NON-RIBBI styles:
     for font in MONTSERRAT_NON_RIBBI:
 
@@ -1643,7 +1648,9 @@ def test_check_metadata_valid_full_name_values():
                     f'with a good NON-RIBBI font ({font})...')
 
         # Unless when not matching typographic familyname from the name table:
-        assert_results_contain(check(font, {"typographic_familynames": ["WrongFamilyName"]}),
+        md = check['font_metadata']
+        md.full_name = "Bad full name"
+        assert_results_contain(check(font, {"font_metadata": md}),
                                FAIL, 'mismatch',
                                f'with a bad NON-RIBBI font ({font})...')
 
@@ -2374,6 +2381,8 @@ def test_check_name_mandatory_entries():
                                FAIL, 'missing-entry',
                                f'with a missing madatory (RIBBI) name entry (id={mandatory})...')
 
+    import pdb
+    pdb.set_trace()
     # === And now a non-RIBBI font: ===
     # Our reference Merriweather Black is known to be good
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Black.ttf"))
