@@ -1552,6 +1552,7 @@ def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats, installed_ttfa
         More info is available at:
         https://davelab6.github.io/epar/
     """,
+    severity = 1,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/226'
 )
 def com_google_fonts_check_epar(ttFont):
