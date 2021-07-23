@@ -5230,12 +5230,18 @@ def com_google_fonts_check_metadata_escaped_strings(metadata_file):
 
 @check(
     id = 'com.google.fonts/check/metadata/designer_profiles',
+    rationale = """
+        Google Fonts has a catalog of designers.
+
+        This check ensures that the online entries of the catalog can be found based on the designer names listed on the METADATA.pb file.
+
+        It also validates the URLs and file formats are all correctly set.
+    """,
     conditions = ['family_metadata'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3083'
 )
 def com_google_fonts_check_metadata_designer_profiles(family_metadata):
-    """METADATA.pb: Designer is listed with the correct name on
-       the Google Fonts catalog of designers?"""
+    """METADATA.pb: Designers are listed correctly on the Google Fonts catalog?"""
     DESIGNER_INFO_RAW_URL = ("https://raw.githubusercontent.com/google/"
                              "fonts/master/catalog/designers/{}/")
     from fontbakery.utils import get_DesignerInfoProto_Message
