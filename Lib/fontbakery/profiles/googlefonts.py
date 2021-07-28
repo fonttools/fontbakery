@@ -108,7 +108,6 @@ REPO_CHECKS = [
 FONT_FILE_CHECKS = [
     'com.google.fonts/check/glyph_coverage',
     'com.google.fonts/check/canonical_filename',
-    'com.google.fonts/check/usweightclass',
     'com.google.fonts/check/fstype',
     'com.google.fonts/check/vendor_id',
     'com.google.fonts/check/ligature_carets',
@@ -128,12 +127,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/name/familyname_first_char',
     'com.google.fonts/check/hinting_impact',
     'com.google.fonts/check/varfont/has_HVAR',
-    'com.google.fonts/check/name/typographicfamilyname',
-    'com.google.fonts/check/name/subfamilyname',
-    'com.google.fonts/check/name/typographicsubfamilyname',
     'com.google.fonts/check/gasp',
-    'com.google.fonts/check/name/familyname',
-    'com.google.fonts/check/name/mandatory_entries',
     'com.google.fonts/check/name/copyright_length',
     'com.google.fonts/check/fontdata_namecheck',
     'com.google.fonts/check/name/ascii_only_entries',
@@ -141,11 +135,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/varfont_weight_instances',
     'com.google.fonts/check/old_ttfautohint',
     'com.google.fonts/check/vttclean',
-    'com.google.fonts/check/name/postscriptname',
     'com.google.fonts/check/aat',
-    'com.google.fonts/check/name/fullfontname',
-    'com.google.fonts/check/mac_style',
-    'com.google.fonts/check/fsselection',
     'com.google.fonts/check/smart_dropout',
     'com.google.fonts/check/integer_ppem_if_hinted',
     'com.google.fonts/check/unitsperem_strict',
@@ -960,83 +950,6 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
     if not failed:
         yield PASS, ("No need to substitute copyright, registered and"
                      " trademark symbols in name table entries of this font.")
-
-
-@check(
-    id = 'com.google.fonts/check/usweightclass',
-    conditions = ['gfnames'],
-    rationale = """
-        Google Fonts expects variable fonts, static ttfs and static otfs to have differing OS/2 usWeightClass values.
-
-        For Variable Fonts, Thin-Black must be 100-900
-        For static ttfs, Thin-Black can be 100-900 or 250-900
-        For static otfs, Thin-Black must be 250-900
-
-        If static otfs are set lower than 250, text may appear blurry in legacy Windows applications.
-
-        Glyphsapp users can change the usWeightClass value of an instance by adding a 'weightClass' customParameter.
-    """,
-    proposal = 'legacy:check/020'
-)
-def com_google_fonts_check_usweightclass(ttFont, gfnames):
-    """Checking OS/2 usWeightClass."""
-    from fontbakery.profiles.shared_conditions import (
-        is_ttf,
-        is_cff,
-        is_variable_font
-    )
-
-    failed = False
-    expected_value = gfnames.usWeightClass
-    weight_name = gfnames.menu_subFamily_name
-    value = ttFont['OS/2'].usWeightClass
-    has_expected_value = value == expected_value
-    fail_message = \
-        "OS/2 usWeightClass is '{}' when it should be '{}'."
-
-    if is_variable_font(ttFont):
-        if not has_expected_value:
-            failed = True
-            yield FAIL,\
-                  Message("bad-value",
-                          fail_message.format(value, expected_value))
-    # overrides for static Thin and ExtaLight fonts
-    # for static ttfs, we don't mind if Thin is 250 and ExtraLight is 275.
-    # However, if the values are incorrect we will recommend they set Thin
-    # to 100 and ExtraLight to 250.
-    # for static otfs, Thin must be 250 and ExtraLight must be 275
-    elif "Thin" in weight_name:
-        if is_ttf(ttFont) and value not in [100, 250]:
-            failed = True
-            yield FAIL,\
-                  Message("bad-value",
-                          fail_message.format(value, expected_value))
-        if is_cff(ttFont) and value != 250:
-            failed = True
-            yield FAIL,\
-                  Message("bad-value",
-                          fail_message.format(value, 250))
-
-    elif "ExtraLight" in weight_name:
-        if is_ttf(ttFont) and value not in [200, 275]:
-            failed = True
-            yield FAIL,\
-                  Message("bad-value",
-                          fail_message.format(value, expected_value))
-        if is_cff(ttFont) and value != 275:
-            failed = True
-            yield FAIL,\
-                  Message("bad-value",
-                          fail_message.format(value, 275))
-
-    elif not has_expected_value:
-        failed = True
-        yield FAIL,\
-              Message("bad-value",
-                      fail_message.format(value, expected_value))
-
-    if not failed:
-        yield PASS, "OS/2 usWeightClass is good"
 
 
 @check(
@@ -2808,43 +2721,6 @@ def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFon
 
 
 @check(
-    id = 'com.google.fonts/check/fsselection',
-    conditions = ['gfnames'],
-    proposal = 'legacy:check/129'
-)
-def com_google_fonts_check_fsselection(ttFont, gfnames):
-    """Checking OS/2 fsSelection value."""
-    from fontbakery.utils import check_bit_entry
-    from fontbakery.constants import (STATIC_STYLE_NAMES,
-                                      RIBBI_STYLE_NAMES,
-                                      FsSelection)
-
-    # Checking fsSelection REGULAR bit:
-    expected = "Regular" in gfnames.subFamily or \
-               (gfnames.subFamily in STATIC_STYLE_NAMES and
-                gfnames.subFamily not in RIBBI_STYLE_NAMES and
-                "Italic" not in gfnames.subFamily)
-    yield check_bit_entry(ttFont, "OS/2", "fsSelection",
-                          expected,
-                          bitmask=FsSelection.REGULAR,
-                          bitname="REGULAR")
-
-    # Checking fsSelection ITALIC bit:
-    expected = "Italic" in gfnames.subFamily
-    yield check_bit_entry(ttFont, "OS/2", "fsSelection",
-                          expected,
-                          bitmask=FsSelection.ITALIC,
-                          bitname="ITALIC")
-
-    # Checking fsSelection BOLD bit:
-    expected = gfnames.subFamily in ["Bold", "BoldItalic"]
-    yield check_bit_entry(ttFont, "OS/2", "fsSelection",
-                          expected,
-                          bitmask=FsSelection.BOLD,
-                          bitname="BOLD")
-
-
-@check(
     id = 'com.google.fonts/check/italic_angle',
     conditions = ['gfnames'],
     rationale = """
@@ -2903,34 +2779,6 @@ def com_google_fonts_check_italic_angle(ttFont, gfnames):
     if not failed:
         yield PASS, (f'Value of post.italicAngle is {value}'
                      f' with style="{gfnames.subFamily}".')
-
-
-@check(
-    id = 'com.google.fonts/check/mac_style',
-    conditions = ['gfnames'],
-    rationale = """
-        The values of the flags on the macStyle entry on the 'head' OpenType table that describe whether a font is bold and/or italic must be coherent with the actual style of the font as inferred by its filename.
-    """,
-    proposal = 'legacy:check/131'
-)
-def com_google_fonts_check_mac_style(ttFont, gfnames):
-    """Checking head.macStyle value."""
-    from fontbakery.utils import check_bit_entry
-    from fontbakery.constants import MacStyle
-
-    # Checking macStyle ITALIC bit:
-    expected = "Italic" in gfnames.subFamily
-    yield check_bit_entry(ttFont, "head", "macStyle",
-                          expected,
-                          bitmask=MacStyle.ITALIC,
-                          bitname="ITALIC")
-
-    # Checking macStyle BOLD bit:
-    expected = gfnames.subFamily in ["Bold", "Bold Italic"]
-    yield check_bit_entry(ttFont, "head", "macStyle",
-                          expected,
-                          bitmask=MacStyle.BOLD,
-                          bitname="BOLD")
 
 
 @check(
@@ -3110,304 +2958,6 @@ def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
     if not failed:
         yield PASS, ("Copyright field for this font on METADATA.pb matches"
                      " copyright notice entries on the name table.")
-
-
-@check(
-    id = 'com.google.fonts/check/name/mandatory_entries',
-    conditions = ['gfnames'],
-    proposal = 'legacy:check/156'
-)
-def com_google_fonts_check_name_mandatory_entries(ttFont, gfnames):
-    """Font has all mandatory 'name' table entries?"""
-    from fontbakery.utils import get_name_entry_strings
-    from fontbakery.constants import RIBBI_STYLE_NAMES
-
-    required_nameIDs = [NameID.FONT_FAMILY_NAME,
-                        NameID.FONT_SUBFAMILY_NAME,
-                        NameID.FULL_FONT_NAME,
-                        NameID.POSTSCRIPT_NAME]
-    if not gfnames.isRibbi:
-        required_nameIDs += [NameID.TYPOGRAPHIC_FAMILY_NAME,
-                             NameID.TYPOGRAPHIC_SUBFAMILY_NAME]
-    passed = True
-    # The font must have at least these name IDs:
-    for nameId in required_nameIDs:
-        if len(get_name_entry_strings(ttFont, nameId)) == 0:
-            passed = False
-            yield FAIL,\
-                  Message("missing-entry",
-                          f"Font lacks entry with nameId={nameId}"
-                          f" ({NameID(nameId).name})")
-    if passed:
-        yield PASS, "Font contains values for all mandatory name table entries."
-
-
-@check(
-    id = 'com.google.fonts/check/name/familyname',
-    conditions = ['gfnames'],
-    rationale = """
-        Check the font family name matches the expected family name. Also ensure that the family name complies with the RIBBI (Regular, Italic, Bold, Bold Italic) naming schema. Info on this schema can be found here https://docs.microsoft.com/en-us/typography/opentype/spec/name#name-ids
-    """,
-    proposal = 'legacy:check/157'
-)
-def com_google_fonts_check_name_familyname(ttFont, gfnames):
-    """Check name table: FONT_FAMILY_NAME entries."""
-    from fontbakery.utils import name_entry_id
-    failed = False
-    for name in ttFont['name'].names:
-        if name.nameID == NameID.FONT_FAMILY_NAME:
-
-            if name.platformID == PlatformID.MACINTOSH:
-                expected_value = gfnames.macFamily
-
-            elif name.platformID == PlatformID.WINDOWS:
-                expected_value = gfnames.family
-            else:
-                failed = True
-                yield FAIL,\
-                      Message("lacks-name",
-                              f"Font should not have a "
-                              f"{name_entry_id(name)} entry!")
-                continue
-
-            string = name.toUnicode()
-            if string != expected_value:
-                failed = True
-                yield FAIL,\
-                      Message("mismatch",
-                              f'Entry {name_entry_id(name)} on the "name" table:'
-                              f' Expected "{expected_value}"'
-                              f' but got "{string}".')
-    if not failed:
-        yield PASS,\
-              Message("ok",
-                      "FONT_FAMILY_NAME entries are all good.")
-
-
-@check(
-    id = 'com.google.fonts/check/name/subfamilyname',
-    conditions = ['gfnames'],
-    proposal = 'legacy:check/158'
-)
-def com_google_fonts_check_name_subfamilyname(ttFont, gfnames):
-    """Check name table: FONT_SUBFAMILY_NAME entries."""
-    failed = False
-    nametable = ttFont['name']
-    win_name = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
-                                 PlatformID.WINDOWS,
-                                 WindowsEncodingID.UNICODE_BMP,
-                                 WindowsLanguageID.ENGLISH_USA)
-    mac_name = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
-                                 PlatformID.MACINTOSH,
-                                 MacintoshEncodingID.ROMAN,
-                                 MacintoshLanguageID.ENGLISH)
-
-    if mac_name and mac_name.toUnicode() != gfnames.macSubFamily:
-        failed = True
-        yield FAIL,\
-              Message("bad-familyname",
-                      f'SUBFAMILY_NAME for Mac "{mac_name.toUnicode()}"'
-                      f' must be "{gfnames.macSubFamily}"')
-    if win_name.toUnicode() != gfnames.subFamily:
-        failed = True
-        yield FAIL,\
-              Message("bad-familyname",
-                      f'SUBFAMILY_NAME for Win "{win_name.toUnicode()}"'
-                      f' must be "{gfnames.subFamily}"')
-    if not failed:
-        yield PASS, "FONT_SUBFAMILY_NAME entries are all good."
-
-
-@check(
-    id = 'com.google.fonts/check/name/fullfontname',
-    rationale = """
-        Requirements for the FULL_FONT_NAME entries in the 'name' table.
-    """,
-    conditions = ['gfnames'],
-    proposal = 'legacy:check/159'
-)
-def com_google_fonts_check_name_fullfontname(ttFont, gfnames):
-    """Check name table: FULL_FONT_NAME entries."""
-    from fontbakery.utils import name_entry_id
-    failed = False
-    for name in ttFont['name'].names:
-        if name.nameID == NameID.FULL_FONT_NAME:
-            expected_value = gfnames.fullName
-            string = name.toUnicode()
-            if string != expected_value:
-                failed = True
-                # special case
-                # see https://github.com/googlefonts/fontbakery/issues/1436
-                if string == expected_value.replace("Regular", "").strip():
-                    yield WARN,\
-                          Message("lacks-regular",
-                                  f'{name_entry_id(name)}\n'
-                                  f'Got "{string}" which lacks "Regular",'
-                                  f' but it is probably OK in this case.')
-                else:
-                    yield FAIL,\
-                          Message("bad-entry",
-                                  f'{name_entry_id(name)}\n'
-                                  f'Expected: "{expected_value}"\n'
-                                  f'But got:  "{string}"')
-    if not failed:
-        yield PASS, "FULL_FONT_NAME entries are all good."
-
-
-@check(
-    id = 'com.google.fonts/check/name/postscriptname',
-    rationale = """
-        Requirements for the POSTSCRIPT_NAME entries in the 'name' table.
-    """,
-    conditions = ['gfnames'],
-    proposal = 'legacy:check/160'
-)
-def com_google_fonts_check_name_postscriptname(ttFont, gfnames):
-    """Check name table: POSTSCRIPT_NAME entries."""
-    from fontbakery.utils import name_entry_id
-
-    failed = False
-    expected = gfnames.postscript
-    for name in ttFont['name'].names:
-        if name.nameID == NameID.POSTSCRIPT_NAME:
-
-            string = name.toUnicode()
-            if string != expected:
-                failed = True
-                yield FAIL,\
-                      Message("bad-entry",
-                              f'Entry {name_entry_id(name)} on the "name" table:'
-                              f' Expected "{expected}"'
-                              f' but got "{string}".')
-    if not failed:
-        yield PASS, "POSTCRIPT_NAME entries are all good."
-
-
-@check(
-    id = 'com.google.fonts/check/name/typographicfamilyname',
-    rationale = """
-        Requirements for the TYPOGRAPHIC_FAMILY_NAME entries in the 'name' table.
-    """,
-    conditions = ['gfnames'],
-    proposal = 'legacy:check/161'
-)
-def com_google_fonts_check_name_typographicfamilyname(ttFont, gfnames):
-    """Check name table: TYPOGRAPHIC_FAMILY_NAME entries."""
-    from fontbakery.utils import name_entry_id
-
-    failed = False
-    if gfnames.isRibbi:
-        for name in ttFont['name'].names:
-            if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
-                failed = True
-                yield FAIL,\
-                      Message("ribbi",
-                              (f'Font style is "{gfnames.subFamily}" and, for that reason,'
-                               f' it is not expected to have a '
-                               f'{name_entry_id(name)} entry!'))
-    else:
-        expected_value = gfnames.typoFamily
-        has_entry = False
-        for name in ttFont['name'].names:
-            if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
-                string = name.string.decode(name.getEncoding()).strip()
-                if string == expected_value:
-                    has_entry = True
-                else:
-                    failed = True
-                    yield FAIL,\
-                          Message("non-ribbi-bad-value",
-                                  (f'{name_entry_id(name)}\n'
-                                   f'Expected: "{expected_value}"\n'
-                                   f'But got:  "{string}".'))
-        if not failed and not has_entry:
-            failed = True
-            yield FAIL,\
-                  Message("non-ribbi-lacks-entry",
-                          ("Non-RIBBI fonts must have a TYPOGRAPHIC_FAMILY_NAME"
-                           " entry on the name table."))
-    if not failed:
-        yield PASS, "TYPOGRAPHIC_FAMILY_NAME entries are all good."
-
-
-@check(
-    id = 'com.google.fonts/check/name/typographicsubfamilyname',
-    rationale = """
-        Requirements for the TYPOGRAPHIC_SUBFAMILY_NAME entries in the 'name' table.
-    """,
-    conditions=['gfnames'],
-    proposal = 'legacy:check/162'
-)
-def com_google_fonts_check_name_typographicsubfamilyname(ttFont, gfnames):
-    """Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries."""
-    failed = False
-    nametable = ttFont['name']
-    win_name = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
-                                 PlatformID.WINDOWS,
-                                 WindowsEncodingID.UNICODE_BMP,
-                                 WindowsLanguageID.ENGLISH_USA)
-    mac_name = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
-                                 PlatformID.MACINTOSH,
-                                 MacintoshEncodingID.ROMAN,
-                                 MacintoshLanguageID.ENGLISH)
-
-    if all([win_name, mac_name]):
-        if win_name.toUnicode() != mac_name.toUnicode():
-            failed = True
-            yield FAIL,\
-                  Message("mismatch",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME entry'
-                          f' for Win "{win_name.toUnicode()}"'
-                          f' and Mac "{mac_name.toUnicode()}" do not match.')
-
-    if gfnames.isRibbi:
-        if win_name and win_name.toUnicode() != gfnames.subFamily:
-            failed = True
-            yield FAIL,\
-                  Message("bad-win-name",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME entry'
-                          f' for Win "{win_name.toUnicode()}"'
-                          f' must be "{gfnames.subFamily}".'
-                          f' Please note, since the font style is RIBBI,'
-                          f' this record can be safely deleted.')
-
-        if mac_name and mac_name.toUnicode() != gfnames.typoSubFamily:
-            failed = True
-            yield FAIL,\
-                  Message("bad-mac-name",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME entry'
-                          f' for Mac "{mac_name.toUnicode()}"'
-                          f' must be "{gfnames.typoSubFamily}".'
-                          f' Please note, since the font style is RIBBI,'
-                          f' this record can be safely deleted.')
-
-    if gfnames.typoSubFamily:
-        if not win_name:
-            failed = True
-            yield FAIL,\
-                  Message("missing-typo-win",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME for Win is missing.'
-                          f' It must be "{gfnames.typoSubFamily}".')
-
-        elif win_name.toUnicode() != gfnames.typoSubFamily:
-            failed = True
-            yield FAIL,\
-                  Message("bad-typo-win",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME for Win'
-                          f' "{win_name.toUnicode()}" is incorrect.'
-                          f' It must be "{gfnames.typoSubFamily}".')
-
-        if mac_name and mac_name.toUnicode() != gfnames.typoSubFamily:
-            failed = True
-            yield FAIL,\
-                  Message("bad-typo-mac",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME for Mac'
-                          f' "{mac_name.toUnicode()}" is incorrect.'
-                          f' It must be "{gfnames.typoSubFamily}".'
-                          f' Please note, this record can be safely deleted.')
-
-    if not failed:
-        yield PASS, "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good."
 
 
 @check(
