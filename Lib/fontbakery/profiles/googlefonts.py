@@ -168,6 +168,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/os2/use_typo_metrics',
     'com.google.fonts/check/meta/script_lang_tags',
     'com.google.fonts/check/no_debugging_tables',
+    'com.google.fonts/check/name_table',
+    'com.google.fonts/check/style_attribs',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -2320,7 +2322,7 @@ def com_google_fonts_check_metadata_filenames(fonts, family_directory, family_me
             passed = False
             yield FAIL,\
                   Message("file-not-found",
-                          f'Filename "{font_metadata.filename}" is listed on'
+                          f'Filename "{font_metadata.filename}" is listed in'
                           f' METADATA.pb but an actual font file'
                           f' with that name was not found.')
         metadata_filenames.append(font_metadata.filename)
@@ -2331,7 +2333,7 @@ def com_google_fonts_check_metadata_filenames(fonts, family_directory, family_me
             yield FAIL,\
                   Message("file-not-declared",
                           f'Filename "{font}" is not declared'
-                          f' on METADATA.pb as a font.filename entry.')
+                          f' in METADATA.pb as a font.filename entry.')
     if passed:
         yield PASS, "Filenames in METADATA.pb look good."
 
@@ -3144,7 +3146,7 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, gfnames):
     id = 'com.google.fonts/check/name/familyname',
     conditions = ['gfnames'],
     rationale = """
-        Checks that the family name infered from the font filename matches the string at nameID 1 (NAMEID_FONT_FAMILY_NAME) if it conforms to RIBBI and otherwise checks that nameID 1 is the family name + the style name.
+        Check the font family name matches the expected family name. Also ensure that the family name complies with the RIBBI (Regular, Italic, Bold, Bold Italic) naming schema. Info on this schema can be found here https://docs.microsoft.com/en-us/typography/opentype/spec/name#name-ids
     """,
     proposal = 'legacy:check/157'
 )
@@ -5482,6 +5484,105 @@ def com_google_fonts_check_no_debugging_tables(ttFont):
               Message("has-debugging-tables",
                       f"This font file contains the following"
                       f" pre-production tables: {tables_list}")
+    else:
+        yield PASS, "OK"
+
+
+@check(
+    id = "com.google.fonts/check/name_table",
+    rationale = """
+        Wip refactor of existing name table checks
+    """,
+    conditions = ['gfnames'],
+)
+def com_google_fonts_check_name_table(ttFont, gfnames):
+    """Check name table records are correct"""
+    nametbl = ttFont['name']
+    family_name = nametbl.getName(1, 3, 1, 0x409).toUnicode()
+    subfamily_name = nametbl.getName(2, 3, 1, 0x409).toUnicode()
+    full_name = nametbl.getName(4, 3, 1, 0x409).toUnicode()
+    postscript_name = nametbl.getName(6, 3, 1, 0x409).toUnicode()
+    typo_family_name = nametbl.getName(16, 3, 1, 0x409)
+    if not typo_family_name:
+        typo_family_name = None
+    else:
+        typo_family_name = typo_family_name.toUnicode()
+    typo_subfamily_name = nametbl.getName(17, 3, 1, 0x409)
+    if not typo_subfamily_name:
+        typo_subfamily_name = None
+    else:
+        typo_subfamily_name = typo_subfamily_name.toUnicode()
+    # TODO check mac names if they exist 
+    tbl_map = [
+        ("Family Name", family_name, gfnames.family),
+        ("SubFamily Name", subfamily_name, gfnames.subFamily),
+        ("PostScript Name", postscript_name, gfnames.postscript),
+        ("Full Name", full_name, gfnames.fullName),
+        ("Typographic Family Name", typo_family_name, gfnames.typoFamily),
+        ("Typographic SubFamily Name", typo_subfamily_name, gfnames.typoSubFamily),
+    ]
+    table = [
+        "Name Table",
+        "",
+        "| Name | Current | Expected |",
+        "| --- | --- | --- |"
+    ]
+    failed = False
+    for name, current, expected in tbl_map:
+        if current != expected:
+            failed = True
+            table.append(f"| {name} | {current} | {expected} |")
+    table.append("")
+
+    if failed:
+        yield FAIL,\
+          Message("incorrect-records",
+                  "\n".join(table)
+          )
+    else:
+        yield PASS, "OK"
+
+
+# macStyle, fsSelection, usWeightClass, usWidthClass
+@check(
+    id = "com.google.fonts/check/style_attribs",
+    rationale = """
+        Wip refactor of style attributes
+    """,
+    conditions = ['gfnames'],
+)
+def com_google_fonts_check_style_attribs(ttFont, gfnames):
+    """Check style attributes are correct"""
+    os2 = ttFont['OS/2']
+    head = ttFont['head']
+
+    fs_selection = os2.fsSelection
+    mac_style = head.macStyle
+    weight_class = os2.usWeightClass
+    width_class = os2.usWidthClass
+    tbl_map = [
+        ("OS/2.fsSelection", fs_selection, gfnames.fsSelection),
+        ("head.macStyle", mac_style, gfnames.macStyle),
+        ("OS/2.weightClass", weight_class, gfnames.usWeightClass),
+        ("OS/2.widthClass", width_class, gfnames.usWidthClass)
+    ]
+    table = [
+        "Style Attributes",
+        "",
+        "| Name | Current | Expected |",
+        "| --- | --- | --- |"
+    ]
+    failed = False
+    for name, current, expected in tbl_map:
+        if current != expected:
+            failed = True
+            table.append(f"| {name} | {current} | {expected} |")
+    table.append("")
+    if failed:
+        yield FAIL,\
+          Message("incorrect-attributes",
+                  "\n".join(table)
+          )
     else:
         yield PASS, "OK"
 
