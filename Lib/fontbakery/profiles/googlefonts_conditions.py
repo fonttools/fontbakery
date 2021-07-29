@@ -275,7 +275,7 @@ def license(license_path):
 
 @condition
 def is_ofl(license):
-    return "OFL" in license
+    return license and "OFL" in license
 
 
 @condition
