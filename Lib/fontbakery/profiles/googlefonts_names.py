@@ -10,7 +10,7 @@ from fontTools.ttLib import TTFont
 import logging
 
 
-__all__ = ["GFNames"]
+__all__ = ["GFNameData"]
 
 
 log = logging.Logger(__name__)
