@@ -200,43 +200,12 @@ def com_google_fonts_check_canonical_filename(ttFont, gfnames):
     failed = False
     current_filename = os.path.basename(ttFont.reader.file.name)
     expected_filename = gfnames.filename
-    if "_" in os.path.basename(current_filename):
-        failed = True
+    if current_filename != expected_filename:
         yield FAIL,\
-              Message("invalid-char",
-                      f'font filename "{current_filename}" is invalid.'
-                      f' It must not contain underscore characters!')
-        return
-
-    if is_variable_font(ttFont):
-        if suffix(current_filename) in STATIC_STYLE_NAMES:
-            failed = True
-            yield FAIL,\
-                  Message("varfont-with-static-filename",
-                          "This is a variable font, but it is using"
-                          " a naming scheme typical of a static font.")
-
-        if current_filename != expected_filename:
-            failed = True
-            yield FAIL,\
-                  Message("bad-varfont-filename",
-                          f"The file '{current_filename}' must be renamed"
-                          f" to '{expected_filename}' according to the"
-                          f" Google Fonts naming policy for variable fonts.")
-
+              Message("bad-filename",
+                      f"filename {current_filename} should be {expected_filename}")
     else:
-        if not canonical_stylename(current_filename):
-            failed = True
-            style_names = '", "'.join(STATIC_STYLE_NAMES)
-            yield FAIL,\
-                  Message("bad-static-filename",
-                          f'Style name used in "{font}" is not canonical.'
-                          f' You should rebuild the font using'
-                          f' any of the following'
-                          f' style names: "{style_names}".')
-
-    if not failed:
-        yield PASS, f"{current_filename} is named canonically."
+        yield PASS, f"{current_filename} is correct."
 
 
 @check(
@@ -5093,7 +5062,6 @@ def com_google_fonts_check_name_table(ttFont, gfnames):
         yield PASS, "OK"
 
 
-# macStyle, fsSelection, usWeightClass, usWidthClass
 @check(
     id = "com.google.fonts/check/style_attribs",
     rationale = """
