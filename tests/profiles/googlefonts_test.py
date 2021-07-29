@@ -2381,8 +2381,6 @@ def test_check_name_mandatory_entries():
                                FAIL, 'missing-entry',
                                f'with a missing madatory (RIBBI) name entry (id={mandatory})...')
 
-    import pdb
-    pdb.set_trace()
     # === And now a non-RIBBI font: ===
     # Our reference Merriweather Black is known to be good
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Black.ttf"))
@@ -3892,7 +3890,29 @@ def test_check_meta_script_lang_tags():
 
     del ttFont["meta"]
     assert_results_contain(check(ttFont),
-                           WARN, 'lacks-meta-table')
+                 WARN, 'lacks-meta-table')
+
+
+@pytest.mark.parametrize(
+    "font_path",
+    # All fonts here have good names. We will break them during the test
+    # Static font family which utilises every possible static style
+    montserrat_fonts + \
+    # Static Condensed Sibling family
+    cabin_condensed_fonts
+)
+def test_check_name_table(font_path):
+    """Ensure font name tables are correct"""
+    from fontbakery.profiles.googlefonts_names import GFNameData
+    check = CheckTester(googlefonts_profile,
+                      "com.google.fonts/check/name_table")
+    ttFont = TTFont(font_path)
+    gfnames = GFNameData(ttFont)
+    assert_PASS(check(ttFont, {"gfnames": gfnames}))
+
+    ttFont['name'].setName("Bad name", 1, 3, 1, 0x409)
+    assert_results_contain(check(ttFont, {"gfnames": gfnames}), FAIL, "incorrect-records")
+    
 
 
 def test_check_no_debugging_tables():
