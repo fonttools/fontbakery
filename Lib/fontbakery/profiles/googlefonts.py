@@ -197,7 +197,6 @@ def com_google_fonts_check_canonical_filename(ttFont, gfnames):
     from fontbakery.constants import (STATIC_STYLE_NAMES,
                                       MacStyle)
 
-    failed = False
     current_filename = os.path.basename(ttFont.reader.file.name)
     expected_filename = gfnames.filename
     if current_filename != expected_filename:
@@ -5031,7 +5030,6 @@ def com_google_fonts_check_name_table(ttFont, gfnames):
         typo_subfamily_name = None
     else:
         typo_subfamily_name = typo_subfamily_name.toUnicode()
-    # TODO check mac names if they exist 
     tbl_map = [
         ("Family Name", family_name, gfnames.family),
         ("SubFamily Name", subfamily_name, gfnames.subFamily),
@@ -5055,8 +5053,8 @@ def com_google_fonts_check_name_table(ttFont, gfnames):
 
     if failed:
         yield FAIL,\
-          Message("incorrect-records",
-                  "\n".join(table)
+              Message("incorrect-records",
+                      "\n".join(table)
           )
     else:
         yield PASS, "OK"
@@ -5098,9 +5096,7 @@ def com_google_fonts_check_style_attribs(ttFont, gfnames):
     table.append("")
     if failed:
         yield FAIL,\
-          Message("incorrect-attributes",
-                  "\n".join(table)
-          )
+              Message("incorrect-attributes", "\n".join(table))
     else:
         yield PASS, "OK"
 
