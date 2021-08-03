@@ -161,6 +161,14 @@ def family_metadata(metadata_file):
           return None
 
 @condition
+def expected_metadata(family_directory):
+    from gftools.addfont import MakeMetadata
+    if family_directory:
+        return MakeMetadata(family_directory, is_new=False)
+    return None
+
+
+@condition
 def registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
     from bs4 import BeautifulSoup

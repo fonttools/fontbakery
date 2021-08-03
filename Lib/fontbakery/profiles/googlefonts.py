@@ -18,6 +18,7 @@ profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
 
 METADATA_CHECKS = [
+    'com.google.fonts/check/metadata/matches_expected',
     'com.google.fonts/check/metadata/parses',
     'com.google.fonts/check/metadata/unknown_designer',
     'com.google.fonts/check/metadata/multiple_designers',
@@ -1714,6 +1715,24 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
     else:
         yield PASS, ("None of the ASCII-only NAME table entries"
                      " contain non-ASCII characteres.")
+
+
+@check(
+    id = 'com.google.fonts/check/metadata/matches_expected',
+    conditions = ['family_metadata', "expected_metadata"],
+)
+def com_google_fonts_check_metadata_matches_expected(family_metadata, expected_metadata):
+    """Check that the metadata file matches the expected metadata file"""
+    import difflib
+    current = str(family_metadata).splitlines(keepends=True)
+    expected = str(expected_metadata).splitlines(keepends=True)
+
+    if current != expected:
+        differ = difflib.Differ()
+        results = list(differ.compare(current, expected))
+        yield FAIL, Message("metadata-mismatch", "\n".join(results))
+    else:
+        yield PASS, "Metadata is ok"
 
 
 @check(
