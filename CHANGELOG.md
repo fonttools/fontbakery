@@ -6,8 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix crash on is_OFL condition when a font project lacks a license. (issue #3393)
 
 ### Changes to existing checks
+#### OpenType Profile
+  - **[com.google.fonts/check/dsig]:** We now recommend (with a WARN) completely removing the 'DSIG' table. We may make this a FAIL by November 2023 when the EOL date for MS Office 2013 is reached. (issue #3398)
 #### Universal Profile
-  - **[com.google.fonts/check/required_tables]:** remove 'DSIG' from list of optional tables (issue #3398)
+  - **[com.google.fonts/check/required_tables]:** remove 'DSIG' from list of optional tables and improve wording on the check rationale. (issue #3398)
 
 
 ## 0.8.0 (2021-Jul-21)
