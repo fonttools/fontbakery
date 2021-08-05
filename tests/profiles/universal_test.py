@@ -518,9 +518,8 @@ def test_check_required_tables():
     optional_tables = ["cvt ", "fpgm", "loca", "prep",
                        "VORG", "EBDT", "EBLC", "EBSC",
                        "BASE", "GPOS", "GSUB", "JSTF",
-                       "DSIG", "gasp", "hdmx", "kern",
-                       "LTSH", "PCLT", "VDMX", "vhea",
-                       "vmtx"]
+                       "gasp", "hdmx", "kern", "LTSH",
+                       "PCLT", "VDMX", "vhea", "vmtx"]
     # Our reference Mada Regular font is good here
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
@@ -568,7 +567,7 @@ def test_check_required_tables():
         # and ensure that the second to last logged message is an
         # INFO status informing the user about it:
         assert_results_contain(check(ttFont),
-                               INFO, "required-tables",
+                               INFO, "optional-tables",
                                f'with optional table {required} ...')
         # remove the one we've just inserted before trying the next one:
         del ttFont.reader.tables[optional]

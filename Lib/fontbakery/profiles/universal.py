@@ -575,7 +575,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
     id='com.google.fonts/check/required_tables',
     conditions = ['is_ttf'],
     rationale = """
-        Depending on the typeface and coverage of a font, certain tables are recommended for optimum quality. For example, the performance of a non-linear font is improved if the VDMX, LTSH, and hdmx tables are present. Non-monospaced Latin fonts should have a kern table. A gasp table is necessary if a designer wants to influence the sizes at which grayscaling is used under Windows. A DSIG table containing a digital signature helps ensure the integrity of the font file. Etc.
+        Depending on the typeface and coverage of a font, certain tables are recommended for optimum quality. For example, the performance of a non-linear font is improved if the VDMX, LTSH, and hdmx tables are present. Non-monospaced Latin fonts should have a kern table. A gasp table is necessary if a designer wants to influence the sizes at which grayscaling is used under Windows. Etc.
     """,
     # FIXME:
     # The rationale description above comes from FontValidator, check W0022.
@@ -593,9 +593,8 @@ def com_google_fonts_check_required_tables(ttFont):
     OPTIONAL_TABLES = ["cvt ", "fpgm", "loca", "prep",
                        "VORG", "EBDT", "EBLC", "EBSC",
                        "BASE", "GPOS", "GSUB", "JSTF",
-                       "DSIG", "gasp", "hdmx", "LTSH",
-                       "PCLT", "VDMX", "vhea", "vmtx",
-                       "kern"]
+                       "gasp", "hdmx", "LTSH", "PCLT",
+                       "VDMX", "vhea", "vmtx", "kern"]
     # See https://github.com/googlefonts/fontbakery/issues/617
     #
     # We should collect the rationale behind the need for each of the
@@ -609,10 +608,9 @@ def com_google_fonts_check_required_tables(ttFont):
     optional_tables = [opt for opt in OPTIONAL_TABLES if opt in ttFont.keys()]
     if optional_tables:
         yield INFO, \
-              Message("required-tables",
+              Message("optional-tables",
                       f"This font contains the following optional tables:\n"
-                      f"{bullet_list(optional_tables)}"
-                     )
+                      f"{bullet_list(optional_tables)}")
 
     if is_variable_font(ttFont):
         # According to https://github.com/googlefonts/fontbakery/issues/1671

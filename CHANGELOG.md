@@ -5,6 +5,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bug fixes
   - Fix crash on is_OFL condition when a font project lacks a license. (issue #3393)
 
+### Changes to existing checks
+#### Universal Profile
+  - **[com.google.fonts/check/required_tables]:** remove 'DSIG' from list of optional tables (issue #3398)
+
 
 ## 0.8.0 (2021-Jul-21)
 ### New Reporter
