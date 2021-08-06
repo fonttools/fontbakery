@@ -1,5 +1,3 @@
-import io
-
 from fontbakery.checkrunner import WARN
 from fontbakery.codetesting import (assert_results_contain,
                                     CheckTester,
@@ -18,7 +16,7 @@ def test_check_outline_alignment_miss():
     assert_results_contain(results,
                            WARN, 'found-misalignments')
     messages = "".join([m[1].message for m in results])
-    assert "A: X=3.0,Y=-2.0 (should be at baseline 0?)" in messages
+    assert "A (U+0041): X=3.0,Y=-2.0 (should be at baseline 0?)" in messages
 
     # TODO: PASS
 
@@ -33,7 +31,7 @@ def test_check_outline_short_segments():
     assert_results_contain(results,
                            WARN, 'found-short-segments')
     messages = "".join([m[1].message for m in results])
-    assert "D contains a short segment L<<180.0,68.0>--<173.0,71.0>>" in messages
+    assert "D (U+0044) contains a short segment L<<180.0,68.0>--<173.0,71.0>>" in messages
 
     # TODO: PASS
 
@@ -48,11 +46,11 @@ def test_check_outline_colinear_vectors():
     assert_results_contain(results,
                            WARN, 'found-colinear-vectors')
     messages = "".join([m[1].message for m in results])
-    assert "A" not in messages
-    assert "B" not in messages
-    assert "C" in messages
-    assert "E" in messages
-    assert ".notdef" in messages
+    assert "A (U+0041)" not in messages
+    assert "B (U+0042)" not in messages
+    assert "C (U+0043)" in messages
+    assert "E (U+0045)" in messages
+    assert ".notdef" not in messages
 
     # TODO: PASS
 
@@ -67,7 +65,7 @@ def test_check_outline_jaggy_segments():
     assert_results_contain(results,
                            WARN, 'found-jaggy-segments')
     messages = "".join([m[1].message for m in results])
-    assert "* E" in messages
+    assert "* E (U+0045)" in messages
 
     filename = TEST_FILE("familysans/FamilySans-Regular.ttf")
     assert_PASS(check(filename))
@@ -86,7 +84,7 @@ def test_check_outline_semi_vertical():
     assert_results_contain(results,
                            WARN, 'found-semi-vertical')
     messages = "".join([m[1].message for m in results])
-    assert "* B" in messages
-    assert "* E" not in messages
+    assert "* B (U+0042)" in messages
+    assert "* E (U+0045)" not in messages
 
     # TODO: PASS
