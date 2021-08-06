@@ -37,7 +37,7 @@ def _get_mark_class_glyphnames(ttFont):
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2877'
 )
 def com_google_fonts_check_gdef_spacing_marks(ttFont):
-    """Check mark characters are in GDEF mark glyph class)"""
+    """Check glyphs in mark glyph class are non-spacing."""
     from fontbakery.utils import pretty_print_list
 
     if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
@@ -46,9 +46,16 @@ def com_google_fonts_check_gdef_spacing_marks(ttFont):
                               if width > 0}
         mark_class_glyphnames = _get_mark_class_glyphnames(ttFont)
         spacing_glyphnames_in_mark_glyph_class = spacing_glyphnames & mark_class_glyphnames
-        if spacing_glyphnames_in_mark_glyph_class :
+        if spacing_glyphnames_in_mark_glyph_class:
+            cmap = ttFont['cmap'].getBestCmap()
+            glyphs = [f"{glyphname} (U+{codepoint:04X})"
+                      for codepoint, glyphname in cmap.items()
+                      if glyphname in spacing_glyphnames_in_mark_glyph_class]
+            glyphs += [f"{glyphname} (unencoded)"
+                       for glyphname in spacing_glyphnames_in_mark_glyph_class
+                       if glyphname not in cmap.values()]
             formatted_list = "\t " +\
-                             pretty_print_list(sorted(spacing_glyphnames_in_mark_glyph_class),
+                             pretty_print_list(sorted(glyphs),
                                                shorten=10,
                                                sep=", ")
             yield WARN,\
@@ -72,7 +79,7 @@ def com_google_fonts_check_gdef_spacing_marks(ttFont):
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2877'
 )
 def com_google_fonts_check_gdef_mark_chars(ttFont):
-    """Check mark characters are in GDEF mark glyph class"""
+    """Check mark characters are in GDEF mark glyph class."""
     from fontbakery.utils import pretty_print_list
 
     if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
@@ -86,8 +93,8 @@ def com_google_fonts_check_gdef_mark_chars(ttFont):
 
         if mark_chars_not_in_mark_class:
             formatted_marks = "\t " +\
-                pretty_print_list(sorted("U+%04X" % c for c in
-                                         mark_chars_not_in_mark_class),
+                pretty_print_list(sorted(f"{cmap[c]} (U+{c:04X})"
+                                         for c in mark_chars_not_in_mark_class),
                                   shorten=None,
                                   sep=", ")
             yield WARN,\
@@ -112,7 +119,7 @@ def com_google_fonts_check_gdef_mark_chars(ttFont):
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2877'
 )
 def com_google_fonts_check_gdef_non_mark_chars(ttFont):
-    """Check GDEF mark glyph class doesn't have characters that are not marks)"""
+    """Check GDEF mark glyph class doesn't have characters that are not marks."""
     from fontbakery.utils import pretty_print_list
 
     if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
