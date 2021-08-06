@@ -20,7 +20,9 @@ FALSE_POSITIVE_CUTOFF = 100  # More than this and we don't make a report
 
 @condition
 def outlines_dict(ttFont):
-    return {g: BezierPath.fromFonttoolsGlyph(ttFont, g) for g in ttFont.getGlyphOrder()}
+    cmap = ttFont['cmap'].getBestCmap()
+    return {(codepoint, glyphname): BezierPath.fromFonttoolsGlyph(ttFont, glyphname)
+            for codepoint, glyphname in cmap.items()}
 
 
 def close_but_not_on(yExpected, yTrue, tolerance):
@@ -51,7 +53,8 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
         "descender": ttFont["OS/2"].sTypoDescender,
     }
     warnings = []
-    for glyphname, outlines in outlines_dict.items():
+    for glyph, outlines in outlines_dict.items():
+        codepoint, glyphname = glyph
         for p in outlines:
             for node in p.asNodelist():
                 if node.type == "offcurve":
@@ -63,7 +66,8 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
                     ):
                         continue
                     if close_but_not_on(yExpected, node.y, ALIGNMENT_MISS_EPSILON):
-                        warnings.append(f"{glyphname}: X={node.x},Y={node.y}"
+                        warnings.append(f"{glyphname} (U+{codepoint:04X}):"
+                                        f" X={node.x},Y={node.y}"
                                         f" (should be at {line} {yExpected}?)")
         if len(warnings) > FALSE_POSITIVE_CUTOFF:
             # Let's not waste time.
@@ -96,7 +100,8 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
 def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
     """Are any segments inordinately short?"""
     warnings = []
-    for glyphname, outlines in outlines_dict.items():
+    for glyph, outlines in outlines_dict.items():
+        codepoint, glyphname = glyph
         for p in outlines:
             outline_length = p.length
             segments = p.asSegments()
@@ -105,12 +110,14 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
             prev_was_line = len(segments[-1]) == 2
             for seg in p.asSegments():
                 if math.isclose(seg.length, 0):  # That's definitely wrong
-                    warnings.append(f"{glyphname} contains a short segment {seg}")
+                    warnings.append(f"{glyphname} (U+{codepoint:04X})"
+                                    f" contains a short segment {seg}")
                 elif (
                     seg.length < SHORT_PATH_ABSOLUTE_EPSILON
                     or seg.length < SHORT_PATH_EPSILON * outline_length
                 ) and (prev_was_line or len(seg) > 2):
-                    warnings.append(f"{glyphname} contains a short segment {seg}")
+                    warnings.append(f"{glyphname} (U+{codepoint:04X})"
+                                    f" contains a short segment {seg}")
                 prev_was_line = len(seg) == 2
         if len(warnings) > FALSE_POSITIVE_CUTOFF:
             yield PASS, ("So many short segments were found"
@@ -141,7 +148,8 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
 def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
     """Do any segments have colinear vectors?"""
     warnings = []
-    for glyphname, outlines in outlines_dict.items():
+    for glyph, outlines in outlines_dict.items():
+        codepoint, glyphname = glyph
         for p in outlines:
             segments = p.asSegments()
             if not segments:
@@ -154,7 +162,8 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
                         abs(prev.tangentAtTime(0).angle - this.tangentAtTime(0).angle)
                         < COLINEAR_EPSILON
                     ):
-                        warnings.append(f"{glyphname}: {prev} -> {this}")
+                        warnings.append(f"{glyphname} (U+{codepoint:04X}):"
+                                        f" {prev} -> {this}")
         if len(warnings) > FALSE_POSITIVE_CUTOFF:
             yield PASS, ("So many colinear vectors were found"
                          " that this was probably by design.")
@@ -182,7 +191,8 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
 def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
     """Do outlines contain any jaggy segments?"""
     warnings = []
-    for glyphname, outlines in outlines_dict.items():
+    for glyph, outlines in outlines_dict.items():
+        codepoint, glyphname = glyph
         for p in outlines:
             segments = p.asSegments()
             if not segments:
@@ -202,7 +212,7 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
                 jag_angle = math.acos(angle)
                 if abs(jag_angle) > JAG_ANGLE or jag_angle == 0:
                     continue
-                warnings.append(f"{glyphname}:"
+                warnings.append(f"{glyphname} (U+{codepoint:04X}):"
                                 f" {prev}/{this} = {math.degrees(jag_angle)}")
 
     if warnings:
@@ -230,7 +240,8 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
 def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
     """Do outlines contain any semi-vertical or semi-horizontal lines?"""
     warnings = []
-    for glyphname, outlines in outlines_dict.items():
+    for glyph, outlines in outlines_dict.items():
+        codepoint, glyphname = glyph
         for p in outlines:
             segments = p.asSegments()
             if not segments:
@@ -241,7 +252,7 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
                 angle = math.degrees((s.end - s.start).angle)
                 for yExpected in [-180, -90, 0, 90, 180]:
                     if close_but_not_on(angle, yExpected, 0.5):
-                        warnings.append(f"{glyphname}: {s}")
+                        warnings.append(f"{glyphname} (U+{codepoint:04X}): {s}")
 
     if warnings:
         formatted_list = " * " + pretty_print_list(sorted(warnings), sep="\n * ")
