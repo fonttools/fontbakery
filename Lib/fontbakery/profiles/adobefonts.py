@@ -23,7 +23,6 @@ ADOBEFONTS_PROFILE_CHECKS = \
     ]
 
 OVERRIDDEN_CHECKS = [
-    'com.google.fonts/check/dsig',
     'com.google.fonts/check/whitespace_glyphs',
     'com.google.fonts/check/valid_glyphnames',
 ]
@@ -112,17 +111,6 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
 
 
 profile.auto_register(globals())
-
-
-profile.check_log_override(
-    # from `opentype` profile:
-    'com.google.fonts/check/dsig',
-    reason = 'For Adobe this issue is not as severe ' \
-           + 'as assessed in the original check.',
-    overrides = (
-        ('lacks-signature', WARN, KEEP_ORIGINAL_MESSAGE)
-    ,)
-)
 
 
 profile.check_log_override(

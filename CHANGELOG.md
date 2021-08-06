@@ -6,6 +6,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix crash on is_OFL condition when a font project lacks a license. (issue #3393)
 
 ### Changes to existing checks
+#### AdobeFonts Profile
+  - Remove **check/dsig** override, which was now outdated because the original check implementation was just changed to actually suggest (with a WARN) the removal of any DSIG tables. (issue #3407)
 #### OpenType Profile
   - **[com.google.fonts/check/dsig]:** We now recommend (with a WARN) completely removing the 'DSIG' table. We may make this a FAIL by November 2023 when the EOL date for MS Office 2013 is reached. (issue #3398)
   - **[com.google.fonts/check/gdef_mark_chars]:** Also print glyphnames on log messages (issue #3395)
