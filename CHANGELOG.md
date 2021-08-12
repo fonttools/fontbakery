@@ -1,7 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.8.1 (2021-Aug-??)
+## 0.8.2 (2021-Aug-??)
+  - ...
+
+
+## 0.8.1 (2021-Aug-11)
 ### Bug fixes
   - Fix crash on is_OFL condition when a font project lacks a license. (issue #3393)
 
