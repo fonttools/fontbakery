@@ -656,14 +656,14 @@ def com_google_fonts_check_unwanted_tables(ttFont):
             info = UNWANTED_TABLES[table]
             unwanted_tables_found.append(f'Table: {table}\nReason: {info}\n')
 
-    if len(unwanted_tables_found) > 0:
+    if unwanted_tables_found:
+        tables = "\n".join(unwanted_tables_found)
         yield FAIL, \
               Message("unwanted-tables",
-                     ("The following unwanted font tables were found:\n"
-                     "{}\n"
-                     "They can be removed with the gftools fix-unwanted-tables script."
-                     ).format("\n".join(unwanted_tables_found))
-                     )
+                      f"The following unwanted font tables were found:\n"
+                      f"{tables}\n"
+                      f"They can be removed with the fix-unwanted-tables"
+                      f" script provided by gftools.")
     else:
         yield PASS, "There are no unwanted tables."
 
