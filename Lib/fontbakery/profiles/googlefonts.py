@@ -5315,9 +5315,10 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
 
         if not info.link:
             passed = False
-            yield FAIL,\
+            yield WARN,\
                   Message("missing-link",
-                          f"Designer {designer} still does not have a webpage link on the catalog. Please provide one.")
+                          f"Designer {designer} does not have a webpage"
+                          f" link on the catalog. Please consider providing one.")
         elif 'plus.google.com' in info.link:
             passed = False
             yield FAIL,\

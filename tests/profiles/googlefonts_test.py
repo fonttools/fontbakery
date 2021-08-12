@@ -3720,6 +3720,7 @@ def test_check_metadata_escaped_strings():
     assert_results_contain(check(bad),
                            FAIL, "escaped-strings")
 
+
 def test_check_metadata_designer_profiles():
     """METADATA.pb: Designer is listed with the correct name on
        the Google Fonts catalog of designers?"""
@@ -3766,10 +3767,11 @@ def test_check_metadata_designer_profiles():
     # TODO: assert_PASS(check(font))
     #
     # TODO: FAIL, "mismatch"
-    # TODO: FAIL, "missing-link"
+    # TODO: WARN, "missing-link"
     # TODO: FAIL, "broken-link"
     # TODO: FAIL, "missing-avatar"
     # TODO: FAIL, "bad-avatar-filename"
+
 
 def test_check_mandatory_avar_table():
     """Ensure variable fonts include an avar table."""
