@@ -73,11 +73,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/7b718dbb070659d16ba17b89e51e416311a5b55c/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/3747fda36e6f0b2da509db056dd4b6b35ac23720/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="07/07/2021" />
+<meta name="ms.date" content="08/11/2021" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -88,11 +88,11 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2021-07-07 04:44 PM" />
+<meta name="updated_at" content="2021-08-11 08:53 PM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3671" />
+<meta name="word_count" content="3750" />
 
 
 	<meta name="scope" content="typography" />
@@ -102,7 +102,6 @@
 		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/e6141ec8.site-ltr.css ">
 
 	
-
 
 	<script id="msdocs-script">
 	var msDocs = {
@@ -146,14 +145,14 @@
 	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
-	<script src="/static/third-party/jsll/4.3.4/jsll-4.js"></script>
+	<script src="/static/third-party/jsll/4.3.4/jsll-4.js" integrity="sha384-uAdmrxddOIWVh6gPCSVnxMNy0bFWA6ksmsR52A7UqQvTPc/nVtxkivaKkP4FB/ma" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
 	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
 	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2c6911d0.index-polyfills.js"></script>
 
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/9c90920f.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/15bcf66b.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -316,7 +315,7 @@
 
 								<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 									<li>
-										<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-07-07T00:00:00.000Z" data-article-date-source="ms.date">07/07/2021</time>
+										<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-08-11T00:00:00.000Z" data-article-date-source="ms.date">08/11/2021</time>
 									</li>
 											<li class="readingTime">18 minutes to read</li>
 										<li class="contributors-holder">
@@ -403,6 +402,10 @@
 <td><a href="https://www.yayoyuyue.com/" data-linktype="external">yayoyuyue</a></td>
 </tr>
 <tr>
+<td>1995</td>
+<td><a href="https://sansagittarius.com/" data-linktype="external">San Sagittarius</a></td>
+</tr>
+<tr>
 <td>1ASC</td>
 <td><a href="http://www.monotypeimaging.com" data-linktype="external">Ascender Corporation</a></td>
 </tr>
@@ -455,6 +458,10 @@
 <td><a href="http://www.myfonts.com/person/tkachenko/sergiy/" data-linktype="external">4th february</a></td>
 </tr>
 <tr>
+<td>50FX</td>
+<td><a href="https://50fox.com/" data-linktype="external">50Fox Studio</a></td>
+</tr>
+<tr>
 <td>5PTS</td>
 <td><a href="http://www.fivepointstech.com/" data-linktype="external">Five Points Technology</a></td>
 </tr>
@@ -463,8 +470,16 @@
 <td><a href="http://www.72puntos.com" data-linktype="external">72 Puntos</a></td>
 </tr>
 <tr>
+<td>8686</td>
+<td><a href="https://svgidea.com/" data-linktype="external">SVG Idea</a></td>
+</tr>
+<tr>
 <td>918</td>
 <td>RavenType</td>
+</tr>
+<tr>
+<td>9999</td>
+<td><a href="https://cricutmarket.com/" data-linktype="external">Cricut Market</a></td>
 </tr>
 </table>
 <h2 id="a">A</h2>
@@ -516,6 +531,10 @@
 <tr>
 <td>ABCD</td>
 <td><a href="http://www.abcdinamo.com" data-linktype="external">Dinamo Typefoundry</a></td>
+</tr>
+<tr>
+<td>ABCX</td>
+<td><a href="https://abcetc.us/" data-linktype="external">ABC ETC</a></td>
 </tr>
 <tr>
 <td>ABEL</td>
@@ -715,6 +734,10 @@
 <td><a href="http://www.architext.com/" data-linktype="external">Architext</a></td>
 </tr>
 <tr>
+<td>ARFS</td>
+<td><a href="https://andrepeat.com/" data-linktype="external">And Repeat</a></td>
+</tr>
+<tr>
 <td>ARIN</td>
 <td><a href="http://www.aringtypeface.com" data-linktype="external">Aring Typeface AB</a></td>
 </tr>
@@ -779,6 +802,9 @@
 <td><a href="http://www.atf.com.au" data-linktype="external">Australian Type Foundry</a></td>
 </tr>
 <tr>
+<td>ATFM</td>
+<td>
+<tr>
 <td>ATFS</td>
 <td>Andrew Tyler's fonts</td>
 </tr>
@@ -815,6 +841,10 @@
 <td><a href="https://avantype.com/" data-linktype="external">AvanType Foundry</a></td>
 </tr>
 <tr>
+<td>AWSM</td>
+<td><a href="https://fontawesome.com/" data-linktype="external">Font Awesome</a></td>
+</tr>
+<tr>
 <td>AYRE</td>
 <td><a href="http://www.ayres.org.uk/" data-linktype="external">AYRES FONTS</a></td>
 </tr>
@@ -838,6 +868,10 @@
 <td>Bigelow & Holmes</td>
 </tr>
 <tr>
+<td>BAPS</td>
+<td><a href="https://www.bapspatil.com/" data-linktype="external">Baps Patil</a></td>
+</tr>
+<tr>
 <td>BARS</td>
 <td><a href="http://www.ciax.com/" data-linktype="external">CIA (BAR CODES) UK</a></td>
 </tr>
@@ -858,8 +892,16 @@
 <td>Bangla Borno Font Foundry.</td>
 </tr>
 <tr>
+<td>BBTF</td>
+<td><a href="https://buerobauer.com" data-linktype="external">buero bauer</a></td>
+</tr>
+<tr>
 <td>BBTY</td>
 <td><a href="https://www.brunobernard.com/" data-linktype="external">Bruno Bernard Typographie</a></td>
+</tr>
+<tr>
+<td>BCAI</td>
+<td><a href="https://boharatcairo.com/" data-linktype="external">Boharat Cairo</a></td>
 </tr>
 <tr>
 <td>BCHF</td>
@@ -872,6 +914,10 @@
 <tr>
 <td>BCP</td>
 <td><a href="https://www.expertlabels.co.uk" data-linktype="external">Expert Labels Ltd.</a></td>
+</tr>
+<tr>
+<td>BD71</td>
+<td>Bangladesh1971</td>
 </tr>
 <tr>
 <td>BDZ</td>
@@ -907,7 +953,7 @@
 </tr>
 <tr>
 <td>BHRT</td>
-<td>Biharat</td>
+<td><a href="https://boharatcairo.com/" data-linktype="external">Boharat Cairo</a></td>
 </tr>
 <tr>
 <td>BIJU</td>
@@ -956,6 +1002,10 @@
 <tr>
 <td>BLI</td>
 <td><a href="http://www.blissym.com/" data-linktype="external">Blissym Language Institute</a></td>
+</tr>
+<tr>
+<td>BLIF</td>
+<td>Bangla Lipi Font Foundry</td>
 </tr>
 <tr>
 <td>BLK</td>
@@ -1886,6 +1936,10 @@
 <td><a href="http://www.fontstore.com" data-linktype="external">Fontstore Pte Ltd</a></td>
 </tr>
 <tr>
+<td>FT</td>
+<td><a href="http://www.formulatype.com/" data-linktype="external">Formula Type</a></td>
+</tr>
+<tr>
 <td>FTDS</td>
 <td><a href="https://fontdasu.com/" data-linktype="external">FONTDASU</a></td>
 </tr>
@@ -1959,6 +2013,10 @@
 <tr>
 <td>GALA</td>
 <td>Galápagos Design Group, Inc.</td>
+</tr>
+<tr>
+<td>GALW</td>
+<td><a href="https://galway2020.ie/en/" data-linktype="external">Galway Cultural Development and Activity Company Limited by Guarantee</a></td>
 </tr>
 <tr>
 <td>GALO</td>
@@ -3003,6 +3061,10 @@
 <td><a href="https://www.MetaAppz.com" data-linktype="external">MetaAppz</a></td>
 </tr>
 <tr>
+<td>MEEM</td>
+<td>MEEM TYPE</td>
+</tr>
+<tr>
 <td>MEH</td>
 <td><a href="http://www.mehallo.com" data-linktype="external">Steve Mehallo</a></td>
 </tr>
@@ -3187,6 +3249,10 @@
 <td><a href="https://www.typogama.com/" data-linktype="external">Typogama</a></td>
 </tr>
 <tr>
+<td>MR</td>
+<td><a href="https://michaelrafailyk.com/" data-linktype="external">Michael Rafailyk</a></td>
+</tr>
+<tr>
 <td>MRF</td>
 <td><a href="http://www.macrhino.com" data-linktype="external">Mac Rhino Fonts</a></td>
 </tr>
@@ -3273,6 +3339,10 @@
 <tr>
 <td>MYFO</td>
 <td><a href="http://www.myfonts.com/" data-linktype="external">MyFonts.com</a></td>
+</tr>
+<tr>
+<td>MYNT</td>
+<td><a href="https://myntconnect.co/" data-linktype="external">Arif Rahman</a></td>
 </tr>
 </table>
 <h2 id="n">N</h2>
@@ -3941,6 +4011,10 @@
 <td>SALT</td>
 <td><a href="http://www.solonka.co" data-linktype="external">Solonka Type Foundry</a></td>
 </tr>
+</td>
+<td>SAMT</td>
+<td><a href="https://www.myfonts.com/search/samtype/" data-linktype="external">Samtype</a></td>
+</tr>
 <tr>
 <td>SAND</td>
 <td><a href="http://www.sandoll.co.kr/?lang=en_US" data-linktype="external">Sandoll</a></td>
@@ -3948,6 +4022,10 @@
 <tr>
 <td>SAPL</td>
 <td><a href="http://www.sansplomb.com" data-linktype="external">Fonderie sans plomb</a></td>
+</tr>
+<tr>
+<td>SATO</td>
+<td><a href="https://satori.pt/" data-linktype="external">Satori Type</a></td>
 </tr>
 <tr>
 <td>SATY</td>
@@ -4022,6 +4100,10 @@
 <td><a href="http://www.shamrockfonts.com" data-linktype="external">ShamFonts / Shamrock Int.</a></td>
 </tr>
 <tr>
+<td>SHAN</td>
+<td><a href="https://www.shanakoppel.com/hebrew-fonts" data-linktype="external">Fontsim by Shana Koppel</a></td>
+</tr>
+<tr>
 <td>SHFT</td>
 <td><a href="http://www.shiftype.com/" data-linktype="external">Shift</a></td>
 </tr>
@@ -4080,6 +4162,10 @@
 <tr>
 <td>Slab</td>
 <td><a href="http://www.schriftlabor.at/" data-linktype="external">Schriftlabor</a></td>
+</tr>
+<tr>
+<td>SLVK</td>
+<td>PTRSLVK Font Foundry</td>
 </tr>
 <tr>
 <td>SMC</td>
@@ -4603,6 +4689,10 @@
     <th width ="50">ID</th>
     <th width="400">Foundry Name</th>
     </tr>
+<tr>
+<td>VCTR</td>
+<td><a href="https://www.vectrotype.com/" data-linktype="external">Vectro Type Foundry</a></td>
+</tr>
 <tr>
 <td>VEZ</td>
 <td>Victoria Eloise Zunhiga</td>
