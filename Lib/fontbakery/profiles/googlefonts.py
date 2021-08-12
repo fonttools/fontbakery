@@ -5313,31 +5313,13 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
                           f" is not the same as listed on the designers"
                           f" catalog ({info.designer}) available at {url}")
 
-        if not info.link:
-            passed = False
-            yield WARN,\
-                  Message("missing-link",
-                          f"Designer {designer} does not have a webpage"
-                          f" link on the catalog. Please consider providing one.")
-        elif 'plus.google.com' in info.link:
+        if info.link != "":
             passed = False
             yield FAIL,\
-                  Message("google-plus",
-                          f"Designer {designer} listed a Google Plus link on the catalog,"
-                          f" but that service is not available anymore. Please update the webpage link.")
-        elif 'profiles.google.com' in info.link:
-            passed = False
-            yield FAIL,\
-                  Message("google-profiles",
-                          f"Designer {designer} listed a Google Profiles link on the catalog,"
-                          f" but that service is not available anymore. Please update the webpage link.")
-        else:
-            response = requests.get(info.link)
-            if response.status_code != requests.codes.OK:
-                passed = False
-                yield FAIL,\
-                      Message("broken-link",
-                              f"The webpage link provided seems to be broken ({info.link})")
+                  Message("link-field",
+                          "Currently the link field is not used by the GFonts API."
+                          " Designer webpage links should, for now, be placed"
+                          " directly on the bio.html file.")
 
         if not info.avatar.file_name:
             passed = False

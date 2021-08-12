@@ -3727,24 +3727,8 @@ def test_check_metadata_designer_profiles():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/metadata/designer_profiles")
 
-    # Montserrat's designer, Julieta Ulanovsky, provided a Google Plus page.
-    # Unfortunately that service is deprecated nowadays, so we need to update
-    # this link to point to some webpage currently online.
-    #
-    font = TEST_FILE("montserrat/Montserrat-Regular.ttf")
-    assert_results_contain(check(font),
-                           FAIL, "google-plus")
-
-    # TODO:
-    # Designer foo used a Google Profiles page,
-    # which is also deprecated and nowadays is called Google Workspace,
-    # but seems to at least require logging in to see the page contents,
-    # so that's not acceptable for serving a public portifolio webpage.
-    # font = TEST_FILE("?/?-Regular.ttf")
-    # assert_results_contain(check(font),
-    #                        FAIL, "google-profiles")
-
     # Delve Withrington is still not listed on the designers catalog.
+    # Note: Once it is listed, this code-test will start failing and will need to be updated.
     font = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
     assert_results_contain(check(font),
                            WARN, "profile-not-found")
@@ -3754,21 +3738,15 @@ def test_check_metadata_designer_profiles():
     assert_results_contain(check(font),
                            FAIL, "multiple-designers")
 
-    # This reference Merriweather font family lists "Sorkin Type" in its METADATA.pb file.
-    # And this foundry has a good profile on the catalog.
-    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    assert_PASS(check(font))
+    # FIXME: Uncomment this code-test once we merge this google/fonts PR:
+    #        https://github.com/google/fonts/pull/3696
+    # # This reference Merriweather font family lists "Sorkin Type" in its METADATA.pb file.
+    # # And this foundry has a good profile on the catalog.
+    # font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
+    # assert_PASS(check(font))
 
-    # TODO: # Twitter URLs are tricky because they seem to always result in an HTTP 400 error
-    # TODO: # We should have a code-test to ensure valid twitter user profile URLs are accepted as valid.
-    # TODO: # This reference Cabin font family lists "Impallary Type" in its METADATA.pb file.
-    # TODO: # And this foundry has a twitter user profile listed on the catalog.
-    # TODO: font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    # TODO: assert_PASS(check(font))
-    #
     # TODO: FAIL, "mismatch"
-    # TODO: WARN, "missing-link"
-    # TODO: FAIL, "broken-link"
+    # TODO: FAIL, "link-field"
     # TODO: FAIL, "missing-avatar"
     # TODO: FAIL, "bad-avatar-filename"
 

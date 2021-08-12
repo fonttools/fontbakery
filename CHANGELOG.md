@@ -2,7 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.8.2 (2021-Aug-??)
-  - ...
+### Changes to existing checks
+#### GoogleFonts Profile
+  - **[com.google.fonts/check/metadata/designer_profiles]:** The `link` field is not currently used by the GFonts API, so it should be kept empty for now. (issue #3409)
 
 
 ## 0.8.1 (2021-Aug-11)
