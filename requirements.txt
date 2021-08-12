@@ -2,10 +2,10 @@
 beautifulsoup4==4.9.3
 beziers==0.3.1
 cmarkgfm==0.6.0
-collidoscope==0.0.6
-defcon==0.8.1
+collidoscope==0.1.1
+defcon==0.9.0
 dehinter==3.1.0
-fontTools[ufo,lxml,unicode]==4.25.1
+fontTools[ufo,lxml,unicode]==4.26.2
 font-v==1.0.5
 lxml==4.6.3
 opentype-sanitizer==8.1.4.post2
@@ -14,7 +14,7 @@ pip-api==0.0.20
 protobuf==3.17.3
 PyYAML==5.4.1
 requests==2.26.0
-rich==10.6.0
+rich==10.7.0
 stringbrewer==0.0.1
 toml==0.10.2
 ufolint==1.2.0
