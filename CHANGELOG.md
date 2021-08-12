@@ -18,6 +18,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/gdef_spacing_marks]:** Also print glyphnames on log messages (issue #3395)
 
 #### Universal Profile
+  - **[com.google.fonts/check/unwanted_tables]:** Stop rejecting MVAR table (issue #3400)
   - **[com.google.fonts/check/required_tables]:** remove 'DSIG' from list of optional tables and improve wording on the check rationale. (issue #3398)
   - **[com.google.fonts/check/outline_\*]:** Also print codepoints on the log messages (issue #3395)
 
