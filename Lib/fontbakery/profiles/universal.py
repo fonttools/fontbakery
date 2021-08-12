@@ -649,12 +649,6 @@ def com_google_fonts_check_unwanted_tables(ttFont):
         'TSI3': 'Table contains data only used in VTT',
         'TSI5': 'Table contains data only used in VTT',
         'prop': '', # FIXME: Why is this one unwanted?
-                    #        Marc Foley found that VFs containing a MVAR table have very
-                    #        loose vertical metrics, even if the MVAR table hasn't adjusted
-                    #        any vertical metric values.
-        'MVAR': ('Produces a bug in DirectWrite which causes'
-                 ' https://bugzilla.mozilla.org/show_bug.cgi?id=1492477,'
-                 ' https://github.com/google/fonts/issues/2085')
     }
     unwanted_tables_found = []
     for table in ttFont.keys():

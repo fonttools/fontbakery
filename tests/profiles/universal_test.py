@@ -587,7 +587,6 @@ def test_check_unwanted_tables():
         "TSI3",
         "TSI5",
         "prop", # FIXME: Why is this one unwanted?
-        "MVAR", # Bugs in DirectWrite
     ]
     # Our reference Mada Regular font is good here:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
