@@ -3,8 +3,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.2 (2021-Aug-??)
 ### Changes to existing checks
-#### GoogleFonts Profile
+#### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/designer_profiles]:** The `link` field is not currently used by the GFonts API, so it should be kept empty for now. (issue #3409)
+### New Checks
+#### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/family_directory_name]:** We want the directory name of a font family to be predictable and directly derived from the family name, all lowercased and removing spaces. (issue #3421)
 
 
 ## 0.8.1 (2021-Aug-11)
@@ -12,21 +15,21 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix crash on is_OFL condition when a font project lacks a license. (issue #3393)
 
 ### Changes to existing checks
-#### AdobeFonts Profile
-  - Remove **check/dsig** override, which was now outdated because the original check implementation was just changed to actually suggest (with a WARN) the removal of any DSIG tables. (issue #3407)
+#### On the Universal Profile
+  - **[com.google.fonts/check/unwanted_tables]:** Stop rejecting MVAR table (issue #3400)
+  - **[com.google.fonts/check/required_tables]:** remove 'DSIG' from list of optional tables and improve wording on the check rationale. (issue #3398)
+  - **[com.google.fonts/check/outline_\*]:** Also print codepoints on the log messages (issue #3395)
 
-#### GoogleFonts Profile
-  - **[com.google.fonts/check/metadata/designer_profiles]:** Change "missing-link" FAIL to WARN (issue #3409)
-
-#### OpenType Profile
+#### On the OpenType Profile
   - **[com.google.fonts/check/dsig]:** We now recommend (with a WARN) completely removing the 'DSIG' table. We may make this a FAIL by November 2023 when the EOL date for MS Office 2013 is reached. (issue #3398)
   - **[com.google.fonts/check/gdef_mark_chars]:** Also print glyphnames on log messages (issue #3395)
   - **[com.google.fonts/check/gdef_spacing_marks]:** Also print glyphnames on log messages (issue #3395)
 
-#### Universal Profile
-  - **[com.google.fonts/check/unwanted_tables]:** Stop rejecting MVAR table (issue #3400)
-  - **[com.google.fonts/check/required_tables]:** remove 'DSIG' from list of optional tables and improve wording on the check rationale. (issue #3398)
-  - **[com.google.fonts/check/outline_\*]:** Also print codepoints on the log messages (issue #3395)
+#### On the Adobe Fonts Profile
+  - Remove **check/dsig** override, which was now outdated because the original check implementation was just changed to actually suggest (with a WARN) the removal of any DSIG tables. (issue #3407)
+
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/designer_profiles]:** Change "missing-link" FAIL to WARN (issue #3409)
 
 
 ## 0.8.0 (2021-Jul-21)

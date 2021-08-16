@@ -64,7 +64,8 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/gf-axisregistry_bounds',
     'com.google.fonts/check/metadata/consistent_axis_enumeration',
     'com.google.fonts/check/metadata/escaped_strings',
-    'com.google.fonts/check/metadata/designer_profiles'
+    'com.google.fonts/check/metadata/designer_profiles',
+    'com.google.fonts/check/metadata/family_directory_name'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -83,7 +84,7 @@ FAMILY_CHECKS = [
     'com.google.fonts/check/family/has_license',
     'com.google.fonts/check/family/control_chars',
     'com.google.fonts/check/family/tnum_horizontal_metrics',
-    'com.google.fonts/check/family/italics_have_roman_counterparts',
+    'com.google.fonts/check/family/italics_have_roman_counterparts'
 ]
 
 NAME_TABLE_CHECKS = [
@@ -92,7 +93,7 @@ NAME_TABLE_CHECKS = [
     'com.google.fonts/check/name/license_url',
     'com.google.fonts/check/name/family_and_style_max_length',
     'com.google.fonts/check/name/line_breaks',
-    'com.google.fonts/check/name/rfn',
+    'com.google.fonts/check/name/rfn'
 ]
 
 REPO_CHECKS = [
@@ -167,7 +168,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/stylisticset_description',
     'com.google.fonts/check/os2/use_typo_metrics',
     'com.google.fonts/check/meta/script_lang_tags',
-    'com.google.fonts/check/no_debugging_tables',
+    'com.google.fonts/check/no_debugging_tables'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -5568,6 +5569,30 @@ def com_google_fonts_check_no_debugging_tables(ttFont):
                       f" pre-production tables: {tables_list}")
     else:
         yield PASS, "OK"
+
+
+@check(
+    id = "com.google.fonts/check/metadata/family_directory_name",
+    rationale = """
+        We want the directory name of a font family to be predictable and directly derived from the family name, all lowercased and removing spaces.
+    """,
+    conditions = ['family_metadata',
+                  'family_directory'],
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3421',
+)
+def com_google_fonts_check_metadata_family_directory_name(family_metadata, family_directory):
+    """Check font family directory name."""
+
+    dir_name = os.path.basename(family_directory)
+    expected = family_metadata.name.replace(" ", "").lower()
+    if expected != dir_name:
+        yield FAIL,\
+              Message("bad-directory-name",
+                      f'Family name on METADATA.pb is "{family_metadata.name}"\n'
+                      f'Directory name is "{dir_name}"\n'
+                      f'Expected "{expected}"')
+    else:
+        yield PASS, f'Directory name is "{dir_name}", as expected.'
 
 
 ###############################################################################

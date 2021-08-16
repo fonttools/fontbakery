@@ -3867,7 +3867,24 @@ def test_check_no_debugging_tables():
                         "com.google.fonts/check/no_debugging_tables")
 
     ttFont = TTFont(TEST_FILE("overpassmono/OverpassMono-Regular.ttf"))
-    assert_results_contain(check(ttFont), WARN, 'has-debugging-tables')
+    assert_results_contain(check(ttFont),
+                           WARN, 'has-debugging-tables')
 
     del ttFont["FFTM"]
     assert_PASS(check(ttFont))
+
+
+def test_check_metadata_family_directory_name():
+    """Check family directory name."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/family_directory_name")
+
+    ttFont = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
+    assert_PASS(check(ttFont))
+
+    # Note:
+    # Here I explicitly pass 'family_metadata' to avoid it being recomputed
+    # after I make the family_directory wrong:
+    assert_results_contain(check(ttFont, {'family_metadata': check['family_metadata'],
+                                          'family_directory': 'overpass'}),
+                           FAIL, 'bad-directory-name')
