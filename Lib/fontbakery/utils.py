@@ -177,6 +177,15 @@ def get_absolute_path(p):
     return abspath
 
 
+def filesize_formatting(s):
+    if s < 1024:
+        return f"{s} bytes"
+    elif s < 1024*1024:
+        return "{:.1f}kb".format(s/1024)
+    else:
+        return "{:.1f}Mb".format(s/(1024*1024))
+
+
 def get_bounding_box(font):
     """ Returns max and min bbox of given truetype font """
     ymin = 0

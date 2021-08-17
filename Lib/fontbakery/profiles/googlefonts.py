@@ -4,6 +4,7 @@ from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, disable
+from fontbakery.utils import filesize_formatting
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (NameID,
@@ -17,6 +18,13 @@ from fontbakery.utils import can_shape
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
+
+profile.configuration_defaults = {
+    "com.google.fonts/check/file_size": {
+        "WARN_SIZE": 1 * 1024 * 1024,
+        "FAIL_SIZE": 9 * 1024 * 1024
+    }
+}
 
 METADATA_CHECKS = [
     'com.google.fonts/check/metadata/parses',
@@ -130,6 +138,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/name/version_format',
     'com.google.fonts/check/name/familyname_first_char',
     'com.google.fonts/check/hinting_impact',
+    'com.google.fonts/check/file_size',
     'com.google.fonts/check/varfont/has_HVAR',
     'com.google.fonts/check/name/typographicfamilyname',
     'com.google.fonts/check/name/subfamilyname',
@@ -1379,14 +1388,6 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
     increase = hinted - dehinted
     change = (float(hinted)/dehinted - 1) * 100
 
-    def filesize_formatting(s):
-        if s < 1024:
-            return f"{s} bytes"
-        elif s < 1024*1024:
-            return "{:.1f}kb".format(s/1024)
-        else:
-            return "{:.1f}Mb".format(s/(1024*1024))
-
     hinted_size = filesize_formatting(hinted)
     dehinted_size = filesize_formatting(dehinted)
     increase = filesize_formatting(increase)
@@ -1401,6 +1402,32 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
                   f" | Hinted Size   | {hinted_size}   |\n"
                   f" | Increase      | {increase}      |\n"
                   f" | Change        | {change:.1f} %  |\n")
+
+
+@check(
+    id = 'com.google.fonts/check/file_size',
+    rationale = """
+        Serving extremely large font files on Google Fonts causes usability issues. This check ensures that file sizes are reasonable.
+    """,
+    severity = 10,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3320',
+    configs = ["WARN_SIZE", "FAIL_SIZE"]
+)
+def com_google_fonts_check_file_size(font, config):
+    """Ensure files are not too large."""
+    size = os.stat(font).st_size
+    if size > FAIL_SIZE:
+        yield FAIL,\
+              Message("massive-font",
+                      f"Font file is {filesize_formatting(size)}, "
+                      f"larger than limit {filesize_formatting(FAIL_SIZE)}")
+    elif size > WARN_SIZE:
+        yield WARN,\
+              Message("large-font",
+                      f"Font file is {filesize_formatting(size)}; "
+                      f"ideally it should be less than {filesize_formatting(WARN_SIZE)}")
+    else:
+        yield PASS, "Font had a reasonable file size"
 
 
 @check(

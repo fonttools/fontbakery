@@ -69,7 +69,9 @@ class CheckRunner:
         # TODO: transform all iterables that are list like to tuples
         # to make sure that they won't change anymore.
         # Also remove duplicates from list like iterables
-        self.config = config
+
+        # Add the profile's config values "underneath" the user's config
+        self.config = profile.merge_default_config(config)
         self._custom_order = config["custom_order"]
         self._explicit_checks = config["explicit_checks"]
         self._exclude_checks = config["exclude_checks"]
@@ -171,6 +173,12 @@ class CheckRunner:
             we can connect the check result with more in depth
             knowledge from the check definition.
         """
+        if check.configs:
+            new_globals = {
+                varname: self.config.get(check.id, {}).get(varname)
+                for varname in check.configs
+            }
+            check.inject_globals(new_globals)
         try:
             # A check can be either a normal function that returns one Status or a
             # generator that yields one or more. The latter will return a generator

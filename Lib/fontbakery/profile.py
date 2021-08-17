@@ -16,6 +16,7 @@ from fontbakery.callable import (
     FontBakeryCondition,
     FontBakeryExpectedValue,
 )
+from fontbakery.configuration import Configuration
 from fontbakery.message import Message
 from fontbakery.section import Section
 from fontbakery.utils import is_negated
@@ -61,6 +62,13 @@ def get_module_profile(module, name=None):
 
 
 class Profile:
+    """
+    Profiles may specify default configuration values (used to parameterize
+    checks), which are then overridden by values in the user's configuration
+    file.
+    """
+    configuration_defaults = {}
+
     def __init__(
         self,
         sections=None,
@@ -1051,6 +1059,15 @@ class Profile:
             ):
                 result.append(check)
         return result
+
+    def merge_default_config(self, user_config):
+        """
+        Forms a configuration object based on defaults provided by the profile,
+        overridden by values in the user's configuration file.
+        """
+        copy = Configuration(**self.configuration_defaults)
+        copy.update(user_config)
+        return copy
 
 
 def _check_log_override(overrides, status, message):

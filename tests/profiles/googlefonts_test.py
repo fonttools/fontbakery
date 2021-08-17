@@ -912,6 +912,21 @@ def test_check_hinting_impact():
     # TODO: test the CFF code-path
 
 
+def test_check_file_size():
+    """Ensure files are not too large."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/file_size")
+
+    assert_PASS(check(TEST_FILE("mada/Mada-Regular.ttf")))
+
+    assert_results_contain(check(TEST_FILE("varfont/inter/Inter[slnt,wght].ttf")),
+                           WARN, 'large-font',
+                           'with quite a big font...')
+
+    assert_results_contain(check(TEST_FILE("cjk/SourceHanSans-Regular.otf")),
+                           FAIL, 'massive-font',
+                           'with a very big font...')
+
 def test_check_name_version_format():
     """ Version format is correct in 'name' table ? """
     check = CheckTester(googlefonts_profile,
