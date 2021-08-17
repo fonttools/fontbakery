@@ -175,8 +175,8 @@ class CheckRunner:
         """
         if check.configs:
             new_globals = {
-              varname: self.config.get(check.id, {}).get(varname)
-              for varname in check.configs
+                varname: self.config.get(check.id, {}).get(varname)
+                for varname in check.configs
             }
             check.inject_globals(new_globals)
         try:
