@@ -4,6 +4,7 @@ from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, disable
+from fontbakery.utils import filesize_formatting
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (NameID,
@@ -1374,14 +1375,6 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
     dehinted = hinting_stats["dehinted_size"]
     increase = hinted - dehinted
     change = (float(hinted)/dehinted - 1) * 100
-
-    def filesize_formatting(s):
-        if s < 1024:
-            return f"{s} bytes"
-        elif s < 1024*1024:
-            return "{:.1f}kb".format(s/1024)
-        else:
-            return "{:.1f}Mb".format(s/(1024*1024))
 
     hinted_size = filesize_formatting(hinted)
     dehinted_size = filesize_formatting(dehinted)
