@@ -12,6 +12,7 @@ from fontbakery.constants import (NameID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
+from fontbakery.utils import can_shape
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 profile_imports = ('fontbakery.profiles.universal',)
@@ -168,7 +169,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/stylisticset_description',
     'com.google.fonts/check/os2/use_typo_metrics',
     'com.google.fonts/check/meta/script_lang_tags',
-    'com.google.fonts/check/no_debugging_tables'
+    'com.google.fonts/check/no_debugging_tables',
+    'com.google.fonts/check/render_own_name'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -5593,6 +5595,31 @@ def com_google_fonts_check_metadata_family_directory_name(family_metadata, famil
                       f'Expected "{expected}"')
     else:
         yield PASS, f'Directory name is "{dir_name}", as expected.'
+
+
+@check(
+    id = "com.google.fonts/check/render_own_name",
+    rationale = """
+        A base expectation is that a font family's regular/default (400 roman) style can render its 'menu name' (nameID 1) in itself.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3159',
+)
+def com_google_fonts_check_render_own_name(ttFont):
+    """Check font can render its own name."""
+
+    menu_name = ttFont["name"].getName(
+        NameID.FONT_FAMILY_NAME,
+        PlatformID.WINDOWS,
+        WindowsEncodingID.UNICODE_BMP,
+        WindowsLanguageID.ENGLISH_USA
+    ).toUnicode()
+    if can_shape(ttFont, menu_name):
+        yield PASS, f'Font can successfully render its own name ({menu_name})'
+    else:
+        yield FAIL,\
+              Message("render-own-name",
+                      f'.notdef glyphs were found when attempting to render {menu_name}'
+                      )
 
 
 ###############################################################################

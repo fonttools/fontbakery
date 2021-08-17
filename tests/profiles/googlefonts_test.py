@@ -3888,3 +3888,16 @@ def test_check_metadata_family_directory_name():
     assert_results_contain(check(ttFont, {'family_metadata': check['family_metadata'],
                                           'family_directory': 'overpass'}),
                            FAIL, 'bad-directory-name')
+
+
+def test_check_render_own_name():
+    """Check family directory name."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/render_own_name")
+
+    ttFont = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
+    assert_PASS(check(ttFont))
+
+    ttFont = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
+    assert_results_contain(check(ttFont),
+                           FAIL, 'render-own-name')
