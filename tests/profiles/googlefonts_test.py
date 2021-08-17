@@ -2293,6 +2293,20 @@ def test_check_production_encoded_glyphs(cabin_ttFonts):
         print (f"Warning: Seems to have failed to download remote font files: {cabin_ttFonts}.")
 
 
+def test_check_transformed_components():
+    """Ensure component transforms do not perform scaling or rotation."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/transformed_components")
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    assert_PASS(check(ttFont),
+                "with a good font...")
+
+    # DM Sans v1.100 had some transformed components
+    ttFont = TTFont(TEST_FILE("dm-sans-v1.100/DMSans-Regular.ttf"))
+    assert_results_contain(check(ttFont),
+                                   FAIL, 'transformed-components')
+
+
 def test_check_metadata_nameid_copyright():
     """ Copyright field for this font on METADATA.pb matches
         all copyright notice entries on the name table? """
@@ -2771,6 +2785,22 @@ def test_check_fontv():
             record.string = version_string
     assert_PASS(check(ttFont),
                 'with one that follows the suggested scheme ...')
+
+
+def test_check_glyf_nested_components():
+    """Check glyphs do not have nested components."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/glyf_nested_components")
+
+    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+    assert_PASS(check(ttFont))
+
+    # We need to create a nested component. "second" has components, so setting
+    # one of "quotedbl"'s components to "second" should do it.
+    ttFont['glyf']['quotedbl'].components[0].glyphName = "second"
+
+    assert_results_contain(check(ttFont),
+                           FAIL, 'found-nested-components')
 
 
 # Temporarily disabling this code-test since check/negative_advance_width itself
@@ -3903,3 +3933,16 @@ def test_check_metadata_family_directory_name():
     assert_results_contain(check(ttFont, {'family_metadata': check['family_metadata'],
                                           'family_directory': 'overpass'}),
                            FAIL, 'bad-directory-name')
+
+
+def test_check_render_own_name():
+    """Check family directory name."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/render_own_name")
+
+    ttFont = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
+    assert_PASS(check(ttFont))
+
+    ttFont = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
+    assert_results_contain(check(ttFont),
+                           FAIL, 'render-own-name')

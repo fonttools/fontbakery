@@ -3,12 +3,16 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.2 (2021-Aug-??)
 ### Changes to existing checks
+#### On the OpenType Profile
+  - **[com.google.fonts/check/glyf_nested_components]:** Nested components are permitted by the OpenType specification, so this check has been moved to the Google Fonts profile. (issue #3424)
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/designer_profiles]:** The `link` field is not currently used by the GFonts API, so it should be kept empty for now. (issue #3409)
 ### New Checks
 #### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/transformed_components]:** Ensure component transforms do not perform scaling or rotation (which causes hinting and rasterization issues). (issue #2011)
   - **[com.google.fonts/check/metadata/family_directory_name]:** We want the directory name of a font family to be predictable and directly derived from the family name, all lowercased and removing spaces. (issue #3421)
   - **[com.google.fonts/check/file_size]:** Ensure that the absolute file size of the font is not going to cause problems on the Google Fonts platform. (issue #3320)
+  - **[com.google.fonts/check/render_own_name]:** Ensure the font can render its own name without .notdef glyphs. (issue #3159)
 
 
 ## 0.8.1 (2021-Aug-11)

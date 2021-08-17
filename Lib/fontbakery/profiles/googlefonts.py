@@ -13,6 +13,7 @@ from fontbakery.constants import (NameID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
+from fontbakery.utils import can_shape
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 profile_imports = ('fontbakery.profiles.universal',)
@@ -124,6 +125,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/production_glyphs_similarity',
     'com.google.fonts/check/fontv',
 #DISABLED:     'com.google.fonts/check/production_encoded_glyphs',
+    'com.google.fonts/check/glyf_nested_components',
     'com.google.fonts/check/varfont/generate_static',
     'com.google.fonts/check/kerning_for_non_ligated_sequences',
     'com.google.fonts/check/name/description_max_length',
@@ -160,6 +162,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/integer_ppem_if_hinted',
     'com.google.fonts/check/unitsperem_strict',
     'com.google.fonts/check/contour_count',
+    'com.google.fonts/check/transformed_components',
     'com.google.fonts/check/vertical_metrics_regressions',
     'com.google.fonts/check/cjk_vertical_metrics',
     'com.google.fonts/check/cjk_vertical_metrics_regressions',
@@ -177,7 +180,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/stylisticset_description',
     'com.google.fonts/check/os2/use_typo_metrics',
     'com.google.fonts/check/meta/script_lang_tags',
-    'com.google.fonts/check/no_debugging_tables'
+    'com.google.fonts/check/no_debugging_tables',
+    'com.google.fonts/check/render_own_name'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -3149,6 +3153,41 @@ def com_google_fonts_check_contour_count(ttFont):
             yield PASS, "All glyphs have the recommended amount of contours"
 
 
+@check(
+    id = 'com.google.fonts/check/transformed_components',
+    conditions = ['is_ttf'],
+    rationale = """
+        Some families have glyphs which have been constructed by using transformed components e.g the 'u' being constructed from a flipped 'n'.
+
+        From a designers point of view, this sounds like a win (less work). However, such approaches can lead to rasterization issues, such as having the 'u' not sitting on the baseline at certain sizes after running the font through ttfautohint.
+
+        As of July 2019, Marc Foley observed that ttfautohint assigns cvt values to transformed glyphs as if they are not transformed and the result is they render very badly, and that vttLib does not support flipped components.
+
+        When building the font with fontmake, this problem can be fixed by using the "Decompose Transformed Components" filter.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2011',
+)
+def com_google_fonts_check_transformed_components(ttFont):
+    """Ensure component transforms do not perform scaling or rotation."""
+    failures = ""
+    for glyph_name in ttFont.getGlyphOrder():
+        glyf = ttFont["glyf"][glyph_name]
+        if not glyf.isComposite():
+            continue
+        for component in glyf.components:
+            comp_name, transform = component.getComponentInfo()
+            if transform[0:4] != (1, 0, 0, 1):
+                failures += f"* {glyph_name} (component {comp_name})\n"
+    if failures:
+        yield FAIL,\
+              Message("transformed-components",
+                      "The following glyphs had components with scaling or rotation:\n\n" +
+                      failures
+                      )
+    else:
+        yield PASS, "No glyphs had components with scaling or rotation"
+
+
 # FIXME!
 # Temporarily disabled since GFonts hosted Cabin files seem to have changed in ways
 # that break some of the assumptions in the check implementation below.
@@ -3674,6 +3713,42 @@ def com_google_fonts_check_negative_advance_width(ttFont):
                           f' interpreted as a negative value ({advwidth}).')
     if not failed:
         yield PASS, "The x-coordinates of all glyphs look good."
+
+
+@check(
+    id = 'com.google.fonts/check/glyf_nested_components',
+    rationale = """
+        There have been bugs rendering variable fonts with nested components. Additionally, some static fonts with nested components have been reported to have rendering and printing issues.
+
+        For more info, see:
+        * https://github.com/googlefonts/fontbakery/issues/2961
+        * https://github.com/arrowtype/recursive/issues/412
+    """,
+    conditions = ['is_ttf'],
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2961'
+)
+def com_google_fonts_check_glyf_nested_components(ttFont):
+    """Check glyphs do not have components which are themselves components."""
+    from fontbakery.utils import pretty_print_list
+    failed = []
+    for glyph_name in ttFont['glyf'].keys():
+        glyph = ttFont['glyf'][glyph_name]
+        if not glyph.isComposite():
+            continue
+        for comp in glyph.components:
+            if ttFont['glyf'][comp.glyphName].isComposite():
+                failed.append(glyph_name)
+    if failed:
+        formatted_list = "\t* " + pretty_print_list(failed,
+                                                    shorten=10,
+                                                    sep="\n\t* ")
+        yield FAIL, \
+              Message('found-nested-components',
+                      f"The following glyphs have components which"
+                      f" themselves are component glyphs:\n"
+                      f"{formatted_list}")
+    else:
+        yield PASS, ("Glyphs do not contain nested components.")
 
 
 @check(
@@ -5622,6 +5697,31 @@ def com_google_fonts_check_metadata_family_directory_name(family_metadata, famil
                       f'Expected "{expected}"')
     else:
         yield PASS, f'Directory name is "{dir_name}", as expected.'
+
+
+@check(
+    id = "com.google.fonts/check/render_own_name",
+    rationale = """
+        A base expectation is that a font family's regular/default (400 roman) style can render its 'menu name' (nameID 1) in itself.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3159',
+)
+def com_google_fonts_check_render_own_name(ttFont):
+    """Check font can render its own name."""
+
+    menu_name = ttFont["name"].getName(
+        NameID.FONT_FAMILY_NAME,
+        PlatformID.WINDOWS,
+        WindowsEncodingID.UNICODE_BMP,
+        WindowsLanguageID.ENGLISH_USA
+    ).toUnicode()
+    if can_shape(ttFont, menu_name):
+        yield PASS, f'Font can successfully render its own name ({menu_name})'
+    else:
+        yield FAIL,\
+              Message("render-own-name",
+                      f'.notdef glyphs were found when attempting to render {menu_name}'
+                      )
 
 
 ###############################################################################
