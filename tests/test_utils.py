@@ -1,5 +1,7 @@
 import pytest
-from fontbakery.utils import text_flow
+from fontbakery.utils import text_flow, can_shape
+from fontTools.ttLib import TTFont
+from fontbakery.codetesting import portable_path
 
 
 def test_text_flow():
@@ -47,3 +49,9 @@ def test_text_flow():
 #                                             "      Two   \n"
 #                                             "      Three ")
 
+def test_can_shape():
+    font = TTFont(portable_path(
+        "data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf"
+    ))
+    assert can_shape(font, "ABC")
+    assert not can_shape(font, "こんにちは")
