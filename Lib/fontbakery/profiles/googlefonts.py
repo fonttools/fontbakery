@@ -1410,13 +1410,11 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
         Serving extremely large font files on Google Fonts causes usability issues. This check ensures that file sizes are reasonable.
     """,
     severity = 10,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/3320'
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3320',
+    configs = ["WARN_SIZE", "FAIL_SIZE"]
 )
 def com_google_fonts_check_file_size(font, config):
     """Ensure files are not too large."""
-    WARN_SIZE = config["com.google.fonts/check/file_size"]["WARN_SIZE"]
-    FAIL_SIZE = config["com.google.fonts/check/file_size"]["FAIL_SIZE"]
-
     size = os.stat(font).st_size
     if size > FAIL_SIZE:
         yield FAIL,\
