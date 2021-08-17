@@ -2,7 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.8.5 (2021-Dec-??)
-  - ...
+### New Checks
+#### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/cjk_chws_feature]:** Ensure CJK fonts contain chws/vchw features. (issue #3363)
 
 
 ## 0.8.4 (2021-Nov-19)
