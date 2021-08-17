@@ -7,7 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/designer_profiles]:** The `link` field is not currently used by the GFonts API, so it should be kept empty for now. (issue #3409)
 ### New Checks
 #### Added to the Google Fonts Profile
-  - **[com.google.fonts/check/metadata/transformed_components]:** Ensure component transforms do not perform scaling or rotation (which causes hinting and rasterization issues). (issue #2011)
+  - **[com.google.fonts/check/transformed_components]:** Ensure component transforms do not perform scaling or rotation (which causes hinting and rasterization issues). (issue #2011)
   - **[com.google.fonts/check/metadata/family_directory_name]:** We want the directory name of a font family to be predictable and directly derived from the family name, all lowercased and removing spaces. (issue #3421)
 
 
