@@ -3,6 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.2 (2021-Aug-??)
 ### Changes to existing checks
+#### On the OpenType Profile
+  - **[com.google.fonts/check/glyf_nested_components]:** Nested components are permitted by the OpenType specification, so this check has been moved to the Google Fonts profile. (issue #3424)
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/designer_profiles]:** The `link` field is not currently used by the GFonts API, so it should be kept empty for now. (issue #3409)
 ### New Checks
