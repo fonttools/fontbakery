@@ -18,6 +18,13 @@ from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-w
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
 
+profile.configuration_defaults = {
+    "com.google.fonts/check/file_size": {
+        "WARN_SIZE": 1 * 1024 * 1024,
+        "FAIL_SIZE": 9 * 1024 * 1024
+    }
+}
+
 METADATA_CHECKS = [
     'com.google.fonts/check/metadata/parses',
     'com.google.fonts/check/metadata/unknown_designer',
@@ -1401,10 +1408,10 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
     severity = 10,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3320'
 )
-def com_google_fonts_check_file_size(font):
+def com_google_fonts_check_file_size(font, config):
     """Ensure files are not too large."""
-    WARN_SIZE = 1 * 1024 * 1024
-    FAIL_SIZE = 9 * 1024 * 1024
+    WARN_SIZE = config["com.google.fonts/check/file_size"]["WARN_SIZE"]
+    FAIL_SIZE = config["com.google.fonts/check/file_size"]["FAIL_SIZE"]
 
     size = os.stat(font).st_size
     if size > FAIL_SIZE:
