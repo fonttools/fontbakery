@@ -912,10 +912,10 @@ def test_check_hinting_impact():
     # TODO: test the CFF code-path
 
 
-def test_check_large_file():
+def test_check_file_size():
     """Ensure files are not too large."""
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/large_file")
+                        "com.google.fonts/check/file_size")
 
     assert_PASS(check(TEST_FILE("mada/Mada-Regular.ttf")))
 

@@ -8,7 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/family_directory_name]:** We want the directory name of a font family to be predictable and directly derived from the family name, all lowercased and removing spaces. (issue #3421)
-  - **[com.google.fonts/check/metadata/large_file]:** Ensure that the absolute file size of the font is not going to cause problems on the Google Fonts platform. (issue #3320)
+  - **[com.google.fonts/check/file_size]:** Ensure that the absolute file size of the font is not going to cause problems on the Google Fonts platform. (issue #3320)
 
 
 ## 0.8.1 (2021-Aug-11)
