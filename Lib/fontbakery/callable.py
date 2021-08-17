@@ -101,6 +101,10 @@ class FontbakeryCallable:
         """
         return self.__wrapped__(*args, **kwds)
 
+    def inject_globals(self, new_globals):
+        self.__wrapped__.__globals__.update(new_globals)
+
+
 def get_doc_desc(func, description, documentation):
     doc = inspect.getdoc(func) or ""
 
@@ -153,6 +157,7 @@ class FontBakeryCheck(FontbakeryCallable):
                  proposal=None, # An URL to the original proposal for this check.
                                 # This is typically a github issue or pull request.
                  severity=None, # numeric value from 1=min to 10=max, denoting check severity
+                 configs=None, # items from config[self.id] to inject into the check's namespace.
                  misc_metadata=None, # Miscelaneous free-form metadata fields
                                      # Some of them may be promoted to 1st-class metadata fields
                                      # if they start being used by the check-runner.
@@ -199,6 +204,13 @@ class FontBakeryCheck(FontbakeryCallable):
 
         documentation: text used as a detailed documentation to
         be read by humans (in markdown format).
+
+        configs: a list of variable names. Their values are looked up the
+        check-specific config (i.e. ``config[self.id]``), and assigned to
+        global variables within the check's namespace. e.g. in a check called
+        ``example.com/mytest``, setting ``configs = [ "hello" ]`` will create
+        a variable called ``hello` and fill it with the value of
+        ``config["example.com/mytest"]["hello"]``.
         """
         super().__init__(checkfunc)
         self.id = id
@@ -208,6 +220,7 @@ class FontBakeryCheck(FontbakeryCallable):
         self.description, self.documentation = get_doc_desc(checkfunc,
                                                             description,
                                                             documentation)
+        self.configs = configs
         self.proposal = proposal
         self.severity = severity
         if not self.description:

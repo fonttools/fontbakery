@@ -173,6 +173,12 @@ class CheckRunner:
             we can connect the check result with more in depth
             knowledge from the check definition.
         """
+        if check.configs:
+            new_globals = {
+              varname: self.config.get(check.id, {}).get(varname)
+              for varname in check.configs
+            }
+            check.inject_globals(new_globals)
         try:
             # A check can be either a normal function that returns one Status or a
             # generator that yields one or more. The latter will return a generator
