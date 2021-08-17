@@ -129,6 +129,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/name/version_format',
     'com.google.fonts/check/name/familyname_first_char',
     'com.google.fonts/check/hinting_impact',
+    'com.google.fonts/check/large_file',
     'com.google.fonts/check/varfont/has_HVAR',
     'com.google.fonts/check/name/typographicfamilyname',
     'com.google.fonts/check/name/subfamilyname',
@@ -1390,6 +1391,34 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
                   f" | Hinted Size   | {hinted_size}   |\n"
                   f" | Increase      | {increase}      |\n"
                   f" | Change        | {change:.1f} %  |\n")
+
+
+@check(
+    id = 'com.google.fonts/check/large_file',
+    rationale = """
+        Serving extremely large font files on Google Fonts causes usability issues. This check ensures that file sizes are reasonable.
+    """,
+    severity = 10,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3320'
+)
+def com_google_fonts_check_large_file(font):
+    """Ensure files are not too large."""
+    WARN_SIZE = 1 * 1024 * 1024
+    FAIL_SIZE = 9 * 1024 * 1024
+
+    size = os.stat(font).st_size
+    if size > FAIL_SIZE:
+        yield FAIL,\
+              Message("massive-font",
+                      f"Font file is {filesize_formatting(size)}, "
+                      f"larger than limit {filesize_formatting(FAIL_SIZE)}")
+    elif size > WARN_SIZE:
+        yield WARN,\
+              Message("large-font",
+                      f"Font file is {filesize_formatting(size)}; "
+                      f"ideally it should be less than {filesize_formatting(WARN_SIZE)}")
+    else:
+        yield PASS, "Font had a reasonable file size"
 
 
 @check(
