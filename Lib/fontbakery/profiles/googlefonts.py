@@ -116,6 +116,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/production_glyphs_similarity',
     'com.google.fonts/check/fontv',
 #DISABLED:     'com.google.fonts/check/production_encoded_glyphs',
+    'com.google.fonts/check/glyf_nested_components',
     'com.google.fonts/check/varfont/generate_static',
     'com.google.fonts/check/kerning_for_non_ligated_sequences',
     'com.google.fonts/check/name/description_max_length',
@@ -3645,6 +3646,42 @@ def com_google_fonts_check_negative_advance_width(ttFont):
                           f' interpreted as a negative value ({advwidth}).')
     if not failed:
         yield PASS, "The x-coordinates of all glyphs look good."
+
+
+@check(
+    id = 'com.google.fonts/check/glyf_nested_components',
+    rationale = """
+        There have been bugs rendering variable fonts with nested components. Additionally, some static fonts with nested components have been reported to have rendering and printing issues.
+
+        For more info, see:
+        * https://github.com/googlefonts/fontbakery/issues/2961
+        * https://github.com/arrowtype/recursive/issues/412
+    """,
+    conditions = ['is_ttf'],
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2961'
+)
+def com_google_fonts_check_glyf_nested_components(ttFont):
+    """Check glyphs do not have components which are themselves components."""
+    from fontbakery.utils import pretty_print_list
+    failed = []
+    for glyph_name in ttFont['glyf'].keys():
+        glyph = ttFont['glyf'][glyph_name]
+        if not glyph.isComposite():
+            continue
+        for comp in glyph.components:
+            if ttFont['glyf'][comp.glyphName].isComposite():
+                failed.append(glyph_name)
+    if failed:
+        formatted_list = "\t* " + pretty_print_list(failed,
+                                                    shorten=10,
+                                                    sep="\n\t* ")
+        yield FAIL, \
+              Message('found-nested-components',
+                      f"The following glyphs have components which"
+                      f" themselves are component glyphs:\n"
+                      f"{formatted_list}")
+    else:
+        yield PASS, ("Glyphs do not contain nested components.")
 
 
 @check(
