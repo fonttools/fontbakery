@@ -3632,6 +3632,31 @@ def test_check_varfont_unsupported_axes():
                            FAIL, 'unsupported-slnt')
 
 
+def test_check_varfont_grad_no_reflow():
+    """ Ensure VFs with the GRAD axis do not vary horizontal advance. """
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/varfont/grad_no_reflow")
+    ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
+    assert_results_contain(check(ttFont),
+                           FAIL, 'grad-causes-reflow')
+
+    # Zero out the horizontal advances
+    gvar = ttFont["gvar"]
+    for glyph, deltas in gvar.variations.items():
+        for delta in deltas:
+            if "GRAD" not in delta.axes:
+                continue
+            if delta.coordinates:
+                delta.coordinates = delta.coordinates[:-4] + [(0,0)] * 4
+
+    # But the kern rules should still be a problem
+    assert_results_contain(check(ttFont),
+                       FAIL, 'grad-kern-causes-reflow')
+
+    ttFont["GPOS"].table.LookupList.Lookup = []
+    assert_PASS(check(ttFont))
+
+
 def test_check_gfaxisregistry_bounds():
     """Validate METADATA.pb axes values are within gf-axisregistry bounds."""
     check = CheckTester(googlefonts_profile,
