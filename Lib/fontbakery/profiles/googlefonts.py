@@ -172,6 +172,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/varfont_duplicate_instance_names',
     'com.google.fonts/check/varfont/consistent_axes',
     'com.google.fonts/check/varfont/unsupported_axes',
+    'com.google.fonts/check/varfont/grad_no_reflow',
     'com.google.fonts/check/gf-axisregistry/fvar_axis_defaults',
     'com.google.fonts/check/STAT/gf-axisregistry',
     'com.google.fonts/check/STAT/axis_order',
@@ -5034,6 +5035,74 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
                       'The "slnt" axis is not yet well supported on Google Chrome.')
     else:
         yield PASS, "Looks good!"
+
+
+@check(
+    id = 'com.google.fonts/check/varfont/grad_no_reflow',
+    rationale = """
+        The grade (GRAD) axis should not change any advanceWidth or kerning data across its design space. This is to because altering the advance width of glyphs can cause text reflow.
+    """,
+    conditions = ['is_variable_font'],
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3187'
+)
+def com_google_fonts_check_varfont_grad_no_reflow(ttFont):
+    """ Ensure VFs with the GRAD axis do not vary horizontal advance. """
+    from fontbakery.utils import pretty_print_list, all_kerning
+    from fontbakery.profiles.shared_conditions import grad_axis
+
+    if not grad_axis(ttFont):
+        yield SKIP, Message("no-grad", "This font has no GRAD axis")
+        return
+
+    gvar = ttFont["gvar"]
+    bad_glyphs = []
+    for glyph, deltas in gvar.variations.items():
+        for delta in deltas:
+            if "GRAD" not in delta.axes:
+                continue
+            if any(c is not None and c != (0, 0) for c in delta.coordinates[-4:]):
+                bad_glyphs.append(glyph)
+    if bad_glyphs:
+        yield FAIL, Message("grad-causes-reflow",
+                            "The following glyphs have variation in horizontal advance due to the GRAD axis: " +
+                            pretty_print_list(bad_glyphs))
+
+    # Determine if any kerning rules vary the horizontal advance.
+    # This is going to get grubby.
+    bad_kerning = False
+
+    if "GDEF" in ttFont and hasattr(ttFont["GDEF"].table, "VarStore"):
+        effective_regions = []
+        varstore = ttFont["GDEF"].table.VarStore
+        regions = varstore.VarRegionList.Region
+        grad_index = [x.axisTag == "GRAD" for x in ttFont["fvar"].axes].index(True)
+        for ix, region in enumerate(regions):
+            axis_tent = region.VarRegionAxis[grad_index]
+            effective = axis_tent.StartCoord != axis_tent.PeakCoord or axis_tent.PeakCoord != axis_tent.EndCoord
+            if effective:
+              effective_regions.append(ix)
+
+        # Some regions vary *something* along the GRAD axis. But what?
+        if effective_regions:
+            kerning = all_kerning(ttFont)
+            for left, right, v1, v2 in kerning:
+                if v1 and hasattr(v1, "XAdvDevice"):
+                    variation = [v1.XAdvDevice.StartSize, v1.XAdvDevice.EndSize]
+                    regions = varstore.VarData[variation[0]].VarRegionIndex
+                    if any(region in effective_regions for region in regions):
+                        deltas = varstore.VarData[variation[0]].Item[variation[1]]
+                        effective_deltas = [deltas[ix] for ix, region in enumerate(regions) if region in effective_regions]
+                        if any(x for x in effective_deltas):
+                            yield FAIL, Message("grad-kern-causes-reflow",
+                                                f"Kerning rules cause variation in horizontal advance on the GRAD axis (e.g. {left}/{right})"
+                                                )
+                            bad_kerning = True
+                            break
+
+
+    # Check kerning here
+    if not bad_glyphs and not bad_kerning:
+        yield PASS, "No variations or kern rules vary horizontal advance along the GRAD axis"
 
 
 @check(

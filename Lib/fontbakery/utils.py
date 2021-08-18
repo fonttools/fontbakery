@@ -491,3 +491,49 @@ def can_shape(ttFont, text, parameters=None):
     vharfbuzz = Vharfbuzz(filename)
     buf = vharfbuzz.shape(text, parameters)
     return all(g.codepoint != 0 for g in buf.glyph_infos)
+
+
+def all_kerning(ttFont):
+    if "GPOS" not in ttFont:
+        return []
+    rules = []
+
+    def _invertClassDef(a, font):
+        classes = {}
+        for glyph, klass in a.items():
+            if klass not in classes:
+                classes[klass] = []
+            classes[klass].append(glyph)
+        glyphset = set(font.getGlyphOrder())
+        classes[0] = glyphset - set(a.keys())
+        return classes
+
+    kern_subtables = []
+    for lu in ttFont["GPOS"].table.LookupList.Lookup:
+        for subtable in lu.SubTable:
+            if subtable.LookupType == 9:
+                subtable = subtable.ExtSubTable
+            if subtable.LookupType == 2:
+                kern_subtables.append(subtable)
+
+    for subtable in kern_subtables:
+        if subtable.Format == 1:
+            for g, pair in zip(subtable.Coverage.glyphs, subtable.PairSet):
+                for vr in pair.PairValueRecord:
+                    rules.append((g, vr.SecondGlyph, vr.Value1, vr.Value2))
+        else:
+            class1 = _invertClassDef(subtable.ClassDef1.classDefs, ttFont)
+            class2 = _invertClassDef(subtable.ClassDef2.classDefs, ttFont)
+            for ix1, c1 in enumerate(subtable.Class1Record):
+                if ix1 not in class1:
+                    continue
+                for ix2, c2 in enumerate(c1.Class2Record):
+                    if ix2 not in class2:
+                        continue
+                    firstClass = list(
+                        set(class1[ix1]) & set(subtable.Coverage.glyphs)
+                    )
+                    for left in firstClass:
+                        for right in class2[ix2]:
+                            rules.append((left, right, c2.Value1, c2.Value2))
+    return rules
