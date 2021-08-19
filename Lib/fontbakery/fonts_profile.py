@@ -6,69 +6,103 @@ Font Bakery CheckRunner is the driver of a font bakery suite of checks.
 import glob
 import logging
 import argparse
+from dataclasses import dataclass
 
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.profile import Profile
+from fontbakery.errors import ValueValidationError
+
+@dataclass
+class FileDescription:
+    name: str
+    extensions: [str]
+    singular: str
+    description: str
 
 class FontsProfile(Profile):
+    accepted_files = [
+      FileDescription(name="fonts", singular="font", extensions=[".otf",".ttf"], description="OpenType binary"),
+      FileDescription(name="ufos", singular="ufo", extensions=[".ufo"], description="UFO source"),
+      FileDescription(name="designspaces", singular="designspace", extensions=[".designspace"], description="Designspace"),
+      FileDescription(name="glyphs_files", singular="glyphs_file", extensions=[".glyphs"], description="Glyphs source"),
+    ]
+
     def setup_argparse(self, argument_parser):
         """
         Set up custom arguments needed for this profile.
         """
-        def get_fonts(pattern):
+        profile = self
 
-            fonts_to_check = []
+        def get_files(pattern):
+            files_to_check = []
             # use glob.glob to accept *.ttf
             # but perform a hacky fixup to workaround the square-brackets naming scheme
             # currently in use for varfonts in google fonts...
             if '].ttf' in pattern:
                 pattern = "*.ttf".join(pattern.split('].ttf'))
 
+            # Everything goes in for now, gets sorted in the Merge
             for fullpath in glob.glob(pattern):
-                if fullpath.lower().rsplit(".", 1)[-1] in ("otf", "ttf"):
-                    fonts_to_check.append(fullpath)
-                else:
-                    logging.warning("Skipping '{}' as it does not seem "
-                                    "to be valid OpenType font file.".format(fullpath))
-            return fonts_to_check
+                files_to_check.append(fullpath)
+            return files_to_check
 
 
         class MergeAction(argparse.Action):
             def __call__(self, parser, namespace, values, option_string=None):
+                for file_description in profile.accepted_files:
+                    setattr(namespace, file_description.name, [])
                 target = [item for l in values for item in l]
-                setattr(namespace, self.dest, target)
+                any_accepted = False
+                for file in target:
+                    accepted = False
+                    for file_description in profile.accepted_files:
+                        if any([file.endswith(extension) for extension in file_description.extensions]):
+                          setattr(namespace, file_description.name, getattr(namespace, file_description.name) + [file])
+                          accepted = True
+                          any_accepted = True
+                    if not accepted:
+                        logging.info(f"Skipping '{file}' as it does not seem "
+                                       "to be accepted by this profile.")
+                if not any_accepted:
+                    raise ValueValidationError('No applicable files found')
 
         argument_parser.add_argument(
-            'fonts',
+            'files',
             # To allow optional commands like "-L" to work without other input
             # files:
             nargs='*',
-            type=get_fonts,
+            type=get_files,
             action=MergeAction,
-            help='font file path(s) to check. Wildcards like *.ttf are allowed.')
+            help='file path(s) to check. Wildcards like *.ttf are allowed.')
 
-        return ('fonts', )
+        return tuple([x.name for x in self.accepted_files])
 
     def get_family_checks(self):
         family_checks = self.get_checks_by_dependencies('ttFonts')
         return family_checks
 
+    @classmethod
+    def _expected_values(self):
+        return { val.name:
+          ExpectedValue(val.name,
+                        default = [],
+                        description = f"A list of the {val.description} file paths to check",
+                        force=True
+                        )
+          for val in self.accepted_files
+        }
 
-fonts_expected_value = ExpectedValue(
-      'fonts'
-    , default=[]
-    , description='A list of the font file paths to check.'
-    , validator=lambda fonts: (True, None) if len(fonts) \
-                                           else (False, 'Value is empty.')
-)
+    @classmethod
+    def _iterargs(self):
+        return { val.singular: val.name for val in self.accepted_files }
 
 def profile_factory(**kwds):
     from fontbakery.profiles.shared_conditions import ttFont
     profile = FontsProfile(
-        iterargs={'font': 'fonts'}
+        iterargs=FontsProfile._iterargs()
       , conditions={ttFont.name: ttFont}
       , derived_iterables={'ttFonts': ('ttFont', True)}
-      , expected_values={fonts_expected_value.name: fonts_expected_value}
+      , expected_values=FontsProfile._expected_values()
       , **kwds
     )
     return profile
