@@ -21,10 +21,10 @@ class FileDescription:
 
 class FontsProfile(Profile):
     accepted_files = [
-      FileDescription(name="fonts", singular="font", extensions=[".otf",".ttf"], description="OpenType binary"),
-      FileDescription(name="ufos", singular="ufo", extensions=[".ufo"], description="UFO source"),
-      FileDescription(name="designspaces", singular="designspace", extensions=[".designspace"], description="Designspace"),
-      FileDescription(name="glyphs_files", singular="glyphs_file", extensions=[".glyphs"], description="Glyphs source"),
+        FileDescription(name="fonts", singular="font", extensions=[".otf",".ttf"], description="OpenType binary"),
+        FileDescription(name="ufos", singular="ufo", extensions=[".ufo"], description="UFO source"),
+        FileDescription(name="designspaces", singular="designspace", extensions=[".designspace"], description="Designspace"),
+        FileDescription(name="glyphs_files", singular="glyphs_file", extensions=[".glyphs"], description="Glyphs source"),
     ]
 
     def setup_argparse(self, argument_parser):
@@ -61,8 +61,8 @@ class FontsProfile(Profile):
                           accepted = True
                           any_accepted = True
                     if not accepted:
-                        logging.info(f"Skipping '{file}' as it does not seem "
-                                       "to be accepted by this profile.")
+                        logging.info("Skipping '{}' as it does not seem "
+                                       "to be accepted by this profile.".format(file))
                 if not any_accepted:
                     raise ValueValidationError('No applicable files found')
 
@@ -75,26 +75,26 @@ class FontsProfile(Profile):
             action=MergeAction,
             help='file path(s) to check. Wildcards like *.ttf are allowed.')
 
-        return tuple([x.name for x in self.accepted_files])
+        return tuple(x.name for x in self.accepted_files)
 
     def get_family_checks(self):
         family_checks = self.get_checks_by_dependencies('ttFonts')
         return family_checks
 
     @classmethod
-    def _expected_values(self):
+    def _expected_values(cls):
         return { val.name:
           ExpectedValue(val.name,
                         default = [],
                         description = f"A list of the {val.description} file paths to check",
                         force=True
                         )
-          for val in self.accepted_files
+          for val in cls.accepted_files
         }
 
     @classmethod
-    def _iterargs(self):
-        return { val.singular: val.name for val in self.accepted_files }
+    def _iterargs(cls):
+        return { val.singular: val.name for val in cls.accepted_files }
 
 def profile_factory(**kwds):
     from fontbakery.profiles.shared_conditions import ttFont
