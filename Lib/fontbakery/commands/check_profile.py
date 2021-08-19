@@ -261,7 +261,12 @@ def main(profile=None, values=None):
         add_profile_arg = True
 
     argument_parser, values_keys = ArgumentParser(profile, profile_arg=add_profile_arg)
-    args = argument_parser.parse_args()
+    try:
+        args = argument_parser.parse_args()
+    except ValueValidationError as e:
+        print(e)
+        argument_parser.print_usage()
+        sys.exit(1)
 
     # The default Windows Terminal just displays the escape codes. The argument
     # parser above therefore has these options disabled.

@@ -77,8 +77,9 @@ class CheckRunner:
         self._exclude_checks = config["exclude_checks"]
         self._iterargs = OrderedDict()
         for singular, plural in profile.iterargs.items():
-            values[plural] = tuple(values[plural])
-            self._iterargs[singular] = len(values[plural])
+            if plural in values:
+                values[plural] = tuple(values[plural])
+                self._iterargs[singular] = len(values[plural])
 
         if not values_can_override_profile_names:
             for name in values:
