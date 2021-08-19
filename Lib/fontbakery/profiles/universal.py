@@ -648,7 +648,9 @@ def com_google_fonts_check_unwanted_tables(ttFont):
         'TSI2': 'Table contains data only used in VTT',
         'TSI3': 'Table contains data only used in VTT',
         'TSI5': 'Table contains data only used in VTT',
-        'prop': '', # FIXME: Why is this one unwanted?
+        'prop': ('Table used on AAT, Apple\'s OS X specific technology.'
+                 ' Although Harfbuzz now has optional AAT support,'
+                 ' new fonts should not be using that.'),
     }
     unwanted_tables_found = []
     for table in ttFont.keys():
