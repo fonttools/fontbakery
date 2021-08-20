@@ -232,6 +232,7 @@ def ftxvalidator_cmd():
 
 @check(
     id = 'com.google.fonts/check/ftxvalidator_is_available',
+    conditions = ["fonts"],
     rationale = """
         There's no reasonable (and legal) way to run the command `ftxvalidator` of the Apple Font Tool Suite on a non-macOS machine. I.e. on GNU+Linux or Windows etc.
 
