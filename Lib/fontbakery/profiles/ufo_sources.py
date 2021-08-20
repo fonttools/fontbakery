@@ -10,6 +10,12 @@ from fontbakery.fonts_profile import profile_factory
 
 profile = profile_factory(default_section=Section("UFO Sources"))
 
+UFO_PROFILE_CHECKS = [
+    'com.daltonmaag/check/ufolint',
+    'com.daltonmaag/check/ufo-required-fields',
+    'com.daltonmaag/check/ufo-recommended-fields',
+    'com.daltonmaag/check/ufo-unnecessary-fields'
+]
 
 @condition
 def ufo_font(ufo):

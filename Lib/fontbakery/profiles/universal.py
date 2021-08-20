@@ -8,10 +8,12 @@ from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
 from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
+from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
 
 profile_imports = ('fontbakery.profiles.opentype',
                    'fontbakery.profiles.outline',
                    'fontbakery.profiles.shaping',
+                   'fontbakery.profiles.ufo_sources',
                    '.shared_conditions')
 profile = profile_factory(default_section=Section("Universal"))
 
@@ -29,9 +31,10 @@ SUPERFAMILY_CHECKS = [
 UNIVERSAL_PROFILE_CHECKS = \
     OPENTYPE_PROFILE_CHECKS + \
     OUTLINE_PROFILE_CHECKS + \
-    THIRDPARTY_CHECKS + \
     SHAPING_PROFILE_CHECKS + \
-    SUPERFAMILY_CHECKS + [
+    SUPERFAMILY_CHECKS + \
+    THIRDPARTY_CHECKS + \
+    UFO_PROFILE_CHECKS + [
         'com.google.fonts/check/name/trailing_spaces',
         'com.google.fonts/check/family/win_ascent_and_descent',
         'com.google.fonts/check/os2_metrics_match_hhea',
