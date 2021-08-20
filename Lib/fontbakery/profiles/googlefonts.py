@@ -84,7 +84,8 @@ DESCRIPTION_CHECKS = [
     'com.google.fonts/check/description/max_length',
     'com.google.fonts/check/description/git_url',
     'com.google.fonts/check/description/eof_linebreak',
-    'com.google.fonts/check/description/family_update'
+    'com.google.fonts/check/description/family_update',
+    'com.google.fonts/check/description/formatting'
 ]
 
 FAMILY_CHECKS = [
@@ -5556,6 +5557,74 @@ def com_google_fonts_check_description_family_update(description, github_gfonts_
                       "Please consider mentioning note-worthy improvements made"
                       " to the family recently.")
     else:
+        yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/description/formatting',
+    rationale = """
+        We expect  the HTML to have:
+        - one structure tag per line
+        - one sentence per line
+        - a final blank line
+        - no mid-sentence line breaks
+
+        It doesn't make a difference to rendered output, but the benefit of this approach is that it makes subsequent diffs very clean.
+    """,
+    conditions = ["description"],
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2811'
+)
+def com_google_fonts_check_description_family_update(description):
+    """Formatting rules for DESCRIPTION.en_us.html file."""
+    passed = True
+    lines = description.split('\n')
+
+    def is_tag(text_line):
+        if '>' not in text_line:
+            return False
+        if '<' not in text_line:
+            return False
+        return text_line.split('<')[1].split(' ')[0]
+
+    def is_good_tag(text_line):
+	return is_one_of_these_tags(text_line,
+	                            ["a", "ol", "ul"]):
+
+    def is_bad_tag(text_line):
+	return is_tag(text_line) and not is_good_tag(text_line)
+
+    def is_one_of_these_tags(text_line, possible_tags):
+        text_line = text_line.lower()
+
+        for tag in possible_tags:
+            if tag in text_line:
+                return True
+        # otherwise:
+        return False
+
+
+    for line in lines:
+        if is_tag(line):
+            continue
+
+        if '.' in line:
+            sentences = line.split('.')
+            if len(sentences) > 2 or \
+               (len(sentences) == 2 and len(sentences[1]) > 0):
+                passed = False
+                yield WARN,\
+                      Message('multi-sentence-line',
+                              "Please split the text so that each"
+                              " sentence is place is a separate line.")
+
+    if lines[-1] != "":
+        passed = False
+        yield WARN,\
+              Message('final-blank',
+                      "Please add a final line-break to the"
+                      " DESCRIPTION.en_us.html file so that"
+                      " the last line is empty.")
+    if passed:
         yield PASS, "OK"
 
 
