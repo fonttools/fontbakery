@@ -2,6 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.8.2 (2021-Aug-??)
+### Noteworthy code-changes
+  - Now one can invoke Font Bakery with different filetypes (other than just TTFs or OTFs) and the checks will run or skip based on file-type. (issue #3169)
+  - For this reason, `UFO Source` checks are now included in the `Universal` profile. (issue #3439)
+  - We'll likely have source-level (GlyphsApp) checks soon using this mechanism.
+
 ### Changes to existing checks
 #### On the Universal Profile
   - **[com.google.fonts/check/unwanted_tables]:** Documented reason for rejection of the 'prop' table. It is a table used on Apple's OSX-specific AAT and new fonts should not be using that. (issue #3411)
