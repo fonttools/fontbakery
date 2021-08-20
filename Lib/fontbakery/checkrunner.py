@@ -15,6 +15,7 @@ import os
 import types
 from collections import OrderedDict, Counter
 import importlib
+import inspect
 from typing import Dict, Any
 
 from fontbakery.callable import (
@@ -400,7 +401,16 @@ class CheckRunner:
             return (status, None)
 
         try:
-            return None, self._get_args(check, iterargs)
+            args = self._get_args(check, iterargs)
+            # Run the generators now, so we can test if they're empty
+            for k,v in args.items():
+                if inspect.isgenerator(v) or inspect.isgeneratorfunction(v):
+                    args[k] = list(v)
+
+            if all(not x for x in args.values()):
+                status = (SKIP, "No applicable arguments")
+                return (status, None)
+            return None, args
         except Exception as error:
             status = (ERROR, FailedDependenciesError(check, error))
             return (status, None)
