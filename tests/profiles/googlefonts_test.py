@@ -3632,10 +3632,11 @@ def test_check_varfont_unsupported_axes():
                            FAIL, 'unsupported-slnt')
 
 
-def test_check_varfont_grad_no_reflow():
+def test_check_varfont_grade_reflow():
     """ Ensure VFs with the GRAD axis do not vary horizontal advance. """
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont/grad_no_reflow")
+                        "com.google.fonts/check/varfont/grade_reflow")
+
     ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
     assert_results_contain(check(ttFont),
                            FAIL, 'grad-causes-reflow')
@@ -3651,7 +3652,7 @@ def test_check_varfont_grad_no_reflow():
 
     # But the kern rules should still be a problem
     assert_results_contain(check(ttFont),
-                       FAIL, 'grad-kern-causes-reflow')
+                           FAIL, 'grad-kern-causes-reflow')
 
     ttFont["GPOS"].table.LookupList.Lookup = []
     assert_PASS(check(ttFont))
@@ -3661,6 +3662,7 @@ def test_check_gfaxisregistry_bounds():
     """Validate METADATA.pb axes values are within gf-axisregistry bounds."""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/metadata/gf-axisregistry_bounds")
+
     # Our reference varfont, CabinVF, has good axes bounds:
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
     assert_PASS(check(ttFont))
@@ -3684,6 +3686,7 @@ def test_check_gf_axisregistry_valid_tags():
     """Validate METADATA.pb axes tags are defined in gf-axisregistry."""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/metadata/gf-axisregistry_valid_tags")
+
     # The axis tags in our reference varfont, CabinVF,
     # are properly defined in the registry:
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
@@ -3699,6 +3702,7 @@ def test_check_gf_axisregistry_fvar_axis_defaults():
     """Validate METADATA.pb axes tags are defined in gf-axisregistry."""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/gf-axisregistry/fvar_axis_defaults")
+
     # The default value for the axes in this reference varfont
     # are properly registered in the registry:
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
@@ -3714,6 +3718,7 @@ def test_check_STAT_gf_axisregistry():
     """Validate STAT particle names and values match the fallback names in GFAxisRegistry."""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/STAT/gf-axisregistry")
+
     # Our reference varfont, CabinVF,
     # has "Regular", instead of "Roman" in its 'ital' axis on the STAT table:
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
@@ -3743,6 +3748,7 @@ def test_check_metadata_consistent_axis_enumeration():
     """Validate VF axes match the ones declared on METADATA.pb."""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/metadata/consistent_axis_enumeration")
+
     # The axis tags of CabinVF,
     # are properly declared on its METADATA.pb:
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
@@ -3879,6 +3885,7 @@ def TODO_test_check_os2_use_typo_metrics_with_cjk():
     """All CJK fonts checked with the googlefonts profile should skip this check"""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/os2/use_typo_metrics")
+
     tt_pass_clear = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))
     tt_pass_set = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))
 

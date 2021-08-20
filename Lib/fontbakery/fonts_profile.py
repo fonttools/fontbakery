@@ -1,7 +1,5 @@
 """
 Font Bakery CheckRunner is the driver of a font bakery suite of checks.
-
-
 """
 import glob
 import logging
@@ -12,6 +10,7 @@ from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.profile import Profile
 from fontbakery.errors import ValueValidationError
 
+
 @dataclass
 class FileDescription:
     name: str
@@ -19,12 +18,25 @@ class FileDescription:
     singular: str
     description: str
 
+
 class FontsProfile(Profile):
     accepted_files = [
-        FileDescription(name="fonts", singular="font", extensions=[".otf",".ttf"], description="OpenType binary"),
-        FileDescription(name="ufos", singular="ufo", extensions=[".ufo"], description="UFO source"),
-        FileDescription(name="designspaces", singular="designspace", extensions=[".designspace"], description="Designspace"),
-        FileDescription(name="glyphs_files", singular="glyphs_file", extensions=[".glyphs"], description="Glyphs source"),
+        FileDescription(name="fonts",
+                        singular="font",
+                        extensions=[".otf",".ttf"],
+                        description="OpenType binary"),
+        FileDescription(name="ufos",
+                        singular="ufo",
+                        extensions=[".ufo"],
+                        description="UFO source"),
+        FileDescription(name="designspaces",
+                        singular="designspace",
+                        extensions=[".designspace"],
+                        description="Designspace"),
+        FileDescription(name="glyphs_files",
+                        singular="glyphs_file",
+                        extensions=[".glyphs"],
+                        description="Glyphs source"),
     ]
 
     def setup_argparse(self, argument_parser):
@@ -61,8 +73,8 @@ class FontsProfile(Profile):
                           accepted = True
                           any_accepted = True
                     if not accepted:
-                        logging.info("Skipping '{}' as it does not seem "
-                                       "to be accepted by this profile.".format(file))
+                        logging.info(f"Skipping '{file}' as it does not"
+                                     f" seem to be accepted by this profile.")
                 if not any_accepted:
                     raise ValueValidationError('No applicable files found')
 
@@ -95,6 +107,7 @@ class FontsProfile(Profile):
     @classmethod
     def _iterargs(cls):
         return { val.singular: val.name for val in cls.accepted_files }
+
 
 def profile_factory(**kwds):
     from fontbakery.profiles.shared_conditions import ttFont

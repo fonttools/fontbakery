@@ -172,7 +172,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/varfont_duplicate_instance_names',
     'com.google.fonts/check/varfont/consistent_axes',
     'com.google.fonts/check/varfont/unsupported_axes',
-    'com.google.fonts/check/varfont/grad_no_reflow',
+    'com.google.fonts/check/varfont/grade_reflow',
     'com.google.fonts/check/gf-axisregistry/fvar_axis_defaults',
     'com.google.fonts/check/STAT/gf-axisregistry',
     'com.google.fonts/check/STAT/axis_order',
@@ -3180,9 +3180,9 @@ def com_google_fonts_check_transformed_components(ttFont):
     if failures:
         yield FAIL,\
               Message("transformed-components",
-                      "The following glyphs had components with scaling or rotation:\n\n" +
-                      failures
-                      )
+                      f"The following glyphs had components with scaling or rotation:\n"
+                      f"\n"
+                      f"{failures}")
     else:
         yield PASS, "No glyphs had components with scaling or rotation"
 
@@ -3741,7 +3741,7 @@ def com_google_fonts_check_glyf_nested_components(ttFont):
         formatted_list = "\t* " + pretty_print_list(failed,
                                                     shorten=10,
                                                     sep="\n\t* ")
-        yield FAIL, \
+        yield FAIL,\
               Message('found-nested-components',
                       f"The following glyphs have components which"
                       f" themselves are component glyphs:\n"
@@ -5038,18 +5038,18 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/varfont/grad_no_reflow',
+    id = 'com.google.fonts/check/varfont/grade_reflow',
     rationale = """
         The grade (GRAD) axis should not change any advanceWidth or kerning data across its design space. This is to because altering the advance width of glyphs can cause text reflow.
     """,
     conditions = ['is_variable_font'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3187'
 )
-def com_google_fonts_check_varfont_grad_no_reflow(ttFont):
+def com_google_fonts_check_varfont_grade_reflow(ttFont):
     """ Ensure VFs with the GRAD axis do not vary horizontal advance. """
-    from fontbakery.utils import pretty_print_list, all_kerning
     from fontbakery.profiles.shared_conditions import grad_axis
-
+    from fontbakery.utils import (all_kerning,
+                                  pretty_print_list)
     if not grad_axis(ttFont):
         yield SKIP, Message("no-grad", "This font has no GRAD axis")
         return
@@ -5060,12 +5060,16 @@ def com_google_fonts_check_varfont_grad_no_reflow(ttFont):
         for delta in deltas:
             if "GRAD" not in delta.axes:
                 continue
-            if any(c is not None and c != (0, 0) for c in delta.coordinates[-4:]):
+            if any(c is not None and c != (0, 0)
+                   for c in delta.coordinates[-4:]):
                 bad_glyphs.append(glyph)
+
     if bad_glyphs:
-        yield FAIL, Message("grad-causes-reflow",
-                            "The following glyphs have variation in horizontal advance due to the GRAD axis: " +
-                            pretty_print_list(bad_glyphs))
+        bad_glyphs_list = pretty_print_list(bad_glyphs)
+        yield FAIL,\
+              Message("grad-causes-reflow",
+                      f"The following glyphs have variation in horizontal"
+                      f" advance due to the GRAD axis: {bad_glyphs_list}")
 
     # Determine if any kerning rules vary the horizontal advance.
     # This is going to get grubby.
@@ -5075,10 +5079,12 @@ def com_google_fonts_check_varfont_grad_no_reflow(ttFont):
         effective_regions = []
         varstore = ttFont["GDEF"].table.VarStore
         regions = varstore.VarRegionList.Region
-        grad_index = [x.axisTag == "GRAD" for x in ttFont["fvar"].axes].index(True)
+        grad_index = [x.axisTag == "GRAD"
+                      for x in ttFont["fvar"].axes].index(True)
         for ix, region in enumerate(regions):
             axis_tent = region.VarRegionAxis[grad_index]
-            effective = axis_tent.StartCoord != axis_tent.PeakCoord or axis_tent.PeakCoord != axis_tent.EndCoord
+            effective = (axis_tent.StartCoord != axis_tent.PeakCoord
+                         or axis_tent.PeakCoord != axis_tent.EndCoord)
             if effective:
               effective_regions.append(ix)
 
@@ -5091,18 +5097,22 @@ def com_google_fonts_check_varfont_grad_no_reflow(ttFont):
                     regions = varstore.VarData[variation[0]].VarRegionIndex
                     if any(region in effective_regions for region in regions):
                         deltas = varstore.VarData[variation[0]].Item[variation[1]]
-                        effective_deltas = [deltas[ix] for ix, region in enumerate(regions) if region in effective_regions]
+                        effective_deltas = [deltas[ix]
+                                            for ix, region in enumerate(regions)
+                                            if region in effective_regions]
                         if any(x for x in effective_deltas):
-                            yield FAIL, Message("grad-kern-causes-reflow",
-                                                f"Kerning rules cause variation in horizontal advance on the GRAD axis (e.g. {left}/{right})"
-                                                )
+                            yield FAIL,\
+                                  Message("grad-kern-causes-reflow",
+                                          f"Kerning rules cause variation in"
+                                          f" horizontal advance on the GRAD axis"
+                                          f" (e.g. {left}/{right})")
                             bad_kerning = True
                             break
 
-
     # Check kerning here
     if not bad_glyphs and not bad_kerning:
-        yield PASS, "No variations or kern rules vary horizontal advance along the GRAD axis"
+        yield PASS, ("No variations or kern rules vary "
+                     "horizontal advance along the GRAD axis")
 
 
 @check(
@@ -5125,10 +5135,12 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, GFAxisRegistr
                 passed = False
                 yield FAIL,\
                       Message('bad-axis-range',
-                              f"The range in the font variation axis '{axis.tag}' ({expected.display_name}"
+                              f"The range in the font variation axis"
+                              f" '{axis.tag}' ({expected.display_name}"
                               f" min:{axis.min_value} max:{axis.max_value})"
-                              f" does not comply with the expected maximum range, as defined on"
-                              f" Google Fonts Axis Registry (min:{expected.min_value} max:{expected.max_value}).")
+                              f" does not comply with the expected maximum range,"
+                              f" as defined on Google Fonts Axis Registry"
+                              f" (min:{expected.min_value} max:{expected.max_value}).")
     if passed:
         yield PASS, "OK"
 
