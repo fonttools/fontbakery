@@ -8,7 +8,7 @@ dehinter==3.1.0
 fontTools[ufo,lxml,unicode]==4.26.2
 font-v==1.0.5
 lxml==4.6.3
-opentype-sanitizer==8.1.4.post2
+opentype-sanitizer==8.1.4.post3
 opentypespec==1.8.4
 pip-api==0.0.20
 protobuf==3.17.3
