@@ -1412,7 +1412,8 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
     """,
     severity = 10,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3320',
-    configs = ["WARN_SIZE", "FAIL_SIZE"]
+    configs = ["WARN_SIZE",
+               "FAIL_SIZE"]
 )
 def com_google_fonts_check_file_size(font, config):
     """Ensure files are not too large."""
@@ -5040,7 +5041,7 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
 @check(
     id = 'com.google.fonts/check/varfont/grade_reflow',
     rationale = """
-        The grade (GRAD) axis should not change any advanceWidth or kerning data across its design space. This is to because altering the advance width of glyphs can cause text reflow.
+        The grade (GRAD) axis should not change any advanceWidth or kerning data across its design space. This is because altering the advance width of glyphs can cause text reflow.
     """,
     conditions = ['is_variable_font'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3187'
@@ -5051,7 +5052,9 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont):
     from fontbakery.utils import (all_kerning,
                                   pretty_print_list)
     if not grad_axis(ttFont):
-        yield SKIP, Message("no-grad", "This font has no GRAD axis")
+        yield SKIP,\
+              Message("no-grad",
+                      "This font has no GRAD axis")
         return
 
     gvar = ttFont["gvar"]
