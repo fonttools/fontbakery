@@ -1800,6 +1800,31 @@ def test_check_font_copyright():
                 'with good strings...')
 
 
+def test_check_glyphs_file_font_copyright():
+    """Copyright notices match canonical pattern in fonts"""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/glyphs_file/font_copyright")
+
+    glyphsFile = GLYPHSAPP_TEST_FILE("Comfortaa.glyphs")
+    # note: the check does not actually verify that the project name is correct.
+    #       It only focuses on the string format.
+
+    # Use an email instead of a git URL:
+    bad_string = ("Copyright 2017 The Archivo Black Project Authors"
+                  " (contact-us@fake-address.com)")
+    glyphsFile.copyright = bad_string
+    assert_results_contain(check(glyphsFile),
+                           FAIL, 'bad-notice-format',
+                           'with a bad copyright notice string...')
+
+    # We change it into a good string (example extracted from Archivo Black):
+    good_string = ("Copyright 2017 The Archivo Black Project Authors"
+                   " (https://github.com/Omnibus-Type/ArchivoBlack)")
+    glyphsFile.copyright = good_string
+    assert_PASS(check(glyphsFile),
+                'with a good coopyright string...')
+
+
 def test_check_metadata_reserved_font_name():
     """ Copyright notice on METADATA.pb should not contain Reserved Font Name. """
     check = CheckTester(googlefonts_profile,
