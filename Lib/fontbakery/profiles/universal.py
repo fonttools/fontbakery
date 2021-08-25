@@ -217,7 +217,7 @@ def com_google_fonts_check_family_single_directory(fonts):
     if len(directories) == 1:
         yield PASS, "All files are in the same directory."
     else:
-        yield FAIL, \
+        yield FAIL,\
               Message("single-directory",
                       f"Not all fonts passed in the command line"
                       f" are in the same directory. This may lead to"
@@ -238,19 +238,20 @@ def com_google_fonts_check_ots(font):
     try:
         process = ots.sanitize(font, check=True, capture_output=True)
     except ots.CalledProcessError as e:
-        yield FAIL, \
+        yield FAIL,\
               Message("ots-sanitize-error",
-                ("ots-sanitize returned an error code ({}). Output follows:\n\n{}{}"
-                ).format(e.returncode, e.stderr.decode(), e.stdout.decode())
-              )
+                      f"ots-sanitize returned an error code ({e.returncode})."
+                      f" Output follows:\n"
+                      f"\n"
+                      f"{e.stderr.decode()}{e.stdout.decode()}")
     else:
         if process.stderr:
-            yield WARN, \
+            yield WARN,\
                   Message("ots-sanitize-warn",
-                          ("ots-sanitize passed this file, "
-                          "however warnings were printed:\n\n{}"
-                          ).format(process.stderr.decode())
-                  )
+                          f"ots-sanitize passed this file,"
+                          f" however warnings were printed:\n"
+                          f"\n"
+                          f"{process.stderr.decode()}")
         else:
             yield PASS, "ots-sanitize passed this file"
 
@@ -699,20 +700,18 @@ def com_google_fonts_check_valid_glyphnames(ttFont, config):
         else:
             yield FAIL,\
                   Message('found-invalid-names',
-                          ("The following glyph names do not comply"
-                           " with naming conventions: {}\n\n"
-                           " A glyph name"
-                           " must be entirely comprised of characters from"
-                           " the following set:"
-                           " A-Z a-z 0-9 .(period) _(underscore)."
-                           " A glyph name must not start with a digit or period."
-                           " There are a few exceptions"
-                           " such as the special glyph \".notdef\"."
-                           " The glyph names \"twocents\", \"a1\", and \"_\""
-                           " are all valid, while \"2cents\""
-                           " and \".twocents\" are not."
-                           "").format(pretty_print_list(config,
-                                                        bad_names)))
+                          f"The following glyph names do not comply"
+                          f" with naming conventions: {pretty_print_list(config, bad_names)}\n"
+                          f"\n"
+                          f" A glyph name must be entirely comprised of characters"
+                          f" from the following set:"
+                          f" A-Z a-z 0-9 .(period) _(underscore)."
+                          f" A glyph name must not start with a digit or period."
+                          f" There are a few exceptions"
+                          f" such as the special glyph \".notdef\"."
+                          f" The glyph names \"twocents\", \"a1\", and \"_\""
+                          f" are all valid, while \"2cents\""
+                          f" and \".twocents\" are not.")
 
 
 @check(
