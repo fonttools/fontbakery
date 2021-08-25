@@ -34,6 +34,12 @@ def RIBBI_ttFonts(fonts):
 
 
 @condition
+def glyphsFile(glyphs_file):
+    import glyphsLib
+    return glyphsLib.load(open(glyphs_file))
+
+
+@condition
 def style_with_spaces(font):
     """Stylename with spaces (derived from a canonical filename)."""
     if style(font):

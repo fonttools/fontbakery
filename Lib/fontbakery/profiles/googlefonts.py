@@ -103,7 +103,8 @@ NAME_TABLE_CHECKS = [
     'com.google.fonts/check/name/license_url',
     'com.google.fonts/check/name/family_and_style_max_length',
     'com.google.fonts/check/name/line_breaks',
-    'com.google.fonts/check/name/rfn'
+    'com.google.fonts/check/name/rfn',
+    'com.google.fonts/check/glyphs_file/name/family_and_style_max_length'
 ]
 
 REPO_CHECKS = [
@@ -4268,6 +4269,33 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                               f" name table records max-length criteria.")
     if not failed:
         yield PASS, "All name entries are good."
+
+
+@check(
+    id = 'com.google.fonts/check/glyphs_file/name/family_and_style_max_length',
+)
+def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFile):
+    """Combined length of family and style must not exceed 27 characters."""
+
+    too_long = []
+    for instance in glyphsFile.instances:
+        if len(instance.fullName) > 27:
+            too_long.append(instance.fullName)
+
+    if too_long:
+        too_long_list = "\n  - " + "\n  - ".join(too_long)
+        yield WARN,\
+              Message("too-long",
+                      f"The fullName length exceeds 27 chars in the"
+                      f" following entries:\n"
+                      f"{too_long_list}\n"
+                      f"\n"
+                      f"Please take a look at the conversation at"
+                      f" https://github.com/googlefonts/fontbakery/issues/2179"
+                      f" in order to understand the reasoning behind these"
+                      f" name table records max-length criteria.")
+    else:
+        yield PASS, "ok"
 
 
 @check(
