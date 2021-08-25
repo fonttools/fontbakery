@@ -3814,12 +3814,10 @@ def test_check_metadata_designer_profiles():
     assert_results_contain(check(font),
                            FAIL, "multiple-designers")
 
-    # FIXME: Uncomment this code-test once we merge this google/fonts PR:
-    #        https://github.com/google/fonts/pull/3696
-    # # This reference Merriweather font family lists "Sorkin Type" in its METADATA.pb file.
-    # # And this foundry has a good profile on the catalog.
-    # font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    # assert_PASS(check(font))
+    # This reference Merriweather font family lists "Sorkin Type" in its METADATA.pb file.
+    # And this foundry has a good profile on the catalog.
+    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
+    assert_PASS(check(font))
 
     # TODO: FAIL, "mismatch"
     # TODO: FAIL, "link-field"
