@@ -103,8 +103,12 @@ NAME_TABLE_CHECKS = [
     'com.google.fonts/check/name/license_url',
     'com.google.fonts/check/name/family_and_style_max_length',
     'com.google.fonts/check/name/line_breaks',
-    'com.google.fonts/check/name/rfn',
-    'com.google.fonts/check/glyphs_file/name/family_and_style_max_length'
+    'com.google.fonts/check/name/rfn'
+]
+
+GLYPHSAPP_CHECKS = [
+    'com.google.fonts/check/glyphs_file/name/family_and_style_max_length',
+    'com.google.fonts/check/glyphs_file/font_copyright'
 ]
 
 REPO_CHECKS = [
@@ -194,7 +198,8 @@ GOOGLEFONTS_PROFILE_CHECKS = \
     FAMILY_CHECKS + \
     NAME_TABLE_CHECKS + \
     REPO_CHECKS + \
-    FONT_FILE_CHECKS
+    FONT_FILE_CHECKS + \
+    GLYPHSAPP_CHECKS
 
 
 @check(
@@ -2279,6 +2284,9 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
                           f' correct font name format ("{font_familyname}").')
 
 
+EXPECTED_COPYRIGHT_PATTERN = \
+r'copyright [0-9]{4}(\-[0-9]{4})? the .* project authors \([^\@]*\)'
+
 @check(
     id = 'com.google.fonts/check/metadata/valid_copyright',
     conditions = ['font_metadata'],
@@ -2297,10 +2305,9 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
 def com_google_fonts_check_metadata_valid_copyright(font_metadata):
     """Copyright notices match canonical pattern in METADATA.pb"""
     import re
+
     string = font_metadata.copyright.lower()
-    does_match = re.search(r'copyright [0-9]{4}(\-[0-9]{4})? the .* project authors \([^\@]*\)',
-                           string)
-    if does_match:
+    if re.search(EXPECTED_COPYRIGHT_PATTERN, string):
         yield PASS, "METADATA.pb copyright string is good"
     else:
         yield FAIL,\
@@ -2323,9 +2330,7 @@ def com_google_fonts_check_font_copyright(ttFont):
 
     failed = False
     for string in get_name_entry_strings(ttFont, NameID.COPYRIGHT_NOTICE):
-        does_match = re.search(r'Copyright [0-9]{4}(\-[0-9]{4})? The .* Project Authors \([^\@]*\)',
-                               string)
-        if does_match:
+        if re.search(EXPECTED_COPYRIGHT_PATTERN, string.lower()):
             yield PASS, (f"Name Table entry: Copyright field '{string}'"
                          f" matches canonical pattern.")
         else:
@@ -2338,6 +2343,26 @@ def com_google_fonts_check_font_copyright(ttFont):
                           f'But instead we have got:\n"{string}"')
     if not failed:
         yield PASS, "Name table copyright entries are good"
+
+
+@check(
+    id = 'com.google.fonts/check/glyphs_file/font_copyright'
+)
+def com_google_fonts_check_glyphs_file_font_copyright(glyphsFile):
+    """Copyright notices match canonical pattern in fonts"""
+    import re
+
+    string = glyphsFile.copyright.lower()
+    if re.search(EXPECTED_COPYRIGHT_PATTERN, string):
+        yield PASS, (f"Name Table entry: Copyright field '{string}'"
+                     f" matches canonical pattern.")
+    else:
+        yield FAIL,\
+              Message("bad-notice-format",
+                      f'Copyright notices should match'
+                      f' a pattern similar to: "Copyright 2019'
+                      f' The Familyname Project Authors (git url)"\n'
+                      f'But instead we have got:\n"{string}"')
 
 
 @check(
