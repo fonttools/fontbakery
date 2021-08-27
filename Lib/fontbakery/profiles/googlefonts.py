@@ -12,7 +12,8 @@ from fontbakery.constants import (NameID,
                                   WindowsEncodingID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
-                                  MacintoshLanguageID)
+                                  MacintoshLanguageID,
+                                  LATEST_TTFAUTOHINT_VERSION)
 from fontbakery.utils import can_shape
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
@@ -1510,11 +1511,11 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
     id = 'com.google.fonts/check/old_ttfautohint',
     conditions = ['is_ttf'],
     rationale = """
-        This check finds which version of ttfautohint was used, by inspecting name table entries and then finds which version of ttfautohint is currently installed in the system.
+        Check if font has been hinted with an outdated version of ttfautohint.
     """,
     proposal = 'legacy:check/056'
 )
-def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats, installed_ttfa):
+def com_google_fonts_check_old_ttfautohint(ttFont):
     """Font has old ttfautohint applied?"""
     from fontbakery.utils import get_name_entry_strings
 
@@ -1524,22 +1525,6 @@ def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats, installed_ttfa
             results = re.search(r'ttfautohint \(v(.*)\)', value)
             if results:
                 return results.group(1)
-
-    def installed_version_is_newer(installed, used):
-        # development versions may include a git commit hash
-        # for now we will simply ignore it:
-        installed = installed.split("-")[0]
-        used = used.split("-")[0]
-
-        installed = list(map(int, installed.split(".")))
-        used = list(map(int, used.split(".")))
-        return installed > used
-
-    if not installed_ttfa:
-        yield ERROR,\
-              Message("not-available",
-                      "ttfautohint is not available.")
-        return
 
     version_strings = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
     ttfa_version = ttfautohint_version(version_strings)
@@ -1559,22 +1544,21 @@ def com_google_fonts_check_old_ttfautohint(ttFont, hinting_stats, installed_ttfa
                       f" {version_strings}")
     else:
         try:
-            if installed_version_is_newer(installed_ttfa,
-                                          ttfa_version):
+            if LATEST_TTFAUTOHINT_VERSION > ttfa_version:
                 yield WARN,\
                       Message("old-ttfa",
                               f"ttfautohint used in font = {ttfa_version};"
-                              f" installed = {installed_ttfa};"
+                              f" latest = {LATEST_TTFAUTOHINT_VERSION};"
                               f" Need to re-run with the newer version!")
             else:
-                yield PASS, (f"ttfautohint available in the system ({installed_ttfa})"
-                             f" is older than the one used in the font"
-                             f" ({ttfa_version}).")
+                yield PASS, (f"Font has been hinted with ttfautohint {ttfa_version}"
+                             f" which is greater than or equal to the latest"
+                             f" known version {LATEST_TTFAUTOHINT_VERSION}")
         except ValueError:
             yield FAIL,\
                   Message("parse-error",
                           f"Failed to parse ttfautohint version values:"
-                          f" installed = '{installed_ttfa}';"
+                          f" latest = '{LATEST_TTFAUTOHINT_VERSION}';"
                           f" used_in_font = '{ttfa_version}'")
 
 
