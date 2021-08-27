@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Universal Profile
   - **[com.google.fonts/check/unwanted_tables]:** Documented reason for rejection of the 'prop' table. It is a table used on Apple's OSX-specific AAT and new fonts should not be using that. (issue #3411)
+  - **[com.google.fonts/check/old_ttfautohint]:** Get latest ttfautohint version number from a constant instead of checking the user's system for an installed version of ttfautohint (issue #3423)
 
 #### On the OpenType Profile
   - **[com.google.fonts/check/glyf_nested_components]:** Nested components are permitted by the OpenType specification, so this check has been moved to the Google Fonts profile. (issue #3424)

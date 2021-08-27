@@ -292,22 +292,6 @@ def familyname(font):
 
 
 @condition
-def installed_ttfa():
-   import subprocess
-   ttfa_cmd = ["ttfautohint",
-               "-V"]  # print version info
-   try:
-       ttfa_output = subprocess.check_output(ttfa_cmd,
-                                             stderr=subprocess.STDOUT)
-   except FileNotFoundError:
-       return None
-
-   installed = re.search(r'ttfautohint ([^-\n]*)(-.*)?\n',
-                         ttfa_output.decode('utf-8')).group(1)
-   return installed
-
-
-@condition
 def hinting_stats(font):
     """
     Return file size differences for a hinted font compared to an dehinted version of same file
