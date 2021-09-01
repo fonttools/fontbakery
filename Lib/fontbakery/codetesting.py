@@ -93,12 +93,14 @@ class CheckTester:
                       'fonts': [values.reader.file.name],
                       'ttFont': values,
                       'ttFonts': [values]}
-        elif isinstance(values, list):
+        elif isinstance(values, list) and values:
             if isinstance(values[0], str):
                 values = {'fonts': values}
             elif isinstance(values[0], TTFont):
                 values = {'fonts': [v.reader.file.name for v in values],
                           'ttFonts': values}
+        else:
+            values = {}
 
         self.runner = CheckRunner(self.profile, values, Configuration(explicit_checks=[self.check_id]))
         for check_identity in self.runner.order:
