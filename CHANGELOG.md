@@ -1,7 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.8.2 (2021-Aug-??)
+## 0.8.3 (2021-Sep-??)
+  - ...
+
+
+## 0.8.2 (2021-Sep-01)
 ### Noteworthy code-changes
   - Fixed build of Read The Docs documentation pages (issue #3313)
   - Now one can invoke Font Bakery with different filetypes (other than just TTFs or OTFs) and the checks will run or skip based on file-type. (issue #3169)
