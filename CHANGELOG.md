@@ -3,6 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.2 (2021-Aug-??)
 ### Noteworthy code-changes
+  - Fixed build of Read The Docs documentation pages (issue #3313)
   - Now one can invoke Font Bakery with different filetypes (other than just TTFs or OTFs) and the checks will run or skip based on file-type. (issue #3169)
   - For this reason, `UFO Source` checks are now included in the `Universal` profile. (issue #3439)
   - We'll likely have source-level (GlyphsApp) checks soon using this mechanism.
