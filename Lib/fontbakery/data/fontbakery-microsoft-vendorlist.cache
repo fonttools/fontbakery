@@ -73,11 +73,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/3747fda36e6f0b2da509db056dd4b6b35ac23720/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/14cfbbf4acbc9284d7ce2728fa182ff34daca1d0/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="08/11/2021" />
+<meta name="ms.date" content="08/24/2021" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -88,18 +88,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2021-08-11 08:53 PM" />
+<meta name="updated_at" content="2021-08-25 12:54 AM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3750" />
+<meta name="word_count" content="3757" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/e6141ec8.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/9918474b.site-ltr.css ">
 
 	
 
@@ -146,13 +146,10 @@
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 	<script>window.onedsAwa = window.awa; delete window.awa;</script>	
 	<script src="/static/third-party/jsll/4.3.4/jsll-4.js" integrity="sha384-uAdmrxddOIWVh6gPCSVnxMNy0bFWA6ksmsR52A7UqQvTPc/nVtxkivaKkP4FB/ma" crossorigin="anonymous"></script>
-	<script nomodule src="/static/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"></script>
-	<script nomodule src="/static/third-party/fetch/3.0.0/fetch.umd.min.js" integrity="sha384-EQIXrC5K2+7X8nGgLkB995I0/6jfAvvyG1ieZ+WYGxgJHFMD/alsG9fSDWvzb5Y1" crossorigin="anonymous"></script>
-	<script nomodule src="/static/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"></script>
-	<script nomodule src="/static/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"></script>
-	<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2c6911d0.index-polyfills.js"></script>
 
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/15bcf66b.index-docs.js"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/global/5cce29c0.deprecation.js"></script>
+
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d23599db.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -160,6 +157,42 @@
 		<a href="#main" class="skip-to-main-link has-outline-color-text visually-hidden-until-focused position-fixed has-inner-focus focus-visible top-0 left-0 right-0 padding-xs has-text-centered has-body-background" tabindex="1">Skip to main content</a>
 		
 		<div hidden id="cookie-consent-holder"></div>
+
+		<div id="unsupported-browser" style="
+			background-color: white;
+			color: black;
+			padding: 16px;
+			border-bottom: 1px solid grey;"
+			hidden
+		>
+			<div style="max-width: 800px; margin: 0 auto;">
+				<p style="font-size: 24px">This browser is no longer supported.</p>
+				<p style="font-size: 16px; margin-top: 16px;">Upgrade to Microsoft Edge to take advantage of the latest features, security updates, and technical support.</p>
+				<div style="margin-top: 12px;">
+					<a href="https://go.microsoft.com/fwlink/p/?LinkID=2092881 "
+						style="
+						background-color: #0078d4;
+						border: 1px solid #0078d4;
+						color: white;
+						padding: 6px 12px;
+						border-radius: 2px;
+						display: inline-block;
+						">
+Download Microsoft Edge					</a>
+					<a href="https://docs.microsoft.com/en-US/lifecycle/faq/internet-explorer-microsoft-edge"
+						style="
+							background-color: white;
+							padding: 6px 12px;
+							border: 1px solid #505050;
+							color: #171717;
+							border-radius: 2px;
+							display: inline-block;
+							">
+More info					</a>
+				</div>
+			</div>
+
+		</div>
 		<!-- liquid-tag banners global -->
 		<div id="headerAreaHolder" data-bi-name="header">
 <header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
@@ -315,7 +348,7 @@
 
 								<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 									<li>
-										<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-08-11T00:00:00.000Z" data-article-date-source="ms.date">08/11/2021</time>
+										<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-08-24T00:00:00.000Z" data-article-date-source="ms.date">08/24/2021</time>
 									</li>
 											<li class="readingTime">18 minutes to read</li>
 										<li class="contributors-holder">
@@ -813,6 +846,10 @@
 <td><a href="https://twitter.com/artakana" data-linktype="external">aratakana</a></td>
 </tr>
 <tr>
+<td>ATSM</td>
+<td><a href="https://aksharatypestudio.in" data-linktype="external">Akshara Type Studio</a></td>
+</tr>
+<tr>
 <td>ATYP</td>
 <td><a href="https://attype.com/" data-linktype="external">Attype Studio</a></td>
 </tr>
@@ -1119,6 +1156,9 @@
 <td>BSYV</td>
 <td><a href="http://www.bensyverson.com" data-linktype="external">Ben Syverson</a></td>
 </tr>
+<tr>
+<td>BTFF</td>
+<td>
 <tr>
 <td>BUBU</td>
 <td><a href="http://www.bubulogix.fr" data-linktype="external">BUBULogix</a></td>
@@ -4056,6 +4096,10 @@
 <td><a href="http://www.schick-toikka.com" data-linktype="external">Schick Toikka</a></td>
 </tr>
 <tr>
+<td>SDFF</td>
+<td><a href="https://staleydigital.com" data-linktype="external">StaleyDigital Font Foundry</a></td>
+</tr>
+<tr>
 <td>Sdtp</td>
 <td><a href="https://sudetype.com" data-linktype="external">Sudetype</a></td>
 </tr>
@@ -4473,7 +4517,7 @@
 </tr>
 <tr>
 <td>TOPP</td>
-<td><a href="http://www.toppan.co.jp/" data-linktype="external">Toppan Printing Co., Ltd.</a></td>
+<td><a href="http://www.toppan.co.jp/" data-linktype="external">Toppan Inc.</a></td>
 </tr>
 <tr>
 <td>TPDP</td>
@@ -4561,7 +4605,7 @@
 </tr>
 <tr>
 <td>TWK</td>
-<td>TYPE.WELTKERN®</td>
+<td><a href="https://www.weltkern.com/" data-linktype="external">TYPE.WELTKERN®</a></td>
 </tr>
 <tr>
 <td>TY</td>
