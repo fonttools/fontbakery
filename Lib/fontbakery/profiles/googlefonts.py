@@ -106,11 +106,6 @@ NAME_TABLE_CHECKS = [
     'com.google.fonts/check/name/rfn'
 ]
 
-GLYPHSAPP_CHECKS = [
-    'com.google.fonts/check/glyphs_file/name/family_and_style_max_length',
-    'com.google.fonts/check/glyphs_file/font_copyright'
-]
-
 REPO_CHECKS = [
     'com.google.fonts/check/repo/dirname_matches_nameid_1',
     'com.google.fonts/check/repo/vf_has_static_fonts',
@@ -199,8 +194,7 @@ GOOGLEFONTS_PROFILE_CHECKS = \
     FAMILY_CHECKS + \
     NAME_TABLE_CHECKS + \
     REPO_CHECKS + \
-    FONT_FILE_CHECKS + \
-    GLYPHSAPP_CHECKS
+    FONT_FILE_CHECKS
 
 
 @check(
@@ -2320,8 +2314,10 @@ def com_google_fonts_check_metadata_valid_copyright(font_metadata):
                       f'But instead we have got:\n"{string}"')
 
 
+# Base-check for font binaries:
 @check(
     id = 'com.google.fonts/check/font_copyright',
+    conditions = ["ttFont"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2383'
 )
 def com_google_fonts_check_font_copyright(ttFont):
@@ -2346,8 +2342,10 @@ def com_google_fonts_check_font_copyright(ttFont):
         yield PASS, "Name table copyright entries are good"
 
 
+# Polymorphism: Check Glyphs App source files:
 @check(
-    id = 'com.google.fonts/check/glyphs_file/font_copyright'
+    id = 'com.google.fonts/check/font_copyright',
+    conditions = ["glyphsFile"]
 )
 def com_google_fonts_check_glyphs_file_font_copyright(glyphsFile):
     """Copyright notices match canonical pattern in fonts"""
@@ -4248,7 +4246,7 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, 
             yield PASS, ("GPOS table provides kerning info for "
                          "all non-ligated sequences.")
 
-
+# Base-check for font binaries:
 @check(
     id = 'com.google.fonts/check/name/family_and_style_max_length',
     rationale = """
@@ -4259,6 +4257,7 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, 
         [1] https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances
         [2] https://github.com/googlefonts/fontbakery/issues/2179
     """,
+    conditions = ["ttFont"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1488',
     misc_metadata = {
         # Somebody with access to Windows should make some experiments
@@ -4297,8 +4296,10 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
         yield PASS, "All name entries are good."
 
 
+# Polymorphism: Check Glyphs App source files:
 @check(
-    id = 'com.google.fonts/check/glyphs_file/name/family_and_style_max_length',
+    id = 'com.google.fonts/check/name/family_and_style_max_length',
+    conditions = ["glyphsFile"]
 )
 def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFile):
     """Combined length of family and style must not exceed 27 characters."""
@@ -4331,6 +4332,7 @@ def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFi
 
         For instance, some designers like to include the full text of a font license in the "copyright notice" entry, but for the GFonts collection this entry should only mention year, author and other basic info in a manner enforced by com.google.fonts/check/font_copyright
     """,
+    conditions = ["ttFont"],
     proposal = 'legacy:check/057'
 )
 def com_google_fonts_check_name_line_breaks(ttFont):

@@ -1,8 +1,9 @@
 import pytest
 import shutil
 
-from fontbakery.codetesting import (TEST_FILE,
-                                    assert_results_contain)
+from fontbakery.codetesting import (assert_results_contain,
+                                    CheckTester,
+                                    TEST_FILE)
 from fontbakery.checkrunner import ERROR
 from fontbakery.profiles import fontval as fontval_profile
 
@@ -10,9 +11,8 @@ from fontbakery.profiles import fontval as fontval_profile
   reason="FontValidator is not installed on your system")
 def test_check_fontvalidator():
     """ MS Font Validator checks """
-    # check = CheckTester(fontval_profile,
-    #                     "com.google.fonts/check/fontvalidator")
-    check = fontval_profile.com_google_fonts_check_fontvalidator
+    check = CheckTester(fontval_profile,
+                        "com.google.fonts/check/fontvalidator")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
 

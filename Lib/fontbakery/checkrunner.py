@@ -21,6 +21,7 @@ from typing import Dict, Any
 from fontbakery.callable import (
     FontbakeryCallable,
     FontBakeryCheck,
+    FontBakeryCheckImplementation,
     FontBakeryCondition,
     FontBakeryExpectedValue,
 )
@@ -157,7 +158,10 @@ class CheckRunner:
 
         return result
 
-    def _exec_check(self, check: FontbakeryCallable, args: Dict[str, Any]):
+    def _exec_check_implementation(self,
+                                   check: FontBakeryCheck,
+                                   implementation: FontBakeryCheckImplementation,
+                                   args: Dict[str, Any]):
         """Yields check sub results.
 
         Each check result is a tuple of: (<Status>, mixed message)
@@ -180,12 +184,12 @@ class CheckRunner:
                 varname: self.config.get(check.id, {}).get(varname)
                 for varname in check.configs
             }
-            check.inject_globals(new_globals)
+            implementation.callable.inject_globals(new_globals)
         try:
             # A check can be either a normal function that returns one Status or a
             # generator that yields one or more. The latter will return a generator
             # object that we can detect with types.GeneratorType.
-            result = check(**args)  # Might raise.
+            result = implementation.callable(**args)  # Might raise.
 
             if isinstance(result, types.GeneratorType):
                 # Iterate over sub-results one-by-one, list(result) would abort on
@@ -362,9 +366,9 @@ class CheckRunner:
                     raise
         return args
 
-    def _get_check_dependencies(self, check, iterargs):
+    def _get_implementation_dependencies(self, implementation, iterargs):
         unfulfilled_conditions = []
-        for condition in check.conditions:
+        for condition in implementation.conditions:
             negate, name = is_negated(condition)
             if name in self._values:
                 # this is a handy way to set flags from the outside
@@ -401,7 +405,7 @@ class CheckRunner:
             return (status, None)
 
         try:
-            args = self._get_args(check, iterargs)
+            args = self._get_args(implementation.callable, iterargs)
             # Run the generators now, so we can test if they're empty
             for k,v in args.items():
                 if inspect.isgenerator(v) or inspect.isgeneratorfunction(v):
@@ -412,11 +416,10 @@ class CheckRunner:
                 return (status, None)
             return None, args
         except Exception as error:
-            status = (ERROR, FailedDependenciesError(check, error))
+            status = (ERROR, FailedDependenciesError(implementation, error))
             return (status, None)
 
     def _run_check(self, check, iterargs):
-        summary_status = None
         # A check is more than just a function, it carries
         # a lot of meta-data for us, in this case we can use
         # meta-data to learn how to call the check (via
@@ -435,8 +438,17 @@ class CheckRunner:
             if not accepted:
                 skipped = (SKIP, "Filtered: {}".format(message or "(no message)"))
 
-        if not skipped:
-            skipped, args = self._get_check_dependencies(check, iterargs)
+            if skipped is not None:
+                yield skipped
+                # And we're done
+                return
+
+        for implementation in check.implementations:
+            yield from self._run_check_implementation(check, implementation, iterargs)
+
+    def _run_check_implementation(self, check, implementation, iterargs):
+        summary_status = None
+        skipped, args = self._get_implementation_dependencies(implementation, iterargs)
 
         # FIXME: check is not a message
         # so, to use it as a message, it should have a "message-interface"
@@ -453,7 +465,7 @@ class CheckRunner:
             # correctly.
             yield skipped
         else:
-            for sub_result in self._exec_check(check, args):
+            for sub_result in self._exec_check_implementation(check, implementation, args):
                 status, _ = sub_result
                 if summary_status is None or status >= summary_status:
                     summary_status = status

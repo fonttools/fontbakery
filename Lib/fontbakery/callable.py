@@ -14,6 +14,11 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 import inspect
 
 from functools import wraps, update_wrapper
+from collections import namedtuple
+
+FontBakeryCheckImplementation = namedtuple(
+    "FontBakeryCheckImplementation", "callable conditions"
+)
 
 def cached_getter(func):
     """Decorate a property by executing it at instatiation time and cache the
@@ -27,6 +32,7 @@ def cached_getter(func):
             setattr(self, attribute, value)
         return value
     return wrapper
+
 
 class FontbakeryCallable:
     def __init__(self, func):
@@ -144,7 +150,7 @@ class FontBakeryCondition(FontbakeryCallable):
                                                             documentation)
         self.force = force
 
-class FontBakeryCheck(FontbakeryCallable):
+class FontBakeryCheck():
     def __init__(self,
                  checkfunc,
                  id,
@@ -212,10 +218,11 @@ class FontBakeryCheck(FontbakeryCallable):
         a variable called ``hello` and fill it with the value of
         ``config["example.com/mytest"]["hello"]``.
         """
-        super().__init__(checkfunc)
         self.id = id
         self.name = checkfunc.__name__ if name is None else name
-        self.conditions = conditions or []
+        self.implementations = [
+            FontBakeryCheckImplementation(FontbakeryCallable(checkfunc), conditions or [])
+        ]
         self.rationale = rationale
         self.description, self.documentation = get_doc_desc(checkfunc,
                                                             description,
@@ -229,6 +236,11 @@ class FontBakeryCheck(FontbakeryCallable):
     # This was problematic. See: https://github.com/googlefonts/fontbakery/issues/2194
     # def __str__(self):
     #  return self.id
+
+    def __call__(self, *args, **kwds):
+        # Nobody should actually *call* this, but the decorated check still needs to be
+        # callable
+        raise NotImplementedError
 
 def condition(*args, **kwds):
     """Check wrapper, a factory for FontBakeryCondition

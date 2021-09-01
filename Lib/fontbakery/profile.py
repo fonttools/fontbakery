@@ -263,24 +263,25 @@ class Profile:
         # make this simple, collect all used names
         for section_name, section in self._sections.items():
             for check in section.checks:
-                dependencies = list(check.args)
-                if hasattr(check, "conditions"):
-                    dependencies += [
-                        name for negated, name in map(is_negated, check.conditions)
-                    ]
+                for implementation in check.implementations:
+                    dependencies = list(implementation.callable.args)
+                    if hasattr(implementation, "conditions"):
+                        dependencies += [
+                            name for negated, name in map(is_negated, implementation.conditions)
+                        ]
 
-                while dependencies:
-                    name = dependencies.pop()
-                    if name in seen:
-                        continue
-                    seen.add(name)
-                    if name not in self._namespace:
-                        failed.append(name)
-                        continue
-                    # if this is a condition, expand its dependencies
-                    condition = self.conditions.get(name, None)
-                    if condition is not None:
-                        dependencies += condition.args
+                    while dependencies:
+                        name = dependencies.pop()
+                        if name in seen:
+                            continue
+                        seen.add(name)
+                        if name not in self._namespace:
+                            failed.append(name)
+                            continue
+                        # if this is a condition, expand its dependencies
+                        condition = self.conditions.get(name, None)
+                        if condition is not None:
+                            dependencies += condition.args
         if len(failed):
             comma_separated = ", ".join(failed)
             raise SetupError(
@@ -432,6 +433,11 @@ class Profile:
         """
         if not key in ("args", "mandatoryArgs"):
             raise TypeError(f'key must be "args" or "mandatoryArgs", got {key}')
+        if isinstance(item, FontBakeryCheck):
+            args = set()
+            for implementation in item.implementations:
+                args.update(self._get_aggregate_args(implementation.callable, key))
+            return args
         dependencies = list(getattr(item, key))
         if hasattr(item, "conditions"):
             dependencies += [name for negated, name in map(is_negated, item.conditions)]
@@ -463,9 +469,10 @@ class Profile:
         args.reverse()
         # (check, signature, scope)
         scopes = [(check, tuple(), tuple()) for check in checks]
-        aggregatedArgs = {
+        aggregateArgs = {
             "args": {
-                check.name: self._get_aggregate_args(check, "args") for check in checks
+                check.name: self._get_aggregate_args(check, "args")
+                for check in checks
             },
             "mandatoryArgs": {
                 check.name: self._get_aggregate_args(check, "mandatoryArgs")
@@ -479,13 +486,13 @@ class Profile:
             args_set = set(args)
             arg = args.pop()
             for check, signature, scope in scopes:
-                if not len(aggregatedArgs["args"][check.name] & args_set):
+                if not len(aggregateArgs["args"][check.name] & args_set):
                     # there's no args no more or no arguments of check are
                     # in args
                     target = saturated
                 elif (
                     arg == "*check"
-                    or arg in aggregatedArgs["mandatoryArgs"][check.name]
+                    or arg in aggregateArgs["mandatoryArgs"][check.name]
                 ):
                     signature += (1,)
                     scope += (arg,)
@@ -657,14 +664,8 @@ class Profile:
                         "register in {}.".format(func, other_section, section)
                     )
                 return False  # skipped
-            else:
-                raise SetupError(
-                    f'Check id "{func}" is not unique!'
-                    f" It is already registered in {other_section} and"
-                    f" registration for that id is now requested in {section}."
-                    f" BUT the current check is a different object than"
-                    f" the registered check."
-                )
+            # It's now acceptable to register multiple implementations with
+            # the same check ID, so we no longer complain about it here.
         self._check_registry[func.id] = section
         return True
 
@@ -1053,11 +1054,13 @@ class Profile:
         deps = set(dependencies)  # faster membership checking
         result = []
         for check in self.checks:
-            check_deps = self.get_deep_check_dependencies(check)
-            if (subset and deps.issubset(check_deps)) or (
-                not subset and len(deps.intersection(check_deps))
-            ):
-                result.append(check)
+            for implementation in check.implementations:
+                check_deps = self.get_deep_check_dependencies(implementation.callable)
+                if (subset and deps.issubset(check_deps)) or (
+                    not subset and len(deps.intersection(check_deps))
+                ):
+                    result.append(check)
+                    break
         return result
 
     def merge_default_config(self, user_config):

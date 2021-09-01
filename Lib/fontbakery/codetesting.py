@@ -52,13 +52,15 @@ class CheckTester:
         self.check_iterargs = None
         self._args = None
 
-    def _get_args(self, condition_overrides=None):
+    def _get_args(self, implementation_callable, condition_overrides=None):
         if condition_overrides is not None:
             for name_key, value in condition_overrides.items():
                 if isinstance(name_key, str):
                     # this is a simplified form of a cache key:
                     # write the conditions directly to the iterargs of the check identity
-                    used_iterargs = self.runner._filter_condition_used_iterargs(name_key, self.check_iterargs)
+                    used_iterargs = \
+                        self.runner._filter_condition_used_iterargs(name_key,
+                                                                    self.check_iterargs)
                     key = (name_key, used_iterargs)
                 else:
                     # Full control for the caller, who has to inspect how
@@ -66,7 +68,8 @@ class CheckTester:
                     key = name_key
                 #                                      error, value
                 self.runner._cache['conditions'][key] = None, value
-        args = self.runner._get_args(self.check, self.check_iterargs)
+
+        args = self.runner._get_args(implementation_callable, self.check_iterargs)
         # args that are derived iterables are generators that must be
         # converted to lists, otherwise we end up with exhausted
         # generators after their first consumption.
@@ -93,7 +96,7 @@ class CheckTester:
         if isinstance(values, str):
             if values.endswith('README.md'):
                 values = {'readme_md': values}
-            elif values.endswith('.ufo'):
+            elif values.endswith('.ufo') or values.endswith('.ufo/'):
                 values = {'ufo': values}
             elif values.endswith('METADATA.pb'):
                 fonts = [os.path.join(os.path.dirname(values), f.filename)
@@ -142,8 +145,11 @@ class CheckTester:
         if self.check_identity is None:
             raise KeyError(f'Check with id "{self.check_id}" not found.')
 
-        self._args = self._get_args(condition_overrides)
-        return list(self.runner._exec_check(self.check, self._args))
+        results = []
+        for implementation in self.check.implementations:
+          self._args = self._get_args(implementation.callable, condition_overrides)
+          results.extend(list(self.runner._exec_check_implementation(self.check, implementation, self._args)))
+        return results
 
 
 def portable_path(p):

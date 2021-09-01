@@ -7,6 +7,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - Check statuses may now also be overriden via configuration file. See USAGE.md for examples. (PR #3469)
   - We now use the CheckTester helper class is all our code-tests. (PR #3453)
   - The `get_family_checks` method also takes into account usage of the `fonts` dependency, in addition to `ttFonts`.
+  - Check-polymorphism: alternative implementations for a given check-ID. This allows one to have multiple checks for the same font problem, but operating in different file formats such as: **(1)** font binaries (ttFont objects) **(2)** GlyphsApp sources **(3)** UFO fonts, etc. (issue #3436)
+  - This release includes a couple polymorphic checks for both **TTF binaries** and **Glyphs App sources**.
 
 ### Changes to existing checks
 #### On the Universal Profile
@@ -19,6 +21,8 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/repo/sample_image]:** The README.md file has a sample image to showcase the font family? (issue #2898)
   - **[com.google.fonts/check/metadata/can_render_samples]:** Ensure sample_text in METADATA.pb can be rendered in the font (issue #3419)
+  - **[com.google.fonts/check/name/family_and_style_max_length]:** Polymorphic implementation for Glyphs App source files. (issue #3436)
+  - **[com.google.fonts/check/font_copyright]:** Polymorphic implementation for Glyphs App source files. (issue #3436)
 
 ### Deprecated Checks
 #### Removed from the Universal Profile

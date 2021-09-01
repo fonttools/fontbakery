@@ -368,6 +368,8 @@ def test_check_name_family_and_style_max_length():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/name/family_and_style_max_length")
 
+    ################# Font binaries: #################
+
     # Our reference Cabin Regular is known to be good 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
@@ -406,11 +408,7 @@ def test_check_name_family_and_style_max_length():
                            WARN, 'too-long',
                            'with a bad font...')
 
-
-def test_check_glyphs_file_name_family_and_style_max_length():
-    """ Combined length of family and style must not exceed 27 characters. """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/glyphs_file/name/family_and_style_max_length")
+    ################# Glyphs App sources: #################
 
     # Our reference Comfortaa.glyphs is known to be good
     glyphsFile = GLYPHSAPP_TEST_FILE("Comfortaa.glyphs")
@@ -1777,6 +1775,8 @@ def test_check_font_copyright():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/font_copyright")
 
+    ################# Font binaries: #################
+
     # Our reference Cabin Regular is known to be bad
     # Since it provides an email instead of a git URL:
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
@@ -1796,10 +1796,7 @@ def test_check_font_copyright():
                 'with good strings...')
 
 
-def test_check_glyphs_file_font_copyright():
-    """Copyright notices match canonical pattern in fonts"""
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/glyphs_file/font_copyright")
+    ################# Glyphs App sources: #################
 
     glyphsFile = GLYPHSAPP_TEST_FILE("Comfortaa.glyphs")
     # note: the check does not actually verify that the project name is correct.
