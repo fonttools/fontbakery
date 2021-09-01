@@ -723,27 +723,15 @@ def test_check_family_vertical_metrics(montserrat_ttFonts):
 
 
 def test_check_superfamily_vertical_metrics(montserrat_ttFonts, cabin_ttFonts, cabin_condensed_ttFonts):
-    from fontbakery.profiles.universal import com_google_fonts_check_superfamily_vertical_metrics as check
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/superfamily/vertical_metrics")
 
-    assert_PASS(check([cabin_ttFonts,
-                       cabin_condensed_ttFonts]),
+    assert_PASS(check([], {"superfamily_ttFonts": [cabin_ttFonts , cabin_condensed_ttFonts]}),
                 'with multiple good families...')
 
-    assert_results_contain(check([cabin_ttFonts,
-                                  montserrat_ttFonts]),
+    assert_results_contain(check([], {"superfamily_ttFonts": [cabin_ttFonts, montserrat_ttFonts]}),
                            WARN, "superfamily-vertical-metrics",
                            'with families that diverge on vertical metric values...')
-    # FIXME:
-    # check = CheckTester(universal_profile,
-    #                     "com.google.fonts/check/superfamily/vertical_metrics")
-    #
-    # assert_PASS(check(cabin_ttFonts + cabin_condensed_ttFonts),
-    #             'with multiple good families...')
-    #
-    # assert_results_contain(check(cabin_ttFonts + montserrat_ttFonts),
-    #                        WARN, None, # FIXME: This needs a message keyword
-    #                        'with families that diverge on vertical metric values...')
-
 
 def test_check_STAT_strings():
     check = CheckTester(universal_profile,
