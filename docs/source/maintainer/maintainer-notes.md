@@ -59,6 +59,7 @@ git push upstream preparing_v0_8_2
 # or make additional commits until the build is finally green
 
 # Update the local copy
+git checkout main
 git fetch upstream
 git rebase upstream/main
 
