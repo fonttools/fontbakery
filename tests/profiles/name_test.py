@@ -1,4 +1,5 @@
 import os
+from types import SimpleNamespace
 
 import fontTools.ttLib
 from fontTools.ttLib import TTFont
@@ -235,7 +236,8 @@ def assert_name_table_check_result(ttFont, index, name, check, value, expected_r
 
 def test_check_family_naming_recommendations():
     """ Font follows the family naming recommendations ? """
-    from fontbakery.profiles.name import com_google_fonts_check_family_naming_recommendations as check
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/family_naming_recommendations")
     # Our reference Mada Medium is known to be good
     ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
 
@@ -317,7 +319,8 @@ def test_check_family_naming_recommendations():
 
 
 def test_check_name_postscript_vs_cff():
-    from fontbakery.profiles.name import com_adobe_fonts_check_name_postscript_vs_cff as check
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/name/postscript_vs_cff")
     test_font = TTFont()
     test_font['CFF '] = fontTools.ttLib.newTable('CFF ')
     test_font['CFF '].cff.fontNames = ['SomeFontName']
@@ -330,6 +333,8 @@ def test_check_name_postscript_vs_cff():
         WindowsEncodingID.UNICODE_BMP,
         WindowsLanguageID.ENGLISH_USA
     )
+
+    test_font.reader = SimpleNamespace(file = SimpleNamespace(name ="whatever"))
     assert_results_contain(check(test_font),
                            FAIL, 'mismatch')
 
@@ -344,8 +349,8 @@ def test_check_name_postscript_vs_cff():
 
 
 def test_check_name_postscript_name_consistency():
-    from fontbakery.profiles.name import \
-        com_adobe_fonts_check_name_postscript_name_consistency as check
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/name/postscript_name_consistency")
 
     base_path = portable_path("data/test/source-sans-pro/TTF")
     font_path = os.path.join(base_path, 'SourceSansPro-Regular.ttf')
@@ -375,8 +380,8 @@ def test_check_name_postscript_name_consistency():
 
 
 def test_check_family_max_4_fonts_per_family_name():
-    from fontbakery.profiles.name import \
-        com_adobe_fonts_check_family_max_4_fonts_per_family_name as check
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/family/max_4_fonts_per_family_name")
 
     base_path = portable_path("data/test/source-sans-pro/OTF")
 
