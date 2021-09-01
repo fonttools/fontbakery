@@ -64,6 +64,7 @@ git fetch upstream
 git rebase upstream/main
 
 # cleanup
+deactivate # just in case we may already in a "dirty" venv
 rm build/ -rf
 rm dist/ -rf
 rm venv/ -rf
