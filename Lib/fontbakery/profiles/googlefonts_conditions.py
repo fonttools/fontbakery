@@ -666,7 +666,16 @@ def GFAxisRegistry():
                  "volume.textproto",
                  "weight.textproto",
                  "width.textproto",
-                 "wonky.textproto"]:
+                 "wonky.textproto",
+                 "x_opaque.textproto",
+                 "x_transparent_figures.textproto",
+                 "x_transparent.textproto",
+                 "y_opaque.textproto",
+                 "y_transparent_ascender.textproto",
+                 "y_transparent_descender.textproto",
+                 "y_transparent_figures.textproto",
+                 "y_transparent_lowercase.textproto",
+                 "y_transparent_uppercase.textproto"]:
         append_AxisMessage(resource_filename('fontbakery', 'data/' + axis))
     return registry
 
