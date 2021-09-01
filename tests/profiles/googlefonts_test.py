@@ -767,32 +767,34 @@ def test_family_directory_condition():
 
 def test_check_family_has_license():
     """ Check font project has a license. """
-    from fontbakery.profiles.googlefonts import (com_google_fonts_check_family_has_license as check,
-                                                 licenses)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/family/has_license")
+
+    from fontbakery.profiles.googlefonts import licenses
 
     # The lines maked with 'hack' below are meant to
     # not let fontbakery's own license to mess up
     # this code test.
     detected_licenses = licenses(portable_path("data/test/028/multiple"))
     detected_licenses.pop(-1) # hack
-    assert_results_contain(check(detected_licenses),
+    assert_results_contain(check([], {"licenses": detected_licenses}),
                            FAIL, 'multiple',
                            'with multiple licenses...')
 
     detected_licenses = licenses(portable_path("data/test/028/none"))
     detected_licenses.pop(-1) # hack
-    assert_results_contain(check(detected_licenses),
+    assert_results_contain(check([], {"licenses": detected_licenses}),
                            FAIL, 'no-license',
                            'with no license...')
 
     detected_licenses = licenses(portable_path("data/test/028/pass_ofl"))
     detected_licenses.pop(-1) # hack
-    assert_PASS(check(detected_licenses),
+    assert_PASS(check([], {"licenses": detected_licenses}),
                 'with a single OFL license...')
 
     detected_licenses = licenses(portable_path("data/test/028/pass_apache"))
     detected_licenses.pop(-1) # hack
-    assert_PASS(check(detected_licenses),
+    assert_PASS(check([], {"licenses": detected_licenses}),
                 'with a single Apache license...')
 
 
@@ -828,7 +830,7 @@ def test_check_license_ofl_body_text():
 
 def test_check_name_license(mada_ttFonts):
     """ Check copyright namerecords match license file. """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_name_license as check
+    check = CheckTester(googlefonts_profile, "com.google.fonts/check/name/license")
 
     # Our reference Mada family has its copyright name records properly set
     # identifying it as being licensed under the Open Font License
@@ -836,17 +838,17 @@ def test_check_name_license(mada_ttFonts):
     wrong_license = 'LICENSE.txt' # Apache
 
     for ttFont in mada_ttFonts:
-        assert_PASS(check(ttFont, license),
+        assert_PASS(check(ttFont, {"license": license}),
                     'with good fonts ...')
 
     for ttFont in mada_ttFonts:
-        assert_results_contain(check(ttFont, wrong_license),
+        assert_results_contain(check(ttFont, {"license": wrong_license}),
                                FAIL, 'wrong',
                                'with wrong entry values ...')
 
     for ttFont in mada_ttFonts:
         delete_name_table_id(ttFont, NameID.LICENSE_DESCRIPTION)
-        assert_results_contain(check(ttFont, wrong_license),
+        assert_results_contain(check(ttFont, {"license": wrong_license}),
                                FAIL, 'missing',
                                'with missing copyright namerecords ...')
 
@@ -1661,11 +1663,9 @@ def test_check_metadata_valid_full_name_values():
 
 def test_check_metadata_valid_filename_values():
     """ METADATA.pb font.filename field contains font name in right format? """
-    # FIXME: CheckTester
-    from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_metadata_valid_filename_values as check,
-                metadata_file,
-                family_metadata)
+    from fontbakery.profiles.googlefonts import (metadata_file, family_metadata)
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/valid_filename_values")
 
     # Our reference Montserrat family is a good 18-styles family:
     for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
@@ -1673,13 +1673,13 @@ def test_check_metadata_valid_filename_values():
         meta = family_metadata(metadata_file(family_directory))
 
         # So it must PASS the check:
-        assert_PASS(check(fontfile, meta),
+        assert_PASS(check(fontfile, {"family_metadata": meta}),
                     f"with a good font ({fontfile})...")
 
         # And fail if it finds a bad filename:
         for font in meta.fonts:
             font.filename = "WrongFileName"
-        assert_results_contain(check(fontfile, meta),
+        assert_results_contain(check(fontfile, {"family_metadata": meta}),
                                FAIL, 'bad-field',
                                f'with a bad font ({fontfile})...')
 
@@ -1797,22 +1797,21 @@ def test_check_metadata_copyright_max_length():
 
 def test_check_metadata_filenames():
     """ METADATA.pb: Font filenames match font.filename entries? """
-    from fontbakery.profiles.googlefonts import (com_google_fonts_check_metadata_filenames as check,
-                                                 metadata_file,
-                                                 family_metadata)
+    check = CheckTester(googlefonts_profile, "com.google.fonts/check/metadata/filenames")
+    from fontbakery.profiles.googlefonts import (metadata_file, family_metadata)
     family_dir = portable_path('data/test/montserrat/')
     family_meta = family_metadata(metadata_file(family_dir))
 
     # test PASS:
     fonts = montserrat_fonts
-    assert_PASS(check(fonts, family_dir, family_meta),
+    assert_PASS(check(fonts, {"family_directory": family_dir, "family_metadata": family_meta}),
                 'with matching list of font files...')
 
     # make sure missing files are detected by the check:
     fonts = montserrat_fonts
     original_name = fonts[0]
     os.rename(original_name, "font.tmp") # rename one font file in order to trigger the FAIL
-    assert_results_contain(check(fonts, family_dir, family_meta),
+    assert_results_contain(check(fonts, {"family_directory": family_dir, "family_metadata": family_meta}),
                            FAIL, 'file-not-found',
                            'with missing font files...')
     os.rename("font.tmp", original_name) # restore filename
@@ -1825,8 +1824,8 @@ def test_check_metadata_filenames():
     # listed on METADATA.pb, so the check must FAIL, even if we do not
     # explicitely include them in the set of files to be checked:
     assert_results_contain(check(cabin_fonts,
-                                 family_dir,
-                                 family_meta),
+                                 {"family_directory": family_dir,
+                                  "family_metadata": family_meta}),
                            FAIL, 'file-not-declared',
                            'with some font files not declared...')
 
@@ -2264,9 +2263,10 @@ def test_check_production_encoded_glyphs(cabin_ttFonts):
     # check = CheckTester(googlefonts_profile,
     #                     "com.google.fonts/check/production_encoded_glyphs")
     from fontbakery.profiles.shared_conditions import family_directory
+    check = CheckTester(googlefonts_profile, "com.google.fonts/check/production_encoded_glyphs")
+
     from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_production_encoded_glyphs as check,
-                api_gfonts_ttFont,
+        import (api_gfonts_ttFont,
                 style,
                 remote_styles,
                 metadata_file,
@@ -3179,7 +3179,8 @@ def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
 
 def test_check_repo_vf_has_static_fonts():
     """Check VF family dirs in google/fonts contain static fonts"""
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_vf_has_static_fonts as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/repo/vf_has_static_fonts")
     import tempfile
     import shutil
     # in order for this check to work, we need to
@@ -3189,45 +3190,46 @@ def test_check_repo_vf_has_static_fonts():
         src_family = portable_path("data/test/varfont")
         shutil.copytree(src_family, family_dir)
 
-        assert_results_contain(check(family_dir),
+        assert_results_contain(check([], {"family_directory": family_dir}),
                                WARN, 'missing',
                                'for a VF family which does not has a static dir.')
 
         static_dir = portable_path(family_dir + "/static")
         os.mkdir(static_dir)
-        assert_results_contain(check(family_dir),
+        assert_results_contain(check([], {"family_directory": family_dir}),
                                FAIL, 'empty',
                                'for a VF family which has a static dir but no fonts in the static dir.')
 
         static_fonts = portable_path("data/test/cabin")
         shutil.rmtree(static_dir)
         shutil.copytree(static_fonts, static_dir)
-        assert_PASS(check(family_dir),
+        assert_PASS(check([], {"family_directory": family_dir}),
                     'for a VF family which has a static dir and static fonts')
 
 
 def test_check_repo_upstream_yaml_has_required_fields():
     """Check upstream.yaml has all required fields"""
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_upstream_yaml_has_required_fields as check
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/repo/upstream_yaml_has_required_fields")
     upstream_yaml = {
         "branch": "main",
         "repository_url": "https://www.github.com/googlefonts/testFamily",
         "files": {"TestFamily-Regular.ttf": "TestFamily-Regular.ttf"}
     }
     # Pass if upstream.yaml file contains all fields
-    assert_PASS(check(upstream_yaml),
+    assert_PASS(check({}, {"upstream_yaml": upstream_yaml}),
                 'for an upstream.yaml which contains all fields')
 
     # Fail if it doesn't
     upstream_yaml.pop("repository_url")
-    assert_results_contain(check(upstream_yaml),
+    assert_results_contain(check({}, {"upstream_yaml": upstream_yaml}),
                            FAIL, "missing-fields",
                            "for an upsream.yaml which doesn't contain all fields")
 
 
 def test_check_repo_fb_report():
     """ A font repository should not include fontbakery report files """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_fb_report as check
+    check = CheckTester(googlefonts_profile, "com.google.fonts/check/repo/fb_report")
     import tempfile
     import shutil
     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -3235,10 +3237,10 @@ def test_check_repo_fb_report():
         src_family = portable_path("data/test/varfont")
         shutil.copytree(src_family, family_dir)
 
-        assert_PASS(check(family_dir),
+        assert_PASS(check([], {"family_directory": family_dir}),
                     'for a repo without Font Bakery report files.')
 
-        assert_PASS(check(family_dir),
+        assert_PASS(check([], {"family_directory": family_dir}),
                     'with a json file that is not a Font Bakery report.')
 
         # Add a json file that is not a FB report
@@ -3261,14 +3263,14 @@ def test_check_repo_fb_report():
                           "jura",
                           "static",
                           "my_fontfamily_name.json"), "w+").write(FB_REPORT_SNIPPET)
-        assert_results_contain(check(family_dir),
+        assert_results_contain(check([], {"family_directory": family_dir}),
                                WARN, 'fb-report',
                                'with an actual snippet of a report.')
 
 
 def test_check_repo_zip_files():
     """ A font repository should not include ZIP files """
-    from fontbakery.profiles.googlefonts import com_google_fonts_check_repo_zip_files as check
+    check = CheckTester(googlefonts_profile, "com.google.fonts/check/repo/zip_files")
     import tempfile
     import shutil
     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -3276,7 +3278,7 @@ def test_check_repo_zip_files():
         src_family = portable_path("data/test/varfont")
         shutil.copytree(src_family, family_dir)
 
-        assert_PASS(check(family_dir),
+        assert_PASS(check([], {"family_directory": family_dir}),
                     'for a repo without ZIP files.')
 
         for ext in ["zip", "rar", "7z"]:
@@ -3287,7 +3289,7 @@ def test_check_repo_zip_files():
                                     f"fonts-release.{ext}")
             #create an empty file. The check won't care about the contents:
             open(filepath, "w+")
-            assert_results_contain(check(family_dir),
+            assert_results_contain(check([], {"family_directory": family_dir}),
                                    FAIL, 'zip-files',
                                    f"when a {ext} file is found.")
             # remove the file before testing the next one ;-)
@@ -3295,10 +3297,10 @@ def test_check_repo_zip_files():
 
 
 def test_check_vertical_metrics_regressions(cabin_ttFonts):
+    check = CheckTester(googlefonts_profile, "com.google.fonts/check/vertical_metrics_regressions")
     from fontbakery.profiles.shared_conditions import family_directory
     from fontbakery.profiles.googlefonts \
-        import (com_google_fonts_check_vertical_metrics_regressions as check,
-                api_gfonts_ttFont,
+        import (api_gfonts_ttFont,
                 style,
                 remote_styles,
                 regular_ttFont,
@@ -3311,29 +3313,29 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     ttFont = regular_ttFont([TTFont(f) for f in cabin_fonts])
 
     # Cabin test family should match by default
-    assert_PASS(check(ttFont, remote),
+    assert_PASS(check(ttFont, {"regular_remote_style": remote}),
                 'with a good family...')
 
     # FAIL with a changed vertical metric values
     remote2 = deepcopy(remote)
     ttFont2 = deepcopy(ttFont)
     ttFont2['OS/2'].sTypoAscender = 0
-    assert_results_contain(check(ttFont2, remote2),
+    assert_results_contain(check(ttFont2, {"regular_remote_style": remote2}),
                            FAIL, 'bad-typo-ascender',
                            'with a family which has an incorrect typoAscender...')
 
     ttFont2['OS/2'].sTypoDescender = 0
-    assert_results_contain(check(ttFont2, remote2),
+    assert_results_contain(check(ttFont2, {"regular_remote_style": remote2}),
                            FAIL, 'bad-typo-descender',
                            'with a family which has an incorrect typoDescender...')
 
     ttFont2['hhea'].ascent = 0
-    assert_results_contain(check(ttFont2, remote2),
+    assert_results_contain(check(ttFont2, {"regular_remote_style": remote2}),
                            FAIL, 'bad-hhea-ascender',
                            'with a family which has an incorrect hhea ascender...')
 
     ttFont2['hhea'].descent = 0
-    assert_results_contain(check(ttFont2, remote2),
+    assert_results_contain(check(ttFont2, {"regular_remote_style": remote2}),
                            FAIL, 'bad-hhea-descender',
                            'with a family which has an incorrect hhea descender...')
 
@@ -3341,7 +3343,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     remote3 = deepcopy(remote)
     ttFont3 = deepcopy(ttFont)
     ttFont3["OS/2"].fsSelection &= ~(1 << 7)
-    assert_results_contain(check(ttFont3, remote3),
+    assert_results_contain(check(ttFont3, {"regular_remote_style": remote3}),
                            FAIL, "bad-fsselection-bit7",
                            "with a remote family which has typo metrics "
                            "enabled and the fonts being checked don't.")
@@ -3356,7 +3358,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     ttFont4["OS/2"].sTypoDescender = -remote4["OS/2"].usWinDescent
     ttFont4["hhea"].ascent = remote4["OS/2"].usWinAscent
     ttFont4["hhea"].descent = -remote4["OS/2"].usWinDescent
-    assert_PASS(check(ttFont4, remote4),
+    assert_PASS(check(ttFont4, {"regular_remote_style": remote4}),
                 'with a remote family which does not have typo metrics'
                 ' enabled but the checked fonts vertical metrics have been'
                 ' set so its typo and hhea metrics match the remote'
@@ -3373,7 +3375,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     ttFont5["OS/2"].sTypoDescender = math.ceil(-remote5["OS/2"].usWinDescent / 2)
     ttFont5["hhea"].ascent = math.ceil(remote5["OS/2"].usWinAscent / 2)
     ttFont5["hhea"].descent = math.ceil(-remote5["OS/2"].usWinDescent / 2)
-    assert_PASS(check(ttFont5, remote5),
+    assert_PASS(check(ttFont5, {"regular_remote_style": remote5}),
                 'with a remote family which does not have typo metrics '
                 'enabled but the checked fonts vertical metrics have been '
                 'set so its typo and hhea metrics match the remote '
@@ -3383,7 +3385,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     remote6 = deepcopy(remote)
     ttFont6 = deepcopy(ttFont)
     ttFont6['OS/2'].fsSelection &= ~(1 << 7)
-    assert_results_contain(check(ttFont6, remote6),
+    assert_results_contain(check(ttFont6, {"regular_remote_style": remote6}),
                            FAIL, "bad-fsselection-bit7",
                            'OS/2 fsSelection bit 7 must be enabled.')
 
@@ -3395,7 +3397,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     remote7["OS/2"].fsSelection &= ~(1 << 7)
     ttFont7["OS/2"].fsSelection &= ~(1 << 7)
     ttFont7["OS/2"].usWinAscent = 2500
-    assert_results_contain(check(ttFont7, remote7),
+    assert_results_contain(check(ttFont7, {"regular_remote_style": remote7}),
                            FAIL, "bad-fsselection-bit7",
                            'OS/2 fsSelection bit 7 must be enabled.')
 
