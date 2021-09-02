@@ -1,6 +1,6 @@
 [![Latest PyPI Version](https://img.shields.io/pypi/v/fontbakery.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
 [![Python](https://img.shields.io/pypi/pyversions/fontbakery.svg?style=flat)](https://pypi.python.org/pypi/fontbakery/)
-[![Build Status](https://github.com/googlefonts/fontbakery/actions/workflows/tox.yml/badge.svg)
+[![Build Status](https://github.com/googlefonts/fontbakery/actions/workflows/tox.yml/badge.svg)](https://github.com/googlefonts/fontbakery/actions/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg)](https://github.com/googlefonts/fontbakery/blob/main/LICENSE.txt)
 
 # [![Font Bakery](data/logo.png)](http://fontbakery.com)
