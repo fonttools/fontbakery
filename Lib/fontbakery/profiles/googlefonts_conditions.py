@@ -409,26 +409,29 @@ def font_familyname(font_familynames):
     return font_familynames[0]
 
 
-# TODO: Design special case handling for whitelists/blacklists
+# TODO: Design special case handling mechanism:
 # https://github.com/googlefonts/fontbakery/issues/1540
 @condition
-def whitelist_camelcased_familyname(font):
-    familynames = [
+def camelcased_familyname_exception(familyname):
+    '''In general, we would not like to have camel-cased
+       familynames but there are a few exceptions to that
+       rule, that we keep listed here, for now.
+    '''
+    for exception in [
+        "3D", # seen in "Rock 3D"
         "BenchNine",
+        "DotGothic", # seen in "DotGothic16"
         "FakeFont",
+        "JetBrains", # seen in "JetBrains Mono"
         "McLaren",
         "MedievalSharp",
+        "RocknRoll", # seen in "RocknRoll One"
         "UnifrakturCook",
         "UnifrakturMaguntia",
         "MonteCarlo",
         "WindSong",
-        "JetBrains Mono",
-        "RocknRoll One",
-        "Rock 3D",
-        "DotGothic16",
-    ]
-    for familyname in familynames:
-        if familyname in font:
+    ]:
+        if exception in familyname:
             return True
 
 

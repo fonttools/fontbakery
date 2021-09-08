@@ -2571,7 +2571,7 @@ def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_me
 @check(
     id = 'com.google.fonts/check/metadata/fontname_not_camel_cased',
     conditions = ['font_metadata',
-                  'not whitelist_camelcased_familyname'],
+                  'not camelcased_familyname_exception'],
     proposal = 'legacy:check/109'
 )
 def com_google_fonts_check_metadata_fontname_not_camel_cased(font_metadata):
