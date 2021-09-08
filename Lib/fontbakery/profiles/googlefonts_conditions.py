@@ -419,13 +419,13 @@ def whitelist_camelcased_familyname(font):
         "McLaren",
         "MedievalSharp",
         "UnifrakturCook",
-        "UnifrakturMaguntia"
-        "MonteCarlo"
-        "WindSong"
-        "JetBrains Mono"
-        "RocknRoll One"
-        "Rock 3D"
-        "DotGothic16"
+        "UnifrakturMaguntia",
+        "MonteCarlo",
+        "WindSong",
+        "JetBrains Mono",
+        "RocknRoll One",
+        "Rock 3D",
+        "DotGothic16",
     ]
     for familyname in familynames:
         if familyname in font:
