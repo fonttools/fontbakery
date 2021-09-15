@@ -117,6 +117,7 @@ REPO_CHECKS = [
     'com.google/fonts/check/repo/upstream_yaml_has_required_fields',
     'com.google.fonts/check/repo/fb_report',
     'com.google.fonts/check/repo/zip_files',
+    'com.google.fonts/check/repo/sample_image',
     'com.google.fonts/check/license/OFL_copyright',
     'com.google.fonts/check/license/OFL_body_text'
 ]
@@ -5839,8 +5840,79 @@ def com_google_fonts_check_render_own_name(ttFont):
     else:
         yield FAIL,\
               Message("render-own-name",
-                      f'.notdef glyphs were found when attempting to render {menu_name}'
-                      )
+                      f'.notdef glyphs were found when attempting to render {menu_name}')
+
+@check(
+    id = "com.google.fonts/check/repo/sample_image",
+    rationale = """
+        In order to showcase what a font family looks like, the project's README.md file should ideally include a sample image and highlight it in the upper portion of the document, no more than 10 lines away from the top of the file.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2898',
+)
+def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory):
+    """Check README.md has a sample image."""
+    import re
+    from fontbakery.utils import bullet_list
+
+    image_path = False
+    line_number = 0
+    for line in readme_contents.split('\n'):
+        if line.strip() == "":
+            continue
+
+        line_number += 1
+        # We're looking for something like this:
+        # ![Raleway font sample](documents/raleway-promo.jpg)
+        # And we accept both png and jpg files
+        result = re.match(r'\!\[.*\]\((.*\.(png|jpg))\)', line)
+        if result:
+            image_path = result[1]
+            break
+
+    local_image_files = []
+    for (dirpath, dirnames, filenames) in os.walk(readme_directory):
+        local_image_files.extend([os.path.join(dirpath[len(readme_directory)+1:], filename)
+                                  for filename in filenames
+                                  if filename.endswith('.jpg') or
+                                     filename.endswith('.png')])
+
+    if local_image_files:
+        sample_tip = local_image_files[0]
+    else:
+        sample_tip = 'samples/some-sample-image.jpg'
+    MARKDOWN_IMAGE_SYNTAX_TIP = (f'You can use something like this:\n\n'
+                                 f'\t![font sample]({sample_tip})')
+
+    if image_path:
+        if image_path not in local_image_files:
+            yield FAIL,\
+                  Message("image-missing",
+                          f'The referenced sample image could not be found:'
+                          f' {os.path.join(readme_directory, image_path)}\n')
+        else:
+            if line_number < 10:
+                yield PASS, "Looks good!"
+            else:
+                yield WARN,\
+                      Message("not-ideal-placement",
+                              'Please consider placing the sample image closer'
+                              ' to the top of the README document so that it is'
+                              ' more immediately viewed by readers.\n')
+    else: # if no image reference was found on README.md:
+        if local_image_files:
+            yield WARN,\
+                  Message("image-not-displayed",
+                          f'Even though the README.md file does not display'
+                          f' a font sample image, a few image files were found:\n'
+                          f'{bullet_list(local_image_files)}\n'
+                          f'\n'
+                          f'Please consider including one of those images on the README.\n'
+                          f'{MARKDOWN_IMAGE_SYNTAX_TIP}\n')
+        else:
+            yield WARN,\
+                  Message("no-sample",
+                          f'Please add a font sample image to the README.md file.\n'
+                          f'{MARKDOWN_IMAGE_SYNTAX_TIP}\n')
 
 
 ###############################################################################

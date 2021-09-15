@@ -4042,3 +4042,40 @@ def test_check_render_own_name():
     ttFont = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
     assert_results_contain(check(ttFont),
                            FAIL, 'render-own-name')
+
+
+@pytest.mark.debug
+def test_check_repo_sample_image():
+    """Check README.md has a sample image."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/repo/sample_image")
+
+    # That's what we'd like to see:
+    # README.md including a sample image and highlighting it in the
+    # upper portion of the document (no more than 10 lines from the top).
+    readme = TEST_FILE("issue_2898/good/README.md")
+    assert_PASS(check(readme))
+
+    # This one is still good, but places the sample image too late in the page:
+    readme = TEST_FILE("issue_2898/not-ideal-placement/README.md")
+    assert_results_contain(check(readme),
+                           WARN, 'not-ideal-placement')
+
+    # Here's a README.md in a project completely lacking such sample image.
+    # This will likely become a FAIL in the future:
+    readme = TEST_FILE("issue_2898/no-sample/README.md")
+    assert_results_contain(check(readme),
+                           WARN, 'no-sample') # FIXME: Make this a FAIL!
+
+    # This is really broken, as it references an image that is not available:
+    readme = TEST_FILE("issue_2898/image-missing/README.md")
+    assert_results_contain(check(readme),
+                           FAIL, 'image-missing')
+
+    # An here a README.md that does not include any sample image,
+    # while an image file can be found within the project's directory tree.
+    # This image could potentially be a font sample, so we let the user know
+    # that it might be the case:
+    readme = TEST_FILE("issue_2898/image-not-displayed/README.md")
+    assert_results_contain(check(readme),
+                           WARN, 'image-not-displayed')

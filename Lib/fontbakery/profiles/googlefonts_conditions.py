@@ -150,6 +150,25 @@ def description(descfile):
 
 
 @condition
+def readme_directory(readme):
+    if isinstance(readme, list):
+        # It makes not sense to deal with more than a single README.md file
+        # This here is just a quirk of the way we handle fontbakery inputs nowadays.
+        readme = readme[0]
+    return os.path.dirname(readme)
+
+
+@condition
+def readme_contents(readme):
+    """Get the contents of the README.md file of a font project."""
+    if not readme:
+        return
+    if isinstance(readme, list):
+        readme = readme[0]        # quirk
+    return open(readme, "r", encoding="utf-8").read()
+
+
+@condition
 def metadata_file(family_directory):
     if family_directory:
         pb_file = os.path.join(family_directory, "METADATA.pb")
