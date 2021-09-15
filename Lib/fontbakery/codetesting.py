@@ -86,7 +86,9 @@ class CheckTester:
     def __call__(self, values, condition_overrides={}):
         from fontTools.ttLib import TTFont
         from glyphsLib import GSFont
-        if isinstance(values, str):
+        if isinstance(values, str) and values.endswith('README.md'):
+            values = {'readme': values}
+        elif isinstance(values, str):
             values = {'font': values,
                       'fonts': [values]}
         elif isinstance(values, TTFont):

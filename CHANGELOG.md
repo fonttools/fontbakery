@@ -5,6 +5,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Noteworthy code-changes
   - This release drops Python 3.6 support (issue #3459)
 
+### New Checks
+#### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/repo/sample_image]:** The README.md file has a sample image to showcase the font family? (issue #2898)
+
 
 ## 0.8.2 (2021-Sep-01)
 ### Noteworthy code-changes
