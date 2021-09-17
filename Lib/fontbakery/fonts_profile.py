@@ -37,10 +37,14 @@ class FontsProfile(Profile):
                         singular="glyphs_file",
                         extensions=[".glyphs"],
                         description="Glyphs source"),
-        FileDescription(name="readme",
-                        singular="readme",
+        FileDescription(name="readme_md",
+                        singular="readme_md",
                         extensions=["README.md"],
                         description="Project's README markdown file"),
+        FileDescription(name="metadata_pb",
+                        singular="metadata_pb",
+                        extensions=["METADATA.pb"],
+                        description="Project's METADATA protobuf file"),
     ]
 
     def setup_argparse(self, argument_parser):

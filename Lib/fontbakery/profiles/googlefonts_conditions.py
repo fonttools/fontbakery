@@ -148,40 +148,52 @@ def description(descfile):
 
 
 @condition
-def readme_directory(readme):
-    if isinstance(readme, list):
-        # It makes not sense to deal with more than a single README.md file
-        # This here is just a quirk of the way we handle fontbakery inputs nowadays.
-        readme = readme[0]
-    return os.path.dirname(readme)
-
-
-@condition
-def readme_contents(readme):
-    """Get the contents of the README.md file of a font project."""
-    if not readme:
+def readme_directory(readme_md):
+    if not readme_md:
         return
-    if isinstance(readme, list):
-        readme = readme[0]        # quirk
-    return open(readme, "r", encoding="utf-8").read()
+    if isinstance(readme_md, list):
+        # It makes no sense to deal with more than a single README.md file
+        # This here is just a quirk of the way we handle fontbakery inputs nowadays.
+        readme_md = readme_md[0]
+    return os.path.dirname(readme_md)
 
 
 @condition
-def metadata_file(family_directory):
-    if family_directory:
+def readme_contents(readme_md):
+    """Get the contents of the README.md file of a font project."""
+    if not readme_md:
+        return
+    if isinstance(readme_md, list):
+        readme_md = readme_md[0]        # quirk
+    return open(readme_md, "r", encoding="utf-8").read()
+
+
+@condition
+def metadata_file(family_directory=None,
+                  metadata_pb=None):
+    if metadata_pb:
+        if isinstance(metadata_pb, list):
+            metadata_pb = metadata_pb[0]        # quirk
+
+        return metadata_pb
+
+    elif family_directory:
         pb_file = os.path.join(family_directory, "METADATA.pb")
         if os.path.exists(pb_file):
             return pb_file
 
 @condition
 def family_metadata(metadata_file):
+    if not metadata_file:
+        return
+
     from google.protobuf import text_format
     from fontbakery.utils import get_FamilyProto_Message
-    if metadata_file:
-      try:
-          return get_FamilyProto_Message(metadata_file)
-      except text_format.ParseError:
-          return None
+    try:
+        return get_FamilyProto_Message(metadata_file)
+    except text_format.ParseError:
+        return None
+
 
 @condition
 def registered_vendor_ids():

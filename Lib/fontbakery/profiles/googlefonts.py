@@ -14,7 +14,6 @@ from fontbakery.constants import (NameID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID,
                                   LATEST_TTFAUTOHINT_VERSION)
-from fontbakery.utils import can_shape
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 profile_imports = ('fontbakery.profiles.universal',)
@@ -75,7 +74,8 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/consistent_axis_enumeration',
     'com.google.fonts/check/metadata/escaped_strings',
     'com.google.fonts/check/metadata/designer_profiles',
-    'com.google.fonts/check/metadata/family_directory_name'
+    'com.google.fonts/check/metadata/family_directory_name',
+    'com.google.fonts/check/metadata/can_render_samples'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -5828,6 +5828,7 @@ def com_google_fonts_check_metadata_family_directory_name(family_metadata, famil
 )
 def com_google_fonts_check_render_own_name(ttFont):
     """Check font can render its own name."""
+    from fontbakery.utils import can_shape
 
     menu_name = ttFont["name"].getName(
         NameID.FONT_FAMILY_NAME,
@@ -5913,6 +5914,35 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory):
                   Message("no-sample",
                           f'Please add a font sample image to the README.md file.\n'
                           f'{MARKDOWN_IMAGE_SYNTAX_TIP}\n')
+
+
+@check(
+    id = "com.google.fonts/check/metadata/can_render_samples",
+    rationale = """
+        In order to prevent tofu from being seen on fonts.google.com, this check verifies that all samples provided on METADATA.pb can be properly rendered by the font.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3419',
+)
+def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
+    """Check samples can be rendered."""
+    from fontbakery.utils import can_shape
+
+    passed = True
+    if not family_metadata.sample_glyphs:
+       passed = False
+       yield SKIP,\
+             Message('no-samples',
+                     'No sample_glyphs on METADATA.pb')
+
+    for name, glyphs in family_metadata.sample_glyphs.items():
+        if not can_shape(ttFont, glyphs):
+            passed = False
+            yield FAIL,\
+                  Message('sample-glyphs',
+                          f"Font can't render the following sample glyphs:\n"
+                          f"'{name}': '{glyphs}'")
+    if passed:
+       yield PASS, "OK."
 
 
 ###############################################################################

@@ -86,12 +86,21 @@ class CheckTester:
 
     def __call__(self, values, condition_overrides={}):
         from fontTools.ttLib import TTFont
+        from fontbakery.profiles.googlefonts_conditions import family_metadata
         from glyphsLib import GSFont
+        import os
+
         if isinstance(values, str):
             if values.endswith('README.md'):
-                values = {'readme': values}
+                values = {'readme_md': values}
             elif values.endswith('.ufo'):
                 values = {'ufo': values}
+            elif values.endswith('METADATA.pb'):
+                fonts = [os.path.join(os.path.dirname(values), f.filename)
+                         for f in family_metadata(values).fonts]
+                values = {'metadata_pb': values,
+                          'font': fonts[0], #FIXME!
+                          'fonts': fonts}
             else:
                 values = {'font': values,
                           'fonts': [values]}

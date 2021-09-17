@@ -4017,7 +4017,6 @@ def test_check_render_own_name():
                            FAIL, 'render-own-name')
 
 
-@pytest.mark.debug
 def test_check_repo_sample_image():
     """Check README.md has a sample image."""
     check = CheckTester(googlefonts_profile,
@@ -4052,3 +4051,28 @@ def test_check_repo_sample_image():
     readme = TEST_FILE("issue_2898/image-not-displayed/README.md")
     assert_results_contain(check(readme),
                            WARN, 'image-not-displayed')
+
+
+def test_check_metadata_can_render_samples():
+    """Check README.md has a sample image."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/can_render_samples")
+
+    # Cabin's METADATA.pb does not have sample_glyphs entry
+    metadata_file = TEST_FILE("cabin/METADATA.pb")
+    assert_SKIP(check(metadata_file))
+
+    # We add a small set of latin glyphs
+    # that we're sure Cabin supports:
+    md = check["family_metadata"]
+    md.sample_glyphs["Letters"] = "abcdefghijklmnopqrstuvyz0123456789"
+    assert_PASS(check(metadata_file, {"family_metadata": md}))
+
+    # And now with Tamil glyphs that Cabin lacks:
+    md.sample_glyphs["Numbers"] = "𑿀 𑿁 𑿂 𑿃 𑿄 𑿅 𑿆 𑿇 𑿈 𑿉 𑿊 𑿋 𑿌 𑿍 𑿎 𑿏 𑿐 𑿑 𑿒 𑿓 𑿔"
+    assert_results_contain(check(metadata_file, {"family_metadata": md}),
+                           FAIL, 'sample-glyphs')
+
+    # TODO: expand the check to also validate sample_text fields
+    # TODO: maybe also fetch samples from the language textprotos
+    #       published on the google/fonts git repo
