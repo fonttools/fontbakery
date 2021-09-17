@@ -18,6 +18,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/repo/sample_image]:** The README.md file has a sample image to showcase the font family? (issue #2898)
+  - **[com.google.fonts/check/metadata/can_render_samples]:** Ensure sample_text in METADATA.pb can be rendered in the font (issue #3419)
 
 
 ## 0.8.2 (2021-Sep-01)
