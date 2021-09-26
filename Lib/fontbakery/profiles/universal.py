@@ -52,7 +52,8 @@ UNIVERSAL_PROFILE_CHECKS = \
 #       'com.google.fonts/check/glyphnames_max_length',
         'com.google.fonts/check/family/vertical_metrics',
         'com.google.fonts/check/STAT_strings',
-        'com.google.fonts/check/rupee'
+        'com.google.fonts/check/rupee',
+        'com.google.fonts/check/unreachable_glyphs'
     ]
 
 @check(
@@ -1089,6 +1090,64 @@ def com_google_fonts_check_rupee(ttFont):
                       'Please add a glyph for Indian Rupee Sign “₹” at codepoint U+20B9.')
     else:
         yield PASS, "Looks good!"
+
+
+@check(
+    id = "com.google.fonts/check/unreachable_glyphs",
+    rationale = """
+        Glyphs are either accessible directly through Unicode codepoints or through substitution rules. Any glyphs not accessible by either of these means are redundant and serve only to increase the font's file size.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3160',
+)
+def com_google_fonts_check_unreachable_glyphs(ttFont):
+    """Check font contains no unreachable glyphs"""
+    all_glyphs = set(ttFont.getGlyphOrder())
+    # Exclude cmapped glyphs
+    all_glyphs -= set(ttFont.getBestCmap().values())
+    all_glyphs.discard(".notdef")
+
+    def remove_lookup_outputs(all_glyphs, lookup):
+        if lookup.LookupType == 1:
+            for sub in lookup.SubTable:
+                all_glyphs -= set(sub.mapping.values())
+        if lookup.LookupType == 2:
+            for sub in lookup.SubTable:
+                for slot in sub.mapping.values():
+                    all_glyphs -= set(slot)
+
+        if lookup.LookupType == 3:
+            for sub in lookup.SubTable:
+                for slot in sub.alternates.values():
+                    all_glyphs -= set(slot)
+
+        if lookup.LookupType == 4:
+            for sub in lookup.SubTable:
+                for ligatures in sub.ligatures.values():
+                    all_glyphs -= set(lig.LigGlyph for lig in ligatures)
+
+        if lookup.LookupType == 7:
+            for xt in lookup.SubTable:
+                xt.SubTable = [xt.ExtSubTable]
+                xt.LookupType = xt.ExtSubTable.LookupType
+                remove_lookup_outputs(all_glyphs, xt)
+
+        if lookup.LookupType == 8:
+            for sub in lookup.SubTable:
+                all_glyphs -= set(sub.Substitute)
+
+    if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
+        lookups = ttFont["GSUB"].table.LookupList.Lookup
+        for lookup in lookups:
+            remove_lookup_outputs(all_glyphs, lookup)
+
+    if all_glyphs:
+        unreachable = "\n\t - " + "\n\t - ".join(all_glyphs)
+        yield WARN, \
+            Message("unreachable-glyphs",
+                  f'The following glyphs could not be reached by codepoint or substitution rules:\n'
+                  f'{unreachable}\n')
+    else:
+        yield PASS, "Font did not contain any unreachable glyphs"
 
 
 profile.auto_register(globals())
