@@ -790,3 +790,28 @@ def test_check_rupee():
                            FAIL, "missing-rupee",
                            "with a sample font missing it.")
 
+
+def test_check_unreachable_glyphs():
+    """Check font contains no unreachable glyphs."""
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/unreachable_glyphs")
+
+    font = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
+    assert_PASS(check(font))
+
+    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
+    message = assert_results_contain(check(font),
+                                     WARN, 'unreachable-glyphs')
+    for glyph in ['caronvertical', 'Gtilde',
+                  'acute.cap', 'breve.cap', 'bullet.cap', 'caron.cap',
+                  'circumflex.cap', 'dotaccent.cap', 'dieresis.cap',
+                  'grave.cap', 'hungarumlaut.cap', 'macron.cap',
+                  'periodcentered.cap', 'ring.cap', 'tilde.cap',
+                  'eight.dnom', 'four.dnom', 'three.dnom', 'two.dnom',
+                  'i.dot',
+                  'five.numr', 'seven.numr',
+                  'breve.r',
+                  'breve.rcap',
+                  'ampersand.sc',
+                  'I.uc']:
+        assert glyph in message
