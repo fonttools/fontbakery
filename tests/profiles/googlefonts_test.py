@@ -4090,5 +4090,18 @@ def test_check_unreachable_glyphs():
     assert_PASS(check(ttFont))
 
     ttFont = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    assert_results_contain(check(ttFont),
-                           WARN, 'unreachable-glyphs')
+    message = assert_results_contain(check(ttFont),
+                                     WARN, 'unreachable-glyphs')
+    for glyph in ['caronvertical', 'Gtilde',
+                  'acute.cap', 'breve.cap', 'bullet.cap', 'caron.cap',
+                  'circumflex.cap', 'dotaccent.cap', 'dieresis.cap',
+                  'grave.cap', 'hungarumlaut.cap', 'macron.cap',
+                  'periodcentered.cap', 'ring.cap', 'tilde.cap',
+                  'eight.dnom', 'four.dnom', 'three.dnom', 'two.dnom',
+                  'i.dot',
+                  'five.numr', 'seven.numr',
+                  'breve.r',
+                  'breve.rcap',
+                  'ampersand.sc',
+                  'I.uc']:
+        assert glyph in message
