@@ -4079,3 +4079,16 @@ def test_check_repo_sample_image():
     readme = TEST_FILE("issue_2898/image-not-displayed/README.md")
     assert_results_contain(check(readme),
                            WARN, 'image-not-displayed')
+
+
+def test_check_unreachable_glyphs():
+    """Check font contains no unreachable glyphs."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/unreachable_glyphs")
+
+    ttFont = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
+    assert_PASS(check(ttFont))
+
+    ttFont = TEST_FILE("merriweather/Merriweather-Regular.ttf")
+    assert_results_contain(check(ttFont),
+                           WARN, 'unreachable-glyphs')
