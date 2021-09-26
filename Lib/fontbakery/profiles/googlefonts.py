@@ -5947,7 +5947,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont):
         if lookup.LookupType == 4:
             for sub in lookup.SubTable:
                 for ligatures in sub.ligatures.values():
-                    all_glyphs -= set([lig.LigGlyph for lig in ligatures])
+                    all_glyphs -= set(lig.LigGlyph for lig in ligatures)
 
         if lookup.LookupType == 7:
             for xt in lookup.SubTable:
