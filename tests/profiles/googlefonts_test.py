@@ -4086,11 +4086,11 @@ def test_check_unreachable_glyphs():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/unreachable_glyphs")
 
-    ttFont = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
-    assert_PASS(check(ttFont))
+    font = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
+    assert_PASS(check(font))
 
-    ttFont = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    message = assert_results_contain(check(ttFont),
+    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
+    message = assert_results_contain(check(font),
                                      WARN, 'unreachable-glyphs')
     for glyph in ['caronvertical', 'Gtilde',
                   'acute.cap', 'breve.cap', 'bullet.cap', 'caron.cap',
