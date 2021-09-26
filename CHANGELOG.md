@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/repo/sample_image]:** The README.md file has a sample image to showcase the font family? (issue #2898)
+  - **[com.google.fonts/check/unreachable_glyphs]:** Check if the font contains any glyphs not reachable by codepoint or substitution rules (issue #3160)
 
 
 ## 0.8.2 (2021-Sep-01)
