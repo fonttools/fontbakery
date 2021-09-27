@@ -47,7 +47,7 @@ class FontbakeryCallable:
         return'<{}:{}>'.format(type(self).__name__,
                                getattr(self, 'id',
                                        getattr(self, 'name',
-                                               super().__repr__() )))
+                                               super().__repr__() ))) # pylint: disable=consider-using-f-string
 
     @property
     @cached_getter

@@ -38,8 +38,10 @@ def colorless_len(str):
     import re
     return len(re.sub('\x1b(\\[[0-9;]+|\\].+)m', '', str))
 
-def text_flow(content, width=80, indent=0, left_margin=0, first_line_indent=0,
-              space_padding=False, text_color="{}".format):
+
+def text_flow(content, width=80, indent=0, left_margin=0,
+              first_line_indent=0, space_padding=False,
+              text_color="{}".format): # pylint: disable=consider-using-f-string
     result = []
     line_num = 0
     for line in content.split("\n"):
@@ -147,13 +149,11 @@ def pretty_print_list(values, shorten=10, sep=", ", glue="and"):
         return str(values[0])
 
     if shorten and len(values) > shorten + 2:
-        return "{} {} {} more.".format(sep.join(map(str, values[:shorten])),
-                                       glue,
-                                       len(values) - shorten)
+        sep = sep.join(map(str, values[:shorten]))
+        return (f"{sep} {glue} {len(values) - shorten} more.")
     else:
-        return "{} {} {}".format(sep.join(map(str, values[:-1])),
-                                 glue,
-                                 str(values[-1]))
+        sep = sep.join(map(str, values[:-1]))
+        return f"{sep} {glue} {str(values[-1])}"
 
 
 def bullet_list(values, bullet="-"):
@@ -181,9 +181,9 @@ def filesize_formatting(s):
     if s < 1024:
         return f"{s} bytes"
     elif s < 1024*1024:
-        return "{:.1f}kb".format(s/1024)
+        return f"{s/1024:.1f}kb"
     else:
-        return "{:.1f}Mb".format(s/(1024*1024))
+        return f"{s/(1024*1024):.1f}Mb"
 
 
 def get_bounding_box(font):
@@ -233,7 +233,7 @@ def name_entry_id(name):
     return "[{}({}):{}({})]".format(NameID(name.nameID).name,
                                     name.nameID,
                                     PlatformID(name.platformID).name,
-                                    name.platformID)
+                                    name.platformID) # pylint: disable=consider-using-f-string
 
 
 def get_glyph_name(font: TTFont, codepoint: int) -> Optional[str]:

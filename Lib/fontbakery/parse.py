@@ -58,7 +58,7 @@ def _style_tokens(string):
 def _parse_name(wght, ital):
     if wght == "Regular" and ital == "Italic":
         wght = ""
-    result = "{} {}".format(wght, ital).lstrip().rstrip()
+    result = f"{wght} {ital}".lstrip().rstrip()
     # replace multiple whitespace characters with a single space"
     return re.sub(r"\W+", " ", result)
 
