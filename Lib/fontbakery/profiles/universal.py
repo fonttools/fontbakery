@@ -1173,7 +1173,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont):
               Message("unreachable-glyphs",
                       f"The following glyphs could not be reached"
                       f" by codepoint or substitution rules:\n"
-                      f"{bullet_list(all_glyphs)}\n")
+                      f"{bullet_list(list(all_glyphs))}\n")
     else:
         yield PASS, "Font did not contain any unreachable glyphs"
 
