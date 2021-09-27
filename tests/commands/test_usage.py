@@ -126,3 +126,25 @@ OK = 123
     stdout = result.stdout.decode()
     assert "FAIL: 0" in stdout
     os.unlink(config.name)
+
+
+def test_config_override():
+    """Test we can override check statuses in the configuration file"""
+    config = tempfile.NamedTemporaryFile(delete=False)
+    config.write(b"""
+overrides:
+  com.google.fonts/check/file_size:
+    large-font: FAIL
+explicit_checks:
+  - com.google.fonts/check/file_size
+""")
+    config.close()
+    test_font = os.path.join("data", "test", "varfont", "inter", "Inter[slnt,wght].ttf")
+    result = subprocess.run(["fontbakery", "check-googlefonts",
+        "-C",
+        "--config", config.name,
+        test_font], stdout=subprocess.PIPE)
+    stdout = result.stdout.decode()
+    # This font has a WARN here, so should now FAIL
+    assert "FAIL: 1" in stdout
+    os.unlink(config.name)
