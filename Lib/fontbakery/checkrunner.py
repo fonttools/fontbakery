@@ -191,13 +191,13 @@ class CheckRunner:
                 # Iterate over sub-results one-by-one, list(result) would abort on
                 # encountering the first exception.
                 for sub_result in result:  # Might raise.
-                    yield self._check_result(sub_result)
+                    yield self._override_status(self._check_result(sub_result), check)
                 return  # Do not fall through to rest of method.
         except Exception as e:
             error = FailedCheckError(e)
             result = (ERROR, error)
 
-        yield self._check_result(result)
+        yield self._override_status(self._check_result(result), check)
 
     def _evaluate_condition(self, name, iterargs, path=None):
         if path is None:
@@ -523,6 +523,19 @@ class CheckRunner:
         session_gen = self.session_protocol_generator(order)
         for result in drive_session_protocol(session_gen, next_check_gen):
             receive_result_fn(result)
+
+    def _override_status(self, result, check):
+        # Potentially override the status based on the config file.
+        # Replaces the status with config["overrides"][check.id][message.code]
+        status, message = result
+        status_overrides = self.config.get("overrides", {}).get(check.id)
+        if (
+            not status_overrides
+            or not isinstance(message, Message)
+            or message.code not in status_overrides
+        ):
+            return result
+        return Status(status_overrides[message.code]), message
 
 
 def drive_session_protocol(session_gen, next_check_gen):
