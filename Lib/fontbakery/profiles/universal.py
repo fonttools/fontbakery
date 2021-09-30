@@ -1126,20 +1126,13 @@ def com_google_fonts_check_unreachable_glyphs(ttFont):
                 for ligatures in sub.ligatures.values():
                     all_glyphs -= set(lig.LigGlyph for lig in ligatures)
 
-        # TODO: Review lookupTypes 5 and 6
-        #       Either handle them or add a comment
-        #       explaining why that might not be necessary.
-        #
-        # if lookup.LookupType in [5, 6]:
-        #    import ipdb; ipdb.set_trace()
-
-        if lookup.LookupType == 5: # Context:
-                                   # Replace one or more glyphs in context
-            pass # FIXME
-
-        if lookup.LookupType == 6: # Chaining Context
-                                   # Replace one or more glyphs in chained context
-            pass # FIXME
+        if lookup.LookupType in [5, 6]:
+            # We do nothing here, because these contextual lookup types don't
+            # generate glyphs directly; they only dispatch to other lookups
+            # stored elsewhere in the lookup list. As we are examining all
+            # lookups in the lookup list, other calls to this function will
+            # deal with the lookups that a contextual lookup references.
+            pass
 
         if lookup.LookupType == 7: # Extension Substitution:
                                    # Extension mechanism for other substitutions
