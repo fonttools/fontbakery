@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.8.3 (2021-Sep-??)
 ### Noteworthy code-changes
   - This release drops Python 3.6 support (issue #3459)
+  - Check statuses may now be replaced in the configuration file. See USAGE.md for examples. (PR #3469)
 
 ### New Checks
 #### Added to the Universal Profile
