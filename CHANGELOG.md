@@ -1,7 +1,20 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.8.2 (2021-Aug-??)
+## 0.8.3 (2021-Sep-??)
+### Noteworthy code-changes
+  - This release drops Python 3.6 support (issue #3459)
+  - Check statuses may now be replaced in the configuration file. See USAGE.md for examples. (PR #3469)
+
+### New Checks
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/unreachable_glyphs]:** Check if the font contains any glyphs not reachable by codepoint or substitution rules (issue #3160)
+
+#### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/repo/sample_image]:** The README.md file has a sample image to showcase the font family? (issue #2898)
+
+
+## 0.8.2 (2021-Sep-01)
 ### Noteworthy code-changes
   - Fixed build of Read The Docs documentation pages (issue #3313)
   - Now one can invoke Font Bakery with different filetypes (other than just TTFs or OTFs) and the checks will run or skip based on file-type. (issue #3169)

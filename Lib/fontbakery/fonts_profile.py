@@ -37,6 +37,10 @@ class FontsProfile(Profile):
                         singular="glyphs_file",
                         extensions=[".glyphs"],
                         description="Glyphs source"),
+        FileDescription(name="readme",
+                        singular="readme",
+                        extensions=["README.md"],
+                        description="Project's README markdown file"),
     ]
 
     def setup_argparse(self, argument_parser):

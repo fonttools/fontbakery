@@ -85,7 +85,10 @@ class CheckTester:
 
     def __call__(self, values, condition_overrides={}):
         from fontTools.ttLib import TTFont
-        if isinstance(values, str):
+        from glyphsLib import GSFont
+        if isinstance(values, str) and values.endswith('README.md'):
+            values = {'readme': values}
+        elif isinstance(values, str):
             values = {'font': values,
                       'fonts': [values]}
         elif isinstance(values, TTFont):
@@ -93,6 +96,11 @@ class CheckTester:
                       'fonts': [values.reader.file.name],
                       'ttFont': values,
                       'ttFonts': [values]}
+        elif isinstance(values, GSFont):
+            values = {'glyphs_file': values.filepath,
+                      'glyphs_files': [values.filepath],
+                      'glyphsFile': values,
+                      'glyphsFiles': [values]}
         elif isinstance(values, list):
             if values:
                 if isinstance(values[0], str):
@@ -100,6 +108,9 @@ class CheckTester:
                 elif isinstance(values[0], TTFont):
                     values = {'fonts': [v.reader.file.name for v in values],
                               'ttFonts': values}
+                elif isinstance(values[0], GSFont):
+                    values = {'glyphs_files': [v.filepath for v in values],
+                              'glyphsFiles': values}
             else:
                 values = {}
 
@@ -125,6 +136,12 @@ def portable_path(p):
 
 def TEST_FILE(f):
     return portable_path("data/test/" + f)
+
+
+def GLYPHSAPP_TEST_FILE(f):
+    import glyphsLib
+    the_file = portable_path("data/test/glyphs_files/" + f)
+    return glyphsLib.load(open(the_file))
 
 
 def assert_PASS(check_results, reason="with a good font...", ignore_error=None):

@@ -106,12 +106,18 @@ NAME_TABLE_CHECKS = [
     'com.google.fonts/check/name/rfn'
 ]
 
+GLYPHSAPP_CHECKS = [
+    'com.google.fonts/check/glyphs_file/name/family_and_style_max_length',
+    'com.google.fonts/check/glyphs_file/font_copyright'
+]
+
 REPO_CHECKS = [
     'com.google.fonts/check/repo/dirname_matches_nameid_1',
     'com.google.fonts/check/repo/vf_has_static_fonts',
     'com.google.fonts/check/repo/upstream_yaml_has_required_fields',
     'com.google.fonts/check/repo/fb_report',
     'com.google.fonts/check/repo/zip_files',
+    'com.google.fonts/check/repo/sample_image',
     'com.google.fonts/check/license/OFL_copyright',
     'com.google.fonts/check/license/OFL_body_text'
 ]
@@ -193,7 +199,8 @@ GOOGLEFONTS_PROFILE_CHECKS = \
     FAMILY_CHECKS + \
     NAME_TABLE_CHECKS + \
     REPO_CHECKS + \
-    FONT_FILE_CHECKS
+    FONT_FILE_CHECKS + \
+    GLYPHSAPP_CHECKS
 
 
 @check(
@@ -2278,6 +2285,9 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
                           f' correct font name format ("{font_familyname}").')
 
 
+EXPECTED_COPYRIGHT_PATTERN = \
+r'copyright [0-9]{4}(\-[0-9]{4})? the .* project authors \([^\@]*\)'
+
 @check(
     id = 'com.google.fonts/check/metadata/valid_copyright',
     conditions = ['font_metadata'],
@@ -2296,10 +2306,9 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
 def com_google_fonts_check_metadata_valid_copyright(font_metadata):
     """Copyright notices match canonical pattern in METADATA.pb"""
     import re
+
     string = font_metadata.copyright.lower()
-    does_match = re.search(r'copyright [0-9]{4}(\-[0-9]{4})? the .* project authors \([^\@]*\)',
-                           string)
-    if does_match:
+    if re.search(EXPECTED_COPYRIGHT_PATTERN, string):
         yield PASS, "METADATA.pb copyright string is good"
     else:
         yield FAIL,\
@@ -2322,9 +2331,7 @@ def com_google_fonts_check_font_copyright(ttFont):
 
     failed = False
     for string in get_name_entry_strings(ttFont, NameID.COPYRIGHT_NOTICE):
-        does_match = re.search(r'Copyright [0-9]{4}(\-[0-9]{4})? The .* Project Authors \([^\@]*\)',
-                               string)
-        if does_match:
+        if re.search(EXPECTED_COPYRIGHT_PATTERN, string.lower()):
             yield PASS, (f"Name Table entry: Copyright field '{string}'"
                          f" matches canonical pattern.")
         else:
@@ -2337,6 +2344,26 @@ def com_google_fonts_check_font_copyright(ttFont):
                           f'But instead we have got:\n"{string}"')
     if not failed:
         yield PASS, "Name table copyright entries are good"
+
+
+@check(
+    id = 'com.google.fonts/check/glyphs_file/font_copyright'
+)
+def com_google_fonts_check_glyphs_file_font_copyright(glyphsFile):
+    """Copyright notices match canonical pattern in fonts"""
+    import re
+
+    string = glyphsFile.copyright.lower()
+    if re.search(EXPECTED_COPYRIGHT_PATTERN, string):
+        yield PASS, (f"Name Table entry: Copyright field '{string}'"
+                     f" matches canonical pattern.")
+    else:
+        yield FAIL,\
+              Message("bad-notice-format",
+                      f'Copyright notices should match'
+                      f' a pattern similar to: "Copyright 2019'
+                      f' The Familyname Project Authors (git url)"\n'
+                      f'But instead we have got:\n"{string}"')
 
 
 @check(
@@ -2545,7 +2572,7 @@ def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_me
 @check(
     id = 'com.google.fonts/check/metadata/fontname_not_camel_cased',
     conditions = ['font_metadata',
-                  'not whitelist_camelcased_familyname'],
+                  'not camelcased_familyname_exception'],
     proposal = 'legacy:check/109'
 )
 def com_google_fonts_check_metadata_fontname_not_camel_cased(font_metadata):
@@ -4271,6 +4298,33 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
 
 
 @check(
+    id = 'com.google.fonts/check/glyphs_file/name/family_and_style_max_length',
+)
+def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFile):
+    """Combined length of family and style must not exceed 27 characters."""
+
+    too_long = []
+    for instance in glyphsFile.instances:
+        if len(instance.fullName) > 27:
+            too_long.append(instance.fullName)
+
+    if too_long:
+        too_long_list = "\n  - " + "\n  - ".join(too_long)
+        yield WARN,\
+              Message("too-long",
+                      f"The fullName length exceeds 27 chars in the"
+                      f" following entries:\n"
+                      f"{too_long_list}\n"
+                      f"\n"
+                      f"Please take a look at the conversation at"
+                      f" https://github.com/googlefonts/fontbakery/issues/2179"
+                      f" in order to understand the reasoning behind these"
+                      f" name table records max-length criteria.")
+    else:
+        yield PASS, "ok"
+
+
+@check(
     id = 'com.google.fonts/check/name/line_breaks',
     rationale = """
         There are some entries on the name table that may include more than one line of text. The Google Fonts team, though, prefers to keep the name table entries short and simple without line breaks.
@@ -5786,8 +5840,79 @@ def com_google_fonts_check_render_own_name(ttFont):
     else:
         yield FAIL,\
               Message("render-own-name",
-                      f'.notdef glyphs were found when attempting to render {menu_name}'
-                      )
+                      f'.notdef glyphs were found when attempting to render {menu_name}')
+
+@check(
+    id = "com.google.fonts/check/repo/sample_image",
+    rationale = """
+        In order to showcase what a font family looks like, the project's README.md file should ideally include a sample image and highlight it in the upper portion of the document, no more than 10 lines away from the top of the file.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2898',
+)
+def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory):
+    """Check README.md has a sample image."""
+    import re
+    from fontbakery.utils import bullet_list
+
+    image_path = False
+    line_number = 0
+    for line in readme_contents.split('\n'):
+        if line.strip() == "":
+            continue
+
+        line_number += 1
+        # We're looking for something like this:
+        # ![Raleway font sample](documents/raleway-promo.jpg)
+        # And we accept both png and jpg files
+        result = re.match(r'\!\[.*\]\((.*\.(png|jpg))\)', line)
+        if result:
+            image_path = result[1]
+            break
+
+    local_image_files = []
+    for (dirpath, dirnames, filenames) in os.walk(readme_directory):
+        local_image_files.extend([os.path.join(dirpath[len(readme_directory)+1:], filename)
+                                  for filename in filenames
+                                  if filename.endswith('.jpg') or
+                                     filename.endswith('.png')])
+
+    if local_image_files:
+        sample_tip = local_image_files[0]
+    else:
+        sample_tip = 'samples/some-sample-image.jpg'
+    MARKDOWN_IMAGE_SYNTAX_TIP = (f'You can use something like this:\n\n'
+                                 f'\t![font sample]({sample_tip})')
+
+    if image_path:
+        if image_path not in local_image_files:
+            yield FAIL,\
+                  Message("image-missing",
+                          f'The referenced sample image could not be found:'
+                          f' {os.path.join(readme_directory, image_path)}\n')
+        else:
+            if line_number < 10:
+                yield PASS, "Looks good!"
+            else:
+                yield WARN,\
+                      Message("not-ideal-placement",
+                              'Please consider placing the sample image closer'
+                              ' to the top of the README document so that it is'
+                              ' more immediately viewed by readers.\n')
+    else: # if no image reference was found on README.md:
+        if local_image_files:
+            yield WARN,\
+                  Message("image-not-displayed",
+                          f'Even though the README.md file does not display'
+                          f' a font sample image, a few image files were found:\n'
+                          f'{bullet_list(local_image_files)}\n'
+                          f'\n'
+                          f'Please consider including one of those images on the README.\n'
+                          f'{MARKDOWN_IMAGE_SYNTAX_TIP}\n')
+        else:
+            yield WARN,\
+                  Message("no-sample",
+                          f'Please add a font sample image to the README.md file.\n'
+                          f'{MARKDOWN_IMAGE_SYNTAX_TIP}\n')
 
 
 ###############################################################################

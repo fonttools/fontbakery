@@ -194,6 +194,20 @@ explicit_checks = [
 
 - Instead of using `--order` to specify the check order, a list of checks can be provided using the `custom_order` key.
 
+Additionally, the configuration file can be used to replace the status of
+particular checks. To do this, you will need to know the *message ID*,
+which is reported with the result. For example, when the
+`com.google.fonts/check/mandatory_glyphs` check reports that the `.notdef`
+glyph does not contain any outlines, it reports the message ID `empty` and
+a `WARN` status. To replace this status and have it return a `FAIL` instead,
+place this in the configuration file (if you are using YAML format):
+
+```
+overrides:
+  com.google.fonts/check/mandatory_glyphs:
+    empty: FAIL
+```
+
 Individual checks and profiles may give semantics to additional configuration values; the whole configuration file is passed to checks which request access to it.
 
 #### Old Command Line Tools

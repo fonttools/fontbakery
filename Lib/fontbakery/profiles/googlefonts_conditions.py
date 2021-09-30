@@ -34,6 +34,12 @@ def RIBBI_ttFonts(fonts):
 
 
 @condition
+def glyphsFile(glyphs_file):
+    import glyphsLib
+    return glyphsLib.load(open(glyphs_file))
+
+
+@condition
 def style_with_spaces(font):
     """Stylename with spaces (derived from a canonical filename)."""
     if style(font):
@@ -141,6 +147,25 @@ def description(descfile):
         return
     import io
     return io.open(descfile, "r", encoding="utf-8").read()
+
+
+@condition
+def readme_directory(readme):
+    if isinstance(readme, list):
+        # It makes not sense to deal with more than a single README.md file
+        # This here is just a quirk of the way we handle fontbakery inputs nowadays.
+        readme = readme[0]
+    return os.path.dirname(readme)
+
+
+@condition
+def readme_contents(readme):
+    """Get the contents of the README.md file of a font project."""
+    if not readme:
+        return
+    if isinstance(readme, list):
+        readme = readme[0]        # quirk
+    return open(readme, "r", encoding="utf-8").read()
 
 
 @condition
@@ -403,23 +428,29 @@ def font_familyname(font_familynames):
     return font_familynames[0]
 
 
-# TODO: Design special case handling for whitelists/blacklists
+# TODO: Design special case handling mechanism:
 # https://github.com/googlefonts/fontbakery/issues/1540
 @condition
-def whitelist_camelcased_familyname(font):
-    familynames = [
+def camelcased_familyname_exception(familyname):
+    '''In general, we would not like to have camel-cased
+       familynames but there are a few exceptions to that
+       rule, that we keep listed here, for now.
+    '''
+    for exception in [
+        "3D", # seen in "Rock 3D"
         "BenchNine",
+        "DotGothic", # seen in "DotGothic16"
         "FakeFont",
+        "JetBrains", # seen in "JetBrains Mono"
         "McLaren",
         "MedievalSharp",
+        "RocknRoll", # seen in "RocknRoll One"
         "UnifrakturCook",
-        "UnifrakturMaguntia"
-        "MonteCarlo"
-        "WindSong"
-        "RUSerius"
-    ]
-    for familyname in familynames:
-        if familyname in font:
+        "UnifrakturMaguntia",
+        "MonteCarlo",
+        "WindSong",
+    ]:
+        if exception in familyname:
             return True
 
 
@@ -666,7 +697,16 @@ def GFAxisRegistry():
                  "volume.textproto",
                  "weight.textproto",
                  "width.textproto",
-                 "wonky.textproto"]:
+                 "wonky.textproto",
+                 "x_opaque.textproto",
+                 "x_transparent_figures.textproto",
+                 "x_transparent.textproto",
+                 "y_opaque.textproto",
+                 "y_transparent_ascender.textproto",
+                 "y_transparent_descender.textproto",
+                 "y_transparent_figures.textproto",
+                 "y_transparent_lowercase.textproto",
+                 "y_transparent_uppercase.textproto"]:
         append_AxisMessage(resource_filename('fontbakery', 'data/' + axis))
     return registry
 

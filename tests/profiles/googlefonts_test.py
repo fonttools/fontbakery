@@ -9,6 +9,7 @@ from fontbakery.codetesting import (assert_results_contain,
                                     assert_SKIP,
                                     portable_path,
                                     TEST_FILE,
+                                    GLYPHSAPP_TEST_FILE,
                                     CheckTester)
 from fontbakery.configuration import Configuration
 from fontbakery.constants import (NameID,
@@ -374,7 +375,7 @@ def test_check_name_family_and_style_max_length():
     assert_PASS(check(ttFont),
                 'with a good font...')
 
-    # Then we emit a WARNing with long family/style names 
+    # Then we emit a WARNing with long family/style names
     # Originaly these were based on the example on the glyphs tutorial
     # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances)
     # but later we increased a bit the max allowed length.
@@ -404,6 +405,46 @@ def test_check_name_family_and_style_max_length():
     assert_results_contain(check(ttFont),
                            WARN, 'too-long',
                            'with a bad font...')
+
+
+def test_check_glyphs_file_name_family_and_style_max_length():
+    """ Combined length of family and style must not exceed 27 characters. """
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/glyphs_file/name/family_and_style_max_length")
+
+    # Our reference Comfortaa.glyphs is known to be good
+    glyphsFile = GLYPHSAPP_TEST_FILE("Comfortaa.glyphs")
+
+    # So it must PASS the check:
+    assert_PASS(check(glyphsFile),
+                'with a good font...')
+
+    # Then we emit a WARNing with long family/style names
+    # Originaly these were based on the example on the glyphs tutorial
+    # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances)
+    # but later we increased a bit the max allowed length.
+
+    # First we expect a WARN with a bad FAMILY NAME
+    # This has 28 chars, while the max currently allowed is 27.
+    bad = "AnAbsurdlyLongFamilyNameFont"
+    assert len(bad) == 28
+    glyphsFile.familyName = bad
+    assert_results_contain(check(glyphsFile),
+                           WARN, 'too-long',
+                           'with a too long font familyname...')
+
+    for i in range(len(glyphsFile.instances)):
+        # Restore the good glyphs file...
+        glyphsFile = GLYPHSAPP_TEST_FILE("Comfortaa.glyphs")
+
+        # ...and break the check again with a long SUBFAMILY NAME
+        # on one of its instances:
+        bad_stylename = "WithAVeryLongAndBadStyleName"
+        assert len(bad_stylename) == 28
+        glyphsFile.instances[i].fullName = f"{glyphsFile.familyName} {bad_stylename}"
+        assert_results_contain(check(glyphsFile),
+                               WARN, 'too-long',
+                               'with a too long stylename...')
 
 
 def test_check_name_line_breaks():
@@ -1757,6 +1798,31 @@ def test_check_font_copyright():
             ttFont['name'].names[i].string = good_string.encode(entry.getEncoding())
     assert_PASS(check(ttFont),
                 'with good strings...')
+
+
+def test_check_glyphs_file_font_copyright():
+    """Copyright notices match canonical pattern in fonts"""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/glyphs_file/font_copyright")
+
+    glyphsFile = GLYPHSAPP_TEST_FILE("Comfortaa.glyphs")
+    # note: the check does not actually verify that the project name is correct.
+    #       It only focuses on the string format.
+
+    # Use an email instead of a git URL:
+    bad_string = ("Copyright 2017 The Archivo Black Project Authors"
+                  " (contact-us@fake-address.com)")
+    glyphsFile.copyright = bad_string
+    assert_results_contain(check(glyphsFile),
+                           FAIL, 'bad-notice-format',
+                           'with a bad copyright notice string...')
+
+    # We change it into a good string (example extracted from Archivo Black):
+    good_string = ("Copyright 2017 The Archivo Black Project Authors"
+                   " (https://github.com/Omnibus-Type/ArchivoBlack)")
+    glyphsFile.copyright = good_string
+    assert_PASS(check(glyphsFile),
+                'with a good coopyright string...')
 
 
 def test_check_metadata_reserved_font_name():
@@ -3978,3 +4044,40 @@ def test_check_render_own_name():
     ttFont = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
     assert_results_contain(check(ttFont),
                            FAIL, 'render-own-name')
+
+
+@pytest.mark.debug
+def test_check_repo_sample_image():
+    """Check README.md has a sample image."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/repo/sample_image")
+
+    # That's what we'd like to see:
+    # README.md including a sample image and highlighting it in the
+    # upper portion of the document (no more than 10 lines from the top).
+    readme = TEST_FILE("issue_2898/good/README.md")
+    assert_PASS(check(readme))
+
+    # This one is still good, but places the sample image too late in the page:
+    readme = TEST_FILE("issue_2898/not-ideal-placement/README.md")
+    assert_results_contain(check(readme),
+                           WARN, 'not-ideal-placement')
+
+    # Here's a README.md in a project completely lacking such sample image.
+    # This will likely become a FAIL in the future:
+    readme = TEST_FILE("issue_2898/no-sample/README.md")
+    assert_results_contain(check(readme),
+                           WARN, 'no-sample') # FIXME: Make this a FAIL!
+
+    # This is really broken, as it references an image that is not available:
+    readme = TEST_FILE("issue_2898/image-missing/README.md")
+    assert_results_contain(check(readme),
+                           FAIL, 'image-missing')
+
+    # An here a README.md that does not include any sample image,
+    # while an image file can be found within the project's directory tree.
+    # This image could potentially be a font sample, so we let the user know
+    # that it might be the case:
+    readme = TEST_FILE("issue_2898/image-not-displayed/README.md")
+    assert_results_contain(check(readme),
+                           WARN, 'image-not-displayed')

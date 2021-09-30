@@ -20,7 +20,7 @@ CLI_PROFILES = [
 
 
 def run_profile_check(profilename):
-    module = import_module("fontbakery.profiles.%s" % profilename)
+    module = import_module(f"fontbakery.profiles.{profilename}")
     sys.exit(check_profile_main(module.profile))
 
 

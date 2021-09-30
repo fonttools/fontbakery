@@ -52,7 +52,8 @@ UNIVERSAL_PROFILE_CHECKS = \
 #       'com.google.fonts/check/glyphnames_max_length',
         'com.google.fonts/check/family/vertical_metrics',
         'com.google.fonts/check/STAT_strings',
-        'com.google.fonts/check/rupee'
+        'com.google.fonts/check/rupee',
+        'com.google.fonts/check/unreachable_glyphs'
     ]
 
 @check(
@@ -1089,6 +1090,85 @@ def com_google_fonts_check_rupee(ttFont):
                       'Please add a glyph for Indian Rupee Sign “₹” at codepoint U+20B9.')
     else:
         yield PASS, "Looks good!"
+
+
+@check(
+    id = "com.google.fonts/check/unreachable_glyphs",
+    rationale = """
+        Glyphs are either accessible directly through Unicode codepoints or through substitution rules. Any glyphs not accessible by either of these means are redundant and serve only to increase the font's file size.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3160',
+)
+def com_google_fonts_check_unreachable_glyphs(ttFont):
+    """Check font contains no unreachable glyphs"""
+
+    def remove_lookup_outputs(all_glyphs, lookup):
+        if lookup.LookupType == 1: # Single:
+                                   # Replace one glyph with one glyph
+            for sub in lookup.SubTable:
+                all_glyphs -= set(sub.mapping.values())
+
+        if lookup.LookupType == 2: # Multiple:
+                                   # Replace one glyph with more than one glyph
+            for sub in lookup.SubTable:
+                for slot in sub.mapping.values():
+                    all_glyphs -= set(slot)
+
+        if lookup.LookupType == 3: # Alternate:
+                                   # Replace one glyph with one of many glyphs
+            for sub in lookup.SubTable:
+                for slot in sub.alternates.values():
+                    all_glyphs -= set(slot)
+
+        if lookup.LookupType == 4: # Ligature:
+                                   # Replace multiple glyphs with one glyph
+            for sub in lookup.SubTable:
+                for ligatures in sub.ligatures.values():
+                    all_glyphs -= set(lig.LigGlyph for lig in ligatures)
+
+        if lookup.LookupType in [5, 6]:
+            # We do nothing here, because these contextual lookup types don't
+            # generate glyphs directly; they only dispatch to other lookups
+            # stored elsewhere in the lookup list. As we are examining all
+            # lookups in the lookup list, other calls to this function will
+            # deal with the lookups that a contextual lookup references.
+            pass
+
+        if lookup.LookupType == 7: # Extension Substitution:
+                                   # Extension mechanism for other substitutions
+            for xt in lookup.SubTable:
+                xt.SubTable = [xt.ExtSubTable]
+                xt.LookupType = xt.ExtSubTable.LookupType
+                remove_lookup_outputs(all_glyphs, xt)
+
+        if lookup.LookupType == 8: # Reverse chaining context single:
+                                   # Applied in reverse order,
+                                   # replace single glyph in chaining context
+            for sub in lookup.SubTable:
+                all_glyphs -= set(sub.Substitute)
+
+
+    all_glyphs = set(ttFont.getGlyphOrder())
+
+    # Exclude cmapped glyphs
+    all_glyphs -= set(ttFont.getBestCmap().values())
+    all_glyphs.discard(".notdef")
+
+    if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
+        lookups = ttFont["GSUB"].table.LookupList.Lookup
+
+        for lookup in lookups:
+            remove_lookup_outputs(all_glyphs, lookup)
+
+    if all_glyphs:
+        from fontbakery.utils import bullet_list
+        yield WARN,\
+              Message("unreachable-glyphs",
+                      f"The following glyphs could not be reached"
+                      f" by codepoint or substitution rules:\n"
+                      f"{bullet_list(list(all_glyphs))}\n")
+    else:
+        yield PASS, "Font did not contain any unreachable glyphs"
 
 
 profile.auto_register(globals())
