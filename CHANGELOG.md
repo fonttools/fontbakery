@@ -4,7 +4,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.8.3 (2021-Sep-??)
 ### Noteworthy code-changes
   - This release drops Python 3.6 support (issue #3459)
-  - Check statuses may now be replaced in the configuration file. See USAGE.md for examples. (PR #3469)
+  - Check statuses may now also be overriden via configuration file. See USAGE.md for examples. (PR #3469)
+  - We now use the CheckTester helper class is all our code-tests. (PR #3453)
 
 ### Changes to existing checks
 #### On the Universal Profile

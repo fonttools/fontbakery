@@ -57,19 +57,16 @@ def test_check_post_table_version():
     """ Font has correct post table version (2 for TTF, 3 for OTF)? """
     check = CheckTester(opentype_profile,
                         "com.google.fonts/check/post_table_version")
-    from fontbakery.profiles.post import com_google_fonts_check_post_table_version as check
 
     # our reference Mada family is know to be good here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    assert_PASS(check(ttFont,
-                      'glyf' in ttFont),
+    assert_PASS(check(ttFont),
                 'with good font.')
 
     # modify the post table version
     ttFont['post'].formatType = 3
 
-    assert_results_contain(check(ttFont,
-                                 'glyf' in ttFont),
+    assert_results_contain(check(ttFont),
                            FAIL, "post-table-version",
                            'with fonts that diverge on the fontRevision field value.')
 

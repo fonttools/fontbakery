@@ -17,6 +17,7 @@
 from fontbakery.checkrunner import CheckRunner
 from fontbakery.configuration import Configuration
 from fontbakery.profile import Profile, get_module_profile
+import defcon
 
 
 class CheckTester:
@@ -86,11 +87,14 @@ class CheckTester:
     def __call__(self, values, condition_overrides={}):
         from fontTools.ttLib import TTFont
         from glyphsLib import GSFont
-        if isinstance(values, str) and values.endswith('README.md'):
-            values = {'readme': values}
-        elif isinstance(values, str):
-            values = {'font': values,
-                      'fonts': [values]}
+        if isinstance(values, str):
+            if values.endswith('README.md'):
+                values = {'readme': values}
+            elif values.endswith('.ufo'):
+                values = {'ufo': values}
+            else:
+                values = {'font': values,
+                          'fonts': [values]}
         elif isinstance(values, TTFont):
             values = {'font': values.reader.file.name,
                       'fonts': [values.reader.file.name],
@@ -101,17 +105,24 @@ class CheckTester:
                       'glyphs_files': [values.filepath],
                       'glyphsFile': values,
                       'glyphsFiles': [values]}
+        elif isinstance(values, defcon.Font):
+            values = {'ufo_font': values}
         elif isinstance(values, list):
-            if isinstance(values[0], str):
-                values = {'fonts': values}
-            elif isinstance(values[0], TTFont):
-                values = {'fonts': [v.reader.file.name for v in values],
-                          'ttFonts': values}
-            elif isinstance(values[0], GSFont):
-                values = {'glyphs_files': [v.filepath for v in values],
-                          'glyphsFiles': values}
+            if values:
+                if isinstance(values[0], str):
+                    values = {'fonts': values}
+                elif isinstance(values[0], TTFont):
+                    values = {'fonts': [v.reader.file.name for v in values],
+                              'ttFonts': values}
+                elif isinstance(values[0], GSFont):
+                    values = {'glyphs_files': [v.filepath for v in values],
+                              'glyphsFiles': values}
+            else:
+                values = {}
 
-        self.runner = CheckRunner(self.profile, values, Configuration(explicit_checks=[self.check_id]))
+        self.runner = CheckRunner(self.profile,
+                                  values,
+                                  Configuration(explicit_checks=[self.check_id]))
         for check_identity in self.runner.order:
             _, check, _ = check_identity
             if check.id != self.check_id:
