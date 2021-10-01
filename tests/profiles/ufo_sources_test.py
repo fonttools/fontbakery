@@ -5,7 +5,9 @@ import pytest
 
 from fontbakery.checkrunner import (DEBUG, ERROR, FAIL, INFO, PASS, SKIP, WARN)
 from fontbakery.codetesting import (assert_PASS,
-                                    assert_results_contain)
+                                    assert_results_contain,
+                                    CheckTester)
+from fontbakery.profiles.ufo_sources import profile as ufo_sources_profile
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -19,7 +21,9 @@ def empty_ufo_font(tmpdir):
 
 
 def test_check_ufolint(empty_ufo_font):
-    from fontbakery.profiles.ufo_sources import com_daltonmaag_check_ufolint as check
+    check = CheckTester(ufo_sources_profile,
+                        "com.daltonmaag/check/ufolint")
+
     _, ufo_path = empty_ufo_font
 
     assert_PASS(check(ufo_path),
@@ -32,7 +36,9 @@ def test_check_ufolint(empty_ufo_font):
 
 
 def test_check_required_fields(empty_ufo_font):
-    from fontbakery.profiles.ufo_sources import com_daltonmaag_check_required_fields as check
+    check = CheckTester(ufo_sources_profile,
+                        "com.daltonmaag/check/ufo-required-fields")
+
     ufo, _ = empty_ufo_font
 
     assert_results_contain(check(ufo),
@@ -51,8 +57,9 @@ def test_check_required_fields(empty_ufo_font):
 
 
 def test_check_recommended_fields(empty_ufo_font):
-    from fontbakery.profiles.ufo_sources import (
-        com_daltonmaag_check_recommended_fields as check)
+    check = CheckTester(ufo_sources_profile,
+                        "com.daltonmaag/check/ufo-recommended-fields")
+
     ufo, _ = empty_ufo_font
 
     assert_results_contain(check(ufo),
@@ -72,7 +79,9 @@ def test_check_recommended_fields(empty_ufo_font):
 
 
 def test_check_unnecessary_fields(empty_ufo_font):
-    from fontbakery.profiles.ufo_sources import com_daltonmaag_check_unnecessary_fields as check
+    check = CheckTester(ufo_sources_profile,
+                        "com.daltonmaag/check/ufo-unnecessary-fields")
+
     ufo, _ = empty_ufo_font
 
     assert_PASS(check(ufo),

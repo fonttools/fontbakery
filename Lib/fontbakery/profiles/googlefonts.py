@@ -114,7 +114,7 @@ GLYPHSAPP_CHECKS = [
 REPO_CHECKS = [
     'com.google.fonts/check/repo/dirname_matches_nameid_1',
     'com.google.fonts/check/repo/vf_has_static_fonts',
-    'com.google/fonts/check/repo/upstream_yaml_has_required_fields',
+    'com.google.fonts/check/repo/upstream_yaml_has_required_fields',
     'com.google.fonts/check/repo/fb_report',
     'com.google.fonts/check/repo/zip_files',
     'com.google.fonts/check/repo/sample_image',
@@ -4604,7 +4604,7 @@ def com_google_fonts_check_repo_fb_report(family_directory):
 
 
 @check(
-    id = "com.google/fonts/check/repo/upstream_yaml_has_required_fields",
+    id = "com.google.fonts/check/repo/upstream_yaml_has_required_fields",
     rationale = """
         If a family has been pushed using the gftools packager, we must check that all the required fields in the upstream.yaml file have been populated.
     """,
