@@ -66,13 +66,14 @@ def create_report_item(vharfbuzz,
                        buf2=None,
                        type="item",
                        extra_data=None):
-    message = f'<div class="shaping">\n\n{message}\n'
     if text:
         message += f': <span class="tf">{text}</span>'
+
     if type == "item":
         message = f"<li>{message}</li>\n"
-    if type == "header":
+    elif type == "header":
         message = get_stylesheet(vharfbuzz) + f"\n<h4>{message}</h4>\n"
+
     if extra_data:
         message += f"\n\n<pre>{extra_data}</pre>\n\n"
 
@@ -97,12 +98,14 @@ def create_report_item(vharfbuzz,
     # Now draw it as SVG
     if buf1:
         message += "\nGot: " + fix_svg(vharfbuzz.buf_to_svg(buf1))
+
     if buf2 and isinstance(buf2, FakeBuffer):
         try:
             message += " Expected: " + fix_svg(vharfbuzz.buf_to_svg(buf2))
         except KeyError:
             pass
-    return message + "\n\n</div>"
+
+    return f'<div class="shaping">\n\n{message}\n\n</div>'
 
 
 def get_from_test_with_default(test, configuration, el, default=None):
