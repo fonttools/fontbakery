@@ -6,6 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - This release drops Python 3.6 support (issue #3459)
   - Check statuses may now be replaced in the configuration file. See USAGE.md for examples. (PR #3469)
 
+### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/shaping/regression]:** Improve reporting of shaping differences. (PR #3472)
+
 ### New Checks
 #### Added to the Universal Profile
   - **[com.google.fonts/check/unreachable_glyphs]:** Check if the font contains any glyphs not reachable by codepoint or substitution rules (issue #3160)
