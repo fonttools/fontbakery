@@ -20,9 +20,9 @@ from difflib import ndiff
 from pathlib import Path
 from fontbakery.callable import check, condition
 from fontbakery.checkrunner import FAIL, PASS, SKIP
-from fontbakery.section import Section
-from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
+from fontbakery.message import Message
+from fontbakery.section import Section
 from vharfbuzz import Vharfbuzz, FakeBuffer
 from os.path import basename, relpath
 from stringbrewer import StringBrewer
@@ -56,46 +56,50 @@ def get_stylesheet(vharfbuzz):
 
 
 def fix_svg(svg):
-    return svg.replace("<svg", '<svg class="shaping-svg"')
+    return svg.replace('<svg', '<svg class="shaping-svg"')
 
 
-def create_report_item(
-    vharfbuzz, message, text=None, buf1=None, buf2=None, type="item", extra_data=None
-):
+def create_report_item(vharfbuzz,
+                       message,
+                       text=None,
+                       buf1=None,
+                       buf2=None,
+                       type="item",
+                       extra_data=None):
     message = f'<div class="shaping">\n\n{message}\n'
     if text:
-        message = message + ': <span class="tf">%s</span>' % text
-
+        message += f': <span class="tf">{text}</span>'
     if type == "item":
-        message = "<li> %s</li>\n" % message
+        message = f"<li>{message}</li>\n"
     if type == "header":
-        message = get_stylesheet(vharfbuzz) + "\n<h4> %s</h4>\n" % message
+        message = get_stylesheet(vharfbuzz) + f"\n<h4>{message}</h4>\n"
     if extra_data:
-        message = message + ("\n\n<pre>%s</pre>\n\n" % extra_data)
+        message += f"\n\n<pre>{extra_data}</pre>\n\n"
+
     serialized_buf1 = None
     if buf1:
-        serialized_buf1 = vharfbuzz.serialize_buf(
-            buf1, glyphsonly=(buf2 and isinstance(buf2, str))
-        )
-        message = message + ("\n\n<pre>Got     : %s</pre>\n\n" % serialized_buf1)
+        serialized_buf1 = vharfbuzz.serialize_buf(buf1,
+                                                  glyphsonly=(buf2 and isinstance(buf2, str)))
+        message += f"\n\n<pre>Got     : {serialized_buf1}</pre>\n\n"
     if buf2:
         if isinstance(buf2, FakeBuffer):
             serialized_buf2 = vharfbuzz.serialize_buf(buf2)
         else:
             serialized_buf2 = buf2
-        message = message + ("\n\n<pre>Expected: %s</pre>\n\n" % serialized_buf2)
+        message += f"\n\n<pre>Expected: {serialized_buf2}</pre>\n\n"
+
         # Report a diff table
         if serialized_buf1:
             diff = list(ndiff([serialized_buf1], [serialized_buf2]))
             if diff and diff[-1][0] == "?":
-                message = message + ("\n\n<pre>         %s</pre>\n\n" % diff[-1][1:])
+                message += f"\n\n<pre>         {diff[-1][1:]}</pre>\n\n"
 
     # Now draw it as SVG
     if buf1:
-        message = message + "\nGot: " + fix_svg(vharfbuzz.buf_to_svg(buf1))
+        message += "\nGot: " + fix_svg(vharfbuzz.buf_to_svg(buf1))
     if buf2 and isinstance(buf2, FakeBuffer):
         try:
-            message = message + " Expected: " + fix_svg(vharfbuzz.buf_to_svg(buf2))
+            message += " Expected: " + fix_svg(vharfbuzz.buf_to_svg(buf2))
         except KeyError:
             pass
     return message + "\n\n</div>"
@@ -115,9 +119,12 @@ def get_shaping_parameters(test, configuration):
 
 # This is a very generic "do something with shaping" test runner.
 # It'll be given concrete meaning later.
-def run_a_set_of_shaping_tests(
-    config, ttFont, run_a_test, test_filter, generate_report, preparation=None
-):
+def run_a_set_of_shaping_tests(config,
+                               ttFont,
+                               run_a_test,
+                               test_filter,
+                               generate_report,
+                               preparation=None):
     filename = Path(ttFont.reader.file.name)
     vharfbuzz = Vharfbuzz(filename)
     shaping_file_found = False
@@ -126,28 +133,29 @@ def run_a_set_of_shaping_tests(
     if "com.google.fonts/check/shaping" not in config:
         yield SKIP, "Shaping test directory not defined in configuration file"
         return
+
     shaping_basedir = config["com.google.fonts/check/shaping"].get("test_directory")
     if not shaping_basedir:
         yield SKIP, "Shaping test directory not defined in configuration file"
         return
+
     for shaping_file in Path(shaping_basedir).glob("*.json"):
         shaping_file_found = True
         try:
             shaping_input_doc = json.loads(shaping_file.read_text())
         except Exception as e:
-            yield FAIL, Message(
-                "shaping-invalid-json", f"{shaping_file}: Invalid JSON: {e}."
-            )
+            yield FAIL,\
+                  Message("shaping-invalid-json",
+                          f"{shaping_file}: Invalid JSON: {e}.")
             return
 
         configuration = shaping_input_doc.get("configuration", {})
         try:
             shaping_tests = shaping_input_doc["tests"]
         except KeyError:
-            yield FAIL, Message(
-                "shaping-missing-tests",
-                f"{shaping_file}: JSON file must have a 'tests' key.",
-            )
+            yield FAIL,\
+                  Message("shaping-missing-tests",
+                          f"{shaping_file}: JSON file must have a 'tests' key.")
             return
 
         if preparation:
@@ -157,11 +165,11 @@ def run_a_set_of_shaping_tests(
         for test in shaping_tests:
             if not test_filter(test, configuration):
                 continue
+
             if not "input" in test:
-                yield FAIL, Message(
-                    "shaping-missing-input",
-                    f"{shaping_file}: test is missing an input key.",
-                )
+                yield FAIL,\
+                      Message("shaping-missing-input",
+                              f"{shaping_file}: test is missing an input key.")
                 return
 
             exclude_fonts = test.get("exclude", [])
@@ -172,37 +180,36 @@ def run_a_set_of_shaping_tests(
             if only_fonts and basename(filename) not in only_fonts:
                 continue
 
-            run_a_test(
-                filename,
-                vharfbuzz,
-                test,
-                configuration,
-                failed_shaping_tests,
-                extra_data,
-            )
+            run_a_test(filename,
+                       vharfbuzz,
+                       test,
+                       configuration,
+                       failed_shaping_tests,
+                       extra_data)
             ran_a_test = True
 
         if ran_a_test:
             if not failed_shaping_tests:
                 yield PASS, f"{shaping_file}: No regression detected"
             else:
-                yield from generate_report(
-                    vharfbuzz, shaping_file, failed_shaping_tests
-                )
+                yield from generate_report(vharfbuzz,
+                                           shaping_file,
+                                           failed_shaping_tests)
 
     if not shaping_file_found:
         yield SKIP, "No test files found."
+
     if not ran_a_test:
         yield SKIP, "No applicable tests ran."
 
 
 @check(
-    id="com.google.fonts/check/shaping/regression",
-    rationale="""
+    id = "com.google.fonts/check/shaping/regression",
+    rationale = """
         Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and compares expected shaping against actual shaping, reporting any differences.
         Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3223",
+    proposal = "https://github.com/googlefonts/fontbakery/pull/3223"
 )
 def com_google_fonts_check_shaping_regression(config, ttFont):
     """Check that texts shape as per expectation"""
@@ -215,18 +222,20 @@ def com_google_fonts_check_shaping_regression(config, ttFont):
     )
 
 
-def run_shaping_regression(
-    filename, vharfbuzz, test, configuration, failed_shaping_tests, extra_data
-):
+def run_shaping_regression(filename,
+                           vharfbuzz,
+                           test,
+                           configuration,
+                           failed_shaping_tests,
+                           extra_data):
     shaping_text = test["input"]
     parameters = get_shaping_parameters(test, configuration)
     output_buf = vharfbuzz.shape(shaping_text, parameters)
     expectation = test["expectation"]
     if isinstance(expectation, dict):
         expectation = expectation.get(filename.name, expectation["default"])
-    output_serialized = vharfbuzz.serialize_buf(
-        output_buf, glyphsonly="+" not in expectation
-    )
+    output_serialized = vharfbuzz.serialize_buf(output_buf,
+                                                glyphsonly="+" not in expectation)
 
     if output_serialized != expectation:
         failed_shaping_tests.append((test, expectation, output_buf, output_serialized))
@@ -247,17 +256,18 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_te
             buf2 = vharfbuzz.buf_from_string(expected)
         else:
             buf2 = expected
-        report_items.append(
-            create_report_item(
-                vharfbuzz,
-                "Shaping did not match",
-                text=test["input"],
-                buf1=output_buf,
-                buf2=buf2,
-                extra_data=extra_data,
-            )
-        )
-    yield FAIL, Message("shaping-regression", header + "\n" + "\n".join(report_items))
+
+        report_item = create_report_item(vharfbuzz,
+                                         "Shaping did not match",
+                                         text=test["input"],
+                                         buf1=output_buf,
+                                         buf2=buf2,
+                                         extra_data=extra_data)
+        report_items.append(report_item)
+
+    yield FAIL,\
+          Message("shaping-regression",
+                  header + "\n" + "\n".join(report_items))
 
 
 @check(
@@ -266,7 +276,7 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_te
         Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and reports if any glyphs are generated in the shaping which should not be produced. (For example, .notdef glyphs, visible viramas, etc.)
         Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3223",
+    proposal = "https://github.com/googlefonts/fontbakery/pull/3223"
 )
 def com_google_fonts_check_shaping_forbidden(config, ttFont):
     """Check that no forbidden glyphs are found while shaping"""
@@ -311,20 +321,23 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items.append(create_report_item(vharfbuzz, msg, type="header"))
     for shaping_text, buf, forbidden in failed_shaping_tests:
         msg = f"{shaping_text} produced '{forbidden}'"
-        report_items.append(
-            create_report_item(vharfbuzz, msg, text=shaping_text, buf1=buf)
-        )
+        report_items.append(create_report_item(vharfbuzz,
+                                               msg,
+                                               text=shaping_text,
+                                               buf1=buf))
 
-    yield FAIL, Message("shaping-forbidden", msg + ".\n" + "\n".join(report_items))
+    yield FAIL,\
+          Message("shaping-forbidden",
+                  msg + ".\n" + "\n".join(report_items))
 
 
 @check(
-    id="com.google.fonts/check/shaping/collides",
-    rationale="""
+    id = "com.google.fonts/check/shaping/collides",
+    rationale = """
         Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and reports instances where the glyphs collide in unexpected ways.
         Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3223",
+    proposal = "https://github.com/googlefonts/fontbakery/pull/3223"
 )
 def com_google_fonts_check_shaping_collides(config, ttFont):
     """Check that no collisions are found while shaping"""
@@ -344,30 +357,31 @@ def setup_glyph_collides(ttFont, configuration):
     collidoscope_configuration = configuration.get("collidoscope")
     if not collidoscope_configuration:
         return {}
-    col = Collidoscope(
-        filename,
-        collidoscope_configuration,
-        direction=configuration.get("direction", "LTR"),
-    )
+    col = Collidoscope(filename,
+                       collidoscope_configuration,
+                       direction=configuration.get("direction", "LTR"))
     return {"collidoscope": col}
 
 
-def run_collides_glyph_test(
-    filename, vharfbuzz, test, configuration, failed_shaping_tests, extra_data
-):
+def run_collides_glyph_test(filename,
+                            vharfbuzz,
+                            test,
+                            configuration,
+                            failed_shaping_tests,
+                            extra_data):
     col = extra_data["collidoscope"]
-    is_stringbrewer = (
-        get_from_test_with_default(test, configuration, "input_type", "string")
-        == "pattern"
-    )
+    is_stringbrewer = get_from_test_with_default(test,
+                                                 configuration,
+                                                 "input_type",
+                                                 "string") == "pattern"
     parameters = get_shaping_parameters(test, configuration)
-    allowed_collisions = get_from_test_with_default(
-        test, configuration, "allowedcollisions", []
-    )
+    allowed_collisions = get_from_test_with_default(test,
+                                                    configuration,
+                                                    "allowedcollisions",
+                                                    [])
     if is_stringbrewer:
-        sb = StringBrewer(
-            recipe=test["input"], ingredients=configuration["ingredients"]
-        )
+        sb = StringBrewer(recipe=test["input"],
+                          ingredients=configuration["ingredients"])
         strings = sb.generate_all()
     else:
         strings = [test["input"]]
@@ -380,30 +394,28 @@ def run_collides_glyph_test(
         bumps = [b for b in bumps if b not in allowed_collisions]
         if bumps:
             draw = fix_svg(col.draw_overlaps(glyphs, collisions))
-
             failed_shaping_tests.append((shaping_text, bumps, draw, output_buf))
 
 
 def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
     seen_bumps = {}
-    msg = f"{shaping_file}: %i collisions found while shaping" % len(
-        failed_shaping_tests
-    )
+    msg = f"{shaping_file}: {len(failed_shaping_tests)} collisions found while shaping"
     report_items.append(create_report_item(vharfbuzz, msg, type="header"))
     for shaping_text, bumps, draw, buf in failed_shaping_tests:
         # Make HTML report here.
         if tuple(bumps) in seen_bumps:
             continue
         seen_bumps[tuple(bumps)] = True
-        report_items.append(
-            create_report_item(
-                vharfbuzz,
-                f"{',' .join(bumps)} collision found in e.g. <span class='tf'>{shaping_text}</span> <div>{draw}</div>",
-                buf1=buf,
-            )
-        )
-    yield FAIL, Message("shaping-collides", msg + ".\n" + "\n".join(report_items))
+        report_item = create_report_item(vharfbuzz,
+                                         f"{',' .join(bumps)} collision found in"
+                                         f" e.g. <span class='tf'>{shaping_text}</span>"
+                                         f" <div>{draw}</div>",
+                                         buf1=buf)
+        report_items.append(report_item)
+    yield FAIL,\
+          Message("shaping-collides",
+                  msg + ".\n" + "\n".join(report_items))
 
 
 profile.auto_register(globals())
