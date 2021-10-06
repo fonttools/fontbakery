@@ -25,12 +25,10 @@ def style(font):
 
 
 @condition
-def RIBBI_ttFonts(fonts):
-    from fontTools.ttLib import TTFont
+def RIBBI_ttFonts(ttFonts):
     from fontbakery.constants import RIBBI_STYLE_NAMES
-    return [TTFont(f)
-            for f in fonts
-            if style(f) in RIBBI_STYLE_NAMES]
+    return [ttFont for ttFont in ttFonts
+            if style(ttFont.reader.file.name) in RIBBI_STYLE_NAMES]
 
 
 @condition

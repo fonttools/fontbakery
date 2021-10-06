@@ -94,7 +94,8 @@ class FontsProfile(Profile):
         return tuple(x.name for x in self.accepted_files)
 
     def get_family_checks(self):
-        family_checks = self.get_checks_by_dependencies('ttFonts')
+        family_checks = self.get_checks_by_dependencies('fonts')
+        family_checks.extend(self.get_checks_by_dependencies('ttFonts'))
         return family_checks
 
     @classmethod
