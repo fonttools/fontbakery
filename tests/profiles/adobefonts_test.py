@@ -17,7 +17,7 @@ def test_check_family_consistent_upm():
     # these fonts have a consistent unitsPerEm of 1000:
     filenames = ['SourceSansPro-Regular.otf',
                  'SourceSansPro-Bold.otf',
-                 'SourceSansPro-It.otf']
+                 'SourceSansPro-Italic.otf']
     fonts = [os.path.join(portable_path("data/test/source-sans-pro/OTF"), filename)
                  for filename in filenames]
 
@@ -36,7 +36,7 @@ def test_get_family_checks():
     family_checks = profile.get_family_checks()
     family_check_ids = {check.id for check in family_checks}
     expected_family_check_ids = {
-        # RIBBI: 'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1',
+        'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1',
         'com.adobe.fonts/check/family/consistent_upm',
         'com.adobe.fonts/check/family/max_4_fonts_per_family_name',
         'com.google.fonts/check/family/underline_thickness',
@@ -46,6 +46,7 @@ def test_get_family_checks():
         'com.google.fonts/check/family/equal_font_versions',
         'com.google.fonts/check/family/win_ascent_and_descent',
         'com.google.fonts/check/family/vertical_metrics',
+        'com.google.fonts/check/family/single_directory',
         # 'com.google.fonts/check/superfamily/vertical_metrics', # should it be included here?
                                                                  # or should we have
                                                                  # a get_superfamily_checks() method?

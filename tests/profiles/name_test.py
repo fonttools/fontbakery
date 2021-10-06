@@ -388,17 +388,17 @@ def test_check_family_max_4_fonts_per_family_name():
 
     font_names = [
         'SourceSansPro-Black.otf',
-        'SourceSansPro-BlackIt.otf',
+        'SourceSansPro-BlackItalic.otf',
         'SourceSansPro-Bold.otf',
-        'SourceSansPro-BoldIt.otf',
+        'SourceSansPro-BoldItalic.otf',
         'SourceSansPro-ExtraLight.otf',
-        'SourceSansPro-ExtraLightIt.otf',
-        'SourceSansPro-It.otf',
+        'SourceSansPro-ExtraLightItalic.otf',
+        'SourceSansPro-Italic.otf',
         'SourceSansPro-Light.otf',
-        'SourceSansPro-LightIt.otf',
+        'SourceSansPro-LightItalic.otf',
         'SourceSansPro-Regular.otf',
         'SourceSansPro-Semibold.otf',
-        'SourceSansPro-SemiboldIt.otf']
+        'SourceSansPro-SemiboldItalic.otf']
 
     font_paths = [os.path.join(base_path, n) for n in font_names]
 

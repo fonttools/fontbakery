@@ -70,7 +70,7 @@ def test_check_outline_jaggy_segments():
     filename = TEST_FILE("familysans/FamilySans-Regular.ttf")
     assert_PASS(check(filename))
 
-    filename = TEST_FILE("source-sans-pro/OTF/SourceSansPro-LightIt.otf")
+    filename = TEST_FILE("source-sans-pro/OTF/SourceSansPro-LightItalic.otf")
     assert_PASS(check(filename))
 
 
