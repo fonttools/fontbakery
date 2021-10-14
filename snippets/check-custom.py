@@ -34,7 +34,6 @@ CUSTOM_PROFILE_CHECKS = UNIVERSAL_PROFILE_CHECKS + [
 # define check ID's in the upstream `universal` profile
 # that should be excluded as a Python tuple
 excluded_check_ids = (
-    # "com.google.fonts/check/ftxvalidator_is_available",
     # "com.google.fonts/check/dsig",
 )
 

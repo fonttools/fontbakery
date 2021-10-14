@@ -1,6 +1,6 @@
 # macOS Installation Guide
 
-You'll need Python 3.6 (or newer) to run Font Bakery. Install the [`python` formula](https://formulae.brew.sh/formula/python) with the [Homebrew](https://brew.sh) package manager using the instructions below.
+You'll need Python 3.7 (or newer) to run Font Bakery. Install the [`python` formula](https://formulae.brew.sh/formula/python) with the [Homebrew](https://brew.sh) package manager using the instructions below.
 
 ## Install
 
@@ -35,31 +35,6 @@ pip3 install --upgrade fontbakery
 
 The following are optional dependencies that you can install to extend the functionality of Font Bakery.  Please note that some tests will not be executed if these optional dependencies are not present on your system.
 
-### Apple OS X Font Tools
-
-Apple provides various font utilities, and `ftxvalidator` is especially useful as it runs the same checks that are run for users when they install a font using Font Book.  Please note that the use of the OS X Font Tools application `ftxvalidator` requires *macOS v10.13 or greater* before you attempt to install the application using the instructions below.
-
-You must use your Apple ID to sign in to [https://developer.apple.com](https://developer.apple.com) and then:
-
-* go to [https://developer.apple.com/download/more/?=font](https://developer.apple.com/download/more/?=font)
-* download `Font_Tools_for_Xcode_9.dmg` (or any newer release that may be available)
-* double-click on the dmg file
-* double-click on `macOS Font Tools.pkg`
-* follow the instructions to install, clicking "continue", "agree", "install", etc
-
-If you wish to run the installation process in Terminal, you can do it this way:
-
-```
-cd ~/Downloads/ ;
-hdiutil attach osxfonttools.dmg ;
-mkdir -p /tmp/ftx ;
-cd /tmp/ftx ;
-cp "/Volumes/OS X Font Tools/OS X Font Tools.pkg" . ;
-xar -xf "OS X Font Tools.pkg" ;
-cd fontTools.pkg/ ;
-cat Payload | gunzip -dc | cpio -i ;
-sudo mv ftx* /usr/local/bin/ ;
-```
 
 ### Microsoft Font Validator
 

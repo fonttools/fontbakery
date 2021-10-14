@@ -5,7 +5,6 @@ from fontbakery.fonts_profile import profile_factory
 def check_filter(item_type, item_id, item):
     # Filter out external tool checks for testing purposes.
     if item_type == "check" and item_id in (
-        "com.google.fonts/check/ftxvalidator",
         "com.google.fonts/check/ots",
         "com.google.fonts/check/fontvalidator",
     ):
@@ -28,7 +27,7 @@ def test_external_profile():
     profile.test_expected_checks(expected_tests)
 
     # Probe tests we don't want
-    assert "com.google.fonts/check/ftxvalidator" not in profile._check_registry.keys()
+    assert "com.google.fonts/check/fontvalidator" not in profile._check_registry.keys()
 
     assert len(profile.sections) > 1
 

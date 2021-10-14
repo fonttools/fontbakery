@@ -24,8 +24,3 @@ Font Validator has useful tests for a font's glyf table. We use [Hintak's fork](
 * Move the binary to your bin folder, `mv /path/to/unzipped/FontValidator /usr/local/bin/FontValidator`
 
 
-### Remote ftxvalidator
-
-The script available at `prebuilt/workarounds/ftxvalidator/ssh-implementation/ftxvalidator` lets you execute the macOS tool `ftxvalidator` on a remote host. It is designed as a drop-in replacement to be put in your `/usr/local/bin` directory.
-
-In order to use it you must also add your client's ssh public key to `.ssh/authorized_keys` on the remote machine.

@@ -1,7 +1,7 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.8.3 (2021-Sep-??)
+## 0.8.3 (2021-Oct-??)
 ### Noteworthy code-changes
   - This release drops Python 3.6 support (issue #3459)
   - Check statuses may now also be overriden via configuration file. See USAGE.md for examples. (PR #3469)
@@ -19,6 +19,11 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/repo/sample_image]:** The README.md file has a sample image to showcase the font family? (issue #2898)
   - **[com.google.fonts/check/metadata/can_render_samples]:** Ensure sample_text in METADATA.pb can be rendered in the font (issue #3419)
+
+### Deprecated Checks
+#### Removed from the Universal Profile
+  - **[com.google.fonts/check/ftxvalidator]**: Since ftxvalidator is a proprietary tool, we can't be sure what it does. Font Bakery's mission is to colect font-bug knowledge publicly with "free as in freedom" code. Also, Font Bakery users have been either simply ignoring this third-party tool, or having headaches with installing it (we heard reports of tens of gigabytes and hours of downloading Apple tools just to have ftxvalidator available for this FontBakery check). In the past the reasoning for keeping a Font Bakery wrapper to ftxval was based on the fact that fonts will not install on MacOS if they do not pass ftxval checking routines. But the onboarders on Google Fonts reported that they've never faced that kind of problem, so we're now making the bold move of completely removing the wrapper-check since we believe our collection of FB checks are good enough to make sure fonts are valid for the MacOS font-installer. (PR #3479)
+  - **[com.google.fonts/check/ftxvalidator_is_available]**: same reason as stated above.
 
 
 ## 0.8.2 (2021-Sep-01)
