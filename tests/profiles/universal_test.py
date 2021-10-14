@@ -285,33 +285,6 @@ def test_check_family_single_directory():
                            f'with multiple dirs: {multiple_dirs}')
 
 
-def test_check_ftxvalidator_is_available():
-    """ Is the command `ftxvalidator` (Apple Font Tool Suite) available? """
-    check = CheckTester(universal_profile,
-                        "com.google.fonts/check/ftxvalidator_is_available")
-
-    font = "foo.ttf"
-    message = assert_PASS(check(font, {'ftxvalidator_cmd': '/usr/local/bin/ftxvalidator'}))
-    assert "is available" in message
-
-    message = assert_results_contain(check(font, {'ftxvalidator_cmd': None}),
-                                     WARN, "ftxvalidator-available")
-    assert "Could not find" in message
-
-
-def NOT_IMPLEMENTED_test_check_ftxvalidator():
-    """ Checking with ftxvalidator. """
-    # check = CheckTester(universal_profile,
-    #                     "com.google.fonts/check/ftxvalidator")
-    # TODO: Implement-me!
-    #
-    # code-paths:
-    # - PASS, "ftxvalidator passed this file."
-    # - FAIL, "ftxvalidator outputs to stderr."
-    # - ERROR, "ftxvalidator returned an error code."
-    # - ERROR, "ftxvalidator is not available!"
-
-
 def test_check_ots():
     """ Checking with ots-sanitize. """
     check = CheckTester(universal_profile,

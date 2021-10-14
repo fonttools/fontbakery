@@ -19,8 +19,6 @@ profile = profile_factory(default_section=Section("Universal"))
 
 THIRDPARTY_CHECKS = [
     'com.google.fonts/check/ots',
-    'com.google.fonts/check/ftxvalidator',
-    'com.google.fonts/check/ftxvalidator_is_available'
 ]
 
 SUPERFAMILY_CHECKS = [
@@ -225,88 +223,6 @@ def com_google_fonts_check_family_single_directory(fonts):
                       f" font files as belonging to a single"
                       f" font family. The detected directories are:"
                       f" {directories}")
-
-
-@condition
-def ftxvalidator_cmd():
-    """ Test if `ftxvalidator` is a command; i.e. an executable with a path."""
-    import shutil
-    return shutil.which('ftxvalidator')
-
-
-@check(
-    id = 'com.google.fonts/check/ftxvalidator_is_available',
-    conditions = ["font"], # No need to look for ftxval if we're not checking font files
-    rationale = """
-        There's no reasonable (and legal) way to run the command `ftxvalidator` of the Apple Font Tool Suite on a non-macOS machine. I.e. on GNU+Linux or Windows etc.
-
-        If Font Bakery is not running on an OSX machine, the machine running Font Bakery could access `ftxvalidator` on OSX, e.g. via ssh or a remote procedure call (rpc).
-
-        There's an ssh example implementation at:
-        https://github.com/googlefonts/fontbakery/blob/main/prebuilt/workarounds/ftxvalidator/ssh-implementation/ftxvalidator
-    """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2184'
-)
-def com_google_fonts_check_ftxvalidator_is_available(ftxvalidator_cmd):
-    """Is the command `ftxvalidator` (Apple Font Tool Suite) available?"""
-    if ftxvalidator_cmd:
-        yield PASS, f"ftxvalidator is available at {ftxvalidator_cmd}"
-    else:
-        yield WARN, \
-              Message("ftxvalidator-available",
-                      "Could not find ftxvalidator.")
-
-
-@check(
-    id = 'com.google.fonts/check/ftxvalidator',
-    conditions = ['ftxvalidator_cmd'],
-    proposal = 'legacy:check/035'
-)
-def com_google_fonts_check_ftxvalidator(font, ftxvalidator_cmd):
-    """Checking with ftxvalidator."""
-    import plistlib
-    try:
-        import subprocess
-        ftx_cmd = [
-            ftxvalidator_cmd,
-            "-t",
-            "all",  # execute all checks
-            font
-        ]
-        # here we capture stdout and stderr separately to avoid
-        # corrupting the plist data to be parsed a bit later:
-        with subprocess.Popen(
-            ftx_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        ) as pipes:
-            ftx_output, ftx_err = pipes.communicate()
-
-        if len(ftx_err):
-            yield WARN, \
-                  Message('stderr',
-                          f"stderr output from ftxvalidator:\n{ftx_err}")
-
-        ftx_data = plistlib.loads(ftx_output)
-        # we accept kATSFontTestSeverityInformation
-        # and kATSFontTestSeverityMinorError
-        if 'kATSFontTestSeverityFatalError' \
-           not in ftx_data['kATSFontTestResultKey']:
-            yield PASS, "ftxvalidator passed this file"
-        else:
-            ftx_cmd = [
-                ftxvalidator_cmd,
-                "-T",  # Human-readable output
-                "-r",  # Generate a full report
-                "-t",
-                "all",  # execute all checks
-                font
-            ]
-            # Here, stdout and stderr are mixed:
-            ftx_output = subprocess.check_output(ftx_cmd, stderr=subprocess.STDOUT)
-            yield FAIL, f"ftxvalidator output follows:\n\n{ftx_output}\n"
-
-    except subprocess.CalledProcessError as e:
-        yield ERROR, ("ftxvalidator returned an error code. Output follows:"
-                      "\n\n{}\n").format(e.output.decode('utf-8'))
 
 
 @check(
