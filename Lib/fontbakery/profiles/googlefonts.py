@@ -106,9 +106,13 @@ NAME_TABLE_CHECKS = [
     'com.google.fonts/check/name/rfn'
 ]
 
+
+# The glyphs checks will be enabled once
+#  we implement check polymorphism
+# https://github.com/googlefonts/fontbakery/issues/3436
 GLYPHSAPP_CHECKS = [
-    'com.google.fonts/check/glyphs_file/name/family_and_style_max_length',
-    'com.google.fonts/check/glyphs_file/font_copyright'
+#DISABLED:    'com.google.fonts/check/glyphs_file/name/family_and_style_max_length',
+#DISABLED:    'com.google.fonts/check/glyphs_file/font_copyright'
 ]
 
 REPO_CHECKS = [
@@ -2346,6 +2350,7 @@ def com_google_fonts_check_font_copyright(ttFont):
         yield PASS, "Name table copyright entries are good"
 
 
+@disable
 @check(
     id = 'com.google.fonts/check/glyphs_file/font_copyright'
 )
@@ -4297,6 +4302,7 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
         yield PASS, "All name entries are good."
 
 
+@disable
 @check(
     id = 'com.google.fonts/check/glyphs_file/name/family_and_style_max_length',
 )
