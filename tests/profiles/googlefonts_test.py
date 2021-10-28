@@ -407,7 +407,7 @@ def test_check_name_family_and_style_max_length():
                            'with a bad font...')
 
 
-def test_check_glyphs_file_name_family_and_style_max_length():
+def DISABLED_test_check_glyphs_file_name_family_and_style_max_length():
     """ Combined length of family and style must not exceed 27 characters. """
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/glyphs_file/name/family_and_style_max_length")
@@ -1796,7 +1796,7 @@ def test_check_font_copyright():
                 'with good strings...')
 
 
-def test_check_glyphs_file_font_copyright():
+def DISABLE_test_check_glyphs_file_font_copyright():
     """Copyright notices match canonical pattern in fonts"""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/glyphs_file/font_copyright")

@@ -1,7 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.8.3 (2021-Oct-??)
+## 0.8.4 (2021-Nov-??)
+  - ...
+
+
+## 0.8.3 (2021-Oct-28)
 ### Noteworthy code-changes
   - This release drops Python 3.6 support (issue #3459)
   - Check statuses may now also be overriden via configuration file. See USAGE.md for examples. (PR #3469)
