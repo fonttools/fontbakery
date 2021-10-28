@@ -65,10 +65,13 @@ class FontbakeryCallable:
                or param.kind not in (inspect.Parameter.POSITIONAL_OR_KEYWORD,
                                      inspect.Parameter.POSITIONAL_ONLY):
                 # has a default i.e. not mandatory or not positional of any kind
-                print(f'{param.default is inspect.Parameter.empty}'
-                      f' param.kind: {param.kind}'
-                      f' param.default: {param.default}'
-                      f' BREAK')
+
+                ## Debugging message:
+                #print(f'[{param}]'
+                #      f' {param.default is inspect.Parameter.empty}'
+                #      f' param.kind: {param.kind}'
+                #      f' param.default: {param.default}'
+                #      f' BREAK')
                 break
             args.append(name)
         return tuple(args)
@@ -87,10 +90,13 @@ class FontbakeryCallable:
             if param.kind not in (inspect.Parameter.POSITIONAL_OR_KEYWORD,
                                   inspect.Parameter.POSITIONAL_ONLY):
                 # no more positional of any kind
-                print(f'{param.default is inspect.Parameter.empty}'
-                      f' param.kind: {param.kind}'
-                      f' param.default: {param.default}'
-                      f' BREAK')
+
+                ## Debugging message:
+                #print(f'[{param}]'
+                #      f'{param.default is inspect.Parameter.empty}'
+                #      f' param.kind: {param.kind}'
+                #      f' param.default: {param.default}'
+                #      f' BREAK')
                 break
             args.append(name)
         return tuple(args)
