@@ -169,7 +169,7 @@ def readme_contents(readme_md):
 
 
 @condition
-def metadata_file(family_directory=None,
+def metadata_file(family_directory,
                   metadata_pb=None):
     if metadata_pb:
         if isinstance(metadata_pb, list):
