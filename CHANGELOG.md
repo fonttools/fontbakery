@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/contour_count]:** WARN if a font has a softhyphen. Also, if present, it should be non-spacing (and should have no contours). (issue #3486)
+  - **[com.google.fonts/check/contour_count]:** Do not expect ZWNJ and ZWJ glyphs to have zero contours. (issue #3487)
 
 
 ## 0.8.3 (2021-Oct-28)
