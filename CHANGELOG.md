@@ -12,7 +12,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Noteworthy code-changes
   - This release drops Python 3.6 support (issue #3459)
   - Check statuses may now also be overriden via configuration file. See USAGE.md for examples. (PR #3469)
-  - We now use the CheckTester helper class is all our code-tests. (PR #3453)
+  - We now use the CheckTester helper class in all our code-tests. (PR #3453)
   - The `get_family_checks` method also takes into account usage of the `fonts` dependency, in addition to `ttFonts`.
 
 ### Changes to existing checks
