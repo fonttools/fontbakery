@@ -2,7 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.8.4 (2021-Nov-??)
-  - ...
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/contour_count]:** WARN if a font has a softhyphen. Also, if present, it should be non-spacing (and should have no contours). (issue #3486)
 
 
 ## 0.8.3 (2021-Oct-28)

@@ -2296,8 +2296,11 @@ def test_check_contour_count(montserrat_ttFonts):
     # TODO: FAIL, "lacks-cmap"
 
     for ttFont in montserrat_ttFonts:
-        assert_PASS(check(ttFont),
-                    'Montserrat which was used to assemble the glyph data...')
+        # Montserrat which was used to assemble the glyph data,
+        # so, it should be good, except for that softhyphen...
+        # TODO: how can we test PASS then?
+        assert_results_contain(check(ttFont),
+                               WARN, 'softhyphen')
 
     # Lets swap the glyf 'a' (2 contours) with glyf 'c' (1 contour)
     for ttFont in montserrat_ttFonts:

@@ -3070,7 +3070,8 @@ def com_google_fonts_check_contour_count(ttFont):
     be the 'recommended' anchor counts for each glyph.
     """
     from fontbakery.glyphdata import desired_glyph_data as glyph_data
-    from fontbakery.utils import (get_font_glyph_data,
+    from fontbakery.utils import (bullet_list,
+                                  get_font_glyph_data,
                                   pretty_print_list)
 
     def in_PUA_range(codepoint):
@@ -3114,6 +3115,16 @@ def com_google_fonts_check_contour_count(ttFont):
         font_glyph_contours_by_glyphname = {f['name']: list(f['contours'])[0]
                                             for f in font_glyph_data}
 
+        if 0x00AD in font_glyph_contours_by_codepoint.keys():
+            yield WARN,\
+                  Message("softhyphen",
+                          "This font has a 'Soft Hyphen' character (codepoint 0x00AD)"
+                          " which is supposed to be zero-width and invisible, and is"
+                          " used to mark a hyphenation possibility within a word"
+                          " in the absence of or overriding dictionary hyphenation."
+                          " It is mostly an obsolete mechanism now, and the character"
+                          " is only included in fonts for legacy codepage coverage.")
+
         shared_glyphs_by_codepoint = set(desired_glyph_contours_by_codepoint) & \
                                      set(font_glyph_contours_by_codepoint)
         for glyph in sorted(shared_glyphs_by_codepoint):
@@ -3146,7 +3157,7 @@ def com_google_fonts_check_contour_count(ttFont):
                 f"Expected: {pretty_print_list(expected, shorten=None, glue='or')}"
                 for name, count, expected in bad_glyphs
             ]
-            bad_glyphs_name = '\n'.join(bad_glyphs_name)
+            bad_glyphs_name = bullet_list(bad_glyphs_name)
             yield WARN,\
                   Message("contour-count",
                           f"This check inspects the glyph outlines and detects the"
@@ -3164,7 +3175,8 @@ def com_google_fonts_check_contour_count(ttFont):
                           f"The following glyphs do not have the recommended"
                           f" number of contours:\n"
                           f"\n"
-                          f"{bad_glyphs_name}")
+                          f"{bad_glyphs_name}"
+                          f"\n")
         else:
             yield PASS, "All glyphs have the recommended amount of contours"
 

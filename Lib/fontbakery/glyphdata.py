@@ -1110,10 +1110,11 @@ desired_glyph_data = \
         ]
     }, 
     {
+        # soft hyphen
         "name": "uni00AD", 
         "unicode": 173, 
         "contours": [
-            1
+            0
         ]
     }, 
     {
