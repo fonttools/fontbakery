@@ -2289,26 +2289,6 @@ def test_check_mac_style():
                                    f"with macStyle:{macStyle_value} style:{style}...")
 
 
-def test_check_contour_count(montserrat_ttFonts):
-    """Check glyphs contain the recommended contour count"""
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/contour_count")
-    # TODO: FAIL, "lacks-cmap"
-
-    for ttFont in montserrat_ttFonts:
-        # Montserrat which was used to assemble the glyph data,
-        # so, it should be good, except for that softhyphen...
-        # TODO: how can we test PASS then?
-        assert_results_contain(check(ttFont),
-                               WARN, 'softhyphen')
-
-    # Lets swap the glyf 'a' (2 contours) with glyf 'c' (1 contour)
-    for ttFont in montserrat_ttFonts:
-        ttFont['glyf']['a'] = ttFont['glyf']['c']
-        assert_results_contain(check(ttFont),
-                               WARN, 'contour-count')
-
-
 # FIXME!
 # GFonts hosted Cabin files seem to have changed in ways
 # that break some of the assumptions in the code-test below.

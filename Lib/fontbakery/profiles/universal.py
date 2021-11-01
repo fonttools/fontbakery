@@ -51,7 +51,8 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/family/vertical_metrics',
         'com.google.fonts/check/STAT_strings',
         'com.google.fonts/check/rupee',
-        'com.google.fonts/check/unreachable_glyphs'
+        'com.google.fonts/check/unreachable_glyphs',
+        'com.google.fonts/check/contour_count'
     ]
 
 @check(
@@ -1085,6 +1086,145 @@ def com_google_fonts_check_unreachable_glyphs(ttFont):
                       f"{bullet_list(list(all_glyphs))}\n")
     else:
         yield PASS, "Font did not contain any unreachable glyphs"
+
+
+@check(
+    id = 'com.google.fonts/check/contour_count',
+    conditions = ['is_ttf',
+                  'not is_variable_font'],
+    rationale = """
+        Visually QAing thousands of glyphs by hand is tiring. Most glyphs can only be constructured in a handful of ways. This means a glyph's contour count will only differ slightly amongst different fonts, e.g a 'g' could either be 2 or 3 contours, depending on whether its double story or single story.
+
+        However, a quotedbl should have 2 contours, unless the font belongs to a display family.
+
+        This check currently does not cover variable fonts because there's plenty of alternative ways of constructing glyphs with multiple outlines for each feature in a VarFont. The expected contour count data for this check is currently optimized for the typical construction of glyphs in static fonts.
+    """,
+    proposal = 'legacy:check/153'
+)
+def com_google_fonts_check_contour_count(ttFont):
+    """Check if each glyph has the recommended amount of contours.
+
+    This check is useful to assure glyphs aren't incorrectly constructed.
+
+    The desired_glyph_data module contains the 'recommended' countour count
+    for encoded glyphs. The contour counts are derived from fonts which were
+    chosen for their quality and unique design decisions for particular glyphs.
+
+    In the future, additional glyph data can be included. A good addition would
+    be the 'recommended' anchor counts for each glyph.
+    """
+    from fontbakery.glyphdata import desired_glyph_data as glyph_data
+    from fontbakery.constants import (PlatformID,
+                                      WindowsEncodingID)
+    from fontbakery.utils import (bullet_list,
+                                  get_font_glyph_data,
+                                  pretty_print_list)
+
+    def in_PUA_range(codepoint):
+        """
+          In Unicode, a Private Use Area (PUA) is a range of code points that,
+          by definition, will not be assigned characters by the Unicode Consortium.
+          Three private use areas are defined:
+            one in the Basic Multilingual Plane (U+E000–U+F8FF),
+            and one each in, and nearly covering, planes 15 and 16
+            (U+F0000–U+FFFFD, U+100000–U+10FFFD).
+        """
+        return (codepoint >= 0xE000 and codepoint <= 0xF8FF) or \
+               (codepoint >= 0xF0000 and codepoint <= 0xFFFFD) or \
+               (codepoint >= 0x100000 and codepoint <= 0x10FFFD)
+
+    # rearrange data structure:
+    desired_glyph_data_by_codepoint = {}
+    desired_glyph_data_by_glyphname = {}
+    for glyph in glyph_data:
+        desired_glyph_data_by_glyphname[glyph['name']] = glyph
+        # since the glyph in PUA ranges have unspecified meaning,
+        # it doesnt make sense for us to have an expected contour cont for them
+        if not in_PUA_range(glyph['unicode']):
+            desired_glyph_data_by_codepoint[glyph['unicode']] = glyph
+
+    bad_glyphs = []
+    desired_glyph_contours_by_codepoint = {f: desired_glyph_data_by_codepoint[f]['contours']
+                                           for f in desired_glyph_data_by_codepoint}
+    desired_glyph_contours_by_glyphname = {f: desired_glyph_data_by_glyphname[f]['contours']
+                                           for f in desired_glyph_data_by_glyphname}
+
+    font_glyph_data = get_font_glyph_data(ttFont)
+
+    if font_glyph_data is None:
+        yield FAIL,\
+              Message("lacks-cmap",
+                      "This font lacks cmap data.")
+    else:
+        font_glyph_contours_by_codepoint = {f['unicode']: list(f['contours'])[0]
+                                            for f in font_glyph_data}
+        font_glyph_contours_by_glyphname = {f['name']: list(f['contours'])[0]
+                                            for f in font_glyph_data}
+
+        if 0x00AD in font_glyph_contours_by_codepoint.keys():
+            yield WARN,\
+                  Message("softhyphen",
+                          "This font has a 'Soft Hyphen' character (codepoint 0x00AD)"
+                          " which is supposed to be zero-width and invisible, and is"
+                          " used to mark a hyphenation possibility within a word"
+                          " in the absence of or overriding dictionary hyphenation."
+                          " It is mostly an obsolete mechanism now, and the character"
+                          " is only included in fonts for legacy codepage coverage.")
+
+        shared_glyphs_by_codepoint = set(desired_glyph_contours_by_codepoint) & \
+                                     set(font_glyph_contours_by_codepoint)
+        for glyph in sorted(shared_glyphs_by_codepoint):
+            if font_glyph_contours_by_codepoint[glyph] not in desired_glyph_contours_by_codepoint[glyph]:
+                bad_glyphs.append([glyph,
+                                   font_glyph_contours_by_codepoint[glyph],
+                                   desired_glyph_contours_by_codepoint[glyph]])
+
+        shared_glyphs_by_glyphname = set(desired_glyph_contours_by_glyphname) & \
+                                     set(font_glyph_contours_by_glyphname)
+        for glyph in sorted(shared_glyphs_by_glyphname):
+            if font_glyph_contours_by_glyphname[glyph] not in desired_glyph_contours_by_glyphname[glyph]:
+                bad_glyphs.append([glyph,
+                                   font_glyph_contours_by_glyphname[glyph],
+                                   desired_glyph_contours_by_glyphname[glyph]])
+
+        if len(bad_glyphs) > 0:
+            cmap = ttFont['cmap'].getcmap(PlatformID.WINDOWS,
+                                          WindowsEncodingID.UNICODE_BMP).cmap
+
+            def _glyph_name(cmap, name):
+                if name in cmap:
+                    return cmap[name]
+                else:
+                    return name
+
+            bad_glyphs_name = [
+                f"Glyph name: {_glyph_name(cmap, name)}\t"
+                f"Contours detected: {count}\t"
+                f"Expected: {pretty_print_list(expected, shorten=None, glue='or')}"
+                for name, count, expected in bad_glyphs
+            ]
+            bad_glyphs_name = bullet_list(bad_glyphs_name)
+            yield WARN,\
+                  Message("contour-count",
+                          f"This check inspects the glyph outlines and detects the"
+                          f" total number of contours in each of them. The expected"
+                          f" values are infered from the typical ammounts of"
+                          f" contours observed in a large collection of reference"
+                          f" font families. The divergences listed below may simply"
+                          f" indicate a significantly different design on some of"
+                          f" your glyphs. On the other hand, some of these may flag"
+                          f" actual bugs in the font such as glyphs mapped to an"
+                          f" incorrect codepoint. Please consider reviewing"
+                          f" the design and codepoint assignment of these to make"
+                          f" sure they are correct.\n"
+                          f"\n"
+                          f"The following glyphs do not have the recommended"
+                          f" number of contours:\n"
+                          f"\n"
+                          f"{bad_glyphs_name}"
+                          f"\n")
+        else:
+            yield PASS, "All glyphs have the recommended amount of contours"
 
 
 profile.auto_register(globals())
