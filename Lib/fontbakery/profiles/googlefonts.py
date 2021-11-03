@@ -5808,14 +5808,13 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     """Check samples can be rendered."""
     from fontbakery.utils import can_shape
 
-    passed = True
     if not family_metadata.sample_glyphs:
-       passed = False
        yield SKIP,\
              Message('no-samples',
                      'No sample_glyphs on METADATA.pb')
        return
 
+    passed = True
     for name, glyphs in family_metadata.sample_glyphs.items():
         if not can_shape(ttFont, glyphs):
             passed = False
