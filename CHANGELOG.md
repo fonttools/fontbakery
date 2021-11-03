@@ -2,6 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.8.4 (2021-Nov-??)
+### Noteworthy code-changes
+  - Fix bad traceback display (issue #3482)
+
 ### Changes to existing checks
 #### Migrations
   - **[com.google.fonts/check/contour_count]:** moved from `Google Fonts` profile to `Universal` profile. (issue #3491)
