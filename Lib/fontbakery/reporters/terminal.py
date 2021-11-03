@@ -382,6 +382,7 @@ class TerminalReporter(TerminalProgress):
             self._collected_results[key][message.name] += 1
 
     def _render_event_sync(self, print, event):
+        import re
         status, msg, (section, check, iterargs) = event
 
         if not status.weight >= self._structure_threshold \
@@ -452,12 +453,15 @@ class TerminalReporter(TerminalProgress):
                 message = str(msg)
 
             if hasattr(msg, 'traceback'):
-                message += '\n' + '\n  ↳ '.join(msg.traceback.split('\n'))
+                message = re.sub(r'(<[^<>]*>)', r'**`\1`**', message, flags=re.MULTILINE)
+                traceback = '  \n`' + '`  \n`'.join(msg.traceback.strip().split('\n')) + '`'
+                traceback = re.sub(r'\n`\s*(File ".*)`', r'\n  ↳ \1', traceback)
+                traceback = re.sub(r'\n`\s*(.*)', r'\n`\1', traceback)
+                message += traceback
 
             formated_msg = '{} {}'.format(formatStatus(self.theme, status), message)
             formated_msg = parse_md(formated_msg)
-            if hasattr(message, 'traceback'):
-                formated_msg += '\n' + '\n  ↳ '.join(message.traceback.split('\n'))
+
             print(text_flow(formated_msg,
                             width=76,
                             indent=4,
