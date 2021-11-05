@@ -289,7 +289,7 @@ def main(profile=None, values=None):
     # these are keys for custom arguments required by the profile.
     if values_keys:
         for key in values_keys:
-            if hasattr(args, key):
+            if hasattr(args, key) and key not in values_:
                 values_[key] = getattr(args, key)
 
     if args.configfile:
