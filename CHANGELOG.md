@@ -3,16 +3,20 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.4 (2021-Nov-??)
 ### Noteworthy code-changes
-  - Fix bad traceback display (issue #3482)
+  - Fixed readability of tracebacks on ERROR messages on the text terminal (issue #3482)
+
+### New Checks
+#### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/description/urls]:** Check for http/https in anchor texts and WARN to remove them (issue #3497)
 
 ### Changes to existing checks
-#### Migrations
-  - **[com.google.fonts/check/contour_count]:** moved from `Google Fonts` profile to `Universal` profile. (issue #3491)
-
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/contour_count]:** WARN if a font has a softhyphen. Also, if present, it should be non-spacing (and should have no contours). (issue #3486)
   - **[com.google.fonts/check/contour_count]:** Do not expect ZWNJ and ZWJ glyphs to have zero contours. (issue #3487)
   - **[com.google.fonts/check/metadata/can_render_samples]:** Ensure METADATA.pb is present before running check (issue googlefonts/Unified-Font-Repository#62)
+
+#### Migrations
+  - **[com.google.fonts/check/contour_count]:** moved from `Google Fonts` profile to `Universal` profile. (issue #3491)
 
 
 ## 0.8.3 (2021-Oct-28)
