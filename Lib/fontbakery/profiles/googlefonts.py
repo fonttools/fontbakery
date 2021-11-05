@@ -85,7 +85,8 @@ DESCRIPTION_CHECKS = [
     'com.google.fonts/check/description/max_length',
     'com.google.fonts/check/description/git_url',
     'com.google.fonts/check/description/eof_linebreak',
-    'com.google.fonts/check/description/family_update'
+    'com.google.fonts/check/description/family_update',
+    'com.google.fonts/check/description/urls'
 ]
 
 FAMILY_CHECKS = [
@@ -345,13 +346,45 @@ def com_google_fonts_check_description_broken_links(description_html):
         yield PASS, "All links in the DESCRIPTION file look good!"
 
 
+@check(
+    id = 'com.google.fonts/check/description/urls',
+    conditions = ['description_html'],
+    rationale = """
+        The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font family webpage on the Google Fonts website.
+
+        Google Fonts has a content formatting policy for that snippet that expects the text content of links not to include the http:// or https:// prefixes.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3497'
+)
+def com_google_fonts_check_description_urls(description_html):
+    """URLs on DESCRIPTION file must not display http(s) prefix."""
+    from lxml import etree
+    passed = True
+    for a_href in description_html.iterfind('.//a[@href]'):
+        link_text = a_href.text
+        if link_text.startswith("http://") or \
+            link_text.startswith("https://"):
+            passed = False
+            yield WARN,\
+                  Message("prefix-found",
+                          f'Please remove the "http(s)://"'
+                          f' prefix from the link text "{link_text}"')
+            continue
+
+    if passed:
+        yield PASS, "All good!"
+
+
 @condition
 def description_html (description):
+    if not description:
+        return
+
     from lxml import etree
+    html = "<html>" + description + "</html>"
     try:
-        html = etree.fromstring("<html>" + description + "</html>")
-        return html
-    except:
+        return etree.fromstring(html)
+    except etree.XMLSyntaxError:
         return None
 
 

@@ -4059,3 +4059,20 @@ def test_check_metadata_can_render_samples():
     # TODO: expand the check to also validate sample_text fields
     # TODO: maybe also fetch samples from the language textprotos
     #       published on the google/fonts git repo
+
+
+def test_check_description_urls():
+    """URLs on DESCRIPTION file must not display http(s) prefix."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/description/urls")
+
+    font = TEST_FILE("librecaslontext/LibreCaslonText[wght].ttf")
+    assert_PASS(check(font))
+
+    font = TEST_FILE("cabinvfbeta/CabinVFBeta.ttf")
+    assert_results_contain(check(font),
+                           WARN, 'prefix-found')
+
+    good_desc = check["description"].replace(">https://", ">")
+    assert_PASS(check(font, {"description": good_desc}))
+
