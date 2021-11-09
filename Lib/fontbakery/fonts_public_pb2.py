@@ -16,42 +16,16 @@ _sym_db = _symbol_database.Default()
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='fonts_public.proto',
-  package='google.fonts',
+  package='google.fonts_public',
   syntax='proto2',
   serialized_options=b'\n\026com.google.fonts.protoB\013FontsPublic',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x12\x66onts_public.proto\x12\x0cgoogle.fonts\"\xfe\x05\n\x0b\x46\x61milyProto\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\x10\n\x08\x64\x65signer\x18\x02 \x02(\t\x12\x0f\n\x07license\x18\x03 \x02(\t\x12\x10\n\x08\x63\x61tegory\x18\x04 \x02(\t\x12\x12\n\ndate_added\x18\x05 \x02(\t\x12&\n\x05\x66onts\x18\x06 \x03(\x0b\x32\x17.google.fonts.FontProto\x12\x0f\n\x07\x61liases\x18\x07 \x03(\t\x12\x0f\n\x07subsets\x18\x08 \x03(\t\x12\x19\n\x11ttf_autohint_args\x18\t \x01(\t\x12,\n\x04\x61xes\x18\n \x03(\x0b\x32\x1e.google.fonts.AxisSegmentProto\x12[\n\x1aregistry_default_overrides\x18\x0b \x03(\x0b\x32\x37.google.fonts.FamilyProto.RegistryDefaultOverridesEntry\x12)\n\x06source\x18\x0c \x01(\x0b\x32\x19.google.fonts.SourceProto\x12\x0f\n\x07is_noto\x18\r \x01(\x08\x12\x11\n\tlanguages\x18\x0e \x03(\t\x12\x34\n\tfallbacks\x18\x0f \x03(\x0b\x32!.google.fonts.FamilyFallbackProto\x12\x42\n\rsample_glyphs\x18\x10 \x03(\x0b\x32+.google.fonts.FamilyProto.SampleGlyphsEntry\x12\x32\n\x0bsample_text\x18\x11 \x01(\x0b\x32\x1d.google.fonts.SampleTextProto\x12\x35\n\x0bsource_type\x18\x12 \x01(\x0e\x32\x16.google.fonts.FontType:\x08TYPE_TTF\x1a?\n\x1dRegistryDefaultOverridesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\x1a\x33\n\x11SampleGlyphsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8a\x01\n\tFontProto\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\r\n\x05style\x18\x02 \x02(\t\x12\x0e\n\x06weight\x18\x03 \x02(\x05\x12\x10\n\x08\x66ilename\x18\x04 \x02(\t\x12\x18\n\x10post_script_name\x18\x05 \x02(\t\x12\x11\n\tfull_name\x18\x06 \x02(\t\x12\x11\n\tcopyright\x18\x07 \x01(\t\"Z\n\x10\x41xisSegmentProto\x12\x0b\n\x03tag\x18\x01 \x01(\t\x12\x11\n\tmin_value\x18\x02 \x01(\x02\x12\x11\n\tmax_value\x18\x04 \x01(\x02J\x04\x08\x03\x10\x04R\rdefault_value\"5\n\x0bSourceProto\x12\x16\n\x0erepository_url\x18\x01 \x01(\t\x12\x0e\n\x06\x63ommit\x18\x02 \x01(\t\"A\n\x0bTargetProto\x12\x32\n\x0btarget_type\x18\x01 \x01(\x0e\x32\x1d.google.fonts.TargetTypeProto\"\xbe\x01\n\x13\x46\x61milyFallbackProto\x12\x33\n\x0b\x61xis_target\x18\x01 \x03(\x0b\x32\x1e.google.fonts.AxisSegmentProto\x12)\n\x06target\x18\x02 \x03(\x0b\x32\x19.google.fonts.TargetProto\x12\x17\n\x0fsize_adjust_pct\x18\x03 \x01(\x02\x12\x1b\n\x13\x61scent_override_pct\x18\x05 \x01(\x02\x12\x11\n\tlocal_src\x18\x04 \x03(\t\"Q\n\x0bRegionProto\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x12\n\npopulation\x18\x03 \x01(\x05\x12\x14\n\x0cregion_group\x18\x04 \x03(\t\"\'\n\x0bScriptProto\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\"\x9a\x02\n\rLanguageProto\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08language\x18\x02 \x01(\t\x12\x0e\n\x06script\x18\x03 \x01(\t\x12\x0c\n\x04name\x18\x04 \x01(\t\x12\x16\n\x0epreferred_name\x18\x05 \x01(\t\x12\x0f\n\x07\x61utonym\x18\x06 \x01(\t\x12\x12\n\npopulation\x18\x07 \x01(\x05\x12\x0e\n\x06region\x18\x08 \x03(\t\x12\x38\n\x0e\x65xemplar_chars\x18\t \x01(\x0b\x32 .google.fonts.ExemplarCharsProto\x12\x32\n\x0bsample_text\x18\n \x01(\x0b\x32\x1d.google.fonts.SampleTextProto\x12\x12\n\nhistorical\x18\x0b \x01(\x08\"z\n\x12\x45xemplarCharsProto\x12\x0c\n\x04\x62\x61se\x18\x01 \x01(\t\x12\x11\n\tauxiliary\x18\x02 \x01(\t\x12\r\n\x05marks\x18\x03 \x01(\t\x12\x10\n\x08numerals\x18\x04 \x01(\t\x12\x13\n\x0bpunctuation\x18\x05 \x01(\t\x12\r\n\x05index\x18\x06 \x01(\t\"\x9f\x02\n\x0fSampleTextProto\x12\x19\n\x11\x66\x61llback_language\x18\x02 \x01(\t\x12\x15\n\rmasthead_full\x18\x03 \x01(\t\x12\x18\n\x10masthead_partial\x18\x04 \x01(\t\x12\x0e\n\x06styles\x18\x05 \x01(\t\x12\x0e\n\x06tester\x18\x06 \x01(\t\x12\x11\n\tposter_sm\x18\x07 \x01(\t\x12\x11\n\tposter_md\x18\x08 \x01(\t\x12\x11\n\tposter_lg\x18\t \x01(\t\x12\x13\n\x0bspecimen_48\x18\n \x01(\t\x12\x13\n\x0bspecimen_36\x18\x0b \x01(\t\x12\x13\n\x0bspecimen_32\x18\x0c \x01(\t\x12\x13\n\x0bspecimen_21\x18\r \x01(\t\x12\x13\n\x0bspecimen_16\x18\x0e \x01(\t*&\n\x08\x46ontType\x12\x0c\n\x08TYPE_TTF\x10\x00\x12\x0c\n\x08TYPE_OTF\x10\x01*h\n\x0fTargetTypeProto\x12\x16\n\x12TARGET_UNSPECIFIED\x10\x00\x12\x15\n\x11TARGET_OS_WINDOWS\x10\x01\x12\x11\n\rTARGET_OS_MAC\x10\x02\x12\x13\n\x0fTARGET_OS_LINUX\x10\x03\x42%\n\x16\x63om.google.fonts.protoB\x0b\x46ontsPublic'
+  serialized_pb=b'\n\x12\x66onts_public.proto\x12\x13google.fonts_public\"\x8e\x06\n\x0b\x46\x61milyProto\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\x10\n\x08\x64\x65signer\x18\x02 \x02(\t\x12\x0f\n\x07license\x18\x03 \x02(\t\x12\x10\n\x08\x63\x61tegory\x18\x04 \x02(\t\x12\x12\n\ndate_added\x18\x05 \x02(\t\x12-\n\x05\x66onts\x18\x06 \x03(\x0b\x32\x1e.google.fonts_public.FontProto\x12\x0f\n\x07\x61liases\x18\x07 \x03(\t\x12\x0f\n\x07subsets\x18\x08 \x03(\t\x12\x19\n\x11ttf_autohint_args\x18\t \x01(\t\x12\x33\n\x04\x61xes\x18\n \x03(\x0b\x32%.google.fonts_public.AxisSegmentProto\x12\x62\n\x1aregistry_default_overrides\x18\x0b \x03(\x0b\x32>.google.fonts_public.FamilyProto.RegistryDefaultOverridesEntry\x12\x30\n\x06source\x18\x0c \x01(\x0b\x32 .google.fonts_public.SourceProto\x12\x0f\n\x07is_noto\x18\r \x01(\x08\x12\x11\n\tlanguages\x18\x0e \x03(\t\x12;\n\tfallbacks\x18\x0f \x03(\x0b\x32(.google.fonts_public.FamilyFallbackProto\x12I\n\rsample_glyphs\x18\x10 \x03(\x0b\x32\x32.google.fonts_public.FamilyProto.SampleGlyphsEntry\x12\x39\n\x0bsample_text\x18\x11 \x01(\x0b\x32$.google.fonts_public.SampleTextProto\x12\x14\n\x0c\x64isplay_name\x18\x12 \x01(\t\x1a?\n\x1dRegistryDefaultOverridesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x02:\x02\x38\x01\x1a\x33\n\x11SampleGlyphsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"\x8a\x01\n\tFontProto\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\r\n\x05style\x18\x02 \x02(\t\x12\x0e\n\x06weight\x18\x03 \x02(\x05\x12\x10\n\x08\x66ilename\x18\x04 \x02(\t\x12\x18\n\x10post_script_name\x18\x05 \x02(\t\x12\x11\n\tfull_name\x18\x06 \x02(\t\x12\x11\n\tcopyright\x18\x07 \x01(\t\"Z\n\x10\x41xisSegmentProto\x12\x0b\n\x03tag\x18\x01 \x01(\t\x12\x11\n\tmin_value\x18\x02 \x01(\x02\x12\x11\n\tmax_value\x18\x04 \x01(\x02J\x04\x08\x03\x10\x04R\rdefault_value\"5\n\x0bSourceProto\x12\x16\n\x0erepository_url\x18\x01 \x01(\t\x12\x0e\n\x06\x63ommit\x18\x02 \x01(\t\"H\n\x0bTargetProto\x12\x39\n\x0btarget_type\x18\x01 \x01(\x0e\x32$.google.fonts_public.TargetTypeProto\"\xcc\x01\n\x13\x46\x61milyFallbackProto\x12:\n\x0b\x61xis_target\x18\x01 \x03(\x0b\x32%.google.fonts_public.AxisSegmentProto\x12\x30\n\x06target\x18\x02 \x03(\x0b\x32 .google.fonts_public.TargetProto\x12\x17\n\x0fsize_adjust_pct\x18\x03 \x01(\x02\x12\x1b\n\x13\x61scent_override_pct\x18\x05 \x01(\x02\x12\x11\n\tlocal_src\x18\x04 \x03(\t\"\x84\x02\n\x0fSampleTextProto\x12\x15\n\rmasthead_full\x18\x01 \x01(\t\x12\x18\n\x10masthead_partial\x18\x02 \x01(\t\x12\x0e\n\x06styles\x18\x03 \x01(\t\x12\x0e\n\x06tester\x18\x04 \x01(\t\x12\x11\n\tposter_sm\x18\x05 \x01(\t\x12\x11\n\tposter_md\x18\x06 \x01(\t\x12\x11\n\tposter_lg\x18\x07 \x01(\t\x12\x13\n\x0bspecimen_48\x18\x08 \x01(\t\x12\x13\n\x0bspecimen_36\x18\t \x01(\t\x12\x13\n\x0bspecimen_32\x18\n \x01(\t\x12\x13\n\x0bspecimen_21\x18\x0b \x01(\t\x12\x13\n\x0bspecimen_16\x18\x0c \x01(\t*\x92\x01\n\x0fTargetTypeProto\x12\x16\n\x12TARGET_UNSPECIFIED\x10\x00\x12\x15\n\x11TARGET_OS_WINDOWS\x10\x01\x12\x11\n\rTARGET_OS_MAC\x10\x02\x12\x13\n\x0fTARGET_OS_LINUX\x10\x03\x12\x15\n\x11TARGET_OS_ANDROID\x10\x04\x12\x11\n\rTARGET_OS_IOS\x10\x05\x42%\n\x16\x63om.google.fonts.protoB\x0b\x46ontsPublic'
 )
 
-_FONTTYPE = _descriptor.EnumDescriptor(
-  name='FontType',
-  full_name='google.fonts.FontType',
-  filename=None,
-  file=DESCRIPTOR,
-  create_key=_descriptor._internal_create_key,
-  values=[
-    _descriptor.EnumValueDescriptor(
-      name='TYPE_TTF', index=0, number=0,
-      serialized_options=None,
-      type=None,
-      create_key=_descriptor._internal_create_key),
-    _descriptor.EnumValueDescriptor(
-      name='TYPE_OTF', index=1, number=1,
-      serialized_options=None,
-      type=None,
-      create_key=_descriptor._internal_create_key),
-  ],
-  containing_type=None,
-  serialized_options=None,
-  serialized_start=2176,
-  serialized_end=2214,
-)
-_sym_db.RegisterEnumDescriptor(_FONTTYPE)
-
-FontType = enum_type_wrapper.EnumTypeWrapper(_FONTTYPE)
 _TARGETTYPEPROTO = _descriptor.EnumDescriptor(
   name='TargetTypeProto',
-  full_name='google.fonts.TargetTypeProto',
+  full_name='google.fonts_public.TargetTypeProto',
   filename=None,
   file=DESCRIPTOR,
   create_key=_descriptor._internal_create_key,
@@ -76,41 +50,51 @@ _TARGETTYPEPROTO = _descriptor.EnumDescriptor(
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='TARGET_OS_ANDROID', index=4, number=4,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
+    _descriptor.EnumValueDescriptor(
+      name='TARGET_OS_IOS', index=5, number=5,
+      serialized_options=None,
+      type=None,
+      create_key=_descriptor._internal_create_key),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2216,
-  serialized_end=2320,
+  serialized_start=1661,
+  serialized_end=1807,
 )
 _sym_db.RegisterEnumDescriptor(_TARGETTYPEPROTO)
 
 TargetTypeProto = enum_type_wrapper.EnumTypeWrapper(_TARGETTYPEPROTO)
-TYPE_TTF = 0
-TYPE_OTF = 1
 TARGET_UNSPECIFIED = 0
 TARGET_OS_WINDOWS = 1
 TARGET_OS_MAC = 2
 TARGET_OS_LINUX = 3
+TARGET_OS_ANDROID = 4
+TARGET_OS_IOS = 5
 
 
 
 _FAMILYPROTO_REGISTRYDEFAULTOVERRIDESENTRY = _descriptor.Descriptor(
   name='RegistryDefaultOverridesEntry',
-  full_name='google.fonts.FamilyProto.RegistryDefaultOverridesEntry',
+  full_name='google.fonts_public.FamilyProto.RegistryDefaultOverridesEntry',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='key', full_name='google.fonts.FamilyProto.RegistryDefaultOverridesEntry.key', index=0,
+      name='key', full_name='google.fonts_public.FamilyProto.RegistryDefaultOverridesEntry.key', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='value', full_name='google.fonts.FamilyProto.RegistryDefaultOverridesEntry.value', index=1,
+      name='value', full_name='google.fonts_public.FamilyProto.RegistryDefaultOverridesEntry.value', index=1,
       number=2, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
@@ -128,27 +112,27 @@ _FAMILYPROTO_REGISTRYDEFAULTOVERRIDESENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=687,
-  serialized_end=750,
+  serialized_start=710,
+  serialized_end=773,
 )
 
 _FAMILYPROTO_SAMPLEGLYPHSENTRY = _descriptor.Descriptor(
   name='SampleGlyphsEntry',
-  full_name='google.fonts.FamilyProto.SampleGlyphsEntry',
+  full_name='google.fonts_public.FamilyProto.SampleGlyphsEntry',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='key', full_name='google.fonts.FamilyProto.SampleGlyphsEntry.key', index=0,
+      name='key', full_name='google.fonts_public.FamilyProto.SampleGlyphsEntry.key', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='value', full_name='google.fonts.FamilyProto.SampleGlyphsEntry.value', index=1,
+      name='value', full_name='google.fonts_public.FamilyProto.SampleGlyphsEntry.value', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -166,141 +150,141 @@ _FAMILYPROTO_SAMPLEGLYPHSENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=752,
-  serialized_end=803,
+  serialized_start=775,
+  serialized_end=826,
 )
 
 _FAMILYPROTO = _descriptor.Descriptor(
   name='FamilyProto',
-  full_name='google.fonts.FamilyProto',
+  full_name='google.fonts_public.FamilyProto',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='name', full_name='google.fonts.FamilyProto.name', index=0,
+      name='name', full_name='google.fonts_public.FamilyProto.name', index=0,
       number=1, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='designer', full_name='google.fonts.FamilyProto.designer', index=1,
+      name='designer', full_name='google.fonts_public.FamilyProto.designer', index=1,
       number=2, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='license', full_name='google.fonts.FamilyProto.license', index=2,
+      name='license', full_name='google.fonts_public.FamilyProto.license', index=2,
       number=3, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='category', full_name='google.fonts.FamilyProto.category', index=3,
+      name='category', full_name='google.fonts_public.FamilyProto.category', index=3,
       number=4, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='date_added', full_name='google.fonts.FamilyProto.date_added', index=4,
+      name='date_added', full_name='google.fonts_public.FamilyProto.date_added', index=4,
       number=5, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fonts', full_name='google.fonts.FamilyProto.fonts', index=5,
+      name='fonts', full_name='google.fonts_public.FamilyProto.fonts', index=5,
       number=6, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='aliases', full_name='google.fonts.FamilyProto.aliases', index=6,
+      name='aliases', full_name='google.fonts_public.FamilyProto.aliases', index=6,
       number=7, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='subsets', full_name='google.fonts.FamilyProto.subsets', index=7,
+      name='subsets', full_name='google.fonts_public.FamilyProto.subsets', index=7,
       number=8, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='ttf_autohint_args', full_name='google.fonts.FamilyProto.ttf_autohint_args', index=8,
+      name='ttf_autohint_args', full_name='google.fonts_public.FamilyProto.ttf_autohint_args', index=8,
       number=9, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='axes', full_name='google.fonts.FamilyProto.axes', index=9,
+      name='axes', full_name='google.fonts_public.FamilyProto.axes', index=9,
       number=10, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='registry_default_overrides', full_name='google.fonts.FamilyProto.registry_default_overrides', index=10,
+      name='registry_default_overrides', full_name='google.fonts_public.FamilyProto.registry_default_overrides', index=10,
       number=11, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='source', full_name='google.fonts.FamilyProto.source', index=11,
+      name='source', full_name='google.fonts_public.FamilyProto.source', index=11,
       number=12, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='is_noto', full_name='google.fonts.FamilyProto.is_noto', index=12,
+      name='is_noto', full_name='google.fonts_public.FamilyProto.is_noto', index=12,
       number=13, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='languages', full_name='google.fonts.FamilyProto.languages', index=13,
+      name='languages', full_name='google.fonts_public.FamilyProto.languages', index=13,
       number=14, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fallbacks', full_name='google.fonts.FamilyProto.fallbacks', index=14,
+      name='fallbacks', full_name='google.fonts_public.FamilyProto.fallbacks', index=14,
       number=15, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sample_glyphs', full_name='google.fonts.FamilyProto.sample_glyphs', index=15,
+      name='sample_glyphs', full_name='google.fonts_public.FamilyProto.sample_glyphs', index=15,
       number=16, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sample_text', full_name='google.fonts.FamilyProto.sample_text', index=16,
+      name='sample_text', full_name='google.fonts_public.FamilyProto.sample_text', index=16,
       number=17, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='source_type', full_name='google.fonts.FamilyProto.source_type', index=17,
-      number=18, type=14, cpp_type=8, label=1,
-      has_default_value=True, default_value=0,
+      name='display_name', full_name='google.fonts_public.FamilyProto.display_name', index=17,
+      number=18, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -316,63 +300,63 @@ _FAMILYPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=37,
-  serialized_end=803,
+  serialized_start=44,
+  serialized_end=826,
 )
 
 
 _FONTPROTO = _descriptor.Descriptor(
   name='FontProto',
-  full_name='google.fonts.FontProto',
+  full_name='google.fonts_public.FontProto',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='name', full_name='google.fonts.FontProto.name', index=0,
+      name='name', full_name='google.fonts_public.FontProto.name', index=0,
       number=1, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='style', full_name='google.fonts.FontProto.style', index=1,
+      name='style', full_name='google.fonts_public.FontProto.style', index=1,
       number=2, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='weight', full_name='google.fonts.FontProto.weight', index=2,
+      name='weight', full_name='google.fonts_public.FontProto.weight', index=2,
       number=3, type=5, cpp_type=1, label=2,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='filename', full_name='google.fonts.FontProto.filename', index=3,
+      name='filename', full_name='google.fonts_public.FontProto.filename', index=3,
       number=4, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='post_script_name', full_name='google.fonts.FontProto.post_script_name', index=4,
+      name='post_script_name', full_name='google.fonts_public.FontProto.post_script_name', index=4,
       number=5, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='full_name', full_name='google.fonts.FontProto.full_name', index=5,
+      name='full_name', full_name='google.fonts_public.FontProto.full_name', index=5,
       number=6, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='copyright', full_name='google.fonts.FontProto.copyright', index=6,
+      name='copyright', full_name='google.fonts_public.FontProto.copyright', index=6,
       number=7, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -390,35 +374,35 @@ _FONTPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=806,
-  serialized_end=944,
+  serialized_start=829,
+  serialized_end=967,
 )
 
 
 _AXISSEGMENTPROTO = _descriptor.Descriptor(
   name='AxisSegmentProto',
-  full_name='google.fonts.AxisSegmentProto',
+  full_name='google.fonts_public.AxisSegmentProto',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='tag', full_name='google.fonts.AxisSegmentProto.tag', index=0,
+      name='tag', full_name='google.fonts_public.AxisSegmentProto.tag', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='min_value', full_name='google.fonts.AxisSegmentProto.min_value', index=1,
+      name='min_value', full_name='google.fonts_public.AxisSegmentProto.min_value', index=1,
       number=2, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='max_value', full_name='google.fonts.AxisSegmentProto.max_value', index=2,
+      name='max_value', full_name='google.fonts_public.AxisSegmentProto.max_value', index=2,
       number=4, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
@@ -436,28 +420,28 @@ _AXISSEGMENTPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=946,
-  serialized_end=1036,
+  serialized_start=969,
+  serialized_end=1059,
 )
 
 
 _SOURCEPROTO = _descriptor.Descriptor(
   name='SourceProto',
-  full_name='google.fonts.SourceProto',
+  full_name='google.fonts_public.SourceProto',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='repository_url', full_name='google.fonts.SourceProto.repository_url', index=0,
+      name='repository_url', full_name='google.fonts_public.SourceProto.repository_url', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='commit', full_name='google.fonts.SourceProto.commit', index=1,
+      name='commit', full_name='google.fonts_public.SourceProto.commit', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -475,21 +459,21 @@ _SOURCEPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1038,
-  serialized_end=1091,
+  serialized_start=1061,
+  serialized_end=1114,
 )
 
 
 _TARGETPROTO = _descriptor.Descriptor(
   name='TargetProto',
-  full_name='google.fonts.TargetProto',
+  full_name='google.fonts_public.TargetProto',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='target_type', full_name='google.fonts.TargetProto.target_type', index=0,
+      name='target_type', full_name='google.fonts_public.TargetProto.target_type', index=0,
       number=1, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -507,49 +491,49 @@ _TARGETPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1093,
-  serialized_end=1158,
+  serialized_start=1116,
+  serialized_end=1188,
 )
 
 
 _FAMILYFALLBACKPROTO = _descriptor.Descriptor(
   name='FamilyFallbackProto',
-  full_name='google.fonts.FamilyFallbackProto',
+  full_name='google.fonts_public.FamilyFallbackProto',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='axis_target', full_name='google.fonts.FamilyFallbackProto.axis_target', index=0,
+      name='axis_target', full_name='google.fonts_public.FamilyFallbackProto.axis_target', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='target', full_name='google.fonts.FamilyFallbackProto.target', index=1,
+      name='target', full_name='google.fonts_public.FamilyFallbackProto.target', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='size_adjust_pct', full_name='google.fonts.FamilyFallbackProto.size_adjust_pct', index=2,
+      name='size_adjust_pct', full_name='google.fonts_public.FamilyFallbackProto.size_adjust_pct', index=2,
       number=3, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='ascent_override_pct', full_name='google.fonts.FamilyFallbackProto.ascent_override_pct', index=3,
+      name='ascent_override_pct', full_name='google.fonts_public.FamilyFallbackProto.ascent_override_pct', index=3,
       number=5, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='local_src', full_name='google.fonts.FamilyFallbackProto.local_src', index=4,
+      name='local_src', full_name='google.fonts_public.FamilyFallbackProto.local_src', index=4,
       number=4, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -567,367 +551,99 @@ _FAMILYFALLBACKPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1161,
-  serialized_end=1351,
-)
-
-
-_REGIONPROTO = _descriptor.Descriptor(
-  name='RegionProto',
-  full_name='google.fonts.RegionProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='google.fonts.RegionProto.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='name', full_name='google.fonts.RegionProto.name', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='population', full_name='google.fonts.RegionProto.population', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='region_group', full_name='google.fonts.RegionProto.region_group', index=3,
-      number=4, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1353,
-  serialized_end=1434,
-)
-
-
-_SCRIPTPROTO = _descriptor.Descriptor(
-  name='ScriptProto',
-  full_name='google.fonts.ScriptProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='google.fonts.ScriptProto.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='name', full_name='google.fonts.ScriptProto.name', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1436,
-  serialized_end=1475,
-)
-
-
-_LANGUAGEPROTO = _descriptor.Descriptor(
-  name='LanguageProto',
-  full_name='google.fonts.LanguageProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='google.fonts.LanguageProto.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='language', full_name='google.fonts.LanguageProto.language', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='script', full_name='google.fonts.LanguageProto.script', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='name', full_name='google.fonts.LanguageProto.name', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='preferred_name', full_name='google.fonts.LanguageProto.preferred_name', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='autonym', full_name='google.fonts.LanguageProto.autonym', index=5,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='population', full_name='google.fonts.LanguageProto.population', index=6,
-      number=7, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='region', full_name='google.fonts.LanguageProto.region', index=7,
-      number=8, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='exemplar_chars', full_name='google.fonts.LanguageProto.exemplar_chars', index=8,
-      number=9, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='sample_text', full_name='google.fonts.LanguageProto.sample_text', index=9,
-      number=10, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='historical', full_name='google.fonts.LanguageProto.historical', index=10,
-      number=11, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1478,
-  serialized_end=1760,
-)
-
-
-_EXEMPLARCHARSPROTO = _descriptor.Descriptor(
-  name='ExemplarCharsProto',
-  full_name='google.fonts.ExemplarCharsProto',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='base', full_name='google.fonts.ExemplarCharsProto.base', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='auxiliary', full_name='google.fonts.ExemplarCharsProto.auxiliary', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='marks', full_name='google.fonts.ExemplarCharsProto.marks', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='numerals', full_name='google.fonts.ExemplarCharsProto.numerals', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='punctuation', full_name='google.fonts.ExemplarCharsProto.punctuation', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='index', full_name='google.fonts.ExemplarCharsProto.index', index=5,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1762,
-  serialized_end=1884,
+  serialized_start=1191,
+  serialized_end=1395,
 )
 
 
 _SAMPLETEXTPROTO = _descriptor.Descriptor(
   name='SampleTextProto',
-  full_name='google.fonts.SampleTextProto',
+  full_name='google.fonts_public.SampleTextProto',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='fallback_language', full_name='google.fonts.SampleTextProto.fallback_language', index=0,
+      name='masthead_full', full_name='google.fonts_public.SampleTextProto.masthead_full', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='masthead_partial', full_name='google.fonts_public.SampleTextProto.masthead_partial', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='masthead_full', full_name='google.fonts.SampleTextProto.masthead_full', index=1,
+      name='styles', full_name='google.fonts_public.SampleTextProto.styles', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='masthead_partial', full_name='google.fonts.SampleTextProto.masthead_partial', index=2,
+      name='tester', full_name='google.fonts_public.SampleTextProto.tester', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='styles', full_name='google.fonts.SampleTextProto.styles', index=3,
+      name='poster_sm', full_name='google.fonts_public.SampleTextProto.poster_sm', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='tester', full_name='google.fonts.SampleTextProto.tester', index=4,
+      name='poster_md', full_name='google.fonts_public.SampleTextProto.poster_md', index=5,
       number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='poster_sm', full_name='google.fonts.SampleTextProto.poster_sm', index=5,
+      name='poster_lg', full_name='google.fonts_public.SampleTextProto.poster_lg', index=6,
       number=7, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='poster_md', full_name='google.fonts.SampleTextProto.poster_md', index=6,
+      name='specimen_48', full_name='google.fonts_public.SampleTextProto.specimen_48', index=7,
       number=8, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='poster_lg', full_name='google.fonts.SampleTextProto.poster_lg', index=7,
+      name='specimen_36', full_name='google.fonts_public.SampleTextProto.specimen_36', index=8,
       number=9, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='specimen_48', full_name='google.fonts.SampleTextProto.specimen_48', index=8,
+      name='specimen_32', full_name='google.fonts_public.SampleTextProto.specimen_32', index=9,
       number=10, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='specimen_36', full_name='google.fonts.SampleTextProto.specimen_36', index=9,
+      name='specimen_21', full_name='google.fonts_public.SampleTextProto.specimen_21', index=10,
       number=11, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='specimen_32', full_name='google.fonts.SampleTextProto.specimen_32', index=10,
+      name='specimen_16', full_name='google.fonts_public.SampleTextProto.specimen_16', index=11,
       number=12, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='specimen_21', full_name='google.fonts.SampleTextProto.specimen_21', index=11,
-      number=13, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='specimen_16', full_name='google.fonts.SampleTextProto.specimen_16', index=12,
-      number=14, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -944,8 +660,8 @@ _SAMPLETEXTPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1887,
-  serialized_end=2174,
+  serialized_start=1398,
+  serialized_end=1658,
 )
 
 _FAMILYPROTO_REGISTRYDEFAULTOVERRIDESENTRY.containing_type = _FAMILYPROTO
@@ -957,24 +673,16 @@ _FAMILYPROTO.fields_by_name['source'].message_type = _SOURCEPROTO
 _FAMILYPROTO.fields_by_name['fallbacks'].message_type = _FAMILYFALLBACKPROTO
 _FAMILYPROTO.fields_by_name['sample_glyphs'].message_type = _FAMILYPROTO_SAMPLEGLYPHSENTRY
 _FAMILYPROTO.fields_by_name['sample_text'].message_type = _SAMPLETEXTPROTO
-_FAMILYPROTO.fields_by_name['source_type'].enum_type = _FONTTYPE
 _TARGETPROTO.fields_by_name['target_type'].enum_type = _TARGETTYPEPROTO
 _FAMILYFALLBACKPROTO.fields_by_name['axis_target'].message_type = _AXISSEGMENTPROTO
 _FAMILYFALLBACKPROTO.fields_by_name['target'].message_type = _TARGETPROTO
-_LANGUAGEPROTO.fields_by_name['exemplar_chars'].message_type = _EXEMPLARCHARSPROTO
-_LANGUAGEPROTO.fields_by_name['sample_text'].message_type = _SAMPLETEXTPROTO
 DESCRIPTOR.message_types_by_name['FamilyProto'] = _FAMILYPROTO
 DESCRIPTOR.message_types_by_name['FontProto'] = _FONTPROTO
 DESCRIPTOR.message_types_by_name['AxisSegmentProto'] = _AXISSEGMENTPROTO
 DESCRIPTOR.message_types_by_name['SourceProto'] = _SOURCEPROTO
 DESCRIPTOR.message_types_by_name['TargetProto'] = _TARGETPROTO
 DESCRIPTOR.message_types_by_name['FamilyFallbackProto'] = _FAMILYFALLBACKPROTO
-DESCRIPTOR.message_types_by_name['RegionProto'] = _REGIONPROTO
-DESCRIPTOR.message_types_by_name['ScriptProto'] = _SCRIPTPROTO
-DESCRIPTOR.message_types_by_name['LanguageProto'] = _LANGUAGEPROTO
-DESCRIPTOR.message_types_by_name['ExemplarCharsProto'] = _EXEMPLARCHARSPROTO
 DESCRIPTOR.message_types_by_name['SampleTextProto'] = _SAMPLETEXTPROTO
-DESCRIPTOR.enum_types_by_name['FontType'] = _FONTTYPE
 DESCRIPTOR.enum_types_by_name['TargetTypeProto'] = _TARGETTYPEPROTO
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -983,19 +691,19 @@ FamilyProto = _reflection.GeneratedProtocolMessageType('FamilyProto', (_message.
   'RegistryDefaultOverridesEntry' : _reflection.GeneratedProtocolMessageType('RegistryDefaultOverridesEntry', (_message.Message,), {
     'DESCRIPTOR' : _FAMILYPROTO_REGISTRYDEFAULTOVERRIDESENTRY,
     '__module__' : 'fonts_public_pb2'
-    # @@protoc_insertion_point(class_scope:google.fonts.FamilyProto.RegistryDefaultOverridesEntry)
+    # @@protoc_insertion_point(class_scope:google.fonts_public.FamilyProto.RegistryDefaultOverridesEntry)
     })
   ,
 
   'SampleGlyphsEntry' : _reflection.GeneratedProtocolMessageType('SampleGlyphsEntry', (_message.Message,), {
     'DESCRIPTOR' : _FAMILYPROTO_SAMPLEGLYPHSENTRY,
     '__module__' : 'fonts_public_pb2'
-    # @@protoc_insertion_point(class_scope:google.fonts.FamilyProto.SampleGlyphsEntry)
+    # @@protoc_insertion_point(class_scope:google.fonts_public.FamilyProto.SampleGlyphsEntry)
     })
   ,
   'DESCRIPTOR' : _FAMILYPROTO,
   '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.FamilyProto)
+  # @@protoc_insertion_point(class_scope:google.fonts_public.FamilyProto)
   })
 _sym_db.RegisterMessage(FamilyProto)
 _sym_db.RegisterMessage(FamilyProto.RegistryDefaultOverridesEntry)
@@ -1004,70 +712,42 @@ _sym_db.RegisterMessage(FamilyProto.SampleGlyphsEntry)
 FontProto = _reflection.GeneratedProtocolMessageType('FontProto', (_message.Message,), {
   'DESCRIPTOR' : _FONTPROTO,
   '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.FontProto)
+  # @@protoc_insertion_point(class_scope:google.fonts_public.FontProto)
   })
 _sym_db.RegisterMessage(FontProto)
 
 AxisSegmentProto = _reflection.GeneratedProtocolMessageType('AxisSegmentProto', (_message.Message,), {
   'DESCRIPTOR' : _AXISSEGMENTPROTO,
   '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.AxisSegmentProto)
+  # @@protoc_insertion_point(class_scope:google.fonts_public.AxisSegmentProto)
   })
 _sym_db.RegisterMessage(AxisSegmentProto)
 
 SourceProto = _reflection.GeneratedProtocolMessageType('SourceProto', (_message.Message,), {
   'DESCRIPTOR' : _SOURCEPROTO,
   '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.SourceProto)
+  # @@protoc_insertion_point(class_scope:google.fonts_public.SourceProto)
   })
 _sym_db.RegisterMessage(SourceProto)
 
 TargetProto = _reflection.GeneratedProtocolMessageType('TargetProto', (_message.Message,), {
   'DESCRIPTOR' : _TARGETPROTO,
   '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.TargetProto)
+  # @@protoc_insertion_point(class_scope:google.fonts_public.TargetProto)
   })
 _sym_db.RegisterMessage(TargetProto)
 
 FamilyFallbackProto = _reflection.GeneratedProtocolMessageType('FamilyFallbackProto', (_message.Message,), {
   'DESCRIPTOR' : _FAMILYFALLBACKPROTO,
   '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.FamilyFallbackProto)
+  # @@protoc_insertion_point(class_scope:google.fonts_public.FamilyFallbackProto)
   })
 _sym_db.RegisterMessage(FamilyFallbackProto)
-
-RegionProto = _reflection.GeneratedProtocolMessageType('RegionProto', (_message.Message,), {
-  'DESCRIPTOR' : _REGIONPROTO,
-  '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.RegionProto)
-  })
-_sym_db.RegisterMessage(RegionProto)
-
-ScriptProto = _reflection.GeneratedProtocolMessageType('ScriptProto', (_message.Message,), {
-  'DESCRIPTOR' : _SCRIPTPROTO,
-  '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.ScriptProto)
-  })
-_sym_db.RegisterMessage(ScriptProto)
-
-LanguageProto = _reflection.GeneratedProtocolMessageType('LanguageProto', (_message.Message,), {
-  'DESCRIPTOR' : _LANGUAGEPROTO,
-  '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.LanguageProto)
-  })
-_sym_db.RegisterMessage(LanguageProto)
-
-ExemplarCharsProto = _reflection.GeneratedProtocolMessageType('ExemplarCharsProto', (_message.Message,), {
-  'DESCRIPTOR' : _EXEMPLARCHARSPROTO,
-  '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.ExemplarCharsProto)
-  })
-_sym_db.RegisterMessage(ExemplarCharsProto)
 
 SampleTextProto = _reflection.GeneratedProtocolMessageType('SampleTextProto', (_message.Message,), {
   'DESCRIPTOR' : _SAMPLETEXTPROTO,
   '__module__' : 'fonts_public_pb2'
-  # @@protoc_insertion_point(class_scope:google.fonts.SampleTextProto)
+  # @@protoc_insertion_point(class_scope:google.fonts_public.SampleTextProto)
   })
 _sym_db.RegisterMessage(SampleTextProto)
 
