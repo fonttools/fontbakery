@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.8.4 (2021-Nov-??)
 ### Noteworthy code-changes
   - Fixed readability of tracebacks on ERROR messages on the text terminal (issue #3482)
+  - Update fonts_public.proto and fonts_public_pb2.py
 
 ### New Checks
 #### Added to the Google Fonts Profile
