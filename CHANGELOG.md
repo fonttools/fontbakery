@@ -3,6 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.4 (2021-Nov-??)
 ### Noteworthy code-changes
+  - Updated Sphinx-docs extension code to use the latest API so that we can have FontBakery online docs properly build once more at https://font-bakery.readthedocs.io (issue #3313)
+  - Also improved the documentation of checks, now displaying the contents of the `proposal` metadata fields. (Also issue #3313)
   - Fixed readability of tracebacks on ERROR messages on the text terminal (issue #3482)
   - Update fonts_public.proto and fonts_public_pb2.py
 

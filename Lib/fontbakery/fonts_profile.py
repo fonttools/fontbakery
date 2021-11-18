@@ -14,7 +14,7 @@ from fontbakery.errors import ValueValidationError
 @dataclass
 class FileDescription:
     name: str
-    extensions: [str]
+    extensions: list
     singular: str
     description: str
 

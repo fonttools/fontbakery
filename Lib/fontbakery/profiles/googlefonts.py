@@ -1886,7 +1886,7 @@ def com_google_fonts_check_metadata_menu_and_latin(family_metadata):
 @check(
     id = 'com.google.fonts/check/metadata/subsets_order',
     conditions = ['family_metadata'],
-    proposal = 'check/087'
+    proposal = 'legacy:check/087'
 )
 def com_google_fonts_check_metadata_subsets_order(family_metadata):
     """METADATA.pb subsets should be alphabetically ordered."""
