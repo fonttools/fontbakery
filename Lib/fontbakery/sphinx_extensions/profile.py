@@ -8,9 +8,8 @@ from sphinx.pycode import ModuleAnalyzer, PycodeError
 from sphinx.locale import __
 from sphinx.domains.python import PyObject
 from sphinx import addnodes
-from sphinx.util.inspect import Signature #, isdescriptor, safe_getmembers, \
-    # safe_getattr, object_description, is_builtin_class_method, \
-    # isenumattribute, isclassmethod, isstaticmethod, isfunction, isbuiltin, ispartial, getdoc
+from sphinx.util.inspect import signature as Signature
+from sphinx.util.inspect import stringify_signature
 
 import logging
 logger = logging.getLogger(__name__)
@@ -60,7 +59,7 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
         # We use the original signature from the wrapped _function
         has_retval = isinstance(self.object, FontBakeryCondition)
         sig = Signature(self.object._func, bound_method=False, has_retval=has_retval)
-        args = sig.format_args()
+        args = stringify_signature(sig)
         # escape backslashes for reST
         args = args.replace('\\', '\\\\')
         return args
@@ -514,14 +513,18 @@ def _skip_member(app, what, name, obj, skip, options):
         True if the member should be skipped during creation of the docs,
         False if it should be included in the docs.
     """
-    if name in ['conditions',
+    if name in ['check_skip_filter',
+                'conditions',
+                'configs',
                 'description',
                 'documentation',
+                'force',
                 'id',
+                'is_librebarcode',
                 'name',
+                'proposal',
                 'rationale',
-                'check_skip_filter',
-                'is_librebarcode']:
+                'severity']:
         return True
     else:
         return None
@@ -561,6 +564,26 @@ def _process_docstring(app, what, name, obj, options, lines):
 
     if hasattr(obj, 'rationale') and obj.rationale:
         lines.append("**Rationale:**")
-
         for line in obj.rationale.split('\n'):
             lines.append(line)
+
+    if hasattr(obj, 'proposal') and obj.proposal:
+        proposal = obj.proposal
+        if not isinstance(obj.proposal, list):
+            proposal = [obj.proposal]
+
+        proposals = [p for p in proposal if "legacy:" not in p]
+        legacy_name = [p.split('legacy:')[1] for p in proposal if "legacy:" in p]
+
+        if legacy_name:
+            lines.append(f"**Legacy check** originally simply called '{legacy_name[0]}'."
+                         f" We used to lack richer metadata back in 2015. We're open to"
+                         f" further improvements to this description.")
+        else:
+            if proposals:
+                lines.append(f"**Originally proposed at** {proposals.pop(0)}")
+
+        if proposals:
+            proposals = ' / '.join(proposals)
+            lines.append(f"**Some additional changes** were proposed at {proposals}")
+
