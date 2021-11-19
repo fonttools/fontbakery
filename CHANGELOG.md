@@ -1,7 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.8.4 (2021-Nov-??)
+## 0.8.5 (2021-Dec-??)
+  - ...
+
+
+## 0.8.4 (2021-Nov-19)
 ### Noteworthy code-changes
   - Updated Sphinx-docs extension code to use the latest API so that we can have FontBakery online docs properly build once more at https://font-bakery.readthedocs.io (issue #3313)
   - Also improved the documentation of checks, now displaying the contents of the `proposal` metadata fields. (Also issue #3313)
