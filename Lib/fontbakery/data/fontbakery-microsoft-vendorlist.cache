@@ -72,11 +72,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/361fba602ca60635a475a08ebe5baf6fdce53a5c/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f6d1b4b3d22beb4c6e094965d4958607a5d27c0d/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="10/13/2021" />
+<meta name="ms.date" content="11/12/2021" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -84,18 +84,18 @@
 <meta name="site_name" content="Docs" />
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2021-10-25 05:09 PM" />
+<meta name="updated_at" content="2021-11-13 02:24 AM" />
 <meta name="page_type" content="conceptual" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="pdf_url_template" content="https://docs.microsoft.com/pdfstore/en-us/Win.typography/{branchName}{pdfName}" />
-<meta name="word_count" content="3811" />
+<meta name="word_count" content="3825" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/433c66a3.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/b1c239b2.site-ltr.css ">
 
 	
 
@@ -129,6 +129,7 @@
 			hasRecommendations: true,
 			contributors: [
 						{ name: "alib-ms", url: "https://github.com/alib-ms" },
+						{ name: "PeterCon", url: "https://github.com/PeterCon" },
 						{ name: "WorkNihar", url: "https://github.com/WorkNihar" },
 						{ name: "mijacobs", url: "https://github.com/mijacobs" },
 						{ name: "v-nihar", url: "https://github.com/v-nihar" },
@@ -142,7 +143,7 @@
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/5cce29c0.deprecation.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/68b9d471.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/a310e966.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -202,7 +203,7 @@ More info					</a>
 
 						<div class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
 					<nav class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
-						<ul id="page-breadcrumbs" class="breadcrumbs">
+						<ul id="page-breadcrumbs" class="breadcrumbs-deprecated">
 						</ul>
 					</nav>
 				<div class="content-header-controls">
@@ -215,7 +216,7 @@ More info					</a>
 						<span>Exit focus mode</span>
 					</button>
 				</div>
-				<div class="has-padding-none-tablet padding-xs font-size-s display-flex justify-content-space-between flex-grow-1 page-action-holder">
+				<div class="has-padding-none-tablet padding-xs font-size-sm display-flex justify-content-space-between flex-grow-1 page-action-holder">
 					<ul class="is-hidden-mobile action-list justify-content-flex-start has-flex-justify-content-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
 						<li hidden>
 							<a id="lang-link" class="button button button-clear button-sm" title="Read in English" data-bi-name="language-toggle">
@@ -331,7 +332,7 @@ More info					</a>
 				<div class="columns is-gapless-mobile has-large-gaps ">
 
 
-					<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+					<div id="main-column" class="column  is-full is-8-desktop">
 
 						<main id="main" role="main" class="content " data-bi-name="content" lang="en-us" dir="ltr">
 
@@ -339,55 +340,131 @@ More info					</a>
 
 							<h1 id="registered-font-vendors">Registered font vendors</h1>
 
-								<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
-									<li>
-										<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-10-25T17:09:00Z" data-article-date-source="git">10/25/2021</time>
-									</li>
-											<li class="readingTime">19 minutes to read</li>
-										<li class="contributors-holder">
-											<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
-																<li class="facepile-item">
-																	<a href="https://github.com/alib-ms" title="alib-ms" aria-label="alib-msGithub profile" data-src="https://github.com/alib-ms.png?size=32" data-contributor-name="alib-ms" class="facepile-item-coin"
-																	>
-																		<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/alib-ms.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																		<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">a</span>
-																	</a>
-																</li>
-																<li class="facepile-item">
-																	<a href="https://github.com/WorkNihar" title="WorkNihar" aria-label="WorkNiharGithub profile" data-src="https://github.com/WorkNihar.png?size=32" data-contributor-name="WorkNihar" class="facepile-item-coin"
-																	>
-																		<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/WorkNihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																		<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">W</span>
-																	</a>
-																</li>
-																<li class="facepile-item">
-																	<a href="https://github.com/mijacobs" title="mijacobs" aria-label="mijacobsGithub profile" data-src="https://github.com/mijacobs.png?size=32" data-contributor-name="mijacobs" class="facepile-item-coin"
-																	>
-																		<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mijacobs.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																		<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">m</span>
-																	</a>
-																</li>
-																<li class="facepile-item">
-																	<a href="https://github.com/v-nihar" title="v-nihar" aria-label="v-niharGithub profile" data-src="https://github.com/v-nihar.png?size=32" data-contributor-name="v-nihar" class="facepile-item-coin"
-																	>
-																		<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/v-nihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																		<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">v</span>
-																	</a>
-																</li>
-																<li class="facepile-item">
-																	<a href="https://github.com/VSC-Service-Account" title="VSC-Service-Account" aria-label="VSC-Service-AccountGithub profile" data-src="https://github.com/VSC-Service-Account.png?size=32" data-contributor-name="VSC-Service-Account" class="facepile-item-coin"
-																	>
-																		<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/VSC-Service-Account.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																		<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">V</span>
-																	</a>
-																</li>
-											</ul>
-										</li>
-								</ul>
 
-								<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
-									<h3>In this article</h3>
-								</nav>
+
+									<div class="display-flex-tablet justify-content-space-between-tablet page-metadata-container">
+
+										<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+													<li>
+														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-11-13T02:24:00Z" data-article-date-source="git">11/13/2021</time>
+													</li>
+															<li class="readingTime">19 minutes to read</li>
+														<li class="contributors-holder">
+															<ul class="facepile has-margin-left-none is-small" data-bi-name="contributors">
+																				<li class="facepile-item">
+																					<a href="https://github.com/alib-ms" title="alib-ms" aria-label="alib-msGithub profile" data-src="https://github.com/alib-ms.png?size=32" data-contributor-name="alib-ms" class="facepile-item-coin"
+																					>
+																						<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/alib-ms.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																						<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">a</span>
+																					</a>
+																				</li>
+																				<li class="facepile-item">
+																					<a href="https://github.com/PeterCon" title="PeterCon" aria-label="PeterConGithub profile" data-src="https://github.com/PeterCon.png?size=32" data-contributor-name="PeterCon" class="facepile-item-coin"
+																					>
+																						<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/PeterCon.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																						<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">P</span>
+																					</a>
+																				</li>
+																				<li class="facepile-item">
+																					<a href="https://github.com/WorkNihar" title="WorkNihar" aria-label="WorkNiharGithub profile" data-src="https://github.com/WorkNihar.png?size=32" data-contributor-name="WorkNihar" class="facepile-item-coin"
+																					>
+																						<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/WorkNihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																						<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">W</span>
+																					</a>
+																				</li>
+																				<li class="facepile-item">
+																					<a href="https://github.com/mijacobs" title="mijacobs" aria-label="mijacobsGithub profile" data-src="https://github.com/mijacobs.png?size=32" data-contributor-name="mijacobs" class="facepile-item-coin"
+																					>
+																						<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mijacobs.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																						<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">m</span>
+																					</a>
+																				</li>
+																				<li class="facepile-item">
+																					<a href="https://github.com/v-nihar" title="v-nihar" aria-label="v-niharGithub profile" data-src="https://github.com/v-nihar.png?size=32" data-contributor-name="v-nihar" class="facepile-item-coin"
+																					>
+																						<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/v-nihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
+																						<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">v</span>
+																					</a>
+																				</li>
+																	<li class="facepile-item">
+																			<button aria-label="View all contributors" class="facepile-item-more" title="View all contributors">
+																				<div class="facepile-item-coin" aria-hidden="true">
+																					<span class="facepile-item-coin-text" aria-hidden="true">
+																						+1
+																					</span>
+																				</div>
+																			</button>
+																	</li>
+															</ul>
+														</li>
+										</ul>
+											<div class="dropdown" data-hide-on-archived>
+												<button class="dropdown-trigger link-button font-size-sm"
+													aria-controls="options" aria-expanded="false" title="Is this page helpful?">
+Is this page helpful?												</button>
+												<div class="dropdown-menu border-radius" id="options" role="menu">
+
+
+<div class="padding-xs" data-bi-name="rating" data-binary-rating-container>
+    <div class="binary-rating" data-binary-rating-hide-on-submit>
+		<form class="feedback-verbatim-form" data-feedback-verbatim-form id="main-page-rating-container">
+        	<div class="binary-rating-buttons">
+				<h3 id="binary-rating-heading" class="font-weight-semibold margin-top-none margin-bottom-xs font-size-h5 has-caret">Please rate your experience</h3>
+				<div class="buttons">
+					<button class="thumb-rating like margin-right-xxs button button-clear button-sm"
+						data-binary-rating-response="rating-yes"
+						title="Yes"
+						type="button"
+						data-bi-name="rating-yes"
+						data-bi-sat="1">
+						<span aria-hidden="true" class="icon docon docon-like"></span>
+						<span>Yes</span>
+					</button>
+					<button class="thumb-rating dislike button button-clear button-sm"
+						data-binary-rating-response="rating-no"
+						title="No"
+						data-bi-name="rating-no"
+						type="button"
+						data-bi-sat="0">
+						<span aria-hidden="true" class="icon docon docon-dislike"></span>
+						<span>No</span>
+					</button>
+				</div>
+			</div>
+			<div id="binary-verbatim-container" class="font-size-xs margin-top-xs">
+				<div class="verbatim-textarea">
+					<label for="binary-rating-textarea" class="visually-hidden">
+Any additional feedback?					</label>
+					<textarea
+						id="binary-rating-textarea"
+						data-binary-rating-text rows="4"
+						maxlength="999"
+						placeholder="Any additional feedback?"
+						class="textarea has-inner-focus"></textarea>
+				</div>
+				<p class="has-line-height-reset has-text-wrap">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
+				<div class="buttons buttons-right margin-top-xs has-margin-right-extra-small">
+					<button class="submit-rating button button-primary button-filled button-sm" data-bi-name="rating-verbatim" data-binary-rating-submit type="submit" disabled>Submit</button>
+				</div>
+			</div>
+        </form>
+    </div>
+    <p
+		data-binary-rating-onsubmit-message="main-page-rating-container"
+		tabindex="-1"
+		class="margin-none inner-focus"
+		hidden>
+Thank you.    </p>
+</div>
+												</div>
+											</div>
+										</div>
+
+
+										<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+											<h3>In this article</h3>
+										</nav>
+
 
 
 							<!-- <content> -->
@@ -829,7 +906,8 @@ More info					</a>
 </tr>
 <tr>
 <td>ATFM</td>
-<td>
+<td>Asira Type Foundry</td>
+</tr>
 <tr>
 <td>ATFS</td>
 <td>Andrew Tyler's fonts</td>
@@ -1271,6 +1349,10 @@ More info					</a>
 <tr>
 <td>CFF</td>
 <td><a href="http://www.characters.nl/" data-linktype="external">Characters Font Foundry</a></td>
+</tr>
+<tr>
+<td>CHRY</td>
+<td>Cherry Fonts</td>
 </tr>
 <tr>
 <td>CINE</td>
@@ -2725,6 +2807,10 @@ More info					</a>
 <td><a href="http://www.kontour.com/" data-linktype="external">Kontour</a></td>
 </tr>
 <tr>
+<td>KNWT</td>
+<td><a href="https://www.voidwreck.com" data-linktype="external">Karl Nawrot</a></td>
+</tr>
+<tr>
 <td>KOP</td>
 <td><a href="http://www.leo-koppelkamm.de" data-linktype="external">Leo Koppelkamm</a></td>
 </tr>
@@ -2959,6 +3045,7 @@ More info					</a>
 <td>LOU</td>
 <td><a href="https://www.loutype.com/" data-linktype="external">Lou Type Foundry</a></td>
 </tr>
+<tr>
 <td>LOVE</td>
 <td><a href="https://www.lovefrom.com/" data-linktype="external">LoveFrom</a></td>
 </tr>
@@ -3813,6 +3900,10 @@ More info					</a>
 <td><a href="http://www.emreparlak.com" data-linktype="external">Emre Parlak</a></td>
 </tr>
 <tr>
+<td>PRNM</td>
+<td><a href="https://pronama.jp" data-linktype="external">Pronama</a></td>
+</tr>
+<tr>
 <td>PROD</td>
 <td><a href="http://www.productiontype.com" data-linktype="external">Production Type</a></td>
 </tr>
@@ -4614,6 +4705,10 @@ More info					</a>
 <td><a href="http://www.simple.treeflow.com" data-linktype="external">Treeflow</a></td>
 </tr>
 <tr>
+<td>TROY</td>
+<td><a href="https://troyleinster.com/" data-linktype="external">Troy Leinster</a></td>
+</tr>
+<tr>
 <td>TS</td>
 <td><a href="http://www.tamilsoft.com/" data-linktype="external">TamilSoft Corporation</a></td>
 </tr>
@@ -5073,43 +5168,7 @@ More info					</a>
 
 						</main>
 
-						<!-- page rating section -->
-								<div class="is-hidden-desktop border-top has-margin-top-large has-padding-top-large binary-rating-holder">
-									
-	
-	
-
-	<div class="feedback-verbatim border-bottom has-padding-bottom-large has-margin-bottom-small" data-bi-name="rating">
-    <div class="binary-rating">
-        <div class="binary-rating-buttons">
-				<h3 class="font-weight-semibold has-margin-top-none font-size-h4 margin-bottom-xs">Is this page helpful?</h3>
-			<div>
-                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-desktop">
-                    <span aria-hidden="true" class="icon docon docon-like"></span>
-                    <span>Yes</span>
-                </button>
-                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-desktop">
-                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
-                    <span>No</span>
-                </button>
-            </div>
-        </div>
-        <form class="feedback-verbatim-form is-hidden" id="rating-container-desktop">
-            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
-                <label for="rating-textarea-desktop" class="visually-hidden">Any additional feedback?</label>
-                <textarea id="rating-textarea-desktop" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
-		    </div>
-			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
-            <div class="buttons buttons-right margin-top-xs has-margin-right-extra-small">
-                <button class="skip-rating button button-clear button-primary button-sm" type="button">Skip</button>
-                <button class="submit-rating button button-primary button-filled button-sm" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
-    <div class="thankyou-rating is-hidden" tabindex="-1">
-        <p>Thank you.</p>
-    </div>
-</div>								</div>
+						<!-- fallback rating section for reference only, remove after a week or so -->
 						<!-- end page rating section -->
 
 
@@ -5263,43 +5322,14 @@ High contrast					</span>
 						</div>
 					</div>
 
-						<div class="font-size-s right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
-							<div id="affixed-right-container" class="doc-outline position-fixed is-vertically-scrollable">
-									
-	
-	
+						<div
+							class="font-size-sm right-container column is-4-desktop display-none display-block-desktop"
+							data-bi-name="pageactions"
+							role="complementary"
+							aria-label="Page Actions">
 
-	<div class="feedback-verbatim border-bottom has-padding-bottom-small has-margin-bottom-small" data-bi-name="rating">
-    <div class="binary-rating">
-        <div class="binary-rating-buttons">
-				<h3 class="font-weight-semibold has-margin-top-none has-margin-bottom-small">Is this page helpful?</h3>
-			<div>
-                <button class="thumb-rating like has-inner-focus" title="Yes" data-bi-name="rating-yes" aria-expanded="false" data-bi-sat="1" aria-controls="rating-container-mobile">
-                    <span aria-hidden="true" class="icon docon docon-like"></span>
-                    <span>Yes</span>
-                </button>
-                <button class="thumb-rating dislike has-inner-focus" title="No" data-bi-name="rating-no" data-bi-sat="0" aria-expanded="false" aria-controls="rating-container-mobile">
-                    <span aria-hidden="true" class="icon docon docon-dislike"></span>
-                    <span>No</span>
-                </button>
-            </div>
-        </div>
-        <form class="feedback-verbatim-form is-hidden" id="rating-container-mobile">
-            <div class="verbatim-textarea box position-relative box-shadow-none border has-margin-top-small has-padding-extra-small font-size-xs">
-                <label for="rating-textarea-mobile" class="visually-hidden">Any additional feedback?</label>
-                <textarea id="rating-textarea-mobile" rows="4" maxlength="999" placeholder="Any additional feedback?" required class="textarea border-none box-shadow-none has-inner-focus"></textarea>
-		    </div>
-			<p class="font-size-xs has-line-height-reset">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
-            <div class="buttons buttons-right margin-top-xs has-margin-right-extra-small">
-                <button class="skip-rating button button-clear button-primary button-sm" type="button">Skip</button>
-                <button class="submit-rating button button-primary button-filled button-sm" data-bi-name="rating-verbatim" disabled type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
-    <div class="thankyou-rating is-hidden" tabindex="-1">
-        <p>Thank you.</p>
-    </div>
-</div>								<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							<div id="affixed-right-container" class="doc-outline is-vertically-scrollable">
+								<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
 									<h3>In this article</h3>
 								</nav>
 							</div>
