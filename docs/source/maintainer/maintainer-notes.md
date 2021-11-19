@@ -77,9 +77,10 @@ rm venv/ -rf
 virtualenv venv -ppython3
 . venv/bin/activate
 
-# Install tox so that we can also run our code tests locally
-pip install tox
-tox
+## Optionally install tox so that we can also
+## run our code tests locally
+# pip install tox
+# tox
 
 # If all is good, then make the actual release:
 # Register a git tag for this release and publish it
@@ -92,6 +93,14 @@ python setup.py bdist_wheel --universal
 # and finally upload the new package to PyPI
 pip install twine
 twine upload dist/*
+
+# Close the current milestone on the GitHub issue tracker
+# moving to a future milestone any of its issue that we've
+# not been able to close yet.
+# https://github.com/googlefonts/fontbakery/milestones
+
+# And after a new release is also a good moment to update the versions
+# of dependencies on requirements.txt ;-)
 ```
 
 ## Cached Vendor ID data
