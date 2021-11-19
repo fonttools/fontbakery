@@ -52,6 +52,10 @@ vim docs/source/conf.py
 git add -p
 git commit -m "update version on docs/source/conf.py"
 
+vim CHANGELOG.md
+git add -p
+git commit -m "update CHANGELOG in preparation for new release"
+
 # send these changes to the public GitHub repo
 git push upstream preparing_v0_8_2
 
