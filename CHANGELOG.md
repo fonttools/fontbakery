@@ -3,7 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.5 (2021-Dec-??)
 ### New Checks
-#### Added to the Google Fonts Profile
+#### Added to the Universal Profile
   - **[com.google.fonts/check/cjk_chws_feature]:** Ensure CJK fonts contain chws/vchw features. (issue #3363)
 
 

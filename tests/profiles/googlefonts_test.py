@@ -3575,25 +3575,6 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
                            ' correct instance coordinates.')
 
 
-def test_check_cjk_chws_feature():
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/cjk_chws_feature")
-
-    ttFont = TTFont(cjk_font)
-    assert_results_contain(check(ttFont),
-                FAIL, "cjk-no-chws",
-                'for Source Han Sans')
-
-    # Insert them.
-    from fontTools.ttLib.tables.otTables import FeatureRecord
-    chws = FeatureRecord()
-    chws.FeatureTag = "chws"
-    vchw = FeatureRecord()
-    vchw.FeatureTag = "vchw"
-    ttFont["GPOS"].table.FeatureList.FeatureRecord.extend([chws, vchw])
-
-    assert_PASS(check(ttFont))
-
 def test_check_varfont_instance_names(vf_ttFont):
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/varfont_instance_names")

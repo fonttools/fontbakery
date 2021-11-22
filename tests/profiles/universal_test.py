@@ -799,3 +799,29 @@ def test_check_contour_count(montserrat_ttFonts):
         ttFont['glyf']['a'] = ttFont['glyf']['c']
         assert_results_contain(check(ttFont),
                                WARN, 'contour-count')
+
+
+def test_check_cjk_chws_feature():
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/cjk_chws_feature")
+
+    cjk_font = TEST_FILE("cjk/SourceHanSans-Regular.otf")
+    ttFont = TTFont(cjk_font)
+    assert_results_contain(check(ttFont),
+                           FAIL, "missing-chws-feature",
+                           'for Source Han Sans')
+
+    assert_results_contain(check(ttFont),
+                           FAIL, "missing-vchw-feature",
+                           'for Source Han Sans')
+
+    # Insert them.
+    from fontTools.ttLib.tables.otTables import FeatureRecord
+    chws = FeatureRecord()
+    chws.FeatureTag = "chws"
+    vchw = FeatureRecord()
+    vchw.FeatureTag = "vchw"
+    ttFont["GPOS"].table.FeatureList.FeatureRecord.extend([chws, vchw])
+
+    assert_PASS(check(ttFont))
+
