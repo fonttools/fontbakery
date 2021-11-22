@@ -178,7 +178,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/cjk_vertical_metrics',
     'com.google.fonts/check/cjk_vertical_metrics_regressions',
     'com.google.fonts/check/cjk_not_enough_glyphs',
-    'com.google.fonts/check/cjk_chws_feature',
     'com.google.fonts/check/varfont_instance_coordinates',
     'com.google.fonts/check/varfont_instance_names',
     'com.google.fonts/check/varfont_duplicate_instance_names',
@@ -4843,28 +4842,6 @@ def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
                       f"Please check that these glyphs have the correct unicodes.")
     else:
         yield PASS, "Font has the correct quantity of CJK glyphs"
-
-
-@check(
-    id = 'com.google.fonts/check/cjk_chws_feature',
-    conditions = ['is_cjk_font'],
-    rationale = """
-        The W3C recommends the addition of chws and vchw features to CJK fonts to enhance the spacing of glyphs in environments which do not fully support JLREQ layout rules.
-
-        The chws_tool utility (https://github.com/googlefonts/chws_tool) can be used to add these features automatically.
-    """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/3363'
-)
-def com_google_fonts_check_cjk_chws_feature(ttFont):
-    """Does the font contain chws and vchw features?"""
-    from fontbakery.profiles.layout import feature_tags
-    tags = feature_tags(ttFont)
-    if "chws" not in tags or "vchw" not in tags:
-        yield WARN,\
-              Message('cjk-no-chws',
-                      "chws/vchw feature not found in font. Use chws_tool (https://github.com/googlefonts/chws_tool) to add them.")
-    else:
-        yield PASS, "Font contains chws and vchw features"
 
 
 @check(
