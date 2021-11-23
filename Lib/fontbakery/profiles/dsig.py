@@ -11,7 +11,7 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 
         As we approach the EOL date, it is now considered better to completely remove the table.
 
-        But if you still want your font to support OpenType features on Office 2013, then you may find it handy to add a fake signature on a dummy DSIG table by running one of the helper scripts provided at https://github.com/googlefonts/gftools
+        But if you still want your font to support OpenType features on Office 2013, then you may find it handy to add a fake signature on a placeholder DSIG table by running one of the helper scripts provided at https://github.com/googlefonts/gftools
 
         Reference: https://github.com/googlefonts/fontbakery/issues/1845
     """,
@@ -26,7 +26,7 @@ def com_google_fonts_check_dsig(ttFont):
         yield WARN,\
               Message("found-DSIG",
                       "This font has a digital signature (DSIG table) which"
-                      " is only required - even if only a dummy placeholder"
+                      " is only required - even if only a placeholder"
                       " - on old programs like MS Office 2013 in order to"
                       " work properly.\n"
                       "The current recommendation is to completely"

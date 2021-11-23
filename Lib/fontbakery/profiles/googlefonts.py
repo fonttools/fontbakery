@@ -427,7 +427,7 @@ def com_google_fonts_check_description_git_url(description_html):
     rationale = """
         Sometimes people write malformed HTML markup. This check should ensure the file is good.
 
-        Additionally, when packaging families for being pushed to the `google/fonts` git repo, if there is no DESCRIPTION.en_us.html file, some older versions of the `add_font.py` tool insert a dummy description file which contains invalid html. This file needs to either be replaced with an existing description file or edited by hand.
+        Additionally, when packaging families for being pushed to the `google/fonts` git repo, if there is no DESCRIPTION.en_us.html file, some older versions of the `add_font.py` tool insert a placeholder description file which contains invalid html. This file needs to either be replaced with an existing description file or edited by hand.
     """,
     proposal = ['legacy:check/004',
                 'https://github.com/googlefonts/fontbakery/issues/2664']
