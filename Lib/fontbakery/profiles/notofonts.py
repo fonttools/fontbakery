@@ -59,7 +59,7 @@ def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
         EXPECTED_SUBTABLES.extend([
             # Adobe says historically some programs used these to identify
             # the script in the font.  The encodingID is the quickdraw
-            # script manager code.  These are dummy tables.
+            # script manager code.  These are placeholder tables.
             (6, PlatformID.MACINTOSH, MacintoshEncodingID.JAPANESE),
             (6, PlatformID.MACINTOSH, MacintoshEncodingID.CHINESE_TRADITIONAL),
             (6, PlatformID.MACINTOSH, MacintoshEncodingID.KOREAN),
