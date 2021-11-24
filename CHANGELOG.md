@@ -6,6 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Universal Profile
   - **[com.google.fonts/check/cjk_chws_feature]:** Ensure CJK fonts contain chws/vchw features. (issue #3363)
 
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/contour_count]:** Four fifths glyph can also be drawn with only 3 contours if the four is open-ended. (issue #3511)
+
 
 ## 0.8.4 (2021-Nov-19)
 ### Noteworthy code-changes

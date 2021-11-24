@@ -8364,7 +8364,7 @@ desired_glyph_data = \
         "name": "fourfifths", 
         "unicode": 8536, 
         "contours": [
-            4
+            3, 4
         ]
     }, 
     {
