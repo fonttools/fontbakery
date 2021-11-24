@@ -131,7 +131,7 @@ class CheckTester:
 
         self.runner = CheckRunner(self.profile,
                                   values,
-                                  Configuration(explicit_checks=[self.check_id]))
+                                  Configuration(explicit_checks=[self.check_id], full_lists=True))
         for check_identity in self.runner.order:
             _, check, _ = check_identity
             if check.id != self.check_id:

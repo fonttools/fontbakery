@@ -43,7 +43,7 @@ def close_but_not_on(yExpected, yTrue, tolerance):
     conditions = ["outlines_dict"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3088'
 )
-def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
+def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config):
     """Are there any misaligned on-curve points?"""
     alignments = {
         "baseline": 0,
@@ -76,7 +76,9 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
             return
 
     if warnings:
-        formatted_list = "\t* " + pretty_print_list(warnings, sep="\n\t* ")
+        formatted_list = "\t* " + pretty_print_list(config,
+                                                    warnings,
+                                                    sep="\n\t* ")
         yield WARN,\
               Message("found-misalignments",
                       f"The following glyphs have on-curve points which"
@@ -97,7 +99,7 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict):
                   "is_not_variable_font"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3088'
 )
-def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
+def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config):
     """Are any segments inordinately short?"""
     warnings = []
     for glyph, outlines in outlines_dict.items():
@@ -125,7 +127,9 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
             return
 
     if warnings:
-        formatted_list = "\t* " + pretty_print_list(warnings, sep="\n\t* ")
+        formatted_list = "\t* " + pretty_print_list(config,
+                                                    warnings,
+                                                    sep="\n\t* ")
         yield WARN,\
               Message("found-short-segments",
                       f"The following glyphs have segments which seem very short:\n"
@@ -145,7 +149,7 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict):
                   "is_not_variable_font"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3088'
 )
-def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
+def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, config):
     """Do any segments have colinear vectors?"""
     warnings = []
     for glyph, outlines in outlines_dict.items():
@@ -170,7 +174,9 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
             return
 
     if warnings:
-        formatted_list = "\t* " + pretty_print_list(sorted(set(warnings)), sep="\n\t* ")
+        formatted_list = "\t* " + pretty_print_list(config,
+                                                    sorted(set(warnings)),
+                                                    sep="\n\t* ")
         yield WARN,\
               Message("found-colinear-vectors",
                       f"The following glyphs have colinear vectors:\n"
@@ -188,7 +194,7 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict):
                   "is_not_variable_font"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3064'
 )
-def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
+def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config):
     """Do outlines contain any jaggy segments?"""
     warnings = []
     for glyph, outlines in outlines_dict.items():
@@ -216,7 +222,9 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
                                 f" {prev}/{this} = {math.degrees(jag_angle)}")
 
     if warnings:
-        formatted_list = "\t* " + pretty_print_list(sorted(warnings), sep="\n\t* ")
+        formatted_list = "\t* " + pretty_print_list(config,
+                                                    sorted(warnings),
+                                                    sep="\n\t* ")
         yield WARN,\
               Message("found-jaggy-segments",
                       f"The following glyphs have jaggy segments:\n"
@@ -237,7 +245,7 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict):
                   "is_not_italic"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3088'
 )
-def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
+def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
     """Do outlines contain any semi-vertical or semi-horizontal lines?"""
     warnings = []
     for glyph, outlines in outlines_dict.items():
@@ -255,7 +263,9 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict):
                         warnings.append(f"{glyphname} (U+{codepoint:04X}): {s}")
 
     if warnings:
-        formatted_list = " * " + pretty_print_list(sorted(warnings), sep="\n * ")
+        formatted_list = " * " + pretty_print_list(config,
+                                                   sorted(warnings),
+                                                   sep="\n * ")
         yield WARN,\
              Message("found-semi-vertical",
                      f"The following glyphs have semi-vertical/semi-horizontal lines:\n"

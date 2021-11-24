@@ -147,6 +147,9 @@ def ArgumentParser(profile, profile_arg=True):
     argument_parser.add_argument('-L', '--list-checks', default=False, action='store_true',
                                  help='List the checks available in the selected profile.')
 
+    argument_parser.add_argument('-F', '--full-lists', default=False, action='store_true',
+                                 help='Do not shorten lists of items.')
+
     argument_parser.add_argument('--dark-theme', default=False, action='store_true',
                                  help='Use a color theme with dark colors.')
 
@@ -301,7 +304,8 @@ def main(profile=None, values=None):
     configuration.maybe_override(Configuration(
         custom_order=args.order,
         explicit_checks=args.checkid,
-        exclude_checks=args.exclude_checkid
+        exclude_checks=args.exclude_checkid,
+        full_lists=args.full_lists
     ))
     runner_kwds = dict(values=values_, config=configuration)
     try:

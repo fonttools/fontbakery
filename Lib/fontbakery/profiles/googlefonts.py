@@ -976,9 +976,9 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2488'
 )
-def com_google_fonts_check_glyph_coverage(ttFont):
+def com_google_fonts_check_glyph_coverage(ttFont, config):
     """Check `Google Fonts Latin Core` glyph coverage."""
-    from fontbakery.utils import pretty_print_list
+    from fontbakery.utils import bullet_list
     from fontbakery.constants import GF_latin_core
 
     font_codepoints = set()
@@ -993,14 +993,8 @@ def com_google_fonts_check_glyph_coverage(ttFont):
         missing = ['0x%04X (%s)' % (c, GF_latin_core[c][1]) for c in sorted(diff)]
         yield FAIL,\
               Message("missing-codepoints",
-                      f"Missing required codepoints:"
-                      f" {pretty_print_list(missing, shorten=4)}")
-        if len(missing) > 4:
-            missing_list = "\n\t\t".join(missing)
-            yield INFO,\
-                  Message("missing-codepoints-verbose",
-                          f"Here's the full list of required codepoints"
-                          f" still missing:\n\t\t{missing_list}")
+                      f"Missing required codepoints:\n"
+                      f"{bullet_list(config, missing)}")
     else:
         yield PASS, "OK"
 
@@ -1113,7 +1107,7 @@ def com_google_fonts_check_usweightclass(ttFont, expected_style):
     conditions = ['gfonts_repo_structure'],
     proposal = 'legacy:check/028'
 )
-def com_google_fonts_check_family_has_license(licenses):
+def com_google_fonts_check_family_has_license(licenses, config):
     """Check font has a license."""
     from fontbakery.utils import pretty_print_list
 
@@ -1122,7 +1116,7 @@ def com_google_fonts_check_family_has_license(licenses):
         yield FAIL,\
               Message("multiple",
                       f"More than a single license file found:"
-                      f" {pretty_print_list(filenames)}")
+                      f" {pretty_print_list(config, filenames)}")
     elif not licenses:
         yield FAIL,\
               Message("no-license",
@@ -1459,7 +1453,7 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
     configs = ["WARN_SIZE",
                "FAIL_SIZE"]
 )
-def com_google_fonts_check_file_size(font, config):
+def com_google_fonts_check_file_size(font):
     """Ensure files are not too large."""
     size = os.stat(font).st_size
     if size > FAIL_SIZE:
@@ -3650,7 +3644,7 @@ def com_google_fonts_check_negative_advance_width(ttFont):
     conditions = ['is_ttf'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2961'
 )
-def com_google_fonts_check_glyf_nested_components(ttFont):
+def com_google_fonts_check_glyf_nested_components(ttFont, config):
     """Check glyphs do not have components which are themselves components."""
     from fontbakery.utils import pretty_print_list
     failed = []
@@ -3662,8 +3656,8 @@ def com_google_fonts_check_glyf_nested_components(ttFont):
             if ttFont['glyf'][comp.glyphName].isComposite():
                 failed.append(glyph_name)
     if failed:
-        formatted_list = "\t* " + pretty_print_list(failed,
-                                                    shorten=10,
+        formatted_list = "\t* " + pretty_print_list(config,
+                                                    failed,
                                                     sep="\n\t* ")
         yield FAIL,\
               Message('found-nested-components',
@@ -4378,7 +4372,7 @@ def com_google_fonts_check_family_control_chars(ttFonts):
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1733'
 )
-def com_google_fonts_check_family_italics_have_roman_counterparts(fonts):
+def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config):
     """Ensure Italic styles have Roman counterparts."""
 
     italics = [f for f in fonts if 'Italic' in f]
@@ -4413,7 +4407,8 @@ def com_google_fonts_check_family_italics_have_roman_counterparts(fonts):
 
     if missing_roman:
         from fontbakery.utils import pretty_print_list
-        missing_roman = pretty_print_list(missing_roman)
+        missing_roman = pretty_print_list(config,
+                                          missing_roman)
         yield FAIL,\
               Message('missing-roman',
                       f"Italics missing a Roman counterpart: {missing_roman}")
@@ -4550,7 +4545,7 @@ def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml)
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2903'
 )
-def com_google_fonts_check_repo_zip_files(family_directory):
+def com_google_fonts_check_repo_zip_files(family_directory, config):
     """A font repository should not include ZIP files"""
     from fontbakery.utils import (filenames_ending_in,
                                   pretty_print_list)
@@ -4563,8 +4558,8 @@ def com_google_fonts_check_repo_zip_files(family_directory):
     if not zip_files:
         yield PASS, 'OK'
     else:
-        files_list = pretty_print_list(zip_files,
-                                       shorten=None,
+        files_list = pretty_print_list(config,
+                                       zip_files,
                                        sep='\n\t* ')
         yield FAIL,\
               Message("zip-files",
@@ -4997,7 +4992,7 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
     conditions = ['is_variable_font'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3187'
 )
-def com_google_fonts_check_varfont_grade_reflow(ttFont):
+def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
     """ Ensure VFs with the GRAD axis do not vary horizontal advance. """
     from fontbakery.profiles.shared_conditions import grad_axis
     from fontbakery.utils import (all_kerning,
@@ -5019,7 +5014,8 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont):
                 bad_glyphs.append(glyph)
 
     if bad_glyphs:
-        bad_glyphs_list = pretty_print_list(bad_glyphs)
+        bad_glyphs_list = pretty_print_list(config,
+                                            bad_glyphs)
         yield FAIL,\
               Message("grad-causes-reflow",
                       f"The following glyphs have variation in horizontal"
@@ -5267,7 +5263,7 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
                   'family_metadata'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3051'
 )
-def com_google_fonts_check_metadata_consistent_axis_enumeration(family_metadata, ttFont):
+def com_google_fonts_check_metadata_consistent_axis_enumeration(family_metadata, ttFont, config):
     """ Validate VF axes match the ones declared on METADATA.pb. """
     from fontbakery.utils import pretty_print_list
 
@@ -5281,7 +5277,7 @@ def com_google_fonts_check_metadata_consistent_axis_enumeration(family_metadata,
         passed = False
         yield FAIL,\
               Message('missing-axes',
-                      f"The font variation axes {pretty_print_list(missing)}"
+                      f"The font variation axes {pretty_print_list(config, missing)}"
                       f" are present in the font's fvar table but are not"
                       f" declared on the METADATA.pb file.")
     if extra:
@@ -5289,7 +5285,7 @@ def com_google_fonts_check_metadata_consistent_axis_enumeration(family_metadata,
         yield FAIL,\
               Message('extra-axes',
                       f"The METADATA.pb file lists font variation axes that"
-                      f" are not supported but this family: {pretty_print_list(extra)}")
+                      f" are not supported but this family: {pretty_print_list(config, extra)}")
     if passed:
         yield PASS, "OK"
 
@@ -5763,7 +5759,7 @@ def com_google_fonts_check_render_own_name(ttFont):
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2898',
 )
-def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory):
+def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, config):
     """Check README.md has a sample image."""
     import re
     from fontbakery.utils import bullet_list
@@ -5818,7 +5814,7 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory):
                   Message("image-not-displayed",
                           f'Even though the README.md file does not display'
                           f' a font sample image, a few image files were found:\n'
-                          f'{bullet_list(local_image_files)}\n'
+                          f'{bullet_list(config, local_image_files)}\n'
                           f'\n'
                           f'Please consider including one of those images on the README.\n'
                           f'{MARKDOWN_IMAGE_SYNTAX_TIP}\n')
