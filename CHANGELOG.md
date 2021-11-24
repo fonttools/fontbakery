@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## 0.8.5 (2021-Dec-??)
 ### Noteworthy code-changes
   - New command line flag: `-F, --full-list` to print full lists (`pretty_print_list` method) even when the total number of items exceeds a certain threashold. (issues #3173 and #3512)
+  - Included a few of the more recently added profiles that were still missing on our online docs (issue #3518)
 
 ### New Checks
 #### Added to the Universal Profile
