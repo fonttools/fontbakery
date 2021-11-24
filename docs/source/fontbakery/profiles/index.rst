@@ -9,10 +9,16 @@ profiles
    universal
    adobefonts
    googlefonts
+   notofonts
    fontval
-   shared_conditions
    ufo_sources
-
+   iso15008
+   layout
+   outline
+   shaping
+   typenetwork
+   shared_conditions
+   googlefonts_conditions
 
 
 .. automodule:: fontbakery.profiles
