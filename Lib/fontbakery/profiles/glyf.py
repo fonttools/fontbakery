@@ -47,7 +47,7 @@ def com_google_fonts_check_glyf_unused_data(ttFont):
     conditions = ['is_ttf'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/735'
 )
-def com_google_fonts_check_points_out_of_bounds(ttFont):
+def com_google_fonts_check_points_out_of_bounds(ttFont, config):
     """Check for points out of bounds."""
     from fontbakery.utils import pretty_print_list
     passed = True
@@ -63,8 +63,8 @@ def com_google_fonts_check_points_out_of_bounds(ttFont):
                 out_of_bounds.append((glyphName, x, y))
 
     if not passed:
-        formatted_list = "\t* " + pretty_print_list(out_of_bounds,
-                                                    shorten=10,
+        formatted_list = "\t* " + pretty_print_list(config,
+                                                    out_of_bounds,
                                                     sep="\n\t* ")
         yield WARN,\
               Message("points-out-of-bounds",
@@ -92,7 +92,7 @@ def com_google_fonts_check_points_out_of_bounds(ttFont):
     conditions = ['is_ttf'],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2709'
 )
-def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
+def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont, config):
     """Check glyphs do not have duplicate components which have the same x,y coordinates."""
     from fontbakery.utils import pretty_print_list
     failed = []
@@ -114,8 +114,8 @@ def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont):
             else:
                 seen.append(comp_info)
     if failed:
-        formatted_list = "\t* " + pretty_print_list(failed,
-                                                    shorten=10,
+        formatted_list = "\t* " + pretty_print_list(config,
+                                                    failed,
                                                     sep="\n\t* ")
         yield FAIL, \
               Message('found-duplicates',

@@ -144,23 +144,29 @@ def suffix(font):
     return '-'.join(s)
 
 
-def pretty_print_list(values, shorten=10, sep=", ", glue="and"):
+def pretty_print_list(config, values, shorten=10, sep=", ", glue="and"):
     if len(values) == 1:
         return str(values[0])
 
+    if config['full_lists']:
+        shorten = None
+
     if shorten and len(values) > shorten + 2:
         sep = sep.join(map(str, values[:shorten]))
-        return (f"{sep} {glue} {len(values) - shorten} more.")
+        return (f"{sep} {glue} {len(values) - shorten} more.\n"
+                f"\n"
+                f"Use -F or --full-lists to disable shortening of long lists.")
     else:
         sep = sep.join(map(str, values[:-1]))
         return f"{sep} {glue} {str(values[-1])}"
 
 
-def bullet_list(values, bullet="-"):
-    return f" {bullet} " + pretty_print_list(values,
-                                             shorten=False,
+def bullet_list(config, values, bullet="-", shorten=10):
+    return f" {bullet} " + pretty_print_list(config,
+                                             values,
+                                             shorten=shorten,
                                              sep=f"\n {bullet} ",
-                                             glue=f"\n {bullet}")
+                                             glue=f"\n {bullet} And")
 
 def get_regular(fonts):
     # TODO: Maybe also support getting a regular instance from a variable font?

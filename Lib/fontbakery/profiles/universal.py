@@ -505,7 +505,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
     # We may want to improve it and/or rephrase it.
     proposal = 'legacy:check/052'
 )
-def com_google_fonts_check_required_tables(ttFont):
+def com_google_fonts_check_required_tables(ttFont, config):
     """Font contains all required tables?"""
     from .shared_conditions import is_variable_font
     from fontbakery.utils import bullet_list
@@ -533,7 +533,7 @@ def com_google_fonts_check_required_tables(ttFont):
         yield INFO, \
               Message("optional-tables",
                       f"This font contains the following optional tables:\n"
-                      f"{bullet_list(optional_tables)}")
+                      f"{bullet_list(config, optional_tables)}")
 
     if is_variable_font(ttFont):
         # According to https://github.com/googlefonts/fontbakery/issues/1671
@@ -549,7 +549,7 @@ def com_google_fonts_check_required_tables(ttFont):
         yield FAIL, \
               Message("required-tables",
                       f"This font is missing the following required tables:\n"
-                      f"{bullet_list(missing_tables)}")
+                      f"{bullet_list(config, missing_tables)}")
     else:
         yield PASS, "Font contains all required tables."
 
@@ -663,7 +663,7 @@ def com_google_fonts_check_STAT_strings(ttFont):
                 'https://github.com/googlefonts/fontbakery/issues/2832'] # increase limit
                                                                          # to 63 chars
 )
-def com_google_fonts_check_valid_glyphnames(ttFont):
+def com_google_fonts_check_valid_glyphnames(ttFont, config):
     """Glyph names are all valid?"""
     from fontbakery.utils import pretty_print_list
 
@@ -695,7 +695,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
                               f"The following glyph names may be too"
                               f" long for some legacy systems which may"
                               f" expect a maximum 31-char length limit:\n"
-                              f"{pretty_print_list(warn_names)}")
+                              f"{pretty_print_list(config, warn_names)}")
         else:
             yield FAIL,\
                   Message('found-invalid-names',
@@ -711,7 +711,8 @@ def com_google_fonts_check_valid_glyphnames(ttFont):
                            " The glyph names \"twocents\", \"a1\", and \"_\""
                            " are all valid, while \"2cents\""
                            " and \".twocents\" are not."
-                           "").format(pretty_print_list(bad_names)))
+                           "").format(pretty_print_list(config,
+                                                        bad_names)))
 
 
 @check(
@@ -1017,7 +1018,7 @@ def com_google_fonts_check_rupee(ttFont):
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3160',
 )
-def com_google_fonts_check_unreachable_glyphs(ttFont):
+def com_google_fonts_check_unreachable_glyphs(ttFont, config):
     """Check font contains no unreachable glyphs"""
 
     def remove_lookup_outputs(all_glyphs, lookup):
@@ -1084,7 +1085,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont):
               Message("unreachable-glyphs",
                       f"The following glyphs could not be reached"
                       f" by codepoint or substitution rules:\n"
-                      f"{bullet_list(list(all_glyphs))}\n")
+                      f"{bullet_list(config, list(all_glyphs))}\n")
     else:
         yield PASS, "Font did not contain any unreachable glyphs"
 
@@ -1102,7 +1103,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont):
     """,
     proposal = 'legacy:check/153'
 )
-def com_google_fonts_check_contour_count(ttFont):
+def com_google_fonts_check_contour_count(ttFont, config):
     """Check if each glyph has the recommended amount of contours.
 
     This check is useful to assure glyphs aren't incorrectly constructed.
@@ -1201,10 +1202,10 @@ def com_google_fonts_check_contour_count(ttFont):
             bad_glyphs_name = [
                 f"Glyph name: {_glyph_name(cmap, name)}\t"
                 f"Contours detected: {count}\t"
-                f"Expected: {pretty_print_list(expected, shorten=None, glue='or')}"
+                f"Expected: {pretty_print_list(config, expected, glue='or')}"
                 for name, count, expected in bad_glyphs
             ]
-            bad_glyphs_name = bullet_list(bad_glyphs_name)
+            bad_glyphs_name = bullet_list(config, bad_glyphs_name)
             yield WARN,\
                   Message("contour-count",
                           f"This check inspects the glyph outlines and detects the"

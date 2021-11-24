@@ -2,6 +2,9 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.8.5 (2021-Dec-??)
+### Noteworthy code-changes
+  - New command line flag: `-F, --full-list` to print full lists (`pretty_print_list` method) even when the total number of items exceeds a certain threashold. (issues #3173 and #3512)
+
 ### New Checks
 #### Added to the Universal Profile
   - **[com.google.fonts/check/cjk_chws_feature]:** Ensure CJK fonts contain chws/vchw features. (issue #3363)
