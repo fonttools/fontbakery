@@ -193,7 +193,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/os2/use_typo_metrics',
     'com.google.fonts/check/meta/script_lang_tags',
     'com.google.fonts/check/no_debugging_tables',
-    'com.google.fonts/check/render_own_name'
+    'com.google.fonts/check/render_own_name',
+    'com.google.fonts/check/colliding_accents'
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -5853,6 +5854,78 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
                           f"'{name}': '{glyphs}'")
     if passed:
        yield PASS, "OK."
+
+
+def count_islands(imagefont, character):
+    from PIL import Image, ImageDraw
+    width, height = imagefont.getsize(character)
+    img = Image.new("RGBA", (width, height))
+    draw = ImageDraw.Draw(img)
+    draw.text((-2, 0), str(character), font=imagefont, fill="#000000")
+
+    visited = [False] * (width * height)
+    threshold = 150
+
+    def mark_visted(x, y):
+        if (x < 0) or (x >= width) or (y < 0) or (y >= height) \
+           or img.getpixel((x, y))[3] <= threshold \
+           or visited[y*width + x]:
+            return
+
+        visited[y*width + x] = True
+
+        mark_visted(x, y+1)
+        mark_visted(x+1, y)
+        mark_visted(x, y-1)
+        mark_visted(x-1, y)
+        mark_visted(x+1, y+1)
+        mark_visted(x-1, y-1)
+        mark_visted(x+1, y-1)
+        mark_visted(x-1, y+1)
+
+    count = 0
+    for y in range(height):
+        for x in range(width):
+            if img.getpixel((x, y))[3] > threshold and not visited[y*width + x]:
+                count += 1
+                mark_visted(x, y)
+    return count
+
+
+@check(
+    id = "com.google.fonts/check/colliding_accents",
+    rationale = """
+        There are known cases of fonts where the acute in Eacute collides with the base glyph at certain sizes.
+        
+        This check renders all accented glyphs at both a small and a large font size, counts the number of "islands" in the rendered bitmaps and reports any mismatch as a detected accent collision.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3506',
+)
+def com_google_fonts_check_colliding_accents(font, ttFont):
+    """Detect colliding accents at small point sizes."""
+    from PIL import ImageFont
+
+    small_size = 22 #FIXME!
+    large_size = 26 #FIXME!
+    font_small = ImageFont.truetype(font, small_size)
+    font_large = ImageFont.truetype(font, large_size)
+    desired_characters = "SABCDEÁÂÉÊČĆŠŽčćšž" # FIXME!
+
+    available_glyphs = ttFont.getBestCmap().values()
+    passed = True
+    for character in desired_characters:
+        if character in available_glyphs:
+            small_count = count_islands(font_small, character)
+            large_count = count_islands(font_large, character)
+            if small_count != large_count:
+                passed = False
+                yield FAIL,\
+                      Message('collision',
+                              f"[{character}]"
+                              f" size={small_size}: count={small_count} |"
+                              f" size={large_size}: count={large_count}")
+    if passed:
+        yield PASS, "OK"
 
 
 ###############################################################################

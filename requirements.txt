@@ -10,6 +10,7 @@ font-v==2.0.0
 lxml==4.6.4
 opentype-sanitizer==8.1.4.post3
 opentypespec==1.8.4
+pillow==8.4.0
 pip-api==0.0.23
 protobuf==3.19.1
 PyYAML==6.0
