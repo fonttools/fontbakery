@@ -139,10 +139,13 @@ def style_parse(ttFont):
     import os
     filename = os.path.basename(ttFont.reader.file.name)
     if len(filename.split("-")) != 2:
-        style = "Regular"
+        # Google Fonts policy on font file naming scheme
+        # requires that only a single dash is used
+        # to separate family name from style.
+        return None
     else:
         style = filename.split("-")[1].split(".")[0]
-    return _style_parse(style)
+        return _style_parse(style)
 
 
 def instance_parse(string):

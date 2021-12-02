@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Noteworthy code-changes
   - New command line flag: `-F, --full-list` to print full lists (`pretty_print_list` method) even when the total number of items exceeds a certain threashold. (issues #3173 and #3512)
   - Included a few of the more recently added profiles that were still missing on our online docs (issue #3518)
+  - Do not accept more than a single dash on font filenames. This ensures FontBakery won't miscomputed expected style values use on checks such as `com.google.fonts/check/usweightclass`. (issue #3524)
 
 ### New Checks
 #### Added to the Universal Profile
