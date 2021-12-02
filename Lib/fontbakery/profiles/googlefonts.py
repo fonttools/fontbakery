@@ -2602,6 +2602,11 @@ def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_me
 
 @check(
     id = 'com.google.fonts/check/metadata/fontname_not_camel_cased',
+    rationale = """
+        We currently have a policy of avoiding camel-cased font family names other than in a very small set of exceptions.
+        
+        If you want to have your family name added to the exceptions list, please read the instructions at https://github.com/googlefonts/fontbakery/issues/3270
+    """,
     conditions = ['font_metadata',
                   'not camelcased_familyname_exception'],
     proposal = 'legacy:check/109'
