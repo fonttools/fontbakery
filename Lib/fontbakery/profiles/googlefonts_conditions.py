@@ -440,6 +440,8 @@ def font_familyname(font_familynames):
 
 # TODO: Design special case handling mechanism:
 # https://github.com/googlefonts/fontbakery/issues/1540
+# TODO: Improve camelcase check result explanation and whitelisting process:
+#https://github.com/googlefonts/fontbakery/issues/3270
 @condition
 def camelcased_familyname_exception(familyname):
     '''In general, we would not like to have camel-cased
@@ -449,6 +451,7 @@ def camelcased_familyname_exception(familyname):
     for exception in [
         "3D", # seen in "Rock 3D"
         "BenchNine",
+        "BhuTuka", # seen in "BhuTuka Expanded One"
         "DotGothic", # seen in "DotGothic16"
         "FakeFont",
         "JetBrains", # seen in "JetBrains Mono"
