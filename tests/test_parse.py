@@ -24,6 +24,7 @@ def test_name():
     style = _style_parse("Bold Oblique")
     assert style.name == "Bold Italic"
 
+
 def test_fvar_coordinates():
     style = instance_parse("Regular")
     assert style.coordinates == {"wght": 400.0}
@@ -51,4 +52,3 @@ def test_token_order():
     style = instance_parse("Italic Black")
     assert style.raw_token_order == ["ital", "wght"]
     assert style.expected_token_order == ["wght", "ital"]
-
