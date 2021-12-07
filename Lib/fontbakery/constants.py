@@ -53,6 +53,20 @@ RIBBI_STYLE_NAMES = [
     "BoldItalic",
     "Bold Italic"]  # <-- Do we really need this one?
 
+RIBBI_SPACED = [
+    "Regular",
+    "Italic",
+    "Bold",
+    "Bold Italic"
+]
+
+RIBBI_UNSPACED = [
+    "Regular",
+    "Italic",
+    "Bold",
+    "BoldItalic"
+]
+
 PLACEHOLDER_LICENSING_TEXT = {
     'UFL.txt': 'Licensed under the Ubuntu Font Licence 1.0.',
     'OFL.txt': 'This Font Software is licensed under the SIL Open Font '
@@ -897,3 +911,219 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 """
 
 LATEST_TTFAUTOHINT_VERSION = "1.8.4"
+
+FSTYPE_RESTRICTIONS = {
+   0x0002: ("* The font must not be modified, embedded or exchanged in"
+            " any manner without first obtaining permission of"
+            " the legal owner."),
+   0x0004: ("The font may be embedded, and temporarily loaded on the"
+            " remote system, but documents that use it must"
+            " not be editable."),
+   0x0008: ("The font may be embedded but must only be installed"
+            " temporarily on other systems."),
+   0x0100: ("The font may not be subsetted prior to embedding."),
+   0x0200: ("Only bitmaps contained in the font may be embedded."
+            " No outline data may be embedded.")
+}
+
+LICENSE_URL = {
+    'OFL.txt': 'https://scripts.sil.org/OFL',
+    'LICENSE.txt': 'https://www.apache.org/licenses/LICENSE-2.0',
+    'UFL.txt': 'https://www.ubuntu.com/legal/terms-and-policies/font-licence'
+}
+LICENSE_NAME = {
+    'OFL.txt': 'Open Font',
+    'LICENSE.txt': 'Apache',
+    'UFL.txt': 'Ubuntu Font License'
+}
+
+GASP_MEANING = {
+    0x01: "- Use grid-fitting",
+    0x02: "- Use grayscale rendering",
+    0x04: "- Use gridfitting with ClearType symmetric smoothing",
+    0x08: "- Use smoothing along multiple axes with ClearType®"
+}
+
+GF_API_WEIGHT_NAMES = {100: "Thin",
+                       200: "ExtraLight",
+                       250: "Thin", # Legacy. Pre-vf epoch
+                       275: "ExtraLight", # Legacy. Pre-vf epoch
+                       300: "Light",
+                       400: "Regular",
+                       500: "Medium",
+                       600: "SemiBold",
+                       700: "Bold",
+                       800: "ExtraBold",
+                       900: "Black"}
+
+CSS_WEIGHT_NAMES = {
+    100: "Thin",
+    200: "ExtraLight",
+    300: "Light",
+    400: "Regular",
+    500: "Medium",
+    600: "SemiBold",
+    700: "Bold",
+    800: "ExtraBold",
+    900: "Black"
+}
+
+POSTSCRIPT_NAME_WEIGHTS = {
+    "Thin": 100,
+    "ThinItalic": 100,
+    "ExtraLight": 200,
+    "ExtraLightItalic": 200,
+    "Light": 300,
+    "LightItalic": 300,
+    "Regular": 400,
+    "Italic": 400,
+    "Medium": 500,
+    "MediumItalic": 500,
+    "SemiBold": 600,
+    "SemiBoldItalic": 600,
+    "Bold": 700,
+    "BoldItalic": 700,
+    "ExtraBold": 800,
+    "ExtraBoldItalic": 800,
+    "Black": 900,
+    "BlackItalic": 900
+}
+
+OPTIMAL_UPEM = {
+  16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 1000, 2000
+}
+
+GF_ACCEPTABLE_UPEM = {
+  16, 32, 64, 128, 256, 500, 512, 1024, 2048, 4096, 1000, 2000
+}
+
+REQUIRED_TABLES = ["cmap", "head", "hhea", "hmtx",
+                   "maxp", "name", "OS/2", "post"]
+
+OPTIONAL_TABLES = ["cvt ", "fpgm", "loca", "prep",
+                   "VORG", "EBDT", "EBLC", "EBSC",
+                   "BASE", "GPOS", "GSUB", "JSTF",
+                   "gasp", "hdmx", "LTSH", "PCLT",
+                   "VDMX", "vhea", "vmtx", "kern"]
+
+UNWANTED_AAT_TABLES = {
+    'EBSC', 'Zaph', 'acnt', 'ankr', 'bdat', 'bhed', 'bloc',
+    'bmap', 'bsln', 'fdsc', 'feat', 'fond', 'gcid', 'just',
+    'kerx', 'lcar', 'ltag', 'mort', 'morx', 'opbd', 'prop',
+    'trak', 'xref'
+}
+
+UNWANTED_TABLES = {
+    'FFTM': 'Table contains redundant FontForge timestamp info',
+    'TTFA': 'Redundant TTFAutohint table',
+    'TSI0': 'Table contains data only used in VTT',
+    'TSI1': 'Table contains data only used in VTT',
+    'TSI2': 'Table contains data only used in VTT',
+    'TSI3': 'Table contains data only used in VTT',
+    'TSI5': 'Table contains data only used in VTT',
+    'prop': ('Table used on AAT, Apple\'s OS X specific technology.'
+             ' Although Harfbuzz now has optional AAT support,'
+             ' new fonts should not be using that.'),
+}
+DEBUGGING_TABLES = ["Debg", "FFTM"]
+
+
+UNACCEPTABLE_CONTROL_CHARACTERS = [
+    "uni0001",
+    "uni0002",
+    "uni0003",
+    "uni0004",
+    "uni0005",
+    "uni0006",
+    "uni0007",
+    "uni0008",
+    "uni0009",
+    "uni000A",
+    "uni000B",
+    "uni000C",
+    "uni000E",
+    "uni000F",
+    "uni0010",
+    "uni0011",
+    "uni0012",
+    "uni0013",
+    "uni0014",
+    "uni0015",
+    "uni0016",
+    "uni0017",
+    "uni0018",
+    "uni0019",
+    "uni001A",
+    "uni001B",
+    "uni001C",
+    "uni001D",
+    "uni001E",
+    "uni001F"
+]
+
+AVERAGE_WIDTH_CALCULATION_FACTORS = {
+    'a': 64,
+    'b': 14,
+    'c': 27,
+    'd': 35,
+    'e': 100,
+    'f': 20,
+    'g': 14,
+    'h': 42,
+    'i': 63,
+    'j': 3,
+    'k': 6,
+    'l': 35,
+    'm': 20,
+    'n': 56,
+    'o': 56,
+    'p': 17,
+    'q': 4,
+    'r': 49,
+    's': 56,
+    't': 71,
+    'u': 31,
+    'v': 10,
+    'w': 18,
+    'x': 3,
+    'y': 18,
+    'z': 2,
+    'space': 166
+}
+
+# AGL recommended names, according to Adobe Glyph List for new fonts:
+AGL_RECOMMENDED_0020 = {'space'}
+AGL_RECOMMENDED_00A0 = {"uni00A0", "space"}  # "space" is in this set because some fonts
+                                             # use the same glyph for U+0020 and U+00A0
+                                             # Including it here also removes a warning
+                                             # when U+0020 is wrong, but U+00A0 is okay.
+
+# AGL compliant names, but not recommended for new fonts:
+AGL_COMPLIANT_BUT_NOT_RECOMMENDED_0020 = {'uni0020',
+                                          'u0020',
+                                          'u00020',
+                                          'u000020'}
+AGL_COMPLIANT_BUT_NOT_RECOMMENDED_00A0 = {'nonbreakingspace',
+                                          'nbspace',
+                                          'u00A0',
+                                          'u000A0',
+                                          'u0000A0'}
+
+# code-points for all Unicode whitespace chars
+# (according to Unicode 11.0 property list):
+WHITESPACE_CHARACTERS = {
+  0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020, 0x0085, 0x00A0, 0x1680,
+  0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
+  0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000
+}
+
+# Code-points that do not have whitespace property, but
+# should not have a drawing.
+EXTRA_NON_DRAWING = {
+  0x180E, 0x200B, 0x2060, 0xFEFF
+}
+
+# Make the set of non drawing characters.
+# OGHAM SPACE MARK U+1680 is removed as it is
+# a whitespace that should have a drawing.
+NON_DRAWING = (WHITESPACE_CHARACTERS | EXTRA_NON_DRAWING) - {0x1680}

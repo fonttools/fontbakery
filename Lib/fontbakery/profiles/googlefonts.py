@@ -13,7 +13,8 @@ from fontbakery.constants import (NameID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID,
-                                  LATEST_TTFAUTOHINT_VERSION)
+                                  LATEST_TTFAUTOHINT_VERSION,
+                                  FSTYPE_RESTRICTIONS)
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 profile_imports = ('fontbakery.profiles.universal',)
@@ -25,6 +26,7 @@ profile.configuration_defaults = {
         "FAIL_SIZE": 9 * 1024 * 1024
     }
 }
+MAX_COPYRIGHT_NOTICE_LENGTH = 500
 
 METADATA_CHECKS = [
     'com.google.fonts/check/metadata/parses',
@@ -206,6 +208,11 @@ GOOGLEFONTS_PROFILE_CHECKS = \
     FONT_FILE_CHECKS + \
     GLYPHSAPP_CHECKS
 
+METADATA_PB_CATEGORIES = ["MONOSPACE",
+                          "SANS_SERIF",
+                          "SERIF",
+                          "DISPLAY",
+                          "HANDWRITING"]
 
 @check(
     id = 'com.google.fonts/check/canonical_filename',
@@ -738,13 +745,9 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
 @check(
     id = 'com.google.fonts/check/metadata/category',
     conditions = ['family_metadata'],
-    rationale = """
+    rationale = f"""
         There are only five acceptable values for the category field in a METADATA.pb file:
-        - MONOSPACE
-        - SANS_SERIF
-        - SERIF
-        - DISPLAY
-        - HANDWRITING
+        {", ".join(METADATA_PB_CATEGORIES)}
 
         This check is meant to avoid typos in this field.
     """,
@@ -752,11 +755,7 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
 )
 def com_google_fonts_check_metadata_category(family_metadata):
     """Ensure METADATA.pb category field is valid."""
-    if family_metadata.category not in ["MONOSPACE",
-                                        "SANS_SERIF",
-                                        "SERIF",
-                                        "DISPLAY",
-                                        "HANDWRITING"]:
+    if family_metadata.category not in METADATA_PB_CATEGORIES:
         yield FAIL,\
               Message('bad-value',
                       f'The field category has "{family_metadata.category}"'
@@ -889,19 +888,6 @@ def com_google_fonts_check_fstype(ttFont):
     """Checking OS/2 fsType does not impose restrictions."""
     value = ttFont['OS/2'].fsType
     if value != 0:
-        FSTYPE_RESTRICTIONS = {
-            0x0002: ("* The font must not be modified, embedded or exchanged in"
-                     " any manner without first obtaining permission of"
-                     " the legal owner."),
-            0x0004: ("The font may be embedded, and temporarily loaded on the"
-                     " remote system, but documents that use it must"
-                     " not be editable."),
-            0x0008: ("The font may be embedded but must only be installed"
-                     " temporarily on other systems."),
-            0x0100: ("The font may not be subsetted prior to embedding."),
-            0x0200: ("Only bitmaps contained in the font may be embedded."
-                     " No outline data may be embedded.")
-        }
         restrictions = ""
         for bit_mask in FSTYPE_RESTRICTIONS.keys():
             if value & bit_mask:
@@ -1269,18 +1255,9 @@ def com_google_fonts_check_name_license(ttFont, license):
 )
 def com_google_fonts_check_name_license_url(ttFont, familyname):
     """License URL matches License text on name table?"""
-    from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
+    from fontbakery.constants import (PLACEHOLDER_LICENSING_TEXT,
+                                      LICENSE_URL, LICENSE_NAME)
     LEGACY_UFL_FAMILIES = ["Ubuntu", "UbuntuCondensed", "UbuntuMono"]
-    LICENSE_URL = {
-        'OFL.txt': 'https://scripts.sil.org/OFL',
-        'LICENSE.txt': 'https://www.apache.org/licenses/LICENSE-2.0',
-        'UFL.txt': 'https://www.ubuntu.com/legal/terms-and-policies/font-licence'
-    }
-    LICENSE_NAME = {
-        'OFL.txt': 'Open Font',
-        'LICENSE.txt': 'Apache',
-        'UFL.txt': 'Ubuntu Font License'
-    }
     detected_license = False
     http_warn = False
     for license in ['OFL.txt', 'LICENSE.txt', 'UFL.txt']:
@@ -1635,6 +1612,7 @@ def com_google_fonts_check_epar(ttFont):
 def com_google_fonts_check_gasp(ttFont):
     """Is the Grid-fitting and Scan-conversion Procedure ('gasp') table
        set to optimize rendering?"""
+    from fontbakery.constants import GASP_MEANING
 
     NON_HINTING_MESSAGE = ("If you are dealing with an unhinted font,"
                            " it can be fixed by running the fonts through"
@@ -1664,17 +1642,11 @@ def com_google_fonts_check_gasp(ttFont):
                               " The gaspRange value for such entry should"
                               " be set to 0xFFFF.")
             else:
-                gasp_meaning = {
-                    0x01: "- Use grid-fitting",
-                    0x02: "- Use grayscale rendering",
-                    0x04: "- Use gridfitting with ClearType symmetric smoothing",
-                    0x08: "- Use smoothing along multiple axes with ClearType®"
-                }
                 table = []
                 for key in ttFont["gasp"].gaspRange.keys():
                     value = ttFont["gasp"].gaspRange[key]
                     meaning = []
-                    for flag, info in gasp_meaning.items():
+                    for flag, info in GASP_MEANING.items():
                         if value & flag:
                             meaning.append(info)
 
@@ -2679,29 +2651,9 @@ def com_google_fonts_check_metadata_os2_weightclass(ttFont,
                                                     font_metadata):
     """Check METADATA.pb font weights are correct."""
     from .shared_conditions import is_variable_font
+    from fontbakery.constants import GF_API_WEIGHT_NAMES, CSS_WEIGHT_NAMES
     # Weight name to value mapping:
-    GF_API_WEIGHT_NAMES = {100: "Thin",
-                           200: "ExtraLight",
-                           250: "Thin", # Legacy. Pre-vf epoch
-                           275: "ExtraLight", # Legacy. Pre-vf epoch
-                           300: "Light",
-                           400: "Regular",
-                           500: "Medium",
-                           600: "SemiBold",
-                           700: "Bold",
-                           800: "ExtraBold",
-                           900: "Black"}
-    CSS_WEIGHT_NAMES = {
-        100: "Thin",
-        200: "ExtraLight",
-        300: "Light",
-        400: "Regular",
-        500: "Medium",
-        600: "SemiBold",
-        700: "Bold",
-        800: "ExtraBold",
-        900: "Black"
-    }
+
     if is_variable_font(ttFont):
         axes = {f.axisTag: f for f in ttFont["fvar"].axes}
         # if there isn't a wght axis, use the OS/2.usWeightClass
@@ -2745,28 +2697,9 @@ def com_google_fonts_check_metadata_os2_weightclass(ttFont,
 )
 def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
     """METADATA.pb weight matches postScriptName for static fonts."""
-    WEIGHTS = {
-        "Thin": 100,
-        "ThinItalic": 100,
-        "ExtraLight": 200,
-        "ExtraLightItalic": 200,
-        "Light": 300,
-        "LightItalic": 300,
-        "Regular": 400,
-        "Italic": 400,
-        "Medium": 500,
-        "MediumItalic": 500,
-        "SemiBold": 600,
-        "SemiBoldItalic": 600,
-        "Bold": 700,
-        "BoldItalic": 700,
-        "ExtraBold": 800,
-        "ExtraBoldItalic": 800,
-        "Black": 900,
-        "BlackItalic": 900
-    }
+    from fontbakery.constants import POSTSCRIPT_NAME_WEIGHTS
     pair = []
-    for k, weight in WEIGHTS.items():
+    for k, weight in POSTSCRIPT_NAME_WEIGHTS.items():
         if weight == font_metadata.weight:
             pair.append((k, weight))
 
@@ -2839,9 +2772,8 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
 )
 def com_google_fonts_check_unitsperem_strict(ttFont):
     """ Stricter unitsPerEm criteria for Google Fonts. """
+    from fontbakery.constants import GF_ACCEPTABLE_UPEM
     upm_height = ttFont["head"].unitsPerEm
-    ACCEPTABLE = [16, 32, 64, 128, 256, 500,
-                  512, 1000, 1024, 2000, 2048]
     if upm_height > 2048 and upm_height <= 4096:
         yield WARN,\
               Message("large-value",
@@ -2849,13 +2781,13 @@ def com_google_fonts_check_unitsperem_strict(ttFont):
                       f" which may be too large (causing filesize bloat),"
                       f" unless you are sure that the detail level"
                       f" in this font requires that much precision.")
-    elif upm_height not in ACCEPTABLE:
+    elif upm_height not in GF_ACCEPTABLE_UPEM:
         yield FAIL,\
               Message("bad-value",
                       f"Font em size (unitsPerEm) is {upm_height}."
                       f" If possible, please consider using 1000."
                       f" Good values for unitsPerEm,"
-                      f" though, are typically these: {ACCEPTABLE}.")
+                      f" though, are typically these: {GF_ACCEPTABLE_UPEM}.")
     else:
         yield PASS, f"Font em size is good (unitsPerEm = {upm_height})."
 
@@ -3206,6 +3138,7 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
 def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces):
     """Check name table: FONT_FAMILY_NAME entries."""
     from fontbakery.utils import name_entry_id
+    from fontbakery.constants import RIBBI_SPACED
 
     def get_only_weight(value):
         onlyWeight = {"BlackItalic": "Black",
@@ -3228,10 +3161,7 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
                 expected_value = familyname_with_spaces
 
             elif name.platformID == PlatformID.WINDOWS:
-                if style in ['Regular',
-                             'Italic',
-                             'Bold',
-                             'Bold Italic']:
+                if style in RIBBI_SPACED:
                     expected_value = familyname_with_spaces
                 else:
                     expected_value = " ".join([familyname_with_spaces,
@@ -3375,12 +3305,10 @@ def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
 def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_with_spaces):
     """Check name table: TYPOGRAPHIC_FAMILY_NAME entries."""
     from fontbakery.utils import name_entry_id
+    from fontbakery.constants import RIBBI_UNSPACED
 
     failed = False
-    if style in ['Regular',
-                 'Italic',
-                 'Bold',
-                 'BoldItalic']:
+    if style in RIBBI_UNSPACED:
         for name in ttFont['name'].names:
             if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
                 failed = True
@@ -3508,16 +3436,16 @@ def com_google_fonts_check_name_copyright_length(ttFont):
     failed = False
     for notice in get_name_entries(ttFont, NameID.COPYRIGHT_NOTICE):
         notice_str = notice.string.decode(notice.getEncoding())
-        if len(notice_str) > 500:
+        if len(notice_str) > MAX_COPYRIGHT_NOTICE_LENGTH:
             failed = True
             yield FAIL,\
                   Message("too-long",
                           f'The length of the following copyright notice'
-                          f' ({len(notice_str)}) exceeds 500 chars:'
+                          f' ({len(notice_str)}) exceeds {MAX_COPYRIGHT_NOTICE_LENGTH} chars:'
                           f' "{notice_str}"')
     if not failed:
         yield PASS, ("All copyright notice name entries on the"
-                     " 'name' table are shorter than 500 characters.")
+                     f" 'name' table are shorter than {MAX_COPYRIGHT_NOTICE_LENGTH} characters.")
 
 
 @check(
@@ -3868,15 +3796,10 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
 )
 def com_google_fonts_check_aat(ttFont):
     """Are there unwanted Apple tables?"""
-    UNWANTED_TABLES = {
-        'EBSC', 'Zaph', 'acnt', 'ankr', 'bdat', 'bhed', 'bloc',
-        'bmap', 'bsln', 'fdsc', 'feat', 'fond', 'gcid', 'just',
-        'kerx', 'lcar', 'ltag', 'mort', 'morx', 'opbd', 'prop',
-        'trak', 'xref'
-    }
+    from fontbakery.constants import UNWANTED_AAT_TABLES
     unwanted_tables_found = []
     for table in ttFont.keys():
-        if table in UNWANTED_TABLES:
+        if table in UNWANTED_AAT_TABLES:
             unwanted_tables_found.append(table)
 
     if len(unwanted_tables_found) > 0:
@@ -4305,40 +4228,8 @@ def com_google_fonts_check_family_control_chars(ttFonts):
     # definition includes the entire control character Unicode block except:
     #    - .null (U+0000)
     #    - CR (U+000D)
-    unacceptable_cc_list = [
-        "uni0001",
-        "uni0002",
-        "uni0003",
-        "uni0004",
-        "uni0005",
-        "uni0006",
-        "uni0007",
-        "uni0008",
-        "uni0009",
-        "uni000A",
-        "uni000B",
-        "uni000C",
-        "uni000E",
-        "uni000F",
-        "uni0010",
-        "uni0011",
-        "uni0012",
-        "uni0013",
-        "uni0014",
-        "uni0015",
-        "uni0016",
-        "uni0017",
-        "uni0018",
-        "uni0019",
-        "uni001A",
-        "uni001B",
-        "uni001C",
-        "uni001D",
-        "uni001E",
-        "uni001F"
-    ]
-
     # a dict with key:value of font path that failed check : list of unacceptable glyph names
+    from fontbakery.constants import UNACCEPTABLE_CONTROL_CHARACTERS
     failed_font_dict = {}
 
     for ttFont in ttFonts:
@@ -4347,7 +4238,7 @@ def com_google_fonts_check_family_control_chars(ttFonts):
         glyph_name_set = set(ttFont["glyf"].glyphs.keys())
         fontname = ttFont.reader.file.name
 
-        for unacceptable_glyph_name in unacceptable_cc_list:
+        for unacceptable_glyph_name in UNACCEPTABLE_CONTROL_CHARACTERS:
             if unacceptable_glyph_name in glyph_name_set:
                 font_failed = True
                 unacceptable_glyphs_in_set.append(unacceptable_glyph_name)
@@ -5696,8 +5587,8 @@ def com_google_fonts_check_meta_script_lang_tags(ttFont):
 )
 def com_google_fonts_check_no_debugging_tables(ttFont):
     """Ensure fonts do not contain any pre-production tables."""
+    from fontbakery.constants import DEBUGGING_TABLES
 
-    DEBUGGING_TABLES = ["Debg", "FFTM"]
     found = [t for t in DEBUGGING_TABLES if t in ttFont]
     if found:
         tables_list = ", ".join(found)

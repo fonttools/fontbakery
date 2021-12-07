@@ -52,16 +52,14 @@ def com_google_fonts_check_family_equal_font_versions(ttFonts):
 def com_google_fonts_check_unitsperem(ttFont):
     """Checking unitsPerEm value is reasonable."""
     upem = ttFont['head'].unitsPerEm
-    target_upem = [2**i for i in range(4, 15)]
-    target_upem.append(1000)
-    target_upem.append(2000)
+    from fontbakery.constants import OPTIMAL_UPEM
     if upem < 16 or upem > 16384:
         yield FAIL,\
               Message("out-of-range",
                       f"The value of unitsPerEm at the head table"
                       f" must be a value between 16 and 16384."
                       f" Got {upem} instead.")
-    elif upem not in target_upem:
+    elif upem not in OPTIMAL_UPEM:
         yield WARN,\
               Message("suboptimal",
                       f"In order to optimize performance on some"

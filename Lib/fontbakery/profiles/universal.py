@@ -371,24 +371,12 @@ def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
 def com_google_fonts_check_whitespace_glyphnames(ttFont):
     """Font has **proper** whitespace glyph names?"""
     from fontbakery.utils import get_glyph_name
-
-    # AGL recommended names, according to Adobe Glyph List for new fonts:
-    AGL_RECOMMENDED_0020 = {'space'}
-    AGL_RECOMMENDED_00A0 = {"uni00A0", "space"}  # "space" is in this set because some fonts
-                                                 # use the same glyph for U+0020 and U+00A0
-                                                 # Including it here also removes a warning
-                                                 # when U+0020 is wrong, but U+00A0 is okay.
-
-    # AGL compliant names, but not recommended for new fonts:
-    AGL_COMPLIANT_BUT_NOT_RECOMMENDED_0020 = {'uni0020',
-                                              'u0020',
-                                              'u00020',
-                                              'u000020'}
-    AGL_COMPLIANT_BUT_NOT_RECOMMENDED_00A0 = {'nonbreakingspace',
-                                              'nbspace',
-                                              'u00A0',
-                                              'u000A0',
-                                              'u0000A0'}
+    from fontbakery.constants import (
+      AGL_RECOMMENDED_0020,
+      AGL_RECOMMENDED_00A0,
+      AGL_COMPLIANT_BUT_NOT_RECOMMENDED_0020,
+      AGL_COMPLIANT_BUT_NOT_RECOMMENDED_00A0
+    )
 
     if ttFont['post'].formatType == 3.0:
         yield SKIP, "Font has version 3 post table."
@@ -462,25 +450,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
     # This checks that certain glyphs are empty.
     # Some, but not all, are Unicode whitespace.
 
-    # code-points for all Unicode whitespace chars
-    # (according to Unicode 11.0 property list):
-    WHITESPACE_CHARACTERS = {
-        0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0020, 0x0085, 0x00A0, 0x1680,
-        0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008,
-        0x2009, 0x200A, 0x2028, 0x2029, 0x202F, 0x205F, 0x3000
-    }
-
-    # Code-points that do not have whitespace property, but
-    # should not have a drawing.
-    EXTRA_NON_DRAWING = {
-        0x180E, 0x200B, 0x2060, 0xFEFF
-    }
-
-    # Make the set of non drawing characters.
-    # OGHAM SPACE MARK U+1680 is removed as it is
-    # a whitespace that should have a drawing.
-    NON_DRAWING = (WHITESPACE_CHARACTERS | EXTRA_NON_DRAWING) - {0x1680}
-
+    from fontbakery.constants import NON_DRAWING
     passed = True
     for codepoint in sorted(NON_DRAWING):
         g = get_glyph_name(ttFont, codepoint)
@@ -509,15 +479,8 @@ def com_google_fonts_check_required_tables(ttFont, config):
     """Font contains all required tables?"""
     from .shared_conditions import is_variable_font
     from fontbakery.utils import bullet_list
+    from fontbakery.constants import REQUIRED_TABLES, OPTIONAL_TABLES
 
-    REQUIRED_TABLES = ["cmap", "head", "hhea", "hmtx",
-                       "maxp", "name", "OS/2", "post"]
-
-    OPTIONAL_TABLES = ["cvt ", "fpgm", "loca", "prep",
-                       "VORG", "EBDT", "EBLC", "EBSC",
-                       "BASE", "GPOS", "GSUB", "JSTF",
-                       "gasp", "hdmx", "LTSH", "PCLT",
-                       "VDMX", "vhea", "vmtx", "kern"]
     # See https://github.com/googlefonts/fontbakery/issues/617
     #
     # We should collect the rationale behind the need for each of the
@@ -563,18 +526,7 @@ def com_google_fonts_check_required_tables(ttFont, config):
 )
 def com_google_fonts_check_unwanted_tables(ttFont):
     """Are there unwanted tables?"""
-    UNWANTED_TABLES = {
-        'FFTM': 'Table contains redundant FontForge timestamp info',
-        'TTFA': 'Redundant TTFAutohint table',
-        'TSI0': 'Table contains data only used in VTT',
-        'TSI1': 'Table contains data only used in VTT',
-        'TSI2': 'Table contains data only used in VTT',
-        'TSI3': 'Table contains data only used in VTT',
-        'TSI5': 'Table contains data only used in VTT',
-        'prop': ('Table used on AAT, Apple\'s OS X specific technology.'
-                 ' Although Harfbuzz now has optional AAT support,'
-                 ' new fonts should not be using that.'),
-    }
+    from fontbakery.constants import UNWANTED_TABLES
     unwanted_tables_found = []
     for table in ttFont.keys():
         if table in UNWANTED_TABLES.keys():

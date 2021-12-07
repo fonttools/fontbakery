@@ -118,39 +118,11 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
 
         expected_value = int(round(width_sum / count))
     else:  # Version 2 and below only consider lowercase latin glyphs and space.
+        from fontbakery.constants import AVERAGE_WIDTH_CALCULATION_FACTORS
         calculation_rule = ("the weighted average of the widths of the latin"
                             " lowercase glyphs in the font")
-        weightFactors = {
-            'a': 64,
-            'b': 14,
-            'c': 27,
-            'd': 35,
-            'e': 100,
-            'f': 20,
-            'g': 14,
-            'h': 42,
-            'i': 63,
-            'j': 3,
-            'k': 6,
-            'l': 35,
-            'm': 20,
-            'n': 56,
-            'o': 56,
-            'p': 17,
-            'q': 4,
-            'r': 49,
-            's': 56,
-            't': 71,
-            'u': 31,
-            'v': 10,
-            'w': 18,
-            'x': 3,
-            'y': 18,
-            'z': 2,
-            'space': 166
-        }
         glyph_order = ttFont.getGlyphOrder()
-        if not all(character in glyph_order for character in weightFactors):
+        if not all(character in glyph_order for character in AVERAGE_WIDTH_CALCULATION_FACTORS.keys()):
             yield FAIL,\
                   Message("missing-glyphs",
                           "Font is missing the required"
@@ -158,9 +130,9 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
             return
 
         width_sum = 0
-        for glyph_id in weightFactors:
+        for glyph_id, weight in AVERAGE_WIDTH_CALCULATION_FACTORS.items():
             width = ttFont['hmtx'].metrics[glyph_id][0]
-            width_sum += (width * weightFactors[glyph_id])
+            width_sum += (width * weight)
 
         expected_value = int(width_sum / 1000.0 + 0.5)  # round to closest int
 
