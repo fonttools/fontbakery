@@ -372,10 +372,10 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
     """Font has **proper** whitespace glyph names?"""
     from fontbakery.utils import get_glyph_name
     from fontbakery.constants import (
-      AGL_RECOMMENDED_0020,
-      AGL_RECOMMENDED_00A0,
-      AGL_COMPLIANT_BUT_NOT_RECOMMENDED_0020,
-      AGL_COMPLIANT_BUT_NOT_RECOMMENDED_00A0
+        AGL_RECOMMENDED_0020,
+        AGL_RECOMMENDED_00A0,
+        AGL_COMPLIANT_BUT_NOT_RECOMMENDED_0020,
+        AGL_COMPLIANT_BUT_NOT_RECOMMENDED_00A0
     )
 
     if ttFont['post'].formatType == 3.0:
