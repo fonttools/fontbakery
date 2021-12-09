@@ -2087,6 +2087,11 @@ def test_check_metadata_os2_weightclass():
                            FAIL, 'mismatch',
                            f'with a bad metadata...')
 
+    ttFont = TTFont(TEST_FILE("leaguegothic-vf/LeagueGothic[wdth].ttf"))
+    assert_PASS(check(ttFont),
+                f'with a good VF that lacks a "wght" axis....')
+                # See: https://github.com/googlefonts/fontbakery/issues/3529
+
     # === test cases for Static Fonts ===
     # Our reference Montserrat family is a good 18-styles family:
     for fontfile in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
