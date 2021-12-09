@@ -2704,16 +2704,16 @@ def com_google_fonts_check_metadata_os2_weightclass(ttFont,
     }
     if is_variable_font(ttFont):
         axes = {f.axisTag: f for f in ttFont["fvar"].axes}
-        # if there isn't a wght axis, use the OS/2.usWeightClass
         if 'wght' not in axes:
-            font_weight = f['OS/2'].usWeightClass
-        # if the wght range includes 400, use 400
+            # if there isn't a wght axis, use the OS/2.usWeightClass
+            font_weight = ttFont['OS/2'].usWeightClass
         else:
+            # if the wght range includes 400, use 400
             wght_includes_400 = axes['wght'].minValue <= 400 and axes['wght'].maxValue >= 400
             if wght_includes_400:
                 font_weight = 400
-            # if 400 isn't in the wght axis range, use the value closest to 400
-            elif not wght_includes_400:
+            else:
+                # if 400 isn't in the wght axis range, use the value closest to 400
                 if abs(axes['wght'].minValue - 400) < abs(axes['wght'].maxValue - 400):
                     font_weight = axes['wght'].minValue
                 else:
