@@ -7,7 +7,7 @@ defcon==0.9.0
 dehinter==4.0.0
 fontTools[ufo,lxml,unicode]==4.28.1
 font-v==2.0.0
-lxml==4.6.4
+lxml==4.6.5
 opentype-sanitizer==8.1.4.post3
 opentypespec==1.8.4
 pip-api==0.0.23
