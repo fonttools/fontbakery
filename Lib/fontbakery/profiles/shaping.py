@@ -65,12 +65,16 @@ def create_report_item(vharfbuzz,
                        buf1=None,
                        buf2=None,
                        type="item",
+                       note=None,
                        extra_data=None):
     if text:
         message += f': <span class="tf">{text}</span>'
 
     if type == "item":
-        message = f"<li>{message}</li>\n"
+        message = f"<li>{message}"
+        if note:
+            message += f" ({note})"
+        message += "</li>\n"
     elif type == "header":
         message = get_stylesheet(vharfbuzz) + f"\n<h4>{message}</h4>\n"
 
@@ -265,6 +269,7 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_te
                                          text=test["input"],
                                          buf1=output_buf,
                                          buf2=buf2,
+                                         note=test.get("note"),
                                          extra_data=extra_data)
         report_items.append(report_item)
 
