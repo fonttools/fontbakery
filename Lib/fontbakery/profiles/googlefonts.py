@@ -75,7 +75,8 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/escaped_strings',
     'com.google.fonts/check/metadata/designer_profiles',
     'com.google.fonts/check/metadata/family_directory_name',
-    'com.google.fonts/check/metadata/can_render_samples'
+    'com.google.fonts/check/metadata/can_render_samples',
+    'com.google.fonts/check/metadata/unsupported_subsets'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -969,33 +970,71 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
         yield PASS, f"OS/2 VendorID '{vid}' looks good!"
 
 
+@condition
+def font_codepoints(ttFont):
+    codepoints = set()
+    for table in ttFont['cmap'].tables:
+        if (table.platformID == PlatformID.WINDOWS and
+            table.platEncID == WindowsEncodingID.UNICODE_BMP):
+            codepoints.update(table.cmap.keys())
+    return codepoints
+
+
 @check(
     id = 'com.google.fonts/check/glyph_coverage',
     rationale = """
         Google Fonts expects that fonts in its collection support at least the minimal set of characters defined in the `GF-latin-core` glyph-set.
     """,
+    conditions = ["font_codepoints"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2488'
 )
-def com_google_fonts_check_glyph_coverage(ttFont, config):
+def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check `Google Fonts Latin Core` glyph coverage."""
     from fontbakery.utils import bullet_list
-    from fontbakery.constants import GF_latin_core
+    from fontbakery.constants import glyphsets
+    import unicodedata2
 
-    font_codepoints = set()
-    for table in ttFont['cmap'].tables:
-        if (table.platformID == PlatformID.WINDOWS and
-            table.platEncID == WindowsEncodingID.UNICODE_BMP):
-            font_codepoints.update(table.cmap.keys())
-
-    required_codepoints = set(GF_latin_core.keys())
+    required_codepoints = set(glyphsets["latin"])
     diff = required_codepoints - font_codepoints
     if bool(diff):
-        missing = ['0x%04X (%s)' % (c, GF_latin_core[c][1]) for c in sorted(diff)]
+        missing = ['0x%04X (%s)' % (c, unicodedata2.name(c)) for c in sorted(diff)]
         yield FAIL,\
               Message("missing-codepoints",
                       f"Missing required codepoints:\n"
                       f"{bullet_list(config, missing)}")
     else:
+        yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/metadata/unsupported_subsets',
+    rationale = """
+        This check ensures that the subsets specified on a METADATA.pb file are actually supported (even if only partially) by the font files.
+
+        Subsets for which none of the codepoints are supported will cause the check to FAIL.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3533',
+    severity = 10, # max severity because this blocks font pushes to production.
+)
+def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont, font_codepoints):
+    """Check for METADATA subsets with zero support."""
+    from fontbakery.constants import glyphsets
+    passed = True
+    for subset in family_metadata.subsets:
+        if subset not in glyphsets.keys():
+            # FIXME: add support for all glyphsets
+            yield INFO, (f"Font Bakery still needs to become aware of"
+                         f" the list of glyphs in the '{subset}' glyph set.")
+            continue
+
+        subset_codepoints = set(glyphsets[subset])
+        if len(subset_codepoints.intersection(font_codepoints)) == 0:
+            passed = False
+            yield FAIL,\
+                  Message("unsupported-subset",
+                          f"Please remove '{subset}' from METADATA.pb since none"
+                          f" of its glyphs are supported by this font file.")
+    if passed:
         yield PASS, "OK"
 
 

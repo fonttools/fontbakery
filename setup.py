@@ -80,6 +80,7 @@ setup(
         'stringbrewer',
         'toml',
         'ufolint',
+        'unicodedata2',
         'vharfbuzz',
     ],
     extras_require={
