@@ -88,13 +88,18 @@ def create_report_item(vharfbuzz,
         message += f"\n\n<pre>Got     : {serialized_buf1}</pre>\n\n"
     if buf2:
         if isinstance(buf2, FakeBuffer):
-            serialized_buf2 = vharfbuzz.serialize_buf(buf2)
+            try:
+              serialized_buf2 = vharfbuzz.serialize_buf(buf2)
+            except Exception:
+              # This may fail if the glyphs are not found in the font
+              serialized_buf2 = None
+              buf2 = None  # Don't try to draw it either
         else:
             serialized_buf2 = buf2
         message += f"\n\n<pre>Expected: {serialized_buf2}</pre>\n\n"
 
         # Report a diff table
-        if serialized_buf1:
+        if serialized_buf1 and serialized_buf2:
             diff = list(ndiff([serialized_buf1], [serialized_buf2]))
             if diff and diff[-1][0] == "?":
                 message += f"\n\n<pre>         {diff[-1][1:]}</pre>\n\n"
