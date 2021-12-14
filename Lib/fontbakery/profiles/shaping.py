@@ -82,10 +82,6 @@ def create_report_item(vharfbuzz,
         message += f"\n\n<pre>{extra_data}</pre>\n\n"
 
     serialized_buf1 = None
-    if buf1:
-        serialized_buf1 = vharfbuzz.serialize_buf(buf1,
-                                                  glyphsonly=(buf2 and isinstance(buf2, str)))
-        message += f"\n\n<pre>Got     : {serialized_buf1}</pre>\n\n"
     if buf2:
         if isinstance(buf2, FakeBuffer):
             try:
@@ -98,11 +94,16 @@ def create_report_item(vharfbuzz,
             serialized_buf2 = buf2
         message += f"\n\n<pre>Expected: {serialized_buf2}</pre>\n\n"
 
-        # Report a diff table
-        if serialized_buf1 and serialized_buf2:
-            diff = list(ndiff([serialized_buf1], [serialized_buf2]))
-            if diff and diff[-1][0] == "?":
-                message += f"\n\n<pre>         {diff[-1][1:]}</pre>\n\n"
+    if buf1:
+        serialized_buf1 = vharfbuzz.serialize_buf(buf1,
+                                                  glyphsonly=(buf2 and isinstance(buf2, str)))
+        message += f"\n\n<pre>Got     : {serialized_buf1}</pre>\n\n"
+
+    # Report a diff table
+    if serialized_buf1 and serialized_buf2:
+        diff = list(ndiff([serialized_buf1], [serialized_buf2]))
+        if diff and diff[-1][0] == "?":
+            message += f"\n\n<pre>         {diff[-1][1:]}</pre>\n\n"
 
     # Now draw it as SVG
     if buf1:
