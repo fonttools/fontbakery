@@ -991,10 +991,10 @@ def font_codepoints(ttFont):
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check `Google Fonts Latin Core` glyph coverage."""
     from fontbakery.utils import bullet_list
-    from fontbakery.constants import glyphsets
+    from glyphsets.codepoints import CodepointsInSubset
     import unicodedata2
 
-    required_codepoints = set(glyphsets["latin"])
+    required_codepoints = CodepointsInSubset("latin")
     diff = required_codepoints - font_codepoints
     if bool(diff):
         missing = ['0x%04X (%s)' % (c, unicodedata2.name(c)) for c in sorted(diff)]
@@ -1018,16 +1018,22 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
 )
 def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont, font_codepoints):
     """Check for METADATA subsets with zero support."""
-    from fontbakery.constants import glyphsets
+    from glyphsets.codepoints import CodepointsInSubset
+    from glyphsets.subsets import SUBSETS
+
     passed = True
     for subset in family_metadata.subsets:
-        if subset not in glyphsets.keys():
-            # FIXME: add support for all glyphsets
-            yield INFO, (f"Font Bakery still needs to become aware of"
-                         f" the list of glyphs in the '{subset}' glyph set.")
+        if subset == "menu":
             continue
 
-        subset_codepoints = set(glyphsets[subset])
+        if subset not in SUBSETS:
+            yield FAIL,\
+                  Message("unknown-subset",
+                          f"Please remove the unrecognized subset '{subset}'"
+                          f" from the METADATA.pb file.")
+            continue
+
+        subset_codepoints = CodepointsInSubset(subset, unique_glyphs=True)
         if len(subset_codepoints.intersection(font_codepoints)) == 0:
             passed = False
             yield FAIL,\
