@@ -4081,3 +4081,21 @@ def test_check_description_urls():
     good_desc = check["description"].replace(">https://", ">")
     assert_PASS(check(font, {"description": good_desc}))
 
+
+def test_check_metadata_unsupported_subsets():
+    """Check for METADATA subsets with zero support."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/unsupported_subsets")
+
+    font = TEST_FILE("librecaslontext/LibreCaslonText[wght].ttf")
+    assert_PASS(check(font))
+
+    md = check["family_metadata"]
+    md.subsets.extend(["foo"])
+    assert_results_contain(check(font, {"family_metadata": md}),
+                           WARN, 'unknown-subset')
+
+    del md.subsets[:]
+    md.subsets.extend(["cyrillic"])
+    assert_results_contain(check(font, {"family_metadata": md}),
+                           WARN, 'unsupported-subset')
