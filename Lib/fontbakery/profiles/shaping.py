@@ -82,6 +82,7 @@ def create_report_item(vharfbuzz,
         message += f"\n\n<pre>{extra_data}</pre>\n\n"
 
     serialized_buf1 = None
+    serialized_buf2 = None
     if buf2:
         if isinstance(buf2, FakeBuffer):
             try:
