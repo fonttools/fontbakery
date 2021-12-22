@@ -764,21 +764,40 @@ def test_check_unreachable_glyphs():
     assert_PASS(check(font))
 
     font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    message = assert_results_contain(check(font),
-                                     WARN, 'unreachable-glyphs')
-    for glyph in ['caronvertical', 'Gtilde',
-                  'acute.cap', 'breve.cap', 'bullet.cap', 'caron.cap',
-                  'circumflex.cap', 'dotaccent.cap', 'dieresis.cap',
-                  'grave.cap', 'hungarumlaut.cap', 'macron.cap',
-                  'periodcentered.cap', 'ring.cap', 'tilde.cap',
-                  'eight.dnom', 'four.dnom', 'three.dnom', 'two.dnom',
-                  'i.dot',
-                  'five.numr', 'seven.numr',
-                  'breve.r',
-                  'breve.rcap',
-                  'ampersand.sc',
-                  'I.uc']:
+    message = assert_results_contain(check(font), WARN, "unreachable-glyphs")
+    for glyph in [
+        "Gtilde",
+        "eight.dnom",
+        "four.dnom",
+        "three.dnom",
+        "two.dnom",
+        "i.dot",
+        "five.numr",
+        "seven.numr",
+        "bullet.cap",
+        "periodcentered.cap",
+        "ampersand.sc",
+        "I.uc",
+    ]:
         assert glyph in message
+
+    for glyph in [
+        "caronvertical",
+        "acute.cap",
+        "breve.cap",
+        "caron.cap",
+        "circumflex.cap",
+        "dotaccent.cap",
+        "dieresis.cap",
+        "grave.cap",
+        "hungarumlaut.cap",
+        "macron.cap",
+        "ring.cap",
+        "tilde.cap",
+        "breve.r",
+        "breve.rcap",
+    ]:
+        assert glyph not in message
 
 
 def test_check_contour_count(montserrat_ttFonts):
