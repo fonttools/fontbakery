@@ -12,6 +12,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/cjk_chws_feature]:** Ensure CJK fonts contain chws/vchw features. (issue #3363)
 
 ### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/unreachable_glyphs]:** Glyphs which are components of other glyphs are no longer flagged as unreachable. (issue #3523)
+
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/contour_count]:** Four fifths glyph can also be drawn with only 3 contours if the four is open-ended. (issue #3511)
 
