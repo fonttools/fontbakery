@@ -1079,6 +1079,13 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
         for lookup in lookups:
             remove_lookup_outputs(all_glyphs, lookup)
 
+    # Remove components used in TrueType table
+    if "glyf" in ttFont:
+        for glyph_name in ttFont["glyf"].keys():
+            base_glyph = ttFont["glyf"][glyph_name]
+            if base_glyph.isComposite():
+                all_glyphs -= set(base_glyph.getComponentNames(ttFont["glyf"]))
+
     if all_glyphs:
         from fontbakery.utils import bullet_list
         yield WARN,\
