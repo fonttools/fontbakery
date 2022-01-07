@@ -7,7 +7,8 @@ defcon==0.9.0
 dehinter==4.0.0
 fontTools[ufo,lxml,unicode]==4.28.1
 font-v==2.0.0
-lxml==4.6.4
+glyphsets==0.1.0
+lxml==4.6.5
 opentype-sanitizer==8.1.4.post3
 opentypespec==1.8.4
 pip-api==0.0.23
@@ -18,5 +19,6 @@ rich==10.14.0
 stringbrewer==0.0.1
 toml==0.10.2
 ufolint==1.2.0
+unicodedata2==13.0.0.post2
 vharfbuzz==0.1.1
 -e .

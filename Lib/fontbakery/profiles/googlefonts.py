@@ -75,7 +75,8 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/escaped_strings',
     'com.google.fonts/check/metadata/designer_profiles',
     'com.google.fonts/check/metadata/family_directory_name',
-    'com.google.fonts/check/metadata/can_render_samples'
+    'com.google.fonts/check/metadata/can_render_samples',
+    'com.google.fonts/check/metadata/unsupported_subsets'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -969,33 +970,77 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
         yield PASS, f"OS/2 VendorID '{vid}' looks good!"
 
 
+@condition
+def font_codepoints(ttFont):
+    codepoints = set()
+    for table in ttFont['cmap'].tables:
+        if (table.platformID == PlatformID.WINDOWS and
+            table.platEncID == WindowsEncodingID.UNICODE_BMP):
+            codepoints.update(table.cmap.keys())
+    return codepoints
+
+
 @check(
     id = 'com.google.fonts/check/glyph_coverage',
     rationale = """
         Google Fonts expects that fonts in its collection support at least the minimal set of characters defined in the `GF-latin-core` glyph-set.
     """,
+    conditions = ["font_codepoints"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2488'
 )
-def com_google_fonts_check_glyph_coverage(ttFont, config):
+def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check `Google Fonts Latin Core` glyph coverage."""
     from fontbakery.utils import bullet_list
-    from fontbakery.constants import GF_latin_core
+    from glyphsets.codepoints import CodepointsInSubset
+    import unicodedata2
 
-    font_codepoints = set()
-    for table in ttFont['cmap'].tables:
-        if (table.platformID == PlatformID.WINDOWS and
-            table.platEncID == WindowsEncodingID.UNICODE_BMP):
-            font_codepoints.update(table.cmap.keys())
-
-    required_codepoints = set(GF_latin_core.keys())
+    required_codepoints = CodepointsInSubset("latin")
     diff = required_codepoints - font_codepoints
     if bool(diff):
-        missing = ['0x%04X (%s)' % (c, GF_latin_core[c][1]) for c in sorted(diff)]
+        missing = ['0x%04X (%s)' % (c, unicodedata2.name(c)) for c in sorted(diff)]
         yield FAIL,\
               Message("missing-codepoints",
                       f"Missing required codepoints:\n"
                       f"{bullet_list(config, missing)}")
     else:
+        yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/metadata/unsupported_subsets',
+    rationale = """
+        This check ensures that the subsets specified on a METADATA.pb file are actually supported (even if only partially) by the font files.
+
+        Subsets for which none of the codepoints are supported will cause the check to FAIL.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3533',
+    severity = 10, # max severity because this blocks font pushes to production.
+)
+def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont, font_codepoints):
+    """Check for METADATA subsets with zero support."""
+    from glyphsets.codepoints import CodepointsInSubset
+    from glyphsets.subsets import SUBSETS
+
+    passed = True
+    for subset in family_metadata.subsets:
+        if subset == "menu":
+            continue
+
+        if subset not in SUBSETS:
+            yield FAIL,\
+                  Message("unknown-subset",
+                          f"Please remove the unrecognized subset '{subset}'"
+                          f" from the METADATA.pb file.")
+            continue
+
+        subset_codepoints = CodepointsInSubset(subset, unique_glyphs=True)
+        if len(subset_codepoints.intersection(font_codepoints)) == 0:
+            passed = False
+            yield FAIL,\
+                  Message("unsupported-subset",
+                          f"Please remove '{subset}' from METADATA.pb since none"
+                          f" of its glyphs are supported by this font file.")
+    if passed:
         yield PASS, "OK"
 
 
@@ -2704,16 +2749,16 @@ def com_google_fonts_check_metadata_os2_weightclass(ttFont,
     }
     if is_variable_font(ttFont):
         axes = {f.axisTag: f for f in ttFont["fvar"].axes}
-        # if there isn't a wght axis, use the OS/2.usWeightClass
         if 'wght' not in axes:
-            font_weight = f['OS/2'].usWeightClass
-        # if the wght range includes 400, use 400
+            # if there isn't a wght axis, use the OS/2.usWeightClass
+            font_weight = ttFont['OS/2'].usWeightClass
         else:
+            # if the wght range includes 400, use 400
             wght_includes_400 = axes['wght'].minValue <= 400 and axes['wght'].maxValue >= 400
             if wght_includes_400:
                 font_weight = 400
-            # if 400 isn't in the wght axis range, use the value closest to 400
-            elif not wght_includes_400:
+            else:
+                # if 400 isn't in the wght axis range, use the value closest to 400
                 if abs(axes['wght'].minValue - 400) < abs(axes['wght'].maxValue - 400):
                     font_weight = axes['wght'].minValue
                 else:

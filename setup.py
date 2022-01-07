@@ -67,6 +67,7 @@ setup(
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
         'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
         'font-v',
+        'glyphsets',
         'lxml',
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
                                       # (see https://github.com/khaledhosny/ots/pull/182)
@@ -80,6 +81,7 @@ setup(
         'stringbrewer',
         'toml',
         'ufolint',
+        'unicodedata2',
         'vharfbuzz',
     ],
     extras_require={
