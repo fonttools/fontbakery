@@ -1,7 +1,5 @@
-import os
-
-from fontTools.ttLib import TTFont
-from fontbakery.checkrunner import (PASS, WARN, FAIL)
+from fontbakery.message import Message
+from fontbakery.checkrunner import FAIL
 from fontbakery.codetesting import (assert_PASS,
                                     assert_results_contain,
                                     CheckTester,
@@ -15,8 +13,8 @@ def test_check_name_no_mac_entries():
 
     # try fonts with Mac names
     font = TEST_FILE('abeezee/ABeeZee-Italic.ttf')
-    assert_results_contain(check(font),
-                           WARN, 'Please remove mac name table ID')
+    message = assert_results_contain(check(font),
+                           FAIL, 'Mac Names')
 
     # try fonts without Mac names
     font = TEST_FILE('source-sans-pro/OTF/SourceSansPro-Regular.otf')

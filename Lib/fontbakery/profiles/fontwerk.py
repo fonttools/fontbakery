@@ -4,7 +4,7 @@ Checks for Fontwerk.
 
 from fontbakery.callable import check
 from fontbakery.section import Section
-from fontbakery.status import PASS, FAIL, WARN
+from fontbakery.status import PASS, FAIL
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
@@ -44,7 +44,7 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
 
     for rec in name_table.names:
         if rec.platformID == 1:
-            yield WARN, f'Please remove mac name table ID {rec.nameID}'
+            yield FAIL, Message("Mac Names", f'Please remove name ID {rec.nameID}')
             passed = False
 
     if passed:
@@ -52,6 +52,5 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
 
 
 profile.auto_register(globals())
-
 
 profile.test_expected_checks(FONTWERK_PROFILE_CHECKS, exclusive=True)
