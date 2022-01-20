@@ -2,7 +2,13 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.8.6 (2022-Feb-??)
+### New Profile
+  - Olli Meier (@moontypespace) contributed a new profile for Fontwerk, https://fontwerk.com/
+
 ### New Checks
+#### Added to the Fontwerk Profile
+  - **[com.fontwerk/check/no_mac_entries]:** Check if font has Mac name table entries (platform=1) (PR #3545)
+
 #### Added to the Universal Profile
   - **[com.google.fonts/check/designspace_has_sources]:** Check that all sources in a designspace can be loaded successfully. (PR #3168)
   - **[com.google.fonts/check/designspace_has_default_master]:** Check that a default master is defined. (PR #3168)
