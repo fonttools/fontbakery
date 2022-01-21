@@ -29,9 +29,16 @@ DEPRECATED_TAGS = ["hngl", "opbd", "size"]
 )
 def com_google_fonts_check_layout_valid_feature_tags(ttFont):
     """Does the font have any invalid feature tags?"""
+
+    # We'll accept any of the OpenType specified feature tags:
+    acceptable_tags = list(FEATURE_TAGS.keys())
+
+    # And whoever is using these clearly know what they're doing:
+    acceptable_tags += ['HARF', 'BUZZ']
+
     bad_tags = set()
     for tag in feature_tags(ttFont):
-        if tag not in FEATURE_TAGS.keys():
+        if tag not in acceptable_tags:
             bad_tags.add(tag)
     if bad_tags:
         yield FAIL, \

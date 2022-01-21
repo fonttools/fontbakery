@@ -17,7 +17,8 @@ from fontbakery.constants import (NameID,
                                   WindowsEncodingID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
-                                  MacintoshLanguageID)
+                                  MacintoshLanguageID,
+                                  OFL_BODY_TEXT)
 from fontbakery.profiles import googlefonts as googlefonts_profile
 import math
 
@@ -477,7 +478,19 @@ def test_check_name_rfn():
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))
 
-    ttFont["name"].setName("Bla Reserved Font Name", 5, 3, 1, 0x409)
+    # The OFL text contains the term 'Reserved Font Name',
+    # which should to cause a FAIL:
+    ttFont["name"].setName(OFL_BODY_TEXT,
+                           NameID.LICENSE_DESCRIPTION,
+                           PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP,
+                           WindowsLanguageID.ENGLISH_USA)
+    assert_PASS(check(ttFont),
+                "with the OFL full text...")
+
+    ttFont["name"].setName("Bla Reserved Font Name",
+                           NameID.VERSION_STRING,
+                           PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP,
+                           WindowsLanguageID.ENGLISH_USA)
     assert_results_contain(check(ttFont),
                            FAIL, 'rfn',
                            'with "Reserved Font Name" on a name table entry...')
