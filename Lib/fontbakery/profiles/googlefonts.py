@@ -4323,6 +4323,12 @@ def com_google_fonts_check_name_rfn(ttFont):
     failed = False
     for entry in ttFont["name"].names:
         string = entry.toUnicode()
+        if "This license is copied below, and is also available with a FAQ" in string:
+            # This is the OFL text in a name table entry.
+            # It contains the term 'Reserved Font Name' in one of its clauses,
+            # so we will ignore this here.
+            continue
+
         if "reserved font name" in string.lower():
             yield FAIL,\
                   Message("rfn",

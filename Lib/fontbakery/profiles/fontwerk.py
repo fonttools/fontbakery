@@ -1,5 +1,5 @@
 """
-Checks for Fontwerk.
+Checks for Fontwerk <https://fontwerk.com/>
 """
 
 from fontbakery.callable import check
@@ -24,27 +24,30 @@ FONTWERK_PROFILE_CHECKS = \
         Mac name table entries are not needed anymore.
         For example, even Apple stopped producing name tables with platform 1.
         Please see: /System/Library/Fonts/SFCompact.ttf
+
+@check(
+    id = 'com.fontwerk/check/no_mac_entries',
+    rationale = """
+        Mac name table entries are not needed anymore.
+        Even Apple stopped producing name tables with platform 1.
+        Please see for example the following system font:
+        /System/Library/Fonts/SFCompact.ttf
+        
+        Also, Dave Opstad, who developed Apple's TrueType specifications, told Olli Meier a couple years ago (as of January/2022) that these entries are outdated and should not be produced anymore.
+
     """,
     proposal = 'https://github.com/googlefonts/gftools/issues/469'
 )
 def com_fontwerk_check_name_no_mac_entries(ttFont):
-    """
-    Check if font has Mac name table entries (platform=1)
-    Report as warning, because Mac name table entries are not needed anymore.
+    """Check if font has Mac name table entries (platform=1)"""
 
-    Further reading:
-    Proof: Even Apple stopped producing name tables with platform 1.
-    Please see for example the following system font: /System/Library/Fonts/SFCompact.ttf
-    Also, Dave Opstad, who developed Apple's TrueType specifications, told me (Olli Meier)
-    a couple years ago that these entries are outdated and should not be produced anymore.
-    """
-
-    name_table = ttFont["name"]
     passed = True
-
-    for rec in name_table.names:
+    for rec in ttFont["name"].names:
         if rec.platformID == 1:
-            yield FAIL, Message("Mac Names", f'Please remove name ID {rec.nameID}')
+            yield FAIL, \
+                  Message("mac-names",
+                          f'Please remove name ID {rec.nameID}')
+
             passed = False
 
     if passed:
@@ -52,5 +55,4 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
 
 
 profile.auto_register(globals())
-
 profile.test_expected_checks(FONTWERK_PROFILE_CHECKS, exclusive=True)
