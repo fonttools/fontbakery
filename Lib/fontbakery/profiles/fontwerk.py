@@ -17,13 +17,6 @@ FONTWERK_PROFILE_CHECKS = \
         'com.fontwerk/check/no_mac_entries'
     ]
 
-@check(
-    id = 'com.fontwerk/check/no_mac_entries',
-    rationale = """
-        Check if font has Mac name table entries (platform=1).
-        Mac name table entries are not needed anymore.
-        For example, even Apple stopped producing name tables with platform 1.
-        Please see: /System/Library/Fonts/SFCompact.ttf
 
 @check(
     id = 'com.fontwerk/check/no_mac_entries',
@@ -32,9 +25,8 @@ FONTWERK_PROFILE_CHECKS = \
         Even Apple stopped producing name tables with platform 1.
         Please see for example the following system font:
         /System/Library/Fonts/SFCompact.ttf
-        
-        Also, Dave Opstad, who developed Apple's TrueType specifications, told Olli Meier a couple years ago (as of January/2022) that these entries are outdated and should not be produced anymore.
 
+        Also, Dave Opstad, who developed Apple's TrueType specifications, told Olli Meier a couple years ago (as of January/2022) that these entries are outdated and should not be produced anymore.
     """,
     proposal = 'https://github.com/googlefonts/gftools/issues/469'
 )
@@ -47,7 +39,6 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
             yield FAIL, \
                   Message("mac-names",
                           f'Please remove name ID {rec.nameID}')
-
             passed = False
 
     if passed:
