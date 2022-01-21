@@ -164,7 +164,7 @@ def html5_document(body_elements) -> str:
             th,
             td {
                 border: 1px solid #ddd;
-                padding: 0.5em
+                padding: 0.5em;
             }
 
             tr:nth-child(even) {
