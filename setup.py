@@ -62,7 +62,8 @@ setup(
         'beautifulsoup4',
         'beziers',
         'cmarkgfm',
-        'collidoscope',
+        'collidoscope==0.3.0', # v0.4.0 bug fails to detect an ïï collision on Nunito Black.
+                               # (see https://github.com/googlefonts/fontbakery/issues/3554)
         'defcon',
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
         'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
