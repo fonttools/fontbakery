@@ -371,7 +371,12 @@ def setup_glyph_collides(ttFont, configuration):
     filename = Path(ttFont.reader.file.name)
     collidoscope_configuration = configuration.get("collidoscope")
     if not collidoscope_configuration:
-        return {}
+        return {
+            "bases": True,
+            "marks": True,
+            "faraway": True,
+            "adjacent_clusters": True,
+        }
     col = Collidoscope(filename,
                        collidoscope_configuration,
                        direction=configuration.get("direction", "LTR"))

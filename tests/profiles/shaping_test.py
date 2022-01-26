@@ -80,6 +80,7 @@ def test_check_shaping_collides():
 
     shaping_test = {
         "configuration": {"collidoscope": {"area": 0,
+                                           "bases": True,
                                            "marks": True}},
         "tests": [{"input": "ïï"}],
     }
