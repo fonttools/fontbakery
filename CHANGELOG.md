@@ -3,7 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.8.6 (2022-Feb-??)
 ### Noteworthy code-changes
-  - Freeze `collidoscope` dependency to version 0.3.0 because v0.4.0 has a bug that fails to detect an `ïï` collision on Nunito Black. (issue #3554)
+  - We now ensure that version 0.4.0 of our `collidoscope` dependency is not used because it had a bug that failed to detect an `ïï` collision on Nunito Black. (issues #3554)
 
 ### New Profile
   - Olli Meier (@moontypespace) contributed a new profile for Fontwerk, https://fontwerk.com/

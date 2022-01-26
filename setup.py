@@ -62,7 +62,8 @@ setup(
         'beautifulsoup4',
         'beziers',
         'cmarkgfm',
-        'collidoscope==0.3.0', # v0.4.0 bug fails to detect an ïï collision on Nunito Black.
+        'collidoscope>=0.4.1', # 0.4.0 had a bug that failed to detect
+                               # an ïï collision on Nunito Black.
                                # (see https://github.com/googlefonts/fontbakery/issues/3554)
         'defcon',
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
