@@ -23,6 +23,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/name/rfn]:** If the OFL text is included in a name table entry, the check should not FAIL, as the full license text contains the term 'Reserved Font Name', which in this case is OK. (issue #3542)
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Allow 'HARF' and 'BUZZ' tags. (issue #3368)
   - **[com.google.fonts/check/glyph_coverage]:** Fix ERROR. (issue #3551)
+  - **[com.google.fonts/check/repo/sample_image]:** Declare conditions so that font repos lacking a README will skip this check. (issue #3559)
 
 
 ## 0.8.5 (2022-Jan-13)
