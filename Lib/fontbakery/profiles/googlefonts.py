@@ -1018,6 +1018,7 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
 
         Subsets for which none of the codepoints are supported will cause the check to FAIL.
     """,
+    conditions = ["family_metadata"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3533',
     severity = 10, # max severity because this blocks font pushes to production.
 )
