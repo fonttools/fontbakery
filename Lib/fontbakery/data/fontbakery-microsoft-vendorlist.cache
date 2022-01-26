@@ -72,11 +72,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/61a9782bb4b1f24103e97f84b75f305b060563f6/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/2216f90c95de7451f4112fb802ae6fb0283ea466/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="12/6/2021" />
+<meta name="ms.date" content="01/20/2022" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -87,15 +87,15 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2021-12-06 08:08 PM" />
-<meta name="word_count" content="3866" />
+<meta name="updated_at" content="2022-01-21 01:55 AM" />
+<meta name="word_count" content="3909" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/24603c6c.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/5a5ec5b2.site-ltr.css ">
 
 	
 
@@ -143,7 +143,7 @@
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/5cce29c0.deprecation.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b79fc645.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/19a00147.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -348,7 +348,7 @@ More info					</a>
 													<li>
 Article													</li>
 													<li>
-														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2021-12-06T20:08:00Z" data-article-date-source="git">12/06/2021</time>
+														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-01-21T01:55:00Z" data-article-date-source="git">01/21/2022</time>
 													</li>
 															<li class="readingTime">19 minutes to read</li>
 														<li class="contributors-holder">
@@ -509,6 +509,10 @@ Thank you.    </p>
 <td>Patricia Lillie</td>
 </tr>
 <tr>
+<td>0909</td>
+<td><a href="https://oladino.com/" data-linktype="external">Oladino</a></td>
+</tr>
+<tr>
 <td>1206</td>
 <td><a href="https://www.yayoyuyue.com/" data-linktype="external">yayoyuyue</a></td>
 </tr>
@@ -567,6 +571,10 @@ Thank you.    </p>
 <tr>
 <td>3tp</td>
 <td><a href="https://3type.cn" data-linktype="external">3type</a></td>
+</tr>
+<tr>
+<td>4A</td>
+<td><a href="https://4ait.ru/" data-linktype="external">4A LLC</a></td>
 </tr>
 <tr>
 <td>4FEB</td>
@@ -940,6 +948,10 @@ Thank you.    </p>
 <td><a href="https://twitter.com/artakana" data-linktype="external">aratakana</a></td>
 </tr>
 <tr>
+<td>ATS</td>
+<td><a href="https://atstype.xyz/" data-linktype="external">Average Type Service</a></td>
+</tr>
+<tr>
 <td>ATSM</td>
 <td><a href="https://aksharatypestudio.in" data-linktype="external">Akshara Type Studio</a></td>
 </tr>
@@ -983,7 +995,6 @@ Thank you.    </p>
 <td>AZLS</td>
 <td><a href="http://www.azalea.com/" data-linktype="external">Azalea Software, Inc.</a></td>
 </tr>
-		
 </table>
 <h2 id="b">B</h2>
 <table>
@@ -1054,6 +1065,10 @@ Thank you.    </p>
 <tr>
 <td>BD71</td>
 <td>Bangladesh1971</td>
+</tr>
+<tr>
+<td>BDTD</td>
+<td><a href="https://www.typedifferent.com/" data-linktype="external">Typedifferent</a></td>
 </tr>
 <tr>
 <td>BDZ</td>
@@ -1268,6 +1283,10 @@ Thank you.    </p>
 <td><a href="http://www.bubulogix.fr" data-linktype="external">BUBULogix</a></td>
 </tr>
 <tr>
+<td>Buer</td>
+<td><a href="https://github.com/Buernia" data-linktype="external">Buernia</a></td>
+</tr>
+<tr>
 <td>BVH</td>
 <td><a href="http://bvhtype.com/" data-linktype="external">BVH Type Foundry</a></td>
 </tr>
@@ -1435,6 +1454,10 @@ Thank you.    </p>
 <td><a href="http://www.connare.com/" data-linktype="external">Connare.com</a></td>
 </tr>
 <tr>
+<td>CONT</td>
+<td><a href="http://www.contemporarytype.com/" data-linktype="external">Contemporary Type</a></td>
+</tr>
+<tr>
 <td>COOL</td>
 <td><a href="http://www.cool-fonts.com/" data-linktype="external">Cool Fonts</a></td>
 </tr>
@@ -1564,6 +1587,10 @@ Thank you.    </p>
 <tr>
 <td>DF</td>
 <td><a href="https://dyslexicfont.com/" data-linktype="external">Dyslexic Font</a></td>
+</tr>
+<tr>
+<td>DFHA</td>
+<td><a href="https://defharo.com/" data-linktype="external">deFharo</a></td>
 </tr>
 <tr>
 <td>DFS</td>
@@ -1727,6 +1754,10 @@ Thank you.    </p>
 <tr>
 <td>EAFN</td>
 <td><a href="https://eafonts.com/" data-linktype="external">EA FONTS</a></td>
+</tr>
+<tr>
+<td>EB</td>
+<td><a href="http://www.electrobibliotheque.org/" data-linktype="external">Électro-bibliothèque</a></td>
 </tr>
 <tr>
 <td>ECAL</td>
@@ -1902,6 +1933,10 @@ Thank you.    </p>
 <tr>
 <td>FeTy</td>
 <td><a href="http://www.felicianotypefoundry.com/" data-linktype="external">Feliciano Type</a></td>
+</tr>
+<tr>
+<td>FETZ</td>
+<td><a href="https://markusfetz.com/" data-linktype="external">Markus Fetz</a></td>
 </tr>
 <tr>
 <td>FFFF</td>
@@ -2319,6 +2354,10 @@ Thank you.    </p>
 <td><a href="https://www.grillitype.com/" data-linktype="external">Grilli Type</a></td>
 </tr>
 <tr>
+<td>GTff</td>
+<td><a href="http://gregthompson.typenetwork.com/" data-linktype="external">Greg Thompson</a></td>
+</tr>
+<tr>
 <td>GTL</td>
 <td><a href="https://gtl.world/" data-linktype="external">GTL Type Label</a></td>
 </tr>
@@ -2646,6 +2685,10 @@ Thank you.    </p>
 <tr>
 <td>J23</td>
 <td>June 23</td>
+</tr>
+<tr>
+<td>JASO</td>
+<td><a href="https://www.instagram.com/studio_jaso/" data-linktype="external">studioJASO</a></td>
 </tr>
 <tr>
 <td>JABM</td>
@@ -3494,6 +3537,10 @@ Thank you.    </p>
 <td>Monotype Imaging (replaced by MONO)</td>
 </tr>
 <tr>
+<td>MTCO</td>
+<td><a href="http://www.martype.co/" data-linktype="external">Martype Company</a></td>
+</tr>
+<tr>
 <td>MTDS</td>
 <td>Multitudes</td>
 </tr>
@@ -3638,6 +3685,10 @@ Thank you.    </p>
 <td><a href="https://github.com/NightFurySL2001" data-linktype="external">NFSL2001</a></td>
 </tr>
 <tr>
+<td>NG</td>
+<td><a href="https://nguyengobber.com/" data-linktype="external">Nguyen Gobber OG</a></td>
+</tr>
+<tr>
 <td>NGMK</td>
 <td>Kousuke Nagai</td>
 </tr>
@@ -3720,6 +3771,10 @@ Thank you.    </p>
 <tr>
 <td>NRON</td>
 <td>neurontype</td>
+</tr>
+<tr>
+<td>NUFO</td>
+<td>Nuform Type</td>
 </tr>
 <tr>
 <td>NVTF</td>
@@ -3819,6 +3874,10 @@ Thank you.    </p>
 <tr>
 <td>OST</td>
 <td><a href="http://www.orangeslicetype.nl" data-linktype="external">Orange Slice Type</a></td>
+</tr>
+<tr>
+<td>OTLR</td>
+<td><a href="https://otlab.ru/" data-linktype="external">OTLab Rus</a></td>
 </tr>
 <tr>
 <td>OTYP</td>
@@ -4367,6 +4426,10 @@ Thank you.    </p>
 <tr>
 <td>SIG</td>
 <td><a href="http://www.vletter.com" data-linktype="external">vLetter, Inc</a></td>
+</tr>
+<tr>
+<td>SIKI</td>
+<td>Sikifonts</td>
 </tr>
 <tr>
 <td>SIL</td>
@@ -5286,12 +5349,12 @@ Thank you.    </p>
 	</button>
 	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
 		<ul class="theme-selector has-padding-small">
-			<li class="theme is-block">
+			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="light">
 					<span class="theme-light has-margin-right-small">
 						<span
-							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							class="theme-selector-icon css-variable-support border display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -5310,12 +5373,12 @@ Thank you.    </p>
 Light					</span>
 				</button>
 			</li>
-			<li class="theme is-block">
+			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="dark">
 					<span class="theme-dark has-margin-right-small">
 						<span
-							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -5334,12 +5397,12 @@ Light					</span>
 Dark					</span>
 				</button>
 			</li>
-			<li class="theme is-block">
+			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="high-contrast">
 					<span class="theme-high-contrast has-margin-right-small">
 						<span
-							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -5360,7 +5423,8 @@ High contrast					</span>
 			</li>
 		</ul>
 	</div>
-</div>		</div>
+</div>
+		</div>
 	</div>
 	<ul class="links" data-bi-name="footerlinks">
 		<li class="manage-cookies-holder" hidden></li>
@@ -5430,12 +5494,12 @@ High contrast					</span>
 	</button>
 	<div class="dropdown-menu" id="theme-menu" role="menu">
 		<ul class="theme-selector has-padding-small">
-			<li class="theme is-block">
+			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="light">
 					<span class="theme-light has-margin-right-small">
 						<span
-							class="theme-selector-icon css-variable-support border is-inline-block has-body-background"
+							class="theme-selector-icon css-variable-support border display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -5454,12 +5518,12 @@ High contrast					</span>
 Light					</span>
 				</button>
 			</li>
-			<li class="theme is-block">
+			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="dark">
 					<span class="theme-dark has-margin-right-small">
 						<span
-							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -5478,12 +5542,12 @@ Light					</span>
 Dark					</span>
 				</button>
 			</li>
-			<li class="theme is-block">
+			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="high-contrast">
 					<span class="theme-high-contrast has-margin-right-small">
 						<span
-							class="border theme-selector-icon css-variable-support is-inline-block has-body-background"
+							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -5504,7 +5568,8 @@ High contrast					</span>
 			</li>
 		</ul>
 	</div>
-</div>		</div>
+</div>
+		</div>
 	</div>
 	<ul class="links" data-bi-name="footerlinks">
 		<li class="manage-cookies-holder" hidden></li>
