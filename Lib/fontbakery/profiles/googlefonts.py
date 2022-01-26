@@ -5818,6 +5818,8 @@ def com_google_fonts_check_render_own_name(ttFont):
     rationale = """
         In order to showcase what a font family looks like, the project's README.md file should ideally include a sample image and highlight it in the upper portion of the document, no more than 10 lines away from the top of the file.
     """,
+    conditions = ["readme_contents",
+                  "readme_directory"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2898',
 )
 def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, config):
