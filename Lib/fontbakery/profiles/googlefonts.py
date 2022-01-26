@@ -996,11 +996,16 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
 
     required_codepoints = CodepointsInSubset("latin")
     diff = required_codepoints - font_codepoints
-    if bool(diff):
-        missing = ['0x%04X (%s)' % (c, unicodedata2.name(c)) for c in sorted(diff)]
+    missing = []
+    for c in sorted(diff):
+        try:
+            missing.append('0x%04X (%s)\n' % (c, unicodedata2.name(chr(c))))
+        except ValueError:
+            pass
+    if missing:
         yield FAIL,\
               Message("missing-codepoints",
-                      f"Missing required codepoints:\n"
+                      f"Missing required codepoints:\n\n"
                       f"{bullet_list(config, missing)}")
     else:
         yield PASS, "OK"
