@@ -450,6 +450,7 @@ def camelcased_familyname_exception(familyname):
     '''
     for exception in [
         "3D", # seen in "Rock 3D"
+        "ABeeZee",
         "BenchNine",
         "BhuTuka", # seen in "BhuTuka Expanded One"
         "DotGothic", # seen in "DotGothic16"
