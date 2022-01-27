@@ -1,0 +1,7 @@
+@font-face {
+	font-family: "STIXTwoMath";
+	src: url("fonts/STIXTwoMath-Regular.ttf");
+}
+mrow {
+	font-family: STIXTwoMath;
+}

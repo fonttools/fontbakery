@@ -1,0 +1,17 @@
+.check {
+  border: 1px solid #aaa;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-bottom: 5px;
+}
+.check-id {
+  margin-bottom: 15px;
+}
+p,
+details {
+  font-size: 1.2em;
+}
