@@ -5104,7 +5104,7 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
         if effective_regions:
             kerning = all_kerning(ttFont)
             for left, right, v1, v2 in kerning:
-                if v1 and hasattr(v1, "XAdvDevice"):
+                if v1 and hasattr(v1, "XAdvDevice") and v1.XAdvDevice:
                     variation = [v1.XAdvDevice.StartSize, v1.XAdvDevice.EndSize]
                     regions = varstore.VarData[variation[0]].VarRegionIndex
                     if any(region in effective_regions for region in regions):
