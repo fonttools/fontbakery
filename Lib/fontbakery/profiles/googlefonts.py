@@ -5066,18 +5066,18 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
         return
 
     gvar = ttFont["gvar"]
-    bad_glyphs = []
+    bad_glyphs = set()
     for glyph, deltas in gvar.variations.items():
         for delta in deltas:
             if "GRAD" not in delta.axes:
                 continue
             if any(c is not None and c != (0, 0)
                    for c in delta.coordinates[-4:]):
-                bad_glyphs.append(glyph)
+                bad_glyphs.add(glyph)
 
     if bad_glyphs:
         bad_glyphs_list = pretty_print_list(config,
-                                            bad_glyphs)
+                                            list(bad_glyphs))
         yield FAIL,\
               Message("grad-causes-reflow",
                       f"The following glyphs have variation in horizontal"
