@@ -25,6 +25,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/glyph_coverage]:** Fix ERROR. (issue #3551)
   - **[com.google.fonts/check/repo/sample_image]:** Declare conditions so that font repos lacking a README.md file will skip this check. (issue #3559)
   - **[com.google.fonts/check/metadata/unsupported_subsets]:** Declare conditions so that font repos lacking a METADATA.pb file will skip this check. (issue #3564)
+  - **[com.google.fonts/check/varfont/grade_reflow]:** fix AttributeError: `'NoneType'` object has no attribute `'StartSize'` (issue #3561)
 
 
 ## 0.8.5 (2022-Jan-13)
