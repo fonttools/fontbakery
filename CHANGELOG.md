@@ -1,7 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.8.6 (2022-Feb-??)
+## 0.8.7 (2022-Feb-??)
+  - ...
+
+
+## 0.8.6 (2022-Jan-28)
 ### Noteworthy code-changes
   - We now ensure that version 0.4.0 of our `collidoscope` dependency is not used because it had a bug that failed to detect an `ïï` collision on Nunito Black. (issues #3556)
 
