@@ -2758,31 +2758,42 @@ def com_google_fonts_check_metadata_os2_weightclass(ttFont,
         if 'wght' not in axes:
             # if there isn't a wght axis, use the OS/2.usWeightClass
             font_weight = ttFont['OS/2'].usWeightClass
+            should_be = "the same"
         else:
             # if the wght range includes 400, use 400
             wght_includes_400 = axes['wght'].minValue <= 400 and axes['wght'].maxValue >= 400
             if wght_includes_400:
                 font_weight = 400
+                should_be = ("400 because it is a varfont which includes"
+                             " this coordinate in its 'wght' axis")
             else:
                 # if 400 isn't in the wght axis range, use the value closest to 400
                 if abs(axes['wght'].minValue - 400) < abs(axes['wght'].maxValue - 400):
                     font_weight = axes['wght'].minValue
                 else:
                     font_weight = axes['wght'].maxValue
+                should_be = (f"{font_weight} because it is the closest value to 400"
+                             f" on the 'wght' axis of this variable font")
     else:
         font_weight = ttFont["OS/2"].usWeightClass
+        if font_weight not in [250, 275]:
+            should_be = "the same"
+        else:
+            if font_weight == 250: expected_value = 100 # "Thin"
+            if font_weight == 275: expected_value = 200 # "ExtraLight"
+            should_be = (f'{expected_value}, corresponding to'
+                         f' CSS weight name "{CSS_WEIGHT_NAMES[expected_value]}"')
 
-    gf_weight = GF_API_WEIGHT_NAMES.get(font_weight,
-                                        "bad Google Fonts API weight value")
-    css_weight = CSS_WEIGHT_NAMES.get(font_metadata.weight,
-                                      "bad CSS weight value")
-    if gf_weight != css_weight:
+    gf_weight_name = GF_API_WEIGHT_NAMES.get(font_weight, "bad value")
+    css_weight_name = CSS_WEIGHT_NAMES.get(font_metadata.weight)
+
+    if gf_weight_name != css_weight_name:
         yield FAIL,\
               Message("mismatch",
-                      f'OS/2 usWeightClass'
-                      f' ({ttFont["OS/2"].usWeightClass}:"{gf_weight}")'
-                      f' does not match weight specified'
-                      f' at METADATA.pb ({font_metadata.weight}:"{css_weight}").')
+                      f'OS/2 table has usWeightClass={ttFont["OS/2"].usWeightClass},'
+                      f' meaning "{gf_weight_name}" on the Google Fonts API.\n\n'
+                      f'On METADATA.pb it should be {should_be},'
+                      f' but instead got {font_metadata.weight}.\n')
     else:
         yield PASS, ("OS/2 usWeightClass or wght axis value matches"
                      " weight specified at METADATA.pb")
