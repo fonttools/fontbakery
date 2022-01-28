@@ -94,11 +94,11 @@ def test_check_monospace():
     # restore good value:
     ttFont["post"].isFixedPitch = IsFixedWidth.NOT_MONOSPACED
 
-    # Now we mark it as monospaced on the OS/2 and it should also fail:
+    # Now we mark it as monospaced on the OS/2 table and it should also fail:
     original_proportion = ttFont["OS/2"].panose.bProportion
     ttFont["OS/2"].panose.bProportion = PANOSE_Proportion.MONOSPACED
     assert_results_contain(check(ttFont),
-                           FAIL, 'bad-panose-proportion',
+                           FAIL, 'bad-panose',
                            'with a non-monospaced font with bad'
                            ' OS/2.panose.bProportion value (MONOSPACED) ...')
 
@@ -159,7 +159,7 @@ def test_check_monospace():
         ttFont["OS/2"].panose.bProportion = bad_value
         # again, we search the expected FAIL because we may algo get an outliers WARN here:
         assert_results_contain(check(ttFont),
-                               FAIL, 'mono-bad-panose-proportion',
+                               FAIL, 'mono-bad-panose',
                                f'Test FAIL with a monospaced font with bad'
                                f' OS/2.panose.bProportion value ({bad_value}) ...')
 

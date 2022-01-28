@@ -19,6 +19,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/designspace_has_consistent_codepoints]:** Check that Unicode assignments are consistent between masters. (PR #3168)
 
 ### Changes to existing checks
+#### On the Opentype Profile
+  - **[com.google.fonts/check/monospace]:** Update PANOSE requirements for monospaced fonts based on comments by Thomas Phinney (@tphinney) (issue #2857)
+
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/name/rfn]:** If the OFL text is included in a name table entry, the check should not FAIL, as the full license text contains the term 'Reserved Font Name', which in this case is OK. (issue #3542)
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Allow 'HARF' and 'BUZZ' tags. (issue #3368)
