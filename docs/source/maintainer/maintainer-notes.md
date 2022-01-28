@@ -88,7 +88,8 @@ git tag -a v0.8.2 -m "Font Bakery version 0.8.2 (2021-Sep-01)"
 git push upstream --tags
 
 # create the package
-python setup.py bdist_wheel --universal
+pip install build
+python -m build
 
 # and finally upload the new package to PyPI
 pip install twine
