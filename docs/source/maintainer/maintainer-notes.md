@@ -68,14 +68,7 @@ git fetch upstream
 git rebase upstream/main
 
 # cleanup
-deactivate # just in case we may already in a "dirty" venv
-rm build/ -rf
 rm dist/ -rf
-rm venv/ -rf
-
-# create a fresh python virtual env
-virtualenv venv -ppython3
-. venv/bin/activate
 
 ## Optionally install tox so that we can also
 ## run our code tests locally
@@ -93,7 +86,7 @@ python -m build
 
 # and finally upload the new package to PyPI
 pip install twine
-twine upload dist/*
+python3 -m twine upload dist/*
 
 # Close the current milestone on the GitHub issue tracker
 # moving to a future milestone any of its issue that we've
