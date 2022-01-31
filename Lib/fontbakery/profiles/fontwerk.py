@@ -7,14 +7,27 @@ from fontbakery.section import Section
 from fontbakery.status import PASS, FAIL
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
-from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
+from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
 
-profile_imports = ('fontbakery.profiles.universal',)
+profile_imports = ('fontbakery.profiles.googlefonts',)
 profile = profile_factory(default_section=Section("Fontwerk"))
 
+# not sure how I can exclude tests I don't want to run.
+CHECKS_DONT_DO = [
+    'com.google.fonts/check/canonical_filename',
+    'com.google.fonts/check/vendor_id',
+    'com.google.fonts/check/family/italics_have_roman_counterparts',
+]
+
+
+OTHER_CHECKS = [x for x in GOOGLEFONTS_PROFILE_CHECKS
+                if x not in CHECKS_DONT_DO]
+
+
 FONTWERK_PROFILE_CHECKS = \
-    UNIVERSAL_PROFILE_CHECKS + [
-        'com.fontwerk/check/no_mac_entries'
+    OTHER_CHECKS + [
+        'com.fontwerk/check/no_mac_entries',
+        'com.fontwerk/check/vendor_id',
     ]
 
 
@@ -45,5 +58,23 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
         yield PASS, 'No Mac name table entries.'
 
 
+@check(
+    id = 'com.fontwerk/check/vendor_id',
+    rationale = """
+        Vendor ID must be WERK for Fontwerk fonts.
+    """,
+)
+def com_fontwerk_check_vendor_id(ttFont):
+    """Checking OS/2 achVendID."""
+
+    vendor_id = ttFont['OS/2'].achVendID
+    if vendor_id != 'WERK':
+        yield FAIL,\
+              Message("bad-vendor-id",
+                      f"OS/2 VendorID is '{vendor_id}', but should be 'WERK'.")
+    else:
+        yield PASS, f"OS/2 VendorID '{vendor_id}' is correct."
+
+
 profile.auto_register(globals())
-profile.test_expected_checks(FONTWERK_PROFILE_CHECKS, exclusive=True)
+profile.test_expected_checks(FONTWERK_PROFILE_CHECKS, exclusive=False)
