@@ -25,3 +25,4 @@ htmlcov
 _version.py
 venv
 docs/_build
+var
