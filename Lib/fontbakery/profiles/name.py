@@ -65,6 +65,46 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
                      " do not contain any copyright string.")
 
 
+def PANOSE_is_monospaced(panose):
+    # https://github.com/googlefonts/fontbakery/issues/2857#issue-608671015
+    from fontbakery.constants import (PANOSE_Family_Type,
+                                      PANOSE_Proportion,
+                                      PANOSE_Spacing)
+
+    if panose.bFamilyType == PANOSE_Family_Type.LATIN_TEXT:
+        return panose.bProportion == PANOSE_Proportion.MONOSPACED
+
+    if panose.bFamilyType in [PANOSE_Family_Type.LATIN_HAND_WRITTEN,
+                              PANOSE_Family_Type.LATIN_SYMBOL]:
+        return panose.bSpacing == PANOSE_Spacing.MONOSPACED
+
+    # otherwise
+    return False
+
+def PANOSE_expected(family_type):
+    # https://github.com/googlefonts/fontbakery/issues/2857#issue-608671015
+    from fontbakery.constants import (PANOSE_Family_Type,
+                                      PANOSE_Proportion,
+                                      PANOSE_Spacing)
+
+    if family_type == PANOSE_Family_Type.LATIN_TEXT:
+        return f"Please set PANOSE Proportion to {PANOSE_Proportion.MONOSPACED} (monospaced)"
+
+    if family_type in [PANOSE_Family_Type.LATIN_HAND_WRITTEN,
+                       PANOSE_Family_Type.LATIN_SYMBOL]:
+        return f"Please set PANOSE Spacing to {PANOSE_Spacing.MONOSPACED} (monospaced)"
+
+    if family_type == PANOSE_Family_Type.LATIN_SYMBOL:
+        return (f"PANOSE Family Type is set to 4 (latin symbol)."
+                f" Please set it instead to {PANOSE_Family_Type.LATIN_TEXT} (latin text),"
+                f" {PANOSE_Family_Type.LATIN_HAND_WRITTEN} (latin hand written)"
+                f" or {PANOSE_Family_Type.LATIN_SYMBOL} (latin symbol)")
+
+    # Otherwise:
+    # I can't even suggest what to do
+    # if it is that much broken!
+    return f"Note: Family Type is set to {family_type}, which does not seem right."
+
 @check(
     id = 'com.google.fonts/check/monospace',
     conditions = ['glyph_metrics_stats',
@@ -80,7 +120,11 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
         * hhea.advanceWidthMax must be correct, meaning no glyph's width value is greater.
           www.microsoft.com/typography/otspec/hhea.htm
 
-        * OS/2.panose.bProportion must be set to 9 (monospace). Spec says: "The PANOSE definition contains ten digits each of which currently describes up to sixteen variations. Windows uses bFamilyType, bSerifStyle and bProportion in the font mapper to determine family type. It also uses bProportion to determine if the font is monospaced."
+        * OS/2.panose.bProportion must be set to 9 (monospace) on latin text fonts.
+
+        * OS/2.panose.bSpacing must be set to 3 (monospace) on latin hand written or latin symbol fonts.
+
+        * Spec says: "The PANOSE definition contains ten digits each of which currently describes up to sixteen variations. Windows uses bFamilyType, bSerifStyle and bProportion in the font mapper to determine family type. It also uses bProportion to determine if the font is monospaced."
           www.microsoft.com/typography/otspec/os2.htm#pan
           monotypecom-test.monotype.de/services/pan2
 
@@ -137,15 +181,13 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
                           f" (meaning 'fixed width monospaced'),"
                           f" but got {ttFont['post'].isFixedPitch} instead.")
 
-        if ttFont['OS/2'].panose.bProportion != PANOSE_Proportion.MONOSPACED:
+        if not PANOSE_is_monospaced(ttFont['OS/2'].panose):
             failed = True
+            family_type = ttFont['OS/2'].panose.bFamilyType
             yield FAIL,\
-                  Message("mono-bad-panose-proportion",
-                          f"On monospaced fonts, the value of"
-                          f" OS/2.panose.bProportion"
-                          f" must be set to {PANOSE_Proportion.MONOSPACED}"
-                          f" (proportion: monospaced),"
-                          f" but got {ttFont['OS/2'].panose.bProportion} instead.")
+                  Message("mono-bad-panose",
+                          f"The PANOSE numbers are incorrect for a monospaced font. "
+                          f"{PANOSE_expected(family_type)}")
 
         num_glyphs = len(ttFont['glyf'].glyphs)
         unusually_spaced_glyphs = [
@@ -185,7 +227,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
         if ttFont['OS/2'].panose.bProportion == PANOSE_Proportion.MONOSPACED:
             failed = True
             yield FAIL,\
-                  Message("bad-panose-proportion",
+                  Message("bad-panose",
                           "On non-monospaced fonts,"
                           " the OS/2.panose.bProportion value can be set to"
                           " any value except 9 (proportion: monospaced)"

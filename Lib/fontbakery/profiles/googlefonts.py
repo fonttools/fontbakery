@@ -996,11 +996,16 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
 
     required_codepoints = CodepointsInSubset("latin")
     diff = required_codepoints - font_codepoints
-    if bool(diff):
-        missing = ['0x%04X (%s)' % (c, unicodedata2.name(c)) for c in sorted(diff)]
+    missing = []
+    for c in sorted(diff):
+        try:
+            missing.append('0x%04X (%s)\n' % (c, unicodedata2.name(chr(c))))
+        except ValueError:
+            pass
+    if missing:
         yield FAIL,\
               Message("missing-codepoints",
-                      f"Missing required codepoints:\n"
+                      f"Missing required codepoints:\n\n"
                       f"{bullet_list(config, missing)}")
     else:
         yield PASS, "OK"
@@ -1013,6 +1018,7 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
 
         Subsets for which none of the codepoints are supported will cause the check to FAIL.
     """,
+    conditions = ["family_metadata"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3533',
     severity = 10, # max severity because this blocks font pushes to production.
 )
@@ -2752,31 +2758,42 @@ def com_google_fonts_check_metadata_os2_weightclass(ttFont,
         if 'wght' not in axes:
             # if there isn't a wght axis, use the OS/2.usWeightClass
             font_weight = ttFont['OS/2'].usWeightClass
+            should_be = "the same"
         else:
             # if the wght range includes 400, use 400
             wght_includes_400 = axes['wght'].minValue <= 400 and axes['wght'].maxValue >= 400
             if wght_includes_400:
                 font_weight = 400
+                should_be = ("400 because it is a varfont which includes"
+                             " this coordinate in its 'wght' axis")
             else:
                 # if 400 isn't in the wght axis range, use the value closest to 400
                 if abs(axes['wght'].minValue - 400) < abs(axes['wght'].maxValue - 400):
                     font_weight = axes['wght'].minValue
                 else:
                     font_weight = axes['wght'].maxValue
+                should_be = (f"{font_weight} because it is the closest value to 400"
+                             f" on the 'wght' axis of this variable font")
     else:
         font_weight = ttFont["OS/2"].usWeightClass
+        if font_weight not in [250, 275]:
+            should_be = "the same"
+        else:
+            if font_weight == 250: expected_value = 100 # "Thin"
+            if font_weight == 275: expected_value = 200 # "ExtraLight"
+            should_be = (f'{expected_value}, corresponding to'
+                         f' CSS weight name "{CSS_WEIGHT_NAMES[expected_value]}"')
 
-    gf_weight = GF_API_WEIGHT_NAMES.get(font_weight,
-                                        "bad Google Fonts API weight value")
-    css_weight = CSS_WEIGHT_NAMES.get(font_metadata.weight,
-                                      "bad CSS weight value")
-    if gf_weight != css_weight:
+    gf_weight_name = GF_API_WEIGHT_NAMES.get(font_weight, "bad value")
+    css_weight_name = CSS_WEIGHT_NAMES.get(font_metadata.weight)
+
+    if gf_weight_name != css_weight_name:
         yield FAIL,\
               Message("mismatch",
-                      f'OS/2 usWeightClass'
-                      f' ({ttFont["OS/2"].usWeightClass}:"{gf_weight}")'
-                      f' does not match weight specified'
-                      f' at METADATA.pb ({font_metadata.weight}:"{css_weight}").')
+                      f'OS/2 table has usWeightClass={ttFont["OS/2"].usWeightClass},'
+                      f' meaning "{gf_weight_name}" on the Google Fonts API.\n\n'
+                      f'On METADATA.pb it should be {should_be},'
+                      f' but instead got {font_metadata.weight}.\n')
     else:
         yield PASS, ("OS/2 usWeightClass or wght axis value matches"
                      " weight specified at METADATA.pb")
@@ -5060,18 +5077,18 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
         return
 
     gvar = ttFont["gvar"]
-    bad_glyphs = []
+    bad_glyphs = set()
     for glyph, deltas in gvar.variations.items():
         for delta in deltas:
             if "GRAD" not in delta.axes:
                 continue
             if any(c is not None and c != (0, 0)
                    for c in delta.coordinates[-4:]):
-                bad_glyphs.append(glyph)
+                bad_glyphs.add(glyph)
 
     if bad_glyphs:
         bad_glyphs_list = pretty_print_list(config,
-                                            bad_glyphs)
+                                            list(bad_glyphs))
         yield FAIL,\
               Message("grad-causes-reflow",
                       f"The following glyphs have variation in horizontal"
@@ -5098,7 +5115,7 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
         if effective_regions:
             kerning = all_kerning(ttFont)
             for left, right, v1, v2 in kerning:
-                if v1 and hasattr(v1, "XAdvDevice"):
+                if v1 and hasattr(v1, "XAdvDevice") and v1.XAdvDevice:
                     variation = [v1.XAdvDevice.StartSize, v1.XAdvDevice.EndSize]
                     regions = varstore.VarData[variation[0]].VarRegionIndex
                     if any(region in effective_regions for region in regions):
@@ -5813,6 +5830,8 @@ def com_google_fonts_check_render_own_name(ttFont):
     rationale = """
         In order to showcase what a font family looks like, the project's README.md file should ideally include a sample image and highlight it in the upper portion of the document, no more than 10 lines away from the top of the file.
     """,
+    conditions = ["readme_contents",
+                  "readme_directory"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2898',
 )
 def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, config):

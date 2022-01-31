@@ -1,7 +1,14 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## 0.8.6 (2022-Feb-??)
+## 0.8.7 (2022-Feb-??)
+  - ...
+
+
+## 0.8.6 (2022-Jan-29)
+### Noteworthy code-changes
+  - We now ensure that version 0.4.0 of our `collidoscope` dependency is not used because it had a bug that failed to detect an `ïï` collision on Nunito Black. (issues #3556)
+
 ### New Profile
   - Olli Meier (@moontypespace) contributed a new profile for Fontwerk, https://fontwerk.com/
 
@@ -16,9 +23,18 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/designspace_has_consistent_codepoints]:** Check that Unicode assignments are consistent between masters. (PR #3168)
 
 ### Changes to existing checks
+#### On the Opentype Profile
+  - **[com.google.fonts/check/monospace]:** Update PANOSE requirements for monospaced fonts based on comments by Thomas Phinney (@tphinney) (issue #2857)
+
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/name/rfn]:** If the OFL text is included in a name table entry, the check should not FAIL, as the full license text contains the term 'Reserved Font Name', which in this case is OK. (issue #3542)
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Allow 'HARF' and 'BUZZ' tags. (issue #3368)
+  - **[com.google.fonts/check/glyph_coverage]:** Fix ERROR. (issue #3551)
+  - **[com.google.fonts/check/repo/sample_image]:** Declare conditions so that font repos lacking a README.md file will skip this check. (issue #3559)
+  - **[com.google.fonts/check/metadata/unsupported_subsets]:** Declare conditions so that font repos lacking a METADATA.pb file will skip this check. (issue #3564)
+  - **[com.google.fonts/check/varfont/grade_reflow]:** fix AttributeError: `'NoneType'` object has no attribute `'StartSize'` (issue #3566)
+  - **[com.google.fonts/check/varfont/grade_reflow]:** Cleanup log message output: use a set (instead of a list) in order to eliminate multiple reporting of the same glyphs (issue #3561)
+  - **[com.google.fonts/check/metadata/os2_weightclass]:** Improve wording of log messages to make the reasoning of expected values clearer to the users (issue #2935)
 
 
 ## 0.8.5 (2022-Jan-13)

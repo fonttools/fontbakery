@@ -1,24 +1,24 @@
 --index-url https://pypi.python.org/simple/
 beautifulsoup4==4.10.0
 beziers==0.4.0
-cmarkgfm==0.6.0
-collidoscope==0.3.0
-defcon==0.9.0
+cmarkgfm==0.7.0
+collidoscope==0.4.1
+defcon==0.10.0
 dehinter==4.0.0
-fontTools[ufo,lxml,unicode]==4.28.1
-font-v==2.0.0
-glyphsets==0.1.0
-lxml==4.6.5
+fontTools[ufo,lxml,unicode]==4.29.0
+font-v==2.1.0
+glyphsets==0.2.1
+lxml==4.7.1
 opentype-sanitizer==8.1.4.post3
 opentypespec==1.8.4
-pip-api==0.0.23
-protobuf==3.19.1
+pip-api==0.0.26
+protobuf==3.19.3
 PyYAML==6.0
-requests==2.26.0
-rich==10.14.0
+requests==2.27.1
+rich==11.0.0
 stringbrewer==0.0.1
 toml==0.10.2
 ufolint==1.2.0
-unicodedata2==13.0.0.post2
+unicodedata2==14.0.0
 vharfbuzz==0.1.1
 -e .

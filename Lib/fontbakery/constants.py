@@ -204,6 +204,14 @@ class MacStyle(enum.IntEnum):
     BOLD   = (1 << 0)
     ITALIC = (1 << 1)
 
+class PANOSE_Family_Type(enum.IntEnum):
+    ANY = 0
+    NO_FIT = 1
+    LATIN_TEXT = 2
+    LATIN_HAND_WRITTEN = 3
+    LATIN_DECORATIVE = 4
+    LATIN_SYMBOL = 5 # aka LATIN_PICTURE
+
 class PANOSE_Proportion(enum.IntEnum):
     ANY = 0
     NO_FIT = 1
@@ -215,6 +223,12 @@ class PANOSE_Proportion(enum.IntEnum):
     VERY_EXTENDED = 7
     VERY_CONDENSED = 8
     MONOSPACED = 9
+
+class PANOSE_Spacing(enum.IntEnum):
+    ANY = 0
+    NO_FIT = 1
+    PROPORTIONAL = 2
+    MONOSPACED = 3
 
 class IsFixedWidth(enum.IntEnum):
     """ 'post' table / isFixedWidth definitions """
