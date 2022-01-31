@@ -19,17 +19,11 @@ CHECKS_DONT_DO = [
     'com.google.fonts/check/family/italics_have_roman_counterparts',
 ]
 
-
-OTHER_CHECKS = [x for x in GOOGLEFONTS_PROFILE_CHECKS
-                if x not in CHECKS_DONT_DO]
-
-
 FONTWERK_PROFILE_CHECKS = \
-    OTHER_CHECKS + [
+    GOOGLEFONTS_PROFILE_CHECKS + [
         'com.fontwerk/check/no_mac_entries',
         'com.fontwerk/check/vendor_id',
     ]
-
 
 @check(
     id = 'com.fontwerk/check/no_mac_entries',
@@ -75,6 +69,9 @@ def com_fontwerk_check_vendor_id(ttFont):
     else:
         yield PASS, f"OS/2 VendorID '{vendor_id}' is correct."
 
-
 profile.auto_register(globals())
-profile.test_expected_checks(FONTWERK_PROFILE_CHECKS, exclusive=False)
+
+for check in CHECKS_DONT_DO:
+    profile.remove_check(check)
+
+profile.test_expected_checks(FONTWERK_PROFILE_CHECKS)
