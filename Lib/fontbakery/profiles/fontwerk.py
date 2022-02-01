@@ -17,10 +17,13 @@ CHECKS_DONT_DO = [
     'com.google.fonts/check/canonical_filename',
     'com.google.fonts/check/vendor_id',
     'com.google.fonts/check/family/italics_have_roman_counterparts',
+    'com.google.fonts/check/fstype',
+    'com.google.fonts/check/gasp',
 ]
 
 FONTWERK_PROFILE_CHECKS = \
-    GOOGLEFONTS_PROFILE_CHECKS + [
+    [check for check in GOOGLEFONTS_PROFILE_CHECKS
+     if check not in CHECKS_DONT_DO] + [
         'com.fontwerk/check/no_mac_entries',
         'com.fontwerk/check/vendor_id',
         'com.fontwerk/check/weight_class_fvar',
@@ -99,7 +102,5 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
     else:
         yield PASS, f"OS/2 usWeightClass '{os2_value}' matches fvar default value."
 
-# profile.auto_register(globals(), filter_func=lambda type, id: not (type == 'check' and id in CHECKS_DONT_DO))
-# still no idea how to remove checks
 profile.auto_register(globals())
 profile.test_expected_checks(FONTWERK_PROFILE_CHECKS, exclusive=True)
