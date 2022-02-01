@@ -33,3 +33,16 @@ def test_check_vendor_id():
     font['OS/2'].achVendID = 'WERK'
     assert_PASS(check(font),
                 "'WERK' is correct.")
+
+
+def test_check_weight_class_fvar():
+    check = CheckTester(fontwerk_profile,
+                        'com.fontwerk/check/weight_class_fvar')
+
+    font = TEST_FILE('varfont/OpenSans[wdth, wght].ttf')
+    assert_PASS(check(font), "matches fvar default value.")
+
+    font['OS/2'].usWeightClass = 333
+    assert_results_contain(check(font),
+                           FAIL, 'bad-weight-class',
+                           "'but should match fvar default value'.")

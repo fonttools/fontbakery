@@ -23,6 +23,7 @@ FONTWERK_PROFILE_CHECKS = \
     GOOGLEFONTS_PROFILE_CHECKS + [
         'com.fontwerk/check/no_mac_entries',
         'com.fontwerk/check/vendor_id',
+        'com.fontwerk/check/weight_class_fvar',
     ]
 
 @check(
@@ -69,9 +70,36 @@ def com_fontwerk_check_vendor_id(ttFont):
     else:
         yield PASS, f"OS/2 VendorID '{vendor_id}' is correct."
 
+@check(
+    id = 'com.fontwerk/check/weight_class_fvar',
+    rationale = """
+        According to Microsoft's OT Spec the OS/2 usWeightClass should match the fvar default value.
+    """,
+    conditions=["is_variable_font"],
+    proposal='https://github.com/googlefonts/gftools/issues/477'
+)
+def com_fontwerk_check_weight_class_fvar(ttFont):
+    """Checking if OS/2 usWeightClass matches fvar."""
+
+    fvar = ttFont['fvar']
+    default_axis_values = {a.axisTag: a.defaultValue for a in fvar.axes}
+
+    fvar_value = default_axis_values.get('wght', None)
+    os2_value = ttFont["OS/2"].usWeightClass
+
+    if fvar_value is None:
+        return
+
+    if os2_value != int(fvar_value):
+        yield FAIL, \
+              Message("bad-weight-class",
+                      f"OS/2 usWeightClass is '{os2_value}', "
+                      f"but should match fvar default value '{fvar_value}'.")
+
+    else:
+        yield PASS, f"OS/2 usWeightClass '{os2_value}' matches fvar default value."
+
+# profile.auto_register(globals(), filter_func=lambda type, id: not (type == 'check' and id in CHECKS_DONT_DO))
+# still no idea how to remove checks
 profile.auto_register(globals())
-
-for check in CHECKS_DONT_DO:
-    profile.remove_check(check)
-
-profile.test_expected_checks(FONTWERK_PROFILE_CHECKS)
+profile.test_expected_checks(FONTWERK_PROFILE_CHECKS, exclusive=True)
