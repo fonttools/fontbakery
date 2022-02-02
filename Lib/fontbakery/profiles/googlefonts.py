@@ -3307,6 +3307,11 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
                 continue
 
             string = name.string.decode(name.getEncoding()).strip()
+
+            if (camelcased_familyname_exception(string) and
+                string == expected_value.replace(" ", "")):
+                continue
+
             if string != expected_value:
                 failed = True
                 yield FAIL,\
@@ -3371,9 +3376,16 @@ def com_google_fonts_check_name_fullfontname(ttFont,
     failed = False
     for name in ttFont['name'].names:
         if name.nameID == NameID.FULL_FONT_NAME:
-            expected_value = "{} {}".format(familyname_with_spaces,
+            camelcased_name = familyname_with_spaces.replace(" ", "")
+            if camelcased_familyname_exception(camelcased_name):
+                familyname = camelcased_name
+            else:
+                familyname = familyname_with_spaces
+
+            expected_value = "{} {}".format(familyname,
                                             style_with_spaces)
             string = name.string.decode(name.getEncoding()).strip()
+
             if string != expected_value:
                 failed = True
                 # special case

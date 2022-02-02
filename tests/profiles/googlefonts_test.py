@@ -2482,7 +2482,9 @@ def test_check_name_familyname():
         (FAIL, "mismatch", TEST_FILE("overpassmono/OverpassMono-Regular.ttf"),     "Overpass Mono", "Foo"),
         (PASS, "ok",       TEST_FILE("merriweather/Merriweather-Black.ttf"),       "Merriweather",  "Merriweather Black"),
         (PASS, "ok",       TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather",  "Merriweather Light"),
-        (FAIL, "mismatch", TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather",  "Merriweather Light Italic")
+        (FAIL, "mismatch", TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather",  "Merriweather Light Italic"),
+        (PASS, "ok",       TEST_FILE("abeezee/ABeeZee-Regular.ttf"), "ABeeZee",  "ABeeZee"),
+        # Note: ABeeZee is a good camel-cased name exception.
     ]
 
     for expected, keyword, filename, mac_value, win_value in test_cases:
@@ -2615,6 +2617,12 @@ def test_check_name_fullfontname():
                                    'with a bad FULL_FONT_NAME entry...')
             # restore it:
             ttFont["name"].names[index].string = backup
+
+    # And we should also accept a few camel-cased familyname exceptions,
+    # so this one should also be fine:
+    ttFont = TTFont(TEST_FILE("abeezee/ABeeZee-Regular.ttf"))
+    assert_PASS(check(ttFont),
+                "with a good camel-cased fontname...")
 
 
 def NOT_IMPLEMENTED_test_check_name_postscriptname():
