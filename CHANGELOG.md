@@ -2,7 +2,10 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## 0.8.7 (2022-Feb-??)
-  - ...
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/name/familyname]:** Consider camel-case exceptions (issue #3584)
+  - **[com.google.fonts/check/name/fullfontname]:** Consider camel-case exceptions (issue #3584)
 
 
 ## 0.8.6 (2022-Jan-29)
