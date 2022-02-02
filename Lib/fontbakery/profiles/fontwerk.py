@@ -12,13 +12,16 @@ from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
 profile_imports = ('fontbakery.profiles.googlefonts',)
 profile = profile_factory(default_section=Section("Fontwerk"))
 
-# not sure how I can exclude tests I don't want to run.
 CHECKS_DONT_DO = [
+    # don't do the following checks
     'com.google.fonts/check/canonical_filename',
     'com.google.fonts/check/vendor_id',
-    'com.google.fonts/check/family/italics_have_roman_counterparts',
     'com.google.fonts/check/fstype',
     'com.google.fonts/check/gasp',
+
+    # Skip the following checks,
+    # because they may need some improvements first.
+    'com.google.fonts/check/family/italics_have_roman_counterparts',
 ]
 
 FONTWERK_PROFILE_CHECKS = \
@@ -102,5 +105,7 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
     else:
         yield PASS, f"OS/2 usWeightClass '{os2_value}' matches fvar default value."
 
-profile.auto_register(globals())
+profile.auto_register(globals(),
+                      filter_func=lambda type, id, _:
+                      not (type == 'check' and id in CHECKS_DONT_DO))
 profile.test_expected_checks(FONTWERK_PROFILE_CHECKS, exclusive=True)
