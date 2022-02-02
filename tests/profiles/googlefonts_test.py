@@ -2331,21 +2331,6 @@ def test_check_production_encoded_glyphs(cabin_ttFonts):
                                FAIL, 'lost-glyphs')
 
 
-def test_check_transformed_components():
-    """Ensure component transforms do not perform scaling or rotation."""
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/transformed_components")
-
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    assert_PASS(check(font),
-                "with a good font...")
-
-    # DM Sans v1.100 had some transformed components
-    font = TEST_FILE("dm-sans-v1.100/DMSans-Regular.ttf")
-    assert_results_contain(check(font),
-                           FAIL, 'transformed-components')
-
-
 def test_check_metadata_nameid_copyright():
     """ Copyright field for this font on METADATA.pb matches
         all copyright notice entries on the name table? """
