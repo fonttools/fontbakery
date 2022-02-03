@@ -8,7 +8,7 @@ general = {
         # name table platform: (3,1,1033,XX)
         0: r'Copyright (c) [0-9]{4}(\-[0-9]{4})? Fontwerk GmbH. All rights reserved.',  # name ID 0: Copyright
         1: r'^[a-zA-Z0-9 ]{1,31}',  # name ID 1: Family Name min 1 max 31 characters
-        2: r'\b(?:Regular|Italic|Bold|Bold Italic)\b',  # name ID 2: Subfamily Name, must be 'Regular', 'Bold', 'Italic' or 'Bold Italic'
+        2: r'\b(?:Regular|Bold Italic|Bold|Italic)\b',  # name ID 2: Subfamily Name, must be 'Regular', 'Bold', 'Italic' or 'Bold Italic'
         3: r'^[a-zA-Z0-9-]{1,31}',  # no spaces, but dash allowed
         6: r'^[a-zA-Z0-9-]{1,28}',  # no spaces, but dash allowed
         5: r"Version [0-9]{1}.[0-9]{2}",  # name ID 5: Version String, [[VERSION-NUMBER]] max two dezimal eg. 1.01 NOT 1.001
