@@ -2449,7 +2449,8 @@ def com_google_fonts_check_glyphs_file_font_copyright(glyphsFile):
 
 @check(
     id = 'com.google.fonts/check/metadata/reserved_font_name',
-    conditions = ['font_metadata'],
+    conditions = ['font_metadata',
+                  'not rfn_exception'],
     proposal = 'legacy:check/103'
 )
 def com_google_fonts_check_metadata_reserved_font_name(font_metadata):
@@ -4309,6 +4310,7 @@ def com_google_fonts_check_name_line_breaks(ttFont):
 
         This check ensures "Reserved Font Name" is not mentioned in the name table.
     """,
+    conditions = ['not rfn_exception'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1380'
 )
 def com_google_fonts_check_name_rfn(ttFont):
