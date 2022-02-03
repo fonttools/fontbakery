@@ -1,6 +1,7 @@
 """
 Checks for Fontwerk <https://fontwerk.com/>
 """
+import re
 
 from fontbakery.callable import check
 from fontbakery.section import Section
@@ -8,6 +9,9 @@ from fontbakery.status import PASS, FAIL
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
 from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
+from fontbakery.profiles.fontwerk_conditions import general
+from fontbakery.constants import NameID
+from fontbakery.utils import get_name_entry_strings
 
 profile_imports = ('fontbakery.profiles.googlefonts',)
 profile = profile_factory(default_section=Section("Fontwerk"))
@@ -18,6 +22,7 @@ CHECKS_DONT_DO = [
     'com.google.fonts/check/vendor_id',
     'com.google.fonts/check/fstype',
     'com.google.fonts/check/gasp',
+    'com.google.fonts/check/font_copyright',
 
     # Skip the following checks,
     # because they may need some improvements first.
@@ -30,6 +35,7 @@ FONTWERK_PROFILE_CHECKS = \
         'com.fontwerk/check/no_mac_entries',
         'com.fontwerk/check/vendor_id',
         'com.fontwerk/check/weight_class_fvar',
+        'com.fontwerk/check/name_table_entries',
     ]
 
 @check(
@@ -104,6 +110,33 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
 
     else:
         yield PASS, f"OS/2 usWeightClass '{os2_value}' matches fvar default value."
+
+
+@check(
+    id = 'com.fontwerk/check/name_table_entries',
+    rationale="""
+      Checking if name table entries meets Fontwerk requirements.
+  """,
+)
+def com_fontwerk_check_name_table_entries(ttFont):
+    """Checking if name table entries meets Fontwerk requirements.
+    """
+
+    for name_rec in ttFont["name"].names:
+        name_id = name_rec.nameID
+        text_pattern = general.get('name table').get(name_id)
+        if not text_pattern:
+            continue
+        name_str = name_rec.toUnicode()
+        if not re.search(text_pattern, name_str):
+            yield FAIL, \
+                  Message("bad-name-content",
+                          f'Name Table ID {name_rec.nameID} should match:\n'
+                          f' "{text_pattern}"\n'
+                          f'But instead we got:\n"{name_str}"')
+        else:
+            yield PASS, f"Name Table ID {name_rec.nameID} entry looks good."
+
 
 profile.auto_register(globals(),
                       filter_func=lambda type, id, _:
