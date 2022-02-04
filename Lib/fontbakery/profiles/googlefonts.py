@@ -14,8 +14,11 @@ from fontbakery.constants import (NameID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID,
                                   LATEST_TTFAUTOHINT_VERSION)
-
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
+from glyphsets import codepoints
+ENCODINGS_DIR = codepoints.nam_dir
+
+
 profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
 
@@ -990,12 +993,9 @@ def font_codepoints(ttFont):
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check `Google Fonts Latin Core` glyph coverage."""
     from fontbakery.utils import bullet_list
-    from glyphsets import codepoints
     import unicodedata2
 
-    gf_glyphsets = codepoints.nam_dir + "/GF Glyph Sets"
-    codepoints.set_encoding_path(gf_glyphsets)
-
+    codepoints.set_encoding_path(ENCODINGS_DIR + "/GF Glyph Sets")
     required_codepoints = codepoints.CodepointsInSubset("GF-latin-core")
     diff = required_codepoints - font_codepoints
     missing = []
@@ -1026,8 +1026,8 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
 )
 def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont, font_codepoints):
     """Check for METADATA subsets with zero support."""
-    from glyphsets.codepoints import CodepointsInSubset
     from glyphsets.subsets import SUBSETS
+    codepoints.set_encoding_path(ENCODINGS_DIR)
 
     passed = True
     for subset in family_metadata.subsets:
@@ -1041,7 +1041,7 @@ def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont,
                           f" from the METADATA.pb file.")
             continue
 
-        subset_codepoints = CodepointsInSubset(subset, unique_glyphs=True)
+        subset_codepoints = codepoints.CodepointsInSubset(subset, unique_glyphs=True)
         if len(subset_codepoints.intersection(font_codepoints)) == 0:
             passed = False
             yield FAIL,\
