@@ -6,7 +6,7 @@ general = {
     "vendor id": 'WERK',
     "name table": {
         # name table platform: (3,1,1033,XX)
-        0: r'Copyright (c) [0-9]{4}(\-[0-9]{4})? Fontwerk GmbH. All rights reserved.',  # name ID 0: Copyright
+        0: r'Copyright \(c\) [0-9]{4}(\-[0-9]{4})? Fontwerk GmbH\. All rights reserved\.',  # name ID 0: Copyright
         1: r'^[a-zA-Z0-9 ]{1,31}',  # name ID 1: Family Name min 1 max 31 characters
         2: r'\b(?:Regular|Bold Italic|Bold|Italic)\b',  # name ID 2: Subfamily Name, must be 'Regular', 'Bold', 'Italic' or 'Bold Italic'
         3: r'^[a-zA-Z0-9-]{1,31}',  # no spaces, but dash allowed
