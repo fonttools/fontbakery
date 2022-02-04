@@ -72,6 +72,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/contour_count]:** Four fifths glyph can also be drawn with only 3 contours if the four is open-ended. (issue #3511)
+  - **[com.google.fonts/check/glyph_coverage]:** Use the new glyphsets python module. (issue #3533)
 
 
 ## 0.8.4 (2021-Nov-19)
