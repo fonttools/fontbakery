@@ -990,10 +990,13 @@ def font_codepoints(ttFont):
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check `Google Fonts Latin Core` glyph coverage."""
     from fontbakery.utils import bullet_list
-    from glyphsets.codepoints import CodepointsInSubset
+    from glyphsets import codepoints
     import unicodedata2
 
-    required_codepoints = CodepointsInSubset("latin")
+    gf_glyphsets = codepoints.nam_dir + "/GF Glyph Sets"
+    codepoints.set_encoding_path(gf_glyphsets)
+
+    required_codepoints = codepoints.CodepointsInSubset("GF-latin-core")
     diff = required_codepoints - font_codepoints
     missing = []
     for c in sorted(diff):
