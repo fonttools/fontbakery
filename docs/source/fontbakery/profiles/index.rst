@@ -10,13 +10,14 @@ profiles
    adobefonts
    googlefonts
    notofonts
+   typenetwork
+   fontwerk
    fontval
    ufo_sources
    iso15008
    layout
    outline
    shaping
-   typenetwork
    shared_conditions
    googlefonts_conditions
 

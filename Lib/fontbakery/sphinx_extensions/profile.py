@@ -58,6 +58,11 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
         # type: () -> str
         # We use the original signature from the wrapped _function
         has_retval = isinstance(self.object, FontBakeryCondition)
+
+        if not hasattr(self.object, '_func'):
+            # FIXME! I don't know what's this.
+            return None
+
         sig = Signature(self.object._func, bound_method=False, has_retval=has_retval)
         args = stringify_signature(sig)
         # escape backslashes for reST
