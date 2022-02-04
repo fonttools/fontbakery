@@ -53,6 +53,7 @@ FONTWERK_PROFILE_CHECKS = \
         'com.fontwerk/check/no_mac_entries',
         'com.fontwerk/check/vendor_id',
         'com.fontwerk/check/weight_class_fvar',
+        'com.fontwerk/check/name_table_entries',
     ]
 
 
