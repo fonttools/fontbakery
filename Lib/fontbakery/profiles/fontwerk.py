@@ -12,6 +12,15 @@ from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
 profile_imports = ('fontbakery.profiles.googlefonts',)
 profile = profile_factory(default_section=Section("Fontwerk"))
 
+# FIXME: It would be much better to refactor this as described at:
+#        https://github.com/googlefonts/fontbakery/issues/3585
+profile.configuration_defaults = {
+    "com.google.fonts/check/file_size": {
+        "WARN_SIZE": 1 * 1024 * 1024,
+        "FAIL_SIZE": 9 * 1024 * 1024
+    }
+}
+
 # Note: I had to use a function here in order to display it
 # in the auto-generated Sphinx docs due to this bug:
 # https://stackoverflow.com/questions/31561895/literalinclude-how-to-include-only-a-variable-using-pyobject
