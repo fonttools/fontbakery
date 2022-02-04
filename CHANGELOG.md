@@ -1,8 +1,22 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+
 ## 0.8.7 (2022-Feb-??)
-  - ...
+### New Checks
+#### Added to the Fontwerk Profile
+  - Include most of the `googlefonts` profile checks. (PR #3579)
+  - **[com.fontwerk/check/vendor_id]:** Vendor ID must for 'WERK' on FontWerk fonts. (PR #3579)
+  - **[com.fontwerk/check/weight_class_fvar]:** usWeightclass must match fvar default value. (PR #3579)
+
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/name/familyname]:** Consider camel-case exceptions (issue #3584)
+  - **[com.google.fonts/check/name/fullfontname]:** Consider camel-case exceptions (issue #3584)
+  - **[com.google.fonts/check/glyph_coverage]:** Use the correct nam-file for checking coverage of the GF-latin-core glyphset (issue #3583)
+
+#### Migrations
+  - **[com.google.fonts/check/transformed_components]:** moved from `Google Fonts` profile to `Universal` profile. It is not strictly a Google Fonts related check as transformed components cause problems in various rendering environments. (issue #3588)
 
 
 ## 0.8.6 (2022-Jan-29)
@@ -35,6 +49,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/grade_reflow]:** fix AttributeError: `'NoneType'` object has no attribute `'StartSize'` (issue #3566)
   - **[com.google.fonts/check/varfont/grade_reflow]:** Cleanup log message output: use a set (instead of a list) in order to eliminate multiple reporting of the same glyphs (issue #3561)
   - **[com.google.fonts/check/metadata/os2_weightclass]:** Improve wording of log messages to make the reasoning of expected values clearer to the users (issue #2935)
+  - **[com.google.fonts/check/metadata/reserved_font_name]:** RFN Exception allow-list (issue #3589)
+  - **[com.google.fonts/check/name/rfn]:** RFN Exception allow-list (issue #3589)
 
 
 ## 0.8.5 (2022-Jan-13)
@@ -56,6 +72,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/contour_count]:** Four fifths glyph can also be drawn with only 3 contours if the four is open-ended. (issue #3511)
+  - **[com.google.fonts/check/glyph_coverage]:** Use the new glyphsets python module. (issue #3533)
 
 
 ## 0.8.4 (2021-Nov-19)

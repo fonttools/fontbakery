@@ -174,7 +174,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/smart_dropout',
     'com.google.fonts/check/integer_ppem_if_hinted',
     'com.google.fonts/check/unitsperem_strict',
-    'com.google.fonts/check/transformed_components',
     'com.google.fonts/check/vertical_metrics_regressions',
     'com.google.fonts/check/cjk_vertical_metrics',
     'com.google.fonts/check/cjk_vertical_metrics_regressions',
@@ -991,10 +990,13 @@ def font_codepoints(ttFont):
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check `Google Fonts Latin Core` glyph coverage."""
     from fontbakery.utils import bullet_list
-    from glyphsets.codepoints import CodepointsInSubset
+    from glyphsets import codepoints
     import unicodedata2
 
-    required_codepoints = CodepointsInSubset("latin")
+    gf_glyphsets = codepoints.nam_dir + "/GF Glyph Sets"
+    codepoints.set_encoding_path(gf_glyphsets)
+
+    required_codepoints = codepoints.CodepointsInSubset("GF-latin-core")
     diff = required_codepoints - font_codepoints
     missing = []
     for c in sorted(diff):
@@ -2450,7 +2452,8 @@ def com_google_fonts_check_glyphs_file_font_copyright(glyphsFile):
 
 @check(
     id = 'com.google.fonts/check/metadata/reserved_font_name',
-    conditions = ['font_metadata'],
+    conditions = ['font_metadata',
+                  'not rfn_exception'],
     proposal = 'legacy:check/103'
 )
 def com_google_fonts_check_metadata_reserved_font_name(font_metadata):
@@ -3137,41 +3140,6 @@ def com_google_fonts_check_mac_style(ttFont, style):
                           bitname="BOLD")
 
 
-@check(
-    id = 'com.google.fonts/check/transformed_components',
-    conditions = ['is_ttf'],
-    rationale = """
-        Some families have glyphs which have been constructed by using transformed components e.g the 'u' being constructed from a flipped 'n'.
-
-        From a designers point of view, this sounds like a win (less work). However, such approaches can lead to rasterization issues, such as having the 'u' not sitting on the baseline at certain sizes after running the font through ttfautohint.
-
-        As of July 2019, Marc Foley observed that ttfautohint assigns cvt values to transformed glyphs as if they are not transformed and the result is they render very badly, and that vttLib does not support flipped components.
-
-        When building the font with fontmake, this problem can be fixed by using the "Decompose Transformed Components" filter.
-    """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2011',
-)
-def com_google_fonts_check_transformed_components(ttFont):
-    """Ensure component transforms do not perform scaling or rotation."""
-    failures = ""
-    for glyph_name in ttFont.getGlyphOrder():
-        glyf = ttFont["glyf"][glyph_name]
-        if not glyf.isComposite():
-            continue
-        for component in glyf.components:
-            comp_name, transform = component.getComponentInfo()
-            if transform[0:4] != (1, 0, 0, 1):
-                failures += f"* {glyph_name} (component {comp_name})\n"
-    if failures:
-        yield FAIL,\
-              Message("transformed-components",
-                      f"The following glyphs had components with scaling or rotation:\n"
-                      f"\n"
-                      f"{failures}")
-    else:
-        yield PASS, "No glyphs had components with scaling or rotation"
-
-
 # FIXME!
 # Temporarily disabled since GFonts hosted Cabin files seem to have changed in ways
 # that break some of the assumptions in the check implementation below.
@@ -3307,6 +3275,11 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
                 continue
 
             string = name.string.decode(name.getEncoding()).strip()
+
+            if (camelcased_familyname_exception(string) and
+                string == expected_value.replace(" ", "")):
+                continue
+
             if string != expected_value:
                 failed = True
                 yield FAIL,\
@@ -3371,9 +3344,16 @@ def com_google_fonts_check_name_fullfontname(ttFont,
     failed = False
     for name in ttFont['name'].names:
         if name.nameID == NameID.FULL_FONT_NAME:
-            expected_value = "{} {}".format(familyname_with_spaces,
+            camelcased_name = familyname_with_spaces.replace(" ", "")
+            if camelcased_familyname_exception(camelcased_name):
+                familyname = camelcased_name
+            else:
+                familyname = familyname_with_spaces
+
+            expected_value = "{} {}".format(familyname,
                                             style_with_spaces)
             string = name.string.decode(name.getEncoding()).strip()
+
             if string != expected_value:
                 failed = True
                 # special case
@@ -4333,6 +4313,7 @@ def com_google_fonts_check_name_line_breaks(ttFont):
 
         This check ensures "Reserved Font Name" is not mentioned in the name table.
     """,
+    conditions = ['not rfn_exception'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1380'
 )
 def com_google_fonts_check_name_rfn(ttFont):

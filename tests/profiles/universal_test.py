@@ -890,3 +890,18 @@ def test_check_designspace_has_consistent_codepoints():
                            FAIL, 'inconsistent-codepoints')
 
     # TODO: Fix it and ensure it passes the check
+
+
+def test_check_transformed_components():
+    """Ensure component transforms do not perform scaling or rotation."""
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/transformed_components")
+
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(font),
+                "with a good font...")
+
+    # DM Sans v1.100 had some transformed components
+    font = TEST_FILE("dm-sans-v1.100/DMSans-Regular.ttf")
+    assert_results_contain(check(font),
+                           FAIL, 'transformed-components')
