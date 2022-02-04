@@ -12,25 +12,34 @@ from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
 profile_imports = ('fontbakery.profiles.googlefonts',)
 profile = profile_factory(default_section=Section("Fontwerk"))
 
-CHECKS_DONT_DO = [
-    # don't do the following checks
-    'com.google.fonts/check/canonical_filename',
-    'com.google.fonts/check/vendor_id',
-    'com.google.fonts/check/fstype',
-    'com.google.fonts/check/gasp',
+# Note: I had to use a function here in order to display it
+# in the auto-generated Sphinx docs due to this bug:
+# https://stackoverflow.com/questions/31561895/literalinclude-how-to-include-only-a-variable-using-pyobject
+def leave_this_one_out(checkid):
+    CHECKS_NOT_TO_INCLUDE = [
+        # don't run these checks on the Fontwerk profile:
+        'com.google.fonts/check/canonical_filename',
+        'com.google.fonts/check/vendor_id',
+        'com.google.fonts/check/fstype',
+        'com.google.fonts/check/gasp',
 
-    # Skip the following checks,
-    # because they may need some improvements first.
-    'com.google.fonts/check/family/italics_have_roman_counterparts',
-]
+        # The following check they may need some improvements
+        # before we decide to include it:
+        'com.google.fonts/check/family/italics_have_roman_counterparts',
+    ]
+
+    if checkid in CHECKS_NOT_TO_INCLUDE:
+        return True
+
 
 FONTWERK_PROFILE_CHECKS = \
-    [check for check in GOOGLEFONTS_PROFILE_CHECKS
-     if check not in CHECKS_DONT_DO] + [
+    [checkid for checkid in GOOGLEFONTS_PROFILE_CHECKS
+     if not leave_this_one_out(checkid)] + [
         'com.fontwerk/check/no_mac_entries',
         'com.fontwerk/check/vendor_id',
         'com.fontwerk/check/weight_class_fvar',
     ]
+
 
 @check(
     id = 'com.fontwerk/check/no_mac_entries',
@@ -64,6 +73,7 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
     rationale = """
         Vendor ID must be WERK for Fontwerk fonts.
     """,
+    proposal='https://github.com/googlefonts/fontbakery/pull/3579'
 )
 def com_fontwerk_check_vendor_id(ttFont):
     """Checking OS/2 achVendID."""
@@ -75,6 +85,7 @@ def com_fontwerk_check_vendor_id(ttFont):
                       f"OS/2 VendorID is '{vendor_id}', but should be 'WERK'.")
     else:
         yield PASS, f"OS/2 VendorID '{vendor_id}' is correct."
+
 
 @check(
     id = 'com.fontwerk/check/weight_class_fvar',
@@ -105,7 +116,8 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
     else:
         yield PASS, f"OS/2 usWeightClass '{os2_value}' matches fvar default value."
 
+
 profile.auto_register(globals(),
                       filter_func=lambda type, id, _:
-                      not (type == 'check' and id in CHECKS_DONT_DO))
+                      not (type == 'check' and leave_this_one_out(id)))
 profile.test_expected_checks(FONTWERK_PROFILE_CHECKS, exclusive=True)

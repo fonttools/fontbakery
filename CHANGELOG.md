@@ -1,7 +1,14 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+
 ## 0.8.7 (2022-Feb-??)
+### New Checks
+#### Added to the Fontwerk Profile
+  - Include most of the `googlefonts` profile checks. (PR #3579)
+  - **[com.fontwerk/check/vendor_id]:** Vendor ID must for 'WERK' on FontWerk fonts. (PR #3579)
+  - **[com.fontwerk/check/weight_class_fvar]:** usWeightclass must match fvar default value. (PR #3579)
+
 ### Changes to existing checks
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/name/familyname]:** Consider camel-case exceptions (issue #3584)
