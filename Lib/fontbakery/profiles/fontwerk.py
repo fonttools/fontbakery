@@ -37,15 +37,30 @@ def leave_this_one_out(checkid):
         'com.google.fonts/check/fstype',
         'com.google.fonts/check/gasp',
         'com.google.fonts/check/font_copyright',
+        'com.google.fonts/check/name/line_breaks',  # can be ignored because of general fontwerk name table test.
+        'com.google.fonts/check/varfont/has_HVAR',  # not needed for fontwerk fonts.
+        'com.google.fonts/check/glyf_nested_components',  # it seem to be not an issue anymore. Maybe downgrade to 'WARN'. Tested it in various browsers, InDesign, exported a PDF, printed it.
+        'com.google.fonts/check/transformed_components',  # it seem to be not an issue anymore. Maybe downgrade to 'WARN'.
 
         # The following check they may need some improvements
         # before we decide to include it:
         'com.google.fonts/check/family/italics_have_roman_counterparts',
+        'com.google.fonts/check/varfont_instance_names',  # need improvements for optical size name or own test.
+        'com.google.fonts/check/smart_dropout',  # improvements needed when it comes to variable fonts. No hinting for var fonts should be ok.
+        'com.google.fonts/check/STAT/gf-axisregistry',  # need improvements.
+        '''
+        Output from report:
+        --- Rationale ---
+        Check that particle names and values on STAT table match the fallback names in
+        each axis entry at the Google Fonts Axis Registry, available at
+        https://github.com/google/fonts/tree/main/axisregistry
+        🔥 FAIL On the font variation axis 'opsz', the name 'Micro' is not among the expected ones (6pt, 7pt, 8pt, 9pt, 10pt, 11pt, 12pt, 14pt, 16pt, 17pt, 18pt, 20pt, 24pt, 28pt, 36pt, 48pt, 60pt, 72pt, 96pt, 120pt, 144pt) according to the Google Fonts Axis Registry. [code: invalid-name]
+
+        '''
     ]
 
     if checkid in CHECKS_NOT_TO_INCLUDE:
         return True
-
 
 FONTWERK_PROFILE_CHECKS = \
     [checkid for checkid in GOOGLEFONTS_PROFILE_CHECKS
