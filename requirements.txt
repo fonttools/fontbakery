@@ -21,4 +21,5 @@ toml==0.10.2
 ufolint==1.2.0
 unicodedata2==14.0.0
 vharfbuzz==0.1.1
+ufo2ft==2.25.2
 -e .
