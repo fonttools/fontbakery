@@ -549,7 +549,6 @@ def all_kerning(ttFont):
 
 
 def is_complex_shaper_font(ttFont):
-    scripts = []
     for table in ["GSUB", "GPOS"]:
         if table not in ttFont:
             continue
