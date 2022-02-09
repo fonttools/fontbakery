@@ -50,6 +50,14 @@ FONTWERK_PROFILE_CHECKS = \
         'com.fontwerk/check/names_match_default_fvar',
     ]
 
+def _familyname(font_obj):
+    '''
+    Function to get the the fonts family name.
+    '''
+    for name_id in [21, 16, 1]:
+        name_str = font_obj["name"].getDebugName(name_id)
+        if name_str is not None:
+            return name_str
 
 @check(
     id = 'com.fontwerk/check/no_mac_entries',
@@ -131,9 +139,9 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
     rationale = """
         Check if the font names names_match_default_fvar
     """,
-    conditions=["is_variable_font", 'familyname'],
+    conditions=["is_variable_font"],
 )
-def com_fontwerk_check_names_match_default_fvar(ttFont, familyname):
+def com_fontwerk_check_names_match_default_fvar(ttFont):
     """Checking if names match default fvar."""
 
     def _check_font_names(font_obj, default_name, fam_id, subfam_id):
@@ -179,7 +187,7 @@ def com_fontwerk_check_names_match_default_fvar(ttFont, familyname):
               Message("missing-default-name-id",
                       "fvar is missing a default instance name ID.")
 
-    fam_name = familyname
+    fam_name = _familyname(ttFont)
     subfam_name = ttFont["name"].getDebugName(default_name_id)
 
     if subfam_name is None:
