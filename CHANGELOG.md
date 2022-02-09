@@ -8,6 +8,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - Include most of the `googlefonts` profile checks. (PR #3579)
   - **[com.fontwerk/check/vendor_id]:** Vendor ID must for 'WERK' on FontWerk fonts. (PR #3579)
   - **[com.fontwerk/check/weight_class_fvar]:** usWeightclass must match fvar default value. (PR #3579)
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/dotted_circle]:** Check dotted circle is present and correct (issue #3600)
 
 ### Changes to existing checks
 #### On the Google Fonts Profile
