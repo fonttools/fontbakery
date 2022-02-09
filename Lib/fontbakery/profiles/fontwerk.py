@@ -39,8 +39,9 @@ def leave_this_one_out(checkid):
         'com.google.fonts/check/font_copyright',
         'com.google.fonts/check/name/line_breaks',  # can be ignored because of general fontwerk name table test.
         'com.google.fonts/check/varfont/has_HVAR',  # not needed for fontwerk fonts.
-        'com.google.fonts/check/glyf_nested_components',  # it seem to be not an issue anymore. Maybe downgrade to 'WARN'. Tested it in various browsers, InDesign, exported a PDF, printed it.
-        'com.google.fonts/check/transformed_components',  # it seem to be not an issue anymore. Maybe downgrade to 'WARN'.
+        #'com.google.fonts/check/glyf_nested_components',  # it seem to be not an issue anymore. Maybe downgrade to 'WARN'. Tested it in various browsers, InDesign, exported a PDF, printed it.
+        #'com.google.fonts/check/transformed_components',  # it seem to be not an issue anymore. Maybe downgrade to 'WARN'.
+        'com.google.fonts/check/family/underline_thickness',  # Maybe downgrade to 'WARN'.
 
         # The following check they may need some improvements
         # before we decide to include it:
