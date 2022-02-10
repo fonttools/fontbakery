@@ -7,6 +7,7 @@ PROFILE = {
             "com.fontwerk/check/weight_class_fvar",
             "com.fontwerk/check/inconsistencies_between_fvar_stat",
             "com.fontwerk/check/style_linking",
+            "com.fontwerk/check/names_match_default_fvar",
         ],
     },
     "exclude_checks": [
