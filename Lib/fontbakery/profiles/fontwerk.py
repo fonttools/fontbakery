@@ -4,7 +4,7 @@ Checks for Fontwerk <https://fontwerk.com/>
 
 from fontbakery.callable import check
 from fontbakery.section import Section
-from fontbakery.status import PASS, FAIL
+from fontbakery.status import PASS, FAIL, SKIP
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
 from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
@@ -47,7 +47,37 @@ FONTWERK_PROFILE_CHECKS = \
         'com.fontwerk/check/no_mac_entries',
         'com.fontwerk/check/vendor_id',
         'com.fontwerk/check/weight_class_fvar',
+        'com.fontwerk/check/names_match_default_fvar',
     ]
+
+def get_name_from_id(font_obj, name_id, fallback=False):
+    """
+    Get name string from given name ID.
+    Fallback possible.
+    """
+    name = font_obj['name'].getDebugName(name_id)
+    if name:
+        return name
+
+    if not fallback:
+        return name
+    else:
+        for group in ((21, 16, 1), (22, 17, 2)):
+            if name_id not in group:
+                continue
+
+            for fallback_id in group:
+                name = font_obj['name'].getDebugName(fallback_id)
+                if name:
+                    return name
+
+    return font_obj['name'].getDebugName(name_id)
+
+def get_family_name(font_obj):
+    '''
+    Function to get the the fonts family name.
+    '''
+    return get_name_from_id(font_obj, 21, fallback=True)
 
 
 @check(
@@ -124,6 +154,74 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
 
     else:
         yield PASS, f"OS/2 usWeightClass '{os2_value}' matches fvar default value."
+
+@check(
+    id = 'com.fontwerk/check/names_match_default_fvar',
+    rationale = """
+        Check if the font names names_match_default_fvar
+    """,
+    conditions=["is_variable_font"],
+)
+def com_fontwerk_check_names_match_default_fvar(ttFont):
+    """Checking if names match default fvar."""
+
+    def _check_font_names(font_obj, default_name, fam_id, subfam_id):
+        # check if default_name match family + subfamily name
+        name_fam = font_obj["name"].getDebugName(fam_id)
+        name_subfam = font_obj["name"].getDebugName(subfam_id)
+
+        if (fam_id, subfam_id) in [(16, 17), (21, 22)]:
+            if [name_fam, name_subfam] == [None, None]:
+                return SKIP, \
+                       Message("missing-name-ids",
+                               f"It's not a requirement that a font has "
+                               f"to have these name IDs {fam_id} and {subfam_id}.")
+
+        if None in [name_fam, name_subfam]:
+            return FAIL, \
+                   Message("missing-name-id",
+                           "Missing name ID.")
+        else:
+            possibel_names = [f"{name_fam} {name_subfam}"]
+            if name_subfam.lower() == 'regular':
+                possibel_names.append(name_fam)
+
+            if default_name in possibel_names:
+                return PASS, f"Name matches fvar default name '{default_name}'."
+            else:
+              return FAIL, \
+                     Message("bad-name",
+                              f"Name {possibel_names} does not match fvar default name '{default_name}'")
+
+
+    fvar = ttFont['fvar']
+    default_axis_values = {a.axisTag: a.defaultValue for a in fvar.axes}
+
+    default_name_id = None
+    for instance in fvar.instances:
+        if instance.coordinates == default_axis_values:
+            default_name_id = instance.subfamilyNameID
+            break
+
+    if default_name_id is None:
+        return FAIL, \
+              Message("missing-default-name-id",
+                      "fvar is missing a default instance name ID.")
+
+    fam_name = get_family_name(ttFont)
+    subfam_name = ttFont["name"].getDebugName(default_name_id)
+
+    if subfam_name is None:
+        return FAIL, \
+              Message("missing-name-id",
+                      f"Name ID {default_name_id} stored in fvar instance is missing in name table.")
+
+    default_name = f"{fam_name} {subfam_name}"
+
+    # check if default_name match name ID 1 + 2
+    for pair in [(21, 22), (16, 17), (1, 2)]:
+        yield _check_font_names(ttFont, default_name, pair[0], pair[1])
+
 
 
 profile.auto_register(globals(),
