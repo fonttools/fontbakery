@@ -9,6 +9,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts Profile
   - **EXPERIMENTAL - [com.google.fonts/check/description/has_unsupported_elements]:** Check the description doesn't contain unsupported html elements. (issue #2811)
 
+#### Added to the FontWerk Profile
+  - **EXPERIMENTAL - [com.fontwerk/check/names_match_default_fvar]:** Check if the font names match default fvar. (PRs #3604 / #3698)
+
 
 ## 0.11.1 (2024-Feb-06)
 ### Release highlights & new features
