@@ -2971,8 +2971,9 @@ def com_google_fonts_check_version_bump(ttFont,
     conditions = ['api_gfonts_ttFont'],
     proposal = 'legacy:check/118'
 )
-def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFont):
+def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFont, config):
     """Glyphs are similiar to Google Fonts version?"""
+    from fontbakery.utils import pretty_print_list
 
     def glyphs_surface_area(ttFont):
         """Calculate the surface area of a glyph's ink"""
@@ -3007,8 +3008,12 @@ def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFon
             bad_glyphs.append(glyph)
 
     if bad_glyphs:
+        formatted_list = "\t* " + pretty_print_list(config,
+                                            bad_glyphs,
+                                            sep="\n\t* ")
+
         yield WARN, ("Following glyphs differ greatly from"
-                     " Google Fonts version: [{}]").format(", ".join(sorted(bad_glyphs)))
+                     f" Google Fonts version:\n{formatted_list}")
     else:
         yield PASS, ("Glyphs are similar in"
                      " comparison to the Google Fonts version.")
