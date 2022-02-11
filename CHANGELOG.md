@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.8.7 (2022-Feb-??)
+### Noteworthy code-changes
+  - The `--succinct` flag now generates succinct HTML and MD reports.
+
 ### New Checks
 #### Added to the Fontwerk Profile
   - Include most of the `googlefonts` profile checks. (PR #3579)
