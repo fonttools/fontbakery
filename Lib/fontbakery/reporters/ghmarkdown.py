@@ -95,6 +95,10 @@ class GHMarkdownReporter(SerializeReporter):
         if 'fontbakery.profiles.' in section: return section.split('fontbakery.profiles.')[1].split('>')[0]
         return section
 
+    def result_is_all_same(self, cluster):
+        first_check = cluster[0]
+        return all(check["logs"] == first_check["logs"] for check in cluster[1:])
+
 
     def get_markdown(self):
         checks = {}
@@ -106,6 +110,10 @@ class GHMarkdownReporter(SerializeReporter):
                 if not isinstance(cluster, list):
                     cluster = [cluster]
                 num_checks += len(cluster)
+                if len(cluster) > 1 and self.result_is_all_same(cluster):
+                    # Pretend it's a family check
+                    cluster = [cluster[0]]
+                    del cluster[0]["filename"]
                 for check in cluster:
                     if self.omit_loglevel(check["result"]):
                         continue
