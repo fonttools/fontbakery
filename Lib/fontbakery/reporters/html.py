@@ -9,6 +9,7 @@ from cmarkgfm.cmark import Options as cmarkgfmOptions
 
 import fontbakery.checkrunner
 import fontbakery.reporters.serialize
+from fontbakery.utils import unindent_rationale
 
 LOGLEVELS = ["ERROR", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]
 EMOTICON = {
@@ -26,8 +27,11 @@ ISSUE_URL = "https://github.com/googlefonts/fontbakery/issues"
 class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
     """Renders a report as a HTML document."""
 
-    def __init__(self, loglevels, **kwd):
+    def __init__(self, loglevels,
+                     succinct=None,
+                     **kwd):
         super().__init__(**kwd)
+        self.succinct = succinct
         self.loglevels = loglevels
 
     def write(self):
@@ -71,6 +75,7 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
                 check_name = html.escape(check)
                 body_elements.append(f"<h3>{results[0]['description']}</h3>")
                 body_elements.append(f"<div>Check ID: {check_name}</div>")
+                body_elements.append(self.render_rationale(results[0], check))
                 for result in results:
                     if self.omit_loglevel(result['result']):
                         continue
@@ -122,6 +127,14 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
         check["logs"].sort(key=lambda c: LOGLEVELS.index(c["status"]))
         logs = "<ul>" + "".join([self.log_html(log) for log in check["logs"]]) + "</ul>"
         return logs
+
+    def render_rationale(self, check, checkid) -> str:
+        if self.succinct or "rationale" not in check:
+            return ""
+        content = unindent_rationale(check['rationale'], checkid)
+        return cmarkgfm.markdown_to_html(
+                content, options=cmarkgfmOptions.CMARK_OPT_UNSAFE
+            )
 
     def log_html(self, log) -> str:
         """Return single check sub-result string as HTML or not if below log
