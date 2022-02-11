@@ -2369,7 +2369,7 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
 
 
 EXPECTED_COPYRIGHT_PATTERN = \
-r'copyright [0-9]{4}(\-[0-9]{4})? the .* project authors \([^\@]*\)'
+r'copyright [0-9]{4}(\-[0-9]{4})? (the .* project authors \([^\@]*\)|google llc. all rights reserved)'
 
 @check(
     id = 'com.google.fonts/check/metadata/valid_copyright',
