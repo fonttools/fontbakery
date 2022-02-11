@@ -1,5 +1,6 @@
 import os
 from fontbakery.reporters.serialize import SerializeReporter
+from fontbakery.utils import html5_collapsible
 from fontbakery.checkrunner import Status
 from fontbakery import __version__ as version
 
@@ -26,13 +27,6 @@ class GHMarkdownReporter(SerializeReporter):
             'PASS':  "\U0001F35E", # 🍞  :bread
             'DEBUG': "\U0001F50E", # 🔎 :mag_right:
         }[name]
-
-
-    def html5_collapsible(self, summary, details):
-        return (f"<details>\n"
-                f"<summary>{summary}</summary>\n"
-                f"{details}\n"
-                f"</details>\n")
 
 
     def log_md(self, log):
@@ -70,7 +64,7 @@ class GHMarkdownReporter(SerializeReporter):
 
         rationale = self.render_rationale(check, checkid)
 
-        return self.html5_collapsible("{} <b>{}:</b> {}".format(self.emoticon(check["result"]),
+        return html5_collapsible("{} <b>{}:</b> {}".format(self.emoticon(check["result"]),
                                                                 check["result"],
                                                                 check["description"]),
                                       f"\n* {github_search_url}\n{rationale}\n{logs}")
@@ -119,12 +113,12 @@ class GHMarkdownReporter(SerializeReporter):
 
         if family_checks:
             family_checks.sort(key=lambda c: c["result"])
-            md += self.html5_collapsible("<b>[{}] Family checks</b>".format(len(family_checks)),
+            md += html5_collapsible("<b>[{}] Family checks</b>".format(len(family_checks)),
                                          "".join(map(self.check_md, family_checks)) + "<br>")
 
         for filename in checks.keys():
             checks[filename].sort(key=lambda c: LOGLEVELS.index(c["result"]))
-            md += self.html5_collapsible("<b>[{}] {}</b>".format(len(checks[filename]),
+            md += html5_collapsible("<b>[{}] {}</b>".format(len(checks[filename]),
                                                                  filename),
                                          "".join(map(self.check_md, checks[filename])) + "<br>")
 
