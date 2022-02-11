@@ -8,8 +8,11 @@ LOGLEVELS=["ERROR","FAIL","WARN","SKIP","INFO","PASS","DEBUG"]
 
 class GHMarkdownReporter(SerializeReporter):
 
-    def __init__(self, loglevels, **kwd):
+    def __init__(self, loglevels,
+                     succinct=None,
+                     **kwd):
         super().__init__(**kwd)
+        self.succinct = succinct
         self.loglevels = loglevels
 
     def write(self):
@@ -49,7 +52,7 @@ class GHMarkdownReporter(SerializeReporter):
 
 
     def render_rationale(self, check, checkid):
-        if not "rationale" in check:
+        if self.succinct or not "rationale" in check:
             return ""
 
         # Ideally we'll at some point invoke a proper markdown

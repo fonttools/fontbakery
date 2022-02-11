@@ -129,7 +129,7 @@ def ArgumentParser(profile, profile_arg=True):
     argument_parser.add_argument('--succinct',
                                  action='store_true',
                                  help='This is a slightly more compact and succint'
-                                      ' output layout for the text terminal.')
+                                      ' output layout.')
 
     if sys.platform != "win32":
         argument_parser.add_argument('-n', '--no-progress',
@@ -334,6 +334,7 @@ def main(profile=None, values=None):
     for reporter_class, output_file in args.reporters:
         reporters.append(reporter_class(loglevels=args.loglevels,
                              runner=runner,
+                             succinct=args.succinct,
                              collect_results_by=args.gather_by,
                              output_file=output_file
                          ))
