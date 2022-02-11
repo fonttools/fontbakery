@@ -27,13 +27,6 @@ ISSUE_URL = "https://github.com/googlefonts/fontbakery/issues"
 class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
     """Renders a report as a HTML document."""
 
-    def __init__(self, loglevels,
-                     succinct=None,
-                     **kwd):
-        super().__init__(**kwd)
-        self.succinct = succinct
-        self.loglevels = loglevels
-
     def write(self):
         with open(self.output_file, "w", encoding="utf-8") as fh:
             fh.write(self.get_html())
@@ -115,12 +108,6 @@ class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
 
         body_elements[0:0] = body_top
         return html5_document(body_elements)
-
-    def omit_loglevel(self, msg) -> bool:
-        """Determine if message is below log level."""
-        return self.loglevels and (
-            self.loglevels[0] > fontbakery.checkrunner.Status(msg)
-        )
 
     def html_for_check(self, check) -> str:
         """Return HTML string for complete single check."""

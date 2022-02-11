@@ -18,6 +18,7 @@ from fontbakery.checkrunner import (
             , END
             )
 from fontbakery.reporters import FontbakeryReporter
+from fontbakery.checkrunner import Status
 
 class SerializeReporter(FontbakeryReporter):
     """
@@ -29,9 +30,13 @@ class SerializeReporter(FontbakeryReporter):
     """
 
 
-    def __init__(self, collect_results_by=None
-                     , **kwd):
+    def __init__(self, loglevels,
+                     succinct=None,
+                     collect_results_by=None,
+                     **kwd):
         super().__init__(**kwd)
+        self.succinct = succinct
+        self.loglevels = loglevels
         self._results_by = collect_results_by
         self._items = {}
         self._doc = None
@@ -47,6 +52,12 @@ class SerializeReporter(FontbakeryReporter):
         # If check is None this is `section`
         # otherwise this `check`
         pass
+
+    def omit_loglevel(self, msg) -> bool:
+        """Determine if message is below log level."""
+        return self.loglevels and (
+            self.loglevels[0] > Status(msg)
+        )
 
     def _register(self, event):
         super()._register(event)
