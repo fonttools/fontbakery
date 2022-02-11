@@ -1196,7 +1196,7 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
     """Check license file has good copyright string."""
     import re
     string = license_contents.strip().split('\n')[0].lower()
-    does_match = re.search(r'copyright [0-9]{4}(\-[0-9]{4})? the .* project authors \([^\@]*\)', string)
+    does_match = re.search(EXPECTED_COPYRIGHT_PATTERN, string)
     if does_match:
         yield PASS, "looks good"
     else:
