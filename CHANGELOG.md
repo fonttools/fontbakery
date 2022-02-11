@@ -16,6 +16,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/name/familyname]:** Consider camel-case exceptions (issue #3584)
   - **[com.google.fonts/check/name/fullfontname]:** Consider camel-case exceptions (issue #3584)
   - **[com.google.fonts/check/glyph_coverage]:** Use the correct nam-file for checking coverage of the GF-latin-core glyphset (issue #3583)
+  - **[com.google.fonts/check/font_copyright]:** Allow Google LLC copyright.
+  - **[com.google.fonts/check/license/OFL_copyright]:** Re-use expected copyright format.
 
 #### Migrations
   - **[com.google.fonts/check/transformed_components]:** moved from `Google Fonts` profile to `Universal` profile. It is not strictly a Google Fonts related check as transformed components cause problems in various rendering environments. (issue #3588)
