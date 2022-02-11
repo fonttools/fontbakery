@@ -121,7 +121,7 @@ class HTMLReporter(SerializeReporter):
         content = unindent_rationale(check['rationale'], checkid)
         return cmarkgfm.markdown_to_html(
                 content, options=cmarkgfmOptions.CMARK_OPT_UNSAFE
-            )
+        )
 
     def log_html(self, log) -> str:
         """Return single check sub-result string as HTML or not if below log
