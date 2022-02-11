@@ -8,13 +8,6 @@ LOGLEVELS=["ERROR","FAIL","WARN","SKIP","INFO","PASS","DEBUG"]
 
 class GHMarkdownReporter(SerializeReporter):
 
-    def __init__(self, loglevels,
-                     succinct=None,
-                     **kwd):
-        super().__init__(**kwd)
-        self.succinct = succinct
-        self.loglevels = loglevels
-
     def write(self):
         with open(self.output_file, "w") as fh:
             fh.write(self.get_markdown())
@@ -81,10 +74,6 @@ class GHMarkdownReporter(SerializeReporter):
                                                                 check["result"],
                                                                 check["description"]),
                                       f"\n* {github_search_url}\n{rationale}\n{logs}")
-
-    def omit_loglevel(self, msg):
-        return self.loglevels and (self.loglevels[0] > Status(msg))
-
 
     def deduce_profile_from_section_name(self, section):
         # This is very hacky!
