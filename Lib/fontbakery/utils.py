@@ -122,6 +122,13 @@ def unindent_rationale(rationale, checkid=None):
     return content
 
 
+def html5_collapsible(summary, details) -> str:
+    """Return nestable, collapsible <detail> tag for check grouping and sub-
+    results."""
+
+    return f"<details><summary>{summary}</summary><div>{details}</div></details>"
+
+
 def split_camel_case(camelcase):
     result = []
     word = ""

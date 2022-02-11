@@ -8,8 +8,8 @@ from cmarkgfm.cmark import Options as cmarkgfmOptions
 
 
 import fontbakery.checkrunner
-import fontbakery.reporters.serialize
-from fontbakery.utils import unindent_rationale
+from fontbakery.reporters.serialize import SerializeReporter
+from fontbakery.utils import unindent_rationale, html5_collapsible
 
 LOGLEVELS = ["ERROR", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]
 EMOTICON = {
@@ -24,7 +24,7 @@ EMOTICON = {
 ISSUE_URL = "https://github.com/googlefonts/fontbakery/issues"
 
 
-class HTMLReporter(fontbakery.reporters.serialize.SerializeReporter):
+class HTMLReporter(SerializeReporter):
     """Renders a report as a HTML document."""
 
     def write(self):
@@ -210,13 +210,6 @@ def html5_document(body_elements) -> str:
                     {body}
                     </body>
                 </html>"""
-
-
-def html5_collapsible(summary, details) -> str:
-    """Return nestable, collapsible <detail> tag for check grouping and sub-
-    results."""
-
-    return f"<details><summary>{summary}</summary><div>{details}</div></details>"
 
 
 def summary_table(
