@@ -5892,26 +5892,51 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
         In order to prevent tofu from being seen on fonts.google.com, this check verifies that all samples provided on METADATA.pb can be properly rendered by the font.
     """,
     conditions = ["family_metadata"],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/3419',
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/3419',
+                'https://github.com/googlefonts/fontbakery/issues/3605']
 )
 def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     """Check samples can be rendered."""
     from fontbakery.utils import can_shape
-
-    if not family_metadata.sample_glyphs:
-       yield SKIP,\
-             Message('no-samples',
-                     'No sample_glyphs on METADATA.pb')
-       return
+    from gflanguages import lang_support
 
     passed = True
-    for name, glyphs in family_metadata.sample_glyphs.items():
-        if not can_shape(ttFont, glyphs):
-            passed = False
-            yield FAIL,\
-                  Message('sample-glyphs',
-                          f"Font can't render the following sample glyphs:\n"
-                          f"'{name}': '{glyphs}'")
+    if not family_metadata.sample_glyphs:
+       passed = False
+       yield INFO,\
+             Message('no-samples',
+                     'No sample_glyphs on METADATA.pb')
+    else:
+        for name, glyphs in family_metadata.sample_glyphs.items():
+            if not can_shape(ttFont, glyphs):
+                passed = False
+                yield FAIL,\
+                      Message('sample-glyphs',
+                              f"Font can't render the following sample glyphs:\n"
+                              f"'{name}': '{glyphs}'")
+
+    languages = lang_support.LoadLanguages()
+    for lang in family_metadata.languages:
+        # Note: checking agains all samples often results in
+        #       a way too verbose output. That's why I only left
+        #       the "tester" string for now.
+        SAMPLES = {
+            #'styles': languages[lang].sample_text.styles,
+            'tester': languages[lang].sample_text.tester,
+            #'specimen_16': languages[lang].sample_text.specimen_16,
+            #'specimen_21': languages[lang].sample_text.specimen_21,
+            #'specimen_32': languages[lang].sample_text.specimen_32,
+            #'specimen_36': languages[lang].sample_text.specimen_36,
+            #'specimen_48': languages[lang].sample_text.specimen_48
+        }
+        for sample_type, sample_text in SAMPLES.items():
+            if not can_shape(ttFont, sample_text):
+                passed = False
+                yield FAIL,\
+                      Message('sample-text',
+                              f'Font can\'t render "{lang}" sample text:\n'
+                              f'"{sample_text}"\n')
+
     if passed:
        yield PASS, "OK."
 
