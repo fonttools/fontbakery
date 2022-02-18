@@ -717,6 +717,7 @@ def GFAxisRegistry():
 
     for axis in ["casual.textproto",
                  "cursive.textproto",
+                 "fill.textproto",
                  "flair.textproto",
                  "grade.textproto",
                  "italic.textproto",
