@@ -4054,7 +4054,8 @@ def test_check_metadata_can_render_samples():
 
     # Cabin's METADATA.pb does not have sample_glyphs entry
     metadata_file = TEST_FILE("cabin/METADATA.pb")
-    assert_SKIP(check(metadata_file))
+    assert_results_contain(check(metadata_file),
+                           INFO, 'no-samples')
 
     # We add a small set of latin glyphs
     # that we're sure Cabin supports:
@@ -4068,8 +4069,6 @@ def test_check_metadata_can_render_samples():
                            FAIL, 'sample-glyphs')
 
     # TODO: expand the check to also validate sample_text fields
-    # TODO: maybe also fetch samples from the language textprotos
-    #       published on the google/fonts git repo
 
 
 def test_check_description_urls():

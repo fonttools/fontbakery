@@ -7,6 +7,7 @@ defcon==0.10.0
 dehinter==4.0.0
 fontTools[ufo,lxml,unicode]==4.29.1
 font-v==2.1.0
+gflanguages==0.2.0
 glyphsets==0.2.1
 lxml==4.8.0
 opentype-sanitizer==8.2.1

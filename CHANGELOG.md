@@ -6,6 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Noteworthy code-changes
   - On the GitHub Markdown reporter, checks which produce all the same output for a range of fonts are now automatically clustered into a family check result. (PR #3610)
 
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/can_render_samples]:** Check that the fonts can render the sample texts for all languages specified on METADATA.pb, by using the new `gflanguages` module (issue #3605)
+
 
 ## 0.8.7 (2022-Feb-17)
 ### Noteworthy code-changes
