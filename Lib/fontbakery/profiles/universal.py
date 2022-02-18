@@ -1429,11 +1429,13 @@ def com_google_fonts_check_transformed_components(ttFont):
 )
 def com_google_fonts_check_dotted_circle(ttFont, config):
     """Ensure dotted circle glyph is present and can attach marks."""
-    from fontbakery.utils import bullet_list, is_complex_shaper_font
+    from fontbakery.utils import (bullet_list,
+                                  is_complex_shaper_font)
 
     mark_glyphs = []
     if "GDEF" in ttFont and hasattr(ttFont["GDEF"].table, "GlyphClassDef"):
       mark_glyphs = [k for k, v in ttFont["GDEF"].table.GlyphClassDef.classDefs.items() if v == 3]
+
     # Only check for encoded
     mark_glyphs = set(mark_glyphs) & set(ttFont.getBestCmap().values())
     nonspacing_mark_glyphs = [g for g in mark_glyphs if ttFont["hmtx"][g][0] == 0]
@@ -1445,15 +1447,17 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
     if 0x25CC not in ttFont.getBestCmap():
         # How bad is this?
         if is_complex_shaper_font(ttFont):
-            yield FAIL, Message('missing-dotted-circle-complex',
+            yield FAIL,\
+                  Message('missing-dotted-circle-complex',
                           "No dotted circle glyph present and font uses a complex shaper")
         else:
-            yield WARN, Message('missing-dotted-circle',
+            yield WARN,\
+                  Message('missing-dotted-circle',
                           "No dotted circle glyph present")
         return
 
-    # Check they all attach to dotted circle if they attach to
-    # something else
+    # Check they all attach to dotted circle
+    # if they attach to something else
     dotted_circle = ttFont.getBestCmap()[0x25CC]
     attachments = {dotted_circle: []}
     does_attach = {}
@@ -1464,6 +1468,7 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
                     xt.SubTable = [xt.ExtSubTable]
                     xt.LookupType = xt.ExtSubTable.LookupType
                     find_mark_base(xt, attachments)
+
             if lookup.LookupType == 4:
                 # Assume all-to-all
                 for st in lookup.SubTable:
@@ -1479,9 +1484,12 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
     for g in nonspacing_mark_glyphs:
         if g in does_attach and g not in attachments[dotted_circle]:
             unattached.append(g)
+
     if unattached:
-        yield FAIL, Message("unattached-dotted-circle-marks",
-            "The following glyphs could not be attached to the dotted circle glyph:\n"+ bullet_list(config, unattached))
+        yield FAIL,\
+              Message("unattached-dotted-circle-marks",
+                      f"The following glyphs could not be attached to the dotted circle glyph:\n"
+                      f"{bullet_list(config, unattached)}")
     else:
         yield PASS, "All marks were anchored to dotted circle"
 
