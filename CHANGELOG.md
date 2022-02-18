@@ -2,15 +2,16 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## 0.8.7 (2022-Feb-??)
+## 0.8.7 (2022-Feb-17)
 ### Noteworthy code-changes
-  - The `--succinct` flag now generates succinct HTML and MD reports.
+  - The `--succinct` flag now generates succinct HTML and MD reports. (PR #3608)
 
 ### New Checks
 #### Added to the Fontwerk Profile
   - Include most of the `googlefonts` profile checks. (PR #3579)
-  - **[com.fontwerk/check/vendor_id]:** Vendor ID must for 'WERK' on FontWerk fonts. (PR #3579)
+  - **[com.fontwerk/check/vendor_id]:** Vendor ID must be 'WERK' on FontWerk fonts. (PR #3579)
   - **[com.fontwerk/check/weight_class_fvar]:** usWeightclass must match fvar default value. (PR #3579)
+
 #### Added to the Universal Profile
   - **[com.google.fonts/check/dotted_circle]:** Check dotted circle is present and correct (issue #3600)
 
@@ -19,8 +20,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/name/familyname]:** Consider camel-case exceptions (issue #3584)
   - **[com.google.fonts/check/name/fullfontname]:** Consider camel-case exceptions (issue #3584)
   - **[com.google.fonts/check/glyph_coverage]:** Use the correct nam-file for checking coverage of the GF-latin-core glyphset (issue #3583)
-  - **[com.google.fonts/check/font_copyright]:** Allow Google LLC copyright.
-  - **[com.google.fonts/check/license/OFL_copyright]:** Re-use expected copyright format.
+  - **[com.google.fonts/check/font_copyright]:** Allow Google LLC copyright. These are use in Noto fonts. (PR #3607)
+  - **[com.google.fonts/check/license/OFL_copyright]:** Re-use expected copyright format. (PR #3607)
+  - **[com.google.fonts/check/metadata/reserved_font_name]:** Added support for an RFN Exception allow-list, but it is kept empty for now while we review potential exceptions (issues #3589 and #3612)
+  - **[com.google.fonts/check/name/rfn]:** RFN Exception allow-list (same as above)
 
 #### Migrations
   - **[com.google.fonts/check/transformed_components]:** moved from `Google Fonts` profile to `Universal` profile. It is not strictly a Google Fonts related check as transformed components cause problems in various rendering environments. (issue #3588)
@@ -31,7 +34,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - We now ensure that version 0.4.0 of our `collidoscope` dependency is not used because it had a bug that failed to detect an `ïï` collision on Nunito Black. (issues #3556)
 
 ### New Profile
-  - Olli Meier (@moontypespace) contributed a new profile for Fontwerk, https://fontwerk.com/
+  - Olli Meier (@moontypespace) contributed a new profile for Fontwerk, https://fontwerk.com/ (PR #3546)
 
 ### New Checks
 #### Added to the Fontwerk Profile
@@ -56,8 +59,6 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/grade_reflow]:** fix AttributeError: `'NoneType'` object has no attribute `'StartSize'` (issue #3566)
   - **[com.google.fonts/check/varfont/grade_reflow]:** Cleanup log message output: use a set (instead of a list) in order to eliminate multiple reporting of the same glyphs (issue #3561)
   - **[com.google.fonts/check/metadata/os2_weightclass]:** Improve wording of log messages to make the reasoning of expected values clearer to the users (issue #2935)
-  - **[com.google.fonts/check/metadata/reserved_font_name]:** RFN Exception allow-list (issue #3589)
-  - **[com.google.fonts/check/name/rfn]:** RFN Exception allow-list (issue #3589)
 
 
 ## 0.8.5 (2022-Jan-13)
