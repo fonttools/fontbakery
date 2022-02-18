@@ -19,6 +19,9 @@ Continuous integration testing is performed on GitHub Actions. Test jobs can be 
 Releases to PyPI are performed by running the following commands (with the proper version number and date):
 
 ```sh
+# These are build/release dependencies:
+pip3 install build twine
+
 # Update the local copy
 git checkout main
 git fetch upstream
@@ -81,11 +84,9 @@ git tag -a v0.8.2 -m "Font Bakery version 0.8.2 (2021-Sep-01)"
 git push upstream --tags
 
 # create the package
-pip install build
-python -m build
+python3 -m build
 
 # and finally upload the new package to PyPI
-pip install twine
 python3 -m twine upload dist/*
 
 # Close the current milestone on the GitHub issue tracker
