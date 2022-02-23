@@ -197,7 +197,7 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2520'
 )
 def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
-    """The variable font 'wdth' (Weight) axis coordinate
+    """The variable font 'wdth' (Width) axis coordinate
        must be within spec range of 1 to 1000 on all instances."""
 
     Failed = False
