@@ -795,8 +795,10 @@ def com_google_fonts_check_ttx_roundtrip(font):
     """Checking with fontTools.ttx"""
     from fontTools import ttx
     import sys
+    import uuid
     ttFont = ttx.TTFont(font)
     failed = False
+    xml_file = f"{uuid.uuid4().hex}.xml"
 
     class TTXLogger:
         msgs = []
@@ -818,7 +820,6 @@ def com_google_fonts_check_ttx_roundtrip(font):
     from xml.parsers.expat import ExpatError
     try:
         logger = TTXLogger()
-        xml_file = font + ".xml"
         ttFont.saveXML(xml_file)
         export_error_msgs = logger.msgs
 
@@ -830,7 +831,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
                 yield FAIL, msg.strip()
 
         f = ttx.TTFont()
-        f.importXML(font + ".xml")
+        f.importXML(xml_file)
         import_error_msgs = [msg for msg in logger.msgs
                              if msg not in export_error_msgs]
 
