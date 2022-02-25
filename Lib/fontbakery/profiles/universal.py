@@ -795,10 +795,11 @@ def com_google_fonts_check_ttx_roundtrip(font):
     """Checking with fontTools.ttx"""
     from fontTools import ttx
     import sys
-    import uuid
+    import tempfile
     ttFont = ttx.TTFont(font)
     failed = False
-    xml_file = f"{uuid.uuid4().hex}.xml"
+    fd, xml_file = tempfile.mkstemp()
+    os.close(fd)
 
     class TTXLogger:
         msgs = []
