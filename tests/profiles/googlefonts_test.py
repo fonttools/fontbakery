@@ -4104,3 +4104,36 @@ def test_check_metadata_unsupported_subsets():
     md.subsets.extend(["cyrillic"])
     assert_results_contain(check(font, {"family_metadata": md}),
                            WARN, 'unsupported-subset')
+
+
+def test_check_metadata_category_hints():
+    """ Check if category on METADATA.pb matches what can be inferred from the family name. """
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/category_hints")
+
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(font),
+                "with a familyname without any of the keyword hints...")
+
+    md = check["family_metadata"]
+    md.name = "SeaweedScript"
+    md.category = "DISPLAY"
+    assert_results_contain(check(font, {"family_metadata": md}),
+                           WARN, 'inferred-category',
+                           f'with a bad category "{md.category}" for familyname "{md.name}"...')
+
+    md.name = "RedHatDisplay"
+    md.category = "SANS_SERIF"
+    assert_results_contain(check(font, {"family_metadata": md}),
+                           WARN, 'inferred-category',
+                           f'with a bad category "{md.category}" for familyname "{md.name}"...')
+
+    md.name = "SeaweedScript"
+    md.category = "HANDWRITING"
+    assert_PASS(check(font, {"family_metadata": md}),
+                f'with a good category "{md.category}" for familyname "{md.name}"...')
+
+    md.name = "RedHatDisplay"
+    md.category = "DISPLAY"
+    assert_PASS(check(font, {"family_metadata": md}),
+                f'with a good category "{md.category}" for familyname "{md.name}"...')

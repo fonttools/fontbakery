@@ -79,7 +79,8 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/designer_profiles',
     'com.google.fonts/check/metadata/family_directory_name',
     'com.google.fonts/check/metadata/can_render_samples',
-    'com.google.fonts/check/metadata/unsupported_subsets'
+    'com.google.fonts/check/metadata/unsupported_subsets',
+    'com.google.fonts/check/metadata/category_hints'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -5938,6 +5939,45 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
                               f'"{sample_text}"\n')
 
     if passed:
+       yield PASS, "OK."
+
+
+@check(
+    id = "com.google.fonts/check/metadata/category_hints",
+    rationale = """
+        Sometimes the font familyname contains words that hint at which is the most likely correct category to be declared on METADATA.pb
+    """,
+    conditions = ["family_metadata"],
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3624'
+)
+def com_google_fonts_check_metadata_category_hint(family_metadata):
+    """Check if category on METADATA.pb matches what can be inferred from the family name."""
+
+    HINTS = {
+        "SANS_SERIF": ["Grotesk",
+                       "Grotesque"],
+        "SERIF": ["Old Style",
+                  "Transitional",
+                  "Garamond"],
+        "DISPLAY": ["Display"],
+        "HANDWRITING": ["Hand",
+                        "Script"]
+    }
+
+    inferred_category = None
+    for category, hints in HINTS.items():
+        for hint in hints:
+            if hint in family_metadata.name:
+                inferred_category = category
+                break
+
+    if (inferred_category is not None and
+        not family_metadata.category == inferred_category):
+       yield WARN,\
+             Message('inferred-category',
+                     f'Familyname seems to hint at "{inferred_category}" but'
+                     f' METADATA.pb declares it as "{family_metadata.category}".')
+    else:
        yield PASS, "OK."
 
 
