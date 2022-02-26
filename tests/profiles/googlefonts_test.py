@@ -4116,24 +4116,24 @@ def test_check_metadata_category_hints():
                 "with a familyname without any of the keyword hints...")
 
     md = check["family_metadata"]
-    md.name = "SeaweedScript"
+    md.name = "Seaweed Script"
     md.category = "DISPLAY"
     assert_results_contain(check(font, {"family_metadata": md}),
                            WARN, 'inferred-category',
                            f'with a bad category "{md.category}" for familyname "{md.name}"...')
 
-    md.name = "RedHatDisplay"
+    md.name = "Red Hat Display"
     md.category = "SANS_SERIF"
     assert_results_contain(check(font, {"family_metadata": md}),
                            WARN, 'inferred-category',
                            f'with a bad category "{md.category}" for familyname "{md.name}"...')
 
-    md.name = "SeaweedScript"
+    md.name = "Seaweed Script"
     md.category = "HANDWRITING"
     assert_PASS(check(font, {"family_metadata": md}),
                 f'with a good category "{md.category}" for familyname "{md.name}"...')
 
-    md.name = "RedHatDisplay"
+    md.name = "Red Hat Display"
     md.category = "DISPLAY"
     assert_PASS(check(font, {"family_metadata": md}),
                 f'with a good category "{md.category}" for familyname "{md.name}"...')

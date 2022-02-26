@@ -5954,11 +5954,14 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
     """Check if category on METADATA.pb matches what can be inferred from the family name."""
 
     HINTS = {
-        "SANS_SERIF": ["Grotesk",
+        "SANS_SERIF": ["Sans",
+                       "Grotesk",
                        "Grotesque"],
         "SERIF": ["Old Style",
                   "Transitional",
-                  "Garamond"],
+                  "Garamond",
+                  "Serif",
+                  "Slab"],
         "DISPLAY": ["Display"],
         "HANDWRITING": ["Hand",
                         "Script"]
