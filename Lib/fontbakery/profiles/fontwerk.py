@@ -167,7 +167,7 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
     """Checking if STAT entries matches fvar and vice versa."""
 
     if 'STAT' not in ttFont:
-        return FAIL, Message("missing-stat-table", f"Missing STAT table in variable font.")
+        return FAIL, Message("missing-stat-table", "Missing STAT table in variable font.")
 
     fvar = ttFont['fvar']
     name = ttFont['name']
@@ -177,14 +177,14 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
         if instance_name is None:
             yield FAIL, Message("missing-name-id",
                                  f"The name ID {ins.subfamilyNameID} used in an "
-                                 f"fvar instance is missing in the name table.")
+                                 "fvar instance is missing in the name table.")
             continue
 
         for axis_tag, value in ins.coordinates.items():
             if not is_covered_in_stat(ttFont, axis_tag, value):
                 yield FAIL, Message("missing-fvar-instance-axis-value",
                                     f"{instance_name}: '{axis_tag}' axis value '{value}' "
-                                    f"missing in STAT table.")
+                                    "missing in STAT table.")
 
         # TODO: Compare fvar instance name with constructed STAT table name.
 
