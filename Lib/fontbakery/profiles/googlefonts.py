@@ -5899,7 +5899,7 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
 def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     """Check samples can be rendered."""
     from fontbakery.utils import can_shape
-    from gflanguages import lang_support
+    from gflanguages import LoadLanguages
 
     passed = True
     if not family_metadata.sample_glyphs:
@@ -5916,7 +5916,7 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
                               f"Font can't render the following sample glyphs:\n"
                               f"'{name}': '{glyphs}'")
 
-    languages = lang_support.LoadLanguages()
+    languages = LoadLanguages()
     for lang in family_metadata.languages:
         # Note: checking agains all samples often results in
         #       a way too verbose output. That's why I only left
