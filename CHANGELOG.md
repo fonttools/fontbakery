@@ -8,6 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - Use the new `axisregistry` python module (Google Fonts Variable Font Axis Registry data-set) to eliminate code & data duplication across tools and repos (issue #3633)
 
 ### New Checks
+#### Added to the FontWerk Profile
+  - **[com.fontwerk/check/inconsistencies_between_fvar_stat]:** Check for inconsistencies in names and values between the fvar instances and STAT table which may cause issues in apps like Adobe InDesign. (PR #3636)
+
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/category_hints]:** Check if category on METADATA.pb matches what can be inferred from keywords in the family name. (issue #3624)
 
