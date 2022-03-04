@@ -75,7 +75,7 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
                 'https://github.com/google/fonts/issues/215',
                 'https://github.com/googlefonts/fontbakery/issues/2638']
 )
-def com_google_fonts_check_post_table_version(ttFont, is_cff):
+def com_google_fonts_check_post_table_version(ttFont):
     """Font has correct post table version?"""
     formatType = ttFont['post'].formatType
     is_cff = "CFF " in ttFont
