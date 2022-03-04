@@ -47,6 +47,7 @@ FONTWERK_PROFILE_CHECKS = \
         'com.fontwerk/check/no_mac_entries',
         'com.fontwerk/check/vendor_id',
         'com.fontwerk/check/weight_class_fvar',
+        'com.fontwerk/check/inconsistencies_between_fvar_stat',
     ]
 
 
@@ -124,6 +125,68 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
 
     else:
         yield PASS, f"OS/2 usWeightClass '{os2_value}' matches fvar default value."
+
+
+def is_covered_in_stat(ttFont, axis_tag, value):
+    stat_table = ttFont['STAT'].table
+    for ax_value in stat_table.AxisValueArray.AxisValue:
+        axis_tag_stat = stat_table.DesignAxisRecord.Axis[ax_value.AxisIndex].AxisTag
+        if axis_tag != axis_tag_stat:
+            continue
+
+        stat_value = []
+        if ax_value.Format in (1, 3):
+            stat_value.append(ax_value.Value)
+
+        if ax_value.Format == 3:
+            stat_value.append(ax_value.LinkedValue)
+
+        if ax_value.Format == 2:
+            stat_value.append(ax_value.NominalValue)
+
+        if ax_value.Format == 4:
+            # TODO: Need to implement
+            #  locations check as well
+            pass
+
+        if value in stat_value:
+            return True
+
+    return False
+
+
+@check(
+    id = 'com.fontwerk/check/inconsistencies_between_fvar_stat',
+    rationale = """
+        Check for inconsistencies in names and values between the fvar instances and STAT table.
+        Inconsistencies may cause issues in apps like Adobe InDesign.
+    """,
+    conditions=["is_variable_font"],
+)
+def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
+    """Checking if STAT entries matches fvar and vice versa."""
+
+    if 'STAT' not in ttFont:
+        return FAIL, Message("missing-stat-table", f"Missing STAT table in variable font.")
+
+    fvar = ttFont['fvar']
+    name = ttFont['name']
+
+    for ins in fvar.instances:
+        instance_name = name.getDebugName(ins.subfamilyNameID)
+        if instance_name is None:
+            yield FAIL, Message("missing-name-id",
+                                 f"The name ID {ins.subfamilyNameID} used in an "
+                                 f"fvar instance is missing in the name table.")
+            continue
+
+        for axis_tag, value in ins.coordinates.items():
+            if not is_covered_in_stat(ttFont, axis_tag, value):
+                yield FAIL, Message("missing-fvar-instance-axis-value",
+                                    f"{instance_name}: '{axis_tag}' axis value '{value}' "
+                                    f"missing in STAT table.")
+
+        # TODO: Compare fvar instance name with constructed STAT table name.
 
 
 profile.auto_register(globals(),
