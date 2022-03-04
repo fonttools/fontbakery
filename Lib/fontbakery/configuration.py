@@ -5,7 +5,8 @@ import yaml
 class Configuration(dict):
     def __init__(self, **kwargs):
         super().__init__(kwargs)
-        for required_arg in ["custom_order", "explicit_checks", "exclude_checks"]:
+        for required_arg in ["custom_order", "explicit_checks",
+                             "exclude_checks", "full_lists"]:
             if required_arg not in self:
                 self[required_arg] = None
 
