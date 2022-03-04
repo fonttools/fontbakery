@@ -55,25 +55,20 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
 @check(
     id = 'com.google.fonts/check/post_table_version',
     rationale = """
-        post format 2.5 was deprecated in OpenType 1.3 and should not be used.
+        Format 2.5 of the 'post' table was deprecated in OpenType 1.3 and should not be used.
 
-        According to Thomas Phinney, the possible problem with post format 3 is that under the right combination of 
-        circumstances, one can generate PDF from a font with a post format 3 table, and not have accurate backing store
-        for any text that has non-default glyphs for a given codepoint. It will look fine but not be searchable. This
-        can affect Latin text with high-end typography, and some complex script writing systems, especially with
-        higher-quality fonts. Those circumstances generally involve creating a PDF by first printing a PostScript stream
-        to disk, and then creating a PDF from that stream without reference to the original source document.  There are
-        some workflows where this applies,but these are not common use cases.
+        According to Thomas Phinney, the possible problem with post format 3 is that under the right combination of circumstances, one can generate PDF from a font with a post format 3 table, and not have accurate backing store for any text that has non-default glyphs for a given codepoint. It will look fine but not be searchable. This can affect Latin text with high-end typography, and some complex script writing systems, especially with
+        higher-quality fonts. Those circumstances generally involve creating a PDF by first printing a PostScript stream to disk, and then creating a PDF from that stream without reference to the original source document. There are some workflows where this applies,but these are not common use cases.
 
-        Apple recommends against use of post format version 4 as "no longer necessary and should be avoided". Please
-        see the Apple TrueType reference documentation for additional details. 
+        Apple recommends against use of post format version 4 as "no longer necessary and should be avoided". Please see the Apple TrueType reference documentation for additional details. 
         https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6post.html
 
         Acceptable post format versions are 2 and 3 for TTF and OTF CFF2 builds, and post format 3 for CFF builds.
     """,
     proposal = ['legacy:check/015',
                 'https://github.com/google/fonts/issues/215',
-                'https://github.com/googlefonts/fontbakery/issues/2638']
+                'https://github.com/googlefonts/fontbakery/issues/2638',
+                'https://github.com/googlefonts/fontbakery/issues/3635']
 )
 def com_google_fonts_check_post_table_version(ttFont):
     """Font has correct post table version?"""
