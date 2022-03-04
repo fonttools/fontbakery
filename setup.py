@@ -69,7 +69,7 @@ setup(
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
         'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
         'font-v',
-        'gflanguages>=0.2.0', # 0.1.1 was under the GPLv3 (see: https://github.com/googlefonts/fontbakery/pull/3617#issuecomment-1044898812)
+        'gflanguages>=0.3.0', # there was an api simplification/update on v0.3.0 (see https://github.com/googlefonts/gflanguages/pull/7)
         'glyphsets',
         'lxml',
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
