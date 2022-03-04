@@ -15,6 +15,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/category_hints]:** Check if category on METADATA.pb matches what can be inferred from keywords in the family name. (issue #3624)
 
 ### Changes to existing checks
+#### On the OpenType Profile
+  - **[com.google.fonts/check/post_table_version]:** Updated policy on acceptable post table version. Downgraded the check from FAIL to WARN-level (according to discussions at issue #3635)
+
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/can_render_samples]:** Check that the fonts can render the sample texts for all languages specified on METADATA.pb, by using the new `gflanguages` module (issue #3605)
 

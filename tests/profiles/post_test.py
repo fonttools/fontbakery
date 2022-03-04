@@ -54,19 +54,77 @@ def test_check_family_underline_thickness(mada_ttFonts):
 
 
 def test_check_post_table_version():
-    """ Font has correct post table version (2 for TTF, 3 for OTF)? """
+    """ Font has acceptable post format version table? """
     check = CheckTester(opentype_profile,
                         "com.google.fonts/check/post_table_version")
 
-    # our reference Mada family is know to be good here.
-    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    assert_PASS(check(ttFont),
-                'with good font.')
+    # create mock fonts for post format testing
 
-    # modify the post table version
-    ttFont['post'].formatType = 3
+    base_tt_font = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
-    assert_results_contain(check(ttFont),
+    #
+    # post format 2 mock font test
+    #
+    mock_post_2 = base_tt_font
+
+    mock_post_2["post"].formatType = 2
+    mock_post_2.reader.file.name = "post 2 mock font"
+
+    assert_PASS(check(mock_post_2), reason="with a post 2 mock font")
+
+    #
+    # post format 2.5 mock font test
+    #
+    mock_post_2_5 = base_tt_font
+
+    mock_post_2_5["post"].formatType = 2.5
+    mock_post_2_5.reader.file.name = "post 2.5 mock font"
+
+    assert_results_contain(check(mock_post_2_5),
                            FAIL, "post-table-version",
-                           'with fonts that diverge on the fontRevision field value.')
+                           'with a font that has post format 2.5 table')
+
+    #
+    # post format 3 mock font test
+    #
+    mock_post_3 = base_tt_font
+
+    mock_post_3["post"].formatType = 3
+    mock_post_3.reader.file.name = "post 3  mock font"
+
+    assert_results_contain(check(mock_post_3),
+                           WARN, "post-table-version",
+                           'with a font that has post format 3 table')
+
+    #
+    # post format 4 mock font test
+    #
+    mock_post_4 = base_tt_font
+
+    mock_post_4["post"].formatType = 4
+    mock_post_4.reader.file.name = "post 4 mock font"
+
+    assert_results_contain(check(mock_post_4),
+                           FAIL, "post-table-version",
+                           'with a font that has post format 4 table')
+
+
+    #
+    # post format 2/3 OTF CFF mock font test
+    #
+    mock_cff_post_2 = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
+
+    mock_cff_post_2["post"].formatType = 2
+    assert("CFF " in mock_cff_post_2)
+    assert("CFF2" not in mock_cff_post_2)
+    mock_cff_post_2.reader.file.name = "post 2 CFF mock font"
+
+    assert_results_contain(check(mock_cff_post_2),
+                           FAIL, "post-table-version",
+                           'with a CFF font that has post format 2 table')
+
+    mock_cff_post_3 = mock_cff_post_2
+    mock_cff_post_3["post"].formatType = 3
+
+    assert_PASS(check(mock_cff_post_3), reason="with a post 3 CFF mock font.")
 

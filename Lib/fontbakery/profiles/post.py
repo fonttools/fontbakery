@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS
+from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
@@ -55,32 +55,44 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
 @check(
     id = 'com.google.fonts/check/post_table_version',
     rationale = """
-        Apple recommends against using 'post' table format 3 under most circumstances, as it can create problems with some printer drivers and PDF documents. The savings in disk space usually does not justify the potential loss in functionality.
-        Source: https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6post.html
+        Format 2.5 of the 'post' table was deprecated in OpenType 1.3 and should not be used.
 
-        The CFF2 table does not contain glyph names, so variable OTFs should be allowed to use post table version 2.
+        According to Thomas Phinney, the possible problem with post format 3 is that under the right combination of circumstances, one can generate PDF from a font with a post format 3 table, and not have accurate backing store for any text that has non-default glyphs for a given codepoint. It will look fine but not be searchable. This can affect Latin text with high-end typography, and some complex script writing systems, especially with
+        higher-quality fonts. Those circumstances generally involve creating a PDF by first printing a PostScript stream to disk, and then creating a PDF from that stream without reference to the original source document. There are some workflows where this applies,but these are not common use cases.
 
-        This check expects:
-        - Version 2 for TTF or OTF CFF2 Variable fonts
-        - Version 3 for OTF
+        Apple recommends against use of post format version 4 as "no longer necessary and should be avoided". Please see the Apple TrueType reference documentation for additional details. 
+        https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6post.html
+
+        Acceptable post format versions are 2 and 3 for TTF and OTF CFF2 builds, and post format 3 for CFF builds.
     """,
     proposal = ['legacy:check/015',
                 'https://github.com/google/fonts/issues/215',
-                'https://github.com/googlefonts/fontbakery/issues/2638']
+                'https://github.com/googlefonts/fontbakery/issues/2638',
+                'https://github.com/googlefonts/fontbakery/issues/3635']
 )
-def com_google_fonts_check_post_table_version(ttFont, is_ttf):
+def com_google_fonts_check_post_table_version(ttFont):
     """Font has correct post table version?"""
     formatType = ttFont['post'].formatType
-    is_var = "fvar" in ttFont.keys()
-    is_cff2 = "CFF2" in ttFont.keys()
-    if is_ttf or (is_var and is_cff2):
-        expected = 2
-    else:
-        expected = 3
-    if formatType != expected:
+    is_cff = "CFF " in ttFont
+
+    if is_cff and formatType != 3:
         yield FAIL, \
               Message("post-table-version",
-                      f"Post table should be version {expected}"
-                      f" instead of {formatType}.")
+                      "CFF fonts must contain post format 3 table.")
+    elif not is_cff and formatType == 3:
+        yield WARN, \
+              Message("post-table-version",
+                      "Post table format 3 use has niche use case problems."
+                      "Please review the check rationale for additional details.")
+    elif formatType == 2.5:
+        yield FAIL, \
+              Message("post-table-version",
+                      "Post format 2.5 was deprecated in OpenType 1.3 and should" 
+                      "not be used.")
+    elif formatType == 4:
+        yield FAIL, \
+              Message("post-table-version",
+                      "According to Apple documentation, post format 4 tables are" 
+                      "no longer necessary and should not be used.")
     else:
-        yield PASS, f"Font has post table version {expected}."
+        yield PASS, f"Font has an acceptable post format {formatType} table version."
