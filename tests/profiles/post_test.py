@@ -70,7 +70,7 @@ def test_check_post_table_version():
     mock_post_2["post"].formatType = 2
     mock_post_2.reader.file.name = "post 2 mock font"
 
-    assert_PASS(check(mock_post_2))
+    assert_PASS(check(mock_post_2), reason="with a post 2 mock font")
 
     #
     # post format 2.5 mock font test
@@ -107,4 +107,24 @@ def test_check_post_table_version():
     assert_results_contain(check(mock_post_4),
                            FAIL, "post-table-version",
                            'with a font that has post format 4 table')
+
+
+    #
+    # post format 2/3 OTF CFF mock font test
+    #
+    mock_cff_post_2 = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
+
+    mock_cff_post_2["post"].formatType = 2
+    assert("CFF " in mock_cff_post_2)
+    assert("CFF2" not in mock_cff_post_2)
+    mock_cff_post_2.reader.file.name = "post 2 CFF mock font"
+
+    assert_results_contain(check(mock_cff_post_2),
+                           FAIL, "post-table-version",
+                           'with a CFF font that has post format 2 table')
+
+    mock_cff_post_3 = mock_cff_post_2
+    mock_cff_post_3["post"].formatType = 3
+
+    assert_PASS(check(mock_cff_post_3), reason="with a post 3 CFF mock font.")
 

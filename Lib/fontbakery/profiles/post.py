@@ -69,16 +69,22 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
         see the Apple TrueType reference documentation for additional details. 
         https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6post.html
 
-        Acceptable post format versions are 2 and 3 for TTF and OTF (CFF and CFF2) builds.
+        Acceptable post format versions are 2 and 3 for TTF and OTF CFF2 builds, and post format 3 for CFF builds.
     """,
     proposal = ['legacy:check/015',
                 'https://github.com/google/fonts/issues/215',
                 'https://github.com/googlefonts/fontbakery/issues/2638']
 )
-def com_google_fonts_check_post_table_version(ttFont):
+def com_google_fonts_check_post_table_version(ttFont, is_cff):
     """Font has correct post table version?"""
     formatType = ttFont['post'].formatType
-    if formatType == 3:
+    is_cff = "CFF " in ttFont
+
+    if is_cff and formatType != 3:
+        yield FAIL, \
+              Message("post-table-version",
+                      "CFF fonts must contain post format 3 table.")
+    elif not is_cff and formatType == 3:
         yield WARN, \
               Message("post-table-version",
                       "Post table format 3 use has niche use case problems."
