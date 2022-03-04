@@ -45,8 +45,7 @@ setup(
               'fontbakery.commands',
               'fontbakery.sphinx_extensions'
               ],
-    package_data={'fontbakery': ['data/*.cache',
-                                 'data/*.textproto']},
+    package_data={'fontbakery': ['data/*.cache']},
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Developers',
@@ -59,6 +58,7 @@ setup(
     python_requires='>=3.7',
     setup_requires=['setuptools_scm'],
     install_requires=[
+        'axisregistry',
         'beautifulsoup4',
         'beziers',
         'cmarkgfm',
