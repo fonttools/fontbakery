@@ -69,7 +69,7 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
     passed = True
     for rec in ttFont["name"].names:
         if rec.platformID == 1:
-            yield FAIL, \
+            yield FAIL,\
                   Message("mac-names",
                           f'Please remove name ID {rec.nameID}')
             passed = False
@@ -83,7 +83,7 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
     rationale = """
         Vendor ID must be WERK for Fontwerk fonts.
     """,
-    proposal='https://github.com/googlefonts/fontbakery/pull/3579'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3579'
 )
 def com_fontwerk_check_vendor_id(ttFont):
     """Checking OS/2 achVendID."""
@@ -102,8 +102,8 @@ def com_fontwerk_check_vendor_id(ttFont):
     rationale = """
         According to Microsoft's OT Spec the OS/2 usWeightClass should match the fvar default value.
     """,
-    conditions=["is_variable_font"],
-    proposal='https://github.com/googlefonts/gftools/issues/477'
+    conditions = ["is_variable_font"],
+    proposal = 'https://github.com/googlefonts/gftools/issues/477'
 )
 def com_fontwerk_check_weight_class_fvar(ttFont):
     """Checking if OS/2 usWeightClass matches fvar."""
@@ -118,7 +118,7 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
         return
 
     if os2_value != int(fvar_value):
-        yield FAIL, \
+        yield FAIL,\
               Message("bad-weight-class",
                       f"OS/2 usWeightClass is '{os2_value}', "
                       f"but should match fvar default value '{fvar_value}'.")
@@ -161,13 +161,16 @@ def is_covered_in_stat(ttFont, axis_tag, value):
         Check for inconsistencies in names and values between the fvar instances and STAT table.
         Inconsistencies may cause issues in apps like Adobe InDesign.
     """,
-    conditions=["is_variable_font"],
+    conditions = ["is_variable_font"],
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3636'
 )
 def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
     """Checking if STAT entries matches fvar and vice versa."""
 
     if 'STAT' not in ttFont:
-        return FAIL, Message("missing-stat-table", "Missing STAT table in variable font.")
+        return FAIL,\
+               Message("missing-stat-table",
+                       "Missing STAT table in variable font.")
 
     fvar = ttFont['fvar']
     name = ttFont['name']
@@ -175,16 +178,18 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
     for ins in fvar.instances:
         instance_name = name.getDebugName(ins.subfamilyNameID)
         if instance_name is None:
-            yield FAIL, Message("missing-name-id",
-                                 f"The name ID {ins.subfamilyNameID} used in an "
-                                 "fvar instance is missing in the name table.")
+            yield FAIL,\
+                  Message("missing-name-id",
+                          f"The name ID {ins.subfamilyNameID} used in an "
+                          f"fvar instance is missing in the name table.")
             continue
 
         for axis_tag, value in ins.coordinates.items():
             if not is_covered_in_stat(ttFont, axis_tag, value):
-                yield FAIL, Message("missing-fvar-instance-axis-value",
-                                    f"{instance_name}: '{axis_tag}' axis value '{value}' "
-                                    "missing in STAT table.")
+                yield FAIL,\
+                      Message("missing-fvar-instance-axis-value",
+                              f"{instance_name}: '{axis_tag}' axis value '{value}' "
+                              f"missing in STAT table.")
 
         # TODO: Compare fvar instance name with constructed STAT table name.
 
