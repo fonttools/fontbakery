@@ -40,9 +40,6 @@ git add -p
 # If something changed, commit it:
 git commit -m "Updating cache of vendor IDs list from Microsoft's website"
 
-# Check for updates on the Google Fonts Axis Registry textproto files at https://github.com/google/fonts/tree/main/axisregistry
-# Newest files must be copied and committed at Lib/fontbakery/data/*.textproto
-
 # Check whether ttfautohint has a newer version available at https://sourceforge.net/projects/freetype/files/ttfautohint/
 # and manually update the LATEST_TTFAUTOHINT_VERSION number, if needed:
 vim Lib/fontbakery/constants.py

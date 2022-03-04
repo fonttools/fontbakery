@@ -182,6 +182,7 @@ def metadata_file(family_directory,
         if os.path.exists(pb_file):
             return pb_file
 
+
 @condition
 def family_metadata(metadata_file):
     if not metadata_file:
@@ -700,46 +701,8 @@ def production_metadata():
 
 @condition
 def GFAxisRegistry():
-    from fontbakery.axes_pb2 import AxisProto
-    from fontbakery.utils import get_Protobuf_Message
-    from pkg_resources import resource_filename
-
-    def normalize_name(name):
-        return ''.join(name.split(' '))
-
-    registry = {}
-    def append_AxisMessage(path):
-        axis_dict = {"message": get_Protobuf_Message(AxisProto, path),
-                     "fallbacks": {}}
-        for fb in axis_dict["message"].fallback:
-            axis_dict["fallbacks"][normalize_name(fb.name)] = fb.value
-        registry[axis_dict["message"].tag] = axis_dict
-
-    for axis in ["casual.textproto",
-                 "cursive.textproto",
-                 "fill.textproto",
-                 "flair.textproto",
-                 "grade.textproto",
-                 "italic.textproto",
-                 "monospace.textproto",
-                 "optical_size.textproto",
-                 "slant.textproto",
-                 "softness.textproto",
-                 "volume.textproto",
-                 "weight.textproto",
-                 "width.textproto",
-                 "wonky.textproto",
-                 "x_opaque.textproto",
-                 "x_transparent_figures.textproto",
-                 "x_transparent.textproto",
-                 "y_opaque.textproto",
-                 "y_transparent_ascender.textproto",
-                 "y_transparent_descender.textproto",
-                 "y_transparent_figures.textproto",
-                 "y_transparent_lowercase.textproto",
-                 "y_transparent_uppercase.textproto"]:
-        append_AxisMessage(resource_filename('fontbakery', 'data/' + axis))
-    return registry
+    from axisregistry import AxisRegistry
+    return AxisRegistry()
 
 
 @condition

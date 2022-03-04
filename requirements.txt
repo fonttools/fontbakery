@@ -1,4 +1,5 @@
 --index-url https://pypi.python.org/simple/
+axisregistry==0.1.0
 beautifulsoup4==4.10.0
 beziers==0.4.0
 cmarkgfm==0.7.0
