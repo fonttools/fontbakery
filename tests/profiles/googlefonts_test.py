@@ -4054,7 +4054,8 @@ def test_check_metadata_can_render_samples():
 
     # Cabin's METADATA.pb does not have sample_glyphs entry
     metadata_file = TEST_FILE("cabin/METADATA.pb")
-    assert_SKIP(check(metadata_file))
+    assert_results_contain(check(metadata_file),
+                           INFO, 'no-samples')
 
     # We add a small set of latin glyphs
     # that we're sure Cabin supports:
@@ -4068,8 +4069,6 @@ def test_check_metadata_can_render_samples():
                            FAIL, 'sample-glyphs')
 
     # TODO: expand the check to also validate sample_text fields
-    # TODO: maybe also fetch samples from the language textprotos
-    #       published on the google/fonts git repo
 
 
 def test_check_description_urls():
@@ -4105,3 +4104,36 @@ def test_check_metadata_unsupported_subsets():
     md.subsets.extend(["cyrillic"])
     assert_results_contain(check(font, {"family_metadata": md}),
                            WARN, 'unsupported-subset')
+
+
+def test_check_metadata_category_hints():
+    """ Check if category on METADATA.pb matches what can be inferred from the family name. """
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/category_hints")
+
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(font),
+                "with a familyname without any of the keyword hints...")
+
+    md = check["family_metadata"]
+    md.name = "Seaweed Script"
+    md.category = "DISPLAY"
+    assert_results_contain(check(font, {"family_metadata": md}),
+                           WARN, 'inferred-category',
+                           f'with a bad category "{md.category}" for familyname "{md.name}"...')
+
+    md.name = "Red Hat Display"
+    md.category = "SANS_SERIF"
+    assert_results_contain(check(font, {"family_metadata": md}),
+                           WARN, 'inferred-category',
+                           f'with a bad category "{md.category}" for familyname "{md.name}"...')
+
+    md.name = "Seaweed Script"
+    md.category = "HANDWRITING"
+    assert_PASS(check(font, {"family_metadata": md}),
+                f'with a good category "{md.category}" for familyname "{md.name}"...')
+
+    md.name = "Red Hat Display"
+    md.category = "DISPLAY"
+    assert_PASS(check(font, {"family_metadata": md}),
+                f'with a good category "{md.category}" for familyname "{md.name}"...')

@@ -117,7 +117,7 @@ Here's the output of `fontbakery check-googlefonts -h`:
                             Messages are all status lines within a check.
                             One of: DEBUG, PASS, SKIP, INFO, WARN, FAIL, ERROR.
                             (default: LOGLEVEL)
-      --succinct            This is a slightly more compact and succint output layout for the text terminal.
+      --succinct            This is a slightly more compact and succint output layout.
       -n, --no-progress     In a tty as stdout, don't render the progress indicators.
       -C, --no-colors       No colors for tty output.
       -S, --show-sections   Show section summaries.

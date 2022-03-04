@@ -71,11 +71,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/17ab117a7c4c096d9e2c5ad2f3d354c3c85bbfc0/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/e3238ea66f795cb16b471bbe1a96971dece653b3/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="01/26/2022" />
+<meta name="ms.date" content="02/14/2022" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -86,15 +86,15 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2022-01-26 06:36 PM" />
-<meta name="word_count" content="3924" />
+<meta name="updated_at" content="2022-02-14 06:25 PM" />
+<meta name="word_count" content="3960" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/232e221b.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/bd0a5f0a.site-ltr.css ">
 
 	
 
@@ -142,7 +142,7 @@
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/5cce29c0.deprecation.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d1e58f34.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d61473b1.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -201,7 +201,7 @@ More info					</a>
 </header>		</div>
 
 						<div id="content-header" class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
-					<nav id="breadcrumbs-deprecated-container" class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+					<nav id="breadcrumbs-deprecated-container" class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" role="navigation" aria-label="Breadcrumb">
 						<ul id="page-breadcrumbs-deprecated" class="breadcrumbs-deprecated">
 						</ul>
 					</nav>
@@ -301,7 +301,7 @@ More info					</a>
 						</button>
 						<div class="is-invisible"></div>
 						<div class="is-hidden-tablet level-item is-flexible level-right">
-							<button type="button" class="page-actions-button  button button-clear button-sm is-hidden-tablet has-inner-focus border is-full-height  has-margin-left-small" aria-label="Page Actions" data-bi-name="pageactions">
+							<button type="button" class="page-actions-button  button button-clear button-sm is-hidden-tablet has-inner-focus border is-full-height  margin-left-xxs" aria-label="Page Actions" data-bi-name="pageactions">
 								<span class="icon">
 									<span class="docon docon-more-vertical" aria-hidden="true"></span>
 								</span>
@@ -334,7 +334,7 @@ More info					</a>
 
 						<main id="main" role="main" data-bi-name="content" lang="en-us" dir="ltr">
 							<!-- article-header -->
-							<div id="article-header" class="background-color-body margin-top-xs-tablet margin-bottom-xs" aria-label="content-header" hidden>
+							<div id="article-header" class="background-color-body margin-top-sm-tablet margin-bottom-xs" aria-label="content-header" hidden>
 								<div class="display-flex align-items-center ">
 									<details id="article-header-breadcrumbs-overflow-popover" class="popover" data-for="article-header-breadcrumbs">
 										<summary class="button button-clear button-primary button-sm">
@@ -342,13 +342,13 @@ More info					</a>
 												<span class="docon docon-more"></span>
 											</span>
 										</summary>
-										<ul id="article-header-breadcrumbs-overflow" class="popover-content padding-xs">
+										<div id="article-header-breadcrumbs-overflow" class="popover-content padding-none">
 
-										</ul>
+										</div>
 									</details>
-									<bread-crumbs id="article-header-breadcrumbs" class="overflow-hidden flex-grow-1 margin-right-lg" id="page-breadcrumbs" min-width="0"></bread-crumbs>
+									<bread-crumbs id="article-header-breadcrumbs" class="overflow-hidden flex-grow-1 margin-right-sm margin-right-md-tablet margin-right-lg-desktop" id="page-breadcrumbs"></bread-crumbs>
 
-									<div class="margin-left-auto display-flex flex-wrap-no-wrap align-items-stretch list-style-none">
+									<div id="article-header-page-actions"  class="opacity-none margin-left-auto display-flex flex-wrap-no-wrap align-items-stretch">
 
 										<a
 											id="lang-link-tablet"
@@ -362,7 +362,12 @@ More info					</a>
 											<span class="is-visually-hidden" data-read-in-link-text>Read in English</span>
 										</a>
 
-											<button type="button" class="collection button button-clear button-sm button-primary display-none display-inline-flex-tablet" data-list-type="collection" data-bi-name="collection" title="Add to collection">
+											<button
+												type="button"
+												class="collection button button-clear button-sm button-primary display-none display-inline-flex-tablet"
+												data-list-type="collection"
+												data-bi-name="collection"
+												title="Add to collection">
 												<span class="icon margin-none" aria-hidden="true">
 													<span class="docon docon-circle-addition"></span>
 												</span>
@@ -388,14 +393,21 @@ More info					</a>
 
 
 										
-										<details class="popover popover-right" data-overflow-pair-id="page-breadcrumbs">
+										<details class="popover popover-right" id="article-header-page-actions-overflow">
 											<summary class="justify-content-flex-start button button-clear button-sm button-primary" aria-label="More actions">
 												<span class="icon" aria-hidden="true">
 													<span class="docon docon-more-vertical"></span>
 												</span>
 											</summary>
-											<div class="popover-content padding-none border">
-													<button type="button" class="justify-content-flex-start button-block button-sm button button-clear display-none-tablet" aria-label="Contents" data-bi-name="contents-expand" data-contents-button data-popover-close>
+											<div class="popover-content padding-none">
+													<button
+														data-page-action-item="overflow-mobile"
+														type="button"
+														class="justify-content-flex-start button-block button-sm has-inner-focus button button-clear display-none-tablet"
+														aria-label="Contents"
+														data-bi-name="contents-expand"
+														data-contents-button
+														data-popover-close>
 														<span class="icon">
 															<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
 														</span>
@@ -404,8 +416,10 @@ More info					</a>
 
 												<a
 													id="lang-link-overflow"
-													class="justify-content-flex-start button-sm button button-clear button-block display-none-tablet"
+													class="justify-content-flex-start button-sm has-inner-focus button button-clear button-block display-none-tablet"
 													title="Read in English" data-bi-name="language-toggle"
+													data-page-action-item="overflow-mobile"
+													data-check-hidden="true"
 													data-read-in-link
 													hidden
 													>
@@ -415,7 +429,15 @@ More info					</a>
 													<span data-read-in-link-text>Read in English</span>
 												</a>
 
-													<button type="button" class="collection justify-content-flex-start button button-clear button-sm button-block display-none-tablet" data-list-type="collection" data-bi-name="collection" title="Add to collection" data-popover-close>
+													<button
+														type="button"
+														class="collection justify-content-flex-start button button-clear button-sm has-inner-focus button-block display-none-tablet"
+														data-list-type="collection"
+														data-bi-name="collection"
+														title="Add to collection"
+														data-page-action-item="overflow-mobile"
+														data-check-hidden="true"
+														data-popover-close>
 														<span class="icon" aria-hidden="true">
 															<span class="docon docon-circle-addition"></span>
 														</span>
@@ -426,9 +448,10 @@ More info					</a>
 													<a id="feedback-section-link"
 														aria-label="Feedback"
 														href="#feedback"
-														class="button button-clear button-block button-sm justify-content-flex-start text-decoration-none display-none-tablet"
+														class="button button-clear button-block button-sm has-inner-focus justify-content-flex-start text-decoration-none display-none-tablet"
 														data-bi-name="comments"
-														title="Send feedback about this page">
+														title="Send feedback about this page"
+														data-page-action-item="overflow-mobile">
 														<span class="icon" aria-hidden="true">
 															<span class="docon docon-comment-lines"></span>
 														</span>
@@ -437,28 +460,28 @@ Feedback														</span>
 													</a>
 
 
-													<div aria-hidden="true" class="margin-none display-none-tablet border-top"></div>
+													<div aria-hidden="true" class="margin-none display-none-tablet border-top" data-page-action-item="overflow-all"></div>
 
 													
-														<a class="button button-clear button-sm button-block text-decoration-none justify-content-flex-start share-twitter" data-bi-name="twitter">
+														<a class="button button-clear button-sm has-inner-focus button-block text-decoration-none justify-content-flex-start share-twitter" data-bi-name="twitter" data-page-action-item="overflow-all">
 															<span class="icon" aria-hidden="true">
 																<span class="docon docon-brand-twitter"></span>
 															</span>
 															<span>Twitter</span>
 														</a>
-														<a class="button button-clear button-sm button-block text-decoration-none justify-content-flex-start share-linkedin" data-bi-name="linkedin">
+														<a class="button button-clear button-sm has-inner-focus button-block text-decoration-none justify-content-flex-start share-linkedin" data-bi-name="linkedin" data-page-action-item="overflow-all">
 															<span class="icon" aria-hidden="true">
 																<span class="docon docon-brand-linkedin"></span>
 															</span>
 															<span>LinkedIn</span>
 														</a>
-														<a class="button button-clear button-sm button-block text-decoration-none justify-content-flex-start share-facebook" data-bi-name="facebook">
+														<a class="button button-clear button-sm button-block has-inner-focus text-decoration-none justify-content-flex-start share-facebook" data-bi-name="facebook" data-page-action-item="overflow-all">
 															<span class="icon" aria-hidden="true">
 																<span class="docon docon-brand-facebook"></span>
 															</span>
 															<span>Facebook</span>
 														</a>
-														<a class="button button-clear button-sm button-block text-decoration-none justify-content-flex-start share-email" data-bi-name="email">
+														<a class="button button-clear button-sm button-block has-inner-focus text-decoration-none justify-content-flex-start share-email" data-bi-name="email" data-page-action-item="overflow-all">
 															<span class="icon" aria-hidden="true">
 																<span class="docon docon-mail-message-fill"></span>
 															</span>
@@ -498,66 +521,20 @@ Feedback														</span>
 														<li>
 Article														</li>
 														<li>
-															<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-01-26T18:36:00Z" data-article-date-source="git">01/26/2022</time>
+															<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-02-14T18:25:00Z" data-article-date-source="git">02/14/2022</time>
 														</li>
 																<li class="readingTime">19 minutes to read</li>
 														<li class="contributors-holder">
-															<ul class="facepile margin-left-none is-small" data-bi-name="contributors">
-																				<li class="facepile-item">
-																					<a href="https://github.com/alib-ms" title="alib-ms" aria-label="alib-msGithub profile" data-src="https://github.com/alib-ms.png?size=32" data-contributor-name="alib-ms" class="facepile-item-coin"
-																					>
-																						<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/alib-ms.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																						<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">a</span>
-																					</a>
-																				</li>
-																				<li class="facepile-item">
-																					<a href="https://github.com/PeterCon" title="PeterCon" aria-label="PeterConGithub profile" data-src="https://github.com/PeterCon.png?size=32" data-contributor-name="PeterCon" class="facepile-item-coin"
-																					>
-																						<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/PeterCon.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																						<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">P</span>
-																					</a>
-																				</li>
-																				<li class="facepile-item">
-																					<a href="https://github.com/WorkNihar" title="WorkNihar" aria-label="WorkNiharGithub profile" data-src="https://github.com/WorkNihar.png?size=32" data-contributor-name="WorkNihar" class="facepile-item-coin"
-																					>
-																						<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/WorkNihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																						<span class="facepile-item-coin-text durable-image-fallback facepile-item-blue"aria-hidden="true">W</span>
-																					</a>
-																				</li>
-																				<li class="facepile-item">
-																					<a href="https://github.com/mijacobs" title="mijacobs" aria-label="mijacobsGithub profile" data-src="https://github.com/mijacobs.png?size=32" data-contributor-name="mijacobs" class="facepile-item-coin"
-																					>
-																						<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/mijacobs.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																						<span class="facepile-item-coin-text durable-image-fallback facepile-item-teal"aria-hidden="true">m</span>
-																					</a>
-																				</li>
-																				<li class="facepile-item">
-																					<a href="https://github.com/v-nihar" title="v-nihar" aria-label="v-niharGithub profile" data-src="https://github.com/v-nihar.png?size=32" data-contributor-name="v-nihar" class="facepile-item-coin"
-																					>
-																						<img class="facepile-item-coin-image durable-image" aria-hidden="true" src="https://github.com/v-nihar.png?size=32" role="presentation" onerror="this.className='facepile-item-coin-image durable-image has-error';"/>
-																						<span class="facepile-item-coin-text durable-image-fallback facepile-item-red"aria-hidden="true">v</span>
-																					</a>
-																				</li>
-																		<li class="facepile-item">
-																				<button aria-label="View all contributors" class="facepile-item-more" title="View all contributors">
-																					<div class="facepile-item-coin" aria-hidden="true">
-																						<span class="facepile-item-coin-text" aria-hidden="true">
-																							+1
-																						</span>
-																					</div>
-																				</button>
-																		</li>
-																</ul>
-															</li>
+															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
+																	6 contributors
+															</button>
+														</li>
 											</ul>
 												<div class="dropdown display-flex" data-hide-on-archived>
-													<button class="dropdown-trigger link-button font-size-sm margin-left-none margin-left-xxs-tablet has-no-wrap"
-														aria-controls="is-this-helpful" aria-expanded="false" title="Is this page helpful?">
-Is this page helpful?													</button>
-													<button tabindex="-1" role="presentation" class="dropdown-trigger thumb-rating like link-button padding-xxs padding-right-none" data-binary-rating-response="rating-yes" title="Yes" type="button" data-bi-name="rating-yes" data-bi-sat="1" aria-controls="is-this-helpful" aria-expanded="false" >
+													<button class="dropdown-trigger thumb-rating like link-button padding-xxs padding-right-none" data-binary-rating-response="rating-yes" title="This article is helpful" type="button" data-bi-name="rating-yes" data-bi-sat="1" aria-controls="is-this-helpful" aria-expanded="false" >
 														<span aria-hidden="true" class="icon docon docon-like"></span>
 													</button>
-													<button tabindex="-1" role="presentation" class="dropdown-trigger thumb-rating dislike link-button padding-xxs padding-right-none" data-binary-rating-response="rating-no" title="No" type="button" data-bi-name="rating-no" data-bi-sat="0" aria-controls="is-this-helpful" aria-expanded="false" >
+													<button class="dropdown-trigger thumb-rating dislike link-button padding-xxs padding-right-none" data-binary-rating-response="rating-no" title="This article is not helpful" type="button" data-bi-name="rating-no" data-bi-sat="0" aria-controls="is-this-helpful" aria-expanded="false" >
 														<span aria-hidden="true" class="icon docon docon-dislike"></span>
 													</button>
 													<div class="dropdown-menu border-radius" id="is-this-helpful" role="menu">
@@ -565,9 +542,9 @@ Is this page helpful?													</button>
 
 <div class="padding-xs" data-bi-name="rating" data-binary-rating-container>
     <div class="binary-rating" data-binary-rating-hide-on-submit>
-		<form class="feedback-verbatim-form" data-feedback-verbatim-form id="main-page-rating-container">
+		<form class="feedback-verbatim-form width-250-tablet" data-feedback-verbatim-form id="main-page-rating-container">
         	<div class="binary-rating-buttons">
-				<h3 id="binary-rating-heading" class="font-weight-semibold margin-top-none margin-bottom-xs font-size-h5 has-caret">Please rate your experience</h3>
+				<h3 id="binary-rating-heading" class="font-weight-semibold margin-top-none margin-bottom-xs font-size-h5 has-caret">Is this page helpful?</h3>
 				<div class="buttons">
 					<button class="thumb-rating like margin-right-xxs button button-clear button-sm"
 						data-binary-rating-response="rating-yes"
@@ -601,7 +578,7 @@ Any additional feedback?					</label>
 						class="textarea has-inner-focus"></textarea>
 				</div>
 				<p class="has-line-height-reset has-text-wrap">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
-				<div class="buttons buttons-right margin-top-xs has-margin-right-extra-small">
+				<div class="buttons buttons-right margin-top-xs margin-right-xxs">
 					<button class="submit-rating button button-primary button-filled button-sm" data-bi-name="rating-verbatim" data-binary-rating-submit type="submit" disabled>Submit</button>
 				</div>
 			</div>
@@ -1315,6 +1292,10 @@ Thank you.    </p>
 <tr>
 <td>BLK</td>
 <td><a href="https://blackletra.com/" data-linktype="external">Blackletra Type Foundry</a></td>
+</tr>
+<tr>
+<td>BLKT</td>
+<td><a href="https://biliktufoundry.com/" data-linktype="external">Biliktu Foundry</a></td>
 </tr>
 <tr>
 <td>BLOM</td>
@@ -2061,6 +2042,10 @@ Thank you.    </p>
 <td><a href="http://www.fontbureau.com/" data-linktype="external">The Font Bureau, Inc.</a></td>
 </tr>
 <tr>
+<td>FBRC</td>
+<td><a href="http://fabricatedframes.com" data-linktype="external">Fabric Font</a></td>
+</tr>
+<tr>
 <td>FBRO</td>
 <td>FaizType.</td>
 </tr>
@@ -2103,6 +2088,10 @@ Thank you.    </p>
 <tr>
 <td>FFFF</td>
 <td><a href="https://www.fabiola-mejia.com/" data-linktype="external">Fabiola Mejía</a></td>
+</tr>
+<tr>
+<td>FG</td>
+<td><a href="https://font.gold/" data-linktype="external">Font.Gold</a></td>
 </tr>
 <tr>
 <td>FGOD</td>
@@ -2706,6 +2695,10 @@ Thank you.    </p>
 <td><a href="https://www.i-am-tiago.com/" data-linktype="external">IamTiago</a></td>
 </tr>
 <tr>
+<td>IBCR</td>
+<td><a href="https://ironbirdcreative.com/" data-linktype="external">Ironbird Creative Studio</a></td>
+</tr>
+<tr>
 <td>IBM</td>
 <td><a href="http://www.ibm.com/" data-linktype="external">IBM</a></td>
 </tr>
@@ -2966,6 +2959,10 @@ Thank you.    </p>
 <tr>
 <td>K</td>
 <td><a href="http://www.kvant.org" data-linktype="external">Kvant Type Foundry</a></td>
+</tr>
+<tr>
+<td>K&C</td>
+<td><a href="https://www.kernsandcairns.com/" data-linktype="external">Kerns & Cairns</a></td>
 </tr>
 <tr>
 <td>ka</td>
@@ -3325,6 +3322,10 @@ Thank you.    </p>
 <tr>
 <td>LuAn</td>
 <td>Patrice Provost</td>
+</tr>
+<tr>
+<td>LUDE</td>
+<td><a href="https://www.ludwigtype.de/" data-linktype="external">LudwigType</a></td>
 </tr>
 <tr>
 <td>LuRa</td>
@@ -4272,7 +4273,7 @@ Thank you.    </p>
     </tr>
 <tr>
 <td>R777</td>
-<td>Sanslit</td>
+<td>SanSLit</td>
 </tr>
 <tr>
 <td>RAIN</td>
@@ -4321,6 +4322,10 @@ Thank you.    </p>
 <tr>
 <td>RJST</td>
 <td><a href="https://robjelinskistudios.com/Beth-Ellen/" data-linktype="external">Rob Jelinski Studios, llc.</a></td>
+</tr>
+<tr>
+<td>RJTY</td>
+<td><a href="https://rojotype.com/" data-linktype="external">rojotype</a></td>
 </tr>
 <tr>
 <td>RKFN</td>
@@ -4411,6 +4416,10 @@ Thank you.    </p>
 <td><a href="http://arthy.id/" data-linktype="external">Arthy</a></td>
 </tr>
 <tr>
+<td>RTYP</td>
+<td><a href="https://www.realtype.co.jp/" data-linktype="external">REALTYPE, Inc.</a></td>
+</tr>
+<tr>
 <td>RUDY</td>
 <td>RudynFluffy</td>
 </tr>
@@ -4480,6 +4489,10 @@ Thank you.    </p>
 <tr>
 <td>SAX</td>
 <td><a href="http://www.saxsoft.de/" data-linktype="external">s.a.x. Software gmbh</a></td>
+</tr>
+<tr>
+<td>SB</td>
+<td><a href="http://saschabente.com/" data-linktype="external">Sascha Bente</a></td>
 </tr>
 <tr>
 <td>SbB</td>
@@ -4700,6 +4713,10 @@ Thank you.    </p>
 <tr>
 <td>STC</td>
 <td><a href="http://www.eyebytes.com" data-linktype="external">Sorkin Type Co</a></td>
+</tr>
+<tr>
+<td>STCO</td>
+<td><a href="https://spacetypecontinuum.com/" data-linktype="external">Space Type Continuum</a></td>
 </tr>
 <tr>
 <td>STF</td>
@@ -5288,6 +5305,10 @@ Thank you.    </p>
 <td><a href="https://webhance.net/" data-linktype="external">Webhance</a></td>
 </tr>
 <tr>
+<td>WCYS</td>
+<td><a href="https://wcys.co/" data-linktype="external">WCYS & Co.</a></td>
+</tr>
+<tr>
 <td>WEI</td>
 <td>Wei Huang</td>
 </tr>
@@ -5302,6 +5323,10 @@ Thank you.    </p>
 <tr>
 <td>WILL</td>
 <td><a href="http://www.willerstorfer.com" data-linktype="external">Willerstorfer Font Foundry</a></td>
+</tr>
+<tr>
+<td>WISE</td>
+<td><a href="https://wisetype.nl/" data-linktype="external">WiseType</a></td>
 </tr>
 <tr>
 <td>WISH</td>
@@ -5475,14 +5500,14 @@ Thank you.    </p>
 
         <div class="choose-feedback-buttons margin-top-xs">
 
-			<a class="button feedback-type-product has-margin-bottom-small github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
+			<a class="button feedback-type-product margin-bottom-xxs github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
 				<span aria-hidden="true" class="docon docon-brand-github has-padding-right-extra-small"></span>
 				<span>This page</span>
 			</a>
         </div>
     </div>
 
-    <div class="action-container display-flex justify-content-flex-end has-margin-top-small has-margin-bottom-small">
+    <div class="action-container display-flex justify-content-flex-end margin-block-xxs">
         <a class="view-on-github has-external-link-indicator" data-bi-name="view-on-github" href="https://github.com/MicrosoftDocs/typography-issues/issues">
             <span aria-hidden="true" class="docon docon-brand-github"></span>
             <span>View all page feedback</span>
@@ -5523,7 +5548,7 @@ Thank you.    </p>
 			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="light">
-					<span class="theme-light has-margin-right-small">
+					<span class="theme-light margin-right-xxs">
 						<span
 							class="theme-selector-icon css-variable-support border display-inline-block has-body-background"
 							aria-hidden="true">
@@ -5547,7 +5572,7 @@ Light					</span>
 			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="dark">
-					<span class="theme-dark has-margin-right-small">
+					<span class="theme-dark margin-right-xxs">
 						<span
 							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
 							aria-hidden="true">
@@ -5571,7 +5596,7 @@ Dark					</span>
 			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="high-contrast">
-					<span class="theme-high-contrast has-margin-right-small">
+					<span class="theme-high-contrast margin-right-xxs">
 						<span
 							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
 							aria-hidden="true">
@@ -5668,7 +5693,7 @@ High contrast					</span>
 			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="light">
-					<span class="theme-light has-margin-right-small">
+					<span class="theme-light margin-right-xxs">
 						<span
 							class="theme-selector-icon css-variable-support border display-inline-block has-body-background"
 							aria-hidden="true">
@@ -5692,7 +5717,7 @@ Light					</span>
 			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="dark">
-					<span class="theme-dark has-margin-right-small">
+					<span class="theme-dark margin-right-xxs">
 						<span
 							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
 							aria-hidden="true">
@@ -5716,7 +5741,7 @@ Dark					</span>
 			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="high-contrast">
-					<span class="theme-high-contrast has-margin-right-small">
+					<span class="theme-high-contrast margin-right-xxs">
 						<span
 							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
 							aria-hidden="true">
