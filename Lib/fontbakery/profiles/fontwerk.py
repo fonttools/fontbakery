@@ -47,6 +47,7 @@ FONTWERK_PROFILE_CHECKS = \
         'com.fontwerk/check/no_mac_entries',
         'com.fontwerk/check/vendor_id',
         'com.fontwerk/check/weight_class_fvar',
+        'com.fontwerk/check/inconsistencies_between_fvar_stat',
     ]
 
 
@@ -68,7 +69,7 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
     passed = True
     for rec in ttFont["name"].names:
         if rec.platformID == 1:
-            yield FAIL, \
+            yield FAIL,\
                   Message("mac-names",
                           f'Please remove name ID {rec.nameID}')
             passed = False
@@ -82,7 +83,7 @@ def com_fontwerk_check_name_no_mac_entries(ttFont):
     rationale = """
         Vendor ID must be WERK for Fontwerk fonts.
     """,
-    proposal='https://github.com/googlefonts/fontbakery/pull/3579'
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3579'
 )
 def com_fontwerk_check_vendor_id(ttFont):
     """Checking OS/2 achVendID."""
@@ -101,8 +102,8 @@ def com_fontwerk_check_vendor_id(ttFont):
     rationale = """
         According to Microsoft's OT Spec the OS/2 usWeightClass should match the fvar default value.
     """,
-    conditions=["is_variable_font"],
-    proposal='https://github.com/googlefonts/gftools/issues/477'
+    conditions = ["is_variable_font"],
+    proposal = 'https://github.com/googlefonts/gftools/issues/477'
 )
 def com_fontwerk_check_weight_class_fvar(ttFont):
     """Checking if OS/2 usWeightClass matches fvar."""
@@ -117,13 +118,80 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
         return
 
     if os2_value != int(fvar_value):
-        yield FAIL, \
+        yield FAIL,\
               Message("bad-weight-class",
                       f"OS/2 usWeightClass is '{os2_value}', "
                       f"but should match fvar default value '{fvar_value}'.")
 
     else:
         yield PASS, f"OS/2 usWeightClass '{os2_value}' matches fvar default value."
+
+
+def is_covered_in_stat(ttFont, axis_tag, value):
+    stat_table = ttFont['STAT'].table
+    for ax_value in stat_table.AxisValueArray.AxisValue:
+        axis_tag_stat = stat_table.DesignAxisRecord.Axis[ax_value.AxisIndex].AxisTag
+        if axis_tag != axis_tag_stat:
+            continue
+
+        stat_value = []
+        if ax_value.Format in (1, 3):
+            stat_value.append(ax_value.Value)
+
+        if ax_value.Format == 3:
+            stat_value.append(ax_value.LinkedValue)
+
+        if ax_value.Format == 2:
+            stat_value.append(ax_value.NominalValue)
+
+        if ax_value.Format == 4:
+            # TODO: Need to implement
+            #  locations check as well
+            pass
+
+        if value in stat_value:
+            return True
+
+    return False
+
+
+@check(
+    id = 'com.fontwerk/check/inconsistencies_between_fvar_stat',
+    rationale = """
+        Check for inconsistencies in names and values between the fvar instances and STAT table.
+        Inconsistencies may cause issues in apps like Adobe InDesign.
+    """,
+    conditions = ["is_variable_font"],
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3636'
+)
+def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
+    """Checking if STAT entries matches fvar and vice versa."""
+
+    if 'STAT' not in ttFont:
+        return FAIL,\
+               Message("missing-stat-table",
+                       "Missing STAT table in variable font.")
+
+    fvar = ttFont['fvar']
+    name = ttFont['name']
+
+    for ins in fvar.instances:
+        instance_name = name.getDebugName(ins.subfamilyNameID)
+        if instance_name is None:
+            yield FAIL,\
+                  Message("missing-name-id",
+                          f"The name ID {ins.subfamilyNameID} used in an "
+                          f"fvar instance is missing in the name table.")
+            continue
+
+        for axis_tag, value in ins.coordinates.items():
+            if not is_covered_in_stat(ttFont, axis_tag, value):
+                yield FAIL,\
+                      Message("missing-fvar-instance-axis-value",
+                              f"{instance_name}: '{axis_tag}' axis value '{value}' "
+                              f"missing in STAT table.")
+
+        # TODO: Compare fvar instance name with constructed STAT table name.
 
 
 profile.auto_register(globals(),
