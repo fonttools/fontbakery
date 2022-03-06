@@ -559,6 +559,8 @@ def is_complex_shaper_font(ttFont):
     for table in ["GSUB", "GPOS"]:
         if table not in ttFont:
             continue
+        if not ttFont[table].table.ScriptList:
+            continue
         for rec in ttFont[table].table.ScriptList.ScriptRecord:
             script = ot_tag_to_script(rec.ScriptTag)
             if script in USE_SCRIPTS or script in INDIC_SCRIPTS:
