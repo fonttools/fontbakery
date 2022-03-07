@@ -8,6 +8,7 @@ from fontbakery.status import PASS, FAIL
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
 from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
+from fontbakery.constants import FsSelection, MacStyle
 
 profile_imports = ('fontbakery.profiles.googlefonts',)
 profile = profile_factory(default_section=Section("Fontwerk"))
@@ -48,6 +49,7 @@ FONTWERK_PROFILE_CHECKS = \
         'com.fontwerk/check/vendor_id',
         'com.fontwerk/check/weight_class_fvar',
         'com.fontwerk/check/inconsistencies_between_fvar_stat',
+        'com.fontwerk/check/style_linking',
     ]
 
 
@@ -192,6 +194,48 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
                               f"missing in STAT table.")
 
         # TODO: Compare fvar instance name with constructed STAT table name.
+
+@check(
+    id = 'com.fontwerk/check/style_linking',
+    rationale = """
+        Look for possible style linking issues.
+    """,
+    proposal = 'https://github.com/googlefonts/noto-fonts/issues/2269'
+)
+def com_fontwerk_check_style_linking(ttFont):
+    """Checking style linking entries"""
+    from .shared_conditions import (is_italic,
+                                    is_bold)
+    errs = []
+    if is_bold(ttFont):
+        if not (ttFont["OS/2"].fsSelection & FsSelection.BOLD):
+            errs.append("OS/2 fsSelection flag should be (most likely) 'Bold'.")
+        if not (ttFont["head"].macStyle & MacStyle.BOLD):
+            errs.append("head macStyle flag should be (most likely) 'Bold'.")
+        if ttFont["name"].getDebugName(2) not in ('Bold', 'Bold Italic'):
+            name_id_2_should_be = 'Bold'
+            if is_italic(ttFont):
+                name_id_2_should_be = 'Bold Italic'
+            errs.append(f"name ID should be (most likely) '{name_id_2_should_be}'.")
+
+    if is_italic(ttFont):
+        if ("post" in ttFont and not ttFont["post"].italicAngle):
+            errs.append("post talbe italic angle should be (most likely) different to 0.")
+        if not (ttFont["OS/2"].fsSelection & FsSelection.ITALIC):
+            errs.append("OS/2 fsSelection flag should be (most likely) 'Italic'.")
+        if not (ttFont["head"].macStyle & MacStyle.ITALIC):
+            errs.append("head macStyle flag should be (most likely) 'Italic'.")
+        if ttFont["name"].getDebugName(2) not in ('Italic', 'Bold Italic'):
+            name_id_2_should_be = 'Italic'
+            if is_bold(ttFont):
+                name_id_2_should_be = 'Bold Italic'
+            errs.append(f"name ID should be (most likely) '{name_id_2_should_be}'.")
+
+    if not errs:
+        yield PASS, "Style linking looks good."
+
+    for err in errs:
+        yield FAIL, Message("style-linking-issue", err)
 
 
 profile.auto_register(globals(),
