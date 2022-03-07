@@ -1432,7 +1432,8 @@ def com_google_fonts_check_transformed_components(ttFont):
 def com_google_fonts_check_dotted_circle(ttFont, config):
     """Ensure dotted circle glyph is present and can attach marks."""
     from fontbakery.utils import (bullet_list,
-                                  is_complex_shaper_font)
+                                  is_complex_shaper_font,
+                                  iterate_lookup_list_with_extensions)
 
     mark_glyphs = []
     if "GDEF" in ttFont and hasattr(ttFont["GDEF"].table, "GlyphClassDef"):
@@ -1463,24 +1464,16 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
     dotted_circle = ttFont.getBestCmap()[0x25CC]
     attachments = {dotted_circle: []}
     does_attach = {}
-    if "GPOS" in ttFont and ttFont["GPOS"].table.LookupList:
-        def find_mark_base(lookup, attachments):
-            if lookup.LookupType == 9:
-                for xt in lookup.SubTable:
-                    xt.SubTable = [xt.ExtSubTable]
-                    xt.LookupType = xt.ExtSubTable.LookupType
-                    find_mark_base(xt, attachments)
+    def find_mark_base(lookup, attachments):
+        if lookup.LookupType == 4:
+            # Assume all-to-all
+            for st in lookup.SubTable:
+                for base in st.BaseCoverage.glyphs:
+                    for mark in st.MarkCoverage.glyphs:
+                        attachments.setdefault(base,[]).append(mark)
+                        does_attach[mark] = True
 
-            if lookup.LookupType == 4:
-                # Assume all-to-all
-                for st in lookup.SubTable:
-                    for base in st.BaseCoverage.glyphs:
-                        for mark in st.MarkCoverage.glyphs:
-                            attachments.setdefault(base,[]).append(mark)
-                            does_attach[mark] = True
-
-        for lookup in ttFont["GPOS"].table.LookupList.Lookup:
-            find_mark_base(lookup, attachments)
+    iterate_lookup_list_with_extensions(ttFont, "GPOS", find_mark_base, attachments)
 
     unattached = []
     for g in nonspacing_mark_glyphs:

@@ -568,3 +568,25 @@ def is_complex_shaper_font(ttFont):
             if script in ["Khmr", "Mymr", "Hang"]:
                 return True
     return False
+
+
+def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):
+    """Iterates over the lookup list of a font's GSUB/GPOS table, calling
+    the callback with the lookup and the provided arguments, but descending
+    into Extension subtables."""
+    if table not in ttFont or not ttFont[table].table.LookupList:
+        return
+
+    extension_type = 9 if table == "GPOS" else 7
+
+    for lookup in ttFont[table].table.LookupList.Lookup:
+        if lookup.LookupType == extension_type:
+            for xt in lookup.SubTable:
+                xt.SubTable = [xt.ExtSubTable]
+                xt.LookupType = xt.ExtSubTable.LookupType
+                callback(xt, *args)
+        else:
+            callback(lookup, *args)
+
+
+
