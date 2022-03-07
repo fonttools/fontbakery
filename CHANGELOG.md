@@ -42,6 +42,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
 #### Added to the FontWerk Profile
   - **[com.fontwerk/check/inconsistencies_between_fvar_stat]:** Check for inconsistencies in names and values between the fvar instances and STAT table which may cause issues in apps like Adobe InDesign. (PR #3636)
+  - **[com.fontwerk/check/style_linking]:** Look for possible style linking issues. (PR #3649)
 
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/category_hints]:** Check if category on METADATA.pb matches what can be inferred from keywords in the family name. (issue #3624)
