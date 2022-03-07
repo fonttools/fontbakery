@@ -923,3 +923,19 @@ def test_check_dotted_circle():
     font = TEST_FILE("broken_markazitext/MarkaziText-VF.ttf")
     assert_results_contain(check(font),
                 "FAIL", "unattached-dotted-circle-marks")
+
+def test_check_gsub5_gpos7():
+    """Ensure dotted circle glyph is present and can attach marks."""
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/gsub5_gpos7")
+
+    font = TEST_FILE("mada/Mada-Regular.ttf")
+    assert_PASS(check(font),
+                "with a good font...")
+
+    font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
+    assert_results_contain(check(font),
+                "FAIL", "has-gsub5")
+
+    assert_results_contain(check(font),
+                "FAIL", "has-gpos7")
