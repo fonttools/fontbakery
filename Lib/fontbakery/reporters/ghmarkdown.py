@@ -42,15 +42,9 @@ class GHMarkdownReporter(SerializeReporter):
         if self.succinct or not "rationale" in check:
             return ""
 
-        # Ideally we'll at some point invoke a proper markdown
-        # parser here. But for now, let's simply fill the raw
-        # content into an 80-column block of text and output it
-        # enclosed in <pre></pre> tags...
-        import html
-        from fontbakery.utils import text_flow, unindent_rationale
+        from fontbakery.utils import unindent_rationale
         content = unindent_rationale(check['rationale'], checkid)
-        rationale = html.escape(text_flow(content, 80))
-        return f"<pre>--- Rationale ---\n{rationale}</pre>\n"
+        return "\n".join([ ">" + line for line in content.split("\n")])
 
     def check_md(self, check):
         checkid = check["key"][1].split(":")[1].split(">")[0]
