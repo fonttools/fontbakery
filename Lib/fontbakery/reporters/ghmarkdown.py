@@ -58,16 +58,17 @@ class GHMarkdownReporter(SerializeReporter):
 
         check["logs"].sort(key=lambda c: c["status"])
         logs = "".join(map(self.log_md, check["logs"]))
-        github_search_url = (f"[{checkid}]"
-                             f"(https://font-bakery.readthedocs.io/en/latest"
-                             f"/fontbakery/profiles/{profile}.html#{checkid})")
+        github_search_url = ( "<a href=\"https://font-bakery.readthedocs.io/en/latest"
+                             f"/fontbakery/profiles/{profile}.html#{checkid}\">"
+                             f"{checkid}</a>" )
 
         rationale = self.render_rationale(check, checkid)
 
-        return html5_collapsible("{} <b>{}:</b> {}".format(self.emoticon(check["result"]),
+        return html5_collapsible("{} <b>{}:</b> {} ({})".format(self.emoticon(check["result"]),
                                                                 check["result"],
-                                                                check["description"]),
-                                      f"\n* {github_search_url}\n{rationale}\n{logs}")
+                                                                check["description"],
+                                                                github_search_url),
+                                      f"\n\n{rationale}\n{logs}")
 
     def deduce_profile_from_section_name(self, section):
         # This is very hacky!
