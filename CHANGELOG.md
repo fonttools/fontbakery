@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.8.8 (2022-Feb-??)
 ### Noteworthy code-changes
   - On the GitHub Markdown reporter, checks which produce all the same output for a range of fonts are now automatically clustered into a family check result. (PR #3610)
+  - More cosmetic improvements to the GitHub Markdown reporter. (PR #3647)
   - Use the new `axisregistry` python module (Google Fonts Variable Font Axis Registry data-set) to eliminate code & data duplication across tools and repos (issue #3633)
 
 ### New Checks
