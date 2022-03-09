@@ -15,6 +15,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/category_hints]:** Check if category on METADATA.pb matches what can be inferred from keywords in the family name. (issue #3624)
 
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/gsub5_gpos7]:** Check if font contains any GSUB 5 or GPOS 7 lookups which are not widely supported. (issue #3643)
+
 ### Changes to existing checks
 #### On the Univeresal Profile
   - **[com.google.fonts/check/dotted_circle]:** Fix ERROR by adding safeguard conditional on `is_complex_shaper_font` function. (issue #3640)
