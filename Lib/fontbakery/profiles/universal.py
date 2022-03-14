@@ -1492,7 +1492,7 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
 
 @check(
     id = 'com.google.fonts/check/gsub5_gpos7',
-    conditions = ['is_ttf'],
+    conditions = ['ttFont'],
     severity = 9,
     rationale = """
         Versions of fonttools >=4.14.0 (19 August 2020) perform an optimisation on chained contextual lookups, expressing GSUB6 as GSUB5 and GPOS8 and GPOS7 where possible (when there are no suffixes/prefixes for all rules in the lookup).
