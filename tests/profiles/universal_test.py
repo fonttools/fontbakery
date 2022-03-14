@@ -918,11 +918,11 @@ def test_check_dotted_circle():
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_results_contain(check(font),
-                "WARN", "missing-dotted-circle")
+                           WARN, "missing-dotted-circle")
 
     font = TEST_FILE("broken_markazitext/MarkaziText-VF.ttf")
     assert_results_contain(check(font),
-                "FAIL", "unattached-dotted-circle-marks")
+                           FAIL, "unattached-dotted-circle-marks")
 
 
 def test_check_gsub5_gpos7():
@@ -937,7 +937,7 @@ def test_check_gsub5_gpos7():
 
     font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
     assert_results_contain(check(font),
-                "FAIL", "has-gsub5")
+                           FAIL, "has-gsub5")
 
     assert_results_contain(check(font),
-                "FAIL", "has-gpos7")
+                           FAIL, "has-gpos7")
