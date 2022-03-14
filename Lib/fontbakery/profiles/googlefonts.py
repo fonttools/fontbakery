@@ -5140,7 +5140,7 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, GFAxisRegistr
     passed = True
     for axis in family_metadata.axes:
         if axis.tag in GFAxisRegistry.keys():
-            expected = GFAxisRegistry[axis.tag]["message"]
+            expected = GFAxisRegistry[axis.tag]
             if axis.min_value < expected.min_value or axis.max_value > expected.max_value:
                 passed = False
                 yield FAIL,\
@@ -5210,8 +5210,8 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegi
     for axis in ttFont['fvar'].axes:
         if axis.axisTag not in GFAxisRegistry:
             continue
-        fallbacks = GFAxisRegistry[axis.axisTag]["fallbacks"]
-        if axis.defaultValue not in fallbacks.values():
+        fallbacks = GFAxisRegistry[axis.axisTag].fallback
+        if axis.defaultValue not in [f.value for f in fallbacks]:
             passed = False
             yield FAIL,\
                   Message('not-registered',
@@ -5267,7 +5267,8 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
 
         axis = ttFont['STAT'].table.DesignAxisRecord.Axis[axis_value.AxisIndex]
         if axis.AxisTag in GFAxisRegistry.keys():
-            fallbacks = GFAxisRegistry[axis.AxisTag]["fallbacks"]
+            fallbacks = GFAxisRegistry[axis.AxisTag].fallback
+            fallbacks = {f.name: f.value for f in fallbacks}
 
             # Here we assume that it is enough to check for only the Windows, English USA entry corresponding
             # to a given nameID. It is up to other checks to ensure all different platform/encoding entries
