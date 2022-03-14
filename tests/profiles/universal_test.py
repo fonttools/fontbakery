@@ -924,8 +924,10 @@ def test_check_dotted_circle():
     assert_results_contain(check(font),
                 "FAIL", "unattached-dotted-circle-marks")
 
+
 def test_check_gsub5_gpos7():
-    """Ensure dotted circle glyph is present and can attach marks."""
+    """Check if font contains any GSUB 5 or GPOS 7 lookups
+    which are not widely supported."""
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/gsub5_gpos7")
 
