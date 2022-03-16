@@ -2,11 +2,14 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.8 (2022-Feb-??)
+## Upcoming release: 0.8.8 (2022-Mar-??)
 ### Noteworthy code-changes
   - On the GitHub Markdown reporter, checks which produce all the same output for a range of fonts are now automatically clustered into a family check result. (PR #3610)
   - More cosmetic improvements to the GitHub Markdown reporter. (PR #3647)
   - Use the new `axisregistry` python module (Google Fonts Variable Font Axis Registry data-set) to eliminate code & data duplication across tools and repos (issue #3633)
+
+### BugFixes
+  - Fixed broken parsing at `@condition def production_metadata()` (issue #3661)
 
 ### New Checks
 #### Added to the FontWerk Profile
