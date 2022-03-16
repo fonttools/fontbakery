@@ -4582,7 +4582,7 @@ def com_google_fonts_check_repo_fb_report(family_directory):
 )
 def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml):
     """Check upstream.yaml file contains all required fields"""
-    required_fields = set(["branch", "files", "repository_url"])
+    required_fields = set(["branch", "files"])
     upstream_fields = set(upstream_yaml.keys())
 
     missing_fields = required_fields - upstream_fields

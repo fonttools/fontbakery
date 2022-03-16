@@ -24,6 +24,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Univeresal Profile
   - **[com.google.fonts/check/dotted_circle]:** Fix ERROR by adding safeguard conditional on `is_complex_shaper_font` function. (issue #3640)
+  - **[com.google.fonts/check/repo/upstream_yaml_has_required_fields]:** Remove repository_url field check since METADATA.pb files now include the source field. (issue #3618)
 
 #### On the OpenType Profile
   - **[com.google.fonts/check/post_table_version]:** Updated policy on acceptable post table version. Downgraded the check from FAIL to WARN-level (according to discussions at issue #3635)

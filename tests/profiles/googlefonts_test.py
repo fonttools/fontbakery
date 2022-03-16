@@ -3248,7 +3248,6 @@ def test_check_repo_upstream_yaml_has_required_fields():
                         "com.google.fonts/check/repo/upstream_yaml_has_required_fields")
     upstream_yaml = {
         "branch": "main",
-        "repository_url": "https://www.github.com/googlefonts/testFamily",
         "files": {"TestFamily-Regular.ttf": "TestFamily-Regular.ttf"}
     }
     # Pass if upstream.yaml file contains all fields
@@ -3256,7 +3255,7 @@ def test_check_repo_upstream_yaml_has_required_fields():
                 'for an upstream.yaml which contains all fields')
 
     # Fail if it doesn't
-    upstream_yaml.pop("repository_url")
+    upstream_yaml.pop("files")
     assert_results_contain(check([], {"upstream_yaml": upstream_yaml}),
                            FAIL, "missing-fields",
                            "for an upsream.yaml which doesn't contain all fields")
