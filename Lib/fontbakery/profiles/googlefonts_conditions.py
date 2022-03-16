@@ -460,6 +460,10 @@ def camelcased_familyname_exception(familyname):
         "McLaren",
         "MedievalSharp",
         "RocknRoll", # seen in "RocknRoll One"
+        "BIZ UDGothic",
+        "BIZ UDPGothic",
+        "BIZ UDMincho",
+        "BIZ UDPMincho",
         "UnifrakturCook",
         "UnifrakturMaguntia",
         "MonteCarlo",
