@@ -692,11 +692,9 @@ def gfonts_repo_structure(fonts):
 @condition
 def production_metadata():
     """Get the Google Fonts production metadata"""
-    import json
     import requests
     meta_url = "http://fonts.google.com/metadata/fonts"
-    # can't do requests.get("url").json() since request text starts with ")]}'"
-    return json.loads(requests.get(meta_url).text[5:])
+    return requests.get(meta_url).json()
 
 
 @condition
