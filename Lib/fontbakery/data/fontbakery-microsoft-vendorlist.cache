@@ -71,11 +71,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/e3238ea66f795cb16b471bbe1a96971dece653b3/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/616ccca46d2db4523cb6e02ad28c394a5890fae6/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="02/14/2022" />
+<meta name="ms.date" content="02/25/2022" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -86,15 +86,15 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2022-02-14 06:25 PM" />
-<meta name="word_count" content="3960" />
+<meta name="updated_at" content="2022-02-25 11:25 PM" />
+<meta name="word_count" content="3967" />
 
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/bd0a5f0a.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/ff0254fa.site-ltr.css ">
 
 	
 
@@ -142,7 +142,7 @@
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/5cce29c0.deprecation.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d61473b1.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/f28e30d7.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -201,7 +201,7 @@ More info					</a>
 </header>		</div>
 
 						<div id="content-header" class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
-					<nav id="breadcrumbs-deprecated-container" class="breadcrumb-holder has-padding-none has-padding-left-medium-tablet has-padding-right-medium-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet has-padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" role="navigation" aria-label="Breadcrumb">
+					<nav id="breadcrumbs-deprecated-container" class="breadcrumb-holder padding-none padding-inline-xs-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" role="navigation" aria-label="Breadcrumb">
 						<ul id="page-breadcrumbs-deprecated" class="breadcrumbs-deprecated">
 						</ul>
 					</nav>
@@ -215,7 +215,7 @@ More info					</a>
 							<span>Exit focus mode</span>
 						</button>
 					</div>
-					<div id="page-actions-deprecated-container" class="has-padding-none-tablet padding-xs font-size-sm display-flex justify-content-space-between flex-grow-1 page-action-holder">
+					<div id="page-actions-deprecated-container" class="padding-none-tablet padding-xs font-size-sm display-flex justify-content-space-between flex-grow-1 page-action-holder">
 						<ul class="is-hidden-mobile action-list justify-content-flex-start justify-content-flex-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
 							<li hidden>
 								<a id="lang-link-deprecated" class="button button button-clear button-sm" title="Read in English" data-bi-name="language-toggle" data-read-in-link data-hidden-parent>
@@ -231,7 +231,7 @@ More info					</a>
 									<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
 								</button>
 							</li>
-								<li id="feedback-section-link">
+								<li data-feedback-section-link>
 									<a href="#feedback" class="button  button button-clear button-sm has-inner-focus" data-bi-name="comments" title="Send feedback about this page">
 										<span class="icon" aria-hidden="true">
 											<span class="docon docon-comment-lines"></span>
@@ -239,7 +239,7 @@ More info					</a>
 										<span class="is-visually-hidden-touch is-hidden-portrait">Feedback</span>
 									</a>
 								</li>
-									<li id="contenteditbtn" hidden>
+									<li data-contenteditbtn hidden>
 										<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"  class=" button button-clear button-sm has-inner-focus" title="Edit This Document" data-bi-name="edit">
 										<span class="icon" aria-hidden="true">
 											<span class="docon docon-edit-outline"></span>
@@ -255,7 +255,7 @@ More info					</a>
 		</span>
 		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
 	</button>
-	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+	<div class="dropdown-menu padding-xxs" id="sharing-menu">
 		<ul data-bi-name="share-links">
 			<li>
 				<a class="button button-clear button-sm button-block justify-content-flex-start has-inner-focus share-twitter" data-bi-name="twitter">
@@ -291,7 +291,8 @@ More info					</a>
 			</li>
 		</ul>
 	</div>
-</div>							</li>
+</div>
+							</li>
 						</ul>
 						<button id="page-actions-toc-button-deprecated" type="button" class="border contents-button button button-clear button-sm is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand" data-contents-button>
 							<span class="icon">
@@ -377,7 +378,7 @@ More info					</a>
 
 										
 
-											<a id="feedback-section-link"
+											<a	data-feedback-section-link
 												aria-label="Feedback"
 												href="#feedback"
 												class="button button-clear button-sm text-decoration-none button-primary display-none display-inline-flex-tablet"
@@ -389,6 +390,17 @@ More info					</a>
 											</a>
 										
 
+											<a	data-contenteditbtn
+												class="button button-clear button-sm text-decoration-none button-primary display-none display-inline-flex-tablet"
+												aria-label="Edit"
+												title="Edit This Document"
+												data-bi-name="edit"
+hidden														href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"
+											>
+												<span class="icon margin-none" aria-hidden="true">
+													<span class="docon docon-edit-outline"></span>
+												</span>
+											</a>
 										
 
 
@@ -445,7 +457,7 @@ More info					</a>
 													</button>
 
 
-													<a id="feedback-section-link"
+													<a	data-feedback-section-link
 														aria-label="Feedback"
 														href="#feedback"
 														class="button button-clear button-block button-sm has-inner-focus justify-content-flex-start text-decoration-none display-none-tablet"
@@ -459,6 +471,18 @@ More info					</a>
 Feedback														</span>
 													</a>
 
+													<a	data-contenteditbtn
+														class="button button-clear button-block button-sm has-inner-focus justify-content-flex-start text-decoration-none display-none-tablet"
+														aria-label="Edit"
+														title="Edit This Document"
+														data-bi-name="edit"
+hidden																href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"
+													>
+														<span class="icon" aria-hidden="true">
+															<span class="docon docon-edit-outline"></span>
+														</span>
+														<span>Edit</span>
+													</a>
 
 													<div aria-hidden="true" class="margin-none display-none-tablet border-top" data-page-action-item="overflow-all"></div>
 
@@ -521,7 +545,7 @@ Feedback														</span>
 														<li>
 Article														</li>
 														<li>
-															<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-02-14T18:25:00Z" data-article-date-source="git">02/14/2022</time>
+															<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-02-25T23:25:00Z" data-article-date-source="git">02/25/2022</time>
 														</li>
 																<li class="readingTime">19 minutes to read</li>
 														<li class="contributors-holder">
@@ -1418,6 +1442,10 @@ Thank you.    </p>
 <td>Bangla Type Font Foundry</td>
 </tr>
 <tr>
+<td>BTYP</td>
+<td><a href="https://creativemarket.com/Beetype" data-linktype="external">BeeType</a></td>
+</tr>
+<tr>
 <td>BUBU</td>
 <td><a href="http://www.bubulogix.fr" data-linktype="external">BUBULogix</a></td>
 </tr>
@@ -1483,6 +1511,10 @@ Thank you.    </p>
 <tr>
 <td>CANO</td>
 <td><a href="http://www.canon.com/" data-linktype="external">Canon</a></td>
+</tr>
+<tr>
+<td>CAPE</td>
+<td><a href="https://www.cape-arcona.com/" data-linktype="external">Cape Arcona Type Foundry</a></td>
 </tr>
 <tr>
 <td>CASL</td>
@@ -5486,6 +5518,10 @@ Thank you.    </p>
 
 
 
+							<section id="right-rail-events-mobile" class="display-none-desktop margin-top-xxs" hidden></section>
+							<section id="right-rail-learning-resources-mobile" class="display-none-desktop margin-top-xxs"  hidden></section>
+							<section id="right-rail-qna-mobile" class="display-none-desktop margin-top-xxs" hidden></section>
+
 						<!-- recommendations section -->
 							<section id="recommendations-section" data-bi-name="recommendations"></section>
 						<!-- end recommendations section -->
@@ -5493,15 +5529,15 @@ Thank you.    </p>
 						<!-- feedback section -->
 <section class="feedback-section position-relative" data-bi-name="feedback-section">
 
-    <h2 id="feedback" class="title is-3 has-margin-top-large">Feedback</h2>
+    <h2 id="feedback" class="title is-3 margin-top-sm">Feedback</h2>
 
     <div class="alert choose-feedback-type">
-        <p aria-hidden="true" id="send-feedback-about">Submit and view feedback for</p>
+        <p id="send-feedback-about">Submit and view feedback for</p>
 
         <div class="choose-feedback-buttons margin-top-xs">
 
 			<a class="button feedback-type-product margin-bottom-xxs github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
-				<span aria-hidden="true" class="docon docon-brand-github has-padding-right-extra-small"></span>
+				<span aria-hidden="true" class="docon docon-brand-github padding-right-xxs"></span>
 				<span>This page</span>
 			</a>
         </div>
@@ -5519,12 +5555,12 @@ Thank you.    </p>
 						<!-- feedback report section -->
 						<!-- end feedback report section -->
 
-						<div class="border-top is-visible-interactive has-default-focus has-margin-top-large ">
+						<div class="border-top is-visible-interactive has-default-focus margin-top-sm ">
 
 
 
 	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
-	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+	<div class="display-flex is-full-height padding-right-lg-desktop">
 			<a
 				data-mscc-ic="false"
 				class="locale-selector-link button button-clear flex-shrink-0"
@@ -5544,7 +5580,7 @@ Thank you.    </p>
 		<span>Theme</span>
 	</button>
 	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
-		<ul class="theme-selector has-padding-small">
+		<ul class="theme-selector padding-xxs">
 			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="light">
@@ -5634,6 +5670,7 @@ High contrast					</span>
 	</ul>
 </footer>
 						</div>
+
 					</div>
 
 						<div
@@ -5646,6 +5683,10 @@ High contrast					</span>
 								<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
 									<h3>In this article</h3>
 								</nav>
+								<section id="right-rail-events" class="margin-top-xxs" hidden></section>
+								<section id="right-rail-learning-resources" class="margin-top-xxs" hidden></section>
+								<section id="right-rail-recommendations" data-bi-name="right-rail-recommendations" class="margin-top-xxs" hidden></section>
+								<section id="right-rail-qna" class="margin-top-xxs" hidden></section>
 							</div>
 						</div>
 
@@ -5669,7 +5710,7 @@ High contrast					</span>
 
 
 	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
-	<div class="display-flex is-full-height has-padding-right-extra-large-desktop">
+	<div class="display-flex is-full-height padding-right-lg-desktop">
 			<a
 				data-mscc-ic="false"
 				class="locale-selector-link button button-clear flex-shrink-0"
@@ -5689,7 +5730,7 @@ High contrast					</span>
 		<span>Theme</span>
 	</button>
 	<div class="dropdown-menu" id="theme-menu" role="menu">
-		<ul class="theme-selector has-padding-small">
+		<ul class="theme-selector padding-xxs">
 			<li class="theme display-block">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="light">
