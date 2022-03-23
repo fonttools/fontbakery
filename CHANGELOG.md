@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.8 (2022-Mar-??)
+## Upcoming release: 0.8.9 (2022-Apr-??)
+  - ...
+
+
+## Upcoming release: 0.8.8 (2022-Mar-23)
 ### Noteworthy code-changes
   - On the GitHub Markdown reporter, checks which produce all the same output for a range of fonts are now automatically clustered into a family check result. (PR #3610)
   - More cosmetic improvements to the GitHub Markdown reporter. (PR #3647)
