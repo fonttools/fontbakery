@@ -52,7 +52,7 @@ class GHMarkdownReporter(SerializeReporter):
 
         check["logs"].sort(key=lambda c: c["status"])
         logs = "".join(map(self.log_md, check["logs"]))
-        github_search_url = ( "<a href=\"https://font-bakery.readthedocs.io/en/latest"
+        github_search_url = ( "<a href=\"https://font-bakery.readthedocs.io/en/stable"
                              f"/fontbakery/profiles/{profile}.html#{checkid}\">"
                              f"{checkid}</a>" )
 

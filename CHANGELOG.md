@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.8.9 (2022-Apr-??)
-  - ...
+### BugFixes
+  - Users reading markdown reports are now directed to the "stable" version of our ReadTheDocs documentation instead of the "latest" (git dev) one. (issue #3677)
 
 
 ## Upcoming release: 0.8.8 (2022-Mar-23)
