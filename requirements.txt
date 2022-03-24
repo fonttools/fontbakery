@@ -6,7 +6,7 @@ cmarkgfm==0.8.0
 collidoscope==0.4.1
 defcon==0.10.0
 dehinter==4.0.0
-fontTools[ufo,lxml,unicode]==4.30.0
+fontTools[ufo,lxml,unicode]==4.31.2
 font-v==2.1.0
 gflanguages==0.4.0
 glyphsets==0.2.1
@@ -17,11 +17,11 @@ pip-api==0.0.29
 protobuf==3.19.4
 PyYAML==6.0
 requests==2.27.1
-rich==12.0.0
+rich==12.0.1
 stringbrewer==0.0.1
 toml==0.10.2
 ufolint==1.2.0
 unicodedata2==14.0.0
 vharfbuzz==0.1.1
-ufo2ft==2.25.3
+ufo2ft==2.26.0
 -e .
