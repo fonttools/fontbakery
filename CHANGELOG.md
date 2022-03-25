@@ -7,7 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Users reading markdown reports are now directed to the "stable" version of our ReadTheDocs documentation instead of the "latest" (git dev) one. (issue #3677)
 
 
-## Upcoming release: 0.8.8 (2022-Mar-23)
+## 0.8.8 (2022-Mar-23)
 ### Noteworthy code-changes
   - On the GitHub Markdown reporter, checks which produce all the same output for a range of fonts are now automatically clustered into a family check result. (PR #3610)
   - More cosmetic improvements to the GitHub Markdown reporter. (PR #3647)
