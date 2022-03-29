@@ -1,4 +1,4 @@
-from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
+from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
 from fontbakery.section import Section
 from fontbakery.status import WARN, PASS #, INFO, ERROR, SKIP, FAIL
 from fontbakery.callable import check #, disable
@@ -10,13 +10,12 @@ from fontbakery.constants import (PlatformID,
                                   MacintoshEncodingID)
 
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
-profile_imports = ('fontbakery.profiles.universal',) # Maybe this should be .googlefonts instead...
+profile_imports = ('fontbakery.profiles.googlefonts',)
 profile = profile_factory(default_section=Section("Noto Fonts"))
 
 
-# Maybe this should be GOOGLEFONTS_PROFILE_CHECKS instead...
 NOTOFONTS_PROFILE_CHECKS = \
-    UNIVERSAL_PROFILE_CHECKS + [
+    GOOGLEFONTS_PROFILE_CHECKS + [
     'com.google.fonts/check/cmap/unexpected_subtables',
     'com.google.fonts/check/unicode_range_bits',
 ]
