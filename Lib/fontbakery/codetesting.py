@@ -70,7 +70,7 @@ class CheckTester:
         # args that are derived iterables are generators that must be
         # converted to lists, otherwise we end up with exhausted
         # generators after their first consumption.
-        for k in args:
+        for k in args.keys():
             if self.profile.get_type(k, None) == 'derived_iterables':
                 args[k] = list(args[k])
         return args
