@@ -6,6 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### BugFixes
   - Users reading markdown reports are now directed to the "stable" version of our ReadTheDocs documentation instead of the "latest" (git dev) one. (issue #3677)
 
+### Changes to existing checks
+#### On the GoogleFonts Profile
+  - **[com.google.fonts/check/license/OFL_copyright]:** Improve wording of log message to clarify its meaning. It was too easy to think that the displayed copyright string (read from the font binary and reported for reference) was an example of the actually expected string format. (issue #3674)
+
 
 ## 0.8.8 (2022-Mar-23)
 ### Noteworthy code-changes
@@ -27,7 +31,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/gsub5_gpos7]:** Check if font contains any GSUB 5 or GPOS 7 lookups which are not widely supported. (issue #3643)
 
 ### Changes to existing checks
-#### On the Univeresal Profile
+#### On the Universal Profile
   - **[com.google.fonts/check/dotted_circle]:** Fix ERROR by adding safeguard conditional on `is_complex_shaper_font` function. (issue #3640)
   - **[com.google.fonts/check/repo/upstream_yaml_has_required_fields]:** Remove repository_url field check since METADATA.pb files now include the source field. (issue #3618)
 

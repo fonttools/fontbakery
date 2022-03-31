@@ -1201,8 +1201,12 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
     if does_match:
         yield PASS, "looks good"
     else:
-        yield FAIL, (f'First line in license file does not match expected format:'
-                     f' "{string}"')
+        yield FAIL,\
+              Message('bad-format',
+                      f'First line in license file is:\n\n'
+                      f'"{string}"\n\n'
+                      f'which does not match the expected format, similar to:\n\n'
+                      f'"Copyright 2022 The Familyname Project Authors (git url)"')
 
 
 @check(
