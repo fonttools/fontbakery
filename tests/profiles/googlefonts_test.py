@@ -852,6 +852,25 @@ def test_check_family_has_license():
                 'with a single Apache license...')
 
 
+def test_check_license_ofl_copyright():
+    """Check license file has good copyright string."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/license/OFL_copyright")
+
+
+    # And Mada has a bad copyright string format:
+    font = TEST_FILE("mada/Mada-Regular.ttf")
+    ttFont = TTFont(font)
+    assert_results_contain(check(ttFont),
+                           FAIL, "bad-format",
+                           "with bad string formatting.")
+
+    # so we fix it:
+    SOME_GOOD_TEXT = "Copyright 2019 The Montserrat Project Authors (https://github.com/julietaula/montserrat)"
+    assert_PASS(check(ttFont, {"license_contents": SOME_GOOD_TEXT}),
+                'with good license contents.')
+
+
 def test_check_license_ofl_body_text():
     """Check OFL.txt contains correct body text."""
     check = CheckTester(googlefonts_profile,
