@@ -925,19 +925,16 @@ def test_check_dotted_circle():
                            FAIL, "unattached-dotted-circle-marks")
 
 
-def test_check_gsub5_gpos7():
-    """Check if font contains any GSUB 5 or GPOS 7 lookups
+def test_check_gpos7():
+    """Check if font contains any GPOS 7 lookups
     which are not widely supported."""
     check = CheckTester(universal_profile,
-                        "com.google.fonts/check/gsub5_gpos7")
+                        "com.google.fonts/check/gpos7")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_PASS(check(font),
                 "with a good font...")
 
     font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
-    assert_results_contain(check(font),
-                           FAIL, "has-gsub5")
-
     assert_results_contain(check(font),
                            FAIL, "has-gpos7")
