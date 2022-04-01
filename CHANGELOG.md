@@ -9,6 +9,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the GoogleFonts Profile
   - **[com.google.fonts/check/license/OFL_copyright]:** Improve wording of log message to clarify its meaning. It was too easy to think that the displayed copyright string (read from the font binary and reported for reference) was an example of the actually expected string format. (issue #3674)
+#### On the Universal Profile
+  - **[com.google.fonts/check/gsub5]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
 
 
 ## 0.8.8 (2022-Mar-23)
