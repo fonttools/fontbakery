@@ -174,8 +174,8 @@ def bullet_list(config, items, bullet="-", indentation="\t"):
     return f"{indentation}{bullet} " +\
            pretty_print_list(config,
                              items,
-                             sep=f"\n{indentation}{bullet} ",
-                             glue=f"\n{indentation}{bullet} And")
+                             sep=f"\n\n{indentation}{bullet} ",
+                             glue=f"\n\n{indentation}{bullet} And")
 
 
 def get_regular(fonts):
