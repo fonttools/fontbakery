@@ -13,6 +13,19 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Universal Profile
   - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
 
+### New Checks
+#### Added to the Noto Fonts Profile
+  - The majority of checks from the Google Fonts profile have been added. (PR #3681)
+  - **[com.google.fonts/check/name/noto_manufacturer]:** Checks for a known manufacturer name and correct designer URL in the name table. (PR #3681)
+  - **[com.google.fonts/check/name/noto_designer]:** Checks for a known designer name. (PR #3681)
+  - **[com.google.fonts/check/name/noto_trademark]:** Checks that the trademark entry in the name table is correct. (PR #3681)
+  - **[com.google.fonts/check/cmap/format_12]:** Checks that format 12 cmap tables are used appropriately. (PR #3681)
+  - **[com.google.fonts/check/os2/noto_vendor]:** Checks that the vendor ID in the OS/2 table is set to GOOG. (PR #3681)
+  - **[com.google.fonts/check/hmtx/encoded_latin_digits]:** Checks that any encoded Latin digits have equal advance width. (PR #3681)
+  - **[com.google.fonts/check/hmtx/comma_period]:** Checks that the comma and period glyphs have the same advance width as each other. (PR #3681)
+  - **[com.google.fonts/check/hmtx/whitespace_advances]:** Checks that whitespace glyphs have expected advance widths. (PR #3681)
+  - **[com.google.fonts/check/cmap/alien_codepoints]:** Checks that there are no surrogate pair or private use area codepoints encoded in the cmap table. (PR #3681)
+
 
 ## 0.8.8 (2022-Mar-23)
 ### Noteworthy code-changes
