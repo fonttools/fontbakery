@@ -2868,12 +2868,12 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, is_italic, fon
         yield SKIP, ('This check only applies to font styles declared'
                      ' as "italic" or "normal" on METADATA.pb.')
     else:
-        if is_italic() and font_metadata.style != "italic":
+        if is_italic(ttFont) and font_metadata.style != "italic":
             yield FAIL,\
                   Message("italic",
                           f'The font style is "{font_metadata.style}"'
                           f' but it should be "italic".')
-        elif not is_italic() and font_metadata.style != "normal":
+        elif not is_italic(ttFont) and font_metadata.style != "normal":
             yield FAIL,\
                   Message("normal",
                           f'The font style is "{font_metadata.style}"'
