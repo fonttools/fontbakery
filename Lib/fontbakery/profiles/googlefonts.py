@@ -2861,20 +2861,8 @@ def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
     conditions = ['font_metadata'],
     proposal = 'legacy:check/115'
 )
-def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata):
+def com_google_fonts_check_metadata_canonical_style_names(ttFont, is_italic, font_metadata):
     """METADATA.pb: Font styles are named canonically?"""
-    from fontbakery.constants import MacStyle
-
-    def find_italic_in_name_table():
-        for entry in ttFont["name"].names:
-            if entry.nameID < 256 and "italic" in entry.string.decode(entry.getEncoding()).lower():
-                return True
-        return False
-
-    def is_italic():
-        return (ttFont["head"].macStyle & MacStyle.ITALIC or
-                ttFont["post"].italicAngle or
-                find_italic_in_name_table())
 
     if font_metadata.style not in ["italic", "normal"]:
         yield SKIP, ('This check only applies to font styles declared'

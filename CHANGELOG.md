@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.8.9 (2022-Apr-??)
+### Noteworthy code-changes
+  - Improve implementation of `is_italic` condition and provide an `is_bold` counterpart (issue #3693)
+
 ### BugFixes
   - Users reading markdown reports are now directed to the "stable" version of our ReadTheDocs documentation instead of the "latest" (git dev) one. (issue #3677)
   - Improve rendering of bullet lists (issue #3691)
