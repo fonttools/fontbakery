@@ -485,12 +485,12 @@ def is_indic_font(ttFont):
     return False
 
 
-def keyword_in_full_font_name(keyword):
+def keyword_in_full_font_name(ttFont, keyword):
     from fontbakery.constants import (MacStyle,
                                       NameID)
     for entry in ttFont["name"].names:
         if entry.nameID == NameID.FULL_FONT_NAME and \
-           keyword in entry.string.decode(entry.getEncoding()).split().lower():
+           keyword in entry.string.decode(entry.getEncoding()).lower().split():
             return True
     return False
 
@@ -502,7 +502,7 @@ def is_italic(ttFont):
     return (
         ("OS/2" in ttFont and ttFont["OS/2"].fsSelection & FsSelection.ITALIC)
         or ("head" in ttFont and ttFont["head"].macStyle & MacStyle.ITALIC)
-        or keyword_in_full_font_name("italic")
+        or keyword_in_full_font_name(ttFont, "italic")
         or ("post" in ttFont and ttFont["post"].italicAngle)
     )
 
@@ -514,7 +514,7 @@ def is_bold(ttFont):
     return (
         ("OS/2" in ttFont and ttFont["OS/2"].fsSelection & FsSelection.BOLD)
         or ("head" in ttFont and ttFont["head"].macStyle & MacStyle.BOLD)
-        or keyword_in_full_font_name("bold")
+        or keyword_in_full_font_name(ttFont, "bold")
     )
 
 
