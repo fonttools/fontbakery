@@ -67,6 +67,7 @@ class Profile:
     checks), which are then overridden by values in the user's configuration
     file.
     """
+
     configuration_defaults = {}
 
     def __init__(
@@ -126,9 +127,7 @@ class Profile:
           b) add some validation, so that we know the values match
              our expectations! These values must be treated as user input!
         """
-        self._namespace = {
-            "config": "config"  # Filled in by checkrunner
-        }
+        self._namespace = {"config": "config"}  # Filled in by checkrunner
 
         self.iterargs = {}
         if iterargs:
@@ -451,7 +450,7 @@ class Profile:
         return args
 
     def get_iterargs(self, item):
-        """ Returns a tuple of all iterags for item, sorted by name."""
+        """Returns a tuple of all iterags for item, sorted by name."""
         # iterargs should always be mandatory, unless there's a good reason
         # not to, which I can't think of right now.
 
@@ -953,7 +952,7 @@ class Profile:
 
     @property
     def check_skip_filter(self):
-        """ return the current check_skip_filter function or None """
+        """return the current check_skip_filter function or None"""
         return self._check_skip_filter
 
     @check_skip_filter.setter
@@ -1073,8 +1072,8 @@ class Profile:
 def _check_log_override(overrides, status, message):
     # These constants are merely meant to be used
     # so that the check_override declarations are more readable:
-    from fontbakery.message import (KEEP_ORIGINAL_STATUS,
-                                    KEEP_ORIGINAL_MESSAGE)
+    from fontbakery.message import KEEP_ORIGINAL_STATUS, KEEP_ORIGINAL_MESSAGE
+
     result_status = status
     result_message = message
     override = False

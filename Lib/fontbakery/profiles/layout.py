@@ -1,7 +1,9 @@
 from fontbakery.callable import check
 from fontbakery.status import PASS, FAIL
 from fontbakery.message import Message
-from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
+from fontbakery.fonts_profile import (
+    profile_factory,
+)  # NOQA pylint: disable=unused-import
 
 
 from opentypespec.tags import FEATURE_TAGS, SCRIPT_TAGS, LANGUAGE_TAGS
@@ -20,12 +22,12 @@ DEPRECATED_TAGS = ["hngl", "opbd", "size"]
 
 
 @check(
-    id = "com.google.fonts/check/layout_valid_feature_tags",
-    rationale = """
+    id="com.google.fonts/check/layout_valid_feature_tags",
+    rationale="""
         Incorrect tags can be indications of typos, leftover debugging code or questionable approaches, or user error in the font editor. Such typos can cause features and language support to fail to work as intended.
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/3355',
-    severity = 8
+    proposal="https://github.com/googlefonts/fontbakery/issues/3355",
+    severity=8,
 )
 def com_google_fonts_check_layout_valid_feature_tags(ttFont):
     """Does the font have any invalid feature tags?"""
@@ -34,17 +36,18 @@ def com_google_fonts_check_layout_valid_feature_tags(ttFont):
     acceptable_tags = list(FEATURE_TAGS.keys())
 
     # And whoever is using these clearly know what they're doing:
-    acceptable_tags += ['HARF', 'BUZZ']
+    acceptable_tags += ["HARF", "BUZZ"]
 
     bad_tags = set()
     for tag in feature_tags(ttFont):
         if tag not in acceptable_tags:
             bad_tags.add(tag)
     if bad_tags:
-        yield FAIL, \
-              Message("bad-feature-tags",
-                      "The following invalid feature tags were found in the font: "
-                      + ", ".join(bad_tags))
+        yield FAIL, Message(
+            "bad-feature-tags",
+            "The following invalid feature tags were found in the font: "
+            + ", ".join(bad_tags),
+        )
     else:
         yield PASS, "No invalid feature tags were found"
 
@@ -59,12 +62,12 @@ def script_tags(ttFont):
 
 
 @check(
-    id = "com.google.fonts/check/layout_valid_script_tags",
-    rationale = """
+    id="com.google.fonts/check/layout_valid_script_tags",
+    rationale="""
         Incorrect script tags can be indications of typos, leftover debugging code or questionable approaches, or user error in the font editor. Such typos can cause features and language support to fail to work as intended.
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/3355',
-    severity = 8
+    proposal="https://github.com/googlefonts/fontbakery/issues/3355",
+    severity=8,
 )
 def com_google_fonts_check_layout_valid_script_tags(ttFont):
     """Does the font have any invalid script tags?"""
@@ -73,10 +76,11 @@ def com_google_fonts_check_layout_valid_script_tags(ttFont):
         if tag not in SCRIPT_TAGS.keys():
             bad_tags.add(tag)
     if bad_tags:
-        yield FAIL, \
-              Message("bad-script-tags",
-                      "The following invalid script tags were found in the font: "
-                      + ", ".join(bad_tags))
+        yield FAIL, Message(
+            "bad-script-tags",
+            "The following invalid script tags were found in the font: "
+            + ", ".join(bad_tags),
+        )
     else:
         yield PASS, "No invalid script tags were found"
 
@@ -92,12 +96,12 @@ def language_tags(ttFont):
 
 
 @check(
-    id = "com.google.fonts/check/layout_valid_language_tags",
-    rationale = """
+    id="com.google.fonts/check/layout_valid_language_tags",
+    rationale="""
         Incorrect language tags can be indications of typos, leftover debugging code or questionable approaches, or user error in the font editor. Such typos can cause features and language support to fail to work as intended.
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/3355',
-    severity = 8
+    proposal="https://github.com/googlefonts/fontbakery/issues/3355",
+    severity=8,
 )
 def com_google_fonts_check_layout_valid_language_tags(ttFont):
     """Does the font have any invalid language tags?"""
@@ -106,9 +110,10 @@ def com_google_fonts_check_layout_valid_language_tags(ttFont):
         if tag not in LANGUAGE_TAGS.keys():
             bad_tags.add(tag)
     if bad_tags:
-        yield FAIL, \
-              Message("bad-language-tags",
-                      "The following invalid language tags were found in the font: "
-                      + ", ".join(bad_tags))
+        yield FAIL, Message(
+            "bad-language-tags",
+            "The following invalid language tags were found in the font: "
+            + ", ".join(bad_tags),
+        )
     else:
         yield PASS, "No invalid language tags were found"

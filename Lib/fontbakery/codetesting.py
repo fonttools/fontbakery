@@ -41,10 +41,13 @@ class CheckTester:
     An initial run can be with unaltered arguments, as CheckRunner would
     produce them by itself. And subsequent calls can reuse some of them.
     """
+
     def __init__(self, module_or_profile, check_id):
-        self.profile = module_or_profile \
-                       if isinstance(module_or_profile, Profile) \
-                       else get_module_profile(module_or_profile)
+        self.profile = (
+            module_or_profile
+            if isinstance(module_or_profile, Profile)
+            else get_module_profile(module_or_profile)
+        )
         self.check_id = check_id
         self.check_identity = None
         self.check_section = None
@@ -58,20 +61,22 @@ class CheckTester:
                 if isinstance(name_key, str):
                     # this is a simplified form of a cache key:
                     # write the conditions directly to the iterargs of the check identity
-                    used_iterargs = self.runner._filter_condition_used_iterargs(name_key, self.check_iterargs)
+                    used_iterargs = self.runner._filter_condition_used_iterargs(
+                        name_key, self.check_iterargs
+                    )
                     key = (name_key, used_iterargs)
                 else:
                     # Full control for the caller, who has to inspect how
                     # the desired key needs to be set up.
                     key = name_key
                 #                                      error, value
-                self.runner._cache['conditions'][key] = None, value
+                self.runner._cache["conditions"][key] = None, value
         args = self.runner._get_args(self.check, self.check_iterargs)
         # args that are derived iterables are generators that must be
         # converted to lists, otherwise we end up with exhausted
         # generators after their first consumption.
         for k in args.keys():
-            if self.profile.get_type(k, None) == 'derived_iterables':
+            if self.profile.get_type(k, None) == "derived_iterables":
                 args[k] = list(args[k])
         return args
 
@@ -79,10 +84,12 @@ class CheckTester:
         if key in self._args:
             return self._args[key]
 
-        used_iterargs = self.runner._filter_condition_used_iterargs(key, self.check_iterargs)
+        used_iterargs = self.runner._filter_condition_used_iterargs(
+            key, self.check_iterargs
+        )
         key = (key, used_iterargs)
-        if key in self.runner._cache['conditions']:
-            return self.runner._cache['conditions'][key][1]
+        if key in self.runner._cache["conditions"]:
+            return self.runner._cache["conditions"][key][1]
 
     def __call__(self, values, condition_overrides={}):
         from fontTools.ttLib import TTFont
@@ -91,49 +98,62 @@ class CheckTester:
         import os
 
         if isinstance(values, str):
-            if values.endswith('README.md'):
-                values = {'readme_md': values}
-            elif values.endswith('.ufo'):
-                values = {'ufo': values}
-            elif values.endswith('.designspace'):
-                values = {'designspace': values}
-            elif values.endswith('METADATA.pb'):
-                fonts = [os.path.join(os.path.dirname(values), f.filename)
-                         for f in family_metadata(values).fonts]
-                values = {'metadata_pb': values,
-                          'font': fonts[0], #FIXME!
-                          'fonts': fonts}
+            if values.endswith("README.md"):
+                values = {"readme_md": values}
+            elif values.endswith(".ufo"):
+                values = {"ufo": values}
+            elif values.endswith(".designspace"):
+                values = {"designspace": values}
+            elif values.endswith("METADATA.pb"):
+                fonts = [
+                    os.path.join(os.path.dirname(values), f.filename)
+                    for f in family_metadata(values).fonts
+                ]
+                values = {
+                    "metadata_pb": values,
+                    "font": fonts[0],  # FIXME!
+                    "fonts": fonts,
+                }
             else:
-                values = {'font': values,
-                          'fonts': [values]}
+                values = {"font": values, "fonts": [values]}
         elif isinstance(values, TTFont):
-            values = {'font': values.reader.file.name,
-                      'fonts': [values.reader.file.name],
-                      'ttFont': values,
-                      'ttFonts': [values]}
+            values = {
+                "font": values.reader.file.name,
+                "fonts": [values.reader.file.name],
+                "ttFont": values,
+                "ttFonts": [values],
+            }
         elif isinstance(values, GSFont):
-            values = {'glyphs_file': values.filepath,
-                      'glyphs_files': [values.filepath],
-                      'glyphsFile': values,
-                      'glyphsFiles': [values]}
+            values = {
+                "glyphs_file": values.filepath,
+                "glyphs_files": [values.filepath],
+                "glyphsFile": values,
+                "glyphsFiles": [values],
+            }
         elif isinstance(values, defcon.Font):
-            values = {'ufo_font': values}
+            values = {"ufo_font": values}
         elif isinstance(values, list):
             if values:
                 if isinstance(values[0], str):
-                    values = {'fonts': values}
+                    values = {"fonts": values}
                 elif isinstance(values[0], TTFont):
-                    values = {'fonts': [v.reader.file.name for v in values],
-                              'ttFonts': values}
+                    values = {
+                        "fonts": [v.reader.file.name for v in values],
+                        "ttFonts": values,
+                    }
                 elif isinstance(values[0], GSFont):
-                    values = {'glyphs_files': [v.filepath for v in values],
-                              'glyphsFiles': values}
+                    values = {
+                        "glyphs_files": [v.filepath for v in values],
+                        "glyphsFiles": values,
+                    }
             else:
                 values = {}
 
-        self.runner = CheckRunner(self.profile,
-                                  values,
-                                  Configuration(explicit_checks=[self.check_id], full_lists=True))
+        self.runner = CheckRunner(
+            self.profile,
+            values,
+            Configuration(explicit_checks=[self.check_id], full_lists=True),
+        )
         for check_identity in self.runner.order:
             _, check, _ = check_identity
             if check.id != self.check_id:
@@ -150,7 +170,8 @@ class CheckTester:
 
 def portable_path(p):
     import os
-    return os.path.join(*p.split('/'))
+
+    return os.path.join(*p.split("/"))
 
 
 def TEST_FILE(f):
@@ -159,12 +180,14 @@ def TEST_FILE(f):
 
 def GLYPHSAPP_TEST_FILE(f):
     import glyphsLib
+
     the_file = portable_path("data/test/glyphs_files/" + f)
     return glyphsLib.load(open(the_file))
 
 
 def assert_PASS(check_results, reason="with a good font...", ignore_error=None):
     from fontbakery.checkrunner import PASS, ERROR
+
     print(f"Test PASS {reason}")
     status, message = list(check_results)[-1]
     if ignore_error and status == ERROR:
@@ -177,17 +200,20 @@ def assert_PASS(check_results, reason="with a good font...", ignore_error=None):
 
 def assert_SKIP(check_results, reason=""):
     from fontbakery.checkrunner import SKIP
+
     print(f"Test SKIP {reason}")
     status, message = list(check_results)[-1]
     assert status == SKIP
     return str(message)
 
 
-def assert_results_contain(check_results,
-                           expected_status,
-                           expected_msgcode=None,
-                           reason=None,
-                           ignore_error=None):
+def assert_results_contain(
+    check_results,
+    expected_status,
+    expected_msgcode=None,
+    reason=None,
+    ignore_error=None,
+):
     """
     This helper function is useful when we want to make sure that
     a certain log message is emited by a check but it can be in any
@@ -195,10 +221,11 @@ def assert_results_contain(check_results,
     """
     from fontbakery.message import Message
     from fontbakery.checkrunner import PASS, DEBUG, ERROR
+
     if not reason:
         reason = f"[{expected_msgcode}]"
     if not expected_msgcode:
-      raise Exception("Test must expect a message code")
+        raise Exception("Test must expect a message code")
 
     print(f"Test {expected_status} {reason}")
     check_results = list(check_results)
@@ -210,21 +237,27 @@ def assert_results_contain(check_results,
 
     for status, msg in check_results:
         if status not in [PASS, DEBUG] and not isinstance(msg, Message):
-            raise Exception(f"Bare Python strings no longer supported in result values.\n"
+            raise Exception(
+                f"Bare Python strings no longer supported in result values.\n"
                 f"Please use the Message class to wrap strings and to give them"
                 f" a keyword useful for identifying them (on bug reports as well as"
                 f" in the implementation of reliable code-tests).\n"
-                f"(Bare string: '{msg}')")
+                f"(Bare string: '{msg}')"
+            )
 
-        if (status == expected_status and
-            expected_msgcode == None or
-            (isinstance(msg, Message) and msg.code == expected_msgcode)):
+        if (
+            status == expected_status
+            and expected_msgcode == None
+            or (isinstance(msg, Message) and msg.code == expected_msgcode)
+        ):
             if isinstance(msg, Message):
                 return msg.message
             else:
-                return msg # It is probably a plain python string
+                return msg  # It is probably a plain python string
 
-    #if not found:
-    raise Exception(f"Expected to find {expected_status}, [code: {expected_msgcode}]\n"
-                    f"But did not find it in:\n"
-                    f"{check_results}")
+    # if not found:
+    raise Exception(
+        f"Expected to find {expected_status}, [code: {expected_msgcode}]\n"
+        f"But did not find it in:\n"
+        f"{check_results}"
+    )

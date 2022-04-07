@@ -6,23 +6,21 @@ from collections import namedtuple
 __all__ = ["style_parse", "instance_parse"]
 
 
-RIBBI_STYLES = ["Regular", "Italic", "Bold", "Bold Italic"] 
+RIBBI_STYLES = ["Regular", "Italic", "Bold", "Bold Italic"]
 
 _WEIGHT_NAMES = {
     r"Th?i?n|wt100": "Thin",
     r"Ext?r?a?Li?g?h?t|wt200": "ExtraLight",
     r"Li?g?h?t|wt300": "Light",
     r"Re?gu?l?a?r?|wt400": "Regular",
-    r"Me?di?u?m?|wt500":"Medium",
+    r"Me?di?u?m?|wt500": "Medium",
     r"Se?m?i?Bo?l?d|wt600": "SemiBold",
     r"Bo?l?d|wt700": "Bold",
     r"Ext?r?a?Bo?l?d|wt800": "ExtraBold",
     r"Bla?c?k|wt900": "Black",
-    r"Ext?r?a?Bla?c?k|wt1000": "ExtraBlack"
+    r"Ext?r?a?Bla?c?k|wt1000": "ExtraBlack",
 }
-_ITALIC_NAMES = {
-    r"Ita?l?i?c?|Obli?q?u?e?": "Italic" 
-}
+_ITALIC_NAMES = {r"Ita?l?i?c?|Obli?q?u?e?": "Italic"}
 _WEIGHT_VALUES = {
     "Thin": {"usWeightClass": 100, "fvar": 100.0},
     "ExtraLight": {"usWeightClass": 200, "fvar": 200.0},
@@ -36,6 +34,7 @@ _WEIGHT_VALUES = {
     "Black": {"usWeightClass": 900, "fvar": 900.0},
     "ExtraBlack": {"usWeightClass": 1000, "fvar": 1000.0},
 }
+
 
 def _re_string_tokenizer(string, mapping):
     found = []
@@ -103,8 +102,9 @@ def _style_parse(string):
     """Parse a string into a GF font style object. All parsed properties
     conform to the Google Fonts specification.
     """
-    _GFStyle = namedtuple("GFStyle",
-                          """name
+    _GFStyle = namedtuple(
+        "GFStyle",
+        """name
                           usWeightClass
                           win_style_name
                           mac_style_name
@@ -112,31 +112,39 @@ def _style_parse(string):
                           fsSelection
                           macStyle
                           is_ribbi
-                          filename""")
+                          filename""",
+    )
     wght, ital = _style_tokens(string)
     name = _parse_name(wght, ital)
-    return _GFStyle(name=name,
-                    usWeightClass=_WEIGHT_VALUES[wght]['usWeightClass'],
-                    win_style_name=_win_style_name(name),
-                    mac_style_name=name,
-                    typo_style_name=_typo_style_name(name),
-                    fsSelection=_fsSelection(wght),
-                    macStyle=_macStyle(wght),
-                    is_ribbi=name in RIBBI_STYLES,
-                    filename=name.replace(" ", ""))
+    return _GFStyle(
+        name=name,
+        usWeightClass=_WEIGHT_VALUES[wght]["usWeightClass"],
+        win_style_name=_win_style_name(name),
+        mac_style_name=name,
+        typo_style_name=_typo_style_name(name),
+        fsSelection=_fsSelection(wght),
+        macStyle=_macStyle(wght),
+        is_ribbi=name in RIBBI_STYLES,
+        filename=name.replace(" ", ""),
+    )
 
 
 def style_parse(ttFont):
     """Get style properites from a TTFont object. If the font is a static font,
     use the filename to get style info, else if the font is a variable font,
     use the default instance's subfamilyNameID record"""
-    if 'fvar' in ttFont:
-        dflt_instance_coords = {a.axisTag: a.defaultValue for a in ttFont['fvar'].axes}
-        for instance in ttFont['fvar'].instances:
+    if "fvar" in ttFont:
+        dflt_instance_coords = {a.axisTag: a.defaultValue for a in ttFont["fvar"].axes}
+        for instance in ttFont["fvar"].instances:
             if instance.coordinates == dflt_instance_coords:
-                name = ttFont['name'].getName(instance.subfamilyNameID, 3, 1, 1033).toUnicode()
+                name = (
+                    ttFont["name"]
+                    .getName(instance.subfamilyNameID, 3, 1, 1033)
+                    .toUnicode()
+                )
                 return _style_parse(name)
     import os
+
     filename = os.path.basename(ttFont.reader.file.name)
     if len(filename.split("-")) != 2:
         # Google Fonts policy on font file naming scheme
@@ -150,23 +158,26 @@ def style_parse(ttFont):
 
 def instance_parse(string):
     """Derive instance properties from a string."""
-    _GFInstance = namedtuple("GFStyle",
-                             """name
+    _GFInstance = namedtuple(
+        "GFStyle",
+        """name
                              coordinates
                              unparsable_tokens
                              raw_token_order
-                             expected_token_order""")
+                             expected_token_order""",
+    )
     wght, ital = _style_tokens(string)
     if not wght:
         wght = "Regular"
     name = _parse_name(wght, ital)
-    coords = {"wght": _WEIGHT_VALUES[wght]['fvar']}
+    coords = {"wght": _WEIGHT_VALUES[wght]["fvar"]}
     return _GFInstance(
         name=name,
         coordinates=coords,
         unparsable_tokens=_unparsable_tokens(string),
         raw_token_order=_token_order(string),
-        expected_token_order=_token_order(name))
+        expected_token_order=_token_order(name),
+    )
 
 
 def _unparsable_tokens(string):
@@ -183,8 +194,7 @@ def _token_order(string):
     results = []
     for token in tokens:
         if _re_string_tokenizer(token, _WEIGHT_NAMES):
-            results.append('wght')
+            results.append("wght")
         if "Italic" == token:
-            results.append('ital')
+            results.append("ital")
     return results
-

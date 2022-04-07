@@ -1,13 +1,16 @@
 from fontbakery.callable import check
 from fontbakery.status import FAIL, PASS
 from fontbakery.message import Message
+
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
+from fontbakery.fonts_profile import (
+    profile_factory,
+)  # NOQA pylint: disable=unused-import
 
 
 @check(
-    id = 'com.google.fonts/check/family/equal_unicode_encodings',
-    proposal = 'legacy:check/013'
+    id="com.google.fonts/check/family/equal_unicode_encodings",
+    proposal="legacy:check/013",
 )
 def com_google_fonts_check_family_equal_unicode_encodings(ttFonts):
     """Fonts have equal unicode encodings?"""
@@ -15,7 +18,7 @@ def com_google_fonts_check_family_equal_unicode_encodings(ttFonts):
     failed = False
     for ttFont in ttFonts:
         cmap = None
-        for table in ttFont['cmap'].tables:
+        for table in ttFont["cmap"].tables:
             if table.format == 4:
                 cmap = table
                 break
@@ -27,29 +30,27 @@ def com_google_fonts_check_family_equal_unicode_encodings(ttFonts):
         if encoding != cmap.platEncID:
             failed = True
     if failed:
-        yield FAIL,\
-              Message("mismatch",
-                      "Fonts have different unicode encodings.")
+        yield FAIL, Message("mismatch", "Fonts have different unicode encodings.")
     else:
         yield PASS, "Fonts have equal unicode encodings."
 
 
 @check(
-    id = 'com.google.fonts/check/all_glyphs_have_codepoints',
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/735'
+    id="com.google.fonts/check/all_glyphs_have_codepoints",
+    proposal="https://github.com/googlefonts/fontbakery/issues/735",
 )
 def com_google_fonts_check_all_glyphs_have_codepoints(ttFont):
     """Check all glyphs have codepoints assigned."""
     failed = False
-    for subtable in ttFont['cmap'].tables:
+    for subtable in ttFont["cmap"].tables:
         if subtable.isUnicode():
             for item in subtable.cmap.items():
                 codepoint = item[0]
                 if codepoint is None:
                     failed = True
-                    yield FAIL,\
-                          Message("glyph-lacks-codepoint",
-                                  f"Glyph {codepoint} lacks a unicode"
-                                  f" codepoint assignment.")
+                    yield FAIL, Message(
+                        "glyph-lacks-codepoint",
+                        f"Glyph {codepoint} lacks a unicode" f" codepoint assignment.",
+                    )
     if not failed:
         yield PASS, "All glyphs have a codepoint value assigned."

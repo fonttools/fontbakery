@@ -110,7 +110,7 @@ class CheckRunner:
 
     @property
     def iterargs(self):
-        """ uses the singular name as key """
+        """uses the singular name as key"""
         iterargs = OrderedDict()
         for name in self._iterargs:
             plural = self._profile.iterargs[name]
@@ -257,7 +257,7 @@ class CheckRunner:
         return self._get(key, iterargs, None, *args)
 
     def get_iterarg(self, name, index):
-        """ Used by e.g. reporters """
+        """Used by e.g. reporters"""
         plural = self._profile.iterargs[name]
         return self._values[plural][index]
 
@@ -403,7 +403,7 @@ class CheckRunner:
         try:
             args = self._get_args(check, iterargs)
             # Run the generators now, so we can test if they're empty
-            for k,v in args.items():
+            for k, v in args.items():
                 if inspect.isgenerator(v) or inspect.isgeneratorfunction(v):
                     args[k] = list(v)
 

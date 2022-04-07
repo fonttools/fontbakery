@@ -15,18 +15,22 @@ import inspect
 
 from functools import wraps, update_wrapper
 
+
 def cached_getter(func):
     """Decorate a property by executing it at instatiation time and cache the
     result on the instance object."""
+
     @wraps(func)
     def wrapper(self):
-        attribute = f'_{func.__name__}'
+        attribute = f"_{func.__name__}"
         value = getattr(self, attribute, None)
         if value is None:
             value = func(self)
             setattr(self, attribute, value)
         return value
+
     return wrapper
+
 
 class FontbakeryCallable:
     def __init__(self, func):
@@ -44,10 +48,10 @@ class FontbakeryCallable:
         update_wrapper(self, func)
 
     def __repr__(self):
-        return'<{}:{}>'.format(type(self).__name__,
-                               getattr(self, 'id',
-                                       getattr(self, 'name',
-                                               super().__repr__() ))) # pylint: disable=consider-using-f-string
+        return "<{}:{}>".format(
+            type(self).__name__,
+            getattr(self, "id", getattr(self, "name", super().__repr__())),
+        )  # pylint: disable=consider-using-f-string
 
     @property
     @cached_getter
@@ -61,13 +65,14 @@ class FontbakeryCallable:
         # make follow_wrapped=True explicit, even though it is the default!
         sig = inspect.signature(self, follow_wrapped=True)
         for name, param in sig.parameters.items():
-            if param.default is not inspect.Parameter.empty \
-               or param.kind not in (inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                                     inspect.Parameter.POSITIONAL_ONLY):
+            if param.default is not inspect.Parameter.empty or param.kind not in (
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                inspect.Parameter.POSITIONAL_ONLY,
+            ):
                 # has a default i.e. not mandatory or not positional of any kind
 
                 ## Debugging message:
-                #print(f'[{param}]'
+                # print(f'[{param}]'
                 #      f' {param.default is inspect.Parameter.empty}'
                 #      f' param.kind: {param.kind}'
                 #      f' param.default: {param.default}'
@@ -87,12 +92,14 @@ class FontbakeryCallable:
                 # is a mandatory
                 continue
 
-            if param.kind not in (inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                                  inspect.Parameter.POSITIONAL_ONLY):
+            if param.kind not in (
+                inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                inspect.Parameter.POSITIONAL_ONLY,
+            ):
                 # no more positional of any kind
 
                 ## Debugging message:
-                #print(f'[{param}]'
+                # print(f'[{param}]'
                 #      f'{param.default is inspect.Parameter.empty}'
                 #      f' param.kind: {param.kind}'
                 #      f' param.default: {param.default}'
@@ -102,7 +109,7 @@ class FontbakeryCallable:
         return tuple(args)
 
     def __call__(self, *args, **kwds):
-        """ Each call to __call__ with the same arguments must return
+        """Each call to __call__ with the same arguments must return
         the same result.
         """
         return self.__wrapped__(*args, **kwds)
@@ -114,7 +121,7 @@ class FontbakeryCallable:
 def get_doc_desc(func, description, documentation):
     doc = inspect.getdoc(func) or ""
 
-    doclines = doc.split('\n')
+    doclines = doc.split("\n")
 
     if not description:
         description = []
@@ -123,58 +130,62 @@ def get_doc_desc(func, description, documentation):
             description.append(doclines[0])
             doclines = doclines[1:]
         # This removes line breaks
-        description = ' '.join(description)
+        description = " ".join(description)
 
     # remove preceding empty lines
     while len(doclines) and not doclines[0]:
         doclines = doclines[1:]
 
     if not documentation and len(doclines):
-        documentation = '\n'.join(doclines) or None
+        documentation = "\n".join(doclines) or None
 
     return description, documentation
 
+
 class FontBakeryCondition(FontbakeryCallable):
-    def __init__(self,
-                 func,
-                 # id,
-                 name = None, # very short text
-                 description = None, # short text
-                 documentation=None, # long text, markdown?
-                 force=False):
+    def __init__(
+        self,
+        func,
+        # id,
+        name=None,  # very short text
+        description=None,  # short text
+        documentation=None,  # long text, markdown?
+        force=False,
+    ):
         super().__init__(func)
         # self.id = id
         self.name = func.__name__ if name is None else name
-        self.description, self.documentation = get_doc_desc(func,
-                                                            description,
-                                                            documentation)
+        self.description, self.documentation = get_doc_desc(
+            func, description, documentation
+        )
         self.force = force
 
-class FontBakeryCheck(FontbakeryCallable):
-    def __init__(self,
-                 checkfunc,
-                 id,
-                 description=None, # short text, this is mandatory
-                 documentation=None,
-                 name=None, # very short text
-                 conditions=None,
-                 rationale=None, # long text explaining why this check is needed.
-                                 # Using markdown, perhaps?
-                 proposal=None, # An URL to the original proposal for this check.
-                                # This is typically a github issue or pull request.
-                 severity=None, # numeric value from 1=min to 10=max, denoting check severity
-                 configs=None, # items from config[self.id] to inject into the check's namespace.
-                 misc_metadata=None, # Miscelaneous free-form metadata fields
-                                     # Some of them may be promoted to 1st-class metadata fields
-                                     # if they start being used by the check-runner.
-                                     # Below are a few candidates for that:
 
-                 # affects=None, # A list of tuples each indicating Browser/OS/Application
-                 #               # and the affected versions range.
-                 # example_failures=None, # A reference to some font or family that
-                 #                        # originally failed due to the problems
-                 #                        # that this check tries to detect and report.
-                ):
+class FontBakeryCheck(FontbakeryCallable):
+    def __init__(
+        self,
+        checkfunc,
+        id,
+        description=None,  # short text, this is mandatory
+        documentation=None,
+        name=None,  # very short text
+        conditions=None,
+        rationale=None,  # long text explaining why this check is needed.
+        # Using markdown, perhaps?
+        proposal=None,  # An URL to the original proposal for this check.
+        # This is typically a github issue or pull request.
+        severity=None,  # numeric value from 1=min to 10=max, denoting check severity
+        configs=None,  # items from config[self.id] to inject into the check's namespace.
+        misc_metadata=None,  # Miscelaneous free-form metadata fields
+        # Some of them may be promoted to 1st-class metadata fields
+        # if they start being used by the check-runner.
+        # Below are a few candidates for that:
+        # affects=None, # A list of tuples each indicating Browser/OS/Application
+        #               # and the affected versions range.
+        # example_failures=None, # A reference to some font or family that
+        #                        # originally failed due to the problems
+        #                        # that this check tries to detect and report.
+    ):
         """This is the base class for all checks. It will usually
         not be used directly to create check instances, rather
         decorators which are factories will init this class.
@@ -223,18 +234,19 @@ class FontBakeryCheck(FontbakeryCallable):
         self.name = checkfunc.__name__ if name is None else name
         self.conditions = conditions or []
         self.rationale = rationale
-        self.description, self.documentation = get_doc_desc(checkfunc,
-                                                            description,
-                                                            documentation)
+        self.description, self.documentation = get_doc_desc(
+            checkfunc, description, documentation
+        )
         self.configs = configs
         self.proposal = proposal
         self.severity = severity
         if not self.description:
-            raise TypeError('{} needs a description.'.format(type(self).__name__))
+            raise TypeError("{} needs a description.".format(type(self).__name__))
 
     # This was problematic. See: https://github.com/googlefonts/fontbakery/issues/2194
     # def __str__(self):
     #  return self.id
+
 
 def condition(*args, **kwds):
     """Check wrapper, a factory for FontBakeryCondition
@@ -250,7 +262,9 @@ def condition(*args, **kwds):
         # used as `@decorator()` maybe with args
         def wrapper(func):
             return FontBakeryCondition(func, *args, **kwds)
+
     return wrapper
+
 
 def check(*args, **kwds):
     """Check wrapper, a factory for FontBakeryCheck
@@ -258,21 +272,27 @@ def check(*args, **kwds):
     Requires all arguments of FontBakeryCheck but not `checkfunc`
     which is passed via the decorator syntax.
     """
+
     def wrapper(checkfunc):
         return FontBakeryCheck(checkfunc, *args, **kwds)
+
     return wrapper
 
+
 # ExpectedValue is not a callable, but it belongs next to check and condition
-_NOT_SET = object() # used as a marker
+_NOT_SET = object()  # used as a marker
+
+
 class FontBakeryExpectedValue:
-    def __init__(self,
-                 name, # unique name in global namespace
-                 description=None, # short text, this is mandatory
-                 documentation=None, # markdown?
-                 default=_NOT_SET, # because None can be a valid default
-                 validator=None, # function, see the docstring of `def validate`
-                 force=False
-                ):
+    def __init__(
+        self,
+        name,  # unique name in global namespace
+        description=None,  # short text, this is mandatory
+        documentation=None,  # markdown?
+        default=_NOT_SET,  # because None can be a valid default
+        validator=None,  # function, see the docstring of `def validate`
+        force=False,
+    ):
         self.name = name
         self.description = description
         self.documentation = documentation
@@ -281,7 +301,7 @@ class FontBakeryExpectedValue:
         self.force = force
 
     def __repr__(self):
-        return'<{}:{}>'.format(type(self).__name__, self.name)
+        return "<{}:{}>".format(type(self).__name__, self.name)
 
     @property
     def has_default(self):
@@ -291,15 +311,15 @@ class FontBakeryExpectedValue:
     def default(self):
         has_default, value = self._default
         if not has_default:
-            raise AttributeError(f'{self} has no default value')
+            raise AttributeError(f"{self} has no default value")
         return value
 
     def validate(self, value):
         """
-          returns (bool valid, string|None message)
-          If valid is True, message is None or can be ignored.
-          If valid is False, message should be a string describing what
-          is wrong with value.
+        returns (bool valid, string|None message)
+        If valid is True, message is None or can be ignored.
+        If valid is False, message should be a string describing what
+        is wrong with value.
         """
         return self._validator(value) if self._validator else (True, None)
 

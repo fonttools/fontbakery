@@ -24,26 +24,32 @@ from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
 from vharfbuzz import Vharfbuzz
 
 
-
 # TODO: this should be part of FontBakeryCheck and check.conditions
 # should be a tuple (negated, name)
 def is_negated(name):
     stripped = name.strip()
-    if stripped.startswith('not '):
+    if stripped.startswith("not "):
         return True, stripped[4:].strip()
-    if stripped.startswith('!'):
+    if stripped.startswith("!"):
         return True, stripped[1:].strip()
     return False, stripped
 
 
 def colorless_len(str):
     import re
-    return len(re.sub('\x1b(\\[[0-9;]+|\\].+)m', '', str))
+
+    return len(re.sub("\x1b(\\[[0-9;]+|\\].+)m", "", str))
 
 
-def text_flow(content, width=80, indent=0, left_margin=0,
-              first_line_indent=0, space_padding=False,
-              text_color="{}".format): # pylint: disable=consider-using-f-string
+def text_flow(
+    content,
+    width=80,
+    indent=0,
+    left_margin=0,
+    first_line_indent=0,
+    space_padding=False,
+    text_color="{}".format,
+):  # pylint: disable=consider-using-f-string
     result = []
     line_num = 0
     for line in content.split("\n"):
@@ -72,11 +78,14 @@ def text_flow(content, width=80, indent=0, left_margin=0,
                 if "/" in this_line:
                     # here we feed-back chunks of a URL
                     # into words if it overflows the block
-                    chunks = this_line.split('/')
+                    chunks = this_line.split("/")
                     new_line = chunks.pop(0)
                     while chunks:
-                        next_len = colorless_len(new_line) + 1 + colorless_len(chunks[0])
-                        if next_len >= _width: break
+                        next_len = (
+                            colorless_len(new_line) + 1 + colorless_len(chunks[0])
+                        )
+                        if next_len >= _width:
+                            break
                         new_line += "/" + chunks.pop(0)
                     this_line = new_line
                     words.insert(0, "/" + "/".join(chunks))
@@ -86,7 +95,9 @@ def text_flow(content, width=80, indent=0, left_margin=0,
                     words.insert(0, this_line[_width:])
                     this_line = this_line[:_width]
 
-            while words and (colorless_len(this_line) + 1 + colorless_len(words[0]) <= width):
+            while words and (
+                colorless_len(this_line) + 1 + colorless_len(words[0]) <= width
+            ):
                 this_line += " " + words.pop(0)
 
             if space_padding:
@@ -148,34 +159,37 @@ def split_camel_case(camelcase):
 def suffix(font):
     filename = os.path.basename(font)
     basename = os.path.splitext(filename)[0]
-    s = basename.split('-')
+    s = basename.split("-")
     s.pop(0)
-    return '-'.join(s)
+    return "-".join(s)
 
 
 def pretty_print_list(config, values, shorten=10, sep=", ", glue="and"):
     if len(values) == 1:
         return str(values[0])
 
-    if config['full_lists']:
+    if config["full_lists"]:
         shorten = None
 
     if shorten and len(values) > shorten + 2:
         sep = sep.join(map(str, values[:shorten]))
-        return (f"{sep} {glue} {len(values) - shorten} more.\n"
-                f"\n"
-                f"Use -F or --full-lists to disable shortening of long lists.")
+        return (
+            f"{sep} {glue} {len(values) - shorten} more.\n"
+            f"\n"
+            f"Use -F or --full-lists to disable shortening of long lists."
+        )
     else:
         sep = sep.join(map(str, values[:-1]))
         return f"{sep} {glue} {str(values[-1])}"
 
 
 def bullet_list(config, items, bullet="-", indentation="\t"):
-    return f"{indentation}{bullet} " +\
-           pretty_print_list(config,
-                             items,
-                             sep=f"\n\n{indentation}{bullet} ",
-                             glue=f"\n\n{indentation}{bullet} And")
+    return f"{indentation}{bullet} " + pretty_print_list(
+        config,
+        items,
+        sep=f"\n\n{indentation}{bullet} ",
+        glue=f"\n\n{indentation}{bullet} And",
+    )
 
 
 def get_regular(fonts):
@@ -189,67 +203,63 @@ def get_absolute_path(p):
     if os.path.isabs(p):
         abspath = p
     else:
-        abspath = os.path.join(os.path.abspath('.'), p)
+        abspath = os.path.join(os.path.abspath("."), p)
     return abspath
 
 
 def filesize_formatting(s):
     if s < 1024:
         return f"{s} bytes"
-    elif s < 1024*1024:
+    elif s < 1024 * 1024:
         return f"{s/1024:.1f}kb"
     else:
         return f"{s/(1024*1024):.1f}Mb"
 
 
 def get_bounding_box(font):
-    """ Returns max and min bbox of given truetype font """
+    """Returns max and min bbox of given truetype font"""
     ymin = 0
     ymax = 0
-    if font.sfntVersion == 'OTTO':
-        ymin = font['head'].yMin
-        ymax = font['head'].yMax
+    if font.sfntVersion == "OTTO":
+        ymin = font["head"].yMin
+        ymax = font["head"].yMax
     else:
-        for g in font['glyf'].glyphs:
-            char = font['glyf'][g]
-            if hasattr(char, 'yMin') and ymin > char.yMin:
+        for g in font["glyf"].glyphs:
+            char = font["glyf"][g]
+            if hasattr(char, "yMin") and ymin > char.yMin:
                 ymin = char.yMin
-            if hasattr(char, 'yMax') and ymax < char.yMax:
+            if hasattr(char, "yMax") and ymax < char.yMax:
                 ymax = char.yMax
     return ymin, ymax
 
 
-def get_name_entries(font,
-                     nameID,
-                     platformID=None,
-                     encodingID=None,
-                     langID=None):
+def get_name_entries(font, nameID, platformID=None, encodingID=None, langID=None):
     results = []
-    for entry in font['name'].names:
-        if entry.nameID == nameID and \
-           (platformID is None or entry.platformID == platformID) and \
-           (encodingID is None or entry.platEncID == encodingID) and \
-           (langID is None or entry.langID == langID):
+    for entry in font["name"].names:
+        if (
+            entry.nameID == nameID
+            and (platformID is None or entry.platformID == platformID)
+            and (encodingID is None or entry.platEncID == encodingID)
+            and (langID is None or entry.langID == langID)
+        ):
             results.append(entry)
     return results
 
 
-def get_name_entry_strings(font,
-                           nameID,
-                           platformID=None,
-                           encodingID=None,
-                           langID=None):
+def get_name_entry_strings(font, nameID, platformID=None, encodingID=None, langID=None):
     entries = get_name_entries(font, nameID, platformID, encodingID, langID)
     return list(map(lambda e: e.string.decode(e.getEncoding()), entries))
 
 
 def name_entry_id(name):
-    from fontbakery.constants import (NameID,
-                                      PlatformID)
-    return "[{}({}):{}({})]".format(NameID(name.nameID).name,
-                                    name.nameID,
-                                    PlatformID(name.platformID).name,
-                                    name.platformID) # pylint: disable=consider-using-f-string
+    from fontbakery.constants import NameID, PlatformID
+
+    return "[{}({}):{}({})]".format(
+        NameID(name.nameID).name,
+        name.nameID,
+        PlatformID(name.platformID).name,
+        name.platformID,
+    )  # pylint: disable=consider-using-f-string
 
 
 def get_glyph_name(font: TTFont, codepoint: int) -> Optional[str]:
@@ -267,14 +277,14 @@ def glyph_contour_count(font, name):
     composite glyphs.
     """
     contour_count = 0
-    items = [font['glyf'][name]]
+    items = [font["glyf"][name]]
 
     while items:
         g = items.pop(0)
         if g.isComposite():
             for comp in g.components:
                 if comp.glyphName != ".ttfautohint":
-                    items.append(font['glyf'][comp.glyphName])
+                    items.append(font["glyf"][comp.glyphName])
         if g.numberOfContours != -1:
             contour_count += g.numberOfContours
     return contour_count
@@ -282,17 +292,18 @@ def glyph_contour_count(font, name):
 
 def get_font_glyph_data(font):
     """Return information for each glyph in a font"""
-    from fontbakery.constants import (PlatformID,
-                                      WindowsEncodingID)
+    from fontbakery.constants import PlatformID, WindowsEncodingID
+
     font_data = []
 
     try:
-        subtable = font['cmap'].getcmap(PlatformID.WINDOWS,
-                                        WindowsEncodingID.UNICODE_BMP)
+        subtable = font["cmap"].getcmap(
+            PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP
+        )
         if not subtable:
-                    # Well... Give it a chance here...
-                    # It may be using a different Encoding_ID value
-            subtable = font['cmap'].tables[0]
+            # Well... Give it a chance here...
+            # It may be using a different Encoding_ID value
+            subtable = font["cmap"].tables[0]
 
         cmap = subtable.cmap
     except:
@@ -304,34 +315,40 @@ def get_font_glyph_data(font):
         if glyph_name in cmap_reversed:
             uni_glyph = cmap_reversed[glyph_name]
             contours = glyph_contour_count(font, glyph_name)
-            font_data.append({
-                'unicode': uni_glyph,
-                'name': glyph_name,
-                'contours': {contours}
-            })
+            font_data.append(
+                {"unicode": uni_glyph, "name": glyph_name, "contours": {contours}}
+            )
     return font_data
+
 
 def get_Protobuf_Message(klass, path):
     from google.protobuf import text_format
+
     message = klass()
     text_data = open(path, "rb").read()
     text_format.Merge(text_data, message)
     return message
 
+
 def get_FamilyProto_Message(path):
     from fontbakery.fonts_public_pb2 import FamilyProto
+
     return get_Protobuf_Message(FamilyProto, path)
+
 
 def get_DesignerInfoProto_Message(text_data):
     from fontbakery.designers_pb2 import DesignerInfoProto
     from google.protobuf import text_format
+
     message = DesignerInfoProto()
     text_format.Merge(text_data, message)
     return message
 
+
 def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
     from fontbakery.message import Message
-    from fontbakery.status import (PASS, FAIL)
+    from fontbakery.status import PASS, FAIL
+
     value = getattr(ttFont[table], attr)
     name_str = f"{table} {attr} {bitname} bit"
     if bool(value & bitmask) == expected:
@@ -341,9 +358,7 @@ def check_bit_entry(ttFont, table, attr, expected, bitmask, bitname):
             expected_str = "set"
         else:
             expected_str = "unset"
-        return FAIL,\
-               Message(f"bad-{bitname}",
-                       f"{name_str} should be {expected_str}.")
+        return FAIL, Message(f"bad-{bitname}", f"{name_str} should be {expected_str}.")
 
 
 class BadCertificateSetupException(Exception):
@@ -354,6 +369,7 @@ def download_file(url):
     from urllib.request import urlopen
     from urllib.error import URLError
     from io import BytesIO
+
     try:
         return BytesIO(urlopen(url).read())
     except URLError as e:
@@ -364,14 +380,15 @@ def download_file(url):
                 " the certificates. There is a note in the installer"
                 " Readme about that. Check the Python folder in the"
                 " Applications directory, you should find a shell script"
-                " to install the certificates.")
+                " to install the certificates."
+            )
 
 
 def cff_glyph_has_ink(font: TTFont, glyph_name: Text) -> bool:
-    if 'CFF2' in font:
-        top_dict = font['CFF2'].cff.topDictIndex[0]
+    if "CFF2" in font:
+        top_dict = font["CFF2"].cff.topDictIndex[0]
     else:
-        top_dict = font['CFF '].cff.topDictIndex[0]
+        top_dict = font["CFF "].cff.topDictIndex[0]
     char_strings = top_dict.CharStrings
     char_string = char_strings[glyph_name]
     bounds = char_string.calcBounds(char_strings)
@@ -382,13 +399,13 @@ def cff_glyph_has_ink(font: TTFont, glyph_name: Text) -> bool:
 
 
 def ttf_glyph_has_ink(font: TTFont, name: Text) -> bool:
-    glyph = font['glyf'].glyphs[name]
-    glyph.expand(font['glyf'])
+    glyph = font["glyf"].glyphs[name]
+    glyph.expand(font["glyf"])
 
     if not glyph.isComposite():
         if glyph.numberOfContours == 0:
             return False
-        (coords, _, _) = glyph.getCoordinates(font['glyf'])
+        (coords, _, _) = glyph.getCoordinates(font["glyf"])
         # you need at least 3 points to draw
         return len(coords) > 2
 
@@ -402,6 +419,7 @@ def ttf_glyph_has_ink(font: TTFont, name: Text) -> bool:
 
 def unicoderange_bit_name(bit):
     from fontbakery.constants import UNICODERANGE_DATA
+
     return UNICODERANGE_DATA[bit][0][1]
 
 
@@ -422,6 +440,7 @@ def get_preferred_cmap(ttFont):
 
 def chars_in_range(ttFont, bit):
     from fontbakery.constants import UNICODERANGE_DATA
+
     cmap = get_preferred_cmap(ttFont)
     chars = []
     for c in sorted(cmap):
@@ -433,6 +452,7 @@ def chars_in_range(ttFont, bit):
 
 def compute_unicoderange_bits(ttFont):
     from fontbakery.constants import UNICODERANGE_DATA
+
     cmap = get_preferred_cmap(ttFont)
     result = 0
     for c in sorted(cmap):
@@ -440,7 +460,7 @@ def compute_unicoderange_bits(ttFont):
             for entry in UNICODERANGE_DATA[bit]:
                 bit = entry[0]
                 if c >= entry[2] and c <= entry[3]:
-                    result |= (1 << bit)
+                    result |= 1 << bit
     return result
 
 
@@ -455,19 +475,19 @@ def glyph_has_ink(font: TTFont, name: Text) -> bool:
     Returns:
         True if the font has at least one contour associated with it.
     """
-    if 'glyf' in font:
+    if "glyf" in font:
         return ttf_glyph_has_ink(font, name)
-    elif ('CFF ' in font) or ('CFF2' in font):
+    elif ("CFF " in font) or ("CFF2" in font):
         return cff_glyph_has_ink(font, name)
     else:
         raise Exception("Could not find 'glyf', 'CFF ', or 'CFF2' table.")
 
 
 def filenames_ending_in(suffix, root):
-    '''
+    """
     Returns a list of the filenames of all files in a given directory subtree
     that have the given filename suffix. Example: List all ".json" files.
-    '''
+    """
     filenames = []
     for f in os.listdir(root):
         fullpath = os.path.join(root, f)
@@ -479,30 +499,28 @@ def filenames_ending_in(suffix, root):
 
 
 def add_check_overrides(checkids, profile_tag, overrides):
-    '''
+    """
     Overridden checkids have a suffix identifying the specific
     profile that customize their behaviour.
 
     This helper function adds them to the list of checks and
     ensures the original check is not redundantly listed.
-    '''
+    """
 
     # First we add the overridden check ids:
-    checkids += [f'{checkid}:{profile_tag}'
-                 for checkid in overrides]
+    checkids += [f"{checkid}:{profile_tag}" for checkid in overrides]
 
     # But then we also remove the original check ids that
     # may have also been included from the original profile:
-    checkids[:] = [checkid for checkid in checkids
-                   if checkid not in overrides]
+    checkids[:] = [checkid for checkid in checkids if checkid not in overrides]
     return checkids
 
 
 def can_shape(ttFont, text, parameters=None):
-    '''
+    """
     Returns true if the font can render a text string without any
     .notdef characters.
-    '''
+    """
     filename = ttFont.reader.file.name
     vharfbuzz = Vharfbuzz(filename)
     buf = vharfbuzz.shape(text, parameters)
@@ -546,9 +564,7 @@ def all_kerning(ttFont):
                 for ix2, c2 in enumerate(c1.Class2Record):
                     if ix2 not in class2:
                         continue
-                    firstClass = list(
-                        set(class1[ix1]) & set(subtable.Coverage.glyphs)
-                    )
+                    firstClass = list(set(class1[ix1]) & set(subtable.Coverage.glyphs))
                     for left in firstClass:
                         for right in class2[ix2]:
                             rules.append((left, right, c2.Value1, c2.Value2))
@@ -587,6 +603,3 @@ def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):
                 callback(xt, *args)
         else:
             callback(lookup, *args)
-
-
-

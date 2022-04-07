@@ -10,7 +10,9 @@ import re
 
 
 def md2html(x):
-    return cmarkgfm.markdown_to_html_with_extensions(x, options=cmarkgfmOptions.CMARK_OPT_UNSAFE, extensions=["autolink"])
+    return cmarkgfm.markdown_to_html_with_extensions(
+        x, options=cmarkgfmOptions.CMARK_OPT_UNSAFE, extensions=["autolink"]
+    )
 
 
 checks = {}

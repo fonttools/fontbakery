@@ -2,37 +2,37 @@ from fontbakery.errors import SetupError
 
 
 class Section:
-    """ An ordered set of checks.
+    """An ordered set of checks.
 
     Used to structure checks in a profile. A profile consists
     of one or more sections.
     """
+
     def __init__(self, name, checks=None, order=None, description=None):
         self.name = name
         self.description = description
         self._add_check_callback = None
         self._remove_check_callback = None
         self._checks = [] if checks is None else list(checks)
-        self._checkid2index = {check.id:i for i, check in enumerate(self._checks)}
+        self._checkid2index = {check.id: i for i, check in enumerate(self._checks)}
         # a list of iterarg-names
         self._order = order or []
 
     def clone(self, filter_func=None):
         checks = self.checks if not filter_func else filter(filter_func, self.checks)
-        return Section(self.name,
-                       checks=checks,
-                       order=self.order,
-                       description=self.description)
+        return Section(
+            self.name, checks=checks, order=self.order, description=self.description
+        )
 
     def __repr__(self):
-        return f'<Section: {self.name}>'
+        return f"<Section: {self.name}>"
 
     # This was problematic. See: https://github.com/googlefonts/fontbakery/issues/2194
     # def __str__(self):
     #     return self.name
 
     def __eq__(self, other):
-        """ True if other.checks has the same checks in the same order"""
+        """True if other.checks has the same checks in the same order"""
         if hasattr(other, "checks"):
             return self._checks == other.checks
         else:
@@ -51,7 +51,7 @@ class Section:
             # allow only one, otherwise, skipping registration in
             # add_check becomes problematic, can't skip just for some
             # callbacks.
-            raise Exception(f'{self} already has an on_add_check callback')
+            raise Exception(f"{self} already has an on_add_check callback")
         self._add_check_callback = callback
 
     def on_remove_check(self, callback):
@@ -59,7 +59,7 @@ class Section:
             # allow only one, otherwise, skipping un-registration in
             # remove_check becomes problematic, can't skip just for some
             # callbacks.
-            raise Exception(f'{self} already has an on_add_check callback')
+            raise Exception(f"{self} already has an on_add_check callback")
         self._remove_check_callback = callback
 
     def add_check(self, check):
@@ -134,5 +134,5 @@ class Section:
           yield PASS, 'example'
         """
         if not self.add_check(func):
-            raise SetupError(f'Can\'t add check {func} to section {self}.')
+            raise SetupError(f"Can't add check {func} to section {self}.")
         return func

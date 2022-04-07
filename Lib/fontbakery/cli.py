@@ -51,27 +51,29 @@ def main():
         description = (
             "Run fontbakery subcommands. Subcommands have their own help "
             "messages. These are usually accessible with the -h/--help flag "
-            "positioned after the subcommand, i.e.: fontbakery subcommand -h")
+            "positioned after the subcommand, i.e.: fontbakery subcommand -h"
+        )
 
         parser = argparse.ArgumentParser(description=description)
         parser.add_argument(
-            'subcommand',
+            "subcommand",
             help="The subcommand to execute",
             nargs="?",
-            choices=subcommands)
+            choices=subcommands,
+        )
         parser.add_argument(
-            '--list-subcommands',
-            action='store_true',
-            help='print the list of subcommands '
-            'to stdout, separated by a space character. This is '
-            'usually only used to generate the shell completion code.')
+            "--list-subcommands",
+            action="store_true",
+            help="print the list of subcommands "
+            "to stdout, separated by a space character. This is "
+            "usually only used to generate the shell completion code.",
+        )
         parser.add_argument(
-            '--version',
-            action='version',
-            version=fontbakery.__version__)
+            "--version", action="version", version=fontbakery.__version__
+        )
         args = parser.parse_args()
 
         if args.list_subcommands:
-            print(' '.join(subcommands))
+            print(" ".join(subcommands))
         else:
             parser.print_help()
