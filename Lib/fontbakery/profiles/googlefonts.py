@@ -2861,8 +2861,9 @@ def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
     conditions = ['font_metadata'],
     proposal = 'legacy:check/115'
 )
-def com_google_fonts_check_metadata_canonical_style_names(ttFont, is_italic, font_metadata):
+def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata):
     """METADATA.pb: Font styles are named canonically?"""
+    from .shared_conditions import is_italic
 
     if font_metadata.style not in ["italic", "normal"]:
         yield SKIP, ('This check only applies to font styles declared'
