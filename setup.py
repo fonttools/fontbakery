@@ -45,8 +45,7 @@ setup(
               'fontbakery.commands',
               'fontbakery.sphinx_extensions'
               ],
-    package_data={'fontbakery': ['data/*.cache',
-                                 'data/*.textproto']},
+    package_data={'fontbakery': ['data/*.cache']},
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Developers',
@@ -59,6 +58,7 @@ setup(
     python_requires='>=3.7',
     setup_requires=['setuptools_scm'],
     install_requires=[
+        'axisregistry',
         'beautifulsoup4',
         'beziers',
         'cmarkgfm',
@@ -69,6 +69,7 @@ setup(
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
         'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
         'font-v',
+        'gflanguages>=0.3.0', # there was an api simplification/update on v0.3.0 (see https://github.com/googlefonts/gflanguages/pull/7)
         'glyphsets',
         'lxml',
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug

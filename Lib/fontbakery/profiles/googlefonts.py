@@ -79,7 +79,8 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/designer_profiles',
     'com.google.fonts/check/metadata/family_directory_name',
     'com.google.fonts/check/metadata/can_render_samples',
-    'com.google.fonts/check/metadata/unsupported_subsets'
+    'com.google.fonts/check/metadata/unsupported_subsets',
+    'com.google.fonts/check/metadata/category_hints'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -1196,12 +1197,16 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
     """Check license file has good copyright string."""
     import re
     string = license_contents.strip().split('\n')[0].lower()
-    does_match = re.search(r'copyright [0-9]{4}(\-[0-9]{4})? the .* project authors \([^\@]*\)', string)
+    does_match = re.search(EXPECTED_COPYRIGHT_PATTERN, string)
     if does_match:
         yield PASS, "looks good"
     else:
-        yield FAIL, (f'First line in license file does not match expected format:'
-                     f' "{string}"')
+        yield FAIL,\
+              Message('bad-format',
+                      f'First line in license file is:\n\n'
+                      f'"{string}"\n\n'
+                      f'which does not match the expected format, similar to:\n\n'
+                      f'"Copyright 2022 The Familyname Project Authors (git url)"')
 
 
 @check(
@@ -2369,7 +2374,7 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
 
 
 EXPECTED_COPYRIGHT_PATTERN = \
-r'copyright [0-9]{4}(\-[0-9]{4})? the .* project authors \([^\@]*\)'
+r'copyright [0-9]{4}(\-[0-9]{4})? (the .* project authors \([^\@]*\)|google llc. all rights reserved)'
 
 @check(
     id = 'com.google.fonts/check/metadata/valid_copyright',
@@ -2858,29 +2863,18 @@ def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
 )
 def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata):
     """METADATA.pb: Font styles are named canonically?"""
-    from fontbakery.constants import MacStyle
-
-    def find_italic_in_name_table():
-        for entry in ttFont["name"].names:
-            if entry.nameID < 256 and "italic" in entry.string.decode(entry.getEncoding()).lower():
-                return True
-        return False
-
-    def is_italic():
-        return (ttFont["head"].macStyle & MacStyle.ITALIC or
-                ttFont["post"].italicAngle or
-                find_italic_in_name_table())
+    from .shared_conditions import is_italic
 
     if font_metadata.style not in ["italic", "normal"]:
         yield SKIP, ('This check only applies to font styles declared'
                      ' as "italic" or "normal" on METADATA.pb.')
     else:
-        if is_italic() and font_metadata.style != "italic":
+        if is_italic(ttFont) and font_metadata.style != "italic":
             yield FAIL,\
                   Message("italic",
                           f'The font style is "{font_metadata.style}"'
                           f' but it should be "italic".')
-        elif not is_italic() and font_metadata.style != "normal":
+        elif not is_italic(ttFont) and font_metadata.style != "normal":
             yield FAIL,\
                   Message("normal",
                           f'The font style is "{font_metadata.style}"'
@@ -2971,8 +2965,9 @@ def com_google_fonts_check_version_bump(ttFont,
     conditions = ['api_gfonts_ttFont'],
     proposal = 'legacy:check/118'
 )
-def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFont):
+def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFont, config):
     """Glyphs are similiar to Google Fonts version?"""
+    from fontbakery.utils import pretty_print_list
 
     def glyphs_surface_area(ttFont):
         """Calculate the surface area of a glyph's ink"""
@@ -3007,8 +3002,12 @@ def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFon
             bad_glyphs.append(glyph)
 
     if bad_glyphs:
+        formatted_list = "\t* " + pretty_print_list(config,
+                                            bad_glyphs,
+                                            sep="\n\t* ")
+
         yield WARN, ("Following glyphs differ greatly from"
-                     " Google Fonts version: [{}]").format(", ".join(sorted(bad_glyphs)))
+                     f" Google Fonts version:\n{formatted_list}")
     else:
         yield PASS, ("Glyphs are similar in"
                      " comparison to the Google Fonts version.")
@@ -4576,7 +4575,7 @@ def com_google_fonts_check_repo_fb_report(family_directory):
 )
 def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml):
     """Check upstream.yaml file contains all required fields"""
-    required_fields = set(["branch", "files", "repository_url"])
+    required_fields = set(["branch", "files"])
     upstream_fields = set(upstream_yaml.keys())
 
     missing_fields = required_fields - upstream_fields
@@ -5134,7 +5133,7 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, GFAxisRegistr
     passed = True
     for axis in family_metadata.axes:
         if axis.tag in GFAxisRegistry.keys():
-            expected = GFAxisRegistry[axis.tag]["message"]
+            expected = GFAxisRegistry[axis.tag]
             if axis.min_value < expected.min_value or axis.max_value > expected.max_value:
                 passed = False
                 yield FAIL,\
@@ -5204,8 +5203,8 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegi
     for axis in ttFont['fvar'].axes:
         if axis.axisTag not in GFAxisRegistry:
             continue
-        fallbacks = GFAxisRegistry[axis.axisTag]["fallbacks"]
-        if axis.defaultValue not in fallbacks.values():
+        fallbacks = GFAxisRegistry[axis.axisTag].fallback
+        if axis.defaultValue not in [f.value for f in fallbacks]:
             passed = False
             yield FAIL,\
                   Message('not-registered',
@@ -5261,7 +5260,8 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
 
         axis = ttFont['STAT'].table.DesignAxisRecord.Axis[axis_value.AxisIndex]
         if axis.AxisTag in GFAxisRegistry.keys():
-            fallbacks = GFAxisRegistry[axis.AxisTag]["fallbacks"]
+            fallbacks = GFAxisRegistry[axis.AxisTag].fallback
+            fallbacks = {f.name: f.value for f in fallbacks}
 
             # Here we assume that it is enough to check for only the Windows, English USA entry corresponding
             # to a given nameID. It is up to other checks to ensure all different platform/encoding entries
@@ -5887,27 +5887,94 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
         In order to prevent tofu from being seen on fonts.google.com, this check verifies that all samples provided on METADATA.pb can be properly rendered by the font.
     """,
     conditions = ["family_metadata"],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/3419',
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/3419',
+                'https://github.com/googlefonts/fontbakery/issues/3605']
 )
 def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     """Check samples can be rendered."""
     from fontbakery.utils import can_shape
-
-    if not family_metadata.sample_glyphs:
-       yield SKIP,\
-             Message('no-samples',
-                     'No sample_glyphs on METADATA.pb')
-       return
+    from gflanguages import LoadLanguages
 
     passed = True
-    for name, glyphs in family_metadata.sample_glyphs.items():
-        if not can_shape(ttFont, glyphs):
-            passed = False
-            yield FAIL,\
-                  Message('sample-glyphs',
-                          f"Font can't render the following sample glyphs:\n"
-                          f"'{name}': '{glyphs}'")
+    if not family_metadata.sample_glyphs:
+       passed = False
+       yield INFO,\
+             Message('no-samples',
+                     'No sample_glyphs on METADATA.pb')
+    else:
+        for name, glyphs in family_metadata.sample_glyphs.items():
+            if not can_shape(ttFont, glyphs):
+                passed = False
+                yield FAIL,\
+                      Message('sample-glyphs',
+                              f"Font can't render the following sample glyphs:\n"
+                              f"'{name}': '{glyphs}'")
+
+    languages = LoadLanguages()
+    for lang in family_metadata.languages:
+        # Note: checking agains all samples often results in
+        #       a way too verbose output. That's why I only left
+        #       the "tester" string for now.
+        SAMPLES = {
+            #'styles': languages[lang].sample_text.styles,
+            'tester': languages[lang].sample_text.tester,
+            #'specimen_16': languages[lang].sample_text.specimen_16,
+            #'specimen_21': languages[lang].sample_text.specimen_21,
+            #'specimen_32': languages[lang].sample_text.specimen_32,
+            #'specimen_36': languages[lang].sample_text.specimen_36,
+            #'specimen_48': languages[lang].sample_text.specimen_48
+        }
+        for sample_type, sample_text in SAMPLES.items():
+            if not can_shape(ttFont, sample_text):
+                passed = False
+                yield FAIL,\
+                      Message('sample-text',
+                              f'Font can\'t render "{lang}" sample text:\n'
+                              f'"{sample_text}"\n')
+
     if passed:
+       yield PASS, "OK."
+
+
+@check(
+    id = "com.google.fonts/check/metadata/category_hints",
+    rationale = """
+        Sometimes the font familyname contains words that hint at which is the most likely correct category to be declared on METADATA.pb
+    """,
+    conditions = ["family_metadata"],
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3624'
+)
+def com_google_fonts_check_metadata_category_hint(family_metadata):
+    """Check if category on METADATA.pb matches what can be inferred from the family name."""
+
+    HINTS = {
+        "SANS_SERIF": ["Sans",
+                       "Grotesk",
+                       "Grotesque"],
+        "SERIF": ["Old Style",
+                  "Transitional",
+                  "Garamond",
+                  "Serif",
+                  "Slab"],
+        "DISPLAY": ["Display"],
+        "HANDWRITING": ["Hand",
+                        "Script"]
+    }
+
+    inferred_category = None
+    for category, hints in HINTS.items():
+        for hint in hints:
+            if hint in family_metadata.name:
+                inferred_category = category
+                break
+
+    if (inferred_category is not None and
+        not family_metadata.category == inferred_category):
+       yield WARN,\
+             Message('inferred-category',
+                     f'Familyname seems to hint at "{inferred_category}" but'
+                     f' METADATA.pb declares it as "{family_metadata.category}".')
+    else:
        yield PASS, "OK."
 
 

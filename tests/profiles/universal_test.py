@@ -918,8 +918,23 @@ def test_check_dotted_circle():
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_results_contain(check(font),
-                "WARN", "missing-dotted-circle")
+                           WARN, "missing-dotted-circle")
 
     font = TEST_FILE("broken_markazitext/MarkaziText-VF.ttf")
     assert_results_contain(check(font),
-                "FAIL", "unattached-dotted-circle-marks")
+                           FAIL, "unattached-dotted-circle-marks")
+
+
+def test_check_gpos7():
+    """Check if font contains any GPOS 7 lookups
+    which are not widely supported."""
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/gpos7")
+
+    font = TEST_FILE("mada/Mada-Regular.ttf")
+    assert_PASS(check(font),
+                "with a good font...")
+
+    font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
+    assert_results_contain(check(font),
+                           FAIL, "has-gpos7")

@@ -19,6 +19,9 @@ Continuous integration testing is performed on GitHub Actions. Test jobs can be 
 Releases to PyPI are performed by running the following commands (with the proper version number and date):
 
 ```sh
+# These are build/release dependencies:
+pip3 install build twine
+
 # Update the local copy
 git checkout main
 git fetch upstream
@@ -36,9 +39,6 @@ git add -p
 
 # If something changed, commit it:
 git commit -m "Updating cache of vendor IDs list from Microsoft's website"
-
-# Check for updates on the Google Fonts Axis Registry textproto files at https://github.com/google/fonts/tree/main/axisregistry
-# Newest files must be copied and committed at Lib/fontbakery/data/*.textproto
 
 # Check whether ttfautohint has a newer version available at https://sourceforge.net/projects/freetype/files/ttfautohint/
 # and manually update the LATEST_TTFAUTOHINT_VERSION number, if needed:
@@ -81,11 +81,9 @@ git tag -a v0.8.2 -m "Font Bakery version 0.8.2 (2021-Sep-01)"
 git push upstream --tags
 
 # create the package
-pip install build
-python -m build
+python3 -m build
 
 # and finally upload the new package to PyPI
-pip install twine
 python3 -m twine upload dist/*
 
 # Close the current milestone on the GitHub issue tracker

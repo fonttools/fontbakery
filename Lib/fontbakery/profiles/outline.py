@@ -5,7 +5,7 @@ from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 from fontbakery.message import Message
-from fontbakery.utils import pretty_print_list
+from fontbakery.utils import bullet_list
 import math
 
 
@@ -76,13 +76,11 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
             return
 
     if warnings:
-        formatted_list = "\t* " + pretty_print_list(config,
-                                                    warnings,
-                                                    sep="\n\t* ")
+        formatted_list = bullet_list(config, warnings, bullet="*")
         yield WARN,\
               Message("found-misalignments",
                       f"The following glyphs have on-curve points which"
-                      f" have potentially incorrect y coordinates:\n"
+                      f" have potentially incorrect y coordinates:\n\n"
                       f"{formatted_list}")
     else:
         yield PASS, "Y-coordinates of points fell on appropriate boundaries."
@@ -127,12 +125,10 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config)
             return
 
     if warnings:
-        formatted_list = "\t* " + pretty_print_list(config,
-                                                    warnings,
-                                                    sep="\n\t* ")
+        formatted_list = bullet_list(config, warnings, bullet="*")
         yield WARN,\
               Message("found-short-segments",
-                      f"The following glyphs have segments which seem very short:\n"
+                      f"The following glyphs have segments which seem very short:\n\n"
                       f"{formatted_list}")
     else:
         yield PASS, "No short segments were found."
@@ -174,12 +170,10 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, confi
             return
 
     if warnings:
-        formatted_list = "\t* " + pretty_print_list(config,
-                                                    sorted(set(warnings)),
-                                                    sep="\n\t* ")
+        formatted_list = bullet_list(config, sorted(set(warnings)), bullet="*")
         yield WARN,\
               Message("found-colinear-vectors",
-                      f"The following glyphs have colinear vectors:\n"
+                      f"The following glyphs have colinear vectors:\n\n"
                       f"{formatted_list}")
     else:
         yield PASS, "No colinear vectors found."
@@ -222,12 +216,10 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config)
                                 f" {prev}/{this} = {math.degrees(jag_angle)}")
 
     if warnings:
-        formatted_list = "\t* " + pretty_print_list(config,
-                                                    sorted(warnings),
-                                                    sep="\n\t* ")
+        formatted_list = bullet_list(config, sorted(warnings), bullet="*")
         yield WARN,\
               Message("found-jaggy-segments",
-                      f"The following glyphs have jaggy segments:\n"
+                      f"The following glyphs have jaggy segments:\n\n"
                       f"{formatted_list}")
     else:
         yield PASS, "No jaggy segments found."
@@ -263,12 +255,10 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
                         warnings.append(f"{glyphname} (U+{codepoint:04X}): {s}")
 
     if warnings:
-        formatted_list = " * " + pretty_print_list(config,
-                                                   sorted(warnings),
-                                                   sep="\n * ")
+        formatted_list = bullet_list(config, sorted(warnings), bullet="*")
         yield WARN,\
              Message("found-semi-vertical",
-                     f"The following glyphs have semi-vertical/semi-horizontal lines:\n"
+                     f"The following glyphs have semi-vertical/semi-horizontal lines:\n\n"
                      f"{formatted_list}")
     else:
         yield PASS, "No semi-horizontal/semi-vertical lines found."

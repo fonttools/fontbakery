@@ -26,6 +26,8 @@ Simon Cozens prepared a [template git repo](https://github.com/googlefonts/Unifi
 
 Font Bakery is available under the Apache 2.0 license.
 
+All comments on the issue tracker or on pull requests will be treated as also licensed under this license such that they can be incorporated into the project code.
+
 ## Install
 
 See the Font Bakery Installation Guide for your platform:

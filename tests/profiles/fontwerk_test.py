@@ -28,8 +28,7 @@ def test_check_vendor_id():
     check = CheckTester(fontwerk_profile,
                         'com.fontwerk/check/vendor_id')
 
-    font = TEST_FILE('abeezee/ABeeZee-Italic.ttf')
-    ttFont = TTFont(font)
+    ttFont = TTFont(TEST_FILE('abeezee/ABeeZee-Italic.ttf'))
     assert_results_contain(check(ttFont),
                            FAIL, 'bad-vendor-id',
                            ", but should be 'WERK'.")
@@ -43,8 +42,7 @@ def test_check_weight_class_fvar():
     check = CheckTester(fontwerk_profile,
                         'com.fontwerk/check/weight_class_fvar')
 
-    font = TEST_FILE('varfont/Oswald-VF.ttf')
-    ttFont = TTFont(font)
+    ttFont = TTFont(TEST_FILE('varfont/Oswald-VF.ttf'))
     assert_PASS(check(ttFont),
                 "matches fvar default value.")
 
@@ -52,6 +50,40 @@ def test_check_weight_class_fvar():
     assert_results_contain(check(ttFont),
                            FAIL, 'bad-weight-class',
                            "but should match fvar default value.")
+
+
+def test_check_inconsistencies_between_fvar_stat():
+    check = CheckTester(fontwerk_profile,
+                        'com.fontwerk/check/inconsistencies_between_fvar_stat')
+
+    ttFont = TTFont(TEST_FILE("bad_fonts/fvar_stat_differences/AxisLocationVAR.ttf"))
+    ttFont['name'].removeNames(nameID=277)
+    assert_results_contain(check(ttFont),
+                           FAIL, 'missing-name-id',
+                           'fvar instance is missing in the name table')
+
+    # add name with wrong order of name parts
+    ttFont['name'].setName('Medium Text', 277, 3, 1, 0x409)
+    assert_results_contain(check(ttFont),
+                           FAIL, 'missing-fvar-instance-axis-value',
+                           'missing in STAT table')
+
+
+def test_check_style_linking():
+    check = CheckTester(fontwerk_profile,
+                        'com.fontwerk/check/style_linking')
+
+    font = TEST_FILE("bad_fonts/style_linking_issues/NotoSans-BoldItalic.ttf")
+    assert_results_contain(check(font),
+                           FAIL, 'style-linking-issue')
+
+    font = TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Bold.ttf")
+    assert_results_contain(check(font),
+                           FAIL, 'style-linking-issue')
+
+    font = TEST_FILE("bad_fonts/style_linking_issues/NotoSans-MediumItalic.ttf")
+    assert_PASS(check(font),
+                "Style linking looks good.")
 
 
 def test_check_names_match_default_fvar():

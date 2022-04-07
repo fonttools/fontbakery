@@ -852,6 +852,25 @@ def test_check_family_has_license():
                 'with a single Apache license...')
 
 
+def test_check_license_ofl_copyright():
+    """Check license file has good copyright string."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/license/OFL_copyright")
+
+
+    # And Mada has a bad copyright string format:
+    font = TEST_FILE("mada/Mada-Regular.ttf")
+    ttFont = TTFont(font)
+    assert_results_contain(check(ttFont),
+                           FAIL, "bad-format",
+                           "with bad string formatting.")
+
+    # so we fix it:
+    SOME_GOOD_TEXT = "Copyright 2019 The Montserrat Project Authors (https://github.com/julietaula/montserrat)"
+    assert_PASS(check(ttFont, {"license_contents": SOME_GOOD_TEXT}),
+                'with good license contents.')
+
+
 def test_check_license_ofl_body_text():
     """Check OFL.txt contains correct body text."""
     check = CheckTester(googlefonts_profile,
@@ -3248,7 +3267,6 @@ def test_check_repo_upstream_yaml_has_required_fields():
                         "com.google.fonts/check/repo/upstream_yaml_has_required_fields")
     upstream_yaml = {
         "branch": "main",
-        "repository_url": "https://www.github.com/googlefonts/testFamily",
         "files": {"TestFamily-Regular.ttf": "TestFamily-Regular.ttf"}
     }
     # Pass if upstream.yaml file contains all fields
@@ -3256,7 +3274,7 @@ def test_check_repo_upstream_yaml_has_required_fields():
                 'for an upstream.yaml which contains all fields')
 
     # Fail if it doesn't
-    upstream_yaml.pop("repository_url")
+    upstream_yaml.pop("files")
     assert_results_contain(check([], {"upstream_yaml": upstream_yaml}),
                            FAIL, "missing-fields",
                            "for an upsream.yaml which doesn't contain all fields")
@@ -4054,7 +4072,8 @@ def test_check_metadata_can_render_samples():
 
     # Cabin's METADATA.pb does not have sample_glyphs entry
     metadata_file = TEST_FILE("cabin/METADATA.pb")
-    assert_SKIP(check(metadata_file))
+    assert_results_contain(check(metadata_file),
+                           INFO, 'no-samples')
 
     # We add a small set of latin glyphs
     # that we're sure Cabin supports:
@@ -4068,8 +4087,6 @@ def test_check_metadata_can_render_samples():
                            FAIL, 'sample-glyphs')
 
     # TODO: expand the check to also validate sample_text fields
-    # TODO: maybe also fetch samples from the language textprotos
-    #       published on the google/fonts git repo
 
 
 def test_check_description_urls():
@@ -4105,3 +4122,36 @@ def test_check_metadata_unsupported_subsets():
     md.subsets.extend(["cyrillic"])
     assert_results_contain(check(font, {"family_metadata": md}),
                            WARN, 'unsupported-subset')
+
+
+def test_check_metadata_category_hints():
+    """ Check if category on METADATA.pb matches what can be inferred from the family name. """
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/category_hints")
+
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(font),
+                "with a familyname without any of the keyword hints...")
+
+    md = check["family_metadata"]
+    md.name = "Seaweed Script"
+    md.category = "DISPLAY"
+    assert_results_contain(check(font, {"family_metadata": md}),
+                           WARN, 'inferred-category',
+                           f'with a bad category "{md.category}" for familyname "{md.name}"...')
+
+    md.name = "Red Hat Display"
+    md.category = "SANS_SERIF"
+    assert_results_contain(check(font, {"family_metadata": md}),
+                           WARN, 'inferred-category',
+                           f'with a bad category "{md.category}" for familyname "{md.name}"...')
+
+    md.name = "Seaweed Script"
+    md.category = "HANDWRITING"
+    assert_PASS(check(font, {"family_metadata": md}),
+                f'with a good category "{md.category}" for familyname "{md.name}"...')
+
+    md.name = "Red Hat Display"
+    md.category = "DISPLAY"
+    assert_PASS(check(font, {"family_metadata": md}),
+                f'with a good category "{md.category}" for familyname "{md.name}"...')

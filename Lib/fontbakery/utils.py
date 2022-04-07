@@ -122,6 +122,13 @@ def unindent_rationale(rationale, checkid=None):
     return content
 
 
+def html5_collapsible(summary, details) -> str:
+    """Return nestable, collapsible <detail> tag for check grouping and sub-
+    results."""
+
+    return f"<details><summary>{summary}</summary><div>{details}</div></details>"
+
+
 def split_camel_case(camelcase):
     result = []
     word = ""
@@ -167,8 +174,8 @@ def bullet_list(config, items, bullet="-", indentation="\t"):
     return f"{indentation}{bullet} " +\
            pretty_print_list(config,
                              items,
-                             sep=f"\n{indentation}{bullet} ",
-                             glue=f"\n{indentation}{bullet} And")
+                             sep=f"\n\n{indentation}{bullet} ",
+                             glue=f"\n\n{indentation}{bullet} And")
 
 
 def get_regular(fonts):
@@ -552,6 +559,8 @@ def is_complex_shaper_font(ttFont):
     for table in ["GSUB", "GPOS"]:
         if table not in ttFont:
             continue
+        if not ttFont[table].table.ScriptList:
+            continue
         for rec in ttFont[table].table.ScriptList.ScriptRecord:
             script = ot_tag_to_script(rec.ScriptTag)
             if script in USE_SCRIPTS or script in INDIC_SCRIPTS:
@@ -559,3 +568,25 @@ def is_complex_shaper_font(ttFont):
             if script in ["Khmr", "Mymr", "Hang"]:
                 return True
     return False
+
+
+def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):
+    """Iterates over the lookup list of a font's GSUB/GPOS table, calling
+    the callback with the lookup and the provided arguments, but descending
+    into Extension subtables."""
+    if table not in ttFont or not ttFont[table].table.LookupList:
+        return
+
+    extension_type = 9 if table == "GPOS" else 7
+
+    for lookup in ttFont[table].table.LookupList.Lookup:
+        if lookup.LookupType == extension_type:
+            for xt in lookup.SubTable:
+                xt.SubTable = [xt.ExtSubTable]
+                xt.LookupType = xt.ExtSubTable.LookupType
+                callback(xt, *args)
+        else:
+            callback(lookup, *args)
+
+
+

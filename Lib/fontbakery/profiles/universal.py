@@ -63,7 +63,8 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/contour_count',
         'com.google.fonts/check/cjk_chws_feature',
         'com.google.fonts/check/transformed_components',
-        'com.google.fonts/check/dotted_circle'
+        'com.google.fonts/check/dotted_circle',
+        'com.google.fonts/check/gpos7'
     ]
 
 
@@ -795,8 +796,11 @@ def com_google_fonts_check_ttx_roundtrip(font):
     """Checking with fontTools.ttx"""
     from fontTools import ttx
     import sys
+    import tempfile
     ttFont = ttx.TTFont(font)
     failed = False
+    fd, xml_file = tempfile.mkstemp()
+    os.close(fd)
 
     class TTXLogger:
         msgs = []
@@ -818,7 +822,6 @@ def com_google_fonts_check_ttx_roundtrip(font):
     from xml.parsers.expat import ExpatError
     try:
         logger = TTXLogger()
-        xml_file = font + ".xml"
         ttFont.saveXML(xml_file)
         export_error_msgs = logger.msgs
 
@@ -830,7 +833,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
                 yield FAIL, msg.strip()
 
         f = ttx.TTFont()
-        f.importXML(font + ".xml")
+        f.importXML(xml_file)
         import_error_msgs = [msg for msg in logger.msgs
                              if msg not in export_error_msgs]
 
@@ -1429,11 +1432,14 @@ def com_google_fonts_check_transformed_components(ttFont):
 )
 def com_google_fonts_check_dotted_circle(ttFont, config):
     """Ensure dotted circle glyph is present and can attach marks."""
-    from fontbakery.utils import bullet_list, is_complex_shaper_font
+    from fontbakery.utils import (bullet_list,
+                                  is_complex_shaper_font,
+                                  iterate_lookup_list_with_extensions)
 
     mark_glyphs = []
     if "GDEF" in ttFont and hasattr(ttFont["GDEF"].table, "GlyphClassDef"):
       mark_glyphs = [k for k, v in ttFont["GDEF"].table.GlyphClassDef.classDefs.items() if v == 3]
+
     # Only check for encoded
     mark_glyphs = set(mark_glyphs) & set(ttFont.getBestCmap().values())
     nonspacing_mark_glyphs = [g for g in mark_glyphs if ttFont["hmtx"][g][0] == 0]
@@ -1445,45 +1451,76 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
     if 0x25CC not in ttFont.getBestCmap():
         # How bad is this?
         if is_complex_shaper_font(ttFont):
-            yield FAIL, Message('missing-dotted-circle-complex',
+            yield FAIL,\
+                  Message('missing-dotted-circle-complex',
                           "No dotted circle glyph present and font uses a complex shaper")
         else:
-            yield WARN, Message('missing-dotted-circle',
+            yield WARN,\
+                  Message('missing-dotted-circle',
                           "No dotted circle glyph present")
         return
 
-    # Check they all attach to dotted circle if they attach to
-    # something else
+    # Check they all attach to dotted circle
+    # if they attach to something else
     dotted_circle = ttFont.getBestCmap()[0x25CC]
     attachments = {dotted_circle: []}
     does_attach = {}
-    if "GPOS" in ttFont and ttFont["GPOS"].table.LookupList:
-        def find_mark_base(lookup, attachments):
-            if lookup.LookupType == 9:
-                for xt in lookup.SubTable:
-                    xt.SubTable = [xt.ExtSubTable]
-                    xt.LookupType = xt.ExtSubTable.LookupType
-                    find_mark_base(xt, attachments)
-            if lookup.LookupType == 4:
-                # Assume all-to-all
-                for st in lookup.SubTable:
-                    for base in st.BaseCoverage.glyphs:
-                        for mark in st.MarkCoverage.glyphs:
-                            attachments.setdefault(base,[]).append(mark)
-                            does_attach[mark] = True
+    def find_mark_base(lookup, attachments):
+        if lookup.LookupType == 4:
+            # Assume all-to-all
+            for st in lookup.SubTable:
+                for base in st.BaseCoverage.glyphs:
+                    for mark in st.MarkCoverage.glyphs:
+                        attachments.setdefault(base,[]).append(mark)
+                        does_attach[mark] = True
 
-        for lookup in ttFont["GPOS"].table.LookupList.Lookup:
-            find_mark_base(lookup, attachments)
+    iterate_lookup_list_with_extensions(ttFont, "GPOS", find_mark_base, attachments)
 
     unattached = []
     for g in nonspacing_mark_glyphs:
         if g in does_attach and g not in attachments[dotted_circle]:
             unattached.append(g)
+
     if unattached:
-        yield FAIL, Message("unattached-dotted-circle-marks",
-            "The following glyphs could not be attached to the dotted circle glyph:\n"+ bullet_list(config, unattached))
+        yield FAIL,\
+              Message("unattached-dotted-circle-marks",
+                      f"The following glyphs could not be attached to the dotted circle glyph:\n"
+                      f"{bullet_list(config, unattached)}")
     else:
         yield PASS, "All marks were anchored to dotted circle"
+
+
+@check(
+    id = 'com.google.fonts/check/gpos7',
+    conditions = ['ttFont'],
+    severity = 9,
+    rationale = """
+        Versions of fonttools >=4.14.0 (19 August 2020) perform an optimisation on chained contextual lookups, expressing GSUB6 as GSUB5 and GPOS8 and GPOS7 where possible (when there are no suffixes/prefixes for all rules in the lookup).
+
+        However, makeotf has never generated these lookup types and they are rare in practice. Perhaps before of this, Mac's CoreText shaper does not correctly interpret GPOS7, meaning that these lookups will be ignored by the shaper, and fonts containing these lookups will have unintended positioning errors.
+
+        To fix this warning, rebuild the font with a recent version of fonttools.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3643',
+)
+def com_google_fonts_check_gpos7(ttFont):
+    """Ensure no GPOS7 lookups are present."""
+    from fontbakery.utils import iterate_lookup_list_with_extensions
+
+    has_gpos7 = False
+    def find_gpos7(lookup):
+        nonlocal has_gpos7
+        if lookup.LookupType == 7:
+            has_gpos7 = True
+    iterate_lookup_list_with_extensions(ttFont, "GPOS", find_gpos7)
+
+    if not has_gpos7:
+        yield PASS, "Font has no GPOS7 lookups"
+        return
+
+    yield WARN,\
+          Message('has-gpos7',
+                  "Font contains a GPOS7 lookup which is not processed by macOS")
 
 
 profile.auto_register(globals())
