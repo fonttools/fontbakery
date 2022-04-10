@@ -1,0 +1,74 @@
+name: Build & Publish
+
+on:
+  push:
+    tags:
+      - 'v\d+\.\d+\.[0-9a-z]+' # e.g. v1.0.0 or v20.15.10b5
+
+jobs:
+  build:
+    name: Build Release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install build
+
+    - name: Build artifacts
+      run: |
+        python -m build
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: wheelstorage
+        path: ./dist/*
+        if-no-files-found: error
+        retention-days: 30
+
+  publish:
+    name: Publish Release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Get date & flat tag
+      id: date_tag
+      run: |
+        export DATE=$(TZ=America/Sao_Paulo date +'%Y-%b-%-d')
+        echo $DATE
+        export FLAT_TAG=$(echo ${GITHUB_REF##*/} | sed 's/[v.]//g')
+        echo $FLAT_TAG
+        echo ::set-output name=TODAY::$DATE
+        echo ::set-output name=VERSION::$FLAT_TAG
+      shell: bash
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: wheelstorage
+        path: dist
+
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        body: '[Release Notes](https://github.com/googlefonts/fontbakery/blob/main/CHANGELOG.md#${{ steps.date_tag.outputs.VERSION }}-${{ steps.date_tag.outputs.TODAY }})'
+        token: ${{ secrets.GITHUB_TOKEN }}
+        prerelease: true
+        files: ./dist/*.tar.gz
