@@ -64,7 +64,8 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/cjk_chws_feature',
         'com.google.fonts/check/transformed_components',
         'com.google.fonts/check/dotted_circle',
-        'com.google.fonts/check/gpos7'
+        'com.google.fonts/check/gpos7',
+        'com.adobe.fonts/check/freetype_rasterizer',
     ]
 
 
@@ -1521,6 +1522,38 @@ def com_google_fonts_check_gpos7(ttFont):
     yield WARN,\
           Message('has-gpos7',
                   "Font contains a GPOS7 lookup which is not processed by macOS")
+
+
+@check(
+    id="com.adobe.fonts/check/freetype_rasterizer",
+    severity=10,
+    rationale="""
+        Malformed fonts can cause FreeType to crash.
+    """,
+    proposal="https://github.com/googlefonts/fontbakery/issues/3642",
+)
+def com_adobe_fonts_check_freetype_rasterizer(font):
+    """Ensure that the font can be rasterized by FreeType."""
+    try:
+        import freetype
+        from freetype.ft_errors import FT_Exception
+
+        face = freetype.Face(font)
+        face.set_char_size(48 * 64)
+        face.load_char("✅")  # any character can be used here
+
+    except ImportError:
+        yield SKIP, (
+            "FreeType is not available; to install it, invoke the "
+            "'freetype' extra when installing FontBakery."
+        )
+    except FT_Exception as err:
+        yield FAIL, Message(
+            "freetype-crash",
+            f"Font caused FreeType to crash with this error: {err}",
+        )
+    else:
+        yield PASS, "Font can be rasterized by FreeType."
 
 
 profile.auto_register(globals())
