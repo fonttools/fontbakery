@@ -94,6 +94,9 @@ setup(
             'sphinx >= 1.4',
             'sphinx_rtd_theme',
         ],
+        'freetype': [
+            'freetype-py',
+        ],
     },
     entry_points={
         'console_scripts': ['fontbakery=fontbakery.cli:main'],

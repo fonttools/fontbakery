@@ -938,3 +938,17 @@ def test_check_gpos7():
     font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
     assert_results_contain(check(font),
                            FAIL, "has-gpos7")
+
+
+def test_freetype_rasterizer():
+    """Ensure that the font can be rasterized by FreeType."""
+    check = CheckTester(universal_profile, "com.adobe.fonts/check/freetype_rasterizer")
+
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(font), "with a good font...")
+
+    font = TEST_FILE("ancho/AnchoGX.ttf")
+    assert_results_contain(check(font), FAIL, "freetype-crash")
+
+    font = TEST_FILE("rubik/Rubik-Italic.ttf")
+    assert_results_contain(check(font), FAIL, "freetype-crash")

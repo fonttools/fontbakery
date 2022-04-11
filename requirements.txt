@@ -8,6 +8,7 @@ defcon==0.10.0
 dehinter==4.0.0
 fontTools[ufo,lxml,unicode]==4.31.2
 font-v==2.1.0
+freetype-py==2.2.0
 gflanguages==0.4.0
 glyphsets==0.2.1
 lxml==4.8.0
