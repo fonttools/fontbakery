@@ -243,3 +243,34 @@ def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
                       f' which is rare. If that\'s not the case, then'
                       f' the "slant" axis should be a range of'
                       f' negative values instead.')
+
+
+@check(
+    id="com.adobe.fonts/check/varfont/valid_axis_nameid",
+    rationale="""
+        According to the 'fvar' documentation in OpenType spec v1.9
+        https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
+
+        The axisNameID field provides a name ID that can be used to obtain strings
+        from the 'name' table that can be used to refer to the axis in application
+        user interfaces. The name ID must be greater than 255 and less than 32768.
+    """,
+    conditions=["is_variable_font"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/3702",
+)
+def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont):
+    """Validates that the value of axisNameID used by each VariationAxisRecord
+    is greater than 255 and less than 32768."""
+
+    font_axis_nameids = [axis.axisNameID for axis in ttFont["fvar"].axes]
+    invalid_axis_nameids = [val for val in font_axis_nameids if not (255 < val < 32768)]
+
+    if invalid_axis_nameids:
+        yield FAIL, Message(
+            "invalid-axis-nameid",
+            f"Found {len(invalid_axis_nameids)} axisNameID value(s) that are not "
+            "greater than 255 and less than 32768: "
+            f"{', '.join(map(str, invalid_axis_nameids))}",
+        )
+
+    yield PASS, "axisNameID values are valid"
