@@ -1,6 +1,8 @@
 import pytest
 import os
+from copy import deepcopy
 from fontTools.ttLib import TTFont
+from fontTools import ttLib
 
 from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR,
                                     SKIP, PASS, FAIL, ENDCHECK)
@@ -369,7 +371,7 @@ def test_check_name_family_and_style_max_length():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/name/family_and_style_max_length")
 
-    # Our reference Cabin Regular is known to be good 
+    # Our reference Cabin Regular is known to be good
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
     # So it must PASS the check:
@@ -2756,6 +2758,16 @@ def test_check_name_typographicsubfamilyname():
                            f'with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...')
                            # note: the check must not complain
                            #       about the lack of a mac entry!
+
+    # Hairline Italic font
+    font = deepcopy(ttFont)
+    font["name"] = ttLib.newTable("name")
+    font["name"].names = []
+    font["name"].addMultilingualName(dict(en="Family Hairline"), nameID=1)
+    font["name"].addMultilingualName(dict(en="Italic"), nameID=2)
+    font["name"].addMultilingualName(dict(en="Family"), nameID=16)
+    font["name"].addMultilingualName(dict(en="Hairline Italic"), nameID=17)
+    assert_PASS(check(font), "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good.")
 
 
 def test_check_name_copyright_length():
