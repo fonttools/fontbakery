@@ -311,3 +311,42 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont):
         )
 
     yield PASS, "subfamilyNameID values are valid"
+
+
+@check(
+    id="com.adobe.fonts/check/varfont/valid_postscript_nameid",
+    rationale="""
+        According to the 'fvar' documentation in OpenType spec v1.9
+        https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
+
+        The postScriptNameID field provides a name ID that can be used to obtain
+        strings from the 'name' table that can be treated as equivalent to name
+        ID 6 (PostScript name) strings for the given instance. Values of 6 and
+        0xFFFF can be used; otherwise, values must be greater than 255 and less
+        than 32768.
+    """,
+    conditions=["is_variable_font"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/3704",
+)
+def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont):
+    """Validates that the value of postScriptNameID used by each InstanceRecord
+    is 6, 0xFFFF, or greater than 255 and less than 32768."""
+
+    font_postscript_nameids = [
+        inst.postscriptNameID for inst in ttFont["fvar"].instances
+    ]
+    invalid_postscript_nameids = [
+        val
+        for val in font_postscript_nameids
+        if not (255 < val < 32768) and val not in {6, 0xFFFF}
+    ]
+
+    if invalid_postscript_nameids:
+        yield FAIL, Message(
+            "invalid-postscript-nameid",
+            f"Found {len(invalid_postscript_nameids)} postScriptNameID value(s) that "
+            "are not 6, 0xFFFF, or greater than 255 and less than 32768: "
+            f"{', '.join(map(str, invalid_postscript_nameids))}",
+        )
+
+    yield PASS, "postScriptNameID values are valid"

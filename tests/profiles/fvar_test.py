@@ -306,3 +306,43 @@ def test_check_varfont_valid_subfamily_nameid():
     inst_1.subfamilyNameID = 3
     inst_2.subfamilyNameID = 18
     assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid")
+
+
+def test_check_varfont_valid_postscript_nameid():
+    """The value of postScriptNameID used by each InstanceRecord must
+    be 6, 0xFFFF, or greater than 255 and less than 32768."""
+    check = CheckTester(
+        opentype_profile, "com.adobe.fonts/check/varfont/valid_postscript_nameid"
+    )
+
+    # The postScriptNameID values in the reference varfont are all valid
+    ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
+    assert_PASS(check(ttFont), "with a good varfont...")
+
+    fvar_table = ttFont["fvar"]
+    inst_1 = fvar_table.instances[0]
+    inst_2 = fvar_table.instances[1]
+    inst_3 = fvar_table.instances[2]
+    inst_4 = fvar_table.instances[3]
+
+    # Change the instances' postScriptNameID to
+    # 6, 0xFFFF and to the maximum and minimum allowed values
+    inst_1.postscriptNameID = 6
+    inst_2.postscriptNameID = 0xFFFF
+    inst_3.postscriptNameID = 256
+    inst_4.postscriptNameID = 32767
+    assert_PASS(check(ttFont), "with a good varfont...")
+
+    # Change two instances' postScriptNameID to invalid values
+    # (32768 is greater than the maximum, and 255 is less than the minimum)
+    inst_3.postscriptNameID = 255
+    inst_4.postscriptNameID = 32768
+    assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid")
+
+    # Reset two postScriptNameID to valid values,
+    # then set two other postScriptNameID to invalid values
+    inst_3.postscriptNameID = 256  # valid
+    inst_4.postscriptNameID = 32767  # valid
+    inst_1.postscriptNameID = 3
+    inst_2.postscriptNameID = 18
+    assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid")
