@@ -439,3 +439,24 @@ def test_check_varfont_same_size_instance_records():
     inst_1.postscriptNameID = 0xFFFF
     inst_3.postscriptNameID = 0xFFFF
     assert_results_contain(check(ttFont), FAIL, "different-size-instance-records")
+
+
+def test_check_varfont_distinct_instance_records():
+    """All of the instance records in a font should have distinct coordinates
+    and distinct subfamilyNameID and postScriptName ID values."""
+    check = CheckTester(
+        opentype_profile, "com.adobe.fonts/check/varfont/distinct_instance_records"
+    )
+
+    # All of the instance records in the reference varfont are unique
+    ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
+    assert_PASS(check(ttFont), "with a good varfont...")
+
+    fvar_table = ttFont["fvar"]
+    inst_1 = fvar_table.instances[0]
+    inst_2 = fvar_table.instances[1]
+
+    # Make instance 2 the same as instance 1
+    inst_2.subfamilyNameID = inst_1.subfamilyNameID
+    inst_2.coordinates["wght"] = inst_1.coordinates["wght"]
+    assert_results_contain(check(ttFont), WARN, "repeated-instance-records")

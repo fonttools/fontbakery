@@ -37,6 +37,11 @@ def is_cff2(ttFont):
 
 
 @condition
+def has_name_table(ttFont):
+    return "name" in ttFont.keys()
+
+
+@condition
 def variable_font_filename(ttFont):
     from fontbakery.utils import get_name_entry_strings
     from fontbakery.constants import (MacStyle,

@@ -444,3 +444,53 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
         )
 
     yield PASS, "All instance records have the same size"
+
+
+@check(
+    id="com.adobe.fonts/check/varfont/distinct_instance_records",
+    rationale="""
+        According to the 'fvar' documentation in OpenType spec v1.9
+        https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
+
+        All of the instance records in a font should have distinct coordinates
+        and distinct subfamilyNameID and postScriptName ID values. If two or more
+        records share the same coordinates, the same nameID values or the same
+        postScriptNameID values, then all but the first can be ignored.
+    """,
+    conditions=["is_variable_font"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/3706",
+)
+def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_table):
+    """Validates that all of the instance records in a given font have distinct data."""
+    name_table = ttFont["name"] if has_name_table else None
+
+    unique_inst_recs = set()
+    repeat_inst_recs = list()
+
+    for i, inst in enumerate(ttFont["fvar"].instances, 1):
+        inst_coords = [(key, val) for key, val in inst.coordinates.items()]
+        inst_subfam_nameid = inst.subfamilyNameID
+        inst_postscript_nameid = inst.postscriptNameID
+        inst_data = (tuple(inst_coords), inst_subfam_nameid, inst_postscript_nameid)
+
+        if inst_data not in unique_inst_recs:
+            unique_inst_recs.add(inst_data)
+
+        else:  # non-unique instance was found
+            inst_name = None
+            if name_table is not None:
+                inst_name = name_table.getDebugName(inst_subfam_nameid)
+
+            if inst_name is None:
+                inst_name = f"Instance #{i}"
+
+            repeat_inst_recs.append(inst_name)
+
+    if repeat_inst_recs:
+        yield WARN, Message(
+            "repeated-instance-records",
+            f"Found {len(repeat_inst_recs)} repeated instance record(s): "
+            f"{', '.join(repeat_inst_recs)}",
+        )
+
+    yield PASS, "All instance records are distinct"

@@ -35,6 +35,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/varfont/valid_postscript_nameid]:** Validates that the value of postScriptNameID used by each InstanceRecord is 6, 0xFFFF, or greater than 255 and less than 32768. (issue #3704)
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** Validates that when an instance record is included for the default instance, its subfamilyNameID value is set to either 2 or 17, and its postScriptNameID value is set to 6. (issue #3708)
   - **[com.adobe.fonts/check/varfont/same_size_instance_records]:** Validates that all of the instance records in a given font have the same size, with all either including or omitting the postScriptNameID field. (issue #3705)
+  - **[com.adobe.fonts/check/varfont/distinct_instance_records]:** Validates that all of the instance records in a given font have distinct data. (issue #3706)
 
 #### Added to the Universal Profile
   - **[com.adobe.fonts/check/freetype_rasterizer]:** Checks that the font can be rasterized by FreeType. (issue #3642)
