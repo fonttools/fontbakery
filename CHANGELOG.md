@@ -31,6 +31,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### Added to the OpenType Profile
   - **[com.adobe.fonts/check/varfont/valid_axis_nameid]:** Validates that the value of axisNameID used by each VariationAxisRecord is greater than 255 and less than 32768. (issue #3702)
+  - **[com.adobe.fonts/check/varfont/valid_subfamily_nameid]:** Validates that the value of subfamilyNameID used by each InstanceRecord is 2, 17, or greater than 255 and less than 32768. (issue #3703)
 
 #### Added to the Universal Profile
   - **[com.adobe.fonts/check/freetype_rasterizer]:** Checks that the font can be rasterized by FreeType. (issue #3642)

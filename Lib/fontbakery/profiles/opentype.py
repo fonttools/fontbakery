@@ -79,6 +79,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/layout_valid_script_tags',
     'com.google.fonts/check/layout_valid_language_tags',
     'com.adobe.fonts/check/varfont/valid_axis_nameid',
+    'com.adobe.fonts/check/varfont/valid_subfamily_nameid',
 ]
 
 profile.auto_register(globals())
