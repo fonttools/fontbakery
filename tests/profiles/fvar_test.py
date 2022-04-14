@@ -235,3 +235,34 @@ def test_check_varfont_slnt_range():
     # And it must now be good ;-)
     assert_PASS(check(ttFont))
 
+
+def test_check_varfont_valid_axis_nameid():
+    """The value of axisNameID used by each VariationAxisRecord must
+    be greater than 255 and less than 32768."""
+    check = CheckTester(
+        opentype_profile, "com.adobe.fonts/check/varfont/valid_axis_nameid"
+    )
+
+    # The axisNameID values in the reference varfont are all valid
+    ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
+    assert_PASS(check(ttFont), "with a good varfont...")
+
+    fvar_table = ttFont["fvar"]
+    wght_axis = fvar_table.axes[0]
+    wdth_axis = fvar_table.axes[1]
+
+    # Change the axes' axisNameID to the maximum and minimum allowed values
+    wght_axis.axisNameID = 32767
+    wdth_axis.axisNameID = 256
+    assert_PASS(check(ttFont), "with a good varfont...")
+
+    # Change the axes' axisNameID to invalid values
+    # (32768 is greater than the maximum, and 255 is less than the minimum)
+    wght_axis.axisNameID = 32768
+    wdth_axis.axisNameID = 255
+    assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid")
+
+    # Another set of invalid values
+    wght_axis.axisNameID = 128
+    wdth_axis.axisNameID = 36000
+    assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid")

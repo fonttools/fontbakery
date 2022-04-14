@@ -29,6 +29,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/hmtx/whitespace_advances]:** Checks that whitespace glyphs have expected advance widths. (PR #3681)
   - **[com.google.fonts/check/cmap/alien_codepoints]:** Checks that there are no surrogate pair or private use area codepoints encoded in the cmap table. (PR #3681)
 
+#### Added to the OpenType Profile
+  - **[com.adobe.fonts/check/varfont/valid_axis_nameid]:** Validates that the value of axisNameID used by each VariationAxisRecord is greater than 255 and less than 32768. (issue #3702)
+
 #### Added to the Universal Profile
   - **[com.adobe.fonts/check/freetype_rasterizer]:** Checks that the font can be rasterized by FreeType. (issue #3642)
 
