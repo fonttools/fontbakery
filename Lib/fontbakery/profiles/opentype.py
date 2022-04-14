@@ -82,6 +82,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.adobe.fonts/check/varfont/valid_subfamily_nameid',
     'com.adobe.fonts/check/varfont/valid_postscript_nameid',
     'com.adobe.fonts/check/varfont/valid_default_instance_nameids',
+    'com.adobe.fonts/check/varfont/same_size_instance_records',
 ]
 
 profile.auto_register(globals())
