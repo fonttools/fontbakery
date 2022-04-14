@@ -384,7 +384,7 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont):
     axes_dflt_coords = {axis.axisTag: axis.defaultValue for axis in fvar_table.axes}
 
     for i, inst in enumerate(fvar_table.instances, 1):
-        inst_coords = {key: val for key, val in inst.coordinates.items()}
+        inst_coords = dict(inst.coordinates.items())
 
         # The instance record has the same coordinates as the default instance
         if inst_coords == axes_dflt_coords:
@@ -430,7 +430,7 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
     """Validates that all of the instance records in a given font have the same size."""
 
     font_ps_nameids_not_provided = set(
-        [inst.postscriptNameID == 0xFFFF for inst in ttFont["fvar"].instances]
+        inst.postscriptNameID == 0xFFFF for inst in ttFont["fvar"].instances
     )
 
     # 'font_ps_nameids_not_provided' is a set whose values can only be
@@ -465,10 +465,10 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
     name_table = ttFont["name"] if has_name_table else None
 
     unique_inst_recs = set()
-    repeat_inst_recs = list()
+    repeat_inst_recs = []
 
     for i, inst in enumerate(ttFont["fvar"].instances, 1):
-        inst_coords = [(key, val) for key, val in inst.coordinates.items()]
+        inst_coords = list(inst.coordinates.items())
         inst_subfam_nameid = inst.subfamilyNameID
         inst_postscript_nameid = inst.postscriptNameID
         inst_data = (tuple(inst_coords), inst_subfam_nameid, inst_postscript_nameid)
