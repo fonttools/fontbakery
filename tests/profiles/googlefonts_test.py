@@ -1,8 +1,6 @@
 import pytest
 import os
-from copy import deepcopy
 from fontTools.ttLib import TTFont
-from fontTools import ttLib
 
 from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR,
                                     SKIP, PASS, FAIL, ENDCHECK)
@@ -2759,14 +2757,17 @@ def test_check_name_typographicsubfamilyname():
                            # note: the check must not complain
                            #       about the lack of a mac entry!
 
-    # Hairline Italic font
-    font = deepcopy(ttFont)
-    font["name"] = ttLib.newTable("name")
-    font["name"].names = []
-    font["name"].addMultilingualName(dict(en="Family Hairline"), nameID=1)
-    font["name"].addMultilingualName(dict(en="Italic"), nameID=2)
-    font["name"].addMultilingualName(dict(en="Family"), nameID=16)
-    font["name"].addMultilingualName(dict(en="Hairline Italic"), nameID=17)
+    # test for commonly used weight names
+    font = TTFont(TEST_FILE("weights/Weights-Hairline.ttf"))
+    assert_PASS(check(font), "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good.")
+
+    font = TTFont(TEST_FILE("weights/Weights-HairlineItalic.ttf"))
+    assert_PASS(check(font), "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good.")
+
+    font = TTFont(TEST_FILE("weights/Weights-ExtraBlack.ttf"))
+    assert_PASS(check(font), "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good.")
+
+    font = TTFont(TEST_FILE("weights/Weights-ExtraBlackItalic.ttf"))
     assert_PASS(check(font), "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good.")
 
 

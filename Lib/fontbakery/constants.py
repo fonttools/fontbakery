@@ -37,6 +37,7 @@ STATIC_STYLE_NAMES = [
     "Bold",
     "ExtraBold",
     "Black",
+    "ExtraBlack",
     "Hairline Italic",
     "Thin Italic",
     "ExtraLight Italic",
@@ -46,7 +47,8 @@ STATIC_STYLE_NAMES = [
     "SemiBold Italic",
     "Bold Italic",
     "ExtraBold Italic",
-    "Black Italic"]
+    "Black Italic",
+    "ExtraBlack Italic"]
 
 RIBBI_STYLE_NAMES = [
     "Regular",
