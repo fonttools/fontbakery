@@ -97,10 +97,11 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
         "Lu",
     }
     invisible_letters = {
+        # Hangul filler chars (category='Lo')
         0x115F,
         0x1160,
         0x3164,
-        0xFFA0,  # Hangul filler chars (category='Lo')
+        0xFFA0,
     }
     for unicode_val, glyph_name in cmap.items():
         category = unicodedata.category(chr(unicode_val))
