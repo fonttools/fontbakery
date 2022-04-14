@@ -29,7 +29,8 @@ OVERRIDDEN_CHECKS = [
 @check(
     id="com.adobe.fonts/check/family/consistent_upm",
     rationale="""
-        While not required by the OpenType spec, we (Adobe) expect that a group of fonts designed & produced as a family have consistent units per em.
+        While not required by the OpenType spec, we (Adobe) expect that a group
+        of fonts designed & produced as a family have consistent units per em.
     """,
     proposal="https://github.com/googlefonts/fontbakery/pull/2372",
 )
@@ -77,9 +78,16 @@ def _quick_and_dirty_glyph_is_empty(font, glyph_name):
 @check(
     id="com.adobe.fonts/check/find_empty_letters",
     rationale="""
-        Font language, script, and character set tagging approaches typically have an underlying assumption that letters (i.e. characters with Unicode general category 'Ll', 'Lm', 'Lo', 'Lt', or 'Lu', which includes CJK ideographs and Hangul syllables) with entries in the 'cmap' table have glyphs with ink (with a few exceptions, notably the Hangul "filler" characters).
+        Font language, script, and character set tagging approaches typically have an
+        underlying assumption that letters (i.e. characters with Unicode general
+        category 'Ll', 'Lm', 'Lo', 'Lt', or 'Lu', which includes CJK ideographs and
+        Hangul syllables) with entries in the 'cmap' table have glyphs with ink (with
+        a few exceptions, notably the Hangul "filler" characters).
 
-        This check is intended to identify fonts in which such letters have been mapped to empty glyphs (typically done as a form of subsetting). Letters with empty glyphs should have their entries removed from the 'cmap' table, even if the empty glyphs are left in place (e.g. for CID consistency).
+        This check is intended to identify fonts in which such letters have been mapped
+        to empty glyphs (typically done as a form of subsetting). Letters with empty
+        glyphs should have their entries removed from the 'cmap' table, even if the
+        empty glyphs are left in place (e.g. for CID consistency).
     """,
     proposal="https://github.com/googlefonts/fontbakery/pull/2460",
 )
@@ -112,7 +120,8 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
         ):
             yield FAIL, Message(
                 "empty-letter",
-                f"U+{unicode_val:04X} should be visible, but its glyph ({glyph_name!r}) is empty.",
+                f"U+{unicode_val:04X} should be visible, "
+                f"but its glyph ({glyph_name!r}) is empty.",
             )
             passed = False
     if passed:
