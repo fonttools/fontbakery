@@ -1,7 +1,10 @@
+"""
+Unit tests for Adobe Fonts profile.
+"""
 import os
 
 from fontTools.ttLib import TTFont
-from fontbakery.checkrunner import PASS, WARN, FAIL
+from fontbakery.checkrunner import WARN, FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
@@ -10,9 +13,12 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.profiles import adobefonts as adobefonts_profile
+from fontbakery.profiles.adobefonts import profile
 
 
 def test_check_family_consistent_upm():
+    """A group of fonts designed & produced as a family should have consistent
+    units per em."""
     check = CheckTester(
         adobefonts_profile, "com.adobe.fonts/check/family/consistent_upm"
     )
@@ -38,8 +44,7 @@ def test_check_family_consistent_upm():
 
 
 def test_get_family_checks():
-    from fontbakery.profiles.adobefonts import profile
-
+    """Validate the set of family checks."""
     family_checks = profile.get_family_checks()
     family_check_ids = {check.id for check in family_checks}
     expected_family_check_ids = {
@@ -62,6 +67,7 @@ def test_get_family_checks():
 
 
 def test_check_find_empty_letters():
+    """Validate that empty glyphs are found."""
     check = CheckTester(adobefonts_profile, "com.adobe.fonts/check/find_empty_letters")
 
     # this font has inked glyphs for all letters

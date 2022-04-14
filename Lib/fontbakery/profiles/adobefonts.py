@@ -106,14 +106,13 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
     for unicode_val, glyph_name in cmap.items():
         category = unicodedata.category(chr(unicode_val))
         if (
-            (_quick_and_dirty_glyph_is_empty(ttFont, glyph_name))
+            _quick_and_dirty_glyph_is_empty(ttFont, glyph_name)
             and (category in letter_categories)
             and (unicode_val not in invisible_letters)
         ):
             yield FAIL, Message(
                 "empty-letter",
-                "U+%04X should be visible, but its glyph ('%s') is empty."
-                % (unicode_val, glyph_name),
+                f"U+{unicode_val:04X} should be visible, but its glyph ({glyph_name!r}) is empty.",
             )
             passed = False
     if passed:
