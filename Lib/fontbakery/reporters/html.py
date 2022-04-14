@@ -9,7 +9,7 @@ from cmarkgfm.cmark import Options as cmarkgfmOptions
 
 import fontbakery.checkrunner
 from fontbakery.reporters.serialize import SerializeReporter
-from fontbakery.utils import unindent_rationale, html5_collapsible
+from fontbakery.utils import unindent_and_unwrap_rationale, html5_collapsible
 
 LOGLEVELS = ["ERROR", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]
 EMOTICON = {
@@ -118,7 +118,7 @@ class HTMLReporter(SerializeReporter):
     def render_rationale(self, check, checkid) -> str:
         if self.succinct or "rationale" not in check:
             return ""
-        content = unindent_rationale(check['rationale'], checkid)
+        content = unindent_and_unwrap_rationale(check['rationale'], checkid)
         return cmarkgfm.markdown_to_html(
                 content, options=cmarkgfmOptions.CMARK_OPT_UNSAFE
         )
