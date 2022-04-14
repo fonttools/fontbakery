@@ -350,3 +350,63 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont):
         )
 
     yield PASS, "postScriptNameID values are valid"
+
+
+@check(
+    id="com.adobe.fonts/check/varfont/valid_default_instance_nameids",
+    rationale="""
+        According to the 'fvar' documentation in OpenType spec v1.9
+        https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
+
+        The default instance of a font is that instance for which the coordinate
+        value of each axis is the defaultValue specified in the corresponding
+        variation axis record. An instance record is not required for the default
+        instance, though an instance record can be provided. When enumerating named
+        instances, the default instance should be enumerated even if there is no
+        corresponding instance record. If an instance record is included for the
+        default instance (that is, an instance record has coordinates set to default
+        values), then the nameID value should be set to either 2 or 17, and the
+        postScriptNameID value should be set to 6.
+    """,
+    conditions=["is_variable_font"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/3708",
+)
+def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont):
+    """Validates that when an instance record is included for the default instance,
+    its subfamilyNameID value is set to either 2 or 17, and its postScriptNameID value
+    is set to 6."""
+
+    fvar_table = ttFont["fvar"]
+
+    font_includes_ps_nameid = any(
+        inst.postscriptNameID != 0xFFFF for inst in fvar_table.instances
+    )
+    axes_dflt_coords = {axis.axisTag: axis.defaultValue for axis in fvar_table.axes}
+
+    for i, inst in enumerate(fvar_table.instances, 1):
+        inst_coords = {key: val for key, val in inst.coordinates.items()}
+
+        # The instance record has the same coordinates as the default instance
+        if inst_coords == axes_dflt_coords:
+            subfam_nameid = inst.subfamilyNameID
+            postscript_nameid = inst.postscriptNameID
+
+            if subfam_nameid not in {2, 17}:
+                yield FAIL, Message(
+                    "invalid-default-instance-subfamily-nameid",
+                    f"Named instance #{i} has the same coordinates as the default "
+                    "instance; its subfamilyNameID must be either 2 or 17, instead of "
+                    f"{subfam_nameid}",
+                )
+
+            # Validate the postScriptNameID only if
+            # at least one instance record includes it
+            if font_includes_ps_nameid and postscript_nameid != 6:
+                yield FAIL, Message(
+                    "invalid-default-instance-postscript-nameid",
+                    f"Named instance #{i} has the same coordinates as the default "
+                    "instance; its postScriptNameID must be 6, instead of "
+                    f"{postscript_nameid}",
+                )
+
+    yield PASS, "The default instance nameID values are valid"

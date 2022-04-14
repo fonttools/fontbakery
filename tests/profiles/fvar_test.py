@@ -346,3 +346,61 @@ def test_check_varfont_valid_postscript_nameid():
     inst_1.postscriptNameID = 3
     inst_2.postscriptNameID = 18
     assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid")
+
+
+def test_check_varfont_valid_default_instance_nameids():
+    """If an instance record is included for the default instance, then the
+    subfamilyNameID value should be set to either 2 or 17, and the postScriptNameID
+    value should be set to 6."""
+    check = CheckTester(
+        opentype_profile, "com.adobe.fonts/check/varfont/valid_default_instance_nameids"
+    )
+
+    # None of the instance records in the reference varfont have the same coordinates
+    # as the default instance
+    ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
+    assert_PASS(check(ttFont), "with a good varfont...")
+
+    # Add an instance record for the default instance
+    from fontTools.ttLib.tables._f_v_a_r import NamedInstance
+
+    fvar_table = ttFont["fvar"]
+    dflt_inst = NamedInstance()
+    dflt_inst.coordinates = {"wght": 400, "wdth": 100}
+    dflt_inst.subfamilyNameID = 2
+    fvar_table.instances.append(dflt_inst)
+
+    # The font now has an instance record for the default
+    # instance; its subfamilyNameID value is valid
+    assert_PASS(check(ttFont), "with a good varfont...")
+
+    # Change subfamilyNameID value of the default instance to an invalid value
+    dflt_inst.subfamilyNameID = 3
+    assert_results_contain(
+        check(ttFont), FAIL, "invalid-default-instance-subfamily-nameid"
+    )
+
+    # Change subfamilyNameID value of the default instance to another valid value
+    dflt_inst.subfamilyNameID = 17
+    assert_PASS(check(ttFont), "with a good varfont...")
+
+    # The value of postScriptNameID is 0xFFFF for all the instance records in the
+    # reference varfont. Change one of them, to make the check validate the
+    # postScriptNameID value of the default instance (which is currently 0xFFFF).
+    inst_1 = fvar_table.instances[0]
+    inst_1.postscriptNameID = 256
+    assert_results_contain(
+        check(ttFont), FAIL, "invalid-default-instance-postscript-nameid"
+    )
+
+    # Change postScriptNameID value of the default instance to a valid value
+    dflt_inst.postscriptNameID = 6
+    assert_PASS(check(ttFont), "with a good varfont...")
+
+    # Change postScriptNameID value of the default instance to an invalid value,
+    # and the postScriptNameID value of the first instance record back to 0xFFFF.
+    dflt_inst.postscriptNameID = 8
+    inst_1.postscriptNameID = 0xFFFF
+    assert_results_contain(
+        check(ttFont), FAIL, "invalid-default-instance-postscript-nameid"
+    )
