@@ -30,8 +30,9 @@ Felipe Correa da Silva Sanches <juca@members.fsf.org>
 Filip Zembowicz <fil@google.com>
 Lasse Fister <commander@graphicore.de>
 Marc Foley <m.foley.88@gmail.com>
+Miguel Sousa <miguel.sousa@adobe.com>
 Mikhail Kashkin <mkashkin@gmail.com>
 Raph Levien <raph.levien@gmail.com>
-Simon Cozens <simon@simon-cozens.org>
 Robert Martinez <mail@robertmartinez.de>
+Simon Cozens <simon@simon-cozens.org>
 Vitaly Volkov <hash.3g@gmail.com>
