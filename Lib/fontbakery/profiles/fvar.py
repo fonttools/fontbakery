@@ -274,3 +274,40 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont):
         )
 
     yield PASS, "axisNameID values are valid"
+
+
+@check(
+    id="com.adobe.fonts/check/varfont/valid_subfamily_nameid",
+    rationale="""
+        According to the 'fvar' documentation in OpenType spec v1.9
+        https://docs.microsoft.com/en-us/typography/opentype/spec/fvar
+
+        The subfamilyNameID field provides a name ID that can be used to obtain
+        strings from the 'name' table that can be treated as equivalent to name
+        ID 17 (typographic subfamily) strings for the given instance. Values of
+        2 or 17 can be used; otherwise, values must be greater than 255 and less
+        than 32768.
+    """,
+    conditions=["is_variable_font"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/3703",
+)
+def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont):
+    """Validates that the value of subfamilyNameID used by each InstanceRecord
+    is 2, 17, or greater than 255 and less than 32768."""
+
+    font_subfam_nameids = [inst.subfamilyNameID for inst in ttFont["fvar"].instances]
+    invalid_subfam_nameids = [
+        val
+        for val in font_subfam_nameids
+        if not (255 < val < 32768) and val not in {2, 17}
+    ]
+
+    if invalid_subfam_nameids:
+        yield FAIL, Message(
+            "invalid-subfamily-nameid",
+            f"Found {len(invalid_subfam_nameids)} subfamilyNameID value(s) that are not "
+            "2, 17, or greater than 255 and less than 32768: "
+            f"{', '.join(map(str, invalid_subfam_nameids))}",
+        )
+
+    yield PASS, "subfamilyNameID values are valid"
