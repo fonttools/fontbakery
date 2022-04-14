@@ -110,15 +110,27 @@ def get_theme(args):
     return DARK_THEME
 
 
-def unindent_rationale(rationale, checkid=None):
+def unindent_and_unwrap_rationale(rationale, checkid=None):
+    """Takes the 'rationale' docstring of a check and removes indents and hard line
+    breaks that were added to long lines."""
     content = ""
-    for line in rationale.split("\n"):
-        if line.strip() == "":
-            content += "\n"
-            continue
+    new_paragraph = True
 
-        # all lines are assumed to be indented by 8 spaces
-        content += line[8:] + "\n"
+    for line in rationale.split("\n"):
+        stripped_line = line.strip()
+
+        if not stripped_line:
+            content += "\n\n"
+            new_paragraph = True
+
+        else:
+            if not new_paragraph:
+                content += " "
+            else:
+                new_paragraph = False
+
+            content += stripped_line
+
     return content
 
 

@@ -42,8 +42,8 @@ class GHMarkdownReporter(SerializeReporter):
         if self.succinct or not "rationale" in check:
             return ""
 
-        from fontbakery.utils import unindent_rationale
-        content = unindent_rationale(check['rationale'], checkid)
+        from fontbakery.utils import unindent_and_unwrap_rationale
+        content = unindent_and_unwrap_rationale(check['rationale'], checkid)
         return "\n".join([ ">" + line for line in content.split("\n")])
 
     def check_md(self, check):

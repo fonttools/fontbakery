@@ -428,8 +428,8 @@ class TerminalReporter(TerminalProgress):
                     with_string))
 
                 if check.rationale:
-                    from fontbakery.utils import text_flow, unindent_rationale
-                    content = unindent_rationale(check.rationale).strip()
+                    from fontbakery.utils import text_flow, unindent_and_unwrap_rationale
+                    content = unindent_and_unwrap_rationale(check.rationale).strip()
                     print('    ' + self.theme["rationale-title"]("  Rationale:" + " " * 64) + '\n'
                           + text_flow(content,
                                       width=76,
