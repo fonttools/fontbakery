@@ -1,4 +1,5 @@
 from fontTools.ttLib import TTFont
+from fontTools.ttLib.tables._f_v_a_r import Axis, NamedInstance
 
 from fontbakery.checkrunner import (FAIL, WARN)
 from fontbakery.codetesting import (assert_PASS,
@@ -57,7 +58,6 @@ def test_check_varfont_regular_slnt_coord():
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
 
     # So we add one:
-    from fontTools.ttLib.tables._f_v_a_r import Axis
     new_axis = Axis()
     new_axis.axisTag = "slnt"
     ttFont["fvar"].axes.append(new_axis)
@@ -82,7 +82,6 @@ def test_check_varfont_regular_ital_coord():
         must be zero on the 'Regular' instance. """
     check = CheckTester(opentype_profile,
                         "com.google.fonts/check/varfont/regular_ital_coord")
-    from fontTools.ttLib.tables._f_v_a_r import Axis
 
     # Our reference varfont, CabinVFBeta.ttf, lacks an 'ital' variation axis.
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
@@ -112,7 +111,6 @@ def test_check_varfont_regular_opsz_coord():
         should be between 10 and 16 on the 'Regular' instance. """
     check = CheckTester(opentype_profile,
                         "com.google.fonts/check/varfont/regular_opsz_coord")
-    from fontTools.ttLib.tables._f_v_a_r import Axis
 
     # Our reference varfont, CabinVFBeta.ttf, lacks an 'opsz' variation axis.
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
@@ -362,7 +360,6 @@ def test_check_varfont_valid_default_instance_nameids():
     assert_PASS(check(ttFont), "with a good varfont...")
 
     # Add an instance record for the default instance
-    from fontTools.ttLib.tables._f_v_a_r import NamedInstance
 
     fvar_table = ttFont["fvar"]
     dflt_inst = NamedInstance()
