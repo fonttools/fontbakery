@@ -134,9 +134,11 @@ profile.auto_register(globals())
 profile.check_log_override(
     # from `universal` profile:
     "com.google.fonts/check/whitespace_glyphs",
-    reason="For Adobe, this is not as severe "
-    + "as assessed in the original check for 0x00A0.",
     overrides=(("missing-whitespace-glyph-0x00A0", WARN, KEEP_ORIGINAL_MESSAGE),),
+    reason=(
+        "For Adobe, this is not as severe "
+        "as assessed in the original check for 0x00A0."
+    ),
 )
 
 
