@@ -16,6 +16,29 @@ from fontbakery.profiles import adobefonts as adobefonts_profile
 from fontbakery.profiles.adobefonts import profile
 
 
+def test_get_family_checks():
+    """Validate the set of family checks."""
+    family_checks = profile.get_family_checks()
+    family_check_ids = {check.id for check in family_checks}
+    expected_family_check_ids = {
+        "com.adobe.fonts/check/family/bold_italic_unique_for_nameid1",
+        "com.adobe.fonts/check/family/consistent_upm",
+        "com.adobe.fonts/check/family/max_4_fonts_per_family_name",
+        "com.google.fonts/check/family/underline_thickness",
+        "com.google.fonts/check/family/panose_proportion",
+        "com.google.fonts/check/family/panose_familytype",
+        "com.google.fonts/check/family/equal_unicode_encodings",
+        "com.google.fonts/check/family/equal_font_versions",
+        "com.google.fonts/check/family/win_ascent_and_descent",
+        "com.google.fonts/check/family/vertical_metrics",
+        "com.google.fonts/check/family/single_directory",
+        # should it be included here? or should we have
+        # a get_superfamily_checks() method?
+        # 'com.google.fonts/check/superfamily/vertical_metrics',
+    }
+    assert family_check_ids == expected_family_check_ids
+
+
 def test_check_family_consistent_upm():
     """A group of fonts designed & produced as a family should have consistent
     units per em."""
@@ -41,29 +64,6 @@ def test_check_family_consistent_upm():
     # now try with one font with a different UPM (i.e. 2048)
     ttFonts[1]["head"].unitsPerEm = 2048
     assert_results_contain(check(ttFonts), FAIL, "inconsistent-upem")
-
-
-def test_get_family_checks():
-    """Validate the set of family checks."""
-    family_checks = profile.get_family_checks()
-    family_check_ids = {check.id for check in family_checks}
-    expected_family_check_ids = {
-        "com.adobe.fonts/check/family/bold_italic_unique_for_nameid1",
-        "com.adobe.fonts/check/family/consistent_upm",
-        "com.adobe.fonts/check/family/max_4_fonts_per_family_name",
-        "com.google.fonts/check/family/underline_thickness",
-        "com.google.fonts/check/family/panose_proportion",
-        "com.google.fonts/check/family/panose_familytype",
-        "com.google.fonts/check/family/equal_unicode_encodings",
-        "com.google.fonts/check/family/equal_font_versions",
-        "com.google.fonts/check/family/win_ascent_and_descent",
-        "com.google.fonts/check/family/vertical_metrics",
-        "com.google.fonts/check/family/single_directory",
-        # should it be included here? or should we have
-        # a get_superfamily_checks() method?
-        # 'com.google.fonts/check/superfamily/vertical_metrics',
-    }
-    assert family_check_ids == expected_family_check_ids
 
 
 def test_check_find_empty_letters():
