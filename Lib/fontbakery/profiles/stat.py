@@ -11,9 +11,10 @@ profile_imports = [
 @check(
     id = 'com.google.fonts/check/varfont/stat_axis_record_for_each_axis',
     rationale = """
-      According to the OpenType spec, there must be an Axis Record for every axis defined in the fvar table.
+        According to the OpenType spec, there must be an Axis Record
+        for every axis defined in the fvar table.
 
-      https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-records
+        https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-records
     """,
     conditions = ['is_variable_font'],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3017'

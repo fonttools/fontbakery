@@ -32,7 +32,9 @@ def _get_mark_class_glyphnames(ttFont):
     id = 'com.google.fonts/check/gdef_spacing_marks',
     rationale = """
         Glyphs in the GDEF mark glyph class should be non-spacing.
-        Spacing glyphs in the GDEF mark glyph class may have incorrect anchor positioning that was only intended for building composite glyphs during design.
+        
+        Spacing glyphs in the GDEF mark glyph class may have incorrect anchor
+        positioning that was only intended for building composite glyphs during design.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2877'
 )
@@ -113,8 +115,11 @@ def com_google_fonts_check_gdef_mark_chars(ttFont, config):
 @check(
     id = 'com.google.fonts/check/gdef_non_mark_chars',
     rationale = """
-        Glyphs in the GDEF mark glyph class become non-spacing and may be repositioned if they have mark anchors.
-        Only combining mark glyphs should be in that class. Any non-mark glyph must not be in that class, in particular spacing glyphs.
+        Glyphs in the GDEF mark glyph class become non-spacing and may be repositioned
+        if they have mark anchors.
+
+        Only combining mark glyphs should be in that class. Any non-mark glyph
+        must not be in that class, in particular spacing glyphs.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2877'
 )

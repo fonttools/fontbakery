@@ -44,8 +44,17 @@ STYLESHEET = """
     @font-face {font-family: "TestFont"; src: url(%s);}
     .tf { font-family: "TestFont"; }
     .shaping pre { font-size: 1.2rem; }
-    .shaping li { font-size: 1.2rem; border-top: 1px solid #ddd; padding: 12px; margin-top: 12px; }
-    .shaping-svg { height: 100px; margin:10px; transform: matrix(1, 0, 0, -1, 0, 0); }
+    .shaping li {
+        font-size: 1.2rem;
+        border-top: 1px solid #ddd;
+        padding: 12px;
+        margin-top: 12px;
+    }
+    .shaping-svg {
+        height: 100px;
+        margin: 10px;
+        transform: matrix(1, 0, 0, -1, 0, 0);
+    }
 </style>
 """
 
@@ -86,18 +95,19 @@ def create_report_item(vharfbuzz,
     if buf2:
         if isinstance(buf2, FakeBuffer):
             try:
-              serialized_buf2 = vharfbuzz.serialize_buf(buf2)
+                serialized_buf2 = vharfbuzz.serialize_buf(buf2)
             except Exception:
-              # This may fail if the glyphs are not found in the font
-              serialized_buf2 = None
-              buf2 = None  # Don't try to draw it either
+                # This may fail if the glyphs are not found in the font
+                serialized_buf2 = None
+                buf2 = None  # Don't try to draw it either
         else:
             serialized_buf2 = buf2
         message += f"\n\n<pre>Expected: {serialized_buf2}</pre>\n\n"
 
     if buf1:
         serialized_buf1 = vharfbuzz.serialize_buf(buf1,
-                                                  glyphsonly=(buf2 and isinstance(buf2, str)))
+                                                  glyphsonly=(buf2 and
+                                                              isinstance(buf2, str)))
         message += f"\n\n<pre>Got     : {serialized_buf1}</pre>\n\n"
 
     # Report a diff table
@@ -220,8 +230,15 @@ def run_a_set_of_shaping_tests(config,
 @check(
     id = "com.google.fonts/check/shaping/regression",
     rationale = """
-        Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and compares expected shaping against actual shaping, reporting any differences.
-        Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
+        Fonts with complex layout rules can benefit from regression tests to ensure
+        that the rules are behaving as designed. This checks runs a shaping test
+        suite and compares expected shaping against actual shaping, reporting
+        any differences.
+        
+        Shaping test suites should be written by the font engineer and referenced
+        in the fontbakery configuration file. For more information about write
+        shaping test files and how to configure fontbakery to read the shaping
+        test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
     proposal = "https://github.com/googlefonts/fontbakery/pull/3223"
 )
@@ -288,8 +305,15 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_te
 @check(
     id="com.google.fonts/check/shaping/forbidden",
     rationale="""
-        Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and reports if any glyphs are generated in the shaping which should not be produced. (For example, .notdef glyphs, visible viramas, etc.)
-        Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
+        Fonts with complex layout rules can benefit from regression tests to ensure
+        that the rules are behaving as designed. This checks runs a shaping test
+        suite and reports if any glyphs are generated in the shaping which should
+        not be produced. (For example, .notdef glyphs, visible viramas, etc.)
+        
+        Shaping test suites should be written by the font engineer and referenced in
+        the Font Bakery configuration file. For more information about write shaping
+        test files and how to configure fontbakery to read the shaping test suites,
+        see https://simoncozens.github.io/tdd-for-otl/
     """,
     proposal = "https://github.com/googlefonts/fontbakery/pull/3223"
 )
@@ -349,8 +373,14 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
 @check(
     id = "com.google.fonts/check/shaping/collides",
     rationale = """
-        Fonts with complex layout rules can benefit from regression tests to ensure that the rules are behaving as designed. This checks runs a shaping test suite and reports instances where the glyphs collide in unexpected ways.
-        Shaping test suites should be written by the font engineer and referenced in the fontbakery configuration file. For more information about write shaping test files and how to configure fontbakery to read the shaping test suites, see https://simoncozens.github.io/tdd-for-otl/
+        Fonts with complex layout rules can benefit from regression tests to ensure
+        that the rules are behaving as designed. This checks runs a shaping test
+        suite and reports instances where the glyphs collide in unexpected ways.
+        
+        Shaping test suites should be written by the font engineer and referenced
+        in the fontbakery configuration file. For more information about write
+        shaping test files and how to configure fontbakery to read the shaping
+        test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
     proposal = "https://github.com/googlefonts/fontbakery/pull/3223"
 )

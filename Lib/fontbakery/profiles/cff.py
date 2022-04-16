@@ -9,12 +9,14 @@ profile_imports = [
     ('.shared_conditions', ('is_cff', 'is_cff2'))
 ]
 
+
 class CFFAnalysis:
     def __init__(self):
         self.glyphs_dotsection = []
         self.glyphs_endchar_seac = []
         self.glyphs_exceed_max = []
         self.glyphs_recursion_errors = []
+
 
 def _get_subr_bias(count):
     if count < 1240:
@@ -39,7 +41,8 @@ def _traverse_subr_call_tree(info, program, depth):
     if depth > 10:
         return
 
-    if len(program) >=5 and program[-1] == 'endchar' and all([isinstance(a, int) for a in program[-5:-1]]):
+    if (len(program) >=5 and program[-1] == 'endchar'
+        and all([isinstance(a, int) for a in program[-5:-1]])):
         info['saw_endchar_seac'] = True
     if 'ignore' in program:  # decompiler expresses 'dotsection' as 'ignore'
         info['saw_dotsection'] = True
@@ -98,6 +101,7 @@ def _analyze_cff(analysis, top_dict, private_dict, fd_index=0):
         if info.get('saw_dotsection'):
             analysis.glyphs_dotsection.append(glyph_name)
 
+
 @condition
 def cff_analysis(ttFont):
 
@@ -134,13 +138,15 @@ def cff_analysis(ttFont):
 
     return analysis
 
+
 @check(
     id = 'com.adobe.fonts/check/cff_call_depth',
     conditions = ['ttFont',
                   'is_cff',
                   'cff_analysis'],
     rationale = """
-        Per "The Type 2 Charstring Format, Technical Note #5177", the "Subr nesting, stack limit" is 10.
+        Per "The Type 2 Charstring Format, Technical Note #5177",
+        the "Subr nesting, stack limit" is 10.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2425'
 )
@@ -154,7 +160,8 @@ def com_adobe_fonts_check_cff_call_depth(cff_analysis):
         for gn in cff_analysis.glyphs_exceed_max:
             yield FAIL, \
                   Message('max-depth',
-                          f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
+                          f'Subroutine call depth exceeded'
+                          f' maximum of 10 for glyph "{gn}".')
         for gn in cff_analysis.glyphs_recursion_errors:
             yield FAIL, \
                   Message('recursion-error',
@@ -182,7 +189,8 @@ def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
         for gn in cff_analysis.glyphs_exceed_max:
             yield FAIL, \
                   Message('max-depth',
-                          f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".')
+                          f'Subroutine call depth exceeded'
+                          f' maximum of 10 for glyph "{gn}".')
         for gn in cff_analysis.glyphs_recursion_errors:
             yield FAIL, \
                   Message('recursion-error',
@@ -198,7 +206,12 @@ def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
                   'is_cff',
                   'cff_analysis'],
     rationale = """
-        The 'dotsection' operator and the use of 'endchar' to build accented characters from the Adobe Standard Encoding Character Set ("seac") are deprecated in CFF. Adobe recommends repairing any fonts that use these, especially endchar-as-seac, because a rendering issue was discovered in Microsoft Word with a font that makes use of this operation. The check treats that useage as a FAIL. There are no known ill effects of using dotsection, so that check is a WARN.
+        The 'dotsection' operator and the use of 'endchar' to build accented characters
+        from the Adobe Standard Encoding Character Set ("seac") are deprecated in CFF.
+        Adobe recommends repairing any fonts that use these, especially endchar-as-seac,
+        because a rendering issue was discovered in Microsoft Word with a font that
+        makes use of this operation. The check treats that usage as a FAIL.
+        There are no known ill effects of using dotsection, so that check is a WARN.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3033'
 )
@@ -215,7 +228,8 @@ def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
         for gn in cff_analysis.glyphs_endchar_seac:
             yield FAIL, \
                   Message('deprecated-operation-endchar-seac',
-                          f'Glyph "{gn}" has deprecated use of "endchar" operator to build accented characters (seac).')
+                          f'Glyph "{gn}" has deprecated use of "endchar"'
+                          f' operator to build accented characters (seac).')
 
     if not any_failures:
         yield PASS, 'No deprecated CFF operators used.'

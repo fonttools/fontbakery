@@ -22,7 +22,9 @@ DEPRECATED_TAGS = ["hngl", "opbd", "size"]
 @check(
     id = "com.google.fonts/check/layout_valid_feature_tags",
     rationale = """
-        Incorrect tags can be indications of typos, leftover debugging code or questionable approaches, or user error in the font editor. Such typos can cause features and language support to fail to work as intended.
+        Incorrect tags can be indications of typos, leftover debugging code or
+        questionable approaches, or user error in the font editor. Such typos can
+        cause features and language support to fail to work as intended.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3355',
     severity = 8
@@ -61,7 +63,9 @@ def script_tags(ttFont):
 @check(
     id = "com.google.fonts/check/layout_valid_script_tags",
     rationale = """
-        Incorrect script tags can be indications of typos, leftover debugging code or questionable approaches, or user error in the font editor. Such typos can cause features and language support to fail to work as intended.
+        Incorrect script tags can be indications of typos, leftover debugging code
+        or questionable approaches, or user error in the font editor. Such typos can
+        cause features and language support to fail to work as intended.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3355',
     severity = 8
@@ -94,7 +98,9 @@ def language_tags(ttFont):
 @check(
     id = "com.google.fonts/check/layout_valid_language_tags",
     rationale = """
-        Incorrect language tags can be indications of typos, leftover debugging code or questionable approaches, or user error in the font editor. Such typos can cause features and language support to fail to work as intended.
+        Incorrect language tags can be indications of typos, leftover debugging code
+        or questionable approaches, or user error in the font editor. Such typos can
+        cause features and language support to fail to work as intended.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3355',
     severity = 8

@@ -56,12 +56,14 @@ FONTWERK_PROFILE_CHECKS = \
 @check(
     id = 'com.fontwerk/check/no_mac_entries',
     rationale = """
-        Mac name table entries are not needed anymore.
-        Even Apple stopped producing name tables with platform 1.
-        Please see for example the following system font:
+        Mac name table entries are not needed anymore. Even Apple stopped producing
+        name tables with platform 1. Please see for example the following system font:
+
         /System/Library/Fonts/SFCompact.ttf
 
-        Also, Dave Opstad, who developed Apple's TrueType specifications, told Olli Meier a couple years ago (as of January/2022) that these entries are outdated and should not be produced anymore.
+        Also, Dave Opstad, who developed Apple's TrueType specifications, told
+        Olli Meier a couple years ago (as of January/2022) that these entries are
+        outdated and should not be produced anymore.
     """,
     proposal = 'https://github.com/googlefonts/gftools/issues/469'
 )
@@ -102,7 +104,8 @@ def com_fontwerk_check_vendor_id(ttFont):
 @check(
     id = 'com.fontwerk/check/weight_class_fvar',
     rationale = """
-        According to Microsoft's OT Spec the OS/2 usWeightClass should match the fvar default value.
+        According to Microsoft's OT Spec the OS/2 usWeightClass
+        should match the fvar default value.
     """,
     conditions = ["is_variable_font"],
     proposal = 'https://github.com/googlefonts/gftools/issues/477'
@@ -160,8 +163,8 @@ def is_covered_in_stat(ttFont, axis_tag, value):
 @check(
     id = 'com.fontwerk/check/inconsistencies_between_fvar_stat',
     rationale = """
-        Check for inconsistencies in names and values between the fvar instances and STAT table.
-        Inconsistencies may cause issues in apps like Adobe InDesign.
+        Check for inconsistencies in names and values between the fvar instances
+        and STAT table. Inconsistencies may cause issues in apps like Adobe InDesign.
     """,
     conditions = ["is_variable_font"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3636'
@@ -182,16 +185,16 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
         if instance_name is None:
             yield FAIL,\
                   Message("missing-name-id",
-                          f"The name ID {ins.subfamilyNameID} used in an "
-                          f"fvar instance is missing in the name table.")
+                          f"The name ID {ins.subfamilyNameID} used in an"
+                          f" fvar instance is missing in the name table.")
             continue
 
         for axis_tag, value in ins.coordinates.items():
             if not is_covered_in_stat(ttFont, axis_tag, value):
                 yield FAIL,\
                       Message("missing-fvar-instance-axis-value",
-                              f"{instance_name}: '{axis_tag}' axis value '{value}' "
-                              f"missing in STAT table.")
+                              f"{instance_name}: '{axis_tag}' axis value '{value}'"
+                              f" missing in STAT table.")
 
         # TODO: Compare fvar instance name with constructed STAT table name.
 

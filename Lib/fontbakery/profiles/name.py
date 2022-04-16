@@ -16,7 +16,8 @@ profile_imports = [
 @check(
     id = 'com.adobe.fonts/check/name/empty_records',
     rationale = """
-        Check the name table for empty records, as this can cause problems in Adobe apps.
+        Check the name table for empty records,
+        as this can cause problems in Adobe apps.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2369'
 )
@@ -88,7 +89,8 @@ def PANOSE_expected(family_type):
                                       PANOSE_Spacing)
 
     if family_type == PANOSE_Family_Type.LATIN_TEXT:
-        return f"Please set PANOSE Proportion to {PANOSE_Proportion.MONOSPACED} (monospaced)"
+        return (f"Please set PANOSE Proportion to"
+                f" {PANOSE_Proportion.MONOSPACED} (monospaced)")
 
     if family_type in [PANOSE_Family_Type.LATIN_HAND_WRITTEN,
                        PANOSE_Family_Type.LATIN_SYMBOL]:
@@ -110,32 +112,46 @@ def PANOSE_expected(family_type):
     conditions = ['glyph_metrics_stats',
                   'is_ttf'],
     rationale = """
-        There are various metadata in the OpenType spec to specify if a font is monospaced or not. If the font is not truly monospaced, then no monospaced metadata should be set (as sometimes they mistakenly are...)
+        There are various metadata in the OpenType spec to specify if a font is
+        monospaced or not. If the font is not truly monospaced, then no monospaced
+        metadata should be set (as sometimes they mistakenly are...)
 
         Requirements for monospace fonts:
 
-        * post.isFixedPitch - "Set to 0 if the font is proportionally spaced, non-zero if the font is not proportionally spaced (monospaced)"
-          www.microsoft.com/typography/otspec/post.htm
+        * post.isFixedPitch - "Set to 0 if the font is proportionally spaced, 
+          non-zero if the font is not proportionally spaced (monospaced)"
+          (https://www.microsoft.com/typography/otspec/post.htm)
 
-        * hhea.advanceWidthMax must be correct, meaning no glyph's width value is greater.
-          www.microsoft.com/typography/otspec/hhea.htm
+        * hhea.advanceWidthMax must be correct, meaning no glyph's width value
+          is greater. (https://www.microsoft.com/typography/otspec/hhea.htm)
 
         * OS/2.panose.bProportion must be set to 9 (monospace) on latin text fonts.
 
-        * OS/2.panose.bSpacing must be set to 3 (monospace) on latin hand written or latin symbol fonts.
+        * OS/2.panose.bSpacing must be set to 3 (monospace) on latin hand written
+          or latin symbol fonts.
 
-        * Spec says: "The PANOSE definition contains ten digits each of which currently describes up to sixteen variations. Windows uses bFamilyType, bSerifStyle and bProportion in the font mapper to determine family type. It also uses bProportion to determine if the font is monospaced."
-          www.microsoft.com/typography/otspec/os2.htm#pan
-          monotypecom-test.monotype.de/services/pan2
+        * Spec says: "The PANOSE definition contains ten digits each of which currently
+          describes up to sixteen variations. Windows uses bFamilyType, bSerifStyle
+          and bProportion in the font mapper to determine family type. It also uses
+          bProportion to determine if the font is monospaced."
+          (https://www.microsoft.com/typography/otspec/os2.htm#pan 
+           https://monotypecom-test.monotype.de/services/pan2)
 
         * OS/2.xAvgCharWidth must be set accurately.
-          "OS/2.xAvgCharWidth is used when rendering monospaced fonts, at least by Windows GDI"
-          http://typedrawers.com/discussion/comment/15397/#Comment_15397
+          "OS/2.xAvgCharWidth is used when rendering monospaced fonts,
+          at least by Windows GDI"
+          (http://typedrawers.com/discussion/comment/15397/#Comment_15397)
 
         Also we should report an error for glyphs not of average width.
 
+
         Please also note:
-        Thomas Phinney told us that a few years ago (as of December 2019), if you gave a font a monospace flag in Panose, Microsoft Word would ignore the actual advance widths and treat it as monospaced. Source: https://typedrawers.com/discussion/comment/45140/#Comment_45140
+        
+        Thomas Phinney told us that a few years ago (as of December 2019), if you gave
+        a font a monospace flag in Panose, Microsoft Word would ignore the actual
+        advance widths and treat it as monospaced.
+        
+        Source: https://typedrawers.com/discussion/comment/45140/#Comment_45140
     """,
     proposal = 'legacy:check/033'
 )
@@ -386,9 +402,12 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
     id = 'com.adobe.fonts/check/name/postscript_vs_cff',
     conditions = ['is_cff'],
     rationale = """
-        The PostScript name entries in the font's 'name' table should match the FontName string in the 'CFF ' table.
+        The PostScript name entries in the font's 'name' table should match
+        the FontName string in the 'CFF ' table.
 
-        The 'CFF ' table has a lot of information that is duplicated in other tables. This information should be consistent across tables, because there's no guarantee which table an app will get the data from.
+        The 'CFF ' table has a lot of information that is duplicated in other tables.
+        This information should be consistent across tables, because there's
+        no guarantee which table an app will get the data from.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2229'
 )
@@ -419,7 +438,8 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
     id = 'com.adobe.fonts/check/name/postscript_name_consistency',
     conditions = ['not is_cff'],  # e.g. TTF or CFF2
     rationale = """
-        The PostScript name entries in the font's 'name' table should be consistent across platforms.
+        The PostScript name entries in the font's 'name' table should be
+        consistent across platforms.
 
         This is the TTF/CFF2 equivalent of the CFF 'name/postscript_vs_cff' check.
     """,
@@ -448,7 +468,9 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
     id = 'com.adobe.fonts/check/family/max_4_fonts_per_family_name',
     rationale = """
         Per the OpenType spec:
-        'The Font Family name [...] should be shared among at most four fonts that differ only in weight or style [...]'
+        
+        'The Font Family name [...] should be shared among at most four fonts that
+        differ only in weight or style [...]'
     """,
 )
 def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):

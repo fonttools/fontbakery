@@ -85,9 +85,12 @@ def com_google_fonts_check_points_out_of_bounds(ttFont, config):
 @check(
     id = 'com.google.fonts/check/glyf_non_transformed_duplicate_components',
     rationale = """
-        There have been cases in which fonts had faulty double quote marks, with each of them containing two single quote marks as components with the same x, y coordinates which makes them visually look like single quote marks.
+        There have been cases in which fonts had faulty double quote marks, with each
+        of them containing two single quote marks as components with the same
+        x, y coordinates which makes them visually look like single quote marks.
 
-        This check ensures that glyphs do not contain duplicate components which have the same x,y coordinates.
+        This check ensures that glyphs do not contain duplicate components
+        which have the same x,y coordinates.
     """,
     conditions = ['is_ttf'],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2709'
