@@ -36,9 +36,16 @@ def close_but_not_on(yExpected, yTrue, tolerance):
 @check(
     id = "com.google.fonts/check/outline_alignment_miss",
     rationale = f"""
-        This check heuristically looks for on-curve points which are close to, but do not sit on, significant boundary coordinates. For example, a point which has a Y-coordinate of 1 or -1 might be a misplaced baseline point. As well as the baseline, here we also check for points near the x-height (but only for lower case Latin letters), cap-height, ascender and descender Y coordinates.
+        This check heuristically looks for on-curve points which are close to, but
+        do not sit on, significant boundary coordinates. For example, a point which
+        has a Y-coordinate of 1 or -1 might be a misplaced baseline point. As well as
+        the baseline, here we also check for points near the x-height (but only for
+        lowercase Latin letters), cap-height, ascender and descender Y coordinates.
 
-        Not all such misaligned curve points are a mistake, and sometimes the design may call for points in locations near the boundaries. As this check is liable to generate significant numbers of false positives, it will pass if there are more than {FALSE_POSITIVE_CUTOFF} reported misalignments.
+        Not all such misaligned curve points are a mistake, and sometimes the design
+        may call for points in locations near the boundaries. As this check is liable
+        to generate significant numbers of false positives, it will pass if there are
+        more than {FALSE_POSITIVE_CUTOFF} reported misalignments.
     """,
     conditions = ["outlines_dict"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3088'
@@ -89,9 +96,13 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
 @check(
     id = "com.google.fonts/check/outline_short_segments",
     rationale = f"""
-        This check looks for outline segments which seem particularly short (less than {SHORT_PATH_EPSILON:.1%} of the overall path length).
+        This check looks for outline segments which seem particularly short (less
+        than {SHORT_PATH_EPSILON:.1%} of the overall path length).
 
-        This check is not run for variable fonts, as they may legitimately have short segments. As this check is liable to generate significant numbers of false positives, it will pass if there are more than {FALSE_POSITIVE_CUTOFF} reported short segments.
+        This check is not run for variable fonts, as they may legitimately have
+        short segments. As this check is liable to generate significant numbers
+        of false positives, it will pass if there are more than
+        {FALSE_POSITIVE_CUTOFF} reported short segments.
     """,
     conditions = ["outlines_dict",
                   "is_not_variable_font"],
@@ -137,9 +148,11 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config)
 @check(
     id = "com.google.fonts/check/outline_colinear_vectors",
     rationale = """
-        This check looks for consecutive line segments which have the same angle. This normally happens if an outline point has been added by accident.
+        This check looks for consecutive line segments which have the same angle. This
+        normally happens if an outline point has been added by accident.
 
-        This check is not run for variable fonts, as they may legitimately have colinear vectors.
+        This check is not run for variable fonts, as they may legitimately have
+        colinear vectors.
     """,
     conditions = ["outlines_dict",
                   "is_not_variable_font"],
@@ -182,7 +195,10 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, confi
 @check(
     id = "com.google.fonts/check/outline_jaggy_segments",
     rationale = """
-        This check heuristically detects outline segments which form a particularly small angle, indicative of an outline error. This may cause false positives in cases such as extreme ink traps, so should be regarded as advisory and backed up by manual inspection.
+        This check heuristically detects outline segments which form a particularly
+        small angle, indicative of an outline error. This may cause false positives
+        in cases such as extreme ink traps, so should be regarded as advisory and
+        backed up by manual inspection.
     """,
     conditions = ["outlines_dict",
                   "is_not_variable_font"],
@@ -258,7 +274,9 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
         formatted_list = bullet_list(config, sorted(warnings), bullet="*")
         yield WARN,\
              Message("found-semi-vertical",
-                     f"The following glyphs have semi-vertical/semi-horizontal lines:\n\n"
+                     f"The following glyphs have"
+                     f" semi-vertical/semi-horizontal lines:\n"
+                     f"\n"
                      f"{formatted_list}")
     else:
         yield PASS, "No semi-horizontal/semi-vertical lines found."

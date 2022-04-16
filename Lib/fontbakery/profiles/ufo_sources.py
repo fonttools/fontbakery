@@ -17,6 +17,7 @@ UFO_PROFILE_CHECKS = [
     'com.daltonmaag/check/ufo-unnecessary-fields'
 ]
 
+
 @condition
 def ufo_font(ufo):
     try:
@@ -24,6 +25,7 @@ def ufo_font(ufo):
         return defcon.Font(ufo)
     except:
         return None
+
 
 @check(
     id = 'com.daltonmaag/check/ufolint',
@@ -115,7 +117,9 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
     rationale = """
         ufo2ft will generate these.
 
-        openTypeOS2UnicodeRanges and openTypeOS2CodePageRanges are exempted because it is useful to toggle a range when not _all_ the glyphs in that region are present.
+        openTypeOS2UnicodeRanges and openTypeOS2CodePageRanges are exempted
+        because it is useful to toggle a range when not _all_ the glyphs in that
+        region are present.
 
         year is deprecated since UFO v2.
     """,

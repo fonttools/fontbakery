@@ -7,15 +7,24 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 @check(
     id = 'com.google.fonts/check/kern_table',
     rationale = """
-        Even though all fonts should have their kerning implemented in the GPOS table, there may be kerning info at the kern table as well.
+        Even though all fonts should have their kerning implemented in the GPOS table,
+        there may be kerning info at the kern table as well.
 
-        Some applications such as MS PowerPoint require kerning info on the kern table. More specifically, they require a format 0 kern subtable from a kern table version 0 with only glyphs defined in the cmap table, which is the only one that Windows understands (and which is also the simplest and more limited of all the kern subtables).
+        Some applications such as MS PowerPoint require kerning info on the kern table.
+        More specifically, they require a format 0 kern subtable from a kern table
+        version 0 with only glyphs defined in the cmap table, which is the only one
+        that Windows understands (and which is also the simplest and more limited
+        of all the kern subtables).
 
-        Google Fonts ingests fonts made for download and use on desktops, and does all web font optimizations in the serving pipeline (using libre libraries that anyone can replicate.)
+        Google Fonts ingests fonts made for download and use on desktops, and does
+        all web font optimizations in the serving pipeline (using libre libraries
+        that anyone can replicate.)
 
-        Ideally, TTFs intended for desktop users (and thus the ones intended for Google Fonts) should have both KERN and GPOS tables.
+        Ideally, TTFs intended for desktop users (and thus the ones intended for
+        Google Fonts) should have both KERN and GPOS tables.
 
-        Given all of the above, we currently treat kerning on a v0 kern table as a good-to-have (but optional) feature.
+        Given all of the above, we currently treat kerning on a v0 kern table
+        as a good-to-have (but optional) feature.
     """,
     proposal = ['legacy:check/066',
                 'https://github.com/googlefonts/fontbakery/issues/1675',

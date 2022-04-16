@@ -101,11 +101,21 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
     conditions = ['vmetrics',
                   'not is_cjk_font'],
     rationale = """
-        A font's winAscent and winDescent values should be greater than the head table's yMax, abs(yMin) values. If they are less than these values, clipping can occur on Windows platforms (https://github.com/RedHatBrand/Overpass/issues/33).
+        A font's winAscent and winDescent values should be greater than the
+        head table's yMax, abs(yMin) values. If they are less than these values,
+        clipping can occur on Windows platforms
+        (https://github.com/RedHatBrand/Overpass/issues/33).
 
-        If the font includes tall/deep writing systems such as Arabic or Devanagari, the winAscent and winDescent can be greater than the yMax and abs(yMin) to accommodate vowel marks.
+        If the font includes tall/deep writing systems such as Arabic or Devanagari,
+        the winAscent and winDescent can be greater than the yMax and abs(yMin)
+        to accommodate vowel marks.
 
-        When the win Metrics are significantly greater than the upm, the linespacing can appear too loose. To counteract this, enabling the OS/2 fsSelection bit 7 (Use_Typo_Metrics), will force Windows to use the OS/2 typo values instead. This means the font developer can control the linespacing with the typo values, whilst avoiding clipping by setting the win values to values greater than the yMax and abs(yMin).
+        When the win Metrics are significantly greater than the upm, the linespacing
+        can appear too loose. To counteract this, enabling the OS/2 fsSelection
+        bit 7 (Use_Typo_Metrics), will force Windows to use the OS/2 typo values
+        instead. This means the font developer can control the linespacing with
+        the typo values, whilst avoiding clipping by setting the win values to values
+        greater than the yMax and abs(yMin).
     """,
     proposal = 'legacy:check/040'
 )
@@ -161,16 +171,25 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
     id = 'com.google.fonts/check/os2_metrics_match_hhea',
     conditions = ['not is_cjk_font'],
     rationale = """
-        OS/2 and hhea vertical metric values should match. This will produce the same linespacing on Mac, GNU+Linux and Windows.
+        OS/2 and hhea vertical metric values should match. This will produce the
+        same linespacing on Mac, GNU+Linux and Windows.
 
         - Mac OS X uses the hhea values.
+        
         - Windows uses OS/2 or Win, depending on the OS or fsSelection bit value.
 
-        When OS/2 and hhea vertical metrics match, the same linespacing results on macOS, GNU+Linux and Windows. Unfortunately as of 2018, Google Fonts has released many fonts with vertical metrics that don't match in this way. When we fix this issue in these existing families, we will create a visible change in line/paragraph layout for either Windows or macOS users, which will upset some of them.
+        When OS/2 and hhea vertical metrics match, the same linespacing results on
+        macOS, GNU+Linux and Windows. Unfortunately as of 2018, Google Fonts
+        has released many fonts with vertical metrics that don't match in this way.
+        When we fix this issue in these existing families, we will create a visible
+        change in line/paragraph layout for either Windows or macOS users,
+        which will upset some of them.
 
-        But we have a duty to fix broken stuff, and inconsistent paragraph layout is unacceptably broken when it is possible to avoid it.
+        But we have a duty to fix broken stuff, and inconsistent paragraph layout
+        is unacceptably broken when it is possible to avoid it.
 
-        If users complain and prefer the old broken version, they have the freedom to take care of their own situation.
+        If users complain and prefer the old broken version, they have the freedom
+        to take care of their own situation.
     """,
     proposal = 'legacy:check/042'
 )
@@ -214,7 +233,11 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
 @check(
     id = 'com.google.fonts/check/family/single_directory',
     rationale = """
-        If the set of font files passed in the command line is not all in the same directory, then we warn the user since the tool will interpret the set of files as belonging to a single family (and it is unlikely that the user would store the files from a single family spreaded in several separate directories).
+        If the set of font files passed in the command line is not all in the
+        same directory, then we warn the user since the tool will interpret the
+        set of files as belonging to a single family (and it is unlikely that
+        the user would store the files from a single family spreaded
+        in several separate directories).
     """,
     proposal = 'legacy:check/002'
 )
@@ -232,10 +255,9 @@ def com_google_fonts_check_family_single_directory(fonts):
     else:
         yield FAIL,\
               Message("single-directory",
-                      f"Not all fonts passed in the command line"
-                      f" are in the same directory. This may lead to"
-                      f" bad results as the tool will interpret all"
-                      f" font files as belonging to a single"
+                      f"Not all fonts passed in the command line are in the"
+                      f" same directory. This may lead to bad results as the tool"
+                      f" will interpret all font files as belonging to a single"
                       f" font family. The detected directories are:"
                       f" {directories}")
 
@@ -295,9 +317,12 @@ def is_up_to_date(installed, latest):
 @check(
     id = 'com.google.fonts/check/fontbakery_version',
     rationale = """
-        Running old versions of FontBakery can lead to a poor report which may include false WARNs and FAILs due do bugs, as well as outdated quality assurance criteria.
+        Running old versions of FontBakery can lead to a poor report which may
+        include false WARNs and FAILs due do bugs, as well as outdated
+        quality assurance criteria.
 
-        Older versions will also not report problems that are detected by new checks added to the tool in more recent updates.
+        Older versions will also not report problems that are detected by new checks
+        added to the tool in more recent updates.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2093'
 )
@@ -322,11 +347,13 @@ def com_google_fonts_check_fontbakery_version():
 @check(
     id = 'com.google.fonts/check/mandatory_glyphs',
     rationale = """
-        The OpenType specification v1.8.2 recommends that the first glyph is the '.notdef' glyph without a codepoint assigned and with a drawing.
+        The OpenType specification v1.8.2 recommends that the first glyph is the
+        '.notdef' glyph without a codepoint assigned and with a drawing.
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/recom#glyph-0-the-notdef-glyph
 
-        Pre-v1.8, it was recommended that fonts should also contain 'space', 'CR' and '.null' glyphs. This might have been relevant for MacOS 9 applications.
+        Pre-v1.8, it was recommended that fonts should also contain 'space', 'CR'
+        and '.null' glyphs. This might have been relevant for MacOS 9 applications.
     """,
     proposal = 'legacy:check/046'
 )
@@ -345,8 +372,9 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
         passed = False
         yield WARN,\
               Message('codepoint',
-                      f"Glyph '.notdef' should not have a Unicode codepoint value assigned,"
-                      f" but got 0x{ttFont.getBestCmap().values()['.notdef']:04X}.")
+                      f"Glyph '.notdef' should not have a Unicode"
+                      f" codepoint value assigned, but got"
+                      f" 0x{ttFont.getBestCmap().values()['.notdef']:04X}.")
 
     if not glyph_has_ink(ttFont, ".notdef"):
         passed = False
@@ -378,7 +406,8 @@ def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
     id = 'com.google.fonts/check/whitespace_glyphnames',
     conditions = ['not missing_whitespace_chars'],
     rationale = """
-        This check enforces adherence to recommended whitespace (codepoints 0020 and 00A0) glyph names according to the Adobe Glyph List.
+        This check enforces adherence to recommended whitespace
+        (codepoints 0020 and 00A0) glyph names according to the Adobe Glyph List.
     """,
     proposal = 'legacy:check/048'
 )
@@ -388,10 +417,10 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
 
     # AGL recommended names, according to Adobe Glyph List for new fonts:
     AGL_RECOMMENDED_0020 = {'space'}
-    AGL_RECOMMENDED_00A0 = {"uni00A0", "space"}  # "space" is in this set because some fonts
-                                                 # use the same glyph for U+0020 and U+00A0
-                                                 # Including it here also removes a warning
-                                                 # when U+0020 is wrong, but U+00A0 is okay.
+    AGL_RECOMMENDED_00A0 = {"uni00A0", "space"}
+    # "space" is in this set because some fonts use the same glyph for
+    # U+0020 and U+00A0. Including it here also removes a warning
+    # when U+0020 is wrong, but U+00A0 is okay.
 
     # AGL compliant names, but not recommended for new fonts:
     AGL_COMPLIANT_BUT_NOT_RECOMMENDED_0020 = {'uni0020',
@@ -512,7 +541,18 @@ def com_google_fonts_check_whitespace_ink(ttFont):
     id='com.google.fonts/check/required_tables',
     conditions = ['is_ttf'],
     rationale = """
-        Depending on the typeface and coverage of a font, certain tables are recommended for optimum quality. For example, the performance of a non-linear font is improved if the VDMX, LTSH, and hdmx tables are present. Non-monospaced Latin fonts should have a kern table. A gasp table is necessary if a designer wants to influence the sizes at which grayscaling is used under Windows. Etc.
+        Depending on the typeface and coverage of a font, certain tables are
+        recommended for optimum quality.
+        
+        For example:
+        
+        - the performance of a non-linear font is improved if the VDMX, LTSH,
+          and hdmx tables are present.
+          
+        - Non-monospaced Latin fonts should have a kern table.
+        
+        - A gasp table is necessary if a designer wants to influence the sizes
+          at which grayscaling is used under Windows. Etc.
     """,
     # FIXME:
     # The rationale description above comes from FontValidator, check W0022.
@@ -571,7 +611,9 @@ def com_google_fonts_check_required_tables(ttFont, config):
 @check(
     id = 'com.google.fonts/check/unwanted_tables',
     rationale = """
-        Some font editors store source data in their own SFNT tables, and these can sometimes sneak into final release files, which should only have OpenType spec tables.
+        Some font editors store source data in their own SFNT tables, and these
+        can sometimes sneak into final release files, which should only have
+        OpenType spec tables.
     """,
     proposal = 'legacy:check/053'
 )
@@ -616,7 +658,8 @@ def STAT_table(ttFont):
     id = 'com.google.fonts/check/STAT_strings',
     conditions = ["STAT_table"],
     rationale = """
-        On the STAT table, the "Italic" keyword must not be used on AxisValues for variation axes other than 'ital'.
+        On the STAT table, the "Italic" keyword must not be used on AxisValues
+        for variation axes other than 'ital'.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2863'
 )
@@ -663,19 +706,25 @@ def com_google_fonts_check_STAT_strings(ttFont):
     rationale = """
         Microsoft's recommendations for OpenType Fonts states the following:
 
-        'NOTE: The PostScript glyph name must be no longer than 31 characters, include only uppercase or lowercase English letters, European digits, the period or the underscore, i.e. from the set [A-Za-z0-9_.] and should start with a letter, except the special glyph name ".notdef" which starts with a period.'
+        'NOTE: The PostScript glyph name must be no longer than 31 characters,
+        include only uppercase or lowercase English letters, European digits,
+        the period or the underscore, i.e. from the set [A-Za-z0-9_.] and
+        should start with a letter, except the special glyph name ".notdef"
+        which starts with a period.'
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/recom#post-table
 
 
-        In practice, though, particularly in modern environments, glyph names can be as long as 63 characters.
+        In practice, though, particularly in modern environments, glyph names
+        can be as long as 63 characters.
+
         According to the "Adobe Glyph List Specification" available at:
 
         https://github.com/adobe-type-tools/agl-specification
     """,
     proposal = ['legacy:check/058',
-                'https://github.com/googlefonts/fontbakery/issues/2832'] # increase limit
-                                                                         # to 63 chars
+                'https://github.com/googlefonts/fontbakery/issues/2832']
+                # issue #2832 increased the limit to 63 chars
 )
 def com_google_fonts_check_valid_glyphnames(ttFont, config):
     """Glyph names are all valid?"""
@@ -711,10 +760,11 @@ def com_google_fonts_check_valid_glyphnames(ttFont, config):
                               f" expect a maximum 31-char length limit:\n"
                               f"{pretty_print_list(config, warn_names)}")
         else:
+            bad_names_list = pretty_print_list(config, bad_names)
             yield FAIL,\
                   Message('found-invalid-names',
                           f"The following glyph names do not comply"
-                          f" with naming conventions: {pretty_print_list(config, bad_names)}\n"
+                          f" with naming conventions: {bad_names_list}\n"
                           f"\n"
                           f" A glyph name must be entirely comprised of characters"
                           f" from the following set:"
@@ -871,7 +921,8 @@ def com_google_fonts_check_ttx_roundtrip(font):
 @check(
     id = 'com.google.fonts/check/family/vertical_metrics',
     rationale = """
-        We want all fonts within a family to have the same vertical metrics so their line spacing is consistent across the family.
+        We want all fonts within a family to have the same vertical metrics so
+        their line spacing is consistent across the family.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1487'
 )
@@ -939,9 +990,11 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
 @check(
     id = 'com.google.fonts/check/superfamily/list',
     rationale = """
-        This is a merely informative check that lists all sibling families detected by fontbakery.
+        This is a merely informative check that lists all sibling families
+        detected by fontbakery.
 
-        Only the fontfiles in these directories will be considered in superfamily-level checks.
+        Only the fontfiles in these directories will be considered in
+        superfamily-level checks.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1487'
 )
@@ -956,9 +1009,13 @@ def com_google_fonts_check_superfamily_list(superfamily):
 @check(
     id = 'com.google.fonts/check/superfamily/vertical_metrics',
     rationale = """
-        We may want all fonts within a super-family (all sibling families) to have the same vertical metrics so their line spacing is consistent across the super-family.
+        We may want all fonts within a super-family (all sibling families) to have
+        the same vertical metrics so their line spacing is consistent
+        across the super-family.
 
-        This is an experimental extended version of com.google.fonts/check/family/vertical_metrics and for now it will only result in WARNs.
+        This is an experimental extended version of
+        com.google.fonts/check/family/vertical_metrics and for now it will only
+        result in WARNs.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1487'
 )
@@ -1010,7 +1067,9 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
 @check(
     id = 'com.google.fonts/check/rupee',
     rationale = """
-        Per Bureau of Indian Standards every font supporting one of the official Indian languages needs to include Unicode Character “₹” (U+20B9) Indian Rupee Sign.
+        Per Bureau of Indian Standards every font supporting one of the
+        official Indian languages needs to include Unicode Character
+        “₹” (U+20B9) Indian Rupee Sign.
     """,
     conditions = ['is_indic_font'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2967'
@@ -1020,7 +1079,8 @@ def com_google_fonts_check_rupee(ttFont):
     if 0x20B9 not in ttFont['cmap'].getBestCmap().keys():
         yield FAIL,\
               Message("missing-rupee",
-                      'Please add a glyph for Indian Rupee Sign “₹” at codepoint U+20B9.')
+                      'Please add a glyph for'
+                      ' Indian Rupee Sign “₹” at codepoint U+20B9.')
     else:
         yield PASS, "Looks good!"
         
@@ -1028,9 +1088,11 @@ def com_google_fonts_check_rupee(ttFont):
 @check(
     id = "com.google.fonts/check/designspace_has_sources",
     rationale = """
-        This check parses a designspace file and tries to load the source files specified.
+        This check parses a designspace file and tries to load the
+        source files specified.
         
-        This is meant to ensure that the file is not malformed, can be properly parsed and does include valid source file references.
+        This is meant to ensure that the file is not malformed,
+        can be properly parsed and does include valid source file references.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
 )
@@ -1064,7 +1126,8 @@ def com_google_fonts_check_designspace_has_default_master(designSpace):
 @check(
     id = "com.google.fonts/check/designspace_has_consistent_glyphset",
     rationale = """
-        This check ensures that non-default masters don't have glyphs not present in the default one.
+        This check ensures that non-default masters don't have glyphs
+        not present in the default one.
     """,
     conditions = ["designspace_sources"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
@@ -1094,7 +1157,8 @@ def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, conf
 @check(
     id = "com.google.fonts/check/designspace_has_consistent_codepoints",
     rationale = """
-        This check ensures that Unicode assignments are consistent across all sources specified in a designspace file.
+        This check ensures that Unicode assignments are consistent
+        across all sources specified in a designspace file.
     """,
     conditions = ["designspace_sources"],
     proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
@@ -1129,7 +1193,9 @@ def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, co
 @check(
     id = "com.google.fonts/check/unreachable_glyphs",
     rationale = """
-        Glyphs are either accessible directly through Unicode codepoints or through substitution rules. Any glyphs not accessible by either of these means are redundant and serve only to increase the font's file size.
+        Glyphs are either accessible directly through Unicode codepoints or through
+        substitution rules. Any glyphs not accessible by either of these means
+        are redundant and serve only to increase the font's file size.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3160',
 )
@@ -1217,11 +1283,18 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
     conditions = ['is_ttf',
                   'not is_variable_font'],
     rationale = """
-        Visually QAing thousands of glyphs by hand is tiring. Most glyphs can only be constructured in a handful of ways. This means a glyph's contour count will only differ slightly amongst different fonts, e.g a 'g' could either be 2 or 3 contours, depending on whether its double story or single story.
+        Visually QAing thousands of glyphs by hand is tiring. Most glyphs can only
+        be constructured in a handful of ways. This means a glyph's contour count
+        will only differ slightly amongst different fonts, e.g a 'g' could either
+        be 2 or 3 contours, depending on whether its double story or single story.
 
-        However, a quotedbl should have 2 contours, unless the font belongs to a display family.
+        However, a quotedbl should have 2 contours, unless the font belongs
+        to a display family.
 
-        This check currently does not cover variable fonts because there's plenty of alternative ways of constructing glyphs with multiple outlines for each feature in a VarFont. The expected contour count data for this check is currently optimized for the typical construction of glyphs in static fonts.
+        This check currently does not cover variable fonts because there's plenty
+        of alternative ways of constructing glyphs with multiple outlines for each
+        feature in a VarFont. The expected contour count data for this check is
+        currently optimized for the typical construction of glyphs in static fonts.
     """,
     proposal = 'legacy:check/153'
 )
@@ -1355,9 +1428,12 @@ def com_google_fonts_check_contour_count(ttFont, config):
     id = 'com.google.fonts/check/cjk_chws_feature',
     conditions = ['is_cjk_font'],
     rationale = """
-        The W3C recommends the addition of chws and vchw features to CJK fonts to enhance the spacing of glyphs in environments which do not fully support JLREQ layout rules.
+        The W3C recommends the addition of chws and vchw features to CJK fonts
+        to enhance the spacing of glyphs in environments which do not fully support
+        JLREQ layout rules.
 
-        The chws_tool utility (https://github.com/googlefonts/chws_tool) can be used to add these features automatically.
+        The chws_tool utility (https://github.com/googlefonts/chws_tool) can be used
+        to add these features automatically.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3363'
 )
@@ -1367,7 +1443,8 @@ def com_google_fonts_check_cjk_chws_feature(ttFont):
     passed = True
     tags = feature_tags(ttFont)
     FEATURE_NOT_FOUND = ("{} feature not found in font."
-                         " Use chws_tool (https://github.com/googlefonts/chws_tool) to add it.")
+                         " Use chws_tool (https://github.com/googlefonts/chws_tool)"
+                         " to add it.")
     if "chws" not in tags:
         passed = False
         yield WARN,\
@@ -1386,13 +1463,21 @@ def com_google_fonts_check_cjk_chws_feature(ttFont):
     id = 'com.google.fonts/check/transformed_components',
     conditions = ['is_ttf'],
     rationale = """
-        Some families have glyphs which have been constructed by using transformed components e.g the 'u' being constructed from a flipped 'n'.
+        Some families have glyphs which have been constructed by using
+        transformed components e.g the 'u' being constructed from a flipped 'n'.
 
-        From a designers point of view, this sounds like a win (less work). However, such approaches can lead to rasterization issues, such as having the 'u' not sitting on the baseline at certain sizes after running the font through ttfautohint.
+        From a designers point of view, this sounds like a win (less work).
+        However, such approaches can lead to rasterization issues, such as
+        having the 'u' not sitting on the baseline at certain sizes after
+        running the font through ttfautohint.
 
-        As of July 2019, Marc Foley observed that ttfautohint assigns cvt values to transformed glyphs as if they are not transformed and the result is they render very badly, and that vttLib does not support flipped components.
+        As of July 2019, Marc Foley observed that ttfautohint assigns cvt values
+        to transformed glyphs as if they are not transformed and the result is
+        they render very badly, and that vttLib does not support flipped components.
 
-        When building the font with fontmake, the problem can be fixed by adding this to the command line:
+        When building the font with fontmake, the problem can be fixed by adding
+        this to the command line:
+        
         --filter DecomposeTransformedComponentsFilter
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2011',
@@ -1423,11 +1508,17 @@ def com_google_fonts_check_transformed_components(ttFont):
     conditions = ['is_ttf'],
     severity = 3,
     rationale = """
-        The dotted circle character (U+25CC) is inserted by shaping engines before mark glyphs which do not have an associated base, especially in the context of broken syllabic clusters.
+        The dotted circle character (U+25CC) is inserted by shaping engines before
+        mark glyphs which do not have an associated base, especially in the context
+        of broken syllabic clusters.
 
-        For fonts containing combining marks, it is recommended that the dotted circle character be included so that these isolated marks can be displayed properly; for fonts supporting complex scripts, this should be considered mandatory.
+        For fonts containing combining marks, it is recommended that the dotted circle
+        character be included so that these isolated marks can be displayed properly;
+        for fonts supporting complex scripts, this should be considered mandatory.
 
-        Additionally, when a dotted circle glyph is present, it should be able to display all marks correctly, meaning that it should contain anchors for all attaching marks.
+        Additionally, when a dotted circle glyph is present, it should be able to
+        display all marks correctly, meaning that it should contain anchors for all
+        attaching marks.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3600',
 )
@@ -1439,7 +1530,8 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
 
     mark_glyphs = []
     if "GDEF" in ttFont and hasattr(ttFont["GDEF"].table, "GlyphClassDef"):
-      mark_glyphs = [k for k, v in ttFont["GDEF"].table.GlyphClassDef.classDefs.items() if v == 3]
+      mark_glyphs = [k for k, v in ttFont["GDEF"].table.GlyphClassDef.classDefs.items()
+                     if v == 3]
 
     # Only check for encoded
     mark_glyphs = set(mark_glyphs) & set(ttFont.getBestCmap().values())
@@ -1454,7 +1546,8 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
         if is_complex_shaper_font(ttFont):
             yield FAIL,\
                   Message('missing-dotted-circle-complex',
-                          "No dotted circle glyph present and font uses a complex shaper")
+                          "No dotted circle glyph present"
+                          "and font uses a complex shaper")
         else:
             yield WARN,\
                   Message('missing-dotted-circle',
@@ -1485,7 +1578,8 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
     if unattached:
         yield FAIL,\
               Message("unattached-dotted-circle-marks",
-                      f"The following glyphs could not be attached to the dotted circle glyph:\n"
+                      f"The following glyphs could not be attached"
+                      f" to the dotted circle glyph:\n"
                       f"{bullet_list(config, unattached)}")
     else:
         yield PASS, "All marks were anchored to dotted circle"
@@ -1496,9 +1590,15 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
     conditions = ['ttFont'],
     severity = 9,
     rationale = """
-        Versions of fonttools >=4.14.0 (19 August 2020) perform an optimisation on chained contextual lookups, expressing GSUB6 as GSUB5 and GPOS8 and GPOS7 where possible (when there are no suffixes/prefixes for all rules in the lookup).
+        Versions of fonttools >=4.14.0 (19 August 2020) perform an optimisation on
+        chained contextual lookups, expressing GSUB6 as GSUB5 and GPOS8 and GPOS7
+        where possible (when there are no suffixes/prefixes for all rules in
+        the lookup).
 
-        However, makeotf has never generated these lookup types and they are rare in practice. Perhaps before of this, Mac's CoreText shaper does not correctly interpret GPOS7, meaning that these lookups will be ignored by the shaper, and fonts containing these lookups will have unintended positioning errors.
+        However, makeotf has never generated these lookup types and they are rare
+        in practice. Perhaps before of this, Mac's CoreText shaper does not correctly
+        interpret GPOS7, meaning that these lookups will be ignored by the shaper,
+        and fonts containing these lookups will have unintended positioning errors.
 
         To fix this warning, rebuild the font with a recent version of fonttools.
     """,

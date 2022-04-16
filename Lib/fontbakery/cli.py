@@ -12,6 +12,7 @@ CLI_PROFILES = [
     "fontval",
     "fontwerk",
     "googlefonts",
+    "iso15008",
     "notofonts",
     "opentype",
     "typenetwork",

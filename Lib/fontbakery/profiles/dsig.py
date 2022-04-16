@@ -7,11 +7,18 @@ from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unus
 @check(
     id = 'com.google.fonts/check/dsig',
     rationale = """
-        Microsoft Office 2013 and below products expect fonts to have a digital signature declared in a DSIG table in order to implement OpenType features. The EOL date for Microsoft Office 2013 products is 4/11/2023. This issue does not impact Microsoft Office 2016 and above products.
+        Microsoft Office 2013 and below products expect fonts to have a digital
+        signature declared in a DSIG table in order to implement OpenType features.
+        The EOL date for Microsoft Office 2013 products is 4/11/2023.
+        This issue does not impact Microsoft Office 2016 and above products.
 
-        As we approach the EOL date, it is now considered better to completely remove the table.
+        As we approach the EOL date, it is now considered better to
+        completely remove the table.
 
-        But if you still want your font to support OpenType features on Office 2013, then you may find it handy to add a fake signature on a placeholder DSIG table by running one of the helper scripts provided at https://github.com/googlefonts/gftools
+        But if you still want your font to support OpenType features on Office 2013,
+        then you may find it handy to add a fake signature on a placeholder DSIG table
+        by running one of the helper scripts provided at
+        https://github.com/googlefonts/gftools
 
         Reference: https://github.com/googlefonts/fontbakery/issues/1845
     """,

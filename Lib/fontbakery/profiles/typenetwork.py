@@ -20,7 +20,7 @@ TYPENETWORK_PROFILE_CHECKS = \
 @check(
     id = 'io.github.abysstypeco/check/ytlc_sanity',
     rationale = """
-        This check follows the proposed values of the ytlc axis proposed by font bureau at the site url. add more later.
+        This check follows the values of the ytlc axis proposed by Font Bureau.
     """,
     conditions=["is_variable_font"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3130'
@@ -36,8 +36,10 @@ def io_github_abysstypeco_check_ytlc_sanity(ttFont):
             passed = False
             yield FAIL,\
                   Message("invalid-range",
-                          f'The range of ytlc values ({axis.minValue} - {axis.maxValue})'
-                          f'does not conform to the expected range of ytlc which should be min value 0 to max value 1000')
+                          f'The range of ytlc values'
+                          f' ({axis.minValue} - {axis.maxValue}) does not conform'
+                          f' to the expected range of ytlc which'
+                          f' should be min value 0 to max value 1000')
     if passed:
         yield PASS, 'ytlc is sane'
 
