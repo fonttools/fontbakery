@@ -43,7 +43,7 @@ def colorless_len(str):
 
 def text_flow(content, width=80, indent=0, left_margin=0, right_margin=0,
               first_line_indent=0, space_padding=False,
-              text_color="{}".format): # pylint: disable=consider-using-f-string
+              text_color="{}".format):  # pylint: disable=consider-using-f-string
     result = []
     line_num = 0
     for line in content.split("\n"):
@@ -76,7 +76,8 @@ def text_flow(content, width=80, indent=0, left_margin=0, right_margin=0,
                     new_line = chunks.pop(0)
                     while chunks:
                         next_len = colorless_len(new_line) + 1 + colorless_len(chunks[0])
-                        if next_len >= _width: break
+                        if next_len >= _width:
+                            break
                         new_line += "/" + chunks.pop(0)
                     this_line = new_line
                     words.insert(0, "/" + "/".join(chunks))
