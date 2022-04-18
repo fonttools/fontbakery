@@ -43,6 +43,40 @@ def test_text_flow():
                                              " Two   \n"
                                              " Three ")
 
+    assert text_flow("One Two Three",
+                     width=9,
+                     left_margin=1,
+                     right_margin=1,
+                     space_padding=True) == (" One Two \n"
+                                             " Three   ")
+
+    assert text_flow("One Two Three",
+                     width=8,
+                     left_margin=1,
+                     right_margin=1,
+                     space_padding=True) == (" One    \n"
+                                             " Two    \n"
+                                             " Three  ")
+
+    assert text_flow("One Two Three Four",
+                     width=7,
+                     left_margin=1,
+                     right_margin=1,
+                     space_padding=True) == (" One   \n"
+                                             " Two   \n"
+                                             " Three \n"
+                                             " Four  ")
+
+    assert text_flow("One Two Three Four",
+                     width=6,
+                     left_margin=1,
+                     right_margin=1,
+                     space_padding=True) == (" One  \n"
+                                             " Two  \n"
+                                             " Thre \n"
+                                             " e    \n"
+                                             " Four ")
+
 # FIXME!
 #    assert text_flow("One Two Three",
 #                     width=12,

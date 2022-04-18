@@ -41,18 +41,18 @@ def colorless_len(str):
     return len(re.sub('\x1b(\\[[0-9;]+|\\].+)m', '', str))
 
 
-def text_flow(content, width=80, indent=0, left_margin=0,
+def text_flow(content, width=80, indent=0, left_margin=0, right_margin=0,
               first_line_indent=0, space_padding=False,
               text_color="{}".format): # pylint: disable=consider-using-f-string
     result = []
     line_num = 0
     for line in content.split("\n"):
         _indent = indent
-        _width = width
+        _width = width - right_margin
 
         if line.strip() == "":
             if space_padding:
-                result.append(" " * _indent + text_color(" " * _width))
+                result.append(" " * _indent + text_color(" " * width))
             continue
 
         words = line.split(" ")
@@ -83,15 +83,15 @@ def text_flow(content, width=80, indent=0, left_margin=0,
                 else:
                     # not sure what else to do,
                     # so we'll simply cut the long word
-                    words.insert(0, this_line[_width:])
-                    this_line = this_line[:_width]
+                    words.insert(0, this_line[_width:])  # word overflow chunk
+                    this_line = this_line[:_width]  # line with chopped word leftover
 
-            while words and (colorless_len(this_line) + 1 + colorless_len(words[0]) <= width):
+            while words and (colorless_len(this_line) + 1 + colorless_len(words[0]) <= _width):
                 this_line += " " + words.pop(0)
 
             if space_padding:
                 # pad the line with spaces to fit the block width:
-                this_line += " " * (_width - colorless_len(this_line))
+                this_line += " " * (width - colorless_len(this_line))
             result.append(" " * _indent + text_color(this_line))
     return "\n".join(result)
 
