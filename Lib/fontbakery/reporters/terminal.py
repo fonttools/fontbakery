@@ -435,6 +435,7 @@ class TerminalReporter(TerminalProgress):
                                       width=76,
                                       indent=4,
                                       left_margin=2,
+                                      right_margin=1,
                                       space_padding=True,
                                       text_color=self.theme["rationale-text"]))
 
