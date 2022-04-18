@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 import os
+import subprocess
 import sys
 
 from fontTools.ttLib import TTFont
@@ -97,6 +98,28 @@ def text_flow(content, width=80, indent=0, left_margin=0, right_margin=0,
     return "\n".join(result)
 
 
+def get_apple_terminal_bg_color():
+    """Runs an AppleScript snippet that returns the RGB values of the
+    background color of the active Apple Terminal window."""
+    line_1 = 'tell application "Terminal"'
+    line_2 = '    get background color of selected tab of window 1'
+    line_3 = 'end tell'
+    output = subprocess.check_output(
+        ["osascript", "-e", line_1, "-e", line_2, "-e", line_3], text=True)
+    return output.strip()
+
+
+def apple_terminal_bg_is_white():
+    """Returns a boolean indicating if the background color
+    of Apple's Terminal is white."""
+    is_apple_terminal = os.getenv("TERM_PROGRAM") == "Apple_Terminal"
+    if is_apple_terminal:
+        bg_color = get_apple_terminal_bg_color()
+        if bg_color == "65535, 65535, 65535":
+            return True
+    return False
+
+
 def get_theme(args):
     if args.no_colors:
         return NO_COLORS_THEME
@@ -105,8 +128,11 @@ def get_theme(args):
     if args.dark_theme:
         return DARK_THEME
     if sys.platform == "darwin":
-        # The vast majority of MacOS users seem to use a light-background on the text terminal
-        return LIGHT_THEME
+        # Apple's Terminal default profile is called 'Basic' and has a white background.
+        # But the user may have switched to a different profile, or even to a different
+        # terminal app. Default to the light-theme only if we're sure that the terminal
+        # app is Apple's Terminal and its background color is indeed white.
+        return LIGHT_THEME if apple_terminal_bg_is_white() else DARK_THEME
     # For orther systems like GNU+Linux and Windows, a dark terminal seems to be more common.
     return DARK_THEME
 
