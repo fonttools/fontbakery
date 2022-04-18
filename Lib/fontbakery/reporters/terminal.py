@@ -429,7 +429,7 @@ class TerminalReporter(TerminalProgress):
 
                 if check.rationale:
                     from fontbakery.utils import text_flow, unindent_and_unwrap_rationale
-                    content = unindent_and_unwrap_rationale(check.rationale).strip()
+                    content = unindent_and_unwrap_rationale(check.rationale)
                     print('    ' + self.theme["rationale-title"]("  Rationale:" + " " * 64) + '\n'
                           + text_flow(content,
                                       width=76,

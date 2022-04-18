@@ -132,7 +132,7 @@ def unindent_and_unwrap_rationale(rationale, checkid=None):
             else:
                 content += " "
 
-    return content.strip()
+    return f"\n{content.strip()}\n"
 
 
 def html5_collapsible(summary, details) -> str:
