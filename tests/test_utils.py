@@ -76,6 +76,7 @@ def test_unindent_and_unwrap_rationale():
         This is the last paragraph.
     """
     expected_rationale = (
+        "\n"
         "This is a line that is very long, so long in fact that it must be hard wrapped"
         " because it is longer than 88 lines, including the two 4-space indents.\n"
         "\n"
@@ -87,5 +88,6 @@ def test_unindent_and_unwrap_rationale():
         " means that it will not be appendend to the end of the previous line.\n"
         "\n"
         "This is the last paragraph."
+        "\n"
     )
     assert unindent_and_unwrap_rationale(rationale) == expected_rationale
