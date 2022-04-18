@@ -114,24 +114,25 @@ def unindent_and_unwrap_rationale(rationale, checkid=None):
     """Takes the 'rationale' docstring of a check and removes indents and hard line
     breaks that were added to long lines."""
     content = ""
-    new_paragraph = True
 
     for line in rationale.split("\n"):
+        soft_return = line.endswith("\u2029")
         stripped_line = line.strip()
+        new_paragraph = len(stripped_line) == 0
 
-        if not stripped_line:
+        if new_paragraph:
+            content = content.rstrip()
             content += "\n\n"
-            new_paragraph = True
 
         else:
-            if not new_paragraph:
-                content += " "
-            else:
-                new_paragraph = False
-
             content += stripped_line
 
-    return content
+            if soft_return:
+                content += "\n"
+            else:
+                content += " "
+
+    return content.strip()
 
 
 def html5_collapsible(summary, details) -> str:
