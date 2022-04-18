@@ -174,8 +174,7 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
         OS/2 and hhea vertical metric values should match. This will produce the
         same linespacing on Mac, GNU+Linux and Windows.
 
-        - Mac OS X uses the hhea values.
-        
+        - Mac OS X uses the hhea values. 
         - Windows uses OS/2 or Win, depending on the OS or fsSelection bit value.
 
         When OS/2 and hhea vertical metrics match, the same linespacing results on
