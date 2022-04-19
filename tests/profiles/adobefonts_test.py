@@ -81,7 +81,7 @@ def test_check_find_empty_letters():
     assert message == "U+0042 should be visible, but its glyph ('B') is empty."
 
 
-def test_check_missing_whitespace():
+def test_check_whitespace_glyphs_adobefonts_override():
     """Check that overridden test for nbsp yields WARN rather than FAIL."""
     check = CheckTester(
         adobefonts_profile, "com.google.fonts/check/whitespace_glyphs:adobefonts"
