@@ -198,7 +198,8 @@ def assert_results_contain(check_results,
     if not reason:
         reason = f"[{expected_msgcode}]"
     if not expected_msgcode:
-      raise Exception("Test must expect a message code")
+        raise Exception(
+            "Test must provide the expected message code (e.g. PASS or FAIL or ...)")
 
     print(f"Test {expected_status} {reason}")
     check_results = list(check_results)
@@ -210,21 +211,20 @@ def assert_results_contain(check_results,
 
     for status, msg in check_results:
         if status not in [PASS, DEBUG] and not isinstance(msg, Message):
-            raise Exception(f"Bare Python strings no longer supported in result values.\n"
+            raise Exception(
+                f"Bare Python strings are no longer supported in result values.\n"
                 f"Please use the Message class to wrap strings and to give them"
-                f" a keyword useful for identifying them (on bug reports as well as"
-                f" in the implementation of reliable code-tests).\n"
-                f"(Bare string: '{msg}')")
+                f" a keyword useful for identifying them (in bug reports as well as"
+                f" in the implementation of reliable unit tests).\n"
+                f"(Bare string: {msg!r})")
 
-        if (status == expected_status and
-            expected_msgcode == None or
-            (isinstance(msg, Message) and msg.code == expected_msgcode)):
+        if status == expected_status:
             if isinstance(msg, Message):
                 return msg.message
             else:
-                return msg # It is probably a plain python string
+                return msg  # It is probably a plain python string
 
-    #if not found:
+    # if no match was found
     raise Exception(f"Expected to find {expected_status}, [code: {expected_msgcode}]\n"
                     f"But did not find it in:\n"
                     f"{check_results}")
