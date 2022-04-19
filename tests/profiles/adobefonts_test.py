@@ -95,3 +95,27 @@ def test_check_whitespace_glyphs_adobefonts_override():
     for subtable in ttFont["cmap"].tables:
         subtable.cmap.pop(0x00A0, None)
     assert_results_contain(check(ttFont), WARN, "missing-whitespace-glyph-0x00A0")
+
+
+def test_check_valid_glyphnames_adobefonts_override():
+    """Check that overridden test yields WARN rather than FAIL."""
+    check = CheckTester(
+        adobefonts_profile, "com.google.fonts/check/valid_glyphnames:adobefonts"
+    )
+
+    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+    assert_PASS(check(ttFont))
+
+    good_name = "b" * 63
+    bad_name1 = "a" * 64
+    bad_name2 = "3cents"
+    bad_name3 = ".threecents"
+    ttFont.glyphOrder[2] = bad_name1
+    ttFont.glyphOrder[3] = bad_name2
+    ttFont.glyphOrder[4] = bad_name3
+    ttFont.glyphOrder[5] = good_name
+    message = assert_results_contain(check(ttFont), WARN, "found-invalid-names")
+    assert good_name not in message
+    assert bad_name1 in message
+    assert bad_name2 in message
+    assert bad_name3 in message
