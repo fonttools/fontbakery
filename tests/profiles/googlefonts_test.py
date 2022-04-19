@@ -3832,7 +3832,7 @@ def test_check_STAT_axis_order():
     # This clearly is not a TTF, but is good enough for testing:
     fonts = [TEST_FILE("merriweather/METADATA.pb")]
     assert_results_contain(check(fonts),
-                           ERROR, "bad-font")
+                           INFO, "bad-font")
 
 
 def test_check_metadata_escaped_strings():
@@ -3900,7 +3900,7 @@ def test_check_description_family_update():
     import requests
     desc = requests.get(ABEEZEE_DESC).text
     assert_results_contain(check(font, {'description': desc}),
-                           FAIL, "description-not-updated")
+                           WARN, "description-not-updated")
 
     assert_PASS(check(font, {'description': desc + '\nSomething else...'}))
 
@@ -4116,12 +4116,12 @@ def test_check_metadata_unsupported_subsets():
     md = check["family_metadata"]
     md.subsets.extend(["foo"])
     assert_results_contain(check(font, {"family_metadata": md}),
-                           WARN, 'unknown-subset')
+                           FAIL, 'unknown-subset')
 
     del md.subsets[:]
     md.subsets.extend(["cyrillic"])
     assert_results_contain(check(font, {"family_metadata": md}),
-                           WARN, 'unsupported-subset')
+                           FAIL, 'unsupported-subset')
 
 
 def test_check_metadata_category_hints():
