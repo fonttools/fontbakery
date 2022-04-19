@@ -1642,17 +1642,17 @@ def com_adobe_fonts_check_freetype_rasterizer(font):
         face.load_char("✅")  # any character can be used here
 
     except ImportError:
-        yield SKIP, (
+        return SKIP, (
             "FreeType is not available; to install it, invoke the "
             "'freetype' extra when installing FontBakery."
         )
     except FT_Exception as err:
-        yield FAIL, Message(
+        return FAIL, Message(
             "freetype-crash",
             f"Font caused FreeType to crash with this error: {err}",
         )
     else:
-        yield PASS, "Font can be rasterized by FreeType."
+        return PASS, "Font can be rasterized by FreeType."
 
 
 profile.auto_register(globals())

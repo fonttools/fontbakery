@@ -1,5 +1,5 @@
 from fontTools.ttLib import TTFont
-from fontTools.ttLib.tables._f_v_a_r import Axis, NamedInstance
+from fontTools.ttLib.tables._f_v_a_r import Axis
 
 from fontbakery.checkrunner import (FAIL, WARN)
 from fontbakery.codetesting import (assert_PASS,
@@ -243,7 +243,8 @@ def test_check_varfont_valid_axis_nameid():
 
     # The axisNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All axisNameID values are valid."
 
     fvar_table = ttFont["fvar"]
     wght_axis = fvar_table.axes[0]
@@ -252,18 +253,29 @@ def test_check_varfont_valid_axis_nameid():
     # Change the axes' axisNameID to the maximum and minimum allowed values
     wght_axis.axisNameID = 32767
     wdth_axis.axisNameID = 256
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All axisNameID values are valid."
 
     # Change the axes' axisNameID to invalid values
     # (32768 is greater than the maximum, and 255 is less than the minimum)
     wght_axis.axisNameID = 32768
     wdth_axis.axisNameID = 255
-    assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid")
+    assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid:32768")
+    msg = assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid:255")
+    assert msg == (
+        "'Unnamed' instance has an axisNameID value that"
+        " is not greater than 255 and less than 32768."
+    )
 
     # Another set of invalid values
     wght_axis.axisNameID = 128
     wdth_axis.axisNameID = 36000
-    assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid")
+    assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid:128")
+    msg = assert_results_contain(check(ttFont), FAIL, "invalid-axis-nameid:36000")
+    assert msg == (
+        "'Unnamed' instance has an axisNameID value that"
+        " is not greater than 255 and less than 32768."
+    )
 
 
 def test_check_varfont_valid_subfamily_nameid():
@@ -275,7 +287,8 @@ def test_check_varfont_valid_subfamily_nameid():
 
     # The subfamilyNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All subfamilyNameID values are valid."
 
     fvar_table = ttFont["fvar"]
     inst_1 = fvar_table.instances[0]
@@ -289,13 +302,19 @@ def test_check_varfont_valid_subfamily_nameid():
     inst_2.subfamilyNameID = 17
     inst_3.subfamilyNameID = 256
     inst_4.subfamilyNameID = 32767
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All subfamilyNameID values are valid."
 
     # Change two instances' subfamilyNameID to invalid values
     # (32768 is greater than the maximum, and 255 is less than the minimum)
     inst_3.subfamilyNameID = 255
     inst_4.subfamilyNameID = 32768
-    assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid")
+    assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid:255")
+    msg = assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid:32768")
+    assert msg == (
+        "'Unnamed' instance has a subfamilyNameID value that"
+        " is neither 2, 17, or greater than 255 and less than 32768."
+    )
 
     # Reset two subfamilyNameID to valid values,
     # then set two other subfamilyNameID to invalid values
@@ -303,7 +322,12 @@ def test_check_varfont_valid_subfamily_nameid():
     inst_4.subfamilyNameID = 32767  # valid
     inst_1.subfamilyNameID = 3
     inst_2.subfamilyNameID = 18
-    assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid")
+    assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid:3")
+    msg = assert_results_contain(check(ttFont), FAIL, "invalid-subfamily-nameid:18")
+    assert msg == (
+        "'Unnamed' instance has a subfamilyNameID value that"
+        " is neither 2, 17, or greater than 255 and less than 32768."
+    )
 
 
 def test_check_varfont_valid_postscript_nameid():
@@ -315,7 +339,8 @@ def test_check_varfont_valid_postscript_nameid():
 
     # The postScriptNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All postScriptNameID values are valid."
 
     fvar_table = ttFont["fvar"]
     inst_1 = fvar_table.instances[0]
@@ -329,13 +354,19 @@ def test_check_varfont_valid_postscript_nameid():
     inst_2.postscriptNameID = 0xFFFF
     inst_3.postscriptNameID = 256
     inst_4.postscriptNameID = 32767
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All postScriptNameID values are valid."
 
     # Change two instances' postScriptNameID to invalid values
     # (32768 is greater than the maximum, and 255 is less than the minimum)
     inst_3.postscriptNameID = 255
     inst_4.postscriptNameID = 32768
-    assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid")
+    assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid:255")
+    msg = assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid:32768")
+    assert msg == (
+        "'Unnamed' instance has a postScriptNameID value that"
+        " is neither 6, 0xFFFF, or greater than 255 and less than 32768."
+    )
 
     # Reset two postScriptNameID to valid values,
     # then set two other postScriptNameID to invalid values
@@ -343,7 +374,12 @@ def test_check_varfont_valid_postscript_nameid():
     inst_4.postscriptNameID = 32767  # valid
     inst_1.postscriptNameID = 3
     inst_2.postscriptNameID = 18
-    assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid")
+    assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid:3")
+    msg = assert_results_contain(check(ttFont), FAIL, "invalid-postscript-nameid:18")
+    assert msg == (
+        "'Unnamed' instance has a postScriptNameID value that"
+        " is neither 6, 0xFFFF, or greater than 255 and less than 32768."
+    )
 
 
 def test_check_varfont_valid_default_instance_nameids():
@@ -354,52 +390,57 @@ def test_check_varfont_valid_default_instance_nameids():
         opentype_profile, "com.adobe.fonts/check/varfont/valid_default_instance_nameids"
     )
 
-    # None of the instance records in the reference varfont have the same coordinates
-    # as the default instance
+    # The 'Regular' instance record in the reference varfont has the same coordinates
+    # as the default instance, but it doesn't use the correct nameID.
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    assert_PASS(check(ttFont), "with a good varfont...")
-
-    # Add an instance record for the default instance
-
-    fvar_table = ttFont["fvar"]
-    dflt_inst = NamedInstance()
-    dflt_inst.coordinates = {"wght": 400, "wdth": 100}
-    dflt_inst.subfamilyNameID = 2
-    fvar_table.instances.append(dflt_inst)
-
-    # The font now has an instance record for the default
-    # instance; its subfamilyNameID value is valid
-    assert_PASS(check(ttFont), "with a good varfont...")
-
-    # Change subfamilyNameID value of the default instance to an invalid value
-    dflt_inst.subfamilyNameID = 3
-    assert_results_contain(
-        check(ttFont), FAIL, "invalid-default-instance-subfamily-nameid"
+    msg = assert_results_contain(
+        check(ttFont), FAIL, "invalid-default-instance-subfamily-nameid:258"
     )
+    assert msg == (
+        "'Regular' instance has the same coordinates as the default instance;"
+        " its subfamilyNameID should be either 2 or 17, instead of 258."
+    )
+
+    # Correct the subfamilyNameID value of the default instance
+    fvar_table = ttFont["fvar"]
+    dflt_inst = fvar_table.instances[0]
+    dflt_inst.subfamilyNameID = 2
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All default instance nameID values are valid."
 
     # Change subfamilyNameID value of the default instance to another valid value
     dflt_inst.subfamilyNameID = 17
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All default instance nameID values are valid."
 
     # The value of postScriptNameID is 0xFFFF for all the instance records in the
     # reference varfont. Change one of them, to make the check validate the
     # postScriptNameID value of the default instance (which is currently 0xFFFF).
-    inst_1 = fvar_table.instances[0]
-    inst_1.postscriptNameID = 256
-    assert_results_contain(
-        check(ttFont), FAIL, "invalid-default-instance-postscript-nameid"
+    inst_2 = fvar_table.instances[1]
+    inst_2.postscriptNameID = 256
+    msg = assert_results_contain(
+        check(ttFont), FAIL, "invalid-default-instance-postscript-nameid:0xFFFF"
+    )
+    assert msg == (
+        "'Instance #1' instance has the same coordinates as the default instance;"
+        " its postScriptNameID should be 6, instead of 0xFFFF."
     )
 
     # Change postScriptNameID value of the default instance to a valid value
     dflt_inst.postscriptNameID = 6
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All default instance nameID values are valid."
 
     # Change postScriptNameID value of the default instance to an invalid value,
-    # and the postScriptNameID value of the first instance record back to 0xFFFF.
+    # and the postScriptNameID value of the second instance record back to 0xFFFF.
     dflt_inst.postscriptNameID = 8
-    inst_1.postscriptNameID = 0xFFFF
-    assert_results_contain(
-        check(ttFont), FAIL, "invalid-default-instance-postscript-nameid"
+    inst_2.postscriptNameID = 0xFFFF
+    msg = assert_results_contain(
+        check(ttFont), FAIL, "invalid-default-instance-postscript-nameid:8"
+    )
+    assert msg == (
+        "'Instance #1' instance has the same coordinates as the default instance;"
+        " its postScriptNameID should be 6, instead of 8."
     )
 
 
@@ -414,7 +455,8 @@ def test_check_varfont_same_size_instance_records():
     # The value of postScriptNameID is 0xFFFF for all the instance records in the
     # reference varfont
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All instance records have the same size."
 
     fvar_table = ttFont["fvar"]
     inst_1 = fvar_table.instances[0]
@@ -424,18 +466,21 @@ def test_check_varfont_same_size_instance_records():
 
     # Change the postScriptNameID of one instance record
     inst_1.postscriptNameID = 256
-    assert_results_contain(check(ttFont), FAIL, "different-size-instance-records")
+    msg = assert_results_contain(check(ttFont), FAIL, "different-size-instance-records")
+    assert msg == "Instance records don't all have the same size."
 
     # Change the postScriptNameID of the remaining instance records
     inst_2.postscriptNameID = 356
     inst_3.postscriptNameID = 456
     inst_4.postscriptNameID = 556
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All instance records have the same size."
 
     # Change the postScriptNameID of two instance records
     inst_1.postscriptNameID = 0xFFFF
     inst_3.postscriptNameID = 0xFFFF
-    assert_results_contain(check(ttFont), FAIL, "different-size-instance-records")
+    msg = assert_results_contain(check(ttFont), FAIL, "different-size-instance-records")
+    assert msg == "Instance records don't all have the same size."
 
 
 def test_check_varfont_distinct_instance_records():
@@ -447,13 +492,25 @@ def test_check_varfont_distinct_instance_records():
 
     # All of the instance records in the reference varfont are unique
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    assert_PASS(check(ttFont), "with a good varfont...")
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "All instance records are distinct."
 
     fvar_table = ttFont["fvar"]
     inst_1 = fvar_table.instances[0]
     inst_2 = fvar_table.instances[1]
+    inst_3 = fvar_table.instances[2]
+    inst_4 = fvar_table.instances[3]
 
     # Make instance 2 the same as instance 1
     inst_2.subfamilyNameID = inst_1.subfamilyNameID
     inst_2.coordinates["wght"] = inst_1.coordinates["wght"]
-    assert_results_contain(check(ttFont), WARN, "repeated-instance-records")
+    msg = assert_results_contain(
+        check(ttFont), WARN, "repeated-instance-record:Regular")
+    assert msg == "'Regular' is a repeated instance record."
+
+    # Make instance 4 the same as instance 3
+    inst_4.subfamilyNameID = inst_3.subfamilyNameID
+    inst_4.coordinates["wght"] = inst_3.coordinates["wght"]
+    msg = assert_results_contain(
+        check(ttFont), WARN, "repeated-instance-record:SemiBold")
+    assert msg == "'SemiBold' is a repeated instance record."

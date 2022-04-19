@@ -945,10 +945,13 @@ def test_freetype_rasterizer():
     check = CheckTester(universal_profile, "com.adobe.fonts/check/freetype_rasterizer")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    assert_PASS(check(font), "with a good font...")
+    msg = assert_PASS(check(font), "with a good font...")
+    assert msg == "Font can be rasterized by FreeType."
 
     font = TEST_FILE("ancho/AnchoGX.ttf")
-    assert_results_contain(check(font), FAIL, "freetype-crash")
+    msg = assert_results_contain(check(font), FAIL, "freetype-crash")
+    assert "FT_Exception:  (too many function definitions)" in msg
 
     font = TEST_FILE("rubik/Rubik-Italic.ttf")
-    assert_results_contain(check(font), FAIL, "freetype-crash")
+    msg = assert_results_contain(check(font), FAIL, "freetype-crash")
+    assert "FT_Exception:  (stack overflow)" in msg
