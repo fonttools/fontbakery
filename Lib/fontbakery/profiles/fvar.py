@@ -290,7 +290,7 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
     """Validates that the value of axisNameID used by each VariationAxisRecord
     is greater than 255 and less than 32768."""
 
-    check_failed = False
+    passed = True
     name_table = ttFont["name"] if has_name_table else None
 
     font_axis_nameids = [axis.axisNameID for axis in ttFont["fvar"].axes]
@@ -309,9 +309,9 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
             f"{inst_name!r} instance has an axisNameID value that"
             " is not greater than 255 and less than 32768.",
         )
-        check_failed = True
+        passed = False
 
-    if not check_failed:
+    if passed:
         yield PASS, "All axisNameID values are valid."
 
 
@@ -334,7 +334,7 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table)
     """Validates that the value of subfamilyNameID used by each InstanceRecord
     is 2, 17, or greater than 255 and less than 32768."""
 
-    check_failed = False
+    passed = True
     name_table = ttFont["name"] if has_name_table else None
 
     font_subfam_nameids = [inst.subfamilyNameID for inst in ttFont["fvar"].instances]
@@ -357,9 +357,9 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table)
             f"{inst_name!r} instance has a subfamilyNameID value that"
             " is neither 2, 17, or greater than 255 and less than 32768.",
         )
-        check_failed = True
+        passed = False
 
-    if not check_failed:
+    if passed:
         yield PASS, "All subfamilyNameID values are valid."
 
 
@@ -382,7 +382,7 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
     """Validates that the value of postScriptNameID used by each InstanceRecord
     is 6, 0xFFFF, or greater than 255 and less than 32768."""
 
-    check_failed = False
+    passed = True
     name_table = ttFont["name"] if has_name_table else None
 
     font_postscript_nameids = [
@@ -407,9 +407,9 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
             f"{inst_name!r} instance has a postScriptNameID value that"
             " is neither 6, 0xFFFF, or greater than 255 and less than 32768.",
         )
-        check_failed = True
+        passed = False
 
-    if not check_failed:
+    if passed:
         yield PASS, "All postScriptNameID values are valid."
 
 
@@ -438,7 +438,7 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
     its subfamilyNameID value is set to either 2 or 17, and its postScriptNameID value
     is set to 6."""
 
-    check_failed = False
+    passed = True
     name_table = ttFont["name"] if has_name_table else None
     fvar_table = ttFont["fvar"]
 
@@ -473,7 +473,7 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
                     " instance; its subfamilyNameID should be either 2 or 17, instead"
                     f" of {subfam_nameid}.",
                 )
-                check_failed = True
+                passed = False
 
             # Validate the postScriptNameID only if
             # at least one instance record includes it
@@ -484,9 +484,9 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
                     " instance; its postScriptNameID should be 6, instead of"
                     f" {postscript_nameid}.",
                 )
-                check_failed = True
+                passed = False
 
-    if not check_failed:
+    if passed:
         yield PASS, "All default instance nameID values are valid."
 
 
@@ -541,7 +541,7 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
 def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_table):
     """Validates that all of the instance records in a given font have distinct data."""
 
-    check_warned = False
+    passed = True
     name_table = ttFont["name"] if has_name_table else None
 
     unique_inst_recs = set()
@@ -567,7 +567,7 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
                 f"repeated-instance-record:{inst_name}",
                 f"{inst_name!r} is a repeated instance record.",
             )
-            check_warned = True
+            passed = False
 
-    if not check_warned:
+    if passed:
         yield PASS, "All instance records are distinct."
