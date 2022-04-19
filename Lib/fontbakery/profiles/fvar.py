@@ -286,22 +286,33 @@ def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
     conditions=["is_variable_font"],
     proposal="https://github.com/googlefonts/fontbakery/issues/3702",
 )
-def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont):
+def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
     """Validates that the value of axisNameID used by each VariationAxisRecord
     is greater than 255 and less than 32768."""
+
+    check_failed = False
+    name_table = ttFont["name"] if has_name_table else None
 
     font_axis_nameids = [axis.axisNameID for axis in ttFont["fvar"].axes]
     invalid_axis_nameids = [val for val in font_axis_nameids if not (255 < val < 32768)]
 
-    if invalid_axis_nameids:
-        yield FAIL, Message(
-            "invalid-axis-nameid",
-            f"Found {len(invalid_axis_nameids)} axisNameID value(s) that are not "
-            "greater than 255 and less than 32768: "
-            f"{', '.join(map(str, invalid_axis_nameids))}",
-        )
+    for nameid in invalid_axis_nameids:
+        inst_name = None
+        if name_table is not None:
+            inst_name = name_table.getDebugName(nameid)
 
-    yield PASS, "axisNameID values are valid"
+        if inst_name is None:
+            inst_name = "Unnamed"
+
+        yield FAIL, Message(
+            f"invalid-axis-nameid:{nameid}",
+            f"{inst_name!r} instance has an axisNameID value that"
+            " is not greater than 255 and less than 32768.",
+        )
+        check_failed = True
+
+    if not check_failed:
+        yield PASS, "All axisNameID values are valid."
 
 
 @check(
@@ -319,9 +330,12 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont):
     conditions=["is_variable_font"],
     proposal="https://github.com/googlefonts/fontbakery/issues/3703",
 )
-def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont):
+def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table):
     """Validates that the value of subfamilyNameID used by each InstanceRecord
     is 2, 17, or greater than 255 and less than 32768."""
+
+    check_failed = False
+    name_table = ttFont["name"] if has_name_table else None
 
     font_subfam_nameids = [inst.subfamilyNameID for inst in ttFont["fvar"].instances]
     invalid_subfam_nameids = [
@@ -330,15 +344,23 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont):
         if not (255 < val < 32768) and val not in {2, 17}
     ]
 
-    if invalid_subfam_nameids:
-        yield FAIL, Message(
-            "invalid-subfamily-nameid",
-            f"Found {len(invalid_subfam_nameids)} subfamilyNameID value(s) that are not "
-            "2, 17, or greater than 255 and less than 32768: "
-            f"{', '.join(map(str, invalid_subfam_nameids))}",
-        )
+    for nameid in invalid_subfam_nameids:
+        inst_name = None
+        if name_table is not None:
+            inst_name = name_table.getDebugName(nameid)
 
-    yield PASS, "subfamilyNameID values are valid"
+        if inst_name is None:
+            inst_name = "Unnamed"
+
+        yield FAIL, Message(
+            f"invalid-subfamily-nameid:{nameid}",
+            f"{inst_name!r} instance has a subfamilyNameID value that"
+            " is neither 2, 17, or greater than 255 and less than 32768.",
+        )
+        check_failed = True
+
+    if not check_failed:
+        yield PASS, "All subfamilyNameID values are valid."
 
 
 @check(
@@ -356,9 +378,12 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont):
     conditions=["is_variable_font"],
     proposal="https://github.com/googlefonts/fontbakery/issues/3704",
 )
-def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont):
+def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table):
     """Validates that the value of postScriptNameID used by each InstanceRecord
     is 6, 0xFFFF, or greater than 255 and less than 32768."""
+
+    check_failed = False
+    name_table = ttFont["name"] if has_name_table else None
 
     font_postscript_nameids = [
         inst.postscriptNameID for inst in ttFont["fvar"].instances
@@ -369,15 +394,23 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont):
         if not (255 < val < 32768) and val not in {6, 0xFFFF}
     ]
 
-    if invalid_postscript_nameids:
-        yield FAIL, Message(
-            "invalid-postscript-nameid",
-            f"Found {len(invalid_postscript_nameids)} postScriptNameID value(s) that "
-            "are not 6, 0xFFFF, or greater than 255 and less than 32768: "
-            f"{', '.join(map(str, invalid_postscript_nameids))}",
-        )
+    for nameid in invalid_postscript_nameids:
+        inst_name = None
+        if name_table is not None:
+            inst_name = name_table.getDebugName(nameid)
 
-    yield PASS, "postScriptNameID values are valid"
+        if inst_name is None:
+            inst_name = "Unnamed"
+
+        yield FAIL, Message(
+            f"invalid-postscript-nameid:{nameid}",
+            f"{inst_name!r} instance has a postScriptNameID value that"
+            " is neither 6, 0xFFFF, or greater than 255 and less than 32768.",
+        )
+        check_failed = True
+
+    if not check_failed:
+        yield PASS, "All postScriptNameID values are valid."
 
 
 @check(
@@ -399,11 +432,14 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont):
     conditions=["is_variable_font"],
     proposal="https://github.com/googlefonts/fontbakery/issues/3708",
 )
-def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont):
+def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
+                                                                 has_name_table):
     """Validates that when an instance record is included for the default instance,
     its subfamilyNameID value is set to either 2 or 17, and its postScriptNameID value
     is set to 6."""
 
+    check_failed = False
+    name_table = ttFont["name"] if has_name_table else None
     fvar_table = ttFont["fvar"]
 
     font_includes_ps_nameid = any(
@@ -419,25 +455,39 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont):
             subfam_nameid = inst.subfamilyNameID
             postscript_nameid = inst.postscriptNameID
 
+            # Special handle the 0xFFFF case, to avoid displaying the value as 65535
+            if postscript_nameid == 0xFFFF:
+                postscript_nameid = "0xFFFF"
+
+            inst_name = None
+            if name_table is not None:
+                inst_name = name_table.getDebugName(subfam_nameid)
+
+            if inst_name is None:
+                inst_name = f"Instance #{i}"
+
             if subfam_nameid not in {2, 17}:
                 yield FAIL, Message(
-                    "invalid-default-instance-subfamily-nameid",
-                    f"Named instance #{i} has the same coordinates as the default "
-                    "instance; its subfamilyNameID must be either 2 or 17, instead of "
-                    f"{subfam_nameid}",
+                    f"invalid-default-instance-subfamily-nameid:{subfam_nameid}",
+                    f"{inst_name!r} instance has the same coordinates as the default"
+                    " instance; its subfamilyNameID should be either 2 or 17, instead"
+                    f" of {subfam_nameid}.",
                 )
+                check_failed = True
 
             # Validate the postScriptNameID only if
             # at least one instance record includes it
             if font_includes_ps_nameid and postscript_nameid != 6:
                 yield FAIL, Message(
-                    "invalid-default-instance-postscript-nameid",
-                    f"Named instance #{i} has the same coordinates as the default "
-                    "instance; its postScriptNameID must be 6, instead of "
-                    f"{postscript_nameid}",
+                    f"invalid-default-instance-postscript-nameid:{postscript_nameid}",
+                    f"{inst_name!r} instance has the same coordinates as the default"
+                    " instance; its postScriptNameID should be 6, instead of"
+                    f" {postscript_nameid}.",
                 )
+                check_failed = True
 
-    yield PASS, "The default instance nameID values are valid"
+    if not check_failed:
+        yield PASS, "All default instance nameID values are valid."
 
 
 @check(
@@ -466,12 +516,12 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
     # it means that some instance records have postscriptNameID values while
     # others do not.
     if len(font_ps_nameids_not_provided) != 1:
-        yield FAIL, Message(
+        return FAIL, Message(
             "different-size-instance-records",
             "Instance records don't all have the same size.",
         )
 
-    yield PASS, "All instance records have the same size"
+    return PASS, "All instance records have the same size."
 
 
 @check(
@@ -490,10 +540,11 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
 )
 def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_table):
     """Validates that all of the instance records in a given font have distinct data."""
+
+    check_warned = False
     name_table = ttFont["name"] if has_name_table else None
 
     unique_inst_recs = set()
-    repeat_inst_recs = []
 
     for i, inst in enumerate(ttFont["fvar"].instances, 1):
         inst_coords = list(inst.coordinates.items())
@@ -512,13 +563,11 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
             if inst_name is None:
                 inst_name = f"Instance #{i}"
 
-            repeat_inst_recs.append(inst_name)
+            yield WARN, Message(
+                f"repeated-instance-record:{inst_name}",
+                f"{inst_name!r} is a repeated instance record.",
+            )
+            check_warned = True
 
-    if repeat_inst_recs:
-        yield WARN, Message(
-            "repeated-instance-records",
-            f"Found {len(repeat_inst_recs)} repeated instance record(s): "
-            f"{', '.join(repeat_inst_recs)}",
-        )
-
-    yield PASS, "All instance records are distinct"
+    if not check_warned:
+        yield PASS, "All instance records are distinct."
