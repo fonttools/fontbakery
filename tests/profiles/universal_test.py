@@ -828,11 +828,11 @@ def test_check_cjk_chws_feature():
     cjk_font = TEST_FILE("cjk/SourceHanSans-Regular.otf")
     ttFont = TTFont(cjk_font)
     assert_results_contain(check(ttFont),
-                           FAIL, "missing-chws-feature",
+                           WARN, "missing-chws-feature",
                            'for Source Han Sans')
 
     assert_results_contain(check(ttFont),
-                           FAIL, "missing-vchw-feature",
+                           WARN, "missing-vchw-feature",
                            'for Source Han Sans')
 
     # Insert them.
@@ -937,7 +937,7 @@ def test_check_gpos7():
 
     font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
     assert_results_contain(check(font),
-                           FAIL, "has-gpos7")
+                           WARN, "has-gpos7")
 
 
 def test_freetype_rasterizer():
