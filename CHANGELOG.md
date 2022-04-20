@@ -17,6 +17,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
 
 ### New Checks
+#### Added to the Adobe Fonts Profile
+  - **[com.adobe.fonts/check/nameid_1_win_english]:** Validates that the font has a good nameID 1, Windows/Unicode/US-English `name` table record. (issue #3714)
+
 #### Added to the Noto Fonts Profile
   - The majority of checks from the Google Fonts profile have been added. (PR #3681)
   - **[com.google.fonts/check/name/noto_manufacturer]:** Checks for a known manufacturer name and correct designer URL in the name table. (PR #3681)

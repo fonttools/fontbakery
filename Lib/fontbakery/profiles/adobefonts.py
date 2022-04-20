@@ -8,7 +8,7 @@ from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message, KEEP_ORIGINAL_MESSAGE
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.section import Section
-from fontbakery.status import PASS, FAIL, WARN
+from fontbakery.status import PASS, FAIL, WARN, ERROR
 from fontbakery.utils import add_check_overrides
 
 
@@ -18,6 +18,7 @@ profile = profile_factory(default_section=Section("Adobe Fonts"))
 ADOBEFONTS_PROFILE_CHECKS = UNIVERSAL_PROFILE_CHECKS + [
     "com.adobe.fonts/check/family/consistent_upm",
     "com.adobe.fonts/check/find_empty_letters",
+    "com.adobe.fonts/check/nameid_1_win_english",
 ]
 
 OVERRIDDEN_CHECKS = [
@@ -126,6 +127,45 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
             passed = False
     if passed:
         yield PASS, "No empty glyphs for letters found."
+
+
+@check(
+    id="com.adobe.fonts/check/nameid_1_win_english",
+    rationale="""
+        While not required by the OpenType spec, Adobe Fonts' pipeline requires
+        every font to support at least nameID 1 (Font Family name) for platformID 3
+        (Windows), encodingID 1 (Unicode), and languageID 1033/0x409 (US-English).
+    """,
+    proposal="https://github.com/googlefonts/fontbakery/issues/3714",
+)
+def com_adobe_fonts_check_nameid_1_win_english(ttFont, has_name_table):
+    """Font has a good nameID 1, Windows/Unicode/US-English `name` table record?"""
+    if not has_name_table:
+        return FAIL, Message("name-table-not-found", "Font has no 'name' table.")
+
+    nameid_1 = ttFont["name"].getName(1, 3, 1, 0x409)
+
+    if nameid_1 is None:
+        return FAIL, Message(
+            "nameid-1-not-found",
+            "Windows nameID 1 US-English record not found.",
+        )
+    else:
+        try:
+            nameid_1_unistr = nameid_1.toUnicode()
+        except UnicodeDecodeError:
+            return ERROR, Message(
+                "nameid-1-decoding-error",
+                "Windows nameID 1 US-English record could not be decoded.",
+            )
+
+        if not nameid_1_unistr.strip():
+            return FAIL, Message(
+                "nameid-1-empty",
+                "Windows nameID 1 US-English record is empty.",
+            )
+
+    return PASS, "Font contains a good Windows nameID 1 US-English record."
 
 
 profile.auto_register(globals())
