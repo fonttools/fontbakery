@@ -199,7 +199,7 @@ def assert_results_contain(check_results,
         reason = f"[{expected_msgcode}]"
     if not expected_msgcode:
         raise Exception(
-            "Test must provide the expected message code (e.g. PASS or FAIL or ...)")
+            "Test must provide the expected message code")
 
     print(f"Test {expected_status} {reason}")
     check_results = list(check_results)
