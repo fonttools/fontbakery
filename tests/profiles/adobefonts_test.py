@@ -4,7 +4,7 @@ Unit tests for Adobe Fonts profile.
 import os
 
 from fontTools.ttLib import TTFont
-from fontbakery.checkrunner import WARN, FAIL
+from fontbakery.checkrunner import WARN, FAIL, ERROR
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
@@ -79,6 +79,49 @@ def test_check_find_empty_letters():
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
     message = assert_results_contain(check(font), FAIL, "empty-letter")
     assert message == "U+0042 should be visible, but its glyph ('B') is empty."
+
+
+def _get_nameid_1_win_eng_record(name_table):
+    """Helper method that returns the Windows nameID 1 US-English record"""
+    for rec in name_table.names:
+        if (rec.nameID, rec.platformID, rec.platEncID, rec.langID) == (1, 3, 1, 0x409):
+            return rec
+
+
+def test_check_nameid_1_win_english():
+    """Validate that font has a good nameID 1, Windows/Unicode/US-English
+    `name` table record."""
+    check = CheckTester(
+        adobefonts_profile, "com.adobe.fonts/check/nameid_1_win_english"
+    )
+
+    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
+    ttFont = TTFont(font)
+    msg = assert_PASS(check(ttFont))
+    assert msg == "Font contains a good Windows nameID 1 US-English record."
+
+    name_table = ttFont["name"]
+    nameid_1_win_eng_rec = _get_nameid_1_win_eng_record(name_table)
+
+    # Replace the nameID 1 string with an empty string
+    nameid_1_win_eng_rec.string = ""
+    msg = assert_results_contain(check(ttFont), FAIL, "nameid-1-empty")
+    assert msg == "Windows nameID 1 US-English record is empty."
+
+    # Replace the nameID 1 string with data that can't be 'utf_16_be'-decoded
+    nameid_1_win_eng_rec.string = "\xff".encode("utf_7")
+    msg = assert_results_contain(check(ttFont), ERROR, "nameid-1-decoding-error")
+    assert msg == "Windows nameID 1 US-English record could not be decoded."
+
+    # Delete all 'name' table records
+    name_table.names = []
+    msg = assert_results_contain(check(ttFont), FAIL, "nameid-1-not-found")
+    assert msg == "Windows nameID 1 US-English record not found."
+
+    # Delete 'name' table
+    del ttFont["name"]
+    msg = assert_results_contain(check(ttFont), FAIL, "name-table-not-found")
+    assert msg == "Font has no 'name' table."
 
 
 def test_check_whitespace_glyphs_adobefonts_override():
