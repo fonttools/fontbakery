@@ -218,7 +218,10 @@ def assert_results_contain(check_results,
                 f" in the implementation of reliable unit tests).\n"
                 f"(Bare string: {msg!r})")
 
-        if status == expected_status:
+        if status == expected_status and (
+            expected_msgcode is None
+            or (isinstance(msg, Message) and msg.code == expected_msgcode)
+        ):
             if isinstance(msg, Message):
                 return msg.message
             else:
