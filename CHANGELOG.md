@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the GoogleFonts Profile
   - **[com.google.fonts/check/license/OFL_copyright]:** Improve wording of log message to clarify its meaning. It was too easy to think that the displayed copyright string (read from the font binary and reported for reference) was an example of the actually expected string format. (issue #3674)
   - **[com.google.fonts/check/cjk_vertical_metrics_regressions]:** Round calculation of expected sTypoAscender and sTypoDescender values (issue #3645)
+  - **[com.google.fonts/check/name/familyname]:** Don't validate localized name table entries compared to the expected English names derived from the font filename (issue #3089)
 
 #### On the Universal Profile
   - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
