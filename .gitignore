@@ -27,3 +27,5 @@ docs/_build
 var
 .eggs
 .tox
+.idea
+.DS_Store
