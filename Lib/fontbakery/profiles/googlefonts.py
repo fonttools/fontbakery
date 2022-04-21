@@ -4971,8 +4971,8 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
         'OS/2.usWinDescent': ttFont['OS/2'].usWinDescent
     }
     expected_metrics = {
-        'OS/2.sTypoAscender': font_upm * 0.88,
-        'OS/2.sTypoDescender': font_upm * -0.12,
+        'OS/2.sTypoAscender': round(font_upm * 0.88),
+        'OS/2.sTypoDescender': round(font_upm * -0.12),
         'OS/2.sTypoLineGap': 0,
         'hhea.lineGap': 0,
     }
