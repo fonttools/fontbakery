@@ -32,6 +32,12 @@ def leave_this_one_out(checkid):
         'com.google.fonts/check/vendor_id',
         'com.google.fonts/check/fstype',
         'com.google.fonts/check/gasp',
+        'com.google.fonts/check/name/description_max_length',
+        'com.google.fonts/check/metadata/includes_production_subsets',
+        'com.google.fonts/check/font_copyright',
+        'com.google.fonts/check/version_bump',
+        'com.google.fonts/check/production_glyphs_similarity',
+        'com.google.fonts/check/name/line_breaks',
 
         # The following check they may need some improvements
         # before we decide to include it:
