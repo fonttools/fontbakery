@@ -2487,7 +2487,7 @@ def test_check_name_familyname():
         (PASS, "ok",       TEST_FILE("merriweather/Merriweather-Black.ttf"),       "Merriweather",  "Merriweather Black"),
         (PASS, "ok",       TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather",  "Merriweather Light"),
         (FAIL, "mismatch", TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather",  "Merriweather Light Italic"),
-        (PASS, "ok",       TEST_FILE("abeezee/ABeeZee-Regular.ttf"), "ABeeZee",  "ABeeZee"),
+        (PASS, "ok",       TEST_FILE("abeezee/ABeeZee-Regular.ttf"),               "ABeeZee",       "ABeeZee"),
         # Note: ABeeZee is a good camel-cased name exception.
     ]
 

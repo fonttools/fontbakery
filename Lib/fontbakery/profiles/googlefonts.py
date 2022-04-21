@@ -3364,9 +3364,39 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
                       "ThinItalic": "Thin"}
         return onlyWeight.get(value, value)
 
+    def has_english_lang_id(name):
+        if name.platformID == PlatformID.MACINTOSH:
+            return name.langID == 0
+
+        if name.platformID == PlatformID.WINDOWS:
+            return name.langID in [
+                0x0C09,  # Australia
+                0x2809,  # Belize
+                0x1009,  # Canada
+                0x2409,  # Caribbean
+                0x4009,  # India
+                0x1809,  # Ireland
+                0x2009,  # Jamaica
+                0x4409,  # Malaysia
+                0x1409,  # New Zealand
+                0x3409,  # Republic of the Philippines
+                0x4809,  # Singapore
+                0x1C09,  # South Africa
+                0x2C09,  # Trinidad and Tobago
+                0x0809,  # United Kingdom
+                0x0409,  # United States
+                0x3009,  # Zimbabwe
+            ]
+
     failed = False
     only_weight = get_only_weight(style)
     for name in ttFont['name'].names:
+        if not has_english_lang_id(name):
+            # The value of familyname_with_spaces is derived from
+            # the filename which is expected to match the English name IDs.
+            # See: https://github.com/googlefonts/fontbakery/issues/3089
+            continue
+
         if name.nameID == NameID.FONT_FAMILY_NAME:
 
             if name.platformID == PlatformID.MACINTOSH:
@@ -3392,7 +3422,7 @@ def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces
             string = name.string.decode(name.getEncoding()).strip()
 
             if (camelcased_familyname_exception(string) and
-                string == expected_value.replace(" ", "")):
+                string.replace(" ", "") == expected_value.replace(" ", "")):
                 continue
 
             if string != expected_value:
