@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### BugFixes
   - Users reading markdown reports are now directed to the "stable" version of our ReadTheDocs documentation instead of the "latest" (git dev) one. (issue #3677)
   - Improve rendering of bullet lists (issue #3691)
+  - Update fonts_public.proto (issue #3731)
 
 ### Changes to existing checks
 #### On the GoogleFonts Profile
