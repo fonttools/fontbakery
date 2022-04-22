@@ -101,8 +101,8 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
     conditions = ['vmetrics',
                   'not is_cjk_font'],
     rationale = """
-        A font's winAscent and winDescent values should be greater than the
-        head table's yMax, abs(yMin) values. If they are less than these values,
+        A font's winAscent and winDescent values should be greater than or equal to 
+        the head table's yMax, abs(yMin) values. If they are less than these values,
         clipping can occur on Windows platforms
         (https://github.com/RedHatBrand/Overpass/issues/33).
 
