@@ -19,6 +19,9 @@ from fontbakery.configuration import Configuration
 from fontbakery.profile import Profile, get_module_profile
 import defcon
 
+PATH_TEST_DATA = "data/test/"
+PATH_TEST_DATA_GLYPHS_FILES = f"{PATH_TEST_DATA}glyphs_files/"
+
 
 class CheckTester:
     """
@@ -154,12 +157,12 @@ def portable_path(p):
 
 
 def TEST_FILE(f):
-    return portable_path("data/test/" + f)
+    return portable_path(f"{PATH_TEST_DATA}{f}")
 
 
 def GLYPHSAPP_TEST_FILE(f):
     import glyphsLib
-    the_file = portable_path("data/test/glyphs_files/" + f)
+    the_file = portable_path(f"{PATH_TEST_DATA_GLYPHS_FILES}{f}")
     return glyphsLib.load(open(the_file))
 
 
