@@ -219,7 +219,7 @@ def assert_results_contain(check_results,
                 f"(Bare string: {msg!r})")
 
         if status == expected_status and (
-            expected_msgcode is None
+            (isinstance(msg, str) and msg == expected_msgcode)
             or (isinstance(msg, Message) and msg.code == expected_msgcode)
         ):
             if isinstance(msg, Message):
