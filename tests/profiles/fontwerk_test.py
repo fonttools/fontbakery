@@ -53,6 +53,10 @@ def test_check_inconsistencies_between_fvar_stat():
     check = CheckTester(fontwerk_profile,
                         'com.fontwerk/check/inconsistencies_between_fvar_stat')
 
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    msg = assert_PASS(check(ttFont), "with a good varfont...")
+    assert msg == "STAT and fvar axis records are consistent."
+
     ttFont = TTFont(TEST_FILE("bad_fonts/fvar_stat_differences/AxisLocationVAR.ttf"))
     ttFont['name'].removeNames(nameID=277)
     assert_results_contain(check(ttFont),
