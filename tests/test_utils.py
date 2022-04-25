@@ -103,7 +103,7 @@ def test_unindent_and_unwrap_rationale():
         This is a new paragraph. This paragraph is also too long to fit within the
         maximum width, so it must be hard wrapped.
         This is a new line that was NOT soft-wrapped, so it will end up appendend to
-        the previous line. 
+        the previous line.⏎
         This is yet another line, but this one was soft-wrapped (Shift+Return), which
         means that it will not be appendend to the end of the previous line.
 

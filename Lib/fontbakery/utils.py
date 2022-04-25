@@ -143,7 +143,7 @@ def unindent_and_unwrap_rationale(rationale, checkid=None):
     content = ""
 
     for line in rationale.split("\n"):
-        soft_return = line.endswith("\u2029")
+        soft_return = line.endswith("⏎")  # U+23CE
         stripped_line = line.strip()
         new_paragraph = len(stripped_line) == 0
 
@@ -155,7 +155,7 @@ def unindent_and_unwrap_rationale(rationale, checkid=None):
             content += stripped_line
 
             if soft_return:
-                content += "\n"
+                content = f"{content[:-1]}\n"
             else:
                 content += " "
 
