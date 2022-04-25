@@ -6196,7 +6196,7 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
             yield WARN,\
                   Message("image-not-displayed",
                           f'Even though the README.md file does not display'
-                          f' a font sample image, a few image files were found:\n'
+                          f' a font sample image, a few image files were found:\n\n'
                           f'{bullet_list(config, local_image_files)}\n'
                           f'\n'
                           f'Please consider including one of those images on the README.\n'

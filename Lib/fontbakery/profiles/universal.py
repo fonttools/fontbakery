@@ -585,7 +585,7 @@ def com_google_fonts_check_required_tables(ttFont, config):
     if optional_tables:
         yield INFO, \
               Message("optional-tables",
-                      f"This font contains the following optional tables:\n"
+                      f"This font contains the following optional tables:\n\n"
                       f"{bullet_list(config, optional_tables)}")
 
     if is_variable_font(ttFont):
@@ -601,7 +601,7 @@ def com_google_fonts_check_required_tables(ttFont, config):
     if missing_tables:
         yield FAIL, \
               Message("required-tables",
-                      f"This font is missing the following required tables:\n"
+                      f"This font is missing the following required tables:\n\n"
                       f"{bullet_list(config, missing_tables)}")
     else:
         yield PASS, "Font contains all required tables."
@@ -1147,7 +1147,7 @@ def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, conf
     if failures:
         yield FAIL,\
               Message("inconsistent-glyphset",
-                      f"Glyphsets were not consistent:\n"
+                      f"Glyphsets were not consistent:\n\n"
                       f"{bullet_list(config, failures)}")
     else:
         yield PASS, "Glyphsets were consistent."
@@ -1183,7 +1183,7 @@ def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, co
     if failures:
         yield FAIL,\
               Message("inconsistent-codepoints",
-                      f"Unicode assignments were not consistent:\n"
+                      f"Unicode assignments were not consistent:\n\n"
                       f"{bullet_list(config, failures)}")
     else:
         yield PASS, "Unicode assignments were consistent."
@@ -1271,7 +1271,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
         yield WARN,\
               Message("unreachable-glyphs",
                       f"The following glyphs could not be reached"
-                      f" by codepoint or substitution rules:\n"
+                      f" by codepoint or substitution rules:\n\n"
                       f"{bullet_list(config, list(all_glyphs))}\n")
     else:
         yield PASS, "Font did not contain any unreachable glyphs"
@@ -1578,7 +1578,7 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
         yield FAIL,\
               Message("unattached-dotted-circle-marks",
                       f"The following glyphs could not be attached"
-                      f" to the dotted circle glyph:\n"
+                      f" to the dotted circle glyph:\n\n"
                       f"{bullet_list(config, unattached)}")
     else:
         yield PASS, "All marks were anchored to dotted circle"
