@@ -101,7 +101,7 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
     conditions = ['vmetrics',
                   'not is_cjk_font'],
     rationale = """
-        A font's winAscent and winDescent values should be greater than or equal to 
+        A font's winAscent and winDescent values should be greater than or equal to
         the head table's yMax, abs(yMin) values. If they are less than these values,
         clipping can occur on Windows platforms
         (https://github.com/RedHatBrand/Overpass/issues/33).
@@ -542,14 +542,11 @@ def com_google_fonts_check_whitespace_ink(ttFont):
     rationale = """
         Depending on the typeface and coverage of a font, certain tables are
         recommended for optimum quality.
-        
-        For example:
-        
+
+        For example:⏎
         - the performance of a non-linear font is improved if the VDMX, LTSH,
-          and hdmx tables are present.
-          
-        - Non-monospaced Latin fonts should have a kern table.
-        
+          and hdmx tables are present.⏎
+        - Non-monospaced Latin fonts should have a kern table.⏎
         - A gasp table is necessary if a designer wants to influence the sizes
           at which grayscaling is used under Windows. Etc.
     """,
@@ -1082,14 +1079,14 @@ def com_google_fonts_check_rupee(ttFont):
                       ' Indian Rupee Sign “₹” at codepoint U+20B9.')
     else:
         yield PASS, "Looks good!"
-        
+
 
 @check(
     id = "com.google.fonts/check/designspace_has_sources",
     rationale = """
         This check parses a designspace file and tries to load the
         source files specified.
-        
+
         This is meant to ensure that the file is not malformed,
         can be properly parsed and does include valid source file references.
     """,
@@ -1476,7 +1473,7 @@ def com_google_fonts_check_cjk_chws_feature(ttFont):
 
         When building the font with fontmake, the problem can be fixed by adding
         this to the command line:
-        
+
         --filter DecomposeTransformedComponentsFilter
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2011',
