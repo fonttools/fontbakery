@@ -497,8 +497,8 @@ def test_check_required_tables():
 
     # Our reference Mada Regular font is good here
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    cff_ft = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Black.otf"))
-    cff2_ft = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
+    cff_font = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Black.otf"))
+    cff2_font = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
 
     # So it must PASS the check:
     msg = assert_PASS(check(ttFont), 'with a good font...')
@@ -509,35 +509,35 @@ def test_check_required_tables():
         assert tag in msg
 
     # CFF ------
-    msg = assert_PASS(check(cff_ft), 'with a good font...')
+    msg = assert_PASS(check(cff_font), 'with a good font...')
     assert msg == "Font contains all required tables."
 
-    msg = assert_results_contain(check(cff_ft), INFO, "optional-tables")
+    msg = assert_results_contain(check(cff_font), INFO, "optional-tables")
     for tag in {"BASE", "GPOS", "GSUB"}:
         assert tag in msg
 
-    del cff_ft.reader.tables["CFF "]
-    msg = assert_results_contain(check(cff_ft), FAIL, "required-tables")
+    del cff_font.reader.tables["CFF "]
+    msg = assert_results_contain(check(cff_font), FAIL, "required-tables")
     assert "CFF " in msg
 
     # CFF2 ------
-    msg = assert_PASS(check(cff2_ft), 'with a good font...')
+    msg = assert_PASS(check(cff2_font), 'with a good font...')
     assert msg == "Font contains all required tables."
 
-    msg = assert_results_contain(check(cff2_ft), INFO, "optional-tables")
+    msg = assert_results_contain(check(cff2_font), INFO, "optional-tables")
     for tag in {"BASE", "GPOS", "GSUB"}:
         assert tag in msg
 
-    del cff2_ft.reader.tables["CFF2"]
-    msg = assert_results_contain(check(cff2_ft), FAIL, "required-tables")
+    del cff2_font.reader.tables["CFF2"]
+    msg = assert_results_contain(check(cff2_font), FAIL, "required-tables")
     assert "CFF2" in msg
 
-    del cff2_ft.reader.tables["STAT"]
-    msg = assert_results_contain(check(cff2_ft), FAIL, "required-tables")
+    del cff2_font.reader.tables["STAT"]
+    msg = assert_results_contain(check(cff2_font), FAIL, "required-tables")
     assert "STAT" in msg
 
-    del cff2_ft.reader.tables["fvar"]
-    msg = assert_results_contain(check(cff2_ft), FAIL, "required-tables")
+    del cff2_font.reader.tables["fvar"]
+    msg = assert_results_contain(check(cff2_font), FAIL, "required-tables")
     assert "CFF " in msg
 
     # Now we test the special cases for variable fonts:
