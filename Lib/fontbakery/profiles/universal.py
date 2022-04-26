@@ -554,6 +554,10 @@ def com_google_fonts_check_whitespace_ink(ttFont):
         - name (Naming table)⏎
         - OS/2 (OS/2 and Windows specific metrics)⏎
         - post (PostScript information)
+
+        The spec also documents that variable fonts require the following table:
+
+        - STAT (Style attributes)
     """,
     proposal = 'legacy:check/052'
 )
@@ -579,8 +583,6 @@ def com_google_fonts_check_required_tables(ttFont, config):
                       f"{bullet_list(config, optional_tables)}")
 
     if is_variable_font(ttFont):
-        # According to https://github.com/googlefonts/fontbakery/issues/1671
-        # STAT table is required on WebKit on MacOS 10.12 for variable fonts.
         REQUIRED_TABLES.append("STAT")
 
     missing_tables = [req for req in REQUIRED_TABLES
