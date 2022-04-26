@@ -13,7 +13,14 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.profiles import adobefonts as adobefonts_profile
-from fontbakery.profiles.adobefonts import profile
+from fontbakery.profiles.adobefonts import (
+    ADOBEFONTS_PROFILE_CHECKS,
+    OVERRIDDEN_CHECKS,
+    profile,
+    SET_EXPLICIT_CHECKS,
+)
+
+OVERRIDE_SUFFIX = ":adobefonts"
 
 
 def test_get_family_checks():
@@ -29,7 +36,7 @@ def test_get_family_checks():
         "com.google.fonts/check/family/panose_familytype",
         "com.google.fonts/check/family/equal_unicode_encodings",
         "com.google.fonts/check/family/equal_font_versions",
-        "com.google.fonts/check/family/win_ascent_and_descent",
+        # "com.google.fonts/check/family/win_ascent_and_descent",
         "com.google.fonts/check/family/vertical_metrics",
         "com.google.fonts/check/family/single_directory",
         # should it be included here? or should we have
@@ -37,6 +44,17 @@ def test_get_family_checks():
         # 'com.google.fonts/check/superfamily/vertical_metrics',
     }
     assert family_check_ids == expected_family_check_ids
+
+
+def test_profile_check_set():
+    """Confirm that the profile has the correct number of checks and the correct
+    set of check IDs."""
+    assert len(SET_EXPLICIT_CHECKS) == 76
+    explicit_with_overrides = sorted(
+        f"{check_id}{OVERRIDE_SUFFIX}" if check_id in OVERRIDDEN_CHECKS else check_id
+        for check_id in SET_EXPLICIT_CHECKS
+    )
+    assert explicit_with_overrides == sorted(ADOBEFONTS_PROFILE_CHECKS)
 
 
 def test_check_family_consistent_upm():
@@ -137,7 +155,7 @@ def test_check_nameid_1_win_english():
 def test_check_whitespace_glyphs_adobefonts_override():
     """Check that overridden test for nbsp yields WARN rather than FAIL."""
     check = CheckTester(
-        adobefonts_profile, "com.google.fonts/check/whitespace_glyphs:adobefonts"
+        adobefonts_profile, f"com.google.fonts/check/whitespace_glyphs{OVERRIDE_SUFFIX}"
     )
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
@@ -152,7 +170,7 @@ def test_check_whitespace_glyphs_adobefonts_override():
 def test_check_valid_glyphnames_adobefonts_override():
     """Check that overridden test yields WARN rather than FAIL."""
     check = CheckTester(
-        adobefonts_profile, "com.google.fonts/check/valid_glyphnames:adobefonts"
+        adobefonts_profile, f"com.google.fonts/check/valid_glyphnames{OVERRIDE_SUFFIX}"
     )
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
