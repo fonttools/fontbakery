@@ -495,47 +495,63 @@ def test_check_required_tables():
                        "gasp", "hdmx", "LTSH", "PCLT",
                        "VDMX", "vhea", "vmtx", "kern"]
 
-    # Our reference Mada Regular font is good here
+    # Valid reference fonts, one for each format.
+    # TrueType: Mada Regular
+    # OpenType-CFF: SourceSansPro-Black
+    # OpenType-CFF2: SourceSansVariable-Italic
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     cff_font = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Black.otf"))
     cff2_font = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
 
-    # So it must PASS the check:
+    # The TrueType font contains all required tables, so it must PASS the check.
     msg = assert_PASS(check(ttFont), 'with a good font...')
     assert msg == "Font contains all required tables."
 
+    # Here we confirm that the check also yields INFO with
+    # a list of table tags specific to the font.
     msg = assert_results_contain(check(ttFont), INFO, "optional-tables")
     for tag in {"loca", "GPOS", "GSUB"}:
         assert tag in msg
 
-    # CFF ------
+    # The OpenType-CFF font contains all required tables, so it must PASS the check.
     msg = assert_PASS(check(cff_font), 'with a good font...')
     assert msg == "Font contains all required tables."
 
+    # Here we confirm that the check also yields INFO with
+    # a list of table tags specific to the OpenType-CFF font.
     msg = assert_results_contain(check(cff_font), INFO, "optional-tables")
     for tag in {"BASE", "GPOS", "GSUB"}:
         assert tag in msg
 
+    # The font must also contain the table that holds the outlines, "CFF " in this case.
     del cff_font.reader.tables["CFF "]
     msg = assert_results_contain(check(cff_font), FAIL, "required-tables")
     assert "CFF " in msg
 
-    # CFF2 ------
+    # The OpenType-CFF2 font contains all required tables, so it must PASS the check.
     msg = assert_PASS(check(cff2_font), 'with a good font...')
     assert msg == "Font contains all required tables."
 
+    # Here we confirm that the check also yields INFO with
+    # a list of table tags specific to the OpenType-CFF2 font.
     msg = assert_results_contain(check(cff2_font), INFO, "optional-tables")
     for tag in {"BASE", "GPOS", "GSUB"}:
         assert tag in msg
 
+    # The font must also contain the table that holds the outlines, "CFF2" in this case.
     del cff2_font.reader.tables["CFF2"]
     msg = assert_results_contain(check(cff2_font), FAIL, "required-tables")
     assert "CFF2" in msg
 
+    # The OT-CFF2 font is variable, so a "STAT" table is also required.
+    # Here we confirm that the check fails when the "STAT" table is removed.
     del cff2_font.reader.tables["STAT"]
     msg = assert_results_contain(check(cff2_font), FAIL, "required-tables")
     assert "STAT" in msg
 
+    # Here we also remove the "fvar" table from the OT-CFF2 font.
+    # Without an "fvar" table the font is validated as if it were a stactic font,
+    # leading the check to FAIL with a message about the lack of a "CFF " table.
     del cff2_font.reader.tables["fvar"]
     msg = assert_results_contain(check(cff2_font), FAIL, "required-tables")
     assert "CFF " in msg
@@ -564,6 +580,7 @@ def test_check_required_tables():
     del ttFont.reader.tables["STAT"]
 
     # Now we remove required tables one-by-one to validate the FAIL code-path:
+    # The font must also contain the table that holds the outlines, "glyf" in this case.
     for required in REQUIRED_TABLES + ["glyf"]:
         ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
         if required in ttFont.reader.tables:
