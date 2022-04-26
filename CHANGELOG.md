@@ -21,6 +21,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Universal Profile
   - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
+  - **[com.google.fonts/check/required_tables]:** CFF/CFF2 fonts are now checked instead of skipped. (pull #3742)
 
 ### New Checks
 #### Added to the Adobe Fonts Profile
