@@ -559,6 +559,14 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 
         - STAT (Style attributes)
     """,
+    # Depending on the typeface and coverage of a font, certain tables are
+    # recommended for optimum quality.
+    # For example:
+    # - the performance of a non-linear font is improved if the VDMX, LTSH,
+    #   and hdmx tables are present.
+    # - Non-monospaced Latin fonts should have a kern table.
+    # - A gasp table is necessary if a designer wants to influence the sizes
+    #   at which grayscaling is used under Windows. Etc.
     proposal = 'legacy:check/052'
 )
 def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
@@ -574,6 +582,16 @@ def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
                        "gasp", "hdmx", "LTSH", "PCLT",
                        "VDMX", "vhea", "vmtx", "kern"]
 
+    # See https://github.com/googlefonts/fontbakery/issues/617
+    #
+    # We should collect the rationale behind the need for each of the
+    # required tables above. Perhaps split it into individual checks
+    # with the correspondent rationales for each subset of required tables.
+    #
+    # com.google.fonts/check/kern_table is a good example of a separate
+    # check for a specific table providing a detailed description of
+    # the rationale behind it.
+
     font_tables = ttFont.keys()
 
     optional_tables = [opt for opt in OPTIONAL_TABLES if opt in font_tables]
@@ -584,6 +602,8 @@ def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
                       f"{bullet_list(config, optional_tables)}")
 
     if is_variable_font:
+        # According to https://github.com/googlefonts/fontbakery/issues/1671
+        # STAT table is required on WebKit on MacOS 10.12 for variable fonts.
         REQUIRED_TABLES.append("STAT")
 
     missing_tables = [req for req in REQUIRED_TABLES
