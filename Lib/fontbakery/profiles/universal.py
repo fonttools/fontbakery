@@ -558,15 +558,17 @@ def com_google_fonts_check_whitespace_ink(ttFont):
         The spec also documents that variable fonts require the following table:
 
         - STAT (Style attributes)
+
+        Depending on the typeface and coverage of a font, certain tables are
+        recommended for optimum quality.
+
+        For example:⏎
+        - the performance of a non-linear font is improved if the VDMX, LTSH,
+          and hdmx tables are present.⏎
+        - Non-monospaced Latin fonts should have a kern table.⏎
+        - A gasp table is necessary if a designer wants to influence the sizes
+          at which grayscaling is used under Windows. Etc.
     """,
-    # Depending on the typeface and coverage of a font, certain tables are
-    # recommended for optimum quality.
-    # For example:
-    # - the performance of a non-linear font is improved if the VDMX, LTSH,
-    #   and hdmx tables are present.
-    # - Non-monospaced Latin fonts should have a kern table.
-    # - A gasp table is necessary if a designer wants to influence the sizes
-    #   at which grayscaling is used under Windows. Etc.
     proposal = 'legacy:check/052'
 )
 def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
