@@ -65,7 +65,8 @@ def _quick_and_dirty_glyph_is_empty(font, glyph_name):
             if glyph.numberOfContours == 0:
                 return True
         return False
-    elif "CFF2" in font:
+
+    if "CFF2" in font:
         top_dict = font["CFF2"].cff.topDictIndex[0]
     else:
         top_dict = font["CFF "].cff.topDictIndex[0]
@@ -150,20 +151,20 @@ def com_adobe_fonts_check_nameid_1_win_english(ttFont, has_name_table):
             "nameid-1-not-found",
             "Windows nameID 1 US-English record not found.",
         )
-    else:
-        try:
-            nameid_1_unistr = nameid_1.toUnicode()
-        except UnicodeDecodeError:
-            return ERROR, Message(
-                "nameid-1-decoding-error",
-                "Windows nameID 1 US-English record could not be decoded.",
-            )
 
-        if not nameid_1_unistr.strip():
-            return FAIL, Message(
-                "nameid-1-empty",
-                "Windows nameID 1 US-English record is empty.",
-            )
+    try:
+        nameid_1_unistr = nameid_1.toUnicode()
+    except UnicodeDecodeError:
+        return ERROR, Message(
+            "nameid-1-decoding-error",
+            "Windows nameID 1 US-English record could not be decoded.",
+        )
+
+    if not nameid_1_unistr.strip():
+        return FAIL, Message(
+            "nameid-1-empty",
+            "Windows nameID 1 US-English record is empty.",
+        )
 
     return PASS, "Font contains a good Windows nameID 1 US-English record."
 

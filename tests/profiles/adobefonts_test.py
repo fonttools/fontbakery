@@ -86,6 +86,7 @@ def _get_nameid_1_win_eng_record(name_table):
     for rec in name_table.names:
         if (rec.nameID, rec.platformID, rec.platEncID, rec.langID) == (1, 3, 1, 0x409):
             return rec
+    return None
 
 
 def test_check_nameid_1_win_english():
