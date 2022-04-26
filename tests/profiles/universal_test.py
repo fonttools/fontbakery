@@ -486,13 +486,15 @@ def test_check_required_tables():
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/required_tables")
 
-    required_tables = ["cmap", "head", "hhea", "hmtx",
+    REQUIRED_TABLES = ["cmap", "head", "hhea", "hmtx",
                        "maxp", "name", "OS/2", "post"]
-    optional_tables = ["cvt ", "fpgm", "loca", "prep",
+
+    OPTIONAL_TABLES = ["cvt ", "fpgm", "loca", "prep",
                        "VORG", "EBDT", "EBLC", "EBSC",
                        "BASE", "GPOS", "GSUB", "JSTF",
-                       "gasp", "hdmx", "kern", "LTSH",
-                       "PCLT", "VDMX", "vhea", "vmtx"]
+                       "gasp", "hdmx", "LTSH", "PCLT",
+                       "VDMX", "vhea", "vmtx", "kern"]
+
     # Our reference Mada Regular font is good here
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
@@ -521,7 +523,7 @@ def test_check_required_tables():
     # and finally remove what we've just added:
     del ttFont.reader.tables["STAT"]
     # Now we remove required tables one-by-one to validate the FAIL code-path:
-    for required in required_tables:
+    for required in REQUIRED_TABLES:
         ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
         if required in ttFont.reader.tables:
             del ttFont.reader.tables[required]
@@ -530,12 +532,12 @@ def test_check_required_tables():
                                f'with missing mandatory table {required} ...')
     # Then, in preparation for the next step, we make sure
     # there's no optional table (by removing them all):
-    for optional in optional_tables:
+    for optional in OPTIONAL_TABLES:
         if optional in ttFont.reader.tables:
             del ttFont.reader.tables[optional]
 
     # Then re-insert them one by one to validate the INFO code-path:
-    for optional in optional_tables:
+    for optional in OPTIONAL_TABLES:
         ttFont.reader.tables[optional] = "foo"
         # and ensure that the second to last logged message is an
         # INFO status informing the user about it:
