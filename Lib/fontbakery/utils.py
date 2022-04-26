@@ -197,7 +197,7 @@ def pretty_print_list(config, values, shorten=10, sep=", ", glue="and"):
     if len(values) == 1:
         return str(values[0])
 
-    if config['full_lists']:
+    if config.get('full_lists'):
         shorten = None
 
     if shorten and len(values) > shorten + 2:
