@@ -70,15 +70,25 @@ def test_check_find_empty_letters():
     """Validate that empty glyphs are found."""
     check = CheckTester(adobefonts_profile, "com.adobe.fonts/check/find_empty_letters")
 
-    # this font has inked glyphs for all letters
-    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
-    assert_PASS(check(font))
+    PASS_MSG = "No empty glyphs for letters found."
+
+    # this OT-CFF font has inked glyphs for all letters
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
+    assert assert_PASS(check(ttFont)) == PASS_MSG
+
+    # this OT-CFF2 font has inked glyphs for all letters
+    ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
+    assert assert_PASS(check(ttFont)) == PASS_MSG
+
+    # this TrueType font has inked glyphs for all letters
+    ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
+    assert assert_PASS(check(ttFont)) == PASS_MSG
 
     # this font has empty glyphs for several letters,
     # the first of which is 'B' (U+0042)
-    font = TEST_FILE("familysans/FamilySans-Regular.ttf")
-    message = assert_results_contain(check(font), FAIL, "empty-letter")
-    assert message == "U+0042 should be visible, but its glyph ('B') is empty."
+    ttFont = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
+    msg = assert_results_contain(check(ttFont), FAIL, "empty-letter")
+    assert msg == "U+0042 should be visible, but its glyph ('B') is empty."
 
 
 def _get_nameid_1_win_eng_record(name_table):
@@ -96,8 +106,7 @@ def test_check_nameid_1_win_english():
         adobefonts_profile, "com.adobe.fonts/check/nameid_1_win_english"
     )
 
-    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
-    ttFont = TTFont(font)
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
     msg = assert_PASS(check(ttFont))
     assert msg == "Font contains a good Windows nameID 1 US-English record."
 
@@ -131,8 +140,7 @@ def test_check_whitespace_glyphs_adobefonts_override():
         adobefonts_profile, "com.google.fonts/check/whitespace_glyphs:adobefonts"
     )
 
-    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
-    ttFont = TTFont(font)
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
     assert_PASS(check(ttFont))
 
     # remove U+00A0, status should be WARN (standard check would be FAIL)
