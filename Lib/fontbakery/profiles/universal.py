@@ -538,7 +538,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 
 @check(
     id='com.google.fonts/check/required_tables',
-    conditions = ['is_ttf'],
+    conditions = ['ttFont'],
     rationale = """
         According to the OpenType spec
         https://docs.microsoft.com/en-us/typography/opentype/spec/otff#required-tables
@@ -561,9 +561,8 @@ def com_google_fonts_check_whitespace_ink(ttFont):
     """,
     proposal = 'legacy:check/052'
 )
-def com_google_fonts_check_required_tables(ttFont, config):
+def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
     """Font contains all required tables?"""
-    from .shared_conditions import is_variable_font
     from fontbakery.utils import bullet_list
 
     REQUIRED_TABLES = ["cmap", "head", "hhea", "hmtx",
@@ -575,20 +574,31 @@ def com_google_fonts_check_required_tables(ttFont, config):
                        "gasp", "hdmx", "LTSH", "PCLT",
                        "VDMX", "vhea", "vmtx", "kern"]
 
-    optional_tables = [opt for opt in OPTIONAL_TABLES if opt in ttFont.keys()]
+    font_tables = ttFont.keys()
+
+    optional_tables = [opt for opt in OPTIONAL_TABLES if opt in font_tables]
     if optional_tables:
         yield INFO, \
               Message("optional-tables",
                       f"This font contains the following optional tables:\n\n"
                       f"{bullet_list(config, optional_tables)}")
 
-    if is_variable_font(ttFont):
+    if is_variable_font:
         REQUIRED_TABLES.append("STAT")
 
     missing_tables = [req for req in REQUIRED_TABLES
-                      if req not in ttFont.keys()]
-    if "glyf" not in ttFont.keys() and "CFF " not in ttFont.keys():
-        missing_tables.append("CFF ' or 'glyf")
+                      if req not in font_tables]
+
+    if ttFont.sfntVersion == "OTTO" and (
+        "CFF " not in font_tables and "CFF2" not in font_tables
+    ):
+        if "fvar" in font_tables:
+            missing_tables.append("CFF2")
+        else:
+            missing_tables.append("CFF ")
+
+    elif ttFont.sfntVersion == "\x00\x01\x00\x00" and "glyf" not in font_tables:
+        missing_tables.append("glyf")
 
     if missing_tables:
         yield FAIL, \
