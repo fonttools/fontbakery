@@ -201,13 +201,13 @@ def pretty_print_list(config, values, shorten=10, sep=", ", glue="and"):
         shorten = None
 
     if shorten and len(values) > shorten + 2:
-        sep = sep.join(map(str, values[:shorten]))
-        return (f"{sep} {glue} {len(values) - shorten} more.\n"
+        joined_items_str = sep.join(map(str, values[:shorten]))
+        return (f"{joined_items_str} {glue} {len(values) - shorten} more.\n"
                 f"\n"
                 f"Use -F or --full-lists to disable shortening of long lists.")
     else:
-        sep = sep.join(map(str, values[:-1]))
-        return f"{sep} {glue} {str(values[-1])}"
+        joined_items_str = sep.join(map(str, values[:-1]))
+        return f"{joined_items_str} {glue} {str(values[-1])}"
 
 
 def bullet_list(config, items, bullet="-", indentation="\t"):
