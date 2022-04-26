@@ -499,8 +499,12 @@ def test_check_required_tables():
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
     # So it must PASS the check:
-    assert_PASS(check(ttFont),
-                'with a good font...')
+    msg = assert_PASS(check(ttFont), 'with a good font...')
+    assert msg == "Font contains all required tables."
+
+    msg = assert_results_contain(check(ttFont), INFO, "optional-tables")
+    for tag in {"loca", "GPOS", "GSUB"}:
+        assert tag in msg
 
     # Now we test the special cases for variable fonts:
     #
@@ -511,25 +515,30 @@ def test_check_required_tables():
     # TODO: Maybe we could someday emit a more explicit
     #       message to the users regarding that...
     ttFont.reader.tables["fvar"] = "foo"
-    assert_results_contain(check(ttFont),
-                           FAIL, "required-tables",
-                           'with fvar but no STAT...')
+    msg = assert_results_contain(check(ttFont),
+                                 FAIL, "required-tables",
+                                 'with fvar but no STAT...')
+    assert "STAT" in msg
 
     del ttFont.reader.tables["fvar"]
     ttFont.reader.tables["STAT"] = "foo"
-    assert_PASS(check(ttFont),
-                'with STAT on a non-variable font...')
+    msg = assert_PASS(check(ttFont),
+                      'with STAT on a non-variable font...')
+    assert msg == "Font contains all required tables."
 
     # and finally remove what we've just added:
     del ttFont.reader.tables["STAT"]
+
     # Now we remove required tables one-by-one to validate the FAIL code-path:
     for required in REQUIRED_TABLES:
         ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
         if required in ttFont.reader.tables:
             del ttFont.reader.tables[required]
-        assert_results_contain(check(ttFont),
-                               FAIL, "required-tables",
-                               f'with missing mandatory table {required} ...')
+        msg = assert_results_contain(check(ttFont),
+                                     FAIL, "required-tables",
+                                     f'with missing mandatory table {required} ...')
+        assert required in msg
+
     # Then, in preparation for the next step, we make sure
     # there's no optional table (by removing them all):
     for optional in OPTIONAL_TABLES:
@@ -541,9 +550,11 @@ def test_check_required_tables():
         ttFont.reader.tables[optional] = "foo"
         # and ensure that the second to last logged message is an
         # INFO status informing the user about it:
-        assert_results_contain(check(ttFont),
-                               INFO, "optional-tables",
-                               f'with optional table {required} ...')
+        msg = assert_results_contain(check(ttFont),
+                                     INFO, "optional-tables",
+                                     f'with optional table {required} ...')
+        assert optional in msg
+
         # remove the one we've just inserted before trying the next one:
         del ttFont.reader.tables[optional]
 
