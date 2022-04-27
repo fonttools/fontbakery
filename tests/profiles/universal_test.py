@@ -712,7 +712,7 @@ def test_check_family_win_ascent_and_descent(mada_ttFonts):
                            'with a bad OS/2.usWinDescent...')
 
 
-def test_check_os2_metrics_match_hhea(mada_ttFonts):
+def test_check_os2_metrics_match_hhea():
     """ Checking OS/2 Metrics match hhea Metrics. """
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/os2_metrics_match_hhea")
