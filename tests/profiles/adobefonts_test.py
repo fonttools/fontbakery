@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 from fontTools.ttLib import TTFont
 
-from fontbakery.checkrunner import WARN, FAIL, ERROR
+from fontbakery.checkrunner import WARN, FAIL, ERROR, PASS
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
@@ -21,6 +21,7 @@ from fontbakery.profiles.adobefonts import (
     profile,
     SET_EXPLICIT_CHECKS,
 )
+from fontbakery.profiles.shared_conditions import vmetrics
 
 OVERRIDE_SUFFIX = ":adobefonts"
 
@@ -38,7 +39,7 @@ def test_get_family_checks():
         "com.google.fonts/check/family/panose_familytype",
         "com.google.fonts/check/family/equal_unicode_encodings",
         "com.google.fonts/check/family/equal_font_versions",
-        # "com.google.fonts/check/family/win_ascent_and_descent",
+        f"com.google.fonts/check/family/win_ascent_and_descent{OVERRIDE_SUFFIX}",
         "com.google.fonts/check/family/vertical_metrics",
         "com.google.fonts/check/family/single_directory",
         # should it be included here? or should we have
@@ -51,7 +52,7 @@ def test_get_family_checks():
 def test_profile_check_set():
     """Confirm that the profile has the correct number of checks and the correct
     set of check IDs."""
-    assert len(SET_EXPLICIT_CHECKS) == 76
+    assert len(SET_EXPLICIT_CHECKS) == 77
     explicit_with_overrides = sorted(
         f"{check_id}{OVERRIDE_SUFFIX}" if check_id in OVERRIDDEN_CHECKS else check_id
         for check_id in SET_EXPLICIT_CHECKS
@@ -201,6 +202,59 @@ def test_check_valid_glyphnames_adobefonts_override():
     assert bad_name1 in message
     assert bad_name2 in message
     assert bad_name3 in message
+
+
+def test_check_family_win_ascent_and_descent_adobefonts_override():
+    """Check that overridden test yields WARN rather than FAIL."""
+    check = CheckTester(
+        adobefonts_profile,
+        f"com.google.fonts/check/family/win_ascent_and_descent{OVERRIDE_SUFFIX}",
+    )
+
+    # Our reference Mada Regular is know to FAIL the original check.
+    # The overridden check should just WARN.
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+    msg = assert_results_contain(check(ttFont), WARN, "ascent")
+    assert msg == (
+        "OS/2.usWinAscent value should be equal or greater than 880,"
+        " but got 776 instead"
+    )
+
+    vm = vmetrics([ttFont])
+    y_max = vm["ymax"]
+    y_min = vm["ymin"]
+    os2_table = ttFont["OS/2"]
+
+    # Now change 'OS/2.usWinAscent' to be more than double 'head.yMax'.
+    # The overridden check should just WARN.
+    os2_table.usWinAscent = y_max * 2 + 1
+    msg = assert_results_contain(check(ttFont), WARN, "ascent")
+    assert msg == (
+        "OS/2.usWinAscent value 1761 is too large."
+        " It should be less than double the yMax. Current yMax value is 880"
+    )
+
+    # Now fix the value of 'OS/2.usWinAscent'. The overridden check should PASS.
+    os2_table.usWinAscent = y_max
+    msg = assert_PASS(check(ttFont), PASS)
+    assert msg == "OS/2 usWinAscent & usWinDescent values look good!"
+
+    # Now mess up the 'OS/2.usWinDescent' value. The overridden check should just WARN.
+    os2_table.usWinDescent = abs(y_min) - 10
+    msg = assert_results_contain(check(ttFont), WARN, "descent")
+    assert msg == (
+        "OS/2.usWinDescent value should be equal or greater than 292,"
+        " but got 282 instead."
+    )
+
+    # Now change 'OS/2.usWinDescent' to be more than double 'head.yMin'.
+    # The overridden check should just WARN.
+    os2_table.usWinDescent = abs(y_min) * 2 + 1
+    msg = assert_results_contain(check(ttFont), WARN, "descent")
+    assert msg == (
+        "OS/2.usWinDescent value 585 is too large."
+        " It should be less than double the yMin. Current absolute yMin value is 292"
+    )
 
 
 @patch("freetype.Face", side_effect=ImportError)
