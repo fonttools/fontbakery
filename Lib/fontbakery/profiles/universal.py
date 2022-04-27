@@ -143,7 +143,7 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
         yield FAIL,\
               Message("ascent",
                       f"OS/2.usWinAscent value"
-                      f" {ttFont['OS/2'].usWinDescent} is too large."
+                      f" {ttFont['OS/2'].usWinAscent} is too large."
                       f" It should be less than double the yMax."
                       f" Current yMax value is {vmetrics['ymax']}")
     # OS/2 usWinDescent:
