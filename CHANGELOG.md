@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Adobe Fonts Profile
   - The profile was updated to exercise only an explicit set of checks, making it impossible for checks from imported profiles to sneak-in unnoticed. As a result, the set of checks that are run now is somewhat different from previous Font Bakery releases. For example, UFO- and designspace-related checks are no longer attempted; and outline and shaping checks are excluded as well. In addition to pairing down the set of checks inherited from the Universal profile, an effort was made to enable specific checks from other profiles such as Fontwerk, GoogleFonts, and Noto Fonts. (pull #3743)
+  - **[com.adobe.fonts/check/find_empty_letters]:** Was downgraded to WARN only for a specific set of Korean hangul syllable characters, which are known to be included in fonts as a workaround to undesired behavior from InDesign's Korean IME (Input Method Editor). More details available at issue #2894. (pull #3744)
 
 #### On the GoogleFonts Profile
   - **[com.google.fonts/check/license/OFL_copyright]:** Improve wording of log message to clarify its meaning. It was too easy to think that the displayed copyright string (read from the font binary and reported for reference) was an example of the actually expected string format. (issue #3674)
