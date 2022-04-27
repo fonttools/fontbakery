@@ -52,7 +52,7 @@ def test_get_family_checks():
 def test_profile_check_set():
     """Confirm that the profile has the correct number of checks and the correct
     set of check IDs."""
-    assert len(SET_EXPLICIT_CHECKS) == 77
+    assert len(SET_EXPLICIT_CHECKS) == 78
     explicit_with_overrides = sorted(
         f"{check_id}{OVERRIDE_SUFFIX}" if check_id in OVERRIDDEN_CHECKS else check_id
         for check_id in SET_EXPLICIT_CHECKS
@@ -255,6 +255,39 @@ def test_check_family_win_ascent_and_descent_adobefonts_override():
         "OS/2.usWinDescent value 585 is too large."
         " It should be less than double the yMin. Current absolute yMin value is 292"
     )
+
+
+def test_check_os2_metrics_match_hhea():
+    """Check that overridden test yields WARN rather than FAIL."""
+    check = CheckTester(
+        adobefonts_profile,
+        f"com.google.fonts/check/os2_metrics_match_hhea{OVERRIDE_SUFFIX}",
+    )
+
+    # Our reference Mada Regular is know to be good here.
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+
+    msg = assert_PASS(check(ttFont), PASS)
+    assert msg == "OS/2.sTypoAscender/Descender values match hhea.ascent/descent."
+
+    os2_table = ttFont["OS/2"]
+    hhea_table = ttFont["hhea"]
+    ascent = hhea_table.ascent
+    descent = hhea_table.descent
+
+    # Now we change sTypoAscender to be bad. The overridden check should just WARN.
+    os2_table.sTypoAscender = ascent - 100
+    msg = assert_results_contain(check(ttFont), WARN, "ascender")
+    assert msg == "OS/2 sTypoAscender (800) and hhea ascent (900) must be equal."
+
+    # Restore 'sTypoAscender' to a good value.
+    os2_table.sTypoAscender = ascent
+
+    # And break the font again, now changing the sTypoDescender value.
+    # The overridden check should just WARN.
+    os2_table.sTypoDescender = descent + 100
+    msg = assert_results_contain(check(ttFont), WARN, "descender")
+    assert msg == "OS/2 sTypoDescender (-200) and hhea descent (-300) must be equal."
 
 
 @patch("freetype.Face", side_effect=ImportError)

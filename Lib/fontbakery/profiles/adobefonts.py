@@ -178,10 +178,8 @@ SET_EXPLICIT_CHECKS = {
     # From universal.py
     "com.google.fonts/check/ots",
     "com.google.fonts/check/name/trailing_spaces",
-    # ---
-    # Excluding these two checks until we override them to WARN (a downgrade)
     "com.google.fonts/check/family/win_ascent_and_descent",
-    # "com.google.fonts/check/os2_metrics_match_hhea",
+    "com.google.fonts/check/os2_metrics_match_hhea",
     # ---
     # NOTE: This check is broken in AWS Lambda
     # https://github.com/googlefonts/fontbakery/issues/2405
@@ -230,6 +228,7 @@ OVERRIDDEN_CHECKS = [
     "com.google.fonts/check/whitespace_glyphs",
     "com.google.fonts/check/valid_glyphnames",
     "com.google.fonts/check/family/win_ascent_and_descent",
+    "com.google.fonts/check/os2_metrics_match_hhea",
     "com.adobe.fonts/check/freetype_rasterizer",
 ]
 
@@ -429,6 +428,16 @@ profile.check_log_override(
     overrides=(
         ("ascent", WARN, KEEP_ORIGINAL_MESSAGE),
         ("descent", WARN, KEEP_ORIGINAL_MESSAGE),
+    ),
+)
+
+
+profile.check_log_override(
+    # From universal.py
+    "com.google.fonts/check/os2_metrics_match_hhea",
+    overrides=(
+        ("ascender", WARN, KEEP_ORIGINAL_MESSAGE),
+        ("descender", WARN, KEEP_ORIGINAL_MESSAGE),
     ),
 )
 
