@@ -14,6 +14,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Adobe Fonts Profile
   - The profile was updated to exercise only an explicit set of checks, making it impossible for checks from imported profiles to sneak-in unnoticed. As a result, the set of checks that are run now is somewhat different from previous Font Bakery releases. For example, UFO- and designspace-related checks are no longer attempted; and outline and shaping checks are excluded as well. In addition to pairing down the set of checks inherited from the Universal profile, an effort was made to enable specific checks from other profiles such as Fontwerk, GoogleFonts, and Noto Fonts. (pull #3743)
   - **[com.adobe.fonts/check/find_empty_letters]:** Was downgraded to WARN only for a specific set of Korean hangul syllable characters, which are known to be included in fonts as a workaround to undesired behavior from InDesign's Korean IME (Input Method Editor). More details available at issue #2894. (pull #3744)
+  - **[com.adobe.fonts/check/freetype_rasterizer]:** This check from the Universal profile is overridden to yield ERROR if FreeType is not installed, ensuring that the check isn't skipped. (pull #3745)
+  - **[com.google.fonts/check/family/win_ascent_and_descent]:** This check from the Universal profile is now overridden to yield just WARN instead of FAIL. (pull #3745)
+  - **[com.google.fonts/check/os2_metrics_match_hhea]:** This check from the Universal profile is now overridden to yield just WARN instead of FAIL. (pull #3745)
 
 #### On the GoogleFonts Profile
   - **[com.google.fonts/check/license/OFL_copyright]:** Improve wording of log message to clarify its meaning. It was too easy to think that the displayed copyright string (read from the font binary and reported for reference) was an example of the actually expected string format. (issue #3674)
@@ -26,6 +29,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Universal Profile
   - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
   - **[com.google.fonts/check/required_tables]:** CFF/CFF2 fonts are now checked instead of skipped. (pull #3742)
+  - **[com.google.fonts/check/family/win_ascent_and_descent]:** Fixed the parameter used in the FAIL message that is issued when the value of `usWinAscent` is too large. (pull #3745)
 
 ### New Checks
 #### Added to the Adobe Fonts Profile
