@@ -2,8 +2,10 @@
 Unit tests for Adobe Fonts profile.
 """
 import os
+from unittest.mock import patch
 
 from fontTools.ttLib import TTFont
+
 from fontbakery.checkrunner import WARN, FAIL, ERROR
 from fontbakery.codetesting import (
     assert_PASS,
@@ -199,3 +201,16 @@ def test_check_valid_glyphnames_adobefonts_override():
     assert bad_name1 in message
     assert bad_name2 in message
     assert bad_name3 in message
+
+
+@patch("freetype.Face", side_effect=ImportError)
+def test_check_freetype_rasterizer_adobefonts_override(mock_import_error):
+    """Check that overridden test yields ERROR rather than SKIP."""
+    check = CheckTester(
+        adobefonts_profile,
+        f"com.adobe.fonts/check/freetype_rasterizer{OVERRIDE_SUFFIX}",
+    )
+
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    msg = assert_results_contain(check(font), ERROR, "freetype-not-installed")
+    assert "FreeType is not available" in msg
