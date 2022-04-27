@@ -1649,6 +1649,7 @@ def com_google_fonts_check_gpos7(ttFont):
 
 @check(
     id="com.adobe.fonts/check/freetype_rasterizer",
+    conditions=['ttFont'],
     severity=10,
     rationale="""
         Malformed fonts can cause FreeType to crash.
@@ -1666,9 +1667,10 @@ def com_adobe_fonts_check_freetype_rasterizer(font):
         face.load_char("✅")  # any character can be used here
 
     except ImportError:
-        return SKIP, (
+        return SKIP, Message(
+            "freetype-not-installed",
             "FreeType is not available; to install it, invoke the "
-            "'freetype' extra when installing FontBakery."
+            "'freetype' extra when installing Font Bakery.",
         )
     except FT_Exception as err:
         return FAIL, Message(

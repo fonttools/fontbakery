@@ -229,6 +229,7 @@ ADOBEFONTS_PROFILE_CHECKS = [
 OVERRIDDEN_CHECKS = [
     "com.google.fonts/check/whitespace_glyphs",
     "com.google.fonts/check/valid_glyphnames",
+    "com.adobe.fonts/check/freetype_rasterizer",
 ]
 
 
@@ -418,6 +419,14 @@ profile.check_log_override(
     # From universal.py
     "com.google.fonts/check/valid_glyphnames",
     overrides=(("found-invalid-names", WARN, KEEP_ORIGINAL_MESSAGE),),
+)
+
+
+profile.check_log_override(
+    # From universal.py
+    "com.adobe.fonts/check/freetype_rasterizer",
+    overrides=(("freetype-not-installed", ERROR, KEEP_ORIGINAL_MESSAGE),),
+    reason=("For Adobe, this check is very important and should never be skipped."),
 )
 
 
