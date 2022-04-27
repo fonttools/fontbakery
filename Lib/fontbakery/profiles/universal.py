@@ -129,40 +129,45 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
         return
 
     failed = False
+    os2_table = ttFont['OS/2']
+    win_ascent = os2_table.usWinAscent
+    win_descent = os2_table.usWinDescent
+    y_max = vmetrics['ymax']
+    y_min = vmetrics['ymin']
 
     # OS/2 usWinAscent:
-    if ttFont['OS/2'].usWinAscent < vmetrics['ymax']:
+    if win_ascent < y_max:
         failed = True
         yield FAIL,\
               Message("ascent",
                       f"OS/2.usWinAscent value should be"
-                      f" equal or greater than {vmetrics['ymax']},"
-                      f" but got {ttFont['OS/2'].usWinAscent} instead")
-    if ttFont['OS/2'].usWinAscent > vmetrics['ymax'] * 2:
+                      f" equal or greater than {y_max},"
+                      f" but got {win_ascent} instead")
+    if win_ascent > y_max * 2:
         failed = True
         yield FAIL,\
               Message("ascent",
                       f"OS/2.usWinAscent value"
-                      f" {ttFont['OS/2'].usWinAscent} is too large."
+                      f" {win_ascent} is too large."
                       f" It should be less than double the yMax."
-                      f" Current yMax value is {vmetrics['ymax']}")
+                      f" Current yMax value is {y_max}")
     # OS/2 usWinDescent:
-    if ttFont['OS/2'].usWinDescent < abs(vmetrics['ymin']):
+    if win_descent < abs(y_min):
         failed = True
         yield FAIL,\
               Message("descent",
                       f"OS/2.usWinDescent value should be equal or"
-                      f" greater than {abs(vmetrics['ymin'])}, but got"
-                      f" {ttFont['OS/2'].usWinDescent} instead.")
+                      f" greater than {abs(y_min)}, but got"
+                      f" {win_descent} instead.")
 
-    if ttFont['OS/2'].usWinDescent > abs(vmetrics['ymin']) * 2:
+    if win_descent > abs(y_min) * 2:
         failed = True
         yield FAIL,\
               Message("descent",
                       f"OS/2.usWinDescent value"
-                      f" {ttFont['OS/2'].usWinDescent} is too large."
+                      f" {win_descent} is too large."
                       f" It should be less than double the yMin."
-                      f" Current absolute yMin value is {abs(vmetrics['ymin'])}")
+                      f" Current absolute yMin value is {abs(y_min)}")
     if not failed:
         yield PASS, "OS/2 usWinAscent & usWinDescent values look good!"
 
