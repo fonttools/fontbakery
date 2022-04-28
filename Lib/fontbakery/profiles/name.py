@@ -261,39 +261,75 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
 )
 def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
     """Does full font name begin with the font family name?"""
-    from fontbakery.utils import get_name_entry_strings
-    familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
-    fullfontname = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
 
-    if len(familyname) == 0:
-        yield FAIL,\
-              Message("no-font-family-name",
-                      "Font lacks a NameID.FONT_FAMILY_NAME"
-                      " entry in the 'name' table.")
-    elif len(fullfontname) == 0:
-        yield FAIL,\
-              Message("no-full-font-name",
-                      "Font lacks a NameID.FULL_FONT_NAME"
-                      " entry in the 'name' table.")
-    else:
-        # we probably should check all found values are equivalent.
-        # and, in that case, then performing the rest of the check
-        # with only the first occurences of the name entries
-        # will suffice:
-        fullfontname = fullfontname[0]
-        familyname = familyname[0]
+    name_table = ttFont["name"]
+    names_compared = False  # Used for knowing if at least one comparison was attempted
+    passed = True
 
-        if not fullfontname.startswith(familyname):
-            yield FAIL,\
-                  Message("does-not",
-                          f"On the 'name' table, the full font name"
-                          f" (NameID {NameID.FULL_FONT_NAME}"
-                          f" - FULL_FONT_NAME: '{familyname}')"
-                          f" does not begin with font family name"
-                          f" (NameID {NameID.FONT_FAMILY_NAME}"
-                          f" - FONT_FAMILY_NAME: '{fullfontname}')")
-        else:
-            yield PASS, "Full font name begins with the font family name."
+    # Collect all the unique platformIDs, encodingIDs, and languageIDs
+    # used in the font's name table.
+    platform_ids = set(rec.platformID for rec in name_table.names)
+    encoding_ids = set(rec.platEncID for rec in name_table.names)
+    language_ids = set(rec.langID for rec in name_table.names)
+
+    # Now iterate over the platform/encoding/languageID sets and compare
+    # the full name and family name strings.
+    # The full name string is always taken from nameID 4, but
+    # the family name string can come from nameIDs 1, 16, or 21.
+    # We'll compare all of the ones contained in the font.
+    full_name_id = NameID.FULL_FONT_NAME
+    for plat_id in sorted(platform_ids):
+        for enc_id in sorted(encoding_ids):
+            for lang_id in sorted(language_ids):
+
+                # Check if the full name record exists
+                if name_table.getName(full_name_id, plat_id, enc_id, lang_id) is None:
+                    # The full_name_id wasn't found. No point in going further
+                    continue
+
+                # Iterate over all possible family name records
+                for family_name_id in (NameID.FONT_FAMILY_NAME,
+                                       NameID.TYPOGRAPHIC_FAMILY_NAME,
+                                       NameID.WWS_FAMILY_NAME):
+                    if name_table.getName(
+                            family_name_id, plat_id, enc_id, lang_id) is None:
+                        # The family_name_id wasn't found. Move on to the next
+                        continue
+
+                    names_compared = True  # Yay! At least one comparison will be made!!
+
+                    try:
+                        family_name = name_table.getName(
+                            family_name_id, plat_id, enc_id, lang_id).toUnicode()
+                        full_name = name_table.getName(
+                            full_name_id, plat_id, enc_id, lang_id).toUnicode()
+                    except UnicodeDecodeError as err:
+                        raise err
+
+                    if not full_name.startswith(family_name):
+                        yield FAIL, Message(
+                            "does-not",
+                            f"On the 'name' table, the full font name {full_name!r}"
+                            f" does not begin with the font family name {family_name!r}"
+                            f" in platformID {plat_id},"
+                            f" encodingID {enc_id},"
+                            f" languageID {lang_id}({lang_id:04X}),"
+                            f" and nameID {family_name_id}."
+                        )
+                        passed = False
+
+    if not names_compared:
+        yield FAIL, Message(
+            "missing-font-names",
+            f"The font's 'name' table lacks a pair of records with"
+            f" nameID {NameID.FULL_FONT_NAME} (Full name),"
+            f" and at least one of"
+            f" nameID {NameID.FONT_FAMILY_NAME} (Font Family name),"
+            f" {NameID.TYPOGRAPHIC_FAMILY_NAME} (Typographic Family name),"
+            f" or {NameID.WWS_FAMILY_NAME} (WWS Family name)."
+        )
+    elif passed:
+        yield PASS, "Full font name begins with the font family name."
 
 
 @check(

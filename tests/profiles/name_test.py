@@ -186,39 +186,73 @@ def test_check_name_match_familyname_fullfont():
     """ Does full font name begin with the font family name? """
     check = CheckTester(opentype_profile,
                         "com.google.fonts/check/name/match_familyname_fullfont")
+
     # Our reference Mada Regular is known to be good
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
     # So it must PASS the check:
-    assert_PASS(check(ttFont),
-                'with a good font...')
+    msg = assert_PASS(check(ttFont))
+    assert msg == "Full font name begins with the font family name."
 
-    # alter the full-font-name prepending a bad prefix:
-    for i, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FULL_FONT_NAME:
-            ttFont["name"].names[i].string = "bad-prefix".encode(name.getEncoding())
+    EXPECTED_NAME_STRING = "Mada"
+    BAD_PREFIX = "bad-prefix"
+    name_table = ttFont["name"]
+    platform_id = 3
+    encoding_id = 1
+    language_id = 0x0409
+    family_name_id = NameID.FONT_FAMILY_NAME
+    full_name_id = NameID.FULL_FONT_NAME
 
-    # and make sure the check FAILs:
-    assert_results_contain(check(ttFont),
-                           FAIL, 'does-not',
-                           'with a font in which the family name'
-                           ' begins with a digit...')
+    # Alter the font's full_name string and re-run the check.
+    # 1. Retrieve the existing name strings and assert that they're the expected ones.
+    family_name = name_table.getName(
+        family_name_id, platform_id, encoding_id, language_id).toUnicode()
+    assert family_name == EXPECTED_NAME_STRING
 
-    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    for i, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FULL_FONT_NAME:
-            del ttFont["name"].names[i]
-    assert_results_contain(check(ttFont),
-                           FAIL, 'no-full-font-name',
-                           'with no FULL_FONT_NAME entries...')
+    full_name_before = name_table.getName(
+        full_name_id, platform_id, encoding_id, language_id).toUnicode()
+    assert full_name_before == EXPECTED_NAME_STRING
 
-    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    for i, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FONT_FAMILY_NAME:
-            del ttFont["name"].names[i]
-    assert_results_contain(check(ttFont),
-                           FAIL, 'no-font-family-name',
-                           'with no FONT_FAMILY_NAME entries...')
+    # 2. Prefix the full_name string, and update the font's name record.
+    name_table.setName(f"{BAD_PREFIX}{full_name_before}", full_name_id,
+                       platform_id, encoding_id, language_id)
+
+    # 3. Retrieve the updated name string, and assert that it's the expected one.
+    full_name_after = name_table.getName(
+        full_name_id, platform_id, encoding_id, language_id).toUnicode()
+    assert full_name_after != family_name
+    assert full_name_after == f"{BAD_PREFIX}{EXPECTED_NAME_STRING}"
+    assert full_name_after.startswith(BAD_PREFIX)
+
+    # 4. Now re-run the check. It should yield FAIL because the full_name string
+    # no longer starts with the family_name string.
+    msg = assert_results_contain(check(ttFont), FAIL, "does-not")
+    assert msg == (f"On the 'name' table, the full font name {full_name_after!r}"
+                   f" does not begin with the font family name {family_name!r}"
+                   f" in platformID {platform_id},"
+                   f" encodingID {encoding_id},"
+                   f" languageID {language_id}({language_id:04X}),"
+                   f" and nameID {family_name_id}.")
+
+    # Remove the modified full name record and re-run the check.
+    # It should yield FAIL because the name table won't contain a full name string
+    # to compare with the family name string.
+    name_table.removeNames(full_name_id, platform_id, encoding_id, language_id)
+    msg = assert_results_contain(check(ttFont), FAIL, "missing-font-names")
+    assert msg == (
+        f"The font's 'name' table lacks a pair of records with"
+        f" nameID {NameID.FULL_FONT_NAME} (Full name),"
+        f" and at least one of"
+        f" nameID {NameID.FONT_FAMILY_NAME} (Font Family name),"
+        f" {NameID.TYPOGRAPHIC_FAMILY_NAME} (Typographic Family name),"
+        f" or {NameID.WWS_FAMILY_NAME} (WWS Family name)."
+    )
+
+    # Run the check on a CJK font. The font's 'name' table contains
+    # English-US (1033/0x0409) and Japanese (1041/0x0411) records. It should PASS.
+    ttFont = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))
+    msg = assert_PASS(check(ttFont))
+    assert msg == "Full font name begins with the font family name."
 
 
 def assert_name_table_check_result(ttFont, index, name, check, value, expected_result, expected_keyword=None):
