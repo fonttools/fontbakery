@@ -29,6 +29,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Fontwerk Profile
   - Added a few more checks to the `CHECKS_NOT_TO_INCLUDE` list. These are checks (most of them from the Google Fonts profile) that Fontwerk is not interested in including in its vendor-specific profile.
 
+#### On the OpenType Profile
+  - **[com.google.fonts/check/name/match_familyname_fullfont]:** The check was completely rewritten; it now correctly compares full name and family name strings that are from the same platform, same encoding, and same language. (pull #3747)
+
 #### On the Universal Profile
   - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
   - **[com.google.fonts/check/required_tables]:** CFF/CFF2 fonts are now checked instead of skipped. (pull #3742)
