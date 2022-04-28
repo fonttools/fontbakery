@@ -1,6 +1,7 @@
 import argparse
 import pkgutil
 import runpy
+import signal
 import sys
 from importlib import import_module
 
@@ -26,7 +27,14 @@ def run_profile_check(profilename):
     sys.exit(check_profile_main(module.profile))
 
 
+def signal_handler(sig, frame):
+    print('\nCancelled by user')
+    sys.exit(-1)
+
+
 def main():
+    signal.signal(signal.SIGINT, signal_handler)
+
     subcommands = [
         pkg[1] for pkg in pkgutil.walk_packages(fontbakery.commands.__path__)
     ] + ["check_" + prof for prof in CLI_PROFILES]
