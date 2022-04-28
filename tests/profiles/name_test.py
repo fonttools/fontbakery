@@ -226,7 +226,7 @@ def test_check_name_match_familyname_fullfont():
 
     # 4. Now re-run the check. It should yield FAIL because the full_name string
     # no longer starts with the family_name string.
-    msg = assert_results_contain(check(ttFont), FAIL, "does-not")
+    msg = assert_results_contain(check(ttFont), FAIL, "mismatch-font-names")
     assert msg == (f"On the 'name' table, the full font name {full_name_after!r}"
                    f" does not begin with the font family name {family_name!r}"
                    f" in platformID {platform_id},"
