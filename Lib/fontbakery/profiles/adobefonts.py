@@ -133,10 +133,7 @@ SET_EXPLICIT_CHECKS = {
     "com.adobe.fonts/check/name/empty_records",
     # "com.google.fonts/check/name/no_copyright_on_description",  # PERMANENTLY_EXCLUDED # noqa
     "com.google.fonts/check/monospace",
-    # ---
-    # Excluding this check because it wrongly compares names of different languageIDs
-    # "com.google.fonts/check/name/match_familyname_fullfont",
-    # ---
+    "com.google.fonts/check/name/match_familyname_fullfont",
     "com.google.fonts/check/family_naming_recommendations",
     "com.adobe.fonts/check/name/postscript_vs_cff",
     "com.adobe.fonts/check/name/postscript_name_consistency",
