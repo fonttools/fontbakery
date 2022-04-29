@@ -70,7 +70,7 @@ setup(
         'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
         'font-v',
         'gflanguages>=0.3.0', # there was an api simplification/update on v0.3.0 (see https://github.com/googlefonts/gflanguages/pull/7)
-        'glyphsets',
+        'glyphsets>=0.5.0',
         'lxml',
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
                                       # (see https://github.com/khaledhosny/ots/pull/182)
