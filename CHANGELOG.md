@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.9 (2022-Apr-??)
+## Upcoming release: 0.8.9 (2022-May-??)
 ### Noteworthy code-changes
   - Improve implementation of `is_italic` condition and provide an `is_bold` counterpart (issue #3693)
   - Nicer cancellation for terminal runner. (issue #3672)
@@ -31,6 +31,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the OpenType Profile
   - **[com.google.fonts/check/name/match_familyname_fullfont]:** The check was completely rewritten; it now correctly compares full name and family name strings that are from the same platform, same encoding, and same language. (pull #3747)
+  - **[com.google.fonts/check/name/match_familyname_fullfont]:** Added rationale text contibuted by Adam Twardoch (issue #3754)
 
 #### On the Universal Profile
   - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)

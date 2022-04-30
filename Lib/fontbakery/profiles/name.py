@@ -257,6 +257,15 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
 
 @check(
     id = 'com.google.fonts/check/name/match_familyname_fullfont',
+    rationale = """
+        The FULL_FONT_NAME entry in the ‘name’ table should start with the same string
+        as the Family Name (FONT_FAMILY_NAME, TYPOGRAPHIC_FAMILY_NAME or
+        WWS_FAMILY_NAME).
+
+        If the Family Name is not included as the first part of the Full Font Name, and
+        the user embeds the font in a document using a Microsoft Office app, the app
+        will fail to render the font when it opens the document again.
+    """,
     proposal = 'legacy:check/068'
 )
 def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
