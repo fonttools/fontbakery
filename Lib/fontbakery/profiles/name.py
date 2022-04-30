@@ -298,13 +298,35 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
 
                     names_compared = True  # Yay! At least one comparison will be made!!
 
+                    decode_error_msg_prefix = (
+                        f"On the 'name' table, the name record"
+                        f" for platformID {plat_id},"
+                        f" encodingID {enc_id},"
+                        f" languageID {lang_id}({lang_id:04X}),"
+                    )
                     try:
                         family_name = name_table.getName(
                             family_name_id, plat_id, enc_id, lang_id).toUnicode()
+                    except UnicodeDecodeError:
+                        yield FAIL, Message(
+                            f"cannot-decode-nameid-{family_name_id}",
+                            f"{decode_error_msg_prefix} and nameID {family_name_id}"
+                            " failed to be decoded."
+                        )
+                        passed = False
+                        continue
+
+                    try:
                         full_name = name_table.getName(
                             full_name_id, plat_id, enc_id, lang_id).toUnicode()
-                    except UnicodeDecodeError as err:
-                        raise err
+                    except UnicodeDecodeError:
+                        yield FAIL, Message(
+                            f"cannot-decode-nameid-{full_name_id}",
+                            f"{decode_error_msg_prefix} and nameID {full_name_id}"
+                            " failed to be decoded."
+                        )
+                        passed = False
+                        continue
 
                     if not full_name.startswith(family_name):
                         yield FAIL, Message(

@@ -254,6 +254,35 @@ def test_check_name_match_familyname_fullfont():
     msg = assert_PASS(check(ttFont))
     assert msg == "Full font name begins with the font family name."
 
+    name_table = ttFont["name"]
+    decode_error_msg_prefix = (
+        f"On the 'name' table, the name record"
+        f" for platformID {platform_id},"
+        f" encodingID {encoding_id},"
+        f" languageID {language_id}({language_id:04X}),"
+    )
+
+    # Replace the English full name string with data that can't be 'utf_16_be'-decoded.
+    # This will cause a UnicodeDecodeError which will yield a FAIL.
+    name_table.setName("\xff".encode("utf_7"),
+                       full_name_id, platform_id, encoding_id, language_id)
+    msg = assert_results_contain(
+        check(ttFont), FAIL, f"cannot-decode-nameid-{full_name_id}")
+    assert msg == (
+        f"{decode_error_msg_prefix} and nameID {full_name_id} failed to be decoded."
+    )
+
+    # This time replace the family name string instead.
+    # This should still trigger a UnicodeDecodeError.
+    name_table = ttFont["name"]
+    name_table.setName("\xff".encode("utf_7"),
+                       family_name_id, platform_id, encoding_id, language_id)
+    msg = assert_results_contain(
+        check(ttFont), FAIL, f"cannot-decode-nameid-{family_name_id}")
+    assert msg == (
+        f"{decode_error_msg_prefix} and nameID {family_name_id} failed to be decoded."
+    )
+
 
 def assert_name_table_check_result(ttFont, index, name, check, value, expected_result, expected_keyword=None):
     backup = name.string
