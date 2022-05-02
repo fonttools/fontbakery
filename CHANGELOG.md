@@ -9,10 +9,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### BugFixes
   - Users reading markdown reports are now directed to the "stable" version of our ReadTheDocs documentation instead of the "latest" (git dev) one. (issue #3677)
-  - Improve rendering of bullet lists (issue #3691)
+  - Improve rendering of bullet lists (issue #3691 & pull #3741)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/glyph_coverage]:** Use glyphsets lib so we can improve this check in the future. (pull #3753)
+  - **[com.google.fonts/check/fontbakery_version]:** If the request to PyPI.org is not successful (due to host errors, or lack of internet connection), the check is skipped. (pull #3756)
 
 #### On the Adobe Fonts Profile
   - The profile was updated to exercise only an explicit set of checks, making it impossible for checks from imported profiles to sneak-in unnoticed. As a result, the set of checks that are run now is somewhat different from previous Font Bakery releases. For example, UFO- and designspace-related checks are no longer attempted; and outline and shaping checks are excluded as well. In addition to pairing down the set of checks inherited from the Universal profile, an effort was made to enable specific checks from other profiles such as Fontwerk, GoogleFonts, and Noto Fonts. (pull #3743)
@@ -37,6 +38,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
   - **[com.google.fonts/check/required_tables]:** CFF/CFF2 fonts are now checked instead of skipped. (pull #3742)
   - **[com.google.fonts/check/family/win_ascent_and_descent]:** Fixed the parameter used in the FAIL message that is issued when the value of `usWinAscent` is too large. (pull #3745)
+  - **[com.google.fonts/check/fontbakery_version]:** A change introduced in #3432 made this check always be skipped; that's now fixed. (issue #3576)
 
 ### New Checks
 #### Added to the Adobe Fonts Profile
