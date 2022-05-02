@@ -219,29 +219,6 @@ def test_check_ttx_roundtrip():
     #                        FAIL, None) # FIXME: This needs a message keyword
 
 
-def test_is_up_to_date():
-    from fontbakery.profiles.universal import is_up_to_date
-    # is_up_to_date(installed, latest)
-    assert(is_up_to_date(installed="0.5.0",
-                            latest="0.5.0") == True)
-    assert(is_up_to_date(installed="0.5.1",
-                            latest="0.5.0") == True)
-    assert(is_up_to_date(installed="0.4.1",
-                            latest="0.5.0") == False)
-    assert(is_up_to_date(installed="0.3.4",
-                            latest="0.3.5") == False)
-    assert(is_up_to_date(installed="1.0.0",
-                            latest="1.0.1") == False)
-    assert(is_up_to_date(installed="2.0.0",
-                            latest="1.5.3") == True)
-    assert(is_up_to_date(installed="0.5.2.dev73+g8c9ebc0.d20181023",
-                            latest="0.5.1") == True)
-    assert(is_up_to_date(installed="0.5.2.dev73+g8c9ebc0.d20181023",
-                            latest="0.5.2") == False)
-    assert(is_up_to_date(installed="0.5.2.dev73+g8c9ebc0.d20181023",
-                            latest="0.5.3") == False)
-
-
 def test_check_name_trailing_spaces():
     """ Name table entries must not have trailing spaces. """
     check = CheckTester(universal_profile,
@@ -298,6 +275,29 @@ def test_check_ots():
                                      FAIL, "ots-sanitize-error")
     assert "invalid sfntVersion" in message
     assert "Failed to sanitize file!" in message
+
+
+def test_is_up_to_date():
+    from fontbakery.profiles.universal import is_up_to_date
+    # is_up_to_date(installed, latest)
+    assert(is_up_to_date("0.5.0",
+                         "0.5.0") is True)
+    assert(is_up_to_date("0.5.1",
+                         "0.5.0") is True)
+    assert(is_up_to_date("0.4.1",
+                         "0.5.0") is False)
+    assert(is_up_to_date("0.3.4",
+                         "0.3.5") is False)
+    assert(is_up_to_date("1.0.0",
+                         "1.0.1") is False)
+    assert(is_up_to_date("2.0.0",
+                         "1.5.3") is True)
+    assert(is_up_to_date("0.5.2.dev73+g8c9ebc0.d20181023",
+                         "0.5.1") is True)
+    assert(is_up_to_date("0.5.2.dev73+g8c9ebc0.d20181023",
+                         "0.5.2") is False)
+    assert(is_up_to_date("0.5.2.dev73+g8c9ebc0.d20181023",
+                         "0.5.3") is False)
 
 
 def test_check_mandatory_glyphs():
