@@ -330,7 +330,7 @@ def is_up_to_date(installed, latest):
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2093'
 )
-def com_google_fonts_check_fontbakery_version():
+def com_google_fonts_check_fontbakery_version(font):
     """Do we have the latest version of FontBakery installed?"""
     import json
     import requests
