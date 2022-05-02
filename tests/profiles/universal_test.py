@@ -11,6 +11,7 @@ from fontbakery.codetesting import (assert_PASS,
                                     TEST_FILE)
 from fontbakery.constants import NameID
 from fontbakery.profiles import universal as universal_profile
+from fontbakery.profiles.universal import is_up_to_date
 
 
 @pytest.fixture
@@ -277,27 +278,30 @@ def test_check_ots():
     assert "Failed to sanitize file!" in message
 
 
-def test_is_up_to_date():
-    from fontbakery.profiles.universal import is_up_to_date
-    # is_up_to_date(installed, latest)
-    assert(is_up_to_date("0.5.0",
-                         "0.5.0") is True)
-    assert(is_up_to_date("0.5.1",
-                         "0.5.0") is True)
-    assert(is_up_to_date("0.4.1",
-                         "0.5.0") is False)
-    assert(is_up_to_date("0.3.4",
-                         "0.3.5") is False)
-    assert(is_up_to_date("1.0.0",
-                         "1.0.1") is False)
-    assert(is_up_to_date("2.0.0",
-                         "1.5.3") is True)
-    assert(is_up_to_date("0.5.2.dev73+g8c9ebc0.d20181023",
-                         "0.5.1") is True)
-    assert(is_up_to_date("0.5.2.dev73+g8c9ebc0.d20181023",
-                         "0.5.2") is False)
-    assert(is_up_to_date("0.5.2.dev73+g8c9ebc0.d20181023",
-                         "0.5.3") is False)
+@pytest.mark.parametrize('installed, latest, result', [
+    ("0.5.0",
+     "0.5.0", True),
+    ("0.5.1",
+     "0.5.0", True),
+    ("0.4.1",
+     "0.5.0", False),
+    ("0.3.4",
+     "0.3.5", False),
+    ("1.0.0",
+     "1.0.1", False),
+    ("2.0.0",
+     "1.5.1", True),
+    ("0.5.2.dev73+g8c9ebc0.d20181023",
+     "0.5.1", True),
+    ("0.5.2.dev73+g8c9ebc0.d20181023",
+     "0.5.2", False),
+    ("0.5.2.dev73+g8c9ebc0.d20181023",
+     "0.5.3", False),
+])
+def test_is_up_to_date(installed, latest, result):
+    assert is_up_to_date(installed, latest) is result
+
+
 
 
 def test_check_mandatory_glyphs():
