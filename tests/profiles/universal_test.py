@@ -364,7 +364,7 @@ def test_fontbakery_version(mock_get, mock_installed):
 
 
 def test_fontbakery_version_live_apis():
-    """Check if Font Bakery is up-to-date. (No-API mocking edition)"""
+    """Check if Font Bakery is up-to-date. (No API-mocking edition)"""
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/fontbakery_version")
 
