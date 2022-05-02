@@ -354,7 +354,7 @@ def test_fontbakery_version(mock_get, mock_installed):
     # Test the case of an unsuccessful response to the GET request.
     mock_response.status_code = 500
     mock_response.content = "500 Internal Server Error"
-    msg = assert_results_contain(check(font), SKIP, "unsuccessful-request-500")
+    msg = assert_results_contain(check(font), FAIL, "unsuccessful-request-500")
     assert "Request to PyPI.org was not successful" in msg
 
     # Test the case of the GET request failing due to a connection error.

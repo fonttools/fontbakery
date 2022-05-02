@@ -346,7 +346,7 @@ def com_google_fonts_check_fontbakery_version(font):
 
     status_code = response.status_code
     if status_code != 200:
-        return SKIP, Message(
+        return FAIL, Message(
             f"unsuccessful-request-{status_code}",
             f"Request to PyPI.org was not successful:\n{response.content}",
         )
