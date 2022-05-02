@@ -3,8 +3,9 @@ from unittest.mock import patch, MagicMock
 
 from fontTools.ttLib import TTFont
 import pytest
+from requests.exceptions import ConnectionError
 
-from fontbakery.checkrunner import INFO, WARN, FAIL, PASS
+from fontbakery.checkrunner import INFO, WARN, FAIL, PASS, SKIP
 from fontbakery.codetesting import (assert_PASS,
                                     assert_SKIP,
                                     assert_results_contain,
@@ -349,6 +350,17 @@ def test_fontbakery_version(mock_get, mock_installed):
     msg = assert_results_contain(check(font), FAIL, "outdated-fontbakery")
     assert (f"Current Font Bakery version is {installed_ver},"
             f" while a newer {latest_ver} is already available.") in msg
+
+    # Test the case of an unsuccessful response to the GET request.
+    mock_response.status_code = 500
+    mock_response.content = "500 Internal Server Error"
+    msg = assert_results_contain(check(font), SKIP, "unsuccessful-request-500")
+    assert "Request to PyPI.org was not successful" in msg
+
+    # Test the case of the GET request failing due to a connection error.
+    mock_get.side_effect = ConnectionError
+    msg = assert_results_contain(check(font), SKIP, "connection-error")
+    assert "Request to PyPI.org failed with this message" in msg
 
 
 def test_check_mandatory_glyphs():

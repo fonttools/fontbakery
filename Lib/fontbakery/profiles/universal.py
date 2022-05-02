@@ -335,17 +335,32 @@ def com_google_fonts_check_fontbakery_version(font):
     import requests
     import pip_api
 
-    pypi_data = requests.get('https://pypi.org/pypi/fontbakery/json')
-    latest = pypi_data.json()["info"]["version"]
+    try:
+        response = requests.get('https://pypi.org/pypi/fontbakery/json')
+
+    except requests.exceptions.ConnectionError as err:
+        return SKIP, Message(
+            "connection-error",
+            f"Request to PyPI.org failed with this message:\n{err}",
+        )
+
+    status_code = response.status_code
+    if status_code != 200:
+        return SKIP, Message(
+            f"unsuccessful-request-{status_code}",
+            f"Request to PyPI.org was not successful:\n{response.content}",
+        )
+
+    latest = response.json()["info"]["version"]
     installed = str(pip_api.installed_distributions()["fontbakery"].version)
 
     if not is_up_to_date(installed, latest):
-        yield FAIL, Message("outdated-fontbakery",
-                            f"Current Font Bakery version is {installed},"
-                            f" while a newer {latest} is already available."
-                            f" Please upgrade it with 'pip install -U fontbakery'")
+        return FAIL, Message("outdated-fontbakery",
+                             f"Current Font Bakery version is {installed},"
+                             f" while a newer {latest} is already available."
+                             f" Please upgrade it with 'pip install -U fontbakery'")
     else:
-        yield PASS, "Font Bakery is up-to-date."
+        return PASS, "Font Bakery is up-to-date."
 
 
 @check(
