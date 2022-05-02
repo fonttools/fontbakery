@@ -363,6 +363,22 @@ def test_fontbakery_version(mock_get, mock_installed):
     assert "Request to PyPI.org failed with this message" in msg
 
 
+def test_fontbakery_version_live_apis():
+    """Check if Font Bakery is up-to-date. (No-API mocking edition)"""
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/fontbakery_version")
+
+    # Any of the test fonts can be used here.
+    # The check requires a 'font' argument but it doesn't do anything with it.
+    font = TEST_FILE("nunito/Nunito-Regular.ttf")
+
+    # The check will make an actual request to PyPI.org,
+    # and will query 'pip' to determine which version of 'fontbakery' is installed.
+    # The check should PASS.
+    msg = assert_PASS(check(font), PASS)
+    assert msg == "Font Bakery is up-to-date."
+
+
 def test_check_mandatory_glyphs():
     """ Font contains the first few mandatory glyphs (.null or NULL, CR and space)? """
     check = CheckTester(universal_profile,
