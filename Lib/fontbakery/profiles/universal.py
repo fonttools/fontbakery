@@ -341,11 +341,12 @@ def com_google_fonts_check_fontbakery_version(font):
     installed = str(pip_api.installed_distributions()["fontbakery"].version)
 
     if not is_up_to_date(installed, latest):
-        yield FAIL, (f"Current Font Bakery version is {installed},"
-                     f" while a newer {latest} is already available."
-                     f" Please upgrade it with 'pip install -U fontbakery'")
+        yield FAIL, Message("outdated-fontbakery",
+                            f"Current Font Bakery version is {installed},"
+                            f" while a newer {latest} is already available."
+                            f" Please upgrade it with 'pip install -U fontbakery'")
     else:
-        yield PASS, "Font Bakery is up-to-date"
+        yield PASS, "Font Bakery is up-to-date."
 
 
 @check(
