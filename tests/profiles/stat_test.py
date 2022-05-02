@@ -22,15 +22,14 @@ def test_check_varfont_stat_axis_record_for_each_axis():
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
 
     # So the check must PASS
-    assert_PASS(check(ttFont), "with all necessary Axis Records...")
+    msg = assert_PASS(check(ttFont))
+    assert msg == "STAT table has all necessary Axis Records."
 
     # We then remove its first Axis Record (`wdth`):
     ttFont["STAT"].table.DesignAxisRecord.Axis.pop(0)
 
     # And now the problem should be detected::
-    assert_results_contain(
-        check(ttFont),
-        FAIL,
-        "missing-axis-records",
-        "with a missing Axis Record: (wght)...",
+    msg = assert_results_contain(check(ttFont), FAIL, "missing-axis-records")
+    assert msg == (
+        f"STAT table is missing Axis Records for the following axes:\n\n\t- wdth"
     )
