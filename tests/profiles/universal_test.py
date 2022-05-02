@@ -1,15 +1,16 @@
-import pytest
 import io
-import os
-from fontTools.ttLib import TTFont
+import json
+from unittest.mock import patch, MagicMock
 
-from fontbakery.checkrunner import (INFO, WARN, FAIL)
+from fontTools.ttLib import TTFont
+import pytest
+
+from fontbakery.checkrunner import INFO, WARN, FAIL, PASS
 from fontbakery.codetesting import (assert_PASS,
                                     assert_SKIP,
                                     assert_results_contain,
                                     CheckTester,
                                     TEST_FILE)
-from fontbakery.constants import NameID
 from fontbakery.profiles import universal as universal_profile
 from fontbakery.profiles.universal import is_up_to_date
 
@@ -302,6 +303,53 @@ def test_is_up_to_date(installed, latest, result):
     assert is_up_to_date(installed, latest) is result
 
 
+class MockDistribution:
+    """Helper class to mock pip-api's Distribution class."""
+
+    def __init__(self, version: str):
+        self.name = "fontbakery"
+        self.version = version
+
+    def __repr__(self):
+        return f"<Distribution(name='{self.name}', version='{self.version}')>"
+
+
+# We don't want to make an actual GET request to PyPI.org, so we'll mock it.
+# We'll also mock pip-api's 'installed_distributions' method.
+@patch("pip_api.installed_distributions")
+@patch("requests.get")
+def test_fontbakery_version(mock_get, mock_installed):
+    """Check if Font Bakery is up-to-date"""
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/fontbakery_version")
+
+    # Any of the test fonts can be used here.
+    # The check requires a 'font' argument but it doesn't do anything with it.
+    font = TEST_FILE("nunito/Nunito-Regular.ttf")
+
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+
+    # Test the case of installed version being the same as PyPI's version.
+    latest_ver = installed_ver = "0.1.0"
+    mock_response.content = json.dumps({"info": {"version": latest_ver}})
+    mock_get.return_value = mock_response
+    mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
+    msg = assert_PASS(check(font), PASS)
+    assert msg == "Font Bakery is up-to-date."
+
+    # Test the case of installed version being newer than PyPI's version.
+    installed_ver = "0.1.1"
+    mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
+    msg = assert_PASS(check(font), PASS)
+    assert msg == "Font Bakery is up-to-date."
+
+    # Test the case of installed version being older than PyPI's version.
+    installed_ver = "0.0.1"
+    mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
+    msg = assert_results_contain(check(font), FAIL, "outdated-fontbakery")
+    assert (f"Current Font Bakery version is {installed_ver},"
+            f" while a newer {latest_ver} is already available.") in msg
 
 
 def test_check_mandatory_glyphs():
