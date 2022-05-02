@@ -31,6 +31,7 @@ def are_ttf(ttFonts):
 def is_cff(ttFont):
     return 'CFF ' in ttFont
 
+
 @condition
 def is_cff2(ttFont):
     return 'CFF2' in ttFont
@@ -39,6 +40,11 @@ def is_cff2(ttFont):
 @condition
 def has_name_table(ttFont):
     return "name" in ttFont.keys()
+
+
+@condition
+def has_STAT_table(ttFont):
+    return "STAT" in ttFont
 
 
 @condition
