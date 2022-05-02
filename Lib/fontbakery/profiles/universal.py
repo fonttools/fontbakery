@@ -332,12 +332,11 @@ def is_up_to_date(installed, latest):
 )
 def com_google_fonts_check_fontbakery_version(font):
     """Do we have the latest version of FontBakery installed?"""
-    import json
     import requests
     import pip_api
 
     pypi_data = requests.get('https://pypi.org/pypi/fontbakery/json')
-    latest = json.loads(pypi_data.content)["info"]["version"]
+    latest = pypi_data.json()["info"]["version"]
     installed = str(pip_api.installed_distributions()["fontbakery"].version)
 
     if not is_up_to_date(installed, latest):

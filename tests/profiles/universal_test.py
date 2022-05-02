@@ -1,5 +1,4 @@
 import io
-import json
 from unittest.mock import patch, MagicMock
 
 from fontTools.ttLib import TTFont
@@ -332,7 +331,7 @@ def test_fontbakery_version(mock_get, mock_installed):
 
     # Test the case of installed version being the same as PyPI's version.
     latest_ver = installed_ver = "0.1.0"
-    mock_response.content = json.dumps({"info": {"version": latest_ver}})
+    mock_response.json.return_value = {"info": {"version": latest_ver}}
     mock_get.return_value = mock_response
     mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
     msg = assert_PASS(check(font), PASS)
