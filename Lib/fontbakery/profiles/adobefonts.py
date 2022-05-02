@@ -177,11 +177,7 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/name/trailing_spaces",
     "com.google.fonts/check/family/win_ascent_and_descent",
     "com.google.fonts/check/os2_metrics_match_hhea",
-    # ---
-    # NOTE: This check is broken in AWS Lambda
-    # https://github.com/googlefonts/fontbakery/issues/2405
     "com.google.fonts/check/fontbakery_version",
-    # ---
     "com.google.fonts/check/ttx-roundtrip",
     "com.google.fonts/check/family/single_directory",
     "com.google.fonts/check/mandatory_glyphs",
