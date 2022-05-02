@@ -69,6 +69,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/cmap/alien_codepoints]:** Checks that there are no surrogate pair or private use area codepoints encoded in the cmap table. (PR #3681)
 
 #### Added to the OpenType Profile
+  - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Validates that STAT table has Axis Value tables. (issue #3090)
   - **[com.adobe.fonts/check/varfont/valid_axis_nameid]:** Validates that the value of axisNameID used by each VariationAxisRecord is greater than 255 and less than 32768. (issue #3702)
   - **[com.adobe.fonts/check/varfont/valid_subfamily_nameid]:** Validates that the value of subfamilyNameID used by each InstanceRecord is 2, 17, or greater than 255 and less than 32768. (issue #3703)
   - **[com.adobe.fonts/check/varfont/valid_postscript_nameid]:** Validates that the value of postScriptNameID used by each InstanceRecord is 6, 0xFFFF, or greater than 255 and less than 32768. (issue #3704)
