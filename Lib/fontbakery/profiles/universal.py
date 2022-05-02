@@ -687,14 +687,9 @@ def com_google_fonts_check_unwanted_tables(ttFont):
         yield PASS, "There are no unwanted tables."
 
 
-@condition
-def STAT_table(ttFont):
-    return "STAT" in ttFont
-
-
 @check(
     id = 'com.google.fonts/check/STAT_strings',
-    conditions = ["STAT_table"],
+    conditions = ["has_STAT_table"],
     rationale = """
         On the STAT table, the "Italic" keyword must not be used on AxisValues
         for variation axes other than 'ital'.
