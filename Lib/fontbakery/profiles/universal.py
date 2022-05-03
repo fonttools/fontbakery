@@ -339,7 +339,7 @@ def com_google_fonts_check_fontbakery_version(font):
         response = requests.get('https://pypi.org/pypi/fontbakery/json')
 
     except requests.exceptions.ConnectionError as err:
-        return SKIP, Message(
+        return FAIL, Message(
             "connection-error",
             f"Request to PyPI.org failed with this message:\n{err}",
         )
