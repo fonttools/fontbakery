@@ -114,12 +114,6 @@ def test_assert_PASS_ignore_error_false(capsys):
     assert captured.out == f"Test PASS {pass_reason}\n"
 
 
-def test_assert_results_contain_no_expected_msgcode():
-    with pytest.raises(Exception) as err:
-        assert_results_contain([], PASS)
-    assert str(err.value) == "Test must provide the expected message code"
-
-
 def test_assert_results_contain_ignore_error_true(capsys):
     msg_code = "a message code"
     ignore = "an error"
