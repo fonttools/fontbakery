@@ -21,6 +21,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/freetype_rasterizer]:** This check from the Universal profile is overridden to yield ERROR if FreeType is not installed, ensuring that the check isn't skipped. (pull #3745)
   - **[com.google.fonts/check/family/win_ascent_and_descent]:** This check from the Universal profile is now overridden to yield just WARN instead of FAIL. (pull #3745)
   - **[com.google.fonts/check/os2_metrics_match_hhea]:** This check from the Universal profile is now overridden to yield just WARN instead of FAIL. (pull #3745)
+  - **[com.google.fonts/check/fontbakery_version]:** This check from the Universal profile is overridden to be skipped instead of failing, when the user's internet connection isn't functional. (pull #3756)
 
 #### On the GoogleFonts Profile
   - **[com.google.fonts/check/license/OFL_copyright]:** Improve wording of log message to clarify its meaning. It was too easy to think that the displayed copyright string (read from the font binary and reported for reference) was an example of the actually expected string format. (issue #3674)

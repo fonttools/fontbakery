@@ -5,8 +5,9 @@ import os
 from unittest.mock import patch
 
 from fontTools.ttLib import TTFont
+from requests.exceptions import ConnectionError
 
-from fontbakery.checkrunner import WARN, FAIL, ERROR, PASS
+from fontbakery.checkrunner import WARN, FAIL, ERROR, PASS, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
@@ -165,7 +166,7 @@ def test_check_nameid_1_win_english():
     assert msg == "Font has no 'name' table."
 
 
-def test_check_whitespace_glyphs_adobefonts_override():
+def test_check_override_whitespace_glyphs():
     """Check that overridden test for nbsp yields WARN rather than FAIL."""
     check = CheckTester(
         adobefonts_profile, f"com.google.fonts/check/whitespace_glyphs{OVERRIDE_SUFFIX}"
@@ -180,7 +181,7 @@ def test_check_whitespace_glyphs_adobefonts_override():
     assert_results_contain(check(ttFont), WARN, "missing-whitespace-glyph-0x00A0")
 
 
-def test_check_valid_glyphnames_adobefonts_override():
+def test_check_override_valid_glyphnames():
     """Check that overridden test yields WARN rather than FAIL."""
     check = CheckTester(
         adobefonts_profile, f"com.google.fonts/check/valid_glyphnames{OVERRIDE_SUFFIX}"
@@ -204,7 +205,7 @@ def test_check_valid_glyphnames_adobefonts_override():
     assert bad_name3 in message
 
 
-def test_check_family_win_ascent_and_descent_adobefonts_override():
+def test_check_override_family_win_ascent_and_descent():
     """Check that overridden test yields WARN rather than FAIL."""
     check = CheckTester(
         adobefonts_profile,
@@ -257,7 +258,7 @@ def test_check_family_win_ascent_and_descent_adobefonts_override():
     )
 
 
-def test_check_os2_metrics_match_hhea():
+def test_check_override_os2_metrics_match_hhea():
     """Check that overridden test yields WARN rather than FAIL."""
     check = CheckTester(
         adobefonts_profile,
@@ -291,7 +292,7 @@ def test_check_os2_metrics_match_hhea():
 
 
 @patch("freetype.Face", side_effect=ImportError)
-def test_check_freetype_rasterizer_adobefonts_override(mock_import_error):
+def test_check_override_freetype_rasterizer(mock_import_error):
     """Check that overridden test yields ERROR rather than SKIP."""
     check = CheckTester(
         adobefonts_profile,
@@ -301,3 +302,16 @@ def test_check_freetype_rasterizer_adobefonts_override(mock_import_error):
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     msg = assert_results_contain(check(font), ERROR, "freetype-not-installed")
     assert "FreeType is not available" in msg
+
+
+@patch("requests.get", side_effect=ConnectionError)
+def test_check_override_fontbakery_version(mock_get):
+    """Check that overridden test yields SKIP rather than FAIL."""
+    check = CheckTester(
+        adobefonts_profile,
+        f"com.google.fonts/check/fontbakery_version{OVERRIDE_SUFFIX}",
+    )
+
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    msg = assert_results_contain(check(font), SKIP, "connection-error")
+    assert "Request to PyPI.org failed with this message" in msg
