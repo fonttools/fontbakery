@@ -15,7 +15,7 @@ from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
 from fontbakery.profiles.notofonts import NOTOFONTS_PROFILE_CHECKS
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.section import Section
-from fontbakery.status import PASS, FAIL, WARN, ERROR
+from fontbakery.status import PASS, FAIL, WARN, ERROR, SKIP
 from fontbakery.utils import add_check_overrides
 
 profile_imports = (
@@ -223,6 +223,7 @@ OVERRIDDEN_CHECKS = [
     "com.google.fonts/check/family/win_ascent_and_descent",
     "com.google.fonts/check/os2_metrics_match_hhea",
     "com.adobe.fonts/check/freetype_rasterizer",
+    "com.google.fonts/check/fontbakery_version",
 ]
 
 
@@ -402,8 +403,8 @@ profile.check_log_override(
     "com.google.fonts/check/whitespace_glyphs",
     overrides=(("missing-whitespace-glyph-0x00A0", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "For Adobe, this is not as severe "
-        "as assessed in the original check for 0x00A0."
+        "For Adobe, this is not as severe"
+        " as assessed in the original check for 0x00A0."
     ),
 )
 
@@ -439,7 +440,18 @@ profile.check_log_override(
     # From universal.py
     "com.adobe.fonts/check/freetype_rasterizer",
     overrides=(("freetype-not-installed", ERROR, KEEP_ORIGINAL_MESSAGE),),
-    reason=("For Adobe, this check is very important and should never be skipped."),
+    reason="For Adobe, this check is very important and should never be skipped.",
+)
+
+
+profile.check_log_override(
+    # From universal.py
+    "com.google.fonts/check/fontbakery_version",
+    overrides=(("connection-error", SKIP, KEEP_ORIGINAL_MESSAGE),),
+    reason=(
+        "For Adobe, users shouldn't be bothered with a failed check"
+        " if their internet connection isn't functional.",
+    ),
 )
 
 
