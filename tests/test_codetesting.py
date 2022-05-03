@@ -114,6 +114,13 @@ def test_assert_PASS_ignore_error_false(capsys):
     assert captured.out == f"Test PASS {pass_reason}\n"
 
 
+def test_assert_results_contain_expected_msgcode_string():
+    bogus_msgcode = True
+    with pytest.raises(Exception) as err:
+        assert_results_contain([], PASS, bogus_msgcode)
+    assert str(err.value) == "The expected message code must be a string"
+
+
 def test_assert_results_contain_ignore_error_true(capsys):
     msg_code = "a message code"
     ignore = "an error"
@@ -134,17 +141,18 @@ def test_assert_results_contain_ignore_error_true(capsys):
 def test_assert_results_contain_bare_string(capsys):
     msg_code = "a message code"
     bare_str = "just a string"
+    reason = "just because..."
     expected_status = PASS
     results = [
         (WARN, bare_str),
         (INFO, bare_str),
     ]
     with pytest.raises(Exception) as err:
-        assert_results_contain(results, expected_status, msg_code)
+        assert_results_contain(results, expected_status, msg_code, reason)
     assert f"(Bare string: {bare_str!r})" in str(err.value)
 
     captured = capsys.readouterr()
-    assert captured.out == f"Test {expected_status} [{msg_code}]\n"
+    assert captured.out == f"Test {expected_status} {reason}\n"
 
 
 def test_assert_results_contain_success_string_msg(capsys):

@@ -201,7 +201,7 @@ def assert_results_contain(check_results,
 
     if not isinstance(expected_msgcode, str):
         raise Exception(
-            "Test must provide the expected message code")
+            "The expected message code must be a string")
 
     if not reason:
         reason = f"[{expected_msgcode}]"
