@@ -318,7 +318,7 @@ class MockDistribution:
 # We'll also mock pip-api's 'installed_distributions' method.
 @patch("pip_api.installed_distributions")
 @patch("requests.get")
-def test_fontbakery_version(mock_get, mock_installed):
+def test_check_fontbakery_version(mock_get, mock_installed):
     """Check if Font Bakery is up-to-date"""
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/fontbakery_version")
@@ -359,11 +359,11 @@ def test_fontbakery_version(mock_get, mock_installed):
 
     # Test the case of the GET request failing due to a connection error.
     mock_get.side_effect = ConnectionError
-    msg = assert_results_contain(check(font), SKIP, "connection-error")
+    msg = assert_results_contain(check(font), FAIL, "connection-error")
     assert "Request to PyPI.org failed with this message" in msg
 
 
-def test_fontbakery_version_live_apis():
+def test_check_fontbakery_version_live_apis():
     """Check if Font Bakery is up-to-date. (No API-mocking edition)"""
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/fontbakery_version")
