@@ -188,7 +188,7 @@ def assert_SKIP(check_results, reason=""):
 
 def assert_results_contain(check_results,
                            expected_status,
-                           expected_msgcode=None,
+                           expected_msgcode,
                            reason=None,
                            ignore_error=None):
     """
@@ -198,11 +198,13 @@ def assert_results_contain(check_results,
     """
     from fontbakery.message import Message
     from fontbakery.checkrunner import PASS, DEBUG, ERROR
-    if not reason:
-        reason = f"[{expected_msgcode}]"
-    if not expected_msgcode:
+
+    if not isinstance(expected_msgcode, str):
         raise Exception(
             "Test must provide the expected message code")
+
+    if not reason:
+        reason = f"[{expected_msgcode}]"
 
     print(f"Test {expected_status} {reason}")
     check_results = list(check_results)
@@ -222,7 +224,7 @@ def assert_results_contain(check_results,
                 f"(Bare string: {msg!r})")
 
         if status == expected_status and (
-            (isinstance(msg, str) and msg == expected_msgcode)
+            isinstance(msg, str)
             or (isinstance(msg, Message) and msg.code == expected_msgcode)
         ):
             if isinstance(msg, Message):
