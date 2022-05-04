@@ -3361,6 +3361,10 @@ def test_check_vertical_metrics():
                            FAIL, 'bad-hhea.lineGap',
                            'hhea.lineGap is "150" it should be 0')
 
+    ttFont['hhea'].lineGap = float('inf')
+    assert_results_contain(check(ttFont),
+                           WARN, 'bad-hhea-range',
+                           'if font hhea are greater than 1.5 * upm')
 
 def test_check_vertical_metrics_regressions(cabin_ttFonts):
     check = CheckTester(googlefonts_profile,
