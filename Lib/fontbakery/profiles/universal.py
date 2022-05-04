@@ -229,6 +229,12 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
                       f"OS/2 sTypoDescender ({ttFont['OS/2'].sTypoDescender})"
                       f" and hhea descent ({ttFont['hhea'].descent})"
                       f" must be equal.")
+    elif ttFont["OS/2"].sTypoLineGap != ttFont["hhea"].lineGap:
+        yield FAIL,\
+              Message("lineGap",
+                      f"OS/2 sTypoLineGap ({ttFont['OS/2'].sTypoLineGap})"
+                      f" and hhea lineGap ({ttFont['hhea'].lineGap})"
+                      f" must be equal.")
     else:
         yield PASS, ("OS/2.sTypoAscender/Descender values"
                      " match hhea.ascent/descent.")
@@ -979,7 +985,8 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
         "usWinAscent": {},
         "usWinDescent": {},
         "ascent": {},
-        "descent": {}
+        "descent": {},
+        "lineGap": {}
     }
 
     missing_tables = False
@@ -1007,6 +1014,7 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
         vmetrics['usWinDescent'][full_font_name] = ttFont['OS/2'].usWinDescent
         vmetrics['ascent'][full_font_name] = ttFont['hhea'].ascent
         vmetrics['descent'][full_font_name] = ttFont['hhea'].descent
+        vmetrics['lineGap'][full_font_name] = ttFont['hhea'].lineGap
 
 
     if not missing_tables:
@@ -1076,7 +1084,8 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
         "usWinAscent": {},
         "usWinDescent": {},
         "ascent": {},
-        "descent": {}
+        "descent": {},
+        "lineGap": {}
     }
 
     for family_ttFonts in superfamily_ttFonts:
@@ -1089,6 +1098,7 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
             vmetrics['usWinDescent'][full_font_name] = ttFont['OS/2'].usWinDescent
             vmetrics['ascent'][full_font_name] = ttFont['hhea'].ascent
             vmetrics['descent'][full_font_name] = ttFont['hhea'].descent
+            vmetrics['lineGap'][full_font_name] = ttFont['hhea'].lineGap
 
     for k, v in vmetrics.items():
         metric_vals = set(vmetrics[k].values())
