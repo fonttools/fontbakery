@@ -50,6 +50,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Adobe Fonts Profile
   - **[com.adobe.fonts/check/nameid_1_win_english]:** Validates that the font has a good nameID 1, Windows/Unicode/US-English `name` table record. (issue #3714)
 
+#### Added to the GoogleFonts Profile
+  - **[com.google.fonts/check/vertical_metrics]:** Similar to `cjk_vertical_metrics`, this check enforces Google Fonts’ general vertical metrics specifications.
+
 #### Added to the Noto Fonts Profile
   - The majority of checks from the Google Fonts profile have been added. (PR #3681)
   - **[com.google.fonts/check/name/noto_manufacturer]:** Checks for a known manufacturer name and correct designer URL in the name table. (PR #3681)

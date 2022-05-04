@@ -3404,6 +3404,16 @@ def test_check_repo_zip_files():
             os.remove(filepath)
 
 
+def test_check_vertical_metrics():
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/vertical_metrics")
+
+    ttFont = TTFont(TEST_FILE("akshar/Akshar[wght].ttf"))
+    assert_results_contain(check(ttFont),
+                           FAIL, 'bad-hhea.lineGap',
+                           'hhea.lineGap is "150" it should be 0')
+
+
 def test_check_vertical_metrics_regressions(cabin_ttFonts):
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/vertical_metrics_regressions")
