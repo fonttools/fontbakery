@@ -12,6 +12,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - Improve rendering of bullet lists (issue #3691 & pull #3741)
 
 ### Changes to existing checks
+  - **[com.google.fonts/check/os2_metrics_match_hhea]:** Included lineGap in comparison
+  - **[com.google.fonts/check/family/vertical_metrics]:** Included hhea.lineGap in comparison
+  - **[com.google.fonts/check/superfamily/vertical_metrics]:** Included hhea.lineGap in comparison
   - **[com.google.fonts/check/glyph_coverage]:** Use glyphsets lib so we can improve this check in the future. (pull #3753)
   - **[com.google.fonts/check/fontbakery_version]:** If the request to PyPI.org is not successful (due to host errors, or lack of internet connection), the check fails. (pull #3756)
 
