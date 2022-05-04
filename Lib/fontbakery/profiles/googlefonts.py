@@ -4896,7 +4896,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
     hhea_sum = (font_metrics['hhea.ascent'] +
                 abs(font_metrics['hhea.descent']) +
                 font_metrics['hhea.lineGap']) / font_upm
-    if not failed and not 1.1 < hhea_sum <= 1.5:
+    if not 1.1 < hhea_sum <= 1.5:
         warn = True
         yield WARN,\
               Message('bad-hhea-range',
@@ -5108,7 +5108,7 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     hhea_sum = (font_metrics['hhea.ascent'] +
                 abs(font_metrics['hhea.descent']) +
                 font_metrics['hhea.lineGap']) / font_upm
-    if not failed and not 1.1 < hhea_sum <= 1.5:
+    if not 1.1 < hhea_sum <= 1.5:
         warn = True
         yield WARN,\
               Message('bad-hhea-range',
