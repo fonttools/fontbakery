@@ -178,6 +178,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/smart_dropout',
     'com.google.fonts/check/integer_ppem_if_hinted',
     'com.google.fonts/check/unitsperem_strict',
+    'com.google.fonts/check/vertical_metrics',
     'com.google.fonts/check/vertical_metrics_regressions',
     'com.google.fonts/check/cjk_vertical_metrics',
     'com.google.fonts/check/cjk_vertical_metrics_regressions',
@@ -4834,6 +4835,76 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
                       f"Please do not host ZIP files on the project repository."
                       f" These files were detected:\n"
                       f"\t* {files_list}")
+
+
+@check(
+    id = 'com.google.fonts/check/vertical_metrics',
+    conditions = ['not remote_styles', 'not is_cjk_font'],
+    rationale = """
+        This check generally enforces Google Fonts’ vertical metrics specifications.
+
+        Our documentation includes further information:
+        https://github.com/googlefonts/gf-docs/tree/main/VerticalMetrics
+    """,
+)
+def com_google_fonts_check_vertical_metrics(ttFont):
+    """Check font follows the Google Fonts vertical metric schema"""
+    from .shared_conditions import typo_metrics_enabled
+    filename = os.path.basename(ttFont.reader.file.name)
+
+    # Check necessary tables are present.
+    missing_tables = False
+    required = ["OS/2", "hhea", "head"]
+    for key in required:
+        if key not in ttFont:
+            missing_tables = True
+            yield FAIL,\
+                  Message(f'lacks-{key}',
+                          f"{filename} lacks a '{key}' table.")
+
+    if missing_tables:
+        return
+
+    font_upm = ttFont['head'].unitsPerEm
+    font_metrics = {
+        'OS/2.sTypoAscender': ttFont['OS/2'].sTypoAscender,
+        'OS/2.sTypoDescender': ttFont['OS/2'].sTypoDescender,
+        'OS/2.sTypoLineGap': ttFont['OS/2'].sTypoLineGap,
+        'hhea.ascent': ttFont['hhea'].ascent,
+        'hhea.descent': ttFont['hhea'].descent,
+        'hhea.lineGap': ttFont['hhea'].lineGap,
+        'OS/2.usWinAscent': ttFont['OS/2'].usWinAscent,
+        'OS/2.usWinDescent': ttFont['OS/2'].usWinDescent
+    }
+    expected_metrics = {
+        'OS/2.sTypoLineGap': 0,
+        'hhea.lineGap': 0,
+    }
+
+    failed = False
+    warn = False
+
+    # Check typo metrics and hhea lineGap match our expected values
+    for k in expected_metrics:
+        if font_metrics[k] != expected_metrics[k]:
+            failed = True
+            yield FAIL,\
+                  Message(f'bad-{k}',
+                          f'{k} is "{font_metrics[k]}" it should be {expected_metrics[k]}')
+
+    # Check the sum of the hhea metrics is between 1.1-1.5x of the font's upm
+    hhea_sum = (font_metrics['hhea.ascent'] +
+                abs(font_metrics['hhea.descent']) +
+                font_metrics['hhea.lineGap']) / font_upm
+    if not failed and not 1.1 < hhea_sum <= 1.5:
+        warn = True
+        yield WARN,\
+              Message('bad-hhea-range',
+                      f"We recommend the absolute sum of the hhea metrics should be"
+                      f" between 1.1-1.5x of the font's upm. This font has {hhea_sum}x")
+
+    if not failed and not warn:
+        yield PASS, 'Vertical metrics are good'
 
 
 @check(
