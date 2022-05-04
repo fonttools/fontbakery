@@ -796,8 +796,14 @@ def test_check_os2_metrics_match_hhea():
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/os2_metrics_match_hhea")
 
-    # Our reference Mada Regular is know to be good here.
+    # Our reference Mada Regular is know to be faulty here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+    assert_results_contain(check(ttFont),
+                           FAIL, 'lineGap',
+                           'OS/2 sTypoLineGap (100) and hhea lineGap (96) must be equal.')
+
+    # Our reference Mada Black is know to be good here.
+    ttFont = TTFont(TEST_FILE("mada/Mada-Black.ttf"))
 
     assert_PASS(check(ttFont),
                 'with a good font...')

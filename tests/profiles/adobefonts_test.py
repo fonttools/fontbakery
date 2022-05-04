@@ -265,9 +265,14 @@ def test_check_override_os2_metrics_match_hhea():
         f"com.google.fonts/check/os2_metrics_match_hhea{OVERRIDE_SUFFIX}",
     )
 
-    # Our reference Mada Regular is know to be good here.
+    # Our reference Mada Regular is know to be faulty here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+    assert_results_contain(check(ttFont),
+                           FAIL, 'lineGap',
+                           'OS/2 sTypoLineGap (100) and hhea lineGap (96) must be equal.')
 
+    # Our reference Mada Black is know to be good here.
+    ttFont = TTFont(TEST_FILE("mada/Mada-Black.ttf"))
     msg = assert_PASS(check(ttFont), PASS)
     assert msg == "OS/2.sTypoAscender/Descender values match hhea.ascent/descent."
 
