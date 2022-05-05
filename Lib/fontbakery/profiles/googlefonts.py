@@ -4867,14 +4867,14 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     font_upm = ttFont['head'].unitsPerEm
     font_metrics = {
-        # 'OS/2.sTypoAscender': ttFont['OS/2'].sTypoAscender,
-        # 'OS/2.sTypoDescender': ttFont['OS/2'].sTypoDescender,
+        'OS/2.sTypoAscender': ttFont['OS/2'].sTypoAscender,
+        'OS/2.sTypoDescender': ttFont['OS/2'].sTypoDescender,
         'OS/2.sTypoLineGap': ttFont['OS/2'].sTypoLineGap,
-        # 'hhea.ascent': ttFont['hhea'].ascent,
-        # 'hhea.descent': ttFont['hhea'].descent,
+        'hhea.ascent': ttFont['hhea'].ascent,
+        'hhea.descent': ttFont['hhea'].descent,
         'hhea.lineGap': ttFont['hhea'].lineGap,
-        # 'OS/2.usWinAscent': ttFont['OS/2'].usWinAscent,
-        # 'OS/2.usWinDescent': ttFont['OS/2'].usWinDescent
+        'OS/2.usWinAscent': ttFont['OS/2'].usWinAscent,
+        'OS/2.usWinDescent': ttFont['OS/2'].usWinDescent
     }
     expected_metrics = {
         'OS/2.sTypoLineGap': 0,
