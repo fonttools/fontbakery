@@ -4842,6 +4842,14 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
     conditions = ['not remote_styles', 'not is_cjk_font'],
     rationale = """
         This check generally enforces Google Fonts’ vertical metrics specifications.
+        In particular:
+        * lineGap must be 0
+        * Sum of hhea ascender+abs(descender)+linegap must be
+          between 120% and 200% of UPM
+        * Warning if sum is over 150% of UPM
+
+        The threshold levels 150% (WARN) and 200% (FAIL) are somewhat arbitrarily chosen
+        and may hint at a glaring mistake in the metrics calculations or UPM settings.
 
         Our documentation includes further information:
         https://github.com/googlefonts/gf-docs/tree/main/VerticalMetrics
