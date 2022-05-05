@@ -4901,7 +4901,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
     if hhea_sum < 1.2:
         failed = True
         yield FAIL,\
-            Message(f'bad-hhea-range',
+            Message('bad-hhea-range',
                 'The sum of hhea.ascender+abs(hhea.descender)+hhea.lineGap '
                 f'is {int(hhea_sum*font_upm)} when it should be at least {int(font_upm*1.2)}')
 
@@ -4909,7 +4909,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
     elif hhea_sum > 2.0:
         failed = True
         yield FAIL,\
-            Message(f'bad-hhea-range',
+            Message('bad-hhea-range',
                 'The sum of hhea.ascender+abs(hhea.descender)+hhea.lineGap '
                 f'is {int(hhea_sum*font_upm)} when it should be at most {int(font_upm*2.0)}')
 
