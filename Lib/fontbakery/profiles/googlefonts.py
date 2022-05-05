@@ -4891,16 +4891,34 @@ def com_google_fonts_check_vertical_metrics(ttFont):
                   Message(f'bad-{k}',
                           f'{k} is "{font_metrics[k]}" it should be {expected_metrics[k]}')
 
-    # Check the sum of the hhea metrics is between 1.1-1.5x of the font's upm
     hhea_sum = (font_metrics['hhea.ascent'] +
                 abs(font_metrics['hhea.descent']) +
                 font_metrics['hhea.lineGap']) / font_upm
-    if not 1.1 < hhea_sum <= 1.5:
+
+    # Check the sum of the hhea metrics is not below 1.2
+    # (120% of upm or 1200 units for 1000 upm font)
+    if hhea_sum < 1.2:
+        failed = True
+        yield FAIL,\
+            Message(f'bad-hhea-range',
+                'The sum of hhea.ascender+abs(hhea.descender)+hhea.lineGap '
+                f'is {int(hhea_sum*font_upm)} when it should be at least {int(font_upm*1.2)}')
+
+    # Check the sum of the hhea metrics is below 2.0
+    elif hhea_sum > 2.0:
+        failed = True
+        yield FAIL,\
+            Message(f'bad-hhea-range',
+                'The sum of hhea.ascender+abs(hhea.descender)+hhea.lineGap '
+                f'is {int(hhea_sum*font_upm)} when it should be at most {int(font_upm*2.0)}')
+
+    # Check the sum of the hhea metrics is between 1.1-1.5x of the font's upm
+    elif hhea_sum > 1.5:
         warn = True
         yield WARN,\
-              Message('bad-hhea-range',
-                      f"We recommend the absolute sum of the hhea metrics should be"
-                      f" between 1.1-1.5x of the font's upm. This font has {hhea_sum}x")
+            Message('bad-hhea-range',
+                "We recommend the absolute sum of the hhea metrics should be"
+                f" between 1.2-1.5x of the font's upm. This font has {hhea_sum}x ({int(hhea_sum*font_upm)})")
 
     if not failed and not warn:
         yield PASS, 'Vertical metrics are good'

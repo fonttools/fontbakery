@@ -3408,15 +3408,40 @@ def test_check_vertical_metrics():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/vertical_metrics")
 
+    # linegap is not 0
     ttFont = TTFont(TEST_FILE("akshar/Akshar[wght].ttf"))
     assert_results_contain(check(ttFont),
                            FAIL, 'bad-hhea.lineGap',
                            'hhea.lineGap is "150" it should be 0')
 
-    ttFont['hhea'].lineGap = float('inf')
+    # hhea sum is above 2000 -> FAIL
+    ttFont['hhea'].lineGap = 0
+    ttFont['OS/2'].sTypoLineGap = 0
+    ttFont['hhea'].descent = -2000
+    ttFont['OS/2'].sTypoDescender = -2000
+    assert_results_contain(check(ttFont),
+                           FAIL, 'bad-hhea-range',
+                           'hhea sum is above 2000')
+
+    # hhea sum is below 1200 -> FAIL
+    ttFont['hhea'].descent = 0
+    ttFont['OS/2'].sTypoDescender = 0
+    assert_results_contain(check(ttFont),
+                           FAIL, 'bad-hhea-range',
+                           'hhea sum is below 1200')
+
+    # hhea sum is above 1500 -> WARN
+    ttFont['hhea'].descent = -700
+    ttFont['OS/2'].sTypoDescender = -700
     assert_results_contain(check(ttFont),
                            WARN, 'bad-hhea-range',
-                           'if font hhea are greater than 1.5 * upm')
+                           'hhea sum is above 1500')
+
+    # hhea sum is in range
+    ttFont['hhea'].descent = -300
+    ttFont['OS/2'].sTypoDescender = -300
+    assert_PASS(check(ttFont))
+
 
 def test_check_vertical_metrics_regressions(cabin_ttFonts):
     check = CheckTester(googlefonts_profile,
