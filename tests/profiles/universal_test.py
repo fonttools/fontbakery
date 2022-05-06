@@ -1032,10 +1032,16 @@ def test_check_transformed_components():
                 "with a good font...")
 
     # DM Sans v1.100 had some transformed components
+    # and it's hinted
     font = TEST_FILE("dm-sans-v1.100/DMSans-Regular.ttf")
     assert_results_contain(check(font),
                            FAIL, 'transformed-components')
 
+    # Amiri is unhinted, but it contains four transformed components
+    # that result in reversed outline direction
+    font = TEST_FILE("amiri/AmiriQuranColored.ttf")
+    assert_results_contain(check(font),
+                           FAIL, 'transformed-components')
 
 def test_check_dotted_circle():
     """Ensure dotted circle glyph is present and can attach marks."""
