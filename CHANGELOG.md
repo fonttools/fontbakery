@@ -40,6 +40,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/name/match_familyname_fullfont]:** Added rationale text contibuted by Adam Twardoch (issue #3754)
 
 #### On the Universal Profile
+  - **[com.google.fonts/check/transformed_components]:** Check for any component transformation only if font is hinted, otherwise check only for flipped contour direction (one transformation dimension is flipped while the other isn't)
   - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
   - **[com.google.fonts/check/required_tables]:** CFF/CFF2 fonts are now checked instead of skipped. (pull #3742)
   - **[com.google.fonts/check/family/win_ascent_and_descent]:** Fixed the parameter used in the FAIL message that is issued when the value of `usWinAscent` is too large. (pull #3745)
