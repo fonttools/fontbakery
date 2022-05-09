@@ -109,7 +109,8 @@ class CheckTester:
                           'fonts': fonts}
             else:
                 values = {'font': values,
-                          'fonts': [values]}
+                          'fonts': [values],
+                          'ufo': values}
         elif isinstance(values, TTFont):
             values = {'font': values.reader.file.name,
                       'fonts': [values.reader.file.name],
