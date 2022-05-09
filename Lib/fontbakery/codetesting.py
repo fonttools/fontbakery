@@ -13,11 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-from fontbakery.checkrunner import CheckRunner
-from fontbakery.configuration import Configuration
-from fontbakery.profile import Profile, get_module_profile
 import defcon
+
+from fontbakery.checkrunner import CheckRunner, PASS, DEBUG, ERROR, SKIP
+from fontbakery.configuration import Configuration
+from fontbakery.message import Message
+from fontbakery.profile import Profile, get_module_profile
 
 PATH_TEST_DATA = "data/test/"
 PATH_TEST_DATA_GLYPHS_FILES = f"{PATH_TEST_DATA}glyphs_files/"
@@ -148,7 +149,15 @@ class CheckTester:
             raise KeyError(f'Check with id "{self.check_id}" not found.')
 
         self._args = self._get_args(condition_overrides)
-        return list(self.runner._exec_check(self.check, self._args))
+
+        # Verify if the check's 'conditions' are met.
+        skipped, _ = self.runner._get_check_dependencies(self.check,
+                                                         self.check_iterargs)
+        if skipped is not None:
+            status, msg_str = skipped
+            return [(status, Message("unfulfilled-conditions", msg_str))]
+        else:
+            return list(self.runner._exec_check(self.check, self._args))
 
 
 def portable_path(p):
@@ -167,7 +176,6 @@ def GLYPHSAPP_TEST_FILE(f):
 
 
 def assert_PASS(check_results, reason="with a good font...", ignore_error=None):
-    from fontbakery.checkrunner import PASS, ERROR
     print(f"Test PASS {reason}")
     status, message = list(check_results)[-1]
     if ignore_error and status == ERROR:
@@ -179,7 +187,6 @@ def assert_PASS(check_results, reason="with a good font...", ignore_error=None):
 
 
 def assert_SKIP(check_results, reason=""):
-    from fontbakery.checkrunner import SKIP
     print(f"Test SKIP {reason}")
     status, message = list(check_results)[-1]
     assert status == SKIP
@@ -196,9 +203,6 @@ def assert_results_contain(check_results,
     a certain log message is emited by a check but it can be in any
     order among other log messages.
     """
-    from fontbakery.message import Message
-    from fontbakery.checkrunner import PASS, DEBUG, ERROR
-
     if not isinstance(expected_msgcode, str):
         raise Exception(
             "The expected message code must be a string")
