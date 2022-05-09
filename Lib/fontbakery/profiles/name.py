@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.status import ERROR, FAIL, PASS, WARN, INFO
+from fontbakery.status import FAIL, PASS, WARN, INFO
 from fontbakery.message import Message
 from fontbakery.constants import (NameID,
                                   PlatformID,
@@ -482,7 +482,8 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
     """CFF table FontName must match name table ID 6 (PostScript name)."""
     cff_names = ttFont['CFF '].cff.fontNames
     if len(cff_names) != 1:
-        yield ERROR, "Unexpected number of font names in CFF table."
+        yield FAIL, Message("cff-name-error",
+                            "Unexpected number of font names in CFF table.")
         return
 
     passed = True
@@ -493,7 +494,7 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
             if postscript_name != cff_name:
                 passed = False
                 yield FAIL,\
-                      Message("mismatch",
+                      Message("ps-cff-name-mismatch",
                               f"Name table PostScript name '{postscript_name}' "
                               f"does not match CFF table FontName '{cff_name}'.")
 

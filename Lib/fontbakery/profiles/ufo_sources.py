@@ -1,7 +1,4 @@
-import os
-
 from fontbakery.callable import check, condition
-from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.status import ERROR, FAIL, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.message import Message
@@ -23,7 +20,7 @@ def ufo_font(ufo):
     try:
         import defcon
         return defcon.Font(ufo)
-    except:
+    except Exception:
         return None
 
 
@@ -33,6 +30,10 @@ def ufo_font(ufo):
 )
 def com_daltonmaag_check_ufolint(ufo):
     """Run ufolint on UFO source directory."""
+
+    # IMPORTANT: This check cannot use the 'ufo_font' condition because it makes it
+    # skip malformed UFOs (e.g. if metainfo.plist file is missing).
+
     import subprocess
     ufolint_cmd = ["ufolint", ufo]
 
@@ -151,4 +152,3 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
 # is useful.
 
 profile.auto_register(globals())
-

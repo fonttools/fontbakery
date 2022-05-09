@@ -1,10 +1,14 @@
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._f_v_a_r import Axis
 
-from fontbakery.checkrunner import (FAIL, WARN)
-from fontbakery.codetesting import (assert_PASS,
-                                    assert_results_contain,
-                                    CheckTester)
+from fontbakery.checkrunner import FAIL, WARN, SKIP
+from fontbakery.codetesting import (
+    assert_PASS,
+    assert_SKIP,
+    assert_results_contain,
+    CheckTester,
+    TEST_FILE,
+)
 from fontbakery.profiles import opentype as opentype_profile
 
 
@@ -17,15 +21,25 @@ def test_check_varfont_regular_wght_coord():
     # Our reference varfont CabinVFBeta.ttf
     # has a good Regular:wght coordinate
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-    assert_PASS(check(ttFont),
-                'with a good Regular:wght coordinate...')
+    assert assert_PASS(check(ttFont)) == "Regular:wght is 400."
 
     # We then ensure the check detects it when we
     # introduce the problem by setting a bad value:
     ttFont["fvar"].instances[0].coordinates["wght"] = 500
-    assert_results_contain(check(ttFont),
-                           FAIL, 'not-400',
-                           'with a bad Regular:wght coordinate (500)...')
+    msg = assert_results_contain(check(ttFont), FAIL, "wght-not-400")
+    assert msg == ('The "wght" axis coordinate of the "Regular" instance must be 400.'
+                   ' Got 500 instead.')
+
+    # Test with a variable font that doesn't have a 'wght' (Weight) axis.
+    # The check should yield SKIP.
+    ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
+    assert assert_SKIP(check(ttFont)) == "Font has no 'wght' (Weight) axis."
+
+    # Now test with a static font.
+    # The test should be skipped due to an unfulfilled condition.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_variable_font"
 
 
 def test_check_varfont_regular_wdth_coord():
@@ -37,15 +51,25 @@ def test_check_varfont_regular_wdth_coord():
     # Our reference varfont CabinVFBeta.ttf
     # has a good Regular:wdth coordinate
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-    assert_PASS(check(ttFont),
-                'with a good Regular:wdth coordinate...')
+    assert assert_PASS(check(ttFont)) == "Regular:wdth is 100."
 
     # We then ensure the check detects it when we
     # introduce the problem by setting a bad value:
     ttFont["fvar"].instances[0].coordinates["wdth"] = 0
-    assert_results_contain(check(ttFont),
-                           FAIL, 'not-100',
-                           'with a bad Regular:wdth coordinate (0)...')
+    msg = assert_results_contain(check(ttFont), FAIL, "wdth-not-100")
+    assert msg == ('The "wdth" axis coordinate of the "Regular" instance must be 100.'
+                   ' Got 0 as a default value instead.')
+
+    # Test with a variable font that doesn't have a 'wdth' (Width) axis.
+    # The check should yield SKIP.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
+    assert assert_SKIP(check(ttFont)) == "Font has no 'wdth' (Width) axis."
+
+    # Now test with a static font.
+    # The test should be skipped due to an unfulfilled condition.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_variable_font"
 
 
 def test_check_varfont_regular_slnt_coord():
@@ -68,13 +92,24 @@ def test_check_varfont_regular_slnt_coord():
     # I inspected our reference CabinVF using ttx
 
     # And with this the check must detect the problem:
-    assert_results_contain(check(ttFont),
-                           FAIL, 'non-zero',
-                           'with a bad Regular:slnt coordinate (12)...')
+    msg = assert_results_contain(check(ttFont), FAIL, "slnt-not-0")
+    assert msg == ('The "slnt" axis coordinate of the "Regular" instance must be zero.'
+                   ' Got 12 as a default value instead.')
 
-    # We then fix the Regular:slnt coordinate value in order to PASS:
-    assert_PASS(check(ttFont, {"regular_slnt_coord": 0}),
-                'with a good Regular:slnt coordinate (zero)...')
+    # We patch the parameter passed-in to the check to make it PASS.
+    msg = assert_PASS(check(ttFont, {"regular_slnt_coord": 0}))
+    assert msg == "Regular:slnt is zero."
+
+    # Test with a variable font that doesn't have a 'slnt' (Slant) axis.
+    # The check should yield SKIP.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
+    assert assert_SKIP(check(ttFont)) == "Font has no 'slnt' (Slant) axis."
+
+    # Now test with a static font.
+    # The test should be skipped due to an unfulfilled condition.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_variable_font"
 
 
 def test_check_varfont_regular_ital_coord():
@@ -97,13 +132,24 @@ def test_check_varfont_regular_ital_coord():
     # I inspected the our reference CabinVF using ttx
 
     # And with this the check must detect the problem:
-    assert_results_contain(check(ttFont),
-                           FAIL, 'non-zero',
-                           'with a bad Regular:ital coordinate (123)...')
+    msg = assert_results_contain(check(ttFont), FAIL, "ital-not-0")
+    assert msg == ('The "ital" axis coordinate of the "Regular" instance must be zero.'
+                   ' Got 123 as a default value instead.')
 
-    # but with zero it must PASS the check:
-    assert_PASS(check(ttFont, {"regular_ital_coord": 0}),
-                'with a good Regular:ital coordinate (zero)...')
+    # We patch the parameter passed-in to the check to make it PASS.
+    msg = assert_PASS(check(ttFont, {"regular_ital_coord": 0}))
+    assert msg == "Regular:ital is zero."
+
+    # Test with a variable font that doesn't have an 'ital' (Italic) axis.
+    # The check should yield SKIP.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
+    assert assert_SKIP(check(ttFont)) == "Font has no 'ital' (Italic) axis."
+
+    # Now test with a static font.
+    # The test should be skipped due to an unfulfilled condition.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-It.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_variable_font"
 
 
 def test_check_varfont_regular_opsz_coord():

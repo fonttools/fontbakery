@@ -1,6 +1,6 @@
 import os
 
-from fontbakery.status import PASS, FAIL, WARN, ERROR, INFO, SKIP
+from fontbakery.status import PASS, FAIL, WARN, INFO, SKIP
 from fontbakery.section import Section
 from fontbakery.callable import condition, check, disable
 from fontbakery.message import Message
@@ -464,13 +464,7 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
         passed = True
 
         space = get_glyph_name(ttFont, 0x0020)
-        if not space:
-            passed = False
-            yield FAIL,\
-                  Message('missing-0020',
-                          'Glyph 0x0020 is missing a glyph name!')
-
-        elif space in AGL_RECOMMENDED_0020:
+        if space in AGL_RECOMMENDED_0020:
             pass
 
         elif space in AGL_COMPLIANT_BUT_NOT_RECOMMENDED_0020:
@@ -488,12 +482,7 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
 
 
         nbsp = get_glyph_name(ttFont, 0x00A0)
-        if not nbsp:
-            yield FAIL,\
-                  Message('missing-00a0',
-                          'Glyph 0x00A0 is missing a glyph name!')
-
-        elif nbsp == space:
+        if nbsp == space:
             # This is OK.
             # Some fonts use the same glyph for both space and nbsp.
             pass

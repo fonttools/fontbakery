@@ -1,7 +1,5 @@
 import os
-from types import SimpleNamespace
 
-import fontTools.ttLib
 from fontTools.ttLib import TTFont
 
 from fontbakery.constants import (NameID,
@@ -10,7 +8,7 @@ from fontbakery.constants import (NameID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
-from fontbakery.checkrunner import (INFO, WARN, PASS, FAIL)
+from fontbakery.checkrunner import INFO, WARN, PASS, FAIL, SKIP
 from fontbakery.codetesting import (assert_PASS,
                                     assert_results_contain,
                                     CheckTester,
@@ -385,31 +383,41 @@ def test_check_family_naming_recommendations():
 def test_check_name_postscript_vs_cff():
     check = CheckTester(opentype_profile,
                         "com.adobe.fonts/check/name/postscript_vs_cff")
-    test_font = TTFont()
-    test_font['CFF '] = fontTools.ttLib.newTable('CFF ')
-    test_font['CFF '].cff.fontNames = ['SomeFontName']
-    test_font['name'] = fontTools.ttLib.newTable('name')
 
-    test_font['name'].setName(
-        'SomeOtherFontName',
+    # Test a font that has matching names. Check should PASS.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
+    msg = assert_PASS(check(ttFont))
+    assert msg == "Name table PostScript name matches CFF table FontName."
+
+    # Change the name-table string. Check should FAIL.
+    other_name = 'SomeOtherFontName'
+    ttFont['name'].setName(
+        other_name,
         NameID.POSTSCRIPT_NAME,
         PlatformID.WINDOWS,
         WindowsEncodingID.UNICODE_BMP,
         WindowsLanguageID.ENGLISH_USA
     )
+    msg = assert_results_contain(check(ttFont), FAIL, "ps-cff-name-mismatch")
+    assert msg == (f"Name table PostScript name '{other_name}' does not match"
+                   " CFF table FontName 'SourceSansPro-Bold'.")
 
-    test_font.reader = SimpleNamespace(file=SimpleNamespace(name="whatever"))
-    assert_results_contain(check(test_font),
-                           FAIL, 'mismatch')
+    # Change the CFF-table name. Check should FAIL.
+    ttFont['CFF '].cff.fontNames = ["name1", "name2"]
+    msg = assert_results_contain(check(ttFont), FAIL, "cff-name-error")
+    assert msg == "Unexpected number of font names in CFF table."
 
-    test_font['name'].setName(
-        'SomeFontName',
-        NameID.POSTSCRIPT_NAME,
-        PlatformID.WINDOWS,
-        WindowsEncodingID.UNICODE_BMP,
-        WindowsLanguageID.ENGLISH_USA
-    )
-    assert_PASS(check(test_font))
+    # Now test with a TrueType font.
+    # The test should be skipped due to an unfulfilled condition.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_cff"
+
+    # Now test with a CFF2 font.
+    # The test should be skipped due to an unfulfilled condition.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_cff"
 
 
 def test_check_name_postscript_name_consistency():
