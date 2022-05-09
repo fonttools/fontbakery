@@ -16,10 +16,10 @@ UFO_PROFILE_CHECKS = [
 
 
 @condition
-def ufo_font(font):
+def ufo_font(ufo):
     try:
         import defcon
-        return defcon.Font(font)
+        return defcon.Font(ufo)
     except Exception:
         return None
 
@@ -28,14 +28,14 @@ def ufo_font(font):
     id = 'com.daltonmaag/check/ufolint',
     proposal = 'https://github.com/googlefonts/fontbakery/pull/1736'
 )
-def com_daltonmaag_check_ufolint(font):
+def com_daltonmaag_check_ufolint(ufo):
     """Run ufolint on UFO source directory."""
 
     # IMPORTANT: This check cannot use the 'ufo_font' condition because it makes it
     # skip malformed UFOs (e.g. if metainfo.plist file is missing).
 
     import subprocess
-    ufolint_cmd = ["ufolint", font]
+    ufolint_cmd = ["ufolint", ufo]
 
     try:
         subprocess.check_output(ufolint_cmd, stderr=subprocess.STDOUT)
