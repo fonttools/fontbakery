@@ -4853,6 +4853,7 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
         Our documentation includes further information:
         https://github.com/googlefonts/gf-docs/tree/main/VerticalMetrics
     """,
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3762'
 )
 def com_google_fonts_check_vertical_metrics(ttFont):
     """Check font follows the Google Fonts vertical metric schema"""
