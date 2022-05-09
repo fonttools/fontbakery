@@ -405,6 +405,12 @@ def test_check_mandatory_glyphs():
     #                              WARN, 'first-glyph')
 
 
+def _remove_cmap_entry(font, cp):
+    """Helper method that removes a codepoint entry from all the tables in cmap."""
+    for subtable in font['cmap'].tables:
+        subtable.cmap.pop(cp, None)
+
+
 def test_check_whitespace_glyphs():
     """ Font contains glyphs for whitespace characters? """
     check = CheckTester(universal_profile,
@@ -416,9 +422,7 @@ def test_check_whitespace_glyphs():
                 'with a good font...')
 
     # We remove the nbsp char (0x00A0)
-    for table in ttFont['cmap'].tables:
-        if 0x00A0 in table.cmap:
-            del table.cmap[0x00A0]
+    _remove_cmap_entry(ttFont, 0x00A0)
 
     # And make sure the problem is detected:
     assert_results_contain(check(ttFont),
@@ -429,9 +433,7 @@ def test_check_whitespace_glyphs():
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
     # And finally do the same with the space character (0x0020):
-    for table in ttFont['cmap'].tables:
-        if 0x0020 in table.cmap:
-            del table.cmap[0x0020]
+    _remove_cmap_entry(ttFont, 0x0020)
     assert_results_contain(check(ttFont),
                            FAIL, 'missing-whitespace-glyph-0x0020',
                            'with a font lacking a space (0x0020)...')
@@ -441,18 +443,6 @@ def test_check_whitespace_glyphnames():
     """ Font has **proper** whitespace glyph names? """
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/whitespace_glyphnames")
-
-    def deleteGlyphEncodings(font, cp):
-        """ This routine is used on to introduce errors
-            in a given font by removing specific entries
-            in the cmap tables.
-        """
-        for subtable in font['cmap'].tables:
-            if subtable.isUnicode():
-                subtable.cmap = {
-                    codepoint: name for codepoint, name in subtable.cmap.items()
-                    if codepoint != cp
-                }
 
     def editCmap(font, cp, name):
         """ Corrupt the cmap by changing the glyph name
@@ -470,7 +460,6 @@ def test_check_whitespace_glyphnames():
     assert_PASS(check(ttFont),
                 'with a good font...')
 
-
     value = ttFont["post"].formatType
     ttFont["post"].formatType = 3.0
     assert_SKIP(check(ttFont),
@@ -479,21 +468,16 @@ def test_check_whitespace_glyphnames():
     # restore good value:
     ttFont["post"].formatType = value
 
-
-    deleteGlyphEncodings(ttFont, 0x0020)
-    assert_results_contain(check(ttFont),
-                           FAIL, 'missing-0020',
-                           'with missing glyph name for char 0x0020 ...')
-
+    _remove_cmap_entry(ttFont, 0x0020)
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: not missing_whitespace_chars"
 
     # restore the original font object in preparation for the next test-case:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
-    deleteGlyphEncodings(ttFont, 0x00A0)
-    assert_results_contain(check(ttFont),
-                           FAIL, 'missing-00a0',
-                           'with missing glyph name for char 0x00A0 ...')
-
+    _remove_cmap_entry(ttFont, 0x00A0)
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: not missing_whitespace_chars"
 
     # restore the original font object in preparation for the next test-case:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -505,28 +489,25 @@ def test_check_whitespace_glyphnames():
                            FAIL, 'non-compliant-00a0',
                            'with not AGL-compliant glyph name "nbsp" for char 0x00A0...')
 
-
     editCmap(ttFont, 0x00A0, "nbspace")
     assert_results_contain(check(ttFont),
                            WARN, 'not-recommended-00a0',
                            'for naming 0x00A0 "nbspace"...')
-
 
     editCmap(ttFont, 0x0020, "foo")
     assert_results_contain(check(ttFont),
                            FAIL, 'non-compliant-0020',
                            'with not AGL-compliant glyph name "foo" for char 0x0020...')
 
-
     editCmap(ttFont, 0x0020, "uni0020")
     assert_results_contain(check(ttFont),
                            WARN, 'not-recommended-0020',
                            'for naming 0x0020 "uni0020"...')
 
-
     editCmap(ttFont, 0x0020, "space")
     editCmap(ttFont, 0x00A0, "uni00A0")
-    assert_PASS(check(ttFont))
+    assert assert_PASS(check(ttFont)) == (
+        "Font has **AGL recommended** names for whitespace glyphs.")
 
 
 def test_check_whitespace_ink():

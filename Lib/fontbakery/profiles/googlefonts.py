@@ -1920,7 +1920,7 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
     conditions = ['family_metadata'],
     proposal = 'legacy:check/082'
 )
-def com_google_fonts_check_metadata_listed_on_gfonts(listed_on_gfonts_api):
+def com_google_fonts_check_metadata_listed_on_gfonts(font, listed_on_gfonts_api):
     """METADATA.pb: Fontfamily is listed on Google Fonts API?"""
     if not listed_on_gfonts_api:
         yield WARN,\
@@ -4335,8 +4335,9 @@ def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1145'
 )
-def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, has_kerning_info):
+def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, config, ligatures, has_kerning_info):
     """Is there kerning info for non-ligated sequences?"""
+    from fontbakery.utils import bullet_list
 
     def look_for_nonligated_kern_info(table):
         for pairpos in table.SubTable:
@@ -4348,9 +4349,8 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, 
                     if kern_pair in ligature_pairs:
                         ligature_pairs.remove(kern_pair)
 
-    def ligatures_str(pairs):
-        result = [f"\t- {first} + {second}" for first, second in pairs]
-        return "\n".join(result)
+    def ligatures_sequences(pairs):
+        return [f"{first} + {second}" for first, second in pairs]
 
     if ligatures == -1:
         yield FAIL,\
@@ -4380,8 +4380,8 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, ligatures, 
             yield WARN,\
                   Message("lacks-kern-info",
                           f"GPOS table lacks kerning info for the following"
-                          f" non-ligated sequences:\n"
-                          f"{ligatures_str(ligature_pairs)}\n\n  ")
+                          f" non-ligated sequences:\n\n"
+                          f"{bullet_list(config, ligatures_sequences(ligature_pairs))}")
         else:
             yield PASS, ("GPOS table provides kerning info for "
                          "all non-ligated sequences.")
@@ -4718,8 +4718,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts,
 @check(
     id = 'com.google.fonts/check/repo/vf_has_static_fonts',
     conditions = ['family_directory',
-                  'gfonts_repo_structure',
-                  'is_variable_font'],
+                  'gfonts_repo_structure'],
     rationale = """
         Variable font family directories kept in the google/fonts git repo may include
         a static/ subdir containing static fonts.

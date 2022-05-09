@@ -97,8 +97,6 @@ class CheckTester:
         if isinstance(values, str):
             if values.endswith('README.md'):
                 values = {'readme_md': values}
-            elif values.endswith('.ufo'):
-                values = {'ufo': values}
             elif values.endswith('.designspace'):
                 values = {'designspace': values}
             elif values.endswith('METADATA.pb'):

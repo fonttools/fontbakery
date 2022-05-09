@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS, WARN
+from fontbakery.status import FAIL, PASS, WARN, SKIP
 from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
@@ -20,19 +20,20 @@ profile_imports = [
         If a variable font has a 'wght' (Weight) axis, then the coordinate of
         its 'Regular' instance is required to be 400.
     """,
-    conditions = ['is_variable_font',
-                  'regular_wght_coord'],
+    conditions = ['is_variable_font'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord):
     """The variable font 'wght' (Weight) axis coordinate must be 400 on the
     'Regular' instance."""
 
-    if regular_wght_coord == 400:
+    if regular_wght_coord is None:
+        yield SKIP, "Font has no 'wght' (Weight) axis."
+    elif regular_wght_coord == 400:
         yield PASS, "Regular:wght is 400."
     else:
         yield FAIL,\
-              Message("not-400",
+              Message("wght-not-400",
                       f'The "wght" axis coordinate of'
                       f' the "Regular" instance must be 400.'
                       f' Got {regular_wght_coord} instead.')
@@ -48,19 +49,20 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
         If a variable font has a 'wdth' (Width) axis, then the coordinate of
         its 'Regular' instance is required to be 100.
     """,
-    conditions = ['is_variable_font',
-                  'regular_wdth_coord'],
+    conditions = ['is_variable_font'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord):
     """The variable font 'wdth' (Width) axis coordinate must be 100 on the 'Regular' instance."""
 
-    if regular_wdth_coord == 100:
+    if regular_wdth_coord is None:
+        yield SKIP, "Font has no 'wdth' (Width) axis."
+    elif regular_wdth_coord == 100:
         yield PASS, "Regular:wdth is 100."
     else:
         yield FAIL,\
-              Message("not-100",
-                      f'The "wdth" coordinate of'
+              Message("wdth-not-100",
+                      f'The "wdth" axis coordinate of'
                       f' the "Regular" instance must be 100.'
                       f' Got {regular_wdth_coord} as a default value instead.')
 
@@ -75,19 +77,20 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
         If a variable font has a 'slnt' (Slant) axis, then the coordinate of
         its 'Regular' instance is required to be zero.
     """,
-    conditions = ['is_variable_font',
-                  'regular_slnt_coord'],
+    conditions = ['is_variable_font'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord):
     """The variable font 'slnt' (Slant) axis coordinate must be zero on the 'Regular' instance."""
 
-    if regular_slnt_coord == 0:
+    if regular_slnt_coord is None:
+        yield SKIP, "Font has no 'slnt' (Slant) axis."
+    elif regular_slnt_coord == 0:
         yield PASS, "Regular:slnt is zero."
     else:
         yield FAIL,\
-              Message("non-zero",
-                      f'The "slnt" coordinate of'
+              Message("slnt-not-0",
+                      f'The "slnt" axis coordinate of'
                       f' the "Regular" instance must be zero.'
                       f' Got {regular_slnt_coord} as a default value instead.')
 
@@ -102,19 +105,20 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
         If a variable font has a 'ital' (Italic) axis, then the coordinate of
         its 'Regular' instance is required to be zero.
     """,
-    conditions = ['is_variable_font',
-                  'regular_ital_coord'],
+    conditions = ['is_variable_font'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord):
     """The variable font 'ital' (Italic) axis coordinate must be zero on the 'Regular' instance."""
 
-    if regular_ital_coord == 0:
+    if regular_ital_coord is None:
+        yield SKIP, "Font has no 'ital' (Italic) axis."
+    elif regular_ital_coord == 0:
         yield PASS, "Regular:ital is zero."
     else:
         yield FAIL,\
-              Message("non-zero",
-                      f'The "ital" coordinate of'
+              Message("ital-not-0",
+                      f'The "ital" axis coordinate of'
                       f' the "Regular" instance must be zero.'
                       f' Got {regular_ital_coord} as a default value instead.')
 

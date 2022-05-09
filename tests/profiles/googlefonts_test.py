@@ -819,6 +819,7 @@ def test_family_directory_condition():
                                               # are correctly detected on the current
                                               # working directory.
 
+
 def test_check_family_has_license():
     """ Check font project has a license. """
     check = CheckTester(googlefonts_profile,
@@ -829,27 +830,31 @@ def test_check_family_has_license():
     # The lines maked with 'hack' below are meant to
     # not let fontbakery's own license to mess up
     # this code test.
+    dir_path = "ofl/foo/bar"
     detected_licenses = licenses(portable_path("data/test/028/multiple"))
-    detected_licenses.pop(-1) # hack
-    assert_results_contain(check([], {"licenses": detected_licenses}),
+    detected_licenses.pop(-1)  # hack
+    assert_results_contain(check(dir_path, {"licenses": detected_licenses}),
                            FAIL, 'multiple',
                            'with multiple licenses...')
 
     detected_licenses = licenses(portable_path("data/test/028/none"))
-    detected_licenses.pop(-1) # hack
-    assert_results_contain(check([], {"licenses": detected_licenses}),
+    detected_licenses.pop(-1)  # hack
+    assert_results_contain(check(dir_path, {"licenses": detected_licenses}),
                            FAIL, 'no-license',
                            'with no license...')
 
     detected_licenses = licenses(portable_path("data/test/028/pass_ofl"))
-    detected_licenses.pop(-1) # hack
-    assert_PASS(check([], {"licenses": detected_licenses}),
+    detected_licenses.pop(-1)  # hack
+    assert_PASS(check(dir_path, {"licenses": detected_licenses}),
                 'with a single OFL license...')
 
     detected_licenses = licenses(portable_path("data/test/028/pass_apache"))
-    detected_licenses.pop(-1) # hack
-    assert_PASS(check([], {"licenses": detected_licenses}),
+    detected_licenses.pop(-1)  # hack
+    assert_PASS(check(dir_path, {"licenses": detected_licenses}),
                 'with a single Apache license...')
+
+    msg = assert_results_contain(check([""]), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: gfonts_repo_structure"
 
 
 def test_check_license_ofl_copyright():
@@ -1467,15 +1472,26 @@ def test_check_metadata_regular_is_400():
                 'with Family Sans, a family with regular=400...')
 
     md = check["family_metadata"]
-    # The we change the value for its regular:
+    # Then we swap the values of the Regular and Medium:
     for i in range(len(md.fonts)):
         if md.fonts[i].filename == "FamilySans-Regular.ttf":
             md.fonts[i].weight = 500
+        if md.fonts[i].filename == "FamilySans-Medium.ttf":
+            md.fonts[i].weight = 400
 
     # and make sure the check now FAILs:
     assert_results_contain(check(font, {"family_metadata": md}),
                            FAIL, 'not-400',
                            'with METADATA.pb with regular=500...')
+
+    # Now we change the value of the Medium back to 500. The check will be skipped
+    # because the family now has no Regular style.
+    for i in range(len(md.fonts)):
+        if md.fonts[i].filename == "FamilySans-Medium.ttf":
+            md.fonts[i].weight = 500
+    msg = assert_results_contain(check(font, {"family_metadata": md}),
+                                 SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: has_regular_style"
 
 
 def test_check_metadata_nameid_family_name():
@@ -2905,10 +2921,16 @@ def test_check_varfont_generate_static():
     ttFont = TTFont(TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"))
     assert_PASS(check(ttFont))
 
-    # Removing a table to deliberately break variable font
+    # Mangle the coordinates of the first named instance
+    # to deliberately break the variable font.
+    ttFont['fvar'].instances[0].coordinates = {'fooo': 400.0, 'baar': 100.0}
+    msg = assert_results_contain(check(ttFont), FAIL, 'varlib-mutator')
+    assert "fontTools.varLib.mutator failed" in msg
+
+    # Now delete the fvar table to exercise a SKIP result due an unfulfilled condition.
     del ttFont['fvar']
-    assert_results_contain(check(ttFont),
-                           FAIL, 'varlib-mutator')
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_variable_font"
 
 
 def test_check_varfont_has_HVAR():
@@ -3092,21 +3114,31 @@ def test_check_ligature_carets():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/ligature_carets")
 
-    # Our reference Mada Medium is known to be bad
+    # Our reference Mada Medium doesn't have a GSUB 'liga' feature, so it is skipped
+    # because of an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
-    assert_results_contain(check(ttFont),
-                           WARN, 'lacks-caret-pos',
-                           'with a bad font...')
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: ligature_glyphs"
 
-    # And FamilySans Regular is also bad
-    ttFont = TTFont("data/test/familysans/FamilySans-Regular.ttf")
-    assert_results_contain(check(ttFont),
-                           WARN, 'GDEF-missing',
-                           'with a bad font...')
+    # Simulate an error coming from the 'ligature_glyphs' condition;
+    # this is to exercise the 'malformed' code path.
+    ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
+    msg = assert_results_contain(check(ttFont, {"ligature_glyphs": -1}), FAIL, "malformed")
+    assert "Failed to lookup ligatures. This font file seems to be malformed." in msg
+
+    # SourceSansPro Bold has ligatures and GDEF table, but lacks caret position data.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
+    msg = assert_results_contain(check(ttFont), WARN, "lacks-caret-pos")
+    assert msg == ("This font lacks caret position values"
+                   " for ligature glyphs on its GDEF table.")
+
+    # Remove the GDEF table to exercise the 'GDEF-missing' code path.
+    del ttFont["GDEF"]
+    msg = assert_results_contain(check(ttFont), WARN, "GDEF-missing")
+    assert "GDEF table is missing, but it is mandatory" in msg
 
     # TODO: test the following code-paths:
     # - WARN "incomplete-caret-pos-data"
-    # - FAIL "malformed"
     # - PASS (We currently lack a reference family that PASSes this check!)
 
 
@@ -3115,16 +3147,31 @@ def test_check_kerning_for_non_ligated_sequences():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/kerning_for_non_ligated_sequences")
 
-    # Our reference Mada Medium is known to be good
+    # Our reference Mada Medium doesn't have a GSUB 'liga' feature, so it is skipped
+    # because of an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
-    assert_PASS(check(ttFont),
-                'with a good font...')
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: ligatures"
 
-    # And Merriweather Regular is known to be bad
+    # Simulate an error coming from the 'ligatures' condition;
+    # this is to exercise the 'malformed' code path.
+    ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
+    msg = assert_results_contain(check(ttFont, {"ligatures": -1}), FAIL, "malformed")
+    assert "Failed to lookup ligatures. This font file seems to be malformed." in msg
+
+    # And Merriweather Regular doesn't have a GPOS 'kern' feature, so it is skipped
+    # because of an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
-    assert_results_contain(check(ttFont),
-                           WARN, 'lacks-kern-info',
-                           'with a bad font...')
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: has_kerning_info"
+
+    # Finally, SourceSansPro Bold is known to not kern the non-ligated glyph sequences.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
+    msg = assert_results_contain(check(ttFont), WARN, "lacks-kern-info")
+    assert msg == (
+        "GPOS table lacks kerning info for the following non-ligated sequences:\n\n"
+        "\t- f + f\n\n\t- f + t \n\n\t- And t + f"
+    )
 
 
 def test_check_family_control_chars():
@@ -3238,18 +3285,19 @@ def test_check_repo_vf_has_static_fonts():
     import shutil
     # in order for this check to work, we need to
     # mimic the folder structure of the Google Fonts repository
+    dir_path = "ofl/foo/bar"
     with tempfile.TemporaryDirectory() as tmp_gf_dir:
         family_dir = portable_path(tmp_gf_dir + "/ofl/testfamily")
         src_family = portable_path("data/test/varfont")
         shutil.copytree(src_family, family_dir)
 
-        assert_results_contain(check([], {"family_directory": family_dir}),
+        assert_results_contain(check(dir_path, {"family_directory": family_dir}),
                                WARN, 'missing',
                                'for a VF family which does not has a static dir.')
 
         static_dir = portable_path(family_dir + "/static")
         os.mkdir(static_dir)
-        assert_results_contain(check([], {"family_directory": family_dir}),
+        assert_results_contain(check(dir_path, {"family_directory": family_dir}),
                                FAIL, 'empty',
                                'for a VF family which has a static dir'
                                ' but no fonts in the static dir.')
@@ -3257,8 +3305,12 @@ def test_check_repo_vf_has_static_fonts():
         static_fonts = portable_path("data/test/cabin")
         shutil.rmtree(static_dir)
         shutil.copytree(static_fonts, static_dir)
-        assert_PASS(check([], {"family_directory": family_dir}),
+        assert_PASS(check(dir_path, {"family_directory": family_dir}),
                     'for a VF family which has a static dir and static fonts')
+
+        msg = assert_results_contain(check("", {"family_directory": family_dir}),
+                                     SKIP, "unfulfilled-conditions")
+        assert msg == "Unfulfilled Conditions: gfonts_repo_structure"
 
 
 def test_check_repo_upstream_yaml_has_required_fields():
@@ -3564,25 +3616,24 @@ def test_check_cjk_not_enough_glyphs():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/cjk_not_enough_glyphs")
     ttFont = TTFont(cjk_font)
-    assert_PASS(check(ttFont),
-                'for Source Han Sans')
+    assert assert_PASS(check(ttFont)) == (
+        "Font has the correct quantity of CJK glyphs")
 
     ttFont = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
-    assert_PASS(check(ttFont),
-                'for Montserrat')
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_cjk_font"
 
     # Let's modify Montserrat's cmap so there's a cjk glyph
-    cmap = ttFont['cmap'].getcmap(3,1)
+    cmap = ttFont['cmap'].getcmap(3, 1)
     # Add first character of the CJK unified Ideographs
     cmap.cmap[0x4E00] = "A"
-    assert_results_contain(check(ttFont),
-                           WARN, "cjk-not-enough-glyphs",
-                           "There is only 1 CJK glyphs")
+    msg = assert_results_contain(check(ttFont), WARN, "cjk-not-enough-glyphs")
+    assert msg.startswith("There is only one CJK glyph")
+
     # Add second character of the CJK unified Ideographs
     cmap.cmap[0x4E01] = "B"
-    assert_results_contain(check(ttFont),
-                           WARN, "cjk-not-enough-glyphs",
-                           "There are only 2 CJK glyphs")
+    msg = assert_results_contain(check(ttFont), WARN, "cjk-not-enough-glyphs")
+    assert msg.startswith("There are only 2 CJK glyphs")
 
 
 def test_check_varfont_instance_coordinates(vf_ttFont):
