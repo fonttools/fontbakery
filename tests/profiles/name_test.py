@@ -8,7 +8,7 @@ from fontbakery.constants import (NameID,
                                   WindowsLanguageID,
                                   MacintoshEncodingID,
                                   MacintoshLanguageID)
-from fontbakery.checkrunner import INFO, WARN, PASS, FAIL, SKIP, ERROR
+from fontbakery.checkrunner import INFO, WARN, PASS, FAIL, SKIP
 from fontbakery.codetesting import (assert_PASS,
                                     assert_results_contain,
                                     CheckTester,
@@ -402,9 +402,9 @@ def test_check_name_postscript_vs_cff():
     assert msg == (f"Name table PostScript name '{other_name}' does not match"
                    " CFF table FontName 'SourceSansPro-Bold'.")
 
-    # Change the CFF-table name. Check should ERROR.
+    # Change the CFF-table name. Check should FAIL.
     ttFont['CFF '].cff.fontNames = ["name1", "name2"]
-    msg = assert_results_contain(check(ttFont), ERROR, "cff-name-error")
+    msg = assert_results_contain(check(ttFont), FAIL, "cff-name-error")
     assert msg == "Unexpected number of font names in CFF table."
 
     # Now test with a TrueType font.
