@@ -13,9 +13,9 @@ from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
 profile_imports = ('fontbakery.profiles.opentype',
                    'fontbakery.profiles.outline',
                    'fontbakery.profiles.shaping',
-                   'fontbakery.profiles.ufo_sources',
-                   '.shared_conditions')
+                   'fontbakery.profiles.ufo_sources')
 profile = profile_factory(default_section=Section("Universal"))
+from .shared_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 
 THIRDPARTY_CHECKS = [
     'com.google.fonts/check/ots',
@@ -1538,7 +1538,7 @@ def com_google_fonts_check_transformed_components(ttFont):
             comp_name, transform = component.getComponentInfo()
 
             # Font is hinted, complain about *any* transformations
-            if "fpgm" in ttFont:
+            if is_hinted(ttFont):
                 if transform[0:4] != (1, 0, 0, 1):
                     failures += f"* {glyph_name} (component {comp_name})\n"
             # Font is unhinted, complain only about transformations where

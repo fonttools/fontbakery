@@ -291,6 +291,10 @@ def vmetrics(ttFonts):
 
 
 @condition
+def is_hinted(ttFont):
+    return "fpgm" in ttFont
+
+@condition
 def is_variable_font(ttFont):
     return "fvar" in ttFont.keys()
 
