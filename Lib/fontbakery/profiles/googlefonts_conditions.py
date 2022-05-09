@@ -675,11 +675,6 @@ def VTT_hinted(ttFont):
 
 
 @condition
-def is_hinted(ttFont):
-    return "fpgm" in ttFont
-
-
-@condition
 def gfonts_repo_structure(fonts):
     """ The family at the given font path
         follows the files and directory structure
