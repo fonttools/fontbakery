@@ -294,15 +294,18 @@ def vmetrics(ttFonts):
 def is_variable_font(ttFont):
     return "fvar" in ttFont.keys()
 
+
 @condition
 def is_not_variable_font(ttFont):
     return "fvar" not in ttFont.keys()
+
 
 @condition
 def VFs(ttFonts):
     """Returns a list of font files which are recognized as variable fonts"""
     return [ttFont for ttFont in ttFonts
             if is_variable_font(ttFont)]
+
 
 @condition
 def slnt_axis(ttFont):
@@ -311,12 +314,14 @@ def slnt_axis(ttFont):
             if axis.axisTag == "slnt":
                 return axis
 
+
 @condition
 def opsz_axis(ttFont):
     if "fvar" in ttFont:
         for axis in ttFont["fvar"].axes:
             if axis.axisTag == "opsz":
                 return axis
+
 
 @condition
 def ital_axis(ttFont):
@@ -325,12 +330,42 @@ def ital_axis(ttFont):
             if axis.axisTag == "ital":
                 return axis
 
+
 @condition
 def grad_axis(ttFont):
     if "fvar" in ttFont:
         for axis in ttFont["fvar"].axes:
             if axis.axisTag == "GRAD":
                 return axis
+
+
+def get_axis_tags_set(ttFont):
+    return set(axis.axisTag for axis in ttFont["fvar"].axes)
+
+
+@condition
+def has_wght_axis(ttFont):
+    if is_variable_font(ttFont) and "wght" in get_axis_tags_set(ttFont):
+        return True
+
+
+@condition
+def has_wdth_axis(ttFont):
+    if is_variable_font(ttFont) and "wdth" in get_axis_tags_set(ttFont):
+        return True
+
+
+@condition
+def has_slnt_axis(ttFont):
+    if is_variable_font(ttFont) and "slnt" in get_axis_tags_set(ttFont):
+        return True
+
+
+@condition
+def has_ital_axis(ttFont):
+    if is_variable_font(ttFont) and "ital" in get_axis_tags_set(ttFont):
+        return True
+
 
 def get_instance_axis_value(ttFont, instance_name, axis_tag):
     if not is_variable_font(ttFont):

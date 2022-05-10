@@ -30,16 +30,24 @@ def test_check_varfont_regular_wght_coord():
     assert msg == ('The "wght" axis coordinate of the "Regular" instance must be 400.'
                    ' Got 500 instead.')
 
+    # Reload the original font.
+    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+    # Change the name of the first instance from 'Regular' (nameID 258)
+    # to 'Medium' (nameID 259). The font now has no Regular instance.
+    ttFont["fvar"].instances[0].subfamilyNameID = 259
+    assert_results_contain(check(ttFont), FAIL, "wght-not-400")
+
     # Test with a variable font that doesn't have a 'wght' (Weight) axis.
     # The check should yield SKIP.
     ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
-    assert assert_SKIP(check(ttFont)) == "Font has no 'wght' (Weight) axis."
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: has_wght_axis"
 
     # Now test with a static font.
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_variable_font"
+    assert msg == "Unfulfilled Conditions: is_variable_font, has_wght_axis"
 
 
 def test_check_varfont_regular_wdth_coord():
@@ -60,16 +68,24 @@ def test_check_varfont_regular_wdth_coord():
     assert msg == ('The "wdth" axis coordinate of the "Regular" instance must be 100.'
                    ' Got 0 as a default value instead.')
 
+    # Reload the original font.
+    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+    # Change the name of the first instance from 'Regular' (nameID 258)
+    # to 'Medium' (nameID 259). The font now has no Regular instance.
+    ttFont["fvar"].instances[0].subfamilyNameID = 259
+    assert_results_contain(check(ttFont), FAIL, "wdth-not-100")
+
     # Test with a variable font that doesn't have a 'wdth' (Width) axis.
     # The check should yield SKIP.
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
-    assert assert_SKIP(check(ttFont)) == "Font has no 'wdth' (Width) axis."
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: has_wdth_axis"
 
     # Now test with a static font.
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_variable_font"
+    assert msg == "Unfulfilled Conditions: is_variable_font, has_wdth_axis"
 
 
 def test_check_varfont_regular_slnt_coord():
@@ -87,7 +103,8 @@ def test_check_varfont_regular_slnt_coord():
     ttFont["fvar"].axes.append(new_axis)
 
     # and specify a bad coordinate for the Regular:
-    ttFont["fvar"].instances[0].coordinates["slnt"] = 12
+    first_instance = ttFont["fvar"].instances[0]
+    first_instance.coordinates["slnt"] = 12
     # Note: I know the correct instance index for this hotfix because
     # I inspected our reference CabinVF using ttx
 
@@ -96,20 +113,26 @@ def test_check_varfont_regular_slnt_coord():
     assert msg == ('The "slnt" axis coordinate of the "Regular" instance must be zero.'
                    ' Got 12 as a default value instead.')
 
-    # We patch the parameter passed-in to the check to make it PASS.
-    msg = assert_PASS(check(ttFont, {"regular_slnt_coord": 0}))
-    assert msg == "Regular:slnt is zero."
+    # We correct the slant coordinate value to make the check PASS.
+    first_instance.coordinates["slnt"] = 0
+    assert assert_PASS(check(ttFont)) == "Regular:slnt is zero."
+
+    # Change the name of the first instance from 'Regular' (nameID 258)
+    # to 'Medium' (nameID 259). The font now has no Regular instance.
+    first_instance.subfamilyNameID = 259
+    assert_results_contain(check(ttFont), FAIL, "slnt-not-0")
 
     # Test with a variable font that doesn't have a 'slnt' (Slant) axis.
     # The check should yield SKIP.
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
-    assert assert_SKIP(check(ttFont)) == "Font has no 'slnt' (Slant) axis."
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: has_slnt_axis"
 
     # Now test with a static font.
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_variable_font"
+    assert msg == "Unfulfilled Conditions: is_variable_font, has_slnt_axis"
 
 
 def test_check_varfont_regular_ital_coord():
@@ -127,7 +150,8 @@ def test_check_varfont_regular_ital_coord():
     ttFont["fvar"].axes.append(new_axis)
 
     # and specify a bad coordinate for the Regular:
-    ttFont["fvar"].instances[0].coordinates["ital"] = 123
+    first_instance = ttFont["fvar"].instances[0]
+    first_instance.coordinates["ital"] = 123
     # Note: I know the correct instance index for this hotfix because
     # I inspected the our reference CabinVF using ttx
 
@@ -136,20 +160,26 @@ def test_check_varfont_regular_ital_coord():
     assert msg == ('The "ital" axis coordinate of the "Regular" instance must be zero.'
                    ' Got 123 as a default value instead.')
 
-    # We patch the parameter passed-in to the check to make it PASS.
-    msg = assert_PASS(check(ttFont, {"regular_ital_coord": 0}))
-    assert msg == "Regular:ital is zero."
+    # We correct the italic coordinate value to make the check PASS.
+    first_instance.coordinates["ital"] = 0
+    assert assert_PASS(check(ttFont)) == "Regular:ital is zero."
+
+    # Change the name of the first instance from 'Regular' (nameID 258)
+    # to 'Medium' (nameID 259). The font now has no Regular instance.
+    first_instance.subfamilyNameID = 259
+    assert_results_contain(check(ttFont), FAIL, "ital-not-0")
 
     # Test with a variable font that doesn't have an 'ital' (Italic) axis.
     # The check should yield SKIP.
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
-    assert assert_SKIP(check(ttFont)) == "Font has no 'ital' (Italic) axis."
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: has_ital_axis"
 
     # Now test with a static font.
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-It.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_variable_font"
+    assert msg == "Unfulfilled Conditions: is_variable_font, has_ital_axis"
 
 
 def test_check_varfont_regular_opsz_coord():
@@ -173,13 +203,13 @@ def test_check_varfont_regular_opsz_coord():
 
     # Then we ensure the problem is detected:
     assert_results_contain(check(ttFont),
-                           WARN, 'out-of-range',
+                           WARN, 'opsz-out-of-range',
                            'with a bad Regular:opsz coordinate (9)...')
 
     # We try yet another bad value
     # and the check should detect the problem:
     assert_results_contain(check(ttFont, {"regular_opsz_coord": 17}),
-                           WARN, 'out-of-range',
+                           WARN, 'opsz-out-of-range',
                            'with another bad Regular:opsz value (17)...')
 
     # We then test with good default opsz values:
@@ -203,7 +233,7 @@ def test_check_varfont_bold_wght_coord():
     # We then change the value to ensure the problem is properly detected by the check:
     ttFont["fvar"].instances[3].coordinates["wght"] = 600
     assert_results_contain(check(ttFont),
-                           FAIL, 'not-700',
+                           FAIL, 'wght-not-700',
                            'with a bad Bold:wght coordinage (600)...')
 
 
@@ -222,13 +252,13 @@ def test_check_varfont_wght_valid_range():
     # We then introduce the problem by setting a bad value:
     ttFont["fvar"].instances[0].coordinates["wght"] = 0
     assert_results_contain(check(ttFont),
-                           FAIL, 'out-of-range',
+                           FAIL, 'wght-out-of-range',
                            'with wght=0...')
 
     # And yet another bad value:
     ttFont["fvar"].instances[0].coordinates["wght"] = 1001
     assert_results_contain(check(ttFont),
-                           FAIL, 'out-of-range',
+                           FAIL, 'wght-out-of-range',
                            'with wght=1001...')
 
 
@@ -247,13 +277,13 @@ def test_check_varfont_wdth_valid_range():
     # We then introduce the problem by setting a bad value:
     ttFont["fvar"].instances[0].coordinates["wdth"] = 0
     assert_results_contain(check(ttFont),
-                           FAIL, 'out-of-range',
+                           FAIL, 'wdth-out-of-range',
                            'with wght=0...')
 
     # And yet another bad value:
     ttFont["fvar"].instances[0].coordinates["wdth"] = 1001
     assert_results_contain(check(ttFont),
-                           FAIL, 'out-of-range',
+                           FAIL, 'wdth-out-of-range',
                            'with wght=1001...')
 
 
@@ -266,7 +296,7 @@ def test_check_varfont_slnt_range():
     # Our reference Inter varfont has a bad slnt range
     ttFont = TTFont("data/test/varfont/inter/Inter[slnt,wght].ttf")
     assert_results_contain(check(ttFont),
-                           WARN, 'unusual-range',
+                           WARN, 'unusual-slnt-range',
                            'with a varfont that has an unusual "slnt" range.')
 
     # We then fix the font-bug by flipping the slnt axis range:
