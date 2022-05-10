@@ -3408,8 +3408,16 @@ def test_check_vertical_metrics():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/vertical_metrics")
 
-    # linegap is not 0
     ttFont = TTFont(TEST_FILE("akshar/Akshar[wght].ttf"))
+
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: not remote_styles"
+
+    # change the font's file name to elude the 'not remote_styles' condition.
+    orig_file_name = ttFont.reader.file.name
+    ttFont.reader.file.name = orig_file_name.replace("Akshar", "Akshar_")
+
+    # linegap is not 0
     assert_results_contain(check(ttFont),
                            FAIL, 'bad-hhea.lineGap',
                            'hhea.lineGap is "150" it should be 0')
