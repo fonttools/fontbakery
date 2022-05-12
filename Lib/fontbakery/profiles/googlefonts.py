@@ -1044,20 +1044,35 @@ def font_codepoints(ttFont):
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2488'
 )
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
-    """Check `Google Fonts Latin Core` glyph coverage."""
+    """Check `Google Fonts glyph coverage."""
     from fontbakery.utils import bullet_list
     from glyphsets import GFGlyphData as glyph_data
     import unicodedata2
 
+    def missing_encoded_glyphs(glyphs):
+        encoded_glyphs = [g["unicode"] for g in glyphs if g["unicode"]]
+        return ['0x%04X (%s)\n' % (c, unicodedata2.name(chr(c))) for c in encoded_glyphs]
+
     missing_glyphs = glyph_data.missing_glyphsets_in_font(ttFont)
+    fail_or_warn = False
     if "GF_Latin_Core" in missing_glyphs:
-        missing_encoded_latin = [g["unicode"] for g in missing_glyphs["GF_Latin_Core"] if g["unicode"]]
-        missing = ['0x%04X (%s)\n' % (c, unicodedata2.name(chr(c))) for c in missing_encoded_latin]
+        fail_or_warn = True
+        missing = missing_encoded_glyphs(missing_glyphs["GF_Latin_Core"])
         yield FAIL,\
               Message("missing-codepoints",
                       f"Missing required codepoints:\n\n"
                       f"{bullet_list(config, missing)}")
-    else:
+    if len(missing_glyphs) > 0:
+        fail_or_warn = True
+        for glyphset_name, glyphs in missing_glyphs.items():
+            if glyphset_name is "GF_Latin_Core":
+                continue
+            missing = missing_encoded_glyphs(glyphs)
+            yield WARN,\
+                  Message("missing-codepoints",
+                          f"{glyphset_name} is almost fulfilled. Missing codepoints:\n\n"
+                          f"{bullet_list(config, missing)}")
+    if not fail_or_warn:
         yield PASS, "OK"
 
 
