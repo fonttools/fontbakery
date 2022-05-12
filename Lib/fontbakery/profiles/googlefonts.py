@@ -1065,7 +1065,7 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     if len(missing_glyphs) > 0:
         fail_or_warn = True
         for glyphset_name, glyphs in missing_glyphs.items():
-            if glyphset_name is "GF_Latin_Core":
+            if glyphset_name == "GF_Latin_Core":
                 continue
             missing = missing_encoded_glyphs(glyphs)
             yield WARN,\
