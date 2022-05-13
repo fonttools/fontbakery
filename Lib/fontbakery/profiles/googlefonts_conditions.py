@@ -455,6 +455,7 @@ def camelcased_familyname_exception(familyname):
         "BenchNine",
         "BhuTuka", # seen in "BhuTuka Expanded One"
         "DotGothic", # seen in "DotGothic16"
+        "DynaPuff",
         "FakeFont",
         "JetBrains", # seen in "JetBrains Mono"
         "McLaren",
