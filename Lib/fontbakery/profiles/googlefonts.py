@@ -1044,7 +1044,7 @@ def font_codepoints(ttFont):
     proposal = 'https://github.com/googlefonts/fontbakery/pull/2488'
 )
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
-    """Check `Google Fonts glyph coverage."""
+    """Check Google Fonts glyph coverage."""
     from fontbakery.utils import bullet_list
     from glyphsets import GFGlyphData as glyph_data
     import unicodedata2
@@ -1053,18 +1053,19 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
         encoded_glyphs = [g["unicode"] for g in glyphs if g["unicode"]]
         return ['0x%04X (%s)\n' % (c, unicodedata2.name(chr(c))) for c in encoded_glyphs]
 
-    missing_glyphs = glyph_data.missing_glyphsets_in_font(ttFont)
-    fail_or_warn = False
-    if "GF_Latin_Core" in missing_glyphs:
-        fail_or_warn = True
-        missing = missing_encoded_glyphs(missing_glyphs["GF_Latin_Core"])
+    missing_mandatory_glyphs = glyph_data.missing_glyphsets_in_font(ttFont, threshold=0.0)
+    missing_optional_glyphs = glyph_data.missing_glyphsets_in_font(ttFont, threshold=0.8)
+    passed = True
+    if "GF_Latin_Core" in missing_mandatory_glyphs:
+        passed = False
+        missing = missing_encoded_glyphs(missing_mandatory_glyphs["GF_Latin_Core"])
         yield FAIL,\
               Message("missing-codepoints",
                       f"Missing required codepoints:\n\n"
                       f"{bullet_list(config, missing)}")
-    if len(missing_glyphs) > 0:
-        fail_or_warn = True
-        for glyphset_name, glyphs in missing_glyphs.items():
+    elif len(missing_optional_glyphs) > 0 and "GF_Latin_Core" not in missing_optional_glyphs:
+        passed = False
+        for glyphset_name, glyphs in missing_optional_glyphs.items():
             if glyphset_name == "GF_Latin_Core":
                 continue
             missing = missing_encoded_glyphs(glyphs)
@@ -1072,7 +1073,7 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
                   Message("missing-codepoints",
                           f"{glyphset_name} is almost fulfilled. Missing codepoints:\n\n"
                           f"{bullet_list(config, missing)}")
-    if not fail_or_warn:
+    if passed:
         yield PASS, "OK"
 
 
