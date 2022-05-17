@@ -732,22 +732,22 @@ def test_check_vendor_id():
                 'with a good font.')
 
 
-def NOT_IMPLEMENTED__test_check_glyph_coverage():
+def test_check_glyph_coverage():
     """ Check glyph coverage. """
-    #check = CheckTester(googlefonts_profile,
-    #                    "com.google.fonts/check/glyph_coverage")
-    #TODO: Implement-me!
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/glyph_coverage")
 
-    ## Our reference Mada Regular is know to be bad here.
-    #ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    #assert_results_contain(check(ttFont),
-    #                       FAIL, 'missing-codepoints',
-    #                       'with a bad font...')
-
-    ## Our reference Cabin Regular is know to be good here.
-    #ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-    #assert_PASS(check(ttFont),
-    #            'with a good font...')
+    # Our reference Cabin Regular is known to be bad here.
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    assert_results_contain(check(ttFont),
+                           FAIL, 'missing-codepoints',
+                           'GF_Latin_Core missing glyphs')
+    # Let's add some encoded glyphs so it passes
+    cmap = ttFont.getBestCmap()
+    cmap[0x01CD] = 0x01CD
+    cmap[0x01CE] = 0x01CE
+    assert_PASS(check(ttFont),
+                'with a good font.')
 
 
 def test_check_name_unwanted_chars():
