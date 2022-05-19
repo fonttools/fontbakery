@@ -13,12 +13,21 @@ A more detailed list of changes is available in the corresponding milestones for
   - Improve rendering of bullet lists (issue #3691 & pull #3741)
 
 ### Changes to existing checks
-  - **[com.google.fonts/check/glyph_coverage]:** Check all fonts against all glyphsets and report any glyphsets which are partially filled (pull #3775)
+#### On the Universal Profile
+  - **[com.google.fonts/check/transformed_components]:** Check for any component transformation only if font is hinted, otherwise check only for flipped contour direction (one transformation dimension is flipped while the other isn't)
+  - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
+  - **[com.google.fonts/check/required_tables]:** CFF/CFF2 fonts are now checked instead of skipped. (pull #3742)
+  - **[com.google.fonts/check/family/win_ascent_and_descent]:** Fixed the parameter used in the FAIL message that is issued when the value of `usWinAscent` is too large. (pull #3745)
+  - **[com.google.fonts/check/fontbakery_version]:** A change introduced in #3432 made this check always be skipped; that's now fixed. (issue #3576)
+  - **[com.google.fonts/check/fontbakery_version]:** If the request to PyPI.org is not successful (due to host errors, or lack of internet connection), the check fails. (pull #3756)
   - **[com.google.fonts/check/os2_metrics_match_hhea]:** Included lineGap in comparison
   - **[com.google.fonts/check/family/vertical_metrics]:** Included hhea.lineGap in comparison
   - **[com.google.fonts/check/superfamily/vertical_metrics]:** Included hhea.lineGap in comparison
-  - **[com.google.fonts/check/fontbakery_version]:** If the request to PyPI.org is not successful (due to host errors, or lack of internet connection), the check fails. (pull #3756)
   - **[com.google.fonts/check/contour_count]:** U+0024 DOLLAR SIGN can also have 5 contours, to support glyphs with two strokes. (issue #3780)
+
+#### On the OpenType Profile
+  - **[com.google.fonts/check/name/match_familyname_fullfont]:** The check was completely rewritten; it now correctly compares full name and family name strings that are from the same platform, same encoding, and same language. (pull #3747)
+  - **[com.google.fonts/check/name/match_familyname_fullfont]:** Added rationale text contibuted by Adam Twardoch (issue #3754)
 
 #### On the Adobe Fonts Profile
   - The profile was updated to exercise only an explicit set of checks, making it impossible for checks from imported profiles to sneak-in unnoticed. As a result, the set of checks that are run now is somewhat different from previous Font Bakery releases. For example, UFO- and designspace-related checks are no longer attempted; and outline and shaping checks are excluded as well. In addition to pairing down the set of checks inherited from the Universal profile, an effort was made to enable specific checks from other profiles such as Fontwerk, GoogleFonts, and Noto Fonts. (pull #3743)
@@ -28,30 +37,20 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/os2_metrics_match_hhea]:** This check from the Universal profile is now overridden to yield just WARN instead of FAIL. (pull #3745)
   - **[com.google.fonts/check/fontbakery_version]:** This check from the Universal profile is overridden to be skipped instead of failing, when the user's internet connection isn't functional. (pull #3756)
 
-#### On the GoogleFonts Profile
+#### On the Google Fonts Profile
   - **[com.google.fonts/check/license/OFL_copyright]:** Improve wording of log message to clarify its meaning. It was too easy to think that the displayed copyright string (read from the font binary and reported for reference) was an example of the actually expected string format. (issue #3674)
   - **[com.google.fonts/check/cjk_vertical_metrics_regressions]:** Round calculation of expected sTypoAscender and sTypoDescender values (issue #3645)
   - **[com.google.fonts/check/name/familyname]:** Don't validate localized name table entries compared to the expected English names derived from the font filename (issue #3089)
+  - **[com.google.fonts/check/glyph_coverage]:** Check all fonts against all glyphsets and report any glyphsets which are partially filled (pull #3775)
 
 #### On the Fontwerk Profile
   - Added a few more checks to the `CHECKS_NOT_TO_INCLUDE` list. These are checks (most of them from the Google Fonts profile) that Fontwerk is not interested in including in its vendor-specific profile.
-
-#### On the OpenType Profile
-  - **[com.google.fonts/check/name/match_familyname_fullfont]:** The check was completely rewritten; it now correctly compares full name and family name strings that are from the same platform, same encoding, and same language. (pull #3747)
-  - **[com.google.fonts/check/name/match_familyname_fullfont]:** Added rationale text contibuted by Adam Twardoch (issue #3754)
-
-#### On the Universal Profile
-  - **[com.google.fonts/check/transformed_components]:** Check for any component transformation only if font is hinted, otherwise check only for flipped contour direction (one transformation dimension is flipped while the other isn't)
-  - **[com.google.fonts/check/gpos7]:** Previously we checked for the existence of GSUB 5 lookups in the erroneous belief that they were not supported; GPOS 7 lookups are not supported in CoreText, but GSUB 5 lookups are fine. (issue #3689)
-  - **[com.google.fonts/check/required_tables]:** CFF/CFF2 fonts are now checked instead of skipped. (pull #3742)
-  - **[com.google.fonts/check/family/win_ascent_and_descent]:** Fixed the parameter used in the FAIL message that is issued when the value of `usWinAscent` is too large. (pull #3745)
-  - **[com.google.fonts/check/fontbakery_version]:** A change introduced in #3432 made this check always be skipped; that's now fixed. (issue #3576)
 
 ### New Checks
 #### Added to the Adobe Fonts Profile
   - **[com.adobe.fonts/check/nameid_1_win_english]:** Validates that the font has a good nameID 1, Windows/Unicode/US-English `name` table record. (issue #3714)
 
-#### Added to the GoogleFonts Profile
+#### Added to the Google Fonts Profile
   - **[com.google.fonts/check/vertical_metrics]:** Similar to `cjk_vertical_metrics`, this check enforces Google Fonts’ general vertical metrics specifications.
 
 #### Added to the Noto Fonts Profile
@@ -845,7 +844,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 
 ## 0.7.5 (2019-May-24)
 ### Note-worthy code changes
-  - The conditions from the googlefonts profile were split out into their own separate file
+  - The conditions from the `googlefonts` profile were split out into their own separate file
 
 ### Dependencies
   - Make docs building dependencies optional using "extras_require"
@@ -920,7 +919,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 ## 0.7.1 (2019-Apr-02)
 ### Major code-changes
   - The new "universal" profile contains checks for best practices agreed upon on the type design community. (issue #2426)
-  - The initial set of checks will be not only the full opentype profile but also those checks original included in both adobefonts and googlefonts profiles.
+  - The initial set of checks will be not only the full opentype profile but also those checks original included in both `adobefonts` and `googlefonts` profiles.
   - The goal is to keep the vendor-specific profiles with only the minimal set of checks that are really specific, while the shared ones are placed on the universal profile.
 
 ### New checks
