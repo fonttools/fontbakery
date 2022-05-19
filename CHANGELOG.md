@@ -7,6 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Improve implementation of `is_italic` condition and provide an `is_bold` counterpart (issue #3693)
   - Nicer cancellation for terminal runner. (issue #3672)
   - The CheckTester class now takes into account the check's own `conditions`. (pull #3766)
+  - Windows Terminal displays colors fine. We can now remove the win32 workaround. (issue #3779)
 
 ### BugFixes
   - Users reading markdown reports are now directed to the "stable" version of our ReadTheDocs documentation instead of the "latest" (git dev) one. (issue #3677)
