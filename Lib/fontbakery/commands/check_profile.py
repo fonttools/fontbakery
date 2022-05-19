@@ -131,15 +131,14 @@ def ArgumentParser(profile, profile_arg=True):
                                  help='This is a slightly more compact and succint'
                                       ' output layout.')
 
-    if sys.platform != "win32":
-        argument_parser.add_argument('-n', '--no-progress',
-                                     action='store_true',
-                                     help='In a tty as stdout, don\'t'
-                                          ' render the progress indicators.')
+    argument_parser.add_argument('-n', '--no-progress',
+                                 action='store_true',
+                                 help='In a tty as stdout, don\'t'
+                                      ' render the progress indicators.')
 
-        argument_parser.add_argument('-C', '--no-colors',
-                                     action='store_true',
-                                     help='No colors for tty output.')
+    argument_parser.add_argument('-C', '--no-colors',
+                                 action='store_true',
+                                 help='No colors for tty output.')
 
     argument_parser.add_argument('-S', '--show-sections', default=False, action='store_true',
                                  help='Show section summaries.')
@@ -271,11 +270,8 @@ def main(profile=None, values=None):
         argument_parser.print_usage()
         sys.exit(1)
 
-    # The default Windows Terminal just displays the escape codes. The argument
-    # parser above therefore has these options disabled.
-    if sys.platform == "win32":
-        args.no_progress = True
-        args.no_colors = True
+    args.no_progress = True
+    args.no_colors = True
 
     theme = get_theme(args)
     # the most verbose loglevel wins
