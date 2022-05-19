@@ -595,7 +595,7 @@ def parse_md(md):
         console.print(Markdown(md))
     formated_text = capture.get()
     for i in range(len(tables)):
-        formated_text = re.sub('<#MD-TABLE-'+str(i)+'#>', tables[i], formated_text)
+        formated_text = formated_text.replace(f'<#MD-TABLE-{i}#>', tables[i], 1)
     return re.sub(r'<br/?>', r'\n', formated_text).strip()
 
 def parse_md_table(match, tables_memo):
