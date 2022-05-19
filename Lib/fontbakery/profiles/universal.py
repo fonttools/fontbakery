@@ -1586,9 +1586,11 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
                                   iterate_lookup_list_with_extensions)
 
     mark_glyphs = []
-    if "GDEF" in ttFont and hasattr(ttFont["GDEF"].table, "GlyphClassDef"):
-      mark_glyphs = [k for k, v in ttFont["GDEF"].table.GlyphClassDef.classDefs.items()
-                     if v == 3]
+    if "GDEF" in ttFont and \
+       hasattr(ttFont["GDEF"].table, "GlyphClassDef") and \
+       hasattr(ttFont["GDEF"].table.GlyphClassDef, "classDefs"):
+        mark_glyphs = [k for k, v in ttFont["GDEF"].table.GlyphClassDef.classDefs.items()
+                       if v == 3]
 
     # Only check for encoded
     mark_glyphs = set(mark_glyphs) & set(ttFont.getBestCmap().values())
