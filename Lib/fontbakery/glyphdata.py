@@ -246,7 +246,8 @@ desired_glyph_data = \
         "unicode": 36, 
         "contours": [
             1, 
-            3
+            3,
+            5
         ]
     }, 
     {

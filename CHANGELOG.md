@@ -18,6 +18,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/family/vertical_metrics]:** Included hhea.lineGap in comparison
   - **[com.google.fonts/check/superfamily/vertical_metrics]:** Included hhea.lineGap in comparison
   - **[com.google.fonts/check/fontbakery_version]:** If the request to PyPI.org is not successful (due to host errors, or lack of internet connection), the check fails. (pull #3756)
+  - **[com.google.fonts/check/contour_count]:** U+0024 DOLLAR SIGN can also have 5 contours, to support glyphs with two strokes. (issue #3780)
 
 #### On the Adobe Fonts Profile
   - The profile was updated to exercise only an explicit set of checks, making it impossible for checks from imported profiles to sneak-in unnoticed. As a result, the set of checks that are run now is somewhat different from previous Font Bakery releases. For example, UFO- and designspace-related checks are no longer attempted; and outline and shaping checks are excluded as well. In addition to pairing down the set of checks inherited from the Universal profile, an effort was made to enable specific checks from other profiles such as Fontwerk, GoogleFonts, and Noto Fonts. (pull #3743)
