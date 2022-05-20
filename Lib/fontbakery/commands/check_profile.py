@@ -132,12 +132,12 @@ def ArgumentParser(profile, profile_arg=True):
                                       ' output layout.')
 
     argument_parser.add_argument('-n', '--no-progress',
-                                 action='store_true',
+                                 default=False, action='store_true',
                                  help='In a tty as stdout, don\'t'
                                       ' render the progress indicators.')
 
     argument_parser.add_argument('-C', '--no-colors',
-                                 action='store_true',
+                                 default=False, action='store_true',
                                  help='No colors for tty output.')
 
     argument_parser.add_argument('-S', '--show-sections', default=False, action='store_true',
@@ -269,9 +269,6 @@ def main(profile=None, values=None):
         print(e)
         argument_parser.print_usage()
         sys.exit(1)
-
-    args.no_progress = True
-    args.no_colors = True
 
     theme = get_theme(args)
     # the most verbose loglevel wins
