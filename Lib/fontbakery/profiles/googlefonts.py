@@ -198,7 +198,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/os2/use_typo_metrics',
     'com.google.fonts/check/meta/script_lang_tags',
     'com.google.fonts/check/no_debugging_tables',
-    'com.google.fonts/check/render_own_name'
+    'com.google.fonts/check/render_own_name',
+    'com.google.fonts/check/font_names',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -210,6 +211,65 @@ GOOGLEFONTS_PROFILE_CHECKS = \
     REPO_CHECKS + \
     FONT_FILE_CHECKS + \
     GLYPHSAPP_CHECKS
+
+
+def to_md(items):
+    res = []
+    # add header
+    header = "| " + " | ".join(items[0].keys()) + " |"
+    res.append(header)
+    lb = "|" + " :--- |" * len(items[0])
+    res.append(lb)
+    for row in items:
+        vals = list(row.values())
+        r = "| " + " | ".join(map(str, vals)) + " |"
+        res.append(r)
+    return "\n".join(res)
+
+
+
+@check(
+    id = 'com.google.fonts/check/font_names',
+    rationale = """""",
+    conditions = ['desired_font_names']
+)
+def com_google_fonts_check_font_names(ttFont, desired_font_names):
+    """Check font names are correct"""
+    def style_names(nametable):
+        res = {}
+        nametable = ttFont['name']
+        for nameID in (1, 2, 4, 6, 16, 17):
+            rec = nametable.getName(nameID, 3, 1, 0x409)
+            if rec:
+                res[nameID] = rec.toUnicode()
+        return res
+
+    font_names = style_names(ttFont['name'])
+    desired_names = style_names(desired_font_names)
+
+    table = []
+    for nameID in set(font_names.keys()) | set(desired_names.keys()):
+        row = {"nameID": nameID}
+        if nameID in font_names:
+            row["current"] = font_names[nameID]
+        else:
+            row["current"] = "N/A"
+        if nameID in desired_names:
+            row["desired"] = desired_names[nameID]
+        else:
+            row["desired"] = "N/A"
+        table.append(row)
+
+    new_names = set(font_names) - set(desired_names)
+    missing_names = set(desired_names) - set(font_names)
+    same_names = set(font_names) & set(desired_names)
+
+    if any([new_names, missing_names]) or \
+       any(font_names[i] != desired_names[i] for i in same_names):
+        yield FAIL, Message('bad-names',
+                            f'Font names are incorrect:\n\n{to_md(table)}')
+    else:
+        yield PASS, f"Font names are good:\n\n{to_md(table)}"
 
 
 @check(

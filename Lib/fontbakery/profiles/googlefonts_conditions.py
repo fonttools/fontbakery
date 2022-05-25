@@ -701,3 +701,16 @@ def upstream_yaml(family_directory):
     if not os.path.isfile(fp):
         return None
     return yaml.load(open(fp, "r"), yaml.FullLoader)
+
+
+@condition
+def desired_font_names(ttFont, ttFonts):
+    from axisregistry import build_name_table, build_fvar_instances, build_stat
+    from copy import deepcopy
+    siblings = [f for f in ttFonts if f != ttFont]
+    font_cp = deepcopy(ttFont)
+    build_name_table(font_cp, siblings=siblings)
+    if "fvar" in font_cp:
+        build_fvar_instances(font_cp)
+        build_stat(ttFont, siblings)
+    return font_cp["name"]
