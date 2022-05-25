@@ -4,7 +4,7 @@ from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, disable
-from fontbakery.utils import filesize_formatting
+from fontbakery.utils import bullet_list, filesize_formatting, markdown_table
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (NameID,
@@ -156,22 +156,16 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/hinting_impact',
     'com.google.fonts/check/file_size',
     'com.google.fonts/check/varfont/has_HVAR',
-    'com.google.fonts/check/name/typographicfamilyname',
-    'com.google.fonts/check/name/subfamilyname',
-    'com.google.fonts/check/name/typographicsubfamilyname',
+    'com.google.fonts/check/font_names',
     'com.google.fonts/check/gasp',
-    'com.google.fonts/check/name/familyname',
     'com.google.fonts/check/name/mandatory_entries',
     'com.google.fonts/check/name/copyright_length',
     'com.google.fonts/check/fontdata_namecheck',
     'com.google.fonts/check/name/ascii_only_entries',
-    'com.google.fonts/check/varfont_has_instances',
-    'com.google.fonts/check/varfont_weight_instances',
+    'com.google.fonts/check/fvar_instances',
     'com.google.fonts/check/old_ttfautohint',
     'com.google.fonts/check/vttclean',
-    'com.google.fonts/check/name/postscriptname',
     'com.google.fonts/check/aat',
-    'com.google.fonts/check/name/fullfontname',
     'com.google.fonts/check/mac_style',
     'com.google.fonts/check/fsselection',
     'com.google.fonts/check/smart_dropout',
@@ -182,8 +176,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/cjk_vertical_metrics',
     'com.google.fonts/check/cjk_vertical_metrics_regressions',
     'com.google.fonts/check/cjk_not_enough_glyphs',
-    'com.google.fonts/check/varfont_instance_coordinates',
-    'com.google.fonts/check/varfont_instance_names',
     'com.google.fonts/check/varfont_duplicate_instance_names',
     'com.google.fonts/check/varfont/consistent_axes',
     'com.google.fonts/check/varfont/unsupported_axes',
@@ -197,7 +189,8 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/os2/use_typo_metrics',
     'com.google.fonts/check/meta/script_lang_tags',
     'com.google.fonts/check/no_debugging_tables',
-    'com.google.fonts/check/render_own_name'
+    'com.google.fonts/check/render_own_name',
+    'com.google.fonts/check/stat',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -230,68 +223,16 @@ GOOGLEFONTS_PROFILE_CHECKS = \
     """,
     proposal = 'legacy:check/001'
 )
-def com_google_fonts_check_canonical_filename(font):
+def com_google_fonts_check_canonical_filename(ttFont):
     """Checking file is named canonically."""
-    from fontTools.ttLib import TTFont
-    from .shared_conditions import (is_variable_font,
-                                    variable_font_filename)
-    from .googlefonts_conditions import canonical_stylename
-    from fontbakery.utils import suffix
-    from fontbakery.constants import STATIC_STYLE_NAMES
-
-    failed = False
-    if "_" in os.path.basename(font):
-        failed = True
-        yield FAIL,\
-              Message("invalid-char",
-                      f'font filename "{font}" is invalid.'
-                      f' It must not contain underscore characters!')
-        return
-
-    ttFont = TTFont(font)
-    if is_variable_font(ttFont):
-        if suffix(font) in STATIC_STYLE_NAMES:
-            failed = True
-            yield FAIL,\
-                  Message("varfont-with-static-filename",
-                          "This is a variable font, but it is using"
-                          " a naming scheme typical of a static font.")
-
-        expected = variable_font_filename(ttFont)
-        if expected is None:
-            failed = True
-            yield FAIL,\
-                  Message("unknown-name",
-                          "FontBakery was unable to figure out which"
-                          " filename to expect for this variable font.\n"
-                          "This most likely means that the name table entries"
-                          " used as reference such as FONT_FAMILY_NAME may"
-                          " not be properly set.\n"
-                          "Please review the name table entries.")
-            return
-
-        font_filename = os.path.basename(font)
-        if font_filename != expected:
-            failed = True
-            yield FAIL,\
-                  Message("bad-varfont-filename",
-                          f"The file '{font_filename}' must be renamed"
-                          f" to '{expected}' according to the"
-                          f" Google Fonts naming policy for variable fonts.")
-
+    from axisregistry import build_filename
+    current_filename = os.path.basename(ttFont.reader.file.name)
+    expected_filename = build_filename(ttFont)
+    if current_filename != expected_filename:
+        yield FAIL, Message('bad-filename',
+                            f'Expected "{expected_filename}. Got {current_filename}.')
     else:
-        if not canonical_stylename(font):
-            failed = True
-            style_names = '", "'.join(STATIC_STYLE_NAMES)
-            yield FAIL,\
-                  Message("bad-static-filename",
-                          f'Style name used in "{font}" is not canonical.'
-                          f' You should rebuild the font using'
-                          f' any of the following'
-                          f' style names: "{style_names}".')
-
-    if not failed:
-        yield PASS, f"{font} is named canonically."
+        yield PASS, f'Font filename is correct, "{current_filename}".'
 
 
 @check(
@@ -1021,7 +962,6 @@ def font_codepoints(ttFont):
 )
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check Google Fonts glyph coverage."""
-    from fontbakery.utils import bullet_list
     from glyphsets import GFGlyphData as glyph_data
     import unicodedata2
 
@@ -3243,6 +3183,87 @@ def com_google_fonts_check_mac_style(ttFont, style):
                           bitname="BOLD")
 
 
+@check(
+    id = 'com.google.fonts/check/font_names',
+    conditions = ['expected_font_names'],
+    rationale = """
+        Google Fonts has several rules which need to be adhered to when
+        setting a font's name table. Please read:
+        https://googlefonts.github.io/gf-guide/statics.html#supported-styles
+        https://googlefonts.github.io/gf-guide/statics.html#style-linking
+        https://googlefonts.github.io/gf-guide/statics.html#unsupported-styles
+        https://googlefonts.github.io/gf-guide/statics.html#single-weight-families
+    """
+)
+def com_google_fonts_check_font_names(ttFont, expected_font_names):
+    """Check font names are correct"""
+    def style_names(nametable):
+        res = {}
+        for nameID in (
+            NameID.FONT_FAMILY_NAME,
+            NameID.FONT_SUBFAMILY_NAME,
+            NameID.FULL_FONT_NAME,
+            NameID.POSTSCRIPT_NAME,
+            NameID.TYPOGRAPHIC_FAMILY_NAME,
+            NameID.TYPOGRAPHIC_SUBFAMILY_NAME
+        ):
+            rec = nametable.getName(nameID, 3, 1, 0x409)
+            if rec:
+                res[nameID] = rec.toUnicode()
+        return res
+
+    font_names = style_names(ttFont['name'])
+    expected_names = style_names(expected_font_names['name'])
+
+    name_ids = {
+        NameID.FONT_FAMILY_NAME: "Family Name",
+        NameID.FONT_SUBFAMILY_NAME: "Subfamily Name",
+        NameID.FULL_FONT_NAME: "Full Name",
+        NameID.POSTSCRIPT_NAME: "Poscript Name",
+        NameID.TYPOGRAPHIC_FAMILY_NAME: "Typographic Family Name",
+        NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "Typographic Subfamily Name",
+    }
+    table = []
+    for nameID in set(font_names.keys()) | set(expected_names.keys()):
+        id_name = name_ids[nameID]
+        row = {"nameID": id_name}
+        if nameID in font_names:
+            row["current"] = font_names[nameID]
+        else:
+            row["current"] = "N/A"
+        if nameID in expected_names:
+            row["expected"] = expected_names[nameID]
+        else:
+            row["expected"] = "N/A"
+        table.append(row)
+
+    new_names = set(font_names) - set(expected_names)
+    missing_names = set(expected_names) - set(font_names)
+    same_names = set(font_names) & set(expected_names)
+
+    md_table = markdown_table(table)
+
+    passed = True
+    if new_names or missing_names:
+        passed = False
+
+    for nameID in same_names:
+        if nameID == NameID.FULL_FONT_NAME and \
+            all([
+                " Regular" in expected_names[nameID],
+                font_names[nameID] == expected_names[nameID].replace(" Regular", "")
+            ]):
+                yield WARN, Message('lacks-regular', "Regular missing from full name")
+        elif font_names[nameID] != expected_names[nameID]:
+            passed = False
+
+    if not passed:
+        yield FAIL, Message('bad-names',
+                            f'Font names are incorrect:\n\n{md_table}')
+    else:
+        yield PASS, f"Font names are good:\n\n{md_table}"
+
+
 # FIXME!
 # Temporarily disabled since GFonts hosted Cabin files seem to have changed in ways
 # that break some of the assumptions in the check implementation below.
@@ -3325,350 +3346,6 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
                           f" ({NameID(nameId).name})")
     if passed:
         yield PASS, "Font contains values for all mandatory name table entries."
-
-
-@check(
-    id = 'com.google.fonts/check/name/familyname',
-    conditions = ['style',
-                  'familyname_with_spaces'],
-    rationale = """
-        Checks that the family name infered from the font filename matches the string
-        at nameID 1 (NAMEID_FONT_FAMILY_NAME) if it conforms to RIBBI and otherwise
-        checks that nameID 1 is the family name + the style name.
-    """,
-    proposal = 'legacy:check/157'
-)
-def com_google_fonts_check_name_familyname(ttFont, style, familyname_with_spaces):
-    """Check name table: FONT_FAMILY_NAME entries."""
-    from fontbakery.utils import name_entry_id
-
-    def get_only_weight(value):
-        onlyWeight = {"BlackItalic": "Black",
-                      "BoldItalic": "",
-                      "ExtraBold": "ExtraBold",
-                      "ExtraBoldItalic": "ExtraBold",
-                      "ExtraLightItalic": "ExtraLight",
-                      "LightItalic": "Light",
-                      "MediumItalic": "Medium",
-                      "SemiBoldItalic": "SemiBold",
-                      "ThinItalic": "Thin"}
-        return onlyWeight.get(value, value)
-
-    def has_english_lang_id(name):
-        if name.platformID == PlatformID.MACINTOSH:
-            return name.langID == 0
-
-        if name.platformID == PlatformID.WINDOWS:
-            return name.langID in [
-                0x0C09,  # Australia
-                0x2809,  # Belize
-                0x1009,  # Canada
-                0x2409,  # Caribbean
-                0x4009,  # India
-                0x1809,  # Ireland
-                0x2009,  # Jamaica
-                0x4409,  # Malaysia
-                0x1409,  # New Zealand
-                0x3409,  # Republic of the Philippines
-                0x4809,  # Singapore
-                0x1C09,  # South Africa
-                0x2C09,  # Trinidad and Tobago
-                0x0809,  # United Kingdom
-                0x0409,  # United States
-                0x3009,  # Zimbabwe
-            ]
-
-    failed = False
-    only_weight = get_only_weight(style)
-    for name in ttFont['name'].names:
-        if not has_english_lang_id(name):
-            # The value of familyname_with_spaces is derived from
-            # the filename which is expected to match the English name IDs.
-            # See: https://github.com/googlefonts/fontbakery/issues/3089
-            continue
-
-        if name.nameID == NameID.FONT_FAMILY_NAME:
-
-            if name.platformID == PlatformID.MACINTOSH:
-                expected_value = familyname_with_spaces
-
-            elif name.platformID == PlatformID.WINDOWS:
-                if style in ['Regular',
-                             'Italic',
-                             'Bold',
-                             'Bold Italic']:
-                    expected_value = familyname_with_spaces
-                else:
-                    expected_value = " ".join([familyname_with_spaces,
-                                               only_weight]).strip()
-            else:
-                failed = True
-                yield FAIL,\
-                      Message("lacks-name",
-                              f"Font should not have a "
-                              f"{name_entry_id(name)} entry!")
-                continue
-
-            string = name.string.decode(name.getEncoding()).strip()
-
-            if (camelcased_familyname_exception(string) and
-                string.replace(" ", "") == expected_value.replace(" ", "")):
-                continue
-
-            if string != expected_value:
-                failed = True
-                yield FAIL,\
-                      Message("mismatch",
-                              f'Entry {name_entry_id(name)} on the "name" table:'
-                              f' Expected "{expected_value}"'
-                              f' but got "{string}".')
-    if not failed:
-        yield PASS,\
-              Message("ok",
-                      "FONT_FAMILY_NAME entries are all good.")
-
-
-@check(
-    id = 'com.google.fonts/check/name/subfamilyname',
-    conditions = ['expected_style'],
-    proposal = 'legacy:check/158'
-)
-def com_google_fonts_check_name_subfamilyname(ttFont, expected_style):
-    """Check name table: FONT_SUBFAMILY_NAME entries."""
-    failed = False
-    nametable = ttFont['name']
-    win_name = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
-                                 PlatformID.WINDOWS,
-                                 WindowsEncodingID.UNICODE_BMP,
-                                 WindowsLanguageID.ENGLISH_USA)
-    mac_name = nametable.getName(NameID.FONT_SUBFAMILY_NAME,
-                                 PlatformID.MACINTOSH,
-                                 MacintoshEncodingID.ROMAN,
-                                 MacintoshLanguageID.ENGLISH)
-
-    if mac_name and mac_name.toUnicode() != expected_style.mac_style_name:
-        failed = True
-        yield FAIL,\
-              Message("bad-familyname",
-                      f'SUBFAMILY_NAME for Mac "{mac_name.toUnicode()}"'
-                      f' must be "{expected_style.mac_style_name}"')
-    if win_name.toUnicode() != expected_style.win_style_name:
-        failed = True
-        yield FAIL,\
-              Message("bad-familyname",
-                      f'SUBFAMILY_NAME for Win "{win_name.toUnicode()}"'
-                      f' must be "{expected_style.win_style_name}"')
-    if not failed:
-        yield PASS, "FONT_SUBFAMILY_NAME entries are all good."
-
-
-@check(
-    id = 'com.google.fonts/check/name/fullfontname',
-    rationale = """
-        Requirements for the FULL_FONT_NAME entries in the 'name' table.
-    """,
-    conditions = ['style_with_spaces',
-                  'familyname_with_spaces'],
-    proposal = 'legacy:check/159'
-)
-def com_google_fonts_check_name_fullfontname(ttFont,
-                                             style_with_spaces,
-                                             familyname_with_spaces):
-    """Check name table: FULL_FONT_NAME entries."""
-    from fontbakery.utils import name_entry_id
-    failed = False
-    for name in ttFont['name'].names:
-        if name.nameID == NameID.FULL_FONT_NAME:
-            camelcased_name = familyname_with_spaces.replace(" ", "")
-            if camelcased_familyname_exception(camelcased_name):
-                familyname = camelcased_name
-            else:
-                familyname = familyname_with_spaces
-
-            expected_value = "{} {}".format(familyname,
-                                            style_with_spaces)
-            string = name.string.decode(name.getEncoding()).strip()
-
-            if string != expected_value:
-                failed = True
-                # special case
-                # see https://github.com/googlefonts/fontbakery/issues/1436
-                if style_with_spaces == "Regular" \
-                   and string == familyname_with_spaces:
-                    yield WARN,\
-                          Message("lacks-regular",
-                                  f'{name_entry_id(name)}\n'
-                                  f'Got "{string}" which lacks "Regular",'
-                                  f' but it is probably OK in this case.')
-                else:
-                    yield FAIL,\
-                          Message("bad-entry",
-                                  f'{name_entry_id(name)}\n'
-                                  f'Expected: "{expected_value}"\n'
-                                  f'But got:  "{string}"')
-    if not failed:
-        yield PASS, "FULL_FONT_NAME entries are all good."
-
-
-@check(
-    id = 'com.google.fonts/check/name/postscriptname',
-    rationale = """
-        Requirements for the POSTSCRIPT_NAME entries in the 'name' table.
-    """,
-    conditions = ['style',
-                  'familyname'],
-    proposal = 'legacy:check/160'
-)
-def com_google_fonts_check_name_postscriptname(ttFont, style, familyname):
-    """Check name table: POSTSCRIPT_NAME entries."""
-    from fontbakery.utils import name_entry_id
-
-    failed = False
-    for name in ttFont['name'].names:
-        if name.nameID == NameID.POSTSCRIPT_NAME:
-            expected_value = f"{familyname}-{style}"
-
-            string = name.string.decode(name.getEncoding()).strip()
-            if string != expected_value:
-                failed = True
-                yield FAIL,\
-                      Message("bad-entry",
-                              f'{name_entry_id(name)}\n'
-                              f'Expected: "{expected_value}"\n'
-                              f'But got:  "{string}"')
-    if not failed:
-        yield PASS, "POSTCRIPT_NAME entries are all good."
-
-
-@check(
-    id = 'com.google.fonts/check/name/typographicfamilyname',
-    rationale = """
-        Requirements for the TYPOGRAPHIC_FAMILY_NAME entries in the 'name' table.
-    """,
-    conditions = ['style',
-                  'familyname_with_spaces'],
-    proposal = 'legacy:check/161'
-)
-def com_google_fonts_check_name_typographicfamilyname(ttFont, style, familyname_with_spaces):
-    """Check name table: TYPOGRAPHIC_FAMILY_NAME entries."""
-    from fontbakery.utils import name_entry_id
-
-    failed = False
-    if style in ['Regular',
-                 'Italic',
-                 'Bold',
-                 'BoldItalic']:
-        for name in ttFont['name'].names:
-            if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
-                failed = True
-                yield FAIL,\
-                      Message("ribbi",
-                              (f'Font style is "{style}" and, for that reason,'
-                               f' it is not expected to have a '
-                               f'{name_entry_id(name)} entry!'))
-    else:
-        expected_value = familyname_with_spaces
-        has_entry = False
-        for name in ttFont['name'].names:
-            if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
-                string = name.string.decode(name.getEncoding()).strip()
-                if string == expected_value:
-                    has_entry = True
-                else:
-                    failed = True
-                    yield FAIL,\
-                          Message("non-ribbi-bad-value",
-                                  (f'{name_entry_id(name)}\n'
-                                   f'Expected: "{expected_value}"\n'
-                                   f'But got:  "{string}".'))
-        if not failed and not has_entry:
-            failed = True
-            yield FAIL,\
-                  Message("non-ribbi-lacks-entry",
-                          ("Non-RIBBI fonts must have a TYPOGRAPHIC_FAMILY_NAME"
-                           " entry on the name table."))
-    if not failed:
-        yield PASS, "TYPOGRAPHIC_FAMILY_NAME entries are all good."
-
-
-@check(
-    id = 'com.google.fonts/check/name/typographicsubfamilyname',
-    rationale = """
-        Requirements for the TYPOGRAPHIC_SUBFAMILY_NAME entries in the 'name' table.
-    """,
-    conditions = ['expected_style'],
-    proposal = 'legacy:check/162'
-)
-def com_google_fonts_check_name_typographicsubfamilyname(ttFont, expected_style):
-    """Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries."""
-    failed = False
-    nametable = ttFont['name']
-    win_name = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
-                                 PlatformID.WINDOWS,
-                                 WindowsEncodingID.UNICODE_BMP,
-                                 WindowsLanguageID.ENGLISH_USA)
-    mac_name = nametable.getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
-                                 PlatformID.MACINTOSH,
-                                 MacintoshEncodingID.ROMAN,
-                                 MacintoshLanguageID.ENGLISH)
-
-    if all([win_name, mac_name]):
-        if win_name.toUnicode() != mac_name.toUnicode():
-            failed = True
-            yield FAIL,\
-                  Message("mismatch",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME entry'
-                          f' for Win "{win_name.toUnicode()}"'
-                          f' and Mac "{mac_name.toUnicode()}" do not match.')
-
-    if expected_style.is_ribbi:
-        if win_name and win_name.toUnicode() != expected_style.win_style_name:
-            failed = True
-            yield FAIL,\
-                  Message("bad-win-name",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME entry'
-                          f' for Win "{win_name.toUnicode()}"'
-                          f' must be "{expected_style.win_style_name}".'
-                          f' Please note, since the font style is RIBBI,'
-                          f' this record can be safely deleted.')
-
-        if mac_name and mac_name.toUnicode() != expected_style.mac_style_name:
-            failed = True
-            yield FAIL,\
-                  Message("bad-mac-name",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME entry'
-                          f' for Mac "{mac_name.toUnicode()}"'
-                          f' must be "{expected_style.mac_style_name}".'
-                          f' Please note, since the font style is RIBBI,'
-                          f' this record can be safely deleted.')
-
-    if expected_style.typo_style_name:
-        if not win_name:
-            failed = True
-            yield FAIL,\
-                  Message("missing-typo-win",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME for Win is missing.'
-                          f' It must be "{expected_style.typo_style_name}".')
-
-        elif win_name.toUnicode() != expected_style.typo_style_name:
-            failed = True
-            yield FAIL,\
-                  Message("bad-typo-win",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME for Win'
-                          f' "{win_name.toUnicode()}" is incorrect.'
-                          f' It must be "{expected_style.typo_style_name}".')
-
-        if mac_name and mac_name.toUnicode() != expected_style.typo_style_name:
-            failed = True
-            yield FAIL,\
-                  Message("bad-typo-mac",
-                          f'TYPOGRAPHIC_SUBFAMILY_NAME for Mac'
-                          f' "{mac_name.toUnicode()}" is incorrect.'
-                          f' It must be "{expected_style.typo_style_name}".'
-                          f' Please note, this record can be safely deleted.')
-
-    if not failed:
-        yield PASS, "TYPOGRAPHIC_SUBFAMILY_NAME entries are all good."
 
 
 @check(
@@ -4101,6 +3778,159 @@ def com_google_fonts_check_aat(ttFont):
 
 
 @check(
+    id = 'com.google.fonts/check/stat',
+    conditions = ['is_variable_font', 'expected_font_names'],
+    rationale = """
+        Check a font's STAT table contains compulsory Axis Values which exist
+        in the Google Fonts Axis Registry.
+
+        We cannot determine what Axis Values the user will set for axes such as
+        opsz, GRAD since these axes are unique for each font so we'll skip them.
+    """
+)
+def com_google_fonts_check_stat(ttFont, expected_font_names):
+    """Check a font's STAT table contains compulsory Axis Values."""
+    axes_to_check = {
+        "CASL", "CRSV", "FILL", "FLAR", "MONO", "SOFT", "VOLM", "wdth", "wght", "WONK"
+    }
+    def stat_axis_values(ttFont, include_axes=axes_to_check):
+        name = ttFont["name"]
+        stat = ttFont["STAT"].table
+        axes = [a.AxisTag for a in stat.DesignAxisRecord.Axis]
+        res = {}
+        if ttFont["STAT"].table.AxisValueCount == 0:
+            return res
+        axis_values = stat.AxisValueArray.AxisValue
+        for ax in axis_values:
+            axis_tag = axes[ax.AxisIndex]
+            if axis_tag not in include_axes:
+                continue
+            ax_name = name.getName(ax.ValueNameID, 3, 1, 0x409).toUnicode()
+            res[(axis_tag, ax_name)] = {
+                "Axis": axis_tag,
+                "Name": ax_name,
+                "Flags": ax.Flags,
+                "Value": ax.Value,
+                "LinkedValue": None if not hasattr(ax, "LinkedValue") else ax.LinkedValue
+            }
+        return res
+    
+    font_axis_values = stat_axis_values(ttFont)
+    expected_axis_values = stat_axis_values(expected_font_names)
+    
+    table = []
+    for axis, name in set(font_axis_values.keys()) | set(expected_axis_values.keys()):
+        row = {}
+        key = (axis, name)
+        if key in font_axis_values:
+            row["Name"] = name
+            row["Axis"] = axis
+            row["Current Value"] = font_axis_values[key]["Value"]
+            row["Current Flags"] = font_axis_values[key]["Flags"]
+            row["Current LinkedValue"] = font_axis_values[key]["LinkedValue"]
+        else:
+            row["Name"] = name
+            row["Axis"] = axis
+            row["Current Value"] = "N/A"
+            row["Current Flags"] = "N/A"
+            row["Current LinkedValue"] = "N/A"
+        if key in expected_axis_values:
+            row["Name"] = name
+            row["Axis"] = axis
+            row["Expected Value"] = expected_axis_values[key]["Value"]
+            row["Expected Flags"] = expected_axis_values[key]["Flags"]
+            row["Expected LinkedValue"] = expected_axis_values[key]["LinkedValue"]
+        else:
+            row["Name"] = name
+            row["Axis"] = axis
+            row["Expected Value"] = "N/A"
+            row["Expected Flags"] = "N/A"
+            row["Expected LinkedValue"] = "N/A"
+        table.append(row)
+    table.sort(key=lambda k: (k["Axis"], str(k["Expected Value"])))
+    md_table = markdown_table(table)
+
+    passed = True
+    is_italic = any(a.axisTag in ["ital", "slnt"] for a in ttFont["fvar"].axes)
+    missing_ital_av = any("Italic" in r["Name"] for r in table)
+    if is_italic and missing_ital_av:
+        passed = False
+        yield FAIL, Message("missing-ital-axis-values",
+            "Italic Axis Value missing.")
+
+    if font_axis_values != expected_axis_values:
+        passed = False
+        yield FAIL, Message('bad-axis-values',
+            f"Compulsory STAT Axis Values are incorrect:\n\n {md_table}\n")
+    if passed:
+        yield PASS, "Compulsory STAT Axis Values are correct."
+
+
+@check(
+    id = 'com.google.fonts/check/fvar_instances',
+    conditions = ['is_variable_font', 'expected_font_names'],
+    rationale = """
+        Check a font's fvar instance coordinates comply with our guidelines:
+        https://googlefonts.github.io/gf-guide/variable.html#fvar-instances
+    """
+)
+def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
+    """Check variable font instances"""
+    def get_instances(ttFont):
+        name = ttFont['name']
+        fvar = ttFont['fvar']
+        res = {}
+        for inst in fvar.instances:
+            inst_name = name.getName(inst.subfamilyNameID, 3, 1, 0x409)
+            if not inst_name:
+                continue
+            res[inst_name.toUnicode()] = inst.coordinates
+        return res
+    font_instances = get_instances(ttFont)
+    expected_instances = get_instances(expected_font_names)
+    table = []
+    for name in set(font_instances.keys()) | set(expected_instances.keys()):
+        row = {"Name": name}
+        if name in font_instances:
+            row["current"] = ", ".join([f"{k}={v}" for k,v in font_instances[name].items()])
+        else:
+            row["current"] = "N/A"
+        if name in expected_instances:
+            row["expected"] = ", ".join([f"{k}={v}" for k,v in expected_instances[name].items()])
+        else:
+            row["expected"] = "N/A"
+        table.append(row)
+    table = sorted(table, key=lambda k: str(k["expected"]))
+
+    missing = set(expected_instances.keys()) - set(font_instances.keys())
+    new = set(font_instances.keys()) - set(expected_instances.keys())
+    same = set(font_instances.keys()) & set(expected_instances.keys())
+    # check if instances have correct weight.
+    if all("wght" in expected_instances[i] for i in expected_instances):
+        wght_wrong = any(font_instances[i]["wght"] != expected_instances[i]["wght"] for i in same)
+    else:
+        wght_wrong = False
+
+    md_table = markdown_table(table)
+    if any([wght_wrong, missing, new]):
+        hints = ""
+        if missing:
+            hints += "- Add missing instances\n"
+        if new:
+            hints += "- Delete additional instances\n"
+        if wght_wrong:
+            hints += "- wght coordinates are wrong for some instances"
+        yield FAIL, Message('bad-fvar-instances',
+                            f"fvar instances are incorrect:\n{hints}\n{md_table}")
+    elif any(font_instances[i] != expected_instances[i] for i in same):
+        yield WARN, Message("suspicious-fvar-coords",
+            (f"fvar instance coordinates for non-wght axes are not the same as the fvar defaults. "
+             f"This may be intentional so please check with the font author:\n\n{md_table}"))
+    else:
+        yield PASS, f"fvar instances are good:\n\n{md_table}"
+
+
+@check(
     id = 'com.google.fonts/check/fvar_name_entries',
     conditions = ['is_variable_font'],
     rationale = """
@@ -4124,53 +3954,6 @@ def com_google_fonts_check_fvar_name_entries(ttFont):
                           f"Named instance with coordinates {instance.coordinates}"
                           f" lacks an entry on the name table"
                           f" (nameID={instance.subfamilyNameID}).")
-
-    if not failed:
-        yield PASS, "OK"
-
-
-@check(
-    id = 'com.google.fonts/check/varfont_has_instances',
-    conditions = ['is_variable_font'],
-    rationale = """
-        Named instances must be present in all variable fonts in order not to frustrate
-        the users' typical expectations of a traditional static font workflow.
-    """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2127'
-)
-def com_google_fonts_check_varfont_has_instances(ttFont):
-    """A variable font must have named instances."""
-
-    if len(ttFont["fvar"].instances):
-        yield PASS, "OK"
-    else:
-        yield FAIL,\
-              Message("lacks-named-instances",
-                      "This variable font lacks"
-                      " named instances on the fvar table.")
-
-
-@check(
-    id = 'com.google.fonts/check/varfont_weight_instances',
-    conditions = ['is_variable_font'],
-    rationale = """
-        The named instances on the weight axis of a variable font must have coordinates
-        that are multiples of 100 on the design space.
-    """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2258'
-)
-def com_google_fonts_check_varfont_weight_instances(ttFont):
-    """Variable font weight coordinates must be multiples of 100."""
-
-    failed = False
-    for instance in ttFont["fvar"].instances:
-        if 'wght' in instance.coordinates and instance.coordinates['wght'] % 100 != 0:
-            failed = True
-            yield FAIL,\
-                  Message("bad-coordinate",
-                          f"Found a variable font instance with"
-                          f" 'wght'={instance.coordinates['wght']}."
-                          f" This should instead be a multiple of 100.")
 
     if not failed:
         yield PASS, "OK"
@@ -4332,8 +4115,6 @@ def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
 )
 def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, config, ligatures, has_kerning_info):
     """Is there kerning info for non-ligated sequences?"""
-    from fontbakery.utils import bullet_list
-
     def look_for_nonligated_kern_info(table):
         for pairpos in table.SubTable:
             for i, glyph in enumerate(pairpos.Coverage.glyphs):
@@ -5229,90 +5010,13 @@ def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/varfont_instance_coordinates',
-    conditions = ['is_variable_font'],
-    proposal = 'https://github.com/googlefonts/fontbakery/pull/2520'
-)
-def com_google_fonts_check_varfont_instance_coordinates(ttFont):
-    """Check variable font instances have correct coordinate values"""
-    from fontbakery.parse import instance_parse
-    from fontbakery.constants import SHOW_GF_DOCS_MSG
-
-    failed = False
-    for instance in ttFont['fvar'].instances:
-        name = ttFont['name'].getName(
-            instance.subfamilyNameID,
-            PlatformID.WINDOWS,
-            WindowsEncodingID.UNICODE_BMP,
-            WindowsLanguageID.ENGLISH_USA
-        ).toUnicode()
-        expected_instance = instance_parse(name)
-        for axis in instance.coordinates:
-            if axis in expected_instance.coordinates and \
-                instance.coordinates[axis] != expected_instance.coordinates[axis]:
-                yield FAIL,\
-                      Message("bad-coordinate",
-                              f'Instance "{name}" {axis} value '
-                              f'is "{instance.coordinates[axis]}". '
-                              f'It should be "{expected_instance.coordinates[axis]}"')
-                failed = True
-
-    if failed:
-        yield FAIL, f"{SHOW_GF_DOCS_MSG}#axes"
-    else:
-        yield PASS, "Instance coordinates are correct"
-
-
-@check(
-    id = 'com.google.fonts/check/varfont_instance_names',
-    conditions = ['is_variable_font'],
-    proposal = 'https://github.com/googlefonts/fontbakery/pull/2520'
-)
-def com_google_fonts_check_varfont_instance_names(ttFont):
-    """Check variable font instances have correct names"""
-    # This check and the fontbakery.parse module used to be more complicated.
-    # On 2020-06-26, we decided to only allow Thin-Black + Italic instances.
-    # If we decide to add more particles to instance names, It's worthwhile
-    # revisiting our previous implementation which can be found in commits
-    # earlier than or equal to ca71d787eb2b8b5a9b111884080dde5d45f5579f
-    from fontbakery.parse import instance_parse
-    from fontbakery.constants import SHOW_GF_DOCS_MSG
-
-    failed = []
-    for instance in ttFont['fvar'].instances:
-        name = ttFont['name'].getName(
-            instance.subfamilyNameID,
-            PlatformID.WINDOWS,
-            WindowsEncodingID.UNICODE_BMP,
-            WindowsLanguageID.ENGLISH_USA
-        ).toUnicode()
-        expected_instance = instance_parse(name)
-
-        # Check if name matches predicted name
-        if expected_instance.name != name:
-            failed.append(name)
-
-    if failed:
-        failed_instances = "\n\t- ".join([""] + failed)
-        yield FAIL,\
-              Message('bad-instance-names',
-                      f'Following instances are not supported: {failed_instances}\n'
-                      f'\n'
-                      f'{SHOW_GF_DOCS_MSG}#fvar-instances')
-    else:
-        yield PASS, "Instance names are correct"
-
-
-@check(
     id = 'com.google.fonts/check/varfont_duplicate_instance_names',
     rationale = """
         This check's purpose is to detect duplicate named instances names in a
         given variable font.
-
         Repeating instance names may be the result of instances for several VF axes
         defined in `fvar`, but since currently only weight+italic tokens are allowed
         in instance names as per GF specs, they ended up repeating.
-
         Instead, only a base set of fonts for the most default representation of the
         family can be defined through instances in the `fvar` table, all other
         instances will have to be left to access through the `STAT` table.
@@ -5912,7 +5616,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
         If the progression rates of axes is linear, this check can be ignored.
         Fontmake will also skip adding an avar table if the progression rates
         are linear. However, we still recommend designers visually proof each
-        instance is at the desired weight, width etc.
+        instance is at the expected weight, width etc.
     """,
     conditions = ["is_variable_font"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3100'
@@ -6241,8 +5945,6 @@ def com_google_fonts_check_render_own_name(ttFont):
 def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, config):
     """Check README.md has a sample image."""
     import re
-    from fontbakery.utils import bullet_list
-
     image_path = False
     line_number = 0
     for line in readme_contents.split('\n'):

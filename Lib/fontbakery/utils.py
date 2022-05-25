@@ -218,6 +218,30 @@ def bullet_list(config, items, bullet="-", indentation="\t"):
                              glue=f"\n\n{indentation}{bullet} And")
 
 
+def markdown_table(items):
+    """Format a list of dicts into a markdown table.
+
+    >>> markdown_table(
+    >>>    [{"name": "Sam", "age": 30}, {"name": "Ash", "age": 25}]
+    >>> )
+    ...
+    | name | age  |
+    | :--- | :--- |
+    | Sam  | 30   |
+    | Ash  | 25   |
+    """
+    res = []
+    header = "| " + " | ".join(items[0].keys()) + " |"
+    res.append(header)
+    lb = "|" + " :--- |" * len(items[0])
+    res.append(lb)
+    for row in items:
+        vals = list(row.values())
+        r = "| " + " | ".join(map(str, vals)) + " |"
+        res.append(r)
+    return "\n".join(res)
+
+
 def get_regular(fonts):
     # TODO: Maybe also support getting a regular instance from a variable font?
     for font in fonts:
