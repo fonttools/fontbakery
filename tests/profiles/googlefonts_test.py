@@ -1,3 +1,4 @@
+from fontbakery.profiles.googlefonts_conditions import expected_font_names
 import pytest
 import os
 from fontTools.ttLib import TTFont
@@ -161,66 +162,51 @@ def test_example_checkrunner_based(cabin_regular_path):
             break
 
 
-def test_check_canonical_filename():
+@pytest.mark.parametrize(
+    """fp,result""",
+    [
+        (TEST_FILE("montserrat/Montserrat-Thin.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Light.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Regular.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Medium.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-SemiBold.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Bold.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Black.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-LightItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Italic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"), PASS),
+        (TEST_FILE("cabinvfbeta/CabinVFBeta-Italic[wght].ttf"), PASS),
+        (TEST_FILE("cabinvfbeta/CabinVFBeta[wdth,wght].ttf"), PASS), # axis tags are sorted
+        (TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/Cabin-Italic.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/Cabin-Roman.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/Cabin-Italic-VF.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/Cabin-Roman-VF.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/Cabin-VF.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/CabinVFBeta[wght,wdth].ttf"), FAIL), # axis tags are NOT sorted here
+    ]
+)
+def test_check_canonical_filename(fp, result):
     """ Files are named canonically. """
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/canonical_filename")
+    ttFont = TTFont(fp)
 
-    static_canonical_names = [
-        TEST_FILE("montserrat/Montserrat-Thin.ttf"),
-        TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"),
-        TEST_FILE("montserrat/Montserrat-Light.ttf"),
-        TEST_FILE("montserrat/Montserrat-Regular.ttf"),
-        TEST_FILE("montserrat/Montserrat-Medium.ttf"),
-        TEST_FILE("montserrat/Montserrat-SemiBold.ttf"),
-        TEST_FILE("montserrat/Montserrat-Bold.ttf"),
-        TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"),
-        TEST_FILE("montserrat/Montserrat-Black.ttf"),
-        TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-LightItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-Italic.ttf"),
-        TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"),
-    ]
-
-    varfont_canonical_names = [
-        TEST_FILE("cabinvfbeta/CabinVFBeta-Italic[wght].ttf"),
-        TEST_FILE("cabinvfbeta/CabinVFBeta[wdth,wght].ttf"), # axis tags are sorted
-    ]
-
-    non_canonical_names = [
-        TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"),
-        TEST_FILE("cabinvfbeta/Cabin-Italic.ttf"),
-        TEST_FILE("cabinvfbeta/Cabin-Roman.ttf"),
-        TEST_FILE("cabinvfbeta/Cabin-Italic-VF.ttf"),
-        TEST_FILE("cabinvfbeta/Cabin-Roman-VF.ttf"),
-        TEST_FILE("cabinvfbeta/Cabin-VF.ttf"),
-        TEST_FILE("cabinvfbeta/CabinVFBeta[wght,wdth].ttf"), # axis tags are NOT sorted here
-    ]
-
-    for canonical in static_canonical_names + varfont_canonical_names:
-        assert_PASS(check(canonical),
-                    f'with "{canonical}" ...')
-
-    for non_canonical in non_canonical_names:
-        assert_results_contain(check(non_canonical),
-                               FAIL, 'bad-varfont-filename',
-                               f'with "{non_canonical}" ...')
-
-    assert_results_contain(check(TEST_FILE("Bad_Name.ttf")),
-                           FAIL, 'invalid-char',
-                           'with filename containing an underscore...')
-
-    assert_results_contain(check(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf")),
-                           FAIL, 'unknown-name',
-                           'with a variable font that lacks some important name table entries...')
-
-    # TODO: FAIL, 'bad-static-filename'
-    # TODO: FAIL, 'varfont-with-static-filename'
+    if result == PASS:
+        assert_PASS(check(ttFont),
+                    f'with "{ttFont.reader.file.name}" ...')
+    else:
+        assert_results_contain(check(ttFont),
+                               FAIL, 'bad-filename',
+                               f'with "{ttFont.reader.file.name}" ...')
 
 
 def test_check_description_broken_links():
@@ -2424,6 +2410,132 @@ def test_check_metadata_category():
                     f'with "{good_value}"...')
 
 
+@pytest.mark.parametrize(
+    """fp,mod,result""",
+    [
+        # tests from test_check_name_familyname:
+        (TEST_FILE("cabin/Cabin-Regular.ttf"), {}, PASS),
+        (TEST_FILE("cabin/Cabin-Regular.ttf"), {NameID.FONT_FAMILY_NAME: "Wrong"}, FAIL),
+        (TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), {}, PASS),
+        (TEST_FILE("overpassmono/OverpassMono-Bold.ttf"), {}, PASS),
+        (TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), {1: "Foo"}, FAIL),
+        (TEST_FILE("merriweather/Merriweather-Black.ttf"), {}, PASS),
+        (TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), {}, PASS),
+        (TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), {NameID.FONT_FAMILY_NAME: "Merriweather Light Italic"}, FAIL),
+        (TEST_FILE("abeezee/ABeeZee-Regular.ttf"), {}, PASS),
+        # tests from test_check_name_subfamilyname
+        (TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), {}, PASS),
+        (TEST_FILE("overpassmono/OverpassMono-Bold.ttf"), {}, PASS),
+        (TEST_FILE("merriweather/Merriweather-Black.ttf"), {}, PASS),
+        (TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Black.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Bold.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Italic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-LightItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Light.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Medium.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Regular.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-SemiBold.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Thin.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"), {NameID.FONT_SUBFAMILY_NAME: "Not a proper style"}, FAIL),
+        # tests from test_check_name_fullfontname
+        (TEST_FILE("cabin/Cabin-Regular.ttf"), {}, PASS),
+        # warn should be raised since full name is missing Regular
+        (TEST_FILE("cabin/Cabin-Regular.ttf"), {4: "Cabin"}, WARN),
+        (TEST_FILE("cabin/Cabin-BoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("cabin/Cabin-BoldItalic.ttf"), {NameID.FULL_FONT_NAME: "Make it fail"}, FAIL),
+        (TEST_FILE("abeezee/ABeeZee-Regular.ttf"), {}, PASS),
+        # tests from test_check_name_typographicfamilyname
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {NameID.TYPOGRAPHIC_FAMILY_NAME: "Arbitrary name"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {NameID.TYPOGRAPHIC_FAMILY_NAME: "Foo"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {NameID.TYPOGRAPHIC_FAMILY_NAME: None}, FAIL),
+        # tests from test_check_name_typographicsubfamilyname
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "Foo"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {NameID.TYPOGRAPHIC_SUBFAMILY_NAME: None}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "Generic Name"}, FAIL),
+        # variable font checks
+        (TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"), {}, PASS),
+        # Open Sans' origin is Light so this should pass
+        (TEST_FILE("varfont/OpenSans[wdth,wght].ttf"), {2: "Regular", 17: "Light"}, PASS),
+        (TEST_FILE("varfont/OpenSans[wdth,wght].ttf"), {2: "Regular", 17: "Condensed Light"}, FAIL),
+        (TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"), {}, PASS),
+        # Roboto Serif has an opsz axes so this should pass
+        (
+            TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"),
+            {
+                NameID.FONT_FAMILY_NAME: "Roboto Serif 20pt",
+                NameID.FONT_SUBFAMILY_NAME: "Regular",
+                NameID.TYPOGRAPHIC_FAMILY_NAME: "Roboto Serif",
+                NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "20pt Regular",
+            },
+            PASS),
+        (TEST_FILE("varfont/Georama[wdth,wght].ttf"), {}, PASS),
+        # Georama's default fvar vals are wdth=62.5, wght=100
+        # which means ExtraCondensed Thin should appear in the family name
+        (TEST_FILE("varfont/Georama[wdth,wght].ttf"),
+        {
+            NameID.FONT_FAMILY_NAME: "Georama ExtraCondensed Thin",
+            NameID.FONT_SUBFAMILY_NAME: "Regular",
+            NameID.TYPOGRAPHIC_FAMILY_NAME: "Georama",
+            NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "ExtraCondensed Thin",
+        },
+        PASS),
+    ]
+)
+def test_check_font_names(fp, mod, result):
+    """Check font names are correct"""
+    # Please note: This check was introduced in
+    # https://github.com/googlefonts/fontbakery/pull/3800 which has replaced
+    # the following checks:
+    #   com.google.fonts/check/name/familyname
+    #   com.google.fonts/check/name/subfamilyname
+    #   com.google.fonts/check/name/typographicfamilyname
+    #   com.google.fonts/check/name/typographicsubfamilyname
+    # It works by simply using the nametable builder which is found in the
+    # axis registry,
+    # https://github.com/googlefonts/axisregistry/blob/main/Lib/axisregistry/__init__.py#L232
+    # this repository already has good unit tests but this check will also include the previous
+    # test cases found in fontbakery.
+    # https://github.com/googlefonts/axisregistry/blob/main/tests/test_names.py
+    from fontbakery.profiles.googlefonts_conditions import expected_font_names
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/font_names")
+    ttFont = TTFont(fp)
+    # get the expecteed font names now before we modify them
+    expected = expected_font_names(ttFont, [])
+    if mod:
+        for k,v in mod.items():
+            if v is None:
+                ttFont['name'].removeNames(k)
+            else:
+                ttFont['name'].setName(v, k, 3, 1, 0x409)
+
+    if result == PASS:
+        assert_PASS(check(ttFont, {"expected_font_names": expected}),
+                    "with a good font...")
+    elif result == WARN:
+        assert_results_contain(check(ttFont, {"expected_font_names": expected}),
+                               WARN, 'lacks-regular',
+                               f'with bad names')
+    else:
+        assert_results_contain(check(ttFont, {"expected_font_names": expected}),
+                               FAIL, 'bad-names',
+                               f'with bad names')
+
+
 def test_check_name_mandatory_entries():
     """ Font has all mandatory 'name' table entries ? """
     check = CheckTester(googlefonts_profile,
@@ -2485,294 +2597,6 @@ def test_condition_familyname_with_spaces():
     from fontbakery.profiles.googlefonts_conditions import familyname_with_spaces
     assert familyname_with_spaces("OverpassMono") == "Overpass Mono"
     assert familyname_with_spaces("BodoniModa11") == "Bodoni Moda 11"
-
-
-def test_check_name_familyname():
-    """ Check name table: FONT_FAMILY_NAME entries. """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/name/familyname")
-
-    # TODO: FAIL, "lacks-name"
-
-    test_cases = [
-        #expect                      filename                                      mac_value        win_value
-        (PASS, "ok",       TEST_FILE("cabin/Cabin-Regular.ttf"),                   "Cabin",         "Cabin"),
-        (FAIL, "mismatch", TEST_FILE("cabin/Cabin-Regular.ttf"),                   "Wrong",         "Cabin"),
-        (PASS, "ok",       TEST_FILE("overpassmono/OverpassMono-Regular.ttf"),     "Overpass Mono", "Overpass Mono"),
-        (PASS, "ok",       TEST_FILE("overpassmono/OverpassMono-Bold.ttf"),        "Overpass Mono", "Overpass Mono"),
-        (FAIL, "mismatch", TEST_FILE("overpassmono/OverpassMono-Regular.ttf"),     "Overpass Mono", "Foo"),
-        (PASS, "ok",       TEST_FILE("merriweather/Merriweather-Black.ttf"),       "Merriweather",  "Merriweather Black"),
-        (PASS, "ok",       TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather",  "Merriweather Light"),
-        (FAIL, "mismatch", TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather",  "Merriweather Light Italic"),
-        (PASS, "ok",       TEST_FILE("abeezee/ABeeZee-Regular.ttf"),               "ABeeZee",       "ABeeZee"),
-        # Note: ABeeZee is a good camel-cased name exception.
-    ]
-
-    for expected, keyword, filename, mac_value, win_value in test_cases:
-        ttFont = TTFont(filename)
-        for i, name in enumerate(ttFont['name'].names):
-            if name.platformID == PlatformID.MACINTOSH:
-                value = mac_value
-            if name.platformID == PlatformID.WINDOWS:
-                value = win_value
-            assert value
-
-            if name.nameID == NameID.FONT_FAMILY_NAME:
-                ttFont['name'].names[i].string = value.encode(name.getEncoding())
-        assert_results_contain(check(ttFont),
-                                     expected, keyword,
-                                     f'with filename="{filename}",'
-                                     f' value="{value}", style="{check["style"]}"...')
-
-
-def test_check_name_subfamilyname():
-    """ Check name table: FONT_SUBFAMILY_NAME entries. """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/name/subfamilyname")
-
-    PASS_test_cases = [
-        #          filename                                       mac_value             win_value
-        (TEST_FILE("overpassmono/OverpassMono-Regular.ttf"),      "Regular",            "Regular"),
-        (TEST_FILE("overpassmono/OverpassMono-Bold.ttf"),         "Bold",               "Bold"),
-        (TEST_FILE("merriweather/Merriweather-Black.ttf"),        "Black",              "Regular"),
-        (TEST_FILE("merriweather/Merriweather-LightItalic.ttf"),  "Light Italic",       "Italic"),
-        (TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"),      "Black Italic",       "Italic"),
-        (TEST_FILE("montserrat/Montserrat-Black.ttf"),            "Black",              "Regular"),
-        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"),       "Bold Italic",        "Bold Italic"),
-        (TEST_FILE("montserrat/Montserrat-Bold.ttf"),             "Bold",               "Bold"),
-        (TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"),  "ExtraBold Italic",   "Italic"),
-        (TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"),        "ExtraBold",          "Regular"),
-        (TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"), "ExtraLight Italic",  "Italic"),
-        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"),       "ExtraLight",         "Regular"),
-        (TEST_FILE("montserrat/Montserrat-Italic.ttf"),           "Italic",             "Italic"),
-        (TEST_FILE("montserrat/Montserrat-LightItalic.ttf"),      "Light Italic",       "Italic"),
-        (TEST_FILE("montserrat/Montserrat-Light.ttf"),            "Light",              "Regular"),
-        (TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"),     "Medium Italic",      "Italic"),
-        (TEST_FILE("montserrat/Montserrat-Medium.ttf"),           "Medium",             "Regular"),
-        (TEST_FILE("montserrat/Montserrat-Regular.ttf"),          "Regular",            "Regular"),
-        (TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"),   "SemiBold Italic",    "Italic"),
-        (TEST_FILE("montserrat/Montserrat-SemiBold.ttf"),         "SemiBold",           "Regular"),
-        (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"),       "Thin Italic",        "Italic"),
-        (TEST_FILE("montserrat/Montserrat-Thin.ttf"),             "Thin",               "Regular")
-    ]
-
-    for filename, mac_value, win_value in PASS_test_cases:
-        ttFont = TTFont(filename)
-        for i, name in enumerate(ttFont['name'].names):
-            if name.platformID == PlatformID.MACINTOSH:
-                value = mac_value
-            if name.platformID == PlatformID.WINDOWS:
-                value = win_value
-            assert value
-
-            if name.nameID == NameID.FONT_SUBFAMILY_NAME:
-                ttFont['name'].names[i].string = value.encode(name.getEncoding())
-
-        results = check(ttFont)
-        style = check["expected_style"]
-        assert_PASS(results,
-                    f"with filename='{filename}', value='{value}', "
-                    f"style_win='{style.win_style_name}', "
-                    f"style_mac='{style.mac_style_name}'...")
-
-    # - FAIL, "bad-familyname" - "Bad familyname value on a FONT_SUBFAMILY_NAME entry."
-    filename = TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")
-    ttFont = TTFont(filename)
-    # We setup a bad entry:
-    ttFont["name"].setName("Not a proper style",
-                           NameID.FONT_SUBFAMILY_NAME,
-                           PlatformID.MACINTOSH,
-                           MacintoshEncodingID.ROMAN,
-                           MacintoshLanguageID.ENGLISH)
-
-    # And this should now FAIL:
-    assert_results_contain(check(ttFont),
-                           FAIL, 'bad-familyname')
-
-    # Repeat this for a Win subfamily name
-    ttFont = TTFont(filename)
-    ttFont["name"].setName("Not a proper style",
-                           NameID.FONT_SUBFAMILY_NAME,
-                           PlatformID.WINDOWS,
-                           WindowsEncodingID.UNICODE_BMP,
-                           WindowsLanguageID.ENGLISH_USA)
-    assert_results_contain(check(ttFont),
-                           FAIL, 'bad-familyname')
-
-
-def test_check_name_fullfontname():
-    """ Check name table: FULL_FONT_NAME entries. """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/name/fullfontname")
-
-    # Our reference Cabin Regular is known to be good
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-    assert_PASS(check(ttFont),
-                "with a good Regular font...")
-
-    # Let's now test the Regular exception
-    # ('Regular' can be optionally ommited on the FULL_FONT_NAME entry):
-    for index, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FULL_FONT_NAME:
-            backup = name.string
-            ttFont["name"].names[index].string = "Cabin".encode(name.getEncoding())
-            assert_results_contain(check(ttFont),
-                                   WARN, 'lacks-regular',
-                                   'with a good Regular font that omits "Regular" on FULL_FONT_NAME...')
-            # restore it:
-            ttFont["name"].names[index].string = backup
-
-    # Let's also make sure our good reference Cabin BoldItalic PASSes the check.
-    # This also tests the splitting of filename infered style with a space char
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-BoldItalic.ttf"))
-    assert_PASS(check(ttFont),
-                "with a good Bold Italic font...")
-
-    # And here we test the FAIL codepath:
-    for index, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FULL_FONT_NAME:
-            backup = name.string
-            ttFont["name"].names[index].string = "MAKE IT FAIL".encode(name.getEncoding())
-            assert_results_contain(check(ttFont),
-                                   FAIL, 'bad-entry',
-                                   'with a bad FULL_FONT_NAME entry...')
-            # restore it:
-            ttFont["name"].names[index].string = backup
-
-    # And we should also accept a few camel-cased familyname exceptions,
-    # so this one should also be fine:
-    ttFont = TTFont(TEST_FILE("abeezee/ABeeZee-Regular.ttf"))
-    assert_PASS(check(ttFont),
-                "with a good camel-cased fontname...")
-
-
-def NOT_IMPLEMENTED_test_check_name_postscriptname():
-    """ Check name table: POSTSCRIPT_NAME entries. """
-    # check = CheckTester(googlefonts_profile,
-    #                     "com.google.fonts/check/name/postscriptname")
-    # TODO: Implement-me!
-    #
-    # code-paths:
-    # - FAIL, "bad-entry"
-    # - PASS
-
-
-def test_check_name_typographicfamilyname():
-    """ Check name table: TYPOGRAPHIC_FAMILY_NAME entries. """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/name/typographicfamilyname")
-
-    # RIBBI fonts must not have a TYPOGRAPHIC_FAMILY_NAME entry
-    ttFont = TTFont(TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"))
-    assert_PASS(check(ttFont),
-                f"with a RIBBI without nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
-
-    # so we add one and make sure the check reports the problem:
-    ttFont['name'].names[5].nameID = NameID.TYPOGRAPHIC_FAMILY_NAME # 5 is arbitrary here
-    assert_results_contain(check(ttFont),
-                           FAIL, 'ribbi',
-                           f'with a RIBBI that has got a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...')
-
-    # non-RIBBI fonts must have a TYPOGRAPHIC_FAMILY_NAME entry
-    ttFont = TTFont(TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"))
-    assert_PASS(check(ttFont),
-                f"with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...")
-
-    # set bad values on all TYPOGRAPHIC_FAMILY_NAME entries:
-    for i, name in enumerate(ttFont['name'].names):
-        if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
-            ttFont['name'].names[i].string = "foo".encode(name.getEncoding())
-
-    assert_results_contain(check(ttFont),
-                           FAIL, 'non-ribbi-bad-value',
-                           'with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entries...')
-
-    # remove all TYPOGRAPHIC_FAMILY_NAME entries
-    # by changing their nameid to something else:
-    for i, name in enumerate(ttFont['name'].names):
-        if name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
-            ttFont['name'].names[i].nameID = 255 # blah! :-)
-
-    assert_results_contain(check(ttFont),
-                           FAIL, 'non-ribbi-lacks-entry',
-                           f'with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_FAMILY_NAME} entry...')
-
-
-def test_check_name_typographicsubfamilyname():
-    """ Check name table: TYPOGRAPHIC_SUBFAMILY_NAME entries. """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/name/typographicsubfamilyname")
-
-    RIBBI = "montserrat/Montserrat-BoldItalic.ttf"
-    NON_RIBBI = "montserrat/Montserrat-ExtraLight.ttf"
-
-    # Add incorrect TYPOGRAPHIC_SUBFAMILY_NAME entries to a RIBBI font
-    ttFont = TTFont(TEST_FILE(RIBBI))
-    ttFont['name'].setName("FOO",
-                           NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
-                           PlatformID.WINDOWS,
-                           WindowsEncodingID.UNICODE_BMP,
-                           WindowsLanguageID.ENGLISH_USA)
-    ttFont['name'].setName("BAR",
-                           NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
-                           PlatformID.MACINTOSH,
-                           MacintoshEncodingID.ROMAN,
-                           MacintoshLanguageID.ENGLISH)
-    assert_results_contain(check(ttFont),
-                           FAIL, 'mismatch',
-                           f'with a RIBBI that has got incorrect'
-                           f' nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...')
-    assert_results_contain(check(ttFont),
-                           FAIL, 'bad-win-name')
-    assert_results_contain(check(ttFont),
-                           FAIL, 'bad-mac-name')
-
-    # non-RIBBI fonts must have a TYPOGRAPHIC_SUBFAMILY_NAME entry
-    ttFont = TTFont(TEST_FILE(NON_RIBBI))
-    assert_PASS(check(ttFont),
-                f'with a non-RIBBI containing a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...')
-
-    # set bad values on the win TYPOGRAPHIC_SUBFAMILY_NAME entry:
-    ttFont = TTFont(TEST_FILE(NON_RIBBI))
-    ttFont['name'].setName("Generic subfamily name",
-                           NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
-                           PlatformID.WINDOWS,
-                           WindowsEncodingID.UNICODE_BMP,
-                           WindowsLanguageID.ENGLISH_USA)
-    assert_results_contain(check(ttFont),
-                           FAIL, 'bad-typo-win',
-                           f'with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...')
-
-    # set bad values on the mac TYPOGRAPHIC_SUBFAMILY_NAME entry:
-    ttFont = TTFont(TEST_FILE(NON_RIBBI))
-    ttFont['name'].setName("Generic subfamily name",
-                           NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
-                           PlatformID.MACINTOSH,
-                           MacintoshEncodingID.ROMAN,
-                           MacintoshLanguageID.ENGLISH)
-    assert_results_contain(check(ttFont),
-                           FAIL, 'bad-typo-mac',
-                           f'with a non-RIBBI with bad nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entries...')
-
-
-    # remove all TYPOGRAPHIC_SUBFAMILY_NAME entries
-    ttFont = TTFont(TEST_FILE(NON_RIBBI))
-    win_name = ttFont['name'].getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
-                                      PlatformID.WINDOWS,
-                                      WindowsEncodingID.UNICODE_BMP,
-                                      WindowsLanguageID.ENGLISH_USA)
-    mac_name = ttFont['name'].getName(NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
-                                      PlatformID.MACINTOSH,
-                                      MacintoshEncodingID.ROMAN,
-                                      MacintoshLanguageID.ENGLISH)
-    win_name.nameID = 254
-    if mac_name:
-        mac_name.nameID = 255
-    assert_results_contain(check(ttFont),
-                           FAIL, 'missing-typo-win',
-                           f'with a non-RIBBI lacking a nameid={NameID.TYPOGRAPHIC_SUBFAMILY_NAME} entry...')
-                           # note: the check must not complain
-                           #       about the lack of a mac entry!
 
 
 def test_check_name_copyright_length():
@@ -3012,21 +2836,22 @@ def test_check_aat():
 
 def test_check_fvar_name_entries():
     """ All name entries referenced by fvar instances exist on the name table? """
+    # TODO fix
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/fvar_name_entries")
+                        "com.google.fonts/check/fvar_instances")
 
-    # This broken version of the Expletus variable font, was where this kind of problem was first observed:
-    ttFont = TTFont(TEST_FILE("broken_expletus_vf/ExpletusSansBeta-VF.ttf"))
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+
+    # rename the first fvar instance so the font is broken
+    ttFont["name"].setName("foo", 258, 3, 1, 0x409)
 
     # So it must FAIL the check:
     assert_results_contain(check(ttFont),
-                           FAIL, 'missing-name',
+                           FAIL, 'bad-fvar-instances',
                            'with a bad font...')
 
-    # If we add the name entry with id=265 (which was the one missing)
-    # then the check must now PASS:
-    from fontTools.ttLib.tables._n_a_m_e import makeName
-    ttFont["name"].names.append(makeName("Foo", 265, 1, 0, 0))
+    # rename the first fvar instance so it is correct
+    ttFont["name"].setName("Regular", 258, 3, 1, 0x409)
 
     assert_PASS(check(ttFont),
                 'with a good font...')
@@ -3034,13 +2859,14 @@ def test_check_fvar_name_entries():
 
 def test_check_varfont_has_instances():
     """ A variable font must have named instances. """
+    # TODO Fix!
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont_has_instances")
+                        "com.google.fonts/check/fvar_instances")
 
     # ExpletusVF does have instances.
     # Note: The "broken" in the path name refers to something else.
     #       (See test_check_fvar_name_entries)
-    ttFont = TTFont(TEST_FILE("broken_expletus_vf/ExpletusSansBeta-VF.ttf"))
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
 
     # So it must PASS the check:
     assert_PASS(check(ttFont),
@@ -3051,14 +2877,14 @@ def test_check_varfont_has_instances():
         del ttFont["fvar"].instances[0]
 
     assert_results_contain(check(ttFont),
-                           FAIL, 'lacks-named-instances',
+                           FAIL, 'bad-fvar-instances',
                            'with a bad font...')
 
 
 def test_check_varfont_weight_instances():
     """ Variable font weight coordinates must be multiples of 100. """
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont_weight_instances")
+                        "com.google.fonts/check/fvar_instances")
 
     # This copy of Markazi Text has an instance with
     # a 491 'wght' coordinate instead of 500.
@@ -3066,12 +2892,15 @@ def test_check_varfont_weight_instances():
 
     # So it must FAIL the check:
     assert_results_contain(check(ttFont),
-                           FAIL, 'bad-coordinate',
+                           FAIL, 'bad-fvar-instances',
                            'with a bad font...')
 
     # Let's then change the weight coordinates to make it PASS the check:
+    # instances are from 400-700 (Regular-Bold) so set start to 400
+    wght_val = 400
     for i, instance in enumerate(ttFont["fvar"].instances):
-        ttFont["fvar"].instances[i].coordinates['wght'] -= instance.coordinates['wght'] % 100
+        ttFont["fvar"].instances[i].coordinates['wght'] = wght_val
+        wght_val += 100
 
     assert_PASS(check(ttFont),
                 'with a good font...')
@@ -3686,7 +3515,7 @@ def test_check_cjk_not_enough_glyphs():
 
 def test_check_varfont_instance_coordinates(vf_ttFont):
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont_instance_coordinates")
+                        "com.google.fonts/check/fvar_instances")
 
     # OpenSans-Roman-VF is correct
     assert_PASS(check(vf_ttFont),
@@ -3698,14 +3527,14 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
         for axis in instance.coordinates.keys():
             instance.coordinates[axis] = 0
     assert_results_contain(check(vf_ttFont2),
-                           FAIL, "bad-coordinate",
+                           FAIL, "bad-fvar-instances",
                            'with a variable font which does not have'
                            ' correct instance coordinates.')
 
 
 def test_check_varfont_instance_names(vf_ttFont):
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont_instance_names")
+                        "com.google.fonts/check/fvar_instances")
 
     assert_PASS(check(vf_ttFont),
                 'with a variable font which has correct instance names.')
@@ -3714,7 +3543,7 @@ def test_check_varfont_instance_names(vf_ttFont):
     vf_ttFont2 = copy(vf_ttFont)
     for instance in vf_ttFont2['fvar'].instances:
         instance.subfamilyNameID = 300
-    broken_name ="ExtraBlack Condensed 300pt"
+    broken_name = "ExtraBlack Condensed 300pt"
     vf_ttFont2['name'].setName(broken_name,
                                300,
                                PlatformID.MACINTOSH,
@@ -3726,13 +3555,13 @@ def test_check_varfont_instance_names(vf_ttFont):
                                WindowsEncodingID.UNICODE_BMP,
                                WindowsLanguageID.ENGLISH_USA)
     assert_results_contain(check(vf_ttFont2),
-                           FAIL, 'bad-instance-names',
+                           FAIL, 'bad-fvar-instances',
                            'with a variable font which does not have correct instance names.')
 
 
 def test_check_varfont_duplicate_instance_names(vf_ttFont):
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont_duplicate_instance_names")
+                        "com.google.fonts/check/fvar_instances")
 
     assert_PASS(check(vf_ttFont),
                 'with a variable font which has unique instance names.')
@@ -3751,7 +3580,7 @@ def test_check_varfont_duplicate_instance_names(vf_ttFont):
                                platEncID=WindowsEncodingID.UNICODE_BMP,
                                langID=WindowsLanguageID.ENGLISH_USA)
     assert_results_contain(check(vf_ttFont2),
-                           FAIL, 'duplicate-instance-names')
+                           FAIL, 'bad-fvar-instances')
 
 
 def test_check_varfont_unsupported_axes():
@@ -4252,3 +4081,112 @@ def test_check_metadata_category_hints():
     md.category[:] = ["DISPLAY"]
     assert_PASS(check(font, {"family_metadata": md}),
                 f'with a good category "{md.category}" for familyname "{md.name}"...')
+
+
+@pytest.mark.parametrize(
+    """fp,mod,result""",
+    [
+        # font includes condensed fvar instances so it should fail
+        (TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"), [], FAIL),
+        # official fonts have been fixed so this should pass
+        (TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"), [], PASS),
+        (TEST_FILE("cabinvf/Cabin-Italic[wdth,wght].ttf"), [], PASS),
+        # lets inject an instance which is not a multiple of 100
+        (TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"), [("Book", 450)], FAIL),
+    ]
+)
+def test_check_fvar_instances(fp, mod, result):
+    """Check font fvar instances are correct"""
+    from fontTools.ttLib.tables._f_v_a_r import NamedInstance
+
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/fvar_instances")
+    ttFont = TTFont(fp)
+    expected = expected_font_names(ttFont, [])
+    if mod:
+        for name, wght_val in mod:
+            inst = NamedInstance() 
+            inst.subfamilyNameID = ttFont['name'].addName(name)
+            inst.coordinates = {"wght": wght_val}
+            ttFont['fvar'].instances.append(inst)
+    
+    if result == PASS:
+        assert_PASS(check(ttFont, {"expected_font_names": expected}),
+                    f'with a good font')
+    elif result == FAIL:
+        assert_results_contain(check(ttFont, {"expected_font_names": expected}),
+                            FAIL, 'bad-fvar-instances',
+                            'with a bad font')
+
+@pytest.mark.parametrize(
+    """fps,new_stat,result""",
+    [
+        # Fail (we didn't really know what we were doing at this stage)
+        (
+            [
+                TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"),
+                TEST_FILE("cabinvf/Cabin-Italic[wdth,wght].ttf"),
+            ],
+            [],
+            FAIL
+        ),
+        # Fix previous test for Cabin[wdth,wght].ttf
+        (
+            [
+                TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"),
+                TEST_FILE("cabinvf/Cabin-Italic[wdth,wght].ttf"),
+            ],
+            # STAT for Cabin[wdth,wght].ttf
+            [
+                dict(
+                    name="Weight",
+                    tag="wght",
+                    values=[
+                        dict(value=400, name="Regular", linkedValue=700.0, flags=0x2),
+                        dict(value=500, name="Medium"),
+                        dict(value=600, name="SemiBold"),
+                        dict(value=700, name="Bold"),
+                    ]
+                ),
+                dict(
+                    name="Width",
+                    tag="wdth",
+                    values=[
+                        dict(value=75, name="Condensed"),
+                        dict(value=87.5, name="SemiCondensed"),
+                        dict(value=100, name="Normal", flags=0x2),
+                    ]
+                ),
+                dict(
+                    name="Italic",
+                    tag="ital",
+                    values=[
+                        dict(value=0.0, name="Normal", linkedValue=1.0, flags=0x2)
+                    ]
+                )
+            ],
+            PASS
+        )
+    ]
+)
+def test_check_stat(fps, new_stat, result):
+    """Check STAT table Axis Values are correct"""
+    # more comprehensive checks are available in the axisregistry:
+    #https://github.com/googlefonts/axisregistry/blob/main/tests/test_names.py#L442
+    # this check merely exists to check that everything is hooked up correctly
+    from fontTools.otlLib.builder import buildStatTable
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/stat")
+    ttFonts = [TTFont(f) for f in fps]
+    ttFont = ttFonts[0]
+    expected = expected_font_names(ttFont, ttFonts)
+    if new_stat:
+        buildStatTable(ttFont, new_stat)
+
+    if result == PASS:
+        assert_PASS(check(ttFont, {"expected_font_names": expected}),
+                    f'with a good font')
+    elif result == FAIL:
+        assert_results_contain(check(ttFont, {"expected_font_names": expected}),
+                            FAIL, 'bad-axis-values',
+                            'with a bad font')
