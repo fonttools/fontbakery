@@ -713,4 +713,4 @@ def desired_font_names(ttFont, ttFonts):
     if "fvar" in font_cp:
         build_fvar_instances(font_cp)
         build_stat(ttFont, siblings)
-    return font_cp["name"]
+    return font_cp

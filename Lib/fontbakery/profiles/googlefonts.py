@@ -146,7 +146,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/varfont/generate_static',
     'com.google.fonts/check/kerning_for_non_ligated_sequences',
     'com.google.fonts/check/name/description_max_length',
-    'com.google.fonts/check/fvar_name_entries',
     'com.google.fonts/check/version_bump',
     'com.google.fonts/check/epar',
     'com.google.fonts/check/font_copyright',
@@ -162,8 +161,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/name/copyright_length',
     'com.google.fonts/check/fontdata_namecheck',
     'com.google.fonts/check/name/ascii_only_entries',
-    'com.google.fonts/check/varfont_has_instances',
-    'com.google.fonts/check/varfont_weight_instances',
     'com.google.fonts/check/old_ttfautohint',
     'com.google.fonts/check/vttclean',
     'com.google.fonts/check/aat',
@@ -194,6 +191,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/no_debugging_tables',
     'com.google.fonts/check/render_own_name',
     'com.google.fonts/check/font_names',
+    'com.google.fonts/check/fvar_instances',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -3783,79 +3781,59 @@ def com_google_fonts_check_aat(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/fvar_name_entries',
-    conditions = ['is_variable_font'],
-    rationale = """
-        The purpose of this check is to make sure that all name entries referenced
-        by variable font instances do exist in the name table.
-    """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2069'
+    id = 'com.google.fonts/check/fvar_instances',
+    conditions = ['is_variable_font', 'desired_font_names']
 )
-def com_google_fonts_check_fvar_name_entries(ttFont):
-    """All name entries referenced by fvar instances exist on the name table?"""
+def com_google_fonts_check_fvar_instances(ttFont, desired_font_names):
+    """Check variable font instances"""
+    def get_instances(ttFont):
+        name = ttFont['name']
+        fvar = ttFont['fvar']
+        res = {}
+        missing_names = False
+        for i, inst in enumerate(fvar.instances):
+            inst_name = name.getName(inst.subfamilyNameID, 3, 1, 0x409).toUnicode()
+            res[inst_name] = inst.coordinates
+        if missing_names:
+            # Skip the check since the fvar instances names are broken and should be fixed
+            # first
+            return
+        return res
+    font_instances = get_instances(ttFont)
+    desired_instances = get_instances(desired_font_names)
+    table = []
+    for name in set(font_instances.keys()) | set(desired_instances.keys()):
+        row = {"Name": name}
+        if name in font_instances:
+            row["current"] = font_instances[name]
+        else:
+            row["current"] = "N/A"
+        if name in desired_instances:
+            row["expected"] = desired_instances[name]
+        else:
+            row["expected"] = "N/A"
+        table.append(row)
+    table = sorted(table, key=lambda k: str(k["expected"]))
 
-    failed = False
-    for instance in ttFont["fvar"].instances:
+    missing = set(desired_instances.keys()) - set(font_instances.keys())
+    new = set(font_instances.keys()) - set(desired_instances.keys())
+    same = set(font_instances.keys()) & set(desired_instances.keys())
+    wght_wrong = any(font_instances[i]["wght"] != desired_instances[i]["wght"] for i in same)
 
-        entries = [entry for entry in ttFont["name"].names
-                   if entry.nameID == instance.subfamilyNameID]
-        if len(entries) == 0:
-            failed = True
-            yield FAIL,\
-                  Message("missing-name",
-                          f"Named instance with coordinates {instance.coordinates}"
-                          f" lacks an entry on the name table"
-                          f" (nameID={instance.subfamilyNameID}).")
-
-    if not failed:
-        yield PASS, "OK"
-
-
-@check(
-    id = 'com.google.fonts/check/varfont_has_instances',
-    conditions = ['is_variable_font'],
-    rationale = """
-        Named instances must be present in all variable fonts in order not to frustrate
-        the users' typical expectations of a traditional static font workflow.
-    """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2127'
-)
-def com_google_fonts_check_varfont_has_instances(ttFont):
-    """A variable font must have named instances."""
-
-    if len(ttFont["fvar"].instances):
-        yield PASS, "OK"
+    if any([wght_wrong, missing, new]):
+        hints = ""
+        if missing:
+            hints += "- Add missing instances\n"
+        if new:
+            hints += "- Delete additional instances\n"
+        if wght_wrong:
+            hints += "- wght coordinates are wrong for some instances"
+        yield FAIL, Message('bad-fvar-instances',
+                            f"fvar instances are incorrect:\n{hints}\n{to_md(table)}")
+    elif any(font_instances[i] != desired_instances[i] for i in same):
+        yield WARN, Message("bad-fvar-coords", f"fvar coordinates are different:\n\n{to_md(table)}")
     else:
-        yield FAIL,\
-              Message("lacks-named-instances",
-                      "This variable font lacks"
-                      " named instances on the fvar table.")
-
-
-@check(
-    id = 'com.google.fonts/check/varfont_weight_instances',
-    conditions = ['is_variable_font'],
-    rationale = """
-        The named instances on the weight axis of a variable font must have coordinates
-        that are multiples of 100 on the design space.
-    """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2258'
-)
-def com_google_fonts_check_varfont_weight_instances(ttFont):
-    """Variable font weight coordinates must be multiples of 100."""
-
-    failed = False
-    for instance in ttFont["fvar"].instances:
-        if 'wght' in instance.coordinates and instance.coordinates['wght'] % 100 != 0:
-            failed = True
-            yield FAIL,\
-                  Message("bad-coordinate",
-                          f"Found a variable font instance with"
-                          f" 'wght'={instance.coordinates['wght']}."
-                          f" This should instead be a multiple of 100.")
-
-    if not failed:
-        yield PASS, "OK"
+        yield PASS, f"fvar instances are good:\n\n{to_md(table)}"
 
 
 @check(
