@@ -291,69 +291,16 @@ def com_google_fonts_check_font_names(ttFont, desired_font_names):
     """,
     proposal = 'legacy:check/001'
 )
-def com_google_fonts_check_canonical_filename(font):
+def com_google_fonts_check_canonical_filename(ttFont):
     """Checking file is named canonically."""
-    from fontTools.ttLib import TTFont
-    from .shared_conditions import (is_variable_font,
-                                    variable_font_filename)
-    from .googlefonts_conditions import canonical_stylename
-    from fontbakery.utils import suffix
-    from fontbakery.constants import STATIC_STYLE_NAMES
-
-    failed = False
-    if "_" in os.path.basename(font):
-        failed = True
-        yield FAIL,\
-              Message("invalid-char",
-                      f'font filename "{font}" is invalid.'
-                      f' It must not contain underscore characters!')
-        return
-
-    ttFont = TTFont(font)
-    if is_variable_font(ttFont):
-        if suffix(font) in STATIC_STYLE_NAMES:
-            failed = True
-            yield FAIL,\
-                  Message("varfont-with-static-filename",
-                          "This is a variable font, but it is using"
-                          " a naming scheme typical of a static font.")
-
-        expected = variable_font_filename(ttFont)
-        if expected is None:
-            failed = True
-            yield FAIL,\
-                  Message("unknown-name",
-                          "FontBakery was unable to figure out which"
-                          " filename to expect for this variable font.\n"
-                          "This most likely means that the name table entries"
-                          " used as reference such as FONT_FAMILY_NAME may"
-                          " not be properly set.\n"
-                          "Please review the name table entries.")
-            return
-
-        font_filename = os.path.basename(font)
-        if font_filename != expected:
-            failed = True
-            yield FAIL,\
-                  Message("bad-varfont-filename",
-                          f"The file '{font_filename}' must be renamed"
-                          f" to '{expected}' according to the"
-                          f" Google Fonts naming policy for variable fonts.")
-
+    from axisregistry import build_filename
+    current_filename = ttFont.reader.file.name
+    expected_filename = build_filename(ttFont)
+    if current_filename != expected_filename:
+        yield FAIL, Message('bad-filename',
+                            f'Expected "{expected_filename}. Got {current_filename}.')
     else:
-        if not canonical_stylename(font):
-            failed = True
-            style_names = '", "'.join(STATIC_STYLE_NAMES)
-            yield FAIL,\
-                  Message("bad-static-filename",
-                          f'Style name used in "{font}" is not canonical.'
-                          f' You should rebuild the font using'
-                          f' any of the following'
-                          f' style names: "{style_names}".')
-
-    if not failed:
-        yield PASS, f"{font} is named canonically."
-
+        yield PASS, f'Font filename is correct, "{current_filename}".'
 
 @check(
     id = 'com.google.fonts/check/description/broken_links',
