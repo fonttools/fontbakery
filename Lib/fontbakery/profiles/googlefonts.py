@@ -4,7 +4,7 @@ from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, disable
-from fontbakery.utils import filesize_formatting
+from fontbakery.utils import bullet_list, filesize_formatting
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (NameID,
@@ -192,6 +192,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/render_own_name',
     'com.google.fonts/check/font_names',
     'com.google.fonts/check/fvar_instances',
+    'com.google.fonts/check/stat',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -3834,6 +3835,80 @@ def com_google_fonts_check_fvar_instances(ttFont, desired_font_names):
         yield WARN, Message("bad-fvar-coords", f"fvar coordinates are different:\n\n{to_md(table)}")
     else:
         yield PASS, f"fvar instances are good:\n\n{to_md(table)}"
+
+
+@check(
+    id = 'com.google.fonts/check/stat',
+    conditions = ['is_variable_font', 'desired_font_names']
+)
+def com_google_fonts_check_stat(ttFont, desired_font_names):
+    """Check a font's STAT table."""
+    def stat_axis_values(ttFont):
+        name = ttFont["name"]
+        stat = ttFont["STAT"].table
+        axes = [a.AxisTag for a in stat.DesignAxisRecord.Axis]
+        axis_values = stat.AxisValueArray.AxisValue
+        res = {}
+        for ax in axis_values:
+            axis_tag = axes[ax.AxisIndex]
+            ax_name = name.getName(ax.ValueNameID, 3, 1, 0x409).toUnicode()
+            res[(axis_tag, ax_name)] = {
+                "Axis": axis_tag,
+                "Name": ax_name,
+                "Flags": ax.Flags,
+                "Value": ax.Value,
+                "LinkedValue": None if not hasattr(ax, "LinkedValue") else ax.LinkedValue
+            }
+        return res
+    
+    font_axis_values = stat_axis_values(ttFont)
+    desired_axis_values = stat_axis_values(desired_font_names)
+    
+    table = []
+    for axis, name in set(font_axis_values.keys()) | set(desired_axis_values.keys()):
+        row = {}
+        key = (axis, name)
+        if key in font_axis_values:
+            row["Name"] = name
+            row["Axis"] = axis
+            row["Current Value"] = font_axis_values[key]["Value"]
+            row["Current Flags"] = font_axis_values[key]["Flags"]
+            row["Current LinkedValue"] = font_axis_values[key]["LinkedValue"]
+        else:
+            row["Name"] = name
+            row["Axis"] = axis
+            row["Current Value"] = "N/A"
+            row["Current Flags"] = "N/A"
+            row["Current LinkedValue"] = "N/A"
+        if key in desired_axis_values:
+            row["Name"] = name
+            row["Axis"] = axis
+            row["Expected Value"] = desired_axis_values[key]["Value"]
+            row["Expected Flags"] = desired_axis_values[key]["Flags"]
+            row["Expected LinkedValue"] = desired_axis_values[key]["LinkedValue"]
+        else:
+            row["Name"] = name
+            row["Axis"] = axis
+            row["Expected Value"] = "N/A"
+            row["Expected Flags"] = "N/A"
+            row["Expected LinkedValue"] = "N/A"
+        table.append(row)
+    table.sort(key=lambda k: (k["Axis"], k["Expected Value"]))
+    
+    axes_in_font = set(a.AxisTag for a in ttFont["fvar"].axes)
+    axes_in_axis_vals = set(a for a,_ in font_axis_values)
+    missing_axis_vals = axes_in_font - axes_in_axis_vals
+    if missing_axis_vals:
+        yield FAIL, Message("missing-axis-values",
+                            f"Missing STAT axis values for axes {missing_axis_vals}")
+
+    if font_axis_values != desired_axis_values:
+        yield WARN, Message('bad-axis-values',
+            f"STAT axis values differ from recommended axes:\n\n {to_md(table)}\n"
+            f"This warning can be ignored if you have the need for a customised "
+            f"STAT table.")
+    else:
+        yield PASS, f"STAT table matches recommended table:\n\n{to_md(table)}"
 
 
 @check(
