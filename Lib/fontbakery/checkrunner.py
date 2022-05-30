@@ -403,11 +403,11 @@ class CheckRunner:
         try:
             args = self._get_args(check, iterargs)
             # Run the generators now, so we can test if they're empty
-            for k,v in args.items():
+            for k, v in args.items():
                 if inspect.isgenerator(v) or inspect.isgeneratorfunction(v):
                     args[k] = list(v)
 
-            if all(not x for x in args.values()):
+            if all(x is None for x in args.values()):
                 status = (SKIP, "No applicable arguments")
                 return (status, None)
             return None, args
