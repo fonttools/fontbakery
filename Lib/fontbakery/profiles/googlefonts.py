@@ -174,9 +174,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/cjk_vertical_metrics',
     'com.google.fonts/check/cjk_vertical_metrics_regressions',
     'com.google.fonts/check/cjk_not_enough_glyphs',
-    'com.google.fonts/check/varfont_instance_coordinates',
-    'com.google.fonts/check/varfont_instance_names',
-    'com.google.fonts/check/varfont_duplicate_instance_names',
     'com.google.fonts/check/varfont/consistent_axes',
     'com.google.fonts/check/varfont/unsupported_axes',
     'com.google.fonts/check/varfont/grade_reflow',
@@ -4961,128 +4958,6 @@ def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
                       f"Please check that these glyphs have the correct unicodes.")
     else:
         yield PASS, "Font has the correct quantity of CJK glyphs"
-
-
-@check(
-    id = 'com.google.fonts/check/varfont_instance_coordinates',
-    conditions = ['is_variable_font'],
-    proposal = 'https://github.com/googlefonts/fontbakery/pull/2520'
-)
-def com_google_fonts_check_varfont_instance_coordinates(ttFont):
-    """Check variable font instances have correct coordinate values"""
-    from fontbakery.parse import instance_parse
-    from fontbakery.constants import SHOW_GF_DOCS_MSG
-
-    failed = False
-    for instance in ttFont['fvar'].instances:
-        name = ttFont['name'].getName(
-            instance.subfamilyNameID,
-            PlatformID.WINDOWS,
-            WindowsEncodingID.UNICODE_BMP,
-            WindowsLanguageID.ENGLISH_USA
-        ).toUnicode()
-        expected_instance = instance_parse(name)
-        for axis in instance.coordinates:
-            if axis in expected_instance.coordinates and \
-                instance.coordinates[axis] != expected_instance.coordinates[axis]:
-                yield FAIL,\
-                      Message("bad-coordinate",
-                              f'Instance "{name}" {axis} value '
-                              f'is "{instance.coordinates[axis]}". '
-                              f'It should be "{expected_instance.coordinates[axis]}"')
-                failed = True
-
-    if failed:
-        yield FAIL, f"{SHOW_GF_DOCS_MSG}#axes"
-    else:
-        yield PASS, "Instance coordinates are correct"
-
-
-@check(
-    id = 'com.google.fonts/check/varfont_instance_names',
-    conditions = ['is_variable_font'],
-    proposal = 'https://github.com/googlefonts/fontbakery/pull/2520'
-)
-def com_google_fonts_check_varfont_instance_names(ttFont):
-    """Check variable font instances have correct names"""
-    # This check and the fontbakery.parse module used to be more complicated.
-    # On 2020-06-26, we decided to only allow Thin-Black + Italic instances.
-    # If we decide to add more particles to instance names, It's worthwhile
-    # revisiting our previous implementation which can be found in commits
-    # earlier than or equal to ca71d787eb2b8b5a9b111884080dde5d45f5579f
-    from fontbakery.parse import instance_parse
-    from fontbakery.constants import SHOW_GF_DOCS_MSG
-
-    failed = []
-    for instance in ttFont['fvar'].instances:
-        name = ttFont['name'].getName(
-            instance.subfamilyNameID,
-            PlatformID.WINDOWS,
-            WindowsEncodingID.UNICODE_BMP,
-            WindowsLanguageID.ENGLISH_USA
-        ).toUnicode()
-        expected_instance = instance_parse(name)
-
-        # Check if name matches predicted name
-        if expected_instance.name != name:
-            failed.append(name)
-
-    if failed:
-        failed_instances = "\n\t- ".join([""] + failed)
-        yield FAIL,\
-              Message('bad-instance-names',
-                      f'Following instances are not supported: {failed_instances}\n'
-                      f'\n'
-                      f'{SHOW_GF_DOCS_MSG}#fvar-instances')
-    else:
-        yield PASS, "Instance names are correct"
-
-
-@check(
-    id = 'com.google.fonts/check/varfont_duplicate_instance_names',
-    rationale = """
-        This check's purpose is to detect duplicate named instances names in a
-        given variable font.
-
-        Repeating instance names may be the result of instances for several VF axes
-        defined in `fvar`, but since currently only weight+italic tokens are allowed
-        in instance names as per GF specs, they ended up repeating.
-
-        Instead, only a base set of fonts for the most default representation of the
-        family can be defined through instances in the `fvar` table, all other
-        instances will have to be left to access through the `STAT` table.
-    """,
-    conditions = ['is_variable_font'],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2986'
-)
-def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
-    """Check variable font instances don't have duplicate names"""
-    from fontbakery.constants import SHOW_GF_DOCS_MSG
-
-    seen = []
-    duplicate = []
-
-    for instance in ttFont['fvar'].instances:
-        name = ttFont['name'].getName(
-            instance.subfamilyNameID,
-            PlatformID.WINDOWS,
-            WindowsEncodingID.UNICODE_BMP,
-            WindowsLanguageID.ENGLISH_USA
-        ).toUnicode()
-
-        if name in seen:
-            duplicate.append(name)
-
-        if not name in seen:
-            seen.append(name)
-
-    if duplicate:
-        duplicate_instances = "\n\t- ".join([""] + duplicate)
-        yield FAIL,\
-              Message('duplicate-instance-names',
-                      f'Following instances names are duplicate: {duplicate_instances}\n')
-    else:
-        yield PASS, "Instance names are unique"
 
 
 @check(
