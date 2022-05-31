@@ -170,6 +170,7 @@ SET_EXPLICIT_CHECKS = {
     # =======================================
     # From stat.py
     "com.google.fonts/check/varfont/stat_axis_record_for_each_axis",
+    "com.adobe.fonts/check/stat_has_axis_value_tables",
     #
     # =======================================
     # From universal.py
