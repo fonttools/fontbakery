@@ -621,8 +621,8 @@ class Profile:
             ]
 
         scopes = self._analyze_checks(full_order, checks)
-        key = lambda item: item[1]  # check, signature, scope = item
-        scopes.sort(key=key, reverse=reverse)
+        # check, signature, scope = item
+        scopes.sort(key=lambda item: item[1], reverse=reverse)
 
         for check, args in self._execute_scopes(iterargs, scopes):
             # this is the iterargs tuple that will be used as a key for caching
@@ -777,12 +777,13 @@ class Profile:
         )
         return True
 
-    def _get_package(self, symbol_table):
+    @staticmethod
+    def _get_package(symbol_table):
         package = symbol_table.get("__package__", None)
         if package is not None:
             return package
         name = symbol_table.get("__name__", None)
-        if name is None or not "." in name:
+        if name is None or "." not in name:
             return None
         return name.rpartition(".")[0]
 
@@ -982,7 +983,8 @@ class Profile:
         """
         self._check_skip_filter = check_skip_filter
 
-    def serialize_identity(self, identity):
+    @staticmethod
+    def serialize_identity(identity):
         """Return a json string that can also  be used as a key.
 
         The JSON is explicitly unambiguous in the item order

@@ -62,7 +62,8 @@ class FontbakeryReporter:
             )
         # reporters without an output file do nothing here
 
-    def _get_key(self, identity):
+    @staticmethod
+    def _get_key(identity):
         section, check, iterargs = identity
         return (str(section) if section else section
               , str(check) if check else check
