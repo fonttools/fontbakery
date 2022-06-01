@@ -43,7 +43,7 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/family/win_ascent_and_descent',
         'com.google.fonts/check/os2_metrics_match_hhea',
         'com.google.fonts/check/fontbakery_version',
-        'com.google.fonts/check/ttx-roundtrip',
+        'com.google.fonts/check/ttx_roundtrip',
         'com.google.fonts/check/family/single_directory',
         'com.google.fonts/check/mandatory_glyphs',
         'com.google.fonts/check/whitespace_glyphs',
@@ -869,7 +869,7 @@ def com_google_fonts_check_glyphnames_max_length(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/ttx-roundtrip',
+    id = 'com.google.fonts/check/ttx_roundtrip',
     conditions = ["not vtt_talk_sources"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1763'
 )

@@ -213,7 +213,7 @@ def DISABLED_test_check_glyphnames_max_length():
 def test_check_ttx_roundtrip():
     """ Checking with fontTools.ttx """
     check = CheckTester(universal_profile,
-                        "com.google.fonts/check/ttx-roundtrip")
+                        "com.google.fonts/check/ttx_roundtrip")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_PASS(check(font))

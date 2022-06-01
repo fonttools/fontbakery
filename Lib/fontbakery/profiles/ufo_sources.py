@@ -9,9 +9,9 @@ profile = profile_factory(default_section=Section("UFO Sources"))
 
 UFO_PROFILE_CHECKS = [
     'com.daltonmaag/check/ufolint',
-    'com.daltonmaag/check/ufo-required-fields',
-    'com.daltonmaag/check/ufo-recommended-fields',
-    'com.daltonmaag/check/ufo-unnecessary-fields'
+    'com.daltonmaag/check/ufo_required_fields',
+    'com.daltonmaag/check/ufo_recommended_fields',
+    'com.daltonmaag/check/ufo_unnecessary_fields'
 ]
 
 
@@ -53,7 +53,7 @@ def com_daltonmaag_check_ufolint(ufo):
 
 
 @check(
-    id = 'com.daltonmaag/check/ufo-required-fields',
+    id = 'com.daltonmaag/check/ufo_required_fields',
     conditions = ['ufo_font'],
     rationale = """
         ufo2ft requires these info fields to compile a font binary:
@@ -83,7 +83,7 @@ def com_daltonmaag_check_required_fields(ufo_font):
 
 
 @check(
-    id = 'com.daltonmaag/check/ufo-recommended-fields',
+    id = 'com.daltonmaag/check/ufo_recommended_fields',
     conditions = ['ufo_font'],
     rationale = """
         This includes fields that should be in any production font.
@@ -113,7 +113,7 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
 
 
 @check(
-    id = 'com.daltonmaag/check/ufo-unnecessary-fields',
+    id = 'com.daltonmaag/check/ufo_unnecessary_fields',
     conditions = ['ufo_font'],
     rationale = """
         ufo2ft will generate these.

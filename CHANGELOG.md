@@ -386,7 +386,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[io.github.abysstypeco/check/ytlc_sanity]:** Check if ytlc values are sane in a varfont (issue #3130)
   - **[com.google.fonts/check/cjk_vertical_metrics_regressions]:** Check CJK family has the same vertical metrics as the same family hosted on Google Fonts (issue #3242)
   - **[com.google.fonts/check/cjk_not_enough_glyphs]:** Warn users if there are less than 40 CJK glyphs in a font. (PR #3214)
-  - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
+  - **[com.google.fonts/check/gf_axisregistry/fvar_axis_defaults]:** Ensure default axis values are registered as fallback on the Google Fonts Axis Registry (issue #3141)
   - **[com.google.fonts/check/description/family_update]:** On a family update, the DESCRIPTION.en_us.html file should ideally also be updated. (issue #3182)
   - **[com.google.fonts/check/missing_small_caps_glyphs]:** Check small caps glyphs are available (issue #3154)
   - **[com.google.fonts/check/shaping/regression]:** Check that OpenType shaping produces results consistent with predefined expectations.
@@ -401,10 +401,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
   - **[com.google.fonts/check/vertical_metrics_regressions]:** Skip check if fonts are CJK (issue #3242) and refactor fsSelection bit 7 requirements (issue #3241)
   - **[com.google.fonts/check/kern_table]:** add FAIL when non-character glyph present, WARN when no format-0 subtable present (issue #3148)
-  - **[com.google.fonts/check/gf-axisregistry/fvar_axis_defaults]:** Only check axes which are in the GF Axis Registry (PR #3217)
+  - **[com.google.fonts/check/gf_axisregistry/fvar_axis_defaults]:** Only check axes which are in the GF Axis Registry (PR #3217)
   - **[com.google.fonts/check/mandatory_avar_table]:** Update rationale to mention that this check may be ignored if axis progressions are linear.
   - **[com.google.fonts/check/integer_ppem_if_hinted]:** Format message with newlines.
-  - **[com.google.fonts/check/STAT/gf-axisregistry]:** Ensure that STAT tables contain Axis Values
+  - **[com.google.fonts/check/STAT/gf_axisregistry]:** Ensure that STAT tables contain Axis Values
   - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** Added hints to GF specs for single-weight families to FAIL output (PR #3196)
   - **[com.google.fonts/check/metadata/has_regular]:** Added hints to GF specs for single-weight families to FAIL output (PR #3197)
   - **[com.google.fonts/check/gdef_mark_chars]:** Do not consider chars with Unicode category Mc, Spacing_Marks as (non spacing) mark class glyphs.
@@ -426,9 +426,9 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 
 ### Bugfixes
   - **[com.google.fonts/check/metadata/consistent_axis_enumeration]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3122)
-  - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3104)
-  - **[com.google.fonts/check/metadata/gf-axisregistry_valid_tags]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3105)
-  - **[com.google.fonts/check/STAT/gf-axisregistry]:** Ignore format-4 entries on STAT table because the GF Axis Registry does not list any multi-axis fallback name which is what such entries are designed to describe (issue #3106)
+  - **[com.google.fonts/check/metadata/gf_axisregistry_bounds]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3104)
+  - **[com.google.fonts/check/metadata/gf_axisregistry_valid_tags]:** Add "family_metadata" as a condition to avoid an ERROR (issue #3105)
+  - **[com.google.fonts/check/STAT/gf_axisregistry]:** Ignore format-4 entries on STAT table because the GF Axis Registry does not list any multi-axis fallback name which is what such entries are designed to describe (issue #3106)
 
 
 ## 0.7.33 (2020-Nov-24)
@@ -449,9 +449,9 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - **[com.google.fonts/check/metadata/escaped_strings]:** Ensure fields in METADATA.pb do not use escaped strings (issue #2932)
   - **[com.google.fonts/check/STAT/axis_order]:** INFO-level check to gather stats on usage of the STAT table AxisOrdering field. May be updated in the future to enforce some ordering scheme yet to be defined. (issue #3049)
   - **[com.google.fonts/check/metadata/consistent_axis_enumeration]:** Validate VF axes on the 'fvar' table match the ones declared on METADATA.pb (issue #3051)
-  - **[com.google.fonts/check/metadata/gf-axisregistry_valid_tags]:** VF axis tags are registered on GF Axis Registry (issue #3010)
-  - **[com.google.fonts/check/metadata/gf-axisregistry_bounds]:** VF axes have ranges compliant to the bounds specified on the GF Axis Registry (issue #3022)
-  - **[com.google.fonts/check/STAT/gf-axisregistry]:** Check that particle names and values on STAT table match the fallback names in each axis registry at the Google Fonts Axis Registry (issue #3022)
+  - **[com.google.fonts/check/metadata/gf_axisregistry_valid_tags]:** VF axis tags are registered on GF Axis Registry (issue #3010)
+  - **[com.google.fonts/check/metadata/gf_axisregistry_bounds]:** VF axes have ranges compliant to the bounds specified on the GF Axis Registry (issue #3022)
+  - **[com.google.fonts/check/STAT/gf_axisregistry]:** Check that particle names and values on STAT table match the fallback names in each axis registry at the Google Fonts Axis Registry (issue #3022)
   - **[com.google.fonts/check/glyf_nested_components]:** Check that components do not reference glyphs which are themselves compontents (issue #2961)
   - **[com.google.fonts/check/outline_alignment_miss]:** Check for outline points near to, but not on, significant Y-axis boundaries. (PR #3088)
   - **[com.google.fonts/check/outline_short_segments]:** Check for outline segments which are suspiciously short. (PR #3088)
@@ -1258,7 +1258,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
   - **[code-test: check/154]:** Fixed the code-test and made it safer under eventual conectivity issues. (issue #1712)
 
 ### Changes to existing checks
-  - **[com.google.fonts/check/ttx-roundtrip]:** Improved the FAIL message to give the users a hint about what could have gone wrong. The most likely reason is a shortcoming on fonttools that makes TTX generate corrupt XML files when dealing with contol code chars in the name table. (issue #2212)
+  - **[com.google.fonts/check/ttx_roundtrip]:** Improved the FAIL message to give the users a hint about what could have gone wrong. The most likely reason is a shortcoming on fonttools that makes TTX generate corrupt XML files when dealing with contol code chars in the name table. (issue #2212)
   - **[com.google.fonts/check/001]:** Accept variable font filenames with Roman/Italic suffixes (issue #2214)
   - **[com.google.fonts/check/034]:** Downgrade xAvgWidth check from FAIL to WARN since sometimes it diverges from GlyphsApp. Also, it seems that the value is not actually used on relevant programs. I still want to clarify what's going on with GlyphsApp calculations of this value. Once that's figured out, we may redefine the severity of the check once again. (issue #2095)
   - **[com.google.fonts/check/097]:** Accept variable font filenames with Roman/Italic suffixes (issue #2214)
@@ -1272,12 +1272,12 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 
 ### Bug fixes
   - **[com.google.fonts/check/098]:** In some cases the check did not yield any result. (issue #2206)
-  - **[com.google.fonts/check/ttx-roundtrip]:** Delete temporary XML that is generated by the TTX round-tripping check. (issue #2193)
+  - **[com.google.fonts/check/ttx_roundtrip]:** Delete temporary XML that is generated by the TTX round-tripping check. (issue #2193)
   - **[com.google.fonts/check/119]:** Fix `'msg'` referenced before assignment (issue #2201)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/130]:** update italic angle check with "over -30 degrees" FAIL and "over -20 degrees" WARN (#2197)
-  - **[com.google.fonts/check/ttx-roundtrip]:** Emit a FAIL when TTX roundtripping results in a parsing error (ExpatError) since a malformed XML most likely means an issue with the font. (issue #2205)
+  - **[com.google.fonts/check/ttx_roundtrip]:** Emit a FAIL when TTX roundtripping results in a parsing error (ExpatError) since a malformed XML most likely means an issue with the font. (issue #2205)
 
 
 ## 0.6.1 (2018-Nov-11)
@@ -1437,7 +1437,7 @@ More info on MFDOS is available at: https://github.com/davelab6/mfdos
   - We've got a cupcake ASCII art by Tony de Marco! Cheers!!!
 
 ### New checks
-  - **[com.google.fonts/check/ttx-roundtrip]:** Make sure the font roundtrips nicely on the TTX tool (issue #1763)
+  - **[com.google.fonts/check/ttx_roundtrip]:** Make sure the font roundtrips nicely on the TTX tool (issue #1763)
 
 ### Changes to existing checks
   - **[com.google.fonts/check/001]:** Added support for canonical variable font filenames
@@ -1527,14 +1527,14 @@ More info on MFDOS is available at: https://github.com/davelab6/mfdos
 ### New checks
   - **[com.daltonmaag/check/ufolint]:** "Run ufolint on UFO source directory."
 
-  - **[com.daltonmaag/check/ufo-required-fields]:** "Check that required fields are present in the UFO fontinfo.
+  - **[com.daltonmaag/check/ufo_required_fields]:** "Check that required fields are present in the UFO fontinfo.
                                                     - ufo2ft requires these info fields to compile a font binary:
                                                       unitsPerEm, ascender, descender, xHeight, capHeight and familyName."
 
-  - **[com.daltonmaag/check/ufo-recommended-fields]:** "Check that recommended fields are present in the UFO fontinfo.
+  - **[com.daltonmaag/check/ufo_recommended_fields]:** "Check that recommended fields are present in the UFO fontinfo.
                                                        - This includes fields that should be in any production font."
 
-  - **[com.daltonmaag/check/ufo-unnecessary-fields]:** "Check that no unnecessary fields are present in the UFO fontinfo.
+  - **[com.daltonmaag/check/ufo_unnecessary_fields]:** "Check that no unnecessary fields are present in the UFO fontinfo.
                                                        - ufo2ft will generate these.
                                                        - openTypeOS2UnicodeRanges and openTypeOS2CodePageRanges are exempted
                                                          because it is useful to toggle a range when not _all_ the glyphs
