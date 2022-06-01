@@ -242,7 +242,8 @@ class TerminalProgress(FontbakeryReporter):
             self._progressbar.append('.')
         return index
 
-    def _reset_progress(self, num_linebeaks):
+    @staticmethod
+    def _reset_progress(num_linebeaks):
         # BACKSPACE = u'\b'
         TOLEFT = '\u001b[1000D' # Move all the way left (max 1000 steps
         CLEARLINE = '\u001b[2K'    # Clear the line
@@ -250,35 +251,40 @@ class TerminalProgress(FontbakeryReporter):
         reset = (CLEARLINE + UP) * num_linebeaks + TOLEFT
         return reset
 
+    @staticmethod
+    def _needs_break(count, columns, right_margin):
+        return (
+            columns and count > columns and (count % (columns - right_margin))
+        )
+
     def _draw_progressbar(self, columns=None, len_prefix=0, right_margin=0):
         """
         if columns is None, don't insert any extra line breaks
         """
-        if self._order == None:
+        if self._order is None:
             total = len(self._results)
         else:
             total = max(len(self._order), len(self._results))
 
-        percent = int(round(len(self._results)/total*100)) if total else 0
-
-        needs_break = lambda count: columns and count > columns \
-                                    and (count % (columns - right_margin))
+        percent = int(round(len(self._results) / total * 100)) if total else 0
 
         # together with unicode_literals `str('status')` seems the best
         # py2 and py3 compatible solution
-        status = type(str('status'), (object,), dict(count=0,progressbar=[]))
+        status = type(str('status'), (object,), dict(count=0, progressbar=[]))
+
         def _append(status, item, length=1, separator=''):
             # * assuming a standard item will take one column in the tty
             # * length must not be bigger than columns (=very narrow columns)
             progressbar = status.progressbar
-            if needs_break(status.count + length + len(separator)):
+            if self._needs_break(status.count + length + len(separator),
+                                 columns, right_margin):
                 progressbar.append('\n')
                 status.count = 0
             else:
                 progressbar.append(separator)
             status.count += length + len(separator)
             progressbar.append(item)
-        append=partial(_append, status)
+        append = partial(_append, status)
         progressbar = status.progressbar
 
         append('', len_prefix)
@@ -289,7 +295,6 @@ class TerminalProgress(FontbakeryReporter):
         percentstring = f'{percent:3d}%'
         append(percentstring, len(percentstring), ' ')
         return ''.join(progressbar)
-
 
     def draw_progressbar(self):
         # tty size

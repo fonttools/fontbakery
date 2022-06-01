@@ -16,8 +16,8 @@ class GHMarkdownReporter(SerializeReporter):
               f' for posting issues on a GitHub issue tracker has been\n'
               f' saved to "{self.output_file}"')
 
-
-    def emoticon(self, name):
+    @staticmethod
+    def emoticon(name):
         return {
             'ERROR': "\U0001F494", # 💔  :broken_heart:
             'FAIL':  "\U0001F525", # 🔥  :fire:
@@ -64,7 +64,8 @@ class GHMarkdownReporter(SerializeReporter):
                                                                 github_search_url),
                                       f"\n\n{rationale}\n{logs}")
 
-    def deduce_profile_from_section_name(self, section):
+    @staticmethod
+    def deduce_profile_from_section_name(section):
         # This is very hacky!
         # We should have a much better way of doing it...
         if 'Google Fonts' in section: return 'googlefonts'
@@ -76,7 +77,8 @@ class GHMarkdownReporter(SerializeReporter):
         if 'fontbakery.profiles.' in section: return section.split('fontbakery.profiles.')[1].split('>')[0]
         return section
 
-    def result_is_all_same(self, cluster):
+    @staticmethod
+    def result_is_all_same(cluster):
         first_check = cluster[0]
         return all(check["logs"] == first_check["logs"] for check in cluster[1:])
 

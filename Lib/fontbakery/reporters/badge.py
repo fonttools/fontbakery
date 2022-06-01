@@ -62,7 +62,8 @@ class BadgeReporter(SerializeReporter):
         self._doc = sections
         return sections
 
-    def make_section(self, key, error_state, score, out_of):
+    @staticmethod
+    def make_section(key, error_state, score, out_of):
         if error_state:
             message = "ERRORED"
             color = "red"

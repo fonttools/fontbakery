@@ -46,7 +46,8 @@ class SerializeReporter(FontbakeryReporter):
         self._max_cluster_by_index = None
         self._observed_checks = {}
 
-    def _set_metadata(self, identity, item):
+    @staticmethod
+    def _set_metadata(identity, item):
         section, check, iterargs = identity
         # If section is None this is the main doc.
         # If check is None this is `section`

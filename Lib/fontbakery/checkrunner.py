@@ -121,7 +121,8 @@ class CheckRunner:
     def profile(self):
         return self._profile
 
-    def _check_result(self, result):
+    @staticmethod
+    def _check_result(result):
         """Check that the check returned a well formed result:
         A tuple (<Status>, message)
 
