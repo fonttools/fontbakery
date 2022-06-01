@@ -2504,43 +2504,29 @@ def test_condition_familyname_with_spaces():
     assert familyname_with_spaces("BodoniModa11") == "Bodoni Moda 11"
 
 
-def test_check_name_familyname():
-    """ Check name table: FONT_FAMILY_NAME entries. """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/name/familyname")
-
-    # TODO: FAIL, "lacks-name"
-
-    test_cases = [
-        #expect                      filename                                      mac_value        win_value
-        (PASS, "ok",       TEST_FILE("cabin/Cabin-Regular.ttf"),                   "Cabin",         "Cabin"),
-        (FAIL, "mismatch", TEST_FILE("cabin/Cabin-Regular.ttf"),                   "Wrong",         "Cabin"),
-        (PASS, "ok",       TEST_FILE("overpassmono/OverpassMono-Regular.ttf"),     "Overpass Mono", "Overpass Mono"),
-        (PASS, "ok",       TEST_FILE("overpassmono/OverpassMono-Bold.ttf"),        "Overpass Mono", "Overpass Mono"),
-        (FAIL, "mismatch", TEST_FILE("overpassmono/OverpassMono-Regular.ttf"),     "Overpass Mono", "Foo"),
-        (PASS, "ok",       TEST_FILE("merriweather/Merriweather-Black.ttf"),       "Merriweather",  "Merriweather Black"),
-        (PASS, "ok",       TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather",  "Merriweather Light"),
-        (FAIL, "mismatch", TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather",  "Merriweather Light Italic"),
-        (PASS, "ok",       TEST_FILE("abeezee/ABeeZee-Regular.ttf"),               "ABeeZee",       "ABeeZee"),
-        # Note: ABeeZee is a good camel-cased name exception.
+@pytest.mark.parametrize(
+    "result, code, fp, win_value",
+    [
+        (PASS, "ok", TEST_FILE("cabin/Cabin-Regular.ttf"), "Cabin"),
+#        (FAIL, "bad-names", TEST_FILE("cabin/Cabin-Regular.ttf"), "Cabin Regular"),
+        (PASS, "ok", TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), "Overpass Mono"),
+        (PASS, "ok", TEST_FILE("overpassmono/OverpassMono-Bold.ttf"), "Overpass Mono"),
+#        (FAIL, "bad-names", TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), "Foo"),
+        (PASS, "ok", TEST_FILE("merriweather/Merriweather-Black.ttf"), "Merriweather Black"),
+        (PASS, "ok", TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather Light"),
+#        (FAIL, "bad-names", TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), "Merriweather Light Italic"),
+        (PASS, "ok", TEST_FILE("abeezee/ABeeZee-Regular.ttf"), "ABeeZee"),
     ]
+)
+def test_check_name_familyname(result, code, fp, win_value):
+    """ Check name table: FONT_FAMILY_NAME entries."""
 
-    for expected, keyword, filename, mac_value, win_value in test_cases:
-        ttFont = TTFont(filename)
-        for i, name in enumerate(ttFont['name'].names):
-            if name.platformID == PlatformID.MACINTOSH:
-                value = mac_value
-            if name.platformID == PlatformID.WINDOWS:
-                value = win_value
-            assert value
-
-            if name.nameID == NameID.FONT_FAMILY_NAME:
-                ttFont['name'].names[i].string = value.encode(name.getEncoding())
-        assert_results_contain(check(ttFont),
-                                     expected, keyword,
-                                     f'with filename="{filename}",'
-                                     f' value="{value}", style="{check["style"]}"...')
-
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/font_names")
+    ttFont = TTFont(fp)
+    name = ttFont["name"]
+    name.setName(win_value, NameID.FONT_FAMILY_NAME, 3, 1, 0x409)
+    assert_results_contain(check(ttFont), result, code)
 
 def test_check_name_subfamilyname():
     """ Check name table: FONT_SUBFAMILY_NAME entries. """
