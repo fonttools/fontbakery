@@ -1076,7 +1076,7 @@ def test_check_gpos7():
                            WARN, "has-gpos7")
 
 
-def test_freetype_rasterizer():
+def test_check_freetype_rasterizer():
     """Ensure that the font can be rasterized by FreeType."""
     check = CheckTester(universal_profile, "com.adobe.fonts/check/freetype_rasterizer")
 
@@ -1091,3 +1091,41 @@ def test_freetype_rasterizer():
     font = TEST_FILE("rubik/Rubik-Italic.ttf")
     msg = assert_results_contain(check(font), FAIL, "freetype-crash")
     assert "FT_Exception:  (stack overflow)" in msg
+
+
+def test_check_sfnt_version():
+    """Ensure that the font has the proper sfntVersion value."""
+    check = CheckTester(universal_profile, "com.adobe.fonts/check/sfnt_version")
+
+    # Valid TrueType font; the check must PASS.
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    msg = assert_PASS(check(ttFont))
+    assert msg == "Font has the correct sfntVersion value."
+
+    # Change the sfntVersion to an improper value for TrueType fonts.
+    # The check should FAIL.
+    ttFont.sfntVersion = "OTTO"
+    msg = assert_results_contain(check(ttFont), FAIL, "wrong-sfnt-version-ttf")
+    assert msg == "Font with TrueType outlines has incorrect sfntVersion value: 'OTTO'"
+
+    # Valid CFF font; the check must PASS.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
+    msg = assert_PASS(check(ttFont))
+    assert msg == "Font has the correct sfntVersion value."
+
+    # Change the sfntVersion to an improper value for CFF fonts. The check should FAIL.
+    ttFont.sfntVersion = "\x00\x01\x00\x00"
+    msg = assert_results_contain(check(ttFont), FAIL, "wrong-sfnt-version-cff")
+    assert msg == (
+        "Font with CFF data has incorrect sfntVersion value: '\x00\x01\x00\x00'")
+
+    # Valid CFF2 font; the check must PASS.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf"))
+    msg = assert_PASS(check(ttFont))
+    assert msg == "Font has the correct sfntVersion value."
+
+    # Change the sfntVersion to an improper value for CFF fonts. The check should FAIL.
+    ttFont.sfntVersion = "\x00\x01\x00\x00"
+    msg = assert_results_contain(check(ttFont), FAIL, "wrong-sfnt-version-cff")
+    assert msg == (
+        "Font with CFF data has incorrect sfntVersion value: '\x00\x01\x00\x00'")
