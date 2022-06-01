@@ -284,7 +284,7 @@ def com_google_fonts_check_font_names(ttFont, desired_font_names):
 def com_google_fonts_check_canonical_filename(ttFont):
     """Checking file is named canonically."""
     from axisregistry import build_filename
-    current_filename = ttFont.reader.file.name
+    current_filename = os.path.basename(ttFont.reader.file.name)
     expected_filename = build_filename(ttFont)
     if current_filename != expected_filename:
         yield FAIL, Message('bad-filename',
@@ -3844,8 +3844,11 @@ def com_google_fonts_check_stat(ttFont, desired_font_names):
         name = ttFont["name"]
         stat = ttFont["STAT"].table
         axes = [a.AxisTag for a in stat.DesignAxisRecord.Axis]
-        axis_values = stat.AxisValueArray.AxisValue
         res = {}
+        try:
+            axis_values = stat.AxisValueArray.AxisValue
+        except AttributeError:
+            return res
         for ax in axis_values:
             axis_tag = axes[ax.AxisIndex]
             ax_name = name.getName(ax.ValueNameID, 3, 1, 0x409).toUnicode()
@@ -3891,13 +3894,6 @@ def com_google_fonts_check_stat(ttFont, desired_font_names):
             row["Expected LinkedValue"] = "N/A"
         table.append(row)
     table.sort(key=lambda k: (k["Axis"], k["Expected Value"]))
-    
-    axes_in_font = set(a.AxisTag for a in ttFont["fvar"].axes)
-    axes_in_axis_vals = set(a for a,_ in font_axis_values)
-    missing_axis_vals = axes_in_font - axes_in_axis_vals
-    if missing_axis_vals:
-        yield FAIL, Message("missing-axis-values",
-                            f"Missing STAT axis values for axes {missing_axis_vals}")
 
     if font_axis_values != desired_axis_values:
         yield WARN, Message('bad-axis-values',
