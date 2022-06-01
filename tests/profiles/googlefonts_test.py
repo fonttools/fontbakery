@@ -3817,9 +3817,9 @@ def test_check_varfont_grade_reflow():
 
 
 def test_check_gfaxisregistry_bounds():
-    """Validate METADATA.pb axes values are within gf-axisregistry bounds."""
+    """Validate METADATA.pb axes values are within gf_axisregistry bounds."""
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/metadata/gf-axisregistry_bounds")
+                        "com.google.fonts/check/metadata/gf_axisregistry_bounds")
 
     # Our reference varfont, CabinVF, has good axes bounds:
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
@@ -3841,9 +3841,9 @@ def test_check_gfaxisregistry_bounds():
 
 
 def test_check_gf_axisregistry_valid_tags():
-    """Validate METADATA.pb axes tags are defined in gf-axisregistry."""
+    """Validate METADATA.pb axes tags are defined in gf_axisregistry."""
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/metadata/gf-axisregistry_valid_tags")
+                        "com.google.fonts/check/metadata/gf_axisregistry_valid_tags")
 
     # The axis tags in our reference varfont, CabinVF,
     # are properly defined in the registry:
@@ -3857,9 +3857,9 @@ def test_check_gf_axisregistry_valid_tags():
 
 
 def test_check_gf_axisregistry_fvar_axis_defaults():
-    """Validate METADATA.pb axes tags are defined in gf-axisregistry."""
+    """Validate METADATA.pb axes tags are defined in gf_axisregistry."""
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/gf-axisregistry/fvar_axis_defaults")
+                        "com.google.fonts/check/gf_axisregistry/fvar_axis_defaults")
 
     # The default value for the axes in this reference varfont
     # are properly registered in the registry:
@@ -3875,7 +3875,7 @@ def test_check_gf_axisregistry_fvar_axis_defaults():
 def test_check_STAT_gf_axisregistry():
     """Validate STAT particle names and values match the fallback names in GFAxisRegistry."""
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/STAT/gf-axisregistry")
+                        "com.google.fonts/check/STAT/gf_axisregistry")
 
     # Our reference varfont, CabinVF,
     # has "Regular", instead of "Roman" in its 'ital' axis on the STAT table:

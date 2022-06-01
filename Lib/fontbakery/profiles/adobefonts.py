@@ -179,7 +179,7 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/family/win_ascent_and_descent",
     "com.google.fonts/check/os2_metrics_match_hhea",
     "com.google.fonts/check/fontbakery_version",
-    "com.google.fonts/check/ttx-roundtrip",
+    "com.google.fonts/check/ttx_roundtrip",
     "com.google.fonts/check/family/single_directory",
     "com.google.fonts/check/mandatory_glyphs",
     "com.google.fonts/check/whitespace_glyphs",

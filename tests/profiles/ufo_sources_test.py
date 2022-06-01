@@ -42,7 +42,7 @@ def test_check_ufolint(empty_ufo_font):
 
 def test_check_required_fields(empty_ufo_font):
     check = CheckTester(ufo_sources_profile,
-                        "com.daltonmaag/check/ufo-required-fields")
+                        "com.daltonmaag/check/ufo_required_fields")
 
     ufo, _ = empty_ufo_font
 
@@ -66,7 +66,7 @@ def test_check_required_fields(empty_ufo_font):
 
 def test_check_recommended_fields(empty_ufo_font):
     check = CheckTester(ufo_sources_profile,
-                        "com.daltonmaag/check/ufo-recommended-fields")
+                        "com.daltonmaag/check/ufo_recommended_fields")
 
     ufo, _ = empty_ufo_font
 
@@ -91,7 +91,7 @@ def test_check_recommended_fields(empty_ufo_font):
 
 def test_check_unnecessary_fields(empty_ufo_font):
     check = CheckTester(ufo_sources_profile,
-                        "com.daltonmaag/check/ufo-unnecessary-fields")
+                        "com.daltonmaag/check/ufo_unnecessary_fields")
 
     ufo, _ = empty_ufo_font
 
