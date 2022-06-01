@@ -199,6 +199,7 @@ SET_EXPLICIT_CHECKS = {
     # "com.google.fonts/check/dotted_circle",
     "com.google.fonts/check/gpos7",
     "com.adobe.fonts/check/freetype_rasterizer",
+    "com.adobe.fonts/check/sfnt_version",
 }
 
 CHECKS_IN_THIS_FILE = [
