@@ -79,6 +79,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### Added to the Universal Profile
   - **[com.adobe.fonts/check/freetype_rasterizer]:** Checks that the font can be rasterized by FreeType. (issue #3642)
+  - **[com.adobe.fonts/check/sfnt_version]:** Ensures the font has the proper sfntVersion value. (issue #3388)
 
 
 ## 0.8.8 (2022-Mar-23)
