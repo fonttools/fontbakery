@@ -14,9 +14,6 @@ profile_imports = [
         Dave C Lemon (Adobe Type Team) recommends setting the underline thickness to be consistent across the family.
 
         If thicknesses are not family consistent, words set on the same line which have different styles look strange.
-
-        See also:
-        https://twitter.com/typenerd1/status/690361887926697986
     """,
     proposal = 'legacy:check/008',
     misc_metadata = {
