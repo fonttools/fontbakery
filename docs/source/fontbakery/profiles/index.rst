@@ -10,7 +10,7 @@ profiles
    adobefonts
    googlefonts
    notofonts
-   typenetwork
+   fontbureau
    fontwerk
    fontval
    ufo_sources

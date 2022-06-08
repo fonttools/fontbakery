@@ -70,7 +70,7 @@ class GHMarkdownReporter(SerializeReporter):
         # We should have a much better way of doing it...
         if 'Google Fonts' in section: return 'googlefonts'
         if 'Adobe' in section: return 'adobefonts'
-        if 'Type Network' in section: return 'typenetwork'
+        if 'Font Bureau' in section: return 'fontbureau'
         if 'Universal' in section: return 'universal'
         if 'Basic UFO checks' in section: return 'ufo_sources'
         if 'Checks inherited from Microsoft Font Validator' in section: return 'fontval'
