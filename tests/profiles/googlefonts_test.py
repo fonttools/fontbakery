@@ -3771,15 +3771,6 @@ def test_check_varfont_unsupported_axes():
     assert_results_contain(check(ttFont),
                            FAIL, 'unsupported-ital')
 
-    # Then we reload the font and add 'opsz'
-    # so it must also FAIL:
-    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-    new_axis = Axis()
-    new_axis.axisTag = "slnt"
-    ttFont["fvar"].axes.append(new_axis)
-    assert_results_contain(check(ttFont),
-                           FAIL, 'unsupported-slnt')
-
 
 def test_check_varfont_grade_reflow():
     """ Ensure VFs with the GRAD axis do not vary horizontal advance. """

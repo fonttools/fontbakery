@@ -5361,10 +5361,10 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
 @check(
     id = 'com.google.fonts/check/varfont/unsupported_axes',
     rationale = """
-        The 'ital' and 'slnt' axes are not supported yet in Google Chrome.
+        The 'ital' axis is not supported yet in Google Chrome.
 
-        For the time being, we need to ensure that VFs do not contain either of
-        these axes. Once browser support is better, we can deprecate this check.
+        For the time being, we need to ensure that VFs do not contain this axis.
+        Once browser support is better, we can deprecate this check.
 
         For more info regarding browser support, see:
         https://arrowtype.github.io/vf-slnt-test/
@@ -5373,16 +5373,12 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2866'
 )
 def com_google_fonts_check_varfont_unsupported_axes(ttFont):
-    """ Ensure VFs do not contain slnt or ital axes. """
-    from fontbakery.profiles.shared_conditions import slnt_axis, ital_axis
+    """ Ensure VFs do not contain the ital axis. """
+    from fontbakery.profiles.shared_conditions import ital_axis
     if ital_axis(ttFont):
         yield FAIL,\
               Message("unsupported-ital",
                       'The "ital" axis is not yet well supported on Google Chrome.')
-    elif slnt_axis(ttFont):
-        yield FAIL,\
-              Message("unsupported-slnt",
-                      'The "slnt" axis is not yet well supported on Google Chrome.')
     else:
         yield PASS, "Looks good!"
 
