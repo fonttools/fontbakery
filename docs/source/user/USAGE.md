@@ -10,11 +10,12 @@ This has several subcommands, described in the help function:
     Run fontbakery subcommands:
         build-contributors
         check-adobefonts
+        check-fontbureau
+        check-fontwerk
         check-fontval
         check-googlefonts
         check-notofonts
         check-profile
-        check-typenetwork
         check-ufo-sources
         check-universal
         generate-glyphdata
@@ -42,7 +43,7 @@ The goal is to keep the vendor-specific profiles with only the minimal set of ch
 
 We should always consider contributing new checks (or moving existing ones) to this universal profile, if appropriate.
 
-### fontbakery check-adobefonts
+### fontbakery check-adobefonts / check-fontbureau / check-fontwerk / check-notofonts
 
 Usage is analogous to the Google Fonts profile described below.
 

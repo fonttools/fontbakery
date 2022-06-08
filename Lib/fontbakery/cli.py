@@ -10,13 +10,13 @@ from fontbakery.commands.check_profile import main as check_profile_main
 
 CLI_PROFILES = [
     "adobefonts",
+    "fontbureau",
     "fontval",
     "fontwerk",
     "googlefonts",
     "iso15008",
     "notofonts",
     "opentype",
-    "typenetwork",
     "ufo_sources",
     "universal",
 ]

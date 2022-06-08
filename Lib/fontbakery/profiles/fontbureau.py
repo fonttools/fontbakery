@@ -10,9 +10,9 @@ from fontbakery.message import Message
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 
 profile_imports = ('fontbakery.profiles.universal',)
-profile = profile_factory(default_section=Section("Type Network"))
+profile = profile_factory(default_section=Section("Font Bureau"))
 
-TYPENETWORK_PROFILE_CHECKS = \
+FONTBUREAU_PROFILE_CHECKS = \
     UNIVERSAL_PROFILE_CHECKS + [
         'io.github.abysstypeco/check/ytlc_sanity'
     ]
@@ -47,4 +47,4 @@ def io_github_abysstypeco_check_ytlc_sanity(ttFont):
 profile.auto_register(globals())
 
 
-profile.test_expected_checks(TYPENETWORK_PROFILE_CHECKS, exclusive=True)
+profile.test_expected_checks(FONTBUREAU_PROFILE_CHECKS, exclusive=True)
