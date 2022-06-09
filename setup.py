@@ -45,7 +45,8 @@ setup(
               'fontbakery.commands',
               'fontbakery.sphinx_extensions'
               ],
-    package_data={'fontbakery': ['data/*.cache']},
+    package_data={'fontbakery': ['data/*.cache',
+                                 'data/googlefonts/*_exceptions.txt']},
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Developers',
