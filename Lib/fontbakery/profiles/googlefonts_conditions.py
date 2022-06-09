@@ -449,29 +449,18 @@ def camelcased_familyname_exception(familyname):
        familynames but there are a few exceptions to that
        rule, that we keep listed here, for now.
     '''
-    for exception in [
-        "3D", # seen in "Rock 3D"
-        "ABeeZee",
-        "BenchNine",
-        "BhuTuka", # seen in "BhuTuka Expanded One"
-        "DotGothic", # seen in "DotGothic16"
-        "DynaPuff",
-        "FakeFont",
-        "JetBrains", # seen in "JetBrains Mono"
-        "McLaren",
-        "MedievalSharp",
-        "RocknRoll", # seen in "RocknRoll One"
-        "BIZ UDGothic",
-        "BIZ UDPGothic",
-        "BIZ UDMincho",
-        "BIZ UDPMincho",
-        "UnifrakturCook",
-        "UnifrakturMaguntia",
-        "MonteCarlo",
-        "WindSong",
-    ]:
+    from pkg_resources import resource_filename
+
+    camelcase_exceptions_txt = 'data/googlefonts/camelcased_familyname_exceptions.txt'
+    filename = resource_filename('fontbakery', camelcase_exceptions_txt)
+    for exception in open(filename, "r").readlines():
+        exception = exception.split('#')[0].strip()
+        if exception == "":
+            continue
+
         if exception in familyname:
             return True
+
 
 @condition
 def rfn_exception(familyname):
@@ -480,12 +469,15 @@ def rfn_exception(familyname):
        been published previously with an RFN, or fonts which benefit from
        an agreement with Google Fonts.
     '''
-    RNF_EXCEPTIONS = [] # For now we'll leave this empty because the
-                        # actual long list of familynames we had here
-                        # still needs to be more carefully reviewed.
-                        # See https://github.com/googlefonts/fontbakery/issues/3612
+    from pkg_resources import resource_filename
 
-    for exception in RNF_EXCEPTIONS:
+    rfn_exceptions_txt = 'data/googlefonts/reserved_font_name_exceptions.txt'
+    filename = resource_filename('fontbakery', rfn_exceptions_txt)
+    for exception in open(filename, "r").readlines():
+        exception = exception.split('#')[0].strip()
+        if exception == "":
+            continue
+
         if exception in familyname:
             return True
 

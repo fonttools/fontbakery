@@ -2,12 +2,13 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.9 (2022-May-??)
+## Upcoming release: 0.8.9 (2022-Jun-??)
 ### Noteworthy code-changes
   - Improve implementation of `is_italic` condition and provide an `is_bold` counterpart (issue #3693)
   - Nicer cancellation for terminal runner. (issue #3672)
   - The CheckTester class now takes into account the check's own `conditions`. (PR #3766)
   - Windows Terminal displays colors fine. We can now remove the win32 workaround. (issue #3779)
+  - On the `Google Fonts` profile, the lists of exceptions for **Reserved Font Names (RFN)** and **CamelCased family names**, are now placed on separate txt files (`Lib/fontbakery/data/googlefonts/*_exceptions.txt`) to facilitate their future editing. (issue #3707)
 
 ### BugFixes
   - Users reading markdown reports are now directed to the "stable" version of our ReadTheDocs documentation instead of the "latest" (git dev) one. (issue #3677)

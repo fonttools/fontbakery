@@ -1,0 +1,9 @@
+# These are the very few font families where we accept usage of
+# a Reserved Font Name. These are typically fonts that had already
+# been published previously with an RFN, or fonts which benefit from
+# an agreement with Google Fonts.
+#
+# For now we'll leave this empty because the
+# actual long list of familynames we had here
+# still needs to be more carefully reviewed.
+# See https://github.com/googlefonts/fontbakery/issues/3612
