@@ -6438,6 +6438,12 @@ def check_skip_filter(checkid, font=None, **iterargs):
         'com.google.fonts/check/whitespace_ink'):
         return False, ('LibreBarcode is blacklisted for this check, see '
                        'https://github.com/graphicore/librebarcode/issues/3')
+
+    if checkid == 'com.google.fonts/check/unitsperem':
+        # This is the one inherited from the OpenType profile, but:
+        return False, ('Google Fonts has a stricter policy which is enforced by'
+                       ' com.google.fonts/check/unitsperem_strict')
+
     return True, None
 
 

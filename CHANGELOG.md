@@ -43,6 +43,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/fontbakery_version]:** This check from the Universal profile is overridden to be skipped instead of failing, when the user's internet connection isn't functional. (PR #3756)
 
 #### On the Google Fonts Profile
+  - **[com.google.fonts/check/unitsperem]:** Auto-SKIP this check inherited from the OpenType profile because Google Fonts has a stricter policy which is enforced by **com.google.fonts/check/unitsperem_strict** (issue #3622)
   - **[com.google.fonts/check/license/OFL_copyright]:** Improve wording of log message to clarify its meaning. It was too easy to think that the displayed copyright string (read from the font binary and reported for reference) was an example of the actually expected string format. (issue #3674)
   - **[com.google.fonts/check/cjk_vertical_metrics_regressions]:** Round calculation of expected sTypoAscender and sTypoDescender values (issue #3645)
   - **[com.google.fonts/check/name/familyname]:** Don't validate localized name table entries compared to the expected English names derived from the font filename (issue #3089)
