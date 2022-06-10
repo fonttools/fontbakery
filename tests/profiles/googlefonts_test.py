@@ -3061,7 +3061,7 @@ def test_check_varfont_has_instances():
 def test_check_varfont_weight_instances():
     """ Variable font weight coordinates must be multiples of 100. """
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont_weight_instances")
+                        "com.google.fonts/check/fvar_instances")
 
     # This copy of Markazi Text has an instance with
     # a 491 'wght' coordinate instead of 500.
@@ -3069,12 +3069,15 @@ def test_check_varfont_weight_instances():
 
     # So it must FAIL the check:
     assert_results_contain(check(ttFont),
-                           FAIL, 'bad-coordinate',
+                           FAIL, 'bad-fvar-instances',
                            'with a bad font...')
 
     # Let's then change the weight coordinates to make it PASS the check:
+    # instances are from 400-700 (Regular-Bold) so set start to 400
+    wght_val = 400
     for i, instance in enumerate(ttFont["fvar"].instances):
-        ttFont["fvar"].instances[i].coordinates['wght'] -= instance.coordinates['wght'] % 100
+        ttFont["fvar"].instances[i].coordinates['wght'] = wght_val
+        wght_val += 100
 
     assert_PASS(check(ttFont),
                 'with a good font...')
