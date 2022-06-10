@@ -3708,7 +3708,7 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
 
 def test_check_varfont_instance_names(vf_ttFont):
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont_instance_names")
+                        "com.google.fonts/check/fvar_instances")
 
     assert_PASS(check(vf_ttFont),
                 'with a variable font which has correct instance names.')
@@ -3717,7 +3717,7 @@ def test_check_varfont_instance_names(vf_ttFont):
     vf_ttFont2 = copy(vf_ttFont)
     for instance in vf_ttFont2['fvar'].instances:
         instance.subfamilyNameID = 300
-    broken_name ="ExtraBlack Condensed 300pt"
+    broken_name = "ExtraBlack Condensed 300pt"
     vf_ttFont2['name'].setName(broken_name,
                                300,
                                PlatformID.MACINTOSH,
@@ -3729,7 +3729,7 @@ def test_check_varfont_instance_names(vf_ttFont):
                                WindowsEncodingID.UNICODE_BMP,
                                WindowsLanguageID.ENGLISH_USA)
     assert_results_contain(check(vf_ttFont2),
-                           FAIL, 'bad-instance-names',
+                           FAIL, 'bad-fvar-instances',
                            'with a variable font which does not have correct instance names.')
 
 
