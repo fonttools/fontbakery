@@ -3689,7 +3689,7 @@ def test_check_cjk_not_enough_glyphs():
 
 def test_check_varfont_instance_coordinates(vf_ttFont):
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont_instance_coordinates")
+                        "com.google.fonts/check/fvar_instances")
 
     # OpenSans-Roman-VF is correct
     assert_PASS(check(vf_ttFont),
@@ -3701,7 +3701,7 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
         for axis in instance.coordinates.keys():
             instance.coordinates[axis] = 0
     assert_results_contain(check(vf_ttFont2),
-                           FAIL, "bad-coordinate",
+                           FAIL, "bad-fvar-instances",
                            'with a variable font which does not have'
                            ' correct instance coordinates.')
 
