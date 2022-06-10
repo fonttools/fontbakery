@@ -4,7 +4,7 @@ from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, disable
-from fontbakery.utils import bullet_list, filesize_formatting
+from fontbakery.utils import bullet_list, filesize_formatting, markdown_table
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (NameID,
@@ -203,21 +203,6 @@ GOOGLEFONTS_PROFILE_CHECKS = \
     GLYPHSAPP_CHECKS
 
 
-def to_md(items):
-    res = []
-    # add header
-    header = "| " + " | ".join(items[0].keys()) + " |"
-    res.append(header)
-    lb = "|" + " :--- |" * len(items[0])
-    res.append(lb)
-    for row in items:
-        vals = list(row.values())
-        r = "| " + " | ".join(map(str, vals)) + " |"
-        res.append(r)
-    return "\n".join(res)
-
-
-
 @check(
     id = 'com.google.fonts/check/font_names',
     rationale = """""",
@@ -254,12 +239,13 @@ def com_google_fonts_check_font_names(ttFont, desired_font_names):
     missing_names = set(desired_names) - set(font_names)
     same_names = set(font_names) & set(desired_names)
 
+    md_table = markdown_table(table)
     if any([new_names, missing_names]) or \
        any(font_names[i] != desired_names[i] for i in same_names):
         yield FAIL, Message('bad-names',
-                            f'Font names are incorrect:\n\n{to_md(table)}')
+                            f'Font names are incorrect:\n\n{md_table}')
     else:
-        yield PASS, f"Font names are good:\n\n{to_md(table)}"
+        yield PASS, f"Font names are good:\n\n{md_table}"
 
 
 @check(
@@ -3818,6 +3804,7 @@ def com_google_fonts_check_fvar_instances(ttFont, desired_font_names):
     same = set(font_instances.keys()) & set(desired_instances.keys())
     wght_wrong = any(font_instances[i]["wght"] != desired_instances[i]["wght"] for i in same)
 
+    md_table = markdown_table(table)
     if any([wght_wrong, missing, new]):
         hints = ""
         if missing:
@@ -3827,11 +3814,11 @@ def com_google_fonts_check_fvar_instances(ttFont, desired_font_names):
         if wght_wrong:
             hints += "- wght coordinates are wrong for some instances"
         yield FAIL, Message('bad-fvar-instances',
-                            f"fvar instances are incorrect:\n{hints}\n{to_md(table)}")
+                            f"fvar instances are incorrect:\n{hints}\n{md_table}")
     elif any(font_instances[i] != desired_instances[i] for i in same):
-        yield WARN, Message("bad-fvar-coords", f"fvar coordinates are different:\n\n{to_md(table)}")
+        yield WARN, Message("bad-fvar-coords", f"fvar coordinates are different:\n\n{md_table}")
     else:
-        yield PASS, f"fvar instances are good:\n\n{to_md(table)}"
+        yield PASS, f"fvar instances are good:\n\n{md_table}"
 
 
 @check(
@@ -3895,13 +3882,14 @@ def com_google_fonts_check_stat(ttFont, desired_font_names):
         table.append(row)
     table.sort(key=lambda k: (k["Axis"], k["Expected Value"]))
 
+    md_table = markdown_table(table)
     if font_axis_values != desired_axis_values:
         yield WARN, Message('bad-axis-values',
-            f"STAT axis values differ from recommended axes:\n\n {to_md(table)}\n"
+            f"STAT axis values differ from recommended axes:\n\n {md_table}\n"
             f"This warning can be ignored if you have the need for a customised "
             f"STAT table.")
     else:
-        yield PASS, f"STAT table matches recommended table:\n\n{to_md(table)}"
+        yield PASS, f"STAT table matches recommended table:\n\n{md_table}"
 
 
 @check(
