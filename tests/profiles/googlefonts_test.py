@@ -203,19 +203,8 @@ def test_check_canonical_filename():
 
     for non_canonical in non_canonical_names:
         assert_results_contain(check(non_canonical),
-                               FAIL, 'bad-varfont-filename',
+                               FAIL, 'bad-filename',
                                f'with "{non_canonical}" ...')
-
-    assert_results_contain(check(TEST_FILE("Bad_Name.ttf")),
-                           FAIL, 'invalid-char',
-                           'with filename containing an underscore...')
-
-    assert_results_contain(check(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf")),
-                           FAIL, 'unknown-name',
-                           'with a variable font that lacks some important name table entries...')
-
-    # TODO: FAIL, 'bad-static-filename'
-    # TODO: FAIL, 'varfont-with-static-filename'
 
 
 def test_check_description_broken_links():
@@ -3015,15 +3004,16 @@ def test_check_aat():
 
 def test_check_fvar_name_entries():
     """ All name entries referenced by fvar instances exist on the name table? """
+    # TODO fix
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/fvar_name_entries")
+                        "com.google.fonts/check/fvar_instances")
 
     # This broken version of the Expletus variable font, was where this kind of problem was first observed:
     ttFont = TTFont(TEST_FILE("broken_expletus_vf/ExpletusSansBeta-VF.ttf"))
 
     # So it must FAIL the check:
     assert_results_contain(check(ttFont),
-                           FAIL, 'missing-name',
+                           FAIL, 'bad-fvar-instances',
                            'with a bad font...')
 
     # If we add the name entry with id=265 (which was the one missing)
@@ -3037,8 +3027,9 @@ def test_check_fvar_name_entries():
 
 def test_check_varfont_has_instances():
     """ A variable font must have named instances. """
+    # TODO Fix!
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/varfont_has_instances")
+                        "com.google.fonts/check/fvar_instances")
 
     # ExpletusVF does have instances.
     # Note: The "broken" in the path name refers to something else.
