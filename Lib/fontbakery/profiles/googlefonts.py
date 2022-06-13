@@ -795,7 +795,7 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
 )
 def com_google_fonts_check_metadata_category(family_metadata):
     """Ensure METADATA.pb category field is valid."""
-    if family_metadata.category not in ["MONOSPACE",
+    if family_metadata.category[-1] not in ["MONOSPACE",
                                         "SANS_SERIF",
                                         "SERIF",
                                         "DISPLAY",
@@ -6403,7 +6403,7 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
                 break
 
     if (inferred_category is not None and
-        not family_metadata.category == inferred_category):
+        not family_metadata.category[-1] == inferred_category):
        yield WARN,\
              Message('inferred-category',
                      f'Familyname seems to hint at "{inferred_category}" but'
