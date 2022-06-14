@@ -795,17 +795,19 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
 )
 def com_google_fonts_check_metadata_category(family_metadata):
     """Ensure METADATA.pb category field is valid."""
+    ok = True
     for category in family_metadata.category:
       if category not in ["MONOSPACE",
                           "SANS_SERIF",
                           "SERIF",
                           "DISPLAY",
                           "HANDWRITING"]:
+        ok = False
         yield FAIL,\
               Message('bad-value',
                       f'The field category has "{category}"'
                       f' which is not valid.')
-    else:
+    if ok:
         yield PASS, "OK!"
 
 
