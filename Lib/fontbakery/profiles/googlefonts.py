@@ -795,16 +795,19 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
 )
 def com_google_fonts_check_metadata_category(family_metadata):
     """Ensure METADATA.pb category field is valid."""
-    if family_metadata.category not in ["MONOSPACE",
-                                        "SANS_SERIF",
-                                        "SERIF",
-                                        "DISPLAY",
-                                        "HANDWRITING"]:
-        yield FAIL,\
-              Message('bad-value',
-                      f'The field category has "{family_metadata.category}"'
-                      f' which is not valid.')
-    else:
+    ok = True
+    for category in family_metadata.category:
+        if category not in ["MONOSPACE",
+                            "SANS_SERIF",
+                            "SERIF",
+                            "DISPLAY",
+                            "HANDWRITING"]:
+            ok = False
+            yield FAIL,\
+                  Message('bad-value',
+                          f'The field category has "{category}"'
+                          f' which is not valid.')
+    if ok:
         yield PASS, "OK!"
 
 
@@ -6335,13 +6338,13 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
              Message('no-samples',
                      'No sample_glyphs on METADATA.pb')
     else:
-        for name, glyphs in family_metadata.sample_glyphs.items():
-            if not can_shape(ttFont, glyphs):
+        for item in family_metadata.sample_glyphs:
+            if not can_shape(ttFont, item.glyphs):
                 passed = False
                 yield FAIL,\
                       Message('sample-glyphs',
                               f"Font can't render the following sample glyphs:\n"
-                              f"'{name}': '{glyphs}'")
+                              f"'{item.name}': '{item.glyphs}'")
 
     languages = LoadLanguages()
     for lang in family_metadata.languages:
@@ -6403,7 +6406,7 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
                 break
 
     if (inferred_category is not None and
-        not family_metadata.category == inferred_category):
+        not inferred_category in family_metadata.category):
        yield WARN,\
              Message('inferred-category',
                      f'Familyname seems to hint at "{inferred_category}" but'
