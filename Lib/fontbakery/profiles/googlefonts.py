@@ -795,14 +795,15 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
 )
 def com_google_fonts_check_metadata_category(family_metadata):
     """Ensure METADATA.pb category field is valid."""
-    if family_metadata.category[-1] not in ["MONOSPACE",
-                                        "SANS_SERIF",
-                                        "SERIF",
-                                        "DISPLAY",
-                                        "HANDWRITING"]:
+    for category in family_metadata.category:
+      if category not in ["MONOSPACE",
+                          "SANS_SERIF",
+                          "SERIF",
+                          "DISPLAY",
+                          "HANDWRITING"]:
         yield FAIL,\
               Message('bad-value',
-                      f'The field category has "{family_metadata.category}"'
+                      f'The field category has "{category}"'
                       f' which is not valid.')
     else:
         yield PASS, "OK!"
@@ -6403,7 +6404,7 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
                 break
 
     if (inferred_category is not None and
-        not family_metadata.category[-1] == inferred_category):
+        not inferred_category in family_metadata.category):
        yield WARN,\
              Message('inferred-category',
                      f'Familyname seems to hint at "{inferred_category}" but'
