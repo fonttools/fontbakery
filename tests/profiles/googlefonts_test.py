@@ -4167,11 +4167,18 @@ def test_check_metadata_can_render_samples():
     # We add a small set of latin glyphs
     # that we're sure Cabin supports:
     md = check["family_metadata"]
-    md.sample_glyphs["Letters"] = "abcdefghijklmnopqrstuvyz0123456789"
+    from fontbakery.fonts_public_pb2 import GlyphGroupProto
+    gg = GlyphGroupProto()
+    gg.name = "Letters"
+    gg.glyphs = "abcdefghijklmnopqrstuvyz0123456789"
+    md.sample_glyphs.append(gg)
     assert_PASS(check(metadata_file, {"family_metadata": md}))
 
     # And now with Tamil glyphs that Cabin lacks:
-    md.sample_glyphs["Numbers"] = "𑿀 𑿁 𑿂 𑿃 𑿄 𑿅 𑿆 𑿇 𑿈 𑿉 𑿊 𑿋 𑿌 𑿍 𑿎 𑿏 𑿐 𑿑 𑿒 𑿓 𑿔"
+    gg = GlyphGroupProto()
+    gg.name = "Numbers"
+    gg.glyphs = "𑿀 𑿁 𑿂 𑿃 𑿄 𑿅 𑿆 𑿇 𑿈 𑿉 𑿊 𑿋 𑿌 𑿍 𑿎 𑿏 𑿐 𑿑 𑿒 𑿓 𑿔"
+    md.sample_glyphs.append(gg)
     assert_results_contain(check(metadata_file, {"family_metadata": md}),
                            FAIL, 'sample-glyphs')
 

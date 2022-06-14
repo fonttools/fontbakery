@@ -6336,13 +6336,13 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
              Message('no-samples',
                      'No sample_glyphs on METADATA.pb')
     else:
-        for name, glyphs in family_metadata.sample_glyphs.items():
-            if not can_shape(ttFont, glyphs):
+        for item in family_metadata.sample_glyphs:
+            if not can_shape(ttFont, item.glyphs):
                 passed = False
                 yield FAIL,\
                       Message('sample-glyphs',
                               f"Font can't render the following sample glyphs:\n"
-                              f"'{name}': '{glyphs}'")
+                              f"'{item.name}': '{item.glyphs}'")
 
     languages = LoadLanguages()
     for lang in family_metadata.languages:
