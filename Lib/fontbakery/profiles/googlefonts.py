@@ -804,9 +804,9 @@ def com_google_fonts_check_metadata_category(family_metadata):
                             "HANDWRITING"]:
             ok = False
             yield FAIL,\
-                Message('bad-value',
-                        f'The field category has "{category}"'
-                        f' which is not valid.')
+                  Message('bad-value',
+                          f'The field category has "{category}"'
+                          f' which is not valid.')
     if ok:
         yield PASS, "OK!"
 
