@@ -4537,9 +4537,9 @@ def com_google_fonts_check_name_line_breaks(ttFont):
     conditions = ['not rfn_exception'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1380'
 )
-def com_google_fonts_check_name_rfn(ttFont):
+def com_google_fonts_check_name_rfn(ttFont, familyname):
     """Name table strings must not contain the string 'Reserved Font Name'."""
-    failed = False
+    ok = True
     for entry in ttFont["name"].names:
         string = entry.toUnicode()
         if "This license is copied below, and is also available with a FAQ" in string:
@@ -4548,14 +4548,28 @@ def com_google_fonts_check_name_rfn(ttFont):
             # so we will ignore this here.
             continue
 
-        if "reserved font name" in string.lower():
-            yield FAIL,\
-                  Message("rfn",
-                          f'Name table entry ("{string}")'
-                          f' contains "Reserved Font Name".'
-                          f' This is an error except in a few specific rare cases.')
-            failed = True
-    if not failed:
+        import re
+        matches = re.search(r'with [Rr]eserved [Ff]ont [Nn]ame (.*)\.', string)
+
+        if matches:
+            reserved_font_name = matches.group(1)
+            if reserved_font_name in familyname:
+                yield FAIL,\
+                      Message("rfn",
+                              f'Name table entry contains "Reserved Font Name":\n'
+                              f'\t"{string}"\n'
+                              f'\n'
+                              f'This is an error except in a few specific rare cases.')
+            else:
+                yield INFO,\
+                      Message("legacy-familyname",
+                              f'Name table entry contains "Reserved Font Name" for a'
+                              f' family name ({reserved_font_name}) that differs'
+                              f' from the currently used family name ({familyname}),'
+                              f' which is fine.')
+            ok = False
+
+    if ok:
         yield PASS, 'None of the name table strings contain "Reserved Font Name".'
 
 

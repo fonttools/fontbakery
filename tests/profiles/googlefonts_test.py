@@ -479,7 +479,7 @@ def test_check_name_rfn():
     assert_PASS(check(ttFont))
 
     # The OFL text contains the term 'Reserved Font Name',
-    # which should to cause a FAIL:
+    # which should not cause a FAIL:
     ttFont["name"].setName(OFL_BODY_TEXT,
                            NameID.LICENSE_DESCRIPTION,
                            PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP,
@@ -487,13 +487,31 @@ def test_check_name_rfn():
     assert_PASS(check(ttFont),
                 "with the OFL full text...")
 
-    ttFont["name"].setName("Bla Reserved Font Name",
+    # NOTE: This is not a real copyright statement. It is only meant to test the check.
+    with_nunito_rfn = ("Copyright 2022 The Nunito Project Authors"
+                     " (https://github.com/googlefonts/NunitoSans),"
+                     " with Reserved Font Name Nunito.")
+    ttFont["name"].setName(with_nunito_rfn,
                            NameID.VERSION_STRING,
                            PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP,
                            WindowsLanguageID.ENGLISH_USA)
     assert_results_contain(check(ttFont),
                            FAIL, 'rfn',
-                           'with "Reserved Font Name" on a name table entry...')
+                           'with "Reserved Font Name Nunito" on a name table entry...')
+
+    # NOTE: This is not a real copyright statement. It is only meant to test the check.
+    with_other_familyname_rfn = ("Copyright 2022 The FooBar Project Authors"
+                                 " (https://github.com/foo/bar),"
+                                 " with Reserved Font Name FooBar.")
+    ttFont["name"].setName(with_other_familyname_rfn,
+                           NameID.VERSION_STRING,
+                           PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP,
+                           WindowsLanguageID.ENGLISH_USA)
+    msg = assert_results_contain(check(ttFont),
+                                 INFO, 'legacy-familyname',
+                                 'with "Reserved Font Name" that references an older'
+                                 ' familyname not being used in this font project...')
+    assert "(FooBar)" in msg
 
 
 def test_check_metadata_parses():
