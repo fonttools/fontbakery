@@ -19,6 +19,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 #### On the Universal Profile
+  - **[com.google.fonts/check/name/rfn]:** Do not FAIL if an RFN is found but referencing a familyname that differs frmo the currently used name. Just emit an INFO message instead. (PR #3739)
   - **[com.google.fonts/check/varfont/unsupported_axes]:** Allow slnt axis (PR #3795)
   - **[com.google.fonts/check/dotted_circle]:** Fix ERROR on fonts without GlyphClassDef.classDefs (issue #3736)
   - **[com.google.fonts/check/transformed_components]:** Check for any component transformation only if font is hinted, otherwise check only for flipped contour direction (one transformation dimension is flipped while the other isn't)
