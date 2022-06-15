@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - On the `Google Fonts` profile, the lists of exceptions for **Reserved Font Names (RFN)** and **CamelCased family names**, are now placed on separate txt files (`Lib/fontbakery/data/googlefonts/*_exceptions.txt`) to facilitate their future editing. (issue #3707)
   - The FontVal checks report will be written to a temporary directory now, making it safe to run the checks in parallel on multiple fonts.
   - Updated the Google Fonts metadata proto format.
+  - Always read regression shaping JSON files as UTF-8 text. Windows may otherwise use a different default encoding.
 
 ### BugFixes
   - Users reading markdown reports are now directed to the "stable" version of our ReadTheDocs documentation instead of the "latest" (git dev) one. (issue #3677)
