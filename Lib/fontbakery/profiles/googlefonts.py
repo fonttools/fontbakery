@@ -4561,7 +4561,7 @@ def com_google_fonts_check_name_rfn(ttFont, familyname):
                               f'\n'
                               f'This is an error except in a few specific rare cases.')
             else:
-                yield INFO,\
+                yield WARN,\
                       Message("legacy-familyname",
                               f'Name table entry contains "Reserved Font Name" for a'
                               f' family name ({reserved_font_name}) that differs'
