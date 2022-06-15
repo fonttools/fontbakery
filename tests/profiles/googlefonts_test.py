@@ -508,7 +508,7 @@ def test_check_name_rfn():
                            PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP,
                            WindowsLanguageID.ENGLISH_USA)
     msg = assert_results_contain(check(ttFont),
-                                 INFO, 'legacy-familyname',
+                                 WARN, 'legacy-familyname',
                                  'with "Reserved Font Name" that references an older'
                                  ' familyname not being used in this font project...')
     assert "(FooBar)" in msg
