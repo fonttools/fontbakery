@@ -3775,8 +3775,10 @@ def com_google_fonts_check_fvar_instances(ttFont, desired_font_names):
         fvar = ttFont['fvar']
         res = {}
         for inst in fvar.instances:
-            inst_name = name.getName(inst.subfamilyNameID, 3, 1, 0x409).toUnicode()
-            res[inst_name] = inst.coordinates
+            inst_name = name.getName(inst.subfamilyNameID, 3, 1, 0x409)
+            if not inst_name:
+                continue
+            res[inst_name.toUnicode()] = inst.coordinates
         return res
     font_instances = get_instances(ttFont)
     desired_instances = get_instances(desired_font_names)

@@ -2760,7 +2760,7 @@ def test_check_varfont_has_instances():
     # ExpletusVF does have instances.
     # Note: The "broken" in the path name refers to something else.
     #       (See test_check_fvar_name_entries)
-    ttFont = TTFont(TEST_FILE("broken_expletus_vf/ExpletusSansBeta-VF.ttf"))
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
 
     # So it must PASS the check:
     assert_PASS(check(ttFont),
@@ -2771,7 +2771,7 @@ def test_check_varfont_has_instances():
         del ttFont["fvar"].instances[0]
 
     assert_results_contain(check(ttFont),
-                           FAIL, 'lacks-named-instances',
+                           FAIL, 'bad-fvar-instances',
                            'with a bad font...')
 
 
