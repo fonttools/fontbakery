@@ -479,7 +479,7 @@ def test_check_name_rfn():
     assert_PASS(check(ttFont))
 
     # The OFL text contains the term 'Reserved Font Name',
-    # which should to cause a FAIL:
+    # which should not cause a FAIL:
     ttFont["name"].setName(OFL_BODY_TEXT,
                            NameID.LICENSE_DESCRIPTION,
                            PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP,
@@ -487,13 +487,31 @@ def test_check_name_rfn():
     assert_PASS(check(ttFont),
                 "with the OFL full text...")
 
-    ttFont["name"].setName("Bla Reserved Font Name",
+    # NOTE: This is not a real copyright statement. It is only meant to test the check.
+    with_nunito_rfn = ("Copyright 2022 The Nunito Project Authors"
+                     " (https://github.com/googlefonts/NunitoSans),"
+                     " with Reserved Font Name Nunito.")
+    ttFont["name"].setName(with_nunito_rfn,
                            NameID.VERSION_STRING,
                            PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP,
                            WindowsLanguageID.ENGLISH_USA)
     assert_results_contain(check(ttFont),
                            FAIL, 'rfn',
-                           'with "Reserved Font Name" on a name table entry...')
+                           'with "Reserved Font Name Nunito" on a name table entry...')
+
+    # NOTE: This is not a real copyright statement. It is only meant to test the check.
+    with_other_familyname_rfn = ("Copyright 2022 The FooBar Project Authors"
+                                 " (https://github.com/foo/bar),"
+                                 " with Reserved Font Name FooBar.")
+    ttFont["name"].setName(with_other_familyname_rfn,
+                           NameID.VERSION_STRING,
+                           PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP,
+                           WindowsLanguageID.ENGLISH_USA)
+    msg = assert_results_contain(check(ttFont),
+                                 WARN, 'legacy-familyname',
+                                 'with "Reserved Font Name" that references an older'
+                                 ' familyname not being used in this font project...')
+    assert "(FooBar)" in msg
 
 
 def test_check_metadata_parses():
@@ -2398,7 +2416,7 @@ def test_check_metadata_category():
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     check(font)
     md = check["family_metadata"]
-    assert md.category == "SANS_SERIF" # ...is known to be good ;-)
+    assert md.category == ["SANS_SERIF"] # ...is known to be good ;-)
     assert_PASS(check(font),
                 "with a good METADATA.pb...")
 
@@ -2407,7 +2425,7 @@ def test_check_metadata_category():
                       "MONO_SPACE",
                       "sans_serif",
                       "monospace"]:
-        md.category = bad_value
+        md.category[:] = [bad_value]
         assert_results_contain(check(font, {"family_metadata": md}),
                                FAIL, 'bad-value',
                                f'with a bad category "{bad_value}"...')
@@ -2418,7 +2436,7 @@ def test_check_metadata_category():
                        "SERIF",
                        "DISPLAY",
                        "HANDWRITING"]:
-        md.category = good_value
+        md.category[:] = [good_value]
         assert_PASS(check(font, {"family_metadata": md}),
                     f'with "{good_value}"...')
 
@@ -4167,11 +4185,18 @@ def test_check_metadata_can_render_samples():
     # We add a small set of latin glyphs
     # that we're sure Cabin supports:
     md = check["family_metadata"]
-    md.sample_glyphs["Letters"] = "abcdefghijklmnopqrstuvyz0123456789"
+    from fontbakery.fonts_public_pb2 import GlyphGroupProto
+    gg = GlyphGroupProto()
+    gg.name = "Letters"
+    gg.glyphs = "abcdefghijklmnopqrstuvyz0123456789"
+    md.sample_glyphs.append(gg)
     assert_PASS(check(metadata_file, {"family_metadata": md}))
 
     # And now with Tamil glyphs that Cabin lacks:
-    md.sample_glyphs["Numbers"] = "𑿀 𑿁 𑿂 𑿃 𑿄 𑿅 𑿆 𑿇 𑿈 𑿉 𑿊 𑿋 𑿌 𑿍 𑿎 𑿏 𑿐 𑿑 𑿒 𑿓 𑿔"
+    gg = GlyphGroupProto()
+    gg.name = "Numbers"
+    gg.glyphs = "𑿀 𑿁 𑿂 𑿃 𑿄 𑿅 𑿆 𑿇 𑿈 𑿉 𑿊 𑿋 𑿌 𑿍 𑿎 𑿏 𑿐 𑿑 𑿒 𑿓 𑿔"
+    md.sample_glyphs.append(gg)
     assert_results_contain(check(metadata_file, {"family_metadata": md}),
                            FAIL, 'sample-glyphs')
 
@@ -4224,23 +4249,23 @@ def test_check_metadata_category_hints():
 
     md = check["family_metadata"]
     md.name = "Seaweed Script"
-    md.category = "DISPLAY"
+    md.category[:] = ["DISPLAY"]
     assert_results_contain(check(font, {"family_metadata": md}),
                            WARN, 'inferred-category',
                            f'with a bad category "{md.category}" for familyname "{md.name}"...')
 
     md.name = "Red Hat Display"
-    md.category = "SANS_SERIF"
+    md.category[:] = ["SANS_SERIF"]
     assert_results_contain(check(font, {"family_metadata": md}),
                            WARN, 'inferred-category',
                            f'with a bad category "{md.category}" for familyname "{md.name}"...')
 
     md.name = "Seaweed Script"
-    md.category = "HANDWRITING"
+    md.category[:] = ["HANDWRITING"]
     assert_PASS(check(font, {"family_metadata": md}),
                 f'with a good category "{md.category}" for familyname "{md.name}"...')
 
     md.name = "Red Hat Display"
-    md.category = "DISPLAY"
+    md.category[:] = ["DISPLAY"]
     assert_PASS(check(font, {"family_metadata": md}),
                 f'with a good category "{md.category}" for familyname "{md.name}"...')

@@ -166,7 +166,7 @@ def run_a_set_of_shaping_tests(config,
     for shaping_file in Path(shaping_basedir).glob("*.json"):
         shaping_file_found = True
         try:
-            shaping_input_doc = json.loads(shaping_file.read_text())
+            shaping_input_doc = json.loads(shaping_file.read_text(encoding="utf-8"))
         except Exception as e:
             yield FAIL,\
                   Message("shaping-invalid-json",

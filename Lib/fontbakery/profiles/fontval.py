@@ -1,4 +1,5 @@
-import os
+from pathlib import Path
+import tempfile
 from fontbakery.callable import check
 from fontbakery.status import ERROR, FAIL, INFO, PASS, WARN
 from fontbakery.section import Section
@@ -95,11 +96,12 @@ def com_google_fonts_check_fontvalidator(font):
     if is_variable_font(TTFont(font)):
         disabled_fval_checks.extend(VARFONT_disabled_fval_checks)
 
+    report_dir = tempfile.TemporaryDirectory(prefix="fontval-")
     try:
         import subprocess
         fval_cmd = [
             "FontValidator", "-file", font, "-all-tables",
-            "-report-in-font-dir", "-no-raster-tests"
+            "-report-dir", report_dir.name, "-no-raster-tests"
         ]
         subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
@@ -144,12 +146,10 @@ def com_google_fonts_check_fontvalidator(font):
         else:
             return f"MS-FonVal: {msg}"
 
-    xml_report_file = f"{font}.report.xml"
-    html_report_file = f"{font}.report.html"
-    fval_file = os.path.join(os.path.dirname(font), 'fval.xsl')
+    report_file = Path(report_dir.name) / f"{Path(font).name}.report.xml"
 
     grouped_msgs = {}
-    with open(xml_report_file, "rb") as xml_report:
+    with open(report_file, "rb") as xml_report:
         from lxml import etree
         doc = etree.fromstring(xml_report.read())
         for report in doc.iterfind('.//Report'):
@@ -174,13 +174,7 @@ def com_google_fonts_check_fontvalidator(font):
 
     # ---------------------------
     # Clean-up generated files...
-    os.remove(xml_report_file)
-    # FontVal internal detail: HTML report generated only on non-Windows due to
-    # Mono or the used HTML renderer not being able to render XML with a
-    # stylesheet directly. https://github.com/googlefonts/fontbakery/issues/1747
-    if os.path.exists(html_report_file):
-        os.remove(html_report_file)
-    os.remove(fval_file)
+    del report_dir
 
     # ---------------------------
     # Here we start emitting the grouped log messages

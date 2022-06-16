@@ -795,16 +795,19 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
 )
 def com_google_fonts_check_metadata_category(family_metadata):
     """Ensure METADATA.pb category field is valid."""
-    if family_metadata.category not in ["MONOSPACE",
-                                        "SANS_SERIF",
-                                        "SERIF",
-                                        "DISPLAY",
-                                        "HANDWRITING"]:
-        yield FAIL,\
-              Message('bad-value',
-                      f'The field category has "{family_metadata.category}"'
-                      f' which is not valid.')
-    else:
+    ok = True
+    for category in family_metadata.category:
+        if category not in ["MONOSPACE",
+                            "SANS_SERIF",
+                            "SERIF",
+                            "DISPLAY",
+                            "HANDWRITING"]:
+            ok = False
+            yield FAIL,\
+                  Message('bad-value',
+                          f'The field category has "{category}"'
+                          f' which is not valid.')
+    if ok:
         yield PASS, "OK!"
 
 
@@ -4534,9 +4537,9 @@ def com_google_fonts_check_name_line_breaks(ttFont):
     conditions = ['not rfn_exception'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1380'
 )
-def com_google_fonts_check_name_rfn(ttFont):
+def com_google_fonts_check_name_rfn(ttFont, familyname):
     """Name table strings must not contain the string 'Reserved Font Name'."""
-    failed = False
+    ok = True
     for entry in ttFont["name"].names:
         string = entry.toUnicode()
         if "This license is copied below, and is also available with a FAQ" in string:
@@ -4545,14 +4548,28 @@ def com_google_fonts_check_name_rfn(ttFont):
             # so we will ignore this here.
             continue
 
-        if "reserved font name" in string.lower():
-            yield FAIL,\
-                  Message("rfn",
-                          f'Name table entry ("{string}")'
-                          f' contains "Reserved Font Name".'
-                          f' This is an error except in a few specific rare cases.')
-            failed = True
-    if not failed:
+        import re
+        matches = re.search(r'with [Rr]eserved [Ff]ont [Nn]ame (.*)\.', string)
+
+        if matches:
+            reserved_font_name = matches.group(1)
+            if reserved_font_name in familyname:
+                yield FAIL,\
+                      Message("rfn",
+                              f'Name table entry contains "Reserved Font Name":\n'
+                              f'\t"{string}"\n'
+                              f'\n'
+                              f'This is an error except in a few specific rare cases.')
+            else:
+                yield WARN,\
+                      Message("legacy-familyname",
+                              f'Name table entry contains "Reserved Font Name" for a'
+                              f' family name ({reserved_font_name}) that differs'
+                              f' from the currently used family name ({familyname}),'
+                              f' which is fine.')
+            ok = False
+
+    if ok:
         yield PASS, 'None of the name table strings contain "Reserved Font Name".'
 
 
@@ -6335,13 +6352,13 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
              Message('no-samples',
                      'No sample_glyphs on METADATA.pb')
     else:
-        for name, glyphs in family_metadata.sample_glyphs.items():
-            if not can_shape(ttFont, glyphs):
+        for item in family_metadata.sample_glyphs:
+            if not can_shape(ttFont, item.glyphs):
                 passed = False
                 yield FAIL,\
                       Message('sample-glyphs',
                               f"Font can't render the following sample glyphs:\n"
-                              f"'{name}': '{glyphs}'")
+                              f"'{item.name}': '{item.glyphs}'")
 
     languages = LoadLanguages()
     for lang in family_metadata.languages:
@@ -6403,7 +6420,7 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
                 break
 
     if (inferred_category is not None and
-        not family_metadata.category == inferred_category):
+        not inferred_category in family_metadata.category):
        yield WARN,\
              Message('inferred-category',
                      f'Familyname seems to hint at "{inferred_category}" but'

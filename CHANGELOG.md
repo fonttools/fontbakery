@@ -9,6 +9,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - The CheckTester class now takes into account the check's own `conditions`. (PR #3766)
   - Windows Terminal displays colors fine. We can now remove the win32 workaround. (issue #3779)
   - On the `Google Fonts` profile, the lists of exceptions for **Reserved Font Names (RFN)** and **CamelCased family names**, are now placed on separate txt files (`Lib/fontbakery/data/googlefonts/*_exceptions.txt`) to facilitate their future editing. (issue #3707)
+  - The FontVal checks report will be written to a temporary directory now, making it safe to run the checks in parallel on multiple fonts.
+  - Updated the Google Fonts metadata proto format.
+  - Always read regression shaping JSON files as UTF-8 text. Windows may otherwise use a different default encoding.
 
 ### BugFixes
   - Users reading markdown reports are now directed to the "stable" version of our ReadTheDocs documentation instead of the "latest" (git dev) one. (issue #3677)
@@ -18,6 +21,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Universal Profile
   - **[com.google.fonts/check/valid_glyphnames]:** Ignore colored .notdef glyphs (PR #3807)
+  - **[com.google.fonts/check/name/rfn]:** Do not FAIL if an RFN is found but referencing a familyname that differs frmo the currently used name. Just emit an WARN message instead, so that we're careful with font naming. (PR #3739)
   - **[com.google.fonts/check/varfont/unsupported_axes]:** Allow slnt axis (PR #3795)
   - **[com.google.fonts/check/dotted_circle]:** Fix ERROR on fonts without GlyphClassDef.classDefs (issue #3736)
   - **[com.google.fonts/check/transformed_components]:** Check for any component transformation only if font is hinted, otherwise check only for flipped contour direction (one transformation dimension is flipped while the other isn't)
