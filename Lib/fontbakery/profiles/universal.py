@@ -772,7 +772,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont, config):
         bad_names = []
         warn_names = []
         for _, glyphName in enumerate(ttFont.getGlyphOrder()):
-            if glyphName in [".null", ".notdef", ".ttfautohint"]:
+            if glyphName.startswith((".null", ".notdef", ".ttfautohint")):
                 # These 2 names are explicit exceptions
                 # in the glyph naming rules
                 continue

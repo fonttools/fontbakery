@@ -90,17 +90,21 @@ def test_check_valid_glyphnames():
 
     # Nowadays, it seems most implementations can deal with
     # up to 63 char glyph names:
-    good_name = "b" * 63
+    good_name1 = "b" * 63
+    # colr font may have a color layer in .notdef so allow these layers
+    good_name2 = ".notdef.color0"
     bad_name1 = "a" * 64
     bad_name2 = "3cents"
     bad_name3 = ".threecents"
     ttFont.glyphOrder[2] = bad_name1
     ttFont.glyphOrder[3] = bad_name2
     ttFont.glyphOrder[4] = bad_name3
-    ttFont.glyphOrder[5] = good_name
+    ttFont.glyphOrder[5] = good_name1
+    ttFont.glyphOrder[6] = good_name2
     message = assert_results_contain(check(ttFont),
                                      FAIL, 'found-invalid-names')
-    assert good_name not in message
+    assert good_name1 not in message
+    assert good_name2 not in message
     assert bad_name1 in message
     assert bad_name2 in message
     assert bad_name3 in message
