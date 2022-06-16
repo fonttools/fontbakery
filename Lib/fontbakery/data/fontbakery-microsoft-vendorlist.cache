@@ -55,8 +55,10 @@
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://docs.microsoft.com/en-us/typography/vendors/" />
 			<meta property="og:description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
-		<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
-		<meta property="og:image:alt" content="Microsoft Logo" />
+
+	<meta property="og:image" content="https://docs.microsoft.com/en-us/media/logos/logo-ms-social.png" />
+
+	<meta property="og:image:alt" content="Microsoft Logo" />
 
 	<meta name="twitter:card" content="summary" />
 
@@ -71,11 +73,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/616ccca46d2db4523cb6e02ad28c394a5890fae6/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/ce30421ccae2793d4f662b312ac299f06aea19f7/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="02/25/2022" />
+<meta name="ms.date" content="06/01/2022" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -86,15 +88,25 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2022-02-25 11:25 PM" />
-<meta name="word_count" content="3967" />
+<meta name="updated_at" content="2022-06-16 01:25 AM" />
+<meta name="word_count" content="4046" />
 
+
+
+
+	<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/000aaee4-f890-4b0a-bd33-24fb2aefa882" data-source="generated" />
+
+	<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/0661002d-4d3e-4257-b5a8-1276befa15d4" data-source="generated" />
+
+	<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/545d40c6-c50c-444b-b422-1c707eeab28e" data-source="generated" />
+
+	
 
 	<meta name="scope" content="typography" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/ff0254fa.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/be4a8746.site-ltr.css ">
 
 	
 
@@ -128,6 +140,7 @@
 			hasRecommendations: true,
 			contributors: [
 						{ name: "alib-ms", url: "https://github.com/alib-ms" },
+						{ name: "kturetz", url: "https://github.com/kturetz" },
 						{ name: "PeterCon", url: "https://github.com/PeterCon" },
 						{ name: "WorkNihar", url: "https://github.com/WorkNihar" },
 						{ name: "mijacobs", url: "https://github.com/mijacobs" },
@@ -141,8 +154,8 @@
 	<script src="https://wcpstatic.microsoft.com/mscc/lib/v2/wcp-consent.js"></script>
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 
-	<script src="/_themes/docs.theme/master/en-us/_themes/global/5cce29c0.deprecation.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/f28e30d7.index-docs.js"></script>
+	<script src="/_themes/docs.theme/master/en-us/_themes/global/67a45209.deprecation.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/e4517ff6.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -200,129 +213,32 @@ More info					</a>
 	<div class="nav-bar border-top is-hidden-mobile"></div>
 </header>		</div>
 
-						<div id="content-header" class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
-					<nav id="breadcrumbs-deprecated-container" class="breadcrumb-holder padding-none padding-inline-xs-tablet has-padding-left-none-uhf-tablet has-padding-left-none-uhf-tablet padding-none-desktop flex-grow-1" data-bi-name="breadcrumb" role="navigation" aria-label="Breadcrumb">
-						<ul id="page-breadcrumbs-deprecated" class="breadcrumbs-deprecated">
-						</ul>
-					</nav>
-					<div class="content-header-controls">
-						<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true" data-contents-button>
-							<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
-							<span class="contents-expand-title">Contents</span>
-						</button>
-						<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
-							<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
-							<span>Exit focus mode</span>
-						</button>
-					</div>
-					<div id="page-actions-deprecated-container" class="padding-none-tablet padding-xs font-size-sm display-flex justify-content-space-between flex-grow-1 page-action-holder">
-						<ul class="is-hidden-mobile action-list justify-content-flex-start justify-content-flex-end-tablet display-flex flex-wrap-wrap flex-grow-1 is-unstyled">
-							<li hidden>
-								<a id="lang-link-deprecated" class="button button button-clear button-sm" title="Read in English" data-bi-name="language-toggle" data-read-in-link data-hidden-parent>
-									<span class="icon docon docon-locale-globe" aria-hidden="true" data-read-in-link-icon></span>
-									<span class="is-visually-hidden-touch is-hidden-portrait" data-read-in-link-text>Read in English</span>
-								</a>
-							</li>
-							<li>
-								<button type="button" class="collection button button-clear button-sm has-inner-focus" data-list-type="collection" data-bi-name="collection" title="Add to collection">
-									<span class="icon" aria-hidden="true">
-										<span class="docon docon-circle-addition has-text-primary"></span>
-									</span>
-									<span class="collection-status is-visually-hidden-touch is-hidden-portrait">Save</span>
-								</button>
-							</li>
-								<li data-feedback-section-link>
-									<a href="#feedback" class="button  button button-clear button-sm has-inner-focus" data-bi-name="comments" title="Send feedback about this page">
-										<span class="icon" aria-hidden="true">
-											<span class="docon docon-comment-lines"></span>
-										</span>
-										<span class="is-visually-hidden-touch is-hidden-portrait">Feedback</span>
-									</a>
-								</li>
-									<li data-contenteditbtn hidden>
-										<a href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"  class=" button button-clear button-sm has-inner-focus" title="Edit This Document" data-bi-name="edit">
-										<span class="icon" aria-hidden="true">
-											<span class="docon docon-edit-outline"></span>
-										</span>
-										<span class="is-visually-hidden-touch is-hidden-portrait">Edit</span>
-									</a>
-								</li>
-							<li>
-<div class="sharing dropdown has-caret">
-	<button class="dropdown-trigger button button-clear button-sm button-block justify-content-flex-start has-inner-focus" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
-		<span class="icon" aria-hidden="true">
-			<span class="docon docon-sharing"></span>
-		</span>
-		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
-	</button>
-	<div class="dropdown-menu padding-xxs" id="sharing-menu">
-		<ul data-bi-name="share-links">
-			<li>
-				<a class="button button-clear button-sm button-block justify-content-flex-start has-inner-focus share-twitter" data-bi-name="twitter">
-					<span class="icon">
-						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
-					</span>
-					<span>Twitter</span>
-				</a>
-			</li>
-			<li>
-				<a class="button button-clear button-sm button-block justify-content-flex-start has-inner-focus share-linkedin" data-bi-name="linkedin">
-					<span class="icon">
-						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
-					</span>
-					<span>LinkedIn</span>
-				</a>
-			</li>
-			<li>
-				<a class="button button-clear button-sm button-block justify-content-flex-start has-inner-focus share-facebook" data-bi-name="facebook">
-					<span class="icon">
-						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
-					</span>
-					<span>Facebook</span>
-				</a>
-			</li>
-			<li>
-				<a class="button button-clear button-sm button-block justify-content-flex-start has-inner-focus share-email" data-bi-name="email">
-					<span class="icon">
-						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
-					</span>
-					<span>Email</span>
-				</a>
-			</li>
-		</ul>
-	</div>
-</div>
-							</li>
-						</ul>
-						<button id="page-actions-toc-button-deprecated" type="button" class="border contents-button button button-clear button-sm is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand" data-contents-button>
-							<span class="icon">
-								<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
-							</span>
-							<span class="contents-expand-title">Table of contents</span>
-						</button>
-						<div class="is-invisible"></div>
-						<div class="is-hidden-tablet level-item is-flexible level-right">
-							<button type="button" class="page-actions-button  button button-clear button-sm is-hidden-tablet has-inner-focus border is-full-height  margin-left-xxs" aria-label="Page Actions" data-bi-name="pageactions">
-								<span class="icon">
-									<span class="docon docon-more-vertical" aria-hidden="true"></span>
-								</span>
-							</button>
-						</div>
-					</div>
-			</div>
 
+			<div id="content-header" class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
+				<div class="content-header-controls margin-xxs margin-inline-sm-tablet">
+					<button type="button" class="contents-button button button-sm margin-right-xxs" data-bi-name="contents-expand" aria-haspopup="true" data-contents-button>
+						<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+						<span class="contents-expand-title">
+Table of contents						</span>
+					</button>
+					<button type="button" class="ap-collapse-behavior ap-expanded button button-sm" data-bi-name="ap-collapse" aria-controls="action-panel">
+						<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+						<span>Exit focus mode</span>
+					</button>
+				</div>
+			</div>
 
 		<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
 			<!-- liquid-tag banners sectional -->
 		</div>
 	</div>
 
-	<div class="mainContainer  uhf-container has-top-padding has-default-focus" data-bi-name="body">
+	<div class="mainContainer  uhf-container has-default-focus" data-bi-name="body">
 
 		<div class="columns has-large-gaps is-gapless-mobile ">
 
 			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
-				<nav id="affixed-left-container" class="position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+				<nav id="affixed-left-container" class="margin-top-sm-tablet position-fixed display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
 			</div>
 
 			<!-- .primary-holder -->
@@ -335,7 +251,7 @@ More info					</a>
 
 						<main id="main" role="main" data-bi-name="content" lang="en-us" dir="ltr">
 							<!-- article-header -->
-							<div id="article-header" class="background-color-body margin-top-sm-tablet margin-bottom-xs" aria-label="content-header" hidden>
+							<div id="article-header" class="background-color-body margin-top-sm-tablet margin-bottom-xs">
 								<div class="display-flex align-items-center ">
 									<details id="article-header-breadcrumbs-overflow-popover" class="popover" data-for="article-header-breadcrumbs">
 										<summary class="button button-clear button-primary button-sm">
@@ -395,7 +311,8 @@ More info					</a>
 												aria-label="Edit"
 												title="Edit This Document"
 												data-bi-name="edit"
-hidden														href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"
+													hidden="hidden"
+														href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"
 											>
 												<span class="icon margin-none" aria-hidden="true">
 													<span class="docon docon-edit-outline"></span>
@@ -476,7 +393,8 @@ Feedback														</span>
 														aria-label="Edit"
 														title="Edit This Document"
 														data-bi-name="edit"
-hidden																href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"
+															hidden="hidden"
+																href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"
 													>
 														<span class="icon" aria-hidden="true">
 															<span class="docon docon-edit-outline"></span>
@@ -538,93 +456,48 @@ hidden																href="https://github.com/MicrosoftDocs/typography/blob/liv
 								<h1 id="registered-font-vendors">Registered font vendors</h1>
 
 
+									<div class="display-flex-tablet justify-content-space-between-tablet page-metadata-container">
+										<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
+												<li>
+Article												</li>
+												<li>
+													<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-06-16T01:25:00Z" data-article-date-source="git">06/16/2022</time>
+												</li>
+														<li class="readingTime">20 minutes to read</li>
+													<li class="contributors-holder">
+														<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
+																7 contributors
+														</button>
+													</li>
+										</ul>
 
-										<div class="display-flex-tablet justify-content-space-between-tablet page-metadata-container">
-
-											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
-														<li>
-Article														</li>
-														<li>
-															<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-02-25T23:25:00Z" data-article-date-source="git">02/25/2022</time>
-														</li>
-																<li class="readingTime">19 minutes to read</li>
-														<li class="contributors-holder">
-															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
-																	6 contributors
-															</button>
-														</li>
-											</ul>
-												<div class="dropdown display-flex" data-hide-on-archived>
-													<button class="dropdown-trigger thumb-rating like link-button padding-xxs padding-right-none" data-binary-rating-response="rating-yes" title="This article is helpful" type="button" data-bi-name="rating-yes" data-bi-sat="1" aria-controls="is-this-helpful" aria-expanded="false" >
-														<span aria-hidden="true" class="icon docon docon-like"></span>
-													</button>
-													<button class="dropdown-trigger thumb-rating dislike link-button padding-xxs padding-right-none" data-binary-rating-response="rating-no" title="This article is not helpful" type="button" data-bi-name="rating-no" data-bi-sat="0" aria-controls="is-this-helpful" aria-expanded="false" >
-														<span aria-hidden="true" class="icon docon docon-dislike"></span>
-													</button>
-													<div class="dropdown-menu border-radius" id="is-this-helpful" role="menu">
-
-
-<div class="padding-xs" data-bi-name="rating" data-binary-rating-container>
-    <div class="binary-rating" data-binary-rating-hide-on-submit>
-		<form class="feedback-verbatim-form width-250-tablet" data-feedback-verbatim-form id="main-page-rating-container">
-        	<div class="binary-rating-buttons">
-				<h3 id="binary-rating-heading" class="font-weight-semibold margin-top-none margin-bottom-xs font-size-h5 has-caret">Is this page helpful?</h3>
-				<div class="buttons">
-					<button class="thumb-rating like margin-right-xxs button button-clear button-sm"
-						data-binary-rating-response="rating-yes"
-						title="Yes"
-						type="button"
-						data-bi-name="rating-yes"
-						data-bi-sat="1">
-						<span aria-hidden="true" class="icon docon docon-like"></span>
-						<span>Yes</span>
-					</button>
-					<button class="thumb-rating dislike button button-clear button-sm"
-						data-binary-rating-response="rating-no"
-						title="No"
-						data-bi-name="rating-no"
-						type="button"
-						data-bi-sat="0">
-						<span aria-hidden="true" class="icon docon docon-dislike"></span>
-						<span>No</span>
-					</button>
-				</div>
-			</div>
-			<div id="binary-verbatim-container" class="font-size-xs margin-top-xs">
-				<div class="verbatim-textarea">
-					<label for="binary-rating-textarea" class="visually-hidden">
-Any additional feedback?					</label>
-					<textarea
-						id="binary-rating-textarea"
-						data-binary-rating-text rows="4"
-						maxlength="999"
-						placeholder="Any additional feedback?"
-						class="textarea has-inner-focus"></textarea>
-				</div>
-				<p class="has-line-height-reset has-text-wrap">Feedback will be sent to Microsoft: By pressing the submit button, your feedback will be used to improve Microsoft products and services. <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy policy.</a></p>
-				<div class="buttons buttons-right margin-top-xs margin-right-xxs">
-					<button class="submit-rating button button-primary button-filled button-sm" data-bi-name="rating-verbatim" data-binary-rating-submit type="submit" disabled>Submit</button>
-				</div>
-			</div>
-        </form>
-    </div>
-    <p
-		data-binary-rating-onsubmit-message="main-page-rating-container"
-		tabindex="-1"
-		class="margin-none inner-focus"
-		hidden>
-Thank you.    </p>
+<div id="user-feedback" class="display-flex" data-hide-on-archived>
+	<button
+		class="thumb-rating-button like link-button margin-xxs margin-right-none"
+		data-binary-rating-response="rating-yes"
+		title="This article is helpful"
+		type="button"
+		data-bi-name="rating-yes"
+		data-bi-sat="1"
+	>
+		<span class="icon docon docon-like" aria-hidden="true"></span>
+	</button>
+	<button
+		class="thumb-rating-button dislike link-button margin-xxs margin-right-none"
+		data-binary-rating-response="rating-no"
+		title="This article is not helpful"
+		type="button"
+		data-bi-name="rating-no"
+		data-bi-sat="0"
+	>
+		<span class="icon docon docon-dislike" aria-hidden="true"></span>
+	</button>
 </div>
-													</div>
-												</div>
-											</div>
+									</div>
 
-
-											<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
-												<h3>In this article</h3>
-											</nav>
-
-
+										<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+											<h3>In this article</h3>
+										</nav>
 
 								<!-- <content> -->
 									<p>The following is the list of registered vendor IDs, with links to vendor sites. All vendor IDs are unique to a single vendor.</p>
@@ -650,6 +523,10 @@ Thank you.    </p>
 <tr>
 <td>$pro</td>
 <td><a href="http://www.cheapprofonts.com/" data-linktype="external">CheapProFonts</a></td>
+</tr>
+<tr>
+<td>@</td>
+<td><a href="https://www.arrowtype.com/" data-linktype="external">Arrow Type</a></td>
 </tr>
 <tr>
 <td>@MT</td>
@@ -741,11 +618,11 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>5PTS</td>
-<td><a href="http://www.fivepointstech.com/" data-linktype="external">Five Points Technology</a></td>
+<td>Five Points Technology</td>
 </tr>
 <tr>
 <td>72PT</td>
-<td><a href="http://www.72puntos.com" data-linktype="external">72 Puntos</a></td>
+<td>72 Puntos</td>
 </tr>
 <tr>
 <td>8686</td>
@@ -788,11 +665,11 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>AA</td>
-<td><a href="https://alirezaalipour.ir" data-linktype="external">Alireza Alipour</a></td>
+<td>Alireza Alipour</td>
 </tr>
 <tr>
 <td>AAT</td>
-<td><a href="http://www.ahmetaltuntype.com" data-linktype="external">AhmetAltunType</a></td>
+<td>AhmetAltunType</td>
 </tr>
 <tr>
 <td>AATF</td>
@@ -816,11 +693,11 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>ABEL</td>
-<td><a href="https://abeltive.github.io" data-linktype="external">Abeltive</a></td>
+<td>Abeltive</td>
 </tr>
 <tr>
 <td>ABOU</td>
-<td><a href="http://www.aboutype.com/" data-linktype="external">Aboutype, Inc.</a></td>
+<td>Aboutype, Inc.</td>
 </tr>
 <tr>
 <td>ABTS</td>
@@ -900,7 +777,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>AKOF</td>
-<td><a href="http://www.type.akofa.com" data-linktype="external">AKOFAType</a></td>
+<td><a href="https://market.akofa.com/" data-linktype="external">AKOFAType</a></td>
 </tr>
 <tr>
 <td>AKRU</td>
@@ -980,7 +857,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>AOP</td>
-<td><a href="http://www.aopbv.nl" data-linktype="external">an Art Of Pengwyn</a></td>
+<td>an Art Of Pengwyn</td>
 </tr>
 <tr>
 <td>APCX</td>
@@ -996,7 +873,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>APPL</td>
-<td><a href="http://www.developer.apple.com/fonts/" data-linktype="external">Apple</a></td>
+<td><a href="https://developer.apple.com/fonts/" data-linktype="external">Apple</a></td>
 </tr>
 <tr>
 <td>APTF</td>
@@ -1039,12 +916,8 @@ Thank you.    </p>
 <td>Archelogix Inc.</td>
 </tr>
 <tr>
-<td>ARRW</td>
-<td><a href="https://arrowtype.com/" data-linktype="external">Arrow Type</a></td>
-</tr>
-<tr>
 <td>ARS</td>
-<td><a href="http://www.enars.sk/" data-linktype="external">EN ARS Ltd.</a></td>
+<td>EN ARS Ltd.</td>
 </tr>
 <tr>
 <td>ART</td>
@@ -1099,6 +972,10 @@ Thank you.    </p>
 <td>Andrew Tyler's fonts</td>
 </tr>
 <tr>
+<td>athk</td>
+<td>atelier type hong kong</td>
+</tr>
+<tr>
 <td>ATKN</td>
 <td><a href="https://twitter.com/artakana" data-linktype="external">aratakana</a></td>
 </tr>
@@ -1148,7 +1025,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>AZLS</td>
-<td><a href="http://www.azalea.com/" data-linktype="external">Azalea Software, Inc.</a></td>
+<td>Azalea Software, Inc.</td>
 </tr>
 </table>
 <h2 id="b">B</h2>
@@ -1188,6 +1065,10 @@ Thank you.    </p>
 <tr>
 <td>BBFF</td>
 <td>Bangla Borno Font Foundry.</td>
+</tr>
+<tr>
+<td>BBOX</td>
+<td><a href="https://bboxtype.com/" data-linktype="external">bBox Type GmbH</a></td>
 </tr>
 <tr>
 <td>BBSL</td>
@@ -1375,7 +1256,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>BORW</td>
-<td><a href="http://www.em2-solutions.com/" data-linktype="external">em2 Solutions</a></td>
+<td>em2 Solutions</td>
 </tr>
 <tr>
 <td>BOYB</td>
@@ -1402,6 +1283,10 @@ Thank you.    </p>
 <td><a href="https://bretagnebretagne.fr/" data-linktype="external">Bretagne</a></td>
 </tr>
 <tr>
+<td>BRIJ</td>
+<td>Brijesh Jivani</td>
+</tr>
+<tr>
 <td>BROS</td>
 <td><a href="http://www.michaelbrosnan.com" data-linktype="external">Michael Brosnan</a></td>
 </tr>
@@ -1411,7 +1296,11 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>BRTE</td>
-<td><a href="https://ryuldavidson.com/" data-linktype="external">Brenners Template</a></td>
+<td><a href="https://creativemarket.com/RyulDavidson" data-linktype="external">Brenners Template</a></td>
+</tr>
+<tr>
+<td>BRWN</td>
+<td><a href="http://www.browntype.com/" data-linktype="external">Brown Type</a></td>
 </tr>
 <tr>
 <td>BS</td>
@@ -1661,6 +1550,10 @@ Thank you.    </p>
 <td><a href="http://www.carrottype.com" data-linktype="external">Carrot Type</a></td>
 </tr>
 <tr>
+<td>CSTM</td>
+<td>CSTM Fonts</td>
+</tr>
+<tr>
 <td>CT</td>
 <td><a href="http://www.castletype.com/" data-linktype="external">CastleType</a></td>
 </tr>
@@ -1733,7 +1626,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>DD</td>
-<td><a href="http://www.devondelapp.com/design/type/" data-linktype="external">Devon DeLapp</a></td>
+<td>Devon DeLapp</td>
 </tr>
 <tr>
 <td>DDT</td>
@@ -1856,6 +1749,10 @@ Thank you.    </p>
 <td><a href="http://www.myfonts.com" data-linktype="external">Jacek Dziubinski</a></td>
 </tr>
 <tr>
+<td>DSLF</td>
+<td><a href="https://dsl-fonts.com/" data-linktype="external">Dsl Fonts Type Foundry</a></td>
+</tr>
+<tr>
 <td>DSSR</td>
 <td><a href="http://www.DresserJohnson.com" data-linktype="external">Dresser Johnson</a></td>
 </tr>
@@ -1927,6 +1824,10 @@ Thank you.    </p>
 <td><a href="https://eafonts.com/" data-linktype="external">EA FONTS</a></td>
 </tr>
 <tr>
+<td>EAST</td>
+<td><a href="https://www.eastofrome.com/" data-linktype="external">East of Rome</a></td>
+</tr>
+<tr>
 <td>EB</td>
 <td><a href="http://www.electrobibliotheque.org/" data-linktype="external">Électro-bibliothèque</a></td>
 </tr>
@@ -1949,6 +1850,10 @@ Thank you.    </p>
 <tr>
 <td>EFF</td>
 <td><a href="http://www.eff.co.uk" data-linktype="external">Electronic Font Foundry</a></td>
+</tr>
+<tr>
+<td>EFFD</td>
+<td><a href="https://www.effont.com/" data-linktype="external">Erik Faulhaber Font-Design</a></td>
 </tr>
 <tr>
 <td>EFI</td>
@@ -2027,6 +1932,10 @@ Thank you.    </p>
 <td><a href="http://www.ethiohahu.com" data-linktype="external">Ethiopian Font Foundry</a></td>
 </tr>
 <tr>
+<td>ETYM</td>
+<td><a href="https://etymos.xyz/" data-linktype="external">Etymos</a></td>
+</tr>
+<tr>
 <td>EVER</td>
 <td><a href="http://www.evertype.com/" data-linktype="external">Evertype</a></td>
 </tr>
@@ -2080,6 +1989,10 @@ Thank you.    </p>
 <tr>
 <td>FBRO</td>
 <td>FaizType.</td>
+</tr>
+<tr>
+<td>FC</td>
+<td><a href="https://font.cafe/" data-linktype="external">Font.Cafe</a></td>
 </tr>
 <tr>
 <td>FCAB</td>
@@ -2155,7 +2068,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>FJTY</td>
-<td><a href="http://www.frankjonen.com/" data-linktype="external">Frank Jonen - Illustration & Typography</a></td>
+<td>Frank Jonen - Illustration & Typography</td>
 </tr>
 <tr>
 <td>FK</td>
@@ -2256,6 +2169,10 @@ Thank you.    </p>
 <tr>
 <td>FPPL</td>
 <td><a href="https://fontpeople.co.uk/" data-linktype="external">FontPeople</a></td>
+</tr>
+<tr>
+<td>FPTF</td>
+<td><a href="https://fontplat.com/" data-linktype="external">Fontplat Type Foundry</a></td>
 </tr>
 <tr>
 <td>frag</td>
@@ -2486,7 +2403,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>GOOG</td>
-<td><a href="http://www.code.google.com/p/noto/" data-linktype="external">Google</a></td>
+<td><a href="https://fonts.google.com/noto" data-linktype="external">Google</a></td>
 </tr>
 <tr>
 <td>Goss</td>
@@ -2522,7 +2439,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>grro</td>
-<td><a href="http://www.grafikk-roren.no/" data-linktype="external">grafikk RØren</a></td>
+<td>grafikk RØren</td>
 </tr>
 <tr>
 <td>GS</td>
@@ -2581,7 +2498,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>HAIL</td>
-<td><a href="http://www.haildesign.com.au/type.html" data-linktype="external">Hail Design</a></td>
+<td><a href="http://haildesign.com.au/" data-linktype="external">Hail Design</a></td>
 </tr>
 <tr>
 <td>HAMZ</td>
@@ -2602,6 +2519,10 @@ Thank you.    </p>
 <tr>
 <td>HBT</td>
 <td><a href="https://www.harbortype.com/" data-linktype="external">Harbor Type</a></td>
+</tr>
+<tr>
+<td>HD</td>
+<td>Hard Type</td>
 </tr>
 <tr>
 <td>HDCO</td>
@@ -2625,7 +2546,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>HIH</td>
-<td><a href="http://www.hihretro.com/" data-linktype="external">HiH Retrofonts</a></td>
+<td>HiH Retrofonts</td>
 </tr>
 <tr>
 <td>HILL</td>
@@ -2652,6 +2573,10 @@ Thank you.    </p>
 <td>HOHOHtype</td>
 </tr>
 <tr>
+<td>Hone</td>
+<td>H-one Design</td>
+</tr>
+<tr>
 <td>HOOL</td>
 <td><a href="http://hooloovoo.studio/" data-linktype="external">Hooloovoo Studio</a></td>
 </tr>
@@ -2665,7 +2590,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>HoX</td>
-<td><a href="https://houseofx.com.br/" data-linktype="external">House of X</a></td>
+<td>House of X</td>
 </tr>
 <tr>
 <td>HP</td>
@@ -2686,6 +2611,10 @@ Thank you.    </p>
 <tr>
 <td>HTF</td>
 <td>The Hoefler Type Foundry, Inc.</td>
+</tr>
+<tr>
+<td>HTT</td>
+<td><a href="https://www.hypetypestudio.com/" data-linktype="external">Hype Type Type</a></td>
 </tr>
 <tr>
 <td>HU</td>
@@ -2780,7 +2709,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>IKOF</td>
-<td><a href="http://www.ikoffice.de/fonts/" data-linktype="external">IKOffice GmbH</a></td>
+<td>IKOffice GmbH</td>
 </tr>
 <tr>
 <td>ILP</td>
@@ -2981,6 +2910,10 @@ Thank you.    </p>
 <td>JY</td>
 <td><a href="http://www.jiyu-kobo.co.jp/" data-linktype="external">JIYUKOBO Ltd.</a></td>
 </tr>
+<tr>
+<td>JYT</td>
+<td><a href="https://justyourtype.de/" data-linktype="external">Just Your Type</a></td>
+</tr>
 </table>
 <h2 id="k">K</h2>
 <table>
@@ -3057,6 +2990,10 @@ Thank you.    </p>
 <td><a href="http://www.klim.co.nz/" data-linktype="external">Klim Typographic Design</a></td>
 </tr>
 <tr>
+<td>KLNT</td>
+<td><a href="https://www.kowloontype.com/" data-linktype="external">Kowloon Type</a></td>
+</tr>
+<tr>
 <td>KLTF</td>
 <td><a href="http://www.kltf.de/" data-linktype="external">Karsten Luecke</a></td>
 </tr>
@@ -3082,7 +3019,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>KORK</td>
-<td><a href="http://www.korkork.com" data-linktype="external">Khork OÜ</a></td>
+<td><a href="https://antonkoovit.com/" data-linktype="external">Khork OÜ</a></td>
 </tr>
 <tr>
 <td>KOST</td>
@@ -3141,7 +3078,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>L52</td>
-<td><a href="https://lipika52.com/" data-linktype="external">Lipika52 Type Foundry</a></td>
+<td>Lipika52 Type Foundry</td>
 </tr>
 <tr>
 <td>LA</td>
@@ -3237,7 +3174,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>LGX</td>
-<td><a href="http://www.logix-press.com/" data-linktype="external">Logix Research Institute, Inc.</a></td>
+<td>Logix Research Institute, Inc.</td>
 </tr>
 <tr>
 <td>LHF</td>
@@ -3262,6 +3199,10 @@ Thank you.    </p>
 <tr>
 <td>LINO</td>
 <td><a href="http://www.monotypeimaging.com" data-linktype="external">Linotype GmbH</a></td>
+</tr>
+<tr>
+<td>LINZ</td>
+<td><a href="http://www.lindahintz.com/" data-linktype="external">Linda Hintz</a></td>
 </tr>
 <tr>
 <td>LIVE</td>
@@ -3361,7 +3302,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>LuRa</td>
-<td><a href="https://lillypip.co.uk/fonts" data-linktype="external">Lucid Rabbit Productions</a></td>
+<td>Lucid Rabbit Productions</td>
 </tr>
 <tr>
 <td>LUD</td>
@@ -3436,7 +3377,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>MAW</td>
-<td><a href="https://www.matthewwills.one/" data-linktype="external">Matthew Willsone</a></td>
+<td>Matthew Willsone</td>
 </tr>
 <tr>
 <td>MAXI</td>
@@ -3544,7 +3485,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>MILL</td>
-<td><a href="http://www.millan.pp.se/" data-linktype="external">Millan</a></td>
+<td>Millan</td>
 </tr>
 <tr>
 <td>MINT</td>
@@ -3597,6 +3538,10 @@ Thank you.    </p>
 <tr>
 <td>MMIK</td>
 <td><a href="http://www.monomonnik.nl" data-linktype="external">Monomonnik</a></td>
+</tr>
+<tr>
+<td>MMNG</td>
+<td><a href="https://www.makemonogram.com/" data-linktype="external">MonogramBros</a></td>
 </tr>
 <tr>
 <td>MNCK</td>
@@ -3741,7 +3686,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>MTF</td>
-<td><a href="http://www.misstiina.com" data-linktype="external">Miss Tiina Fonts</a></td>
+<td><a href="https://misstiina.com/fonts/" data-linktype="external">Miss Tiina Fonts</a></td>
 </tr>
 <tr>
 <td>MTFO</td>
@@ -3812,7 +3757,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>NASK</td>
-<td><a href="http://www.naske.studio/" data-linktype="external">Naske Studio</a></td>
+<td><a href="https://www.behance.net/naskestudio" data-linktype="external">Naske Studio</a></td>
 </tr>
 <tr>
 <td>NASR</td>
@@ -3837,7 +3782,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>ncnd</td>
-<td><a href="http://www.unix.temple.edu/~phanley/" data-linktype="external">&cond</a></td>
+<td>&cond</td>
 </tr>
 <tr>
 <td>NDCT</td>
@@ -3957,7 +3902,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>NP</td>
-<td><a href="http://www.nipponia.in/blog/" data-linktype="external">Nipponia</a></td>
+<td><a href="https://www.nipponia.in/fonts/" data-linktype="external">Nipponia</a></td>
 </tr>
 <tr>
 <td>NPD</td>
@@ -4004,7 +3949,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>OHG</td>
-<td><a href="http://www.ourhousegraphics.com" data-linktype="external">Our House Graphics Inc.</a></td>
+<td>Our House Graphics Inc.</td>
 </tr>
 <tr>
 <td>OHNO</td>
@@ -4024,7 +3969,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>OMNY</td>
-<td><a href="https://omnytype.com/" data-linktype="external">OMNY TYPE</a></td>
+<td>OMNY TYPE</td>
 </tr>
 <tr>
 <td>Once</td>
@@ -4094,10 +4039,6 @@ Thank you.    </p>
 <td><a href="http://www.p22.com/" data-linktype="external">P22 Inc.</a></td>
 </tr>
 <tr>
-<td>PAAT</td>
-<td><a href="https://www.cloud9.fi/" data-linktype="external">Paavola Type</a></td>
-</tr>
-<tr>
 <td>PARA</td>
 <td><a href="http://www.paratype.com/" data-linktype="external">ParaType Inc.</a></td>
 </tr>
@@ -4119,7 +4060,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>PDWX</td>
-<td><a href="http://www.nwlink.com/~carolynp/" data-linktype="external">Parsons Design Workx</a></td>
+<td>Parsons Design Workx</td>
 </tr>
 <tr>
 <td>PEAC</td>
@@ -4191,7 +4132,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>PRFS</td>
-<td><a href="http://www.ourworld.compuserve.com/homepages/profirst/" data-linktype="external">Production First Software</a></td>
+<td>Production First Software</td>
 </tr>
 <tr>
 <td>PRGR</td>
@@ -4260,6 +4201,10 @@ Thank you.    </p>
 <tr>
 <td>PTMI</td>
 <td><a href="http://www.pagetech.com" data-linktype="external">Page Technology Marketing, Inc.</a></td>
+</tr>
+<tr>
+<td>PTS</td>
+<td><a href="https://www.paavolatype.com/" data-linktype="external">Paavola Type Studio</a></td>
 </tr>
 <tr>
 <td>PTYP</td>
@@ -4332,6 +4277,10 @@ Thank you.    </p>
 <td><a href="http://www.underware.nl/" data-linktype="external">Underware</a></td>
 </tr>
 <tr>
+<td>RENE</td>
+<td><a href="https://www.renebieder.com/" data-linktype="external">Studio Rene Bieder</a></td>
+</tr>
+<tr>
 <td>RES</td>
 <td><a href="http://www.resultat.nl/" data-linktype="external">Resultat</a></td>
 </tr>
@@ -4341,7 +4290,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>RICK</td>
-<td><a href="http://www.ricknertype.com" data-linktype="external">Rickner Type</a></td>
+<td><a href="https://www.fonts.com/browse/designers/tom-rickner" data-linktype="external">Rickner Type</a></td>
 </tr>
 <tr>
 <td>RIXF</td>
@@ -4353,7 +4302,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>RJST</td>
-<td><a href="https://robjelinskistudios.com/Beth-Ellen/" data-linktype="external">Rob Jelinski Studios, llc.</a></td>
+<td>Rob Jelinski Studios, llc.</td>
 </tr>
 <tr>
 <td>RJTY</td>
@@ -4373,7 +4322,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>RLTF</td>
-<td><a href="http://www.Rebeletter.com" data-linktype="external">Rebeletter Studios</a></td>
+<td>Rebeletter Studios</td>
 </tr>
 <tr>
 <td>RMU</td>
@@ -4382,6 +4331,10 @@ Thank you.    </p>
 <tr>
 <td>RNDY</td>
 <td>randytype</td>
+</tr>
+<tr>
+<td>ROAD</td>
+<td><a href="http://road.org.hk/" data-linktype="external">Road Research Society</a></td>
 </tr>
 <tr>
 <td>ROB</td>
@@ -4437,7 +4390,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>RT</td>
-<td><a href="https://ritmoritmo.com/" data-linktype="external">Ritmo</a></td>
+<td><a href="https://www.fontshop.com/families/ritmo" data-linktype="external">Ritmo</a></td>
 </tr>
 <tr>
 <td>RTG</td>
@@ -4496,7 +4449,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>SALT</td>
-<td><a href="http://www.solonka.co" data-linktype="external">Solonka Type Foundry</a></td>
+<td>Solonka Type Foundry</td>
 </tr>
 </td>
 <td>SAMT</td>
@@ -4536,7 +4489,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>SBT</td>
-<td><a href="http://www.selfbuildtype.com/" data-linktype="external">SelfBuild Type Foundry</a></td>
+<td>SelfBuild Type Foundry</td>
 </tr>
 <tr>
 <td>SBYA</td>
@@ -4656,7 +4609,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>skz</td>
-<td><a href="http://www.celticlady.com/celtshop/" data-linktype="external">Celtic Lady's Fonts</a></td>
+<td>Celtic Lady's Fonts</td>
 </tr>
 <tr>
 <td>SL</td>
@@ -4684,7 +4637,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>SOBF</td>
-<td><a href="https://sorenbakholfonts.blogspot.com/" data-linktype="external">Soren Bakhol Fonts</a></td>
+<td>Soren Bakhol Fonts</td>
 </tr>
 <tr>
 <td>SOHO</td>
@@ -4707,12 +4660,8 @@ Thank you.    </p>
 <td>Spiratype</a></td>
 </tr>
 <tr>
-<td>SPRT</td>
-<td><a href="http://www.sportsfonts.com" data-linktype="external">Sports Fonts</a></td>
-</tr>
-<tr>
 <td>SPT</td>
-<td><a href="http://www.spacetype.co/" data-linktype="external">Spacetype foundry</a></td>
+<td><a href="https://www.typeforward.com/" data-linktype="external">Type Forward</a></td>
 </tr>
 <tr>
 <td>spty</td>
@@ -4733,6 +4682,10 @@ Thank you.    </p>
 <tr>
 <td>ssm0</td>
 <td><a href="https://www.siryali-studios.com/" data-linktype="external">Siryali Studios</a></td>
+</tr>
+<tr>
+<td>SSTK</td>
+<td><a href="https://typekiosk.smuss.studio/" data-linktype="external">Smuss Type Kiosk</a></td>
 </tr>
 <tr>
 <td>ST</td>
@@ -4780,11 +4733,11 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>SUNW</td>
-<td><a href="http://www.sunwalk.com/" data-linktype="external">sunwalk fontworks</a></td>
+<td>sunwalk fontworks</td>
 </tr>
 <tr>
 <td>SVTD</td>
-<td><a href="http://www.typography.synthview.com" data-linktype="external">Synthview</a></td>
+<td><a href="https://typography.synthview.com/" data-linktype="external">Synthview</a></td>
 </tr>
 <tr>
 <td>SWEL</td>
@@ -4844,7 +4797,7 @@ Thank you.    </p>
 	
 <tr>
 <td>TBFF</td>
-<td><a href="http://www.myfonts.com/foundry/trueblue/" data-linktype="external">TrueBlue Font Foundry</a></td>
+<td><a href="https://www.myfonts.com/foundry/TrueBlue/" data-linktype="external">TrueBlue Font Foundry</a></td>
 </tr>
 <tr>
 <td>TBTF</td>
@@ -4880,7 +4833,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>TF3D</td>
-<td><a href="http://www.tattoofont3d.com" data-linktype="external">TattooFont3D</a></td>
+<td>TattooFont3D</td>
 </tr>
 <tr>
 <td>TFAC</td>
@@ -4893,6 +4846,10 @@ Thank you.    </p>
 <tr>
 <td>TFTS</td>
 <td><a href="http://www.thefoundrytypes.com/" data-linktype="external">The Foundry Types</a></td>
+</tr>
+<tr>
+<td>TFWD</td>
+<td><a href="http://www.sportsfonts.com" data-linktype="external">Sports Fonts</a></td>
 </tr>
 <tr>
 <td>TG</td>
@@ -4924,7 +4881,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>TILD</td>
-<td><a href="http://www.tilde.lv/fonts/" data-linktype="external">Tilde, SIA</a></td>
+<td>Tilde, SIA</td>
 </tr>
 <tr>
 <td>TIMO</td>
@@ -4997,6 +4954,10 @@ Thank you.    </p>
 <tr>
 <td>TOPP</td>
 <td><a href="http://www.toppan.co.jp/" data-linktype="external">Toppan Inc.</a></td>
+</tr>
+<tr>
+<td>tots</td>
+<td><a href="https://type-o-tones.com/" data-linktype="external">Type-Ø-Tones</a></td>
 </tr>
 <tr>
 <td>TPDP</td>
@@ -5238,7 +5199,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>VKP</td>
-<td><a href="http://www.flash.net/~patelvk/indianfonts.html" data-linktype="external">Vijay K. Patel</a></td>
+<td>Vijay K. Patel</td>
 </tr>
 <tr>
 <td>VLKF</td>
@@ -5455,6 +5416,10 @@ Thank you.    </p>
 <td><a href="https://www.behance.net/yurlick" data-linktype="external">YT Foundry</a></td>
 </tr>
 <tr>
+<td>YU</td>
+<td><a href="https://www.behance.net/heshkepurev" data-linktype="external">YU Type</a></td>
+</tr>
+<tr>
 <td>YUKI</td>
 <td>Yuki Type Foundry</td>
 </tr>
@@ -5465,7 +5430,7 @@ Thank you.    </p>
 </tr>
 <tr>
 <td>YYYY</td>
-<td><a href="https://yellowtype.com/" data-linktype="external">Yellow Type Foundry</a></td>
+<td><a href="https://www.myfonts.com/foundry/Yellow_Design_Studio/" data-linktype="external">Yellow Type Foundry</a></td>
 </tr>
 </table>
 <h2 id="z">Z</h2>
@@ -5518,13 +5483,13 @@ Thank you.    </p>
 
 
 
-							<section id="right-rail-events-mobile" class="display-none-desktop margin-top-xxs" hidden></section>
-							<section id="right-rail-learning-resources-mobile" class="display-none-desktop margin-top-xxs"  hidden></section>
-							<section id="right-rail-qna-mobile" class="display-none-desktop margin-top-xxs" hidden></section>
-
 						<!-- recommendations section -->
 							<section id="recommendations-section" data-bi-name="recommendations"></section>
+							<section id="right-rail-recommendations-mobile" data-bi-name="recommendations" class="display-none-desktop margin-top-xxs" hidden></section>
 						<!-- end recommendations section -->
+
+							<section id="right-rail-learning-resources-mobile" class="display-none-desktop margin-top-xxs" data-bi-name="learning-resources-card" hidden></section>
+							<section id="right-rail-qna-mobile" class="display-none-desktop margin-top-xxs" data-bi-name="qna-link-card" hidden></section>
 
 						<!-- feedback section -->
 <section class="feedback-section position-relative" data-bi-name="feedback-section">
@@ -5554,6 +5519,8 @@ Thank you.    </p>
 
 						<!-- feedback report section -->
 						<!-- end feedback report section -->
+
+							<section id="right-rail-events-mobile" class="display-none-desktop margin-top-xs" data-bi-name="events-card" hidden></section>
 
 						<div class="border-top is-visible-interactive has-default-focus margin-top-sm ">
 
@@ -5679,14 +5646,14 @@ High contrast					</span>
 							role="complementary"
 							aria-label="Page Actions">
 
-							<div id="affixed-right-container" class="doc-outline is-vertically-scrollable">
+							<div id="affixed-right-container" class="margin-top-sm-tablet doc-outline is-vertically-scrollable" data-bi-name="right-column">
+								<section id="right-rail-events" data-bi-name="events-card" class="margin-bottom-xxs" hidden></section>
+								<section id="right-rail-recommendations" data-bi-name="recommendations" class="margin-bottom-xxs" hidden></section>
 								<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
 									<h3>In this article</h3>
 								</nav>
-								<section id="right-rail-events" class="margin-top-xxs" hidden></section>
-								<section id="right-rail-learning-resources" class="margin-top-xxs" hidden></section>
-								<section id="right-rail-recommendations" data-bi-name="right-rail-recommendations" class="margin-top-xxs" hidden></section>
-								<section id="right-rail-qna" class="margin-top-xxs" hidden></section>
+								<section id="right-rail-learning-resources" class="margin-top-xxs" data-bi-name="learning-resources-card" hidden></section>
+								<section id="right-rail-qna" class="margin-top-xxs" data-bi-name="qna-link-card" hidden></section>
 							</div>
 						</div>
 
