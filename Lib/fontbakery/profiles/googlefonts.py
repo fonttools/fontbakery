@@ -3789,11 +3789,11 @@ def com_google_fonts_check_fvar_instances(ttFont, desired_font_names):
     for name in set(font_instances.keys()) | set(desired_instances.keys()):
         row = {"Name": name}
         if name in font_instances:
-            row["current"] = font_instances[name]
+            row["current"] = ", ".join([f"{k}={v}" for k,v in font_instances[name].items()])
         else:
             row["current"] = "N/A"
         if name in desired_instances:
-            row["expected"] = desired_instances[name]
+            row["expected"] = ", ".join([f"{k}={v}" for k,v in desired_instances[name].items()])
         else:
             row["expected"] = "N/A"
         table.append(row)
