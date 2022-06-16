@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.9 (2022-Jun-??)
+## Upcoming release: 0.8.10 (2022-Jul-??)
+  - ...
+
+
+## 0.8.9 (2022-Jun-16)
 ### Noteworthy code-changes
   - Improve implementation of `is_italic` condition and provide an `is_bold` counterpart (issue #3693)
   - Nicer cancellation for terminal runner. (issue #3672)
