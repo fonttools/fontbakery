@@ -2734,18 +2734,18 @@ def test_check_fvar_name_entries():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/fvar_instances")
 
-    # This broken version of the Expletus variable font, was where this kind of problem was first observed:
-    ttFont = TTFont(TEST_FILE("broken_expletus_vf/ExpletusSansBeta-VF.ttf"))
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+
+    # rename the first fvar instance so the font is broken
+    ttFont["name"].setName("foo", 258, 3, 1, 0x409)
 
     # So it must FAIL the check:
     assert_results_contain(check(ttFont),
                            FAIL, 'bad-fvar-instances',
                            'with a bad font...')
 
-    # If we add the name entry with id=265 (which was the one missing)
-    # then the check must now PASS:
-    from fontTools.ttLib.tables._n_a_m_e import makeName
-    ttFont["name"].names.append(makeName("Foo", 265, 1, 0, 0))
+    # rename the first fvar instance so it is correct
+    ttFont["name"].setName("Regular", 258, 3, 1, 0x409)
 
     assert_PASS(check(ttFont),
                 'with a good font...')
