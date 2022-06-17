@@ -224,9 +224,18 @@ def com_google_fonts_check_font_names(ttFont, desired_font_names):
     font_names = style_names(ttFont['name'])
     desired_names = style_names(desired_font_names)
 
+    name_ids = {
+        1: "Family Name",
+        2: "Subfamily Name",
+        4: "Full Name",
+        6: "Poscript Name",
+        16: "Typographic Family Name",
+        17: "Typographic Subfamily Name",
+    }
     table = []
     for nameID in set(font_names.keys()) | set(desired_names.keys()):
-        row = {"nameID": nameID}
+        id_name = name_ids[nameID]
+        row = {"nameID": id_name}
         if nameID in font_names:
             row["current"] = font_names[nameID]
         else:
