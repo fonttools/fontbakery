@@ -146,6 +146,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/varfont/generate_static',
     'com.google.fonts/check/kerning_for_non_ligated_sequences',
     'com.google.fonts/check/name/description_max_length',
+    'com.google.fonts/check/fvar_name_entries',
     'com.google.fonts/check/version_bump',
     'com.google.fonts/check/epar',
     'com.google.fonts/check/font_copyright',
@@ -174,6 +175,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/cjk_vertical_metrics',
     'com.google.fonts/check/cjk_vertical_metrics_regressions',
     'com.google.fonts/check/cjk_not_enough_glyphs',
+    'com.google.fonts/check/varfont_duplicate_instance_names',
     'com.google.fonts/check/varfont/consistent_axes',
     'com.google.fonts/check/varfont/unsupported_axes',
     'com.google.fonts/check/varfont/grade_reflow',
@@ -3890,6 +3892,35 @@ def com_google_fonts_check_stat(ttFont, desired_font_names):
 
 
 @check(
+    id = 'com.google.fonts/check/fvar_name_entries',
+    conditions = ['is_variable_font'],
+    rationale = """
+        The purpose of this check is to make sure that all name entries referenced
+        by variable font instances do exist in the name table.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2069'
+)
+def com_google_fonts_check_fvar_name_entries(ttFont):
+    """All name entries referenced by fvar instances exist on the name table?"""
+
+    failed = False
+    for instance in ttFont["fvar"].instances:
+
+        entries = [entry for entry in ttFont["name"].names
+                   if entry.nameID == instance.subfamilyNameID]
+        if len(entries) == 0:
+            failed = True
+            yield FAIL,\
+                  Message("missing-name",
+                          f"Named instance with coordinates {instance.coordinates}"
+                          f" lacks an entry on the name table"
+                          f" (nameID={instance.subfamilyNameID}).")
+
+    if not failed:
+        yield PASS, "OK"
+
+
+@check(
     id = 'com.google.fonts/check/family/tnum_horizontal_metrics',
     conditions = ['RIBBI_ttFonts'],
     rationale = """
@@ -4939,6 +4970,51 @@ def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
                       f"Please check that these glyphs have the correct unicodes.")
     else:
         yield PASS, "Font has the correct quantity of CJK glyphs"
+
+
+@check(
+    id = 'com.google.fonts/check/varfont_duplicate_instance_names',
+    rationale = """
+        This check's purpose is to detect duplicate named instances names in a
+        given variable font.
+        Repeating instance names may be the result of instances for several VF axes
+        defined in `fvar`, but since currently only weight+italic tokens are allowed
+        in instance names as per GF specs, they ended up repeating.
+        Instead, only a base set of fonts for the most default representation of the
+        family can be defined through instances in the `fvar` table, all other
+        instances will have to be left to access through the `STAT` table.
+    """,
+    conditions = ['is_variable_font'],
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2986'
+)
+def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
+    """Check variable font instances don't have duplicate names"""
+    from fontbakery.constants import SHOW_GF_DOCS_MSG
+
+    seen = []
+    duplicate = []
+
+    for instance in ttFont['fvar'].instances:
+        name = ttFont['name'].getName(
+            instance.subfamilyNameID,
+            PlatformID.WINDOWS,
+            WindowsEncodingID.UNICODE_BMP,
+            WindowsLanguageID.ENGLISH_USA
+        ).toUnicode()
+
+        if name in seen:
+            duplicate.append(name)
+
+        if not name in seen:
+            seen.append(name)
+
+    if duplicate:
+        duplicate_instances = "\n\t- ".join([""] + duplicate)
+        yield FAIL,\
+              Message('duplicate-instance-names',
+                      f'Following instances names are duplicate: {duplicate_instances}\n')
+    else:
+        yield PASS, "Instance names are unique"
 
 
 @check(
