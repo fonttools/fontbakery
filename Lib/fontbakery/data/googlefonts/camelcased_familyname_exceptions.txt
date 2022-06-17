@@ -13,6 +13,7 @@ FakeFont
 JetBrains # seen in "JetBrains Mono"
 McLaren
 MedievalSharp
+MuseoModerno
 RocknRoll # seen in "RocknRoll One"
 BIZ UDGothic
 BIZ UDPGothic
