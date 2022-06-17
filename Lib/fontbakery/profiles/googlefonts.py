@@ -208,9 +208,9 @@ GOOGLEFONTS_PROFILE_CHECKS = \
 @check(
     id = 'com.google.fonts/check/font_names',
     rationale = """""",
-    conditions = ['desired_font_names']
+    conditions = ['expected_font_names']
 )
-def com_google_fonts_check_font_names(ttFont, desired_font_names):
+def com_google_fonts_check_font_names(ttFont, expected_font_names):
     """Check font names are correct"""
     def style_names(nametable):
         res = {}
@@ -222,7 +222,7 @@ def com_google_fonts_check_font_names(ttFont, desired_font_names):
         return res
 
     font_names = style_names(ttFont['name'])
-    desired_names = style_names(desired_font_names)
+    expected_names = style_names(expected_font_names)
 
     name_ids = {
         1: "Family Name",
@@ -233,26 +233,26 @@ def com_google_fonts_check_font_names(ttFont, desired_font_names):
         17: "Typographic Subfamily Name",
     }
     table = []
-    for nameID in set(font_names.keys()) | set(desired_names.keys()):
+    for nameID in set(font_names.keys()) | set(expected_names.keys()):
         id_name = name_ids[nameID]
         row = {"nameID": id_name}
         if nameID in font_names:
             row["current"] = font_names[nameID]
         else:
             row["current"] = "N/A"
-        if nameID in desired_names:
-            row["desired"] = desired_names[nameID]
+        if nameID in expected_names:
+            row["expected"] = expected_names[nameID]
         else:
-            row["desired"] = "N/A"
+            row["expected"] = "N/A"
         table.append(row)
 
-    new_names = set(font_names) - set(desired_names)
-    missing_names = set(desired_names) - set(font_names)
-    same_names = set(font_names) & set(desired_names)
+    new_names = set(font_names) - set(expected_names)
+    missing_names = set(expected_names) - set(font_names)
+    same_names = set(font_names) & set(expected_names)
 
     md_table = markdown_table(table)
     if any([new_names, missing_names]) or \
-       any(font_names[i] != desired_names[i] for i in same_names):
+       any(font_names[i] != expected_names[i] for i in same_names):
         yield FAIL, Message('bad-names',
                             f'Font names are incorrect:\n\n{md_table}')
     else:
@@ -3777,9 +3777,9 @@ def com_google_fonts_check_aat(ttFont):
 
 @check(
     id = 'com.google.fonts/check/fvar_instances',
-    conditions = ['is_variable_font', 'desired_font_names']
+    conditions = ['is_variable_font', 'expected_font_names']
 )
-def com_google_fonts_check_fvar_instances(ttFont, desired_font_names):
+def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
     """Check variable font instances"""
     def get_instances(ttFont):
         name = ttFont['name']
@@ -3792,25 +3792,25 @@ def com_google_fonts_check_fvar_instances(ttFont, desired_font_names):
             res[inst_name.toUnicode()] = inst.coordinates
         return res
     font_instances = get_instances(ttFont)
-    desired_instances = get_instances(desired_font_names)
+    expected_instances = get_instances(expected_font_names)
     table = []
-    for name in set(font_instances.keys()) | set(desired_instances.keys()):
+    for name in set(font_instances.keys()) | set(expected_instances.keys()):
         row = {"Name": name}
         if name in font_instances:
             row["current"] = ", ".join([f"{k}={v}" for k,v in font_instances[name].items()])
         else:
             row["current"] = "N/A"
-        if name in desired_instances:
-            row["expected"] = ", ".join([f"{k}={v}" for k,v in desired_instances[name].items()])
+        if name in expected_instances:
+            row["expected"] = ", ".join([f"{k}={v}" for k,v in expected_instances[name].items()])
         else:
             row["expected"] = "N/A"
         table.append(row)
     table = sorted(table, key=lambda k: str(k["expected"]))
 
-    missing = set(desired_instances.keys()) - set(font_instances.keys())
-    new = set(font_instances.keys()) - set(desired_instances.keys())
-    same = set(font_instances.keys()) & set(desired_instances.keys())
-    wght_wrong = any(font_instances[i]["wght"] != desired_instances[i]["wght"] for i in same)
+    missing = set(expected_instances.keys()) - set(font_instances.keys())
+    new = set(font_instances.keys()) - set(expected_instances.keys())
+    same = set(font_instances.keys()) & set(expected_instances.keys())
+    wght_wrong = any(font_instances[i]["wght"] != expected_instances[i]["wght"] for i in same)
 
     md_table = markdown_table(table)
     if any([wght_wrong, missing, new]):
@@ -3823,7 +3823,7 @@ def com_google_fonts_check_fvar_instances(ttFont, desired_font_names):
             hints += "- wght coordinates are wrong for some instances"
         yield FAIL, Message('bad-fvar-instances',
                             f"fvar instances are incorrect:\n{hints}\n{md_table}")
-    elif any(font_instances[i] != desired_instances[i] for i in same):
+    elif any(font_instances[i] != expected_instances[i] for i in same):
         yield WARN, Message("bad-fvar-coords", f"fvar coordinates are different:\n\n{md_table}")
     else:
         yield PASS, f"fvar instances are good:\n\n{md_table}"
@@ -3831,9 +3831,9 @@ def com_google_fonts_check_fvar_instances(ttFont, desired_font_names):
 
 @check(
     id = 'com.google.fonts/check/stat',
-    conditions = ['is_variable_font', 'desired_font_names']
+    conditions = ['is_variable_font', 'expected_font_names']
 )
-def com_google_fonts_check_stat(ttFont, desired_font_names):
+def com_google_fonts_check_stat(ttFont, expected_font_names):
     """Check a font's STAT table."""
     def stat_axis_values(ttFont):
         name = ttFont["name"]
@@ -3857,10 +3857,10 @@ def com_google_fonts_check_stat(ttFont, desired_font_names):
         return res
     
     font_axis_values = stat_axis_values(ttFont)
-    desired_axis_values = stat_axis_values(desired_font_names)
+    expected_axis_values = stat_axis_values(expected_font_names)
     
     table = []
-    for axis, name in set(font_axis_values.keys()) | set(desired_axis_values.keys()):
+    for axis, name in set(font_axis_values.keys()) | set(expected_axis_values.keys()):
         row = {}
         key = (axis, name)
         if key in font_axis_values:
@@ -3875,12 +3875,12 @@ def com_google_fonts_check_stat(ttFont, desired_font_names):
             row["Current Value"] = "N/A"
             row["Current Flags"] = "N/A"
             row["Current LinkedValue"] = "N/A"
-        if key in desired_axis_values:
+        if key in expected_axis_values:
             row["Name"] = name
             row["Axis"] = axis
-            row["Expected Value"] = desired_axis_values[key]["Value"]
-            row["Expected Flags"] = desired_axis_values[key]["Flags"]
-            row["Expected LinkedValue"] = desired_axis_values[key]["LinkedValue"]
+            row["Expected Value"] = expected_axis_values[key]["Value"]
+            row["Expected Flags"] = expected_axis_values[key]["Flags"]
+            row["Expected LinkedValue"] = expected_axis_values[key]["LinkedValue"]
         else:
             row["Name"] = name
             row["Axis"] = axis
@@ -3891,7 +3891,7 @@ def com_google_fonts_check_stat(ttFont, desired_font_names):
     table.sort(key=lambda k: (k["Axis"], k["Expected Value"]))
 
     md_table = markdown_table(table)
-    if font_axis_values != desired_axis_values:
+    if font_axis_values != expected_axis_values:
         yield WARN, Message('bad-axis-values',
             f"STAT axis values differ from recommended axes:\n\n {md_table}\n"
             f"This warning can be ignored if you have the need for a customised "
@@ -5588,7 +5588,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
         If the progression rates of axes is linear, this check can be ignored.
         Fontmake will also skip adding an avar table if the progression rates
         are linear. However, we still recommend designers visually proof each
-        instance is at the desired weight, width etc.
+        instance is at the expected weight, width etc.
     """,
     conditions = ["is_variable_font"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3100'

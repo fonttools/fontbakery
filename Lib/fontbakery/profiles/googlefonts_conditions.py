@@ -704,7 +704,7 @@ def upstream_yaml(family_directory):
 
 
 @condition
-def desired_font_names(ttFont, ttFonts):
+def expected_font_names(ttFont, ttFonts):
     from axisregistry import build_name_table, build_fvar_instances, build_stat
     from copy import deepcopy
     siblings = [f for f in ttFonts if f != ttFont]
