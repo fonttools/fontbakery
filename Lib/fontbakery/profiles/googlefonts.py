@@ -3810,7 +3810,11 @@ def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
     missing = set(expected_instances.keys()) - set(font_instances.keys())
     new = set(font_instances.keys()) - set(expected_instances.keys())
     same = set(font_instances.keys()) & set(expected_instances.keys())
-    wght_wrong = any(font_instances[i]["wght"] != expected_instances[i]["wght"] for i in same)
+    # check if instances have correct weight. Only check if font has wght axis
+    if all("wght" in expected_instances[i] for i in expected_instances):
+        wght_wrong = any(font_instances[i]["wght"] != expected_instances[i]["wght"] for i in same)
+    else:
+        wght_wrong = False
 
     md_table = markdown_table(table)
     if any([wght_wrong, missing, new]):
@@ -3888,7 +3892,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
             row["Expected Flags"] = "N/A"
             row["Expected LinkedValue"] = "N/A"
         table.append(row)
-    table.sort(key=lambda k: (k["Axis"], k["Expected Value"]))
+    table.sort(key=lambda k: (k["Axis"], str(k["Expected Value"])))
 
     md_table = markdown_table(table)
     if font_axis_values != expected_axis_values:
