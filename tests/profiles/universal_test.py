@@ -302,6 +302,8 @@ def test_check_ots():
      "0.5.2", False),
     ("0.5.2.dev73+g8c9ebc0.d20181023",
      "0.5.3", False),
+    ("0.8.10.dev2+gfa9260bf",
+     "0.8.9", True),
 ])
 def test_is_up_to_date(installed, latest, result):
     assert is_up_to_date(installed, latest) is result
