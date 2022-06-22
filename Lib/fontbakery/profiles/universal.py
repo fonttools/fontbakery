@@ -301,26 +301,24 @@ def com_google_fonts_check_ots(font):
 
 
 def is_up_to_date(installed, latest):
-    # ignoring the development version suffix is ok
-    # and is necessary for the string comparison
-    # below to always yield valid results
-    has_githash = ".dev" in installed
-    installed = installed.split(".dev")[0]
+    # Trim version suffixes (e.g. '.post3', '.dev73+g8c9ebc0.d20181023'),
+    # split MAJOR.MINOR.PATCH numbers,
+    # and convert them to integers.
+    inst_nums = map(int, installed.split(".")[:3])
+    last_nums = map(int, latest.split(".")[:3])
 
-    # Maybe the installed version is even newer than the
-    # released one (such as during development on git).
-    # That's what we're trying to detect here:
-    installed = installed.split('.')
-    latest = latest.split('.')
-    for i in range(len(installed)):
-        if int(installed[i]) > int(latest[i]):
+    # Compare MAJOR.MINOR.PATCH integers.
+    for inst_version, last_version in zip(inst_nums, last_nums):
+        if inst_version > last_version:
             return True
-        if int(installed[i]) < int(latest[i]):
+        if inst_version < last_version:
             return False
 
-    # Otherwise it should be identical
-    # to the latest released version.
-    return not has_githash
+    # All MAJOR.MINOR.PATCH integers are the same between 'installed' and 'latest';
+    # in this case Font Bakery is up-to-date, unless a) it's installed in development
+    # mode, in which case the version number must be higher, or b) a post-release has
+    # been issued.
+    return False if (".dev" in installed or ".post" in latest) else True
 
 
 @check(
