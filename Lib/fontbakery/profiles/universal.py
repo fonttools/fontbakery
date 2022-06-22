@@ -313,9 +313,9 @@ def is_up_to_date(installed, latest):
     installed = installed.split('.')
     latest = latest.split('.')
     for i in range(len(installed)):
-        if installed[i] > latest[i]:
+        if int(installed[i]) > int(latest[i]):
             return True
-        if installed[i] < latest[i]:
+        if int(installed[i]) < int(latest[i]):
             return False
 
     # Otherwise it should be identical
