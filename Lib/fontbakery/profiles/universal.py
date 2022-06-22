@@ -318,7 +318,7 @@ def is_up_to_date(installed, latest):
     # in this case Font Bakery is up-to-date, unless a) it's installed in development
     # mode, in which case the version number must be higher, or b) a post-release has
     # been issued.
-    return False if (".dev" in installed or ".post" in latest) else True
+    return not (".dev" in installed or ".post" in latest)
 
 
 @check(
