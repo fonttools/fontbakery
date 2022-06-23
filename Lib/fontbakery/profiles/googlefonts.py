@@ -3835,11 +3835,21 @@ def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
 
 @check(
     id = 'com.google.fonts/check/stat',
-    conditions = ['is_variable_font', 'expected_font_names']
+    conditions = ['is_variable_font', 'expected_font_names'],
+    rationale = """
+        Check a font's STAT table contains compulsory Axis Values which exist
+        in the Google Fonts Axis Registry.
+
+        We cannot determine what Axis Values the user will set for axes such as
+        opsz, GRAD since these axes are unique for each font so we'll skip them.
+    """
 )
 def com_google_fonts_check_stat(ttFont, expected_font_names):
-    """Check a font's STAT table."""
-    def stat_axis_values(ttFont):
+    """Check a font's STAT table contains compulsory Axis Values."""
+    axes_to_check = {
+        "CASL", "CRSV", "FILL", "FLAR", "MONO", "SOFT", "VOLM", "wdth", "wght", "WONK"
+    }
+    def stat_axis_values(ttFont, axes_to_check=axes_to_check):
         name = ttFont["name"]
         stat = ttFont["STAT"].table
         axes = [a.AxisTag for a in stat.DesignAxisRecord.Axis]
@@ -3850,6 +3860,8 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
             return res
         for ax in axis_values:
             axis_tag = axes[ax.AxisIndex]
+            if axis_tag not in axes_to_check:
+                continue
             ax_name = name.getName(ax.ValueNameID, 3, 1, 0x409).toUnicode()
             res[(axis_tag, ax_name)] = {
                 "Axis": axis_tag,
@@ -3893,15 +3905,22 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
             row["Expected LinkedValue"] = "N/A"
         table.append(row)
     table.sort(key=lambda k: (k["Axis"], str(k["Expected Value"])))
-
     md_table = markdown_table(table)
+
+    passed = True
+    is_italic = any(a.axisTag in ["ital", "slnt"] for a in ttFont["fvar"].axes)
+    missing_ital_av = any("Italic" in r["Name"] for r in table)
+    if is_italic and missing_ital_av:
+        passed = False
+        yield FAIL, Message("missing-ital-axis-values",
+            "Italic Axis Value missing.")
+
     if font_axis_values != expected_axis_values:
-        yield WARN, Message('bad-axis-values',
-            f"STAT axis values differ from recommended axes:\n\n {md_table}\n"
-            f"This warning can be ignored if you have the need for a customised "
-            f"STAT table.")
-    else:
-        yield PASS, f"STAT table matches recommended table:\n\n{md_table}"
+        passed = False
+        yield FAIL, Message('bad-axis-values',
+            f"Compulsory STAT Axis Values are incorrect:\n\n {md_table}\n")
+    if passed:
+        yield PASS, f"Compulsory STAT Axis Values are correct."
 
 
 @check(
