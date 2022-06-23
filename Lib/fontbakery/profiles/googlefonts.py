@@ -207,8 +207,15 @@ GOOGLEFONTS_PROFILE_CHECKS = \
 
 @check(
     id = 'com.google.fonts/check/font_names',
-    rationale = """""",
-    conditions = ['expected_font_names']
+    conditions = ['expected_font_names'],
+    rationale = """
+        Google Fonts has several rules which need to be adhered to when
+        setting a font's name table. Please read:
+        https://googlefonts.github.io/gf-guide/statics.html#supported-styles
+        https://googlefonts.github.io/gf-guide/statics.html#style-linking
+        https://googlefonts.github.io/gf-guide/statics.html#unsupported-styles
+        https://googlefonts.github.io/gf-guide/statics.html#single-weight-families
+    """
 )
 def com_google_fonts_check_font_names(ttFont, expected_font_names):
     """Check font names are correct"""
