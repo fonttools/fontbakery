@@ -3828,7 +3828,9 @@ def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
         yield FAIL, Message('bad-fvar-instances',
                             f"fvar instances are incorrect:\n{hints}\n{md_table}")
     elif any(font_instances[i] != expected_instances[i] for i in same):
-        yield WARN, Message("bad-fvar-coords", f"fvar coordinates are different:\n\n{md_table}")
+        yield WARN, Message("suspicious-fvar-coords",
+            (f"fvar instance coordinates for non-wght axes are not the same as the fvar defaults. "
+             "This may be intentional so please check with the font author:\n\n{md_table}"))
     else:
         yield PASS, f"fvar instances are good:\n\n{md_table}"
 
