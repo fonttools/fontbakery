@@ -1049,7 +1049,6 @@ def font_codepoints(ttFont):
 )
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check Google Fonts glyph coverage."""
-    from fontbakery.utils import bullet_list
     from glyphsets import GFGlyphData as glyph_data
     import unicodedata2
 
@@ -3837,7 +3836,7 @@ def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
     elif any(font_instances[i] != expected_instances[i] for i in same):
         yield WARN, Message("suspicious-fvar-coords",
             (f"fvar instance coordinates for non-wght axes are not the same as the fvar defaults. "
-             "This may be intentional so please check with the font author:\n\n{md_table}"))
+             f"This may be intentional so please check with the font author:\n\n{md_table}"))
     else:
         yield PASS, f"fvar instances are good:\n\n{md_table}"
 
@@ -3929,7 +3928,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
         yield FAIL, Message('bad-axis-values',
             f"Compulsory STAT Axis Values are incorrect:\n\n {md_table}\n")
     if passed:
-        yield PASS, f"Compulsory STAT Axis Values are correct."
+        yield PASS, "Compulsory STAT Axis Values are correct."
 
 
 @check(
@@ -4117,8 +4116,6 @@ def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
 )
 def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, config, ligatures, has_kerning_info):
     """Is there kerning info for non-ligated sequences?"""
-    from fontbakery.utils import bullet_list
-
     def look_for_nonligated_kern_info(table):
         for pairpos in table.SubTable:
             for i, glyph in enumerate(pairpos.Coverage.glyphs):
@@ -5949,8 +5946,6 @@ def com_google_fonts_check_render_own_name(ttFont):
 def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, config):
     """Check README.md has a sample image."""
     import re
-    from fontbakery.utils import bullet_list
-
     image_path = False
     line_number = 0
     for line in readme_contents.split('\n'):
