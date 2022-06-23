@@ -293,11 +293,23 @@ def main(profile=None, values=None):
     else:
         configuration = Configuration()
 
+    # Since version 0.8.10, we established a convention of never using a dash/hyphen
+    # on check IDs. The existing ones were replaced by underscores.
+    # All new checks will use underscores when needed.
+    # Here we accept dashes to ensure backwards compatibility with the older
+    # check IDs that may still be referenced on scripts of our users.
+    explicit_checks = None
+    exclude_checks = None
+    if args.checkid:
+        explicit_checks = [c.replace('-', '_') for c in list(args.checkid)]
+    if args.exclude_checkid:
+        exclude_checks = [x.replace('-', '_') for x in list(args.exclude_checkid)]
+
     # Command line args overrides config, but only if given
     configuration.maybe_override(Configuration(
         custom_order=args.order,
-        explicit_checks=args.checkid,
-        exclude_checks=args.exclude_checkid,
+        explicit_checks=explicit_checks,
+        exclude_checks=exclude_checks,
         full_lists=args.full_lists
     ))
     runner_kwds = dict(values=values_, config=configuration)
