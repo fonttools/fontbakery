@@ -59,7 +59,7 @@ setup(
     python_requires='>=3.7',
     setup_requires=['setuptools_scm'],
     install_requires=[
-        'axisregistry',
+        'axisregistry>=0.3.0',
         'beautifulsoup4',
         'beziers',
         'cmarkgfm',
