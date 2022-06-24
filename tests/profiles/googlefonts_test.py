@@ -4071,3 +4071,40 @@ def test_check_metadata_category_hints():
     md.category[:] = ["DISPLAY"]
     assert_PASS(check(font, {"family_metadata": md}),
                 f'with a good category "{md.category}" for familyname "{md.name}"...')
+
+
+@pytest.mark.parametrize(
+    """fp,mod,result""",
+    [
+        # font includes condensed fvar instances so it should fail
+        (TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"), [], FAIL),
+        # official fonts have been fixed so this should pass
+        (TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"), [], PASS),
+        (TEST_FILE("cabinvf/Cabin-Italic[wdth,wght].ttf"), [], PASS),
+        # lets inject an instance which is not a multiple of 100
+        (TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"), [("Book", 450)], FAIL),
+
+    ]
+)
+def test_check_fvar_instances(fp, mod, result):
+    """Check font fvar instances are correct"""
+    from fontTools.ttLib.tables._f_v_a_r import NamedInstance
+
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/fvar_instances")
+    ttFont = TTFont(fp)
+    expected = expected_font_names(ttFont, [])
+    if mod:
+        for name, wght_val in mod:
+            inst = NamedInstance() 
+            inst.subfamilyNameID = ttFont['name'].addName(name)
+            inst.coordinates = {"wght": wght_val}
+            ttFont['fvar'].instances.append(inst)
+    
+    if result == PASS:
+        assert_PASS(check(ttFont, {"expected_font_names": expected}),
+                    f'with a good font')
+    elif result == FAIL:
+        assert_results_contain(check(ttFont, {"expected_font_names": expected}),
+                            FAIL, 'bad-fvar-instances',
+                            'with a bad font')
