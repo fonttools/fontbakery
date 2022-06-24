@@ -2482,7 +2482,23 @@ def test_check_metadata_category():
         (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {17: "Foo"}, FAIL),
         (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {}, PASS),
         (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {17: None}, FAIL),
-        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {17: "Generic Name"}, FAIL)
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {17: "Generic Name"}, FAIL),
+        # variable font checks
+        (TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"), {}, PASS),
+        # Open Sans' origin is Light so this should pass
+        (TEST_FILE("varfont/OpenSans[wdth,wght].ttf"), {2: "Regular", 17: "Light"}, PASS),
+        (TEST_FILE("varfont/OpenSans[wdth,wght].ttf"), {2: "Regular", 17: "Condensed Light"}, FAIL),
+        (TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"), {}, PASS),
+        # Roboto Serif has an opsz axes so this should pass
+        (
+            TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"),
+            {
+                1: "Roboto Serif 20pt",
+                2: "Regular",
+                16: "Roboto Serif",
+                17: "20pt Regular",
+            },
+            PASS),
     ]
 )
 def test_check_font_names(fp, mod, result):
