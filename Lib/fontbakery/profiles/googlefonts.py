@@ -3224,7 +3224,6 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
     """Check font names are correct"""
     def style_names(nametable):
         res = {}
-        nametable = ttFont['name']
         for nameID in (1, 2, 4, 6, 16, 17):
             rec = nametable.getName(nameID, 3, 1, 0x409)
             if rec:
@@ -3232,7 +3231,7 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
         return res
 
     font_names = style_names(ttFont['name'])
-    expected_names = style_names(expected_font_names)
+    expected_names = style_names(expected_font_names['name'])
 
     name_ids = {
         1: "Family Name",
@@ -3798,7 +3797,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
     axes_to_check = {
         "CASL", "CRSV", "FILL", "FLAR", "MONO", "SOFT", "VOLM", "wdth", "wght", "WONK"
     }
-    def stat_axis_values(ttFont, axes_to_check=axes_to_check):
+    def stat_axis_values(ttFont, include_axes=axes_to_check):
         name = ttFont["name"]
         stat = ttFont["STAT"].table
         axes = [a.AxisTag for a in stat.DesignAxisRecord.Axis]
@@ -3809,7 +3808,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
             return res
         for ax in axis_values:
             axis_tag = axes[ax.AxisIndex]
-            if axis_tag not in axes_to_check:
+            if axis_tag not in include_axes:
                 continue
             ax_name = name.getName(ax.ValueNameID, 3, 1, 0x409).toUnicode()
             res[(axis_tag, ax_name)] = {
@@ -3874,7 +3873,11 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
 
 @check(
     id = 'com.google.fonts/check/fvar_instances',
-    conditions = ['is_variable_font', 'expected_font_names']
+    conditions = ['is_variable_font', 'expected_font_names'],
+    rationale = """
+        Check a font's fvar instance coordinates comply with our guidelines:
+        https://googlefonts.github.io/gf-guide/variable.html#fvar-instances
+    """
 )
 def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
     """Check variable font instances"""
@@ -3907,7 +3910,7 @@ def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
     missing = set(expected_instances.keys()) - set(font_instances.keys())
     new = set(font_instances.keys()) - set(expected_instances.keys())
     same = set(font_instances.keys()) & set(expected_instances.keys())
-    # check if instances have correct weight. Only check if font has wght axis
+    # check if instances have correct weight.
     if all("wght" in expected_instances[i] for i in expected_instances):
         wght_wrong = any(font_instances[i]["wght"] != expected_instances[i]["wght"] for i in same)
     else:

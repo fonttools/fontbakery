@@ -1,3 +1,4 @@
+from fontbakery.profiles.googlefonts_conditions import expected_font_names
 import pytest
 import os
 from fontTools.ttLib import TTFont
@@ -2424,6 +2425,105 @@ def test_check_metadata_category():
         md.category[:] = [good_value]
         assert_PASS(check(font, {"family_metadata": md}),
                     f'with "{good_value}"...')
+
+
+@pytest.mark.parametrize(
+    """fp,mod,result""",
+    [
+        # tests from test_check_name_familyname:
+        (TEST_FILE("cabin/Cabin-Regular.ttf"), {}, PASS),
+        (TEST_FILE("cabin/Cabin-Regular.ttf"), {1: "Wrong"}, FAIL),
+        (TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), {}, PASS),
+        (TEST_FILE("overpassmono/OverpassMono-Bold.ttf"), {}, PASS),
+        (TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), {1: "Foo"}, FAIL),
+        (TEST_FILE("merriweather/Merriweather-Black.ttf"), {}, PASS),
+        (TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), {}, PASS),
+        (TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), {1: "Merriweather Light Italic"}, FAIL),
+        (TEST_FILE("abeezee/ABeeZee-Regular.ttf"), {}, PASS),
+        # tests from test_check_name_subfamilyname
+        (TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), {}, PASS),
+        (TEST_FILE("overpassmono/OverpassMono-Bold.ttf"), {}, PASS),
+        (TEST_FILE("merriweather/Merriweather-Black.ttf"), {}, PASS),
+        (TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Black.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Bold.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Italic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-LightItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Light.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Medium.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Regular.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-SemiBold.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-Thin.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"), {2: "Not a proper style"}, FAIL),
+        # tests from test_check_name_fullfontname
+        (TEST_FILE("cabin/Cabin-Regular.ttf"), {}, PASS),
+        # todo fix this
+        (TEST_FILE("cabin/Cabin-Regular.ttf"), {4: "Cabin"}, FAIL),
+        (TEST_FILE("cabin/Cabin-BoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("cabin/Cabin-BoldItalic.ttf"), {4: "Make it fail"}, FAIL),
+        (TEST_FILE("abeezee/ABeeZee-Regular.ttf"), {}, PASS),
+        # tests from test_check_name_typographicfamilyname
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {16: "Arbitrary name"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {16: "Foo"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {16: None}, FAIL),
+        # tests from test_check_name_typographicsubfamilyname
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {17: "Foo"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {}, PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {17: None}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {17: "Generic Name"}, FAIL)
+    ]
+)
+def test_check_font_names(fp, mod, result):
+    """Check font names are correct"""
+    # Please note: This check was introduced in
+    # https://github.com/googlefonts/fontbakery/pull/3800 which has replaced
+    # the following checks:
+    #   com.google.fonts/check/name/familyname
+    #   com.google.fonts/check/name/subfamilyname
+    #   com.google.fonts/check/name/typographicfamilyname
+    #   com.google.fonts/check/name/typographicsubfamilyname
+    # It works by simply using the nametable builder which is found in the
+    # axis registry,
+    # https://github.com/googlefonts/axisregistry/blob/main/Lib/axisregistry/__init__.py#L232
+    # this repository already has good unit tests but this check will also include the previous
+    # test cases found in fontbakery.
+    # https://github.com/googlefonts/axisregistry/blob/main/tests/test_names.py
+    from fontbakery.profiles.googlefonts_conditions import expected_font_names
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/font_names")
+    ttFont = TTFont(fp)
+    # get the expecteed font names now before we modify them
+    expected = expected_font_names(ttFont, [])
+    if mod:
+        for k,v in mod.items():
+            if v is None:
+                ttFont['name'].removeNames(k)
+            else:
+                ttFont['name'].setName(v, k, 3, 1, 0x409)
+
+    if result == PASS:
+        assert_PASS(check(ttFont, {"expected_font_names": expected}),
+                    "with a good font...")
+    elif result == WARN:
+        assert_results_contain(check(ttFont, {"expected_font_names": expected}),
+                               WARN, 'bad-names',
+                               f'with bad names')
+    else:
+        assert_results_contain(check(ttFont, {"expected_font_names": expected}),
+                               FAIL, 'bad-names',
+                               f'with bad names')
 
 
 def test_check_name_mandatory_entries():
