@@ -157,6 +157,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/hinting_impact',
     'com.google.fonts/check/file_size',
     'com.google.fonts/check/varfont/has_HVAR',
+    'com.google.fonts/check/font_names',
     'com.google.fonts/check/gasp',
     'com.google.fonts/check/name/mandatory_entries',
     'com.google.fonts/check/name/copyright_length',
@@ -189,7 +190,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/meta/script_lang_tags',
     'com.google.fonts/check/no_debugging_tables',
     'com.google.fonts/check/render_own_name',
-    'com.google.fonts/check/font_names',
     'com.google.fonts/check/fvar_instances',
     'com.google.fonts/check/stat',
 ]
@@ -203,67 +203,6 @@ GOOGLEFONTS_PROFILE_CHECKS = \
     REPO_CHECKS + \
     FONT_FILE_CHECKS + \
     GLYPHSAPP_CHECKS
-
-
-@check(
-    id = 'com.google.fonts/check/font_names',
-    conditions = ['expected_font_names'],
-    rationale = """
-        Google Fonts has several rules which need to be adhered to when
-        setting a font's name table. Please read:
-        https://googlefonts.github.io/gf-guide/statics.html#supported-styles
-        https://googlefonts.github.io/gf-guide/statics.html#style-linking
-        https://googlefonts.github.io/gf-guide/statics.html#unsupported-styles
-        https://googlefonts.github.io/gf-guide/statics.html#single-weight-families
-    """
-)
-def com_google_fonts_check_font_names(ttFont, expected_font_names):
-    """Check font names are correct"""
-    def style_names(nametable):
-        res = {}
-        nametable = ttFont['name']
-        for nameID in (1, 2, 4, 6, 16, 17):
-            rec = nametable.getName(nameID, 3, 1, 0x409)
-            if rec:
-                res[nameID] = rec.toUnicode()
-        return res
-
-    font_names = style_names(ttFont['name'])
-    expected_names = style_names(expected_font_names)
-
-    name_ids = {
-        1: "Family Name",
-        2: "Subfamily Name",
-        4: "Full Name",
-        6: "Poscript Name",
-        16: "Typographic Family Name",
-        17: "Typographic Subfamily Name",
-    }
-    table = []
-    for nameID in set(font_names.keys()) | set(expected_names.keys()):
-        id_name = name_ids[nameID]
-        row = {"nameID": id_name}
-        if nameID in font_names:
-            row["current"] = font_names[nameID]
-        else:
-            row["current"] = "N/A"
-        if nameID in expected_names:
-            row["expected"] = expected_names[nameID]
-        else:
-            row["expected"] = "N/A"
-        table.append(row)
-
-    new_names = set(font_names) - set(expected_names)
-    missing_names = set(expected_names) - set(font_names)
-    same_names = set(font_names) & set(expected_names)
-
-    md_table = markdown_table(table)
-    if any([new_names, missing_names]) or \
-       any(font_names[i] != expected_names[i] for i in same_names):
-        yield FAIL, Message('bad-names',
-                            f'Font names are incorrect:\n\n{md_table}')
-    else:
-        yield PASS, f"Font names are good:\n\n{md_table}"
 
 
 @check(
@@ -295,6 +234,7 @@ def com_google_fonts_check_canonical_filename(ttFont):
                             f'Expected "{expected_filename}. Got {current_filename}.')
     else:
         yield PASS, f'Font filename is correct, "{current_filename}".'
+
 
 @check(
     id = 'com.google.fonts/check/description/broken_links',
@@ -3266,6 +3206,67 @@ def com_google_fonts_check_mac_style(ttFont, style):
                           expected,
                           bitmask=MacStyle.BOLD,
                           bitname="BOLD")
+
+
+@check(
+    id = 'com.google.fonts/check/font_names',
+    conditions = ['expected_font_names'],
+    rationale = """
+        Google Fonts has several rules which need to be adhered to when
+        setting a font's name table. Please read:
+        https://googlefonts.github.io/gf-guide/statics.html#supported-styles
+        https://googlefonts.github.io/gf-guide/statics.html#style-linking
+        https://googlefonts.github.io/gf-guide/statics.html#unsupported-styles
+        https://googlefonts.github.io/gf-guide/statics.html#single-weight-families
+    """
+)
+def com_google_fonts_check_font_names(ttFont, expected_font_names):
+    """Check font names are correct"""
+    def style_names(nametable):
+        res = {}
+        nametable = ttFont['name']
+        for nameID in (1, 2, 4, 6, 16, 17):
+            rec = nametable.getName(nameID, 3, 1, 0x409)
+            if rec:
+                res[nameID] = rec.toUnicode()
+        return res
+
+    font_names = style_names(ttFont['name'])
+    expected_names = style_names(expected_font_names)
+
+    name_ids = {
+        1: "Family Name",
+        2: "Subfamily Name",
+        4: "Full Name",
+        6: "Poscript Name",
+        16: "Typographic Family Name",
+        17: "Typographic Subfamily Name",
+    }
+    table = []
+    for nameID in set(font_names.keys()) | set(expected_names.keys()):
+        id_name = name_ids[nameID]
+        row = {"nameID": id_name}
+        if nameID in font_names:
+            row["current"] = font_names[nameID]
+        else:
+            row["current"] = "N/A"
+        if nameID in expected_names:
+            row["expected"] = expected_names[nameID]
+        else:
+            row["expected"] = "N/A"
+        table.append(row)
+
+    new_names = set(font_names) - set(expected_names)
+    missing_names = set(expected_names) - set(font_names)
+    same_names = set(font_names) & set(expected_names)
+
+    md_table = markdown_table(table)
+    if any([new_names, missing_names]) or \
+       any(font_names[i] != expected_names[i] for i in same_names):
+        yield FAIL, Message('bad-names',
+                            f'Font names are incorrect:\n\n{md_table}')
+    else:
+        yield PASS, f"Font names are good:\n\n{md_table}"
 
 
 # FIXME!
