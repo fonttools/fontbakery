@@ -156,55 +156,51 @@ def test_example_checkrunner_based(cabin_regular_path):
             break
 
 
-def test_check_canonical_filename():
+@pytest.mark.parametrize(
+    """fp,result""",
+    [
+        (TEST_FILE("montserrat/Montserrat-Thin.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Light.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Regular.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Medium.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-SemiBold.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Bold.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Black.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-LightItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-Italic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"), PASS),
+        (TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"), PASS),
+        (TEST_FILE("cabinvfbeta/CabinVFBeta-Italic[wght].ttf"), PASS),
+        (TEST_FILE("cabinvfbeta/CabinVFBeta[wdth,wght].ttf"), PASS), # axis tags are sorted
+        (TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/Cabin-Italic.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/Cabin-Roman.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/Cabin-Italic-VF.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/Cabin-Roman-VF.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/Cabin-VF.ttf"), FAIL),
+        (TEST_FILE("cabinvfbeta/CabinVFBeta[wght,wdth].ttf"), FAIL), # axis tags are NOT sorted here
+    ]
+)
+def test_check_canonical_filename(fp, result):
     """ Files are named canonically. """
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/canonical_filename")
+    ttFont = TTFont(fp)
 
-    static_canonical_names = [
-        TEST_FILE("montserrat/Montserrat-Thin.ttf"),
-        TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"),
-        TEST_FILE("montserrat/Montserrat-Light.ttf"),
-        TEST_FILE("montserrat/Montserrat-Regular.ttf"),
-        TEST_FILE("montserrat/Montserrat-Medium.ttf"),
-        TEST_FILE("montserrat/Montserrat-SemiBold.ttf"),
-        TEST_FILE("montserrat/Montserrat-Bold.ttf"),
-        TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"),
-        TEST_FILE("montserrat/Montserrat-Black.ttf"),
-        TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-LightItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-Italic.ttf"),
-        TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"),
-        TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"),
-    ]
-
-    varfont_canonical_names = [
-        TEST_FILE("cabinvfbeta/CabinVFBeta-Italic[wght].ttf"),
-        TEST_FILE("cabinvfbeta/CabinVFBeta[wdth,wght].ttf"), # axis tags are sorted
-    ]
-
-    non_canonical_names = [
-        TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"),
-        TEST_FILE("cabinvfbeta/Cabin-Italic.ttf"),
-        TEST_FILE("cabinvfbeta/Cabin-Roman.ttf"),
-        TEST_FILE("cabinvfbeta/Cabin-Italic-VF.ttf"),
-        TEST_FILE("cabinvfbeta/Cabin-Roman-VF.ttf"),
-        TEST_FILE("cabinvfbeta/Cabin-VF.ttf"),
-        TEST_FILE("cabinvfbeta/CabinVFBeta[wght,wdth].ttf"), # axis tags are NOT sorted here
-    ]
-
-    for canonical in static_canonical_names + varfont_canonical_names:
-        assert_PASS(check(canonical),
-                    f'with "{canonical}" ...')
-
-    for non_canonical in non_canonical_names:
-        assert_results_contain(check(non_canonical),
+    if result == PASS:
+        assert_PASS(check(ttFont),
+                    f'with "{ttFont.reader.file.name}" ...')
+    else:
+        assert_results_contain(check(ttFont),
                                FAIL, 'bad-filename',
-                               f'with "{non_canonical}" ...')
+                               f'with "{ttFont.reader.file.name}" ...')
 
 
 def test_check_description_broken_links():
