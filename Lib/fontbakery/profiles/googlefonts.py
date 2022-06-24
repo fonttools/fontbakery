@@ -163,6 +163,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/name/copyright_length',
     'com.google.fonts/check/fontdata_namecheck',
     'com.google.fonts/check/name/ascii_only_entries',
+    'com.google.fonts/check/fvar_instances',
     'com.google.fonts/check/old_ttfautohint',
     'com.google.fonts/check/vttclean',
     'com.google.fonts/check/aat',
@@ -190,7 +191,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/meta/script_lang_tags',
     'com.google.fonts/check/no_debugging_tables',
     'com.google.fonts/check/render_own_name',
-    'com.google.fonts/check/fvar_instances',
     'com.google.fonts/check/stat',
 ]
 
@@ -3783,66 +3783,6 @@ def com_google_fonts_check_aat(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/fvar_instances',
-    conditions = ['is_variable_font', 'expected_font_names']
-)
-def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
-    """Check variable font instances"""
-    def get_instances(ttFont):
-        name = ttFont['name']
-        fvar = ttFont['fvar']
-        res = {}
-        for inst in fvar.instances:
-            inst_name = name.getName(inst.subfamilyNameID, 3, 1, 0x409)
-            if not inst_name:
-                continue
-            res[inst_name.toUnicode()] = inst.coordinates
-        return res
-    font_instances = get_instances(ttFont)
-    expected_instances = get_instances(expected_font_names)
-    table = []
-    for name in set(font_instances.keys()) | set(expected_instances.keys()):
-        row = {"Name": name}
-        if name in font_instances:
-            row["current"] = ", ".join([f"{k}={v}" for k,v in font_instances[name].items()])
-        else:
-            row["current"] = "N/A"
-        if name in expected_instances:
-            row["expected"] = ", ".join([f"{k}={v}" for k,v in expected_instances[name].items()])
-        else:
-            row["expected"] = "N/A"
-        table.append(row)
-    table = sorted(table, key=lambda k: str(k["expected"]))
-
-    missing = set(expected_instances.keys()) - set(font_instances.keys())
-    new = set(font_instances.keys()) - set(expected_instances.keys())
-    same = set(font_instances.keys()) & set(expected_instances.keys())
-    # check if instances have correct weight. Only check if font has wght axis
-    if all("wght" in expected_instances[i] for i in expected_instances):
-        wght_wrong = any(font_instances[i]["wght"] != expected_instances[i]["wght"] for i in same)
-    else:
-        wght_wrong = False
-
-    md_table = markdown_table(table)
-    if any([wght_wrong, missing, new]):
-        hints = ""
-        if missing:
-            hints += "- Add missing instances\n"
-        if new:
-            hints += "- Delete additional instances\n"
-        if wght_wrong:
-            hints += "- wght coordinates are wrong for some instances"
-        yield FAIL, Message('bad-fvar-instances',
-                            f"fvar instances are incorrect:\n{hints}\n{md_table}")
-    elif any(font_instances[i] != expected_instances[i] for i in same):
-        yield WARN, Message("suspicious-fvar-coords",
-            (f"fvar instance coordinates for non-wght axes are not the same as the fvar defaults. "
-             f"This may be intentional so please check with the font author:\n\n{md_table}"))
-    else:
-        yield PASS, f"fvar instances are good:\n\n{md_table}"
-
-
-@check(
     id = 'com.google.fonts/check/stat',
     conditions = ['is_variable_font', 'expected_font_names'],
     rationale = """
@@ -3930,6 +3870,66 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
             f"Compulsory STAT Axis Values are incorrect:\n\n {md_table}\n")
     if passed:
         yield PASS, "Compulsory STAT Axis Values are correct."
+
+
+@check(
+    id = 'com.google.fonts/check/fvar_instances',
+    conditions = ['is_variable_font', 'expected_font_names']
+)
+def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
+    """Check variable font instances"""
+    def get_instances(ttFont):
+        name = ttFont['name']
+        fvar = ttFont['fvar']
+        res = {}
+        for inst in fvar.instances:
+            inst_name = name.getName(inst.subfamilyNameID, 3, 1, 0x409)
+            if not inst_name:
+                continue
+            res[inst_name.toUnicode()] = inst.coordinates
+        return res
+    font_instances = get_instances(ttFont)
+    expected_instances = get_instances(expected_font_names)
+    table = []
+    for name in set(font_instances.keys()) | set(expected_instances.keys()):
+        row = {"Name": name}
+        if name in font_instances:
+            row["current"] = ", ".join([f"{k}={v}" for k,v in font_instances[name].items()])
+        else:
+            row["current"] = "N/A"
+        if name in expected_instances:
+            row["expected"] = ", ".join([f"{k}={v}" for k,v in expected_instances[name].items()])
+        else:
+            row["expected"] = "N/A"
+        table.append(row)
+    table = sorted(table, key=lambda k: str(k["expected"]))
+
+    missing = set(expected_instances.keys()) - set(font_instances.keys())
+    new = set(font_instances.keys()) - set(expected_instances.keys())
+    same = set(font_instances.keys()) & set(expected_instances.keys())
+    # check if instances have correct weight. Only check if font has wght axis
+    if all("wght" in expected_instances[i] for i in expected_instances):
+        wght_wrong = any(font_instances[i]["wght"] != expected_instances[i]["wght"] for i in same)
+    else:
+        wght_wrong = False
+
+    md_table = markdown_table(table)
+    if any([wght_wrong, missing, new]):
+        hints = ""
+        if missing:
+            hints += "- Add missing instances\n"
+        if new:
+            hints += "- Delete additional instances\n"
+        if wght_wrong:
+            hints += "- wght coordinates are wrong for some instances"
+        yield FAIL, Message('bad-fvar-instances',
+                            f"fvar instances are incorrect:\n{hints}\n{md_table}")
+    elif any(font_instances[i] != expected_instances[i] for i in same):
+        yield WARN, Message("suspicious-fvar-coords",
+            (f"fvar instance coordinates for non-wght axes are not the same as the fvar defaults. "
+             f"This may be intentional so please check with the font author:\n\n{md_table}"))
+    else:
+        yield PASS, f"fvar instances are good:\n\n{md_table}"
 
 
 @check(
