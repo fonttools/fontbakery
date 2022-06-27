@@ -2466,8 +2466,8 @@ def test_check_metadata_category():
         (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"), {NameID.FONT_SUBFAMILY_NAME: "Not a proper style"}, FAIL),
         # tests from test_check_name_fullfontname
         (TEST_FILE("cabin/Cabin-Regular.ttf"), {}, PASS),
-        # todo fix this
-        (TEST_FILE("cabin/Cabin-Regular.ttf"), {4: "Cabin"}, FAIL),
+        # warn should be raised since full name is missing Regular
+        (TEST_FILE("cabin/Cabin-Regular.ttf"), {4: "Cabin"}, WARN),
         (TEST_FILE("cabin/Cabin-BoldItalic.ttf"), {}, PASS),
         (TEST_FILE("cabin/Cabin-BoldItalic.ttf"), {NameID.FULL_FONT_NAME: "Make it fail"}, FAIL),
         (TEST_FILE("abeezee/ABeeZee-Regular.ttf"), {}, PASS),
@@ -2545,7 +2545,7 @@ def test_check_font_names(fp, mod, result):
                     "with a good font...")
     elif result == WARN:
         assert_results_contain(check(ttFont, {"expected_font_names": expected}),
-                               WARN, 'bad-names',
+                               WARN, 'lacks-regular',
                                f'with bad names')
     else:
         assert_results_contain(check(ttFont, {"expected_font_names": expected}),

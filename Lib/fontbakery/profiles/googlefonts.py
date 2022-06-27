@@ -3234,12 +3234,12 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
     expected_names = style_names(expected_font_names['name'])
 
     name_ids = {
-        1: "Family Name",
-        2: "Subfamily Name",
-        4: "Full Name",
-        6: "Poscript Name",
-        16: "Typographic Family Name",
-        17: "Typographic Subfamily Name",
+        NameID.FONT_FAMILY_NAME: "Family Name",
+        NameID.FONT_SUBFAMILY_NAME: "Subfamily Name",
+        NameID.FULL_FONT_NAME: "Full Name",
+        NameID.POSTSCRIPT_NAME: "Poscript Name",
+        NameID.TYPOGRAPHIC_FAMILY_NAME: "Typographic Family Name",
+        NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "Typographic Subfamily Name",
     }
     table = []
     for nameID in set(font_names.keys()) | set(expected_names.keys()):
@@ -3260,8 +3260,19 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
     same_names = set(font_names) & set(expected_names)
 
     md_table = markdown_table(table)
-    if any([new_names, missing_names]) or \
-       any(font_names[i] != expected_names[i] for i in same_names):
+
+    passed = True
+    if new_names or missing_names:
+        passed = False
+
+    for nameID in same_names:
+        if nameID == NameID.FULL_FONT_NAME and \
+            font_names[nameID] == expected_names[nameID].replace(" Regular", ""):
+            yield WARN, Message('lacks-regular', "Regular missing from full name")
+        elif font_names[nameID] != expected_names[nameID]:
+            passed = False
+
+    if not passed:
         yield FAIL, Message('bad-names',
                             f'Font names are incorrect:\n\n{md_table}')
     else:
