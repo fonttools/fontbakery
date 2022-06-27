@@ -3267,8 +3267,11 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
 
     for nameID in same_names:
         if nameID == NameID.FULL_FONT_NAME and \
-            font_names[nameID] == expected_names[nameID].replace(" Regular", ""):
-            yield WARN, Message('lacks-regular', "Regular missing from full name")
+            all([
+                " Regular" in expected_names[nameID],
+                font_names[nameID] == expected_names[nameID].replace(" Regular", "")
+            ]):
+                yield WARN, Message('lacks-regular', "Regular missing from full name")
         elif font_names[nameID] != expected_names[nameID]:
             passed = False
 
