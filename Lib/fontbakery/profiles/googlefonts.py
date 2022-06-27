@@ -3224,7 +3224,14 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
     """Check font names are correct"""
     def style_names(nametable):
         res = {}
-        for nameID in (1, 2, 4, 6, 16, 17):
+        for nameID in (
+            NameID.FONT_FAMILY_NAME,
+            NameID.FONT_SUBFAMILY_NAME,
+            NameID.FULL_FONT_NAME,
+            NameID.POSTSCRIPT_NAME,
+            NameID.TYPOGRAPHIC_FAMILY_NAME,
+            NameID.TYPOGRAPHIC_SUBFAMILY_NAME
+        ):
             rec = nametable.getName(nameID, 3, 1, 0x409)
             if rec:
                 res[nameID] = rec.toUnicode()
@@ -3816,10 +3823,9 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
         stat = ttFont["STAT"].table
         axes = [a.AxisTag for a in stat.DesignAxisRecord.Axis]
         res = {}
-        try:
-            axis_values = stat.AxisValueArray.AxisValue
-        except AttributeError:
+        if ttFont["STAT"].table.AxisValueCount == 0:
             return res
+        axis_values = stat.AxisValueArray.AxisValue
         for ax in axis_values:
             axis_tag = axes[ax.AxisIndex]
             if axis_tag not in include_axes:
