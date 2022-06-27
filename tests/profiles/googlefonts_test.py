@@ -4207,4 +4207,3 @@ def test_check_stat(fps, new_stat, result):
         assert_results_contain(check(ttFont, {"expected_font_names": expected}),
                             FAIL, 'bad-axis-values',
                             'with a bad font')
-    
