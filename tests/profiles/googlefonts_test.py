@@ -2499,6 +2499,17 @@ def test_check_metadata_category():
                 17: "20pt Regular",
             },
             PASS),
+        (TEST_FILE("varfont/Georama[wdth,wght].ttf"), {}, PASS),
+        # Georama's default fvar vals are wdth=62.5, wght=100
+        # which means ExtraCondensed Thin should appear in the family name
+        (TEST_FILE("varfont/Georama[wdth,wght].ttf"),
+        {
+            1: "Georama ExtraCondensed Thin",
+            2: "Regular",
+            16: "Georama",
+            17: "ExtraCondensed Thin",
+        },
+        PASS),
     ]
 )
 def test_check_font_names(fp, mod, result):
