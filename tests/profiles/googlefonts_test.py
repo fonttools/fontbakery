@@ -2432,13 +2432,13 @@ def test_check_metadata_category():
     [
         # tests from test_check_name_familyname:
         (TEST_FILE("cabin/Cabin-Regular.ttf"), {}, PASS),
-        (TEST_FILE("cabin/Cabin-Regular.ttf"), {1: "Wrong"}, FAIL),
+        (TEST_FILE("cabin/Cabin-Regular.ttf"), {NameID.FONT_FAMILY_NAME: "Wrong"}, FAIL),
         (TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), {}, PASS),
         (TEST_FILE("overpassmono/OverpassMono-Bold.ttf"), {}, PASS),
         (TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), {1: "Foo"}, FAIL),
         (TEST_FILE("merriweather/Merriweather-Black.ttf"), {}, PASS),
         (TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), {}, PASS),
-        (TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), {1: "Merriweather Light Italic"}, FAIL),
+        (TEST_FILE("merriweather/Merriweather-LightItalic.ttf"), {NameID.FONT_FAMILY_NAME: "Merriweather Light Italic"}, FAIL),
         (TEST_FILE("abeezee/ABeeZee-Regular.ttf"), {}, PASS),
         # tests from test_check_name_subfamilyname
         (TEST_FILE("overpassmono/OverpassMono-Regular.ttf"), {}, PASS),
@@ -2463,26 +2463,26 @@ def test_check_metadata_category():
         (TEST_FILE("montserrat/Montserrat-SemiBold.ttf"), {}, PASS),
         (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"), {}, PASS),
         (TEST_FILE("montserrat/Montserrat-Thin.ttf"), {}, PASS),
-        (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"), {2: "Not a proper style"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"), {NameID.FONT_SUBFAMILY_NAME: "Not a proper style"}, FAIL),
         # tests from test_check_name_fullfontname
         (TEST_FILE("cabin/Cabin-Regular.ttf"), {}, PASS),
         # todo fix this
         (TEST_FILE("cabin/Cabin-Regular.ttf"), {4: "Cabin"}, FAIL),
         (TEST_FILE("cabin/Cabin-BoldItalic.ttf"), {}, PASS),
-        (TEST_FILE("cabin/Cabin-BoldItalic.ttf"), {4: "Make it fail"}, FAIL),
+        (TEST_FILE("cabin/Cabin-BoldItalic.ttf"), {NameID.FULL_FONT_NAME: "Make it fail"}, FAIL),
         (TEST_FILE("abeezee/ABeeZee-Regular.ttf"), {}, PASS),
         # tests from test_check_name_typographicfamilyname
         (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {}, PASS),
-        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {16: "Arbitrary name"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {NameID.TYPOGRAPHIC_FAMILY_NAME: "Arbitrary name"}, FAIL),
         (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {}, PASS),
-        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {16: "Foo"}, FAIL),
-        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {16: None}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {NameID.TYPOGRAPHIC_FAMILY_NAME: "Foo"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {NameID.TYPOGRAPHIC_FAMILY_NAME: None}, FAIL),
         # tests from test_check_name_typographicsubfamilyname
         (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {}, PASS),
-        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {17: "Foo"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"), {NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "Foo"}, FAIL),
         (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {}, PASS),
-        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {17: None}, FAIL),
-        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {17: "Generic Name"}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {NameID.TYPOGRAPHIC_SUBFAMILY_NAME: None}, FAIL),
+        (TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"), {NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "Generic Name"}, FAIL),
         # variable font checks
         (TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"), {}, PASS),
         # Open Sans' origin is Light so this should pass
@@ -2493,10 +2493,10 @@ def test_check_metadata_category():
         (
             TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"),
             {
-                1: "Roboto Serif 20pt",
-                2: "Regular",
-                16: "Roboto Serif",
-                17: "20pt Regular",
+                NameID.FONT_FAMILY_NAME: "Roboto Serif 20pt",
+                NameID.FONT_SUBFAMILY_NAME: "Regular",
+                NameID.TYPOGRAPHIC_FAMILY_NAME: "Roboto Serif",
+                NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "20pt Regular",
             },
             PASS),
         (TEST_FILE("varfont/Georama[wdth,wght].ttf"), {}, PASS),
@@ -2504,10 +2504,10 @@ def test_check_metadata_category():
         # which means ExtraCondensed Thin should appear in the family name
         (TEST_FILE("varfont/Georama[wdth,wght].ttf"),
         {
-            1: "Georama ExtraCondensed Thin",
-            2: "Regular",
-            16: "Georama",
-            17: "ExtraCondensed Thin",
+            NameID.FONT_FAMILY_NAME: "Georama ExtraCondensed Thin",
+            NameID.FONT_SUBFAMILY_NAME: "Regular",
+            NameID.TYPOGRAPHIC_FAMILY_NAME: "Georama",
+            NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "ExtraCondensed Thin",
         },
         PASS),
     ]
