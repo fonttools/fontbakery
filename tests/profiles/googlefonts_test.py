@@ -4105,18 +4105,18 @@ def test_check_fvar_instances(fp, mod, result):
     expected = expected_font_names(ttFont, [])
     if mod:
         for name, wght_val in mod:
-            inst = NamedInstance() 
+            inst = NamedInstance()
             inst.subfamilyNameID = ttFont['name'].addName(name)
             inst.coordinates = {"wght": wght_val}
             ttFont['fvar'].instances.append(inst)
-    
+
     if result == PASS:
         assert_PASS(check(ttFont, {"expected_font_names": expected}),
                     f'with a good font')
     elif result == FAIL:
         assert_results_contain(check(ttFont, {"expected_font_names": expected}),
-                            FAIL, 'bad-fvar-instances',
-                            'with a bad font')
+                               FAIL, 'bad-fvar-instances',
+                               'with a bad font')
 
 @pytest.mark.parametrize(
     """fps,new_stat,result""",
@@ -4169,14 +4169,14 @@ def test_check_fvar_instances(fp, mod, result):
         )
     ]
 )
-def test_check_stat(fps, new_stat, result):
+def test_check_STAT(fps, new_stat, result):
     """Check STAT table Axis Values are correct"""
     # more comprehensive checks are available in the axisregistry:
     #https://github.com/googlefonts/axisregistry/blob/main/tests/test_names.py#L442
     # this check merely exists to check that everything is hooked up correctly
     from fontTools.otlLib.builder import buildStatTable
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/stat")
+                        "com.google.fonts/check/STAT")
     ttFonts = [TTFont(f) for f in fps]
     ttFont = ttFonts[0]
     expected = expected_font_names(ttFont, ttFonts)
@@ -4188,5 +4188,5 @@ def test_check_stat(fps, new_stat, result):
                     f'with a good font')
     elif result == FAIL:
         assert_results_contain(check(ttFont, {"expected_font_names": expected}),
-                            FAIL, 'bad-axis-values',
-                            'with a bad font')
+                               FAIL, 'bad-axis-values',
+                               'with a bad font')

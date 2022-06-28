@@ -190,7 +190,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/meta/script_lang_tags',
     'com.google.fonts/check/no_debugging_tables',
     'com.google.fonts/check/render_own_name',
-    'com.google.fonts/check/stat',
+    'com.google.fonts/check/STAT',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -2738,7 +2738,7 @@ def com_google_fonts_check_metadata_match_name_familyname(family_metadata, font_
 @check(
     id = 'com.google.fonts/check/metadata/canonical_weight_value',
     conditions = ['font_metadata'],
-    proposal = 'legacy:check.111'
+    proposal = 'legacy:check/111'
 )
 def com_google_fonts_check_metadata_canonical_weight_value(font_metadata):
     """METADATA.pb: Check that font weight has a canonical value."""
@@ -3193,7 +3193,8 @@ def com_google_fonts_check_mac_style(ttFont, style):
         https://googlefonts.github.io/gf-guide/statics.html#style-linking
         https://googlefonts.github.io/gf-guide/statics.html#unsupported-styles
         https://googlefonts.github.io/gf-guide/statics.html#single-weight-families
-    """
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3800'
 )
 def com_google_fonts_check_font_names(ttFont, expected_font_names):
     """Check font names are correct"""
@@ -3778,21 +3779,25 @@ def com_google_fonts_check_aat(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/stat',
-    conditions = ['is_variable_font', 'expected_font_names'],
+    id = 'com.google.fonts/check/STAT',
+    conditions = ['is_variable_font',
+                  'expected_font_names'],
     rationale = """
         Check a font's STAT table contains compulsory Axis Values which exist
         in the Google Fonts Axis Registry.
 
         We cannot determine what Axis Values the user will set for axes such as
         opsz, GRAD since these axes are unique for each font so we'll skip them.
-    """
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3800'
 )
 def com_google_fonts_check_stat(ttFont, expected_font_names):
     """Check a font's STAT table contains compulsory Axis Values."""
     axes_to_check = {
-        "CASL", "CRSV", "FILL", "FLAR", "MONO", "SOFT", "VOLM", "wdth", "wght", "WONK"
+        "CASL", "CRSV", "FILL", "FLAR", "MONO",
+        "SOFT", "VOLM", "wdth", "wght", "WONK"
     }
+
     def stat_axis_values(ttFont, include_axes=axes_to_check):
         name = ttFont["name"]
         stat = ttFont["STAT"].table
@@ -3814,10 +3819,10 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
                 "LinkedValue": None if not hasattr(ax, "LinkedValue") else ax.LinkedValue
             }
         return res
-    
+
     font_axis_values = stat_axis_values(ttFont)
     expected_axis_values = stat_axis_values(expected_font_names)
-    
+
     table = []
     for axis, name in set(font_axis_values.keys()) | set(expected_axis_values.keys()):
         row = {}
@@ -3868,11 +3873,13 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
 
 @check(
     id = 'com.google.fonts/check/fvar_instances',
-    conditions = ['is_variable_font', 'expected_font_names'],
+    conditions = ['is_variable_font',
+                  'expected_font_names'],
     rationale = """
         Check a font's fvar instance coordinates comply with our guidelines:
         https://googlefonts.github.io/gf-guide/variable.html#fvar-instances
-    """
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3800'
 )
 def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
     """Check variable font instances"""
@@ -4627,7 +4634,8 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
 
 @check(
     id = 'com.google.fonts/check/vertical_metrics',
-    conditions = ['not remote_styles', 'not is_cjk_font'],
+    conditions = ['not remote_styles',
+                  'not is_cjk_font'],
     rationale = """
         This check generally enforces Google Fonts’ vertical metrics specifications.
         In particular:
