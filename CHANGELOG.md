@@ -11,16 +11,16 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 #### On the Google Fonts Profile
-  - **[com.google.fonts/check/name/familyname]:** Removed due to new font names check (PR #3800)
-  - **[com.google.fonts/check/name/subfamilyname]:** Removed due to new font names check (PR #3800)
-  - **[com.google.fonts/check/name/fullfontname]:** Removed due to new font names check (PR #3800)
-  - **[com.google.fonts/check/name/postscriptname]:** Removed due to new font names check (PR #3800)
-  - **[com.google.fonts/check/name/typographicfamilyname]:** Removed due to new font names check (PR #3800)
-  - **[com.google.fonts/check/name/typographicsubfamilyname]:** Removed due to new font names check (PR #3800)
-  - **[com.google.fonts/check/varfont_has_instances]:** Removed due to new fvar instances check (PR #3800)
-  - **[com.google.fonts/check/varfont_weight_instances]:** Removed due to new fvar instances check (PR #3800)
-  - **[com.google.fonts/check/varfont_instance_coordinates]:** Removed due to new fvar instances check (PR #3800)
-  - **[com.google.fonts/check/varfont_instance_names]:** Removed due to new fvar instances check (PR #3800)
+  - **[com.google.fonts/check/name/familyname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/name/subfamilyname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/name/fullfontname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/name/postscriptname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/name/typographicfamilyname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/name/typographicsubfamilyname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/varfont_has_instances]:** Removed due to new `fvar_instances` check (PR #3800)
+  - **[com.google.fonts/check/varfont_weight_instances]:** Removed due to new `fvar_instances` check (PR #3800)
+  - **[com.google.fonts/check/varfont_instance_coordinates]:** Removed due to new `fvar_instances` check (PR #3800)
+  - **[com.google.fonts/check/varfont_instance_names]:** Removed due to new `fvar_instances` check (PR #3800)
 
 ### BugFixes
   - fixed bug on fontbakery_version check so that it now understands that v0.x.9 is older than v0.x.10 (issue #3813)
