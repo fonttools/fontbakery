@@ -467,27 +467,31 @@ def test_check_varfont_valid_default_instance_nameids():
     )
 
     # The 'Regular' instance record in the reference varfont has the same coordinates
-    # as the default instance, but it doesn't use the correct nameID.
+    # as the default instance, and the same text
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    msg = assert_results_contain(
-        check(ttFont), FAIL, "invalid-default-instance-subfamily-nameid:258"
-    )
-    assert msg == (
-        "'Regular' instance has the same coordinates as the default instance;"
-        " its subfamilyNameID should be either 2 or 17, instead of 258."
-    )
-
-    # Correct the subfamilyNameID value of the default instance
-    fvar_table = ttFont["fvar"]
-    dflt_inst = fvar_table.instances[0]
-    dflt_inst.subfamilyNameID = 2
     msg = assert_PASS(check(ttFont), "with a good varfont...")
     assert msg == "All default instance nameID values are valid."
 
     # Change subfamilyNameID value of the default instance to another valid value
+    fvar_table = ttFont["fvar"]
+    dflt_inst = fvar_table.instances[0]
     dflt_inst.subfamilyNameID = 17
     msg = assert_PASS(check(ttFont), "with a good varfont...")
     assert msg == "All default instance nameID values are valid."
+
+    # Change the subfamilyNameID value of the default instance to something stupid
+    dflt_inst.subfamilyNameID = 5
+
+    msg = assert_results_contain(
+        check(ttFont), FAIL, "invalid-default-instance-subfamily-nameid:5"
+    )
+    assert msg == (
+        "'Version 3.001' instance has the same coordinates as the default instance;"
+        " its subfamily name should be Regular"
+    )
+
+    # Put it back
+    dflt_inst.subfamilyNameID = 258
 
     # The value of postScriptNameID is 0xFFFF for all the instance records in the
     # reference varfont. Change one of them, to make the check validate the
@@ -498,8 +502,8 @@ def test_check_varfont_valid_default_instance_nameids():
         check(ttFont), FAIL, "invalid-default-instance-postscript-nameid:0xFFFF"
     )
     assert msg == (
-        "'Instance #1' instance has the same coordinates as the default instance;"
-        " its postScriptNameID should be 6, instead of 0xFFFF."
+        "'Regular' instance has the same coordinates as the default instance;"
+        " its postscript name should be Cabin-Regular, instead of None."
     )
 
     # Change postScriptNameID value of the default instance to a valid value
@@ -515,8 +519,8 @@ def test_check_varfont_valid_default_instance_nameids():
         check(ttFont), FAIL, "invalid-default-instance-postscript-nameid:8"
     )
     assert msg == (
-        "'Instance #1' instance has the same coordinates as the default instance;"
-        " its postScriptNameID should be 6, instead of 8."
+        "'Regular' instance has the same coordinates as the default instance; "
+        "its postscript name should be Cabin-Regular, instead of Pablo Impallari. http://www.impallari.com Igino Marini. http://www.ikern.com."
     )
 
 
