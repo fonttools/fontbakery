@@ -6,6 +6,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### BugFixes
   - fixed bug on fontbakery_version check so that it now understands that v0.x.9 is older than v0.x.10 (issue #3813)
 
+### Changes to existing checks
+#### On the Universal Profile
+  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** Relaxed the implementation to compare name values, not strictly IDs. (PR #3821)
 
 ## 0.8.9 (2022-Jun-16)
 ### Noteworthy code-changes
