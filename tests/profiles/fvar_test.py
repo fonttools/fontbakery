@@ -487,7 +487,7 @@ def test_check_varfont_valid_default_instance_nameids():
     )
     assert msg == (
         "'Version 3.001' instance has the same coordinates as the default instance;"
-        " its subfamily name should be Regular"
+        " its subfamily name should be 'Regular'"
     )
 
     # Put it back
@@ -503,7 +503,7 @@ def test_check_varfont_valid_default_instance_nameids():
     )
     assert msg == (
         "'Regular' instance has the same coordinates as the default instance;"
-        " its postscript name should be Cabin-Regular, instead of None."
+        " its postscript name should be 'Cabin-Regular', instead of 'None'."
     )
 
     # Change postScriptNameID value of the default instance to a valid value
@@ -520,7 +520,7 @@ def test_check_varfont_valid_default_instance_nameids():
     )
     assert msg == (
         "'Regular' instance has the same coordinates as the default instance; "
-        "its postscript name should be Cabin-Regular, instead of Pablo Impallari. http://www.impallari.com Igino Marini. http://www.ikern.com."
+        "its postscript name should be 'Cabin-Regular', instead of 'Pablo Impallari. http://www.impallari.com Igino Marini. http://www.ikern.com'."
     )
 
 
