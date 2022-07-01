@@ -5905,7 +5905,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
                           " Designer webpage links should, for now, be placed"
                           " directly on the bio.html file.")
 
-        if not info.avatar.file_name:
+        if not info.avatar.file_name and designer != "Google":
             passed = False
             yield FAIL,\
                   Message("missing-avatar",
