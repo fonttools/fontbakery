@@ -701,3 +701,8 @@ def upstream_yaml(family_directory):
     if not os.path.isfile(fp):
         return None
     return yaml.load(open(fp, "r"), yaml.FullLoader)
+
+
+@condition
+def is_noto(font_familyname):
+    return font_familyname.startswith("Noto ")
