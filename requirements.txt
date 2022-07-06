@@ -11,7 +11,7 @@ font-v==2.1.0
 freetype-py==2.3.0
 gflanguages==0.4.0
 glyphsets==0.5.0
-lxml==4.9.0
+lxml==4.9.1
 opentype-sanitizer==8.2.1
 opentypespec==1.8.4
 pip-api==0.0.29
