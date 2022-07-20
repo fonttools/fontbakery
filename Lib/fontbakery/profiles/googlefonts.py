@@ -87,7 +87,6 @@ DESCRIPTION_CHECKS = [
     'com.google.fonts/check/description/broken_links',
     'com.google.fonts/check/description/valid_html',
     'com.google.fonts/check/description/min_length',
-    'com.google.fonts/check/description/max_length',
     'com.google.fonts/check/description/git_url',
     'com.google.fonts/check/description/eof_linebreak',
     'com.google.fonts/check/description/family_update',
@@ -505,32 +504,6 @@ def com_google_fonts_check_description_min_length(description):
                       " have size larger than 200 bytes.")
     else:
         yield PASS, "DESCRIPTION.en_us.html is larger than 200 bytes."
-
-
-@check(
-    id = 'com.google.fonts/check/description/max_length',
-    conditions = ['description'],
-    rationale = """
-        The fonts.google.com catalog specimen pages 2016 to 2020 were placed in a
-        narrow area of the page. That meant a maximum limit of 1,000 characters was
-        good, so that the narrow column did not extent that section of the page to
-        be too long.
-        
-        But with the "v4" redesign of 2020, the specimen pages allow for longer
-        texts without upsetting the balance of the page. So currently the limit
-        before warning is 2,000 characters.
-    """,
-    proposal = 'legacy:check/006'
-)
-def com_google_fonts_check_description_max_length(description):
-    """DESCRIPTION.en_us.html must have less than 2000 bytes."""
-    if len(description) >= 2000:
-        yield FAIL,\
-              Message("too-long",
-                      "DESCRIPTION.en_us.html must"
-                      " have size smaller than 2000 bytes.")
-    else:
-        yield PASS, "DESCRIPTION.en_us.html is smaller than 2,000 bytes."
 
 
 @check(
