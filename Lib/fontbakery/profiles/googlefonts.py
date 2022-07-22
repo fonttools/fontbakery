@@ -1033,22 +1033,24 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     missing_optional_glyphs = glyph_data.missing_glyphsets_in_font(ttFont, threshold=0.8)
     passed = True
     if "GF_Latin_Core" in missing_mandatory_glyphs:
-        passed = False
         missing = missing_encoded_glyphs(missing_mandatory_glyphs["GF_Latin_Core"])
-        yield FAIL,\
-              Message("missing-codepoints",
-                      f"Missing required codepoints:\n\n"
-                      f"{bullet_list(config, missing)}")
+        if missing:
+            passed = False
+            yield FAIL,\
+                Message("missing-codepoints",
+                        f"Missing required codepoints:\n\n"
+                        f"{bullet_list(config, missing)}")
     elif len(missing_optional_glyphs) > 0 and "GF_Latin_Core" not in missing_optional_glyphs:
-        passed = False
         for glyphset_name, glyphs in missing_optional_glyphs.items():
             if glyphset_name == "GF_Latin_Core":
                 continue
             missing = missing_encoded_glyphs(glyphs)
-            yield WARN,\
-                  Message("missing-codepoints",
-                          f"{glyphset_name} is almost fulfilled. Missing codepoints:\n\n"
-                          f"{bullet_list(config, missing)}")
+            if missing:
+                passed = False
+                yield WARN,\
+                    Message("missing-codepoints",
+                            f"{glyphset_name} is almost fulfilled. Missing codepoints:\n\n"
+                            f"{bullet_list(config, missing)}")
     if passed:
         yield PASS, "OK"
 
