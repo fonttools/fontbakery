@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.8.10 (2022-Jul-??)
 ### BugFixes
   - fixed bug on fontbakery_version check so that it now understands that v0.x.9 is older than v0.x.10 (issue #3813)
+  - Fix fontbakery.profiles.shared_conditions.*_*_coord functions so they work on Italic fonts (issue #3828, PR #3834)
 
 ### Changes to existing checks
 #### On the Universal Profile
