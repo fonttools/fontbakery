@@ -396,17 +396,23 @@ def get_instance_axis_value(ttFont, instance_name, axis_tag):
 
 @condition
 def regular_wght_coord(ttFont):
-    return get_instance_axis_value(ttFont, "Regular", "wght")
+    upright = get_instance_axis_value(ttFont, "Regular", "wght")
+    italic = get_instance_axis_value(ttFont, "Italic", "wght")
+    return upright if upright is not None else italic
 
 
 @condition
 def bold_wght_coord(ttFont):
-    return get_instance_axis_value(ttFont, "Bold", "wght")
+    upright = get_instance_axis_value(ttFont, "Bold", "wght")
+    italic = get_instance_axis_value(ttFont, "Bold Italic", "wght")
+    return upright if upright is not None else italic
 
 
 @condition
 def regular_wdth_coord(ttFont):
-    return get_instance_axis_value(ttFont, "Regular", "wdth")
+    upright = get_instance_axis_value(ttFont, "Regular", "wdth")
+    italic = get_instance_axis_value(ttFont, "Italic", "wdth")
+    return upright if upright is not None else italic
 
 
 @condition
@@ -421,7 +427,9 @@ def regular_ital_coord(ttFont):
 
 @condition
 def regular_opsz_coord(ttFont):
-    return get_instance_axis_value(ttFont, "Regular", "opsz")
+    upright = get_instance_axis_value(ttFont, "Regular", "opsz")
+    italic = get_instance_axis_value(ttFont, "Italic", "opsz")
+    return upright if upright is not None else italic
 
 
 @condition

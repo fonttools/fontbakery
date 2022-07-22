@@ -43,6 +43,10 @@ def test_check_varfont_regular_wght_coord():
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
     assert msg == "Unfulfilled Conditions: has_wght_axis"
 
+    # Test with an italic variable font. The Italic instance must also be 400
+    ttFont = TTFont(TEST_FILE("varfont/OpenSans-Italic[wdth,wght].ttf"))
+    assert assert_PASS(check(ttFont)) == "Regular:wght is 400."
+
     # Now test with a static font.
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
@@ -80,6 +84,10 @@ def test_check_varfont_regular_wdth_coord():
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
     assert msg == "Unfulfilled Conditions: has_wdth_axis"
+
+    # Test with an italic variable font. The Italic instance must also be 100
+    ttFont = TTFont(TEST_FILE("varfont/OpenSans-Italic[wdth,wght].ttf"))
+    assert assert_PASS(check(ttFont)) == "Regular:wdth is 100."
 
     # Now test with a static font.
     # The test should be skipped due to an unfulfilled condition.
