@@ -3793,6 +3793,10 @@ def com_google_fonts_check_aat(ttFont):
 )
 def com_google_fonts_check_stat(ttFont, expected_font_names):
     """Check a font's STAT table contains compulsory Axis Values."""
+    if "STAT" not in ttFont:
+        yield FAIL, "Font is missing STAT table"
+        return
+
     axes_to_check = {
         "CASL", "CRSV", "FILL", "FLAR", "MONO",
         "SOFT", "VOLM", "wdth", "wght", "WONK"
@@ -3807,15 +3811,22 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
             return res
         axis_values = stat.AxisValueArray.AxisValue
         for ax in axis_values:
+            # Google Fonts axis registry cannot check format 4 Axis Values
+            if ax.Format == 4:
+                continue
             axis_tag = axes[ax.AxisIndex]
             if axis_tag not in include_axes:
                 continue
             ax_name = name.getName(ax.ValueNameID, 3, 1, 0x409).toUnicode()
+            if ax.Format == 2:
+                value = ax.NominalValue
+            else:
+                value = ax.Value
             res[(axis_tag, ax_name)] = {
                 "Axis": axis_tag,
                 "Name": ax_name,
                 "Flags": ax.Flags,
-                "Value": ax.Value,
+                "Value": value,
                 "LinkedValue": None if not hasattr(ax, "LinkedValue") else ax.LinkedValue
             }
         return res
@@ -5311,6 +5322,9 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
 
     passed = True
     format4_entries = False
+    if "STAT" not in ttFont:
+        yield FAIL, "Font is missing STAT table."
+        return
     axis_value_array = ttFont['STAT'].table.AxisValueArray
     if not axis_value_array:
         yield FAIL, Message("missing-axis-values",
