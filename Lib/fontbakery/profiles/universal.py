@@ -1228,7 +1228,11 @@ def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, co
     id = "com.google.fonts/check/unreachable_glyphs",
     rationale = """
         Glyphs are either accessible directly through Unicode codepoints or through
-        substitution rules. Any glyphs not accessible by either of these means
+        substitution rules.
+        
+        In Color Fonts, glyphs are also referenced by the COLR table.
+        
+        Any glyphs not accessible by either of these means
         are redundant and serve only to increase the font's file size.
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3160',
@@ -1287,6 +1291,16 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
     # Exclude cmapped glyphs
     all_glyphs -= set(ttFont.getBestCmap().values())
     all_glyphs.discard(".notdef")
+
+    if "COLR" in ttFont:
+        for paint_record in ttFont["COLR"].table.BaseGlyphList.BaseGlyphPaintRecord:
+            if hasattr(paint_record.Paint, "Glyph"):
+                all_glyphs.discard(paint_record.Paint.Glyph)
+
+        for paint in ttFont["COLR"].table.LayerList.Paint:
+            if hasattr(paint, "Glyph"):
+                all_glyphs.discard(paint.Glyph)
+
 
     if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
         lookups = ttFont["GSUB"].table.LookupList.Lookup

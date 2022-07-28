@@ -911,8 +911,13 @@ def test_check_unreachable_glyphs():
     font = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
     assert_PASS(check(font))
 
+    # Also ensure it works correctly with a color font:
+    font = TEST_FILE("color_fonts/noto-glyf_colr_1.ttf")
+    assert_PASS(check(font))
+
     font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    message = assert_results_contain(check(font), WARN, "unreachable-glyphs")
+    message = assert_results_contain(check(font),
+                                     WARN, "unreachable-glyphs")
     for glyph in [
         "Gtilde",
         "eight.dnom",
