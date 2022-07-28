@@ -11,6 +11,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Universal Profile
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** Relaxed the implementation to compare name values, not strictly IDs. (PR #3821)
 
+#### On the Universal Profile
+  - **[com.google.fonts/check/unreachable_glyphs]:** Do not report glyphs referenced in color fonts graphic compositions on the COLR table as missing. (issue #3837)
+
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/glyph_coverage]:** Ensure check doesn't error when font contains all required encoded glyphs (PR #3833)
 
