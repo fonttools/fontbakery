@@ -727,21 +727,21 @@ def test_glyph_has_ink():
 
     cff_test_font = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
     print('Test if CFF glyph with ink has ink')
-    assert(glyph_has_ink(cff_test_font, '.notdef') is True)
+    assert glyph_has_ink(cff_test_font, '.notdef') is True
     print('Test if CFF glyph without ink has ink')
-    assert(glyph_has_ink(cff_test_font, 'space') is False)
+    assert glyph_has_ink(cff_test_font, 'space') is False
 
     ttf_test_font = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Regular.ttf"))
     print('Test if TTF glyph with ink has ink')
-    assert(glyph_has_ink(ttf_test_font, '.notdef') is True)
+    assert glyph_has_ink(ttf_test_font, '.notdef') is True
     print('Test if TTF glyph without ink has ink')
-    assert(glyph_has_ink(ttf_test_font, 'space') is False)
+    assert glyph_has_ink(ttf_test_font, 'space') is False
 
     cff2_test_font = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf"))
     print('Test if CFF2 glyph with ink has ink')
-    assert(glyph_has_ink(cff2_test_font, '.notdef') is True)
+    assert glyph_has_ink(cff2_test_font, '.notdef') is True
     print('Test if CFF2 glyph without ink has ink')
-    assert(glyph_has_ink(cff2_test_font, 'space') is False)
+    assert glyph_has_ink(cff2_test_font, 'space') is False
 
 
 mada_fonts = [
@@ -1152,3 +1152,16 @@ def test_check_sfnt_version():
     msg = assert_results_contain(check(ttFont), FAIL, "wrong-sfnt-version-cff")
     assert msg == (
         "Font with CFF data has incorrect sfntVersion value: '\x00\x01\x00\x00'")
+
+
+def test_check_whitespace_widths():
+    """ Whitespace glyphs have coherent widths? """
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/whitespace_widths")
+
+    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+    assert_PASS(check(ttFont))
+
+    ttFont["hmtx"].metrics["space"] = (0, 1)
+    assert_results_contain(check(ttFont),
+                           FAIL, 'different-widths')

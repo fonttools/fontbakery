@@ -15,6 +15,7 @@ import inspect
 
 from functools import wraps, update_wrapper
 
+
 def cached_getter(func):
     """Decorate a property by executing it at instatiation time and cache the
     result on the instance object."""
@@ -27,6 +28,7 @@ def cached_getter(func):
             setattr(self, attribute, value)
         return value
     return wrapper
+
 
 class FontbakeryCallable:
     def __init__(self, func):
@@ -44,10 +46,10 @@ class FontbakeryCallable:
         update_wrapper(self, func)
 
     def __repr__(self):
-        return'<{}:{}>'.format(type(self).__name__,
-                               getattr(self, 'id',
-                                       getattr(self, 'name',
-                                               super().__repr__() ))) # pylint: disable=consider-using-f-string
+        return '<{}:{}>'.format(type(self).__name__,
+                                getattr(self, 'id',
+                                        getattr(self, 'name',
+                                                super().__repr__())))  # pylint: disable=consider-using-f-string
 
     @property
     @cached_getter
@@ -66,12 +68,12 @@ class FontbakeryCallable:
                                      inspect.Parameter.POSITIONAL_ONLY):
                 # has a default i.e. not mandatory or not positional of any kind
 
-                ## Debugging message:
-                #print(f'[{param}]'
-                #      f' {param.default is inspect.Parameter.empty}'
-                #      f' param.kind: {param.kind}'
-                #      f' param.default: {param.default}'
-                #      f' BREAK')
+                # Debugging message:
+                # print(f'[{param}]'
+                #       f' {param.default is inspect.Parameter.empty}'
+                #       f' param.kind: {param.kind}'
+                #       f' param.default: {param.default}'
+                #       f' BREAK')
                 break
             args.append(name)
         return tuple(args)
@@ -91,12 +93,12 @@ class FontbakeryCallable:
                                   inspect.Parameter.POSITIONAL_ONLY):
                 # no more positional of any kind
 
-                ## Debugging message:
-                #print(f'[{param}]'
-                #      f'{param.default is inspect.Parameter.empty}'
-                #      f' param.kind: {param.kind}'
-                #      f' param.default: {param.default}'
-                #      f' BREAK')
+                # Debugging message:
+                # print(f'[{param}]'
+                #       f'{param.default is inspect.Parameter.empty}'
+                #       f' param.kind: {param.kind}'
+                #       f' param.default: {param.default}'
+                #       f' BREAK')
                 break
             args.append(name)
         return tuple(args)
@@ -134,13 +136,14 @@ def get_doc_desc(func, description, documentation):
 
     return description, documentation
 
+
 class FontBakeryCondition(FontbakeryCallable):
     def __init__(self,
                  func,
                  # id,
-                 name = None, # very short text
-                 description = None, # short text
-                 documentation=None, # long text, markdown?
+                 name=None,  # very short text
+                 description=None,  # short text
+                 documentation=None,  # long text, markdown?
                  force=False):
         super().__init__(func)
         # self.id = id
@@ -150,31 +153,32 @@ class FontBakeryCondition(FontbakeryCallable):
                                                             documentation)
         self.force = force
 
+
 class FontBakeryCheck(FontbakeryCallable):
     def __init__(self,
                  checkfunc,
                  id,
-                 description=None, # short text, this is mandatory
+                 description=None,  # short text, this is mandatory
                  documentation=None,
-                 name=None, # very short text
+                 name=None,  # very short text
                  conditions=None,
-                 rationale=None, # long text explaining why this check is needed.
-                                 # Using markdown, perhaps?
-                 proposal=None, # An URL to the original proposal for this check.
-                                # This is typically a github issue or pull request.
-                 severity=None, # numeric value from 1=min to 10=max, denoting check severity
-                 configs=None, # items from config[self.id] to inject into the check's namespace.
-                 misc_metadata=None, # Miscelaneous free-form metadata fields
-                                     # Some of them may be promoted to 1st-class metadata fields
-                                     # if they start being used by the check-runner.
-                                     # Below are a few candidates for that:
+                 rationale=None,  # long text explaining why this check is needed.
+                                  # Using markdown, perhaps?
+                 proposal=None,  # An URL to the original proposal for this check.
+                                 # This is typically a github issue or pull request.
+                 severity=None,  # numeric value from 1=min to 10=max, denoting check severity
+                 configs=None,  # items from config[self.id] to inject into the check's namespace.
+                 misc_metadata=None,  # Miscelaneous free-form metadata fields
+                                      # Some of them may be promoted to 1st-class metadata fields
+                                      # if they start being used by the check-runner.
+                                      # Below are a few candidates for that:
 
-                 # affects=None, # A list of tuples each indicating Browser/OS/Application
-                 #               # and the affected versions range.
-                 # example_failures=None, # A reference to some font or family that
-                 #                        # originally failed due to the problems
-                 #                        # that this check tries to detect and report.
-                ):
+                 # affects=None,  # A list of tuples each indicating Browser/OS/Application
+                 #                # and the affected versions range.
+                 # example_failures=None,  # A reference to some font or family that
+                 #                         # originally failed due to the problems
+                 #                         # that this check tries to detect and report.
+                 ):
         """This is the base class for all checks. It will usually
         not be used directly to create check instances, rather
         decorators which are factories will init this class.
@@ -236,6 +240,7 @@ class FontBakeryCheck(FontbakeryCallable):
     # def __str__(self):
     #  return self.id
 
+
 def condition(*args, **kwds):
     """Check wrapper, a factory for FontBakeryCondition
 
@@ -252,6 +257,7 @@ def condition(*args, **kwds):
             return FontBakeryCondition(func, *args, **kwds)
     return wrapper
 
+
 def check(*args, **kwds):
     """Check wrapper, a factory for FontBakeryCheck
 
@@ -262,17 +268,18 @@ def check(*args, **kwds):
         return FontBakeryCheck(checkfunc, *args, **kwds)
     return wrapper
 
+
 # ExpectedValue is not a callable, but it belongs next to check and condition
-_NOT_SET = object() # used as a marker
+_NOT_SET = object()  # used as a marker
 class FontBakeryExpectedValue:
     def __init__(self,
-                 name, # unique name in global namespace
-                 description=None, # short text, this is mandatory
-                 documentation=None, # markdown?
-                 default=_NOT_SET, # because None can be a valid default
-                 validator=None, # function, see the docstring of `def validate`
+                 name,  # unique name in global namespace
+                 description=None,  # short text, this is mandatory
+                 documentation=None,  # markdown?
+                 default=_NOT_SET,  # because None can be a valid default
+                 validator=None,  # function, see the docstring of `def validate`
                  force=False
-                ):
+                 ):
         self.name = name
         self.description = description
         self.documentation = documentation
@@ -281,7 +288,7 @@ class FontBakeryExpectedValue:
         self.force = force
 
     def __repr__(self):
-        return'<{}:{}>'.format(type(self).__name__, self.name)
+        return '<{}:{}>'.format(type(self).__name__, self.name)
 
     @property
     def has_default(self):

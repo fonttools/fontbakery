@@ -48,8 +48,8 @@ def main():
         sys.argv[0] += " " + subcommand
         del sys.argv[1]  # Make this indirection less visible for subcommands.
         if (
-            subcommand_module.startswith("check_")
-            and subcommand_module[6:] in CLI_PROFILES
+            subcommand_module.startswith("check_") and
+            subcommand_module[6:] in CLI_PROFILES
         ):
             run_profile_check(subcommand_module[6:])
         else:
