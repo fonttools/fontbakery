@@ -7,6 +7,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - fixed bug on fontbakery_version check so that it now understands that v0.x.9 is older than v0.x.10 (issue #3813)
   - Fix fontbakery.profiles.shared_conditions.*_*_coord functions so they work on Italic fonts (issue #3828, PR #3834)
 
+### Migrations
+#### To the `Universal` profile
+  - **[com.google.fonts/check/whitespace_widths]:** moved from `OpenType` profile. Also added rationale text. (issue #3843)
+
 ### Changes to existing checks
 #### On the Universal Profile
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** Relaxed the implementation to compare name values, not strictly IDs. (PR #3821)
@@ -165,8 +169,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/reserved_font_name]:** Added support for an RFN Exception allow-list, but it is kept empty for now while we review potential exceptions (issues #3589 and #3612)
   - **[com.google.fonts/check/name/rfn]:** RFN Exception allow-list (same as above)
 
-#### Migrations
-  - **[com.google.fonts/check/transformed_components]:** moved from `Google Fonts` profile to `Universal` profile. It is not strictly a Google Fonts related check as transformed components cause problems in various rendering environments. (issue #3588)
+### Migrations
+#### To the `Universal` profile
+  - **[com.google.fonts/check/transformed_components]:** moved from `Google Fonts` profile. It is not strictly a Google Fonts related check as transformed components cause problems in various rendering environments. (issue #3588)
 
 
 ## 0.8.6 (2022-Jan-29)
@@ -240,8 +245,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/contour_count]:** Do not expect ZWNJ and ZWJ glyphs to have zero contours. (issue #3487)
   - **[com.google.fonts/check/metadata/can_render_samples]:** Ensure METADATA.pb is present before running check (issue googlefonts/Unified-Font-Repository#62)
 
-#### Migrations
-  - **[com.google.fonts/check/contour_count]:** moved from `Google Fonts` profile to `Universal` profile. (issue #3491)
+### Migrations
+#### To the `Universal` profile
+  - **[com.google.fonts/check/contour_count]:** moved from `Google Fonts` profile. (issue #3491)
 
 
 ## 0.8.3 (2021-Oct-28)

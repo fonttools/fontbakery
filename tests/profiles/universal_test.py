@@ -1152,3 +1152,16 @@ def test_check_sfnt_version():
     msg = assert_results_contain(check(ttFont), FAIL, "wrong-sfnt-version-cff")
     assert msg == (
         "Font with CFF data has incorrect sfntVersion value: '\x00\x01\x00\x00'")
+
+
+def test_check_whitespace_widths():
+    """ Whitespace glyphs have coherent widths? """
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/whitespace_widths")
+
+    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+    assert_PASS(check(ttFont))
+
+    ttFont["hmtx"].metrics["space"] = (0, 1)
+    assert_results_contain(check(ttFont),
+                           FAIL, 'different-widths')

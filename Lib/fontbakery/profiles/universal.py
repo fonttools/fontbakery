@@ -65,6 +65,7 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/gpos7',
         'com.adobe.fonts/check/freetype_rasterizer',
         'com.adobe.fonts/check/sfnt_version',
+        'com.google.fonts/check/whitespace_widths',
     ]
 
 
@@ -1757,6 +1758,52 @@ def com_adobe_fonts_check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
 
     else:
         return PASS, "Font has the correct sfntVersion value."
+
+
+@check(
+    id = 'com.google.fonts/check/whitespace_widths',
+    conditions = ['not missing_whitespace_chars'],
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/3843',
+                'legacy:check/050'],
+    rationale = """
+        If the space and nbspace glyphs have different widths, then Google Workspace
+        has problems with the font.
+        
+        The nbspace is used to replace the space character in multiple situations
+        in documents; such as the space before punctuation in languages that do that.
+        It avoids the punctuation to be separated from the last word and go to next line.
+        
+        This is automatic substitution by the text editors, not by fonts. It is also
+        used by designers in text composition practice to create nicely shaped paragraphs.
+        If the space and the nbspace are not the same width, it breaks the text
+        composition of documents.
+    """
+)
+def com_google_fonts_check_whitespace_widths(ttFont):
+    """Space and non-breaking space have the same width?"""
+    from fontbakery.utils import get_glyph_name
+
+    space_name = get_glyph_name(ttFont, 0x0020)
+    nbsp_name = get_glyph_name(ttFont, 0x00A0)
+
+    space_width = ttFont['hmtx'][space_name][0]
+    nbsp_width = ttFont['hmtx'][nbsp_name][0]
+
+    if space_width > 0 and space_width == nbsp_width:
+        yield PASS, "Space and non-breaking space have the same width."
+    else:
+        yield FAIL,\
+              Message("different-widths",
+                      f"Space and non-breaking space have differing width:"
+                      f" The space glyph named {space_name}"
+                      f" is {space_width} font units wide,"
+                      f" non-breaking space named ({nbsp_name})"
+                      f" is {nbsp_width} font units wide, and"
+                      f" both should be positive and the same."
+                      f" GlyphsApp has \"Sidebearing arithmetic\""
+                      f" (https://glyphsapp.com/tutorials/spacing)"
+                      f" which allows you to set the non-breaking"
+                      f" space width to always equal the space width.")
 
 
 profile.auto_register(globals())
