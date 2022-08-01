@@ -16,22 +16,20 @@ from multiprocessing import Process, Queue
 import queue
 
 from fontbakery.reporters import FontbakeryReporter
-from fontbakery.checkrunner import (  # NOQA
-              INFO
-            , WARN
-            , ERROR
-            , STARTCHECK
-            , SKIP
-            , PASS
-            , FAIL
-            , ENDCHECK
-            , END
-            , DEBUG
-            , CheckRunner
-            , session_protocol_generator
-            , drive_session_protocol
-            , get_profile_from_module_locator
-            )
+from fontbakery.checkrunner import (INFO,
+                                    WARN,
+                                    ERROR,
+                                    STARTCHECK,
+                                    SKIP,
+                                    PASS,
+                                    FAIL,
+                                    ENDCHECK,
+                                    END,
+                                    DEBUG,
+                                    CheckRunner,
+                                    session_protocol_generator,
+                                    drive_session_protocol,
+                                    get_profile_from_module_locator)
 from fontbakery.message import Message
 
 
@@ -39,12 +37,13 @@ from fontbakery.message import Message
 # WORKER/CHILD #
 ################
 
-name2status = {status.name:status for status in \
+name2status = {status.name: status for status in \
                (DEBUG, PASS, SKIP, INFO, WARN, FAIL, ERROR)}
+
 
 # Similar to DashbordWorkerReporter of Font Bakery Dashboard.
 class WorkerToQueueReporter(FontbakeryReporter):
-    def __init__(self, queue, profile, ticks_to_flush = None, **kwd):
+    def __init__(self, queue, profile, ticks_to_flush=None, **kwd):
         super().__init__(**kwd)
         self._queue = queue
         self._profile = profile
@@ -124,11 +123,12 @@ class WorkerToQueueReporter(FontbakeryReporter):
             self._queue.put(tuple(self._collectedChecks.items()))
         self._collectedChecks = None
 
-#This is the inverse of the serialization in WorkerToQueueReporter
+
+# This is the inverse of the serialization in WorkerToQueueReporter
 def check_protocol_from_worker_data(profile, key_check_data):
     key, check_data = key_check_data
     identity = profile.deserialize_identity(key)
-    yield STARTCHECK, None, identity  ## = event
+    yield STARTCHECK, None, identity  # = event
 
     for log in check_data['statuses']:
         status = name2status[log['status']]
@@ -140,10 +140,11 @@ def check_protocol_from_worker_data(profile, key_check_data):
             setattr(message, 'traceback', log['traceback'])
         else:
             message = log['message']
-        yield status, message, identity ### = event
+        yield status, message, identity  # = event
 
     status = name2status[check_data['result']]
-    yield ENDCHECK, status, identity ## = event
+    yield ENDCHECK, status, identity  # = event
+
 
 def _worker_jobs_generator(jobs_queue, profile, reporter):
     while True:
@@ -161,18 +162,18 @@ def _worker_jobs_generator(jobs_queue, profile, reporter):
             job = jobs_queue.get(True)
         yield profile.deserialize_identity(job)
 
-def multiprocessing_worker(jobs_queue, results_queue, profile_module_locator
-                         , runner_kwds):
+
+def multiprocessing_worker(jobs_queue, results_queue, profile_module_locator, runner_kwds):
     profile = get_profile_from_module_locator(profile_module_locator)
     runner = CheckRunner(profile, **runner_kwds)
-    reporter = WorkerToQueueReporter( results_queue
-                                    , profile=profile
-                                    , runner=runner
-                                    , ticks_to_flush=5
-                                    )
+    reporter = WorkerToQueueReporter(results_queue,
+                                     profile=profile,
+                                     runner=runner,
+                                     ticks_to_flush=5)
 
     next_check_gen = _worker_jobs_generator(jobs_queue, profile, reporter)
     runner.run_externally_controlled(reporter.receive, next_check_gen)
+
 
 #####################
 # DISPATCHER/PARENT #
@@ -187,6 +188,7 @@ def _results_generator(results_queue, len_results):
             count_results += 1
         if count_results >= len_results:
             return
+
 
 @contextmanager
 def _multiprocessing_checkrunner(jobs, process_count, *args):
@@ -209,11 +211,12 @@ def _multiprocessing_checkrunner(jobs, process_count, *args):
                         args=(jobs_queue, results_queue, *args))
             processes.append(p)
             p.start()
-        yield _results_generator(results_queue, len_jobs) # next_check_gen
+        yield _results_generator(results_queue, len_jobs)  # next_check_gen
     finally:
         for p in processes:
             p.terminate()
             p.join()
+
 
 def multiprocessing_runner(process_count, runner, runner_kwds):
     # process_count is a positive int, never 0 at this point
@@ -221,9 +224,9 @@ def multiprocessing_runner(process_count, runner, runner_kwds):
     profile = runner.profile
     joblist = list(profile.serialize_order(runner.order))
 
-    session_gen = session_protocol_generator(
-                      partial(check_protocol_from_worker_data, profile),
-                      runner.order)
+    session_gen = session_protocol_generator(partial(check_protocol_from_worker_data,
+                                                     profile),
+                                             runner.order)
     with _multiprocessing_checkrunner(joblist,
                                       process_count,
                                       profile.module_locator,

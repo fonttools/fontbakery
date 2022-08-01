@@ -115,8 +115,8 @@ def test_check_post_table_version():
     mock_cff_post_2 = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
 
     mock_cff_post_2["post"].formatType = 2
-    assert("CFF " in mock_cff_post_2)
-    assert("CFF2" not in mock_cff_post_2)
+    assert "CFF " in mock_cff_post_2
+    assert "CFF2" not in mock_cff_post_2
     mock_cff_post_2.reader.file.name = "post 2 CFF mock font"
 
     assert_results_contain(check(mock_cff_post_2),

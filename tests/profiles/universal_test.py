@@ -727,21 +727,21 @@ def test_glyph_has_ink():
 
     cff_test_font = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
     print('Test if CFF glyph with ink has ink')
-    assert(glyph_has_ink(cff_test_font, '.notdef') is True)
+    assert glyph_has_ink(cff_test_font, '.notdef') is True
     print('Test if CFF glyph without ink has ink')
-    assert(glyph_has_ink(cff_test_font, 'space') is False)
+    assert glyph_has_ink(cff_test_font, 'space') is False
 
     ttf_test_font = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Regular.ttf"))
     print('Test if TTF glyph with ink has ink')
-    assert(glyph_has_ink(ttf_test_font, '.notdef') is True)
+    assert glyph_has_ink(ttf_test_font, '.notdef') is True
     print('Test if TTF glyph without ink has ink')
-    assert(glyph_has_ink(ttf_test_font, 'space') is False)
+    assert glyph_has_ink(ttf_test_font, 'space') is False
 
     cff2_test_font = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf"))
     print('Test if CFF2 glyph with ink has ink')
-    assert(glyph_has_ink(cff2_test_font, '.notdef') is True)
+    assert glyph_has_ink(cff2_test_font, '.notdef') is True
     print('Test if CFF2 glyph without ink has ink')
-    assert(glyph_has_ink(cff2_test_font, 'space') is False)
+    assert glyph_has_ink(cff2_test_font, 'space') is False
 
 
 mada_fonts = [

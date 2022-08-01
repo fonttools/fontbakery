@@ -208,8 +208,8 @@ def test_check_code_pages():
                         "com.google.fonts/check/code_pages")
 
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
-    assert(ttFont['OS/2'].ulCodePageRange1 != 0 or
-           ttFont['OS/2'].ulCodePageRange2 != 0) # It has got at least 1 code page range declared
+    assert (ttFont['OS/2'].ulCodePageRange1 != 0 or
+            ttFont['OS/2'].ulCodePageRange2 != 0) # It has got at least 1 code page range declared
     assert_PASS(check(ttFont),
                 'with good font.')
 

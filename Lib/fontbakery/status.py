@@ -54,6 +54,7 @@ class Status:
 
     __repr__ = __str__
 
+
 # Status messages of the check runner protocol
 
 # Structuring statuses
@@ -82,14 +83,14 @@ class Status:
 
 # Log statuses
 # only between STARTCHECK and ENDCHECK:
-DEBUG = Status('DEBUG', 0) # Silent by default
+DEBUG = Status('DEBUG', 0)  # Silent by default
 PASS = Status('PASS', 1)
-SKIP = Status('SKIP', 2) # SKIP is heavier than PASS because it's likely more interesting to
-                         # see what got skipped, to reveal blind spots.
+SKIP = Status('SKIP', 2)  # SKIP is heavier than PASS because it's likely more interesting to
+                          # see what got skipped, to reveal blind spots.
 INFO = Status('INFO', 3)
-WARN = Status('WARN', 4) # A check that results in WARN may indicate a problem, but also may be OK.
-FAIL = Status('FAIL', 5) # A FAIL is a problem detected in the font or family.
-ERROR = Status('ERROR', 6) # Something a programmer must fix. It will make a check fail as well.
+WARN = Status('WARN', 4)  # A check that results in WARN may indicate a problem, but also may be OK.
+FAIL = Status('FAIL', 5)  # A FAIL is a problem detected in the font or family.
+ERROR = Status('ERROR', 6)  # Something a programmer must fix. It will make a check fail as well.
 
 # Start of the suite of checks. Must be always the first message, even in async mode.
 # Message is the full execution order of the whole profile

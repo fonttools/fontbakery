@@ -6013,10 +6013,10 @@ def com_google_fonts_check_stylisticset_description(ttFont):
             feature = ttFont['GSUB'].table.FeatureList.FeatureRecord[record]
             tag = feature.FeatureTag
             SSETS = [f'ss{n+1:02d}' for n in range(20)]
-            assert('ss00' not in SSETS)
-            assert('ss01' in SSETS)
-            assert('ss20' in SSETS)
-            assert('ss21' not in SSETS)
+            assert 'ss00' not in SSETS
+            assert 'ss01' in SSETS
+            assert 'ss20' in SSETS
+            assert 'ss21' not in SSETS
             if tag in SSETS:
                 if feature.Feature.FeatureParams == None:
                     passed = False
