@@ -34,6 +34,7 @@ mada_fonts = [
     TEST_FILE("mada/Mada-Regular.ttf"),
 ]
 
+
 @pytest.fixture
 def mada_ttFonts():
     return [TTFont(path) for path in mada_fonts]
@@ -84,9 +85,11 @@ cjk_font = TEST_FILE("cjk/SourceHanSans-Regular.otf")
 def montserrat_ttFonts():
     return [TTFont(path) for path in montserrat_fonts]
 
+
 @pytest.fixture
 def cabin_ttFonts():
     return [TTFont(path) for path in cabin_fonts]
+
 
 @pytest.fixture
 def vf_ttFont():
@@ -99,13 +102,15 @@ def change_name_table_id(ttFont, nameID, newEntryString, platEncID=0):
         if nameRecord.nameID == nameID and nameRecord.platEncID == platEncID:
             ttFont['name'].names[i].string = newEntryString
 
+
 def delete_name_table_id(ttFont, nameID):
     delete = []
     for i, nameRecord in enumerate(ttFont['name'].names):
         if nameRecord.nameID == nameID:
             delete.append(i)
     for i in sorted(delete, reverse=True):
-        del(ttFont['name'].names[i])
+        del ttFont['name'].names[i]
+
 
 @pytest.fixture
 def cabin_regular_path():

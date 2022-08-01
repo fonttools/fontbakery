@@ -111,10 +111,6 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/maxadvancewidth",
     #
     # =======================================
-    # From hmtx.py
-    "com.google.fonts/check/whitespace_widths",
-    #
-    # =======================================
     # From kern.py
     "com.google.fonts/check/kern_table",
     #
@@ -200,6 +196,7 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/gpos7",
     "com.adobe.fonts/check/freetype_rasterizer",
     "com.adobe.fonts/check/sfnt_version",
+    "com.google.fonts/check/whitespace_widths",
 }
 
 CHECKS_IN_THIS_FILE = [
