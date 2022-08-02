@@ -708,6 +708,7 @@ def is_noto(font_familyname):
     return font_familyname.startswith("Noto ")
 
 
+@condition
 def expected_font_names(ttFont, ttFonts):
     from axisregistry import build_name_table, build_fvar_instances, build_stat
     from copy import deepcopy
