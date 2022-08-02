@@ -328,7 +328,7 @@ def com_google_fonts_check_description_urls(description_html):
 
 
 @condition
-def description_html (description):
+def description_html(description):
     if not description:
         return
 
@@ -342,7 +342,8 @@ def description_html (description):
 
 @check(
     id = 'com.google.fonts/check/description/git_url',
-    conditions = ['description_html', 'not is_noto'],
+    conditions = ['description_html',
+                  'not is_noto'],
     rationale = """
         The contents of the DESCRIPTION.en-us.html file are displayed on the
         Google Fonts website in the about section of each font family specimen page.
