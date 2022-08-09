@@ -59,12 +59,12 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
     passed = True
     stat_table = ttFont["STAT"].table
 
-    if len(stat_table.AxisValueArray.AxisValue) == 0:
+    if ttFont["STAT"].table.AxisValueCount == 0:
         yield FAIL, Message(
             "no-axis-value-tables",
             "STAT table has no Axis Value tables.",
         )
-        passed = False
+        return
 
     if is_variable_font:
         # Collect all the values defined for each design axis in the STAT table.

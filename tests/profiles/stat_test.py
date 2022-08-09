@@ -62,7 +62,8 @@ def test_check_stat_has_axis_value_tables():
 
     # Now remove all Axis Value tables by emptying the AxisValueArray.
     # The check should FAIL.
-    ttFont["STAT"].table.AxisValueArray.AxisValue = []
+    ttFont["STAT"].table.AxisValueArray = None
+    ttFont["STAT"].table.AxisValueCount = 0
     msg = assert_results_contain(check(ttFont), FAIL, "no-axis-value-tables")
     assert msg == "STAT table has no Axis Value tables."
 
