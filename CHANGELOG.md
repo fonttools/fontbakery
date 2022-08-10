@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 #### On the Google Fonts Profile
+  - **[com.fontwerk/check/inconsistencies_between_fvar_stat]:** Do not raise an error if font is missing AxisValues (issue #3848 PR #3849)
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Do not raise an error if font is missing AxisValues (issue #3848 PR #3849)
   - **[com.google.fonts/check/name/familyname]:** Removed due to new `font_names` check (PR #3800)
   - **[com.google.fonts/check/name/subfamilyname]:** Removed due to new `font_names` check (PR #3800)

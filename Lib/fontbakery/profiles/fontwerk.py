@@ -139,7 +139,11 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
 
 
 def is_covered_in_stat(ttFont, axis_tag, value):
+    if "STAT" not in ttFont:
+        return False
     stat_table = ttFont['STAT'].table
+    if stat_table.AxisValueCount == 0:
+        return False
     for ax_value in stat_table.AxisValueArray.AxisValue:
         axis_tag_stat = stat_table.DesignAxisRecord.Axis[ax_value.AxisIndex].AxisTag
         if axis_tag != axis_tag_stat:
