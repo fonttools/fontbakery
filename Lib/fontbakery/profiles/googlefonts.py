@@ -5643,11 +5643,12 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
     """,
     conditions = ["is_variable_font"],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3100'
+    # NOTE: This is a high-priority WARN.
 )
 def com_google_fonts_check_mandatory_avar_table(ttFont):
     """Ensure variable fonts include an avar table."""
     if "avar" not in ttFont:
-        yield FAIL,\
+        yield WARN,\
               Message('missing-avar',
                       "This variable font does not have an avar table.")
     else:

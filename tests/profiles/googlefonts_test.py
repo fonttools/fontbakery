@@ -3805,7 +3805,7 @@ def test_check_mandatory_avar_table():
 
     del ttFont["avar"]
     assert_results_contain(check(ttFont),
-                           FAIL, "missing-avar")
+                           WARN, "missing-avar")
 
 
 def test_check_description_family_update():
