@@ -29,6 +29,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont_instance_names]:** Removed due to new `fvar_instances` check (PR #3800)
 
 ### BugFixes
+  - **[com.google.fonts/check/unreachable_glyphs]:** Fix crash by adding support for color-font legacy COLR v0 format. (issue #3850)
   - fixed bug on fontbakery_version check so that it now understands that v0.x.9 is older than v0.x.10 (issue #3813)
   - Fix fontbakery.profiles.shared_conditions.*_*_coord functions so they work on Italic fonts (issue #3828, PR #3834)
 

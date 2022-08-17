@@ -911,7 +911,11 @@ def test_check_unreachable_glyphs():
     font = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
     assert_PASS(check(font))
 
-    # Also ensure it works correctly with a color font:
+    # Also ensure it works correctly with a color font in COLR v0 format:
+    font = TEST_FILE("color_fonts/AmiriQuranColored.ttf")
+    assert_PASS(check(font))
+
+    # And also with a color font in COLR v1 format:
     font = TEST_FILE("color_fonts/noto-glyf_colr_1.ttf")
     assert_PASS(check(font))
 

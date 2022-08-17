@@ -1294,13 +1294,24 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
     all_glyphs.discard(".notdef")
 
     if "COLR" in ttFont:
-        for paint_record in ttFont["COLR"].table.BaseGlyphList.BaseGlyphPaintRecord:
-            if hasattr(paint_record.Paint, "Glyph"):
-                all_glyphs.discard(paint_record.Paint.Glyph)
+        if ttFont["COLR"].version == 0:
+            for glyphname, colorlayers in ttFont["COLR"].ColorLayers.items():
+                for layer in colorlayers:
+                    all_glyphs.discard(layer.name)
 
-        for paint in ttFont["COLR"].table.LayerList.Paint:
-            if hasattr(paint, "Glyph"):
-                all_glyphs.discard(paint.Glyph)
+        elif ttFont["COLR"].version == 1:
+            # FIXME: Cosimo Lupo said at https://github.com/googlefonts/fontbakery/pull/3838#pullrequestreview-1053613190
+            #        that a version=1 COLR table can be mixed and
+            #        also contain COLRv0 layer glyphs, in the
+            #        font["COLR"].table.{BaseGlyph,Layer}RecordArray.
+
+            for paint_record in ttFont["COLR"].table.BaseGlyphList.BaseGlyphPaintRecord:
+                if hasattr(paint_record.Paint, "Glyph"):
+                    all_glyphs.discard(paint_record.Paint.Glyph)
+
+            for paint in ttFont["COLR"].table.LayerList.Paint:
+                if hasattr(paint, "Glyph"):
+                    all_glyphs.discard(paint.Glyph)
 
 
     if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
