@@ -407,9 +407,9 @@ def com_google_fonts_check_description_valid_html(descfile, description):
                       f" later be included in the Google Fonts"
                       f" font family specimen webpage.")
 
-    from lxml import etree
+    from lxml import html
     try:
-        etree.fromstring("<html>" + description + "</html>")
+        html.fromstring("<html>" + description + "</html>")
     except Exception as e:
         passed = False
         yield FAIL,\

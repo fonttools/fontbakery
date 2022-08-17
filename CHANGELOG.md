@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/font_names]:** Ensure font names match our specification (PR #3800)
   - **[com.google.fonts/check/fvar_instances]:** Ensure fvar instances match our specification (PR #3800)
   - **[com.google.fonts/check/STAT]:** Ensure fonts have compulsory STAT table axis values (PR #3800)
+  - **[com.google.fonts/check/description/valid_html]:** Fix parser to accept ampersand character in DESCRIPTION files. (issue #3840)
 
 ### Changes to existing checks
 #### On the Google Fonts Profile

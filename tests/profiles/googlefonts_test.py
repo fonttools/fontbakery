@@ -282,13 +282,13 @@ def test_check_description_valid_html():
                            FAIL, 'html-tag',
                            'with description file that contains the <html> tag...')
 
-    bad_desc = ("<p>This example has the & caracter,"
-                " but does not escape it with an HTML entity code."
-                " It should use &amp; instead."
-                "</p>")
-    assert_results_contain(check(font, {"description": bad_desc}),
-                           FAIL, 'malformed-snippet',
-                           'with a known-bad file (not using HTML entity syntax)...')
+    good_desc = ("<p>This example has the & caracter,"
+                 " and does not escape it with an HTML entity code."
+                 " It could use &amp; instead, but that's not strictly necessary."
+                 "</p>")
+    # See discussion at https://github.com/googlefonts/fontbakery/issues/3840
+    assert_PASS(check(font, {"description": good_desc}),
+                'with a file containing ampersand char without HTML entity syntax...')
 
 
 def test_check_description_min_length():
