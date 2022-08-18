@@ -517,7 +517,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 ## 0.7.31 (2020-Sept-24)
 ### Note-worthy code changes
   - This is a quick new release to address a silly but fatal crash (issue #3044)
-  - We normalized the ordering of log messages of some checks. To avoid imprevisibility of python set iteration, we sort them before printing. This helps to reduce diffs for people that compare subsequent runs of fontbakery on automated AQ setups (issue #3038)
+  - We normalized the ordering of log messages of some checks. To avoid imprevisibility of python set iteration, we sort them before printing. This helps to reduce diffs for people that compare subsequent runs of fontbakery on automated QA setups (issue #3038)
 
 
 ## 0.7.30 (2020-Sept-24)
