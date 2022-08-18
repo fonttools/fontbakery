@@ -1333,7 +1333,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
               Message("unreachable-glyphs",
                       f"The following glyphs could not be reached"
                       f" by codepoint or substitution rules:\n\n"
-                      f"{bullet_list(config, list(all_glyphs))}\n")
+                      f"{bullet_list(config, sorted(list(all_glyphs)))}\n")
     else:
         yield PASS, "Font did not contain any unreachable glyphs"
 
@@ -1657,7 +1657,7 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
               Message("unattached-dotted-circle-marks",
                       f"The following glyphs could not be attached"
                       f" to the dotted circle glyph:\n\n"
-                      f"{bullet_list(config, unattached)}")
+                      f"{bullet_list(config, sorted(unattached))}")
     else:
         yield PASS, "All marks were anchored to dotted circle"
 
