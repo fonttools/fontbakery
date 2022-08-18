@@ -3044,8 +3044,8 @@ def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFon
 
     if bad_glyphs:
         formatted_list = "\t* " + pretty_print_list(config,
-                                            bad_glyphs,
-                                            sep="\n\t* ")
+                                                    sorted(bad_glyphs),
+                                                    sep="\n\t* ")
 
         yield WARN, ("Following glyphs differ greatly from"
                      f" Google Fonts version:\n{formatted_list}")

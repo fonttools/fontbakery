@@ -46,7 +46,7 @@ def com_google_fonts_check_layout_valid_feature_tags(ttFont):
         yield FAIL, \
               Message("bad-feature-tags",
                       "The following invalid feature tags were found in the font: "
-                      + ", ".join(bad_tags))
+                      + ", ".join(sorted(bad_tags)))
     else:
         yield PASS, "No invalid feature tags were found"
 
@@ -80,7 +80,7 @@ def com_google_fonts_check_layout_valid_script_tags(ttFont):
         yield FAIL, \
               Message("bad-script-tags",
                       "The following invalid script tags were found in the font: "
-                      + ", ".join(bad_tags))
+                      + ", ".join(sorted(bad_tags)))
     else:
         yield PASS, "No invalid script tags were found"
 
@@ -115,6 +115,6 @@ def com_google_fonts_check_layout_valid_language_tags(ttFont):
         yield FAIL, \
               Message("bad-language-tags",
                       "The following invalid language tags were found in the font: "
-                      + ", ".join(bad_tags))
+                      + ", ".join(sorted(bad_tags)))
     else:
         yield PASS, "No invalid language tags were found"
