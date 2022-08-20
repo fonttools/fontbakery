@@ -726,7 +726,7 @@ def com_google_fonts_check_STAT_strings(ttFont):
               Message("bad-italic",
                       f'The following AxisValue entries on the STAT table'
                       f' should not contain "Italic":\n'
-                      f' {list(sorted(bad_values))}')
+                      f' {sorted(bad_values)}')
 
     if passed:
         yield PASS, "Looks good!"
@@ -1333,7 +1333,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
               Message("unreachable-glyphs",
                       f"The following glyphs could not be reached"
                       f" by codepoint or substitution rules:\n\n"
-                      f"{bullet_list(config, sorted(list(all_glyphs)))}\n")
+                      f"{bullet_list(config, sorted(all_glyphs))}\n")
     else:
         yield PASS, "Font did not contain any unreachable glyphs"
 
