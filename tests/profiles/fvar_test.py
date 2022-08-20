@@ -4,7 +4,6 @@ from fontTools.ttLib.tables._f_v_a_r import Axis
 from fontbakery.checkrunner import FAIL, WARN, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
-    assert_SKIP,
     assert_results_contain,
     CheckTester,
     TEST_FILE,
