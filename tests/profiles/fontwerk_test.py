@@ -1,5 +1,5 @@
 from fontTools.ttLib import TTFont
-from fontbakery.checkrunner import FAIL
+from fontbakery.checkrunner import FAIL, SKIP
 from fontbakery.codetesting import (assert_PASS,
                                     assert_results_contain,
                                     CheckTester,
@@ -47,6 +47,12 @@ def test_check_weight_class_fvar():
     assert_results_contain(check(ttFont),
                            FAIL, 'bad-weight-class',
                            "but should match fvar default value.")
+
+    # Test with a variable font that doesn't have a 'wght' (Weight) axis.
+    # The check should yield SKIP.
+    ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: has_wght_axis"
 
 
 def test_check_inconsistencies_between_fvar_stat():

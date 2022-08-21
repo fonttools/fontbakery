@@ -113,7 +113,7 @@ def com_fontwerk_check_vendor_id(ttFont):
         According to Microsoft's OT Spec the OS/2 usWeightClass
         should match the fvar default value.
     """,
-    conditions = ["is_variable_font"],
+    conditions = ["is_variable_font", "has_wght_axis"],
     proposal = 'https://github.com/googlefonts/gftools/issues/477'
 )
 def com_fontwerk_check_weight_class_fvar(ttFont):
@@ -122,11 +122,8 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
     fvar = ttFont['fvar']
     default_axis_values = {a.axisTag: a.defaultValue for a in fvar.axes}
 
-    fvar_value = default_axis_values.get('wght', None)
+    fvar_value = default_axis_values.get('wght')
     os2_value = ttFont["OS/2"].usWeightClass
-
-    if fvar_value is None:
-        return
 
     if os2_value != int(fvar_value):
         yield FAIL,\
