@@ -166,7 +166,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
     for key in required:
         if key not in ttFont:
             missing_tables = True
-            yield FAIL, Message(f'lacks-table', f"Font lacks '{key}' table.")
+            yield FAIL, Message('lacks-table', f"Font lacks '{key}' table.")
 
     if missing_tables:
         return

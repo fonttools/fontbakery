@@ -23,7 +23,7 @@ def com_google_fonts_check_linegaps(ttFont):
     missing_tables = _get_missing_tables(required_tables, ttFont)
     if missing_tables:
         for table_tag in missing_tables:
-            yield FAIL, Message(f"lacks-table", f"Font lacks '{table_tag}' table.")
+            yield FAIL, Message("lacks-table", f"Font lacks '{table_tag}' table.")
         return
 
     if ttFont["hhea"].lineGap != 0:
@@ -48,7 +48,7 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
     missing_tables = _get_missing_tables(required_tables, ttFont)
     if missing_tables:
         for table_tag in missing_tables:
-            yield FAIL, Message(f"lacks-table", f"Font lacks '{table_tag}' table.")
+            yield FAIL, Message("lacks-table", f"Font lacks '{table_tag}' table.")
         return
 
     hhea_advance_width_max = ttFont['hhea'].advanceWidthMax
