@@ -179,6 +179,10 @@ def test_check_monospace():
     assert (status == WARN and message.code == "mono-outliers") or \
            (status == PASS and message.code == "mono-good")
 
+    # Confirm the check yields FAIL if the font doesn't have a required table
+    del ttFont["OS/2"]
+    assert_results_contain(check(ttFont), FAIL, "lacks-table")
+
 
 def test_check_name_match_familyname_fullfont():
     """ Does full font name begin with the font family name? """

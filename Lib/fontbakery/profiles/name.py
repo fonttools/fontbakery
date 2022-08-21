@@ -159,12 +159,6 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
     """Checking correctness of monospaced metadata."""
     from fontbakery.constants import (IsFixedWidth,
                                       PANOSE_Proportion)
-    failed = False
-    # Note: These values are read from the dict here only to
-    # reduce the max line length in the check implementation below:
-    seems_monospaced = glyph_metrics_stats["seems_monospaced"]
-    most_common_width = glyph_metrics_stats["most_common_width"]
-    width_max = glyph_metrics_stats['width_max']
 
     # Check for missing tables before indexing them
     missing_tables = False
@@ -172,12 +166,17 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
     for key in required:
         if key not in ttFont:
             missing_tables = True
-            yield FAIL,\
-                  Message(f'lacks-{key}',
-                          f"Font file lacks a '{key}' table.")
+            yield FAIL, Message(f'lacks-table', f"Font lacks '{key}' table.")
 
     if missing_tables:
         return
+
+    failed = False
+    # Note: These values are read from the dict here only to
+    # reduce the max line length in the check implementation below:
+    seems_monospaced = glyph_metrics_stats["seems_monospaced"]
+    most_common_width = glyph_metrics_stats["most_common_width"]
+    width_max = glyph_metrics_stats['width_max']
 
     if ttFont['hhea'].advanceWidthMax != width_max:
         failed = True
