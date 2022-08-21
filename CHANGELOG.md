@@ -32,15 +32,25 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### BugFixes
   - **[com.google.fonts/check/unreachable_glyphs]:** Fix crash by adding support for color-font legacy COLR v0 format. (issue #3850)
-  - fixed bug on fontbakery_version check so that it now understands that v0.x.9 is older than v0.x.10 (issue #3813)
-  - Fix fontbakery.profiles.shared_conditions.*_*_coord functions so they work on Italic fonts (issue #3828, PR #3834)
+  - Fixed bug on `fontbakery_version` check so that it now understands that v0.x.9 is older than v0.x.10 (issue #3813)
+  - Fixed `fontbakery.profiles.shared_conditions.*_*_coord` functions so they work on Italic fonts (issue #3828, PR #3834)
+  - **[com.fontwerk/check/weight_class_fvar]:** Fixed ERROR result as the check did not yield any status when a variable font had no `wght` axis. (PR #3866)
+  - **[com.google.fonts/check/varfont_duplicate_instance_names]:** Fixed crash caused by trying to decode a non-existant `name`-table record. (PR #3866)
+  - **[com.google.fonts/check/linegaps]:** Fixed crash by checking for the existence of tables required by the check before accessing them. (issue #3656, PR #3866)
+  - **[com.google.fonts/check/maxadvancewidth]:** Fixed crash by checking for the existence of tables required by the check before accessing them. (issue #3656, PR #3866)
+  - **[com.google.fonts/check/unexpected_subtables]:** Fixed crash by checking for the existence of `OS/2` table required by `is_cjk_font` condition before accessing it. (PR #3866)
+  - **[com.adobe.fonts/check/varfont/valid_axis_nameid]:** Fixed ERROR result as the check did not yield any status when a variable font had no `name` table. (PR #3866)
+  - **[com.adobe.fonts/check/varfont/valid_subfamily_nameid]:** Fixed ERROR result as the check did not yield any status when a variable font had no `name` table. (PR #3866)
+  - **[com.adobe.fonts/check/varfont/valid_postscript_nameid]:** Fixed ERROR result as the check did not yield any status when a variable font had no `name` table. (PR #3866)
+  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** Fixed ERROR result as the check did not yield any status when a variable font had no `name` table. (PR #3866)
+  - **[com.adobe.fonts/check/varfont/distinct_instance_records]:** Fixed ERROR result as the check did not yield any status when a variable font had no `name` table. (PR #3866)
 
 ### Migrations
 #### To the `Universal` profile
   - **[com.google.fonts/check/whitespace_widths]:** moved from `OpenType` profile. Also added rationale text. (issue #3843)
 
 ### Changes to existing checks
-#### On the Universal Profile
+#### On the OpenType Profile
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** Relaxed the implementation to compare name values, not strictly IDs. (PR #3821)
 
 #### On the Universal Profile
