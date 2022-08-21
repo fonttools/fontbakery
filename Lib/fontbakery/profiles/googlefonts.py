@@ -5047,31 +5047,40 @@ def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
 )
 def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
     """Check variable font instances don't have duplicate names"""
-    from fontbakery.constants import SHOW_GF_DOCS_MSG
-
-    seen = []
-    duplicate = []
+    seen = set()
+    duplicate = set()
+    found_all_eng_name_recs = True
+    PLAT_ID = PlatformID.WINDOWS
+    ENC_ID = WindowsEncodingID.UNICODE_BMP
+    LANG_ID = WindowsLanguageID.ENGLISH_USA
 
     for instance in ttFont['fvar'].instances:
-        name = ttFont['name'].getName(
-            instance.subfamilyNameID,
-            PlatformID.WINDOWS,
-            WindowsEncodingID.UNICODE_BMP,
-            WindowsLanguageID.ENGLISH_USA
-        ).toUnicode()
+        name_id = instance.subfamilyNameID
+        name = ttFont['name'].getName(name_id, PLAT_ID, ENC_ID, LANG_ID)
 
-        if name in seen:
-            duplicate.append(name)
+        if name:
+            name = name.toUnicode()
 
-        if not name in seen:
-            seen.append(name)
+            if name in seen:
+                duplicate.add(name)
+            else:
+                seen.add(name)
+        else:
+            found_all_eng_name_recs = False
+            yield FAIL, Message(
+                'name-record-not-found',
+                f"A 'name' table record for platformID {PLAT_ID},"
+                f" encodingID {ENC_ID}, languageID {LANG_ID}({LANG_ID:04X}),"
+                f" and nameID {name_id} was not found.")
 
     if duplicate:
-        duplicate_instances = "\n\t- ".join([""] + duplicate)
+        duplicate_instances = ''.join(f'* {inst}\n' for inst in sorted(duplicate))
         yield FAIL,\
               Message('duplicate-instance-names',
-                      f'Following instances names are duplicate: {duplicate_instances}\n')
-    else:
+                      'Following instances names are duplicate:\n\n'
+                      f'{duplicate_instances}')
+
+    elif found_all_eng_name_recs:
         yield PASS, "Instance names are unique"
 
 

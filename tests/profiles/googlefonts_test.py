@@ -3561,7 +3561,7 @@ def test_check_varfont_instance_names(vf_ttFont):
 
 def test_check_varfont_duplicate_instance_names(vf_ttFont):
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/fvar_instances")
+                        "com.google.fonts/check/varfont_duplicate_instance_names")
 
     assert_PASS(check(vf_ttFont),
                 'with a variable font which has unique instance names.')
@@ -3580,7 +3580,14 @@ def test_check_varfont_duplicate_instance_names(vf_ttFont):
                                platEncID=WindowsEncodingID.UNICODE_BMP,
                                langID=WindowsLanguageID.ENGLISH_USA)
     assert_results_contain(check(vf_ttFont2),
-                           FAIL, 'bad-fvar-instances')
+                           FAIL, 'duplicate-instance-names')
+
+    # Change the nameID of the 3rd named instance to 456,
+    # and don't create a name record with that nameID.
+    name_id = 456
+    vf_ttFont2['fvar'].instances[2].subfamilyNameID = name_id
+    msg = assert_results_contain(check(vf_ttFont2), FAIL, 'name-record-not-found')
+    assert f" and nameID {name_id} was not found." in msg
 
 
 def test_check_varfont_unsupported_axes():
