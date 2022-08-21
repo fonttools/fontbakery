@@ -290,10 +290,11 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
     """Validates that the value of axisNameID used by each VariationAxisRecord
     is greater than 255 and less than 32768."""
 
-    passed = True
     if not has_name_table:
-        return FAIL, Message("no-name", "Font has no name table")
+        yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
+        return
 
+    passed = True
     name_table = ttFont["name"]
 
     font_axis_nameids = [axis.axisNameID for axis in ttFont["fvar"].axes]
@@ -332,10 +333,11 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table)
     """Validates that the value of subfamilyNameID used by each InstanceRecord
     is 2, 17, or greater than 255 and less than 32768."""
 
-    passed = True
     if not has_name_table:
-        return FAIL, Message("no-name", "Font has no name table")
+        yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
+        return
 
+    passed = True
     name_table = ttFont["name"]
 
     font_subfam_nameids = [inst.subfamilyNameID for inst in ttFont["fvar"].instances]
@@ -378,9 +380,11 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
     """Validates that the value of postScriptNameID used by each InstanceRecord
     is 6, 0xFFFF, or greater than 255 and less than 32768."""
 
-    passed = True
     if not has_name_table:
-        return FAIL, Message("no-name", "Font has no name table")
+        yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
+        return
+
+    passed = True
     name_table = ttFont["name"]
 
     font_postscript_nameids = [
@@ -434,10 +438,11 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
     the same value as 2), and its postScriptNameID value is set to 6 (or
     something with the same value as 6)."""
 
-    passed = True
     if not has_name_table:
-        return FAIL, Message("no-name", "Font has no name table")
+        yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
+        return
 
+    passed = True
     name_table = ttFont["name"]
     fvar_table = ttFont["fvar"]
 
@@ -537,10 +542,11 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
 def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_table):
     """Validates that all of the instance records in a given font have distinct data."""
 
-    passed = True
     if not has_name_table:
-        return FAIL, Message("no-name", "Font has no name table")
+        yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
+        return
 
+    passed = True
     name_table = ttFont["name"]
 
     unique_inst_recs = set()
