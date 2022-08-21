@@ -43,6 +43,11 @@ def has_name_table(ttFont):
 
 
 @condition
+def has_os2_table(ttFont):
+    return "OS/2" in ttFont.keys()
+
+
+@condition
 def has_STAT_table(ttFont):
     return "STAT" in ttFont
 
@@ -475,6 +480,9 @@ def is_cjk_font(ttFont):
     from fontbakery.constants import (CJK_CODEPAGE_BITS,
                                       CJK_UNICODE_RANGE_BITS,
                                       CJK_UNICODE_RANGES)
+    if not has_os2_table(ttFont):
+        return
+
     os2 = ttFont["OS/2"]
 
     # OS/2 code page checks
