@@ -360,6 +360,10 @@ def test_check_varfont_valid_axis_nameid():
         " is not greater than 255 and less than 32768."
     )
 
+    # Confirm the check yields FAIL if the font doesn't have a required table
+    del ttFont['name']
+    assert_results_contain(check(ttFont), FAIL, "lacks-table")
+
 
 def test_check_varfont_valid_subfamily_nameid():
     """The value of subfamilyNameID used by each InstanceRecord must
@@ -412,6 +416,10 @@ def test_check_varfont_valid_subfamily_nameid():
         " is neither 2, 17, or greater than 255 and less than 32768."
     )
 
+    # Confirm the check yields FAIL if the font doesn't have a required table
+    del ttFont['name']
+    assert_results_contain(check(ttFont), FAIL, "lacks-table")
+
 
 def test_check_varfont_valid_postscript_nameid():
     """The value of postScriptNameID used by each InstanceRecord must
@@ -463,6 +471,10 @@ def test_check_varfont_valid_postscript_nameid():
         "'Unnamed' instance has a postScriptNameID value that"
         " is neither 6, 0xFFFF, or greater than 255 and less than 32768."
     )
+
+    # Confirm the check yields FAIL if the font doesn't have a required table
+    del ttFont['name']
+    assert_results_contain(check(ttFont), FAIL, "lacks-table")
 
 
 def test_check_varfont_valid_default_instance_nameids():
@@ -529,6 +541,10 @@ def test_check_varfont_valid_default_instance_nameids():
         "'Regular' instance has the same coordinates as the default instance; "
         "its postscript name should be 'Cabin-Regular', instead of 'Pablo Impallari. http://www.impallari.com Igino Marini. http://www.ikern.com'."
     )
+
+    # Confirm the check yields FAIL if the font doesn't have a required table
+    del ttFont['name']
+    assert_results_contain(check(ttFont), FAIL, "lacks-table")
 
 
 def test_check_varfont_same_size_instance_records():
@@ -601,3 +617,7 @@ def test_check_varfont_distinct_instance_records():
     msg = assert_results_contain(
         check(ttFont), WARN, "repeated-instance-record:SemiBold")
     assert msg == "'SemiBold' is a repeated instance record."
+
+    # Confirm the check yields FAIL if the font doesn't have a required table
+    del ttFont['name']
+    assert_results_contain(check(ttFont), FAIL, "lacks-table")
