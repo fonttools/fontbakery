@@ -6,17 +6,15 @@ from fontbakery.status import WARN, PASS, FAIL, SKIP #, INFO, ERROR
 from fontbakery.callable import check #, disable
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
-from fontbakery.constants import (PlatformID,
+from fontbakery.constants import (NameID,
+                                  PlatformID,
                                   WindowsEncodingID,
                                   UnicodeEncodingID,
                                   MacintoshEncodingID)
 
-from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
-profile_imports = [
-    'fontbakery.profiles.googlefonts',
-    ('.shared_conditions', ('glyph_metrics_stats', 'preferred_cmap', 'unicoderange'))
-]
-
+profile_imports = (
+    (".", ("shared_conditions", "googlefonts", "googlefonts_conditions")),
+)
 profile = profile_factory(default_section=Section("Noto Fonts"))
 
 profile.configuration_defaults = {
@@ -129,9 +127,12 @@ def _get_advance_width_for_char(ttFont, ch):
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2676'
 )
-def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
+def com_google_fonts_check_cmap_unexpected_subtables(ttFont, has_os2_table, is_cjk_font):
     """Ensure all cmap subtables are the typical types expected in a font."""
-    from fontbakery.profiles.shared_conditions import is_cjk_font
+
+    if not has_os2_table:
+        yield FAIL, Message("font-lacks-OS/2-table", "Font lacks 'OS/2' table.")
+        return
 
     passed = True
     # Note:
@@ -154,7 +155,7 @@ def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
         ( 4, PlatformID.UNICODE, UnicodeEncodingID.UNICODE_2_0_BMP_ONLY),        #  97.0% of GFonts TTFs (only 84 files lack it)
         (12, PlatformID.UNICODE, UnicodeEncodingID.UNICODE_2_0_FULL)             #   2.9% of GFonts TTFs (82 files)
     ]
-    if is_cjk_font(ttFont):
+    if is_cjk_font:
         EXPECTED_SUBTABLES.extend([
             # Adobe says historically some programs used these to identify
             # the script in the font.  The encodingID is the quickdraw
