@@ -36,6 +36,10 @@ def test_check_linegaps():
     ttFont['OS/2'].sTypoLineGap = 0
     assert_PASS(check(ttFont))
 
+    # Confirm the check yields FAIL if the font doesn't have a required table
+    del ttFont['OS/2']
+    assert_results_contain(check(ttFont), FAIL, "lacks-table")
+
 
 def test_check_maxadvancewidth():
     """ MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables? """
@@ -49,3 +53,6 @@ def test_check_maxadvancewidth():
     assert_results_contain(check(ttFont),
                            FAIL, 'mismatch')
 
+    # Confirm the check yields FAIL if the font doesn't have a required table
+    del ttFont['hmtx']
+    assert_results_contain(check(ttFont), FAIL, "lacks-table")
