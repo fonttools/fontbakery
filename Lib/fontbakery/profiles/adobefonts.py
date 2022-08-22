@@ -136,6 +136,7 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From notofonts.py
+    # "com.google.fonts/check/cmap/unexpected_subtables",  # PERMANENTLY_EXCLUDED
     # "com.google.fonts/check/hmtx/comma_period",          # PERMANENTLY_EXCLUDED
     # "com.google.fonts/check/hmtx/encoded_latin_digits",  # PERMANENTLY_EXCLUDED
     # "com.google.fonts/check/hmtx/whitespace_advances",   # PERMANENTLY_EXCLUDED
@@ -146,7 +147,6 @@ SET_EXPLICIT_CHECKS = {
     # "com.google.fonts/check/cmap/alien_codepoints",
     # "com.google.fonts/check/unicode_range_bits",
     "com.google.fonts/check/cmap/format_12",
-    "com.google.fonts/check/cmap/unexpected_subtables",
     #
     # =======================================
     # From os2.py
