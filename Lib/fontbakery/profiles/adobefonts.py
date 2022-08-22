@@ -401,6 +401,7 @@ def com_adobe_fonts_check_nameid_1_win_english(ttFont, has_name_table):
         that can be included in OpenType font files.⏎
         Fonts that do not pass this check are guaranteed to be rejected by the pipeline.
     """,
+    proposal="https://github.com/googlefonts/fontbakery/pull/3870",
 )
 def com_adobe_fonts_check_unsupported_tables(ttFont):
     """Does the font has any unsupported tables?"""
