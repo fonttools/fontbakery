@@ -89,7 +89,6 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From googlefonts.py
-    # "com.google.fonts/check/varfont_has_instances",
     # "com.google.fonts/check/varfont_weight_instances",  # weak rationale
     "com.google.fonts/check/aat",
     "com.google.fonts/check/fvar_name_entries",
