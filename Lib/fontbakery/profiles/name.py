@@ -264,6 +264,15 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
         If the Family Name is not included as the first part of the Full Font Name, and
         the user embeds the font in a document using a Microsoft Office app, the app
         will fail to render the font when it opens the document again.
+
+        NOTE: Up until version 1.5, the OpenType spec included the following exception
+        in the definition of Full Font Name:
+
+            "An exception to the [above] definition of Full font name is for Microsoft
+            platform strings for CFF OpenType fonts: in this case, the Full font name
+            string must be identical to the PostScript FontName in the CFF Name INDEX."
+
+        https://docs.microsoft.com/en-us/typography/opentype/otspec150/name#name-ids
     """,
     proposal = 'legacy:check/068'
 )
