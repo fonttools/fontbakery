@@ -353,3 +353,30 @@ def test_check_override_match_familyname_fullfont():
     msg = assert_results_contain(check(ttFont), WARN, "mismatch-font-names")
     assert (f"the full font name {full_font_name!r}"
             " does not begin with the font family name") in msg
+
+
+def test_check_override_trailing_spaces():
+    """Check that overridden test yields WARN rather than FAIL."""
+    check = CheckTester(
+        adobefonts_profile,
+        f"com.google.fonts/check/name/trailing_spaces{OVERRIDE_SUFFIX}",
+    )
+
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Semibold.otf"))
+    msg = assert_PASS(check(ttFont), PASS)
+    assert msg == "No trailing spaces on name table entries."
+
+    # Add a trailing space to the License string for Microsoft platform record
+    name_table = ttFont["name"]
+    license_string = name_table.getName(NameID.LICENSE_DESCRIPTION,
+                                        PlatformID.WINDOWS,
+                                        WindowsEncodingID.UNICODE_BMP,
+                                        WindowsLanguageID.ENGLISH_USA)
+    license_string = f"{license_string.toUnicode()} "
+    name_table.setName(license_string,
+                       NameID.LICENSE_DESCRIPTION,
+                       PlatformID.WINDOWS,
+                       WindowsEncodingID.UNICODE_BMP,
+                       WindowsLanguageID.ENGLISH_USA)
+    msg = assert_results_contain(check(ttFont), WARN, "trailing-space")
+    assert msg.endswith("'This Font [...]Software. '")
