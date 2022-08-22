@@ -126,13 +126,13 @@ SET_EXPLICIT_CHECKS = {
     # =======================================
     # From name.py
     # "com.google.fonts/check/name/no_copyright_on_description",  # PERMANENTLY_EXCLUDED # noqa
+    "com.google.fonts/check/name/match_familyname_fullfont",  # IS_OVERRIDDEN
     "com.adobe.fonts/check/family/max_4_fonts_per_family_name",
     "com.adobe.fonts/check/name/empty_records",
     "com.adobe.fonts/check/name/postscript_name_consistency",
     "com.adobe.fonts/check/name/postscript_vs_cff",
     "com.google.fonts/check/family_naming_recommendations",
     "com.google.fonts/check/monospace",
-    "com.google.fonts/check/name/match_familyname_fullfont",
     #
     # =======================================
     # From notofonts.py
@@ -221,6 +221,7 @@ OVERRIDDEN_CHECKS = [
     "com.adobe.fonts/check/freetype_rasterizer",
     "com.google.fonts/check/family/win_ascent_and_descent",
     "com.google.fonts/check/fontbakery_version",
+    "com.google.fonts/check/name/match_familyname_fullfont",
     "com.google.fonts/check/os2_metrics_match_hhea",
     "com.google.fonts/check/valid_glyphnames",
     "com.google.fonts/check/whitespace_glyphs",
@@ -452,6 +453,18 @@ profile.check_log_override(
     reason=(
         "For Adobe, users shouldn't be bothered with a failed check"
         " if their internet connection isn't functional.",
+    ),
+)
+
+
+profile.check_log_override(
+    # From name.py
+    "com.google.fonts/check/name/match_familyname_fullfont",
+    overrides=(("mismatch-font-names", WARN, KEEP_ORIGINAL_MESSAGE),),
+    reason=(
+        "Many CFF OpenType fonts in circulation are built with the Microsoft platform"
+        " Full font name string identical to the PostScript FontName in the CFF Name"
+        " INDEX. This practice was documented in the OpenType spec until version 1.5.",
     ),
 )
 

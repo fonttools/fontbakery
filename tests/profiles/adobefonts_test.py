@@ -15,6 +15,12 @@ from fontbakery.codetesting import (
     portable_path,
     TEST_FILE,
 )
+from fontbakery.constants import (
+    NameID,
+    PlatformID,
+    WindowsEncodingID,
+    WindowsLanguageID,
+)
 from fontbakery.profiles import adobefonts as adobefonts_profile
 from fontbakery.profiles.adobefonts import (
     ADOBEFONTS_PROFILE_CHECKS,
@@ -324,3 +330,26 @@ def test_check_override_fontbakery_version(mock_get):
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     msg = assert_results_contain(check(font), SKIP, "connection-error")
     assert "Request to PyPI.org failed with this message" in msg
+
+
+def test_check_override_match_familyname_fullfont():
+    """Check that overridden test yields WARN rather than FAIL."""
+    check = CheckTester(
+        adobefonts_profile,
+        f"com.google.fonts/check/name/match_familyname_fullfont{OVERRIDE_SUFFIX}",
+    )
+
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Semibold.otf"))
+    msg = assert_PASS(check(ttFont), PASS)
+    assert msg == "Full font name begins with the font family name."
+
+    # Change the Full Font Name string for Microsoft platform record
+    full_font_name = "SourceSansPro-Semibold"
+    ttFont["name"].setName(full_font_name,
+                           NameID.FULL_FONT_NAME,
+                           PlatformID.WINDOWS,
+                           WindowsEncodingID.UNICODE_BMP,
+                           WindowsLanguageID.ENGLISH_USA)
+    msg = assert_results_contain(check(ttFont), WARN, "mismatch-font-names")
+    assert (f"the full font name {full_font_name!r}"
+            " does not begin with the font family name") in msg
