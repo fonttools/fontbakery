@@ -172,6 +172,21 @@ def test_check_nameid_1_win_english():
     assert msg == "Font has no 'name' table."
 
 
+def test_check_unsupported_tables():
+    """Check if font has any unsupported tables."""
+    check = CheckTester(
+        adobefonts_profile, "com.adobe.fonts/check/unsupported_tables"
+    )
+
+    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
+    msg = assert_PASS(check(ttFont))
+    assert msg == "No unsupported tables were found."
+
+    ttFont = TTFont(TEST_FILE("hinting/Roboto-VF.ttf"))
+    msg = assert_results_contain(check(ttFont), FAIL, "unsupported-tables")
+    assert "TSI0" in msg
+
+
 def test_check_override_whitespace_glyphs():
     """Check that overridden test for nbsp yields WARN rather than FAIL."""
     check = CheckTester(

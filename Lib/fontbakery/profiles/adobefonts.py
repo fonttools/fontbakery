@@ -33,6 +33,7 @@ SET_EXPLICIT_CHECKS = {
     "com.adobe.fonts/check/family/consistent_upm",
     "com.adobe.fonts/check/find_empty_letters",
     "com.adobe.fonts/check/nameid_1_win_english",
+    "com.adobe.fonts/check/unsupported_tables",
     #
     # =======================================
     # From cff.py
@@ -196,7 +197,6 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/transformed_components",
     "com.google.fonts/check/ttx_roundtrip",
     "com.google.fonts/check/unique_glyphnames",
-    "com.google.fonts/check/unwanted_tables",
     "com.google.fonts/check/whitespace_widths",
 }
 
@@ -204,6 +204,7 @@ CHECKS_IN_THIS_FILE = [
     "com.adobe.fonts/check/family/consistent_upm",
     "com.adobe.fonts/check/find_empty_letters",
     "com.adobe.fonts/check/nameid_1_win_english",
+    "com.adobe.fonts/check/unsupported_tables",
 ]
 
 SET_IMPORTED_CHECKS = set(
@@ -391,6 +392,37 @@ def com_adobe_fonts_check_nameid_1_win_english(ttFont, has_name_table):
         )
 
     return PASS, "Font contains a good Windows nameID 1 US-English record."
+
+
+@check(
+    id="com.adobe.fonts/check/unsupported_tables",
+    rationale="""
+        Adobe Fonts' font-processing pipeline does not support all kinds of tables
+        that can be included in OpenType font files.⏎
+        Fonts that do not pass this check are guaranteed to be rejected by the pipeline.
+    """,
+)
+def com_adobe_fonts_check_unsupported_tables(ttFont):
+    """Does the font has any unsupported tables?"""
+    SUPPORTED_TABLES = {
+        "avar", "BASE", "CFF ", "CFF2", "cmap", "cvar", "cvt ", "DSIG", "feat", "fpgm",
+        "fvar", "gasp", "GDEF", "glyf", "GPOS", "GSUB", "gvar", "hdmx", "head", "hhea",
+        "hmtx", "HVAR", "kern", "loca", "LTSH", "maxp", "meta", "morx", "MVAR", "name",
+        "OS/2", "PCLT", "post", "prep", "STAT", "SVG ", "VDMX", "vhea", "vmtx", "VORG",
+        "VVAR",
+    }
+    font_tables = set(ttFont.keys())
+    font_tables.discard("GlyphOrder")  # pseudo-table created by FontTools
+    unsupported_tables = sorted(font_tables - SUPPORTED_TABLES)
+
+    if unsupported_tables:
+        unsupported_list = ''.join(f"* {tag}\n" for tag in unsupported_tables)
+        yield FAIL, Message(
+            "unsupported-tables",
+            f"The following unsupported font tables were found:\n\n{unsupported_list}",
+        )
+    else:
+        yield PASS, "No unsupported tables were found."
 
 
 profile.auto_register(
