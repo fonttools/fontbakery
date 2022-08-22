@@ -7,7 +7,7 @@ from unittest.mock import patch
 from fontTools.ttLib import TTFont
 from requests.exceptions import ConnectionError
 
-from fontbakery.checkrunner import WARN, FAIL, ERROR, PASS, SKIP
+from fontbakery.checkrunner import WARN, FAIL, PASS, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
@@ -158,7 +158,7 @@ def test_check_nameid_1_win_english():
 
     # Replace the nameID 1 string with data that can't be 'utf_16_be'-decoded
     nameid_1_win_eng_rec.string = "\xff".encode("utf_7")
-    msg = assert_results_contain(check(ttFont), ERROR, "nameid-1-decoding-error")
+    msg = assert_results_contain(check(ttFont), FAIL, "nameid-1-decoding-error")
     assert msg == "Windows nameID 1 US-English record could not be decoded."
 
     # Delete all 'name' table records
@@ -323,14 +323,14 @@ def test_check_override_os2_metrics_match_hhea():
 
 @patch("freetype.Face", side_effect=ImportError)
 def test_check_override_freetype_rasterizer(mock_import_error):
-    """Check that overridden test yields ERROR rather than SKIP."""
+    """Check that overridden test yields FAIL rather than SKIP."""
     check = CheckTester(
         adobefonts_profile,
         f"com.adobe.fonts/check/freetype_rasterizer{OVERRIDE_SUFFIX}",
     )
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    msg = assert_results_contain(check(font), ERROR, "freetype-not-installed")
+    msg = assert_results_contain(check(font), FAIL, "freetype-not-installed")
     assert "FreeType is not available" in msg
 
 
