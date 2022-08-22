@@ -26,7 +26,7 @@ profile = profile_factory(default_section=Section("Adobe Fonts"))
 SET_EXPLICIT_CHECKS = {
     # This is the set of explict checks that will be invoked
     # when fontbakery is run with the 'check-adobefonts' subcommand.
-    # The contents of this set were last updated on April 26, 2022.
+    # The contents of this set were last updated on August 21, 2022.
     #
     # =======================================
     # From adobefonts.py (this file)
@@ -36,14 +36,14 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From cff.py
-    "com.adobe.fonts/check/cff_call_depth",
     "com.adobe.fonts/check/cff2_call_depth",
+    "com.adobe.fonts/check/cff_call_depth",
     "com.adobe.fonts/check/cff_deprecated_operators",
     #
     # =======================================
     # From cmap.py
-    "com.google.fonts/check/family/equal_unicode_encodings",
     "com.google.fonts/check/all_glyphs_have_codepoints",
+    "com.google.fonts/check/family/equal_unicode_encodings",
     #
     # =======================================
     # From dsig.py
@@ -51,48 +51,48 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From fontwerk.py
-    # "com.fontwerk/check/no_mac_entries",
-    # "com.fontwerk/check/vendor_id",  # PERMANENTLY_EXCLUDED
-    "com.fontwerk/check/weight_class_fvar",
-    "com.fontwerk/check/inconsistencies_between_fvar_stat",
     # "com.fontwerk/check/style_linking",  # PERMANENTLY_EXCLUDED
+    # "com.fontwerk/check/vendor_id",      # PERMANENTLY_EXCLUDED
+    # "com.fontwerk/check/no_mac_entries",
+    "com.fontwerk/check/inconsistencies_between_fvar_stat",
+    "com.fontwerk/check/weight_class_fvar",
     #
     # =======================================
     # From fvar.py
-    "com.google.fonts/check/varfont/regular_wght_coord",
-    "com.google.fonts/check/varfont/regular_wdth_coord",
-    "com.google.fonts/check/varfont/regular_slnt_coord",
+    "com.adobe.fonts/check/varfont/distinct_instance_records",
+    "com.adobe.fonts/check/varfont/same_size_instance_records",
+    "com.adobe.fonts/check/varfont/valid_axis_nameid",
+    "com.adobe.fonts/check/varfont/valid_default_instance_nameids",
+    "com.adobe.fonts/check/varfont/valid_postscript_nameid",
+    "com.adobe.fonts/check/varfont/valid_subfamily_nameid",
+    "com.google.fonts/check/varfont/bold_wght_coord",
     "com.google.fonts/check/varfont/regular_ital_coord",
     "com.google.fonts/check/varfont/regular_opsz_coord",
-    "com.google.fonts/check/varfont/bold_wght_coord",
-    "com.google.fonts/check/varfont/wght_valid_range",
-    "com.google.fonts/check/varfont/wdth_valid_range",
+    "com.google.fonts/check/varfont/regular_slnt_coord",
+    "com.google.fonts/check/varfont/regular_wdth_coord",
+    "com.google.fonts/check/varfont/regular_wght_coord",
     "com.google.fonts/check/varfont/slnt_range",
-    "com.adobe.fonts/check/varfont/valid_axis_nameid",
-    "com.adobe.fonts/check/varfont/valid_subfamily_nameid",
-    "com.adobe.fonts/check/varfont/valid_postscript_nameid",
-    "com.adobe.fonts/check/varfont/valid_default_instance_nameids",
-    "com.adobe.fonts/check/varfont/same_size_instance_records",
-    "com.adobe.fonts/check/varfont/distinct_instance_records",
+    "com.google.fonts/check/varfont/wdth_valid_range",
+    "com.google.fonts/check/varfont/wght_valid_range",
     #
     # =======================================
     # From gdef.py
-    # "com.google.fonts/check/gdef_spacing_marks",
     # "com.google.fonts/check/gdef_mark_chars",
     # "com.google.fonts/check/gdef_non_mark_chars",
+    # "com.google.fonts/check/gdef_spacing_marks",
     #
     # =======================================
     # From glyf.py
+    "com.google.fonts/check/glyf_non_transformed_duplicate_components",
     "com.google.fonts/check/glyf_unused_data",
     "com.google.fonts/check/points_out_of_bounds",
-    "com.google.fonts/check/glyf_non_transformed_duplicate_components",
     #
     # =======================================
     # From googlefonts.py
-    "com.google.fonts/check/aat",
-    "com.google.fonts/check/fvar_name_entries",
     # "com.google.fonts/check/varfont_has_instances",
     # "com.google.fonts/check/varfont_weight_instances",  # weak rationale
+    "com.google.fonts/check/aat",
+    "com.google.fonts/check/fvar_name_entries",
     "com.google.fonts/check/varfont_duplicate_instance_names",
     #
     # =======================================
@@ -102,8 +102,8 @@ SET_EXPLICIT_CHECKS = {
     # =======================================
     # From head.py
     "com.google.fonts/check/family/equal_font_versions",
-    "com.google.fonts/check/unitsperem",
     "com.google.fonts/check/font_version",
+    "com.google.fonts/check/unitsperem",
     #
     # =======================================
     # From hhea.py
@@ -117,8 +117,8 @@ SET_EXPLICIT_CHECKS = {
     # =======================================
     # From layout.py
     "com.google.fonts/check/layout_valid_feature_tags",
-    "com.google.fonts/check/layout_valid_script_tags",
     "com.google.fonts/check/layout_valid_language_tags",
+    "com.google.fonts/check/layout_valid_script_tags",
     #
     # =======================================
     # From loca.py
@@ -126,37 +126,37 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From name.py
-    "com.adobe.fonts/check/name/empty_records",
     # "com.google.fonts/check/name/no_copyright_on_description",  # PERMANENTLY_EXCLUDED # noqa
+    "com.adobe.fonts/check/family/max_4_fonts_per_family_name",
+    "com.adobe.fonts/check/name/empty_records",
+    "com.adobe.fonts/check/name/postscript_name_consistency",
+    "com.adobe.fonts/check/name/postscript_vs_cff",
+    "com.google.fonts/check/family_naming_recommendations",
     "com.google.fonts/check/monospace",
     "com.google.fonts/check/name/match_familyname_fullfont",
-    "com.google.fonts/check/family_naming_recommendations",
-    "com.adobe.fonts/check/name/postscript_vs_cff",
-    "com.adobe.fonts/check/name/postscript_name_consistency",
-    "com.adobe.fonts/check/family/max_4_fonts_per_family_name",
     #
     # =======================================
     # From notofonts.py
-    "com.google.fonts/check/cmap/unexpected_subtables",
-    # "com.google.fonts/check/unicode_range_bits",
-    # "com.google.fonts/check/name/noto_manufacturer",  # PERMANENTLY_EXCLUDED
-    # "com.google.fonts/check/name/noto_designer",  # PERMANENTLY_EXCLUDED
-    # "com.google.fonts/check/name/noto_trademark",  # PERMANENTLY_EXCLUDED
-    "com.google.fonts/check/cmap/format_12",
-    # "com.google.fonts/check/os2/noto_vendor",  # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/hmtx/comma_period",          # PERMANENTLY_EXCLUDED
     # "com.google.fonts/check/hmtx/encoded_latin_digits",  # PERMANENTLY_EXCLUDED
-    # "com.google.fonts/check/hmtx/comma_period",  # PERMANENTLY_EXCLUDED
-    # "com.google.fonts/check/hmtx/whitespace_advances",  # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/hmtx/whitespace_advances",   # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/name/noto_designer",         # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/name/noto_manufacturer",     # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/name/noto_trademark",        # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/os2/noto_vendor",            # PERMANENTLY_EXCLUDED
     # "com.google.fonts/check/cmap/alien_codepoints",
+    # "com.google.fonts/check/unicode_range_bits",
+    "com.google.fonts/check/cmap/format_12",
+    "com.google.fonts/check/cmap/unexpected_subtables",
     #
     # =======================================
     # From os2.py
-    "com.google.fonts/check/family/panose_proportion",
-    "com.google.fonts/check/family/panose_familytype",
     # "com.google.fonts/check/xavgcharwidth",  # PERMANENTLY_EXCLUDED
-    "com.adobe.fonts/check/fsselection_matches_macstyle",
     "com.adobe.fonts/check/family/bold_italic_unique_for_nameid1",
+    "com.adobe.fonts/check/fsselection_matches_macstyle",
     "com.google.fonts/check/code_pages",
+    "com.google.fonts/check/family/panose_familytype",
+    "com.google.fonts/check/family/panose_proportion",
     #
     # =======================================
     # From post.py
@@ -165,37 +165,39 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From stat.py
-    "com.google.fonts/check/varfont/stat_axis_record_for_each_axis",
     "com.adobe.fonts/check/stat_has_axis_value_tables",
+    "com.google.fonts/check/varfont/stat_axis_record_for_each_axis",
     #
     # =======================================
     # From universal.py
-    "com.google.fonts/check/ots",
-    "com.google.fonts/check/name/trailing_spaces",
-    "com.google.fonts/check/family/win_ascent_and_descent",
-    "com.google.fonts/check/os2_metrics_match_hhea",
-    "com.google.fonts/check/fontbakery_version",
-    "com.google.fonts/check/ttx_roundtrip",
-    "com.google.fonts/check/family/single_directory",
-    "com.google.fonts/check/mandatory_glyphs",
-    "com.google.fonts/check/whitespace_glyphs",
     # "com.google.fonts/check/whitespace_glyphnames",  # PERMANENTLY_EXCLUDED
-    # "com.google.fonts/check/whitespace_ink",  # PERMANENTLY_EXCLUDED
-    "com.google.fonts/check/required_tables",
-    "com.google.fonts/check/unwanted_tables",
-    "com.google.fonts/check/valid_glyphnames",
-    "com.google.fonts/check/unique_glyphnames",
-    "com.google.fonts/check/family/vertical_metrics",
-    "com.google.fonts/check/STAT_strings",
-    "com.google.fonts/check/rupee",
-    # "com.google.fonts/check/unreachable_glyphs",
-    # "com.google.fonts/check/contour_count",
+    # "com.google.fonts/check/whitespace_ink",         # PERMANENTLY_EXCLUDED
     # "com.google.fonts/check/cjk_chws_feature",
-    "com.google.fonts/check/transformed_components",
+    # "com.google.fonts/check/contour_count",
     # "com.google.fonts/check/dotted_circle",
-    "com.google.fonts/check/gpos7",
-    "com.adobe.fonts/check/freetype_rasterizer",
+    # "com.google.fonts/check/unreachable_glyphs",
+    # ---
+    "com.adobe.fonts/check/freetype_rasterizer",             # IS_OVERRIDDEN
+    "com.google.fonts/check/family/win_ascent_and_descent",  # IS_OVERRIDDEN
+    "com.google.fonts/check/fontbakery_version",             # IS_OVERRIDDEN
+    "com.google.fonts/check/os2_metrics_match_hhea",         # IS_OVERRIDDEN
+    "com.google.fonts/check/valid_glyphnames",               # IS_OVERRIDDEN
+    "com.google.fonts/check/whitespace_glyphs",              # IS_OVERRIDDEN
+    # ---
     "com.adobe.fonts/check/sfnt_version",
+    "com.google.fonts/check/family/single_directory",
+    "com.google.fonts/check/family/vertical_metrics",
+    "com.google.fonts/check/gpos7",
+    "com.google.fonts/check/mandatory_glyphs",
+    "com.google.fonts/check/name/trailing_spaces",
+    "com.google.fonts/check/ots",
+    "com.google.fonts/check/required_tables",
+    "com.google.fonts/check/rupee",
+    "com.google.fonts/check/STAT_strings",
+    "com.google.fonts/check/transformed_components",
+    "com.google.fonts/check/ttx_roundtrip",
+    "com.google.fonts/check/unique_glyphnames",
+    "com.google.fonts/check/unwanted_tables",
     "com.google.fonts/check/whitespace_widths",
 }
 
@@ -217,12 +219,12 @@ ADOBEFONTS_PROFILE_CHECKS = [
 ] + [c for c in SET_IMPORTED_CHECKS if c in SET_EXPLICIT_CHECKS]
 
 OVERRIDDEN_CHECKS = [
-    "com.google.fonts/check/whitespace_glyphs",
-    "com.google.fonts/check/valid_glyphnames",
-    "com.google.fonts/check/family/win_ascent_and_descent",
-    "com.google.fonts/check/os2_metrics_match_hhea",
     "com.adobe.fonts/check/freetype_rasterizer",
+    "com.google.fonts/check/family/win_ascent_and_descent",
     "com.google.fonts/check/fontbakery_version",
+    "com.google.fonts/check/os2_metrics_match_hhea",
+    "com.google.fonts/check/valid_glyphnames",
+    "com.google.fonts/check/whitespace_glyphs",
 ]
 
 
