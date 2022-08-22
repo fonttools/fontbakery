@@ -32,6 +32,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont_weight_instances]:** Removed due to new `fvar_instances` check (PR #3800)
   - **[com.google.fonts/check/varfont_instance_coordinates]:** Removed due to new `fvar_instances` check (PR #3800)
   - **[com.google.fonts/check/varfont_instance_names]:** Removed due to new `fvar_instances` check (PR #3800)
+  - **[com.adobe.fonts/check/freetype_rasterizer]:** Override this check to make it mandatory for Google Fonts, emitting a FAIL if freetype is not installed, instead of silently skipping. (issue #3871)
 
 ### BugFixes
   - **[com.google.fonts/check/unreachable_glyphs]:** Fix crash by adding support for color-font legacy COLR v0 format. (issue #3850)
