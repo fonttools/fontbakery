@@ -179,6 +179,7 @@ SET_EXPLICIT_CHECKS = {
     "com.adobe.fonts/check/freetype_rasterizer",             # IS_OVERRIDDEN
     "com.google.fonts/check/family/win_ascent_and_descent",  # IS_OVERRIDDEN
     "com.google.fonts/check/fontbakery_version",             # IS_OVERRIDDEN
+    "com.google.fonts/check/name/trailing_spaces",           # IS_OVERRIDDEN
     "com.google.fonts/check/os2_metrics_match_hhea",         # IS_OVERRIDDEN
     "com.google.fonts/check/valid_glyphnames",               # IS_OVERRIDDEN
     "com.google.fonts/check/whitespace_glyphs",              # IS_OVERRIDDEN
@@ -188,7 +189,6 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/family/vertical_metrics",
     "com.google.fonts/check/gpos7",
     "com.google.fonts/check/mandatory_glyphs",
-    "com.google.fonts/check/name/trailing_spaces",
     "com.google.fonts/check/ots",
     "com.google.fonts/check/required_tables",
     "com.google.fonts/check/rupee",
@@ -222,6 +222,7 @@ OVERRIDDEN_CHECKS = [
     "com.google.fonts/check/family/win_ascent_and_descent",
     "com.google.fonts/check/fontbakery_version",
     "com.google.fonts/check/name/match_familyname_fullfont",
+    "com.google.fonts/check/name/trailing_spaces",
     "com.google.fonts/check/os2_metrics_match_hhea",
     "com.google.fonts/check/valid_glyphnames",
     "com.google.fonts/check/whitespace_glyphs",
@@ -407,6 +408,14 @@ profile.check_log_override(
         "For Adobe, this is not as severe"
         " as assessed in the original check for 0x00A0."
     ),
+)
+
+
+profile.check_log_override(
+    # From universal.py
+    "com.google.fonts/check/name/trailing_spaces",
+    overrides=(("trailing-space", WARN, KEEP_ORIGINAL_MESSAGE),),
+    reason=("For Adobe, this is not as severe as assessed in the original check."),
 )
 
 
