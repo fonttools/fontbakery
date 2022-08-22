@@ -4,8 +4,11 @@ from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, disable
-from fontbakery.utils import bullet_list, filesize_formatting, markdown_table
-from fontbakery.message import Message
+from fontbakery.utils import (add_check_overrides,
+                              bullet_list,
+                              filesize_formatting,
+                              markdown_table)
+from fontbakery.message import Message, KEEP_ORIGINAL_MESSAGE
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (NameID,
                                   PlatformID,
@@ -28,6 +31,10 @@ profile.configuration_defaults = {
         "FAIL_SIZE": 9 * 1024 * 1024
     }
 }
+
+OVERRIDDEN_CHECKS = [
+    "com.adobe.fonts/check/freetype_rasterizer",
+]
 
 METADATA_CHECKS = [
     'com.google.fonts/check/metadata/parses',
@@ -6177,4 +6184,16 @@ def check_skip_filter(checkid, font=None, **iterargs):
 
 profile.check_skip_filter = check_skip_filter
 profile.auto_register(globals())
+
+profile.check_log_override(
+    # From universal.py
+    "com.adobe.fonts/check/freetype_rasterizer",
+    overrides=(("freetype-not-installed", FAIL, KEEP_ORIGINAL_MESSAGE),),
+    reason="For Google Fonts, this check is very important and should never be skipped.",
+)
+
+GOOGLEFONTS_PROFILE_CHECKS = add_check_overrides(
+    GOOGLEFONTS_PROFILE_CHECKS, profile.profile_tag, OVERRIDDEN_CHECKS
+)
+
 profile.test_expected_checks(GOOGLEFONTS_PROFILE_CHECKS, exclusive=True)
