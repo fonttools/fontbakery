@@ -8,6 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - We normalized the ordering of log messages of some more checks. To avoid imprevisibility of python set iteration, we sort them before printing. This helps to reduce diffs for people that compare subsequent runs of fontbakery on automated QA setups (issue #3654)
 
 ### New Checks
+#### On the Adobe Fonts Profile
+  - **[com.adobe.fonts/check/unsupported_tables]:** Verifies if fonts contain any tables not supported by Adobe Font's font-processing pipeline (PR #3870)
+
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/font_names]:** Ensure font names match our specification (PR #3800)
   - **[com.google.fonts/check/fvar_instances]:** Ensure fvar instances match our specification (PR #3800)
@@ -50,6 +53,15 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/whitespace_widths]:** moved from `OpenType` profile. Also added rationale text. (issue #3843)
 
 ### Changes to existing checks
+#### On the Adobe Fonts Profile
+  - **[com.google.fonts/check/cmap/unexpected_subtables]:** This check from the Noto Fonts profile was disabled; CJK vendors still include Macintosh format 2 subtables in their fonts (PR #3870)
+  - **[com.google.fonts/check/os2_metrics_match_hhea]:** Mismatches of `lineGap` values were downgraded from FAIL to WARN (PR #3870)
+  - **[com.google.fonts/check/name/match_familyname_fullfont]:** This check from the OpenType profile was overridden and downgraded from FAIL to WARN. Many OpenType-CFF fonts in circulation are built with the Microsoft platform Full font name string identical to the PostScript FontName in the CFF Name INDEX. This practice was documented in the OpenType specification up until version 1.5 (PR #3870)
+  - **[com.google.fonts/check/name/trailing_spaces]:** This check from the Universal profile was overridden and downgraded from FAIL to WARN (PR #3870)
+  - **[com.google.fonts/check/unwanted_tables]:** This check from the Universal profile was replaced by the new `com.adobe.fonts/check/unsupported_tables` check (PR #3870)
+  - **[com.adobe.fonts/check/nameid_1_win_english]:** Replaced ERROR status by FAIL status (PR #3870)
+  - **[com.adobe.fonts/check/freetype_rasterizer]:** Replaced ERROR status by FAIL status (PR #3870)
+
 #### On the OpenType Profile
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** Relaxed the implementation to compare name values, not strictly IDs. (PR #3821)
 
