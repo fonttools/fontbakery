@@ -265,12 +265,6 @@ def test_check_override_os2_metrics_match_hhea():
         f"com.google.fonts/check/os2_metrics_match_hhea{OVERRIDE_SUFFIX}",
     )
 
-    # Our reference Mada Regular is know to be faulty here.
-    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    assert_results_contain(check(ttFont),
-                           FAIL, 'lineGap',
-                           'OS/2 sTypoLineGap (100) and hhea lineGap (96) must be equal.')
-
     # Our reference Mada Black is know to be good here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Black.ttf"))
     msg = assert_PASS(check(ttFont), PASS)
@@ -280,6 +274,7 @@ def test_check_override_os2_metrics_match_hhea():
     hhea_table = ttFont["hhea"]
     ascent = hhea_table.ascent
     descent = hhea_table.descent
+    linegap = hhea_table.lineGap
 
     # Now we change sTypoAscender to be bad. The overridden check should just WARN.
     os2_table.sTypoAscender = ascent - 100
@@ -294,6 +289,15 @@ def test_check_override_os2_metrics_match_hhea():
     os2_table.sTypoDescender = descent + 100
     msg = assert_results_contain(check(ttFont), WARN, "descender")
     assert msg == "OS/2 sTypoDescender (-200) and hhea descent (-300) must be equal."
+
+    # Restore 'sTypoDescender' to a good value.
+    os2_table.sTypoDescender = descent
+
+    # And break the font one last time, now changing the sTypoLineGap value.
+    # The overridden check should just WARN.
+    os2_table.sTypoLineGap = linegap + 100
+    msg = assert_results_contain(check(ttFont), WARN, "lineGap")
+    assert msg == "OS/2 sTypoLineGap (200) and hhea lineGap (100) must be equal."
 
 
 @patch("freetype.Face", side_effect=ImportError)

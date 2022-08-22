@@ -432,6 +432,7 @@ profile.check_log_override(
     overrides=(
         ("ascender", WARN, KEEP_ORIGINAL_MESSAGE),
         ("descender", WARN, KEEP_ORIGINAL_MESSAGE),
+        ("lineGap", WARN, KEEP_ORIGINAL_MESSAGE),
     ),
 )
 
