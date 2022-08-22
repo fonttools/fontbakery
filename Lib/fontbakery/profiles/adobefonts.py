@@ -15,7 +15,7 @@ from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
 from fontbakery.profiles.notofonts import NOTOFONTS_PROFILE_CHECKS
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.section import Section
-from fontbakery.status import PASS, FAIL, WARN, ERROR, SKIP
+from fontbakery.status import PASS, FAIL, WARN, SKIP
 from fontbakery.utils import add_check_overrides
 
 profile_imports = (
@@ -380,7 +380,7 @@ def com_adobe_fonts_check_nameid_1_win_english(ttFont, has_name_table):
     try:
         nameid_1_unistr = nameid_1.toUnicode()
     except UnicodeDecodeError:
-        return ERROR, Message(
+        return FAIL, Message(
             "nameid-1-decoding-error",
             "Windows nameID 1 US-English record could not be decoded.",
         )
@@ -482,7 +482,7 @@ profile.check_log_override(
 profile.check_log_override(
     # From universal.py
     "com.adobe.fonts/check/freetype_rasterizer",
-    overrides=(("freetype-not-installed", ERROR, KEEP_ORIGINAL_MESSAGE),),
+    overrides=(("freetype-not-installed", FAIL, KEEP_ORIGINAL_MESSAGE),),
     reason="For Adobe, this check is very important and should never be skipped.",
 )
 
