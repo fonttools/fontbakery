@@ -9,7 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New Checks
 #### On the Adobe Fonts Profile
-  - **[com.adobe.fonts/check/unsupported_tables]:** Verifies if fonts contain any tables not supported by Adobe Font's font-processing pipeline (PR #3870)
+  - **[com.adobe.fonts/check/unsupported_tables]:** Verifies if fonts contain any tables not supported by Adobe Fonts' font-processing pipeline (PR #3870)
 
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/font_names]:** Ensure font names match our specification (PR #3800)
