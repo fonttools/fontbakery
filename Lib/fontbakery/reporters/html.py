@@ -17,7 +17,7 @@ EMOTICON = {
     "WARN": "⚠️",
     "INFO": "ℹ️",
     "SKIP": "⏩",
-    "PASS": "✔️",
+    "PASS": "✅",
     "DEBUG": "🔎"
 }
 ISSUE_URL = "https://github.com/googlefonts/fontbakery/issues"
