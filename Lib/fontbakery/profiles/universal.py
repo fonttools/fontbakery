@@ -1291,6 +1291,9 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
 
     # Exclude cmapped glyphs
     all_glyphs -= set(ttFont.getBestCmap().values())
+
+    # and ignore these:
+    all_glyphs.discard(".null")
     all_glyphs.discard(".notdef")
 
     if "COLR" in ttFont:
@@ -1300,10 +1303,15 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
                     all_glyphs.discard(layer.name)
 
         elif ttFont["COLR"].version == 1:
-            # FIXME: Cosimo Lupo said at https://github.com/googlefonts/fontbakery/pull/3838#pullrequestreview-1053613190
-            #        that a version=1 COLR table can be mixed and
-            #        also contain COLRv0 layer glyphs, in the
-            #        font["COLR"].table.{BaseGlyph,Layer}RecordArray.
+            if (hasattr(ttFont["COLR"].table, "BaseGlyphRecordArray")
+                and ttFont["COLR"].table.BaseGlyphRecordArray is not None):
+                for baseglyph_record in ttFont["COLR"].table.BaseGlyphRecordArray.BaseGlyphRecord:
+                    all_glyphs.discard(baseglyph_record.BaseGlyph)
+
+            if (hasattr(ttFont["COLR"].table, "LayerRecordArray")
+                and ttFont["COLR"].table.LayerRecordArray is not None):
+                for layer_record in ttFont["COLR"].table.LayerRecordArray.LayerRecord:
+                    all_glyphs.discard(layer_record.LayerGlyph)
 
             for paint_record in ttFont["COLR"].table.BaseGlyphList.BaseGlyphPaintRecord:
                 if hasattr(paint_record.Paint, "Glyph"):
