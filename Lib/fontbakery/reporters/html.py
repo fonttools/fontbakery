@@ -7,7 +7,6 @@ import cmarkgfm
 from cmarkgfm.cmark import Options as cmarkgfmOptions
 
 
-import fontbakery.checkrunner
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.utils import unindent_and_unwrap_rationale, html5_collapsible
 
