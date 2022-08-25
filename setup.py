@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os
+
 from setuptools import setup
 
 try:
@@ -76,7 +76,8 @@ setup(
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
                                       # (see https://github.com/khaledhosny/ots/pull/182)
         'opentypespec',
-        'pip-api',
+        'packaging',  # needed for checking Font Bakery's version
+        'pip-api',    # needed for checking Font Bakery's version
         'protobuf>=3.7.0',  # 3.7.0 fixed a bug on parsing some METADATA.pb files
                             # (see https://github.com/googlefonts/fontbakery/issues/2200)
         'PyYAML',

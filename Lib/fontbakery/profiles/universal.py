@@ -1,4 +1,5 @@
 import os
+import re
 
 from fontbakery.status import PASS, FAIL, WARN, INFO, SKIP
 from fontbakery.section import Section
@@ -9,6 +10,10 @@ from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
 from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
 from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
+
+from packaging.version import VERSION_PATTERN
+
+re_version = re.compile(r"^\s*" + VERSION_PATTERN + r"\s*$", re.VERBOSE | re.IGNORECASE)
 
 profile_imports = (
     (".", ("shared_conditions", "opentype", "outline", "shaping", "ufo_sources")),
@@ -301,25 +306,55 @@ def com_google_fonts_check_ots(font):
             yield PASS, "ots-sanitize passed this file"
 
 
-def is_up_to_date(installed, latest):
-    # Trim version suffixes (e.g. '.post3', '.dev73+g8c9ebc0.d20181023'),
-    # split MAJOR.MINOR.PATCH numbers,
-    # and convert them to integers.
-    inst_nums = map(int, installed.split(".")[:3])
-    last_nums = map(int, latest.split(".")[:3])
+def _parse_package_version(version_string: str) -> dict:
+    """
+    Parses a Python package version string.
+    """
+    match = re_version.search(version_string)
+    release = match.group("release")
+    pre_rel = match.group("pre")
+    post_rel = match.group("post")
+    dev_rel = match.group("dev")
 
-    # Compare MAJOR.MINOR.PATCH integers.
-    for inst_version, last_version in zip(inst_nums, last_nums):
+    # Split MAJOR.MINOR.PATCH numbers, and convert them to integers
+    major, minor, patch = map(int, release.split("."))
+    version_parts = {
+        "major": major,
+        "minor": minor,
+        "patch": patch,
+    }
+    # Add the release-kind booleans
+    version_parts["pre"] = pre_rel is not None
+    version_parts["post"] = post_rel is not None
+    version_parts["dev"] = dev_rel is not None
+
+    return version_parts
+
+
+def is_up_to_date(installed_str, latest_str):
+    installed_dict = _parse_package_version(installed_str)
+    latest_dict = _parse_package_version(latest_str)
+
+    installed_rel = [*installed_dict.values()][:3]
+    latest_rel = [*latest_dict.values()][:3]
+
+    # Compare MAJOR.MINOR.PATCH parts
+    for inst_version, last_version in zip(installed_rel, latest_rel):
         if inst_version > last_version:
             return True
         if inst_version < last_version:
             return False
 
     # All MAJOR.MINOR.PATCH integers are the same between 'installed' and 'latest';
-    # in this case Font Bakery is up-to-date, unless a) it's installed in development
-    # mode, in which case the version number must be higher, or b) a post-release has
-    # been issued.
-    return not (".dev" in installed or ".post" in latest)
+    # therefore Font Bakery is up-to-date, unless
+    # a) a pre-release is installed or FB is installed in development mode (in which
+    #    case the version number installed must be higher), or
+    # b) a post-release has been issued.
+
+    installed_is_pre_or_dev_rel = installed_dict.get("pre") or installed_dict.get("dev")
+    latest_is_post_rel = latest_dict.get("post")
+
+    return not (installed_is_pre_or_dev_rel or latest_is_post_rel)
 
 
 @check(
