@@ -64,9 +64,6 @@ git checkout main
 git fetch upstream
 git rebase upstream/main
 
-# cleanup
-rm dist/ -rf
-
 ## Optionally install tox so that we can also
 ## run our code tests locally
 # pip install tox
