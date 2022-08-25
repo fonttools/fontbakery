@@ -73,11 +73,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/ce30421ccae2793d4f662b312ac299f06aea19f7/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/53087a24cf5f4cebce65e1b17e535b9f22a48ea6/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="06/01/2022" />
+<meta name="ms.date" content="08/09/2022" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -88,8 +88,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2022-06-16 01:25 AM" />
-<meta name="word_count" content="4046" />
+<meta name="updated_at" content="2022-08-10 12:47 AM" />
+<meta name="word_count" content="4135" />
 
 
 
@@ -103,10 +103,11 @@
 	
 
 	<meta name="scope" content="typography" />
+	<meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <link href="https://docs.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Docs</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/be4a8746.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/1509096e.site-ltr.css ">
 
 	
 
@@ -121,7 +122,6 @@
 			pageTemplate: 'Conceptual',
 			brand: '',
 			context: {
-
 			},
 			hasBinaryRating: true,
 			hasGithubIssues: true,
@@ -129,8 +129,6 @@
 			enableTutorialFeedback: false,
 			feedbackSystem: 'GitHub',
 			feedbackGitHubRepo: 'MicrosoftDocs/typography-issues',
-			feedbackProductUrl: '',
-			contentGitUrl: 'https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md',
 			extendBreadcrumb: true,
 			isEditDisplayable: false,
 			hideViewSource: false,
@@ -155,7 +153,7 @@
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/67a45209.deprecation.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/e4517ff6.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/be98f4e.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -251,10 +249,10 @@ Table of contents						</span>
 
 						<main id="main" role="main" data-bi-name="content" lang="en-us" dir="ltr">
 							<!-- article-header -->
-							<div id="article-header" class="background-color-body margin-top-sm-tablet margin-bottom-xs">
+							<div id="article-header" class="background-color-body margin-top-sm-tablet margin-bottom-xs display-none-print">
 								<div class="display-flex align-items-center ">
 									<details id="article-header-breadcrumbs-overflow-popover" class="popover" data-for="article-header-breadcrumbs">
-										<summary class="button button-clear button-primary button-sm">
+										<summary class="button button-clear button-primary button-sm" aria-label="All breadcrumbs">
 											<span class="icon">
 												<span class="docon docon-more"></span>
 											</span>
@@ -311,7 +309,9 @@ Table of contents						</span>
 												aria-label="Edit"
 												title="Edit This Document"
 												data-bi-name="edit"
-													hidden="hidden"
+
+													hidden
+
 														href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"
 											>
 												<span class="icon margin-none" aria-hidden="true">
@@ -393,7 +393,9 @@ Feedback														</span>
 														aria-label="Edit"
 														title="Edit This Document"
 														data-bi-name="edit"
-															hidden="hidden"
+
+															hidden
+
 																href="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md"
 													>
 														<span class="icon" aria-hidden="true">
@@ -461,17 +463,17 @@ Feedback														</span>
 												<li>
 Article												</li>
 												<li>
-													<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-06-16T01:25:00Z" data-article-date-source="git">06/16/2022</time>
+													<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-08-10T00:47:00Z" data-article-date-source="git">08/10/2022</time>
 												</li>
 														<li class="readingTime">20 minutes to read</li>
-													<li class="contributors-holder">
+													<li class="contributors-holder display-none-print">
 														<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
 																7 contributors
 														</button>
 													</li>
 										</ul>
 
-<div id="user-feedback" class="display-flex" data-hide-on-archived>
+<div id="user-feedback" class="display-flex display-none-print" data-hide-on-archived>
 	<button
 		class="thumb-rating-button like link-button margin-xxs margin-right-none"
 		data-binary-rating-response="rating-yes"
@@ -495,7 +497,7 @@ Article												</li>
 </div>
 									</div>
 
-										<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+										<nav id="center-doc-outline" class="doc-outline is-hidden-desktop display-none-print" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
 											<h3>In this article</h3>
 										</nav>
 
@@ -533,16 +535,20 @@ Article												</li>
 <td><a href="https://www.marktype.com/" data-linktype="external">MarkType</a></td>
 </tr>
 <tr>
+<td>0.IZ</td>
+<td><a href="https://itemzero.com/" data-linktype="external">0.itemzero</a></td>
+</tr>
+<tr>
+<td>100</td>
+<td><a href="https://authentic.website" data-linktype="external">AUTHENTIC</a></td>
+</tr>
+<tr>
 <td>0264</td>
 <td>Patricia Lillie</td>
 </tr>
 <tr>
 <td>0909</td>
 <td><a href="https://oladino.com/" data-linktype="external">Oladino</a></td>
-</tr>
-<tr>
-<td>100</td>
-<td><a href="https://authentic.website" data-linktype="external">AUTHENTIC</a></td>
 </tr>
 <tr>
 <td>1206</td>
@@ -581,12 +587,20 @@ Article												</li>
 <td><a href="https://www.205.tf/" data-linktype="external">205TF</a></td>
 </tr>
 <tr>
+<td>2000</td>
+<td><a href="https://www.2000px.com/" data-linktype="external">2000px Media Inc.</a></td>
+</tr>
+<tr>
 <td>2DLT</td>
 <td><a href="http://www.typo.2d.lviv.ua" data-linktype="external">2D Typo</a></td>
 </tr>
 <tr>
 <td>2REB</td>
 <td><a href="http://www.2rebels.com/" data-linktype="external">2Rebels</a></td>
+</tr>
+<tr>
+<td>3011</td>
+<td><a href="https://luxsvg.com/" data-linktype="external">LuxSVG</a></td>
 </tr>
 <tr>
 <td>3270</td>
@@ -776,6 +790,10 @@ Article												</li>
 <td><a href="http://www.prescottdesignshop.com" data-linktype="external">Alan Jay Prescott Typography</a></td>
 </tr>
 <tr>
+<td>AKHD</td>
+<td><a href="http://qa.linkedin.com/in/ahmad-kassem-alhindi-71193a32" data-linktype="external">AKHD</a></td>
+</tr>
+<tr>
 <td>AKOF</td>
 <td><a href="https://market.akofa.com/" data-linktype="external">AKOFAType</a></td>
 </tr>
@@ -960,6 +978,10 @@ Article												</li>
 <td><a href="http://www.atftype.com" data-linktype="external">American Type Founders Collection</a></td>
 </tr>
 <tr>
+<td>ATFF</td>
+<td>ArabType Font Foundry</td>
+</tr>
+<tr>
 <td>ATF1</td>
 <td><a href="http://www.atf.com.au" data-linktype="external">Australian Type Foundry</a></td>
 </tr>
@@ -1041,6 +1063,10 @@ Article												</li>
 <tr>
 <td>B&H</td>
 <td>Bigelow & Holmes</td>
+</tr>
+<tr>
+<td>BABA</td>
+<td><a href="https://www.alibabagroup.com/cn/global/home" data-linktype="external">alibaba</a></td>
 </tr>
 <tr>
 <td>BAPS</td>
@@ -1442,6 +1468,10 @@ Article												</li>
 <td><a href="http://www.myfonts.com/foundry/Celebrity_Fontz/" data-linktype="external">Celebrity Fontz</a></td>
 </tr>
 <tr>
+<td>CENT</td>
+<td><a href="https://www.centraltype.com/" data-linktype="external">Central Type</a></td>
+</tr>
+<tr>
 <td>CF</td>
 <td><a href="http://www.colophon-foundry.org" data-linktype="external">Colophon Foundry</a></td>
 </tr>
@@ -1456,6 +1486,10 @@ Article												</li>
 <tr>
 <td>CFF</td>
 <td><a href="http://www.characters.nl/" data-linktype="external">Characters Font Foundry</a></td>
+</tr>
+<tr>
+<td>CHIC</td>
+<td>CHIC Type</td>
 </tr>
 <tr>
 <td>CHRY</td>
@@ -1550,6 +1584,10 @@ Article												</li>
 <td><a href="http://www.carrottype.com" data-linktype="external">Carrot Type</a></td>
 </tr>
 <tr>
+<td>csmp</td>
+<td>cosmope type</td>
+</tr>
+<tr>
 <td>CSTM</td>
 <td>CSTM Fonts</td>
 </tr>
@@ -1624,6 +1662,11 @@ Article												</li>
 <td>DBFF</td>
 <td><a href="http://www.DesignBase.co.uk" data-linktype="external">DesignBase</a></td>
 </tr>
+ 
+<tr>
+<td>DC</td>
+<td>Domicile Foundry</td>
+</tr>
 <tr>
 <td>DD</td>
 <td>Devon DeLapp</td>
@@ -1683,6 +1726,10 @@ Article												</li>
 <tr>
 <td>DIMK</td>
 <td><a href="https://www.dimka.com/fonts/" data-linktype="external">Dimka Fonts</a></td>
+</tr>
+<tr>
+<td>DJDJ</td>
+<td>Dominik Jáger</td>
 </tr>
 <tr>
 <td>djr</td>
@@ -1880,6 +1927,10 @@ Article												</li>
 <td>EK TYPE</td>
 </tr>
 <tr>
+<td>ELE</td>
+<td>Elefonts</td>
+</tr>
+<tr>
 <td>ELEO</td>
 <td><a href="http://idee-sree.com/" data-linktype="external">Enliteleo</a></td>
 </tr>
@@ -2047,6 +2098,10 @@ Article												</li>
 <td><a href="http://www.fannyhmln.xyz/" data-linktype="external">Fanny Hamelin</a></td>
 </tr>
 <tr>
+<td>FHTP</td>
+<td><a href="https://fabiohaagtype.com/" data-linktype="external">Fabio Haag Type</a></td>
+</tr>
+<tr>
 <td>FILI</td>
 <td><a href="http://www.louisefili.com" data-linktype="external">Louise Fili Ltd</a></td>
 </tr>
@@ -2177,6 +2232,10 @@ Article												</li>
 <tr>
 <td>frag</td>
 <td><a href="https://fragtypefoundry.xyz/" data-linktype="external">fragTYPE</a></td>
+</tr>
+<tr>
+<td>FRGT</td>
+<td><a href="https://thefreightcollection.com/" data-linktype="external">Freight Collection</a></td>
 </tr>
 <tr>
 <td>FRJN</td>
@@ -2465,6 +2524,10 @@ Article												</li>
 <td>GTYP</td>
 <td><a href="http://www.g-type.com" data-linktype="external">G-Type</a></td>
 </tr>
+<tr>
+<td>GYST</td>
+<td><a href="https://www.instagram.com/groteskly.yours/" data-linktype="external">Groteskly Yours</a></td>
+</tr>
 </table>
 <h2 id="h">H</h2>
 <table>
@@ -2501,6 +2564,10 @@ Article												</li>
 <td><a href="http://haildesign.com.au/" data-linktype="external">Hail Design</a></td>
 </tr>
 <tr>
+<td>HAL</td>
+<td><a href="https://type.hanli.eu/" data-linktype="external">HAL Typefaces</a></td></tr>
+</tr>
+<tr>
 <td>HAMZ</td>
 <td><a href="https://www.hamzehnaghdi.com/" data-linktype="external">Hamzeh Naghdi</a></td>
 </tr>
@@ -2522,7 +2589,7 @@ Article												</li>
 </tr>
 <tr>
 <td>HD</td>
-<td>Hard Type</td>
+<td><a href="https://hardtype.xyz/" data-linktype="external">Hard Type</a></td>
 </tr>
 <tr>
 <td>HDCO</td>
@@ -2607,6 +2674,10 @@ Article												</li>
 <tr>
 <td>HT</td>
 <td><a href="http://www.huertatipografica.com/" data-linktype="external">Huerta Tipográfica</a></td>
+</tr>
+<tr>
+<td>HTA</td>
+<td><a href="https://github.com/hantype" data-linktype="external">活字攷古</a></td>
 </tr>
 <tr>
 <td>HTF</td>
@@ -2760,8 +2831,8 @@ Article												</li>
 <td><a href="http://www.itf.is" data-linktype="external">Invisible Type</a></td>
 </tr>
 <tr>
-<td>ISE</td>
-<td><a href="http://www.softfonts.com" data-linktype="external">ISE-Aditi Info. Pvt . Ltd.</a></td>
+<td>ISE </td>
+<td><a href="https://softfonts.com/" data-linktype="external">ISE (devanagarifonts.com)</a></td>
 </tr>
 <tr>
 <td>it*</td>
@@ -2833,6 +2904,10 @@ Article												</li>
 <tr>
 <td>JBLT</td>
 <td><a href="http://www.jblt.co" data-linktype="external">JEAN-BAPTISTE LEV&#201;E TYPOGRAPHY</a></td>
+</tr>
+<tr>
+<td>JCF</td>
+<td><a href="https://www.juancasco.net/" data-linktype="external">Juan Casco Fonts</a></td>
 </tr>
 <tr>
 <td>JCT</td>
@@ -3085,8 +3160,16 @@ Article												</li>
 <td><a href="http://www.large.la" data-linktype="external">Large</a></td>
 </tr>
 <tr>
+<td>LADD</td>
+<td><a href="https://ladd-design.com/" data-linktype="external">Adam Ladd Design</a></td>
+</tr>
+<tr>
 <td>LaG</td>
 <td><a href="http://www.mattlag.com/type/" data-linktype="external">Matt LaGrandeur</a></td>
+</tr>
+<tr>
+<td>LAGA</td>
+<td><a href="https://lagarto.fi/" data-linktype="external">Lagarto</a></td>
 </tr>
 <tr>
 <td>laic</td>
@@ -3107,6 +3190,10 @@ Article												</li>
 <tr>
 <td>LARA</td>
 <td><a href="http://www.LarabieFonts.com/" data-linktype="external">Larabiefonts</a></td>
+</tr>
+<tr>
+<td>LARR</td>
+<td>Larry</td>
 </tr>
 <tr>
 <td>LArt</td>
@@ -3213,6 +3300,10 @@ Article												</li>
 <td><a href="http://www.letterjuice.cat" data-linktype="external">Letterjuice</a></td>
 </tr>
 <tr>
+<td>LJDS</td>
+<td><a href="https://ljdesignstudios.com/" data-linktype="external">LJ Design Studios</a></td>
+</tr>
+<tr>
 <td>LLDL</td>
 <td><a href="http://lalettredeluxe.com/" data-linktype="external">La Lettre de Luxe</a></td>
 </tr>
@@ -3301,6 +3392,10 @@ Article												</li>
 <td><a href="https://www.ludwigtype.de/" data-linktype="external">LudwigType</a></td>
 </tr>
 <tr>
+<td>LUFF</td>
+<td><a href="https://ellenlufftype.com/" data-linktype="external">Ellen Luff Type Foundry</a></td>
+</tr>
+<tr>
 <td>LuRa</td>
 <td>Lucid Rabbit Productions</td>
 </tr>
@@ -3352,6 +3447,10 @@ Article												</li>
 <td><a href="http://www.magusdigital.com" data-linktype="external">Magus Digital</a></td>
 </tr>
 <tr>
+<td>MAMA</td>
+<td><a href="https://www.alimama.com/" data-linktype="external">alimama</a></td>
+</tr>
+<tr>
 <td>MANC</td>
 <td><a href="https://www.manchestertype.com" data-linktype="external">Manchester Type</a></td>
 </tr>
@@ -3390,6 +3489,10 @@ Article												</li>
 <tr>
 <td>MBF</td>
 <td><a href="https://themoonbandit.com/" data-linktype="external">Moonbandit font foundry</a></td>
+</tr>
+<tr>
+<td>MBJH</td>
+<td><a href="http://mutsuba.info/font/" data-linktype="external">Mutsuba Jouhou</a></td>
 </tr>
 <tr>
 <td>MC</td>
@@ -3611,7 +3714,6 @@ Article												</li>
 <td>MOON</td>
 <td><a href="http://www.moonlighttype.com/" data-linktype="external">Moonlight Type and Technolog</a></td>
 </tr>
-	
 <tr>
 <td>MORF</td>
 <td><a href="https://morefont.ch/" data-linktype="external">morefont</a></td>
@@ -3775,7 +3877,6 @@ Article												</li>
 <td>NBR</td>
 <td><a href="https://noirblancrouge.com" data-linktype="external">Noir Blanc Rouge</a></td>
 </tr>
-		
 <tr>
 <td>NBTF</td>
 <td><a href="https://norbergtypefoundry.com/" data-linktype="external">Norberg Type Foundry</a></td>
@@ -4119,6 +4220,10 @@ Article												</li>
 <td><a href="http://www.playtype.com" data-linktype="external">Playtype</a></td>
 </tr>
 <tr>
+<td>PLN</td>
+<td><a href="https://plain-form.com/" data-linktype="external">Plain Form</a></td>
+</tr>
+<tr>
 <td>PMPT</td>
 <td><a href="https://pampatype.com/" data-linktype="external">PampaType font foundry</a></td>
 </tr>
@@ -4283,6 +4388,10 @@ Article												</li>
 <tr>
 <td>RES</td>
 <td><a href="http://www.resultat.nl/" data-linktype="external">Resultat</a></td>
+</tr>
+<tr>
+<td>RETY</td>
+<td><a href="https://www.re-type.com/" data-linktype="external">Retype</a></td>
 </tr>
 <tr>
 <td>REZ</td>
@@ -4794,7 +4903,6 @@ Article												</li>
 <td>TB</td>
 <td><a href="http://www.typebank.co.jp/" data-linktype="external">TypeBank Co.,Ltd</a></td>
 </tr>
-	
 <tr>
 <td>TBFF</td>
 <td><a href="https://www.myfonts.com/foundry/TrueBlue/" data-linktype="external">TrueBlue Font Foundry</a></td>
@@ -4926,6 +5034,10 @@ Article												</li>
 <tr>
 <td>TMT</td>
 <td><a href="http://www.typemytype.com" data-linktype="external">TypeMyType Comm. V.</a></td>
+</tr>
+<tr>
+<td>TN  </td>
+<td><a href="https://www.typenetwork.com/" data-linktype="external">Type Network</a></td>
 </tr>
 <tr>
 <td>TNB</td>
@@ -5094,6 +5206,10 @@ Article												</li>
 <tr>
 <td>TYPR</td>
 <td><a href="http://www.typeproject.com/" data-linktype="external">Type Project</a></td>
+</tr>
+<tr>
+<td>TYPT</td>
+<td><a href="https://www.typearture.com/" data-linktype="external">Typearture</a></td>
 </tr>
 <tr>
 <td>TYRE</td>
@@ -5288,7 +5404,6 @@ Article												</li>
 <td>WASP</td>
 <td><a href="http://www.waspbarcode.com/" data-linktype="external">Wasp Barcode Technologies</a></td>
 </tr>
-	
 <tr>
 <td>WATF</td>
 <td><a href="https://wa-type.com/" data-linktype="external">WA</a></td>
@@ -5300,6 +5415,10 @@ Article												</li>
 <tr>
 <td>WCYS</td>
 <td><a href="https://wcys.co/" data-linktype="external">WCYS & Co.</a></td>
+</tr>
+<tr>
+<td>WEBF</td>
+<td><a href="https://webfont.jp/" data-linktype="external">WebFonts JAPAN Inc.</a></td>
 </tr>
 <tr>
 <td>WEI</td>
@@ -5423,7 +5542,6 @@ Article												</li>
 <td>YUKI</td>
 <td>Yuki Type Foundry</td>
 </tr>
-	
 <tr>
 <td>YWFT</td>
 <td><a href="http://www.youworkforthem.com" data-linktype="external">YouWorkForThem</a></td>
@@ -5476,6 +5594,9 @@ Article												</li>
 <p>External Web sites listed here are not under the control of Microsoft. Accordingly, Microsoft can make no representation concerning the content of these sites to you, nor can the fact that Microsoft has given you this listing serve as an endorsement by Microsoft of any of these sites. Microsoft is providing external links only as a convenience to you. This is to inform you that Microsoft has not tested any software found on these sites and therefore cannot make any representations regarding the quality, safety or suitability of any software found there. There are inherent dangers in the use of any software found on the Internet, and Microsoft cautions you to make sure that you completely understand the risks before retrieving any software on the Internet.</p>
 
 							</div>
+
+							<div id="assertive-live-region" role="alert" aria-live="assertive" class="visually-hidden" aria-relevant="additions" aria-atomic="true"></div>
+							<div id="polite-live-region" role="status" aria-live="polite" class="visually-hidden" aria-relevant="additions" aria-atomic="true"></div>
 							<!-- </content> -->
 
 						</main>
@@ -5484,7 +5605,7 @@ Article												</li>
 
 
 						<!-- recommendations section -->
-							<section id="recommendations-section" data-bi-name="recommendations"></section>
+							<section id="recommendations-section" data-bi-name="recommendations" class="display-none-print"></section>
 							<section id="right-rail-recommendations-mobile" data-bi-name="recommendations" class="display-none-desktop margin-top-xxs" hidden></section>
 						<!-- end recommendations section -->
 
@@ -5547,8 +5668,8 @@ Article												</li>
 		<span>Theme</span>
 	</button>
 	<div class="dropdown-menu" id="theme-menu-interactive" role="menu">
-		<ul class="theme-selector padding-xxs">
-			<li class="theme display-block">
+		<ul class="theme-selector padding-xxs" role="none">
+			<li class="theme display-block" role="menuitem">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="light">
 					<span class="theme-light margin-right-xxs">
@@ -5568,11 +5689,11 @@ Article												</li>
 							</svg>
 						</span>
 					</span>
-					<span role="menuitem">
+					<span>
 Light					</span>
 				</button>
 			</li>
-			<li class="theme display-block">
+			<li class="theme display-block" role="menuitem">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="dark">
 					<span class="theme-dark margin-right-xxs">
@@ -5592,11 +5713,11 @@ Light					</span>
 							</svg>
 						</span>
 					</span>
-					<span role="menuitem">
+					<span>
 Dark					</span>
 				</button>
 			</li>
-			<li class="theme display-block">
+			<li class="theme display-block" role="menuitem">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="high-contrast">
 					<span class="theme-high-contrast margin-right-xxs">
@@ -5616,7 +5737,7 @@ Dark					</span>
 							</svg>
 						</span>
 					</span>
-					<span role="menuitem">
+					<span>
 High contrast					</span>
 				</button>
 			</li>
@@ -5628,8 +5749,8 @@ High contrast					</span>
 	<ul class="links" data-bi-name="footerlinks">
 		<li class="manage-cookies-holder" hidden></li>
 				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
-				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
-				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog/" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li>
 					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
 				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
@@ -5697,8 +5818,8 @@ High contrast					</span>
 		<span>Theme</span>
 	</button>
 	<div class="dropdown-menu" id="theme-menu" role="menu">
-		<ul class="theme-selector padding-xxs">
-			<li class="theme display-block">
+		<ul class="theme-selector padding-xxs" role="none">
+			<li class="theme display-block" role="menuitem">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="light">
 					<span class="theme-light margin-right-xxs">
@@ -5718,11 +5839,11 @@ High contrast					</span>
 							</svg>
 						</span>
 					</span>
-					<span role="menuitem">
+					<span>
 Light					</span>
 				</button>
 			</li>
-			<li class="theme display-block">
+			<li class="theme display-block" role="menuitem">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="dark">
 					<span class="theme-dark margin-right-xxs">
@@ -5742,11 +5863,11 @@ Light					</span>
 							</svg>
 						</span>
 					</span>
-					<span role="menuitem">
+					<span>
 Dark					</span>
 				</button>
 			</li>
-			<li class="theme display-block">
+			<li class="theme display-block" role="menuitem">
 				<button class="button button-clear button-sm theme-control button-block justify-content-flex-start"
 					data-theme-to="high-contrast">
 					<span class="theme-high-contrast margin-right-xxs">
@@ -5766,7 +5887,7 @@ Dark					</span>
 							</svg>
 						</span>
 					</span>
-					<span role="menuitem">
+					<span>
 High contrast					</span>
 				</button>
 			</li>
@@ -5778,8 +5899,8 @@ High contrast					</span>
 	<ul class="links" data-bi-name="footerlinks">
 		<li class="manage-cookies-holder" hidden></li>
 				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
-				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog" data-bi-name="bloglink">Blog</a></li>
-				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/teamblog/" data-bi-name="bloglink">Blog</a></li>
+				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li>
 					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
 				<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
