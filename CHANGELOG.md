@@ -12,10 +12,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - We normalized the ordering of log messages of some more checks. To avoid imprevisibility of python set iteration, we sort them before printing. This helps to reduce diffs for people that compare subsequent runs of fontbakery on automated QA setups (issue #3654)
 
 ### New Checks
-#### On the Adobe Fonts Profile
+#### Added to the Adobe Fonts Profile
   - **[com.adobe.fonts/check/unsupported_tables]:** Verifies if fonts contain any tables not supported by Adobe Fonts' font-processing pipeline (PR #3870)
 
-#### On the Google Fonts Profile
+#### Added to the Google Fonts Profile
   - **[com.google.fonts/check/font_names]:** Ensure font names match our specification (PR #3800)
   - **[com.google.fonts/check/fvar_instances]:** Ensure fvar instances match our specification (PR #3800)
   - **[com.google.fonts/check/STAT]:** Ensure fonts have compulsory STAT table axis values (PR #3800)
