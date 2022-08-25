@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.10 (2022-Aug-??)
+## Upcoming release: 0.8.11 (2022-Sep-??)
+  - ...
+
+
+## Upcoming release: 0.8.10 (2022-Aug-25)
 ### Release Notes
   - We have updated our Code of Conduct. Please read [the updated text](CODE_OF_CONDUCT.md) which corresponds to the `Contributor Covenant version 2.1` available at https://www.contributor-covenant.org/version/2/1/code_of_conduct/
   - We normalized the ordering of log messages of some more checks. To avoid imprevisibility of python set iteration, we sort them before printing. This helps to reduce diffs for people that compare subsequent runs of fontbakery on automated QA setups (issue #3654)
