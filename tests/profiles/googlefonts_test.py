@@ -4213,3 +4213,38 @@ def test_check_override_freetype_rasterizer(mock_import_error):
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     msg = assert_results_contain(check(font), FAIL, "freetype-not-installed")
     assert "FreeType is not available" in msg
+
+
+def test_check_colorfont_tables():
+    """Fonts must have neither or both the tables 'COLR' and 'SVG'."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/colorfont_tables")
+
+    ttFont = TTFont(TEST_FILE("color_fonts/noto-glyf_colr_1.ttf"))
+    assert 'COLR' in ttFont.keys()
+    assert 'SVG' not in ttFont.keys()
+    assert_results_contain(check(ttFont),
+                           FAIL, 'missing-table',
+                           'with a color font lacking SVG table')
+
+    # Fake an SVG table:
+    ttFont["SVG"] = "fake!"
+    assert 'SVG' in ttFont.keys()
+    assert 'COLR' in ttFont.keys()
+    assert_PASS(check(ttFont),
+                f'with a font containing both tables.')
+
+    # Now remove the COLR one:
+    del ttFont["COLR"]
+    assert 'COLR' not in ttFont.keys()
+    assert 'SVG' in ttFont.keys()
+    assert_results_contain(check(ttFont),
+                           FAIL, 'missing-table',
+                           'with a font with SVG table but no COLR table.')
+
+    # Finally, get rid of both:
+    del ttFont["SVG"]
+    assert 'SVG' not in ttFont.keys()
+    assert 'COLR' not in ttFont.keys()
+    assert_PASS(check(ttFont),
+                f'with a good font without SVG or COLR tables.')

@@ -198,6 +198,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/no_debugging_tables',
     'com.google.fonts/check/render_own_name',
     'com.google.fonts/check/STAT',
+    'com.google.fonts/check/colorfont_tables',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -6145,6 +6146,39 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
                      f' METADATA.pb declares it as "{family_metadata.category}".')
     else:
        yield PASS, "OK."
+
+
+@check(
+    id = "com.google.fonts/check/colorfont_tables",
+    rationale = """
+        No one color font format supports all major user agents, but the combination
+        of COLR & SVG tables is pretty good.
+
+        A smart server could prune away one or the other based on user agent,
+        and a dumb server will at least have something that works.
+
+        Fonts that do not pass this check can be fixed with the maximum_color tool
+        available at https://github.com/googlefonts/nanoemoji
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3886'
+)
+def com_google_fonts_check_colorfont_tables(ttFont):
+    """Fonts must have neither or both the tables 'COLR' and 'SVG'."""
+    SUGGESTED_FIX = ("To fix this, please run the font through the maximum_color tool"
+                     " that installs as part of the nanoemoji package"
+                     " (https://github.com/googlefonts/nanoemoji)")
+    if 'COLR' in ttFont.keys() and 'SVG' not in ttFont.keys():
+        yield FAIL,\
+              Message('missing-table',
+                      "This is a color font (it has a 'COLR' table)"
+                      " but it lacks an 'SVG' table. " + SUGGESTED_FIX)
+    elif 'COLR' not in ttFont.keys() and 'SVG' in ttFont.keys():
+        yield FAIL,\
+              Message('missing-table',
+                      "This is a color font (it has a 'SVG' table)"
+                      " but it lacks an 'COLR' table. " + SUGGESTED_FIX)
+    else:
+        yield PASS, "Looks good!"
 
 
 ###############################################################################
