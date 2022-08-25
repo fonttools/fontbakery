@@ -802,7 +802,6 @@ def com_google_fonts_check_valid_glyphnames(ttFont, config):
         yield SKIP, ("TrueType fonts with a format 3.0 post table"
                      " contain no glyph names.")
     else:
-        import re
         bad_names = []
         warn_names = []
         for _, glyphName in enumerate(ttFont.getGlyphOrder()):
@@ -861,7 +860,6 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
         yield SKIP, ("TrueType fonts with a format 3.0 post table"
                      " contain no glyph names.")
     else:
-        import re
         glyphs = []
         duplicated_glyphIDs = []
         for _, g in enumerate(ttFont.getGlyphOrder()):
