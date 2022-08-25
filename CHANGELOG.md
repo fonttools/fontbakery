@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.8.11 (2022-Sep-??)
-  - ...
+### New Checks
+#### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/colorfont_tables]:** Fonts must have neither or both the tables `COLR` and `SVG`. (issue #3886)
 
 
 ## 0.8.10 (2022-Aug-25)
