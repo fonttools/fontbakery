@@ -6,7 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
-## Upcoming release: 0.8.10 (2022-Aug-25)
+## 0.8.10 (2022-Aug-25)
 ### Release Notes
   - We have updated our Code of Conduct. Please read [the updated text](CODE_OF_CONDUCT.md) which corresponds to the `Contributor Covenant version 2.1` available at https://www.contributor-covenant.org/version/2/1/code_of_conduct/
   - We normalized the ordering of log messages of some more checks. To avoid imprevisibility of python set iteration, we sort them before printing. This helps to reduce diffs for people that compare subsequent runs of fontbakery on automated QA setups (issue #3654)
@@ -21,22 +21,13 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/STAT]:** Ensure fonts have compulsory STAT table axis values (PR #3800)
   - **[com.google.fonts/check/description/valid_html]:** Fix parser to accept ampersand character in DESCRIPTION files. (issue #3840)
 
-### Changes to existing checks
-#### On the Google Fonts Profile
-  - **[com.google.fonts/check/mandatory_avar_table]:** Downgrade it to a mere WARN, even though it is still a high-priority one. (issue #3100)
-  - **[com.fontwerk/check/inconsistencies_between_fvar_stat]:** Do not raise an error if font is missing AxisValues (issue #3848 PR #3849)
-  - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Do not raise an error if font is missing AxisValues (issue #3848 PR #3849)
-  - **[com.google.fonts/check/name/familyname]:** Removed due to new `font_names` check (PR #3800)
-  - **[com.google.fonts/check/name/subfamilyname]:** Removed due to new `font_names` check (PR #3800)
-  - **[com.google.fonts/check/name/fullfontname]:** Removed due to new `font_names` check (PR #3800)
-  - **[com.google.fonts/check/name/postscriptname]:** Removed due to new `font_names` check (PR #3800)
-  - **[com.google.fonts/check/name/typographicfamilyname]:** Removed due to new `font_names` check (PR #3800)
-  - **[com.google.fonts/check/name/typographicsubfamilyname]:** Removed due to new `font_names` check (PR #3800)
-  - **[com.google.fonts/check/varfont_has_instances]:** Removed due to new `fvar_instances` check (PR #3800)
-  - **[com.google.fonts/check/varfont_weight_instances]:** Removed due to new `fvar_instances` check (PR #3800)
-  - **[com.google.fonts/check/varfont_instance_coordinates]:** Removed due to new `fvar_instances` check (PR #3800)
-  - **[com.google.fonts/check/varfont_instance_names]:** Removed due to new `fvar_instances` check (PR #3800)
-  - **[com.adobe.fonts/check/freetype_rasterizer]:** Override this check to make it mandatory for Google Fonts, emitting a FAIL if freetype is not installed, instead of silently skipping. (issue #3871)
+### Deprecated Checks
+#### Removed from the Google Fonts Profile
+  - **[com.google.fonts/check/description_max_length]**: Recent requirement from GF marketing team is to remove character limit on description. GF specimen page has been updated to allow bigger description text from designers. (issue #3829)
+
+### Migrations
+#### To the `Universal` profile
+  - **[com.google.fonts/check/whitespace_widths]:** moved from `OpenType` profile. Also added rationale text. (issue #3843)
 
 ### BugFixes
   - **[com.google.fonts/check/unreachable_glyphs]:** Fix crash by adding support for color-font legacy COLR v0 format. (issue #3850)
@@ -53,10 +44,6 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** Fixed ERROR result as the check did not yield any status when a variable font had no `name` table. (PR #3866)
   - **[com.adobe.fonts/check/varfont/distinct_instance_records]:** Fixed ERROR result as the check did not yield any status when a variable font had no `name` table. (PR #3866)
 
-### Migrations
-#### To the `Universal` profile
-  - **[com.google.fonts/check/whitespace_widths]:** moved from `OpenType` profile. Also added rationale text. (issue #3843)
-
 ### Changes to existing checks
 #### On the Adobe Fonts Profile
   - **[com.google.fonts/check/cmap/unexpected_subtables]:** This check from the Noto Fonts profile was disabled; CJK vendors still include Macintosh format 2 subtables in their fonts (PR #3870)
@@ -67,18 +54,28 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/nameid_1_win_english]:** Replaced ERROR status by FAIL status (PR #3870)
   - **[com.adobe.fonts/check/freetype_rasterizer]:** Replaced ERROR status by FAIL status (PR #3870)
 
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/glyph_coverage]:** Ensure check doesn't error when font contains all required encoded glyphs (PR #3833)
+  - **[com.google.fonts/check/mandatory_avar_table]:** Downgrade it to a mere WARN, even though it is still a high-priority one. (issue #3100)
+  - **[com.fontwerk/check/inconsistencies_between_fvar_stat]:** Do not raise an error if font is missing AxisValues (issue #3848 PR #3849)
+  - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Do not raise an error if font is missing AxisValues (issue #3848 PR #3849)
+  - **[com.google.fonts/check/name/familyname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/name/subfamilyname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/name/fullfontname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/name/postscriptname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/name/typographicfamilyname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/name/typographicsubfamilyname]:** Removed due to new `font_names` check (PR #3800)
+  - **[com.google.fonts/check/varfont_has_instances]:** Removed due to new `fvar_instances` check (PR #3800)
+  - **[com.google.fonts/check/varfont_weight_instances]:** Removed due to new `fvar_instances` check (PR #3800)
+  - **[com.google.fonts/check/varfont_instance_coordinates]:** Removed due to new `fvar_instances` check (PR #3800)
+  - **[com.google.fonts/check/varfont_instance_names]:** Removed due to new `fvar_instances` check (PR #3800)
+  - **[com.adobe.fonts/check/freetype_rasterizer]:** Override this check to make it mandatory for Google Fonts, emitting a FAIL if freetype is not installed, instead of silently skipping. (issue #3871)
+
 #### On the OpenType Profile
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** Relaxed the implementation to compare name values, not strictly IDs. (PR #3821)
 
 #### On the Universal Profile
   - **[com.google.fonts/check/unreachable_glyphs]:** Do not report glyphs referenced in color fonts graphic compositions on the COLR table as missing. (issue #3837)
-
-#### On the Google Fonts Profile
-  - **[com.google.fonts/check/glyph_coverage]:** Ensure check doesn't error when font contains all required encoded glyphs (PR #3833)
-
-### Deprecated Checks
-#### Removed from the Google Fonts Profile
-  - **[com.google.fonts/check/description_max_length]**: Recent requirement from GF marketing team is to remove character limit on description. GF specimen page has been updated to allow bigger description text from designers. (issue #3829)
 
 
 ## 0.8.9 (2022-Jun-16)
