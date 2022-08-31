@@ -6232,7 +6232,7 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3886'
 )
 def com_google_fonts_check_colorfont_tables(ttFont):
-    """Check font has correct color font tables"""
+    """Check font has the expected color font tables"""
     SUGGESTED_FIX = ("To fix this, please run the font through the maximum_color tool"
                      " that installs as part of the nanoemoji package"
                      " (https://github.com/googlefonts/nanoemoji)")
