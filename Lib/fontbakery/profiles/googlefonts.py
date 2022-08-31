@@ -6232,22 +6232,35 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3886'
 )
 def com_google_fonts_check_colorfont_tables(ttFont):
-    """Fonts must have neither or both the tables 'COLR' and 'SVG '."""
+    """Check font has correct color font tables"""
     SUGGESTED_FIX = ("To fix this, please run the font through the maximum_color tool"
                      " that installs as part of the nanoemoji package"
                      " (https://github.com/googlefonts/nanoemoji)")
-    if 'COLR' in ttFont.keys() and 'SVG ' not in ttFont.keys():
-        yield FAIL,\
-              Message('missing-table',
-                      "This is a color font (it has a 'COLR' table)"
-                      " but it lacks an 'SVG ' table. " + SUGGESTED_FIX)
-    elif 'COLR' not in ttFont.keys() and 'SVG ' in ttFont.keys():
-        yield FAIL,\
-              Message('missing-table',
-                      "This is a color font (it has a 'SVG ' table)"
-                      " but it lacks an 'COLR' table. " + SUGGESTED_FIX)
-    else:
-        yield PASS, "Looks good!"
+    if "COLR" in ttFont:
+        colr_table = ttFont["COLR"]
+        if colr_table.version == 0 and "SVG" in ttFont:
+            yield FAIL, Message(
+                "drop-svg",
+                "Font has a COLR v0 table so the SVG table isn't needed."
+            )
+            return
+        elif colr_table.version == 1 and "SVG" not in ttFont:
+            yield FAIL, Message(
+                "add-svg",
+                "Font is Colr v1 so it needs an SVG table."
+            )
+            return
+    elif "SVG" in ttFont:
+        if "COLR" not in ttFont:
+            yield FAIL, Message(
+                "add-colr",
+                "Font only has an SVG table. Please add a colr table as well. "
+                "You may be required to drop the SVG table if the colr table "
+                "version is v0."
+            )
+            return
+    yield PASS, "Looks Good!"
+
 
 
 @check(
