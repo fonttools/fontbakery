@@ -6254,7 +6254,7 @@ def com_google_fonts_check_colorfont_tables(ttFont):
         if "COLR" not in ttFont:
             yield FAIL, Message(
                 "add-colr",
-                "Font only has an SVG table. Please add a colr table as well. "
+                "Font only has an SVG table. Please add a COLR table as well. "
                 "You may be required to drop the SVG table if the colr table "
                 "version is v0."
             )
