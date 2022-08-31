@@ -6235,14 +6235,14 @@ def com_google_fonts_check_colorfont_tables(ttFont):
     """Check font has the expected color font tables"""
     if "COLR" in ttFont:
         colr_table = ttFont["COLR"]
-        if colr_table.version == 0 and "SVG" in ttFont:
+        if colr_table.version == 0 and "SVG " in ttFont:
             yield FAIL, Message(
                 "drop-svg",
                 "Font has a COLR v0 table, which is already widely supported, "
                 "so the SVG table isn't needed."
             )
             return
-        elif colr_table.version == 1 and "SVG" not in ttFont:
+        elif colr_table.version == 1 and "SVG " not in ttFont:
             yield FAIL, Message(
                 "add-svg",
                 "Font has COLRv1 but no SVG table; for CORLv1, we require "
@@ -6250,7 +6250,7 @@ def com_google_fonts_check_colorfont_tables(ttFont):
                 "the former is not supported yet."
             )
             return
-    elif "SVG" in ttFont:
+    elif "SVG " in ttFont:
         if "COLR" not in ttFont:
             yield FAIL, Message(
                 "add-colr",
