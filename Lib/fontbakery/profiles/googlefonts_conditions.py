@@ -686,7 +686,10 @@ def production_metadata():
     """Get the Google Fonts production metadata"""
     import requests
     meta_url = "http://fonts.google.com/metadata/fonts"
-    return requests.get(meta_url).json()
+    # FIXME: This is not affected by the --timeout
+    #        command-line option introduced at
+    #        https://github.com/googlefonts/fontbakery/pull/3892
+    return requests.get(meta_url, timeout=10).json()
 
 
 @condition

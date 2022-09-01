@@ -369,13 +369,13 @@ def is_up_to_date(installed_str, latest_str):
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/2093'
 )
-def com_google_fonts_check_fontbakery_version(font):
+def com_google_fonts_check_fontbakery_version(font, config):
     """Do we have the latest version of FontBakery installed?"""
     import requests
     import pip_api
 
     try:
-        response = requests.get('https://pypi.org/pypi/fontbakery/json')
+        response = requests.get('https://pypi.org/pypi/fontbakery/json', timeout=config.get("timeout"))
 
     except requests.exceptions.ConnectionError as err:
         return FAIL, Message(
