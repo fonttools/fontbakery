@@ -6,6 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New Checks
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Fonts must have neither or both the tables `COLR` and `SVG`. (issue #3886)
+  - **[com.google.fonts/check/description/noto_has_article]:** Noto fonts must have an ARTICLE.en_us.html file. (issue #3841)
 
 
 ## 0.8.10 (2022-Aug-25)
