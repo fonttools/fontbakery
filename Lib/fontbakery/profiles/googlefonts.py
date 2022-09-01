@@ -5546,7 +5546,7 @@ def com_google_fonts_check_metadata_escaped_strings(metadata_file):
     conditions = ['family_metadata'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3083'
 )
-def com_google_fonts_check_metadata_designer_profiles(family_metadata):
+def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
     """METADATA.pb: Designers are listed correctly on the Google Fonts catalog?"""
     DESIGNER_INFO_RAW_URL = ("https://raw.githubusercontent.com/google/"
                              "fonts/master/catalog/designers/{}/")
@@ -5598,7 +5598,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
             continue
 
         url = DESIGNER_INFO_RAW_URL.format(normalized_name) + "info.pb"
-        response = requests.get(url)
+        response = requests.get(url, timeout=config.get("timeout"))
         if response.status_code != requests.codes.OK:
             passed = False
             yield WARN,\
@@ -5634,7 +5634,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
                           f"Please provide one.")
         else:
             avatar_url = DESIGNER_INFO_RAW_URL.format(normalized_name) + info.avatar.file_name
-            response = requests.get(avatar_url)
+            response = requests.get(avatar_url, timeout=config.get("timeout"))
             if response.status_code != requests.codes.OK:
                 passed = False
                 yield FAIL,\

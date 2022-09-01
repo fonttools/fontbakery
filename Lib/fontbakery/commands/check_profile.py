@@ -155,6 +155,9 @@ def ArgumentParser(profile, profile_arg=True):
     argument_parser.add_argument('--light-theme', default=False, action='store_true',
                                  help='Use a color theme with light colors.')
 
+    argument_parser.add_argument('--timeout', default=10, type=int,
+                                 help='Timeout (in seconds) for network operations.')
+
     argument_parser.add_argument('--json', default=False, action=AddReporterAction, cls=SerializeReporter,
                                  metavar= 'JSON_FILE',
                                  help='Write a json formatted report to JSON_FILE.')
