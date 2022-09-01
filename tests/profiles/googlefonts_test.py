@@ -4248,3 +4248,17 @@ def test_check_colorfont_tables():
     assert 'COLR' not in ttFont.keys()
     assert_PASS(check(ttFont),
                 f'with a good font without SVG or COLR tables.')
+
+
+def test_check_noto_has_article():
+    """Noto fonts must have an ARTICLE.en_us.html file"""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/description/noto_has_article")
+
+    ttFont = TTFont(TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf"))
+    assert_PASS(check(ttFont), "with a good font")
+
+    ttFont = TTFont(TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf"))
+    assert_results_contain(check(ttFont),
+                           FAIL, 'missing-article',
+                           "with a bad font")
