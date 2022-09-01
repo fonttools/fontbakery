@@ -97,7 +97,8 @@ DESCRIPTION_CHECKS = [
     'com.google.fonts/check/description/git_url',
     'com.google.fonts/check/description/eof_linebreak',
     'com.google.fonts/check/description/family_update',
-    'com.google.fonts/check/description/urls'
+    'com.google.fonts/check/description/urls',
+    'com.google.fonts/check/description/noto_has_article'
 ]
 
 FAMILY_CHECKS = [
@@ -6179,6 +6180,26 @@ def com_google_fonts_check_colorfont_tables(ttFont):
                       " but it lacks an 'COLR' table. " + SUGGESTED_FIX)
     else:
         yield PASS, "Looks good!"
+
+@check(
+    id = 'com.google.fonts/check/description/noto_has_article',
+    conditions = ['is_noto'],
+    rationale = """
+        Noto fonts are displayed in a different way on the fonts.google.com
+         web site, and so must also contain an article about them.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3841'
+)
+def com_google_fonts_check_description_noto_has_article(font):
+    """Noto fonts must have an ARTICLE.en_us.html file"""
+    directory = os.path.dirname(font)
+    descfilepath = os.path.join(directory, "article", "ARTICLE.en_us.html")
+    if os.path.exists(descfilepath):
+        yield PASS, "ARTICLE.en_us.html exists"
+    else:
+        yield FAIL,\
+              Message('missing-article',
+                      "This is a Noto font but it lacks an ARTICLE.en_us.html file")
 
 
 ###############################################################################
