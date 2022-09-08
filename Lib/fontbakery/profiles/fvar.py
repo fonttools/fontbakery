@@ -423,8 +423,8 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
         instances, the default instance should be enumerated even if there is no
         corresponding instance record. If an instance record is included for the
         default instance (that is, an instance record has coordinates set to default
-        values), then the nameID value should be set to either 2 or 17  or to a
-        name ID with the same value as name ID 2. Also, if a postScriptNameID is
+        values), then the nameID value should be set to either 2 or 17 or to a
+        name ID with the same value as name ID 2 or 17. Also, if a postScriptNameID is
         included in instance records, and the postScriptNameID value should be set
         to 6 or to a name ID with the same value as name ID 6.
     """,
@@ -434,9 +434,9 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
 def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
                                                                  has_name_table):
     """Validates that when an instance record is included for the default instance,
-    its subfamilyNameID value is set to either 2 or 17 (or something with
-    the same value as 2), and its postScriptNameID value is set to 6 (or
-    something with the same value as 6)."""
+    its subfamilyNameID value is set to a name ID whose string is equal to the
+    string of either name ID 2 or 17, and its postScriptNameID value is set to a
+    name ID whose string is equal to the string of name ID 6."""
 
     if not has_name_table:
         yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
@@ -452,6 +452,8 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
     axes_dflt_coords = {axis.axisTag: axis.defaultValue for axis in fvar_table.axes}
     name2 = name_table.getDebugName(2)
     name6 = name_table.getDebugName(6)
+    name17 = name_table.getDebugName(17)
+    font_subfam_name = name17 or name2
 
     for i, inst in enumerate(fvar_table.instances, 1):
         inst_coords = dict(inst.coordinates.items())
@@ -459,6 +461,7 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
         # The instance record has the same coordinates as the default instance
         if inst_coords == axes_dflt_coords:
             subfam_nameid = inst.subfamilyNameID
+            subfam_name = name_table.getDebugName(subfam_nameid) or f"Instance #{i}"
             postscript_nameid = inst.postscriptNameID
             postscript_name = name_table.getDebugName(postscript_nameid) or "None"
 
@@ -466,29 +469,27 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
             if postscript_nameid == 0xFFFF:
                 postscript_nameid = "0xFFFF"
 
-            inst_name = name_table.getDebugName(subfam_nameid) or f"Instance #{i}"
-
-            if subfam_nameid not in {2, 17} and inst_name != name2:
+            if subfam_name != font_subfam_name:
                 yield FAIL, Message(
-                    f"invalid-default-instance-subfamily-nameid:{subfam_nameid}",
-                    f"{inst_name!r} instance has the same coordinates as the default"
-                    f" instance; its subfamily name should be '{name2}'"
+                    f"invalid-default-instance-subfamily-name",
+                    f"{subfam_name!r} instance has the same coordinates as the default"
+                    f" instance; its subfamily name should be {font_subfam_name!r}"
                 )
                 passed = False
 
-            # Validate the postScriptNameID only if
+            # Validate the postScriptNameID string only if
             # at least one instance record includes it
-            if font_includes_ps_nameid and postscript_nameid != 6 and postscript_name != name6:
+            if font_includes_ps_nameid and postscript_name != name6:
                 yield FAIL, Message(
-                    f"invalid-default-instance-postscript-nameid:{postscript_nameid}",
-                    f"{inst_name!r} instance has the same coordinates as the default"
-                    f" instance; its postscript name should be '{name6}', instead of"
-                    f" '{postscript_name}'.",
+                    f"invalid-default-instance-postscript-name",
+                    f"{subfam_name!r} instance has the same coordinates as the default"
+                    f" instance; its postscript name should be {name6!r}, instead of"
+                    f" {postscript_name!r}.",
                 )
                 passed = False
 
     if passed:
-        yield PASS, "All default instance nameID values are valid."
+        yield PASS, "All default instance name strings are valid."
 
 
 @check(
