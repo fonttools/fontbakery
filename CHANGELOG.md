@@ -8,6 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/colorfont_tables]:** Fonts must have neither or both the tables `COLR` and `SVG`. (issue #3886)
   - **[com.google.fonts/check/description/noto_has_article]:** Noto fonts must have an ARTICLE.en_us.html file. (issue #3841)
 
+### BugFixes
+  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
+
 
 ## 0.8.10 (2022-Aug-25)
 ### Release Notes
