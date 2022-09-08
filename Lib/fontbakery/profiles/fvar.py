@@ -471,7 +471,7 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
 
             if subfam_name != font_subfam_name:
                 yield FAIL, Message(
-                    f"invalid-default-instance-subfamily-name",
+                    "invalid-default-instance-subfamily-name",
                     f"{subfam_name!r} instance has the same coordinates as the default"
                     f" instance; its subfamily name should be {font_subfam_name!r}"
                 )
@@ -481,7 +481,7 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
             # at least one instance record includes it
             if font_includes_ps_nameid and postscript_name != name6:
                 yield FAIL, Message(
-                    f"invalid-default-instance-postscript-name",
+                    "invalid-default-instance-postscript-name",
                     f"{subfam_name!r} instance has the same coordinates as the default"
                     f" instance; its postscript name should be {name6!r}, instead of"
                     f" {postscript_name!r}.",
