@@ -155,7 +155,9 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
         does not specify a required value for the 'Bold' instance of a variable font.
 
         But Dave Crossland suggested that we should enforce
-        a required value of 700 in this case.
+        a required value of 700 in this case (NOTE: a distinction
+        is made between "no bold instance present" vs "bold instance is present
+        but its wght coordinate is not == 700").
     """,
     conditions = ['is_variable_font',
                   'has_wght_axis'],
@@ -164,7 +166,11 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
 def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
     """The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold' instance."""
 
-    if bold_wght_coord == 700:
+    if bold_wght_coord is None:
+        yield FAIL,\
+              Message("no-bold-instance",
+                      'A "Bold" instance was not found.')
+    elif bold_wght_coord == 700:
         yield PASS, "Bold:wght is 700."
     else:
         yield FAIL,\
