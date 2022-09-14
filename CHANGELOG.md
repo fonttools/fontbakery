@@ -11,6 +11,11 @@ A more detailed list of changes is available in the corresponding milestones for
 ### BugFixes
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
 
+### Changes to existing checks
+  - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
+  instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
+#### Overridden in the Adobe Fonts Profile
+  - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN.
 
 ## 0.8.10 (2022-Aug-25)
 ### Release Notes
