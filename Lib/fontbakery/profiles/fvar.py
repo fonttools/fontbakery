@@ -169,7 +169,7 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
     if bold_wght_coord is None:
         yield FAIL,\
               Message("no-bold-instance",
-                      'A "Bold" instance was not found.')
+                      '"Bold" instance not present.')
     elif bold_wght_coord == 700:
         yield PASS, "Bold:wght is 700."
     else:

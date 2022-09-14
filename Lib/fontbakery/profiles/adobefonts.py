@@ -517,7 +517,8 @@ profile.check_log_override(
     "com.google.fonts/check/varfont/bold_wght_coord",
     overrides=(("no-bold-instance", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "Adobe doesn't require a 'Bold' named instance."
+        "Adobe doesn't require a 'Bold' named instance (but when a 'Bold' instance"
+        " is present, its coordinate on the 'wght' axis must be == 700)."
     ),
 )
 
