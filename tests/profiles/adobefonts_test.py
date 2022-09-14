@@ -395,3 +395,20 @@ def test_check_override_trailing_spaces():
                        WindowsLanguageID.ENGLISH_USA)
     msg = assert_results_contain(check(ttFont), WARN, "trailing-space")
     assert msg.endswith("'This Font [...]Software. '")
+
+
+def test_check_override_bold_wght_coord():
+    """Check that overriden test yields WARN rather than FAIL."""
+    check = CheckTester(
+        adobefonts_profile,
+        f"com.google.fonts/check/varfont/bold_wght_coord{OVERRIDE_SUFFIX}",
+    )
+
+    ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf"))
+
+    # remove "Bold" named instance
+    fvar_table = ttFont["fvar"]
+    del fvar_table.instances[4]
+
+    msg = assert_results_contain(check(ttFont), WARN, 'no-bold-instance')
+    assert msg == '"Bold" instance not present.'
