@@ -26,7 +26,7 @@ profile = profile_factory(default_section=Section("Adobe Fonts"))
 SET_EXPLICIT_CHECKS = {
     # This is the set of explict checks that will be invoked
     # when fontbakery is run with the 'check-adobefonts' subcommand.
-    # The contents of this set were last updated on August 21, 2022.
+    # The contents of this set were last updated on September 14, 2022.
     #
     # =======================================
     # From adobefonts.py (this file)
@@ -66,7 +66,7 @@ SET_EXPLICIT_CHECKS = {
     "com.adobe.fonts/check/varfont/valid_default_instance_nameids",
     "com.adobe.fonts/check/varfont/valid_postscript_nameid",
     "com.adobe.fonts/check/varfont/valid_subfamily_nameid",
-    "com.google.fonts/check/varfont/bold_wght_coord",
+    "com.google.fonts/check/varfont/bold_wght_coord",  # IS_OVERRIDDEN
     "com.google.fonts/check/varfont/regular_ital_coord",
     "com.google.fonts/check/varfont/regular_opsz_coord",
     "com.google.fonts/check/varfont/regular_slnt_coord",
@@ -226,6 +226,7 @@ OVERRIDDEN_CHECKS = [
     "com.google.fonts/check/name/trailing_spaces",
     "com.google.fonts/check/os2_metrics_match_hhea",
     "com.google.fonts/check/valid_glyphnames",
+    "com.google.fonts/check/varfont/bold_wght_coord",
     "com.google.fonts/check/whitespace_glyphs",
 ]
 
@@ -507,6 +508,16 @@ profile.check_log_override(
         "Many CFF OpenType fonts in circulation are built with the Microsoft platform"
         " Full font name string identical to the PostScript FontName in the CFF Name"
         " INDEX. This practice was documented in the OpenType spec until version 1.5.",
+    ),
+)
+
+
+profile.check_log_override(
+    # From fvar.py
+    "com.google.fonts/check/varfont/bold_wght_coord",
+    overrides=(("no-bold-instance", WARN, KEEP_ORIGINAL_MESSAGE),),
+    reason=(
+        "Adobe doesn't require a 'Bold' named instance."
     ),
 )
 
