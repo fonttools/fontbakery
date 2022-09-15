@@ -5599,6 +5599,13 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
 
         url = DESIGNER_INFO_RAW_URL.format(normalized_name) + "info.pb"
         response = requests.get(url, timeout=config.get("timeout"))
+
+        # (see https://github.com/googlefonts/fontbakery/pull/3892#issuecomment-1248758859)
+        # For debugging purposes:
+        # yield WARN,\
+        #      Message("config",
+        #              f"Config is '{config}'")
+
         if response.status_code != requests.codes.OK:
             passed = False
             yield WARN,\
