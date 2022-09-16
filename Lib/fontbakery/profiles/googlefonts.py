@@ -6220,14 +6220,12 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
 @check(
     id = "com.google.fonts/check/colorfont_tables",
     rationale = """
-        No one color font format supports all major user agents, but the combination
-        of COLR & SVG tables is pretty good.
+        Colr v0 fonts are widely supported in most browsers so they do not require
+        an SVG color table. However, Colr v1 is only well supported in Chrome so
+        we need to add an SVG table to these fonts.
 
-        A smart server could prune away one or the other based on user agent,
-        and a dumb server will at least have something that works.
-
-        Fonts that do not pass this check can be fixed with the maximum_color tool
-        available at https://github.com/googlefonts/nanoemoji
+        To add an SVG table, run the maximum_color tool in Nano Emoji,
+        https://github.com/googlefonts/nanoemoji
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3886'
 )
