@@ -4227,33 +4227,43 @@ def test_check_override_freetype_rasterizer(mock_import_error):
 
 
 def test_check_colorfont_tables():
-    """Fonts must have neither or both the tables 'COLR' and 'SVG '."""
+    """Fonts must have neither or both the tables 'COLR' and 'SVG'."""
+    from fontTools.ttLib import newTable
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/colorfont_tables")
 
     ttFont = TTFont(TEST_FILE("color_fonts/noto-glyf_colr_1.ttf"))
-    assert 'COLR' in ttFont.keys()
     assert 'SVG ' not in ttFont.keys()
+    assert 'COLR' in ttFont.keys()
+    # Check colr v1 font has an svg table. Will fail since font
+    # doesn't have one.
     assert_results_contain(check(ttFont),
-                           FAIL, 'missing-table',
+                           FAIL, 'add-svg',
                            'with a color font lacking SVG table')
 
     # Fake an SVG table:
-    ttFont["SVG "] = "fake!"
+    ttFont["SVG "] = newTable('SVG ')
     assert 'SVG ' in ttFont.keys()
     assert 'COLR' in ttFont.keys()
     assert_PASS(check(ttFont),
                 f'with a font containing both tables.')
 
-    # Now remove the COLR one:
-    del ttFont["COLR"]
-    assert 'COLR' not in ttFont.keys()
+    # Now downgrade to colr table to v0:
+    ttFont["COLR"].version = 0
     assert 'SVG ' in ttFont.keys()
     assert_results_contain(check(ttFont),
-                           FAIL, 'missing-table',
-                           'with a font with SVG table but no COLR table.')
+                           FAIL, 'drop-svg',
+                           'with a font which should not have an SVG table')
 
-    # Finally, get rid of both:
+    # Delete colr table and keep SVG:
+    del ttFont["COLR"]
+    assert 'SVG ' in ttFont.keys()
+    assert 'COLR' not in ttFont.keys()
+    assert_results_contain(check(ttFont),
+                           FAIL, 'add-colr',
+                           'with a font which should have a COLR table')
+    
+    #finally delete both color font tables
     del ttFont["SVG "]
     assert 'SVG ' not in ttFont.keys()
     assert 'COLR' not in ttFont.keys()
