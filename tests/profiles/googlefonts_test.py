@@ -4262,7 +4262,7 @@ def test_check_colorfont_tables():
     assert_results_contain(check(ttFont),
                            FAIL, 'add-colr',
                            'with a font which should have a COLR table')
-    
+
     #finally delete both color font tables
     del ttFont["SVG "]
     assert 'SVG ' not in ttFont.keys()
