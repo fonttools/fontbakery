@@ -9,8 +9,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/description/noto_has_article]:** Noto fonts must have an ARTICLE.en_us.html file. (issue #3841)
 
 ### BugFixes
-  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
   - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
+  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
+  - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
 
 ### Changes to existing checks
 #### On the OpenType Profile

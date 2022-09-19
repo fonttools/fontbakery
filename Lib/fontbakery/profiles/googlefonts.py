@@ -6164,19 +6164,19 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3886'
 )
 def com_google_fonts_check_colorfont_tables(ttFont):
-    """Fonts must have neither or both the tables 'COLR' and 'SVG'."""
+    """Fonts must have neither or both the tables 'COLR' and 'SVG '."""
     SUGGESTED_FIX = ("To fix this, please run the font through the maximum_color tool"
                      " that installs as part of the nanoemoji package"
                      " (https://github.com/googlefonts/nanoemoji)")
-    if 'COLR' in ttFont.keys() and 'SVG' not in ttFont.keys():
+    if 'COLR' in ttFont.keys() and 'SVG ' not in ttFont.keys():
         yield FAIL,\
               Message('missing-table',
                       "This is a color font (it has a 'COLR' table)"
-                      " but it lacks an 'SVG' table. " + SUGGESTED_FIX)
-    elif 'COLR' not in ttFont.keys() and 'SVG' in ttFont.keys():
+                      " but it lacks an 'SVG ' table. " + SUGGESTED_FIX)
+    elif 'COLR' not in ttFont.keys() and 'SVG ' in ttFont.keys():
         yield FAIL,\
               Message('missing-table',
-                      "This is a color font (it has a 'SVG' table)"
+                      "This is a color font (it has a 'SVG ' table)"
                       " but it lacks an 'COLR' table. " + SUGGESTED_FIX)
     else:
         yield PASS, "Looks good!"
