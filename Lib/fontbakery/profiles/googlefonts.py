@@ -6213,7 +6213,7 @@ def com_google_fonts_check_empty_glyph_on_gid1_for_colrv0(ttFont):
     gid1.draw(pen)
     area = pen.value
 
-    if 'COLR' in ttFont.keys() and area != 0:
+    if 'COLR' in ttFont.keys() and ttFont['COLR'].version == 0 and area != 0:
         yield FAIL,\
               Message('gid1-has-contours',
                       "This is a COLR font. As a workaround for a rendering bug in "
