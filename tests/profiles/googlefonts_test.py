@@ -4286,6 +4286,32 @@ def test_check_color_cpal_brightness():
                 'with a colrv0 font with good layer colors')
 
 
+def test_check_empty_glyph_on_gid1_for_colrv0():
+    """Put an empty glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
+
+    def gid1area(ttFont):
+        from fontTools.pens.areaPen import AreaPen
+        glyphOrder = ttFont.getGlyphOrder()
+        glyphSet = ttFont.getGlyphSet()
+        pen = AreaPen(glyphSet)
+        gid1 = glyphSet[glyphOrder[1]]
+        gid1.draw(pen)
+        return pen.value
+
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/empty_glyph_on_gid1_for_colrv0")
+
+    ttFont = TTFont(TEST_FILE("color_fonts/AmiriQuranColored_gid1_notempty.ttf"))
+    assert 'COLR' in ttFont.keys() and ttFont['COLR'].version == 0 and gid1area(ttFont) != 0
+    assert_results_contain(check(ttFont),
+                           FAIL, 'gid1-has-contours',
+                           'with a font with COLR table but no empty glyph on GID 1.')
+
+    ttFont = TTFont(TEST_FILE("color_fonts/AmiriQuranColored.ttf"))
+    assert 'COLR' in ttFont.keys() and ttFont['COLR'].version == 0 and gid1area(ttFont) == 0
+    assert_PASS(check(ttFont), 'with a good font with COLR table and an empty glyph on GID 1.')
+
+
 def test_check_noto_has_article():
     """Noto fonts must have an ARTICLE.en_us.html file"""
     check = CheckTester(googlefonts_profile,
