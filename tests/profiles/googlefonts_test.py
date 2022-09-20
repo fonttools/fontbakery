@@ -4251,29 +4251,26 @@ def test_check_colorfont_tables():
 
 def test_check_empty_glyph_on_gid1_for_colrv0():
     """Put an empty glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
+
+    def gid1area(ttFont):
+        from fontTools.pens.areaPen import AreaPen
+        glyphSet = ttFont.getGlyphSet()
+        pen = AreaPen(glyphSet)
+        gid1 = glyphSet[glyphSet.keys()[1]]
+        gid1.draw(pen)
+        return pen.value
+
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/empty_glyph_on_gid1_for_colrv0")
 
-    ttFont = TTFont(TEST_FILE("color_fonts/noto-glyf_colr_1.ttf"))
-    space_glyphname = "space"
-    if "uni0020" in ttFont['cmap'].tables[0].cmap:
-        space_glyphname = "uni0020"
-    assert 'COLR' in ttFont.keys()
-
-    # Re-order glyphs to be sure that the space glyph is not on GID 1:
-    glyf = ttFont['glyf']
-    glyf.glyphOrder = list(glyf.glyphOrder[0]) + glyf.glyphOrder[2:] + [space_glyphname]
-    ttFont['glyf'] = glyf
-    assert ttFont['glyf'].glyphOrder[1] != space_glyphname
+    ttFont = TTFont(TEST_FILE("color_fonts/AmiriQuranColored_gid1_notempty.ttf"))
+    assert 'COLR' in ttFont.keys() and ttFont['COLR'].version == 0 and gid1area(ttFont) != 0
     assert_results_contain(check(ttFont),
                            FAIL, 'gid1-has-contours',
                            'with a font with COLR table but no empty glyph on GID 1.')
 
-    # Re-order glyphs to be sure that the space glyph is on GID 1:
-    glyf = ttFont['glyf']
-    glyf.glyphOrder = glyf.glyphOrder[:1] + [space_glyphname] + glyf.glyphOrder[1:]
-    ttFont['glyf'] = glyf
-    assert ttFont['glyf'].glyphOrder[1] == space_glyphname
+    ttFont = TTFont(TEST_FILE("color_fonts/AmiriQuranColored.ttf"))
+    assert 'COLR' in ttFont.keys() and ttFont['COLR'].version == 0 and gid1area(ttFont) == 0
     assert_PASS(check(ttFont),
                 f'with a good font with COLR table and an empty glyph on GID 1.')
 
