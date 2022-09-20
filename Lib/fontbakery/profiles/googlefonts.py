@@ -6209,7 +6209,7 @@ def com_google_fonts_check_space_on_gid1_for_colrv0(ttFont):
     if 'COLR' in ttFont.keys() and ttFont['glyf'].glyphOrder[1] != 'space':
         yield FAIL,\
               Message('wrong-glyphorder',
-                      "This is a COLR font. As a workaround for a shaping bug in "
+                      "This is a COLR font. As a workaround for a rendering bug in "
                       "Windows 10, it needs the space glyph to be in GID 1. " + SUGGESTED_FIX)
     else:
         yield PASS, "Looks good!"
