@@ -6206,16 +6206,12 @@ def com_google_fonts_check_empty_glyph_on_gid1_for_colrv0(ttFont):
     SUGGESTED_FIX = ("To fix this, please reorder the glyph order so that"
                     " a glyph with no contours is on GID 1 right after the .notdef glyph."
                     " This could be the space glyph.")
-    if 'glyf' in ttFont.keys():
-        glyf = ttFont['glyf']
-        numberOfContours = glyf[glyf.glyphOrder[1]].numberOfContours
-    elif 'CFF ' in ttFont.keys():
-        from fontTools.pens.areaPen import AreaPen
-        glyphSet = ttFont.getGlyphSet()
-        pen = AreaPen(glyphSet)
-        gid1 = glyphSet[glyphSet.keys()[1]]
-        gid1.draw(pen)
-        numberOfContours = pen.value
+    from fontTools.pens.areaPen import AreaPen
+    glyphSet = ttFont.getGlyphSet()
+    pen = AreaPen(glyphSet)
+    gid1 = glyphSet[glyphSet.keys()[1]]
+    gid1.draw(pen)
+    numberOfContours = pen.value
 
     if 'COLR' in ttFont.keys() and numberOfContours != 0:
         yield FAIL,\
