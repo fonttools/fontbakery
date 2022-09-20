@@ -4249,30 +4249,33 @@ def test_check_colorfont_tables():
     assert_PASS(check(ttFont),
                 f'with a good font without SVG or COLR tables.')
 
-def test_check_space_on_gid1_for_colrv0():
-    """Put space glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
+def test_check_empty_glyph_on_gid1_for_colrv0():
+    """Put an empty glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/space_on_gid1_for_colrv0")
+                        "com.google.fonts/check/empty_glyph_on_gid1_for_colrv0")
 
     ttFont = TTFont(TEST_FILE("color_fonts/noto-glyf_colr_1.ttf"))
+    space_glyphname = "space"
+    if "uni0020" in ttFont['cmap'].tables[0].cmap:
+        space_glyphname = "uni0020"
     assert 'COLR' in ttFont.keys()
 
     # Re-order glyphs to be sure that the space glyph is not on GID 1:
     glyf = ttFont['glyf']
-    glyf.glyphOrder = list(glyf.glyphOrder[0]) + glyf.glyphOrder[2:] + ["space"]
+    glyf.glyphOrder = list(glyf.glyphOrder[0]) + glyf.glyphOrder[2:] + [space_glyphname]
     ttFont['glyf'] = glyf
-    assert ttFont['glyf'].glyphOrder[1] != "space"
+    assert ttFont['glyf'].glyphOrder[1] != space_glyphname
     assert_results_contain(check(ttFont),
-                           FAIL, 'wrong-glyphorder',
-                           'with a font with COLR table but space not on GID 1.')
+                           FAIL, 'gid1-has-contours',
+                           'with a font with COLR table but no empty glyph on GID 1.')
 
     # Re-order glyphs to be sure that the space glyph is on GID 1:
     glyf = ttFont['glyf']
-    glyf.glyphOrder = glyf.glyphOrder[:1] + ["space"] + glyf.glyphOrder[1:]
+    glyf.glyphOrder = glyf.glyphOrder[:1] + [space_glyphname] + glyf.glyphOrder[1:]
     ttFont['glyf'] = glyf
-    assert ttFont['glyf'].glyphOrder[1] == "space"
+    assert ttFont['glyf'].glyphOrder[1] == space_glyphname
     assert_PASS(check(ttFont),
-                f'with a good font with COLR table and space on GID 1.')
+                f'with a good font with COLR table and an empty glyph on GID 1.')
 
 def test_check_noto_has_article():
     """Noto fonts must have an ARTICLE.en_us.html file"""
