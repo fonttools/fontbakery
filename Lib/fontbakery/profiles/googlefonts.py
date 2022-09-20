@@ -200,7 +200,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/render_own_name',
     'com.google.fonts/check/STAT',
     'com.google.fonts/check/colorfont_tables',
-    'com.google.fonts/check/space_on_gid1_for_colrv0',
+    'com.google.fonts/check/empty_glyph_on_gid1_for_colrv0',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -6183,27 +6183,38 @@ def com_google_fonts_check_colorfont_tables(ttFont):
         yield PASS, "Looks good!"
 
 @check(
-    id = "com.google.fonts/check/space_on_gid1_for_colrv0",
+    id = "com.google.fonts/check/empty_glyph_on_gid1_for_colrv0",
     rationale = """
         A rendering bug in Windows 10 paints whichever glyph is on GID 1
-        on top of color glyphs, spaces, and also seemingly at random,
-        for COLRv0 fonts.
+        on top of some glyphs, colored or not. This only occurs for COLR version 0 fonts.
 
-        Having the space glyph on GID 1 is a practical workaround for that.
+        Having a glyph with no contours on GID 1 is a practical workaround for that.
 
         See https://github.com/googlefonts/gftools/issues/609
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3886'
 )
-def com_google_fonts_check_space_on_gid1_for_colrv0(ttFont):
-    """Put space glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
+def com_google_fonts_check_empty_glyph_on_gid1_for_colrv0(ttFont):
+    """Put an empty glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
     SUGGESTED_FIX = ("To fix this, please reorder the glyph order so that"
-                     " the space glyph is on GID 1 right after the .notdef glyph.")
-    if 'COLR' in ttFont.keys() and ttFont['glyf'].glyphOrder[1] != 'space':
+                    " a glyph with no contours is on GID 1 right after the .notdef glyph."
+                    " This could be the space glyph.")
+    if 'glyf' in ttFont.keys():
+        glyf = ttFont['glyf']
+        numberOfContours = glyf[glyf.glyphOrder[1]].numberOfContours
+    elif 'CFF ' in ttFont.keys():
+        from fontTools.pens.areaPen import AreaPen
+        glyphSet = ttFont.getGlyphSet()
+        pen = AreaPen(glyphSet)
+        gid1 = glyphSet[glyphSet.keys()[1]]
+        gid1.draw(pen)
+        numberOfContours = pen.value
+
+    if 'COLR' in ttFont.keys() and numberOfContours != 0:
         yield FAIL,\
-              Message('wrong-glyphorder',
+              Message('gid1-has-contours',
                       "This is a COLR font. As a workaround for a rendering bug in "
-                      "Windows 10, it needs the space glyph to be in GID 1. " + SUGGESTED_FIX)
+                      "Windows 10, it needs an empty glyph to be in GID 1. " + SUGGESTED_FIX)
     else:
         yield PASS, "Looks good!"
 

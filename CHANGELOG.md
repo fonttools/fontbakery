@@ -7,7 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Fonts must have neither or both the tables `COLR` and `SVG`. (issue #3886)
   - **[com.google.fonts/check/description/noto_has_article]:** Noto fonts must have an ARTICLE.en_us.html file. (issue #3841)
-  - **[com.google.fonts/check/description/space_on_gid1_for_colrv0]:** Ensure that `space` is on GID 1 to work around Windows 10 rendering bug ([gftools issue #609](https://github.com/googlefonts/gftools/issues/609))
+  - **[com.google.fonts/check/description/empty_glyph_on_gid1_for_colrv0]:** Ensure that `space` is on GID 1 to work around Windows 10 rendering bug ([gftools issue #609](https://github.com/googlefonts/gftools/issues/609))
 
 ### BugFixes
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
