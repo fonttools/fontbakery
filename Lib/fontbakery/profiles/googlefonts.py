@@ -202,6 +202,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/STAT',
     'com.google.fonts/check/colorfont_tables',
     'com.google.fonts/check/color_cpal_brightness',
+    'com.google.fonts/check/empty_glyph_on_gid1_for_colrv0',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -6309,6 +6310,41 @@ def com_google_fonts_check_color_cpal_brightness(config, ttFont):
                       f" To fix this, please either set the color definitions of all"
                       f" layers in question to current color (0xFFFF), or alter"
                       f" the brightness of these layers significantly.")
+    else:
+        yield PASS, "Looks good!"
+
+
+@check(
+    id = "com.google.fonts/check/empty_glyph_on_gid1_for_colrv0",
+    rationale = """
+        A rendering bug in Windows 10 paints whichever glyph is on GID 1
+        on top of some glyphs, colored or not. This only occurs for COLR version 0 fonts.
+
+        Having a glyph with no contours on GID 1 is a practical workaround for that.
+
+        See https://github.com/googlefonts/gftools/issues/609
+    """,
+    proposal = ['https://github.com/googlefonts/gftools/issues/609',
+                'https://github.com/googlefonts/fontbakery/pull/3905']
+)
+def com_google_fonts_check_empty_glyph_on_gid1_for_colrv0(ttFont):
+    """Put an empty glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
+    SUGGESTED_FIX = ("To fix this, please reorder the glyphs so that"
+                    " a glyph with no contours is on GID 1 right after the `.notdef` glyph."
+                    " This could be the space glyph.")
+    from fontTools.pens.areaPen import AreaPen
+    glyphOrder = ttFont.getGlyphOrder()
+    glyphSet = ttFont.getGlyphSet()
+    pen = AreaPen(glyphSet)
+    gid1 = glyphSet[glyphOrder[1]]
+    gid1.draw(pen)
+    area = pen.value
+
+    if 'COLR' in ttFont.keys() and ttFont['COLR'].version == 0 and area != 0:
+        yield FAIL,\
+              Message('gid1-has-contours',
+                      "This is a COLR font. As a workaround for a rendering bug in"
+                      " Windows 10, it needs an empty glyph to be in GID 1. " + SUGGESTED_FIX)
     else:
         yield PASS, "Looks good!"
 
