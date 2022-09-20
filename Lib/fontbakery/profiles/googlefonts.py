@@ -200,6 +200,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/render_own_name',
     'com.google.fonts/check/STAT',
     'com.google.fonts/check/colorfont_tables',
+    'com.google.fonts/check/space_on_gid1_for_colrv0',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -6187,6 +6188,32 @@ def com_google_fonts_check_colorfont_tables(ttFont):
                       " but it lacks an 'COLR' table. " + SUGGESTED_FIX)
     else:
         yield PASS, "Looks good!"
+
+@check(
+    id = "com.google.fonts/check/space_on_gid1_for_colrv0",
+    rationale = """
+        A shaping bug in Windows 10 inserts whichever glyph is on GID 1
+        on top of color glyphs, spaces, and also seemingly at random,
+        for COLRv0 fonts.
+
+        Having the space glyph on GID 1 is a practical workaround for that.
+
+        See https://github.com/googlefonts/gftools/issues/609
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3886'
+)
+def com_google_fonts_check_space_on_gid1_for_colrv0(ttFont):
+    """Put space glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
+    SUGGESTED_FIX = ("To fix this, please reorder the glyph order so that"
+                     " the space glyph is on GID 1 right after the .notdef glyph.")
+    if 'COLR' in ttFont.keys() and ttFont['glyf'].glyphOrder[1] != 'space':
+        yield FAIL,\
+              Message('wrong-glyphorder',
+                      "This is a COLR font. As a workaround for a shaping bug in "
+                      "Windows 10, it needs the space glyph to be in GID 1. " + SUGGESTED_FIX)
+    else:
+        yield PASS, "Looks good!"
+
 
 @check(
     id = 'com.google.fonts/check/description/noto_has_article',
