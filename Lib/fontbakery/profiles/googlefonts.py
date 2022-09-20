@@ -6185,7 +6185,7 @@ def com_google_fonts_check_colorfont_tables(ttFont):
 @check(
     id = "com.google.fonts/check/space_on_gid1_for_colrv0",
     rationale = """
-        A shaping bug in Windows 10 inserts whichever glyph is on GID 1
+        A rendering bug in Windows 10 paints whichever glyph is on GID 1
         on top of color glyphs, spaces, and also seemingly at random,
         for COLRv0 fonts.
 
