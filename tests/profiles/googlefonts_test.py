@@ -4254,9 +4254,10 @@ def test_check_empty_glyph_on_gid1_for_colrv0():
 
     def gid1area(ttFont):
         from fontTools.pens.areaPen import AreaPen
+        glyphOrder = ttFont.getGlyphOrder()
         glyphSet = ttFont.getGlyphSet()
         pen = AreaPen(glyphSet)
-        gid1 = glyphSet[glyphSet.keys()[1]]
+        gid1 = glyphSet[glyphOrder[1]]
         gid1.draw(pen)
         return pen.value
 
