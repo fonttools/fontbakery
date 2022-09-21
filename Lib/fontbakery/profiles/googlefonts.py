@@ -6199,9 +6199,10 @@ def com_google_fonts_check_empty_glyph_on_gid1_for_colrv0(ttFont):
                     " a glyph with no contours is on GID 1 right after the .notdef glyph."
                     " This could be the space glyph.")
     from fontTools.pens.areaPen import AreaPen
+    glyphOrder = ttFont.getGlyphOrder()
     glyphSet = ttFont.getGlyphSet()
     pen = AreaPen(glyphSet)
-    gid1 = glyphSet[glyphSet.keys()[1]]
+    gid1 = glyphSet[glyphOrder[1]]
     gid1.draw(pen)
     area = pen.value
 
