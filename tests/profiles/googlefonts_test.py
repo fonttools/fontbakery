@@ -4218,10 +4218,8 @@ OVERRIDE_SUFFIX = ":googlefonts"
 @patch("freetype.Face", side_effect=ImportError)
 def test_check_override_freetype_rasterizer(mock_import_error):
     """Check that overridden test yields FAIL rather than SKIP."""
-    check = CheckTester(
-        googlefonts_profile,
-        f"com.adobe.fonts/check/freetype_rasterizer{OVERRIDE_SUFFIX}",
-    )
+    check = CheckTester(googlefonts_profile,
+                        f"com.adobe.fonts/check/freetype_rasterizer{OVERRIDE_SUFFIX}")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     msg = assert_results_contain(check(font), FAIL, "freetype-not-installed")
@@ -4263,15 +4261,30 @@ def test_check_colorfont_tables():
                 f'with a good font without SVG or COLR tables.')
 
 
+def test_check_color_cpal_brightness():
+    """Color layers should have a minimum brightness"""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/color_cpal_brightness")
+
+    font = TEST_FILE("color_fonts/AmiriQuranColored_too_dark.ttf")
+    assert_results_contain(check(font),
+                           WARN, 'glyphs-too-dark-or-too-bright',
+                           'with a colrv0 font with doo dark layers')
+
+    font = TEST_FILE("color_fonts/AmiriQuranColored.ttf")
+    assert_PASS(check(font),
+                'with a colrv0 font with good layer colors')
+
+
 def test_check_noto_has_article():
     """Noto fonts must have an ARTICLE.en_us.html file"""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/description/noto_has_article")
 
-    ttFont = TTFont(TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf"))
-    assert_PASS(check(ttFont), "with a good font")
+    font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
+    assert_PASS(check(font), "with a good font")
 
-    ttFont = TTFont(TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf"))
-    assert_results_contain(check(ttFont),
+    font = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
+    assert_results_contain(check(font),
                            FAIL, 'missing-article',
                            "with a bad font")
