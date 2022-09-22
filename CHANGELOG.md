@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/colorfont_tables]:** Fonts must have neither or both the tables `COLR` and `SVG`. (issue #3886)
   - **[com.google.fonts/check/description/noto_has_article]:** Noto fonts must have an ARTICLE.en_us.html file. (issue #3841)
   - **[com.google.fonts/check/slant_direction]:** Check slant direction of outline to match values of slnt axis extrema. (PR #3910)
+  - **[com.google.fonts/check/color_cpal_brightness]:** Warn if COLRv0 layers are colored too dark or too bright instead of foreground color. (PR #3908)
 
 ### BugFixes
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
