@@ -2298,6 +2298,23 @@ def test_check_italic_angle():
                         f'with italic-angle:{value} style:{style}...')
 
 
+def test_check_slant_direction():
+    """Checking direction of slnt axis angles"""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/slant_direction")
+    
+    import uharfbuzz as hb
+
+    file_path = TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf")
+    assert_PASS(check(TTFont(file_path), hb.Blob.from_file_path(file_path)))
+
+    file_path = TEST_FILE("slant_direction/Cairo_wrong_slnt_axis.ttf")
+    assert_results_contain(check(TTFont(file_path), hb.Blob.from_file_path(file_path)),
+        FAIL,
+        "positive-value-for-clockwise-lean",
+        "with Cairo_wrong_slnt_axis.ttf...")
+
+
 def test_check_mac_style():
     """ Checking head.macStyle value. """
     check = CheckTester(googlefonts_profile,
