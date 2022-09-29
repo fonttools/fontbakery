@@ -3170,7 +3170,7 @@ def uharfbuzz_blob(font):
     return hb.Blob.from_file_path(font)
 
 from fontTools.pens.basePen import BasePen
-class SlantPen(BasePen):
+class PointsPen(BasePen):
     def __init__(self):
         self.points = []
 
@@ -3255,7 +3255,7 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
             for the given slant value.
             """
             hb_font.set_variations({"slnt": slant})
-            pen = SlantPen()
+            pen = PointsPen()
             hb_font.draw_glyph_with_pen(buf.glyph_infos[0].codepoint, pen)
             x_delta = pen.highestPoint()[0] - pen.lowestPoint()[0]
             return x_delta
