@@ -3233,40 +3233,42 @@ class SlantPen(BasePen):
 def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
     """Checking direction of slnt axis angles"""
 
-    import uharfbuzz as hb
-    hb_face = hb.Face(uharfbuzz_blob)
-    hb_font = hb.Font(hb_face)
-    buf = hb.Buffer()
-    buf.add_str("H")
-    features = {"kern": True, "liga": True}
-    hb.shape(hb_font, buf, features)
-
     def axis(tag):
         """Return the axis with the given tag."""
         for axis in ttFont["fvar"].axes:
             if axis.axisTag == tag:
                 return axis
 
-    def x_delta(slant):
-        """
-        Return the x delta (difference of x position between highest and lowest point)
-        for the given slant value.
-        """
-        hb_font.set_variations({"slnt": slant})
-        pen = SlantPen()
-        hb_font.draw_glyph_with_pen(buf.glyph_infos[0].codepoint, pen)
-        x_delta = pen.highestPoint()[0] - pen.lowestPoint()[0]
-        return x_delta
+    if axis('slnt'):
 
-    if x_delta(axis('slnt').minValue) < x_delta(axis('slnt').maxValue):
-        yield FAIL,\
-              Message("positive-value-for-clockwise-lean",
-                      (f"The right-leaning glyphs have a positive "
-                      "'slnt' axis value, which is likely a mistake. "
-                      "It needs to be negative to lean rightwards."))
+        import uharfbuzz as hb
+        hb_face = hb.Face(uharfbuzz_blob)
+        hb_font = hb.Font(hb_face)
+        buf = hb.Buffer()
+        buf.add_str("H")
+        features = {"kern": True, "liga": True}
+        hb.shape(hb_font, buf, features)
 
-    else:
-        yield PASS, f"Angle of 'slnt' axis looks good."
+        def x_delta(slant):
+            """
+            Return the x delta (difference of x position between highest and lowest point)
+            for the given slant value.
+            """
+            hb_font.set_variations({"slnt": slant})
+            pen = SlantPen()
+            hb_font.draw_glyph_with_pen(buf.glyph_infos[0].codepoint, pen)
+            x_delta = pen.highestPoint()[0] - pen.lowestPoint()[0]
+            return x_delta
+
+        if x_delta(axis('slnt').minValue) < x_delta(axis('slnt').maxValue):
+            yield FAIL,\
+                Message("positive-value-for-clockwise-lean",
+                        (f"The right-leaning glyphs have a positive "
+                        "'slnt' axis value, which is likely a mistake. "
+                        "It needs to be negative to lean rightwards."))
+
+        else:
+            yield PASS, f"Angle of 'slnt' axis looks good."
 
 
 @check(
