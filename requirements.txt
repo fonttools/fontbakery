@@ -23,6 +23,7 @@ rich==12.4.4
 stringbrewer==0.0.1
 toml==0.10.2
 ufolint==1.2.0
+uharfbuzz==0.30.0
 unicodedata2==14.0.0
 vharfbuzz==0.1.3
 ufo2ft==2.27.0
