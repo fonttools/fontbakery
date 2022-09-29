@@ -7,6 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Fonts must have neither or both the tables `COLR` and `SVG`. (issue #3886)
   - **[com.google.fonts/check/description/noto_has_article]:** Noto fonts must have an ARTICLE.en_us.html file. (issue #3841)
+  - **[com.google.fonts/check/slant_direction]:** Check slant direction of outline to match values of slnt axis extrema
 
 ### BugFixes
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
