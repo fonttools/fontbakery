@@ -3191,7 +3191,7 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
                                   PointsPen)
     import uharfbuzz as hb
 
-    if not axis('slnt'):
+    if not axis(ttFont, 'slnt'):
         return PASS, "Font has no slnt axis"
 
     hb_face = hb.Face(uharfbuzz_blob)
@@ -3213,7 +3213,7 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
         x_delta = pen.highestPoint()[0] - pen.lowestPoint()[0]
         return x_delta
 
-    if x_delta(axis('slnt').minValue) < x_delta(axis('slnt').maxValue):
+    if x_delta(axis(ttFont, 'slnt').minValue) < x_delta(axis(ttFont, 'slnt').maxValue):
         yield FAIL,\
               Message("positive-value-for-clockwise-lean",
                       "The right-leaning glyphs have a positive 'slnt' axis value,"

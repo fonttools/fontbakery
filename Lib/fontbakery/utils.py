@@ -653,7 +653,7 @@ def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):
             callback(lookup, *args)
 
 
-def axis(tag):
+def axis(ttFont, tag):
     """Return the axis with the given tag."""
     for axis in ttFont["fvar"].axes:
         if axis.axisTag == tag:
