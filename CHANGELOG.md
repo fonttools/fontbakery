@@ -2,16 +2,16 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.11 (2022-Sep-??)
+## Upcoming release: 0.8.11 (2022-Oct-??)
 ### New Checks
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Fonts must have neither or both the tables `COLR` and `SVG`. (issue #3886)
   - **[com.google.fonts/check/description/noto_has_article]:** Noto fonts must have an ARTICLE.en_us.html file. (issue #3841)
-  - **[com.google.fonts/check/slant_direction]:** Check slant direction of outline to match values of slnt axis extrema
+  - **[com.google.fonts/check/slant_direction]:** Check slant direction of outline to match values of slnt axis extrema. (PR #3910)
 
 ### BugFixes
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
-  - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG'
+  - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
   - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
 
 ### Changes to existing checks
