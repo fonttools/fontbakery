@@ -663,7 +663,7 @@ def axis(tag):
 from fontTools.pens.basePen import BasePen
 class PointsPen(BasePen):
     def __init__(self):
-        super(PointsPen, self).__init__()
+        super().__init__()
         self.points = []
 
     def _moveTo(self, pt):
