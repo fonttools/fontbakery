@@ -5547,7 +5547,7 @@ def com_google_fonts_check_metadata_escaped_strings(metadata_file):
     conditions = ['family_metadata'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3083'
 )
-def com_google_fonts_check_metadata_designer_profiles(family_metadata):
+def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
     """METADATA.pb: Designers are listed correctly on the Google Fonts catalog?"""
     DESIGNER_INFO_RAW_URL = ("https://raw.githubusercontent.com/google/"
                              "fonts/master/catalog/designers/{}/")
@@ -5599,7 +5599,14 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
             continue
 
         url = DESIGNER_INFO_RAW_URL.format(normalized_name) + "info.pb"
-        response = requests.get(url)
+        response = requests.get(url, timeout=config.get("timeout"))
+
+        # (see https://github.com/googlefonts/fontbakery/pull/3892#issuecomment-1248758859)
+        # For debugging purposes:
+        # yield WARN,\
+        #      Message("config",
+        #              f"Config is '{config}'")
+
         if response.status_code != requests.codes.OK:
             passed = False
             yield WARN,\
@@ -5635,7 +5642,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
                           f"Please provide one.")
         else:
             avatar_url = DESIGNER_INFO_RAW_URL.format(normalized_name) + info.avatar.file_name
-            response = requests.get(avatar_url)
+            response = requests.get(avatar_url, timeout=config.get("timeout"))
             if response.status_code != requests.codes.OK:
                 passed = False
                 yield FAIL,\
@@ -6165,19 +6172,19 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3886'
 )
 def com_google_fonts_check_colorfont_tables(ttFont):
-    """Fonts must have neither or both the tables 'COLR' and 'SVG'."""
+    """Fonts must have neither or both the tables 'COLR' and 'SVG '."""
     SUGGESTED_FIX = ("To fix this, please run the font through the maximum_color tool"
                      " that installs as part of the nanoemoji package"
                      " (https://github.com/googlefonts/nanoemoji)")
-    if 'COLR' in ttFont.keys() and 'SVG' not in ttFont.keys():
+    if 'COLR' in ttFont.keys() and 'SVG ' not in ttFont.keys():
         yield FAIL,\
               Message('missing-table',
                       "This is a color font (it has a 'COLR' table)"
-                      " but it lacks an 'SVG' table. " + SUGGESTED_FIX)
-    elif 'COLR' not in ttFont.keys() and 'SVG' in ttFont.keys():
+                      " but it lacks an 'SVG ' table. " + SUGGESTED_FIX)
+    elif 'COLR' not in ttFont.keys() and 'SVG ' in ttFont.keys():
         yield FAIL,\
               Message('missing-table',
-                      "This is a color font (it has a 'SVG' table)"
+                      "This is a color font (it has a 'SVG ' table)"
                       " but it lacks an 'COLR' table. " + SUGGESTED_FIX)
     else:
         yield PASS, "Looks good!"

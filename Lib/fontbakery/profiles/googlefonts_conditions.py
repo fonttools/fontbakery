@@ -380,7 +380,7 @@ def hinting_stats(font):
 
 
 @condition
-def listed_on_gfonts_api(familyname):
+def listed_on_gfonts_api(familyname, config):
     if not familyname:
         return False
 
@@ -390,7 +390,7 @@ def listed_on_gfonts_api(familyname):
     # to find it in the GFonts metadata:
     from_camelcased_name = split_camel_case(familyname)
 
-    for item in production_metadata()["familyMetadataList"]:
+    for item in production_metadata(config)["familyMetadataList"]:
         if item["family"] == familyname or \
            item["family"] == from_camelcased_name:
             return True
@@ -483,7 +483,7 @@ def rfn_exception(familyname):
 
 
 @condition
-def remote_styles(familyname_with_spaces):
+def remote_styles(familyname_with_spaces, config):
     """Get a dictionary of TTFont objects of all font files of
        a given family as currently hosted at Google Fonts.
     """
@@ -508,7 +508,7 @@ def remote_styles(familyname_with_spaces):
                 fonts.append([file_name, TTFont(file_obj)])
         return fonts
 
-    if not listed_on_gfonts_api(familyname_with_spaces):
+    if not listed_on_gfonts_api(familyname_with_spaces, config):
         return None
 
     remote_fonts_zip = download_family_from_Google_Fonts(familyname_with_spaces)
@@ -682,11 +682,11 @@ def gfonts_repo_structure(fonts):
 
 
 @condition
-def production_metadata():
+def production_metadata(config):
     """Get the Google Fonts production metadata"""
     import requests
     meta_url = "http://fonts.google.com/metadata/fonts"
-    return requests.get(meta_url).json()
+    return requests.get(meta_url, timeout=config.get("timeout")).json()
 
 
 @condition
