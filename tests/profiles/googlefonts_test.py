@@ -2300,21 +2300,15 @@ def test_check_italic_angle():
 
 def test_check_slant_direction():
     """Checking direction of slnt axis angles"""
-    # TODO:
-    # This test is not using the CheckTester class because it can’t handle
-    # arbitrary parameters such as (in this case) uharfbuzz blobs.
-    # This should be changed back to CheckTester once that is possible.
-    check = googlefonts_profile.com_google_fonts_check_slant_direction
-    
-    import uharfbuzz as hb
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/slant_direction")
 
-    file_path = TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf")
-    result = check(TTFont(file_path), hb.Blob.from_file_path(file_path))
-    assert PASS in list(result)[0]
+    font = TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf")
+    assert_PASS(check(font))
 
-    file_path = TEST_FILE("slant_direction/Cairo_wrong_slnt_axis.ttf")
-    result = check(TTFont(file_path), hb.Blob.from_file_path(file_path))
-    assert FAIL in list(result)[0]
+    font = TEST_FILE("slant_direction/Cairo_wrong_slnt_axis.ttf")
+    assert_results_contain(check(font),
+                           FAIL, 'positive-value-for-clockwise-lean')
 
 
 def test_check_mac_style():
