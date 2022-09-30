@@ -3222,6 +3222,9 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
     if passed:
         yield PASS, "Angle of 'slnt' axis looks good."
 
+    else:
+        yield PASS, f"Font has no slnt axis"
+
 
 @check(
     id = 'com.google.fonts/check/mac_style',
