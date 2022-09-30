@@ -3169,84 +3169,36 @@ def uharfbuzz_blob(font):
     import uharfbuzz as hb
     return hb.Blob.from_file_path(font)
 
-from fontTools.pens.basePen import BasePen
-class PointsPen(BasePen):
-    def __init__(self):
-        self.points = []
-
-    def _moveTo(self, pt):
-        self.points.append(pt)
-
-    def _lineTo(self, pt):
-        self.points.append(pt)
-
-    def _curveToOne(self, pt1, pt2, pt3):
-        self.points.append(pt1)
-        self.points.append(pt2)
-        self.points.append(pt3)
-
-    def _qCurveToOne(self, pt1, pt2):
-        self.points.append(pt1)
-        self.points.append(pt2)
-
-    def _closePath(self):
-        pass
-
-    def _endPath(self):
-        self.points = []
-        self.beginPath()
-
-    def getPoints(self):
-        return self.points
-
-    def highestPoint(self):
-        highest = None
-        for p in self.points:
-            if highest is None or p[1] > highest[1]:
-                highest = p
-        return highest
-
-    def lowestPoint(self):
-        lowest = None
-        for p in self.points:
-            if lowest is None or p[1] < lowest[1]:
-                lowest = p
-        return lowest
-
-    def _addComponent(self, glyphName, transformation):
-        self.glyphSet[glyphName].draw(self)
-
 
 @check(
     id = 'com.google.fonts/check/slant_direction',
     conditions = ['is_variable_font'],
     rationale = """
-        The 'slnt' axis values are defined as negative values for a clockwise (right) lean,
-        and positive values for counter-clockwise lean. This is counter-intuitive for many
-        designers who are used to think of a positive slant as a lean to the right.
+        The 'slnt' axis values are defined as negative values for a clockwise (right)
+        lean, and positive values for counter-clockwise lean. This is counter-intuitive
+        for many designers who are used to think of a positive slant as a lean to
+        the right.
 
         This check ensures that the slant axis direction is consistent with the specs.
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_slnt
     """,
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3910'
 )
 def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
     """Checking direction of slnt axis angles"""
+    from fontbakery.utils import (axis,
+                                  PointsPen)
+    import uharfbuzz as hb
 
-    def axis(tag):
-        """Return the axis with the given tag."""
-        for axis in ttFont["fvar"].axes:
-            if axis.axisTag == tag:
-                return axis
-
+    passed = True
     if axis('slnt'):
-
-        import uharfbuzz as hb
         hb_face = hb.Face(uharfbuzz_blob)
         hb_font = hb.Font(hb_face)
         buf = hb.Buffer()
         buf.add_str("H")
-        features = {"kern": True, "liga": True}
+        features = {"kern": True,
+                    "liga": True}
         hb.shape(hb_font, buf, features)
 
         def x_delta(slant):
@@ -3261,14 +3213,14 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
             return x_delta
 
         if x_delta(axis('slnt').minValue) < x_delta(axis('slnt').maxValue):
+            passed = False
             yield FAIL,\
-                Message("positive-value-for-clockwise-lean",
-                        (f"The right-leaning glyphs have a positive "
-                        "'slnt' axis value, which is likely a mistake. "
-                        "It needs to be negative to lean rightwards."))
-
-        else:
-            yield PASS, f"Angle of 'slnt' axis looks good."
+                  Message("positive-value-for-clockwise-lean",
+                          "The right-leaning glyphs have a positive 'slnt' axis value,"
+                          " which is likely a mistake. It needs to be negative"
+                          " to lean rightwards.")
+    if passed:
+        yield PASS, "Angle of 'slnt' axis looks good."
 
 
 @check(
