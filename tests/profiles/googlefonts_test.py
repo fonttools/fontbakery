@@ -4272,8 +4272,7 @@ def test_check_empty_glyph_on_gid1_for_colrv0():
 
     ttFont = TTFont(TEST_FILE("color_fonts/AmiriQuranColored.ttf"))
     assert 'COLR' in ttFont.keys() and ttFont['COLR'].version == 0 and gid1area(ttFont) == 0
-    assert_PASS(check(ttFont),
-                f'with a good font with COLR table and an empty glyph on GID 1.')
+    assert_PASS(check(ttFont), 'with a good font with COLR table and an empty glyph on GID 1.')
 
 def test_check_noto_has_article():
     """Noto fonts must have an ARTICLE.en_us.html file"""
