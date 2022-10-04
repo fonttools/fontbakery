@@ -6198,7 +6198,9 @@ def com_google_fonts_check_colorfont_tables(ttFont):
         Having a glyph with no contours on GID 1 is a practical workaround for that.
 
         See https://github.com/googlefonts/gftools/issues/609
-    """
+    """,
+    proposal = ['https://github.com/googlefonts/gftools/issues/609',
+            'https://github.com/googlefonts/fontbakery/pull/3905']
 )
 def com_google_fonts_check_empty_glyph_on_gid1_for_colrv0(ttFont):
     """Put an empty glyph on GID 1 right after the .notdef glyph for COLRv0 fonts."""
