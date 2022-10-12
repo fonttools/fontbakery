@@ -4741,7 +4741,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
                 f'is {int(hhea_sum*font_upm)} when it should be at most {int(font_upm*2.0)}')
 
     # Check the sum of the hhea metrics is between 1.1-1.5x of the font's upm
-    if hhea_sum > 1.5:
+    elif hhea_sum > 1.5:
         warn = True
         yield WARN,\
             Message('bad-hhea-range',
