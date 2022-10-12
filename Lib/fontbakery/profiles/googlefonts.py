@@ -4748,6 +4748,48 @@ def com_google_fonts_check_vertical_metrics(ttFont):
                 "We recommend the absolute sum of the hhea metrics should be"
                 f" between 1.2-1.5x of the font's upm. This font has {hhea_sum}x ({int(hhea_sum*font_upm)})")
 
+    # Check for OS/2.sTypoAscender being positive
+    elif font_metrics['OS/2.sTypoAscender'] < 0:
+        failed = True
+        yield FAIL,\
+            Message('typoascender-negative',
+                "The OS/2 sTypoAscender should be positive. This font has a negative value.")
+
+    # Check for hhea.ascent being positive
+    elif font_metrics['hhea.ascent'] < 0:
+        failed = True
+        yield FAIL,\
+            Message('hheaascent-negative',
+                "The hhea ascender should be positive. This font has a negative value.")
+
+    # Check for OS/2.usWinAscent being negative
+    elif font_metrics['OS/2.usWinAscent'] < 0:
+        failed = True
+        yield FAIL,\
+            Message('winascent-negative',
+                "The OS/2.usWinAscent should be positive. This font has a negative value.")
+
+    # Check for OS/2.sTypoDescender being negative
+    elif font_metrics['OS/2.sTypoDescender'] > 0:
+        failed = True
+        yield FAIL,\
+            Message('typodescender-positive',
+                "The OS/2 sTypoDescender should be negative. This font has a positive value.")
+
+    # Check for hhea.descent being negative
+    elif font_metrics['hhea.descent'] > 0:
+        failed = True
+        yield FAIL,\
+            Message('hheadescent-positive',
+                "The hhea descender should be negative. This font has a positive value.")
+
+    # Check for OS/2.usWinDescent being positive
+    elif font_metrics['OS/2.usWinDescent'] < 0:
+        failed = True
+        yield FAIL,\
+            Message('windescent-negative',
+                "The OS/2.usWinDescent should be positive. This font has a negative value.")
+
     if not failed and not warn:
         yield PASS, 'Vertical metrics are good'
 
