@@ -4733,7 +4733,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
                 f'is {int(hhea_sum*font_upm)} when it should be at least {int(font_upm*1.2)}')
 
     # Check the sum of the hhea metrics is below 2.0
-    if hhea_sum > 2.0:
+    elif hhea_sum > 2.0:
         failed = True
         yield FAIL,\
             Message('bad-hhea-range',
