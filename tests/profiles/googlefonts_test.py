@@ -3297,6 +3297,56 @@ def test_check_vertical_metrics():
     ttFont['OS/2'].sTypoDescender = -300
     assert_PASS(check(ttFont))
 
+    # reset
+    def reset_metrics():
+        ttFont['hhea'].ascent = 900
+        ttFont['hhea'].descent = -300
+        ttFont['OS/2'].sTypoAscender = 900
+        ttFont['OS/2'].sTypoDescender = -300
+        ttFont['hhea'].lineGap = 0
+        ttFont['OS/2'].sTypoLineGap = 0
+        ttFont['OS/2'].usWinAscent = 900
+        ttFont['OS/2'].usWinDescent = 300
+
+    # ascenders are negative -> FAIL
+    reset_metrics()
+    ttFont['OS/2'].sTypoAscender = -900
+    assert_results_contain(check(ttFont),
+                           FAIL, 'typo-ascender',
+                           'typo ascender is negative')
+    reset_metrics()
+    ttFont['hhea'].ascent = -900
+    assert_results_contain(check(ttFont),
+                           FAIL, 'hhea-ascent',
+                           'hhea ascent is negative')
+
+    # descenders are positive -> FAIL
+    reset_metrics()
+    ttFont['OS/2'].sTypoDescender = 300
+    assert_results_contain(check(ttFont),
+                           FAIL, 'typo-descender',
+                           'typo descender is positive')
+    reset_metrics()
+    ttFont['hhea'].descent = 300
+    assert_results_contain(check(ttFont),
+                           FAIL, 'hhea-descent',
+                           'hhea descent is positive')
+
+    # winascent is negative -> FAIL
+    reset_metrics()
+    ttFont['OS/2'].usWinAscent = -900
+    assert_results_contain(check(ttFont),
+                           FAIL, 'win-ascent',
+                           'OS/2.usWinAscent is negative')
+
+    # windescent is negative -> FAIL
+    reset_metrics()
+    ttFont['OS/2'].usWinDescent = -300
+    assert_results_contain(check(ttFont),
+                           FAIL, 'win-descent',
+                           'OS/2.usWinDescent is negative')
+
+
 
 def test_check_vertical_metrics_regressions(cabin_ttFonts):
     check = CheckTester(googlefonts_profile,

@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.11 (2022-Oct-??)
+## Upcoming release: 0.8.11 (2022-Nov-??)
 ### New Checks
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Check if fonts contain the correct color tables. (issue #3886)
@@ -24,6 +24,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the OpenType Profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
   instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
+
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/vertical_metrics]:** Check for positive and negative ascender and descender values (PR #3921)
 
 #### Overridden in the Adobe Fonts Profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN. (issue #3898)
