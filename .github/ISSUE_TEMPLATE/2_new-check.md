@@ -1,6 +1,6 @@
 ---
 name: New check proposal
-about: Submit a new check to FontBakery
+about: Describe a font problem that FontBakery should detect
 title: 'New check: subject'
 labels: 'New check proposal'
 assignees: ''
@@ -27,15 +27,16 @@ assignees: ''
 
 (You could inspect the Profiles's list at https://font-bakery.readthedocs.io/en/stable/fontbakery/profiles/index.html). Most common:
 
-- [ ] Google Fonts
-- [ ] Adobe Fonts
-- [ ] Universal
-- [ ] Other
+- [ ] vendor-specific: Google Fonts
+- [ ] vendor-specific: Adobe Fonts
+- [ ] OpenType (requirements imposed by the OpenType specification)
+- [ ] Universal (broadly accepted best practices on the type design community)
+- [ ] Other:
 
 **Which log result level should it have:**
 
-- [ ] `Fail` (Something that must be addressed for the propper functioning of the font)
-- [ ] `Warn` (Highlights potential issues that are suggested to address)
+- [ ] **FAIL** (Something that must be addressed for the propper functioning of the font)
+- [ ] **WARN** (Highlights potential issues that are suggested to address)
 
 **A severity assessment:**
 
