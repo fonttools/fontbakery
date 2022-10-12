@@ -15,6 +15,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
   instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
   - **[com.google.fonts/check/vertical_metrics]:** Check for positive and negative ascender and descender values
+
 #### Overridden in the Adobe Fonts Profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN.
 
