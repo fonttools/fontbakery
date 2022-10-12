@@ -1,4 +1,13 @@
-(**NOTE:** If your issue is related to a specific check, please consider mentioning its check-id on the issue title.)
+---
+name: Check improvement proposal
+about: Submit an improvement or revision to a existing check
+title: '[Check ID] situation'
+labels: 'Check improvement proposal'
+assignees: ''
+
+---
+
+(**NOTE:** Please include the check-id on the issue title. Check-id example [com.google.fonts/check/metadata/parses])
 
 ## Observed behaviour
 
