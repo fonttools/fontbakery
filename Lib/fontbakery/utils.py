@@ -653,4 +653,59 @@ def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):
             callback(lookup, *args)
 
 
+def axis(ttFont, tag):
+    """Return the axis with the given tag."""
+    for axis in ttFont["fvar"].axes:
+        if axis.axisTag == tag:
+            return axis
 
+
+from fontTools.pens.basePen import BasePen
+class PointsPen(BasePen):
+    def __init__(self):
+        super().__init__()
+        self.points = []
+
+    def _moveTo(self, pt):
+        self.points.append(pt)
+
+    def _lineTo(self, pt):
+        self.points.append(pt)
+
+    def _curveToOne(self, pt1, pt2, pt3):
+        self.points.append(pt1)
+        self.points.append(pt2)
+        self.points.append(pt3)
+
+    def _qCurveToOne(self, pt1, pt2):
+        self.points.append(pt1)
+        self.points.append(pt2)
+
+    def _closePath(self):
+        pass
+
+    def _endPath(self):
+        self.points = []
+        self.beginPath()
+
+    def getPoints(self):
+        return self.points
+
+    def highestPoint(self):
+        highest = None
+        for p in self.points:
+            if (highest is None
+                or p[1] > highest[1]): # pylint: disable=unsubscriptable-object
+                highest = p
+        return highest
+
+    def lowestPoint(self):
+        lowest = None
+        for p in self.points:
+            if (lowest is None
+                or p[1] < lowest[1]): # pylint: disable=unsubscriptable-object
+                lowest = p
+        return lowest
+
+    def _addComponent(self, glyphName, transformation):
+        self.glyphSet[glyphName].draw(self)

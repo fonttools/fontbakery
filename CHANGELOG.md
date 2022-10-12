@@ -2,22 +2,29 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.11 (2022-Sep-??)
+## Upcoming release: 0.8.11 (2022-Oct-??)
 ### New Checks
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Fonts must have neither or both the tables `COLR` and `SVG`. (issue #3886)
   - **[com.google.fonts/check/description/noto_has_article]:** Noto fonts must have an ARTICLE.en_us.html file. (issue #3841)
+  - **[com.google.fonts/check/slant_direction]:** Check slant direction of outline to match values of slnt axis extrema. (PR #3910)
+  - **[com.google.fonts/check/color_cpal_brightness]:** Warn if COLRv0 layers are colored too dark or too bright instead of foreground color. (PR #3908)
 
 ### BugFixes
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
+  - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
+  - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
 
 ### Changes to existing checks
+#### On the OpenType Profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
   instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
-  - **[com.google.fonts/check/vertical_metrics]:** Check for positive and negative ascender and descender values
+
+#### On Google Fonts Profile
+- **[com.google.fonts/check/vertical_metrics]:** Check for positive and negative ascender and descender values
 
 #### Overridden in the Adobe Fonts Profile
-  - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN.
+  - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN. (issue #3898)
 
 ## 0.8.10 (2022-Aug-25)
 ### Release Notes

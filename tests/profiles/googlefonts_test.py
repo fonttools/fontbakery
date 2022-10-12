@@ -2298,6 +2298,19 @@ def test_check_italic_angle():
                         f'with italic-angle:{value} style:{style}...')
 
 
+def test_check_slant_direction():
+    """Checking direction of slnt axis angles"""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/slant_direction")
+
+    font = TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf")
+    assert_PASS(check(font))
+
+    font = TEST_FILE("slant_direction/Cairo_wrong_slnt_axis.ttf")
+    assert_results_contain(check(font),
+                           FAIL, 'positive-value-for-clockwise-lean')
+
+
 def test_check_mac_style():
     """ Checking head.macStyle value. """
     check = CheckTester(googlefonts_profile,
@@ -4255,10 +4268,8 @@ OVERRIDE_SUFFIX = ":googlefonts"
 @patch("freetype.Face", side_effect=ImportError)
 def test_check_override_freetype_rasterizer(mock_import_error):
     """Check that overridden test yields FAIL rather than SKIP."""
-    check = CheckTester(
-        googlefonts_profile,
-        f"com.adobe.fonts/check/freetype_rasterizer{OVERRIDE_SUFFIX}",
-    )
+    check = CheckTester(googlefonts_profile,
+                        f"com.adobe.fonts/check/freetype_rasterizer{OVERRIDE_SUFFIX}")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     msg = assert_results_contain(check(font), FAIL, "freetype-not-installed")
@@ -4266,20 +4277,20 @@ def test_check_override_freetype_rasterizer(mock_import_error):
 
 
 def test_check_colorfont_tables():
-    """Fonts must have neither or both the tables 'COLR' and 'SVG'."""
+    """Fonts must have neither or both the tables 'COLR' and 'SVG '."""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/colorfont_tables")
 
     ttFont = TTFont(TEST_FILE("color_fonts/noto-glyf_colr_1.ttf"))
     assert 'COLR' in ttFont.keys()
-    assert 'SVG' not in ttFont.keys()
+    assert 'SVG ' not in ttFont.keys()
     assert_results_contain(check(ttFont),
                            FAIL, 'missing-table',
                            'with a color font lacking SVG table')
 
     # Fake an SVG table:
-    ttFont["SVG"] = "fake!"
-    assert 'SVG' in ttFont.keys()
+    ttFont["SVG "] = "fake!"
+    assert 'SVG ' in ttFont.keys()
     assert 'COLR' in ttFont.keys()
     assert_PASS(check(ttFont),
                 f'with a font containing both tables.')
@@ -4287,17 +4298,32 @@ def test_check_colorfont_tables():
     # Now remove the COLR one:
     del ttFont["COLR"]
     assert 'COLR' not in ttFont.keys()
-    assert 'SVG' in ttFont.keys()
+    assert 'SVG ' in ttFont.keys()
     assert_results_contain(check(ttFont),
                            FAIL, 'missing-table',
                            'with a font with SVG table but no COLR table.')
 
     # Finally, get rid of both:
-    del ttFont["SVG"]
-    assert 'SVG' not in ttFont.keys()
+    del ttFont["SVG "]
+    assert 'SVG ' not in ttFont.keys()
     assert 'COLR' not in ttFont.keys()
     assert_PASS(check(ttFont),
                 f'with a good font without SVG or COLR tables.')
+
+
+def test_check_color_cpal_brightness():
+    """Color layers should have a minimum brightness"""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/color_cpal_brightness")
+
+    font = TEST_FILE("color_fonts/AmiriQuranColored_too_dark.ttf")
+    assert_results_contain(check(font),
+                           WARN, 'glyphs-too-dark-or-too-bright',
+                           'with a colrv0 font with doo dark layers')
+
+    font = TEST_FILE("color_fonts/AmiriQuranColored.ttf")
+    assert_PASS(check(font),
+                'with a colrv0 font with good layer colors')
 
 
 def test_check_noto_has_article():
@@ -4305,10 +4331,10 @@ def test_check_noto_has_article():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/description/noto_has_article")
 
-    ttFont = TTFont(TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf"))
-    assert_PASS(check(ttFont), "with a good font")
+    font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
+    assert_PASS(check(font), "with a good font")
 
-    ttFont = TTFont(TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf"))
-    assert_results_contain(check(ttFont),
+    font = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
+    assert_results_contain(check(font),
                            FAIL, 'missing-article',
                            "with a bad font")

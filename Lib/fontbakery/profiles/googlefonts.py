@@ -158,6 +158,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/epar',
     'com.google.fonts/check/font_copyright',
     'com.google.fonts/check/italic_angle',
+    'com.google.fonts/check/slant_direction',
     'com.google.fonts/check/has_ttfautohint_params',
     'com.google.fonts/check/name/version_format',
     'com.google.fonts/check/name/familyname_first_char',
@@ -200,6 +201,7 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/render_own_name',
     'com.google.fonts/check/STAT',
     'com.google.fonts/check/colorfont_tables',
+    'com.google.fonts/check/color_cpal_brightness',
 ]
 
 GOOGLEFONTS_PROFILE_CHECKS = \
@@ -3163,6 +3165,65 @@ def com_google_fonts_check_italic_angle(ttFont, style):
                      f' with style="{style}".')
 
 
+@condition
+def uharfbuzz_blob(font):
+    import uharfbuzz as hb
+    return hb.Blob.from_file_path(font)
+
+
+@check(
+    id = 'com.google.fonts/check/slant_direction',
+    conditions = ['is_variable_font'],
+    rationale = """
+        The 'slnt' axis values are defined as negative values for a clockwise (right)
+        lean, and positive values for counter-clockwise lean. This is counter-intuitive
+        for many designers who are used to think of a positive slant as a lean to
+        the right.
+
+        This check ensures that the slant axis direction is consistent with the specs.
+
+        https://docs.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_slnt
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3910'
+)
+def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
+    """Checking direction of slnt axis angles"""
+    from fontbakery.utils import (axis,
+                                  PointsPen)
+    import uharfbuzz as hb
+
+    if not axis(ttFont, 'slnt'):
+        return PASS, "Font has no slnt axis"
+
+    hb_face = hb.Face(uharfbuzz_blob)
+    hb_font = hb.Font(hb_face)
+    buf = hb.Buffer()
+    buf.add_str("H")
+    features = {"kern": True,
+                "liga": True}
+    hb.shape(hb_font, buf, features)
+
+    def x_delta(slant):
+        """
+        Return the x delta (difference of x position between highest and lowest point)
+        for the given slant value.
+        """
+        hb_font.set_variations({"slnt": slant})
+        pen = PointsPen()
+        hb_font.draw_glyph_with_pen(buf.glyph_infos[0].codepoint, pen)
+        x_delta = pen.highestPoint()[0] - pen.lowestPoint()[0]
+        return x_delta
+
+    if x_delta(axis(ttFont, 'slnt').minValue) < x_delta(axis(ttFont, 'slnt').maxValue):
+        yield FAIL,\
+              Message("positive-value-for-clockwise-lean",
+                      "The right-leaning glyphs have a positive 'slnt' axis value,"
+                      " which is likely a mistake. It needs to be negative"
+                      " to lean rightwards.")
+    else:
+        yield PASS, "Angle of 'slnt' axis looks good."
+
+
 @check(
     id = 'com.google.fonts/check/mac_style',
     conditions = ['style'],
@@ -5588,7 +5649,7 @@ def com_google_fonts_check_metadata_escaped_strings(metadata_file):
     conditions = ['family_metadata'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3083'
 )
-def com_google_fonts_check_metadata_designer_profiles(family_metadata):
+def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
     """METADATA.pb: Designers are listed correctly on the Google Fonts catalog?"""
     DESIGNER_INFO_RAW_URL = ("https://raw.githubusercontent.com/google/"
                              "fonts/master/catalog/designers/{}/")
@@ -5640,7 +5701,14 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
             continue
 
         url = DESIGNER_INFO_RAW_URL.format(normalized_name) + "info.pb"
-        response = requests.get(url)
+        response = requests.get(url, timeout=config.get("timeout"))
+
+        # (see https://github.com/googlefonts/fontbakery/pull/3892#issuecomment-1248758859)
+        # For debugging purposes:
+        # yield WARN,\
+        #      Message("config",
+        #              f"Config is '{config}'")
+
         if response.status_code != requests.codes.OK:
             passed = False
             yield WARN,\
@@ -5676,7 +5744,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata):
                           f"Please provide one.")
         else:
             avatar_url = DESIGNER_INFO_RAW_URL.format(normalized_name) + info.avatar.file_name
-            response = requests.get(avatar_url)
+            response = requests.get(avatar_url, timeout=config.get("timeout"))
             if response.status_code != requests.codes.OK:
                 passed = False
                 yield FAIL,\
@@ -6206,22 +6274,77 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3886'
 )
 def com_google_fonts_check_colorfont_tables(ttFont):
-    """Fonts must have neither or both the tables 'COLR' and 'SVG'."""
+    """Fonts must have neither or both the tables 'COLR' and 'SVG '."""
     SUGGESTED_FIX = ("To fix this, please run the font through the maximum_color tool"
                      " that installs as part of the nanoemoji package"
                      " (https://github.com/googlefonts/nanoemoji)")
-    if 'COLR' in ttFont.keys() and 'SVG' not in ttFont.keys():
+    if 'COLR' in ttFont.keys() and 'SVG ' not in ttFont.keys():
         yield FAIL,\
               Message('missing-table',
                       "This is a color font (it has a 'COLR' table)"
-                      " but it lacks an 'SVG' table. " + SUGGESTED_FIX)
-    elif 'COLR' not in ttFont.keys() and 'SVG' in ttFont.keys():
+                      " but it lacks an 'SVG ' table. " + SUGGESTED_FIX)
+    elif 'COLR' not in ttFont.keys() and 'SVG ' in ttFont.keys():
         yield FAIL,\
               Message('missing-table',
-                      "This is a color font (it has a 'SVG' table)"
+                      "This is a color font (it has a 'SVG ' table)"
                       " but it lacks an 'COLR' table. " + SUGGESTED_FIX)
     else:
         yield PASS, "Looks good!"
+
+
+@check(
+    id = "com.google.fonts/check/color_cpal_brightness",
+    rationale = """
+        Layers of a COLRv0 font should not be too dark or too bright. When layer colors
+        are set explicitly, they can't be changed and they may turn out illegible
+        against dark or bright backgrounds.
+
+        While traditional color-less fonts can be colored in design apps or CSS, a
+        black color definition in a COLRv0 font actually means that that layer will be
+        rendered in black regardless of the background color. This leads to text
+        becoming invisible against a dark background, for instance when using a dark
+        theme in a web browser or operating system.
+
+        This check ensures that layer colors are at least 10% bright and at most 90%
+        bright, when not already set to the current color (0xFFFF).
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3908'
+)
+def com_google_fonts_check_color_cpal_brightness(config, ttFont):
+    """Color layers should have a minimum brightness"""
+    from fontbakery.utils import pretty_print_list
+
+    def color_brightness(hex_value):
+        '''Generic color brightness formula'''
+        return (hex_value[0] * 299 + hex_value[1] * 587 + hex_value[2] * 114) / 1000
+
+    minimum_brightness = 256 * .1
+    FOREGROUND_COLOR = 0xFFFF
+    dark_glyphs = []
+    if 'COLR' in ttFont.keys() and ttFont['COLR'].version == 0:
+        for key in ttFont['COLR'].ColorLayers:
+            for layer in ttFont['COLR'].ColorLayers[key]:
+                # 0xFFFF is the foreground color, ignore
+                if layer.colorID != FOREGROUND_COLOR:
+                    hex_value = ttFont["CPAL"].palettes[0][layer.colorID]
+                    layer_brightness = color_brightness(hex_value)
+                    if (layer_brightness < minimum_brightness
+                        or layer_brightness > 256 - minimum_brightness):
+                        if key not in dark_glyphs:
+                            dark_glyphs.append(key)
+    if dark_glyphs:
+        dark_glyphs = pretty_print_list(config, sorted(dark_glyphs))
+        yield WARN,\
+              Message('glyphs-too-dark-or-too-bright',
+                      f"The following glyphs have layers that are too bright or"
+                      f" too dark: {dark_glyphs}.\n"
+                      f"\n"
+                      f" To fix this, please either set the color definitions of all"
+                      f" layers in question to current color (0xFFFF), or alter"
+                      f" the brightness of these layers significantly.")
+    else:
+        yield PASS, "Looks good!"
+
 
 @check(
     id = 'com.google.fonts/check/description/noto_has_article',
