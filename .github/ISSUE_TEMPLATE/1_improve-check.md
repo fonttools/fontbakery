@@ -1,6 +1,6 @@
 ---
 name: Check improvement proposal
-about: Submit an improvement or revision to a existing check
+about: Suggest an improvement to an existing check
 title: '[Check ID] situation'
 labels: 'Check improvement proposal'
 assignees: ''
