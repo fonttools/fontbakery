@@ -4733,7 +4733,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
                 f'is {int(hhea_sum*font_upm)} when it should be at least {int(font_upm*1.2)}')
 
     # Check the sum of the hhea metrics is below 2.0
-    elif hhea_sum > 2.0:
+    if hhea_sum > 2.0:
         failed = True
         yield FAIL,\
             Message('bad-hhea-range',
@@ -4741,7 +4741,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
                 f'is {int(hhea_sum*font_upm)} when it should be at most {int(font_upm*2.0)}')
 
     # Check the sum of the hhea metrics is between 1.1-1.5x of the font's upm
-    elif hhea_sum > 1.5:
+    if hhea_sum > 1.5:
         warn = True
         yield WARN,\
             Message('bad-hhea-range',
@@ -4749,42 +4749,42 @@ def com_google_fonts_check_vertical_metrics(ttFont):
                 f" between 1.2-1.5x of the font's upm. This font has {hhea_sum}x ({int(hhea_sum*font_upm)})")
 
     # Check for OS/2.sTypoAscender being positive
-    elif font_metrics['OS/2.sTypoAscender'] < 0:
+    if font_metrics['OS/2.sTypoAscender'] < 0:
         failed = True
         yield FAIL,\
             Message('typoascender-negative',
                 "The OS/2 sTypoAscender should be positive. This font has a negative value.")
 
     # Check for hhea.ascent being positive
-    elif font_metrics['hhea.ascent'] < 0:
+    if font_metrics['hhea.ascent'] < 0:
         failed = True
         yield FAIL,\
             Message('hheaascent-negative',
                 "The hhea ascender should be positive. This font has a negative value.")
 
     # Check for OS/2.usWinAscent being negative
-    elif font_metrics['OS/2.usWinAscent'] < 0:
+    if font_metrics['OS/2.usWinAscent'] < 0:
         failed = True
         yield FAIL,\
             Message('winascent-negative',
                 "The OS/2.usWinAscent should be positive. This font has a negative value.")
 
     # Check for OS/2.sTypoDescender being negative
-    elif font_metrics['OS/2.sTypoDescender'] > 0:
+    if font_metrics['OS/2.sTypoDescender'] > 0:
         failed = True
         yield FAIL,\
             Message('typodescender-positive',
                 "The OS/2 sTypoDescender should be negative. This font has a positive value.")
 
     # Check for hhea.descent being negative
-    elif font_metrics['hhea.descent'] > 0:
+    if font_metrics['hhea.descent'] > 0:
         failed = True
         yield FAIL,\
             Message('hheadescent-positive',
                 "The hhea descender should be negative. This font has a positive value.")
 
     # Check for OS/2.usWinDescent being positive
-    elif font_metrics['OS/2.usWinDescent'] < 0:
+    if font_metrics['OS/2.usWinDescent'] < 0:
         failed = True
         yield FAIL,\
             Message('windescent-negative',
