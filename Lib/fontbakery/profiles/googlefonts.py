@@ -4725,7 +4725,7 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
         This check generally enforces Google Fonts’ vertical metrics specifications.
         In particular:
         * lineGap must be 0
-        * Sum of hhea ascender+abs(descender)+linegap must be
+        * Sum of hhea ascender + abs(descender) + linegap must be
           between 120% and 200% of UPM
         * Warning if sum is over 150% of UPM
 
@@ -4735,7 +4735,8 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
         Our documentation includes further information:
         https://github.com/googlefonts/gf-docs/tree/main/VerticalMetrics
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/pull/3762'
+    proposal = ['https://github.com/googlefonts/fontbakery/pull/3762',
+                'https://github.com/googlefonts/fontbakery/pull/3921']
 )
 def com_google_fonts_check_vertical_metrics(ttFont):
     """Check font follows the Google Fonts vertical metric schema"""
@@ -4780,7 +4781,8 @@ def com_google_fonts_check_vertical_metrics(ttFont):
             failed = True
             yield FAIL,\
                   Message(f'bad-{k}',
-                          f'{k} is "{font_metrics[k]}" it should be {expected_metrics[k]}')
+                          f'{k} is "{font_metrics[k]}" it should'
+                          f' be {expected_metrics[k]}')
 
     hhea_sum = (font_metrics['hhea.ascent'] +
                 abs(font_metrics['hhea.descent']) +
@@ -4791,25 +4793,76 @@ def com_google_fonts_check_vertical_metrics(ttFont):
     if hhea_sum < 1.2:
         failed = True
         yield FAIL,\
-            Message('bad-hhea-range',
-                'The sum of hhea.ascender+abs(hhea.descender)+hhea.lineGap '
-                f'is {int(hhea_sum*font_upm)} when it should be at least {int(font_upm*1.2)}')
+              Message('bad-hhea-range',
+                      f'The sum of hhea.ascender + abs(hhea.descender) + hhea.lineGap'
+                      f' is {int(hhea_sum * font_upm)} when it should be'
+                      f' at least {int(font_upm * 1.2)}')
 
     # Check the sum of the hhea metrics is below 2.0
     elif hhea_sum > 2.0:
         failed = True
         yield FAIL,\
-            Message('bad-hhea-range',
-                'The sum of hhea.ascender+abs(hhea.descender)+hhea.lineGap '
-                f'is {int(hhea_sum*font_upm)} when it should be at most {int(font_upm*2.0)}')
+              Message('bad-hhea-range',
+                      f'The sum of hhea.ascender + abs(hhea.descender) + hhea.lineGap'
+                      f' is {int(hhea_sum * font_upm)} when it should be'
+                      f' at most {int(font_upm * 2.0)}')
 
     # Check the sum of the hhea metrics is between 1.1-1.5x of the font's upm
     elif hhea_sum > 1.5:
         warn = True
         yield WARN,\
-            Message('bad-hhea-range',
-                "We recommend the absolute sum of the hhea metrics should be"
-                f" between 1.2-1.5x of the font's upm. This font has {hhea_sum}x ({int(hhea_sum*font_upm)})")
+              Message('bad-hhea-range',
+                      f"We recommend the absolute sum of the hhea metrics should be"
+                      f" between 1.2-1.5x of the font's upm. This font"
+                      f" has {hhea_sum}x ({int(hhea_sum * font_upm)})")
+
+    # OS/2.sTypoAscender must be strictly positive
+    if font_metrics['OS/2.sTypoAscender'] < 0:
+        failed = True
+        yield FAIL,\
+              Message('typo-ascender',
+                      "The OS/2 sTypoAscender must be strictly positive,"
+                      " but the font has {font_metrics['OS/2.sTypoAscender']}")
+
+    # hhea.ascent must be strictly positive
+    if font_metrics['hhea.ascent'] <= 0:
+        failed = True
+        yield FAIL,\
+              Message('hhea-ascent',
+                      "The hhea ascender must be strictly positive,"
+                      " but the font has {font_metrics['hhea.ascent']}")
+
+    # OS/2.usWinAscent must be strictly positive
+    if font_metrics['OS/2.usWinAscent'] <= 0:
+        failed = True
+        yield FAIL,\
+              Message('win-ascent',
+                      f"The OS/2.usWinAscent must be strictly positive,"
+                      f" but the font has {font_metrics['OS/2.usWinAscent']}")
+
+    # OS/2.sTypoDescender must be negative or zero
+    if font_metrics['OS/2.sTypoDescender'] > 0:
+        failed = True
+        yield FAIL,\
+              Message('typo-descender',
+                      "The OS/2 sTypoDescender must be negative or zero."
+                      " This font has a strictly positive value.")
+
+    # hhea.descent must be negative or zero
+    if font_metrics['hhea.descent'] > 0:
+        failed = True
+        yield FAIL,\
+              Message('hhea-descent',
+                      "The hhea descender must be negative or zero."
+                      " This font has a strictly positive value.")
+
+    # OS/2.usWinDescent must be positive or zero
+    if font_metrics['OS/2.usWinDescent'] < 0:
+        failed = True
+        yield FAIL,\
+              Message('win-descent',
+                      "The OS/2.usWinDescent must be positive or zero."
+                      " This font has a negative value.")
 
     if not failed and not warn:
         yield PASS, 'Vertical metrics are good'
