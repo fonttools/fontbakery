@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
   - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
   - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
+  - Use `getBestFullName` for the report instead of reading name table identifier 4 directly. (PR #3924)
 
 ### Changes to existing checks
 #### On the OpenType Profile
