@@ -128,7 +128,7 @@ class GHMarkdownReporter(SerializeReporter):
                                          "".join(map(self.check_md, checks[filename])) + "<br>")
 
         if num_checks != 0:
-            summary_table = "### Summary\n\n" + \
+            summary_table = "\n### Summary\n\n" + \
                 ("| {} " + " | {} ".join(LOGLEVELS) + " |\n").format(*[self.emoticon(k)
                                                                        for k in LOGLEVELS]) + \
                 ("|:-----:|:----:|:----:|:----:|:----:|:----:|:----:|\n"

@@ -5,7 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.8.11 (2022-Oct-??)
 ### New Checks
 #### Added to the Google Fonts Profile
-  - **[com.google.fonts/check/colorfont_tables]:** Fonts must have neither or both the tables `COLR` and `SVG`. (issue #3886)
+  - **[com.google.fonts/check/colorfont_tables]:** Check if fonts contain the correct color tables. (issue #3886)
   - **[com.google.fonts/check/description/noto_has_article]:** Noto fonts must have an ARTICLE.en_us.html file. (issue #3841)
   - **[com.google.fonts/check/description/empty_glyph_on_gid1_for_colrv0]:** Ensure that GID 1 is empty to work around Windows 10 rendering bug ([gftools issue #609](https://github.com/googlefonts/gftools/issues/609))
   - **[com.google.fonts/check/slant_direction]:** Check slant direction of outline to match values of slnt axis extrema. (PR #3910)
@@ -14,7 +14,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### BugFixes
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
   - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
+  - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
   - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
+  - Fix summary header in the Github Markdown reporter. (PR #3923)
+  - Use `getBestFullName` for the report instead of reading name table identifier 4 directly. (PR #3924)
 
 ### Changes to existing checks
 #### On the OpenType Profile

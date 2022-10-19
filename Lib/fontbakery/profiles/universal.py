@@ -1021,7 +1021,7 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
                           f"{filename} lacks a 'hhea' table.")
             continue
 
-        full_font_name = ttFont['name'].getName(4, 3, 1, 1033).toUnicode()
+        full_font_name = ttFont['name'].getBestFullName()
         vmetrics['sTypoAscender'][full_font_name] = ttFont['OS/2'].sTypoAscender
         vmetrics['sTypoDescender'][full_font_name] = ttFont['OS/2'].sTypoDescender
         vmetrics['sTypoLineGap'][full_font_name] = ttFont['OS/2'].sTypoLineGap
@@ -1105,7 +1105,7 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
 
     for family_ttFonts in superfamily_ttFonts:
         for ttFont in family_ttFonts:
-            full_font_name = ttFont['name'].getName(4, 3, 1, 1033).toUnicode()
+            full_font_name = ttFont['name'].getBestFullName()
             vmetrics['sTypoAscender'][full_font_name] = ttFont['OS/2'].sTypoAscender
             vmetrics['sTypoDescender'][full_font_name] = ttFont['OS/2'].sTypoDescender
             vmetrics['sTypoLineGap'][full_font_name] = ttFont['OS/2'].sTypoLineGap
@@ -1324,6 +1324,15 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
 
     # Exclude cmapped glyphs
     all_glyphs -= set(ttFont.getBestCmap().values())
+
+    # Exclude glyphs referenced by cmap format 14 variation sequences
+    # (as discussed at https://github.com/googlefonts/fontbakery/issues/3915):
+    for table in ttFont['cmap'].tables:
+        if table.format == 14:
+            for values in table.uvsDict.values():
+                for v in list(values):
+                    if v[1] is not None:
+                        all_glyphs.discard(v[1])
 
     # and ignore these:
     all_glyphs.discard(".null")
