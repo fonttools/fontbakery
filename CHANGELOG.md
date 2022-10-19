@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### BugFixes
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
   - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
+  - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
   - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
   - Fix summary header in the Github Markdown reporter. (PR #3923)
   - Use `getBestFullName` for the report instead of reading name table identifier 4 directly. (PR #3924)

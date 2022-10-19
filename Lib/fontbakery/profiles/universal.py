@@ -1325,6 +1325,15 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
     # Exclude cmapped glyphs
     all_glyphs -= set(ttFont.getBestCmap().values())
 
+    # Exclude glyphs referenced by cmap format 14 variation sequences
+    # (as discussed at https://github.com/googlefonts/fontbakery/issues/3915):
+    for table in ttFont['cmap'].tables:
+        if table.format == 14:
+            for values in table.uvsDict.values():
+                for v in list(values):
+                    if v[1] is not None:
+                        all_glyphs.discard(v[1])
+
     # and ignore these:
     all_glyphs.discard(".null")
     all_glyphs.discard(".notdef")
