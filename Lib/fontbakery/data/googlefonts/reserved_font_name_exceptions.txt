@@ -7,3 +7,26 @@
 # actual long list of familynames we had here
 # still needs to be more carefully reviewed.
 # See https://github.com/googlefonts/fontbakery/issues/3612
+
+#SIL fonts
+Abyssinica SIL
+Akatab
+Alkalami
+Andika
+Annapurna
+Charis SIL
+David Libre
+Ezra SIL
+Gentium Book Basic
+Gentium Book Plus
+Gentium Plus
+Harmattan
+Lateef
+Mingzat
+Narnoor
+Nuosu SIL
+Padauk
+Scheherazade New
+Shimenkan
+Tagmukay
+Tai Heritage Pro
