@@ -17,7 +17,6 @@ Annapurna
 Charis SIL
 David Libre
 Ezra SIL
-Gentium Book Basic
 Gentium Book Plus
 Gentium Plus
 Harmattan
