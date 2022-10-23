@@ -475,6 +475,7 @@ def rfn_exception(familyname):
     filename = resource_filename('fontbakery', rfn_exceptions_txt)
     for exception in open(filename, "r").readlines():
         exception = exception.split('#')[0].strip()
+        exception = exception.replace(" ", "")
         if exception == "":
             continue
 
