@@ -106,9 +106,8 @@ def com_google_fonts_check_iso15008_proportions(ttFont):
                       "There was no 'H' glyph in the font,"
                       " so the proportions could not be tested")
 
-    h_glyph, _ = glyphset["H"]._getGlyphAndOffset()
     pen = BoundsPen(glyphset)
-    h_glyph.draw(pen, ttFont.get("glyf"))
+    glyphset["H"].draw(pen)
     (xMin, yMin, xMax, yMax) = pen.bounds
     proportion = (xMax - xMin) / (yMax - yMin)
     if 0.65 <= proportion <= 0.80:
@@ -205,9 +204,8 @@ def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
 
     # For v, however, a simple LSB/RSB is adequate.
     glyphset = ttFont.getGlyphSet()
-    h_glyph, _ = glyphset["v"]._getGlyphAndOffset()
     pen = BoundsPen(glyphset)
-    h_glyph.draw(pen, ttFont.get("glyf"))
+    glyphset["v"].draw(pen)
     (xMin, yMin, xMax, yMax) = pen.bounds
     v_advance = ttFont["hmtx"]["v"][0]
 
@@ -268,9 +266,8 @@ def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
     l_rsb = l_advance - l_intersections[-1].point.x
 
     glyphset = ttFont.getGlyphSet()
-    h_glyph, _ = glyphset["m"]._getGlyphAndOffset()
     pen = BoundsPen(glyphset)
-    h_glyph.draw(pen, ttFont.get("glyf"))
+    glyphset["m"].draw(pen)
     (xMin, yMin, xMax, yMax) = pen.bounds
     m_advance = ttFont["hmtx"]["m"][0]
     m_lsb = xMin
@@ -316,14 +313,12 @@ def com_google_fonts_check_iso15008_interline_spacing(ttFont):
                       " so the spacing could not be tested")
         return
 
-    h_glyph, _ = glyphset["h"]._getGlyphAndOffset()
     pen = BoundsPen(glyphset)
-    h_glyph.draw(pen, ttFont.get("glyf"))
+    glyphset["h"].draw(pen)
     (_, _, _, h_yMax) = pen.bounds
 
-    g_glyph, _ = glyphset["g"]._getGlyphAndOffset()
     pen = BoundsPen(glyphset)
-    g_glyph.draw(pen, ttFont.get("glyf"))
+    glyphset["g"].draw(pen)
     (_, g_yMin, _, _) = pen.bounds
 
     linegap = (
