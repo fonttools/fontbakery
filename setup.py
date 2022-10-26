@@ -61,14 +61,14 @@ setup(
     install_requires=[
         'axisregistry>=0.3.0',
         'beautifulsoup4',
-        'beziers',
+        'beziers>=0.5.0', # Uses new fontTools glyph outline access
         'cmarkgfm',
         'collidoscope>=0.4.1', # 0.4.0 had a bug that failed to detect
                                # an ïï collision on Nunito Black.
                                # (see https://github.com/googlefonts/fontbakery/issues/3554)
         'defcon',
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
-        'fontTools[ufo,lxml,unicode]>=3.34',  # 3.34 fixed some CFF2 issues, including calcBounds
+        'fontTools[ufo,lxml,unicode]>=4.36.0',  # allows for passing location to glyphsets
         'font-v',
         'gflanguages>=0.3.0', # there was an api simplification/update on v0.3.0 (see https://github.com/googlefonts/gflanguages/pull/7)
         'glyphsets>=0.5.0',
