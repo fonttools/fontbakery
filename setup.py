@@ -73,6 +73,7 @@ setup(
         'gflanguages>=0.3.0', # there was an api simplification/update on v0.3.0 (see https://github.com/googlefonts/gflanguages/pull/7)
         'glyphsets>=0.5.0',
         'lxml',
+        'munkres',  # for interpolation compatibility checking
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
                                       # (see https://github.com/khaledhosny/ots/pull/182)
         'opentypespec',

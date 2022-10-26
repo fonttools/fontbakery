@@ -12,6 +12,7 @@ freetype-py==2.3.0
 gflanguages==0.4.0
 glyphsets==0.5.0
 lxml==4.9.1
+munkres==1.1.4
 opentype-sanitizer==8.2.1
 opentypespec==1.8.4
 packaging==21.3
