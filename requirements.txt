@@ -6,7 +6,7 @@ cmarkgfm==0.8.0
 collidoscope==0.4.1
 defcon==0.10.1
 dehinter==4.0.0
-fontTools[ufo,lxml,unicode]==4.33.3
+fontTools[ufo,lxml,unicode]==4.37.4
 font-v==2.1.0
 freetype-py==2.3.0
 gflanguages==0.4.0
