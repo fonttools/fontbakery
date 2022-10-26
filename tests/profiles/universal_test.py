@@ -1162,3 +1162,16 @@ def test_check_whitespace_widths():
     ttFont["hmtx"].metrics["space"] = (0, 1)
     assert_results_contain(check(ttFont),
                            FAIL, 'different-widths')
+
+
+def test_check_interpolation_issues():
+    """ Detect any interpolation issues in the font. """
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/interpolation_issues")
+    # With a good font
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    assert_PASS(check(ttFont))
+
+    ttFont = TTFont(TEST_FILE("notosansbamum/NotoSansBamum[wght].ttf"))
+    assert_results_contain(check(ttFont),
+                           WARN, 'interpolation-issues')
