@@ -12,6 +12,7 @@ freetype-py==2.3.0
 gflanguages==0.4.1
 glyphsets==0.5.3
 lxml==4.9.1
+munkres==1.1.4  # This should be a dependency of fonttools instead!
 opentype-sanitizer==9.0.0
 opentypespec==1.8.4
 packaging==21.3
