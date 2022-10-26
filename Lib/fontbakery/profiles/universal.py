@@ -71,6 +71,7 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.adobe.fonts/check/freetype_rasterizer',
         'com.adobe.fonts/check/sfnt_version',
         'com.google.fonts/check/whitespace_widths',
+        'com.google.fonts/check/interpolation_issues',
     ]
 
 
@@ -1865,6 +1866,75 @@ def com_google_fonts_check_whitespace_widths(ttFont):
                       f" (https://glyphsapp.com/tutorials/spacing)"
                       f" which allows you to set the non-breaking"
                       f" space width to always equal the space width.")
+
+
+@check(
+    id="com.google.fonts/check/interpolation_issues",
+    conditions=["is_variable_font"],
+    severity=4,
+    rationale="""
+        When creating a variable font, the designer must make sure that
+        corresponding paths have the same start points across masters, as well
+        as that corresponding component shapes are placed in the same order
+        within a glyph across masters. If this is not done, the glyph will not
+        interpolate correctly.
+
+        This test checks for the presence of potential interpolation errors
+        using the fontTools.varLib.interpolatable module.
+    """,
+    proposal="https://github.com/googlefonts/fontbakery/issues/3930",
+)
+def com_google_fonts_check_iterpolation_issues(ttFont, config):
+    """Detect any interpolation issues in the font."""
+    from fontTools.varLib.interpolatable import test as interpolation_test
+    from fontbakery.utils import bullet_list
+
+    gvar = ttFont["gvar"]
+    # This code copied from fontTools.varLib.interpolatable
+    locs = set()
+    names = []
+    for variations in gvar.variations.values():
+        for var in variations:
+            loc = []
+            for tag, val in sorted(var.axes.items()):
+                loc.append((tag, val[1]))
+            locs.add(tuple(loc))
+    # Rebuild locs as dictionaries
+    new_locs = [{}]
+    names.append("()")
+    for loc in sorted(locs, key=lambda v: (len(v), v)):
+        names.append(str(loc))
+        l = {}
+        for tag, val in loc:
+            l[tag] = val
+        new_locs.append(l)
+    locs = new_locs
+    glyphsets = [ttFont.getGlyphSet(location=loc, normalized=True) for loc in locs]
+    results = interpolation_test(glyphsets)
+    if not results:
+        yield PASS, "No interpolation issues found"
+    else:
+        # Most of the potential problems varLib.interpolatable finds can't
+        # exist in a built binary variable font. We focus on those which can.
+        report = []
+        for glyph, glyph_problems in results.items():
+            for p in glyph_problems:
+                if p["type"] == "contour_order":
+                    report.append(
+                        f"Contour order differs in glyph '{glyph}': "
+                        f" {p['value_1']} in {p['master_1'] or 'default'}, "
+                        f" {p['value_2']} in {p['master_2'] or 'default'}."
+                    )
+                elif p["type"] == "wrong_start_point":
+                    report.append(
+                        f"Contour {p['contour']} start point differs in glyph '{glyph}' "
+                        f" between location {p['master_1'] or 'default'} and location {p['master_2'] or 'default'}"
+                    )
+        yield WARN, Message(
+            "interpolation-issues",
+            "Interpolation issues were found in the font: "
+            f"{bullet_list(config, report)}",
+        )
 
 
 profile.auto_register(globals())
