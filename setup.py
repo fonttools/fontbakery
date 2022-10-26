@@ -61,7 +61,7 @@ setup(
     install_requires=[
         'axisregistry>=0.3.0',
         'beautifulsoup4',
-        'beziers',
+        'beziers>=0.5.0', # Uses new fontTools glyph outline access
         'cmarkgfm',
         'collidoscope>=0.4.1', # 0.4.0 had a bug that failed to detect
                                # an ïï collision on Nunito Black.
