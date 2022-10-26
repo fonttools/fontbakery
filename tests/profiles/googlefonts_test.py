@@ -728,12 +728,15 @@ def test_check_glyph_coverage():
     # Our reference Cabin Regular is known to be bad here.
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
     assert_results_contain(check(ttFont),
-                           FAIL, 'missing-codepoints',
-                           'GF_Latin_Core missing glyphs')
-    # Let's add some encoded glyphs so it passes
+                           WARN, 'missing-codepoints',
+                           'GF_TransLatin_Arabic is almost fulfilled.')
+
+    # Let's fix it then...
     cmap = ttFont.getBestCmap()
-    cmap[0x01CD] = 0x01CD
-    cmap[0x01CE] = 0x01CE
+    cmap[0x1E34] = 0x1E34  # (LATIN CAPITAL LETTER K WITH LINE BELOW)
+    cmap[0x1E35] = 0x1E35  # (LATIN SMALL LETTER K WITH LINE BELOW)
+    cmap[0x1E96] = 0x1E96  # (LATIN SMALL LETTER H WITH LINE BELOW)
+    cmap[0x02BD] = 0x02BD  # (MODIFIER LETTER REVERSED COMMA)
     assert_PASS(check(ttFont),
                 'with a good font.')
 
