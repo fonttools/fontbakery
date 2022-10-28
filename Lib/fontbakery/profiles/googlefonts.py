@@ -3194,7 +3194,8 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
     import uharfbuzz as hb
 
     if not axis(ttFont, 'slnt'):
-        return PASS, "Font has no slnt axis"
+        yield PASS, "Font has no slnt axis"
+        return
 
     hb_face = hb.Face(uharfbuzz_blob)
     hb_font = hb.Font(hb_face)
