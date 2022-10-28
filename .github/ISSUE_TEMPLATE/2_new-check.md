@@ -46,4 +46,4 @@ Which log result level should it have:
 
 ## Severity assessment
 
-(On a 0 to 5 level, how "buggy" would the font be considered if not including the aspect checked? Where 0 is something ideal to include but that would not affect the behavior of the font, and 5 is something that could lead to bad performance.)
+(On a 1 to 5 level, how "buggy" would the font be considered if not including the aspect checked? Where 1 is something ideal to include but that would not affect the behavior of the font, and 5 is something that could lead to bad performance.)
