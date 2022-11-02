@@ -1,8 +1,8 @@
 --index-url https://pypi.python.org/simple/
-axisregistry==0.3.8
+axisregistry==0.3.9
 beautifulsoup4==4.11.1
 beziers==0.5.0
-cmarkgfm==0.8.0
+cmarkgfm==2022.10.27
 collidoscope==0.4.1
 defcon==0.10.2
 dehinter==4.0.0
@@ -17,14 +17,14 @@ opentype-sanitizer==9.0.0
 opentypespec==1.8.4
 packaging==21.3
 pip-api==0.0.30
-protobuf==3.19.4  # Should update this to 4.21.8 once axisregistry 0.3.9 is released
+protobuf==3.19.4  # Should update this to 3.20.3 (but not the 4.x series) once gflanguages==0.4.2 is released
 PyYAML==6.0
 requests==2.28.1
 rich==12.6.0
 stringbrewer==0.0.1
 toml==0.10.2
 ufolint==1.2.0
-unicodedata2==14.0.0
+unicodedata2==15.0.0
 vharfbuzz==0.1.4
-ufo2ft==2.28.0
+ufo2ft==2.29.0
 -e .
