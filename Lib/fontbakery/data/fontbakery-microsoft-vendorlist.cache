@@ -109,7 +109,7 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/58c394e6.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f5b6debf.site-ltr.css ">
 
 	
 
@@ -143,8 +143,6 @@
 			hasRecommendations: true,
 			contributors: [
 						{ name: "alib-ms", url: "https://github.com/alib-ms" },
-						{ name: "DhurataJ", url: "https://github.com/DhurataJ" },
-						{ name: "kturetz", url: "https://github.com/kturetz" },
 						{ name: "PeterCon", url: "https://github.com/PeterCon" },
 						{ name: "WorkNihar", url: "https://github.com/WorkNihar" },
 						{ name: "mijacobs", url: "https://github.com/mijacobs" },
@@ -159,7 +157,7 @@
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/67a45209.deprecation.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/26ff8d64.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d2419533.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -492,7 +490,7 @@ Article													</li>
 															<li class="readingTime">20 minutes to read</li>
 														<li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
-																	8 contributors
+																	6 contributors
 															</button>
 														</li>
 											</ul>
