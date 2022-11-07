@@ -8,6 +8,7 @@ import fontTools.subset
 
 from fontbakery.checkrunner import (INFO, WARN, FAIL)
 from fontbakery.codetesting import (assert_PASS,
+                                    assert_SKIP,
                                     assert_results_contain,
                                     CheckTester,
                                     portable_path,
@@ -218,4 +219,27 @@ def test_check_code_pages():
     assert_results_contain(check(ttFont),
                            FAIL, "no-code-pages",
                            'with a font with no code page declared.')
+
+def test_check_vendor_id():
+    """ Check vendor id against the configured value """
+    check = CheckTester(opentype_profile,
+                        "com.thetypefounders/check/vendor_id")
+
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+    assert (ttFont['OS/2'].achVendID == 'STC ')
+
+    # If there is no configured vendor_id value, SKIP the check
+    assert_SKIP(check(ttFont))
+
+    config = { "vendor_id": "STC " }
+    assert_PASS(check({
+        "config": config,
+        "ttFont": ttFont,
+    }))
+
+    ttFont['OS/2'].achVendID = 'TEST'
+    assert_results_contain(check({
+        "config": config,
+        "ttFont": ttFont,
+    }), FAIL, "bad-vendor-id", "OS/2 VendorID is 'TEST', but should be 'STC '")
 

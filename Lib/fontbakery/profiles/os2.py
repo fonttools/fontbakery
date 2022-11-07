@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS, WARN, INFO
+from fontbakery.status import FAIL, PASS, WARN, INFO, SKIP
 from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
@@ -329,3 +329,40 @@ def com_google_fonts_check_code_pages(ttFont):
                       " ulCodePageRange1 and CodePageRange2 fields.")
     else:
         yield PASS, "At least one code page is defined."
+
+
+@check(
+    id = 'com.thetypefounders/check/vendor_id',
+    rationale = """
+        When a font project's Vendor ID is specified explicitely on FontBakery's
+        configuration file, all binaries must have a matching vendor identifier
+        value in the OS/2 table.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3941'
+)
+def com_thetypefounders_check_vendor_id(config, ttFont):
+    """Checking OS/2 achVendID against configuration."""
+
+    if "vendor_id" not in config:
+        yield SKIP, ("Add the `vendor_id` key to a `fontbakery.yaml` file"
+                     " on your font project directory to enable this check.\n"
+                     "You'll also need to use the `--configuration` flag when"
+                     " invoking fontbakery.")
+        return
+
+    if "OS/2" not in ttFont:
+        yield FAIL,\
+              Message("lacks-OS/2",
+                      "The required OS/2 table is missing.")
+        return
+
+    config_vendor_id = config['vendor_id']
+    font_vendor_id = ttFont['OS/2'].achVendID
+
+    if config_vendor_id != font_vendor_id:
+        yield FAIL,\
+              Message("bad-vendor-id",
+                      f"OS/2 VendorID is '{font_vendor_id}',"
+                      f" but should be '{config_vendor_id}'.")
+    else:
+        yield PASS, f"OS/2 VendorID '{font_vendor_id}' is correct."
