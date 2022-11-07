@@ -339,7 +339,7 @@ def com_google_fonts_check_code_pages(ttFont):
         Add the `vendor_id` key to the configuration file to enable
         this check.
     """,
-    proposal =  'https://github.com/googlefonts/fontbakery/issues/287348'
+    proposal =  'https://github.com/googlefonts/fontbakery/pull/3941'
 )
 def com_thetypefounders_check_vendor_id(config, ttFont):
     """Checking OS/2 achVendID against configuration."""
