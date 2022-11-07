@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Universal Profile
   - **[com.google.fonts/check/interpolation_issues]:** Check for shape order or curve start point interpolation issues within a variable font. (issue #3930)
 
+#### Added to the Open Type Profile
+  - **[com.thetypefounders/check/vendor_id]:** When a font project's Vendor ID is specified explicitely on FontBakery's configuration file, all binaries must have a matching vendor identifier value in the OS/2 table. (PR #3941)
+
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Check if fonts contain the correct color tables. (issue #3886)
   - **[com.google.fonts/check/description/noto_has_article]:** Noto fonts must have an ARTICLE.en_us.html file. (issue #3841)
