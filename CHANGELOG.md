@@ -18,6 +18,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/empty_glyph_on_gid1_for_colrv0]:** Ensure that GID 1 is empty to work around Windows 10 rendering bug ([gftools issue #609](https://github.com/googlefonts/gftools/issues/609))
 
 ### BugFixes
+  - **[setup.py]:** Only install Protobuf versions 3.7.0-3.20.3 (PR #3946)
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
   - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
   - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
