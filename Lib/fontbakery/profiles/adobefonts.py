@@ -43,7 +43,6 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From cmap.py
-    "com.google.fonts/check/all_glyphs_have_codepoints",
     "com.google.fonts/check/family/equal_unicode_encodings",
     #
     # =======================================

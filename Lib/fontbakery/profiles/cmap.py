@@ -32,24 +32,3 @@ def com_google_fonts_check_family_equal_unicode_encodings(ttFonts):
                       "Fonts have different unicode encodings.")
     else:
         yield PASS, "Fonts have equal unicode encodings."
-
-
-@check(
-    id = 'com.google.fonts/check/all_glyphs_have_codepoints',
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/735'
-)
-def com_google_fonts_check_all_glyphs_have_codepoints(ttFont):
-    """Check all glyphs have codepoints assigned."""
-    failed = False
-    for subtable in ttFont['cmap'].tables:
-        if subtable.isUnicode():
-            for item in subtable.cmap.items():
-                codepoint = item[0]
-                if codepoint is None:
-                    failed = True
-                    yield FAIL,\
-                          Message("glyph-lacks-codepoint",
-                                  f"Glyph {codepoint} lacks a unicode"
-                                  f" codepoint assignment.")
-    if not failed:
-        yield PASS, "All glyphs have a codepoint value assigned."
