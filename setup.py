@@ -81,7 +81,7 @@ setup(
         'pip-api',    # needed for checking Font Bakery's version
         # 3.7.0 fixed a bug on parsing some METADATA.pb files.
         # We cannot use v4 because our protobuf files have been compiled with v3.
-        'protobuf>=3.7.0, <=3.20.3',  
+        'protobuf>=3.7.0, <4',  
                             # (see https://github.com/googlefonts/fontbakery/issues/2200)
         'PyYAML',
         'requests',
