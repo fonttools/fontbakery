@@ -47,25 +47,3 @@ def test_check_family_equal_unicode_encodings(mada_ttFonts):
     assert_results_contain(check(bad_ttFonts),
                            FAIL, 'mismatch',
                            'with fonts that diverge on unicode encoding.')
-
-
-# Note: I am not aware of any real-case of a font that FAILs this check.
-def test_check_all_glyphs_have_codepoints():
-    """ Check all glyphs have codepoints assigned. """
-    check = CheckTester(opentype_profile,
-                        "com.google.fonts/check/all_glyphs_have_codepoints")
-
-    # our reference Mada SemiBold is know to be good here.
-    ttFont = TTFont(TEST_FILE("mada/Mada-SemiBold.ttf"))
-    assert_PASS(check(ttFont),
-                'with a good font.')
-
-    # This is a silly way to break the font.
-    # A much better test would rather use a real font file that has the problem.
-    ttFont['cmap'].tables[0].cmap[None] = "foo"
-
-    assert_results_contain(check(ttFont),
-                           FAIL, 'glyph-lacks-codepoint',
-                           'with a font in which a glyph'
-                           ' lacks a unicode codepoint assignment.')
-
