@@ -18,8 +18,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/empty_glyph_on_gid1_for_colrv0]:** Ensure that GID 1 is empty to work around Windows 10 rendering bug ([gftools issue #609](https://github.com/googlefonts/gftools/issues/609))
 
 ### Removed from the Open Type and Adobe Profiles
-
- - **[com.google.fonts/check/all_glyphs_have_codepoints]:** This check cannot fail with fontTools and is therefore redundant.
+  - **[com.google.fonts/check/all_glyphs_have_codepoints]:** This check cannot ever fail with fontTools and is therefore redundant. (issue #1793)
 
 ### BugFixes
   - **[setup.py]:** Our protobuf files have been compiled with v3 versions of protobuf which cannot be read by v4. (PR #3946)
