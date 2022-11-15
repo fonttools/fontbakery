@@ -17,14 +17,22 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/color_cpal_brightness]:** Warn if COLRv0 layers are colored too dark or too bright instead of foreground color. (PR #3908)
   - **[com.google.fonts/check/empty_glyph_on_gid1_for_colrv0]:** Ensure that GID 1 is empty to work around Windows 10 rendering bug ([gftools issue #609](https://github.com/googlefonts/gftools/issues/609))
 
-### Removed from the Open Type and Adobe Profiles
+### Deprecated check (removed from the Open Type and Adobe Profiles)
   - **[com.google.fonts/check/all_glyphs_have_codepoints]:** This check cannot ever fail with fontTools and is therefore redundant. (issue #1793)
+
+### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
+
+#### On the OpenType Profile
+  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
+
+#### On the GoogleFonts Profile
+  - **[com.google.fonts/check/vendor_id]:** PYRS is a default Vendor ID entry from FontLab generated binaries. (issue #3943)
+  - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
 
 ### BugFixes
   - **[setup.py]:** Our protobuf files have been compiled with v3 versions of protobuf which cannot be read by v4. (PR #3946)
-  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
-  - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
-  - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
   - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
   - Fix summary header in the Github Markdown reporter. (PR #3923)
   - Use `getBestFullName` for the report instead of reading name table identifier 4 directly. (PR #3924)

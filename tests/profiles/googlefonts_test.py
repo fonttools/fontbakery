@@ -692,7 +692,7 @@ def test_check_vendor_id():
     # Let's start with our reference Merriweather Regular
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
 
-    bad_vids = ['UKWN', 'ukwn', 'PfEd']
+    bad_vids = ['UKWN', 'ukwn', 'PfEd', 'PYRS']
     for bad_vid in bad_vids:
         ttFont['OS/2'].achVendID = bad_vid
         assert_results_contain(check(ttFont),

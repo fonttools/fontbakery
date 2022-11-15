@@ -922,7 +922,8 @@ def com_google_fonts_check_fstype(ttFont):
         If you registered recently, you're safe to ignore warnings emitted by this
         check, since your ID will soon be included in one of our upcoming releases.
     """,
-    proposal = 'legacy:check/018'
+    proposal = ['legacy:check/018',
+                'https://github.com/googlefonts/fontbakery/issues/3943']
 )
 def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
     """Checking OS/2 achVendID."""
@@ -934,7 +935,7 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
         " https://www.microsoft.com/typography/links/vendorlist.aspx\n")
 
     vid = ttFont['OS/2'].achVendID
-    bad_vids = ['UKWN', 'ukwn', 'PfEd']
+    bad_vids = ['UKWN', 'ukwn', 'PfEd', 'PYRS']
     if vid is None:
         yield WARN,\
               Message("not-set",
