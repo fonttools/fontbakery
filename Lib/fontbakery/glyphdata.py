@@ -10618,7 +10618,8 @@ desired_glyph_data = \
         "name": "uni0E3F", 
         "unicode": 3647, 
         "contours": [
-            3
+            3,
+            5
         ]
     }, 
     {
