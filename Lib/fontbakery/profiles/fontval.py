@@ -6,7 +6,7 @@ from fontbakery.section import Section
 from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
-from .shared_conditions import is_variable_font
+from .shared_conditions import is_cff, is_variable_font
 
 profile_imports = ['.shared_conditions']
 profile = profile_factory(default_section=Section("Checks inherited from Microsoft Font Validator"))
@@ -21,12 +21,6 @@ def com_google_fonts_check_fontvalidator(font):
     # In some cases we want to override the severity level of
     # certain checks in FontValidator:
     downgrade_to_warn = [
-        # There are reports that this fontval check has an out-of-date
-        # understanding of valid bits in fsSelection.
-        # More info at:
-        # https://github.com/googlei18n/fontmake/issues/414#issuecomment-379408127
-        "There are undefined bits set in fsSelection field",
-
         # FIX-ME: Why did we downgrade this one to WARN?
         "Misoriented contour"
     ]
@@ -68,7 +62,57 @@ def com_google_fonts_check_fontvalidator(font):
 
         # Font Bakery has its own check for required/optional tables:
         # com.google.fonts/check/required_tables
-        "Recommended table is missing"
+        "Recommended table is missing",
+
+        # Check W5300 does not recognise some tags in use, e.g. stylistic sets
+        # tagged `ssXX` (where XX is the number). This warning has been reported
+        # to HinTak here: https://github.com/HinTak/Font-Validator/issues/41
+        "The FeatureRecord tag is valid, but unregistered",
+
+        # Check E5400: field now called featureParamsOffset and can be null.
+        # This error has been reported to HinTak by Khaled Hosny here:
+        # https://github.com/HinTak/Font-Validator/issues/34.
+        "The FeatureParams field is not null",
+
+        # Check E5700: Lookup flags more recently used by the pipeline are not
+        # recognized by Font Validator and therefore it flags that they are in a
+        # reserved bit. This error has been reported to HinTak by Khaled Hosny
+        # here: https://github.com/HinTak/Font-Validator/issues/34.
+        "The LookupFlag reserved bits are not all set to zero.",
+
+        # Check E4100: We expect this error due to the new way fontmake compiles
+        # anchors. See this bug report on the FontValidator side:
+        # https://github.com/HinTak/Font-Validator/issues/59
+        "The AnchorFormat field is invalid",
+
+        # Check E2101: Complains about the USE_TYPO_METRICS bit. See
+        # https://github.com/HinTak/Font-Validator/issues/34.
+        "There are undefined bits set in fsSelection field",
+
+        # Unless there is a Microsoft Symbol subtable in the CMAP table, Font
+        # Validator will check Microsoft Unicode/Apple subtables for the
+        # presence of the euro character. This does not consider the glyph set
+        # of the font, and so will raise a warning in fonts that purposely do
+        # not contain the euro.
+        "Character code U+20AC, the euro character, is not mapped in cmap 3,1",
+
+        #  Fontbakery has its own check for this.
+        "The unitsPerEm value is not a power of two",
+
+        # Actually not a problem, and being produced by ufo2ft for years.
+        "Intersecting components of composite glyph",
+
+        # OS/2 table version: Yeah, and?
+        "The version number is valid, but less than 5",
+
+        # W1900: FontVal computes maxp.maxSizeOfInstructions and
+        # maxComponentDepth differently from fontTools
+        "maxSizeOfInstructions computation not via either approved method",
+
+        # E1900: FontValidator calculates the wrong maxp.maxComponentDepth. This
+        # issue has been reported on the FontValidator side:
+        # https://github.com/microsoft/Font-Validator/issues/62
+        "The value doesn't match the calculated value"
     ]
 
     # There are also some checks that do not make
@@ -78,7 +122,6 @@ def com_google_fonts_check_fontvalidator(font):
         # contours because they are used to draw each portion
         # of variable glyph features.
         "Intersecting contours",
-        "Intersecting components of composite glyph",
 
         # DeltaFormat = 32768 (same as 0x8000) means VARIATION_INDEX,
         # according to https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2
@@ -92,9 +135,19 @@ def com_google_fonts_check_fontvalidator(font):
         "The device table's DeltaFormat value is invalid"
     ]
 
+    CFF_disabled_fval_checks = [
+        # We expect this warning for static OTFs, since they store glyph names in
+        # the CFF table instead of the post table.
+        "Apple recommends against using post table format 3 under most circumstances",
+    ]
+
     from fontTools.ttLib import TTFont
-    if is_variable_font(TTFont(font)):
+    ttFont = TTFont(font)
+    if is_variable_font(ttFont):
         disabled_fval_checks.extend(VARFONT_disabled_fval_checks)
+
+    if is_cff(ttFont):
+        disabled_fval_checks.extend(CFF_disabled_fval_checks)
 
     report_dir = tempfile.TemporaryDirectory(prefix="fontval-")
     try:
