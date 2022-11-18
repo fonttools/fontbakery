@@ -21,13 +21,13 @@ sys.path.insert(0, os.path.abspath("../Lib"))
 # -- Project information -----------------------------------------------------
 
 project = "Font Bakery"
-copyright = "2021 The Font Bakery Authors"
+copyright = "2022 The Font Bakery Authors"
 author = "The Font Bakery Authors"
 
 # The short X.Y version
 version = "0.8"
 # The full version, including alpha/beta/rc tags
-release = "0.8.11a3"
+release = "0.8.11a4"
 
 
 # -- General configuration ---------------------------------------------------
@@ -199,7 +199,7 @@ def linkcode_resolve(domain, info):
     # AND We can link to a tag i.e. a release tag. This is awesome:
     # tag is: "v0.7.2"
     # https://github.com/googlefonts/fontbakery/tree/v0.7.2/Lib/fontbakery/profiles
-    tree = 'v0.8.11a3'
+    tree = 'v0.8.11a4'
     # It's not planned for us to get the line number :-(
     # I had to hammer this data into the info.
     if 'lineno' in info:
