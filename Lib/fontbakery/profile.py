@@ -690,6 +690,7 @@ class Profile:
         new_id = f"{override_check_id}:{self.profile_tag}"
         old_check, section = self.get_check(override_check_id)
         new_check = check_log_override(old_check, new_id, *args, **kwds)
+        new_check.conditions = old_check.conditions
         section.replace_check(override_check_id, new_check)
         return new_check
 
