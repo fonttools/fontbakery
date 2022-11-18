@@ -41,6 +41,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix summary header in the Github Markdown reporter. (PR #3923)
   - Use `getBestFullName` for the report instead of reading name table identifier 4 directly. (PR #3924)
   - fix crash on iso15008 checks by updating usage of internal fonttools `_TTGlyphGlyf` API that changed at https://github.com/fonttools/fonttools/commit/b818e1494ff2bfb7f0cd71d827ba97578c919303
+  - Overriden checks now also properly inherit conditions. (issue #3952)
 
 ### Changes to existing checks
 #### On the OpenType Profile
