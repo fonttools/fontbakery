@@ -9,15 +9,15 @@ dehinter==4.0.0
 fontTools[ufo,lxml,unicode]==4.38.0
 font-v==2.1.0
 freetype-py==2.3.0
-gflanguages==0.4.1
-glyphsets==0.5.3
+gflanguages==0.4.3
+glyphsets==0.5.4
 lxml==4.9.1
 munkres==1.1.4  # This should be a dependency of fonttools instead!
 opentype-sanitizer==9.0.0
 opentypespec==1.8.4
 packaging==21.3
 pip-api==0.0.30
-protobuf==3.19.4  # Should update this to 3.20.3 (but not the 4.x series) once gflanguages==0.4.2 is released
+protobuf==3.20.3
 PyYAML==6.0
 requests==2.28.1
 rich==12.6.0
