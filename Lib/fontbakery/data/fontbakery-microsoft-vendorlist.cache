@@ -75,11 +75,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/52799eeba7b07bcfcf1344c46fd241ee331ed60d/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/a1aeeca8205a918419914829fa433b40baca3baa/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="10/21/2022" />
+<meta name="ms.date" content="11/11/2022" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -90,8 +90,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2022-10-22 02:45 AM" />
-<meta name="word_count" content="4198" />
+<meta name="updated_at" content="2022-11-11 08:32 PM" />
+<meta name="word_count" content="4241" />
 
 
 
@@ -109,7 +109,7 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f5b6debf.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f9093179.site-ltr.css ">
 
 	
 
@@ -143,6 +143,8 @@
 			hasRecommendations: true,
 			contributors: [
 						{ name: "alib-ms", url: "https://github.com/alib-ms" },
+						{ name: "DhurataJ", url: "https://github.com/DhurataJ" },
+						{ name: "kturetz", url: "https://github.com/kturetz" },
 						{ name: "PeterCon", url: "https://github.com/PeterCon" },
 						{ name: "WorkNihar", url: "https://github.com/WorkNihar" },
 						{ name: "mijacobs", url: "https://github.com/mijacobs" },
@@ -157,7 +159,7 @@
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/67a45209.deprecation.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d2419533.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/135c252f.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -484,13 +486,13 @@ Feedback														</span>
 											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
 													<li>
 Article													</li>
-													<li>
-														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-10-22T02:45:00Z" data-article-date-source="git">10/22/2022</time>
+													<li class="visibility-hidden-visual-diff">
+														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-11-11T20:32:00Z" data-article-date-source="git">11/11/2022</time>
 													</li>
-															<li class="readingTime">20 minutes to read</li>
+															<li class="readingTime">21 minutes to read</li>
 														<li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
-																	6 contributors
+																	8 contributors
 															</button>
 														</li>
 											</ul>
@@ -722,7 +724,7 @@ Article													</li>
 </tr>
 <tr>
 <td>ABCX</td>
-<td><a href="https://abcetc.us/" data-linktype="external">ABC ETC</a></td>
+<td><a href="https://abc-etc.com/" data-linktype="external">ABC ETC INC</a></td>
 </tr>
 <tr>
 <td>ABEL</td>
@@ -1627,6 +1629,10 @@ Article													</li>
 <td><a href="http://www.castletype.com/" data-linktype="external">CastleType</a></td>
 </tr>
 <tr>
+<td>CTCO</td>
+<td><a href="https://wearecolt.com/" data-linktype="external">Colt Type Co.</a></td>
+</tr>
+<tr>
 <td>CTDL</td>
 <td><a href="http://www.agfamonotype.com/" data-linktype="external">China Type Designs Ltd.</a></td>
 </tr>
@@ -1637,6 +1643,10 @@ Article													</li>
 <tr>
 <td>CTYP</td>
 <td>Countertype</td>
+</tr>
+<tr>
+<td>CUBI</td>
+<td><a href="https://about.cubictype.com/" data-linktype="external">CubicType</a></td>
 </tr>
 <tr>
 <td>cwwf</td>
@@ -1801,6 +1811,10 @@ Article													</li>
 <tr>
 <td>DRFN</td>
 <td>DR Fonts</td>
+</tr>
+<tr>
+<td>DRT</td>
+<td>Dave Rowland Type</td>
 </tr>
 <tr>
 <td>DS</td>
@@ -2838,6 +2852,10 @@ Article													</li>
 <td><a href="http://www.impress.co.jp/" data-linktype="external">Impress</a></td>
 </tr>
 <tr>
+<td>INCD</td>
+<td><a href="https://inc-design.com/" data-linktype="external">INCDesign</a></td>
+</tr>
+<tr>
 <td>INDG</td>
 <td>Indigo+Indigo</td>
 </tr>
@@ -2876,6 +2894,10 @@ Article													</li>
 <tr>
 <td>INVT</td>
 <td><a href="http://www.itf.is" data-linktype="external">Invisible Type</a></td>
+</tr>
+<tr>
+<td>IRRT</td>
+<td><a href="https://unforma.club/" data-linktype="external">Irregular Regular</a></td>
 </tr>
 <tr>
 <td>ISE </td>
@@ -3096,6 +3118,10 @@ Article													</li>
 <td><a href="https://www.instagram.com/mokhatib/" data-linktype="external">Monkey Arts Ltd.</a></td>
 </tr>
 <tr>
+<td>KHTF</td>
+<td>KH Type</td>
+</tr>
+<tr>
 <td>KILO</td>
 <td><a href="http://www.kilotype.de" data-linktype="external">Kilotype</a></td>
 </tr>
@@ -3174,6 +3200,10 @@ Article													</li>
 <tr>
 <td>KTRF</td>
 <td>Kazan Traditional Font</td>
+</tr>
+<tr>
+<td>KTTF</td>
+<td>Kitchen Table Type Foundry</td>
 </tr>
 <tr>
 <td>KUBA</td>
@@ -3556,6 +3586,10 @@ Article													</li>
 <tr>
 <td>MCKL</td>
 <td><a href="http://www.mckltype.com" data-linktype="external">MCKL</a></td>
+</tr>
+<tr>
+<td>MCL</td>
+<td><a href="https://www.mycreativeland.com/" data-linktype="external">My Creative Land</a></td>
 </tr>
 <tr>
 <td>MCOW</td>
@@ -4011,6 +4045,10 @@ Article													</li>
 <tr>
 <td>NIS</td>
 <td><a href="http://www.nisfont.co.jp/" data-linktype="external">NIS Corporation</a></td>
+</tr>
+<tr>
+<td>NITS</td>
+<td><a href="https://niteeshyadav.com/" data-linktype="external">Niteesh Yadav</a></td>
 </tr>
 <tr>
 <td>NIVA</td>
@@ -4785,7 +4823,7 @@ Article													</li>
 </tr>
 <tr>
 <td>SKP</td>
-<td><a href="http://www.essque-productions.com" data-linktype="external">Essqu&#233; Productions</a></td>
+<td><a href="https://www.essque-productions.com/" data-linktype="external">Essqué Productions</a></td>
 </tr>
 <tr>
 <td>skz</td>
@@ -4798,6 +4836,10 @@ Article													</li>
 <tr>
 <td>Slab</td>
 <td><a href="http://www.schriftlabor.at/" data-linktype="external">Schriftlabor</a></td>
+</tr>
+<tr>
+<td>SLFN</td>
+<td><a href="https://www.singlelinefonts.com/" data-linktype="external">Single Line Fonts</a></td>
 </tr>
 <tr>
 <td>SLVK</td>
@@ -4858,6 +4900,10 @@ Article													</li>
 <tr>
 <td>SSFD</td>
 <td>Stefan Stoychev</td>
+</tr>
+<tr>
+<td>SRFT</td>
+<td><a href="https://schrifteria.xyz/" data-linktype="external">Schrifteria Foundry</a></td>
 </tr>
 <tr>
 <td>ssm0</td>
@@ -5005,6 +5051,10 @@ Article													</li>
 <tr>
 <td>TD</td>
 <td><a href="http://www.typedepot.com" data-linktype="external">Typedepot</a></td>
+</tr>
+<tr>
+<td>TDBK</td>
+<td><a href="https://kosmynka.com/" data-linktype="external">Typeface Design Borys Kosmynka</a></td>
 </tr>
 <tr>
 <td>TDFF</td>
@@ -5850,7 +5900,7 @@ High contrast					</span>
 				<li><a data-mscc-ic="false" href="/en-us/previous-versions/" data-bi-name="archivelink">Previous Versions</a></li>
 				<li><a data-mscc-ic="false" href="https://techcommunity.microsoft.com/t5/microsoft-learn-blog/bg-p/MicrosoftLearnBlog" data-bi-name="bloglink">Blog</a></li>
 				<li><a data-mscc-ic="false" href="/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li>
-					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
 				<li><a data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
 		<li>&copy; Microsoft 2022</li>
@@ -6000,7 +6050,7 @@ High contrast					</span>
 				<li><a data-mscc-ic="false" href="/en-us/previous-versions/" data-bi-name="archivelink">Previous Versions</a></li>
 				<li><a data-mscc-ic="false" href="https://techcommunity.microsoft.com/t5/microsoft-learn-blog/bg-p/MicrosoftLearnBlog" data-bi-name="bloglink">Blog</a></li>
 				<li><a data-mscc-ic="false" href="/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li>
-					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
 				<li><a data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
 		<li>&copy; Microsoft 2022</li>
