@@ -49,6 +49,9 @@ def com_google_fonts_check_varfont_stat_axis_record_for_each_axis(ttFont, config
         tables for particular values should be implemented consistently across fonts
         in the family.
 
+        If present, Format 4 Axis Value tables are checked to ensure they have more than
+        one AxisValueRecord (a strong recommendation from the OpenType spec).
+
         https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-value-tables
     """,
     conditions=["has_STAT_table"],
@@ -75,15 +78,28 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
 
             # Iterate over Axis Value tables.
             for axis_value in stat_table.AxisValueArray.AxisValue:
-                if axis_value.AxisIndex != axis_index:
-                    # Not the axis we're collecting for, skip.
-                    continue
-
                 axis_value_format = axis_value.Format
-                if axis_value_format == 2:
-                    axis_values.add(axis_value.NominalValue)
-                else:
-                    axis_values.add(axis_value.Value)
+
+                if axis_value_format in (1, 2, 3):
+                    if axis_value.AxisIndex != axis_index:
+                        # Not the axis we're collecting for, skip.
+                        continue
+
+                    if axis_value_format == 2:
+                        axis_values.add(axis_value.NominalValue)
+                    else:
+                        axis_values.add(axis_value.Value)
+
+                if axis_value_format == 4:
+                    # check that axisCount > 1. Also, format 4 records DO NOT
+                    # contribute to the "stat_axes_values" list used to check
+                    # against fvar instances.
+                    # see https://github.com/googlefonts/fontbakery/issues/3957
+                    if axis_value.AxisCount <= 1:
+                        yield FAIL, Message(
+                            "format-4-axis-count",
+                            "STAT Format 4 Axis Value table has axis count <= 1.",
+                        )
 
             stat_axes_values[axis_tag] = axis_values
 
