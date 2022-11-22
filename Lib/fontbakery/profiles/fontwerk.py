@@ -142,21 +142,23 @@ def is_covered_in_stat(ttFont, axis_tag, value):
     if stat_table.AxisValueCount == 0:
         return False
     for ax_value in stat_table.AxisValueArray.AxisValue:
-        axis_tag_stat = stat_table.DesignAxisRecord.Axis[ax_value.AxisIndex].AxisTag
-        if axis_tag != axis_tag_stat:
-            continue
-
+        ax_value_format = ax_value.Format
         stat_value = []
-        if ax_value.Format in (1, 3):
-            stat_value.append(ax_value.Value)
+        if ax_value_format in (1, 2, 3):
+            axis_tag_stat = stat_table.DesignAxisRecord.Axis[ax_value.AxisIndex].AxisTag
+            if axis_tag != axis_tag_stat:
+                continue
 
-        if ax_value.Format == 3:
-            stat_value.append(ax_value.LinkedValue)
+            if ax_value_format in (1, 3):
+                stat_value.append(ax_value.Value)
 
-        if ax_value.Format == 2:
-            stat_value.append(ax_value.NominalValue)
+            if ax_value_format == 3:
+                stat_value.append(ax_value.LinkedValue)
 
-        if ax_value.Format == 4:
+            if ax_value_format == 2:
+                stat_value.append(ax_value.NominalValue)
+
+        if ax_value_format == 4:
             # TODO: Need to implement
             #  locations check as well
             pass
