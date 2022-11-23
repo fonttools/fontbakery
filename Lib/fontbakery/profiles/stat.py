@@ -104,8 +104,8 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
                 else:
                   # FAIL on unknown axis_value_format
                   yield FAIL, Message(
-                    "unknown-axis-value-format",
-                    f"AxisValue format {axis_value_format} is unknown.",
+                      "unknown-axis-value-format",
+                      f"AxisValue format {axis_value_format} is unknown.",
                   )
 
             stat_axes_values[axis_tag] = axis_values
