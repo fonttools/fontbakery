@@ -21,6 +21,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/all_glyphs_have_codepoints]:** This check cannot ever fail with fontTools and is therefore redundant. (issue #1793)
 
 ### Changes to existing checks
+#### On the AdobeFonts Profile
+  - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Added check that format 4 AxisValue tables have AxisCount (number of AxisValueRecords) > 1 (issue #3957)
+  - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Improved overall check to FAIL when an unknown AxisValue.Format is encountered.
 #### On the Universal Profile
   - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
   - **[com.google.fonts/check/contour_count]:** U+0E3F THAI CURRENCY SYMBOL BAHT can also have 5 contours (issue #3914)
@@ -42,6 +45,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - Use `getBestFullName` for the report instead of reading name table identifier 4 directly. (PR #3924)
   - fix crash on iso15008 checks by updating usage of internal fonttools `_TTGlyphGlyf` API that changed at https://github.com/fonttools/fonttools/commit/b818e1494ff2bfb7f0cd71d827ba97578c919303
   - Overriden checks now also properly inherit conditions. (issue #3952)
+  - **[com.fontwerk/check/inconsistencies_between_fvar_stat]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
+  - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
 
 ### Changes to existing checks
 #### On the OpenType Profile
