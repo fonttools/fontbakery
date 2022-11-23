@@ -90,7 +90,7 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
                     else:
                         axis_values.add(axis_value.Value)
 
-                if axis_value_format == 4:
+                elif axis_value_format == 4:
                     # check that axisCount > 1. Also, format 4 records DO NOT
                     # contribute to the "stat_axes_values" list used to check
                     # against fvar instances.
@@ -100,6 +100,13 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
                             "format-4-axis-count",
                             "STAT Format 4 Axis Value table has axis count <= 1.",
                         )
+
+                else:
+                  # FAIL on unknown axis_value_format
+                  yield FAIL, Message(
+                    "unknown-axis-value-format",
+                    f"AxisValue format {axis_value_format} is unknown.",
+                  )
 
             stat_axes_values[axis_tag] = axis_values
 
