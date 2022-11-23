@@ -1,4 +1,5 @@
 from fontTools.ttLib import TTFont
+from fontTools.ttLib.tables.otTables import AxisValueRecord
 
 from fontbakery.checkrunner import FAIL, SKIP
 from fontbakery.codetesting import (
@@ -84,3 +85,34 @@ def test_check_stat_has_axis_value_tables():
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Black.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
     assert msg == "Unfulfilled Conditions: has_STAT_table"
+
+    # Add a format 4 AxisValue table with 2 AxisValueRecords. This should PASS.
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    f4avt = type(ttFont['STAT'].table.AxisValueArray.AxisValue[0])()
+    f4avt.Format = 4
+    f4avt.Flags = 0
+    f4avt.ValueNameID = 2
+    avr0 = AxisValueRecord()
+    avr0.AxisIndex = 0
+    avr0.Value = 100
+    avr1 = AxisValueRecord()
+    avr1.AxisIndex = 1
+    avr1.Value = 400
+    f4avt.AxisValueRecord = [avr0, avr1]
+    f4avt.AxisCount = len(f4avt.AxisValueRecord)
+    ttFont['STAT'].table.AxisValueArray.AxisValue.append(f4avt)
+    msg = assert_PASS(check(ttFont))
+    assert msg == "STAT table has Axis Value tables."
+
+    # Now delete one of the AxisValueRecords of the just-added format 4 AxisValue table.
+    # This should now FAIL since format 4 should contain at least 2 AxisValueRecords.
+    del ttFont['STAT'].table.AxisValueArray.AxisValue[7].AxisValueRecord[1]
+    ttFont['STAT'].table.AxisValueArray.AxisValue[7].AxisCount = 1
+    msg = assert_results_contain(check(ttFont), FAIL, "format-4-axis-count")
+    assert msg == "STAT Format 4 Axis Value table has axis count <= 1."
+
+    # An unknown AxisValue table Format should FAIL.
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    ttFont['STAT'].table.AxisValueArray.AxisValue[0].Format = 5
+    msg = assert_results_contain(check(ttFont), FAIL, "unknown-axis-value-format")
+    assert msg == "AxisValue format 5 is unknown."
