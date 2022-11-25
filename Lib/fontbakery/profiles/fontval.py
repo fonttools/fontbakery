@@ -220,10 +220,6 @@ def com_google_fonts_check_fontvalidator(font):
                     grouped_msgs[msg]["details"].append(details)
 
     # ---------------------------
-    # Clean-up generated files...
-    del report_dir
-
-    # ---------------------------
     # Here we start emitting the grouped log messages
     for msg, data in grouped_msgs.items():
         # But before printing we try to make the "details" more
