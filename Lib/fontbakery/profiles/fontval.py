@@ -15,8 +15,15 @@ profile = profile_factory(default_section=Section("Checks inherited from Microso
     id = 'com.google.fonts/check/fontvalidator',
     proposal = 'legacy:check/037'
 )
-def com_google_fonts_check_fontvalidator(font):
+def com_google_fonts_check_fontvalidator(font, config):
     """Checking with Microsoft Font Validator."""
+
+    check_config = config.get("com.google.fonts/check/fontvalidator", {})
+    enabled_checks = check_config.get("enabled_checks")
+    disabled_checks = check_config.get("disabled_checks")
+    if enabled_checks is not None and disabled_checks is not None:
+        raise Exception("The check config must contain either enabled_checks or "
+            "disabled_checks, but not both.")
 
     # In some cases we want to override the severity level of
     # certain checks in FontValidator:
@@ -143,6 +150,9 @@ def com_google_fonts_check_fontvalidator(font):
     if is_cff(ttFont):
         disabled_fval_checks.extend(CFF_disabled_fval_checks)
 
+    if disabled_checks is not None:
+        disabled_fval_checks = disabled_checks
+
     report_dir = tempfile.TemporaryDirectory(prefix="fontval-")
     try:
         import subprocess
@@ -204,8 +214,11 @@ def com_google_fonts_check_fontvalidator(font):
             details = report.get("Details")
 
             disable_it = False
-            for substring in disabled_fval_checks:
-                if substring in msg:
+            if enabled_checks is not None:
+                if not any(substring in msg for substring in enabled_checks):
+                    disable_it = True
+            else:
+                if any(substring in msg for substring in disabled_fval_checks):
                     disable_it = True
             if disable_it:
                 continue
