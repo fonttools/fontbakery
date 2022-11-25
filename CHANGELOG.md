@@ -36,7 +36,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
 
 #### On the FontVal Profile
-  - **[com.google.fonts/check/fontvalidator]:** Disable a slew of frequent false positive warnings.
+  - **[com.google.fonts/check/fontvalidator]:** Disable a slew of frequent false positive warnings and make the check configurable via the configuration.
 
 ### BugFixes
   - **[setup.py]:** Our protobuf files have been compiled with v3 versions of protobuf which cannot be read by v4. (PR #3946)
