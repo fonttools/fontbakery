@@ -36,12 +36,6 @@ def com_google_fonts_check_fontvalidator(font):
         # by FontVal, thus resulting in this spurious false-FAIL:
         "The version number is neither 0x00010000 nor 0x0001002",
 
-        # These messages below are simply fontval given user feedback
-        # on the progress of runnint it. It has nothing to do with
-        # actual issues on the font files:
-        "Validating glyph with index",
-        "Table Test:",
-
         # No software is affected by Mac strings nowadays.
         # More info at: googlei18n/fontmake#414
         "The table doesn't contain strings for Mac platform",
@@ -158,18 +152,18 @@ def com_google_fonts_check_fontvalidator(font):
         ]
         subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        filtered_msgs = ""
-        for line in e.output.decode().split("\n"):
-            disable_it = False
-            for substring in disabled_fval_checks:
-                if substring in line:
-                    disable_it = True
-            if not disable_it:
-                filtered_msgs += line + "\n"
+        # Filter uninteresting progress reports.
+        filtered_output = [
+            msg
+            for msg in e.output.decode().splitlines()
+            if not msg.startswith(
+                ("Table Test:", "Progress: Validating glyph with index")
+            )
+        ]
         yield INFO, \
               Message("fontval-returned-error",
                       ("Microsoft Font Validator returned an error code."
-                      " Output follows :\n\n{}\n").format(filtered_msgs))
+                      " Output follows :\n\n{}\n").format("\n".join(filtered_output)))
     except (OSError, IOError) as error:
         yield ERROR, \
               Message("fontval-not-available",
