@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.11 (2022-Nov-??)
+## Upcoming release: 0.8.11 (2022-Dec-??)
 ### New Checks
 #### Added to the Universal Profile
   - **[com.google.fonts/check/interpolation_issues]:** Check for shape order or curve start point interpolation issues within a variable font. (issue #3930)
@@ -24,6 +24,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the AdobeFonts Profile
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Added check that format 4 AxisValue tables have AxisCount (number of AxisValueRecords) > 1 (issue #3957)
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Improved overall check to FAIL when an unknown AxisValue.Format is encountered.
+
 #### On the Universal Profile
   - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
   - **[com.google.fonts/check/contour_count]:** U+0E3F THAI CURRENCY SYMBOL BAHT can also have 5 contours (issue #3914)
@@ -36,7 +37,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
 
 #### On the FontVal Profile
-  - **[com.google.fonts/check/fontvalidator]:** Disable a slew of frequent false positive warnings and make the check configurable via the configuration.
+  - **[com.google.fonts/check/fontvalidator]:** Disable a slew of frequent false positive warnings (PR #3951)
+  and make the check configurable via the configuration. (PR #3964)
 
 ### BugFixes
   - **[setup.py]:** Our protobuf files have been compiled with v3 versions of protobuf which cannot be read by v4. (PR #3946)
@@ -54,7 +56,7 @@ A more detailed list of changes is available in the corresponding milestones for
   instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
 
 #### On the Google Fonts Profile
-  - **[com.google.fonts/check/vertical_metrics]:** Check for positive and negative ascender and descender values (PR #3921)
+  - **[com.google.fonts/check/vertical_metrics]:** Check for positive and negative ascender and descender values. (PR #3921)
 
 #### Overridden in the Adobe Fonts Profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN. (issue #3898)
