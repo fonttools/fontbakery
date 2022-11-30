@@ -5,7 +5,7 @@ from fontbakery.status import ERROR, FAIL, INFO, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
+from fontbakery.fonts_profile import profile_factory
 from .shared_conditions import is_cff, is_variable_font
 
 profile_imports = ['.shared_conditions']
@@ -15,8 +15,15 @@ profile = profile_factory(default_section=Section("Checks inherited from Microso
     id = 'com.google.fonts/check/fontvalidator',
     proposal = 'legacy:check/037'
 )
-def com_google_fonts_check_fontvalidator(font):
+def com_google_fonts_check_fontvalidator(font, config):
     """Checking with Microsoft Font Validator."""
+
+    check_config = config.get("com.google.fonts/check/fontvalidator", {})
+    enabled_checks = check_config.get("enabled_checks")
+    disabled_checks = check_config.get("disabled_checks")
+    if enabled_checks is not None and disabled_checks is not None:
+        raise Exception("The check config must contain either enabled_checks or "
+            "disabled_checks, but not both.")
 
     # In some cases we want to override the severity level of
     # certain checks in FontValidator:
@@ -35,12 +42,6 @@ def com_google_fonts_check_fontvalidator(font):
         # describes GDEF header version 1.3, which is not yet recognized
         # by FontVal, thus resulting in this spurious false-FAIL:
         "The version number is neither 0x00010000 nor 0x0001002",
-
-        # These messages below are simply fontval given user feedback
-        # on the progress of runnint it. It has nothing to do with
-        # actual issues on the font files:
-        "Validating glyph with index",
-        "Table Test:",
 
         # No software is affected by Mac strings nowadays.
         # More info at: googlei18n/fontmake#414
@@ -149,6 +150,9 @@ def com_google_fonts_check_fontvalidator(font):
     if is_cff(ttFont):
         disabled_fval_checks.extend(CFF_disabled_fval_checks)
 
+    if disabled_checks is not None:
+        disabled_fval_checks = disabled_checks
+
     report_dir = tempfile.TemporaryDirectory(prefix="fontval-")
     try:
         import subprocess
@@ -158,18 +162,18 @@ def com_google_fonts_check_fontvalidator(font):
         ]
         subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        filtered_msgs = ""
-        for line in e.output.decode().split("\n"):
-            disable_it = False
-            for substring in disabled_fval_checks:
-                if substring in line:
-                    disable_it = True
-            if not disable_it:
-                filtered_msgs += line + "\n"
+        # Filter uninteresting progress reports.
+        filtered_output = [
+            msg
+            for msg in e.output.decode().splitlines()
+            if not msg.startswith(
+                ("Table Test:", "Progress: Validating glyph with index")
+            )
+        ]
         yield INFO, \
               Message("fontval-returned-error",
                       ("Microsoft Font Validator returned an error code."
-                      " Output follows :\n\n{}\n").format(filtered_msgs))
+                      " Output follows :\n\n{}\n").format("\n".join(filtered_output)))
     except (OSError, IOError) as error:
         yield ERROR, \
               Message("fontval-not-available",
@@ -210,8 +214,11 @@ def com_google_fonts_check_fontvalidator(font):
             details = report.get("Details")
 
             disable_it = False
-            for substring in disabled_fval_checks:
-                if substring in msg:
+            if enabled_checks is not None:
+                if not any(substring in msg for substring in enabled_checks):
+                    disable_it = True
+            else:
+                if any(substring in msg for substring in disabled_fval_checks):
                     disable_it = True
             if disable_it:
                 continue
@@ -224,10 +231,6 @@ def com_google_fonts_check_fontvalidator(font):
                     # avoid cluttering the output with tons of identical reports
                     # yield INFO, 'grouped_msgs[msg]["details"]: {}'.format(grouped_msgs[msg]["details"])
                     grouped_msgs[msg]["details"].append(details)
-
-    # ---------------------------
-    # Clean-up generated files...
-    del report_dir
 
     # ---------------------------
     # Here we start emitting the grouped log messages
