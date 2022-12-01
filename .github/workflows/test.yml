@@ -34,11 +34,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
 
-    - name: Run flake8 (only Ubuntu/Python 3.9)
+    - name: Run flake8 & pylint (only Ubuntu/Python 3.9)
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
       run: |
-        python -m pip install flake8
+        python -m pip install flake8 pylint sphinx
         flake8 --count --show-source --statistics
+        pylint Lib/fontbakery
 
     - name: Install dependencies
       run: |
