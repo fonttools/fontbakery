@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.9", "3.10"]
 
     steps:
     - uses: actions/checkout@v3
@@ -30,15 +30,20 @@ jobs:
         tar -xvzf ./FontVal-2.1.2-ubuntu-16.04-x64.tgz
         sudo mv ./FontVal-2.1.2-ubuntu-16.04-x64/FontValidator /usr/local/bin/FontValidator
 
-    - name: Install dependencies
+    - name: Update pip
       run: |
         python -m pip install --upgrade pip
+
+    - name: Run flake8 (only Ubuntu/Python 3.9)
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
+      run: |
+        python -m pip install flake8
+        flake8 --count --show-source --statistics
+
+    - name: Install dependencies
+      run: |
         python -m pip install pytest pytest-xdist
         python -m pip install -r requirements.txt
-
-    - name: Install Font Bakery
-      run: |
-        python -m pip install .
         python -m pip freeze --all
 
     - name: Test with pytest
