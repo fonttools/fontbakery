@@ -40,12 +40,14 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/fontvalidator]:** Disable a slew of frequent false positive warnings (PR #3951)
   and make the check configurable via the configuration. (PR #3964)
 
+#### On the ISO15008 Profile
+  - Fixed ERRORs by updating usage of internal fonttools `_TTGlyphGlyf` API that changed at https://github.com/fonttools/fonttools/commit/b818e1494ff2bfb7f0cd71d827ba97578c919303
+
 ### BugFixes
   - **[setup.py]:** Our protobuf files have been compiled with v3 versions of protobuf which cannot be read by v4. (PR #3946)
   - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
   - Fix summary header in the Github Markdown reporter. (PR #3923)
   - Use `getBestFullName` for the report instead of reading name table identifier 4 directly. (PR #3924)
-  - fix crash on iso15008 checks by updating usage of internal fonttools `_TTGlyphGlyf` API that changed at https://github.com/fonttools/fonttools/commit/b818e1494ff2bfb7f0cd71d827ba97578c919303
   - Overriden checks now also properly inherit conditions. (issue #3952)
   - **[com.fontwerk/check/inconsistencies_between_fvar_stat]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
