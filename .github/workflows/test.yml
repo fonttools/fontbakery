@@ -30,9 +30,12 @@ jobs:
         tar -xvzf ./FontVal-2.1.2-ubuntu-16.04-x64.tgz
         sudo mv ./FontVal-2.1.2-ubuntu-16.04-x64/FontValidator /usr/local/bin/FontValidator
 
-    - name: Update pip
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        python -m pip install pytest pytest-xdist
+        python -m pip install -r requirements.txt
+        python -m pip freeze --all
 
     - name: Run flake8 & pylint (only Ubuntu/Python 3.9)
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
@@ -40,12 +43,6 @@ jobs:
         python -m pip install flake8 pylint sphinx
         flake8 --count --show-source --statistics
         pylint Lib/fontbakery
-
-    - name: Install dependencies
-      run: |
-        python -m pip install pytest pytest-xdist
-        python -m pip install -r requirements.txt
-        python -m pip freeze --all
 
     - name: Test with pytest
       run: |
