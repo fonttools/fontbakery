@@ -23,7 +23,8 @@ def test_portable_path():
 
 def test_TEST_FILE():
     file_path = "dir/file"
-    assert TEST_FILE(file_path) == f"{PATH_TEST_DATA}{file_path}"
+    assert TEST_FILE(file_path) == (
+        f"{PATH_TEST_DATA}{file_path}".replace("/", os.sep))
 
 
 def test_GLYPHSAPP_TEST_FILE():

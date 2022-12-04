@@ -1,9 +1,13 @@
-from fontbakery.profiles.googlefonts_conditions import expected_font_names
-import pytest
+import math
 import os
+import shutil
+import tempfile
 from unittest.mock import patch
+
+import pytest
 from fontTools.ttLib import TTFont
 
+from fontbakery.profiles.googlefonts_conditions import expected_font_names
 from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR,
                                     SKIP, PASS, FAIL, ENDCHECK)
 from fontbakery.codetesting import (assert_results_contain,
@@ -22,7 +26,6 @@ from fontbakery.constants import (NameID,
                                   MacintoshLanguageID,
                                   OFL_BODY_TEXT)
 from fontbakery.profiles import googlefonts as googlefonts_profile
-import math
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -40,6 +43,7 @@ mada_fonts = [
 @pytest.fixture
 def mada_ttFonts():
     return [TTFont(path) for path in mada_fonts]
+
 
 cabin_fonts = [
     TEST_FILE("cabin/Cabin-BoldItalic.ttf"),
@@ -3124,18 +3128,28 @@ def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
     #              'with one good font...')
 
 
+def _rmtree(dir_path):
+    # Avoid "FileExistsError: [WinError 183] Cannot create a file when that
+    # file already exists" on Windows.
+    if os.path.exists(dir_path):
+        shutil.rmtree(dir_path)
+
+
 def test_check_repo_vf_has_static_fonts():
     """Check VF family dirs in google/fonts contain static fonts"""
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/repo/vf_has_static_fonts")
-    import tempfile
-    import shutil
+
     # in order for this check to work, we need to
     # mimic the folder structure of the Google Fonts repository
     dir_path = "ofl/foo/bar"
     with tempfile.TemporaryDirectory() as tmp_gf_dir:
         family_dir = portable_path(tmp_gf_dir + "/ofl/testfamily")
         src_family = portable_path("data/test/varfont")
+
+        # TODO: When FB stops supporting Python 3.7, remove this step and add
+        # `dirs_exist_ok=True` parameter to shutil.copytree()
+        _rmtree(family_dir)
         shutil.copytree(src_family, family_dir)
 
         assert_results_contain(check(dir_path, {"family_directory": family_dir}),
@@ -3183,11 +3197,14 @@ def test_check_repo_fb_report():
     """ A font repository should not include fontbakery report files """
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/repo/fb_report")
-    import tempfile
-    import shutil
+
     with tempfile.TemporaryDirectory() as tmp_dir:
         family_dir = portable_path(tmp_dir)
         src_family = portable_path("data/test/varfont")
+
+        # TODO: When FB stops supporting Python 3.7, remove this step and add
+        # `dirs_exist_ok=True` parameter to shutil.copytree()
+        _rmtree(family_dir)
         shutil.copytree(src_family, family_dir)
 
         assert_PASS(check([], {"family_directory": family_dir}),
@@ -3226,11 +3243,14 @@ def test_check_repo_zip_files():
     """ A font repository should not include ZIP files """
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/repo/zip_files")
-    import tempfile
-    import shutil
+
     with tempfile.TemporaryDirectory() as tmp_dir:
         family_dir = portable_path(tmp_dir)
         src_family = portable_path("data/test/varfont")
+
+        # TODO: When FB stops supporting Python 3.7, remove this step and add
+        # `dirs_exist_ok=True` parameter to shutil.copytree()
+        _rmtree(family_dir)
         shutil.copytree(src_family, family_dir)
 
         assert_PASS(check([], {"family_directory": family_dir}),
