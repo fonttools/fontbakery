@@ -6111,6 +6111,7 @@ def com_google_fonts_check_render_own_name(ttFont):
 )
 def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, config):
     """Check README.md has a sample image."""
+    import glob
     import re
     image_path = False
     line_number = 0
@@ -6124,15 +6125,11 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
         # And we accept both png and jpg files
         result = re.match(r'\!\[.*\]\((.*\.(png|jpg))\)', line)
         if result:
-            image_path = result[1]
+            image_path = os.path.join(
+                readme_directory, result[1].replace('/', os.sep))
             break
 
-    local_image_files = []
-    for (dirpath, dirnames, filenames) in os.walk(readme_directory):
-        local_image_files.extend([os.path.join(dirpath[len(readme_directory)+1:], filename)
-                                  for filename in filenames
-                                  if filename.endswith('.jpg') or
-                                     filename.endswith('.png')])
+    local_image_files = glob.glob(os.path.join(readme_directory, '**/*.[jp][np]g'))
 
     if local_image_files:
         sample_tip = local_image_files[0]

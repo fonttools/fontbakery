@@ -250,11 +250,9 @@ def get_regular(fonts):
 
 
 def get_absolute_path(p):
-    if os.path.isabs(p):
-        abspath = p
-    else:
-        abspath = os.path.join(os.path.abspath('.'), p)
-    return abspath
+    if not os.path.isabs(p):
+        p = os.path.abspath(p)
+    return p
 
 
 def filesize_formatting(s):
