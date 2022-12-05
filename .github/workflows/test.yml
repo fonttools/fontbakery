@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.7"]
 
     steps:
     - uses: actions/checkout@v3
@@ -36,6 +36,7 @@ jobs:
         python -m pip install pytest pytest-xdist
         python -m pip install -r requirements.txt
         python -m pip freeze --all
+        fontbakery --version
 
     - name: Run flake8 & pylint (only Ubuntu/Python 3.9)
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
