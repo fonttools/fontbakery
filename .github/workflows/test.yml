@@ -59,4 +59,3 @@ jobs:
       run: |
         python -m pip install pytest-cov
         python -m pytest --cov
-        coverage
