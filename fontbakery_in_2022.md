@@ -2,9 +2,9 @@ This document is a recompilation of our CHANGELOG.md info, listing the full set 
 
 ## FontBakery in 2022
 
-There were 11 releases in 2022:
+There were 13 releases in 2022:
 * The 6 stable releases from v0.8.5 in January until v0.8.10 in August.
-* And 5 pre-releases of the upcoming version v0.8.11
+* And 7 pre-releases of the upcoming version v0.8.11
 
 ### New Profile
   - Olli Meier (@moontypespace) contributed a new profile for Fontwerk, https://fontwerk.com/ (PR #3546)
