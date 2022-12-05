@@ -16,6 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # unshallow fetch for setuptools-scm (otherwise the version is always 0.1.dev1)
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -36,6 +38,10 @@ jobs:
         python -m pip install pytest pytest-xdist
         python -m pip install -r requirements.txt
         python -m pip freeze --all
+
+    - name: Install Font Bakery
+      run: |
+        python -m pip install . --use-pep517
         fontbakery --version
 
     - name: Run flake8 & pylint (only Ubuntu/Python 3.9)
@@ -47,7 +53,7 @@ jobs:
 
     - name: Test with pytest
       run: |
-        python -m pytest
+        python -m pytest -n 0 -vv -k test_check_fontbakery_version_live_apis
 
     - name: Run coverage (only Ubuntu/Python 3.10)
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10'
