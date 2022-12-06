@@ -412,3 +412,24 @@ def test_check_override_bold_wght_coord():
 
     msg = assert_results_contain(check(ttFont), WARN, 'no-bold-instance')
     assert msg == '"Bold" instance not present.'
+
+
+def test_check_STAT_strings():
+    """Check com.adobe.fonts/check/STAT_strings."""
+    check = CheckTester(
+        adobefonts_profile,
+        "com.adobe.fonts/check/STAT_strings",
+    )
+
+    # This should FAIL (like com.google.fonts/check/STAT_strings that
+    # it is based on) because it uses "Italic" in names for 'wght' and 'wdth' axes.
+    ttFont = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Italic.ttf"))
+    msg = assert_results_contain(check(ttFont), FAIL, 'bad-italic')
+    assert 'The following AxisValue entries in the STAT table should not contain "Italic"' in msg
+
+    # Now set up a font using "Italic" for the 'slnt' axis
+    ttFont = TTFont(TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf"))
+    ttFont['name'].setName("Italic", 286, 3, 1, 1033)
+    # This should PASS with our check
+    msg = assert_results_contain(check(ttFont), PASS, 'bad-italic')
+    assert msg == 'Looks good!'
