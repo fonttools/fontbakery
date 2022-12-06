@@ -26,7 +26,7 @@ profile = profile_factory(default_section=Section("Adobe Fonts"))
 SET_EXPLICIT_CHECKS = {
     # This is the set of explict checks that will be invoked
     # when fontbakery is run with the 'check-adobefonts' subcommand.
-    # The contents of this set were last updated on September 14, 2022.
+    # The contents of this set were last updated on December 6, 2022.
     #
     # =======================================
     # From adobefonts.py (this file)
@@ -34,6 +34,7 @@ SET_EXPLICIT_CHECKS = {
     "com.adobe.fonts/check/find_empty_letters",
     "com.adobe.fonts/check/nameid_1_win_english",
     "com.adobe.fonts/check/unsupported_tables",
+    "com.adobe.fonts/check/STAT_strings",
     #
     # =======================================
     # From cff.py
@@ -175,6 +176,7 @@ SET_EXPLICIT_CHECKS = {
     # "com.google.fonts/check/contour_count",
     # "com.google.fonts/check/dotted_circle",
     # "com.google.fonts/check/unreachable_glyphs",
+    # "com.google.fonts/check/STAT_strings",
     # ---
     "com.adobe.fonts/check/freetype_rasterizer",             # IS_OVERRIDDEN
     "com.google.fonts/check/family/win_ascent_and_descent",  # IS_OVERRIDDEN
@@ -192,7 +194,6 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/ots",
     "com.google.fonts/check/required_tables",
     "com.google.fonts/check/rupee",
-    "com.google.fonts/check/STAT_strings",
     "com.google.fonts/check/transformed_components",
     "com.google.fonts/check/ttx_roundtrip",
     "com.google.fonts/check/unique_glyphnames",
@@ -204,6 +205,7 @@ CHECKS_IN_THIS_FILE = [
     "com.adobe.fonts/check/find_empty_letters",
     "com.adobe.fonts/check/nameid_1_win_english",
     "com.adobe.fonts/check/unsupported_tables",
+    "com.adobe.fonts/check/STAT_strings",
 ]
 
 SET_IMPORTED_CHECKS = set(
@@ -424,6 +426,55 @@ def com_adobe_fonts_check_unsupported_tables(ttFont):
         )
     else:
         yield PASS, "No unsupported tables were found."
+
+
+@check(
+    id = 'com.adobe.fonts/check/STAT_strings',
+    conditions = ["has_STAT_table"],
+    rationale = """
+        In the STAT table, the "Italic" keyword must not be used on AxisValues
+        for variation axes other than 'ital' or 'slnt'. This is a more lenient
+        implementation of com.google.fonts/check/STAT_strings which allows "Italic"
+        only for the 'ital' axis.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2863'
+)
+def com_adobe_fonts_check_STAT_strings(ttFont):
+    """ Check correctness of STAT table strings """
+    passed = True
+    stat_table = ttFont["STAT"].table
+    ital_slnt_axis_indices = []
+    for index, axis in enumerate(stat_table.DesignAxisRecord.Axis):
+        if axis.AxisTag in ('ital', 'slnt'):
+            ital_slnt_axis_indices.append(index)
+
+    nameIDs = set()
+    if ttFont["STAT"].table.AxisValueArray:
+        for value in stat_table.AxisValueArray.AxisValue:
+            if hasattr(value, "AxisIndex"):
+                if value.AxisIndex not in ital_slnt_axis_indices:
+                    nameIDs.add(value.ValueNameID)
+
+            if hasattr(value, "AxisValueRecord"):
+                for record in value.AxisValueRecord:
+                    if record.AxisIndex not in ital_slnt_axis_indices:
+                        nameIDs.add(value.ValueNameID)
+
+    bad_values = set()
+    for name in ttFont['name'].names:
+        if name.nameID in nameIDs and "italic" in name.toUnicode().lower():
+            passed = False
+            bad_values.add(f"nameID {name.nameID}: {name.toUnicode()}")
+
+    if bad_values:
+        yield FAIL,\
+              Message("bad-italic",
+                      f'The following AxisValue entries in the STAT table'
+                      f' should not contain "Italic":\n'
+                      f' {sorted(bad_values)}')
+
+    if passed:
+        yield PASS, "Looks good!"
 
 
 profile.auto_register(
