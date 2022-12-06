@@ -177,6 +177,7 @@ SET_EXPLICIT_CHECKS = {
     # "com.google.fonts/check/dotted_circle",
     # "com.google.fonts/check/unreachable_glyphs",
     # "com.google.fonts/check/STAT_strings",
+    # "com.google.fonts/check/transformed_components",
     # ---
     "com.adobe.fonts/check/freetype_rasterizer",             # IS_OVERRIDDEN
     "com.google.fonts/check/family/win_ascent_and_descent",  # IS_OVERRIDDEN
@@ -194,7 +195,6 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/ots",
     "com.google.fonts/check/required_tables",
     "com.google.fonts/check/rupee",
-    "com.google.fonts/check/transformed_components",
     "com.google.fonts/check/ttx_roundtrip",
     "com.google.fonts/check/unique_glyphnames",
     "com.google.fonts/check/whitespace_widths",
