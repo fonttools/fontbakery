@@ -24,6 +24,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the AdobeFonts Profile
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Added check that format 4 AxisValue tables have AxisCount (number of AxisValueRecords) > 1 (issue #3957)
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Improved overall check to FAIL when an unknown AxisValue.Format is encountered.
+  - **[com.adobe.fonts/check/STAT_strings]:** Added a more lenient version of com.google.fonts/check/STAT_strings (allows "Italic" on 'slnt' or 'ital' axes).
+  - **[com.google.fonts/check/STAT_strings]:** removed from the list of explicit checks.
+  - **[com.google.fonts/check/transformed_components]**: removed from the list of explicit checks.
 #### On the Universal Profile
   - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
   - **[com.google.fonts/check/contour_count]:** U+0E3F THAI CURRENCY SYMBOL BAHT can also have 5 contours (issue #3914)
