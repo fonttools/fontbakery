@@ -19,6 +19,7 @@ CLI_PROFILES = [
     "opentype",
     "ufo_sources",
     "universal",
+    "proposals",
 ]
 
 
