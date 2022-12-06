@@ -32,6 +32,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
 
 #### On the GoogleFonts Profile
+  - **[com.google.fonts/check/metadata/broken_links]:** add special handling for github url (issue #2550)
   - **[com.google.fonts/check/vendor_id]:** PYRS is a default Vendor ID entry from FontLab generated binaries. (issue #3943)
   - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
 
