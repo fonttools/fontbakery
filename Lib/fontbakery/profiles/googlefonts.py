@@ -582,11 +582,13 @@ def com_google_fonts_check_metadata_designer_values(family_metadata):
 
 @check(
     id = 'com.google.fonts/check/metadata/broken_links',
-    conditions = ['family_metadata']
+    conditions = ['family_metadata'],
+    proposal = "https://github.com/googlefonts/fontbakery/issues/2550"
 )
 def com_google_fonts_check_metadata_broken_links(family_metadata):
     """Does METADATA.pb copyright field contain broken links?"""
     import requests
+    passed = True
     broken_links = []
     unique_links = []
     for font_metadata in family_metadata.fonts:
@@ -622,23 +624,46 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
                 # we're just perhaps being too agressive in probing the server!
                 if code not in [requests.codes.ok,
                                 requests.codes.too_many_requests]:
-                    broken_links.append(("{} (status code: {})").format(link, code))
+                    # special case handling for github.com/$user/$repo/$something
+                    chunks = link.split('/')
+                    good = False
+                    if len(chunks)==6 and chunks[2].endswith('github.com'):
+                        protocol, _, domain, user, repo, something = chunks
+                        for branch in ['main', 'master']:
+                            alternate_link = f"{protocol}//{domain}/{user}/{repo}/tree/{branch}/{something}"
+                            response = requests.head(alternate_link, allow_redirects=True, timeout=10)
+                            code = response.status_code
+                            if code in [requests.codes.ok,
+                                        requests.codes.too_many_requests]:
+                                passed = False
+                                yield WARN,\
+                                      Message("bad-github-url",
+                                             f"Could not fetch '{link}'.\n\n"
+                                             f"But '{alternate_link}' seems to be good."
+                                             f" Please consider using that instead.\n")
+                                good = True
+                    if not good:
+                        passed = False
+                        broken_links.append(("{} (status code: {})").format(link, code))
             except requests.exceptions.Timeout:
+                passed = False
                 yield WARN,\
                       Message("timeout",
                               f"Timed out while attempting to access: '{link}'."
                               f" Please verify if that's a broken link.")
             except requests.exceptions.RequestException:
-                broken_links.append(link)
+                broken_links.append("ouch! "+link)
 
     if len(broken_links) > 0:
         broken_links_list = '\n\t'.join(broken_links)
+        passed = False
         yield FAIL,\
               Message("broken-links",
                       f"The following links are broken"
                       f" in the METADATA.pb file:\n\t"
                       f"{broken_links_list}")
-    else:
+
+    if passed:
         yield PASS, "All links in the METADATA.pb file look good!"
 
 
