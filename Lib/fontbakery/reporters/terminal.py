@@ -444,6 +444,15 @@ class TerminalReporter(TerminalProgress):
                                       space_padding=True,
                                       text_color=self.theme["rationale-text"]))
 
+                if check.suggested_profile:
+                    print("    " + self.theme["rationale-title"]("Suggested Profile:") + f" {check.suggested_profile}")
+
+                if check.proponent:
+                    print("    " + self.theme["rationale-title"]("Proponent:") + f" {check.proponent}")
+
+                if check.proposal:
+                    print("    " + self.theme["rationale-title"]("More info:") + f" {check.proposal}")
+
         # Log statuses have weights >= 0
         # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
         if status.weight >= self._log_threshold:
