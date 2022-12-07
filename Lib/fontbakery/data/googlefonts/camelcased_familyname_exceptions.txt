@@ -7,19 +7,21 @@
 ABeeZee
 BenchNine
 BhuTuka # seen in "BhuTuka Expanded One"
+BioRhyme
 DotGothic # seen in "DotGothic16"
 DynaPuff
 FakeFont
 JetBrains # seen in "JetBrains Mono"
 McLaren
 MedievalSharp
+MonteCarlo
 MuseoModerno
 RocknRoll # seen in "RocknRoll One"
-BIZ UDGothic
-BIZ UDPGothic
-BIZ UDMincho
-BIZ UDPMincho
+UDGothic # seen in "BIZ UDGothic"
+UDPGothic # seen in "BIZ UDPGothic"
+UDMincho # seen in "BIZ UDMincho"
+UDPMincho # seen in "BIZ UDPMincho"
 UnifrakturCook
 UnifrakturMaguntia
-MonteCarlo
+SignWriting # seen in "Noto Sans SignWriting"
 WindSong
