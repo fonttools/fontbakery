@@ -4083,30 +4083,18 @@ def test_check_metadata_can_render_samples():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/metadata/can_render_samples")
 
-    # Cabin's METADATA.pb does not have sample_glyphs entry
-    metadata_file = TEST_FILE("cabin/METADATA.pb")
-    assert_results_contain(check(metadata_file),
-                           INFO, 'no-samples')
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(font))
 
-    # We add a small set of latin glyphs
-    # that we're sure Cabin supports:
+    # This will try to render using strings provided by the gflanguages package
+    # Available at https://pypi.org/project/gflanguages/
     md = check["family_metadata"]
-    from fontbakery.fonts_public_pb2 import GlyphGroupProto
-    gg = GlyphGroupProto()
-    gg.name = "Letters"
-    gg.glyphs = "abcdefghijklmnopqrstuvyz0123456789"
-    md.sample_glyphs.append(gg)
-    assert_PASS(check(metadata_file, {"family_metadata": md}))
+    md.languages.append('non_Runr') # Cabin does not support Old Nordic Runic
+    assert_results_contain(check(font, {"family_metadata": md}),
+                           FAIL, 'sample-text')
 
-    # And now with Tamil glyphs that Cabin lacks:
-    gg = GlyphGroupProto()
-    gg.name = "Numbers"
-    gg.glyphs = "𑿀 𑿁 𑿂 𑿃 𑿄 𑿅 𑿆 𑿇 𑿈 𑿉 𑿊 𑿋 𑿌 𑿍 𑿎 𑿏 𑿐 𑿑 𑿒 𑿓 𑿔"
-    md.sample_glyphs.append(gg)
-    assert_results_contain(check(metadata_file, {"family_metadata": md}),
-                           FAIL, 'sample-glyphs')
-
-    # TODO: expand the check to also validate sample_text fields
+    # TODO: expand the check to also validate rendering of
+    #       text provided explicitely on the sample_text field of METADATA.pb
 
 
 def test_check_description_urls():
