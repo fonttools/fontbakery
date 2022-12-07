@@ -6214,6 +6214,14 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     passed = True
     languages = LoadLanguages()
     for lang in family_metadata.languages:
+        if lang not in languages:
+            yield WARN, \
+                  Message("no-sample-string",
+                          f"Aparently there's no sample strings for"
+                          f" '{lang}' in the gflanguages package.")
+            passed = False
+            continue
+
         # Note: checking agains all samples often results in
         #       a way too verbose output. That's why I only left
         #       the "tester" string for now.
