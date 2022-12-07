@@ -6199,7 +6199,7 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
     id = "com.google.fonts/check/metadata/can_render_samples",
     rationale = """
         In order to prevent tofu from being seen on fonts.google.com, this check
-        verifies that all samples provided on METADATA.pb can be properly
+        verifies that all samples specified by METADATA.pb can be properly
         rendered by the font.
     """,
     conditions = ["family_metadata"],
@@ -6212,20 +6212,6 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     from gflanguages import LoadLanguages
 
     passed = True
-    if not family_metadata.sample_glyphs:
-       passed = False
-       yield INFO,\
-             Message('no-samples',
-                     'No sample_glyphs on METADATA.pb')
-    else:
-        for item in family_metadata.sample_glyphs:
-            if not can_shape(ttFont, item.glyphs):
-                passed = False
-                yield FAIL,\
-                      Message('sample-glyphs',
-                              f"Font can't render the following sample glyphs:\n"
-                              f"'{item.name}': '{item.glyphs}'")
-
     languages = LoadLanguages()
     for lang in family_metadata.languages:
         # Note: checking agains all samples often results in
