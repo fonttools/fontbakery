@@ -6227,6 +6227,10 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
             #'specimen_48': languages[lang].sample_text.specimen_48
         }
         for sample_type, sample_text in SAMPLES.items():
+            # Remove line-breaks and zero width space (U+200B) characteres.
+            # For more info, see https://github.com/googlefonts/fontbakery/issues/3990
+            sample_text = sample_text.replace("\n", "").replace("\u200b", "")
+
             if not can_shape(ttFont, sample_text):
                 passed = False
                 yield FAIL,\
