@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.11 (2022-Nov-??)
+## Upcoming release: 0.8.11 (2022-Dec-??)
 ### New Checks
 #### Added to the Universal Profile
   - **[com.google.fonts/check/interpolation_issues]:** Check for shape order or curve start point interpolation issues within a variable font. (issue #3930)
@@ -27,6 +27,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/STAT_strings]:** Added a more lenient version of com.google.fonts/check/STAT_strings (allows "Italic" on 'slnt' or 'ital' axes).
   - **[com.google.fonts/check/STAT_strings]:** removed from the list of explicit checks.
   - **[com.google.fonts/check/transformed_components]**: removed from the list of explicit checks.
+
 #### On the Universal Profile
   - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
   - **[com.google.fonts/check/contour_count]:** U+0E3F THAI CURRENCY SYMBOL BAHT can also have 5 contours (issue #3914)
@@ -35,6 +36,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
 
 #### On the GoogleFonts Profile
+  - **[com.google.fonts/check/metadata/can_render_samples]:** Fix false-FAIL by removing '\n' and U+200B (zero width space) characteres from sample strings (issue #3990)
   - **[com.google.fonts/check/metadata/broken_links]:** add special handling for github url (issue #2550)
   - **[com.google.fonts/check/vendor_id]:** PYRS is a default Vendor ID entry from FontLab generated binaries. (issue #3943)
   - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
