@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.8.11 (2022-Dec-??)
+### Noteworthy code-changes
+  - The terminal reporter now prints out URLs for "more info" (typically github issues) where the user can learn more about how the check was originally proposed/discussed. (PR #3994)
+
 ### New Checks
 #### Added to the Universal Profile
   - **[com.google.fonts/check/interpolation_issues]:** Check for shape order or curve start point interpolation issues within a variable font. (issue #3930)
