@@ -451,7 +451,18 @@ class TerminalReporter(TerminalProgress):
                     print("    " + self.theme["rationale-title"]("Proponent:") + f" {check.proponent}")
 
                 if check.proposal:
-                    print("    " + self.theme["rationale-title"]("More info:") + f" {check.proposal}")
+                    moreinfo = check.proposal
+                    if not isinstance(moreinfo, list):
+                       moreinfo = [moreinfo]
+
+                    # Here I remove the "legacy" entries because they lack an actual
+                    # url which the users could access to read more about the check
+                    moreinfo = [mi for mi in moreinfo if 'legacy' not in mi]
+                    if moreinfo:
+                        moreinfo_str = "    " + self.theme["rationale-title"]("More info:") + " " + moreinfo[0] + "\n"
+                        if len(moreinfo) > 1:
+                            moreinfo_str += "\n".join(["               " + i for i in moreinfo[1:]])
+                        print(moreinfo_str)
 
         # Log statuses have weights >= 0
         # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
