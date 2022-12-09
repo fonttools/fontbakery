@@ -8,15 +8,15 @@
 Font Bakery is a command-line tool for checking the quality of font projects.
 
 For a quick overview, check out the [list of checks](https://font-bakery.readthedocs.io/en/stable/fontbakery/profiles/index.html) currently offered.
+And for a full written introduction [check out our documentation at Read The Docs.](https://font-bakery.readthedocs.io/en/stable)
 
-And for a full introduction [check out our documentation at Read The Docs.](https://font-bakery.readthedocs.io/en/stable)
+For video introductions, see the [TypeCon 2018](https://www.youtube.com/watch?v=5S3cN3VHfBg) and [ATypI 2020](https://www.youtube.com/watch?v=6OKE6p9E0eY)  FontBakery presentations.
 
-A recording of the [ATypI 2020 FontBakery presentation](https://www.youtube.com/watch?v=6OKE6p9E0eY) is also available.
-
-Font Bakery has an active community of contributors from foundries around the world, including Adobe Fonts, Dalton Maag, Type Network, and Google Fonts. Please join our developer chat channel at https://gitter.im/fontbakery/Lobby
+Font Bakery has an active community of contributors from foundries around the world, including Adobe Fonts, Dalton Maag, Type Network, and Google Fonts. Please join our developer chat channel at [gitter.im/fontbakery/Lobby](https://gitter.im/fontbakery/Lobby)
 
 Font Bakery is not an official Google project, and Google provides no support for it.
-However, throughout 2018-2021 the core project maintainers Felipe Corrêa da Silva Sanches <juca@members.fsf.org> and Lasse Fister <commander@graphicore.de> are commissioned by the Google Fonts team to maintain it.
+However, throughout 2018-2023 a project maintainer, Felipe Corrêa da Silva Sanches ([@felipesanches](https://github.com/felipesanches)), is commissioned by the Google Fonts team to maintain it.
+The original software architecture (and maintenance of it) is by Lasse Fister ([@graphicore](https://github.com/graphicore).
 
 ## Run Font Bakery automatically on Github Actions
 
