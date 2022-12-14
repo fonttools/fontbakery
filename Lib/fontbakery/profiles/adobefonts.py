@@ -165,7 +165,7 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From stat.py
-    "com.adobe.fonts/check/stat_has_axis_value_tables",
+    "com.adobe.fonts/check/stat_has_axis_value_tables",  # IS_OVERRIDDEN
     "com.google.fonts/check/varfont/stat_axis_record_for_each_axis",
     #
     # =======================================
@@ -221,6 +221,7 @@ ADOBEFONTS_PROFILE_CHECKS = [
 
 OVERRIDDEN_CHECKS = [
     "com.adobe.fonts/check/freetype_rasterizer",
+    "com.adobe.fonts/check/stat_has_axis_value_tables",
     "com.adobe.fonts/check/varfont/valid_default_instance_nameids",
     "com.google.fonts/check/family/win_ascent_and_descent",
     "com.google.fonts/check/fontbakery_version",
@@ -580,6 +581,23 @@ profile.check_log_override(
     overrides=(
         ("invalid-default-instance-subfamily-name", WARN, KEEP_ORIGINAL_MESSAGE),
         ("invalid-default-instance-postscript-name", WARN, KEEP_ORIGINAL_MESSAGE),
+    ),
+    reason=(
+        "Adobe and the OpenType spec strongly recommend following these"
+        " guidelines, but they are not hard requirements so we are relaxing"
+        " this to WARN rather than FAIL.⏎"
+        "Fonts that do not meet these guidelines might behave inconsistently"
+        " so please carefully consider trying to meet them."
+    ),
+)
+
+
+profile.check_log_override(
+    # From stat.py
+    "com.adobe.fonts/check/stat_has_axis_value_tables",
+    overrides=(
+        ("missing-axis-value-table", WARN, KEEP_ORIGINAL_MESSAGE),
+        ("format-4-axis-count", WARN, KEEP_ORIGINAL_MESSAGE),
     ),
     reason=(
         "Adobe and the OpenType spec strongly recommend following these"

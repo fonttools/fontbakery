@@ -5,6 +5,7 @@ import os
 from unittest.mock import patch
 
 from fontTools.ttLib import TTFont
+from fontTools.ttLib.tables.otTables import AxisValueRecord
 from requests.exceptions import ConnectionError
 
 from fontbakery.checkrunner import WARN, FAIL, PASS, SKIP
@@ -352,6 +353,38 @@ def test_check_override_varfont_valid_default_instance_nameids():
         "'Instance #1' instance has the same coordinates as the default instance;"
         " its postscript name should be 'Cabin-Regular', instead of 'None'."
     )
+
+
+def test_check_override_stat_has_axis_value_tables():
+    """Check that overriddent tests yield the right result."""
+    check = CheckTester(
+        adobefonts_profile,
+        f"com.adobe.fonts/check/stat_has_axis_value_tables{OVERRIDE_SUFFIX}",
+    )
+
+    # Our reference Cabin[wdth,wght].ttf variable font has Axis Value tables.
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    # Remove the 4th Axis Value table (index 3), belonging to 'Medium' weight.
+    # The overridden check should WARN.
+    ttFont["STAT"].table.AxisValueArray.AxisValue.pop(3)
+    msg = assert_results_contain(check(ttFont), WARN, "missing-axis-value-table")
+    assert msg == "STAT table is missing Axis Value for 'wght' value '500.0'"
+
+    # Add a format 4 AxisValue table with a single AxisValueRecord. This overriden check
+    # should WARN.
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    f4avt = type(ttFont['STAT'].table.AxisValueArray.AxisValue[0])()
+    f4avt.Format = 4
+    f4avt.Flags = 0
+    f4avt.ValueNameID = 2
+    avr0 = AxisValueRecord()
+    avr0.AxisIndex = 0
+    avr0.Value = 100
+    f4avt.AxisValueRecord = [avr0]
+    f4avt.AxisCount = len(f4avt.AxisValueRecord)
+    ttFont['STAT'].table.AxisValueArray.AxisValue.append(f4avt)
+    msg = assert_results_contain(check(ttFont), WARN, "format-4-axis-count")
+    assert msg == "STAT Format 4 Axis Value table has axis count <= 1."
 
 
 @patch("freetype.Face", side_effect=ImportError)
