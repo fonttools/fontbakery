@@ -321,6 +321,39 @@ def test_check_override_os2_metrics_match_hhea():
     assert msg == "OS/2 sTypoLineGap (200) and hhea lineGap (100) must be equal."
 
 
+def test_check_override_varfont_valid_default_instance_nameids():
+    """Check that overriden tests yield WARN instead of FAIL"""
+    check = CheckTester(
+        adobefonts_profile, f"com.adobe.fonts/check/varfont/valid_default_instance_nameids{OVERRIDE_SUFFIX}"
+    )
+
+    ttFont_1 = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+
+    # Change subfamilyNameID value of the default instance to another name ID whose
+    # string doesn't match the font's Subfamily name, thus making the check fail.
+    fvar_table_1 = ttFont_1["fvar"]
+    dflt_inst = fvar_table_1.instances[0]
+    dflt_inst.subfamilyNameID = 16  # the font doesn't have this record
+    msg = assert_results_contain(
+        check(ttFont_1), WARN, "invalid-default-instance-subfamily-name"
+    )
+    assert msg == ("'Instance #1' instance has the same coordinates as the default"
+                   " instance; its subfamily name should be 'Regular'")
+
+    # The value of postScriptNameID is 0xFFFF for all the instance records in CabinVF.
+    # Change one of them, to make the check validate the postScriptNameID value of the
+    # default instance (which is currently 0xFFFF).
+    inst_2 = fvar_table_1.instances[1]
+    inst_2.postscriptNameID = 256  # the font doesn't have this record
+    msg = assert_results_contain(
+        check(ttFont_1), WARN, "invalid-default-instance-postscript-name"
+    )
+    assert msg == (
+        "'Instance #1' instance has the same coordinates as the default instance;"
+        " its postscript name should be 'Cabin-Regular', instead of 'None'."
+    )
+
+
 @patch("freetype.Face", side_effect=ImportError)
 def test_check_override_freetype_rasterizer(mock_import_error):
     """Check that overridden test yields FAIL rather than SKIP."""

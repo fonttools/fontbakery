@@ -63,7 +63,7 @@ SET_EXPLICIT_CHECKS = {
     "com.adobe.fonts/check/varfont/distinct_instance_records",
     "com.adobe.fonts/check/varfont/same_size_instance_records",
     "com.adobe.fonts/check/varfont/valid_axis_nameid",
-    "com.adobe.fonts/check/varfont/valid_default_instance_nameids",
+    "com.adobe.fonts/check/varfont/valid_default_instance_nameids",  # IS_OVERRIDDEN
     "com.adobe.fonts/check/varfont/valid_postscript_nameid",
     "com.adobe.fonts/check/varfont/valid_subfamily_nameid",
     "com.google.fonts/check/varfont/bold_wght_coord",  # IS_OVERRIDDEN
@@ -221,6 +221,7 @@ ADOBEFONTS_PROFILE_CHECKS = [
 
 OVERRIDDEN_CHECKS = [
     "com.adobe.fonts/check/freetype_rasterizer",
+    "com.adobe.fonts/check/varfont/valid_default_instance_nameids",
     "com.google.fonts/check/family/win_ascent_and_descent",
     "com.google.fonts/check/fontbakery_version",
     "com.google.fonts/check/name/match_familyname_fullfont",
@@ -569,6 +570,23 @@ profile.check_log_override(
     reason=(
         "Adobe doesn't require a 'Bold' named instance (but when a 'Bold' instance"
         " is present, its coordinate on the 'wght' axis must be == 700)."
+    ),
+)
+
+
+profile.check_log_override(
+    # From fvar.py
+    "com.adobe.fonts/check/varfont/valid_default_instance_nameids",
+    overrides=(
+        ("invalid-default-instance-subfamily-name", WARN, KEEP_ORIGINAL_MESSAGE),
+        ("invalid-default-instance-postscript-name", WARN, KEEP_ORIGINAL_MESSAGE),
+    ),
+    reason=(
+        "Adobe and the OpenType spec strongly recommend following these"
+        " guidelines, but they are not hard requirements so we are relaxing"
+        " this to WARN rather than FAIL.⏎"
+        "Fonts that do not meet these guidelines might behave inconsistently"
+        " so please carefully consider trying to meet them."
     ),
 )
 
