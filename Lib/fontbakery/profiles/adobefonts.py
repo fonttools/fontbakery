@@ -56,7 +56,7 @@ SET_EXPLICIT_CHECKS = {
     # "com.fontwerk/check/vendor_id",      # PERMANENTLY_EXCLUDED
     # "com.fontwerk/check/no_mac_entries",
     "com.fontwerk/check/inconsistencies_between_fvar_stat",  # IS_OVERRIDDEN
-    "com.fontwerk/check/weight_class_fvar",
+    "com.fontwerk/check/weight_class_fvar",  # IS_OVERRIDDEN
     #
     # =======================================
     # From fvar.py
@@ -224,6 +224,7 @@ OVERRIDDEN_CHECKS = [
     "com.adobe.fonts/check/stat_has_axis_value_tables",
     "com.adobe.fonts/check/varfont/valid_default_instance_nameids",
     "com.fontwerk/check/inconsistencies_between_fvar_stat",
+    "com.fontwerk/check/weight_class_fvar",
     "com.google.fonts/check/family/win_ascent_and_descent",
     "com.google.fonts/check/fontbakery_version",
     "com.google.fonts/check/name/match_familyname_fullfont",
@@ -614,6 +615,20 @@ profile.check_log_override(
     # From fontwerk.py
     "com.fontwerk/check/inconsistencies_between_fvar_stat",
     overrides=(("missing-fvar-instance-axis-value", WARN, KEEP_ORIGINAL_MESSAGE),),
+    reason=(
+        "Adobe and Fontwerk strongly recommend following this"
+        " guideline, but it is not a hard requirement so we are relaxing"
+        " this to WARN rather than FAIL.⏎"
+        "Fonts that do not meet this guideline might behave inconsistently"
+        " so please carefully consider trying to meet it."
+    ),
+)
+
+
+profile.check_log_override(
+    # From fontwerk.py
+    "com.fontwerk/check/weight_class_fvar",
+    overrides=(("bad-weight-class", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
         "Adobe and Fontwerk strongly recommend following this"
         " guideline, but it is not a hard requirement so we are relaxing"

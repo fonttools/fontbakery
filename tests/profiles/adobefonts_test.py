@@ -400,6 +400,17 @@ def test_check_override_inconsistencies_between_fvar_stat():
                            'missing in STAT table')
 
 
+def test_check_weight_class_fvar():
+    check = CheckTester(adobefonts_profile,
+                        f'com.fontwerk/check/weight_class_fvar{OVERRIDE_SUFFIX}')
+
+    ttFont = TTFont(TEST_FILE('varfont/Oswald-VF.ttf'))
+    ttFont['OS/2'].usWeightClass = 333
+    assert_results_contain(check(ttFont),
+                           WARN, 'bad-weight-class',
+                           "but should match fvar default value.")
+
+
 @patch("freetype.Face", side_effect=ImportError)
 def test_check_override_freetype_rasterizer(mock_import_error):
     """Check that overridden test yields FAIL rather than SKIP."""
