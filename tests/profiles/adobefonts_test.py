@@ -356,7 +356,7 @@ def test_check_override_varfont_valid_default_instance_nameids():
 
 
 def test_check_override_stat_has_axis_value_tables():
-    """Check that overriddent tests yield the right result."""
+    """Check that overridden tests yield the right result."""
     check = CheckTester(
         adobefonts_profile,
         f"com.adobe.fonts/check/stat_has_axis_value_tables{OVERRIDE_SUFFIX}",
@@ -385,6 +385,19 @@ def test_check_override_stat_has_axis_value_tables():
     ttFont['STAT'].table.AxisValueArray.AxisValue.append(f4avt)
     msg = assert_results_contain(check(ttFont), WARN, "format-4-axis-count")
     assert msg == "STAT Format 4 Axis Value table has axis count <= 1."
+
+
+def test_check_override_inconsistencies_between_fvar_stat():
+    """Check that the overridden test yields WARN rather than FAIL"""
+    check = CheckTester(adobefonts_profile,
+                        f'com.fontwerk/check/inconsistencies_between_fvar_stat{OVERRIDE_SUFFIX}')
+
+    ttFont = TTFont(TEST_FILE("bad_fonts/fvar_stat_differences/AxisLocationVAR.ttf"))
+    # add name with wrong order of name parts
+    ttFont['name'].setName('Medium Text', 277, 3, 1, 0x409)
+    assert_results_contain(check(ttFont),
+                           WARN, 'missing-fvar-instance-axis-value',
+                           'missing in STAT table')
 
 
 @patch("freetype.Face", side_effect=ImportError)
