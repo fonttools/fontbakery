@@ -569,10 +569,13 @@ profile.check_log_override(
 profile.check_log_override(
     # From fvar.py
     "com.google.fonts/check/varfont/bold_wght_coord",
-    overrides=(("no-bold-instance", WARN, KEEP_ORIGINAL_MESSAGE),),
+    overrides=(
+        ("no-bold-instance", WARN, KEEP_ORIGINAL_MESSAGE),
+        ("wght-not-700", WARN, KEEP_ORIGINAL_MESSAGE),
+    ),
     reason=(
-        "Adobe doesn't require a 'Bold' named instance (but when a 'Bold' instance"
-        " is present, its coordinate on the 'wght' axis must be == 700)."
+        "Adobe strongly recommends, but does not require having a Bold instance,"
+        " and that instance should have coordinate 700 on the 'wght' axis."
     ),
 )
 
