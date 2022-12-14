@@ -400,7 +400,7 @@ def test_check_override_inconsistencies_between_fvar_stat():
                            'missing in STAT table')
 
 
-def test_check_weight_class_fvar():
+def test_check_override_weight_class_fvar():
     check = CheckTester(adobefonts_profile,
                         f'com.fontwerk/check/weight_class_fvar{OVERRIDE_SUFFIX}')
 
