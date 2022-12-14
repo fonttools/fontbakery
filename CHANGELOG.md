@@ -30,6 +30,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/STAT_strings]:** Added a more lenient version of com.google.fonts/check/STAT_strings (allows "Italic" on 'slnt' or 'ital' axes).
   - **[com.google.fonts/check/STAT_strings]:** removed from the list of explicit checks.
   - **[com.google.fonts/check/transformed_components]**: removed from the list of explicit checks.
+  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]**: relax `invalid-default-instance-subfamily-name` and `invalid-default-instance-postscript-name` from FAIL to WARN.
+  - **[com.adobe.fonts/check/stat_has_axis_value_tables]**: relax `missing-axis-value-table` and `format-4-axis-count` from FAIL to WARN.
+  - **[com.fontwerk/check/inconsistencies_between_fvar_stat]**: relax `missing-fvar-instance-axis-value` from FAIL to WARN.
+  - **[com.fontwerk/check/weight_class_fvar]**: relax `bad-weight-class` from FAIL to WARN.
+  - **[com.google.fonts/check/varfont/bold_wght_coord]**: relax `wght-not-700` from FAIL to WARN.
 
 #### On the Universal Profile
   - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
