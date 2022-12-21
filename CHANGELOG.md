@@ -42,6 +42,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the OpenType Profile
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
+  - **[com.google.fonts/check/varfont/wdth_valid_range]:** Modified (relaxed) to match the OpenType spec's valid range ("strictly greater than zero")
 
 #### On the GoogleFonts Profile
   - **[com.google.fonts/check/metadata/can_render_samples]:** Fix false-FAIL by removing '\n' and U+200B (zero width space) characteres from sample strings (issue #3990)
