@@ -220,7 +220,7 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
         registered design-variation tag 'wdth' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
 
-        On the 'wdth' (Width) axis, the valid coordinate range is 1-1000
+        On the 'wdth' (Width) axis, the valid numeric range is strictly greater than zero.
     """,
     conditions = ['is_variable_font',
                   'has_wdth_axis'],
@@ -228,18 +228,24 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
 )
 def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
     """The variable font 'wdth' (Width) axis coordinate
-       must be within spec range of 1 to 1000 on all instances."""
+       must strictly greater than zero."""
 
     passed = True
     for instance in ttFont['fvar'].instances:
         if 'wdth' in instance.coordinates:
             value = instance.coordinates['wdth']
-            if value < 1 or value > 1000:
+            if value < 1:
                 passed = False
                 yield FAIL,\
                       Message("wdth-out-of-range",
                               f'Found a bad "wdth" coordinate with value {value}'
-                              f' outside of the valid range from 1 to 1000.')
+                              f' outside of the valid range (> 0).')
+                break
+            if value > 1000:
+                yield WARN,\
+                      Message("wdth-greater-than-1000",
+                              f'Found a "wdth" coordinate with value {value}'
+                              f' which is valid but unusual.')
                 break
 
     if passed:
