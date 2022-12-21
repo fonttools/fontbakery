@@ -271,7 +271,7 @@ def test_check_varfont_wght_valid_range():
 
 def test_check_varfont_wdth_valid_range():
     """ The variable font 'wdth' (Width) axis coordinate
-        must be within spec range of 1 to 1000 on all instances. """
+        must be strictly greater than zero, per the spec. """
     check = CheckTester(opentype_profile,
                         "com.google.fonts/check/varfont/wdth_valid_range")
 
@@ -287,10 +287,10 @@ def test_check_varfont_wdth_valid_range():
                            FAIL, 'wdth-out-of-range',
                            'with wght=0...')
 
-    # And yet another bad value:
+    # A valid but unusual value:
     ttFont["fvar"].instances[0].coordinates["wdth"] = 1001
     assert_results_contain(check(ttFont),
-                           FAIL, 'wdth-out-of-range',
+                           WARN, 'wdth-greater-than-1000',
                            'with wght=1001...')
 
 
