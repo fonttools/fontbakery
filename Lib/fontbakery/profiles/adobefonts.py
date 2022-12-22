@@ -67,11 +67,11 @@ SET_EXPLICIT_CHECKS = {
     "com.adobe.fonts/check/varfont/valid_postscript_nameid",
     "com.adobe.fonts/check/varfont/valid_subfamily_nameid",
     "com.google.fonts/check/varfont/bold_wght_coord",  # IS_OVERRIDDEN
-    "com.google.fonts/check/varfont/regular_ital_coord",
-    "com.google.fonts/check/varfont/regular_opsz_coord",
-    "com.google.fonts/check/varfont/regular_slnt_coord",
-    "com.google.fonts/check/varfont/regular_wdth_coord",
-    "com.google.fonts/check/varfont/regular_wght_coord",
+    "com.google.fonts/check/varfont/regular_ital_coord",  # IS_OVERRIDDEN
+    "com.google.fonts/check/varfont/regular_opsz_coord",  # IS_OVERRIDDEN
+    "com.google.fonts/check/varfont/regular_slnt_coord",  # IS_OVERRIDDEN
+    "com.google.fonts/check/varfont/regular_wdth_coord",  # IS_OVERRIDDEN
+    "com.google.fonts/check/varfont/regular_wght_coord",  # IS_OVERRIDDEN
     "com.google.fonts/check/varfont/slnt_range",
     "com.google.fonts/check/varfont/wdth_valid_range",
     "com.google.fonts/check/varfont/wght_valid_range",
@@ -232,6 +232,11 @@ OVERRIDDEN_CHECKS = [
     "com.google.fonts/check/os2_metrics_match_hhea",
     "com.google.fonts/check/valid_glyphnames",
     "com.google.fonts/check/varfont/bold_wght_coord",
+    "com.google.fonts/check/varfont/regular_ital_coord",
+    "com.google.fonts/check/varfont/regular_opsz_coord",
+    "com.google.fonts/check/varfont/regular_slnt_coord",
+    "com.google.fonts/check/varfont/regular_wdth_coord",
+    "com.google.fonts/check/varfont/regular_wght_coord",
     "com.google.fonts/check/whitespace_glyphs",
 ]
 
@@ -576,6 +581,66 @@ profile.check_log_override(
     reason=(
         "Adobe strongly recommends, but does not require having a Bold instance,"
         " and that instance should have coordinate 700 on the 'wght' axis."
+    ),
+)
+
+
+profile.check_log_override(
+    # From fvar.py
+    "com.google.fonts/check/varfont/regular_ital_coord",
+    overrides=(
+        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE)
+    ),
+    reason=(
+        "Adobe strongly recommends, but does not require having a Regular instance."
+    ),
+)
+
+
+profile.check_log_override(
+    # From fvar.py
+    "com.google.fonts/check/varfont/regular_opsz_coord",
+    overrides=(
+        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE)
+    ),
+    reason=(
+        "Adobe strongly recommends, but does not require having a Regular instance."
+    ),
+)
+
+
+profile.check_log_override(
+    # From fvar.py
+    "com.google.fonts/check/varfont/regular_slnt_coord",
+    overrides=(
+        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE)
+    ),
+    reason=(
+        "Adobe strongly recommends, but does not require having a Regular instance."
+    ),
+)
+
+
+profile.check_log_override(
+    # From fvar.py
+    "com.google.fonts/check/varfont/regular_wdth_coord",
+    overrides=(
+        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE)
+    ),
+    reason=(
+        "Adobe strongly recommends, but does not require having a Regular instance."
+    ),
+)
+
+
+profile.check_log_override(
+    # From fvar.py
+    "com.google.fonts/check/varfont/regular_wght_coord",
+    overrides=(
+        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE)
+    ),
+    reason=(
+        "Adobe strongly recommends, but does not require having a Regular instance."
     ),
 )
 
