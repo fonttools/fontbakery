@@ -27,8 +27,8 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
     'Regular' instance."""
 
     if regular_wght_coord is None:
-        yield FAIL, \
-              Message("no-regular-instance", 
+        yield FAIL,\
+              Message("no-regular-instance",
               '"Regular" instance not present.')
     elif regular_wght_coord == 400:
         yield PASS, "Regular:wght is 400."
@@ -58,8 +58,8 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
     """The variable font 'wdth' (Width) axis coordinate must be 100 on the 'Regular' instance."""
 
     if regular_wdth_coord is None:
-        yield FAIL, \
-              Message("no-regular-instance", 
+        yield FAIL,\
+              Message("no-regular-instance",
               '"Regular" instance not present.')
     elif regular_wdth_coord == 100:
         yield PASS, "Regular:wdth is 100."
@@ -90,7 +90,7 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
 
     if regular_slnt_coord is None:
         yield FAIL, \
-              Message("no-regular-instance", 
+              Message("no-regular-instance",
               '"Regular" instance not present.')
     elif regular_slnt_coord == 0:
         yield PASS, "Regular:slnt is zero."
@@ -121,7 +121,7 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
 
     if regular_ital_coord is None:
         yield FAIL, \
-              Message("no-regular-instance", 
+              Message("no-regular-instance",
               '"Regular" instance not present.')
     elif regular_ital_coord == 0:
         yield PASS, "Regular:ital is zero."
@@ -153,7 +153,7 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
 
     if regular_opsz_coord is None:
         yield FAIL, \
-              Message("no-regular-instance", 
+              Message("no-regular-instance",
               '"Regular" instance not present.')
     elif regular_opsz_coord >= 10 and regular_opsz_coord <= 16:
         yield PASS, f"Regular:opsz coordinate ({regular_opsz_coord}) looks good."

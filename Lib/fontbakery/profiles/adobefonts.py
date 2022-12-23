@@ -589,7 +589,7 @@ profile.check_log_override(
     # From fvar.py
     "com.google.fonts/check/varfont/regular_ital_coord",
     overrides=(
-        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE)
+        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE),
     ),
     reason=(
         "Adobe strongly recommends, but does not require having a Regular instance."
@@ -601,7 +601,7 @@ profile.check_log_override(
     # From fvar.py
     "com.google.fonts/check/varfont/regular_opsz_coord",
     overrides=(
-        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE)
+        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE),
     ),
     reason=(
         "Adobe strongly recommends, but does not require having a Regular instance."
@@ -613,7 +613,7 @@ profile.check_log_override(
     # From fvar.py
     "com.google.fonts/check/varfont/regular_slnt_coord",
     overrides=(
-        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE)
+        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE),
     ),
     reason=(
         "Adobe strongly recommends, but does not require having a Regular instance."
@@ -625,7 +625,7 @@ profile.check_log_override(
     # From fvar.py
     "com.google.fonts/check/varfont/regular_wdth_coord",
     overrides=(
-        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE)
+        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE),
     ),
     reason=(
         "Adobe strongly recommends, but does not require having a Regular instance."
@@ -637,7 +637,7 @@ profile.check_log_override(
     # From fvar.py
     "com.google.fonts/check/varfont/regular_wght_coord",
     overrides=(
-        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE)
+        ("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE),
     ),
     reason=(
         "Adobe strongly recommends, but does not require having a Regular instance."
