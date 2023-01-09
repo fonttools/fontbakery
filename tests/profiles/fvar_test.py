@@ -34,7 +34,8 @@ def test_check_varfont_regular_wght_coord():
     # Change the name of the first instance from 'Regular' (nameID 258)
     # to 'Medium' (nameID 259). The font now has no Regular instance.
     ttFont["fvar"].instances[0].subfamilyNameID = 259
-    assert_results_contain(check(ttFont), FAIL, "wght-not-400")
+    msg = assert_results_contain(check(ttFont), FAIL, "no-regular-instance")
+    assert msg == ('"Regular" instance not present.')
 
     # Test with a variable font that doesn't have a 'wght' (Weight) axis.
     # The check should yield SKIP.
@@ -76,7 +77,8 @@ def test_check_varfont_regular_wdth_coord():
     # Change the name of the first instance from 'Regular' (nameID 258)
     # to 'Medium' (nameID 259). The font now has no Regular instance.
     ttFont["fvar"].instances[0].subfamilyNameID = 259
-    assert_results_contain(check(ttFont), FAIL, "wdth-not-100")
+    msg = assert_results_contain(check(ttFont), FAIL, "no-regular-instance")
+    assert msg == ('"Regular" instance not present.')
 
     # Test with a variable font that doesn't have a 'wdth' (Width) axis.
     # The check should yield SKIP.
@@ -127,7 +129,8 @@ def test_check_varfont_regular_slnt_coord():
     # Change the name of the first instance from 'Regular' (nameID 258)
     # to 'Medium' (nameID 259). The font now has no Regular instance.
     first_instance.subfamilyNameID = 259
-    assert_results_contain(check(ttFont), FAIL, "slnt-not-0")
+    msg = assert_results_contain(check(ttFont), FAIL, "no-regular-instance")
+    assert msg == ('"Regular" instance not present.')
 
     # Test with a variable font that doesn't have a 'slnt' (Slant) axis.
     # The check should yield SKIP.
@@ -174,7 +177,8 @@ def test_check_varfont_regular_ital_coord():
     # Change the name of the first instance from 'Regular' (nameID 258)
     # to 'Medium' (nameID 259). The font now has no Regular instance.
     first_instance.subfamilyNameID = 259
-    assert_results_contain(check(ttFont), FAIL, "ital-not-0")
+    msg = assert_results_contain(check(ttFont), FAIL, "no-regular-instance")
+    assert msg == ('"Regular" instance not present.')
 
     # Test with a variable font that doesn't have an 'ital' (Italic) axis.
     # The check should yield SKIP.
@@ -204,7 +208,8 @@ def test_check_varfont_regular_opsz_coord():
     ttFont["fvar"].axes.append(new_axis)
 
     # and specify a bad coordinate for the Regular:
-    ttFont["fvar"].instances[0].coordinates["opsz"] = 9
+    first_instance = ttFont["fvar"].instances[0]
+    first_instance.coordinates["opsz"] = 9
     # Note: I know the correct instance index for this hotfix because
     # I inspected the our reference CabinVF using ttx
 
@@ -223,6 +228,12 @@ def test_check_varfont_regular_opsz_coord():
     for value in [10, 11, 12, 13, 14, 15, 16]:
         assert_PASS(check(ttFont, {"regular_opsz_coord": value}),
                     f'with a good Regular:opsz coordinate ({value})...')
+
+    # Change the name of the first instance from 'Regular' (nameID 258)
+    # to 'Medium' (nameID 259). The font now has no Regular instance.
+    first_instance.subfamilyNameID = 259
+    msg = assert_results_contain(check(ttFont), FAIL, "no-regular-instance")
+    assert msg == ('"Regular" instance not present.')
 
 
 def test_check_varfont_bold_wght_coord():
