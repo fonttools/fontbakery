@@ -5,6 +5,15 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.8.11 (2022-Dec-??)
 ### Noteworthy code-changes
   - The terminal reporter now prints out URLs for "more info" (typically github issues) where the user can learn more about how the check was originally proposed/discussed. (PR #3994)
+  - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
+
+### BugFixes
+  - **[setup.py]:** Our protobuf files have been compiled with v3 versions of protobuf which cannot be read by v4. (PR #3946)
+  - Fix summary header in the Github Markdown reporter. (PR #3923)
+  - Use `getBestFullName` for the report instead of reading name table identifier 4 directly. (PR #3924)
+  - fix crash on iso15008 checks by updating usage of internal fonttools `_TTGlyphGlyf` API that changed at https://github.com/fonttools/fonttools/commit/b818e1494ff2bfb7f0cd71d827ba97578c919303
+  - Overriden checks now also properly inherit conditions. (issue #3952)
+  - Updated style condition to correctly handle VFs (PR #4007)
 
 ### New Checks
 #### Added to the Universal Profile
@@ -24,6 +33,17 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/all_glyphs_have_codepoints]:** This check cannot ever fail with fontTools and is therefore redundant. (issue #1793)
 
 ### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
+  - **[com.google.fonts/check/contour_count]:** U+0E3F THAI CURRENCY SYMBOL BAHT can also have 5 contours (issue #3914)
+
+#### On the OpenType Profile
+  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
+  - **[com.google.fonts/check/varfont/wdth_valid_range]:** Modified (relaxed) to match the OpenType spec's valid range ("strictly greater than zero")
+  - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
+  - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
+  instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
+
 #### On the AdobeFonts Profile
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Added check that format 4 AxisValue tables have AxisCount (number of AxisValueRecords) > 1 (issue #3957)
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Improved overall check to FAIL when an unknown AxisValue.Format is encountered.
@@ -35,45 +55,20 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.fontwerk/check/inconsistencies_between_fvar_stat]**: relax `missing-fvar-instance-axis-value` from FAIL to WARN.
   - **[com.fontwerk/check/weight_class_fvar]**: relax `bad-weight-class` from FAIL to WARN.
   - **[com.google.fonts/check/varfont/bold_wght_coord]**: relax `wght-not-700` from FAIL to WARN.
-
-#### On the Universal Profile
-  - **[com.google.fonts/check/unreachable_glyphs]:** Fix handling of format 14 'cmap' table. (issue #3915)
-  - **[com.google.fonts/check/contour_count]:** U+0E3F THAI CURRENCY SYMBOL BAHT can also have 5 contours (issue #3914)
-
-#### On the OpenType Profile
-  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]:** The check did not account for nameID 17. (issue #3895)
-  - **[com.google.fonts/check/varfont/wdth_valid_range]:** Modified (relaxed) to match the OpenType spec's valid range ("strictly greater than zero")
+  - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN. (issue #3898)
 
 #### On the GoogleFonts Profile
   - **[com.google.fonts/check/metadata/can_render_samples]:** Fix false-FAIL by removing '\n' and U+200B (zero width space) characteres from sample strings (issue #3990)
   - **[com.google.fonts/check/metadata/broken_links]:** add special handling for github url (issue #2550)
   - **[com.google.fonts/check/vendor_id]:** PYRS is a default Vendor ID entry from FontLab generated binaries. (issue #3943)
   - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
-  - Updated style condition to correctly handle VFs
+  - **[com.google.fonts/check/vertical_metrics]:** Check for positive and negative ascender and descender values (PR #3921)
 
 #### On the FontVal Profile
   - **[com.google.fonts/check/fontvalidator]:** Disable a slew of frequent false positive warnings and make the check configurable via the configuration.
 
-### BugFixes
-  - **[setup.py]:** Our protobuf files have been compiled with v3 versions of protobuf which cannot be read by v4. (PR #3946)
-  - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
-  - Fix summary header in the Github Markdown reporter. (PR #3923)
-  - Use `getBestFullName` for the report instead of reading name table identifier 4 directly. (PR #3924)
-  - fix crash on iso15008 checks by updating usage of internal fonttools `_TTGlyphGlyf` API that changed at https://github.com/fonttools/fonttools/commit/b818e1494ff2bfb7f0cd71d827ba97578c919303
-  - Overriden checks now also properly inherit conditions. (issue #3952)
+#### On the FontWerk Profile
   - **[com.fontwerk/check/inconsistencies_between_fvar_stat]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
-  - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
-
-### Changes to existing checks
-#### On the OpenType Profile
-  - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
-  instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
-
-#### On the Google Fonts Profile
-  - **[com.google.fonts/check/vertical_metrics]:** Check for positive and negative ascender and descender values (PR #3921)
-
-#### Overridden in the Adobe Fonts Profile
-  - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN. (issue #3898)
 
 
 ## 0.8.10 (2022-Aug-25)
