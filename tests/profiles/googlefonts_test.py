@@ -2629,6 +2629,7 @@ def test_style_condition():
     assert style("ShantellSans-BoldItalic.ttf") == "BoldItalic"
     # Fail this
     assert style("ShantellSans-Fat.ttf") == None
+    assert style("ShantellSans.ttf") == None
 
 
 def test_check_name_copyright_length():
