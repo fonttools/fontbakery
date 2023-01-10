@@ -16,10 +16,21 @@ from fontbakery.constants import (
 def style(font):
     """Determine font style from canonical filename."""
     from fontbakery.constants import STATIC_STYLE_NAMES
+    acceptable_stylenames = [name.replace(' ', '') for name in STATIC_STYLE_NAMES]
     filename = os.path.basename(font)
-    if '-' in filename:
+    # VF
+    if '[' in filename:
+        filename = os.path.splitext(filename)[0].split('[')[0]
+        if '-' in filename:
+            stylename = os.path.splitext(filename)[0].split('-')[1]
+            if stylename in acceptable_stylenames:
+                return stylename
+        else:
+            return 'Regular'
+    # Static
+    elif '-' in filename:
         stylename = os.path.splitext(filename)[0].split('-')[1]
-        if stylename in [name.replace(' ', '') for name in STATIC_STYLE_NAMES]:
+        if stylename in acceptable_stylenames:
             return stylename
     return None
 
