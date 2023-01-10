@@ -409,6 +409,13 @@ def regular_wght_coord(ttFont):
 
 
 @condition
+def default_wght_coord(ttFont):
+    for a in ttFont["fvar"].axes:
+        if a.axisTag == "wght":
+            return a.defaultValue
+
+
+@condition
 def bold_wght_coord(ttFont):
     upright = get_instance_axis_value(ttFont, "Bold", "wght")
     italic = get_instance_axis_value(ttFont, "Bold Italic", "wght")

@@ -16,17 +16,23 @@ from fontbakery.constants import (
 def style(font):
     """Determine font style from canonical filename."""
     from fontbakery.constants import STATIC_STYLE_NAMES
+    from .shared_conditions import is_variable_font, default_wght_coord
+    from fontTools.ttLib import TTFont
     acceptable_stylenames = [name.replace(' ', '') for name in STATIC_STYLE_NAMES]
     filename = os.path.basename(font)
     # VF
-    if '[' in filename:
-        filename = os.path.splitext(filename)[0].split('[')[0]
-        if '-' in filename:
-            stylename = os.path.splitext(filename)[0].split('-')[1]
-            if stylename in acceptable_stylenames:
-                return stylename
+    ttFont = TTFont(font)
+    if is_variable_font(ttFont):
+        if default_wght_coord(ttFont) == 700.0:
+            if "Italic" in filename:
+                return "BoldItalic"
+            else:
+                return "Bold"
         else:
-            return 'Regular'
+            if "Italic" in filename:
+                return "Italic"
+            else:
+                return "Regular"
     # Static
     elif '-' in filename:
         stylename = os.path.splitext(filename)[0].split('-')[1]
