@@ -2620,6 +2620,17 @@ def test_condition_familyname_with_spaces():
     assert familyname_with_spaces("BodoniModa11") == "Bodoni Moda 11"
 
 
+def test_style_condition():
+    from fontbakery.profiles.googlefonts_conditions import style
+    assert style("ShantellSans[BNCE,INFM,SPAC,wght].ttf") == "Regular"
+    assert style("ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf") == "Italic"
+    assert style("ShantellSans-Regular.ttf") == "Regular"
+    assert style("ShantellSans-Italic.ttf") == "Italic"
+    assert style("ShantellSans-BoldItalic.ttf") == "BoldItalic"
+    # Fail this
+    assert style("ShantellSans-Fat.ttf") == None
+
+
 def test_check_name_copyright_length():
     """ Length of copyright notice must not exceed 500 characters. """
     check = CheckTester(googlefonts_profile,

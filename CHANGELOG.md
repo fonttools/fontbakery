@@ -49,6 +49,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/broken_links]:** add special handling for github url (issue #2550)
   - **[com.google.fonts/check/vendor_id]:** PYRS is a default Vendor ID entry from FontLab generated binaries. (issue #3943)
   - **[com.google.fonts/check/colorfont_tables]:** Check for four-digit 'SVG ' table instead of 'SVG' (PR #3903)
+  - Updated style condition to correctly handle VFs
 
 #### On the FontVal Profile
   - **[com.google.fonts/check/fontvalidator]:** Disable a slew of frequent false positive warnings and make the check configurable via the configuration.
