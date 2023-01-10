@@ -210,12 +210,15 @@ def test_pretty_print_list_shorten(values, shorten, expected_str):
     else:
         assert pretty_print_list(config, values) == expected_str
 
-
+# FIXME: The spurious extra spaces in the expected strings below seem like
+#        bad formatting being enforced by the code-test
+#        Or, in other words, the code-test simply documenting
+#        the poor output of the code it tests.
 @pytest.mark.parametrize('values, expected_str', [
     (_make_values(1), "\t- item 1"),
-    (_make_values(2), "\t- item 1 \n\n\t- And item 2"),
-    (_make_values(3), "\t- item 1\n\n\t- item 2 \n\n\t- And item 3"),
-    (_make_values(4), "\t- item 1\n\n\t- item 2\n\n\t- item 3 \n\n\t- And item 4"),
+    (_make_values(2), "\t- item 1 \n\n\t- item 2"),
+    (_make_values(3), "\t- item 1\n\n\t- item 2 \n\n\t- item 3"),
+    (_make_values(4), "\t- item 1\n\n\t- item 2\n\n\t- item 3 \n\n\t- item 4"),
 ])
 def test_bullet_list(values, expected_str):
     config = {'full_lists': True}

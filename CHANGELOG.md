@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - fix crash on iso15008 checks by updating usage of internal fonttools `_TTGlyphGlyf` API that changed at https://github.com/fonttools/fonttools/commit/b818e1494ff2bfb7f0cd71d827ba97578c919303
   - Overriden checks now also properly inherit conditions. (issue #3952)
   - Updated style condition to correctly handle VFs (PR #4007)
+  - Do not include an "And" on the last item of bullet lists. (issue #4006)
 
 ### New Checks
 #### Added to the Universal Profile

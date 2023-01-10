@@ -215,7 +215,7 @@ def bullet_list(config, items, bullet="-", indentation="\t"):
            pretty_print_list(config,
                              items,
                              sep=f"\n\n{indentation}{bullet} ",
-                             glue=f"\n\n{indentation}{bullet} And")
+                             glue=f"\n\n{indentation}{bullet}")
 
 
 def markdown_table(items):
