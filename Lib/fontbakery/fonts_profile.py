@@ -5,6 +5,7 @@ import glob
 import logging
 import argparse
 from dataclasses import dataclass
+import os
 
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.profile import Profile
@@ -54,13 +55,11 @@ class FontsProfile(Profile):
         profile = self
 
         def get_files(pattern):
+            if os.path.exists(pattern):
+                # not a pattern
+                return [pattern]
             files_to_check = []
             # use glob.glob to accept *.ttf
-            # but perform a hacky fixup to workaround the square-brackets naming scheme
-            # currently in use for varfonts in google fonts...
-            if '].ttf' in pattern:
-                pattern = "*.ttf".join(pattern.split('].ttf'))
-
             # Everything goes in for now, gets sorted in the Merge
             for fullpath in glob.glob(pattern):
                 files_to_check.append(fullpath)
