@@ -2620,6 +2620,23 @@ def test_condition_familyname_with_spaces():
     assert familyname_with_spaces("BodoniModa11") == "Bodoni Moda 11"
 
 
+def test_style_condition():
+    from fontbakery.profiles.googlefonts_conditions import style
+    # VFs
+    assert style(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")) == "Regular"
+    assert style(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")) == "Italic"
+    assert style(TEST_FILE("shantell/ShantellSans-Bold[BNCE,INFM,SPAC,wght].ttf")) == "Bold"
+    assert style(TEST_FILE("shantell/ShantellSans-BoldItalic[BNCE,INFM,SPAC,wght].ttf")) == "BoldItalic"
+    # Statics
+    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Regular.ttf")) == "Regular"
+    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Italic.ttf")) == "Italic"
+    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Bold.ttf")) == "Bold"
+    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-BoldItalic.ttf")) == "BoldItalic"
+    # Badly named statics, fail them
+    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans-Fat.ttf")) == None
+    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans.ttf")) == None
+
+
 def test_check_name_copyright_length():
     """ Length of copyright notice must not exceed 500 characters. """
     check = CheckTester(googlefonts_profile,
@@ -3021,7 +3038,7 @@ def test_check_kerning_for_non_ligated_sequences():
     msg = assert_results_contain(check(ttFont), WARN, "lacks-kern-info")
     assert msg == (
         "GPOS table lacks kerning info for the following non-ligated sequences:\n\n"
-        "\t- f + f\n\n\t- f + t \n\n\t- And t + f"
+        "\t- f + f\n\n\t- f + t \n\n\t- t + f"
     )
 
 
