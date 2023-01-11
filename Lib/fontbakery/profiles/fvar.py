@@ -144,7 +144,8 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
         the coordinate of its 'Regular' instance is recommended to be
         a value in the range 10 to 16.
     """,
-    conditions = ['is_variable_font'],
+    conditions = ['is_variable_font',
+                  'has_opsz_axis'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
 )
 def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord):

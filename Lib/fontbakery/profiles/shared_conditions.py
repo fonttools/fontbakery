@@ -382,6 +382,12 @@ def has_ital_axis(ttFont):
         return True
 
 
+@condition
+def has_opsz_axis(ttFont):
+    if is_variable_font(ttFont) and "opsz" in get_axis_tags_set(ttFont):
+        return True
+
+
 def get_instance_axis_value(ttFont, instance_name, axis_tag):
     if not is_variable_font(ttFont):
         return None
