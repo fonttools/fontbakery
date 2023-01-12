@@ -175,7 +175,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/old_ttfautohint',
     'com.google.fonts/check/vttclean',
     'com.google.fonts/check/aat',
-    'com.google.fonts/check/mac_style',
     'com.google.fonts/check/fsselection',
     'com.google.fonts/check/smart_dropout',
     'com.google.fonts/check/integer_ppem_if_hinted',
@@ -3187,36 +3186,6 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
                       " to lean rightwards.")
     else:
         yield PASS, "Angle of 'slnt' axis looks good."
-
-
-@check(
-    id = 'com.google.fonts/check/mac_style',
-    conditions = ['style'],
-    rationale = """
-        The values of the flags on the macStyle entry on the 'head' OpenType table
-        that describe whether a font is bold and/or italic must be coherent with the
-        actual style of the font as inferred by its filename.
-    """,
-    proposal = 'legacy:check/131'
-)
-def com_google_fonts_check_mac_style(ttFont, style):
-    """Checking head.macStyle value."""
-    from fontbakery.utils import check_bit_entry
-    from fontbakery.constants import MacStyle
-
-    # Checking macStyle ITALIC bit:
-    expected = "Italic" in style
-    yield check_bit_entry(ttFont, "head", "macStyle",
-                          expected,
-                          bitmask=MacStyle.ITALIC,
-                          bitname="ITALIC")
-
-    # Checking macStyle BOLD bit:
-    expected = style in ["Bold", "BoldItalic"]
-    yield check_bit_entry(ttFont, "head", "macStyle",
-                          expected,
-                          bitmask=MacStyle.BOLD,
-                          bitname="BOLD")
 
 
 @check(
