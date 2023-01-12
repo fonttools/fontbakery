@@ -18,7 +18,7 @@ from fontbakery.constants import (NameID,
                                   MacintoshLanguageID,
                                   LATEST_TTFAUTOHINT_VERSION)
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
-from .shared_conditions import style
+from .shared_conditions import *
 from glyphsets import codepoints
 ENCODINGS_DIR = codepoints.nam_dir
 
