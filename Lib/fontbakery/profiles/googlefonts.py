@@ -857,7 +857,7 @@ def com_google_fonts_check_family_equal_glyph_names(ttFonts):
             missing_styles = [style(k) for k in missing[gn]]
             if None not in available_styles + missing_styles:
                 # if possible, use stylenames in the log messages.
-                avail = ', '.join(sorted(vailable_styles))
+                avail = ', '.join(sorted(available_styles))
                 miss = ', '.join(sorted(missing_styles))
             else:
                 # otherwise, print filenames:
