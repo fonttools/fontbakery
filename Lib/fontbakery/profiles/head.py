@@ -170,3 +170,33 @@ def com_google_fonts_check_font_version(ttFont):
 
     if not failed:
         yield PASS, "All font version fields match."
+
+
+@check(
+    id = 'com.google.fonts/check/mac_style',
+    conditions = ['style'],
+    rationale = """
+        The values of the flags on the macStyle entry on the 'head' OpenType table
+        that describe whether a font is bold and/or italic must be coherent with the
+        actual style of the font as inferred by its filename.
+    """,
+    proposal = 'legacy:check/131'
+)
+def com_google_fonts_check_mac_style(ttFont, style):
+    """Checking head.macStyle value."""
+    from fontbakery.utils import check_bit_entry
+    from fontbakery.constants import MacStyle
+
+    # Checking macStyle ITALIC bit:
+    expected = "Italic" in style
+    yield check_bit_entry(ttFont, "head", "macStyle",
+                          expected,
+                          bitmask=MacStyle.ITALIC,
+                          bitname="ITALIC")
+
+    # Checking macStyle BOLD bit:
+    expected = style in ["Bold", "BoldItalic"]
+    yield check_bit_entry(ttFont, "head", "macStyle",
+                          expected,
+                          bitmask=MacStyle.BOLD,
+                          bitname="BOLD")

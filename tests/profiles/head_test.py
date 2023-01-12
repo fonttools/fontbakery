@@ -4,7 +4,7 @@ import os
 import pytest
 from fontTools.ttLib import TTFont
 
-from fontbakery.checkrunner import (WARN, FAIL)
+from fontbakery.checkrunner import (WARN, FAIL, PASS)
 from fontbakery.codetesting import (assert_PASS,
                                     assert_results_contain,
                                     CheckTester,
@@ -164,3 +164,34 @@ def test_check_font_version():
     assert_results_contain(check(test_font),
                            FAIL, 'missing')
 
+
+def test_check_mac_style():
+    """ Checking head.macStyle value. """
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/mac_style")
+    from fontbakery.constants import MacStyle
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+
+    # macStyle-value, style, expected
+    test_cases = [
+        [0, "Thin", PASS],
+        [0, "Bold", "bad-BOLD"],
+        [0, "Italic", "bad-ITALIC"],
+        [MacStyle.ITALIC, "Italic", PASS],
+        [MacStyle.ITALIC, "Thin", "bad-ITALIC"],
+        [MacStyle.BOLD, "Bold", PASS],
+        [MacStyle.BOLD, "Thin", "bad-BOLD"],
+        [MacStyle.BOLD | MacStyle.ITALIC, "BoldItalic", PASS]
+    ]
+
+    for macStyle_value, style, expected in test_cases:
+        ttFont["head"].macStyle = macStyle_value
+
+        if expected == PASS:
+            assert_PASS(check(ttFont, {"style": style}),
+                        'with macStyle:{macStyle_value} style:{style}...')
+        else:
+            assert_results_contain(check(ttFont, {"style": style}),
+                                   FAIL, expected,
+                                   f"with macStyle:{macStyle_value} style:{style}...")
