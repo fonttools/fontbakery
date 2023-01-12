@@ -58,7 +58,6 @@ def has_STAT_table(ttFont):
 def style(font):
     """Determine font style from canonical filename."""
     from fontbakery.constants import STATIC_STYLE_NAMES
-    from .shared_conditions import is_variable_font, default_wght_coord
     from fontTools.ttLib import TTFont
     acceptable_stylenames = [name.replace(' ', '') for name in STATIC_STYLE_NAMES]
     filename = os.path.basename(font)
