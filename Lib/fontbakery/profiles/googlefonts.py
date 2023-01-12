@@ -34,6 +34,7 @@ profile.configuration_defaults = {
 
 OVERRIDDEN_CHECKS = [
     "com.adobe.fonts/check/freetype_rasterizer",
+    "com.google.fonts/check/italic_angle",
 ]
 
 METADATA_CHECKS = [
@@ -157,7 +158,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/version_bump',
     'com.google.fonts/check/epar',
     'com.google.fonts/check/font_copyright',
-    'com.google.fonts/check/italic_angle',
     'com.google.fonts/check/slant_direction',
     'com.google.fonts/check/has_ttfautohint_params',
     'com.google.fonts/check/name/version_format',
@@ -3129,69 +3129,6 @@ def com_google_fonts_check_fsselection(ttFont, style):
                           bitname="BOLD")
 
 
-@check(
-    id = 'com.google.fonts/check/italic_angle',
-    conditions = ['style'],
-    rationale = """
-        The 'post' table italicAngle property should be a reasonable amount, likely
-        not more than -20°, never more than -30°, and never greater than 0°. Note that
-        in the OpenType specification, the value is negative for a lean rightwards.
-
-        https://docs.microsoft.com/en-us/typography/opentype/spec/post
-    """,
-    proposal = 'legacy:check/130'
-)
-def com_google_fonts_check_italic_angle(ttFont, style):
-    """Checking post.italicAngle value."""
-    failed = False
-    value = ttFont["post"].italicAngle
-
-    # Checking that italicAngle <= 0
-    if value > 0:
-        failed = True
-        yield FAIL,\
-              Message("positive",
-                      (f"The value of post.italicAngle is positive, which"
-                       f" is likely a mistake and should become negative,"
-                       f" from {value} to {-value}."))
-
-    # Checking that italicAngle is less than 20° (not good) or 30° (bad)
-    # Also note we invert the value to check it in a clear way
-    if abs(value) > 30:
-        failed = True
-        yield FAIL,\
-              Message("over-minus30-degrees",
-                      (f"The value of post.italicAngle ({value}) is very high"
-                       f" (over -30°!) and should be confirmed."))
-    elif abs(value) > 20:
-        failed = True
-        yield WARN,\
-              Message("over-minus20-degrees",
-                      (f"The value of post.italicAngle ({value}) seems very high"
-                       f" (over -20°!) and should be confirmed."))
-
-
-    # Checking if italicAngle matches font style:
-    if "Italic" in style:
-        if ttFont['post'].italicAngle == 0:
-            failed = True
-            yield FAIL,\
-                  Message("zero-italic",
-                          ("Font is italic, so post.italicAngle"
-                           " should be non-zero."))
-    else:
-        if ttFont["post"].italicAngle != 0:
-            failed = True
-            yield FAIL,\
-                  Message("non-zero-normal",
-                          ("Font is not italic, so post.italicAngle"
-                           " should be equal to zero."))
-
-    if not failed:
-        yield PASS, (f'Value of post.italicAngle is {value}'
-                     f' with style="{style}".')
-
-
 @condition
 def uharfbuzz_blob(font):
     import uharfbuzz as hb
@@ -4551,14 +4488,14 @@ def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config)
                   Message('bad-filename',
                           f"Filename seems to be incorrect: '{italic}'")
 
-        style = os.path.basename(italic).split('-')[-1].split('.')[0]
-        is_varfont = '[' in style
+        style_from_filename = os.path.basename(italic).split('-')[-1].split('.')[0]
+        is_varfont = '[' in style_from_filename
 
         # to remove the axes syntax used on variable-font filenames:
         if is_varfont:
-            style = style.split('[')[0]
+            style_from_filename = style_from_filename.split('[')[0]
 
-        if style == 'Italic':
+        if style_from_filename == 'Italic':
             if is_varfont:
                 # "Familyname-Italic[wght,wdth].ttf" => "Familyname[wght,wdth].ttf"
                 roman_counterpart = italic.replace('-Italic', '')
@@ -6488,6 +6425,13 @@ profile.check_log_override(
     "com.adobe.fonts/check/freetype_rasterizer",
     overrides=(("freetype-not-installed", FAIL, KEEP_ORIGINAL_MESSAGE),),
     reason="For Google Fonts, this check is very important and should never be skipped.",
+)
+
+profile.check_log_override(
+    # From opentype.py
+    "com.google.fonts/check/italic_angle",
+    overrides=(("over-minus30-degrees", FAIL, KEEP_ORIGINAL_MESSAGE),),
+    reason=("For Google Fonts, an Italic angle over -30° is considered a FAIL."),
 )
 
 GOOGLEFONTS_PROFILE_CHECKS = add_check_overrides(
