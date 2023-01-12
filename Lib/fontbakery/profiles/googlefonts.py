@@ -18,7 +18,7 @@ from fontbakery.constants import (NameID,
                                   MacintoshLanguageID,
                                   LATEST_TTFAUTOHINT_VERSION)
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
-from .shared_conditions import *
+from .shared_conditions import style
 from glyphsets import codepoints
 ENCODINGS_DIR = codepoints.nam_dir
 
@@ -4489,14 +4489,14 @@ def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config)
                   Message('bad-filename',
                           f"Filename seems to be incorrect: '{italic}'")
 
-        style = os.path.basename(italic).split('-')[-1].split('.')[0]
-        is_varfont = '[' in style
+        style_from_filename = os.path.basename(italic).split('-')[-1].split('.')[0]
+        is_varfont = '[' in style_from_filename
 
         # to remove the axes syntax used on variable-font filenames:
         if is_varfont:
-            style = style.split('[')[0]
+            style_from_filename = style_from_filename.split('[')[0]
 
-        if style == 'Italic':
+        if style_from_filename == 'Italic':
             if is_varfont:
                 # "Familyname-Italic[wght,wdth].ttf" => "Familyname[wght,wdth].ttf"
                 roman_counterpart = italic.replace('-Italic', '')
