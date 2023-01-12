@@ -1,6 +1,7 @@
 from fontbakery.callable import check
 from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
+from .shared_conditions import style
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
 
@@ -108,3 +109,66 @@ def com_google_fonts_check_post_table_version(ttFont):
                       "no longer necessary and should not be used.")
     else:
         yield PASS, f"Font has an acceptable post format {formatType} table version."
+
+
+@check(
+    id = 'com.google.fonts/check/italic_angle',
+    conditions = ['style'],
+    rationale = """
+        The 'post' table italicAngle property should be a reasonable amount, likely
+        not more than -20°, never more than -30°, and never greater than 0°. Note that
+        in the OpenType specification, the value is negative for a lean rightwards.
+
+        https://docs.microsoft.com/en-us/typography/opentype/spec/post
+    """,
+    proposal = 'legacy:check/130'
+)
+def com_google_fonts_check_italic_angle(ttFont, style):
+    """Checking post.italicAngle value."""
+    failed = False
+    value = ttFont["post"].italicAngle
+
+    # Checking that italicAngle <= 0
+    if value > 0:
+        failed = True
+        yield FAIL,\
+              Message("positive",
+                      (f"The value of post.italicAngle is positive, which"
+                       f" is likely a mistake and should become negative,"
+                       f" from {value} to {-value}."))
+
+    # Checking that italicAngle is less than 20° (not good) or 30° (bad)
+    # Also note we invert the value to check it in a clear way
+    if abs(value) > 30:
+        failed = True
+        yield WARN,\
+              Message("over-minus30-degrees",
+                      (f"The value of post.italicAngle ({value}) is very high"
+                       f" (over -30°!) and should be confirmed."))
+    elif abs(value) > 20:
+        failed = True
+        yield WARN,\
+              Message("over-minus20-degrees",
+                      (f"The value of post.italicAngle ({value}) seems very high"
+                       f" (over -20°!) and should be confirmed."))
+
+
+    # Checking if italicAngle matches font style:
+    if "Italic" in style:
+        if ttFont['post'].italicAngle == 0:
+            failed = True
+            yield FAIL,\
+                  Message("zero-italic",
+                          ("Font is italic, so post.italicAngle"
+                           " should be non-zero."))
+    else:
+        if ttFont["post"].italicAngle != 0:
+            failed = True
+            yield FAIL,\
+                  Message("non-zero-normal",
+                          ("Font is not italic, so post.italicAngle"
+                           " should be equal to zero."))
+
+    if not failed:
+        yield PASS, (f'Value of post.italicAngle is {value}'
+                     f' with style="{style}".')

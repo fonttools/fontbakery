@@ -52,6 +52,37 @@ def has_STAT_table(ttFont):
     return "STAT" in ttFont
 
 
+# -------------------------------------------------------------------
+# FIXME! Redundant with @condition GF's canonical_stylename(font)?
+@condition
+def style(font):
+    """Determine font style from canonical filename."""
+    from fontbakery.constants import STATIC_STYLE_NAMES
+    from .shared_conditions import is_variable_font, default_wght_coord
+    from fontTools.ttLib import TTFont
+    acceptable_stylenames = [name.replace(' ', '') for name in STATIC_STYLE_NAMES]
+    filename = os.path.basename(font)
+    # VF
+    ttFont = TTFont(font)
+    if is_variable_font(ttFont):
+        if default_wght_coord(ttFont) == 700.0:
+            if "Italic" in filename:
+                return "BoldItalic"
+            else:
+                return "Bold"
+        else:
+            if "Italic" in filename:
+                return "Italic"
+            else:
+                return "Regular"
+    # Static
+    elif '-' in filename:
+        stylename = os.path.splitext(filename)[0].split('-')[1]
+        if stylename in acceptable_stylenames:
+            return stylename
+    return None
+
+
 @condition
 def variable_font_filename(ttFont):
     from fontbakery.utils import get_name_entry_strings

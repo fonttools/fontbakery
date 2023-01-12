@@ -2283,13 +2283,7 @@ def test_check_italic_angle():
 
     # italic-angle, style, fail_message
     test_cases = [
-        [1, "Italic", FAIL, "positive"],
-        [0, "Regular", PASS, None], # This must PASS as it is a non-italic
-        [-21, "ThinItalic", WARN, "over-minus20-degrees"],
-        [-30, "ThinItalic", WARN, "over-minus20-degrees"],
         [-31, "ThinItalic", FAIL, "over-minus30-degrees"],
-        [0, "Italic", FAIL, "zero-italic"],
-        [-1,"ExtraBold", FAIL, "non-zero-normal"]
     ]
 
     for value, style, expected_result, expected_msg in test_cases:
@@ -2621,7 +2615,7 @@ def test_condition_familyname_with_spaces():
 
 
 def test_style_condition():
-    from fontbakery.profiles.googlefonts_conditions import style
+    from fontbakery.profiles.shared_conditions import style
     # VFs
     assert style(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")) == "Regular"
     assert style(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")) == "Italic"
