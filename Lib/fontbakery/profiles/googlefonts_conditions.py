@@ -518,7 +518,7 @@ def regular_remote_style(remote_styles):
     if "Regular" in remote_styles:
         return remote_styles["Regular"]
 
-    for style, font in remote_styles.items():
+    for style_name, font in remote_styles.items():
         if is_variable_font(font):
             if get_instance_axis_value(font, "Regular", "wght"):
                 return font
