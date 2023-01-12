@@ -2,7 +2,7 @@ import pytest
 
 from fontTools.ttLib import TTFont
 
-from fontbakery.checkrunner import WARN, FAIL
+from fontbakery.checkrunner import WARN, FAIL, PASS
 from fontbakery.codetesting import (assert_PASS,
                                     assert_results_contain,
                                     CheckTester,
@@ -128,3 +128,33 @@ def test_check_post_table_version():
 
     assert_PASS(check(mock_cff_post_3), reason="with a post 3 CFF mock font.")
 
+
+def test_check_italic_angle():
+    """ Checking post.italicAngle value. """
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/italic_angle")
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+
+    # italic-angle, style, fail_message
+    test_cases = [
+        [1, "Italic", FAIL, "positive"],
+        [0, "Regular", PASS, None], # This must PASS as it is a non-italic
+        [-21, "ThinItalic", WARN, "over-minus20-degrees"],
+        [-30, "ThinItalic", WARN, "over-minus20-degrees"],
+        [-31, "ThinItalic", WARN, "over-minus30-degrees"],
+        [0, "Italic", FAIL, "zero-italic"],
+        [-1,"ExtraBold", FAIL, "non-zero-normal"]
+    ]
+
+    for value, style, expected_result, expected_msg in test_cases:
+        ttFont["post"].italicAngle = value
+
+        if expected_result != PASS:
+            assert_results_contain(check(ttFont, {"style": style}),
+                                   expected_result,
+                                   expected_msg,
+                                   f"with italic-angle:{value} style:{style}...")
+        else:
+            assert_PASS(check(ttFont, {"style": style}),
+                        f'with italic-angle:{value} style:{style}...')

@@ -26,8 +26,11 @@ from fontbakery.constants import (NameID,
                                   MacintoshLanguageID,
                                   OFL_BODY_TEXT)
 from fontbakery.profiles import googlefonts as googlefonts_profile
+from fontbakery.profiles import opentype as opentype_profile
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
+
+OVERRIDE_SUFFIX = ":googlefonts"
 
 mada_fonts = [
     TEST_FILE("mada/Mada-Black.ttf"),
@@ -2277,7 +2280,7 @@ def NOT_IMPLEMENTED_test_check_fsselection():
 def test_check_italic_angle():
     """ Checking post.italicAngle value. """
     check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/italic_angle")
+                        f"com.google.fonts/check/italic_angle{OVERRIDE_SUFFIX}")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
@@ -2316,38 +2319,6 @@ def test_check_slant_direction():
     font = TEST_FILE("slant_direction/Cairo_wrong_slnt_axis.ttf")
     assert_results_contain(check(font),
                            FAIL, 'positive-value-for-clockwise-lean')
-
-
-def test_check_mac_style():
-    """ Checking head.macStyle value. """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/mac_style")
-    from fontbakery.constants import MacStyle
-
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-
-    # macStyle-value, style, expected
-    test_cases = [
-        [0, "Thin", PASS],
-        [0, "Bold", "bad-BOLD"],
-        [0, "Italic", "bad-ITALIC"],
-        [MacStyle.ITALIC, "Italic", PASS],
-        [MacStyle.ITALIC, "Thin", "bad-ITALIC"],
-        [MacStyle.BOLD, "Bold", PASS],
-        [MacStyle.BOLD, "Thin", "bad-BOLD"],
-        [MacStyle.BOLD | MacStyle.ITALIC, "BoldItalic", PASS]
-    ]
-
-    for macStyle_value, style, expected in test_cases:
-        ttFont["head"].macStyle = macStyle_value
-
-        if expected == PASS:
-            assert_PASS(check(ttFont, {"style": style}),
-                        'with macStyle:{macStyle_value} style:{style}...')
-        else:
-            assert_results_contain(check(ttFont, {"style": style}),
-                                   FAIL, expected,
-                                   f"with macStyle:{macStyle_value} style:{style}...")
 
 
 # FIXME!
@@ -2618,23 +2589,6 @@ def test_condition_familyname_with_spaces():
     from fontbakery.profiles.googlefonts_conditions import familyname_with_spaces
     assert familyname_with_spaces("OverpassMono") == "Overpass Mono"
     assert familyname_with_spaces("BodoniModa11") == "Bodoni Moda 11"
-
-
-def test_style_condition():
-    from fontbakery.profiles.googlefonts_conditions import style
-    # VFs
-    assert style(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")) == "Regular"
-    assert style(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")) == "Italic"
-    assert style(TEST_FILE("shantell/ShantellSans-Bold[BNCE,INFM,SPAC,wght].ttf")) == "Bold"
-    assert style(TEST_FILE("shantell/ShantellSans-BoldItalic[BNCE,INFM,SPAC,wght].ttf")) == "BoldItalic"
-    # Statics
-    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Regular.ttf")) == "Regular"
-    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Italic.ttf")) == "Italic"
-    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Bold.ttf")) == "Bold"
-    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-BoldItalic.ttf")) == "BoldItalic"
-    # Badly named statics, fail them
-    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans-Fat.ttf")) == None
-    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans.ttf")) == None
 
 
 def test_check_name_copyright_length():

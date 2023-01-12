@@ -44,6 +44,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
   instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
+  - **[com.google.fonts/check/italic_angle]:** Moved this check from the GoogleFonts profile to OpenType profile
+  - **[com.google.fonts/check/mac_style]:** Moved this check from the GoogleFonts profile to OpenType profile
 
 #### On the AdobeFonts Profile
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Added check that format 4 AxisValue tables have AxisCount (number of AxisValueRecords) > 1 (issue #3957)

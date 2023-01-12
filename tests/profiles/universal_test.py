@@ -67,6 +67,23 @@ def cabin_condensed_ttFonts():
     return [TTFont(path) for path in cabin_condensed_fonts]
 
 
+def test_style_condition():
+    from fontbakery.profiles.shared_conditions import style
+    # VFs
+    assert style(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")) == "Regular"
+    assert style(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")) == "Italic"
+    assert style(TEST_FILE("shantell/ShantellSans-Bold[BNCE,INFM,SPAC,wght].ttf")) == "Bold"
+    assert style(TEST_FILE("shantell/ShantellSans-BoldItalic[BNCE,INFM,SPAC,wght].ttf")) == "BoldItalic"
+    # Statics
+    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Regular.ttf")) == "Regular"
+    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Italic.ttf")) == "Italic"
+    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Bold.ttf")) == "Bold"
+    assert style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-BoldItalic.ttf")) == "BoldItalic"
+    # Badly named statics, fail them
+    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans-Fat.ttf")) == None
+    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans.ttf")) == None
+
+
 def test_check_valid_glyphnames():
     """ Glyph names are all valid? """
     check = CheckTester(universal_profile,
