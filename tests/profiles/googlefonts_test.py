@@ -30,6 +30,8 @@ from fontbakery.profiles import opentype as opentype_profile
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
+OVERRIDE_SUFFIX = ":googlefonts"
+
 mada_fonts = [
     TEST_FILE("mada/Mada-Black.ttf"),
     TEST_FILE("mada/Mada-ExtraLight.ttf"),
@@ -2277,8 +2279,8 @@ def NOT_IMPLEMENTED_test_check_fsselection():
 
 def test_check_italic_angle():
     """ Checking post.italicAngle value. """
-    check = CheckTester(opentype_profile,
-                        "com.google.fonts/check/italic_angle")
+    check = CheckTester(googlefonts_profile,
+                        f"com.google.fonts/check/italic_angle{OVERRIDE_SUFFIX}")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
