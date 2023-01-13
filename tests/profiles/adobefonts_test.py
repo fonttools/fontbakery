@@ -526,5 +526,5 @@ def test_check_STAT_strings():
     ttFont = TTFont(TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf"))
     ttFont['name'].setName("Italic", 286, 3, 1, 1033)
     # This should PASS with our check
-    msg = assert_results_contain(check(ttFont), PASS, 'bad-italic')
+    msg = assert_results_contain(check(ttFont), PASS, 'Looks good!')
     assert msg == 'Looks good!'

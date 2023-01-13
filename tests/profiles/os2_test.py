@@ -265,23 +265,25 @@ def test_check_fsselection():
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
-    # fsSelection-value, style, expected
+    # fsSelection-value, style, expected, expected_message
     test_cases = [
-        # [0, "Thin", PASS],
-        # [0, "Bold", "bad-BOLD"],
-        # [0, "Italic", "bad-ITALIC"],
-        [FsSelection.REGULAR, "Regular", PASS],
-        [FsSelection.REGULAR, "Italic", "bad-REGULAR"], # TODO: <-- It doesn't matter whether it's bad-REGULAR or bad-ITALIC here. Check why.
-        [FsSelection.REGULAR, "Italic", "bad-ITALIC"], # TODO: <-- It doesn't matter whether it's bad-REGULAR or bad-ITALIC here. Check why.
-        [FsSelection.ITALIC, "Italic", PASS],
-        [FsSelection.ITALIC, "Thin", "bad-ITALIC"],
-        [FsSelection.BOLD, "Bold", PASS],
-        [FsSelection.BOLD, "Regular", "bad-REGULAR"],
-        [FsSelection.BOLD, "Thin", "bad-BOLD"],
-        [FsSelection.BOLD | FsSelection.ITALIC, "BoldItalic", PASS]
+        [FsSelection.REGULAR, "Regular", PASS, None],
+        [FsSelection.REGULAR, "Italic", "bad-REGULAR", "OS/2 fsSelection REGULAR bit should be unset."],
+        [FsSelection.REGULAR, "Italic", "bad-ITALIC", "OS/2 fsSelection ITALIC bit should be set."],
+        [FsSelection.ITALIC, "Italic", PASS, None],
+        [FsSelection.ITALIC, "Thin", "bad-ITALIC", "OS/2 fsSelection ITALIC bit should be unset."],
+        [FsSelection.BOLD, "Bold", PASS, None],
+        [FsSelection.BOLD, "Regular", "bad-REGULAR", "OS/2 fsSelection REGULAR bit should be set."],
+        [FsSelection.BOLD, "Regular", "bad-BOLD", "OS/2 fsSelection BOLD bit should be unset."],
+        [FsSelection.BOLD, "Thin", "bad-BOLD", "OS/2 fsSelection BOLD bit should be unset."],
+        [FsSelection.BOLD | FsSelection.ITALIC, "BoldItalic", PASS, None],
+        [FsSelection.BOLD | FsSelection.ITALIC, "Italic", "bad-BOLD", "OS/2 fsSelection BOLD bit should be unset."],
+        [FsSelection.BOLD | FsSelection.ITALIC, "Bold", "bad-ITALIC", "OS/2 fsSelection ITALIC bit should be unset."],
+        [FsSelection.BOLD, "BoldItalic", "bad-ITALIC", "OS/2 fsSelection ITALIC bit should be set."],
+        [FsSelection.ITALIC, "BoldItalic", "bad-BOLD", "OS/2 fsSelection BOLD bit should be set."],
     ]
 
-    for fsSelection_value, style, expected in test_cases:
+    for fsSelection_value, style, expected, expected_message in test_cases:
         ttFont["OS/2"].fsSelection = fsSelection_value
 
         if expected == PASS:
@@ -291,6 +293,4 @@ def test_check_fsselection():
             message = assert_results_contain(check(ttFont, {"style": style}),
                                    FAIL, expected,
                                    f"with fsSelection:{fsSelection_value} style:{style}...")
-            # import logging
-            # logging.warning(message)
-            # assert expected in message
+            assert message == expected_message
