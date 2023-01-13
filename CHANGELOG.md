@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.8.11 (2022-Dec-??)
+## Upcoming release: 0.8.11 (2023-Jan-??)
 ### Noteworthy code-changes
   - The terminal reporter now prints out URLs for "more info" (typically github issues) where the user can learn more about how the check was originally proposed/discussed. (PR #3994)
   - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
@@ -15,7 +15,13 @@ A more detailed list of changes is available in the corresponding milestones for
   - Overriden checks now also properly inherit conditions. (issue #3952)
   - Updated style condition to correctly handle VFs (PR #4007)
   - Do not include an "And" on the last item of bullet lists. (issue #4006)
-  - Correctly process expected messages when they are plain strings in assert_results_contain()
+  - Correctly process expected messages when they are plain strings in assert_results_contain() (PR #4015)
+
+### Migrations of checks
+#### Moved to the OpenType profile  
+  - **[com.google.fonts/check/italic_angle]:** from the GoogleFonts profile (issue #3663)
+  - **[com.google.fonts/check/mac_style]:** from the GoogleFonts profile (issue #3664)
+  - **[com.google.fonts/check/fsselection]:** from the GoogleFonts profile (issue #3665)
 
 ### New Checks
 #### Added to the Universal Profile
@@ -45,9 +51,6 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
   instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
-  - **[com.google.fonts/check/italic_angle]:** Moved this check from the GoogleFonts profile to OpenType profile (PR #4012)
-  - **[com.google.fonts/check/mac_style]:** Moved this check from the GoogleFonts profile to OpenType profile (PR #4013)
-  - **[com.google.fonts/check/fsselection]:** Moved this check from the GoogleFonts profile to OpenType profile (PR #4014)
 
 #### On the AdobeFonts Profile
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Added check that format 4 AxisValue tables have AxisCount (number of AxisValueRecords) > 1 (issue #3957)
