@@ -46,6 +46,7 @@ A more detailed list of changes is available in the corresponding milestones for
   instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
   - **[com.google.fonts/check/italic_angle]:** Moved this check from the GoogleFonts profile to OpenType profile (PR #4012)
   - **[com.google.fonts/check/mac_style]:** Moved this check from the GoogleFonts profile to OpenType profile (PR #4013)
+  - **[com.google.fonts/check/fsselection]:** Moved this check from the GoogleFonts profile to OpenType profile (PR #4014)
 
 #### On the AdobeFonts Profile
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Added check that format 4 AxisValue tables have AxisCount (number of AxisValueRecords) > 1 (issue #3957)
