@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS, WARN, INFO
+from fontbakery.status import FAIL, PASS, WARN, INFO, SKIP
 from fontbakery.message import Message
 from fontbakery.constants import (NameID,
                                   PlatformID,
@@ -550,7 +550,7 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
     """,
 )
 def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
-    """Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts"""
+    """Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts."""
     from collections import Counter
     from fontbakery.utils import get_name_entry_strings
 
@@ -578,3 +578,67 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
                           f" (should be 4 or fewer).")
     if passed:
         yield PASS, ("There were no more than 4 fonts per family name.")
+
+
+@check(
+    id = 'com.google.fonts/check/name/italic_names',
+    conditions = ['style'],
+    rationale = """
+        This check ensures that several entries in the name table
+        conform to the font's Upright or Italic style,
+        namely IDs 1 & 2 as well as 16 & 17 if they're present.
+    """,
+)
+def com_google_fonts_check_name_italic_names(ttFont, style):
+    """Check name table IDs 1, 2, 16, 17 to conform to Italic style."""
+
+    def get_name(nameID):
+        for entry in ttFont['name'].names:
+            if entry.nameID == nameID:
+                return entry.toUnicode()
+    
+    if "Italic" not in style:
+        yield SKIP, ("Font is not Italic.")
+    else:
+        passed = True
+        # Name ID 1 (Family Name)
+        if "Italic" in get_name(NameID.FONT_FAMILY_NAME):
+            yield FAIL,\
+                  Message("bad-familyname",
+                          "Name ID 1 (Family Name) must not contain 'Italic'.")
+            passed = False
+        
+        # Name ID 2 (Subfamily Name)
+        subfamily_name_from_style = style
+        if not subfamily_name_from_style.startswith("Italic"):
+            subfamily_name_from_style = subfamily_name_from_style.replace("Italic", " Italic")
+
+        subfamily_name = get_name(NameID.FONT_SUBFAMILY_NAME)
+        if subfamily_name_from_style != subfamily_name:
+            yield FAIL,\
+                  Message("bad-subfamilyname",
+                          f"Name ID 2 (Subfamily Name) does not conform to font style.\n"
+                          f"Expected: '{subfamily_name_from_style}'\n"
+                          f"Got: '{subfamily_name}'.")
+            passed = False
+
+        # Name ID 16 (Typographic Family Name)
+        if get_name(NameID.TYPOGRAPHIC_FAMILY_NAME):
+            if "Italic" in get_name(NameID.TYPOGRAPHIC_FAMILY_NAME):
+                yield FAIL,\
+                      Message("bad-typographicfamilyname",
+                              "Name ID 16 (Typographic Family Name)"
+                              " must not contain 'Italic'.")
+                passed = False
+
+        # Name ID 17 (Typographic Subfamily Name)
+        if get_name(NameID.TYPOGRAPHIC_SUBFAMILY_NAME):
+            if not get_name(NameID.TYPOGRAPHIC_SUBFAMILY_NAME).endswith("Italic"):
+                yield FAIL,\
+                      Message("bad-typographicsubfamilyname",
+                              "Name ID 17 (Typographic Subfamily Name)"
+                              " must contain 'Italic'.")
+                passed = False
+
+        if passed:
+            yield PASS, ("All font names are good for Italic fonts.")

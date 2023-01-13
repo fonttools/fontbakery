@@ -29,6 +29,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### Added to the Open Type Profile
   - **[com.thetypefounders/check/vendor_id]:** When a font project's Vendor ID is specified explicitely on FontBakery's configuration file, all binaries must have a matching vendor identifier value in the OS/2 table. (PR #3941)
+  - **[com.google.fonts/check/name/italic_names]:** Implemented checks for name IDs 1, 2, 16, 17 for Italic fonts (issues #3666 and #3667)
 
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Check if fonts contain the correct color tables. (issue #3886)
