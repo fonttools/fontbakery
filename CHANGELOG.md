@@ -15,6 +15,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Overriden checks now also properly inherit conditions. (issue #3952)
   - Updated style condition to correctly handle VFs (PR #4007)
   - Do not include an "And" on the last item of bullet lists. (issue #4006)
+  - Correctly process expected messages when they are plain strings in assert_results_contain()
 
 ### New Checks
 #### Added to the Universal Profile
