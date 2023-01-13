@@ -244,18 +244,6 @@ def test_check_vendor_id():
     }), FAIL, "bad-vendor-id", "OS/2 VendorID is 'TEST', but should be 'STC '")
 
 
-# class FsSelection(enum.IntEnum):
-#     ITALIC         = (1 << 0)
-#     UNDERSCORE     = (1 << 1)
-#     NEGATIVE       = (1 << 2)
-#     OUTLINED       = (1 << 3)
-#     STRIKEOUT      = (1 << 4)
-#     BOLD           = (1 << 5)
-#     REGULAR        = (1 << 6)
-#     USETYPOMETRICS = (1 << 7)
-#     WWS            = (1 << 8)
-#     OBLIQUE        = (1 << 9)
-
 def test_check_fsselection():
     """ Checking OS/2 fsSelection value. """
     check = CheckTester(opentype_profile,
