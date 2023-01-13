@@ -2267,16 +2267,6 @@ def NOT_IMPLEMENTED_test_check_production_glyphs_similarity():
     # - PASS, "Glyphs are similar"
 
 
-def NOT_IMPLEMENTED_test_check_fsselection():
-    """ Checking OS/2 fsSelection value. """
-    # check = CheckTester(googlefonts_profile,
-    #                     "com.google.fonts/check/fsselection")
-    # TODO: Implement-me!
-    #
-    # code-paths:
-    # ...
-
-
 def test_check_italic_angle():
     """ Checking post.italicAngle value. """
     check = CheckTester(googlefonts_profile,

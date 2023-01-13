@@ -6,7 +6,7 @@ import fontTools.ttLib
 from fontTools.ttLib import TTFont
 import fontTools.subset
 
-from fontbakery.checkrunner import (INFO, WARN, FAIL)
+from fontbakery.checkrunner import (INFO, WARN, FAIL, PASS)
 from fontbakery.codetesting import (assert_PASS,
                                     assert_SKIP,
                                     assert_results_contain,
@@ -243,3 +243,54 @@ def test_check_vendor_id():
         "ttFont": ttFont,
     }), FAIL, "bad-vendor-id", "OS/2 VendorID is 'TEST', but should be 'STC '")
 
+
+# class FsSelection(enum.IntEnum):
+#     ITALIC         = (1 << 0)
+#     UNDERSCORE     = (1 << 1)
+#     NEGATIVE       = (1 << 2)
+#     OUTLINED       = (1 << 3)
+#     STRIKEOUT      = (1 << 4)
+#     BOLD           = (1 << 5)
+#     REGULAR        = (1 << 6)
+#     USETYPOMETRICS = (1 << 7)
+#     WWS            = (1 << 8)
+#     OBLIQUE        = (1 << 9)
+
+def test_check_fsselection():
+    """ Checking OS/2 fsSelection value. """
+    check = CheckTester(opentype_profile,
+                        "com.google.fonts/check/fsselection")
+
+    from fontbakery.constants import FsSelection
+
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+
+    # fsSelection-value, style, expected
+    test_cases = [
+        # [0, "Thin", PASS],
+        # [0, "Bold", "bad-BOLD"],
+        # [0, "Italic", "bad-ITALIC"],
+        [FsSelection.REGULAR, "Regular", PASS],
+        [FsSelection.REGULAR, "Italic", "bad-REGULAR"], # TODO: <-- It doesn't matter whether it's bad-REGULAR or bad-ITALIC here. Check why.
+        [FsSelection.REGULAR, "Italic", "bad-ITALIC"], # TODO: <-- It doesn't matter whether it's bad-REGULAR or bad-ITALIC here. Check why.
+        [FsSelection.ITALIC, "Italic", PASS],
+        [FsSelection.ITALIC, "Thin", "bad-ITALIC"],
+        [FsSelection.BOLD, "Bold", PASS],
+        [FsSelection.BOLD, "Regular", "bad-REGULAR"],
+        [FsSelection.BOLD, "Thin", "bad-BOLD"],
+        [FsSelection.BOLD | FsSelection.ITALIC, "BoldItalic", PASS]
+    ]
+
+    for fsSelection_value, style, expected in test_cases:
+        ttFont["OS/2"].fsSelection = fsSelection_value
+
+        if expected == PASS:
+            assert_PASS(check(ttFont, {"style": style}),
+                        'with fsSelection:{fsSelection_value} style:{style}...')
+        else:
+            message = assert_results_contain(check(ttFont, {"style": style}),
+                                   FAIL, expected,
+                                   f"with fsSelection:{fsSelection_value} style:{style}...")
+            # import logging
+            # logging.warning(message)
+            # assert expected in message

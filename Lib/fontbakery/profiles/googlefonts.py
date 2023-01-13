@@ -175,7 +175,6 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/old_ttfautohint',
     'com.google.fonts/check/vttclean',
     'com.google.fonts/check/aat',
-    'com.google.fonts/check/fsselection',
     'com.google.fonts/check/smart_dropout',
     'com.google.fonts/check/integer_ppem_if_hinted',
     'com.google.fonts/check/unitsperem_strict',
@@ -3089,43 +3088,6 @@ def com_google_fonts_check_production_glyphs_similarity(ttFont, api_gfonts_ttFon
     else:
         yield PASS, ("Glyphs are similar in"
                      " comparison to the Google Fonts version.")
-
-
-@check(
-    id = 'com.google.fonts/check/fsselection',
-    conditions = ['style'],
-    proposal = 'legacy:check/129'
-)
-def com_google_fonts_check_fsselection(ttFont, style):
-    """Checking OS/2 fsSelection value."""
-    from fontbakery.utils import check_bit_entry
-    from fontbakery.constants import (STATIC_STYLE_NAMES,
-                                      RIBBI_STYLE_NAMES,
-                                      FsSelection)
-
-    # Checking fsSelection REGULAR bit:
-    expected = "Regular" in style or \
-               (style in STATIC_STYLE_NAMES and
-                style not in RIBBI_STYLE_NAMES and
-                "Italic" not in style)
-    yield check_bit_entry(ttFont, "OS/2", "fsSelection",
-                          expected,
-                          bitmask=FsSelection.REGULAR,
-                          bitname="REGULAR")
-
-    # Checking fsSelection ITALIC bit:
-    expected = "Italic" in style
-    yield check_bit_entry(ttFont, "OS/2", "fsSelection",
-                          expected,
-                          bitmask=FsSelection.ITALIC,
-                          bitname="ITALIC")
-
-    # Checking fsSelection BOLD bit:
-    expected = style in ["Bold", "BoldItalic"]
-    yield check_bit_entry(ttFont, "OS/2", "fsSelection",
-                          expected,
-                          bitmask=FsSelection.BOLD,
-                          bitname="BOLD")
 
 
 @condition
