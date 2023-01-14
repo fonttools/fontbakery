@@ -366,3 +366,42 @@ def com_thetypefounders_check_vendor_id(config, ttFont):
                       f" but should be '{config_vendor_id}'.")
     else:
         yield PASS, f"OS/2 VendorID '{font_vendor_id}' is correct."
+
+
+@check(
+    id = 'com.google.fonts/check/fsselection',
+    conditions = ['style'],
+    proposal = 'legacy:check/129'
+)
+def com_google_fonts_check_fsselection(ttFont, style):
+    """Checking OS/2 fsSelection value."""
+    import logging
+    logging.warning(f"{ttFont}, {style}")
+    from fontbakery.utils import check_bit_entry
+    from fontbakery.constants import (STATIC_STYLE_NAMES,
+                                      RIBBI_STYLE_NAMES,
+                                      FsSelection)
+
+    # Checking fsSelection REGULAR bit:
+    expected = "Regular" in style or \
+               (style in STATIC_STYLE_NAMES and
+                style not in RIBBI_STYLE_NAMES and
+                "Italic" not in style)
+    yield check_bit_entry(ttFont, "OS/2", "fsSelection",
+                          expected,
+                          bitmask=FsSelection.REGULAR,
+                          bitname="REGULAR")
+
+    # Checking fsSelection ITALIC bit:
+    expected = "Italic" in style
+    yield check_bit_entry(ttFont, "OS/2", "fsSelection",
+                          expected,
+                          bitmask=FsSelection.ITALIC,
+                          bitname="ITALIC")
+
+    # Checking fsSelection BOLD bit:
+    expected = style in ["Bold", "BoldItalic"]
+    yield check_bit_entry(ttFont, "OS/2", "fsSelection",
+                          expected,
+                          bitmask=FsSelection.BOLD,
+                          bitname="BOLD")
