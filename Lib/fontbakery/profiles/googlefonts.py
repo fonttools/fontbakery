@@ -6361,8 +6361,11 @@ profile.check_log_override(
 profile.check_log_override(
     # From opentype.py
     "com.google.fonts/check/italic_angle",
-    overrides=(("over-minus30-degrees", FAIL, KEEP_ORIGINAL_MESSAGE),),
-    reason=("For Google Fonts, an Italic angle over -30° is considered a FAIL."),
+    overrides=(
+        ("positive", FAIL, KEEP_ORIGINAL_MESSAGE),
+        ("over-30-degrees", FAIL, KEEP_ORIGINAL_MESSAGE),
+    ),
+    reason=("Google Fonts has different policies on checking for italic angle."),
 )
 
 GOOGLEFONTS_PROFILE_CHECKS = add_check_overrides(

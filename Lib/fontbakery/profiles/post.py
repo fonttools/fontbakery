@@ -115,8 +115,8 @@ def com_google_fonts_check_post_table_version(ttFont):
     conditions = ['style'],
     rationale = """
         The 'post' table italicAngle property should be a reasonable amount, likely
-        not more than -20°, never more than -30°, and never greater than 0°. Note that
-        in the OpenType specification, the value is negative for a lean rightwards.
+        not more than 30°. Note that
+        in the OpenType specification, the value is negative for a rightward lean.
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/post
     """,
@@ -130,26 +130,35 @@ def com_google_fonts_check_italic_angle(ttFont, style):
     # Checking that italicAngle <= 0
     if value > 0:
         failed = True
-        yield FAIL,\
+        yield WARN,\
               Message("positive",
-                      (f"The value of post.italicAngle is positive, which"
-                       f" is likely a mistake and should become negative,"
-                       f" from {value} to {-value}."))
+                      ("The value of post.italicAngle is positive, which"
+                       " is likely a mistake and should become negative"
+                       " for right-leaning Italics. If this font is"
+                       " left-leaning, ignore this warning."))
+
+    # Checking that italicAngle > 90
+    if abs(value) > 90:
+        failed = True
+        yield FAIL,\
+              Message("over-90-degrees",
+                      ("The value of post.italicAngle is over 90°, which"
+                      " is surely a mistake."))
 
     # Checking that italicAngle is less than 20° (not good) or 30° (bad)
     # Also note we invert the value to check it in a clear way
     if abs(value) > 30:
         failed = True
         yield WARN,\
-              Message("over-minus30-degrees",
+              Message("over-30-degrees",
                       (f"The value of post.italicAngle ({value}) is very high"
-                       f" (over -30°!) and should be confirmed."))
+                       f" (over -30° or 30°) and should be confirmed."))
     elif abs(value) > 20:
         failed = True
         yield WARN,\
-              Message("over-minus20-degrees",
+              Message("over-20-degrees",
                       (f"The value of post.italicAngle ({value}) seems very high"
-                       f" (over -20°!) and should be confirmed."))
+                       f" (over -20° or 20°) and should be confirmed."))
 
 
     # Checking if italicAngle matches font style:
@@ -164,7 +173,7 @@ def com_google_fonts_check_italic_angle(ttFont, style):
         if ttFont["post"].italicAngle != 0:
             failed = True
             yield FAIL,\
-                  Message("non-zero-normal",
+                  Message("non-zero-upright",
                           ("Font is not italic, so post.italicAngle"
                            " should be equal to zero."))
 
