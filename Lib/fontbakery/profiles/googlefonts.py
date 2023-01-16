@@ -66,6 +66,7 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/valid_full_name_values',
     'com.google.fonts/check/metadata/valid_filename_values',
     'com.google.fonts/check/metadata/valid_post_script_name_values',
+    'com.google.fonts/check/metadata/valid_nameid25',
     'com.google.fonts/check/metadata/valid_copyright',
     'com.google.fonts/check/metadata/reserved_font_name',
     'com.google.fonts/check/metadata/copyright_max_length',
@@ -2429,6 +2430,46 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
                           f' postScriptName ("{font_metadata.post_script_name}")'
                           f' does not match'
                           f' correct font name format ("{font_familyname}").')
+
+
+@check(
+    id = 'com.google.fonts/check/metadata/valid_nameid25',
+    conditions = ['style'],
+    rationale = """
+        Due to a bug in (at least) Adobe Indesign, name ID 25
+        needs to be different for Italic VFs than their Upright counterparts.
+        Google Fonts chooses to append "Italic" here.
+    """,
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/3024',
+                'https://github.com/googlefonts/gftools/issues/297']
+)
+def com_google_fonts_check_metadata_valid_nameid25(ttFont, style):
+    "Check name ID 25 to end with \"Italic\" for Italic VFs."
+    from .shared_conditions import is_variable_font
+
+    def get_name(font, ID):
+        for entry in font['name'].names:
+            if entry.nameID == 25:
+                return entry.toUnicode()
+
+    if not ("Italic" in style and is_variable_font(ttFont)):
+        yield PASS, ("Not an Italic VF.")
+    else:
+        passed = True
+        if not get_name(ttFont, 25).endswith("Italic"):
+            passed = False
+            yield FAIL,\
+                  Message("nameid25-missing-italic",
+                          'Name ID 25 must end with "Italic" for Italic fonts.')
+        if " " in get_name(ttFont, 25):
+            passed = False
+            yield FAIL,\
+                  Message("nameid25-has-spaces",
+                          'Name ID 25 must not contain spaces.')
+
+        if passed:
+            yield PASS, ("Name ID 25 looks good.")
+
 
 
 EXPECTED_COPYRIGHT_PATTERN = \

@@ -1786,6 +1786,44 @@ def test_check_metadata_valid_post_script_name_values():
                                f'with a bad font ({fontfile})...')
 
 
+def test_check_metadata_valid_nameid25():
+    """Check name ID 25 to end with "Italic" for Italic VFs"""
+    from fontbakery.profiles.shared_conditions import style
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/valid_nameid25")
+
+    # PASS
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
+    assert_PASS(check(ttFont), f"with a good font ({ttFont})...")
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf"))
+    assert_PASS(check(ttFont), f"with a good font ({ttFont})...")
+
+    def set_name(font, nameID, string):
+        for record in font["name"].names:
+            if record.nameID == nameID:
+                old_string = record.toUnicode()
+                if string != old_string:
+                    font["name"].setName(
+                        string,
+                        record.nameID,
+                        record.platformID,
+                        record.platEncID,
+                        record.langID,
+                    )
+
+    # FAIL
+    fontpath = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf")
+    ttFont = TTFont(fontpath)
+    set_name(ttFont, 25, "ShantellSans")
+    assert_results_contain(check(ttFont, {"style": style(fontpath)}),
+                            FAIL, 'nameid25-missing-italic',
+                            f'with a bad font ({ttFont})...')
+    set_name(ttFont, 25, "ShantellSans Italic")
+    assert_results_contain(check(ttFont, {"style": style(fontpath)}),
+                            FAIL, 'nameid25-has-spaces',
+                            f'with a bad font ({ttFont})...')
+
+
 def test_check_metadata_valid_copyright():
     """ Copyright notice on METADATA.pb matches canonical pattern ? """
     check = CheckTester(googlefonts_profile,
