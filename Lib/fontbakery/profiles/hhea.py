@@ -68,3 +68,48 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
     else:
         yield PASS, ("MaxAdvanceWidth is consistent"
                      " with values in the Hmtx and Hhea tables.")
+
+
+@check(
+    id = 'com.google.fonts/check/caret_slope',
+    conditions = ['style'],
+    rationale = """
+        Checks whether hhea.caretSlopeRise and hhea.caretSlopeRun
+        match with post.italicAngle.
+
+        For Upright fonts, you can set hhea.caretSlopeRise to 1
+        and hhea.caretSlopeRun to 0.
+
+        For Italic fonts, you can set hhea.caretSlopeRise to head.unitsPerEm
+        and calculate hhea.caretSlopeRun like this:
+        round(math.atan(math.radians(-1 * font["post"].italicAngle)) * font["head"].unitsPerEm)
+
+        This check allows for a 0.1° rounding difference between the Italic angle
+        as calculated by the caret slope and post.italicAngle
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3670'
+)
+def com_google_fonts_check_caret_slope(ttFont, style):
+    """Check hhea.caretSlopeRise and hhea.caretSlopeRun"""
+
+    import math
+    postItalicAngle = ttFont["post"].italicAngle
+    upm = ttFont["head"].unitsPerEm
+    run = ttFont["hhea"].caretSlopeRun
+    rise = ttFont["hhea"].caretSlopeRise
+    hheaItalicAngle = math.degrees(math.tan(-1 * run / rise))
+    expectedCaretSlopeRise = upm
+    expectedCaretSlopeRun = round(math.atan(math.radians(-1 * postItalicAngle)) * upm)
+
+    if abs(postItalicAngle - hheaItalicAngle) > .1:
+        yield FAIL,\
+              Message("caretslope-mismatch",
+                      f"hhea.caretSlopeRise and hhea.caretSlopeRun"
+                      f" do not match with post.italicAngle.\n"
+                      f"Got: caretSlopeRise {ttFont['hhea'].caretSlopeRise}"
+                      f" and caretSlopeRun {ttFont['hhea'].caretSlopeRun}\n"
+                      f"Expected: caretSlopeRise {expectedCaretSlopeRise}"
+                      f" and caretSlopeRun {expectedCaretSlopeRun}")
+    else:
+        yield PASS, ("hhea.caretSlopeRise and hhea.caretSlopeRun"
+                     " match with post.italicAngle.")

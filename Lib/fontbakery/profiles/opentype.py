@@ -87,6 +87,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.adobe.fonts/check/varfont/distinct_instance_records',
     'com.adobe.fonts/check/stat_has_axis_value_tables',
     'com.thetypefounders/check/vendor_id',
+    'com.google.fonts/check/caret_slope',
 ]
 
 profile.auto_register(globals())
