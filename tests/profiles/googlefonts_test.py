@@ -4274,8 +4274,6 @@ def test_check_STAT(fps, new_stat, result):
                                'with a bad font')
 
 
-OVERRIDE_SUFFIX = ":googlefonts"
-
 @patch("freetype.Face", side_effect=ImportError)
 def test_check_override_freetype_rasterizer(mock_import_error):
     """Check that overridden test yields FAIL rather than SKIP."""
@@ -4385,3 +4383,43 @@ def test_check_noto_has_article():
     assert_results_contain(check(font),
                            FAIL, 'missing-article',
                            "with a bad font")
+
+
+def test_check_italic_axis_in_stat_is_boolean():
+    """Ensure 'ital' STAT axis is boolean value"""
+    check = CheckTester(googlefonts_profile,
+                        f"com.google.fonts/check/italic_axis_in_stat_is_boolean{OVERRIDE_SUFFIX}")
+    from fontbakery.profiles.shared_conditions import style
+
+    # PASS
+    font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
+    assert_PASS(check(TTFont(font), {"style": style(font)}))
+
+    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
+    assert_PASS(check(TTFont(font), {"style": style(font)}))
+
+    # FAIL
+    font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
+    ttFont = TTFont(font)
+    ttFont["STAT"].table.AxisValueArray.AxisValue[6].Value = 1
+    assert_results_contain(check(ttFont, {"style": style(font)}), FAIL, "wrong-ital-axis-value")
+
+    font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
+    ttFont = TTFont(font)
+    ttFont["STAT"].table.AxisValueArray.AxisValue[6].Flags = 0
+    assert_results_contain(check(ttFont, {"style": style(font)}), FAIL, "wrong-ital-axis-flag")
+
+    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
+    ttFont = TTFont(font)
+    ttFont["STAT"].table.AxisValueArray.AxisValue[6].Value = 0
+    assert_results_contain(check(ttFont, {"style": style(font)}), FAIL, "wrong-ital-axis-value")
+
+    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
+    ttFont = TTFont(font)
+    ttFont["STAT"].table.AxisValueArray.AxisValue[6].Flags = 2
+    assert_results_contain(check(ttFont, {"style": style(font)}), FAIL, "wrong-ital-axis-flag")
+
+    font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
+    ttFont = TTFont(font)
+    ttFont["STAT"].table.AxisValueArray.AxisValue[6].LinkedValue = None
+    assert_results_contain(check(ttFont, {"style": style(font)}), FAIL, "wrong-ital-axis-linkedvalue")
