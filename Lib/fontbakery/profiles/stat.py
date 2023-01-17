@@ -1,6 +1,6 @@
 from fontbakery.callable import check
 from fontbakery.message import Message
-from fontbakery.status import FAIL, PASS, INFO, WARN
+from fontbakery.status import FAIL, PASS, INFO, WARN, SKIP
 from fontbakery.utils import bullet_list
 import os
 
@@ -199,3 +199,72 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
 
     if passed:
         yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/italic_axis_in_stat_is_boolean',
+    conditions=["style", "has_STAT_table"],
+    rationale = """
+        Check that the value of the 'ital' STAT axis is boolean (either 0 or 1),
+        and elided for the Upright and not elided for the Italic,
+        and that the Upright is linked to the Italic.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3668'
+)
+def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
+    """Ensure 'ital' STAT axis is boolean value"""
+
+    from fontbakery.profiles.shared_conditions import is_variable_font
+
+    def get_STAT_axis(font, tag):
+        for i, axis in enumerate(font["STAT"].table.DesignAxisRecord.Axis):
+            if axis.AxisTag == tag:
+                for axisValue in font["STAT"].table.AxisValueArray.AxisValue:
+                    if axisValue.AxisIndex == i:
+                        linkedValue = None
+                        if hasattr(axisValue, "LinkedValue"):
+                            linkedValue = axisValue.LinkedValue
+                        return axisValue.Value, axisValue.Flags, linkedValue
+        return None, None, None
+
+    value, flags, linkedValue = get_STAT_axis(ttFont, "ital")
+    if (value, flags, linkedValue) == (None, None):
+        yield SKIP, "No 'ital' axis in STAT."
+        return
+
+    passed = True
+    if "Italic" in style:
+        if value != 1:
+            passed = False
+            yield WARN,\
+                  Message("wrong-ital-axis-value",
+                          f"STAT table 'ital' axis has wrong value."
+                          f" Expected: 1, got '{value}'.")
+        if flags != 0:
+            passed = False
+            yield WARN,\
+                  Message("wrong-ital-axis-flag",
+                          f"STAT table 'ital' axis flag is wrong."
+                          f" Expected: 0 (not elided), got '{flags}'.")
+    else:
+        if value != 0:
+            passed = False
+            yield WARN,\
+                  Message("wrong-ital-axis-value",
+                          f"STAT table 'ital' axis has wrong value."
+                          f" Expected: 0, got '{value}'.")
+        if flags != 2:
+            passed = False
+            yield WARN,\
+                  Message("wrong-ital-axis-flag",
+                          f"STAT table 'ital' axis flag is wrong.\n"
+                          f"Expected: 2 (elided)\n"
+                          f"Got: '{flags}'")
+        if linkedValue != 1:
+            passed = False
+            yield WARN,\
+                  Message("wrong-ital-axis-linkedvalue",
+                          "STAT table 'ital' axis is not linked to Italic.")
+
+    if passed:
+        yield PASS, "STAT table ital axis values are good."

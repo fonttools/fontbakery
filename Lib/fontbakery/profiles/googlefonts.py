@@ -35,6 +35,7 @@ profile.configuration_defaults = {
 OVERRIDDEN_CHECKS = [
     "com.adobe.fonts/check/freetype_rasterizer",
     "com.google.fonts/check/italic_angle",
+    "com.google.fonts/check/italic_axis_in_stat_is_boolean",
 ]
 
 METADATA_CHECKS = [
@@ -6407,6 +6408,17 @@ profile.check_log_override(
         ("over-30-degrees", FAIL, KEEP_ORIGINAL_MESSAGE),
     ),
     reason=("Google Fonts has different policies on checking for italic angle."),
+)
+
+profile.check_log_override(
+    # From opentype.py
+    "com.google.fonts/check/italic_axis_in_stat_is_boolean",
+    overrides=(
+        ("wrong-ital-axis-value", FAIL, KEEP_ORIGINAL_MESSAGE),
+        ("wrong-ital-axis-flag", FAIL, KEEP_ORIGINAL_MESSAGE),
+        ("wrong-ital-axis-linkedvalue", FAIL, KEEP_ORIGINAL_MESSAGE),
+    ),
+    reason=("For Google Fonts, all messages from this check are considered FAILs"),
 )
 
 GOOGLEFONTS_PROFILE_CHECKS = add_check_overrides(
