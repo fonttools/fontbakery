@@ -88,6 +88,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.adobe.fonts/check/stat_has_axis_value_tables',
     'com.thetypefounders/check/vendor_id',
     'com.google.fonts/check/caret_slope',
+    'com.google.fonts/check/italic_axis_in_stat',
 ]
 
 profile.auto_register(globals())

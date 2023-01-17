@@ -1,7 +1,8 @@
 from fontbakery.callable import check
 from fontbakery.message import Message
-from fontbakery.status import FAIL, PASS
+from fontbakery.status import FAIL, PASS, INFO, WARN
 from fontbakery.utils import bullet_list
+import os
 
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
@@ -129,3 +130,72 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
 
     if passed:
         yield PASS, "STAT table has Axis Value tables."
+
+
+@check(
+    id = 'com.google.fonts/check/italic_axis_in_stat',
+    rationale = """
+        Check that related Upright and Italic VFs have a
+        'ital' axis in STAT table.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/2934'
+)
+def com_google_fonts_check_italic_axis_in_stat(fonts, config):
+    """Ensure VFs have 'ital' STAT axis."""
+    from fontTools.ttLib import TTFont
+
+    italics = [f for f in fonts if 'Italic' in f]
+    missing_roman = []
+    italic_to_roman_mapping = {}
+    for italic in italics:
+        style_from_filename = os.path.basename(italic).split('-')[-1].split('.')[0]
+        is_varfont = '[' in style_from_filename
+
+        # to remove the axes syntax used on variable-font filenames:
+        if is_varfont:
+            style_from_filename = style_from_filename.split('[')[0]
+
+        if style_from_filename == 'Italic':
+            if is_varfont:
+                # "Familyname-Italic[wght,wdth].ttf" => "Familyname[wght,wdth].ttf"
+                roman_counterpart = italic.replace('-Italic', '')
+            else:
+                # "Familyname-Italic.ttf" => "Familyname-Regular.ttf"
+                roman_counterpart = italic.replace('Italic', 'Regular')
+        else:
+            # "Familyname-BoldItalic[wght,wdth].ttf" => "Familyname-Bold[wght,wdth].ttf"
+            roman_counterpart = italic.replace('Italic', '')
+
+        if is_varfont:
+            if roman_counterpart not in fonts:
+                missing_roman.append(italic)
+            else:
+                italic_to_roman_mapping[italic] = roman_counterpart
+
+    if missing_roman:
+        from fontbakery.utils import pretty_print_list
+        missing_roman = pretty_print_list(config,
+                                          missing_roman)
+        yield FAIL,\
+              Message('missing-roman',
+                      f"Italics missing a Roman counterpart, so couldn't check"
+                      f" both Roman and Italic for 'ital' axis: {missing_roman}")
+        return
+
+    # Actual check starts here
+    passed = True
+    for italic_filename in italic_to_roman_mapping:
+        italic = italic_filename
+        upright = italic_to_roman_mapping[italic_filename]
+
+        for filepath in (upright, italic):
+            ttFont = TTFont(filepath)
+            if not "ital" in [axis.AxisTag for axis in ttFont["STAT"].table.DesignAxisRecord.Axis]:
+                passed = False
+                yield FAIL,\
+                      Message('missing-ital-axis',
+                              f"Font {os.path.basename(filepath)}"
+                              f" is missing an 'ital' axis.")
+
+    if passed:
+        yield PASS, "OK"
