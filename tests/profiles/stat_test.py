@@ -7,6 +7,7 @@ from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,
     TEST_FILE,
+    portable_path,
 )
 from fontbakery.profiles import opentype as opentype_profile
 
@@ -116,3 +117,30 @@ def test_check_stat_has_axis_value_tables():
     ttFont['STAT'].table.AxisValueArray.AxisValue[0].Format = 5
     msg = assert_results_contain(check(ttFont), FAIL, "unknown-axis-value-format")
     assert msg == "AxisValue format 5 is unknown."
+
+
+def test_check_italic_axis_in_stat():
+    """Ensure VFs have 'ital' STAT axis."""
+    check = CheckTester(
+        opentype_profile,
+        "com.google.fonts/check/italic_axis_in_stat",
+    )
+
+    # PASS
+    fonts = [
+        TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"),
+        TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"),
+    ]
+    assert_PASS(check(fonts))
+
+    # FAIL
+    fonts = [
+        TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"),
+    ]
+    assert_results_contain(check(fonts), FAIL, "missing-roman")
+
+    fonts = [
+        TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].missingitalaxis.ttf"),
+        TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].missingitalaxis.ttf"),
+    ]
+    assert_results_contain(check(fonts), FAIL, "missing-ital-axis")
