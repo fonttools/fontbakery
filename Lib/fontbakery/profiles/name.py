@@ -171,7 +171,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
     if missing_tables:
         return
 
-    failed = False
+    passed = True
     # Note: These values are read from the dict here only to
     # reduce the max line length in the check implementation below:
     seems_monospaced = glyph_metrics_stats["seems_monospaced"]
@@ -179,7 +179,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
     width_max = glyph_metrics_stats['width_max']
 
     if ttFont['hhea'].advanceWidthMax != width_max:
-        failed = True
+        passed = False
         yield FAIL,\
               Message("bad-advanceWidthMax",
                       f"Value of hhea.advanceWidthMax"
@@ -188,7 +188,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
 
     if seems_monospaced:
         if ttFont['post'].isFixedPitch == IsFixedWidth.NOT_MONOSPACED:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("mono-bad-post-isFixedPitch",
                           f"On monospaced fonts, the value of post.isFixedPitch"
@@ -196,8 +196,17 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
                           f" (meaning 'fixed width monospaced'),"
                           f" but got {ttFont['post'].isFixedPitch} instead.")
 
+        # https://learn.microsoft.com/en-us/typography/opentype/spec/recom#hhea-table
+        number_of_h_metrics = ttFont['hhea'].numberOfHMetrics
+        if number_of_h_metrics != 3:
+            passed = False
+            yield FAIL,\
+                  Message("bad-numberOfHMetrics",
+                          f"Value of hhea.numberOfHMetrics should be set to 3"
+                          f" but got {number_of_h_metrics} instead.")
+
         if not PANOSE_is_monospaced(ttFont['OS/2'].panose):
-            failed = True
+            passed = False
             family_type = ttFont['OS/2'].panose.bFamilyType
             yield FAIL,\
                   Message("mono-bad-panose",
@@ -213,7 +222,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
         ]
         outliers_ratio = float(len(unusually_spaced_glyphs)) / num_glyphs
         if outliers_ratio > 0:
-            failed = True
+            passed = False
             yield WARN,\
                   Message("mono-outliers",
                           f"Font is monospaced"
@@ -222,7 +231,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
                           f" have a different width."
                           f" You should check the widths of:"
                           f" {unusually_spaced_glyphs}")
-        if not failed:
+        if passed:
             yield PASS,\
                   Message("mono-good",
                           "Font is monospaced and all related metadata look good.")
@@ -231,7 +240,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
         # that all monospace-related metadata is properly unset.
 
         if ttFont['post'].isFixedPitch != IsFixedWidth.NOT_MONOSPACED:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("bad-post-isFixedPitch",
                           f"On non-monospaced fonts,"
@@ -240,14 +249,14 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
                           f" but got {ttFont['post'].isFixedPitch} instead.")
 
         if ttFont['OS/2'].panose.bProportion == PANOSE_Proportion.MONOSPACED:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("bad-panose",
                           "On non-monospaced fonts,"
                           " the OS/2.panose.bProportion value can be set to"
                           " any value except 9 (proportion: monospaced)"
                           " which is the bad value we got in this font.")
-        if not failed:
+        if passed:
             yield PASS,\
                   Message("good",
                           "Font is not monospaced and"
