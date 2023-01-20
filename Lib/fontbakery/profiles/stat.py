@@ -268,3 +268,33 @@ def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
 
     if passed:
         yield PASS, "STAT table ital axis values are good."
+
+
+@check(
+    id = 'com.google.fonts/check/italic_axis_last',
+    conditions=["style", "has_STAT_table"],
+    rationale = """
+        Check that the 'ital' STAT axis is last in axis order.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3669'
+)
+def com_google_fonts_check_italic_axis_last(ttFont, style):
+    """Ensure 'ital' STAT axis is last."""
+
+    def get_STAT_axis(font, tag):
+        for axis in font["STAT"].table.DesignAxisRecord.Axis:
+            if axis.AxisTag == tag:
+                return axis
+        return None
+
+    axis = get_STAT_axis(ttFont, "ital")
+    if not axis:
+        yield SKIP, "No 'ital' axis in STAT."
+        return
+
+    if ttFont["STAT"].table.DesignAxisRecord.Axis[-1].AxisTag != "ital":
+        yield WARN,\
+              Message("ital-axis-not-last",
+                      "STAT table 'ital' axis is not the last in the axis order.")
+    else:
+        yield PASS, "STAT table ital axis order is good."

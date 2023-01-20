@@ -36,6 +36,7 @@ OVERRIDDEN_CHECKS = [
     "com.adobe.fonts/check/freetype_rasterizer",
     "com.google.fonts/check/italic_angle",
     "com.google.fonts/check/italic_axis_in_stat_is_boolean",
+    "com.google.fonts/check/italic_axis_last",
 ]
 
 METADATA_CHECKS = [
@@ -6419,6 +6420,13 @@ profile.check_log_override(
         ("wrong-ital-axis-linkedvalue", FAIL, KEEP_ORIGINAL_MESSAGE),
     ),
     reason=("For Google Fonts, all messages from this check are considered FAILs"),
+)
+
+profile.check_log_override(
+    # From opentype.py
+    "com.google.fonts/check/italic_axis_last",
+    overrides=(("ital-axis-not-last", FAIL, KEEP_ORIGINAL_MESSAGE),),
+    reason=("For Google Fonts, the 'ital' axis must be last in the axes order."),
 )
 
 GOOGLEFONTS_PROFILE_CHECKS = add_check_overrides(

@@ -4428,3 +4428,17 @@ def test_check_italic_axis_in_stat_is_boolean():
     ttFont["STAT"].table.AxisValueArray.AxisValue[6].LinkedValue = None
     assert_results_contain(check(ttFont, {"style": style(font)}),
                            FAIL, "wrong-ital-axis-linkedvalue")
+
+
+def test_check_italic_axis_last():
+    """Ensure 'ital' STAT axis is boolean value"""
+    check = CheckTester(googlefonts_profile,
+                        f"com.google.fonts/check/italic_axis_last{OVERRIDE_SUFFIX}")
+    from fontbakery.profiles.shared_conditions import style
+
+    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
+    assert_results_contain(check(font, {"style": style(font)}),
+                           FAIL, "ital-axis-not-last")
+
+    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf")
+    assert_PASS(check(font, {"style": style(font)}))
