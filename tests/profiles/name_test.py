@@ -548,14 +548,14 @@ def test_check_italic_names():
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     assert_SKIP(check(ttFont))
 
-    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf"))
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
     assert_PASS(check(ttFont), PASS)
 
     # FAIL
-    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf"))
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
     set_name(ttFont, 16, "Shantell Sans Italic")
     assert_results_contain(check(ttFont), FAIL, "bad-typographicfamilyname")
 
-    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf"))
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
     set_name(ttFont, 17, "Light")
     assert_results_contain(check(ttFont), FAIL, "bad-typographicsubfamilyname")
