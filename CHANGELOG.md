@@ -32,7 +32,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/name/italic_names]:** Implemented checks for name IDs 1, 2, 16, 17 for Italic fonts (issues #3666 and #3667)
   - **[com.google.fonts/check/caret_slope]:** Check for hhea.caretSlopeRise and hhea.caretSlopeRun to match post.italicAngle (issue #3670)
   - **[com.google.fonts/check/italic_axis_in_stat]:** Check that ital axis exists in STAT table (issue #2934)
-  - **[com.google.fonts/check/italic_axis_in_stat_is_boolean]:** Check that STAT ital axis values are boolean (0 or 1) and flags are elided for Upright and not elided for Roman, and Roman is linked to Italic (PR #4022)
+  - **[com.google.fonts/check/italic_axis_in_stat_is_boolean]:** Check that STAT ital axis values are boolean (0 or 1) and flags are elided for Upright and not elided for Roman, and Roman is linked to Italic (issue #3668)
+  - **[com.google.fonts/check/italic_axis_last]:** Check that STAT ital axis is last in order (issue #3669)
 
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Check if fonts contain the correct color tables. (issue #3886)

@@ -90,6 +90,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/caret_slope',
     'com.google.fonts/check/italic_axis_in_stat',
     'com.google.fonts/check/italic_axis_in_stat_is_boolean',
+    'com.google.fonts/check/italic_axis_last',
 ]
 
 profile.auto_register(globals())
