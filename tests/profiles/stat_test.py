@@ -207,5 +207,5 @@ def test_check_italic_axis_last():
     assert_results_contain(check(font, {"style": style(font)}),
                            WARN, "ital-axis-not-last")
 
-    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed-b.ttf")
+    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf")
     assert_PASS(check(font, {"style": style(font)}))
