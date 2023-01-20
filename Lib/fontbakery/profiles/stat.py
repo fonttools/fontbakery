@@ -214,8 +214,6 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
 def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
     """Ensure 'ital' STAT axis is boolean value"""
 
-    from fontbakery.profiles.shared_conditions import is_variable_font
-
     def get_STAT_axis(font, tag):
         for i, axis in enumerate(font["STAT"].table.DesignAxisRecord.Axis):
             if axis.AxisTag == tag:
