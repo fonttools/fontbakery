@@ -145,6 +145,19 @@ def test_check_italic_axis_in_stat():
                            FAIL, "missing-roman")
 
     fonts = [
+        TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"),
+        TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"),
+    ]
+    # Remove ital axes
+    for i, font in enumerate(fonts):
+        ttFont = TTFont(font)
+        # These two fonts actually have the ital axis in different positions
+        if i == 0:
+            ttFont["STAT"].table.DesignAxisRecord.Axis = [ttFont["STAT"].table.DesignAxisRecord.Axis[0]] + ttFont["STAT"].table.DesignAxisRecord.Axis[2:]        
+        elif i == 1:
+            ttFont["STAT"].table.DesignAxisRecord.Axis = ttFont["STAT"].table.DesignAxisRecord.Axis[:-1]        
+        ttFont.save(font.replace(".ttf", ".missingitalaxis.ttf"))
+    fonts = [
         TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].missingitalaxis.ttf"),
         TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].missingitalaxis.ttf"),
     ]
