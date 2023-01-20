@@ -71,7 +71,7 @@ def test_style_condition():
     from fontbakery.profiles.shared_conditions import style
     # VFs
     assert style(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")) == "Regular"
-    assert style(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].unfixednametable.ttf")) == "Italic"
+    assert style(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")) == "Italic"
     assert style(TEST_FILE("shantell/ShantellSans-Bold[BNCE,INFM,SPAC,wght].ttf")) == "Bold"
     assert style(TEST_FILE("shantell/ShantellSans-BoldItalic[BNCE,INFM,SPAC,wght].ttf")) == "BoldItalic"
     # Statics
