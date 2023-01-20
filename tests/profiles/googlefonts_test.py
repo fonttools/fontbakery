@@ -4402,24 +4402,29 @@ def test_check_italic_axis_in_stat_is_boolean():
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)
     ttFont["STAT"].table.AxisValueArray.AxisValue[6].Value = 1
-    assert_results_contain(check(ttFont, {"style": style(font)}), FAIL, "wrong-ital-axis-value")
+    assert_results_contain(check(ttFont, {"style": style(font)}),
+                           FAIL, "wrong-ital-axis-value")
 
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)
     ttFont["STAT"].table.AxisValueArray.AxisValue[6].Flags = 0
-    assert_results_contain(check(ttFont, {"style": style(font)}), FAIL, "wrong-ital-axis-flag")
+    assert_results_contain(check(ttFont, {"style": style(font)}),
+                           FAIL, "wrong-ital-axis-flag")
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)
     ttFont["STAT"].table.AxisValueArray.AxisValue[6].Value = 0
-    assert_results_contain(check(ttFont, {"style": style(font)}), FAIL, "wrong-ital-axis-value")
+    assert_results_contain(check(ttFont, {"style": style(font)}),
+                           FAIL, "wrong-ital-axis-value")
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)
     ttFont["STAT"].table.AxisValueArray.AxisValue[6].Flags = 2
-    assert_results_contain(check(ttFont, {"style": style(font)}), FAIL, "wrong-ital-axis-flag")
+    assert_results_contain(check(ttFont, {"style": style(font)}),
+                           FAIL, "wrong-ital-axis-flag")
 
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)
     ttFont["STAT"].table.AxisValueArray.AxisValue[6].LinkedValue = None
-    assert_results_contain(check(ttFont, {"style": style(font)}), FAIL, "wrong-ital-axis-linkedvalue")
+    assert_results_contain(check(ttFont, {"style": style(font)}),
+                           FAIL, "wrong-ital-axis-linkedvalue")
