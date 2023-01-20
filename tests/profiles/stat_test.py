@@ -149,7 +149,7 @@ def test_check_italic_axis_in_stat():
         TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"),
     ]
     # Remove ital axes
-    for i, font in enumerate(fonts):
+    for font in fonts:
         ttFont = TTFont(font)
         ttFont["STAT"].table.DesignAxisRecord.Axis = ttFont["STAT"].table.DesignAxisRecord.Axis[:-1]        
         ttFont.save(font.replace(".ttf", ".missingitalaxis.ttf"))
