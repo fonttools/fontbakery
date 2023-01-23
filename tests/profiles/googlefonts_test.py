@@ -2336,6 +2336,19 @@ def test_check_italic_angle():
             assert_PASS(check(ttFont, {"style": style}),
                         f'with italic-angle:{value} style:{style}...')
 
+    # Cairo, check left and right-leaning explicitly
+    ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.rightslanted.ttf"))
+    assert_PASS(check(ttFont, {"style": "Italic"}))
+    ttFont["post"].italicAngle *= -1
+    assert_results_contain(check(ttFont, {"style": "Italic"}),
+                           FAIL, "positive")
+
+    ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
+    assert_PASS(check(ttFont, {"style": "Italic"}))
+    ttFont["post"].italicAngle *= -1
+    assert_results_contain(check(ttFont, {"style": "Italic"}),
+                           FAIL, "negative")
+
 
 def test_check_slant_direction():
     """Checking direction of slnt axis angles"""

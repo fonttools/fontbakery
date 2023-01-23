@@ -6406,6 +6406,7 @@ profile.check_log_override(
     "com.google.fonts/check/italic_angle",
     overrides=(
         ("positive", FAIL, KEEP_ORIGINAL_MESSAGE),
+        ("negative", FAIL, KEEP_ORIGINAL_MESSAGE),
         ("over-30-degrees", FAIL, KEEP_ORIGINAL_MESSAGE),
     ),
     reason=("Google Fonts has different policies on checking for italic angle."),
