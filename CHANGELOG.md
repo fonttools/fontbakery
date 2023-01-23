@@ -58,6 +58,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
   instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
   - **[com.google.fonts/check/monospace]:** The check was modified to also check that `hhea.numberOfHMetrics` equals `3` for monospaced fonts, as per [Microsoft's recommendation](https://learn.microsoft.com/en-us/typography/opentype/spec/recom#hhea-table). (PR #4025)
+  - **[com.google.fonts/check/italic_angle]:**  Improve italic_angle check to base reporting on Italic angle as measure from outline. (PR #4031)
 
 #### On the AdobeFonts Profile
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Added check that format 4 AxisValue tables have AxisCount (number of AxisValueRecords) > 1 (issue #3957)
