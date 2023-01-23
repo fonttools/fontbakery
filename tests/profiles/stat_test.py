@@ -145,6 +145,15 @@ def test_check_italic_axis_in_stat():
                            FAIL, "missing-roman")
 
     fonts = [
+        TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"),
+        TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"),
+    ]
+    # Remove ital axes
+    for font in fonts:
+        ttFont = TTFont(font)
+        ttFont["STAT"].table.DesignAxisRecord.Axis = ttFont["STAT"].table.DesignAxisRecord.Axis[:-1]        
+        ttFont.save(font.replace(".ttf", ".missingitalaxis.ttf"))
+    fonts = [
         TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].missingitalaxis.ttf"),
         TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].missingitalaxis.ttf"),
     ]
@@ -204,8 +213,11 @@ def test_check_italic_axis_last():
     from fontbakery.profiles.shared_conditions import style
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
-    assert_results_contain(check(font, {"style": style(font)}),
+    ttFont = TTFont(font)
+    # Move last axis (ital) to the front
+    ttFont["STAT"].table.DesignAxisRecord.Axis = [ttFont["STAT"].table.DesignAxisRecord.Axis[-1]] + ttFont["STAT"].table.DesignAxisRecord.Axis[:-1]
+    assert_results_contain(check(ttFont, {"style": style(font)}),
                            WARN, "ital-axis-not-last")
 
-    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf")
+    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     assert_PASS(check(font, {"style": style(font)}))

@@ -64,14 +64,14 @@ def test_check_caretslope():
                         "com.google.fonts/check/caret_slope")
 
     # PASS
-    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf"))
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
     assert_PASS(check(ttFont))
 
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     assert_PASS(check(ttFont))
 
     # FAIL for right-leaning
-    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf"))
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
     ttFont["post"].italicAngle = -12
     message = assert_results_contain(check(ttFont), FAIL, 'caretslope-mismatch')
     assert message == (

@@ -1795,7 +1795,7 @@ def test_check_metadata_valid_nameid25():
     # PASS
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     assert_PASS(check(ttFont), f"with a good font ({ttFont})...")
-    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf"))
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
     assert_PASS(check(ttFont), f"with a good font ({ttFont})...")
 
     def set_name(font, nameID, string):
@@ -1812,7 +1812,7 @@ def test_check_metadata_valid_nameid25():
                     )
 
     # FAIL
-    fontpath = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf")
+    fontpath = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(fontpath)
     set_name(ttFont, 25, "ShantellSans")
     assert_results_contain(check(ttFont, {"style": style(fontpath)}),
@@ -4437,8 +4437,11 @@ def test_check_italic_axis_last():
     from fontbakery.profiles.shared_conditions import style
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
-    assert_results_contain(check(font, {"style": style(font)}),
+    ttFont = TTFont(font)
+    # Move last axis (ital) to the front
+    ttFont["STAT"].table.DesignAxisRecord.Axis = [ttFont["STAT"].table.DesignAxisRecord.Axis[-1]] + ttFont["STAT"].table.DesignAxisRecord.Axis[:-1]
+    assert_results_contain(check(ttFont, {"style": style(font)}),
                            FAIL, "ital-axis-not-last")
 
-    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].fixed.ttf")
+    font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     assert_PASS(check(font, {"style": style(font)}))
