@@ -203,7 +203,8 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
 
 @check(
     id = 'com.google.fonts/check/italic_axis_in_stat_is_boolean',
-    conditions=["style", "has_STAT_table"],
+    conditions=["style",
+                "has_STAT_table"],
     rationale = """
         Check that the value of the 'ital' STAT axis is boolean (either 0 or 1),
         and elided for the Upright and not elided for the Italic,
@@ -215,6 +216,12 @@ def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
     """Ensure 'ital' STAT axis is boolean value"""
 
     def get_STAT_axis(font, tag):
+        for axis in font["STAT"].table.DesignAxisRecord.Axis:
+            if axis.AxisTag == tag:
+                return axis
+        return None
+
+    def get_STAT_axis_value(font, tag):
         for i, axis in enumerate(font["STAT"].table.DesignAxisRecord.Axis):
             if axis.AxisTag == tag:
                 for axisValue in font["STAT"].table.AxisValueArray.AxisValue:
@@ -225,12 +232,17 @@ def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
                         return axisValue.Value, axisValue.Flags, linkedValue
         return None, None, None
 
-    value, flags, linkedValue = get_STAT_axis(ttFont, "ital")
-    if (value, flags, linkedValue) == (None, None):
+    if not get_STAT_axis(ttFont, "ital"):
+        yield SKIP, "Font doesn't have an ital axis"
+        return
+
+    value, flags, linkedValue = get_STAT_axis_value(ttFont, "ital")
+    if (value, flags, linkedValue) == (None, None, None):
         yield SKIP, "No 'ital' axis in STAT."
         return
 
     passed = True
+    # Font has an 'ital' axis in STAT
     if "Italic" in style:
         if value != 1:
             passed = False
