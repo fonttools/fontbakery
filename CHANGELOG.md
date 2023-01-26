@@ -44,8 +44,12 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/empty_glyph_on_gid1_for_colrv0]:** Ensure that GID 1 is empty to work around Windows 10 rendering bug ([gftools issue #609](https://github.com/googlefonts/gftools/issues/609))
   - **[com.google.fonts/check/metadata/valid_nameid25]:** Check Name ID 25 for VF Italics (issue #3024)
 
-### Deprecated check (removed from the Open Type and Adobe Profiles)
+### Deprecated checks
+#### Removed from the Open Type and Adobe Profiles
   - **[com.google.fonts/check/all_glyphs_have_codepoints]:** This check cannot ever fail with fontTools and is therefore redundant. (issue #1793)
+
+#### Removed from the Google Fonts Profile
+  - **[com.google.fonts/check/listed_on_gfonts]:** Did not pass for any new families and was not deemed to be a useful check by the onboarding team. The WARN was actually considered annoying. (issue #3220)
 
 ### Changes to existing checks
 #### On the Universal Profile
