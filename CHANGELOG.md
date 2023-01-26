@@ -59,6 +59,18 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
   instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
   - **[com.google.fonts/check/monospace]:** The check was modified to also check that `hhea.numberOfHMetrics` equals `3` for monospaced fonts, as per [Microsoft's recommendation](https://learn.microsoft.com/en-us/typography/opentype/spec/recom#hhea-table). (PR #4025)
+  - **[com.google.fonts/check/varfont/regular_wght_coord]:** The check was modified to distinguish between a font having no regular
+  instance (code: `no-regular-instance`) versus having a regular instance whose wght coord != 400 (existing code `wght-not-400`). (issue #4003)
+  - **[com.google.fonts/check/varfont/regular_wdth_coord]:** The check was modified to distinguish between a font having no regular
+  instance (code: `no-regular-instance`) versus having a regular instance whose wdth coord != 100 (existing code `wdth-not-100`). (issue #4003)
+  - **[com.google.fonts/check/varfont/regular_slnt_coord]:** The check was modified to distinguish between a font having no regular
+  instance (code: `no-regular-instance`) versus having a regular instance whose slnt coord != 100 (existing code `slnt-not-0`). (issue #4003)
+  - **[com.google.fonts/check/varfont/regular_ital_coord]:** The check was modified to distinguish between a font having no regular
+  instance (code: `no-regular-instance`) versus having a regular instance whose ital coord != 100 (existing code `ital-not-0`). (issue #4003)
+  - **[com.google.fonts/check/varfont/regular_opsz_coord]:** The check was modified to distinguish between a font having no regular
+  instance (code: `no-regular-instance`) versus having a regular instance whose opsz is out of range (existing code `opsz-out-of-range`). (issue #4003)
+  - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
+  instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
   - **[com.google.fonts/check/italic_angle]:**  Improve italic_angle check to base reporting on Italic angle as measure from outline. (PR #4031)
   - **[com.google.fonts/check/italic_axis_in_stat_is_boolean]:** Skip check if font doesn't have an ital axis. (PR #4033)
 
@@ -75,6 +87,14 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/bold_wght_coord]**: relax `wght-not-700` from FAIL to WARN.
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN. (issue #3898)
 
+#### Overridden in the Adobe Fonts Profile
+  - **[com.google.fonts/check/varfont/regular_wght_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
+  - **[com.google.fonts/check/varfont/regular_wdth_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
+  - **[com.google.fonts/check/varfont/regular_slnt_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
+  - **[com.google.fonts/check/varfont/regular_ital_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
+  - **[com.google.fonts/check/varfont/regular_opsz_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
+  - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN. (issue #3898)
+
 #### On the GoogleFonts Profile
   - **[com.google.fonts/check/metadata/can_render_samples]:** Fix false-FAIL by removing '\n' and U+200B (zero width space) characteres from sample strings (issue #3990)
   - **[com.google.fonts/check/metadata/broken_links]:** add special handling for github url (issue #2550)
@@ -89,32 +109,6 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the FontWerk Profile
   - **[com.fontwerk/check/inconsistencies_between_fvar_stat]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
-
-### Changes to existing checks
-#### On the OpenType Profile
-  - **[com.google.fonts/check/varfont/regular_wght_coord]:** The check was modified to distinguish between a font having no regular
-  instance (code: `no-regular-instance`) versus having a regular instance whose wght coord != 400 (existing code `wght-not-400`). (issue #4003)
-  - **[com.google.fonts/check/varfont/regular_wdth_coord]:** The check was modified to distinguish between a font having no regular
-  instance (code: `no-regular-instance`) versus having a regular instance whose wdth coord != 100 (existing code `wdth-not-100`). (issue #4003)
-  - **[com.google.fonts/check/varfont/regular_slnt_coord]:** The check was modified to distinguish between a font having no regular
-  instance (code: `no-regular-instance`) versus having a regular instance whose slnt coord != 100 (existing code `slnt-not-0`). (issue #4003)
-  - **[com.google.fonts/check/varfont/regular_ital_coord]:** The check was modified to distinguish between a font having no regular
-  instance (code: `no-regular-instance`) versus having a regular instance whose ital coord != 100 (existing code `ital-not-0`). (issue #4003)
-  - **[com.google.fonts/check/varfont/regular_opsz_coord]:** The check was modified to distinguish between a font having no regular
-  instance (code: `no-regular-instance`) versus having a regular instance whose opsz is out of range (existing code `opsz-out-of-range`). (issue #4003)
-  - **[com.google.fonts/check/varfont/bold_wght_coord]:** The check was modified to distinguish between a font having no bold
-  instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
-
-#### On the Google Fonts Profile
-  - **[com.google.fonts/check/vertical_metrics]:** Check for positive and negative ascender and descender values (PR #3921)
-
-#### Overridden in the Adobe Fonts Profile
-  - **[com.google.fonts/check/varfont/regular_wght_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
-  - **[com.google.fonts/check/varfont/regular_wdth_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
-  - **[com.google.fonts/check/varfont/regular_slnt_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
-  - **[com.google.fonts/check/varfont/regular_ital_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
-  - **[com.google.fonts/check/varfont/regular_opsz_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
-  - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN. (issue #3898)
 
 
 ## 0.8.10 (2022-Aug-25)
