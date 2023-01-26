@@ -5787,6 +5787,8 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
                         # used for reaching 32-bit offsets
                         # within the GSUB table.
                         subtable = subtable.ExtSubTable
+                    if not hasattr(subtable, "mapping"):
+                        continue
                     smcp_glyphs = set(subtable.mapping.values())
                     missing = smcp_glyphs - set(ttFont.getGlyphNames())
                     if missing:
