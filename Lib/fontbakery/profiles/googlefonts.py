@@ -44,7 +44,6 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/unknown_designer',
     'com.google.fonts/check/metadata/multiple_designers',
     'com.google.fonts/check/metadata/designer_values',
-    'com.google.fonts/check/metadata/listed_on_gfonts',
     'com.google.fonts/check/metadata/unique_full_name_values',
     'com.google.fonts/check/metadata/unique_weight_style_pairs',
     'com.google.fonts/check/metadata/license',
@@ -1888,21 +1887,6 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
     else:
         yield PASS, ("None of the ASCII-only NAME table entries"
                      " contain non-ASCII characteres.")
-
-
-@check(
-    id = 'com.google.fonts/check/metadata/listed_on_gfonts',
-    conditions = ['family_metadata'],
-    proposal = 'legacy:check/082'
-)
-def com_google_fonts_check_metadata_listed_on_gfonts(font, listed_on_gfonts_api):
-    """METADATA.pb: Fontfamily is listed on Google Fonts API?"""
-    if not listed_on_gfonts_api:
-        yield WARN,\
-              Message("not-found",
-                      "Family not found via Google Fonts API.")
-    else:
-        yield PASS, "Font is properly listed via Google Fonts API."
 
 
 @check(

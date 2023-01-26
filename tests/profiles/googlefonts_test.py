@@ -1201,36 +1201,6 @@ def test_split_camel_case_condition():
     assert split_camel_case("LibreCaslonText") == "Libre Caslon Text"
 
 
-def test_check_metadata_listed_on_gfonts():
-    """ METADATA.pb: Fontfamily is listed on Google Fonts API? """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/metadata/listed_on_gfonts")
-
-    font = TEST_FILE("familysans/FamilySans-Regular.ttf")
-    # Our reference FamilySans family is a just a generic example
-    # and thus is not really hosted (nor will ever be hosted) at Google Fonts servers:
-    assert_results_contain(check(font),
-                           WARN, 'not-found',
-                           f'with "{font}", from a family that\'s'
-                           f' not listed on GFonts...')
-
-    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    # Our reference Merriweather family is available on the Google Fonts collection:
-    assert_PASS(check(font),
-                f'with "{font}", from a family that is'
-                f' listed on Google Fonts API...')
-
-    font = TEST_FILE("abeezee/ABeeZee-Regular.ttf")
-    # This is to ensure the code handles well camel-cased familynames.
-    assert_PASS(check(font),
-                f'with "{font}", listed and with a camel-cased name...')
-
-    font = TEST_FILE("librecaslontext/LibreCaslonText[wght].ttf")
-    # And the check should also properly handle space-separated multi-word familynames.
-    assert_PASS(check(font),
-                f'with "{font}", available and with a space-separated family name...')
-
-
 def test_check_metadata_unique_full_name_values():
     """ METADATA.pb: check if fonts field only has unique "full_name" values. """
     check = CheckTester(googlefonts_profile,
