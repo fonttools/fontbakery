@@ -12,6 +12,7 @@ DotGothic # seen in "DotGothic16"
 DynaPuff
 FakeFont
 JetBrains # seen in "JetBrains Mono"
+KoHo
 McLaren
 MedievalSharp
 MonteCarlo
