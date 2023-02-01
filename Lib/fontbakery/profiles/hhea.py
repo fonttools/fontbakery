@@ -74,7 +74,6 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
 
 @check(
     id = 'com.google.fonts/check/caret_slope',
-    conditions = ['style'],
     rationale = """
         Checks whether hhea.caretSlopeRise and hhea.caretSlopeRun
         match with post.italicAngle.
@@ -91,7 +90,7 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3670'
 )
-def com_google_fonts_check_caret_slope(ttFont, style):
+def com_google_fonts_check_caret_slope(ttFont):
     """Check hhea.caretSlopeRise and hhea.caretSlopeRun"""
 
     import math
