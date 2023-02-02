@@ -53,6 +53,13 @@ RIBBI_STYLE_NAMES = [
     "BoldItalic",
     "Bold Italic"]  # <-- Do we really need this one?
 
+REGISTERED_AXIS_TAGS = [
+  "ital",
+  "opsz",
+  "slnt",
+  "wdth",
+  "wght"]
+
 PLACEHOLDER_LICENSING_TEXT = {
     'UFL.txt': 'Licensed under the Ubuntu Font Licence 1.0.',
     'OFL.txt': 'This Font Software is licensed under the SIL Open Font '

@@ -3,6 +3,7 @@ from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
+from fontbakery.constants import REGISTERED_AXIS_TAGS
 
 profile_imports = (
     (".", ("shared_conditions",)),
@@ -629,7 +630,6 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
        Warn if foundry-defined tag is similar to registered tag, aka is
        equivalent to registered tag when using all lowercase letters.
     """
-    registeredTags = ["ital", "opsz", "slnt", "wdth", "wght"]
     passed = True
     for axis in ttFont["fvar"].axes:
       axisTag = axis.axisTag
@@ -661,5 +661,9 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
                 Message("invalid-foundry-defined-tag-chars",
                         f'foundry-defined tag {axisTag} must only use'
                         f'uppercase or digits.')
+        if axisTag in REGISTERED_TAGS:
+        if axisTag.lower() in REGISTERED_TAGS:
+        if axisTag in REGISTERED_AXIS_TAGS:
+        if axisTag.lower() in REGISTERED_AXIS_TAGS:
     if (passed == True):
       yield PASS, f"Tag ({axisTag}) looks good."
