@@ -195,7 +195,6 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/mandatory_glyphs",
     "com.google.fonts/check/ots",
     "com.google.fonts/check/required_tables",
-    "com.google.fonts/check/foundry-defined-tag-name",
     "com.google.fonts/check/rupee",
     "com.google.fonts/check/ttx_roundtrip",
     "com.google.fonts/check/unique_glyphnames",

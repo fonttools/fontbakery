@@ -621,7 +621,7 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
         and must use only uppercase letters or digits.
     """,
     conditions = ['is_variable_font'],
-    proposal = ''
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/4043'
 )
 def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
     """Validate that foundry-defined tags begin with an uppercase letter (0x41 to 0x5A),
