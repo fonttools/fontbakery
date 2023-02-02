@@ -2070,14 +2070,11 @@ def test_check_metadata_fontname_not_camel_cased():
                            FAIL, 'camelcase',
                            'with a bad font name (CamelCased)...')
 
-    # Real-world bad file
-    font = TEST_FILE("konkhmer_sleokchher/KonKhmer_SleokChher.ttf")
-    md = check["font_metadata"]
-    assert md.name == "KonKhmer_SleokChher"
+    # Real-world case:
+    md.name = "KonKhmer_SleokChher"
     assert_results_contain(check(font, {"font_metadata": md}),
                            FAIL, 'camelcase',
                            'with a bad font name (CamelCased)...')
-
 
     # And we also make sure the check PASSes with a few known good names:
     for good_name in ["VT323",
