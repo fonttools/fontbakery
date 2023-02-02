@@ -351,6 +351,11 @@ def test_check_varfont_foundry_defined_tag_name():
   assert_PASS(check(ttFont),
               'with a good varfont...')
 
+  # Warn: Uppercase version of registered tag
+  ttFont["fvar"].axes[0].axisTag = "ITAL"
+  assert_results_contain(check(ttFont),
+                         WARN, 'foundry-defined-similar-registered-name')
+
   # Fail: failing: first-letter not uppercase
   ttFont["fvar"].axes[0].axisTag = "nope"
   assert_results_contain(check(ttFont),

@@ -624,14 +624,24 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
     proposal = ''
 )
 def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
-    """Validate that Foundry-defined tags begin with an uppercase letter (0x41 to 0x5A),
-        and use only uppercase letters or digits"""
+    """Validate that foundry-defined tags begin with an uppercase letter (0x41 to 0x5A),
+       and use only uppercase letters or digits.
+       Warn if foundry-defined tag is similar to registered tag, aka is
+       equivalent to registered tag when using all lowercase letters.
+    """
     registeredTags = ["ital", "opsz", "slnt", "wdth", "wght"]
     passed = True
     for axis in ttFont["fvar"].axes:
       axisTag = axis.axisTag
       if axisTag in registeredTags:
          continue
+      elif axisTag.lower() in registeredTags:
+         yield WARN, \
+               Message("foundry-defined-similar-registered-name",
+                       f'Foundry-defined tag {axisTag} is very similar to '
+                       f'registered tag {axisTag.lower()}, consider renaming.'
+                       f'If this tag was meant to be a registered tag, please'
+                       f'use all lowercase letters in the tag name.')
       firstChar = ord(axisTag[0])
       if (firstChar < 0x41 or firstChar > 0x5A):
         # if firstChar is less than 0x41 or greater than 0x5A,
