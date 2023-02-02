@@ -3,6 +3,7 @@ from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
+from fontbakery.constants import REGISTERED_AXIS_TAGS
 
 profile_imports = (
     (".", ("shared_conditions",)),
@@ -607,3 +608,61 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
 
     if passed:
         yield PASS, "All instance records are distinct."
+
+
+@check(
+    id = 'com.adobe.fonts/check/varfont/foundry_defined_tag_name',
+    rationale = """
+        According to the Open-Type spec's
+        syntactic requirements for foundry-defined design-variation
+        axis tags available at
+        https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxisreg
+
+        Foundry-defined tags must begin with an uppercase letter (0x41 to 0x5A),
+        and must use only uppercase letters or digits.
+    """,
+    conditions = ['is_variable_font'],
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/4043'
+)
+def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
+    """Validate that foundry-defined tags begin with an uppercase letter (0x41 to 0x5A),
+       and use only uppercase letters or digits.
+       Warn if foundry-defined tag is similar to registered tag, aka is
+       equivalent to registered tag when using all lowercase letters.
+    """
+    passed = True
+    for axis in ttFont["fvar"].axes:
+        axisTag = axis.axisTag
+        if axisTag in REGISTERED_AXIS_TAGS:
+           continue
+        if axisTag.lower() in REGISTERED_AXIS_TAGS:
+           yield WARN, \
+                 Message("foundry-defined-similar-registered-name",
+                         f'Foundry-defined tag {axisTag} is very similar to '
+                         f'registered tag {axisTag.lower()}, consider renaming.'
+                         f'If this tag was meant to be a registered tag, please'
+                         f'use all lowercase letters in the tag name.')
+
+        firstChar = ord(axisTag[0])
+        if (firstChar < 0x41 or firstChar > 0x5A):
+            # if firstChar is less than 0x41 or greater than 0x5A,
+            # it isn't uppercase, therefore fail.
+            passed = False
+            yield FAIL, \
+                  Message("invalid-foundry-defined-tag-first-letter",
+                          f'foundry-defined tag {axisTag} must begin '
+                          f'with an uppercase letter.')
+
+        for i in range(1, 4, 1):
+            char = ord(axisTag[i])
+            if (char < 0x30 or (char > 0x39 and char < 0x41) or char > 0x5A):
+                # if less than 0x30, greater than 0x39 but less than 0x41,
+                # or greater than 0x5A, fail.
+                passed = False
+                yield FAIL, \
+                      Message("invalid-foundry-defined-tag-chars",
+                              f'foundry-defined tag {axisTag} must only use'
+                              f'uppercase or digits.')
+
+    if (passed == True):
+        yield PASS, f"Tag ({axisTag}) looks good."

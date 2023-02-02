@@ -1265,9 +1265,9 @@ def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, co
     rationale = """
         Glyphs are either accessible directly through Unicode codepoints or through
         substitution rules.
-        
+
         In Color Fonts, glyphs are also referenced by the COLR table.
-        
+
         Any glyphs not accessible by either of these means
         are redundant and serve only to increase the font's file size.
     """,
@@ -1829,11 +1829,11 @@ def com_adobe_fonts_check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
     rationale = """
         If the space and nbspace glyphs have different widths, then Google Workspace
         has problems with the font.
-        
+
         The nbspace is used to replace the space character in multiple situations
         in documents; such as the space before punctuation in languages that do that.
         It avoids the punctuation to be separated from the last word and go to next line.
-        
+
         This is automatic substitution by the text editors, not by fonts. It is also
         used by designers in text composition practice to create nicely shaped paragraphs.
         If the space and the nbspace are not the same width, it breaks the text

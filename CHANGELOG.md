@@ -35,6 +35,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/italic_axis_in_stat]:** Check that ital axis exists in STAT table (issue #2934)
   - **[com.google.fonts/check/italic_axis_in_stat_is_boolean]:** Check that STAT ital axis values are boolean (0 or 1) and flags are elided for Upright and not elided for Roman, and Roman is linked to Italic (issue #3668)
   - **[com.google.fonts/check/italic_axis_last]:** Check that STAT ital axis is last in order (issue #3669)
+  - **[com.adobe.fonts/check/varfont/foundry_defined_tag_name]:** Check that foundry-defined tags begin with an uppercase letter (0x41 to 0x5A), and use only uppercase letters or digits (issue #4043)
 
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Check if fonts contain the correct color tables. (issue #3886)
@@ -90,6 +91,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.fontwerk/check/weight_class_fvar]**: relax `bad-weight-class` from FAIL to WARN.
   - **[com.google.fonts/check/varfont/bold_wght_coord]**: relax `wght-not-700` from FAIL to WARN.
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** downgrade `no-bold-instance` from FAIL to WARN. (issue #3898)
+  - **[com.adobe.fonts/check/varfont/foundry_defined_tag_name]:** Added check that foundry-defined tags begin with an uppercase letter (0x41 to 0x5A), and use only uppercase letters or digits (issue #4043)
 
 #### Overridden in the Adobe Fonts Profile
   - **[com.google.fonts/check/varfont/regular_wght_coord]:** downgrade `no-regular-instance` from FAIL to WARN. (issue #4003)
