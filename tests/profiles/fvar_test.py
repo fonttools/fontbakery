@@ -328,6 +328,40 @@ def test_check_varfont_slnt_range():
     assert_PASS(check(ttFont))
 
 
+def test_check_varfont_foundry_defined_tag_name():
+  """ The variable font foundry-defined tag name must
+      begin with an uppercase letter (0x41 to 0x5A)
+      and only use uppercase letters or digits.
+  """
+  check = CheckTester(opentype_profile,
+                      "com.adobe.fonts/check/varfont/foundry_defined_tag_name")
+
+  # Our reference varfont CabinVFBeta.ttf
+  # has registered tags.
+  ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+  assert_PASS(check(ttFont),
+              'with a good varfont...')
+
+  # Pass: All uppercase
+  ttFont["fvar"].axes[0].axisTag = "GOOD"
+  assert_PASS(check(ttFont),
+              'with a good varfont...')
+  # Pass: All uppercase + digits
+  ttFont["fvar"].axes[0].axisTag = "G009"
+  assert_PASS(check(ttFont),
+              'with a good varfont...')
+
+  # Fail: failing: first-letter not uppercase
+  ttFont["fvar"].axes[0].axisTag = "nope"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'invalid-foundry-defined-tag-first-letter')
+
+  # Fail: characters not all uppercase-letters or digits
+  ttFont["fvar"].axes[0].axisTag = "N0pe"
+  assert_results_contain(check(ttFont),
+                         FAIL, 'invalid-foundry-defined-tag-chars')
+
+
 def test_check_varfont_valid_axis_nameid():
     """The value of axisNameID used by each VariationAxisRecord must
     be greater than 255 and less than 32768."""
