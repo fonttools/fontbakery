@@ -98,9 +98,17 @@ def com_google_fonts_check_caret_slope(ttFont):
     upm = ttFont["head"].unitsPerEm
     run = ttFont["hhea"].caretSlopeRun
     rise = ttFont["hhea"].caretSlopeRise
+    if rise == 0:
+        yield FAIL,\
+              Message("zero-rise",
+                      "caretSlopeRise must not be zero. Set it to 1 for upright fonts.")
+        return
     hheaItalicAngle = math.degrees(math.tan(-1 * run / rise))
-    expectedCaretSlopeRise = upm
     expectedCaretSlopeRun = round(math.atan(math.radians(-1 * postItalicAngle)) * upm)
+    if expectedCaretSlopeRun == 0:
+        expectedCaretSlopeRise = 1
+    else:
+        expectedCaretSlopeRise = upm
 
     if abs(postItalicAngle - hheaItalicAngle) > .1:
         yield FAIL,\
