@@ -635,7 +635,7 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
       axisTag = axis.axisTag
       if axisTag in registeredTags:
          continue
-      elif axisTag.lower() in registeredTags:
+      if axisTag.lower() in registeredTags:
          yield WARN, \
                Message("foundry-defined-similar-registered-name",
                        f'Foundry-defined tag {axisTag} is very similar to '
