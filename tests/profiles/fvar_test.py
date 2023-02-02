@@ -329,50 +329,44 @@ def test_check_varfont_slnt_range():
 
 
 def test_check_varfont_foundry_defined_tag_name():
-  """ The variable font foundry-defined tag name must
-      begin with an uppercase letter (0x41 to 0x5A)
-      and only use uppercase letters or digits.
-  """
-  check = CheckTester(opentype_profile,
-                      "com.adobe.fonts/check/varfont/foundry_defined_tag_name")
+    "Validate foundry-defined design-variation axis tag names."
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/varfont/foundry_defined_tag_name")
 
-  # Our reference varfont CabinVFBeta.ttf
-  # has registered tags.
-  ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-  assert_PASS(check(ttFont),
-              'with a good varfont...')
+    # Our reference varfont CabinVFBeta.ttf has registered tags.
+    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+    assert_PASS(check(ttFont),
+                'with a good varfont...')
 
-  # Pass: All uppercase
-  ttFont["fvar"].axes[0].axisTag = "GOOD"
-  assert_PASS(check(ttFont),
-              'with a good varfont...')
-  # Pass: All uppercase + digits
-  ttFont["fvar"].axes[0].axisTag = "G009"
-  assert_PASS(check(ttFont),
-              'with a good varfont...')
+    ttFont["fvar"].axes[0].axisTag = "GOOD"
+    assert_PASS(check(ttFont),
+               'with a good all uppercase axis tag...')
 
-  # Warn: Uppercase version of registered tag
-  ttFont["fvar"].axes[0].axisTag = "ITAL"
-  assert_results_contain(check(ttFont),
-                         WARN, 'foundry-defined-similar-registered-name')
+    ttFont["fvar"].axes[0].axisTag = "G009"
+    assert_PASS(check(ttFont),
+                'with all uppercase + digits...')
 
-  # Fail: failing: first-letter not uppercase
-  ttFont["fvar"].axes[0].axisTag = "nope"
-  assert_results_contain(check(ttFont),
-                         FAIL, 'invalid-foundry-defined-tag-first-letter')
+    ttFont["fvar"].axes[0].axisTag = "ITAL"
+    assert_results_contain(check(ttFont),
+                           WARN, 'foundry-defined-similar-registered-name',
+                           'with an uppercase version of registered tag...')
 
-  # Fail: characters not all uppercase-letters or digits
-  ttFont["fvar"].axes[0].axisTag = "N0pe"
-  assert_results_contain(check(ttFont),
-                         FAIL, 'invalid-foundry-defined-tag-chars')
+    ttFont["fvar"].axes[0].axisTag = "nope"
+    assert_results_contain(check(ttFont),
+                           FAIL, 'invalid-foundry-defined-tag-first-letter',
+                           'when first letter of axis tag is not uppercase...')
+
+    ttFont["fvar"].axes[0].axisTag = "N0pe"
+    assert_results_contain(check(ttFont),
+                           FAIL, 'invalid-foundry-defined-tag-chars',
+                           'when characters not all uppercase-letters or digits...')
 
 
 def test_check_varfont_valid_axis_nameid():
     """The value of axisNameID used by each VariationAxisRecord must
     be greater than 255 and less than 32768."""
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/varfont/valid_axis_nameid"
-    )
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/varfont/valid_axis_nameid")
 
     # The axisNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
@@ -418,9 +412,8 @@ def test_check_varfont_valid_axis_nameid():
 def test_check_varfont_valid_subfamily_nameid():
     """The value of subfamilyNameID used by each InstanceRecord must
     be 2, 17, or greater than 255 and less than 32768."""
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/varfont/valid_subfamily_nameid"
-    )
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/varfont/valid_subfamily_nameid")
 
     # The subfamilyNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
@@ -474,9 +467,8 @@ def test_check_varfont_valid_subfamily_nameid():
 def test_check_varfont_valid_postscript_nameid():
     """The value of postScriptNameID used by each InstanceRecord must
     be 6, 0xFFFF, or greater than 255 and less than 32768."""
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/varfont/valid_postscript_nameid"
-    )
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/varfont/valid_postscript_nameid")
 
     # The postScriptNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
@@ -531,9 +523,8 @@ def test_check_varfont_valid_default_instance_nameids():
     """If an instance record is included for the default instance, then the instance's
     subfamilyName string should match the string of nameID 2 or nameID 17, and the
     instance's postScriptName string should match the string of nameID 6."""
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/varfont/valid_default_instance_nameids"
-    )
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/varfont/valid_default_instance_nameids")
 
     # The font's 'Regular' instance record has the same coordinates as the default
     # instance, and the record's string matches the string of nameID 2.
@@ -606,9 +597,8 @@ def test_check_varfont_same_size_instance_records():
     """All of the instance records in a given font must have the same size,
     with all either including or omitting the postScriptNameID field. If the value
     is 0xFFFF it means that no PostScript name is provided for the instance."""
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/varfont/same_size_instance_records"
-    )
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/varfont/same_size_instance_records")
 
     # The value of postScriptNameID is 0xFFFF for all the instance records in the
     # reference varfont
@@ -644,9 +634,8 @@ def test_check_varfont_same_size_instance_records():
 def test_check_varfont_distinct_instance_records():
     """All of the instance records in a font should have distinct coordinates
     and distinct subfamilyNameID and postScriptName ID values."""
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/varfont/distinct_instance_records"
-    )
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/varfont/distinct_instance_records")
 
     # All of the instance records in the reference varfont are unique
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
