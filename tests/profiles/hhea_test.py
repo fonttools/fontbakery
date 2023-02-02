@@ -73,7 +73,8 @@ def test_check_caretslope():
     # FAIL for right-leaning
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
     ttFont["post"].italicAngle = -12
-    message = assert_results_contain(check(ttFont), FAIL, 'caretslope-mismatch')
+    message = assert_results_contain(check(ttFont),
+                                     FAIL, 'caretslope-mismatch')
     assert message == (
         "hhea.caretSlopeRise and hhea.caretSlopeRun do not match with post.italicAngle.\n"
         "Got: caretSlopeRise 1000 and caretSlopeRun 190\n"
@@ -84,9 +85,18 @@ def test_check_caretslope():
     ttFont["hhea"].caretSlopeRun = 206
     assert_PASS(check(ttFont))
 
+    good_value = ttFont["hhea"].caretSlopeRise
+    ttFont["hhea"].caretSlopeRise = 0
+    assert_results_contain(check(ttFont),
+                           FAIL, 'zero-rise')
+
+    # Fix it again from backed up good value
+    ttFont["hhea"].caretSlopeRise = good_value
+
     # FAIL for left-leaning
     ttFont["post"].italicAngle = 12
-    message = assert_results_contain(check(ttFont), FAIL, 'caretslope-mismatch')
+    message = assert_results_contain(check(ttFont),
+                                     FAIL, 'caretslope-mismatch')
     assert message == (
         "hhea.caretSlopeRise and hhea.caretSlopeRun do not match with post.italicAngle.\n"
         "Got: caretSlopeRise 1000 and caretSlopeRun 206\n"
