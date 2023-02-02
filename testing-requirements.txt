@@ -1,0 +1,5 @@
+--index-url https://pypi.python.org/simple/
+flake8==6.0.0
+pylint==2.15.10
+sphinx==6.1.3
+pytest-cov==4.0.0

@@ -48,7 +48,9 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
     missing_tables = _get_missing_tables(required_tables, ttFont)
     if missing_tables:
         for table_tag in missing_tables:
-            yield FAIL, Message("lacks-table", f"Font lacks '{table_tag}' table.")
+            yield FAIL,\
+                  Message("lacks-table",
+                          f"Font lacks '{table_tag}' table.")
         return
 
     hhea_advance_width_max = ttFont['hhea'].advanceWidthMax
@@ -72,7 +74,6 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
 
 @check(
     id = 'com.google.fonts/check/caret_slope',
-    conditions = ['style'],
     rationale = """
         Checks whether hhea.caretSlopeRise and hhea.caretSlopeRun
         match with post.italicAngle.
@@ -89,7 +90,7 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3670'
 )
-def com_google_fonts_check_caret_slope(ttFont, style):
+def com_google_fonts_check_caret_slope(ttFont):
     """Check hhea.caretSlopeRise and hhea.caretSlopeRun"""
 
     import math
@@ -97,9 +98,17 @@ def com_google_fonts_check_caret_slope(ttFont, style):
     upm = ttFont["head"].unitsPerEm
     run = ttFont["hhea"].caretSlopeRun
     rise = ttFont["hhea"].caretSlopeRise
+    if rise == 0:
+        yield FAIL,\
+              Message("zero-rise",
+                      "caretSlopeRise must not be zero. Set it to 1 for upright fonts.")
+        return
     hheaItalicAngle = math.degrees(math.tan(-1 * run / rise))
-    expectedCaretSlopeRise = upm
     expectedCaretSlopeRun = round(math.atan(math.radians(-1 * postItalicAngle)) * upm)
+    if expectedCaretSlopeRun == 0:
+        expectedCaretSlopeRise = 1
+    else:
+        expectedCaretSlopeRise = upm
 
     if abs(postItalicAngle - hheaItalicAngle) > .1:
         yield FAIL,\
