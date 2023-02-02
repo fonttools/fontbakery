@@ -632,38 +632,37 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
     """
     passed = True
     for axis in ttFont["fvar"].axes:
-      axisTag = axis.axisTag
-      if axisTag in registeredTags:
-         continue
-      if axisTag.lower() in registeredTags:
-         yield WARN, \
-               Message("foundry-defined-similar-registered-name",
-                       f'Foundry-defined tag {axisTag} is very similar to '
-                       f'registered tag {axisTag.lower()}, consider renaming.'
-                       f'If this tag was meant to be a registered tag, please'
-                       f'use all lowercase letters in the tag name.')
-      firstChar = ord(axisTag[0])
-      if (firstChar < 0x41 or firstChar > 0x5A):
-        # if firstChar is less than 0x41 or greater than 0x5A,
-        # it isn't uppercase, therefore fail.
-        passed = False
-        yield FAIL, \
-              Message("invalid-foundry-defined-tag-first-letter",
-                      f'foundry-defined tag {axisTag} must begin '
-                      f'with an uppercase letter.')
-      for i in range(1, 4, 1):
-        char = ord(axisTag[i])
-        if (char < 0x30 or (char > 0x39 and char < 0x41) or char > 0x5A):
-          # if less than 0x30, greater than 0x39 but less than 0x41,
-          # or greater than 0x5A, fail.
-          passed = False
-          yield FAIL, \
-                Message("invalid-foundry-defined-tag-chars",
-                        f'foundry-defined tag {axisTag} must only use'
-                        f'uppercase or digits.')
-        if axisTag in REGISTERED_TAGS:
-        if axisTag.lower() in REGISTERED_TAGS:
+        axisTag = axis.axisTag
         if axisTag in REGISTERED_AXIS_TAGS:
+           continue
         if axisTag.lower() in REGISTERED_AXIS_TAGS:
+           yield WARN, \
+                 Message("foundry-defined-similar-registered-name",
+                         f'Foundry-defined tag {axisTag} is very similar to '
+                         f'registered tag {axisTag.lower()}, consider renaming.'
+                         f'If this tag was meant to be a registered tag, please'
+                         f'use all lowercase letters in the tag name.')
+
+        firstChar = ord(axisTag[0])
+        if (firstChar < 0x41 or firstChar > 0x5A):
+            # if firstChar is less than 0x41 or greater than 0x5A,
+            # it isn't uppercase, therefore fail.
+            passed = False
+            yield FAIL, \
+                  Message("invalid-foundry-defined-tag-first-letter",
+                          f'foundry-defined tag {axisTag} must begin '
+                          f'with an uppercase letter.')
+
+        for i in range(1, 4, 1):
+            char = ord(axisTag[i])
+            if (char < 0x30 or (char > 0x39 and char < 0x41) or char > 0x5A):
+                # if less than 0x30, greater than 0x39 but less than 0x41,
+                # or greater than 0x5A, fail.
+                passed = False
+                yield FAIL, \
+                      Message("invalid-foundry-defined-tag-chars",
+                              f'foundry-defined tag {axisTag} must only use'
+                              f'uppercase or digits.')
+
     if (passed == True):
-      yield PASS, f"Tag ({axisTag}) looks good."
+        yield PASS, f"Tag ({axisTag}) looks good."

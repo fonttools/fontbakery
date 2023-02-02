@@ -26,7 +26,7 @@ profile = profile_factory(default_section=Section("Adobe Fonts"))
 SET_EXPLICIT_CHECKS = {
     # This is the set of explict checks that will be invoked
     # when fontbakery is run with the 'check-adobefonts' subcommand.
-    # The contents of this set were last updated on December 22, 2022.
+    # The contents of this set were last updated on February 2, 2023.
     #
     # =======================================
     # From adobefonts.py (this file)
