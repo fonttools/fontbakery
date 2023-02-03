@@ -35,14 +35,18 @@ def com_google_fonts_check_kern_table(ttFont):
 
     kern = ttFont.get("kern")
     if kern:
-        cmap = set(ttFont.getBestCmap().values())
+        # Scour all cmap tables for encoded glyphs.
+        characterGlyphs = set()
+        for table in ttFont["cmap"].tables:
+            characterGlyphs.update(table.cmap.values())
+
         nonCharacterGlyphs = set()
         for kernTable in kern.kernTables:
             if kernTable.format == 0:
                 for leftGlyph, rightGlyph in kernTable.kernTable.keys():
-                    if leftGlyph not in cmap:
+                    if leftGlyph not in characterGlyphs:
                         nonCharacterGlyphs.add(leftGlyph)
-                    if rightGlyph not in cmap:
+                    if rightGlyph not in characterGlyphs:
                         nonCharacterGlyphs.add(rightGlyph)
         if all(kernTable.format != 0 for kernTable in kern.kernTables):
           yield WARN,\
