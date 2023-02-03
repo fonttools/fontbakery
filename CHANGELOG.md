@@ -78,6 +78,7 @@ A more detailed list of changes is available in the corresponding milestones for
   instance (code: `no-bold-instance`) versus having a bold instance whose wght coord != 700 (existing code `wght-not-700`). (issue #3898)
   - **[com.google.fonts/check/italic_angle]:**  Improve italic_angle check to base reporting on Italic angle as measure from outline. (PR #4031)
   - **[com.google.fonts/check/italic_axis_in_stat_is_boolean]:** Skip check if font doesn't have an ital axis. (PR #4033)
+  - **[com.google.fonts/check/kern_table]**: Scour all cmap tables for encoded glyphs.
 
 #### On the AdobeFonts Profile
   - **[com.adobe.fonts/check/stat_has_axis_value_tables]:** Added check that format 4 AxisValue tables have AxisCount (number of AxisValueRecords) > 1 (issue #3957)
