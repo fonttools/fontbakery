@@ -74,7 +74,6 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/filenames',
     'com.google.fonts/check/metadata/italic_style',
     'com.google.fonts/check/metadata/normal_style',
-    'com.google.fonts/check/metadata/fontname_not_camel_cased',
     'com.google.fonts/check/metadata/match_name_familyname',
     'com.google.fonts/check/metadata/canonical_weight_value',
     'com.google.fonts/check/metadata/os2_weightclass',
@@ -120,7 +119,8 @@ NAME_TABLE_CHECKS = [
     'com.google.fonts/check/name/license_url',
     'com.google.fonts/check/name/family_and_style_max_length',
     'com.google.fonts/check/name/line_breaks',
-    'com.google.fonts/check/name/rfn'
+    'com.google.fonts/check/name/rfn',
+    'com.google.fonts/check/name/family_name_compliance',
 ]
 
 
@@ -2756,32 +2756,6 @@ def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_me
 
 
 @check(
-    id = 'com.google.fonts/check/metadata/fontname_not_camel_cased',
-    rationale = """
-        We currently have a policy of avoiding camel-cased font family names other
-        than in a very small set of exceptions.
-        
-        If you want to have your family name added to the exceptions list, please read
-        the instructions at https://github.com/googlefonts/fontbakery/issues/3270
-    """,
-    conditions = ['font_metadata',
-                  'not camelcased_familyname_exception'],
-    proposal = 'legacy:check/109'
-)
-def com_google_fonts_check_metadata_fontname_not_camel_cased(font_metadata):
-    """METADATA.pb: Check if fontname is not camel cased."""
-    import re
-    if bool(re.match(r'([A-Z][a-z]+){2,}', font_metadata.name)):
-        yield FAIL,\
-              Message("camelcase",
-                      f'METADATA.pb: "{font_metadata.name}" is a CamelCased name.'
-                      f' To solve this, simply use spaces'
-                      f' instead in the font name.')
-    else:
-        yield PASS, "Font name is not camel-cased."
-
-
-@check(
     id = 'com.google.fonts/check/metadata/match_name_familyname',
     conditions = ['family_metadata', # that's the family-wide metadata!
                   'font_metadata'],  # and this one's specific to a single file
@@ -4375,6 +4349,113 @@ def com_google_fonts_check_name_rfn(ttFont, familyname):
 
     if ok:
         yield PASS, 'None of the name table strings contain "Reserved Font Name".'
+
+
+@check(
+    id = 'com.google.fonts/check/name/family_name_compliance',
+    rationale = """
+        Checks the family name for compliance with the Google Fonts Guide.
+        https://googlefonts.github.io/gf-guide/onboarding.html#new-fonts
+        
+        If you want to have your family name added to the CamelCase
+        exceptions list, please submit a pull request to the
+        camelcased_familyname_exceptions.txt file.
+
+        Similarly, abbreviations can be submitted to the
+        abbreviations_familyname_exceptions.txt file.
+
+        These are located in the Lib/fontbakery/data/googlefonts/ directory
+        of the FontBakery source code currently hosted at
+        https://github.com/googlefonts/fontbakery/
+    """,
+    conditions = [],
+    proposal = "https://github.com/googlefonts/fontbakery/issues/4049"
+)
+def com_google_fonts_check_name_family_name_compliance(ttFont):
+    """Check family name for GF Guide compliance."""
+    import re
+    from pkg_resources import resource_filename
+    from fontbakery.utils import get_name_entries
+    camelcase_exceptions_txt = 'data/googlefonts/camelcased_familyname_exceptions.txt'
+    abbreviations_exceptions_txt = 'data/googlefonts/abbreviations_familyname_exceptions.txt'
+    passed = True
+
+    if get_name_entries(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME):
+        family_name = get_name_entries(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)[0].toUnicode()
+    else:
+        family_name = get_name_entries(ttFont, NameID.FONT_FAMILY_NAME)[0].toUnicode()
+
+    # CamelCase
+    if bool(re.match(r'([A-Z][a-z]+){2,}', family_name)):
+        known_exception = False
+
+        # Process exceptions
+        filename = resource_filename('fontbakery', camelcase_exceptions_txt)
+        for exception in open(filename, "r").readlines():
+            exception = exception.split('#')[0].strip()
+            if exception == "":
+                continue
+            if exception in family_name:
+                known_exception = True
+                yield PASS,\
+                      Message("known-camelcase-exception",
+                              "Family name is a known exception"
+                              " to the CamelCase rule.")
+                break
+        
+        if not known_exception:
+            passed = False
+            yield FAIL,\
+                  Message("camelcase",
+                          f'"{family_name}" is a CamelCased name.'
+                          f' To solve this, simply use spaces'
+                          f' instead in the font name.')
+
+    # Abbreviations
+    if bool(re.match(r'([A-Z]){2,}', family_name)):
+        known_exception = False
+
+        # Process exceptions
+        filename = resource_filename('fontbakery', abbreviations_exceptions_txt)
+        for exception in open(filename, "r").readlines():
+            exception = exception.split('#')[0].strip()
+            if exception == "":
+                continue
+            if exception in family_name:
+                known_exception = True
+                yield PASS,\
+                      Message("known-abbreviation-exception",
+                              "Family name is a known exception"
+                              " to the abbreviation rule.")
+                break
+        
+        if not known_exception:
+            # Allow SC ending
+            if not family_name.endswith("SC"):
+                passed = False
+                yield FAIL,\
+                      Message("abbreviation",
+                              f'"{family_name}" contains an abbreviation.')
+
+    # Allowed characters
+    forbidden_characters = re.findall(r'[^a-zA-Z0-9 ]', family_name)
+    if forbidden_characters:
+        forbidden_characters = "".join(sorted(list(set(forbidden_characters))))
+        passed = False
+        yield FAIL,\
+              Message("forbidden-characters",
+                      f'"{family_name}" contains the following characters'
+                      f' which are not allowed: "{forbidden_characters}".')
+
+    # Starts with uppercase
+    if not bool(re.match(r'^[A-Z]', family_name)):
+        passed = False
+        yield FAIL,\
+              Message("starts-with-not-uppercase",
+                      f'"{family_name}" doesn\'t start with an uppercase letter.')
+
+    if passed:
+        yield PASS, "Font name looks good."
 
 
 @check(

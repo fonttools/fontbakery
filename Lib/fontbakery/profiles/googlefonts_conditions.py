@@ -426,29 +426,6 @@ def font_familyname(font_familynames):
     return font_familynames[0]
 
 
-# TODO: Design special case handling mechanism:
-# https://github.com/googlefonts/fontbakery/issues/1540
-# TODO: Improve camelcase check result explanation and whitelisting process:
-#https://github.com/googlefonts/fontbakery/issues/3270
-@condition
-def camelcased_familyname_exception(familyname):
-    '''In general, we would not like to have camel-cased
-       familynames but there are a few exceptions to that
-       rule, that we keep listed here, for now.
-    '''
-    from pkg_resources import resource_filename
-
-    camelcase_exceptions_txt = 'data/googlefonts/camelcased_familyname_exceptions.txt'
-    filename = resource_filename('fontbakery', camelcase_exceptions_txt)
-    for exception in open(filename, "r").readlines():
-        exception = exception.split('#')[0].strip()
-        if exception == "":
-            continue
-
-        if exception in familyname:
-            return True
-
-
 @condition
 def rfn_exception(familyname):
     '''These are the very few font families where we accept usage of

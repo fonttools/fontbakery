@@ -45,6 +45,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/empty_glyph_on_gid1_for_colrv0]:** Ensure that GID 1 is empty to work around Windows 10 rendering bug ([gftools issue #609](https://github.com/googlefonts/gftools/issues/609))
   - **[com.google.fonts/check/metadata/valid_nameid25]:** Check Name ID 25 for VF Italics (issue #3024)
   - **[com.google.fonts/check/metadata/consistent_repo_urls]:** Check URL on copyright string is the same as in repository_url field. (issue #4056)
+  - **[com.google.fonts/check/name/family_name_compliance]:** Expanded and revised version of `metadata/fontname_not_camel_cased` check (issue #4049)
+
+### Renamed check IDs
+#### On Google Fonts profile
+  - **[com.google.fonts/check/metadata/fontname_not_camel_cased]** => com.google.fonts/check/name/family_name_compliance
 
 ### Deprecated checks
 #### Removed from the Open Type and Adobe Profiles

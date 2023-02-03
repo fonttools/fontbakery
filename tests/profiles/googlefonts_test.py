@@ -491,6 +491,84 @@ def test_check_name_rfn():
     assert "(FooBar)" in msg
 
 
+def test_check_name_family_name_compliance():
+    """Check family name for GF Guide compliance."""
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/name/family_name_compliance")
+
+    def set_name(font, nameID, string):
+        for record in font["name"].names:
+            if record.nameID == nameID:
+                old_string = record.toUnicode()
+                if string != old_string:
+                    font["name"].setName(
+                        string,
+                        record.nameID,
+                        record.platformID,
+                        record.platEncID,
+                        record.langID,
+                    )
+
+    # CAMEL CASE
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    assert_PASS(check(ttFont),
+                'with a good font...')
+
+    # FAIL with a CamelCased name:
+    set_name(ttFont, 1, "GollyGhost")
+    assert_results_contain(check(ttFont),
+                           FAIL, 'camelcase',
+                           'with a bad font name (CamelCased)...')
+    set_name(ttFont, 1, "KonKhmer_SleokChher")
+    assert_results_contain(check(ttFont),
+                           FAIL, 'camelcase',
+                           'with a bad font name (CamelCased)...')
+
+    # PASS with a known CamelCased exception:
+    set_name(ttFont, 1, "KoHo")
+    assert_results_contain(check(ttFont),
+                           PASS, 'known-camelcase-exception',
+                           'with a bad font name (CamelCased)...')
+
+    # ABBREVIATIONS
+    set_name(ttFont, 1, "DTL Prokyon")
+    assert_results_contain(check(ttFont),
+                           FAIL, 'abbreviation',
+                           'with a bad font name')
+    set_name(ttFont, 1, "PT Sans")
+    assert_results_contain(check(ttFont),
+                           PASS, 'known-abbreviation-exception',
+                           'with a bad font name')
+    # Allow SC ending
+    set_name(ttFont, 1, "Amatic SC")
+    assert_PASS(check(ttFont),
+                'with a good font...')
+
+    # FORBIDDEN CHARACTERS
+    set_name(ttFont, 1, "KonKhmer_SleokChher")
+    message = assert_results_contain(check(ttFont),
+                           FAIL, 'forbidden-characters',
+                           'with a bad font name')
+    assert message == '"KonKhmer_SleokChher" contains the following characters which are not allowed: "_".'
+    set_name(ttFont, 1, "Kon*Khmer_Sleok-Chher")
+    message = assert_results_contain(check(ttFont),
+                           FAIL, 'forbidden-characters',
+                           'with a bad font name')
+    assert message == '"Kon*Khmer_Sleok-Chher" contains the following characters which are not allowed: "*-_".'
+
+    # STARTS WITH UPPERCASE
+    set_name(ttFont, 1, "cabin")
+    message = assert_results_contain(check(ttFont),
+                           FAIL, 'starts-with-not-uppercase',
+                           'with a bad font name')
+
+
+    # # And we also make sure the check PASSes with a few known good names:
+    set_name(ttFont, 1, "VT323")
+    assert_PASS(check(ttFont),
+                'with a good font...')
+
+        
 def test_check_metadata_parses():
     """ Check METADATA.pb parse correctly. """
     check = CheckTester(googlefonts_profile,
@@ -2051,38 +2129,6 @@ def test_check_metadata_nameid_family_and_full_names():
                                    'with a METADATA.pb / FONT_FAMILY_NAME mismatch...')
             # and restore the good value:
             ttFont['name'].names[i].string = backup
-
-
-def test_check_metadata_fontname_not_camel_cased():
-    """ METADATA.pb: Check if fontname is not camel cased. """
-    check = CheckTester(googlefonts_profile,
-                        "com.google.fonts/check/metadata/fontname_not_camel_cased")
-
-    # Our reference Cabin Regular is known to be good
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    assert_PASS(check(font),
-                'with a good font...')
-
-    # Then we FAIL with a CamelCased name:
-    md = check["font_metadata"]
-    md.name = "GollyGhost"
-    assert_results_contain(check(font, {"font_metadata": md}),
-                           FAIL, 'camelcase',
-                           'with a bad font name (CamelCased)...')
-
-    # Real-world case:
-    md.name = "KonKhmer_SleokChher"
-    assert_results_contain(check(font, {"font_metadata": md}),
-                           FAIL, 'camelcase',
-                           'with a bad font name (CamelCased)...')
-
-    # And we also make sure the check PASSes with a few known good names:
-    for good_name in ["VT323",
-                      "PT Sans",
-                      "Amatic SC"]:
-        md.name = good_name
-        assert_PASS(check(font, {"font_metadata": md}),
-                    f'with a good font name "{good_name}"...')
 
 
 def test_check_metadata_match_name_familyname():

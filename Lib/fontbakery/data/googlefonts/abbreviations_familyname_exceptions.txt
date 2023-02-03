@@ -1,0 +1,10 @@
+# In general, we would not like to have abbreviations
+# font family names in the Google Fonts collection
+# but there are a few exceptions to that rule,
+# that we keep listed here, for now.
+
+SIL
+PT
+IBM
+STIX
+VT
