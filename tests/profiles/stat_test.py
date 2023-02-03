@@ -159,6 +159,9 @@ def test_check_italic_axis_in_stat():
     ]
     assert_results_contain(check(fonts),
                            FAIL, "missing-ital-axis")
+    import os
+    for font in fonts:
+        os.remove(font)
 
 
 def test_check_italic_axis_in_stat_is_boolean():
