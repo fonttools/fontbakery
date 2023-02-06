@@ -412,7 +412,8 @@ def setup_glyph_collides(ttFont, configuration):
         }
     col = Collidoscope(filename,
                        collidoscope_configuration,
-                       direction=configuration.get("direction", "LTR"))
+                       direction=configuration.get("direction", "LTR"),
+                       location=configuration.get("variations"))
     return {"collidoscope": col}
 
 
