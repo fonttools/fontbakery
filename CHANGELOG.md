@@ -71,6 +71,8 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the FontWerk Profile
   - **[com.fontwerk/check/inconsistencies_between_fvar_stat]:** Fixed bug that resulted in an ERROR when attempting to access `.AxisIndex` of a format 4 AxisValue table (issue #3904)
 
+#### On the Shaping Profile
+  - All checks can now take a `variations` key in their configuration (either in the default configuration or for each check) specifying the variable font location at which to apply the check.
 
 ## 0.8.10 (2022-Aug-25)
 ### Release Notes
