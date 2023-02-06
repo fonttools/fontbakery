@@ -66,9 +66,7 @@ setup(
         'beautifulsoup4',
         'beziers>=0.5.0', # Uses new fontTools glyph outline access
         'cmarkgfm',
-        'collidoscope==0.4.1', # 0.4.0 had a bug that failed to detect
-                               # an ïï collision on Nunito Black.
-                               # (see https://github.com/googlefonts/fontbakery/issues/3554)
+        'collidoscope==0.6.3',
         'defcon',
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
         'fontTools[ufo,lxml,unicode]>=4.36.0',  # allows for passing location to glyphsets
