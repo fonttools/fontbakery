@@ -138,6 +138,9 @@ def get_shaping_parameters(test, configuration):
     params = {}
     for el in ["script", "language", "direction", "features", "shaper"]:
         params[el] = get_from_test_with_default(test, configuration, el)
+    variations = get_from_test_with_default(test, configuration, "variations")
+    if variations:
+      params["variations"] = variations
     return params
 
 
