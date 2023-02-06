@@ -125,3 +125,39 @@ def test_check_shaping_collides():
         assert_results_contain(check(wrap_args(config, font)),
                                FAIL, "shaping-collides",
                                "ïï collides in Nunito")
+
+    # With a variable font
+    shaping_test = {
+        "configuration": {"collidoscope": {"area": 0,
+                                           "bases": True,
+                                           "marks": True},
+                          "variations": {"wght": 400}},
+        "tests": [{"input": "ưï"}],
+    }
+
+    with tempfile.TemporaryDirectory() as tmp_gf_dir:
+        json.dump(shaping_test, open(os.path.join(tmp_gf_dir, "test.json"), "w"))
+
+        config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
+
+        font = TEST_FILE("varfont/OpenSans-Italic[wdth,wght].ttf")
+        assert_PASS(check(wrap_args(config, font)),
+                    "ưï doesn't collide in Open Sans Italic wght=400")
+
+    shaping_test = {
+        "configuration": {"collidoscope": {"area": 0,
+                                           "bases": True,
+                                           "marks": True},
+                          "variations": {"wght": 800}},
+        "tests": [{"input": "ưï"}],
+    }
+
+    with tempfile.TemporaryDirectory() as tmp_gf_dir:
+        json.dump(shaping_test, open(os.path.join(tmp_gf_dir, "test.json"), "w"))
+
+        config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
+
+        font = TEST_FILE("varfont/OpenSans-Italic[wdth,wght].ttf")
+        assert_results_contain(check(wrap_args(config, font)),
+                    FAIL, "shaping-collides",
+                    "ưï collides in Open Sans Italic wght=800")
