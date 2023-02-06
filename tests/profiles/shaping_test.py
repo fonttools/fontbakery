@@ -47,6 +47,33 @@ def test_check_shaping_regression():
                                FAIL, "shaping-regression",
                                "Slabo: A!=664,V!=691")
 
+    # With a variable font
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/shaping/regression")
+
+    shaping_test = {
+        "configuration": {
+            "variations": {"wght": 100 }
+        },
+        "tests": [{"input": "AV",
+                   "expectation": "A=0+1229|V=1+1182",
+                   },
+                  {"input": "AV",
+                   "expectation": "A=0+1487|V=1+1421",
+                   "variations": {"wght": 800 }
+                   }
+                 ],
+    }
+
+    with tempfile.TemporaryDirectory() as tmp_gf_dir:
+        json.dump(shaping_test, open(os.path.join(tmp_gf_dir, "test.json"), "w"))
+
+        config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
+
+        font = TEST_FILE("varfont/OpenSans[wdth,wght].ttf")
+        assert_PASS(check(wrap_args(config, font)),
+                    "OpenSans: wght=100, wght=800")
+
 
 def test_check_shaping_forbidden():
     """ Check that we can test for forbidden glyphs in output. """
