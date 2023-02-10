@@ -83,7 +83,7 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
 
         For Italic fonts, you can set hhea.caretSlopeRise to head.unitsPerEm
         and calculate hhea.caretSlopeRun like this:
-        round(math.atan(math.radians(-1 * font["post"].italicAngle)) * font["head"].unitsPerEm)
+        round(math.tan(math.radians(-1 * font["post"].italicAngle)) * font["head"].unitsPerEm)
 
         This check allows for a 0.1° rounding difference between the Italic angle
         as calculated by the caret slope and post.italicAngle
@@ -103,13 +103,14 @@ def com_google_fonts_check_caret_slope(ttFont):
               Message("zero-rise",
                       "caretSlopeRise must not be zero. Set it to 1 for upright fonts.")
         return
-    hheaItalicAngle = math.degrees(math.tan(-1 * run / rise))
-    expectedCaretSlopeRun = round(math.atan(math.radians(-1 * postItalicAngle)) * upm)
+    hheaItalicAngle = math.degrees(math.atan(-run / rise))
+    expectedCaretSlopeRun = round(math.tan(math.radians(-postItalicAngle)) * upm)
     if expectedCaretSlopeRun == 0:
         expectedCaretSlopeRise = 1
     else:
         expectedCaretSlopeRise = upm
 
+    print(postItalicAngle, hheaItalicAngle)
     if abs(postItalicAngle - hheaItalicAngle) > .1:
         yield FAIL,\
               Message("caretslope-mismatch",
