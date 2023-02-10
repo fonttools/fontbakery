@@ -66,7 +66,7 @@ setup(
         'beautifulsoup4',
         'beziers>=0.5.0', # Uses new fontTools glyph outline access
         'cmarkgfm',
-        'collidoscope==0.6.3',
+        'collidoscope>=0.6.5', # 0.6 series has variable font support
         'defcon',
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
         'fontTools[ufo,lxml,unicode]>=4.36.0',  # allows for passing location to glyphsets
