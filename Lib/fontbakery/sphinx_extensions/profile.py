@@ -527,9 +527,11 @@ def _skip_member(app, what, name, obj, skip, options):
                 'id',
                 'is_librebarcode',
                 'name',
+                'proponent',
                 'proposal',
                 'rationale',
-                'severity']:
+                'severity',
+                'suggested_profile']:
         return True
     else:
         return None
@@ -586,9 +588,21 @@ def _process_docstring(app, what, name, obj, options, lines):
                          f" further improvements to this description.")
         else:
             if proposals:
-                lines.append(f"**Originally proposed at** {proposals.pop(0)}")
+                lines.append(f"- **Originally proposed at** {proposals.pop(0)}")
 
         if proposals:
             proposals = ' / '.join(proposals)
-            lines.append(f"**Some additional changes** were proposed at {proposals}")
+            lines.append(f"- **Some additional changes** were proposed at {proposals}")
+
+    if hasattr(obj, 'proponent') and obj.proponent:
+        proponent = obj.proponent
+        if "(@" in obj.proponent and ")" in obj.proponent:
+            fullname, username = obj.proponent.split("(@")
+            fullname = fullname.strip()
+            username = username.split(")")[0].strip()
+            proponent = f'`{fullname} <https://github.com/{username}/>`_'
+        lines.append(f"- **Proposed by**: {proponent}")
+
+    if hasattr(obj, 'suggested_profile') and obj.suggested_profile:
+        lines.append(f"- **Suggested profile:** {obj.suggested_profile}")
 
