@@ -21,27 +21,26 @@ sys.path.insert(0, os.path.abspath("../Lib"))
 # -- Project information -----------------------------------------------------
 
 project = "Font Bakery"
-copyright = "2022 The Font Bakery Authors"
+copyright = "2023 The Font Bakery Authors"
 author = "The Font Bakery Authors"
 
 # The short X.Y version
 version = "0.8"
 # The full version, including alpha/beta/rc tags
-release = "0.8.11a4"
+release = "0.8.11b0"
 
 
 # -- General configuration ---------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#
 needs_sphinx = "4.3"
 
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
+# Add any Sphinx extension module names here, as strings.
+# They can be extensions coming with Sphinx (named 'sphinx.ext.*')
+# or your custom ones.
 extensions = ["sphinx.ext.autodoc"
             , "sphinx.ext.viewcode"
-            , "fontbakery.sphinx_extensions.linkcode" #was "sphinx.ext.linkcode"
+            , "fontbakery.sphinx_extensions.linkcode"
             , "fontbakery.sphinx_extensions.profile"
             , "sphinx.ext.napoleon"
             , "recommonmark"
@@ -180,33 +179,24 @@ def linkcode_resolve(domain, info):
         return None
     if not info['module']:
         return None
+
     filename = info['module'].replace('.', '/')
+
     # We must get the "tree" part dynamically, best would be the release
     # tag, if it is the same as the version that we are building at the
     # moment. Second best probably a hash. The branch HEAD is only of
     # limited usefulnes as the documentation will become out of sync.
     #
-    # On GitHub
-    # The release tagged "v0.7.2" is at:
-    # short: bffe109
-    # long:  bffe10976dc641d63b0622f09627bd0136157f1e
-    # we can link to HEAD of a branch by branchname (here 'main'):
-    # https://github.com/googlefonts/fontbakery/tree/main/Lib/fontbakery/profiles
-    # We can link to a commit hash tree
-    # short: https://github.com/googlefonts/fontbakery/tree/bffe109/Lib/fontbakery/profiles
-    # long: https://github.com/googlefonts/fontbakery/tree/bffe10976dc641d63b0622f09627bd0136157f1e/Lib/fontbakery/profiles
-    #
-    # AND We can link to a tag i.e. a release tag. This is awesome:
-    # tag is: "v0.7.2"
+    # On GitHub, we can link to a tag i.e. a release tag such as "v0.7.2"
+    # as seen on this URL:
     # https://github.com/googlefonts/fontbakery/tree/v0.7.2/Lib/fontbakery/profiles
-    tree = 'v0.8.11a4'
+
+    tree = 'v0.8.11b0'
     # It's not planned for us to get the line number :-(
     # I had to hammer this data into the info.
     if 'lineno' in info:
         lineno = '#L{}'.format(info["lineno"])
     else:
         lineno = ''
-    #if 'com_google' in info['fullname']:
-    #    import ipdb
-    #    ipdb.set_trace()
+
     return 'https://github.com/googlefonts/fontbakery/tree/{}/Lib/{}.py{}'.format(tree, filename, lineno)

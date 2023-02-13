@@ -11,11 +11,11 @@ The checks of the `opentype` profile are separated in one sub-profile for each o
    cmap
    dsig
    fvar
+   gdef
    glyf
    gpos
    head
    hhea
-   hmtx
    kern
    loca
    name
