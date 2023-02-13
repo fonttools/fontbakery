@@ -90,7 +90,8 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/family_directory_name',
     'com.google.fonts/check/metadata/can_render_samples',
     'com.google.fonts/check/metadata/unsupported_subsets',
-    'com.google.fonts/check/metadata/category_hints'
+    'com.google.fonts/check/metadata/category_hints',
+    'com.google.fonts/check/metadata/consistent_repo_urls'
 ]
 
 DESCRIPTION_CHECKS = [
@@ -2980,6 +2981,40 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
                           f' but it should be "normal".')
         else:
             yield PASS, "Font styles are named canonically."
+
+
+@check(
+    id = 'com.google.fonts/check/metadata/consistent_repo_urls',
+    conditions = ['family_metadata'],
+    rationale = """
+        Sometimes, perhaps due to copy-pasting, projects may declare different URLs
+        between the font.coyright and the family.sources.repository_url fields.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/4056'
+)
+def com_google_fonts_check_metadata_consistent_repo_urls(config, family_metadata):
+    """METADATA.pb: Check URL on copyright string is the same as in repository_url field."""
+    bad_urls = []
+    repo_url = family_metadata.source.repository_url
+    for font_md in family_metadata.fonts:
+        if "http" in font_md.copyright:
+            link = "http" + font_md.copyright.split("http")[1]
+
+            if ')' in link:
+                link = link.split(')')[0].strip()
+
+        if link != repo_url:
+            bad_urls.append(link)
+
+    if bad_urls:
+        from fontbakery.utils import pretty_print_list
+        bad_urls = pretty_print_list(config, bad_urls)
+        yield FAIL,\
+              Message("mismatch",
+                      f"Value of repository_url field is {repo_url}\n\n"
+                      f"But font copyright string has: {bad_urls}\n")
+    else:
+        yield PASS, "OK"
 
 
 @check(

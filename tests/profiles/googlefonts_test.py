@@ -2214,6 +2214,27 @@ def NOT_IMPLEMENTED_test_check_metadata_canonical_style_names():
     # - PASS		"Font styles are named canonically."
 
 
+def test_check_metadata_consistent_repo_urls():
+    """ METADATA.pb: Check URL on copyright string is the same as in repository_url field. """
+    check = CheckTester(googlefonts_profile,
+                        "com.google.fonts/check/metadata/consistent_repo_urls")
+
+
+    # The problem was first seen on a project with these diverging values:
+    # copyright: "Copyright 2022 The Delicious Handrawn Project Authors (https://github.com/duartp/gloock)"
+    # repository_url: "https://github.com/alphArtype/Delicious-Handrawn"
+    ttFont = TTFont(TEST_FILE("delicioushandrawn/DeliciousHandrawn-Regular.ttf"))
+    assert_results_contain(check(ttFont),
+                           FAIL, 'mismatch',
+                           'with different URLs...')
+
+    family_md = check["family_metadata"]
+    # so we fix it:
+    assert family_md.source.repository_url == "https://github.com/alphArtype/Delicious-Handrawn"
+    family_md.fonts[0].copyright = "Copyright 2022 The Delicious Handrawn Project Authors (https://github.com/alphArtype/Delicious-Handrawn)"
+    assert_PASS(check(ttFont, {"family_metadata": family_md}))
+
+
 def test_check_unitsperem_strict():
     """ Stricter unitsPerEm criteria for Google Fonts. """
     check = CheckTester(googlefonts_profile,
