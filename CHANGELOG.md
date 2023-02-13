@@ -44,6 +44,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/color_cpal_brightness]:** Warn if COLRv0 layers are colored too dark or too bright instead of foreground color. (PR #3908)
   - **[com.google.fonts/check/empty_glyph_on_gid1_for_colrv0]:** Ensure that GID 1 is empty to work around Windows 10 rendering bug ([gftools issue #609](https://github.com/googlefonts/gftools/issues/609))
   - **[com.google.fonts/check/metadata/valid_nameid25]:** Check Name ID 25 for VF Italics (issue #3024)
+  - **[com.google.fonts/check/metadata/consistent_repo_urls]:** Check URL on copyright string is the same as in repository_url field. (issue #4056)
 
 ### Deprecated checks
 #### Removed from the Open Type and Adobe Profiles
