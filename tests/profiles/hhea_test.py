@@ -1,6 +1,6 @@
 from fontTools.ttLib import TTFont
 
-from fontbakery.checkrunner import WARN, FAIL
+from fontbakery.checkrunner import WARN, FAIL, PASS
 from fontbakery.codetesting import (assert_PASS,
                                     assert_results_contain,
                                     CheckTester,
@@ -77,12 +77,12 @@ def test_check_caretslope():
                                      FAIL, 'caretslope-mismatch')
     assert message == (
         "hhea.caretSlopeRise and hhea.caretSlopeRun do not match with post.italicAngle.\n"
-        "Got: caretSlopeRise 1000 and caretSlopeRun 190\n"
-        "Expected: caretSlopeRise 1000 and caretSlopeRun 206"
+        "Got: caretSlopeRise 1000 and caretSlopeRun 194\n"
+        "Expected: caretSlopeRise 1000 and caretSlopeRun 213"
     )
 
     # FIX
-    ttFont["hhea"].caretSlopeRun = 206
+    ttFont["hhea"].caretSlopeRun = 213
     assert_PASS(check(ttFont))
 
     good_value = ttFont["hhea"].caretSlopeRise
@@ -99,10 +99,10 @@ def test_check_caretslope():
                                      FAIL, 'caretslope-mismatch')
     assert message == (
         "hhea.caretSlopeRise and hhea.caretSlopeRun do not match with post.italicAngle.\n"
-        "Got: caretSlopeRise 1000 and caretSlopeRun 206\n"
-        "Expected: caretSlopeRise 1000 and caretSlopeRun -206"
+        "Got: caretSlopeRise 1000 and caretSlopeRun 213\n"
+        "Expected: caretSlopeRise 1000 and caretSlopeRun -213"
     )
 
     # FIX
-    ttFont["hhea"].caretSlopeRun = -206
+    ttFont["hhea"].caretSlopeRun = -213
     assert_PASS(check(ttFont))
