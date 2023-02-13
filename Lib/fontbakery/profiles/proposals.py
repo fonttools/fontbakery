@@ -14,7 +14,7 @@ from .shared_conditions import * # pylint: disable=wildcard-import,unused-wildca
 
 profile = profile_factory(default_section=Section("Check Proposals"))
 
-'''
+TEMPLATE_FOR_NEW_CHECK = '''
 Please, feel free to use this template when adding new check proposals here:
 
 @check(
