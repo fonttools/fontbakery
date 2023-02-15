@@ -25,6 +25,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New Checks
 #### Added to the Universal Profile
+  - **[com.google.fonts/check/soft_dotted]:** Ensure soft_dotted characters lose their dot when combined with marks that replace the dot. (issue #4059)
   - **[com.google.fonts/check/interpolation_issues]:** Check for shape order or curve start point interpolation issues within a variable font. (issue #3930)
   - **[com.google.fonts/check/math_signs_width]:** Check that math signs have the same width (issue #3832)
   - **[com.google.fonts/check/soft_hyphen]:** It was originally part of the validation on **check/contour_count**, but it was leading to confusion, so it was split out into a separate check. (issue #4046)
