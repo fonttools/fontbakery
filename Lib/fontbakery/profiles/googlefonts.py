@@ -779,7 +779,7 @@ def com_google_fonts_check_family_equal_numbers_of_glyphs(ttFonts):
     # because we'll have to iterate twice in this check implementation:
     the_ttFonts = list(ttFonts)
 
-    failed = False
+    passed = True
     max_stylename = None
     max_count = 0
     max_glyphs = None
@@ -798,7 +798,7 @@ def com_google_fonts_check_family_equal_numbers_of_glyphs(ttFonts):
         these_glyphs = set(ttFont['glyf'].glyphs)
         this_count = len(these_glyphs)
         if this_count != max_count:
-            failed = True
+            passed = False
             all_glyphs = max_glyphs.union(these_glyphs)
             common_glyphs = max_glyphs.intersection(these_glyphs)
             diff = all_glyphs - common_glyphs
@@ -814,7 +814,7 @@ def com_google_fonts_check_family_equal_numbers_of_glyphs(ttFonts):
                           f" {max_stylename} has {max_count} glyphs."
                           f" There are {diff_count} different glyphs"
                           f" among them: {sorted(diff)}")
-    if not failed:
+    if passed:
         yield PASS, ("All font files in this family have"
                      " an equal total ammount of glyphs.")
 
@@ -841,13 +841,13 @@ def com_google_fonts_check_family_equal_glyph_names(ttFonts):
         missing[glyphname] = []
         available[glyphname] = []
 
-    failed = False
+    passed = True
     for ttFont in fonts:
         fontname = ttFont.reader.file.name
         these_ones = set(ttFont["glyf"].glyphs.keys())
         for glyphname in all_glyphnames:
             if glyphname not in these_ones:
-                failed = True
+                passed = False
                 missing[glyphname].append(fontname)
             else:
                 available[glyphname].append(fontname)
@@ -870,7 +870,7 @@ def com_google_fonts_check_family_equal_glyph_names(ttFonts):
                           f"Glyphname '{gn}' is defined on {avail}"
                           f" but is missing on {miss}.")
 
-    if not failed:
+    if passed:
         yield PASS, "All font files have identical glyph names."
 
 
@@ -1083,7 +1083,7 @@ def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont,
 def com_google_fonts_check_name_unwanted_chars(ttFont):
     """Substitute copyright, registered and trademark
        symbols in name table entries."""
-    failed = False
+    passed = True
     replacement_map = [("\u00a9", '(c)'),
                        ("\u00ae", '(r)'),
                        ("\u2122", '(tm)')]
@@ -1096,8 +1096,8 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
                       Message("unwanted-chars",
                               f"NAMEID #{name.nameID} contains symbols that"
                               f" should be replaced by '{ascii_repl}'.")
-                failed = True
-    if not failed:
+                passed = False
+    if passed:
         yield PASS, ("No need to substitute copyright, registered and"
                      " trademark symbols in name table entries of this font.")
 
@@ -1131,7 +1131,7 @@ def com_google_fonts_check_usweightclass(ttFont, expected_style):
         is_variable_font
     )
 
-    failed = False
+    passed = True
     expected_value = expected_style.usWeightClass
     weight_name = expected_style.name
     value = ttFont['OS/2'].usWeightClass
@@ -1141,7 +1141,7 @@ def com_google_fonts_check_usweightclass(ttFont, expected_style):
 
     if is_variable_font(ttFont):
         if not has_expected_value:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("bad-value",
                           fail_message.format(value, expected_value))
@@ -1152,35 +1152,35 @@ def com_google_fonts_check_usweightclass(ttFont, expected_style):
     # for static otfs, Thin must be 250 and ExtraLight must be 275
     elif "Thin" in weight_name:
         if is_ttf(ttFont) and value not in [100, 250]:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("bad-value",
                           fail_message.format(value, expected_value))
         if is_cff(ttFont) and value != 250:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("bad-value",
                           fail_message.format(value, 250))
 
     elif "ExtraLight" in weight_name:
         if is_ttf(ttFont) and value not in [200, 275]:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("bad-value",
                           fail_message.format(value, expected_value))
         if is_cff(ttFont) and value != 275:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("bad-value",
                           fail_message.format(value, 275))
 
     elif not has_expected_value:
-        failed = True
+        passed = False
         yield FAIL,\
               Message("bad-value",
                       fail_message.format(value, expected_value))
 
-    if not failed:
+    if passed:
         yield PASS, "OS/2 usWeightClass is good"
 
 
@@ -1296,7 +1296,7 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
 def com_google_fonts_check_name_license(ttFont, license):
     """Check copyright namerecords match license file."""
     from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
-    failed = False
+    passed = True
     http_warn = False
     placeholder = PLACEHOLDER_LICENSING_TEXT[license]
     entry_found = False
@@ -1315,7 +1315,7 @@ def com_google_fonts_check_name_license(ttFont, license):
                 http_warn = True
 
             if value != placeholder:
-                failed = True
+                passed = False
                 yield FAIL,\
                       Message("wrong",
                               f'License file {license} exists but'
@@ -1338,7 +1338,7 @@ def com_google_fonts_check_name_license(ttFont, license):
                       f"Font lacks NameID {NameID.LICENSE_DESCRIPTION}"
                       f" (LICENSE DESCRIPTION). A proper licensing"
                       f" entry must be set.")
-    elif not failed:
+    elif passed:
         yield PASS, "Licensing entry on name table is correctly set."
 
 
@@ -1419,7 +1419,7 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                          " Please ensure NameID 13 (LICENSE DESCRIPTION) is properly set.")
             return
         else:
-            failed = False
+            passed = True
             expected = LICENSE_URL[detected_license]
             for nameRecord in ttFont['name'].names:
                 if nameRecord.nameID == NameID.LICENSE_INFO_URL:
@@ -1435,7 +1435,7 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                     if string == expected:
                         found_good_entry = True
                     else:
-                        failed = True
+                        passed = False
                         yield FAIL,\
                               Message("licensing-inconsistency",
                                       f"Licensing inconsistency in name table entries!"
@@ -1468,7 +1468,9 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                           f"When in doubt, please choose OFL for"
                           f" new font projects.")
         else:
-            if failed:
+            if passed:
+                yield PASS, "Font has a valid license URL in NAME table."
+            else:
                 yield FAIL,\
                       Message("bad-entries",
                               f"Even though a valid license URL was seen in the"
@@ -1476,8 +1478,6 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                               f" Please review NameIDs {NameID.LICENSE_DESCRIPTION}"
                               f" (LICENSE DESCRIPTION) and {NameID.LICENSE_INFO_URL}"
                               f" (LICENSE INFO URL).")
-            else:
-                yield PASS, "Font has a valid license URL in NAME table."
 
 
 @check(
@@ -1496,14 +1496,16 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
 )
 def com_google_fonts_check_name_description_max_length(ttFont):
     """Description strings in the name table must not exceed 200 characters."""
-    failed = False
+    passed = True
     for name in ttFont['name'].names:
         if (name.nameID == NameID.DESCRIPTION and
             len(name.string.decode(name.getEncoding())) > 200):
-            failed = True
+            passed = False
             break
 
-    if failed:
+    if passed:
+        yield PASS, "All description name records have reasonably small lengths."
+    else:
         yield WARN,\
               Message("too-long",
                       f"A few name table entries with ID={NameID.DESCRIPTION}"
@@ -1513,8 +1515,6 @@ def com_google_fonts_check_name_description_max_length(ttFont):
                       f" string entries by a bug in an old FontLab version."
                       f" If that's the case, then such copyright notices"
                       f" must be removed from these entries.")
-    else:
-        yield PASS, "All description name records have reasonably small lengths."
 
 
 @check(
@@ -1588,17 +1588,17 @@ def com_google_fonts_check_name_version_format(ttFont):
     def is_valid_version_format(value):
         return re.match(r'Version\s0*[1-9][0-9]*\.\d+', value)
 
-    failed = False
+    passed = True
     version_entries = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
     if len(version_entries) == 0:
-        failed = True
+        passed = False
         yield FAIL,\
               Message("no-version-string",
                       f"Font lacks a NameID.VERSION_STRING"
                       f" (nameID={NameID.VERSION_STRING}) entry")
     for ventry in version_entries:
         if not is_valid_version_format(ventry):
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("bad-version-strings",
                           f'The NameID.VERSION_STRING'
@@ -1606,7 +1606,7 @@ def com_google_fonts_check_name_version_format(ttFont):
                           f' follow the pattern "Version X.Y" with X.Y'
                           f' greater than or equal to 1.000.'
                           f' Current version string is: "{ventry}"')
-    if not failed:
+    if passed:
         yield PASS, "Version format in NAME table entries is correct."
 
 
@@ -1627,24 +1627,24 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
             return results.group(1), results.group(2)
 
     version_strings = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
-    failed = True
+    passed = False
     for vstring in version_strings:
         values = ttfautohint_version(vstring)
         if values:
             ttfa_version, params = values
             if params:
+                passed = True
                 yield PASS,\
                       Message("ok",
                               f"Font has ttfautohint params ({params})")
-                failed = False
         else:
+            passed = True
             yield SKIP,\
                   Message("not-hinted",
                           "Font appears to our heuristic as"
                           " not hinted using ttfautohint.")
-            failed = False
 
-    if failed:
+    if not passed:
         yield FAIL,\
               Message("lacks-ttfa-params",
                       "Font is lacking ttfautohint params on its"
@@ -1770,7 +1770,7 @@ def com_google_fonts_check_gasp(ttFont):
                           "The 'gasp' table has no values.\n" + \
                           NON_HINTING_MESSAGE)
         else:
-            failed = False
+            passed = True
             if 0xFFFF not in ttFont["gasp"].gaspRange:
                 yield WARN,\
                       Message("lacks-ffff-range",
@@ -1808,16 +1808,16 @@ def com_google_fonts_check_gasp(ttFont):
                               Message("non-ffff-range",
                                       f"The gasp table has a range of {key}"
                                       f" that may be unneccessary.")
-                        failed = True
+                        passed = False
                     else:
                         value = ttFont["gasp"].gaspRange[0xFFFF]
                         if value != 0x0F:
-                            failed = True
+                            passed = False
                             yield WARN,\
                                   Message("unset-flags",
                                           f"The gasp range 0xFFFF value 0x{value:02X}"
                                           f" should be set to 0x0F.")
-                if not failed:
+                if passed:
                     yield PASS, ("The 'gasp' table is correctly set, with one "
                                  "gaspRange:value of 0xFFFF:0x0F.")
 
@@ -1833,15 +1833,15 @@ def com_google_fonts_check_gasp(ttFont):
 def com_google_fonts_check_name_familyname_first_char(ttFont):
     """Make sure family name does not begin with a digit."""
     from fontbakery.utils import get_name_entry_strings
-    failed = False
+    passed = True
     for familyname in get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME):
         digits = map(str, range(0, 10))
         if familyname[0] in digits:
             yield FAIL,\
                   Message("begins-with-digit",
                           f"Font family name '{familyname}' begins with a digit!")
-            failed = True
-    if failed is False:
+            passed = False
+    if passed:
         yield PASS, "Font family name first character is not a digit."
 
 
@@ -2159,12 +2159,12 @@ def com_google_fonts_check_metadata_nameid_post_script_name(ttFont, font_metadat
     """Checks METADATA.pb font.post_script_name matches
        postscript name declared on the name table.
     """
-    failed = False
+    passed = True
     from fontbakery.utils import get_name_entry_strings
 
     postscript_names = get_name_entry_strings(ttFont, NameID.POSTSCRIPT_NAME)
     if len(postscript_names) == 0:
-        failed = True
+        passed = False
         yield FAIL,\
               Message("missing",
                       (f"This font lacks a POSTSCRIPT_NAME entry"
@@ -2173,13 +2173,13 @@ def com_google_fonts_check_metadata_nameid_post_script_name(ttFont, font_metadat
     else:
         for psname in postscript_names:
             if psname != font_metadata.post_script_name:
-                failed = True
+                passed = False
                 yield FAIL,\
                       Message("mismatch",
                               (f'Unmatched postscript name in font:'
                                f' TTF has "{psname}" while METADATA.pb has'
                                f' "{font_metadata.post_script_name}".'))
-    if not failed:
+    if passed:
         yield PASS, (f'Postscript name "{font_metadata.post_script_name}"'
                      f' is identical in METADATA.pb and on the TTF file.')
 
@@ -2320,16 +2320,16 @@ def com_google_fonts_check_metadata_valid_name_values(style,
     else:
         familynames = typographic_familynames
 
-    failed = False
+    passed = True
     for font_familyname in familynames:
         if font_familyname not in font_metadata.name:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("mismatch",
                           f'METADATA.pb font.name field ("{font_metadata.name}")'
                           f' does not match'
                           f' correct font name format ("{font_familyname}").')
-    if not failed:
+    if passed:
         yield PASS, ("METADATA.pb font.name field contains"
                      " font name in right format.")
 
@@ -2380,14 +2380,15 @@ def com_google_fonts_check_metadata_valid_filename_values(font,
                                                           family_metadata):
     """METADATA.pb font.filename field contains font name in right format?"""
     expected = os.path.basename(font)
-    failed = True
+    passed = False
     for font_metadata in family_metadata.fonts:
         if font_metadata.filename == expected:
-            failed = False
+            passed = True
             yield PASS, ("METADATA.pb filename field contains"
                          " font name in right format.")
             break
-    if failed:
+
+    if not passed:
         yield FAIL,\
               Message("bad-field",
                       f'None of the METADATA.pb filename fields match'
@@ -2513,20 +2514,20 @@ def com_google_fonts_check_font_copyright(ttFont):
     import re
     from fontbakery.utils import get_name_entry_strings
 
-    failed = False
+    passed = True
     for string in get_name_entry_strings(ttFont, NameID.COPYRIGHT_NOTICE):
         if re.search(EXPECTED_COPYRIGHT_PATTERN, string.lower()):
             yield PASS, (f"Name Table entry: Copyright field '{string}'"
                          f" matches canonical pattern.")
         else:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("bad-notice-format",
                           f'Name Table entry: Copyright notices should match'
                           f' a pattern similar to: "Copyright 2019'
                           f' The Familyname Project Authors (git url)"\n'
                           f'But instead we have got:\n"{string}"')
-    if not failed:
+    if passed:
         yield PASS, "Name table copyright entries are good"
 
 
@@ -3045,29 +3046,29 @@ def com_google_fonts_check_version_bump(ttFont,
     v_number = ttFont["head"].fontRevision
     api_gfonts_v_number = api_gfonts_ttFont["head"].fontRevision
     github_gfonts_v_number = github_gfonts_ttFont["head"].fontRevision
-    failed = False
+    passed = True
 
     if v_number == api_gfonts_v_number:
-        failed = True
+        passed = False
         yield FAIL, (f"Version number {v_number} is equal to"
                      f" version on Google Fonts.")
 
     if v_number < api_gfonts_v_number:
-        failed = True
+        passed = False
         yield FAIL, (f"Version number {v_number} is less than"
                      f" version on Google Fonts ({api_gfonts_v_number}).")
 
     if v_number == github_gfonts_v_number:
-        failed = True
+        passed = False
         yield FAIL, (f"Version number {v_number} is equal to"
                      f" version on Google Fonts GitHub repo.")
 
     if v_number < github_gfonts_v_number:
-        failed = True
+        passed = False
         yield FAIL, (f"Version number {v_number} is less than"
                      f" version on Google Fonts GitHub repo ({github_gfonts_v_number}).")
 
-    if not failed:
+    if passed:
         yield PASS, (f"Version number {v_number} is greater than"
                      f" version on Google Fonts GitHub ({github_gfonts_v_number})"
                      f" and production servers ({api_gfonts_v_number}).")
@@ -3305,19 +3306,19 @@ def com_google_fonts_check_production_encoded_glyphs(ttFont, api_gfonts_ttFont):
 def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
     """Copyright field for this font on METADATA.pb matches
        all copyright notice entries on the name table ?"""
-    failed = False
+    passed = True
     for nameRecord in ttFont['name'].names:
         string = nameRecord.string.decode(nameRecord.getEncoding())
         if nameRecord.nameID == NameID.COPYRIGHT_NOTICE and\
            string != font_metadata.copyright:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("mismatch",
                           f'Copyright field for this font on METADATA.pb'
                           f' ("{font_metadata.copyright}") differs from'
                           f' a copyright notice entry on the name table:'
                           f' "{string}"')
-    if not failed:
+    if passed:
         yield PASS, ("Copyright field for this font on METADATA.pb matches"
                      " copyright notice entries on the name table.")
 
@@ -3365,17 +3366,17 @@ def com_google_fonts_check_name_copyright_length(ttFont):
     """Length of copyright notice must not exceed 500 characters."""
     from fontbakery.utils import get_name_entries
 
-    failed = False
+    passed = True
     for notice in get_name_entries(ttFont, NameID.COPYRIGHT_NOTICE):
         notice_str = notice.string.decode(notice.getEncoding())
         if len(notice_str) > 500:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("too-long",
                           f'The length of the following copyright notice'
                           f' ({len(notice_str)}) exceeds 500 chars:'
                           f' "{notice_str}"')
-    if not failed:
+    if passed:
         yield PASS, ("All copyright notice name entries on the"
                      " 'name' table are shorter than 500 characters.")
 
@@ -3492,20 +3493,20 @@ def com_google_fonts_check_fontv(ttFont):
 )
 def com_google_fonts_check_negative_advance_width(ttFont):
     """Check that advance widths cannot be inferred as negative."""
-    failed = False
+    passed = True
     for glyphName in ttFont["glyf"].glyphs:
         coords = ttFont["glyf"][glyphName].coordinates
         rightX = coords[-3][0]
         leftX = coords[-4][0]
         advwidth = rightX - leftX
         if advwidth < 0:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("bad-coordinates",
                           f'Glyph "{glyphName}" has bad coordinates on the glyf'
                           f' table, which may lead to the advance width to be'
                           f' interpreted as a negative value ({advwidth}).')
-    if not failed:
+    if passed:
         yield PASS, "The x-coordinates of all glyphs look good."
 
 
@@ -3526,17 +3527,17 @@ def com_google_fonts_check_negative_advance_width(ttFont):
 def com_google_fonts_check_glyf_nested_components(ttFont, config):
     """Check glyphs do not have components which are themselves components."""
     from fontbakery.utils import pretty_print_list
-    failed = []
+    bad_glyphs = []
     for glyph_name in ttFont['glyf'].keys():
         glyph = ttFont['glyf'][glyph_name]
         if not glyph.isComposite():
             continue
         for comp in glyph.components:
             if ttFont['glyf'][comp.glyphName].isComposite():
-                failed.append(glyph_name)
-    if failed:
+                bad_glyphs.append(glyph_name)
+    if bad_glyphs:
         formatted_list = "\t* " + pretty_print_list(config,
-                                                    failed,
+                                                    bad_glyphs,
                                                     sep="\n\t* ")
         yield FAIL,\
               Message('found-nested-components',
@@ -3964,20 +3965,20 @@ def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
 def com_google_fonts_check_fvar_name_entries(ttFont):
     """All name entries referenced by fvar instances exist on the name table?"""
 
-    failed = False
+    passed = True
     for instance in ttFont["fvar"].instances:
 
         entries = [entry for entry in ttFont["name"].names
                    if entry.nameID == instance.subfamilyNameID]
         if len(entries) == 0:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("missing-name",
                           f"Named instance with coordinates {instance.coordinates}"
                           f" lacks an entry on the name table"
                           f" (nameID={instance.subfamilyNameID}).")
 
-    if not failed:
+    if passed:
         yield PASS, "OK"
 
 
@@ -4211,7 +4212,7 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
     """Combined length of family and style must not exceed 27 characters."""
     from fontbakery.utils import (get_name_entries,
                                   get_name_entry_strings)
-    failed = False
+    passed = True
     for familyname in get_name_entries(ttFont,
                                        NameID.FONT_FAMILY_NAME):
         # we'll only match family/style name entries with the same platform ID:
@@ -4221,7 +4222,7 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                                                     NameID.FONT_SUBFAMILY_NAME,
                                                     platformID=plat):
             if len(familyname_str + stylename_str) > 27:
-                failed = True
+                passed = False
                 yield WARN,\
                       Message("too-long",
                               f"The combined length of family and style"
@@ -4234,7 +4235,7 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                               f" https://github.com/googlefonts/fontbakery/issues/2179"
                               f" in order to understand the reasoning behind these"
                               f" name table records max-length criteria.")
-    if not failed:
+    if passed:
         yield PASS, "All name entries are good."
 
 
@@ -4282,17 +4283,17 @@ def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFi
 )
 def com_google_fonts_check_name_line_breaks(ttFont):
     """Name table entries should not contain line-breaks."""
-    failed = False
+    passed = True
     for name in ttFont["name"].names:
         string = name.string.decode(name.getEncoding())
         if "\n" in string:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("line-break",
                           f"Name entry {NameID(name.nameID).name}"
                           f" on platform {PlatformID(name.platformID).name}"
                           f" contains a line-break.")
-    if not failed:
+    if passed:
         yield PASS, ("Name table entries are all single-line"
                      " (no line-breaks found).")
 
@@ -4509,27 +4510,29 @@ def com_google_fonts_check_family_control_chars(ttFonts):
         "uni001F"
     ]
 
-    # a dict with key:value of font path that failed check : list of unacceptable glyph names
-    failed_font_dict = {}
+    # A dict with 'key => value' pairs of
+    # font path that did not pass the check => list of unacceptable glyph names
+    bad_fonts = {}
 
     for ttFont in ttFonts:
-        font_failed = False
+        passed = True
         unacceptable_glyphs_in_set = []  # a list of unacceptable glyph names identified
         glyph_name_set = set(ttFont["glyf"].glyphs.keys())
         fontname = ttFont.reader.file.name
 
         for unacceptable_glyph_name in unacceptable_cc_list:
             if unacceptable_glyph_name in glyph_name_set:
-                font_failed = True
+                passed = False
                 unacceptable_glyphs_in_set.append(unacceptable_glyph_name)
 
-        if font_failed:
-            failed_font_dict[fontname] = unacceptable_glyphs_in_set
+        if not passed:
+            bad_fonts[fontname] = unacceptable_glyphs_in_set
 
-    if len(failed_font_dict) > 0:
+    if len(bad_fonts) > 0:
         msg_unacceptable = "The following unacceptable control characters were identified:\n"
-        for fnt in failed_font_dict.keys():
-            msg_unacceptable += f" {fnt}: {', '.join(failed_font_dict[fnt])}\n"
+        for fnt in bad_fonts.keys():
+            bad = ', '.join(bad_fonts[fnt])
+            msg_unacceptable += f" {fnt}: {bad}\n"
         yield FAIL,\
               Message("unacceptable",
                       f"{msg_unacceptable}")
@@ -4809,13 +4812,12 @@ def com_google_fonts_check_vertical_metrics(ttFont):
         'hhea.lineGap': 0,
     }
 
-    failed = False
-    warn = False
+    passed = True
 
     # Check typo metrics and hhea lineGap match our expected values
     for k in expected_metrics:
         if font_metrics[k] != expected_metrics[k]:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message(f'bad-{k}',
                           f'{k} is "{font_metrics[k]}" it should'
@@ -4828,7 +4830,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
     # Check the sum of the hhea metrics is not below 1.2
     # (120% of upm or 1200 units for 1000 upm font)
     if hhea_sum < 1.2:
-        failed = True
+        passed = False
         yield FAIL,\
               Message('bad-hhea-range',
                       f'The sum of hhea.ascender + abs(hhea.descender) + hhea.lineGap'
@@ -4837,7 +4839,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # Check the sum of the hhea metrics is below 2.0
     elif hhea_sum > 2.0:
-        failed = True
+        passed = False
         yield FAIL,\
               Message('bad-hhea-range',
                       f'The sum of hhea.ascender + abs(hhea.descender) + hhea.lineGap'
@@ -4846,7 +4848,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # Check the sum of the hhea metrics is between 1.1-1.5x of the font's upm
     elif hhea_sum > 1.5:
-        warn = True
+        passed = False
         yield WARN,\
               Message('bad-hhea-range',
                       f"We recommend the absolute sum of the hhea metrics should be"
@@ -4855,7 +4857,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # OS/2.sTypoAscender must be strictly positive
     if font_metrics['OS/2.sTypoAscender'] < 0:
-        failed = True
+        passed = False
         yield FAIL,\
               Message('typo-ascender',
                       "The OS/2 sTypoAscender must be strictly positive,"
@@ -4863,7 +4865,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # hhea.ascent must be strictly positive
     if font_metrics['hhea.ascent'] <= 0:
-        failed = True
+        passed = False
         yield FAIL,\
               Message('hhea-ascent',
                       "The hhea ascender must be strictly positive,"
@@ -4871,7 +4873,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # OS/2.usWinAscent must be strictly positive
     if font_metrics['OS/2.usWinAscent'] <= 0:
-        failed = True
+        passed = False
         yield FAIL,\
               Message('win-ascent',
                       f"The OS/2.usWinAscent must be strictly positive,"
@@ -4879,7 +4881,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # OS/2.sTypoDescender must be negative or zero
     if font_metrics['OS/2.sTypoDescender'] > 0:
-        failed = True
+        passed = False
         yield FAIL,\
               Message('typo-descender',
                       "The OS/2 sTypoDescender must be negative or zero."
@@ -4887,7 +4889,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # hhea.descent must be negative or zero
     if font_metrics['hhea.descent'] > 0:
-        failed = True
+        passed = False
         yield FAIL,\
               Message('hhea-descent',
                       "The hhea descender must be negative or zero."
@@ -4895,13 +4897,13 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # OS/2.usWinDescent must be positive or zero
     if font_metrics['OS/2.usWinDescent'] < 0:
-        failed = True
+        passed = False
         yield FAIL,\
               Message('win-descent',
                       "The OS/2.usWinDescent must be positive or zero."
                       " This font has a negative value.")
 
-    if not failed and not warn:
+    if passed:
         yield PASS, 'Vertical metrics are good'
 
 
@@ -4947,10 +4949,10 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
     gf_has_typo_metrics = typo_metrics_enabled(gf_ttFont)
     ttFont_has_typo_metrics = typo_metrics_enabled(ttFont)
 
-    failed = False
+    passed = True
     if gf_has_typo_metrics:
         if not ttFont_has_typo_metrics:
-            failed = True
+            passed = False
             yield FAIL, Message("bad-fsselection-bit7",
                                 "fsSelection bit 7 needs to be enabled because "
                                 "the family on Google Fonts has it enabled.")
@@ -4966,7 +4968,7 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
            (math.ceil(ttFont['OS/2'].usWinAscent),
             math.ceil(ttFont['OS/2'].usWinDescent)):
                if not ttFont_has_typo_metrics:
-                   failed = True
+                   passed = False
                    yield FAIL, Message("bad-fsselection-bit7",
                                        "fsSelection bit 7 needs to be enabled "
                                        "because the win metrics differ from "
@@ -4987,7 +4989,7 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
     hhea_descender = ttFont['hhea'].descent
 
     if typo_ascender != expected_ascender:
-        failed = True
+        passed = False
         yield FAIL,\
               Message("bad-typo-ascender",
                       f"{full_font_name}:"
@@ -4995,7 +4997,7 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
                       f" when it should be {expected_ascender}")
 
     if typo_descender != expected_descender:
-        failed = True
+        passed = False
         yield FAIL,\
               Message("bad-typo-descender",
                       f"{full_font_name}:"
@@ -5003,7 +5005,7 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
                       f" when it should be {expected_descender}")
 
     if hhea_ascender != expected_ascender:
-        failed = True
+        passed = False
         yield FAIL,\
               Message("bad-hhea-ascender",
                       f"{full_font_name}:"
@@ -5011,13 +5013,13 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, regular_
                       f" when it should be {expected_ascender}")
 
     if hhea_descender != expected_descender:
-        failed = True
+        passed = False
         yield FAIL,\
               Message("bad-hhea-descender",
                       f"{full_font_name}:"
                       f" hhea Descender is {hhea_descender}"
                       f" when it should be {expected_descender}")
-    if not failed:
+    if passed:
         yield PASS, "Vertical metrics have not regressed."
 
 
@@ -5071,12 +5073,11 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
         'hhea.lineGap': 0,
     }
 
-    failed = False
-    warn = False
+    passed = True
 
     # Check fsSelection bit 7 is not enabled
     if typo_metrics_enabled(ttFont):
-        failed = True
+        passed = False
         yield FAIL,\
               Message('bad-fselection-bit7',
                       'OS/2 fsSelection bit 7 must be disabled')
@@ -5084,20 +5085,20 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     # Check typo metrics and hhea lineGap match our expected values
     for k in expected_metrics:
         if font_metrics[k] != expected_metrics[k]:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message(f'bad-{k}',
                           f'{k} is "{font_metrics[k]}" it should be {expected_metrics[k]}')
 
     # Check hhea and win values match
     if font_metrics['hhea.ascent'] != font_metrics['OS/2.usWinAscent']:
-        failed = True
+        passed = False
         yield FAIL,\
               Message('ascent-mismatch',
                       'hhea.ascent must match OS/2.usWinAscent')
 
     if abs(font_metrics['hhea.descent']) != font_metrics['OS/2.usWinDescent']:
-        failed = True
+        passed = False
         yield FAIL,\
               Message('descent-mismatch',
                       'hhea.descent must match absolute value of OS/2.usWinDescent')
@@ -5107,13 +5108,13 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
                 abs(font_metrics['hhea.descent']) +
                 font_metrics['hhea.lineGap']) / font_upm
     if not 1.1 < hhea_sum <= 1.5:
-        warn = True
+        passed = False
         yield WARN,\
               Message('bad-hhea-range',
                       f"We recommend the absolute sum of the hhea metrics should be"
                       f" between 1.1-1.4x of the font's upm. This font has {hhea_sum}x")
 
-    if not failed and not warn:
+    if passed:
         yield PASS, 'Vertical metrics are good'
 
 
@@ -5136,7 +5137,7 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(regular_ttFont, regu
 
     upm_scale = ttFont['head'].unitsPerEm / gf_ttFont['head'].unitsPerEm
 
-    failed = False
+    passed = True
     for tbl, attrib in [
         ("OS/2", "sTypoAscender"),
         ("OS/2", "sTypoDescender"),
@@ -5150,12 +5151,12 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(regular_ttFont, regu
         gf_val = math.ceil(getattr(gf_ttFont[tbl], attrib) * upm_scale)
         f_val = math.ceil(getattr(ttFont[tbl], attrib))
         if gf_val != f_val:
-            failed = True
+            passed = False
             yield FAIL,\
                   Message("cjk-metric-regression",
                           f" {tbl} {attrib} is {f_val}"
                           f" when it should be {gf_val}")
-    if not failed:
+    if passed:
         yield PASS, "CJK vertical metrics are good"
 
 
