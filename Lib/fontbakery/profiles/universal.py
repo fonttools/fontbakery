@@ -64,6 +64,7 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/rupee',
         'com.google.fonts/check/unreachable_glyphs',
         'com.google.fonts/check/contour_count',
+        'com.google.fonts/check/soft_hyphen',
         'com.google.fonts/check/cjk_chws_feature',
         'com.google.fonts/check/transformed_components',
         'com.google.fonts/check/dotted_circle',
@@ -1470,16 +1471,6 @@ def com_google_fonts_check_contour_count(ttFont, config):
         font_glyph_contours_by_glyphname = {f['name']: list(f['contours'])[0]
                                             for f in font_glyph_data}
 
-        if 0x00AD in font_glyph_contours_by_codepoint.keys():
-            yield WARN,\
-                  Message("softhyphen",
-                          "This font has a 'Soft Hyphen' character (codepoint 0x00AD)"
-                          " which is supposed to be zero-width and invisible, and is"
-                          " used to mark a hyphenation possibility within a word"
-                          " in the absence of or overriding dictionary hyphenation."
-                          " It is mostly an obsolete mechanism now, and the character"
-                          " is only included in fonts for legacy codepage coverage.")
-
         shared_glyphs_by_codepoint = set(desired_glyph_contours_by_codepoint) & \
                                      set(font_glyph_contours_by_codepoint)
         for glyph in sorted(shared_glyphs_by_codepoint):
@@ -1534,6 +1525,30 @@ def com_google_fonts_check_contour_count(ttFont, config):
                           f"\n")
         else:
             yield PASS, "All glyphs have the recommended amount of contours"
+
+
+@check(
+    id = 'com.google.fonts/check/soft_hyphen',
+    rationale = """
+        The 'Soft Hyphen' character (codepoint 0x00AD) is used to mark
+        a hyphenation possibility within a word in the absence of or
+        overriding dictionary hyphenation.
+
+        It is supposed to be zero-width and invisible.
+
+        It is also mostly an obsolete mechanism now, and the character
+        is typicaly only included in fonts for legacy codepage coverage.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/4046'
+)
+def com_google_fonts_check_soft_hyphen(ttFont):
+    """Does the font contain a soft hyphen?"""
+    if 0x00AD in ttFont['cmap'].getBestCmap().keys():
+        yield WARN,\
+              Message("softhyphen",
+                      "This font has a 'Soft Hyphen' character.")
+    else:
+        yield PASS, "Looks good!"
 
 
 @check(
