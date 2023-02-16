@@ -967,18 +967,25 @@ def test_check_unreachable_glyphs():
         assert glyph not in message
 
 
+def test_check_soft_hyphen(montserrat_ttFonts):
+    """Check glyphs contain the recommended contour count"""
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/soft_hyphen")
+    for ttFont in montserrat_ttFonts:
+        # Montserrat has a softhyphen...
+        assert_results_contain(check(ttFont),
+                               WARN, 'softhyphen')
+
+        _remove_cmap_entry(ttFont, 0x00AD)
+        assert_PASS(check(ttFont))
+
+
 def test_check_contour_count(montserrat_ttFonts):
     """Check glyphs contain the recommended contour count"""
     check = CheckTester(universal_profile,
                         "com.google.fonts/check/contour_count")
-    # TODO: FAIL, "lacks-cmap"
-
-    for ttFont in montserrat_ttFonts:
-        # Montserrat which was used to assemble the glyph data,
-        # so, it should be good, except for that softhyphen...
-        # TODO: how can we test PASS then?
-        assert_results_contain(check(ttFont),
-                               WARN, 'softhyphen')
+    # TODO: test FAIL, "lacks-cmap"
+    # TODO: test PASS
 
     # Lets swap the glyf 'a' (2 contours) with glyf 'c' (1 contour)
     for ttFont in montserrat_ttFonts:
