@@ -333,12 +333,10 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
                         continue
 
                     if full_name.startswith(family_name):
-                        yield PASS, "Full font name begins with the font family name."
                         passed = True
                         break
                     else:
                         passed = False
-                        continue
 
     if not names_compared or passed == False:
         yield FAIL, Message(
