@@ -280,7 +280,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
             "An exception to the [above] definition of Full font name is for Microsoft
             platform strings for CFF OpenType fonts: in this case, the Full font name
             string must be identical to the PostScript FontName in the CFF Name INDEX."
-            
+
         https://docs.microsoft.com/en-us/typography/opentype/otspec150/name#name-ids
     """,
     proposal = 'legacy:check/068'
