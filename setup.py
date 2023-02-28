@@ -66,9 +66,7 @@ setup(
         'beautifulsoup4',
         'beziers>=0.5.0', # Uses new fontTools glyph outline access
         'cmarkgfm',
-        'collidoscope==0.4.1', # 0.4.0 had a bug that failed to detect
-                               # an ïï collision on Nunito Black.
-                               # (see https://github.com/googlefonts/fontbakery/issues/3554)
+        'collidoscope',
         'defcon',
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
         'fontTools[ufo,lxml,unicode]>=4.36.0',  # allows for passing location to glyphsets
@@ -84,7 +82,7 @@ setup(
         'pip-api',    # needed for checking Font Bakery's version
         # 3.7.0 fixed a bug on parsing some METADATA.pb files.
         # We cannot use v4 because our protobuf files have been compiled with v3.
-        'protobuf>=3.7.0, <4',  
+        'protobuf>=3.7.0, <4',
                             # (see https://github.com/googlefonts/fontbakery/issues/2200)
         'PyYAML',
         'requests',
