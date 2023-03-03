@@ -1742,7 +1742,7 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
         Characters with the Soft_Dotted property are listed in
         https://www.unicode.org/Public/UCD/latest/ucd/PropList.txt
     """,
-  proposal = 'https://github.com/googlefonts/fontbakery/issue/4059',
+    proposal = 'https://github.com/googlefonts/fontbakery/issue/4059',
 )
 def com_google_fonts_check_soft_dotted(ttFont):
     """Ensure soft_dotted characters lose their dot when combined with marks that
@@ -1798,9 +1798,8 @@ def com_google_fonts_check_soft_dotted(ttFont):
         if (len(outlines_dict[ord("i")]) == len(outlines_dict[ord("ı")])):
             unclear = True
     if unclear:
-        yield SKIP, \
-              "It is not clear if the soft dotted characters have glyphs " \
-              "with dots."
+        yield SKIP, ("It is not clear if the soft dotted"
+                     " characters have glyphs with dots.")
         return
 
     # Use harfbuzz to check if soft dotted glyphs are substituted
@@ -1825,10 +1824,8 @@ def com_google_fonts_check_soft_dotted(ttFont):
             text = chr(soft) + chr(above)
 
         # Only check a few strings that we WARN about.
-        if (
-            text not in ortho_soft_dotted_strings and
-            len(warn_unchanged_strings) >= 20
-        ):
+        if (text not in ortho_soft_dotted_strings and
+            len(warn_unchanged_strings) >= 20):
             continue
 
         buf = vharfbuzz.shape(text)
