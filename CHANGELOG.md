@@ -1,8 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## Upcoming release: 0.8.12 (2023-Apr-??)
+  - ...
 
-## Upcoming release: 0.8.11 (2023-Jan-??)
+
+## 0.8.11 (2023-Mar-03)
 ### Noteworthy code-changes
   - The terminal reporter now prints out URLs for "more info" (typically github issues) where the user can learn more about how the check was originally proposed/discussed. (PR #3994)
   - Added a `--timeout` parameter and set timeouts on all network requests. (PR #3892)
