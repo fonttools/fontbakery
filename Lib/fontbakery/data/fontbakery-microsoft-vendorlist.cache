@@ -48,6 +48,7 @@
 
 
 
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -75,11 +76,11 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/a1aeeca8205a918419914829fa433b40baca3baa/typographydocs/vendors/index.md" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/6d07e645e603242053c258b5a4524007978212c9/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="11/11/2022" />
+<meta name="ms.date" content="02/07/2023" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -90,10 +91,12 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2022-11-11 08:32 PM" />
-<meta name="word_count" content="4241" />
+<meta name="updated_at" content="2023-02-07 07:37 PM" />
+<meta name="word_count" content="4331" />
 
 
+	<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
+	
 
 
 	<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/000aaee4-f890-4b0a-bd33-24fb2aefa882" data-source="generated" />
@@ -109,7 +112,7 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/f9093179.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/fe1c95bc.site-ltr.css ">
 
 	
 
@@ -140,6 +143,7 @@
 			hasPrintButton: true,
 			hasBookmark: true,
 			hasShare: true,
+			isPermissioned: false,
 			hasRecommendations: true,
 			contributors: [
 						{ name: "alib-ms", url: "https://github.com/alib-ms" },
@@ -159,7 +163,7 @@
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/67a45209.deprecation.js"></script>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/135c252f.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/48344aa8.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -296,20 +300,6 @@ Table of contents						</span>
 											</button>
 										
 
-										
-
-											<a	data-feedback-section-link
-												aria-label="Feedback"
-												href="#feedback"
-												class="button button-clear button-sm text-decoration-none button-primary display-none display-inline-flex-tablet"
-												data-bi-name="comments"
-												title="Send feedback about this page">
-												<span class="icon margin-none" aria-hidden="true">
-													<span class="docon docon-comment-lines"></span>
-												</span>
-											</a>
-										
-
 											<a	data-contenteditbtn
 												class="button button-clear button-sm text-decoration-none button-primary display-none display-inline-flex-tablet"
 												aria-label="Edit"
@@ -339,14 +329,13 @@ Table of contents						</span>
 														data-page-action-item="overflow-mobile"
 														type="button"
 														class="justify-content-flex-start button-block button-sm has-inner-focus button button-clear display-none-tablet"
-														aria-label="Contents"
 														data-bi-name="contents-expand"
 														data-contents-button
 														data-popover-close>
 														<span class="icon">
 															<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
 														</span>
-														<span class="contents-expand-title">Table of contents</span>
+															<span class="contents-expand-title">Table of contents</span>
 													</button>
 
 												<a
@@ -379,21 +368,6 @@ Table of contents						</span>
 														<span class="collection-status">Save</span>
 													</button>
 
-
-													<a	data-feedback-section-link
-														aria-label="Feedback"
-														href="#feedback"
-														class="button button-clear button-block button-sm has-inner-focus justify-content-flex-start text-decoration-none display-none-tablet"
-														data-bi-name="comments"
-														title="Send feedback about this page"
-														data-page-action-item="overflow-mobile">
-														<span class="icon" aria-hidden="true">
-															<span class="docon docon-comment-lines"></span>
-														</span>
-														<span>
-Feedback														</span>
-													</a>
-
 													<a	data-contenteditbtn
 														class="button button-clear button-block button-sm has-inner-focus justify-content-flex-start text-decoration-none display-none-tablet"
 														aria-label="Edit"
@@ -419,15 +393,15 @@ Feedback														</span>
 														data-page-action-item="overflow-all"
 														data-popover-close
 														data-print-page
-														data-check-hidden="true"
-														hidden>
+														data-check-hidden="true">
 														<span class="icon" aria-hidden="true">
 															<span class="docon docon-print"></span>
 														</span>
 														<span>Print</span>
 													</button>
 
-													<div aria-hidden="true" class="margin-none display-none-tablet border-top" data-page-action-item="overflow-all"></div>
+													<div aria-hidden="true" class="margin-none
+														border-top" data-page-action-item="overflow-all"></div>
 
 													
 														<a class="button button-clear button-sm has-inner-focus button-block text-decoration-none justify-content-flex-start share-twitter" data-bi-name="twitter" data-page-action-item="overflow-all">
@@ -464,12 +438,12 @@ Feedback														</span>
 							<!-- end article-header -->
 
 
-							<div class="">
-								<button type="button" class="border contents-button button button-clear button-sm is-hidden-tablet has-inner-focus" aria-label="Contents" data-bi-name="contents-expand" data-contents-button hidden>
+							<div>
+								<button type="button" class="border contents-button button button-clear button-sm is-hidden-tablet has-inner-focus" data-bi-name="contents-expand" data-contents-button hidden>
 									<span class="icon">
 										<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
 									</span>
-									<span class="contents-expand-title">Table of contents</span>
+										<span class="contents-expand-title">Table of contents</span>
 								</button>
 							</div>
 
@@ -487,7 +461,7 @@ Feedback														</span>
 													<li>
 Article													</li>
 													<li class="visibility-hidden-visual-diff">
-														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2022-11-11T20:32:00Z" data-article-date-source="git">11/11/2022</time>
+														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2023-02-07T19:37:00Z" data-article-date-source="git">02/07/2023</time>
 													</li>
 															<li class="readingTime">21 minutes to read</li>
 														<li class="contributors-holder display-none-print">
@@ -501,6 +475,7 @@ Article													</li>
 <div id="user-feedback" class="margin-block-xxs display-none-print" data-hide-on-archived>
 	<button
 		id="user-feedback-button"
+		data-test-id="conceptual-feedback-button"
 		class="button button-sm button-clear button-primary"
 		type="button"
 		data-bi-name="user-feedback-button"
@@ -514,8 +489,8 @@ Article													</li>
 </div>
 									</div>
 
-										<nav id="center-doc-outline" class="doc-outline is-hidden-desktop display-none-print" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
-											<h3>In this article</h3>
+										<nav id="center-doc-outline" class="doc-outline is-hidden-desktop display-none-print margin-bottom-sm" data-bi-name="intopic toc" role="navigation" aria-label="In this article">
+											<h2 id="ms--in-this-article" class="title is-6 margin-block-xs">In this article</h2>
 										</nav>
 
 								<!-- <content> -->
@@ -683,6 +658,10 @@ Article													</li>
 <td><a href="http://www.signfonts.com" data-linktype="external">Art&Sign Studio</a></td>
 </tr>
 <tr>
+<td>A&TP</td>
+<td><a href="https://github.com/ashishdes/Braah" data-linktype="external">Art & Type</a></td>
+</tr>
+<tr>
 <td>A70</td>
 <td><a href="https://autumnseventy.com/" data-linktype="external">AutumnSeventy</a></td>
 </tr>
@@ -721,6 +700,10 @@ Article													</li>
 <tr>
 <td>ABCD</td>
 <td><a href="http://www.abcdinamo.com" data-linktype="external">Dinamo Typefoundry</a></td>
+</tr>
+<tr>
+<td>ABCO</td>
+<td><a href="https://www.aboutcontact.com/" data-linktype="external">About Contact</a></td>
 </tr>
 <tr>
 <td>ABCX</td>
@@ -801,6 +784,10 @@ Article													</li>
 <tr>
 <td>aide</td>
 <td>Aiolfi.design</td>
+</tr>
+<tr>
+<td>AIYR</td>
+<td><a href="https://aiyaristudio.com/" data-linktype="external">Aiyari</a></td>
 </tr>
 <tr>
 <td>AJL</td>
@@ -941,6 +928,10 @@ Article													</li>
 <tr>
 <td>ARIN</td>
 <td><a href="http://www.aringtypeface.com" data-linktype="external">Aring Typeface AB</a></td>
+</tr>
+<tr>
+<td>ARit</td>
+<td>Arabia-it</td>
 </tr>
 <tr>
 <td>ARMA</td>
@@ -1162,6 +1153,10 @@ Article													</li>
 <td><a href="https://kara-lynn.info/pages/topo-typo.html" data-linktype="external">Topography Typography</a></td>
 </tr>
 <tr>
+<td>BECH</td>
+<td>Bech Type</td>
+</tr>
+<tr>
 <td>BEN</td>
 <td><a href="http://benhodosi.com/" data-linktype="external">Ben Hodosi</a></td>
 </tr>
@@ -1171,6 +1166,10 @@ Article													</li>
 </tr>
 <tr>
 <td>BF</td>
+<td><a href="http://www.brass-fonts.de" data-linktype="external">BrassFonts</a></td>
+</tr>
+<tr>
+<td>BFGS</td>
 <td><a href="http://www.brass-fonts.de" data-linktype="external">BrassFonts</a></td>
 </tr>
 <tr>
@@ -1302,6 +1301,10 @@ Article													</li>
 <td><a href="https://www.beachy.org/" data-linktype="external">Beach-o-matic</a></td>
 </tr>
 <tr>
+<td>BOOM</td>
+<td><a href="https://boom-promphans.com/" data-linktype="external">Boom-Promphans</a></td>
+</tr>
+<tr>
 <td>BORW</td>
 <td>em2 Solutions</td>
 </tr>
@@ -1425,12 +1428,20 @@ Article													</li>
 <td><a href="http://www.typeclub.co.uk/" data-linktype="external">Club 21</a></td>
 </tr>
 <tr>
+<td>CAD3</td>
+<td><a href="https://clipartdesign.net/" data-linktype="external">Clipartdesign</a></td>
+</tr>
+<tr>
 <td>CAFE</td>
 <td><a href="https://fonts.cafe24.com/" data-linktype="external">Cafe24 Corp.</a></td>
 </tr>
 <tr>
 <td>CAK</td>
 <td>pluginfonts.com</td>
+</tr>
+<tr>
+<td>CAL</td>
+<td><a href="https://calfonts.com/" data-linktype="external">California Type Foundry</a></td>
 </tr>
 <tr>
 <td>CAM</td>
@@ -1801,6 +1812,10 @@ Article													</li>
 <td><a href="http://www.dukom.org" data-linktype="external">Dukom Design</a></td>
 </tr>
 <tr>
+<td>DONS</td>
+<td><a href="https://donsvg.com/" data-linktype="external">Don SVG Files</a></td>
+</tr>
+<tr>
 <td>DP</td>
 <td><a href="https://displaay.net" data-linktype="external">Displaay</a></td>
 </tr>
@@ -1899,6 +1914,10 @@ Article													</li>
 <tr>
 <td>DXTF</td>
 <td><a href="http://www.dxtypefoundry.ru/" data-linktype="external">DXTypefoundry</a></td>
+</tr>
+<tr>
+<td>DY</td>
+<td><a href="https://github.com/dy" data-linktype="external">Dmitry Ivanov</a></td>
 </tr>
 <tr>
 <td>DYNA</td>
@@ -2129,6 +2148,14 @@ Article													</li>
 <tr>
 <td>FETZ</td>
 <td><a href="https://markusfetz.com/" data-linktype="external">Markus Fetz</a></td>
+</tr>
+<tr>
+<td>FFBR</td>
+<td><a href="https://www.fontfabric.com/" data-linktype="external">Fontfabric</a></td>
+</tr>
+<tr>
+<td>FFF</td>
+<td><a href="https://finalfinal.ai/" data-linktype="external">Final Final Foundry</a></td>
 </tr>
 <tr>
 <td>FFFF</td>
@@ -2494,6 +2521,14 @@ Article													</li>
 <td><a href="http://www.gilleslecorre.com/pages/fonts.html" data-linktype="external">GLC foundry</a></td>
 </tr>
 <tr>
+<td>GLDN</td>
+<td><a href="https://www.myfonts.com/collections/studio-gulden-foundry" data-linktype="external">Studio Gulden</a></td>
+</tr>
+<tr>
+<td>GLGX</td>
+<td>Golgex Design</td>
+</tr>
+<tr>
 <td>GLYF</td>
 <td>Glyph Systems</td>
 </tr>
@@ -2820,6 +2855,10 @@ Article													</li>
 <td><a href="http://www.kostasbartsokas.com/" data-linktype="external">Kostas Bartsokas</a></td>
 </tr>
 <tr>
+<td>IDL</td>
+<td><a href="https://www.identitylab.at/" data-linktype="external">Identity Lab</a></td>
+</tr>
+<tr>
 <td>IDMS</td>
 <td><a href="https://www.incstonedesign.com/" data-linktype="external">Incstone Design by Megami Studios</a></td>
 </tr>
@@ -2900,6 +2939,10 @@ Article													</li>
 <td><a href="https://unforma.club/" data-linktype="external">Irregular Regular</a></td>
 </tr>
 <tr>
+<td>ISAC</td>
+<td><a href="https://www.isacotype.com/" data-linktype="external">Isaco Type</a></td>
+</tr>
+<tr>
 <td>ISE </td>
 <td><a href="https://softfonts.com/" data-linktype="external">ISE (devanagarifonts.com)</a></td>
 </tr>
@@ -2941,6 +2984,10 @@ Article													</li>
 <tr>
 <td>J23</td>
 <td>June 23</td>
+</tr>
+<tr>
+<td>JAMO</td>
+<td><a href="https://jamo.works/" data-linktype="external">JAMO</a></td>
 </tr>
 <tr>
 <td>JASO</td>
@@ -3017,6 +3064,10 @@ Article													</li>
 <tr>
 <td>JMN</td>
 <td><a href="https://napadow.com/" data-linktype="external">Jeff Napadow</a></td>
+</tr>
+<tr>
+<td>JO M</td>
+<td><a href="https://www.jomalinis.com/" data-linktype="external">Jo Malinis</a></td>
 </tr>
 <tr>
 <td>JOON</td>
@@ -3119,7 +3170,7 @@ Article													</li>
 </tr>
 <tr>
 <td>KHTF</td>
-<td>KH Type</td>
+<td><a href="https://khtype.com/" data-linktype="external">KH Type</a></td>
 </tr>
 <tr>
 <td>KILO</td>
@@ -3190,6 +3241,10 @@ Article													</li>
 <td><a href="http://www.karandash.eu" data-linktype="external">Karandash Type &amp; Graphics Foundry</a></td>
 </tr>
 <tr>
+<td>KSES</td>
+<td><a href="https://www.ksesoftware.com/type.html" data-linktype="external">KSE Software</a></td>
+</tr>
+<tr>
 <td>KTF</td>
 <td><a href="http://www.kustomtype.com" data-linktype="external">Kustomtype</a></td>
 </tr>
@@ -3203,7 +3258,7 @@ Article													</li>
 </tr>
 <tr>
 <td>KTTF</td>
-<td>Kitchen Table Type Foundry</td>
+<td><a href="https://www.kitchentablefoundry.com/" data-linktype="external">Kitchen Table Type Foundry</a></td>
 </tr>
 <tr>
 <td>KUBA</td>
@@ -3880,6 +3935,10 @@ Article													</li>
 <td><a href="http://www.musictypefoundry.com" data-linktype="external">Music Type Foundry</a></td>
 </tr>
 <tr>
+<td>MTMF</td>
+<td>Modern Type</td>
+</tr>
+<tr>
 <td>MTNT</td>
 <td><a href="https://mutant.tech/" data-linktype="external">Mutant Standard</a></td>
 </tr>
@@ -4325,6 +4384,10 @@ Article													</li>
 <td><a href="https://plain-form.com/" data-linktype="external">Plain Form</a></td>
 </tr>
 <tr>
+<td>plnt</td>
+<td><a href="https://plantype.co/" data-linktype="external">Plantype</a></td>
+</tr>
+<tr>
 <td>PMPT</td>
 <td><a href="https://pampatype.com/" data-linktype="external">PampaType font foundry</a></td>
 </tr>
@@ -4383,6 +4446,10 @@ Article													</li>
 <tr>
 <td>PSIS</td>
 <td><a href="http://www.PhotoShopIsland.com" data-linktype="external">PhotoShopIsland.com</a></td>
+</tr>
+<tr>
+<td>PSTL</td>
+<td><a href="https://pstypelab.com/" data-linktype="external">ps.type.lab</a></td>
 </tr>
 <tr>
 <td>PSTP</td>
@@ -4623,7 +4690,7 @@ Article													</li>
 <td>RudynFluffy</td>
 </tr>
 <tr>
-<td>RV</td>
+<td>VOLK</td>
 <td><a href="http://radmirvolk.design/" data-linktype="external">Radmir Volk</a></td>
 </tr>
 <tr>
@@ -4823,7 +4890,7 @@ Article													</li>
 </tr>
 <tr>
 <td>SKP</td>
-<td><a href="https://www.essque-productions.com/" data-linktype="external">Essqué Productions</a></td>
+<td><a href="https://www.essqueproductions.com" data-linktype="external">Essqué Productions</a></td>
 </tr>
 <tr>
 <td>skz</td>
@@ -4988,6 +5055,10 @@ Article													</li>
 <tr>
 <td>SYDA</td>
 <td><a href="http://www.siddhayoga.org" data-linktype="external">Shree Muktananda Ashram</a></td>
+</tr>
+<tr>
+<td>SyDi</td>
+<td><a href="https://www.facebook.com/groups/syydai" data-linktype="external">SyyDai</a></td>
 </tr>
 <tr>
 <td>SYN</td>
@@ -5193,6 +5264,10 @@ Article													</li>
 <td><a href="http://www.tondonero.com" data-linktype="external">Tondonero</a></td>
 </tr>
 <tr>
+<td>TOFU</td>
+<td><a href="https://www.tofutype.ca/" data-linktype="external">Tofu Type Foundry</a></td>
+</tr>
+<tr>
 <td>TOKO</td>
 <td><a href="https://www.tokotypefaces.com" data-linktype="external">Tokotype</a></td>
 </tr>
@@ -5237,6 +5312,10 @@ Article													</li>
 <td><a href="http://www.typotheque.com/" data-linktype="external">Typotheque</a></td>
 </tr>
 <tr>
+<td>TpTp</td>
+<td><a href="https://typetype.org/" data-linktype="external">TypeType</a></td>
+</tr>
+<tr>
 <td>TPTR</td>
 <td><a href="http://typetr.typenetwork.com/" data-linktype="external">TYPETR</a></td>
 </tr>
@@ -5254,7 +5333,7 @@ Article													</li>
 </tr>
 <tr>
 <td>TROY</td>
-<td><a href="https://troyleinster.com/" data-linktype="external">Troy Leinster</a></td>
+<td><a href="https://www.leinstertype.com/" data-linktype="external">Leinster Type</a></td>
 </tr>
 <tr>
 <td>TS</td>
@@ -5388,6 +5467,10 @@ Article													</li>
 <td><a href="https://dn-works.com/ufas/" data-linktype="external">Unicode Fonts for Ancient Scripts</a></td>
 </tr>
 <tr>
+<td>UFCB</td>
+<td><a href="https://unforma.club/" data-linktype="external">Unforma Club</a></td>
+</tr>
+<tr>
 <td>UFDN</td>
 <td><a href="http://underforest.com" data-linktype="external">UNDERFOREST DESIGN</a></td>
 </tr>
@@ -5426,6 +5509,10 @@ Article													</li>
 <tr>
 <td>URW</td>
 <td><a href="http://www.urwpp.de/" data-linktype="external">URW Type Foundry GmbH</a></td>
+</tr>
+<tr>
+<td>USSS</td>
+<td><a href="https://usssual.com/" data-linktype="external">USSSUAL</a></td>
 </tr>
 <tr>
 <td>UT</td>
@@ -5477,6 +5564,10 @@ Article													</li>
 <tr>
 <td>VMT</td>
 <td><a href="http://www.vmtype.com" data-linktype="external">VMType</a></td>
+</tr>
+<tr>
+<td>VN</td>
+<td><a href="https://viktornuebel.com/" data-linktype="external">Viktor Nübel Type Design</a></td>
 </tr>
 <tr>
 <td>VO</td>
@@ -5664,6 +5755,10 @@ Article													</li>
 <td><a href="http://yfficient.com/" data-linktype="external">Yfficient Graphic Design and Marketing</a></td>
 </tr>
 <tr>
+<td>YMGT</td>
+<td><a href="https://yoonmingoo.net/" data-linktype="external">YMG Type Foundry</a></td>
+</tr>
+<tr>
 <td>YN</td>
 <td><a href="http://www.yanone.de" data-linktype="external">Yanone</a></td>
 </tr>
@@ -5735,6 +5830,10 @@ Article													</li>
 <td><a href="https://zi-hi.com/" data-linktype="external">字嗨</a></td>
 </tr>
 <tr>
+<td>ZP</td>
+<td><a href="https://zilap.co/" data-linktype="external">Zilap Estudio</a></td>
+</tr>
+<tr>
 <td>ZSFT</td>
 <td>Zsoft</td>
 </tr>
@@ -5755,23 +5854,17 @@ Article													</li>
 
 						<!-- recommendations section -->
 							<section id="recommendations-section" data-bi-name="recommendations" class="display-none-print"></section>
-							<section id="right-rail-recommendations-mobile" data-bi-name="recommendations" class="display-none-desktop margin-top-xxs" hidden></section>
 						<!-- end recommendations section -->
-
-							<section id="right-rail-learning-resources-mobile" class="display-none-desktop margin-top-xxs" data-bi-name="learning-resources-card" hidden></section>
-							<section id="right-rail-qna-mobile" class="display-none-desktop margin-top-xxs" data-bi-name="qna-link-card" hidden></section>
 
 						<!-- feedback section -->
 <section class="feedback-section position-relative" data-bi-name="feedback-section">
-
     <h2 id="feedback" class="title is-3 margin-top-sm">Feedback</h2>
 
-    <div class="alert choose-feedback-type">
+    <div class="alert choose-feedback-type padding-bottom-sm">
         <p id="send-feedback-about">Submit and view feedback for</p>
 
-        <div class="choose-feedback-buttons margin-top-xs">
-
-			<a class="button feedback-type-product margin-bottom-xxs github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
+        <div class="choose-feedback-buttons buttons margin-top-xs">
+			<a class="button feedback-type-product github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
 				<span aria-hidden="true" class="docon docon-brand-github padding-right-xxs"></span>
 				<span>This page</span>
 			</a>
@@ -5790,7 +5883,19 @@ Article													</li>
 						<!-- feedback report section -->
 						<!-- end feedback report section -->
 
-							<section id="right-rail-events-mobile" class="display-none-desktop margin-top-xs" data-bi-name="events-card" hidden></section>
+							<div
+								id="ms--additional-resources-mobile"
+								role="complementary"
+								aria-label="Additional resources"
+								class="display-none-desktop"
+							>
+								<hr class="hr" hidden />
+								<h2 id="ms--additional-resources-mobile-heading" class="title is-3" hidden>Additional resources</h2>
+									<section id="right-rail-recommendations-mobile" data-bi-name="recommendations" hidden></section>
+								<section id="right-rail-training-mobile" data-bi-name="learning-resources-card" hidden></section>
+								<section id="right-rail-events-mobile" data-bi-name="events-card" hidden></section>
+								<section id="right-rail-qna-mobile" data-bi-name="qna-link-card" hidden></section>
+							</div>
 
 						<div class="border-top is-visible-interactive has-default-focus margin-top-sm ">
 
@@ -5903,7 +6008,7 @@ High contrast					</span>
 					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
 				<li><a data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
-		<li>&copy; Microsoft 2022</li>
+		<li>&copy; Microsoft 2023</li>
 	</ul>
 </footer>
 						</div>
@@ -5911,18 +6016,20 @@ High contrast					</span>
 					</div>
 
 						<div
-							class="font-size-sm right-container column is-4-desktop display-none display-block-desktop"
+							id="ms--additional-resources"
+							class="right-container column is-4-desktop display-none display-block-desktop"
 							data-bi-name="pageactions"
 							role="complementary"
-							aria-label="Page Actions">
-
-							<div id="affixed-right-container" class="margin-top-sm-tablet doc-outline is-vertically-scrollable" data-bi-name="right-column">
-								<section id="right-rail-events" data-bi-name="events-card" class="margin-bottom-xxs" hidden></section>
-								<section id="right-rail-recommendations" data-bi-name="recommendations" class="margin-bottom-xxs" hidden></section>
-								<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline">
+							aria-label="Additional resources"
+						>
+							<div id="affixed-right-container" class="margin-top-sm-tablet" data-bi-name="right-column">
+								<h2 id="ms--additional-resources-heading" class="title is-6 margin-top-md" hidden>Additional resources</h2>
+								<section id="right-rail-events" data-bi-name="events-card" hidden></section>
+								<section id="right-rail-training" data-bi-name="learning-resources-card" hidden></section>
+								<section id="right-rail-recommendations" data-bi-name="recommendations" hidden></section>
+								<nav id="side-doc-outline" class="doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="In this article">
 									<h3>In this article</h3>
 								</nav>
-								<section id="right-rail-learning-resources" class="margin-top-xxs" data-bi-name="learning-resources-card" hidden></section>
 								<section id="right-rail-qna" class="margin-top-xxs" data-bi-name="qna-link-card" hidden></section>
 							</div>
 						</div>
@@ -6053,7 +6160,7 @@ High contrast					</span>
 					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
 				<li><a data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 				<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
-		<li>&copy; Microsoft 2022</li>
+		<li>&copy; Microsoft 2023</li>
 	</ul>
 </footer>
 	</section>
