@@ -196,14 +196,17 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
                           f" (meaning 'fixed width monospaced'),"
                           f" but got {ttFont['post'].isFixedPitch} instead.")
 
-        # https://learn.microsoft.com/en-us/typography/opentype/spec/recom#hhea-table
         number_of_h_metrics = ttFont['hhea'].numberOfHMetrics
         if number_of_h_metrics != 3:
             passed = False
-            yield FAIL,\
+            yield WARN,\
                   Message("bad-numberOfHMetrics",
-                          f"Value of hhea.numberOfHMetrics should be set to 3"
-                          f" but got {number_of_h_metrics} instead.")
+                          f"The OpenType spec recomments at https://learn.microsoft.com/"
+                          f"en-us/typography/opentype/spec/recom#hhea-table"
+                          f" that hhea.numberOfHMetrics be set to 3"
+                          f" but this font has {number_of_h_metrics} instead.\n"
+                          f"Please read https://github.com/fonttools/fonttools/issues/3014"
+                          f" to decide whether this makes sense for your font.")
 
         if not PANOSE_is_monospaced(ttFont['OS/2'].panose):
             passed = False
