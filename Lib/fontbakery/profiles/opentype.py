@@ -78,7 +78,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/italic_angle',
     'com.google.fonts/check/mac_style',
     'com.google.fonts/check/fsselection',
-    'com.google.fonts/check/name/italic_names',
+    # DISABLED 'com.google.fonts/check/name/italic_names',
     'com.adobe.fonts/check/varfont/valid_axis_nameid',
     'com.adobe.fonts/check/varfont/valid_subfamily_nameid',
     'com.adobe.fonts/check/varfont/valid_postscript_nameid',

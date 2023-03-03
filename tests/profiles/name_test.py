@@ -495,7 +495,11 @@ def test_check_family_max_4_fonts_per_family_name():
                            FAIL, 'too-many')
 
 
-def test_check_italic_names():
+# FIXME!
+# Proposed for inclusion during the 0.8.11 dev cycle.
+# But concerns were brought up at https://github.com/googlefonts/fontbakery/issues/4061
+# So we should address that before re-enabling this.
+def DISABLED_test_check_italic_names():
     check = CheckTester(opentype_profile,
                         "com.google.fonts/check/name/italic_names")
 

@@ -1,4 +1,4 @@
-from fontbakery.callable import check
+from fontbakery.callable import check, disable
 from fontbakery.status import FAIL, PASS, WARN, INFO, SKIP
 from fontbakery.message import Message
 from fontbakery.constants import (NameID,
@@ -592,6 +592,11 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
         yield PASS, ("There were no more than 4 fonts per family name.")
 
 
+# FIXME!
+# Proposed for inclusion during the 0.8.11 dev cycle.
+# But concerns were brought up at https://github.com/googlefonts/fontbakery/issues/4061
+# So we should address that before re-enabling this.
+@disable
 @check(
     id = 'com.google.fonts/check/name/italic_names',
     conditions = ['style'],
@@ -600,6 +605,7 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
         conform to the font's Upright or Italic style,
         namely IDs 1 & 2 as well as 16 & 17 if they're present.
     """,
+    proposal = "https://github.com/googlefonts/fontbakery/issues/3666"
 )
 def com_google_fonts_check_name_italic_names(ttFont, style):
     """Check name table IDs 1, 2, 16, 17 to conform to Italic style."""
