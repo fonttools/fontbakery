@@ -32,12 +32,14 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### Added to the Open Type Profile
   - **[com.thetypefounders/check/vendor_id]:** When a font project's Vendor ID is specified explicitely on FontBakery's configuration file, all binaries must have a matching vendor identifier value in the OS/2 table. (PR #3941)
-  - **[com.google.fonts/check/name/italic_names]:** Implemented checks for name IDs 1, 2, 16, 17 for Italic fonts (issues #3666 and #3667)
   - **[com.google.fonts/check/caret_slope]:** Check for hhea.caretSlopeRise and hhea.caretSlopeRun to match post.italicAngle (issues #3670 & #4039)
   - **[com.google.fonts/check/italic_axis_in_stat]:** Check that ital axis exists in STAT table (issue #2934)
   - **[com.google.fonts/check/italic_axis_in_stat_is_boolean]:** Check that STAT ital axis values are boolean (0 or 1) and flags are elided for Upright and not elided for Roman, and Roman is linked to Italic (issue #3668)
   - **[com.google.fonts/check/italic_axis_last]:** Check that STAT ital axis is last in order (issue #3669)
   - **[com.adobe.fonts/check/varfont/foundry_defined_tag_name]:** Check that foundry-defined tags begin with an uppercase letter (0x41 to 0x5A), and use only uppercase letters or digits (issue #4043)
+
+#### Proposed for future inclusion on the Open Type Profile
+  - **[com.google.fonts/check/name/italic_names]:** Implemented checks for name IDs 1, 2, 16, 17 for Italic fonts (Proposed at issues #3666 and #3667, but has problems described at issue #4061)
 
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/colorfont_tables]:** Check if fonts contain the correct color tables. (issue #3886)
