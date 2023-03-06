@@ -623,7 +623,7 @@ def com_google_fonts_check_name_italic_names(ttFont, style):
         
         # Name ID 2 (Subfamily Name)
         subfamily_name = get_name(NameID.FONT_SUBFAMILY_NAME)
-        if subfamily_name not in ("Regular", "Bold", "Italic", "Bold Italic"):
+        if subfamily_name not in ("Italic", "Bold Italic"):
             yield FAIL,\
                   Message("bad-subfamilyname",
                           f"Name ID 2 (Subfamily Name) does not conform to specs. Only R/I/B/BI are allowed.\n"
