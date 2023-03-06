@@ -3,6 +3,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.8.12 (2023-Apr-??)
   - ...
+  
+### New Checks
+#### Added to the Open Type Profile
+  - **[com.google.fonts/check/name/italic_names]:** Implemented checks for name IDs 1, 2, 16, 17 for Italic fonts (Proposed at issues #3666 and #3667)
 
 
 ## 0.8.11 (2023-Mar-03)
