@@ -592,11 +592,6 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
         yield PASS, ("There were no more than 4 fonts per family name.")
 
 
-# FIXME!
-# Proposed for inclusion during the 0.8.11 dev cycle.
-# But concerns were brought up at https://github.com/googlefonts/fontbakery/issues/4061
-# So we should address that before re-enabling this.
-@disable
 @check(
     id = 'com.google.fonts/check/name/italic_names',
     conditions = ['style'],
@@ -627,16 +622,11 @@ def com_google_fonts_check_name_italic_names(ttFont, style):
             passed = False
         
         # Name ID 2 (Subfamily Name)
-        subfamily_name_from_style = style
-        if not subfamily_name_from_style.startswith("Italic"):
-            subfamily_name_from_style = subfamily_name_from_style.replace("Italic", " Italic")
-
         subfamily_name = get_name(NameID.FONT_SUBFAMILY_NAME)
-        if subfamily_name_from_style != subfamily_name:
+        if subfamily_name not in ("Regular", "Bold", "Italic", "Bold Italic"):
             yield FAIL,\
                   Message("bad-subfamilyname",
-                          f"Name ID 2 (Subfamily Name) does not conform to font style.\n"
-                          f"Expected: '{subfamily_name_from_style}'\n"
+                          f"Name ID 2 (Subfamily Name) does not conform to specs. Only R/I/B/BI are allowed.\n"
                           f"Got: '{subfamily_name}'.")
             passed = False
 

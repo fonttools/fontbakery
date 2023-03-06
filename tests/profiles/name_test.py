@@ -495,11 +495,7 @@ def test_check_family_max_4_fonts_per_family_name():
                            FAIL, 'too-many')
 
 
-# FIXME!
-# Proposed for inclusion during the 0.8.11 dev cycle.
-# But concerns were brought up at https://github.com/googlefonts/fontbakery/issues/4061
-# So we should address that before re-enabling this.
-def DISABLED_test_check_italic_names():
+def test_check_italic_names():
     check = CheckTester(opentype_profile,
                         "com.google.fonts/check/name/italic_names")
 
@@ -530,6 +526,9 @@ def DISABLED_test_check_italic_names():
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Italic.ttf"))
     assert_PASS(check(ttFont), PASS)
 
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-Medium.ttf"))
+    assert_SKIP(check(ttFont))
+
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Bold.ttf"))
     assert_SKIP(check(ttFont))
 
@@ -544,6 +543,14 @@ def DISABLED_test_check_italic_names():
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Italic.ttf"))
     set_name(ttFont, 2, "Regular")
     assert_results_contain(check(ttFont), FAIL, "bad-subfamilyname")
+
+    # This file is faulty as-is
+    ttFont = TTFont(TEST_FILE("cabin/Cabin-MediumItalic.ttf"))
+    assert_results_contain(check(ttFont), FAIL, "bad-subfamilyname")
+    # Fix it
+    set_name(ttFont, 1, "Cabin Medium")
+    set_name(ttFont, 2, "Italic")
+    assert_PASS(check(ttFont), PASS)
 
 
     # Fonts with Name ID 16 & 17
