@@ -1742,7 +1742,7 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
         Characters with the Soft_Dotted property are listed in
         https://www.unicode.org/Public/UCD/latest/ucd/PropList.txt
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issue/4059',
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/4059',
 )
 def com_google_fonts_check_soft_dotted(ttFont):
     """Ensure soft_dotted characters lose their dot when combined with marks that
