@@ -6,8 +6,12 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Open Type Profile
   - **[com.google.fonts/check/name/italic_names]:** Implemented checks for name IDs 1, 2, 16, 17 for Italic fonts (issues #3666 and #3667)
 
-### Tests
+### BugFixes
+  - Fix crash on markdown reporter by explicitly specifing UTF-8 encoding (issue #4089)
+
+### Code tests
   - Added test for com.google.fonts/soft_doted. (issue #4069)
+
 
 ## 0.8.11 (2023-Mar-03)
 ### Noteworthy code-changes
