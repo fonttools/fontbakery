@@ -1741,6 +1741,9 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
 
         Characters with the Soft_Dotted property are listed in
         https://www.unicode.org/Public/UCD/latest/ucd/PropList.txt
+        
+        See also:
+        https://googlefonts.github.io/gf-guide/diacritics.html#soft-dotted-glyphs
     """,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/4059',
 )
