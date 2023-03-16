@@ -1535,12 +1535,20 @@ def com_google_fonts_check_contour_count(ttFont, config):
         a hyphenation possibility within a word in the absence of or
         overriding dictionary hyphenation.
 
-        It is supposed to be zero-width and invisible.
+        It is sometimes designed empty with no width (such as a control character),
+        sometimes the same as the traditional hyphen, sometimes double encoded with
+        the hyphen.
 
-        It is also mostly an obsolete mechanism now, and the character
-        is typicaly only included in fonts for legacy codepage coverage.
+        That being said, it is recommended to not include it in the font at all,
+        because discretionary hyphenation should be handled at the level of the
+        shaping engine, not the font. Also, even if present, the software would
+        not display that character.
+
+        More discussion at:
+        https://typedrawers.com/discussion/2046/special-dash-things-softhyphen-horizontalbar
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/4046'
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/4046',
+                'https://github.com/googlefonts/fontbakery/issues/3486']
 )
 def com_google_fonts_check_soft_hyphen(ttFont):
     """Does the font contain a soft hyphen?"""

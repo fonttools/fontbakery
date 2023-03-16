@@ -6,6 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Open Type Profile
   - **[com.google.fonts/check/name/italic_names]:** Implemented checks for name IDs 1, 2, 16, 17 for Italic fonts (issues #3666 and #3667)
 
+### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/soft_hyphen]:** Improve wording of the rationale. (issue #4095)
+
 ### BugFixes
   - Fix crash on markdown reporter by explicitly specifing UTF-8 encoding (issue #4089)
 
