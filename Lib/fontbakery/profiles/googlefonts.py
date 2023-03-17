@@ -1,4 +1,5 @@
 import os
+from collections import defaultdict
 
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
@@ -19,6 +20,8 @@ from fontbakery.constants import (NameID,
                                   LATEST_TTFAUTOHINT_VERSION)
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 from glyphsets import codepoints
+import unicodedata2
+
 ENCODINGS_DIR = codepoints.nam_dir
 
 
@@ -89,6 +92,7 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/family_directory_name',
     'com.google.fonts/check/metadata/can_render_samples',
     'com.google.fonts/check/metadata/unsupported_subsets',
+    'com.google.fonts/check/metadata/unreachable_subsets',
     'com.google.fonts/check/metadata/category_hints',
     'com.google.fonts/check/metadata/consistent_repo_urls'
 ]
@@ -1003,7 +1007,6 @@ def font_codepoints(ttFont):
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check Google Fonts glyph coverage."""
     from glyphsets import GFGlyphData as glyph_data
-    import unicodedata2
 
     def missing_encoded_glyphs(glyphs):
         encoded_glyphs = [g["unicode"] for g in glyphs if g["unicode"]]
@@ -1074,6 +1077,70 @@ def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont,
                           f" of its glyphs are supported by this font file.")
     if passed:
         yield PASS, "OK"
+
+
+@check(
+    id = 'com.google.fonts/check/metadata/unreachable_subsets',
+    rationale = """
+        This check ensures that all encoded glyphs in the font are covered by a
+        subset declared in the METADATA.pb. Google Fonts splits the font into
+        a set of subset fonts based on the contents of the `subsets` field and
+        the subset definitions in the `glyphsets` repository.
+
+        Any encoded glyphs which are not by any of these subset definitions
+        will not be served in the subsetted fonts, and so will be unreachable to
+        the end user.
+    """,
+    conditions = ["family_metadata"],
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/4097',
+    severity = 2,
+)
+def com_google_fonts_check_metadata_unreachable_subsets(family_metadata, ttFont, font_codepoints, config):
+    """Check for codepoints not covered by METADATA subsets."""
+    from glyphsets.subsets import SUBSETS
+    from fontbakery.utils import pretty_print_list
+    codepoints.set_encoding_path(ENCODINGS_DIR)
+
+
+    for subset in family_metadata.subsets:
+      font_codepoints = font_codepoints - set(codepoints.CodepointsInSubset(subset))
+
+    if not font_codepoints:
+        yield PASS, "OK"
+        return
+
+    message = """The following codepoints supported by the font are not covered by
+    any subsets defined in the font's metadata file, and will never
+    be served. You can solve this by either manually adding additional
+    subset declarations to METADATA.pb, or by editing the glyphset
+    definitions.\n\n"""
+
+    unreachable = []
+    subsets_for_cps = defaultdict(set)
+    # This is faster than calling SubsetsForCodepoint for
+    # each codepoint
+    for subset in codepoints.ListSubsets():
+      cps = codepoints.CodepointsInSubset(subset, unique_glyphs=True)
+      for cp in cps or []:
+        subsets_for_cps[cp].add(subset)
+
+    for codepoint in sorted(font_codepoints):
+      subsets = subsets_for_cps[codepoint]
+      if not subsets:
+        continue
+      if len(subsets) > 1:
+        subsets = "one of: "+", ".join(subsets)
+      else:
+        subsets = ", ".join(subsets)
+      try:
+        name = unicodedata2.name(chr(codepoint))
+      except Exception:
+        name = ""
+      unreachable.append(" * U+%04X %s: try adding %s" % (codepoint, name, subsets))
+    message += pretty_print_list(config, unreachable, sep="\n", glue="\n")
+    message += ("\n\nOr you can add the above codepoints to one of the subsets supported by the font: "+", ".join(f"`{s}`" for s in family_metadata.subsets))
+
+    yield WARN, Message("unreachable-subsets", message)
 
 
 @check(
