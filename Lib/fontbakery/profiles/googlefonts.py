@@ -92,7 +92,7 @@ METADATA_CHECKS = [
     'com.google.fonts/check/metadata/family_directory_name',
     'com.google.fonts/check/metadata/can_render_samples',
     'com.google.fonts/check/metadata/unsupported_subsets',
-    'com.google.fonts/check/metadata/unreachable_subsets',
+    'com.google.fonts/check/metadata/unreachable_subsetting',
     'com.google.fonts/check/metadata/category_hints',
     'com.google.fonts/check/metadata/consistent_repo_urls'
 ]
@@ -1080,7 +1080,7 @@ def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont,
 
 
 @check(
-    id = 'com.google.fonts/check/metadata/unreachable_subsets',
+    id = 'com.google.fonts/check/metadata/unreachable_subsetting',
     rationale = """
         This check ensures that all encoded glyphs in the font are covered by a
         subset declared in the METADATA.pb. Google Fonts splits the font into
@@ -1095,7 +1095,7 @@ def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont,
     proposal = 'https://github.com/googlefonts/fontbakery/issues/4097',
     severity = 2,
 )
-def com_google_fonts_check_metadata_unreachable_subsets(family_metadata, ttFont, font_codepoints, config):
+def com_google_fonts_check_metadata_unreachable_subsetting(family_metadata, ttFont, font_codepoints, config):
     """Check for codepoints not covered by METADATA subsets."""
     from glyphsets.subsets import SUBSETS
     from fontbakery.utils import pretty_print_list
@@ -1140,7 +1140,7 @@ def com_google_fonts_check_metadata_unreachable_subsets(family_metadata, ttFont,
     message += pretty_print_list(config, unreachable, sep="\n", glue="\n")
     message += ("\n\nOr you can add the above codepoints to one of the subsets supported by the font: "+", ".join(f"`{s}`" for s in family_metadata.subsets))
 
-    yield WARN, Message("unreachable-subsets", message)
+    yield WARN, Message("unreachable-subsetting", message)
 
 
 @check(
