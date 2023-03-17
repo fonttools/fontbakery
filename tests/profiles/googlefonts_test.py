@@ -4503,10 +4503,10 @@ def test_check_italic_axis_last():
     assert_PASS(check(font, {"style": style(font)}))
 
 
-def test_check_metadata_unreachable_subsets():
-    """Check for codepoints not covered by METADATA subsets"""
+def test_check_metadata_unreachable_subsetting():
+    """Check for codepoints not covered by METADATA subsetting"""
     check = CheckTester(googlefonts_profile,
-                        f"com.google.fonts/check/metadata/unreachable_subsets")
+                        f"com.google.fonts/check/metadata/unreachable_subsetting")
     from fontbakery.profiles.shared_conditions import style
 
     font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
@@ -4514,5 +4514,5 @@ def test_check_metadata_unreachable_subsets():
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_results_contain(check(font),
-                           WARN, 'unreachable-subsets',
+                           WARN, 'unreachable-subsetting',
                            "with a bad font")
