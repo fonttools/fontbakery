@@ -75,6 +75,7 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/whitespace_widths',
         'com.google.fonts/check/interpolation_issues',
         'com.google.fonts/check/math_signs_width',
+        'com.google.fonts/check/colorv1/explicit_clipboxes',
     ]
 
 
@@ -2166,6 +2167,34 @@ def com_google_fonts_check_math_signs_width(ttFont):
                       f"{outliers_summary}")
     else:
         yield PASS, "Looks good."
+
+
+@check(
+    id = 'com.google.fonts/check/colorv1/explicit_clipboxes',
+    rationale = """
+        Due to a browser bug, COLRv1 fonts that do not have explicit ClipBoxes
+        (which are optional) render incorrectly on Google Chrome versions prior to v111.
+
+        This bug was fixed on Chrome version 111 (March 2023), but some users may
+        still be using older versions of the web browser.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/4020'
+)
+def com_google_fonts_check_colorv1_explicit_clipboxes(ttFont):
+    """ Workaround Chrome ClipBoxes bug. """
+    if "COLR" not in ttFont or ttFont["COLR"].version != 1:
+        yield SKIP, "Not a COLRv1 font."
+
+    elif ttFont["COLR"].table.ClipList is None:
+        yield FAIL,\
+              Message('lacks-explicit-clipboxes',
+                      "This font won't render correctly on Google Chrome versions"
+                      " prior to v111 (March 2023).\n\n"
+                      "To fix this, rebuild the font using ufo2ft >= 2.31.0"
+                      " which can automatically compute clipboxes"
+                      " (adding a non empty ClipList works around that Chrome bug).")
+    else:
+        yield PASS, "OK"
 
 
 profile.auto_register(globals())
