@@ -1242,3 +1242,22 @@ def test_check_math_signs_width():
     font = TEST_FILE("montserrat/Montserrat-Regular.ttf")
     assert_results_contain(check(font),
                            WARN, "width-outliers")
+
+
+def test_check_colorv1_explicit_clipboxes():
+    """ Workaround Chrome ClipBoxes bug. """
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/colorv1/explicit_clipboxes")
+
+    # This is not a COLR font
+    font = TEST_FILE("nunito/Nunito-Regular.ttf")
+    assert_SKIP(check(font))
+
+    # This is where the problem was discovered:
+    font = TEST_FILE("blakaink/v1.001/BlakaInk-Regular.ttf")
+    assert_results_contain(check(font),
+                           FAIL, "lacks-explicit-clipboxes")
+
+    # And this is the same font after the problem was fixed:
+    font = TEST_FILE("blakaink/v1.002/BlakaInk-Regular.ttf")
+    assert_PASS(check(font))
