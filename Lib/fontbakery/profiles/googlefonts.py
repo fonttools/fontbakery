@@ -1103,7 +1103,7 @@ def com_google_fonts_check_metadata_unreachable_subsetting(family_metadata, ttFo
 
 
     for subset in family_metadata.subsets:
-      font_codepoints = font_codepoints - set(codepoints.CodepointsInSubset(subset))
+        font_codepoints = font_codepoints - set(codepoints.CodepointsInSubset(subset))
 
     if not font_codepoints:
         yield PASS, "OK"
@@ -1117,30 +1117,36 @@ def com_google_fonts_check_metadata_unreachable_subsetting(family_metadata, ttFo
 
     unreachable = []
     subsets_for_cps = defaultdict(set)
-    # This is faster than calling SubsetsForCodepoint for
-    # each codepoint
+    # This is faster than calling SubsetsForCodepoint for each codepoint
     for subset in codepoints.ListSubsets():
-      cps = codepoints.CodepointsInSubset(subset, unique_glyphs=True)
-      for cp in cps or []:
-        subsets_for_cps[cp].add(subset)
+        cps = codepoints.CodepointsInSubset(subset, unique_glyphs=True)
+        for cp in cps or []:
+            subsets_for_cps[cp].add(subset)
 
     for codepoint in sorted(font_codepoints):
-      subsets = subsets_for_cps[codepoint]
-      if not subsets:
-        continue
-      if len(subsets) > 1:
-        subsets = "one of: "+", ".join(subsets)
-      else:
-        subsets = ", ".join(subsets)
-      try:
-        name = unicodedata2.name(chr(codepoint))
-      except Exception:
-        name = ""
-      unreachable.append(" * U+%04X %s: try adding %s" % (codepoint, name, subsets))
-    message += pretty_print_list(config, unreachable, sep="\n", glue="\n")
-    message += ("\n\nOr you can add the above codepoints to one of the subsets supported by the font: "+", ".join(f"`{s}`" for s in family_metadata.subsets))
+        subsets = subsets_for_cps[codepoint]
+        if not subsets:
+            continue
 
-    yield WARN, Message("unreachable-subsetting", message)
+        if len(subsets) > 1:
+            subsets = "one of: "+", ".join(subsets)
+        else:
+            subsets = ", ".join(subsets)
+
+        try:
+            name = unicodedata2.name(chr(codepoint))
+        except Exception:
+            name = ""
+
+        unreachable.append(" * U+%04X %s: try adding %s" % (codepoint, name, subsets))
+
+    subsets = ", ".join(f"`{s}`" for s in family_metadata.subsets)
+    message += pretty_print_list(config, unreachable, sep="\n", glue="\n")
+    message += (f"\n\nOr you can add the above codepoints to one"
+                f" of the subsets supported by the font: {subsets}")
+
+    yield WARN, \
+          Message("unreachable-subsetting", message)
 
 
 @check(
