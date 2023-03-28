@@ -3044,6 +3044,8 @@ def com_google_fonts_check_metadata_consistent_repo_urls(config, family_metadata
     """METADATA.pb: Check URL on copyright string is the same as in repository_url field."""
     bad_urls = []
     repo_url = family_metadata.source.repository_url
+    if repo_url.endswith(".git"):
+        repo_url = repo_url[:-4]
     for font_md in family_metadata.fonts:
         if "http" in font_md.copyright:
             link = "http" + font_md.copyright.split("http")[1]
