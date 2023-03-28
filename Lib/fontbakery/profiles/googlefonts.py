@@ -5770,7 +5770,7 @@ def com_google_fonts_check_metadata_escaped_strings(metadata_file):
 
         It also validates the URLs and file formats are all correctly set.
     """,
-    conditions = ['family_metadata'],
+    conditions = ['family_metadata', 'not is_noto'],
     proposal = 'https://github.com/googlefonts/fontbakery/issues/3083'
 )
 def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
