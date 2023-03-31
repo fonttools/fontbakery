@@ -3053,8 +3053,8 @@ def com_google_fonts_check_metadata_consistent_repo_urls(config, family_metadata
             if ')' in link:
                 link = link.split(')')[0].strip()
 
-        if link != repo_url:
-            bad_urls.append(link)
+            if link != repo_url:
+                bad_urls.append(link)
 
     if bad_urls:
         from fontbakery.utils import pretty_print_list
