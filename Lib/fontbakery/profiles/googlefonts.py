@@ -1177,9 +1177,11 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
 
 @check(
     id = 'com.google.fonts/check/usweightclass',
-    conditions = ['expected_style'],
+    conditions = ['expected_font_names'],
     rationale = """
-        Google Fonts expects variable fonts, static ttfs and static otfs to have
+        Check the OS/2 usWeightClass is appropriate for the font's best SubFamily name.
+    
+        Google Fonts also expects variable fonts, static ttfs and static otfs to have
         differing OS/2 usWeightClass values.
 
         - For Variable Fonts, Thin-Black must be 100-900
@@ -1196,62 +1198,60 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
     """,
     proposal = 'legacy:check/020'
 )
-def com_google_fonts_check_usweightclass(ttFont, expected_style):
-    """Checking OS/2 usWeightClass."""
+def com_google_fonts_check_usweightclass(ttFont, expected_font_names):
+    """Check the OS/2 usWeightClass is appropriate for the font's best SubFamily name."""
     from fontbakery.profiles.shared_conditions import (
         is_ttf,
         is_cff,
         is_variable_font
     )
-
     passed = True
-    expected_value = expected_style.usWeightClass
-    weight_name = expected_style.name
     value = ttFont['OS/2'].usWeightClass
+    expected_value = expected_font_names["OS/2"].usWeightClass
+    style_name = ttFont["name"].getBestSubFamilyName()
     has_expected_value = value == expected_value
     fail_message = \
-        "OS/2 usWeightClass is '{}' when it should be '{}'."
-
+        "Best SubFamily name is '{}'. Expected OS/2 usWeightClass is {}, got {}."
     if is_variable_font(ttFont):
         if not has_expected_value:
             passed = False
             yield FAIL,\
                   Message("bad-value",
-                          fail_message.format(value, expected_value))
+                          fail_message.format(style_name, expected_value, value))
     # overrides for static Thin and ExtaLight fonts
     # for static ttfs, we don't mind if Thin is 250 and ExtraLight is 275.
     # However, if the values are incorrect we will recommend they set Thin
     # to 100 and ExtraLight to 250.
     # for static otfs, Thin must be 250 and ExtraLight must be 275
-    elif "Thin" in weight_name:
+    elif "Thin" in style_name:
         if is_ttf(ttFont) and value not in [100, 250]:
             passed = False
             yield FAIL,\
                   Message("bad-value",
-                          fail_message.format(value, expected_value))
+                          fail_message.format(style_name, expected_value, value))
         if is_cff(ttFont) and value != 250:
             passed = False
             yield FAIL,\
                   Message("bad-value",
-                          fail_message.format(value, 250))
+                          fail_message.format(style_name, 250, value))
 
-    elif "ExtraLight" in weight_name:
+    elif "ExtraLight" in style_name:
         if is_ttf(ttFont) and value not in [200, 275]:
             passed = False
             yield FAIL,\
                   Message("bad-value",
-                          fail_message.format(value, expected_value))
+                          fail_message.format(style_name, expected_value, value))
         if is_cff(ttFont) and value != 275:
             passed = False
             yield FAIL,\
                   Message("bad-value",
-                          fail_message.format(value, 275))
+                          fail_message.format(style_name, 275, value))
 
     elif not has_expected_value:
         passed = False
         yield FAIL,\
               Message("bad-value",
-                      fail_message.format(value, expected_value))
+                      fail_message.format(style_name, expected_value, value))
 
     if passed:
         yield PASS, "OS/2 usWeightClass is good"
