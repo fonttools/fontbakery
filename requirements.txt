@@ -1,26 +1,26 @@
 --index-url https://pypi.python.org/simple/
-axisregistry==0.3.11
-beautifulsoup4==4.11.2
+axisregistry==0.4.1
+beautifulsoup4==4.12.2
 beziers==0.5.0
 cmarkgfm==2022.10.27
 collidoscope==0.6.5
 defcon==0.10.2
 dehinter==4.0.0
-fontTools[ufo,lxml,unicode]==4.38.0
+fontTools[ufo,lxml,unicode]==4.39.3
 font-v==2.1.0
 freetype-py==2.3.0
-gflanguages==0.4.4
-glyphsets==0.5.4
+gflanguages==0.4.7
+glyphsets==0.6.0
 lxml==4.9.2
 munkres==1.1.4  # This should be a dependency of fonttools instead!
 opentype-sanitizer==9.0.0
 opentypespec==1.9.1
-packaging==23.0
+packaging==23.1
 pip-api==0.0.30
 protobuf==3.20.3
 PyYAML==6.0
 requests==2.28.2
-rich==13.3.1
+rich==13.3.4
 stringbrewer==0.0.1
 toml==0.10.2
 ufolint==1.2.0
