@@ -10,6 +10,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/name/italic_names]:** Implemented checks for name IDs 1, 2, 16, 17 for Italic fonts (issues #3666 and #3667)
 
 ### Changes to existing checks
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/usweightclass]:** use the axisregistry's name builders instead of the parse module (issue #4113)
+
 #### On the Universal Profile
   - **[com.google.fonts/check/soft_hyphen]:** Improve wording of the rationale. (issue #4095)
 
