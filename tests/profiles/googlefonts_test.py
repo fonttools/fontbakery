@@ -885,6 +885,19 @@ def test_check_usweightclass():
 
     # TODO: test italic variants to ensure we do not get regressions of
     #       this bug: https://github.com/googlefonts/fontbakery/issues/2650
+    
+
+    # Check with VF font reported in issue:
+    # https://github.com/googlefonts/fontbakery/issues/4113
+    font = TEST_FILE("playfair/Playfair-Italic[opsz,wdth,wght].ttf")
+    ttFont = TTFont(font)
+    assert_PASS(check(ttFont),
+                f'with good font "{font}" (usWeightClass = 300) ...')
+
+    ttFont['OS/2'].usWeightClass = 400
+    assert_results_contain(check(ttFont),
+                           FAIL, "bad-value",
+                           f'with bad font "{font}"...')
 
 
 def test_family_directory_condition():
