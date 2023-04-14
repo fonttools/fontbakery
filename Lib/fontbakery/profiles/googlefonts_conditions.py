@@ -31,11 +31,6 @@ def style_with_spaces(font):
         return style(font).replace('Italic',
                                    ' Italic').strip()
 
-@condition
-def expected_style(ttFont):
-    from fontbakery.parse import style_parse
-    return style_parse(ttFont)
-
 
 @condition
 def expected_os2_weight(style):
