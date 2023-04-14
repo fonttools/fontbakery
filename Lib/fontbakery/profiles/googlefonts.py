@@ -1179,9 +1179,7 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
     id = 'com.google.fonts/check/usweightclass',
     conditions = ['expected_font_names'],
     rationale = """
-        Check the OS/2 usWeightClass is appropriate for the font's best SubFamily name.
-    
-        Google Fonts also expects variable fonts, static ttfs and static otfs to have
+        Google Fonts expects variable fonts, static ttfs and static otfs to have
         differing OS/2 usWeightClass values.
 
         - For Variable Fonts, Thin-Black must be 100-900
