@@ -234,7 +234,7 @@ def test_check_description_broken_links():
 
     good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
     assert_results_contain(check(font, {"description": good_desc}),
-                           INFO, "email",
+                           FAIL, "email",
                            'with a description file containing "mailto" links...')
 
     assert_PASS(check(font, {"description": good_desc}),
@@ -633,7 +633,7 @@ def test_check_metadata_broken_links():
     #check = CheckTester(googlefonts_profile,
     #                    "com.google.fonts/check/metadata/broken_links")
     # TODO: Implement-me!
-    # INFO, "email"
+    # FAIL, "email"
     # WARN, "timeout"
     # FAIL, "broken-links"
 
