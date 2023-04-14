@@ -260,7 +260,8 @@ def com_google_fonts_check_canonical_filename(ttFont):
         family webpage on the Google Fonts website. For that reason, all hyperlinks
         in it must be properly working.
     """,
-    proposal = 'legacy:check/003'
+    proposal = ['legacy:check/003',
+                'https://github.com/googlefonts/fontbakery/issues/4110']
 )
 def com_google_fonts_check_description_broken_links(description_html):
     """Does DESCRIPTION file contain broken links?"""
@@ -279,7 +280,7 @@ def com_google_fonts_check_description_broken_links(description_html):
         if link.startswith("mailto:") and \
            "@" in link and \
            "." in link.split("@")[1]:
-            yield INFO,\
+            yield FAIL,\
                   Message("email",
                           f"Found an email address: {link}")
             continue
@@ -588,7 +589,8 @@ def com_google_fonts_check_metadata_designer_values(family_metadata):
 @check(
     id = 'com.google.fonts/check/metadata/broken_links',
     conditions = ['family_metadata'],
-    proposal = "https://github.com/googlefonts/fontbakery/issues/2550"
+    proposal = ["https://github.com/googlefonts/fontbakery/issues/2550",
+                "https://github.com/googlefonts/fontbakery/issues/4110"]
 )
 def com_google_fonts_check_metadata_broken_links(family_metadata):
     """Does METADATA.pb copyright field contain broken links?"""
@@ -604,7 +606,7 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
                 continue
 
             unique_links.append(copyright)
-            yield INFO,\
+            yield FAIL,\
                   Message("email",
                           f"Found an email address: {copyright}")
             continue

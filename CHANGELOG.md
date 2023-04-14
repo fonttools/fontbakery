@@ -12,6 +12,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Google Fonts profile
   - **[com.google.fonts/check/usweightclass]:** use the axisregistry's name builders instead of the parse module (issue #4113)
+  - **[com.google.fonts/check/metadata/broken_links]:** We should not keep email addresses on METADATA.pb files (issue #4110)
+  - **[com.google.fonts/check/description/broken_links]:** We should not keep email addresses on DESCRIPTION files (issue #4110)
 
 #### On the Universal Profile
   - **[com.google.fonts/check/soft_hyphen]:** Improve wording of the rationale. (issue #4095)
