@@ -2269,6 +2269,9 @@ def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
     from fontbakery.utils import get_name_entry_strings
 
     full_fontnames = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
+    # FIXME: only check English names
+    #        https://github.com/googlefonts/fontbakery/issues/4000
+
     if len(full_fontnames) == 0:
         yield FAIL,\
               Message("lacks-entry",
@@ -2290,9 +2293,14 @@ def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
 
 @check(
     id = 'com.google.fonts/check/metadata/nameid/font_name',
+    rationale = """
+        This check ensures consistency between the font name declared on the name table
+        and the contents of the METADATA.pb file.
+    """,
     conditions = ['font_metadata',
                   'style'],
-    proposal = 'legacy:check/095'
+    proposal = ['https://github.com/googlefonts/fontbakery/issues/4086',
+                'legacy:check/095']
 )
 def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadata):
     """METADATA.pb font.name value should be same as
@@ -2301,13 +2309,14 @@ def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadat
     from fontbakery.utils import get_name_entry_strings
     from fontbakery.constants import RIBBI_STYLE_NAMES
 
-    if style in RIBBI_STYLE_NAMES:
+    font_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+    if len(font_familynames) == 0:
+        # We'll only use nameid 1 (FONT_FAMILY_NAME) when the font
+        # does not have nameid 16 (TYPOGRAPHIC_FAMILY_NAME).
+        # https://github.com/googlefonts/fontbakery/issues/4086
         font_familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
-        nameid = NameID.FONT_FAMILY_NAME
-    else:
-        font_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
-        nameid = NameID.TYPOGRAPHIC_FAMILY_NAME
 
+    nameid = NameID.FONT_FAMILY_NAME
     if len(font_familynames) == 0:
         yield FAIL,\
               Message("lacks-entry",
