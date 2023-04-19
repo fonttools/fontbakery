@@ -34,6 +34,7 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/family/equal_font_versions',
     'com.adobe.fonts/check/family/bold_italic_unique_for_nameid1',
     'com.adobe.fonts/check/family/max_4_fonts_per_family_name',
+    'com.adobe.fonts/check/family/consistent_family_name',
     'com.adobe.fonts/check/name/postscript_vs_cff',
     'com.adobe.fonts/check/name/postscript_name_consistency',
     'com.adobe.fonts/check/name/empty_records',
