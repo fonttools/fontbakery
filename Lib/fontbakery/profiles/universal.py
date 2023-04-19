@@ -96,7 +96,7 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
             shortened_str = name_record.toUnicode()
             if len(shortened_str) > 20:
                 shortened_str = shortened_str[:10] + "[...]" + shortened_str[-10:]
-            yield FAIL, \
+            yield FAIL,\
                   Message("trailing-space",
                           f"Name table record with key = {name_key} has"
                           f" trailing spaces that must be removed:"
@@ -589,7 +589,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 
 
 @check(
-    id='com.google.fonts/check/required_tables',
+    id = 'com.google.fonts/check/required_tables',
     conditions = ['ttFont'],
     rationale = """
         According to the OpenType spec
@@ -650,7 +650,7 @@ def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
 
     optional_tables = [opt for opt in OPTIONAL_TABLES if opt in font_tables]
     if optional_tables:
-        yield INFO, \
+        yield INFO,\
               Message("optional-tables",
                       f"This font contains the following optional tables:\n\n"
                       f"{bullet_list(config, optional_tables)}")
@@ -675,7 +675,7 @@ def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
         missing_tables.append("glyf")
 
     if missing_tables:
-        yield FAIL, \
+        yield FAIL,\
               Message("required-tables",
                       f"This font is missing the following required tables:\n\n"
                       f"{bullet_list(config, missing_tables)}")
@@ -714,7 +714,7 @@ def com_google_fonts_check_unwanted_tables(ttFont):
             unwanted_tables_found.append(f'* {table} - {info}\n')
 
     if unwanted_tables_found:
-        yield FAIL, \
+        yield FAIL,\
               Message("unwanted-tables",
                       f"The following unwanted font tables were found:\n\n"
                       f"{''.join(unwanted_tables_found)}\n"
@@ -876,7 +876,7 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
         if len(duplicated_glyphIDs) == 0:
             yield PASS, "Font contains unique glyph names."
         else:
-            yield FAIL, \
+            yield FAIL,\
                   Message("duplicated-glyph-names",
                           "The following glyph names occur twice: "
                           f"{duplicated_glyphIDs}")
@@ -899,7 +899,7 @@ def com_google_fonts_check_glyphnames_max_length(ttFont):
         for name in ttFont.getGlyphOrder():
             if len(name) > 109:
                 failed = True
-                yield FAIL, \
+                yield FAIL,\
                     Message("glyphname-too-long",
                             f"Glyph name is too long: '{name}'")
         if not failed:
@@ -1013,14 +1013,14 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
         filename = os.path.basename(ttFont.reader.file.name)
         if 'OS/2' not in ttFont:
             missing_tables = True
-            yield FAIL, \
+            yield FAIL,\
                   Message('lacks-OS/2',
                           f"{filename} lacks an 'OS/2' table.")
             continue
 
         if 'hhea' not in ttFont:
             missing_tables = True
-            yield FAIL, \
+            yield FAIL,\
                   Message('lacks-hhea',
                           f"{filename} lacks a 'hhea' table.")
             continue
@@ -1049,7 +1049,7 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
             for k in failed:
                 s = ["{}: {}".format(k, v) for k, v in vmetrics[k].items()]
                 s = "\n".join(s)
-                yield FAIL, \
+                yield FAIL,\
                       Message(f'{k}-mismatch',
                               f"{k} is not the same across the family:\n"
                               f"{s}")
@@ -1128,7 +1128,7 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
         for k in warn:
             s = ["{}: {}".format(k, v) for k, v in vmetrics[k].items()]
             s = "\n".join(s)
-            yield WARN, \
+            yield WARN,\
                   Message("superfamily-vertical-metrics",
                           f"{k} is not the same across the super-family:\n"
                           f"{s}")
@@ -1171,7 +1171,7 @@ def com_google_fonts_check_rupee(ttFont):
 def com_google_fonts_check_designspace_has_sources(designspace_sources):
     """See if we can actually load the source files."""
     if not designspace_sources:
-        yield FAIL, \
+        yield FAIL,\
               Message("no-sources",
                       "Unable to load source files.")
     else:
@@ -1188,7 +1188,7 @@ def com_google_fonts_check_designspace_has_sources(designspace_sources):
 def com_google_fonts_check_designspace_has_default_master(designSpace):
     """Ensure a default master is defined."""
     if not designSpace.findDefault():
-        yield FAIL, \
+        yield FAIL,\
               Message("not-found",
                       "Unable to find a default master.")
     else:
@@ -1863,7 +1863,7 @@ def com_google_fonts_check_soft_dotted(ttFont):
     elif warn_unchanged_strings:
         yield WARN, Message("soft-dotted", message)
     else:
-        yield PASS, \
+        yield PASS,\
               ("All soft dotted characters seem to lose their dot when "
                "combined with a mark above.")
 
@@ -1907,13 +1907,13 @@ def com_google_fonts_check_gpos7(ttFont):
 
 
 @check(
-    id="com.adobe.fonts/check/freetype_rasterizer",
-    conditions=['ttFont'],
-    severity=10,
-    rationale="""
+    id = "com.adobe.fonts/check/freetype_rasterizer",
+    conditions = ['ttFont'],
+    severity = 10,
+    rationale = """
         Malformed fonts can cause FreeType to crash.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3642",
+    proposal = "https://github.com/googlefonts/fontbakery/issues/3642",
 )
 def com_adobe_fonts_check_freetype_rasterizer(font):
     """Ensure that the font can be rasterized by FreeType."""
@@ -1932,18 +1932,17 @@ def com_adobe_fonts_check_freetype_rasterizer(font):
             "'freetype' extra when installing Font Bakery.",
         )
     except FT_Exception as err:
-        return FAIL, Message(
-            "freetype-crash",
-            f"Font caused FreeType to crash with this error: {err}",
-        )
+        yield FAIL,\
+              Message("freetype-crash",
+                      f"Font caused FreeType to crash with this error: {err}")
     else:
-        return PASS, "Font can be rasterized by FreeType."
+        yield PASS, "Font can be rasterized by FreeType."
 
 
 @check(
-    id="com.adobe.fonts/check/sfnt_version",
-    severity=10,
-    rationale="""
+    id = "com.adobe.fonts/check/sfnt_version",
+    severity = 10,
+    rationale = """
         OpenType fonts that contain TrueType outlines should use the value of 0x00010000
         for the sfntVersion. OpenType fonts containing CFF data (version 1 or 2) should
         use 0x4F54544F ('OTTO', when re-interpreted as a Tag) for sfntVersion.
@@ -1952,28 +1951,26 @@ def com_adobe_fonts_check_freetype_rasterizer(font):
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/otff#table-directory
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3388",
+    proposal = "https://github.com/googlefonts/fontbakery/issues/3388",
 )
 def com_adobe_fonts_check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
     """Font has the proper sfntVersion value?"""
     sfnt_version = ttFont.sfntVersion
 
     if is_ttf and sfnt_version != "\x00\x01\x00\x00":
-        return FAIL, Message(
-            "wrong-sfnt-version-ttf",
-            "Font with TrueType outlines has incorrect sfntVersion value:"
-            f" '{sfnt_version}'",
-        )
+        yield FAIL,\
+              Message("wrong-sfnt-version-ttf",
+                      f"Font with TrueType outlines has incorrect sfntVersion value:"
+                      f" '{sfnt_version}'")
 
     elif (is_cff or is_cff2) and sfnt_version != "OTTO":
-        return FAIL, Message(
-            "wrong-sfnt-version-cff",
-            "Font with CFF data has incorrect sfntVersion value:"
-            f" '{sfnt_version}'",
-        )
+        yield FAIL,\
+              Message("wrong-sfnt-version-cff",
+                      f"Font with CFF data has incorrect sfntVersion value:"
+                      f" '{sfnt_version}'")
 
     else:
-        return PASS, "Font has the correct sfntVersion value."
+        yield PASS, "Font has the correct sfntVersion value."
 
 
 @check(
