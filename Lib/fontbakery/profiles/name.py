@@ -592,6 +592,72 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
         yield PASS, ("There were no more than 4 fonts per family name.")
 
 
+
+@check(
+    id = 'com.adobe.fonts/check/family/consistent_family_name',
+    rationale = """
+        Per the OpenType spec:
+        Fonts within a font family all must have consistent names 
+        in the Typographic Family name (nameID 16)
+        or Font Family name (nameID 1), depending on which it uses.
+        
+        Inconsistent font/typographic family names across fonts in a family
+        can result in unexpected behaviors, such as broken style linking.
+    """,
+)
+def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
+    """Verify that family names in the name table are consistent across all fonts in the family.
+       Checks Typographic Family name (nameID 16) if present, 
+       otherwise uses Font Family name (nameID 1)
+    """
+    from fontbakery.utils import get_name_entry_strings
+    from collections import defaultdict
+    import os
+
+    name_dict = defaultdict(list)
+    for ttFont in ttFonts:
+        filename = os.path.basename(ttFont.reader.file.name)
+        # try nameID 16
+        nameID = NameID.TYPOGRAPHIC_FAMILY_NAME
+        names_list = get_name_entry_strings(ttFont,
+                                            NameID.TYPOGRAPHIC_FAMILY_NAME,
+                                            PlatformID.WINDOWS,
+                                            WindowsEncodingID.UNICODE_BMP,
+                                            WindowsLanguageID.ENGLISH_USA)
+        if len(names_list) == 0:
+            # use nameID 1 instead
+            nameID = NameID.FONT_FAMILY_NAME
+            names_list = get_name_entry_strings(ttFont,
+                                                NameID.FONT_FAMILY_NAME,
+                                                PlatformID.WINDOWS,
+                                                WindowsEncodingID.UNICODE_BMP,
+                                                WindowsLanguageID.ENGLISH_USA)
+        name_dict[frozenset(names_list)].append((filename, nameID))
+
+    if len(name_dict) > 1:
+        diff_names = []
+        detail_str_arr = []
+        for name_set, font_tuple_list in name_dict.items():
+            fonts_str = ""
+            detail_str = ""
+            diff_names += list(name_set)
+            if len(font_tuple_list) == 0:
+                continue
+            detail_str += "\n* '" + ", ".join(list(name_set)) + "' found in: "
+            for ft in font_tuple_list:
+                comma = ", " if fonts_str != "" else ""
+                fonts_str += f"{comma}{str(ft[0])} (nameID {ft[1]})"
+            detail_str_arr.append(detail_str + fonts_str)
+
+        quoted_diff_names = [f"'{name}'" for name in diff_names]
+        msg = f"Fonts in family has inconsistent font family names: " \
+              f"{str(', '.join(quoted_diff_names))}. " + "".join(detail_str_arr)
+        yield FAIL, \
+                Message("inconsistent-family-name", msg)
+    else:
+        yield PASS, ("Font family names are consistent across the family.")
+
+
 @check(
     id = 'com.google.fonts/check/name/italic_names',
     conditions = ['style'],
