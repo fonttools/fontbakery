@@ -1657,6 +1657,13 @@ def test_check_metadata_nameid_font_name():
                                    f'with a bad FULL_FONT_NAME entry ({i})...')
             ttFont["name"].names[i].string = good # restore good value
 
+    # We also want to make sure that name id 16, whenever present,
+    # is used to compute the expected familyname.
+    # Tiro Devanagari Hindi is a good exampmle of this:
+    font = TEST_FILE("tirodevanagarihindi/TiroDevanagariHindi-Regular.ttf")
+    assert_PASS(check(font),
+                'with a good font containing name id 16...')
+
     # TODO:
     # FAIL, "lacks-entry"
 

@@ -52,6 +52,7 @@ RIBBI_STYLE_NAMES = [
     "Bold",
     "BoldItalic",
     "Bold Italic"]  # <-- Do we really need this one?
+    # some name ids use spaces other dont
 
 REGISTERED_AXIS_TAGS = [
     "ital",
