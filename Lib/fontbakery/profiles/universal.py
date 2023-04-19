@@ -1926,11 +1926,11 @@ def com_adobe_fonts_check_freetype_rasterizer(font):
         face.load_char("✅")  # any character can be used here
 
     except ImportError:
-        return SKIP, Message(
-            "freetype-not-installed",
-            "FreeType is not available; to install it, invoke the "
-            "'freetype' extra when installing Font Bakery.",
-        )
+        yield SKIP,\
+              Message("freetype-not-installed",
+                      "FreeType is not available. To fix this, invoke"
+                      " the 'freetype' extra when installing Font Bakery:\n"
+                      "pip3 install -U fontbakery[freetype]")
     except FT_Exception as err:
         yield FAIL,\
               Message("freetype-crash",
