@@ -75,6 +75,7 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/whitespace_widths',
         'com.google.fonts/check/interpolation_issues',
         'com.google.fonts/check/math_signs_width',
+        'com.adobe.fonts/check/family/consistent_family_name',
     ]
 
 
