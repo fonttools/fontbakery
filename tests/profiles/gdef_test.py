@@ -1,3 +1,4 @@
+from io import BytesIO
 from fontTools.ttLib import TTFont, newTable
 from fontTools.ttLib.tables import otTables
 
@@ -21,6 +22,10 @@ def get_test_font():
     test_ttf = ufo2ft.compileTTF(test_ufo)
 
     # Make the CheckTester class happy... :-P
+    stream = BytesIO()
+    test_ttf.save(stream)
+    stream.seek(0)
+    test_ttf = TTFont(stream)
     test_ttf.reader.file.name = "in-memory-data.ttf"
     return test_ttf
 
