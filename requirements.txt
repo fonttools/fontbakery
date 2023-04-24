@@ -26,4 +26,4 @@ toml==0.10.2
 ufolint==1.2.0
 unicodedata2==15.0.0
 vharfbuzz==0.2.0
-ufo2ft==2.28.0  # Temporarily fixed at this version to workaround issue #3940
+ufo2ft==2.30.0
