@@ -15,7 +15,7 @@ def typo_metrics_enabled(ttFont):
 
 @check(
     id="com.google.fonts/check/vertical_metrics",
-    conditions=["not remote_styles", "not is_cjk_font"],
+    conditions=["not listed_on_gfonts_api", "not is_cjk_font"],
     rationale="""
         This check generally enforces Google Fonts’ vertical metrics specifications.
         In particular:
@@ -291,7 +291,7 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
 
 @check(
     id="com.google.fonts/check/cjk_vertical_metrics",
-    conditions=["is_cjk_font", "not remote_styles"],
+    conditions=["is_cjk_font", "not listed_on_gfonts_api"],
     rationale="""
         CJK fonts have different vertical metrics when compared to Latin fonts.
         We follow the schema developed by dr Ken Lunde for Source Han Sans and
