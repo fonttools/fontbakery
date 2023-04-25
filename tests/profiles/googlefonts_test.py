@@ -3851,7 +3851,7 @@ def test_check_vertical_metrics():
     ttFont = TTFont(TEST_FILE("akshar/Akshar[wght].ttf"))
 
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not remote_styles"
+    assert msg == "Unfulfilled Conditions: not listed_on_gfonts_api"
 
     # change the font's file name to elude the 'not remote_styles' condition.
     orig_file_name = ttFont.reader.file.name
