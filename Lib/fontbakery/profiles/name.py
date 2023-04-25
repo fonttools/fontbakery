@@ -650,20 +650,20 @@ def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
         diff_names = []
         detail_str_arr = []
         for name_set, font_tuple_list in name_dict.items():
-            fonts_str = f""
-            detail_str = f""
+            fonts_str = ""
+            detail_str = ""
             diff_names.extend(list(name_set))
             if len(font_tuple_list) == 0:
                 continue
-            detail_str += f"\n* ' {f', '.join(list(name_set))} ' found in: "
+            detail_str += f"\n* ' {', '.join(list(name_set))} ' found in: "
             for ft in font_tuple_list:
-                comma = f", " if fonts_str != f"" else f""
+                comma = ", " if fonts_str != "" else ""
                 fonts_str += f"{comma}{str(ft[0])} (nameID {ft[1]})"
             detail_str_arr.append(detail_str + fonts_str)
 
         quoted_diff_names = [f"{name!r}" for name in diff_names]
         msg = (f"Fonts in family has inconsistent font family names: "
-               f"{str(', '.join(quoted_diff_names))}. {f''.join(detail_str_arr)}")
+               f"{str(', '.join(quoted_diff_names))}. {''.join(detail_str_arr)}")
         yield FAIL, \
                 Message("inconsistent-family-name", msg)
     else:
