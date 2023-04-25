@@ -916,29 +916,33 @@ def test_check_family_has_license():
 
     from fontbakery.profiles.googlefonts import licenses
 
-    # The lines maked with 'hack' below are meant to
-    # not let fontbakery's own license to mess up
-    # this code test.
+    def licenses_for_test(path):
+        found = licenses(path)
+        # If the tests are running inside a git checkout of fontbakery,
+        # fontbakery's own license will also be detected:
+        # ['data/test/028/multiple/OFL.txt',
+        #  'data/test/028/multiple/LICENSE.txt',
+        #  '/home/dan/src/fontbakery/LICENSE.txt']
+        # Filter it out so it doesn't interfere with the test.
+        found = [lic for lic in found if not os.path.isabs(lic)]
+        return found
+
     dir_path = "ofl/foo/bar"
-    detected_licenses = licenses(portable_path("data/test/028/multiple"))
-    detected_licenses.pop(-1)  # hack
+    detected_licenses = licenses_for_test(portable_path("data/test/028/multiple"))
     assert_results_contain(check(dir_path, {"licenses": detected_licenses}),
                            FAIL, 'multiple',
                            'with multiple licenses...')
 
-    detected_licenses = licenses(portable_path("data/test/028/none"))
-    detected_licenses.pop(-1)  # hack
+    detected_licenses = licenses_for_test(portable_path("data/test/028/none"))
     assert_results_contain(check(dir_path, {"licenses": detected_licenses}),
                            FAIL, 'no-license',
                            'with no license...')
 
-    detected_licenses = licenses(portable_path("data/test/028/pass_ofl"))
-    detected_licenses.pop(-1)  # hack
+    detected_licenses = licenses_for_test(portable_path("data/test/028/pass_ofl"))
     assert_PASS(check(dir_path, {"licenses": detected_licenses}),
                 'with a single OFL license...')
 
-    detected_licenses = licenses(portable_path("data/test/028/pass_apache"))
-    detected_licenses.pop(-1)  # hack
+    detected_licenses = licenses_for_test(portable_path("data/test/028/pass_apache"))
     assert_PASS(check(dir_path, {"licenses": detected_licenses}),
                 'with a single Apache license...')
 
