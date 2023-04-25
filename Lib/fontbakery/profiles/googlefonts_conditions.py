@@ -592,7 +592,7 @@ def github_gfonts_ttFont(ttFont, license_filename):
 
 
 @condition
-def github_gfonts_description(ttFont, license_filename):
+def github_gfonts_description(ttFont, license_filename, config):
     """Get the contents of the DESCRIPTION.en_us.html file
     from the google/fonts github repository corresponding
     to a given ttFont.
@@ -600,8 +600,7 @@ def github_gfonts_description(ttFont, license_filename):
     if not license_filename:
         return None
 
-    from fontbakery.utils import download_file
-    from urllib.request import HTTPError
+    import requests
 
     LICENSE_DIRECTORY = {"OFL.txt": "ofl", "UFL.txt": "ufl", "LICENSE.txt": "apache"}
     filename = os.path.basename(ttFont.reader.file.name)
@@ -611,10 +610,8 @@ def github_gfonts_description(ttFont, license_filename):
         f"/{LICENSE_DIRECTORY[license_filename]}/{familyname}/DESCRIPTION.en_us.html"
     )
     try:
-        descfile = download_file(url)
-        if descfile:
-            return descfile.read().decode("UTF-8")
-    except HTTPError:
+        return requests.get(url, timeout=config.get("timeout")).text
+    except requests.RequestException:
         return None
 
 
