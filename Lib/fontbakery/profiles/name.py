@@ -597,10 +597,22 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
     id = 'com.adobe.fonts/check/family/consistent_family_name',
     rationale = """
         Per the OpenType spec:
+            * "...many existing applications that use this pair of names assume that a
+              Font Family name is shared by at most four fonts that form a font
+              style-linking group"
+            * "For extended typographic families that includes fonts other than the 
+              four basic styles(regular, italic, bold, bold italic), it is strongly
+              recommended that name IDs 16 and 17 be used in fonts to create an extended,
+              typographic grouping."
+            * "If name ID 16 is absent, then name ID 1 is considered to be the typographic
+               family name."
+
+        https://learn.microsoft.com/en-us/typography/opentype/spec/name
+
         Fonts within a font family all must have consistent names 
         in the Typographic Family name (nameID 16)
         or Font Family name (nameID 1), depending on which it uses.
-        
+
         Inconsistent font/typographic family names across fonts in a family
         can result in unexpected behaviors, such as broken style linking.
     """,
@@ -638,20 +650,20 @@ def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
         diff_names = []
         detail_str_arr = []
         for name_set, font_tuple_list in name_dict.items():
-            fonts_str = ""
-            detail_str = ""
-            diff_names += list(name_set)
+            fonts_str = f""
+            detail_str = f""
+            diff_names.extend(list(name_set))
             if len(font_tuple_list) == 0:
                 continue
-            detail_str += "\n* '" + ", ".join(list(name_set)) + "' found in: "
+            detail_str += f"\n* ' {f', '.join(list(name_set))} ' found in: "
             for ft in font_tuple_list:
-                comma = ", " if fonts_str != "" else ""
+                comma = f", " if fonts_str != f"" else f""
                 fonts_str += f"{comma}{str(ft[0])} (nameID {ft[1]})"
             detail_str_arr.append(detail_str + fonts_str)
 
-        quoted_diff_names = [f"'{name}'" for name in diff_names]
-        msg = f"Fonts in family has inconsistent font family names: " \
-              f"{str(', '.join(quoted_diff_names))}. " + "".join(detail_str_arr)
+        quoted_diff_names = [f"{name!r}" for name in diff_names]
+        msg = (f"Fonts in family has inconsistent font family names: "
+               f"{str(', '.join(quoted_diff_names))}. {f''.join(detail_str_arr)}")
         yield FAIL, \
                 Message("inconsistent-family-name", msg)
     else:

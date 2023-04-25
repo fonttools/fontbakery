@@ -496,60 +496,61 @@ def test_check_family_max_4_fonts_per_family_name():
 
 
 def test_check_consistent_font_family_name():
-  check = CheckTester(opentype_profile,
-                      "com.adobe.fonts/check/family/consistent_family_name")
+    check = CheckTester(opentype_profile,
+                        "com.adobe.fonts/check/family/consistent_family_name")
 
-  base_path = portable_path("data/test/source-sans-pro/OTF")
+    base_path = portable_path("data/test/source-sans-pro/OTF")
 
-  font_names = [
-      'SourceSansPro-Black.otf',
-      'SourceSansPro-BlackItalic.otf',
-      'SourceSansPro-Bold.otf',
-      'SourceSansPro-BoldItalic.otf',
-      'SourceSansPro-ExtraLight.otf',
-      'SourceSansPro-ExtraLightItalic.otf',
-      'SourceSansPro-Italic.otf',
-      'SourceSansPro-Light.otf',
-      'SourceSansPro-LightItalic.otf',
-      'SourceSansPro-Regular.otf',
-      'SourceSansPro-Semibold.otf',
-      'SourceSansPro-SemiboldItalic.otf']
+    font_names = [
+        'SourceSansPro-Black.otf',
+        'SourceSansPro-BlackItalic.otf',
+        'SourceSansPro-Bold.otf',
+        'SourceSansPro-BoldItalic.otf',
+        'SourceSansPro-ExtraLight.otf',
+        'SourceSansPro-ExtraLightItalic.otf',
+        'SourceSansPro-Italic.otf',
+        'SourceSansPro-Light.otf',
+        'SourceSansPro-LightItalic.otf',
+        'SourceSansPro-Regular.otf',
+        'SourceSansPro-Semibold.otf',
+        'SourceSansPro-SemiboldItalic.otf',
+    ]
 
-  font_paths = [os.path.join(base_path, n) for n in font_names]
+    font_paths = [os.path.join(base_path, n) for n in font_names]
 
-  test_fonts = [TTFont(x) for x in font_paths]
+    test_fonts = [TTFont(x) for x in font_paths]
 
-  # try fonts with consistent family names
-  assert_PASS(check(test_fonts))
+    # try fonts with consistent family names
+    assert_PASS(check(test_fonts))
 
-  # now set 5 of the fonts to have different family names.
-  name_records = test_fonts[1]['name'].names
-  for name_record in name_records:
-    if name_record.nameID == 1:
-      name_record.string = 'wrong-name'.encode('utf-16be')
+    # now set 5 of the fonts to have different family names
+    for i in range(1, 6):
+        if i in [1, 2, 3]:
+            target_nameID = 1
+        elif i in [4, 5]:
+            target_nameID = 16
+        name_records = test_fonts[i]['name'].names
+        wrong_name = f"wrong-name-{9 % i}"
+        for name_record in name_records:
+            if name_record.nameID == target_nameID:
+                name_record.string = wrong_name.encode('utf-16be')
 
-  name_records = test_fonts[2]['name'].names
-  for name_record in name_records:
-    if name_record.nameID == 1:
-      name_record.string = 'wrong-name-2'.encode('utf-16be')
+    msg = assert_results_contain(check(test_fonts),
+                                 FAIL, 'inconsistent-family-name')
 
-  name_records = test_fonts[3]['name'].names
-  for name_record in name_records:
-    if name_record.nameID == 1:
-      name_record.string = 'wrong-name'.encode('utf-16be')
+    assert msg in (f"Fonts in family has inconsistent font family names: "
+                   f"'Source Sans Pro', 'wrong-name-1', 'wrong-name-0', "
+                   f"'wrong-name-4'. \n* 'Source Sans Pro' found in: "
+                   f"SourceSansPro-Black.otf (nameID 16), SourceSansPro-BlackItalic.otf"
+                   f" (nameID 16), SourceSansPro-Italic.otf (nameID 1), SourceSansPro-Light.otf"
+                   f" (nameID 16), SourceSansPro-LightItalic.otf (nameID 16), "
+                   f"SourceSansPro-Regular.otf (nameID 1), SourceSansPro-Semibold.otf "
+                   f"(nameID 16), SourceSansPro-SemiboldItalic.otf (nameID 16)\n* 'wrong-name-1'"
+                   f" found in: SourceSansPro-Bold.otf (nameID 1), SourceSansPro-ExtraLight.otf"
+                   f" (nameID 16)\n* 'wrong-name-0' found in: SourceSansPro-BoldItalic.otf (nameID 1)"
+                   f"\n* 'wrong-name-4' found in: SourceSansPro-ExtraLightItalic.otf (nameID 16)"
+                  )
 
-  name_records = test_fonts[4]['name'].names
-  for name_record in name_records:
-    if name_record.nameID == 16:
-      name_record.string = 'wrong-name-2'.encode('utf-16be')
-
-  name_records = test_fonts[5]['name'].names
-  for name_record in name_records:
-    if name_record.nameID == 16:
-      name_record.string = 'wrong-name-3'.encode('utf-16be')
-
-    assert_results_contain(check(test_fonts),
-                           FAIL, 'inconsistent-family-name')
 
 def test_check_italic_names():
     check = CheckTester(opentype_profile,
