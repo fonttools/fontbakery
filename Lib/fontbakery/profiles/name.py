@@ -655,7 +655,7 @@ def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
             diff_names.extend(list(name_set))
             if len(font_tuple_list) == 0:
                 continue
-            detail_str += f"\n* ' {', '.join(list(name_set))} ' found in: "
+            detail_str += f"\n* '{', '.join(list(name_set))}' found in: "
             for ft in font_tuple_list:
                 comma = ", " if fonts_str != "" else ""
                 fonts_str += f"{comma}{str(ft[0])} (nameID {ft[1]})"
