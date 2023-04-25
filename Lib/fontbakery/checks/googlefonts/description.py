@@ -32,7 +32,7 @@ def description_html(font):
         return None
 
 
-def github_gfonts_description(font: Font, network):
+def github_gfonts_description(font: Font, network, config):
     """Get the contents of the DESCRIPTION.en_us.html file
     from the google/fonts github repository corresponding
     to a given ttFont.
@@ -41,8 +41,7 @@ def github_gfonts_description(font: Font, network):
     if not license_file or not network:
         return None
 
-    from fontbakery.utils import download_file
-    from urllib.request import HTTPError
+    import requests
 
     LICENSE_DIRECTORY = {"OFL.txt": "ofl", "UFL.txt": "ufl", "LICENSE.txt": "apache"}
     filename = os.path.basename(font.file)
@@ -52,10 +51,8 @@ def github_gfonts_description(font: Font, network):
         f"/{LICENSE_DIRECTORY[license_file]}/{familyname}/DESCRIPTION.en_us.html"
     )
     try:
-        descfile = download_file(url)
-        if descfile:
-            return descfile.read().decode("UTF-8")
-    except HTTPError:
+        return requests.get(url, timeout=config.get("timeout")).text
+    except requests.RequestException:
         return None
 
 
@@ -411,11 +408,11 @@ def com_google_fonts_check_description_eof_linebreak(description):
     conditions=["description", "network"],
     proposal="https://github.com/fonttools/fontbakery/issues/3182",
 )
-def com_google_fonts_check_description_family_update(font, network):
+def com_google_fonts_check_description_family_update(font, network, config):
     """
     On a family update, the DESCRIPTION.en_us.html file should ideally also be updated.
     """
-    remote_description = github_gfonts_description(font, network)
+    remote_description = github_gfonts_description(font, network, config)
     if remote_description == font.description:
         yield WARN, Message(
             "description-not-updated",
