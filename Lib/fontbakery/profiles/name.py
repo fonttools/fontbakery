@@ -650,7 +650,7 @@ def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
         detail_str_arr = []
         indent = "\n  - "
         for name_set, font_tuple_list in name_dict.items():
-            detail_str = f"\n\n* {next(iter(name_set))!r} was found in:"
+            detail_str = f"\n\n* '{next(iter(name_set), '')}' was found in:"
 
             fonts_str_arr = []
             for ft in font_tuple_list:
