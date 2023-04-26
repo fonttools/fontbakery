@@ -537,19 +537,9 @@ def test_check_consistent_font_family_name():
 
     msg = assert_results_contain(check(test_fonts),
                                  FAIL, 'inconsistent-family-name')
-
-    assert msg in (f"Fonts in family has inconsistent font family names: "
-                   f"'Source Sans Pro', 'wrong-name-1', 'wrong-name-0', "
-                   f"'wrong-name-4'. \n* 'Source Sans Pro' found in: "
-                   f"SourceSansPro-Black.otf (nameID 16), SourceSansPro-BlackItalic.otf"
-                   f" (nameID 16), SourceSansPro-Italic.otf (nameID 1), SourceSansPro-Light.otf"
-                   f" (nameID 16), SourceSansPro-LightItalic.otf (nameID 16), "
-                   f"SourceSansPro-Regular.otf (nameID 1), SourceSansPro-Semibold.otf "
-                   f"(nameID 16), SourceSansPro-SemiboldItalic.otf (nameID 16)\n* 'wrong-name-1'"
-                   f" found in: SourceSansPro-Bold.otf (nameID 1), SourceSansPro-ExtraLight.otf"
-                   f" (nameID 16)\n* 'wrong-name-0' found in: SourceSansPro-BoldItalic.otf (nameID 1)"
-                   f"\n* 'wrong-name-4' found in: SourceSansPro-ExtraLightItalic.otf (nameID 16)"
-                  )
+    assert "4 different Font Family names were found" in msg
+    assert "'Source Sans Pro' was found" in msg
+    assert "'wrong-name-1' was found" in msg
 
 
 def test_check_italic_names():
