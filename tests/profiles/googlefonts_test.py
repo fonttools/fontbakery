@@ -3208,13 +3208,6 @@ def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
     #              'with one good font...')
 
 
-def _rmtree(dir_path):
-    # Avoid "FileExistsError: [WinError 183] Cannot create a file when that
-    # file already exists" on Windows.
-    if os.path.exists(dir_path):
-        shutil.rmtree(dir_path)
-
-
 def test_check_repo_vf_has_static_fonts():
     """Check VF family dirs in google/fonts contain static fonts"""
     check = CheckTester(googlefonts_profile,
@@ -3227,10 +3220,7 @@ def test_check_repo_vf_has_static_fonts():
         family_dir = portable_path(tmp_gf_dir + "/ofl/testfamily")
         src_family = portable_path("data/test/varfont")
 
-        # TODO: When FB stops supporting Python 3.7, remove this step and add
-        # `dirs_exist_ok=True` parameter to shutil.copytree()
-        _rmtree(family_dir)
-        shutil.copytree(src_family, family_dir)
+        shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
 
         assert_results_contain(check(dir_path, {"family_directory": family_dir}),
                                WARN, 'missing',
@@ -3282,10 +3272,7 @@ def test_check_repo_fb_report():
         family_dir = portable_path(tmp_dir)
         src_family = portable_path("data/test/varfont")
 
-        # TODO: When FB stops supporting Python 3.7, remove this step and add
-        # `dirs_exist_ok=True` parameter to shutil.copytree()
-        _rmtree(family_dir)
-        shutil.copytree(src_family, family_dir)
+        shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
 
         assert_PASS(check([], {"family_directory": family_dir}),
                     'for a repo without Font Bakery report files.')
@@ -3328,10 +3315,7 @@ def test_check_repo_zip_files():
         family_dir = portable_path(tmp_dir)
         src_family = portable_path("data/test/varfont")
 
-        # TODO: When FB stops supporting Python 3.7, remove this step and add
-        # `dirs_exist_ok=True` parameter to shutil.copytree()
-        _rmtree(family_dir)
-        shutil.copytree(src_family, family_dir)
+        shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
 
         assert_PASS(check([], {"family_directory": family_dir}),
                     'for a repo without ZIP files.')
@@ -3342,7 +3326,7 @@ def test_check_repo_zip_files():
                                     f"jura",
                                     f"static",
                                     f"fonts-release.{ext}")
-            #create an empty file. The check won't care about the contents:
+            # create an empty file. The check won't care about the contents:
             open(filepath, "w+")
             assert_results_contain(check([], {"family_directory": family_dir}),
                                    FAIL, 'zip-files',

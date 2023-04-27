@@ -39,7 +39,6 @@ def test_command_check_googlefonts():
         subprocess.check_output(["fontbakery", "check-googlefonts"])
 
 
-#@pytest.mark.skipif(sys.version_info < (3, 7), reason="requires python3.7 or higher")
 @pytest.mark.xfail(strict=True) # This test is too much prone to failing whenever we update
                                 # the text-output formatting or the actual log messages in that fontbakery check
                                 # I would like to have this test refactored to be in a good state for much longer.
