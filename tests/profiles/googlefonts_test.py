@@ -65,33 +65,12 @@ cabin_condensed_fonts = [
     TEST_FILE("cabincondensed/CabinCondensed-SemiBold.ttf")
 ]
 
-montserrat_fonts = [
-    TEST_FILE("montserrat/Montserrat-Black.ttf"),
-    TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Bold.ttf"),
-    TEST_FILE("montserrat/Montserrat-BoldItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraBold.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraLight.ttf"),
-    TEST_FILE("montserrat/Montserrat-ExtraLightItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Italic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Light.ttf"),
-    TEST_FILE("montserrat/Montserrat-LightItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Medium.ttf"),
-    TEST_FILE("montserrat/Montserrat-MediumItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Regular.ttf"),
-    TEST_FILE("montserrat/Montserrat-SemiBold.ttf"),
-    TEST_FILE("montserrat/Montserrat-SemiBoldItalic.ttf"),
-    TEST_FILE("montserrat/Montserrat-Thin.ttf"),
-    TEST_FILE("montserrat/Montserrat-ThinItalic.ttf")
+rosarivo_fonts = [
+    TEST_FILE("rosarivo_metadata/Rosarivo-Italic.ttf"),
+    TEST_FILE("rosarivo_metadata/Rosarivo-Regular.ttf"),
 ]
 
 cjk_font = TEST_FILE("cjk/SourceHanSans-Regular.otf")
-
-
-@pytest.fixture
-def montserrat_ttFonts():
-    return [TTFont(path) for path in montserrat_fonts]
 
 
 @pytest.fixture
@@ -2017,11 +1996,11 @@ def test_check_metadata_filenames():
     check = CheckTester(googlefonts_profile,
                         "com.google.fonts/check/metadata/filenames")
 
-    assert_PASS(check(montserrat_fonts),
+    assert_PASS(check(rosarivo_fonts),
                 'with matching list of font files...')
 
     # make sure missing files are detected by the check:
-    fonts = montserrat_fonts
+    fonts = rosarivo_fonts
     original_name = fonts[0]
     # rename one font file in order to trigger the FAIL
     os.rename(original_name, "font.tmp")
