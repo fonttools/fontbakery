@@ -1,6 +1,6 @@
 # macOS Installation Guide
 
-You'll need Python 3.7 (or newer) to run Font Bakery. Install the [`python` formula](https://formulae.brew.sh/formula/python) with the [Homebrew](https://brew.sh) package manager using the instructions below.
+You'll need Python 3.8 (or newer) to run Font Bakery. Install the [`python` formula](https://formulae.brew.sh/formula/python) with the [Homebrew](https://brew.sh) package manager using the instructions below.
 
 ## Install
 
