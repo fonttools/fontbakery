@@ -26,7 +26,6 @@ from fontbakery.constants import (NameID,
                                   MacintoshLanguageID,
                                   OFL_BODY_TEXT)
 from fontbakery.profiles import googlefonts as googlefonts_profile
-from fontbakery.profiles import opentype as opentype_profile
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
