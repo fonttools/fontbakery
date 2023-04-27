@@ -9,6 +9,8 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Open Type Profile
   - **[com.google.fonts/check/name/italic_names]:** Implemented checks for name IDs 1, 2, 16, 17 for Italic fonts (issues #3666 and #3667)
 
+#### Added to the Adobe Fonts Profile
+  - **[com.adobe.fonts/check/family/consistent_family_name]:** Verifies that family names in the name table are consistent across all fonts in a family. Checks Typographic Family name (nameID 16) if present, otherwise uses Font Family name (nameID 1). (issue #4112)
 ### Changes to existing checks
 #### On the Google Fonts profile
   - **[com.google.fonts/check/usweightclass]:** use the axisregistry's name builders instead of the parse module (issue #4113)
