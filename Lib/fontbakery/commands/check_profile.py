@@ -188,7 +188,7 @@ def ArgumentParser(profile, profile_arg=True):
                                       f'One of: {comma_separated}')
 
     def parse_order(arg):
-        order = filter(len, [n.strip() for n in arg.split(',')])
+        order = list(filter(len, [n.strip() for n in arg.split(',')]))
         return order or None
     comma_separated = ', '.join(iterargs)
     argument_parser.add_argument('-o','--order', default=None, type=parse_order,
