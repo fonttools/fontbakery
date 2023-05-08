@@ -11,6 +11,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### Added to the Adobe Fonts Profile
   - **[com.adobe.fonts/check/family/consistent_family_name]:** Verifies that family names in the name table are consistent across all fonts in a family. Checks Typographic Family name (nameID 16) if present, otherwise uses Font Family name (nameID 1). (issue #4112)
+
+### Migrations of checks
+#### Moved to the Universal profile
+  - **[com.google.fonts/check/linegaps]:** from the OpenType profile (issue #4133)
+
 ### Changes to existing checks
 #### On the Google Fonts profile
   - **[com.google.fonts/check/usweightclass]:** use the axisregistry's name builders instead of the parse module (issue #4113)
@@ -20,6 +25,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Universal Profile
   - **[com.google.fonts/check/soft_hyphen]:** Improve wording of the rationale. (issue #4095)
+  - **[com.google.fonts/check/linegaps]:** Added rationale (issue #4133)
 
 ### BugFixes
   - Fix crash on markdown reporter by explicitly specifing UTF-8 encoding (issue #4089)

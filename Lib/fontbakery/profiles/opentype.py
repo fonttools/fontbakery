@@ -59,7 +59,6 @@ OPENTYPE_PROFILE_CHECKS = [
     'com.google.fonts/check/monospace',
     'com.google.fonts/check/xavgcharwidth',
     'com.adobe.fonts/check/fsselection_matches_macstyle',
-    'com.google.fonts/check/linegaps',
     'com.google.fonts/check/unitsperem',
     'com.google.fonts/check/dsig',
     'com.google.fonts/check/gdef_spacing_marks',
