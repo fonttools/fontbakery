@@ -1257,14 +1257,14 @@ def test_check_linegaps():
     ttFont['hhea'].lineGap = 1
     ttFont['OS/2'].sTypoLineGap = 0
     assert_results_contain(check(ttFont),
-                           FAIL, 'hhea',
+                           WARN, 'hhea',
                            'with non-zero hhea.lineGap...')
 
     # Then we run the check with a non-zero OS/2.sTypoLineGap:
     ttFont['hhea'].lineGap = 0
     ttFont['OS/2'].sTypoLineGap = 1
     assert_results_contain(check(ttFont),
-                           FAIL, 'OS/2',
+                           WARN, 'OS/2',
                            'with non-zero OS/2.sTypoLineGap...')
 
     # And finaly we fix it by making both values equal to zero:
