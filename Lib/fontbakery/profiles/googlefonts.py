@@ -6395,43 +6395,66 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
 @check(
     id = "com.google.fonts/check/colorfont_tables",
     rationale = """
-        Colr v0 fonts are widely supported in most browsers so they do not require
-        an SVG color table. However, Colr v1 is only well supported in Chrome so
-        we need to add an SVG table to these fonts.
+        COLR v0 fonts are widely supported in most browsers so they do not require
+        an SVG color table. However, some environments (e.g. Safari, Adobe apps)
+        do not currently support COLR v1 so we need to add an SVG table to these fonts,
+        except in the case of variable fonts, since SVG does not support
+        OpenType Variations.
 
-        To add an SVG table, run the maximum_color tool in Nano Emoji,
+        To automatically generate compatible SVG/COLR tables,
+        run the maximum_color tool in nanoemoji:
         https://github.com/googlefonts/nanoemoji
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/3886'
+    proposal = ['https://googlefonts.github.io/gf-guide/color.html',
+                'https://github.com/googlefonts/fontbakery/issues/3886',
+                'https://github.com/googlefonts/fontbakery/issues/3888',
+                'https://github.com/googlefonts/fontbakery/pull/3889',
+                'https://github.com/googlefonts/fontbakery/issues/4131']
 )
 def com_google_fonts_check_colorfont_tables(ttFont):
-    """Check font has the expected color font tables"""
-    if "COLR" in ttFont:
-        colr_table = ttFont["COLR"]
-        if colr_table.version == 0 and "SVG " in ttFont:
-            yield FAIL, Message(
-                "drop-svg",
-                "Font has a COLR v0 table, which is already widely supported, "
-                "so the SVG table isn't needed."
-            )
-            return
-        elif colr_table.version == 1 and "SVG " not in ttFont:
-            yield FAIL, Message(
-                "add-svg",
-                "Font has COLRv1 but no SVG table; for CORLv1, we require "
-                "that an SVG table is present to support environments where "
-                "the former is not supported yet."
-            )
-            return
-    elif "SVG " in ttFont:
-        if "COLR" not in ttFont:
-            yield FAIL, Message(
-                "add-colr",
-                "Font only has an SVG table. Please add a COLR table as well. "
-            )
-            return
-    yield PASS, "Looks Good!"
+    """Check font has the expected color font tables."""
+    from .shared_conditions import is_variable_font
 
+    passed = True
+    NANOEMOJI_ADVICE = ("You can do it by using the maximum_color tool provided by"
+                        " the nanoemoji project:\n"
+                        "https://github.com/googlefonts/nanoemoji")
+
+    if "COLR" in ttFont:
+        if ttFont["COLR"].version == 0 and "SVG " in ttFont:
+            passed = False
+            yield FAIL,\
+                  Message("drop-svg",
+                          "Font has a COLR v0 table, which is already widely supported,"
+                          " so the SVG table isn't needed.")
+
+        elif ttFont["COLR"].version == 1 and "SVG " not in ttFont\
+             and not is_variable_font(ttFont):
+            passed = False
+            yield FAIL,\
+                  Message("add-svg",
+                          "Font has COLRv1 but no SVG table; for CORLv1, we require"
+                          " that an SVG table is present to support environments where"
+                          " the former is not supported yet.\n" + NANOEMOJI_ADVICE)
+
+    if "SVG " in ttFont:
+        if is_variable_font(ttFont):
+            passed = False
+            yield FAIL,\
+                  Message("variable-svg",
+                          "This is a variable font and SVG does not support"
+                          " OpenType Variations.\n"
+                          "Please remove the SVG table from this font.")
+
+        if "COLR" not in ttFont:
+            passed = False
+            yield FAIL,\
+                  Message("add-colr",
+                          "Font only has an SVG table."
+                          " Please add a COLR table as well.\n" + NANOEMOJI_ADVICE)
+
+    if passed:
+        yield PASS, "Looks Good!"
 
 
 @check(
