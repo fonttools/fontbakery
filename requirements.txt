@@ -18,8 +18,8 @@ opentype-sanitizer==9.1.0
 opentypespec==1.9.1
 packaging==23.1
 pip-api==0.0.30
-protobuf==3.20.3
 PyYAML==6.0.1
+protobuf==3.20.3
 requests==2.31.0
 rich==13.4.2
 stringbrewer==0.0.1
@@ -27,3 +27,4 @@ toml==0.10.2
 ufolint==1.2.0
 vharfbuzz==0.2.0
 ufo2ft==2.32.0
+shaperglot==0.3.0

@@ -6,6 +6,12 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
+## 0.9.0a2 (2023-Aug-04)
+### Changes to existing checks
+#### On the Shaping profile
+  - **[com.google.fonts/check/soft_dotted]:** Added affected languages to output & downgraded to WARN. (issue #4085)
+
+
 ## 0.9.0a1 (2023-Aug-02)
 ### Note-worthy code changes
   - This is the first version in which we're using the Black auto-formatter on the entire code-base. (Discussions #3397)

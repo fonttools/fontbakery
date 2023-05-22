@@ -699,20 +699,68 @@ def com_google_fonts_check_soft_dotted(ttFont):
 
     message = ""
     if fail_unchanged_strings:
+        fail_unchanged_strings = " ".join(fail_unchanged_strings)
         message += (
-            "The dot of soft dotted characters used in orthographies must disappear in"
-            f" the following strings: {' '.join(fail_unchanged_strings)}"
+            f"The dot of soft dotted characters used in orthographies"
+            f" _must_ disappear in the following strings: {fail_unchanged_strings}"
         )
     if warn_unchanged_strings:
+        warn_unchanged_strings = " ".join(warn_unchanged_strings)
         if message:
             message += "\n\n"
         message += (
-            "The dot of soft dotted characters should disappear in other cases,"
-            f" for example: {' '.join(warn_unchanged_strings)}"
+            f"The dot of soft dotted characters _should_ disappear in"
+            f" other cases, for example: {warn_unchanged_strings}"
         )
-    if fail_unchanged_strings:
-        yield FAIL, Message("soft-dotted", message)
-    elif warn_unchanged_strings:
+
+    # Calculate font's affected languages for additional information
+    if fail_unchanged_strings or warn_unchanged_strings:
+        from shaperglot.checker import Checker
+        from shaperglot.languages import Languages, gflangs
+
+        languages = Languages()
+
+        # Find all affected languages
+        ortho_soft_dotted_langs = set()
+        for c in ortho_soft_dotted_strings:
+            for lang in gflangs:
+                if (
+                    c in gflangs[lang].exemplar_chars.base
+                    or c in gflangs[lang].exemplar_chars.auxiliary
+                ):
+                    ortho_soft_dotted_langs.add(lang)
+        if ortho_soft_dotted_langs:
+            affected_languages = []
+            unaffected_languages = []
+            languages = Languages()
+            checker = Checker(ttFont.reader.file.name)
+
+            for lang in ortho_soft_dotted_langs:
+                reporter = checker.check(languages[lang])
+                string = (
+                    f"{gflangs[lang].name} ({gflangs[lang].script}, "
+                    f"{'{:,.0f}'.format(gflangs[lang].population)} speakers)"
+                )
+                if reporter.is_success:
+                    affected_languages.append(string)
+                else:
+                    unaffected_languages.append(string)
+
+            if affected_languages:
+                affected_languages = ", ".join(affected_languages)
+                message += (
+                    f"\n\nYour font fully covers the following languages that require"
+                    f" the soft-dotted feature: {affected_languages}. "
+                )
+
+            if unaffected_languages:
+                unaffected_languages = ", ".join(unaffected_languages)
+                message += (
+                    f"\n\nYour font does *not* cover the following languages that"
+                    f" require the soft-dotted feature: {unaffected_languages}."
+                )
+
+    if fail_unchanged_strings or warn_unchanged_strings:
         yield WARN, Message("soft-dotted", message)
     else:
         yield PASS, (
