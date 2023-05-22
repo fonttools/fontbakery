@@ -33,6 +33,7 @@ shaping_extras = [
     "stringbrewer",
     f"ufo2ft{UFO2FT_VERSION}",
     f"vharfbuzz{VHARFBUZZ_VERSION}",
+    "shaperglot>=0.2.0",  # v0.2.0 had an API update
 ]
 
 ufo_sources_extras = [
@@ -173,7 +174,6 @@ setup(
         # used by 'italic_angle' check in OpenType profile ('post' table);
         # also used by ISO 15008 profile
         "beziers>=0.5.0",  # 0.5.0 uses new fontTools glyph outline access
-        # ---
     ],
     extras_require={
         "all": all_extras,
