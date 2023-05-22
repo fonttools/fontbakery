@@ -1859,6 +1859,37 @@ def com_google_fonts_check_soft_dotted(ttFont):
         message += f"The dot of soft dotted characters should disappear in " \
                    f"other cases, for example: " \
                    f"{' '.join(warn_unchanged_strings)}"
+
+    # Calculate font's affected languages for additional information
+    if fail_unchanged_strings or warn_unchanged_strings:
+        from shaperglot.checker import Checker
+        from shaperglot.languages import Languages, gflangs
+        languages = Languages()
+
+        # Find all affected languages
+        ortho_soft_dotted_langs = set()
+        for c in ortho_soft_dotted_strings:
+            for lang in gflangs:
+                if (
+                    c in gflangs[lang].exemplar_chars.base
+                    or c in gflangs[lang].exemplar_chars.auxiliary
+                ):
+                    ortho_soft_dotted_langs.add(lang)
+        if ortho_soft_dotted_langs:
+            affected_languages = []
+            languages = Languages()
+            checker = Checker(ttFont.reader.file.name)
+
+            for lang in ortho_soft_dotted_langs:
+                reporter = checker.check(languages[lang])
+                if reporter.is_success:
+                    affected_languages.append(f"{gflangs[lang].name} ({gflangs[lang].script})")
+            
+            if affected_languages:
+                message += f"\n\nYour font fully covers the following languages that require " \
+                        f"the soft-dotted-i feature: " \
+                        f"{', '.join(affected_languages)}. "
+
     if fail_unchanged_strings:
         yield FAIL, Message("soft-dotted", message)
     elif warn_unchanged_strings:
