@@ -27,4 +27,4 @@ ufolint==1.2.0
 unicodedata2==15.0.0
 vharfbuzz==0.2.0
 ufo2ft==2.30.0
-git+https://github.com/googlefonts/shaperglot
+shaperglot==0.1.0
