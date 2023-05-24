@@ -26,7 +26,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Universal Profile
   - **[com.google.fonts/check/soft_hyphen]:** Improve wording of the rationale. (issue #4095)
   - **[com.google.fonts/check/linegaps]:** Added rationale (issue #4133)
-  - **[com.google.fonts/check/soft_dotted]:** Added affected languages to output. (issue #4085)
+  - **[com.google.fonts/check/soft_dotted]:** Added affected languages to output & downgraded to WARN. (issue #4085)
 
 ### BugFixes
   - Fix crash on markdown reporter by explicitly specifing UTF-8 encoding (issue #4089)
