@@ -1877,18 +1877,27 @@ def com_google_fonts_check_soft_dotted(ttFont):
                     ortho_soft_dotted_langs.add(lang)
         if ortho_soft_dotted_langs:
             affected_languages = []
+            unaffected_languages = []
             languages = Languages()
             checker = Checker(ttFont.reader.file.name)
 
             for lang in ortho_soft_dotted_langs:
                 reporter = checker.check(languages[lang])
+                string = f"{gflangs[lang].name} ({gflangs[lang].script}, {'{:,.0f}'.format(gflangs[lang].population)} speakers)"
                 if reporter.is_success:
-                    affected_languages.append(f"{gflangs[lang].name} ({gflangs[lang].script})")
+                    affected_languages.append(string)
+                else:
+                    unaffected_languages.append(string)
             
             if affected_languages:
                 message += f"\n\nYour font fully covers the following languages that require " \
-                        f"the soft-dotted-i feature: " \
+                        f"the soft-dotted feature: " \
                         f"{', '.join(affected_languages)}. "
+
+            if unaffected_languages:
+                message += f"\n\nYour font does *not* cover the following languages that require " \
+                        f"the soft-dotted feature: " \
+                        f"{', '.join(unaffected_languages)}. "
 
     if fail_unchanged_strings:
         yield FAIL, Message("soft-dotted", message)
