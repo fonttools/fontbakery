@@ -1899,9 +1899,7 @@ def com_google_fonts_check_soft_dotted(ttFont):
                         f"the soft-dotted feature: " \
                         f"{', '.join(unaffected_languages)}. "
 
-    if fail_unchanged_strings:
-        yield FAIL, Message("soft-dotted", message)
-    elif warn_unchanged_strings:
+    if fail_unchanged_strings or warn_unchanged_strings:
         yield WARN, Message("soft-dotted", message)
     else:
         yield PASS,\
