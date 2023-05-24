@@ -1851,12 +1851,12 @@ def com_google_fonts_check_soft_dotted(ttFont):
     message = ""
     if fail_unchanged_strings:
         message += f"The dot of soft dotted characters used in orthographies " \
-                   f"must disappear in the following strings: " \
+                   f"_must_ disappear in the following strings: " \
                    f"{' '.join(fail_unchanged_strings)}"
     if warn_unchanged_strings:
         if message:
             message += "\n\n"
-        message += f"The dot of soft dotted characters should disappear in " \
+        message += f"The dot of soft dotted characters _should_ disappear in " \
                    f"other cases, for example: " \
                    f"{' '.join(warn_unchanged_strings)}"
 
