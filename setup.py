@@ -38,7 +38,8 @@ shaping_extras = [
     "stringbrewer",
     f"ufo2ft{UFO2FT_VERSION}",
     f"vharfbuzz{VHARFBUZZ_VERSION}",
-    "shaperglot>=0.2.0",  # v0.2.0 had an API update
+    "shaperglot>=0.3.0",  # versions prior to v0.3.0 had too stric dependency rules
+    # for other deps such as protobuf, making it harder satisfy all dependencies.
 ]
 
 ufo_sources_extras = [
