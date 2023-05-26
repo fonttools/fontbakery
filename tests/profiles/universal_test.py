@@ -1275,3 +1275,33 @@ def test_check_linegaps():
     # Confirm the check yields FAIL if the font doesn't have a required table
     del ttFont['OS/2']
     assert_results_contain(check(ttFont), FAIL, "lacks-table")
+
+
+def test_check_STAT_in_statics():
+    """ Checking STAT table on static fonts. """
+    check = CheckTester(universal_profile,
+                        "com.google.fonts/check/STAT_in_statics")
+
+    ttFont = TTFont(TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"))
+    assert_SKIP(check(ttFont),
+                'with a variable font...')
+
+    # fake it: Remove fvar table to make Font Bakery think it is dealing with a static font
+    del ttFont["fvar"]
+
+    # We know that our reference RobotoSerif varfont (which the check is induced
+    # here to think it is a static font) has multiple records per design axis in its
+    # STAT table:
+    assert_results_contain(check(ttFont),
+                           FAIL, 'multiple-STAT-entries',
+                           'with a static font with a bad STAT table...')
+
+    # Remove all entries except the very first one:
+    stat = ttFont["STAT"].table
+    stat.AxisValueArray.AxisCount = 1
+    stat.AxisValueArray.AxisValue = [stat.AxisValueArray.AxisValue[0]]
+
+    # And finally, completely remove STAT and it should PASS:
+    del ttFont["STAT"]
+    assert_PASS(check(ttFont))
+

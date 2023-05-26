@@ -1,8 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.8.12 (2023-Apr-??)
+## Upcoming release: 0.8.12 (2023-May-??)
 ### New Checks
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/STAT_in_statics]:** Static fonts with more than a single entry per design axis cause trouble on Windows (issue #4149)
+
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/unreachable_subsetting]:** Implemented checks to ensure that all encoded glyphs in the font are covered by a subset declared in the METADATA.pb (issue #4097)
 
