@@ -2511,7 +2511,8 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(font_metadata,
         Google Fonts chooses to append "Italic" here.
     """,
     proposal = ['https://github.com/googlefonts/fontbakery/issues/3024',
-                'https://github.com/googlefonts/gftools/issues/297']
+                'https://github.com/googlefonts/gftools/issues/297',
+                'https://typo.social/@arrowtype/110430680157544757']
 )
 def com_google_fonts_check_metadata_valid_nameid25(ttFont, style):
     "Check name ID 25 to end with \"Italic\" for Italic VFs."
