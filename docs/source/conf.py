@@ -27,7 +27,7 @@ author = "The Font Bakery Authors"
 # The short X.Y version
 version = "0.8"
 # The full version, including alpha/beta/rc tags
-release = "0.8.11"
+release = "0.8.12"
 
 
 # -- General configuration ---------------------------------------------------
@@ -191,7 +191,7 @@ def linkcode_resolve(domain, info):
     # as seen on this URL:
     # https://github.com/googlefonts/fontbakery/tree/v0.7.2/Lib/fontbakery/profiles
 
-    tree = 'v0.8.11'
+    tree = 'v0.8.12'
     # It's not planned for us to get the line number :-(
     # I had to hammer this data into the info.
     if 'lineno' in info:
