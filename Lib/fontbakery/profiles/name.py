@@ -357,19 +357,13 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
                         passed = False
                         continue
 
-                    if not full_name.startswith(family_name):
-                        yield FAIL, Message(
-                            "mismatch-font-names",
-                            f"On the 'name' table, the full font name {full_name!r}"
-                            f" does not begin with the font family name {family_name!r}"
-                            f" in platformID {plat_id},"
-                            f" encodingID {enc_id},"
-                            f" languageID {lang_id}({lang_id:04X}),"
-                            f" and nameID {family_name_id}."
-                        )
+                    if full_name.startswith(family_name):
+                        passed = True
+                        break
+                    else:
                         passed = False
 
-    if not names_compared:
+    if not names_compared or passed == False:
         yield FAIL, Message(
             "missing-font-names",
             f"The font's 'name' table lacks a pair of records with"
