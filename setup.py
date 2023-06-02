@@ -102,7 +102,7 @@ setup(
             'sphinx_rtd_theme',
         ],
         'freetype': [
-            'freetype-py<=2.3.0, >2.4.0', # Avoiding 2.4.0 due to seg-fault described at https://github.com/googlefonts/fontbakery/issues/4143
+            'freetype-py!=2.4.0', # Avoiding 2.4.0 due to seg-fault described at https://github.com/googlefonts/fontbakery/issues/4143
         ],
     },
     entry_points={

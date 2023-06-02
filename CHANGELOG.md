@@ -1,8 +1,12 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.8.13 (2023-Jun-??)
+## Upcoming release: 0.8.14 (2023-Jun-??)
   - ...
+
+
+## 0.8.13 (2023-Jun-02)
+  - Fix a critical install bug. I had used wrong syntax on setup.py which made v0.8.12 impossible to install when enabling the freetype extra. Sorry! (issue #4157)
 
 
 ## 0.8.12 (2023-May-31)
