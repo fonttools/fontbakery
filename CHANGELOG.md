@@ -3,6 +3,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.10.1 (2023-Oct-??)
+### New checks
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/legacy_accents]:** Legacy accents must not be used in composites and must have positive width (issue #3959)
+
 ### Changes to existing checks
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/license/OFL_body_text]:** Make the check more tolerant to minor and negligible differences on the contents of the OFL license text, ignoring white space (tabs, line-breaks and space chars). (issue #4289)
