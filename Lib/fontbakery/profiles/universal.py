@@ -46,6 +46,7 @@ UNIVERSAL_PROFILE_CHECKS = (
         "com.google.fonts/check/whitespace_glyphs",
         "com.google.fonts/check/whitespace_glyphnames",
         "com.google.fonts/check/whitespace_ink",
+        "com.google.fonts/check/legacy_accents",
         "com.google.fonts/check/required_tables",
         "com.google.fonts/check/unwanted_tables",
         "com.google.fonts/check/valid_glyphnames",
@@ -669,6 +670,87 @@ def com_google_fonts_check_whitespace_ink(ttFont):
             )
     if passed:
         yield PASS, "There is no whitespace glyph with ink."
+
+
+@check(
+    id="com.google.fonts/check/legacy_accents",
+    proposal="https://github.com/googlefonts/fontbakery/issues/3959",
+    rationale="""
+        Legacy accents should not be used in accented glyphs. The use of legacy accents in accented glyphs breaks
+        the mark to mark combining feature that allows a font to stack diacritics over one glyph.
+        Use combining marks instead as a component in composite glyphs.
+
+        Legacy accents should not have anchors and positive width (at least as wide as their bounding box).
+        They are often used independently of a letter, either as a placeholder for an expected
+        combined mark+letter combination in MacOS, or separately. For instance, the ´ is often used
+        (mistakenly) as an apostrophe, the ` is used in Markdown to notify code blocks, and ^ is used
+        as an exponential operator in maths.
+    """,
+)
+def com_google_fonts_check_legacy_accents(ttFont):
+    """Check that legacy accents aren't used in composite glyphs."""
+    import babelfont
+
+    # code-points for all legacy chars
+    LEGACY_ACCENTS = {
+        0x00A8,
+        0x02D9,
+        0x0060,
+        0x00B4,
+        0x02DD,
+        0x02C6,
+        0x02C7,
+        0x02D8,
+        0x02DA,
+        0x02DC,
+        0x00AF,
+        0x00B8,
+        0x02DB,
+    }
+
+    passed = True
+    font = babelfont.load(ttFont.reader.file.name)
+
+    # Check whether the composites are using legacy accents.
+    for glyph in font.glyphs:
+        layer = font.default_master.get_glyph_layer(glyph.name)
+        for component in layer.components:
+            component_glyph = font.glyphs[component.ref]
+            if set(component_glyph.codepoints).intersection(LEGACY_ACCENTS):
+                passed = False
+                yield WARN, Message(
+                    "legacy-accents-component",
+                    f'Glyph "{glyph.name}" has a legacy accent component ({component.ref}).'
+                    f" It needs to be replaced by a combining mark.",
+                )
+
+    # Check whether legacy accents have positive width.
+    for glyph in font.glyphs:
+        if set(glyph.codepoints).intersection(LEGACY_ACCENTS):
+            layer = font.default_master.get_glyph_layer(glyph.name)
+            if layer.width < layer.bounds[2] - layer.bounds[0]:
+                passed = False
+                yield FAIL, Message(
+                    "legacy-accents-width",
+                    f'Legacy accent "{glyph.name}" are too narrow',
+                )
+
+    # Check whether legacy accents appear in GDEF as marks.
+    # Not being marks in GDEF also typically means that they don't have anchors,
+    # as font compilers would have otherwise classified them as marks in GDEF.
+    if "GDEF" in ttFont:
+        class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
+        for glyph in font.glyphs:
+            if set(glyph.codepoints).intersection(LEGACY_ACCENTS):
+                if glyph.name in class_def and class_def[glyph.name] == 3:
+                    passed = False
+                    yield FAIL, Message(
+                        "legacy-accents-gdef",
+                        f'Legacy accent "{glyph.name}" is defined in GDEF as a mark (class 3)',
+                    )
+
+    if passed:
+        yield PASS, "All used accent are combining marks."
 
 
 @check(
