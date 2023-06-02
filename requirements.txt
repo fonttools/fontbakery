@@ -9,7 +9,7 @@ dehinter==4.0.0
 fontTools[ufo,lxml,unicode]==4.39.4
 font-v==2.1.0
 freetype-py==2.3.0  # pinned for now. See: https://github.com/googlefonts/fontbakery/issues/4143
-gflanguages==0.4.7
+gflanguages==0.4.8
 glyphsets==0.6.1
 lxml==4.9.2
 munkres==1.1.4  # This should be a dependency of fonttools instead!
