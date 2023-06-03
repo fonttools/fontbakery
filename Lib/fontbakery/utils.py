@@ -18,10 +18,8 @@ import subprocess
 import sys
 
 from fontTools.ttLib import TTFont
-from fontTools.unicodedata import ot_tag_to_script
 from typing import Text, Optional
 from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
-from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
 from vharfbuzz import Vharfbuzz
 
 
@@ -615,21 +613,6 @@ def all_kerning(ttFont):
                         for right in class2[ix2]:
                             rules.append((left, right, c2.Value1, c2.Value2))
     return rules
-
-
-def is_complex_shaper_font(ttFont):
-    for table in ["GSUB", "GPOS"]:
-        if table not in ttFont:
-            continue
-        if not ttFont[table].table.ScriptList:
-            continue
-        for rec in ttFont[table].table.ScriptList.ScriptRecord:
-            script = ot_tag_to_script(rec.ScriptTag)
-            if script in USE_SCRIPTS or script in INDIC_SCRIPTS:
-                return True
-            if script in ["Khmr", "Mymr", "Hang"]:
-                return True
-    return False
 
 
 def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):

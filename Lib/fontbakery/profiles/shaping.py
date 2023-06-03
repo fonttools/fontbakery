@@ -19,10 +19,12 @@ import textwrap
 from difflib import ndiff
 from pathlib import Path
 from fontbakery.callable import check, condition
-from fontbakery.checkrunner import FAIL, PASS, SKIP
+from fontbakery.checkrunner import FAIL, PASS, SKIP, WARN
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
 from fontbakery.section import Section
+from fontTools.unicodedata import ot_tag_to_script
+from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
 from vharfbuzz import Vharfbuzz, FakeBuffer
 from os.path import basename, relpath
 from stringbrewer import StringBrewer
@@ -30,13 +32,16 @@ from collidoscope import Collidoscope
 
 shaping_basedir = Path("qa", "shaping_tests")
 
-profile_imports = ()
+profile_imports = (
+    (".", ("shared_conditions",)),
+)
 profile = profile_factory(default_section=Section("Shaping Checks"))
 
 SHAPING_PROFILE_CHECKS = [
     "com.google.fonts/check/shaping/regression",
     "com.google.fonts/check/shaping/forbidden",
     "com.google.fonts/check/shaping/collides",
+    "com.google.fonts/check/dotted_circle",
 ]
 
 STYLESHEET = """
@@ -466,6 +471,104 @@ def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     yield FAIL,\
           Message("shaping-collides",
                   msg + ".\n" + "\n".join(report_items))
+
+
+def is_complex_shaper_font(ttFont):
+    for table in ["GSUB", "GPOS"]:
+        if table not in ttFont:
+            continue
+        if not ttFont[table].table.ScriptList:
+            continue
+        for rec in ttFont[table].table.ScriptList.ScriptRecord:
+            script = ot_tag_to_script(rec.ScriptTag)
+            if script in USE_SCRIPTS or script in INDIC_SCRIPTS:
+                return True
+            if script in ["Khmr", "Mymr", "Hang"]:
+                return True
+    return False
+
+
+@check(
+    id = 'com.google.fonts/check/dotted_circle',
+    conditions = ['is_ttf'],
+    severity = 3,
+    rationale = """
+        The dotted circle character (U+25CC) is inserted by shaping engines before
+        mark glyphs which do not have an associated base, especially in the context
+        of broken syllabic clusters.
+
+        For fonts containing combining marks, it is recommended that the dotted circle
+        character be included so that these isolated marks can be displayed properly;
+        for fonts supporting complex scripts, this should be considered mandatory.
+
+        Additionally, when a dotted circle glyph is present, it should be able to
+        display all marks correctly, meaning that it should contain anchors for all
+        attaching marks.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3600',
+)
+def com_google_fonts_check_dotted_circle(ttFont, config):
+    """Ensure dotted circle glyph is present and can attach marks."""
+    from fontbakery.utils import (bullet_list,
+                                  iterate_lookup_list_with_extensions)
+
+    mark_glyphs = []
+    if "GDEF" in ttFont and \
+       hasattr(ttFont["GDEF"].table, "GlyphClassDef") and \
+       hasattr(ttFont["GDEF"].table.GlyphClassDef, "classDefs"):
+        mark_glyphs = [k for k, v in ttFont["GDEF"].table.GlyphClassDef.classDefs.items()
+                       if v == 3]
+
+    # Only check for encoded
+    mark_glyphs = set(mark_glyphs) & set(ttFont.getBestCmap().values())
+    nonspacing_mark_glyphs = [g for g in mark_glyphs if ttFont["hmtx"][g][0] == 0]
+
+    if not nonspacing_mark_glyphs:
+        yield SKIP, "Font has no nonspacing mark glyphs."
+        return
+
+    if 0x25CC not in ttFont.getBestCmap():
+        # How bad is this?
+        if is_complex_shaper_font(ttFont):
+            yield FAIL,\
+                  Message('missing-dotted-circle-complex',
+                          "No dotted circle glyph present"
+                          "and font uses a complex shaper")
+        else:
+            yield WARN,\
+                  Message('missing-dotted-circle',
+                          "No dotted circle glyph present")
+        return
+
+    # Check they all attach to dotted circle
+    # if they attach to something else
+    dotted_circle = ttFont.getBestCmap()[0x25CC]
+    attachments = {dotted_circle: []}
+    does_attach = {}
+    def find_mark_base(lookup, attachments):
+        if lookup.LookupType == 4:
+            # Assume all-to-all
+            for st in lookup.SubTable:
+                for base in st.BaseCoverage.glyphs:
+                    for mark in st.MarkCoverage.glyphs:
+                        attachments.setdefault(base,[]).append(mark)
+                        does_attach[mark] = True
+
+    iterate_lookup_list_with_extensions(ttFont, "GPOS", find_mark_base, attachments)
+
+    unattached = []
+    for g in nonspacing_mark_glyphs:
+        if g in does_attach and g not in attachments[dotted_circle]:
+            unattached.append(g)
+
+    if unattached:
+        yield FAIL,\
+              Message("unattached-dotted-circle-marks",
+                      f"The following glyphs could not be attached"
+                      f" to the dotted circle glyph:\n\n"
+                      f"{bullet_list(config, sorted(unattached))}")
+    else:
+        yield PASS, "All marks were anchored to dotted circle"
 
 
 profile.auto_register(globals())
