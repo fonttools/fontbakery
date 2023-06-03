@@ -20,8 +20,6 @@ import sys
 from fontTools.ttLib import TTFont
 from typing import Text, Optional
 from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
-from vharfbuzz import Vharfbuzz
-
 
 
 # TODO: this should be part of FontBakeryCheck and check.conditions
@@ -556,17 +554,6 @@ def add_check_overrides(checkids, profile_tag, overrides):
     checkids[:] = [checkid for checkid in checkids
                    if checkid not in overrides]
     return checkids
-
-
-def can_shape(ttFont, text, parameters=None):
-    '''
-    Returns true if the font can render a text string without any
-    .notdef characters.
-    '''
-    filename = ttFont.reader.file.name
-    vharfbuzz = Vharfbuzz(filename)
-    buf = vharfbuzz.shape(text, parameters)
-    return all(g.codepoint != 0 for g in buf.glyph_infos)
 
 
 def all_kerning(ttFont):
