@@ -6197,6 +6197,19 @@ def com_google_fonts_check_metadata_family_directory_name(family_metadata, famil
         yield PASS, f'Directory name is "{dir_name}", as expected.'
 
 
+def can_shape(ttFont, text, parameters=None):
+    '''
+    Returns true if the font can render a text string without any
+    .notdef characters.
+    '''
+    from vharfbuzz import Vharfbuzz
+
+    filename = ttFont.reader.file.name
+    vharfbuzz = Vharfbuzz(filename)
+    buf = vharfbuzz.shape(text, parameters)
+    return all(g.codepoint != 0 for g in buf.glyph_infos)
+
+
 @check(
     id = "com.google.fonts/check/render_own_name",
     rationale = """
@@ -6207,8 +6220,6 @@ def com_google_fonts_check_metadata_family_directory_name(family_metadata, famil
 )
 def com_google_fonts_check_render_own_name(ttFont):
     """Check font can render its own name."""
-    from fontbakery.utils import can_shape
-
     menu_name = ttFont["name"].getName(
         NameID.FONT_FAMILY_NAME,
         PlatformID.WINDOWS,
@@ -6307,7 +6318,6 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
 )
 def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     """Check samples can be rendered."""
-    from fontbakery.utils import can_shape
     from gflanguages import LoadLanguages
 
     passed = True

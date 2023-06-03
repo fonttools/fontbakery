@@ -7,6 +7,7 @@ from unittest.mock import patch
 import pytest
 from fontTools.ttLib import TTFont
 
+from fontbakery.profiles.googlefonts import can_shape
 from fontbakery.profiles.googlefonts_conditions import expected_font_names
 from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR,
                                     SKIP, PASS, FAIL, ENDCHECK)
@@ -4069,6 +4070,14 @@ def test_check_metadata_family_directory_name():
     assert_results_contain(check(ttFont, {'family_metadata': check['family_metadata'],
                                           'family_directory': 'overpass'}),
                            FAIL, 'bad-directory-name')
+
+
+def test_can_shape():
+    font = TTFont(portable_path(
+        "data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf"
+    ))
+    assert can_shape(font, "ABC")
+    assert not can_shape(font, "こんにちは")
 
 
 def test_check_render_own_name():
