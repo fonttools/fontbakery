@@ -1931,8 +1931,8 @@ def com_adobe_fonts_check_freetype_rasterizer(font):
         yield SKIP,\
               Message("freetype-not-installed",
                       "FreeType is not available. To fix this, invoke"
-                      " the 'freetype' extra when installing Font Bakery:\n"
-                      "pip3 install -U fontbakery[freetype]")
+                      " the 'freetype' extra when installing Font Bakery:\n\n"
+                      "python -m pip install -U 'fontbakery[freetype]'\n\n")
     except FT_Exception as err:
         yield FAIL,\
               Message("freetype-crash",
