@@ -189,7 +189,7 @@ def suffix(font):
     return '-'.join(s)
 
 
-def pretty_print_list(config, values, shorten=10, sep=", ", glue="and"):
+def pretty_print_list(config, values, shorten=10, sep=", ", glue=" and "):
     if len(values) == 1:
         return str(values[0])
 
@@ -198,12 +198,12 @@ def pretty_print_list(config, values, shorten=10, sep=", ", glue="and"):
 
     if shorten and len(values) > shorten + 2:
         joined_items_str = sep.join(map(str, values[:shorten]))
-        return (f"{joined_items_str} {glue} {len(values) - shorten} more.\n"
+        return (f"{joined_items_str}{glue}{len(values) - shorten} more.\n"
                 f"\n"
                 f"Use -F or --full-lists to disable shortening of long lists.")
     else:
         joined_items_str = sep.join(map(str, values[:-1]))
-        return f"{joined_items_str} {glue} {str(values[-1])}"
+        return f"{joined_items_str}{glue}{str(values[-1])}"
 
 
 def bullet_list(config, items, bullet="-", indentation="\t"):
@@ -211,7 +211,7 @@ def bullet_list(config, items, bullet="-", indentation="\t"):
            pretty_print_list(config,
                              items,
                              sep=f"\n\n{indentation}{bullet} ",
-                             glue=f"\n\n{indentation}{bullet}")
+                             glue=f"\n\n{indentation}{bullet} ")
 
 
 def markdown_table(items):

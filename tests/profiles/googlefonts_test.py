@@ -3080,7 +3080,7 @@ def test_check_kerning_for_non_ligated_sequences():
     msg = assert_results_contain(check(ttFont), WARN, "lacks-kern-info")
     assert msg == (
         "GPOS table lacks kerning info for the following non-ligated sequences:\n\n"
-        "\t- f + f\n\n\t- f + t \n\n\t- t + f"
+        "\t- f + f\n\n\t- f + t\n\n\t- t + f"
     )
 
 
