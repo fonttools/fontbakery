@@ -2,7 +2,10 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.8.14 (2023-Jun-??)
-  - ...
+### Migrations of checks
+#### Moved to the Shaping profile
+  - **[com.google.fonts/check/dotted_circle]:** from the Universal profile (issue #4161)
+  - **[com.google.fonts/check/soft_dotted]:** from the Universal profile (issue #4161)
 
 ### Changes to existing checks
 #### On the Universal Profile
@@ -47,7 +50,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix crash on markdown reporter by explicitly specifing UTF-8 encoding (issue #4089)
 
 ### Code tests
-  - Added test for com.google.fonts/soft_doted. (issue #4069)
+  - Added test for `com.google.fonts/soft_dotted`. (issue #4069)
 
 
 ## 0.8.11 (2023-Mar-03)
@@ -73,7 +76,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New Checks
 #### Added to the Universal Profile
-  - **[com.google.fonts/check/soft_dotted]:** Ensure soft_dotted characters lose their dot when combined with marks that replace the dot. (issue #4059)
+  - **[com.google.fonts/check/soft_dotted]:** Ensure soft-dotted characters lose their dot when combined with marks that replace the dot. (issue #4059)
   - **[com.google.fonts/check/interpolation_issues]:** Check for shape order or curve start point interpolation issues within a variable font. (issue #3930)
   - **[com.google.fonts/check/math_signs_width]:** Check that math signs have the same width (issue #3832)
   - **[com.google.fonts/check/soft_hyphen]:** It was originally part of the validation on **check/contour_count**, but it was leading to confusion, so it was split out into a separate check. (issue #4046)
