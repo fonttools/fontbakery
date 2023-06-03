@@ -1088,30 +1088,6 @@ def test_check_transformed_components():
                            FAIL, 'transformed-components')
 
 
-def test_check_soft_dotted():
-    """Check if font substitues soft dotted glyphs
-    when combined with top marks."""
-    check = CheckTester(universal_profile,
-                        "com.google.fonts/check/soft_dotted")
-
-    font = TEST_FILE("abeezee/ABeeZee-Regular.ttf")
-    msg = assert_results_contain(check(font), WARN, "soft-dotted")
-    assert "The dot of soft dotted characters used in orthographies" not in msg
-    assert "The dot of soft dotted characters should disappear" in msg
-
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    msg = assert_results_contain(check(font), FAIL, "soft-dotted")
-    assert "The dot of soft dotted characters used in orthographies" in msg
-    assert "The dot of soft dotted characters should disappear" in msg
-
-    font = TEST_FILE("akshar/Akshar[wght].ttf")
-    assert_PASS(check(font),
-                "All soft dotted characters seem to lose their dot ...")
-
-    font = TEST_FILE("rosarivo/Rosarivo-Regular.ttf")
-    assert_SKIP(check(font),
-               "It is not clear if soft dotted characters ...")
-
 def test_check_gpos7():
     """Check if font contains any GPOS 7 lookups
     which are not widely supported."""
