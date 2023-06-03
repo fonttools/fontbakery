@@ -249,7 +249,7 @@ def com_google_fonts_check_shaping_regression(config, ttFont):
         ttFont,
         run_shaping_regression,
         lambda test, configuration: "expectation" in test,
-        gereate_shaping_regression_report,
+        generate_shaping_regression_report,
     )
 
 
@@ -272,7 +272,7 @@ def run_shaping_regression(filename,
         failed_shaping_tests.append((test, expectation, output_buf, output_serialized))
 
 
-def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_tests):
+def generate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
     header = f"{shaping_file}: Expected and actual shaping not matching"
     report_items.append(create_report_item(vharfbuzz, header, type="header"))
