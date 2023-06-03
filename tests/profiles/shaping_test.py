@@ -3,12 +3,12 @@ import json
 import os
 import tempfile
 
-from fontbakery.checkrunner import FAIL
+from fontbakery.checkrunner import FAIL, WARN
 from fontbakery.codetesting import (assert_PASS,
                                     assert_results_contain,
                                     CheckTester,
                                     TEST_FILE)
-from fontbakery.profiles import universal as universal_profile
+from fontbakery.profiles import shaping as shaping_profile
 
 
 def wrap_args(config, font):
@@ -24,7 +24,7 @@ def wrap_args(config, font):
 
 def test_check_shaping_regression():
     """ Check that we can test shaping against expectations. """
-    check = CheckTester(universal_profile,
+    check = CheckTester(shaping_profile,
                         "com.google.fonts/check/shaping/regression")
 
     shaping_test = {
@@ -50,7 +50,7 @@ def test_check_shaping_regression():
 
 def test_check_shaping_forbidden():
     """ Check that we can test for forbidden glyphs in output. """
-    check = CheckTester(universal_profile,
+    check = CheckTester(shaping_profile,
                         "com.google.fonts/check/shaping/forbidden")
 
     shaping_test = {
@@ -75,7 +75,7 @@ def test_check_shaping_forbidden():
 
 def test_check_shaping_collides():
     """ Check that we can test for colliding glyphs in output. """
-    check = CheckTester(universal_profile,
+    check = CheckTester(shaping_profile,
                         "com.google.fonts/check/shaping/collides")
 
     shaping_test = {
@@ -98,3 +98,21 @@ def test_check_shaping_collides():
         assert_results_contain(check(wrap_args(config, font)),
                                FAIL, "shaping-collides",
                                "ïï collides in Nunito")
+
+
+def test_check_dotted_circle():
+    """Ensure dotted circle glyph is present and can attach marks."""
+    check = CheckTester(shaping_profile,
+                        "com.google.fonts/check/dotted_circle")
+
+    font = TEST_FILE("mada/Mada-Regular.ttf")
+    assert_PASS(check(font),
+                "with a good font...")
+
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_results_contain(check(font),
+                           WARN, "missing-dotted-circle")
+
+    font = TEST_FILE("broken_markazitext/MarkaziText-VF.ttf")
+    assert_results_contain(check(font),
+                           FAIL, "unattached-dotted-circle-marks")

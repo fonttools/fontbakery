@@ -1087,23 +1087,6 @@ def test_check_transformed_components():
     assert_results_contain(check(font),
                            FAIL, 'transformed-components')
 
-def test_check_dotted_circle():
-    """Ensure dotted circle glyph is present and can attach marks."""
-    check = CheckTester(universal_profile,
-                        "com.google.fonts/check/dotted_circle")
-
-    font = TEST_FILE("mada/Mada-Regular.ttf")
-    assert_PASS(check(font),
-                "with a good font...")
-
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    assert_results_contain(check(font),
-                           WARN, "missing-dotted-circle")
-
-    font = TEST_FILE("broken_markazitext/MarkaziText-VF.ttf")
-    assert_results_contain(check(font),
-                           FAIL, "unattached-dotted-circle-marks")
-
 
 def test_check_soft_dotted():
     """Check if font substitues soft dotted glyphs
