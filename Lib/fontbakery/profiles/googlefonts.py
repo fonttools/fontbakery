@@ -19,10 +19,6 @@ from fontbakery.constants import (NameID,
                                   MacintoshLanguageID,
                                   LATEST_TTFAUTOHINT_VERSION)
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
-from glyphsets import codepoints
-import unicodedata2
-
-ENCODINGS_DIR = codepoints.nam_dir
 
 
 profile_imports = ('fontbakery.profiles.universal',)
@@ -1009,6 +1005,7 @@ def font_codepoints(ttFont):
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check Google Fonts glyph coverage."""
     from glyphsets import GFGlyphData as glyph_data
+    import unicodedata2
 
     def missing_encoded_glyphs(glyphs):
         encoded_glyphs = [g["unicode"] for g in glyphs if g["unicode"]]
@@ -1055,8 +1052,10 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
 )
 def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont, font_codepoints):
     """Check for METADATA subsets with zero support."""
+    from glyphsets import codepoints
     from glyphsets.subsets import SUBSETS
-    codepoints.set_encoding_path(ENCODINGS_DIR)
+
+    codepoints.set_encoding_path(codepoints.nam_dir)
 
     passed = True
     for subset in family_metadata.subsets:
@@ -1099,10 +1098,11 @@ def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont,
 )
 def com_google_fonts_check_metadata_unreachable_subsetting(family_metadata, ttFont, font_codepoints, config):
     """Check for codepoints not covered by METADATA subsets."""
-    from glyphsets.subsets import SUBSETS
+    from glyphsets import codepoints
     from fontbakery.utils import pretty_print_list
-    codepoints.set_encoding_path(ENCODINGS_DIR)
+    import unicodedata2
 
+    codepoints.set_encoding_path(codepoints.nam_dir)
 
     for subset in family_metadata.subsets:
         font_codepoints = font_codepoints - set(codepoints.CodepointsInSubset(subset))
