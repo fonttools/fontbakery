@@ -182,6 +182,7 @@ SET_EXPLICIT_CHECKS = {
     # "com.google.fonts/check/transformed_components",
     # ---
     "com.adobe.fonts/check/freetype_rasterizer",             # IS_OVERRIDDEN
+    "com.google.fonts/check/ots",                            # IS_OVERRIDDEN
     "com.google.fonts/check/family/win_ascent_and_descent",  # IS_OVERRIDDEN
     "com.google.fonts/check/fontbakery_version",             # IS_OVERRIDDEN
     "com.google.fonts/check/name/trailing_spaces",           # IS_OVERRIDDEN
@@ -194,7 +195,6 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/family/vertical_metrics",
     "com.google.fonts/check/gpos7",
     "com.google.fonts/check/mandatory_glyphs",
-    "com.google.fonts/check/ots",
     "com.google.fonts/check/required_tables",
     "com.google.fonts/check/rupee",
     "com.google.fonts/check/ttx_roundtrip",
@@ -223,6 +223,7 @@ ADOBEFONTS_PROFILE_CHECKS = [
 
 OVERRIDDEN_CHECKS = [
     "com.adobe.fonts/check/freetype_rasterizer",
+    "com.google.fonts/check/ots",
     "com.adobe.fonts/check/stat_has_axis_value_tables",
     "com.adobe.fonts/check/varfont/valid_default_instance_nameids",
     "com.fontwerk/check/inconsistencies_between_fvar_stat",
@@ -546,6 +547,14 @@ profile.check_log_override(
     # From universal.py
     "com.adobe.fonts/check/freetype_rasterizer",
     overrides=(("freetype-not-installed", FAIL, KEEP_ORIGINAL_MESSAGE),),
+    reason="For Adobe, this check is very important and should never be skipped.",
+)
+
+
+profile.check_log_override(
+    # From universal.py
+    "com.google.fonts/check/ots",
+    overrides=(("ots-not-installed", FAIL, KEEP_ORIGINAL_MESSAGE),),
     reason="For Adobe, this check is very important and should never be skipped.",
 )
 

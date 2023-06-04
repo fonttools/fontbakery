@@ -425,6 +425,19 @@ def test_check_override_freetype_rasterizer(mock_import_error):
     assert "FreeType is not available" in msg
 
 
+@patch("ots.sanitize", side_effect=ImportError)
+def test_check_override_ots(mock_import_error):
+    """Check that overridden test yields FAIL rather than SKIP."""
+    check = CheckTester(
+        adobefonts_profile,
+        f"com.google.fonts/check/ots{OVERRIDE_SUFFIX}",
+    )
+
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    msg = assert_results_contain(check(font), FAIL, "ots-not-installed")
+    assert "OpenType Sanitizer is not available" in msg
+
+
 @patch("requests.get", side_effect=ConnectionError)
 def test_check_override_fontbakery_version(mock_get):
     """Check that overridden test yields SKIP rather than FAIL."""
