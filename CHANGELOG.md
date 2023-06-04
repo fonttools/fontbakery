@@ -4,6 +4,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.8.14 (2023-Jun-??)
   - ...
 
+### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/ots]:** The **opentype-sanitizer** package is no longer installed by default, and this check will be automatically skipped because of that. To make the check not be skipped, the **opentype-sanitizer** package must be installed; this can be done explicitly with `python -m pip install opentype-sanitizer`, or implicitly with the new **ots** extra: `python -m pip install -U 'fontbakery[ots]'` (issue #4163)
+
 
 ## 0.8.13 (2023-Jun-02)
   - Fix a critical install bug. I had used wrong syntax on setup.py which made v0.8.12 impossible to install when enabling the freetype extra. Sorry! (issue #4157)
