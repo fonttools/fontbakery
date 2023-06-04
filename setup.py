@@ -62,15 +62,31 @@ setup(
         'setuptools_scm[toml]>=6.2',
     ],
     install_requires=[
+        # --- core dependencies
+        'fontTools[ufo,lxml,unicode]>=4.39.0',  # Python 3.8+ required
+        'opentypespec',
+
+        # --- for parsing Configuration files
+        'PyYAML',
+        'toml',
+
+        # --- used by Reporters
+        'cmarkgfm',
+        'rich',
+
+        # --- for checking Font Bakery's version
+        'packaging',
+        'pip-api',
+        'requests',
+
+        # TODO: move the packages below to Extras
         'axisregistry>=0.3.0',
         'beautifulsoup4',
         'beziers>=0.5.0', # Uses new fontTools glyph outline access
-        'cmarkgfm',
         'collidoscope>=0.5.2', # 0.5.1 did not yet support python 3.11
                                # (see https://github.com/googlefonts/fontbakery/issues/3970)
         'defcon',
         'dehinter>=3.1.0', # 3.1.0 added dehinter.font.hint function
-        'fontTools[ufo,lxml,unicode]>=4.36.0',  # allows for passing location to glyphsets
         'font-v',
         'gflanguages>=0.3.0', # there was an api simplification/update on v0.3.0 (see https://github.com/googlefonts/gflanguages/pull/7)
         'glyphsets>=0.5.0',
@@ -78,18 +94,11 @@ setup(
         'munkres',  # for interpolation compatibility checking
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
                                       # (see https://github.com/khaledhosny/ots/pull/182)
-        'opentypespec',
-        'packaging',  # needed for checking Font Bakery's version
-        'pip-api',    # needed for checking Font Bakery's version
         # 3.7.0 fixed a bug on parsing some METADATA.pb files.
         # We cannot use v4 because our protobuf files have been compiled with v3.
-        'protobuf>=3.7.0, <4',  
+        'protobuf>=3.7.0, <4',
                             # (see https://github.com/googlefonts/fontbakery/issues/2200)
-        'PyYAML',
-        'requests',
-        'rich',
         'stringbrewer',
-        'toml',
         'ufolint',
         'ufo2ft>=2.25.2',  # 2.25.2 updated the script lists for Unicode 14.0
         'unicodedata2',
