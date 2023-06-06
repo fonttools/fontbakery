@@ -2,14 +2,13 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.8.14 (2023-Jun-??)
+### Note-worthy code changes
+  - This release adds vendor-specific extras so that we can minimize the dependency tree based on which profiles the user intends to run. This means users of the googlefonts profile will need to install using `pip install -U fontbakery[googlefonts]` (issue #3874)
+
 ### Migrations of checks
 #### Moved to the Shaping profile
   - **[com.google.fonts/check/dotted_circle]:** from the Universal profile (issue #4161)
   - **[com.google.fonts/check/soft_dotted]:** from the Universal profile (issue #4161)
-
-### Changes to existing checks
-#### On the Universal Profile
-  - **[com.google.fonts/check/ots]:** The **opentype-sanitizer** package is no longer installed by default, and this check will be automatically skipped because of that. To make the check not be skipped, the **opentype-sanitizer** package must be installed; this can be done explicitly with `python -m pip install opentype-sanitizer`, or implicitly with the new **ots** extra: `python -m pip install -U 'fontbakery[ots]'` (issue #4163)
 
 
 ## 0.8.13 (2023-Jun-02)
