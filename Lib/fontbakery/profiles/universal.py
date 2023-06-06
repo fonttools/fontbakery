@@ -287,10 +287,17 @@ def com_google_fonts_check_family_single_directory(fonts):
 )
 def com_google_fonts_check_ots(font):
     """Checking with ots-sanitize."""
-    import ots
-
     try:
+        import ots
         process = ots.sanitize(font, check=True, capture_output=True)
+
+    except ImportError:
+        yield SKIP,\
+              Message("ots-not-installed",
+                      "OpenType Sanitizer is not available. To fix this,"
+                      " invoke the 'ots' extra when installing Font Bakery:\n\n"
+                      "python -m pip install -U 'fontbakery[ots]'\n\n")
+
     except ots.CalledProcessError as e:
         yield FAIL,\
               Message("ots-sanitize-error",

@@ -7,6 +7,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/dotted_circle]:** from the Universal profile (issue #4161)
   - **[com.google.fonts/check/soft_dotted]:** from the Universal profile (issue #4161)
 
+### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/ots]:** The **opentype-sanitizer** package is no longer installed by default, and this check will be automatically skipped because of that. To make the check not be skipped, the **opentype-sanitizer** package must be installed; this can be done explicitly with `python -m pip install opentype-sanitizer`, or implicitly with the new **ots** extra: `python -m pip install -U 'fontbakery[ots]'` (issue #4163)
+
 
 ## 0.8.13 (2023-Jun-02)
   - Fix a critical install bug. I had used wrong syntax on setup.py which made v0.8.12 impossible to install when enabling the freetype extra. Sorry! (issue #4157)
