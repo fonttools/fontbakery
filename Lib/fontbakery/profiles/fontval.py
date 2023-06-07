@@ -13,7 +13,7 @@ try:
     import lxml
 except:
     import sys
-    sys.exit("\nSince FontBakery version 0.8.14, to run the fontval profile,\n"
+    sys.exit("\nSince FontBakery version 0.9.0, to run the fontval profile,\n"
              "one needs to install fontbakery with the 'fontval' extra, like this:\n"
              "\n"
              "python -m pip install -U fontbakery[fontval]\n\n")

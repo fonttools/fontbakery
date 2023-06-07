@@ -1,7 +1,7 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.8.14 (2023-Jun-??)
+## Upcoming release: 0.9.0 (2023-Jun-??)
 ### Note-worthy code changes
   - This release adds vendor-specific extras so that we can minimize the dependency tree based on which profiles the user intends to run. This means users of the googlefonts profile will need to install using `pip install -U fontbakery[googlefonts]` (issue #3874)
 
