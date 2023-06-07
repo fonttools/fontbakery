@@ -22,25 +22,33 @@ except IOError:
     readme = ''
 
 
+FONTTOOLS_VERSION = '>=4.39.0'  # Python 3.8+ required
+UFO2FT_VERSION = '>=2.25.2'
+
 # Profile-specific dependencies:
+ufo_sources_extras = [
+    'defcon',
+    f'fontTools[ufo]{FONTTOOLS_VERSION}',
+    f'ufo2ft{UFO2FT_VERSION}',
+    'ufolint',
+]
+
 googlefonts_extras = [
     'axisregistry>=0.3.0',
     'beautifulsoup4',  # For parsing registered vendor IDs from Microsoft's webpage
     'dehinter>=3.1.0',  # 3.1.0 added dehinter.font.hint function
     'font-v',
+    f'fontTools[lxml,unicode]{FONTTOOLS_VERSION}',
     'gflanguages>=0.3.0',  # There was an api simplification/update on v0.3.0
                            # (see https://github.com/googlefonts/gflanguages/pull/7)
     'glyphsets>=0.5.0',
-    'lxml',
     'protobuf>=3.7.0, <4',  # 3.7.0 fixed a bug on parsing some METADATA.pb files.
                             # We cannot use v4 because our protobuf files have been compiled with v3.
                             # (see https://github.com/googlefonts/fontbakery/issues/2200)
-    'unicodedata2',
-]
+] + ufo_sources_extras
 
 fontval_extras = [
-    'lxml',  # Note: lxml is actually installed as a sub-dependency of the core ones.
-             #       But I am keeping it listed here explicitely, just in case...
+    'lxml',
 ]
 
 docs_extras = [
@@ -53,6 +61,7 @@ all_extras = set(
     docs_extras
     + googlefonts_extras
     + fontval_extras
+    + ufo_sources_extras
 )
 
 setup(
@@ -97,7 +106,7 @@ setup(
     ],
     install_requires=[
         # --- core dependencies
-        'fontTools[ufo,lxml,unicode]>=4.39.0',  # Python 3.8+ required
+        f'fontTools{FONTTOOLS_VERSION}',
         'freetype-py!=2.4.0',  # Avoiding 2.4.0 due to seg-fault described at
                                # https://github.com/googlefonts/fontbakery/issues/4143
         'munkres',  # For interpolation compatibility checking (fontTools dependency)
@@ -125,10 +134,8 @@ setup(
         'collidoscope>=0.5.2',  # Shaping (& Universal) profiles
                                 # 0.5.1 did not yet support python 3.11
                                 # (see https://github.com/googlefonts/fontbakery/issues/3970)
-        'defcon',  # Universal, UFO sources & OpenType profiles
         'stringbrewer',  # Shaping (& Universal) profiles
-        'ufolint',  # ufo_sources profile
-        'ufo2ft>=2.25.2',  # Shaping (& Universal), Opentype, ufo_sources profiles
+        f'ufo2ft{UFO2FT_VERSION}',  # Shaping
                            # 2.25.2 updated the script lists for Unicode 14.0
         'vharfbuzz>=0.2.0',  # Googlefonts, Shaping (& Universal) profiles
                              # v0.2.0 had an API update
@@ -138,6 +145,7 @@ setup(
         'docs': docs_extras,
         'googlefonts': googlefonts_extras,
         'fontval': fontval_extras,
+        'ufo-sources': ufo_sources_extras,
     },
     entry_points={
         'console_scripts': ['fontbakery=fontbakery.cli:main'],
