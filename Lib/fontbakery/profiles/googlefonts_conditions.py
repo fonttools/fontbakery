@@ -16,7 +16,7 @@ try:
     import google.protobuf
 except:
     import sys
-    sys.exit("\nSince FontBakery version 0.8.14, to run the googlefonts profile,\n"
+    sys.exit("\nSince FontBakery version 0.9.0, to run the googlefonts profile,\n"
              "one needs to install fontbakery with the 'googlefonts' extra, like this:\n"
              "\n"
              "python -m pip install -U fontbakery[googlefonts]\n")
