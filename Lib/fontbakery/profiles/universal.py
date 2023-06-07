@@ -7,7 +7,6 @@ from fontbakery.callable import check, disable
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
-from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
 
 from packaging.version import VERSION_PATTERN
@@ -15,7 +14,7 @@ from packaging.version import VERSION_PATTERN
 re_version = re.compile(r"^\s*" + VERSION_PATTERN + r"\s*$", re.VERBOSE | re.IGNORECASE)
 
 profile_imports = (
-    (".", ("shared_conditions", "opentype", "outline", "shaping")),
+    (".", ("shared_conditions", "opentype", "shaping")),
 )
 profile = profile_factory(default_section=Section("Universal"))
 
@@ -27,7 +26,6 @@ SUPERFAMILY_CHECKS = [
 
 UNIVERSAL_PROFILE_CHECKS = (
     OPENTYPE_PROFILE_CHECKS
-    + OUTLINE_PROFILE_CHECKS
     + SHAPING_PROFILE_CHECKS
     + SUPERFAMILY_CHECKS
     + [

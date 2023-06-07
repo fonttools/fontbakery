@@ -19,6 +19,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Moved out of the Universal profile
  - All UFO Sources checks (issue #4165)
  - All DesignSpace checks (issue #4165)
+ - All Outline checks; these checks are now only invoked by the Google Fonts profile (issue #4165)
 
 
 ## 0.8.13 (2023-Jun-02)
