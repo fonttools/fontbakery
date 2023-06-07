@@ -5161,3 +5161,20 @@ def test_check_metadata_unreachable_subsetting():
     assert_results_contain(
         check(font), WARN, "unreachable-subsetting", "with a bad font"
     )
+
+
+def test_check_alt_caron():
+    """Check accent of Lcaron, dcaron, lcaron, tcaron"""
+    check = CheckTester(
+        googlefonts_profile, f"com.google.fonts/check/alt_caron{OVERRIDE_SUFFIX}"
+    )
+
+    ttFont = TTFont(TEST_FILE("annie/AnnieUseYourTelescope-Regular.ttf"))
+    assert_results_contain(
+        check(ttFont), FAIL, "bad-mark"
+    )  # deviation from universal profile
+    assert_results_contain(check(ttFont), FAIL, "wrong-mark")
+    ttFont = TTFont(TEST_FILE("cousine/Cousine-Bold.ttf"))
+    assert_results_contain(check(ttFont), WARN, "decomposed-outline")
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+    assert_PASS(check(ttFont))

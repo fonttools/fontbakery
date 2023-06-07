@@ -1352,3 +1352,18 @@ def test_check_STAT_in_statics():
 
     # It should PASS now
     assert assert_PASS(check(ttFont)) == "Looks good!"
+
+
+def test_check_alt_caron():
+    """Check accent of Lcaron, dcaron, lcaron, tcaron"""
+    check = CheckTester(universal_profile, "com.google.fonts/check/alt_caron")
+
+    ttFont = TTFont(TEST_FILE("annie/AnnieUseYourTelescope-Regular.ttf"))
+    assert_results_contain(check(ttFont), WARN, "bad-mark")
+    assert_results_contain(check(ttFont), FAIL, "wrong-mark")
+
+    ttFont = TTFont(TEST_FILE("cousine/Cousine-Bold.ttf"))
+    assert_results_contain(check(ttFont), WARN, "decomposed-outline")
+
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+    assert_PASS(check(ttFont))

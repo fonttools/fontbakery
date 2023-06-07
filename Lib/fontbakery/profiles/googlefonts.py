@@ -42,6 +42,7 @@ OVERRIDDEN_CHECKS = [
     "com.google.fonts/check/italic_angle",
     "com.google.fonts/check/italic_axis_in_stat_is_boolean",
     "com.google.fonts/check/italic_axis_last",
+    "com.google.fonts/check/alt_caron",
 ]
 
 METADATA_CHECKS = [
@@ -7126,6 +7127,13 @@ profile.check_log_override(
     "com.google.fonts/check/italic_axis_last",
     overrides=(("ital-axis-not-last", FAIL, KEEP_ORIGINAL_MESSAGE),),
     reason=("For Google Fonts, the 'ital' axis must be last in the axes order."),
+)
+
+profile.check_log_override(
+    # From universal.py
+    "com.google.fonts/check/alt_caron",
+    overrides=(("bad-mark", FAIL, KEEP_ORIGINAL_MESSAGE),),
+    reason=("For Google Fonts, one of the comma-lookalikes is a FAIL"),
 )
 
 GOOGLEFONTS_PROFILE_CHECKS = add_check_overrides(
