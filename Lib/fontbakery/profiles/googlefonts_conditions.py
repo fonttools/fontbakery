@@ -12,16 +12,6 @@ from fontbakery.constants import (
 from .shared_conditions import style
 
 
-try:
-    import google.protobuf
-except ImportError:
-    import sys
-    sys.exit("\nSince FontBakery version 0.9.0, to run the googlefonts profile,\n"
-             "one needs to install fontbakery with the 'googlefonts' extra, like this:\n"
-             "\n"
-             "python -m pip install -U 'fontbakery[googlefonts]'\n")
-
-
 @condition
 def RIBBI_ttFonts(ttFonts):
     from fontbakery.constants import RIBBI_STYLE_NAMES
@@ -181,7 +171,15 @@ def family_metadata(metadata_file):
     if not metadata_file:
         return
 
-    from google.protobuf import text_format
+    try:
+        from google.protobuf import text_format
+    except ImportError:
+        import sys
+        sys.exit("\nSince FontBakery version 0.9.0, to run the googlefonts profile,\n"
+                 "one needs to install fontbakery with the 'googlefonts' extra, like this:\n"
+                 "\n"
+                 "python -m pip install -U 'fontbakery[googlefonts]'\n")
+
     from fontbakery.utils import get_FamilyProto_Message
     try:
         return get_FamilyProto_Message(metadata_file)
