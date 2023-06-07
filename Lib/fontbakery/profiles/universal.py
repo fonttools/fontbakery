@@ -67,6 +67,7 @@ UNIVERSAL_PROFILE_CHECKS = (
         "com.google.fonts/check/math_signs_width",
         "com.google.fonts/check/linegaps",
         "com.google.fonts/check/STAT_in_statics",
+        "com.google.fonts/check/alt_caron",
     ]
 )
 
@@ -1987,6 +1988,66 @@ def com_google_fonts_check_STAT_in_statics(ttFont):
                 " static font which will causes problems on Windows.",
             )
 
+    if passed:
+        yield PASS, "Looks good!"
+
+
+@check(
+    id="com.google.fonts/check/alt_caron",
+    rationale="""
+        Lcaron, dcaron, lcaron, tcaron should NOT be composed with quoteright or quotesingle or comma or caron(comb).
+        It should be composed with a distinctive glyph which doesn't look like an apostrophe.
+
+        Source:
+        https://ilovetypography.com/2009/01/24/on-diacritics/
+        http://diacritics.typo.cz/index.php?id=5
+        https://www.typotheque.com/articles/lcaron
+    """,
+    proposal="https://github.com/googlefonts/fontbakery/issues/3308",
+)
+def com_google_fonts_check_alt_caron(ttFont):
+    """Check accent of Lcaron, dcaron, lcaron, tcaron"""
+    import babelfont
+
+    passed = True
+    caron_glyphs = (0x013D, 0x010F, 0x013E, 0x0165)
+    wrong_caron_marks = (0x02C7, 0x030C)
+    # This may be expanded to include other comma-lookalikes:
+    bad_caron_marks = (0x002C, 0x2019, 0x201A, 0x0027)
+
+    font = babelfont.load(ttFont.reader.file.name)
+    for glyph in font.glyphs:
+        if set(glyph.codepoints).intersection(set(caron_glyphs)):
+            layer = font.default_master.get_glyph_layer(glyph.name)
+            if layer.shapes and not layer.components:
+                yield WARN, Message(
+                    "decomposed-outline",
+                    f"{glyph.name} is decomposed and therefore could not be checked. Please check manually.",
+                )
+            if len(layer.components) == 1:
+                yield WARN, Message(
+                    "single-component",
+                    f"{glyph.name} is composed of a single component and therefore could not be checked. Please check manually.",
+                )
+            if len(layer.components) > 1:
+                for component in layer.components:
+                    # Uses absolutely wrong caron mark
+                    if font.glyphs[component.ref].codepoints and set(
+                        font.glyphs[component.ref].codepoints
+                    ).intersection(set(wrong_caron_marks)):
+                        passed = False
+                        yield FAIL, Message(
+                            "wrong-mark",
+                            f"{glyph.name} uses component {component.ref}.",
+                        )
+
+                    # Uses bad mark
+                    if set(font.glyphs[component.ref].codepoints).intersection(
+                        set(bad_caron_marks)
+                    ):
+                        yield WARN, Message(
+                            "bad-mark", f"{glyph.name} uses component {component.ref}."
+                        )
     if passed:
         yield PASS, "Looks good!"
 

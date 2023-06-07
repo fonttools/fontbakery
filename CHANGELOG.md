@@ -24,6 +24,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the OpenType profile
   - **[com.google.fonts/check/italic_angle]**: Fix an ERROR: If any of the glyphs checked (bar, vertical line, left square bracket, etc.) have no outlines, the check will now emit a WARN, because that's useful information. (PR #4187)
 
+### New Checks
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/alt_caron]:** Check that alternate caron is used in the four affected Latin glyphs. (issue #3308)
+
 
 ## 0.8.13 (2023-Jun-02)
   - Fix a critical install bug. I had used wrong syntax on setup.py which made v0.8.12 impossible to install when enabling the freetype extra. Sorry! (issue #4157)
