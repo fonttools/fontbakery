@@ -1,6 +1,7 @@
 import os
 from collections import defaultdict
 
+from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
@@ -23,7 +24,7 @@ from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-w
 
 
 profile_imports = (
-    (".", ("universal", "ufo_sources")),
+    (".", ("universal", "outline", "ufo_sources")),
 )
 profile = profile_factory(default_section=Section("Google Fonts"))
 
@@ -210,6 +211,7 @@ FONT_FILE_CHECKS = [
 
 GOOGLEFONTS_PROFILE_CHECKS = (
     UNIVERSAL_PROFILE_CHECKS
+    + OUTLINE_PROFILE_CHECKS
     + UFO_PROFILE_CHECKS
     + METADATA_CHECKS
     + DESCRIPTION_CHECKS
