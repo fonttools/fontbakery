@@ -1,9 +1,7 @@
 import os
 from collections import defaultdict
 
-from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
-from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, disable
@@ -21,11 +19,13 @@ from fontbakery.constants import (NameID,
                                   MacintoshLanguageID,
                                   LATEST_TTFAUTOHINT_VERSION)
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
+from glyphsets import codepoints
+import unicodedata2
+
+ENCODINGS_DIR = codepoints.nam_dir
 
 
-profile_imports = (
-    (".", ("universal", "outline", "ufo_sources")),
-)
+profile_imports = ('fontbakery.profiles.universal',)
 profile = profile_factory(default_section=Section("Google Fonts"))
 
 profile.configuration_defaults = {
@@ -36,6 +36,7 @@ profile.configuration_defaults = {
 }
 
 OVERRIDDEN_CHECKS = [
+    "com.adobe.fonts/check/freetype_rasterizer",
     "com.google.fonts/check/italic_angle",
     "com.google.fonts/check/italic_axis_in_stat_is_boolean",
     "com.google.fonts/check/italic_axis_last",
@@ -209,18 +210,16 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/empty_glyph_on_gid1_for_colrv0',
 ]
 
-GOOGLEFONTS_PROFILE_CHECKS = (
-    UNIVERSAL_PROFILE_CHECKS
-    + OUTLINE_PROFILE_CHECKS
-    + UFO_PROFILE_CHECKS
-    + METADATA_CHECKS
-    + DESCRIPTION_CHECKS
-    + FAMILY_CHECKS
-    + NAME_TABLE_CHECKS
-    + REPO_CHECKS
-    + FONT_FILE_CHECKS
-    + GLYPHSAPP_CHECKS
-)
+GOOGLEFONTS_PROFILE_CHECKS = \
+    UNIVERSAL_PROFILE_CHECKS + \
+    METADATA_CHECKS + \
+    DESCRIPTION_CHECKS + \
+    FAMILY_CHECKS + \
+    NAME_TABLE_CHECKS + \
+    REPO_CHECKS + \
+    FONT_FILE_CHECKS + \
+    GLYPHSAPP_CHECKS
+
 
 @check(
     id = 'com.google.fonts/check/canonical_filename',
@@ -1010,7 +1009,6 @@ def font_codepoints(ttFont):
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check Google Fonts glyph coverage."""
     from glyphsets import GFGlyphData as glyph_data
-    import unicodedata2
 
     def missing_encoded_glyphs(glyphs):
         encoded_glyphs = [g["unicode"] for g in glyphs if g["unicode"]]
@@ -1057,10 +1055,8 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
 )
 def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont, font_codepoints):
     """Check for METADATA subsets with zero support."""
-    from glyphsets import codepoints
     from glyphsets.subsets import SUBSETS
-
-    codepoints.set_encoding_path(codepoints.nam_dir)
+    codepoints.set_encoding_path(ENCODINGS_DIR)
 
     passed = True
     for subset in family_metadata.subsets:
@@ -1103,11 +1099,10 @@ def com_google_fonts_check_metadata_unsupported_subsets(family_metadata, ttFont,
 )
 def com_google_fonts_check_metadata_unreachable_subsetting(family_metadata, ttFont, font_codepoints, config):
     """Check for codepoints not covered by METADATA subsets."""
-    from glyphsets import codepoints
+    from glyphsets.subsets import SUBSETS
     from fontbakery.utils import pretty_print_list
-    import unicodedata2
+    codepoints.set_encoding_path(ENCODINGS_DIR)
 
-    codepoints.set_encoding_path(codepoints.nam_dir)
 
     for subset in family_metadata.subsets:
         font_codepoints = font_codepoints - set(codepoints.CodepointsInSubset(subset))
@@ -6202,19 +6197,6 @@ def com_google_fonts_check_metadata_family_directory_name(family_metadata, famil
         yield PASS, f'Directory name is "{dir_name}", as expected.'
 
 
-def can_shape(ttFont, text, parameters=None):
-    '''
-    Returns true if the font can render a text string without any
-    .notdef characters.
-    '''
-    from vharfbuzz import Vharfbuzz
-
-    filename = ttFont.reader.file.name
-    vharfbuzz = Vharfbuzz(filename)
-    buf = vharfbuzz.shape(text, parameters)
-    return all(g.codepoint != 0 for g in buf.glyph_infos)
-
-
 @check(
     id = "com.google.fonts/check/render_own_name",
     rationale = """
@@ -6225,6 +6207,8 @@ def can_shape(ttFont, text, parameters=None):
 )
 def com_google_fonts_check_render_own_name(ttFont):
     """Check font can render its own name."""
+    from fontbakery.utils import can_shape
+
     menu_name = ttFont["name"].getName(
         NameID.FONT_FAMILY_NAME,
         PlatformID.WINDOWS,
@@ -6323,6 +6307,7 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
 )
 def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     """Check samples can be rendered."""
+    from fontbakery.utils import can_shape
     from gflanguages import LoadLanguages
 
     passed = True
@@ -6619,6 +6604,13 @@ def check_skip_filter(checkid, font=None, **iterargs):
 
 profile.check_skip_filter = check_skip_filter
 profile.auto_register(globals())
+
+profile.check_log_override(
+    # From universal.py
+    "com.adobe.fonts/check/freetype_rasterizer",
+    overrides=(("freetype-not-installed", FAIL, KEEP_ORIGINAL_MESSAGE),),
+    reason="For Google Fonts, this check is very important and should never be skipped.",
+)
 
 profile.check_log_override(
     # From opentype.py

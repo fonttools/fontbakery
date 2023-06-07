@@ -8,20 +8,8 @@ from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from .shared_conditions import is_cff, is_variable_font
 
-
-try:
-    import lxml
-except ImportError:
-    import sys
-    sys.exit("\nSince FontBakery version 0.9.0, to run the fontval profile,\n"
-             "one needs to install fontbakery with the 'fontval' extra, like this:\n"
-             "\n"
-             "python -m pip install -U 'fontbakery[fontval]'\n\n")
-
-
 profile_imports = ['.shared_conditions']
 profile = profile_factory(default_section=Section("Checks inherited from Microsoft Font Validator"))
-
 
 @check(
     id = 'com.google.fonts/check/fontvalidator',
