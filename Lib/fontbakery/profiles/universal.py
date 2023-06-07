@@ -29,15 +29,7 @@ SUPERFAMILY_CHECKS = [
     'com.google.fonts/check/superfamily/vertical_metrics',
 ]
 
-DESIGNSPACE_CHECKS = [
-    'com.google.fonts/check/designspace_has_sources',
-    'com.google.fonts/check/designspace_has_default_master',
-    'com.google.fonts/check/designspace_has_consistent_glyphset',
-    'com.google.fonts/check/designspace_has_consistent_codepoints',
-]
-
 UNIVERSAL_PROFILE_CHECKS = \
-    DESIGNSPACE_CHECKS + \
     OPENTYPE_PROFILE_CHECKS + \
     OUTLINE_PROFILE_CHECKS + \
     SHAPING_PROFILE_CHECKS + \
@@ -1162,111 +1154,6 @@ def com_google_fonts_check_rupee(ttFont):
                       ' Indian Rupee Sign “₹” at codepoint U+20B9.')
     else:
         yield PASS, "Looks good!"
-
-
-@check(
-    id = "com.google.fonts/check/designspace_has_sources",
-    rationale = """
-        This check parses a designspace file and tries to load the
-        source files specified.
-
-        This is meant to ensure that the file is not malformed,
-        can be properly parsed and does include valid source file references.
-    """,
-    proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
-)
-def com_google_fonts_check_designspace_has_sources(designspace_sources):
-    """See if we can actually load the source files."""
-    if not designspace_sources:
-        yield FAIL,\
-              Message("no-sources",
-                      "Unable to load source files.")
-    else:
-        yield PASS, "OK"
-
-
-@check(
-    id = "com.google.fonts/check/designspace_has_default_master",
-    rationale = """
-        We expect that designspace files declare on of the masters as default.
-    """,
-    proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
-)
-def com_google_fonts_check_designspace_has_default_master(designSpace):
-    """Ensure a default master is defined."""
-    if not designSpace.findDefault():
-        yield FAIL,\
-              Message("not-found",
-                      "Unable to find a default master.")
-    else:
-        yield PASS, "We located a default master."
-
-
-@check(
-    id = "com.google.fonts/check/designspace_has_consistent_glyphset",
-    rationale = """
-        This check ensures that non-default masters don't have glyphs
-        not present in the default one.
-    """,
-    conditions = ["designspace_sources"],
-    proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
-)
-def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, config):
-    """Check consistency of glyphset in a designspace file."""
-    from fontbakery.utils import bullet_list
-
-    default_glyphset = set(designSpace.findDefault().font.keys())
-    failures = []
-    for source in designSpace.sources:
-        master_glyphset = set(source.font.keys())
-        outliers = master_glyphset - default_glyphset
-        if outliers:
-            outliers = ", ".join(list(outliers))
-            failures.append(f"Source {source.filename} has glyphs not present"
-                            f" in the default master: {outliers}")
-    if failures:
-        yield FAIL,\
-              Message("inconsistent-glyphset",
-                      f"Glyphsets were not consistent:\n\n"
-                      f"{bullet_list(config, failures)}")
-    else:
-        yield PASS, "Glyphsets were consistent."
-
-
-@check(
-    id = "com.google.fonts/check/designspace_has_consistent_codepoints",
-    rationale = """
-        This check ensures that Unicode assignments are consistent
-        across all sources specified in a designspace file.
-    """,
-    conditions = ["designspace_sources"],
-    proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
-)
-def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, config):
-    """Check codepoints consistency in a designspace file."""
-    from fontbakery.utils import bullet_list
-
-    default_source = designSpace.findDefault()
-    default_unicodes = {g.name: g.unicode for g in default_source.font}
-    failures = []
-    for source in designSpace.sources:
-        for g in source.font:
-            if g.name not in default_unicodes:
-                # Previous test will cover this
-                continue
-
-            if g.unicode != default_unicodes[g.name]:
-                failures.append(f"Source {source.filename} has"
-                                f" {g.name}={g.unicode};"
-                                f" default master has"
-                                f" {g.name}={default_unicodes[g.name]}")
-    if failures:
-        yield FAIL,\
-              Message("inconsistent-codepoints",
-                      f"Unicode assignments were not consistent:\n\n"
-                      f"{bullet_list(config, failures)}")
-    else:
-        yield PASS, "Unicode assignments were consistent."
 
 
 @check(
