@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.9.0 (2023-Aug-??)
-  - ...
+### New Checks
+#### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
 
 
 ## 0.9.0a2 (2023-Aug-04)
@@ -21,6 +23,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - A font-file is not needed anymore when running `--list-checks` (issue #3878)
+
+### Migrations of checks
+#### Moved to the Shaping profile
+  - **[com.google.fonts/check/dotted_circle]:** from the Universal profile (issue #4161)
+  - **[com.google.fonts/check/soft_dotted]:** from the Universal profile (issue #4161)
 
 ### Changes to existing checks
 #### On the Universal profile
