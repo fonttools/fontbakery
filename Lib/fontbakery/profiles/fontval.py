@@ -16,7 +16,7 @@ except:
     sys.exit("\nSince FontBakery version 0.9.0, to run the fontval profile,\n"
              "one needs to install fontbakery with the 'fontval' extra, like this:\n"
              "\n"
-             "python -m pip install -U fontbakery[fontval]\n\n")
+             "python -m pip install -U 'fontbakery[fontval]'\n\n")
 
 
 profile_imports = ['.shared_conditions']
