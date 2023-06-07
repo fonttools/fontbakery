@@ -2,7 +2,6 @@ import math
 import os
 import shutil
 import tempfile
-from unittest.mock import patch
 
 import pytest
 from fontTools.ttLib import TTFont
@@ -4323,17 +4322,6 @@ def test_check_STAT(fps, new_stat, result):
         assert_results_contain(check(ttFont, {"expected_font_names": expected}),
                                FAIL, 'bad-axis-values',
                                'with a bad font')
-
-
-@patch("freetype.Face", side_effect=ImportError)
-def test_check_override_freetype_rasterizer(mock_import_error):
-    """Check that overridden test yields FAIL rather than SKIP."""
-    check = CheckTester(googlefonts_profile,
-                        f"com.adobe.fonts/check/freetype_rasterizer{OVERRIDE_SUFFIX}")
-
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    msg = assert_results_contain(check(font), FAIL, "freetype-not-installed")
-    assert "FreeType is not available" in msg
 
 
 def test_check_colorfont_tables():

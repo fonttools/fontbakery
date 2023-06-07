@@ -32,7 +32,6 @@ profile.configuration_defaults = {
 }
 
 OVERRIDDEN_CHECKS = [
-    "com.adobe.fonts/check/freetype_rasterizer",
     "com.google.fonts/check/italic_angle",
     "com.google.fonts/check/italic_axis_in_stat_is_boolean",
     "com.google.fonts/check/italic_axis_last",
@@ -6614,13 +6613,6 @@ def check_skip_filter(checkid, font=None, **iterargs):
 
 profile.check_skip_filter = check_skip_filter
 profile.auto_register(globals())
-
-profile.check_log_override(
-    # From universal.py
-    "com.adobe.fonts/check/freetype_rasterizer",
-    overrides=(("freetype-not-installed", FAIL, KEEP_ORIGINAL_MESSAGE),),
-    reason="For Google Fonts, this check is very important and should never be skipped.",
-)
 
 profile.check_log_override(
     # From opentype.py

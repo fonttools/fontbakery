@@ -20,9 +20,6 @@ profile_imports = (
 )
 profile = profile_factory(default_section=Section("Universal"))
 
-THIRDPARTY_CHECKS = [
-    'com.google.fonts/check/ots',
-]
 
 SUPERFAMILY_CHECKS = [
     'com.google.fonts/check/superfamily/list',
@@ -34,7 +31,6 @@ UNIVERSAL_PROFILE_CHECKS = \
     OUTLINE_PROFILE_CHECKS + \
     SHAPING_PROFILE_CHECKS + \
     SUPERFAMILY_CHECKS + \
-    THIRDPARTY_CHECKS + \
     UFO_PROFILE_CHECKS + [
         'com.google.fonts/check/name/trailing_spaces',
         'com.google.fonts/check/family/win_ascent_and_descent',
@@ -60,6 +56,7 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/cjk_chws_feature',
         'com.google.fonts/check/transformed_components',
         'com.google.fonts/check/gpos7',
+        'com.google.fonts/check/ots',
         'com.adobe.fonts/check/freetype_rasterizer',
         'com.adobe.fonts/check/sfnt_version',
         'com.google.fonts/check/whitespace_widths',
@@ -279,16 +276,10 @@ def com_google_fonts_check_family_single_directory(fonts):
 )
 def com_google_fonts_check_ots(font):
     """Checking with ots-sanitize."""
-    try:
-        import ots
-        process = ots.sanitize(font, check=True, capture_output=True)
+    import ots
 
-    except ImportError:
-        yield SKIP,\
-              Message("ots-not-installed",
-                      "OpenType Sanitizer is not available. To fix this,"
-                      " invoke the 'ots' extra when installing Font Bakery:\n\n"
-                      "python -m pip install -U 'fontbakery[ots]'\n\n")
+    try:
+        process = ots.sanitize(font, check=True, capture_output=True)
 
     except ots.CalledProcessError as e:
         yield FAIL,\
@@ -1598,20 +1589,14 @@ def com_google_fonts_check_gpos7(ttFont):
 )
 def com_adobe_fonts_check_freetype_rasterizer(font):
     """Ensure that the font can be rasterized by FreeType."""
-    try:
-        import freetype
-        from freetype.ft_errors import FT_Exception
+    import freetype
+    from freetype.ft_errors import FT_Exception
 
+    try:
         face = freetype.Face(font)
         face.set_char_size(48 * 64)
         face.load_char("✅")  # any character can be used here
 
-    except ImportError:
-        yield SKIP,\
-              Message("freetype-not-installed",
-                      "FreeType is not available. To fix this, invoke"
-                      " the 'freetype' extra when installing Font Bakery:\n\n"
-                      "python -m pip install -U 'fontbakery[freetype]'\n\n")
     except FT_Exception as err:
         yield FAIL,\
               Message("freetype-crash",
