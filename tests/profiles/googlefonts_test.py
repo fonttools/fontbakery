@@ -2582,6 +2582,29 @@ def test_check_metadata_consistent_repo_urls():
     assert_PASS(check(ttFont, {"family_metadata": family_md}))
 
 
+def test_check_metadata_primary_script():
+    """METADATA.pb: Check for primary_script"""
+    check = CheckTester(
+        googlefonts_profile, "com.google.fonts/check/metadata/primary_script"
+    )
+
+    class Metadata:
+        primary_script = ""
+
+    family_md = Metadata()
+    ttFont = TTFont(TEST_FILE("fira/FiraCode[wght].ttf"))
+    family_md.primary_script = ""
+    assert_results_contain(
+        check(ttFont, {"family_metadata": family_md}), WARN, "missing-primary-script"
+    )
+    family_md.primary_script = "Arab"
+    assert_results_contain(
+        check(ttFont, {"family_metadata": family_md}), WARN, "wrong-primary-script"
+    )
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+    assert_PASS(check(ttFont, {"family_metadata": family_md}))
+
+
 def test_check_unitsperem_strict():
     """Stricter unitsPerEm criteria for Google Fonts."""
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/unitsperem_strict")
