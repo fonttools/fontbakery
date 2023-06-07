@@ -9,14 +9,13 @@ from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
 from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
-from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
 
 from packaging.version import VERSION_PATTERN
 
 re_version = re.compile(r"^\s*" + VERSION_PATTERN + r"\s*$", re.VERBOSE | re.IGNORECASE)
 
 profile_imports = (
-    (".", ("shared_conditions", "opentype", "outline", "shaping", "ufo_sources")),
+    (".", ("shared_conditions", "opentype", "outline", "shaping")),
 )
 profile = profile_factory(default_section=Section("Universal"))
 
@@ -26,12 +25,12 @@ SUPERFAMILY_CHECKS = [
     'com.google.fonts/check/superfamily/vertical_metrics',
 ]
 
-UNIVERSAL_PROFILE_CHECKS = \
-    OPENTYPE_PROFILE_CHECKS + \
-    OUTLINE_PROFILE_CHECKS + \
-    SHAPING_PROFILE_CHECKS + \
-    SUPERFAMILY_CHECKS + \
-    UFO_PROFILE_CHECKS + [
+UNIVERSAL_PROFILE_CHECKS = (
+    OPENTYPE_PROFILE_CHECKS
+    + OUTLINE_PROFILE_CHECKS
+    + SHAPING_PROFILE_CHECKS
+    + SUPERFAMILY_CHECKS
+    + [
         'com.google.fonts/check/name/trailing_spaces',
         'com.google.fonts/check/family/win_ascent_and_descent',
         'com.google.fonts/check/os2_metrics_match_hhea',
@@ -65,6 +64,7 @@ UNIVERSAL_PROFILE_CHECKS = \
         'com.google.fonts/check/linegaps',
         'com.google.fonts/check/STAT_in_statics',
     ]
+)
 
 
 @check(

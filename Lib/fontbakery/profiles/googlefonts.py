@@ -2,6 +2,7 @@ import os
 from collections import defaultdict
 
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
+from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, disable
@@ -21,7 +22,9 @@ from fontbakery.constants import (NameID,
 from .googlefonts_conditions import * # pylint: disable=wildcard-import,unused-wildcard-import
 
 
-profile_imports = ('fontbakery.profiles.universal',)
+profile_imports = (
+    (".", ("universal", "ufo_sources")),
+)
 profile = profile_factory(default_section=Section("Google Fonts"))
 
 profile.configuration_defaults = {
@@ -205,16 +208,17 @@ FONT_FILE_CHECKS = [
     'com.google.fonts/check/empty_glyph_on_gid1_for_colrv0',
 ]
 
-GOOGLEFONTS_PROFILE_CHECKS = \
-    UNIVERSAL_PROFILE_CHECKS + \
-    METADATA_CHECKS + \
-    DESCRIPTION_CHECKS + \
-    FAMILY_CHECKS + \
-    NAME_TABLE_CHECKS + \
-    REPO_CHECKS + \
-    FONT_FILE_CHECKS + \
-    GLYPHSAPP_CHECKS
-
+GOOGLEFONTS_PROFILE_CHECKS = (
+    UNIVERSAL_PROFILE_CHECKS
+    + UFO_PROFILE_CHECKS
+    + METADATA_CHECKS
+    + DESCRIPTION_CHECKS
+    + FAMILY_CHECKS
+    + NAME_TABLE_CHECKS
+    + REPO_CHECKS
+    + FONT_FILE_CHECKS
+    + GLYPHSAPP_CHECKS
+)
 
 @check(
     id = 'com.google.fonts/check/canonical_filename',
