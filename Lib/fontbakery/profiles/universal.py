@@ -7,28 +7,43 @@ from fontbakery.callable import check, disable
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
+from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
+from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
 
 from packaging.version import VERSION_PATTERN
 
 re_version = re.compile(r"^\s*" + VERSION_PATTERN + r"\s*$", re.VERBOSE | re.IGNORECASE)
 
 profile_imports = (
-    (".", ("shared_conditions", "opentype", "shaping")),
+    (".", ("shared_conditions", "opentype", "outline", "shaping", "ufo_sources")),
 )
 profile = profile_factory(default_section=Section("Universal"))
 
+THIRDPARTY_CHECKS = [
+    'com.google.fonts/check/ots',
+]
 
 SUPERFAMILY_CHECKS = [
     'com.google.fonts/check/superfamily/list',
     'com.google.fonts/check/superfamily/vertical_metrics',
 ]
 
-UNIVERSAL_PROFILE_CHECKS = (
-    OPENTYPE_PROFILE_CHECKS
-    + SHAPING_PROFILE_CHECKS
-    + SUPERFAMILY_CHECKS
-    + [
+DESIGNSPACE_CHECKS = [
+    'com.google.fonts/check/designspace_has_sources',
+    'com.google.fonts/check/designspace_has_default_master',
+    'com.google.fonts/check/designspace_has_consistent_glyphset',
+    'com.google.fonts/check/designspace_has_consistent_codepoints',
+]
+
+UNIVERSAL_PROFILE_CHECKS = \
+    DESIGNSPACE_CHECKS + \
+    OPENTYPE_PROFILE_CHECKS + \
+    OUTLINE_PROFILE_CHECKS + \
+    SHAPING_PROFILE_CHECKS + \
+    SUPERFAMILY_CHECKS + \
+    THIRDPARTY_CHECKS + \
+    UFO_PROFILE_CHECKS + [
         'com.google.fonts/check/name/trailing_spaces',
         'com.google.fonts/check/family/win_ascent_and_descent',
         'com.google.fonts/check/os2_metrics_match_hhea',
@@ -52,8 +67,9 @@ UNIVERSAL_PROFILE_CHECKS = (
         'com.google.fonts/check/soft_hyphen',
         'com.google.fonts/check/cjk_chws_feature',
         'com.google.fonts/check/transformed_components',
+        'com.google.fonts/check/dotted_circle',
+        'com.google.fonts/check/soft_dotted',
         'com.google.fonts/check/gpos7',
-        'com.google.fonts/check/ots',
         'com.adobe.fonts/check/freetype_rasterizer',
         'com.adobe.fonts/check/sfnt_version',
         'com.google.fonts/check/whitespace_widths',
@@ -62,7 +78,6 @@ UNIVERSAL_PROFILE_CHECKS = (
         'com.google.fonts/check/linegaps',
         'com.google.fonts/check/STAT_in_statics',
     ]
-)
 
 
 @check(
@@ -278,7 +293,6 @@ def com_google_fonts_check_ots(font):
 
     try:
         process = ots.sanitize(font, check=True, capture_output=True)
-
     except ots.CalledProcessError as e:
         yield FAIL,\
               Message("ots-sanitize-error",
@@ -1146,6 +1160,111 @@ def com_google_fonts_check_rupee(ttFont):
 
 
 @check(
+    id = "com.google.fonts/check/designspace_has_sources",
+    rationale = """
+        This check parses a designspace file and tries to load the
+        source files specified.
+
+        This is meant to ensure that the file is not malformed,
+        can be properly parsed and does include valid source file references.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
+)
+def com_google_fonts_check_designspace_has_sources(designspace_sources):
+    """See if we can actually load the source files."""
+    if not designspace_sources:
+        yield FAIL,\
+              Message("no-sources",
+                      "Unable to load source files.")
+    else:
+        yield PASS, "OK"
+
+
+@check(
+    id = "com.google.fonts/check/designspace_has_default_master",
+    rationale = """
+        We expect that designspace files declare on of the masters as default.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
+)
+def com_google_fonts_check_designspace_has_default_master(designSpace):
+    """Ensure a default master is defined."""
+    if not designSpace.findDefault():
+        yield FAIL,\
+              Message("not-found",
+                      "Unable to find a default master.")
+    else:
+        yield PASS, "We located a default master."
+
+
+@check(
+    id = "com.google.fonts/check/designspace_has_consistent_glyphset",
+    rationale = """
+        This check ensures that non-default masters don't have glyphs
+        not present in the default one.
+    """,
+    conditions = ["designspace_sources"],
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
+)
+def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, config):
+    """Check consistency of glyphset in a designspace file."""
+    from fontbakery.utils import bullet_list
+
+    default_glyphset = set(designSpace.findDefault().font.keys())
+    failures = []
+    for source in designSpace.sources:
+        master_glyphset = set(source.font.keys())
+        outliers = master_glyphset - default_glyphset
+        if outliers:
+            outliers = ", ".join(list(outliers))
+            failures.append(f"Source {source.filename} has glyphs not present"
+                            f" in the default master: {outliers}")
+    if failures:
+        yield FAIL,\
+              Message("inconsistent-glyphset",
+                      f"Glyphsets were not consistent:\n\n"
+                      f"{bullet_list(config, failures)}")
+    else:
+        yield PASS, "Glyphsets were consistent."
+
+
+@check(
+    id = "com.google.fonts/check/designspace_has_consistent_codepoints",
+    rationale = """
+        This check ensures that Unicode assignments are consistent
+        across all sources specified in a designspace file.
+    """,
+    conditions = ["designspace_sources"],
+    proposal = 'https://github.com/googlefonts/fontbakery/pull/3168'
+)
+def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, config):
+    """Check codepoints consistency in a designspace file."""
+    from fontbakery.utils import bullet_list
+
+    default_source = designSpace.findDefault()
+    default_unicodes = {g.name: g.unicode for g in default_source.font}
+    failures = []
+    for source in designSpace.sources:
+        for g in source.font:
+            if g.name not in default_unicodes:
+                # Previous test will cover this
+                continue
+
+            if g.unicode != default_unicodes[g.name]:
+                failures.append(f"Source {source.filename} has"
+                                f" {g.name}={g.unicode};"
+                                f" default master has"
+                                f" {g.name}={default_unicodes[g.name]}")
+    if failures:
+        yield FAIL,\
+              Message("inconsistent-codepoints",
+                      f"Unicode assignments were not consistent:\n\n"
+                      f"{bullet_list(config, failures)}")
+    else:
+        yield PASS, "Unicode assignments were consistent."
+
+
+@check(
     id = "com.google.fonts/check/unreachable_glyphs",
     rationale = """
         Glyphs are either accessible directly through Unicode codepoints or through
@@ -1538,6 +1657,219 @@ def com_google_fonts_check_transformed_components(ttFont, is_hinted):
 
 
 @check(
+    id = 'com.google.fonts/check/dotted_circle',
+    conditions = ['is_ttf'],
+    severity = 3,
+    rationale = """
+        The dotted circle character (U+25CC) is inserted by shaping engines before
+        mark glyphs which do not have an associated base, especially in the context
+        of broken syllabic clusters.
+
+        For fonts containing combining marks, it is recommended that the dotted circle
+        character be included so that these isolated marks can be displayed properly;
+        for fonts supporting complex scripts, this should be considered mandatory.
+
+        Additionally, when a dotted circle glyph is present, it should be able to
+        display all marks correctly, meaning that it should contain anchors for all
+        attaching marks.
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/3600',
+)
+def com_google_fonts_check_dotted_circle(ttFont, config):
+    """Ensure dotted circle glyph is present and can attach marks."""
+    from fontbakery.utils import (bullet_list,
+                                  is_complex_shaper_font,
+                                  iterate_lookup_list_with_extensions)
+
+    mark_glyphs = []
+    if "GDEF" in ttFont and \
+       hasattr(ttFont["GDEF"].table, "GlyphClassDef") and \
+       hasattr(ttFont["GDEF"].table.GlyphClassDef, "classDefs"):
+        mark_glyphs = [k for k, v in ttFont["GDEF"].table.GlyphClassDef.classDefs.items()
+                       if v == 3]
+
+    # Only check for encoded
+    mark_glyphs = set(mark_glyphs) & set(ttFont.getBestCmap().values())
+    nonspacing_mark_glyphs = [g for g in mark_glyphs if ttFont["hmtx"][g][0] == 0]
+
+    if not nonspacing_mark_glyphs:
+        yield SKIP, "Font has no nonspacing mark glyphs."
+        return
+
+    if 0x25CC not in ttFont.getBestCmap():
+        # How bad is this?
+        if is_complex_shaper_font(ttFont):
+            yield FAIL,\
+                  Message('missing-dotted-circle-complex',
+                          "No dotted circle glyph present"
+                          "and font uses a complex shaper")
+        else:
+            yield WARN,\
+                  Message('missing-dotted-circle',
+                          "No dotted circle glyph present")
+        return
+
+    # Check they all attach to dotted circle
+    # if they attach to something else
+    dotted_circle = ttFont.getBestCmap()[0x25CC]
+    attachments = {dotted_circle: []}
+    does_attach = {}
+    def find_mark_base(lookup, attachments):
+        if lookup.LookupType == 4:
+            # Assume all-to-all
+            for st in lookup.SubTable:
+                for base in st.BaseCoverage.glyphs:
+                    for mark in st.MarkCoverage.glyphs:
+                        attachments.setdefault(base,[]).append(mark)
+                        does_attach[mark] = True
+
+    iterate_lookup_list_with_extensions(ttFont, "GPOS", find_mark_base, attachments)
+
+    unattached = []
+    for g in nonspacing_mark_glyphs:
+        if g in does_attach and g not in attachments[dotted_circle]:
+            unattached.append(g)
+
+    if unattached:
+        yield FAIL,\
+              Message("unattached-dotted-circle-marks",
+                      f"The following glyphs could not be attached"
+                      f" to the dotted circle glyph:\n\n"
+                      f"{bullet_list(config, sorted(unattached))}")
+    else:
+        yield PASS, "All marks were anchored to dotted circle"
+
+
+@check(
+    id = 'com.google.fonts/check/soft_dotted',
+    severity = 3,
+    rationale = """
+        An accent placed on characters with a "soft dot", like i or j, causes
+        the dot to disappear.
+        An explicit dot above can be added where required.
+        See "Diacritics on i and j" in Section 7.1, "Latin" in The Unicode Standard.
+
+        Characters with the Soft_Dotted property are listed in
+        https://www.unicode.org/Public/UCD/latest/ucd/PropList.txt
+        
+        See also:
+        https://googlefonts.github.io/gf-guide/diacritics.html#soft-dotted-glyphs
+    """,
+    proposal = 'https://github.com/googlefonts/fontbakery/issues/4059',
+)
+def com_google_fonts_check_soft_dotted(ttFont):
+    """Ensure soft_dotted characters lose their dot when combined with marks that
+    replace the dot."""
+    import itertools
+    from beziers.path import BezierPath
+    from fontTools import unicodedata
+    from fontbakery.utils import Vharfbuzz
+
+    cmap = ttFont['cmap'].getBestCmap()
+
+    # Soft dotted strings know to be used in orthographies.
+    ortho_soft_dotted_strings = set(
+        "i̋ i̍ i᷆ i᷇ i̓ i̊ i̐ ɨ́ ɨ̀ ɨ̂ ɨ̋ ɨ̏ ɨ̌ ɨ̄ ɨ̃ ɨ̈ ɨ̧́ ɨ̧̀ ɨ̧̂ ɨ̧̌ ɨ̱́ ɨ̱̀ ɨ̱̈ į́ į̀ į̂ į̄ į̄́ į̄̀ į̄̂ į̄̌ į̃ į̌ ị́ ị̀ ị̂ "
+        "ị̄ ị̃ ḭ́ ḭ̀ ḭ̄ j́ j̀ j̄ j̑ j̃ j̈ і́".split())
+    # Characters with Soft_Dotted property in Unicode.
+    soft_dotted_chars = (
+        set(ord(c) for c in "iⅈ𝐢𝑖𝒊𝒾𝓲𝔦𝕚𝖎𝗂𝗶𝘪𝙞𝚒ⁱᵢįịḭɨᶤ𝼚ᶖjⅉ𝐣𝑗𝒋𝒿𝓳𝔧𝕛𝖏𝗃𝗷𝘫𝙟𝚓ʲⱼɉʝᶨϳіј") &
+        set(cmap.keys())
+    )
+    # Only check above marks used with Latin, Greek, Cyrillic scripts.
+    mark_above_chars = set((
+        c for c in cmap.keys()
+        if unicodedata.combining(chr(c)) == 230 and
+        unicodedata.block(chr(c)).startswith(
+            ("Combining Diacritical Marks", "Cyrillic")
+        )
+    ))
+    # Only check non above marks used with Latin, Grek, Cyrillic scripts
+    # that are reordered before the above marks
+    mark_non_above_chars = set(
+        c for c in cmap.keys()
+        if unicodedata.combining(chr(c)) < 230 and
+        unicodedata.block(chr(c)).startswith("Combining Diacritical Marks")
+    )
+    # Skip when no characters to test with
+    if not soft_dotted_chars or not mark_above_chars:
+        yield SKIP, "Font has no soft dotted characters or no mark above characters."
+        return
+
+    # Collect outlines to skip fonts where i and dotlessi are the same,
+    # or i and I are the same.
+    outlines_dict = {
+        codepoint: BezierPath.fromFonttoolsGlyph(ttFont, glyphname)
+        for codepoint, glyphname in cmap.items()
+        if codepoint in [ord("i"), ord("I"), ord("ı")]
+    }
+    unclear = False
+    if ord("i") in cmap.keys() and ord("I") in cmap.keys():
+        if (len(outlines_dict[ord("i")]) == len(outlines_dict[ord("I")])):
+            unclear = True
+    if not unclear and ord("i") in cmap.keys() and ord("ı") in cmap.keys():
+        if (len(outlines_dict[ord("i")]) == len(outlines_dict[ord("ı")])):
+            unclear = True
+    if unclear:
+        yield SKIP, ("It is not clear if the soft dotted"
+                     " characters have glyphs with dots.")
+        return
+
+    # Use harfbuzz to check if soft dotted glyphs are substituted
+    filename = ttFont.reader.file.name
+    vharfbuzz = Vharfbuzz(filename)
+    fail_unchanged_strings = []
+    warn_unchanged_strings = []
+    for sequence in sorted(
+        itertools.product(
+            soft_dotted_chars,
+            # add "" to add cases without non above marks
+            mark_non_above_chars.union(set((0, ))),
+            mark_above_chars
+        )
+    ):
+        soft, non_above, above = sequence
+        if non_above:
+            unchanged = f"{cmap[soft]}|{cmap[non_above]}|{cmap[above]}"
+            text = chr(soft) + chr(non_above) + chr(above)
+        else:
+            unchanged = f"{cmap[soft]}|{cmap[above]}"
+            text = chr(soft) + chr(above)
+
+        # Only check a few strings that we WARN about.
+        if (text not in ortho_soft_dotted_strings and
+            len(warn_unchanged_strings) >= 20):
+            continue
+
+        buf = vharfbuzz.shape(text)
+        output = vharfbuzz.serialize_buf(buf, glyphsonly=True)
+        if output == unchanged:
+            if text in ortho_soft_dotted_strings:
+                fail_unchanged_strings.append(text)
+            else:
+                warn_unchanged_strings.append(text)
+
+    message = ""
+    if fail_unchanged_strings:
+        message += f"The dot of soft dotted characters used in orthographies " \
+                   f"must disappear in the following strings: " \
+                   f"{' '.join(fail_unchanged_strings)}"
+    if warn_unchanged_strings:
+        if message:
+            message += "\n\n"
+        message += f"The dot of soft dotted characters should disappear in " \
+                   f"other cases, for example: " \
+                   f"{' '.join(warn_unchanged_strings)}"
+    if fail_unchanged_strings:
+        yield FAIL, Message("soft-dotted", message)
+    elif warn_unchanged_strings:
+        yield WARN, Message("soft-dotted", message)
+    else:
+        yield PASS,\
+              ("All soft dotted characters seem to lose their dot when "
+               "combined with a mark above.")
+
+@check(
     id = 'com.google.fonts/check/gpos7',
     conditions = ['ttFont'],
     severity = 9,
@@ -1587,14 +1919,20 @@ def com_google_fonts_check_gpos7(ttFont):
 )
 def com_adobe_fonts_check_freetype_rasterizer(font):
     """Ensure that the font can be rasterized by FreeType."""
-    import freetype
-    from freetype.ft_errors import FT_Exception
-
     try:
+        import freetype
+        from freetype.ft_errors import FT_Exception
+
         face = freetype.Face(font)
         face.set_char_size(48 * 64)
         face.load_char("✅")  # any character can be used here
 
+    except ImportError:
+        yield SKIP,\
+              Message("freetype-not-installed",
+                      "FreeType is not available. To fix this, invoke"
+                      " the 'freetype' extra when installing Font Bakery:\n"
+                      "pip3 install -U fontbakery[freetype]")
     except FT_Exception as err:
         yield FAIL,\
               Message("freetype-crash",

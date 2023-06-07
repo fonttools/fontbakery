@@ -2,11 +2,11 @@ import math
 import os
 import shutil
 import tempfile
+from unittest.mock import patch
 
 import pytest
 from fontTools.ttLib import TTFont
 
-from fontbakery.profiles.googlefonts import can_shape
 from fontbakery.profiles.googlefonts_conditions import expected_font_names
 from fontbakery.checkrunner import (DEBUG, INFO, WARN, ERROR,
                                     SKIP, PASS, FAIL, ENDCHECK)
@@ -3079,7 +3079,7 @@ def test_check_kerning_for_non_ligated_sequences():
     msg = assert_results_contain(check(ttFont), WARN, "lacks-kern-info")
     assert msg == (
         "GPOS table lacks kerning info for the following non-ligated sequences:\n\n"
-        "\t- f + f\n\n\t- f + t\n\n\t- t + f"
+        "\t- f + f\n\n\t- f + t \n\n\t- t + f"
     )
 
 
@@ -4071,14 +4071,6 @@ def test_check_metadata_family_directory_name():
                            FAIL, 'bad-directory-name')
 
 
-def test_can_shape():
-    font = TTFont(portable_path(
-        "data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf"
-    ))
-    assert can_shape(font, "ABC")
-    assert not can_shape(font, "こんにちは")
-
-
 def test_check_render_own_name():
     """Check family directory name."""
     check = CheckTester(googlefonts_profile,
@@ -4322,6 +4314,17 @@ def test_check_STAT(fps, new_stat, result):
         assert_results_contain(check(ttFont, {"expected_font_names": expected}),
                                FAIL, 'bad-axis-values',
                                'with a bad font')
+
+
+@patch("freetype.Face", side_effect=ImportError)
+def test_check_override_freetype_rasterizer(mock_import_error):
+    """Check that overridden test yields FAIL rather than SKIP."""
+    check = CheckTester(googlefonts_profile,
+                        f"com.adobe.fonts/check/freetype_rasterizer{OVERRIDE_SUFFIX}")
+
+    font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    msg = assert_results_contain(check(font), FAIL, "freetype-not-installed")
+    assert "FreeType is not available" in msg
 
 
 def test_check_colorfont_tables():
