@@ -22,7 +22,7 @@ except IOError:
     readme = ''
 
 
-# Vendor-specific dependencies:
+# Profile-specific dependencies:
 googlefonts_extras = [
     'axisregistry>=0.3.0',
     'beautifulsoup4',  # For parsing registered vendor IDs from Microsoft's webpage
@@ -43,8 +43,17 @@ fontval_extras = [
              #       But I am keeping it listed here explicitely, just in case...
 ]
 
-all_extras = googlefonts_extras \
-           + fontval_extras
+docs_extras = [
+    'recommonmark',
+    'sphinx >= 1.4',
+    'sphinx_rtd_theme',
+]
+
+all_extras = set(
+    docs_extras
+    + googlefonts_extras
+    + fontval_extras
+)
 
 setup(
     name="fontbakery",
@@ -96,7 +105,6 @@ setup(
         'opentype-sanitizer>=7.1.9',  # 7.1.9 fixes caret value format = 3 bug
                                       # (see https://github.com/khaledhosny/ots/pull/182)
 
-
         # --- for parsing Configuration files
         'PyYAML',
         'toml',
@@ -126,12 +134,8 @@ setup(
                              # v0.2.0 had an API update
     ],
     extras_require={
-        'docs': [
-            'recommonmark',
-            'sphinx >= 1.4',
-            'sphinx_rtd_theme',
-        ],
         'all': all_extras,
+        'docs': docs_extras,
         'googlefonts': googlefonts_extras,
         'fontval': fontval_extras,
     },
