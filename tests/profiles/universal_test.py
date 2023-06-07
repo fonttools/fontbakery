@@ -1020,52 +1020,6 @@ def test_check_cjk_chws_feature():
     assert_PASS(check(ttFont))
 
 
-def test_check_designspace_has_sources():
-    """See if we can actually load the source files."""
-    check = CheckTester(universal_profile,
-                        "com.google.fonts/check/designspace_has_sources")
-
-    designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
-    assert_PASS(check(designspace))
-
-    # TODO: FAIL, 'no-sources'
-
-
-def test_check_designspace_has_default_master():
-    """Ensure a default master is defined."""
-    check = CheckTester(universal_profile,
-                        "com.google.fonts/check/designspace_has_default_master")
-
-    designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
-    assert_PASS(check(designspace))
-
-    # TODO: FAIL, 'not-found'
-
-
-def test_check_designspace_has_consistent_glyphset():
-    """Check consistency of glyphset in a designspace file."""
-    check = CheckTester(universal_profile,
-                        "com.google.fonts/check/designspace_has_consistent_glyphset")
-
-    designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
-    assert_results_contain(check(designspace),
-                           FAIL, 'inconsistent-glyphset')
-
-    # TODO: Fix it and ensure it passes the check
-
-
-def test_check_designspace_has_consistent_codepoints():
-    """Check codepoints consistency in a designspace file."""
-    check = CheckTester(universal_profile,
-                        "com.google.fonts/check/designspace_has_consistent_codepoints")
-
-    designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
-    assert_results_contain(check(designspace),
-                           FAIL, 'inconsistent-codepoints')
-
-    # TODO: Fix it and ensure it passes the check
-
-
 def test_check_transformed_components():
     """Ensure component transforms do not perform scaling or rotation."""
     check = CheckTester(universal_profile,

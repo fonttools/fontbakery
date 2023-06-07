@@ -10,6 +10,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/dotted_circle]:** from the Universal profile (issue #4161)
   - **[com.google.fonts/check/soft_dotted]:** from the Universal profile (issue #4161)
 
+#### Moved to the UFO Sources profile
+  - **[com.google.fonts/check/designspace_has_sources]:** from the Universal profile (issue #)
+  - **[com.google.fonts/check/designspace_has_default_master]:** from the Universal profile (issue #)
+  - **[com.google.fonts/check/designspace_has_consistent_glyphset]:** from the Universal profile (issue #)
+  - **[com.google.fonts/check/designspace_has_consistent_codepoints]:** from the Universal profile (issue #)
 
 ## 0.8.13 (2023-Jun-02)
   - Fix a critical install bug. I had used wrong syntax on setup.py which made v0.8.12 impossible to install when enabling the freetype extra. Sorry! (issue #4157)

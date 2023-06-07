@@ -105,33 +105,6 @@ def variable_font_filename(ttFont):
 
 
 @condition
-def designSpace(designspace):
-    """
-    Given a filepath for a designspace file, parse it
-    and return a DesignSpaceDocument, which is
-    'an object to read, write and edit
-    interpolation systems for typefaces'.
-    """
-    if designspace:
-        from fontTools.designspaceLib import DesignSpaceDocument
-        import defcon
-        DS = DesignSpaceDocument.fromfile(designspace)
-        DS.loadSourceFonts(defcon.Font)
-        return DS
-
-
-@condition
-def designspace_sources(designSpace):
-    """
-    Given a DesignSpaceDocument object,
-    return a set of UFO font sources.
-    """
-    if designSpace:
-        import defcon
-        return designSpace.loadSourceFonts(defcon.Font)
-
-
-@condition
 def family_directory(font):
     """Get the path of font project directory."""
     if font:
