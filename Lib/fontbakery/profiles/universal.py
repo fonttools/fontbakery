@@ -256,9 +256,7 @@ def com_google_fonts_check_os2_metrics_match_hhea(ttFont):
             f" must be equal.",
         )
     else:
-        yield PASS, (
-            "OS/2.sTypoAscender/Descender values" " match hhea.ascent/descent."
-        )
+        yield PASS, "OS/2.sTypoAscender/Descender values match hhea.ascent/descent."
 
 
 @check(
@@ -859,7 +857,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont, config):
         and ttFont["post"].formatType == 3.0
     ):
         yield SKIP, (
-            "TrueType fonts with a format 3.0 post table" " contain no glyph names."
+            "TrueType fonts with a format 3.0 post table contain no glyph names."
         )
     else:
         bad_names = []
@@ -920,7 +918,7 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
         and ttFont["post"].formatType == 3.0
     ):
         yield SKIP, (
-            "TrueType fonts with a format 3.0 post table" " contain no glyph names."
+            "TrueType fonts with a format 3.0 post table contain no glyph names."
         )
     else:
         glyphs = []
@@ -954,7 +952,7 @@ def com_google_fonts_check_glyphnames_max_length(ttFont):
         and ttFont["post"].formatType == 3.0
     ):
         yield PASS, (
-            "TrueType fonts with a format 3.0 post table" " contain no glyph names."
+            "TrueType fonts with a format 3.0 post table contain no glyph names."
         )
     else:
         failed = False
@@ -1212,7 +1210,7 @@ def com_google_fonts_check_rupee(ttFont):
     if 0x20B9 not in ttFont["cmap"].getBestCmap().keys():
         yield FAIL, Message(
             "missing-rupee",
-            "Please add a glyph for" " Indian Rupee Sign “₹” at codepoint U+20B9.",
+            "Please add a glyph for Indian Rupee Sign “₹” at codepoint U+20B9.",
         )
     else:
         yield PASS, "Looks good!"
@@ -1794,7 +1792,7 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
         if is_complex_shaper_font(ttFont):
             yield FAIL, Message(
                 "missing-dotted-circle-complex",
-                "No dotted circle glyph present" "and font uses a complex shaper",
+                "No dotted circle glyph present and font uses a complex shaper",
             )
         else:
             yield WARN, Message(
@@ -1911,7 +1909,7 @@ def com_google_fonts_check_soft_dotted(ttFont):
             unclear = True
     if unclear:
         yield SKIP, (
-            "It is not clear if the soft dotted" " characters have glyphs with dots."
+            "It is not clear if the soft dotted characters have glyphs with dots."
         )
         return
 
