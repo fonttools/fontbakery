@@ -3,9 +3,7 @@ from fontbakery.status import FAIL, PASS, WARN, INFO, SKIP
 from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import (
-    profile_factory,
-)  # NOQA pylint: disable=unused-import
+from .fonts_profile import profile_factory  # NOQA pylint: disable=unused-import
 
 profile_imports = [
     (".shared_conditions", ("vmetrics",)),
@@ -158,7 +156,7 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
         if not all(character in glyph_order for character in weightFactors):
             yield FAIL, Message(
                 "missing-glyphs",
-                "Font is missing the required" " latin lowercase letters and/or space.",
+                "Font is missing the required latin lowercase letters and/or space.",
             )
             return
 
@@ -225,7 +223,7 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
         failed = True
         yield FAIL, Message(
             "fsselection-macstyle-bold",
-            "The OS/2.fsSelection and head.macStyle " "bold settings do not match.",
+            "The OS/2.fsSelection and head.macStyle bold settings do not match.",
         )
     head_italic = (ttFont["head"].macStyle & MacStyle.ITALIC) != 0
     os2_italic = (ttFont["OS/2"].fsSelection & FsSelection.ITALIC) != 0
@@ -233,11 +231,11 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
         failed = True
         yield FAIL, Message(
             "fsselection-macstyle-italic",
-            "The OS/2.fsSelection and head.macStyle " "italic settings do not match.",
+            "The OS/2.fsSelection and head.macStyle italic settings do not match.",
         )
     if not failed:
         yield PASS, (
-            "The OS/2.fsSelection and head.macStyle " "bold and italic settings match."
+            "The OS/2.fsSelection and head.macStyle bold and italic settings match."
         )
 
 

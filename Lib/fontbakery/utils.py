@@ -712,8 +712,9 @@ class PointsPen(BasePen):
         highest = None
         for p in self.points:
             if (
-                highest is None or p[1] > highest[1]
-            ):  # pylint: disable=unsubscriptable-object
+                highest is None
+                or p[1] > highest[1]  # pylint: disable=unsubscriptable-object
+            ):
                 highest = p
         return highest
 
@@ -721,8 +722,9 @@ class PointsPen(BasePen):
         lowest = None
         for p in self.points:
             if (
-                lowest is None or p[1] < lowest[1]
-            ):  # pylint: disable=unsubscriptable-object
+                lowest is None
+                or p[1] < lowest[1]  # pylint: disable=unsubscriptable-object
+            ):
                 lowest = p
         return lowest
 

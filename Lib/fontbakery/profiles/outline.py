@@ -3,9 +3,7 @@ from beziers.path import BezierPath
 from fontbakery.callable import condition, check
 from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.section import Section
-from fontbakery.fonts_profile import (
-    profile_factory,
-)  # NOQA pylint: disable=unused-import
+from .fonts_profile import profile_factory  # NOQA pylint: disable=unused-import
 from fontbakery.message import Message
 from fontbakery.utils import bullet_list
 import math
@@ -144,7 +142,7 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config)
                 prev_was_line = len(seg) == 2
         if len(warnings) > FALSE_POSITIVE_CUTOFF:
             yield PASS, (
-                "So many short segments were found" " that this was probably by design."
+                "So many short segments were found that this was probably by design."
             )
             return
 

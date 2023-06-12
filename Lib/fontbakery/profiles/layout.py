@@ -1,10 +1,7 @@
 from fontbakery.callable import check
 from fontbakery.status import PASS, FAIL
 from fontbakery.message import Message
-from fontbakery.fonts_profile import (
-    profile_factory,
-)  # NOQA pylint: disable=unused-import
-
+from .fonts_profile import profile_factory  # NOQA pylint: disable=unused-import
 
 from opentypespec.tags import FEATURE_TAGS, SCRIPT_TAGS, LANGUAGE_TAGS
 

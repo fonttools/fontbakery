@@ -3,9 +3,7 @@ from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import (
-    profile_factory,
-)  # NOQA pylint: disable=unused-import
+from .fonts_profile import profile_factory  # NOQA pylint: disable=unused-import
 
 profile_imports = [(".shared_conditions", ("is_ttf",))]
 
@@ -104,7 +102,7 @@ def com_google_fonts_check_post_table_version(ttFont):
     elif formatType == 2.5:
         yield FAIL, Message(
             "post-table-version",
-            "Post format 2.5 was deprecated in OpenType 1.3 and should" "not be used.",
+            "Post format 2.5 was deprecated in OpenType 1.3 and should not be used.",
         )
     elif formatType == 4:
         yield FAIL, Message(
@@ -265,14 +263,14 @@ def com_google_fonts_check_italic_angle(ttFont, style):
             passed = False
             yield FAIL, Message(
                 "zero-italic",
-                ("Font is italic, so post.italicAngle" " should be non-zero."),
+                ("Font is italic, so post.italicAngle should be non-zero."),
             )
     else:
         if ttFont["post"].italicAngle != 0:
             passed = False
             yield FAIL, Message(
                 "non-zero-upright",
-                ("Font is not italic, so post.italicAngle" " should be equal to zero."),
+                ("Font is not italic, so post.italicAngle should be equal to zero."),
             )
 
     if passed:

@@ -5,9 +5,7 @@ from fontbakery.utils import bullet_list
 import os
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
-    profile_factory,
-)
+from .fonts_profile import profile_factory  # NOQA pylint: disable=unused-import
 
 profile_imports = ((".", ("shared_conditions",)),)
 

@@ -9,9 +9,7 @@ from fontbakery.constants import (
 )
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import (
-    profile_factory,
-)  # NOQA pylint: disable=unused-import
+from .fonts_profile import profile_factory  # NOQA pylint: disable=unused-import
 
 profile_imports = [(".shared_conditions", ("glyph_metrics_stats", "is_ttf", "is_cff"))]
 
@@ -294,7 +292,7 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
             )
         if passed:
             yield PASS, Message(
-                "good", "Font is not monospaced and" " all related metadata look good."
+                "good", "Font is not monospaced and all related metadata look good."
             )
 
 
@@ -441,7 +439,7 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
                 {
                     "field": "PostScript Name",
                     "value": string,
-                    "rec": ("May contain only a-zA-Z0-9" " characters and an hyphen."),
+                    "rec": ("May contain only a-zA-Z0-9 characters and an hyphen."),
                 }
             )
         if string.count("-") > 1:
@@ -449,7 +447,7 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
                 {
                     "field": "Postscript Name",
                     "value": string,
-                    "rec": ("May contain not more" " than a single hyphen"),
+                    "rec": ("May contain not more than a single hyphen"),
                 }
             )
 
@@ -596,7 +594,7 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
         )
     else:
         yield PASS, (
-            'Entries in the "name" table for ID 6 ' "(PostScript name) are consistent."
+            'Entries in the "name" table for ID 6 (PostScript name) are consistent.'
         )
 
 
@@ -774,7 +772,7 @@ def com_google_fonts_check_name_italic_names(ttFont, style):
             if not get_name(NameID.TYPOGRAPHIC_SUBFAMILY_NAME).endswith("Italic"):
                 yield FAIL, Message(
                     "bad-typographicsubfamilyname",
-                    "Name ID 17 (Typographic Subfamily Name)" " must contain 'Italic'.",
+                    "Name ID 17 (Typographic Subfamily Name) must contain 'Italic'.",
                 )
                 passed = False
 
