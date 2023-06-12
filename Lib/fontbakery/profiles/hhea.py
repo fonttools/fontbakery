@@ -3,9 +3,9 @@ from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import (
+from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
     profile_factory,
-)  # NOQA pylint: disable=unused-import
+)
 
 profile_imports = [(".shared_conditions", ("glyph_metrics_stats", "is_ttf"))]
 
@@ -38,7 +38,7 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
         )
     else:
         yield PASS, (
-            "MaxAdvanceWidth is consistent" " with values in the Hmtx and Hhea tables."
+            "MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables."
         )
 
 
@@ -95,5 +95,5 @@ def com_google_fonts_check_caret_slope(ttFont):
         )
     else:
         yield PASS, (
-            "hhea.caretSlopeRise and hhea.caretSlopeRun" " match with post.italicAngle."
+            "hhea.caretSlopeRise and hhea.caretSlopeRun match with post.italicAngle."
         )

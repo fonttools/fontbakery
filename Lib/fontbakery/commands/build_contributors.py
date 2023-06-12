@@ -19,7 +19,7 @@ CONTRIBUTORS_HEAD = """# This is the list of people who have contributed to this
 
 """
 
-description = "Generate a CONTRIBUTORS.txt document" " from a repository's git history."
+description = "Generate a CONTRIBUTORS.txt document from a repository's git history."
 parser = argparse.ArgumentParser(description=description)
 parser.add_argument("folder", nargs=1, help="source folder which contains git commits")
 

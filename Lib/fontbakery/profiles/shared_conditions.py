@@ -5,9 +5,9 @@ from collections import Counter
 from fontbakery.callable import condition
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import (
+from fontbakery.fonts_profile import (  # NOQA pylint: disable=cyclic-import
     profile_factory,
-)  # NOQA pylint: disable=unused-import,cyclic-import
+)
 
 
 @condition

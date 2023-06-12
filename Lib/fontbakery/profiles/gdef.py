@@ -3,9 +3,9 @@ from fontbakery.status import FAIL, PASS, WARN, SKIP
 from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import (
+from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
     profile_factory,
-)  # NOQA pylint: disable=unused-import
+)
 
 
 def _is_non_spacing_mark_char(charcode):
@@ -74,7 +74,7 @@ def com_google_fonts_check_gdef_spacing_marks(ttFont, config):
             )
         else:
             yield PASS, (
-                "Font does not has spacing glyphs" " in the GDEF mark glyph class."
+                "Font does not has spacing glyphs in the GDEF mark glyph class."
             )
     else:
         yield SKIP, (

@@ -184,7 +184,9 @@ from fontbakery.checkrunner import (DEBUG, PASS,
 # example will create an instance of `FontsProfile`.
 # The comment at the end of the line disables flake8
 # and pylint to complain about unused imports.
-from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
+from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
+    profile_factory,
+)
 
 # At this point we already have a importable profile
 # It needs some checks though, to be useful.
