@@ -25,7 +25,7 @@ setup(
     name="fontbakery",
     use_scm_version={"write_to": "Lib/fontbakery/_version.py"},
     url="https://github.com/googlefonts/fontbakery/",
-    description="Well designed Font QA tool, written in Python 3",
+    description="A font quality assurance tool for everyone",
     long_description=readme,
     long_description_content_type="text/markdown",
     author=(
