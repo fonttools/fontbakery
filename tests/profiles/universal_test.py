@@ -1229,6 +1229,11 @@ def test_check_freetype_rasterizer():
     msg = assert_results_contain(check(font), FAIL, "freetype-crash")
     assert "FT_Exception:  (stack overflow)" in msg
 
+    # Example that segfaults with 'freetype-py' version 2.4.0
+    font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.ttf")
+    msg = assert_PASS(check(font), "with a good font...")
+    assert msg == "Font can be rasterized by FreeType."
+
 
 def test_check_sfnt_version():
     """Ensure that the font has the proper sfntVersion value."""
