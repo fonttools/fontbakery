@@ -29,7 +29,7 @@ def run_profile_check(profilename):
 
 
 def signal_handler(sig, frame):
-    print('\nCancelled by user')
+    print("\nCancelled by user")
     sys.exit(-1)
 
 
@@ -49,8 +49,8 @@ def main():
         sys.argv[0] += " " + subcommand
         del sys.argv[1]  # Make this indirection less visible for subcommands.
         if (
-            subcommand_module.startswith("check_") and
-            subcommand_module[6:] in CLI_PROFILES
+            subcommand_module.startswith("check_")
+            and subcommand_module[6:] in CLI_PROFILES
         ):
             run_profile_check(subcommand_module[6:])
         else:
@@ -61,27 +61,29 @@ def main():
         description = (
             "Run fontbakery subcommands. Subcommands have their own help "
             "messages. These are usually accessible with the -h/--help flag "
-            "positioned after the subcommand, i.e.: fontbakery subcommand -h")
+            "positioned after the subcommand, i.e.: fontbakery subcommand -h"
+        )
 
         parser = argparse.ArgumentParser(description=description)
         parser.add_argument(
-            'subcommand',
+            "subcommand",
             help="The subcommand to execute",
             nargs="?",
-            choices=subcommands)
+            choices=subcommands,
+        )
         parser.add_argument(
-            '--list-subcommands',
-            action='store_true',
-            help='print the list of subcommands '
-            'to stdout, separated by a space character. This is '
-            'usually only used to generate the shell completion code.')
+            "--list-subcommands",
+            action="store_true",
+            help="print the list of subcommands "
+            "to stdout, separated by a space character. This is "
+            "usually only used to generate the shell completion code.",
+        )
         parser.add_argument(
-            '--version',
-            action='version',
-            version=fontbakery.__version__)
+            "--version", action="version", version=fontbakery.__version__
+        )
         args = parser.parse_args()
 
         if args.list_subcommands:
-            print(' '.join(subcommands))
+            print(" ".join(subcommands))
         else:
             parser.print_help()

@@ -176,9 +176,7 @@ def test_check_nameid_1_win_english():
 
 def test_check_unsupported_tables():
     """Check if font has any unsupported tables."""
-    check = CheckTester(
-        adobefonts_profile, "com.adobe.fonts/check/unsupported_tables"
-    )
+    check = CheckTester(adobefonts_profile, "com.adobe.fonts/check/unsupported_tables")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     msg = assert_PASS(check(ttFont))
@@ -326,7 +324,8 @@ def test_check_override_os2_metrics_match_hhea():
 def test_check_override_varfont_valid_default_instance_nameids():
     """Check that overriden tests yield WARN instead of FAIL"""
     check = CheckTester(
-        adobefonts_profile, f"com.adobe.fonts/check/varfont/valid_default_instance_nameids{OVERRIDE_SUFFIX}"
+        adobefonts_profile,
+        f"com.adobe.fonts/check/varfont/valid_default_instance_nameids{OVERRIDE_SUFFIX}",
     )
 
     ttFont_1 = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
@@ -339,8 +338,10 @@ def test_check_override_varfont_valid_default_instance_nameids():
     msg = assert_results_contain(
         check(ttFont_1), WARN, "invalid-default-instance-subfamily-name"
     )
-    assert msg == ("'Instance #1' instance has the same coordinates as the default"
-                   " instance; its subfamily name should be 'Regular'")
+    assert msg == (
+        "'Instance #1' instance has the same coordinates as the default"
+        " instance; its subfamily name should be 'Regular'"
+    )
 
     # The value of postScriptNameID is 0xFFFF for all the instance records in CabinVF.
     # Change one of them, to make the check validate the postScriptNameID value of the
@@ -374,7 +375,7 @@ def test_check_override_stat_has_axis_value_tables():
     # Add a format 4 AxisValue table with a single AxisValueRecord. This overriden check
     # should WARN.
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
-    f4avt = type(ttFont['STAT'].table.AxisValueArray.AxisValue[0])()
+    f4avt = type(ttFont["STAT"].table.AxisValueArray.AxisValue[0])()
     f4avt.Format = 4
     f4avt.Flags = 0
     f4avt.ValueNameID = 2
@@ -383,33 +384,36 @@ def test_check_override_stat_has_axis_value_tables():
     avr0.Value = 100
     f4avt.AxisValueRecord = [avr0]
     f4avt.AxisCount = len(f4avt.AxisValueRecord)
-    ttFont['STAT'].table.AxisValueArray.AxisValue.append(f4avt)
+    ttFont["STAT"].table.AxisValueArray.AxisValue.append(f4avt)
     msg = assert_results_contain(check(ttFont), WARN, "format-4-axis-count")
     assert msg == "STAT Format 4 Axis Value table has axis count <= 1."
 
 
 def test_check_override_inconsistencies_between_fvar_stat():
     """Check that the overridden test yields WARN rather than FAIL"""
-    check = CheckTester(adobefonts_profile,
-                        f'com.fontwerk/check/inconsistencies_between_fvar_stat{OVERRIDE_SUFFIX}')
+    check = CheckTester(
+        adobefonts_profile,
+        f"com.fontwerk/check/inconsistencies_between_fvar_stat{OVERRIDE_SUFFIX}",
+    )
 
     ttFont = TTFont(TEST_FILE("bad_fonts/fvar_stat_differences/AxisLocationVAR.ttf"))
     # add name with wrong order of name parts
-    ttFont['name'].setName('Medium Text', 277, 3, 1, 0x409)
-    assert_results_contain(check(ttFont),
-                           WARN, 'missing-fvar-instance-axis-value',
-                           'missing in STAT table')
+    ttFont["name"].setName("Medium Text", 277, 3, 1, 0x409)
+    assert_results_contain(
+        check(ttFont), WARN, "missing-fvar-instance-axis-value", "missing in STAT table"
+    )
 
 
 def test_check_override_weight_class_fvar():
-    check = CheckTester(adobefonts_profile,
-                        f'com.fontwerk/check/weight_class_fvar{OVERRIDE_SUFFIX}')
+    check = CheckTester(
+        adobefonts_profile, f"com.fontwerk/check/weight_class_fvar{OVERRIDE_SUFFIX}"
+    )
 
-    ttFont = TTFont(TEST_FILE('varfont/Oswald-VF.ttf'))
-    ttFont['OS/2'].usWeightClass = 333
-    assert_results_contain(check(ttFont),
-                           WARN, 'bad-weight-class',
-                           "but should match fvar default value.")
+    ttFont = TTFont(TEST_FILE("varfont/Oswald-VF.ttf"))
+    ttFont["OS/2"].usWeightClass = 333
+    assert_results_contain(
+        check(ttFont), WARN, "bad-weight-class", "but should match fvar default value."
+    )
 
 
 @patch("freetype.Face", side_effect=ImportError)
@@ -451,14 +455,18 @@ def test_check_override_match_familyname_fullfont():
 
     # Change the Full Font Name string for Microsoft platform record
     full_font_name = "SourceSansPro-Semibold"
-    ttFont["name"].setName(full_font_name,
-                           NameID.FULL_FONT_NAME,
-                           PlatformID.WINDOWS,
-                           WindowsEncodingID.UNICODE_BMP,
-                           WindowsLanguageID.ENGLISH_USA)
+    ttFont["name"].setName(
+        full_font_name,
+        NameID.FULL_FONT_NAME,
+        PlatformID.WINDOWS,
+        WindowsEncodingID.UNICODE_BMP,
+        WindowsLanguageID.ENGLISH_USA,
+    )
     msg = assert_results_contain(check(ttFont), WARN, "mismatch-font-names")
-    assert (f"the full font name {full_font_name!r}"
-            " does not begin with the font family name") in msg
+    assert (
+        f"the full font name {full_font_name!r}"
+        " does not begin with the font family name"
+    ) in msg
 
 
 def test_check_override_trailing_spaces():
@@ -474,16 +482,20 @@ def test_check_override_trailing_spaces():
 
     # Add a trailing space to the License string for Microsoft platform record
     name_table = ttFont["name"]
-    license_string = name_table.getName(NameID.LICENSE_DESCRIPTION,
-                                        PlatformID.WINDOWS,
-                                        WindowsEncodingID.UNICODE_BMP,
-                                        WindowsLanguageID.ENGLISH_USA)
+    license_string = name_table.getName(
+        NameID.LICENSE_DESCRIPTION,
+        PlatformID.WINDOWS,
+        WindowsEncodingID.UNICODE_BMP,
+        WindowsLanguageID.ENGLISH_USA,
+    )
     license_string = f"{license_string.toUnicode()} "
-    name_table.setName(license_string,
-                       NameID.LICENSE_DESCRIPTION,
-                       PlatformID.WINDOWS,
-                       WindowsEncodingID.UNICODE_BMP,
-                       WindowsLanguageID.ENGLISH_USA)
+    name_table.setName(
+        license_string,
+        NameID.LICENSE_DESCRIPTION,
+        PlatformID.WINDOWS,
+        WindowsEncodingID.UNICODE_BMP,
+        WindowsLanguageID.ENGLISH_USA,
+    )
     msg = assert_results_contain(check(ttFont), WARN, "trailing-space")
     assert msg.endswith("'This Font [...]Software. '")
 
@@ -499,14 +511,16 @@ def test_check_override_bold_wght_coord():
     fvar_table = ttFont["fvar"]
 
     # change the Bold instance 'wght' coord to something other than 700
-    fvar_table.instances[4].coordinates['wght'] = 725
-    msg = assert_results_contain(check(ttFont), WARN, 'wght-not-700')
-    assert msg.startswith('The "wght" axis coordinate of the "Bold" instance must be 700.')
+    fvar_table.instances[4].coordinates["wght"] = 725
+    msg = assert_results_contain(check(ttFont), WARN, "wght-not-700")
+    assert msg.startswith(
+        'The "wght" axis coordinate of the "Bold" instance must be 700.'
+    )
 
     # remove "Bold" named instance
     del fvar_table.instances[4]
 
-    msg = assert_results_contain(check(ttFont), WARN, 'no-bold-instance')
+    msg = assert_results_contain(check(ttFont), WARN, "no-bold-instance")
     assert msg == '"Bold" instance not present.'
 
 
@@ -520,12 +534,15 @@ def test_check_STAT_strings():
     # This should FAIL (like com.google.fonts/check/STAT_strings that
     # it is based on) because it uses "Italic" in names for 'wght' and 'wdth' axes.
     ttFont = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Italic.ttf"))
-    msg = assert_results_contain(check(ttFont), FAIL, 'bad-italic')
-    assert 'The following AxisValue entries in the STAT table should not contain "Italic"' in msg
+    msg = assert_results_contain(check(ttFont), FAIL, "bad-italic")
+    assert (
+        'The following AxisValue entries in the STAT table should not contain "Italic"'
+        in msg
+    )
 
     # Now set up a font using "Italic" for the 'slnt' axis
     ttFont = TTFont(TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf"))
-    ttFont['name'].setName("Italic", 286, 3, 1, 1033)
+    ttFont["name"].setName("Italic", 286, 3, 1, 1033)
     # This should PASS with our check
-    msg = assert_results_contain(check(ttFont), PASS, 'Looks good!')
-    assert msg == 'Looks good!'
+    msg = assert_results_contain(check(ttFont), PASS, "Looks good!")
+    assert msg == "Looks good!"

@@ -1,10 +1,12 @@
-from typing import Any, List, Tuple, Dict #cast
+from typing import Any, List, Tuple, Dict  # cast
 
 from sphinx.application import Sphinx
+
 # from sphinx.ext.autodoc import Documenter
 from sphinx.ext.autodoc import ModuleLevelDocumenter
 from sphinx.pycode import ModuleAnalyzer, PycodeError
-#from sphinx.domains.python import PythonDomain
+
+# from sphinx.domains.python import PythonDomain
 from sphinx.locale import __
 from sphinx.domains.python import PyObject
 from sphinx import addnodes
@@ -12,29 +14,30 @@ from sphinx.util.inspect import signature as Signature
 from sphinx.util.inspect import stringify_signature
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 # we can get source code first line numbers with this module for object
 import inspect
 
 from fontbakery.callable import (
-                          FontbakeryCallable
-                        , FontBakeryCondition
-                        , FontBakeryCheck
-                        , Disabled
-                        , FontBakeryExpectedValue
-                        )
+    FontbakeryCallable,
+    FontBakeryCondition,
+    FontBakeryCheck,
+    Disabled,
+    FontBakeryExpectedValue,
+)
 
 # mute the style checks for unused names
 # will be removed eventually
-if False: #pylint: disable=using-constant-test
+if False:  # pylint: disable=using-constant-test
     FontbakeryCallable
     FontBakeryCondition
     FontBakeryCheck
     Disabled
     FontBakeryExpectedValue
 
-__version__ = '0.0.1'
+__version__ = "0.0.1"
 
 
 # ModuleLevelDocumenter(Documenter): Specialized Documenter subclass for objects on module level (functions,
@@ -45,7 +48,8 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
     """
     Specialized Documenter subclass for instances of FontBakeryCheck.
     """
-    objtype = 'fontbakerycallable'
+
+    objtype = "fontbakerycallable"
     can_doc_cls = FontbakeryCallable
     member_order = 30
 
@@ -54,19 +58,21 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
         # type: (Any, str, bool, Any) -> bool
         return isinstance(member, cls.can_doc_cls)
 
-    def format_args(self): # pylint: disable=arguments-differ  # I am really not sure what went wrong here...
+    def format_args(
+        self,
+    ):  # pylint: disable=arguments-differ  # I am really not sure what went wrong here...
         # type: () -> str
         # We use the original signature from the wrapped _function
         has_retval = isinstance(self.object, FontBakeryCondition)
 
-        if not hasattr(self.object, '_func'):
+        if not hasattr(self.object, "_func"):
             # FIXME! I don't know what's this.
             return None
 
         sig = Signature(self.object._func, bound_method=False, has_retval=has_retval)
         args = stringify_signature(sig)
         # escape backslashes for reST
-        args = args.replace('\\', '\\\\')
+        args = args.replace("\\", "\\\\")
         return args
 
     def format_name(self):
@@ -89,11 +95,13 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
         # the document and also genindex.html anchor works so far (with 7 instead of /)
         #
         res = super().format_name()
-        if self.objtype == 'fontbakerycheck':
+        if self.objtype == "fontbakerycheck":
             # A bit hackish, splitting somwhere else by ::: to retrieve the checkid
             # we can get the source file first line number of self.object:
             lineno = inspect.getsourcelines(self.object)[1]
-            res =  self.object.id + ':::' + f'{lineno}' + ':::' + res#.replace('/', '7')
+            res = (
+                self.object.id + ":::" + f"{lineno}" + ":::" + res
+            )  # .replace('/', '7')
         # else:
         #   res = super().format_name()
         # print('formatted name:', res)
@@ -106,8 +114,13 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
         # sig signature: com_google_fonts_check_post_table_version(ttFont, is_ttf)
         # result: ('com_google_fonts_check_post_table_version', None) signode: <desc_signature class="" first="False" fullname="com_google_fonts_check_post_table_version" module="fontbakery.profiles.post"><desc_annotation xml:space="preserve">FontBakeryCheck </desc_annotation><desc_addname xml:space="preserve">fontbakery.profiles.post.</desc_addname><desc_name xml:space="preserve">com_google_fonts_check_post_table_version</desc_name><desc_parameterlist xml:space="preserve"><desc_parameter xml:space="preserve">ttFont</desc_parameter><desc_parameter xml:space="preserve">is_ttf</desc_parameter></desc_parameterlist></desc_signature>
 
-    def generate(self, more_content=None, real_modname=None,
-                       check_module=False, all_members=False):
+    def generate(
+        self,
+        more_content=None,
+        real_modname=None,
+        check_module=False,
+        all_members=False,
+    ):
         # type: (Any, str, bool, bool) -> None
         """Generate reST for the object given by *self.name*, and possibly for
         its members.
@@ -130,12 +143,15 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
         if not self.parse_name():
             # need a module to import
             logger.warning(
-                __('don\'t know which module to import for autodocumenting '
-                   '%r (try placing a "module" or "currentmodule" directive '
-                   'in the document, or giving an explicit module name)') %
-                   self.name, type='autodoc')
+                __(
+                    "don't know which module to import for autodocumenting "
+                    '%r (try placing a "module" or "currentmodule" directive '
+                    "in the document, or giving an explicit module name)"
+                )
+                % self.name,
+                type="autodoc",
+            )
             return
-
 
         # now, import the module and get object to document
         if not self.import_object():
@@ -144,7 +160,6 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
         # doesn't do anything!
         # if self.objtype == 'fontbakerycheck':
         #   self.name = self.object.id
-
 
         # If there is no real module defined, figure out which to use.
         # The real module is used in the module analyzer to look up the module
@@ -160,71 +175,69 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
             # be cached anyway)
             self.analyzer.find_attr_docs()
         except PycodeError as err:
-            logger.debug('[autodoc] module analyzer failed: %s', err)
+            logger.debug("[autodoc] module analyzer failed: %s", err)
             # no source file -- e.g. for builtin and C modules
             self.analyzer = None
             # at least add the module.__file__ as a dependency
-            if hasattr(self.module, '__file__') and self.module.__file__:
+            if hasattr(self.module, "__file__") and self.module.__file__:
                 self.directive.filename_set.add(self.module.__file__)
         else:
             self.directive.filename_set.add(self.analyzer.srcname)
-
 
         # check __module__ of object (for members not given explicitly)
         if check_module:
             if not self.check_module():
                 return
 
-
         sourcename = self.get_sourcename()
-
 
         # make sure that the result starts with an empty line.  This is
         # necessary for some situations where another directive preprocesses
         # reST and no starting newline is present
-        self.add_line('', sourcename)
-
+        self.add_line("", sourcename)
 
         # format the object's signature, if any
         sig = self.format_signature()
 
         # generate the directive header and options, if applicable
         self.add_directive_header(sig)
-        self.add_line('', sourcename)
-
+        self.add_line("", sourcename)
 
         # e.g. the module directive doesn't have content
         self.indent += self.content_indent
 
-
         # add all content (from docstrings, attribute docs etc.)
         self.add_content(more_content)
-
 
         # document members, if possible
         self.document_members(all_members)
 
 
 class FontBakeryCheckDocumenter(FontBakeryCallableDocumenter):
-    objtype = 'fontbakerycheck'
+    objtype = "fontbakerycheck"
     can_doc_cls = FontBakeryCheck
 
 
 class FontBakeryConditionDocumenter(FontBakeryCallableDocumenter):
-    objtype = 'fontbakerycondition'
+    objtype = "fontbakerycondition"
     can_doc_cls = FontBakeryCondition
+
 
 from sphinx.domains.python import _pseudo_parse_arglist
 
 import re
+
 # REs for Python signatures
 py_sig_re = re.compile(
-    r'''^ ([\w.]*\.)?            # class name(s)
+    r"""^ ([\w.]*\.)?            # class name(s)
           (\w+)  \s*             # thing name
           (?: \(\s*(.*)\s*\)     # optional: arguments
            (?:\s* -> \s* (.*))?  #           return annotation
           )? $                   # and nothing more
-     ''', re.VERBOSE)
+     """,
+    re.VERBOSE,
+)
+
 
 # PyObject: https://github.com/sphinx-doc/sphinx/blob/master/sphinx/domains/python.py#L189
 # PyObject is a subclass of sphinx.directives.ObjectDescription
@@ -239,9 +252,9 @@ class PyFontBakeryObject(PyObject):
 
     @property
     def pretty_objtype(self):
-        if self.objtype.startswith('fontbakery'):
-            suffix = self.objtype[len('fontbakery'):]
-            return 'FontBakery' + suffix[0].upper() + suffix[1:]
+        if self.objtype.startswith("fontbakery"):
+            suffix = self.objtype[len("fontbakery") :]
+            return "FontBakery" + suffix[0].upper() + suffix[1:]
         return self.objtype
 
     def get_signature_prefix(self, sig):
@@ -251,7 +264,7 @@ class PyFontBakeryObject(PyObject):
         # print('sig signature:', sig)
         # > sig signature: com_google_fonts_check_all_glyphs_have_codepoints(ttFont)
 
-        return self.pretty_objtype + ' '
+        return self.pretty_objtype + " "
 
     # this is bullshit, returns two values but manipulates
     # signode massively, which is undocumented.
@@ -297,53 +310,48 @@ class PyFontBakeryObject(PyObject):
         # > prefix, name, arglist, retann = None com_google_fonts_check_all_glyphs_have_codepoints ttFont None
 
         # determine module and class name (if applicable), as well as full name
-        modname = self.options.get('module', self.env.ref_context.get('py:module'))
-        classname = self.env.ref_context.get('py:class')
+        modname = self.options.get("module", self.env.ref_context.get("py:module"))
+        classname = self.env.ref_context.get("py:class")
         if classname:
             add_module = False
-            if prefix and (prefix == classname or
-               prefix.startswith(classname + ".")):
+            if prefix and (prefix == classname or prefix.startswith(classname + ".")):
                 fullname = prefix + name
                 # class name is given again in the signature
-                prefix = prefix[len(classname):].lstrip('.')
+                prefix = prefix[len(classname) :].lstrip(".")
             elif prefix:
                 # class name is given in the signature, but different
                 # (shouldn't happen)
-                fullname = classname + '.' + prefix + name
+                fullname = classname + "." + prefix + name
             else:
                 # class name is not given in the signature
-                fullname = classname + '.' + name
+                fullname = classname + "." + name
         else:
             add_module = True
             if prefix:
-                classname = prefix.rstrip('.')
+                classname = prefix.rstrip(".")
                 fullname = prefix + name
             else:
-                classname = ''
+                classname = ""
                 fullname = name
 
+        signode["module"] = modname
+        signode["class"] = classname
+        signode["fullname"] = fullname
+        signode.attributes["lineno"] = lineno
 
-        signode['module'] = modname
-        signode['class'] = classname
-        signode['fullname'] = fullname
-        signode.attributes['lineno'] = lineno
-
-
-        #sig_prefix = self.get_signature_prefix(sig)
-        #if sig_prefix:
+        # sig_prefix = self.get_signature_prefix(sig)
+        # if sig_prefix:
         #  signode += addnodes.desc_annotation(sig_prefix, sig_prefix)
-
 
         if prefix:
             signode += addnodes.desc_addname(prefix, prefix)
         elif add_module and self.env.config.add_module_names:
-            if modname and modname != 'exceptions':
+            if modname and modname != "exceptions":
                 # exceptions are a special case, since they are documented in the
                 # 'exceptions' module.
-                #nodetext = modname + ' ID: '
-                #signode += addnodes.desc_addname(nodetext, nodetext)
+                # nodetext = modname + ' ID: '
+                # signode += addnodes.desc_addname(nodetext, nodetext)
                 pass
-
 
         signode += addnodes.desc_name(name, cid)
         if arglist:
@@ -353,15 +361,12 @@ class PyFontBakeryObject(PyObject):
                 # for callables, add an empty parameter list
                 signode += addnodes.desc_parameterlist()
 
-
         if retann:
             signode += addnodes.desc_returns(retann, retann)
 
-
-        anno = self.options.get('annotation')
+        anno = self.options.get("annotation")
         if anno:
-            signode += addnodes.desc_annotation(' ' + anno, ' ' + anno)
-
+            signode += addnodes.desc_annotation(" " + anno, " " + anno)
 
         return cid, prefix
 
@@ -370,17 +375,20 @@ class PyFontBakeryObject(PyObject):
         # > >>>>>>>>>>>>>>>>>handle_signature: com.google.fonts/check/all_glyphs_have_codepoints:::36:::com_google_fonts_check_all_glyphs_have_codepoints(ttFont) <desc_signature first="False"/>
 
         cid = None
-        if ':::' in sig:
-            cid, lineno, sig = sig.split(':::')
+        if ":::" in sig:
+            cid, lineno, sig = sig.split(":::")
             # print('GOT id:', cid, lineno, 'for:', sig)
             # > GOT id: com.google.fonts/check/all_glyphs_have_codepoints 36 for: com_google_fonts_check_all_glyphs_have_codepoints(ttFont)
 
-        res = '(NONE!)'
+        res = "(NONE!)"
         try:
-            res = self._handle_signature(cid, lineno, sig, signode) if cid is not None\
-                            else super().handle_signature(sig, signode)
+            res = (
+                self._handle_signature(cid, lineno, sig, signode)
+                if cid is not None
+                else super().handle_signature(sig, signode)
+            )
         except Exception as e:
-            print('!!!', e)
+            print("!!!", e)
             raise e
 
         return res
@@ -389,7 +397,7 @@ class PyFontBakeryObject(PyObject):
     def get_index_text(self, modname, name):
         # type: (str, Tuple[str, str]) -> str
 
-        return f'{name[0]} ({self.pretty_objtype} in {modname})'
+        return f"{name[0]} ({self.pretty_objtype} in {modname})"
         # fontbakerycheck
         # modname: fontbakery.profiles.cmap
         # name_cls:('com_google_fonts_check_all_glyphs_have_codepoints', None)
@@ -397,27 +405,28 @@ class PyFontBakeryObject(PyObject):
 
     def add_target_and_index(self, name_cls, sig, signode):
         # type: (Tuple[str, str], str, addnodes.desc_signature) -> None
-        modname = self.options.get('module', self.env.ref_context.get('py:module'))
+        modname = self.options.get("module", self.env.ref_context.get("py:module"))
         # fullname = (modname and modname + '.' or '') + name_cls[0]
         fullname = name_cls[0]
         # note target
         if fullname not in self.state.document.ids:
-            signode['names'].append(fullname)
-            signode['ids'].append(fullname)
-            signode['first'] = (not self.names)
+            signode["names"].append(fullname)
+            signode["ids"].append(fullname)
+            signode["first"] = not self.names
             self.state.document.note_explicit_target(signode)
 
             # note, there will be a change to this in a future release
             # https://github.com/sphinx-doc/sphinx/commit/259be8716ad4b2332aa4d7693d73400eb06fa7d7
             ## in the past (now)
-            objects = self.env.domaindata['py']['objects']
+            objects = self.env.domaindata["py"]["objects"]
             if fullname in objects:
                 self.state_machine.reporter.warning(
-                    'duplicate object description of %s, ' % fullname +
-                    'other instance in ' +
-                    self.env.doc2path(objects[fullname][0]) +
-                    ', use :noindex: for one of them',
-                    line=self.lineno)
+                    "duplicate object description of %s, " % fullname
+                    + "other instance in "
+                    + self.env.doc2path(objects[fullname][0])
+                    + ", use :noindex: for one of them",
+                    line=self.lineno,
+                )
                 objects[fullname] = (self.env.docname, self.objtype)
             ## in the future
             # domain = cast(PythonDomain, self.env.get_domain('py'))
@@ -425,16 +434,14 @@ class PyFontBakeryObject(PyObject):
 
         indextext = self.get_index_text(modname, name_cls)
         if indextext:
-            self.indexnode['entries'].append(('single',
-                                              indextext,
-                                              fullname,
-                                              '',
-                                              None))
+            self.indexnode["entries"].append(("single", indextext, fullname, "", None))
+
 
 # Copied a lot from napoleon extension:
 # https://github.com/sphinx-doc/sphinx/blob/master/sphinx/ext/napoleon/__init__.py
 # To get started, hooking into autodoc seems the way to go, hence that was
 # a good fit.
+
 
 def setup(app):
     # type: (Sphinx) -> Dict[str, Any]
@@ -455,30 +462,36 @@ def setup(app):
     """
     if not isinstance(app, Sphinx):
         # probably called by tests
-        return {'version': __version__, 'parallel_read_safe': True}
+        return {"version": __version__, "parallel_read_safe": True}
 
     # _patch_python_domain()
 
-    #=> this:
+    # => this:
     app.add_autodocumenter(FontBakeryCallableDocumenter)
     app.add_autodocumenter(FontBakeryCheckDocumenter)
     app.add_autodocumenter(FontBakeryConditionDocumenter)
 
     # https://github.com/sphinx-doc/sphinx/blob/master/sphinx/domains/python.py
-    app.add_directive_to_domain('py', 'fontbakerycallable', PyFontBakeryObject, override=False)
-    app.add_directive_to_domain('py', 'fontbakerycheck', PyFontBakeryObject, override=False)
-    app.add_directive_to_domain('py', 'fontbakerycondition', PyFontBakeryObject, override=False)
+    app.add_directive_to_domain(
+        "py", "fontbakerycallable", PyFontBakeryObject, override=False
+    )
+    app.add_directive_to_domain(
+        "py", "fontbakerycheck", PyFontBakeryObject, override=False
+    )
+    app.add_directive_to_domain(
+        "py", "fontbakerycondition", PyFontBakeryObject, override=False
+    )
 
     # => see e.g.: https://github.com/sphinx-doc/sphinx/blob/master/sphinx/ext/autodoc/__init__.py#L984
 
+    app.setup_extension("sphinx.ext.autodoc")
+    app.connect("autodoc-process-docstring", _process_docstring)
+    app.connect("autodoc-skip-member", _skip_member)
 
-    app.setup_extension('sphinx.ext.autodoc')
-    app.connect('autodoc-process-docstring', _process_docstring)
-    app.connect('autodoc-skip-member', _skip_member)
-
-    #for name, (default, rebuild) in Config._config_values.items():
+    # for name, (default, rebuild) in Config._config_values.items():
     #    app.add_config_value(name, default, rebuild)
-    return {'version': __version__, 'parallel_read_safe': True}
+    return {"version": __version__, "parallel_read_safe": True}
+
 
 def _skip_member(app, what, name, obj, skip, options):
     # type: (Sphinx, str, str, Any, bool, Any) -> bool
@@ -518,20 +531,22 @@ def _skip_member(app, what, name, obj, skip, options):
         True if the member should be skipped during creation of the docs,
         False if it should be included in the docs.
     """
-    if name in ['check_skip_filter',
-                'conditions',
-                'configs',
-                'description',
-                'documentation',
-                'force',
-                'id',
-                'is_librebarcode',
-                'name',
-                'proponent',
-                'proposal',
-                'rationale',
-                'severity',
-                'suggested_profile']:
+    if name in [
+        "check_skip_filter",
+        "conditions",
+        "configs",
+        "description",
+        "documentation",
+        "force",
+        "id",
+        "is_librebarcode",
+        "name",
+        "proponent",
+        "proposal",
+        "rationale",
+        "severity",
+        "suggested_profile",
+    ]:
         return True
     else:
         return None
@@ -569,40 +584,41 @@ def _process_docstring(app, what, name, obj, options, lines):
         .. note:: `lines` is modified *in place*
     """
 
-    if hasattr(obj, 'rationale') and obj.rationale:
+    if hasattr(obj, "rationale") and obj.rationale:
         lines.append("**Rationale:**")
-        for line in obj.rationale.split('\n'):
+        for line in obj.rationale.split("\n"):
             lines.append(line)
 
-    if hasattr(obj, 'proposal') and obj.proposal:
+    if hasattr(obj, "proposal") and obj.proposal:
         proposal = obj.proposal
         if not isinstance(obj.proposal, list):
             proposal = [obj.proposal]
 
         proposals = [p for p in proposal if "legacy:" not in p]
-        legacy_name = [p.split('legacy:')[1] for p in proposal if "legacy:" in p]
+        legacy_name = [p.split("legacy:")[1] for p in proposal if "legacy:" in p]
 
         if legacy_name:
-            lines.append(f"**Legacy check** originally simply called '{legacy_name[0]}'."
-                         f" We used to lack richer metadata back in 2015. We're open to"
-                         f" further improvements to this description.")
+            lines.append(
+                f"**Legacy check** originally simply called '{legacy_name[0]}'."
+                f" We used to lack richer metadata back in 2015. We're open to"
+                f" further improvements to this description."
+            )
         else:
             if proposals:
                 lines.append(f"- **Originally proposed at** {proposals.pop(0)}")
 
         if proposals:
-            proposals = ' / '.join(proposals)
+            proposals = " / ".join(proposals)
             lines.append(f"- **Some additional changes** were proposed at {proposals}")
 
-    if hasattr(obj, 'proponent') and obj.proponent:
+    if hasattr(obj, "proponent") and obj.proponent:
         proponent = obj.proponent
         if "(@" in obj.proponent and ")" in obj.proponent:
             fullname, username = obj.proponent.split("(@")
             fullname = fullname.strip()
             username = username.split(")")[0].strip()
-            proponent = f'`{fullname} <https://github.com/{username}/>`_'
+            proponent = f"`{fullname} <https://github.com/{username}/>`_"
         lines.append(f"- **Proposed by**: {proponent}")
 
-    if hasattr(obj, 'suggested_profile') and obj.suggested_profile:
+    if hasattr(obj, "suggested_profile") and obj.suggested_profile:
         lines.append(f"- **Suggested profile:** {obj.suggested_profile}")
-
