@@ -103,11 +103,11 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
                         )
 
                 else:
-                  # FAIL on unknown axis_value_format
-                  yield FAIL, Message(
-                      "unknown-axis-value-format",
-                      f"AxisValue format {axis_value_format} is unknown.",
-                  )
+                    # FAIL on unknown axis_value_format
+                    yield FAIL, Message(
+                        "unknown-axis-value-format",
+                        f"AxisValue format {axis_value_format} is unknown.",
+                    )
 
             stat_axes_values[axis_tag] = axis_values
 
@@ -133,38 +133,38 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
 
 
 @check(
-    id = 'com.google.fonts/check/italic_axis_in_stat',
-    rationale = """
+    id="com.google.fonts/check/italic_axis_in_stat",
+    rationale="""
         Check that related Upright and Italic VFs have a
         'ital' axis in STAT table.
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2934'
+    proposal="https://github.com/googlefonts/fontbakery/issues/2934",
 )
 def com_google_fonts_check_italic_axis_in_stat(fonts, config):
     """Ensure VFs have 'ital' STAT axis."""
     from fontTools.ttLib import TTFont
 
-    italics = [f for f in fonts if 'Italic' in f]
+    italics = [f for f in fonts if "Italic" in f]
     missing_roman = []
     italic_to_roman_mapping = {}
     for italic in italics:
-        style_from_filename = os.path.basename(italic).split('-')[-1].split('.')[0]
-        is_varfont = '[' in style_from_filename
+        style_from_filename = os.path.basename(italic).split("-")[-1].split(".")[0]
+        is_varfont = "[" in style_from_filename
 
         # to remove the axes syntax used on variable-font filenames:
         if is_varfont:
-            style_from_filename = style_from_filename.split('[')[0]
+            style_from_filename = style_from_filename.split("[")[0]
 
-        if style_from_filename == 'Italic':
+        if style_from_filename == "Italic":
             if is_varfont:
                 # "Familyname-Italic[wght,wdth].ttf" => "Familyname[wght,wdth].ttf"
-                roman_counterpart = italic.replace('-Italic', '')
+                roman_counterpart = italic.replace("-Italic", "")
             else:
                 # "Familyname-Italic.ttf" => "Familyname-Regular.ttf"
-                roman_counterpart = italic.replace('Italic', 'Regular')
+                roman_counterpart = italic.replace("Italic", "Regular")
         else:
             # "Familyname-BoldItalic[wght,wdth].ttf" => "Familyname-Bold[wght,wdth].ttf"
-            roman_counterpart = italic.replace('Italic', '')
+            roman_counterpart = italic.replace("Italic", "")
 
         if is_varfont:
             if roman_counterpart not in fonts:
@@ -174,12 +174,13 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
 
     if missing_roman:
         from fontbakery.utils import pretty_print_list
-        missing_roman = pretty_print_list(config,
-                                          missing_roman)
-        yield FAIL,\
-              Message('missing-roman',
-                      f"Italics missing a Roman counterpart, so couldn't check"
-                      f" both Roman and Italic for 'ital' axis: {missing_roman}")
+
+        missing_roman = pretty_print_list(config, missing_roman)
+        yield FAIL, Message(
+            "missing-roman",
+            f"Italics missing a Roman counterpart, so couldn't check"
+            f" both Roman and Italic for 'ital' axis: {missing_roman}",
+        )
         return
 
     # Actual check starts here
@@ -190,27 +191,28 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
 
         for filepath in (upright, italic):
             ttFont = TTFont(filepath)
-            if not "ital" in [axis.AxisTag for axis in ttFont["STAT"].table.DesignAxisRecord.Axis]:
+            if not "ital" in [
+                axis.AxisTag for axis in ttFont["STAT"].table.DesignAxisRecord.Axis
+            ]:
                 passed = False
-                yield FAIL,\
-                      Message('missing-ital-axis',
-                              f"Font {os.path.basename(filepath)}"
-                              f" is missing an 'ital' axis.")
+                yield FAIL, Message(
+                    "missing-ital-axis",
+                    f"Font {os.path.basename(filepath)}" f" is missing an 'ital' axis.",
+                )
 
     if passed:
         yield PASS, "OK"
 
 
 @check(
-    id = 'com.google.fonts/check/italic_axis_in_stat_is_boolean',
-    conditions=["style",
-                "has_STAT_table"],
-    rationale = """
+    id="com.google.fonts/check/italic_axis_in_stat_is_boolean",
+    conditions=["style", "has_STAT_table"],
+    rationale="""
         Check that the value of the 'ital' STAT axis is boolean (either 0 or 1),
         and elided for the Upright and not elided for the Italic,
         and that the Upright is linked to the Italic.
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/3668'
+    proposal="https://github.com/googlefonts/fontbakery/issues/3668",
 )
 def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
     """Ensure 'ital' STAT axis is boolean value"""
@@ -246,47 +248,52 @@ def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
     if "Italic" in style:
         if value != 1:
             passed = False
-            yield WARN,\
-                  Message("wrong-ital-axis-value",
-                          f"STAT table 'ital' axis has wrong value."
-                          f" Expected: 1, got '{value}'.")
+            yield WARN, Message(
+                "wrong-ital-axis-value",
+                f"STAT table 'ital' axis has wrong value."
+                f" Expected: 1, got '{value}'.",
+            )
         if flags != 0:
             passed = False
-            yield WARN,\
-                  Message("wrong-ital-axis-flag",
-                          f"STAT table 'ital' axis flag is wrong."
-                          f" Expected: 0 (not elided), got '{flags}'.")
+            yield WARN, Message(
+                "wrong-ital-axis-flag",
+                f"STAT table 'ital' axis flag is wrong."
+                f" Expected: 0 (not elided), got '{flags}'.",
+            )
     else:
         if value != 0:
             passed = False
-            yield WARN,\
-                  Message("wrong-ital-axis-value",
-                          f"STAT table 'ital' axis has wrong value."
-                          f" Expected: 0, got '{value}'.")
+            yield WARN, Message(
+                "wrong-ital-axis-value",
+                f"STAT table 'ital' axis has wrong value."
+                f" Expected: 0, got '{value}'.",
+            )
         if flags != 2:
             passed = False
-            yield WARN,\
-                  Message("wrong-ital-axis-flag",
-                          f"STAT table 'ital' axis flag is wrong.\n"
-                          f"Expected: 2 (elided)\n"
-                          f"Got: '{flags}'")
+            yield WARN, Message(
+                "wrong-ital-axis-flag",
+                f"STAT table 'ital' axis flag is wrong.\n"
+                f"Expected: 2 (elided)\n"
+                f"Got: '{flags}'",
+            )
         if linkedValue != 1:
             passed = False
-            yield WARN,\
-                  Message("wrong-ital-axis-linkedvalue",
-                          "STAT table 'ital' axis is not linked to Italic.")
+            yield WARN, Message(
+                "wrong-ital-axis-linkedvalue",
+                "STAT table 'ital' axis is not linked to Italic.",
+            )
 
     if passed:
         yield PASS, "STAT table ital axis values are good."
 
 
 @check(
-    id = 'com.google.fonts/check/italic_axis_last',
+    id="com.google.fonts/check/italic_axis_last",
     conditions=["style", "has_STAT_table"],
-    rationale = """
+    rationale="""
         Check that the 'ital' STAT axis is last in axis order.
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/3669'
+    proposal="https://github.com/googlefonts/fontbakery/issues/3669",
 )
 def com_google_fonts_check_italic_axis_last(ttFont, style):
     """Ensure 'ital' STAT axis is last."""
@@ -303,8 +310,9 @@ def com_google_fonts_check_italic_axis_last(ttFont, style):
         return
 
     if ttFont["STAT"].table.DesignAxisRecord.Axis[-1].AxisTag != "ital":
-        yield WARN,\
-              Message("ital-axis-not-last",
-                      "STAT table 'ital' axis is not the last in the axis order.")
+        yield WARN, Message(
+            "ital-axis-not-last",
+            "STAT table 'ital' axis is not the last in the axis order.",
+        )
     else:
         yield PASS, "STAT table ital axis order is good."

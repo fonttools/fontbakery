@@ -1,13 +1,14 @@
 class Status:
-    """ If you create a custom Status symbol, please keep in mind that
+    """If you create a custom Status symbol, please keep in mind that
     all statuses are registered globally and that can cause name collisions.
 
     However, it's an intended use case for your checks to be able to yield
     custom statuses. Interpreters of the check protocol will have to skip
     statuses unknown to them or treat them in an otherwise non-fatal fashion.
     """
+
     def __new__(cls, name, weight=0):
-        """ Don't create two instances with same name.
+        """Don't create two instances with same name.
 
         >>> a = Status('PASS')
         >>> a
@@ -23,14 +24,14 @@ class Status:
         instance = cls.__instances.get(name, None)
         if instance is None:
             instance = cls.__instances[name] = super(Status, cls).__new__(cls)
-            setattr(instance, '_Status__name', name)
-            setattr(instance, '_Status__weight', weight)
+            setattr(instance, "_Status__name", name)
+            setattr(instance, "_Status__weight", weight)
         return instance
 
     __instances = {}
 
     def __str__(self):
-        return f'<Status {self.__name}>'
+        return f"<Status {self.__name}>"
 
     @property
     def name(self):
@@ -83,24 +84,30 @@ class Status:
 
 # Log statuses
 # only between STARTCHECK and ENDCHECK:
-DEBUG = Status('DEBUG', 0)  # Silent by default
-PASS = Status('PASS', 1)
-SKIP = Status('SKIP', 2)  # SKIP is heavier than PASS because it's likely more interesting to
-                          # see what got skipped, to reveal blind spots.
-INFO = Status('INFO', 3)
-WARN = Status('WARN', 4)  # A check that results in WARN may indicate a problem, but also may be OK.
-FAIL = Status('FAIL', 5)  # A FAIL is a problem detected in the font or family.
-ERROR = Status('ERROR', 6)  # Something a programmer must fix. It will make a check fail as well.
+DEBUG = Status("DEBUG", 0)  # Silent by default
+PASS = Status("PASS", 1)
+SKIP = Status(
+    "SKIP", 2
+)  # SKIP is heavier than PASS because it's likely more interesting to
+# see what got skipped, to reveal blind spots.
+INFO = Status("INFO", 3)
+WARN = Status(
+    "WARN", 4
+)  # A check that results in WARN may indicate a problem, but also may be OK.
+FAIL = Status("FAIL", 5)  # A FAIL is a problem detected in the font or family.
+ERROR = Status(
+    "ERROR", 6
+)  # Something a programmer must fix. It will make a check fail as well.
 
 # Start of the suite of checks. Must be always the first message, even in async mode.
 # Message is the full execution order of the whole profile
-START = Status('START', -6)
+START = Status("START", -6)
 # Only between START and before the first SECTIONSUMMARY and END
 # Message is None.
-STARTCHECK = Status('STARTCHECK', -2)
+STARTCHECK = Status("STARTCHECK", -2)
 # Ends the last check started by STARTCHECK.
 # Message the the result status of the whole check, one of PASS, SKIP, FAIL, ERROR.
-ENDCHECK = Status('ENDCHECK', -1)
+ENDCHECK = Status("ENDCHECK", -1)
 # After the last ENDCHECK one SECTIONSUMMARY for each section before END.
 # Message is a tuple of:
 #   * the actual execution order of the section in the check runner session
@@ -109,8 +116,8 @@ ENDCHECK = Status('ENDCHECK', -1)
 #   * a Counter dictionary where the keys are Status.name of
 #     the ENDCHECK message. If serialized, some existing statuses may not be
 #     in the counter because they never occurred in the section.
-SECTIONSUMMARY = Status('SECTIONSUMMARY', -3)
+SECTIONSUMMARY = Status("SECTIONSUMMARY", -3)
 # End of the suite of checks. Must be always the last message, even in async mode.
 # Message is a counter as described in SECTIONSUMMARY, but with the collected
 # results of all checks in all sections.
-END = Status('END', -5)
+END = Status("END", -5)

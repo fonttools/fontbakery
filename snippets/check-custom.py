@@ -76,6 +76,7 @@ excluded_check_ids = (
 #
 # ================================================
 
+
 # TEST PASS EXAMPLE
 # This check is a live example that is executed when
 # you run this custom profile.  It is safe to remove
@@ -96,6 +97,7 @@ def org_example_check_valid_test_pass():
 # End check definitions
 #
 # ================================================
+
 
 # This function identifies the skipped checks that are
 # defined in the `excluded_check_ids` tuple at the head
