@@ -1,17 +1,19 @@
 from fontbakery.callable import check
 from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
+
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory # NOQA pylint: disable=unused-import
+from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
+    profile_factory,
+)
 from fontbakery.constants import REGISTERED_AXIS_TAGS
 
-profile_imports = (
-    (".", ("shared_conditions",)),
-)
+profile_imports = ((".", ("shared_conditions",)),)
+
 
 @check(
-    id = 'com.google.fonts/check/varfont/regular_wght_coord',
-    rationale = """
+    id="com.google.fonts/check/varfont/regular_wght_coord",
+    rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wght' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
@@ -19,31 +21,29 @@ profile_imports = (
         If a variable font has a 'wght' (Weight) axis, then the coordinate of
         its 'Regular' instance is required to be 400.
     """,
-    conditions = ['is_variable_font',
-                  'has_wght_axis'],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    conditions=["is_variable_font", "has_wght_axis"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord):
     """The variable font 'wght' (Weight) axis coordinate must be 400 on the
     'Regular' instance."""
 
     if regular_wght_coord is None:
-        yield FAIL,\
-              Message("no-regular-instance",
-              '"Regular" instance not present.')
+        yield FAIL, Message("no-regular-instance", '"Regular" instance not present.')
     elif regular_wght_coord == 400:
         yield PASS, "Regular:wght is 400."
     else:
-        yield FAIL,\
-              Message("wght-not-400",
-                      f'The "wght" axis coordinate of'
-                      f' the "Regular" instance must be 400.'
-                      f' Got {regular_wght_coord} instead.')
+        yield FAIL, Message(
+            "wght-not-400",
+            f'The "wght" axis coordinate of'
+            f' the "Regular" instance must be 400.'
+            f" Got {regular_wght_coord} instead.",
+        )
 
 
 @check(
-    id = 'com.google.fonts/check/varfont/regular_wdth_coord',
-    rationale = """
+    id="com.google.fonts/check/varfont/regular_wdth_coord",
+    rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wdth' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
@@ -51,30 +51,28 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
         If a variable font has a 'wdth' (Width) axis, then the coordinate of
         its 'Regular' instance is required to be 100.
     """,
-    conditions = ['is_variable_font',
-                  'has_wdth_axis'],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    conditions=["is_variable_font", "has_wdth_axis"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord):
     """The variable font 'wdth' (Width) axis coordinate must be 100 on the 'Regular' instance."""
 
     if regular_wdth_coord is None:
-        yield FAIL,\
-              Message("no-regular-instance",
-              '"Regular" instance not present.')
+        yield FAIL, Message("no-regular-instance", '"Regular" instance not present.')
     elif regular_wdth_coord == 100:
         yield PASS, "Regular:wdth is 100."
     else:
-        yield FAIL,\
-              Message("wdth-not-100",
-                      f'The "wdth" axis coordinate of'
-                      f' the "Regular" instance must be 100.'
-                      f' Got {regular_wdth_coord} as a default value instead.')
+        yield FAIL, Message(
+            "wdth-not-100",
+            f'The "wdth" axis coordinate of'
+            f' the "Regular" instance must be 100.'
+            f" Got {regular_wdth_coord} as a default value instead.",
+        )
 
 
 @check(
-    id = 'com.google.fonts/check/varfont/regular_slnt_coord',
-    rationale = """
+    id="com.google.fonts/check/varfont/regular_slnt_coord",
+    rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'slnt' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_slnt
@@ -82,30 +80,28 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
         If a variable font has a 'slnt' (Slant) axis, then the coordinate of
         its 'Regular' instance is required to be zero.
     """,
-    conditions = ['is_variable_font',
-                  'has_slnt_axis'],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    conditions=["is_variable_font", "has_slnt_axis"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord):
     """The variable font 'slnt' (Slant) axis coordinate must be zero on the 'Regular' instance."""
 
     if regular_slnt_coord is None:
-        yield FAIL, \
-              Message("no-regular-instance",
-              '"Regular" instance not present.')
+        yield FAIL, Message("no-regular-instance", '"Regular" instance not present.')
     elif regular_slnt_coord == 0:
         yield PASS, "Regular:slnt is zero."
     else:
-        yield FAIL,\
-              Message("slnt-not-0",
-                      f'The "slnt" axis coordinate of'
-                      f' the "Regular" instance must be zero.'
-                      f' Got {regular_slnt_coord} as a default value instead.')
+        yield FAIL, Message(
+            "slnt-not-0",
+            f'The "slnt" axis coordinate of'
+            f' the "Regular" instance must be zero.'
+            f" Got {regular_slnt_coord} as a default value instead.",
+        )
 
 
 @check(
-    id = 'com.google.fonts/check/varfont/regular_ital_coord',
-    rationale = """
+    id="com.google.fonts/check/varfont/regular_ital_coord",
+    rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'ital' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_ital
@@ -113,30 +109,28 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
         If a variable font has a 'ital' (Italic) axis, then the coordinate of
         its 'Regular' instance is required to be zero.
     """,
-    conditions = ['is_variable_font',
-                  'has_ital_axis'],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    conditions=["is_variable_font", "has_ital_axis"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord):
     """The variable font 'ital' (Italic) axis coordinate must be zero on the 'Regular' instance."""
 
     if regular_ital_coord is None:
-        yield FAIL, \
-              Message("no-regular-instance",
-              '"Regular" instance not present.')
+        yield FAIL, Message("no-regular-instance", '"Regular" instance not present.')
     elif regular_ital_coord == 0:
         yield PASS, "Regular:ital is zero."
     else:
-        yield FAIL,\
-              Message("ital-not-0",
-                      f'The "ital" axis coordinate of'
-                      f' the "Regular" instance must be zero.'
-                      f' Got {regular_ital_coord} as a default value instead.')
+        yield FAIL, Message(
+            "ital-not-0",
+            f'The "ital" axis coordinate of'
+            f' the "Regular" instance must be zero.'
+            f" Got {regular_ital_coord} as a default value instead.",
+        )
 
 
 @check(
-    id = 'com.google.fonts/check/varfont/regular_opsz_coord',
-    rationale = """
+    id="com.google.fonts/check/varfont/regular_opsz_coord",
+    rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'opsz' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_opsz
@@ -145,31 +139,29 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
         the coordinate of its 'Regular' instance is recommended to be
         a value in the range 10 to 16.
     """,
-    conditions = ['is_variable_font',
-                  'has_opsz_axis'],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    conditions=["is_variable_font", "has_opsz_axis"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord):
     """The variable font 'opsz' (Optical Size) axis coordinate should be between 10 and 16 on the 'Regular' instance."""
 
     if regular_opsz_coord is None:
-        yield FAIL, \
-              Message("no-regular-instance",
-              '"Regular" instance not present.')
+        yield FAIL, Message("no-regular-instance", '"Regular" instance not present.')
     elif regular_opsz_coord >= 10 and regular_opsz_coord <= 16:
         yield PASS, f"Regular:opsz coordinate ({regular_opsz_coord}) looks good."
     else:
-        yield WARN,\
-              Message("opsz-out-of-range",
-                      f'The "opsz" (Optical Size) coordinate'
-                      f' on the "Regular" instance is recommended'
-                      f' to be a value in the range 10 to 16.'
-                      f' Got {regular_opsz_coord} instead.')
+        yield WARN, Message(
+            "opsz-out-of-range",
+            f'The "opsz" (Optical Size) coordinate'
+            f' on the "Regular" instance is recommended'
+            f" to be a value in the range 10 to 16."
+            f" Got {regular_opsz_coord} instead.",
+        )
 
 
 @check(
-    id = 'com.google.fonts/check/varfont/bold_wght_coord',
-    rationale = """
+    id="com.google.fonts/check/varfont/bold_wght_coord",
+    rationale="""
         The Open-Type spec's registered
         design-variation tag 'wght' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
@@ -180,54 +172,52 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
         is made between "no bold instance present" vs "bold instance is present
         but its wght coordinate is not == 700").
     """,
-    conditions = ['is_variable_font',
-                  'has_wght_axis'],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/1707'
+    conditions=["is_variable_font", "has_wght_axis"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
     """The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold' instance."""
 
     if bold_wght_coord is None:
-        yield FAIL,\
-              Message("no-bold-instance",
-                      '"Bold" instance not present.')
+        yield FAIL, Message("no-bold-instance", '"Bold" instance not present.')
     elif bold_wght_coord == 700:
         yield PASS, "Bold:wght is 700."
     else:
-        yield FAIL,\
-              Message("wght-not-700",
-                      f'The "wght" axis coordinate of'
-                      f' the "Bold" instance must be 700.'
-                      f' Got {bold_wght_coord} instead.')
+        yield FAIL, Message(
+            "wght-not-700",
+            f'The "wght" axis coordinate of'
+            f' the "Bold" instance must be 700.'
+            f" Got {bold_wght_coord} instead.",
+        )
 
 
 @check(
-    id = 'com.google.fonts/check/varfont/wght_valid_range',
-    rationale = """
+    id="com.google.fonts/check/varfont/wght_valid_range",
+    rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wght' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
 
         On the 'wght' (Weight) axis, the valid coordinate range is 1-1000.
     """,
-    conditions = ['is_variable_font',
-                  'has_wght_axis'],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2264'
+    conditions=["is_variable_font", "has_wght_axis"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/2264",
 )
 def com_google_fonts_check_varfont_wght_valid_range(ttFont):
     """The variable font 'wght' (Weight) axis coordinate
-       must be within spec range of 1 to 1000 on all instances."""
+    must be within spec range of 1 to 1000 on all instances."""
 
     passed = True
-    for instance in ttFont['fvar'].instances:
-        if 'wght' in instance.coordinates:
-            value = instance.coordinates['wght']
+    for instance in ttFont["fvar"].instances:
+        if "wght" in instance.coordinates:
+            value = instance.coordinates["wght"]
             if value < 1 or value > 1000:
                 passed = False
-                yield FAIL,\
-                      Message("wght-out-of-range",
-                              f'Found a bad "wght" coordinate with value {value}'
-                              f' outside of the valid range from 1 to 1000.')
+                yield FAIL, Message(
+                    "wght-out-of-range",
+                    f'Found a bad "wght" coordinate with value {value}'
+                    f" outside of the valid range from 1 to 1000.",
+                )
                 break
 
     if passed:
@@ -235,38 +225,39 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/varfont/wdth_valid_range',
-    rationale = """
+    id="com.google.fonts/check/varfont/wdth_valid_range",
+    rationale="""
         According to the Open-Type spec's
         registered design-variation tag 'wdth' available at
         https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wdth
 
         On the 'wdth' (Width) axis, the valid numeric range is strictly greater than zero.
     """,
-    conditions = ['is_variable_font',
-                  'has_wdth_axis'],
-    proposal = 'https://github.com/googlefonts/fontbakery/pull/2520'
+    conditions=["is_variable_font", "has_wdth_axis"],
+    proposal="https://github.com/googlefonts/fontbakery/pull/2520",
 )
 def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
     """The variable font 'wdth' (Width) axis coordinate
-       must strictly greater than zero."""
+    must strictly greater than zero."""
 
     passed = True
-    for instance in ttFont['fvar'].instances:
-        if 'wdth' in instance.coordinates:
-            value = instance.coordinates['wdth']
+    for instance in ttFont["fvar"].instances:
+        if "wdth" in instance.coordinates:
+            value = instance.coordinates["wdth"]
             if value < 1:
                 passed = False
-                yield FAIL,\
-                      Message("wdth-out-of-range",
-                              f'Found a bad "wdth" coordinate with value {value}'
-                              f' outside of the valid range (> 0).')
+                yield FAIL, Message(
+                    "wdth-out-of-range",
+                    f'Found a bad "wdth" coordinate with value {value}'
+                    f" outside of the valid range (> 0).",
+                )
                 break
             if value > 1000:
-                yield WARN,\
-                      Message("wdth-greater-than-1000",
-                              f'Found a "wdth" coordinate with value {value}'
-                              f' which is valid but unusual.')
+                yield WARN, Message(
+                    "wdth-greater-than-1000",
+                    f'Found a "wdth" coordinate with value {value}'
+                    f" which is valid but unusual.",
+                )
                 break
 
     if passed:
@@ -274,8 +265,8 @@ def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
 
 
 @check(
-    id = 'com.google.fonts/check/varfont/slnt_range',
-    rationale = """
+    id="com.google.fonts/check/varfont/slnt_range",
+    rationale="""
         The OpenType spec says at
         https://docs.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_slnt that:
 
@@ -284,26 +275,26 @@ def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
         right-leaning oblique design will have a negative slant value. This matches
         the scale used for the italicAngle field in the post table.
     """,
-    conditions = ['is_variable_font',
-                  'has_slnt_axis'],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/2572'
+    conditions=["is_variable_font", "has_slnt_axis"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/2572",
 )
 def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
-    """ The variable font 'slnt' (Slant) axis coordinate
-        specifies positive values in its range? """
+    """The variable font 'slnt' (Slant) axis coordinate
+    specifies positive values in its range?"""
 
     if slnt_axis.minValue < 0 and slnt_axis.maxValue >= 0:
         yield PASS, "Looks good!"
     else:
-        yield WARN,\
-              Message("unusual-slnt-range",
-                      f'The range of values for the "slnt" axis in'
-                      f' this font only allows positive coordinates'
-                      f' (from {slnt_axis.minValue} to {slnt_axis.maxValue}),'
-                      f' indicating that this may be a back slanted design,'
-                      f' which is rare. If that\'s not the case, then'
-                      f' the "slant" axis should be a range of'
-                      f' negative values instead.')
+        yield WARN, Message(
+            "unusual-slnt-range",
+            f'The range of values for the "slnt" axis in'
+            f" this font only allows positive coordinates"
+            f" (from {slnt_axis.minValue} to {slnt_axis.maxValue}),"
+            f" indicating that this may be a back slanted design,"
+            f" which is rare. If that's not the case, then"
+            f' the "slant" axis should be a range of'
+            f" negative values instead.",
+        )
 
 
 @check(
@@ -464,8 +455,9 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
     conditions=["is_variable_font"],
     proposal="https://github.com/googlefonts/fontbakery/issues/3708",
 )
-def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
-                                                                 has_name_table):
+def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
+    ttFont, has_name_table
+):
     """Validates that when an instance record is included for the default instance,
     its subfamilyNameID value is set to a name ID whose string is equal to the
     string of either name ID 2 or 17, and its postScriptNameID value is set to a
@@ -506,7 +498,7 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(ttFont,
                 yield FAIL, Message(
                     "invalid-default-instance-subfamily-name",
                     f"{subfam_name!r} instance has the same coordinates as the default"
-                    f" instance; its subfamily name should be {font_subfam_name!r}"
+                    f" instance; its subfamily name should be {font_subfam_name!r}",
                 )
                 passed = False
 
@@ -611,8 +603,8 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
 
 
 @check(
-    id = 'com.adobe.fonts/check/varfont/foundry_defined_tag_name',
-    rationale = """
+    id="com.adobe.fonts/check/varfont/foundry_defined_tag_name",
+    rationale="""
         According to the Open-Type spec's syntactic requirements for 
         foundry-defined design-variation axis tags available at
         https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxisreg
@@ -620,8 +612,8 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
         Foundry-defined tags must begin with an uppercase letter
         and must use only uppercase letters or digits.
     """,
-    conditions = ['is_variable_font'],
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/4043'
+    conditions=["is_variable_font"],
+    proposal="https://github.com/googlefonts/fontbakery/issues/4043",
 )
 def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
     "Validate foundry-defined design-variation axis tag names."
@@ -631,31 +623,36 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
         if axisTag in REGISTERED_AXIS_TAGS:
             continue
         if axisTag.lower() in REGISTERED_AXIS_TAGS:
-            yield WARN, \
-                  Message("foundry-defined-similar-registered-name",
-                          f'Foundry-defined tag "{axisTag}" is very similar to'
-                          f' registered tag "{axisTag.lower()}", consider renaming.\n'
-                          f'If this tag was meant to be a registered tag, please'
-                          f' use all lowercase letters in the tag name.')
+            yield WARN, Message(
+                "foundry-defined-similar-registered-name",
+                f'Foundry-defined tag "{axisTag}" is very similar to'
+                f' registered tag "{axisTag.lower()}", consider renaming.\n'
+                f"If this tag was meant to be a registered tag, please"
+                f" use all lowercase letters in the tag name.",
+            )
 
         firstChar = ord(axisTag[0])
-        if not (firstChar >= ord('A') and firstChar <= ord('Z')):
+        if not (firstChar >= ord("A") and firstChar <= ord("Z")):
             passed = False
-            yield FAIL, \
-                  Message("invalid-foundry-defined-tag-first-letter",
-                          f'Please fix axis tag "{axisTag}".\n'
-                          f'Foundry-defined tags must begin with an uppercase letter.')
+            yield FAIL, Message(
+                "invalid-foundry-defined-tag-first-letter",
+                f'Please fix axis tag "{axisTag}".\n'
+                f"Foundry-defined tags must begin with an uppercase letter.",
+            )
 
         for i in range(3):
             char = ord(axisTag[1 + i])
-            if not ((char >= ord('0') and char <= ord('9')) or \
-                    (char >= ord('A') and char <= ord('Z'))):
+            if not (
+                (char >= ord("0") and char <= ord("9"))
+                or (char >= ord("A") and char <= ord("Z"))
+            ):
                 passed = False
-                yield FAIL, \
-                      Message("invalid-foundry-defined-tag-chars",
-                              f'Please fix axis tag "{axisTag}".\n'
-                              f'Foundry-defined tags must only use'
-                              f' uppercase or digits.')
+                yield FAIL, Message(
+                    "invalid-foundry-defined-tag-chars",
+                    f'Please fix axis tag "{axisTag}".\n'
+                    f"Foundry-defined tags must only use"
+                    f" uppercase or digits.",
+                )
 
     if passed:
         yield PASS, f"Axis tag '{axisTag}' looks good."

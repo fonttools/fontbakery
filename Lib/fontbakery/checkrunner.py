@@ -110,7 +110,7 @@ class CheckRunner:
 
     @property
     def iterargs(self):
-        """ uses the singular name as key """
+        """uses the singular name as key"""
         iterargs = OrderedDict()
         for name in self._iterargs:
             plural = self._profile.iterargs[name]
@@ -258,7 +258,7 @@ class CheckRunner:
         return self._get(key, iterargs, None, *args)
 
     def get_iterarg(self, name, index):
-        """ Used by e.g. reporters """
+        """Used by e.g. reporters"""
         plural = self._profile.iterargs[name]
         return self._values[plural][index]
 
@@ -564,7 +564,6 @@ def session_protocol_generator(check_protocol_generator, order):
     sections = OrderedDict()
     next_check_identity = yield START, order, (None, None, None)
     while next_check_identity:
-
         for event in check_protocol_generator(next_check_identity):
             # send(check_identity) always after ENDCHECK
             next_check_identity = yield event

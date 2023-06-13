@@ -10,15 +10,10 @@ domains as well.
 Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
-from fontbakery.checkrunner import (
-              DEBUG
-            , SECTIONSUMMARY
-            , ENDCHECK
-            , START
-            , END
-            )
+from fontbakery.checkrunner import DEBUG, SECTIONSUMMARY, ENDCHECK, START, END
 from fontbakery.reporters import FontbakeryReporter
 from fontbakery.checkrunner import Status
+
 
 class SerializeReporter(FontbakeryReporter):
     """
@@ -29,11 +24,7 @@ class SerializeReporter(FontbakeryReporter):
     >> print(json.dumps(sr.getdoc(), sort_keys=True, indent=4))
     """
 
-
-    def __init__(self, loglevels,
-                     succinct=None,
-                     collect_results_by=None,
-                     **kwd):
+    def __init__(self, loglevels, succinct=None, collect_results_by=None, **kwd):
         super().__init__(**kwd)
         self.succinct = succinct
         self.loglevels = loglevels
@@ -56,9 +47,7 @@ class SerializeReporter(FontbakeryReporter):
 
     def omit_loglevel(self, msg) -> bool:
         """Determine if message is below log level."""
-        return self.loglevels and (
-            self.loglevels[0] > Status(msg)
-        )
+        return self.loglevels and (self.loglevels[0] > Status(msg))
 
     def _register(self, event):
         super()._register(event)
@@ -76,13 +65,13 @@ class SerializeReporter(FontbakeryReporter):
                 if self._results_by:
                     # give the consumer a clue that/how the sections
                     # are structured differently.
-                    item['clusteredBy'] = self._results_by
+                    item["clusteredBy"] = self._results_by
             if status == SECTIONSUMMARY:
                 item.update(dict(key=key, result=None, checks=[]))
             if check:
                 item.update(dict(key=key, result=None, logs=[]))
                 if self._results_by:
-                    if self._results_by == '*check':
+                    if self._results_by == "*check":
                         if check.id not in self._observed_checks:
                             self._observed_checks[check.id] = len(self._observed_checks)
                         index = self._observed_checks[check.id]
@@ -95,42 +84,49 @@ class SerializeReporter(FontbakeryReporter):
 
                     if index is not None:
                         if self._max_cluster_by_index is not None:
-                            self._max_cluster_by_index = max(index, self._max_cluster_by_index)
+                            self._max_cluster_by_index = max(
+                                index, self._max_cluster_by_index
+                            )
                         else:
                             self._max_cluster_by_index = index
 
-                    item['clustered'] = {
-                        'name': self._results_by
-                      , 'index': index # None if this check did not require self.results_by
+                    item["clustered"] = {
+                        "name": self._results_by,
+                        "index": index,  # None if this check did not require self.results_by
                     }
-                    if value: # Not set if self.runner was not defined on initialization
-                        item['clustered']['value'] = value
+                    if (
+                        value
+                    ):  # Not set if self.runner was not defined on initialization
+                        item["clustered"]["value"] = value
             self._set_metadata(identity, item)
 
         if check:
-            item['description'] = check.description
+            item["description"] = check.description
             if check.rationale:
-                item['rationale'] = check.rationale
+                item["rationale"] = check.rationale
             if check.severity:
-                item['severity'] = check.severity
+                item["severity"] = check.severity
             if item["key"][2] != ():
-                item['filename'] = self.runner.get_iterarg(*item["key"][2][0])
+                item["filename"] = self.runner.get_iterarg(*item["key"][2][0])
 
         if status == END:
-            item['result'] = message # is a Counter
+            item["result"] = message  # is a Counter
         if status == SECTIONSUMMARY:
-            _, item['result'] = message # message[1] is a Counter
+            _, item["result"] = message  # message[1] is a Counter
         if status == ENDCHECK:
-            item['result'] = message.name # is a Status
+            item["result"] = message.name  # is a Status
         if status >= DEBUG:
-            item['logs'].append({'status': status.name,
-                                 'message': f'{message}',
-                                 'traceback': getattr(message, 'traceback', None)
-                                })
+            item["logs"].append(
+                {
+                    "status": status.name,
+                    "message": f"{message}",
+                    "traceback": getattr(message, "traceback", None),
+                }
+            )
 
     def getdoc(self):
         if not self._ended:
-            raise Exception('Can\'t create doc before END status was recevived.')
+            raise Exception("Can't create doc before END status was recevived.")
         if self._doc is not None:
             return self._doc
         doc = self._items[self._get_key((None, None, None))]
@@ -144,28 +140,28 @@ class SerializeReporter(FontbakeryReporter):
 
             check = self._items[key]
             if self._results_by:
-                if not len(sectionDoc['checks']):
+                if not len(sectionDoc["checks"]):
                     clusterlen = self._max_cluster_by_index + 1
-                    if self._results_by != '*check':
+                    if self._results_by != "*check":
                         # + 1 for rests bucket
                         clusterlen += 1
-                    sectionDoc['checks'] = [[] for _ in range(clusterlen)]
-                index = check['clustered']['index']
+                    sectionDoc["checks"] = [[] for _ in range(clusterlen)]
+                index = check["clustered"]["index"]
                 if index is None:
                     # last element collects unclustered
                     index = -1
-                sectionDoc['checks'][index].append(check)
+                sectionDoc["checks"][index].append(check)
             else:
-                sectionDoc['checks'].append(check)
+                sectionDoc["checks"].append(check)
             if sectionKey not in seen:
                 seen.add(sectionKey)
-                doc['sections'].append(sectionDoc)
+                doc["sections"].append(sectionDoc)
         self._doc = doc
         return doc
 
     def write(self):
         import json
+
         with open(self.output_file, "w") as fh:
             json.dump(self.getdoc(), fh, sort_keys=True, indent=4)
         print(f'A report in JSON format has been saved to "{self.output_file}"')
-

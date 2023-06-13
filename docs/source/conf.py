@@ -27,7 +27,7 @@ author = "The Font Bakery Authors"
 # The short X.Y version
 version = "0.8"
 # The full version, including alpha/beta/rc tags
-release = "0.8.11"
+release = "0.8.13"
 
 
 # -- General configuration ---------------------------------------------------
@@ -38,13 +38,14 @@ needs_sphinx = "4.3"
 # Add any Sphinx extension module names here, as strings.
 # They can be extensions coming with Sphinx (named 'sphinx.ext.*')
 # or your custom ones.
-extensions = ["sphinx.ext.autodoc"
-            , "sphinx.ext.viewcode"
-            , "fontbakery.sphinx_extensions.linkcode"
-            , "fontbakery.sphinx_extensions.profile"
-            , "sphinx.ext.napoleon"
-            , "recommonmark"
-            ]
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "fontbakery.sphinx_extensions.linkcode",
+    "fontbakery.sphinx_extensions.profile",
+    "sphinx.ext.napoleon",
+    "recommonmark",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -130,11 +131,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (main_doc,
-     "FontBakery.tex",
-     "Font Bakery Documentation",
-     "The Font Bakery Authors",
-     "manual")
+    (
+        main_doc,
+        "FontBakery.tex",
+        "Font Bakery Documentation",
+        "The Font Bakery Authors",
+        "manual",
+    )
 ]
 
 
@@ -142,13 +145,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (main_doc,
-     "fontbakery",
-     "Font Bakery Documentation",
-     [author],
-     1)
-]
+man_pages = [(main_doc, "fontbakery", "Font Bakery Documentation", [author], 1)]
 
 # -- Options for Texinfo output ----------------------------------------------
 
@@ -156,17 +153,20 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (main_doc,
-     "FontBakery",
-     "Font Bakery Documentation",
-     author,
-     "FontBakery",
-     "Well designed Font QA tool, written in Python 3.",
-     "Miscellaneous")
+    (
+        main_doc,
+        "FontBakery",
+        "Font Bakery Documentation",
+        author,
+        "FontBakery",
+        "Well designed Font QA tool, written in Python 3.",
+        "Miscellaneous",
+    )
 ]
 
 
 # -- Extension configuration -------------------------------------------------
+
 
 def linkcode_resolve(domain, info):
     # hmmm: related https://github.com/sphinx-doc/sphinx/issues/1556
@@ -175,12 +175,12 @@ def linkcode_resolve(domain, info):
     # ipdb> domain
     # 'py'
 
-    if domain != 'py':
+    if domain != "py":
         return None
-    if not info['module']:
+    if not info["module"]:
         return None
 
-    filename = info['module'].replace('.', '/')
+    filename = info["module"].replace(".", "/")
 
     # We must get the "tree" part dynamically, best would be the release
     # tag, if it is the same as the version that we are building at the
@@ -191,12 +191,14 @@ def linkcode_resolve(domain, info):
     # as seen on this URL:
     # https://github.com/googlefonts/fontbakery/tree/v0.7.2/Lib/fontbakery/profiles
 
-    tree = 'v0.8.11'
+    tree = "v0.8.13"
     # It's not planned for us to get the line number :-(
     # I had to hammer this data into the info.
-    if 'lineno' in info:
-        lineno = '#L{}'.format(info["lineno"])
+    if "lineno" in info:
+        lineno = "#L{}".format(info["lineno"])
     else:
-        lineno = ''
+        lineno = ""
 
-    return 'https://github.com/googlefonts/fontbakery/tree/{}/Lib/{}.py{}'.format(tree, filename, lineno)
+    return "https://github.com/googlefonts/fontbakery/tree/{}/Lib/{}.py{}".format(
+        tree, filename, lineno
+    )

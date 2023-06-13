@@ -15,6 +15,7 @@ disable=
 	attribute-defined-outside-init,
 	bare-except,
 	broad-except,
+	broad-exception-raised,
 	c-extension-no-member,
 	chained-comparison,
 	consider-iterating-dictionary,

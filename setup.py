@@ -17,49 +17,89 @@
 from setuptools import setup
 
 try:
-    readme = open('README.md').read()
+    readme = open("README.md", encoding="utf8").read()
 except IOError:
-    readme = ''
+    readme = ""
+
+
+FONTTOOLS_VERSION = ">=4.39.0"  # Python 3.8+ required
+UFO2FT_VERSION = ">=2.25.2"
+
+# Profile-specific dependencies:
+ufo_sources_extras = [
+    "defcon",
+    f"fontTools[ufo]{FONTTOOLS_VERSION}",
+    f"ufo2ft{UFO2FT_VERSION}",
+    "ufolint",
+]
+
+googlefonts_extras = [
+    "axisregistry>=0.3.0",
+    "beautifulsoup4",  # For parsing registered vendor IDs from Microsoft's webpage
+    "dehinter>=3.1.0",  # 3.1.0 added dehinter.font.hint function
+    "font-v",
+    f"fontTools[lxml,unicode]{FONTTOOLS_VERSION}",
+    "gflanguages>=0.3.0",  # There was an api simplification/update on v0.3.0
+    # (see https://github.com/googlefonts/gflanguages/pull/7)
+    "glyphsets>=0.5.0",
+    "protobuf>=3.7.0, <4",  # 3.7.0 fixed a bug on parsing some METADATA.pb files.
+    # We cannot use v4 because our protobuf files have been compiled with v3.
+    # (see https://github.com/googlefonts/fontbakery/issues/2200)
+] + ufo_sources_extras
+
+fontval_extras = [
+    "lxml",
+]
+
+docs_extras = []
+
+all_extras = set(docs_extras + googlefonts_extras + fontval_extras + ufo_sources_extras)
 
 setup(
     name="fontbakery",
     use_scm_version={"write_to": "Lib/fontbakery/_version.py"},
-    url='https://github.com/googlefonts/fontbakery/',
-    description='Well designed Font QA tool, written in Python 3',
+    url="https://github.com/googlefonts/fontbakery/",
+    description="A font quality assurance tool for everyone",
     long_description=readme,
-    long_description_content_type='text/markdown',
-    author=('Font Bakery authors and contributors:'
-            ' Dave Crossland,'
-            ' Felipe Sanches,'
-            ' Lasse Fister,'
-            ' Marc Foley,'
-            ' Nikolaus Waxweiler,'
-            ' Chris Simpkins,'
-            ' Jens Kutilek,'
-            ' Vitaly Volkov'),
-    author_email='dave@lab6.com',
-    package_dir={'': 'Lib'},
-    packages=['fontbakery',
-              'fontbakery.reporters',
-              'fontbakery.profiles',
-              'fontbakery.commands',
-              'fontbakery.sphinx_extensions'
-              ],
-    package_data={'fontbakery': ['data/*.cache',
-                                 'data/googlefonts/*_exceptions.txt']},
-    classifiers=[
-        'Environment :: Console',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3 :: Only',
+    long_description_content_type="text/markdown",
+    author=(
+        "Font Bakery authors and contributors:"
+        " Dave Crossland,"
+        " Felipe Sanches,"
+        " Lasse Fister,"
+        " Marc Foley,"
+        " Nikolaus Waxweiler,"
+        " Chris Simpkins,"
+        " Jens Kutilek,"
+        " Vitaly Volkov,"
+        " Simon Cozens,"
+        " Miguel Sousa"
+    ),
+    author_email="juca@members.fsf.org",
+    package_dir={"": "Lib"},
+    packages=[
+        "fontbakery",
+        "fontbakery.reporters",
+        "fontbakery.profiles",
+        "fontbakery.commands",
     ],
-    python_requires='>=3.8',
+    package_data={"fontbakery": ["data/*.cache", "data/googlefonts/*_exceptions.txt"]},
+    classifiers=[
+        "Environment :: Console",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+    ],
+    python_requires=">=3.8",
     setup_requires=[
-        'setuptools>=61.2',
-        'setuptools_scm[toml]>=6.2',
+        "setuptools>=61.2",
+        "setuptools_scm[toml]>=6.2",
     ],
     install_requires=[
         'axisregistry>=0.3.0',
@@ -97,20 +137,18 @@ setup(
         'shaperglot>=0.2.0',
     ],
     extras_require={
-        'docs': [
-            'recommonmark',
-            'sphinx >= 1.4',
-            'sphinx_rtd_theme',
-        ],
-        'freetype': [
-            'freetype-py',
-        ],
+        "all": all_extras,
+        "docs": docs_extras,
+        "googlefonts": googlefonts_extras,
+        "fontval": fontval_extras,
+        "ufo-sources": ufo_sources_extras,
     },
     entry_points={
-        'console_scripts': ['fontbakery=fontbakery.cli:main'],
+        "console_scripts": ["fontbakery=fontbakery.cli:main"],
     },
-# TODO: review this and make it cross-platform:
-#    data_files=[
-#        ('/etc/bash_completion.d', ['snippets/fontbakery.bash-completion']),
-#    ]
+
+    # TODO: review this and make it cross-platform:
+    #    data_files=[
+    #        ('/etc/bash_completion.d', ['snippets/fontbakery.bash-completion']),
+    #    ]
 )

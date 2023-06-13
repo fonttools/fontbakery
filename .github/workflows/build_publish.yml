@@ -7,7 +7,6 @@ on:
 
 jobs:
   build:
-    name: Build Release
     runs-on: ubuntu-latest
 
     steps:
@@ -15,7 +14,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
@@ -37,20 +36,25 @@ jobs:
         retention-days: 30
 
   publish:
-    name: Publish Release
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/fontbakery
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+      contents: write  # Required by 'action-gh-release'
 
     steps:
     - name: Get date & flat tag
       id: date_tag
       run: |
-        export DATE=$(TZ=America/Sao_Paulo date +'%Y-%b-%-d')
+        export DATE=$(TZ=US/Pacific date +'%Y-%m-%d')
         echo $DATE
-        export FLAT_TAG=$(echo ${GITHUB_REF##*/} | sed 's/[v.]//g')
+        export FLAT_TAG=$(echo ${GITHUB_REF##*/} | sed 's/\.//g')
         echo $FLAT_TAG
-        echo ::set-output name=TODAY::$DATE
-        echo ::set-output name=VERSION::$FLAT_TAG
+        echo "TODAY=$DATE" >> "$GITHUB_OUTPUT"
+        echo "VERSION=$FLAT_TAG" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: Download artifacts
@@ -61,14 +65,10 @@ jobs:
 
     - name: Publish to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
-        body: '[Release Notes](https://github.com/googlefonts/fontbakery/blob/main/CHANGELOG.md#${{ steps.date_tag.outputs.VERSION }}-${{ steps.date_tag.outputs.TODAY }})'
-        token: ${{ secrets.GITHUB_TOKEN }}
+        body: '[Release Notes](https://github.com/googlefonts/fontbakery/blob/main/CHANGELOG.md#${{ steps.date_tag.outputs.VERSION }}---${{ steps.date_tag.outputs.TODAY }})'
         prerelease: true
         files: ./dist/*.tar.gz
