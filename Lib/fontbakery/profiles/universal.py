@@ -1948,20 +1948,25 @@ def com_google_fonts_check_soft_dotted(ttFont):
 
     message = ""
     if fail_unchanged_strings:
-        message += f"The dot of soft dotted characters used in orthographies " \
-                   f"_must_ disappear in the following strings: " \
-                   f"{' '.join(fail_unchanged_strings)}"
+        message += (
+            f"The dot of soft dotted characters used in orthographies "
+            f"_must_ disappear in the following strings: "
+            f"{' '.join(fail_unchanged_strings)}"
+        )
     if warn_unchanged_strings:
         if message:
             message += "\n\n"
-        message += f"The dot of soft dotted characters _should_ disappear in " \
-                   f"other cases, for example: " \
-                   f"{' '.join(warn_unchanged_strings)}"
+        message += (
+            f"The dot of soft dotted characters _should_ disappear in "
+            f"other cases, for example: "
+            f"{' '.join(warn_unchanged_strings)}"
+        )
 
     # Calculate font's affected languages for additional information
     if fail_unchanged_strings or warn_unchanged_strings:
         from shaperglot.checker import Checker
         from shaperglot.languages import Languages, gflangs
+
         languages = Languages()
 
         # Find all affected languages
@@ -1986,16 +1991,20 @@ def com_google_fonts_check_soft_dotted(ttFont):
                     affected_languages.append(string)
                 else:
                     unaffected_languages.append(string)
-            
+
             if affected_languages:
-                message += f"\n\nYour font fully covers the following languages that require " \
-                        f"the soft-dotted feature: " \
-                        f"{', '.join(affected_languages)}. "
+                message += (
+                    f"\n\nYour font fully covers the following languages that require "
+                    f"the soft-dotted feature: "
+                    f"{', '.join(affected_languages)}. "
+                )
 
             if unaffected_languages:
-                message += f"\n\nYour font does *not* cover the following languages that require " \
-                        f"the soft-dotted feature: " \
-                        f"{', '.join(unaffected_languages)}. "
+                message += (
+                    f"\n\nYour font does *not* cover the following languages that require "
+                    f"the soft-dotted feature: "
+                    f"{', '.join(unaffected_languages)}. "
+                )
 
     if fail_unchanged_strings or warn_unchanged_strings:
         yield WARN, Message("soft-dotted", message)
