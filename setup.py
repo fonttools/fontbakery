@@ -94,7 +94,7 @@ setup(
         'ufo2ft>=2.25.2',  # 2.25.2 updated the script lists for Unicode 14.0
         'unicodedata2',
         'vharfbuzz>=0.2.0',  # API update
-        'shaperglot',
+        'shaperglot>=0.2.0',
     ],
     extras_require={
         'docs': [
