@@ -4,17 +4,18 @@ from fontbakery.callable import check
 from fontbakery.status import ERROR, FAIL, INFO, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.message import Message
+
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory
 from .shared_conditions import is_cff, is_variable_font
 
-profile_imports = ['.shared_conditions']
-profile = profile_factory(default_section=Section("Checks inherited from Microsoft Font Validator"))
-
-@check(
-    id = 'com.google.fonts/check/fontvalidator',
-    proposal = 'legacy:check/037'
+profile_imports = [".shared_conditions"]
+profile = profile_factory(
+    default_section=Section("Checks inherited from Microsoft Font Validator")
 )
+
+
+@check(id="com.google.fonts/check/fontvalidator", proposal="legacy:check/037")
 def com_google_fonts_check_fontvalidator(font, config):
     """Checking with Microsoft Font Validator."""
 
@@ -22,8 +23,10 @@ def com_google_fonts_check_fontvalidator(font, config):
     enabled_checks = check_config.get("enabled_checks")
     disabled_checks = check_config.get("disabled_checks")
     if enabled_checks is not None and disabled_checks is not None:
-        raise Exception("The check config must contain either enabled_checks or "
-            "disabled_checks, but not both.")
+        raise Exception(
+            "The check config must contain either enabled_checks or "
+            "disabled_checks, but not both."
+        )
 
     # In some cases we want to override the severity level of
     # certain checks in FontValidator:
@@ -42,16 +45,13 @@ def com_google_fonts_check_fontvalidator(font, config):
         # describes GDEF header version 1.3, which is not yet recognized
         # by FontVal, thus resulting in this spurious false-FAIL:
         "The version number is neither 0x00010000 nor 0x0001002",
-
         # No software is affected by Mac strings nowadays.
         # More info at: googlei18n/fontmake#414
         "The table doesn't contain strings for Mac platform",
         "The PostScript string is not present for both required platforms",
-
         # Font Bakery has got a native check for the xAvgCharWidth field
         # which is: com.google.fonts/check/xavgcharwidth
         "The xAvgCharWidth field does not equal the calculated value",
-
         # The optimal ordering suggested by FVal check W0020 seems to only be
         # relevant to performance optimizations on old versions of Windows
         # running on old hardware. Since such performance considerations
@@ -60,60 +60,48 @@ def com_google_fonts_check_fontvalidator(font, config):
         # More info at:
         # https://github.com/googlefonts/fontbakery/issues/2105
         "Tables are not in optimal order",
-
         # Font Bakery has its own check for required/optional tables:
         # com.google.fonts/check/required_tables
         "Recommended table is missing",
-
         # Check W5300 does not recognise some tags in use, e.g. stylistic sets
         # tagged `ssXX` (where XX is the number). This warning has been reported
         # to HinTak here: https://github.com/HinTak/Font-Validator/issues/41
         "The FeatureRecord tag is valid, but unregistered",
-
         # Check E5400: field now called featureParamsOffset and can be null.
         # This error has been reported to HinTak by Khaled Hosny here:
         # https://github.com/HinTak/Font-Validator/issues/34.
         "The FeatureParams field is not null",
-
         # Check E5700: Lookup flags more recently used by the pipeline are not
         # recognized by Font Validator and therefore it flags that they are in a
         # reserved bit. This error has been reported to HinTak by Khaled Hosny
         # here: https://github.com/HinTak/Font-Validator/issues/34.
         "The LookupFlag reserved bits are not all set to zero.",
-
         # Check E4100: We expect this error due to the new way fontmake compiles
         # anchors. See this bug report on the FontValidator side:
         # https://github.com/HinTak/Font-Validator/issues/59
         "The AnchorFormat field is invalid",
-
         # Check E2101: Complains about the USE_TYPO_METRICS bit. See
         # https://github.com/HinTak/Font-Validator/issues/34.
         "There are undefined bits set in fsSelection field",
-
         # Unless there is a Microsoft Symbol subtable in the CMAP table, Font
         # Validator will check Microsoft Unicode/Apple subtables for the
         # presence of the euro character. This does not consider the glyph set
         # of the font, and so will raise a warning in fonts that purposely do
         # not contain the euro.
         "Character code U+20AC, the euro character, is not mapped in cmap 3,1",
-
         #  Fontbakery has its own check for this.
         "The unitsPerEm value is not a power of two",
-
         # Actually not a problem, and being produced by ufo2ft for years.
         "Intersecting components of composite glyph",
-
         # OS/2 table version: Yeah, and?
         "The version number is valid, but less than 5",
-
         # W1900: FontVal computes maxp.maxSizeOfInstructions and
         # maxComponentDepth differently from fontTools
         "maxSizeOfInstructions computation not via either approved method",
-
         # E1900: FontValidator calculates the wrong maxp.maxComponentDepth. This
         # issue has been reported on the FontValidator side:
         # https://github.com/microsoft/Font-Validator/issues/62
-        "The value doesn't match the calculated value"
+        "The value doesn't match the calculated value",
     ]
 
     # There are also some checks that do not make
@@ -123,7 +111,6 @@ def com_google_fonts_check_fontvalidator(font, config):
         # contours because they are used to draw each portion
         # of variable glyph features.
         "Intersecting contours",
-
         # DeltaFormat = 32768 (same as 0x8000) means VARIATION_INDEX,
         # according to https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2
         # The FontVal problem description for this check (E5200) only mentions
@@ -133,7 +120,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         # That's good enough reason to mute it.
         # More info at:
         # https://github.com/googlefonts/fontbakery/issues/2109
-        "The device table's DeltaFormat value is invalid"
+        "The device table's DeltaFormat value is invalid",
     ]
 
     CFF_disabled_fval_checks = [
@@ -143,6 +130,7 @@ def com_google_fonts_check_fontvalidator(font, config):
     ]
 
     from fontTools.ttLib import TTFont
+
     ttFont = TTFont(font)
     if is_variable_font(ttFont):
         disabled_fval_checks.extend(VARFONT_disabled_fval_checks)
@@ -156,9 +144,15 @@ def com_google_fonts_check_fontvalidator(font, config):
     report_dir = tempfile.TemporaryDirectory(prefix="fontval-")
     try:
         import subprocess
+
         fval_cmd = [
-            "FontValidator", "-file", font, "-all-tables",
-            "-report-dir", report_dir.name, "-no-raster-tests"
+            "FontValidator",
+            "-file",
+            font,
+            "-all-tables",
+            "-report-dir",
+            report_dir.name,
+            "-no-raster-tests",
         ]
         subprocess.check_output(fval_cmd, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
@@ -170,15 +164,18 @@ def com_google_fonts_check_fontvalidator(font, config):
                 ("Table Test:", "Progress: Validating glyph with index")
             )
         ]
-        yield INFO, \
-              Message("fontval-returned-error",
-                      ("Microsoft Font Validator returned an error code."
-                      " Output follows :\n\n{}\n").format("\n".join(filtered_output)))
+        yield INFO, Message(
+            "fontval-returned-error",
+            (
+                "Microsoft Font Validator returned an error code."
+                " Output follows :\n\n{}\n"
+            ).format("\n".join(filtered_output)),
+        )
     except (OSError, IOError) as error:
-        yield ERROR, \
-              Message("fontval-not-available",
-                      "Mono runtime and/or Microsoft Font Validator"
-                      " are not available!")
+        yield ERROR, Message(
+            "fontval-not-available",
+            "Mono runtime and/or Microsoft Font Validator are not available!",
+        )
         raise error
 
     def report_message(msg, details):
@@ -196,9 +193,10 @@ def com_google_fonts_check_fontvalidator(font, config):
                 if len(details) > 25:
                     num_similar = len(details) - 10
                     details = details[:10]
-                    details.append(f"NOTE: {num_similar} other similar"
-                                    " results were hidden!")
-                details = '\n\t- ' + '\n\t- '.join(details)
+                    details.append(
+                        f"NOTE: {num_similar} other similar" " results were hidden!"
+                    )
+                details = "\n\t- " + "\n\t- ".join(details)
             return f"MS-FonVal: {msg} DETAILS: {details}"
         else:
             return f"MS-FonVal: {msg}"
@@ -208,8 +206,9 @@ def com_google_fonts_check_fontvalidator(font, config):
     grouped_msgs = {}
     with open(report_file, "rb") as xml_report:
         from lxml import etree
+
         doc = etree.fromstring(xml_report.read())
-        for report in doc.iterfind('.//Report'):
+        for report in doc.iterfind(".//Report"):
             msg = report.get("Message")
             details = report.get("Details")
 
@@ -224,8 +223,10 @@ def com_google_fonts_check_fontvalidator(font, config):
                 continue
 
             if msg not in grouped_msgs:
-                grouped_msgs[msg] = {"errortype": report.get("ErrorType"),
-                                     "details": [details]}
+                grouped_msgs[msg] = {
+                    "errortype": report.get("ErrorType"),
+                    "details": [details],
+                }
             else:
                 if details not in grouped_msgs[msg]["details"]:
                     # avoid cluttering the output with tons of identical reports
@@ -247,12 +248,17 @@ def com_google_fonts_check_fontvalidator(font, config):
         # Simplify the list of glyph indices by only displaying
         # their numerical values in a list:
         for glyph_index in ["Glyph index ", "glyph# "]:
-            if data["details"] and \
-               data["details"][0] and \
-               glyph_index in data["details"][0]:
+            if (
+                data["details"]
+                and data["details"][0]
+                and glyph_index in data["details"][0]
+            ):
                 try:
-                    data["details"] = {'Glyph index': [int(x.split(glyph_index)[1])
-                                                       for x in data["details"]]}
+                    data["details"] = {
+                        "Glyph index": [
+                            int(x.split(glyph_index)[1]) for x in data["details"]
+                        ]
+                    }
                     break
                 except ValueError:
                     pass
@@ -273,5 +279,6 @@ def com_google_fonts_check_fontvalidator(font, config):
 
         else:
             yield INFO, Message("fontval-info", report_message(msg, data["details"]))
+
 
 profile.auto_register(globals())

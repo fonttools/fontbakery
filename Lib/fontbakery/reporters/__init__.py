@@ -10,27 +10,28 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 from collections import Counter
 
 from fontbakery.checkrunner import (
-              DEBUG
-            , INFO
-            , WARN
-            , ERROR
-            , STARTCHECK
-            , SKIP
-            , PASS
-            , FAIL
-            , ENDCHECK
-            , SECTIONSUMMARY
-            , START
-            , END
-            )
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR,
+    STARTCHECK,
+    SKIP,
+    PASS,
+    FAIL,
+    ENDCHECK,
+    SECTIONSUMMARY,
+    START,
+    END,
+)
 from fontbakery.errors import ProtocolViolationError
+
 
 class FontbakeryReporter:
     def __init__(self, is_async=False, runner=None, output_file=None, loglevels=None):
         self._started = None
         self._ended = None
         self._order = None
-        self._results = [] # ENDCHECK events in order of appearance
+        self._results = []  # ENDCHECK events in order of appearance
         self._indexes = {}
         self._tick = 0
         self._counter = Counter()
@@ -65,10 +66,11 @@ class FontbakeryReporter:
     @staticmethod
     def _get_key(identity):
         section, check, iterargs = identity
-        return (str(section) if section else section
-              , str(check) if check else check
-              , iterargs
-              )
+        return (
+            str(section) if section else section,
+            str(check) if check else check,
+            iterargs,
+        )
 
     def _get_index(self, identity):
         key = self._get_key(identity)
@@ -81,7 +83,7 @@ class FontbakeryReporter:
     def _set_order(self, order):
         self._order = tuple(order)
         length = len(self._order)
-        self._counter['(not finished)'] = length - len(self._results)
+        self._counter["(not finished)"] = length - len(self._results)
         self._indexes = dict(zip(map(self._get_key, self._order), range(length)))
 
     def _cleanup(self, event):
@@ -103,25 +105,28 @@ class FontbakeryReporter:
         if status == ENDCHECK:
             self._results.append(event)
             self._counter[message.name] += 1
-            self._counter['(not finished)'] -= 1
+            self._counter["(not finished)"] -= 1
 
     @property
     def worst_check_status(self):
-        """ Returns a status or None if there was no check result """
+        """Returns a status or None if there was no check result"""
         return self._worst_check_status
 
     def receive(self, event):
         status, message, identity = event
         if self._started is None and status != START:
-            raise ProtocolViolationError(f'Received Event before status START:'
-                                         f' {status} {message}.')
+            raise ProtocolViolationError(
+                f"Received Event before status START:" f" {status} {message}."
+            )
         if self._ended:
             status, message, identity = event
-            raise ProtocolViolationError(f'Received Event after status END:'
-                                         f' {status} {message}.')
+            raise ProtocolViolationError(
+                f"Received Event after status END:" f" {status} {message}."
+            )
 
-        if status is ENDCHECK and (self._worst_check_status is None \
-                                   or self._worst_check_status < message):
+        if status is ENDCHECK and (
+            self._worst_check_status is None or self._worst_check_status < message
+        ):
             # we only record ENDCHECK, because check runner may in the future
             # have tools to upgrade/downgrade the actually worst status
             # this should be future proof.

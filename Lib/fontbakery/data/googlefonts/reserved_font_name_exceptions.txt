@@ -8,7 +8,6 @@
 # still needs to be more carefully reviewed.
 # See https://github.com/googlefonts/fontbakery/issues/3612
 
-#SIL fonts
 Abyssinica SIL
 Akatab
 Alkalami
@@ -20,6 +19,7 @@ Ezra SIL
 Gentium Book Plus
 Gentium Plus
 Harmattan
+Intel One Mono
 Lateef
 Mingzat
 Narnoor

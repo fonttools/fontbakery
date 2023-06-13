@@ -16,20 +16,22 @@ from multiprocessing import Process, Queue
 import queue
 
 from fontbakery.reporters import FontbakeryReporter
-from fontbakery.checkrunner import (INFO,
-                                    WARN,
-                                    ERROR,
-                                    STARTCHECK,
-                                    SKIP,
-                                    PASS,
-                                    FAIL,
-                                    ENDCHECK,
-                                    END,
-                                    DEBUG,
-                                    CheckRunner,
-                                    session_protocol_generator,
-                                    drive_session_protocol,
-                                    get_profile_from_module_locator)
+from fontbakery.checkrunner import (
+    INFO,
+    WARN,
+    ERROR,
+    STARTCHECK,
+    SKIP,
+    PASS,
+    FAIL,
+    ENDCHECK,
+    END,
+    DEBUG,
+    CheckRunner,
+    session_protocol_generator,
+    drive_session_protocol,
+    get_profile_from_module_locator,
+)
 from fontbakery.message import Message
 
 
@@ -37,8 +39,9 @@ from fontbakery.message import Message
 # WORKER/CHILD #
 ################
 
-name2status = {status.name: status for status in \
-               (DEBUG, PASS, SKIP, INFO, WARN, FAIL, ERROR)}
+name2status = {
+    status.name: status for status in (DEBUG, PASS, SKIP, INFO, WARN, FAIL, ERROR)
+}
 
 
 # Similar to DashbordWorkerReporter of Font Bakery Dashboard.
@@ -66,16 +69,14 @@ class WorkerToQueueReporter(FontbakeryReporter):
         key = self._profile.serialize_identity(identity)
 
         if status == STARTCHECK:
-            self._current = {
-                'statuses': []
-            }
+            self._current = {"statuses": []}
 
         if status == ENDCHECK:
             # Do more? Anything more would make access easier but also be a
             # derivative of the actual data, i.e. not SSOT. Calculating (and
             # thus interpreting) results for the checks is probably not too
             # expensive to do it on the fly.
-            self._current['result'] = message.name
+            self._current["result"] = message.name
             self._save_result(key, self._current)
             self._current = None
 
@@ -92,11 +93,11 @@ class WorkerToQueueReporter(FontbakeryReporter):
             #  "code": used to explicitly overwrite specific (FAIL) statuses
             #  "traceback": only provided if message is an Excepion and likely
             #               if status is "ERROR"
-            log = {'status': status.name}
+            log = {"status": status.name}
 
-            if hasattr(message, 'traceback'):
+            if hasattr(message, "traceback"):
                 # message is likely a FontbakeryError if this is not None
-                log['traceback'] = message.traceback
+                log["traceback"] = message.traceback
             if isinstance(message, Message):
                 # Ducktyping could be a valid option here.
                 # in that case, a FontbakeryError could also provide a `code` attribute
@@ -105,11 +106,11 @@ class WorkerToQueueReporter(FontbakeryReporter):
                 # of the error must be repaired!
                 log.update(message.getData())
             else:
-                log['message'] = f'{message}'
-            self._current['statuses'].append(log)
+                log["message"] = f"{message}"
+            self._current["statuses"].append(log)
 
     def _save_result(self, key, check_result):
-        """ send check_result to the queue"""
+        """send check_result to the queue"""
         if self._collectedChecks is None:
             # order is not really relevant in multiprocessing, however, we keep
             # it as long as possible, could be good for debugging.
@@ -130,19 +131,19 @@ def check_protocol_from_worker_data(profile, key_check_data):
     identity = profile.deserialize_identity(key)
     yield STARTCHECK, None, identity  # = event
 
-    for log in check_data['statuses']:
-        status = name2status[log['status']]
-        if 'code' in log:
-            message = Message(log['code'], log['message'])
-        elif 'traceback' in log:
+    for log in check_data["statuses"]:
+        status = name2status[log["status"]]
+        if "code" in log:
+            message = Message(log["code"], log["message"])
+        elif "traceback" in log:
             # not to happy with this generic exception, let's se how it plays out
-            message = Exception(log['message'])
-            setattr(message, 'traceback', log['traceback'])
+            message = Exception(log["message"])
+            setattr(message, "traceback", log["traceback"])
         else:
-            message = log['message']
+            message = log["message"]
         yield status, message, identity  # = event
 
-    status = name2status[check_data['result']]
+    status = name2status[check_data["result"]]
     yield ENDCHECK, status, identity  # = event
 
 
@@ -163,13 +164,14 @@ def _worker_jobs_generator(jobs_queue, profile, reporter):
         yield profile.deserialize_identity(job)
 
 
-def multiprocessing_worker(jobs_queue, results_queue, profile_module_locator, runner_kwds):
+def multiprocessing_worker(
+    jobs_queue, results_queue, profile_module_locator, runner_kwds
+):
     profile = get_profile_from_module_locator(profile_module_locator)
     runner = CheckRunner(profile, **runner_kwds)
-    reporter = WorkerToQueueReporter(results_queue,
-                                     profile=profile,
-                                     runner=runner,
-                                     ticks_to_flush=5)
+    reporter = WorkerToQueueReporter(
+        results_queue, profile=profile, runner=runner, ticks_to_flush=5
+    )
 
     next_check_gen = _worker_jobs_generator(jobs_queue, profile, reporter)
     runner.run_externally_controlled(reporter.receive, next_check_gen)
@@ -178,6 +180,7 @@ def multiprocessing_worker(jobs_queue, results_queue, profile_module_locator, ru
 #####################
 # DISPATCHER/PARENT #
 #####################
+
 
 def _results_generator(results_queue, len_results):
     count_results = 0
@@ -201,14 +204,16 @@ def _multiprocessing_checkrunner(jobs, process_count, *args):
     try:
         processes = []
         for _ in range(process_count):
-            p = Process(target=multiprocessing_worker,
-                        # NOTE: stuff is pickled here, but that
-                        # seems to be no problem despite of
-                        # e.g. pickling a profile (see #2982),
-                        # which was fixed by using profile.module_locator
-                        # instead. The other arguments seem easier
-                        # to pickle.
-                        args=(jobs_queue, results_queue, *args))
+            p = Process(
+                target=multiprocessing_worker,
+                # NOTE: stuff is pickled here, but that
+                # seems to be no problem despite of
+                # e.g. pickling a profile (see #2982),
+                # which was fixed by using profile.module_locator
+                # instead. The other arguments seem easier
+                # to pickle.
+                args=(jobs_queue, results_queue, *args),
+            )
             processes.append(p)
             p.start()
         yield _results_generator(results_queue, len_jobs)  # next_check_gen
@@ -224,11 +229,10 @@ def multiprocessing_runner(process_count, runner, runner_kwds):
     profile = runner.profile
     joblist = list(profile.serialize_order(runner.order))
 
-    session_gen = session_protocol_generator(partial(check_protocol_from_worker_data,
-                                                     profile),
-                                             runner.order)
-    with _multiprocessing_checkrunner(joblist,
-                                      process_count,
-                                      profile.module_locator,
-                                      runner_kwds) as next_check_gen:
+    session_gen = session_protocol_generator(
+        partial(check_protocol_from_worker_data, profile), runner.order
+    )
+    with _multiprocessing_checkrunner(
+        joblist, process_count, profile.module_locator, runner_kwds
+    ) as next_check_gen:
         yield from drive_session_protocol(session_gen, next_check_gen)

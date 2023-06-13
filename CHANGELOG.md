@@ -1,8 +1,26 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.8.12 (2023-Apr-??)
+
+## Upcoming release: 0.9.0 (2023-Jun-??)
+### Note-worthy code changes
+  - This is the first version in which we're using the Black auto-formatter on the entire code-base. (Discussions #3397)
+  - Also, now software dependencies can be installed based on the user needs. The default FontBakery installation from PyPI includes only the dependencies for running font-binary checks from the Universal profile. To run source-level checks, one needs to enable the `ufo-sources` extra. (issues #3715 and #3874)
+
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.adobe.fonts/check/freetype_rasterizer]:** Added test-code that segfaults with freetype-py version 2.4.0, so that we make sure the problem won't go unnoticed, and will enable us to know when it gets fixed (issue #4143)
+
+
+## 0.8.13 (2023-Jun-02)
+  - Fix a critical install bug. I had used wrong syntax on setup.py which made v0.8.12 impossible to install when enabling the freetype extra. Sorry! (issue #4157)
+
+
+## 0.8.12 (2023-May-31)
 ### New Checks
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/STAT_in_statics]:** Static fonts with more than a single entry per design axis cause trouble on Windows (issue #4149)
+
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/unreachable_subsetting]:** Implemented checks to ensure that all encoded glyphs in the font are covered by a subset declared in the METADATA.pb (issue #4097)
 
@@ -22,6 +40,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/broken_links]:** We should not keep email addresses on METADATA.pb files (issue #4110)
   - **[com.google.fonts/check/description/broken_links]:** We should not keep email addresses on DESCRIPTION files (issue #4110)
   - **[com.google.fonts/check/metadata/nameid/font_name]:** Use name id 16, when present, to compute the expected font family name (issue #4086)
+  - **[com.google.fonts/check/check/colorfont_tables]:** Update checking criteria according to gf-guide (issue #4131)
 
 #### On the Universal Profile
   - **[com.google.fonts/check/soft_hyphen]:** Improve wording of the rationale. (issue #4095)
