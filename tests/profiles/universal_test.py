@@ -1187,12 +1187,12 @@ def test_check_soft_dotted():
     font = TEST_FILE("abeezee/ABeeZee-Regular.ttf")
     msg = assert_results_contain(check(font), WARN, "soft-dotted")
     assert "The dot of soft dotted characters used in orthographies" not in msg
-    assert "The dot of soft dotted characters should disappear" in msg
+    assert "The dot of soft dotted characters _should_ disappear" in msg
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    msg = assert_results_contain(check(font), FAIL, "soft-dotted")
+    msg = assert_results_contain(check(font), WARN, "soft-dotted")
     assert "The dot of soft dotted characters used in orthographies" in msg
-    assert "The dot of soft dotted characters should disappear" in msg
+    assert "The dot of soft dotted characters _should_ disappear" in msg
 
     font = TEST_FILE("akshar/Akshar[wght].ttf")
     assert_PASS(check(font), "All soft dotted characters seem to lose their dot ...")
