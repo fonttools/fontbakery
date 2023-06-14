@@ -2,16 +2,15 @@
 Checks for suitability for in-car displays (ISO 15008).
 """
 
-from fontbakery.callable import check, condition
+from fontbakery.callable import check
 from fontbakery.section import Section
-from fontbakery.status import PASS, FAIL, WARN
+from fontbakery.status import PASS, FAIL
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
 from fontTools.pens.boundsPen import BoundsPen
 from beziers.path import BezierPath
 from beziers.line import Line
 from beziers.point import Point
-import beziers
 import uharfbuzz as hb
 
 
@@ -89,7 +88,7 @@ def pair_kerning(font, left, right):
     rationale="""
         According to ISO 15008, fonts used for in-car displays should not be
         too narrow or too wide.
-        
+
         To ensure legibility of this font on in-car information systems,
         it is recommended that the ratio of H width to H height
         is between 0.65 and 0.80.
@@ -129,7 +128,7 @@ def com_google_fonts_check_iso15008_proportions(ttFont):
     rationale="""
         According to ISO 15008, fonts used for in-car displays should
         not be too light or too bold.
-        
+
         To ensure legibility of this font on in-car information systems,
         it is recommended that the ratio of stem width to ascender height
         is between 0.10 and 0.20.
@@ -163,16 +162,16 @@ def com_google_fonts_check_iso15008_stem_width(ttFont):
     rationale="""
         According to ISO 15008, fonts used for in-car displays should not
         be too narrow or too wide.
-        
+
         To ensure legibility of this font on in-car information systems,
         it is recommended that the spacing falls within the following values:
-        
+
         * space between vertical strokes (e.g. "ll") should be 150%-240%
           of the stem width.
-        
+
         * space between diagonals and verticals (e.g. "vl") should be
           at least 85% of the stem width.
-        
+
         * diagonal characters should not touch (e.g. "vv").
     """
     + DISCLAIMER,
@@ -256,7 +255,7 @@ def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
     rationale="""
         According to ISO 15008, fonts used for in-car displays
         should not be too narrow or too wide.
-        
+
         To ensure legibility of this font on in-car information systems,
         it is recommended that the space character should have advance width
         between 250% and 300% of the space between the letters l and m.
@@ -310,7 +309,7 @@ def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
     rationale="""
         According to ISO 15008, fonts used for in-car displays
         should not be too narrow or too wide.
-        
+
         To ensure legibility of this font on in-car information systems,
         it is recommended that the vertical metrics be set to a minimum
         at least one stem width between the bottom of the descender
