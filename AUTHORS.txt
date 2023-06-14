@@ -6,6 +6,7 @@
 # Name or Organization <email address>
 # The email address is not required for organizations.
 
+Adobe Inc.
 Google Inc.
 Mikhail Kashkin <mkashkin@gmail.com>
 Brian Dickens <hostilefork@gmail.com>
