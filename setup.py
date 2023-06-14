@@ -51,7 +51,11 @@ fontval_extras = [
     "lxml",
 ]
 
-docs_extras = []
+docs_extras = [
+    "recommonmark",
+    "sphinx >= 1.4",
+    "sphinx_rtd_theme",
+]
 
 all_extras = set(docs_extras + googlefonts_extras + fontval_extras + ufo_sources_extras)
 
