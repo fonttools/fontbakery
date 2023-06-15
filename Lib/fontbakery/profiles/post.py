@@ -148,8 +148,7 @@ def com_google_fonts_check_italic_angle(ttFont, style):
                     if intersections:
                         return intersections[0].point.x
 
-    calculated_italic_angle = None
-    for glyph_name in (
+    GLYPHS_TO_CHECK = (
         "bar",
         "uni007C",  # VERTICAL LINE
         "bracketleft",
@@ -157,8 +156,23 @@ def com_google_fonts_check_italic_angle(ttFont, style):
         "H",
         "uni0048",  # LATIN CAPITAL LETTER H
         "I",
-        "uni0049",
-    ):  # LATIN CAPITAL LETTER I
+        "uni0049",  # LATIN CAPITAL LETTER I
+    )
+
+    bad_glyphs = []
+    for glyph_name in GLYPHS_TO_CHECK:
+        # Get bounds
+        glyphset = ttFont.getGlyphSet()
+        if glyph_name not in glyphset:
+            continue
+        boundspen = BoundsPen(glyphset)
+        glyphset[glyph_name].draw(boundspen)
+        if not boundspen.bounds:
+            bad_glyphs.append(glyph_name)
+            continue
+
+    calculated_italic_angle = None
+    for glyph_name in GLYPHS_TO_CHECK:
         try:
             paths = BezierPath.fromFonttoolsGlyph(ttFont, glyph_name)
         except KeyError:
@@ -167,7 +181,10 @@ def com_google_fonts_check_italic_angle(ttFont, style):
         # Get bounds
         boundspen = BoundsPen(ttFont.getGlyphSet())
         ttFont.getGlyphSet()[glyph_name].draw(boundspen)
-        (xMin, yMin, xMax, yMax) = boundspen.bounds
+        bounds = boundspen.bounds
+        if not bounds:
+            continue
+        (xMin, yMin, xMax, yMax) = bounds
 
         # Measure at 20% distance from bottom and top
         y_bottom = yMin + (yMax - yMin) * 0.2
@@ -274,6 +291,16 @@ def com_google_fonts_check_italic_angle(ttFont, style):
                 "non-zero-upright",
                 ("Font is not italic, so post.italicAngle should be equal to zero."),
             )
+
+    if bad_glyphs:
+        passed = False
+        yield WARN, Message(
+            "empty-glyphs",
+            (
+                "The following glyphs were present but did not contain any outlines: "
+                + ", ".join(bad_glyphs)
+            ),
+        )
 
     if passed:
         yield PASS, (f"Value of post.italicAngle is {value}" f' with style="{style}".')

@@ -11,6 +11,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Universal profile
   - **[com.adobe.fonts/check/freetype_rasterizer]:** Added test-code that segfaults with freetype-py version 2.4.0, so that we make sure the problem won't go unnoticed, and will enable us to know when it gets fixed (issue #4143)
 
+#### On the OpenType profile
+  - **[com.google.fonts/check/italic_angle]**: Fix an ERROR: If any of the glyphs checked (bar, vertical line, left square bracket, etc.) have no outlines, the check will now emit a WARN, because that's useful information. (PR #4187)
+
 
 ## 0.8.13 (2023-Jun-02)
   - Fix a critical install bug. I had used wrong syntax on setup.py which made v0.8.12 impossible to install when enabling the freetype extra. Sorry! (issue #4157)
