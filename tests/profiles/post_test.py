@@ -189,3 +189,11 @@ def test_check_italic_angle():
     assert_PASS(check(ttFont, {"style": "Italic"}))
     ttFont["post"].italicAngle *= -1
     assert_results_contain(check(ttFont, {"style": "Italic"}), WARN, "negative")
+
+    ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.rightslanted.ttf"))
+    assert_PASS(check(ttFont, {"style": "Italic"}))
+    ttFont["glyf"]["I"].endPtsOfContours = []
+    ttFont["glyf"]["I"].coordinates = []
+    ttFont["glyf"]["I"].flags = []
+    ttFont["glyf"]["I"].numberOfContours = 0
+    assert_results_contain(check(ttFont, {"style": "Italic"}), WARN, "empty-glyphs")

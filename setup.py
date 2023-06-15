@@ -150,7 +150,6 @@ setup(
     entry_points={
         "console_scripts": ["fontbakery=fontbakery.cli:main"],
     },
-
     # TODO: review this and make it cross-platform:
     #    data_files=[
     #        ('/etc/bash_completion.d', ['snippets/fontbakery.bash-completion']),
