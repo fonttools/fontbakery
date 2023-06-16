@@ -8,6 +8,7 @@ from fontbakery.status import FAIL, SKIP, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
+    assert_SKIP,
     CheckTester,
     TEST_FILE,
 )
@@ -171,3 +172,73 @@ def test_check_designspace_has_consistent_codepoints():
     assert_results_contain(check(designspace), FAIL, "inconsistent-codepoints")
 
     # TODO: Fix it and ensure it passes the check
+
+
+def test_check_default_languagesystem_pass_without_features(empty_ufo_font):
+    """Pass if the UFO source has no features."""
+    check = CheckTester(
+        ufo_sources_profile, "com.thetypefounders/check/features_default_languagesystem"
+    )
+
+    ufo, _ = empty_ufo_font
+
+    assert_SKIP(check(ufo), "No features.fea file in font.")
+
+
+def test_check_default_languagesystem_pass_with_empty_features(empty_ufo_font):
+    """Pass if the UFO source has a feature file but it is empty."""
+    check = CheckTester(
+        ufo_sources_profile, "com.thetypefounders/check/features_default_languagesystem"
+    )
+
+    ufo, _ = empty_ufo_font
+
+    ufo.features.text = ""
+
+    assert_PASS(check(ufo))
+
+
+def test_check_default_languagesystem_pass_with_features(empty_ufo_font):
+    """Pass if the font has features and no default languagesystem statements."""
+    check = CheckTester(
+        ufo_sources_profile, "com.thetypefounders/check/features_default_languagesystem"
+    )
+
+    ufo, _ = empty_ufo_font
+
+    ufo.features.text = "feature liga { sub f i by f_i; } liga;"
+
+    assert_PASS(check(ufo))
+
+
+def test_check_default_languagesystem_warn_without_default_languagesystem(
+    empty_ufo_font,
+):
+    """Warn if `languagesystem DFLT dflt` is not present in the feature file,
+    but other languagesystem statements are."""
+    check = CheckTester(
+        ufo_sources_profile, "com.thetypefounders/check/features_default_languagesystem"
+    )
+
+    ufo, _ = empty_ufo_font
+
+    ufo.features.text = (
+        "languagesystem latn dflt; feature liga { sub f i by f_i; } liga;"
+    )
+
+    assert_results_contain(check(ufo), WARN, "default-languagesystem")
+
+
+def test_check_default_languagesystem_pass_with_default_languagesystem(empty_ufo_font):
+    """Pass if `languagesystem DFLT dflt` is explicitly used in the features."""
+    check = CheckTester(
+        ufo_sources_profile, "com.thetypefounders/check/features_default_languagesystem"
+    )
+
+    ufo, _ = empty_ufo_font
+
+    ufo.features.text = """languagesystem DFLT dflt;
+languagesystem latn dflt;
+feature liga { sub f i by f_i; } liga;"""
+
+    assert_PASS(check(ufo))
