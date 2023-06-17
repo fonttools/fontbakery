@@ -191,7 +191,7 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
 
         for filepath in (upright, italic):
             ttFont = TTFont(filepath)
-            if not "ital" in [
+            if "ital" not in [
                 axis.AxisTag for axis in ttFont["STAT"].table.DesignAxisRecord.Axis
             ]:
                 passed = False

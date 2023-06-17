@@ -1392,7 +1392,7 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
     """Check OFL body text is correct."""
     from fontbakery.constants import OFL_BODY_TEXT
 
-    if not OFL_BODY_TEXT in license_contents.replace("http://", "https://"):
+    if OFL_BODY_TEXT not in license_contents.replace("http://", "https://"):
         yield FAIL, Message(
             "incorrect-ofl-body-text",
             "The OFL.txt body text is incorrect. Please use"
@@ -6833,7 +6833,7 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
 
     if (
         inferred_category is not None
-        and not inferred_category in family_metadata.category
+        and inferred_category not in family_metadata.category
     ):
         yield WARN, Message(
             "inferred-category",
