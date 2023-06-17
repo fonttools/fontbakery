@@ -109,8 +109,8 @@ def test_style_condition():
         == "BoldItalic"
     )
     # Badly named statics, fail them
-    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans-Fat.ttf")) == None
-    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans.ttf")) == None
+    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans-Fat.ttf")) is None
+    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans.ttf")) is None
 
 
 def test_check_valid_glyphnames():

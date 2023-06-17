@@ -1895,7 +1895,7 @@ def com_google_fonts_check_math_signs_width(ttFont):
     most_common_width = None
     num_glyphs = 0
     for glyph_width, glyph_names in glyphs_by_width.items():
-        if most_common_width == None:
+        if most_common_width is None:
             num_glyphs = len(glyph_names)
             most_common_width = glyph_width
         else:

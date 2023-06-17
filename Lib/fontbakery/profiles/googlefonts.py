@@ -6443,7 +6443,7 @@ def com_google_fonts_check_stylisticset_description(ttFont):
             assert "ss20" in SSETS
             assert "ss21" not in SSETS
             if tag in SSETS:
-                if feature.Feature.FeatureParams == None:
+                if feature.Feature.FeatureParams is None:
                     passed = False
                     yield WARN, Message(
                         "missing-description",
@@ -6451,9 +6451,10 @@ def com_google_fonts_check_stylisticset_description(ttFont):
                         f" a description string on the 'name' table.",
                     )
                 else:
-                    pass  # TODO: Maybe here we can add code to make sure
+                    # TODO: Maybe here we can add code to make sure
                     #       that the referenced nameid does exist
                     #       in the name table.
+                    pass
     if passed:
         yield PASS, "OK"
 
