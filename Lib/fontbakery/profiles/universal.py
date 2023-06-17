@@ -1807,10 +1807,10 @@ def com_google_fonts_check_iterpolation_issues(ttFont, config):
     names.append("()")
     for loc in sorted(locs, key=lambda v: (len(v), v)):
         names.append(str(loc))
-        l = {}
+        location = {}
         for tag, val in loc:
-            l[tag] = val
-        new_locs.append(l)
+            location[tag] = val
+        new_locs.append(location)
 
     locs = new_locs
     glyphsets = [ttFont.getGlyphSet(location=loc, normalized=True) for loc in locs]

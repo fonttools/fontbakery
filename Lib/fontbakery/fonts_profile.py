@@ -78,7 +78,8 @@ class FontsProfile(Profile):
             def __call__(self, parser, namespace, values, option_string=None):
                 for file_description in profile.accepted_files:
                     setattr(namespace, file_description.name, [])
-                target = [item for l in values for item in l]
+                # flatten the 'values' list: [['a'], ['b']] => ['a', 'b']
+                target = [item for sublist in values for item in sublist]
                 any_accepted = False
                 for file in target:
                     accepted = False

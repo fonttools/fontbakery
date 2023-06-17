@@ -159,7 +159,7 @@ class GHMarkdownReporter(SerializeReporter):
             )
             md += "\n" + summary_table
 
-        omitted = [l for l in LOGLEVELS if self.omit_loglevel(l)]
+        omitted = [loglvl for loglvl in LOGLEVELS if self.omit_loglevel(loglvl)]
         if omitted:
             md += (
                 "\n"

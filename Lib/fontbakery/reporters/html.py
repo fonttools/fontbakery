@@ -96,7 +96,7 @@ class HTMLReporter(SerializeReporter):
             results_summary = [data["result"][k] for k in LOGLEVELS]
             body_top.append(summary_table(*results_summary, num_checks))
 
-        omitted = [l for l in LOGLEVELS if self.omit_loglevel(l)]
+        omitted = [loglvl for loglvl in LOGLEVELS if self.omit_loglevel(loglvl)]
         if omitted:
             body_top.append(
                 "<p><strong>Note:</strong>"
