@@ -28,7 +28,5 @@ extend-ignore =
     F403,
     # '<name>' may be undefined, or defined from star imports
     F405,
-    # f-string is missing placeholders
-    F541,
     # line break before binary operator
     W503,

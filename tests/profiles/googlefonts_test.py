@@ -2441,7 +2441,7 @@ def test_check_metadata_os2_weightclass():
     # === test cases for Variable Fonts ===
     # Our reference Jura is known to be good
     ttFont = TTFont(TEST_FILE("varfont/jura/Jura[wght].ttf"))
-    assert_PASS(check(ttFont), f"with a good metadata...")
+    assert_PASS(check(ttFont), "with a good metadata...")
 
     # Should report if a bad weight value is ifound though:
     md = check["font_metadata"]
@@ -2452,11 +2452,11 @@ def test_check_metadata_os2_weightclass():
         check(ttFont, {"font_metadata": md}),
         FAIL,
         "mismatch",
-        f"with a bad metadata...",
+        "with a bad metadata...",
     )
 
     ttFont = TTFont(TEST_FILE("leaguegothic-vf/LeagueGothic[wdth].ttf"))
-    assert_PASS(check(ttFont), f'with a good VF that lacks a "wght" axis....')
+    assert_PASS(check(ttFont), 'with a good VF that lacks a "wght" axis....')
     # See: https://github.com/googlefonts/fontbakery/issues/3529
 
     # === test cases for Static Fonts ===
@@ -2920,14 +2920,14 @@ def test_check_font_names(fp, mod, result):
             check(ttFont, {"expected_font_names": expected}),
             WARN,
             "lacks-regular",
-            f"with bad names",
+            "with bad names",
         )
     else:
         assert_results_contain(
             check(ttFont, {"expected_font_names": expected}),
             FAIL,
             "bad-names",
-            f"with bad names",
+            "with bad names",
         )
 
 
@@ -3692,7 +3692,7 @@ def test_check_repo_zip_files(tmp_path):
 
     for ext in ["zip", "rar", "7z"]:
         # ZIP files must be detected even if placed on subdirectories:
-        filepath = os.path.join(family_dir, f"jura", f"static", f"fonts-release.{ext}")
+        filepath = os.path.join(family_dir, "jura", "static", f"fonts-release.{ext}")
         # create an empty file. The check won't care about the contents:
         open(filepath, "w+")
         assert_results_contain(
@@ -4755,7 +4755,7 @@ def test_check_fvar_instances(fp, mod, result):
 
     if result == PASS:
         assert_PASS(
-            check(ttFont, {"expected_font_names": expected}), f"with a good font"
+            check(ttFont, {"expected_font_names": expected}), "with a good font"
         )
     elif result == FAIL:
         assert_results_contain(
@@ -4831,7 +4831,7 @@ def test_check_STAT(fps, new_stat, result):
 
     if result == PASS:
         assert_PASS(
-            check(ttFont, {"expected_font_names": expected}), f"with a good font"
+            check(ttFont, {"expected_font_names": expected}), "with a good font"
         )
     elif result == FAIL:
         assert_results_contain(
@@ -4907,7 +4907,7 @@ def test_check_colorfont_tables():
     del ttFont["SVG "]
     assert "SVG " not in ttFont.keys()
     assert "COLR" not in ttFont.keys()
-    assert_PASS(check(ttFont), f"with a good font without SVG or COLR tables.")
+    assert_PASS(check(ttFont), "with a good font without SVG or COLR tables.")
 
 
 def test_check_color_cpal_brightness():
