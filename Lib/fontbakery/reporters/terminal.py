@@ -160,10 +160,9 @@ class TerminalProgress(FontbakeryReporter):
         structure_threshold=None,
         theme=LIGHT_THEME,
         succinct=None,
-        cupcake=True
+        cupcake=True,
         # a tuple of structural statuses to be skipped
         # e.g. (SECTIONSUMMARY, )
-        ,
         skip_status_report=None,
         **kwd,
     ):
