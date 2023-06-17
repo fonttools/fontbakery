@@ -6,8 +6,6 @@ show_source = false
 select = E,F,W
 extend-exclude = *_pb2.py
 extend-ignore =
-    # whitespace before ','
-    E203,
     # inline comment should start with '# '
     E262,
     # block comment should start with '# '
