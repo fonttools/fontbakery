@@ -172,11 +172,11 @@ def PANOSE_expected(family_type):
 
 
         Please also note:
-        
+
         Thomas Phinney told us that a few years ago (as of December 2019), if you gave
         a font a monospace flag in Panose, Microsoft Word would ignore the actual
         advance widths and treat it as monospaced.
-        
+
         Source: https://typedrawers.com/discussion/comment/45140/#Comment_45140
     """,
     proposal="legacy:check/033",
@@ -604,7 +604,7 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
     id="com.adobe.fonts/check/family/max_4_fonts_per_family_name",
     rationale="""
         Per the OpenType spec:
-        
+
         'The Font Family name [...] should be shared among at most four fonts that
         differ only in weight or style [...]'
     """,

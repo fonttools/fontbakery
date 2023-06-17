@@ -1964,7 +1964,7 @@ def com_google_fonts_check_linegaps(ttFont):
         Adobe feature syntax allows for the definition of a STAT table. Fonts built
         with a hand-coded STAT table in feature syntax may be built either as static
         or variable, but will end up with the same STAT table.
-        
+
         This is a problem, because a STAT table which works on variable fonts
         will not be appropriate for static instances. The examples in the OpenType spec
         of non-variable fonts with a STAT table show that the table entries must be

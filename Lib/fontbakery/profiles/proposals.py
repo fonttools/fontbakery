@@ -41,15 +41,15 @@ def com_<revese_domain>_check_<check_name>(ttFont):
     id="com.google.fonts/check/mandatory_name_entries",
     rationale="""
         Any fonts checked with GF profile must contain these name IDs:
-        
+
         * ID 0: Copyright string (Copyright: No complaint when everything is missing #3950)
-        
+
         * ID 9: author's name
-        
+
         * ID 13: License description
-        
+
         * ID 14: License URL
-        
+
         I think we don't care so much about Manufacturer's name, Manufacturer's URL and Designer's URL, but will confirm.
     """,
     proposal="https://github.com/googlefonts/fontbakery/issues/3963",

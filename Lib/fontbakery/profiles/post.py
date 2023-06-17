@@ -61,7 +61,7 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
         is that under the right combination of circumstances, one can generate
         PDF from a font with a post format 3 table, and not have accurate backing
         store for any text that has non-default glyphs for a given codepoint.
-        
+
         It will look fine but not be searchable. This can affect Latin text with
         high-end typography, and some complex script writing systems, especially
         with higher-quality fonts. Those circumstances generally involve creating
@@ -73,7 +73,7 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
         Apple recommends against use of post format version 4 as "no longer
         necessary and should be avoided". Please see the Apple TrueType reference
         documentation for additional details.
-         
+
         https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6post.html
 
         Acceptable post format versions are 2 and 3 for TTF and OTF CFF2 builds,
