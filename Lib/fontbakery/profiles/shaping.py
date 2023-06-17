@@ -237,7 +237,7 @@ def run_a_set_of_shaping_tests(
         that the rules are behaving as designed. This checks runs a shaping test
         suite and compares expected shaping against actual shaping, reporting
         any differences.
-        
+
         Shaping test suites should be written by the font engineer and referenced
         in the fontbakery configuration file. For more information about write
         shaping test files and how to configure fontbakery to read the shaping
@@ -310,7 +310,7 @@ def gereate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_te
         that the rules are behaving as designed. This checks runs a shaping test
         suite and reports if any glyphs are generated in the shaping which should
         not be produced. (For example, .notdef glyphs, visible viramas, etc.)
-        
+
         Shaping test suites should be written by the font engineer and referenced in
         the Font Bakery configuration file. For more information about write shaping
         test files and how to configure fontbakery to read the shaping test suites,
@@ -374,7 +374,7 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
         Fonts with complex layout rules can benefit from regression tests to ensure
         that the rules are behaving as designed. This checks runs a shaping test
         suite and reports instances where the glyphs collide in unexpected ways.
-        
+
         Shaping test suites should be written by the font engineer and referenced
         in the fontbakery configuration file. For more information about write
         shaping test files and how to configure fontbakery to read the shaping
