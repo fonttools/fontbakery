@@ -6,12 +6,8 @@ show_source = false
 select = E,F,W
 extend-exclude = *_pb2.py
 extend-ignore =
-    # inline comment should start with '# '
-    E262,
     # block comment should start with '# '
     E265,
-    # too many leading '#' for block comment
-    E266,
     # module level import not at top of file
     E402,
     # line too long
