@@ -28,7 +28,5 @@ extend-ignore =
     F405,
     # f-string is missing placeholders
     F541,
-    # blank line contains whitespace
-    W293,
     # line break before binary operator
     W503,

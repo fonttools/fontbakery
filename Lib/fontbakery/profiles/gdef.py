@@ -35,7 +35,7 @@ def _get_mark_class_glyphnames(ttFont):
     id="com.google.fonts/check/gdef_spacing_marks",
     rationale="""
         Glyphs in the GDEF mark glyph class should be non-spacing.
-        
+
         Spacing glyphs in the GDEF mark glyph class may have incorrect anchor
         positioning that was only intended for building composite glyphs during design.
     """,
