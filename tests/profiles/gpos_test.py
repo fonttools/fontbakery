@@ -25,14 +25,14 @@ def test_check_gpos_kerning_info():
     # delete all Pair Adjustment lookups:
     while True:
         found = False
-        for l, lookup in enumerate(ttFont["GPOS"].table.LookupList.Lookup):
+        for idx, lookup in enumerate(ttFont["GPOS"].table.LookupList.Lookup):
             # if lookup.LookupType == 2:  # type 2 = Pair Adjustment
             #  del ttFont["GPOS"].table.LookupList.Lookup[l]
             #  found = True
             if lookup.LookupType == 9:  # type 9 = Extension subtable
                 for e, ext in enumerate(lookup.SubTable):
                     if ext.ExtensionLookupType == 2:  # type 2 = Pair Adjustment
-                        del ttFont["GPOS"].table.LookupList.Lookup[l].SubTable[e]
+                        del ttFont["GPOS"].table.LookupList.Lookup[idx].SubTable[e]
                         found = True
         if not found:
             break
