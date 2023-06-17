@@ -391,7 +391,7 @@ class Profile:
         if has_fallback:
             fallback = args[0]
 
-        if not name in self._namespace:
+        if name not in self._namespace:
             if has_fallback:
                 return fallback
             raise KeyError(name)
@@ -429,7 +429,7 @@ class Profile:
         Item is a check or a condition, which means it can be dependent on
         more conditions, this climbs down all the way.
         """
-        if not key in ("args", "mandatoryArgs"):
+        if key not in ("args", "mandatoryArgs"):
             raise TypeError(f'key must be "args" or "mandatoryArgs", got {key}')
         dependencies = list(getattr(item, key))
         if hasattr(item, "conditions"):

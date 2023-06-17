@@ -194,7 +194,7 @@ def run_a_set_of_shaping_tests(
             if not test_filter(test, configuration):
                 continue
 
-            if not "input" in test:
+            if "input" not in test:
                 yield FAIL, Message(
                     "shaping-missing-input",
                     f"{shaping_file}: test is missing an input key.",
