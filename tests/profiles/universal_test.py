@@ -978,7 +978,7 @@ def test_check_rupee():
 
     print("Ensure the check will SKIP when dealing with a non-indic font...")
     non_indic = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    assert is_indic_font(non_indic) == False
+    assert is_indic_font(non_indic) is False
 
     # This one is good:
     ttFont = TTFont(

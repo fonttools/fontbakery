@@ -4878,7 +4878,7 @@ def test_check_colorfont_tables():
     # Make it a static again:
     del ttFont["fvar"]
     assert "fvar" not in ttFont.keys()
-    assert is_variable_font(ttFont) == False
+    assert is_variable_font(ttFont) is False
 
     assert "SVG " in ttFont.keys()
     assert "COLR" in ttFont.keys()

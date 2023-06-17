@@ -12,8 +12,6 @@ extend-ignore =
     E402,
     # line too long
     E501,
-    # comparison to True should be 'if cond is True:' or 'if cond:'
-    E712,
     # test for membership should be 'not in'
     E713,
     # do not use bare 'except'
