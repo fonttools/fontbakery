@@ -2,8 +2,8 @@ import re
 
 from fontbakery.profiles.googlefonts import GOOGLEFONTS_PROFILE_CHECKS
 from fontbakery.section import Section
-from fontbakery.status import WARN, PASS, FAIL, SKIP  # , INFO, ERROR
-from fontbakery.callable import check  # , disable
+from fontbakery.status import WARN, PASS, FAIL, SKIP
+from fontbakery.callable import check
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (
@@ -149,46 +149,37 @@ def com_google_fonts_check_cmap_unexpected_subtables(
     #   Format 12 = Segmented coverage
     #   Format 14 = Unicode Variation Sequences
     EXPECTED_SUBTABLES = [
-        (
-            0,
-            PlatformID.MACINTOSH,
-            MacintoshEncodingID.ROMAN,
-        ),  # 13.7% of GFonts TTFs (389 files)
-        # ( 4, PlatformID.MACINTOSH, MacintoshEncodingID.ROMAN),     # only the Sansation family has this on GFonts
-        (
-            6,
-            PlatformID.MACINTOSH,
-            MacintoshEncodingID.ROMAN,
-        ),  # 38.1% of GFonts TTFs (1.082 files)
-        # ( 4, PlatformID.UNICODE,   UnicodeEncodingID.UNICODE_1_0), # only the Gentium family has this on GFonts
-        # (12, PlatformID.UNICODE, 10), # INVALID? - only the Overpass family and SawarabiGothic-Regular has this on GFonts
+        # 13.7% of GFonts TTFs (389 files)
+        (0, PlatformID.MACINTOSH, MacintoshEncodingID.ROMAN),
+        #
+        # only the Sansation family has this on GFonts
+        # (4, PlatformID.MACINTOSH, MacintoshEncodingID.ROMAN),
+        #
+        # 38.1% of GFonts TTFs (1.082 files)
+        (6, PlatformID.MACINTOSH, MacintoshEncodingID.ROMAN),
+        #
+        # only the Gentium family has this on GFonts
+        # (4, PlatformID.UNICODE, UnicodeEncodingID.UNICODE_1_0),
+        #
+        # INVALID? - only the Overpass family and SawarabiGothic-Regular
+        #            has this on GFonts
+        # (12, PlatformID.UNICODE, 10),
         # -----------------------------------------------------------------------
-        (
-            4,
-            PlatformID.WINDOWS,
-            WindowsEncodingID.UNICODE_BMP,
-        ),  # Absolutely all GFonts TTFs have this table :-)
-        (
-            12,
-            PlatformID.WINDOWS,
-            WindowsEncodingID.UNICODE_FULL_REPERTOIRE,
-        ),  #   5.7% of GFonts TTFs (162 files)
-        (
-            14,
-            PlatformID.UNICODE,
-            UnicodeEncodingID.UNICODE_VARIATION_SEQUENCES,
-        ),  #   1.1% - Only 4 families (30 TTFs),
-        #          including SourceCodePro, have this on GFonts
-        (
-            4,
-            PlatformID.UNICODE,
-            UnicodeEncodingID.UNICODE_2_0_BMP_ONLY,
-        ),  #  97.0% of GFonts TTFs (only 84 files lack it)
-        (
-            12,
-            PlatformID.UNICODE,
-            UnicodeEncodingID.UNICODE_2_0_FULL,
-        ),  #   2.9% of GFonts TTFs (82 files)
+        # Absolutely all GFonts TTFs have this table :-)
+        (4, PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP),
+        #
+        # 5.7% of GFonts TTFs (162 files)
+        (12, PlatformID.WINDOWS, WindowsEncodingID.UNICODE_FULL_REPERTOIRE),
+        #
+        # 1.1% - Only 4 families (30 TTFs),
+        # including SourceCodePro, have this on GFonts
+        (14, PlatformID.UNICODE, UnicodeEncodingID.UNICODE_VARIATION_SEQUENCES),
+        #
+        # 97.0% of GFonts TTFs (only 84 files lack it)
+        (4, PlatformID.UNICODE, UnicodeEncodingID.UNICODE_2_0_BMP_ONLY),
+        #
+        # 2.9% of GFonts TTFs (82 files)
+        (12, PlatformID.UNICODE, UnicodeEncodingID.UNICODE_2_0_FULL),
     ]
     if is_cjk_font:
         EXPECTED_SUBTABLES.extend(
