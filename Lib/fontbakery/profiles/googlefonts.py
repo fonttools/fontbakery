@@ -1778,7 +1778,7 @@ def com_google_fonts_check_has_ttfautohint_params(ttFont):
 
     def ttfautohint_version(value):
         # example string:
-        #'Version 1.000; ttfautohint (v0.93) -l 8 -r 50 -G 200 -x 14 -w "G"
+        # 'Version 1.000; ttfautohint (v0.93) -l 8 -r 50 -G 200 -x 14 -w "G"
         import re
 
         results = re.search(r"ttfautohint \(v(.*)\) ([^;]*)", value)
@@ -6768,13 +6768,13 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
         #       a way too verbose output. That's why I only left
         #       the "tester" string for now.
         SAMPLES = {
-            #'styles': languages[lang].sample_text.styles,
+            # 'styles': languages[lang].sample_text.styles,
             "tester": languages[lang].sample_text.tester,
-            #'specimen_16': languages[lang].sample_text.specimen_16,
-            #'specimen_21': languages[lang].sample_text.specimen_21,
-            #'specimen_32': languages[lang].sample_text.specimen_32,
-            #'specimen_36': languages[lang].sample_text.specimen_36,
-            #'specimen_48': languages[lang].sample_text.specimen_48
+            # 'specimen_16': languages[lang].sample_text.specimen_16,
+            # 'specimen_21': languages[lang].sample_text.specimen_21,
+            # 'specimen_32': languages[lang].sample_text.specimen_32,
+            # 'specimen_36': languages[lang].sample_text.specimen_36,
+            # 'specimen_48': languages[lang].sample_text.specimen_48
         }
         for sample_type, sample_text in SAMPLES.items():
             # Remove line-breaks and zero width space (U+200B) characteres.
