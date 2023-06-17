@@ -676,15 +676,17 @@ def com_google_fonts_check_whitespace_ink(ttFont):
     id="com.google.fonts/check/legacy_accents",
     proposal="https://github.com/googlefonts/fontbakery/issues/3959",
     rationale="""
-        Legacy accents should not be used in accented glyphs. The use of legacy accents in accented glyphs breaks
-        the mark to mark combining feature that allows a font to stack diacritics over one glyph.
-        Use combining marks instead as a component in composite glyphs.
+        Legacy accents should not be used in accented glyphs. The use of legacy
+        accents in accented glyphs breaks the mark to mark combining feature that
+        allows a font to stack diacritics over one glyph. Use combining marks
+        instead as a component in composite glyphs.
 
-        Legacy accents should not have anchors and positive width (at least as wide as their bounding box).
-        They are often used independently of a letter, either as a placeholder for an expected
-        combined mark+letter combination in MacOS, or separately. For instance, the ´ is often used
-        (mistakenly) as an apostrophe, the ` is used in Markdown to notify code blocks, and ^ is used
-        as an exponential operator in maths.
+        Legacy accents should not have anchors and positive width (at least as
+        wide as their bounding box). They are often used independently of a letter,
+        either as a placeholder for an expected combined mark+letter combination
+        in MacOS, or separately. For instance, U+00B4 (ACUTE ACCENT) is often
+        mistakenly used as an apostrophe, U+0060 (GRAVE ACCENT) is used in Markdown
+        to notify code blocks, and ^ is used as an exponential operator in maths.
     """,
 )
 def com_google_fonts_check_legacy_accents(ttFont):
@@ -693,19 +695,19 @@ def com_google_fonts_check_legacy_accents(ttFont):
 
     # code-points for all legacy chars
     LEGACY_ACCENTS = {
-        0x00A8,
-        0x02D9,
-        0x0060,
-        0x00B4,
-        0x02DD,
-        0x02C6,
-        0x02C7,
-        0x02D8,
-        0x02DA,
-        0x02DC,
-        0x00AF,
-        0x00B8,
-        0x02DB,
+        0x00A8,  # DIAERESIS
+        0x02D9,  # DOT ABOVE
+        0x0060,  # GRAVE ACCENT
+        0x00B4,  # ACUTE ACCENT
+        0x02DD,  # DOUBLE ACUTE ACCENT
+        0x02C6,  # MODIFIER LETTER CIRCUMFLEX ACCENT
+        0x02C7,  # CARON
+        0x02D8,  # BREVE
+        0x02DA,  # RING ABOVE
+        0x02DC,  # SMALL TILDE
+        0x00AF,  # MACRON
+        0x00B8,  # CEDILLA
+        0x02DB,  # OGONEK
     }
 
     passed = True
@@ -720,8 +722,8 @@ def com_google_fonts_check_legacy_accents(ttFont):
                 passed = False
                 yield WARN, Message(
                     "legacy-accents-component",
-                    f'Glyph "{glyph.name}" has a legacy accent component ({component.ref}).'
-                    f" It needs to be replaced by a combining mark.",
+                    f'Glyph "{glyph.name}" has a legacy accent component'
+                    f" ({component.ref}). It needs to be replaced by a combining mark.",
                 )
 
     # Check whether legacy accents have positive width.
@@ -732,7 +734,7 @@ def com_google_fonts_check_legacy_accents(ttFont):
                 passed = False
                 yield FAIL, Message(
                     "legacy-accents-width",
-                    f'Legacy accent "{glyph.name}" are too narrow',
+                    f'Legacy accent "{glyph.name}" are too narrow.',
                 )
 
     # Check whether legacy accents appear in GDEF as marks.
@@ -746,7 +748,8 @@ def com_google_fonts_check_legacy_accents(ttFont):
                     passed = False
                     yield FAIL, Message(
                         "legacy-accents-gdef",
-                        f'Legacy accent "{glyph.name}" is defined in GDEF as a mark (class 3)',
+                        f'Legacy accent "{glyph.name}" is defined in GDEF'
+                        f" as a mark (class 3).",
                     )
 
     if passed:
