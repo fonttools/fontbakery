@@ -290,7 +290,7 @@ def licenses(family_directory):
 @condition
 def license_contents(license_path):
     if license_path:
-        return open(license_path).read()
+        return open(license_path).read().replace(" \n", "\n")
 
 
 @condition

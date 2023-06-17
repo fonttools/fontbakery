@@ -605,7 +605,7 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
 @check(
     id="com.adobe.fonts/check/varfont/foundry_defined_tag_name",
     rationale="""
-        According to the Open-Type spec's syntactic requirements for 
+        According to the Open-Type spec's syntactic requirements for
         foundry-defined design-variation axis tags available at
         https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxisreg
 
