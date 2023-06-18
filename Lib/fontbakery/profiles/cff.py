@@ -3,9 +3,7 @@ from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import (
-    profile_factory,  # NOQA pylint: disable=unused-import
-)
+from fontbakery.fonts_profile import profile_factory  # noqa: F401
 
 profile_imports = [(".shared_conditions", ("is_cff", "is_cff2"))]
 

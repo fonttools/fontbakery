@@ -125,12 +125,17 @@ def test_profile_imports():
         # just as an example: import a check and a dependency/condition of
         # that check from the googlefonts specific profile:
         (
+            "fontbakery.profiles.googlefonts_conditions",
+            (
+                # This condition is a dependency of the check below:
+                "familyname",
+            ),
+        ),
+        (
             "fontbakery.profiles.googlefonts",
             (
                 # "License URL matches License text on name table?"
                 "com_google_fonts_check_name_license_url",
-                # This condition is a dependency of the check above:
-                "familyname",
             ),
         ),
     ]

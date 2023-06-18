@@ -1,11 +1,11 @@
+from opentypespec.tags import FEATURE_TAGS, SCRIPT_TAGS, LANGUAGE_TAGS
+
 from fontbakery.callable import check
 from fontbakery.status import PASS, FAIL
 from fontbakery.message import Message
-from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
-    profile_factory,
-)
 
-from opentypespec.tags import FEATURE_TAGS, SCRIPT_TAGS, LANGUAGE_TAGS
+# used to inform get_module_profile whether and how to create a profile
+from fontbakery.fonts_profile import profile_factory  # noqa: F401
 
 
 def feature_tags(ttFont):
