@@ -1,13 +1,11 @@
+from fontTools.ttLib import TTLibError
+
 from fontbakery.message import Message
 from fontbakery.callable import check
 from fontbakery.status import FAIL, PASS, WARN
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
-    profile_factory,
-)
-
-import fontTools.ttLib
+from fontbakery.fonts_profile import profile_factory  # noqa: F401
 
 
 @check(
@@ -34,7 +32,7 @@ def com_google_fonts_check_glyf_unused_data(ttFont):
             yield PASS, "There is no unused data at the end of the glyf table."
         else:
             raise Exception("Bug: fontTools did not raise an expected exception.")
-    except fontTools.ttLib.TTLibError as error:
+    except TTLibError as error:
         if "not enough 'glyf' table data" in format(error):
             yield FAIL, Message(
                 "missing-data",

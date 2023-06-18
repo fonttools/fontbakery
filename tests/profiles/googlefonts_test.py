@@ -789,9 +789,9 @@ def test_check_fstype():
     )
 
 
-def test_condition__registered_vendor_ids():
+def test_condition_registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
-    from fontbakery.profiles.googlefonts import registered_vendor_ids
+    from fontbakery.profiles.googlefonts_conditions import registered_vendor_ids
 
     registered_ids = registered_vendor_ids()
 
@@ -980,8 +980,7 @@ def test_check_family_has_license():
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/family/has_license"
     )
-
-    from fontbakery.profiles.googlefonts import licenses
+    from fontbakery.profiles.googlefonts_conditions import licenses
 
     def licenses_for_test(path):
         found = licenses(path)

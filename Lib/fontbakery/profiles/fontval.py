@@ -1,12 +1,12 @@
 from pathlib import Path
 import tempfile
+
 from fontbakery.callable import check
+from fontbakery.fonts_profile import profile_factory
 from fontbakery.status import ERROR, FAIL, INFO, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.message import Message
 
-# used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory
 from .shared_conditions import is_cff, is_variable_font
 
 

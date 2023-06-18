@@ -9,9 +9,8 @@ from fontbakery.section import Section
 from fontbakery.status import INFO, PASS, FAIL  # WARN
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
-from .googlefonts_conditions import *  # pylint: disable=wildcard-import,unused-wildcard-import
-from .shared_conditions import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
+profile_imports = ((".", ("shared_conditions", "googlefonts_conditions")),)
 profile = profile_factory(default_section=Section("Check Proposals"))
 
 TEMPLATE_FOR_NEW_CHECK = '''

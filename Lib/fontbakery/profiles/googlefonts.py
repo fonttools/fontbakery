@@ -6,7 +6,7 @@ from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.section import Section
-from fontbakery.callable import check, disable
+from fontbakery.callable import check, condition, disable
 from fontbakery.utils import (
     add_check_overrides,
     bullet_list,
@@ -22,12 +22,13 @@ from fontbakery.constants import (
     WindowsLanguageID,
     MacintoshEncodingID,
     MacintoshLanguageID,
+    UnicodeEncodingID,
     LATEST_TTFAUTOHINT_VERSION,
 )
-from .googlefonts_conditions import *  # pylint: disable=wildcard-import,unused-wildcard-import
 
-
-profile_imports = ((".", ("universal", "outline", "ufo_sources")),)
+profile_imports = (
+    (".", ("googlefonts_conditions", "universal", "outline", "ufo_sources")),
+)
 profile = profile_factory(default_section=Section("Google Fonts"))
 
 profile.configuration_defaults = {
@@ -1721,17 +1722,18 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
 def com_google_fonts_check_file_size(font):
     """Ensure files are not too large."""
     size = os.stat(font).st_size
-    if size > FAIL_SIZE:
+    if size > FAIL_SIZE:  # noqa: F821
         yield FAIL, Message(
             "massive-font",
             f"Font file is {filesize_formatting(size)}, "
-            f"larger than limit {filesize_formatting(FAIL_SIZE)}",
+            f"larger than limit {filesize_formatting(FAIL_SIZE)}",  # noqa: F821
         )
-    elif size > WARN_SIZE:
+    elif size > WARN_SIZE:  # noqa: F821
         yield WARN, Message(
             "large-font",
             f"Font file is {filesize_formatting(size)}; "
-            f"ideally it should be less than {filesize_formatting(WARN_SIZE)}",
+            f"ideally it should be less than "
+            f"{filesize_formatting(WARN_SIZE)}",  # noqa: F821
         )
     else:
         yield PASS, "Font had a reasonable file size"

@@ -1,13 +1,12 @@
+import os
+
 from fontbakery.callable import check
 from fontbakery.message import Message
 from fontbakery.status import FAIL, PASS, INFO, WARN, SKIP
 from fontbakery.utils import bullet_list
-import os
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
-    profile_factory,
-)
+from fontbakery.fonts_profile import profile_factory  # noqa: F401
 
 profile_imports = ((".", ("shared_conditions",)),)
 
