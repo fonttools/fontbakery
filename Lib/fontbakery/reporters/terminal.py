@@ -12,17 +12,18 @@ Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
-import sys
-import os
-import subprocess
+import builtins  # using this to override print function somewhere
 from collections import Counter
 from functools import partial
-import builtins  # using this to override print function somewhere
 from io import StringIO
+import os
+import subprocess
+import sys
 from time import time
 
+from fontbakery.constants import LIGHT_THEME
 from fontbakery.reporters import FontbakeryReporter
-from fontbakery.checkrunner import (  # NOQA
+from fontbakery.checkrunner import (
     INFO,
     WARN,
     ERROR,
@@ -147,9 +148,6 @@ class ThrottledOut:
             self._buffer.append(reset_progressbar)
         self._current_ticks = 0
         self._last_flush_time = time()
-
-
-from fontbakery.constants import LIGHT_THEME
 
 
 class TerminalProgress(FontbakeryReporter):

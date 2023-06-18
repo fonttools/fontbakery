@@ -8,8 +8,6 @@ extend-exclude = *_pb2.py
 extend-ignore =
     # whitespace before ':'
     E203,
-    # module level import not at top of file
-    E402,
     # line too long
     E501,
     # '<module>' imported but unused
