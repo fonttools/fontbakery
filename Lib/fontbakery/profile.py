@@ -329,7 +329,7 @@ class Profile:
             try:
                 int(checkid.split("/")[-1])
                 return True
-            except:
+            except ValueError:
                 return False
 
         numerical_check_ids = [c for c in registered_checks if is_numerical_id(c)]

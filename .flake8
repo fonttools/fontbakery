@@ -12,8 +12,6 @@ extend-ignore =
     E402,
     # line too long
     E501,
-    # do not use bare 'except'
-    E722,
     # '<module>' imported but unused
     F401,
     # 'from <module> import *' used; unable to detect undefined names

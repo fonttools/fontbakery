@@ -534,7 +534,7 @@ class TerminalReporter(TerminalProgress):
 
             try:
                 message = f"{msg.message}\n" f"[code: {msg.code}]"
-            except:
+            except AttributeError:
                 message = str(msg)
 
             if hasattr(msg, "traceback"):
