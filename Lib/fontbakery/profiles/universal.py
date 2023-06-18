@@ -1995,8 +1995,9 @@ def com_google_fonts_check_STAT_in_statics(ttFont):
 @check(
     id="com.google.fonts/check/alt_caron",
     rationale="""
-        Lcaron, dcaron, lcaron, tcaron should NOT be composed with quoteright or quotesingle or comma or caron(comb).
-        It should be composed with a distinctive glyph which doesn't look like an apostrophe.
+        Lcaron, dcaron, lcaron, tcaron should NOT be composed with quoteright
+        or quotesingle or comma or caron(comb). It should be composed with a
+        distinctive glyph which doesn't look like an apostrophe.
 
         Source:
         https://ilovetypography.com/2009/01/24/on-diacritics/
@@ -2005,36 +2006,59 @@ def com_google_fonts_check_STAT_in_statics(ttFont):
     """,
     proposal="https://github.com/googlefonts/fontbakery/issues/3308",
 )
-def com_google_fonts_check_alt_caron(ttFont):
+def com_google_fonts_check_alt_caron(font):
     """Check accent of Lcaron, dcaron, lcaron, tcaron"""
     import babelfont
 
     passed = True
-    caron_glyphs = (0x013D, 0x010F, 0x013E, 0x0165)
-    wrong_caron_marks = (0x02C7, 0x030C)
-    # This may be expanded to include other comma-lookalikes:
-    bad_caron_marks = (0x002C, 0x2019, 0x201A, 0x0027)
+    CARON_GLYPHS = set(
+        (
+            0x013D,  # LATIN CAPITAL LETTER L WITH CARON
+            0x010F,  # LATIN SMALL LETTER D WITH CARON
+            0x013E,  # LATIN SMALL LETTER L WITH CARON
+            0x0165,  # LATIN SMALL LETTER T WITH CARON
+        )
+    )
 
-    font = babelfont.load(ttFont.reader.file.name)
+    WRONG_CARON_MARKS = set(
+        (
+            0x02C7,  # CARON
+            0x030C,  # COMBINING CARON
+        )
+    )
+
+    # This may be expanded to include other comma-lookalikes:
+    BAD_CARON_MARKS = set(
+        (
+            0x002C,  # COMMA
+            0x2019,  # RIGHT SINGLE QUOTATION MARK
+            0x201A,  # SINGLE LOW-9 QUOTATION MARK
+            0x0027,  # APOSTROPHE
+        )
+    )
+
+    font = babelfont.load(font)
     for glyph in font.glyphs:
-        if set(glyph.codepoints).intersection(set(caron_glyphs)):
+        if set(glyph.codepoints).intersection(CARON_GLYPHS):
             layer = font.default_master.get_glyph_layer(glyph.name)
             if layer.shapes and not layer.components:
                 yield WARN, Message(
                     "decomposed-outline",
-                    f"{glyph.name} is decomposed and therefore could not be checked. Please check manually.",
+                    f"{glyph.name} is decomposed and therefore could not be checked."
+                    f" Please check manually.",
                 )
             if len(layer.components) == 1:
                 yield WARN, Message(
                     "single-component",
-                    f"{glyph.name} is composed of a single component and therefore could not be checked. Please check manually.",
+                    f"{glyph.name} is composed of a single component and therefore"
+                    f" could not be checked. Please check manually.",
                 )
             if len(layer.components) > 1:
                 for component in layer.components:
                     # Uses absolutely wrong caron mark
                     if font.glyphs[component.ref].codepoints and set(
                         font.glyphs[component.ref].codepoints
-                    ).intersection(set(wrong_caron_marks)):
+                    ).intersection(WRONG_CARON_MARKS):
                         passed = False
                         yield FAIL, Message(
                             "wrong-mark",
@@ -2043,7 +2067,7 @@ def com_google_fonts_check_alt_caron(ttFont):
 
                     # Uses bad mark
                     if set(font.glyphs[component.ref].codepoints).intersection(
-                        set(bad_caron_marks)
+                        BAD_CARON_MARKS
                     ):
                         yield WARN, Message(
                             "bad-mark", f"{glyph.name} uses component {component.ref}."
