@@ -16,9 +16,11 @@
 import os
 import subprocess
 import sys
-
-from fontTools.ttLib import TTFont
 from typing import Text, Optional
+
+from fontTools.pens.basePen import BasePen
+from fontTools.ttLib import TTFont
+
 from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
 
 
@@ -644,9 +646,6 @@ def axis(ttFont, tag):
     for axis in ttFont["fvar"].axes:
         if axis.axisTag == tag:
             return axis
-
-
-from fontTools.pens.basePen import BasePen
 
 
 class PointsPen(BasePen):
