@@ -1,6 +1,8 @@
 import os
 import re
 
+from packaging.version import VERSION_PATTERN
+
 from fontbakery.status import PASS, FAIL, WARN, INFO, SKIP
 from fontbakery.section import Section
 from fontbakery.callable import check, disable
@@ -8,8 +10,6 @@ from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
 from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
-
-from packaging.version import VERSION_PATTERN
 
 re_version = re.compile(r"^\s*" + VERSION_PATTERN + r"\s*$", re.VERBOSE | re.IGNORECASE)
 

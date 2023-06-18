@@ -1,4 +1,4 @@
-from fontbakery.checkrunner import WARN
+from fontbakery.status import WARN
 from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,

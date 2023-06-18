@@ -20,8 +20,6 @@ from fontbakery.constants import (
     PlatformID,
     WindowsEncodingID,
     WindowsLanguageID,
-    MacintoshEncodingID,
-    MacintoshLanguageID,
     UnicodeEncodingID,
     LATEST_TTFAUTOHINT_VERSION,
 )
@@ -275,7 +273,6 @@ def com_google_fonts_check_canonical_filename(ttFont):
 def com_google_fonts_check_description_broken_links(description_html):
     """Does DESCRIPTION file contain broken links?"""
     import requests
-    from lxml import etree
 
     doc = description_html
     broken_links = []
@@ -335,8 +332,6 @@ def com_google_fonts_check_description_broken_links(description_html):
 )
 def com_google_fonts_check_description_urls(description_html):
     """URLs on DESCRIPTION file must not display http(s) prefix."""
-    from lxml import etree
-
     passed = True
     for a_href in description_html.iterfind(".//a[@href]"):
         link_text = a_href.text
@@ -1722,18 +1717,18 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
 def com_google_fonts_check_file_size(font):
     """Ensure files are not too large."""
     size = os.stat(font).st_size
-    if size > FAIL_SIZE:  # noqa: F821
+    if size > FAIL_SIZE:  # noqa:F821 pylint:disable=E0602
         yield FAIL, Message(
             "massive-font",
             f"Font file is {filesize_formatting(size)}, "
-            f"larger than limit {filesize_formatting(FAIL_SIZE)}",  # noqa: F821
+            f"larger than limit {filesize_formatting(FAIL_SIZE)}",  # noqa:F821 pylint:disable=E0602
         )
-    elif size > WARN_SIZE:  # noqa: F821
+    elif size > WARN_SIZE:  # noqa:F821 pylint:disable=E0602
         yield WARN, Message(
             "large-font",
             f"Font file is {filesize_formatting(size)}; "
             f"ideally it should be less than "
-            f"{filesize_formatting(WARN_SIZE)}",  # noqa: F821
+            f"{filesize_formatting(WARN_SIZE)}",  # noqa:F821 pylint:disable=E0602
         )
     else:
         yield PASS, "Font had a reasonable file size"
@@ -2460,7 +2455,6 @@ def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadat
     the family name declared on the name table.
     """
     from fontbakery.utils import get_name_entry_strings
-    from fontbakery.constants import RIBBI_STYLE_NAMES
 
     font_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
     if len(font_familynames) == 0:
@@ -5233,7 +5227,6 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
 )
 def com_google_fonts_check_vertical_metrics(ttFont):
     """Check font follows the Google Fonts vertical metric schema"""
-    from .shared_conditions import typo_metrics_enabled
 
     filename = os.path.basename(ttFont.reader.file.name)
 
@@ -5401,11 +5394,7 @@ def com_google_fonts_check_vertical_metrics_regressions(
     """Check if the vertical metrics of a family are similar to the same
     family hosted on Google Fonts."""
     import math
-    from .shared_conditions import (
-        is_variable_font,
-        get_instance_axis_value,
-        typo_metrics_enabled,
-    )
+    from .shared_conditions import typo_metrics_enabled
 
     gf_ttFont = regular_remote_style
     ttFont = regular_ttFont
@@ -5519,7 +5508,7 @@ def com_google_fonts_check_vertical_metrics_regressions(
 )
 def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     """Check font follows the Google Fonts CJK vertical metric schema"""
-    from .shared_conditions import is_cjk_font, typo_metrics_enabled
+    from .shared_conditions import typo_metrics_enabled
 
     filename = os.path.basename(ttFont.reader.file.name)
 

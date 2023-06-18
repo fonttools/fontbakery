@@ -1,9 +1,9 @@
 import os
-import subprocess
-import sys
 import re
-import pytest
+import subprocess
 import tempfile
+
+import pytest
 
 
 def test_list_subcommands_has_all_scripts():

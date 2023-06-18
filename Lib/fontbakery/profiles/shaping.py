@@ -14,21 +14,21 @@
 # limitations under the License.
 
 import json
-import sys
-import textwrap
 from difflib import ndiff
 from pathlib import Path
-from fontbakery.callable import check, condition
-from fontbakery.checkrunner import FAIL, PASS, SKIP, WARN
+from os.path import basename, relpath
+
+from collidoscope import Collidoscope
+from fontTools.unicodedata import ot_tag_to_script
+from stringbrewer import StringBrewer
+from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
+from vharfbuzz import Vharfbuzz, FakeBuffer
+
+from fontbakery.callable import check
+from fontbakery.status import FAIL, PASS, SKIP, WARN
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
 from fontbakery.section import Section
-from fontTools.unicodedata import ot_tag_to_script
-from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
-from vharfbuzz import Vharfbuzz, FakeBuffer
-from os.path import basename, relpath
-from stringbrewer import StringBrewer
-from collidoscope import Collidoscope
 
 shaping_basedir = Path("qa", "shaping_tests")
 

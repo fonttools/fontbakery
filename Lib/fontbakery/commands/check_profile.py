@@ -2,23 +2,25 @@
 # usage:
 # $ fontbakery check-profile fontbakery.profiles.googlefonts -h
 import argparse
+from collections import OrderedDict
 from importlib import import_module
 import os
 import sys
-from collections import OrderedDict
 
 from fontbakery.checkrunner import (
-    distribute_generator,
     CheckRunner,
+    distribute_generator,
     get_module_from_file,
+)
+from fontbakery.status import (
     DEBUG,
-    INFO,
-    WARN,
     ERROR,
-    SKIP,
-    PASS,
     FAIL,
+    INFO,
+    PASS,
     SECTIONSUMMARY,
+    SKIP,
+    WARN,
 )
 from fontbakery.configuration import Configuration
 from fontbakery.profile import Profile, get_module_profile

@@ -9,20 +9,7 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 from collections import Counter
 
-from fontbakery.checkrunner import (
-    DEBUG,
-    INFO,
-    WARN,
-    ERROR,
-    STARTCHECK,
-    SKIP,
-    PASS,
-    FAIL,
-    ENDCHECK,
-    SECTIONSUMMARY,
-    START,
-    END,
-)
+from fontbakery.status import END, ENDCHECK, START
 from fontbakery.errors import ProtocolViolationError
 
 

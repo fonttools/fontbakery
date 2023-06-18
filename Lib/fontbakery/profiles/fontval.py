@@ -11,7 +11,7 @@ from .shared_conditions import is_cff, is_variable_font
 
 
 try:
-    import lxml
+    from lxml import etree
 except ImportError:
     import sys
 
@@ -219,8 +219,6 @@ def com_google_fonts_check_fontvalidator(font, config):
 
     grouped_msgs = {}
     with open(report_file, "rb") as xml_report:
-        from lxml import etree
-
         doc = etree.fromstring(xml_report.read())
         for report in doc.iterfind(".//Report"):
             msg = report.get("Message")

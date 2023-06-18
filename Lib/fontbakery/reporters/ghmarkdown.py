@@ -1,7 +1,7 @@
 import os
+
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.utils import html5_collapsible
-from fontbakery.checkrunner import Status
 from fontbakery import __version__ as version
 
 LOGLEVELS = ["ERROR", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]

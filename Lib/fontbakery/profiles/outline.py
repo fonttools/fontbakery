@@ -3,13 +3,13 @@ import math
 from beziers.path import BezierPath
 
 from fontbakery.callable import condition, check
-from fontbakery.status import FAIL, PASS, WARN
+from fontbakery.status import PASS, WARN
 from fontbakery.section import Section
 from fontbakery.message import Message
 from fontbakery.utils import bullet_list
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory  # noqa: F401
+from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable=W0611
 
 ALIGNMENT_MISS_EPSILON = 2  # Two point lee-way on alignment misses
 SHORT_PATH_EPSILON = 0.006  # <0.6% of total outline length makes a short segment

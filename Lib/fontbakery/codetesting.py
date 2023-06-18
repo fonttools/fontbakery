@@ -15,7 +15,8 @@
 #
 import defcon
 
-from fontbakery.checkrunner import CheckRunner, PASS, DEBUG, ERROR, SKIP
+from fontbakery.checkrunner import CheckRunner
+from fontbakery.status import PASS, DEBUG, ERROR, SKIP
 from fontbakery.configuration import Configuration
 from fontbakery.message import Message
 from fontbakery.profile import Profile, get_module_profile

@@ -1,9 +1,9 @@
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS, WARN, SKIP
+from fontbakery.status import PASS, WARN, SKIP
 from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory  # noqa: F401
+from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable=W0611
 
 
 def _is_non_spacing_mark_char(charcode):

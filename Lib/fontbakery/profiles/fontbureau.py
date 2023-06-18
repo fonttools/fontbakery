@@ -4,7 +4,7 @@ Checks for Font Bureau.
 
 from fontbakery.callable import check
 from fontbakery.section import Section
-from fontbakery.status import PASS, FAIL, WARN
+from fontbakery.status import PASS, FAIL
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
