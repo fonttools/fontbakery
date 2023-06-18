@@ -2050,7 +2050,7 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
             string = name.string.decode(name.getEncoding())
             try:
                 string.encode("ascii")
-            except:
+            except UnicodeEncodeError:
                 bad_entries.append(name)
                 badstring = string.encode("ascii", errors="xmlcharrefreplace")
                 yield FAIL, Message(
@@ -3761,7 +3761,7 @@ def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
             )
         else:
             yield PASS, "Font familyname seems to be unique."
-    except:
+    except requests.exceptions.RequestException:
         import sys
 
         yield ERROR, Message(
@@ -6127,7 +6127,7 @@ def com_google_fonts_check_metadata_consistent_axis_enumeration(
 def com_google_fonts_check_STAT_axis_order(fonts):
     """Check axis ordering on the STAT table."""
     from collections import Counter
-    from fontTools.ttLib import TTFont
+    from fontTools.ttLib import TTFont, TTLibError
 
     no_stat = 0
     summary = []
@@ -6145,7 +6145,7 @@ def com_google_fonts_check_STAT_axis_order(fonts):
                 yield SKIP, Message(
                     "missing-STAT", f"This font does not have a STAT table: {font}"
                 )
-        except:
+        except (TTLibError, AttributeError):
             yield INFO, Message("bad-font", f"Something wrong with {font}")
 
     report = "\n\t".join(map(str, Counter(summary).most_common()))

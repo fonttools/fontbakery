@@ -200,7 +200,7 @@ def ligatures(ttFont):
                                                 lig.Component
                                             )
         return all_ligatures
-    except:
+    except (AttributeError, IndexError):
         return -1  # Indicate fontTools-related crash...
 
 
@@ -222,7 +222,7 @@ def ligature_glyphs(ttFont):
                                         if lig.LigGlyph not in all_ligature_glyphs:
                                             all_ligature_glyphs.append(lig.LigGlyph)
         return all_ligature_glyphs
-    except:
+    except (AttributeError, IndexError):
         return -1  # Indicate fontTools-related crash...
 
 
