@@ -17,26 +17,27 @@ from collections import Counter
 from functools import partial
 from io import StringIO
 import os
+import re
 import subprocess
 import sys
 from time import time
 
 from fontbakery.constants import LIGHT_THEME
 from fontbakery.reporters import FontbakeryReporter
-from fontbakery.checkrunner import (
-    INFO,
-    WARN,
-    ERROR,
-    STARTCHECK,
-    SKIP,
-    PASS,
-    FAIL,
-    ENDCHECK,
-    SECTIONSUMMARY,
-    START,
-    END,
-    DEBUG,
+from fontbakery.status import (
     Status,
+    DEBUG,
+    END,
+    ENDCHECK,
+    ERROR,
+    FAIL,
+    INFO,
+    PASS,
+    SECTIONSUMMARY,
+    SKIP,
+    START,
+    STARTCHECK,
+    WARN,
 )
 
 statuses = (
@@ -412,8 +413,6 @@ class TerminalReporter(TerminalProgress):
             self._collected_results[key][message.name] += 1
 
     def _render_event_sync(self, print, event):
-        import re
-
         status, msg, (section, check, iterargs) = event
 
         if (
@@ -680,7 +679,6 @@ class TerminalReporter(TerminalProgress):
 def parse_md(md):
     from rich.console import Console
     from rich.markdown import Markdown
-    import re
 
     table_re = r"(^|[^|]\n)((?:^\|[^\n]*\|(?:\n|$))+)([^|]|$)"
     md = re.sub(r"\n([\r\t ]*\n)+", r"\n\n", md, flags=re.MULTILINE)
@@ -708,7 +706,6 @@ def parse_md_table(match, tables_memo):
     from rich.style import Style
     from rich.align import Align
     from rich import box
-    import re
 
     [table_header, table_body, columns] = split_md_table(match.group(2))
     b = box.Box("    \n    \n══╪═\n    \n┈┈┼┈\n┈┈┼┈\n    \n    ")
@@ -747,8 +744,6 @@ def parse_md_table(match, tables_memo):
 
 
 def map_md_table_align_col(cell):
-    import re
-
     if re.match(r"^\s*:-+:\s*$", cell):
         return "center"
     if re.match(r"^\s*-+:\s*$", cell):
@@ -757,8 +752,6 @@ def map_md_table_align_col(cell):
 
 
 def split_md_table(md_table):
-    import re
-
     md_table = re.sub(r"^\||\|$", "", md_table, flags=re.MULTILINE)
     table_header = []
     table_body = []

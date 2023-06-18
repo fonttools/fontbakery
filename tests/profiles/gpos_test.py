@@ -6,7 +6,7 @@ from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,
 )
-from fontbakery.checkrunner import WARN
+from fontbakery.status import WARN
 from fontbakery.profiles import opentype as opentype_profile
 
 

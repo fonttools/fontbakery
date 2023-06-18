@@ -18,14 +18,9 @@ import importlib
 import inspect
 from typing import Dict, Any
 
-from fontbakery.callable import (
-    FontbakeryCallable,
-    FontBakeryCheck,
-    FontBakeryCondition,
-    FontBakeryExpectedValue,
-)
+from fontbakery.callable import FontBakeryCallable
 from fontbakery.message import Message
-from fontbakery.profile import Profile, get_module_profile
+from fontbakery.profile import get_module_profile
 from fontbakery.utils import is_negated
 from fontbakery.errors import (
     APIViolationError,
@@ -36,25 +31,19 @@ from fontbakery.errors import (
     MissingConditionError,
     SetupError,
     MissingValueError,
-    CircularAliasError,
-    NamespaceError,
     ValueValidationError,
 )
-from fontbakery.section import Section
 from fontbakery.status import (
     Status,
-    DEBUG,
-    PASS,
-    SKIP,
-    INFO,
-    WARN,
-    FAIL,
+    END,
+    ENDCHECK,
     ERROR,
+    FAIL,
+    PASS,
+    SECTIONSUMMARY,
+    SKIP,
     START,
     STARTCHECK,
-    ENDCHECK,
-    SECTIONSUMMARY,
-    END,
 )
 
 

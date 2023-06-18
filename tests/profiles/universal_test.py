@@ -5,7 +5,7 @@ from fontTools.ttLib import TTFont
 import pytest
 from requests.exceptions import ConnectionError
 
-from fontbakery.checkrunner import INFO, WARN, FAIL, SKIP
+from fontbakery.status import INFO, WARN, FAIL, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
@@ -795,7 +795,6 @@ def test_check_unwanted_tables():
 
 def test_glyph_has_ink():
     from fontbakery.utils import glyph_has_ink
-    from fontTools.ttLib import TTFont
 
     print()  # so next line doesn't start with '.....'
 

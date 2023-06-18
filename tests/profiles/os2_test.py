@@ -6,7 +6,7 @@ import fontTools.ttLib
 from fontTools.ttLib import TTFont
 import fontTools.subset
 
-from fontbakery.checkrunner import INFO, WARN, FAIL, PASS
+from fontbakery.status import INFO, WARN, FAIL, PASS
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,

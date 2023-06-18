@@ -7,7 +7,7 @@ from fontTools.ttLib import TTFont
 
 from fontbakery.profiles.googlefonts import can_shape
 from fontbakery.profiles.googlefonts_conditions import expected_font_names
-from fontbakery.checkrunner import DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL, ENDCHECK
+from fontbakery.status import DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL, ENDCHECK
 from fontbakery.codetesting import (
     assert_results_contain,
     assert_PASS,
@@ -2897,7 +2897,6 @@ def test_check_font_names(fp, mod, result):
     # this repository already has good unit tests but this check will also include the previous
     # test cases found in fontbakery.
     # https://github.com/googlefonts/axisregistry/blob/main/tests/test_names.py
-    from fontbakery.profiles.googlefonts_conditions import expected_font_names
 
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/font_names")
     ttFont = TTFont(fp)
@@ -3803,8 +3802,6 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/vertical_metrics_regressions"
     )
-    from fontbakery.profiles.shared_conditions import family_directory
-
     ttFonts = [TTFont(f) for f in cabin_fonts]
 
     # Cabin test family should match by default

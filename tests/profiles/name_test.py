@@ -10,7 +10,7 @@ from fontbakery.constants import (
     MacintoshEncodingID,
     MacintoshLanguageID,
 )
-from fontbakery.checkrunner import INFO, WARN, PASS, FAIL, SKIP
+from fontbakery.status import INFO, WARN, PASS, FAIL, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,

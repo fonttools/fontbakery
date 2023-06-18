@@ -11,7 +11,6 @@ import logging
 
 from fontbakery.errors import NamespaceError, SetupError, CircularAliasError
 from fontbakery.callable import (
-    FontbakeryCallable,
     FontBakeryCheck,
     FontBakeryCondition,
     FontBakeryExpectedValue,

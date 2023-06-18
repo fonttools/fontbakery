@@ -3,7 +3,7 @@ import os
 import defcon
 import pytest
 
-from fontbakery.checkrunner import FAIL, SKIP, WARN
+from fontbakery.status import FAIL, SKIP, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,

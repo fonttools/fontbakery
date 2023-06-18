@@ -1,9 +1,10 @@
-from fontTools.ttLib import TTFont
 import json
 import os
 import tempfile
 
-from fontbakery.checkrunner import FAIL, WARN
+from fontTools.ttLib import TTFont
+
+from fontbakery.status import FAIL, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
