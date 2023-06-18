@@ -133,6 +133,7 @@ setup(
     install_requires=[
         # ---
         # core dependencies
+        "babelfont",
         f"fontTools{FONTTOOLS_VERSION}",
         "freetype-py!=2.4.0",  # Avoiding 2.4.0 due to seg-fault described at
         # https://github.com/googlefonts/fontbakery/issues/4143

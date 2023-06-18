@@ -5171,10 +5171,13 @@ def test_check_alt_caron():
 
     ttFont = TTFont(TEST_FILE("annie/AnnieUseYourTelescope-Regular.ttf"))
     assert_results_contain(
-        check(ttFont), FAIL, "bad-mark"
-    )  # deviation from universal profile
+        check(ttFont), FAIL, "bad-mark"  # deviation from universal profile
+    )
+
     assert_results_contain(check(ttFont), FAIL, "wrong-mark")
+
     ttFont = TTFont(TEST_FILE("cousine/Cousine-Bold.ttf"))
     assert_results_contain(check(ttFont), WARN, "decomposed-outline")
+
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
     assert_PASS(check(ttFont))
