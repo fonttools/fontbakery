@@ -178,7 +178,7 @@ class FontBakeryCheck(FontbakeryCallable):
         suggested_profile=None,  # A suggestion of which fontbakery profile
         # should this check be added to once implemented.
         severity=None,  # numeric value from 1=min to 10=max, denoting check severity
-        configs=None,  # items from config[self.id] to inject into the check's namespace.
+        configs=None,  # items from config[self.id] to inject into the check's namespace
         misc_metadata=None,  # Miscelaneous free-form metadata fields
         # Some of them may be promoted to 1st-class metadata fields
         # if they start being used by the check-runner.

@@ -125,12 +125,12 @@ def com_google_fonts_check_fontvalidator(font, config):
         # contours because they are used to draw each portion
         # of variable glyph features.
         "Intersecting contours",
-        # DeltaFormat = 32768 (same as 0x8000) means VARIATION_INDEX,
-        # according to https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2
+        # DeltaFormat = 32768 (same as 0x8000) means VARIATION_INDEX, according to
+        # https://docs.microsoft.com/en-us/typography/opentype/spec/chapter2
         # The FontVal problem description for this check (E5200) only mentions
         # the other values as possible valid ones. So apparently this means FontVal
-        # implementation is not up-to-date with more recent versions of the OpenType spec
-        # and that's why these spurious FAILs are being emitted.
+        # implementation is not up-to-date with more recent versions of the OpenType
+        # spec and that's why these spurious FAILs are being emitted.
         # That's good enough reason to mute it.
         # More info at:
         # https://github.com/googlefonts/fontbakery/issues/2109
@@ -242,7 +242,8 @@ def com_google_fonts_check_fontvalidator(font, config):
             else:
                 if details not in grouped_msgs[msg]["details"]:
                     # avoid cluttering the output with tons of identical reports
-                    # yield INFO, 'grouped_msgs[msg]["details"]: {}'.format(grouped_msgs[msg]["details"])
+                    # yield INFO, 'grouped_msgs[msg]["details"]: {}'.format(
+                    # grouped_msgs[msg]["details"])
                     grouped_msgs[msg]["details"].append(details)
 
     # ---------------------------

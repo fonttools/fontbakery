@@ -1266,7 +1266,7 @@ def test_check_STAT_in_statics():
     ttFont = TTFont(TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"))
     assert_SKIP(check(ttFont), "with a variable font...")
 
-    # fake it: Remove fvar table to make FontBakery think it is dealing with a static font
+    # Remove fvar table to make FontBakery think it is dealing with a static font
     del ttFont["fvar"]
 
     # We know that our reference RobotoSerif varfont (which the check is induced

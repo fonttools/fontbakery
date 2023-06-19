@@ -1131,7 +1131,10 @@ def com_google_fonts_check_superfamily_list(superfamily):
     proposal="https://github.com/googlefonts/fontbakery/issues/1487",
 )
 def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
-    """Each font in set of sibling families must have the same set of vertical metrics values."""
+    """
+    Each font in set of sibling families must have the same set of vertical metrics
+    values.
+    """
     if len(superfamily_ttFonts) < 2:
         yield SKIP, "Sibling families were not detected."
         return
@@ -1728,12 +1731,12 @@ def com_adobe_fonts_check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
         If the space and nbspace glyphs have different widths, then Google Workspace
         has problems with the font.
 
-        The nbspace is used to replace the space character in multiple situations
-        in documents; such as the space before punctuation in languages that do that.
-        It avoids the punctuation to be separated from the last word and go to next line.
+        The nbspace is used to replace the space character in multiple situations in
+        documents; such as the space before punctuation in languages that do that. It
+        avoids the punctuation to be separated from the last word and go to next line.
 
-        This is automatic substitution by the text editors, not by fonts. It is also
-        used by designers in text composition practice to create nicely shaped paragraphs.
+        This is automatic substitution by the text editors, not by fonts. It's also used
+        by designers in text composition practice to create nicely shaped paragraphs.
         If the space and the nbspace are not the same width, it breaks the text
         composition of documents.
     """,

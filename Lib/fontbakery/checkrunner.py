@@ -368,9 +368,9 @@ class CheckRunner:
                 return (status, None)
 
             # An annoying FutureWarning here (Python 3.8.3) on stderr:
-            #     "FutureWarning: The behavior of this method will change in future
-            #      versions. Use specific 'len(elem)' or 'elem is not None' test instead."
-            # Actually not shure how to tackle this, since val is very unspecific
+            #   "FutureWarning: The behavior of this method will change in future
+            #    versions. Use specific 'len(elem)' or 'elem is not None' test instead."
+            # Actually not sure how to tackle this, since val is very unspecific
             # here intentionally. Where is the documentation for the change?
             if val is None:
                 bool_val = False
@@ -589,7 +589,7 @@ FILE_MODULE_NAME_PREFIX = "."
 def get_module_from_file(filename):
     # filename = 'my/path/to/file.py'
     # module_name = 'file_module.file_py'
-    module_name = f"{FILE_MODULE_NAME_PREFIX}{format(os.path.basename(filename).replace('.', '_'))}"
+    module_name = f"{FILE_MODULE_NAME_PREFIX}{format(os.path.basename(filename).replace('.', '_'))}"  # noqa:E501 pylint:disable=C0301
     module_spec = importlib.util.spec_from_file_location(module_name, filename)
     module = importlib.util.module_from_spec(module_spec)
     module_spec.loader.exec_module(module)

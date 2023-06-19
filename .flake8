@@ -8,7 +8,5 @@ extend-exclude = *_pb2.py
 extend-ignore =
     # whitespace before ':'
     E203,
-    # line too long
-    E501,
     # line break before binary operator
     W503,

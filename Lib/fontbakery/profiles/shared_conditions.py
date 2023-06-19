@@ -127,7 +127,8 @@ def sibling_directories(family_directory):
     smarter filesystem lookup procedures or even by letting the user feed explicit
     sibling family paths.
 
-    This function returs a list of paths to directories where related font files were detected.
+    This function returs a list of paths to directories where related font files were
+    detected.
     """
     SIBLING_SUFFIXES = ["sans", "sc", "narrow", "text", "display", "condensed"]
 

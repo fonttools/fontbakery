@@ -41,7 +41,8 @@ def test_check_caretslope():
     ttFont["post"].italicAngle = -12
     message = assert_results_contain(check(ttFont), FAIL, "caretslope-mismatch")
     assert message == (
-        "hhea.caretSlopeRise and hhea.caretSlopeRun do not match with post.italicAngle.\n"
+        "hhea.caretSlopeRise and hhea.caretSlopeRun"
+        " do not match with post.italicAngle.\n"
         "Got: caretSlopeRise 1000 and caretSlopeRun 194\n"
         "Expected: caretSlopeRise 1000 and caretSlopeRun 213"
     )
@@ -61,7 +62,8 @@ def test_check_caretslope():
     ttFont["post"].italicAngle = 12
     message = assert_results_contain(check(ttFont), FAIL, "caretslope-mismatch")
     assert message == (
-        "hhea.caretSlopeRise and hhea.caretSlopeRun do not match with post.italicAngle.\n"
+        "hhea.caretSlopeRise and hhea.caretSlopeRun"
+        " do not match with post.italicAngle.\n"
         "Got: caretSlopeRise 1000 and caretSlopeRun 213\n"
         "Expected: caretSlopeRise 1000 and caretSlopeRun -213"
     )

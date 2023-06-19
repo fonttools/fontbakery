@@ -11,9 +11,11 @@ profile_imports = [(".shared_conditions", ("is_ttf",))]
 @check(
     id="com.google.fonts/check/family/underline_thickness",
     rationale="""
-        Dave C Lemon (Adobe Type Team) recommends setting the underline thickness to be consistent across the family.
+        Dave C Lemon (Adobe Type Team) recommends setting the underline thickness to be
+        consistent across the family.
 
-        If thicknesses are not family consistent, words set on the same line which have different styles look strange.
+        If thicknesses are not family consistent, words set on the same line which have
+        different styles look strange.
     """,
     proposal="legacy:check/008",
     misc_metadata={"affects": [("InDesign", "unspecified")]},

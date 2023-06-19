@@ -562,8 +562,8 @@ def test_check_varfont_valid_default_instance_nameids():
     msg = assert_PASS(check(ttFont_1))
     assert msg == "All default instance name strings are valid."
 
-    # The font's 'LightCondensed' instance record has the same coordinates as the default
-    # instance, and the record's string matches the string of nameID 17.
+    # The font's 'LightCondensed' instance record has the same coordinates as the
+    # default instance, and the record's string matches the string of nameID 17.
     ttFont_2 = TTFont(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf"))
     msg = assert_PASS(check(ttFont_2))
     assert msg == "All default instance name strings are valid."

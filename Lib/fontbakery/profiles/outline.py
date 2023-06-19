@@ -261,9 +261,12 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config)
 @check(
     id="com.google.fonts/check/outline_semi_vertical",
     rationale="""
-        This check detects line segments which are nearly, but not quite, exactly horizontal or vertical. Sometimes such lines are created by design, but often they are indicative of a design error.
+        This check detects line segments which are nearly, but not quite, exactly
+        horizontal or vertical. Sometimes such lines are created by design, but often
+        they are indicative of a design error.
 
-        This check is disabled for italic styles, which often contain nearly-upright lines.
+        This check is disabled for italic styles, which often contain nearly-upright
+        lines.
     """,
     conditions=["outlines_dict", "is_not_variable_font", "is_not_italic"],
     proposal="https://github.com/googlefonts/fontbakery/pull/3088",

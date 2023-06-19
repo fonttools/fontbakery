@@ -153,7 +153,7 @@ class GHMarkdownReporter(SerializeReporter):
                     ""
                 ).format(*[data["result"][k] for k in LOGLEVELS])
                 + (
-                    "| {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% |\n"
+                    "| {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% |\n"  # noqa:E501 pylint:disable=C0301
                     ""
                 ).format(*[100 * data["result"][k] / num_checks for k in LOGLEVELS])
             )

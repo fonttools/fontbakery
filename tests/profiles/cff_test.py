@@ -94,5 +94,8 @@ def test_check_cff_deprecated_operators():
         check(font),
         FAIL,
         "deprecated-operation-endchar-seac",
-        'Glyph "Agrave" has deprecated use of "endchar" operator to build accented characters (seac).',
+        (
+            'Glyph "Agrave" has deprecated use of "endchar" operator'
+            " to build accented characters (seac)."
+        ),
     )

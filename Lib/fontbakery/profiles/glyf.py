@@ -104,7 +104,9 @@ def com_google_fonts_check_points_out_of_bounds(ttFont, config):
     proposal="https://github.com/googlefonts/fontbakery/pull/2709",
 )
 def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont, config):
-    """Check glyphs do not have duplicate components which have the same x,y coordinates."""
+    """
+    Check glyphs do not have duplicate components which have the same x,y coordinates.
+    """
     from fontbakery.utils import pretty_print_list
 
     failed = []

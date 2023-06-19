@@ -73,14 +73,14 @@ class HTMLReporter(SerializeReporter):
                     if "filename" in result:
                         body_elements.append(
                             html5_collapsible(
-                                f"{EMOTICON[result['result']]} <strong>{result['filename']}</strong>",
+                                f"{EMOTICON[result['result']]} <strong>{result['filename']}</strong>",  # noqa:E501 pylint:disable=C0301
                                 self.html_for_check(result),
                             )
                         )
                     else:
                         body_elements.append(
                             html5_collapsible(
-                                f"{EMOTICON[result['result']]} <strong>Family check</strong>",
+                                f"{EMOTICON[result['result']]} <strong>Family check</strong>",  # noqa:E501 pylint:disable=C0301
                                 self.html_for_check(result),
                             )
                         )
