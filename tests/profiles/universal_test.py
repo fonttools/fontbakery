@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 
 from fontTools.ttLib import TTFont
 import pytest
-from requests.exceptions import ConnectionError
+import requests
 
 from fontbakery.status import INFO, WARN, FAIL, SKIP
 from fontbakery.codetesting import (
@@ -415,7 +415,7 @@ def test_check_fontbakery_version(mock_get, mock_installed):
     assert "Request to PyPI.org was not successful" in msg
 
     # Test the case of the GET request failing due to a connection error.
-    mock_get.side_effect = ConnectionError
+    mock_get.side_effect = requests.exceptions.ConnectionError
     msg = assert_results_contain(check(font), FAIL, "connection-error")
     assert "Request to PyPI.org failed with this message" in msg
 

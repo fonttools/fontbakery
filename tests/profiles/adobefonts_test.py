@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables.otTables import AxisValueRecord
-from requests.exceptions import ConnectionError
+import requests
 
 from fontbakery.status import WARN, FAIL, PASS, SKIP
 from fontbakery.codetesting import (
@@ -416,7 +416,7 @@ def test_check_override_weight_class_fvar():
     )
 
 
-@patch("requests.get", side_effect=ConnectionError)
+@patch("requests.get", side_effect=requests.exceptions.ConnectionError)
 def test_check_override_fontbakery_version(mock_get):
     """Check that overridden test yields SKIP rather than FAIL."""
     check = CheckTester(

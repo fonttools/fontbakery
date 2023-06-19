@@ -1095,7 +1095,7 @@ def test_check_name_license(mada_ttFonts):
 
     for ttFont in mada_ttFonts:
         assert_results_contain(
-            check(ttFont, {"license": "LICENSE.txt"}),  # Apache
+            check(ttFont, {"license_filename": "LICENSE.txt"}),  # Apache
             FAIL,
             "wrong",
             "with wrong entry values ...",

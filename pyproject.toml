@@ -68,7 +68,6 @@ disable = [
 	"pointless-statement",
 	"protected-access",
 	"raise-missing-from",
-	"redefined-builtin",
 	"redefined-outer-name",
 	"singleton-comparison",
 	"subprocess-run-check",

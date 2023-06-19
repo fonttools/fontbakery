@@ -165,7 +165,7 @@ class FontBakeryCheck(FontbakeryCallable):
     def __init__(
         self,
         checkfunc,
-        id,
+        id,  # pylint:disable=redefined-builtin
         description=None,  # short text, this is mandatory
         documentation=None,
         name=None,  # very short text
