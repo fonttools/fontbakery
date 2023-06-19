@@ -649,10 +649,10 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
               style-linking group"
             * "For extended typographic families that includes fonts other than the
               four basic styles(regular, italic, bold, bold italic), it is strongly
-              recommended that name IDs 16 and 17 be used in fonts to create an extended,
-              typographic grouping."
-            * "If name ID 16 is absent, then name ID 1 is considered to be the typographic
-               family name."
+              recommended that name IDs 16 and 17 be used in fonts to create an
+              extended, typographic grouping."
+            * "If name ID 16 is absent, then name ID 1 is considered to be the
+              typographic family name."
 
         https://learn.microsoft.com/en-us/typography/opentype/spec/name
 
@@ -665,9 +665,10 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
     """,
 )
 def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
-    """Verify that family names in the name table are consistent across all fonts in the family.
-    Checks Typographic Family name (nameID 16) if present,
-    otherwise uses Font Family name (nameID 1)
+    """
+    Verify that family names in the name table are consistent across all fonts in the
+    family. Checks Typographic Family name (nameID 16) if present, otherwise uses Font
+    Family name (nameID 1)
     """
     from fontbakery.utils import get_name_entry_strings
     from collections import defaultdict
@@ -752,7 +753,8 @@ def com_google_fonts_check_name_italic_names(ttFont, style):
         if subfamily_name not in ("Italic", "Bold Italic"):
             yield FAIL, Message(
                 "bad-subfamilyname",
-                f"Name ID 2 (Subfamily Name) does not conform to specs. Only R/I/B/BI are allowed.\n"
+                "Name ID 2 (Subfamily Name) does not conform to specs."
+                " Only R/I/B/BI are allowed.\n"
                 f"Got: '{subfamily_name}'.",
             )
             passed = False
@@ -762,8 +764,7 @@ def com_google_fonts_check_name_italic_names(ttFont, style):
             if "Italic" in get_name(NameID.TYPOGRAPHIC_FAMILY_NAME):
                 yield FAIL, Message(
                     "bad-typographicfamilyname",
-                    "Name ID 16 (Typographic Family Name)"
-                    " must not contain 'Italic'.",
+                    "Name ID 16 (Typographic Family Name) must not contain 'Italic'.",
                 )
                 passed = False
 

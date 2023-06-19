@@ -603,17 +603,17 @@ def test_check_name_family_name_compliance():
     message = assert_results_contain(
         check(ttFont), FAIL, "forbidden-characters", "with a bad font name"
     )
-    assert (
-        message
-        == '"KonKhmer_SleokChher" contains the following characters which are not allowed: "_".'
+    assert message == (
+        '"KonKhmer_SleokChher" contains the following characters'
+        ' which are not allowed: "_".'
     )
     set_name(ttFont, 1, "Kon*Khmer_Sleok-Chher")
     message = assert_results_contain(
         check(ttFont), FAIL, "forbidden-characters", "with a bad font name"
     )
-    assert (
-        message
-        == '"Kon*Khmer_Sleok-Chher" contains the following characters which are not allowed: "*-_".'
+    assert message == (
+        '"Kon*Khmer_Sleok-Chher" contains the following characters'
+        ' which are not allowed: "*-_".'
     )
 
     # STARTS WITH UPPERCASE
@@ -805,11 +805,11 @@ def test_condition_registered_vendor_ids():
     assert "CFA " in registered_ids  # Computer Fonts Australia
 
     print(
-        '"GNU ": "Free Software Foundation, Inc." is a good vendor id with 3 letters and a space.'
+        '"GNU ": "Free Software Foundation, Inc." is a good vendor id'
+        " with 3 letters and a space."
     )
-    assert (
-        "GNU " in registered_ids
-    )  # Free Software Foundation, Inc. / http://www.gnu.org/
+    # Free Software Foundation, Inc. / http://www.gnu.org/
+    assert "GNU " in registered_ids
 
     print('"GNU" without the right-padding space must not be on the list!')
     assert "GNU" not in registered_ids  # All vendor ids must be 4 chars long!
@@ -821,7 +821,8 @@ def test_condition_registered_vendor_ids():
     assert "B&H " in registered_ids  # Bigelow & Holmes
 
     print(
-        '"MS  ": "Microsoft Corp." is a good vendor id with 2 letters and padded with spaces.'
+        '"MS  ": "Microsoft Corp." is a good vendor id'
+        " with 2 letters and padded with spaces."
     )
     assert "MS  " in registered_ids  # Microsoft Corp.
 
@@ -834,15 +835,15 @@ def test_condition_registered_vendor_ids():
     assert "H" not in registered_ids  # 1 char long is bad
 
     print(
-        '"H   ": "Hurme Design" is a good vendor id with a single letter padded with spaces.'
+        '"H   ": "Hurme Design" is a good vendor id'
+        " with a single letter padded with spaces."
     )
     assert "H   " in registered_ids  # Hurme Design
 
     print('"   H": But not padded on the left, please!')
-    assert (
-        "   H" not in registered_ids
-    )  # a bad vendor id (presumably for "Hurme Design"
+    # a bad vendor id (presumably for "Hurme Design"
     # but with a vendor id parsing bug)
+    assert "   H" not in registered_ids
 
     print('"????" is an unknown vendor id.')
     assert "????" not in registered_ids
@@ -1039,7 +1040,10 @@ def test_check_license_ofl_copyright():
     )
 
     # so we fix it:
-    SOME_GOOD_TEXT = "Copyright 2019 The Montserrat Project Authors (https://github.com/julietaula/montserrat)"
+    SOME_GOOD_TEXT = (
+        "Copyright 2019 The Montserrat Project Authors"
+        " (https://github.com/julietaula/montserrat)"
+    )
     assert_PASS(
         check(ttFont, {"license_contents": SOME_GOOD_TEXT}),
         "with good license contents.",
@@ -1228,8 +1232,8 @@ def NOT_IMPLEMENTED_test_check_old_ttfautohint():
     #
     # code-paths:
     # - FAIL, code="lacks-version-strings"
-    # - INFO, code="version-not-detected"  "Could not detect which version of ttfautohint
-    #                                       was used in this font."
+    # - INFO, code="version-not-detected"  "Could not detect which version of
+    #                                       ttfautohint was used in this font."
     # - WARN, code="old-ttfa"  "detected an old ttfa version"
     # - PASS
     # - FAIL, code="parse-error"
@@ -1241,13 +1245,15 @@ def NOT_IMPLEMENTED_test_check_old_ttfautohint():
         (
             FAIL,
             "lacks-ttfa-params",
-            "with a font lacking ttfautohint params on its version strings on the name table.",
+            "with a font lacking ttfautohint params on its version strings "
+            "on the name table.",
             TEST_FILE("coveredbyyourgrace/CoveredByYourGrace.ttf"),
         ),
         (
             SKIP,
             "not-hinted",
-            "with a font which appears to our heuristic as not hinted using ttfautohint.",
+            "with a font which appears to our heuristic as not hinted using "
+            "ttfautohint.",
             TEST_FILE("mada/Mada-Regular.ttf"),
         ),
         (
@@ -1298,7 +1304,8 @@ def NOT_IMPLEMENTED_test_check_gasp():
     # - FAIL, "lacks-ffff-range"  "The gasp table does not have a 0xFFFF gasp range."
     # - INFO, "ranges"            "These are the ppm ranges declared on the gasp table:"
     # - WARN, "non-ffff-range"    "The gasp table has a range that may be unneccessary."
-    # - WARN, "unset-flags"       "All flags in gasp range 0xFFFF (i.e. all font sizes) must be set to 1"
+    # - WARN, "unset-flags"       "All flags in gasp range 0xFFFF (i.e. all font sizes)
+    #                              must be set to 1"
     # - PASS                      "The gasp table is correctly set."
 
 
@@ -1628,7 +1635,9 @@ def test_check_metadata_familyname():
 
 
 def test_check_metadata_has_regular():
-    """METADATA.pb: According Google Fonts standards, families should have a Regular style."""
+    """
+    METADATA.pb: According Google Fonts standards, families should have a Regular style.
+    """
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/metadata/has_regular"
     )
@@ -1664,7 +1673,8 @@ def test_check_metadata_regular_is_400():
     # Let's start with the METADATA.pb file from our reference FamilySans family:
     font = TEST_FILE("familysans/FamilySans-Regular.ttf")
 
-    # We know that Family Sans' Regular has a weight value equal to 400, so the check should PASS:
+    # We know that Family Sans' Regular has a weight value equal to 400,
+    # so the check should PASS:
     assert_PASS(check(font), "with Family Sans, a family with regular=400...")
 
     md = check["family_metadata"]
@@ -1785,7 +1795,10 @@ def test_check_metadata_nameid_full_name():
 
 
 def test_check_metadata_nameid_font_name():
-    """METADATA.pb font.name value should be same as the family name declared on the name table."""
+    """
+    METADATA.pb font.name value should be same as the family name declared on
+    the name table.
+    """
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/metadata/nameid/font_name"
     )
@@ -2330,7 +2343,8 @@ def test_check_metadata_normal_style():
     #
     # Note: This time the boolean logic is the quite opposite in comparison
     # to the test for com.google.fonts/check/metadata/italic_style above.
-    # Here we have to set the bit back to 1 to get a wrongful "this font is an italic" setting:
+    # Here we have to set the bit back to 1 to get a wrongful "this font is an italic"
+    # setting:
     ttFont["head"].macStyle |= MacStyle.ITALIC
     assert_results_contain(
         check(ttFont), FAIL, "bad-macstyle", "with bad macstyle bit value..."
@@ -2338,7 +2352,10 @@ def test_check_metadata_normal_style():
 
 
 def test_check_metadata_nameid_family_and_full_names():
-    """METADATA.pb font.name and font.full_name fields match the values declared on the name table?"""
+    """
+    METADATA.pb font.name and font.full_name fields match the values declared on
+    the name table?
+    """
     check = CheckTester(
         googlefonts_profile,
         "com.google.fonts/check/metadata/nameid/family_and_full_names",
@@ -2512,20 +2529,24 @@ def NOT_IMPLEMENTED_test_check_metadata_canonical_style_names():
     # TODO: Implement-me!
     #
     # code-paths:
-    # - SKIP		"Applicable only to font styles declared as 'italic' or 'normal' on METADATA.pb."
+    # - SKIP		    "Applicable only to font styles declared as 'italic' or 'normal'
+    #                    on METADATA.pb."
     # - FAIL, "italic"	"Font style should be italic."
     # - FAIL, "normal"	"Font style should be normal."
-    # - PASS		"Font styles are named canonically."
+    # - PASS		    "Font styles are named canonically."
 
 
 def test_check_metadata_consistent_repo_urls():
-    """METADATA.pb: Check URL on copyright string is the same as in repository_url field."""
+    """
+    METADATA.pb: Check URL on copyright string is the same as in repository_url field.
+    """
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/metadata/consistent_repo_urls"
     )
 
     # The problem was first seen on a project with these diverging values:
-    # copyright: "Copyright 2022 The Delicious Handrawn Project Authors (https://github.com/duartp/gloock)"
+    # copyright: "Copyright 2022 The Delicious Handrawn Project Authors
+    #             (https://github.com/duartp/gloock)"
     # repository_url: "https://github.com/alphArtype/Delicious-Handrawn"
     ttFont = TTFont(TEST_FILE("delicioushandrawn/DeliciousHandrawn-Regular.ttf"))
     assert_results_contain(check(ttFont), FAIL, "mismatch", "with different URLs...")
@@ -2536,9 +2557,10 @@ def test_check_metadata_consistent_repo_urls():
         family_md.source.repository_url
         == "https://github.com/alphArtype/Delicious-Handrawn"
     )
-    family_md.fonts[
-        0
-    ].copyright = "Copyright 2022 The Delicious Handrawn Project Authors (https://github.com/alphArtype/Delicious-Handrawn)"
+    family_md.fonts[0].copyright = (
+        "Copyright 2022 The Delicious Handrawn Project Authors"
+        " (https://github.com/alphArtype/Delicious-Handrawn)"
+    )
     assert_PASS(check(ttFont, {"family_metadata": family_md}))
 
 
@@ -2894,8 +2916,8 @@ def test_check_font_names(fp, mod, result):
     # It works by simply using the nametable builder which is found in the
     # axis registry,
     # https://github.com/googlefonts/axisregistry/blob/main/Lib/axisregistry/__init__.py#L232
-    # this repository already has good unit tests but this check will also include the previous
-    # test cases found in fontbakery.
+    # this repository already has good unit tests but this check will also include the
+    # previous test cases found in fontbakery.
     # https://github.com/googlefonts/axisregistry/blob/main/tests/test_names.py
 
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/font_names")
@@ -3470,7 +3492,8 @@ def test_check_family_control_chars():
         "with one bad font that has multiple bad char...",
     )
 
-    # Unacceptable control chars should fail with multiple files x multiple bad chars in fonts
+    # Unacceptable control chars should fail with multiple files x multiple bad chars
+    # in fonts
     fonts = [onebad_cc_font, multibad_cc_font]
     assert_results_contain(
         check(fonts),
@@ -3660,8 +3683,8 @@ def test_check_repo_fb_report(tmp_path):
     },
     "sections": [
     """
-    # Report files must be detected even if placed on subdirectories
-    # and the check code shuld not rely only on filename (such as "Jura-Regular.fb-report.json")
+    # Report files must be detected even if placed on subdirectories and the check code
+    # should not rely only on filename (such as "Jura-Regular.fb-report.json")
     # but should instead inspect the contents of the file:
     open(
         os.path.join(family_dir, "jura", "static", "my_fontfamily_name.json"), "w+"
@@ -3841,7 +3864,8 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
         "with a family which has an incorrect hhea descender...",
     )
 
-    # Fail if family on Google Fonts has fsSelection bit 7 enabled but checked fonts don't
+    # Fail if family on Google Fonts has fsSelection bit 7 enabled
+    # but checked fonts don't
     local_regular["OS/2"].fsSelection &= ~(1 << 7)
     assert_results_contain(
         check(ttFonts, {"regular_ttFont": local_regular}),
@@ -4312,7 +4336,9 @@ def test_check_gf_axisregistry_fvar_axis_defaults():
 
 
 def test_check_STAT_gf_axisregistry():
-    """Validate STAT particle names and values match the fallback names in GFAxisRegistry."""
+    """
+    Validate STAT particle names and values match the fallback names in GFAxisRegistry.
+    """
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/STAT/gf_axisregistry"
     )
@@ -4332,10 +4358,10 @@ def test_check_STAT_gf_axisregistry():
         == ttFont["name"].names[4].nameID
     )
     assert ttFont["name"].names[4].toUnicode() == "Bold"
-    ttFont["STAT"].table.AxisValueArray.AxisValue[
-        3
-    ].Value = 800  # instead of the expected 700
-    # Note: I know it is AxisValue[3] and names[4] because I inspected the font using ttx.
+    # instead of the expected 700
+    # Note: I know it is AxisValue[3] and names[4]
+    # because I inspected the font using ttx.
+    ttFont["STAT"].table.AxisValueArray.AxisValue[3].Value = 800
     assert_results_contain(check(ttFont), FAIL, "bad-coordinate")
 
     # Let's remove all Axis Values. This will fail since we Google Fonts
@@ -4405,7 +4431,8 @@ def test_check_metadata_designer_profiles():
     )
 
     # Delve Withrington is still not listed on the designers catalog.
-    # Note: Once it is listed, this code-test will start failing and will need to be updated.
+    # Note: Once it is listed, this code-test will start failing
+    # and will need to be updated.
     font = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
     assert_results_contain(check(font), WARN, "profile-not-found")
 
@@ -4413,8 +4440,8 @@ def test_check_metadata_designer_profiles():
     font = TEST_FILE("cousine/Cousine-Regular.ttf")
     assert_results_contain(check(font), FAIL, "multiple-designers")
 
-    # This reference Merriweather font family lists "Sorkin Type" in its METADATA.pb file.
-    # And this foundry has a good profile on the catalog.
+    # This reference Merriweather font family lists "Sorkin Type" in its METADATA.pb
+    # file. And this foundry has a good profile on the catalog.
     font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
     assert_PASS(check(font))
 
@@ -4438,7 +4465,9 @@ def test_check_mandatory_avar_table():
 
 
 def test_check_description_family_update():
-    """On a family update, the DESCRIPTION.en_us.html file should ideally also be updated."""
+    """
+    On a family update, the DESCRIPTION.en_us.html file should ideally also be updated.
+    """
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/description/family_update"
     )
@@ -4681,7 +4710,9 @@ def test_check_metadata_unsupported_subsets():
 
 
 def test_check_metadata_category_hints():
-    """Check if category on METADATA.pb matches what can be inferred from the family name."""
+    """
+    Check if category on METADATA.pb matches what can be inferred from the family name.
+    """
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/metadata/category_hints"
     )
@@ -4849,7 +4880,7 @@ def test_check_colorfont_tables():
     assert "SVG " not in ttFont.keys()
     assert "COLR" in ttFont.keys()
     assert ttFont["COLR"].version == 1
-    # Check colr v1 static font has an svg table (since v1 is not yet broadly supported).
+    # Check colr v1 static font has an svg table (since v1 isn't yet broadly supported).
     # Will fail since font doesn't have one.
     assert_results_contain(
         check(ttFont), FAIL, "add-svg", "with a static colr v1 font lacking SVG table"

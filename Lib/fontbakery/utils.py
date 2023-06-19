@@ -144,7 +144,7 @@ def get_theme(args):
         # terminal app. Default to the light-theme only if we're sure that the terminal
         # app is Apple's Terminal and its background color is indeed white.
         return LIGHT_THEME if apple_terminal_bg_is_white() else DARK_THEME
-    # For orther systems like GNU+Linux and Windows, a dark terminal seems to be more common.
+    # For orther systems like GNU+Linux and Windows, a dark terminal may be more common.
     return DARK_THEME
 
 

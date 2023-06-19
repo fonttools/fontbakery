@@ -204,7 +204,8 @@ class TerminalProgress(FontbakeryReporter):
         if text:
             self.stdout.write(text)
         elif self._print_progress:
-            # the empty string will change the ticks counter when self.stdout is a ThrottledOut
+            # the empty string will change the ticks counter
+            # when self.stdout is a ThrottledOut
             self.stdout.write("")
         status, _, _ = event
         if status == END and self._print_progress:
@@ -625,7 +626,7 @@ class TerminalReporter(TerminalProgress):
                 f"\n"
                 f"    If you get {formatStatus(self.theme, 'ERROR')}s,"
                 f" please help us improve the tool by reporting them at\n"
-                f"    {self.theme['url']('https://github.com/googlefonts/fontbakery/issues')}\n"
+                f"    {self.theme['url']('https://github.com/googlefonts/fontbakery/issues')}\n"  # noqa:E501 pylint:disable=C0301
                 f"\n"
                 f"    (but other kinds of bug reports and/or\n"
                 f"     feature requests are also always welcome, of course!)\n"

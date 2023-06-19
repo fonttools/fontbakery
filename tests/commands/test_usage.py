@@ -73,21 +73,21 @@ def test_status_log_is_indented():
     stdout = p.sub("#", result.stdout.decode()).split("\n")
     assert "\n".join(stdout[24:30]) == "\n".join(
         [
-            "     #[0#31#40mFAIL#[0m Name Table entry: Copyright notices should match a      ",
-            '          pattern similar to: "Copyright 2019 The Familyname Project Authors    ',
-            '          (git url)"                                                            ',
-            "          But instead we have got:                                              ",
-            '          "Copyright 2014 The Nunito Project Authors (contact@sansoxygen.com)"  ',
-            "          [code: bad#notice#format]                                             ",
+            "     #[0#31#40mFAIL#[0m Name Table entry: Copyright notices should match a      ",  # noqa:E501 pylint:disable=C0301
+            '          pattern similar to: "Copyright 2019 The Familyname Project Authors    ',  # noqa:E501 pylint:disable=C0301
+            '          (git url)"                                                            ',  # noqa:E501 pylint:disable=C0301
+            "          But instead we have got:                                              ",  # noqa:E501 pylint:disable=C0301
+            '          "Copyright 2014 The Nunito Project Authors (contact@sansoxygen.com)"  ',  # noqa:E501 pylint:disable=C0301
+            "          [code: bad#notice#format]                                             ",  # noqa:E501 pylint:disable=C0301
         ]
     )
     assert "\n".join(stdout[10:15]) == "\n".join(
         [
-            "     #[0#36#40mINFO#[0m Could not detect which version of ttfautohint was used  ",
-            "          in this font. It is typically specified as a comment in the font      ",
-            "          version entries of the 'name' table. Such font version strings are    ",
-            "          currently: ['Version 3.000', 'Version 3.000'] [code:                  ",
-            "          version#not#detected]                                                 ",
+            "     #[0#36#40mINFO#[0m Could not detect which version of ttfautohint was used  ",  # noqa:E501 pylint:disable=C0301
+            "          in this font. It is typically specified as a comment in the font      ",  # noqa:E501 pylint:disable=C0301
+            "          version entries of the 'name' table. Such font version strings are    ",  # noqa:E501 pylint:disable=C0301
+            "          currently: ['Version 3.000', 'Version 3.000'] [code:                  ",  # noqa:E501 pylint:disable=C0301
+            "          version#not#detected]                                                 ",  # noqa:E501 pylint:disable=C0301
         ]
     )
 

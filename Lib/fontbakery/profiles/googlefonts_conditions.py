@@ -335,7 +335,8 @@ def familyname(font):
 @condition
 def hinting_stats(font):
     """
-    Return file size differences for a hinted font compared to an dehinted version of same file
+    Return file size differences for a hinted font compared to an dehinted version
+    of same file
     """
     from io import BytesIO
     from dehinter.font import dehint

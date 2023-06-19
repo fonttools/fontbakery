@@ -139,7 +139,7 @@ def test_check_monospace():
         status == PASS and message.code == "mono-good"
     )
 
-    # Let's incorrectly mark it as a non-monospaced on the post table and it should fail:
+    # Incorrectly mark it as a non-monospaced on the post table and it should fail:
     ttFont["post"].isFixedPitch = IsFixedWidth.NOT_MONOSPACED
     # here we search for the expected FAIL among all results
     # instead of simply looking at the last one
@@ -167,7 +167,8 @@ def test_check_monospace():
     ]
     for bad_value in bad_monospaced_panose_values:
         ttFont["OS/2"].panose.bProportion = bad_value
-        # again, we search the expected FAIL because we may algo get an outliers WARN here:
+        # again, we search the expected FAIL because
+        # we may algo get an outliers WARN here:
         assert_results_contain(
             check(ttFont),
             FAIL,

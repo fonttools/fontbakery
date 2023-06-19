@@ -11,15 +11,17 @@ desired_glyph_data = [
     {"name": "uni2009", "unicode": 8201, "contours": [0]},
     {"name": "uni200A", "unicode": 8202, "contours": [0]},
     {"name": "uni200B", "unicode": 8203, "contours": [0]},
-    #    While ZWNJ and ZWJ display is suppressed in most text conditions, we follow Microsoft’s recommendation that visible glyphs be provided for these and other formatting characters, which can be displayed in text editing conditions
-    #    https://github.com/googlefonts/fontbakery/issues/3487
-    #    {
-    #        "name": "uni200C", #ZWNJ: zero width non-joiner
-    #        "unicode": 8204,
-    #        "contours": [
-    #            0
-    #        ]
-    #    },
+    # While ZWNJ and ZWJ display is suppressed in most text conditions, we follow
+    # Microsoft’s recommendation that visible glyphs be provided for these and other
+    # formatting characters, which can be displayed in text editing conditions
+    # https://github.com/googlefonts/fontbakery/issues/3487
+    # {
+    #     "name": "uni200C", #ZWNJ: zero width non-joiner
+    #     "unicode": 8204,
+    #     "contours": [
+    #         0
+    #     ]
+    # },
     {"name": "nonmarkingreturn", "unicode": 13, "contours": [0]},
     {"name": "uni2010", "unicode": 8208, "contours": [1]},
     {"name": "uni2011", "unicode": 8209, "contours": [1]},
@@ -609,15 +611,17 @@ desired_glyph_data = [
     {"name": "reflexsuperset", "unicode": 8839, "contours": [2]},
     {"name": "uni2288", "unicode": 8840, "contours": [2]},
     {"name": "uni2289", "unicode": 8841, "contours": [2]},
-    #    While ZWNJ and ZWJ display is suppressed in most text conditions, we follow Microsoft’s recommendation that visible glyphs be provided for these and other formatting characters, which can be displayed in text editing conditions
-    #    https://github.com/googlefonts/fontbakery/issues/3487
-    #    {
-    #        "name": "uni200D", #ZWJ: zero width joiner
-    #        "unicode": 8205,
-    #        "contours": [
-    #            0
-    #        ]
-    #    },
+    # While ZWNJ and ZWJ display is suppressed in most text conditions, we follow
+    # Microsoft’s recommendation that visible glyphs be provided for these and other
+    # formatting characters, which can be displayed in text editing conditions
+    # https://github.com/googlefonts/fontbakery/issues/3487
+    # {
+    #     "name": "uni200D", #ZWJ: zero width joiner
+    #     "unicode": 8205,
+    #     "contours": [
+    #         0
+    #     ]
+    # },
     {"name": "uni0292", "unicode": 658, "contours": [1]},
     {"name": "circleplus", "unicode": 8853, "contours": [3]},
     {"name": "p", "unicode": 112, "contours": [2]},

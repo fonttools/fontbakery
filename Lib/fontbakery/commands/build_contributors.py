@@ -6,7 +6,8 @@ import sys
 
 import git
 
-CONTRIBUTORS_HEAD = """# This is the list of people who have contributed to this project,
+CONTRIBUTORS_HEAD = """
+# This is the list of people who have contributed to this project,
 # and includes those not listed in AUTHORS.txt because they are not
 # copyright authors. For example, company employees may be listed
 # here because their company holds the copyright and is listed there.

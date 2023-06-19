@@ -91,7 +91,8 @@ class SerializeReporter(FontbakeryReporter):
 
                     item["clustered"] = {
                         "name": self._results_by,
-                        "index": index,  # None if this check did not require self.results_by
+                        # 'index' is None if this check did not require self.results_by
+                        "index": index,
                     }
                     if (
                         value

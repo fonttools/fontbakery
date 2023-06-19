@@ -33,7 +33,8 @@ def get_module_profile(module, name=None):
     If neither name is defined, the module is not considered a profile-module
     and None is returned.
 
-    TODO: describe the `name` argument and better define the signature of `profile_factory`.
+    TODO:
+    Describe the `name` argument and better define the signature of `profile_factory`.
 
     The `module` argument is expected to behave like a python module.
     The optional `name` argument is used when `profile_factory` is called to
@@ -848,8 +849,8 @@ class Profile:
         if it is present. If they an item is an instance of FontBakeryCheck,
         FontBakeryCondition or FontBakeryExpectedValue and register it in
         the default section.
-        If an item is a python module, try to get a profile using `get_module_profile(item)`
-        and then using `merge_profile`;
+        If an item is a python module, try to get a profile using
+        `get_module_profile(item)` and then using `merge_profile`;
         If the profile_imports kwarg is given, it is used instead of the one taken from
         the module namespace.
 
