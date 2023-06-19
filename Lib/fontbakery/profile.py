@@ -218,21 +218,23 @@ class Profile:
     def sections(self):
         return self._sections.values()
 
-    def _add_dict_to_namespace(self, type, data):
+    def _add_dict_to_namespace(self, ns_type, data):
         for key, value in data.items():
             self.add_to_namespace(
-                type, key, value, force=getattr(value, "force", False)
+                ns_type, key, value, force=getattr(value, "force", False)
             )
 
-    def add_to_namespace(self, type, name, value, force=False):
-        if type not in self._valid_namespace_types:
+    def add_to_namespace(self, ns_type, name, value, force=False):
+        if ns_type not in self._valid_namespace_types:
             valid_types = ", ".join(self._valid_namespace_types)
-            raise TypeError(f'Unknow type "{type}"' f" Valid types are: {valid_types}")
+            raise TypeError(
+                f'Unknow type "{ns_type}"' f" Valid types are: {valid_types}"
+            )
 
         if name in self._namespace:
             registered_type = self._namespace[name]
             registered_value = getattr(self, registered_type)[name]
-            if type == registered_type and registered_value == value:
+            if ns_type == registered_type and registered_value == value:
                 # if the registered equals: skip silently. Registering the same
                 # value multiple times is allowed, so we can easily expand profiles
                 # that define (partly) the same entries
@@ -242,15 +244,15 @@ class Profile:
                 msg = (
                     f'Name "{name}" is already registered'
                     f' in "{registered_type}" (value: {registered_value}).'
-                    f' Requested registering in "{type}" (value: {value}).'
+                    f' Requested registering in "{ns_type}" (value: {value}).'
                 )
                 raise NamespaceError(msg)
             else:
                 # clean the old type up
                 del getattr(self, registered_type)[name]
 
-        self._namespace[name] = type
-        target = getattr(self, type)
+        self._namespace[name] = ns_type
+        target = getattr(self, ns_type)
         target[name] = value
 
     def test_dependencies(self):

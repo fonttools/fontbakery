@@ -215,7 +215,8 @@ class TerminalProgress(FontbakeryReporter):
     def _render_event(self, event):
         status, message, (section, check, iterargs) = event
         output = StringIO()
-        print = partial(builtins.print, file=output)
+        # XXX override of built-in print() function
+        print_func = partial(builtins.print, file=output)
 
         if (
             not status.weight >= self._structure_threshold
@@ -225,20 +226,20 @@ class TerminalProgress(FontbakeryReporter):
 
         if status == START:
             order = message
-            print(f"Start ... running {len(order)} individual check executions.")
+            print_func(f"Start ... running {len(order)} individual check executions.")
 
         if status == END:
             if self._print_progress:
-                print(self._draw_progressbar())  # .encode('utf-8'))
-            print("")
+                print_func(self._draw_progressbar())  # .encode('utf-8'))
+            print_func("")
             if (
                 self._cupcake
                 and len(self._order)
                 and self._counter[ERROR.name] + self._counter[FAIL.name] == 0
                 and self._counter[PASS.name] > 20
             ):
-                print(self.theme["cupcake"](CUPCAKE))
-            print("DONE!")
+                print_func(self.theme["cupcake"](CUPCAKE))
+            print_func("DONE!")
         return output.getvalue()
 
     def _set_order(self, order):
@@ -341,20 +342,20 @@ class TerminalProgress(FontbakeryReporter):
 
 
 def _render_results_counter(theme, counter):
-    format = "    {}: {}".format
+    formatting = "    {}: {}".format
     result = []
 
     seen = set()
     for s in check_statuses:
         name = s.name
         seen.add(name)
-        result.append(format(formatStatus(theme, s), counter[name]))
+        result.append(formatting(formatStatus(theme, s), counter[name]))
 
     # there may be custom statuses
     for name in counter:
         if name not in seen:
             seen.add(name)
-            result.append(format(formatStatus(theme, name), counter[name]))
+            result.append(formatting(formatStatus(theme, name), counter[name]))
     return "\n".join(result)
 
 
@@ -413,7 +414,7 @@ class TerminalReporter(TerminalProgress):
                 self._collected_results[key] = Counter()
             self._collected_results[key][message.name] += 1
 
-    def _render_event_sync(self, print, event):
+    def _render_event_sync(self, print_func, event):
         status, msg, (section, check, iterargs) = event
 
         if (
@@ -441,7 +442,7 @@ class TerminalReporter(TerminalProgress):
                 if formatted_iterargs != ():
                     with_string = os.path.basename(f"{formatted_iterargs[0][1]}")
 
-                print(
+                print_func(
                     (" >> Check:   {}\n" "    Desc:    {}\n" "    Files:   {}").format(
                         self.theme["check-id"](check.id),
                         self.theme["description"](check.description),
@@ -455,7 +456,7 @@ class TerminalReporter(TerminalProgress):
                 if formatted_iterargs != ():
                     with_string = f"with {formatted_iterargs[0][1]}"
 
-                print(
+                print_func(
                     (" >> {}\n" "    {}\n" "    {}\n").format(
                         self.theme["check-id"](check.id),
                         self.theme["description"](check.description),
@@ -470,7 +471,7 @@ class TerminalReporter(TerminalProgress):
                     )
 
                     content = unindent_and_unwrap_rationale(check.rationale)
-                    print(
+                    print_func(
                         "    "
                         + self.theme["rationale-title"]("  Rationale:" + " " * 64)
                         + "\n"
@@ -486,14 +487,14 @@ class TerminalReporter(TerminalProgress):
                     )
 
                 if check.suggested_profile:
-                    print(
+                    print_func(
                         "    "
                         + self.theme["rationale-title"]("Suggested Profile:")
                         + f" {check.suggested_profile}"
                     )
 
                 if check.proponent:
-                    print(
+                    print_func(
                         "    "
                         + self.theme["rationale-title"]("Proponent:")
                         + f" {check.proponent}"
@@ -519,12 +520,12 @@ class TerminalReporter(TerminalProgress):
                             moreinfo_str += "\n".join(
                                 ["               " + i for i in moreinfo[1:]]
                             )
-                        print(moreinfo_str)
+                        print_func(moreinfo_str)
 
         # Log statuses have weights >= 0
         # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
         if status.weight >= self._log_threshold:
-            print("")
+            print_func("")
 
             from fontbakery.utils import text_flow
 
@@ -549,7 +550,7 @@ class TerminalReporter(TerminalProgress):
             formated_msg = "{} {}".format(formatStatus(self.theme, status), message)
             formated_msg = parse_md(formated_msg)
 
-            print(
+            print_func(
                 text_flow(
                     formated_msg,
                     width=76,
@@ -562,25 +563,25 @@ class TerminalReporter(TerminalProgress):
 
         if status == ENDCHECK:
             if not self.succinct:
-                print("\n")
-            print("    Result: {}\n".format(formatStatus(self.theme, msg)))
+                print_func("\n")
+            print_func("    Result: {}\n".format(formatStatus(self.theme, msg)))
 
         if status == SECTIONSUMMARY:
             order, counter = msg
-            print("")
-            print("=" * 8, f"Section results: {section}", "=" * 8)
-            print(
+            print_func("")
+            print_func("=" * 8, f"Section results: {section}", "=" * 8)
+            print_func(
                 "{} {} in section".format(
                     len(order), len(order) == 1 and "check" or "checks"
                 )
             )
-            print("")
-            print(_render_results_counter(self.theme, counter))
+            print_func("")
+            print_func(_render_results_counter(self.theme, counter))
 
         if status == END:
-            print("")
+            print_func("")
             if self.results_by:
-                print("Collected results by", self.results_by)
+                print_func("Collected results by", self.results_by)
                 for key in self._collected_results:
                     if self.results_by == "*check":
                         val = key
@@ -590,25 +591,25 @@ class TerminalReporter(TerminalProgress):
                         val = key
                     else:
                         val = f'(not using "{self.results_by}")'
-                    print(f"{self.results_by}: {val}")
-                    print(
+                    print_func(f"{self.results_by}: {val}")
+                    print_func(
                         _render_results_counter(
                             self.theme, self._collected_results[key]
                         )
                     )
-                    print("")
+                    print_func("")
 
-            print("Total:")
-            print("")
-            print(_render_results_counter(self.theme, msg))
-            print("")
+            print_func("Total:")
+            print_func("")
+            print_func(_render_results_counter(self.theme, msg))
+            print_func("")
 
             # same end message as parent
             text = super()._render_event(event)
             if text:
-                print(text)
+                print_func(text)
 
-            print(
+            print_func(
                 f"    {self.theme['header']('Meaning of check results:')}\n"
                 f"\n"
                 f"    An {formatStatus(self.theme, 'ERROR')} is something"
@@ -633,9 +634,9 @@ class TerminalReporter(TerminalProgress):
             )
 
         if status not in statuses:
-            print("-" * 8, status, "-" * 8)
+            print_func("-" * 8, status, "-" * 8)
 
-    def _render_event_async(self, print, event):
+    def _render_event_async(self, print_func, event):
         status, message, identity = event
         (section, check, iterargs) = identity
         key = self._get_key(identity)
@@ -659,20 +660,21 @@ class TerminalReporter(TerminalProgress):
         ):
             for e in [logs["start"]] + logs["logs"] + [logs["end"]]:
                 if e is not None:
-                    self._render_event_sync(print, e)
+                    self._render_event_sync(print_func, e)
 
         if not section:
-            self._render_event_sync(print, event)
+            self._render_event_sync(print_func, event)
 
     def _render_event(self, event):
         status, message, (section, check, iterargs) = event
         output = StringIO()
-        print = partial(builtins.print, file=output)
+        # XXX override of built-in print() function
+        print_func = partial(builtins.print, file=output)
 
         if self._render_async:
-            self._render_event_async(print, event)
+            self._render_event_async(print_func, event)
         else:
-            self._render_event_sync(print, event)
+            self._render_event_sync(print_func, event)
 
         return output.getvalue()
 

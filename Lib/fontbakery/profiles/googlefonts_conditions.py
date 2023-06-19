@@ -284,8 +284,8 @@ def licenses(family_directory):
 
     for directory in search_paths:
         if directory:
-            for license in ["OFL.txt", "LICENSE.txt"]:
-                license_path = os.path.join(directory, license)
+            for license_filename in ["OFL.txt", "LICENSE.txt"]:
+                license_path = os.path.join(directory, license_filename)
                 if os.path.exists(license_path):
                     found.append(license_path)
     return found
@@ -308,15 +308,15 @@ def license_path(licenses):
 
 
 @condition
-def license(license_path):
+def license_filename(license_path):
     """Get license filename."""
     if license_path:
         return os.path.basename(license_path)
 
 
 @condition
-def is_ofl(license):
-    return license and "OFL" in license
+def is_ofl(license_filename):
+    return license_filename and "OFL" in license_filename
 
 
 @condition
@@ -564,11 +564,11 @@ def api_gfonts_ttFont(style, remote_styles):
 
 
 @condition
-def github_gfonts_ttFont(ttFont, license):
+def github_gfonts_ttFont(ttFont, license_filename):
     """Get a TTFont object of a font downloaded
     from Google Fonts git repository.
     """
-    if not license:
+    if not license_filename:
         return None
 
     from fontbakery.utils import download_file
@@ -580,7 +580,7 @@ def github_gfonts_ttFont(ttFont, license):
     familyname = filename.split("-")[0].lower()
     url = (
         f"https://github.com/google/fonts/raw/main"
-        f"/{LICENSE_DIRECTORY[license]}/{familyname}/{filename}"
+        f"/{LICENSE_DIRECTORY[license_filename]}/{familyname}/{filename}"
     )
     try:
         fontfile = download_file(url)
@@ -591,12 +591,12 @@ def github_gfonts_ttFont(ttFont, license):
 
 
 @condition
-def github_gfonts_description(ttFont, license):
+def github_gfonts_description(ttFont, license_filename):
     """Get the contents of the DESCRIPTION.en_us.html file
     from the google/fonts github repository corresponding
     to a given ttFont.
     """
-    if not license:
+    if not license_filename:
         return None
 
     from fontbakery.utils import download_file
@@ -607,7 +607,7 @@ def github_gfonts_description(ttFont, license):
     familyname = filename.split("-")[0].lower()
     url = (
         f"https://github.com/google/fonts/raw/main"
-        f"/{LICENSE_DIRECTORY[license]}/{familyname}/DESCRIPTION.en_us.html"
+        f"/{LICENSE_DIRECTORY[license_filename]}/{familyname}/DESCRIPTION.en_us.html"
     )
     try:
         descfile = download_file(url)

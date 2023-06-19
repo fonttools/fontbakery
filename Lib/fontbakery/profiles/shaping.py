@@ -78,19 +78,19 @@ def create_report_item(
     text=None,
     buf1=None,
     buf2=None,
-    type="item",
+    kind="item",
     note=None,
     extra_data=None,
 ):
     if text:
         message += f': <span class="tf">{text}</span>'
 
-    if type == "item":
+    if kind == "item":
         message = f"<li>{message}"
         if note:
             message += f" ({note})"
         message += "</li>\n"
-    elif type == "header":
+    elif kind == "header":
         message = get_stylesheet(vharfbuzz) + f"\n<h4>{message}</h4>\n"
 
     if extra_data:
@@ -280,7 +280,7 @@ def run_shaping_regression(
 def generate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
     header = f"{shaping_file}: Expected and actual shaping not matching"
-    report_items.append(create_report_item(vharfbuzz, header, type="header"))
+    report_items.append(create_report_item(vharfbuzz, header, kind="header"))
     for test, expected, output_buf, output_serialized in failed_shaping_tests:
         extra_data = {
             k: test[k]
@@ -362,7 +362,7 @@ def run_forbidden_glyph_test(
 def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
     msg = f"{shaping_file}: Forbidden glyphs found while shaping"
-    report_items.append(create_report_item(vharfbuzz, msg, type="header"))
+    report_items.append(create_report_item(vharfbuzz, msg, kind="header"))
     for shaping_text, buf, forbidden in failed_shaping_tests:
         msg = f"{shaping_text} produced '{forbidden}'"
         report_items.append(
@@ -452,7 +452,7 @@ def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
     seen_bumps = {}
     msg = f"{shaping_file}: {len(failed_shaping_tests)} collisions found while shaping"
-    report_items.append(create_report_item(vharfbuzz, msg, type="header"))
+    report_items.append(create_report_item(vharfbuzz, msg, kind="header"))
     for shaping_text, bumps, draw, buf in failed_shaping_tests:
         # Make HTML report here.
         if tuple(bumps) in seen_bumps:

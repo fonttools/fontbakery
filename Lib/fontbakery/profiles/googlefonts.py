@@ -623,18 +623,18 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
     broken_links = []
     unique_links = []
     for font_metadata in family_metadata.fonts:
-        copyright = font_metadata.copyright
-        if "mailto:" in copyright:
+        copyright_str = font_metadata.copyright
+        if "mailto:" in copyright_str:
             # avoid reporting more then once
-            if copyright in unique_links:
+            if copyright_str in unique_links:
                 continue
 
-            unique_links.append(copyright)
-            yield FAIL, Message("email", f"Found an email address: {copyright}")
+            unique_links.append(copyright_str)
+            yield FAIL, Message("email", f"Found an email address: {copyright_str}")
             continue
 
-        if "http" in copyright:
-            link = "http" + copyright.split("http")[1]
+        if "http" in copyright_str:
+            link = "http" + copyright_str.split("http")[1]
 
             for endchar in [" ", ")"]:
                 if endchar in link:
@@ -1411,7 +1411,7 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
 
 @check(
     id="com.google.fonts/check/name/license",
-    conditions=["license"],
+    conditions=["license_filename"],
     rationale="""
         A known licensing description must be provided in the NameID 14
         (LICENSE DESCRIPTION) entries of the name table.
@@ -1438,13 +1438,13 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
     """,
     proposal="legacy:check/029",
 )
-def com_google_fonts_check_name_license(ttFont, license):
+def com_google_fonts_check_name_license(ttFont, license_filename):
     """Check copyright namerecords match license file."""
     from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
 
     passed = True
     http_warn = False
-    placeholder = PLACEHOLDER_LICENSING_TEXT[license]
+    placeholder = PLACEHOLDER_LICENSING_TEXT[license_filename]
     entry_found = False
     for i, nameRecord in enumerate(ttFont["name"].names):
         if nameRecord.nameID == NameID.LICENSE_DESCRIPTION:
@@ -1465,7 +1465,7 @@ def com_google_fonts_check_name_license(ttFont, license):
                 passed = False
                 yield FAIL, Message(
                     "wrong",
-                    f"License file {license} exists but"
+                    f"License file {license_filename} exists but"
                     f" NameID {NameID.LICENSE_DESCRIPTION}"
                     f" (LICENSE DESCRIPTION) value on platform"
                     f" {nameRecord.platformID}"
@@ -1536,8 +1536,8 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
     }
     detected_license = False
     http_warn = False
-    for license in ["OFL.txt", "LICENSE.txt", "UFL.txt"]:
-        placeholder = PLACEHOLDER_LICENSING_TEXT[license]
+    for license_filename in ["OFL.txt", "LICENSE.txt", "UFL.txt"]:
+        placeholder = PLACEHOLDER_LICENSING_TEXT[license_filename]
         for nameRecord in ttFont["name"].names:
             string = nameRecord.string.decode(nameRecord.getEncoding())
             if nameRecord.nameID == NameID.LICENSE_DESCRIPTION:
@@ -1553,7 +1553,7 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                     http_warn = True
 
                 if string == placeholder:
-                    detected_license = license
+                    detected_license = license_filename
                     break
 
     if detected_license == "UFL.txt" and familyname not in LEGACY_UFL_FAMILIES:
@@ -2238,12 +2238,12 @@ def com_google_fonts_check_metadata_includes_production_subsets(
 )
 def com_google_fonts_check_metadata_copyright(family_metadata):
     """METADATA.pb: Copyright notice is the same in all fonts?"""
-    copyright = None
+    copyright_str = None
     fail = False
     for f in family_metadata.fonts:
-        if copyright and f.copyright != copyright:
+        if copyright_str and f.copyright != copyright_str:
             fail = True
-        copyright = f.copyright
+        copyright_str = f.copyright
     if fail:
         yield FAIL, Message(
             "inconsistency",
@@ -5076,7 +5076,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts, gfonts_repo_struct
     expected = "".join(expected.split(" "))
     expected = "".join(expected.split("-"))
 
-    license, familypath, filename = get_absolute_path(regular).split(os.path.sep)[-3:]
+    _, familypath, _ = get_absolute_path(regular).split(os.path.sep)[-3:]
     if familypath == expected:
         yield PASS, "OK"
     else:

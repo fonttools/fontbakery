@@ -35,10 +35,10 @@ def is_negated(name):
     return False, stripped
 
 
-def colorless_len(str):
+def colorless_len(string):
     import re
 
-    return len(re.sub("\x1b(\\[[0-9;]+|\\].+)m", "", str))
+    return len(re.sub("\x1b(\\[[0-9;]+|\\].+)m", "", string))
 
 
 def text_flow(
