@@ -9,7 +9,7 @@ from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
 from fontbakery.section import Section
 from fontbakery.status import PASS, FAIL
-
+from fontbakery.utils import exit_with_install_instructions
 
 try:
     from beziers.path import BezierPath
@@ -17,15 +17,7 @@ try:
     from beziers.point import Point
     import uharfbuzz as hb
 except ImportError:
-    import sys
-
-    sys.exit(
-        "\nTo run the iso15008 profile, one needs to install\n"
-        "fontbakery with the 'iso15008' extra, like this:\n"
-        "\n"
-        "python -m pip install -U 'fontbakery[iso15008]'\n\n"
-    )
-
+    exit_with_install_instructions("iso15008")
 
 profile = profile_factory(default_section=Section("Suitability for In-Car Display"))
 
