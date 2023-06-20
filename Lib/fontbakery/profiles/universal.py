@@ -1775,7 +1775,7 @@ def com_google_fonts_check_whitespace_widths(ttFont):
 
 @check(
     id="com.google.fonts/check/interpolation_issues",
-    conditions=["is_variable_font"],
+    conditions=["is_variable_font", "is_ttf"],
     severity=4,
     rationale="""
         When creating a variable font, the designer must make sure that
