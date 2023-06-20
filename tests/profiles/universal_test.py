@@ -1211,6 +1211,14 @@ def test_check_interpolation_issues():
     ttFont = TTFont(TEST_FILE("notosansbamum/NotoSansBamum[wght].ttf"))
     assert_results_contain(check(ttFont), WARN, "interpolation-issues")
 
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_variable_font"
+
+    ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_ttf"
+
 
 def test_check_math_signs_width():
     """Check font math signs have the same width."""
