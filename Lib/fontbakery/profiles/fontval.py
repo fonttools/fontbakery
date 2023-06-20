@@ -6,22 +6,14 @@ from fontbakery.fonts_profile import profile_factory
 from fontbakery.status import ERROR, FAIL, INFO, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.message import Message
+from fontbakery.utils import exit_with_install_instructions
 
 from .shared_conditions import is_cff, is_variable_font
-
 
 try:
     from lxml import etree
 except ImportError:
-    import sys
-
-    sys.exit(
-        "\nTo run the fontval profile, one needs to install\n"
-        "fontbakery with the 'fontval' extra, like this:\n"
-        "\n"
-        "python -m pip install -U 'fontbakery[fontval]'\n\n"
-    )
-
+    exit_with_install_instructions("fontval")
 
 profile_imports = [".shared_conditions"]
 profile = profile_factory(

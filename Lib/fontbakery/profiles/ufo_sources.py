@@ -3,7 +3,7 @@ from fontbakery.status import ERROR, FAIL, PASS, WARN
 from fontbakery.section import Section
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
-
+from fontbakery.utils import exit_with_install_instructions
 
 profile = profile_factory(default_section=Section("UFO Sources"))
 
@@ -23,9 +23,12 @@ UFO_PROFILE_CHECKS = [
 def ufo_font(ufo):
     try:
         import defcon
+        from fontTools.ufoLib.errors import UFOLibError
 
         return defcon.Font(ufo)
-    except Exception:
+    except ImportError:
+        exit_with_install_instructions("ufo-sources")
+    except UFOLibError:
         return None
 
 

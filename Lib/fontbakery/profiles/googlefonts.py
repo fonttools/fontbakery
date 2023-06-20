@@ -23,6 +23,7 @@ from fontbakery.constants import (
     UnicodeEncodingID,
     LATEST_TTFAUTOHINT_VERSION,
 )
+from fontbakery.utils import exit_with_install_instructions
 
 profile_imports = (
     (".", ("googlefonts_conditions", "universal", "outline", "ufo_sources")),
@@ -250,7 +251,10 @@ GOOGLEFONTS_PROFILE_CHECKS = (
 )
 def com_google_fonts_check_canonical_filename(ttFont):
     """Checking file is named canonically."""
-    from axisregistry import build_filename
+    try:
+        from axisregistry import build_filename
+    except ImportError:
+        exit_with_install_instructions("googlefonts")
 
     current_filename = os.path.basename(ttFont.reader.file.name)
     expected_filename = build_filename(ttFont)
