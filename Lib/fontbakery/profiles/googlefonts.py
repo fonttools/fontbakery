@@ -251,11 +251,12 @@ def com_google_fonts_check_canonical_filename(ttFont):
     """Checking file is named canonically."""
     try:
         from axisregistry import build_filename
+
+        current_filename = os.path.basename(ttFont.reader.file.name)
+        expected_filename = build_filename(ttFont)
     except ImportError:
         exit_with_install_instructions("googlefonts")
 
-    current_filename = os.path.basename(ttFont.reader.file.name)
-    expected_filename = build_filename(ttFont)
     if current_filename != expected_filename:
         yield FAIL, Message(
             "bad-filename", f'Expected "{expected_filename}. Got {current_filename}.'

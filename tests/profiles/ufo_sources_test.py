@@ -1,4 +1,5 @@
 import os
+from unittest.mock import patch
 
 import defcon
 import pytest
@@ -20,6 +21,17 @@ def empty_ufo_font(tmpdir):
     ufo_path = str(tmpdir.join("empty_font.ufo"))
     ufo.save(ufo_path)
     return (ufo, ufo_path)
+
+
+@patch("defcon.Font", side_effect=ImportError)
+def test_extra_needed_exit(mock_import_error):
+    ufo_path = TEST_FILE("test.ufo")
+    with patch("sys.exit") as mock_exit:
+        check = CheckTester(
+            ufo_sources_profile, "com.daltonmaag/check/ufo_required_fields"
+        )
+        check(ufo_path)
+        mock_exit.assert_called()
 
 
 def test_check_ufolint(empty_ufo_font):
