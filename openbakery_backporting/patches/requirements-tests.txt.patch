@@ -1,0 +1,11 @@
+diff --git a/requirements-tests.txt b/requirements-tests.txt
+index 6d6d0115..f97a88cd 100644
+--- a/requirements-tests.txt
++++ b/requirements-tests.txt
+@@ -1,6 +1,4 @@
+---index-url https://pypi.python.org/simple/
+ black==23.3.0
+ flake8==6.0.0
+ pylint==2.17.4
+-sphinx==7.0.1
+ pytest-cov==4.1.0
