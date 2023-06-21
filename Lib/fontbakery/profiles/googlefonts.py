@@ -136,10 +136,8 @@ NAME_TABLE_CHECKS = [
 #  we implement check polymorphism
 # https://github.com/googlefonts/fontbakery/issues/3436
 GLYPHSAPP_CHECKS = [
-    # DISABLED:
-    # "com.google.fonts/check/glyphs_file/name/family_and_style_max_length",
-    # DISABLED:
-    # "com.google.fonts/check/glyphs_file/font_copyright",
+    # DISABLED: "com.google.fonts/check/glyphs_file/name/family_and_style_max_length",
+    # DISABLED: "com.google.fonts/check/glyphs_file/font_copyright",
 ]
 
 REPO_CHECKS = [
@@ -162,7 +160,7 @@ FONT_FILE_CHECKS = [
     "com.google.fonts/check/ligature_carets",
     "com.google.fonts/check/production_glyphs_similarity",
     "com.google.fonts/check/fontv",
-    # DISABLED:     'com.google.fonts/check/production_encoded_glyphs',
+    # DISABLED: "com.google.fonts/check/production_encoded_glyphs",
     "com.google.fonts/check/glyf_nested_components",
     "com.google.fonts/check/varfont/generate_static",
     "com.google.fonts/check/kerning_for_non_ligated_sequences",
