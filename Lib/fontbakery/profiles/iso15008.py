@@ -1,7 +1,9 @@
 """
 Checks for suitability for in-car displays (ISO 15008).
 """
-
+from beziers.line import Line
+from beziers.path import BezierPath
+from beziers.point import Point
 from fontTools.pens.boundsPen import BoundsPen
 
 from fontbakery.callable import check
@@ -12,9 +14,6 @@ from fontbakery.status import PASS, FAIL
 from fontbakery.utils import exit_with_install_instructions
 
 try:
-    from beziers.path import BezierPath
-    from beziers.line import Line
-    from beziers.point import Point
     import uharfbuzz as hb
 except ImportError:
     exit_with_install_instructions("iso15008")
