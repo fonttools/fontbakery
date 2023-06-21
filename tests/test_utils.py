@@ -1,11 +1,25 @@
+from unittest.mock import patch
+
 import pytest
 
 from fontbakery.utils import (
     bullet_list,
+    exit_with_install_instructions,
     pretty_print_list,
     text_flow,
     unindent_and_unwrap_rationale,
 )
+
+
+def test_exit_with_install_instructions():
+    extras_name = "test-profile"
+    with patch("sys.exit") as mock_exit:
+        exit_with_install_instructions(extras_name)
+        mock_exit.assert_called_with(
+            f"\nTo run the {extras_name} profile, one needs to install\n"
+            f"fontbakery with the '{extras_name}' extra, like this:\n\n"
+            f"    python -m pip install -U 'fontbakery[{extras_name}]'\n\n"
+        )
 
 
 def test_text_flow():

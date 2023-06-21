@@ -1,10 +1,24 @@
 import shutil
+import sys
 
 import pytest
+
+from conftest import ImportRaiser, remove_import_raiser, reload_module
 
 from fontbakery.codetesting import TEST_FILE, assert_results_contain
 from fontbakery.status import ERROR
 from fontbakery.profiles import fontval as fontval_profile
+
+
+def test_extra_needed_exit(monkeypatch):
+    module_name = "lxml.etree"
+    sys.meta_path.insert(0, ImportRaiser(module_name))
+    monkeypatch.delitem(sys.modules, module_name, raising=False)
+
+    with pytest.raises(SystemExit):
+        reload_module("fontbakery.profiles.fontval")
+
+    remove_import_raiser(module_name)
 
 
 @pytest.mark.skipif(

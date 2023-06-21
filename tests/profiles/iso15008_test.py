@@ -1,3 +1,9 @@
+import sys
+
+import pytest
+
+from conftest import ImportRaiser, remove_import_raiser, reload_module
+
 from fontbakery.status import FAIL
 from fontbakery.codetesting import (
     assert_PASS,
@@ -6,6 +12,17 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.profiles import iso15008 as iso15008_profile
+
+
+def test_extra_needed_exit(monkeypatch):
+    module_name = "uharfbuzz"
+    sys.meta_path.insert(0, ImportRaiser(module_name))
+    monkeypatch.delitem(sys.modules, module_name, raising=False)
+
+    with pytest.raises(SystemExit):
+        reload_module("fontbakery.profiles.iso15008")
+
+    remove_import_raiser(module_name)
 
 
 def test_check_iso15008_proportions():

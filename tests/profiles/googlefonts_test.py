@@ -1,9 +1,13 @@
 import math
 import os
 import shutil
+import sys
+from unittest.mock import patch
 
 import pytest
 from fontTools.ttLib import TTFont
+
+from conftest import ImportRaiser, remove_import_raiser
 
 from fontbakery.profiles.googlefonts import can_shape
 from fontbakery.profiles.googlefonts_conditions import expected_font_names
@@ -153,6 +157,32 @@ def test_example_checkrunner_based(cabin_regular_path):
         if status == ENDCHECK:
             assert message == WARN and last_check_message.code == "unknown"
             break
+
+
+def test_extra_needed_exit_from_conditions(monkeypatch):
+    module_name = "google.protobuf"
+    sys.meta_path.insert(0, ImportRaiser(module_name))
+    monkeypatch.delitem(sys.modules, module_name, raising=False)
+
+    with pytest.raises(SystemExit):
+        check = CheckTester(
+            googlefonts_profile, "com.google.fonts/check/metadata/unknown_designer"
+        )
+        font = TEST_FILE("merriweather/Merriweather.ttf")
+        check(font)
+
+    remove_import_raiser(module_name)
+
+
+@patch("axisregistry.build_filename", side_effect=ImportError)
+def test_extra_needed_exit(mock_import_error):
+    ttFont = TTFont(TEST_FILE("cabinvfbeta/Cabin-VF.ttf"))
+    with patch("sys.exit") as mock_exit:
+        check = CheckTester(
+            googlefonts_profile, "com.google.fonts/check/canonical_filename"
+        )
+        check(ttFont)
+        mock_exit.assert_called()
 
 
 @pytest.mark.parametrize(
