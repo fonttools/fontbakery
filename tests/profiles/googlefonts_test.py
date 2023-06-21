@@ -177,20 +177,16 @@ def test_example_checkrunner_based(cabin_regular_path):
         (TEST_FILE("montserrat/Montserrat-ExtraBoldItalic.ttf"), PASS),
         (TEST_FILE("montserrat/Montserrat-BlackItalic.ttf"), PASS),
         (TEST_FILE("cabinvfbeta/CabinVFBeta-Italic[wght].ttf"), PASS),
-        (
-            TEST_FILE("cabinvfbeta/CabinVFBeta[wdth,wght].ttf"),
-            PASS,
-        ),  # axis tags are sorted
         (TEST_FILE("cabinvfbeta/CabinVFBeta.ttf"), FAIL),
         (TEST_FILE("cabinvfbeta/Cabin-Italic.ttf"), FAIL),
         (TEST_FILE("cabinvfbeta/Cabin-Roman.ttf"), FAIL),
         (TEST_FILE("cabinvfbeta/Cabin-Italic-VF.ttf"), FAIL),
         (TEST_FILE("cabinvfbeta/Cabin-Roman-VF.ttf"), FAIL),
         (TEST_FILE("cabinvfbeta/Cabin-VF.ttf"), FAIL),
-        (
-            TEST_FILE("cabinvfbeta/CabinVFBeta[wght,wdth].ttf"),
-            FAIL,
-        ),  # axis tags are NOT sorted here
+        # axis tags are sorted
+        (TEST_FILE("cabinvfbeta/CabinVFBeta[wdth,wght].ttf"), PASS),
+        # axis tags are NOT sorted
+        (TEST_FILE("cabinvfbeta/CabinVFBeta[wght,wdth].ttf"), FAIL),
     ],
 )
 def test_check_canonical_filename(fp, result):
