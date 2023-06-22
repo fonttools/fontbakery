@@ -416,19 +416,6 @@ def test_check_override_weight_class_fvar():
     )
 
 
-@patch("freetype.Face", side_effect=ImportError)
-def test_check_override_freetype_rasterizer(mock_import_error):
-    """Check that overridden test yields FAIL rather than SKIP."""
-    check = CheckTester(
-        adobefonts_profile,
-        f"com.adobe.fonts/check/freetype_rasterizer{OVERRIDE_SUFFIX}",
-    )
-
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    msg = assert_results_contain(check(font), FAIL, "freetype-not-installed")
-    assert "FreeType is not available" in msg
-
-
 @patch("requests.get", side_effect=ConnectionError)
 def test_check_override_fontbakery_version(mock_get):
     """Check that overridden test yields SKIP rather than FAIL."""

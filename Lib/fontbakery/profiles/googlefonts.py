@@ -1,7 +1,9 @@
 import os
 from collections import defaultdict
 
+from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
+from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, disable
@@ -23,13 +25,9 @@ from fontbakery.constants import (
     LATEST_TTFAUTOHINT_VERSION,
 )
 from .googlefonts_conditions import *  # pylint: disable=wildcard-import,unused-wildcard-import
-from glyphsets import codepoints
-import unicodedata2
-
-ENCODINGS_DIR = codepoints.nam_dir
 
 
-profile_imports = ("fontbakery.profiles.universal",)
+profile_imports = ((".", ("universal", "outline", "ufo_sources")),)
 profile = profile_factory(default_section=Section("Google Fonts"))
 
 profile.configuration_defaults = {
@@ -40,7 +38,6 @@ profile.configuration_defaults = {
 }
 
 OVERRIDDEN_CHECKS = [
-    "com.adobe.fonts/check/freetype_rasterizer",
     "com.google.fonts/check/italic_angle",
     "com.google.fonts/check/italic_axis_in_stat_is_boolean",
     "com.google.fonts/check/italic_axis_last",
@@ -216,6 +213,8 @@ FONT_FILE_CHECKS = [
 
 GOOGLEFONTS_PROFILE_CHECKS = (
     UNIVERSAL_PROFILE_CHECKS
+    + OUTLINE_PROFILE_CHECKS
+    + UFO_PROFILE_CHECKS
     + METADATA_CHECKS
     + DESCRIPTION_CHECKS
     + FAMILY_CHECKS
@@ -232,7 +231,7 @@ GOOGLEFONTS_PROFILE_CHECKS = (
         A font's filename must be composed as "<familyname>-<stylename>.ttf":
 
         - Nunito-Regular.ttf
-        
+
         - Oswald-BoldItalic.ttf
 
 
@@ -240,7 +239,7 @@ GOOGLEFONTS_PROFILE_CHECKS = (
         square brackets and separated by commas:
 
         - Roboto[wdth,wght].ttf
-        
+
         - Familyname-Italic[wght].ttf
     """,
     proposal="legacy:check/001",
@@ -1056,6 +1055,7 @@ def font_codepoints(ttFont):
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check Google Fonts glyph coverage."""
     from glyphsets import GFGlyphData as glyph_data
+    import unicodedata2
 
     def missing_encoded_glyphs(glyphs):
         encoded_glyphs = [g["unicode"] for g in glyphs if g["unicode"]]
@@ -1114,9 +1114,10 @@ def com_google_fonts_check_metadata_unsupported_subsets(
     family_metadata, ttFont, font_codepoints
 ):
     """Check for METADATA subsets with zero support."""
+    from glyphsets import codepoints
     from glyphsets.subsets import SUBSETS
 
-    codepoints.set_encoding_path(ENCODINGS_DIR)
+    codepoints.set_encoding_path(codepoints.nam_dir)
 
     passed = True
     for subset in family_metadata.subsets:
@@ -1163,10 +1164,11 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
     family_metadata, ttFont, font_codepoints, config
 ):
     """Check for codepoints not covered by METADATA subsets."""
-    from glyphsets.subsets import SUBSETS
+    from glyphsets import codepoints
     from fontbakery.utils import pretty_print_list
+    import unicodedata2
 
-    codepoints.set_encoding_path(ENCODINGS_DIR)
+    codepoints.set_encoding_path(codepoints.nam_dir)
 
     for subset in family_metadata.subsets:
         font_codepoints = font_codepoints - set(codepoints.CodepointsInSubset(subset))
@@ -1248,9 +1250,9 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
         differing OS/2 usWeightClass values.
 
         - For Variable Fonts, Thin-Black must be 100-900
-        
+
         - For static ttfs, Thin-Black can be 100-900 or 250-900
-        
+
         - For static otfs, Thin-Black must be 250-900
 
         If static otfs are set lower than 250, text may appear blurry in
@@ -1415,12 +1417,12 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
         Depending on the chosen license, one of the following string snippets is
         expected to be found on the NameID 13 (LICENSE DESCRIPTION) entries of the
         name table:
-        
+
         - "This Font Software is licensed under the SIL Open Font License, Version 1.1.
           This license is available with a FAQ at: https://scripts.sil.org/OFL"
-  
+
         - "Licensed under the Apache License, Version 2.0"
-  
+
         - "Licensed under the Ubuntu Font Licence 1.0."
 
 
@@ -2719,7 +2721,7 @@ EXPECTED_COPYRIGHT_PATTERN = r"copyright [0-9]{4}(\-[0-9]{4})? (the .* project a
     conditions=["font_metadata"],
     rationale="""
         The expected pattern for the copyright string adheres to the following rules:
-        
+
         * It must say "Copyright" followed by a 4 digit year (optionally followed by
           a hyphen and another 4 digit year)
 
@@ -3830,12 +3832,12 @@ def com_google_fonts_check_fontv(ttFont):
 
         There are reports of broken versions of Glyphs.app causing this kind of problem
         as reported at [1] and [2].
-        
+
         This check detects and reports such malformed glyf table entries.
-        
-        
+
+
         [1] https://github.com/googlefonts/fontbakery/issues/1720
-        
+
         [2] https://github.com/fonttools/fonttools/pull/1198
     """,
     conditions=["is_ttf"],
@@ -3965,13 +3967,13 @@ def com_google_fonts_check_varfont_consistent_axes(VFs):
         ## VF font axes
 
         - min weight, max weight = 400, 800
-        
+
         - min width, max width = 50, 100
 
         ## Target Instance
 
         - weight = 600
-        
+
         - width = 75
     """,
     conditions=["is_variable_font"],
@@ -4789,7 +4791,7 @@ def com_google_fonts_check_name_rfn(ttFont, familyname):
     rationale="""
         Checks the family name for compliance with the Google Fonts Guide.
         https://googlefonts.github.io/gf-guide/onboarding.html#new-fonts
-        
+
         If you want to have your family name added to the CamelCase
         exceptions list, please submit a pull request to the
         camelcased_familyname_exceptions.txt file.
@@ -5084,7 +5086,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts, gfonts_repo_struct
     rationale="""
         Variable font family directories kept in the google/fonts git repo may include
         a static/ subdir containing static fonts.
-        
+
         These files are meant to be served for users that still lack support for
         variable fonts in their web browsers.
     """,
@@ -5376,14 +5378,14 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
         - The family should visually have the same vertical metrics as the Regular
           style hosted on Google Fonts.
-        
+
         - If the family on Google Fonts has differing hhea and typo metrics, the family
           being checked should use the typo metrics for both the hhea and typo entries.
-        
+
         - If the family on Google Fonts has use typo metrics not enabled and the family
           being checked has it enabled, the hhea and typo metrics should use the family
           on Google Fonts winAscent and winDescent values.
-        
+
         - If the upms differ, the values must be scaled so the visual appearance is
           the same.
 
@@ -6627,6 +6629,19 @@ def com_google_fonts_check_metadata_family_directory_name(
         yield PASS, f'Directory name is "{dir_name}", as expected.'
 
 
+def can_shape(ttFont, text, parameters=None):
+    """
+    Returns true if the font can render a text string without any
+    .notdef characters.
+    """
+    from vharfbuzz import Vharfbuzz
+
+    filename = ttFont.reader.file.name
+    vharfbuzz = Vharfbuzz(filename)
+    buf = vharfbuzz.shape(text, parameters)
+    return all(g.codepoint != 0 for g in buf.glyph_infos)
+
+
 @check(
     id="com.google.fonts/check/render_own_name",
     rationale="""
@@ -6637,8 +6652,6 @@ def com_google_fonts_check_metadata_family_directory_name(
 )
 def com_google_fonts_check_render_own_name(ttFont):
     """Check font can render its own name."""
-    from fontbakery.utils import can_shape
-
     menu_name = (
         ttFont["name"]
         .getName(
@@ -6749,7 +6762,6 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
 )
 def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     """Check samples can be rendered."""
-    from fontbakery.utils import can_shape
     from gflanguages import LoadLanguages
 
     passed = True
@@ -7074,13 +7086,6 @@ def check_skip_filter(checkid, font=None, **iterargs):
 
 profile.check_skip_filter = check_skip_filter
 profile.auto_register(globals())
-
-profile.check_log_override(
-    # From universal.py
-    "com.adobe.fonts/check/freetype_rasterizer",
-    overrides=(("freetype-not-installed", FAIL, KEEP_ORIGINAL_MESSAGE),),
-    reason="For Google Fonts, this check is very important and should never be skipped.",
-)
 
 profile.check_log_override(
     # From opentype.py
