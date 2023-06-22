@@ -6,17 +6,16 @@ on:
       - 'docs/**'
       - '**.md'
       - '**.txt'
+      - '!requirements*.txt'
 
   pull_request:
-#    types:
-#      - opened
-#      - reopened
-#      - sinchronize
-#      - edited
+    types:
+      - opened
     paths-ignore:
       - 'docs/**'
       - '**.md'
       - '**.txt'
+      - '!requirements*.txt'
 
 jobs:
   lint:
