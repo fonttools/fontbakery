@@ -253,7 +253,7 @@ class PyFontBakeryObject(PyObject):
     @property
     def pretty_objtype(self):
         if self.objtype.startswith("fontbakery"):
-            suffix = self.objtype[len("fontbakery"):]
+            suffix = self.objtype[len("fontbakery") :]
             return "FontBakery" + suffix[0].upper() + suffix[1:]
         return self.objtype
 
@@ -317,7 +317,7 @@ class PyFontBakeryObject(PyObject):
             if prefix and (prefix == classname or prefix.startswith(classname + ".")):
                 fullname = prefix + name
                 # class name is given again in the signature
-                prefix = prefix[len(classname):].lstrip(".")
+                prefix = prefix[len(classname) :].lstrip(".")
             elif prefix:
                 # class name is given in the signature, but different
                 # (shouldn't happen)
