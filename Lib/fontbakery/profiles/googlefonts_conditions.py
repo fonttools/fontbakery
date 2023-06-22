@@ -176,7 +176,18 @@ def family_metadata(metadata_file):
     if not metadata_file:
         return
 
-    from google.protobuf import text_format
+    try:
+        from google.protobuf import text_format
+    except ImportError:
+        import sys
+
+        sys.exit(
+            "\nTo run the googlefonts profile, one needs to install\n"
+            "fontbakery with the 'fontval' extra, like this:\n"
+            "\n"
+            "python -m pip install -U 'fontbakery[googlefonts]'\n\n"
+        )
+
     from fontbakery.utils import get_FamilyProto_Message
 
     try:

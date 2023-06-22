@@ -352,7 +352,7 @@ def com_google_fonts_check_code_pages(ttFont):
 @check(
     id="com.thetypefounders/check/vendor_id",
     rationale="""
-        When a font project's Vendor ID is specified explicitely on FontBakery's
+        When a font project's Vendor ID is specified explicitly on FontBakery's
         configuration file, all binaries must have a matching vendor identifier
         value in the OS/2 table.
     """,

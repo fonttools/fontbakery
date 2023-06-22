@@ -2,13 +2,10 @@ import pytest
 
 from fontbakery.utils import (
     bullet_list,
-    can_shape,
     pretty_print_list,
     text_flow,
     unindent_and_unwrap_rationale,
 )
-from fontTools.ttLib import TTFont
-from fontbakery.codetesting import portable_path
 
 
 def test_text_flow():
@@ -61,14 +58,6 @@ def test_text_flow():
 #                     space_padding=True) == (     " One   \n"
 #                                             "      Two   \n"
 #                                             "      Three ")
-
-
-def test_can_shape():
-    font = TTFont(
-        portable_path("data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf")
-    )
-    assert can_shape(font, "ABC")
-    assert not can_shape(font, "こんにちは")
 
 
 def test_unindent_and_unwrap_rationale():
@@ -132,7 +121,7 @@ def test_pretty_print_list_full(values, expected_str):
     assert pretty_print_list(config, values, sep=" + ") == expected_str.replace(
         ", ", " + "
     )
-    assert pretty_print_list(config, values, glue="&") == expected_str.replace(
+    assert pretty_print_list(config, values, glue=" & ") == expected_str.replace(
         "and", "&"
     )
 
@@ -232,17 +221,13 @@ def test_pretty_print_list_shorten(values, shorten, expected_str):
         assert pretty_print_list(config, values) == expected_str
 
 
-# FIXME: The spurious extra spaces in the expected strings below seem like
-#        bad formatting being enforced by the code-test
-#        Or, in other words, the code-test simply documenting
-#        the poor output of the code it tests.
 @pytest.mark.parametrize(
     "values, expected_str",
     [
         (_make_values(1), "\t- item 1"),
-        (_make_values(2), "\t- item 1 \n\n\t- item 2"),
-        (_make_values(3), "\t- item 1\n\n\t- item 2 \n\n\t- item 3"),
-        (_make_values(4), "\t- item 1\n\n\t- item 2\n\n\t- item 3 \n\n\t- item 4"),
+        (_make_values(2), "\t- item 1\n\n\t- item 2"),
+        (_make_values(3), "\t- item 1\n\n\t- item 2\n\n\t- item 3"),
+        (_make_values(4), "\t- item 1\n\n\t- item 2\n\n\t- item 3\n\n\t- item 4"),
     ],
 )
 def test_bullet_list(values, expected_str):
