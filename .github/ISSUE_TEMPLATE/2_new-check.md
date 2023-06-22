@@ -1,6 +1,6 @@
 ---
 name: New check proposal
-about: Describe a font problem that FontBakery should detect
+about: Describe a font problem that you wished FontBakery could detect
 title: 'New check: subject'
 labels: 'New check proposal'
 assignees: ''
@@ -14,22 +14,17 @@ assignees: ''
 
 ## Detailed description of the problem 
 
-(Describe which programs, operating systems and/or text rendering engines are affected by the problem. This description would likely be reused for the check rationale text.)
+(Describe which applications, operating systems and/or text rendering engines are affected by the problem. This description will likely be reused for the check's rationale text)
 
 
-## Optional fix
+## Resources and steps needed to reproduce the problem
 
-(Please provide instructions on how to fix the problem on at least one font editor or binary hot-fixing script)
-
-
-## Resources and exact process needed to replicate
-
-(Please provide files that can be used to replicate the problem. We would use it during development of the proposed check and possibly also as a test file for our code-tests.)
+(Provide the steps and files for reproducing the problem. We will need them for developing the proposed check and for including them in tests that validate the codebase)
 
 
-## Expected Profile
+## Suggested profile
 
-Please suggest in which profile should it be included. (You could inspect the Profiles's list at https://font-bakery.readthedocs.io/en/stable/fontbakery/profiles/index.html). Most common are:
+Suggest which profile the check should be added to. The most common are:
 
 - [ ] Vendor-specific: Google Fonts
 - [ ] Vendor-specific: Adobe Fonts
@@ -37,13 +32,13 @@ Please suggest in which profile should it be included. (You could inspect the Pr
 - [ ] Universal (broadly accepted best practices on the type design community)
 - [ ] Other:
 
-## Expected Result
+## Suggested result
 
-Which log result level should it have:
+Which log result level should the check have:
 
-- [ ] 🔥 **FAIL** (Something that must be addressed for the propper functioning of the font)
-- [ ] ⚠️ **WARN** (Highlights potential issues that are suggested to address)
+- [ ] 🔥 **FAIL** (An issue that must be corrected for the font to function properly)
+- [ ] ⚠️ **WARN** (A potential issues that may need to be addressed)
 
 ## Severity assessment
 
-(On a 1 to 5 level, how "buggy" would the font be considered if not including the aspect checked? Where 1 is something ideal to include but that would not affect the behavior of the font, and 5 is something that could lead to bad performance.)
+(Classify the problem on a scale of 1 (minor) to 5 (major). How "buggy" would the font be considered if it had the problem described?)

@@ -1,22 +1,22 @@
 ---
 name: Check improvement proposal
-about: Suggest an improvement to an existing check
+about: Suggest improvements to an existing check
 title: '[Check ID] situation'
 labels: 'Check improvement proposal'
 assignees: ''
 
 ---
 
-(**NOTE:** Please include the check-id on the issue title. Check-id example [com.google.fonts/check/metadata/parses])
+(**NOTE:** Please include the check-id in the issue's title. Check-id example: [com.google.fonts/check/metadata/parses])
 
 ## Observed behaviour
 
-(Describe here what was the result that you are commenting on)
+(Describe the results you're getting)
 
 ## Expected behaviour
 
-(Describe here what you expected to happen, or what you wish was different)
+(Describe what you expected to happen, or wished was different)
 
-## Resources and exact process needed to replicate
+## Resources and steps needed to reproduce
 
-(Please provide here an URL to a font file that appears to cause the issue, and the exact steps from updating to the latest code on the `main` branch to reproduce the Observed Behaviour. We need this in for replicating the issue and fixing it :)
+(Provide the font file that causes the issue, and the exact steps to reproduce it. Also mention the FontBakery version you're using, and some details about your system, e.g. OS, Python version, etc.)
