@@ -1,12 +1,11 @@
 import math
 import os
 import shutil
-import tempfile
-from unittest.mock import patch
 
 import pytest
 from fontTools.ttLib import TTFont
 
+from fontbakery.profiles.googlefonts import can_shape
 from fontbakery.profiles.googlefonts_conditions import expected_font_names
 from fontbakery.checkrunner import DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL, ENDCHECK
 from fontbakery.codetesting import (
@@ -3430,7 +3429,7 @@ def test_check_kerning_for_non_ligated_sequences():
     msg = assert_results_contain(check(ttFont), WARN, "lacks-kern-info")
     assert msg == (
         "GPOS table lacks kerning info for the following non-ligated sequences:\n\n"
-        "\t- f + f\n\n\t- f + t \n\n\t- t + f"
+        "\t- f + f\n\n\t- f + t\n\n\t- t + f"
     )
 
 
@@ -3556,7 +3555,7 @@ def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
     #              'with one good font...')
 
 
-def test_check_repo_vf_has_static_fonts():
+def test_check_repo_vf_has_static_fonts(tmp_path):
     """Check VF family dirs in google/fonts contain static fonts"""
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/repo/vf_has_static_fonts"
@@ -3565,40 +3564,41 @@ def test_check_repo_vf_has_static_fonts():
     # in order for this check to work, we need to
     # mimic the folder structure of the Google Fonts repository
     dir_path = "ofl/foo/bar"
-    with tempfile.TemporaryDirectory() as tmp_gf_dir:
-        family_dir = portable_path(tmp_gf_dir + "/ofl/testfamily")
-        src_family = portable_path("data/test/varfont")
+    tmp_gf_dir = tmp_path / "repo_vf_has_static_fonts"
+    tmp_gf_dir.mkdir()
+    family_dir = tmp_gf_dir / "ofl/testfamily"
+    src_family = portable_path("data/test/varfont")
 
-        shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
+    shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
 
-        assert_results_contain(
-            check(dir_path, {"family_directory": family_dir}),
-            WARN,
-            "missing",
-            "for a VF family which does not has a static dir.",
-        )
+    assert_results_contain(
+        check(dir_path, {"family_directory": family_dir}),
+        WARN,
+        "missing",
+        "for a VF family which does not has a static dir.",
+    )
 
-        static_dir = portable_path(family_dir + "/static")
-        os.mkdir(static_dir)
-        assert_results_contain(
-            check(dir_path, {"family_directory": family_dir}),
-            FAIL,
-            "empty",
-            "for a VF family which has a static dir" " but no fonts in the static dir.",
-        )
+    static_dir = family_dir / "static"
+    static_dir.mkdir()
+    assert_results_contain(
+        check(dir_path, {"family_directory": family_dir}),
+        FAIL,
+        "empty",
+        "for a VF family which has a static dir" " but no fonts in the static dir.",
+    )
 
-        static_fonts = portable_path("data/test/cabin")
-        shutil.rmtree(static_dir)
-        shutil.copytree(static_fonts, static_dir)
-        assert_PASS(
-            check(dir_path, {"family_directory": family_dir}),
-            "for a VF family which has a static dir and static fonts",
-        )
+    static_fonts = portable_path("data/test/cabin")
+    shutil.rmtree(static_dir)
+    shutil.copytree(static_fonts, static_dir)
+    assert_PASS(
+        check(dir_path, {"family_directory": family_dir}),
+        "for a VF family which has a static dir and static fonts",
+    )
 
-        msg = assert_results_contain(
-            check("", {"family_directory": family_dir}), SKIP, "unfulfilled-conditions"
-        )
-        assert msg == "Unfulfilled Conditions: gfonts_repo_structure"
+    msg = assert_results_contain(
+        check("", {"family_directory": family_dir}), SKIP, "unfulfilled-conditions"
+    )
+    assert msg == "Unfulfilled Conditions: gfonts_repo_structure"
 
 
 def test_check_repo_upstream_yaml_has_required_fields():
@@ -3627,32 +3627,32 @@ def test_check_repo_upstream_yaml_has_required_fields():
     )
 
 
-def test_check_repo_fb_report():
-    """A font repository should not include fontbakery report files"""
+def test_check_repo_fb_report(tmp_path):
+    """A font repository should not include FontBakery report files"""
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/repo/fb_report")
 
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        family_dir = portable_path(tmp_dir)
-        src_family = portable_path("data/test/varfont")
+    family_dir = tmp_path / "repo_fb_report"
+    family_dir.mkdir()
+    src_family = portable_path("data/test/varfont")
 
-        shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
+    shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
 
-        assert_PASS(
-            check([], {"family_directory": family_dir}),
-            "for a repo without Font Bakery report files.",
-        )
+    assert_PASS(
+        check([], {"family_directory": family_dir}),
+        "for a repo without FontBakery report files.",
+    )
 
-        assert_PASS(
-            check([], {"family_directory": family_dir}),
-            "with a json file that is not a Font Bakery report.",
-        )
+    assert_PASS(
+        check([], {"family_directory": family_dir}),
+        "with a json file that is not a FontBakery report.",
+    )
 
-        # Add a json file that is not a FB report
-        open(os.path.join(family_dir, "something_else.json"), "w+").write(
-            "this is not a FB report"
-        )
+    # Add a json file that is not a FB report
+    open(os.path.join(family_dir, "something_else.json"), "w+").write(
+        "this is not a FB report"
+    )
 
-        FB_REPORT_SNIPPET = """
+    FB_REPORT_SNIPPET = """
 {
     "result": {
         "INFO": 8,
@@ -3662,49 +3662,47 @@ def test_check_repo_fb_report():
     },
     "sections": [
     """
-        # Report files must be detected even if placed on subdirectories
-        # and the check code shuld not rely only on filename (such as "Jura-Regular.fb-report.json")
-        # but should instead inspect the contents of the file:
-        open(
-            os.path.join(family_dir, "jura", "static", "my_fontfamily_name.json"), "w+"
-        ).write(FB_REPORT_SNIPPET)
-        assert_results_contain(
-            check([], {"family_directory": family_dir}),
-            WARN,
-            "fb-report",
-            "with an actual snippet of a report.",
-        )
+    # Report files must be detected even if placed on subdirectories
+    # and the check code shuld not rely only on filename (such as "Jura-Regular.fb-report.json")
+    # but should instead inspect the contents of the file:
+    open(
+        os.path.join(family_dir, "jura", "static", "my_fontfamily_name.json"), "w+"
+    ).write(FB_REPORT_SNIPPET)
+    assert_results_contain(
+        check([], {"family_directory": family_dir}),
+        WARN,
+        "fb-report",
+        "with an actual snippet of a report.",
+    )
 
 
-def test_check_repo_zip_files():
+def test_check_repo_zip_files(tmp_path):
     """A font repository should not include ZIP files"""
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/repo/zip_files")
 
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        family_dir = portable_path(tmp_dir)
-        src_family = portable_path("data/test/varfont")
+    family_dir = tmp_path / "repo_zip_files"
+    family_dir.mkdir()
+    src_family = portable_path("data/test/varfont")
 
-        shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
+    shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
 
-        assert_PASS(
-            check([], {"family_directory": family_dir}), "for a repo without ZIP files."
+    assert_PASS(
+        check([], {"family_directory": family_dir}), "for a repo without ZIP files."
+    )
+
+    for ext in ["zip", "rar", "7z"]:
+        # ZIP files must be detected even if placed on subdirectories:
+        filepath = os.path.join(family_dir, f"jura", f"static", f"fonts-release.{ext}")
+        # create an empty file. The check won't care about the contents:
+        open(filepath, "w+")
+        assert_results_contain(
+            check([], {"family_directory": family_dir}),
+            FAIL,
+            "zip-files",
+            f"when a {ext} file is found.",
         )
-
-        for ext in ["zip", "rar", "7z"]:
-            # ZIP files must be detected even if placed on subdirectories:
-            filepath = os.path.join(
-                family_dir, f"jura", f"static", f"fonts-release.{ext}"
-            )
-            # create an empty file. The check won't care about the contents:
-            open(filepath, "w+")
-            assert_results_contain(
-                check([], {"family_directory": family_dir}),
-                FAIL,
-                "zip-files",
-                f"when a {ext} file is found.",
-            )
-            # remove the file before testing the next one ;-)
-            os.remove(filepath)
+        # remove the file before testing the next one ;-)
+        os.remove(filepath)
 
 
 def test_check_vertical_metrics():
@@ -4583,6 +4581,14 @@ def test_check_metadata_family_directory_name():
     )
 
 
+def test_can_shape():
+    font = TTFont(
+        portable_path("data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf")
+    )
+    assert can_shape(font, "ABC")
+    assert not can_shape(font, "こんにちは")
+
+
 def test_check_render_own_name():
     """Check family directory name."""
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/render_own_name")
@@ -4834,19 +4840,6 @@ def test_check_STAT(fps, new_stat, result):
             "bad-axis-values",
             "with a bad font",
         )
-
-
-@patch("freetype.Face", side_effect=ImportError)
-def test_check_override_freetype_rasterizer(mock_import_error):
-    """Check that overridden test yields FAIL rather than SKIP."""
-    check = CheckTester(
-        googlefonts_profile,
-        f"com.adobe.fonts/check/freetype_rasterizer{OVERRIDE_SUFFIX}",
-    )
-
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    msg = assert_results_contain(check(font), FAIL, "freetype-not-installed")
-    assert "FreeType is not available" in msg
 
 
 def test_check_colorfont_tables():

@@ -320,7 +320,7 @@ def test_check_ots():
     sanitary_font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(sanitary_font))
 
-    bogus_font = TEST_FILE("README.txt")
+    bogus_font = TEST_FILE("cabin/OFL.txt")
     message = assert_results_contain(check(bogus_font), FAIL, "ots-sanitize-error")
     assert "invalid sfntVersion" in message
     assert "Failed to sanitize file!" in message
@@ -375,7 +375,7 @@ class MockDistribution:
 @patch("pip_api.installed_distributions")
 @patch("requests.get")
 def test_check_fontbakery_version(mock_get, mock_installed):
-    """Check if Font Bakery is up-to-date"""
+    """Check if FontBakery is up-to-date"""
     check = CheckTester(universal_profile, "com.google.fonts/check/fontbakery_version")
 
     # Any of the test fonts can be used here.
@@ -391,20 +391,20 @@ def test_check_fontbakery_version(mock_get, mock_installed):
     mock_get.return_value = mock_response
     mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
     msg = assert_PASS(check(font), PASS)
-    assert msg == "Font Bakery is up-to-date."
+    assert msg == "FontBakery is up-to-date."
 
     # Test the case of installed version being newer than PyPI's version.
     installed_ver = "0.1.1"
     mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
     msg = assert_PASS(check(font), PASS)
-    assert msg == "Font Bakery is up-to-date."
+    assert msg == "FontBakery is up-to-date."
 
     # Test the case of installed version being older than PyPI's version.
     installed_ver = "0.0.1"
     mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
     msg = assert_results_contain(check(font), FAIL, "outdated-fontbakery")
     assert (
-        f"Current Font Bakery version is {installed_ver},"
+        f"Current FontBakery version is {installed_ver},"
         f" while a newer {latest_ver} is already available."
     ) in msg
 
@@ -421,7 +421,7 @@ def test_check_fontbakery_version(mock_get, mock_installed):
 
 
 def test_check_fontbakery_version_live_apis():
-    """Check if Font Bakery is up-to-date. (No API-mocking edition)"""
+    """Check if FontBakery is up-to-date. (No API-mocking edition)"""
     check = CheckTester(universal_profile, "com.google.fonts/check/fontbakery_version")
 
     # Any of the test fonts can be used here.
@@ -432,7 +432,7 @@ def test_check_fontbakery_version_live_apis():
     # and will query 'pip' to determine which version of 'fontbakery' is installed.
     # The check should PASS.
     msg = assert_PASS(check(font), PASS)
-    assert msg == "Font Bakery is up-to-date."
+    assert msg == "FontBakery is up-to-date."
 
 
 def test_check_mandatory_glyphs():
@@ -1096,55 +1096,6 @@ def test_check_cjk_chws_feature():
     assert_PASS(check(ttFont))
 
 
-def test_check_designspace_has_sources():
-    """See if we can actually load the source files."""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/designspace_has_sources"
-    )
-
-    designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
-    assert_PASS(check(designspace))
-
-    # TODO: FAIL, 'no-sources'
-
-
-def test_check_designspace_has_default_master():
-    """Ensure a default master is defined."""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/designspace_has_default_master"
-    )
-
-    designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
-    assert_PASS(check(designspace))
-
-    # TODO: FAIL, 'not-found'
-
-
-def test_check_designspace_has_consistent_glyphset():
-    """Check consistency of glyphset in a designspace file."""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/designspace_has_consistent_glyphset"
-    )
-
-    designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
-    assert_results_contain(check(designspace), FAIL, "inconsistent-glyphset")
-
-    # TODO: Fix it and ensure it passes the check
-
-
-def test_check_designspace_has_consistent_codepoints():
-    """Check codepoints consistency in a designspace file."""
-    check = CheckTester(
-        universal_profile,
-        "com.google.fonts/check/designspace_has_consistent_codepoints",
-    )
-
-    designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
-    assert_results_contain(check(designspace), FAIL, "inconsistent-codepoints")
-
-    # TODO: Fix it and ensure it passes the check
-
-
 def test_check_transformed_components():
     """Ensure component transforms do not perform scaling or rotation."""
     check = CheckTester(
@@ -1163,42 +1114,6 @@ def test_check_transformed_components():
     # that result in reversed outline direction
     font = TEST_FILE("amiri/AmiriQuranColored.ttf")
     assert_results_contain(check(font), FAIL, "transformed-components")
-
-
-def test_check_dotted_circle():
-    """Ensure dotted circle glyph is present and can attach marks."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/dotted_circle")
-
-    font = TEST_FILE("mada/Mada-Regular.ttf")
-    assert_PASS(check(font), "with a good font...")
-
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    assert_results_contain(check(font), WARN, "missing-dotted-circle")
-
-    font = TEST_FILE("broken_markazitext/MarkaziText-VF.ttf")
-    assert_results_contain(check(font), FAIL, "unattached-dotted-circle-marks")
-
-
-def test_check_soft_dotted():
-    """Check if font substitues soft dotted glyphs
-    when combined with top marks."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/soft_dotted")
-
-    font = TEST_FILE("abeezee/ABeeZee-Regular.ttf")
-    msg = assert_results_contain(check(font), WARN, "soft-dotted")
-    assert "The dot of soft dotted characters used in orthographies" not in msg
-    assert "The dot of soft dotted characters should disappear" in msg
-
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    msg = assert_results_contain(check(font), FAIL, "soft-dotted")
-    assert "The dot of soft dotted characters used in orthographies" in msg
-    assert "The dot of soft dotted characters should disappear" in msg
-
-    font = TEST_FILE("akshar/Akshar[wght].ttf")
-    assert_PASS(check(font), "All soft dotted characters seem to lose their dot ...")
-
-    font = TEST_FILE("rosarivo/Rosarivo-Regular.ttf")
-    assert_SKIP(check(font), "It is not clear if soft dotted characters ...")
 
 
 def test_check_gpos7():
@@ -1353,7 +1268,7 @@ def test_check_STAT_in_statics():
     ttFont = TTFont(TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"))
     assert_SKIP(check(ttFont), "with a variable font...")
 
-    # fake it: Remove fvar table to make Font Bakery think it is dealing with a static font
+    # fake it: Remove fvar table to make FontBakery think it is dealing with a static font
     del ttFont["fvar"]
 
     # We know that our reference RobotoSerif varfont (which the check is induced

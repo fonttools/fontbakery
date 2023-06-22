@@ -18,11 +18,8 @@ import subprocess
 import sys
 
 from fontTools.ttLib import TTFont
-from fontTools.unicodedata import ot_tag_to_script
 from typing import Text, Optional
 from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
-from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
-from vharfbuzz import Vharfbuzz
 
 
 # TODO: this should be part of FontBakeryCheck and check.conditions
@@ -205,7 +202,7 @@ def suffix(font):
     return "-".join(s)
 
 
-def pretty_print_list(config, values, shorten=10, sep=", ", glue="and"):
+def pretty_print_list(config, values, shorten=10, sep=", ", glue=" and "):
     if len(values) == 1:
         return str(values[0])
 
@@ -215,13 +212,13 @@ def pretty_print_list(config, values, shorten=10, sep=", ", glue="and"):
     if shorten and len(values) > shorten + 2:
         joined_items_str = sep.join(map(str, values[:shorten]))
         return (
-            f"{joined_items_str} {glue} {len(values) - shorten} more.\n"
+            f"{joined_items_str}{glue}{len(values) - shorten} more.\n"
             f"\n"
             f"Use -F or --full-lists to disable shortening of long lists."
         )
     else:
         joined_items_str = sep.join(map(str, values[:-1]))
-        return f"{joined_items_str} {glue} {str(values[-1])}"
+        return f"{joined_items_str}{glue}{str(values[-1])}"
 
 
 def bullet_list(config, items, bullet="-", indentation="\t"):
@@ -229,7 +226,7 @@ def bullet_list(config, items, bullet="-", indentation="\t"):
         config,
         items,
         sep=f"\n\n{indentation}{bullet} ",
-        glue=f"\n\n{indentation}{bullet}",
+        glue=f"\n\n{indentation}{bullet} ",
     )
 
 
@@ -579,17 +576,6 @@ def add_check_overrides(checkids, profile_tag, overrides):
     return checkids
 
 
-def can_shape(ttFont, text, parameters=None):
-    """
-    Returns true if the font can render a text string without any
-    .notdef characters.
-    """
-    filename = ttFont.reader.file.name
-    vharfbuzz = Vharfbuzz(filename)
-    buf = vharfbuzz.shape(text, parameters)
-    return all(g.codepoint != 0 for g in buf.glyph_infos)
-
-
 def all_kerning(ttFont):
     if "GPOS" not in ttFont:
         return []
@@ -632,21 +618,6 @@ def all_kerning(ttFont):
                         for right in class2[ix2]:
                             rules.append((left, right, c2.Value1, c2.Value2))
     return rules
-
-
-def is_complex_shaper_font(ttFont):
-    for table in ["GSUB", "GPOS"]:
-        if table not in ttFont:
-            continue
-        if not ttFont[table].table.ScriptList:
-            continue
-        for rec in ttFont[table].table.ScriptList.ScriptRecord:
-            script = ot_tag_to_script(rec.ScriptTag)
-            if script in USE_SCRIPTS or script in INDIC_SCRIPTS:
-                return True
-            if script in ["Khmr", "Mymr", "Hang"]:
-                return True
-    return False
 
 
 def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):
