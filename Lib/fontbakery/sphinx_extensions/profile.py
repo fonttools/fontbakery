@@ -253,7 +253,7 @@ class PyFontBakeryObject(PyObject):
     @property
     def pretty_objtype(self):
         if self.objtype.startswith("fontbakery"):
-            suffix = self.objtype[len("fontbakery") :]
+            suffix = self.objtype[len("fontbakery"):]
             return "FontBakery" + suffix[0].upper() + suffix[1:]
         return self.objtype
 
@@ -317,7 +317,7 @@ class PyFontBakeryObject(PyObject):
             if prefix and (prefix == classname or prefix.startswith(classname + ".")):
                 fullname = prefix + name
                 # class name is given again in the signature
-                prefix = prefix[len(classname) :].lstrip(".")
+                prefix = prefix[len(classname):].lstrip(".")
             elif prefix:
                 # class name is given in the signature, but different
                 # (shouldn't happen)
@@ -417,7 +417,7 @@ class PyFontBakeryObject(PyObject):
 
             # note, there will be a change to this in a future release
             # https://github.com/sphinx-doc/sphinx/commit/259be8716ad4b2332aa4d7693d73400eb06fa7d7
-            ## in the past (now)
+            # in the past (now)
             objects = self.env.domaindata["py"]["objects"]
             if fullname in objects:
                 self.state_machine.reporter.warning(
@@ -428,7 +428,7 @@ class PyFontBakeryObject(PyObject):
                     line=self.lineno,
                 )
                 objects[fullname] = (self.env.docname, self.objtype)
-            ## in the future
+            # in the future
             # domain = cast(PythonDomain, self.env.get_domain('py'))
             # domain.note_object(fullname, self.objtype)
 
