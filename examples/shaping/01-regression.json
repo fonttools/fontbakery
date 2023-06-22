@@ -22,7 +22,7 @@
       "input": "AVḲ",
       "expectation": "A=0+679|V=1+676|K=2+707|dotbelowcomb.case=2@-250,0+0",
       "comment": "Expected positions may be specified using Harfbuzz hb-shape syntax"
-    }
+    },
     {
       "input": "AVḲ",
       "expectation": "A=0+679|V=1+676|K=2+707|dotbelowcomb.case=2@-250,0+0",
