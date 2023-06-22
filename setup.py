@@ -23,7 +23,7 @@ except IOError:
 
 
 FONTTOOLS_VERSION = ">=4.39.0"  # Python 3.8+ required
-UFO2FT_VERSION = ">=2.25.2"
+UFO2FT_VERSION = ">=2.25.2"  # 2.25.2 updated the script lists for Unicode 14.0
 
 # Profile-specific dependencies:
 ufo_sources_extras = [
@@ -39,13 +39,17 @@ googlefonts_extras = [
     "dehinter>=3.1.0",  # 3.1.0 added dehinter.font.hint function
     "font-v",
     f"fontTools[lxml,unicode]{FONTTOOLS_VERSION}",
-    "gflanguages>=0.3.0",  # There was an api simplification/update on v0.3.0
+    "gflanguages>=0.3.0",  # 0.3.0 had an api simplification/update
     # (see https://github.com/googlefonts/gflanguages/pull/7)
     "glyphsets>=0.5.0",
     "protobuf>=3.7.0, <4",  # 3.7.0 fixed a bug on parsing some METADATA.pb files.
     # We cannot use v4 because our protobuf files have been compiled with v3.
     # (see https://github.com/googlefonts/fontbakery/issues/2200)
 ] + ufo_sources_extras
+
+iso15008_extras = [
+    "uharfbuzz",
+]
 
 fontval_extras = [
     "lxml",
@@ -57,7 +61,13 @@ docs_extras = [
     "sphinx_rtd_theme",
 ]
 
-all_extras = set(docs_extras + googlefonts_extras + fontval_extras + ufo_sources_extras)
+all_extras = set(
+    docs_extras
+    + fontval_extras
+    + googlefonts_extras
+    + iso15008_extras
+    + ufo_sources_extras
+)
 
 setup(
     name="fontbakery",
@@ -67,7 +77,7 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     author=(
-        "Font Bakery authors and contributors:"
+        "FontBakery authors and contributors:"
         " Dave Crossland,"
         " Felipe Sanches,"
         " Lasse Fister,"
@@ -106,45 +116,51 @@ setup(
         "setuptools_scm[toml]>=6.2",
     ],
     install_requires=[
-        # --- core dependencies
+        # ---
+        # core dependencies
         f"fontTools{FONTTOOLS_VERSION}",
         "freetype-py!=2.4.0",  # Avoiding 2.4.0 due to seg-fault described at
         # https://github.com/googlefonts/fontbakery/issues/4143
-        "munkres",  # For interpolation compatibility checking (fontTools dependency)
         "opentypespec",
         "opentype-sanitizer>=7.1.9",  # 7.1.9 fixes caret value format = 3 bug
         # (see https://github.com/khaledhosny/ots/pull/182)
-        #
-        # --- for parsing Configuration files
+        # ---
+        # fontTools extra that is needed by 'interpolation_issues' check in
+        # Universal profile
+        "munkres",
+        # ---
+        # for parsing Configuration files (Lib/fontbakery/configuration.py)
         "PyYAML",
         "toml",
-        #
-        # --- used by Reporters
-        "cmarkgfm",
-        "rich",
-        #
-        # --- for checking FontBakery's version
-        "packaging",  # Universal profile
-        "pip-api",  # Universal profile
-        "requests",  # Universal & googlefonts profiles
+        # ---
+        # used by Reporters (Lib/fontbakery/reporters)
+        "cmarkgfm",  # (html.py)
+        "rich",  # (terminal.py)
+        # ---
+        # used by 'fontbakery_version' check in Universal profile
+        "packaging",
+        "pip-api",
+        "requests",  # also used by Google Fonts profile
+        # ---
+        # used by 'italic_angle' check in OpenType profile ('post' table);
+        # also used by ISO 15008 profile
+        "beziers>=0.5.0",  # 0.5.0 uses new fontTools glyph outline access
         #
         # TODO: Try to split the packages below into feature-specific extras.
-        "beziers>=0.5.0",  # Opentype, iso15008, Shaping (& Universal) profiles
-        # Uses new fontTools glyph outline access
         "collidoscope>=0.5.2",  # Shaping (& Universal) profiles
         # 0.5.1 did not yet support python 3.11
         # (see https://github.com/googlefonts/fontbakery/issues/3970)
         "stringbrewer",  # Shaping (& Universal) profiles
         f"ufo2ft{UFO2FT_VERSION}",  # Shaping
-        # 2.25.2 updated the script lists for Unicode 14.0
         "vharfbuzz>=0.2.0",  # Googlefonts, Shaping (& Universal) profiles
         # v0.2.0 had an API update
     ],
     extras_require={
         "all": all_extras,
         "docs": docs_extras,
-        "googlefonts": googlefonts_extras,
         "fontval": fontval_extras,
+        "googlefonts": googlefonts_extras,
+        "iso15008": iso15008_extras,
         "ufo-sources": ufo_sources_extras,
     },
     entry_points={
