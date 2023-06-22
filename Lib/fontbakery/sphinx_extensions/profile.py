@@ -7,15 +7,15 @@ from sphinx.ext.autodoc import ModuleLevelDocumenter
 from sphinx.pycode import ModuleAnalyzer, PycodeError
 
 # from sphinx.domains.python import PythonDomain
+from sphinx.domains.python import _pseudo_parse_arglist
 from sphinx.locale import __
 from sphinx.domains.python import PyObject
 from sphinx import addnodes
 from sphinx.util.inspect import signature as Signature
 from sphinx.util.inspect import stringify_signature
 
+import re
 import logging
-
-logger = logging.getLogger(__name__)
 
 # we can get source code first line numbers with this module for object
 import inspect
@@ -27,6 +27,10 @@ from fontbakery.callable import (
     Disabled,
     FontBakeryExpectedValue,
 )
+
+
+logger = logging.getLogger(__name__)
+
 
 # mute the style checks for unused names
 # will be removed eventually
@@ -222,10 +226,6 @@ class FontBakeryConditionDocumenter(FontBakeryCallableDocumenter):
     objtype = "fontbakerycondition"
     can_doc_cls = FontBakeryCondition
 
-
-from sphinx.domains.python import _pseudo_parse_arglist
-
-import re
 
 # REs for Python signatures
 py_sig_re = re.compile(
