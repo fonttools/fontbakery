@@ -4,7 +4,7 @@ import os
 import re
 import sys
 
-import git
+import git  # pip install GitPython
 
 CONTRIBUTORS_HEAD = """
 # This is the list of people who have contributed to this project,
