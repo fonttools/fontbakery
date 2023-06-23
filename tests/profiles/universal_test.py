@@ -5,7 +5,7 @@ from fontTools.ttLib import TTFont
 import pytest
 from requests.exceptions import ConnectionError
 
-from fontbakery.checkrunner import INFO, WARN, FAIL, PASS, SKIP
+from fontbakery.checkrunner import INFO, WARN, FAIL, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
@@ -390,13 +390,13 @@ def test_check_fontbakery_version(mock_get, mock_installed):
     mock_response.json.return_value = {"info": {"version": latest_ver}}
     mock_get.return_value = mock_response
     mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
-    msg = assert_PASS(check(font), PASS)
+    msg = assert_PASS(check(font))
     assert msg == "FontBakery is up-to-date."
 
     # Test the case of installed version being newer than PyPI's version.
     installed_ver = "0.1.1"
     mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
-    msg = assert_PASS(check(font), PASS)
+    msg = assert_PASS(check(font))
     assert msg == "FontBakery is up-to-date."
 
     # Test the case of installed version being older than PyPI's version.
@@ -431,7 +431,7 @@ def test_check_fontbakery_version_live_apis():
     # The check will make an actual request to PyPI.org,
     # and will query 'pip' to determine which version of 'fontbakery' is installed.
     # The check should PASS.
-    msg = assert_PASS(check(font), PASS)
+    msg = assert_PASS(check(font))
     assert msg == "FontBakery is up-to-date."
 
 
@@ -569,9 +569,8 @@ def test_check_whitespace_glyphnames():
 
     editCmap(ttFont, 0x0020, "space")
     editCmap(ttFont, 0x00A0, "uni00A0")
-    assert assert_PASS(check(ttFont)) == (
-        "Font has **AGL recommended** names for whitespace glyphs."
-    )
+    msg = assert_PASS(check(ttFont))
+    assert msg == "Font has **AGL recommended** names for whitespace glyphs."
 
 
 def test_check_whitespace_ink():
