@@ -1,9 +1,5 @@
-import os
-
-from fontbakery.checkrunner import Section, PASS, FAIL, WARN, ERROR, INFO, SKIP
-from fontbakery.callable import condition, check, disable
-from fontbakery.constants import PriorityLevel
-from fontbakery.message import Message
+from fontbakery.checkrunner import Section, PASS
+from fontbakery.callable import check
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 

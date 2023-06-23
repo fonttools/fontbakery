@@ -14,7 +14,6 @@ import requests
 import argparse
 import subprocess
 import tempfile
-from urllib.parse import urlparse
 import os
 import json
 import shutil
