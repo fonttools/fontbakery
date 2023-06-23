@@ -1,4 +1,9 @@
-from typing import Any, List, Tuple, Dict  # cast
+# from typing import Any, List, Tuple, Dict  # cast
+import re
+import logging
+
+# we can get source code first line numbers with this module for object
+import inspect
 
 from sphinx.application import Sphinx
 
@@ -14,11 +19,6 @@ from sphinx import addnodes
 from sphinx.util.inspect import signature as Signature
 from sphinx.util.inspect import stringify_signature
 
-import re
-import logging
-
-# we can get source code first line numbers with this module for object
-import inspect
 
 from fontbakery.callable import (
     FontbakeryCallable,
@@ -44,8 +44,8 @@ if False:  # pylint: disable=using-constant-test
 __version__ = "0.0.1"
 
 
-# ModuleLevelDocumenter(Documenter): Specialized Documenter subclass for objects on module level (functions,
-# classes, data/constants). Implements: resolve_name
+# ModuleLevelDocumenter(Documenter): Specialized Documenter subclass for objects on
+# module level (functions, classes, data/constants). Implements: resolve_name
 # https://github.com/sphinx-doc/sphinx/blob/master/sphinx/ext/autodoc/__init__.py#L850
 # Documenter
 class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
@@ -64,7 +64,9 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
 
     def format_args(
         self,
-    ):  # pylint: disable=arguments-differ  # I am really not sure what went wrong here...
+    ):  # pylint: disable=arguments-differ
+        # I am really not sure what went wrong here...
+        #
         # type: () -> str
         # We use the original signature from the wrapped _function
         has_retval = isinstance(self.object, FontBakeryCondition)
@@ -84,16 +86,17 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
         # search for the separator ":::" in this document to see where
         # the info is received. This is not a clean solution!
         #
-        # in https://github.com/sphinx-doc/sphinx/blob/master/sphinx/ext/autodoc/__init__.py#L374
+        # in https://github.com/sphinx-doc/sphinx/
+        #            blob/master/sphinx/ext/autodoc/__init__.py#L374
+        #
         # it says:
         #  > This normally should be something that can be parsed by the generated
         #  > directive, but doesn't need to be (Sphinx will display it unparsed
         #  > then).
-        # See below in `handle_signature`
-        # where that ipdb debugger is started, usually that eception would be
-        # dropped and we drop out of signature building. (RAISED here in `_handle_signature`
-        # The ValueError when the regex doesn't match...)
-        # seems like the slash (/) Is killing most of the header!
+        # See below in `handle_signature` where that ipdb debugger is started, usually
+        # that exception would be dropped and we drop out of signature building.
+        # (RAISED here in `_handle_signature` the ValueError when the regex
+        # doesn't match...) seems like the slash (/) is killing most of the header!
         # Otherwise the ids display fine, the dots are fine.
         # Also, in any case of name change, the [source] view is killed (removed!)
         # the document and also genindex.html anchor works so far (with 7 instead of /)
@@ -109,14 +112,31 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
         # else:
         #   res = super().format_name()
         # print('formatted name:', res)
-        # > formatted name: com.google.fonts/check/xavgcharwidth:::59:::com_google_fonts_check_xavgcharwidth
+        # > formatted name: com.google.fonts/check/
+        #                   xavgcharwidth:::59:::com_google_fonts_check_xavgcharwidth
         # > formatted name: bold_wght_coord
 
         return res
 
-        # handle_signature: com_google_fonts_check_post_table_version(ttFont, is_ttf) <desc_signature first="False"/>
+        # handle_signature: com_google_fonts_check_post_table_version(ttFont, is_ttf)
+        #                   <desc_signature first="False"/>
         # sig signature: com_google_fonts_check_post_table_version(ttFont, is_ttf)
-        # result: ('com_google_fonts_check_post_table_version', None) signode: <desc_signature class="" first="False" fullname="com_google_fonts_check_post_table_version" module="fontbakery.profiles.post"><desc_annotation xml:space="preserve">FontBakeryCheck </desc_annotation><desc_addname xml:space="preserve">fontbakery.profiles.post.</desc_addname><desc_name xml:space="preserve">com_google_fonts_check_post_table_version</desc_name><desc_parameterlist xml:space="preserve"><desc_parameter xml:space="preserve">ttFont</desc_parameter><desc_parameter xml:space="preserve">is_ttf</desc_parameter></desc_parameterlist></desc_signature>
+        # result: ('com_google_fonts_check_post_table_version', None)
+        # signode: <desc_signature class=""
+        #                          first="False"
+        #                          fullname="com_google_fonts_check_post_table_version"
+        #                          module="fontbakery.profiles.post">
+        #              <desc_annotation
+        #                  xml:space="preserve">FontBakeryCheck</desc_annotation>
+        #              <desc_addname xml:space="preserve">
+        #                  fontbakery.profiles.post.</desc_addname>
+        #              <desc_name xml:space="preserve">
+        #                  com_google_fonts_check_post_table_version</desc_name>
+        #              <desc_parameterlist xml:space="preserve">
+        #                  <desc_parameter xml:space="preserve">ttFont</desc_parameter>
+        #                  <desc_parameter xml:space="preserve">is_ttf</desc_parameter>
+        #              </desc_parameterlist>
+        #          </desc_signature>
 
     def generate(
         self,
@@ -239,7 +259,8 @@ py_sig_re = re.compile(
 )
 
 
-# PyObject: https://github.com/sphinx-doc/sphinx/blob/master/sphinx/domains/python.py#L189
+# PyObject:
+#     https://github.com/sphinx-doc/sphinx/blob/master/sphinx/domains/python.py#L189
 # PyObject is a subclass of sphinx.directives.ObjectDescription
 # ObjectDescription is a sphinx.util.docutils.SphinxDirective
 # SphinxDirective is a docutils.parsers.rst.Directive
@@ -268,8 +289,8 @@ class PyFontBakeryObject(PyObject):
 
     # this is bullshit, returns two values but manipulates
     # signode massively, which is undocumented.
-    # signode is an instance of <class 'sphinx.addnodes.desc_signature'>
-    # from https://github.com/sphinx-doc/sphinx/blob/master/sphinx/domains/python.py#L237
+    # signode is an instance of <class 'sphinx.addnodes.desc_signature'> from
+    # https://github.com/sphinx-doc/sphinx/blob/master/sphinx/domains/python.py#L237
     def _handle_signature(self, cid, lineno, sig, signode):
         # type: (str, addnodes.desc_signature) -> Tuple[str, str]
         """Transform a Python signature into RST nodes.
@@ -288,17 +309,18 @@ class PyFontBakeryObject(PyObject):
             fullname="com.google.fonts/check/all_glyphs_have_codepoints"
             module="fontbakery.profiles.cmap"
             >
-                <desc_annotation
-                    xml:space="preserve">FontBakeryCheck </desc_annotation>
-                <desc_addname
-                    xml:space="preserve">fontbakery.profiles.cmap.</desc_addname>
-                <desc_name
-                    xml:space="preserve">com_google_fonts_check_all_glyphs_have_codepoints</desc_name>
-                <desc_parameterlist
-                    xml:space="preserve">
-                        <desc_parameter xml:space="preserve">ttFont</desc_parameter>
-                </desc_parameterlist>
-          </desc_signature>
+            <desc_annotation
+                xml:space="preserve">FontBakeryCheck </desc_annotation>
+            <desc_addname
+                xml:space="preserve">fontbakery.profiles.cmap.</desc_addname>
+            <desc_name
+                xml:space="preserve">com_google_fonts_check_all_glyphs_have_codepoints
+            </desc_name>
+            <desc_parameterlist
+                xml:space="preserve">
+                <desc_parameter xml:space="preserve">ttFont</desc_parameter>
+            </desc_parameterlist>
+        </desc_signature>
 
         """
         m = py_sig_re.match(sig)
@@ -307,7 +329,8 @@ class PyFontBakeryObject(PyObject):
             raise ValueError
         prefix, name, arglist, retann = m.groups()
         # print('prefix, name, arglist, retann =', prefix, name, arglist, retann)
-        # > prefix, name, arglist, retann = None com_google_fonts_check_all_glyphs_have_codepoints ttFont None
+        # > prefix, name, arglist, retann =
+        #       None com_google_fonts_check_all_glyphs_have_codepoints ttFont None
 
         # determine module and class name (if applicable), as well as full name
         modname = self.options.get("module", self.env.ref_context.get("py:module"))
@@ -372,13 +395,18 @@ class PyFontBakeryObject(PyObject):
 
     def handle_signature(self, sig, signode):
         # print('>>>>>>>>>>>>>>>>>handle_signature:', sig, signode)
-        # > >>>>>>>>>>>>>>>>>handle_signature: com.google.fonts/check/all_glyphs_have_codepoints:::36:::com_google_fonts_check_all_glyphs_have_codepoints(ttFont) <desc_signature first="False"/>
+        # > >>>>>>>>>>>>>>>>>handle_signature:
+        #   com.google.fonts/check/
+        #   all_glyphs_have_codepoints:::36:::
+        #   com_google_fonts_check_all_glyphs_have_codepoints(ttFont)
+        #   <desc_signature first="False"/>
 
         cid = None
         if ":::" in sig:
             cid, lineno, sig = sig.split(":::")
             # print('GOT id:', cid, lineno, 'for:', sig)
-            # > GOT id: com.google.fonts/check/all_glyphs_have_codepoints 36 for: com_google_fonts_check_all_glyphs_have_codepoints(ttFont)
+            # > GOT id: com.google.fonts/check/all_glyphs_have_codepoints 36
+            #      for: com_google_fonts_check_all_glyphs_have_codepoints(ttFont)
 
         res = "(NONE!)"
         try:
@@ -416,7 +444,8 @@ class PyFontBakeryObject(PyObject):
             self.state.document.note_explicit_target(signode)
 
             # note, there will be a change to this in a future release
-            # https://github.com/sphinx-doc/sphinx/commit/259be8716ad4b2332aa4d7693d73400eb06fa7d7
+            # https://github.com/sphinx-doc/sphinx/
+            #         commit/259be8716ad4b2332aa4d7693d73400eb06fa7d7
             # in the past (now)
             objects = self.env.domaindata["py"]["objects"]
             if fullname in objects:
@@ -482,7 +511,8 @@ def setup(app):
         "py", "fontbakerycondition", PyFontBakeryObject, override=False
     )
 
-    # => see e.g.: https://github.com/sphinx-doc/sphinx/blob/master/sphinx/ext/autodoc/__init__.py#L984
+    # => see e.g.: https://github.com/sphinx-doc/sphinx/
+    #                      blob/master/sphinx/ext/autodoc/__init__.py#L984
 
     app.setup_extension("sphinx.ext.autodoc")
     app.connect("autodoc-process-docstring", _process_docstring)

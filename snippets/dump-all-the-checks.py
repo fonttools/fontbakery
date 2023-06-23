@@ -1,6 +1,5 @@
 import pkgutil
 import fontbakery
-from fontbakery.utils import get_theme
 from importlib import import_module
 from fontbakery.profile import get_module_profile
 import json

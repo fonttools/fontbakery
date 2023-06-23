@@ -18,7 +18,7 @@ import importlib
 import inspect
 from typing import Dict, Any
 
-from fontbakery.callable import FontBakeryCallable
+from fontbakery.callable import FontbakeryCallable
 from fontbakery.message import Message
 from fontbakery.profile import get_module_profile
 from fontbakery.utils import is_negated
