@@ -18,17 +18,15 @@ from difflib import ndiff
 from pathlib import Path
 from os.path import basename, relpath
 
-from collidoscope import Collidoscope
 from fontTools.unicodedata import ot_tag_to_script
-from stringbrewer import StringBrewer
-from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
-from vharfbuzz import Vharfbuzz, FakeBuffer
 
 from fontbakery.callable import check
 from fontbakery.status import FAIL, PASS, SKIP, WARN
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.message import Message
 from fontbakery.section import Section
+from fontbakery.utils import exit_with_install_instructions
+
 
 shaping_basedir = Path("qa", "shaping_tests")
 
@@ -82,6 +80,8 @@ def create_report_item(
     note=None,
     extra_data=None,
 ):
+    from vharfbuzz import FakeBuffer
+
     if text:
         message += f': <span class="tf">{text}</span>'
 
@@ -152,8 +152,14 @@ def get_shaping_parameters(test, configuration):
 def run_a_set_of_shaping_tests(
     config, ttFont, run_a_test, test_filter, generate_report, preparation=None
 ):
-    filename = Path(ttFont.reader.file.name)
-    vharfbuzz = Vharfbuzz(filename)
+    try:
+        from vharfbuzz import Vharfbuzz
+
+        filename = Path(ttFont.reader.file.name)
+        vharfbuzz = Vharfbuzz(filename)
+    except ImportError:
+        exit_with_install_instructions("shaping")
+
     shaping_file_found = False
     ran_a_test = False
     extra_data = None
@@ -336,6 +342,8 @@ def com_google_fonts_check_shaping_forbidden(config, ttFont):
 def run_forbidden_glyph_test(
     filename, vharfbuzz, test, configuration, failed_shaping_tests, extra_data
 ):
+    from stringbrewer import StringBrewer
+
     is_stringbrewer = (
         get_from_test_with_default(test, configuration, "input_type", "string")
         == "pattern"
@@ -400,6 +408,8 @@ def com_google_fonts_check_shaping_collides(config, ttFont):
 
 
 def setup_glyph_collides(ttFont, configuration):
+    from collidoscope import Collidoscope
+
     filename = Path(ttFont.reader.file.name)
     collidoscope_configuration = configuration.get("collidoscope")
     if not collidoscope_configuration:
@@ -420,6 +430,8 @@ def setup_glyph_collides(ttFont, configuration):
 def run_collides_glyph_test(
     filename, vharfbuzz, test, configuration, failed_shaping_tests, extra_data
 ):
+    from stringbrewer import StringBrewer
+
     col = extra_data["collidoscope"]
     is_stringbrewer = (
         get_from_test_with_default(test, configuration, "input_type", "string")
@@ -469,6 +481,8 @@ def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
 
 
 def is_complex_shaper_font(ttFont):
+    from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
+
     for table in ["GSUB", "GPOS"]:
         if table not in ttFont:
             continue
@@ -592,6 +606,7 @@ def com_google_fonts_check_soft_dotted(ttFont):
     import itertools
     from beziers.path import BezierPath
     from fontTools import unicodedata
+    from vharfbuzz import Vharfbuzz
 
     cmap = ttFont["cmap"].getBestCmap()
 
