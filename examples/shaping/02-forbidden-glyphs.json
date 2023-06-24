@@ -1,16 +1,28 @@
 {
   "configuration": {
+    "comment": "(For context, read the comments in '01-regression.json' first)",
+    "comment1": "This is another example of a configuration file to be used with the Shaping profile.",
+    "comment2": "In this example, the 'forbidden_glyphs' mode is activated (by using the corresponding",
+    "comment3": "key and an array of glyph names as the value). This mode will mark as FAIL any tests",
+    "comment4": "whose shaping results include a forbidden glyph. In this mode the test blocks are not",
+    "comment5": "required to include a 'expectation' key to yield results.",
+    "comment6": "In sum, this kind of configuration can be used for checking if any glyphs declared as",
+    "comment7": "forbidden are found in the shaping results.",
     "forbidden_glyphs": [".notdef", "uni25CC"]
   },
   "tests": [
     {
+      "comment": "Basic tests will work as before...",
       "input": "fi",
-      "expectation": "f_i",
-      "comment": "Ordinary tests will be run as before..."
+      "expectation": "f_i"
     },
     {
-      "input": "世界",
-      "comment": "...but now any test (even without an expectation) which shapes a .notdef will fail"
+      "comment": "...but now any tests (even without an 'expectation') whose shaping results include",
+      "comment1": "a forbidden glyph, will be marked as FAIL. (NOTE: for this example to yield FAIL",
+      "comment2": "it's necessary to use a font that does NOT support the characters shown below.",
+      "comment3": "The FAIL occurs because the text shaper will render any unsupported characters",
+      "comment4": "as a '.notdef' glyph — which the configuration specifies as being forbidden)",
+      "input": "世界"
     }
   ]
 }
