@@ -2,6 +2,7 @@ import os
 from collections import defaultdict
 
 from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
+from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
 from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
@@ -26,7 +27,7 @@ from fontbakery.constants import (
 from fontbakery.utils import exit_with_install_instructions
 
 profile_imports = (
-    (".", ("googlefonts_conditions", "universal", "outline", "ufo_sources")),
+    (".", ("googlefonts_conditions", "universal", "outline", "shaping", "ufo_sources")),
 )
 profile = profile_factory(default_section=Section("Google Fonts"))
 
@@ -113,8 +114,8 @@ DESCRIPTION_CHECKS = [
 ]
 
 FAMILY_CHECKS = [
-    #   'com.google.fonts/check/family/equal_numbers_of_glyphs',
-    #   'com.google.fonts/check/family/equal_glyph_names',
+    # "com.google.fonts/check/family/equal_numbers_of_glyphs",
+    # "com.google.fonts/check/family/equal_glyph_names",
     "com.google.fonts/check/family/has_license",
     "com.google.fonts/check/family/control_chars",
     "com.google.fonts/check/family/tnum_horizontal_metrics",
@@ -217,6 +218,7 @@ FONT_FILE_CHECKS = [
 GOOGLEFONTS_PROFILE_CHECKS = (
     UNIVERSAL_PROFILE_CHECKS
     + OUTLINE_PROFILE_CHECKS
+    + SHAPING_PROFILE_CHECKS
     + UFO_PROFILE_CHECKS
     + METADATA_CHECKS
     + DESCRIPTION_CHECKS
