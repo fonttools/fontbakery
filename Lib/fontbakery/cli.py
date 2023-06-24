@@ -18,6 +18,7 @@ CLI_PROFILES = [
     "iso15008",
     "notofonts",
     "opentype",
+    "shaping",
     "ufo_sources",
     "universal",
     "proposals",
