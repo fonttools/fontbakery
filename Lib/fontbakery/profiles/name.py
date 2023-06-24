@@ -606,6 +606,7 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
         'The Font Family name [...] should be shared among at most four fonts that
         differ only in weight or style [...]'
     """,
+    proposal="https://github.com/googlefonts/fontbakery/pull/2372",
 )
 def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
     """Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts."""
@@ -663,6 +664,7 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
         Inconsistent font/typographic family names across fonts in a family
         can result in unexpected behaviors, such as broken style linking.
     """,
+    proposal="https://github.com/googlefonts/fontbakery/issues/4112",
 )
 def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
     """
