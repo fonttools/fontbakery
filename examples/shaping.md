@@ -1,28 +1,35 @@
-Examples for the shaping check
-==============================
+# (Text) Shaping checks
 
-As well as finding structural issues with a font, fontbakery contains a
-check profile (`fontbakery.profiles.shaping`) which ensures that the
-font's OpenType layout rules behave as designed. To run this check, the
-designer must supply one or more test suites, which are represented as
-JSON files.
+In addition to helping you find structural issues in a font, FontBakery contains
+a Shaping profile that can be used for validating that a font's OpenType layout
+features work as expected. To run the Shaping profile checks you need to provide
+one or more test suite files. These files are written in JSON format and include
+the parameters and values required by the checks.
 
-The `shaping/` directory contains a number of JSON files which
-illustrate the expected format and syntax of these test suites. They are also documented with comments to explain the intent of tests and how they can be customised. Copying and modifying these files can form a basis for your own shaping test suite.
+The [**shaping**](./shaping/) directory includes a few examples of such test suite
+files to illustrate the expected format and syntax the JSON files must follow.
+They are also annotated with comments that explain the intent of tests and how
+they can be customized. Copying and modifying these files can form the basis for
+your own text shaping test suite.
 
-To run the shaping check, you need to tell fontbakery where to find your test suite. This can be done by creating a fontbakery configuration file in YAML format and specifying the directory where the JSON files can be found:
+To run the Shaping checks, you first need to instruct `fontbakery` where your test
+suite files are located. This can be done by creating a configuration file in YAML
+format. Its contents will specify the directory where the JSON files can be found:
 
 ```
 com.google.fonts/check/shaping:
     test_directory: examples/shaping
 ```
 
-If this file is saved as (e.g.) `fontbakery.yml`, then the shaping check can be run with the following command:
+After saving this file — as `shaping.yml`, for example — you can then run
+the Shaping profile checks using the following command:
 
-```
-fontbakery check-profile --config fontbakery.yml fontbakery.profiles.shaping Font.ttf
-```
+    fontbakery shaping --config shaping.yml Font.ttf
 
-For best results, generate a HTML report using the `--html report.html` flag to fontbakery, as this will contain SVG illustrations for failing tests.
+For best results, generate an HTML report using the `--html` option.
 
-For more information on the shaping check, see https://simoncozens.github.io/tdd-for-otl/
+    fontbakery shaping --config shaping.yml --html shaping.html Font.ttf
+
+The report will include SVG illustrations for any failing tests.
+
+For more information on the Shaping checks, see https://simoncozens.github.io/tdd-for-otl/

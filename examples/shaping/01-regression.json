@@ -1,33 +1,56 @@
 {
+  "configuration": {
+    "comment": "This is a basic configuration file for using with the Shaping profile.",
+    "comment2": "It contains examples of text shaping tests that can be used for validating",
+    "comment3": "that a font's OpenType layout features work as expected. A configuration",
+    "comment4": "file of this kind can also be assembled to represent a snapshot of a font's",
+    "comment5": "OpenType layout functionality, and be used to test if any changes occur",
+    "comment6": "whenever a new version of the font is produced.",
+    "comment7": "At a minimum, this file must contain a key named 'tests' whose value",
+    "comment8": "is an array of test blocks. Each of these blocks must include at least",
+    "comment9": "two keys named 'input' and 'expectation'.",
+    "comment10": "These comments as well as the whole 'configuration' block are not required",
+    "comment11": "for running the text shaping tests and can be removed."
+  },
   "tests": [
     {
+      "comment": "A simple test using only glyph names (without positions)",
       "input": "fi",
-      "expectation": "f_i",
-      "comment": "A simple test with only glyph names, not positions"
+      "expectation": "f_i"
     },
     {
+      "comment": "Expected positions may be specified using Harfbuzz's hb-shape syntax",
+      "comment2": "(see https://harfbuzz.github.io/utilities.html#utilities-command-line-hbshape)",
+      "input": "AVḲ",
+      "expectation": "A=0+679|V=1+676|K=2+707|dotbelowcomb.case=2@-250,0+0"
+    },
+    {
+      "comment": "Depending on your platform, the subshapers supported by",
+      "comment2": "'uharfbuzz' may be invoked using the 'shaper' key.",
+      "comment3": "'directwrite' and 'uniscribe' are available on Windows,",
+      "comment4": "and 'coretext' is available on macOS",
+      "input": "AVḲ",
+      "shaper": "coretext",
+      "expectation": "A=0+679|V=1+676|K=2+707|dotbelowcomb.case=2@-250,0+0"
+    },
+    {
+      "comment": "Features may be specified using the 'features' key",
+      "comment2": "(see https://learn.microsoft.com/typography/opentype/spec/featurelist)",
       "input": "pi",
       "features": { "smcp": true },
-      "expectation": "p.sc|i.sc",
-      "comment": "Features may be specified using the features key"
+      "expectation": "p.sc|i.sc"
     },
     {
+      "comment": "Languages may be specified using the 'language' key",
+      "comment2": "(see https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)",
+      "comment3": "It's also possible to specify the 'script'",
+      "comment4": "(see https://learn.microsoft.com/typography/opentype/spec/scripttags)",
+      "comment5": "and the 'direction'; supported values are 'LTR' (left-to-right),",
+      "comment6": "'RTL' (right-to-left), 'TTB' (top-to-bottom), and 'BTT'.",
       "input": "pi",
       "features": { "smcp": true },
       "language": "tr",
-      "expectation": "p.sc|i.sc.loclTRK",
-      "comment": "Languages may be specified using the language key"
-    },
-    {
-      "input": "AVḲ",
-      "expectation": "A=0+679|V=1+676|K=2+707|dotbelowcomb.case=2@-250,0+0",
-      "comment": "Expected positions may be specified using Harfbuzz hb-shape syntax"
-    },
-    {
-      "input": "AVḲ",
-      "expectation": "A=0+679|V=1+676|K=2+707|dotbelowcomb.case=2@-250,0+0",
-      "shaper": "coretext",
-      "comment": "If your uharfbuzz is compiled with other subshapers, these can be accessed through the shaper key."
+      "expectation": "p.sc|i.sc.loclTRK"
     }
   ]
 }
