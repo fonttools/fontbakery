@@ -1,6 +1,7 @@
 import json
 import os
 import tempfile
+from unittest.mock import patch
 
 from fontTools.ttLib import TTFont
 
@@ -24,6 +25,17 @@ def wrap_args(config, font):
         "ttFont": ttFont,
         "ttFonts": [ttFont],
     }
+
+
+@patch("vharfbuzz.Vharfbuzz", side_effect=ImportError)
+def test_extra_needed_exit(mock_import_error):
+    font = TEST_FILE("nunito/Nunito-Regular.ttf")
+    with patch("sys.exit") as mock_exit:
+        check = CheckTester(
+            shaping_profile, "com.google.fonts/check/shaping/regression"
+        )
+        check(font)
+        mock_exit.assert_called()
 
 
 def test_check_shaping_regression():
