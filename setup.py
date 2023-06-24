@@ -24,8 +24,17 @@ except IOError:
 
 FONTTOOLS_VERSION = ">=4.39.0"  # Python 3.8+ required
 UFO2FT_VERSION = ">=2.25.2"  # 2.25.2 updated the script lists for Unicode 14.0
+VHARFBUZZ_VERSION = ">=0.2.0"  # 0.2.0 had an API update
 
 # Profile-specific dependencies:
+shaping_extras = [
+    "collidoscope>=0.5.2",  # 0.5.2 added Python 3.11 wheels
+    # (see https://github.com/googlefonts/fontbakery/issues/3970)
+    "stringbrewer",
+    f"ufo2ft{UFO2FT_VERSION}",
+    f"vharfbuzz{VHARFBUZZ_VERSION}",
+]
+
 ufo_sources_extras = [
     "defcon",
     f"fontTools[ufo]{FONTTOOLS_VERSION}",
@@ -33,19 +42,24 @@ ufo_sources_extras = [
     "ufolint",
 ]
 
-googlefonts_extras = [
-    "axisregistry>=0.3.0",
-    "beautifulsoup4",  # For parsing registered vendor IDs from Microsoft's webpage
-    "dehinter>=3.1.0",  # 3.1.0 added dehinter.font.hint function
-    "font-v",
-    f"fontTools[lxml,unicode]{FONTTOOLS_VERSION}",
-    "gflanguages>=0.3.0",  # 0.3.0 had an api simplification/update
-    # (see https://github.com/googlefonts/gflanguages/pull/7)
-    "glyphsets>=0.5.0",
-    "protobuf>=3.7.0, <4",  # 3.7.0 fixed a bug on parsing some METADATA.pb files.
-    # We cannot use v4 because our protobuf files have been compiled with v3.
-    # (see https://github.com/googlefonts/fontbakery/issues/2200)
-] + ufo_sources_extras
+googlefonts_extras = (
+    [
+        "axisregistry>=0.3.0",
+        "beautifulsoup4",  # For parsing registered vendor IDs from Microsoft's webpage
+        "dehinter>=3.1.0",  # 3.1.0 added dehinter.font.hint function
+        "font-v",
+        f"fontTools[lxml,unicode]{FONTTOOLS_VERSION}",
+        "gflanguages>=0.3.0",  # 0.3.0 had an api simplification/update
+        # (see https://github.com/googlefonts/gflanguages/pull/7)
+        "glyphsets>=0.5.0",
+        "protobuf>=3.7.0, <4",  # 3.7.0 fixed a bug on parsing some METADATA.pb files.
+        # We cannot use v4 because our protobuf files have been compiled with v3.
+        # (see https://github.com/googlefonts/fontbakery/issues/2200)
+        f"vharfbuzz{VHARFBUZZ_VERSION}",
+    ]
+    + shaping_extras
+    + ufo_sources_extras
+)
 
 iso15008_extras = [
     "uharfbuzz",
@@ -66,6 +80,7 @@ all_extras = set(
     + fontval_extras
     + googlefonts_extras
     + iso15008_extras
+    + shaping_extras
     + ufo_sources_extras
 )
 
@@ -145,15 +160,7 @@ setup(
         # used by 'italic_angle' check in OpenType profile ('post' table);
         # also used by ISO 15008 profile
         "beziers>=0.5.0",  # 0.5.0 uses new fontTools glyph outline access
-        #
-        # TODO: Try to split the packages below into feature-specific extras.
-        "collidoscope>=0.5.2",  # Shaping (& Universal) profiles
-        # 0.5.1 did not yet support python 3.11
-        # (see https://github.com/googlefonts/fontbakery/issues/3970)
-        "stringbrewer",  # Shaping (& Universal) profiles
-        f"ufo2ft{UFO2FT_VERSION}",  # Shaping
-        "vharfbuzz>=0.2.0",  # Googlefonts, Shaping (& Universal) profiles
-        # v0.2.0 had an API update
+        # ---
     ],
     extras_require={
         "all": all_extras,
@@ -161,6 +168,7 @@ setup(
         "fontval": fontval_extras,
         "googlefonts": googlefonts_extras,
         "iso15008": iso15008_extras,
+        "shaping": shaping_extras,
         "ufo-sources": ufo_sources_extras,
     },
     entry_points={
