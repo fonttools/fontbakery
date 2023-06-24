@@ -39,6 +39,7 @@ jobs:
 
     - name: Install FontBakery (no extras)
       run: |
+        python -m pip install --upgrade pip
         python -m pip install .
         fontbakery -h
         fontbakery --version
@@ -81,6 +82,14 @@ jobs:
         fontbakery check-ufo-sources --verbose data/test/test.ufo;
         fontbakery check-ufo-sources -x designspace_has_consistent
         "data/test/stupidfont/Stupid Font.designspace"
+
+    - name: Install `shaping` extra
+      run: |
+        python -m pip install '.[shaping]'
+
+    - name: Run Shaping checks
+      run: >-
+        fontbakery check-shaping data/test/mada/Mada-Regular.ttf
 
     - name: Install `googlefonts` extra
       run: |
