@@ -3,12 +3,23 @@ import re
 
 from packaging.version import VERSION_PATTERN
 
-from fontbakery.status import PASS, FAIL, WARN, INFO, SKIP
-from fontbakery.section import Section
 from fontbakery.callable import check
-from fontbakery.message import Message
+from fontbakery.constants import PlatformID, WindowsEncodingID
 from fontbakery.fonts_profile import profile_factory
+from fontbakery.glyphdata import desired_glyph_data
+from fontbakery.message import Message
+from fontbakery.profiles.layout import feature_tags
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
+from fontbakery.section import Section
+from fontbakery.status import PASS, FAIL, WARN, INFO, SKIP
+from fontbakery.utils import (
+    bullet_list,
+    get_font_glyph_data,
+    get_glyph_name,
+    glyph_has_ink,
+    iterate_lookup_list_with_extensions,
+    pretty_print_list,
+)
 
 re_version = re.compile(r"^\s*" + VERSION_PATTERN + r"\s*$", re.VERBOSE | re.IGNORECASE)
 
@@ -400,8 +411,6 @@ def com_google_fonts_check_fontbakery_version(font, config):
 )
 def com_google_fonts_check_mandatory_glyphs(ttFont):
     """Font contains '.notdef' as its first glyph?"""
-    from fontbakery.utils import glyph_has_ink
-
     passed = True
     if ttFont.getGlyphOrder()[0] != ".notdef":
         passed = False
@@ -453,8 +462,6 @@ def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
 )
 def com_google_fonts_check_whitespace_glyphnames(ttFont):
     """Font has **proper** whitespace glyph names?"""
-    from fontbakery.utils import get_glyph_name
-
     # AGL recommended names, according to Adobe Glyph List for new fonts:
     AGL_RECOMMENDED_0020 = {"space"}
     AGL_RECOMMENDED_00A0 = {"uni00A0", "space"}
@@ -523,8 +530,6 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
 @check(id="com.google.fonts/check/whitespace_ink", proposal="legacy:check/049")
 def com_google_fonts_check_whitespace_ink(ttFont):
     """Whitespace glyphs have ink?"""
-    from fontbakery.utils import get_glyph_name, glyph_has_ink
-
     # This checks that certain glyphs are empty.
     # Some, but not all, are Unicode whitespace.
 
@@ -617,8 +622,6 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 )
 def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
     """Font contains all required tables?"""
-    from fontbakery.utils import bullet_list
-
     REQUIRED_TABLES = ["cmap", "head", "hhea", "hmtx", "maxp", "name", "OS/2", "post"]
 
     OPTIONAL_TABLES = [
@@ -811,8 +814,6 @@ def com_google_fonts_check_STAT_strings(ttFont):
 )
 def com_google_fonts_check_valid_glyphnames(ttFont, config):
     """Glyph names are all valid?"""
-    from fontbakery.utils import pretty_print_list
-
     if (
         ttFont.sfntVersion == b"\x00\x01\x00\x00"
         and ttFont.get("post")
@@ -1272,8 +1273,6 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
                 all_glyphs -= set(base_glyph.getComponentNames(ttFont["glyf"]))
 
     if all_glyphs:
-        from fontbakery.utils import bullet_list
-
         yield WARN, Message(
             "unreachable-glyphs",
             "The following glyphs could not be reached"
@@ -1315,9 +1314,6 @@ def com_google_fonts_check_contour_count(ttFont, config):
     In the future, additional glyph data can be included. A good addition would
     be the 'recommended' anchor counts for each glyph.
     """
-    from fontbakery.glyphdata import desired_glyph_data as glyph_data
-    from fontbakery.constants import PlatformID, WindowsEncodingID
-    from fontbakery.utils import bullet_list, get_font_glyph_data, pretty_print_list
 
     def in_PUA_range(codepoint):
         """
@@ -1337,7 +1333,7 @@ def com_google_fonts_check_contour_count(ttFont, config):
     # rearrange data structure:
     desired_glyph_data_by_codepoint = {}
     desired_glyph_data_by_glyphname = {}
-    for glyph in glyph_data:
+    for glyph in desired_glyph_data:
         desired_glyph_data_by_glyphname[glyph["name"]] = glyph
         # since the glyph in PUA ranges have unspecified meaning,
         # it doesnt make sense for us to have an expected contour cont for them
@@ -1483,8 +1479,6 @@ def com_google_fonts_check_soft_hyphen(ttFont):
 )
 def com_google_fonts_check_cjk_chws_feature(ttFont):
     """Does the font contain chws and vchw features?"""
-    from fontbakery.profiles.layout import feature_tags
-
     passed = True
     tags = feature_tags(ttFont)
     FEATURE_NOT_FOUND = (
@@ -1581,8 +1575,6 @@ def com_google_fonts_check_transformed_components(ttFont, is_hinted):
 )
 def com_google_fonts_check_gpos7(ttFont):
     """Ensure no GPOS7 lookups are present."""
-    from fontbakery.utils import iterate_lookup_list_with_extensions
-
     has_gpos7 = False
 
     def find_gpos7(lookup):
@@ -1686,8 +1678,6 @@ def com_adobe_fonts_check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
 )
 def com_google_fonts_check_whitespace_widths(ttFont):
     """Space and non-breaking space have the same width?"""
-    from fontbakery.utils import get_glyph_name
-
     space_name = get_glyph_name(ttFont, 0x0020)
     nbsp_name = get_glyph_name(ttFont, 0x00A0)
 
@@ -1726,7 +1716,6 @@ def com_google_fonts_check_whitespace_widths(ttFont):
 def com_google_fonts_check_iterpolation_issues(ttFont, config):
     """Detect any interpolation issues in the font."""
     from fontTools.varLib.interpolatable import test as interpolation_test
-    from fontbakery.utils import bullet_list
 
     gvar = ttFont["gvar"]
     # This code copied from fontTools.varLib.interpolatable
@@ -1794,8 +1783,6 @@ def com_google_fonts_check_iterpolation_issues(ttFont, config):
 )
 def com_google_fonts_check_math_signs_width(ttFont):
     """Check math signs have the same width."""
-    from fontbakery.utils import get_glyph_name
-
     # Ironically, the block of text below may not have
     # uniform widths for these glyphs depending on
     # which font your text editor is using while you
