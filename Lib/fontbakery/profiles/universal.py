@@ -5,7 +5,7 @@ from packaging.version import VERSION_PATTERN
 
 from fontbakery.status import PASS, FAIL, WARN, INFO, SKIP
 from fontbakery.section import Section
-from fontbakery.callable import check, disable
+from fontbakery.callable import check
 from fontbakery.message import Message
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
@@ -39,7 +39,6 @@ UNIVERSAL_PROFILE_CHECKS = (
         "com.google.fonts/check/unwanted_tables",
         "com.google.fonts/check/valid_glyphnames",
         "com.google.fonts/check/unique_glyphnames",
-        # "com.google.fonts/check/glyphnames_max_length",
         "com.google.fonts/check/family/vertical_metrics",
         "com.google.fonts/check/STAT_strings",
         "com.google.fonts/check/rupee",
@@ -896,33 +895,6 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
                 "duplicated-glyph-names",
                 f"The following glyph names occur twice: {duplicated_glyphIDs}",
             )
-
-
-@disable  # until we know the rationale.
-@check(
-    id="com.google.fonts/check/glyphnames_max_length",
-    proposal="https://github.com/googlefonts/fontbakery/issues/735",
-)
-def com_google_fonts_check_glyphnames_max_length(ttFont):
-    """Check that glyph names do not exceed max length."""
-    if (
-        ttFont.sfntVersion == b"\x00\x01\x00\x00"
-        and ttFont.get("post")
-        and ttFont["post"].formatType == 3.0
-    ):
-        yield PASS, (
-            "TrueType fonts with a format 3.0 post table contain no glyph names."
-        )
-    else:
-        failed = False
-        for name in ttFont.getGlyphOrder():
-            if len(name) > 109:
-                failed = True
-                yield FAIL, Message(
-                    "glyphname-too-long", f"Glyph name is too long: '{name}'"
-                )
-        if not failed:
-            yield PASS, "No glyph names exceed max allowed length."
 
 
 @check(

@@ -199,57 +199,6 @@ def test_check_unique_glyphnames():
     assert_SKIP(check(ttFont))
 
 
-def DISABLED_test_check_glyphnames_max_length():
-    """Check that glyph names do not exceed max length."""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/glyphnames_max_length"
-    )
-    import defcon
-    import ufo2ft
-
-    # TTF
-    test_font = defcon.Font(TEST_FILE("test.ufo"))
-    ttFont = ufo2ft.compileTTF(test_font)
-    assert_PASS(check(ttFont))
-
-    test_glyph = defcon.Glyph()
-    test_glyph.unicode = 0x1234
-    test_glyph.name = (
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    )
-    test_font.insertGlyph(test_glyph)
-    ttFont = ufo2ft.compileTTF(test_font, useProductionNames=False)
-    assert_results_contain(check(ttFont), FAIL, "glyphname-too-long")
-
-    ttFont = ufo2ft.compileTTF(test_font, useProductionNames=True)
-    assert_PASS(check(ttFont))
-
-    # Upgrade to post format 3.0 and roundtrip data to update TTF object.
-    ttFont["post"].formatType = 3.0
-    _file = io.BytesIO()
-    _file.name = ttFont.reader.file.name
-    ttFont.save(_file)
-    ttFont = TTFont(_file)
-    message = assert_PASS(check(ttFont))
-    assert "format 3.0" in message
-
-    del test_font, ttFont, _file  # Prevent copypasta errors.
-
-    # CFF
-    test_font = defcon.Font(TEST_FILE("test.ufo"))
-    ttFont = ufo2ft.compileOTF(test_font)
-    assert_PASS(check(ttFont))
-
-    test_font.insertGlyph(test_glyph)
-    ttFont = ufo2ft.compileOTF(test_font, useProductionNames=False)
-    assert_results_contain(check(ttFont), FAIL, "glyphname-too-long")
-
-    ttFont = ufo2ft.compileOTF(test_font, useProductionNames=True)
-    assert_PASS(check(ttFont))
-
-
 def test_check_ttx_roundtrip():
     """Checking with fontTools.ttx"""
     check = CheckTester(universal_profile, "com.google.fonts/check/ttx_roundtrip")
