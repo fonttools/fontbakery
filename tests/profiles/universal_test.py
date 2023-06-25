@@ -116,15 +116,18 @@ def test_style_condition():
 def test_check_valid_glyphnames():
     """Glyph names are all valid?"""
     check = CheckTester(universal_profile, "com.google.fonts/check/valid_glyphnames")
+    pass_msg = "Glyph names are all valid."
 
     # We start with a good font file:
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert_PASS(check(ttFont))
+    message = assert_PASS(check(ttFont))
+    assert message == pass_msg
 
     # There used to be a 31 char max-length limit.
     # This was considered good:
     ttFont.glyphOrder[2] = "a" * 31
-    assert_PASS(check(ttFont))
+    message = assert_PASS(check(ttFont))
+    assert message == pass_msg
 
     # And this was considered bad:
     legacy_too_long = "a" * 32
@@ -156,13 +159,26 @@ def test_check_valid_glyphnames():
     # no glyph names, so the check must be SKIP'd in that case.
     #
     # Upgrade to post format 3.0 and roundtrip data to update TTF object.
+    ttf_skip_msg = "TrueType fonts with a format 3 post table"
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     ttFont["post"].formatType = 3.0
     _file = io.BytesIO()
     _file.name = ttFont.reader.file.name
     ttFont.save(_file)
     ttFont = TTFont(_file)
-    assert_SKIP(check(ttFont))
+    message = assert_SKIP(check(ttFont))
+    assert ttf_skip_msg in message
+
+    # Also test with CFF...
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
+    message = assert_PASS(check(ttFont))
+    assert message == pass_msg
+
+    # ... and CFF2 fonts
+    cff2_skip_msg = "OpenType-CFF2 fonts with a format 3 post table"
+    ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf"))
+    message = assert_SKIP(check(ttFont))
+    assert cff2_skip_msg in message
 
 
 def test_check_unique_glyphnames():
