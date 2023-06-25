@@ -67,6 +67,21 @@ jobs:
         --verbose
         -c required_tables
 
+    - name: Run Font Bureau checks
+      run: >-
+        fontbakery check-fontbureau
+        -c ots
+        -c ytlc_sanity
+        data/test/fontbureau/ytlcSample.ttf
+
+    - name: Run Adobe Fonts checks
+      run: >-
+        fontbakery check-adobefonts
+        data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf
+        data/test/source-sans-pro/OTF/SourceSansPro-Italic.otf;
+        fontbakery check-adobefonts
+        data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
+
     - name: Try running UFO Sources checks
       run: >-
         fontbakery check-ufo-sources --verbose data/test/test.ufo
@@ -107,6 +122,37 @@ jobs:
         -c contour_count
         -c outline_colinear_vectors
         data/test/cabin/Cabin-*.ttf
+
+    - name: Install `fontwerk` extra
+      run: |
+        python -m pip install '.[fontwerk]'
+
+    - name: Run Fontwerk checks
+      run: >-
+        fontbakery check-fontwerk
+        -c weight_class_fvar
+        -c inconsistencies_between_fvar_stat
+        -c style_linking
+        -c consistent_axes
+        -c metadata/parses
+        -c usweightclass
+        data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
+
+    - name: Install `notofonts` extra
+      run: |
+        python -m pip install '.[notofonts]'
+
+    - name: Run Noto Fonts checks
+      run: >-
+        fontbakery check-notofonts
+        -c unicode_range_bits
+        -c noto_trademark
+        -c noto_vendor
+        -c alien_codepoints
+        -c tnum_horizontal_metrics
+        -c control_chars
+        -c canonical_filename
+        data/test/notosanskhudawadi/NotoSansKhudawadi-Regular.ttf
 
     - name: Uninstall FontBakery
       run: |
