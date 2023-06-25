@@ -155,13 +155,13 @@ def test_check_valid_glyphnames():
     assert bad_name2 in message
     assert bad_name3 in message
 
-    # TrueType fonts with a format 3.0 post table contain
+    # TrueType fonts with a format 3 post table contain
     # no glyph names, so the check must be SKIP'd in that case.
     #
-    # Upgrade to post format 3.0 and roundtrip data to update TTF object.
+    # Upgrade to post format 3 and roundtrip data to update TTF object.
     ttf_skip_msg = "TrueType fonts with a format 3 post table"
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    ttFont["post"].formatType = 3.0
+    ttFont["post"].formatType = 3
     _file = io.BytesIO()
     _file.name = ttFont.reader.file.name
     ttFont.save(_file)
@@ -184,12 +184,14 @@ def test_check_valid_glyphnames():
 def test_check_unique_glyphnames():
     """Font contains unique glyph names?"""
     check = CheckTester(universal_profile, "com.google.fonts/check/unique_glyphnames")
+    pass_msg = "Glyph names are all unique."
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert_PASS(check(ttFont))
+    message = assert_PASS(check(ttFont))
+    assert message == pass_msg
 
     # Fonttools renames duplicate glyphs with #1, #2, ... on load.
-    # Code snippet from https://github.com/fonttools/fonttools/issues/149.
+    # Code snippet from https://github.com/fonttools/fonttools/issues/149
     glyph_names = ttFont.getGlyphOrder()
     glyph_names[2] = glyph_names[3]
 
@@ -204,15 +206,28 @@ def test_check_unique_glyphnames():
     message = assert_results_contain(check(ttFont), FAIL, "duplicated-glyph-names")
     assert "space" in message
 
-    # Upgrade to post format 3.0 and roundtrip data to update TTF object.
+    # Upgrade to post format 3 and roundtrip data to update TTF object.
+    ttf_skip_msg = "TrueType fonts with a format 3 post table"
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     ttFont.setGlyphOrder(glyph_names)
-    ttFont["post"].formatType = 3.0
+    ttFont["post"].formatType = 3
     _file = io.BytesIO()
     _file.name = ttFont.reader.file.name
     ttFont.save(_file)
     ttFont = TTFont(_file)
-    assert_SKIP(check(ttFont))
+    message = assert_SKIP(check(ttFont))
+    assert ttf_skip_msg in message
+
+    # Also test with CFF...
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
+    message = assert_PASS(check(ttFont))
+    assert message == pass_msg
+
+    # ... and CFF2 fonts
+    cff2_skip_msg = "OpenType-CFF2 fonts with a format 3 post table"
+    ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf"))
+    message = assert_SKIP(check(ttFont))
+    assert cff2_skip_msg in message
 
 
 def test_check_ttx_roundtrip():

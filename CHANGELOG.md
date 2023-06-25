@@ -16,6 +16,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/freetype_rasterizer]:** Added test-code that segfaults with freetype-py version 2.4.0, so that we make sure the problem won't go unnoticed, and will enable us to know when it gets fixed (issue #4143)
   - **[com.google.fonts/check/interpolation_issues]:** The check ERRORed when ran on CFF2 variable fonts. The check is now SKIPped for such fonts because it depends on the presence of the `gvar` table, which only apply to TrueType variable fonts (https://github.com/miguelsousa/openbakery/issues/28).
   - **[com.google.fonts/check/valid_glyphnames]:** The check now takes into account that OpenType-CFF2 fonts with `post` table format 3 contain no glyph names, and will yield SKIP.
+  - **[com.google.fonts/check/unique_glyphnames]:** The check now takes into account that OpenType-CFF2 fonts with `post` table format 3 contain no glyph names, and will yield SKIP.
 
 #### On the OpenType profile
   - **[com.google.fonts/check/italic_angle]**: Fix an ERROR: If any of the glyphs checked (bar, vertical line, left square bracket, etc.) have no outlines, the check will now emit a WARN, because that's useful information. (PR #4187)
