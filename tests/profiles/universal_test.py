@@ -1,3 +1,4 @@
+import os
 import io
 from unittest.mock import patch, MagicMock
 
@@ -967,7 +968,7 @@ def test_check_superfamily_list():
     msg = assert_results_contain(
         check([], {"superfamily": [cabin_fonts]}), INFO, "family-path"
     )
-    assert msg == "data/test/cabin"
+    assert msg == os.path.normpath("data/test/cabin")
 
 
 def test_check_superfamily_vertical_metrics(
