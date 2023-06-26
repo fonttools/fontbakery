@@ -1,5 +1,5 @@
 # Workflow for testing installing, running, and uninstalling FontBakery
-name: Install & Run
+name: ⚙️ Install & Run
 
 on:
   push:

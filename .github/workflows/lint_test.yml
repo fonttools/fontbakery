@@ -1,4 +1,4 @@
-name: Lint & Test
+name: 🧑‍🔬 Lint & Test
 
 on:
   push:
