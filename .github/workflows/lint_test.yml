@@ -7,6 +7,8 @@ on:
       - '**.md'
       - '**.txt'
       - '!requirements*.txt'
+    tags-ignore:
+      - '**'
 
   pull_request:
     paths-ignore:
