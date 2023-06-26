@@ -14,7 +14,7 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.profiles import universal as universal_profile
-from fontbakery.profiles.shared_conditions import style, is_indic_font
+from fontbakery.profiles.shared_conditions import style
 from fontbakery.profiles.universal import is_up_to_date
 from fontbakery.utils import glyph_has_ink
 
@@ -1007,35 +1007,22 @@ def test_check_rupee():
     """Ensure indic fonts have the Indian Rupee Sign glyph."""
     check = CheckTester(universal_profile, "com.google.fonts/check/rupee")
 
-    # FIXME: This should be possible:
-    #          The `assert_SKIP` helper should be able to detect when a
-    #          check skips due to unmet @conditions.
-    #          For now it only detects explicit SKIP messages instead.
-    #
-    # non_indic = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    # assert_SKIP(check(non_indic),
-    #             "with a non-indic font.")
-    #
-    #        But for now we have to do this:
-    #
-
-    print("Ensure the check will SKIP when dealing with a non-indic font...")
-    non_indic = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    assert is_indic_font(non_indic) is False
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_indic_font"
 
     # This one is good:
     ttFont = TTFont(
         TEST_FILE("indic-font-with-rupee-sign/NotoSerifDevanagari-Regular.ttf")
     )
-    assert_PASS(check(ttFont), "with a sample font that has the Indian Rupee Sign.")
+    assert assert_PASS(check(ttFont)) == "Looks good!"
 
     # But this one lacks the glyph:
     ttFont = TTFont(
         TEST_FILE("indic-font-without-rupee-sign/NotoSansOlChiki-Regular.ttf")
     )
-    assert_results_contain(
-        check(ttFont), FAIL, "missing-rupee", "with a sample font missing it."
-    )
+    msg = assert_results_contain(check(ttFont), FAIL, "missing-rupee")
+    assert msg == "Please add a glyph for Indian Rupee Sign (₹) at codepoint U+20B9."
 
 
 def test_check_unreachable_glyphs():
