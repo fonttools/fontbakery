@@ -905,6 +905,11 @@ def test_check_os2_metrics_match_hhea():
         check(ttFont), FAIL, "descender", "with a bad OS/2.sTypoDescender font..."
     )
 
+    # Delete OS/2 table
+    del ttFont["OS/2"]
+    message = assert_results_contain(check(ttFont), FAIL, "lacks-OS/2")
+    assert message == "Mada-Black.ttf lacks a 'OS/2' table."
+
 
 def test_check_family_vertical_metrics(montserrat_ttFonts):
     check = CheckTester(
