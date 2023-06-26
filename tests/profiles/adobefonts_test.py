@@ -266,7 +266,7 @@ def test_check_override_family_win_ascent_and_descent():
     msg = assert_results_contain(check(ttFont), WARN, "descent")
     assert msg == (
         "OS/2.usWinDescent value should be equal or greater than 292,"
-        " but got 282 instead."
+        " but got 282 instead"
     )
 
     # Now change 'OS/2.usWinDescent' to be more than double 'head.yMin'.

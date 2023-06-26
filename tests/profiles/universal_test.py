@@ -14,7 +14,7 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.profiles import universal as universal_profile
-from fontbakery.profiles.shared_conditions import style, vmetrics, is_indic_font
+from fontbakery.profiles.shared_conditions import style, is_indic_font
 from fontbakery.profiles.universal import is_up_to_date
 from fontbakery.utils import glyph_has_ink
 
@@ -798,13 +798,14 @@ def test_glyph_has_ink():
 
 
 mada_fonts = [
+    # ⚠️ 'test_check_family_win_ascent_and_descent' expects the Regular font to be first
+    TEST_FILE("mada/Mada-Regular.ttf"),
     TEST_FILE("mada/Mada-Black.ttf"),
+    TEST_FILE("mada/Mada-Bold.ttf"),
     TEST_FILE("mada/Mada-ExtraLight.ttf"),
+    TEST_FILE("mada/Mada-Light.ttf"),
     TEST_FILE("mada/Mada-Medium.ttf"),
     TEST_FILE("mada/Mada-SemiBold.ttf"),
-    TEST_FILE("mada/Mada-Bold.ttf"),
-    TEST_FILE("mada/Mada-Light.ttf"),
-    TEST_FILE("mada/Mada-Regular.ttf"),
 ]
 
 
@@ -819,30 +820,52 @@ def test_check_family_win_ascent_and_descent(mada_ttFonts):
         universal_profile, "com.google.fonts/check/family/win_ascent_and_descent"
     )
 
-    # Our reference Mada Regular is know to be bad here.
-    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-
-    # But we fix it first to test the PASS code-path:
-    vm = vmetrics(mada_ttFonts)
-    ttFont["OS/2"].usWinAscent = vm["ymax"]
-    ttFont["OS/2"].usWinDescent = abs(vm["ymin"])
-    assert_PASS(check(ttFont), "with a good font...")
-
-    # Then we break it:
-    ttFont["OS/2"].usWinAscent = 0  # FIXME: this should be bad as well: vm['ymax'] - 1
-    ttFont["OS/2"].usWinDescent = abs(vm["ymin"])
-    assert_results_contain(
-        check(ttFont), FAIL, "ascent", "with a bad OS/2.usWinAscent..."
+    # Mada Regular is know to be bad
+    # single font input
+    ttFont = TTFont(mada_fonts[0])
+    message = assert_results_contain(check(ttFont), FAIL, "ascent")
+    assert message == (
+        "OS/2.usWinAscent value should be"
+        " equal or greater than 880, but got 776 instead"
+    )
+    # multi font input
+    check_results = check(mada_ttFonts)
+    message = assert_results_contain([check_results[0]], FAIL, "ascent")
+    assert message == (
+        "OS/2.usWinAscent value should be"
+        " equal or greater than 918, but got 776 instead"
+    )
+    message = assert_results_contain([check_results[1]], FAIL, "descent")
+    assert message == (
+        "OS/2.usWinDescent value should be"
+        " equal or greater than 406, but got 322 instead"
     )
 
-    # and also this other way of breaking it:
-    ttFont["OS/2"].usWinAscent = vm["ymax"]
-    ttFont[
-        "OS/2"
-    ].usWinDescent = 0  # FIXME: this should be bad as well: abs(vm['ymin']) - 1
-    assert_results_contain(
-        check(ttFont), FAIL, "descent", "with a bad OS/2.usWinDescent..."
+    # Fix usWinAscent
+    ttFont["OS/2"].usWinAscent = 880
+    message = assert_PASS(check(ttFont))
+    assert message == "OS/2 usWinAscent & usWinDescent values look good!"
+
+    # Make usWinAscent too large
+    ttFont["OS/2"].usWinAscent = 880 * 2 + 1
+    message = assert_results_contain(check(ttFont), FAIL, "ascent")
+    assert message == (
+        "OS/2.usWinAscent value 1761 is too large. "
+        "It should be less than double the yMax. Current yMax value is 880"
     )
+
+    # Make usWinDescent too large
+    ttFont["OS/2"].usWinDescent = 292 * 2 + 1
+    message = assert_results_contain(check(ttFont), FAIL, "descent")
+    assert message == (
+        "OS/2.usWinDescent value 585 is too large."
+        " It should be less than double the yMin. Current absolute yMin value is 292"
+    )
+
+    # Delete OS/2 table
+    del ttFont["OS/2"]
+    message = assert_results_contain(check(ttFont), FAIL, "lacks-OS/2")
+    assert message == "Font file lacks OS/2 table"
 
 
 def test_check_os2_metrics_match_hhea():
