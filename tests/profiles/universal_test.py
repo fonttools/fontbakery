@@ -424,26 +424,44 @@ def test_check_fontbakery_version_live_apis():
 
 def test_check_mandatory_glyphs():
     """Font contains the first few mandatory glyphs (.null or NULL, CR and space)?"""
+    from fontTools import subset
+
     check = CheckTester(universal_profile, "com.google.fonts/check/mandatory_glyphs")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert_PASS(check(ttFont))
+    assert assert_PASS(check(ttFont)) == "OK"
 
-    import fontTools.subset
-
-    subsetter = fontTools.subset.Subsetter()
-    subsetter.populate(glyphs="n")  # Arbitrarily remove everything except n.
+    options = subset.Options()
+    options.glyph_names = True  # Preserve glyph names
+    # By default, the subsetter keeps the '.notdef' glyph but removes its outlines
+    subsetter = subset.Subsetter(options)
+    subsetter.populate(text="mn")  # Arbitrarily remove everything except 'm' and 'n'
     subsetter.subset(ttFont)
-    # It seems that fontTools automatically adds '.notdef' as the 1st glyph
-    # but as an empty one, so the check should complain about it:
-    assert_results_contain(check(ttFont), WARN, "empty")
-    # FIXME: The assumption above should be double-checked!
+    message = assert_results_contain(check(ttFont), WARN, "notdef-is-blank")
+    assert message == "The '.notdef' glyph should contain a drawing, but it is blank."
 
-    # TODO: assert_results_contain(check(ttFont),
-    #                              WARN, 'codepoint')
+    options.notdef_glyph = False  # Drop '.notdef' glyph
+    subsetter = subset.Subsetter(options)
+    subsetter.populate(text="mn")
+    subsetter.subset(ttFont)
+    message = assert_results_contain(check(ttFont), WARN, "notdef-not-found")
+    assert message == "Font should contain the '.notdef' glyph."
 
-    # TODO: assert_results_contain(check(ttFont),
-    #                              WARN, 'first-glyph')
+    # Change the glyph name from 'n' to '.notdef'
+    ttFont.glyphOrder = ["m", ".notdef"]
+    for subtable in ttFont["cmap"].tables:
+        if subtable.isUnicode():
+            subtable.cmap[110] = ".notdef"
+
+    results = check(ttFont)
+    message = assert_results_contain([results[0]], WARN, "notdef-not-first")
+    assert message == "The '.notdef' should be the font's first glyph."
+
+    message = assert_results_contain([results[1]], WARN, "notdef-has-codepoint")
+    assert message == (
+        "The '.notdef' glyph should not have a Unicode codepoint value assigned,"
+        " but has 0x006E."
+    )
 
 
 def _remove_cmap_entry(font, cp):

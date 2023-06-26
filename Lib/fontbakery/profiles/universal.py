@@ -427,24 +427,37 @@ def com_google_fonts_check_fontbakery_version(font, config):
 def com_google_fonts_check_mandatory_glyphs(ttFont):
     """Font contains '.notdef' as its first glyph?"""
     passed = True
-    if ttFont.getGlyphOrder()[0] != ".notdef":
+    NOTDEF = ".notdef"
+    glyph_order = ttFont.getGlyphOrder()
+
+    if NOTDEF not in glyph_order or len(glyph_order) == 0:
+        yield WARN, Message(
+            "notdef-not-found", f"Font should contain the {NOTDEF!r} glyph."
+        )
+        # The font doesn't even have the notdef. There's no point in testing further.
+        return
+
+    if glyph_order[0] != NOTDEF:
         passed = False
         yield WARN, Message(
-            "first-glyph", "Font should contain the .notdef glyph as the first glyph."
+            "notdef-not-first", f"The {NOTDEF!r} should be the font's first glyph."
         )
 
-    if ".notdef" in ttFont.getBestCmap().values():
+    cmap = ttFont.getBestCmap()  # e.g. {65: 'A', 66: 'B', 67: 'C'} or None
+    if cmap and NOTDEF in cmap.values():
         passed = False
+        rev_cmap = {name: val for val, name in reversed(sorted(cmap.items()))}
         yield WARN, Message(
-            "codepoint",
-            "Glyph '.notdef' should not have a Unicode codepoint value assigned,"
-            f" but got 0x{ttFont.getBestCmap().values()['.notdef']:04X}.",
+            "notdef-has-codepoint",
+            f"The {NOTDEF!r} glyph should not have a Unicode codepoint value assigned,"
+            f" but has 0x{rev_cmap[NOTDEF]:04X}.",
         )
 
-    if not glyph_has_ink(ttFont, ".notdef"):
+    if not glyph_has_ink(ttFont, NOTDEF):
         passed = False
         yield WARN, Message(
-            "empty", "Glyph '.notdef' should contain a drawing, but it is empty."
+            "notdef-is-blank",
+            f"The {NOTDEF!r} glyph should contain a drawing, but it is blank.",
         )
 
     if passed:
