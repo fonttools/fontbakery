@@ -297,12 +297,19 @@ def test_check_ots():
     """Checking with ots-sanitize."""
     check = CheckTester(universal_profile, "com.google.fonts/check/ots")
 
-    sanitary_font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    assert_PASS(check(sanitary_font))
+    fine_font = TEST_FILE("cabin/Cabin-Regular.ttf")
+    assert_PASS(check(fine_font))
 
-    bogus_font = TEST_FILE("cabin/OFL.txt")
-    message = assert_results_contain(check(bogus_font), FAIL, "ots-sanitize-error")
-    assert "invalid sfntVersion" in message
+    warn_font = TEST_FILE("bad_fonts/ots/bad_post_version.otf")
+    message = assert_results_contain(check(warn_font), WARN, "ots-sanitize-warn")
+    assert (
+        "WARNING: post: Only version supported for fonts with CFF table is"
+        " 0x00030000 not 0x20000" in message
+    )
+
+    bad_font = TEST_FILE("bad_fonts/ots/no_glyph_data.ttf")
+    message = assert_results_contain(check(bad_font), FAIL, "ots-sanitize-error")
+    assert "ERROR: no supported glyph data table(s) present" in message
     assert "Failed to sanitize file!" in message
 
 
