@@ -957,6 +957,15 @@ def test_check_family_vertical_metrics(montserrat_ttFonts):
     # FAIL, 'lacks-hhea'
 
 
+def test_check_superfamily_list():
+    check = CheckTester(universal_profile, "com.google.fonts/check/superfamily/list")
+
+    msg = assert_results_contain(
+        check([], {"superfamily": [cabin_fonts]}), INFO, "family-path"
+    )
+    assert msg == "data/test/cabin"
+
+
 def test_check_superfamily_vertical_metrics(
     montserrat_ttFonts, cabin_ttFonts, cabin_condensed_ttFonts
 ):
