@@ -941,20 +941,24 @@ def test_check_family_vertical_metrics(montserrat_ttFonts):
         universal_profile, "com.google.fonts/check/family/vertical_metrics"
     )
 
-    assert_PASS(check(montserrat_ttFonts), "with multiple good fonts...")
+    msg = assert_PASS(check(montserrat_ttFonts), "with multiple good fonts...")
+    assert msg == "Vertical metrics are the same across the family."
 
-    montserrat_ttFonts[0]["OS/2"].usWinAscent = 4000
-    assert_results_contain(
-        check(montserrat_ttFonts),
-        FAIL,
-        "usWinAscent-mismatch",
-        "with one bad font that has one different vertical metric val...",
-    )
+    montserrat_ttFonts[0]["OS/2"].sTypoAscender = 3333
+    montserrat_ttFonts[1]["OS/2"].usWinAscent = 4444
+    results = check(montserrat_ttFonts)
+    msg = assert_results_contain([results[0]], FAIL, "sTypoAscender-mismatch")
+    assert "Montserrat Black: 3333" in msg
+    msg = assert_results_contain([results[1]], FAIL, "usWinAscent-mismatch")
+    assert "Montserrat Black Italic: 4444" in msg
 
-    # TODO: Also test these code-paths:
-    # FAIL, 'mismatch-<other values>'
-    # FAIL, 'lacks-OS/2'
-    # FAIL, 'lacks-hhea'
+    del montserrat_ttFonts[2]["OS/2"]
+    del montserrat_ttFonts[3]["hhea"]
+    results = check(montserrat_ttFonts)
+    msg = assert_results_contain([results[0]], FAIL, "lacks-OS/2")
+    assert msg == "Montserrat-Bold.ttf lacks an 'OS/2' table."
+    msg = assert_results_contain([results[1]], FAIL, "lacks-hhea")
+    assert msg == "Montserrat-BoldItalic.ttf lacks a 'hhea' table."
 
 
 def test_check_superfamily_list():
