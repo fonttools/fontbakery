@@ -1928,7 +1928,7 @@ def com_google_fonts_check_linegaps(ttFont):
 
 @check(
     id="com.google.fonts/check/STAT_in_statics",
-    conditions=["not is_variable_font"],
+    conditions=["not is_variable_font", "has_STAT_table"],
     rationale="""
         Adobe feature syntax allows for the definition of a STAT table. Fonts built
         with a hand-coded STAT table in feature syntax may be built either as static
@@ -1965,28 +1965,27 @@ def com_google_fonts_check_STAT_in_statics(ttFont):
             entries[tag_name] = 1
 
     passed = True
-    if "STAT" in ttFont:
-        stat = ttFont["STAT"].table
-        designAxes = stat.DesignAxisRecord.Axis
-        for axisValueTable in stat.AxisValueArray.AxisValue:
-            axisValueFormat = axisValueTable.Format
-            if axisValueFormat in (1, 2, 3):
-                axisTag = designAxes[axisValueTable.AxisIndex].AxisTag
+    stat = ttFont["STAT"].table
+    designAxes = stat.DesignAxisRecord.Axis
+    for axisValueTable in stat.AxisValueArray.AxisValue:
+        axisValueFormat = axisValueTable.Format
+        if axisValueFormat in (1, 2, 3):
+            axisTag = designAxes[axisValueTable.AxisIndex].AxisTag
+            count_entries(axisTag)
+        elif axisValueFormat == 4:
+            for rec in axisValueTable.AxisValueRecord:
+                axisTag = designAxes[rec.AxisIndex].AxisTag
                 count_entries(axisTag)
-            elif axisValueFormat == 4:
-                for rec in axisValueTable.AxisValueRecord:
-                    axisTag = designAxes[rec.AxisIndex].AxisTag
-                    count_entries(axisTag)
 
-        for tag_name in entries:
-            if entries[tag_name] > 1:
-                passed = False
-                yield FAIL, Message(
-                    "multiple-STAT-entries",
-                    "The STAT table has more than a single entry for the"
-                    f" '{tag_name}' axis ({entries[tag_name]}) on this"
-                    " static font which will causes problems on Windows.",
-                )
+    for tag_name in entries:
+        if entries[tag_name] > 1:
+            passed = False
+            yield FAIL, Message(
+                "multiple-STAT-entries",
+                "The STAT table has more than a single entry for the"
+                f" '{tag_name}' axis ({entries[tag_name]}) on this"
+                " static font which will causes problems on Windows.",
+            )
 
     if passed:
         yield PASS, "Looks good!"
