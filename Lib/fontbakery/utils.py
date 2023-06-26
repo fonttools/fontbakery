@@ -534,7 +534,7 @@ def compute_unicoderange_bits(ttFont):
     return result
 
 
-def glyph_has_ink(font: TTFont, name: Text) -> bool:
+def glyph_has_ink(font: TTFont, glyph_name: Text) -> bool:
     """Checks if specified glyph has any ink.
 
     That is, that it has at least one defined contour associated.
@@ -546,9 +546,9 @@ def glyph_has_ink(font: TTFont, name: Text) -> bool:
         True if the font has at least one contour associated with it.
     """
     if "glyf" in font:
-        return ttf_glyph_has_ink(font, name)
+        return ttf_glyph_has_ink(font, glyph_name)
     elif ("CFF " in font) or ("CFF2" in font):
-        return cff_glyph_has_ink(font, name)
+        return cff_glyph_has_ink(font, glyph_name)
     else:
         raise Exception("Could not find 'glyf', 'CFF ', or 'CFF2' table.")
 
