@@ -112,20 +112,35 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
         (https://github.com/RedHatBrand/Overpass/issues/33).
 
         If the font includes tall/deep writing systems such as Arabic or Devanagari,
-        the winAscent and winDescent can be greater than the yMax and abs(yMin)
-        to accommodate vowel marks.
+        the winAscent and winDescent can be greater than the yMax and absolute yMin
+        values to accommodate vowel marks.
 
-        When the win Metrics are significantly greater than the upm, the linespacing
+        When the 'win' Metrics are significantly greater than the UPM, the linespacing
         can appear too loose. To counteract this, enabling the OS/2 fsSelection
-        bit 7 (Use_Typo_Metrics), will force Windows to use the OS/2 typo values
+        bit 7 (Use_Typo_Metrics), will force Windows to use the OS/2 'typo' values
         instead. This means the font developer can control the linespacing with
-        the typo values, whilst avoiding clipping by setting the win values to values
-        greater than the yMax and abs(yMin).
+        the 'typo' values, whilst avoiding clipping by setting the 'win' values to
+        values greater than the yMax and absolute yMin.
     """,
     proposal="legacy:check/040",
 )
 def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
     """Checking OS/2 usWinAscent & usWinDescent."""
+
+    # NOTE:
+    # This check works on a single font file as well as on a group of font files.
+    # Even though one of this check's inputs is 'ttFont' (whereas other family-wide
+    # checks use 'ttFonts') the other input parameter, 'vmetrics', will collect vertical
+    # metrics values for all the font files provided in the command line. This means
+    # that running the check may yield more or less results depending on the set of font
+    # files that is provided in the command line. This behaviour is NOT a bug.
+    # For example, compare the results of these two commands:
+    #   fontbakery check-universal -c ascent_and_descent data/test/mada/Mada-Regular.ttf
+    #   fontbakery check-universal -c ascent_and_descent data/test/mada/*.ttf
+    #
+    # The second command will yield more FAIL results for each font. This happens
+    # because the check does a family-wide validation of the vertical metrics, instead
+    # of a single font validation.
 
     if "OS/2" not in ttFont:
         yield FAIL, Message("lacks-OS/2", "Font file lacks OS/2 table")
@@ -159,7 +174,7 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
         yield FAIL, Message(
             "descent",
             f"OS/2.usWinDescent value should be equal or greater than {abs(y_min)},"
-            f" but got {win_descent} instead.",
+            f" but got {win_descent} instead",
         )
 
     if win_descent > abs(y_min) * 2:
