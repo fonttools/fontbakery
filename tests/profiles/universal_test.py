@@ -1087,14 +1087,36 @@ def test_check_soft_hyphen(montserrat_ttFonts):
 
 def test_check_contour_count(montserrat_ttFonts):
     """Check glyphs contain the recommended contour count"""
+    from fontTools import subset
+
     check = CheckTester(universal_profile, "com.google.fonts/check/contour_count")
-    # TODO: test FAIL, "lacks-cmap"
-    # TODO: test PASS
+
+    ttFont = TTFont(TEST_FILE("rokkitt/Rokkitt-Regular.otf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: is_ttf"
+
+    ttFont = TTFont(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf"))
+    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: not is_variable_font"
+
+    ttFont = montserrat_ttFonts[0]
 
     # Lets swap the glyf 'a' (2 contours) with glyf 'c' (1 contour)
-    for ttFont in montserrat_ttFonts:
-        ttFont["glyf"]["a"] = ttFont["glyf"]["c"]
-        assert_results_contain(check(ttFont), WARN, "contour-count")
+    ttFont["glyf"]["a"] = ttFont["glyf"]["c"]
+    msg = assert_results_contain(check(ttFont), WARN, "contour-count")
+    assert "Glyph name: a\tContours detected: 1\tExpected: 2" in msg
+
+    # Subset the font to just the 'c' glyph to get a PASS
+    subsetter = subset.Subsetter()
+    subsetter.populate(text="c")
+    subsetter.subset(ttFont)
+    msg = assert_PASS(check(ttFont))
+    assert msg == "All glyphs have the recommended amount of contours"
+
+    # Now delete the 'cmap' table to trigger a FAIL
+    del ttFont["cmap"]
+    msg = assert_results_contain(check(ttFont), FAIL, "lacks-cmap")
+    assert msg == "This font lacks cmap data."
 
 
 def test_check_cjk_chws_feature():

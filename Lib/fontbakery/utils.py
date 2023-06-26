@@ -376,7 +376,7 @@ def get_font_glyph_data(font):
             subtable = font["cmap"].tables[0]
 
         cmap = subtable.cmap
-    except (AttributeError, IndexError):
+    except (AttributeError, IndexError, KeyError):
         return None
 
     cmap_reversed = dict(zip(cmap.values(), cmap.keys()))
