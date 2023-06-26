@@ -964,6 +964,9 @@ def test_check_superfamily_vertical_metrics(
         universal_profile, "com.google.fonts/check/superfamily/vertical_metrics"
     )
 
+    msg = assert_SKIP(check([], {"superfamily_ttFonts": [cabin_ttFonts[0]]}))
+    assert msg == "Sibling families were not detected."
+
     assert_PASS(
         check([], {"superfamily_ttFonts": [cabin_ttFonts, cabin_condensed_ttFonts]}),
         "with multiple good families...",
