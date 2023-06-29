@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - This is the first version in which we're using the Black auto-formatter on the entire code-base. (Discussions #3397)
   - Also, now software dependencies can be installed based on the user needs. The default FontBakery installation from PyPI includes only the dependencies for running font-binary checks from the Universal profile. To run source-level checks, one needs to enable the `ufo-sources` extra. (issues #3715 and #3874)
 
+### Bugfixes
+  - A font-file is not needed anymore when running `--list-checks` (issue #3878)
+
 ### Changes to existing checks
 #### On the Universal profile
   - **[com.adobe.fonts/check/freetype_rasterizer]:** Added test-code that segfaults with freetype-py version 2.4.0, so that we make sure the problem won't go unnoticed, and will enable us to know when it gets fixed (issue #4143)

@@ -26,6 +26,16 @@ def test_list_subcommands_has_all_scripts():
     assert sorted(scripts) == sorted(subcommands)
 
 
+def test_list_checks_option(capfd):
+    """Test if 'fontbakery <subcommand> --list-checks' can run successfully and output
+    the expected content."""
+    from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
+
+    subprocess.check_call(["fontbakery", "check-universal", "--list-checks"])
+    output = capfd.readouterr().out
+    assert set(output.split()) == set(UNIVERSAL_PROFILE_CHECKS)
+
+
 def test_command_check_googlefonts():
     """Test if `fontbakery check-googlefonts` can run successfully`."""
     subprocess.check_output(["fontbakery", "check-googlefonts", "-h"])
