@@ -76,6 +76,10 @@ class FontsProfile(Profile):
 
         class MergeAction(argparse.Action):
             def __call__(self, parser, namespace, values, option_string=None):
+                if namespace.list_checks:
+                    # -L/--list-checks option was used; don't try to validate file
+                    # inputs because this option doesn't require them
+                    return
                 for file_description in profile.accepted_files:
                     setattr(namespace, file_description.name, [])
                 # flatten the 'values' list: [['a'], ['b']] => ['a', 'b']
@@ -107,9 +111,7 @@ class FontsProfile(Profile):
 
         argument_parser.add_argument(
             "files",
-            # To allow optional commands like "-L" to work without other input
-            # files:
-            nargs="*",
+            nargs="*",  # allow no input files; needed for -L/--list-checks option
             type=get_files,
             action=MergeAction,
             help="file path(s) to check. Wildcards like *.ttf are allowed.",
