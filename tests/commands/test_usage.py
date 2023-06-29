@@ -5,6 +5,7 @@ import tempfile
 
 import pytest
 
+TOOL_NAME = "fontbakery"
 
 def test_list_subcommands_has_all_scripts():
     """Tests if the output from running `fontbakery --list-subcommands` matches
@@ -21,7 +22,7 @@ def test_list_subcommands_has_all_scripts():
     ]
     scripts = scripts + [("check-" + i).replace("_", "-") for i in CLI_PROFILES]
     subcommands = (
-        subprocess.check_output(["fontbakery", "--list-subcommands"]).decode().split()
+        subprocess.check_output([TOOL_NAME, "--list-subcommands"]).decode().split()
     )
     assert sorted(scripts) == sorted(subcommands)
 
@@ -31,20 +32,20 @@ def test_list_checks_option(capfd):
     the expected content."""
     from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 
-    subprocess.check_call(["fontbakery", "check-universal", "--list-checks"])
+    subprocess.check_call([TOOL_NAME, "check-universal", "--list-checks"])
     output = capfd.readouterr().out
     assert set(output.split()) == set(UNIVERSAL_PROFILE_CHECKS)
 
 
 def test_command_check_googlefonts():
     """Test if `fontbakery check-googlefonts` can run successfully`."""
-    subprocess.check_output(["fontbakery", "check-googlefonts", "-h"])
+    subprocess.check_output([TOOL_NAME, "check-googlefonts", "-h"])
 
     test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
 
     subprocess.check_output(
         [
-            "fontbakery",
+            TOOL_NAME,
             "check-googlefonts",
             "-c",
             "com.google.fonts/check/canonical_filename",
@@ -53,7 +54,7 @@ def test_command_check_googlefonts():
     )
 
     with pytest.raises(subprocess.CalledProcessError):
-        subprocess.check_output(["fontbakery", "check-googlefonts"])
+        subprocess.check_output([TOOL_NAME, "check-googlefonts"])
 
 
 @pytest.mark.xfail(
@@ -66,7 +67,7 @@ def test_status_log_is_indented():
     """Test if statuses are printed in a limited boundary."""
     result = subprocess.run(
         [
-            "fontbakery",
+            TOOL_NAME,
             "check-googlefonts",
             "-c",
             "old_ttfautohint",
@@ -102,26 +103,26 @@ def test_status_log_is_indented():
 
 def test_command_check_profile():
     """Test if `fontbakery check-profile` can run successfully`."""
-    subprocess.check_output(["fontbakery", "check-profile", "-h"])
+    subprocess.check_output([TOOL_NAME, "check-profile", "-h"])
 
     with pytest.raises(subprocess.CalledProcessError):
-        subprocess.check_output(["fontbakery", "check-profile"])
+        subprocess.check_output([TOOL_NAME, "check-profile"])
 
 
 def test_command_check_opentype():
     """Test if `fontbakery check-opentype` can run successfully`."""
-    subprocess.check_output(["fontbakery", "check-opentype", "-h"])
+    subprocess.check_output([TOOL_NAME, "check-opentype", "-h"])
 
     with pytest.raises(subprocess.CalledProcessError):
-        subprocess.check_output(["fontbakery", "check-opentype"])
+        subprocess.check_output([TOOL_NAME, "check-opentype"])
 
 
 def test_command_check_ufo_sources():
     """Test if `fontbakery check-ufo-sources` can run successfully`."""
-    subprocess.check_output(["fontbakery", "check-ufo-sources", "-h"])
+    subprocess.check_output([TOOL_NAME, "check-ufo-sources", "-h"])
 
     with pytest.raises(subprocess.CalledProcessError):
-        subprocess.check_output(["fontbakery", "check-ufo-sources"])
+        subprocess.check_output([TOOL_NAME, "check-ufo-sources"])
 
 
 def test_command_config_file():
@@ -131,7 +132,7 @@ def test_command_config_file():
     config.close()
     test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
     result = subprocess.run(
-        ["fontbakery", "check-googlefonts", "--config", config.name, test_font],
+        [TOOL_NAME, "check-googlefonts", "--config", config.name, test_font],
         stdout=subprocess.PIPE,
     )
     stdout = result.stdout.decode()
@@ -153,7 +154,7 @@ OK = 123
     test_profile = os.path.join("tests", "profiles", "a_test_profile.py")
     result = subprocess.run(
         [
-            "fontbakery",
+            TOOL_NAME,
             "check-profile",
             "-C",
             "--config",
@@ -183,7 +184,7 @@ explicit_checks:
     config.close()
     test_font = os.path.join("data", "test", "varfont", "inter", "Inter[slnt,wght].ttf")
     result = subprocess.run(
-        ["fontbakery", "check-googlefonts", "-C", "--config", config.name, test_font],
+        [TOOL_NAME, "check-googlefonts", "-C", "--config", config.name, test_font],
         stdout=subprocess.PIPE,
     )
     stdout = result.stdout.decode()
