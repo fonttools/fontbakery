@@ -62,7 +62,7 @@ def ArgumentParser(profile, profile_arg=True):
 
     if profile_arg:
         argument_parser.add_argument(
-            "profile", help="File/Module name," ' must define a fontbakery "profile".'
+            "profile", help="File/Module name, must define an fontbakery 'profile'."
         )
 
     values_keys = profile.setup_argparse(argument_parser)
@@ -78,7 +78,7 @@ def ArgumentParser(profile, profile_arg=True):
         "--checkid",
         action="append",
         help=(
-            "Explicit check-ids (or parts of their name) to be executed. "
+            "Explicit check-ids (or parts of their name) to be executed.\n"
             "Use this option multiple times to select multiple checks."
         ),
     )
@@ -88,7 +88,7 @@ def ArgumentParser(profile, profile_arg=True):
         "--exclude-checkid",
         action="append",
         help=(
-            "Exclude check-ids (or parts of their name) from execution. "
+            "Exclude check-ids (or parts of their name) from execution.\n"
             "Use this option multiple times to exclude multiple checks."
         ),
     )
@@ -106,7 +106,7 @@ def ArgumentParser(profile, profile_arg=True):
         dest="loglevels",
         const=PASS,
         action="append_const",
-        help="Shortcut for `-l PASS`.\n",
+        help="Shortcut for '-l PASS'.\n",
     )
 
     argument_parser.add_argument(
@@ -135,7 +135,7 @@ def ArgumentParser(profile, profile_arg=True):
     argument_parser.add_argument(
         "--succinct",
         action="store_true",
-        help="This is a slightly more compact and succint" " output layout.",
+        help="This is a slightly more compact and succint output layout.",
     )
 
     argument_parser.add_argument(
@@ -143,7 +143,7 @@ def ArgumentParser(profile, profile_arg=True):
         "--no-progress",
         default=False,
         action="store_true",
-        help="In a tty as stdout, don't" " render the progress indicators.",
+        help="Suppress the progress indicators in the console output.",
     )
 
     argument_parser.add_argument(
@@ -151,7 +151,7 @@ def ArgumentParser(profile, profile_arg=True):
         "--no-colors",
         default=False,
         action="store_true",
-        help="No colors for tty output.",
+        help="Suppress the coloring theme in the console output.",
     )
 
     argument_parser.add_argument(

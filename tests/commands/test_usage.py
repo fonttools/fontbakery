@@ -54,8 +54,6 @@ def test_command_check_googlefonts():
 # Please, only remove the xfail mark once the test is more robust / future proof.
 def test_status_log_is_indented():
     """Test if statuses are printed in a limited boundary."""
-    test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
-
     result = subprocess.run(
         [
             "fontbakery",
@@ -64,7 +62,7 @@ def test_status_log_is_indented():
             "old_ttfautohint",
             "-c",
             "font_copyright",
-            test_font,
+            os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"),
         ],
         capture_output=True,
     )

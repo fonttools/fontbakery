@@ -59,6 +59,13 @@ jobs:
         -x soft_dotted
         data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
 
+    - name: Run Universal check using 'check-profile'
+      run: >-
+        fontbakery check-profile fontbakery.profiles.universal
+        data/test/mada/Mada-Regular.ttf
+        --verbose
+        -c required_tables
+
     - name: Try running UFO Sources checks
       run: >-
         fontbakery check-ufo-sources --verbose data/test/test.ufo
