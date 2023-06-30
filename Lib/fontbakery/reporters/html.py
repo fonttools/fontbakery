@@ -86,7 +86,7 @@ class HTMLReporter(SerializeReporter):
                         )
 
         body_top = [
-            "<h1>Fontbakery Technical Report</h1>",
+            "<h1>FontBakery Technical Report</h1>",
             "<div>If you think a check is flawed or have an idea for a check, please "
             f" file an issue at <a href='{ISSUE_URL}'>{ISSUE_URL}</a> and remember "
             "to include a pointer to the repo and branch you're checking.</div>",
@@ -199,7 +199,7 @@ def html5_document(body_elements) -> str:
                 <html lang="en">
                     <head>
                         <meta charset="utf-8">
-                        <title>Fontbakery Check Report</title>
+                        <title>FontBakery Check Report</title>
                         <style>
                             {style}
                         </style>

@@ -55,7 +55,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         # More info at: googlei18n/fontmake#414
         "The table doesn't contain strings for Mac platform",
         "The PostScript string is not present for both required platforms",
-        # Font Bakery has got a native check for the xAvgCharWidth field
+        # FontBakery has got a native check for the xAvgCharWidth field
         # which is: com.google.fonts/check/xavgcharwidth
         "The xAvgCharWidth field does not equal the calculated value",
         # The optimal ordering suggested by FVal check W0020 seems to only be
@@ -66,7 +66,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         # More info at:
         # https://github.com/googlefonts/fontbakery/issues/2105
         "Tables are not in optimal order",
-        # Font Bakery has its own check for required/optional tables:
+        # FontBakery has its own check for required/optional tables:
         # com.google.fonts/check/required_tables
         "Recommended table is missing",
         # Check W5300 does not recognise some tags in use, e.g. stylistic sets
@@ -95,7 +95,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         # of the font, and so will raise a warning in fonts that purposely do
         # not contain the euro.
         "Character code U+20AC, the euro character, is not mapped in cmap 3,1",
-        #  Fontbakery has its own check for this.
+        # FontBakery has its own check for this.
         "The unitsPerEm value is not a power of two",
         # Actually not a problem, and being produced by ufo2ft for years.
         "Intersecting components of composite glyph",
