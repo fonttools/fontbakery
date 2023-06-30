@@ -1,8 +1,10 @@
 ## Description
-This pull request addresses the problems described at issue #xxxx
+Relates to issue #X
 
-## To Do
+(Provide a list of all the noteworthy changes you've done. Elaborate on any decisions you had to make, and include links and/or screenshots, if applicable)
+
+## Checklist
 - [ ] update `CHANGELOG.md`
-- [ ] wait for all checks to pass
+- [ ] wait for the tests to pass
 - [ ] request a review
 
