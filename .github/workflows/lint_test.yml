@@ -9,8 +9,6 @@ on:
       - '!requirements*.txt'
 
   pull_request:
-    types:
-      - opened
     paths-ignore:
       - 'docs/**'
       - '**.md'
