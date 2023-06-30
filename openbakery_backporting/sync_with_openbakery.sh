@@ -102,11 +102,11 @@ patch -p1 -R < openbakery_backporting/patches/0004-Codecov-also-looks-great-but.
 #       in order to more clearly signal that it is not a Google-biased project.
 #
 # We also improved the description of the project goals.
-
+patch -p1 -R < openbakery_backporting/patches/0005-minimizing-diff-to-CONTRIBUTING.md.patch
 
 
 ##### FontBakery's fixes that should be applied to Open Bakery as well:
 
 # Fix for setuptools-scm, overwise package version always ends up being "0.1.dev1":
-patch -p1 -R < openbakery_backporting/patches/0005-unshallow-fetch-for-setuptools-scm-otherwise-the-ver.patch
+patch -p1 -R < openbakery_backporting/patches/0006-unshallow-fetch-for-setuptools-scm-otherwise-the-ver.patch
 
