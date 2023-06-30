@@ -18,6 +18,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/valid_glyphnames]:** The check now takes into account that OpenType-CFF2 fonts with `post` table format 3 contain no glyph names, and will yield SKIP.
   - **[com.google.fonts/check/unique_glyphnames]:** The check now takes into account that OpenType-CFF2 fonts with `post` table format 3 contain no glyph names, and will yield SKIP.
   - **[com.google.fonts/check/mandatory_glyphs]:** Improved the check's resilience to edge cases that could result in ERRORs.
+  - **[com.google.fonts/check/STAT_in_statics]:** The check now skips fonts that do not have a `STAT` table.
 
 #### On the OpenType profile
   - **[com.google.fonts/check/italic_angle]**: Fix an ERROR: If any of the glyphs checked (bar, vertical line, left square bracket, etc.) have no outlines, the check will now emit a WARN, because that's useful information. (PR #4187)
