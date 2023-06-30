@@ -34,6 +34,9 @@ git grep -rl OpenBakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's
 git grep -rl OpenBakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/OpenBakeryReporter/FontbakeryReporter/g'
 git grep -rl OpenBakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/OpenBakeryError/FontbakeryError/g'
 
+# auto-replace github URLs:
+git grep -rl openbakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/miguelsousa\/openbakery/googlefonts\/fontbakery/g'
+
 # auto-replace project name:
 git grep -rl openbakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/openbakery/fontbakery/g'
 git grep -rl OpenBakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/OpenBakery/FontBakery/g'
@@ -41,6 +44,10 @@ git grep -rl OpenBakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's
 # Instances of abusive, harassing, or otherwise unacceptable behavior may be
 # reported to the community leaders responsible for enforcement at:
 sed -i 's/miguel.sousa@adobe.com/dcrossland@google.com/g' CODE_OF_CONDUCT.md
+
+# If you have any questions or concerns regarding these guidelines or the Project,
+# please contact...
+sed -i 's/Miguel Sousa at miguel.sousa@adobe.com./us via the issue tracker or send an email to Felipe Sanches at juca@members.fsf.org/g' CONTRIBUTING.md
 
 ##### Now here's the patching out of the things we don't need: #####
 
@@ -84,6 +91,17 @@ rm renovate.json
 rm codecov.yml
 patch -p1 -R < openbakery_backporting/patches/0004-Codecov-also-looks-great-but.patch
 
+
+##### A few tweaks to the CONTRIBUTING.md file: #####
+# These URLs are broken:
+#   https://miguelsousa.github.io/fontbakery/dev-setup.html
+#   https://miguelsousa.github.io/fontbakery/run-tests-locally.html
+#
+# Projects hosted at the googlefonts github organization need a CLA signature.
+# Note: We may in the future migrate FontBakery away from the googlefonts github org
+#       in order to more clearly signal that it is not a Google-biased project.
+#
+# We also improved the description of the project goals.
 
 
 
