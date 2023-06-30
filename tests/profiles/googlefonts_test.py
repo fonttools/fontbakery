@@ -118,7 +118,7 @@ def test_example_checkrunner_based(cabin_regular_path):
     This test is run via the checkRunner and demonstrate how to get
     (mutable) objects from the conditions cache and change them.
 
-    NOTE: the actual fontbakery checks of conditions should never
+    NOTE: the actual FontBakery checks of conditions should never
     change a condition object.
     """
     from fontbakery.checkrunner import CheckRunner
@@ -1012,7 +1012,7 @@ def test_check_family_has_license():
     def licenses_for_test(path):
         found = licenses(path)
         # If the tests are running inside a git checkout of fontbakery,
-        # fontbakery's own license will also be detected:
+        # FontBakery's own license will also be detected:
         # ['data/test/028/multiple/OFL.txt',
         #  'data/test/028/multiple/LICENSE.txt',
         #  '/home/dan/src/fontbakery/LICENSE.txt']

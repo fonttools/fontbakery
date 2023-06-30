@@ -10,7 +10,7 @@ Please make sure to read all the sections before making your contribution. It
 will make it a lot easier for us maintainers, and smooth out the experience for
 all involved. The community looks forward to your contributions. 🎉
 
-If this is your first contribution to Font Bakery, we have a [tutorial] that walks
+If this is your first contribution to FontBakery, we have a [tutorial] that walks
 you through setting up your developer environment, making a change, and testing it.
 
 [tutorial]: https://font-bakery.readthedocs.io/en/latest/developer/source-contrib-guide.html
@@ -28,7 +28,7 @@ You generally only need to submit a CLA once, so if you've already submitted one
 
 ## Our mission
 
-Font Bakery is a community project. Consequently, it is wholly dependent on its
+FontBakery is a community project. Consequently, it is wholly dependent on its
 community to provide a productive, friendly and collaborative environment.
 
 The first and foremost goal of the Font Bakery community is to discover and
@@ -53,7 +53,7 @@ If you have been contributing for a while, take a look at issues labeled
 `backlog` and consider their priority level.
 
 When you create your first pull request, add your name to our
-[Contributors] list. Thank you for making Font Bakery better! 🙇‍♀️
+[Contributors] list. Thank you for making FontBakery better! 🙇‍♀️
 
 [Issues]: https://github.com/googlefonts/fontbakery/issues
 [Contributors]: ./CONTRIBUTORS.txt
@@ -143,13 +143,13 @@ To make your PR go smooth, keep in mind that the reviewers expect you to:
 ### Review comments
 
 Reviewers play a crucial role as the initial interface with new members of the
-Font Bakery community, since they can have a substantial impact on their first
+FontBakery community, since they can have a substantial impact on their first
 impressions. Consequently, reviewers hold significant importance in shaping
 the overall well-being of the community.
 
 Reviewers are expected to not only abide by the [code of conduct](#code-of-conduct),
 but also strongly encouraged to go above and beyond the code of conduct to
-promote a collaborative, respectful Font Bakery community.
+promote a collaborative, respectful FontBakery community.
 
 ### Review latency
 
@@ -234,7 +234,7 @@ you have issues in GitHub assigned to you.
 
 ## Breaking Changes
 
-Some changes may break our compatibility with previous versions of Font Bakery.
+Some changes may break our compatibility with previous versions of FontBakery.
 When that happens, we need to release that change with a new major version number
 to indicate to users that it contains breaking changes.
 When you realize that you may need to make a breaking change, discuss it with
@@ -244,7 +244,7 @@ it should be released.
 
 ## Code of Conduct
 
-The Font Bakery project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md).
+The FontBakery project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md).
 
 
 ## Legal Notice

@@ -1,5 +1,5 @@
 """
-Font Bakery CheckRunner is the driver of a font bakery suite of checks.
+FontBakery CheckRunner is the driver of a fontbakery suite of checks.
 """
 import glob
 import logging

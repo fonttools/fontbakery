@@ -46,7 +46,7 @@ name2status = {
 }
 
 
-# Similar to DashbordWorkerReporter of Font Bakery Dashboard.
+# Similar to DashbordWorkerReporter of FontBakery Dashboard.
 class WorkerToQueueReporter(FontbakeryReporter):
     def __init__(self, queue, profile, ticks_to_flush=None, **kwd):
         super().__init__(**kwd)
@@ -87,7 +87,7 @@ class WorkerToQueueReporter(FontbakeryReporter):
             #    string, an Exception, a Message. Probably we should leave it
             #    like this. Message should be the ultimate answer if it's not
             #    an Exception or a string.
-            # turn everything in a fontbakery/Message like object
+            # turn everything in a FontBakery/Message like object
             # `code` may be used for overwriting special failing statuses
             # otherwise, code must be none
             #

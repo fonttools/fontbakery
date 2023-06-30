@@ -125,7 +125,7 @@ class GHMarkdownReporter(SerializeReporter):
                             checks[key] = []
                         checks[key].append(check)
 
-        md = f"## Fontbakery report\n" f"\n" f"Fontbakery version: {version}\n" f"\n"
+        md = f"## FontBakery report\n" f"\n" f"fontbakery version: {version}\n" f"\n"
 
         if family_checks:
             family_checks.sort(key=lambda c: c["result"])

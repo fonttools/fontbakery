@@ -1,5 +1,5 @@
 """
-Font Bakery reporters/serialize can report the events of the Font Bakery
+FontBakery reporters/serialize can report the events of the FontBakery
 CheckRunner Protocol to a serializeable document e.g. for usage with `json.dumps`.
 
 Separation of Concerns Disclaimer:

@@ -5138,7 +5138,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
     proposal="https://github.com/googlefonts/fontbakery/issues/2888",
 )
 def com_google_fonts_check_repo_fb_report(family_directory):
-    """A font repository should not include fontbakery report files"""
+    """A font repository should not include FontBakery report files"""
     from fontbakery.utils import filenames_ending_in
 
     has_report_files = any(
@@ -5153,8 +5153,8 @@ def com_google_fonts_check_repo_fb_report(family_directory):
     else:
         yield WARN, Message(
             "fb-report",
-            "There's no need to keep a copy of Font Bakery reports in the"
-            " repository, since they are ephemeral; Font Bakery has"
+            "There's no need to keep a copy of FontBakery reports in the"
+            " repository, since they are ephemeral; FontBakery has"
             " a 'github markdown' output mode to make it easy to file"
             " reports as issues.",
         )
@@ -5386,7 +5386,7 @@ def com_google_fonts_check_vertical_metrics(ttFont):
     rationale="""
         If the family already exists on Google Fonts, we need to ensure that the
         checked family's vertical metrics are similar. This check will test the
-        following schema which was outlined in Fontbakery issue #1162 [1]:
+        following schema which was outlined in Font Bakery issue #1162 [1]:
 
         - The family should visually have the same vertical metrics as the Regular
           style hosted on Google Fonts.

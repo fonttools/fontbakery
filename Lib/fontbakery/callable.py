@@ -1,5 +1,5 @@
 """
-Font Bakery callable is the wrapper for your custom check code.
+FontBakery callable is the wrapper for your custom check code.
 
 
 Separation of Concerns Disclaimer:

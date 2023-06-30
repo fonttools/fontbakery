@@ -58,7 +58,7 @@ class BadgeReporter(SerializeReporter):
             total_total += out_of
             sections[key] = self.make_section(key, error_state, score, out_of)
         sections["overall"] = self.make_section(
-            "Fontbakery QA", False, total_score, total_total
+            "FontBakery QA", False, total_score, total_total
         )
         self._doc = sections
         return sections
