@@ -7,6 +7,7 @@ import pytest
 
 TOOL_NAME = "fontbakery"
 
+
 def test_list_subcommands_has_all_scripts():
     """Tests if the output from running `fontbakery --list-subcommands` matches
     the fontbakery scripts within the bin folder and the promoted profiles."""
@@ -32,29 +33,48 @@ def test_list_checks_option(capfd):
     the expected content."""
     from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 
-    subprocess.check_call([TOOL_NAME, "check-universal", "--list-checks"])
+    subprocess.run([TOOL_NAME, "check-universal", "--list-checks"], check=True)
     output = capfd.readouterr().out
     assert set(output.split()) == set(UNIVERSAL_PROFILE_CHECKS)
 
 
 def test_command_check_googlefonts():
-    """Test if `fontbakery check-googlefonts` can run successfully`."""
-    subprocess.check_output([TOOL_NAME, "check-googlefonts", "-h"])
-
-    test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
-
-    subprocess.check_output(
+    """Test if 'fontbakery check-googlefonts' can run successfully."""
+    subprocess.run([TOOL_NAME, "check-googlefonts", "-h"], check=True)
+    subprocess.run(
         [
             TOOL_NAME,
             "check-googlefonts",
             "-c",
             "com.google.fonts/check/canonical_filename",
-            test_font,
-        ]
+            os.path.join("data", "test", "nunito", "Nunito-Regular.ttf"),
+        ],
+        check=True,
     )
+    with pytest.raises(subprocess.CalledProcessError):
+        subprocess.run([TOOL_NAME, "check-googlefonts"], check=True)
+
+
+@pytest.mark.parametrize(
+    "subcommand",
+    [
+        "check-profile",
+        "check-opentype",
+        "check-ufo-sources",
+    ],
+)
+def test_command_check_profile(subcommand):
+    """Test if 'fontbakery <subcommand>' can run successfully."""
+    subprocess.run([TOOL_NAME, subcommand, "-h"], check=True)
 
     with pytest.raises(subprocess.CalledProcessError):
-        subprocess.check_output([TOOL_NAME, "check-googlefonts"])
+        subprocess.run([TOOL_NAME, subcommand], check=True)
+
+
+def test_tool_help():
+    """Test if just 'fontbakery' command can run successfully."""
+    assert subprocess.run([TOOL_NAME, "-h"]).returncode == 0
+    assert subprocess.run([TOOL_NAME]).returncode == 0
 
 
 @pytest.mark.xfail(
@@ -99,30 +119,6 @@ def test_status_log_is_indented():
             "          version#not#detected]                                                 ",  # noqa:E501 pylint:disable=C0301
         ]
     )
-
-
-def test_command_check_profile():
-    """Test if `fontbakery check-profile` can run successfully`."""
-    subprocess.check_output([TOOL_NAME, "check-profile", "-h"])
-
-    with pytest.raises(subprocess.CalledProcessError):
-        subprocess.check_output([TOOL_NAME, "check-profile"])
-
-
-def test_command_check_opentype():
-    """Test if `fontbakery check-opentype` can run successfully`."""
-    subprocess.check_output([TOOL_NAME, "check-opentype", "-h"])
-
-    with pytest.raises(subprocess.CalledProcessError):
-        subprocess.check_output([TOOL_NAME, "check-opentype"])
-
-
-def test_command_check_ufo_sources():
-    """Test if `fontbakery check-ufo-sources` can run successfully`."""
-    subprocess.check_output([TOOL_NAME, "check-ufo-sources", "-h"])
-
-    with pytest.raises(subprocess.CalledProcessError):
-        subprocess.check_output([TOOL_NAME, "check-ufo-sources"])
 
 
 def test_command_config_file():
