@@ -1,0 +1,63 @@
+From ec0d021326b9790d4e9e77f1d0fc159455103509 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Felipe=20Corr=C3=AAa=20da=20Silva=20Sanches?=
+ <juca@members.fsf.org>
+Date: Fri, 30 Jun 2023 19:07:56 +0100
+Subject: [PATCH 1/1] minimizing diff to CONTRIBUTING.md
+
+---
+ CONTRIBUTING.md | 29 ++++++++---------------------
+ 1 file changed, 8 insertions(+), 21 deletions(-)
+
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index 6b253cc4..3cdcfd97 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -249,37 +249,24 @@ The FontBakery project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md
+ 
+ ## Legal Notice
+ 
+-Thank you for considering contributing to this libre software project ("the Project").
+-By submitting contributions to this Project, you agree to comply with the
+-following guidelines:
++Thank you for considering contributing to this open-source project ("the Project"). By submitting contributions to this Project, you agree to comply with the following guidelines:
+ 
+-1. You confirm that each of your contributions was created by you or that you have the
+-necessary rights to submit it under the terms of the Apache 2.0 license.
++1. You confirm that each of your contributions was created by you or that you have the necessary rights to submit it under the terms of the Apache 2.0 license.
+ 
+-2. You grant the Project and its users a perpetual, worldwide, non-exclusive,
+-royalty-free, irrevocable, transferable license to use, modify, display, distribute,
+-and sublicense your contributions under the Apache 2.0 license.
++2. You grant the Project and its users a perpetual, worldwide, non-exclusive, royalty-free, irrevocable, transferable license to use, modify, display, distribute, and sublicense your contributions under the Apache 2.0 license.
+ 
+-3. You acknowledge that your contributions may be publicly available, and you waive
+-any privacy or publicity rights with respect to your contributions.
++3. You acknowledge that your contributions may be publicly available, and you waive any privacy or publicity rights with respect to your contributions.
+ 
+-4. You agree to follow the Project's code of conduct, which ensures a respectful
+-and inclusive environment for all contributors.
++4. You agree to follow the Project's code of conduct, which ensures a respectful and inclusive environment for all contributors.
+ 
+-5. You understand that your contributions are provided "as is," and the Project and
+-its contributors disclaim any warranties or liabilities associated with
+-your contributions.
++5. You understand that your contributions are provided "as is," and the Project and its contributors disclaim any warranties or liabilities associated with your contributions.
+ 
+ 
+ ## License
+ 
+-By contributing to this Project, you agree that your contributions will be licensed
+-under the terms of the Apache 2.0 license. You can find a copy of the license in
+-the [LICENSE file](./LICENSE.txt).
++By contributing to this Project, you agree that your contributions will be licensed under the terms of the Apache 2.0 license. You can find a copy of the license in the [LICENSE file](./LICENSE.txt).
+ 
+ 
+ ## Contact
+ 
+-If you have any questions or concerns regarding these guidelines or the Project,
+-please contact us via the issue tracker or send an email to Felipe Sanches
+-at juca@members.fsf.org
++If you have any questions or concerns regarding these guidelines or the Project, please contact us via the issue tracker or send an email to Felipe Sanches at juca@members.fsf.org
+-- 
+2.30.2
+
