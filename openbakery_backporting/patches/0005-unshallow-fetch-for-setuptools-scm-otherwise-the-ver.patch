@@ -1,0 +1,27 @@
+From ae4b556d952de34e347a7a73acc16a9cf1b7e4fa Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Felipe=20Corr=C3=AAa=20da=20Silva=20Sanches?=
+ <juca@members.fsf.org>
+Date: Fri, 30 Jun 2023 14:52:33 +0100
+Subject: [PATCH 1/1] unshallow fetch for setuptools-scm (otherwise the version
+ is always 0.1.dev1)
+
+---
+ .github/workflows/lint_test.yml | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/.github/workflows/lint_test.yml b/.github/workflows/lint_test.yml
+index a4838ab9..3e26958f 100644
+--- a/.github/workflows/lint_test.yml
++++ b/.github/workflows/lint_test.yml
+@@ -23,8 +23,6 @@ jobs:
+ 
+     steps:
+     - uses: actions/checkout@v3
+-      with:
+-        fetch-depth: 0  # unshallow fetch for setuptools-scm (otherwise the version is always 0.1.dev1)
+ 
+     - name: Set up Python 3.10
+       uses: actions/setup-python@v4
+-- 
+2.30.2
+

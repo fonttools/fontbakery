@@ -1,0 +1,36 @@
+From c0d571571faa58b4a1ce4cae8e829f89ef0e7361 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Felipe=20Corr=C3=AAa=20da=20Silva=20Sanches?=
+ <juca@members.fsf.org>
+Date: Fri, 30 Jun 2023 14:36:08 +0100
+Subject: [PATCH 1/1] OpenBakery-branding & URLs
+
+---
+ .github/ISSUE_TEMPLATE/config.yml   | 2 +-
+ .github/workflows/build_publish.yml | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/.github/ISSUE_TEMPLATE/config.yml b/.github/ISSUE_TEMPLATE/config.yml
+index a6e216fd..a09acff8 100644
+--- a/.github/ISSUE_TEMPLATE/config.yml
++++ b/.github/ISSUE_TEMPLATE/config.yml
+@@ -2,4 +2,4 @@ blank_issues_enabled: false
+ contact_links:
+   - name: Anything else
+     about: Report a bug or ask a question in GitHub Discussions.
+-    url: https://github.com/googlefonts/fontbakery/discussions
++    url: https://github.com/miguelsousa/fontbakery/discussions
+diff --git a/.github/workflows/build_publish.yml b/.github/workflows/build_publish.yml
+index fb2dd90f..50c89eaf 100644
+--- a/.github/workflows/build_publish.yml
++++ b/.github/workflows/build_publish.yml
+@@ -70,6 +70,6 @@ jobs:
+     - name: Create GitHub Release
+       uses: softprops/action-gh-release@v1
+       with:
+-        body: '[Release Notes](https://github.com/googlefonts/fontbakery/blob/main/CHANGELOG.md#${{ steps.date_tag.outputs.VERSION }}---${{ steps.date_tag.outputs.TODAY }})'
++        body: '[Release Notes](https://github.com/miguelsousa/fontbakery/blob/main/CHANGELOG.md#${{ steps.date_tag.outputs.VERSION }}---${{ steps.date_tag.outputs.TODAY }})'
+         prerelease: true
+         files: ./dist/*.tar.gz
+-- 
+2.30.2
+

@@ -1,0 +1,28 @@
+From b6bd13b18504c0c6a896baf66b003e7fc32e70a1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Felipe=20Corr=C3=AAa=20da=20Silva=20Sanches?=
+ <juca@members.fsf.org>
+Date: Fri, 30 Jun 2023 14:59:37 +0100
+Subject: [PATCH 1/1] Codecov also looks great, but...
+
+I am a bit weary of giving it GitHub authorization to "Act on my behalf".
+I need a bit more time to think about it.
+---
+ .github/workflows/lint_test.yml | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/.github/workflows/lint_test.yml b/.github/workflows/lint_test.yml
+index a4838ab9..b3d58c5e 100644
+--- a/.github/workflows/lint_test.yml
++++ b/.github/workflows/lint_test.yml
+@@ -83,3 +83,8 @@ jobs:
+       run: |
+         python -m pytest --quiet --cov
+ 
++    - name: Upload coverage reports to Codecov
++      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10'
++      uses: codecov/codecov-action@v3
++      env:
++        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+-- 
+2.30.2
+
