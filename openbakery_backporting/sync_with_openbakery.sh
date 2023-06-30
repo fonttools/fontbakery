@@ -68,7 +68,7 @@ rm docs/index.md
 rm docs/user-guide.md
 
 # These are OpenBakery branding & URLs:
-patch -p1 -R < openbakery_backporting/patches/0001-OpenBakery-branding-URLs.patch
+# patch -p1 -R < openbakery_backporting/patches/0001-OpenBakery-branding-URLs.patch
 
 # We still use the sphinx dependency for building the Font Bakery Read The Docs pages.
 # We also use the header line
