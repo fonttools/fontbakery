@@ -30,16 +30,16 @@ mv Lib/fontbakery/data/openbakery-microsoft-vendorlist.cache Lib/fontbakery/data
 
 # preserve correct API names
 # (These are subtle case-name differences. We may want to address these quirks of the API on a major release in the future):
-git grep -rl OpenBakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/OpenBakeryCallable/FontbakeryCallable/g'
-git grep -rl OpenBakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/OpenBakeryReporter/FontbakeryReporter/g'
-git grep -rl OpenBakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/OpenBakeryError/FontbakeryError/g'
+git grep -rl OpenBakery -- ':(exclude)openbakery/' | xargs sed -i 's/OpenBakeryCallable/FontbakeryCallable/g'
+git grep -rl OpenBakery -- ':(exclude)openbakery/' | xargs sed -i 's/OpenBakeryReporter/FontbakeryReporter/g'
+git grep -rl OpenBakery -- ':(exclude)openbakery/' | xargs sed -i 's/OpenBakeryError/FontbakeryError/g'
 
 # auto-replace github URLs:
-git grep -rl openbakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/miguelsousa\/openbakery/googlefonts\/fontbakery/g'
+git grep -rl openbakery -- ':(exclude)openbakery/' | xargs sed -i 's/miguelsousa\/openbakery/googlefonts\/fontbakery/g'
 
 # auto-replace project name:
-git grep -rl openbakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/openbakery/fontbakery/g'
-git grep -rl OpenBakery -- ':(exclude)openbakery_backporting/' | xargs sed -i 's/OpenBakery/FontBakery/g'
+git grep -rl openbakery -- ':(exclude)openbakery/' | xargs sed -i 's/openbakery/fontbakery/g'
+git grep -rl OpenBakery -- ':(exclude)openbakery/' | xargs sed -i 's/OpenBakery/FontBakery/g'
 
 # Instances of abusive, harassing, or otherwise unacceptable behavior may be
 # reported to the community leaders responsible for enforcement at:
@@ -67,20 +67,17 @@ rm docs/developer-guide.md
 rm docs/index.md
 rm docs/user-guide.md
 
-# These are OpenBakery branding & URLs:
-# patch -p1 -R < openbakery_backporting/patches/0001-OpenBakery-branding-URLs.patch
-
 # We still use the sphinx dependency for building the Font Bakery Read The Docs pages.
 # We also use the header line
 # --index-url https://pypi.python.org/simple/
 # following advice from Cosimo Lupo, for the reasons described at the article at:
 # https://caremad.io/posts/2013/07/setup-vs-requirement/
 # More detailed info at: https://github.com/googlefonts/fontbakery/issues/2174
-patch -p1 -R < openbakery_backporting/patches/0002-requirements-tests.txt.patch
+patch -p1 -R < openbakery/patches/0002-requirements-tests.txt.patch
 
 # I don't want to delete the comment stating that the munkres dependency
 # should actually be a fonttools dependency
-patch -p1 -R < openbakery_backporting/patches/0003-requirements.txt.patch
+patch -p1 -R < openbakery/patches/0003-requirements.txt.patch
 
 # Renovate sounds like a good tool, but I am not ready yet to deploy it
 # on the GoogleFonts github org. I would have to ask some team members first.
@@ -89,7 +86,7 @@ rm renovate.json
 # Codecov also looks great, but I am a bit weary of giving it GitHub authorization
 # to "Act on my behalf". I need a bit more time to think about it.
 rm codecov.yml
-patch -p1 -R < openbakery_backporting/patches/0004-Codecov-also-looks-great-but.patch
+patch -p1 -R < openbakery/patches/0004-Codecov-also-looks-great-but.patch
 
 
 ##### A few tweaks to the CONTRIBUTING.md file: #####
@@ -102,11 +99,11 @@ patch -p1 -R < openbakery_backporting/patches/0004-Codecov-also-looks-great-but.
 #       in order to more clearly signal that it is not a Google-biased project.
 #
 # We also improved the description of the project goals.
-patch -p1 -R < openbakery_backporting/patches/0005-minimizing-diff-to-CONTRIBUTING.md.patch
+patch -p1 -R < openbakery/patches/0005-minimizing-diff-to-CONTRIBUTING.md.patch
 
 
 ##### FontBakery's fixes that should be applied to Open Bakery as well:
 
 # Fix for setuptools-scm, overwise package version always ends up being "0.1.dev1":
-patch -p1 -R < openbakery_backporting/patches/0006-unshallow-fetch-for-setuptools-scm-otherwise-the-ver.patch
+patch -p1 -R < openbakery/patches/0006-unshallow-fetch-for-setuptools-scm-otherwise-the-ver.patch
 
