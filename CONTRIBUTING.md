@@ -13,17 +13,28 @@ all involved. The community looks forward to your contributions. 🎉
 If this is your first contribution to FontBakery, we have a [tutorial] that walks
 you through setting up your developer environment, making a change, and testing it.
 
-[tutorial]: https://miguelsousa.github.io/fontbakery/dev-setup.html
+[tutorial]: https://font-bakery.readthedocs.io/en/latest/developer/source-contrib-guide.html
 
+## Google CLA
+
+Contributions to this project must be accompanied by a Contributor License Agreement.
+You (or your employer) retain the copyright to your contribution;  this simply gives
+us permission to use and redistribute your contributions as part of the project.
+Head over to <https://cla.developers.google.com/> to see your current agreements
+on file or to sign a new one.
+
+You generally only need to submit a CLA once, so if you've already submitted one
+(even if it was for a different project), you probably don't need to do it again.
 
 ## Our mission
 
 FontBakery is a community project. Consequently, it is wholly dependent on its
 community to provide a productive, friendly and collaborative environment.
 
-The first and foremost goal of the FontBakery community is to provide
-`fontbakery`, a command-line tool that simplifies the process of performing
-quality assurance on font files.
+The first and foremost goal of the Font Bakery community is to discover and
+document all possible problems that a font project can have, and then use that
+knowledge to provide `fontbakery`, a tool that simplifies the process
+of performing quality assurance on font files.
 
 The second and equally important goal is to create and maintain a community of
 developers that foster easy and agile development of such tool.
@@ -61,10 +72,13 @@ for small changes, but bigger changes should look like this:
     >
     > A paragraph describing what changed and its impact."
 
+If there's an issue describing the problem fixed or feature implemented, be sure to
+unclude a reference to it in the log message: `(issue #123)`
+
 Make sure you don't include `@mentions` in your commit messages.
 
-This is open source software. Consider the people who will read your code, and
-make it look nice for them. 😍
+This is collaboratively developed free software. Consider the people who will read
+your code, and make it look nice for them. 😍
 
 [Black]: https://github.com/psf/black
 
@@ -77,14 +91,6 @@ from the **main** branch.
 Prefix the branch's name with your GitHub handler, followed by a forward slash `/`.
 This way we know who created the branch, and all your branches will be grouped
 together.
-
-
-## Testing your changes
-
-This [guide] will walk you through the steps of running the unit tests locally.
-
-[guide]: https://miguelsousa.github.io/fontbakery/run-tests-locally.html
-
 
 ## When to open a pull request
 
