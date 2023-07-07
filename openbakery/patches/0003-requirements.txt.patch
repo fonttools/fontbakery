@@ -10,7 +10,7 @@ index 07ad9ae0..88088284 100644
 @@ -12,7 +11,7 @@ freetype-py==2.3.0  # pinned for now. See: https://github.com/googlefonts/fontba
  gflanguages==0.8.9
  glyphsets==0.6.2
- lxml==4.9.2
+ lxml==4.9.3
 -munkres==1.1.4  # This should be a dependency of fonttools instead!
 +munkres==1.1.4
  opentype-sanitizer==9.1.0
