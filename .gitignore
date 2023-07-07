@@ -10,6 +10,5 @@ _version.py
 venv
 docs/_build
 .eggs
-.tox
 .idea
 .DS_Store

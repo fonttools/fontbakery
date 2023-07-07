@@ -11,9 +11,6 @@ source = fontbakery
 [paths]
 source =
     Lib/fontbakery
-    .tox*/*/Lib/python*/site-packages/fontbakery
-    .tox*/*/Lib/site-packages/fontbakery
-    .tox*/pypy*/site-packages/fontbakery
 
 [report]
 # Regexes for lines to exclude from consideration
