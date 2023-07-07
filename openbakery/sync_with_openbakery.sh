@@ -104,7 +104,7 @@ patch -p1 -R < openbakery/patches/0004-Codecov-also-looks-great-but.patch
 #       in order to more clearly signal that it is not a Google-biased project.
 #
 # We also improved the description of the project goals.
-patch -p1 -R < openbakery/patches/0005-minimizing-diff-to-CONTRIBUTING.md.patch
+patch -p1 -R < openbakery/patches/0005-fixes-to-CONTRIBUTING.md.patch
 
 
 ##### FontBakery's fixes that should be applied to Open Bakery as well:
@@ -112,3 +112,11 @@ patch -p1 -R < openbakery/patches/0005-minimizing-diff-to-CONTRIBUTING.md.patch
 # Fix for setuptools-scm, overwise package version always ends up being "0.1.dev1":
 patch -p1 -R < openbakery/patches/0006-unshallow-fetch-for-setuptools-scm-otherwise-the-ver.patch
 
+# Font Bakery won't remove the "check-" prefix from commands like "check-googlefonts" or "check-universal"
+# on the command line because there may be other commands in the future such as "fix-something"
+# as we had in the past. Those fixers were split out into the gftools project, but may be reintroduced
+# later. It is good to keep the prefix, which has a purpose equivalent to a "namespace".
+#
+# This was discussed at:
+# https://github.com/miguelsousa/openbakery/commit/489a2cc76e009a7c7a6d4bd3d4f3be1a9db641bd#commitcomment-119393361
+patch -p1 -R < openbakery/patches/0007-Removal-of-check-prefix-on-subcommands.patch
