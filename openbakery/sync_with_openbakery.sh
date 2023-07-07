@@ -3,8 +3,9 @@
 # in sync except for the extremely rare occasions when there's disagreement on what
 # Miguel Sousa is doing there.
 
-# Backup our changelog:
+# Backup a few things:
 mv CHANGELOG.md CHANGELOG.md.fontbakery
+mv venv venv.fontbakery
 
 #### Get the latest contents from the Open Bakery github repo ####
 cd ~/devel/openbakery/
@@ -56,6 +57,10 @@ rm -f data/openbakery.jpg
 
 # We have our own changelog:
 mv CHANGELOG.md.fontbakery CHANGELOG.md
+
+# And our own virtual environment
+rm -rf venv
+mv venv.fontbakery venv
 
 # We also have our own documentation for now,
 # even though I would be happy to merge both projects docs soon:
