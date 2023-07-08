@@ -282,14 +282,14 @@ def com_google_fonts_check_italic_angle(ttFont, style):
             passed = False
             yield FAIL, Message(
                 "zero-italic",
-                ("Font is italic, so post.italicAngle should be non-zero."),
+                "Font is italic, so post.italicAngle should be non-zero.",
             )
     else:
         if ttFont["post"].italicAngle != 0:
             passed = False
             yield FAIL, Message(
                 "non-zero-upright",
-                ("Font is not italic, so post.italicAngle should be equal to zero."),
+                "Font is not italic, so post.italicAngle should be equal to zero.",
             )
 
     if bad_glyphs:

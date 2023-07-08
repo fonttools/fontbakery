@@ -92,7 +92,7 @@ def test_check_monospace():
         check(ttFont),
         FAIL,
         "bad-post-isFixedPitch",
-        "with a non-monospaced font with bad" " post.isFixedPitch value ...",
+        "with a non-monospaced font with bad post.isFixedPitch value ...",
     )
 
     # restore good value:
@@ -148,7 +148,7 @@ def test_check_monospace():
         check(ttFont),
         FAIL,
         "mono-bad-post-isFixedPitch",
-        "with a monospaced font with" " bad post.isFixedPitch value ...",
+        "with a monospaced font with bad post.isFixedPitch value ...",
     )
 
     # There are several bad panose proportion values for a monospaced font.

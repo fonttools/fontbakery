@@ -402,7 +402,7 @@ def test_check_description_eof_linebreak():
         "when we lack an end-of-file linebreak...",
     )
 
-    good = "On the other hand, this one\n" "is good enough.\n"
+    good = "On the other hand, this one\nis good enough.\n"
     assert_PASS(check(font, {"description": good}), "when we add one...")
 
 
@@ -712,7 +712,7 @@ def test_check_metadata_designer_values():
         check(font, {"family_metadata": md}),
         FAIL,
         "slash",
-        "with a bad multiple-designers string" " (names separated by a slash char)...",
+        "with a bad multiple-designers string (names separated by a slash char)...",
     )
 
 
@@ -2763,7 +2763,7 @@ def test_check_metadata_nameid_copyright():
         check(font, {"font_metadata": md}),
         FAIL,
         "mismatch",
-        "with a bad METADATA.pb" " (with a copyright string not matching this font)...",
+        "with a bad METADATA.pb (with a copyright string not matching this font)...",
     )
 
 
@@ -3486,13 +3486,13 @@ def test_check_family_control_chars():
     )
 
     good_font = TEST_FILE(
-        "bad_character_set/control_chars/" "FontbakeryTesterCCGood-Regular.ttf"
+        "bad_character_set/control_chars/FontbakeryTesterCCGood-Regular.ttf"
     )
     onebad_cc_font = TEST_FILE(
-        "bad_character_set/control_chars/" "FontbakeryTesterCCOneBad-Regular.ttf"
+        "bad_character_set/control_chars/FontbakeryTesterCCOneBad-Regular.ttf"
     )
     multibad_cc_font = TEST_FILE(
-        "bad_character_set/control_chars/" "FontbakeryTesterCCMultiBad-Regular.ttf"
+        "bad_character_set/control_chars/FontbakeryTesterCCMultiBad-Regular.ttf"
     )
 
     # No unacceptable control characters should pass with one file
@@ -3631,7 +3631,7 @@ def test_check_repo_vf_has_static_fonts(tmp_path):
         check(dir_path, {"family_directory": family_dir}),
         FAIL,
         "empty",
-        "for a VF family which has a static dir" " but no fonts in the static dir.",
+        "for a VF family which has a static dir but no fonts in the static dir.",
     )
 
     static_fonts = portable_path("data/test/cabin")
@@ -4176,7 +4176,7 @@ def test_check_varfont_instance_coordinates(vf_ttFont):
         check(vf_ttFont2),
         FAIL,
         "bad-fvar-instances",
-        "with a variable font which does not have" " correct instance coordinates.",
+        "with a variable font which does not have correct instance coordinates.",
     )
 
 
