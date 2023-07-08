@@ -197,7 +197,7 @@ def GLYPHSAPP_TEST_FILE(f):
     import glyphsLib
 
     the_file = portable_path(f"{PATH_TEST_DATA_GLYPHS_FILES}{f}")
-    return glyphsLib.load(open(the_file))
+    return glyphsLib.load(open(the_file, encoding="utf-8"))
 
 
 def assert_PASS(check_results, reason="with a good font...", ignore_error=None):

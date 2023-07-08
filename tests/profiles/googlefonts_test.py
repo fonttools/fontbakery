@@ -324,7 +324,7 @@ def test_check_description_valid_html():
         check(font), "with description file that contains a good HTML snippet..."
     )
 
-    bad_desc = open(TEST_FILE("cabin/FONTLOG.txt"), "r").read()  # :-)
+    bad_desc = open(TEST_FILE("cabin/FONTLOG.txt"), "r", encoding="utf-8").read()
     assert_results_contain(
         check(font, {"description": bad_desc}),
         FAIL,
@@ -3694,7 +3694,7 @@ def test_check_repo_fb_report(tmp_path):
     )
 
     # Add a json file that is not a FB report
-    open(os.path.join(family_dir, "something_else.json"), "w+").write(
+    open(os.path.join(family_dir, "something_else.json"), "w+", encoding="utf-8").write(
         "this is not a FB report"
     )
 
@@ -3712,7 +3712,9 @@ def test_check_repo_fb_report(tmp_path):
     # should not rely only on filename (such as "Jura-Regular.fb-report.json")
     # but should instead inspect the contents of the file:
     open(
-        os.path.join(family_dir, "jura", "static", "my_fontfamily_name.json"), "w+"
+        os.path.join(family_dir, "jura", "static", "my_fontfamily_name.json"),
+        "w+",
+        encoding="utf-8",
     ).write(FB_REPORT_SNIPPET)
     assert_results_contain(
         check([], {"family_directory": family_dir}),
@@ -3740,7 +3742,7 @@ def test_check_repo_zip_files(tmp_path):
         # ZIP files must be detected even if placed on subdirectories:
         filepath = os.path.join(family_dir, "jura", "static", f"fonts-release.{ext}")
         # create an empty file. The check won't care about the contents:
-        open(filepath, "w+")
+        open(filepath, "w+", encoding="utf-8")
         assert_results_contain(
             check([], {"family_directory": family_dir}),
             FAIL,

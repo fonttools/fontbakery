@@ -48,7 +48,10 @@ def test_check_shaping_regression():
     }
 
     with tempfile.TemporaryDirectory() as tmp_gf_dir:
-        json.dump(shaping_test, open(os.path.join(tmp_gf_dir, "test.json"), "w"))
+        json.dump(
+            shaping_test,
+            open(os.path.join(tmp_gf_dir, "test.json"), "w", encoding="utf-8"),
+        )
 
         config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
 
@@ -74,7 +77,10 @@ def test_check_shaping_forbidden():
     }
 
     with tempfile.TemporaryDirectory() as tmp_gf_dir:
-        json.dump(shaping_test, open(os.path.join(tmp_gf_dir, "test.json"), "w"))
+        json.dump(
+            shaping_test,
+            open(os.path.join(tmp_gf_dir, "test.json"), "w", encoding="utf-8"),
+        )
 
         config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
 
@@ -100,7 +106,10 @@ def test_check_shaping_collides():
     }
 
     with tempfile.TemporaryDirectory() as tmp_gf_dir:
-        json.dump(shaping_test, open(os.path.join(tmp_gf_dir, "test.json"), "w"))
+        json.dump(
+            shaping_test,
+            open(os.path.join(tmp_gf_dir, "test.json"), "w", encoding="utf-8"),
+        )
 
         config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
 

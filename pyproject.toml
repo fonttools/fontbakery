@@ -87,7 +87,6 @@ disable = [
 	"unexpected-keyword-arg",
 	"unnecessary-dict-index-lookup",
 	"unnecessary-pass",
-	"unspecified-encoding",
 	"unused-argument",
 	"unused-variable",
 	"use-a-generator",

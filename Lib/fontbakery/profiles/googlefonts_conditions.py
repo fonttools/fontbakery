@@ -32,7 +32,7 @@ def RIBBI_ttFonts(ttFonts):
 def glyphsFile(glyphs_file):
     import glyphsLib
 
-    return glyphsLib.load(open(glyphs_file))
+    return glyphsLib.load(open(glyphs_file, encoding="utf-8"))
 
 
 @condition
@@ -288,7 +288,7 @@ def licenses(family_directory):
 @condition
 def license_contents(license_path):
     if license_path:
-        return open(license_path).read().replace(" \n", "\n")
+        return open(license_path, encoding="utf-8").read().replace(" \n", "\n")
 
 
 @condition
@@ -452,7 +452,7 @@ def rfn_exception(familyname):
 
     rfn_exceptions_txt = "data/googlefonts/reserved_font_name_exceptions.txt"
     filename = resource_filename("fontbakery", rfn_exceptions_txt)
-    for exception in open(filename, "r").readlines():
+    for exception in open(filename, "r", encoding="utf-8").readlines():
         exception = exception.split("#")[0].strip()
         exception = exception.replace(" ", "")
         if exception == "":
@@ -687,7 +687,7 @@ def upstream_yaml(family_directory):
     fp = os.path.join(family_directory, "upstream.yaml")
     if not os.path.isfile(fp):
         return None
-    return yaml.load(open(fp, "r"), yaml.FullLoader)
+    return yaml.load(open(fp, "r", encoding="utf-8"), yaml.FullLoader)
 
 
 @condition

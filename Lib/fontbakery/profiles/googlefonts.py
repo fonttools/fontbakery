@@ -4844,7 +4844,7 @@ def com_google_fonts_check_name_family_name_compliance(ttFont):
 
         # Process exceptions
         filename = resource_filename("fontbakery", camelcase_exceptions_txt)
-        for exception in open(filename, "r").readlines():
+        for exception in open(filename, "r", encoding="utf-8").readlines():
             exception = exception.split("#")[0].strip()
             if exception == "":
                 continue
@@ -4871,7 +4871,7 @@ def com_google_fonts_check_name_family_name_compliance(ttFont):
 
         # Process exceptions
         filename = resource_filename("fontbakery", abbreviations_exceptions_txt)
-        for exception in open(filename, "r").readlines():
+        for exception in open(filename, "r", encoding="utf-8").readlines():
             exception = exception.split("#")[0].strip()
             if exception == "":
                 continue
@@ -5145,7 +5145,7 @@ def com_google_fonts_check_repo_fb_report(family_directory):
         [
             f
             for f in filenames_ending_in(".json", family_directory)
-            if '"result"' in open(f).read()
+            if '"result"' in open(f, encoding="utf-8").read()
         ]
     )
     if not has_report_files:
@@ -6184,7 +6184,7 @@ def com_google_fonts_check_STAT_axis_order(fonts):
 def com_google_fonts_check_metadata_escaped_strings(metadata_file):
     """Ensure METADATA.pb does not use escaped strings."""
     passed = True
-    for line in open(metadata_file, "r").readlines():
+    for line in open(metadata_file, "r", encoding="utf-8").readlines():
         for quote_char in ["'", '"']:
             segments = line.split(quote_char)
             if len(segments) >= 3:

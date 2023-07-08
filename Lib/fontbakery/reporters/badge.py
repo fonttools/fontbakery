@@ -95,7 +95,7 @@ class BadgeReporter(SerializeReporter):
 
             sanitize_name = section.replace(" ", "")
             filename = os.path.join(self.output_file, sanitize_name) + ".json"
-            with open(filename, "w") as fh:
+            with open(filename, "w", encoding="utf-8") as fh:
                 json.dump(data, fh, sort_keys=True, indent=4)
 
         print(f'A set of badges in JSON format has been saved to "{self.output_file}/"')
