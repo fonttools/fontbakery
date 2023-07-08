@@ -984,7 +984,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
         ttFont.saveXML(xml_file)
         export_error_msgs = logger.msgs
 
-        if len(export_error_msgs):
+        if export_error_msgs:
             failed = True
             yield INFO, (
                 "While converting TTF into an XML file,"

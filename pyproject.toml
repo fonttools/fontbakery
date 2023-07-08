@@ -54,7 +54,6 @@ disable = [
 	"inconsistent-return-statements",
 	"invalid-name",
 	"keyword-arg-before-vararg",
-	"len-as-condition",
 	"logging-not-lazy",
 	"missing-docstring",
 	"multiple-statements",

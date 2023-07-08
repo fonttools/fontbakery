@@ -284,7 +284,7 @@ class CheckRunner:
 
     def _get(self, name, iterargs, path, *args):
         iterargsDict = dict(iterargs)
-        has_fallback = bool(len(args))
+        has_fallback = len(args) > 0
         if has_fallback:
             fallback = args[0]
 

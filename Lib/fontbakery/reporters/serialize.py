@@ -140,7 +140,7 @@ class SerializeReporter(FontbakeryReporter):
 
             check = self._items[key]
             if self._results_by:
-                if not len(sectionDoc["checks"]):
+                if not sectionDoc["checks"]:
                     clusterlen = self._max_cluster_by_index + 1
                     if self._results_by != "*check":
                         # + 1 for rests bucket
