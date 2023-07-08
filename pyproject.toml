@@ -24,7 +24,11 @@ filterwarnings = [
 # ============================================================================
 [tool.pylint.master]
 ignore-patterns = ".*_pb2.py"
+jobs = 0  # Specifying 0 will auto-detect the number of processors available to use
 logging-format-style = "new"
+msg-template = "{msg_id} ({symbol}) {path} @ {line} — {msg}"
+output-format = "colorized"
+score = "n"
 
 [tool.pylint.'MESSAGES CONTROL']
 disable = [
