@@ -260,7 +260,7 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
     from fontbakery.constants import NameID, FsSelection
 
     failed = False
-    family_name_and_bold_italic = list()
+    family_name_and_bold_italic = []
     for ttFont in RIBBI_ttFonts:
         names_list = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
         # names_list will likely contain multiple entries, e.g. multiple copies

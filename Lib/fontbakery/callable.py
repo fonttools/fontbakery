@@ -61,7 +61,7 @@ class FontbakeryCallable:
     @property
     @cached_getter
     def mandatoryArgs(self):
-        args = list()
+        args = []
         # make follow_wrapped=True explicit, even though it is the default!
         sig = inspect.signature(self, follow_wrapped=True)
         for name, param in sig.parameters.items():
@@ -84,7 +84,7 @@ class FontbakeryCallable:
     @property
     @cached_getter
     def optionalArgs(self):
-        args = list()
+        args = []
         # make follow_wrapped=True explicit, even though it is the default!
         sig = inspect.signature(self, follow_wrapped=True)
         for name, param in sig.parameters.items():
