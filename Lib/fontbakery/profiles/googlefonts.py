@@ -2055,10 +2055,7 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
     """Are there non-ASCII characters in ASCII-only NAME table entries?"""
     bad_entries = []
     for name in ttFont["name"].names:
-        if (
-            name.nameID == NameID.COPYRIGHT_NOTICE
-            or name.nameID == NameID.POSTSCRIPT_NAME
-        ):
+        if name.nameID in (NameID.COPYRIGHT_NOTICE, NameID.POSTSCRIPT_NAME):
             string = name.string.decode(name.getEncoding())
             try:
                 string.encode("ascii")
