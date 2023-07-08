@@ -86,7 +86,6 @@ disable = [
 	"too-many-statements",
 	"undefined-loop-variable",
 	"unexpected-keyword-arg",
-	"unnecessary-comprehension",
 	"unnecessary-dict-index-lookup",
 	"unnecessary-pass",
 	"unspecified-encoding",
