@@ -124,10 +124,9 @@ def test_example_checkrunner_based(cabin_regular_path):
     from fontbakery.checkrunner import CheckRunner
     from fontbakery.profiles.googlefonts import profile
 
-    values = dict(fonts=[cabin_regular_path])
     runner = CheckRunner(
         profile,
-        values,
+        {"fonts": [cabin_regular_path]},
         Configuration(explicit_checks=["com.google.fonts/check/vendor_id"]),
     )
 
@@ -4839,30 +4838,42 @@ def test_check_fvar_instances(fp, mod, result):
             ],
             # STAT for Cabin[wdth,wght].ttf
             [
-                dict(
-                    name="Weight",
-                    tag="wght",
-                    values=[
-                        dict(value=400, name="Regular", linkedValue=700.0, flags=0x2),
-                        dict(value=500, name="Medium"),
-                        dict(value=600, name="SemiBold"),
-                        dict(value=700, name="Bold"),
+                {
+                    "name": "Weight",
+                    "tag": "wght",
+                    "values": [
+                        {
+                            "value": 400,
+                            "name": "Regular",
+                            "linkedValue": 700.0,
+                            "flags": 0x2,
+                        },
+                        {"value": 500, "name": "Medium"},
+                        {"value": 600, "name": "SemiBold"},
+                        {"value": 700, "name": "Bold"},
                     ],
-                ),
-                dict(
-                    name="Width",
-                    tag="wdth",
-                    values=[
-                        dict(value=75, name="Condensed"),
-                        dict(value=87.5, name="SemiCondensed"),
-                        dict(value=100, name="Normal", flags=0x2),
+                },
+                {
+                    "name": "Width",
+                    "tag": "wdth",
+                    "values": [
+                        {"value": 75, "name": "Condensed"},
+                        {"value": 87.5, "name": "SemiCondensed"},
+                        {"value": 100, "name": "Normal", "flags": 0x2},
                     ],
-                ),
-                dict(
-                    name="Italic",
-                    tag="ital",
-                    values=[dict(value=0.0, name="Normal", linkedValue=1.0, flags=0x2)],
-                ),
+                },
+                {
+                    "name": "Italic",
+                    "tag": "ital",
+                    "values": [
+                        {
+                            "value": 0.0,
+                            "name": "Normal",
+                            "linkedValue": 1.0,
+                            "flags": 0x2,
+                        }
+                    ],
+                },
             ],
             PASS,
         ),

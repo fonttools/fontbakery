@@ -287,7 +287,7 @@ class TerminalProgress(FontbakeryReporter):
 
         # together with unicode_literals `str('status')` seems the best
         # py2 and py3 compatible solution
-        status = type(str("status"), (object,), dict(count=0, progressbar=[]))
+        status = type(str("status"), (object,), {"count": 0, "progressbar": []})
 
         def _append(status, item, length=1, separator=""):
             # * assuming a standard item will take one column in the tty

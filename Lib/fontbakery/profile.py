@@ -204,7 +204,10 @@ class Profile:
         # If not module_spec: this is only a problem in multiprocessing, in
         # that case we'll be failing to access this with an AttributeError.
         if module_spec is not None:
-            self.module_locator = dict(name=module_spec.name, origin=module_spec.origin)
+            self.module_locator = {
+                "name": module_spec.name,
+                "origin": module_spec.origin,
+            }
 
     _valid_namespace_types = {
         "iterargs": "iterarg",
