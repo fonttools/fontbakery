@@ -92,6 +92,5 @@ disable = [
 	"unused-argument",
 	"unused-variable",
 	"use-a-generator",
-	"use-dict-literal",
 	"used-before-assignment",
 ]

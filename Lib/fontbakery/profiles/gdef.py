@@ -149,7 +149,7 @@ def com_google_fonts_check_gdef_non_mark_chars(ttFont, config):
             if _is_non_spacing_mark_char(charcode) is False
         }
         nonmark_char_glyphnames = {cmap[c] for c in nonmark_chars}
-        glyphname_to_char_mapping = dict()
+        glyphname_to_char_mapping = {}
         for k, v in cmap.items():
             if v in glyphname_to_char_mapping:
                 glyphname_to_char_mapping[v].add(k)

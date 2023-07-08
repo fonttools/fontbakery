@@ -408,7 +408,7 @@ def main(profile=None, values=None):
             full_lists=args.full_lists,
         )
     )
-    runner_kwds = dict(values=values_, config=configuration)
+    runner_kwds = {"values": values_, "config": configuration}
     try:
         runner = CheckRunner(profile, **runner_kwds)
     except ValueValidationError as e:

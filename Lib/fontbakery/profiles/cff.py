@@ -83,7 +83,7 @@ def _analyze_cff(analysis, top_dict, private_dict, fd_index=0):
         except RecursionError:
             analysis.glyphs_recursion_errors.append(glyph_name)
             continue
-        info = dict()
+        info = {}
         info["subrs"] = subrs
         info["global_subrs"] = global_subrs
         info["gsubr_bias"] = gsubr_bias

@@ -60,15 +60,15 @@ class SerializeReporter(FontbakeryReporter):
             self._items[key] = item
             # init
             if status in (START, END) and not item:
-                item.update(dict(result=None, sections=[]))
+                item.update({"result": None, "sections": []})
                 if self._results_by:
                     # give the consumer a clue that/how the sections
                     # are structured differently.
                     item["clusteredBy"] = self._results_by
             if status == SECTIONSUMMARY:
-                item.update(dict(key=key, result=None, checks=[]))
+                item.update({"key": key, "result": None, "checks": []})
             if check:
-                item.update(dict(key=key, result=None, logs=[]))
+                item.update({"key": key, "result": None, "logs": []})
                 if self._results_by:
                     if self._results_by == "*check":
                         if check.id not in self._observed_checks:
