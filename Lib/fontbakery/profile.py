@@ -658,7 +658,10 @@ class Profile:
                 if other_section is not section:
                     logging.debug(
                         "Check {} is already registered in {}, skipping "
-                        "register in {}.".format(func, other_section, section)
+                        "register in {}.",
+                        func,
+                        other_section,
+                        section,
                     )
                 return False  # skipped
             else:

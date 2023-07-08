@@ -55,7 +55,6 @@ disable = [
 	"invalid-name",
 	"keyword-arg-before-vararg",
 	"len-as-condition",
-	"logging-format-interpolation",
 	"logging-not-lazy",
 	"missing-docstring",
 	"multiple-statements",
