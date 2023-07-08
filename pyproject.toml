@@ -93,6 +93,5 @@ disable = [
 	"unused-variable",
 	"use-a-generator",
 	"use-dict-literal",
-	"use-implicit-booleaness-not-comparison",
 	"used-before-assignment",
 ]
