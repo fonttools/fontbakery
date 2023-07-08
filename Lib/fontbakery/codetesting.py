@@ -98,7 +98,7 @@ class CheckTester:
         if key in self.runner._cache["conditions"]:
             return self.runner._cache["conditions"][key][1]
 
-    def __call__(self, values, condition_overrides={}):
+    def __call__(self, values, condition_overrides=None):
         from fontTools.ttLib import TTFont
         from fontbakery.profiles.googlefonts_conditions import family_metadata
         from glyphsLib import GSFont
