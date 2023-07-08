@@ -30,7 +30,6 @@ logging-format-style = "new"
 disable = [
 	"abstract-method",
 	"arguments-renamed",
-	"attribute-defined-outside-init",
 	"broad-except",
 	"broad-exception-raised",
 	"c-extension-no-member",
