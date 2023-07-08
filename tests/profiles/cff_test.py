@@ -25,14 +25,14 @@ def test_check_cff_call_depth():
         check(font),
         FAIL,
         "max-depth",
-        "- Subroutine call depth exceeded" ' maximum of 10 for glyph "D".',
+        '- Subroutine call depth exceeded maximum of 10 for glyph "D".',
     )
 
     assert_results_contain(
         check(font),
         FAIL,
         "max-depth",
-        "- Subroutine call depth exceeded" ' maximum of 10 for glyph "E".',
+        '- Subroutine call depth exceeded maximum of 10 for glyph "E".',
     )
 
     assert_results_contain(
@@ -58,14 +58,14 @@ def test_check_cff2_call_depth():
         check(font),
         FAIL,
         "max-depth",
-        "Subroutine call depth exceeded" ' maximum of 10 for glyph "D".',
+        'Subroutine call depth exceeded maximum of 10 for glyph "D".',
     )
 
     assert_results_contain(
         check(font),
         FAIL,
         "max-depth",
-        "Subroutine call depth exceeded" ' maximum of 10 for glyph "E".',
+        'Subroutine call depth exceeded maximum of 10 for glyph "E".',
     )
 
     assert_results_contain(

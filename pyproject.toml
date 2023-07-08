@@ -49,7 +49,6 @@ disable = [
 	"fixme",
 	"global-statement",
 	"global-variable-undefined",
-	"implicit-str-concat",
 	"import-outside-toplevel",
 	"inconsistent-return-statements",
 	"invalid-name",
