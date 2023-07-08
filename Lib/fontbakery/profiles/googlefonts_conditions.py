@@ -229,7 +229,7 @@ def registered_vendor_ids():
             if not cells:
                 continue
 
-            labels = [label for label in cells[1].stripped_strings]
+            labels = list(cells[1].stripped_strings)
 
             # pad the code to make sure it is a 4 char string,
             # otherwise eg "CF  " will not be matched to "CF"
