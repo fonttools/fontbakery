@@ -199,7 +199,8 @@ def test_check_unique_glyphnames():
     # Load again, we changed the font directly.
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     ttFont.setGlyphOrder(glyph_names)
-    ttFont["post"]  # Just access the data to make fonttools generate it.
+    # Just access the data to make fonttools generate it.
+    ttFont["post"]  # pylint:disable=pointless-statement
     _file = io.BytesIO()
     _file.name = ttFont.reader.file.name
     ttFont.save(_file)

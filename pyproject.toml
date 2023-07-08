@@ -64,7 +64,6 @@ disable = [
 	"no-else-return",
 	"no-member",
 	"no-name-in-module",
-	"pointless-statement",
 	"protected-access",
 	"raise-missing-from",
 	"redefined-outer-name",
