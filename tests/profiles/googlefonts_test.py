@@ -3901,7 +3901,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
         "enabled and the fonts being checked don't.",
     )
 
-    if 0:  # FIXME:
+    if 0:  # FIXME: pylint:disable=W0125
         # Pass if family on Google Fonts doesn't have fsSelection bit 7 enabled
         # but checked fonts have taken this into consideration
         check(ttFonts)
@@ -3927,7 +3927,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
             " fonts win metrics.",
         )
 
-    if 0:  # FIXME:
+    if 0:  # FIXME: pylint:disable=W0125
         # Same as previous check but using a remote font which has a different upm
         check(ttFonts)
         remote_regular = check["regular_remote_style"]
