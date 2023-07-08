@@ -613,7 +613,7 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
     from collections import Counter
     from fontbakery.utils import get_name_entry_strings
 
-    family_names = list()
+    family_names = []
     for ttFont in ttFonts:
         names_list = get_name_entry_strings(
             ttFont,
