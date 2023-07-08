@@ -96,5 +96,4 @@ disable = [
 	"use-implicit-booleaness-not-comparison",
 	"use-list-literal",
 	"used-before-assignment",
-	"using-constant-test",
 ]
