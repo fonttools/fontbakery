@@ -689,20 +689,14 @@ class PointsPen(BasePen):
     def highestPoint(self):
         highest = None
         for p in self.points:
-            if (
-                highest is None
-                or p[1] > highest[1]  # pylint: disable=unsubscriptable-object
-            ):
+            if highest is None or p[1] > highest[1]:  # pylint: disable=E1136
                 highest = p
         return highest
 
     def lowestPoint(self):
         lowest = None
         for p in self.points:
-            if (
-                lowest is None
-                or p[1] < lowest[1]  # pylint: disable=unsubscriptable-object
-            ):
+            if lowest is None or p[1] < lowest[1]:  # pylint: disable=E1136
                 lowest = p
         return lowest
 
