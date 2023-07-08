@@ -24,6 +24,7 @@ filterwarnings = [
 # ============================================================================
 [tool.pylint.master]
 ignore-patterns = ".*_pb2.py"
+logging-format-style = "new"
 
 [tool.pylint.'MESSAGES CONTROL']
 disable = [
@@ -55,7 +56,6 @@ disable = [
 	"keyword-arg-before-vararg",
 	"len-as-condition",
 	"logging-format-interpolation",
-	"logging-fstring-interpolation",
 	"logging-not-lazy",
 	"missing-docstring",
 	"multiple-statements",

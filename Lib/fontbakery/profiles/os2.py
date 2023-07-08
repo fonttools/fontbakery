@@ -392,9 +392,6 @@ def com_thetypefounders_check_vendor_id(config, ttFont):
 )
 def com_google_fonts_check_fsselection(ttFont, style):
     """Checking OS/2 fsSelection value."""
-    import logging
-
-    logging.warning(f"{ttFont}, {style}")
     from fontbakery.utils import check_bit_entry
     from fontbakery.constants import STATIC_STYLE_NAMES, RIBBI_STYLE_NAMES, FsSelection
 
