@@ -42,7 +42,6 @@ disable = [
 	"consider-using-ternary",
 	"consider-using-with",
 	"cyclic-import",
-	"dangerous-default-value",
 	"duplicate-code",
 	"f-string-without-interpolation",
 	"fixme",

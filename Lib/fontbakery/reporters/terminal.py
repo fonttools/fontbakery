@@ -157,7 +157,7 @@ class TerminalProgress(FontbakeryReporter):
         print_progress=True,
         stdout=sys.stdout,
         structure_threshold=None,
-        theme=LIGHT_THEME,
+        theme=None,
         succinct=None,
         cupcake=True,
         # a tuple of structural statuses to be skipped
@@ -167,7 +167,7 @@ class TerminalProgress(FontbakeryReporter):
     ):
         super().__init__(**kwd)
 
-        self.theme = theme
+        self.theme = theme or LIGHT_THEME
         self.succinct = succinct
         self._print_progress = stdout.isatty() and print_progress
 

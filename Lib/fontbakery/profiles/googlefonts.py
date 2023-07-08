@@ -4198,7 +4198,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
         yield FAIL, "Font is missing STAT table"
         return
 
-    axes_to_check = {
+    AXES_TO_CHECK = {
         "CASL",
         "CRSV",
         "FILL",
@@ -4211,7 +4211,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
         "WONK",
     }
 
-    def stat_axis_values(ttFont, include_axes=axes_to_check):
+    def stat_axis_values(ttFont):
         name = ttFont["name"]
         stat = ttFont["STAT"].table
         axes = [a.AxisTag for a in stat.DesignAxisRecord.Axis]
@@ -4224,7 +4224,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
             if ax.Format == 4:
                 continue
             axis_tag = axes[ax.AxisIndex]
-            if axis_tag not in include_axes:
+            if axis_tag not in AXES_TO_CHECK:
                 continue
             ax_name = name.getName(ax.ValueNameID, 3, 1, 0x409).toUnicode()
             if ax.Format == 2:
