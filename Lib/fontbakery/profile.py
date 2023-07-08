@@ -285,7 +285,7 @@ class Profile:
                     condition = self.conditions.get(name, None)
                     if condition is not None:
                         dependencies += condition.args
-        if len(failed):
+        if failed:
             comma_separated = ", ".join(failed)
             raise SetupError(
                 f"Profile uses names that are not declared"
@@ -306,7 +306,7 @@ class Profile:
         """
         s = set()
         duplicates = set(x for x in expected_check_ids if x in s or s.add(x))
-        if len(duplicates):
+        if duplicates:
             raise SetupError(
                 "Profile has duplicated entries in its list"
                 " of expected check IDs:\n" + "\n".join(duplicates)
@@ -387,7 +387,7 @@ class Profile:
             if valid:
                 continue
             messages.append(f"{name}: {message} (value: {value})")
-        if len(messages):
+        if messages:
             return False, "\n".join(messages)
         return True, None
 
@@ -483,9 +483,8 @@ class Profile:
             args_set = set(args)
             arg = args.pop()
             for check, signature, scope in scopes:
-                if not len(aggregatedArgs["args"][check.name] & args_set):
-                    # there's no args no more or no arguments of check are
-                    # in args
+                if not aggregatedArgs["args"][check.name] & args_set:
+                    # there's no args no more or no arguments of check are in args
                     target = saturated
                 elif (
                     arg == "*check"
@@ -548,7 +547,7 @@ class Profile:
             ), f"Scopes are badly sorted. {current_section} in {seen}"
 
             if current_section != last_section:
-                if len(items):
+                if items:
                     # flush items
                     generators.append(
                         self._execute_section(iterargs, last_section, items)
@@ -558,7 +557,7 @@ class Profile:
                 last_section = current_section
             items.append((check, signature, scope))
         # clean up left overs
-        if len(items):
+        if items:
             generators.append(self._execute_section(iterargs, current_section, items))
 
         for item in chain(*generators):
@@ -591,7 +590,7 @@ class Profile:
 
         full_order = []
         seen = set()
-        while len(stack):
+        while stack:
             item = stack.pop()
             if item in seen:
                 continue
@@ -949,7 +948,7 @@ class Profile:
         )
         for section in profile.sections:
             my_section = self._sections.get(str(section), None)
-            if not len(section.checks):
+            if not section.checks:
                 continue
             if my_section is None:
                 # create a new section: don't change other module/profile contents
