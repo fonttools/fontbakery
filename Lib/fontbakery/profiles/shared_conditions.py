@@ -92,7 +92,7 @@ def variable_font_filename(ttFont):
 
     familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
     typo_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
-    if familynames == []:
+    if not familynames:
         return None
 
     familyname = typo_familynames[0] if typo_familynames else familynames[0]

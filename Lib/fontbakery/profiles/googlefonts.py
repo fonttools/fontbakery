@@ -2169,7 +2169,7 @@ def com_google_fonts_check_metadata_menu_and_latin(family_metadata):
         if s not in list(family_metadata.subsets):
             missing.append(s)
 
-    if missing != []:
+    if missing:
         if len(missing) == 2:
             missing = "both"
         else:
