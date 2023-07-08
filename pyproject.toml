@@ -88,7 +88,6 @@ disable = [
 	"unnecessary-dict-index-lookup",
 	"unnecessary-pass",
 	"unspecified-encoding",
-	"unsubscriptable-object",
 	"unused-argument",
 	"unused-variable",
 	"use-a-generator",
