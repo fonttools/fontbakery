@@ -662,7 +662,7 @@ def test_check_required_tables():
     # Here we confirm that the check also yields INFO with
     # a list of table tags specific to the font.
     msg = assert_results_contain(check(ttFont), INFO, "optional-tables")
-    for tag in {"loca", "GPOS", "GSUB"}:
+    for tag in ("loca", "GPOS", "GSUB"):
         assert tag in msg
 
     # The OpenType-CFF font contains all required tables, so it must PASS the check.
@@ -672,7 +672,7 @@ def test_check_required_tables():
     # Here we confirm that the check also yields INFO with
     # a list of table tags specific to the OpenType-CFF font.
     msg = assert_results_contain(check(cff_font), INFO, "optional-tables")
-    for tag in {"BASE", "GPOS", "GSUB"}:
+    for tag in ("BASE", "GPOS", "GSUB"):
         assert tag in msg
 
     # The font must also contain the table that holds the outlines, "CFF " in this case.
@@ -687,7 +687,7 @@ def test_check_required_tables():
     # Here we confirm that the check also yields INFO with
     # a list of table tags specific to the OpenType-CFF2 font.
     msg = assert_results_contain(check(cff2_font), INFO, "optional-tables")
-    for tag in {"BASE", "GPOS", "GSUB"}:
+    for tag in ("BASE", "GPOS", "GSUB"):
         assert tag in msg
 
     # The font must also contain the table that holds the outlines, "CFF2" in this case.
