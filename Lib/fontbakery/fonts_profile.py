@@ -103,8 +103,9 @@ class FontsProfile(Profile):
                             any_accepted = True
                     if not accepted:
                         logging.info(
-                            f"Skipping '{file}' as it does not"
-                            f" seem to be accepted by this profile."
+                            "Skipping '{}' as it does not"
+                            " seem to be accepted by this profile.",
+                            file,
                         )
                 if not any_accepted:
                     raise ValueValidationError("No applicable files found")
