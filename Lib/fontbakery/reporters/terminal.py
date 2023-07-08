@@ -378,7 +378,9 @@ class TerminalReporter(TerminalProgress):
         # FAIL, PASS and SKIP are only expected within checks though
         # Log statuses have weights >= 0
         log_threshold = (
-            log_threshold if type(log_threshold) is not Status else log_threshold.weight
+            log_threshold
+            if not isinstance(log_threshold, Status)
+            else log_threshold.weight
         )
         self._log_threshold = min(ERROR.weight + 1, max(0, log_threshold))
 
@@ -390,7 +392,7 @@ class TerminalReporter(TerminalProgress):
         # default: no DEBUG output
         check_threshold = (
             check_threshold
-            if type(check_threshold) is not Status
+            if not isinstance(check_threshold, Status)
             else check_threshold.weight
         )
         self._check_threshold = min(ERROR.weight + 1, max(PASS.weight, check_threshold))
