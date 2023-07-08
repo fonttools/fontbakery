@@ -58,6 +58,7 @@ class CheckTester:
         self.check_section = None
         self.check = None
         self.check_iterargs = None
+        self.runner = None
         self._args = None
 
     def _get_args(self, condition_overrides=None):
