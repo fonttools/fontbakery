@@ -58,7 +58,6 @@ disable = [
 	"logging-fstring-interpolation",
 	"logging-not-lazy",
 	"missing-docstring",
-	"missing-timeout",
 	"multiple-statements",
 	"no-else-raise",
 	"no-else-return",

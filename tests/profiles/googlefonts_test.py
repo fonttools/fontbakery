@@ -4506,7 +4506,7 @@ def test_check_description_family_update():
     )
     import requests
 
-    desc = requests.get(ABEEZEE_DESC).text
+    desc = requests.get(ABEEZEE_DESC, timeout=10).text
     assert_results_contain(
         check(font, {"description": desc}), WARN, "description-not-updated"
     )
