@@ -3,6 +3,7 @@ from unittest.mock import patch
 import pytest
 
 from fontbakery.utils import (
+    apple_terminal_bg_is_white,
     bullet_list,
     exit_with_install_instructions,
     get_apple_terminal_bg_color,
@@ -101,6 +102,24 @@ def test_get_apple_terminal_bg_color(mock_subproc):
     subproc_output = "6424, 6425, 6425\n"
     mock_subproc.return_value.stdout = subproc_output
     assert get_apple_terminal_bg_color() == subproc_output.strip()
+
+
+@pytest.mark.parametrize(
+    "rgb_str, term_prog, expected_bool",
+    [
+        (None, "", False),
+        (None, "iTerm.app", False),
+        ("", "Apple_Terminal", False),
+        ("65535, 65535, 65535", "Apple_Terminal", True),
+    ],
+)
+@patch("fontbakery.utils.get_apple_terminal_bg_color")
+def test_apple_terminal_bg_is_white(
+    mock_get_bg_color, rgb_str, term_prog, expected_bool, monkeypatch
+):
+    monkeypatch.setenv("TERM_PROGRAM", term_prog)
+    mock_get_bg_color.return_value = rgb_str
+    assert apple_terminal_bg_is_white() is expected_bool
 
 
 def test_unindent_and_unwrap_rationale():
