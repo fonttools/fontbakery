@@ -1,12 +1,16 @@
+import argparse
+import sys
 from unittest.mock import patch
 
 import pytest
 
+from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
 from fontbakery.utils import (
     apple_terminal_bg_is_white,
     bullet_list,
     exit_with_install_instructions,
     get_apple_terminal_bg_color,
+    get_theme,
     is_negated,
     pretty_print_list,
     text_flow,
@@ -120,6 +124,60 @@ def test_apple_terminal_bg_is_white(
     monkeypatch.setenv("TERM_PROGRAM", term_prog)
     mock_get_bg_color.return_value = rgb_str
     assert apple_terminal_bg_is_white() is expected_bool
+
+
+@pytest.mark.parametrize(
+    "args, expected_theme",
+    [
+        (
+            # args.no_colors is True
+            argparse.Namespace(no_colors=True, light_theme=False, dark_theme=False),
+            NO_COLORS_THEME,
+        ),
+        (
+            # args.light_theme is True
+            argparse.Namespace(no_colors=False, light_theme=True, dark_theme=False),
+            LIGHT_THEME,
+        ),
+        (
+            # args.dark_theme is True
+            argparse.Namespace(no_colors=False, light_theme=False, dark_theme=True),
+            DARK_THEME,
+        ),
+        (
+            # None of the theme flags is True
+            argparse.Namespace(no_colors=False, light_theme=False, dark_theme=False),
+            DARK_THEME,
+        ),
+        (
+            # Multiple theme flags are True (Should return the first True theme)
+            argparse.Namespace(no_colors=True, light_theme=True, dark_theme=True),
+            NO_COLORS_THEME,
+        ),
+    ],
+)
+def test_get_theme(args, expected_theme):
+    assert get_theme(args) == expected_theme
+
+
+@pytest.mark.parametrize(
+    "platform, bg_is_white, expected_theme",
+    [
+        ("", None, DARK_THEME),
+        ("linux", None, DARK_THEME),
+        ("win32", None, DARK_THEME),
+        ("darwin", True, LIGHT_THEME),
+        ("darwin", False, DARK_THEME),
+    ],
+)
+@patch("fontbakery.utils.apple_terminal_bg_is_white")
+def test_get_theme_on_macos(
+    mock_bg_is_white, platform, bg_is_white, expected_theme, monkeypatch
+):
+    mock_bg_is_white.return_value = bg_is_white
+    monkeypatch.setattr(sys, "platform", platform)
+    args = argparse.Namespace(no_colors=False, light_theme=False, dark_theme=False)
+    assert get_theme(args) == expected_theme
 
 
 def test_unindent_and_unwrap_rationale():
