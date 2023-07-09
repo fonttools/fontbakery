@@ -5,6 +5,7 @@ import pytest
 from fontbakery.utils import (
     bullet_list,
     exit_with_install_instructions,
+    is_negated,
     pretty_print_list,
     text_flow,
     unindent_and_unwrap_rationale,
@@ -20,6 +21,26 @@ def test_exit_with_install_instructions():
             f"fontbakery with the '{extras_name}' extra, like this:\n\n"
             f"    python -m pip install -U 'fontbakery[{extras_name}]'\n\n"
         )
+
+
+@pytest.mark.parametrize(
+    "input_str, expected_tup",
+    [
+        ("", (False, "")),
+        (" ", (False, "")),
+        ("abc", (False, "abc")),
+        (" abc ", (False, "abc")),
+        ("not", (False, "not")),
+        ("not ", (False, "not")),
+        (" not ", (False, "not")),
+        ("notabc", (False, "notabc")),
+        ("not abc", (True, "abc")),
+        ("not  abc", (True, "abc")),
+        (" not  abc ", (True, "abc")),
+    ],
+)
+def test_is_negated(input_str, expected_tup):
+    assert is_negated(input_str) == expected_tup
 
 
 def test_text_flow():
