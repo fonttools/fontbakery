@@ -5,6 +5,7 @@ import pytest
 from fontbakery.utils import (
     bullet_list,
     exit_with_install_instructions,
+    get_apple_terminal_bg_color,
     is_negated,
     pretty_print_list,
     text_flow,
@@ -93,6 +94,13 @@ def test_text_flow():
 #                     space_padding=True) == (     " One   \n"
 #                                             "      Two   \n"
 #                                             "      Three ")
+
+
+@patch("subprocess.run")
+def test_get_apple_terminal_bg_color(mock_subproc):
+    subproc_output = "6424, 6425, 6425\n"
+    mock_subproc.return_value.stdout = subproc_output
+    assert get_apple_terminal_bg_color() == subproc_output.strip()
 
 
 def test_unindent_and_unwrap_rationale():

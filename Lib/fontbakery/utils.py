@@ -120,9 +120,12 @@ def get_apple_terminal_bg_color():
     line_1 = 'tell application "Terminal"'
     line_2 = "    get background color of selected tab of window 1"
     line_3 = "end tell"
-    output = subprocess.check_output(
-        ["osascript", "-e", line_1, "-e", line_2, "-e", line_3], text=True
-    )
+    output = subprocess.run(
+        ["osascript", "-e", line_1, "-e", line_2, "-e", line_3],
+        text=True,
+        check=True,
+        stdout=subprocess.PIPE,
+    ).stdout
     return output.strip()
 
 
