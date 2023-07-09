@@ -3,13 +3,15 @@ name: ⚙️ Install & Run
 
 on:
   push:
+    branches:
+      - '**'
     paths-ignore:
       - 'docs/**'
       - '**.md'
       - '**.txt'
       - '!requirements*.txt'
     tags-ignore:
-      - '*'
+      - '**'
 
   pull_request:
     paths-ignore:
