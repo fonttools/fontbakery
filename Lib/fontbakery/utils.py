@@ -38,8 +38,6 @@ def is_negated(name):
     stripped = name.strip()
     if stripped.startswith("not "):
         return True, stripped[4:].strip()
-    if stripped.startswith("!"):
-        return True, stripped[1:].strip()
     return False, stripped
 
 
