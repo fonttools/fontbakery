@@ -55,8 +55,8 @@ def text_flow(
     right_margin=0,
     first_line_indent=0,
     space_padding=False,
-    text_color="{}".format,
-):  # pylint: disable=consider-using-f-string
+    text_color="{}".format,  # pylint: disable=consider-using-f-string
+):
     result = []
     line_num = 0
     for line in content.split("\n"):
