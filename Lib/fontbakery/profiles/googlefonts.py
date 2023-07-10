@@ -5060,7 +5060,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
     """Directory name in GFonts repo structure must
     match NameID 1 of the regular."""
     from fontTools.ttLib import TTFont
-    from fontbakery.utils import get_name_entry_strings, get_absolute_path, get_regular
+    from fontbakery.utils import get_name_entry_strings, get_regular
 
     regular = get_regular(fonts)
     if not regular:
@@ -5078,7 +5078,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
     expected = "".join(expected.split(" "))
     expected = "".join(expected.split("-"))
 
-    _, familypath, _ = get_absolute_path(regular).split(os.path.sep)[-3:]
+    _, familypath, _ = os.path.abspath(regular).split(os.path.sep)[-3:]
     if familypath == expected:
         yield PASS, "OK"
     else:

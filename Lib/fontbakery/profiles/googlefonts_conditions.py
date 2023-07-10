@@ -657,11 +657,10 @@ def gfonts_repo_structure(fonts):
     follows the files and directory structure
     typical of a font project hosted on
     the Google Fonts repo on GitHub?"""
-    from fontbakery.utils import get_absolute_path
 
     # FIXME: Improve this with more details
     #        about the expected structure.
-    abspath = get_absolute_path(fonts[0])
+    abspath = os.path.abspath(fonts[0])
     return abspath.split(os.path.sep)[-3] in ["ufl", "ofl", "apache"]
 
 

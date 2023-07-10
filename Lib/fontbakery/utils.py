@@ -256,12 +256,6 @@ def get_regular(fonts):
             return font
 
 
-def get_absolute_path(p):
-    if not os.path.isabs(p):
-        p = os.path.abspath(p)
-    return p
-
-
 def filesize_formatting(s):
     if s < 1024:
         return f"{s} bytes"
