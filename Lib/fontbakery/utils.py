@@ -197,14 +197,6 @@ def split_camel_case(camelcase):
     return "".join(chars)
 
 
-def suffix(font):
-    filename = os.path.basename(font)
-    basename = os.path.splitext(filename)[0]
-    s = basename.split("-")
-    s.pop(0)
-    return "-".join(s)
-
-
 def pretty_print_list(config, values, shorten=10, sep=", ", glue=" and "):
     if len(values) == 1:
         return str(values[0])
