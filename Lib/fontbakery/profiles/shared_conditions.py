@@ -334,11 +334,6 @@ def is_variable_font(ttFont):
 
 
 @condition
-def is_not_variable_font(ttFont):
-    return "fvar" not in ttFont.keys()
-
-
-@condition
 def VFs(ttFonts):
     """Returns a list of font files which are recognized as variable fonts"""
     return [ttFont for ttFont in ttFonts if is_variable_font(ttFont)]
@@ -635,13 +630,3 @@ def is_bold(ttFont):
         or ("head" in ttFont and ttFont["head"].macStyle & MacStyle.BOLD)
         or keyword_in_full_font_name(ttFont, "bold")
     )
-
-
-@condition
-def is_not_italic(ttFont):
-    return not is_italic(ttFont)
-
-
-@condition
-def is_not_bold(ttFont):
-    return not is_bold(ttFont)
