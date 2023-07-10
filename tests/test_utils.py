@@ -22,6 +22,7 @@ from fontbakery.utils import (
     html5_collapsible,
     is_negated,
     pretty_print_list,
+    split_camel_case,
     text_flow,
     unindent_and_unwrap_rationale,
 )
@@ -279,6 +280,17 @@ def test_html5_collapsible():
         html5_collapsible("abc", "ABC")
         == "<details><summary>abc</summary><div>ABC</div></details>"
     )
+
+
+def test_split_camel_case():
+    assert split_camel_case("") == ""
+    assert split_camel_case("abc") == "abc"
+    assert split_camel_case("Abc") == "Abc"
+    assert split_camel_case("abC") == "ab C"
+    assert split_camel_case("AbC") == "Ab C"
+    assert split_camel_case("ABC") == "A B C"
+    assert split_camel_case("Lobster") == "Lobster"
+    assert split_camel_case("LibreCaslonText") == "Libre Caslon Text"
 
 
 def _make_values(count: int) -> list:
