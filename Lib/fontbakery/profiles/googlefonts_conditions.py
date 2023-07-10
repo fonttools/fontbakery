@@ -101,7 +101,6 @@ def stylenames_are_canonical(fonts):
 @condition
 def canonical_stylename(font):
     """Returns the canonical stylename of a given font."""
-    from fontbakery.utils import suffix
     from fontbakery.constants import STATIC_STYLE_NAMES, VARFONT_SUFFIXES
     from .shared_conditions import is_variable_font
     from fontTools.ttLib import TTFont
@@ -111,7 +110,7 @@ def canonical_stylename(font):
 
     filename = os.path.basename(font)
     basename = os.path.splitext(filename)[0]
-    s = suffix(font)
+    s = "-".join(basename.split("-")[1:])
     varfont = os.path.exists(font) and is_variable_font(TTFont(font))
     if (
         "-" in basename
