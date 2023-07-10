@@ -84,39 +84,72 @@ def test_text_flow():
 
     assert text_flow("One Two Three") == "One Two Three"
 
-    assert text_flow("One Two Three", width=5) == ("One\n" "Two\n" "Three")
+    assert text_flow("One Two Three", width=5) == "One\nTwo\nThree"
 
-    assert text_flow("One Two Three", width=6, space_padding=True) == (
-        "One   \n" "Two   \n" "Three "
+    assert (
+        text_flow("One Two\n\nThree", width=5, space_padding=True)
+        == "One  \nTwo  \n     \nThree"
     )
 
-    assert text_flow("One Two Three", width=7, space_padding=True) == (
-        "One Two\n" "Three  "
+    assert (
+        text_flow("One Two Three", width=6, space_padding=True)
+        == "One   \nTwo   \nThree "
     )
 
-    assert text_flow("One Two Three", width=9, left_margin=2, space_padding=True) == (
-        "  One Two\n" "  Three  "
+    assert text_flow("One Two\n\nThree", width=10) == "One Two\nThree"
+
+    assert text_flow("One Two Three", width=7, space_padding=True) == "One Two\nThree  "
+
+    assert (
+        text_flow("One Two Three", width=9, left_margin=2, space_padding=True)
+        == "  One Two\n  Three  "
     )
 
-    assert text_flow("One Two Three", width=7, left_margin=1, space_padding=True) == (
-        " One   \n" " Two   \n" " Three "
+    assert (
+        text_flow("One Two Three", width=7, left_margin=1, space_padding=True)
+        == " One   \n Two   \n Three "
     )
 
-    assert text_flow(
-        "One Two Three", width=9, left_margin=1, right_margin=1, space_padding=True
-    ) == (" One Two \n" " Three   ")
+    assert (
+        text_flow(
+            "One Two Three", width=9, left_margin=1, right_margin=1, space_padding=True
+        )
+        == " One Two \n Three   "
+    )
 
-    assert text_flow(
-        "One Two Three", width=8, left_margin=1, right_margin=1, space_padding=True
-    ) == (" One    \n" " Two    \n" " Three  ")
+    assert (
+        text_flow(
+            "One Two Three", width=8, left_margin=1, right_margin=1, space_padding=True
+        )
+        == " One    \n Two    \n Three  "
+    )
 
-    assert text_flow(
-        "One Two Three Four", width=7, left_margin=1, right_margin=1, space_padding=True
-    ) == (" One   \n" " Two   \n" " Three \n" " Four  ")
+    assert (
+        text_flow(
+            "One Two Three Four",
+            width=7,
+            left_margin=1,
+            right_margin=1,
+            space_padding=True,
+        )
+        == " One   \n Two   \n Three \n Four  "
+    )
 
-    assert text_flow(
-        "One Two Three Four", width=6, left_margin=1, right_margin=1, space_padding=True
-    ) == (" One  \n" " Two  \n" " Thre \n" " e    \n" " Four ")
+    assert (
+        text_flow(
+            "One Two Three Four",
+            width=6,
+            left_margin=1,
+            right_margin=1,
+            space_padding=True,
+        )
+        == " One  \n Two  \n Thre \n e    \n Four "
+    )
+
+    assert (
+        text_flow("https://learn.microsoft.com/typography/opentype/spec/name", width=30)
+        == "https://learn.microsoft.com\n/typography/opentype/spec/name"
+    )
 
 
 # FIXME!
