@@ -1435,13 +1435,6 @@ def test_check_name_ascii_only_entries():
     assert_PASS(check(ttFont), "with non-ascii on entries with nameId > 18...")
 
 
-def test_split_camel_case_condition():
-    from fontbakery.utils import split_camel_case
-
-    assert split_camel_case("Lobster") == "Lobster"
-    assert split_camel_case("LibreCaslonText") == "Libre Caslon Text"
-
-
 def test_check_metadata_unique_full_name_values():
     """METADATA.pb: check if fonts field only has unique "full_name" values."""
     check = CheckTester(

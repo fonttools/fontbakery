@@ -188,19 +188,13 @@ def html5_collapsible(summary, details) -> str:
 
 
 def split_camel_case(camelcase):
-    result = []
-    word = ""
-    for char in camelcase:
-        if char.isupper():
-            if word != "":
-                result.append(word)
-            word = char
-        else:
-            word += char
+    chars = []
+    for i, char in enumerate(camelcase):
+        if char.isupper() and i > 0:
+            chars.append(" ")
+        chars.append(char)
 
-    if word != "":
-        result.append(word)
-    return " ".join(result)
+    return "".join(chars)
 
 
 def suffix(font):
