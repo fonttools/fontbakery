@@ -113,7 +113,7 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
         of false positives, it will pass if there are more than
         {FALSE_POSITIVE_CUTOFF} reported short segments.
     """,
-    conditions=["outlines_dict", "is_not_variable_font"],
+    conditions=["outlines_dict", "not is_variable_font"],
     proposal="https://github.com/googlefonts/fontbakery/pull/3088",
 )
 def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config):
@@ -168,7 +168,7 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config)
         This check is not run for variable fonts, as they may legitimately have
         colinear vectors.
     """,
-    conditions=["outlines_dict", "is_not_variable_font"],
+    conditions=["outlines_dict", "not is_variable_font"],
     proposal="https://github.com/googlefonts/fontbakery/pull/3088",
 )
 def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, config):
@@ -216,7 +216,7 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, confi
         in cases such as extreme ink traps, so should be regarded as advisory and
         backed up by manual inspection.
     """,
-    conditions=["outlines_dict", "is_not_variable_font"],
+    conditions=["outlines_dict", "not is_variable_font"],
     proposal="https://github.com/googlefonts/fontbakery/issues/3064",
 )
 def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config):
@@ -268,7 +268,7 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config)
         This check is disabled for italic styles, which often contain nearly-upright
         lines.
     """,
-    conditions=["outlines_dict", "is_not_variable_font", "is_not_italic"],
+    conditions=["outlines_dict", "not is_variable_font", "not is_italic"],
     proposal="https://github.com/googlefonts/fontbakery/pull/3088",
 )
 def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):

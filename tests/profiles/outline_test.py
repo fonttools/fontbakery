@@ -1,4 +1,4 @@
-from fontbakery.status import WARN
+from fontbakery.status import WARN, SKIP
 from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,
@@ -39,6 +39,10 @@ def test_check_outline_short_segments():
 
     # TODO: PASS
 
+    font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
+    msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: not is_variable_font"
+
 
 def test_check_outline_colinear_vectors():
     """Check for colinear line segments."""
@@ -57,6 +61,10 @@ def test_check_outline_colinear_vectors():
     assert ".notdef" not in messages
 
     # TODO: PASS
+
+    font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
+    msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: not is_variable_font"
 
 
 def test_check_outline_jaggy_segments():
@@ -77,6 +85,10 @@ def test_check_outline_jaggy_segments():
     filename = TEST_FILE("source-sans-pro/OTF/SourceSansPro-LightItalic.otf")
     assert_PASS(check(filename))
 
+    font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
+    msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: not is_variable_font"
+
 
 def test_check_outline_semi_vertical():
     """Check for semi-vertical/semi-horizontal lines."""
@@ -90,3 +102,11 @@ def test_check_outline_semi_vertical():
     assert "* E (U+0045)" not in messages
 
     # TODO: PASS
+
+    font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
+    msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: not is_variable_font"
+
+    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Italic.otf")
+    msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: not is_italic"
