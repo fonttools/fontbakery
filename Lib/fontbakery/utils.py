@@ -183,9 +183,7 @@ def unindent_and_unwrap_rationale(rationale, checkid=None):
 
 
 def html5_collapsible(summary, details) -> str:
-    """Return nestable, collapsible <detail> tag for check grouping and sub-
-    results."""
-
+    """Return nestable, collapsible <detail> tag for check grouping and sub-results."""
     return f"<details><summary>{summary}</summary><div>{details}</div></details>"
 
 
