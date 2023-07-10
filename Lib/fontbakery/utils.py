@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 import os
+import re
 import subprocess
 import sys
 from typing import Text, Optional
@@ -42,8 +43,7 @@ def is_negated(name):
 
 
 def colorless_len(string):
-    import re
-
+    """Returns the lenght of a string without its color prefix"""
     return len(re.sub("\x1b(\\[[0-9;]+|\\].+)m", "", string))
 
 

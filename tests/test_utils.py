@@ -4,10 +4,18 @@ from unittest.mock import patch
 
 import pytest
 
-from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
+from fontbakery.constants import (
+    NO_COLORS_THEME,
+    DARK_THEME,
+    LIGHT_THEME,
+    color,
+    WHITE,
+    BLACK,
+)
 from fontbakery.utils import (
     apple_terminal_bg_is_white,
     bullet_list,
+    colorless_len,
     exit_with_install_instructions,
     get_apple_terminal_bg_color,
     get_theme,
@@ -47,6 +55,26 @@ def test_exit_with_install_instructions():
 )
 def test_is_negated(input_str, expected_tup):
     assert is_negated(input_str) == expected_tup
+
+
+@pytest.mark.parametrize(
+    "input_str, expected_len",
+    [
+        ("", 0),
+        ("abc", 3),
+        (" abc ", 5),
+        (color(WHITE, BLACK, bold=True)("abc"), 3),
+        (color(WHITE, BLACK)("abc"), 3),
+    ],
+)
+def test_colorless_len(input_str, expected_len):
+    assert colorless_len(input_str) == expected_len
+
+
+# NOTE: The 'color()' method is in 'constants.py'
+def test_color():
+    assert color(WHITE, BLACK, bold=True)("abc") == "\x1b[1;37;40mabc\x1b[0m"
+    assert color(WHITE, BLACK)("abc") == "\x1b[0;37;40mabc\x1b[0m"
 
 
 def test_text_flow():

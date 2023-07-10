@@ -71,10 +71,7 @@ SHOW_GF_DOCS_MSG = (
 
 # ANSI color codes for the helper logging class:
 def color(bg, fg, bold=False):
-    bold_bit = 0
-    if bold:
-        bold_bit = 1
-    return ("\033[{};{};{}m".format(bold_bit, bg, fg + 10) + "{}\033[0m").format
+    return (f"\033[{int(bold)};{bg};{fg + 10}m" "{}\033[0m").format
 
 
 def no_color(s):
