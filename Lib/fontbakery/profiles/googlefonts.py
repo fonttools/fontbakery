@@ -5056,7 +5056,7 @@ def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config)
     conditions=["gfonts_repo_structure", "not is_variable_font"],
     proposal="https://github.com/googlefonts/fontbakery/issues/2302",
 )
-def com_google_fonts_check_repo_dirname_match_nameid_1(fonts, gfonts_repo_structure):
+def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
     """Directory name in GFonts repo structure must
     match NameID 1 of the regular."""
     from fontTools.ttLib import TTFont

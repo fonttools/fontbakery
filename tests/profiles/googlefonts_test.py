@@ -3578,20 +3578,54 @@ def test_check_family_italics_have_roman_counterparts():
     )
 
 
-def NOT_IMPLEMENTED__test_com_google_fonts_check_repo_dirname_match_nameid_1():
-    """Are any unacceptable control characters present in font files?"""
-    # check = CheckTester(googlefonts_profile,
-    #                     "com.google.fonts/check/repo_dirname_match_nameid_1")
-    # TODO: Implement-me!
-    #
-    # PASS
-    # FAIL, "lacks-regular"
-    # FAIL, "mismatch"
-    #
-    #  passing_file = TEST_FILE(".../.ttf")
-    #  fonts = [passing_file]
-    #  assert_PASS(check(fonts),
-    #              'with one good font...')
+def test_check_repo_dirname_match_nameid_1(tmp_path):
+    check = CheckTester(
+        googlefonts_profile, "com.google.fonts/check/repo/dirname_matches_nameid_1"
+    )
+    FONT_FAMILY_NAME = "rosarivo"
+
+    # Create a temporary directory that mimics the folder structure of the Google Fonts
+    # repository, and copy into it a test family that is known to have all the necessary
+    # files.
+    tmp_gf_dir = tmp_path / f"ofl/{FONT_FAMILY_NAME}"
+    src_family = portable_path(f"data/test/{FONT_FAMILY_NAME}")
+    shutil.copytree(src_family, tmp_gf_dir, dirs_exist_ok=True)
+
+    # PASS result
+    fonts = [str(pth) for pth in tmp_gf_dir.glob("*.ttf")]
+    msg = assert_PASS(check(fonts))
+    assert msg == "OK"
+
+    # Get the path of the Regular font; it will be used for deleting the file later.
+    reg_font_path = next((pth for pth in fonts if "Regular" in pth), None)
+
+    # Now rename the temporary directory to make the check fail.
+    new_dir_name = f"not_{FONT_FAMILY_NAME}"
+    renamed_tmp_gf_dir = tmp_gf_dir.with_name(new_dir_name)
+    os.replace(tmp_gf_dir, renamed_tmp_gf_dir)
+
+    # FAIL ("mismatch") result
+    fonts = [str(pth) for pth in renamed_tmp_gf_dir.glob("*.ttf")]
+    msg = assert_results_contain(check(fonts), FAIL, "mismatch")
+    assert msg == (
+        f"Family name on the name table ('{FONT_FAMILY_NAME.title()}')"
+        f" does not match directory name in the repo structure ('{new_dir_name}')."
+        f" Expected '{FONT_FAMILY_NAME}'."
+    )
+
+    # Rename the temporary directory back to the original name,
+    # and delete the Regular font file to make the check fail.
+    os.replace(renamed_tmp_gf_dir, tmp_gf_dir)
+    os.remove(reg_font_path)
+
+    # FAIL ("lacks-regular") result
+    fonts = [str(pth) for pth in tmp_gf_dir.glob("*.ttf")]
+    msg = assert_results_contain(check(fonts), FAIL, "lacks-regular")
+    assert "The font seems to lack a regular." in msg
+
+    # SKIP result; the fonts are in a directory that doesn't have the correct structure.
+    msg = assert_results_contain(check(cabin_fonts), SKIP, "unfulfilled-conditions")
+    assert msg == "Unfulfilled Conditions: gfonts_repo_structure"
 
 
 def test_check_repo_vf_has_static_fonts(tmp_path):
