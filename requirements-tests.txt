@@ -1,5 +1,5 @@
 --index-url https://pypi.python.org/simple/
-black==23.3.0
+black==23.7.0
 flake8==6.0.0
 pylint==2.17.4
 sphinx==7.0.1
