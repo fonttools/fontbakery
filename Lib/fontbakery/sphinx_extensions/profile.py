@@ -35,11 +35,11 @@ logger = logging.getLogger(__name__)
 # mute the style checks for unused names
 # will be removed eventually
 if False:  # pylint: disable=using-constant-test
-    FontbakeryCallable
-    FontBakeryCondition
-    FontBakeryCheck
-    Disabled
-    FontBakeryExpectedValue
+    FontbakeryCallable  # pylint: disable=pointless-statement
+    FontBakeryCondition  # pylint: disable=pointless-statement
+    FontBakeryCheck  # pylint: disable=pointless-statement
+    Disabled  # pylint: disable=pointless-statement
+    FontBakeryExpectedValue  # pylint: disable=pointless-statement
 
 __version__ = "0.0.1"
 
