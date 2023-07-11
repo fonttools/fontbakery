@@ -7,6 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - This is the first version in which we're using the Black auto-formatter on the entire code-base. (Discussions #3397)
   - Also, now software dependencies can be installed based on the user needs. The default FontBakery installation from PyPI includes only the dependencies for running font-binary checks from the Universal profile. To run source-level checks, one needs to enable the `ufo-sources` extra. (issues #3715 and #3874)
   - The **Shaping** and **UFO** checks are no longer included in the Universal profile. To run them use their respective subcommands (`check-shaping` or `check-ufo-sources`).
+  - On the `conditions` field of the `@check` decorator, the "!" character is no longer supported as a boolean-not operator. Please use the "not" keyword for that, instead.
 
 ### Bugfixes
   - A font-file is not needed anymore when running `--list-checks` (issue #3878)
