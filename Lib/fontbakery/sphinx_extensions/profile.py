@@ -75,7 +75,12 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
             # FIXME! I don't know what's this.
             return None
 
-        sig = Signature(self.object._func, bound_method=False, has_retval=has_retval)
+        # FIXME: Unexpected keyword argument 'has_retval'
+        sig = Signature(  # pylint disable:unexpected-keyword-arg
+            self.object._func,
+            bound_method=False,
+            has_retval=has_retval,
+        )
         args = stringify_signature(sig)
         # escape backslashes for reST
         args = args.replace("\\", "\\\\")
@@ -168,11 +173,11 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
             # need a module to import
             logger.warning(
                 __(
-                    "don't know which module to import for autodocumenting "
-                    '%r (try placing a "module" or "currentmodule" directive '
-                    "in the document, or giving an explicit module name)"
-                )
-                % self.name,
+                    "don't know which module to import for autodocumenting"
+                    ' %r (try placing a "module" or "currentmodule" directive'
+                    " in the document, or giving an explicit module name)"
+                ),
+                self.name,
                 type="autodoc",
             )
             return
@@ -199,7 +204,11 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
             # be cached anyway)
             self.analyzer.find_attr_docs()
         except PycodeError as err:
-            logger.debug("[autodoc] module analyzer failed: %s", err)
+            # FIXME: Too many arguments for logging format string
+            logger.debug(  # pylint disable:logging-too-many-args
+                "[autodoc] module analyzer failed: %s",
+                err,
+            )
             # no source file -- e.g. for builtin and C modules
             self.analyzer = None
             # at least add the module.__file__ as a dependency
