@@ -1,0 +1,87 @@
+From 578bd555d51fbebc5c05b634d6a7fde8befe35ac Mon Sep 17 00:00:00 2001
+From: Miguel Sousa <msousa@adobe.com>
+Date: Fri, 7 Jul 2023 22:20:46 -0700
+Subject: [PATCH 12/39] Fix pylint `superfluous-parens`
+
+---
+ Lib/fontbakery/profiles/fontwerk.py | 8 ++++----
+ Lib/fontbakery/profiles/fvar.py     | 2 +-
+ Lib/fontbakery/profiles/outline.py  | 4 ++--
+ pyproject.toml                      | 1 -
+ 4 files changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/Lib/fontbakery/profiles/fontwerk.py b/Lib/fontbakery/profiles/fontwerk.py
+index 8b01505..486c61b 100644
+--- a/Lib/fontbakery/profiles/fontwerk.py
++++ b/Lib/fontbakery/profiles/fontwerk.py
+@@ -227,9 +227,9 @@ def com_fontwerk_check_style_linking(ttFont):
+ 
+     errs = []
+     if is_bold(ttFont):
+-        if not (ttFont["OS/2"].fsSelection & FsSelection.BOLD):
++        if not ttFont["OS/2"].fsSelection & FsSelection.BOLD:
+             errs.append("OS/2 fsSelection flag should be (most likely) 'Bold'.")
+-        if not (ttFont["head"].macStyle & MacStyle.BOLD):
++        if not ttFont["head"].macStyle & MacStyle.BOLD:
+             errs.append("head macStyle flag should be (most likely) 'Bold'.")
+         if ttFont["name"].getDebugName(2) not in ("Bold", "Bold Italic"):
+             name_id_2_should_be = "Bold"
+@@ -242,9 +242,9 @@ def com_fontwerk_check_style_linking(ttFont):
+             errs.append(
+                 "post talbe italic angle should be (most likely) different to 0."
+             )
+-        if not (ttFont["OS/2"].fsSelection & FsSelection.ITALIC):
++        if not ttFont["OS/2"].fsSelection & FsSelection.ITALIC:
+             errs.append("OS/2 fsSelection flag should be (most likely) 'Italic'.")
+-        if not (ttFont["head"].macStyle & MacStyle.ITALIC):
++        if not ttFont["head"].macStyle & MacStyle.ITALIC:
+             errs.append("head macStyle flag should be (most likely) 'Italic'.")
+         if ttFont["name"].getDebugName(2) not in ("Italic", "Bold Italic"):
+             name_id_2_should_be = "Italic"
+diff --git a/Lib/fontbakery/profiles/fvar.py b/Lib/fontbakery/profiles/fvar.py
+index bd99956..597daff 100644
+--- a/Lib/fontbakery/profiles/fvar.py
++++ b/Lib/fontbakery/profiles/fvar.py
+@@ -336,7 +336,7 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
+     name_table = ttFont["name"]
+ 
+     font_axis_nameids = [axis.axisNameID for axis in ttFont["fvar"].axes]
+-    invalid_axis_nameids = [val for val in font_axis_nameids if not (255 < val < 32768)]
++    invalid_axis_nameids = [val for val in font_axis_nameids if not 255 < val < 32768]
+ 
+     for nameid in invalid_axis_nameids:
+         inst_name = name_table.getDebugName(nameid) or "Unnamed"
+diff --git a/Lib/fontbakery/profiles/outline.py b/Lib/fontbakery/profiles/outline.py
+index 4b2b867..311f415 100644
+--- a/Lib/fontbakery/profiles/outline.py
++++ b/Lib/fontbakery/profiles/outline.py
+@@ -233,12 +233,12 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config)
+                 this = segments[i]
+                 in_vector = prev.tangentAtTime(1) * -1
+                 out_vector = this.tangentAtTime(0)
+-                if not (in_vector.magnitude * out_vector.magnitude):
++                if not in_vector.magnitude * out_vector.magnitude:
+                     continue
+                 angle = (in_vector @ out_vector) / (
+                     in_vector.magnitude * out_vector.magnitude
+                 )
+-                if not (-1 <= angle <= 1):
++                if not -1 <= angle <= 1:
+                     continue
+                 jag_angle = math.acos(angle)
+                 if abs(jag_angle) > JAG_ANGLE or jag_angle == 0:
+diff --git a/pyproject.toml b/pyproject.toml
+index 7bc662e..e5a7daa 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -69,7 +69,6 @@ disable = [
+ 	"redefined-outer-name",
+ 	"singleton-comparison",
+ 	"subprocess-run-check",
+-	"superfluous-parens",
+ 	"too-few-public-methods",
+ 	"too-many-arguments",
+ 	"too-many-boolean-expressions",
+-- 
+2.30.2
+

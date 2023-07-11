@@ -162,3 +162,8 @@ patch -p1 -R < openbakery/patches/0006-unshallow-fetch-for-setuptools-scm-otherw
 #
 # This was discussed at https://github.com/miguelsousa/openbakery/issues/30#issuecomment-1600765260
 # TODO: patch -p1 -R < openbakery/patches/0009-FontBakery-won-t-change-FontValidator-ERROR-into-a-F.patch
+
+
+# "Fix pylint superfluous-parens" --- Commit rejected to foster better code legibility
+# https://github.com/miguelsousa/openbakery/commit/578bd555d51fbebc5c05b634d6a7fde8befe35ac
+patch -p1 -R < openbakery/patches/Fix-pylint-superfluous-parens.patch
