@@ -84,4 +84,10 @@ disable = [
 
 	# Information
 	"c-extension-no-member",
+
+	# FIXME on Sphinx code,
+	"abstract-method",
+	"unexpected-keyword-arg",
+	"logging-too-many-args",
+	"attribute-defined-outside-init",
 ]
