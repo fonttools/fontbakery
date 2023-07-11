@@ -166,4 +166,9 @@ patch -p1 -R < openbakery/patches/0006-unshallow-fetch-for-setuptools-scm-otherw
 
 # "Fix pylint superfluous-parens" --- Commit rejected to foster better code legibility
 # https://github.com/miguelsousa/openbakery/commit/578bd555d51fbebc5c05b634d6a7fde8befe35ac
-patch -p1 -R < openbakery/patches/Fix-pylint-superfluous-parens.patch
+patch -p1 -R < openbakery/patches/0010-Fix-pylint-superfluous-parens.patch
+
+
+# "Delete get_regular method" --- Commit rejected to foster better code legibility
+# https://github.com/miguelsousa/openbakery/commit/799c11e36c5f88e89a6eda29f3c545bddfa55135
+patch -p1 -R < openbakery/patches/0011-Delete-get_regular-method.patch
