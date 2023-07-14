@@ -38,7 +38,7 @@ index fdd2872d..bcc954eb 100644
 +    if not shutil.which("FontValidator"):
 +        yield FAIL, Message(
 +            "fontval-not-available",
-+            "Mono runtime and/or Microsoft Font Validator" " are not available!",
++            "Mono runtime and/or Microsoft Font Validator are not available!",
 +        )
 +        return
 +
