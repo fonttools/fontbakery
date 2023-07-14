@@ -74,14 +74,14 @@ diff --git a/pyproject.toml b/pyproject.toml
 index 7bc662e..e5a7daa 100644
 --- a/pyproject.toml
 +++ b/pyproject.toml
-@@ -69,7 +69,6 @@ disable = [
+@@ -47,7 +47,6 @@ disable = [
+ 	"raise-missing-from",
  	"redefined-outer-name",
- 	"singleton-comparison",
  	"subprocess-run-check",
 -	"superfluous-parens",
- 	"too-few-public-methods",
- 	"too-many-arguments",
- 	"too-many-boolean-expressions",
+ 	"undefined-loop-variable",
+ 	"unnecessary-pass",
+ 	"unused-argument",
 -- 
 2.30.2
 
