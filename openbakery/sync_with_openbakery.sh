@@ -6,7 +6,10 @@
 # Backup a few things:
 rm -rf ../fontbakery-tmp-backup
 mkdir ../fontbakery-tmp-backup
+mv data/logo.png ../fontbakery-tmp-backup/
+mv data/logo.svg ../fontbakery-tmp-backup/
 mv CHANGELOG.md ../fontbakery-tmp-backup/
+mv README.md ../fontbakery-tmp-backup/
 mv venv ../fontbakery-tmp-backup
 mv .git ../fontbakery-tmp-backup
 mv docs ../fontbakery-tmp-backup/
@@ -19,7 +22,7 @@ mv MANIFEST.in ../fontbakery-tmp-backup/
 mv .readthedocs.yml ../fontbakery-tmp-backup/
 mv .pre-commit-config.yaml ../fontbakery-tmp-backup/
 mv .editorconfig ../fontbakery-tmp-backup/
-
+mv data/test/README.txt ../fontbakery-tmp-backup/data-test-README.txt
 
 #### Get the latest contents from the Open Bakery github repo ####
 cd ~/devel/openbakery/
@@ -54,6 +57,9 @@ git grep -rl OpenBakery -- ':(exclude)openbakery/' | xargs sed -i 's/OpenBakeryE
 # auto-replace github URLs:
 git grep -rl openbakery -- ':(exclude)openbakery/' | xargs sed -i 's/miguelsousa\/openbakery/googlefonts\/fontbakery/g'
 
+# "An OpenBakery report" => "A FontBakery report"
+git grep -rl openbakery -- ':(exclude)openbakery/' | xargs sed -i 's/An OpenBakery/A FontBakery/g'
+
 # auto-replace project name:
 git grep -rl openbakery -- ':(exclude)openbakery/' | xargs sed -i 's/openbakery/fontbakery/g'
 git grep -rl OpenBakery -- ':(exclude)openbakery/' | xargs sed -i 's/OpenBakery/FontBakery/g'
@@ -75,8 +81,13 @@ sed -i 's/Miguel Sousa at miguel.sousa@adobe.com./us via the issue tracker or se
 # We do not need the fork's logo:
 rm -f data/openbakery.jpg
 
-# We have our own changelog:
+# And we keep ours:
+mv ../fontbakery-tmp-backup/logo.png data
+mv ../fontbakery-tmp-backup/logo.svg data
+
+# We have our own changelog and readme:
 mv ../fontbakery-tmp-backup/CHANGELOG.md .
+mv ../fontbakery-tmp-backup/README.md .
 
 # And our own virtual environment
 rm -rf venv
@@ -100,6 +111,12 @@ rm docs/user-guide.md
 mv ../fontbakery-tmp-backup/docs .
 mv ../fontbakery-tmp-backup/.readthedocs.yml .
 mv ../fontbakery-tmp-backup/sphinx_extensions ./Lib/fontbakery/
+
+
+echo "\n=============="
+echo "The data/test/README.txt has important guidelines on how the test files should"
+echo " be taken care of to ensure code-tests are not broken by edits to those files."
+mv ../fontbakery-tmp-backup/data-test-README.txt ./data/test/README.txt
 
 echo "\n=============="
 echo "We still use the sphinx dependency for building the Font Bakery Read The Docs pages."
@@ -169,7 +186,7 @@ patch -p1 -R < openbakery/patches/0007-Removal-of-check-prefix-on-subcommands.pa
 echo "\n=============="
 echo "Cleanup bad-strings."
 echo ""
-#TODO: patch -p1 -R < openbakery/patches/0008-fixes-to-strings.patch
+patch -p1 -R < openbakery/patches/0008-a-few-fixes-to-strings.patch
 
 echo "\n=============="
 echo "FontBakery won't change FontValidator ERROR into a FAIL."
@@ -199,5 +216,9 @@ echo ""
 patch -p1 -R < openbakery/patches/0011-Delete-get_regular-method.patch
 
 echo "\n=============="
+echo "\"Remove a few incorrect 'PASS' 2nd args from calls to method 'assert_PASS'"
+echo ""
+patch -p1 -R < openbakery/patches/0012-remove-the-incorrect-PASS-2nd-arg-from-assert_PASS-c.patch
+
 echo "DONE!\n=============="
 
