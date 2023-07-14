@@ -19,7 +19,7 @@ diff --git a/.github/workflows/install_run.yml b/.github/workflows/install_run.y
 index e689e491..9cb15c36 100644
 --- a/.github/workflows/install_run.yml
 +++ b/.github/workflows/install_run.yml
-@@ -46,13 +46,13 @@ jobs:
+@@ -48,13 +48,13 @@ jobs:
  
      - name: Run Universal checks
        run: >-
@@ -35,7 +35,7 @@ index e689e491..9cb15c36 100644
          -x win_ascent_and_descent
          -x os2_metrics_match_hhea
          -x fsselection
-@@ -69,22 +69,22 @@ jobs:
+@@ -71,22 +71,22 @@ jobs:
  
      - name: Run Font Bureau checks
        run: >-
@@ -62,7 +62,7 @@ index e689e491..9cb15c36 100644
          || exit 0
        shell: bash
  
-@@ -94,8 +94,8 @@ jobs:
+@@ -96,8 +96,8 @@ jobs:
  
      - name: Run UFO Sources checks
        run: >-
@@ -73,7 +73,7 @@ index e689e491..9cb15c36 100644
          "data/test/stupidfont/Stupid Font.designspace"
  
      - name: Install `shaping` extra
-@@ -104,7 +104,7 @@ jobs:
+@@ -106,7 +106,7 @@ jobs:
  
      - name: Run Shaping checks
        run: >-
@@ -82,7 +82,7 @@ index e689e491..9cb15c36 100644
  
      - name: Install `googlefonts` extra
        run: |
-@@ -112,7 +112,7 @@ jobs:
+@@ -114,7 +114,7 @@ jobs:
  
      - name: Run Google Fonts checks
        run: >-
@@ -91,7 +91,7 @@ index e689e491..9cb15c36 100644
          -c canonical_filename
          -c vendor_id
          -c glyph_coverage
-@@ -129,7 +129,7 @@ jobs:
+@@ -131,7 +131,7 @@ jobs:
  
      - name: Run Fontwerk checks
        run: >-
@@ -100,7 +100,7 @@ index e689e491..9cb15c36 100644
          -c weight_class_fvar
          -c inconsistencies_between_fvar_stat
          -c style_linking
-@@ -144,7 +144,7 @@ jobs:
+@@ -146,7 +146,7 @@ jobs:
  
      - name: Run Noto Fonts checks
        run: >-
