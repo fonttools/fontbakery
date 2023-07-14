@@ -10,6 +10,7 @@ mv CHANGELOG.md ../fontbakery-tmp-backup/
 mv venv ../fontbakery-tmp-backup
 mv .git ../fontbakery-tmp-backup
 mv docs ../fontbakery-tmp-backup/
+mv Lib/fontbakery/sphinx_extensions/ ../fontbakery-tmp-backup/
 mv openbakery ../fontbakery-tmp-backup/
 
 # Also keeping these things that I still do not understand why Miguel deleted:
@@ -98,6 +99,7 @@ rm docs/index.md
 rm docs/user-guide.md
 mv ../fontbakery-tmp-backup/docs .
 mv ../fontbakery-tmp-backup/.readthedocs.yml .
+mv ../fontbakery-tmp-backup/sphinx_extensions ./Lib/fontbakery/
 
 echo "\n=============="
 echo "We still use the sphinx dependency for building the Font Bakery Read The Docs pages."
@@ -128,7 +130,7 @@ echo ""
 rm codecov.yml
 patch -p1 -R < openbakery/patches/0004-Codecov-also-looks-great-but.patch
 
-echo "##### A few tweaks to the CONTRIBUTING.md file: #####\n"
+echo "\n\n##### A few tweaks to the CONTRIBUTING.md file: #####\n"
 echo "\n=============="
 echo "These URLs are broken:"
 echo "  https://miguelsousa.github.io/fontbakery/dev-setup.html"
@@ -143,7 +145,7 @@ echo ""
 patch -p1 -R < openbakery/patches/0005-fixes-to-CONTRIBUTING.md.patch
 
 
-##### FontBakery's fixes that should be applied to Open Bakery as well:
+echo "\n\n##### FontBakery's fixes that should be applied to Open Bakery as well: #####\n"
 
 echo "\n=============="
 echo "Fix for setuptools-scm, overwise package version always ends up being '0.1.dev1'"
@@ -165,9 +167,9 @@ echo ""
 patch -p1 -R < openbakery/patches/0007-Removal-of-check-prefix-on-subcommands.patch
 
 echo "\n=============="
-echo "Cleanup bad-strings. (TODO)"
+echo "Cleanup bad-strings."
 echo ""
-# TODO: patch -p1 -R < openbakery/patches/0008-fixes-to-strings.patch
+#TODO: patch -p1 -R < openbakery/patches/0008-fixes-to-strings.patch
 
 echo "\n=============="
 echo "FontBakery won't change FontValidator ERROR into a FAIL."
