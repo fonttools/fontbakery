@@ -576,8 +576,9 @@ def test_check_whitespace_glyphnames():
 
     editCmap(ttFont, 0x0020, "space")
     editCmap(ttFont, 0x00A0, "uni00A0")
-    msg = assert_PASS(check(ttFont))
-    assert msg == "Font has **AGL recommended** names for whitespace glyphs."
+    assert assert_PASS(check(ttFont)) == (
+        "Font has **AGL recommended** names for whitespace glyphs."
+    )
 
 
 def test_check_whitespace_ink():

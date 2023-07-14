@@ -1,0 +1,52 @@
+From 6680f3711d8bc02cdbc76fa124ed7435779ea653 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Felipe=20Corr=C3=AAa=20da=20Silva=20Sanches?=
+ <juca@members.fsf.org>
+Date: Tue, 18 Jul 2023 03:36:50 +0100
+Subject: [PATCH 1/1] remove the incorrect "PASS" 2nd arg from assert_PASS
+ calls
+
+---
+ tests/profiles/universal_test.py | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tests/profiles/universal_test.py b/tests/profiles/universal_test.py
+index 7a38adea..06e5b9a0 100644
+--- a/tests/profiles/universal_test.py
++++ b/tests/profiles/universal_test.py
+@@ -6,7 +6,7 @@ from fontTools.ttLib import TTFont
+ import pytest
+ import requests
+ 
+-from fontbakery.status import INFO, WARN, FAIL, SKIP
++from fontbakery.status import INFO, WARN, FAIL, PASS, SKIP
+ from fontbakery.codetesting import (
+     assert_PASS,
+     assert_SKIP,
+@@ -379,13 +379,13 @@ def test_check_fontbakery_version(mock_get, mock_installed):
+     mock_response.json.return_value = {"info": {"version": latest_ver}}
+     mock_get.return_value = mock_response
+     mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
+-    msg = assert_PASS(check(font))
++    msg = assert_PASS(check(font), PASS)
+     assert msg == "FontBakery is up-to-date."
+ 
+     # Test the case of installed version being newer than PyPI's version.
+     installed_ver = "0.1.1"
+     mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
+-    msg = assert_PASS(check(font))
++    msg = assert_PASS(check(font), PASS)
+     assert msg == "FontBakery is up-to-date."
+ 
+     # Test the case of installed version being older than PyPI's version.
+@@ -420,7 +420,7 @@ def test_check_fontbakery_version_live_apis():
+     # The check will make an actual request to PyPI.org,
+     # and will query 'pip' to determine which version of 'fontbakery' is installed.
+     # The check should PASS.
+-    msg = assert_PASS(check(font))
++    msg = assert_PASS(check(font), PASS)
+     assert msg == "FontBakery is up-to-date."
+ 
+ 
+-- 
+2.30.2
+
