@@ -2105,7 +2105,7 @@ def com_google_fonts_check_metadata_unique_full_name_values(family_metadata):
             'Found duplicated "full_name" values in METADATA.pb fonts field.',
         )
     else:
-        yield PASS, ('METADATA.pb "fonts" field only has unique "full_name" values.')
+        yield PASS, 'METADATA.pb "fonts" field only has unique "full_name" values.'
 
 
 @check(
@@ -2127,7 +2127,7 @@ def com_google_fonts_check_metadata_unique_weight_style_pairs(family_metadata):
             "Found duplicated style:weight pair in METADATA.pb fonts field.",
         )
     else:
-        yield PASS, ('METADATA.pb "fonts" field only has unique style:weight pairs.')
+        yield PASS, 'METADATA.pb "fonts" field only has unique style:weight pairs.'
 
 
 @check(
@@ -2968,9 +2968,9 @@ def com_google_fonts_check_metadata_normal_style(ttFont, font_metadata):
         font_familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
         font_fullname = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
         if len(font_familyname) == 0 or len(font_fullname) == 0:
-            yield SKIP, "Font lacks familyname and/or fullname entries in name table."
             # FIXME: This is the same SKIP condition as in check/metadata/italic_style
             #        so we definitely need to address them with a common condition!
+            yield SKIP, "Font lacks familyname and/or fullname entries in name table."
         else:
             font_familyname = font_familyname[0]
             font_fullname = font_fullname[0]
@@ -2987,20 +2987,20 @@ def com_google_fonts_check_metadata_normal_style(ttFont, font_metadata):
                 yield FAIL, Message(
                     "familyname-italic",
                     (
-                        f"Font macStyle indicates a non-Italic font,"
+                        "Font macStyle indicates a non-Italic font,"
                         f" but nameID {NameID.FONT_FAMILY_NAME}"
                         f' (FONT_FAMILY_NAME: "{font_familyname}")'
-                        f' ends with "Italic".'
+                        ' ends with "Italic".'
                     ),
                 )
             elif font_fullname.split("-")[-1].endswith("Italic"):
                 yield FAIL, Message(
                     "fullfont-italic",
                     (
-                        f"Font macStyle indicates a non-Italic font,"
+                        "Font macStyle indicates a non-Italic font,"
                         f" but nameID {NameID.FULL_FONT_NAME}"
                         f' (FULL_FONT_NAME: "{font_fullname}")'
-                        f' ends with "Italic".'
+                        ' ends with "Italic".'
                     ),
                 )
             else:
@@ -3066,8 +3066,7 @@ def com_google_fonts_check_metadata_match_name_familyname(
         yield FAIL, Message(
             "mismatch",
             f"METADATA.pb: {font_metadata.filename}:\n"
-            f' Family name "{family_metadata.name}"'
-            f" does not match"
+            f' Family name "{family_metadata.name}" does not match'
             f' font name: "{font_metadata.name}"',
         )
     else:
@@ -3464,7 +3463,7 @@ def com_google_fonts_check_production_glyphs_similarity(
             f" Google Fonts version:\n{formatted_list}"
         )
     else:
-        yield PASS, ("Glyphs are similar in comparison to the Google Fonts version.")
+        yield PASS, "Glyphs are similar in comparison to the Google Fonts version."
 
 
 @condition
@@ -4002,7 +4001,7 @@ def com_google_fonts_check_varfont_generate_static(ttFont):
         with tempfile.TemporaryFile() as instance:
             font = mutator.instantiateVariableFont(ttFont, loc)
             font.save(instance)
-            yield PASS, ("fontTools.varLib.mutator generated a static font instance")
+            yield PASS, "fontTools.varLib.mutator generated a static font instance"
     except Exception as e:
         yield FAIL, Message(
             "varlib-mutator",
@@ -6573,8 +6572,7 @@ def com_google_fonts_check_meta_script_lang_tags(ttFont):
         if "dlng" not in ttFont["meta"].data:
             yield FAIL, Message(
                 "missing-dlng-tag",
-                "Please specify which languages and scripts"
-                " this font is designed for.",
+                "Please specify which languages and scripts this font is designed for.",
             )
         else:
             yield INFO, Message("dlng-tag", f"{ttFont['meta'].data['dlng']}")
