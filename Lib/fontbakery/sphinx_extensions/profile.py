@@ -76,7 +76,7 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
             return None
 
         # FIXME: Unexpected keyword argument 'has_retval'
-        sig = Signature(  # pylint disable:unexpected-keyword-arg
+        sig = Signature(  # pylint: disable=unexpected-keyword-arg
             self.object._func,
             bound_method=False,
             has_retval=has_retval,
@@ -205,7 +205,7 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
             self.analyzer.find_attr_docs()
         except PycodeError as err:
             # FIXME: Too many arguments for logging format string
-            logger.debug(  # pylint disable:logging-too-many-args
+            logger.debug(  # pylint: disable=logging-too-many-args
                 "[autodoc] module analyzer failed: %s",
                 err,
             )
@@ -283,7 +283,7 @@ class PyFontBakeryObject(PyObject):
     @property
     def pretty_objtype(self):
         if self.objtype.startswith("fontbakery"):
-            suffix = self.objtype[len("fontbakery") :]
+            suffix = self.objtype[len("fontbakery") :]  # noqa: E203
             return "FontBakery" + suffix[0].upper() + suffix[1:]
         return self.objtype
 
@@ -349,7 +349,7 @@ class PyFontBakeryObject(PyObject):
             if prefix and (prefix == classname or prefix.startswith(classname + ".")):
                 fullname = prefix + name
                 # class name is given again in the signature
-                prefix = prefix[len(classname) :].lstrip(".")
+                prefix = prefix[len(classname) :].lstrip(".")  # noqa: E203
             elif prefix:
                 # class name is given in the signature, but different
                 # (shouldn't happen)
