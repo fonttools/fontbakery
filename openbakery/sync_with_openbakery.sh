@@ -1,7 +1,15 @@
-# This would be so much easier if the Open Bakery repo had kept the full git history...
+# NOTE: As of July 18, 2023, I finally have been able to finish inspecting the full set
+#       of changes in OpenBakery and documented them below.
+#
+#       Using as a reference, code from the following commit:
+#       https://github.com/miguelsousa/openbakery/commit/0b29c2db3b4f076c9e651eb8f97281a40d216a0c
+#
+#
+# This task would be so much easier if the Open Bakery repo had kept the full git history...
 # So here we have to curate a set of patches to automate keeping the projects
 # in sync except for the extremely rare occasions when there's disagreement on what
 # Miguel Sousa is doing there.
+
 
 # Backup a few things:
 rm -rf ../fontbakery-tmp-backup
@@ -227,6 +235,7 @@ echo ""
 echo "com.google.fonts/check/italic_angle on OpenType profile"
 echo "(PR #4187)"
 echo ""
+;;;;; ATTENTION: There is no "-R" in the command below!
 patch -p1 < openbakery/patches/0013-Fix-an-ERROR-on-italic_angle-check.patch
 
 echo "\n=============="
