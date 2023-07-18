@@ -6,7 +6,5 @@ show_source = false
 select = E,F,W
 extend-exclude = *_pb2.py
 extend-ignore =
-    # whitespace before ':'
-    E203,
     # line break before binary operator
     W503,
