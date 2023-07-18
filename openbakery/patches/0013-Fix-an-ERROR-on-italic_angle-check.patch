@@ -1,0 +1,102 @@
+From 699e4e86a3ddfd27961d2047653759138369e754 Mon Sep 17 00:00:00 2001
+From: Simon Cozens <simon@simon-cozens.org>
+Date: Thu, 15 Jun 2023 08:22:55 +0100
+Subject: [PATCH 1/1] Fix an ERROR on italic_angle check
+
+If any of the glyphs checked (bar, vertical line, left square bracket, etc.)
+have no outlines, the check will now emit a WARN, because that's useful information.
+
+com.google.fonts/check/italic_angle on OpenType profile
+(PR #4187)
+---
+ Lib/fontbakery/profiles/post.py | 37 ++++++++++++++++++++++++++++-----
+ tests/profiles/post_test.py     |  8 +++++++
+ 2 files changed, 43 insertions(+), 6 deletions(-)
+
+diff --git a/Lib/fontbakery/profiles/post.py b/Lib/fontbakery/profiles/post.py
+index 44429a84..cd3a8e03 100644
+--- a/Lib/fontbakery/profiles/post.py
++++ b/Lib/fontbakery/profiles/post.py
+@@ -148,8 +148,7 @@ def com_google_fonts_check_italic_angle(ttFont, style):
+                     if intersections:
+                         return intersections[0].point.x
+ 
+-    calculated_italic_angle = None
+-    for glyph_name in (
++    GLYPHS_TO_CHECK = (
+         "bar",
+         "uni007C",  # VERTICAL LINE
+         "bracketleft",
+@@ -157,8 +156,23 @@ def com_google_fonts_check_italic_angle(ttFont, style):
+         "H",
+         "uni0048",  # LATIN CAPITAL LETTER H
+         "I",
+-        "uni0049",
+-    ):  # LATIN CAPITAL LETTER I
++        "uni0049",  # LATIN CAPITAL LETTER I
++    )
++
++    bad_glyphs = []
++    for glyph_name in GLYPHS_TO_CHECK:
++        # Get bounds
++        glyphset = ttFont.getGlyphSet()
++        if glyph_name not in glyphset:
++            continue
++        boundspen = BoundsPen(glyphset)
++        glyphset[glyph_name].draw(boundspen)
++        if not boundspen.bounds:
++            bad_glyphs.append(glyph_name)
++            continue
++
++    calculated_italic_angle = None
++    for glyph_name in GLYPHS_TO_CHECK:
+         try:
+             paths = BezierPath.fromFonttoolsGlyph(ttFont, glyph_name)
+         except KeyError:
+@@ -167,7 +181,10 @@ def com_google_fonts_check_italic_angle(ttFont, style):
+         # Get bounds
+         boundspen = BoundsPen(ttFont.getGlyphSet())
+         ttFont.getGlyphSet()[glyph_name].draw(boundspen)
+-        (xMin, yMin, xMax, yMax) = boundspen.bounds
++        bounds = boundspen.bounds
++        if not bounds:
++            continue
++        (xMin, yMin, xMax, yMax) = bounds
+ 
+         # Measure at 20% distance from bottom and top
+         y_bottom = yMin + (yMax - yMin) * 0.2
+@@ -275,5 +292,15 @@ def com_google_fonts_check_italic_angle(ttFont, style):
+                 ("Font is not italic, so post.italicAngle should be equal to zero."),
+             )
+ 
++    if bad_glyphs:
++        passed = False
++        yield WARN, Message(
++            "empty-glyphs",
++            (
++                "The following glyphs were present but did not contain any outlines: "
++                + ", ".join(bad_glyphs)
++            ),
++        )
++
+     if passed:
+         yield PASS, (f"Value of post.italicAngle is {value}" f' with style="{style}".')
+diff --git a/tests/profiles/post_test.py b/tests/profiles/post_test.py
+index 028564d8..60454955 100644
+--- a/tests/profiles/post_test.py
++++ b/tests/profiles/post_test.py
+@@ -189,3 +189,11 @@ def test_check_italic_angle():
+     assert_PASS(check(ttFont, {"style": "Italic"}))
+     ttFont["post"].italicAngle *= -1
+     assert_results_contain(check(ttFont, {"style": "Italic"}), WARN, "negative")
++
++    ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.rightslanted.ttf"))
++    assert_PASS(check(ttFont, {"style": "Italic"}))
++    ttFont["glyf"]["I"].endPtsOfContours = []
++    ttFont["glyf"]["I"].coordinates = []
++    ttFont["glyf"]["I"].flags = []
++    ttFont["glyf"]["I"].numberOfContours = 0
++    assert_results_contain(check(ttFont, {"style": "Italic"}), WARN, "empty-glyphs")
+-- 
+2.30.2
+
