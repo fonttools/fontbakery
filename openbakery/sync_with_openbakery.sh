@@ -216,5 +216,18 @@ echo "\"Remove a few incorrect 'PASS' 2nd args from calls to method 'assert_PASS
 echo ""
 patch -p1 -R < openbakery/patches/0012-remove-the-incorrect-PASS-2nd-arg-from-assert_PASS-c.patch
 
+echo "\n=============="
+echo "\"From: Simon Cozens <simon@simon-cozens.org>"
+echo "Date: Thu, 15 Jun 2023 08:22:55 +0100"
+echo "Subject: Fix an ERROR on italic_angle check"
+echo ""
+echo "If any of the glyphs checked (bar, vertical line, left square bracket, etc.)"
+echo "have no outlines, the check will now emit a WARN, because that's useful information."
+echo ""
+echo "com.google.fonts/check/italic_angle on OpenType profile"
+echo "(PR #4187)"
+echo ""
+patch -p1 < openbakery/patches/0013-Fix-an-ERROR-on-italic_angle-check.patch
+
 echo "DONE!\n=============="
 
