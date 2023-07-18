@@ -183,10 +183,6 @@ echo "https://github.com/miguelsousa/openbakery/commit/489a2cc76e009a7c7a6d4bd3d
 echo ""
 patch -p1 -R < openbakery/patches/0007-Removal-of-check-prefix-on-subcommands.patch
 
-echo "\n=============="
-echo "Cleanup bad-strings."
-echo ""
-patch -p1 -R < openbakery/patches/0008-a-few-fixes-to-strings.patch
 
 echo "\n=============="
 echo "FontBakery won't change FontValidator ERROR into a FAIL."
