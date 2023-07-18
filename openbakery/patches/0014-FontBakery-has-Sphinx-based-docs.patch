@@ -1,0 +1,58 @@
+From 6b4833b6e7866b138a03b976e927dd41dde5e5e1 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Felipe=20Corr=C3=AAa=20da=20Silva=20Sanches?=
+ <juca@members.fsf.org>
+Date: Tue, 18 Jul 2023 04:12:31 +0100
+Subject: [PATCH 1/2] FontBakery has Sphinx-based docs
+
+---
+ pyproject.toml |  6 ------
+ setup.py       | 10 +---------
+ 2 files changed, 1 insertion(+), 15 deletions(-)
+
+diff --git a/pyproject.toml b/pyproject.toml
+index 6e09f12e..763e9cfb 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -84,10 +84,4 @@ disable = [
+ 
+ 	# Information
+ 	"c-extension-no-member",
+-
+-	# FIXME on Sphinx code,
+-	"abstract-method",
+-	"unexpected-keyword-arg",
+-	"logging-too-many-args",
+-	"attribute-defined-outside-init",
+ ]
+diff --git a/setup.py b/setup.py
+index 240b78f4..b5c18796 100644
+--- a/setup.py
++++ b/setup.py
+@@ -69,15 +69,8 @@ fontval_extras = [
+     "lxml",
+ ]
+ 
+-docs_extras = [
+-    "recommonmark",
+-    "sphinx >= 1.4",
+-    "sphinx_rtd_theme",
+-]
+-
+ all_extras = set(
+-    docs_extras
+-    + fontval_extras
++    fontval_extras
+     + googlefonts_extras
+     + iso15008_extras
+     + shaping_extras
+@@ -164,7 +157,6 @@ setup(
+     ],
+     extras_require={
+         "all": all_extras,
+-        "docs": docs_extras,
+         "fontval": fontval_extras,
+         "fontwerk": googlefonts_extras,
+         "googlefonts": googlefonts_extras,
+-- 
+2.30.2
+

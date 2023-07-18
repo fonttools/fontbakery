@@ -1,0 +1,27 @@
+From 99f1545ff836b1aeaf037288772d78a1a547ff88 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Felipe=20Corr=C3=AAa=20da=20Silva=20Sanches?=
+ <juca@members.fsf.org>
+Date: Tue, 18 Jul 2023 04:13:18 +0100
+Subject: [PATCH 2/2] Preserve the comment reminding us to someday fix
+ command-line autocompletion in a crossplatform manner.
+
+---
+ setup.py | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/setup.py b/setup.py
+index b5c18796..5b151103 100644
+--- a/setup.py
++++ b/setup.py
+@@ -168,8 +168,4 @@ setup(
+     entry_points={
+         "console_scripts": ["fontbakery=fontbakery.cli:main"],
+     },
+-    # TODO: review this and make it cross-platform:
+-    #    data_files=[
+-    #        ('/etc/bash_completion.d', ['snippets/fontbakery.bash-completion']),
+-    #    ]
+ )
+-- 
+2.30.2
+

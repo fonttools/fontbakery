@@ -229,5 +229,16 @@ echo "(PR #4187)"
 echo ""
 patch -p1 < openbakery/patches/0013-Fix-an-ERROR-on-italic_angle-check.patch
 
+echo "\n=============="
+echo "FontBakery has Sphinx-based docs"
+echo ""
+patch -p1 -R < openbakery/patches/0014-FontBakery-has-Sphinx-based-docs.patch
+
+echo "\n=============="
+echo "Preserve the comment reminding us to someday fix"
+echo " command-line autocompletion in a crossplatform manner."
+echo ""
+patch -p1 -R < openbakery/patches/0015-Preserve-the-comment-reminding-us-to-someday-fix-com.patch
+
 echo "DONE!\n=============="
 
