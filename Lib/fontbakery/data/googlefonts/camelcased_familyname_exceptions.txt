@@ -26,3 +26,4 @@ UnifrakturCook
 UnifrakturMaguntia
 SignWriting # seen in "Noto Sans SignWriting"
 WindSong
+ADLaM
