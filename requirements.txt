@@ -7,7 +7,7 @@ cmarkgfm==2022.10.27
 collidoscope==0.6.5
 defcon==0.10.2
 dehinter==4.0.0
-fontTools[ufo,lxml,unicode]==4.40.0
+fontTools[ufo,lxml,unicode]==4.41.0
 font-v==2.1.0
 freetype-py==2.3.0  # pinned for now. See: https://github.com/googlefonts/fontbakery/issues/4143
 gflanguages==0.8.9
@@ -19,7 +19,7 @@ opentypespec==1.9.1
 packaging==23.1
 pip-api==0.0.30
 protobuf==3.20.3
-PyYAML==6.0
+PyYAML==6.0.1
 requests==2.31.0
 rich==13.4.2
 stringbrewer==0.0.1
