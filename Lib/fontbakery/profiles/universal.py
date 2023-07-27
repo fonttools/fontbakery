@@ -22,7 +22,6 @@ PROFILE = {
             "com.google.fonts/check/valid_glyphnames",
             "com.google.fonts/check/unique_glyphnames",
             "com.google.fonts/check/family/vertical_metrics",
-            "com.google.fonts/check/STAT_strings",
             "com.google.fonts/check/rupee",
             "com.google.fonts/check/unreachable_glyphs",
             "com.google.fonts/check/contour_count",
