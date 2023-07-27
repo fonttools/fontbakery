@@ -204,6 +204,13 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont):
             # on the GF Axis Registry for this specific variation axis tag.
             name = normalize_name(name_entry.toUnicode())
             expected_names = [normalize_name(n) for n in fallbacks.keys()]
+
+            # Allow an Italic AxisValue for the slnt axis which can be any
+            # user value.
+            if axis.AxisTag == "slnt" and name == "Italic":
+                yield INFO, Message("italic-detected",
+                                    "Detected an Italic AxisValue for the slnt axis")
+                continue
             if hasattr(axis_value, "Value"):  # Format 1 & 3
                 is_value = axis_value.Value
             elif hasattr(axis_value, "NominalValue"):  # Format 2
