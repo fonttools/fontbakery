@@ -3,7 +3,7 @@ name: 🚀 Build & Publish
 on:
   push:
     tags:
-      - '\d+\.\d+\.[0-9a-z]+' # e.g. 1.0.0 or 20.15.10b5
+      - 'v\d+\.\d+\.[0-9a-z]+' # e.g. v1.0.0 or v20.15.10b5
 
 jobs:
   build:
