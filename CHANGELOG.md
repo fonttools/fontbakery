@@ -2,10 +2,14 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.9.0 (2023-Jun-??)
+## Upcoming release: 0.9.0 (2023-Aug-??)
+  - ...
+
+
+## 0.9.0a1 (2023-Aug-01)
 ### Note-worthy code changes
   - This is the first version in which we're using the Black auto-formatter on the entire code-base. (Discussions #3397)
-  - Also, now software dependencies can be installed based on the user needs. The default FontBakery installation from PyPI includes only the dependencies for running font-binary checks from the Universal profile. To run source-level checks, one needs to enable the `ufo-sources` extra. (issues #3715 and #3874)
+  - Also, now software dependencies can be installed based on the user needs. The default FontBakery installation from PyPI includes only the dependencies for running font-binary checks from the Universal profile (which includes the OpenType profile). To run source-level checks, one needs to enable the `ufo-sources` extra. For vendor-specific profiles, the profile name has to be used as an extra when installing fontbakery (issues #3715 and #3874)
   - The **Shaping** and **UFO** checks are no longer included in the Universal profile. To run them use their respective subcommands (`check-shaping` or `check-ufo-sources`).
   - On the `conditions` field of the `@check` decorator, the "!" character is no longer supported as a boolean-not operator. Please use the "not" keyword for that, instead.
 
