@@ -42,6 +42,8 @@ ufo_sources_extras = [
     "ufolint",
 ]
 
+adobefonts_extras = []
+
 googlefonts_extras = (
     [
         "axisregistry>=0.3.0",
@@ -61,6 +63,10 @@ googlefonts_extras = (
     + ufo_sources_extras
 )
 
+fontwerk_extras = googlefonts_extras
+
+notofonts_extras = googlefonts_extras
+
 iso15008_extras = [
     "uharfbuzz",
 ]
@@ -77,9 +83,12 @@ docs_extras = [
 
 all_extras = set(
     docs_extras
+    + adobefonts_extras
     + fontval_extras
+    + fontwerk_extras
     + googlefonts_extras
     + iso15008_extras
+    + notofonts_extras
     + shaping_extras
     + ufo_sources_extras
 )
@@ -93,16 +102,19 @@ setup(
     long_description_content_type="text/markdown",
     author=(
         "FontBakery authors and contributors:"
+        " Chris Simpkins,"
         " Dave Crossland,"
         " Felipe Sanches,"
+        " Jens Kutilek,"
         " Lasse Fister,"
         " Marc Foley,"
+        " Miguel Sousa,"
         " Nikolaus Waxweiler,"
-        " Chris Simpkins,"
-        " Jens Kutilek,"
-        " Vitaly Volkov,"
+        " Rosalie Wagner,"
         " Simon Cozens,"
-        " Miguel Sousa"
+        " Vitaly Volkov,"
+        " Viviana Monsalve,"
+        " Yanone"
     ),
     author_email="juca@members.fsf.org",
     package_dir={"": "Lib"},
@@ -166,10 +178,11 @@ setup(
     extras_require={
         "all": all_extras,
         "docs": docs_extras,
+        "adobefonts": adobefonts_extras,
         "fontval": fontval_extras,
-        "fontwerk": googlefonts_extras,
+        "fontwerk": fontwerk_extras,
         "googlefonts": googlefonts_extras,
-        "notofonts": googlefonts_extras,
+        "notofonts": notofonts_extras,
         "iso15008": iso15008_extras,
         "shaping": shaping_extras,
         "ufo-sources": ufo_sources_extras,
