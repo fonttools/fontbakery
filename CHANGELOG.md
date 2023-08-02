@@ -6,7 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
-## 0.9.0a1 (2023-Aug-01)
+## 0.9.0a1 (2023-Aug-02)
 ### Note-worthy code changes
   - This is the first version in which we're using the Black auto-formatter on the entire code-base. (Discussions #3397)
   - Also, now software dependencies can be installed based on the user needs. The default FontBakery installation from PyPI includes only the dependencies for running font-binary checks from the Universal profile (which includes the OpenType profile). To run source-level checks, one needs to enable the `ufo-sources` extra. For vendor-specific profiles, the profile name has to be used as an extra when installing fontbakery (issues #3715 and #3874)
