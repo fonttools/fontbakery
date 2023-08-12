@@ -59,6 +59,7 @@ UNIVERSAL_PROFILE_CHECKS = (
         "com.google.fonts/check/cjk_chws_feature",
         "com.google.fonts/check/transformed_components",
         "com.google.fonts/check/gpos7",
+        "com.google.fonts/check/caps_vertically_centered",
         "com.google.fonts/check/ots",
         "com.adobe.fonts/check/freetype_rasterizer",
         "com.adobe.fonts/check/sfnt_version",
@@ -70,7 +71,6 @@ UNIVERSAL_PROFILE_CHECKS = (
         "com.google.fonts/check/alt_caron",
     ]
 )
-
 
 @check(
     id="com.google.fonts/check/name/trailing_spaces",
@@ -276,6 +276,45 @@ def com_google_fonts_check_family_single_directory(fonts):
             " will interpret all font files as belonging to a single"
             f" font family. The detected directories are: {directories}",
         )
+
+
+@check(
+    id="com.google.fonts/check/caps_vertically_centered",
+    proposal="https://github.com/googlefonts/fontbakery/issues/4139",
+    rationale="""
+        If possible, the uppercase glyphs should be vertically centered in the em box.
+        This allows for easier centering of text in buttons, etc.
+        There is a twitter thread about this here:
+        https://twitter.com/romanshamin_en/status/1562801657691672576
+    """,
+)
+def com_google_fonts_check_caps_vertically_centered(ttFont):
+    """Check if uppercase glyphs are vertically centered."""
+
+    filename = os.path.basename(ttFont.reader.file.name)
+
+    # Check both OS/2 and hhea are present.
+    missing_tables = False
+
+    required = ["OS/2", "hhea"]
+    for key in required:
+        if key not in ttFont:
+            missing_tables = True
+            yield FAIL, Message(f"lacks-{key}", f"{filename} lacks a '{key}' table.")
+
+    if missing_tables:
+        return
+
+    cap_height = ttFont["OS/2"].sCapHeight
+    ascender = ttFont["hhea"].ascent
+    descender = ttFont["hhea"].descent
+
+    vertically_centered = cap_height - ascender == descender
+
+    if vertically_centered:
+        yield PASS, "Glyphs are vertically centered in the em box."
+    else:
+        yield WARN, Message("Uppercase glyphs are not vertically centered in the em box.")
 
 
 @check(id="com.google.fonts/check/ots", proposal="legacy:check/036")
