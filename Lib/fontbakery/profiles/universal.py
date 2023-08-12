@@ -284,8 +284,8 @@ def com_google_fonts_check_family_single_directory(fonts):
     proposal="https://github.com/googlefonts/fontbakery/issues/4139",
     rationale="""
         If possible, the uppercase glyphs should be vertically centered in the em box.
-        This allows for easier centering of text in buttons, etc.
-        There is a twitter thread about this here:
+        This allows for easier centering of text in buttons and grid systems.
+        There is a detailed twitter thread about this subject here:
         https://twitter.com/romanshamin_en/status/1562801657691672576
     """,
 )
@@ -316,13 +316,14 @@ def com_google_fonts_check_caps_vertically_centered(ttFont):
 
     vertically_centered = difference <= error_margin
 
-    if vertically_centered:
-        yield PASS, "Uppercase glyphs are vertically centered in the em box."
-    else:
+    if not vertically_centered:
         yield WARN, Message(
-            "vertical-metrics",
+            "not-vertically-centered",
             "Uppercase glyphs are not vertically centered in the em box.",
         )
+
+    if vertically_centered:
+        yield PASS, "Uppercase glyphs are vertically centered in the em box."
 
 
 @check(id="com.google.fonts/check/ots", proposal="legacy:check/036")
