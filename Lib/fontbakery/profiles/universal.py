@@ -306,16 +306,23 @@ def com_google_fonts_check_caps_vertically_centered(ttFont):
     if missing_tables:
         return
 
+    upm = ttFont["head"].unitsPerEm
+    error_margin = upm * 0.05
     cap_height = ttFont["OS/2"].sCapHeight
     ascender = ttFont["hhea"].ascent
     descender = ttFont["hhea"].descent
+    top_margin = ascender - cap_height
+    difference = abs(top_margin - abs(descender))
 
-    vertically_centered = cap_height - ascender == descender
+    vertically_centered = difference <= error_margin
 
     if vertically_centered:
         yield PASS, "Uppercase glyphs are vertically centered in the em box."
     else:
-        yield WARN, ("Uppercase glyphs are not vertically centered in the em box.")
+        yield WARN, Message(
+            "vertical-metrics",
+            "Uppercase glyphs are not vertically centered in the em box.",
+        )
 
 
 @check(id="com.google.fonts/check/ots", proposal="legacy:check/036")
