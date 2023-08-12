@@ -72,6 +72,7 @@ UNIVERSAL_PROFILE_CHECKS = (
     ]
 )
 
+
 @check(
     id="com.google.fonts/check/name/trailing_spaces",
     proposal="https://github.com/googlefonts/fontbakery/issues/2417",
