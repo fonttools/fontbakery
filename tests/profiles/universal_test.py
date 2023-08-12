@@ -1376,10 +1376,10 @@ def test_check_caps_vertically_centered():
         universal_profile, "com.google.fonts/check/caps_vertically_centered"
     )
 
-    test_font = TTFont(
-        TEST_FILE("shantell/ShantellSans-FakeVFBold[BNCE,INFM,SPAC,wght].ttf")
-    )
+    test_font = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     assert_PASS(check(test_font))
 
-    test_font = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
-    assert_results_contain(check(test_font), WARN, "not vertically centered")
+    test_font = TTFont(
+        TEST_FILE("indic-font-with-rupee-sign/NotoSerifDevanagari-Regular.ttf")
+    )
+    assert_results_contain(check(test_font), WARN, "vertical-metrics-not-centered")

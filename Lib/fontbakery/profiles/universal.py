@@ -318,7 +318,7 @@ def com_google_fonts_check_caps_vertically_centered(ttFont):
 
     if not vertically_centered:
         yield WARN, Message(
-            "not vertically centered",
+            "vertical-metrics-not-centered",
             "Uppercase glyphs are not vertically centered in the em box.",
         )
 
