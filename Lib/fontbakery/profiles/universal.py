@@ -312,9 +312,9 @@ def com_google_fonts_check_caps_vertically_centered(ttFont):
     vertically_centered = cap_height - ascender == descender
 
     if vertically_centered:
-        yield PASS, "Glyphs are vertically centered in the em box."
+        yield PASS, "Uppercase glyphs are vertically centered in the em box."
     else:
-        yield WARN, Message("Uppercase glyphs are not vertically centered in the em box.")
+        yield WARN, ("Uppercase glyphs are not vertically centered in the em box.")
 
 
 @check(id="com.google.fonts/check/ots", proposal="legacy:check/036")
