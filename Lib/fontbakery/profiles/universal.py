@@ -285,26 +285,14 @@ def com_google_fonts_check_family_single_directory(fonts):
     rationale="""
         If possible, the uppercase glyphs should be vertically centered in the em box.
         This allows for easier centering of text in buttons and grid systems.
+        This check mainly applies to Latin and other similar scripts.
+        For non-latin scripts like Arabic, this check might not be applicable.
         There is a detailed twitter thread about this subject here:
         https://twitter.com/romanshamin_en/status/1562801657691672576
     """,
 )
 def com_google_fonts_check_caps_vertically_centered(ttFont):
     """Check if uppercase glyphs are vertically centered."""
-
-    filename = os.path.basename(ttFont.reader.file.name)
-
-    # Check both OS/2 and hhea are present.
-    missing_tables = False
-
-    required = ["OS/2", "hhea"]
-    for key in required:
-        if key not in ttFont:
-            missing_tables = True
-            yield FAIL, Message(f"lacks-{key}", f"{filename} lacks a '{key}' table.")
-
-    if missing_tables:
-        return
 
     upm = ttFont["head"].unitsPerEm
     error_margin = upm * 0.05
