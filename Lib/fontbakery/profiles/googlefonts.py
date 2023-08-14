@@ -3890,7 +3890,7 @@ def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
     rationale="""
         The git sha1 tagging and dev/release features of Source Foundry `font-v` tool
         are awesome and we would love to consider upstreaming the approach into
-        fontmake someday. For now we only emit a WARN if a given font does not yet
+        fontmake someday. For now we only emit an INFO if a given font does not yet
         follow the experimental versioning style, but at some point we may start
         enforcing it.
     """,
