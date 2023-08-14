@@ -5505,13 +5505,13 @@ def com_google_fonts_check_vertical_metrics_regressions(
     if not ttFont:
         yield FAIL, Message(
             "couldnt-find-local-regular",
-            "Could not identify a local Regular style font"
+            "Could not identify a local Regular style font",
         )
         return
     if not gf_ttFont:
         yield FAIL, Message(
             "couldnt-find-remote-regular",
-            "Could not identify a Regular style font hosted on Google Fonts"
+            "Could not identify a Regular style font hosted on Google Fonts",
         )
         return
 
@@ -5729,13 +5729,13 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(
     if not ttFont:
         yield FAIL, Message(
             "couldnt-find-local-regular",
-            "Could not identify a local Regular style font"
+            "Could not identify a local Regular style font",
         )
         return
     if not gf_ttFont:
         yield FAIL, Message(
             "couldnt-find-remote-regular",
-            "Could not identify a Regular style font hosted on Google Fonts"
+            "Could not identify a Regular style font hosted on Google Fonts",
         )
         return
 
