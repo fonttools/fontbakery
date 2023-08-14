@@ -4,6 +4,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.9.0 (2023-Aug-??)
 ### New Checks
+### Changes to existing checks
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/vertical_metrics_regressions]:** Fix an error when the provided font did not have a Regular style. (issue #3897)
+
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
 
