@@ -1059,7 +1059,7 @@ def font_codepoints(ttFont):
         Google Fonts expects that fonts in its collection support at least the minimal
         set of characters defined in the `GF-latin-core` glyph-set.
     """,
-    conditions=["font_codepoints"],
+    conditions=["font_codepoints", "not is_icon_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/2488",
 )
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
