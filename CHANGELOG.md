@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.9.0 (2023-Aug-??)
+### Note-worthy code changes
+  - The default log level has been changed to WARN. (issue #4186)
+
 ### New Checks
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
