@@ -4,6 +4,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.9.0 (2023-Aug-??)
 ### New Checks
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.agoogle.fonts/check/os2_metrics_match_hhea]:** Re-worded rationale text to be vendor-neutral (issue #4206)
+
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
 
