@@ -5933,7 +5933,8 @@ def com_google_fonts_check_varfont_duplexed_axis_reflow(ttFont, config):
                             yield FAIL, Message(
                                 "duplexed-kern-causes-reflow",
                                 f"Kerning rules cause variation in"
-                                f" horizontal advance on a duplexed axis ({relevant_axes_display})"
+                                f" horizontal advance on a duplexed axis "
+                                f" ({relevant_axes_display})"
                                 f" (e.g. {left}/{right})",
                             )
                             bad_kerning = True
@@ -5942,7 +5943,8 @@ def com_google_fonts_check_varfont_duplexed_axis_reflow(ttFont, config):
     # Check kerning here
     if not bad_glyphs and not bad_kerning:
         yield PASS, (
-            "No variations or kern rules vary horizontal advance along any duplexed axes"
+            "No variations or kern rules vary horizontal advance along "
+            "any duplexed axes"
         )
 
 
