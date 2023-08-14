@@ -43,12 +43,11 @@ class HTMLReporter(SerializeReporter):
             section_stati_of_note = (
                 e for e in section["result"].elements() if e != "PASS"
             )
-            if all([self.omit_loglevel(s) for s in section["result"].elements()]):
-                continue
             section_stati = "".join(
                 EMOTICON[s] for s in sorted(section_stati_of_note, key=LOGLEVELS.index)
             )
-            body_elements.append(f"<h2>{section_name} {section_stati}</h2>")
+            if not all([self.omit_loglevel(s) for s in section["result"].elements()]):
+                body_elements.append(f"<h2>{section_name} {section_stati}</h2>")
 
             checks_by_id: Dict[str, List[Dict[str, str]]] = collections.defaultdict(
                 list
