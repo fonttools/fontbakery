@@ -8,6 +8,7 @@ from fontbakery.constants import (
     PlatformID,
     UnicodeEncodingID,
     WindowsLanguageID,
+    PANOSE_Family_Type,
 )
 from fontbakery.utils import exit_with_install_instructions
 
@@ -705,3 +706,11 @@ def expected_font_names(ttFont, ttFonts):
         build_fvar_instances(font_cp)
         build_stat(font_cp, siblings)
     return font_cp
+
+
+@condition
+def is_icon_font(ttFont, config):
+    return config.get("is_icon_font", False) or (
+        "OS/2" in ttFont
+        and ttFont["OS/2"].panose.bFamilyType == PANOSE_Family_Type.LATIN_SYMBOL
+    )

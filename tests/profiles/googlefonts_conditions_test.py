@@ -1,9 +1,12 @@
 import pytest
+from fontTools.ttLib import TTFont
+
 
 from fontbakery.codetesting import TEST_FILE
 from fontbakery.profiles.googlefonts_conditions import (
     canonical_stylename,
     stylenames_are_canonical,
+    is_icon_font,
 )
 
 
@@ -70,3 +73,12 @@ def test_stylenames_are_canonical_condition():
         TEST_FILE("merriweather/Merriweather.ttf"),
     )
     assert stylenames_are_canonical(fonts) is False
+
+
+def test_is_icon_font_condition():
+    font = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+    assert is_icon_font(font, {}) is False
+    assert is_icon_font(font, {"is_icon_font": True}) is True
+
+    font = TTFont(TEST_FILE("notoemoji/NotoEmoji-Regular.ttf"))
+    assert is_icon_font(font, {}) is True

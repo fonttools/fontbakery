@@ -26,6 +26,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/vertical_metrics_regressions]:** Fix an error when the provided font did not have a Regular style. (issue #3897)
   - **[com.google.fonts/check/cjk_not_enough_glyphs]:** This check is now only run when a font has CJK codepages or ranges declared in the `OS/2` table. Other CJK-related checks are run on fonts with a minimum of 150 CJK glyphs. (issue #3846)
   - **[com.google.fonts/check/grade_reflow]**: This check has been renamed to **com.google.fonts/check/varfont/duplexed_axis_reflow** and now also checks the `ROND` axis. (issue #4200)
+  - **[com.google.fonts/check/glyph_coverage]:** This check is now skipped for icon fonts. (issues #3323 and #3327)
 
 
 ## 0.9.0a2 (2023-Aug-04)
