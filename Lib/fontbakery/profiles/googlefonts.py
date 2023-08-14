@@ -3890,7 +3890,7 @@ def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
     rationale="""
         The git sha1 tagging and dev/release features of Source Foundry `font-v` tool
         are awesome and we would love to consider upstreaming the approach into
-        fontmake someday. For now we only emit a WARN if a given font does not yet
+        fontmake someday. For now we only emit an INFO if a given font does not yet
         follow the experimental versioning style, but at some point we may start
         enforcing it.
     """,
@@ -5502,6 +5502,19 @@ def com_google_fonts_check_vertical_metrics_regressions(
     gf_ttFont = regular_remote_style
     ttFont = regular_ttFont
 
+    if not ttFont:
+        yield FAIL, Message(
+            "couldnt-find-local-regular",
+            "Could not identify a local Regular style font",
+        )
+        return
+    if not gf_ttFont:
+        yield FAIL, Message(
+            "couldnt-find-remote-regular",
+            "Could not identify a Regular style font hosted on Google Fonts",
+        )
+        return
+
     upm_scale = ttFont["head"].unitsPerEm / gf_ttFont["head"].unitsPerEm
 
     gf_has_typo_metrics = typo_metrics_enabled(gf_ttFont)
@@ -5696,7 +5709,7 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
 
 @check(
     id="com.google.fonts/check/cjk_vertical_metrics_regressions",
-    conditions=["is_cjk_font", "regular_remote_style"],
+    conditions=["is_cjk_font", "regular_remote_style", "regular_ttFont"],
     rationale="""
         Check CJK family has the same vertical metrics as the same family
         hosted on Google Fonts.
@@ -5712,6 +5725,19 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(
 
     gf_ttFont = regular_remote_style
     ttFont = regular_ttFont
+
+    if not ttFont:
+        yield FAIL, Message(
+            "couldnt-find-local-regular",
+            "Could not identify a local Regular style font",
+        )
+        return
+    if not gf_ttFont:
+        yield FAIL, Message(
+            "couldnt-find-remote-regular",
+            "Could not identify a Regular style font hosted on Google Fonts",
+        )
+        return
 
     upm_scale = ttFont["head"].unitsPerEm / gf_ttFont["head"].unitsPerEm
 

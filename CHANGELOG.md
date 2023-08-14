@@ -6,6 +6,14 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Note-worthy code changes
   - The default log level has been changed to WARN. (issue #4186)
 
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.agoogle.fonts/check/os2_metrics_match_hhea]:** Re-worded rationale text to be vendor-neutral (issue #4206)
+
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/font-v]:** Change rationale to reflect the fact that this check emits an INFO (issue #4067)
+  - **[com.google.fonts/check/vertical_metrics_regressions]:** Fix an error when the provided font did not have a Regular style. (issue #3897)
+
 ### New Checks
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
