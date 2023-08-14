@@ -4,7 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.9.0 (2023-Aug-??)
 ### Note-worthy code changes
-  - The default log level has been changed to WARN. (issue #4186)
+  - The default log level has been changed to WARN. Now that profiles are big, you don't (by default) want a big long list of everything that is OK about your font; you just want to know the problems to fix. Make WARN the default and have people get a list of PASS if they ask for it. (issue #4186)
 
 ### Changes to existing checks
 #### On the Universal profile
