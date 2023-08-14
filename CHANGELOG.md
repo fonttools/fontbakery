@@ -5,6 +5,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.9.0 (2023-Aug-??)
 ### New Checks
 ### Changes to existing checks
+#### On the Universal profile
+  - **[com.agoogle.fonts/check/os2_metrics_match_hhea]:** Re-worded rationale text to be vendor-neutral (issue #4206)
+
 #### On the Google Fonts profile
   - **[com.google.fonts/check/vertical_metrics_regressions]:** Fix an error when the provided font did not have a Regular style. (issue #3897)
 
