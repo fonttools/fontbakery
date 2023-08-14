@@ -4325,14 +4325,14 @@ def test_check_varfont_unsupported_axes():
     assert_results_contain(check(ttFont), FAIL, "unsupported-ital")
 
 
-def test_check_varfont_grade_reflow():
+def test_check_varfont_duplexed_axis_reflow():
     """Ensure VFs with the GRAD axis do not vary horizontal advance."""
     check = CheckTester(
-        googlefonts_profile, "com.google.fonts/check/varfont/grade_reflow"
+        googlefonts_profile, "com.google.fonts/check/varfont/duplexed_axis_reflow"
     )
 
     ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
-    assert_results_contain(check(ttFont), FAIL, "grad-causes-reflow")
+    assert_results_contain(check(ttFont), FAIL, "duplexed-causes-reflow")
 
     # Zero out the horizontal advances
     gvar = ttFont["gvar"]
@@ -4344,7 +4344,7 @@ def test_check_varfont_grade_reflow():
                 delta.coordinates = delta.coordinates[:-4] + [(0, 0)] * 4
 
     # But the kern rules should still be a problem
-    assert_results_contain(check(ttFont), FAIL, "grad-kern-causes-reflow")
+    assert_results_contain(check(ttFont), FAIL, "duplexed-kern-causes-reflow")
 
     ttFont["GPOS"].table.LookupList.Lookup = []
     assert_PASS(check(ttFont))

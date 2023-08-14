@@ -200,7 +200,7 @@ FONT_FILE_CHECKS = [
     "com.google.fonts/check/varfont_duplicate_instance_names",
     "com.google.fonts/check/varfont/consistent_axes",
     "com.google.fonts/check/varfont/unsupported_axes",
-    "com.google.fonts/check/varfont/grade_reflow",
+    "com.google.fonts/check/varfont/duplexed_axis_reflow",
     "com.google.fonts/check/gf_axisregistry/fvar_axis_defaults",
     "com.google.fonts/check/STAT/gf_axisregistry",
     "com.google.fonts/check/STAT/axis_order",
@@ -5856,29 +5856,33 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/varfont/grade_reflow",
+    id="com.google.fonts/check/varfont/duplexed_axis_reflow",
     rationale="""
-        The grade (GRAD) axis should not change any advanceWidth or kerning data
-        across its design space. This is because altering the advance width of glyphs
-        can cause text reflow.
+        Certain axes, such as grade (GRAD) or roundness (ROND), should not
+        change any advanceWidth or kerning data across the font's design space.
+        This is because altering the advance width of glyphs can cause text reflow.
     """,
     conditions=["is_variable_font"],
     proposal="https://github.com/googlefonts/fontbakery/issues/3187",
 )
-def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
-    """Ensure VFs with the GRAD axis do not vary horizontal advance."""
-    from fontbakery.profiles.shared_conditions import grad_axis
+def com_google_fonts_check_varfont_duplexed_axis_reflow(ttFont, config):
+    """Ensure VFs with duplexed axes do not vary horizontal advance."""
+    from fontbakery.profiles.shared_conditions import get_axis_tags_set
     from fontbakery.utils import all_kerning, pretty_print_list
 
-    if not grad_axis(ttFont):
-        yield SKIP, Message("no-grad", "This font has no GRAD axis")
+    DUPLEXED_AXES = {"GRAD", "ROND"}
+    relevant_axes = get_axis_tags_set(ttFont) & DUPLEXED_AXES
+    relevant_axes_display = " or ".join(relevant_axes)
+
+    if not (relevant_axes):
+        yield SKIP, Message("no-relevant-axes", "This font has no duplexed axes")
         return
 
     gvar = ttFont["gvar"]
     bad_glyphs = set()
     for glyph, deltas in gvar.variations.items():
         for delta in deltas:
-            if "GRAD" not in delta.axes:
+            if not any(duplexed_axis in delta.axes for duplexed_axis in relevant_axes):
                 continue
             if any(c is not None and c != (0, 0) for c in delta.coordinates[-4:]):
                 bad_glyphs.add(glyph)
@@ -5886,9 +5890,10 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
     if bad_glyphs:
         bad_glyphs_list = pretty_print_list(config, list(bad_glyphs))
         yield FAIL, Message(
-            "grad-causes-reflow",
+            "duplexed-causes-reflow",
             f"The following glyphs have variation in horizontal"
-            f" advance due to the GRAD axis: {bad_glyphs_list}",
+            f" advance due to duplexed axes ({relevant_axes_display}):"
+            f" {bad_glyphs_list}",
         )
 
     # Determine if any kerning rules vary the horizontal advance.
@@ -5896,20 +5901,21 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
     bad_kerning = False
 
     if "GDEF" in ttFont and hasattr(ttFont["GDEF"].table, "VarStore"):
-        effective_regions = []
+        effective_regions = set()
         varstore = ttFont["GDEF"].table.VarStore
         regions = varstore.VarRegionList.Region
-        grad_index = [x.axisTag == "GRAD" for x in ttFont["fvar"].axes].index(True)
-        for ix, region in enumerate(regions):
-            axis_tent = region.VarRegionAxis[grad_index]
-            effective = (
-                axis_tent.StartCoord != axis_tent.PeakCoord
-                or axis_tent.PeakCoord != axis_tent.EndCoord
-            )
-            if effective:
-                effective_regions.append(ix)
+        for axis in relevant_axes:
+            axis_index = [x.axisTag == axis for x in ttFont["fvar"].axes].index(True)
+            for ix, region in enumerate(regions):
+                axis_tent = region.VarRegionAxis[axis_index]
+                effective = (
+                    axis_tent.StartCoord != axis_tent.PeakCoord
+                    or axis_tent.PeakCoord != axis_tent.EndCoord
+                )
+                if effective:
+                    effective_regions.add(ix)
 
-        # Some regions vary *something* along the GRAD axis. But what?
+        # Some regions vary *something* along the axis. But what?
         if effective_regions:
             kerning = all_kerning(ttFont)
             for left, right, v1, v2 in kerning:
@@ -5925,9 +5931,9 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
                         ]
                         if any(x for x in effective_deltas):
                             yield FAIL, Message(
-                                "grad-kern-causes-reflow",
+                                "duplexed-kern-causes-reflow",
                                 f"Kerning rules cause variation in"
-                                f" horizontal advance on the GRAD axis"
+                                f" horizontal advance on a duplexed axis ({relevant_axes_display})"
                                 f" (e.g. {left}/{right})",
                             )
                             bad_kerning = True
@@ -5936,7 +5942,7 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
     # Check kerning here
     if not bad_glyphs and not bad_kerning:
         yield PASS, (
-            "No variations or kern rules vary horizontal advance along the GRAD axis"
+            "No variations or kern rules vary horizontal advance along any duplexed axes"
         )
 
 
