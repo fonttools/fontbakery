@@ -3,6 +3,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.9.0 (2023-Aug-??)
+### Changes to existing checks
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/grade_reflow]**: This check has been renamed to **[com.google.fonts/check/varfont/duplexed_axis_reflow]** and now also checks the `ROND` axis. (issue #4200)
+
 ### New Checks
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
