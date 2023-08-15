@@ -211,16 +211,6 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
         )
 
     if seems_monospaced:
-        if ttFont["post"].isFixedPitch == IsFixedWidth.NOT_MONOSPACED:
-            passed = False
-            yield FAIL, Message(
-                "mono-bad-post-isFixedPitch",
-                f"On monospaced fonts, the value of post.isFixedPitch"
-                f" must be set to a non-zero value"
-                f" (meaning 'fixed width monospaced'),"
-                f" but got {ttFont['post'].isFixedPitch} instead.",
-            )
-
         number_of_h_metrics = ttFont["hhea"].numberOfHMetrics
         if number_of_h_metrics != 3:
             passed = False
@@ -263,6 +253,16 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
                 f" You should check the widths of:"
                 f" {unusually_spaced_glyphs}",
             )
+        elif ttFont["post"].isFixedPitch == IsFixedWidth.NOT_MONOSPACED:
+            passed = False
+            yield FAIL, Message(
+                "mono-bad-post-isFixedPitch",
+                f"On monospaced fonts, the value of post.isFixedPitch"
+                f" must be set to a non-zero value"
+                f" (meaning 'fixed width monospaced'),"
+                f" but got {ttFont['post'].isFixedPitch} instead.",
+            )
+
         if passed:
             yield PASS, Message(
                 "mono-good", "Font is monospaced and all related metadata look good."
