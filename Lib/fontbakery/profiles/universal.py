@@ -492,7 +492,7 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
 
     if not glyph_has_ink(ttFont, NOTDEF):
         passed = False
-        yield WARN, Message(
+        yield FAIL, Message(
             "notdef-is-blank",
             f"The {NOTDEF!r} glyph should contain a drawing, but it is blank.",
         )
