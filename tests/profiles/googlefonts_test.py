@@ -4194,12 +4194,15 @@ def test_check_cjk_not_enough_glyphs():
 
     ttFont = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_cjk_font"
+    assert msg == "Unfulfilled Conditions: is_claiming_to_be_cjk_font"
 
     # Let's modify Montserrat's cmap so there's a cjk glyph
     cmap = ttFont["cmap"].getcmap(3, 1)
     # Add first character of the CJK unified Ideographs
     cmap.cmap[0x4E00] = "A"
+    # And let's declare that we are a CJK font
+    ttFont["OS/2"].ulCodePageRange1 |= 1 << 17
+
     msg = assert_results_contain(check(ttFont), WARN, "cjk-not-enough-glyphs")
     assert msg.startswith("There is only one CJK glyph")
 

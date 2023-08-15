@@ -575,7 +575,6 @@ CJK_UNICODE_RANGE_BITS = {
     "Hangul Syllables": 56,
     "CJK Unified Ideographs": 59,
     "CJK Strokes": 61,
-    "Yi Syllables": 83,
 }
 
 
@@ -602,8 +601,6 @@ CJK_UNICODE_RANGES = [
     [0x31C0, 0x31EF],  # CJK Strokes
     [0xF900, 0xFAFF],  # CJK Compatibility Ideographs (CJK Strokes)
     [0x2F800, 0x2FA1F],  # CJK Compatibility Ideographs Supplement (CJK Strokes)
-    [0xA000, 0xA48F],  # Yi Syllables
-    [0xA490, 0xA4CF],  # Yi Radicals
 ]
 
 OFL_BODY_TEXT = """
