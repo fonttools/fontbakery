@@ -439,7 +439,7 @@ def test_check_mandatory_glyphs():
     subsetter = subset.Subsetter(options)
     subsetter.populate(text="mn")  # Arbitrarily remove everything except 'm' and 'n'
     subsetter.subset(ttFont)
-    message = assert_results_contain(check(ttFont), WARN, "notdef-is-blank")
+    message = assert_results_contain(check(ttFont), FAIL, "notdef-is-blank")
     assert message == "The '.notdef' glyph should contain a drawing, but it is blank."
 
     options.notdef_glyph = False  # Drop '.notdef' glyph
