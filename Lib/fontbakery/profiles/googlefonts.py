@@ -5766,9 +5766,9 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(
 
 @check(
     id="com.google.fonts/check/cjk_not_enough_glyphs",
-    conditions=["is_cjk_font"],
+    conditions=["is_claiming_to_be_cjk_font"],
     rationale="""
-        Hangul has 40 characters and it's the smallest CJK writing system.
+        Kana has 150 characters and it's the smallest CJK writing system.
 
         If a font contains less CJK glyphs than this writing system, we inform the
         user that some glyphs may be encoded incorrectly.
@@ -5776,12 +5776,12 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(
     proposal="https://github.com/fonttools/fontbakery/pull/3214",
 )
 def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
-    """Does the font contain less than 40 CJK characters?"""
+    """Does the font contain less than 150 CJK characters?"""
     from .shared_conditions import get_cjk_glyphs
 
     cjk_glyphs = get_cjk_glyphs(ttFont)
     cjk_glyph_count = len(cjk_glyphs)
-    if cjk_glyph_count > 0 and cjk_glyph_count < 40:
+    if cjk_glyph_count > 0 and cjk_glyph_count < 150:
         if cjk_glyph_count == 1:
             N_CJK_glyphs = "There is only one CJK glyph"
         else:
@@ -5789,8 +5789,8 @@ def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
 
         yield WARN, Message(
             "cjk-not-enough-glyphs",
-            f"{N_CJK_glyphs} when there needs to be at least 40"
-            f" in order to support the smallest CJK writing system, Hangul.\n"
+            f"{N_CJK_glyphs} when there needs to be at least 150"
+            f" in order to support the smallest CJK writing system, Kana.\n"
             f"The following CJK glyphs were found:\n"
             f"{cjk_glyphs}\n"
             f"Please check that these glyphs have the correct unicodes.",

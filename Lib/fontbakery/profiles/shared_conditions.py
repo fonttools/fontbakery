@@ -503,18 +503,21 @@ def unicoderange(ttFont):
 
 
 @condition
-def is_cjk_font(ttFont):
+def is_claiming_to_be_cjk_font(ttFont):
     """Test font object to confirm that it meets our definition of a CJK font file.
 
-    The definition is met if any of the following conditions are True:
+    We do this in two ways: in some cases, we are testing the *metadata*,
+    i.e. what the font claims about itself, in which case the definition is
+    met if any of the following conditions are True:
+
       1. The font has a CJK code page bit set in the OS/2 table
       2. The font has a CJK Unicode range bit set in the OS/2 table
-      3. The font has any CJK Unicode code points defined in the cmap table
+
+    See below for another way of testing this.
     """
     from fontbakery.constants import (
         CJK_CODEPAGE_BITS,
         CJK_UNICODE_RANGE_BITS,
-        CJK_UNICODE_RANGES,
     )
 
     if not has_os2_table(ttFont):
@@ -541,15 +544,21 @@ def is_cjk_font(ttFont):
             if os2.ulUnicodeRange3 & (1 << (bit - 64)):
                 return True
 
-    # defined CJK Unicode code point in cmap table checks
-    cmap = ttFont.getBestCmap()
-    for unicode_range in CJK_UNICODE_RANGES:
-        for x in range(unicode_range[0], unicode_range[1] + 1):
-            if int(x) in cmap:
-                return True
-
     # default, return False if the above checks did not identify a CJK font
     return False
+
+
+@condition
+def is_cjk_font(ttFont):
+    """
+    The `is_claiming_to_be_cjk_font` condition looks up the font's metadata to see if
+    it is claiming to be a CJK font. But the metadata may be wrong, and the correctness
+    of the metadata is something what we want to check!
+    We also want to know if the font really is a CJK font, i.e. it contains a
+    significant number of CJK characters. We say that *this* definition is met if the
+    font has more than 150 CJK Unicode code points defined in the cmap table.
+    """
+    return len(get_cjk_glyphs(ttFont)) > 150
 
 
 @condition

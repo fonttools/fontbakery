@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Google Fonts profile
   - **[com.google.fonts/check/font-v]:** Change rationale to reflect the fact that this check emits an INFO (issue #4067)
   - **[com.google.fonts/check/vertical_metrics_regressions]:** Fix an error when the provided font did not have a Regular style. (issue #3897)
+  - **[com.google.fonts/check/cjk_not_enough_glyphs]:** This check is now only run when a font has CJK codepages or ranges declared in the `OS/2` table. Other CJK-related checks are run on fonts with a minimum of 150 CJK glyphs. (issue #3846)
 
 ### New Checks
 #### Added to the Google Fonts Profile
