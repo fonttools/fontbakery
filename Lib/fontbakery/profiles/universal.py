@@ -1506,14 +1506,20 @@ def com_google_fonts_check_contour_count(ttFont, config):
                 else:
                     return name
 
-            bad_glyphs_name = [
-                f"Glyph name: {_glyph_name(cmap, name)}\t"
-                f"Contours detected: {count}\t"
-                f"Expected: {pretty_print_list(config, expected, glue='or')}"
-                for name, count, expected in bad_glyphs
-            ]
-            bad_glyphs_name = bullet_list(config, bad_glyphs_name)
-            yield WARN, Message(
+            badness = WARN
+            bad_glyphs_message = []
+
+            for name, count, expected in bad_glyphs:
+                bad_glyphs_message.append(
+                    f"Glyph name: {_glyph_name(cmap, name)}\t"
+                    f"Contours detected: {count}\t"
+                    f"Expected: {pretty_print_list(config, expected, glue='or')}"
+                )
+                if count == 0:
+                    badness = FAIL
+
+            bad_glyphs_message = bullet_list(config, bad_glyphs_message)
+            yield badness, Message(
                 "contour-count",
                 "This check inspects the glyph outlines and detects the total number"
                 " of contours in each of them. The expected values are infered from"
@@ -1525,7 +1531,7 @@ def com_google_fonts_check_contour_count(ttFont, config):
                 " reviewing the design and codepoint assignment of these to make"
                 " sure they are correct.\n\n"
                 "The following glyphs do not have the recommended"
-                f" number of contours:\n\n{bad_glyphs_name}\n",
+                f" number of contours:\n\n{bad_glyphs_message}\n",
             )
         else:
             yield PASS, "All glyphs have the recommended amount of contours"
