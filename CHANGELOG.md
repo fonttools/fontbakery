@@ -2,16 +2,19 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 1.0.0a1 (2023-Sep-??)
+## Upcoming release: 0.9.3 (2023-Sep-??)
   - ...
 
 
-## 0.9.2 (2023-Sep-20)
-### Bug Fixes
-#### On the Universal Profile
-  - **[com.google.fonts/check/font_is_centered_vertically]:** Fix yet another error on fonts without ASCII letters (issue #4269)
+## 0.9.2 (2023-Sep-21)
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.google.fonts/check/font_is_centered_vertically]:** Fix yet another ERROR on fonts without ASCII letters (issue #4269)
+  - **[com.google.fonts/check/contour_count]:** This check now FAILs if a glyph which should have contours is found to have no contours (issue #4137)
+
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/unreachable_subsetting]:** Report codepoints in supplementary Unicode planes, and codepoints with no glyphset support at all (PR #4273)
+
 
 ## 0.9.1 (2023-Sep-19)
 ### Stable release notes
