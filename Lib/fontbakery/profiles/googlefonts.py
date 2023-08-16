@@ -4572,8 +4572,9 @@ def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
                 " value.\n"
                 "\n"
                 "This can be accomplished by using the"
-                " 'gftools fix-hinting' command.\n"
+                " 'gftools fix-hinting' command:\n"
                 "\n"
+                "```\n"
                 "# create virtualenv\n"
                 "python3 -m venv venv"
                 "\n"
@@ -4582,7 +4583,8 @@ def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
                 "\n"
                 "# install gftools\n"
                 "pip install git+https://www.github.com"
-                "/googlefonts/tools"
+                "/googlefonts/tools\n"
+                "```\n"
             ),
         )
 
