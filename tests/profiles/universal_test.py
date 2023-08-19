@@ -1380,6 +1380,6 @@ def test_check_caps_vertically_centered():
     assert_PASS(check(test_font))
 
     test_font = TTFont(
-        TEST_FILE("indic-font-with-rupee-sign/NotoSerifDevanagari-Regular.ttf")
+        TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf")
     )
     assert_results_contain(check(test_font), WARN, "vertical-metrics-not-centered")
