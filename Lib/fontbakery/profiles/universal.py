@@ -284,24 +284,32 @@ def com_google_fonts_check_family_single_directory(fonts):
     proposal="https://github.com/googlefonts/fontbakery/issues/4139",
     rationale="""
         If possible, the uppercase glyphs should be vertically centered in the em box.
-        This allows for easier centering of text in buttons and grid systems.
+        This allows for easier centering of text in buttons, lists, and grid systems,
+        with less CSS work needed to corectly position the type.
         This check mainly applies to Latin and other similar scripts.
         For non-latin scripts like Arabic, this check might not be applicable.
-        There is a detailed twitter thread about this subject here:
-        https://twitter.com/romanshamin_en/status/1562801657691672576
+        There is a detailed description of this subject at:
+        https://x.com/romanshamin_en/status/1562801657691672576
     """,
 )
 def com_google_fonts_check_caps_vertically_centered(ttFont):
     """Check if uppercase glyphs are vertically centered."""
+    from fontTools.pens.boundsPen import BoundsPen
+
+    glyphSet = ttFont.getGlyphSet()
+    highest_point_list = []
+    for glyphName in ["A", "B", "C", "D", "E", "H", "I", "M", "O", "S", "T", "X"]:
+        pen = BoundsPen(glyphSet)
+        glyphSet[glyphName].draw(pen)
+        highest_point = pen.bounds[3]
+        highest_point_list.append(highest_point)
 
     upm = ttFont["head"].unitsPerEm
     error_margin = upm * 0.05
-    cap_height = ttFont["OS/2"].sCapHeight
-    ascender = ttFont["hhea"].ascent
+    average_cap_height = sum(highest_point_list) / len(highest_point_list)
     descender = ttFont["hhea"].descent
-    top_margin = ascender - cap_height
+    top_margin = upm - average_cap_height
     difference = abs(top_margin - abs(descender))
-
     vertically_centered = difference <= error_margin
 
     if not vertically_centered:
@@ -309,8 +317,7 @@ def com_google_fonts_check_caps_vertically_centered(ttFont):
             "vertical-metrics-not-centered",
             "Uppercase glyphs are not vertically centered in the em box.",
         )
-
-    if vertically_centered:
+    else:
         yield PASS, "Uppercase glyphs are vertically centered in the em box."
 
 
