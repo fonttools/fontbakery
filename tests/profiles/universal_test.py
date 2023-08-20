@@ -1379,7 +1379,5 @@ def test_check_caps_vertically_centered():
     test_font = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     assert_PASS(check(test_font))
 
-    test_font = TTFont(
-        TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf")
-    )
+    test_font = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
     assert_results_contain(check(test_font), WARN, "vertical-metrics-not-centered")
