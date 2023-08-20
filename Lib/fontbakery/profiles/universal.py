@@ -283,10 +283,12 @@ def com_google_fonts_check_family_single_directory(fonts):
     id="com.google.fonts/check/caps_vertically_centered",
     proposal="https://github.com/googlefonts/fontbakery/issues/4139",
     rationale="""
-        If possible, the uppercase glyphs should be vertically centered in the em box.
-        This allows for easier centering of text in buttons, lists, and grid systems,
-        with less CSS work needed to corectly position the type.
-        This check mainly applies to Latin and other similar scripts.
+        This check suggests one possible approach to designing vertical metrics,
+        but can be ingnored if you follow a different approach.
+        In order to center text in buttons, lists, and grid systems
+        with minimal additional CSS work, the uppercase glyphs should be
+        vertically centered in the em box.
+        This check mainly applies to Latin, Greek, Cyrillic, and other similar scripts.
         For non-latin scripts like Arabic, this check might not be applicable.
         There is a detailed description of this subject at:
         https://x.com/romanshamin_en/status/1562801657691672576
