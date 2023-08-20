@@ -59,6 +59,7 @@ UNIVERSAL_PROFILE_CHECKS = (
         "com.google.fonts/check/cjk_chws_feature",
         "com.google.fonts/check/transformed_components",
         "com.google.fonts/check/gpos7",
+        "com.google.fonts/check/caps_vertically_centered",
         "com.google.fonts/check/ots",
         "com.adobe.fonts/check/freetype_rasterizer",
         "com.adobe.fonts/check/sfnt_version",
@@ -276,6 +277,50 @@ def com_google_fonts_check_family_single_directory(fonts):
             " will interpret all font files as belonging to a single"
             f" font family. The detected directories are: {directories}",
         )
+
+
+@check(
+    id="com.google.fonts/check/caps_vertically_centered",
+    proposal="https://github.com/googlefonts/fontbakery/issues/4139",
+    rationale="""
+        This check suggests one possible approach to designing vertical metrics,
+        but can be ingnored if you follow a different approach.
+        In order to center text in buttons, lists, and grid systems
+        with minimal additional CSS work, the uppercase glyphs should be
+        vertically centered in the em box.
+        This check mainly applies to Latin, Greek, Cyrillic, and other similar scripts.
+        For non-latin scripts like Arabic, this check might not be applicable.
+        There is a detailed description of this subject at:
+        https://x.com/romanshamin_en/status/1562801657691672576
+    """,
+)
+def com_google_fonts_check_caps_vertically_centered(ttFont):
+    """Check if uppercase glyphs are vertically centered."""
+    from fontTools.pens.boundsPen import BoundsPen
+
+    glyphSet = ttFont.getGlyphSet()
+    highest_point_list = []
+    for glyphName in ["A", "B", "C", "D", "E", "H", "I", "M", "O", "S", "T", "X"]:
+        pen = BoundsPen(glyphSet)
+        glyphSet[glyphName].draw(pen)
+        highest_point = pen.bounds[3]
+        highest_point_list.append(highest_point)
+
+    upm = ttFont["head"].unitsPerEm
+    error_margin = upm * 0.05
+    average_cap_height = sum(highest_point_list) / len(highest_point_list)
+    descender = ttFont["hhea"].descent
+    top_margin = upm - average_cap_height
+    difference = abs(top_margin - abs(descender))
+    vertically_centered = difference <= error_margin
+
+    if not vertically_centered:
+        yield WARN, Message(
+            "vertical-metrics-not-centered",
+            "Uppercase glyphs are not vertically centered in the em box.",
+        )
+    else:
+        yield PASS, "Uppercase glyphs are vertically centered in the em box."
 
 
 @check(id="com.google.fonts/check/ots", proposal="legacy:check/036")

@@ -1367,3 +1367,17 @@ def test_check_alt_caron():
 
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
     assert_PASS(check(ttFont))
+
+
+def test_check_caps_vertically_centered():
+    """Check if uppercase glyphs are vertically centered."""
+
+    check = CheckTester(
+        universal_profile, "com.google.fonts/check/caps_vertically_centered"
+    )
+
+    test_font = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
+    assert_PASS(check(test_font))
+
+    test_font = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
+    assert_results_contain(check(test_font), WARN, "vertical-metrics-not-centered")

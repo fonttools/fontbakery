@@ -18,6 +18,8 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
 
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/caps_vertically_centered]:** If possible, the uppercase glyphs should be vertically centered in the em box. (issue #4139)
 
 ## 0.9.0a2 (2023-Aug-04)
 ### Changes to existing checks
