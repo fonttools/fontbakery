@@ -15,7 +15,7 @@ extend-exclude = '''
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = ["tests"]
-addopts = "-n 8  --color=yes  --verbose"
+addopts = "--color=yes  --verbose"
 filterwarnings = [
     "ignore:pkg_resources is deprecated as an API:DeprecationWarning",
     "ignore:Deprecated call to `pkg_resources.declare_namespace:DeprecationWarning",
