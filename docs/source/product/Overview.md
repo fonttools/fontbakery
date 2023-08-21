@@ -2,7 +2,7 @@
 
 Font quality is a daily concern of font publishers, foundries and type designers. Every foundry has their own set of tools to ensure that the fonts they publish are in good shape. The “Font Bakery” project is a new and unique initiative to publicly, openly and collaboratively gather knowledge on font issues - and whisk that knowledge into software tools that check font files. Checks can be made on OpenType, UFO, GlyphsApp, and TruFont files, and exist at 3 levels: As standardized format profiles, as distributor requirements, or as individuals’ custom checks.
 
-Font Bakery began in 2013 as a small and simple Python program written as a side-project by Dave Crossland to accelerate the onboarding process for Google Fonts. In 2017, he commissioned Felipe Sanches and Lasse Fister to take it to the next level by rewriting it into a modern and modular architecture. It now has an active community of contributors from foundries around the world, and is now suitable for both individual designers and all large font distributors to use via command-line interfaces and a web dashboard.
+Font Bakery began in 2013 as a small and simple Python program written as a side-project by Dave Crossland to accelerate the onboarding process for Google Fonts. In 2017, he commissioned Felipe Sanches and Lasse Fister to take it to the next level by rewriting it into a modern and modular architecture. It now has an active community of contributors from foundries around the world, and is now suitable for both individual designers and all large font distributors to use via command-line interfaces and a desktop UI app.
 
 # 2. How does the Font Bakery project improve font production?
 
@@ -26,29 +26,7 @@ GitHub uses the Markdown markup to apply basic typographic formatting to the Pul
 
 ![Screenshot of a check report formatted with Markdown, with one family and one check expanded to ‘drill down’ into the details. Adding a new font family to Google Fonts requires evaluating its quality by running Font Bakery in this way.](https://raw.githubusercontent.com/fonttools/fontbakery/main/docs/source/product/images/figure2.3.png "Figure 2.3")
 
-# 3. How does the Font Bakery Dashboard project improve font publishing workflows?
-
-There are now more than 900 families in the Google Fonts catalog, and over 2,000 font files; with over 100 checks, this means 100,000s of check results can be generated. To interrogate, monitor, and manage such a large collection of font families and quality metadata, an official sister project was started: Font Bakery Dashboard. 
-
-This is currently under development (at github.com/googlefonts/fontbakery-dashboard) and has two parts. The first is a ‘back end’ web server application, that orchestrates 10s or 1,000s of “Font Bakery Worker” virtual machines using the Kubernetes system (Figure 3.1) 
-
-![Diagram of the Font Bakery Dashboard system architecture. Source: https://github.com/googlefonts/fontbakery-dashboard/blob/182a109cd8c12655b1cab6d98ecf3abfcdd7b857/docs/nodes%20diagram%20v1.pdf](https://raw.githubusercontent.com/fonttools/fontbakery/main/docs/source/product/images/figure3.1.png "Figure 3.1")
-
-The Linux kernel “container” technology pioneered by Docker Inc is widely supported on many computing infrastructure providers such as Google Cloud Platform, Amazon Web Services, Microsoft Azure, Digital Ocean, or your own server hardware. It can even run on your laptop, using the Minikube system. The benefit of using Kubernetes is that it can run as many copies of Font Bakery in parallel as needed. 
-
-The deluge of check results from such parallel runs are all stored in a database, and the second part is a 'front end’ web page application which provides a graphical user interface to that database. This itself has two parts. 
-
-The first is a front page dashboard table, highlighting the overall status of the whole catalog at each stage of publication (Figure 3.2) With this global view of the check results, a person managing the catalog can better grasp the overall state, decide where to focus improvement efforts, and see progression of an update from a foundry through each stage to the final publication on production API servers that are seen by end-users.
-
-![Screenshot of the front page table of the Font Bakery Dashboard.](https://raw.githubusercontent.com/fonttools/fontbakery/main/docs/source/product/images/figure3.2.png "Figure 3.2")
-
-The second are all the unique check results pages, that contain all details. While the Markdown report format is a simple expanding tree, the Font Bakery Dashboard Report Page template (Figure 3.3) offers a much more sophisticated interface for filtering results by check status or font file.
-
-![Screenshot of a Check Results page on the Font Bakery Dashboard.](https://raw.githubusercontent.com/fonttools/fontbakery/main/docs/source/product/images/figure3.3.png "Figure 3.3")
-
-In addition to checking font projects at each stage of publication, a secondary feature, the Font Bakery Dashboard offers font developers a simply way to get started using Font Bakery to check their projects; users can upload font project files using a simple drag and drop interface and run the checks at a click of a button, with no need to install any Font Bakery software themselves. This is available today at fontbakery.com 
-
-# 4. What is the opportunity for designers and foundries to collaborate on font quality assurance?
+# 3. What is the opportunity for designers and foundries to collaborate on font quality assurance?
 
 The Font Bakery project has 3 core product values:
 
@@ -78,9 +56,9 @@ The third value is understandability. Having the checks implemented correctly an
 
 ![The detailed rationale description for the check shown in Figure 4.1. Users will not only know that there's an issue with a font, but also why is that check is relevant.](https://raw.githubusercontent.com/fonttools/fontbakery/main/docs/source/product/images/figure4.3.png "Figure 4.3")
 
-This is an on-going effort, with checks and rationales being regularly reviewed and updated by the community of type designers using the tool, so that we can all have a detailed understanding of the relevance of each check. The rationales are stored as metadata in the code, so that can be accessed from other tools built with Font Bakery (like the Dashboard) that can display this information when relevant for users. 
+This is an on-going effort, with checks and rationales being regularly reviewed and updated by the community of type designers using the tool, so that we can all have a detailed understanding of the relevance of each check. The rationales are stored as metadata in the code, so that can be accessed from other tools built with Font Bakery (like the UI app) that can display this information when relevant for users. 
 
-# 5. Why contribute publicly? Common goals with shared costs
+# 4. Why contribute publicly? Common goals with shared costs
 
 Good quality is a common goal for all designers and foundries, not only those working on libre fonts. Developing good tools to ensure quality is expensive, time consuming, and requires deep expertise. Working in a public participatory fashion, ‘in the open,’ can be a cost-effective business strategy for type designers and font publishers because the costs are shared, and the benefits are mutual. The synergies of public discussion that occur during public development can help the type community as a whole to improve, in ways that no private team or consortium could possibly do in an isolated fashion.
 
@@ -88,7 +66,7 @@ It is important to stress that collaboration in an open and public project like 
 
 So, if you are not a programmer but want to participate, there is a safe and welcoming path for you. The easiest way to participate is by ‘opening an issue’ on Font Bakery's issue tracker (at github.com/fonttools/fontbakery/issues) describing the font problems you'd wish to have checks for. From that initial description, a conversation typically emerges among the project programmers and other type designers to determine the best way to implement it.
 
-# 6. Conclusion: Font Bakery's "Secret Master Plan"
+# 5. Conclusion: Font Bakery's "Secret Master Plan"
 
 To recap, these are our three guiding product values:
 
