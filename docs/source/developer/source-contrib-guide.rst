@@ -27,7 +27,7 @@ Pull the source repository with the following command:
 
 ::
 
-   $ git clone https://github.com/googlefonts/fontbakery.git
+   $ git clone https://github.com/fonttools/fontbakery.git
 
 and navigate to the root of the repository with:
 
@@ -94,32 +94,23 @@ write custom Font Bakery profiles.
 Source Code Testing
 -------------------
 
-Font Bakery ``check-googlefonts`` provides over 130 checks for fonts and
-families according to the quality requirements of the Google Fonts team.
-In addition to a complete architectural overhaul, release 0.3.1
-introduced a set of code tests to assure the quality of the Font Bakery
+Font Bakery provides over 2 hundred checks for fonts and families.
+
+It also contains a set of code tests to assure the quality of the Font Bakery
 suite of checks. We aim to reach 100% test coverage.
 
-.. tip:: You can find test line coverage data at the end of the testing report that is executed for any `Travis CI job <https://travis-ci.org/googlefonts/fontbakery>`_
 
-In order to run the tests you need to have the ``tox`` dependency
-and Python interpreter versions that are defined for testing installed.
+In order to run the tests you need to have the ``pytest`` dependency installed.
 
-Install ``tox``
+Install ``pytest``
 ~~~~~~~~~~~~~~~
 
-Install ``tox`` in your virtual environment with:
+Install ``pytest`` in your virtual environment with:
 
 ::
 
-   $ pip install tox
+   $ pip install pytest
 
-Install Python Testing Versions
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-You can find the versions of the Python interpreter that are used for
-testing in the ``tox.ini`` file. This file is located in the root of the
-Font Bakery repository.
 
 Execute Source Code Test Suite
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -129,7 +120,8 @@ execute the Font Bakery test suite:
 
 ::
 
-   $ tox
+   $ pytest tests
+
 
 Propose Source Code Changes
 ---------------------------
@@ -140,27 +132,27 @@ for this purpose. Consult `GitHub
 Help <https://help.github.com/articles/about-pull-requests/>`__ for more
 information on using pull requests to submit your changes for review.
 
-The test suite that you execute locally with ``tox`` is executed by 
-the Travis CI testing service when you submit a pull request to the
+The test suite that you execute locally with ``pytest`` is executed by 
+the Github Actions automatically when you submit a pull request to the
 repository. Please add new tests that cover your source changes with all
 proposals. Pull requests cannot be merged if any test fails as a result
 of your modifications.
 
 .. important:: Please submit tests that cover all source code changes in your pull request!
 
-The Travis CI build logs can be viewed at
-https://travis-ci.org/googlefonts/fontbakery.
+The build logs can be viewed at
+https://github.com/fonttools/fontbakery/actions
 
 
 Community Guidelines
 --------------------
 
 This project follows `Google's Open Source Community Guidelines <https://opensource.google.com/conduct/>`_ and 
-the Font Bakery `Code of Conduct <https://github.com/googlefonts/fontbakery/blob/main/CODE_OF_CONDUCT.md>`_.
+the Font Bakery `Code of Conduct <https://github.com/fonttools/fontbakery/blob/main/CODE_OF_CONDUCT.md>`_.
 
 
 License
 -------
 
 The source code is licensed under the `Apache v2.0
-License <https://github.com/googlefonts/fontbakery/blob/main/LICENSE.txt>`__.
+License <https://github.com/fonttools/fontbakery/blob/main/LICENSE.txt>`__.

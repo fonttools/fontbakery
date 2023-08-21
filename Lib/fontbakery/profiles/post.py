@@ -82,8 +82,8 @@ def com_google_fonts_check_family_underline_thickness(ttFonts):
     proposal=[
         "legacy:check/015",
         "https://github.com/google/fonts/issues/215",
-        "https://github.com/googlefonts/fontbakery/issues/2638",
-        "https://github.com/googlefonts/fontbakery/issues/3635",
+        "https://github.com/fonttools/fontbakery/issues/2638",
+        "https://github.com/fonttools/fontbakery/issues/3635",
     ],
 )
 def com_google_fonts_check_post_table_version(ttFont):

@@ -253,7 +253,7 @@ def run_a_set_of_shaping_tests(
         shaping test files and how to configure FontBakery to read the shaping
         test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3223",
+    proposal="https://github.com/fonttools/fontbakery/pull/3223",
 )
 def com_google_fonts_check_shaping_regression(config, ttFont):
     """Check that texts shape as per expectation"""
@@ -326,7 +326,7 @@ def generate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_t
         test files and how to configure FontBakery to read the shaping test suites,
         see https://simoncozens.github.io/tdd-for-otl/
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3223",
+    proposal="https://github.com/fonttools/fontbakery/pull/3223",
 )
 def com_google_fonts_check_shaping_forbidden(config, ttFont):
     """Check that no forbidden glyphs are found while shaping"""
@@ -392,7 +392,7 @@ def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
         shaping test files and how to configure FontBakery to read the shaping
         test suites, see https://simoncozens.github.io/tdd-for-otl/
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3223",
+    proposal="https://github.com/fonttools/fontbakery/pull/3223",
 )
 def com_google_fonts_check_shaping_collides(config, ttFont):
     """Check that no collisions are found while shaping"""
@@ -514,7 +514,7 @@ def is_complex_shaper_font(ttFont):
         display all marks correctly, meaning that it should contain anchors for all
         attaching marks.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3600",
+    proposal="https://github.com/fonttools/fontbakery/issues/3600",
 )
 def com_google_fonts_check_dotted_circle(ttFont, config):
     """Ensure dotted circle glyph is present and can attach marks."""
@@ -598,7 +598,7 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
         See also:
         https://googlefonts.github.io/gf-guide/diacritics.html#soft-dotted-glyphs
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/4059",
+    proposal="https://github.com/fonttools/fontbakery/issues/4059",
 )
 def com_google_fonts_check_soft_dotted(ttFont):
     """Ensure soft_dotted characters lose their dot when combined with marks that

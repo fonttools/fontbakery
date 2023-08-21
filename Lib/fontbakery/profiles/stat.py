@@ -20,7 +20,7 @@ profile_imports = ((".", ("shared_conditions",)),)
         https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-records
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/pull/3017",
+    proposal="https://github.com/fonttools/fontbakery/pull/3017",
 )
 def com_google_fonts_check_varfont_stat_axis_record_for_each_axis(ttFont, config):
     """All fvar axes have a correspondent Axis Record on STAT table?"""
@@ -55,7 +55,7 @@ def com_google_fonts_check_varfont_stat_axis_record_for_each_axis(ttFont, config
         https://docs.microsoft.com/en-us/typography/opentype/spec/stat#axis-value-tables
     """,
     conditions=["has_STAT_table"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3090",
+    proposal="https://github.com/fonttools/fontbakery/issues/3090",
 )
 def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
     """STAT table has Axis Value tables?"""
@@ -94,7 +94,7 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
                     # check that axisCount > 1. Also, format 4 records DO NOT
                     # contribute to the "stat_axes_values" list used to check
                     # against fvar instances.
-                    # see https://github.com/googlefonts/fontbakery/issues/3957
+                    # see https://github.com/fonttools/fontbakery/issues/3957
                     if axis_value.AxisCount <= 1:
                         yield FAIL, Message(
                             "format-4-axis-count",
@@ -137,7 +137,7 @@ def com_adobe_fonts_check_stat_has_axis_value_tables(ttFont, is_variable_font):
         Check that related Upright and Italic VFs have a
         'ital' axis in STAT table.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2934",
+    proposal="https://github.com/fonttools/fontbakery/issues/2934",
 )
 def com_google_fonts_check_italic_axis_in_stat(fonts, config):
     """Ensure VFs have 'ital' STAT axis."""
@@ -211,7 +211,7 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
         and elided for the Upright and not elided for the Italic,
         and that the Upright is linked to the Italic.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3668",
+    proposal="https://github.com/fonttools/fontbakery/issues/3668",
 )
 def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
     """Ensure 'ital' STAT axis is boolean value"""
@@ -292,7 +292,7 @@ def com_google_fonts_check_italic_axis_in_stat_is_boolean(ttFont, style):
     rationale="""
         Check that the 'ital' STAT axis is last in axis order.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3669",
+    proposal="https://github.com/fonttools/fontbakery/issues/3669",
 )
 def com_google_fonts_check_italic_axis_last(ttFont, style):
     """Ensure 'ital' STAT axis is last."""

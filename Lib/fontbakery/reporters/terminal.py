@@ -629,7 +629,7 @@ class TerminalReporter(TerminalProgress):
                 f"\n"
                 f"    If you get {formatStatus(self.theme, 'ERROR')}s,"
                 f" please help us improve the tool by reporting them at\n"
-                f"    {self.theme['url']('https://github.com/googlefonts/fontbakery/issues')}\n"  # noqa:E501 pylint:disable=C0301
+                f"    {self.theme['url']('https://github.com/fonttools/fontbakery/issues')}\n"  # noqa:E501 pylint:disable=C0301
                 f"\n"
                 f"    (but other kinds of bug reports and/or\n"
                 f"     feature requests are also always welcome, of course!)\n"

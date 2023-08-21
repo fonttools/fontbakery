@@ -29,7 +29,7 @@ VHARFBUZZ_VERSION = ">=0.2.0"  # 0.2.0 had an API update
 # Profile-specific dependencies:
 shaping_extras = [
     "collidoscope>=0.5.2",  # 0.5.2 added Python 3.11 wheels
-    # (see https://github.com/googlefonts/fontbakery/issues/3970)
+    # (see https://github.com/fonttools/fontbakery/issues/3970)
     "stringbrewer",
     f"ufo2ft{UFO2FT_VERSION}",
     f"vharfbuzz{VHARFBUZZ_VERSION}",
@@ -57,7 +57,7 @@ googlefonts_extras = (
         "glyphsets>=0.5.0",
         "protobuf>=3.7.0, <4",  # 3.7.0 fixed a bug on parsing some METADATA.pb files.
         # We cannot use v4 because our protobuf files have been compiled with v3.
-        # (see https://github.com/googlefonts/fontbakery/issues/2200)
+        # (see https://github.com/fonttools/fontbakery/issues/2200)
         f"vharfbuzz{VHARFBUZZ_VERSION}",
     ]
     + shaping_extras
@@ -97,7 +97,7 @@ all_extras = set(
 setup(
     name="fontbakery",
     use_scm_version={"write_to": "Lib/fontbakery/_version.py"},
-    url="https://github.com/googlefonts/fontbakery/",
+    url="https://github.com/fonttools/fontbakery/",
     description="A font quality assurance tool for everyone",
     long_description=readme,
     long_description_content_type="text/markdown",
@@ -149,7 +149,7 @@ setup(
         "babelfont",
         f"fontTools{FONTTOOLS_VERSION}",
         "freetype-py!=2.4.0",  # Avoiding 2.4.0 due to seg-fault described at
-        # https://github.com/googlefonts/fontbakery/issues/4143
+        # https://github.com/fonttools/fontbakery/issues/4143
         "opentypespec",
         "opentype-sanitizer>=7.1.9",  # 7.1.9 fixes caret value format = 3 bug
         # (see https://github.com/khaledhosny/ots/pull/182)

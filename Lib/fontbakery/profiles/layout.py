@@ -27,7 +27,7 @@ DEPRECATED_TAGS = ["hngl", "opbd", "size"]
         questionable approaches, or user error in the font editor. Such typos can
         cause features and language support to fail to work as intended.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3355",
+    proposal="https://github.com/fonttools/fontbakery/issues/3355",
     severity=8,
 )
 def com_google_fonts_check_layout_valid_feature_tags(ttFont):
@@ -69,7 +69,7 @@ def script_tags(ttFont):
         or questionable approaches, or user error in the font editor. Such typos can
         cause features and language support to fail to work as intended.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3355",
+    proposal="https://github.com/fonttools/fontbakery/issues/3355",
     severity=8,
 )
 def com_google_fonts_check_layout_valid_script_tags(ttFont):
@@ -105,7 +105,7 @@ def language_tags(ttFont):
         or questionable approaches, or user error in the font editor. Such typos can
         cause features and language support to fail to work as intended.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3355",
+    proposal="https://github.com/fonttools/fontbakery/issues/3355",
     severity=8,
 )
 def com_google_fonts_check_layout_valid_language_tags(ttFont):

@@ -546,7 +546,7 @@ def test_check_whitespace_glyphnames():
     # restore the original font object in preparation for the next test-case:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
-    # See https://github.com/googlefonts/fontbakery/issues/2624
+    # See https://github.com/fonttools/fontbakery/issues/2624
     # nbsp is not Adobe Glyph List compliant.
     editCmap(ttFont, 0x00A0, "nbsp")
     assert_results_contain(

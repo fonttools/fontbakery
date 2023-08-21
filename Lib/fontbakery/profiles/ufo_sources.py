@@ -63,7 +63,7 @@ def designspace_sources(designSpace):
 
 @check(
     id="com.daltonmaag/check/ufolint",
-    proposal="https://github.com/googlefonts/fontbakery/pull/1736",
+    proposal="https://github.com/fonttools/fontbakery/pull/1736",
 )
 def com_daltonmaag_check_ufolint(ufo):
     """Run ufolint on UFO source directory."""
@@ -97,7 +97,7 @@ def com_daltonmaag_check_ufolint(ufo):
         ufo2ft requires these info fields to compile a font binary:
         unitsPerEm, ascender, descender, xHeight, capHeight and familyName.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/1736",
+    proposal="https://github.com/fonttools/fontbakery/pull/1736",
 )
 def com_daltonmaag_check_required_fields(ufo_font):
     """Check that required fields are present in the UFO fontinfo."""
@@ -128,7 +128,7 @@ def com_daltonmaag_check_required_fields(ufo_font):
     rationale="""
         This includes fields that should be in any production font.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/1736",
+    proposal="https://github.com/fonttools/fontbakery/pull/1736",
 )
 def com_daltonmaag_check_recommended_fields(ufo_font):
     """Check that recommended fields are present in the UFO fontinfo."""
@@ -167,7 +167,7 @@ def com_daltonmaag_check_recommended_fields(ufo_font):
 
         year is deprecated since UFO v2.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/1736",
+    proposal="https://github.com/fonttools/fontbakery/pull/1736",
 )
 def com_daltonmaag_check_unnecessary_fields(ufo_font):
     """Check that no unnecessary fields are present in the UFO fontinfo."""
@@ -206,7 +206,7 @@ def com_daltonmaag_check_unnecessary_fields(ufo_font):
         This is meant to ensure that the file is not malformed,
         can be properly parsed and does include valid source file references.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3168",
+    proposal="https://github.com/fonttools/fontbakery/pull/3168",
 )
 def com_google_fonts_check_designspace_has_sources(designspace_sources):
     """See if we can actually load the source files."""
@@ -221,7 +221,7 @@ def com_google_fonts_check_designspace_has_sources(designspace_sources):
     rationale="""
         We expect that designspace files declare on of the masters as default.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3168",
+    proposal="https://github.com/fonttools/fontbakery/pull/3168",
 )
 def com_google_fonts_check_designspace_has_default_master(designSpace):
     """Ensure a default master is defined."""
@@ -238,7 +238,7 @@ def com_google_fonts_check_designspace_has_default_master(designSpace):
         not present in the default one.
     """,
     conditions=["designspace_sources"],
-    proposal="https://github.com/googlefonts/fontbakery/pull/3168",
+    proposal="https://github.com/fonttools/fontbakery/pull/3168",
 )
 def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, config):
     """Check consistency of glyphset in a designspace file."""
@@ -271,7 +271,7 @@ def com_google_fonts_check_designspace_has_consistent_glyphset(designSpace, conf
         across all sources specified in a designspace file.
     """,
     conditions=["designspace_sources"],
-    proposal="https://github.com/googlefonts/fontbakery/pull/3168",
+    proposal="https://github.com/fonttools/fontbakery/pull/3168",
 )
 def com_google_fonts_check_designspace_has_consistent_codepoints(designSpace, config):
     """Check codepoints consistency in a designspace file."""

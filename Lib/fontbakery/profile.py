@@ -171,7 +171,7 @@ class Profile:
         self._check_skip_filter = check_skip_filter
 
         # Used in multiprocessing because pickling the profiles fail on
-        # Mac and Windows. See: googlefonts/fontbakery#2982
+        # Mac and Windows. See: fonttools/fontbakery#2982
         # module_locator can actually a module.__spec__ but also just a dict
         # self.module_locator will always be just a dict
         if module_spec is None:
@@ -346,7 +346,7 @@ class Profile:
                 f"Numerical check IDs must be renamed to keyword-based IDs:\n"
                 f"{list_of_checks}\n"
                 f"\n"
-                f"See also: https://github.com/googlefonts/fontbakery/issues/2238\n"
+                f"See also: https://github.com/fonttools/fontbakery/issues/2238\n"
                 f"\n"
             )
 

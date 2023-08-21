@@ -20,7 +20,7 @@ import enum
 
 # These variable font naming rules will soon change.
 # For more detail, see:
-# https://github.com/googlefonts/fontbakery/issues/2396#issuecomment-473250089
+# https://github.com/fonttools/fontbakery/issues/2396#issuecomment-473250089
 VARFONT_SUFFIXES = ["VF", "Italic-VF", "Roman-VF"]
 
 STATIC_STYLE_NAMES = [

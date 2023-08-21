@@ -20,7 +20,7 @@ profile_imports = ((".", ("shared_conditions",)),)
         its 'Regular' instance is required to be 400.
     """,
     conditions=["is_variable_font", "has_wght_axis"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
+    proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord):
     """The variable font 'wght' (Weight) axis coordinate must be 400 on the
@@ -50,7 +50,7 @@ def com_google_fonts_check_varfont_regular_wght_coord(ttFont, regular_wght_coord
         its 'Regular' instance is required to be 100.
     """,
     conditions=["is_variable_font", "has_wdth_axis"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
+    proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord):
     """
@@ -82,7 +82,7 @@ def com_google_fonts_check_varfont_regular_wdth_coord(ttFont, regular_wdth_coord
         its 'Regular' instance is required to be zero.
     """,
     conditions=["is_variable_font", "has_slnt_axis"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
+    proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord):
     """
@@ -114,7 +114,7 @@ def com_google_fonts_check_varfont_regular_slnt_coord(ttFont, regular_slnt_coord
         its 'Regular' instance is required to be zero.
     """,
     conditions=["is_variable_font", "has_ital_axis"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
+    proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord):
     """
@@ -147,7 +147,7 @@ def com_google_fonts_check_varfont_regular_ital_coord(ttFont, regular_ital_coord
         a value in the range 10 to 16.
     """,
     conditions=["is_variable_font", "has_opsz_axis"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
+    proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord):
     """
@@ -183,7 +183,7 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
         but its wght coordinate is not == 700").
     """,
     conditions=["is_variable_font", "has_wght_axis"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/1707",
+    proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
 def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
     """
@@ -214,7 +214,7 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
         On the 'wght' (Weight) axis, the valid coordinate range is 1-1000.
     """,
     conditions=["is_variable_font", "has_wght_axis"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2264",
+    proposal="https://github.com/fonttools/fontbakery/issues/2264",
 )
 def com_google_fonts_check_varfont_wght_valid_range(ttFont):
     """The variable font 'wght' (Weight) axis coordinate
@@ -248,7 +248,7 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
         zero.
     """,
     conditions=["is_variable_font", "has_wdth_axis"],
-    proposal="https://github.com/googlefonts/fontbakery/pull/2520",
+    proposal="https://github.com/fonttools/fontbakery/pull/2520",
 )
 def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
     """The variable font 'wdth' (Width) axis coordinate
@@ -290,7 +290,7 @@ def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
         the scale used for the italicAngle field in the post table.
     """,
     conditions=["is_variable_font", "has_slnt_axis"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2572",
+    proposal="https://github.com/fonttools/fontbakery/issues/2572",
 )
 def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
     """The variable font 'slnt' (Slant) axis coordinate
@@ -322,7 +322,7 @@ def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
         user interfaces. The name ID must be greater than 255 and less than 32768.
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3702",
+    proposal="https://github.com/fonttools/fontbakery/issues/3702",
 )
 def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
     """Validates that the value of axisNameID used by each VariationAxisRecord
@@ -365,7 +365,7 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
         than 32768.
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3703",
+    proposal="https://github.com/fonttools/fontbakery/issues/3703",
 )
 def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table):
     """Validates that the value of subfamilyNameID used by each InstanceRecord
@@ -412,7 +412,7 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table)
         than 32768.
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3704",
+    proposal="https://github.com/fonttools/fontbakery/issues/3704",
 )
 def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table):
     """Validates that the value of postScriptNameID used by each InstanceRecord
@@ -467,7 +467,7 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
         to 6 or to a name ID with the same value as name ID 6.
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3708",
+    proposal="https://github.com/fonttools/fontbakery/issues/3708",
 )
 def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
     ttFont, has_name_table
@@ -543,7 +543,7 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
         equivalent is provided for the instance.
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3705",
+    proposal="https://github.com/fonttools/fontbakery/issues/3705",
 )
 def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
     """Validates that all of the instance records in a given font have the same size."""
@@ -577,7 +577,7 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
         postScriptNameID values, then all but the first can be ignored.
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3706",
+    proposal="https://github.com/fonttools/fontbakery/issues/3706",
 )
 def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_table):
     """Validates that all of the instance records in a given font have distinct data."""
@@ -627,7 +627,7 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
         and must use only uppercase letters or digits.
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/4043",
+    proposal="https://github.com/fonttools/fontbakery/issues/4043",
 )
 def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
     "Validate foundry-defined design-variation axis tag names."

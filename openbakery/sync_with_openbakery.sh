@@ -132,7 +132,7 @@ echo "We also use the header line"
 echo " --index-url https://pypi.python.org/simple/"
 echo " following advice from Cosimo Lupo, for the reasons described at the article at:"
 echo " https://caremad.io/posts/2013/07/setup-vs-requirement/"
-echo " More detailed info at: https://github.com/googlefonts/fontbakery/issues/2174"
+echo " More detailed info at: https://github.com/fonttools/fontbakery/issues/2174"
 echo ""
 patch -p1 -R < openbakery/patches/0002-requirements-tests.txt.patch
 
