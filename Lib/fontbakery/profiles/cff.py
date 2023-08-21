@@ -145,7 +145,7 @@ def cff_analysis(ttFont):
         Per "The Type 2 Charstring Format, Technical Note #5177",
         the "Subr nesting, stack limit" is 10.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2425",
+    proposal="https://github.com/fonttools/fontbakery/pull/2425",
 )
 def com_adobe_fonts_check_cff_call_depth(cff_analysis):
     """Is the CFF subr/gsubr call depth > 10?"""
@@ -174,7 +174,7 @@ def com_adobe_fonts_check_cff_call_depth(cff_analysis):
     rationale="""
         Per "The CFF2 CharString Format", the "Subr nesting, stack limit" is 10.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2425",
+    proposal="https://github.com/fonttools/fontbakery/pull/2425",
 )
 def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
     """Is the CFF2 subr/gsubr call depth > 10?"""
@@ -208,7 +208,7 @@ def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
         makes use of this operation. The check treats that usage as a FAIL.
         There are no known ill effects of using dotsection, so that check is a WARN.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3033",
+    proposal="https://github.com/fonttools/fontbakery/pull/3033",
 )
 def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
     """Does the font use deprecated CFF operators or operations?"""

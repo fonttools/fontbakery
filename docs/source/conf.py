@@ -189,7 +189,7 @@ def linkcode_resolve(domain, info):
     #
     # On GitHub, we can link to a tag i.e. a release tag such as "v0.7.2"
     # as seen on this URL:
-    # https://github.com/googlefonts/fontbakery/tree/v0.7.2/Lib/fontbakery/profiles
+    # https://github.com/fonttools/fontbakery/tree/v0.7.2/Lib/fontbakery/profiles
 
     tree = "v0.9.0a2"
     # It's not planned for us to get the line number :-(
@@ -199,6 +199,6 @@ def linkcode_resolve(domain, info):
     else:
         lineno = ""
 
-    return "https://github.com/googlefonts/fontbakery/tree/{}/Lib/{}.py{}".format(
+    return "https://github.com/fonttools/fontbakery/tree/{}/Lib/{}.py{}".format(
         tree, filename, lineno
     )

@@ -20,7 +20,7 @@ profile_imports = [(".shared_conditions", ("glyph_metrics_stats", "is_ttf", "is_
         Check the name table for empty records,
         as this can cause problems in Adobe apps.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2369",
+    proposal="https://github.com/fonttools/fontbakery/pull/2369",
 )
 def com_adobe_fonts_check_name_empty_records(ttFont):
     """Check name table for empty records."""
@@ -78,7 +78,7 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
 
 
 def PANOSE_is_monospaced(panose):
-    # https://github.com/googlefonts/fontbakery/issues/2857#issue-608671015
+    # https://github.com/fonttools/fontbakery/issues/2857#issue-608671015
     from fontbakery.constants import (
         PANOSE_Family_Type,
         PANOSE_Proportion,
@@ -99,7 +99,7 @@ def PANOSE_is_monospaced(panose):
 
 
 def PANOSE_expected(family_type):
-    # https://github.com/googlefonts/fontbakery/issues/2857#issue-608671015
+    # https://github.com/fonttools/fontbakery/issues/2857#issue-608671015
     from fontbakery.constants import (
         PANOSE_Family_Type,
         PANOSE_Proportion,
@@ -538,7 +538,7 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
         This information should be consistent across tables, because there's
         no guarantee which table an app will get the data from.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2229",
+    proposal="https://github.com/fonttools/fontbakery/pull/2229",
 )
 def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
     """CFF table FontName must match name table ID 6 (PostScript name)."""
@@ -575,7 +575,7 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
 
         This is the TTF/CFF2 equivalent of the CFF 'name/postscript_vs_cff' check.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2394",
+    proposal="https://github.com/fonttools/fontbakery/pull/2394",
 )
 def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
     """Name table ID 6 (PostScript name) must be consistent across platforms."""
@@ -606,7 +606,7 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
         'The Font Family name [...] should be shared among at most four fonts that
         differ only in weight or style [...]'
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2372",
+    proposal="https://github.com/fonttools/fontbakery/pull/2372",
 )
 def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
     """Verify that each group of fonts with the same nameID 1 has maximum of 4 fonts."""
@@ -664,7 +664,7 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
         Inconsistent font/typographic family names across fonts in a family
         can result in unexpected behaviors, such as broken style linking.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/4112",
+    proposal="https://github.com/fonttools/fontbakery/issues/4112",
 )
 def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
     """
@@ -729,7 +729,7 @@ def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
         conform to the font's Upright or Italic style,
         namely IDs 1 & 2 as well as 16 & 17 if they're present.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3666",
+    proposal="https://github.com/fonttools/fontbakery/issues/3666",
 )
 def com_google_fonts_check_name_italic_names(ttFont, style):
     """Check name table IDs 1, 2, 16, 17 to conform to Italic style."""

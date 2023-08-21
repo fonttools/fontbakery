@@ -57,7 +57,7 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
         This check allows for a 0.1° rounding difference between the Italic angle
         as calculated by the caret slope and post.italicAngle
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3670",
+    proposal="https://github.com/fonttools/fontbakery/issues/3670",
 )
 def com_google_fonts_check_caret_slope(ttFont):
     """Check hhea.caretSlopeRise and hhea.caretSlopeRun"""

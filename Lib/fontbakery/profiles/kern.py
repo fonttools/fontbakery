@@ -30,8 +30,8 @@ from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable
     """,
     proposal=[
         "legacy:check/066",
-        "https://github.com/googlefonts/fontbakery/issues/1675",
-        "https://github.com/googlefonts/fontbakery/issues/3148",
+        "https://github.com/fonttools/fontbakery/issues/1675",
+        "https://github.com/fonttools/fontbakery/issues/3148",
     ],
 )
 def com_google_fonts_check_kern_table(ttFont):

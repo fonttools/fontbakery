@@ -20,7 +20,7 @@ EMOTICON = {
     "PASS": "✅",
     "DEBUG": "🔎",
 }
-ISSUE_URL = "https://github.com/googlefonts/fontbakery/issues"
+ISSUE_URL = "https://github.com/fonttools/fontbakery/issues"
 
 
 class HTMLReporter(SerializeReporter):

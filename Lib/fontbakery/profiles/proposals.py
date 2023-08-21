@@ -23,7 +23,7 @@ Please, feel free to use this template when adding new check proposals here:
     rationale = """
         <insert rationale text here>
     """,
-    proposal = 'https://github.com/googlefonts/fontbakery/issues/<issue-number>'
+    proposal = 'https://github.com/fonttools/fontbakery/issues/<issue-number>'
 )
 def com_<revese_domain>_check_<check_name>(ttFont):
     """<insert a one-line short description here>"""
@@ -53,7 +53,7 @@ def com_<revese_domain>_check_<check_name>(ttFont):
         I think we don't care so much about Manufacturer's name,
         Manufacturer's URL and Designer's URL, but will confirm.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3963",
+    proposal="https://github.com/fonttools/fontbakery/issues/3963",
 )
 def com_google_fonts_check_mandatory_name_entries(ttFont):
     """Mandatory name table entries (other than font names)"""
@@ -72,7 +72,7 @@ def com_google_fonts_check_mandatory_name_entries(ttFont):
         Ideally, all authors listed in the upstream repository's AUTHORS.txt should
         be mentioned in the designer field.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3961",
+    proposal="https://github.com/fonttools/fontbakery/issues/3961",
 )
 def com_google_fonts_check_metadata_empty_designer(family_metadata):
     """At least one designer is declared in METADATA.pb"""

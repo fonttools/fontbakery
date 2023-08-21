@@ -22,11 +22,11 @@ from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable
         by running one of the helper scripts provided at
         https://github.com/googlefonts/gftools
 
-        Reference: https://github.com/googlefonts/fontbakery/issues/1845
+        Reference: https://github.com/fonttools/fontbakery/issues/1845
     """,
     proposal=[
         "legacy:check/045",
-        "https://github.com/googlefonts/fontbakery/issues/3398",
+        "https://github.com/fonttools/fontbakery/issues/3398",
     ],
 )
 def com_google_fonts_check_dsig(ttFont):

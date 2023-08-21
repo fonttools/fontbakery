@@ -2,4 +2,4 @@ blank_issues_enabled: false
 contact_links:
   - name: Anything else
     about: Report a bug or ask a question in GitHub Discussions.
-    url: https://github.com/googlefonts/fontbakery/discussions
+    url: https://github.com/fonttools/fontbakery/discussions

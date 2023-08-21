@@ -55,7 +55,7 @@ If you have been contributing for a while, take a look at issues labeled
 When you create your first pull request, add your name to our
 [Contributors] list. Thank you for making FontBakery better! 🙇‍♀️
 
-[Issues]: https://github.com/googlefonts/fontbakery/issues
+[Issues]: https://github.com/fonttools/fontbakery/issues
 [Contributors]: ./CONTRIBUTORS.txt
 
 
@@ -103,7 +103,7 @@ straightforward, for example, "Implement missing command X", then also outline
 your proposed solution. Your PR will go smoother if the solution is agreed upon
 before you've spent a lot of time implementing it.
 
-[discussion]: https://github.com/googlefonts/fontbakery/discussions
+[discussion]: https://github.com/fonttools/fontbakery/discussions
 
 
 ## Submitting a pull request

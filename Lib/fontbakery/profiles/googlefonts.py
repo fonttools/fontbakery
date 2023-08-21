@@ -137,7 +137,7 @@ NAME_TABLE_CHECKS = [
 
 # The glyphs checks will be enabled once
 #  we implement check polymorphism
-# https://github.com/googlefonts/fontbakery/issues/3436
+# https://github.com/fonttools/fontbakery/issues/3436
 GLYPHSAPP_CHECKS = [
     # DISABLED: "com.google.fonts/check/glyphs_file/name/family_and_style_max_length",
     # DISABLED: "com.google.fonts/check/glyphs_file/font_copyright",
@@ -279,7 +279,7 @@ def com_google_fonts_check_canonical_filename(ttFont):
     """,
     proposal=[
         "legacy:check/003",
-        "https://github.com/googlefonts/fontbakery/issues/4110",
+        "https://github.com/fonttools/fontbakery/issues/4110",
     ],
 )
 def com_google_fonts_check_description_broken_links(description_html):
@@ -340,7 +340,7 @@ def com_google_fonts_check_description_broken_links(description_html):
         Google Fonts has a content formatting policy for that snippet that expects the
         text content of links not to include the http:// or https:// prefixes.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3497",
+    proposal="https://github.com/fonttools/fontbakery/issues/3497",
 )
 def com_google_fonts_check_description_urls(description_html):
     """URLs on DESCRIPTION file must not display http(s) prefix."""
@@ -389,7 +389,7 @@ def description_html(description):
         Such hosting is typically done on sites like Github, Gitlab, GNU Savannah or
         any other git-based version control service.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2523",
+    proposal="https://github.com/fonttools/fontbakery/issues/2523",
 )
 def com_google_fonts_check_description_git_url(description_html):
     """Does DESCRIPTION file contain a upstream Git repo URL?"""
@@ -426,7 +426,7 @@ def com_google_fonts_check_description_git_url(description_html):
     """,
     proposal=[
         "legacy:check/004",
-        "https://github.com/googlefonts/fontbakery/issues/2664",
+        "https://github.com/fonttools/fontbakery/issues/2664",
     ],
 )
 def com_google_fonts_check_description_valid_html(descfile, description):
@@ -497,7 +497,7 @@ def com_google_fonts_check_description_min_length(description):
         collection, we chose to adopt the practice of placing this final linebreak
         character on them.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2879",
+    proposal="https://github.com/fonttools/fontbakery/issues/2879",
 )
 def com_google_fonts_check_description_eof_linebreak(description):
     """DESCRIPTION.en_us.html should end in a linebreak."""
@@ -518,7 +518,7 @@ def com_google_fonts_check_description_eof_linebreak(description):
         The purpose of this check is to ensure that the METADATA.pb file is not
         malformed.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2248",
+    proposal="https://github.com/fonttools/fontbakery/issues/2248",
 )
 def com_google_fonts_check_metadata_parses(family_directory):
     """Check METADATA.pb parse correctly."""
@@ -547,7 +547,7 @@ def com_google_fonts_check_metadata_parses(family_directory):
     conditions=["family_metadata"],
     proposal=[
         "legacy:check/007",
-        "https://github.com/googlefonts/fontbakery/issues/800",
+        "https://github.com/fonttools/fontbakery/issues/800",
     ],
 )
 def com_google_fonts_check_metadata_unknown_designer(family_metadata):
@@ -572,7 +572,7 @@ def com_google_fonts_check_metadata_unknown_designer(family_metadata):
         If there's more than a single designer, the designer names must be
         separated by commas.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2766",
+    proposal="https://github.com/fonttools/fontbakery/issues/2766",
 )
 def com_google_fonts_check_metadata_multiple_designers(family_metadata):
     """Font designer field in METADATA.pb must not contain 'Multiple designers'."""
@@ -597,7 +597,7 @@ def com_google_fonts_check_metadata_multiple_designers(family_metadata):
 
         See eg https://fonts.google.com/specimen/Rubik
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2479",
+    proposal="https://github.com/fonttools/fontbakery/issues/2479",
 )
 def com_google_fonts_check_metadata_designer_values(family_metadata):
     """Multiple values in font designer field in
@@ -618,8 +618,8 @@ def com_google_fonts_check_metadata_designer_values(family_metadata):
     id="com.google.fonts/check/metadata/broken_links",
     conditions=["family_metadata"],
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/2550",
-        "https://github.com/googlefonts/fontbakery/issues/4110",
+        "https://github.com/fonttools/fontbakery/issues/2550",
+        "https://github.com/fonttools/fontbakery/issues/4110",
     ],
 )
 def com_google_fonts_check_metadata_broken_links(family_metadata):
@@ -719,7 +719,7 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
         Also, to avoid confusion, we expect that font files (other than statics)
         are not placed on subdirectories.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2575",
+    proposal="https://github.com/fonttools/fontbakery/issues/2575",
 )
 def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_directory):
     """Ensure METADATA.pb lists all font binaries."""
@@ -786,7 +786,7 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
 
         This check is meant to avoid typos in this field.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2972",
+    proposal="https://github.com/fonttools/fontbakery/issues/2972",
 )
 def com_google_fonts_check_metadata_category(family_metadata):
     """Ensure METADATA.pb category field is valid."""
@@ -1005,7 +1005,7 @@ def com_google_fonts_check_fstype(ttFont):
     """,
     proposal=[
         "legacy:check/018",
-        "https://github.com/googlefonts/fontbakery/issues/3943",
+        "https://github.com/fonttools/fontbakery/issues/3943",
     ],
 )
 def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
@@ -1060,7 +1060,7 @@ def font_codepoints(ttFont):
         set of characters defined in the `GF-latin-core` glyph-set.
     """,
     conditions=["font_codepoints"],
-    proposal="https://github.com/googlefonts/fontbakery/pull/2488",
+    proposal="https://github.com/fonttools/fontbakery/pull/2488",
 )
 def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
     """Check Google Fonts glyph coverage."""
@@ -1117,7 +1117,7 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
         check to FAIL.
     """,
     conditions=["family_metadata"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3533",
+    proposal="https://github.com/fonttools/fontbakery/issues/3533",
     severity=10,  # max severity because this blocks font pushes to production.
 )
 def com_google_fonts_check_metadata_unsupported_subsets(
@@ -1167,7 +1167,7 @@ def com_google_fonts_check_metadata_unsupported_subsets(
         the end user.
     """,
     conditions=["family_metadata"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/4097",
+    proposal="https://github.com/fonttools/fontbakery/issues/4097",
     severity=2,
 )
 def com_google_fonts_check_metadata_unreachable_subsetting(
@@ -1370,7 +1370,7 @@ def com_google_fonts_check_family_has_license(licenses, config):
         (https://github.com/julietaula/montserrat)"
     """,
     severity=10,  # max severity because licensing mistakes can cause legal problems.
-    proposal="https://github.com/googlefonts/fontbakery/issues/2764",
+    proposal="https://github.com/fonttools/fontbakery/issues/2764",
 )
 def com_google_fonts_check_license_OFL_copyright(license_contents):
     """Check license file has good copyright string."""
@@ -1398,7 +1398,7 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
         Often users will accidently delete parts of the body text.
     """,
     severity=10,  # max severity because licensing mistakes can cause legal problems.
-    proposal="https://github.com/googlefonts/fontbakery/issues/3352",
+    proposal="https://github.com/fonttools/fontbakery/issues/3352",
 )
 def com_google_fonts_check_license_OFL_body_text(license_contents):
     """Check OFL body text is correct."""
@@ -1727,7 +1727,7 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
         This check ensures that file sizes are reasonable.
     """,
     severity=10,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3320",
+    proposal="https://github.com/fonttools/fontbakery/issues/3320",
     configs=["WARN_SIZE", "FAIL_SIZE"],
 )
 def com_google_fonts_check_file_size(font):
@@ -1784,7 +1784,7 @@ def com_google_fonts_check_name_version_format(ttFont):
 
 @check(
     id="com.google.fonts/check/has_ttfautohint_params",
-    proposal="https://github.com/googlefonts/fontbakery/issues/1773",
+    proposal="https://github.com/fonttools/fontbakery/issues/1773",
 )
 def com_google_fonts_check_has_ttfautohint_params(ttFont):
     """Font has ttfautohint params?"""
@@ -1896,7 +1896,7 @@ def com_google_fonts_check_old_ttfautohint(ttFont):
         https://davelab6.github.io/epar/
     """,
     severity=1,
-    proposal="https://github.com/googlefonts/fontbakery/issues/226",
+    proposal="https://github.com/fonttools/fontbakery/issues/226",
 )
 def com_google_fonts_check_epar(ttFont):
     """EPAR table present in font?"""
@@ -1905,7 +1905,7 @@ def com_google_fonts_check_epar(ttFont):
         yield INFO, Message(
             "lacks-EPAR",
             "EPAR table not present in font. To learn more see"
-            " https://github.com/googlefonts/fontbakery/issues/818",
+            " https://github.com/fonttools/fontbakery/issues/818",
         )
     else:
         yield PASS, "EPAR table present in font."
@@ -2050,7 +2050,7 @@ def com_google_fonts_check_name_familyname_first_char(ttFont):
     """,
     proposal=[
         "legacy:check/074",
-        "https://github.com/googlefonts/fontbakery/issues/1663",
+        "https://github.com/fonttools/fontbakery/issues/1663",
     ],
 )
 def com_google_fonts_check_name_ascii_only_entries(ttFont):
@@ -2158,7 +2158,7 @@ def com_google_fonts_check_metadata_license(family_metadata):
     conditions=["family_metadata"],
     proposal=[
         "legacy:check/086",
-        "https://github.com/googlefonts/fontbakery/issues/912#issuecomment-237935444",
+        "https://github.com/fonttools/fontbakery/issues/912#issuecomment-237935444",
     ],
 )
 def com_google_fonts_check_metadata_menu_and_latin(family_metadata):
@@ -2212,7 +2212,7 @@ def com_google_fonts_check_metadata_subsets_order(family_metadata):
     rationale="""
         Check METADATA.pb file includes the same subsets as the family in production.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2989",
+    proposal="https://github.com/fonttools/fontbakery/issues/2989",
 )
 def com_google_fonts_check_metadata_includes_production_subsets(
     family_metadata, production_metadata
@@ -2423,7 +2423,7 @@ def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
 
     full_fontnames = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
     # FIXME: only check English names
-    #        https://github.com/googlefonts/fontbakery/issues/4000
+    #        https://github.com/fonttools/fontbakery/issues/4000
 
     if len(full_fontnames) == 0:
         yield FAIL, Message(
@@ -2460,7 +2460,7 @@ def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
     """,
     conditions=["font_metadata", "style"],
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/4086",
+        "https://github.com/fonttools/fontbakery/issues/4086",
         "legacy:check/095",
     ],
 )
@@ -2474,7 +2474,7 @@ def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadat
     if len(font_familynames) == 0:
         # We'll only use nameid 1 (FONT_FAMILY_NAME) when the font
         # does not have nameid 16 (TYPOGRAPHIC_FAMILY_NAME).
-        # https://github.com/googlefonts/fontbakery/issues/4086
+        # https://github.com/fonttools/fontbakery/issues/4086
         font_familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
 
     nameid = NameID.FONT_FAMILY_NAME
@@ -2689,7 +2689,7 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(
         Google Fonts chooses to append "Italic" here.
     """,
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/3024",
+        "https://github.com/fonttools/fontbakery/issues/3024",
         "https://github.com/googlefonts/gftools/issues/297",
         "https://typo.social/@arrowtype/110430680157544757",
     ],
@@ -2771,7 +2771,7 @@ def com_google_fonts_check_metadata_valid_copyright(font_metadata):
 
 @check(
     id="com.google.fonts/check/font_copyright",
-    proposal="https://github.com/googlefonts/fontbakery/pull/2383",
+    proposal="https://github.com/fonttools/fontbakery/pull/2383",
 )
 def com_google_fonts_check_font_copyright(ttFont):
     """Copyright notices match canonical pattern in fonts"""
@@ -2871,7 +2871,7 @@ def com_google_fonts_check_metadata_copyright_max_length(font_metadata):
         We may want to merge them all into a single check.
     """,
     conditions=["family_metadata"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2597",
+    proposal="https://github.com/fonttools/fontbakery/issues/2597",
 )
 def com_google_fonts_check_metadata_filenames(fonts, family_directory, family_metadata):
     """METADATA.pb: Font filenames match font.filename entries?"""
@@ -3108,7 +3108,7 @@ def com_google_fonts_check_metadata_canonical_weight_value(font_metadata):
     conditions=["font_metadata"],
     proposal=[
         "legacy:check/112",
-        "https://github.com/googlefonts/fontbakery/issues/2683",
+        "https://github.com/fonttools/fontbakery/issues/2683",
     ],
 )
 def com_google_fonts_check_metadata_os2_weightclass(ttFont, font_metadata):
@@ -3287,7 +3287,7 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
         Sometimes, perhaps due to copy-pasting, projects may declare different URLs
         between the font.coyright and the family.sources.repository_url fields.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/4056",
+    proposal="https://github.com/fonttools/fontbakery/issues/4056",
 )
 def com_google_fonts_check_metadata_consistent_repo_urls(config, family_metadata):
     """
@@ -3328,7 +3328,7 @@ def com_google_fonts_check_metadata_consistent_repo_urls(config, family_metadata
         This is an educated guess based on the number of glyphs per script in the font
         and should be taken with caution.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/4109",
+    proposal="https://github.com/fonttools/fontbakery/issues/4109",
 )
 def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
     """METADATA.pb: Check for primary_script"""
@@ -3576,7 +3576,7 @@ def uharfbuzz_blob(font):
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_slnt
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3910",
+    proposal="https://github.com/fonttools/fontbakery/pull/3910",
 )
 def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
     """Checking direction of slnt axis angles"""
@@ -3627,7 +3627,7 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
         https://googlefonts.github.io/gf-guide/statics.html#unsupported-styles
         https://googlefonts.github.io/gf-guide/statics.html#single-weight-families
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3800",
+    proposal="https://github.com/fonttools/fontbakery/pull/3800",
 )
 def com_google_fonts_check_font_names(ttFont, expected_font_names):
     """Check font names are correct"""
@@ -3702,7 +3702,7 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
 # FIXME!
 # Temporarily disabled since GFonts hosted Cabin files seem to have changed in ways
 # that break some of the assumptions in the check implementation below.
-# More info at https://github.com/googlefonts/fontbakery/issues/2581
+# More info at https://github.com/fonttools/fontbakery/issues/2581
 @disable
 @check(
     id="com.google.fonts/check/production_encoded_glyphs",
@@ -3802,7 +3802,7 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
         are actually much shorter than this with a length of roughly 70 or 80
         characters.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/1603",
+    proposal="https://github.com/fonttools/fontbakery/issues/1603",
 )
 def com_google_fonts_check_name_copyright_length(ttFont):
     """Length of copyright notice must not exceed 500 characters."""
@@ -3833,13 +3833,13 @@ def com_google_fonts_check_name_copyright_length(ttFont):
         that is http://namecheck.fontdata.com
     """,
     conditions=["familyname"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/494",
+    proposal="https://github.com/fonttools/fontbakery/issues/494",
 )
 def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
     """Familyname must be unique according to namecheck.fontdata.com"""
     import requests
 
-    FB_ISSUE_TRACKER = "https://github.com/googlefonts/fontbakery/issues"
+    FB_ISSUE_TRACKER = "https://github.com/fonttools/fontbakery/issues"
     NAMECHECK_URL = "http://namecheck.fontdata.com"
     try:
         # Since October 2019, it seems that we need to fake our user-agent
@@ -3894,7 +3894,7 @@ def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
         follow the experimental versioning style, but at some point we may start
         enforcing it.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/1563",
+    proposal="https://github.com/fonttools/fontbakery/issues/1563",
 )
 def com_google_fonts_check_fontv(ttFont):
     """Check for font-v versioning."""
@@ -3920,7 +3920,7 @@ def com_google_fonts_check_fontv(ttFont):
 # still not quite right.
 # FIXME: reimplement this addressing the actual root cause of the issue.
 # See also ongoing discussion at:
-# https://github.com/googlefonts/fontbakery/issues/1727
+# https://github.com/fonttools/fontbakery/issues/1727
 @disable
 @check(
     id="com.google.fonts/check/negative_advance_width",
@@ -3936,12 +3936,12 @@ def com_google_fonts_check_fontv(ttFont):
         This check detects and reports such malformed glyf table entries.
 
 
-        [1] https://github.com/googlefonts/fontbakery/issues/1720
+        [1] https://github.com/fonttools/fontbakery/issues/1720
 
         [2] https://github.com/fonttools/fonttools/pull/1198
     """,
     conditions=["is_ttf"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/1720",
+    proposal="https://github.com/fonttools/fontbakery/issues/1720",
 )
 def com_google_fonts_check_negative_advance_width(ttFont):
     """Check that advance widths cannot be inferred as negative."""
@@ -3971,11 +3971,11 @@ def com_google_fonts_check_negative_advance_width(ttFont):
         to have rendering and printing issues.
 
         For more info, see:
-        * https://github.com/googlefonts/fontbakery/issues/2961
+        * https://github.com/fonttools/fontbakery/issues/2961
         * https://github.com/arrowtype/recursive/issues/412
     """,
     conditions=["is_ttf"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2961",
+    proposal="https://github.com/fonttools/fontbakery/issues/2961",
 )
 def com_google_fonts_check_glyf_nested_components(ttFont, config):
     """Check glyphs do not have components which are themselves components."""
@@ -4010,7 +4010,7 @@ def com_google_fonts_check_glyf_nested_components(ttFont, config):
         value ranges accross all the files.
     """,
     conditions=["VFs"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2810",
+    proposal="https://github.com/fonttools/fontbakery/issues/2810",
 )
 def com_google_fonts_check_varfont_consistent_axes(VFs):
     """Ensure that all variable font files have the same set of axes and axis ranges."""
@@ -4077,7 +4077,7 @@ def com_google_fonts_check_varfont_consistent_axes(VFs):
         - width = 75
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/1727",
+    proposal="https://github.com/fonttools/fontbakery/issues/1727",
 )
 def com_google_fonts_check_varfont_generate_static(ttFont):
     """Check a static ttf can be generated from a variable font."""
@@ -4117,7 +4117,7 @@ def com_google_fonts_check_varfont_generate_static(ttFont):
     #         with costly text-layout operations
     #         when an HVAR table is missing!
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2119",
+    proposal="https://github.com/fonttools/fontbakery/issues/2119",
 )
 def com_google_fonts_check_varfont_has_HVAR(ttFont):
     """Check that variable fonts have an HVAR table."""
@@ -4194,7 +4194,7 @@ def com_google_fonts_check_smart_dropout(ttFont):
         weight when left embedded in the font binaries. The sources should be kept on
         the project files but stripped out when building release binaries.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2059",
+    proposal="https://github.com/fonttools/fontbakery/issues/2059",
 )
 def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
     """There must not be VTT Talk sources in the font."""
@@ -4221,7 +4221,7 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
         [1] https://developer.apple.com/fonts/TrueType-Reference-Manual/RM06/Chap6.html
         [2] https://docs.microsoft.com/en-us/typography/opentype/spec/
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2190",
+    proposal="https://github.com/fonttools/fontbakery/pull/2190",
 )
 def com_google_fonts_check_aat(ttFont):
     """Are there unwanted Apple tables?"""
@@ -4279,7 +4279,7 @@ def com_google_fonts_check_aat(ttFont):
         We cannot determine what Axis Values the user will set for axes such as
         opsz, GRAD since these axes are unique for each font so we'll skip them.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3800",
+    proposal="https://github.com/fonttools/fontbakery/pull/3800",
 )
 def com_google_fonts_check_stat(ttFont, expected_font_names):
     """Check a font's STAT table contains compulsory Axis Values."""
@@ -4390,7 +4390,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
         Check a font's fvar instance coordinates comply with our guidelines:
         https://googlefonts.github.io/gf-guide/variable.html#fvar-instances
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3800",
+    proposal="https://github.com/fonttools/fontbakery/pull/3800",
 )
 def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
     """Check variable font instances"""
@@ -4467,7 +4467,7 @@ def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
         The purpose of this check is to make sure that all name entries referenced
         by variable font instances do exist in the name table.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2069",
+    proposal="https://github.com/fonttools/fontbakery/issues/2069",
 )
 def com_google_fonts_check_fvar_name_entries(ttFont):
     """All name entries referenced by fvar instances exist on the name table?"""
@@ -4503,7 +4503,7 @@ def com_google_fonts_check_fvar_name_entries(ttFont):
         Here's a good explanation of this:
         https://www.typography.com/techniques/fonts-for-financials/#tabular-figs
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2278",
+    proposal="https://github.com/fonttools/fontbakery/issues/2278",
 )
 def com_google_fonts_check_family_tnum_horizontal_metrics(RIBBI_ttFonts):
     """All tabular figures must have the same width across the RIBBI-family."""
@@ -4555,7 +4555,7 @@ def com_google_fonts_check_family_tnum_horizontal_metrics(RIBBI_ttFonts):
         Bit 3 = Force ppem to integer values for all internal scaler math;
                 May use fractional ppem sizes if this bit is clear;
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2338",
+    proposal="https://github.com/fonttools/fontbakery/issues/2338",
 )
 def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
     """PPEM must be an integer on hinted fonts."""
@@ -4599,7 +4599,7 @@ def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
         names starting with 'caret_'. These can be compiled with fontmake as of
         version v2.4.0.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/1225",
+    proposal="https://github.com/fonttools/fontbakery/issues/1225",
 )
 def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
     """Are there caret positions declared for every ligature?"""
@@ -4610,7 +4610,7 @@ def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
                 "Failed to lookup ligatures."
                 " This font file seems to be malformed."
                 " For more info, read:"
-                " https://github.com/googlefonts/fontbakery/issues/1596"
+                " https://github.com/fonttools/fontbakery/issues/1596"
             ),
         )
     elif "GDEF" not in ttFont:
@@ -4657,7 +4657,7 @@ def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
         sequences for text where ligatures aren't used
         (eg https://github.com/impallari/Raleway/issues/14).
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/1145",
+    proposal="https://github.com/fonttools/fontbakery/issues/1145",
 )
 def com_google_fonts_check_kerning_for_non_ligated_sequences(
     ttFont, config, ligatures, has_kerning_info
@@ -4683,7 +4683,7 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(
             "Failed to lookup ligatures."
             " This font file seems to be malformed."
             " For more info, read:"
-            " https://github.com/googlefonts/fontbakery/issues/1596",
+            " https://github.com/fonttools/fontbakery/issues/1596",
         )
     else:
         ligature_pairs = []
@@ -4728,9 +4728,9 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(
         decided that allowing up to 27 chars would still be on the safe side, though.
 
         [1] https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances
-        [2] https://github.com/googlefonts/fontbakery/issues/2179
+        [2] https://github.com/fonttools/fontbakery/issues/2179
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/1488",
+    proposal="https://github.com/fonttools/fontbakery/issues/1488",
     misc_metadata={
         # Somebody with access to Windows should make some experiments
         # and confirm that this is really the case.
@@ -4760,7 +4760,7 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                     f" SUBFAMILY_NAME = '{stylename_str}'\n"
                     f"\n"
                     f"Please take a look at the conversation at"
-                    f" https://github.com/googlefonts/fontbakery/issues/2179"
+                    f" https://github.com/fonttools/fontbakery/issues/2179"
                     f" in order to understand the reasoning behind these"
                     f" name table records max-length criteria.",
                 )
@@ -4789,7 +4789,7 @@ def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFi
             f"{too_long_list}\n"
             f"\n"
             f"Please take a look at the conversation at"
-            f" https://github.com/googlefonts/fontbakery/issues/2179"
+            f" https://github.com/fonttools/fontbakery/issues/2179"
             f" in order to understand the reasoning behind these"
             f" name table records max-length criteria.",
         )
@@ -4844,7 +4844,7 @@ def com_google_fonts_check_name_line_breaks(ttFont):
         This check ensures "Reserved Font Name" is not mentioned in the name table.
     """,
     conditions=["not rfn_exception"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/1380",
+    proposal="https://github.com/fonttools/fontbakery/issues/1380",
 )
 def com_google_fonts_check_name_rfn(ttFont, familyname):
     """Name table strings must not contain the string 'Reserved Font Name'."""
@@ -4900,10 +4900,10 @@ def com_google_fonts_check_name_rfn(ttFont, familyname):
 
         These are located in the Lib/fontbakery/data/googlefonts/ directory
         of the FontBakery source code currently hosted at
-        https://github.com/googlefonts/fontbakery/
+        https://github.com/fonttools/fontbakery/
     """,
     conditions=[],
-    proposal="https://github.com/googlefonts/fontbakery/issues/4049",
+    proposal="https://github.com/fonttools/fontbakery/issues/4049",
 )
 def com_google_fonts_check_name_family_name_compliance(ttFont):
     """Check family name for GF Guide compliance."""
@@ -5010,7 +5010,7 @@ def com_google_fonts_check_name_family_name_compliance(ttFont):
         Acceptable control characters are defined as .null (U+0000) and
         CR (U+000D) for this test.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2430",
+    proposal="https://github.com/fonttools/fontbakery/pull/2430",
 )
 def com_google_fonts_check_family_control_chars(ttFonts):
     """Does font file include unacceptable control character glyphs?"""
@@ -5092,7 +5092,7 @@ def com_google_fonts_check_family_control_chars(ttFonts):
 
         [1] https://github.com/google/fonts/pull/1482
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/1733",
+    proposal="https://github.com/fonttools/fontbakery/issues/1733",
 )
 def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config):
     """Ensure Italic styles have Roman counterparts."""
@@ -5143,7 +5143,7 @@ def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config)
 @check(
     id="com.google.fonts/check/repo/dirname_matches_nameid_1",
     conditions=["gfonts_repo_structure", "not is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2302",
+    proposal="https://github.com/fonttools/fontbakery/issues/2302",
 )
 def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
     """Directory name in GFonts repo structure must
@@ -5189,7 +5189,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
         These files are meant to be served for users that still lack support for
         variable fonts in their web browsers.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2654",
+    proposal="https://github.com/fonttools/fontbakery/issues/2654",
 )
 def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
     """A static fonts directory with at least two fonts must accompany variable fonts"""
@@ -5221,7 +5221,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
         A FontBakery report is ephemeral and so should be used for posting issues on a
         bug-tracker instead of being hosted in the font project repository.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2888",
+    proposal="https://github.com/fonttools/fontbakery/issues/2888",
 )
 def com_google_fonts_check_repo_fb_report(family_directory):
     """A font repository should not include FontBakery report files"""
@@ -5254,7 +5254,7 @@ def com_google_fonts_check_repo_fb_report(family_directory):
     """,
     conditions=["upstream_yaml"],
     severity=10,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3338",
+    proposal="https://github.com/fonttools/fontbakery/issues/3338",
 )
 def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml):
     """Check upstream.yaml file contains all required fields"""
@@ -5283,7 +5283,7 @@ def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml)
         Note: a source purist position is that only source files and build scripts
         should be checked in.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2903",
+    proposal="https://github.com/fonttools/fontbakery/issues/2903",
 )
 def com_google_fonts_check_repo_zip_files(family_directory, config):
     """A font repository should not include ZIP files"""
@@ -5324,8 +5324,8 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
         https://github.com/googlefonts/gf-docs/tree/main/VerticalMetrics
     """,
     proposal=[
-        "https://github.com/googlefonts/fontbakery/pull/3762",
-        "https://github.com/googlefonts/fontbakery/pull/3921",
+        "https://github.com/fonttools/fontbakery/pull/3762",
+        "https://github.com/fonttools/fontbakery/pull/3921",
     ],
 )
 def com_google_fonts_check_vertical_metrics(ttFont):
@@ -5487,9 +5487,9 @@ def com_google_fonts_check_vertical_metrics(ttFont):
         - If the upms differ, the values must be scaled so the visual appearance is
           the same.
 
-        [1] https://github.com/googlefonts/fontbakery/issues/1162
+        [1] https://github.com/fonttools/fontbakery/issues/1162
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/1162",
+    proposal="https://github.com/fonttools/fontbakery/issues/1162",
 )
 def com_google_fonts_check_vertical_metrics_regressions(
     regular_ttFont, regular_remote_style
@@ -5620,7 +5620,7 @@ def com_google_fonts_check_vertical_metrics_regressions(
         Our documentation includes further information:
         https://github.com/googlefonts/gf-docs/tree/main/Spec#cjk-vertical-metrics
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2797",
+    proposal="https://github.com/fonttools/fontbakery/pull/2797",
 )
 def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     """Check font follows the Google Fonts CJK vertical metric schema"""
@@ -5714,7 +5714,7 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
         Check CJK family has the same vertical metrics as the same family
         hosted on Google Fonts.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3244",
+    proposal="https://github.com/fonttools/fontbakery/pull/3244",
 )
 def com_google_fonts_check_cjk_vertical_metrics_regressions(
     regular_ttFont, regular_remote_style
@@ -5773,7 +5773,7 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(
         If a font contains less CJK glyphs than this writing system, we inform the
         user that some glyphs may be encoded incorrectly.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3214",
+    proposal="https://github.com/fonttools/fontbakery/pull/3214",
 )
 def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
     """Does the font contain less than 40 CJK characters?"""
@@ -5812,7 +5812,7 @@ def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
         instances will have to be left to access through the `STAT` table.
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2986",
+    proposal="https://github.com/fonttools/fontbakery/issues/2986",
 )
 def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
     """Check variable font instances don't have duplicate names"""
@@ -5866,7 +5866,7 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
         https://arrowtype.github.io/vf-slnt-test/
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2866",
+    proposal="https://github.com/fonttools/fontbakery/issues/2866",
 )
 def com_google_fonts_check_varfont_unsupported_axes(ttFont):
     """Ensure VFs do not contain the ital axis."""
@@ -5889,7 +5889,7 @@ def com_google_fonts_check_varfont_unsupported_axes(ttFont):
         can cause text reflow.
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3187",
+    proposal="https://github.com/fonttools/fontbakery/issues/3187",
 )
 def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
     """Ensure VFs with the GRAD axis do not vary horizontal advance."""
@@ -5974,7 +5974,7 @@ def com_google_fonts_check_varfont_grade_reflow(ttFont, config):
         https://github.com/google/fonts/tree/main/axisregistry
     """,
     conditions=["is_variable_font", "family_metadata", "GFAxisRegistry"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3010",
+    proposal="https://github.com/fonttools/fontbakery/issues/3010",
 )
 def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, GFAxisRegistry):
     """Validate METADATA.pb axes values are within gf_axisregistry bounds."""
@@ -6025,7 +6025,7 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, GFAxisRegistr
         material for a future update to the OpenType specification's axis registry.
     """,
     conditions=["is_variable_font", "family_metadata", "GFAxisRegistry"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3022",
+    proposal="https://github.com/fonttools/fontbakery/issues/3022",
 )
 def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, GFAxisRegistry):
     """Validate METADATA.pb axes tags are defined in gf_axisregistry."""
@@ -6065,7 +6065,7 @@ def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, GFAxisReg
         'opsz' axis was 16pt, and it was not yet a registered fallback positon.
     """,
     conditions=["is_variable_font", "GFAxisRegistry"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3141",
+    proposal="https://github.com/fonttools/fontbakery/issues/3141",
 )
 def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegistry):
     """
@@ -6099,7 +6099,7 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegi
         https://github.com/google/fonts/tree/main/axisregistry
     """,
     conditions=["is_variable_font", "GFAxisRegistry"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3022",
+    proposal="https://github.com/fonttools/fontbakery/issues/3022",
 )
 def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
     """
@@ -6203,7 +6203,7 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
         on METADATA.pb so that they can be served by the GFonts API.
     """,
     conditions=["is_variable_font", "family_metadata"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3051",
+    proposal="https://github.com/fonttools/fontbakery/issues/3051",
 )
 def com_google_fonts_check_metadata_consistent_axis_enumeration(
     family_metadata, ttFont, config
@@ -6245,7 +6245,7 @@ def com_google_fonts_check_metadata_consistent_axis_enumeration(
         We may later update this to enforce some unified axis ordering scheme,
         yet to be determined.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3049",
+    proposal="https://github.com/fonttools/fontbakery/issues/3049",
 )
 def com_google_fonts_check_STAT_axis_order(fonts):
     """Check axis ordering on the STAT table."""
@@ -6291,7 +6291,7 @@ def com_google_fonts_check_STAT_axis_order(fonts):
         do not need escaping.
     """,
     conditions=["metadata_file"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2932",
+    proposal="https://github.com/fonttools/fontbakery/issues/2932",
 )
 def com_google_fonts_check_metadata_escaped_strings(metadata_file):
     """Ensure METADATA.pb does not use escaped strings."""
@@ -6323,7 +6323,7 @@ def com_google_fonts_check_metadata_escaped_strings(metadata_file):
         It also validates the URLs and file formats are all correctly set.
     """,
     conditions=["family_metadata", "not is_noto"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3083",
+    proposal="https://github.com/fonttools/fontbakery/issues/3083",
 )
 def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
     """METADATA.pb: Designers are listed correctly on the Google Fonts catalog?"""
@@ -6383,7 +6383,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
         url = DESIGNER_INFO_RAW_URL.format(normalized_name) + "info.pb"
         response = requests.get(url, timeout=config.get("timeout"))
 
-        # https://github.com/googlefonts/fontbakery/pull/3892#issuecomment-1248758859
+        # https://github.com/fonttools/fontbakery/pull/3892#issuecomment-1248758859
         # For debugging purposes:
         # yield WARN,\
         #      Message("config",
@@ -6459,7 +6459,7 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
         instance is at the expected weight, width etc.
     """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3100"
+    proposal="https://github.com/fonttools/fontbakery/issues/3100"
     # NOTE: This is a high-priority WARN.
 )
 def com_google_fonts_check_mandatory_avar_table(ttFont):
@@ -6483,7 +6483,7 @@ def com_google_fonts_check_mandatory_avar_table(ttFont):
         as a reminder to do so whenever appropriate!
     """,
     conditions=["description", "github_gfonts_description"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3182",
+    proposal="https://github.com/fonttools/fontbakery/issues/3182",
 )
 def com_google_fonts_check_description_family_update(
     description, github_gfonts_description
@@ -6510,7 +6510,7 @@ def com_google_fonts_check_description_family_update(
         Ensure small caps glyphs are available if
         a font declares smcp or c2sc OT features.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3154",
+    proposal="https://github.com/fonttools/fontbakery/issues/3154",
 )
 def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
     """Check small caps glyphs are available."""
@@ -6553,7 +6553,7 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
         TextEdit and Inkscape use that info to display to the users so that they know
         what a given stylistic set offers.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3155",
+    proposal="https://github.com/fonttools/fontbakery/issues/3155",
 )
 def com_google_fonts_check_stylisticset_description(ttFont):
     """Ensure Stylistic Sets have description."""
@@ -6607,7 +6607,7 @@ def com_google_fonts_check_stylisticset_description(ttFont):
     """,
     conditions=["not is_cjk_font"],
     severity=10,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3241",
+    proposal="https://github.com/fonttools/fontbakery/issues/3241",
 )
 def com_google_fonts_check_os2_fsselectionbit7(ttFonts):
     """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts."""
@@ -6674,7 +6674,7 @@ def com_google_fonts_check_os2_fsselectionbit7(ttFonts):
         may read this data. This makes the solution much more portable and universal.
     """,
     severity=3,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3349",
+    proposal="https://github.com/fonttools/fontbakery/issues/3349",
 )
 def com_google_fonts_check_meta_script_lang_tags(ttFont):
     """Ensure fonts have ScriptLangTags declared on the 'meta' table."""
@@ -6710,7 +6710,7 @@ def com_google_fonts_check_meta_script_lang_tags(ttFont):
         be removed before release.
     """,
     severity=6,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3357",
+    proposal="https://github.com/fonttools/fontbakery/issues/3357",
 )
 def com_google_fonts_check_no_debugging_tables(ttFont):
     """Ensure fonts do not contain any pre-production tables."""
@@ -6735,7 +6735,7 @@ def com_google_fonts_check_no_debugging_tables(ttFont):
         derived from the family name, all lowercased and removing spaces.
     """,
     conditions=["family_metadata", "family_directory"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3421",
+    proposal="https://github.com/fonttools/fontbakery/issues/3421",
 )
 def com_google_fonts_check_metadata_family_directory_name(
     family_metadata, family_directory
@@ -6774,7 +6774,7 @@ def can_shape(ttFont, text, parameters=None):
         A base expectation is that a font family's regular/default (400 roman) style
         can render its 'menu name' (nameID 1) in itself.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3159",
+    proposal="https://github.com/fonttools/fontbakery/issues/3159",
 )
 def com_google_fonts_check_render_own_name(ttFont):
     """Check font can render its own name."""
@@ -6805,7 +6805,7 @@ def com_google_fonts_check_render_own_name(ttFont):
         portion of the document, no more than 10 lines away from the top of the file.
     """,
     conditions=["readme_contents", "readme_directory"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2898",
+    proposal="https://github.com/fonttools/fontbakery/issues/2898",
 )
 def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, config):
     """Check README.md has a sample image."""
@@ -6882,8 +6882,8 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
     """,
     conditions=["family_metadata"],
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/3419",
-        "https://github.com/googlefonts/fontbakery/issues/3605",
+        "https://github.com/fonttools/fontbakery/issues/3419",
+        "https://github.com/fonttools/fontbakery/issues/3605",
     ],
 )
 def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
@@ -6916,7 +6916,7 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
         }
         for sample_type, sample_text in SAMPLES.items():
             # Remove line-breaks and zero width space (U+200B) characteres.
-            # For more info, see https://github.com/googlefonts/fontbakery/issues/3990
+            # For more info, see https://github.com/fonttools/fontbakery/issues/3990
             sample_text = sample_text.replace("\n", "").replace("\u200b", "")
 
             if not can_shape(ttFont, sample_text):
@@ -6937,7 +6937,7 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
         likely correct category to be declared on METADATA.pb
     """,
     conditions=["family_metadata"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/3624",
+    proposal="https://github.com/fonttools/fontbakery/issues/3624",
 )
 def com_google_fonts_check_metadata_category_hint(family_metadata):
     """
@@ -6986,10 +6986,10 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
     """,
     proposal=[
         "https://googlefonts.github.io/gf-guide/color.html",
-        "https://github.com/googlefonts/fontbakery/issues/3886",
-        "https://github.com/googlefonts/fontbakery/issues/3888",
-        "https://github.com/googlefonts/fontbakery/pull/3889",
-        "https://github.com/googlefonts/fontbakery/issues/4131",
+        "https://github.com/fonttools/fontbakery/issues/3886",
+        "https://github.com/fonttools/fontbakery/issues/3888",
+        "https://github.com/fonttools/fontbakery/pull/3889",
+        "https://github.com/fonttools/fontbakery/issues/4131",
     ],
 )
 def com_google_fonts_check_colorfont_tables(ttFont):
@@ -7063,7 +7063,7 @@ def com_google_fonts_check_colorfont_tables(ttFont):
         This check ensures that layer colors are at least 10% bright and at most 90%
         bright, when not already set to the current color (0xFFFF).
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3908",
+    proposal="https://github.com/fonttools/fontbakery/pull/3908",
 )
 def com_google_fonts_check_color_cpal_brightness(config, ttFont):
     """Color layers should have a minimum brightness"""
@@ -7116,7 +7116,7 @@ def com_google_fonts_check_color_cpal_brightness(config, ttFont):
     """,
     proposal=[
         "https://github.com/googlefonts/gftools/issues/609",
-        "https://github.com/googlefonts/fontbakery/pull/3905",
+        "https://github.com/fonttools/fontbakery/pull/3905",
     ],
 )
 def com_google_fonts_check_empty_glyph_on_gid1_for_colrv0(ttFont):
@@ -7152,7 +7152,7 @@ def com_google_fonts_check_empty_glyph_on_gid1_for_colrv0(ttFont):
         Noto fonts are displayed in a different way on the fonts.google.com
          web site, and so must also contain an article about them.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3841",
+    proposal="https://github.com/fonttools/fontbakery/issues/3841",
 )
 def com_google_fonts_check_description_noto_has_article(font):
     """Noto fonts must have an ARTICLE.en_us.html file"""

@@ -17,7 +17,7 @@ improvements, set priorities and assign people to them. We only assign
 an issue to someone when they are going to work on that issue soon. We
 tag all issues with a priority tag, P0 for “urgent” through P5 for
 “someday-maybe”. If you find a bug or have an idea, please `create a new
-issue <https://github.com/googlefonts/fontbakery/issues/new>`__ and
+issue <https://github.com/fonttools/fontbakery/issues/new>`__ and
 we’ll be happy to work with you on it!
 
 If you would like to contribute your work on the project source, please
@@ -39,9 +39,9 @@ submitted one (even if it was for a different project), you probably
 don’t need to do it again.
 
 After your contribution is included, you will be listed in the
-`CONTRIBUTORS.txt <https://github.com/googlefonts/fontbakery/blob/main/CONTRIBUTORS.txt>`__
+`CONTRIBUTORS.txt <https://github.com/fonttools/fontbakery/blob/main/CONTRIBUTORS.txt>`__
 and/or
-`AUTHORS.txt <https://github.com/googlefonts/fontbakery/blob/main/AUTHORS.txt>`__
+`AUTHORS.txt <https://github.com/fonttools/fontbakery/blob/main/AUTHORS.txt>`__
 files. ``CONTRIBUTORS.txt`` is the official list of people who can
 contribute (and typically have contributed) code to this repository,
 while the ``AUTHORS.txt`` file lists the copyright holders.

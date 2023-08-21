@@ -27,7 +27,7 @@ class Section:
     def __repr__(self):
         return f"<Section: {self.name}>"
 
-    # This was problematic. See: https://github.com/googlefonts/fontbakery/issues/2194
+    # This was problematic. See: https://github.com/fonttools/fontbakery/issues/2194
     # def __str__(self):
     #     return self.name
 

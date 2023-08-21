@@ -248,7 +248,7 @@ OVERRIDDEN_CHECKS = [
         While not required by the OpenType spec, we (Adobe) expect that a group
         of fonts designed & produced as a family have consistent units per em.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2372",
+    proposal="https://github.com/fonttools/fontbakery/pull/2372",
 )
 def com_adobe_fonts_check_family_consistent_upm(ttFonts):
     """Fonts have consistent Units Per Em?"""
@@ -311,9 +311,9 @@ def _quick_and_dirty_glyph_is_empty(font, glyph_name):
         range of Korean hangul syllable code-points, which are known to be used by font
         designers as a workaround to undesired behavior from InDesign's Korean IME
         (Input Method Editor).
-        More details available at https://github.com/googlefonts/fontbakery/issues/2894
+        More details available at https://github.com/fonttools/fontbakery/issues/2894
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2460",
+    proposal="https://github.com/fonttools/fontbakery/pull/2460",
 )
 def com_adobe_fonts_check_find_empty_letters(ttFont):
     """Letters in font have glyphs that are not empty?"""
@@ -374,7 +374,7 @@ def com_adobe_fonts_check_find_empty_letters(ttFont):
         every font to support at least nameID 1 (Font Family name) for platformID 3
         (Windows), encodingID 1 (Unicode), and languageID 1033/0x409 (US-English).
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3714",
+    proposal="https://github.com/fonttools/fontbakery/issues/3714",
 )
 def com_adobe_fonts_check_nameid_1_win_english(ttFont, has_name_table):
     """Font has a good nameID 1, Windows/Unicode/US-English `name` table record?"""
@@ -413,7 +413,7 @@ def com_adobe_fonts_check_nameid_1_win_english(ttFont, has_name_table):
         that can be included in OpenType font files.⏎
         Fonts that do not pass this check are guaranteed to be rejected by the pipeline.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3870",
+    proposal="https://github.com/fonttools/fontbakery/pull/3870",
 )
 def com_adobe_fonts_check_unsupported_tables(ttFont):
     """Does the font have any unsupported tables?"""
@@ -483,7 +483,7 @@ def com_adobe_fonts_check_unsupported_tables(ttFont):
         implementation of com.google.fonts/check/STAT_strings which allows "Italic"
         only for the 'ital' axis.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2863",
+    proposal="https://github.com/fonttools/fontbakery/issues/2863",
 )
 def com_adobe_fonts_check_STAT_strings(ttFont):
     """Check correctness of STAT table strings"""

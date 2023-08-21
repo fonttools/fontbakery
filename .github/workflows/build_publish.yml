@@ -69,7 +69,7 @@ jobs:
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
-        body: '[Release Notes](https://github.com/googlefonts/fontbakery/blob/main/CHANGELOG.md#${{ steps.date_tag.outputs.VERSION }}-${{ steps.date_tag.outputs.TODAY }})'
+        body: '[Release Notes](https://github.com/fonttools/fontbakery/blob/main/CHANGELOG.md#${{ steps.date_tag.outputs.VERSION }}-${{ steps.date_tag.outputs.TODAY }})'
         token: ${{ secrets.GITHUB_TOKEN }}
         prerelease: true
         files: ./dist/*.tar.gz

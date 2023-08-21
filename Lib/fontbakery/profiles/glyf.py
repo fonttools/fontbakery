@@ -48,7 +48,7 @@ def com_google_fonts_check_glyf_unused_data(ttFont):
 @check(
     id="com.google.fonts/check/points_out_of_bounds",
     conditions=["is_ttf"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/735",
+    proposal="https://github.com/fonttools/fontbakery/issues/735",
 )
 def com_google_fonts_check_points_out_of_bounds(ttFont, config):
     """Check for points out of bounds."""
@@ -101,7 +101,7 @@ def com_google_fonts_check_points_out_of_bounds(ttFont, config):
         which have the same x,y coordinates.
     """,
     conditions=["is_ttf"],
-    proposal="https://github.com/googlefonts/fontbakery/pull/2709",
+    proposal="https://github.com/fonttools/fontbakery/pull/2709",
 )
 def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont, config):
     """

@@ -631,7 +631,7 @@ def familyname_with_spaces(familyname):
         MountainsofChristmas which would need to
         have the "of" split apart from "Mountains".
 
-        See also: https://github.com/googlefonts/fontbakery/issues/1489
+        See also: https://github.com/fonttools/fontbakery/issues/1489
         "Failure to handle font family with 3 words in it"
         """
         # TODO (M Foley) this case is insane. We should just fix the fonts

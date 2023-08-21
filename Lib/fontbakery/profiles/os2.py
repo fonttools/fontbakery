@@ -181,7 +181,7 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
             f" may be a symptom of the slightly different"
             f" calculation of the xAvgCharWidth value in"
             f" font editors. There's further discussion on"
-            f" this at https://github.com/googlefonts/fontbakery"
+            f" this at https://github.com/fonttools/fontbakery"
             f"/issues/1622",
         )
     else:
@@ -198,7 +198,7 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
         The bold and italic bits in OS/2.fsSelection must match the bold and italic
         bits in head.macStyle per the OpenType spec.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2382",
+    proposal="https://github.com/fonttools/fontbakery/pull/2382",
 )
 def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
     """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
@@ -250,7 +250,7 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
         This four-way distinction should also be reflected in the OS/2.fsSelection
         field, using bits 0 and 5.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/2388",
+    proposal="https://github.com/fonttools/fontbakery/pull/2388",
 )
 def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
     """Check that OS/2.fsSelection bold & italic settings are unique
@@ -321,7 +321,7 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
         So here we simply detect as a FAIL when a given font has no code page
         declared at all.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2474",
+    proposal="https://github.com/fonttools/fontbakery/issues/2474",
 )
 def com_google_fonts_check_code_pages(ttFont):
     """Check code page character ranges"""
@@ -354,7 +354,7 @@ def com_google_fonts_check_code_pages(ttFont):
         configuration file, all binaries must have a matching vendor identifier
         value in the OS/2 table.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3941",
+    proposal="https://github.com/fonttools/fontbakery/pull/3941",
 )
 def com_thetypefounders_check_vendor_id(config, ttFont):
     """Checking OS/2 achVendID against configuration."""

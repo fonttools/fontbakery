@@ -53,7 +53,7 @@ This is the command used by foundries checking their projects for Google Fonts
 
 
 
-It runs the checks that we use in the [`profiles/googlefonts.py` Python script](https://github.com/googlefonts/fontbakery/blob/main/Lib/fontbakery/profiles/googlefonts.py)
+It runs the checks that we use in the [`profiles/googlefonts.py` Python script](https://github.com/fonttools/fontbakery/blob/main/Lib/fontbakery/profiles/googlefonts.py)
 
 To run the checks on some fonts:
 

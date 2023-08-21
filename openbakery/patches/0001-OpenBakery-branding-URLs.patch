@@ -17,7 +17,7 @@ index a6e216fd..a09acff8 100644
  contact_links:
    - name: Anything else
      about: Report a bug or ask a question in GitHub Discussions.
--    url: https://github.com/googlefonts/fontbakery/discussions
+-    url: https://github.com/fonttools/fontbakery/discussions
 +    url: https://github.com/miguelsousa/fontbakery/discussions
 diff --git a/.github/workflows/build_publish.yml b/.github/workflows/build_publish.yml
 index fb2dd90f..50c89eaf 100644
@@ -27,7 +27,7 @@ index fb2dd90f..50c89eaf 100644
      - name: Create GitHub Release
        uses: softprops/action-gh-release@v1
        with:
--        body: '[Release Notes](https://github.com/googlefonts/fontbakery/blob/main/CHANGELOG.md#${{ steps.date_tag.outputs.VERSION }}---${{ steps.date_tag.outputs.TODAY }})'
+-        body: '[Release Notes](https://github.com/fonttools/fontbakery/blob/main/CHANGELOG.md#${{ steps.date_tag.outputs.VERSION }}---${{ steps.date_tag.outputs.TODAY }})'
 +        body: '[Release Notes](https://github.com/miguelsousa/fontbakery/blob/main/CHANGELOG.md#${{ steps.date_tag.outputs.VERSION }}---${{ steps.date_tag.outputs.TODAY }})'
          prerelease: true
          files: ./dist/*.tar.gz
