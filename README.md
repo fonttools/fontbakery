@@ -53,9 +53,10 @@ The project was initiated by Dave Crossland in 2013 to accelerate the onboarding
 In 2017 Lasse Fister and Felipe Sanches rewrote it into a modern, modular architecture suitable for both individuals and large distributors.
 Felipe has maintained the check contents since 2016.
 
-Lasse also began a sister project, [Font Bakery Dashboard](https://GitHub.com/GoogleFonts/Fontbakery-Dashboard):
+In 2017, Lasse began a sister project, [Font Bakery Dashboard](https://GitHub.com/GoogleFonts/Fontbakery-Dashboard):
 A UI and a cloud system that scales up for checking 1,000s of font files super fast and in parallel, by using 1,000s of "container" virtual machines.
 See his [TypoLabs 2018 talk on YouTube](https://www.youtube.com/watch?v=Kqhzg89zKYw) and its [presentation deck](https://docs.google.com/presentation/d/14dU3cUXelwvpVokhKYmJ6jT51AASDaOFyEUSdxb0RAg/).
+However, the project was halted at the end of 2019.
 
 Most of the checks are for OpenType binary files, and project metadata files. 
 (Currently, the Google Fonts `METADATA.pb` files are supported.)
