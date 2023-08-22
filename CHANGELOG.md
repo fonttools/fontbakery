@@ -8,12 +8,12 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 #### On the Universal profile
-  - **[com.agoogle.fonts/check/os2_metrics_match_hhea]:** Re-worded rationale text to be vendor-neutral (issue #4206)
+  - **[com.google.fonts/check/os2_metrics_match_hhea]:** Re-worded rationale text to be vendor-neutral (issue #4206)
+  - **[com.google.fonts/check/mandatory_glyphs]:** The check which ensures that the `.notdef` glyph is not empty has been upgraded from a WARN to a FAIL. (issue #4093)
 
 #### On the Google Fonts profile
   - **[com.google.fonts/check/font-v]:** Change rationale to reflect the fact that this check emits an INFO (issue #4067)
   - **[com.google.fonts/check/vertical_metrics_regressions]:** Fix an error when the provided font did not have a Regular style. (issue #3897)
-  - **[com.google.fonts/check/mandatory_glyphs]:** The check which ensures that the `.notdef` glyph is not empty has been upgraded from a WARN to a FAIL. (issue #4093)
 
 ### New Checks
 #### Added to the Google Fonts Profile
