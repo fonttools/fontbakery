@@ -452,7 +452,12 @@ def com_google_fonts_check_fontbakery_version(font, config):
     id="com.google.fonts/check/mandatory_glyphs",
     rationale="""
         The OpenType specification v1.8.2 recommends that the first glyph is the
-        '.notdef' glyph without a codepoint assigned and with a drawing.
+        '.notdef' glyph without a codepoint assigned and with a drawing:
+
+        The .notdef glyph is very important for providing the user feedback
+        that a glyph is not found in the font. This glyph should not be left
+        without an outline as the user will only see what looks like a space
+        if a glyph is missing and not be aware of the active font’s limitation.
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/recom#glyph-0-the-notdef-glyph
 
@@ -492,7 +497,7 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
 
     if not glyph_has_ink(ttFont, NOTDEF):
         passed = False
-        yield WARN, Message(
+        yield FAIL, Message(
             "notdef-is-blank",
             f"The {NOTDEF!r} glyph should contain a drawing, but it is blank.",
         )
