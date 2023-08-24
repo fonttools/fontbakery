@@ -9,6 +9,13 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Bug-fixes
   - Fix summary statistics on HTML reporter (issue #3997)
 
+### New Checks
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/caps_vertically_centered]:** If possible, the uppercase glyphs should be vertically centered in the em box. (issue #4139)
+
+#### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
+
 ### Changes to existing checks
 #### On the Universal profile
   - **[com.google.fonts/check/os2_metrics_match_hhea]:** Re-worded rationale text to be vendor-neutral (issue #4206)
@@ -18,13 +25,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/font-v]:** Change rationale to reflect the fact that this check emits an INFO (issue #4067)
   - **[com.google.fonts/check/vertical_metrics_regressions]:** Fix an error when the provided font did not have a Regular style. (issue #3897)
   - **[com.google.fonts/check/cjk_not_enough_glyphs]:** This check is now only run when a font has CJK codepages or ranges declared in the `OS/2` table. Other CJK-related checks are run on fonts with a minimum of 150 CJK glyphs. (issue #3846)
+  - **[com.google.fonts/check/grade_reflow]**: This check has been renamed to **com.google.fonts/check/varfont/duplexed_axis_reflow** and now also checks the `ROND` axis. (issue #4200)
 
-### New Checks
-#### Added to the Google Fonts Profile
-  - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
-
-#### Added to the Universal Profile
-  - **[com.google.fonts/check/caps_vertically_centered]:** If possible, the uppercase glyphs should be vertically centered in the em box. (issue #4139)
 
 ## 0.9.0a2 (2023-Aug-04)
 ### Changes to existing checks
@@ -41,6 +43,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bugfixes
   - A font-file is not needed anymore when running `--list-checks` (issue #3878)
+
+### New Checks
+#### Added to the Universal Profile
+  - **[com.google.fonts/check/alt_caron]:** Check that alternate caron is used in the four affected Latin glyphs. (issue #3308)
 
 ### Migrations of checks
 #### Moved to the Shaping profile
@@ -59,10 +65,6 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the OpenType profile
   - **[com.google.fonts/check/italic_angle]**: Fix an ERROR: If any of the glyphs checked (bar, vertical line, left square bracket, etc.) have no outlines, the check will now emit a WARN, because that's useful information. (PR #4187)
 
-### New Checks
-#### Added to the Universal Profile
-  - **[com.google.fonts/check/alt_caron]:** Check that alternate caron is used in the four affected Latin glyphs. (issue #3308)
-
 
 ## 0.8.13 (2023-Jun-02)
   - Fix a critical install bug. I had used wrong syntax on setup.py which made v0.8.12 impossible to install when enabling the freetype extra. Sorry! (issue #4157)
@@ -73,11 +75,11 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Universal Profile
   - **[com.google.fonts/check/STAT_in_statics]:** Static fonts with more than a single entry per design axis cause trouble on Windows (issue #4149)
 
-#### Added to the Google Fonts Profile
-  - **[com.google.fonts/check/metadata/unreachable_subsetting]:** Implemented checks to ensure that all encoded glyphs in the font are covered by a subset declared in the METADATA.pb (issue #4097)
-
 #### Added to the Open Type Profile
   - **[com.google.fonts/check/name/italic_names]:** Implemented checks for name IDs 1, 2, 16, 17 for Italic fonts (issues #3666 and #3667)
+
+#### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/unreachable_subsetting]:** Implemented checks to ensure that all encoded glyphs in the font are covered by a subset declared in the METADATA.pb (issue #4097)
 
 #### Added to the Adobe Fonts Profile
   - **[com.adobe.fonts/check/family/consistent_family_name]:** Verifies that family names in the name table are consistent across all fonts in a family. Checks Typographic Family name (nameID 16) if present, otherwise uses Font Family name (nameID 1). (issue #4112)
@@ -87,16 +89,16 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/linegaps]:** from the OpenType profile (issue #4133)
 
 ### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/soft_hyphen]:** Improve wording of the rationale. (issue #4095)
+  - **[com.google.fonts/check/linegaps]:** Added rationale (issue #4133)
+
 #### On the Google Fonts profile
   - **[com.google.fonts/check/usweightclass]:** use the axisregistry's name builders instead of the parse module (issue #4113)
   - **[com.google.fonts/check/metadata/broken_links]:** We should not keep email addresses on METADATA.pb files (issue #4110)
   - **[com.google.fonts/check/description/broken_links]:** We should not keep email addresses on DESCRIPTION files (issue #4110)
   - **[com.google.fonts/check/metadata/nameid/font_name]:** Use name id 16, when present, to compute the expected font family name (issue #4086)
   - **[com.google.fonts/check/check/colorfont_tables]:** Update checking criteria according to gf-guide (issue #4131)
-
-#### On the Universal Profile
-  - **[com.google.fonts/check/soft_hyphen]:** Improve wording of the rationale. (issue #4095)
-  - **[com.google.fonts/check/linegaps]:** Added rationale (issue #4133)
 
 ### BugFixes
   - Fix crash on markdown reporter by explicitly specifing UTF-8 encoding (issue #4089)
