@@ -12,7 +12,7 @@ $ tox
 
 The coverage report can be found at the end of the test results that are printed to the standard output/error stream.
 
-Continuous integration testing is performed on GitHub Actions. Test jobs can be found at [https://github.com/googlefonts/fontbakery/actions](https://github.com/googlefonts/fontbakery/actions).
+Continuous integration testing is performed on GitHub Actions. Test jobs can be found at [https://github.com/fonttools/fontbakery/actions](https://github.com/fonttools/fontbakery/actions).
 
 ## Updating the distribution package
 
@@ -81,7 +81,7 @@ git push upstream --tags
 # Close the current milestone on the GitHub issue tracker
 # moving to a future milestone any of its issue that we've
 # not been able to close yet.
-# https://github.com/googlefonts/fontbakery/milestones
+# https://github.com/fonttools/fontbakery/milestones
 
 # And after a new release is also a good moment to update the versions
 # of dependencies on requirements.txt ;-)

@@ -40,7 +40,7 @@ def test_profile_imports():
     When a names array in profile_imports contained sub module names, the import
     would fail.
 
-    https://github.com/googlefonts/fontbakery/issues/1886
+    https://github.com/fonttools/fontbakery/issues/1886
     """
 
     def _test(profile_imports, expected_tests, expected_conditions=tuple()):
@@ -85,7 +85,7 @@ def test_profile_imports():
     _test(profile_imports, expected_tests)
 
     # make sure the suggested workaround still works:
-    # https://github.com/googlefonts/fontbakery/issues/1886#issuecomment-392535435
+    # https://github.com/fonttools/fontbakery/issues/1886#issuecomment-392535435
     profile_imports = (
         "fontbakery.profiles.cmap",
         "fontbakery.profiles.head",

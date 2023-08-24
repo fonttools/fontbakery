@@ -439,7 +439,7 @@ def test_check_mandatory_glyphs():
     subsetter = subset.Subsetter(options)
     subsetter.populate(text="mn")  # Arbitrarily remove everything except 'm' and 'n'
     subsetter.subset(ttFont)
-    message = assert_results_contain(check(ttFont), WARN, "notdef-is-blank")
+    message = assert_results_contain(check(ttFont), FAIL, "notdef-is-blank")
     assert message == "The '.notdef' glyph should contain a drawing, but it is blank."
 
     options.notdef_glyph = False  # Drop '.notdef' glyph
@@ -546,7 +546,7 @@ def test_check_whitespace_glyphnames():
     # restore the original font object in preparation for the next test-case:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
-    # See https://github.com/googlefonts/fontbakery/issues/2624
+    # See https://github.com/fonttools/fontbakery/issues/2624
     # nbsp is not Adobe Glyph List compliant.
     editCmap(ttFont, 0x00A0, "nbsp")
     assert_results_contain(
@@ -1367,3 +1367,17 @@ def test_check_alt_caron():
 
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
     assert_PASS(check(ttFont))
+
+
+def test_check_caps_vertically_centered():
+    """Check if uppercase glyphs are vertically centered."""
+
+    check = CheckTester(
+        universal_profile, "com.google.fonts/check/caps_vertically_centered"
+    )
+
+    test_font = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
+    assert_PASS(check(test_font))
+
+    test_font = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
+    assert_results_contain(check(test_font), WARN, "vertical-metrics-not-centered")

@@ -346,7 +346,7 @@ def test_check_description_valid_html():
         " It could use &amp; instead, but that's not strictly necessary."
         "</p>"
     )
-    # See discussion at https://github.com/googlefonts/fontbakery/issues/3840
+    # See discussion at https://github.com/fonttools/fontbakery/issues/3840
     assert_PASS(
         check(font, {"description": good_desc}),
         "with a file containing ampersand char without HTML entity syntax...",
@@ -977,10 +977,10 @@ def test_check_usweightclass():
     assert_PASS(check(ttFont), f'with good font "{font}" (usWeightClass = 275) ...')
 
     # TODO: test italic variants to ensure we do not get regressions of
-    #       this bug: https://github.com/googlefonts/fontbakery/issues/2650
+    #       this bug: https://github.com/fonttools/fontbakery/issues/2650
 
     # Check with VF font reported in issue:
-    # https://github.com/googlefonts/fontbakery/issues/4113
+    # https://github.com/fonttools/fontbakery/issues/4113
     font = TEST_FILE("playfair/Playfair-Italic[opsz,wdth,wght].ttf")
     ttFont = TTFont(font)
     assert_PASS(check(ttFont), f'with good font "{font}" (usWeightClass = 300) ...')
@@ -1870,7 +1870,7 @@ def test_check_metadata_match_fullname_postscript():
 
     # TODO: Verify why/whether "Regular" cannot be omited on font.full_name
     #       There's some relevant info at:
-    #       https://github.com/googlefonts/fontbakery/issues/1517
+    #       https://github.com/fonttools/fontbakery/issues/1517
     #
     # FIXME: com.google.fonts/check/metadata/nameid/full_name
     #        ties the full_name values from the METADATA.pb file and the
@@ -2491,7 +2491,7 @@ def test_check_metadata_os2_weightclass():
 
     ttFont = TTFont(TEST_FILE("leaguegothic-vf/LeagueGothic[wdth].ttf"))
     assert_PASS(check(ttFont), 'with a good VF that lacks a "wght" axis....')
-    # See: https://github.com/googlefonts/fontbakery/issues/3529
+    # See: https://github.com/fonttools/fontbakery/issues/3529
 
     # === test cases for Static Fonts ===
     # Our reference Montserrat family is a good 18-styles family:
@@ -2738,7 +2738,7 @@ def test_check_slant_direction():
 # FIXME!
 # GFonts hosted Cabin files seem to have changed in ways
 # that break some of the assumptions in the code-test below.
-# More info at https://github.com/googlefonts/fontbakery/issues/2581
+# More info at https://github.com/fonttools/fontbakery/issues/2581
 @pytest.mark.xfail(strict=True)
 def test_check_production_encoded_glyphs(cabin_ttFonts):
     """Check glyphs are not missing when compared to version on fonts.google.com"""
@@ -2948,7 +2948,7 @@ def test_check_metadata_category():
 def test_check_font_names(fp, mod, result):
     """Check font names are correct"""
     # Please note: This check was introduced in
-    # https://github.com/googlefonts/fontbakery/pull/3800 which has replaced
+    # https://github.com/fonttools/fontbakery/pull/3800 which has replaced
     # the following checks:
     #   com.google.fonts/check/name/familyname
     #   com.google.fonts/check/name/subfamilyname
@@ -3177,7 +3177,7 @@ def test_check_glyf_nested_components():
 # actual root cause of the issue.
 #
 # See also comments at googlefons.py as well as at
-# https://github.com/googlefonts/fontbakery/issues/1727
+# https://github.com/fonttools/fontbakery/issues/1727
 def disabled_test_check_negative_advance_width():
     """Check that advance widths cannot be inferred as negative."""
     check = CheckTester(
@@ -4194,12 +4194,15 @@ def test_check_cjk_not_enough_glyphs():
 
     ttFont = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_cjk_font"
+    assert msg == "Unfulfilled Conditions: is_claiming_to_be_cjk_font"
 
     # Let's modify Montserrat's cmap so there's a cjk glyph
     cmap = ttFont["cmap"].getcmap(3, 1)
     # Add first character of the CJK unified Ideographs
     cmap.cmap[0x4E00] = "A"
+    # And let's declare that we are a CJK font
+    ttFont["OS/2"].ulCodePageRange1 |= 1 << 17
+
     msg = assert_results_contain(check(ttFont), WARN, "cjk-not-enough-glyphs")
     assert msg.startswith("There is only one CJK glyph")
 

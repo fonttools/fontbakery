@@ -64,7 +64,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         # are most likely negligible, we're not going to bother users with
         # this check's table ordering requirements.
         # More info at:
-        # https://github.com/googlefonts/fontbakery/issues/2105
+        # https://github.com/fonttools/fontbakery/issues/2105
         "Tables are not in optimal order",
         # FontBakery has its own check for required/optional tables:
         # com.google.fonts/check/required_tables
@@ -125,7 +125,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         # spec and that's why these spurious FAILs are being emitted.
         # That's good enough reason to mute it.
         # More info at:
-        # https://github.com/googlefonts/fontbakery/issues/2109
+        # https://github.com/fonttools/fontbakery/issues/2109
         "The device table's DeltaFormat value is invalid",
     ]
 

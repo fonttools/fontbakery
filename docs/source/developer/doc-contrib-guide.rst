@@ -26,7 +26,7 @@ Pull the source repository with the following command:
 
 ::
 
-   $ git clone https://github.com/googlefonts/fontbakery.git
+   $ git clone https://github.com/fonttools/fontbakery.git
 
 and navigate to the root of the repository with:
 
@@ -129,21 +129,19 @@ for this purpose. Consult `GitHub
 Help <https://help.github.com/articles/about-pull-requests/>`__ for more
 information on using pull requests to submit your changes for review.
 
-The Font Bakery source code test suite is executed by 
-the Travis CI testing service when you submit a pull request to the
-repository. Please verify that all tests pass with your pull request.
-Pull requests cannot be merged if any test fails as a result
-of your project documentation edits.
+The Font Bakery source code test suite is executed on Github Actions when you submit
+a pull request to the repository. Please verify that all tests pass with your pull request.
+Pull requests cannot be merged if any test fails as a result of your project documentation edits.
 
-The Travis CI build logs can be viewed at
-https://travis-ci.org/googlefonts/fontbakery.
+The build logs can be viewed at
+https://github.com/fonttools/fontbakery/actions
 
 
 Community Guidelines
 --------------------
 
 This project follows `Google's Open Source Community Guidelines <https://opensource.google.com/conduct/>`_ and 
-the Font Bakery `Code of Conduct <https://github.com/googlefonts/fontbakery/blob/main/CODE_OF_CONDUCT.md>`_.
+the Font Bakery `Code of Conduct <https://github.com/fonttools/fontbakery/blob/main/CODE_OF_CONDUCT.md>`_.
 
 
 License

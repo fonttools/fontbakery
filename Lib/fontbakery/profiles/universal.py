@@ -59,6 +59,7 @@ UNIVERSAL_PROFILE_CHECKS = (
         "com.google.fonts/check/cjk_chws_feature",
         "com.google.fonts/check/transformed_components",
         "com.google.fonts/check/gpos7",
+        "com.google.fonts/check/caps_vertically_centered",
         "com.google.fonts/check/ots",
         "com.adobe.fonts/check/freetype_rasterizer",
         "com.adobe.fonts/check/sfnt_version",
@@ -74,7 +75,7 @@ UNIVERSAL_PROFILE_CHECKS = (
 
 @check(
     id="com.google.fonts/check/name/trailing_spaces",
-    proposal="https://github.com/googlefonts/fontbakery/issues/2417",
+    proposal="https://github.com/fonttools/fontbakery/issues/2417",
 )
 def com_google_fonts_check_name_trailing_spaces(ttFont):
     """Name table records must not have trailing spaces."""
@@ -197,21 +198,12 @@ def com_google_fonts_check_family_win_ascent_and_descent(ttFont, vmetrics):
         OS/2 and hhea vertical metric values should match. This will produce the
         same linespacing on Mac, GNU+Linux and Windows.
 
-        - Mac OS X uses the hhea values.⏎
+        - Mac OS X uses the hhea values.
         - Windows uses OS/2 or Win, depending on the OS or fsSelection bit value.
 
         When OS/2 and hhea vertical metrics match, the same linespacing results on
-        macOS, GNU+Linux and Windows. Unfortunately as of 2018, Google Fonts
-        has released many fonts with vertical metrics that don't match in this way.
-        When we fix this issue in these existing families, we will create a visible
-        change in line/paragraph layout for either Windows or macOS users,
-        which will upset some of them.
-
-        But we have a duty to fix broken stuff, and inconsistent paragraph layout
-        is unacceptably broken when it is possible to avoid it.
-
-        If users complain and prefer the old broken version, they have the freedom
-        to take care of their own situation.
+        macOS, GNU+Linux and Windows. Note that fixing this issue in a previously
+        released font may cause reflow in user documents and unhappy users.
     """,
     proposal="legacy:check/042",
 )
@@ -285,6 +277,50 @@ def com_google_fonts_check_family_single_directory(fonts):
             " will interpret all font files as belonging to a single"
             f" font family. The detected directories are: {directories}",
         )
+
+
+@check(
+    id="com.google.fonts/check/caps_vertically_centered",
+    proposal="https://github.com/fonttools/fontbakery/issues/4139",
+    rationale="""
+        This check suggests one possible approach to designing vertical metrics,
+        but can be ingnored if you follow a different approach.
+        In order to center text in buttons, lists, and grid systems
+        with minimal additional CSS work, the uppercase glyphs should be
+        vertically centered in the em box.
+        This check mainly applies to Latin, Greek, Cyrillic, and other similar scripts.
+        For non-latin scripts like Arabic, this check might not be applicable.
+        There is a detailed description of this subject at:
+        https://x.com/romanshamin_en/status/1562801657691672576
+    """,
+)
+def com_google_fonts_check_caps_vertically_centered(ttFont):
+    """Check if uppercase glyphs are vertically centered."""
+    from fontTools.pens.boundsPen import BoundsPen
+
+    glyphSet = ttFont.getGlyphSet()
+    highest_point_list = []
+    for glyphName in ["A", "B", "C", "D", "E", "H", "I", "M", "O", "S", "T", "X"]:
+        pen = BoundsPen(glyphSet)
+        glyphSet[glyphName].draw(pen)
+        highest_point = pen.bounds[3]
+        highest_point_list.append(highest_point)
+
+    upm = ttFont["head"].unitsPerEm
+    error_margin = upm * 0.05
+    average_cap_height = sum(highest_point_list) / len(highest_point_list)
+    descender = ttFont["hhea"].descent
+    top_margin = upm - average_cap_height
+    difference = abs(top_margin - abs(descender))
+    vertically_centered = difference <= error_margin
+
+    if not vertically_centered:
+        yield WARN, Message(
+            "vertical-metrics-not-centered",
+            "Uppercase glyphs are not vertically centered in the em box.",
+        )
+    else:
+        yield PASS, "Uppercase glyphs are vertically centered in the em box."
 
 
 @check(id="com.google.fonts/check/ots", proposal="legacy:check/036")
@@ -373,7 +409,7 @@ def is_up_to_date(installed_str, latest_str):
         Older versions will also not report problems that are detected by new checks
         added to the tool in more recent updates.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2093",
+    proposal="https://github.com/fonttools/fontbakery/issues/2093",
 )
 def com_google_fonts_check_fontbakery_version(font, config):
     """Do we have the latest version of FontBakery installed?"""
@@ -416,7 +452,12 @@ def com_google_fonts_check_fontbakery_version(font, config):
     id="com.google.fonts/check/mandatory_glyphs",
     rationale="""
         The OpenType specification v1.8.2 recommends that the first glyph is the
-        '.notdef' glyph without a codepoint assigned and with a drawing.
+        '.notdef' glyph without a codepoint assigned and with a drawing:
+
+        The .notdef glyph is very important for providing the user feedback
+        that a glyph is not found in the font. This glyph should not be left
+        without an outline as the user will only see what looks like a space
+        if a glyph is missing and not be aware of the active font’s limitation.
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/recom#glyph-0-the-notdef-glyph
 
@@ -456,7 +497,7 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
 
     if not glyph_has_ink(ttFont, NOTDEF):
         passed = False
-        yield WARN, Message(
+        yield FAIL, Message(
             "notdef-is-blank",
             f"The {NOTDEF!r} glyph should contain a drawing, but it is blank.",
         )
@@ -676,7 +717,7 @@ def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
         "kern",
     ]
 
-    # See https://github.com/googlefonts/fontbakery/issues/617
+    # See https://github.com/fonttools/fontbakery/issues/617
     #
     # We should collect the rationale behind the need for each of the
     # required tables above. Perhaps split it into individual checks
@@ -697,7 +738,7 @@ def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
         )
 
     if is_variable_font:
-        # According to https://github.com/googlefonts/fontbakery/issues/1671
+        # According to https://github.com/fonttools/fontbakery/issues/1671
         # STAT table is required on WebKit on MacOS 10.12 for variable fonts.
         REQUIRED_TABLES.append("STAT")
 
@@ -774,7 +815,7 @@ def com_google_fonts_check_unwanted_tables(ttFont):
         On the STAT table, the "Italic" keyword must not be used on AxisValues
         for variation axes other than 'ital'.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2863",
+    proposal="https://github.com/fonttools/fontbakery/issues/2863",
 )
 def com_google_fonts_check_STAT_strings(ttFont):
     """Check correctness of STAT table strings"""
@@ -838,7 +879,7 @@ def com_google_fonts_check_STAT_strings(ttFont):
     proposal=[
         "legacy:check/058",
         # issue #2832 increased the limit to 63 chars
-        "https://github.com/googlefonts/fontbakery/issues/2832",
+        "https://github.com/fonttools/fontbakery/issues/2832",
     ],
 )
 def com_google_fonts_check_valid_glyphnames(ttFont, config):
@@ -865,7 +906,7 @@ def com_google_fonts_check_valid_glyphnames(ttFont, config):
         warn_names = set()
         for glyphName in ttFont.getGlyphOrder():
             # The first two names are explicit exceptions in the glyph naming rules.
-            # The third was added in https://github.com/googlefonts/fontbakery/pull/2003
+            # The third was added in https://github.com/fonttools/fontbakery/pull/2003
             if glyphName.startswith((".null", ".notdef", ".ttfautohint")):
                 continue
             if not re.match(r"^(?![.0-9])[a-zA-Z._0-9]{1,63}$", glyphName):
@@ -948,7 +989,7 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
 @check(
     id="com.google.fonts/check/ttx_roundtrip",
     conditions=["not vtt_talk_sources"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/1763",
+    proposal="https://github.com/fonttools/fontbakery/issues/1763",
 )
 def com_google_fonts_check_ttx_roundtrip(font):
     """Checking with fontTools.ttx"""
@@ -1036,7 +1077,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
         We want all fonts within a family to have the same vertical metrics so
         their line spacing is consistent across the family.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/1487",
+    proposal="https://github.com/fonttools/fontbakery/issues/1487",
 )
 def com_google_fonts_check_family_vertical_metrics(ttFonts):
     """Each font in a family must have the same set of vertical metrics values."""
@@ -1104,7 +1145,7 @@ def com_google_fonts_check_family_vertical_metrics(ttFonts):
         Only the fontfiles in these directories will be considered in
         superfamily-level checks.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/1487",
+    proposal="https://github.com/fonttools/fontbakery/issues/1487",
 )
 def com_google_fonts_check_superfamily_list(superfamily):
     """List all superfamily filepaths"""
@@ -1123,7 +1164,7 @@ def com_google_fonts_check_superfamily_list(superfamily):
         com.google.fonts/check/family/vertical_metrics and for now it will only
         result in WARNs.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/1487",
+    proposal="https://github.com/fonttools/fontbakery/issues/1487",
 )
 def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
     """
@@ -1183,7 +1224,7 @@ def com_google_fonts_check_superfamily_vertical_metrics(superfamily_ttFonts):
         “₹” (U+20B9) Indian Rupee Sign.
     """,
     conditions=["is_indic_font"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2967",
+    proposal="https://github.com/fonttools/fontbakery/issues/2967",
 )
 def com_google_fonts_check_rupee(ttFont):
     """Ensure indic fonts have the Indian Rupee Sign glyph."""
@@ -1207,7 +1248,7 @@ def com_google_fonts_check_rupee(ttFont):
         Any glyphs not accessible by either of these means
         are redundant and serve only to increase the font's file size.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3160",
+    proposal="https://github.com/fonttools/fontbakery/issues/3160",
 )
 def com_google_fonts_check_unreachable_glyphs(ttFont, config):
     """Check font contains no unreachable glyphs"""
@@ -1263,7 +1304,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
     all_glyphs -= set(ttFont.getBestCmap().values())
 
     # Exclude glyphs referenced by cmap format 14 variation sequences
-    # (as discussed at https://github.com/googlefonts/fontbakery/issues/3915):
+    # (as discussed at https://github.com/fonttools/fontbakery/issues/3915):
     for table in ttFont["cmap"].tables:
         if table.format == 14:
             for values in table.uvsDict.values():
@@ -1499,8 +1540,8 @@ def com_google_fonts_check_contour_count(ttFont, config):
         https://typedrawers.com/discussion/2046/special-dash-things-softhyphen-horizontalbar
     """,
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/4046",
-        "https://github.com/googlefonts/fontbakery/issues/3486",
+        "https://github.com/fonttools/fontbakery/issues/4046",
+        "https://github.com/fonttools/fontbakery/issues/3486",
     ],
 )
 def com_google_fonts_check_soft_hyphen(ttFont):
@@ -1522,7 +1563,7 @@ def com_google_fonts_check_soft_hyphen(ttFont):
         The chws_tool utility (https://github.com/googlefonts/chws_tool) can be used
         to add these features automatically.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3363",
+    proposal="https://github.com/fonttools/fontbakery/issues/3363",
 )
 def com_google_fonts_check_cjk_chws_feature(ttFont):
     """Does the font contain chws and vchw features?"""
@@ -1567,7 +1608,7 @@ def com_google_fonts_check_cjk_chws_feature(ttFont):
 
         --filter DecomposeTransformedComponentsFilter
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2011",
+    proposal="https://github.com/fonttools/fontbakery/issues/2011",
 )
 def com_google_fonts_check_transformed_components(ttFont, is_hinted):
     """Ensure component transforms do not perform scaling or rotation."""
@@ -1618,7 +1659,7 @@ def com_google_fonts_check_transformed_components(ttFont, is_hinted):
 
         To fix this warning, rebuild the font with a recent version of fonttools.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3643",
+    proposal="https://github.com/fonttools/fontbakery/issues/3643",
 )
 def com_google_fonts_check_gpos7(ttFont):
     """Ensure no GPOS7 lookups are present."""
@@ -1647,7 +1688,7 @@ def com_google_fonts_check_gpos7(ttFont):
     rationale="""
         Malformed fonts can cause FreeType to crash.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3642",
+    proposal="https://github.com/fonttools/fontbakery/issues/3642",
 )
 def com_adobe_fonts_check_freetype_rasterizer(font):
     """Ensure that the font can be rasterized by FreeType."""
@@ -1679,7 +1720,7 @@ def com_adobe_fonts_check_freetype_rasterizer(font):
 
         https://docs.microsoft.com/en-us/typography/opentype/spec/otff#table-directory
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3388",
+    proposal="https://github.com/fonttools/fontbakery/issues/3388",
 )
 def com_adobe_fonts_check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
     """Font has the proper sfntVersion value?"""
@@ -1719,7 +1760,7 @@ def com_adobe_fonts_check_sfnt_version(ttFont, is_ttf, is_cff, is_cff2):
         composition of documents.
     """,
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/3843",
+        "https://github.com/fonttools/fontbakery/issues/3843",
         "legacy:check/050",
     ],
 )
@@ -1758,7 +1799,7 @@ def com_google_fonts_check_whitespace_widths(ttFont):
         Here we check for the presence of potential interpolation errors using the
         fontTools.varLib.interpolatable module.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3930",
+    proposal="https://github.com/fonttools/fontbakery/issues/3930",
 )
 def com_google_fonts_check_iterpolation_issues(ttFont, config):
     """Detect any interpolation issues in the font."""
@@ -1826,7 +1867,7 @@ def com_google_fonts_check_iterpolation_issues(ttFont, config):
         This probably comes from the will to avoid additional tabular math signs
         knowing that their design can easily share the same width.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3832",
+    proposal="https://github.com/fonttools/fontbakery/issues/3832",
 )
 def com_google_fonts_check_math_signs_width(ttFont):
     """Check math signs have the same width."""
@@ -1905,7 +1946,7 @@ def com_google_fonts_check_math_signs_width(ttFont):
         (typo/hhea)LineGap values must be 0.
     """,
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/4133",
+        "https://github.com/fonttools/fontbakery/issues/4133",
         "https://googlefonts.github.io/gf-guide/metrics.html",
     ],
 )
@@ -1952,7 +1993,7 @@ def com_google_fonts_check_linegaps(ttFont):
         read the first entry only, causing all instances to report themselves
         as "Thin Condensed".
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/4149",
+    proposal="https://github.com/fonttools/fontbakery/issues/4149",
 )
 def com_google_fonts_check_STAT_in_statics(ttFont):
     """Checking STAT table entries in static fonts."""
@@ -2004,7 +2045,7 @@ def com_google_fonts_check_STAT_in_statics(ttFont):
         http://diacritics.typo.cz/index.php?id=5
         https://www.typotheque.com/articles/lcaron
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/3308",
+    proposal="https://github.com/fonttools/fontbakery/issues/3308",
 )
 def com_google_fonts_check_alt_caron(font):
     """Check accent of Lcaron, dcaron, lcaron, tcaron"""

@@ -130,7 +130,7 @@ def _get_advance_width_for_char(ttFont, ch):
         There are just a few typical types of cmap subtables that are used in fonts.
         If anything different is declared in a font, it will be treated as a FAIL.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/issues/2676",
+    proposal="https://github.com/fonttools/fontbakery/issues/2676",
 )
 def com_google_fonts_check_cmap_unexpected_subtables(
     ttFont, has_os2_table, is_cjk_font
@@ -221,7 +221,7 @@ def com_google_fonts_check_cmap_unexpected_subtables(
         then ensures that their corresponding ranges are enabled.
     """,
     conditions=["unicoderange", "preferred_cmap"],
-    proposal="https://github.com/googlefonts/fontbakery/issues/2676",
+    proposal="https://github.com/fonttools/fontbakery/issues/2676",
 )
 def com_google_fonts_check_unicode_range_bits(ttFont, unicoderange, preferred_cmap):
     """Ensure UnicodeRange bits are properly set."""
@@ -262,7 +262,7 @@ def com_google_fonts_check_unicode_range_bits(ttFont, unicoderange, preferred_cm
         Noto fonts must contain known manufacturer and manufacturer
         URL entries in the name table.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3681",
+    proposal="https://github.com/fonttools/fontbakery/pull/3681",
 )
 def com_google_fonts_check_noto_manufacturer(ttFont):
     """Ensure the manufacturer is a known Noto manufacturer and the URL is correct."""
@@ -312,7 +312,7 @@ def com_google_fonts_check_noto_manufacturer(ttFont):
     rationale="""
         Noto fonts must contain known designer entries in the name table.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3681",
+    proposal="https://github.com/fonttools/fontbakery/pull/3681",
 )
 def com_google_fonts_check_noto_designer(ttFont):
     """Ensure the designer is a known Noto designer."""
@@ -341,7 +341,7 @@ def com_google_fonts_check_noto_designer(ttFont):
     rationale="""
         Noto fonts must contain the correct trademark entry in the name table.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3681",
+    proposal="https://github.com/fonttools/fontbakery/pull/3681",
 )
 def com_google_fonts_check_noto_trademark(ttFont):
     """Ensure the trademark matches the expected string."""
@@ -372,7 +372,7 @@ def com_google_fonts_check_noto_trademark(ttFont):
         it should actually contain such codepoints. Additionally, it should also
         contain all characters mapped in the format 4 subtable.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3681",
+    proposal="https://github.com/fonttools/fontbakery/pull/3681",
 )
 def com_google_fonts_check_cmap_format_12(ttFont, config):
     """Check that format 12 cmap subtables are correctly constituted."""
@@ -425,7 +425,7 @@ def com_google_fonts_check_cmap_format_12(ttFont, config):
     rationale="""
         Vendor ID must be 'GOOG'
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3681",
+    proposal="https://github.com/fonttools/fontbakery/pull/3681",
 )
 def com_google_fonts_check_os2_noto_vendor(ttFont):
     """Check OS/2 achVendID is set to GOOG."""
@@ -444,7 +444,7 @@ def com_google_fonts_check_os2_noto_vendor(ttFont):
     rationale="""
         Encoded Latin digits in Noto fonts should have equal advance widths.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3681",
+    proposal="https://github.com/fonttools/fontbakery/pull/3681",
 )
 def com_google_fonts_check_htmx_encoded_latin_digits(ttFont):
     """Check all encoded Latin digits have the same advance width"""
@@ -497,7 +497,7 @@ def com_google_fonts_check_htmx_comma_period(ttFont):
     rationale="""
         Encoded whitespace in Noto fonts should have well-defined advance widths.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3681",
+    proposal="https://github.com/fonttools/fontbakery/pull/3681",
 )
 def com_google_fonts_check_htmx_whitespace_advances(
     ttFont, config, glyph_metrics_stats
@@ -565,7 +565,7 @@ def com_google_fonts_check_htmx_whitespace_advances(
     rationale="""
         Private Use Area codepoints and Surrogate Pairs should not be encoded.
     """,
-    proposal="https://github.com/googlefonts/fontbakery/pull/3681",
+    proposal="https://github.com/fonttools/fontbakery/pull/3681",
 )
 def com_google_fonts_check_cmap_alien_codepoints(ttFont, config):
     """Check no PUA or Surrogate Pair codepoints encoded"""

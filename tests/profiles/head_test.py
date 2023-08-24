@@ -134,7 +134,7 @@ def test_check_font_version():
 
     # 1.00099 is only a mis-interpretation of a valid float value (1.001)
     # See more detailed discussion at:
-    # https://github.com/googlefonts/fontbakery/issues/2006
+    # https://github.com/fonttools/fontbakery/issues/2006
     test_font = TTFont(test_font_path)
     test_font["head"].fontRevision = 1.00098
     test_font["name"].setName("Version 1.001", 5, 1, 0, 0x0)
@@ -148,7 +148,7 @@ def test_check_font_version():
 
     # Test that having more than 3 decimal places in the version
     # in the Name table is acceptable.
-    # See https://github.com/googlefonts/fontbakery/issues/2928
+    # See https://github.com/fonttools/fontbakery/issues/2928
     test_font = TTFont(test_font_path)
     # This is the nearest multiple of 1/65536 to 2020.0613
     test_font["head"].fontRevision = 2020.061294555664

@@ -2,13 +2,13 @@
 
 A Font Bakery Profile (an instance of the type `fontbakery.checkrunner.Profile`) is a container for a set of checks to be run on font files.
 
-A profile usually lives inside a Python module: one module contains one profile. Font Bakery comes with a number of profiles, located in [`fontbakery.profiles.*`](https://github.com/googlefonts/fontbakery/blob/main/Lib/fontbakery/profiles), which can be used directly, but you can also create a custom profile. A custom profile can include your own checks, written in Python, and/or checks included from other profiles. Writing a custom Font Bakery profile can be a good way to either ensure the quality of a **single font project**, or for a **font foundry** or **maintainer of a font library** to establish comprehensive quality standards and quality monitoring.
+A profile usually lives inside a Python module: one module contains one profile. Font Bakery comes with a number of profiles, located in [`fontbakery.profiles.*`](https://github.com/fonttools/fontbakery/blob/main/Lib/fontbakery/profiles), which can be used directly, but you can also create a custom profile. A custom profile can include your own checks, written in Python, and/or checks included from other profiles. Writing a custom Font Bakery profile can be a good way to either ensure the quality of a **single font project**, or for a **font foundry** or **maintainer of a font library** to establish comprehensive quality standards and quality monitoring.
 
-Font Bakery comes with a set of checks that can be included into such a custom profile according to the requirements of the author. These checks are mainly organized in profile modules named after OpenType tables, and can be found at [`fontbakery.profiles.*`](https://github.com/googlefonts/fontbakery/blob/main/Lib/fontbakery/profiles).
+Font Bakery comes with a set of checks that can be included into such a custom profile according to the requirements of the author. These checks are mainly organized in profile modules named after OpenType tables, and can be found at [`fontbakery.profiles.*`](https://github.com/fonttools/fontbakery/blob/main/Lib/fontbakery/profiles).
 
-When you decide to include a profile or a single check from a Font Bakery profile into your own custom profile, you'll end up reading and reviewing the profile's Python code. We welcome questions, remarks, improvements, additions, **more documentation** and other contributions. Please use our [issue tracker](https://github.com/googlefonts/fontbakery/issues) to contact us or send **pull requests**.
+When you decide to include a profile or a single check from a Font Bakery profile into your own custom profile, you'll end up reading and reviewing the profile's Python code. We welcome questions, remarks, improvements, additions, **more documentation** and other contributions. Please use our [issue tracker](https://github.com/fonttools/fontbakery/issues) to contact us or send **pull requests**.
 
-[`fontbakery.profiles.googlefonts`](https://github.com/googlefonts/fontbakery/blob/main/Lib/fontbakery/profiles/googlefonts.py) is a custom profile and can be an interesting piece of code to inspect for some inspiration.
+[`fontbakery.profiles.googlefonts`](https://github.com/fonttools/fontbakery/blob/main/Lib/fontbakery/profiles/googlefonts.py) is a custom profile and can be an interesting piece of code to inspect for some inspiration.
 
 ## From automatic discovery to full control
 
@@ -41,7 +41,7 @@ If an item is a python module (an instance of `types.ModuleType`) it is tried to
 
 When you are calling `profile.auto_register` explicitly yourself, you can also use the `filter_func` argument. This gives you finer control over which items are loaded into your profile, you can use it to implement bloklist and/or allowlist filtering.
 
-Here is an example where [`filter_func` was needed due to a namespace clash.](https://github.com/googlefonts/fontbakery/pull/1770#issuecomment-380122216)
+Here is an example where [`filter_func` was needed due to a namespace clash.](https://github.com/fonttools/fontbakery/pull/1770#issuecomment-380122216)
 
 If a `filter_func` argument is defined it is called like `filter_func(type, name_or_id, item)` where:
 
@@ -155,7 +155,7 @@ $ fontbakery check-profile fontbakery ./path/to/fonts/*
 
 ## Writing Profiles: Quick start
 
-A very basic profile with no apparent use but to document profiles, checks and conditions. For real world use cases look into the modules at [`fontbakery.profiles.*`](https://github.com/googlefonts/fontbakery/tree/main/Lib/fontbakery/profiles)
+A very basic profile with no apparent use but to document profiles, checks and conditions. For real world use cases look into the modules at [`fontbakery.profiles.*`](https://github.com/fonttools/fontbakery/tree/main/Lib/fontbakery/profiles)
 
 Execute:
 

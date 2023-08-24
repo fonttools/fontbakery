@@ -99,8 +99,8 @@ def pair_kerning(font, left, right):
     """
     + DISCLAIMER,
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/1832",
-        "https://github.com/googlefonts/fontbakery/issues/3250",
+        "https://github.com/fonttools/fontbakery/issues/1832",
+        "https://github.com/fonttools/fontbakery/issues/3250",
     ],
 )
 def com_google_fonts_check_iso15008_proportions(ttFont):
@@ -139,8 +139,8 @@ def com_google_fonts_check_iso15008_proportions(ttFont):
     """
     + DISCLAIMER,
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/1832",
-        "https://github.com/googlefonts/fontbakery/issues/3251",
+        "https://github.com/fonttools/fontbakery/issues/1832",
+        "https://github.com/fonttools/fontbakery/issues/3251",
     ],
 )
 def com_google_fonts_check_iso15008_stem_width(ttFont):
@@ -180,8 +180,8 @@ def com_google_fonts_check_iso15008_stem_width(ttFont):
     """
     + DISCLAIMER,
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/1832",
-        "https://github.com/googlefonts/fontbakery/issues/3252",
+        "https://github.com/fonttools/fontbakery/issues/1832",
+        "https://github.com/fonttools/fontbakery/issues/3252",
     ],
 )
 def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
@@ -266,8 +266,8 @@ def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
     """
     + DISCLAIMER,
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/1832",
-        "https://github.com/googlefonts/fontbakery/issues/3253",
+        "https://github.com/fonttools/fontbakery/issues/1832",
+        "https://github.com/fonttools/fontbakery/issues/3253",
     ],
 )
 def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
@@ -321,8 +321,8 @@ def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
     """
     + DISCLAIMER,
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/1832",
-        "https://github.com/googlefonts/fontbakery/issues/3254",
+        "https://github.com/fonttools/fontbakery/issues/1832",
+        "https://github.com/fonttools/fontbakery/issues/3254",
     ],
 )
 def com_google_fonts_check_iso15008_interline_spacing(ttFont):

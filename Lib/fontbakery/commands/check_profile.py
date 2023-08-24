@@ -39,7 +39,7 @@ log_levels = OrderedDict(
     (s.name, s) for s in sorted((DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL))
 )
 
-DEFAULT_LOG_LEVEL = INFO
+DEFAULT_LOG_LEVEL = WARN
 
 
 class AddReporterAction(argparse.Action):

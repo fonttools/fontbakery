@@ -248,7 +248,7 @@ class FontBakeryCheck(FontbakeryCallable):
         if not self.description:
             raise TypeError("{} needs a description.".format(type(self).__name__))
 
-    # This was problematic. See: https://github.com/googlefonts/fontbakery/issues/2194
+    # This was problematic. See: https://github.com/fonttools/fontbakery/issues/2194
     # def __str__(self):
     #  return self.id
 
