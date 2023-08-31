@@ -336,7 +336,7 @@ def com_thetypefounders_check_features_default_languagesystem(ufo_font):
     else:
         tags = re.findall(
             # pylint: disable-next=line-too-long
-            r"languagesystem\s+([A-Za-z0-9\._!$%&*+:?^'|~]{1,4})\s+([A-Za-z0-9\._!$%&*+:?^'|~]{1,4})",
+            r"languagesystem\s+([A-Za-z0-9\._!$%&*+:?^'|~]{1,4})\s+([A-Za-z0-9\._!$%&*+:?^'|~]{1,4})",  # noqa E501
             ufo_font.features.text,
         )
 
