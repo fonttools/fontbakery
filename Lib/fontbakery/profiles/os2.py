@@ -35,7 +35,7 @@ def com_google_fonts_check_family_panose_proportion(ttFonts):
         )
 
     if not passed:
-        yield FAIL, Message(
+        yield WARN, Message(
             "inconsistency",
             "PANOSE proportion is not the same across this family."
             " In order to fix this, please make sure that"
@@ -71,7 +71,7 @@ def com_google_fonts_check_family_panose_familytype(ttFonts):
         )
 
     if not passed:
-        yield FAIL, Message(
+        yield WARN, Message(
             "inconsistency",
             "PANOSE family type is not the same across this family."
             " In order to fix this, please make sure that"
