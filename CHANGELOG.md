@@ -28,6 +28,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/grade_reflow]**: This check has been renamed to **com.google.fonts/check/varfont/duplexed_axis_reflow** and now also checks the `ROND` axis. (issue #4200)
   - **[com.google.fonts/check/glyph_coverage]:** This check is now skipped for icon fonts. (issues #3323 and #3327)
 
+#### On the OpenType profile
+  - **[com.google.fonts/check/family/panose_familytype], [com.google.fonts/check/family/panose_proportion]:** Failures have been downgraded to warnings. (issue #4192)
 
 ## 0.9.0a2 (2023-Aug-04)
 ### Changes to existing checks
