@@ -16,6 +16,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
 
+#### Added to the UFO Profile
+  - **[com.thetypefounders/check/features_default_languagesystem]:** Checks if a default languagesystem statement is present in feature files and warns if the compiler will not insert one automatically (issue #4011)
+
 ### Changes to existing checks
 #### On the Universal profile
   - **[com.google.fonts/check/os2_metrics_match_hhea]:** Re-worded rationale text to be vendor-neutral (issue #4206)
