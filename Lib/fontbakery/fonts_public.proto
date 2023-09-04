@@ -12,6 +12,18 @@ message FamilyProto {
   required string name = 1;
   required string designer = 2;
   required string license = 3;
+
+  // A mutually-exclusive category for each font. The categories are: Serif,
+  // Sans Serif, Display, Handwriting and Monospace. Being mutually exclusive is
+  // a significant deficiency as, for example, most Display fonts are typically
+  // Serif or Sans Serif and that is not captured.
+  //
+  // For searching, this field is replaced by stroke and classifications (see
+  // below), however, this field persists (it's required after all) and will
+  // continue to be populated in the onboarding process.
+  //
+  // This is repeated field, yet Google Fonts only uses the last entry so
+  // multiple entries should be avoided.
   repeated string category = 4;  // Only the LAST value is used by Google Fonts
   required string date_added = 5;
   repeated FontProto fonts = 6;
@@ -33,7 +45,23 @@ message FamilyProto {
   // The script to use when picking sample text. See the Script spanner table.
   optional string primary_script = 21;
 
-  // Next = 22
+  // Stroke of the letter forms: serif, sans serif, or slab serif.  A family
+  // has a single stroke and may have none at all. The values are strings that
+  // in all uppercase with spaces replaced by underscores:
+  //    SERIF
+  //    SANS_SERIF
+  //    SLAB_SERIF
+  optional string stroke = 22;
+
+  // A family's broad classifications: display, handwriting, monospace, and
+  // symbols (not text). The values are in all uppercase:
+  //    DISPLAY
+  //    HANDWRITING
+  //    MONOTYPE
+  //    SYMBOLS
+  repeated string classifications = 23;
+
+  // Next = 24
 }
 
 message FontProto {
