@@ -55,6 +55,7 @@
 
 
 
+
 <html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
 
 <head>
@@ -102,6 +103,10 @@
 <meta name="word_count" content="4529" />
 
 
+	<meta name="recommendation_types" content="Training" />
+	<meta name="recommendation_types" content="Certification" />
+	
+
 	<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
 	
 
@@ -119,7 +124,7 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/a2af0641.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/a771ae71.site-ltr.css ">
 
 	
 
@@ -137,6 +142,8 @@
 			},
 			hasBinaryRating: true,
 			hasGithubIssues: true,
+			feedbackHelpLinkType:'',
+			feedbackHelpLinkUrl:'',
 			standardFeedback: false,
 			showFeedbackReport: false,
 			enableTutorialFeedback: false,
@@ -152,6 +159,7 @@
 			hasBookmark: true,
 			hasShare: true,
 			isPermissioned: false,
+			isPrivateUnauthorized: false,
 			hasRecommendations: true,
 			contributors: [
 						{ name: "alib-ms", url: "https://github.com/alib-ms" },
@@ -183,7 +191,7 @@
 			id="adobe-target-script"
 			type="application/javascript"
 		/>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b85b450c.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b1025f26.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -6137,6 +6145,7 @@ Article													</li>
 
 
 
+
 						<!-- recommendations section -->
 						<!-- end recommendations section -->
 
@@ -6188,7 +6197,7 @@ Article													</li>
 
 
 	<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
-	<div class="display-flex is-full-height padding-right-lg-desktop">
+	<div class="display-flex gap-xs flex-wrap-wrap is-full-height padding-right-lg-desktop">
 			<a
 				data-mscc-ic="false"
 				class="locale-selector-link button button-sm button-clear flex-shrink-0"
@@ -6198,7 +6207,7 @@ Article													</li>
 						<span class="docon docon-world"></span>
 					</span>
 					<span class="local-selector-link-text"></span></a>
-		<div class="margin-inline-xs flex-shrink-0">
+		<div class="flex-shrink-0">
 <div class="dropdown has-caret-up">
 	<button class="dropdown-trigger button button-clear button-sm has-inner-focus theme-dropdown-trigger"
 		aria-controls="theme-menu-interactive" aria-expanded="false" title="Theme" data-bi-name="theme">
@@ -6291,12 +6300,12 @@ High contrast					</span>
 	</div>
 	<ul class="links" data-bi-name="footerlinks">
 		<li class="manage-cookies-holder" hidden></li>
-				<li><a data-mscc-ic="false" href="/en-us/previous-versions/" data-bi-name="archivelink">Previous Versions</a></li>
-				<li><a data-mscc-ic="false" href="https://techcommunity.microsoft.com/t5/microsoft-learn-blog/bg-p/MicrosoftLearnBlog" data-bi-name="bloglink">Blog</a></li>
-				<li><a data-mscc-ic="false" href="/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li>
-					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
-				<li><a data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
-				<li><a data-mscc-ic="false" href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/" data-bi-name="trademarks">Trademarks</a></li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/previous-versions/" data-bi-name="archivelink">Previous Versions</a></li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="https://techcommunity.microsoft.com/t5/microsoft-learn-blog/bg-p/MicrosoftLearnBlog" data-bi-name="bloglink">Blog</a></li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a class="external-link-indicator" data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/" data-bi-name="trademarks">Trademarks</a></li>
 		<li>&copy; Microsoft 2023</li>
 	</ul>
 </footer>
@@ -6343,7 +6352,7 @@ High contrast					</span>
 
 
 	<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
-	<div class="display-flex is-full-height padding-right-lg-desktop">
+	<div class="display-flex gap-xs flex-wrap-wrap is-full-height padding-right-lg-desktop">
 			<a
 				data-mscc-ic="false"
 				class="locale-selector-link button button-sm button-clear flex-shrink-0"
@@ -6353,7 +6362,7 @@ High contrast					</span>
 						<span class="docon docon-world"></span>
 					</span>
 					<span class="local-selector-link-text"></span></a>
-		<div class="margin-inline-xs flex-shrink-0">
+		<div class="flex-shrink-0">
 <div class="dropdown has-caret-up">
 	<button class="dropdown-trigger button button-clear button-sm has-inner-focus theme-dropdown-trigger"
 		aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
@@ -6446,12 +6455,12 @@ High contrast					</span>
 	</div>
 	<ul class="links" data-bi-name="footerlinks">
 		<li class="manage-cookies-holder" hidden></li>
-				<li><a data-mscc-ic="false" href="/en-us/previous-versions/" data-bi-name="archivelink">Previous Versions</a></li>
-				<li><a data-mscc-ic="false" href="https://techcommunity.microsoft.com/t5/microsoft-learn-blog/bg-p/MicrosoftLearnBlog" data-bi-name="bloglink">Blog</a></li>
-				<li><a data-mscc-ic="false" href="/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li>
-					<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
-				<li><a data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
-				<li><a data-mscc-ic="false" href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/" data-bi-name="trademarks">Trademarks</a></li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/previous-versions/" data-bi-name="archivelink">Previous Versions</a></li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="https://techcommunity.microsoft.com/t5/microsoft-learn-blog/bg-p/MicrosoftLearnBlog" data-bi-name="bloglink">Blog</a></li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/contribute/" data-bi-name="contributorGuide">Contribute</a></li>
+					<li><a class="external-link-indicator" data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+				<li><a class="external-link-indicator" data-mscc-ic="false" href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/" data-bi-name="trademarks">Trademarks</a></li>
 		<li>&copy; Microsoft 2023</li>
 	</ul>
 </footer>
