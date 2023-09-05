@@ -1,0 +1,47 @@
+    .modal-dialog {
+        max-width: 100%;
+        margin: 0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100vh;
+        display: flex;
+    }
+
+    .dz-progress {
+        display: none;
+    }
+
+    .modal-body {
+        background-color: rgb(166, 234, 255);
+    }
+
+    #test {
+        background-color: rgb(120, 214, 235)
+    }
+
+    .dropzone {
+        border: none;
+        background-color: rgba(166, 234, 255, 0.3)
+    }
+
+    img.img-fluid {
+        height: 30vh !important;
+    }
+
+    #loading {
+        height: 38px;
+    }
+
+    #progress-wrapper {
+        width: 200px;
+    }
+
+    .leftarrow {
+        display:inline-block !important;
+        font-size: 40pt;
+    }
+    .leftarrow:hover {
+        text-decoration: none;
+    }
