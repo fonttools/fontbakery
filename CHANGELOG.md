@@ -2,12 +2,17 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.9.0 (2023-Aug-??)
+## Upcoming release: 0.9.0 (2023-Sep-??)
+  - ...
+
+
+## Upcoming release: 0.9.0a3 (2023-Sep-05)
 ### Note-worthy code changes
   - The default log level has been changed to WARN. Now that profiles are big, you don't (by default) want a big long list of everything that is OK about your font; you just want to know the problems to fix. Make WARN the default and have people get a list of PASS if they ask for it. (issue #4186)
 
 ### Bug-fixes
   - Fix summary statistics on HTML reporter (issue #3997)
+  - Updated **fonts_public.proto** to fix ERRORs on parsing fields `stroke` and `classifications` that were recently added to the schema (issue #4249)
 
 ### New Checks
 #### Added to the Universal Profile
@@ -33,6 +38,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the OpenType profile
   - **[com.google.fonts/check/family/panose_familytype], [com.google.fonts/check/family/panose_proportion]:** Failures have been downgraded to warnings. (issue #4192)
+
 
 ## 0.9.0a2 (2023-Aug-04)
 ### Changes to existing checks
