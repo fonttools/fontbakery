@@ -31,7 +31,7 @@ const EXCUSES = {
   'com.google.fonts/check/version_bump': NEEDS_NETWORK,
   'com.google.fonts/check/production_glyphs_similarity': NEEDS_NETWORK,
   // Shaping checks
-  'com.google.fonts/check/render_own_name': NOWASM('it requires the Freetype library, which is unavailable in WASM'),
+  'com.google.fonts/check/render_own_name': CANT_COMPILE('Freetype'),
   'com.google.fonts/check/dotted_circle': CANT_COMPILE('cffsubr [required by ufo2ft]'),
   'com.google.fonts/check/metadata/can_render_samples': CANT_COMPILE('Harfbuzz'),
   'com.google.fonts/check/slant_direction': CANT_COMPILE('Harfbuzz'),
