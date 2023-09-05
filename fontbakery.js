@@ -20,6 +20,7 @@ const EXCUSES = {
   'com.adobe.fonts/check/freetype_rasterizer': CANT_COMPILE('Freetype'),
   'com.google.fonts/check/ots': CANT_COMPILE('OpenType Sanitizer'),
   'com.google.fonts/check/alt_caron:googlefonts': NOWASM('the check requires a library (babelfont) with a Rust dependency'),
+  'com.google.fonts/check/alt_caron': NOWASM('the check requires a library (babelfont) with a Rust dependency'),
   // Needs network
   'com.google.fonts/check/vendor_id': NEEDS_NETWORK,
   'com.google.fonts/check/fontdata_namecheck': NEEDS_NETWORK,
