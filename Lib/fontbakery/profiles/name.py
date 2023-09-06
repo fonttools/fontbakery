@@ -419,12 +419,11 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
 
 
 @check(
-    id="com.google.fonts/check/family_naming_recommendations",
-    proposal="legacy:check/071",
+    id="com.adobe.fonts/check/postscript_name",
+    proposal="https://github.com/miguelsousa/openbakery/issues/62",
 )
-def com_google_fonts_check_family_naming_recommendations(ttFont):
-    """Font follows the family naming recommendations?"""
-    # See http://forum.fontlab.com/index.php?topic=313.0
+def com_adobe_fonts_check_postscript_name(ttFont):
+    """PostScript name follows OpenType specification requirements?"""
     import re
     from fontbakery.utils import get_name_entry_strings
 
@@ -439,7 +438,7 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
                 {
                     "field": "PostScript Name",
                     "value": string,
-                    "rec": ("May contain only a-zA-Z0-9 characters and an hyphen."),
+                    "rec": ("May contain only a-zA-Z0-9 characters and a hyphen."),
                 }
             )
         if string.count("-") > 1:
@@ -447,9 +446,34 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
                 {
                     "field": "Postscript Name",
                     "value": string,
-                    "rec": ("May contain not more than a single hyphen"),
+                    "rec": ("May contain not more than a single hyphen."),
                 }
             )
+
+    if len(bad_entries) > 0:
+        table = "| Field | Value | Recommendation |\n"
+        table += "|:----- |:----- |:-------------- |\n"
+        for bad in bad_entries:
+            table += "| {} | {} | {} |\n".format(bad["field"], bad["value"], bad["rec"])
+        yield FAIL, Message(
+            "bad-psname-entries",
+            f"PostScript name does not follow requirements:\n\n{table}",
+        )
+    else:
+        yield PASS, Message("psname-ok", "PostScript name follows requirements.")
+
+
+@check(
+    id="com.google.fonts/check/family_naming_recommendations",
+    proposal="legacy:check/071",
+)
+def com_google_fonts_check_family_naming_recommendations(ttFont):
+    """Font follows the family naming recommendations?"""
+    # See http://forum.fontlab.com/index.php?topic=313.0
+
+    from fontbakery.utils import get_name_entry_strings
+
+    bad_entries = []
 
     for string in get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME):
         if len(string) >= 64:

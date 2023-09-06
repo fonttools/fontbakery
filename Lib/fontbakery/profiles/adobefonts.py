@@ -26,7 +26,7 @@ profile = profile_factory(default_section=Section("Adobe Fonts"))
 SET_EXPLICIT_CHECKS = {
     # This is the set of explict checks that will be invoked
     # when fontbakery is run with the 'check-adobefonts' subcommand.
-    # The contents of this set were last updated on April 19, 2023.
+    # The contents of this set were last updated on September 6, 2023.
     #
     # =======================================
     # From adobefonts.py (this file)
@@ -132,6 +132,7 @@ SET_EXPLICIT_CHECKS = {
     "com.adobe.fonts/check/family/max_4_fonts_per_family_name",
     "com.adobe.fonts/check/family/consistent_family_name",
     "com.adobe.fonts/check/name/empty_records",
+    "com.adobe.fonts/check/postscript_name",
     "com.adobe.fonts/check/name/postscript_name_consistency",
     "com.adobe.fonts/check/name/postscript_vs_cff",
     "com.google.fonts/check/family_naming_recommendations",
