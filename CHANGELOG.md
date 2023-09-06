@@ -3,10 +3,16 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.9.0 (2023-Sep-??)
-  - ...
+### New Checks
+#### Added to the OpenType Profile
+  - **[com.adobe.fonts/check/postscript_name]:** FAIL on bad postscript names (issue #4254).
+
+### Changes to existing checks
+#### On the OpenType Profile
+  - **[com.google.fonts/check/family_naming_recommendations]:** Two validations of PostScript names were moved out of this check and into **com.adobe.fonts/check/postscript_name** which yields FAILs (issue #4254).
 
 
-## Upcoming release: 0.9.0a3 (2023-Sep-05)
+## 0.9.0a3 (2023-Sep-05)
 ### Note-worthy code changes
   - The default log level has been changed to WARN. Now that profiles are big, you don't (by default) want a big long list of everything that is OK about your font; you just want to know the problems to fix. Make WARN the default and have people get a list of PASS if they ask for it. (issue #4186)
 

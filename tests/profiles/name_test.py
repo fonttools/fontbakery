@@ -356,17 +356,9 @@ def test_check_family_naming_recommendations():
         if name.nameID == NameID.POSTSCRIPT_NAME:
             print("== NameID.POST_SCRIPT_NAME ==")
 
-            print("Test INFO: May contain only a-zA-Z0-9 characters and an hyphen...")
-            # The '@' and '!' chars here are the expected rule violations:
-            name_test("B@zinga!", INFO, "bad-entries")
-
             print("Test PASS: A name with a single hyphen is OK...")
             # A single hypen in the name is OK:
             name_test("Big-Bang", PASS)
-
-            print("Test INFO: May not contain more than a single hyphen...")
-            # The second hyphen char here is the expected rule violation:
-            name_test("Big-Bang-Theory", INFO, "bad-entries")
 
             print("Test INFO: Exceeds max length (63)...")
             name_test("A" * 64, INFO, "bad-entries")
@@ -654,3 +646,37 @@ def test_check_italic_names():
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
     set_name(ttFont, 17, "Light")
     assert_results_contain(check(ttFont), FAIL, "bad-typographicsubfamilyname")
+
+
+def test_check_name_postscript():
+    check = CheckTester(opentype_profile, "com.adobe.fonts/check/postscript_name")
+
+    # Test a font that has OK psname. Check should PASS.
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
+    assert_PASS(check(ttFont), "psname-ok")
+
+    # Change the PostScript name string to more than one hyphen. Should FAIL.
+    bad_ps_name = "more-than-one-hyphen".encode("utf-16-be")
+    ttFont["name"].setName(
+        bad_ps_name,
+        NameID.POSTSCRIPT_NAME,
+        PlatformID.WINDOWS,
+        WindowsEncodingID.UNICODE_BMP,
+        WindowsLanguageID.ENGLISH_USA,
+    )
+    msg = assert_results_contain(check(ttFont), FAIL, "bad-psname-entries")
+    assert "PostScript name does not follow requirements" in msg
+    assert "May contain not more than a single hyphen." in msg
+
+    # Now change it to a string with illegal characters. Should FAIL.
+    bad_ps_name = "(illegal) characters".encode("utf-16-be")
+    ttFont["name"].setName(
+        bad_ps_name,
+        NameID.POSTSCRIPT_NAME,
+        PlatformID.WINDOWS,
+        WindowsEncodingID.UNICODE_BMP,
+        WindowsLanguageID.ENGLISH_USA,
+    )
+    msg = assert_results_contain(check(ttFont), FAIL, "bad-psname-entries")
+    assert "PostScript name does not follow requirements" in msg
+    assert "May contain only a-zA-Z0-9 characters and a hyphen." in msg

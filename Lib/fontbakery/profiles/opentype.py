@@ -70,6 +70,7 @@ OPENTYPE_PROFILE_CHECKS = [
     "com.google.fonts/check/glyf_unused_data",
     "com.google.fonts/check/family_naming_recommendations",
     "com.google.fonts/check/maxadvancewidth",
+    "com.adobe.fonts/check/postscript_name",
     "com.google.fonts/check/points_out_of_bounds",
     "com.google.fonts/check/glyf_non_transformed_duplicate_components",
     "com.google.fonts/check/code_pages",
