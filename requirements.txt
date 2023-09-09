@@ -5,12 +5,12 @@ beautifulsoup4==4.12.2
 beziers==0.5.0
 cmarkgfm==2022.10.27
 collidoscope==0.6.5
-defcon==0.10.2
+defcon==0.10.3
 dehinter==4.0.0
-fontTools[ufo,lxml,unicode]==4.41.1
+fontTools[ufo,lxml,unicode]==4.42.1
 font-v==2.1.0
 freetype-py==2.3.0  # pinned for now. See: https://github.com/fonttools/fontbakery/issues/4143
-gflanguages==0.5.4
+gflanguages==0.5.5
 glyphsets==0.6.2
 lxml==4.9.3
 munkres==1.1.4  # This should be a dependency of fonttools instead!
@@ -21,10 +21,10 @@ pip-api==0.0.30
 PyYAML==6.0.1
 protobuf==3.20.3
 requests==2.31.0
-rich==13.4.2
+rich==13.5.2
 stringbrewer==0.0.1
 toml==0.10.2
 ufolint==1.2.0
 vharfbuzz==0.2.0
-ufo2ft==2.32.0
+ufo2ft==2.33.4
 shaperglot==0.3.0
