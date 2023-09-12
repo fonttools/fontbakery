@@ -32,6 +32,7 @@ from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.badge import BadgeReporter
 from fontbakery.reporters.ghmarkdown import GHMarkdownReporter
 from fontbakery.reporters.html import HTMLReporter
+from fontbakery.reporters.tnhtml import TNReporter
 from fontbakery.utils import get_theme
 
 
@@ -231,6 +232,15 @@ def ArgumentParser(profile, profile_arg=True):
         default=False,
         action=AddReporterAction,
         cls=HTMLReporter,
+        metavar="HTML_FILE",
+        help="Write a HTML report to HTML_FILE.",
+    )
+
+    argument_parser.add_argument(
+        "--tn",
+        default=False,
+        action=AddReporterAction,
+        cls=TNReporter,
         metavar="HTML_FILE",
         help="Write a HTML report to HTML_FILE.",
     )
