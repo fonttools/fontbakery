@@ -2,7 +2,20 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.9.0 (2023-Sep-??)
+## Upcoming release: 1.0.0a1 (2023-Sep-??)
+  - ...
+
+
+## 0.9.0 (2023-Sep-12)
+# Stable release notes
+  To see the full list of changes, please also read below the changelog entries of these pre-releases of v0.9.0:
+  - 0.9.0a3 (2023-Sep-05)
+  - 0.9.0a2 (2023-Aug-04)
+  - 0.9.0a1 (2023-Aug-02)
+
+### Noteworthy code-changes
+  - gflanguages dependency updated to v0.5.6
+
 ### New Checks
 #### Added to the OpenType Profile
   - **[com.adobe.fonts/check/postscript_name]:** FAIL on bad postscript names (issue #4254).
