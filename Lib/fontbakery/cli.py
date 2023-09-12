@@ -19,6 +19,7 @@ CLI_PROFILES = [
     "notofonts",
     "opentype",
     "shaping",
+    "typenetwork",
     "ufo_sources",
     "universal",
     "proposals",

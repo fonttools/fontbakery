@@ -68,6 +68,14 @@ fontwerk_extras = googlefonts_extras
 
 notofonts_extras = googlefonts_extras
 
+typenetwork_extras = [
+    "beautifulsoup4",
+    f"ufo2ft{UFO2FT_VERSION}",
+    f"vharfbuzz{VHARFBUZZ_VERSION}",
+    "uharfbuzz",
+    "shaperglot>=0.2.0"
+]
+
 iso15008_extras = [
     "uharfbuzz",
 ]
@@ -189,6 +197,7 @@ setup(
         "fontwerk": fontwerk_extras,
         "googlefonts": googlefonts_extras,
         "notofonts": notofonts_extras,
+        "typenetwork": typenetwork_extras,
         "iso15008": iso15008_extras,
         "shaping": shaping_extras,
         "ufo-sources": ufo_sources_extras,
