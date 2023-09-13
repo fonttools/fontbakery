@@ -73,7 +73,7 @@ typenetwork_extras = [
     f"ufo2ft{UFO2FT_VERSION}",
     f"vharfbuzz{VHARFBUZZ_VERSION}",
     "uharfbuzz",
-    "shaperglot>=0.2.0"
+    "shaperglot>=0.2.0",
 ]
 
 iso15008_extras = [

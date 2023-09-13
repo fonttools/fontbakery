@@ -19,7 +19,7 @@ EMOTICON = {
     "INFO": "ℹ️",
     "SKIP": "⏩",
     "PASS": "✅",
-    "DEBUG": "🔎"
+    "DEBUG": "🔎",
 }
 HTML_STYLES = """
 html {
@@ -125,7 +125,7 @@ class TNReporter(SerializeReporter):
         with open(self.output_file, "w", encoding="utf-8") as fh:
             fh.write(self.get_html())
         print(f'A TN report in HTML format has been saved to "{self.output_file}"')
-        
+
     def get_html(self) -> str:
         """Return complete report as a HTML string."""
         data = self.getdoc()
@@ -134,7 +134,9 @@ class TNReporter(SerializeReporter):
 
         # Order by section first...
         for section in data["sections"]:
-            section_name = html.escape(section["key"][0].replace("<", "").replace(">", ""))
+            section_name = html.escape(
+                section["key"][0].replace("<", "").replace(">", "")
+            )
             section_stati_of_note = (
                 e for e in section["result"].elements() if e != "PASS"
             )
@@ -157,17 +159,19 @@ class TNReporter(SerializeReporter):
                 for check in cluster:
                     checks_by_id[check["key"][1]].append(check)
             for check, results in checks_by_id.items():
-                if all([self.omit_loglevel(result['result']) for result in results]):
+                if all([self.omit_loglevel(result["result"]) for result in results]):
                     continue
                 check_name = html.escape(check)
                 body_elements.append(f"<h3>{results[0]['description']}</h3>")
-                body_elements.append(f"<div class='check__idlabel'>Check ID: {check_name}</div>")
+                body_elements.append(
+                    f"<div class='check__idlabel'>Check ID: {check_name}</div>"
+                )
                 body_elements.append(self.render_rationale(results[0], check))
                 for result in results:
-                    if self.omit_loglevel(result['result']):
+                    if self.omit_loglevel(result["result"]):
                         continue
                     if "filename" in result:
-                        shortFilename = result['filename'].split('/')[-1]
+                        shortFilename = result["filename"].split("/")[-1]
                         body_elements.append(
                             html5_collapsible(
                                 f"{EMOTICON[result['result']]} {shortFilename}",
@@ -181,7 +185,6 @@ class TNReporter(SerializeReporter):
                                 self.html_for_check(result),
                             )
                         )
-
 
         # ---------------------------------- HEADER ---------------------------------- #
         header = getHeader(data, num_checks, self.omit_loglevel)
@@ -198,9 +201,9 @@ class TNReporter(SerializeReporter):
     def render_rationale(self, check, checkid) -> str:
         if self.succinct or "rationale" not in check:
             return ""
-        content = unindent_and_unwrap_rationale(check['rationale'], checkid)
+        content = unindent_and_unwrap_rationale(check["rationale"], checkid)
         return cmarkgfm.markdown_to_html(
-                content, options=cmarkgfmOptions.CMARK_OPT_UNSAFE
+            content, options=cmarkgfmOptions.CMARK_OPT_UNSAFE
         )
 
     def log_html(self, log) -> str:
@@ -286,8 +289,7 @@ def getHeader(data, num_checks, omit_loglevel) -> str:
             fontbakery version: {fb_version}
         </p>
         """
-        
-    ) 
+    )
 
     return BODY_TOP
 
