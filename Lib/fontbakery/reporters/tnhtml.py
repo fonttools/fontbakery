@@ -65,7 +65,7 @@ h2 {
 h3 {
     margin-bottom: 1px;
     margin-top: 2rem;
-    border-top: 1px solid #cecece; 
+    border-top: 1px solid #cecece;
     padding-top: 2rem;
 }
 
@@ -265,7 +265,7 @@ def getHeader(data, num_checks, omit_loglevel) -> str:
         results_summary = [data["result"][k] for k in LOGLEVELS]
         BODY_TOP.append(summary_table(*results_summary, num_checks))
 
-    omitted = [l for l in LOGLEVELS if omit_loglevel(l)]
+    omitted = [level for level in LOGLEVELS if omit_loglevel(level)]
     if omitted:
         BODY_TOP.append(
             "<p><strong>Note:</strong>"

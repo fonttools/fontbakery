@@ -795,13 +795,13 @@ def com_typenetwork_check_vertical_metrics(ttFont):
     )
 
     if useTypoMetric:
-        if hheaAscent_equals_typoAscent == False:
+        if not hheaAscent_equals_typoAscent:
             yield FAIL, Message(
                 "ascender",
                 f"OS/2 sTypoAscender ({ttFont['OS/2'].sTypoAscender})"
                 f" and hhea ascent ({ttFont['hhea'].ascent}) must be equal.",
             )
-        elif hheaDescent_equals_typoDescent == False:
+        elif not hheaDescent_equals_typoDescent:
             yield FAIL, Message(
                 "descender",
                 f"OS/2 sTypoDescender ({ttFont['OS/2'].sTypoDescender})"
@@ -824,15 +824,15 @@ def com_typenetwork_check_vertical_metrics(ttFont):
         if hheaAscent_equals_typoAscent and hheaDescent_equals_winDescent:
             yield FAIL, Message(
                 "useTypoMetricsDisabled",
-                f"OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is not enabled",
+                "OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is not enabled",
             )
-        elif hheaAscent_equals_winAscent == False:
+        elif not hheaAscent_equals_winAscent:
             yield FAIL, Message(
                 "ascender",
                 f"hhea ascent ({ttFont['hhea'].ascent})"
                 f" and OS/2 win ascent ({ttFont['OS/2'].usWinAscent}) must be equal.",
             )
-        elif hheaDescent_equals_winDescent == False:
+        elif not hheaDescent_equals_winDescent:
             yield FAIL, Message(
                 "descender",
                 f"hhea descent ({ttFont['hhea'].descent})"
@@ -874,11 +874,11 @@ def com_typenetwork_check_font_is_centered_vertically(ttFont):
     if threshold1 >= ratio > threshold2:
         yield WARN, Message(
             "uncentered",
-            f"The font will be displayed a bit vertically uncentered on web environments.",
+            "The font will be displayed a bit vertically uncentered on web environments.",
         )
         yield WARN, Message(
             "uncentered",
-            f"The font will be displayed a bit vertically uncentered on web environments."
+            "The font will be displayed a bit vertically uncentered on web environments."
             f" Top space above cap height is {ascent} and under baseline is {descent} ",
         )
     elif ratio >= threshold2:
@@ -890,7 +890,7 @@ def com_typenetwork_check_font_is_centered_vertically(ttFont):
     else:
         yield PASS, Message(
             "centered",
-            f"The font will be displayed vertically centered on web environments.",
+            "The font will be displayed vertically centered on web environments.",
         )
 
 
@@ -962,7 +962,6 @@ def tn_expected_os2_weight(stylename):
 
         If static otfs are set lower than 250, text may appear blurry in
         legacy Windows applications.
-        
         Glyphsapp users can change the usWeightClass value of an instance by adding
         a 'weightClass' customParameter.
     """,
@@ -980,7 +979,7 @@ def com_typenetwork_check_usweightclass(ttFont, tn_expected_os2_weight):
     expected_value = tn_expected_os2_weight["weightClass"]
     weight_name = tn_expected_os2_weight["name"]
     os2_value = ttFont["OS/2"].usWeightClass
-    has_expected_value = os2_value == expected_value
+
     fail_message = "OS/2 usWeightClass is '{}' when it should be '{}'."
     no_value_message = "OS/2 usWeightClass is '{}' and weight name is '{}'."
 
@@ -1172,7 +1171,7 @@ def equal_numbers_of_glyphs(roman_ttFonts, italic_ttFonts):
             f"{max_roman_font} has {max_roman_count} and \n\t{roman_failed_fonts}",
         )
     else:
-        yield PASS, f"All roman files in this family have an equal total ammount of glyphs."
+        yield PASS, "All roman files in this family have an equal total ammount of glyphs."
 
     if len(italic_failed_fonts) > 0:
         yield WARN, Message(
@@ -1181,7 +1180,7 @@ def equal_numbers_of_glyphs(roman_ttFonts, italic_ttFonts):
             f"{max_italic_font} has {max_italic_count} and \n\t{italic_failed_fonts}",
         )
     else:
-        yield PASS, f"All italics files in this family have an equal total ammount of glyphs."
+        yield PASS, "All italics files in this family have an equal total ammount of glyphs."
 
 
 @check(
@@ -1197,7 +1196,7 @@ def com_typenetwork_check_family_valid_underline(ttFont):
     failedThickness = False
 
     underlineThickness = ttFont["post"].underlineThickness
-    if underlineThickness == None or underlineThickness == 0:
+    if underlineThickness is None or underlineThickness == 0:
         failedThickness = True
 
     if failedThickness:
@@ -1220,7 +1219,7 @@ def com_typenetwork_check_family_valid_strikeout(ttFont):
     failedThickness = False
 
     strikeoutSize = ttFont["OS/2"].yStrikeoutSize
-    if strikeoutSize == None or strikeoutSize == 0:
+    if strikeoutSize is None or strikeoutSize == 0:
         failedThickness = True
 
     if failedThickness:
@@ -1305,7 +1304,7 @@ def com_typenetwork_check_composite_glyphs(ttFont):
     numberOfGlyphs = ttFont["maxp"].numGlyphs
     for glyph_name in ttFont["glyf"].keys():
         glyph = ttFont["glyf"][glyph_name]
-        if glyph_name not in baseGlyphs and glyph.isComposite() == False:
+        if glyph_name not in baseGlyphs and glyph.isComposite() is False:
             failed.append(glyph_name)
 
     percentageOfNotCompositeGlyphs = round(len(failed) * 100 / numberOfGlyphs)
@@ -1324,7 +1323,7 @@ def com_typenetwork_check_composite_glyphs(ttFont):
     id="com.typenetwork/check/PUA_encoded_glyphs",
     rationale="""
         Since it’s not frequent the use of PUA encoded glyphs,
-        we want WARN when a font can be a bad use of it, 
+        we want WARN when a font can be a bad use of it,
         like to encode small caps glyphs.
     """,
 )
@@ -1346,7 +1345,6 @@ def com_typenetwork_PUA_encoded_glyphs(ttFont, config):
 
     pua_encoded_glyphs = []
 
-    cmap = ttFont["cmap"].getBestCmap()
     F8FF_decimal = 63743
 
     for cp, glyphName in ttFont.getBestCmap().items():
@@ -1360,7 +1358,7 @@ def com_typenetwork_PUA_encoded_glyphs(ttFont, config):
             f"{bullet_list(config, pua_encoded_glyphs)}",
         )
     else:
-        yield PASS, (f"No PUA encoded glyphs.")
+        yield PASS, ("No PUA encoded glyphs.")
 
 
 @check(
@@ -1413,7 +1411,7 @@ def com_typenetwork_marks_width(ttFont, config):
         )
 
     if not len(failed_non_spacing_mark_chars) and not len(failed_spacing_mark_chars):
-        yield PASS, (f"Marks have correct widths.")
+        yield PASS, ("Marks have correct widths.")
 
 
 @check(
@@ -1534,7 +1532,6 @@ def com_typenetwork_check_varfont_axis_has_variation(ttFont):
     rationale="""
         If a font doesn’ have STAT table, instances get sorted better on Adobe Apps when fvar axes follows a specific order:
         'opsz', 'wdth', 'wght','ital', 'slnt'.
-        
         We should deprecate this check since STAT is a required table.
         """,
     conditions=["is_variable_font"],
@@ -1542,7 +1539,6 @@ def com_typenetwork_check_varfont_axis_has_variation(ttFont):
 )
 def com_typenetwork_check_varfont_fvar_axes_order(ttFont):
     """Check fvar axes order"""
-    failedAxes = []
     prefferedOrder = ["opsz", "wdth", "wght", "ital", "slnt"]
     fontRegisteredAxes = []
     customAxes = []
@@ -1586,7 +1582,6 @@ def com_typenetwork_check_varfont_fvar_axes_order(ttFont):
 )
 def com_typenetwork_check_family_duplicated_names(ttFonts):
     """Check if font doesn’t have duplicated names within a family"""
-    seen_subfamilyNames = set()
     duplicate_subfamilyNames = set()
     seen_fullNames = set()
     duplicate_fullNames = set()
