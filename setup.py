@@ -125,7 +125,13 @@ setup(
         "fontbakery.profiles",
         "fontbakery.commands",
     ],
-    package_data={"fontbakery": ["data/*.cache", "data/googlefonts/*_exceptions.txt"]},
+    package_data={
+        "fontbakery": [
+            "data/*.cache",
+            "data/*.base64",
+            "data/googlefonts/*_exceptions.txt",
+        ]
+    },
     classifiers=[
         "Environment :: Console",
         "Intended Audience :: Developers",

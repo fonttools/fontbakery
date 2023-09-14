@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="500"
+   height="500"
+   id="svg3179"
+   version="1.1"
+   inkscape:version="1.3-dev (095e1f47c6, 2022-11-07)"
+   sodipodi:docname="fontbakery-logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title3236">Font Bakery Logo</title>
+  <defs
+     id="defs3181" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#dedede"
+     borderopacity="1"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.89871365"
+     inkscape:cx="215.86409"
+     inkscape:cy="202.51167"
+     inkscape:document-units="px"
+     inkscape:current-layer="g4364"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:showpageshadow="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1" />
+  <metadata
+     id="metadata3184">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Font Bakery Logo</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Robert Martinez</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>font build service</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:source>https://github.com/xen/fontbakery</dc:source>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(635.27948,-52.362183)">
+    <g
+       id="g4364">
+      <g
+         id="g1"
+         transform="matrix(1.0252095,0,0,1.0252095,9.9681279,-8.1406931)"
+         style="stroke-width:0.975411">
+        <g
+           id="g4082"
+           transform="matrix(1.6570999,0,0,1.6570999,250.27697,-106.00042)"
+           style="stroke-width:0.588625">
+          <path
+             style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#b3eeff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.588625px;marker:none;enable-background:accumulate"
+             d="m 251.59375,47.21875 c -81.27422,0 -147.15625,65.88203 -147.15625,147.15625 0,81.27422 65.88203,147.15625 147.15625,147.15625 81.27422,0 147.15625,-65.88203 147.15625,-147.15625 0,-81.27422 -65.88203,-147.15625 -147.15625,-147.15625 z"
+             transform="translate(-635.27948,52.362183)"
+             id="path3278" />
+        </g>
+        <g
+           id="g4067"
+           transform="matrix(1.6570999,0,0,1.6570999,250.27697,-106.00042)"
+           style="stroke-width:0.588625">
+          <path
+             sodipodi:nodetypes="cccccccccc"
+             inkscape:connector-curvature="0"
+             id="path3290"
+             transform="translate(-635.27948,52.362183)"
+             d="m 206.89349,137.05441 c -72.73857,-33.75998 -74.49408,71.0107 -10.29974,57.82059 l 5.76713,88.33318 c 33.82742,-2.45226 64.21304,-3.34452 86.21392,-0.82763 l 4.55015,-73.5993 c 0.58262,-9.0357 -12.00001,4.01117 -47.09375,-15.125 27.11798,4.95126 43.83163,3.94126 53.60332,-1.28551 32.28612,10.09481 58.06133,-3.9468 51.14668,-34.12079 -6.09438,-23.26773 -28.8541,-29.53508 -61.0625,-35.09375 -47.44109,-5.43966 -47.52019,37.4132 -82.82521,13.89821 z"
+             style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.588625px;marker:none;enable-background:accumulate" />
+          <g
+             id="g4060"
+             style="stroke-width:0.588625">
+            <path
+               id="text4705"
+               transform="translate(-635.27948,52.362183)"
+               d="m 209.0625,208.96875 -13.5,0.375 2.09375,75.84375 52.65625,-1.46875 -0.34375,-12.375 -39.15625,1.09375 -0.5,-18.21875 35.96875,-1 -0.34375,-12.375 -35.96875,1 z"
+               style="color:#000000;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:109.314px;line-height:100%;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:0px;word-spacing:0px;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.588625px;marker:none;enable-background:accumulate" />
+            <path
+               id="text4709"
+               transform="translate(-635.27948,52.362183)"
+               d="m 300.34375,209.40625 -1.375,32.84375 -35.9375,-1.5 -0.53125,12.375 35.9375,1.5 -0.75,18.1875 -39.15625,-1.65625 -0.5,12.375 52.625,2.21875 3.1875,-75.78125 z"
+               style="color:#000000;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:109.314px;line-height:100%;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:0px;word-spacing:0px;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.588625px;marker:none;enable-background:accumulate" />
+            <path
+               id="text4713"
+               transform="translate(-635.27948,52.362183)"
+               d="m 308.5625,119.46875 -1.46875,12.1875 2.125,0.3125 c 7.20161,1.06907 13.30202,2.87292 18.28125,5.40625 3.93268,2.00099 7.23731,4.48931 9.9375,7.5 2.68463,2.96299 4.59598,6.0889 5.71875,9.375 1.09107,3.2701 1.55812,6.61107 1.375,10.03125 -0.21482,3.40416 -1.10715,6.64291 -2.65625,9.6875 -1.59749,3.13983 -3.77865,5.80728 -6.53125,8 -2.76815,2.14495 -5.86829,3.69376 -9.3125,4.65625 -3.45974,0.91471 -7.30197,1.08609 -11.53125,0.53125 -4.21308,-0.58649 -8.43764,-1.96269 -12.6875,-4.125 -5.20121,-2.64633 -9.95334,-6.20162 -14.21875,-10.6875 l -1.4375,-1.53125 -8.75,7.53125 1.375,1.65625 c 5.38154,6.45113 11.91924,11.64241 19.5625,15.53125 5.93076,3.01752 11.75912,4.83891 17.53125,5.5 5.74049,0.64499 10.98148,0.19856 15.71875,-1.34375 4.75344,-1.57398 9.06365,-3.99746 12.90625,-7.3125 3.8109,-3.33112 6.92227,-7.42928 9.375,-12.25 2.485,-4.88407 3.92682,-9.86357 4.3125,-14.9375 0.38567,-5.07382 -0.23655,-9.96517 -1.90625,-14.6875 -1.66971,-4.72219 -4.50339,-9.20809 -8.5,-13.4375 -3.99661,-4.22924 -8.97506,-7.84127 -14.9375,-10.875 -7.10414,-3.61445 -14.50672,-5.79322 -22.15625,-6.53125 z"
+               style="color:#000000;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:109.314px;line-height:100%;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:0px;word-spacing:0px;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.588625px;marker:none;enable-background:accumulate" />
+            <path
+               id="text4717"
+               transform="translate(-635.27948,52.362183)"
+               d="m 182.375,124.65625 c -1.89726,0.0414 -3.72179,0.21107 -5.53125,0.46875 -4.81984,0.65213 -9.07032,1.92842 -12.71875,3.84375 -3.60786,1.88579 -6.83082,4.25281 -9.65625,7.125 -2.79032,2.87779 -5.02124,6.10362 -6.6875,9.625 -1.6663,3.52148 -2.78597,7.24592 -3.40625,11.21875 -0.59287,3.79711 -0.70029,7.60004 -0.28125,11.375 0.4245,3.73985 1.46667,7.44466 3.125,11.125 1.69345,3.68586 3.94033,7.0355 6.75,10.03125 2.8151,2.9606 6.48966,5.55964 11,7.8125 4.55091,2.22319 9.70277,3.78724 15.46875,4.6875 13.53581,2.11339 24.57535,-0.25307 33.09375,-7.0625 l 4.8125,-30.84375 -36.5,-5.6875 -1.8125,11.71875 23.46875,3.65625 -2.25,14.375 c -4.56918,2.27587 -10.09347,2.91629 -16.5625,1.90625 -5.90661,-0.92221 -11.07377,-2.88381 -15.46875,-5.875 -4.35442,-3.02084 -7.52728,-6.75445 -9.5625,-11.25 -2.03528,-4.49551 -2.67099,-9.3083 -1.875,-14.40625 0.6038,-3.86735 1.97142,-7.29917 4.09375,-10.28125 2.1629,-3.01166 4.77593,-5.34439 7.8125,-7.03125 3.07165,-1.68126 6.4319,-2.82067 10.09375,-3.4375 3.66175,-0.61672 7.33568,-0.64432 11.0625,-0.0625 3.79701,0.5929 7.5222,1.67436 11.125,3.28125 3.60814,1.57184 6.54506,3.18836 8.84375,4.84375 l 1.75,1.3125 7.15625,-9.59375 -1.65625,-1.34375 c -7.25416,-5.67045 -15.86283,-9.25895 -25.8125,-10.8125 -3.40598,-0.53174 -6.7129,-0.78777 -9.875,-0.71875 z"
+               style="color:#000000;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:109.314px;line-height:100%;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:0px;word-spacing:0px;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.588625px;marker:none;enable-background:accumulate" />
+            <path
+               id="text4721"
+               transform="translate(-635.27948,52.362183)"
+               d="m 279.625,116.25 c -1.81475,-0.005 -3.69369,0.21106 -5.65625,0.6875 -2.01059,0.46173 -3.76831,1.01541 -5.28125,1.65625 -1.52952,0.60947 -3.14595,1.38132 -4.84375,2.28125 l -42.90625,22.75 6.28125,11.875 42.8125,-22.6875 c 0.78604,-0.41663 1.52541,-0.76079 2.1875,-1.03125 0.6455,-0.30186 1.54794,-0.60777 2.71875,-0.90625 1.12277,-0.31321 2.18488,-0.49205 3.1875,-0.5 0.98602,-0.0394 2.15515,0.11798 3.46875,0.46875 1.297,0.31937 2.50686,0.87253 3.6875,1.65625 1.13259,0.76899 2.37884,1.89392 3.6875,3.375 1.2606,1.46634 2.43131,3.23748 3.53125,5.3125 1.14997,2.16936 2.01541,4.36305 2.59375,6.59375 l 0.5625,2.25 11.53125,-3.5625 -0.46875,-2.0625 c -0.86393,-3.52919 -2.18548,-6.97966 -3.96875,-10.34375 -1.73326,-3.26973 -3.59662,-6.06526 -5.5625,-8.40625 -1.98252,-2.37238 -3.88826,-4.22246 -5.75,-5.53125 -1.87837,-1.34017 -3.86873,-2.31886 -5.96875,-2.9375 -2.09997,-0.61858 -4.06038,-0.91621 -5.84375,-0.9375 z"
+               style="color:#000000;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:109.314px;line-height:100%;font-family:Cantarell;-inkscape-font-specification:'Cantarell Bold';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:0px;word-spacing:0px;text-transform:none;writing-mode:lr-tb;direction:ltr;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#333333;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.588625px;marker:none;enable-background:accumulate" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
