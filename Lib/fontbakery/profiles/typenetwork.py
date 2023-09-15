@@ -1533,7 +1533,7 @@ def com_typenetwork_check_name_mandatory_entries(ttFont, style):
     conditions=["is_variable_font"],
     proposal=[
         "https://github.com/fonttools/fontbakery/pull/4260",
-        #    "https://github.com/TypeNetwork/fontQA/issues/61", # This is currently private.
+        # "https://github.com/TypeNetwork/fontQA/issues/61", # Currently private repo.
     ],
 )
 def com_typenetwork_check_varfont_axes_have_variation(ttFont):
@@ -1571,7 +1571,7 @@ def com_typenetwork_check_varfont_axes_have_variation(ttFont):
     conditions=["is_variable_font"],
     proposal=[
         "https://github.com/fonttools/fontbakery/pull/4260",
-        #    "https://github.com/TypeNetwork/fontQA/issues/25", # This is currently private.
+        # "https://github.com/TypeNetwork/fontQA/issues/25", # Currently private repo.
     ],
 )
 def com_typenetwork_check_varfont_fvar_axes_order(ttFont):
@@ -1620,7 +1620,7 @@ def com_typenetwork_check_varfont_fvar_axes_order(ttFont):
         """,
     proposal=[
         "https://github.com/fonttools/fontbakery/pull/4260",
-        #    "https://github.com/TypeNetwork/fontQA/issues/25", # This is currently private.
+        # "https://github.com/TypeNetwork/fontQA/issues/25", # Currently private repo.
     ],
 )
 def com_typenetwork_check_family_duplicated_names(ttFonts):
@@ -1669,10 +1669,12 @@ def com_typenetwork_check_family_duplicated_names(ttFonts):
                 seen_postscriptNames.add(postscriptName)
 
     # if duplicate_subfamilyNames:
-    #     duplicate_subfamilyNamesString = "".join(f"* {inst}\n" for inst in sorted(duplicate_subfamilyNames))
+    #     duplicate_subfamilyNamesString = \
+    #         "".join(f"* {inst}\n" for inst in sorted(duplicate_subfamilyNames))
     #     yield FAIL, Message(
     #         "duplicate-subfamily-names",
-    #         "Following subfamily names are duplicate:\n\n" f"{duplicate_subfamilyNamesString}",
+    #         "Following subfamily names are duplicate:\n\n"
+    #         f"{duplicate_subfamilyNamesString}",
     #     )
 
     if duplicate_fullNames:
