@@ -5,6 +5,28 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 1.0.0a1 (2023-Sep-??)
 ### Noteworthy code-changes
   - Guido Ferreyra from Type Network contributed improvements to the HTML Reporter which now displays vendor-specific branding (like logo and custom header text - whenever provided). This also includes improvements on the layout of the HTML page with the goal of improving readability of the reports. (PRs #4260 and #4263)
+  - This version also introduces a new `Type Network` vendor-specific profile. (PR #4260)
+
+### New Checks
+#### Added to the TypeNetwork Profile
+  A large portion of these 16 checks below are derived from existing checks from other profiles, but adapted to the specific needs of Type Network. For that reason, we may in the future embrace some of those different criteria, perhaps on the `Universal` profile. But that will require us to look more closely and try to reach consensus of each of them, whenever appropriate.
+
+  - **[com.typenetwork/check/glyph_coverage]:** Type Network expects that fonts in its catalog support at least the minimal set of characters. (PR #4260)
+  - **[com.typenetwork/check/vertical_metrics]:** OS/2 and hhea vertical metric values should match. This will produce the same linespacing on Mac, GNU+Linux and Windows. (PR #4260)
+  - **[com.typenetwork/check/font_is_centered_vertically]:** Similar to the one on the `Universal` profile, but with a different implementation. (PR #4260)
+  - **[com.typenetwork/check/family/tnum_horizontal_metrics]:** Tabular figures need to have the same metrics in all styles in order to allow tables to be set with proper typographic control, but to maintain the placement of decimals and numeric columns between rows. (PR #4260)
+  - **[com.typenetwork/check/family/equal_numbers_of_glyphs]:** Check if all fonts in a family have the same number of glyphs. (PR #4260)
+  - **[com.typenetwork/check/usweightclass]:**  (PR #4260)
+  - **[com.typenetwork/check/family/valid_underline]:** If underline thickness is not set nothing gets rendered on Figma. (PR #4260)
+  - **[com.typenetwork/check/family/valid_strikeout]:** If strikeout size is not set, nothing gets rendered on Figma. (PR #4260)
+  - **[com.typenetwork/check/fstype]:** Type Network's EULA is more accurately represented by setting fstype to 4, also known as 'Print & Preview'. This setting indicates that the fonts may be embedded, and temporarily loaded on the remote system, but documents that use it must not be editable. (PR #4260)
+  - **[com.typenetwork/check/composite_glyphs]:** For performance reasons, is desirable that TTF fonts use composites glyphs. (PR #4260)
+  - **[com.typenetwork/check/PUA_encoded_glyphs]:** Since the use of PUA encoded glyphs is not frequent, we want to WARN when a font can be a bad use of it, like to encode small caps glyphs. (PR #4260)
+  - **[com.typenetwork/check/marks_width]:** To avoid incorrect overlappings when typing, glyphs that are spacing marks must have width, on the other hand, combining marks should be 0 width. (PR #4260)
+  - **[com.typenetwork/check/name/mandatory_entries]:** For proper functioning, fonts must have some specific records. Other name records are optional but desireable to be present. (PR #4260)
+  - **[com.typenetwork/check/varfont/axes_have_variation]:** Axes on a variable font must have variation. In other words min and max values need to be different. It’s common to find fonts with unnecesary axes added like `ital`. (PR #4260)
+  - **[com.typenetwork/check/varfont/fvar_axes_order]:** If a font doesn’t have a STAT table, instances get sorted better on Adobe Apps when fvar axes follow a specific order: 'opsz', 'wdth', 'wght','ital', 'slnt'. **Note:** We should deprecate this check since STAT is a required table. (PR #4260)
+  - **[com.typenetwork/check/family/duplicated_names]:** Check if font doesn’t have duplicated names within a family. Having duplicated name records can produce several issues like not all fonts being listed on design apps or incorrect automatic creation of CSS classes and @font-face rules. (PR #4260)
 
 
 ## 0.9.0 (2023-Sep-12)
