@@ -23,7 +23,7 @@ EMOTICON = {
 }
 ISSUE_URL = "https://github.com/fonttools/fontbakery/issues"
 LOGO_SVG = ""  # this will be set later, after inferrence of vendor-specific profile
-BODY_TOP = ""  # This will be a piece of header text
+BODY_TOP = []  # This will be a piece of header content
 HTML_STYLES = """
 html {
     font-family: -apple-system, sans-serif;
