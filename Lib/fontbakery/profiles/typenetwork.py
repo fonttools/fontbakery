@@ -52,7 +52,7 @@ SET_EXPLICIT_CHECKS = {
     "com.typenetwork/check/PUA_encoded_glyphs",
     "com.typenetwork/check/marks_width",
     "com.typenetwork/check/name/mandatory_entries",
-    "com.typenetwork/check/varfont/axes_has_variation",
+    "com.typenetwork/check/varfont/axes_have_variation",
     "com.typenetwork/check/varfont/fvar_axes_order",
     "com.typenetwork/check/family/duplicated_names",
     #
@@ -303,7 +303,7 @@ CHECKS_IN_THIS_FILE = [
     "com.typenetwork/check/PUA_encoded_glyphs",
     "com.typenetwork/check/marks_width",
     "com.typenetwork/check/name/mandatory_entries",
-    "com.typenetwork/check/varfont/axes_has_variation",
+    "com.typenetwork/check/varfont/axes_have_variation",
     "com.typenetwork/check/varfont/fvar_axes_order",
     "com.typenetwork/check/family/duplicated_names",
 ]
