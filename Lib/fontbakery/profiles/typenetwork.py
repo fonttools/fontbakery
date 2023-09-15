@@ -59,7 +59,8 @@ SET_EXPLICIT_CHECKS = {
     # =======================================
     # From adobefonts.py
     "com.adobe.fonts/check/family/consistent_upm",
-    # 'com.adobe.fonts/check/find_empty_letters', # Teporary disabled, the check is broken
+    # 'com.adobe.fonts/check/find_empty_letters', # Temporarily disabled,
+    #                                             # the check is broken
     "com.adobe.fonts/check/nameid_1_win_english",
     "com.adobe.fonts/check/unsupported_tables",
     "com.adobe.fonts/check/STAT_strings",
@@ -146,7 +147,8 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/mandatory_avar_table",
     "com.google.fonts/check/missing_small_caps_glyphs",
     "com.google.fonts/check/stylisticset_description",
-    # 'com.google.fonts/check/os2/use_typo_metrics', # Removed in favor of new vmetrics check
+    # 'com.google.fonts/check/os2/use_typo_metrics', # Removed in favor of
+    #                                                # new vmetrics check
     #
     # =======================================
     # From gpos.py
@@ -251,7 +253,8 @@ SET_EXPLICIT_CHECKS = {
     # From universal.py
     "com.google.fonts/check/name/trailing_spaces",
     "com.google.fonts/check/family/win_ascent_and_descent",
-    # 'com.google.fonts/check/os2_metrics_match_hhea', # Removed in favor of new vmetrics check
+    # 'com.google.fonts/check/os2_metrics_match_hhea', # Removed in favor of
+    #                                                  # new vmetrics check
     "com.google.fonts/check/family/single_directory",
     # 'com.google.fonts/check/caps_vertically_centered', # REVIEW
     "com.google.fonts/check/ots",  # OVERRIDEN
@@ -343,9 +346,11 @@ OVERRIDDEN_CHECKS = [
 @check(
     id="com.typenetwork/check/glyph_coverage",
     rationale="""
-        Type Network expects that fonts in its catalog support at least the minimal set of characters.
+        Type Network expects that fonts in its catalog support at least the minimal
+        set of characters.
     """,
     conditions=["font_codepoints"],
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def com_typenetwork_glyph_coverage(ttFont, font_codepoints, config):
     """Check Type Network minimum glyph coverage."""
@@ -761,6 +766,7 @@ def com_typenetwork_glyph_coverage(ttFont, font_codepoints, config):
         When OS/2 and hhea vertical metrics match, the same linespacing results on
         macOS, GNU+Linux and Windows.
     """,
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def com_typenetwork_check_vertical_metrics(ttFont):
     """Checking vertical metrics."""
@@ -817,8 +823,9 @@ def com_typenetwork_check_vertical_metrics(ttFont):
         yield WARN, Message(
             "metrics-recommendation",
             "OS/2 fsSelection USE_TYPO_METRICS is not enabled.\n\n"
-            "Type Networks recommends to enable it and follow the vertical metrics scheme where basically"
-            " hhea matches typo metrics. Read in more detail about it in our vertical metrics guide.",
+            "Type Networks recommends to enable it and follow the vertical metrics"
+            " scheme where basically hhea matches typo metrics. Read in more detail"
+            " about it in our vertical metrics guide.",
         )
 
         if hheaAscent_equals_typoAscent and hheaDescent_equals_winDescent:
@@ -841,7 +848,8 @@ def com_typenetwork_check_vertical_metrics(ttFont):
         elif typoMetricsSum != hheaMetricsSum:
             yield FAIL, Message(
                 "typo-and-hhea-sum",
-                f"OS/2 typo metrics sum ({typoMetricsSum}) must be equal to win metrics sum ({hheaMetricsSum})",
+                f"OS/2 typo metrics sum ({typoMetricsSum}) must be"
+                f" equal to win metrics sum ({hheaMetricsSum})",
             )
         else:
             yield PASS, "hhea and Win metrics are equal and useTypoMetrics is disabled."
@@ -850,7 +858,9 @@ def com_typenetwork_check_vertical_metrics(ttFont):
 @check(
     id="com.typenetwork/check/font_is_centered_vertically",
     rationale="""
+        FIXME! This check still does not have rationale documentation.
     """,
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def com_typenetwork_check_font_is_centered_vertically(ttFont):
     """Checking if font is vertically centered."""
@@ -874,18 +884,21 @@ def com_typenetwork_check_font_is_centered_vertically(ttFont):
     if threshold1 >= ratio > threshold2:
         yield WARN, Message(
             "uncentered",
-            "The font will be displayed a bit vertically uncentered on web environments.",
+            "The font will be displayed a bit vertically uncentered on"
+            " web environments.",
         )
         yield WARN, Message(
             "uncentered",
-            "The font will be displayed a bit vertically uncentered on web environments."
-            f" Top space above cap height is {ascent} and under baseline is {descent} ",
+            f"The font will be displayed a bit vertically uncentered on"
+            f" web environments. Top space above cap height is {ascent}"
+            f" and under baseline is {descent}",
         )
     elif ratio >= threshold2:
         yield FAIL, Message(
             "very-uncentered",
-            f"The font will be displayed really vertically uncentered on web environments."
-            f" Top space above cap height is {ascent} and under baseline is {descent} ",
+            f"The font will be displayed really vertically uncentered on"
+            f" web environments. Top space above cap height is {ascent}"
+            f" and under baseline is {descent}",
         )
     else:
         yield PASS, Message(
@@ -965,6 +978,7 @@ def tn_expected_os2_weight(stylename):
         Glyphsapp users can change the usWeightClass value of an instance by adding
         a 'weightClass' customParameter.
     """,
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def com_typenetwork_check_usweightclass(ttFont, tn_expected_os2_weight):
     """Checking OS/2 usWeightClass."""
@@ -1034,8 +1048,11 @@ def com_typenetwork_check_usweightclass(ttFont, tn_expected_os2_weight):
 @check(
     id="com.typenetwork/check/family/tnum_horizontal_metrics",
     rationale="""
-        Tabular figures need to have the same metrics in all styles in order to allow tables to be set with proper typographic control, but to maintain the placement of decimals and numeric columns between rows.
+        Tabular figures need to have the same metrics in all styles in order to allow
+        tables to be set with proper typographic control, but to maintain the placement
+        of decimals and numeric columns between rows.
     """,
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def com_typenetwork_check_family_tnum_horizontal_metrics(ttFonts, config):
     """All tabular figures must have the same width across the family."""
@@ -1081,8 +1098,9 @@ def com_typenetwork_check_family_tnum_horizontal_metrics(ttFonts, config):
     if half_width:
         yield INFO, Message(
             "half-widths",
-            f"The are other glyphs with half of the width ({half_width}) of the most common width"
-            f" such as the following ones:\n\n{bullet_list(config, half_width_glyphs)}.",
+            f"The are other glyphs with half of the width ({half_width}) of the"
+            f" most common width such as the following ones:\n\n"
+            f"{bullet_list(config, half_width_glyphs)}.",
         )
 
     if len(tnum_widths.keys()):
@@ -1092,9 +1110,8 @@ def com_typenetwork_check_family_tnum_horizontal_metrics(ttFonts, config):
             tnumWidthsString += f"{width}: {pretty_print_list(config, glyphs)}\n\n"
         yield WARN, Message(
             "inconsistent-widths",
-            f"The most common tabular glyph width is"
-            f" {most_common_width}. But there are other"
-            f" tabular glyphs with different widths"
+            f"The most common tabular glyph width is {most_common_width}."
+            f" But there are other tabular glyphs with different widths"
             f" such as the following ones:\n\n{tnumWidthsString}.",
         )
     else:
@@ -1122,9 +1139,10 @@ def italic_ttFonts(ttFonts):
 @check(
     id="com.typenetwork/check/family/equal_numbers_of_glyphs",
     rationale="""
-        Check if fonts has the same number of glyphs.
+        Check if all fonts in a family have the same number of glyphs.
     """,
     conditions=["roman_ttFonts", "italic_ttFonts"],
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def equal_numbers_of_glyphs(roman_ttFonts, italic_ttFonts):
     """Equal number of glyphs"""
@@ -1171,7 +1189,9 @@ def equal_numbers_of_glyphs(roman_ttFonts, italic_ttFonts):
             f"{max_roman_font} has {max_roman_count} and \n\t{roman_failed_fonts}",
         )
     else:
-        yield PASS, "All roman files in this family have an equal total ammount of glyphs."
+        yield PASS, (
+            "All roman files in this family have an equal total ammount of glyphs."
+        )
 
     if len(italic_failed_fonts) > 0:
         yield WARN, Message(
@@ -1180,14 +1200,17 @@ def equal_numbers_of_glyphs(roman_ttFonts, italic_ttFonts):
             f"{max_italic_font} has {max_italic_count} and \n\t{italic_failed_fonts}",
         )
     else:
-        yield PASS, "All italics files in this family have an equal total ammount of glyphs."
+        yield PASS, (
+            "All italics files in this family have an equal total ammount of glyphs."
+        )
 
 
 @check(
     id="com.typenetwork/check/family/valid_underline",
     rationale="""
-        If underline thickness is not set nothing gets rendered on Figma
+        If underline thickness is not set nothing gets rendered on Figma.
     """,
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
     misc_metadata={"affects": [("Figma", "unspecified")]},
 )
 def com_typenetwork_check_family_valid_underline(ttFont):
@@ -1209,8 +1232,9 @@ def com_typenetwork_check_family_valid_underline(ttFont):
 @check(
     id="com.typenetwork/check/family/valid_strikeout",
     rationale="""
-        If strikeout size is not set, nothing gets rendered on Figma
+        If strikeout size is not set, nothing gets rendered on Figma.
     """,
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
     misc_metadata={"affects": [("Figma", "unspecified")]},
 )
 def com_typenetwork_check_family_valid_strikeout(ttFont):
@@ -1232,14 +1256,17 @@ def com_typenetwork_check_family_valid_strikeout(ttFont):
 @check(
     id="com.typenetwork/check/fstype",
     rationale="""
-        The fsType in the OS/2 table is a legacy DRM-related field. Fonts in the
-        Google Fonts collection must have it set to zero (also known as
-        "Installable Embedding"). This setting indicates that the fonts can be
-        embedded in documents and permanently installed by applications on
-        remote systems.
+        The fsType in the OS/2 table is a legacy DRM-related field.
+        Type Network's EULA is more accurately represented by setting it to 4,
+        also known as 'Print & Preview'.
+
+        This setting indicates that the fonts may be embedded, and temporarily loaded
+        on the remote system, but documents that use it must not be editable.
+
         More detailed info is available at:
         https://docs.microsoft.com/en-us/typography/opentype/spec/os2#fstype
     """,
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def com_typenetwork_check_fstype(ttFont):
     """Checking OS/2 fsType does not impose restrictions."""
@@ -1273,7 +1300,7 @@ def com_typenetwork_check_fstype(ttFont):
 
     if value & 0b1111110011110001:
         restrictions += (
-            "* There are reserved bits set," " which indicates an invalid setting."
+            "* There are reserved bits set, which indicates an invalid setting."
         )
 
     if value != 0x0004:
@@ -1281,23 +1308,24 @@ def com_typenetwork_check_fstype(ttFont):
             "no-preview-print",
             f"In this font fsType is set to {value} meaning that:\n"
             f"{restrictions}\n"
-            f"\n"
-            f" TN advises setting the fsType to bit 4, Print & Preview, which slightly more restrictive."
-            f" This setting will match TN’s EULA.",
+            "\n"
+            "TN advises setting the fsType to bit 4, Print & Preview, which"
+            "matches TN’s EULA.",
         )
     else:
-        yield PASS, "OS/2 fsType is properly set to Preview and Print."
+        yield PASS, "OS/2 fsType is properly set to 'Print & Preview'."
 
 
 @check(
     id="com.typenetwork/check/composite_glyphs",
     rationale="""
-        For performance reasons, is desirable that ttf fonts uses composites glyphs.
+        For performance reasons, is desirable that TTF fonts use composites glyphs.
     """,
     conditions=["is_ttf"],
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def com_typenetwork_check_composite_glyphs(ttFont):
-    """Check if ttf font uses composite glyphs."""
+    """Check if TTF font uses composite glyphs."""
     baseGlyphs = [*string.printable]
     failed = []
 
@@ -1311,7 +1339,7 @@ def com_typenetwork_check_composite_glyphs(ttFont):
     if percentageOfNotCompositeGlyphs > 50:
         yield WARN, Message(
             "low-composites",
-            f"{percentageOfNotCompositeGlyphs}% " f"of the glyphs are not composites.",
+            f"{percentageOfNotCompositeGlyphs}% of the glyphs are not composites.",
         )
     else:
         yield PASS, (
@@ -1322,10 +1350,10 @@ def com_typenetwork_check_composite_glyphs(ttFont):
 @check(
     id="com.typenetwork/check/PUA_encoded_glyphs",
     rationale="""
-        Since it’s not frequent the use of PUA encoded glyphs,
-        we want WARN when a font can be a bad use of it,
-        like to encode small caps glyphs.
+        Since the use of PUA encoded glyphs is not frequent, we want to WARN when
+        a font can be a bad use of it, like to encode small caps glyphs.
     """,
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def com_typenetwork_PUA_encoded_glyphs(ttFont, config):
     """Check if font has PUA encoded glyphs."""
@@ -1345,11 +1373,9 @@ def com_typenetwork_PUA_encoded_glyphs(ttFont, config):
 
     pua_encoded_glyphs = []
 
-    F8FF_decimal = 63743
-
     for cp, glyphName in ttFont.getBestCmap().items():
-        if in_PUA_range(cp) and cp != F8FF_decimal:
-            pua_encoded_glyphs.append(f"{glyphName} " + f"U+{cp:02x}".upper())
+        if in_PUA_range(cp) and cp != 0xF8FF:
+            pua_encoded_glyphs.append(glyphName + f" U+{cp:02x}".upper())
 
     if pua_encoded_glyphs:
         yield WARN, Message(
@@ -1358,15 +1384,16 @@ def com_typenetwork_PUA_encoded_glyphs(ttFont, config):
             f"{bullet_list(config, pua_encoded_glyphs)}",
         )
     else:
-        yield PASS, ("No PUA encoded glyphs.")
+        yield PASS, "No PUA encoded glyphs."
 
 
 @check(
     id="com.typenetwork/check/marks_width",
     rationale="""
-        To avoid incorrect overlappings when typing, glyphs that are spacing marks must have width,
-        on the other hand, combining marks should be 0 width.
+        To avoid incorrect overlappings when typing, glyphs that are spacing marks
+        must have width, on the other hand, combining marks should be 0 width.
     """,
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def com_typenetwork_marks_width(ttFont, config):
     """Check if marks glyphs have the correct width."""
@@ -1411,7 +1438,7 @@ def com_typenetwork_marks_width(ttFont, config):
         )
 
     if not len(failed_non_spacing_mark_chars) and not len(failed_spacing_mark_chars):
-        yield PASS, ("Marks have correct widths.")
+        yield PASS, "Marks have correct widths."
 
 
 @check(
@@ -1421,6 +1448,7 @@ def com_typenetwork_marks_width(ttFont, config):
         For proper functioning, fonts must have some specific records.
         Other name records are optional but desireable to be present.
     """,
+    proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
 def com_typenetwork_check_name_mandatory_entries(ttFont, style):
     """Font has all mandatory 'name' table entries?"""
@@ -1478,7 +1506,7 @@ def com_typenetwork_check_name_mandatory_entries(ttFont, style):
             passed = False
             yield INFO, Message(
                 "missing-optional-entry",
-                f"Font lacks entry with nameId={nameId}" f" ({NameID(nameId).name})",
+                f"Font lacks entry with nameId={nameId} ({NameID(nameId).name})",
             )
 
     # The font should NOT have these name IDs:
@@ -1496,16 +1524,20 @@ def com_typenetwork_check_name_mandatory_entries(ttFont, style):
 
 
 @check(
-    id="com.typenetwork/check/varfont/axes_has_variation",
+    id="com.typenetwork/check/varfont/axes_have_variation",
     rationale="""
-        Axes on a variable font must have variation. In other words min and max values needs to be different.
-        It’s common to find fonts with unnecesary axes added like `ital`
+        Axes on a variable font must have variation. In other words min and max values
+        need to be different. It’s common to find fonts with unnecesary axes
+        added like `ital`.
         """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/TypeNetwork/fontQA/issues/61",
+    proposal=[
+        "https://github.com/fonttools/fontbakery/pull/4260",
+    #    "https://github.com/TypeNetwork/fontQA/issues/61", # This is currently private.
+    ],
 )
-def com_typenetwork_check_varfont_axis_has_variation(ttFont):
-    """Check if font axes has variation"""
+def com_typenetwork_check_varfont_axes_have_variation(ttFont):
+    """Check if font axes have variation"""
     failedAxes = []
     for axis in ttFont["fvar"].axes:
         if axis.minValue == axis.maxValue:
@@ -1521,7 +1553,8 @@ def com_typenetwork_check_varfont_axis_has_variation(ttFont):
         for failedAxis in failedAxes:
             yield FAIL, Message(
                 "axis-has-no-variation",
-                f"'{failedAxis['tag']}' axis has no variation its min and max values are {failedAxis['minValue'], failedAxis['maxValue']}",
+                f"'{failedAxis['tag']}' axis has no variation its min and max values"
+                f" are {failedAxis['minValue'], failedAxis['maxValue']}",
             )
     else:
         yield PASS, "All font axes has variation."
@@ -1530,12 +1563,16 @@ def com_typenetwork_check_varfont_axis_has_variation(ttFont):
 @check(
     id="com.typenetwork/check/varfont/fvar_axes_order",
     rationale="""
-        If a font doesn’ have STAT table, instances get sorted better on Adobe Apps when fvar axes follows a specific order:
-        'opsz', 'wdth', 'wght','ital', 'slnt'.
+        If a font doesn’t have a STAT table, instances get sorted better on Adobe Apps
+        when fvar axes follow a specific order: 'opsz', 'wdth', 'wght','ital', 'slnt'.
+
         We should deprecate this check since STAT is a required table.
         """,
     conditions=["is_variable_font"],
-    proposal="https://github.com/TypeNetwork/fontQA/issues/25",
+    proposal=[
+        "https://github.com/fonttools/fontbakery/pull/4260",
+    #    "https://github.com/TypeNetwork/fontQA/issues/25", # This is currently private.
+    ],
 )
 def com_typenetwork_check_varfont_fvar_axes_order(ttFont):
     """Check fvar axes order"""
@@ -1544,7 +1581,7 @@ def com_typenetwork_check_varfont_fvar_axes_order(ttFont):
     customAxes = []
 
     if "STAT" in ttFont.keys():
-        yield SKIP, "The font has STAT table, this will control instances order.."
+        yield SKIP, "The font has a STAT table. This will control instances order."
     else:
         for index, axis in enumerate(ttFont["fvar"].axes):
             if axis.axisTag in prefferedOrder:
@@ -1557,31 +1594,37 @@ def com_typenetwork_check_varfont_fvar_axes_order(ttFont):
         if filtered != fontRegisteredAxes:
             yield FAIL, Message(
                 "axes-incorrect-order",
-                f"Font’s registered axes are not in correct order to get a good instances sorting on Adobe apps.\n\n"
-                f"Current order is {fontRegisteredAxes} it should be {filtered}",
+                "Font’s registered axes are not in a correct order to get good"
+                "instances sorting on Adobe apps.\n\n"
+                f"Current order is {fontRegisteredAxes}, but it should be {filtered}",
             )
         else:
-            yield PASS, "Font’s axes follows the preferred sorting."
+            yield PASS, "Font’s axes follow the preferred sorting."
 
         if len(customAxes):
             yield INFO, Message(
                 "custom-axes",
-                f"The font has custom axes with the indicated order:\n\n"
+                "The font has custom axes with the indicated order:\n\n"
                 f"{customAxes}\n\n"
-                f"it’s order can depend on the kind of variation and the subfamily groups that may create.",
+                "Its order can depend on the kind of variation and the subfamily"
+                "groups that may create.",
             )
 
 
 @check(
     id="com.typenetwork/check/family/duplicated_names",
     rationale="""
-        Having duplicated name records can produce several issues like not all fonts being listed on design apps
-        or incorrect automatic creation of CSS clases and @font-face rules.
+        Having duplicated name records can produce several issues like not all fonts
+        being listed on design apps or incorrect automatic creation of CSS classes
+        and @font-face rules.
         """,
-    proposal="https://github.com/TypeNetwork/fontQA/issues/25",
+    proposal=[
+        "https://github.com/fonttools/fontbakery/pull/4260",
+    #    "https://github.com/TypeNetwork/fontQA/issues/25", # This is currently private.
+    ],
 )
 def com_typenetwork_check_family_duplicated_names(ttFonts):
-    """Check if font doesn’t have duplicated names within a family"""
+    """Check if font doesn’t have duplicated names within a family."""
     duplicate_subfamilyNames = set()
     seen_fullNames = set()
     duplicate_fullNames = set()
@@ -1711,7 +1754,7 @@ profile.check_log_override(
         ("wght-not-700", WARN, KEEP_ORIGINAL_MESSAGE),
     ),
     reason=(
-        "Adobe and Type Network recommends, but does not require having a Bold instance,"
+        "Adobe and Type Network recommend, but do not require having a Bold instance,"
         " and that instance should have coordinate 700 on the 'wght' axis."
     ),
 )
@@ -1722,7 +1765,8 @@ profile.check_log_override(
     "com.google.fonts/check/varfont/regular_ital_coord",
     overrides=(("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "Adobe and Type Network recommends, but does not require having a Regular instance."
+        "Adobe and Type Network recommend, but do not require"
+        " having a Regular instance."
     ),
 )
 
@@ -1732,7 +1776,8 @@ profile.check_log_override(
     "com.google.fonts/check/varfont/regular_opsz_coord",
     overrides=(("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "Adobe and Type Network recommends, but does not require having a Regular instance."
+        "Adobe and Type Network recommend, but do not require"
+        " having a Regular instance."
     ),
 )
 
@@ -1742,7 +1787,8 @@ profile.check_log_override(
     "com.google.fonts/check/varfont/regular_slnt_coord",
     overrides=(("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "Adobe and Type Network recommends, but does not require having a Regular instance."
+        "Adobe and Type Network recommend, but do not require"
+        " having a Regular instance."
     ),
 )
 
@@ -1752,7 +1798,8 @@ profile.check_log_override(
     "com.google.fonts/check/varfont/regular_wdth_coord",
     overrides=(("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "Adobe and Type Network recommends, but does not require having a Regular instance."
+        "Adobe and Type Network recommend, but do not require"
+        " having a Regular instance."
     ),
 )
 
@@ -1762,7 +1809,8 @@ profile.check_log_override(
     "com.google.fonts/check/varfont/regular_wght_coord",
     overrides=(("no-regular-instance", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "Adobe and Type Network recommends, but does not require having a Regular instance."
+        "Adobe and Type Network recommend, but do not require"
+        " having a Regular instance."
     ),
 )
 
@@ -1771,7 +1819,7 @@ profile.check_log_override(
     "com.google.fonts/check/gdef_non_mark_chars",
     overrides=(("non-mark-chars", FAIL, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "When non marks characters are on the GDEF Mark class, will produce a overlap"
+        "When non mark characters are on the GDEF Mark class, will produce an overlap."
     ),
 )
 
@@ -1780,7 +1828,8 @@ profile.check_log_override(
     "com.google.fonts/check/math_signs_width",
     overrides=(("width-outliers", INFO, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "It really depends on the design and the intended use to make math symbols the same width"
+        "It really depends on the design and the intended use"
+        " to make math symbols the same width."
     ),
 )
 
@@ -1796,7 +1845,9 @@ profile.check_log_override(
     "com.google.fonts/check/soft_dotted",
     overrides=(("soft-dotted", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "This is something rather new and really unknown for many partners, it will make a lot of fonts to fail and in many cases it will much more headaches than benefits."
+        "This is something rather new and really unknown for many partners."
+        " It will fail on a lot of fonts and in many cases it will cause"
+        " much more headaches than benefits."
     ),
 )
 
@@ -1804,7 +1855,7 @@ profile.check_log_override(
     # From googlefonts.py
     "com.google.fonts/check/smart_dropout",
     overrides=(("lacks-smart-dropout", WARN, KEEP_ORIGINAL_MESSAGE),),
-    reason=("It’s up to foundries to do it or not."),
+    reason=("It’s up to foundries to decide."),
 )
 
 profile.check_log_override(
@@ -1812,7 +1863,8 @@ profile.check_log_override(
     "com.google.fonts/check/name/match_familyname_fullfont",
     overrides=(("mismatch-font-names", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "It’s Office specific and not possible to achieve on some families with abbreviated names."
+        "It’s Microsoft Office specific and not possible to achieve"
+        " on some families with abbreviated names."
     ),
 )
 
@@ -1821,7 +1873,8 @@ profile.check_log_override(
     "com.google.fonts/check/transformed_components",
     overrides=(("transformed-components", WARN, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "Since it can have a big impact on font production, it’s foundry decision what to do regardin this situation."
+        "Since it can have a big impact on font production, it’s a foundry decision"
+        " what to do regarding this situation."
     ),
 )
 
@@ -1830,7 +1883,8 @@ profile.check_log_override(
     "com.google.fonts/check/ots",
     overrides=(("ots-sanitize-warn", FAIL, KEEP_ORIGINAL_MESSAGE),),
     reason=(
-        "This issues can be a major fail, for instance a bad avar on vfs will make the font to not interpolate."
+        "These issues can be a major fail, for instance a bad avar on VFs"
+        " will make the font to not interpolate."
     ),
 )
 
