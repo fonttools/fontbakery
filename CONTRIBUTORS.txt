@@ -28,6 +28,7 @@ Brian Dickens <hostilefork@gmail.com>
 Dave Crossland <dcrossland@google.com>
 Felipe Correa da Silva Sanches <juca@members.fsf.org>
 Filip Zembowicz <fil@google.com>
+Guido Ferreyra <guido@tipografia.com.ar>
 Lasse Fister <commander@graphicore.de>
 Marc Foley <m.foley.88@gmail.com>
 Miguel Sousa <miguel.sousa@adobe.com>
