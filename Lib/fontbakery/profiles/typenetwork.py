@@ -1423,21 +1423,21 @@ def com_typenetwork_marks_width(ttFont, config):
             if glyphSet[glypname].width == 0:
                 failed_spacing_mark_chars.append(glypname)
 
-    if len(failed_non_spacing_mark_chars):
+    if failed_non_spacing_mark_chars:
         yield FAIL, Message(
             "non-spacing-not-zero",
             f"Combining accents with width advance width:\n\n"
             f"{bullet_list(config, failed_non_spacing_mark_chars)}",
         )
 
-    if len(failed_spacing_mark_chars):
+    if failed_spacing_mark_chars:
         yield FAIL, Message(
             "non-spacing-not-zero",
             f"Spacing marks without advance width:\n\n"
             f"{bullet_list(config, failed_spacing_mark_chars)}",
         )
 
-    if not len(failed_non_spacing_mark_chars) and not len(failed_spacing_mark_chars):
+    if not failed_non_spacing_mark_chars and not failed_spacing_mark_chars:
         yield PASS, "Marks have correct widths."
 
 
@@ -1549,7 +1549,7 @@ def com_typenetwork_check_varfont_axes_have_variation(ttFont):
                 }
             )
 
-    if len(failedAxes):
+    if failedAxes:
         for failedAxis in failedAxes:
             yield FAIL, Message(
                 "axis-has-no-variation",
@@ -1601,7 +1601,7 @@ def com_typenetwork_check_varfont_fvar_axes_order(ttFont):
         else:
             yield PASS, "Font’s axes follow the preferred sorting."
 
-        if len(customAxes):
+        if customAxes:
             yield INFO, Message(
                 "custom-axes",
                 "The font has custom axes with the indicated order:\n\n"
