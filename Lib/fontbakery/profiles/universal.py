@@ -300,6 +300,15 @@ def com_google_fonts_check_caps_vertically_centered(ttFont):
 
     glyphSet = ttFont.getGlyphSet()
     highest_point_list = []
+    if "A" not in glyphSet.keys():
+        yield SKIP, Message(
+            "lacks-ascii",
+            "The implementation of this check relies on"
+            " uppercase latin characteres that are not"
+            " available in this font.",
+        )
+        return
+
     for glyphName in ["A", "B", "C", "D", "E", "H", "I", "M", "O", "S", "T", "X"]:
         pen = BoundsPen(glyphSet)
         glyphSet[glyphName].draw(pen)
