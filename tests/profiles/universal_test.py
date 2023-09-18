@@ -1376,8 +1376,11 @@ def test_check_caps_vertically_centered():
         universal_profile, "com.google.fonts/check/caps_vertically_centered"
     )
 
-    test_font = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
-    assert_PASS(check(test_font))
+    ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
+    assert_PASS(check(ttFont))
 
-    test_font = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
-    assert_results_contain(check(test_font), WARN, "vertical-metrics-not-centered")
+    ttFont = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))
+    assert_SKIP(check(ttFont))
+
+    ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
+    assert_results_contain(check(ttFont), WARN, "vertical-metrics-not-centered")

@@ -7,6 +7,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - Guido Ferreyra from Type Network contributed improvements to the HTML Reporter which now displays vendor-specific branding (like logo and custom header text - whenever provided). This also includes improvements on the layout of the HTML page with the goal of improving readability of the reports. (PRs #4260 and #4263)
   - This version also introduces a new `Type Network` vendor-specific profile. (PR #4260)
 
+### Bug Fixes
+#### On the Universal Profile
+  - **[com.google.fonts/check/font_is_centered_vertically]:** Fix error on font without ASCII letters (issue #4265)
+
 ### New Checks
 #### Added to the TypeNetwork Profile
   A large portion of these 16 checks below are derived from existing checks from other profiles, but adapted to the specific needs of Type Network. For that reason, we may in the future embrace some of those different criteria, perhaps on the `Universal` profile. But that will require us to look more closely and try to reach consensus of each of them, whenever appropriate.
