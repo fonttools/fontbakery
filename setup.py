@@ -48,7 +48,10 @@ adobefonts_extras = []
 googlefonts_extras = (
     [
         "axisregistry>=0.3.0",
-        "beautifulsoup4",  # For parsing registered vendor IDs from Microsoft's webpage
+        "beautifulsoup4>=4.7.1",  # For parsing registered vendor IDs
+        # com.google.fonts/check/vendor_id produces an ERROR if Beautiful Soup 4
+        # version 4.0.1 to 4.6.1 or 4.7.0 is installed because of bugs in Beautiful Soup
+        # (see https://github.com/fonttools/fontbakery/issues/4270)
         "dehinter>=3.1.0",  # 3.1.0 added dehinter.font.hint function
         "font-v",
         f"fontTools[lxml,unicode]{FONTTOOLS_VERSION}",
