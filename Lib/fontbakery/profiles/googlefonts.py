@@ -1043,14 +1043,7 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
 
 @condition
 def font_codepoints(ttFont):
-    codepoints = set()
-    for table in ttFont["cmap"].tables:
-        if (
-            table.platformID == PlatformID.WINDOWS
-            and table.platEncID == WindowsEncodingID.UNICODE_BMP
-        ):
-            codepoints.update(table.cmap.keys())
-    return codepoints
+    return set(ttFont.getBestCmap().keys())
 
 
 @check(
