@@ -281,7 +281,6 @@ def com_google_fonts_check_family_single_directory(fonts):
 
 @check(
     id="com.google.fonts/check/caps_vertically_centered",
-    proposal="https://github.com/fonttools/fontbakery/issues/4139",
     rationale="""
         This check suggests one possible approach to designing vertical metrics,
         but can be ingnored if you follow a different approach.
@@ -293,23 +292,26 @@ def com_google_fonts_check_family_single_directory(fonts):
         There is a detailed description of this subject at:
         https://x.com/romanshamin_en/status/1562801657691672576
     """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4139",
 )
 def com_google_fonts_check_caps_vertically_centered(ttFont):
     """Check if uppercase glyphs are vertically centered."""
     from fontTools.pens.boundsPen import BoundsPen
 
+    SOME_UPPERCASE_GLYPHS = ["A", "B", "C", "D", "E", "H", "I", "M", "O", "S", "T", "X"]
     glyphSet = ttFont.getGlyphSet()
-    highest_point_list = []
-    if "A" not in glyphSet.keys():
-        yield SKIP, Message(
-            "lacks-ascii",
-            "The implementation of this check relies on"
-            " uppercase latin characteres that are not"
-            " available in this font.",
-        )
-        return
 
-    for glyphName in ["A", "B", "C", "D", "E", "H", "I", "M", "O", "S", "T", "X"]:
+    for glyphname in SOME_UPPERCASE_GLYPHS:
+        if glyphname not in glyphSet.keys():
+            yield SKIP, Message(
+                "lacks-ascii",
+                "The implementation of this check relies on a few samples"
+                " of uppercase latin characteres that are not available in this font.",
+            )
+            return
+
+    highest_point_list = []
+    for glyphName in SOME_UPPERCASE_GLYPHS:
         pen = BoundsPen(glyphSet)
         glyphSet[glyphName].draw(pen)
         highest_point = pen.bounds[3]
