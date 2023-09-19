@@ -76,6 +76,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/primary_script]:** New check that guesses the primary script and compares to METADATA.pb (issue #4109)
+  - **[com.google.fonts/check/metadata/unreachable_subsetting]:** Report codepoints in supplementary Unicode planes, and codepoints with no glyphset support at all (PR #4273)
 
 #### Added to the UFO Profile
   - **[com.thetypefounders/check/features_default_languagesystem]:** Checks if a default languagesystem statement is present in feature files and warns if the compiler will not insert one automatically (issue #4011)
