@@ -184,6 +184,7 @@ PROFILES = {
   'googlefonts': 'Google Fonts',
   'adobefonts': 'Adobe Fonts',
   'fontbureau': 'Font Bureau',
+  'typenetwork': 'Type Network',
   'fontwerk': 'Fontwerk',
 };
 
