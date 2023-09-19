@@ -3,7 +3,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 1.0.0a1 (2023-Sep-??)
-### Noteworthy code-changes
+  - ...
+
+
+## 0.9.1 (2023-Sep-19)
+### Stable release notes
   - Guido Ferreyra from Type Network contributed improvements to the HTML Reporter which now displays vendor-specific branding (like logo and custom header text - whenever provided). This also includes improvements on the layout of the HTML page with the goal of improving readability of the reports. (PRs #4260 and #4263)
   - This version also introduces a new `Type Network` vendor-specific profile. (PR #4260)
 
@@ -34,7 +38,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.9.0 (2023-Sep-12)
-# Stable release notes
+### Stable release notes
   To see the full list of changes, please also read below the changelog entries of these pre-releases of v0.9.0:
   - 0.9.0a3 (2023-Sep-05)
   - 0.9.0a2 (2023-Aug-04)
