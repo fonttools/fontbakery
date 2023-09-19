@@ -5188,6 +5188,14 @@ def test_check_metadata_unreachable_subsetting():
         check(font), WARN, "unreachable-subsetting", "with a bad font"
     )
 
+    font = TEST_FILE("playfair/Playfair-Italic[opsz,wdth,wght].ttf")
+    assert_results_contain(
+        check(font),
+        WARN,
+        "unreachable-subsetting",
+        "with a bad font and no METADATA.pb",
+    )
+
 
 def test_check_alt_caron():
     """Check accent of Lcaron, dcaron, lcaron, tcaron"""
