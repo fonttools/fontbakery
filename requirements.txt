@@ -21,7 +21,7 @@ pip-api==0.0.30
 PyYAML==6.0.1
 protobuf==3.20.3
 requests==2.31.0
-rich==13.5.2
+rich==13.5.3
 stringbrewer==0.0.1
 toml==0.10.2
 ufolint==1.2.0
