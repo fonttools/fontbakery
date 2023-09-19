@@ -1159,21 +1159,39 @@ def com_google_fonts_check_metadata_unsupported_subsets(
         will not be served in the subsetted fonts, and so will be unreachable to
         the end user.
     """,
-    conditions=["family_metadata"],
     proposal="https://github.com/fonttools/fontbakery/issues/4097",
     severity=2,
 )
 def com_google_fonts_check_metadata_unreachable_subsetting(
-    family_metadata, ttFont, font_codepoints, config
+    family_directory, font, ttFont, font_codepoints, config
 ):
     """Check for codepoints not covered by METADATA subsets."""
     from glyphsets import codepoints
     from fontbakery.utils import pretty_print_list
+    from fontbakery.profiles.googlefonts_conditions import (
+        metadata_file,
+        family_metadata,
+    )
     import unicodedata2
 
     codepoints.set_encoding_path(codepoints.nam_dir)
 
-    for subset in family_metadata.subsets:
+    # Use the METADATA.pb subsets if we have them
+    metadatapb = metadata_file(family_directory)
+    if metadatapb:
+        metadata = family_metadata(metadatapb)
+        if metadata:
+            subsets = metadata.subsets
+        else:
+            yield FAIL, Message(
+                "unparsable-metadata", "Could not parse metadata.pb file"
+            )
+            return
+    else:
+        # Follow what the packager would do
+        subsets = [s[0] for s in codepoints.SubsetsInFont(font, 50, 0.01)]
+
+    for subset in subsets:
         font_codepoints = font_codepoints - set(codepoints.CodepointsInSubset(subset))
 
     if not font_codepoints:
@@ -1204,7 +1222,6 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
             name = ""
 
         unreachable.append(" * U+%04X %s: %s" % (codepoint, name, message))
-
 
     message = """The following codepoints supported by the font are not covered by
     any subsets defined in the font's metadata file, and will never
