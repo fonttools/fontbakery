@@ -1180,12 +1180,6 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
         yield PASS, "OK"
         return
 
-    message = """The following codepoints supported by the font are not covered by
-    any subsets defined in the font's metadata file, and will never
-    be served. You can solve this by either manually adding additional
-    subset declarations to METADATA.pb, or by editing the glyphset
-    definitions.\n\n"""
-
     unreachable = []
     subsets_for_cps = defaultdict(set)
     # This is faster than calling SubsetsForCodepoint for each codepoint
@@ -1195,23 +1189,30 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
             subsets_for_cps[cp].add(subset)
 
     for codepoint in sorted(font_codepoints):
-        subsets = subsets_for_cps[codepoint]
-        if not subsets:
-            continue
+        subsets_for_cp = subsets_for_cps[codepoint]
 
-        if len(subsets) > 1:
-            subsets = "one of: " + ", ".join(subsets)
+        if len(subsets_for_cp) == 0:
+            message = "not included in any glyphset definition"
+        elif len(subsets_for_cp) == 1:
+            message = "try adding " + ", ".join(subsets_for_cp)
         else:
-            subsets = ", ".join(subsets)
+            message = "try adding one of: " + ", ".join(subsets_for_cp)
 
         try:
             name = unicodedata2.name(chr(codepoint))
         except Exception:
             name = ""
 
-        unreachable.append(" * U+%04X %s: try adding %s" % (codepoint, name, subsets))
+        unreachable.append(" * U+%04X %s: %s" % (codepoint, name, message))
 
-    subsets = ", ".join(f"`{s}`" for s in family_metadata.subsets)
+
+    message = """The following codepoints supported by the font are not covered by
+    any subsets defined in the font's metadata file, and will never
+    be served. You can solve this by either manually adding additional
+    subset declarations to METADATA.pb, or by editing the glyphset
+    definitions.\n\n"""
+
+    subsets = ", ".join(f"`{s}`" for s in subsets)
     message += pretty_print_list(config, unreachable, sep="\n", glue="\n")
     message += (
         f"\n\nOr you can add the above codepoints to one"
