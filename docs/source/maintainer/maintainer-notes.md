@@ -2,12 +2,12 @@
 
 ## Code Testing
 
-`tox` and `coverage` are used to execute the Font Bakery test suite and line coverage assessment, respectively.  
+`pytest` and `coverage` are used to execute the Font Bakery test suite and line coverage assessment, respectively.
 
 Use the following command to run all tests:
 
 ```
-$ tox
+$ pytest -x tests
 ```
 
 The coverage report can be found at the end of the test results that are printed to the standard output/error stream.
@@ -64,10 +64,8 @@ git checkout main
 git fetch upstream
 git rebase upstream/main
 
-## Optionally install tox so that we can also
-## run our code tests locally
-# pip install tox
-# tox
+## Optionally run our code tests locally
+pytest -x tests
 
 # If all is good, then make the actual release:
 # Register a git tag for this release and publish it
