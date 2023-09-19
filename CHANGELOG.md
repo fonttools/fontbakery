@@ -6,6 +6,12 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
+## 0.9.2 (2023-Sep-20)
+### Bug Fixes
+#### On the Universal Profile
+  - **[com.google.fonts/check/font_is_centered_vertically]:** Fix yet another error on fonts without ASCII letters (issue #4269)
+
+
 ## 0.9.1 (2023-Sep-19)
 ### Stable release notes
   - Guido Ferreyra from Type Network contributed improvements to the HTML Reporter which now displays vendor-specific branding (like logo and custom header text - whenever provided). This also includes improvements on the layout of the HTML page with the goal of improving readability of the reports. (PRs #4260 and #4263)
