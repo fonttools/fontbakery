@@ -1159,7 +1159,10 @@ def com_google_fonts_check_metadata_unsupported_subsets(
         will not be served in the subsetted fonts, and so will be unreachable to
         the end user.
     """,
-    proposal="https://github.com/fonttools/fontbakery/issues/4097",
+    proposal=[
+        "https://github.com/fonttools/fontbakery/issues/4097",
+        "https://github.com/fonttools/fontbakery/pull/4273",
+    ],
     severity=2,
 )
 def com_google_fonts_check_metadata_unreachable_subsetting(
