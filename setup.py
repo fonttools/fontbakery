@@ -25,6 +25,11 @@ except IOError:
 FONTTOOLS_VERSION = ">=4.39.0"  # Python 3.8+ required
 UFO2FT_VERSION = ">=2.25.2"  # 2.25.2 updated the script lists for Unicode 14.0
 VHARFBUZZ_VERSION = ">=0.2.0"  # 0.2.0 had an API update
+BEAUTIFULSOUP4_VERSION = ">=4.7.1"  # For parsing registered vendor IDs
+# com.google.fonts/check/vendor_id produces an ERROR if Beautiful Soup 4
+# version 4.0.1 to 4.6.1 or 4.7.0 is installed because of bugs in Beautiful Soup
+# (see https://github.com/fonttools/fontbakery/issues/4270)
+
 
 # Profile-specific dependencies:
 shaping_extras = [
@@ -48,10 +53,7 @@ adobefonts_extras = []
 googlefonts_extras = (
     [
         "axisregistry>=0.3.0",
-        "beautifulsoup4>=4.7.1",  # For parsing registered vendor IDs
-        # com.google.fonts/check/vendor_id produces an ERROR if Beautiful Soup 4
-        # version 4.0.1 to 4.6.1 or 4.7.0 is installed because of bugs in Beautiful Soup
-        # (see https://github.com/fonttools/fontbakery/issues/4270)
+        f"beautifulsoup4{BEAUTIFULSOUP4_VERSION}",
         "dehinter>=3.1.0",  # 3.1.0 added dehinter.font.hint function
         "font-v",
         f"fontTools[lxml,unicode]{FONTTOOLS_VERSION}",
@@ -72,7 +74,7 @@ fontwerk_extras = googlefonts_extras
 notofonts_extras = googlefonts_extras
 
 typenetwork_extras = [
-    "beautifulsoup4",
+    f"beautifulsoup4{BEAUTIFULSOUP4_VERSION}",
     f"ufo2ft{UFO2FT_VERSION}",
     f"vharfbuzz{VHARFBUZZ_VERSION}",
     "uharfbuzz",
