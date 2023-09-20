@@ -55,7 +55,9 @@ googlefonts_extras = (
         "axisregistry>=0.3.0",
         f"beautifulsoup4{BEAUTIFULSOUP4_VERSION}",
         "dehinter>=3.1.0",  # 3.1.0 added dehinter.font.hint function
-        "font-v",
+        "font-v>=0.6.0",  # com.google.fonts/check/fontv produces an ERROR with font-v
+        # version 0.5.0 or earlier because it uses the method
+        # FontVersion.get_name_id5_version_string which was added in version 0.6.0
         f"fontTools[lxml,unicode]{FONTTOOLS_VERSION}",
         "gflanguages>=0.3.0",  # 0.3.0 had an api simplification/update
         # (see https://github.com/googlefonts/gflanguages/pull/7)
