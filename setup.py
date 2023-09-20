@@ -158,7 +158,8 @@ setup(
     python_requires=">=3.8",
     setup_requires=[
         "setuptools>=61.2",
-        "setuptools_scm[toml]>=6.2",
+        "setuptools_scm[toml]>=6.2, !=8.0.0",  # version 8.0.0 had a bug as described at
+        # https://github.com/pypa/setuptools_scm/issues/905
     ],
     install_requires=[
         # ---
