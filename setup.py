@@ -185,7 +185,9 @@ setup(
         "toml",
         # ---
         # used by Reporters (Lib/fontbakery/reporters)
-        "cmarkgfm",  # (html.py)
+        "cmarkgfm>=0.4",  # (html.py) Doing anything with Font Bakery with
+        # a version of cmarkgfm older than 0.4 fails with:
+        # ImportError: cannot import name 'Options' from 'cmarkgfm.cmark'
         "rich",  # (terminal.py)
         # ---
         # used by 'fontbakery_version' check in Universal profile
