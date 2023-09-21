@@ -1506,33 +1506,46 @@ def com_google_fonts_check_contour_count(ttFont, config):
                 else:
                     return name
 
-            badness = WARN
             bad_glyphs_message = []
+            zero_contours_message = []
 
             for name, count, expected in bad_glyphs:
-                bad_glyphs_message.append(
-                    f"Glyph name: {_glyph_name(cmap, name)}\t"
-                    f"Contours detected: {count}\t"
-                    f"Expected: {pretty_print_list(config, expected, glue='or')}"
-                )
                 if count == 0:
-                    badness = FAIL
+                    zero_contours_message.append(
+                        f"Glyph name: {_glyph_name(cmap, name)}\t"
+                        f"Expected: {pretty_print_list(config, expected, glue=' or ')}"
+                    )
+                else:
+                    bad_glyphs_message.append(
+                        f"Glyph name: {_glyph_name(cmap, name)}\t"
+                        f"Contours detected: {count}\t"
+                        f"Expected: {pretty_print_list(config, expected, glue=' or ')}"
+                    )
 
-            bad_glyphs_message = bullet_list(config, bad_glyphs_message)
-            yield badness, Message(
-                "contour-count",
-                "This check inspects the glyph outlines and detects the total number"
-                " of contours in each of them. The expected values are infered from"
-                " the typical ammounts of contours observed in a large collection"
-                " of reference font families. The divergences listed below may simply"
-                " indicate a significantly different design on some of your glyphs."
-                " On the other hand, some of these may flag actual bugs in the font"
-                " such as glyphs mapped to an incorrect codepoint. Please consider"
-                " reviewing the design and codepoint assignment of these to make"
-                " sure they are correct.\n\n"
-                "The following glyphs do not have the recommended"
-                f" number of contours:\n\n{bad_glyphs_message}\n",
-            )
+            if bad_glyphs_message:
+                bad_glyphs_message = bullet_list(config, bad_glyphs_message)
+                yield WARN, Message(
+                    "contour-count",
+                    "This check inspects the glyph outlines and detects the total"
+                    " number of contours in each of them. The expected values are"
+                    " infered from the typical ammounts of contours observed in a"
+                    " large collection of reference font families. The divergences"
+                    " listed below may simply indicate a significantly different"
+                    " design on some of your glyphs. On the other hand, some of these"
+                    " may flag actual bugs in the font such as glyphs mapped to an"
+                    " incorrect codepoint. Please consider reviewing the design and"
+                    " codepoint assignment of these to make sure they are correct.\n\n"
+                    "The following glyphs do not have the recommended number of"
+                    f" contours:\n\n{bad_glyphs_message}\n",
+                )
+
+            if zero_contours_message:
+                zero_contours_message = bullet_list(config, zero_contours_message)
+                yield FAIL, Message(
+                    "no-contour",
+                    "The following glyphs have no contours even though they were"
+                    f" expected to have some:\n\n{zero_contours_message}\n",
+                )
         else:
             yield PASS, "All glyphs have the recommended amount of contours"
 
