@@ -1114,8 +1114,8 @@ def test_check_contour_count(montserrat_ttFonts):
 
     # Lets swap the glyf 'a' (2 contours) with space (0 contour) to get a FAIL
     ttFont["glyf"]["a"] = ttFont["glyf"]["space"]
-    msg = assert_results_contain(check(ttFont), FAIL, "contour-count")
-    assert "Glyph name: a\tContours detected: 0\tExpected: 2" in msg
+    msg = assert_results_contain(check(ttFont), FAIL, "no-contour")
+    assert "Glyph name: a\tExpected: 2" in msg
 
     # Subset the font to just the 'c' glyph to get a PASS
     subsetter = subset.Subsetter()
