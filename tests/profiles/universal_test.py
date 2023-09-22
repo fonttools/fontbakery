@@ -1374,7 +1374,7 @@ def test_check_alt_caron():
     assert_PASS(check(ttFont))
 
 
-def test_check_caps_vertically_centered():
+def DISABLED_test_check_caps_vertically_centered():
     """Check if uppercase glyphs are vertically centered."""
 
     check = CheckTester(

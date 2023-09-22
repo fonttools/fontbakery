@@ -3,7 +3,7 @@ import re
 
 from packaging.version import VERSION_PATTERN
 
-from fontbakery.callable import check
+from fontbakery.callable import check, disable
 from fontbakery.constants import PlatformID, WindowsEncodingID
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.glyphdata import desired_glyph_data
@@ -59,7 +59,7 @@ UNIVERSAL_PROFILE_CHECKS = (
         "com.google.fonts/check/cjk_chws_feature",
         "com.google.fonts/check/transformed_components",
         "com.google.fonts/check/gpos7",
-        "com.google.fonts/check/caps_vertically_centered",
+        # "com.google.fonts/check/caps_vertically_centered",  # Disabled: issue #4274
         "com.google.fonts/check/ots",
         "com.adobe.fonts/check/freetype_rasterizer",
         "com.adobe.fonts/check/sfnt_version",
@@ -279,6 +279,7 @@ def com_google_fonts_check_family_single_directory(fonts):
         )
 
 
+@disable
 @check(
     id="com.google.fonts/check/caps_vertically_centered",
     rationale="""
