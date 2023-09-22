@@ -6,10 +6,13 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
-## 0.9.2 (2023-Sep-21)
+## 0.9.2 (2023-Sep-22)
+### Stable release notes
+  - **[com.google.fonts/check/caps_vertically_centered]** was temporarily disabled, until the calculations are properly reviewed. (issue #4274)
+
 ### Changes to existing checks
 #### On the Universal profile
-  - **[com.google.fonts/check/font_is_centered_vertically]:** Fix yet another ERROR on fonts without ASCII letters (issue #4269)
+  - **[com.google.fonts/check/caps_vertically_centered]:** Fix yet another ERROR on fonts without ASCII letters (issue #4269)
   - **[com.google.fonts/check/contour_count]:** This check now FAILs if a glyph which should have contours is found to have no contours (issue #4137)
 
 #### On the Google Fonts Profile
@@ -23,7 +26,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Bug Fixes
 #### On the Universal Profile
-  - **[com.google.fonts/check/font_is_centered_vertically]:** Fix error on font without ASCII letters (issue #4265)
+  - **[com.google.fonts/check/caps_vertically_centered]:** Fix error on font without ASCII letters (issue #4265)
 
 ### New Checks
 #### Added to the TypeNetwork Profile
