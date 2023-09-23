@@ -139,6 +139,7 @@ setup(
         "fontbakery.reporters",
         "fontbakery.profiles",
         "fontbakery.commands",
+        "fontbakery.sphinx_extensions",  # for FontBakery's documentation at ReadTheDocs
     ],
     package_data={
         "fontbakery": [
