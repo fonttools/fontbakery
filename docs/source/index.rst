@@ -1,6 +1,6 @@
 .. image:: ../../data/logo.png
 
-|PyPI| |PyVersion| |TravisBuild| |License|
+|PyPI| |PyVersion| |License|
 
 Welcome to the Font Bakery Documentation!
 =========================================
@@ -67,10 +67,6 @@ Indices
 .. |PyVersion| image:: https://img.shields.io/pypi/pyversions/fontbakery.svg?style=flat
    :alt: Python versions
    :target: https://pypi.python.org/pypi/fontbakery/
-
-.. |TravisBuild| image:: https://travis-ci.org/fonttools/fontbakery.svg
-   :alt: Travis CI Build
-   :target: https://travis-ci.org/fonttools/fontbakery
 
 .. |License| image:: https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg
    :alt: License
