@@ -338,7 +338,7 @@ def com_google_fonts_check_description_broken_links(description_html):
         family webpage on the Google Fonts website.
 
         Google Fonts has a content formatting policy for that snippet that expects the
-        text content of links not to include the http:// or https:// prefixes.
+        text content of anchors not to include the http:// or https:// prefixes.
     """,
     proposal=[
         "https://github.com/fonttools/fontbakery/issues/3497",
@@ -354,7 +354,8 @@ def com_google_fonts_check_description_urls(description_html):
             if a_href.attrib:
                 yield FAIL, Message(
                     "empty-link-text",
-                    f"The following link has empty text:\n\n{a_href.attrib}\n",
+                    "The following anchor has empty text content:\n\n"
+                    f"{a_href.attrib}\n",
                 )
             continue
 
@@ -362,8 +363,8 @@ def com_google_fonts_check_description_urls(description_html):
             passed = False
             yield FAIL, Message(
                 "prefix-found",
-                f'Please remove the "http(s)://"'
-                f' prefix from the link text "{link_text}"',
+                'Please remove the "http(s)://" prefix from the text content'
+                f" of the following anchor:\n\n{link_text}",
             )
             continue
 
