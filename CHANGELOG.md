@@ -6,7 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
-## 0.9.2 (2023-Sep-22)
+## 0.9.2 (2023-Sep-23)
 ### Stable release notes
   - **[com.google.fonts/check/caps_vertically_centered]** was temporarily disabled, until the calculations are properly reviewed. (issue #4274)
 
