@@ -340,7 +340,10 @@ def com_google_fonts_check_description_broken_links(description_html):
         Google Fonts has a content formatting policy for that snippet that expects the
         text content of links not to include the http:// or https:// prefixes.
     """,
-    proposal="https://github.com/fonttools/fontbakery/issues/3497",
+    proposal=[
+        "https://github.com/fonttools/fontbakery/issues/3497",
+        "https://github.com/fonttools/fontbakery/issues/4283",
+    ],
 )
 def com_google_fonts_check_description_urls(description_html):
     """URLs on DESCRIPTION file must not display http(s) prefix."""
@@ -348,11 +351,16 @@ def com_google_fonts_check_description_urls(description_html):
     for a_href in description_html.iterfind(".//a[@href]"):
         link_text = a_href.text
         if not link_text:
+            if a_href.attrib:
+                yield FAIL, Message(
+                    "empty-link-text",
+                    f"The following link has empty text:\n\n{a_href.attrib}\n",
+                )
             continue
 
         if link_text.startswith("http://") or link_text.startswith("https://"):
             passed = False
-            yield WARN, Message(
+            yield FAIL, Message(
                 "prefix-found",
                 f'Please remove the "http(s)://"'
                 f' prefix from the link text "{link_text}"',

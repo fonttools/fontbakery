@@ -4763,10 +4763,15 @@ def test_check_description_urls():
     assert_PASS(check(font))
 
     font = TEST_FILE("cabinvfbeta/CabinVFBeta.ttf")
-    assert_results_contain(check(font), WARN, "prefix-found")
+    assert_results_contain(check(font), FAIL, "prefix-found")
 
     good_desc = check["description"].replace(">https://", ">")
     assert_PASS(check(font, {"description": good_desc}))
+
+    bad_desc = check["description"].replace(">github.com/impallari/Cabin<", "><")
+    assert_results_contain(
+        check(font, {"description": bad_desc}), FAIL, "empty-link-text"
+    )
 
 
 def test_check_metadata_unsupported_subsets():
