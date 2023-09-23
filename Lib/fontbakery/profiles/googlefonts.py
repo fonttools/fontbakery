@@ -347,6 +347,9 @@ def com_google_fonts_check_description_urls(description_html):
     passed = True
     for a_href in description_html.iterfind(".//a[@href]"):
         link_text = a_href.text
+        if not link_text:
+            continue
+
         if link_text.startswith("http://") or link_text.startswith("https://"):
             passed = False
             yield WARN, Message(
