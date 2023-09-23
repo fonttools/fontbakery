@@ -213,9 +213,9 @@ class FontBakeryCallableDocumenter(ModuleLevelDocumenter):
             self.analyzer = None
             # at least add the module.__file__ as a dependency
             if hasattr(self.module, "__file__") and self.module.__file__:
-                self.directive.filename_set.add(self.module.__file__)
+                self.directive.record_dependencies.add(self.module.__file__)
         else:
-            self.directive.filename_set.add(self.analyzer.srcname)
+            self.directive.record_dependencies.add(self.analyzer.srcname)
 
         # check __module__ of object (for members not given explicitly)
         if check_module:
