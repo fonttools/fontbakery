@@ -20,9 +20,9 @@ def com_google_fonts_check_family_equal_unicode_encodings(ttFonts):
             if table.format == 4:
                 cmap = table
                 break
-        # Could a font lack a format 4 cmap table ?
-        # If we ever find one of those, it would crash the check here.
-        # Then we'd have to yield a FAIL regarding the missing table entry.
+        if not cmap:
+            yield FAIL, Message("no-cmap", "Couldn't find a format 4 cmap table.")
+            return
         if not encoding:
             encoding = cmap.platEncID
         if encoding != cmap.platEncID:

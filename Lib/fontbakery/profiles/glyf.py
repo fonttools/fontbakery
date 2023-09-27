@@ -15,8 +15,8 @@ from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable
 )
 def com_google_fonts_check_glyf_unused_data(ttFont):
     """Is there any unused data at the end of the glyf table?"""
+    expected_glyphs = len(ttFont.getGlyphOrder())
     try:
-        expected_glyphs = len(ttFont.getGlyphOrder())
         actual_glyphs = len(ttFont["glyf"].glyphs)
         diff = actual_glyphs - expected_glyphs
 

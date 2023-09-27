@@ -76,8 +76,11 @@ class CheckTester:
                     # Full control for the caller, who has to inspect how
                     # the desired key needs to be set up.
                     key = name_key
-                #                                      error, value
-                self.runner._cache["conditions"][key] = None, value
+
+                self.runner._cache["conditions"][key] = (
+                    None,  # error
+                    value,  # value
+                )  # pytype:disable=unsupported-operands
         args = self.runner._get_args(self.check, self.check_iterargs)
         # args that are derived iterables are generators that must be
         # converted to lists, otherwise we end up with exhausted

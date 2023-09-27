@@ -16,9 +16,9 @@ import types
 from collections import OrderedDict, Counter
 import importlib
 import inspect
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 
-from fontbakery.callable import FontbakeryCallable
+from fontbakery.callable import FontBakeryCheck
 from fontbakery.message import Message
 from fontbakery.profile import get_module_profile
 from fontbakery.utils import is_negated
@@ -147,7 +147,7 @@ class CheckRunner:
 
         return result
 
-    def _exec_check(self, check: FontbakeryCallable, args: Dict[str, Any]):
+    def _exec_check(self, check: FontBakeryCheck, args: Dict[str, Any]):
         """Yields check sub results.
 
         Each check result is a tuple of: (<Status>, mixed message)
@@ -468,19 +468,21 @@ class CheckRunner:
         yield ENDCHECK, summary_status
 
     @property
-    def order(self):
+    def order(self) -> Tuple[Tuple[Any, Any, Any], ...]:
         order = self._cache.get("order", None)
-        if order is None:
-            order = []
-            # section, check, iterargs = identity
-            for identity in self._profile.execution_order(
-                self._iterargs,
-                custom_order=self._custom_order,
-                explicit_checks=self._explicit_checks,
-                exclude_checks=self._exclude_checks,
-            ):
-                order.append(identity)
-            self._cache["order"] = order = tuple(order)
+        if order is not None:
+            return order  # pytype:disable=bad-return-type
+
+        order = []
+        # section, check, iterargs = identity
+        for identity in self._profile.execution_order(
+            self._iterargs,
+            custom_order=self._custom_order,
+            explicit_checks=self._explicit_checks,
+            exclude_checks=self._exclude_checks,
+        ):
+            order.append(identity)
+        self._cache["order"] = order = tuple(order)
         return order
 
     def check_order(self, order):
@@ -591,6 +593,8 @@ def get_module_from_file(filename):
     # module_name = 'file_module.file_py'
     module_name = f"{FILE_MODULE_NAME_PREFIX}{format(os.path.basename(filename).replace('.', '_'))}"  # noqa:E501 pylint:disable=C0301
     module_spec = importlib.util.spec_from_file_location(module_name, filename)
+    if not module_spec:
+        raise ValueError(f"Could not get module spec for file {filename}")
     module = importlib.util.module_from_spec(module_spec)
     module_spec.loader.exec_module(module)
     # assert module.__file__ == filename

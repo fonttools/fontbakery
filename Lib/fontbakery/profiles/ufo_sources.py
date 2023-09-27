@@ -25,9 +25,10 @@ UFO_PROFILE_CHECKS = [
 
 @condition
 def ufo_font(ufo):
+    from fontTools.ufoLib.errors import UFOLibError
+
     try:
         import defcon
-        from fontTools.ufoLib.errors import UFOLibError
 
         return defcon.Font(ufo)
     except ImportError:

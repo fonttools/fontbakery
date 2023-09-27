@@ -150,7 +150,9 @@ class SerializeReporter(FontbakeryReporter):
                 if index is None:
                     # last element collects unclustered
                     index = -1
-                sectionDoc["checks"][index].append(check)
+                sectionDoc["checks"][index].append(
+                    check
+                )  # pytype: disable=attribute-error
             else:
                 sectionDoc["checks"].append(check)
             if sectionKey not in seen:

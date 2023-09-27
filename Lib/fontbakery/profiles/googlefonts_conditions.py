@@ -1,5 +1,6 @@
 import os
 import re
+from bs4 import NavigableString
 import yaml
 
 from fontbakery.callable import condition
@@ -218,8 +219,11 @@ def registered_vendor_ids():
 
     for section_id in IDs:
         section = soup.find("h2", {"id": section_id})
+        if not section:
+            continue
+
         table = section.find_next_sibling("table")
-        if not table:
+        if not table or isinstance(table, NavigableString):
             continue
 
         # print ("table: '{}'".format(table))
@@ -251,9 +255,9 @@ def git_rootdir(family_dir):
 
     original_dir = os.getcwd()
     root_dir = None
-    try:
-        import subprocess
+    import subprocess
 
+    try:
         os.chdir(family_dir)
         git_cmd = ["git", "rev-parse", "--show-toplevel"]
         git_output = subprocess.check_output(git_cmd, stderr=subprocess.STDOUT)

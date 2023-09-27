@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Optional
 from collections import OrderedDict
 from functools import wraps, partial
 from itertools import chain
@@ -22,7 +22,7 @@ from fontbakery.utils import is_negated
 from fontbakery.status import DEBUG
 
 
-def get_module_profile(module, name=None):
+def get_module_profile(module: types.ModuleType, name=None):
     """
     Get or create a profile from a module and return it.
 
@@ -54,8 +54,9 @@ def get_module_profile(module, name=None):
         if "profile_factory" not in module.__dict__:
             return None
         default_section = Section(name or module.__name__)
+        spec = getattr(module, "__spec__")
         profile = module.profile_factory(
-            default_section=default_section, module_spec=module.__spec__
+            default_section=default_section, module_spec=spec
         )
         profile.auto_register(module.__dict__)
         return profile
@@ -178,8 +179,11 @@ class Profile:
             # This is a bit of a hack, but the idea is to reduce boilerplate
             # when writing modules that directly define a profile.
             try:
-                frame = inspect.currentframe().f_back
+                frame = inspect.currentframe()
                 while frame:
+                    frame = frame.f_back
+                    if not frame:
+                        break
                     # Note, if __spec__ is a local variable we shpuld be at a
                     # module top level. It should also be the correct ModuleSpec
                     # according to how we do this "usually" (as documented and
@@ -197,7 +201,6 @@ class Profile:
                         ):
                             break
                         module_spec = None  # reset
-                    frame = frame.f_back
             finally:
                 del frame
 
@@ -569,8 +572,8 @@ class Profile:
         iterargs,
         reverse=False,
         custom_order=None,
-        explicit_checks: Iterable = None,
-        exclude_checks: Iterable = None,
+        explicit_checks: Optional[Iterable] = None,
+        exclude_checks: Optional[Iterable] = None,
     ):
         """
         order must:

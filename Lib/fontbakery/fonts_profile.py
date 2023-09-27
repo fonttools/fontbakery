@@ -7,7 +7,9 @@ import argparse
 from dataclasses import dataclass
 import os
 
-from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
+from fontbakery.callable import (
+    FontBakeryExpectedValue as ExpectedValue,
+)
 from fontbakery.profile import Profile
 from fontbakery.errors import ValueValidationError
 
