@@ -1857,9 +1857,24 @@ def com_google_fonts_check_iterpolation_issues(ttFont, config):
             location[tag] = val
         new_locs.append(location)
 
+    axis_maps = {
+        ax.axisTag: {-1: ax.minValue, 0: ax.defaultValue, 1: ax.maxValue}
+        for ax in ttFont["fvar"].axes
+    }
+
     locs = new_locs
     glyphsets = [ttFont.getGlyphSet(location=loc, normalized=True) for loc in locs]
     results = interpolation_test(glyphsets)
+
+    def master_to_location(glyf):
+        from fontTools.varLib.models import piecewiseLinearMap
+
+        location = []
+        for ax in ttFont["fvar"].axes:
+            normalized = glyf.location.get(ax.axisTag, 0)
+            denormalized = int(piecewiseLinearMap(normalized, axis_maps[ax.axisTag]))
+            location.append(f"{ax.axisTag}={denormalized}")
+        return ",".join(location)
 
     if not results:
         yield PASS, "No interpolation issues found"
@@ -1879,13 +1894,13 @@ def com_google_fonts_check_iterpolation_issues(ttFont, config):
                     report.append(
                         f"Contour {p['contour']} start point"
                         f" differs in glyph '{glyph}' between"
-                        f" location {p['master_1'] or 'default'} and"
-                        f" location {p['master_2'] or 'default'}"
+                        f" location {master_to_location(p['master_1'])} and"
+                        f" location {master_to_location(p['master_2'])}"
                     )
         yield WARN, Message(
             "interpolation-issues",
-            f"Interpolation issues were found in the font:"
-            f" {bullet_list(config, report)}",
+            f"Interpolation issues were found in the font:\n\n"
+            f"{bullet_list(config, report)}",
         )
 
 
