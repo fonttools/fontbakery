@@ -3319,10 +3319,17 @@ def com_google_fonts_check_metadata_consistent_repo_urls(config, family_metadata
     """
     METADATA.pb: Check URL on copyright string is the same as in repository_url field.
     """
-    bad_urls = []
     repo_url = family_metadata.source.repository_url
+    if not repo_url:
+        yield FAIL, Message(
+            "lacks-repo-url", "Please add a family.sources.repository_url entry."
+        )
+        return
+
     if repo_url.endswith(".git"):
         repo_url = repo_url[:-4]
+
+    bad_urls = set()
     for font_md in family_metadata.fonts:
         if "http" in font_md.copyright:
             link = "http" + font_md.copyright.split("http")[1]
@@ -3331,16 +3338,15 @@ def com_google_fonts_check_metadata_consistent_repo_urls(config, family_metadata
                 link = link.split(")")[0].strip()
 
             if link != repo_url:
-                bad_urls.append(link)
+                bad_urls.add(link)
 
     if bad_urls:
         from fontbakery.utils import pretty_print_list
 
-        bad_urls = pretty_print_list(config, bad_urls)
+        bad_urls = pretty_print_list(config, list(bad_urls))
         yield FAIL, Message(
             "mismatch",
-            f"Value of repository_url field is {repo_url}\n\n"
-            f"But font copyright string has: {bad_urls}\n",
+            f"repository_url: {repo_url}\n\nfont copyright string: {bad_urls}\n",
         )
     else:
         yield PASS, "OK"

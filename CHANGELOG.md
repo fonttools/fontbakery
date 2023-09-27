@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.9.3 (2023-Sep-??)
 ### Changes to existing checks
 #### On the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/consistent_repo_urls]:** Report missing source.repository_url (issue #4285)
   - **[com.google.fonts/check/description/urls]:** fixed an ERROR due to trying to call `startswith` method on NoneType. Also upgrade check to FAIL and report any links with empty text content. (issue #4283)
 
 

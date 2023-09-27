@@ -2581,6 +2581,14 @@ def test_check_metadata_consistent_repo_urls():
     )
     assert_PASS(check(ttFont, {"family_metadata": family_md}))
 
+    family_md.source.repository_url = ""
+    assert_results_contain(
+        check(ttFont, {"family_metadata": family_md}),
+        FAIL,
+        "lacks-repo-url",
+        "when the field is either empty or completley missing...",
+    )
+
 
 def test_check_metadata_primary_script():
     """METADATA.pb: Check for primary_script"""
