@@ -1,6 +1,5 @@
 import os
 import re
-from bs4 import NavigableString
 import yaml
 
 from fontbakery.callable import condition
@@ -198,7 +197,7 @@ def family_metadata(metadata_file):
 @condition
 def registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
-    from bs4 import BeautifulSoup
+    from bs4 import BeautifulSoup, NavigableString
     from pkg_resources import resource_filename
 
     registered_vendor_ids = {}
