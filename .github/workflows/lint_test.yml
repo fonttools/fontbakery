@@ -39,11 +39,12 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt -r requirements-tests.txt
 
-    - name: Run black, flake8, and pylint
+    - name: Run black, flake8, pylint and pytype
       run: |
         black . --check --diff --color
         flake8
         pylint Lib tests
+        pytype
 
 
   test:
