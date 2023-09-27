@@ -8,6 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/consistent_repo_urls]:** Report missing source.repository_url (issue #4285)
   - **[com.google.fonts/check/description/urls]:** fixed an ERROR due to trying to call `startswith` method on NoneType. Also upgrade check to FAIL and report any links with empty text content. (issue #4283)
 
+#### On the Universal Profile
+  - **[com.google.fonts/check/interpolation_issues]:** Improved the warning message to show the actual master locations. (PR #4288)
+
 
 ## 0.9.2 (2023-Sep-23)
 ### Stable release notes
