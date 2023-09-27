@@ -38,12 +38,14 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt -r requirements-tests.txt
+        python -m pip install pytype # Not in requirements as it doesn't work on Windows
 
-    - name: Run black, flake8, and pylint
+    - name: Run black, flake8, pylint and pytype
       run: |
         black . --check --diff --color
         flake8
         pylint Lib tests
+        pytype
 
 
   test:

@@ -2,7 +2,7 @@
 
 import collections
 import html
-from typing import List, Dict
+from typing import Any, List, Dict
 import cmarkgfm
 from cmarkgfm.cmark import Options as cmarkgfmOptions
 
@@ -218,7 +218,7 @@ class HTMLReporter(SerializeReporter):
             body_elements.append(f"<h2>{section_name}</h2>")
             body_elements.append(f"<span class='section__emoji'>{section_stati}</span>")
 
-            checks_by_id: Dict[str, List[Dict[str, str]]] = collections.defaultdict(
+            checks_by_id: Dict[str, List[Dict[str, Any]]] = collections.defaultdict(
                 list
             )
             # ...and check second.
@@ -324,7 +324,7 @@ def html5_document(body_elements) -> str:
                 </html>"""
 
 
-def getHeader(data, num_checks, omit_loglevel) -> str:
+def getHeader(data, num_checks, omit_loglevel) -> List[str]:
     if num_checks:
         results_summary = [data["result"][k] for k in LOGLEVELS]
         BODY_TOP.append(summary_table(*results_summary, num_checks))

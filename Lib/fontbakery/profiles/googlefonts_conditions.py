@@ -197,7 +197,7 @@ def family_metadata(metadata_file):
 @condition
 def registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
-    from bs4 import BeautifulSoup
+    from bs4 import BeautifulSoup, NavigableString
     from pkg_resources import resource_filename
 
     registered_vendor_ids = {}
@@ -218,8 +218,11 @@ def registered_vendor_ids():
 
     for section_id in IDs:
         section = soup.find("h2", {"id": section_id})
+        if not section:
+            continue
+
         table = section.find_next_sibling("table")
-        if not table:
+        if not table or isinstance(table, NavigableString):
             continue
 
         # print ("table: '{}'".format(table))
@@ -251,9 +254,9 @@ def git_rootdir(family_dir):
 
     original_dir = os.getcwd()
     root_dir = None
-    try:
-        import subprocess
+    import subprocess
 
+    try:
         os.chdir(family_dir)
         git_cmd = ["git", "rev-parse", "--show-toplevel"]
         git_output = subprocess.check_output(git_cmd, stderr=subprocess.STDOUT)

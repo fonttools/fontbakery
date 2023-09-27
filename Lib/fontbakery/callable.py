@@ -14,6 +14,7 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 import inspect
 
 from functools import wraps, update_wrapper
+from typing import Callable
 
 
 def cached_getter(func):
@@ -33,6 +34,8 @@ def cached_getter(func):
 
 
 class FontbakeryCallable:
+    __wrapped__: Callable
+
     def __init__(self, func):
         self._args = None
         self._mandatoryArgs = None
@@ -259,16 +262,8 @@ def condition(*args, **kwds):
     Requires all arguments of FontBakeryCondition but not `func`
     which is passed via the decorator syntax.
     """
-    if len(args) == 1 and len(kwds) == 0 and callable(args[0]):
-        # used as `@decorator`
-        func = args[0]
-        return FontBakeryCondition(func)
-    else:
-        # used as `@decorator()` maybe with args
-        def wrapper(func):
-            return FontBakeryCondition(func, *args, **kwds)
-
-    return wrapper
+    func = args[0]
+    return FontBakeryCondition(func)
 
 
 def check(*args, **kwds):

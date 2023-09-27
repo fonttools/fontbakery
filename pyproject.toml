@@ -91,3 +91,11 @@ disable = [
 	"logging-too-many-args",
 	"attribute-defined-outside-init",
 ]
+
+[tool.pytype]
+inputs = [ "Lib" ]
+exclude = [
+  "Lib/fontbakery/*_pb2.py",
+  "Lib/fontbakery/sphinx_extensions",
+]
+

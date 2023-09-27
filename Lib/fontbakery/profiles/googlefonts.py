@@ -837,7 +837,7 @@ def com_google_fonts_check_family_equal_numbers_of_glyphs(ttFonts):
     passed = True
     max_stylename = None
     max_count = 0
-    max_glyphs = None
+    max_glyphs = set([])
     for ttFont in the_ttFonts:
         fontname = ttFont.reader.file.name
         stylename = canonical_stylename(fontname)
@@ -1758,6 +1758,7 @@ def com_google_fonts_check_hinting_impact(font, hinting_stats):
 )
 def com_google_fonts_check_file_size(font):
     """Ensure files are not too large."""
+    # pytype: disable=name-error
     size = os.stat(font).st_size
     if size > FAIL_SIZE:  # noqa:F821 pylint:disable=E0602
         yield FAIL, Message(
@@ -1773,6 +1774,7 @@ def com_google_fonts_check_file_size(font):
         )
     else:
         yield PASS, "Font had a reasonable file size"
+    # pytype: enable=name-error
 
 
 @check(id="com.google.fonts/check/name/version_format", proposal="legacy:check/055")
@@ -2728,6 +2730,7 @@ def com_google_fonts_check_metadata_valid_nameid25(ttFont, style):
         for entry in font["name"].names:
             if entry.nameID == 25:
                 return entry.toUnicode()
+        return ""
 
     if not ("Italic" in style and is_variable_font(ttFont)):
         yield PASS, ("Not an Italic VF.")

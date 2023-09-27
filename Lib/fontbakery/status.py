@@ -24,8 +24,8 @@ class Status:
         instance = cls.__instances.get(name, None)
         if instance is None:
             instance = cls.__instances[name] = super(Status, cls).__new__(cls)
-            setattr(instance, "_Status__name", name)
-            setattr(instance, "_Status__weight", weight)
+            instance.__name = name
+            instance.__weight = weight
         return instance
 
     __instances = {}

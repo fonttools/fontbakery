@@ -203,8 +203,8 @@ def _multiprocessing_checkrunner(jobs, process_count, *args):
         jobs_queue.put(job)
     len_jobs = len(jobs)
 
+    processes = []
     try:
-        processes = []
         for _ in range(process_count):
             p = Process(
                 target=multiprocessing_worker,

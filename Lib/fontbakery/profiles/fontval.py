@@ -148,9 +148,9 @@ def com_google_fonts_check_fontvalidator(font, config):
         disabled_fval_checks = disabled_checks
 
     report_dir = tempfile.TemporaryDirectory(prefix="fontval-")
-    try:
-        import subprocess
+    import subprocess
 
+    try:
         fval_cmd = [
             "FontValidator",
             "-file",

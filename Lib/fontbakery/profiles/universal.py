@@ -365,6 +365,10 @@ def _parse_package_version(version_string: str) -> dict:
     Parses a Python package version string.
     """
     match = re_version.search(version_string)
+    if not match:
+        raise ValueError(
+            f"Python version '{version_string}' was not a valid version string"
+        )
     release = match.group("release")
     pre_rel = match.group("pre")
     post_rel = match.group("post")
