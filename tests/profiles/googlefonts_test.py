@@ -2589,6 +2589,14 @@ def test_check_metadata_consistent_repo_urls():
         "when the field is either empty or completley missing...",
     )
 
+    # League Gothic got a bad repo in DESCRIPTION.en.html
+    ttFont = TTFont(TEST_FILE("leaguegothic-vf/LeagueGothic[wdth].ttf"))
+    assert_results_contain(check(ttFont), FAIL, "mismatch", "with different URLs...")
+
+    # CabinVF got a bad repo in OFL.txt
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+    assert_results_contain(check(ttFont), FAIL, "mismatch", "with different URLs...")
+
 
 def test_check_metadata_primary_script():
     """METADATA.pb: Check for primary_script"""
