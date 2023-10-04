@@ -3327,7 +3327,7 @@ def com_google_fonts_check_metadata_consistent_repo_urls(
     repo_url = family_metadata.source.repository_url
     if not repo_url:
         yield FAIL, Message(
-            "lacks-repo-url", "Please add a family.sources.repository_url entry."
+            "lacks-repo-url", "Please add a family.source.repository_url entry."
         )
         return
 
