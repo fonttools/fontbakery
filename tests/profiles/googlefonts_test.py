@@ -924,6 +924,11 @@ def test_check_glyph_coverage():
     cmap[0x02BD] = 0x02BD  # (MODIFIER LETTER REVERSED COMMA)
     assert_PASS(check(ttFont), "with a good font.")
 
+    # Moirai is Korean, so only needs kernel
+    ttFont = TTFont(TEST_FILE("moiraione/MoiraiOne-Regular.ttf"))
+    assert 0x02C7 not in ttFont.getBestCmap()  # This is in core but not kernel
+    assert_PASS(check(ttFont))
+
 
 def test_check_name_unwanted_chars():
     """Substitute copyright, registered and trademark

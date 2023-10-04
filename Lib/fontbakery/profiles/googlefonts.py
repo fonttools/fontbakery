@@ -1067,7 +1067,9 @@ def font_codepoints(ttFont):
     conditions=["font_codepoints", "not is_icon_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/2488",
 )
-def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
+def com_google_fonts_check_glyph_coverage(
+    ttFont, font_codepoints, family_metadata, config
+):
     """Check Google Fonts glyph coverage."""
     from glyphsets import GFGlyphData as glyph_data
     import unicodedata2
@@ -1085,7 +1087,14 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
         ttFont, threshold=0.8
     )
     passed = True
-    if "GF_Latin_Core" in missing_mandatory_glyphs:
+
+    # If we have a primary_script set, we only need care about Kernel
+    if family_metadata and family_metadata.primary_script:
+        required_glyphset = "GF_Latin_Kernel"
+    else:
+        required_glyphset = "GF_Latin_Core"
+
+    if required_glyphset in missing_mandatory_glyphs:
         missing = missing_encoded_glyphs(missing_mandatory_glyphs["GF_Latin_Core"])
         if missing:
             passed = False
@@ -1095,10 +1104,10 @@ def com_google_fonts_check_glyph_coverage(ttFont, font_codepoints, config):
             )
     elif (
         len(missing_optional_glyphs) > 0
-        and "GF_Latin_Core" not in missing_optional_glyphs
+        and required_glyphset not in missing_optional_glyphs
     ):
         for glyphset_name, glyphs in missing_optional_glyphs.items():
-            if glyphset_name == "GF_Latin_Core":
+            if glyphset_name == required_glyphset:
                 continue
             missing = missing_encoded_glyphs(glyphs)
             if missing:
