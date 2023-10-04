@@ -929,6 +929,7 @@ def test_check_glyph_coverage():
     assert 0x02C7 not in ttFont.getBestCmap()  # This is in core but not kernel
     assert_PASS(check(ttFont))
 
+
 def test_check_name_unwanted_chars():
     """Substitute copyright, registered and trademark
     symbols in name table entries."""
