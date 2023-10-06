@@ -227,12 +227,21 @@ class HTMLReporter(SerializeReporter):
                     cluster = [cluster]
                 num_checks += len(cluster)
                 for check in cluster:
-                    checks_by_id[check["key"][1]].append(check)
-            for check, results in checks_by_id.items():
+                    check_id = check["key"][1].split(":")[1].split(">")[0]
+                    checks_by_id[check_id].append(check)
+            for check_id, results in checks_by_id.items():
                 if all([self.omit_loglevel(result["result"]) for result in results]):
                     continue
-                check_name = html.escape(check)
-                body_elements.append(f"<h3>{results[0]['description']}</h3>")
+                check_name = html.escape(check_id)
+                exp = ""
+                if "experimental" in results[0]:
+                    exp = (
+                        "<div style='color:#88c'>"
+                        "EXPERIMENTAL CHECK"
+                        f" - {results[0]['experimental']}"
+                        "</div>"
+                    )
+                body_elements.append(f"<h3>{exp}{results[0]['description']}</h3>")
                 body_elements.append(
                     f"<div class='check__idlabel'>Check ID: {check_name}</div>"
                 )
@@ -257,7 +266,7 @@ class HTMLReporter(SerializeReporter):
                             )
                         )
 
-        # ---------------------------------- HEADER ---------------------------------- #
+        # ------------------------ HEADER --------------------- #
         header = getHeader(data, num_checks, self.omit_loglevel)
 
         body_elements[0:0] = header

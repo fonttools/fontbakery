@@ -98,6 +98,7 @@ class GHMarkdownReporter(SerializeReporter):
     def get_markdown(self):
         checks = {}
         family_checks = []
+        experimental_checks = []
         data = self.getdoc()
         num_checks = 0
         for section in data["sections"]:
@@ -112,11 +113,13 @@ class GHMarkdownReporter(SerializeReporter):
                 for check in cluster:
                     if self.omit_loglevel(check["result"]):
                         continue
-
                     check["profile"] = self.deduce_profile_from_section_name(
                         section["key"][0]
                     )
-                    if "filename" not in check.keys():
+                    if "experimental" in check:
+                        # These will be reported separately
+                        experimental_checks.append(check)
+                    elif "filename" not in check.keys():
                         # That's a family check!
                         family_checks.append(check)
                     else:
@@ -125,7 +128,14 @@ class GHMarkdownReporter(SerializeReporter):
                             checks[key] = []
                         checks[key].append(check)
 
-        md = f"## FontBakery report\n" f"\n" f"fontbakery version: {version}\n" f"\n"
+        md = f"## FontBakery report\n\nfontbakery version: {version}\n\n"
+
+        if experimental_checks:
+            experimental_checks.sort(key=lambda c: c["result"])
+            md += html5_collapsible(
+                "<b>[{}] Experimental checks</b>".format(len(experimental_checks)),
+                "".join(map(self.check_md, experimental_checks)) + "<br>",
+            )
 
         if family_checks:
             family_checks.sort(key=lambda c: c["result"])

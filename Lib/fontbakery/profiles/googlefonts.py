@@ -102,6 +102,7 @@ METADATA_CHECKS = [
     "com.google.fonts/check/metadata/category_hints",
     "com.google.fonts/check/metadata/consistent_repo_urls",
     "com.google.fonts/check/metadata/primary_script",
+    "com.google.fonts/check/metadata/empty_designer",
 ]
 
 DESCRIPTION_CHECKS = [
@@ -7255,6 +7256,31 @@ def com_google_fonts_check_description_noto_has_article(font):
             "missing-article",
             "This is a Noto font but it lacks an ARTICLE.en_us.html file",
         )
+
+
+@check(
+    id="com.google.fonts/check/metadata/empty_designer",
+    rationale="""
+        Any font published on Google Fonts must credit one or several authors,
+        foundry and/or individuals.
+
+        Ideally, all authors listed in the upstream repository's AUTHORS.txt should
+        be mentioned in the designer field.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/3961",
+    proponent="Rosalie Wagner (@RosaWagner)",
+    experimental="Since 2023/Oct/05",
+)
+def com_google_fonts_check_metadata_empty_designer(family_metadata):
+    """At least one designer is declared in METADATA.pb"""
+
+    if family_metadata.designer.strip() == "":
+        yield FAIL, Message("empty-designer", "Font designer field is empty.")
+
+    # TODO: Parse AUTHORS.txt and WARN if names do not match
+    # (and then maybe rename the check-id)
+    else:
+        yield PASS, "Font designer field is not empty."
 
 
 ###############################################################################
