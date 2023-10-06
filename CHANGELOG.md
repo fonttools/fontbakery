@@ -2,7 +2,14 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.9.3 (2023-Oct-10)
+## Upcoming release: 0.10.0 (2023-Oct-10)
+### Release notes
+  - This release adds support for marking checks as **experimental**, which will make them not affect the process exit code and so will allow such checks to result in a FAIL without breaking continuous integration builds. This will give time for users to report problems on the implementation of new checks. If after some time nobody complains, then those new checks will more safely be made effective by removing their `experimental` tag.
+
+### New checks
+#### Addded to the Google Fonts Profile
+  - **EXPERIMENTAL - [com.google.fonts/check/metadata/empty_designer]:** Any font published on Google Fonts must credit one or several authors, foundry and/or individuals. (issue #3961)
+
 ### Changes to existing checks
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/consistent_repo_urls]:** Report missing source.repository_url (issue #4285), check with other sources (issue #3521), test repo URL more flexibly (issue #4107)

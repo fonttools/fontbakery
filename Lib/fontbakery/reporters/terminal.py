@@ -458,9 +458,15 @@ class TerminalReporter(TerminalProgress):
                 if formatted_iterargs != ():
                     with_string = f"with {formatted_iterargs[0][1]}"
 
+                experimental = ""
+                if hasattr(check, "experimental") and check.experimental:
+                    exp = f"[EXPERIMENTAL CHECK - {check.experimental}]"
+                    experimental = "    " + self.theme["experimental"](exp) + "\n"
+
                 print_func(
-                    (" >> {}\n" "    {}\n" "    {}\n").format(
+                    (" >> {}\n{}    {}\n    {}\n").format(
                         self.theme["check-id"](check.id),
+                        experimental,
                         self.theme["description"](check.description),
                         with_string,
                     )

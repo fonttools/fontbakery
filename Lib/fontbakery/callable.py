@@ -180,6 +180,7 @@ class FontBakeryCheck(FontbakeryCallable):
         proponent=None,  # Name Surname (@github_username)
         suggested_profile=None,  # A suggestion of which fontbakery profile
         # should this check be added to once implemented.
+        experimental=False,  # Experimental checks won't affect the process exit code
         severity=None,  # numeric value from 1=min to 10=max, denoting check severity
         configs=None,  # items from config[self.id] to inject into the check's namespace
         misc_metadata=None,  # Miscelaneous free-form metadata fields
@@ -246,6 +247,7 @@ class FontBakeryCheck(FontbakeryCallable):
         self.configs = configs
         self.proposal = proposal
         self.proponent = proponent
+        self.experimental = experimental
         self.suggested_profile = suggested_profile
         self.severity = severity
         if not self.description:

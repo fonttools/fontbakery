@@ -114,10 +114,15 @@ class FontbakeryReporter:
         if status is ENDCHECK and (
             self._worst_check_status is None or self._worst_check_status < message
         ):
-            # we only record ENDCHECK, because check runner may in the future
-            # have tools to upgrade/downgrade the actually worst status
-            # this should be future proof.
-            self._worst_check_status = message
+            # Checks that are marked as "experimental" do not affect the
+            # exit status code, so that they won't break a build on continuous
+            # integration setups.
+            section, check, iterargs = identity
+            if not check.experimental:
+                # we only record ENDCHECK, because check runner may in the future
+                # have tools to upgrade/downgrade the actually worst status
+                # this should be future proof.
+                self._worst_check_status = message
 
         self._register(event)
         self._cleanup(event)

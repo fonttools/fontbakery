@@ -576,6 +576,7 @@ def _skip_member(app, what, name, obj, skip, options):
         "configs",
         "description",
         "documentation",
+        "experimental",
         "force",
         "id",
         "is_librebarcode",
@@ -661,3 +662,8 @@ def _process_docstring(app, what, name, obj, options, lines):
 
     if hasattr(obj, "suggested_profile") and obj.suggested_profile:
         lines.append(f"- **Suggested profile:** {obj.suggested_profile}")
+
+    if hasattr(obj, "experimental") and obj.experimental:
+        lines.append(
+            f"- **EXPERIMENTAL:** {obj.experimental}. Please provide feedback!"
+        )
