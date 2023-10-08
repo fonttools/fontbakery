@@ -18,6 +18,7 @@ try:
 except ImportError:
     exit_with_install_instructions()
 
+profile_imports = ((".", ("shared_conditions",)),)
 profile = profile_factory(default_section=Section("Suitability for In-Car Display"))
 
 DISCLAIMER = """
