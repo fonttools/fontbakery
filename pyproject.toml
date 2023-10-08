@@ -66,6 +66,7 @@ disable = [
 	# Refactor
 	"chained-comparison",
 	"consider-using-with",
+	"duplicate-code",
 	"inconsistent-return-statements",
 	"no-else-raise",
 	"no-else-return",
