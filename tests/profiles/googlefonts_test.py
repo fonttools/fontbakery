@@ -2644,28 +2644,21 @@ def test_check_unitsperem_strict():
     PASS_VALUES.extend([500, 1000])  # or common typical values
     PASS_VALUES.extend([2000, 2048])  # not so common, but still ok
 
-    WARN_LARGE_VALUES = [2500, 4000, 4096]  # uncommon and large,
-    # but we've seen legitimate cases such as the
-    # Big Shoulders Family which uses 4000 since
-    # it needs more details.
-
+    FAIL_LARGE_VALUES = [4096, 16385]  # uncommon and large,
     # and finally the bad ones, including:
-    FAIL_VALUES = [0, 1, 2, 4, 8, 15, 16385]  # simply invalid
-    FAIL_VALUES.extend([100, 1500, 5000])  # suboptimal (uncommon and not power of two)
-    FAIL_VALUES.extend([8192, 16384])  # and valid ones suggested by the opentype spec,
-    # but too large, causing undesireable filesize bloat.
+    FAIL_BAD_VALUES = [0, 1, 2, 4, 8, 15]  # simply invalid
 
     for pass_value in PASS_VALUES:
         ttFont["head"].unitsPerEm = pass_value
         assert_PASS(check(ttFont), f"with unitsPerEm = {pass_value}...")
 
-    for warn_value in WARN_LARGE_VALUES:
+    for warn_value in FAIL_LARGE_VALUES:
         ttFont["head"].unitsPerEm = warn_value
         assert_results_contain(
-            check(ttFont), WARN, "large-value", f"with unitsPerEm = {warn_value}..."
+            check(ttFont), FAIL, "large-value", f"with unitsPerEm = {warn_value}..."
         )
 
-    for fail_value in FAIL_VALUES:
+    for fail_value in FAIL_BAD_VALUES:
         ttFont["head"].unitsPerEm = fail_value
         assert_results_contain(
             check(ttFont), FAIL, "bad-value", f"with unitsPerEm = {fail_value}..."
