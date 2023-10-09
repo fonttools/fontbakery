@@ -5260,34 +5260,47 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
     conditions=["family_directory", "gfonts_repo_structure"],
     rationale="""
         Variable font family directories kept in the google/fonts git repo may include
-        a static/ subdir containing static fonts.
-
-        These files are meant to be served for users that still lack support for
-        variable fonts in their web browsers.
+        a static/ subdir containing static fonts, if manual hinting is used on
+        these fonts. Otherwise, the directory should be removed.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/2654",
 )
 def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
-    """A static fonts directory with at least two fonts must accompany variable fonts"""
+    """A static fonts directory, if present, must contain manually hinted fonts"""
+    from fontTools.ttLib import TTFont
+    from fontbakery.profiles.googlefonts_conditions import VTT_hinted
+    from fontbakery.profiles.shared_conditions import is_hinted
+    from fontbakery.utils import get_name_entry_strings
+
+    def manually_hinted(ttFont):
+        if not is_hinted(ttFont):
+            return False
+        if VTT_hinted(ttFont):
+            return True
+        name_strings = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
+        if any("ttfautohint" in name for name in name_strings):
+            return False
+        return True
+
     static_dir = os.path.join(family_directory, "static")
     if os.path.exists(static_dir):
-        has_static_fonts = any(
-            [f for f in os.listdir(static_dir) if f.endswith(".ttf")]
-        )
-        if has_static_fonts:
+        static_fonts = [
+            os.path.join(static_dir, f)
+            for f in os.listdir(static_dir)
+            if f.endswith(".ttf")
+        ]
+        if not static_fonts:
             yield PASS, "OK"
-        else:
-            yield FAIL, Message(
-                "empty",
-                'There is a "static" dir but it is empty.'
-                " Either add static fonts or delete the directory.",
+            return
+
+        if not all(manually_hinted(TTFont(font)) for font in static_fonts):
+            yield WARN, Message(
+                "not-manually-hinted",
+                'There is a "static" dir but it contains fonts which are not '
+                "manually hinted. Delete the directory.",
             )
-    else:
-        yield WARN, Message(
-            "missing",
-            'Please consider adding a subdirectory called "static/"'
-            " and including in it static font files.",
-        )
+            return
+    yield PASS, "OK"
 
 
 @check(
