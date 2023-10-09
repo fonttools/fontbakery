@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/consistent_repo_urls]:** Report missing source.repository_url (issue #4285), check with other sources (issue #3521), test repo URL more flexibly (issue #4107)
   - **[com.google.fonts/check/description/urls]:** fixed an ERROR due to trying to call `startswith` method on NoneType. Also upgrade check to FAIL and report any links with empty text content. (issue #4283)
   - **[com.google.fonts/check/glyph_coverage]:** Only check for GF Latin Kernel when fonts have a primary_script set. (issue #4111)
+  - **[com.google.fonts/check/vf_has_static_fonts]:** This check now allows manually-hinted static fonts but otherwise warns if fonts are found in the static/ directory. (issue #4092)
 
 #### On the Universal Profile
   - **[com.google.fonts/check/interpolation_issues]:** Improved the warning message to show the actual master locations. (PR #4288)
