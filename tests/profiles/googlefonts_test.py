@@ -3681,34 +3681,35 @@ def test_check_repo_vf_has_static_fonts(tmp_path):
 
     shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
 
-    assert_results_contain(
+    assert_PASS(
         check(dir_path, {"family_directory": family_dir}),
-        WARN,
-        "missing",
-        "for a VF family which does not has a static dir.",
+        "for a VF family which does not have a static dir.",
     )
 
     static_dir = family_dir / "static"
     static_dir.mkdir()
-    assert_results_contain(
-        check(dir_path, {"family_directory": family_dir}),
-        FAIL,
-        "empty",
-        "for a VF family which has a static dir but no fonts in the static dir.",
-    )
-
-    static_fonts = portable_path("data/test/cabin")
+    static_fonts = portable_path("data/test/ibmplexsans-vf")
     shutil.rmtree(static_dir)
     shutil.copytree(static_fonts, static_dir)
     assert_PASS(
         check(dir_path, {"family_directory": family_dir}),
-        "for a VF family which has a static dir and static fonts",
+        "for a VF family which has a static dir and manually hinted static fonts",
     )
 
-    msg = assert_results_contain(
-        check("", {"family_directory": family_dir}), SKIP, "unfulfilled-conditions"
+    static_fonts = portable_path("data/test/overpassmono")
+    shutil.rmtree(static_dir)
+    static_dir.mkdir()
+    shutil.copyfile(
+        os.path.join(static_fonts, "OverpassMono-Regular.ttf"),
+        static_dir / "OverpassMono-Regular.ttf",
     )
-    assert msg == "Unfulfilled Conditions: gfonts_repo_structure"
+
+    assert_results_contain(
+        check(dir_path, {"family_directory": family_dir}),
+        WARN,
+        "not-manually-hinted",
+        "for a VF family which has a static dir but no manually hinted static fonts",
+    )
 
 
 def test_check_repo_upstream_yaml_has_required_fields():
