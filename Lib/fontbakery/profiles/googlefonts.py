@@ -3488,14 +3488,7 @@ def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
         Even though the OpenType spec allows unitsPerEm to be any value between 16
         and 16384, the Google Fonts project aims at a narrower set of reasonable values.
 
-        The spec suggests usage of powers of two in order to get some performance
-        improvements on legacy renderers, so those values are acceptable.
-
-        But values of 500 or 1000 are also acceptable, with the added benefit that it
-        makes upm math easier for designers, while the performance hit of not using a
-        power of two is most likely negligible nowadays.
-
-        Additionally, values above 2048 would likely result in unreasonable
+        Values above 4000 would likely result in unreasonable
         filesize increases.
     """,
     proposal="legacy:check/116",
@@ -3503,22 +3496,22 @@ def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
 def com_google_fonts_check_unitsperem_strict(ttFont):
     """Stricter unitsPerEm criteria for Google Fonts."""
     upm_height = ttFont["head"].unitsPerEm
-    ACCEPTABLE = [16, 32, 64, 128, 256, 500, 512, 1000, 1024, 2000, 2048]
-    if upm_height > 2048 and upm_height <= 4096:
-        yield WARN, Message(
+    RECOMMENDED = [16, 32, 64, 128, 256, 500, 512, 1000, 1024, 2000, 2048]
+    if upm_height > 4000:
+        yield FAIL, Message(
             "large-value",
             f"Font em size (unitsPerEm) is {upm_height}"
             f" which may be too large (causing filesize bloat),"
             f" unless you are sure that the detail level"
             f" in this font requires that much precision.",
         )
-    elif upm_height not in ACCEPTABLE:
+    elif upm_height < 16:
         yield FAIL, Message(
             "bad-value",
             f"Font em size (unitsPerEm) is {upm_height}."
             f" If possible, please consider using 1000."
             f" Good values for unitsPerEm,"
-            f" though, are typically these: {ACCEPTABLE}.",
+            f" though, are typically these: {RECOMMENDED}.",
         )
     else:
         yield PASS, f"Font em size is good (unitsPerEm = {upm_height})."
