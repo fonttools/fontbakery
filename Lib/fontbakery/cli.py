@@ -27,6 +27,9 @@ CLI_PROFILES = [
 
 
 def run_profile_check(profilename):
+    from fontbakery.utils import set_profile_name
+
+    set_profile_name(profilename)
     module = import_module(f"fontbakery.profiles.{profilename}")
     sys.exit(check_profile_main(module.profile))
 
