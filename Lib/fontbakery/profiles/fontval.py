@@ -13,7 +13,7 @@ from .shared_conditions import is_cff, is_variable_font
 try:
     import lxml.etree
 except ImportError:
-    exit_with_install_instructions("fontval")
+    exit_with_install_instructions()
 
 profile_imports = [".shared_conditions"]
 profile = profile_factory(

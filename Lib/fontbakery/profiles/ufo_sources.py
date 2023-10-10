@@ -25,14 +25,14 @@ UFO_PROFILE_CHECKS = [
 
 @condition
 def ufo_font(ufo):
-    from fontTools.ufoLib.errors import UFOLibError
+    try:
+        from fontTools.ufoLib.errors import UFOLibError
+        import defcon
+    except ImportError:
+        exit_with_install_instructions()
 
     try:
-        import defcon
-
         return defcon.Font(ufo)
-    except ImportError:
-        exit_with_install_instructions("ufo-sources")
     except UFOLibError:
         return None
 
@@ -45,10 +45,13 @@ def designSpace(designspace):
     'an object to read, write and edit
     interpolation systems for typefaces'.
     """
-    if designspace:
+    try:
         from fontTools.designspaceLib import DesignSpaceDocument
         import defcon
+    except ImportError:
+        exit_with_install_instructions()
 
+    if designspace:
         DS = DesignSpaceDocument.fromfile(designspace)
         DS.loadSourceFonts(defcon.Font)
         return DS
@@ -60,9 +63,12 @@ def designspace_sources(designSpace):
     Given a DesignSpaceDocument object,
     return a set of UFO font sources.
     """
-    if designSpace:
+    try:
         import defcon
+    except ImportError:
+        exit_with_install_instructions()
 
+    if designSpace:
         return designSpace.loadSourceFonts(defcon.Font)
 
 

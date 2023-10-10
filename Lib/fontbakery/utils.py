@@ -24,12 +24,19 @@ from fontTools.ttLib import TTFont
 
 from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
 
+profile_name = None
 
-def exit_with_install_instructions(extras_name):
+
+def set_profile_name(name):
+    global profile_name  # pylint:disable=W0603 (global-statement)
+    profile_name = name
+
+
+def exit_with_install_instructions():
     sys.exit(
-        f"\nTo run the {extras_name} profile, one needs to install\n"
-        f"fontbakery with the '{extras_name}' extra, like this:\n\n"
-        f"    python -m pip install -U 'fontbakery[{extras_name}]'\n\n"
+        f"\nTo run the {profile_name} profile, one needs to install\n"
+        f"fontbakery with the '{profile_name}' extra, like this:\n\n"
+        f"    python -m pip install -U 'fontbakery[{profile_name}]'\n\n"
     )
 
 
@@ -371,7 +378,10 @@ def get_font_glyph_data(font):
 
 
 def get_Protobuf_Message(klass, path):
-    from google.protobuf import text_format
+    try:
+        from google.protobuf import text_format
+    except ImportError:
+        exit_with_install_instructions()
 
     message = klass()
     text_data = open(path, "rb").read()
@@ -380,14 +390,20 @@ def get_Protobuf_Message(klass, path):
 
 
 def get_FamilyProto_Message(path):
-    from fontbakery.fonts_public_pb2 import FamilyProto
+    try:
+        from fontbakery.fonts_public_pb2 import FamilyProto
+    except ImportError:
+        exit_with_install_instructions()
 
     return get_Protobuf_Message(FamilyProto, path)
 
 
 def get_DesignerInfoProto_Message(text_data):
-    from fontbakery.designers_pb2 import DesignerInfoProto
-    from google.protobuf import text_format
+    try:
+        from fontbakery.designers_pb2 import DesignerInfoProto
+        from google.protobuf import text_format
+    except ImportError:
+        exit_with_install_instructions()
 
     message = DesignerInfoProto()
     text_format.Merge(text_data, message)

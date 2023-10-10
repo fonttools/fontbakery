@@ -184,7 +184,7 @@ def family_metadata(metadata_file):
     try:
         from google.protobuf import text_format
     except ImportError:
-        exit_with_install_instructions("googlefonts")
+        exit_with_install_instructions()
 
     from fontbakery.utils import get_FamilyProto_Message
 
@@ -197,8 +197,12 @@ def family_metadata(metadata_file):
 @condition
 def registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
-    from bs4 import BeautifulSoup, NavigableString
     from pkg_resources import resource_filename
+
+    try:
+        from bs4 import BeautifulSoup, NavigableString
+    except ImportError:
+        exit_with_install_instructions()
 
     registered_vendor_ids = {}
     CACHED = resource_filename(

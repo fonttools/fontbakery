@@ -254,13 +254,14 @@ GOOGLEFONTS_PROFILE_CHECKS = (
 )
 def com_google_fonts_check_canonical_filename(ttFont):
     """Checking file is named canonically."""
-    try:
-        from axisregistry import build_filename
 
-        current_filename = os.path.basename(ttFont.reader.file.name)
-        expected_filename = build_filename(ttFont)
+    try:
+        import axisregistry
     except ImportError:
-        exit_with_install_instructions("googlefonts")
+        exit_with_install_instructions()
+
+    current_filename = os.path.basename(ttFont.reader.file.name)
+    expected_filename = axisregistry.build_filename(ttFont)
 
     if current_filename != expected_filename:
         yield FAIL, Message(
@@ -375,10 +376,13 @@ def com_google_fonts_check_description_urls(description_html):
 
 @condition
 def description_html(description):
+    try:
+        from lxml import etree
+    except ImportError:
+        exit_with_install_instructions()
+
     if not description:
         return
-
-    from lxml import etree
 
     html = "<html>" + description + "</html>"
     try:
@@ -444,8 +448,12 @@ def com_google_fonts_check_description_git_url(description_html):
 )
 def com_google_fonts_check_description_valid_html(descfile, description):
     """Is this a proper HTML snippet?"""
-    passed = True
+    try:
+        from lxml import html
+    except ImportError:
+        exit_with_install_instructions()
 
+    passed = True
     if "<html>" in description or "</html>" in description:
         yield FAIL, Message(
             "html-tag",
@@ -454,8 +462,6 @@ def com_google_fonts_check_description_valid_html(descfile, description):
             f" later be included in the Google Fonts"
             f" font family specimen webpage.",
         )
-
-    from lxml import html
 
     try:
         html.fromstring("<html>" + description + "</html>")
@@ -535,8 +541,11 @@ def com_google_fonts_check_description_eof_linebreak(description):
 )
 def com_google_fonts_check_metadata_parses(family_directory):
     """Check METADATA.pb parse correctly."""
-    from google.protobuf import text_format
-    from fontbakery.utils import get_FamilyProto_Message
+    try:
+        from google.protobuf import text_format
+        from fontbakery.utils import get_FamilyProto_Message
+    except ImportError:
+        exit_with_install_instructions()
 
     try:
         pb_file = os.path.join(family_directory, "METADATA.pb")
@@ -1072,8 +1081,11 @@ def com_google_fonts_check_glyph_coverage(
     ttFont, font_codepoints, family_metadata, config
 ):
     """Check Google Fonts glyph coverage."""
-    from glyphsets import GFGlyphData as glyph_data
-    import unicodedata2
+    try:
+        from glyphsets import GFGlyphData as glyph_data
+        import unicodedata2
+    except ImportError:
+        exit_with_install_instructions()
 
     def missing_encoded_glyphs(glyphs):
         encoded_glyphs = [g["unicode"] for g in glyphs if g["unicode"]]
@@ -1139,8 +1151,11 @@ def com_google_fonts_check_metadata_unsupported_subsets(
     family_metadata, ttFont, font_codepoints
 ):
     """Check for METADATA subsets with zero support."""
-    from glyphsets import codepoints
-    from glyphsets.subsets import SUBSETS
+    try:
+        from glyphsets import codepoints
+        from glyphsets.subsets import SUBSETS
+    except ImportError:
+        exit_with_install_instructions()
 
     codepoints.set_encoding_path(codepoints.nam_dir)
 
@@ -1191,13 +1206,17 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
     family_directory, font, ttFont, font_codepoints, config
 ):
     """Check for codepoints not covered by METADATA subsets."""
-    from glyphsets import codepoints
+    try:
+        import unicodedata2
+        from glyphsets import codepoints
+    except ImportError:
+        exit_with_install_instructions()
+
     from fontbakery.utils import pretty_print_list
     from fontbakery.profiles.googlefonts_conditions import (
         metadata_file,
         family_metadata,
     )
-    import unicodedata2
 
     codepoints.set_encoding_path(codepoints.nam_dir)
 
@@ -3625,7 +3644,10 @@ def com_google_fonts_check_production_glyphs_similarity(
 
 @condition
 def uharfbuzz_blob(font):
-    import uharfbuzz as hb
+    try:
+        import uharfbuzz as hb
+    except ImportError:
+        exit_with_install_instructions()
 
     return hb.Blob.from_file_path(font)
 
@@ -3647,8 +3669,12 @@ def uharfbuzz_blob(font):
 )
 def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
     """Checking direction of slnt axis angles"""
+    try:
+        import uharfbuzz as hb
+    except ImportError:
+        exit_with_install_instructions()
+
     from fontbakery.utils import axis, PointsPen
-    import uharfbuzz as hb
 
     if not axis(ttFont, "slnt"):
         yield PASS, "Font has no slnt axis"
@@ -3968,7 +3994,10 @@ def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
 )
 def com_google_fonts_check_fontv(ttFont):
     """Check for font-v versioning."""
-    from fontv.libfv import FontVersion
+    try:
+        from fontv.libfv import FontVersion
+    except ImportError:
+        exit_with_install_instructions()
 
     fv = FontVersion(ttFont)
     if fv.version and (fv.is_development or fv.is_release):
@@ -6853,7 +6882,10 @@ def can_shape(ttFont, text, parameters=None):
     Returns true if the font can render a text string without any
     .notdef characters.
     """
-    from vharfbuzz import Vharfbuzz
+    try:
+        from vharfbuzz import Vharfbuzz
+    except ImportError:
+        exit_with_install_instructions()
 
     filename = ttFont.reader.file.name
     vharfbuzz = Vharfbuzz(filename)
@@ -6981,7 +7013,10 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
 )
 def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     """Check samples can be rendered."""
-    from gflanguages import LoadLanguages
+    try:
+        from gflanguages import LoadLanguages
+    except ImportError:
+        exit_with_install_instructions()
 
     passed = True
     languages = LoadLanguages()

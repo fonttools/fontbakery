@@ -2,7 +2,6 @@ import math
 import os
 import shutil
 import sys
-from unittest.mock import patch
 
 import pytest
 from fontTools.ttLib import TTFont
@@ -173,15 +172,19 @@ def test_extra_needed_exit_from_conditions(monkeypatch):
     remove_import_raiser(module_name)
 
 
-@patch("axisregistry.build_filename", side_effect=ImportError)
-def test_extra_needed_exit(mock_import_error):
-    ttFont = TTFont(TEST_FILE("cabinvfbeta/Cabin-VF.ttf"))
-    with patch("sys.exit") as mock_exit:
+def test_extra_needed_exit(monkeypatch):
+    module_name = "axisregistry"
+    sys.meta_path.insert(0, ImportRaiser(module_name))
+    monkeypatch.delitem(sys.modules, module_name, raising=False)
+
+    with pytest.raises(SystemExit):
         check = CheckTester(
             googlefonts_profile, "com.google.fonts/check/canonical_filename"
         )
+        ttFont = TTFont(TEST_FILE("cabinvfbeta/Cabin-VF.ttf"))
         check(ttFont)
-        mock_exit.assert_called()
+
+    remove_import_raiser(module_name)
 
 
 @pytest.mark.parametrize(

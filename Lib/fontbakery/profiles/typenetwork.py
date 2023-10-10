@@ -14,7 +14,12 @@ from fontbakery.profiles.notofonts import NOTOFONTS_PROFILE_CHECKS
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.section import Section
 from fontbakery.status import PASS, FAIL, WARN, SKIP, INFO
-from fontbakery.utils import add_check_overrides, bullet_list, pretty_print_list
+from fontbakery.utils import (
+    add_check_overrides,
+    bullet_list,
+    exit_with_install_instructions,
+    pretty_print_list,
+)
 from fontbakery.constants import (
     NameID,
     PlatformID,
@@ -354,7 +359,10 @@ OVERRIDDEN_CHECKS = [
 )
 def com_typenetwork_glyph_coverage(ttFont, font_codepoints, config):
     """Check Type Network minimum glyph coverage."""
-    import unicodedata2
+    try:
+        import unicodedata2
+    except ImportError:
+        exit_with_install_instructions()
 
     TN_latin_set = {
         0x0020: (" ", "SPACE"),

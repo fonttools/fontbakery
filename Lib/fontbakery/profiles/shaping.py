@@ -158,7 +158,7 @@ def run_a_set_of_shaping_tests(
         filename = Path(ttFont.reader.file.name)
         vharfbuzz = Vharfbuzz(filename)
     except ImportError:
-        exit_with_install_instructions("shaping")
+        exit_with_install_instructions()
 
     shaping_file_found = False
     ran_a_test = False
@@ -408,7 +408,10 @@ def com_google_fonts_check_shaping_collides(config, ttFont):
 
 
 def setup_glyph_collides(ttFont, configuration):
-    from collidoscope import Collidoscope
+    try:
+        from collidoscope import Collidoscope
+    except ImportError:
+        exit_with_install_instructions()
 
     filename = Path(ttFont.reader.file.name)
     collidoscope_configuration = configuration.get("collidoscope")
@@ -430,7 +433,10 @@ def setup_glyph_collides(ttFont, configuration):
 def run_collides_glyph_test(
     filename, vharfbuzz, test, configuration, failed_shaping_tests, extra_data
 ):
-    from stringbrewer import StringBrewer
+    try:
+        from stringbrewer import StringBrewer
+    except ImportError:
+        exit_with_install_instructions()
 
     col = extra_data["collidoscope"]
     is_stringbrewer = (
@@ -481,7 +487,10 @@ def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
 
 
 def is_complex_shaper_font(ttFont):
-    from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
+    try:
+        from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
+    except ImportError:
+        exit_with_install_instructions()
 
     for table in ["GSUB", "GPOS"]:
         if table not in ttFont:
@@ -603,10 +612,14 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
 def com_google_fonts_check_soft_dotted(ttFont):
     """Ensure soft_dotted characters lose their dot when combined with marks that
     replace the dot."""
+    try:
+        from vharfbuzz import Vharfbuzz
+    except ImportError:
+        exit_with_install_instructions()
+
     import itertools
     from beziers.path import BezierPath
     from fontTools import unicodedata
-    from vharfbuzz import Vharfbuzz
 
     cmap = ttFont["cmap"].getBestCmap()
 

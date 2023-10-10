@@ -29,13 +29,16 @@ from fontbakery.utils import (
 
 
 def test_exit_with_install_instructions():
-    extras_name = "test-profile"
+    from fontbakery.utils import set_profile_name
+
+    profile_name = "test-profile"
+    set_profile_name(profile_name)
     with patch("sys.exit") as mock_exit:
-        exit_with_install_instructions(extras_name)
+        exit_with_install_instructions()
         mock_exit.assert_called_with(
-            f"\nTo run the {extras_name} profile, one needs to install\n"
-            f"fontbakery with the '{extras_name}' extra, like this:\n\n"
-            f"    python -m pip install -U 'fontbakery[{extras_name}]'\n\n"
+            f"\nTo run the {profile_name} profile, one needs to install\n"
+            f"fontbakery with the '{profile_name}' extra, like this:\n\n"
+            f"    python -m pip install -U 'fontbakery[{profile_name}]'\n\n"
         )
 
 

@@ -6,6 +6,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Release notes
   - This release adds support for marking checks as **experimental**, which will make them not affect the process exit code and so will allow such checks to result in a FAIL without breaking continuous integration builds. This will give time for users to report problems on the implementation of new checks. If after some time nobody complains, then those new checks will more safely be made effective by removing their `experimental` tag.
 
+  - **Bugfix:** Display informative message when users forget to install the `extra` needed for the vendor-specific profile they're trying to run (issue #4292)
+
 ### New checks
 #### Addded to the Google Fonts Profile
   - **EXPERIMENTAL - [com.google.fonts/check/metadata/empty_designer]:** Any font published on Google Fonts must credit one or several authors, foundry and/or individuals. (issue #3961)

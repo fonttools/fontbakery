@@ -1,8 +1,10 @@
 import os
-from unittest.mock import patch
+import sys
 
 import defcon
 import pytest
+
+from conftest import ImportRaiser, remove_import_raiser
 
 from fontbakery.status import FAIL, SKIP, WARN
 from fontbakery.codetesting import (
@@ -24,15 +26,19 @@ def empty_ufo_font(tmpdir):
     return (ufo, ufo_path)
 
 
-@patch("defcon.Font", side_effect=ImportError)
-def test_extra_needed_exit(mock_import_error):
+def test_extra_needed_exit(monkeypatch):
+    module_name = "defcon"
+    sys.meta_path.insert(0, ImportRaiser(module_name))
+    monkeypatch.delitem(sys.modules, module_name, raising=False)
+
     ufo_path = TEST_FILE("test.ufo")
-    with patch("sys.exit") as mock_exit:
+    with pytest.raises(SystemExit):
         check = CheckTester(
             ufo_sources_profile, "com.daltonmaag/check/ufo_required_fields"
         )
         check(ufo_path)
-        mock_exit.assert_called()
+
+    remove_import_raiser(module_name)
 
 
 def test_check_ufolint(empty_ufo_font):
