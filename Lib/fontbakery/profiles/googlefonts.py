@@ -2508,12 +2508,16 @@ def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadat
     """
     from fontbakery.utils import get_name_entry_strings
 
-    font_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+    font_familynames = get_name_entry_strings(
+        ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME, langID=0x409
+    )
     if len(font_familynames) == 0:
         # We'll only use nameid 1 (FONT_FAMILY_NAME) when the font
         # does not have nameid 16 (TYPOGRAPHIC_FAMILY_NAME).
         # https://github.com/fonttools/fontbakery/issues/4086
-        font_familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+        font_familynames = get_name_entry_strings(
+            ttFont, NameID.FONT_FAMILY_NAME, langID=0x409
+        )
 
     nameid = NameID.FONT_FAMILY_NAME
     if len(font_familynames) == 0:

@@ -1819,7 +1819,7 @@ def test_check_metadata_nameid_full_name():
     # Good font with other language name entries
     font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
 
-    assert_PASS(check(font), "with a good font...")
+    assert_PASS(check(font), "with a good font with other languages...")
 
 
 def test_check_metadata_nameid_font_name():
@@ -1857,6 +1857,11 @@ def test_check_metadata_nameid_font_name():
     # Tiro Devanagari Hindi is a good exampmle of this:
     font = TEST_FILE("tirodevanagarihindi/TiroDevanagariHindi-Regular.ttf")
     assert_PASS(check(font), "with a good font containing name id 16...")
+
+    # Good font with other language name entries
+    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
+
+    assert_PASS(check(font), "with a good font with other languages...")
 
     # TODO:
     # FAIL, "lacks-entry"
