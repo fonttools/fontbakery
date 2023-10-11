@@ -2699,21 +2699,22 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(
     """METADATA.pb font.post_script_name field
     contains font name in right format?
     """
-    for font_familyname in font_familynames:
-        psname = "".join(str(font_familyname).split())
-        if psname in "".join(font_metadata.post_script_name.split("-")):
-            yield PASS, (
-                "METADATA.pb postScriptName field"
-                " contains font name in right format."
-            )
-        else:
-            yield FAIL, Message(
-                "mismatch",
-                f"METADATA.pb"
-                f' postScriptName ("{font_metadata.post_script_name}")'
-                f" does not match"
-                f' correct font name format ("{font_familyname}").',
-            )
+    possible_psnames = [
+        "".join(str(font_familyname).split()) for font_familyname in font_familynames
+    ]
+    metadata_psname = "".join(font_metadata.post_script_name.split("-"))
+    if any(psname in metadata_psname for psname in possible_psnames):
+        yield PASS, (
+            "METADATA.pb postScriptName field contains font name in right format."
+        )
+    else:
+        yield FAIL, Message(
+            "mismatch",
+            f"METADATA.pb"
+            f' postScriptName ("{font_metadata.post_script_name}")'
+            f" does not match"
+            f' correct font name format ("{", ".join(possible_psnames)}").',
+        )
 
 
 @check(

@@ -2086,6 +2086,11 @@ def test_check_metadata_valid_post_script_name_values():
             f"with a bad font ({fontfile})...",
         )
 
+    # Good font with other language name entries
+    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
+
+    assert_PASS(check(font), "with a good font with other languages...")
+
 
 def test_check_metadata_valid_nameid25():
     """Check name ID 25 to end with "Italic" for Italic VFs"""
