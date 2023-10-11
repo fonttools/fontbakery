@@ -716,6 +716,7 @@ def parse_md_table(match, tables_memo):
     from rich.table import Table
     from rich.style import Style
     from rich.align import Align
+    from rich.markdown import Markdown
     from rich import box
 
     [table_header, table_body, columns] = split_md_table(match.group(2))
@@ -735,6 +736,7 @@ def parse_md_table(match, tables_memo):
     for row in table_body:
         num += 1
         style = sty_even if (num % 2 == 0) else sty_odd
+        row = map(Markdown, row)
         table.add_row(*row, style=style)
 
     console = Console(width=70)

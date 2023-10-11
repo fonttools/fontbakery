@@ -3721,7 +3721,7 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
         NameID.FONT_FAMILY_NAME: "Family Name",
         NameID.FONT_SUBFAMILY_NAME: "Subfamily Name",
         NameID.FULL_FONT_NAME: "Full Name",
-        NameID.POSTSCRIPT_NAME: "Poscript Name",
+        NameID.POSTSCRIPT_NAME: "Postscript Name",
         NameID.TYPOGRAPHIC_FAMILY_NAME: "Typographic Family Name",
         NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "Typographic Subfamily Name",
     }
@@ -3737,6 +3737,9 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
             row["expected"] = expected_names[nameID]
         else:
             row["expected"] = "N/A"
+        if row["current"] != row["expected"]:
+            row["current"] = "**" + row["current"] + "**"
+            row["expected"] = "**" + row["expected"] + "**"
         table.append(row)
 
     new_names = set(font_names) - set(expected_names)
