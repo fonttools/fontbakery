@@ -22,6 +22,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/valid_name_values))]:** Allow name table entries in any language to match the METADATA. (issue #4000)
   - **[com.google.fonts/check/metadata/valid_full_name_values))]:** Allow name table entries in any language to match the METADATA. (issue #4000)
   - **[com.google.fonts/check/metadata/valid_post_script_name_values))]:** Allow name table entries in any language to match the METADATA. (issue #4000)
+  - **[com.google.fonts/check/font_names))]:** This check now highlights names which did not match the expected values. (issue #3912)
 
 #### On the Universal Profile
   - **[com.google.fonts/check/interpolation_issues]:** Improved the warning message to show the actual master locations. (PR #4288)
