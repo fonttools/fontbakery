@@ -3738,8 +3738,8 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
         else:
             row["expected"] = "N/A"
         if row["current"] != row["expected"]:
-            row["current"] = "**"+row["current"]+"**"
-            row["expected"] = "**"+row["expected"]+"**"
+            row["current"] = "**" + row["current"] + "**"
+            row["expected"] = "**" + row["expected"] + "**"
         table.append(row)
 
     new_names = set(font_names) - set(expected_names)
