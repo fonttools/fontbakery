@@ -2647,7 +2647,7 @@ def com_google_fonts_check_metadata_valid_full_name_values(
 
     if any((name in font_metadata.full_name) for name in familynames):
         yield PASS, (
-            f"METADATA.pb font.full_name field contains" f" font name in right format."
+            "METADATA.pb font.full_name field contains font name in right format."
         )
     else:
         yield FAIL, Message(
