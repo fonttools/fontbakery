@@ -1816,6 +1816,11 @@ def test_check_metadata_nameid_full_name():
         "when a font lacks FULL_FONT_NAME entries in its name table...",
     )
 
+    # Good font with other language name entries
+    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
+
+    assert_PASS(check(font), "with a good font...")
+
 
 def test_check_metadata_nameid_font_name():
     """

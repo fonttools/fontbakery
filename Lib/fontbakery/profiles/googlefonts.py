@@ -2459,7 +2459,7 @@ def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
     """
     from fontbakery.utils import get_name_entry_strings
 
-    full_fontnames = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
+    full_fontnames = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME, langID=0x409)
     # FIXME: only check English names
     #        https://github.com/fonttools/fontbakery/issues/4000
 
