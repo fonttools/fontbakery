@@ -2645,21 +2645,18 @@ def com_google_fonts_check_metadata_valid_full_name_values(
         if familynames == []:
             yield SKIP, "No TYPOGRAPHIC_FAMILYNAME"
 
-    for font_familyname in familynames:
-        if font_familyname in font_metadata.full_name:
-            yield PASS, (
-                f"METADATA.pb font.full_name field contains"
-                f" font name in right format."
-                f' ("{font_familyname}" in "{font_metadata.full_name}")'
-            )
-        else:
-            yield FAIL, Message(
-                "mismatch",
-                f"METADATA.pb font.full_name field"
-                f' ("{font_metadata.full_name}")'
-                f" does not match correct font name format"
-                f' ("{font_familyname}").',
-            )
+    if any((name in font_metadata.full_name) for name in familynames):
+        yield PASS, (
+            f"METADATA.pb font.full_name field contains" f" font name in right format."
+        )
+    else:
+        yield FAIL, Message(
+            "mismatch",
+            f"METADATA.pb font.full_name field"
+            f' ("{font_metadata.full_name}")'
+            f" does not match correct font name format"
+            f' ("{", ".join(familynames)}").',
+        )
 
 
 @check(
