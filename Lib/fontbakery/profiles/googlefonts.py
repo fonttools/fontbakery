@@ -2459,7 +2459,7 @@ def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
     """
     from fontbakery.utils import get_name_entry_strings
 
-    full_fontnames = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
+    full_fontnames = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME, langID=0x409)
     # FIXME: only check English names
     #        https://github.com/fonttools/fontbakery/issues/4000
 
@@ -2508,12 +2508,16 @@ def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadat
     """
     from fontbakery.utils import get_name_entry_strings
 
-    font_familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+    font_familynames = get_name_entry_strings(
+        ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME, langID=0x409
+    )
     if len(font_familynames) == 0:
         # We'll only use nameid 1 (FONT_FAMILY_NAME) when the font
         # does not have nameid 16 (TYPOGRAPHIC_FAMILY_NAME).
         # https://github.com/fonttools/fontbakery/issues/4086
-        font_familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+        font_familynames = get_name_entry_strings(
+            ttFont, NameID.FONT_FAMILY_NAME, langID=0x409
+        )
 
     nameid = NameID.FONT_FAMILY_NAME
     if len(font_familynames) == 0:
@@ -2610,17 +2614,14 @@ def com_google_fonts_check_metadata_valid_name_values(
     else:
         familynames = typographic_familynames
 
-    passed = True
-    for font_familyname in familynames:
-        if font_familyname not in font_metadata.name:
-            passed = False
-            yield FAIL, Message(
-                "mismatch",
-                f'METADATA.pb font.name field ("{font_metadata.name}")'
-                f" does not match"
-                f' correct font name format ("{font_familyname}").',
-            )
-    if passed:
+    if not any((name in font_metadata.name) for name in familynames):
+        yield FAIL, Message(
+            "mismatch",
+            f'METADATA.pb font.name field ("{font_metadata.name}")'
+            f" does not match"
+            f' correct font name format ("{", ".join(familynames)}").',
+        )
+    else:
         yield PASS, "METADATA.pb font.name field contains font name in right format."
 
 
@@ -2644,21 +2645,18 @@ def com_google_fonts_check_metadata_valid_full_name_values(
         if familynames == []:
             yield SKIP, "No TYPOGRAPHIC_FAMILYNAME"
 
-    for font_familyname in familynames:
-        if font_familyname in font_metadata.full_name:
-            yield PASS, (
-                f"METADATA.pb font.full_name field contains"
-                f" font name in right format."
-                f' ("{font_familyname}" in "{font_metadata.full_name}")'
-            )
-        else:
-            yield FAIL, Message(
-                "mismatch",
-                f"METADATA.pb font.full_name field"
-                f' ("{font_metadata.full_name}")'
-                f" does not match correct font name format"
-                f' ("{font_familyname}").',
-            )
+    if any((name in font_metadata.full_name) for name in familynames):
+        yield PASS, (
+            "METADATA.pb font.full_name field contains font name in right format."
+        )
+    else:
+        yield FAIL, Message(
+            "mismatch",
+            f"METADATA.pb font.full_name field"
+            f' ("{font_metadata.full_name}")'
+            f" does not match correct font name format"
+            f' ("{", ".join(familynames)}").',
+        )
 
 
 @check(
@@ -2701,21 +2699,22 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(
     """METADATA.pb font.post_script_name field
     contains font name in right format?
     """
-    for font_familyname in font_familynames:
-        psname = "".join(str(font_familyname).split())
-        if psname in "".join(font_metadata.post_script_name.split("-")):
-            yield PASS, (
-                "METADATA.pb postScriptName field"
-                " contains font name in right format."
-            )
-        else:
-            yield FAIL, Message(
-                "mismatch",
-                f"METADATA.pb"
-                f' postScriptName ("{font_metadata.post_script_name}")'
-                f" does not match"
-                f' correct font name format ("{font_familyname}").',
-            )
+    possible_psnames = [
+        "".join(str(font_familyname).split()) for font_familyname in font_familynames
+    ]
+    metadata_psname = "".join(font_metadata.post_script_name.split("-"))
+    if any(psname in metadata_psname for psname in possible_psnames):
+        yield PASS, (
+            "METADATA.pb postScriptName field contains font name in right format."
+        )
+    else:
+        yield FAIL, Message(
+            "mismatch",
+            f"METADATA.pb"
+            f' postScriptName ("{font_metadata.post_script_name}")'
+            f" does not match"
+            f' correct font name format ("{", ".join(possible_psnames)}").',
+        )
 
 
 @check(

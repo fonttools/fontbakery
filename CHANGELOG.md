@@ -17,6 +17,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/glyph_coverage]:** Only check for GF Latin Kernel when fonts have a primary_script set. (issue #4111)
   - **[com.google.fonts/check/vf_has_static_fonts]:** This check now allows manually-hinted static fonts but otherwise warns if fonts are found in the static/ directory. (issue #4092)
   - **[com.google.fonts/check/unitsperem_strict]:** Relax the range of values which cause FAIL. (issue #4094)
+  - **[com.google.fonts/check/metadata/nameid/full_name)]:** Only English language name entries will be considered. (issue #4000)
+  - **[com.google.fonts/check/metadata/nameid/font_name)]:** Only English language name entries will be considered. (issue #4000)
+  - **[com.google.fonts/check/metadata/valid_name_values))]:** Allow name table entries in any language to match the METADATA. (issue #4000)
+  - **[com.google.fonts/check/metadata/valid_full_name_values))]:** Allow name table entries in any language to match the METADATA. (issue #4000)
+  - **[com.google.fonts/check/metadata/valid_post_script_name_values))]:** Allow name table entries in any language to match the METADATA. (issue #4000)
 
 #### On the Universal Profile
   - **[com.google.fonts/check/interpolation_issues]:** Improved the warning message to show the actual master locations. (PR #4288)

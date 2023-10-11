@@ -1816,6 +1816,11 @@ def test_check_metadata_nameid_full_name():
         "when a font lacks FULL_FONT_NAME entries in its name table...",
     )
 
+    # Good font with other language name entries
+    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
+
+    assert_PASS(check(font), "with a good font with other languages...")
+
 
 def test_check_metadata_nameid_font_name():
     """
@@ -1852,6 +1857,11 @@ def test_check_metadata_nameid_font_name():
     # Tiro Devanagari Hindi is a good exampmle of this:
     font = TEST_FILE("tirodevanagarihindi/TiroDevanagariHindi-Regular.ttf")
     assert_PASS(check(font), "with a good font containing name id 16...")
+
+    # Good font with other language name entries
+    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
+
+    assert_PASS(check(font), "with a good font with other languages...")
 
     # TODO:
     # FAIL, "lacks-entry"
@@ -1984,6 +1994,11 @@ def test_check_metadata_valid_name_values():
             f"with a bad NON-RIBBI font ({font})...",
         )
 
+    # Good font with other language name entries
+    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
+
+    assert_PASS(check(font), "with a good font with other languages...")
+
 
 def test_check_metadata_valid_full_name_values():
     """METADATA.pb font.full_name field contains font name in right format?"""
@@ -2018,6 +2033,11 @@ def test_check_metadata_valid_full_name_values():
             "mismatch",
             f"with a bad NON-RIBBI font ({font})...",
         )
+
+    # Good font with other language name entries
+    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
+
+    assert_PASS(check(font), "with a good font with other languages...")
 
 
 def test_check_metadata_valid_filename_values():
@@ -2065,6 +2085,11 @@ def test_check_metadata_valid_post_script_name_values():
             "mismatch",
             f"with a bad font ({fontfile})...",
         )
+
+    # Good font with other language name entries
+    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
+
+    assert_PASS(check(font), "with a good font with other languages...")
 
 
 def test_check_metadata_valid_nameid25():
