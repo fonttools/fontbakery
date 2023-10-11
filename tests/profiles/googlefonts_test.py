@@ -1994,6 +1994,11 @@ def test_check_metadata_valid_name_values():
             f"with a bad NON-RIBBI font ({font})...",
         )
 
+    # Good font with other language name entries
+    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
+
+    assert_PASS(check(font), "with a good font with other languages...")
+
 
 def test_check_metadata_valid_full_name_values():
     """METADATA.pb font.full_name field contains font name in right format?"""
