@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.10.0 (2023-Oct-10)
+## Upcoming release: 0.10.1 (2023-Oct-??)
+  - ...
+
+
+## 0.10.0 (2023-Oct-12)
 ### Release notes
   - This release adds support for marking checks as **experimental**, which will make them not affect the process exit code and so will allow such checks to result in a FAIL without breaking continuous integration builds. This will give time for users to report problems on the implementation of new checks. If after some time nobody complains, then those new checks will more safely be made effective by removing their `experimental` tag.
 
