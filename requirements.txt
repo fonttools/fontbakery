@@ -7,24 +7,24 @@ cmarkgfm==2022.10.27
 collidoscope==0.6.5
 defcon==0.10.3
 dehinter==4.0.0
-fontTools[ufo,lxml,unicode]==4.42.1
+fontTools[ufo,lxml,unicode]==4.43.1
 font-v==2.1.0
 freetype-py==2.3.0  # pinned for now. See: https://github.com/fonttools/fontbakery/issues/4143
-gflanguages==0.5.6
+gflanguages==0.5.7
 glyphsets==0.6.4
 lxml==4.9.3
 munkres==1.1.4  # This should be a dependency of fonttools instead!
 opentype-sanitizer==9.1.0
 opentypespec==1.9.1
-packaging==23.1
+packaging==23.2
 pip-api==0.0.30
 PyYAML==6.0.1
 protobuf==3.20.3
 requests==2.31.0
-rich==13.5.3
+rich==13.6.0
+shaperglot==0.3.0
 stringbrewer==0.0.1
 toml==0.10.2
 ufolint==1.2.0
-vharfbuzz==0.2.0
 ufo2ft==2.33.4
-shaperglot==0.3.0
+vharfbuzz==0.2.0
