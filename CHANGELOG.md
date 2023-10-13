@@ -6,7 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
-## Upcoming release: 0.10.1 (2023-Oct-13)
+## 0.10.1 (2023-Oct-13)
 ### New checks
 #### Added to the Universal Profile
   - **EXPERIMENTAL - [com.google.fonts/check/legacy_accents]:** Legacy accents must not be used in composites and must have positive width (issue #3959)
