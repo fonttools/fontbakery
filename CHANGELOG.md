@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/license/OFL_body_text]:** Make the check more tolerant to minor and negligible differences on the contents of the OFL license text, ignoring white space (tabs, line-breaks and space chars). (issue #4289)
+  - **[com.google.fonts/check/family/equal_numbers_of_glyphs]:** This check has been reworked, re-enabled and renamed to `com.google.fonts/check/family/equal_codepoint_coverage`. It now checks that the encoded glyphset is consistent across a family. (issue #4180)
 
 
 ## 0.10.0 (2023-Oct-12)
