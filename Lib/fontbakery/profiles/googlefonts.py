@@ -1458,8 +1458,11 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
 def com_google_fonts_check_license_OFL_body_text(license_contents):
     """Check OFL body text is correct."""
     from fontbakery.constants import OFL_BODY_TEXT
+    from fontbakery.utils import remove_white_space
 
-    if OFL_BODY_TEXT not in license_contents.replace("http://", "https://"):
+    if remove_white_space(OFL_BODY_TEXT) not in remove_white_space(
+        license_contents.replace("http://", "https://")
+    ):
         yield FAIL, Message(
             "incorrect-ofl-body-text",
             "The OFL.txt body text is incorrect. Please use"

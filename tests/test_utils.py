@@ -42,6 +42,12 @@ def test_exit_with_install_instructions():
         )
 
 
+def test_remove_white_space():
+    from fontbakery.utils import remove_white_space
+
+    assert remove_white_space("\t  ab \n\tcd  ef ") == "abcdef"
+
+
 @pytest.mark.parametrize(
     "input_str, expected_tup",
     [
