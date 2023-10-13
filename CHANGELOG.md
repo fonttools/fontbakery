@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.10.1 (2023-Oct-??)
-  - ...
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/license/OFL_body_text]:** Make the check more tolerant to minor and negligible differences on the contents of the OFL license text, ignoring white space (tabs, line-breaks and space chars). (issue #4289)
 
 
 ## 0.10.0 (2023-Oct-12)

@@ -40,6 +40,13 @@ def exit_with_install_instructions():
     )
 
 
+def remove_white_space(s):
+    s = s.replace(" ", "")
+    s = s.replace("\t", "")
+    s = s.replace("\n", "")
+    return s
+
+
 # TODO: this should be part of FontBakeryCheck and check.conditions
 # should be a tuple (negated, name)
 def is_negated(name):
