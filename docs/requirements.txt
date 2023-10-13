@@ -1,3 +1,4 @@
 sphinx == 4.3.0
 sphinx_rtd_theme == 1.0.0
 recommonmark == 0.7.1
+-e ..[all]
