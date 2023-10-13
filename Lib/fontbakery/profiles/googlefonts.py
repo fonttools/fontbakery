@@ -7309,8 +7309,7 @@ def com_google_fonts_check_description_noto_has_article(font):
         be mentioned in the designer field.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3961",
-    proponent="Rosalie Wagner (@RosaWagner)",
-    experimental="Since 2023/Oct/05",
+    experimental="Since 2023/Oct/12",
 )
 def com_google_fonts_check_metadata_empty_designer(family_metadata):
     """At least one designer is declared in METADATA.pb"""
