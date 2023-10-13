@@ -2,7 +2,11 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.10.1 (2023-Oct-??)
+## Upcoming release: 0.10.2 (2023-Oct-??)
+  - ...
+
+
+## Upcoming release: 0.10.1 (2023-Oct-13)
 ### New checks
 #### Added to the Universal Profile
   - **EXPERIMENTAL - [com.google.fonts/check/legacy_accents]:** Legacy accents must not be used in composites and must have positive width (issue #3959)
@@ -20,7 +24,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **Bugfix:** Display informative message when users forget to install the `extra` needed for the vendor-specific profile they're trying to run (issue #4292)
 
 ### New checks
-#### Addded to the Google Fonts Profile
+#### Added to the Google Fonts Profile
   - **EXPERIMENTAL - [com.google.fonts/check/metadata/empty_designer]:** Any font published on Google Fonts must credit one or several authors, foundry and/or individuals. (issue #3961)
 
 ### Changes to existing checks
