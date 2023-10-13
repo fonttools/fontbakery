@@ -757,23 +757,22 @@ def test_check_metadata_undeclared_fonts():
     assert_PASS(check(font))
 
 
-@pytest.mark.skip(reason="re-enable after addressing issue #1998")
-def test_check_family_equal_numbers_of_glyphs(mada_ttFonts, cabin_ttFonts):
-    """Fonts have equal numbers of glyphs?"""
+def test_check_family_equal_codepoint_coverage(mada_ttFonts, cabin_ttFonts):
+    """Fonts have equal codepoint coverage?"""
     check = CheckTester(
-        googlefonts_profile, "com.google.fonts/check/family/equal_numbers_of_glyphs"
+        googlefonts_profile, "com.google.fonts/check/family/equal_codepoint_coverage"
     )
 
     # our reference Cabin family is know to be good here.
     assert_PASS(check(cabin_ttFonts), "with a good family.")
 
-    # our reference Mada family is bad here with 407 glyphs on most font files
-    # except the Black and the Medium, that both have 408 glyphs.
+    # Let's de-encode some glyphs
+    del cabin_ttFonts[1]["cmap"].tables[0].cmap[8730]
     assert_results_contain(
-        check(mada_ttFonts),
+        check(cabin_ttFonts),
         FAIL,
-        "glyph-count-diverges",
-        "with fonts that diverge on number of glyphs.",
+        "glyphset-diverges",
+        "with fonts that diverge.",
     )
 
 
