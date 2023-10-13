@@ -118,7 +118,7 @@ DESCRIPTION_CHECKS = [
 ]
 
 FAMILY_CHECKS = [
-    # "com.google.fonts/check/family/equal_numbers_of_glyphs",
+    "com.google.fonts/check/family/equal_codepoint_coverage",
     # "com.google.fonts/check/family/equal_glyph_names",
     "com.google.fonts/check/family/has_license",
     "com.google.fonts/check/family/control_chars",
@@ -831,59 +831,38 @@ def com_google_fonts_check_metadata_category(family_metadata):
         yield PASS, "OK!"
 
 
-@disable  # TODO: re-enable after addressing issue #1998
 @check(
-    id="com.google.fonts/check/family/equal_numbers_of_glyphs",
+    id="com.google.fonts/check/family/equal_codepoint_coverage",
     conditions=["are_ttf", "stylenames_are_canonical"],
     proposal="legacy:check/011",
 )
-def com_google_fonts_check_family_equal_numbers_of_glyphs(ttFonts):
-    """Fonts have equal numbers of glyphs?"""
+def com_google_fonts_check_family_equal_codepoint_coverage(ttFonts, config):
+    """Fonts have equal codepoint coverage"""
     from .googlefonts_conditions import canonical_stylename
 
-    # ttFonts is an iterator, so here we make a list from it
-    # because we'll have to iterate twice in this check implementation:
-    the_ttFonts = list(ttFonts)
-
-    passed = True
-    max_stylename = None
-    max_count = 0
-    max_glyphs = set([])
-    for ttFont in the_ttFonts:
+    cmaps = {}
+    for ttFont in ttFonts:
         fontname = ttFont.reader.file.name
         stylename = canonical_stylename(fontname)
-        this_count = len(ttFont["glyf"].glyphs)
-        if this_count > max_count:
-            max_count = this_count
-            max_stylename = stylename
-            max_glyphs = set(ttFont["glyf"].glyphs)
+        cmaps[stylename] = set(ttFont.getBestCmap().keys())
+    cmap_list = list(cmaps.values())
+    common_cps = cmap_list[0].intersection(*cmap_list[1:])
+    problems = []
 
-    for ttFont in the_ttFonts:
-        fontname = ttFont.reader.file.name
-        stylename = canonical_stylename(fontname)
-        these_glyphs = set(ttFont["glyf"].glyphs)
-        this_count = len(these_glyphs)
-        if this_count != max_count:
-            passed = False
-            all_glyphs = max_glyphs.union(these_glyphs)
-            common_glyphs = max_glyphs.intersection(these_glyphs)
-            diff = all_glyphs - common_glyphs
-            diff_count = len(diff)
-            if diff_count < 10:
-                diff = ", ".join(diff)
-            else:
-                diff = ", ".join(list(diff)[:10]) + " (and more)"
-
-            yield FAIL, Message(
-                "glyph-count-diverges",
-                f"{stylename} has {this_count} glyphs while"
-                f" {max_stylename} has {max_count} glyphs."
-                f" There are {diff_count} different glyphs"
-                f" among them: {sorted(diff)}",
+    for style, cmap in cmaps.items():
+        residue = cmap - common_cps
+        if residue:
+            problems.append(
+                f"* {style} contains encoded codepoints not found "
+                "in other related fonts:"
+                + bullet_list(config, ["U+%04x" % cp for cp in residue])
             )
-    if passed:
+
+    if problems:
+        yield FAIL, Message("glyphset-diverges", "\n".join(problems))
+    else:
         yield PASS, (
-            "All font files in this family have an equal total ammount of glyphs."
+            "All font files in this family have an equivalent encoded glyphset."
         )
 
 
