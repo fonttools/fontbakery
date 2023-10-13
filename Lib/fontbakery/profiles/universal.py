@@ -688,6 +688,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
         mistakenly used as an apostrophe, U+0060 (GRAVE ACCENT) is used in Markdown
         to notify code blocks, and ^ is used as an exponential operator in maths.
     """,
+    experimental="Since 2023/Oct/13",
 )
 def com_google_fonts_check_legacy_accents(ttFont):
     """Check that legacy accents aren't used in composite glyphs."""
