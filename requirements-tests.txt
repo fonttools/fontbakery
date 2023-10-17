@@ -1,7 +1,7 @@
 --index-url https://pypi.python.org/simple/
 black==23.9.1
 flake8==6.1.0
-pylint==2.17.7  # TODO: try pylint 3.x
+pylint==3.0.1
 sphinx==7.1.2  # Sphinx 7.2.x series requires python >= 3.9
 pytest-cov==4.1.0
 pytest-xdist==3.3.1
