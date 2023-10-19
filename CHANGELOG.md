@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.10.2 (2023-Oct-??)
-  - ...
+### Changes to existing checks
+#### On the Universal Profile
+  - **EXPERIMENTAL - [com.google.fonts/check/legacy_accents]:** Legacy accents cannot have zero-width. Previously we were expecting those to not be "too narrow". (issue #4310)
 
 
 ## 0.10.1 (2023-Oct-13)
