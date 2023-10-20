@@ -71,6 +71,7 @@ UNIVERSAL_PROFILE_CHECKS = (
         "com.google.fonts/check/STAT_in_statics",
         "com.google.fonts/check/alt_caron",
         "com.google.fonts/check/arabic_spacing_symbols",
+        "com.google.fonts/check/arabic_high_hamza",
     ]
 )
 
@@ -777,7 +778,7 @@ def com_google_fonts_check_legacy_accents(ttFont):
     experimental="Since 2023/Oct/20",
     severity=4,
 )
-def com_google_fonts_check_spacing_symbols(ttFont):
+def com_google_fonts_check_arabic_spacing_symbols(ttFont):
     """Check that Arabic spacing symbols U+FBB2–FBC1 aren't classified as marks."""
     import babelfont
 
@@ -814,6 +815,51 @@ def com_google_fonts_check_spacing_symbols(ttFont):
                         "mark-in-gdef",
                         f'"{glyph.name}" is defined in GDEF as a mark (class 3).',
                     )
+
+    if passed:
+        yield PASS, "Looks good!"
+
+
+@check(
+    id="com.google.fonts/check/arabic_high_hamza",
+    proposal=[
+        "https://github.com/googlefonts/fontbakery/issues/4290",
+    ],
+    rationale="""
+        Many fonts incorrectly treat ARABIC LETTER HIGH HAMZA (U+0675) as a variant of
+        ARABIC HAMZA ABOVE (U+0654) and make it a combining mark of the same size.
+
+        But U+0675 is a base letter and should be a variant of ARABIC LETTER HAMZA
+        (U+0621) but raised slightly above baseline.
+
+        Not doing so effectively makes the font useless for Jawi and
+        possibly Kazakh as well.
+    """,
+    experimental="Since 2023/Oct/20",
+    severity=4,
+)
+def com_google_fonts_check_arabic_high_hamza(ttFont):
+    """Check that glyph for U+0675 ARABIC LETTER HIGH HAMZA is not a mark."""
+    import babelfont
+
+    ARABIC_LETTER_HIGH_HAMZA = 0x0675
+
+    passed = True
+    font = babelfont.load(ttFont.reader.file.name)
+
+    if "GDEF" in ttFont:
+        class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
+        for glyph in font.glyphs:
+            if ARABIC_LETTER_HIGH_HAMZA in set(glyph.codepoints):
+                if glyph.name in class_def and class_def[glyph.name] == 3:
+                    passed = False
+                    yield FAIL, Message(
+                        "mark-in-gdef",
+                        f'"{glyph.name}" is defined in GDEF as a mark (class 3).',
+                    )
+    # TODO: Should we also validate the bounding box of the glyph and compare
+    #       it to U+0621 expecting them to have roughly the same size?
+    #       (within a certain tolerance margin)
 
     if passed:
         yield PASS, "Looks good!"
