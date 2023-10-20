@@ -2,7 +2,15 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.10.2 (2023-Oct-??)
+## Upcoming release: 0.10.3 (2023-Oct-??)
+  - ...
+
+
+## 0.10.2 (2023-Oct-20)
+### New checks
+#### Added to the Universal Profile
+  - **EXPERIMENTAL - [com.google.fonts/check/arabic_spacing_symbols]:** Check that Arabic spacing symbols U+FBB2–FBC1 aren't classified as marks. (issue #4295)
+
 ### Changes to existing checks
 #### On the Universal Profile
   - **EXPERIMENTAL - [com.google.fonts/check/legacy_accents]:** Legacy accents cannot have zero-width. Previously we were expecting those to not be "too narrow". (issue #4310)
