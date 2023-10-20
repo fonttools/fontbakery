@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New checks
 #### Added to the Universal Profile
   - **EXPERIMENTAL - [com.google.fonts/check/arabic_spacing_symbols]:** Check that Arabic spacing symbols U+FBB2–FBC1 aren't classified as marks. (issue #4295)
+  - **EXPERIMENTAL - [com.google.fonts/check/arabic_high_hamza]:** Check that glyph for U+0675 ARABIC LETTER HIGH HAMZA is not a mark. (issue #4290)
 
 ### Changes to existing checks
 #### On the Universal Profile
