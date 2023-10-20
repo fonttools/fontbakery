@@ -76,6 +76,10 @@ git push upstream --tags
 # generate the package and automatically publish it on PyPI.
 # A GitHub release will also be created automatically.
 
+# ATTENTION!
+# We need to manually set this release to be considered the latest one.
+# And also uncheck its "pre-release" checkbox!
+
 # Close the current milestone on the GitHub issue tracker
 # moving to a future milestone any of its issue that we've
 # not been able to close yet.
