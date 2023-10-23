@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.10.3 (2023-Oct-??)
-  - ...
+### New checks
+#### Added to the Google Fonts Profile
+  - **EXPERIMENTAL - [com.google.fonts/check/glyphsets/shape_languages]:** This check uses a heuristic to determine which GF glyphsets a font supports. Then it checks the font for correct shaping behaviour for all languages in those glyphsets. (issue #4147)
 
 
 ## 0.10.2 (2023-Oct-20)
