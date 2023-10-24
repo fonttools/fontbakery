@@ -3350,7 +3350,7 @@ def com_google_fonts_check_metadata_consistent_repo_urls(
 
     import re
 
-    A_GITHUB_URL = r"github.com/\w+/\w+"
+    A_GITHUB_URL = r"github.com/[\w-]+/[\w-]+"
 
     def clean_url(url):
         if ")" in url:
@@ -3384,7 +3384,7 @@ def com_google_fonts_check_metadata_consistent_repo_urls(
 
     if a_url and description:
         headless = re.sub(r"^https?://", "", a_url)
-        for match in re.findall(A_GITHUB_URL, description):
+        for match in set(re.findall(A_GITHUB_URL, description)):
             if clean_url(match) != headless:
                 bad_urls.append(("HTML description", match))
 

@@ -7,6 +7,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts Profile
   - **EXPERIMENTAL - [com.google.fonts/check/glyphsets/shape_languages]:** This check uses a heuristic to determine which GF glyphsets a font supports. Then it checks the font for correct shaping behaviour for all languages in those glyphsets. (issue #4147)
 
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/consistent_repo_urls]:** Git URLs can contain dashes and also there may be multiple URLs in a single description file. (issue #4316)
+
 
 ## 0.10.2 (2023-Oct-20)
 ### New checks
