@@ -139,17 +139,29 @@ def test_check_monospace():
         status == PASS and message.code == "mono-good"
     )
 
-    # Incorrectly mark it as a non-monospaced on the post table and it should fail:
+    # Mark it as a non-monospaced on the post table and it should
+    # result in a WARN, if we find outliers
     ttFont["post"].isFixedPitch = IsFixedWidth.NOT_MONOSPACED
-    # here we search for the expected FAIL among all results
-    # instead of simply looking at the last one
-    # because we may also get an outliers WARN in some cases:
+    assert_results_contain(
+        check(ttFont),
+        WARN,
+        "mono-outliers",
+        "with a monospaced font containing a few width outliers...",
+    )
+
+    # or a FAIL otherwise:
+    for g in ttFont["hmtx"].metrics:  # fake it!
+        ttFont["hmtx"].metrics[g] = (123, 456)  # (adv, lsb)
     assert_results_contain(
         check(ttFont),
         FAIL,
         "mono-bad-post-isFixedPitch",
         "with a monospaced font with bad post.isFixedPitch value ...",
     )
+
+    # restore original testing font:
+    ttFont = TTFont(TEST_FILE("overpassmono/OverpassMono-Regular.ttf"))
+    ttFont["post"].isFixedPitch = IsFixedWidth.NOT_MONOSPACED
 
     # There are several bad panose proportion values for a monospaced font.
     # Only PANOSE_Proportion.MONOSPACED would be valid.
