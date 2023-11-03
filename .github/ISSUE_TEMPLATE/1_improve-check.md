@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-(**NOTE:** Please include the check-id in the issue's title. Check-id example: [com.google.fonts/check/metadata/parses])
+(**NOTE:** Please include the check-id in the issue's title.)
 
 ## Observed behaviour
 
