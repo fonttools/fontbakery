@@ -10,6 +10,8 @@
 
 Abyssinica SIL
 Akatab
+Alike
+Alike Angular
 Alkalami
 Andika
 Annapurna
