@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.10.4 (2023-Nov-??)
-  - ...
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/escaped_strings]:** Accept escaped quotes. They're fine. This check is really meant to detect things like "Juli\303\241n" instead of "Julián". (issue #4331)
 
 
 ## Upcoming release: 0.10.3 (2023-Nov-02)
