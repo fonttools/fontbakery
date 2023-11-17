@@ -2,7 +2,14 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.10.4 (2023-Nov-??)
+## Upcoming release: 0.10.5 (2023-Nov-??)
+  - ...
+
+
+## 0.10.4 (2023-Nov-17)
+### Note-worthy code changes
+  - With significant performance improvement on some of the checks (**check/hinting_stats**, **check/varfont/generate_static** and **check/interpolation_issues**), from a dozen hours down to a few seconds ;-) Thanks Simon & Behdad for that performance boost!
+
 ### Changes to existing checks
 #### On the Universal Profile
   - **[com.google.fonts/check/arabic_high_hamza]:** Check area of arabic letter high hamza (U+0621) to be roughly the same as arabic letter hamza (U+0675) (issue #4315)
@@ -12,7 +19,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/glyphsets/shape_languages]:** Use tables to make the check results more readable. (issue #4326)
 
 
-## Upcoming release: 0.10.3 (2023-Nov-02)
+## 0.10.3 (2023-Nov-02)
 ### New checks
 #### Added to the Google Fonts Profile
   - **EXPERIMENTAL - [com.google.fonts/check/glyphsets/shape_languages]:** This check uses a heuristic to determine which GF glyphsets a font supports. Then it checks the font for correct shaping behaviour for all languages in those glyphsets. (issue #4147)
