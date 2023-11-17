@@ -3848,7 +3848,7 @@ LANGUAGE_CODES_PER_GLYPHSET = {
     proposal=["https://github.com/googlefonts/fontbakery/issues/4147"],
     experimental="Since 2023/Nov/02",
 )
-def com_google_fonts_check_glyphsets_shape_languages(ttFont):
+def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
     """Shapes languages in all GF glyphsets."""
     from glyphsets import GFGlyphData as glyph_data
     from shaperglot.checker import Checker
@@ -3865,27 +3865,49 @@ def com_google_fonts_check_glyphsets_shape_languages(ttFont):
         percentage_fulfilled = glyphsets_fulfilled[glyphset]
         if percentage_fulfilled > 0.8:
             any_glyphset_supported = True
+            if glyphset not in LANGUAGE_CODES_PER_GLYPHSET:
+                # yield WARN, f"'{glyphset}' not in LANGUAGE_CODES_PER_GLYPHSET"
+                # TODO: https://github.com/fonttools/fontbakery/issues/4325
+                continue
+
+            fails_table = []
+            warns_table = []
             for language_code in LANGUAGE_CODES_PER_GLYPHSET[glyphset]:
                 reporter = shaperglot_checker.check(shaperglot_languages[language_code])
                 if reporter.warns:
-                    yield WARN, Message(
-                        "warning-language-shaping",
-                        (
-                            f"{glyphset}/{language_code}"
-                            f" ({shaperglot_languages[language_code]['name']}):"
-                            f" {reporter.warns}"
-                        ),
-                    )
+                    for n, warn in enumerate(reporter.warns):
+                        if n == 0:
+                            name = shaperglot_languages[language_code]["name"]
+                            row = {"Language": f"{language_code} ({name})"}
+                        else:
+                            row = {"Language": " ^ "}
+
+                        row["FAIL messages"] = warn.message
+                        warns_table.append(row)
+
                 if reporter.fails:
-                    passed = False
-                    yield FAIL, Message(
-                        "failed-language-shaping",
-                        (
-                            f"{glyphset}/{language_code} "
-                            f"({shaperglot_languages[language_code]['name']}):"
-                            f" {reporter.fails}"
-                        ),
-                    )
+                    for n, fail in enumerate(reporter.fails):
+                        if n == 0:
+                            name = shaperglot_languages[language_code]["name"]
+                            row = {"Language": f"{language_code} ({name})"}
+                        else:
+                            row = {"Language": " ^ "}
+
+                        row["FAIL messages"] = fail.message
+                        fails_table.append(row)
+
+            if fails_table:
+                passed = False
+                yield FAIL, Message(
+                    "failed-language-shaping",
+                    f"{glyphset} glyphset:\n\n{markdown_table(fails_table)}\n\n",
+                )
+
+            if warns_table:
+                yield WARN, Message(
+                    "warning-language-shaping",
+                    f"{glyphset} glyphset:\n\n{markdown_table(warns_table)}\n\n",
+                )
 
     if not any_glyphset_supported:
         yield FAIL, Message(
