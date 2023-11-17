@@ -841,8 +841,18 @@ def com_google_fonts_check_arabic_spacing_symbols(ttFont):
 def com_google_fonts_check_arabic_high_hamza(ttFont):
     """Check that glyph for U+0675 ARABIC LETTER HIGH HAMZA is not a mark."""
     import babelfont
+    from fontTools.pens.areaPen import AreaPen
 
+    ARABIC_LETTER_HAMZA = 0x0621
     ARABIC_LETTER_HIGH_HAMZA = 0x0675
+
+    glyph_set = ttFont.getGlyphSet()
+    if ARABIC_LETTER_HAMZA not in glyph_set or ARABIC_LETTER_HAMZA not in glyph_set:
+        yield SKIP, Message(
+            "glyphs-missing",
+            "This check will only run on fonts that have both glyphs U+0621 and U+0675",
+        )
+        return
 
     passed = True
     font = babelfont.load(ttFont.reader.file.name)
@@ -857,9 +867,27 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
                         "mark-in-gdef",
                         f'"{glyph.name}" is defined in GDEF as a mark (class 3).',
                     )
-    # TODO: Should we also validate the bounding box of the glyph and compare
-    #       it to U+0621 expecting them to have roughly the same size?
-    #       (within a certain tolerance margin)
+
+    # Also validate the bounding box of the glyph and compare
+    # it to U+0621 expecting them to have roughly the same size
+    # (within a certain tolerance margin)
+    area_pen = AreaPen(glyph_set)
+
+    glyph_set[ARABIC_LETTER_HAMZA].draw(area_pen)
+    hamza_area = area_pen.value
+
+    area_pen.value = 0
+    glyph_set[ARABIC_LETTER_HIGH_HAMZA].draw(area_pen)
+    high_hamza_area = area_pen.value
+
+    if abs((high_hamza_area - hamza_area) / hamza_area) > 0.1:
+        passed = False
+        yield FAIL, Message(
+            "glyph-area",
+            "The arabic letter high hamza (U+0675) should have roughly"
+            " the same size the arabic letter hamza (U+0621),"
+            " but a different glyph outline area was detected.",
+        )
 
     if passed:
         yield PASS, "Looks good!"

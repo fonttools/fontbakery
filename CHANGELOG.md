@@ -4,6 +4,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.10.4 (2023-Nov-??)
 ### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/arabic_high_hamza]:** Check area of arabic letter high hamza (U+0621) to be roughly the same as arabic letter hamza (U+0675) (issue #4315)
+
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/escaped_strings]:** Accept escaped quotes. They're fine. This check is really meant to detect things like "Juli\303\241n" instead of "Julián". (issue #4331)
   - **[com.google.fonts/check/glyphsets/shape_languages]:** Use tables to make the check results more readable. (issue #4326)
