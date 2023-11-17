@@ -8,11 +8,23 @@
 # still needs to be more carefully reviewed.
 # See https://github.com/fonttools/fontbakery/issues/3612
 
+
+Abyssinica SIL
+Abyssinica SIL
 Akatab
 Alike
 Alike Angular
+Alkalami
+Andika
+Charis SIL
 David Libre
+Gentium Book Plus
+Gentium Plus
 Harmattan
 Intel One Mono
+Lateef
+Mingzat
 Narnoor
+Nuosu SIL
 Scheherazade New
+Tai Heritage Pro
