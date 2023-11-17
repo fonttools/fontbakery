@@ -82,12 +82,12 @@
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="feedback_system" content="GitHub" />
-<meta name="git_commit_id" content="b8749a8e2f0c80fa7817c2a129622bf2428b37df" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/b8749a8e2f0c80fa7817c2a129622bf2428b37df/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="659158f42ac05e80c5683944627af9552dc6960d" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/659158f42ac05e80c5683944627af9552dc6960d/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="10/09/2023" />
+<meta name="ms.date" content="11/09/2023" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -98,8 +98,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2023-10-09 06:42 PM" />
-<meta name="word_count" content="4598" />
+<meta name="updated_at" content="2023-11-09 05:08 PM" />
+<meta name="word_count" content="4670" />
 
 
 	<meta name="recommendation_types" content="Training" />
@@ -112,18 +112,18 @@
 
 	<meta name="cmProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/c0439c36-80e3-415f-8e4c-6951e3f1b136" data-source="generated" />
 
-	<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/000aaee4-f890-4b0a-bd33-24fb2aefa882" data-source="generated" />
+	<meta name="cmProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/c6f99e62-1cf6-4b71-af9b-649b05f80cce" data-source="generated" />
 
-	<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/0661002d-4d3e-4257-b5a8-1276befa15d4" data-source="generated" />
+	<meta name="cmProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/000aaee4-f890-4b0a-bd33-24fb2aefa882" data-source="generated" />
 
 	
 
 
 	<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/2812d699-d85f-4a7f-839d-44e218b35d24" data-source="generated" />
 
-	<meta name="spProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/57828563-e363-48c1-ac42-c4d23fb7ba52" data-source="generated" />
+	<meta name="spProducts" content="https://microsoft-devrel.poolparty.biz/DevRelOfferingOntology/3f56b378-07a9-4fa1-afe8-9889fdc77628" data-source="generated" />
 
-	<meta name="spProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/05df39fb-4203-4146-99d8-5ff1e833520c" data-source="generated" />
+	<meta name="spProducts" content="https://authoring-docs-microsoft.poolparty.biz/devrel/57828563-e363-48c1-ac42-c4d23fb7ba52" data-source="generated" />
 
 	
 
@@ -132,7 +132,7 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/edf5538c.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/44daae31.site-ltr.css ">
 
 	
 
@@ -159,7 +159,7 @@
 			feedbackSystem: 'GitHub',
 			feedbackGitHubRepo: 'MicrosoftDocs/typography-issues',
 			feedbackProductUrl: '',
-			extendBreadcrumb: true,
+			extendBreadcrumb: false,
 			isEditDisplayable: false,
 			hideViewSource: false,
 			hasPageActions: true,
@@ -199,7 +199,7 @@
 			id="adobe-target-script"
 			type="application/javascript"
 		/>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/2d45e6c2.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/331a0985.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -241,9 +241,12 @@ Download Microsoft Edge					</a>
 More info about Internet Explorer and Microsoft Edge					</a>
 				</div>
 			</div>
-
 		</div>
 		<!-- liquid-tag banners global -->
+
+		<!-- site header -->
+		<div id="ms--site-header" class="uhf-container has-padding display-none"></div>
+
 		<div id="headerAreaHolder" data-bi-name="header">
 <header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
 	<div class="nav-bar">
@@ -499,7 +502,7 @@ Table of contents						</span>
 Article													</li>
 
 													<li class="visibility-hidden-visual-diff">
-														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2023-10-09T08:00:00Z" data-article-date-source="calculated">10/09/2023</time>
+														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2023-11-09T08:00:00Z" data-article-date-source="calculated">11/09/2023</time>
 													</li>
 														<li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
@@ -1466,7 +1469,7 @@ Article													</li>
 </tr>
 <tr>
 <td>BUBU</td>
-<td><a href="http://www.bubulogix.fr" data-linktype="external">BUBULogix</a></td>
+<td>BUBULogix</td>
 </tr>
 <tr>
 <td>Buer</td>
@@ -1506,6 +1509,10 @@ Article													</li>
 <tr>
 <td>C21</td>
 <td><a href="http://www.typeclub.co.uk/" data-linktype="external">Club 21</a></td>
+</tr>
+<tr>
+<td>CAB</td>
+<td><a href="http://lesliecabarga.com/" data-linktype="external">CabargaType</a></td>
 </tr>
 <tr>
 <td>CAD3</td>
@@ -1565,7 +1572,7 @@ Article													</li>
 </tr>
 <tr>
 <td>CDAC</td>
-<td><a href="http://www.cdac.org.in/" data-linktype="external">Centre for Development of Advanced Computing</a></td>
+<td>Centre for Development of Advanced Computing</td>
 </tr>
 <tr>
 <td>cdd</td>
@@ -1916,6 +1923,10 @@ Article													</li>
 <td><a href="https://donsvg.com/" data-linktype="external">Don SVG Files</a></td>
 </tr>
 <tr>
+<td>DOT</td>
+<td><a href="https://ddott.net/" data-linktype="external">DDOTT Typefoundry</a></td>
+</tr>
+<tr>
 <td>DP</td>
 <td><a href="https://displaay.net" data-linktype="external">Displaay</a></td>
 </tr>
@@ -2135,12 +2146,12 @@ Article													</li>
 <td><a href="http://karamemet.com/" data-linktype="external">Erkin Karamemet</a></td>
 </tr>
 <tr>
-<td>ESIG</td>
-<td><a href="http://www.e-signature.com/" data-linktype="external">E-Signature</a></td>
+<td>ESD</td>
+<td><a href="https://enricosogari.com/" data-linktype="external">Sogari Design</a></td>
 </tr>
 <tr>
-<td>ETCO</td>
-<td><a href="https://www.etc.supply/" data-linktype="external">Etcetera Type Company</a></td>
+<td>ESIG</td>
+<td><a href="http://www.e-signature.com/" data-linktype="external">E-Signature</a></td>
 </tr>
 <tr>
 <td>ESTF</td>
@@ -2154,6 +2165,10 @@ Article													</li>
 <td>ETAL</td>
 <td><a href="http://www.lettersetal.co.uk/" data-linktype="external">Lettersetal</a></td>
 <td></td>
+</tr>
+<tr>
+<td>ETCO</td>
+<td><a href="https://www.etc.supply/" data-linktype="external">Etcetera Type Company</a></td>
 </tr>
 <tr>
 <td>ETDF</td>
@@ -2284,7 +2299,7 @@ Article													</li>
 </tr>
 <tr>
 <td>FGOD</td>
-<td><a href="http://www.fontgod.com" data-linktype="external">FontGod</a></td>
+<td>FontGod</td>
 </tr>
 <tr>
 <td>FHF</td>
@@ -2595,7 +2610,7 @@ Article													</li>
 </tr>
 <tr>
 <td>GARI</td>
-<td><a href="http://www.garyritchie.com/" data-linktype="external">Gary Ritchie</a></td>
+<td>Gary Ritchie</td>
 </tr>
 <tr>
 <td>GATF</td>
@@ -2610,8 +2625,8 @@ Article													</li>
 <td><a href="http://www.angelfire.com/va/grndino/index.html" data-linktype="external">GD Fonts</a></td>
 </tr>
 <tr>
-<td>Geez</td>
-<td>Beteseb Graphic Design</td>
+<td>GEEZ</td>
+<td><a href="https://t.me/geezfonts" data-linktype="external">Geezfonts</a></td>
 </tr>
 <tr>
 <td>GenT</td>
@@ -2739,7 +2754,7 @@ Article													</li>
 </tr>
 <tr>
 <td>GTff</td>
-<td><a href="http://gregthompson.typenetwork.com/" data-linktype="external">Greg Thompson</a></td>
+<td><a href="https://gregthompsontype.com/" data-linktype="external">Greg Thompson Type</a></td>
 </tr>
 <tr>
 <td>GTL</td>
@@ -2945,6 +2960,10 @@ Article													</li>
 <td><a href="http://www.hvdfonts.com" data-linktype="external">HVD Fonts GmbH</a></td>
 </tr>
 <tr>
+<td>HWT</td>
+<td><a href="https://hamiltonwoodtype.com" data-linktype="external">Hamilton Wood Typethety</a></td>
+</tr>
+<tr>
 <td>HXTP</td>
 <td>Hexatype</td>
 </tr>
@@ -3056,6 +3075,10 @@ Article													</li>
 <td>Indigo+Indigo</td>
 </tr>
 <tr>
+<td>INFS</td>
+<td><a href="https://infernalsoft.co.uk" data-linktype="external">iNfernalSoft</a></td>
+</tr>
+<tr>
 <td>INGA</td>
 <td><a href="http://www.ingaploennigs.com" data-linktype="external">Inga Type</a></td>
 </tr>
@@ -3125,7 +3148,7 @@ Article													</li>
 </tr>
 <tr>
 <td>IvyF</td>
-<td><a href="http://www.theivyfoundry.com" data-linktype="external">The Ivy Foundry</a></td>
+<td><a href="https://ivyfoundry.com/" data-linktype="external">The Ivy Foundry</a></td>
 </tr>
 <tr>
 <td>IWA</td>
@@ -3235,6 +3258,10 @@ Article													</li>
 <td><a href="http://www.joonfont.com" data-linktype="external">JoonFont</a></td>
 </tr>
 <tr>
+<td>JOT</td>
+<td><a href="https://www.joshownby.com/" data-linktype="external">Josh Ownby</a></td>
+</tr>
+<tr>
 <td>JP</td>
 <td><a href="http://www.jamra-patel.com" data-linktype="external">Jamra Patel</a></td>
 </tr>
@@ -3338,6 +3365,10 @@ Article													</li>
 <td><a href="https://kevinfoleyfonts.com/" data-linktype="external">Kevin Foley Fonts</a></td>
 </tr>
 <tr>
+<td>KGLR</td>
+<td>Kugler Industries</td>
+</tr>
+<tr>
 <td>KH</td>
 <td><a href="https://fontbundles.net/kristyhatswell" data-linktype="external">Kristy Hatswell</a></td>
 </tr>
@@ -3383,7 +3414,7 @@ Article													</li>
 </tr>
 <tr>
 <td>KMR</td>
-<td>kimera</td>
+<td><a href="https://kimeracorp.eu/" data-linktype="external">kimera</a></td>
 </tr>
 <tr>
 <td>KMRS</td>
@@ -3549,6 +3580,10 @@ Article													</li>
 <td>Interleaf, Inc.</td>
 </tr>
 <tr>
+<td>Leah</td>
+<td><a href="http://www.leahlackey.com" data-linktype="external">Leah Lackey</a></td>
+</tr>
+<tr>
 <td>LECH</td>
 <td><a href="http://antoniolechuga.com/" data-linktype="external">Antonio Lechuga</a></td>
 </tr>
@@ -3565,8 +3600,8 @@ Article													</li>
 <td>Letraset</td>
 </tr>
 <tr>
-<td>Leah</td>
-<td><a href="http://www.leahlackey.com" data-linktype="external">Leah Lackey</a></td>
+<td>LETS</td>
+<td><a href="https://letstype.co/" data-linktype="external">Let’s Type</a></td>
 </tr>
 <tr>
 <td>Lev</td>
@@ -3626,7 +3661,7 @@ Article													</li>
 </tr>
 <tr>
 <td>LIVE</td>
-<td><a href="http://www.livedesign.com.ua/" data-linktype="external">Livedesign</a></td>
+<td>Livedesign</td>
 </tr>
 <tr>
 <td>LJ</td>
@@ -3637,8 +3672,16 @@ Article													</li>
 <td><a href="https://ljdesignstudios.com/" data-linktype="external">LJ Design Studios</a></td>
 </tr>
 <tr>
+<td>LKAS</td>
+<td><a href="https://shawnlukas.com/" data-linktype="external">Shawn Lukas</a></td>
+</tr>
+<tr>
 <td>LL75</td>
 <td>Lior Livne</td>
+</tr>
+<tr>
+<td>LLD</td>
+<td><a href="https://liptonletterdesign.com/" data-linktype="external">Lipton Letter Design</a></td>
 </tr>
 <tr>
 <td>LLDL</td>
@@ -3675,6 +3718,10 @@ Article													</li>
 <tr>
 <td>LOMT</td>
 <td><a href="https://www.theleagueofmoveabletype.com/" data-linktype="external">The League of Moveable Type</a></td>
+</tr>
+<tr>
+<td>LONT</td>
+<td><a href="https://lontar.eu/en/" data-linktype="external">Lontar GmbH</a></td>
 </tr>
 <tr>
 <td>lool</td>
@@ -3818,6 +3865,10 @@ Article													</li>
 <tr>
 <td>MATE</td>
 <td><a href="http://www.typemates.de" data-linktype="external">TypeMates</a></td>
+</tr>
+<tr>
+<td>MATF</td>
+<td>Manos Andreakis</td>
 </tr>
 <tr>
 <td>MATS</td>
@@ -3982,6 +4033,10 @@ Article													</li>
 <tr>
 <td>MLBU</td>
 <td><a href="http://www.malibudreamdesigns.com" data-linktype="external">Malibu Dream Designs, LLC</a></td>
+</tr>
+<tr>
+<td>MLFM</td>
+<td>MultiFormis</td>
 </tr>
 <tr>
 <td>MLGC</td>
@@ -4403,10 +4458,6 @@ Article													</li>
 <td><a href="http://nort.rocks/" data-linktype="external">Nort</a></td>
 </tr>
 <tr>
-<td>NOS</td>
-<td><a href="https://www.nos.black" data-linktype="external">NOS</a></td>
-</tr>
-<tr>
 <td>NOSE</td>
 <td><a href="https://nose.ch/" data-linktype="external">Nose AG</a></td>
 </tr>
@@ -4454,12 +4505,20 @@ Article													</li>
     <th width="400">Foundry Name</th>
     </tr>
 <tr>
+<td>OCC</td>
+<td><a href="https://occupantfonts.com/" data-linktype="external">Occupant Fonts</a></td>
+</tr>
+<tr>
 <td>ODSR</td>
 <td><a href="http://www.oddsorts.com" data-linktype="external">Oddsorts</a></td>
 </tr>
 <tr>
 <td>OFTY</td>
 <td><a href="http://officefortypography.ch/" data-linktype="external">Office for Typography</a></td>
+</tr>
+<tr>
+<td>OGJ</td>
+<td><a href="https://www.myfonts.com/a/font/premium-font-collections/ogj" data-linktype="external">OGJ Type</a></td>
 </tr>
 <tr>
 <td>OHG</td>
@@ -4534,6 +4593,10 @@ Article													</li>
 <td><a href="http://www.outofstepfontco.com/" data-linktype="external">Out Of Step Font Company</a></td>
 </tr>
 <tr>
+<td>OSPF</td>
+<td>OneSevenPointFive</td>
+</tr>
+<tr>
 <td>OST</td>
 <td><a href="http://www.orangeslicetype.nl" data-linktype="external">Orange Slice Type</a></td>
 </tr>
@@ -4599,6 +4662,10 @@ Article													</li>
 <tr>
 <td>PEAC</td>
 <td><a href="https://www.peachcreme.com/collections/fonts" data-linktype="external">PeachCreme.com</a></td>
+</tr>
+<tr>
+<td>PEAR</td>
+<td><a href="http://www.pear-socam.com/" data-linktype="external">Pear-Socam Softworks</a></td>
 </tr>
 <tr>
 <td>PECI</td>
@@ -5018,6 +5085,10 @@ Article													</li>
 <td>Sed4-Type Foundry</td>
 </tr>
 <tr>
+<td>sacc</td>
+<td><a href="https://schriftbildwortklang.de/ueber/" data-linktype="external">Saccade SchriftBildWort Fonts</a></td>
+</tr>
+<tr>
 <td>SAJA</td>
 <td><a href="http://www.sajatypeworks.com" data-linktype="external">Saja Typeworks</a></td>
 </tr>
@@ -5250,6 +5321,10 @@ Article													</li>
 <td><a href="https://sproets.nl/" data-linktype="external">SproetS</a></td>
 </tr>
 <tr>
+<td>SPIL</td>
+<td><a href="https://www.spillingtype.com/" data-linktype="external">Spilling Type</a></td>
+</tr>
+<tr>
 <td>SPIR</td>
 <td>Spiratype</a></td>
 </tr>
@@ -5260,6 +5335,10 @@ Article													</li>
 <tr>
 <td>spty</td>
 <td><a href="http://www.supertype.de" data-linktype="external">supertype</a></td>
+</tr>
+<tr>
+<td>SPVT</td>
+<td><a href="https://sproviero-type.com/" data-linktype="external">Sproviero Type</a></td>
 </tr>
 <tr>
 <td>SRC</td>
@@ -5295,7 +5374,7 @@ Article													</li>
 </tr>
 <tr>
 <td>STAN</td>
-<td><a href="https://stanleyfonts.com/" data-linktype="external">Stanley fonts</a></td>
+<td>Stanley fonts</td>
 </tr>
 <tr>
 <td>STC</td>
@@ -5549,6 +5628,10 @@ Article													</li>
 <td><a href="http://www.tiro.com/" data-linktype="external">Tiro Typeworks</a></td>
 </tr>
 <tr>
+<td>TJ</td>
+<td><a href="https://www.tjtrewin.com" data-linktype="external">TJ Trewin</a></td>
+</tr>
+<tr>
 <td>TJS</td>
 <td><a href="http://www.typejockeys.com" data-linktype="external">Typejockeys</a></td>
 </tr>
@@ -5563,6 +5646,10 @@ Article													</li>
 <tr>
 <td>TM</td>
 <td><a href="http://www.typemafia.com" data-linktype="external">Type Mafia</a></td>
+</tr>
+<tr>
+<td>TMBR</td>
+<td><a href="https://timbretype.com/" data-linktype="external">TimbreType</a></td>
 </tr>
 <tr>
 <td>TMF</td>
@@ -5681,12 +5768,20 @@ Article													</li>
 <td><a href="https://github.com/TrionesType" data-linktype="external">TrionesType</a></td>
 </tr>
 <tr>
+<td>TROL</td>
+<td><a href="https://www.therepublicofletters.xyz/" data-linktype="external">The Republic of Letters</a></td>
+</tr>
+<tr>
 <td>TROY</td>
 <td><a href="https://www.leinstertype.com/" data-linktype="external">Leinster Type</a></td>
 </tr>
 <tr>
 <td>TS</td>
 <td>TamilSoft Corporation</td>
+</tr>
+<tr>
+<td>TSEN</td>
+<td><a href="https://typesenses.com/" data-linktype="external">Typesenses</a></td>
 </tr>
 <tr>
 <td>TSGT</td>
@@ -5948,7 +6043,7 @@ Article													</li>
 </tr>
 <tr>
 <td>VR  </td>
-<td><a href="http://www.victoriarushton.com/" data-linktype="external">Victoria Rushton</a></td>
+<td>Victoria Rushton</td>
 </tr>
 <tr>
 <td>VRED</td>
@@ -6081,6 +6176,10 @@ Article													</li>
 <td><a href="http://www.font.net/" data-linktype="external">Xerox Font Services</a></td>
 </tr>
 <tr>
+<td>XOT</td>
+<td><a href="https://xotype.co/" data-linktype="external">XO Type Co.</a></td>
+</tr>
+<tr>
 <td>XOTH</td>
 <td><a href="http://www.about.me/xoth" data-linktype="external">Xoth Morello</a></td>
 </tr>
@@ -6196,7 +6295,7 @@ Article													</li>
 </tr>
 <tr>
 <td>ZIHI</td>
-<td><a href="https://zi-hi.com/" data-linktype="external">字嗨</a></td>
+<td>字嗨</td>
 </tr>
 <tr>
 <td>ZORN</td>
