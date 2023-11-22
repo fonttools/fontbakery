@@ -84,7 +84,6 @@ def com_google_fonts_check_family_panose_familytype(ttFonts):
 
 @check(
     id="com.google.fonts/check/xavgcharwidth",
-    conditions=["is_ttf"],
     proposal="legacy:check/034",
 )
 def com_google_fonts_check_xavgcharwidth(ttFont):
@@ -109,8 +108,9 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
 
         width_sum = 0
         count = 0
-        for glyph_id in ttFont["glyf"].glyphs:  # At least .notdef must be present.
-            width = ttFont["hmtx"].metrics[glyph_id][0]
+        for width, _ in ttFont[
+            "hmtx"
+        ].metrics.values():  # At least .notdef must be present.
             # The OpenType spec doesn't exclude negative widths, but only positive
             # widths seems to be the assumption in the wild?
             if width > 0:
