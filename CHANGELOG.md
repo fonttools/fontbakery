@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Universal Profile
   - **[com.google.fonts/check/arabic_high_hamza]:** Check area of arabic letter high hamza (U+0621) to be roughly the same as arabic letter hamza (U+0675) (issue #4315)
+  - **[com.google.fonts/check/xavgcharwidth]:** This check now also applies to CFF-flavoured fonts (issue #4212)
 
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/escaped_strings]:** Accept escaped quotes. They're fine. This check is really meant to detect things like "Juli\303\241n" instead of "Julián". (issue #4331)
