@@ -5,3 +5,4 @@ pylint==3.0.2
 sphinx==7.1.2  # Sphinx 7.2.x series requires python >= 3.9
 pytest-cov==4.1.0
 pytest-xdist==3.4.0
+requests-mock==1.10.0
