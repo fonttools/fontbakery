@@ -4,10 +4,15 @@ import shutil
 import sys
 
 import pytest
+import requests
 from conftest import ImportRaiser, remove_import_raiser
 from fontTools.ttLib import TTFont
 
-from fontbakery.checks.googlefonts.conditions import expected_font_names
+from fontbakery.checks.googlefonts.conditions import (
+    expected_font_names,
+    GF_TAGS_SHEET_URL,
+    GF_TAGS_SHEET_URL2,
+)
 from fontbakery.checks.googlefonts.glyphset import can_shape
 from fontbakery.codetesting import (
     GLYPHSAPP_TEST_FILE,
@@ -183,9 +188,14 @@ def test_check_canonical_filename(fp, result):
         )
 
 
-def test_check_description_broken_links():
+def test_check_description_broken_links(requests_mock):
     """Does DESCRIPTION file contain broken links ?"""
     check = CheckTester("com.google.fonts/check/description/broken_links")
+
+    requests_mock.head("http://example.com/", text="good")
+    requests_mock.head("http://fonts.google.com/", text="good")
+    requests_mock.head("http://thisisanexampleofabrokenurl.com/", status_code=404)
+    requests_mock.head("http://timeout.example.invalid/", exc=requests.Timeout())
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(font), "with description file that has no links...")
@@ -222,7 +232,16 @@ def test_check_description_broken_links():
         "with a description file containing a known-bad URL...",
     )
 
-    # TODO: WARN, 'timeout'
+    bad_desc = (
+        good_desc
+        + "<a href='http://timeout.example.invalid/'>This is a link that times out</a>"
+    )
+    assert_results_contain(
+        check(MockFont(file=font, description=bad_desc)),
+        WARN,
+        "timeout",
+        "with a description file containing a URL that times out...",
+    )
 
 
 def test_check_description_git_url():
@@ -1469,17 +1488,25 @@ def test_check_metadata_subsets_order():
         )
 
 
-def test_check_metadata_includes_production_subsets():
+def test_check_metadata_includes_production_subsets(requests_mock):
     """Check METADATA.pb has production subsets."""
     check = CheckTester(
         "com.google.fonts/check/metadata/includes_production_subsets",
     )
 
-    # We need to use a family that is already in production
-    # Our reference Cabin is known to be good
-    fonts = cabin_fonts
+    requests_mock.get(
+        "http://fonts.google.com/metadata/fonts",
+        json={
+            "familyMetadataList": [
+                {
+                    "family": "Cabin",
+                    "subsets": ["menu", "latin", "latin-ext", "vietnamese"],
+                },
+            ],
+        },
+    )
 
-    # So it must PASS the check:
+    fonts = cabin_fonts
     assert_PASS(check(fonts), "with a good METADATA.pb for this family...")
 
     # Then we induce the problem by removing a subset:
@@ -3477,8 +3504,17 @@ def test_check_repo_zip_files(tmp_path):
         os.remove(filepath)
 
 
-def test_check_vertical_metrics():
+def test_check_vertical_metrics(requests_mock):
     check = CheckTester("com.google.fonts/check/vertical_metrics")
+
+    requests_mock.get(
+        "http://fonts.google.com/metadata/fonts",
+        json={
+            "familyMetadataList": [
+                {"family": "Akshar"},
+            ],
+        },
+    )
 
     font = TEST_FILE("akshar/Akshar[wght].ttf")
 
@@ -3743,8 +3779,15 @@ def test_check_vertical_metrics_regressions():
     )
 
 
-def test_check_cjk_vertical_metrics():
+def test_check_cjk_vertical_metrics(requests_mock):
     check = CheckTester("com.google.fonts/check/cjk_vertical_metrics")
+
+    requests_mock.get(
+        "http://fonts.google.com/metadata/fonts",
+        json={
+            "familyMetadataList": [],
+        },
+    )
 
     ttFont = TTFont(cjk_font)
     assert_PASS(check(ttFont), "for Source Han Sans")
@@ -4189,14 +4232,35 @@ def test_check_metadata_escaped_strings():
     assert_results_contain(check(bad), FAIL, "escaped-strings")
 
 
-def test_check_metadata_designer_profiles():
+def test_check_metadata_designer_profiles(requests_mock):
     """METADATA.pb: Designer is listed with the correct name on
     the Google Fonts catalog of designers?"""
     check = CheckTester("com.google.fonts/check/metadata/designer_profiles")
 
+    requests_mock.get(
+        "https://raw.githubusercontent.com/google/fonts/master/"
+        "catalog/designers/delvewithrington/info.pb",
+        status_code=404,
+    )
+    sorkintype_info = """
+        designer: "Sorkin Type"
+        link: ""
+        avatar {
+          file_name: "sorkin_type.png"
+        }
+        """
+    requests_mock.get(
+        "https://raw.githubusercontent.com/google/fonts/master/"
+        "catalog/designers/sorkintype/info.pb",
+        text=sorkintype_info,
+    )
+    requests_mock.get(
+        "https://raw.githubusercontent.com/google/fonts/master/"
+        "catalog/designers/sorkintype/sorkin_type.png",
+        content=b"\x89PNG\x0D\x0A\x1A\x0A",
+    )
+
     # Delve Withrington is still not listed on the designers catalog.
-    # Note: Once it is listed, this code-test will start failing
-    # and will need to be updated.
     font = TEST_FILE("overpassmono/OverpassMono-Regular.ttf")
     assert_results_contain(check(font), WARN, "profile-not-found")
 
@@ -4226,7 +4290,7 @@ def test_check_mandatory_avar_table():
     assert_results_contain(check(ttFont), WARN, "missing-avar")
 
 
-def test_check_description_family_update():
+def test_check_description_family_update(requests_mock):
     """
     On a family update, the DESCRIPTION.en_us.html file should ideally also be updated.
     """
@@ -4234,12 +4298,12 @@ def test_check_description_family_update():
 
     font = TEST_FILE("abeezee/ABeeZee-Regular.ttf")
     ABEEZEE_DESC = (
-        "https://raw.githubusercontent.com/google/fonts/"
-        "main/ofl/abeezee/DESCRIPTION.en_us.html"
+        "https://github.com/google/fonts/raw/main/ofl/abeezee/DESCRIPTION.en_us.html"
     )
-    import requests
 
-    desc = requests.get(ABEEZEE_DESC, timeout=10).text
+    desc = "<html>My fake description.</html>"
+    requests_mock.get(ABEEZEE_DESC, text=desc)
+
     assert_results_contain(
         check(MockFont(file=font, description=desc)), WARN, "description-not-updated"
     )
@@ -4925,9 +4989,21 @@ def test_check_varfont_bold_wght_coord():
     assert_results_contain(check(ttFont), SKIP, "no-bold-weight")
 
 
-def test_check_metadata_has_tags():
+def test_check_metadata_has_tags(requests_mock):
     """The font has tags in the GF Tags spreadsheet"""
     check = CheckTester("com.google.fonts/check/metadata/has_tags")
+
+    fake_gf_tags_sheet = (
+        "Family,Family Dir,Existing Category\n"
+        ",,\n,,\n,,\n,,\n,,\n"
+        "Merriweather,merriweather,SERIF\n"
+    )
+    requests_mock.get(GF_TAGS_SHEET_URL, text=fake_gf_tags_sheet)
+    fake_gf_tags_sheet2 = (
+        "Timestamp,Email Address,Family Name (name ID 1/16),,Category\n"
+        ",,\n,,\n,,\n,,\n,,\n"
+    )
+    requests_mock.get(GF_TAGS_SHEET_URL2, text=fake_gf_tags_sheet2)
 
     font = "data/test/merriweather/Merriweather-Regular.ttf"
     assert_PASS(check(font), "with a name that's in the spreadsheet...")

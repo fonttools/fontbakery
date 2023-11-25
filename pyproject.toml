@@ -194,6 +194,7 @@ tests = [
     "pylint == 3.0.3",
 	"pytest-cov == 4.1.0",
 	"pytest-xdist == 3.5.0",
+	"requests-mock == 1.10.0",
 
 	"fontbakery[all]",
 ]
