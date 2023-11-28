@@ -775,7 +775,6 @@ def com_google_fonts_check_legacy_accents(ttFont):
         for their original purpose as stand-alone symbols to used in pedagogical
         contexts discussing Arabic consonantal marks.
     """,
-    experimental="Since 2023/Oct/20",
     severity=4,
 )
 def com_google_fonts_check_arabic_spacing_symbols(ttFont):
