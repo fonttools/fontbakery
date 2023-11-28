@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.10.5 (2023-Nov-??)
-  - ...
+### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/arabic_spacing_symbols]**: "Check that Arabic spacing symbols U+FBB2–FBC1 aren't classified as marks." Originally implemented in v0.10.2 / **No longer marked as experimental.** (issue #4295)
 
 
 ## 0.10.4 (2023-Nov-17)
