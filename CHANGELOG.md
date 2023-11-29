@@ -5,7 +5,11 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.10.5 (2023-Nov-??)
 ### Changes to existing checks
 #### On the Universal Profile
-  - **[com.google.fonts/check/arabic_spacing_symbols]**: "Check that Arabic spacing symbols U+FBB2–FBC1 aren't classified as marks." Originally implemented in v0.10.2 / **No longer marked as experimental.** (issue #4295)
+  - **[com.google.fonts/check/arabic_spacing_symbols]:** "Check that Arabic spacing symbols U+FBB2–FBC1 aren't classified as marks." Originally implemented in v0.10.2 / **No longer marked as experimental.** (issue #4295)
+
+#### On the Google Fonts Profile
+  - **[@condition github_gfonts_ttFont]:** Fixed a bug that was not properly handling the square brackets used in variable font file names. (issue #4340)
+  - **[com.google.fonts/check/version_bump]:** Improved log messages making them more legible and also fixing the formating of the version numbers (issue #4340)
 
 
 ## 0.10.4 (2023-Nov-17)
