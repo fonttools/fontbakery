@@ -3974,35 +3974,36 @@ def com_google_fonts_check_version_bump(
     if v_number == api_gfonts_v_number:
         passed = False
         yield FAIL, (
-            f"Version number {v_number} is equal to" f" version on Google Fonts."
+            f"Version number {v_number:0.3f} is"
+            f" equal to version on **Google Fonts**."
         )
 
     if v_number < api_gfonts_v_number:
         passed = False
         yield FAIL, (
-            f"Version number {v_number} is less than"
-            f" version on Google Fonts ({api_gfonts_v_number})."
+            f"Version number {v_number:0.3f} is less than on"
+            f" **Google Fonts** ({api_gfonts_v_number:0.3f})."
         )
 
     if v_number == github_gfonts_v_number:
         passed = False
         yield FAIL, (
-            f"Version number {v_number} is equal to"
-            f" version on Google Fonts GitHub repo."
+            f"Version number {v_number:0.3f} is equal to version on"
+            f" google/fonts **GitHub repo**."
         )
 
     if v_number < github_gfonts_v_number:
         passed = False
         yield FAIL, (
-            f"Version number {v_number} is less than"
-            f" version on Google Fonts GitHub repo ({github_gfonts_v_number})."
+            f"Version number {v_number:0.3f} is less than on"
+            f" google/fonts **GitHub repo** ({github_gfonts_v_number:0.3f})."
         )
 
     if passed:
         yield PASS, (
-            f"Version number {v_number} is greater than"
-            f" version on Google Fonts GitHub ({github_gfonts_v_number})"
-            f" and production servers ({api_gfonts_v_number})."
+            f"Version number {v_number:0.3f} is greater than on"
+            f" google/fonts **GitHub repo** ({github_gfonts_v_number:0.3f})"
+            f" and **production servers** ({api_gfonts_v_number:0.3f})."
         )
 
 

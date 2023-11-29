@@ -578,7 +578,7 @@ def github_gfonts_ttFont(ttFont, license_filename):
 
     LICENSE_DIRECTORY = {"OFL.txt": "ofl", "UFL.txt": "ufl", "LICENSE.txt": "apache"}
     filename = os.path.basename(ttFont.reader.file.name)
-    familyname = filename.split("-")[0].lower()
+    familyname = filename.split("-")[0].split("[")[0].lower()
     url = (
         f"https://github.com/google/fonts/raw/main"
         f"/{LICENSE_DIRECTORY[license_filename]}/{familyname}/{filename}"
