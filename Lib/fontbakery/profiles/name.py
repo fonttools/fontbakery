@@ -7,6 +7,7 @@ from fontbakery.constants import (
     WindowsEncodingID,
     WindowsLanguageID,
 )
+from fontbakery.utils import markdown_table
 
 # used to inform get_module_profile whether and how to create a profile
 from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable=W0611
@@ -436,31 +437,30 @@ def com_adobe_fonts_check_postscript_name(ttFont):
         if bad_psname.search(string):
             bad_entries.append(
                 {
-                    "field": "PostScript Name",
-                    "value": string,
-                    "rec": ("May contain only a-zA-Z0-9 characters and a hyphen."),
+                    "Field": "PostScript Name",
+                    "Value": string,
+                    "Recommendation": (
+                        "May contain only a-zA-Z0-9 characters and a hyphen."
+                    ),
                 }
             )
         if string.count("-") > 1:
             bad_entries.append(
                 {
-                    "field": "Postscript Name",
-                    "value": string,
-                    "rec": ("May contain not more than a single hyphen."),
+                    "Field": "Postscript Name",
+                    "Value": string,
+                    "Recommendation": ("May contain not more than a single hyphen."),
                 }
             )
 
     if len(bad_entries) > 0:
-        table = "| Field | Value | Recommendation |\n"
-        table += "|:----- |:----- |:-------------- |\n"
-        for bad in bad_entries:
-            table += "| {} | {} | {} |\n".format(bad["field"], bad["value"], bad["rec"])
         yield FAIL, Message(
             "bad-psname-entries",
-            f"PostScript name does not follow requirements:\n\n{table}",
+            f"PostScript name does not follow requirements:\n\n"
+            f"{markdown_table(bad_entries)}",
         )
     else:
-        yield PASS, Message("psname-ok", "PostScript name follows requirements.")
+        yield PASS, "PostScript name follows requirements."
 
 
 @check(
