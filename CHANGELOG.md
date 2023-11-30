@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.10.5 (2023-Nov-??)
+### Note-worthy code changes
+ - Serialize a check's documentation along with the other properties so reports can get at it.
+
 ### Changes to existing checks
 #### On the Universal Profile
   - **[com.google.fonts/check/arabic_spacing_symbols]:** "Check that Arabic spacing symbols U+FBB2–FBC1 aren't classified as marks." Originally implemented in v0.10.2 / **No longer marked as experimental.** (issue #4295)
@@ -281,7 +284,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Correctly process expected messages when they are plain strings in assert_results_contain() (PR #4015)
 
 ### Migrations of checks
-#### Moved to the OpenType profile  
+#### Moved to the OpenType profile
   - **[com.google.fonts/check/italic_angle]:** from the GoogleFonts profile (issue #3663)
   - **[com.google.fonts/check/mac_style]:** from the GoogleFonts profile (issue #3664)
   - **[com.google.fonts/check/fsselection]:** from the GoogleFonts profile (issue #3665)
