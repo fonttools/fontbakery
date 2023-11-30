@@ -102,6 +102,8 @@ class SerializeReporter(FontbakeryReporter):
 
         if check:
             item["description"] = check.description
+            if check.documentation:
+                item["documentation"] = check.documentation
             if check.rationale:
                 item["rationale"] = check.rationale
             if check.experimental:
