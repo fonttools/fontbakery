@@ -282,7 +282,7 @@ class HTMLReporter(SerializeReporter):
         if self.succinct or "rationale" not in check:
             return ""
         content = unindent_and_unwrap_rationale(check["rationale"], checkid)
-        return cmarkgfm.markdown_to_html(
+        return cmarkgfm.github_flavored_markdown_to_html(
             content, options=cmarkgfmOptions.CMARK_OPT_UNSAFE
         )
 
@@ -292,7 +292,7 @@ class HTMLReporter(SerializeReporter):
         if not self.omit_loglevel(log["status"]):
             emoticon = EMOTICON[log["status"]]
             status = log["status"]
-            message = cmarkgfm.markdown_to_html(
+            message = cmarkgfm.github_flavored_markdown_to_html(
                 log["message"], options=cmarkgfmOptions.CMARK_OPT_UNSAFE
             )
             return (

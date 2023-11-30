@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
  - Serialize a check's documentation along with the other properties so reports can get at it.
 
 ### Changes to existing checks
+#### On the Open Type Profile
+  - **[com.adobe.fonts/check/postscript_name]:** Render GitHub Flavoured Markdown on HTML reporter output, so that we can have nice things like tables. (issue #4346)
+
 #### On the Universal Profile
   - **[com.google.fonts/check/arabic_spacing_symbols]:** "Check that Arabic spacing symbols U+FBB2–FBC1 aren't classified as marks." Originally implemented in v0.10.2 / **No longer marked as experimental.** (issue #4295)
 
