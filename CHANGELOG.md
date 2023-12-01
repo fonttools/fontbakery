@@ -2,8 +2,13 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.10.6 (2023-Dec-??)
+## Upcoming release: 0.10.7 (2023-Dec-??)
   - ...
+
+
+## 0.10.6 (2023-Dec-01)
+### Note-worthy code changes
+  - There are a few Google Fonts profile dependencies that MUST always be up-to-date because they hold data: **glyphsets**, **gflanguages**, **shaperglot** and **axisregistry**. These will from now on be handled differenty on `setup.py`, so that only their latest available packages are acceptable for installation. Thanks @yanone for noticing and reporting this issue. (issue #4351)
 
 
 ## 0.10.5 (2023-Dec-01)

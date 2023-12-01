@@ -51,23 +51,33 @@ ufo_sources_extras = [
 
 adobefonts_extras = []
 
+
+# These Google Fonts profile dependencies contain data that is critical to
+# always be up-to-date, so we treat any update to these deps the same way we would
+# deal with API-breaking updates. Only the latest released version is acceptable:
+googlefonts_always_latest = [
+    "axisregistry>=0.4.5",
+    "gflanguages>=0.5.10",
+    "glyphsets>=0.6.6",
+    "shaperglot>=0.3.1",
+]
+
+
 googlefonts_extras = (
     [
-        "axisregistry>=0.3.0",
         f"beautifulsoup4{BEAUTIFULSOUP4_VERSION}",
         "dehinter>=3.1.0",  # 3.1.0 added dehinter.font.hint function
         "font-v>=0.6.0",  # com.google.fonts/check/fontv produces an ERROR with font-v
         # version 0.5.0 or earlier because it uses the method
         # FontVersion.get_name_id5_version_string which was added in version 0.6.0
         f"fontTools[lxml,unicode]{FONTTOOLS_VERSION}",
-        "gflanguages>=0.3.0",  # 0.3.0 had an api simplification/update
         # (see https://github.com/googlefonts/gflanguages/pull/7)
-        "glyphsets>=0.6.6",  # api update: glyph_data.glyphsets_fulfilled
         "protobuf>=3.7.0, <4",  # 3.7.0 fixed a bug on parsing some METADATA.pb files.
         # We cannot use v4 because our protobuf files have been compiled with v3.
         # (see https://github.com/fonttools/fontbakery/issues/2200)
         f"vharfbuzz{VHARFBUZZ_VERSION}",
     ]
+    + googlefonts_always_latest
     + shaping_extras
     + ufo_sources_extras
 )
@@ -81,7 +91,7 @@ typenetwork_extras = [
     f"ufo2ft{UFO2FT_VERSION}",
     f"vharfbuzz{VHARFBUZZ_VERSION}",
     "uharfbuzz",
-    "shaperglot>=0.2.0",
+    "shaperglot>=0.3.1",
 ]
 
 iso15008_extras = [
