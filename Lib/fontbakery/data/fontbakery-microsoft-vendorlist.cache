@@ -82,12 +82,12 @@
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
 <meta name="feedback_system" content="GitHub" />
-<meta name="git_commit_id" content="659158f42ac05e80c5683944627af9552dc6960d" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/659158f42ac05e80c5683944627af9552dc6960d/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="b931dc45b64c1e1106246a0e89bbc12ea300681a" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/b931dc45b64c1e1106246a0e89bbc12ea300681a/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="11/09/2023" />
+<meta name="ms.date" content="11/24/2023" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -98,8 +98,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2023-11-09 05:08 PM" />
-<meta name="word_count" content="4670" />
+<meta name="updated_at" content="2023-11-24 07:42 PM" />
+<meta name="word_count" content="4675" />
 
 
 	<meta name="recommendation_types" content="Training" />
@@ -132,7 +132,7 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/44daae31.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/581302d8.site-ltr.css ">
 
 	
 
@@ -199,7 +199,7 @@
 			id="adobe-target-script"
 			type="application/javascript"
 		/>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/331a0985.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/64dc500e.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -245,7 +245,7 @@ More info about Internet Explorer and Microsoft Edge					</a>
 		<!-- liquid-tag banners global -->
 
 		<!-- site header -->
-		<div id="ms--site-header" class="uhf-container has-padding display-none"></div>
+		<header id="ms--site-header" class="display-none"></header>
 
 		<div id="headerAreaHolder" data-bi-name="header">
 <header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
@@ -502,7 +502,7 @@ Table of contents						</span>
 Article													</li>
 
 													<li class="visibility-hidden-visual-diff">
-														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2023-11-09T08:00:00Z" data-article-date-source="calculated">11/09/2023</time>
+														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2023-11-24T08:00:00Z" data-article-date-source="calculated">11/24/2023</time>
 													</li>
 														<li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
@@ -1197,7 +1197,7 @@ Article													</li>
 </tr>
 <tr>
 <td>BCAI</td>
-<td><a href="https://boharatcairo.com/" data-linktype="external">Boharat Cairo</a></td>
+<td>Boharat Cairo</td>
 </tr>
 <tr>
 <td>BCHF</td>
@@ -1265,7 +1265,7 @@ Article													</li>
 </tr>
 <tr>
 <td>BHRT</td>
-<td><a href="https://boharatcairo.com/" data-linktype="external">Boharat Cairo</a></td>
+<td>Boharat Cairo</td>
 </tr>
 <tr>
 <td>BIJU</td>
@@ -3581,7 +3581,7 @@ Article													</li>
 </tr>
 <tr>
 <td>Leah</td>
-<td><a href="http://www.leahlackey.com" data-linktype="external">Leah Lackey</a></td>
+<td>Leah Lackey</td>
 </tr>
 <tr>
 <td>LECH</td>
@@ -3868,7 +3868,7 @@ Article													</li>
 </tr>
 <tr>
 <td>MATF</td>
-<td>Manos Andreakis</td>
+<td><a href="https://andretype.com/" data-linktype="external">Manos Andreakis</a></td>
 </tr>
 <tr>
 <td>MATS</td>
@@ -4615,6 +4615,10 @@ Article													</li>
 <tr>
 <td>OURT</td>
 <td><a href="http://www.ourtype.com" data-linktype="external">Ourtype</a></td>
+</tr>
+<tr>
+<td>OZTY</td>
+<td>Oz Type</td>
 </tr>
 </table>
 <h2 id="p">P</h2>
@@ -6296,6 +6300,10 @@ Article													</li>
 <tr>
 <td>ZIHI</td>
 <td>字嗨</td>
+</tr>
+<tr>
+<td>ZKZN</td>
+<td><a href="https://zakznak.com/" data-linktype="external">Zakznak</a></td>
 </tr>
 <tr>
 <td>ZORN</td>
