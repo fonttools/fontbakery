@@ -1,5 +1,5 @@
 --index-url https://pypi.python.org/simple/
-axisregistry==0.4.3
+axisregistry==0.4.5
 babelfont==3.0.1
 beautifulsoup4==4.12.2
 beziers==0.5.0
@@ -7,11 +7,11 @@ cmarkgfm==2022.10.27
 collidoscope==0.6.5
 defcon==0.10.3
 dehinter==4.0.0
-fontTools[ufo,lxml,unicode]==4.44.3
+fontTools[ufo,lxml,unicode]==4.45.1
 font-v==2.1.0
 freetype-py==2.3.0  # pinned for now. See: https://github.com/fonttools/fontbakery/issues/4143
-gflanguages==0.5.9
-glyphsets==0.6.5
+gflanguages==0.5.10
+glyphsets==0.6.6
 lxml==4.9.3
 munkres==1.1.4  # This should be a dependency of fonttools instead!
 opentype-sanitizer==9.1.0
