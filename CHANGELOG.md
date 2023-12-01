@@ -2,9 +2,13 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.10.5 (2023-Nov-??)
+## Upcoming release: 0.10.6 (2023-Dec-??)
+  - ...
+
+
+## 0.10.5 (2023-Dec-01)
 ### Note-worthy code changes
- - Serialize a check's documentation along with the other properties so reports can get at it.
+  - Serialize a check's documentation along with the other properties so reporters can use the info. (PR #4345)
 
 ### Changes to existing checks
 #### On the Open Type Profile
