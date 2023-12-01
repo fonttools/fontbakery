@@ -5294,3 +5294,19 @@ def test_check_legacy_accents():
         "legacy-accents-width",
         "for legacy accents having zero width.",
     )
+
+
+def test_check_shape_languages():
+    """Shapes languages in all GF glyphsets."""
+    check = CheckTester(
+        googlefonts_profile, "com.google.fonts/check/glyphsets/shape_languages"
+    )
+
+    test_font = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    assert_PASS(check(test_font))
+
+    test_font = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
+    assert_results_contain(check(test_font), FAIL, "no-glyphset-supported")
+
+    test_font = TTFont(TEST_FILE("annie/AnnieUseYourTelescope-Regular.ttf"))
+    assert_results_contain(check(test_font), FAIL, "failed-language-shaping")
