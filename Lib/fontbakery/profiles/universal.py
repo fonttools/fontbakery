@@ -1,5 +1,6 @@
 import os
 import re
+from typing import List
 
 from packaging.version import VERSION_PATTERN
 
@@ -2092,9 +2093,9 @@ def com_google_fonts_check_interpolation_issues(ttFont, config):
     # have differently-typed default names, and so this optional argument must
     # be provided to ensure that returned names are always strings.
     # See: https://github.com/fonttools/fontbakery/issues/4356
-    names = []
+    names: List[str] = []
     for glyphset in glyphsets:
-        full_location = []
+        full_location: List[str] = []
         for ax in ttFont["fvar"].axes:
             normalized = glyphset.location.get(ax.axisTag, 0)
             denormalized = int(piecewiseLinearMap(normalized, axis_maps[ax.axisTag]))
