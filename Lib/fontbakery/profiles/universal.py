@@ -2057,7 +2057,7 @@ def com_google_fonts_check_whitespace_widths(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3930",
 )
-def com_google_fonts_check_iterpolation_issues(ttFont, config):
+def com_google_fonts_check_interpolation_issues(ttFont, config):
     """Detect any interpolation issues in the font."""
     from fontTools.varLib.interpolatable import test as interpolation_test
     from fontTools.varLib.models import piecewiseLinearMap
