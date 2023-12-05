@@ -2060,11 +2060,11 @@ def com_google_fonts_check_whitespace_widths(ttFont):
 def com_google_fonts_check_iterpolation_issues(ttFont, config):
     """Detect any interpolation issues in the font."""
     from fontTools.varLib.interpolatable import test as interpolation_test
+    from fontTools.varLib.models import piecewiseLinearMap
 
     gvar = ttFont["gvar"]
     # This code copied from fontTools.varLib.interpolatable
     locs = set()
-    names = []
     for variations in gvar.variations.values():
         for var in variations:
             loc = []
@@ -2074,9 +2074,7 @@ def com_google_fonts_check_iterpolation_issues(ttFont, config):
 
     # Rebuild locs as dictionaries
     new_locs = [{}]
-    names.append("()")
     for loc in sorted(locs, key=lambda v: (len(v), v)):
-        names.append(str(loc))
         location = {}
         for tag, val in loc:
             location[tag] = val
@@ -2089,17 +2087,22 @@ def com_google_fonts_check_iterpolation_issues(ttFont, config):
 
     locs = new_locs
     glyphsets = [ttFont.getGlyphSet(location=loc, normalized=True) for loc in locs]
-    results = interpolation_test(glyphsets)
 
-    def master_to_location(glyf):
-        from fontTools.varLib.models import piecewiseLinearMap
-
-        location = []
+    # Name glyphsets by their full location. Different versions of fonttools
+    # have differently-typed default names, and so this optional argument must
+    # be provided to ensure that returned names are always strings.
+    # See: https://github.com/fonttools/fontbakery/issues/4356
+    names = []
+    for glyphset in glyphsets:
+        full_location = []
         for ax in ttFont["fvar"].axes:
-            normalized = glyf.location.get(ax.axisTag, 0)
+            normalized = glyphset.location.get(ax.axisTag, 0)
             denormalized = int(piecewiseLinearMap(normalized, axis_maps[ax.axisTag]))
-            location.append(f"{ax.axisTag}={denormalized}")
-        return ",".join(location)
+            full_location.append(f"{ax.axisTag}={denormalized}")
+        names.append(",".join(full_location))
+
+    # Inputs are ready; run the tests.
+    results = interpolation_test(glyphsets, names=names)
 
     if not results:
         yield PASS, "No interpolation issues found"
@@ -2112,15 +2115,15 @@ def com_google_fonts_check_iterpolation_issues(ttFont, config):
                 if p["type"] == "contour_order":
                     report.append(
                         f"Contour order differs in glyph '{glyph}':"
-                        f" {p['value_1']} in {p['master_1'] or 'default'},"
-                        f" {p['value_2']} in {p['master_2'] or 'default'}."
+                        f" {p['value_1']} in {p['master_1']},"
+                        f" {p['value_2']} in {p['master_2']}."
                     )
                 elif p["type"] == "wrong_start_point":
                     report.append(
                         f"Contour {p['contour']} start point"
                         f" differs in glyph '{glyph}' between"
-                        f" location {master_to_location(p['master_1'])} and"
-                        f" location {master_to_location(p['master_2'])}"
+                        f" location {p['master_1']} and"
+                        f" location {p['master_2']}"
                     )
         yield WARN, Message(
             "interpolation-issues",
