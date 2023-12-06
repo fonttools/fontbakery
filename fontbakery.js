@@ -15,12 +15,16 @@ version, and we recommend that you install fontbakery and check your
 fonts locally to ensure that all checks are run.`;
 const CANT_COMPILE = (s) => NOWASM(`the ${s} library cannot be compiled for WASM`);
 const NEEDS_NETWORK = NOWASM("it needs access to the network");
+const BABELFONT =  NOWASM('the check requires a library (babelfont) with a Rust dependency');
 const EXCUSES = {
   // Needs dependencies
   'com.adobe.fonts/check/freetype_rasterizer': CANT_COMPILE('Freetype'),
   'com.google.fonts/check/ots': CANT_COMPILE('OpenType Sanitizer'),
-  'com.google.fonts/check/alt_caron:googlefonts': NOWASM('the check requires a library (babelfont) with a Rust dependency'),
-  'com.google.fonts/check/alt_caron': NOWASM('the check requires a library (babelfont) with a Rust dependency'),
+  'com.google.fonts/check/alt_caron:googlefonts': BABELFONT,
+  'com.google.fonts/check/alt_caron': BABELFONT,
+  'com.google.fonts/check/arabic_high_hamza': BABELFONT,
+  'com.google.fonts/check/arabic_spacing_symbols': BABELFONT,
+  'com.google.fonts/check/legacy_accents:googlefonts': BABELFONT,
   // Needs network
   'com.google.fonts/check/vendor_id': NEEDS_NETWORK,
   'com.google.fonts/check/fontdata_namecheck': NEEDS_NETWORK,
@@ -36,6 +40,8 @@ const EXCUSES = {
   'com.google.fonts/check/dotted_circle': CANT_COMPILE('cffsubr [required by ufo2ft]'),
   'com.google.fonts/check/metadata/can_render_samples': CANT_COMPILE('Harfbuzz'),
   'com.google.fonts/check/slant_direction': CANT_COMPILE('Harfbuzz'),
+  'com.google.fonts/check/glyphsets/shape_languages': CANT_COMPILE('Harfbuzz'),
+
   // Other checks
   'com.google.fonts/check/metadata/family_directory_name': NOWASM('there are no directories in the WASM environment'),
 };
