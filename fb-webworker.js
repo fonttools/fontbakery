@@ -40,6 +40,7 @@ async function loadPyodideAndPackages() {
     'requests',
     'beziers>=0.5.0',
     'dehinter',
+    'beautifulsoup4',
   ]);
   await micropip.install('fontbakery', false, false, null, true);
   await pyodide.runPythonAsync(`
