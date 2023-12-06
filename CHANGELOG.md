@@ -5,6 +5,11 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.10.7 (2023-Dec-??)
   - ...
 
+### Changes to existing checks
+
+#### On the Universal Profile
+  - **[com.google.fonts/check/interpolation_issues]:** Fix crash when using fonttools>=4.46.0, and missing location formatting for contour order issues  (issue #4356)
+
 
 ## 0.10.6 (2023-Dec-01)
 ### Note-worthy code changes
