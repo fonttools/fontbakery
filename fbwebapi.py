@@ -15,6 +15,7 @@ for notreal in [
     "glyphsLib.glyphdata",
     "defcon",
     "vharfbuzz",
+    "uharfbuzz",
 ]:
     sys.modules[notreal] = MagicMock()
 
