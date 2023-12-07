@@ -746,7 +746,7 @@ def com_google_fonts_check_legacy_accents(ttFont):
     # Check whether legacy accents appear in GDEF as marks.
     # Not being marks in GDEF also typically means that they don't have anchors,
     # as font compilers would have otherwise classified them as marks in GDEF.
-    if "GDEF" in ttFont:
+    if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
         class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
         for glyph in font.glyphs:
             if set(glyph.codepoints).intersection(LEGACY_ACCENTS):
@@ -804,7 +804,7 @@ def com_google_fonts_check_arabic_spacing_symbols(ttFont):
     passed = True
     font = babelfont.load(ttFont.reader.file.name)
 
-    if "GDEF" in ttFont:
+    if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
         class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
         for glyph in font.glyphs:
             if set(glyph.codepoints).intersection(ARABIC_SPACING_SYMBOLS):
@@ -856,7 +856,7 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
     passed = True
     font = babelfont.load(ttFont.reader.file.name)
 
-    if "GDEF" in ttFont:
+    if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
         class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
         for glyph in font.glyphs:
             if ARABIC_LETTER_HIGH_HAMZA in set(glyph.codepoints):
