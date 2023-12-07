@@ -2105,27 +2105,28 @@ def com_google_fonts_check_interpolation_issues(ttFont, config):
     # Inputs are ready; run the tests.
     results = interpolation_test(glyphsets, names=names)
 
-    if not results:
+    # Most of the potential problems varLib.interpolatable finds can't
+    # exist in a built binary variable font. We focus on those which can.
+    report = []
+    for glyph, glyph_problems in results.items():
+        for p in glyph_problems:
+            if p["type"] == "contour_order":
+                report.append(
+                    f"Contour order differs in glyph '{glyph}':"
+                    f" {p['value_1']} in {p['master_1']},"
+                    f" {p['value_2']} in {p['master_2']}."
+                )
+            elif p["type"] == "wrong_start_point":
+                report.append(
+                    f"Contour {p['contour']} start point"
+                    f" differs in glyph '{glyph}' between"
+                    f" location {p['master_1']} and"
+                    f" location {p['master_2']}"
+                )
+
+    if not report:
         yield PASS, "No interpolation issues found"
     else:
-        # Most of the potential problems varLib.interpolatable finds can't
-        # exist in a built binary variable font. We focus on those which can.
-        report = []
-        for glyph, glyph_problems in results.items():
-            for p in glyph_problems:
-                if p["type"] == "contour_order":
-                    report.append(
-                        f"Contour order differs in glyph '{glyph}':"
-                        f" {p['value_1']} in {p['master_1']},"
-                        f" {p['value_2']} in {p['master_2']}."
-                    )
-                elif p["type"] == "wrong_start_point":
-                    report.append(
-                        f"Contour {p['contour']} start point"
-                        f" differs in glyph '{glyph}' between"
-                        f" location {p['master_1']} and"
-                        f" location {p['master_2']}"
-                    )
         yield WARN, Message(
             "interpolation-issues",
             f"Interpolation issues were found in the font:\n\n"
