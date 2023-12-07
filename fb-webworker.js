@@ -41,8 +41,9 @@ async function loadPyodideAndPackages() {
     'beziers>=0.5.0',
     'dehinter',
     'beautifulsoup4',
-    'ufo2ft',
+    'fs',
   ]);
+  await micropip.install('ufo2ft', false, false, null, true);
   await micropip.install('fontbakery', false, false, null, true);
   await pyodide.runPythonAsync(`
     from pyodide.http import pyfetch
