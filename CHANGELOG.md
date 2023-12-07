@@ -8,7 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 
 #### On the Universal Profile
-  - **[com.google.fonts/check/interpolation_issues]:** Fix crash when using fonttools>=4.46.0, and missing location formatting for contour order issues  (issue #4356)
+  - **[com.google.fonts/check/interpolation_issues]:** Fix crash when using fonttools>=4.46.0, crash when only ignored issues were found, and missing location formatting for contour order issues. (issue #4356)
 
 
 ## 0.10.6 (2023-Dec-01)
