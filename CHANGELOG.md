@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.10.7 (2023-Dec-??)
-  - ...
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/name/family_and_style_max_length]:** This test has been extensively reworked, thanks to feedback from @vv-monsale, @moontypespace and @RosaWagner (issue #4316, issue #4104)
 
 ### Changes to existing checks
 
