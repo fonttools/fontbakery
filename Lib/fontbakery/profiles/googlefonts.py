@@ -2616,8 +2616,6 @@ def com_google_fonts_check_metadata_valid_name_values(
     style, font_metadata, font_familynames, typographic_familynames
 ):
     """METADATA.pb font.name field contains font name in right format?"""
-    from fontbakery.constants import RIBBI_STYLE_NAMES
-
     if style in RIBBI_STYLE_NAMES:
         familynames = font_familynames
     else:
@@ -2643,8 +2641,6 @@ def com_google_fonts_check_metadata_valid_full_name_values(
     style, font_metadata, font_familynames, typographic_familynames
 ):
     """METADATA.pb font.full_name field contains font name in right format?"""
-    from fontbakery.constants import RIBBI_STYLE_NAMES
-
     if style in RIBBI_STYLE_NAMES:
         familynames = font_familynames
         if familynames == []:
@@ -3952,7 +3948,6 @@ def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
 def com_google_fonts_check_name_mandatory_entries(ttFont, style):
     """Font has all mandatory 'name' table entries?"""
     from fontbakery.utils import get_name_entry_strings
-    from fontbakery.constants import RIBBI_STYLE_NAMES
 
     required_nameIDs = [
         NameID.FONT_FAMILY_NAME,
