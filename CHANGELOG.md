@@ -2,14 +2,17 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.10.7 (2023-Dec-??)
+## Upcoming release: 0.10.8 (2023-Dec-??)
+  - ...
+
+
+## 0.10.7 (2023-Dec-12)
 ### Changes to existing checks
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/name/family_and_style_max_length]:** This test has been extensively reworked, thanks to feedback from @vv-monsale, @moontypespace and @RosaWagner (issue #4316, issue #4104)
 
-### Changes to existing checks
-
 #### On the Universal Profile
+  - **[com.google.fonts/check/contour_count]:** U+0025 PERCENT SIGN and U+2031 PER TEN THOUSAND SIGN can also have 4 and 8 contours, respectively (issue #4365)
   - **[com.google.fonts/check/interpolation_issues]:** Fix crash when using fonttools>=4.46.0, crash when only ignored issues were found, and missing location formatting for contour order issues. (issue #4356)
 
 
