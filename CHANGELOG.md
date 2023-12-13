@@ -3,7 +3,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.10.8 (2023-Dec-??)
-  - ...
+  - New status result: "FATAL". To be used when a problem detected is extremely bad and must be imediately addressed. (issue #4364)
+
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/parses]:**  Changed from **FAIL** to **FATAL** (issue #4364)
 
 
 ## 0.10.7 (2023-Dec-13)

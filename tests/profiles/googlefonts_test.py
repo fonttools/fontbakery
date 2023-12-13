@@ -10,7 +10,17 @@ from conftest import ImportRaiser, remove_import_raiser
 
 from fontbakery.profiles.googlefonts import can_shape
 from fontbakery.profiles.googlefonts_conditions import expected_font_names
-from fontbakery.status import DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL, ENDCHECK
+from fontbakery.status import (
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR,
+    SKIP,
+    PASS,
+    FATAL,
+    FAIL,
+    ENDCHECK,
+)
 from fontbakery.codetesting import (
     assert_results_contain,
     assert_PASS,
@@ -676,7 +686,7 @@ def test_check_metadata_parses():
 
     bad = TEST_FILE("broken_metadata/foo.ttf")
     assert_results_contain(
-        check(bad), FAIL, "parsing-error", "with a bad METADATA.pb file..."
+        check(bad), FATAL, "parsing-error", "with a bad METADATA.pb file..."
     )
 
 

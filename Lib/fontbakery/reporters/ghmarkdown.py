@@ -4,7 +4,7 @@ from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.utils import html5_collapsible
 from fontbakery import __version__ as version
 
-LOGLEVELS = ["ERROR", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]
+LOGLEVELS = ["ERROR", "FATAL", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]
 
 
 class GHMarkdownReporter(SerializeReporter):
@@ -21,6 +21,7 @@ class GHMarkdownReporter(SerializeReporter):
     def emoticon(name):
         return {
             "ERROR": "\U0001F494",  # 💔  :broken_heart:
+            "FATAL": "\U00002620",  # ☠️  :skull_and_crossbones:
             "FAIL": "\U0001F525",  # 🔥  :fire:
             "WARN": "\U000026A0",  # ⚠️  :warning:
             "INFO": "\U00002139",  # ℹ️  :information_source:
