@@ -3502,16 +3502,32 @@ def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
 )
 def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
     """Shapes languages in all GF glyphsets."""
+    from glyphsets.definitions import unicodes_per_glyphset, glyphset_definitions
     from shaperglot.checker import Checker
     from shaperglot.languages import Languages
-    from .googlefonts_conditions import get_glyphsets_fulfilled
-    from glyphsets.definitions import glyphset_definitions
 
     shaperglot_checker = Checker(ttFont.reader.file.name)
     shaperglot_languages = Languages()
 
     passed = True
     any_glyphset_supported = False
+
+    def get_glyphsets_fulfilled(ttFont):
+        res = {}
+        unicodes_in_font = set(ttFont.getBestCmap().keys())
+        for glyphset in glyphset_definitions:
+            unicodes_in_glyphset = unicodes_per_glyphset(glyphset)
+            if glyphset not in res:
+                res[glyphset] = {"has": [], "missing": [], "percentage": 0}
+            for unicode in unicodes_in_glyphset:
+                if unicode in unicodes_in_font:
+                    res[glyphset]["has"].append(unicode)
+                else:
+                    res[glyphset]["missing"].append(unicode)
+            res[glyphset]["percentage"] = len(res[glyphset]["has"]) / len(
+                unicodes_in_glyphset
+            )
+        return res
 
     glyphsets_fulfilled = get_glyphsets_fulfilled(ttFont)
     for glyphset in glyphsets_fulfilled:
