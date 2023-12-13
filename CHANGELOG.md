@@ -3,11 +3,12 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.10.8 (2023-Dec-??)
-  - New status result: "FATAL". To be used when a problem detected is extremely bad and must be imediately addressed. (issue #4364)
+  - New status result: "FATAL". To be used when a problem detected is extremely bad and must be imediately addressed. (issue #4374 / Discussion #4364)
+  - New command-line flag `--error-code-on` to define the threshold for emitting error code 1. By default, the FontBakery process still communicates an error code 1 if there's any check resulting in FAIL or worse. But with this flag, the user (for instance, in a continuous integration setup) can change the behaviour, such as making a CI job break only when getting a FATAL check-result (or, alternatively, making it even stricter by also breaking CI jobs on WARNs).
 
 ### Changes to existing checks
 #### On the Google Fonts Profile
-  - **[com.google.fonts/check/metadata/parses]:**  Changed from **FAIL** to **FATAL** (issue #4364)
+  - **[com.google.fonts/check/metadata/parses]:**  Changed from **FAIL** to **FATAL** (issue #4374)
 
 
 ## 0.10.7 (2023-Dec-13)
