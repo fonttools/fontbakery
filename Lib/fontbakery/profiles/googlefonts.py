@@ -1067,11 +1067,25 @@ def com_google_fonts_check_glyph_coverage(
     ttFont, font_codepoints, family_metadata, config
 ):
     """Check Google Fonts glyph coverage."""
+    try:
+        from glyphsets import GFGlyphData as glyph_data
+        import unicodedata2
+    except ImportError:
+        exit_with_install_instructions()
 
-    import unicodedata2
-    from .googlefonts_conditions import get_glyphsets_fulfilled
+    def missing_encoded_glyphs(glyphs):
+        encoded_glyphs = [g["unicode"] for g in glyphs if g["unicode"]]
+        return [
+            "0x%04X (%s)\n" % (c, unicodedata2.name(chr(c))) for c in encoded_glyphs
+        ]
 
-    glyphsets_fulfilled = get_glyphsets_fulfilled(ttFont)
+    missing_mandatory_glyphs = glyph_data.missing_glyphsets_in_font(
+        ttFont, threshold=0.0
+    )
+    missing_optional_glyphs = glyph_data.missing_glyphsets_in_font(
+        ttFont, threshold=0.8
+    )
+    passed = True
 
     # If we have a primary_script set, we only need care about Kernel
     if family_metadata and family_metadata.primary_script:
@@ -1079,19 +1093,29 @@ def com_google_fonts_check_glyph_coverage(
     else:
         required_glyphset = "GF_Latin_Core"
 
-    passed = True
-
-    if glyphsets_fulfilled[required_glyphset]["missing"]:
-        missing = [
-            "0x%04X (%s)\n" % (c, unicodedata2.name(chr(c)))
-            for c in glyphsets_fulfilled[required_glyphset]["missing"]
-        ]
-        passed = False
-        yield FAIL, Message(
-            "missing-codepoints",
-            f"Missing required codepoints:\n\n" f"{bullet_list(config, missing)}",
-        )
-
+    if required_glyphset in missing_mandatory_glyphs:
+        missing = missing_encoded_glyphs(missing_mandatory_glyphs["GF_Latin_Core"])
+        if missing:
+            passed = False
+            yield FAIL, Message(
+                "missing-codepoints",
+                f"Missing required codepoints:\n\n" f"{bullet_list(config, missing)}",
+            )
+    elif (
+        len(missing_optional_glyphs) > 0
+        and required_glyphset not in missing_optional_glyphs
+    ):
+        for glyphset_name, glyphs in missing_optional_glyphs.items():
+            if glyphset_name == required_glyphset:
+                continue
+            missing = missing_encoded_glyphs(glyphs)
+            if missing:
+                passed = False
+                yield WARN, Message(
+                    "missing-codepoints",
+                    f"{glyphset_name} is almost fulfilled. Missing codepoints:\n\n"
+                    f"{bullet_list(config, missing)}",
+                )
     if passed:
         yield PASS, "OK"
 
