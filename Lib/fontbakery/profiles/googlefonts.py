@@ -5,7 +5,7 @@ from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
-from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
+from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FATAL, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, condition, disable
 from fontbakery.utils import (
@@ -559,7 +559,7 @@ def com_google_fonts_check_metadata_parses(family_directory):
         get_FamilyProto_Message(pb_file)
         yield PASS, "METADATA.pb parsed successfuly."
     except text_format.ParseError as e:
-        yield FAIL, Message(
+        yield FATAL, Message(
             "parsing-error",
             f"Family metadata at {family_directory} failed to parse.\n"
             f"TRACEBACK:\n{e}",
