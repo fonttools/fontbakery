@@ -62,7 +62,7 @@ googlefonts_extras = (
         f"fontTools[lxml,unicode]{FONTTOOLS_VERSION}",
         "gflanguages>=0.3.0",  # 0.3.0 had an api simplification/update
         # (see https://github.com/googlefonts/gflanguages/pull/7)
-        "glyphsets>=0.6.7",  # api update: glyph_data.glyphsets_fulfilled
+        "glyphsets>=0.6.8",  # api update: glyph_data.glyphsets_fulfilled
         "protobuf>=3.7.0, <4",  # 3.7.0 fixed a bug on parsing some METADATA.pb files.
         # We cannot use v4 because our protobuf files have been compiled with v3.
         # (see https://github.com/fonttools/fontbakery/issues/2200)
