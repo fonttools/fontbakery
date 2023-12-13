@@ -17,6 +17,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[@condition github_gfonts_ttFont]:** Fixed a bug that was not properly handling the square brackets used in variable font file names. (issue #4340)
   - **[com.google.fonts/check/version_bump]:** Improved log messages making them more legible and also fixing the formating of the version numbers (issue #4340)
   - **[com.google.fonts/check/glyphsets/shape_languages]:** React to new glyphset data as per glyphsets==0.6.6. This finalizes the check as originally intended. (issue #4147)
+  - **[com.google.fonts/check/glyph_coverage]:** Rewrite check to follow new glyphsets API and data sets (issue #4379)
 
 
 ## 0.10.4 (2023-Nov-17)
