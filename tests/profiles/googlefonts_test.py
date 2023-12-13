@@ -911,12 +911,16 @@ def test_check_glyph_coverage():
 
     # Our reference Cabin Regular is known to be bad here.
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-    assert_results_contain(
-        check(ttFont),
-        WARN,
-        "missing-codepoints",
-        "GF_TransLatin_Arabic is almost fulfilled.",
-    )
+
+    # Deactivating this for now as GF_TransLatin_Arabic isn't available under
+    # the new glyphset setup yet.
+    # TODO: Reactivate this:
+    # assert_results_contain(
+    #     check(ttFont),
+    #     WARN,
+    #     "missing-codepoints",
+    #     "GF_TransLatin_Arabic is almost fulfilled.",
+    # )
 
     # Let's fix it then...
     cmap = ttFont.getBestCmap()
