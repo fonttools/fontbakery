@@ -10,7 +10,17 @@ from conftest import ImportRaiser, remove_import_raiser
 
 from fontbakery.profiles.googlefonts import can_shape
 from fontbakery.profiles.googlefonts_conditions import expected_font_names
-from fontbakery.status import DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL, ENDCHECK
+from fontbakery.status import (
+    DEBUG,
+    INFO,
+    WARN,
+    ERROR,
+    SKIP,
+    PASS,
+    FATAL,
+    FAIL,
+    ENDCHECK,
+)
 from fontbakery.codetesting import (
     assert_results_contain,
     assert_PASS,
@@ -409,43 +419,50 @@ def test_check_description_eof_linebreak():
 
 
 def test_check_name_family_and_style_max_length():
-    """Combined length of family and style must not exceed 27 characters."""
+    """Name table entries should not be too long."""
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/name/family_and_style_max_length"
     )
 
     # Our reference Cabin Regular is known to be good
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
 
     # So it must PASS the check:
     assert_PASS(check(ttFont), "with a good font...")
 
     # Then we emit a WARNing with long family/style names
-    # Originaly these were based on the example on the glyphs tutorial
-    # (at https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances)
-    # but later we increased a bit the max allowed length.
+    # See https://github.com/fonttools/fontbakery/issues/2179 for
+    # a discussion of the requirements
 
-    # First we expect a WARN with a bad FAMILY NAME
     for index, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FONT_FAMILY_NAME:
-            # This has 28 chars, while the max currently allowed is 27.
-            bad = "AnAbsurdlyLongFamilyNameFont"
-            assert len(bad) == 28
+        if name.nameID == NameID.FULL_FONT_NAME:
+            # This has 33 chars, while the max currently allowed is 31
+            bad = "An Absurdly Long Family Name Font"
+            assert len(bad) == 33
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
-            break
-    assert_results_contain(check(ttFont), WARN, "too-long", "with a bad font...")
+        if name.nameID == NameID.POSTSCRIPT_NAME:
+            bad = "AnAbsurdlyLongFontName-Regular"
+            assert len(bad) == 30
+            ttFont["name"].names[index].string = bad.encode(name.getEncoding())
 
-    # Now let's restore the good Cabin Regular...
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
+    results = check(ttFont)
+    assert_results_contain(results, WARN, "nameid4-too-long", "with a bad font...")
+    assert_results_contain(results, WARN, "nameid6-too-long", "with a bad font...")
 
-    # ...and break the check again with a bad SUBFAMILY NAME:
+    # Restore the original VF
+    ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
+
+    # ...and break the check again with a bad fvar instance name:
+    nameid_to_break = ttFont["fvar"].instances[0].subfamilyNameID
     for index, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FONT_SUBFAMILY_NAME:
+        if name.nameID == nameid_to_break:
             bad = "WithAVeryLongAndBadStyleName"
             assert len(bad) == 28
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
             break
-    assert_results_contain(check(ttFont), WARN, "too-long", "with a bad font...")
+    assert_results_contain(
+        check(ttFont), WARN, "instance-too-long", "with a bad font..."
+    )
 
 
 def DISABLED_test_check_glyphs_file_name_family_and_style_max_length():
@@ -669,7 +686,7 @@ def test_check_metadata_parses():
 
     bad = TEST_FILE("broken_metadata/foo.ttf")
     assert_results_contain(
-        check(bad), FAIL, "parsing-error", "with a bad METADATA.pb file..."
+        check(bad), FATAL, "parsing-error", "with a bad METADATA.pb file..."
     )
 
 

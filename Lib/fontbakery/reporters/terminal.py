@@ -30,6 +30,7 @@ from fontbakery.status import (
     END,
     ENDCHECK,
     ERROR,
+    FATAL,
     FAIL,
     INFO,
     PASS,
@@ -47,6 +48,7 @@ statuses = (
     STARTCHECK,
     SKIP,
     PASS,
+    FATAL,
     FAIL,
     ENDCHECK,
     SECTIONSUMMARY,
@@ -55,7 +57,7 @@ statuses = (
     DEBUG,
 )
 # these are displayed in the result counters
-check_statuses = [ERROR, FAIL, SKIP, PASS, WARN, INFO]
+check_statuses = [ERROR, FATAL, FAIL, SKIP, PASS, WARN, INFO]
 check_statuses.sort(key=lambda s: s.weight, reverse=True)
 
 
@@ -235,7 +237,10 @@ class TerminalProgress(FontbakeryReporter):
             if (
                 self._cupcake
                 and len(self._order)
-                and self._counter[ERROR.name] + self._counter[FAIL.name] == 0
+                and self._counter[ERROR.name]
+                + self._counter[FAIL.name]
+                + self._counter[FATAL.name]
+                == 0
                 and self._counter[PASS.name] > 20
             ):
                 print_func(self.theme["cupcake"](CUPCAKE))
@@ -531,7 +536,7 @@ class TerminalReporter(TerminalProgress):
                         print_func(moreinfo_str)
 
         # Log statuses have weights >= 0
-        # log_statuses = (INFO, WARN, PASS, SKIP, FAIL, ERROR, DEBUG)
+        # log_statuses = (INFO, WARN, PASS, SKIP, FATAL, FAIL, ERROR, DEBUG)
         if status.weight >= self._log_threshold:
             print_func("")
 
@@ -622,6 +627,8 @@ class TerminalReporter(TerminalProgress):
                 f"\n"
                 f"    An {formatStatus(self.theme, 'ERROR')} is something"
                 f" wrong with FontBakery itself, possibly a bug.\n"
+                f"    A {formatStatus(self.theme, 'FATAL')} is an extremely"
+                f" severe issue that must be addressed immediately.\n"
                 f"    A {formatStatus(self.theme, 'FAIL')} is a problem"
                 f" with the font that must be fixed.\n"
                 f"    A {formatStatus(self.theme, 'WARN')} is something"
