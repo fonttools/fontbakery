@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/parses]:**  Changed from **FAIL** to **FATAL** (issue #4374)
+  - **[com.google.fonts/check/glyph_coverage]:** Rewrite check to follow new glyphsets API and data sets (issue #4379)
 
 
 ## 0.10.7 (2023-Dec-13)

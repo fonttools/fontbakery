@@ -58,7 +58,7 @@ adobefonts_extras = []
 googlefonts_always_latest = [
     "axisregistry>=0.4.5",
     "gflanguages>=0.5.10",
-    "glyphsets>=0.6.6",
+    "glyphsets>=0.6.8",
     "shaperglot>=0.3.1",
 ]
 
