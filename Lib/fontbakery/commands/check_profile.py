@@ -15,6 +15,7 @@ from fontbakery.checkrunner import (
 from fontbakery.status import (
     DEBUG,
     ERROR,
+    FATAL,
     FAIL,
     INFO,
     PASS,
@@ -36,10 +37,11 @@ from fontbakery.utils import get_theme
 
 
 log_levels = OrderedDict(
-    (s.name, s) for s in sorted((DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL))
+    (s.name, s) for s in sorted((DEBUG, INFO, FATAL, WARN, ERROR, SKIP, PASS, FAIL))
 )
 
 DEFAULT_LOG_LEVEL = WARN
+DEFAULT_ERROR_CODE_ON = FAIL
 
 
 class AddReporterAction(argparse.Action):
@@ -308,6 +310,17 @@ def ArgumentParser(profile, profile_arg=True):
         " as number of worker processes\n"
         "in multi-processing. This is equivalent to : `--jobs %(const)s`",
     )
+    argument_parser.add_argument(
+        "-e",
+        "--error-code-on",
+        dest="error_code_on",
+        type=log_levels_get,
+        default=DEFAULT_ERROR_CODE_ON,
+        help="Threshold for emitting process error code 1. (Useful for"
+        " deciding the criteria for breaking a continuous integration job)\n"
+        f"One of: {valid_keys}.\n"
+        f"(default: {DEFAULT_ERROR_CODE_ON.name})",
+    )
     return argument_parser, values_keys
 
 
@@ -457,7 +470,7 @@ def main(profile=None, values=None):
         reporter.write()
 
     # Fail and error let the command fail
-    return 1 if tr.worst_check_status in (ERROR, FAIL) else 0
+    return 1 if tr.worst_check_status.weight >= args.error_code_on.weight else 0
 
 
 def list_checks(profile, theme, verbose=False):

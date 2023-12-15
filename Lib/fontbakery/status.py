@@ -76,7 +76,7 @@ class Status:
 #
 # From all the statuses that can occur within a check, the "worst" one
 # is defining for the check overall status:
-# ERROR > FAIL > WARN > INFO > SKIP > PASS > DEBUG
+# ERROR > FATAL > FAIL > WARN > INFO > SKIP > PASS > DEBUG
 # Anything from WARN to PASS does not make a check fail.
 # A result < PASS creates an ERROR. That means, DEBUG is not a valid
 # result of a check, nor is any of the structuring statuses.
@@ -95,8 +95,10 @@ WARN = Status(
     "WARN", 4
 )  # A check that results in WARN may indicate a problem, but also may be OK.
 FAIL = Status("FAIL", 5)  # A FAIL is a problem detected in the font or family.
+FATAL = Status("FATAL", 6)  # A FATAL is an extremely severe problem,
+# which must be addressed immediately!
 ERROR = Status(
-    "ERROR", 6
+    "ERROR", 7
 )  # Something a programmer must fix. It will make a check fail as well.
 
 # Start of the suite of checks. Must be always the first message, even in async mode.
@@ -106,7 +108,7 @@ START = Status("START", -6)
 # Message is None.
 STARTCHECK = Status("STARTCHECK", -2)
 # Ends the last check started by STARTCHECK.
-# Message the the result status of the whole check, one of PASS, SKIP, FAIL, ERROR.
+# Message the result status of the whole check, one of PASS, SKIP, FAIL, FATAL, ERROR.
 ENDCHECK = Status("ENDCHECK", -1)
 # After the last ENDCHECK one SECTIONSUMMARY for each section before END.
 # Message is a tuple of:

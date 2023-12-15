@@ -721,3 +721,27 @@ def is_icon_font(ttFont, config):
         "OS/2" in ttFont
         and ttFont["OS/2"].panose.bFamilyType == PANOSE_Family_Type.LATIN_SYMBOL
     )
+
+
+def get_glyphsets_fulfilled(ttFont):
+    """Returns a dictionary of glyphsets that are fulfilled by the font,
+    and the percentage of glyphs in the font that are in the glyphset.
+    This is following the new glyphset definitions in glyphsets.definitions
+    """
+    from glyphsets.definitions import unicodes_per_glyphset, glyphset_definitions
+
+    res = {}
+    unicodes_in_font = set(ttFont.getBestCmap().keys())
+    for glyphset in glyphset_definitions:
+        unicodes_in_glyphset = unicodes_per_glyphset(glyphset)
+        if glyphset not in res:
+            res[glyphset] = {"has": [], "missing": [], "percentage": 0}
+        for unicode in unicodes_in_glyphset:
+            if unicode in unicodes_in_font:
+                res[glyphset]["has"].append(unicode)
+            else:
+                res[glyphset]["missing"].append(unicode)
+        res[glyphset]["percentage"] = len(res[glyphset]["has"]) / len(
+            unicodes_in_glyphset
+        )
+    return res

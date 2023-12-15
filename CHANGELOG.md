@@ -2,9 +2,34 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.10.5 (2023-Nov-??)
+## Upcoming release: 0.10.8 (2023-Dec-??)
+  - New status result: "FATAL". To be used when a problem detected is extremely bad and must be imediately addressed. (issue #4374 / Discussion #4364)
+  - New command-line flag `--error-code-on` to define the threshold for emitting error code 1. By default, the FontBakery process still communicates an error code 1 if there's any check resulting in FAIL or worse. But with this flag, the user (for instance, in a continuous integration setup) can change the behaviour, such as making a CI job break only when getting a FATAL check-result (or, alternatively, making it even stricter by also breaking CI jobs on WARNs).
+
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/parses]:**  Changed from **FAIL** to **FATAL** (issue #4374)
+  - **[com.google.fonts/check/glyph_coverage]:** Rewrite check to follow new glyphsets API and data sets (issue #4379)
+
+
+## 0.10.7 (2023-Dec-13)
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/name/family_and_style_max_length]:** This test has been extensively reworked, thanks to feedback from @vv-monsale, @moontypespace and @RosaWagner (issue #4316, issue #4104)
+
+#### On the Universal Profile
+  - **[com.google.fonts/check/contour_count]:** U+0025 PERCENT SIGN and U+2031 PER TEN THOUSAND SIGN can also have 4 and 8 contours, respectively (issue #4365)
+  - **[com.google.fonts/check/interpolation_issues]:** Fix crash when using fonttools>=4.46.0, crash when only ignored issues were found, and missing location formatting for contour order issues. (issue #4356)
+
+
+## 0.10.6 (2023-Dec-01)
 ### Note-worthy code changes
- - Serialize a check's documentation along with the other properties so reports can get at it.
+  - There are a few Google Fonts profile dependencies that MUST always be up-to-date because they hold data: **glyphsets**, **gflanguages**, **shaperglot** and **axisregistry**. These will from now on be handled differenty on `setup.py`, so that only their latest available packages are acceptable for installation. Thanks @yanone for noticing and reporting this issue. (issue #4351)
+
+
+## 0.10.5 (2023-Dec-01)
+### Note-worthy code changes
+  - Serialize a check's documentation along with the other properties so reporters can use the info. (PR #4345)
 
 ### Changes to existing checks
 #### On the Open Type Profile

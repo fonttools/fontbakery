@@ -44,7 +44,7 @@ jobs:
       run: |
         black . --check --diff --color
         flake8
-        pylint Lib tests
+        pylint --recursive=true Lib tests
         pytype
 
 

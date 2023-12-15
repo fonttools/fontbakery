@@ -11,9 +11,10 @@ from fontbakery.utils import unindent_and_unwrap_rationale, html5_collapsible
 
 from fontbakery import __version__ as fb_version
 
-LOGLEVELS = ["ERROR", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]
+LOGLEVELS = ["ERROR", "FATAL", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]
 EMOTICON = {
     "ERROR": "💥",
+    "FATAL": "☠",
     "FAIL": "🔥",
     "WARN": "⚠️",
     "INFO": "ℹ️",
@@ -351,6 +352,8 @@ def getHeader(data, num_checks, omit_loglevel) -> List[str]:
 
     <ul>
     <li>💥 An <em>ERROR</em> is something wrong with FontBakery itself, possibly a bug.
+    <li>☠ A <em>FATAL</em> is an extremely severe issue that must be addressed
+    immediately.
     <li>🔥 A <em>FAIL</em> is a problem with the font that must be fixed.
     <li>⚠️ A <em>WARN</em> is something that you should consider addressing.
     <li>ℹ️ An <em>INFO</em> result simply prints something useful. Typically stats.
@@ -373,6 +376,7 @@ def getHeader(data, num_checks, omit_loglevel) -> List[str]:
 
 def summary_table(
     errors: int,
+    fatals: int,
     fails: int,
     warns: int,
     skips: int,
@@ -388,6 +392,7 @@ def summary_table(
             <table>
             <tr>
                 <th>{EMOTICON['ERROR']} ERROR</th>
+                <th>{EMOTICON['FATAL']} FATAL</th>
                 <th>{EMOTICON['FAIL']} FAIL</th>
                 <th>{EMOTICON['WARN']} WARN</th>
                 <th>{EMOTICON['SKIP']} SKIP</th>
@@ -396,6 +401,7 @@ def summary_table(
             </tr>
             <tr>
                 <td>{errors}</td>
+                <td>{fatals}</td>
                 <td>{fails}</td>
                 <td>{warns}</td>
                 <td>{skips}</td>
@@ -404,6 +410,7 @@ def summary_table(
             </tr>
             <tr>
                 <td>{round(errors / total * 100)}%</td>
+                <td>{round(fatals / total * 100)}%</td>
                 <td>{round(fails / total * 100)}%</td>
                 <td>{round(warns / total * 100)}%</td>
                 <td>{round(skips / total * 100)}%</td>

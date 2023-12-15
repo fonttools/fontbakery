@@ -5,7 +5,7 @@ from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
 from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
 from fontbakery.profiles.ufo_sources import UFO_PROFILE_CHECKS
-from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FAIL
+from fontbakery.status import INFO, WARN, ERROR, SKIP, PASS, FATAL, FAIL
 from fontbakery.section import Section
 from fontbakery.callable import check, condition, disable
 from fontbakery.utils import (
@@ -17,6 +17,7 @@ from fontbakery.utils import (
 from fontbakery.message import Message, KEEP_ORIGINAL_MESSAGE
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.constants import (
+    RIBBI_STYLE_NAMES,
     NameID,
     PlatformID,
     WindowsEncodingID,
@@ -558,7 +559,7 @@ def com_google_fonts_check_metadata_parses(family_directory):
         get_FamilyProto_Message(pb_file)
         yield PASS, "METADATA.pb parsed successfuly."
     except text_format.ParseError as e:
-        yield FAIL, Message(
+        yield FATAL, Message(
             "parsing-error",
             f"Family metadata at {family_directory} failed to parse.\n"
             f"TRACEBACK:\n{e}",
@@ -1067,25 +1068,11 @@ def com_google_fonts_check_glyph_coverage(
     ttFont, font_codepoints, family_metadata, config
 ):
     """Check Google Fonts glyph coverage."""
-    try:
-        from glyphsets import GFGlyphData as glyph_data
-        import unicodedata2
-    except ImportError:
-        exit_with_install_instructions()
 
-    def missing_encoded_glyphs(glyphs):
-        encoded_glyphs = [g["unicode"] for g in glyphs if g["unicode"]]
-        return [
-            "0x%04X (%s)\n" % (c, unicodedata2.name(chr(c))) for c in encoded_glyphs
-        ]
+    import unicodedata2
+    from .googlefonts_conditions import get_glyphsets_fulfilled
 
-    missing_mandatory_glyphs = glyph_data.missing_glyphsets_in_font(
-        ttFont, threshold=0.0
-    )
-    missing_optional_glyphs = glyph_data.missing_glyphsets_in_font(
-        ttFont, threshold=0.8
-    )
-    passed = True
+    glyphsets_fulfilled = get_glyphsets_fulfilled(ttFont)
 
     # If we have a primary_script set, we only need care about Kernel
     if family_metadata and family_metadata.primary_script:
@@ -1093,29 +1080,19 @@ def com_google_fonts_check_glyph_coverage(
     else:
         required_glyphset = "GF_Latin_Core"
 
-    if required_glyphset in missing_mandatory_glyphs:
-        missing = missing_encoded_glyphs(missing_mandatory_glyphs["GF_Latin_Core"])
-        if missing:
-            passed = False
-            yield FAIL, Message(
-                "missing-codepoints",
-                f"Missing required codepoints:\n\n" f"{bullet_list(config, missing)}",
-            )
-    elif (
-        len(missing_optional_glyphs) > 0
-        and required_glyphset not in missing_optional_glyphs
-    ):
-        for glyphset_name, glyphs in missing_optional_glyphs.items():
-            if glyphset_name == required_glyphset:
-                continue
-            missing = missing_encoded_glyphs(glyphs)
-            if missing:
-                passed = False
-                yield WARN, Message(
-                    "missing-codepoints",
-                    f"{glyphset_name} is almost fulfilled. Missing codepoints:\n\n"
-                    f"{bullet_list(config, missing)}",
-                )
+    passed = True
+
+    if glyphsets_fulfilled[required_glyphset]["missing"]:
+        missing = [
+            "0x%04X (%s)\n" % (c, unicodedata2.name(chr(c)))
+            for c in glyphsets_fulfilled[required_glyphset]["missing"]
+        ]
+        passed = False
+        yield FAIL, Message(
+            "missing-codepoints",
+            f"Missing required codepoints:\n\n" f"{bullet_list(config, missing)}",
+        )
+
     if passed:
         yield PASS, "OK"
 
@@ -2615,8 +2592,6 @@ def com_google_fonts_check_metadata_valid_name_values(
     style, font_metadata, font_familynames, typographic_familynames
 ):
     """METADATA.pb font.name field contains font name in right format?"""
-    from fontbakery.constants import RIBBI_STYLE_NAMES
-
     if style in RIBBI_STYLE_NAMES:
         familynames = font_familynames
     else:
@@ -2642,8 +2617,6 @@ def com_google_fonts_check_metadata_valid_full_name_values(
     style, font_metadata, font_familynames, typographic_familynames
 ):
     """METADATA.pb font.full_name field contains font name in right format?"""
-    from fontbakery.constants import RIBBI_STYLE_NAMES
-
     if style in RIBBI_STYLE_NAMES:
         familynames = font_familynames
         if familynames == []:
@@ -3502,32 +3475,16 @@ def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
 )
 def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
     """Shapes languages in all GF glyphsets."""
-    from glyphsets.definitions import unicodes_per_glyphset, glyphset_definitions
     from shaperglot.checker import Checker
     from shaperglot.languages import Languages
+    from .googlefonts_conditions import get_glyphsets_fulfilled
+    from glyphsets.definitions import glyphset_definitions
 
     shaperglot_checker = Checker(ttFont.reader.file.name)
     shaperglot_languages = Languages()
 
     passed = True
     any_glyphset_supported = False
-
-    def get_glyphsets_fulfilled(ttFont):
-        res = {}
-        unicodes_in_font = set(ttFont.getBestCmap().keys())
-        for glyphset in glyphset_definitions:
-            unicodes_in_glyphset = unicodes_per_glyphset(glyphset)
-            if glyphset not in res:
-                res[glyphset] = {"has": [], "missing": [], "percentage": 0}
-            for unicode in unicodes_in_glyphset:
-                if unicode in unicodes_in_font:
-                    res[glyphset]["has"].append(unicode)
-                else:
-                    res[glyphset]["missing"].append(unicode)
-            res[glyphset]["percentage"] = len(res[glyphset]["has"]) / len(
-                unicodes_in_glyphset
-            )
-        return res
 
     glyphsets_fulfilled = get_glyphsets_fulfilled(ttFont)
     for glyphset in glyphsets_fulfilled:
@@ -3951,7 +3908,6 @@ def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
 def com_google_fonts_check_name_mandatory_entries(ttFont, style):
     """Font has all mandatory 'name' table entries?"""
     from fontbakery.utils import get_name_entry_strings
-    from fontbakery.constants import RIBBI_STYLE_NAMES
 
     required_nameIDs = [
         NameID.FONT_FAMILY_NAME,
@@ -4906,52 +4862,73 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(
 @check(
     id="com.google.fonts/check/name/family_and_style_max_length",
     rationale="""
-        According to a GlyphsApp tutorial [1], in order to make sure all versions of
-        Windows recognize it as a valid font file, we must make sure that the
-        concatenated length of the familyname (NameID.FONT_FAMILY_NAME) and
-        style (NameID.FONT_SUBFAMILY_NAME) strings in the name table do not
-        exceed 20 characters.
+        This check ensures that the length of name table entries is not
+        too long, as this causes problems in some environments. For
+        details as to the latest requirements and the reason for them,
+        please see https://github.com/fonttools/fontbakery/issues/2179
 
-        After discussing the problem in more detail at FontBakery issue #2179 [2] we
-        decided that allowing up to 27 chars would still be on the safe side, though.
-
-        [1] https://glyphsapp.com/tutorials/multiple-masters-part-3-setting-up-instances
-        [2] https://github.com/fonttools/fontbakery/issues/2179
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1488",
     misc_metadata={
-        # Somebody with access to Windows should make some experiments
-        # and confirm that this is really the case.
         "affects": [("Windows", "unspecified")],
     },
 )
 def com_google_fonts_check_name_family_and_style_max_length(ttFont):
-    """Combined length of family and style must not exceed 27 characters."""
-    from fontbakery.utils import get_name_entries, get_name_entry_strings
+    """Combined length of family and style must not exceed 31 characters."""
+    from fontbakery.utils import get_name_entry_strings
+    import re
+
+    ribbi_re = " (" + "|".join(RIBBI_STYLE_NAMES) + ")$"
 
     passed = True
-    for familyname in get_name_entries(ttFont, NameID.FONT_FAMILY_NAME):
-        # we'll only match family/style name entries with the same platform ID:
-        plat = familyname.platformID
-        familyname_str = familyname.string.decode(familyname.getEncoding())
-        for stylename_str in get_name_entry_strings(
-            ttFont, NameID.FONT_SUBFAMILY_NAME, platformID=plat
-        ):
-            if len(familyname_str + stylename_str) > 27:
+
+    def strip_ribbi(x):
+        return re.sub(ribbi_re, "", x)
+
+    checks = [
+        [
+            NameID.FULL_FONT_NAME,
+            31,
+            "with the dropdown menu in old versions of Microsoft Word",
+            strip_ribbi,
+        ],
+        [
+            NameID.POSTSCRIPT_NAME,
+            27,
+            "with PostScript printers, especially on Mac platforms",
+            lambda x: x,
+        ],
+    ]
+    for nameid, maxlen, reason, transform in checks:
+        for the_name in get_name_entry_strings(ttFont, nameid):
+            the_name = transform(the_name)
+            if len(the_name) > maxlen:
                 passed = False
                 yield WARN, Message(
-                    "too-long",
-                    f"The combined length of family and style"
-                    f" exceeds 27 chars in the following"
-                    f" '{PlatformID(plat).name}' entries:\n"
-                    f" FONT_FAMILY_NAME = '{familyname_str}' /"
-                    f" SUBFAMILY_NAME = '{stylename_str}'\n"
-                    f"\n"
-                    f"Please take a look at the conversation at"
-                    f" https://github.com/fonttools/fontbakery/issues/2179"
-                    f" in order to understand the reasoning behind these"
-                    f" name table records max-length criteria.",
+                    f"nameid{nameid}-too-long",
+                    f"Name ID {nameid} '{the_name}' exceeds"
+                    f" {maxlen} characters. This has been found to"
+                    f" cause problems {reason}",
                 )
+
+    # name ID 1 + fvar instance name > 31 : WARN : problems with Windows
+    if "fvar" in ttFont:
+        for instance in ttFont["fvar"].instances:
+            for instance_name in get_name_entry_strings(
+                ttFont, instance.subfamilyNameID
+            ):
+                for family_name in get_name_entry_strings(
+                    ttFont, NameID.FONT_FAMILY_NAME
+                ):
+                    full_instance_name = instance_name + " " + family_name
+                    if len(full_instance_name) > 31:
+                        yield WARN, Message(
+                            "instance-too-long",
+                            f"Variable font instance name {full_instance_name}"
+                            " exceeds 31 characters. This has been found to "
+                            " cause problems in Microsoft Windows 11",
+                        )
+
     if passed:
         yield PASS, "All name entries are good."
 
