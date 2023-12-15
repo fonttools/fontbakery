@@ -1,8 +1,11 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## Upcoming release: 0.10.9 (2024-Jan-??)
+  - ...
 
-## Upcoming release: 0.10.8 (2023-Dec-??)
+
+## 0.10.8 (2023-Dec-15)
   - New status result: "FATAL". To be used when a problem detected is extremely bad and must be imediately addressed. (issue #4374 / Discussion #4364)
   - New command-line flag `--error-code-on` to define the threshold for emitting error code 1. By default, the FontBakery process still communicates an error code 1 if there's any check resulting in FAIL or worse. But with this flag, the user (for instance, in a continuous integration setup) can change the behaviour, such as making a CI job break only when getting a FATAL check-result (or, alternatively, making it even stricter by also breaking CI jobs on WARNs).
 
