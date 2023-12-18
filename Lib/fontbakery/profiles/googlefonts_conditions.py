@@ -401,7 +401,7 @@ def listed_on_gfonts_api(familyname, config, network):
     # to find it in the GFonts metadata:
     from_camelcased_name = split_camel_case(familyname)
 
-    for item in production_metadata(config)["familyMetadataList"]:
+    for item in production_metadata(config, network)["familyMetadataList"]:
         if item["family"] == familyname or item["family"] == from_camelcased_name:
             return True
 
