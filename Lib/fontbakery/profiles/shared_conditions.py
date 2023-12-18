@@ -9,6 +9,11 @@ from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable
 
 
 @condition
+def network(config):
+    return not config["skip_network"]
+
+
+@condition
 def ttFont(font):
     from fontTools.ttLib import TTFont
 
