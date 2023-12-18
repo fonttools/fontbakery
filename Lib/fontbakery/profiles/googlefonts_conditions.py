@@ -387,7 +387,10 @@ def hinting_stats(font):
 
 
 @condition
-def listed_on_gfonts_api(familyname, config):
+def listed_on_gfonts_api(familyname, config, network):
+    if not network:
+        return
+
     if not familyname:
         return False
 
@@ -470,10 +473,12 @@ def rfn_exception(familyname):
 
 
 @condition
-def remote_styles(familyname_with_spaces, config):
+def remote_styles(familyname_with_spaces, config, network):
     """Get a dictionary of TTFont objects of all font files of
     a given family as currently hosted at Google Fonts.
     """
+    if not network:
+        return
 
     def download_family_from_Google_Fonts(familyname):
         """Return a zipfile containing a font family hosted on fonts.google.com"""
@@ -565,11 +570,11 @@ def api_gfonts_ttFont(style, remote_styles):
 
 
 @condition
-def github_gfonts_ttFont(ttFont, license_filename):
+def github_gfonts_ttFont(ttFont, license_filename, network):
     """Get a TTFont object of a font downloaded
     from Google Fonts git repository.
     """
-    if not license_filename:
+    if not license_filename or not network:
         return None
 
     from fontbakery.utils import download_file
@@ -592,12 +597,12 @@ def github_gfonts_ttFont(ttFont, license_filename):
 
 
 @condition
-def github_gfonts_description(ttFont, license_filename):
+def github_gfonts_description(ttFont, license_filename, network):
     """Get the contents of the DESCRIPTION.en_us.html file
     from the google/fonts github repository corresponding
     to a given ttFont.
     """
-    if not license_filename:
+    if not license_filename or not network:
         return None
 
     from fontbakery.utils import download_file
@@ -673,8 +678,11 @@ def gfonts_repo_structure(fonts):
 
 
 @condition
-def production_metadata(config):
+def production_metadata(config, network):
     """Get the Google Fonts production metadata"""
+    if not network:
+        return
+
     import requests
 
     meta_url = "http://fonts.google.com/metadata/fonts"
