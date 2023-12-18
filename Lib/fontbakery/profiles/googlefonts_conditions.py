@@ -501,7 +501,7 @@ def remote_styles(familyname_with_spaces, config, network):
                 fonts.append([file_name, TTFont(file_obj)])
         return fonts
 
-    if not listed_on_gfonts_api(familyname_with_spaces, config):
+    if not listed_on_gfonts_api(familyname_with_spaces, config, network):
         return None
 
     remote_fonts_zip = download_family_from_Google_Fonts(familyname_with_spaces)
