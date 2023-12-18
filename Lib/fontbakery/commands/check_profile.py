@@ -202,6 +202,13 @@ def ArgumentParser(profile, profile_arg=True):
     )
 
     argument_parser.add_argument(
+        "--skip-network",
+        default=False,
+        action="store_true",
+        help="Skip network checks",
+    )
+
+    argument_parser.add_argument(
         "--json",
         default=False,
         action=AddReporterAction,
@@ -419,6 +426,7 @@ def main(profile=None, values=None):
             explicit_checks=explicit_checks,
             exclude_checks=exclude_checks,
             full_lists=args.full_lists,
+            skip_network=args.skip_network,
         )
     )
     runner_kwds = {"values": values_, "config": configuration}
