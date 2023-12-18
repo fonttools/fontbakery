@@ -421,6 +421,7 @@ def is_up_to_date(installed_str, latest_str):
 
 @check(
     id="com.google.fonts/check/fontbakery_version",
+    conditions=["network"],
     rationale="""
         Running old versions of FontBakery can lead to a poor report which may
         include false WARNs and FAILs due do bugs, as well as outdated

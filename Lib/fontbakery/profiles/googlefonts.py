@@ -280,7 +280,7 @@ def com_google_fonts_check_canonical_filename(ttFont):
 
 @check(
     id="com.google.fonts/check/description/broken_links",
-    conditions=["description_html"],
+    conditions=["network", "description_html"],
     rationale="""
         The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font
         family webpage on the Google Fonts website. For that reason, all hyperlinks
@@ -645,7 +645,7 @@ def com_google_fonts_check_metadata_designer_values(family_metadata):
 
 @check(
     id="com.google.fonts/check/metadata/broken_links",
-    conditions=["family_metadata"],
+    conditions=["network", "family_metadata"],
     proposal=[
         "https://github.com/fonttools/fontbakery/issues/2550",
         "https://github.com/fonttools/fontbakery/issues/4110",
@@ -3971,7 +3971,7 @@ def com_google_fonts_check_name_copyright_length(ttFont):
         We need to check names are not already used, and today the best place to check
         that is http://namecheck.fontdata.com
     """,
-    conditions=["familyname"],
+    conditions=["network", "familyname"],
     proposal="https://github.com/fonttools/fontbakery/issues/494",
 )
 def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
@@ -6518,7 +6518,7 @@ def com_google_fonts_check_metadata_escaped_strings(metadata_file):
 
         It also validates the URLs and file formats are all correctly set.
     """,
-    conditions=["family_metadata", "not is_noto"],
+    conditions=["network", "family_metadata", "not is_noto"],
     proposal="https://github.com/fonttools/fontbakery/issues/3083",
 )
 def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
