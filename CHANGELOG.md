@@ -2,7 +2,7 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.10.9 (2024-Jan-??)
-  - ...
+  - New command-line flag `--skip-network` to skip any checks which require Internet access.
 
 
 ## 0.10.8 (2023-Dec-15)
