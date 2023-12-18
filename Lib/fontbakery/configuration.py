@@ -10,6 +10,7 @@ class Configuration(dict):
             "explicit_checks",
             "exclude_checks",
             "full_lists",
+            "skip_network",
         ]:
             if required_arg not in self:
                 self[required_arg] = None
