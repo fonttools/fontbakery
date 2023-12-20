@@ -159,14 +159,13 @@ class GHMarkdownReporter(SerializeReporter):
                     *[self.emoticon(k) for k in LOGLEVELS]
                 )
                 + (
-                    "|:-----:|:----:|:----:|:----:|:----:|:----:|:----:|\n"
-                    "| {} | {} | {} | {} | {} | {} | {} |\n"
+                    "|" + "|".join([":-----:"] * len(LOGLEVELS)) + "|\n"
+                    "|" + "|".join([" {} "] * len(LOGLEVELS)) + "|\n"
                     ""
                 ).format(*[data["result"][k] for k in LOGLEVELS])
-                + (
-                    "| {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% | {:.0f}% |\n"  # noqa:E501 pylint:disable=C0301
-                    ""
-                ).format(*[100 * data["result"][k] / num_checks for k in LOGLEVELS])
+                + ("|" + "|".join([" {:.0f}% "] * len(LOGLEVELS)) + "|\n" "").format(
+                    *[100 * data["result"][k] / num_checks for k in LOGLEVELS]
+                )
             )
             md += "\n" + summary_table
 
