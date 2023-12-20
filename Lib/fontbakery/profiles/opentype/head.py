@@ -5,9 +5,6 @@ from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 from fontbakery.constants import NameID
 
-# used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable=W0611
-
 
 @check(
     id="com.google.fonts/check/family/equal_font_versions", proposal="legacy:check/014"

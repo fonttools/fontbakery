@@ -1,30 +1,30 @@
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.section import Section
 
+from .cff import *  # noqa:F401,F403
+from .cmap import *  # noqa:F401,F403
+from .head import *  # noqa:F401,F403
+from .os2 import *  # noqa:F401,F403
+from .post import *  # noqa:F401,F403
+from .name import *  # noqa:F401,F403
+from .loca import *  # noqa:F401,F403
+from .hhea import *  # noqa:F401,F403
+from .dsig import *  # noqa:F401,F403
+from .gdef import *  # noqa:F401,F403
+from .gpos import *  # noqa:F401,F403
+from .kern import *  # noqa:F401,F403
+from .glyf import *  # noqa:F401,F403
+from .fvar import *  # noqa:F401,F403
+from .stat import *  # noqa:F401,F403
+from .layout import *  # noqa:F401,F403
+
 profile_imports = (
     (
-        ".",
-        (
-            "cff",
-            "cmap",
-            "head",
-            "os2",
-            "post",
-            "name",
-            "loca",
-            "hhea",
-            "dsig",
-            "gdef",
-            "gpos",
-            "kern",
-            "glyf",
-            "fvar",
-            "stat",
-            "layout",
-            "shared_conditions",
-        ),
+        "..",
+        ("shared_conditions",),
     ),
 )
+
 profile = profile_factory(default_section=Section("OpenType Specification Checks"))
 
 OPENTYPE_PROFILE_CHECKS = [

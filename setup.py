@@ -149,6 +149,7 @@ setup(
         "fontbakery",
         "fontbakery.reporters",
         "fontbakery.profiles",
+        "fontbakery.profiles.opentype",
         "fontbakery.commands",
         "fontbakery.sphinx_extensions",  # for FontBakery's documentation at ReadTheDocs
     ],

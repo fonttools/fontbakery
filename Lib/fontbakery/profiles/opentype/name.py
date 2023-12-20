@@ -7,12 +7,6 @@ from fontbakery.constants import (
     WindowsEncodingID,
     WindowsLanguageID,
 )
-from fontbakery.utils import markdown_table
-
-# used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable=W0611
-
-profile_imports = [(".shared_conditions", ("glyph_metrics_stats", "is_ttf", "is_cff"))]
 
 
 @check(
@@ -426,7 +420,7 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
 def com_adobe_fonts_check_postscript_name(ttFont):
     """PostScript name follows OpenType specification requirements?"""
     import re
-    from fontbakery.utils import get_name_entry_strings
+    from fontbakery.utils import get_name_entry_strings, markdown_table
 
     bad_entries = []
 

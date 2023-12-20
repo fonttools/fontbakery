@@ -9,8 +9,8 @@ from fontbakery.constants import PlatformID, WindowsEncodingID
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.glyphdata import desired_glyph_data
 from fontbakery.message import Message
-from fontbakery.profiles.layout import feature_tags
 from fontbakery.profiles.opentype import OPENTYPE_PROFILE_CHECKS
+from fontbakery.profiles.opentype.layout import feature_tags
 from fontbakery.section import Section
 from fontbakery.status import PASS, FAIL, WARN, INFO, SKIP
 from fontbakery.utils import (
