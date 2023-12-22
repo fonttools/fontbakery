@@ -184,7 +184,14 @@ class CheckTester:
             status, msg_str = skipped
             return [(status, Message("unfulfilled-conditions", msg_str))]
         else:
-            return list(self.runner._exec_check(self.check, self._args))
+            # No "try" while testing, we want to know about exceptions
+            if self.check.configs:
+                new_globals = {
+                    varname: self.runner.config.get(self.check.id, {}).get(varname)
+                    for varname in self.check.configs
+                }
+                self.check.inject_globals(new_globals)
+            return list(self.check(**self._args))
 
 
 def portable_path(p):
