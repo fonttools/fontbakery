@@ -1,7 +1,9 @@
 from fontbakery.callable import check
 from fontbakery.status import FAIL, PASS, WARN, INFO, SKIP
 from fontbakery.message import Message
-from fontbakery.profiles.googlefonts_conditions import RIBBI_ttFonts
+from fontbakery.profiles.googlefonts_conditions import (  # noqa:F401,E501 pylint:disable=W0611
+    RIBBI_ttFonts,
+)
 
 
 @check(
@@ -245,7 +247,9 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2388",
 )
-def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
+def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(
+    RIBBI_ttFonts,  # noqa:F811
+):
     """Check that OS/2.fsSelection bold & italic settings are unique
     for each NameID1"""
     from collections import Counter
