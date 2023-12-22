@@ -113,6 +113,7 @@ def com_google_fonts_check_iso15008_proportions(ttFont):
             "There was no 'H' glyph in the font,"
             " so the proportions could not be tested",
         )
+        return
 
     pen = BoundsPen(glyphset)
     glyphset["H"].draw(pen)
