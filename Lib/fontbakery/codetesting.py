@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import types
+
 import defcon
 
 from fontbakery.checkrunner import CheckRunner
@@ -191,7 +193,10 @@ class CheckTester:
                     for varname in self.check.configs
                 }
                 self.check.inject_globals(new_globals)
-            return list(self.check(**self._args))
+            result = self.check(**self._args)
+            if not isinstance(result, types.GeneratorType):
+                result = [result]
+            return list(result)
 
 
 def portable_path(p):
