@@ -64,8 +64,7 @@ SET_EXPLICIT_CHECKS = {
     # =======================================
     # From adobefonts.py
     "com.adobe.fonts/check/family/consistent_upm",
-    # 'com.adobe.fonts/check/find_empty_letters', # Temporarily disabled,
-    #                                             # the check is broken
+    # "com.adobe.fonts/check/find_empty_letters", # The check is broken
     "com.adobe.fonts/check/nameid_1_win_english",
     "com.adobe.fonts/check/unsupported_tables",
     "com.adobe.fonts/check/STAT_strings",
@@ -91,7 +90,7 @@ SET_EXPLICIT_CHECKS = {
     # =======================================
     # From fontwerk.py
     "com.fontwerk/check/no_mac_entries",
-    # 'com.fontwerk/check/vendor_id', # PERMANENTLY EXCLUDED
+    # "com.fontwerk/check/vendor_id", # PERMANENTLY EXCLUDED
     "com.fontwerk/check/weight_class_fvar",
     "com.fontwerk/check/inconsistencies_between_fvar_stat",
     "com.fontwerk/check/style_linking",
@@ -107,6 +106,7 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/varfont/wght_valid_range",
     "com.google.fonts/check/varfont/wdth_valid_range",
     "com.google.fonts/check/varfont/slnt_range",
+    "com.typenetwork/check/varfont/ital_range",
     "com.adobe.fonts/check/varfont/valid_axis_nameid",
     "com.adobe.fonts/check/varfont/valid_subfamily_nameid",
     "com.adobe.fonts/check/varfont/valid_postscript_nameid",
@@ -129,11 +129,13 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From googlefonts.py
+    "com.google.fonts/check/family/equal_codepoint_coverage",
     "com.google.fonts/check/vendor_id",
-    # 'com.google.fonts/check/metadata/unreachable_subsetting', # Review
-    # 'com.google.fonts/check/gasp', # Review
-    # 'com.google.fonts/check/metadata/valid_nameid25', # TEMPORARY EXCLUDED
-    # 'com.google.fonts/check/metadata/primary_script', # Review
+    # "com.google.fonts/check/metadata/unreachable_subsetting", # Review
+    # "com.google.fonts/check/gasp", # Review
+    # "com.google.fonts/check/metadata/valid_nameid25", # TEMPORARY EXCLUDED
+    # "com.google.fonts/check/metadata/primary_script", # Review
+    # "com.google.fonts/check/glyphsets/shape_languages", # Review
     "com.google.fonts/check/slant_direction",
     "com.google.fonts/check/negative_advance_width",
     "com.google.fonts/check/glyf_nested_components",
@@ -147,13 +149,14 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/name/family_and_style_max_length",
     "com.google.fonts/check/family/control_chars",
     "com.google.fonts/check/varfont_duplicate_instance_names",
-    # 'com.google.fonts/check/varfont/duplexed_axis_reflow', # Review
-    # 'com.google.fonts/check/STAT/axis_order',
+    # "com.google.fonts/check/varfont/duplexed_axis_reflow", # Review
+    # "com.google.fonts/check/STAT/axis_order",
     "com.google.fonts/check/mandatory_avar_table",
     "com.google.fonts/check/missing_small_caps_glyphs",
     "com.google.fonts/check/stylisticset_description",
-    # 'com.google.fonts/check/os2/use_typo_metrics', # Removed in favor of
+    # "com.google.fonts/check/os2/use_typo_metrics", # Removed in favor of
     #                                                # new vmetrics check
+    # "com.google.fonts/check/metadata/empty_designer", # Review
     #
     # =======================================
     # From gpos.py
@@ -188,7 +191,7 @@ SET_EXPLICIT_CHECKS = {
     # =======================================
     # From name.py
     "com.adobe.fonts/check/name/empty_records",
-    # 'com.google.fonts/check/name/no_copyright_on_description', # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/name/no_copyright_on_description", # PERMANENTLY_EXCLUDED
     "com.google.fonts/check/monospace",
     "com.google.fonts/check/name/match_familyname_fullfont",  # OVERRIDEN
     "com.adobe.fonts/check/postscript_name",  # REVIEW
@@ -201,17 +204,17 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From notofonts.py
-    # 'com.google.fonts/check/cmap/unexpected_subtables',  # PERMANENTLY_EXCLUDED
-    # 'com.google.fonts/check/unicode_range_bits',
-    # 'com.google.fonts/check/name/noto_manufacturer',     # PERMANENTLY_EXCLUDED
-    # 'com.google.fonts/check/name/noto_designer',         # PERMANENTLY_EXCLUDED
-    # 'com.google.fonts/check/name/noto_trademark',        # PERMANENTLY_EXCLUDED
-    # 'com.google.fonts/check/cmap/format_12',
-    # 'com.google.fonts/check/os2/noto_vendor',            # PERMANENTLY_EXCLUDED
-    # 'com.google.fonts/check/hmtx/encoded_latin_digits',  # PERMANENTLY_EXCLUDED
-    # 'com.google.fonts/check/hmtx/comma_period',          # PERMANENTLY_EXCLUDED
-    # 'com.google.fonts/check/hmtx/whitespace_advances',   # PERMANENTLY_EXCLUDED
-    # 'com.google.fonts/check/cmap/alien_codepoints',
+    # "com.google.fonts/check/cmap/unexpected_subtables", # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/unicode_range_bits", # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/name/noto_manufacturer", # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/name/noto_designer", # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/name/noto_trademark", # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/cmap/format_12", # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/os2/noto_vendor", # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/hmtx/encoded_latin_digits", # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/hmtx/comma_period", # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/hmtx/whitespace_advances", # PERMANENTLY_EXCLUDED
+    # "com.google.fonts/check/cmap/alien_codepoints", # PERMANENTLY_EXCLUDED
     #
     # =======================================
     # From os2.py
@@ -221,7 +224,7 @@ SET_EXPLICIT_CHECKS = {
     "com.adobe.fonts/check/fsselection_matches_macstyle",
     "com.adobe.fonts/check/family/bold_italic_unique_for_nameid1",
     "com.google.fonts/check/code_pages",
-    # 'com.thetypefounders/check/vendor_id', # PERMANENTLY_EXCLUDED
+    # "com.thetypefounders/check/vendor_id", # PERMANENTLY_EXCLUDED
     "com.google.fonts/check/fsselection",
     #
     # =======================================
@@ -240,9 +243,9 @@ SET_EXPLICIT_CHECKS = {
     #
     # =======================================
     # From shaping.py
-    # 'com.google.fonts/check/shaping/regression',
-    # 'com.google.fonts/check/shaping/forbidden',
-    # 'com.google.fonts/check/shaping/collides',
+    # "com.google.fonts/check/shaping/regression",
+    # "com.google.fonts/check/shaping/forbidden",
+    # "com.google.fonts/check/shaping/collides",
     "com.google.fonts/check/dotted_circle",  # REVIEW
     "com.google.fonts/check/soft_dotted",  # REVIEW
     #
@@ -258,16 +261,19 @@ SET_EXPLICIT_CHECKS = {
     # From universal.py
     "com.google.fonts/check/name/trailing_spaces",
     "com.google.fonts/check/family/win_ascent_and_descent",
-    # 'com.google.fonts/check/os2_metrics_match_hhea', # Removed in favor of
+    # "com.google.fonts/check/os2_metrics_match_hhea", # Removed in favor of
     #                                                  # new vmetrics check
     "com.google.fonts/check/family/single_directory",
-    # 'com.google.fonts/check/caps_vertically_centered', # REVIEW
+    # "com.google.fonts/check/caps_vertically_centered", # REVIEW
     "com.google.fonts/check/ots",  # OVERRIDEN
-    # 'com.google.fonts/check/fontbakery_version', # Permanently Removed
+    # "com.google.fonts/check/fontbakery_version", # Permanently Removed
     "com.google.fonts/check/mandatory_glyphs",
     "com.google.fonts/check/whitespace_glyphs",
     "com.google.fonts/check/whitespace_glyphnames",
     "com.google.fonts/check/whitespace_ink",
+    "com.google.fonts/check/legacy_accents",
+    "com.google.fonts/check/arabic_spacing_symbols",
+    "com.google.fonts/check/arabic_high_hamza",
     "com.google.fonts/check/required_tables",
     "com.google.fonts/check/unwanted_tables",
     "com.google.fonts/check/STAT_strings",
@@ -291,7 +297,7 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/math_signs_width",  # OVERRIDEN
     "com.google.fonts/check/linegaps",
     "com.google.fonts/check/STAT_in_statics",
-    "com.google.fonts/check/alt_caron",  # REVIEW
+    # "com.google.fonts/check/alt_caron",  # PERMANENTLY EXCLUDED
 }
 
 CHECKS_IN_THIS_FILE = [
@@ -460,7 +466,7 @@ def com_typenetwork_glyph_coverage(ttFont, font_codepoints, config):
         0x007C: ("|", "VERTICAL LINE"),
         0x007D: ("}", "RIGHT CURLY BRACKET"),
         0x007E: ("~", "TILDE"),
-        0x00A0: (" ", "NO-BREAK SPACE"),
+        0x00A0: (" ", "NO-BREAK SPACE"),
         0x00A1: ("¡", "INVERTED EXCLAMATION MARK"),
         0x00A2: ("¢", "CENT SIGN"),
         0x00A3: ("£", "POUND SIGN"),
@@ -731,7 +737,7 @@ def com_typenetwork_glyph_coverage(ttFont, font_codepoints, config):
         # 0x03A9: ("Ω", "GREEK CAPITAL LETTER OMEGA"),
         # 0x03BC: ("μ", "GREEK SMALL LETTER MU"),
         # 0x03C0: ("π", "GREEK SMALL LETTER PI"),
-        # 0x2126: ("Ω", "OHM SIGN"),
+        # 0x2126: ("Ω", "OHM SIGN"),
         # 0x2202: ("∂", "PARTIAL DIFFERENTIAL"),
         # 0x2206: ("∆", "INCREMENT"),
         # 0x220F: ("∏", "N-ARY PRODUCT"),
@@ -892,26 +898,26 @@ def com_typenetwork_check_font_is_centered_vertically(ttFont):
     if threshold1 >= ratio > threshold2:
         yield WARN, Message(
             "uncentered",
-            "The font will be displayed a bit vertically uncentered on"
+            "The font will display slightly vertically uncentered on"
             " web environments.",
         )
         yield WARN, Message(
             "uncentered",
-            f"The font will be displayed a bit vertically uncentered on"
+            f"The font will display vertically uncentered on"
             f" web environments. Top space above cap height is {ascent}"
             f" and under baseline is {descent}",
         )
     elif ratio >= threshold2:
         yield FAIL, Message(
             "very-uncentered",
-            f"The font will be displayed really vertically uncentered on"
+            f"The font will display significantly vertically uncentered on"
             f" web environments. Top space above cap height is {ascent}"
             f" and under baseline is {descent}",
         )
     else:
         yield PASS, Message(
             "centered",
-            "The font will be displayed vertically centered on web environments.",
+            "The font will display vertically centered on web environments.",
         )
 
 
@@ -1025,6 +1031,11 @@ def com_typenetwork_check_usweightclass(ttFont, tn_expected_os2_weight):
     # However, if the values are incorrect we will recommend they set Thin
     # to 100 and ExtraLight to 250.
     # for static otfs, Thin must be 250 and ExtraLight must be 275
+
+    elif not expected_value:
+        failed = True
+        yield INFO, Message("no-value", no_value_message.format(os2_value, weight_name))
+
     elif "Thin" == weight_name.split(" "):
         if is_ttf(ttFont) and os2_value not in [100, 250]:
             failed = True
@@ -1045,9 +1056,9 @@ def com_typenetwork_check_usweightclass(ttFont, tn_expected_os2_weight):
             failed = True
             yield FAIL, Message("bad-value", fail_message.format(os2_value, 275))
 
-    elif not expected_value:
+    elif os2_value != expected_value:
         failed = True
-        yield INFO, Message("no-value", no_value_message.format(os2_value, weight_name))
+        yield FAIL, Message("bad-value", fail_message.format(os2_value, expected_value))
 
     if not failed:
         yield PASS, "OS/2 usWeightClass is good"
@@ -1327,7 +1338,7 @@ def com_typenetwork_check_fstype(ttFont):
 @check(
     id="com.typenetwork/check/composite_glyphs",
     rationale="""
-        For performance reasons, is desirable that TTF fonts use composites glyphs.
+        For performance reasons, it is recommended that TTF fonts use composite glyphs.
     """,
     conditions=["is_ttf"],
     proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
@@ -1358,8 +1369,15 @@ def com_typenetwork_check_composite_glyphs(ttFont):
 @check(
     id="com.typenetwork/check/PUA_encoded_glyphs",
     rationale="""
-        Since the use of PUA encoded glyphs is not frequent, we want to WARN when
-        a font can be a bad use of it, like to encode small caps glyphs.
+        Using Private Use Area (PUA) encodings is not recommended. They are
+        defined by users and are not standardized. That said, PUA are font
+        specific so they will break if the user tries to copy/paste,
+        search/replace, or change the font. Using PUA to encode small caps,
+        for example, is not recommended as small caps can and should be
+        accessible via Open Type substitution instead.
+
+        If you must encode your characters in the Private Use Area (PUA),
+        do so with great caution.
     """,
     proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )

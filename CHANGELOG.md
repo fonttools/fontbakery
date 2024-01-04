@@ -1,10 +1,18 @@
 Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.10.9 (2024-Jan-??)
+## Upcoming release: 0.10.10 (2024-Jan-??)
+  - ...
+
+
+## 0.10.9 (2024-Jan-12)
   - New command-line flag `--skip-network` to skip any checks which require Internet access. (PR #4387)
   - Fix number of log level stats colums displayed with --ghmarkdown (PR #4390)
   - Code tests no longer catch exceptions and instead display backtraces. (PR #4392)
+
+### New checks
+#### Added to the OpenType Profile
+  - **EXPERIMENTAL - [com.typenetwork/check/varfont/ital_range]:** Check variable font ital axis has correct range. (PR #4402)
 
 ### Changes to existing checks
 #### On the Shaping profile
@@ -13,9 +21,11 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the OpenType profile
 - **[com.adobe.fonts/check/varfont/same_size_instance_records]:** Skip variable fonts without named instances. (issue #4410)
 
-### Changes to existing checks
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/valid_name_values]:**  Compare METADATA family name against the font's best family name (issue #4262)
+
+#### On the TypeNework Profile
+  - Updated including latest universal checks and improved writing of some rationales and log messages. (PR #4402)
 
 
 ## 0.10.8 (2023-Dec-15)
