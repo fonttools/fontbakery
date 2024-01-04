@@ -312,6 +312,36 @@ def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
 
 
 @check(
+    id="com.typenetwork/check/varfont/ital_range",
+    rationale="""
+        The OpenType spec says at
+        https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_ital
+        that:
+
+        [...] Valid numeric range: Values must be in the range 0 to 1.
+    """,
+    conditions=["is_variable_font", "has_ital_axis"],
+    experimental="Since 2024/Jan/12",
+)
+def com_typenetwork_check_varfont_ital_range(ttFont, ital_axis):
+    """The variable font 'ital' (Italic) axis coordinates
+    is in a valid range?"""
+
+    if ital_axis.minValue == 0 and ital_axis.maxValue == 1:
+        yield PASS, "Looks good!"
+    else:
+        yield FAIL, Message(
+            "invalid-ital-range",
+            f'The range of values for the "ital" axis in'
+            f" this font is {ital_axis.minValue} to {ital_axis.maxValue}."
+            f" Italic axis range must be 0 to 1, "
+            f" where Roman is 0 and Italic 1."
+            f" If you prefer a bigger variation range consider using"
+            f' "Slant" axis instead of "Italic".',
+        )
+
+
+@check(
     id="com.adobe.fonts/check/varfont/valid_axis_nameid",
     rationale="""
         According to the 'fvar' documentation in OpenType spec v1.9
