@@ -1911,7 +1911,7 @@ def com_google_fonts_check_transformed_components(ttFont, is_hinted):
         the lookup).
 
         However, makeotf has never generated these lookup types and they are rare
-        in practice. Perhaps before of this, Mac's CoreText shaper does not correctly
+        in practice. Perhaps because of this, Mac's CoreText shaper does not correctly
         interpret GPOS7, meaning that these lookups will be ignored by the shaper,
         and fonts containing these lookups will have unintended positioning errors.
 
