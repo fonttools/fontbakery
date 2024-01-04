@@ -6083,20 +6083,21 @@ def com_google_fonts_check_varfont_duplexed_axis_reflow(ttFont, config):
         return
 
     gvar = ttFont["gvar"]
-    bad_glyphs = set()
+    bad_glyphs_by_axis = defaultdict(set)
     for glyph, deltas in gvar.variations.items():
         for delta in deltas:
-            if not any(duplexed_axis in delta.axes for duplexed_axis in relevant_axes):
-                continue
-            if any(c is not None and c != (0, 0) for c in delta.coordinates[-4:]):
-                bad_glyphs.add(glyph)
+            for duplexed_axis in relevant_axes:
+                if duplexed_axis not in delta.axes:
+                    continue
+                if any(c is not None and c != (0, 0) for c in delta.coordinates[-4:]):
+                    bad_glyphs_by_axis[duplexed_axis].add(glyph)
 
-    if bad_glyphs:
-        bad_glyphs_list = pretty_print_list(config, list(bad_glyphs))
+    for duplexed_axis, bad_glyphs in bad_glyphs_by_axis.items():
+        bad_glyphs_list = pretty_print_list(config, sorted(bad_glyphs))
         yield FAIL, Message(
             "duplexed-causes-reflow",
-            f"The following glyphs have variation in horizontal"
-            f" advance due to duplexed axes ({relevant_axes_display}):"
+            "The following glyphs have variation in horizontal"
+            f" advance due to duplexed axis {duplexed_axis}:"
             f" {bad_glyphs_list}",
         )
 
@@ -6145,7 +6146,7 @@ def com_google_fonts_check_varfont_duplexed_axis_reflow(ttFont, config):
                             break
 
     # Check kerning here
-    if not bad_glyphs and not bad_kerning:
+    if not bad_glyphs_by_axis and not bad_kerning:
         yield PASS, (
             "No variations or kern rules vary horizontal advance along "
             "any duplexed axes"
