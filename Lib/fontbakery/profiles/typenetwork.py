@@ -272,9 +272,9 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/whitespace_glyphs",
     "com.google.fonts/check/whitespace_glyphnames",
     "com.google.fonts/check/whitespace_ink",
-    'com.google.fonts/check/legacy_accents',
-    'com.google.fonts/check/arabic_spacing_symbols',
-    'com.google.fonts/check/arabic_high_hamza',
+    "com.google.fonts/check/legacy_accents",
+    "com.google.fonts/check/arabic_spacing_symbols",
+    "com.google.fonts/check/arabic_high_hamza",
     "com.google.fonts/check/required_tables",
     "com.google.fonts/check/unwanted_tables",
     "com.google.fonts/check/STAT_strings",
@@ -1737,7 +1737,7 @@ def com_typenetwork_check_family_duplicated_names(ttFonts):
         [...] Valid numeric range: Values must be in the range 0 to 1.
 
     """,
-    conditions=["is_variable_font", "has_ital_axis"]
+    conditions=["is_variable_font", "has_ital_axis"],
 )
 def com_typenetwork_check_varfont_ital_range(ttFont, ital_axis):
     """The variable font 'ital' (Italic) axis coordinates
@@ -1753,7 +1753,7 @@ def com_typenetwork_check_varfont_ital_range(ttFont, ital_axis):
             f" Italic axis range must be 0 to 1, "
             f" where Roman is 0 and Italic 1."
             f" If you prefer a bigger variation range consider using"
-            f' "Slant" axis instead of "Italic".'
+            f' "Slant" axis instead of "Italic".',
         )
 
 
