@@ -144,6 +144,9 @@ def get_shaping_parameters(test, configuration):
     params = {}
     for el in ["script", "language", "direction", "features", "shaper"]:
         params[el] = get_from_test_with_default(test, configuration, el)
+    params["variations"] = get_from_test_with_default(
+        test, configuration, "variations", {}
+    )
     return params
 
 
@@ -290,7 +293,7 @@ def generate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_t
     for test, expected, output_buf, output_serialized in failed_shaping_tests:
         extra_data = {
             k: test[k]
-            for k in ["script", "language", "direction", "features"]
+            for k in ["script", "language", "direction", "features", "variations"]
             if k in test
         }
         # Make HTML report here.

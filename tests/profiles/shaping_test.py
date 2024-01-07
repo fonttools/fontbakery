@@ -67,6 +67,37 @@ def test_check_shaping_regression():
         )
 
 
+def test_check_shaping_regression_with_variations():
+    """Check that we can test shaping with variation settings against expectations."""
+    check = CheckTester(shaping_profile, "com.google.fonts/check/shaping/regression")
+
+    shaping_test = {
+        "configuration": {},
+        "tests": [
+            {
+                "input": "AV",
+                "expectation": "A=0+453|V=1+505",
+            },
+            {
+                "input": "AV",
+                "expectation": "A=0+517|V=1+526",
+                "variations": {"wght": 700},
+            },
+        ],
+    }
+
+    with tempfile.TemporaryDirectory() as tmp_gf_dir:
+        json.dump(
+            shaping_test,
+            open(os.path.join(tmp_gf_dir, "test.json"), "w", encoding="utf-8"),
+        )
+
+        config = {"com.google.fonts/check/shaping": {"test_directory": tmp_gf_dir}}
+
+        font = TEST_FILE("varfont/Oswald-VF.ttf")
+        assert_PASS(check(wrap_args(config, font)), "Oswald: A=0+453|V=1+505")
+
+
 def test_check_shaping_forbidden():
     """Check that we can test for forbidden glyphs in output."""
     check = CheckTester(shaping_profile, "com.google.fonts/check/shaping/forbidden")
