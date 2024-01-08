@@ -60,7 +60,6 @@ SET_EXPLICIT_CHECKS = {
     "com.typenetwork/check/varfont/axes_have_variation",
     "com.typenetwork/check/varfont/fvar_axes_order",
     "com.typenetwork/check/family/duplicated_names",
-    "com.typenetwork/check/family/duplicated_names",
     "com.typenetwork/check/varfont/ital_range",
     #
     # =======================================
