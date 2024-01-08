@@ -1371,11 +1371,11 @@ def com_typenetwork_check_composite_glyphs(ttFont):
 @check(
     id="com.typenetwork/check/PUA_encoded_glyphs",
     rationale="""
-        Using Private Use Area (PUA) encodings is not recommended. They are 
-        defined by users and are not standardized. That said, PUA are font 
-        specific so they will break if the user tries to copy/paste, 
-        search/replace, or change the font. Using PUA to encode small caps, 
-        for example, is not recommended as small caps can and should be 
+        Using Private Use Area (PUA) encodings is not recommended. They are
+        defined by users and are not standardized. That said, PUA are font
+        specific so they will break if the user tries to copy/paste,
+        search/replace, or change the font. Using PUA to encode small caps,
+        for example, is not recommended as small caps can and should be
         accessible via Open Type substitution instead.
 
         If you must encode your characters in the Private Use Area (PUA),
@@ -1732,7 +1732,8 @@ def com_typenetwork_check_family_duplicated_names(ttFonts):
     id="com.typenetwork/check/varfont/ital_range",
     rationale="""
         The OpenType spec says at
-        https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_ital that:
+        https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_ital
+        that:
 
         [...] Valid numeric range: Values must be in the range 0 to 1.
 
