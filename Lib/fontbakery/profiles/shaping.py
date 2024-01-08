@@ -54,24 +54,19 @@ def create_report_item(
     text=None,
     buf1=None,
     buf2=None,
-    kind="item",
     note=None,
     extra_data=None,
 ):
     from vharfbuzz import FakeBuffer
 
+    message = f"* {message}"
     if text:
         message += f": {text}"
-
-    if kind == "item":
-        message = f"* {message}"
-        if note:
-            message += f" ({note})"
-    elif kind == "header":
-        message = f"#### {message}\n"
-
+    if note:
+        message += f" ({note})"
     if extra_data:
-        message += f"\n\n      {extra_data}\n\n"
+        message += f"\n\n      {extra_data}"
+    message += "\n\n"
 
     serialized_buf1 = None
     serialized_buf2 = None
@@ -265,8 +260,6 @@ def run_shaping_regression(
 
 def generate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
-    header = f"{shaping_file}: Expected and actual shaping not matching"
-    report_items.append(create_report_item(vharfbuzz, header, kind="header"))
     for test, expected, output_buf, output_serialized in failed_shaping_tests:
         extra_data = {
             k: test[k]
@@ -290,6 +283,7 @@ def generate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_t
         )
         report_items.append(report_item)
 
+    header = f"{shaping_file}: Expected and actual shaping not matching"
     yield FAIL, Message("shaping-regression", header + "\n" + "\n".join(report_items))
 
 
@@ -349,15 +343,14 @@ def run_forbidden_glyph_test(
 
 def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
-    msg = f"{shaping_file}: Forbidden glyphs found while shaping"
-    report_items.append(create_report_item(vharfbuzz, msg, kind="header"))
     for shaping_text, buf, forbidden in failed_shaping_tests:
         msg = f"{shaping_text} produced '{forbidden}'"
         report_items.append(
             create_report_item(vharfbuzz, msg, text=shaping_text, buf1=buf)
         )
 
-    yield FAIL, Message("shaping-forbidden", msg + ".\n" + "\n".join(report_items))
+    header = f"{shaping_file}: Forbidden glyphs found while shaping"
+    yield FAIL, Message("shaping-forbidden", header + ".\n" + "\n".join(report_items))
 
 
 @check(
@@ -449,8 +442,6 @@ def run_collides_glyph_test(
 def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
     seen_bumps = {}
-    msg = f"{shaping_file}: {len(failed_shaping_tests)} collisions found while shaping"
-    report_items.append(create_report_item(vharfbuzz, msg, kind="header"))
     for shaping_text, bumps, draw, buf in failed_shaping_tests:
         # Make HTML report here.
         if tuple(bumps) in seen_bumps:
@@ -463,7 +454,10 @@ def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
             buf1=buf,
         )
         report_items.append(report_item)
-    yield FAIL, Message("shaping-collides", msg + ".\n" + "\n".join(report_items))
+    header = (
+        f"{shaping_file}: {len(failed_shaping_tests)} collisions found while shaping"
+    )
+    yield FAIL, Message("shaping-collides", header + ".\n" + "\n".join(report_items))
 
 
 def is_complex_shaper_font(ttFont):
