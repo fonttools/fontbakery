@@ -2594,8 +2594,10 @@ def com_google_fonts_check_metadata_valid_name_values(ttFont, font_metadata):
     if family_name != font_metadata.name:
         yield FAIL, Message(
             "mismatch",
-            (f"METADATA.pb font.name field is {font_metadata.name} "
-             f"but font has {family_name}")
+            (
+                f"METADATA.pb font.name field is {font_metadata.name} "
+                f"but font has {family_name}"
+            ),
         )
     else:
         yield PASS, "METADATA.pb font.name is correct"
