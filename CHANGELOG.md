@@ -2,14 +2,21 @@ Below are the most important changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.10.9 (2024-Jan-??)
-  - New command-line flag `--skip-network` to skip any checks which require Internet access.
-  - Fix number of log level stats colums displayed with --ghmarkdown
-  - Code tests no longer catch exceptions and instead display backtraces.
+  - New command-line flag `--skip-network` to skip any checks which require Internet access. (PR #4387)
+  - Fix number of log level stats colums displayed with --ghmarkdown (PR #4390)
+  - Code tests no longer catch exceptions and instead display backtraces. (PR #4392)
+
+### Changes to existing checks
+#### On the Shaping profile
+- **[com.google.fonts/check/shaping/regression]:** Font variations can now be set in the test configuration, similar to font features. (PR #4405)
+
+#### On the OpenType profile
+- **[com.adobe.fonts/check/varfont/same_size_instance_records]:** Skip variable fonts without named instances. (issue #4410)
 
 
 ## 0.10.8 (2023-Dec-15)
   - New status result: "FATAL". To be used when a problem detected is extremely bad and must be imediately addressed. (issue #4374 / Discussion #4364)
-  - New command-line flag `--error-code-on` to define the threshold for emitting error code 1. By default, the FontBakery process still communicates an error code 1 if there's any check resulting in FAIL or worse. But with this flag, the user (for instance, in a continuous integration setup) can change the behaviour, such as making a CI job break only when getting a FATAL check-result (or, alternatively, making it even stricter by also breaking CI jobs on WARNs).
+  - New command-line flag `--error-code-on` to define the threshold for emitting error code 1. By default, the FontBakery process still communicates an error code 1 if there's any check resulting in FAIL or worse. But with this flag, the user (for instance, in a continuous integration setup) can change the behaviour, such as making a CI job break only when getting a FATAL check-result (or, alternatively, making it even stricter by also breaking CI jobs on WARNs). (PR #4376)
 
 ### Changes to existing checks
 #### On the Google Fonts Profile

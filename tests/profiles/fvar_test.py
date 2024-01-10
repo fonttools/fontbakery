@@ -665,6 +665,10 @@ def test_check_varfont_same_size_instance_records():
     msg = assert_results_contain(check(ttFont), FAIL, "different-size-instance-records")
     assert msg == "Instance records don't all have the same size."
 
+    fvar_table.instances = []
+    msg = assert_results_contain(check(ttFont), SKIP, "no-instance-records")
+    assert msg == "Font has no instance records."
+
 
 def test_check_varfont_distinct_instance_records():
     """All of the instance records in a font should have distinct coordinates

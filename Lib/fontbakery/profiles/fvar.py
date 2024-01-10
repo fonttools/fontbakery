@@ -1,6 +1,6 @@
 from fontbakery.callable import check
 from fontbakery.constants import REGISTERED_AXIS_TAGS
-from fontbakery.status import FAIL, PASS, WARN
+from fontbakery.status import FAIL, PASS, WARN, SKIP
 from fontbakery.message import Message
 
 # used to inform get_module_profile whether and how to create a profile
@@ -547,6 +547,9 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
 )
 def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
     """Validates that all of the instance records in a given font have the same size."""
+
+    if not ttFont["fvar"].instances:
+        return SKIP, Message("no-instance-records", "Font has no instance records.")
 
     font_ps_nameids_not_provided = set(
         inst.postscriptNameID == 0xFFFF for inst in ttFont["fvar"].instances
