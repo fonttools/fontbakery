@@ -14,7 +14,7 @@ For video introductions, see the [TypeCon 2018](https://www.youtube.com/watch?v=
 Font Bakery has an active community of contributors from foundries around the world, including Adobe Fonts, Dalton Maag, Type Network, and Google Fonts.
 
 Font Bakery is not an official Google project, and Google provides no support for it.
-However, throughout 2018-2023 a project maintainer, Felipe Corrêa da Silva Sanches ([@felipesanches](https://github.com/felipesanches)), is commissioned by the Google Fonts team to maintain it.
+However, throughout 2018-2024 a project maintainer, Felipe Corrêa da Silva Sanches ([@felipesanches](https://github.com/felipesanches)), is commissioned by the Google Fonts team to maintain it.
 The original software architecture (and maintenance of it) is by Lasse Fister ([@graphicore](https://github.com/graphicore)).
 
 ## Run Font Bakery automatically on Github Actions
