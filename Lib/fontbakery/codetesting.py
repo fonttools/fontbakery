@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import types
+
 import defcon
 
 from fontbakery.checkrunner import CheckRunner
@@ -184,7 +186,17 @@ class CheckTester:
             status, msg_str = skipped
             return [(status, Message("unfulfilled-conditions", msg_str))]
         else:
-            return list(self.runner._exec_check(self.check, self._args))
+            # No "try" while testing, we want to know about exceptions
+            if self.check.configs:
+                new_globals = {
+                    varname: self.runner.config.get(self.check.id, {}).get(varname)
+                    for varname in self.check.configs
+                }
+                self.check.inject_globals(new_globals)
+            result = self.check(**self._args)
+            if not isinstance(result, types.GeneratorType):
+                result = [result]
+            return list(result)
 
 
 def portable_path(p):

@@ -450,11 +450,14 @@ def test_check_mandatory_glyphs():
     assert message == "Font should contain the '.notdef' glyph."
 
     # Change the glyph name from 'n' to '.notdef'
+    # (Must reload the font here since we already decompiled the glyf table)
+    ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     ttFont.glyphOrder = ["m", ".notdef"]
     for subtable in ttFont["cmap"].tables:
         if subtable.isUnicode():
             subtable.cmap[110] = ".notdef"
-
+            if 0 in subtable.cmap:
+                del subtable.cmap[0]
     results = check(ttFont)
     message = assert_results_contain([results[0]], WARN, "notdef-not-first")
     assert message == "The '.notdef' should be the font's first glyph."

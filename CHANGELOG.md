@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.10.9 (2024-Jan-??)
   - New command-line flag `--skip-network` to skip any checks which require Internet access. (PR #4387)
   - Fix number of log level stats colums displayed with --ghmarkdown (PR #4390)
+  - Code tests no longer catch exceptions and instead display backtraces. (PR #4392)
 
 ### Changes to existing checks
 #### On the Shaping profile
