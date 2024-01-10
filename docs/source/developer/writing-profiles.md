@@ -177,8 +177,7 @@ from fontbakery.callable import check, condition
 # status emitted by a check is the end result of that check.
 # DEBUG can't be an end result, the least severe status
 # allowed as a check is PASS.
-from fontbakery.checkrunner import (DEBUG, PASS,
-               INFO, SKIP, WARN, FAIL, ERROR)
+from fontbakery.status import DEBUG, PASS, INFO, SKIP, WARN, FAIL, ERROR
 # Used to inform get_module_profile whether and
 # how to create a profile. This
 # example will create an instance of `FontsProfile`.
@@ -196,7 +195,7 @@ from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
 # for this example, containing checks for the accordingly
 # named tables
 profile_imports = [
-    ['fontbakery.profiles', ['cmap', 'head']]
+    ['fontbakery.profiles', ['shared_conditions']]
 ]
 
 # Now we picked some checks from other profiles, but
@@ -252,14 +251,6 @@ def has_cap_r_in_name(font):
     # use return within this check.
     return PASS, '"R" is in font filename.'
 
-
-# conditions are used for the dependency injection as arguments
-# and to decide if a check will be skipped
-@condition
-# ttFont is a condition built into FontProfile
-# it returns an instance of fontTools.TTLib.TTFont
-def is_ttf(ttFont):
-   return 'glyf' in ttFont
    
 @check(
     id='de.graphicore.fontbakery/examples/ttf_has_glyphs',
