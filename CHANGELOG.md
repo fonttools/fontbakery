@@ -23,6 +23,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/metadata/valid_name_values]:**  Compare METADATA family name against the font's best family name (issue #4262)
+  - **[com.google.fonts/check/name/license_url]:** New OFL website URL is expected, while the old one emits a WARN (issue #4358)
 
 #### On the TypeNework Profile
   - Updated including latest universal checks and improved writing of some rationales and log messages. (PR #4402)

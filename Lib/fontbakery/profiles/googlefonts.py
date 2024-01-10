@@ -1452,7 +1452,7 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
         name table:
 
         - "This Font Software is licensed under the SIL Open Font License, Version 1.1.
-          This license is available with a FAQ at: https://scripts.sil.org/OFL"
+          This license is available with a FAQ at: openfontlicense.org"
 
         - "Licensed under the Apache License, Version 2.0"
 
@@ -1532,7 +1532,7 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
         The string snippets used for detecting licensing terms are:
 
         - "This Font Software is licensed under the SIL Open Font License, Version 1.1.
-          This license is available with a FAQ at: https://scripts.sil.org/OFL"
+          This license is available with a FAQ at: openfontlicense.org"
 
         - "Licensed under the Apache License, Version 2.0"
 
@@ -1545,7 +1545,10 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
         When in doubt, please choose OFL for new font projects.
     """,
     conditions=["familyname"],
-    proposal="legacy:check/030",
+    proposal=[
+        "legacy:check/030",
+        "https://github.com/fonttools/fontbakery/issues/4358",
+    ],
 )
 def com_google_fonts_check_name_license_url(ttFont, familyname):
     """License URL matches License text on name table?"""
@@ -1553,7 +1556,7 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
 
     LEGACY_UFL_FAMILIES = ["Ubuntu", "UbuntuCondensed", "UbuntuMono"]
     LICENSE_URL = {
-        "OFL.txt": "https://scripts.sil.org/OFL",
+        "OFL.txt": "https://openfontlicense.org",
         "LICENSE.txt": "https://www.apache.org/licenses/LICENSE-2.0",
         "UFL.txt": "https://www.ubuntu.com/legal/terms-and-policies/font-licence",
     }
@@ -1618,6 +1621,13 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
                         string = "https://".join(string.split("http://"))
                     if string == expected:
                         found_good_entry = True
+                    elif "scripts.sil.org/OFL" in string:
+                        found_good_entry = True
+                        yield WARN, Message(
+                            "deprecated-ofl-url",
+                            'OFL url is no longer "https://scripts.sil.org/OFL". '
+                            "Use 'https://openfontlicense.org' instead.",
+                        )
                     else:
                         passed = False
                         yield FAIL, Message(
