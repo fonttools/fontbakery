@@ -17,6 +17,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Shaping profile
 - **[com.google.fonts/check/shaping/regression]:** Font variations can now be set in the test configuration, similar to font features. (PR #4405)
+- **[com.google.fonts/check/shaping/regression]:** Fix regressions in HTML outoput and make the check outout more markdown-compatible. (PR #4406)
 
 #### On the OpenType profile
 - **[com.adobe.fonts/check/varfont/same_size_instance_records]:** Skip variable fonts without named instances. (issue #4410)
