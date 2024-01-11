@@ -1986,35 +1986,25 @@ MONTSERRAT_NON_RIBBI = [
 
 
 def test_check_metadata_valid_name_values():
-    """METADATA.pb font.name field contains font name in right format?"""
+    """METADATA.pb font.name field matches font"""
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/metadata/valid_name_values"
     )
 
     # Our reference Montserrat family is a good 18-styles family:
-    for font in MONTSERRAT_RIBBI:
+    for font in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
         # So it must PASS the check:
-        assert_PASS(check(font), f"with a good RIBBI font ({font})...")
+        ttfont = TTFont(font)
+        assert_PASS(check(ttfont), f"with a good RIBBI font ({font})...")
 
         # And fail if it finds a bad font_familyname:
+        ttfont["name"].setName("foobar", 1, 3, 1, 0x409)
+        ttfont["name"].setName("foobar", 16, 3, 1, 0x409)
         assert_results_contain(
-            check(font, {"font_familynames": ["WrongFamilyName"]}),
+            check(ttfont),
             FAIL,
             "mismatch",
             f"with a bad RIBBI font ({font})...",
-        )
-
-    # We do the same for NON-RIBBI styles:
-    for font in MONTSERRAT_NON_RIBBI:
-        # So it must PASS the check:
-        assert_PASS(check(font), "with a good NON-RIBBI font ({fontfile})...")
-
-        # And fail if it finds a bad font_familyname:
-        assert_results_contain(
-            check(font, {"typographic_familynames": ["WrongFamilyName"]}),
-            FAIL,
-            "mismatch",
-            f"with a bad NON-RIBBI font ({font})...",
         )
 
     # Good font with other language name entries

@@ -13,6 +13,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the OpenType profile
 - **[com.adobe.fonts/check/varfont/same_size_instance_records]:** Skip variable fonts without named instances. (issue #4410)
 
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/metadata/valid_name_values]:**  Compare METADATA family name against the font's best family name (issue #4262)
+
 
 ## 0.10.8 (2023-Dec-15)
   - New status result: "FATAL". To be used when a problem detected is extremely bad and must be imediately addressed. (issue #4374 / Discussion #4364)
