@@ -60,7 +60,6 @@ SET_EXPLICIT_CHECKS = {
     "com.typenetwork/check/varfont/axes_have_variation",
     "com.typenetwork/check/varfont/fvar_axes_order",
     "com.typenetwork/check/family/duplicated_names",
-    "com.typenetwork/check/varfont/ital_range",
     #
     # =======================================
     # From adobefonts.py
@@ -107,6 +106,7 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/varfont/wght_valid_range",
     "com.google.fonts/check/varfont/wdth_valid_range",
     "com.google.fonts/check/varfont/slnt_range",
+    "com.typenetwork/check/varfont/ital_range",
     "com.adobe.fonts/check/varfont/valid_axis_nameid",
     "com.adobe.fonts/check/varfont/valid_subfamily_nameid",
     "com.adobe.fonts/check/varfont/valid_postscript_nameid",
@@ -317,7 +317,6 @@ CHECKS_IN_THIS_FILE = [
     "com.typenetwork/check/varfont/axes_have_variation",
     "com.typenetwork/check/varfont/fvar_axes_order",
     "com.typenetwork/check/family/duplicated_names",
-    "com.typenetwork/check/varfont/ital_range",
 ]
 
 SET_IMPORTED_CHECKS = set(
@@ -1725,36 +1724,6 @@ def com_typenetwork_check_family_duplicated_names(ttFonts):
 
     if not duplicate_fullNames and not duplicate_postscriptNames:
         yield PASS, "All names are unique"
-
-
-@check(
-    id="com.typenetwork/check/varfont/ital_range",
-    rationale="""
-        The OpenType spec says at
-        https://learn.microsoft.com/en-us/typography/opentype/spec/dvaraxistag_ital
-        that:
-
-        [...] Valid numeric range: Values must be in the range 0 to 1.
-
-    """,
-    conditions=["is_variable_font", "has_ital_axis"],
-)
-def com_typenetwork_check_varfont_ital_range(ttFont, ital_axis):
-    """The variable font 'ital' (Italic) axis coordinates
-    is in a valid range?"""
-
-    if ital_axis.minValue == 0 and ital_axis.maxValue == 1:
-        yield PASS, "Looks good!"
-    else:
-        yield FAIL, Message(
-            "invalidd-ital-range",
-            f'The range of values for the "ital" axis in'
-            f" this font is {ital_axis.minValue} to {ital_axis.maxValue}."
-            f" Italic axis range must be 0 to 1, "
-            f" where Roman is 0 and Italic 1."
-            f" If you prefer a bigger variation range consider using"
-            f' "Slant" axis instead of "Italic".',
-        )
 
 
 profile.auto_register(

@@ -5,6 +5,14 @@ A more detailed list of changes is available in the corresponding milestones for
   - New command-line flag `--skip-network` to skip any checks which require Internet access.
   - Fix number of log level stats colums displayed with --ghmarkdown
 
+### New checks
+#### Added to the Universal Profile
+  - **[com.typenetwork/check/varfont/ital_range]:** Check variable font ital axis has correct range.
+
+### Changes to existing checks
+#### On the TypeNework Profile
+- Improved writing of some rationales.
+- Update including latest universal checks.
 
 ## 0.10.8 (2023-Dec-15)
   - New status result: "FATAL". To be used when a problem detected is extremely bad and must be imediately addressed. (issue #4374 / Discussion #4364)

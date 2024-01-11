@@ -48,6 +48,7 @@ OPENTYPE_PROFILE_CHECKS = [
     "com.google.fonts/check/varfont/regular_opsz_coord",
     "com.google.fonts/check/varfont/bold_wght_coord",
     "com.google.fonts/check/varfont/slnt_range",
+    "com.typenetwork/check/varfont/ital_range",
     "com.google.fonts/check/varfont/wght_valid_range",
     "com.google.fonts/check/varfont/wdth_valid_range",
     "com.google.fonts/check/varfont/stat_axis_record_for_each_axis",
