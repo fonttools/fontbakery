@@ -6095,7 +6095,7 @@ def com_google_fonts_check_varfont_duplexed_axis_reflow(ttFont, config):
     for duplexed_axis, bad_glyphs in bad_glyphs_by_axis.items():
         bad_glyphs_list = pretty_print_list(config, sorted(bad_glyphs))
         yield FAIL, Message(
-            "duplexed-causes-reflow",
+            f"{duplexed_axis.lower()}-causes-reflow",
             "The following glyphs have variation in horizontal"
             f" advance due to duplexed axis {duplexed_axis}:"
             f" {bad_glyphs_list}",

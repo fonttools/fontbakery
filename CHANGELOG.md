@@ -5,6 +5,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - New command-line flag `--skip-network` to skip any checks which require Internet access.
   - Fix number of log level stats colums displayed with --ghmarkdown
 
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/varfont/duplexed_axis_reflow]:** yield FAILs per incorrect axis (message codes specifying axis); sort the list of bad glyphs
 
 ## 0.10.8 (2023-Dec-15)
   - New status result: "FATAL". To be used when a problem detected is extremely bad and must be imediately addressed. (issue #4374 / Discussion #4364)

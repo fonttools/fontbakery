@@ -4398,7 +4398,7 @@ def test_check_varfont_duplexed_axis_reflow():
     )
 
     ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
-    assert_results_contain(check(ttFont), FAIL, "duplexed-causes-reflow")
+    assert_results_contain(check(ttFont), FAIL, "grad-causes-reflow")
 
     # Zero out the horizontal advances
     gvar = ttFont["gvar"]
