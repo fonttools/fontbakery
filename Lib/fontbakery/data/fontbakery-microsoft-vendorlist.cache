@@ -53,8 +53,14 @@
 
 
 
-
-<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light" lang="en-us" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="false" data-target="docs" x-ms-format-detection="none">
+<html
+	class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light"
+	lang="en-us"
+	dir="ltr"
+	data-authenticated="false"
+	data-auth-status-determined="false"
+	data-target="docs"
+	x-ms-format-detection="none">
 
 <head>
 	<meta charset="utf-8" />
@@ -81,13 +87,16 @@
 <meta name="description" content="Vendors who have registered a unique 'Vendor ID' with Microsoft." />
 <meta name="document_id" content="91d203fe-edb5-7fd0-88f1-40a688aee010" />
 <meta name="document_version_independent_id" content="42388cb3-6080-2322-5f5f-5111f3b70ffb" />
+<meta name="feedback_help_link_type" content="" />
+<meta name="feedback_help_link_url" content="" />
+<meta name="feedback_product_url" content="" />
 <meta name="feedback_system" content="GitHub" />
-<meta name="git_commit_id" content="b931dc45b64c1e1106246a0e89bbc12ea300681a" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/b931dc45b64c1e1106246a0e89bbc12ea300681a/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="33bdf609ac20c0fd9a10720b643e7801a6c44109" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/33bdf609ac20c0fd9a10720b643e7801a6c44109/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="11/24/2023" />
+<meta name="ms.date" content="01/04/2024" />
 <meta name="ms.prod" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -98,8 +107,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2023-11-24 07:42 PM" />
-<meta name="word_count" content="4675" />
+<meta name="updated_at" content="2024-01-04 06:55 PM" />
+<meta name="word_count" content="4714" />
 
 
 	<meta name="recommendation_types" content="Training" />
@@ -132,7 +141,7 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/581302d8.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/d017a206.site-ltr.css ">
 
 	
 
@@ -187,6 +196,7 @@
 	<script src="https://js.monitor.azure.com/scripts/c/ms.jsll-3.min.js"></script>
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/67a45209.deprecation.js"></script>
+
 		<link rel="preconnect" href="//mscom.demdex.net" crossorigin>
 		<link rel="dns-prefetch" href="//target.microsoft.com">
 		<link rel="dns-prefetch" href="//microsoftmscompoc.tt.omtrdc.net">
@@ -199,7 +209,7 @@
 			id="adobe-target-script"
 			type="application/javascript"
 		/>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/64dc500e.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/3b3c6903.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -245,11 +255,11 @@ More info about Internet Explorer and Microsoft Edge					</a>
 		<!-- liquid-tag banners global -->
 
 		<!-- site header -->
-		<header id="ms--site-header" class="display-none"></header>
+		<header id="ms--site-header" class="display-none" role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization"></header>
 
 		<div id="headerAreaHolder" data-bi-name="header">
 <header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
-	<div class="nav-bar">
+	<div id="ms--primary-nav" class="nav-bar">
 		<div class="nav-bar-brand">
 			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
 				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
@@ -257,8 +267,9 @@ More info about Internet Explorer and Microsoft Edge					</a>
 			</a>
 		</div>
 	</div>
-	<div class="nav-bar border-top is-hidden-mobile"></div>
-</header>		</div>
+	<div id="ms--secondary-nav" class="nav-bar border-bottom is-hidden-mobile"></div>
+</header>
+		</div>
 
 
 			<div id="content-header" class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
@@ -502,7 +513,7 @@ Table of contents						</span>
 Article													</li>
 
 													<li class="visibility-hidden-visual-diff">
-														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2023-11-24T08:00:00Z" data-article-date-source="calculated">11/24/2023</time>
+														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-01-04T08:00:00Z" data-article-date-source="calculated">01/04/2024</time>
 													</li>
 														<li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
@@ -546,8 +557,7 @@ Article													</li>
     </tr>
 <tr>
 <td>!666</td>
-[https://www.agyei.design]()
-<td><a href="https://www.agyei.design" data-linktype="external">Agyei Archer</a></td>
+<td>Agyei Archer</td>
 </tr>
 <tr>
 <td>!ETF</td>
@@ -582,8 +592,16 @@ Article													</li>
 <td><a href="https://itemzero.com/" data-linktype="external">0.itemzero</a></td>
 </tr>
 <tr>
+<td>00F3</td>
+<td>Óliver Lalan</td>
+</tr>
+<tr>
 <td>100</td>
 <td><a href="https://authentic.website" data-linktype="external">AUTHENTIC</a></td>
+</tr>
+<tr>
+<td>123</td>
+<td>Numbers Font Foundry</td>
 </tr>
 <tr>
 <td>0264</td>
@@ -1380,6 +1398,10 @@ Article													</li>
 <td><a href="http://www.boldmonday.com" data-linktype="external">Bold Monday</a></td>
 </tr>
 <tr>
+<td>BOLT</td>
+<td><a href="https://www.davidsargent.com.au/" data-linktype="external">Bolt Cutter Type</a></td>
+</tr>
+<tr>
 <td>BOMF</td>
 <td><a href="https://www.beachy.org/" data-linktype="external">Beach-o-matic</a></td>
 </tr>
@@ -1644,7 +1666,7 @@ Article													</li>
 </tr>
 <tr>
 <td>CLP </td>
-<td><a href="https://gutenberg.osdn.jp/" data-linktype="external">Gutenberg Labo</a></td>
+<td>Gutenberg Labo</td>
 </tr>
 <tr>
 <td>CLT</td>
@@ -2322,6 +2344,10 @@ Article													</li>
 <td><a href="http://youbringfire.com/" data-linktype="external">youbringfire</a></td>
 </tr>
 <tr>
+<td>FIRM</td>
+<td><a href="https://firm.gs/typefirm/" data-linktype="external">TYPE FIRM</a></td>
+</tr>
+<tr>
 <td>FJ</td>
 <td><a href="http://frncojonas.com/" data-linktype="external">frncojonas</a></td>
 </tr>
@@ -2763,6 +2789,10 @@ Article													</li>
 <tr>
 <td>GTYP</td>
 <td><a href="http://www.g-type.com" data-linktype="external">G-Type</a></td>
+</tr>
+<tr>
+<td>GXH</td>
+<td>H.G. Font</td>
 </tr>
 <tr>
 <td>GYST</td>
@@ -4043,6 +4073,10 @@ Article													</li>
 <td>Micrologic Software</td>
 </tr>
 <tr>
+<td>MLKT</td><td>
+<a href="https://mallikatype.com/" data-linktype="external">Mallikātype</a></td>
+</tr>
+<tr>
 <td>mlss</td>
 <td><a href="http://www.marksimonson.com" data-linktype="external">Mark Simonson Studio LLC</a></td>
 </tr>
@@ -4241,6 +4275,10 @@ Article													</li>
 <tr>
 <td>MTY</td>
 <td>Motoya Co. ,LTD.</td>
+</tr>
+<tr>
+<td>MUCC</td>
+<td><a href="https://www.muccatypo.com/" data-linktype="external">muccatypo</a></td>
 </tr>
 <tr>
 <td>MUK!</td>
@@ -4490,6 +4528,10 @@ Article													</li>
 <td><a href="https://beta.newglyph.com/" data-linktype="external">newglyph</a></td>
 </tr>
 <tr>
+<td>NX</td>
+<td><a href="https://www.noxakar.com/" data-linktype="external">Noxakar</a></td>
+</tr>
+<tr>
 <td>NYCM</td>
 <td><a href="https://www.nycmusicservices.com/" data-linktype="external">NYC Music Services</a></td>
 </tr>
@@ -4640,6 +4682,10 @@ Article													</li>
 <td><a href="http://www.paratype.com/" data-linktype="external">ParaType Inc.</a></td>
 </tr>
 <tr>
+<td>PARK</td>
+<td>Boomi Park</td>
+</tr>
+<tr>
 <td>pbd0</td>
 <td><a href="https://www.peterbaindesign.com" data-linktype="external">Peter Bain</a></td>
 </tr>
@@ -4677,7 +4723,7 @@ Article													</li>
 </tr>
 <tr>
 <td>PETR</td>
-<td><a href="http://www.dariapetrova.com" data-linktype="external">Daria Petrova</a></td>
+<td>Daria Petrova</td>
 </tr>
 <tr>
 <td>PF</td>
@@ -4844,8 +4890,12 @@ Article													</li>
 <td><a href="http://www.preusstype.com/" data-linktype="external">PreussType</a></td>
 </tr>
 <tr>
+<td>PUBL</td>
+<td><a href="https://www.publicletters.co/" data-linktype="external">Public Letters</a></td>
+</tr>
+<tr>
 <td>PYRS</td>
-<td><a href="http://www.pyrus.com/" data-linktype="external">PYRS   Fontlab Ltd. / Made with FontLab</a></td>
+<td><a href="http://www.pyrus.com/" data-linktype="external">PYRS Fontlab Ltd. / Made with FontLab</a></td>
 </tr>
 <tr>
 <td>PYTE</td>
@@ -5516,12 +5566,20 @@ Article													</li>
 <td>TrueBlue Font Foundry</td>
 </tr>
 <tr>
+<td>TBLD</td>
+<td>Typobold</td>
+</tr>
+<tr>
 <td>TBTF</td>
 <td>TypoBaaz Type Foundry</td>
 </tr>
 <tr>
 <td>TC</td>
 <td><a href="http://www.typeco.com/" data-linktype="external">Typeco</a></td>
+</tr>
+<tr>
+<td>TCO</td>
+<td>Type Colony</td>
 </tr>
 <tr>
 <td>TCH</td>
@@ -6180,6 +6238,10 @@ Article													</li>
 <td><a href="http://www.font.net/" data-linktype="external">Xerox Font Services</a></td>
 </tr>
 <tr>
+<td>xljb</td>
+<td><a href="https://www.exljbris.com/" data-linktype="external">exljbris Font Foundry</a></td>
+</tr>
+<tr>
 <td>XOT</td>
 <td><a href="https://xotype.co/" data-linktype="external">XO Type Co.</a></td>
 </tr>
@@ -6212,7 +6274,7 @@ Article													</li>
 </tr>
 <tr>
 <td>YDI</td>
-<td><a href="http://www.yoondesign.com" data-linktype="external">YOON Design Group</a></td>
+<td>YOON Design Group</td>
 </tr>
 <tr>
 <td>YDS</td>
@@ -6278,6 +6340,10 @@ Article													</li>
 <td><a href="https://f.ziti163.com/" data-linktype="external">Jiangxi ZoomlaCMS Soft Co. LTD</a></td>
 </tr>
 <tr>
+<td>ZAKZ</td>
+<td><a href="https://zakznak.com/" data-linktype="external">Zakznak</a></td>
+</tr>
+<tr>
 <td>ZANE</td>
 <td><a href="http://www.unrender.com/" data-linktype="external">Unrender</a></td>
 </tr>
@@ -6332,7 +6398,6 @@ Article													</li>
 							<!-- </content> -->
 
 						</main>
-
 
 
 
@@ -6398,6 +6463,32 @@ Article													</li>
 						<span class="docon docon-world"></span>
 					</span>
 					<span class="local-selector-link-text"></span></a>
+		<div class="ccpa-privacy-link flex-shrink-0" hidden>
+<a
+	href="https://aka.ms/yourcaliforniaprivacychoices"
+	class="button button-sm button-clear"
+	data-mscc-ic="false"
+	data-bi-name="your-privacy-choices"
+>
+	<svg
+		role="img"
+		aria-label="California Consumer Privacy Act (CCPA) Opt-Out Icon"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 30 14"
+		xml:space="preserve"
+		height="16"
+		width="43"
+		focusable="false"
+	>
+		<title>California Consumer Privacy Act (CCPA) Opt-Out Icon</title>
+		<path d="M7.4 12.8h6.8l3.1-11.6H7.4C4.2 1.2 1.6 3.8 1.6 7s2.6 5.8 5.8 5.8z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#fff"></path>
+		<path d="M22.6 0H7.4c-3.9 0-7 3.1-7 7s3.1 7 7 7h15.2c3.9 0 7-3.1 7-7s-3.2-7-7-7zm-21 7c0-3.2 2.6-5.8 5.8-5.8h9.9l-3.1 11.6H7.4c-3.2 0-5.8-2.6-5.8-5.8z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#06f"></path>
+		<path d="M24.6 4c.2.2.2.6 0 .8L22.5 7l2.2 2.2c.2.2.2.6 0 .8-.2.2-.6.2-.8 0l-2.2-2.2-2.2 2.2c-.2.2-.6.2-.8 0-.2-.2-.2-.6 0-.8L20.8 7l-2.2-2.2c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0l2.2 2.2L23.8 4c.2-.2.6-.2.8 0z" style="fill:#fff"></path>
+		<path d="M12.7 4.1c.2.2.3.6.1.8L8.6 9.8c-.1.1-.2.2-.3.2-.2.1-.5.1-.7-.1L5.4 7.7c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0L8 8.6l3.8-4.5c.2-.2.6-.2.9 0z" style="fill:#06f"></path>
+	</svg>
+	<span>Your Privacy Choices</span>
+</a>
+		</div>
 		<div class="flex-shrink-0">
 <div class="dropdown has-caret-up">
 	<button class="dropdown-trigger button button-clear button-sm has-inner-focus theme-dropdown-trigger"
@@ -6417,7 +6508,7 @@ Article													</li>
 					data-theme-to="light">
 					<span class="theme-light margin-right-xxs">
 						<span
-							class="theme-selector-icon css-variable-support border display-inline-block has-body-background"
+							class="theme-selector-icon border display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -6441,7 +6532,7 @@ Light					</span>
 					data-theme-to="dark">
 					<span class="theme-dark margin-right-xxs">
 						<span
-							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
+							class="border theme-selector-icon display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -6465,7 +6556,7 @@ Dark					</span>
 					data-theme-to="high-contrast">
 					<span class="theme-high-contrast margin-right-xxs">
 						<span
-							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
+							class="border theme-selector-icon display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -6553,6 +6644,32 @@ High contrast					</span>
 						<span class="docon docon-world"></span>
 					</span>
 					<span class="local-selector-link-text"></span></a>
+		<div class="ccpa-privacy-link flex-shrink-0" hidden>
+<a
+	href="https://aka.ms/yourcaliforniaprivacychoices"
+	class="button button-sm button-clear"
+	data-mscc-ic="false"
+	data-bi-name="your-privacy-choices"
+>
+	<svg
+		role="img"
+		aria-label="California Consumer Privacy Act (CCPA) Opt-Out Icon"
+		xmlns="http://www.w3.org/2000/svg"
+		viewBox="0 0 30 14"
+		xml:space="preserve"
+		height="16"
+		width="43"
+		focusable="false"
+	>
+		<title>California Consumer Privacy Act (CCPA) Opt-Out Icon</title>
+		<path d="M7.4 12.8h6.8l3.1-11.6H7.4C4.2 1.2 1.6 3.8 1.6 7s2.6 5.8 5.8 5.8z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#fff"></path>
+		<path d="M22.6 0H7.4c-3.9 0-7 3.1-7 7s3.1 7 7 7h15.2c3.9 0 7-3.1 7-7s-3.2-7-7-7zm-21 7c0-3.2 2.6-5.8 5.8-5.8h9.9l-3.1 11.6H7.4c-3.2 0-5.8-2.6-5.8-5.8z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#06f"></path>
+		<path d="M24.6 4c.2.2.2.6 0 .8L22.5 7l2.2 2.2c.2.2.2.6 0 .8-.2.2-.6.2-.8 0l-2.2-2.2-2.2 2.2c-.2.2-.6.2-.8 0-.2-.2-.2-.6 0-.8L20.8 7l-2.2-2.2c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0l2.2 2.2L23.8 4c.2-.2.6-.2.8 0z" style="fill:#fff"></path>
+		<path d="M12.7 4.1c.2.2.3.6.1.8L8.6 9.8c-.1.1-.2.2-.3.2-.2.1-.5.1-.7-.1L5.4 7.7c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0L8 8.6l3.8-4.5c.2-.2.6-.2.9 0z" style="fill:#06f"></path>
+	</svg>
+	<span>Your Privacy Choices</span>
+</a>
+		</div>
 		<div class="flex-shrink-0">
 <div class="dropdown has-caret-up">
 	<button class="dropdown-trigger button button-clear button-sm has-inner-focus theme-dropdown-trigger"
@@ -6572,7 +6689,7 @@ High contrast					</span>
 					data-theme-to="light">
 					<span class="theme-light margin-right-xxs">
 						<span
-							class="theme-selector-icon css-variable-support border display-inline-block has-body-background"
+							class="theme-selector-icon border display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -6596,7 +6713,7 @@ Light					</span>
 					data-theme-to="dark">
 					<span class="theme-dark margin-right-xxs">
 						<span
-							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
+							class="border theme-selector-icon display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
@@ -6620,7 +6737,7 @@ Dark					</span>
 					data-theme-to="high-contrast">
 					<span class="theme-high-contrast margin-right-xxs">
 						<span
-							class="border theme-selector-icon css-variable-support display-inline-block has-body-background"
+							class="border theme-selector-icon display-inline-block has-body-background"
 							aria-hidden="true">
 							<svg class="svg" xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 22 14">
