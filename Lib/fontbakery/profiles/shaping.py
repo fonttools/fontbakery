@@ -16,7 +16,7 @@
 import json
 from difflib import ndiff
 from pathlib import Path
-from os.path import basename, relpath
+from os.path import basename
 
 from fontTools.unicodedata import ot_tag_to_script
 
@@ -41,33 +41,11 @@ SHAPING_PROFILE_CHECKS = [
     "com.google.fonts/check/soft_dotted",
 ]
 
-STYLESHEET = """
-<style type="text/css">
-    @font-face {font-family: "TestFont"; src: url(%s);}
-    .tf { font-family: "TestFont"; }
-    .shaping pre { font-size: 1.2rem; }
-    .shaping li {
-        font-size: 1.2rem;
-        border-top: 1px solid #ddd;
-        padding: 12px;
-        margin-top: 12px;
-    }
-    .shaping-svg {
-        height: 100px;
-        margin: 10px;
-        transform: matrix(1, 0, 0, -1, 0, 0);
-    }
-</style>
-"""
-
-
-def get_stylesheet(vharfbuzz):
-    filename = Path(vharfbuzz.filename)
-    return STYLESHEET % relpath(filename, shaping_basedir)
-
 
 def fix_svg(svg):
-    return svg.replace("<svg", '<svg class="shaping-svg"')
+    svg = svg.replace("<svg", '<svg style="height:100px;margin:10px;"')
+    svg = svg.replace("\n", " ")
+    return svg
 
 
 def create_report_item(
@@ -76,25 +54,19 @@ def create_report_item(
     text=None,
     buf1=None,
     buf2=None,
-    kind="item",
     note=None,
     extra_data=None,
 ):
     from vharfbuzz import FakeBuffer
 
+    message = f"* {message}"
     if text:
-        message += f': <span class="tf">{text}</span>'
-
-    if kind == "item":
-        message = f"<li>{message}"
-        if note:
-            message += f" ({note})"
-        message += "</li>\n"
-    elif kind == "header":
-        message = f"{get_stylesheet(vharfbuzz)}\n<h4>{message}</h4>\n"
-
+        message += f": {text}"
+    if note:
+        message += f" ({note})"
     if extra_data:
-        message += f"\n\n<pre>{extra_data}</pre>\n\n"
+        message += f"\n\n      {extra_data}"
+    message += "\n\n"
 
     serialized_buf1 = None
     serialized_buf2 = None
@@ -108,23 +80,23 @@ def create_report_item(
                 buf2 = None  # Don't try to draw it either
         else:
             serialized_buf2 = buf2
-        message += f"\n\n<pre>Expected: {serialized_buf2}</pre>\n\n"
+        message += f"      Expected: {serialized_buf2}\n"
 
     if buf1:
         serialized_buf1 = vharfbuzz.serialize_buf(
             buf1, glyphsonly=(buf2 and isinstance(buf2, str))
         )
-        message += f"\n\n<pre>Got     : {serialized_buf1}</pre>\n\n"
+        message += f"      Got     : {serialized_buf1}\n"
 
     # Report a diff table
     if serialized_buf1 and serialized_buf2:
         diff = list(ndiff([serialized_buf1], [serialized_buf2]))
         if diff and diff[-1][0] == "?":
-            message += f"\n\n<pre>         {diff[-1][1:]}</pre>\n\n"
+            message += f"               {diff[-1][1:]}\n"
 
     # Now draw it as SVG
     if buf1:
-        message += f"\nGot: {fix_svg(vharfbuzz.buf_to_svg(buf1))}"
+        message += f"  Got: {fix_svg(vharfbuzz.buf_to_svg(buf1))}"
 
     if buf2 and isinstance(buf2, FakeBuffer):
         try:
@@ -132,7 +104,7 @@ def create_report_item(
         except KeyError:
             pass
 
-    return f'<div class="shaping">\n\n{message}\n\n</div>'
+    return message
 
 
 def get_from_test_with_default(test, configuration, el, default=None):
@@ -288,8 +260,6 @@ def run_shaping_regression(
 
 def generate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
-    header = f"{shaping_file}: Expected and actual shaping not matching"
-    report_items.append(create_report_item(vharfbuzz, header, kind="header"))
     for test, expected, output_buf, output_serialized in failed_shaping_tests:
         extra_data = {
             k: test[k]
@@ -313,6 +283,7 @@ def generate_shaping_regression_report(vharfbuzz, shaping_file, failed_shaping_t
         )
         report_items.append(report_item)
 
+    header = f"{shaping_file}: Expected and actual shaping not matching"
     yield FAIL, Message("shaping-regression", header + "\n" + "\n".join(report_items))
 
 
@@ -372,15 +343,14 @@ def run_forbidden_glyph_test(
 
 def forbidden_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
-    msg = f"{shaping_file}: Forbidden glyphs found while shaping"
-    report_items.append(create_report_item(vharfbuzz, msg, kind="header"))
     for shaping_text, buf, forbidden in failed_shaping_tests:
         msg = f"{shaping_text} produced '{forbidden}'"
         report_items.append(
             create_report_item(vharfbuzz, msg, text=shaping_text, buf1=buf)
         )
 
-    yield FAIL, Message("shaping-forbidden", msg + ".\n" + "\n".join(report_items))
+    header = f"{shaping_file}: Forbidden glyphs found while shaping"
+    yield FAIL, Message("shaping-forbidden", header + ".\n" + "\n".join(report_items))
 
 
 @check(
@@ -472,8 +442,6 @@ def run_collides_glyph_test(
 def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
     report_items = []
     seen_bumps = {}
-    msg = f"{shaping_file}: {len(failed_shaping_tests)} collisions found while shaping"
-    report_items.append(create_report_item(vharfbuzz, msg, kind="header"))
     for shaping_text, bumps, draw, buf in failed_shaping_tests:
         # Make HTML report here.
         if tuple(bumps) in seen_bumps:
@@ -486,7 +454,10 @@ def collides_glyph_test_results(vharfbuzz, shaping_file, failed_shaping_tests):
             buf1=buf,
         )
         report_items.append(report_item)
-    yield FAIL, Message("shaping-collides", msg + ".\n" + "\n".join(report_items))
+    header = (
+        f"{shaping_file}: {len(failed_shaping_tests)} collisions found while shaping"
+    )
+    yield FAIL, Message("shaping-collides", header + ".\n" + "\n".join(report_items))
 
 
 def is_complex_shaper_font(ttFont):
