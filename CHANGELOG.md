@@ -4,6 +4,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.10.10 (2024-Jan-??)
   - ...
 
+### Noteworthy code-changes
+  - babelfont dependency has been dropped.
+
 
 ## 0.10.9 (2024-Jan-12)
   - New command-line flag `--skip-network` to skip any checks which require Internet access. (PR #4387)

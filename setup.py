@@ -181,7 +181,6 @@ setup(
     install_requires=[
         # ---
         # core dependencies
-        "babelfont>=3.0.1",  # v3.0.1 needed by check/legacy_accents
         f"fontTools{FONTTOOLS_VERSION}",
         "freetype-py!=2.4.0",  # Avoiding 2.4.0 due to seg-fault described at
         # https://github.com/fonttools/fontbakery/issues/4143

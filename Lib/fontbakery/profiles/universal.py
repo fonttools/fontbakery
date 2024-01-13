@@ -699,7 +699,6 @@ def com_google_fonts_check_whitespace_ink(ttFont):
 )
 def com_google_fonts_check_legacy_accents(ttFont):
     """Check that legacy accents aren't used in composite glyphs."""
-    import babelfont
 
     # code-points for all legacy chars
     LEGACY_ACCENTS = {
@@ -719,30 +718,36 @@ def com_google_fonts_check_legacy_accents(ttFont):
     }
 
     passed = True
-    font = babelfont.load(ttFont.reader.file.name)
+
+    glyphOrder = ttFont.getGlyphOrder()
+    reverseCmap = ttFont["cmap"].buildReversed()
+    hmtx = ttFont["hmtx"]
 
     # Check whether the composites are using legacy accents.
-    for glyph in font.glyphs:
-        layer = font.default_master.get_glyph_layer(glyph.name)
-        for component in layer.components:
-            component_glyph = font.glyphs[component.ref]
-            if set(component_glyph.codepoints).intersection(LEGACY_ACCENTS):
-                passed = False
-                yield WARN, Message(
-                    "legacy-accents-component",
-                    f'Glyph "{glyph.name}" has a legacy accent component'
-                    f" ({component.ref}). It needs to be replaced by a combining mark.",
-                )
+    if "glyf" in ttFont:
+        glyf = ttFont["glyf"]
+        for name in glyphOrder:
+            if not glyf[name].isComposite():
+                continue
+            for component in glyf[name].components:
+                codepoints = reverseCmap.get(component.glyphName, set())
+                if codepoints.intersection(LEGACY_ACCENTS):
+                    passed = False
+                    yield WARN, Message(
+                        "legacy-accents-component",
+                        f'Glyph "{name}" has a legacy accent component '
+                        f" ({component.glyphName}). "
+                        "It needs to be replaced by a combining mark.",
+                    )
 
     # Check whether legacy accents have positive width.
-    for glyph in font.glyphs:
-        if set(glyph.codepoints).intersection(LEGACY_ACCENTS):
-            layer = font.default_master.get_glyph_layer(glyph.name)
-            if layer.width == 0:
+    for name in reverseCmap:
+        if reverseCmap[name].intersection(LEGACY_ACCENTS):
+            if hmtx[name][0] == 0:
                 passed = False
                 yield FAIL, Message(
                     "legacy-accents-width",
-                    f'Width of legacy accent "{glyph.name}" is zero.',
+                    f'Width of legacy accent "{name}" is zero.',
                 )
 
     # Check whether legacy accents appear in GDEF as marks.
@@ -750,13 +755,13 @@ def com_google_fonts_check_legacy_accents(ttFont):
     # as font compilers would have otherwise classified them as marks in GDEF.
     if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
         class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
-        for glyph in font.glyphs:
-            if set(glyph.codepoints).intersection(LEGACY_ACCENTS):
-                if glyph.name in class_def and class_def[glyph.name] == 3:
+        for name in reverseCmap:
+            if reverseCmap[name].intersection(LEGACY_ACCENTS):
+                if name in class_def and class_def[name] == 3:
                     passed = False
                     yield FAIL, Message(
                         "legacy-accents-gdef",
-                        f'Legacy accent "{glyph.name}" is defined in GDEF'
+                        f'Legacy accent "{name}" is defined in GDEF'
                         f" as a mark (class 3).",
                     )
 
@@ -781,7 +786,6 @@ def com_google_fonts_check_legacy_accents(ttFont):
 )
 def com_google_fonts_check_arabic_spacing_symbols(ttFont):
     """Check that Arabic spacing symbols U+FBB2–FBC1 aren't classified as marks."""
-    import babelfont
 
     # code-points
     ARABIC_SPACING_SYMBOLS = {
@@ -804,17 +808,16 @@ def com_google_fonts_check_arabic_spacing_symbols(ttFont):
     }
 
     passed = True
-    font = babelfont.load(ttFont.reader.file.name)
-
     if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
         class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
-        for glyph in font.glyphs:
-            if set(glyph.codepoints).intersection(ARABIC_SPACING_SYMBOLS):
-                if glyph.name in class_def and class_def[glyph.name] == 3:
+        reverseCmap = ttFont["cmap"].buildReversed()
+        for name in reverseCmap:
+            if reverseCmap[name].intersection(ARABIC_SPACING_SYMBOLS):
+                if name in class_def and class_def[name] == 3:
                     passed = False
                     yield FAIL, Message(
                         "mark-in-gdef",
-                        f'"{glyph.name}" is defined in GDEF as a mark (class 3).',
+                        f'"{name}" is defined in GDEF as a mark (class 3).',
                     )
 
     if passed:
@@ -841,7 +844,6 @@ def com_google_fonts_check_arabic_spacing_symbols(ttFont):
 )
 def com_google_fonts_check_arabic_high_hamza(ttFont):
     """Check that glyph for U+0675 ARABIC LETTER HIGH HAMZA is not a mark."""
-    import babelfont
     from fontTools.pens.areaPen import AreaPen
 
     ARABIC_LETTER_HAMZA = 0x0621
@@ -856,17 +858,18 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
         return
 
     passed = True
-    font = babelfont.load(ttFont.reader.file.name)
 
     if "GDEF" in ttFont and ttFont["GDEF"].table.GlyphClassDef:
         class_def = ttFont["GDEF"].table.GlyphClassDef.classDefs
-        for glyph in font.glyphs:
-            if ARABIC_LETTER_HIGH_HAMZA in set(glyph.codepoints):
-                if glyph.name in class_def and class_def[glyph.name] == 3:
+        reverseCmap = ttFont["cmap"].buildReversed()
+        glyphOrder = ttFont.getGlyphOrder()
+        for name in glyphOrder:
+            if ARABIC_LETTER_HIGH_HAMZA in reverseCmap.get(name, set()):
+                if name in class_def and class_def[name] == 3:
                     passed = False
                     yield FAIL, Message(
                         "mark-in-gdef",
-                        f'"{glyph.name}" is defined in GDEF as a mark (class 3).',
+                        f'"{name}" is defined in GDEF as a mark (class 3).',
                     )
 
     # Also validate the bounding box of the glyph and compare
@@ -2312,6 +2315,7 @@ def com_google_fonts_check_STAT_in_statics(ttFont):
 
 @check(
     id="com.google.fonts/check/alt_caron",
+    conditions=["is_ttf"],
     rationale="""
         Lcaron, dcaron, lcaron, tcaron should NOT be composed with quoteright
         or quotesingle or comma or caron(comb). It should be composed with a
@@ -2324,11 +2328,9 @@ def com_google_fonts_check_STAT_in_statics(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3308",
 )
-def com_google_fonts_check_alt_caron(font):
+def com_google_fonts_check_alt_caron(ttFont):
     """Check accent of Lcaron, dcaron, lcaron, tcaron"""
-    import babelfont
 
-    passed = True
     CARON_GLYPHS = set(
         (
             0x013D,  # LATIN CAPITAL LETTER L WITH CARON
@@ -2355,40 +2357,42 @@ def com_google_fonts_check_alt_caron(font):
         )
     )
 
-    font = babelfont.load(font)
-    for glyph in font.glyphs:
-        if set(glyph.codepoints).intersection(CARON_GLYPHS):
-            layer = font.default_master.get_glyph_layer(glyph.name)
-            if layer.shapes and not layer.components:
+    passed = True
+
+    glyphOrder = ttFont.getGlyphOrder()
+    reverseCmap = ttFont["cmap"].buildReversed()
+
+    for name in glyphOrder:
+        if reverseCmap.get(name, set()).intersection(CARON_GLYPHS):
+            glyph = ttFont["glyf"][name]
+            if not glyph.isComposite():
                 yield WARN, Message(
                     "decomposed-outline",
-                    f"{glyph.name} is decomposed and therefore could not be checked."
+                    f"{name} is decomposed and therefore could not be checked."
                     f" Please check manually.",
                 )
-            if len(layer.components) == 1:
+                continue
+            if len(glyph.components) == 1:
                 yield WARN, Message(
                     "single-component",
-                    f"{glyph.name} is composed of a single component and therefore"
+                    f"{name} is composed of a single component and therefore"
                     f" could not be checked. Please check manually.",
                 )
-            if len(layer.components) > 1:
-                for component in layer.components:
+            if len(glyph.components) > 1:
+                for component in glyph.components:
                     # Uses absolutely wrong caron mark
-                    if font.glyphs[component.ref].codepoints and set(
-                        font.glyphs[component.ref].codepoints
-                    ).intersection(WRONG_CARON_MARKS):
+                    codepoints = reverseCmap.get(component.glyphName, set())
+                    if codepoints.intersection(WRONG_CARON_MARKS):
                         passed = False
                         yield FAIL, Message(
                             "wrong-mark",
-                            f"{glyph.name} uses component {component.ref}.",
+                            f"{name} uses component {component.glyphName}.",
                         )
 
                     # Uses bad mark
-                    if set(font.glyphs[component.ref].codepoints).intersection(
-                        BAD_CARON_MARKS
-                    ):
+                    if codepoints.intersection(BAD_CARON_MARKS):
                         yield WARN, Message(
-                            "bad-mark", f"{glyph.name} uses component {component.ref}."
+                            "bad-mark", f"{name} uses component {component.glyphName}."
                         )
     if passed:
         yield PASS, "Looks good!"
