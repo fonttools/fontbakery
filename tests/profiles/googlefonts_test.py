@@ -4415,6 +4415,9 @@ def test_check_varfont_duplexed_axis_reflow():
     ttFont["GPOS"].table.LookupList.Lookup = []
     assert_PASS(check(ttFont))
 
+    ttFont = TTFont(TEST_FILE("bad_fonts/reflowing_ROND/BadRoundness-VF.ttf"))
+    assert_results_contain(check(ttFont), FAIL, "rond-causes-reflow")
+
 
 def test_check_gfaxisregistry_bounds():
     """Validate METADATA.pb axes values are within gf_axisregistry bounds."""
