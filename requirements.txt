@@ -2,16 +2,16 @@
 axisregistry==0.4.5
 beautifulsoup4==4.12.2
 beziers==0.5.0
-cmarkgfm==2022.10.27
+cmarkgfm==2024.1.14
 collidoscope==0.6.5
 defcon==0.10.3
 dehinter==4.0.0
-fontTools[ufo,lxml,unicode]==4.45.1
+fontTools[ufo,lxml,unicode]==4.47.2
 font-v==2.1.0
 freetype-py==2.3.0  # pinned for now. See: https://github.com/fonttools/fontbakery/issues/4143
-gflanguages==0.5.13
+gflanguages==0.5.15
 glyphsets==0.6.11
-lxml==4.9.3
+lxml==4.9.4  # while fonttools[lxml] still require lxml<5
 munkres==1.1.4  # This should be a dependency of fonttools instead!
 opentype-sanitizer==9.1.0
 opentypespec==1.9.1
