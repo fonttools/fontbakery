@@ -5,7 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 ### Noteworthy code-changes
-  - babelfont dependency has been dropped.
+  - babelfont dependency has been dropped. (PR #4416)
 
 
 ## 0.10.9 (2024-Jan-12)
