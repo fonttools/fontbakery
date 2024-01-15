@@ -29,6 +29,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the TypeNework Profile
   - Updated including latest universal checks and improved writing of some rationales and log messages. (PR #4402)
 
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/varfont/duplexed_axis_reflow]:** yield FAILs per incorrect axis (message codes specifying axis); sort the list of bad glyphs
 
 ## 0.10.8 (2023-Dec-15)
   - New status result: "FATAL". To be used when a problem detected is extremely bad and must be imediately addressed. (issue #4374 / Discussion #4364)
