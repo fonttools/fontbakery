@@ -478,7 +478,12 @@ def main(profile=None, values=None):
         reporter.write()
 
     # Fail and error let the command fail
-    return 1 if tr.worst_check_status.weight >= args.error_code_on.weight else 0
+    return (
+        1
+        if tr.worst_check_status is not None
+        and tr.worst_check_status.weight >= args.error_code_on.weight
+        else 0
+    )
 
 
 def list_checks(profile, theme, verbose=False):
