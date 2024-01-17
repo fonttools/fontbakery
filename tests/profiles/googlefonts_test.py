@@ -5280,9 +5280,7 @@ def test_check_alt_caron():
 
 def test_check_legacy_accents():
     """Check that legacy accents aren't used in composite glyphs."""
-    check = CheckTester(
-        googlefonts_profile, f"com.google.fonts/check/legacy_accents{OVERRIDE_SUFFIX}"
-    )
+    check = CheckTester(googlefonts_profile, "com.google.fonts/check/legacy_accents")
 
     test_font = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
     assert_PASS(check(test_font))
@@ -5298,7 +5296,7 @@ def test_check_legacy_accents():
     test_font = TTFont(TEST_FILE("lugrasimo/Lugrasimo-Regular.ttf"))
     assert_results_contain(
         check(test_font),
-        FAIL,
+        WARN,
         "legacy-accents-component",
         "for legacy accents being used in composites.",
     )
