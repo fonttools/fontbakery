@@ -1433,3 +1433,24 @@ def DISABLED_test_check_caps_vertically_centered():
 
     ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
     assert_results_contain(check(ttFont), WARN, "vertical-metrics-not-centered")
+
+
+def test_check_case_mapping():
+    """Ensure the font supports case swapping for all its glyphs."""
+    check = CheckTester(universal_profile, "com.google.fonts/check/case_mapping")
+
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+    # Glyph present in the font                  Missing case-swapping counterpart
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # U+01D3: LATIN CAPITAL LETTER U WITH CARON  U+01D4: LATIN SMALL LETTER U WITH CARON
+    # U+01E6: LATIN CAPITAL LETTER G WITH CARON  U+01E7: LATIN SMALL LETTER G WITH CARON
+    # U+01F4: LATIN CAPITAL LETTER G WITH ACUTE  U+01F5: LATIN SMALL LETTER G WITH ACUTE
+    assert_results_contain(check(ttFont), FAIL, "missing-case-counterparts")
+
+    # While we'd expect designers to draw the missing counterparts,
+    # for testing purposes we can simply delete the glyphs that lack a counterpart
+    # to make the check PASS:
+    _remove_cmap_entry(ttFont, 0x01D3)
+    _remove_cmap_entry(ttFont, 0x01E6)
+    _remove_cmap_entry(ttFont, 0x01F4)
+    assert_PASS(check(ttFont))

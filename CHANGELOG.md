@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Universal Profile
   - **EXPERIMENTAL - [com.google.fonts/check/varfont/family_axis_ranges]:** Check that family axis ranges are indentical. (issue #4445)
   - **EXPERIMENTAL - [com.google.fonts/check/tabular_kerning]:** Check that tabular numerals and symbols have no kerning. (issue #4440)
+  - **EXPERIMENTAL - [com.google.fonts/check/case_mapping]:** Ensure that no glyph lacks its corresponding upper or lower counterpart (but only when unicode supports case-mapping). (issue #3230)
 
 #### Added to the Google Fonts Profile
   - **EXPERIMENTAL - [com.google.fonts/check/metadata/has_tags]:** Check that the font family appears in the tags spreadsheet. (issue #4465)
