@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/varfont/duplexed_axis_reflow]:** yield FAILs per incorrect axis (message codes specifying axis); sort the list of bad glyphs (PR #4400)
   - **[com.google.fonts/check/legacy_accents]:** We changed our minds here, and removed the overide to FAIL on "legacy-accents-component", so it is back a mere WARN again, just like in the Universal Profile (issue #4425)
+  - **[com.google.fonts/check/font_copyright]:** Accept date ranges. (issue #4386)
 
 
 ## 0.10.9 (2024-Jan-12)
