@@ -376,6 +376,14 @@ def grad_axis(ttFont):
                 return axis
 
 
+@condition
+def wght_axis(ttFont):
+    if "fvar" in ttFont:
+        for axis in ttFont["fvar"].axes:
+            if axis.axisTag == "wght":
+                return axis
+
+
 def get_axis_tags_set(ttFont):
     return set(axis.axisTag for axis in ttFont["fvar"].axes)
 
