@@ -3,8 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.10.10 (2024-Jan-??)
 ### Noteworthy code-changes
-  - babelfont dependency has been dropped. (PR #4416)
-  - fix crash when no matching checks are found (issue #4420)
+  - The babelfont dependency has been dropped. (PR #4416)
+  - Fix a crash when no matching checks are found during a multi-processing run. Also, do not freeze indefinitely. Instead, terminate the program emitting a process error code -1 and giving the user some guidance. (issue #4420)
 
 ### Changes to existing checks
 #### On the Google Fonts Profile
