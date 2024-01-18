@@ -190,8 +190,13 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
     The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
     instance.
     """
+    from .shared_conditions import wght_axis
 
+    wght = wght_axis(ttFont)
     if bold_wght_coord is None:
+        if wght and wght.maxValue < 700:
+            yield SKIP, Message("no-bold-weight", "Weight axis doesn't go up to bold")
+            return
         yield FAIL, Message("no-bold-instance", '"Bold" instance not present.')
     elif bold_wght_coord == 700:
         yield PASS, "Bold:wght is 700."
