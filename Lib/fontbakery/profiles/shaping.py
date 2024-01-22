@@ -475,7 +475,7 @@ def is_complex_shaper_font(ttFont):
             script = ot_tag_to_script(rec.ScriptTag)
             if script in USE_SCRIPTS or script in INDIC_SCRIPTS:
                 return True
-            if script in ["Khmr", "Mymr", "Hang"]:
+            if script in ["Khmr", "Mymr"]:
                 return True
     return False
 
