@@ -1,4 +1,4 @@
-Below are the most important changes from each release.
+Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.10.10 (2024-Jan-??)
@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix a crash when no matching checks are found during a multi-processing run. Also, do not freeze indefinitely. Instead, terminate the program emitting a process error code -1 and giving the user some guidance. (issue #4420)
 
 ### Changes to existing checks
+#### On the Shaping Profile
+  - ""[com.google.fonts/check/dotted_circle]:** Don't check for dotted circles in Hangul fonts. Hangul is not a syllabic script. Old Hangeul uses complex shaping and has diacritic marks that require dotted circles. Contemporary Hangeul does not. (related to issue #3600)
+
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/varfont/duplexed_axis_reflow]:** yield FAILs per incorrect axis (message codes specifying axis); sort the list of bad glyphs (PR #4400)
   - **[com.google.fonts/check/legacy_accents]:** We changed our minds here, and removed the overide to FAIL on "legacy-accents-component", so it is back a mere WARN again, just like in the Universal Profile (issue #4425)
