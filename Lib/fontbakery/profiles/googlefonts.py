@@ -1378,14 +1378,41 @@ def com_google_fonts_check_family_has_license(licenses, config):
         yield PASS, f"Found license at '{licenses[0]}'"
 
 
+DESCRIPTION_OF_EXPECTED_COPYRIGHT_STRING_FORMATTING = """
+        The expected pattern for the copyright string adheres to the following rules:
+
+        * It must say "Copyright" followed by a 4 digit year (optionally followed by
+          a hyphen and another 4 digit year)
+
+        * Additional years or year ranges are also valid.
+
+        * An optional comma can be placed here.
+
+        * Then it must say "The <familyname> Project Authors" and, within parentheses,
+          a URL for a git repository must be provided. But we have an exception
+          for the fonts from the Noto project, that simply have
+          "google llc. all rights reserved" here.
+
+        * The check is case insensitive and does not validate whether the familyname
+          is correct, even though we'd obviously expect it to be.
+
+
+        Here is an example of a valid copyright string:
+
+        "Copyright 2017 The Archivo Black Project Authors
+         (https://github.com/Omnibus-Type/ArchivoBlack)"
+"""
+EXPECTED_COPYRIGHT_PATTERN = r"copyright \d{4}(-\d{4})?(,\s*\d{4}(-\d{4})?)*,? (the .* project authors \([^\@]*\)|google llc. all rights reserved)"  # noqa:E501 pylint:disable=C0301
+
+
 @check(
     id="com.google.fonts/check/license/OFL_copyright",
     conditions=["license_contents"],
     rationale="""
-        An OFL.txt file's first line should be the font copyright e.g:
-        "Copyright 2019 The Montserrat Project Authors
-        (https://github.com/julietaula/montserrat)"
-    """,
+        An OFL.txt file's first line should be the font copyright.
+
+    """
+    + DESCRIPTION_OF_EXPECTED_COPYRIGHT_STRING_FORMATTING,
     severity=10,  # max severity because licensing mistakes can cause legal problems.
     proposal="https://github.com/fonttools/fontbakery/issues/2764",
 )
@@ -2746,32 +2773,16 @@ def com_google_fonts_check_metadata_valid_nameid25(ttFont, style):
             yield PASS, ("Name ID 25 looks good.")
 
 
-EXPECTED_COPYRIGHT_PATTERN = r"copyright [0-9]{4}(\-[0-9]{4})? (the .* project authors \([^\@]*\)|google llc. all rights reserved)"  # noqa:E501 pylint:disable=C0301
-
-
 @check(
     id="com.google.fonts/check/metadata/valid_copyright",
     conditions=["font_metadata"],
     rationale="""
-        The expected pattern for the copyright string adheres to the following rules:
+        This check aims at ensuring a uniform and legally accurate copyright statement
+        on the METADATA.pb copyright entries accross the Google Fonts library.
 
-        * It must say "Copyright" followed by a 4 digit year (optionally followed by
-          a hyphen and another 4 digit year)
-
-        * Then it must say "The <familyname> Project Authors"
-
-        * And within parentheses, a URL for a git repository must be provided
-
-        * The check is case insensitive and does not validate whether the familyname
-          is correct, even though we'd expect it is (and we may soon update the check
-          to validate that aspect as well!)
-
-
-        Here is an example of a valid copyright string:
-
-        "Copyright 2017 The Archivo Black Project Authors
-         (https://github.com/Omnibus-Type/ArchivoBlack)"
-    """,
+    """
+    + DESCRIPTION_OF_EXPECTED_COPYRIGHT_STRING_FORMATTING,
+    severity=10,  # max severity because licensing mistakes can cause legal problems.
     proposal="legacy:check/102",
 )
 def com_google_fonts_check_metadata_valid_copyright(font_metadata):
@@ -2784,16 +2795,21 @@ def com_google_fonts_check_metadata_valid_copyright(font_metadata):
     else:
         yield FAIL, Message(
             "bad-notice-format",
-            f"METADATA.pb: Copyright notices should match"
-            f" a pattern similar to:\n"
-            f' "Copyright 2020 The Familyname Project Authors (git url)"'
-            f"\n"
-            f'But instead we have got:\n"{string}"',
+            f"METADATA.pb: Copyright notices should match a pattern similar to:\n\n"
+            f' "Copyright 2020 The Familyname Project Authors (git url)"\n\n'
+            f'But instead we have got:\n\n"{string}"',
         )
 
 
 @check(
     id="com.google.fonts/check/font_copyright",
+    rationale="""
+        This check aims at ensuring a uniform and legally accurate copyright statement
+        on the name table entries of font files accross the Google Fonts library.
+
+    """
+    + DESCRIPTION_OF_EXPECTED_COPYRIGHT_STRING_FORMATTING,
+    severity=10,  # max severity because licensing mistakes can cause legal problems.
     proposal="https://github.com/fonttools/fontbakery/pull/2383",
 )
 def com_google_fonts_check_font_copyright(ttFont):
@@ -2813,9 +2829,9 @@ def com_google_fonts_check_font_copyright(ttFont):
             yield FAIL, Message(
                 "bad-notice-format",
                 f"Name Table entry: Copyright notices should match"
-                f' a pattern similar to: "Copyright 2019'
-                f' The Familyname Project Authors (git url)"\n'
-                f'But instead we have got:\n"{string}"',
+                f" a pattern similar to:\n\n"
+                f'"Copyright 2019 The Familyname Project Authors (git url)"\n\n'
+                f'But instead we have got:\n\n"{string}"\n',
             )
     if passed:
         yield PASS, "Name table copyright entries are good"

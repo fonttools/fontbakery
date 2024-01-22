@@ -197,6 +197,16 @@ def _results_generator(results_queue, len_results):
 
 @contextmanager
 def _multiprocessing_checkrunner(jobs, process_count, *args):
+    if len(jobs) == 0:
+        import sys
+
+        print(
+            "There are no jobs to execute.\n"
+            "This looks like a corner-case like the one described at:\n"
+            "https://github.com/fonttools/fontbakery/issues/4420\n"
+        )
+        sys.exit(-1)
+
     jobs_queue = Queue()
     results_queue = Queue()
     for job in jobs:

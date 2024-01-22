@@ -2151,6 +2151,24 @@ def test_check_metadata_valid_nameid25():
     )
 
 
+# note: The copyright checks do not actually verify that the project name is correct.
+#       They only focus on the string format.
+GOOD_COPYRIGHT_NOTICE_STRINGS = (
+    (
+        "Copyright 2017 The Archivo Black Project Authors"
+        " (https://github.com/Omnibus-Type/ArchivoBlack)"
+    ),
+    (
+        "Copyright 2017-2018 The YearRange Project Authors"
+        " (https://github.com/Looks/Good)"
+    ),
+    (
+        "Copyright 2012-2014, 2016, 2019-2021, 2023 The MultiYear Project Authors"
+        " (https://github.com/With/ManyRanges)"
+    ),
+)
+
+
 def test_check_metadata_valid_copyright():
     """Copyright notice on METADATA.pb matches canonical pattern ?"""
     check = CheckTester(
@@ -2164,25 +2182,20 @@ def test_check_metadata_valid_copyright():
         check(font), FAIL, "bad-notice-format", "with a bad copyright notice string..."
     )
 
-    # Then we change it into a good string (example extracted from Archivo Black):
-    # note: the check does not actually verify that the project name is correct.
-    #       It only focuses on the string format.
-    good_string = (
-        "Copyright 2017 The Archivo Black Project Authors"
-        " (https://github.com/Omnibus-Type/ArchivoBlack)"
-    )
-    md = check["font_metadata"]
-    md.copyright = good_string
-    assert_PASS(
-        check(font, {"font_metadata": md}), "with a good copyright notice string..."
-    )
+    # Then, to make the check PASS, we change it into a few good strings:
+    for good_string in GOOD_COPYRIGHT_NOTICE_STRINGS:
+        md = check["font_metadata"]
+        md.copyright = good_string
+        assert_PASS(
+            check(font, {"font_metadata": md}), "with a good copyright notice string..."
+        )
 
-    # We also ignore case, so these should also PASS:
-    md.copyright = good_string.upper()
-    assert_PASS(check(font, {"font_metadata": md}), "with all uppercase...")
+        # We also ignore case, so these should also PASS:
+        md.copyright = good_string.upper()
+        assert_PASS(check(font, {"font_metadata": md}), "with all uppercase...")
 
-    md.copyright = good_string.lower()
-    assert_PASS(check(font, {"font_metadata": md}), "with all lowercase...")
+        md.copyright = good_string.lower()
+        assert_PASS(check(font, {"font_metadata": md}), "with all lowercase...")
 
 
 def test_check_font_copyright():
@@ -2190,7 +2203,7 @@ def test_check_font_copyright():
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/font_copyright")
 
     # Our reference Cabin Regular is known to be bad
-    # Since it provides an email instead of a git URL:
+    # since it provides an email instead of a git URL:
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
     assert_results_contain(
         check(ttFont),
@@ -2199,17 +2212,12 @@ def test_check_font_copyright():
         "with a bad copyright notice string...",
     )
 
-    # We change it into a good string (example extracted from Archivo Black):
-    # note: the check does not actually verify that the project name is correct.
-    #       It only focuses on the string format.
-    good_string = (
-        "Copyright 2017 The Archivo Black Project Authors"
-        " (https://github.com/Omnibus-Type/ArchivoBlack)"
-    )
-    for i, entry in enumerate(ttFont["name"].names):
-        if entry.nameID == NameID.COPYRIGHT_NOTICE:
-            ttFont["name"].names[i].string = good_string.encode(entry.getEncoding())
-    assert_PASS(check(ttFont), "with good strings...")
+    # Then, to make the check PASS, we change it into a few good strings:
+    for good_string in GOOD_COPYRIGHT_NOTICE_STRINGS:
+        for i, entry in enumerate(ttFont["name"].names):
+            if entry.nameID == NameID.COPYRIGHT_NOTICE:
+                ttFont["name"].names[i].string = good_string.encode(entry.getEncoding())
+        assert_PASS(check(ttFont), "with good strings...")
 
 
 def DISABLE_test_check_glyphs_file_font_copyright():
