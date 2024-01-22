@@ -14,6 +14,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/duplexed_axis_reflow]:** yield FAILs per incorrect axis (message codes specifying axis); sort the list of bad glyphs (PR #4400)
   - **[com.google.fonts/check/legacy_accents]:** We changed our minds here, and removed the overide to FAIL on "legacy-accents-component", so it is back a mere WARN again, just like in the Universal Profile (issue #4425)
   - **[com.google.fonts/check/font_copyright]:** Accept date ranges. (issue #4386)
+  - **[com.google.fonts/check/metadata/unsupported_subsets]** and **[com.google.fonts/check/metadata/unreachable_subsetting]**: Updated to use the new `gfsubsets` package. (PR #4434)
+
 #### On the OpenType Profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** Only check for a bold instance on fonts where the weight range extends to 700. (issue #4373)
   - **[com.google.fonts/check/license/OFL_body_text]:** yield WARN instead of FAIL if body text is incorrect since the Google Fonts backend will make its own license file. Also show which lines needing changing (PR #4437)
