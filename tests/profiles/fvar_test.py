@@ -275,6 +275,12 @@ def test_check_varfont_bold_wght_coord():
         check(ttFont), FAIL, "wght-not-700", "with a bad Bold:wght coordinage (600)..."
     )
 
+    # Check we skip when we don't have a 700 weight.
+    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+    del ttFont["fvar"].instances[3]
+    ttFont["fvar"].axes[0].maxValue = 600
+    assert_results_contain(check(ttFont), SKIP, "no-bold-weight")
+
 
 def test_check_varfont_wght_valid_range():
     """The variable font 'wght' (Weight) axis coordinate
