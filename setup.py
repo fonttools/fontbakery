@@ -60,6 +60,7 @@ googlefonts_always_latest = [
     "gflanguages>=0.5.15",
     "glyphsets>=0.6.11",
     "shaperglot>=0.3.1",
+    "gfsubsets>=2024.1.22",
 ]
 
 

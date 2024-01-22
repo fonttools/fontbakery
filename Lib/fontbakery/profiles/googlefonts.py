@@ -1115,19 +1115,16 @@ def com_google_fonts_check_metadata_unsupported_subsets(
 ):
     """Check for METADATA subsets with zero support."""
     try:
-        from glyphsets import codepoints
-        from glyphsets.subsets import SUBSETS
+        from gfsubsets import CodepointsInSubset, ListSubsets
     except ImportError:
         exit_with_install_instructions()
-
-    codepoints.set_encoding_path(codepoints.nam_dir)
 
     passed = True
     for subset in family_metadata.subsets:
         if subset == "menu":
             continue
 
-        if subset not in SUBSETS:
+        if subset not in ListSubsets():
             yield FAIL, Message(
                 "unknown-subset",
                 f"Please remove the unrecognized subset '{subset}'"
@@ -1135,7 +1132,10 @@ def com_google_fonts_check_metadata_unsupported_subsets(
             )
             continue
 
-        subset_codepoints = codepoints.CodepointsInSubset(subset, unique_glyphs=True)
+        subset_codepoints = CodepointsInSubset(subset, unique_glyphs=True)
+        # All subsets now have these magic codepoints
+        subset_codepoints -= set([0, 13, 32, 160])
+
         if len(subset_codepoints.intersection(font_codepoints)) == 0:
             passed = False
             yield FAIL, Message(
@@ -1171,7 +1171,7 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
     """Check for codepoints not covered by METADATA subsets."""
     try:
         import unicodedata2
-        from glyphsets import codepoints
+        from gfsubsets import SubsetsInFont, CodepointsInSubset, ListSubsets
     except ImportError:
         exit_with_install_instructions()
 
@@ -1180,8 +1180,6 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
         metadata_file,
         family_metadata,
     )
-
-    codepoints.set_encoding_path(codepoints.nam_dir)
 
     # Use the METADATA.pb subsets if we have them
     metadatapb = metadata_file(family_directory)
@@ -1196,10 +1194,10 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
             return
     else:
         # Follow what the packager would do
-        subsets = [s[0] for s in codepoints.SubsetsInFont(font, 50, 0.01)]
+        subsets = [s[0] for s in SubsetsInFont(font, 50, 0.01)]
 
     for subset in subsets:
-        font_codepoints = font_codepoints - set(codepoints.CodepointsInSubset(subset))
+        font_codepoints = font_codepoints - set(CodepointsInSubset(subset))
 
     if not font_codepoints:
         yield PASS, "OK"
@@ -1208,8 +1206,8 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
     unreachable = []
     subsets_for_cps = defaultdict(set)
     # This is faster than calling SubsetsForCodepoint for each codepoint
-    for subset in codepoints.ListSubsets():
-        cps = codepoints.CodepointsInSubset(subset, unique_glyphs=True)
+    for subset in ListSubsets():
+        cps = CodepointsInSubset(subset, unique_glyphs=True)
         for cp in cps or []:
             subsets_for_cps[cp].add(subset)
 
