@@ -12,7 +12,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/legacy_accents]:** We changed our minds here, and removed the overide to FAIL on "legacy-accents-component", so it is back a mere WARN again, just like in the Universal Profile (issue #4425)
   - **[com.google.fonts/check/font_copyright]:** Accept date ranges. (issue #4386)
 #### On the OpenType Profile
-  - **[com.google.fonts/check/varfont/bold_wght_coord]:** Only check for a bold instance fonts where the weight range extends to 700. (issue #4373)
+  - **[com.google.fonts/check/varfont/bold_wght_coord]:** Only check for a bold instance on fonts where the weight range extends to 700. (issue #4373)
 
 
 ## 0.10.9 (2024-Jan-12)
