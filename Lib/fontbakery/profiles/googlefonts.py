@@ -1,6 +1,5 @@
 import os
 from collections import defaultdict
-from pprint import pformat
 from difflib import Differ
 
 from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
@@ -1470,7 +1469,8 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
     res = diff.compare(OFL_BODY_TEXT.splitlines(keepends=True), license_contents)
 
     changed_lines = [
-        f"\{l}".replace("\n", "\\n") for l in res if l.startswith(("-", "+"))
+        f"\{line}".replace("\n", "\\n") for line in res # noqa E501
+        if line.startswith(("-", "+"))
     ]
 
     if changed_lines:
@@ -1544,8 +1544,9 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
                 passed = True
                 yield WARN, Message(
                     "old-old-url",
-                    "Please consider updating the url from 'https://scripts.sil.org/OFL' "
-                    "to 'https://openfontlicense.org'.",
+                    "Please consider updating the url from "
+                    "'https://scripts.sil.org/OFL' to "
+                    "'https://openfontlicense.org'.",
                 )
                 return
             if value != placeholder:

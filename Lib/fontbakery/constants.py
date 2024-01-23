@@ -609,7 +609,8 @@ CJK_UNICODE_RANGES = [
     [0x2F800, 0x2FA1F],  # CJK Compatibility Ideographs Supplement (CJK Strokes)
 ]
 
-OFL_BODY_TEXT = """\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.
+OFL_BODY_TEXT = \
+    """\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
 https://openfontlicense.org
 
