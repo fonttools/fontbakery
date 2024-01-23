@@ -23,15 +23,12 @@ class SerializeReporter(FontbakeryReporter):
     >> print(json.dumps(sr.getdoc(), sort_keys=True, indent=4))
     """
 
-    def __init__(self, loglevels, succinct=None, collect_results_by=None, **kwd):
-        super().__init__(**kwd)
-        self.succinct = succinct
-        self.loglevels = loglevels
-        self._results_by = collect_results_by
+    def __post_init__(self):
+        super().__post_init__()
         self._items = {}
         self._doc = None
 
-        # used when self._results_by is set
+        # used when self.collect_results_by is set
         # this way we minimize our knowledge of the profile
         self._max_cluster_by_index = None
         self._observed_checks = {}
@@ -61,25 +58,27 @@ class SerializeReporter(FontbakeryReporter):
             # init
             if status in (START, END) and not item:
                 item.update({"result": None, "sections": []})
-                if self._results_by:
+                if self.collect_results_by:
                     # give the consumer a clue that/how the sections
                     # are structured differently.
-                    item["clusteredBy"] = self._results_by
+                    item["clusteredBy"] = self.collect_results_by
             if status == SECTIONSUMMARY:
                 item.update({"key": key, "result": None, "checks": []})
             if check:
                 item.update({"key": key, "result": None, "logs": []})
-                if self._results_by:
-                    if self._results_by == "*check":
+                if self.collect_results_by:
+                    if self.collect_results_by == "*check":
                         if check.id not in self._observed_checks:
                             self._observed_checks[check.id] = len(self._observed_checks)
                         index = self._observed_checks[check.id]
                         value = check.id
                     else:
-                        index = dict(iterargs).get(self._results_by, None)
+                        index = dict(iterargs).get(self.collect_results_by, None)
                         value = None
                         if self.runner:
-                            value = self.runner.get_iterarg(self._results_by, index)
+                            value = self.runner.get_iterarg(
+                                self.collect_results_by, index
+                            )
 
                     if index is not None:
                         if self._max_cluster_by_index is not None:
@@ -90,7 +89,7 @@ class SerializeReporter(FontbakeryReporter):
                             self._max_cluster_by_index = index
 
                     item["clustered"] = {
-                        "name": self._results_by,
+                        "name": self.collect_results_by,
                         # 'index' is None if this check did not require self.results_by
                         "index": index,
                     }
@@ -143,10 +142,10 @@ class SerializeReporter(FontbakeryReporter):
             sectionDoc = self._items[sectionKey]
 
             check = self._items[key]
-            if self._results_by:
+            if self.collect_results_by:
                 if not sectionDoc["checks"]:
                     clusterlen = self._max_cluster_by_index + 1
-                    if self._results_by != "*check":
+                    if self.collect_results_by != "*check":
                         # + 1 for rests bucket
                         clusterlen += 1
                     sectionDoc["checks"] = [[] for _ in range(clusterlen)]

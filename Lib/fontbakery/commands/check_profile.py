@@ -385,10 +385,10 @@ def main(profile=None, values=None):
         sys.exit(1)
 
     theme = get_theme(args)
-    # the most verbose loglevel wins
-    loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
 
     if args.list_checks:
+        # the most verbose loglevel wins
+        loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
         list_checks(profile, theme, verbose=loglevel > DEFAULT_LOG_LEVEL)
 
     values_ = {}
@@ -438,27 +438,33 @@ def main(profile=None, values=None):
         sys.exit(1)
 
     is_async = args.multiprocessing != 0
+    if not args.loglevels:
+        args.loglevels = [
+            status
+            for status in log_levels.values()
+            if status.weight >= DEFAULT_LOG_LEVEL.weight
+        ]
 
     tr = TerminalReporter(
-        runner=runner,
         is_async=is_async,
-        print_progress=not args.no_progress,
+        runner=runner,
+        loglevels=args.loglevels,
         succinct=args.succinct,
-        check_threshold=loglevel,
-        log_threshold=args.loglevel_messages or loglevel,
-        theme=theme,
         collect_results_by=args.gather_by,
+        theme=theme,
         skip_status_report=None if args.show_sections else (SECTIONSUMMARY,),
     )
     reporters = [tr]
+
     if "reporters" not in args:
         args.reporters = []
 
     for reporter_class, output_file in args.reporters:
         reporters.append(
             reporter_class(
-                loglevels=args.loglevels,
+                is_async=is_async,
                 runner=runner,
+                loglevels=args.loglevels,
                 succinct=args.succinct,
                 collect_results_by=args.gather_by,
                 output_file=output_file,

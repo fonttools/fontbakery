@@ -370,11 +370,8 @@ class TerminalReporter(TerminalProgress):
     on endcheck, make a summary of the check and yield that
     """
 
-    def __init__(
-        self, collect_results_by=None, check_threshold=None, log_threshold=None, **kwd
-    ):
-        super().__init__(**kwd)
-        self.results_by = collect_results_by
+    def __post_init__(self):
+        super().__post_init__()
         self._collected_results = {}
         self._event_buffers = {}
 
@@ -382,12 +379,9 @@ class TerminalReporter(TerminalProgress):
         # especially DEBUG, INFO, WARNING and ERROR
         # FAIL, PASS and SKIP are only expected within checks though
         # Log statuses have weights >= 0
-        log_threshold = (
-            log_threshold
-            if not isinstance(log_threshold, Status)
-            else log_threshold.weight
-        )
-        self._log_threshold = min(ERROR.weight + 1, max(0, log_threshold))
+        log_threshold = min(self.loglevels) if self.loglevels else WARN
+        check_threshold = log_threshold
+        self._log_threshold = min(ERROR.weight + 1, max(0, log_threshold.weight))
 
         # Use this to silence the output checks in async mode, it also activates
         # async mode if turned off.
@@ -411,11 +405,11 @@ class TerminalReporter(TerminalProgress):
         super()._register(event)
         status, message, (section, check, iterargs) = event
 
-        if self.results_by and status == ENDCHECK:
+        if self.collect_results_by and status == ENDCHECK:
             key = (
                 check.id
-                if self.results_by == "*check"
-                else dict(iterargs).get(self.results_by, None)
+                if self.collect_results_by == "*check"
+                else dict(iterargs).get(self.collect_results_by, None)
             )
             if key not in self._collected_results:
                 self._collected_results[key] = Counter()
@@ -425,7 +419,7 @@ class TerminalReporter(TerminalProgress):
         status, msg, (section, check, iterargs) = event
 
         if (
-            not status.weight >= self._structure_threshold
+            not status.weight >= self._minimum_weight
             or status in self._skip_status_report
         ):
             return
@@ -537,7 +531,7 @@ class TerminalReporter(TerminalProgress):
 
         # Log statuses have weights >= 0
         # log_statuses = (INFO, WARN, PASS, SKIP, FATAL, FAIL, ERROR, DEBUG)
-        if status.weight >= self._log_threshold:
+        if status in self.loglevels:
             print_func("")
 
             from fontbakery.utils import text_flow
@@ -582,7 +576,7 @@ class TerminalReporter(TerminalProgress):
         if status == SECTIONSUMMARY:
             order, counter = msg
             print_func("")
-            print_func("=" * 8, f"Section results: {section}", "=" * 8)
+            print_func("=" * 8, f"Section results: {event.identity.section}", "=" * 8)
             print_func(
                 "{} {} in section".format(
                     len(order), len(order) == 1 and "check" or "checks"
@@ -593,18 +587,18 @@ class TerminalReporter(TerminalProgress):
 
         if status == END:
             print_func("")
-            if self.results_by:
-                print_func("Collected results by", self.results_by)
+            if self.collect_results_by:
+                print_func("Collected results by", self.collect_results_by)
                 for key in self._collected_results:
-                    if self.results_by == "*check":
+                    if self.collect_results_by == "*check":
                         val = key
                     elif key is not None and self.runner:
-                        val = self.runner.get_iterarg(self.results_by, key)
+                        val = self.runner.get_iterarg(self.collect_results_by, key)
                     elif key is not None:
                         val = key
                     else:
-                        val = f'(not using "{self.results_by}")'
-                    print_func(f"{self.results_by}: {val}")
+                        val = f'(not using "{self.collect_results_by}")'
+                    print_func(f"{self.collect_results_by}: {val}")
                     print_func(
                         _render_results_counter(
                             self.theme, self._collected_results[key]
@@ -686,7 +680,7 @@ class TerminalReporter(TerminalProgress):
         # XXX override of built-in print() function
         print_func = partial(builtins.print, file=output)
 
-        if self._render_async:
+        if self.is_async:
             self._render_event_async(print_func, event)
         else:
             self._render_event_sync(print_func, event)
