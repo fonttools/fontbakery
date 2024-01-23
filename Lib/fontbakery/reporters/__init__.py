@@ -8,13 +8,25 @@ Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 from collections import Counter
+from typing import Iterable, Optional
+from dataclasses import dataclass
 
-from fontbakery.status import END, ENDCHECK, START
+from fontbakery.checkrunner import CheckRunner
+from fontbakery.status import END, ENDCHECK, START, Status
 from fontbakery.errors import ProtocolViolationError
 
 
+@dataclass
 class FontbakeryReporter:
-    def __init__(self, is_async=False, runner=None, output_file=None, loglevels=None):
+    is_async: bool = False
+    runner: Optional[CheckRunner] = None
+    output_file: Optional[str] = None
+    loglevels: Optional[Iterable[Status]] = None
+    collect_results_by: Optional[str] = None
+    succinct: bool = False
+
+
+    def __post_init__(self):
         self._started = None
         self._ended = None
         self._order = None
@@ -22,14 +34,12 @@ class FontbakeryReporter:
         self._indexes = {}
         self._tick = 0
         self._counter = Counter()
-        self.loglevels = loglevels
-
-        # Runner should know if it is async!
-        self.is_async = is_async
-        self.runner = runner
-
         self._worst_check_status = None
-        self.output_file = output_file
+        self._minimum_weight = min(status.weight for status in self.loglevels)
+
+    def omit_loglevel(self, msg) -> bool:
+        """Determine if message is below log level."""
+        return Status(msg).weight < self._minimum_weight
 
     def run(self, order=None):
         """
@@ -37,10 +47,6 @@ class FontbakeryReporter:
         """
         for event in self.runner.run(order=order):
             self.receive(event)
-
-    @property
-    def order(self):
-        return self._order
 
     def write(self):
         if self.output_file is not None:
