@@ -8,7 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 #### On the Shaping Profile
-  - ""[com.google.fonts/check/dotted_circle]:** Don't check for dotted circles in Hangul fonts. Hangul is not a syllabic script. Old Hangeul uses complex shaping and has diacritic marks that require dotted circles. Contemporary Hangeul does not. (related to issue #3600)
+  - **[com.google.fonts/check/license/OFL_body_text]:** yield WARN instead of FAIL if body text is incorrect since the Google Fonts backend will make its own license file. Also show which lines needing changing (PR #4437)
+  - **[com.google.fonts/check/name/license]:** yield WARN if license url is scripts.sil.org/OFL
+  - **[com.google.fonts/check/dotted_circle]:** Don't check for dotted circles in Hangul fonts. Hangul is not a syllabic script. Old Hangeul uses complex shaping and has diacritic marks that require dotted circles. Contemporary Hangeul does not. (related to issue #3600)
 
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/varfont/duplexed_axis_reflow]:** yield FAILs per incorrect axis (message codes specifying axis); sort the list of bad glyphs (PR #4400)
