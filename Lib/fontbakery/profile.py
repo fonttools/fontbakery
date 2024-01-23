@@ -15,6 +15,7 @@ from fontbakery.callable import (
     FontBakeryCondition,
     FontBakeryExpectedValue,
 )
+from fontbakery.events import Identity
 from fontbakery.configuration import Configuration
 from fontbakery.message import Message
 from fontbakery.section import Section
@@ -650,7 +651,7 @@ class Profile:
                 explicit_checks=explicit_checks,
                 exclude_checks=exclude_checks,
             ):
-                yield (section, check, section_iterargs)
+                yield Identity(section, check, section_iterargs)
 
     def _register_check(self, section, func):
         other_section = self._check_registry.get(func.id, None)
@@ -1000,7 +1001,6 @@ class Profile:
         entries (dictionaries are not ordered usually)
         Otherwise it is valid JSON
         """
-        section, check, iterargs = identity
         values = map(
             # separators are without space, which is the default in JavaScript;
             # just in case we need to make these keys in JS.
@@ -1011,7 +1011,7 @@ class Profile:
             # and conveys insights on how the order came to be (clustering of
             # iterargs). `sorted(iterargs)` however is more robust over time,
             # the keys will be the same, even if the sorting order changes.
-            [str(section), check.id, sorted(iterargs)],
+            [str(identity.section), identity.check.id, sorted(identity.iterargs)],
         )
         return '{{"section":{},"check":{},"iterargs":{}}}'.format(*values)
 
@@ -1021,7 +1021,7 @@ class Profile:
         check, _ = self.get_check(item["check"])
         # tuple of tuples instead list of lists
         iterargs = tuple(tuple(item) for item in item["iterargs"])
-        return section, check, iterargs
+        return Identity(section, check, iterargs)
 
     def serialize_order(self, order):
         return map(self.serialize_identity, order)

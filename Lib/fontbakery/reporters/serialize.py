@@ -10,6 +10,7 @@ domains as well.
 Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
+from fontbakery.events import Identity
 from fontbakery.status import Status, DEBUG, END, ENDCHECK, SECTIONSUMMARY, START
 from fontbakery.reporters import FontbakeryReporter
 
@@ -47,24 +48,23 @@ class SerializeReporter(FontbakeryReporter):
 
     def _register(self, event):
         super()._register(event)
-        status, message, identity = event
-        section, check, iterargs = identity
-        key = self._get_key(identity)
+        key = event.identity.key
 
         # not item == True when item is empty
         item = self._items.get(key, {})
         if not item:
             self._items[key] = item
             # init
-            if status in (START, END) and not item:
+            if event.status in (START, END) and not item:
                 item.update({"result": None, "sections": []})
                 if self.collect_results_by:
                     # give the consumer a clue that/how the sections
                     # are structured differently.
                     item["clusteredBy"] = self.collect_results_by
-            if status == SECTIONSUMMARY:
+            if event.status == SECTIONSUMMARY:
                 item.update({"key": key, "result": None, "checks": []})
-            if check:
+            if event.identity.check:
+                check = event.identity.check
                 item.update({"key": key, "result": None, "logs": []})
                 if self.collect_results_by:
                     if self.collect_results_by == "*check":
@@ -73,7 +73,9 @@ class SerializeReporter(FontbakeryReporter):
                         index = self._observed_checks[check.id]
                         value = check.id
                     else:
-                        index = dict(iterargs).get(self.collect_results_by, None)
+                        index = dict(event.identity.iterargs).get(
+                            self.collect_results_by, None
+                        )
                         value = None
                         if self.runner:
                             value = self.runner.get_iterarg(
@@ -97,9 +99,9 @@ class SerializeReporter(FontbakeryReporter):
                         value
                     ):  # Not set if self.runner was not defined on initialization
                         item["clustered"]["value"] = value
-            self._set_metadata(identity, item)
 
-        if check:
+        if event.identity.check:
+            check = event.identity.check
             item["description"] = check.description
             if check.documentation:
                 item["documentation"] = check.documentation
@@ -112,18 +114,18 @@ class SerializeReporter(FontbakeryReporter):
             if item["key"][2] != ():
                 item["filename"] = self.runner.get_iterarg(*item["key"][2][0])
 
-        if status == END:
-            item["result"] = message  # is a Counter
-        if status == SECTIONSUMMARY:
-            _, item["result"] = message  # message[1] is a Counter
-        if status == ENDCHECK:
-            item["result"] = message.name  # is a Status
-        if status >= DEBUG:
+        if event.status == END:
+            item["result"] = event.message  # is a Counter
+        if event.status == SECTIONSUMMARY:
+            _, item["result"] = event.message  # message[1] is a Counter
+        if event.status == ENDCHECK:
+            item["result"] = event.message.name  # is a Status
+        if event.status >= DEBUG:
             item["logs"].append(
                 {
-                    "status": status.name,
-                    "message": f"{message}",
-                    "traceback": getattr(message, "traceback", None),
+                    "status": event.status.name,
+                    "message": f"{event.message}",
+                    "traceback": getattr(event.message, "traceback", None),
                 }
             )
 
@@ -132,13 +134,12 @@ class SerializeReporter(FontbakeryReporter):
             raise Exception("Can't create doc before END status was recevived.")
         if self._doc is not None:
             return self._doc
-        doc = self._items[self._get_key((None, None, None))]
+        doc = self._items[Identity(None, None, None).key]
         seen = set()
         # this puts all in the original order
         for identity in self._order:
-            key = self._get_key(identity)
-            section, _, _ = identity
-            sectionKey = self._get_key((section, None, None))
+            key = identity.key
+            sectionKey = Identity(identity.section, None, None).key
             sectionDoc = self._items[sectionKey]
 
             check = self._items[key]

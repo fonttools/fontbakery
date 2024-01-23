@@ -9,7 +9,6 @@ import sys
 
 from fontbakery.checkrunner import (
     CheckRunner,
-    distribute_generator,
     get_module_from_file,
 )
 from fontbakery.status import (
@@ -27,7 +26,6 @@ from fontbakery.configuration import Configuration
 from fontbakery.profile import Profile, get_module_profile
 
 from fontbakery.errors import ValueValidationError
-from fontbakery.multiproc import multiprocessing_runner
 from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.badge import BadgeReporter
@@ -297,7 +295,7 @@ def ArgumentParser(profile, profile_arg=True):
     argument_parser.add_argument(
         "-J",
         "--jobs",
-        default=0,
+        default=1,
         type=positive_int,
         metavar="JOBS",
         dest="multiprocessing",
@@ -305,7 +303,7 @@ def ArgumentParser(profile, profile_arg=True):
         f"of worker processes. A sensible number is the cpu count of your\n"
         f"system, detected: {os.cpu_count()}."
         f" As an automated shortcut see -j/--auto-jobs.\n"
-        f"Use 0 to run in single-processing mode (default %(default)s).",
+        f"Use 1 to run in single-processing mode (default %(default)s).",
     )
     argument_parser.add_argument(
         "-j",
@@ -431,7 +429,7 @@ def main(profile=None, values=None):
     )
     runner_kwds = {"values": values_, "config": configuration}
     try:
-        runner = CheckRunner(profile, **runner_kwds)
+        runner = CheckRunner(profile, jobs=args.multiprocessing, **runner_kwds)
     except ValueValidationError as e:
         print(e)
         argument_parser.print_usage()
@@ -453,6 +451,7 @@ def main(profile=None, values=None):
         collect_results_by=args.gather_by,
         theme=theme,
         skip_status_report=None if args.show_sections else (SECTIONSUMMARY,),
+        print_progress=not args.no_progress,
     )
     reporters = [tr]
 
@@ -471,14 +470,7 @@ def main(profile=None, values=None):
             )
         )
 
-    if args.multiprocessing == 0:
-        status_generator = runner.run()
-    else:
-        status_generator = multiprocessing_runner(
-            args.multiprocessing, runner, runner_kwds
-        )
-
-    distribute_generator(status_generator, [reporter.receive for reporter in reporters])
+    runner.run([reporter.receive for reporter in reporters])
 
     for reporter in reporters:
         reporter.write()

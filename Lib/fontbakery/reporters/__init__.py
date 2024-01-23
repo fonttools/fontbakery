@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from fontbakery.checkrunner import CheckRunner
 from fontbakery.status import END, ENDCHECK, START, Status
 from fontbakery.errors import ProtocolViolationError
+from fontbakery.events import EndCheckEvent, Identity, Event, StartEvent, EndEvent
 
 
 @dataclass
@@ -56,43 +57,34 @@ class FontbakeryReporter:
             )
         # reporters without an output file do nothing here
 
-    @staticmethod
-    def _get_key(identity):
-        section, check, iterargs = identity
-        return (
-            str(section) if section else section,
-            str(check) if check else check,
-            iterargs,
-        )
-
     def _get_index(self, identity):
-        key = self._get_key(identity)
+        assert isinstance(identity, Identity)
+        key = identity.key
         try:
             return self._indexes[key]
         except KeyError:
             self._indexes[key] = len(self._indexes)
             return self._indexes[key]
 
-    def _set_order(self, order):
-        self._order = tuple(order)
+    def _set_order(self, order: Iterable[Identity]):
+        self._order = order
         length = len(self._order)
         self._counter["(not finished)"] = length - len(self._results)
-        self._indexes = dict(zip(map(self._get_key, self._order), range(length)))
-
-    def _cleanup(self, event):
-        pass
+        keys = [identity.key for identity in self._order]
+        self._indexes = dict(zip(keys, range(length)))
 
     def _output(self, event):
         pass
 
     def _register(self, event):
-        status, message, identity = event
+        assert isinstance(event, Event)
         self._tick += 1
-        if status == START:
-            self._set_order(message)
+        if isinstance(event, StartEvent):
+            self._set_order(event.order)
             self._started = event
+            return
 
-        if status == END:
+        elif isinstance(event, EndEvent):
             self._ended = event
 
             if self.collect_results_by:
@@ -107,9 +99,9 @@ class FontbakeryReporter:
                     self._collected_results[key] = Counter()
                 self._collected_results[key][event.message.name] += 1
 
-        elif status == ENDCHECK:
+        elif isinstance(event, EndCheckEvent):
             self._results.append(event)
-            self._counter[message.name] += 1
+            self._counter[event.summary_status.name] += 1
             self._counter["(not finished)"] -= 1
 
     @property
@@ -118,30 +110,28 @@ class FontbakeryReporter:
         return self._worst_check_status
 
     def receive(self, event):
-        status, message, identity = event
-        if self._started is None and status != START:
+        if self._started is None and not isinstance(event, StartEvent):
             raise ProtocolViolationError(
-                f"Received Event before status START:" f" {status} {message}."
+                f"Received Event before status START:"
+                f" {event.status} {event.message}."
             )
         if self._ended:
-            status, message, identity = event
             raise ProtocolViolationError(
-                f"Received Event after status END:" f" {status} {message}."
+                f"Received Event after status END:" f" {event.status} {event.message}."
             )
 
-        if status is ENDCHECK and (
-            self._worst_check_status is None or self._worst_check_status < message
+        if isinstance(event, EndCheckEvent) and (
+            self._worst_check_status is None
+            or self._worst_check_status < event.summary_status
         ):
             # Checks that are marked as "experimental" do not affect the
             # exit status code, so that they won't break a build on continuous
             # integration setups.
-            section, check, iterargs = identity
-            if not check.experimental:
+            if not event.identity.check.experimental:
                 # we only record ENDCHECK, because check runner may in the future
                 # have tools to upgrade/downgrade the actually worst status
                 # this should be future proof.
-                self._worst_check_status = message
+                self._worst_check_status = event.summary_status
 
         self._register(event)
-        self._cleanup(event)
         self._output(event)
