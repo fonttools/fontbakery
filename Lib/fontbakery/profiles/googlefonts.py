@@ -1542,7 +1542,7 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
             if "scripts.sil.org/OFL" in value:
                 passed = True
                 yield WARN, Message(
-                    "old-old-url",
+                    "old-url",
                     "Please consider updating the url from "
                     "'https://scripts.sil.org/OFL' to "
                     "'https://openfontlicense.org'.",
