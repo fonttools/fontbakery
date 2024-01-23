@@ -7,6 +7,14 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix a crash when no matching checks are found during a multi-processing run. Also, do not freeze indefinitely. Instead, terminate the program emitting a process error code -1 and giving the user some guidance. (issue #4420)
 
 ### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/arabic_spacing_symbols]:** Also check U+FBC2 ARABIC SYMBOL WASLA ABOVE (issue #4417)
+
+#### On the OpenType Profile
+  - **[com.google.fonts/check/varfont/bold_wght_coord]:** Only check for a bold instance on fonts where the weight range extends to 700. (issue #4373)
+  - **[com.google.fonts/check/license/OFL_body_text]:** yield WARN instead of FAIL if body text is incorrect since the Google Fonts backend will make its own license file. Also show which lines needing changing (PR #4437)
+  - **[com.google.fonts/check/name/license]:** yield WARN if license url is scripts.sil.org/OFL (PR #4437)
+
 #### On the Shaping Profile
   - **[com.google.fonts/check/dotted_circle]:** Don't check for dotted circles in Hangul fonts. Hangul is not a syllabic script. Old Hangeul uses complex shaping and has diacritic marks that require dotted circles. Contemporary Hangeul does not. (related to issue #3600)
 
@@ -15,11 +23,6 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/legacy_accents]:** We changed our minds here, and removed the overide to FAIL on "legacy-accents-component", so it is back a mere WARN again, just like in the Universal Profile (issue #4425)
   - **[com.google.fonts/check/font_copyright]:** Accept date ranges. (issue #4386)
   - **[com.google.fonts/check/metadata/unsupported_subsets]** and **[com.google.fonts/check/metadata/unreachable_subsetting]**: Updated to use the new `gfsubsets` package. (PR #4434)
-
-#### On the OpenType Profile
-  - **[com.google.fonts/check/varfont/bold_wght_coord]:** Only check for a bold instance on fonts where the weight range extends to 700. (issue #4373)
-  - **[com.google.fonts/check/license/OFL_body_text]:** yield WARN instead of FAIL if body text is incorrect since the Google Fonts backend will make its own license file. Also show which lines needing changing (PR #4437)
-  - **[com.google.fonts/check/name/license]:** yield WARN if license url is scripts.sil.org/OFL (PR #4437)
 
 
 ## 0.10.9 (2024-Jan-12)
