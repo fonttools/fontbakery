@@ -805,6 +805,7 @@ def com_google_fonts_check_arabic_spacing_symbols(ttFont):
         0xFBBF,  # Ring
         0xFBC0,  # Small Tah Above
         0xFBC1,  # Small Tah Below
+        0xFBC2,  # Wasla Above
     }
 
     passed = True
