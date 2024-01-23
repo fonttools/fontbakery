@@ -40,10 +40,9 @@ jobs:
         python -m pip install -r requirements.txt -r requirements-tests.txt
         python -m pip install pytype # Not in requirements as it doesn't work on Windows
 
-    - name: Run black, flake8, pylint and pytype
+    - name: Run black, pylint and pytype
       run: |
         black . --check --diff --color
-        flake8
         pylint --recursive=true Lib tests
         pytype
 

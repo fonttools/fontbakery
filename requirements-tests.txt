@@ -1,6 +1,5 @@
 --index-url https://pypi.python.org/simple/
 black==23.12.1
-flake8==7.0.0
 pylint==3.0.3
 sphinx==7.1.2  # Sphinx 7.2.x series requires python >= 3.9
 pytest-cov==4.1.0
