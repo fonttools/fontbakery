@@ -1469,7 +1469,8 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
     res = diff.compare(OFL_BODY_TEXT.splitlines(keepends=True), license_contents)
 
     changed_lines = [
-        f"\{line}".replace("\n", "\\n") for line in res # noqa E501
+        f"\{line}".replace("\n", "\\n")  # noqa E501
+        for line in res
         if line.startswith(("-", "+"))
     ]
 
