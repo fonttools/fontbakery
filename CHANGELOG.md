@@ -17,12 +17,14 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Shaping Profile
   - **[com.google.fonts/check/dotted_circle]:** Don't check for dotted circles in Hangul fonts. Hangul is not a syllabic script. Old Hangeul uses complex shaping and has diacritic marks that require dotted circles. Contemporary Hangeul does not. (related to issue #3600)
+  - **[com.google.fonts/check/soft_dotted]:** Check requires internet access. (issue #4396)
 
 #### On the Google Fonts Profile
   - **[com.google.fonts/check/varfont/duplexed_axis_reflow]:** yield FAILs per incorrect axis (message codes specifying axis); sort the list of bad glyphs (PR #4400)
   - **[com.google.fonts/check/legacy_accents]:** We changed our minds here, and removed the overide to FAIL on "legacy-accents-component", so it is back a mere WARN again, just like in the Universal Profile (issue #4425)
   - **[com.google.fonts/check/font_copyright]:** Accept date ranges. (issue #4386)
   - **[com.google.fonts/check/metadata/unsupported_subsets]** and **[com.google.fonts/check/metadata/unreachable_subsetting]**: Updated to use the new `gfsubsets` package. (PR #4434)
+  - **[com.google.fonts/check/glyphsets/shape_languages]:** Check requires internet access. (issue #4396)
 
 
 ## 0.10.9 (2024-Jan-12)
