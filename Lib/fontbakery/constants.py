@@ -59,7 +59,7 @@ PLACEHOLDER_LICENSING_TEXT = {
     "UFL.txt": "Licensed under the Ubuntu Font Licence 1.0.",
     "OFL.txt": "This Font Software is licensed under the SIL Open Font "
     "License, Version 1.1. This license is available with a FAQ "
-    "at: https://scripts.sil.org/OFL",
+    "at: https://openfontlicense.org",
     "LICENSE.txt": "Licensed under the Apache License, Version 2.0",
 }
 
@@ -609,11 +609,9 @@ CJK_UNICODE_RANGES = [
     [0x2F800, 0x2FA1F],  # CJK Compatibility Ideographs Supplement (CJK Strokes)
 ]
 
-OFL_BODY_TEXT = """
-
-This Font Software is licensed under the SIL Open Font License, Version 1.1.
+OFL_BODY_TEXT = """\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:
-https://scripts.sil.org/OFL
+https://openfontlicense.org
 
 
 -----------------------------------------------------------
@@ -701,8 +699,7 @@ COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
-OTHER DEALINGS IN THE FONT SOFTWARE.
-"""
+OTHER DEALINGS IN THE FONT SOFTWARE."""
 
 LATEST_TTFAUTOHINT_VERSION = "1.8.4"
 

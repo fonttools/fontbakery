@@ -1131,7 +1131,7 @@ def test_check_license_ofl_body_text():
     )
     assert_results_contain(
         check(ttFont, {"license_contents": bad_license}),
-        FAIL,
+        WARN,
         "incorrect-ofl-body-text",
         "with incorrect ofl body text",
     )
@@ -1142,7 +1142,7 @@ def test_check_name_license(mada_ttFonts):
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/name/license")
 
     # Our reference Mada family has its copyright name records properly set
-    # identifying it as being licensed under the Open Font License
+    # identifying it as being licensed under the Open Font License.
     for ttFont in mada_ttFonts:
         assert_PASS(check(ttFont), "with good fonts ...")
 
