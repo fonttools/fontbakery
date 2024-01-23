@@ -1,5 +1,7 @@
 import os
 from collections import defaultdict
+from pprint import pformat
+from difflib import Differ
 
 from fontbakery.profiles.outline import OUTLINE_PROFILE_CHECKS
 from fontbakery.profiles.shaping import SHAPING_PROFILE_CHECKS
@@ -1447,8 +1449,6 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
 def com_google_fonts_check_license_OFL_body_text(license_contents):
     """Check OFL body text is correct."""
     from fontbakery.constants import OFL_BODY_TEXT
-    from pprint import pformat
-    from difflib import Differ
 
     # apply replacements so we get ideal license contents as of 2024.
     # We want https and openfontslicense.org as the url. We also don't
