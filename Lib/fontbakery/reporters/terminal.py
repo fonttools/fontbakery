@@ -25,6 +25,7 @@ from rich.markup import escape
 import rich
 
 from fontbakery.constants import LIGHT_THEME, CUPCAKE, MEANING_MESSAGE
+from fontbakery.events import EndCheckEvent
 from fontbakery.reporters import FontbakeryReporter
 
 from fontbakery.status import (
@@ -165,8 +166,7 @@ class TerminalReporter(FontbakeryReporter):
 
     def _register(self, event):
         super()._register(event)
-        status, message, identity = event
-        if status == ENDCHECK and self.print_progress:
+        if isinstance(event, EndCheckEvent) and self.print_progress:
             self._set_progress_event(event)
 
     def _output(self, event):
@@ -181,9 +181,8 @@ class TerminalReporter(FontbakeryReporter):
                 self._set_progress_event(event)
 
     def _set_progress_event(self, event):
-        status, message, identity = event
-        index = self._get_index(identity)
-        self.progressbar[index] = message
+        index = self._get_index(event.identity)
+        self.progressbar[index] = event.message
         total = max(len(self._order), len(self._results))
         self.progressbar.percent = (
             int(round(len(self._results) / total * 100)) if total else 0
@@ -198,21 +197,17 @@ class TerminalReporter(FontbakeryReporter):
         return index
 
     def add_to_event_buffer(self, event, *renderables):
-        status, message, identity = event
-        section, check, iterargs = identity
-        key = self._get_key(identity)
-        if key not in self._event_buffers:
-            self._event_buffers[key] = []
-        self._event_buffers[key].extend(renderables)
+        if event.identity.key not in self._event_buffers:
+            self._event_buffers[event.identity.key] = []
+        self._event_buffers[event.identity.key].extend(renderables)
 
     def _render_START(self, event):
-        _, order, _ = event
+        order = event.message
         self._console.print(
             f"Start ... running {len(order)} individual check executions."
         )
 
     def _render_END(self, event):
-        status, message, identity = event
         self._console.print("")
         if self.collect_results_by:
             self._console.print("Collected results by", self.collect_results_by)
@@ -235,12 +230,12 @@ class TerminalReporter(FontbakeryReporter):
             self._log_context.__exit__(None, None, None)
 
         if self.succinct:
-            self._console.print(self._render_results_counter(message))
+            self._console.print(self._render_results_counter(event.message))
             return
 
         self._console.print("Total:")
+        self._console.print(self._render_results_counter(event.message))
         self._console.print("")
-        self._console.print(self._render_results_counter(message))
         self._console.print("")
         self._console.print(MEANING_MESSAGE)
         self._console.print("")
@@ -256,12 +251,11 @@ class TerminalReporter(FontbakeryReporter):
         self._console.print("DONE!")
 
     def _render_STARTCHECK(self, event):
-        status, message, identity = event
-        section, check, iterargs = identity
+        check = event.identity.check
 
         formatted_iterargs = tuple(
             ("{}[{}]".format(*item), self.runner.get_iterarg(*item))
-            for item in iterargs
+            for item in event.identity.iterargs
         )
 
         if self.succinct:
@@ -349,13 +343,12 @@ class TerminalReporter(FontbakeryReporter):
             self.add_to_event_buffer(event, "\n")
 
     def _render_ENDCHECK(self, event):
-        status, msg, identity = event
-        key = self._get_key(identity)
+        msg = event.message
         if msg not in self.loglevels:
             return
         # Deal with event buffer
-        if self._event_buffers[key]:
-            self._console.print(*self._event_buffers[key], end="")
+        if self._event_buffers[event.identity.key]:
+            self._console.print(*self._event_buffers[event.identity.key], end="")
         if not self.succinct:
             self._console.print("\n")
             self._console.print(
@@ -365,7 +358,7 @@ class TerminalReporter(FontbakeryReporter):
             self._console.print(f"[message-{msg.name}]{msg.name}[/message-{msg.name}]")
 
     def _render_event(self, event):
-        status, message, identity = event
+        status = event.status
         if (
             not status.weight >= self._structure_threshold
             or status in self.skip_status_report
@@ -403,7 +396,8 @@ class TerminalReporter(FontbakeryReporter):
     def _render_checkresult(self, event):
         if self.succinct:
             return
-        status, msg, identity = event
+        msg = event.message
+        status = event.status
 
         # Log statuses have weights >= 0
         # log_statuses = (INFO, WARN, PASS, SKIP, FATAL, FAIL, ERROR, DEBUG)
@@ -432,7 +426,8 @@ class TerminalReporter(FontbakeryReporter):
                 event, f"    [message-{status.name.lower()}]{status.name}[/] "
             )
             self.add_to_event_buffer(
-                event, IndentedParagraph(Markdown(message), right=2, left=10, first=0)
+                event,
+                IndentedParagraph(Markdown(msg.message), right=2, left=10, first=0),
             )
 
         if status not in statuses:
