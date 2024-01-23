@@ -1449,29 +1449,29 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
     from fontbakery.constants import OFL_BODY_TEXT
     from pprint import pformat
     from difflib import Differ
+
     # apply replacements so we get ideal license contents as of 2024.
     # We want https and openfontslicense.org as the url. We also don't
     # seem to care if the last line is an empty line.
     # Not having these will raise warns in other checks.
     if license_contents[-1] == "\n":
         license_contents = license_contents[:-1]
-    license_contents = license_contents.replace(
-        "http://", "https://"
-    ).replace(
-        "https://scripts.sil.org/OFL",
-        "https://openfontlicense.org",
-    ).replace(
-        "<",
-        "\\<"
-    ).splitlines(keepends=True)[1:]
-
-    diff = Differ()
-    res = diff.compare(
-        OFL_BODY_TEXT.splitlines(keepends=True),
-        license_contents
+    license_contents = (
+        license_contents.replace("http://", "https://")
+        .replace(
+            "https://scripts.sil.org/OFL",
+            "https://openfontlicense.org",
+        )
+        .replace("<", "\\<")
+        .splitlines(keepends=True)[1:]
     )
 
-    changed_lines = [f"\{l}".replace("\n", "\\n") for l in res if l.startswith(("-", "+"))]
+    diff = Differ()
+    res = diff.compare(OFL_BODY_TEXT.splitlines(keepends=True), license_contents)
+
+    changed_lines = [
+        f"\{l}".replace("\n", "\\n") for l in res if l.startswith(("-", "+"))
+    ]
 
     if changed_lines:
         output = "\n\n".join(changed_lines)
@@ -1482,7 +1482,7 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
             "/blob/main/OFL.txt as a template. "
             "You should only modify the first line.\n\n"
             "Lines changed:\n\n"
-            f"{output}\n\n"
+            f"{output}\n\n",
         )
     else:
         yield PASS, "OFL license body text is correct"
@@ -1545,7 +1545,7 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
                 yield WARN, Message(
                     "old-old-url",
                     "Please consider updating the url from 'https://scripts.sil.org/OFL' "
-                    "to 'https://openfontlicense.org'."
+                    "to 'https://openfontlicense.org'.",
                 )
                 return
             if value != placeholder:
