@@ -3521,6 +3521,9 @@ def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
         Then it checks the font for correct shaping behaviour for all languages in
         those glyphsets.
     """,
+    conditions=[
+        "network"
+    ],  # use Shaperglot, which uses youseedee, which downloads Unicode files
     proposal=["https://github.com/googlefonts/fontbakery/issues/4147"],
     experimental="Since 2023/Nov/02",
 )

@@ -581,6 +581,9 @@ def com_google_fonts_check_dotted_circle(ttFont, config):
         See also:
         https://googlefonts.github.io/gf-guide/diacritics.html#soft-dotted-glyphs
     """,
+    conditions=[
+        "network"
+    ],  # use Shaperglot, which uses youseedee, which downloads Unicode files
     proposal="https://github.com/fonttools/fontbakery/issues/4059",
 )
 def com_google_fonts_check_soft_dotted(ttFont):
