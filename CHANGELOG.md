@@ -8,8 +8,6 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 #### On the Shaping Profile
-  - **[com.google.fonts/check/license/OFL_body_text]:** yield WARN instead of FAIL if body text is incorrect since the Google Fonts backend will make its own license file. Also show which lines needing changing (PR #4437)
-  - **[com.google.fonts/check/name/license]:** yield WARN if license url is scripts.sil.org/OFL (PR #4437)
   - **[com.google.fonts/check/dotted_circle]:** Don't check for dotted circles in Hangul fonts. Hangul is not a syllabic script. Old Hangeul uses complex shaping and has diacritic marks that require dotted circles. Contemporary Hangeul does not. (related to issue #3600)
 
 #### On the Google Fonts Profile
@@ -18,6 +16,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/font_copyright]:** Accept date ranges. (issue #4386)
 #### On the OpenType Profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** Only check for a bold instance on fonts where the weight range extends to 700. (issue #4373)
+  - **[com.google.fonts/check/license/OFL_body_text]:** yield WARN instead of FAIL if body text is incorrect since the Google Fonts backend will make its own license file. Also show which lines needing changing (PR #4437)
+  - **[com.google.fonts/check/name/license]:** yield WARN if license url is scripts.sil.org/OFL (PR #4437)
 
 
 ## 0.10.9 (2024-Jan-12)
