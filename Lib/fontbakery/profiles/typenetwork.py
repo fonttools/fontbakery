@@ -102,7 +102,6 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/varfont/regular_slnt_coord",  # OVERRIDEN: Lowered to WARN
     "com.google.fonts/check/varfont/regular_ital_coord",  # OVERRIDEN: Lowered to WARN
     "com.google.fonts/check/varfont/regular_opsz_coord",  # OVERRIDEN: Lowered to WARN
-    "com.google.fonts/check/varfont/bold_wght_coord",  # OVERRIDEN: Lowered to WARN
     "com.google.fonts/check/varfont/wght_valid_range",
     "com.google.fonts/check/varfont/wdth_valid_range",
     "com.google.fonts/check/varfont/slnt_range",
@@ -157,6 +156,7 @@ SET_EXPLICIT_CHECKS = {
     # "com.google.fonts/check/os2/use_typo_metrics", # Removed in favor of
     #                                                # new vmetrics check
     # "com.google.fonts/check/metadata/empty_designer", # Review
+    "com.google.fonts/check/varfont/bold_wght_coord",  # OVERRIDEN: Lowered to WARN
     #
     # =======================================
     # From gpos.py
@@ -1775,7 +1775,7 @@ profile.check_log_override(
 )
 
 profile.check_log_override(
-    # From fvar.py
+    # From googlefonts.py
     "com.google.fonts/check/varfont/bold_wght_coord",
     overrides=(
         ("no-bold-instance", WARN, KEEP_ORIGINAL_MESSAGE),

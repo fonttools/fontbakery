@@ -257,31 +257,6 @@ def test_check_varfont_regular_opsz_coord():
     assert msg == ('"Regular" instance not present.')
 
 
-def test_check_varfont_bold_wght_coord():
-    """The variable font 'wght' (Weight) axis coordinate
-    must be 700 on the 'Bold' instance."""
-    check = CheckTester(
-        opentype_profile, "com.google.fonts/check/varfont/bold_wght_coord"
-    )
-
-    # Our reference varfont CabinVFBeta.ttf
-    # has a good Bold:wght coordinate
-    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-    assert_PASS(check(ttFont), "with a good Bold:wght coordinate...")
-
-    # We then change the value to ensure the problem is properly detected by the check:
-    ttFont["fvar"].instances[3].coordinates["wght"] = 600
-    assert_results_contain(
-        check(ttFont), FAIL, "wght-not-700", "with a bad Bold:wght coordinage (600)..."
-    )
-
-    # Check we skip when we don't have a 700 weight.
-    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-    del ttFont["fvar"].instances[3]
-    ttFont["fvar"].axes[0].maxValue = 600
-    assert_results_contain(check(ttFont), SKIP, "no-bold-weight")
-
-
 def test_check_varfont_wght_valid_range():
     """The variable font 'wght' (Weight) axis coordinate
     must be within spec range of 1 to 1000 on all instances."""

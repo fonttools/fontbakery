@@ -170,46 +170,6 @@ def com_google_fonts_check_varfont_regular_opsz_coord(ttFont, regular_opsz_coord
 
 
 @check(
-    id="com.google.fonts/check/varfont/bold_wght_coord",
-    rationale="""
-        The Open-Type spec's registered
-        design-variation tag 'wght' available at
-        https://docs.microsoft.com/en-gb/typography/opentype/spec/dvaraxistag_wght
-        does not specify a required value for the 'Bold' instance of a variable font.
-
-        But Dave Crossland suggested that we should enforce
-        a required value of 700 in this case (NOTE: a distinction
-        is made between "no bold instance present" vs "bold instance is present
-        but its wght coordinate is not == 700").
-    """,
-    conditions=["is_variable_font", "has_wght_axis"],
-    proposal="https://github.com/fonttools/fontbakery/issues/1707",
-)
-def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
-    """
-    The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
-    instance.
-    """
-    from .shared_conditions import wght_axis
-
-    wght = wght_axis(ttFont)
-    if bold_wght_coord is None:
-        if wght and wght.maxValue < 700:
-            yield SKIP, Message("no-bold-weight", "Weight axis doesn't go up to bold")
-            return
-        yield FAIL, Message("no-bold-instance", '"Bold" instance not present.')
-    elif bold_wght_coord == 700:
-        yield PASS, "Bold:wght is 700."
-    else:
-        yield FAIL, Message(
-            "wght-not-700",
-            f'The "wght" axis coordinate of'
-            f' the "Bold" instance must be 700.'
-            f" Got {bold_wght_coord} instead.",
-        )
-
-
-@check(
     id="com.google.fonts/check/varfont/wght_valid_range",
     rationale="""
         According to the Open-Type spec's
