@@ -15,6 +15,8 @@
 #
 import enum
 
+from rich.theme import Theme
+
 # =====================================
 # GLOBAL CONSTANTS DEFINITIONS
 
@@ -68,101 +70,124 @@ SHOW_GF_DOCS_MSG = (
     "https://github.com/googlefonts/gf-docs/tree/main/Spec"
 )
 
+NO_COLORS_THEME = Theme(
+    {
+        "header": "",
+        "url": "",
+        "check-id": "",
+        "description": "",
+        "experimental": "",
+        "rationale-title": "",
+        "rationale-text": "",
+        "message-info": "",
+        "message-warn": "",
+        "message-error": "",
+        "message-skip": "",
+        "message-pass": "",
+        "message-fail": "",
+        "message-fatal": "",
+        "message-cupcake": "",
+        "message-spinner": "",
+        "list-checks: section": "",
+        "list-checks: check-id": "",
+        "list-checks: description": "",
+    }
+)
 
-# ANSI color codes for the helper logging class:
-def color(bg, fg, bold=False):
-    return (f"\033[{int(bold)};{bg};{fg + 10}m" "{}\033[0m").format
+DARK_THEME = Theme(
+    {
+        "header": "bold white on black",
+        "url": "bold cyan on black",
+        "check-id": "bold cyan on black",
+        "description": "magenta on black",
+        "experimental": "bright_yellow on black",
+        "rationale-title": "bold bright_cyan on bright_black",
+        "rationale-text": "white on black",
+        "message-info": "cyan on black",
+        "message-warn": "yellow on black",
+        "message-error": "bright_white on red",
+        "message-skip": "blue on black",
+        "message-pass": "green on black",
+        "message-fail": "red on black",
+        "message-fatal": "black on bright_yellow",
+        "cupcake": "magenta on black",
+        "spinner": "green on black",
+        "list-checks: section": "white on black",
+        "list-checks: check-id": "cyan on black",
+        "list-checks: description": "blue on black",
+    }
+)
 
+LIGHT_THEME = Theme(
+    {
+        # Foreground, Background
+        "header": "bold black on bright_white",
+        "url": "bold cyan on bright_white",
+        "check-id": "bold magenta on bright_white",
+        "description": "cyan on bright_white",
+        "experimental": "black on bright_yellow",
+        "rationale-title": "bold magenta on bright_white",
+        "rationale-text": "black on bright_white",
+        "message-info": "cyan on bright_white",
+        "message-warn": "bold black on bright_yellow",
+        "message-error": "bold bright_white on bright_red",
+        "message-skip": "blue on bright_white",
+        "message-pass": "green on bright_white",
+        "message-fail": "bold bright_red on bright_white",
+        "message-fatal": "bold black on bright_yellow",
+        "cupcake": "magenta on bright_white",
+        "spinner": "green on bright_white",
+        "list-checks: section": "bold white on bright_white",
+        "list-checks: check-id": "bold cyan on bright_white",
+        "list-checks: description": "blue on bright_white",
+    }
+)
 
-def no_color(s):
-    return s
+CUPCAKE = r"""
+                           ,@.
+                         ,@.@@,.
+                   ,@@,.@@@.  @.@@@,.
+                 ,@@. @@@.     @@. @@,.
+         ,@@@.@,.@.              @.  @@@@,.@.@@,.
+    ,@@.@.     @@.@@.            @,.    .@’ @’  @@,
+  ,@@. @.          .@@.@@@.  @@’                  @,
+ ,@.  @@.                                          @,
+ @.     @,@@,.     ,                             .@@,
+ @,.       .@,@@,.         .@@,.  ,       .@@,  @, @,
+ @.                             .@. @ @@,.    ,      @
+  @,.@@.     @,.      @@,.      @.           @,.    @’
+   @@||@,.  @’@,.       @@,.  @@ @,.        @’@@,  @’
+      \\@@@@’  @,.      @’@@@@’   @@,.   @@@’ //@@@’
+       |||||||| @@,.  @@’ |||||||  |@@@|@||  ||
+        \\\\\\\  ||@@@||  |||||||  |||||||  //
+         |||||||  ||||||  ||||||   ||||||  ||
+          \\\\\\  ||||||  ||||||  ||||||  //
+           ||||||  |||||  |||||   |||||  ||
+            \\\\\  |||||  |||||  |||||  //
+             |||||  ||||  |||||  ||||  ||
+              \\\\  ||||  ||||  ||||  //
+               ||||||||||||||||||||||||
 
+         No check is failing. Get a cupcake!
+       <<Art by Tony de Marco, July 26, 2018>>
+"""
 
-BLACK = 30
-RED = 31
-GREEN = 32
-YELLOW = 33
-BLUE = 34
-MAGENTA = 35
-CYAN = 36
-WHITE = 37
-BRIGHT_BLACK = 90
-BRIGHT_RED = 91
-BRIGHT_GREEN = 92
-BRIGHT_YELLOW = 93
-BRIGHT_BLUE = 94
-BRIGHT_MAGENTA = 95
-BRIGHT_CYAN = 96
-BRIGHT_WHITE = 97
+MEANING_MESSAGE = """
+    [header]Meaning of check results:[/]
 
-NO_COLORS_THEME = {
-    "header": no_color,
-    "url": no_color,
-    "check-id": no_color,
-    "description": no_color,
-    "experimental": no_color,
-    "rationale-title": no_color,
-    "rationale-text": no_color,
-    "INFO": no_color,
-    "WARN": no_color,
-    "ERROR": no_color,
-    "SKIP": no_color,
-    "PASS": no_color,
-    "FAIL": no_color,
-    "FATAL": no_color,
-    "cupcake": no_color,
-    "spinner": no_color,
-    "list-checks: section": no_color,
-    "list-checks: check-id": no_color,
-    "list-checks: description": no_color,
-}
+    An [message-error]ERROR[/] is something wrong with FontBakery itself, possibly a bug.
+    A  [message-fatal]FATAL[/] is an extremely severe issue that must be addressed immediately.
+    A  [message-fail]FAIL[/] is a problem with the font that must be fixed.
+    A  [message-warn]WARN[/] is something that you should consider addressing.
+    An [message-info]INFO[/] result simply prints something useful. Typically stats.
+    A  [message-pass]PASS[/] means the font looks good for the given checking routine.
+And a  [message-skip]SKIP[/] happens when the check does not apply to the given font.
 
-DARK_THEME = {
-    # Foreground, Background
-    "header": color(WHITE, BLACK, bold=True),
-    "url": color(CYAN, BLACK, bold=True),
-    "check-id": color(CYAN, BLACK, bold=True),
-    "description": color(MAGENTA, BLACK),
-    "experimental": color(BRIGHT_YELLOW, BLACK),
-    "rationale-title": color(BRIGHT_CYAN, BRIGHT_BLACK, bold=True),
-    "rationale-text": color(WHITE, BLACK),
-    "INFO": color(CYAN, BLACK),
-    "WARN": color(YELLOW, BLACK),
-    "ERROR": color(BRIGHT_WHITE, RED),
-    "SKIP": color(BLUE, BLACK),
-    "PASS": color(GREEN, BLACK),
-    "FAIL": color(RED, BLACK),
-    "FATAL": color(BLACK, BRIGHT_YELLOW),
-    "cupcake": color(MAGENTA, BLACK),
-    "spinner": color(GREEN, BLACK),
-    "list-checks: section": color(WHITE, BLACK),
-    "list-checks: check-id": color(CYAN, BLACK),
-    "list-checks: description": color(BLUE, BLACK),
-}
+    If you get [message-error]ERROR[/]s, please help us improve the tool by reporting them at
+    https://github.com/fonttools/fontbakery/issues (but other kinds of bug
+    reports and/or feature requests are also always welcome, of course!)
 
-LIGHT_THEME = {
-    # Foreground, Background
-    "header": color(BLACK, BRIGHT_WHITE, bold=True),
-    "url": color(CYAN, BRIGHT_WHITE, bold=True),
-    "check-id": color(MAGENTA, BRIGHT_WHITE, bold=True),
-    "description": color(CYAN, BRIGHT_WHITE),
-    "experimental": color(BLACK, BRIGHT_YELLOW),
-    "rationale-title": color(MAGENTA, BRIGHT_WHITE, bold=True),
-    "rationale-text": color(BLACK, BRIGHT_WHITE),
-    "INFO": color(CYAN, BRIGHT_WHITE),
-    "WARN": color(BLACK, BRIGHT_YELLOW, bold=True),
-    "ERROR": color(BRIGHT_WHITE, BRIGHT_RED, bold=True),
-    "SKIP": color(BLUE, BRIGHT_WHITE),
-    "PASS": color(GREEN, BRIGHT_WHITE),
-    "FAIL": color(BRIGHT_RED, BRIGHT_WHITE, bold=True),
-    "FATAL": color(BLACK, BRIGHT_YELLOW, bold=True),
-    "cupcake": color(MAGENTA, BRIGHT_WHITE),
-    "spinner": color(GREEN, BRIGHT_WHITE),
-    "list-checks: section": color(WHITE, BRIGHT_WHITE, bold=True),
-    "list-checks: check-id": color(CYAN, BRIGHT_WHITE, bold=True),
-    "list-checks: description": color(BLUE, BRIGHT_WHITE),
-}
-
+"""
 
 class NameID(enum.IntEnum):
     """nameID definitions for the name table"""

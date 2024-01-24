@@ -36,6 +36,7 @@ class FontbakeryReporter:
         self._counter = Counter()
         self._worst_check_status = None
         self._minimum_weight = min(status.weight for status in self.loglevels)
+        self._collected_results = {}
 
     def omit_loglevel(self, msg) -> bool:
         """Determine if message is below log level."""
@@ -95,7 +96,19 @@ class FontbakeryReporter:
         if status == END:
             self._ended = event
 
-        if status == ENDCHECK:
+            if self.collect_results_by:
+                key = (
+                    event.identity.check.id
+                    if self.collect_results_by == "*check"
+                    else dict(event.identity.iterargs).get(
+                        self.collect_results_by, None
+                    )
+                )
+                if key not in self._collected_results:
+                    self._collected_results[key] = Counter()
+                self._collected_results[key][event.message.name] += 1
+
+        elif status == ENDCHECK:
             self._results.append(event)
             self._counter[message.name] += 1
             self._counter["(not finished)"] -= 1
