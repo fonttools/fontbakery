@@ -6,6 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - The babelfont dependency has been dropped. (PR #4416)
   - Fix a crash when no matching checks are found during a multi-processing run. Also, do not freeze indefinitely. Instead, terminate the program emitting a process error code -1 and giving the user some guidance. (issue #4420)
 
+### Migration of checks
+#### Moved to the Google Fonts profile
+  - **[com.google.fonts/check/varfont/bold_wght_coord]:** from the Open Type profile. (issue #4436)
+
 ### Changes to existing checks
 #### On the Universal Profile
   - **[com.google.fonts/check/arabic_spacing_symbols]:** Also check U+FBC2 ARABIC SYMBOL WASLA ABOVE (issue #4417)

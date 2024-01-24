@@ -66,7 +66,6 @@ SET_EXPLICIT_CHECKS = {
     "com.adobe.fonts/check/varfont/valid_default_instance_nameids",  # IS_OVERRIDDEN
     "com.adobe.fonts/check/varfont/valid_postscript_nameid",
     "com.adobe.fonts/check/varfont/valid_subfamily_nameid",
-    "com.google.fonts/check/varfont/bold_wght_coord",  # IS_OVERRIDDEN
     "com.google.fonts/check/varfont/regular_ital_coord",  # IS_OVERRIDDEN
     "com.google.fonts/check/varfont/regular_opsz_coord",  # IS_OVERRIDDEN
     "com.google.fonts/check/varfont/regular_slnt_coord",  # IS_OVERRIDDEN
@@ -95,6 +94,7 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/aat",
     "com.google.fonts/check/fvar_name_entries",
     "com.google.fonts/check/varfont_duplicate_instance_names",
+    "com.google.fonts/check/varfont/bold_wght_coord",  # IS_OVERRIDDEN
     #
     # =======================================
     # From gpos.py
@@ -603,7 +603,7 @@ profile.check_log_override(
 
 
 profile.check_log_override(
-    # From fvar.py
+    # From googlefonts.py
     "com.google.fonts/check/varfont/bold_wght_coord",
     overrides=(
         ("no-bold-instance", WARN, KEEP_ORIGINAL_MESSAGE),
