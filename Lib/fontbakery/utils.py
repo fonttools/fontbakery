@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 import os
-import re
 import subprocess
 import sys
 from typing import Text, Optional
@@ -54,78 +53,6 @@ def is_negated(name):
     if stripped.startswith("not "):
         return True, stripped[4:].strip()
     return False, stripped
-
-
-def colorless_len(string):
-    """Returns the lenght of a string without its color prefix"""
-    return len(re.sub("\x1b(\\[[0-9;]+|\\].+)m", "", string))
-
-
-def text_flow(
-    content,
-    width=80,
-    indent=0,
-    left_margin=0,
-    right_margin=0,
-    first_line_indent=0,
-    space_padding=False,
-    text_color="{}".format,  # pylint: disable=consider-using-f-string
-):
-    result = []
-    line_num = 0
-    for line in content.split("\n"):
-        _indent = indent
-        _width = width - right_margin
-
-        if line.strip() == "":
-            if space_padding:
-                result.append(" " * _indent + text_color(" " * width))
-            continue
-
-        words = line.split(" ")
-        while words:
-            line_num += 1
-            if line_num == 1:
-                if left_margin > -first_line_indent:
-                    inside_indent = " " * (left_margin + first_line_indent)
-                else:
-                    inside_indent = ""
-            else:
-                inside_indent = " " * left_margin
-            this_line = inside_indent + words.pop(0)
-
-            if colorless_len(this_line) > _width:
-                # let's see what we can do to make it fit
-                if "/" in this_line:
-                    # here we feed-back chunks of a URL
-                    # into words if it overflows the block
-                    chunks = this_line.split("/")
-                    new_line = chunks.pop(0)
-                    while chunks:
-                        next_len = (
-                            colorless_len(new_line) + 1 + colorless_len(chunks[0])
-                        )
-                        if next_len >= _width:
-                            break
-                        new_line += "/" + chunks.pop(0)
-                    this_line = new_line
-                    words.insert(0, "/" + "/".join(chunks))
-                else:
-                    # not sure what else to do,
-                    # so we'll simply cut the long word
-                    words.insert(0, this_line[_width:])  # word overflow chunk
-                    this_line = this_line[:_width]  # line with chopped word leftover
-
-            while words and (
-                colorless_len(this_line) + 1 + colorless_len(words[0]) <= _width
-            ):
-                this_line += " " + words.pop(0)
-
-            if space_padding:
-                # pad the line with spaces to fit the block width:
-                this_line += " " * (width - colorless_len(this_line))
-            result.append(" " * _indent + text_color(this_line))
-    return "\n".join(result)
 
 
 def get_apple_terminal_bg_color():

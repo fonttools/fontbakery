@@ -8,14 +8,10 @@ from fontbakery.constants import (
     NO_COLORS_THEME,
     DARK_THEME,
     LIGHT_THEME,
-    color,
-    WHITE,
-    BLACK,
 )
 from fontbakery.utils import (
     apple_terminal_bg_is_white,
     bullet_list,
-    colorless_len,
     exit_with_install_instructions,
     get_apple_terminal_bg_color,
     get_theme,
@@ -23,7 +19,6 @@ from fontbakery.utils import (
     is_negated,
     pretty_print_list,
     split_camel_case,
-    text_flow,
     unindent_and_unwrap_rationale,
 )
 
@@ -66,111 +61,6 @@ def test_remove_white_space():
 )
 def test_is_negated(input_str, expected_tup):
     assert is_negated(input_str) == expected_tup
-
-
-@pytest.mark.parametrize(
-    "input_str, expected_len",
-    [
-        ("", 0),
-        ("abc", 3),
-        (" abc ", 5),
-        (color(WHITE, BLACK, bold=True)("abc"), 3),
-        (color(WHITE, BLACK)("abc"), 3),
-    ],
-)
-def test_colorless_len(input_str, expected_len):
-    assert colorless_len(input_str) == expected_len
-
-
-# NOTE: The 'color()' method is in 'constants.py'
-def test_color():
-    assert color(WHITE, BLACK, bold=True)("abc") == "\x1b[1;37;40mabc\x1b[0m"
-    assert color(WHITE, BLACK)("abc") == "\x1b[0;37;40mabc\x1b[0m"
-
-
-def test_text_flow():
-    assert text_flow("") == ""
-
-    assert text_flow("Testing") == "Testing"
-
-    assert text_flow("One Two Three") == "One Two Three"
-
-    assert text_flow("One Two Three", width=5) == "One\nTwo\nThree"
-
-    assert (
-        text_flow("One Two\n\nThree", width=5, space_padding=True)
-        == "One  \nTwo  \n     \nThree"
-    )
-
-    assert (
-        text_flow("One Two Three", width=6, space_padding=True)
-        == "One   \nTwo   \nThree "
-    )
-
-    assert text_flow("One Two\n\nThree", width=10) == "One Two\nThree"
-
-    assert text_flow("One Two Three", width=7, space_padding=True) == "One Two\nThree  "
-
-    assert (
-        text_flow("One Two Three", width=9, left_margin=2, space_padding=True)
-        == "  One Two\n  Three  "
-    )
-
-    assert (
-        text_flow("One Two Three", width=7, left_margin=1, space_padding=True)
-        == " One   \n Two   \n Three "
-    )
-
-    assert (
-        text_flow(
-            "One Two Three", width=9, left_margin=1, right_margin=1, space_padding=True
-        )
-        == " One Two \n Three   "
-    )
-
-    assert (
-        text_flow(
-            "One Two Three", width=8, left_margin=1, right_margin=1, space_padding=True
-        )
-        == " One    \n Two    \n Three  "
-    )
-
-    assert (
-        text_flow(
-            "One Two Three Four",
-            width=7,
-            left_margin=1,
-            right_margin=1,
-            space_padding=True,
-        )
-        == " One   \n Two   \n Three \n Four  "
-    )
-
-    assert (
-        text_flow(
-            "One Two Three Four",
-            width=6,
-            left_margin=1,
-            right_margin=1,
-            space_padding=True,
-        )
-        == " One  \n Two  \n Thre \n e    \n Four "
-    )
-
-    assert (
-        text_flow("https://learn.microsoft.com/typography/opentype/spec/name", width=30)
-        == "https://learn.microsoft.com\n/typography/opentype/spec/name"
-    )
-
-
-# FIXME!
-#    assert text_flow("One Two Three",
-#                     width=12,
-#                     left_margin=6,
-#                     first_line_indent=-5,
-#                     space_padding=True) == (     " One   \n"
-#                                             "      Two   \n"
-#                                             "      Three ")
 
 
 @patch("subprocess.run")
