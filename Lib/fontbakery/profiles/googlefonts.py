@@ -4918,18 +4918,15 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(
     id="com.google.fonts/check/name/family_and_style_max_length",
     rationale="""
         This check ensures that the length of name table entries is not
-        too long, as this causes problems in some environments. For
-        details as to the latest requirements and the reason for them,
-        please see https://github.com/fonttools/fontbakery/issues/2179
-
+        too long, as this causes problems in some environments.
     """,
-    proposal="https://github.com/fonttools/fontbakery/issues/1488",
-    misc_metadata={
-        "affects": [("Windows", "unspecified")],
-    },
+    proposal=[
+        "https://github.com/fonttools/fontbakery/issues/1488",
+        "https://github.com/fonttools/fontbakery/issues/2179",
+    ],
 )
 def com_google_fonts_check_name_family_and_style_max_length(ttFont):
-    """Combined length of family and style must not exceed 31 characters."""
+    """Combined length of family and style must not exceed 32 characters."""
     from fontbakery.utils import get_name_entry_strings
     import re
 
@@ -4942,31 +4939,37 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
 
     checks = [
         [
+            FAIL,
             NameID.FULL_FONT_NAME,
-            31,
-            "with the dropdown menu in old versions of Microsoft Word",
+            32,
+            (
+                "with the dropdown menu in old versions of Microsoft Word"
+                " as well as shaping issues for some accented letters in"
+                " Microsoft Word on Windows 10 and 11"
+            ),
             strip_ribbi,
         ],
         [
+            WARN,
             NameID.POSTSCRIPT_NAME,
             27,
             "with PostScript printers, especially on Mac platforms",
             lambda x: x,
         ],
     ]
-    for nameid, maxlen, reason, transform in checks:
+    for loglevel, nameid, maxlen, reason, transform in checks:
         for the_name in get_name_entry_strings(ttFont, nameid):
             the_name = transform(the_name)
             if len(the_name) > maxlen:
                 passed = False
-                yield WARN, Message(
+                yield loglevel, Message(
                     f"nameid{nameid}-too-long",
                     f"Name ID {nameid} '{the_name}' exceeds"
                     f" {maxlen} characters. This has been found to"
-                    f" cause problems {reason}",
+                    f" cause problems {reason}.",
                 )
 
-    # name ID 1 + fvar instance name > 31 : WARN : problems with Windows
+    # name ID 1 + fvar instance name > 32 : FAIL : problems with Windows
     if "fvar" in ttFont:
         for instance in ttFont["fvar"].instances:
             for instance_name in get_name_entry_strings(
@@ -4976,12 +4979,16 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                     ttFont, NameID.FONT_FAMILY_NAME
                 ):
                     full_instance_name = instance_name + " " + family_name
-                    if len(full_instance_name) > 31:
-                        yield WARN, Message(
+                    if len(full_instance_name) > 32:
+                        yield FAIL, Message(
                             "instance-too-long",
-                            f"Variable font instance name {full_instance_name}"
-                            " exceeds 31 characters. This has been found to "
-                            " cause problems in Microsoft Windows 11",
+                            f"Variable font instance name '{full_instance_name}'"
+                            f" formed by space-separated concatenation of"
+                            f" instance subfamily nameID {instance.subfamilyNameID}"
+                            f" and font family name (nameID {NameID.FONT_FAMILY_NAME})"
+                            f" exceeds 32 characters.\n\n"
+                            f"This has been found to cause shaping issues for some"
+                            f" accented letters in Microsoft Word on Windows 10 and 11.",
                         )
 
     if passed:
