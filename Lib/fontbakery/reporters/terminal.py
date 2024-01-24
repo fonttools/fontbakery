@@ -22,6 +22,7 @@ from typing import Optional
 from rich.segment import Segment
 from rich.live import Live
 from rich.markdown import Markdown
+from rich.markup import escape
 import rich
 
 from fontbakery.constants import LIGHT_THEME, CUPCAKE, MEANING_MESSAGE
@@ -114,6 +115,10 @@ class TerminalReporter(FontbakeryReporter):
         stdout = sys.stdout
         self.theme = self.theme or LIGHT_THEME
         self._console = rich.console.Console(theme=self.theme)
+        if self.succinct:
+            self.print_progress = False
+        self.progressbar = None
+        self._log_context = None
         if self.print_progress:
             self.progressbar = ProgressBar(0, self.theme)
             self._log_context = Live(self.progressbar, console=self._console)
@@ -183,6 +188,7 @@ class TerminalReporter(FontbakeryReporter):
             int(round(len(self._results) / total * 100)) if total else 0
         )
         self.progressbar._tick = self._tick
+        self._log_context.update(self.progressbar)
 
     def _get_index(self, identity):
         index = super()._get_index(identity)
@@ -224,14 +230,18 @@ class TerminalReporter(FontbakeryReporter):
                 )
                 self._console.print("")
 
+        if self.print_progress:
+            self._log_context.__exit__(None, None, None)
+
+        if self.succinct:
+            self._console.print(self._render_results_counter(message))
+            return
+
         self._console.print("Total:")
         self._console.print("")
         self._console.print(self._render_results_counter(message))
         self._console.print("")
         self._console.print(MEANING_MESSAGE)
-        if self.print_progress:
-            self._log_context.__exit__(None, None, None)
-
         self._console.print("")
         if (
             len(self._order)
@@ -258,12 +268,12 @@ class TerminalReporter(FontbakeryReporter):
             if formatted_iterargs:
                 with_string = os.path.basename(f"{formatted_iterargs[0][1]}")
 
-            self.add_to_event_buffer(event, 
-                (" >> Check:   {}\n" "    Desc:    {}\n" "    Files:   {}").format(
-                    self.theme["check-id"](check.id),
-                    self.theme["description"](check.description),
-                    with_string,
-                )
+            self.add_to_event_buffer(
+                event,
+                ("{}: [check-id]{}[/]: ").format(
+                    escape(with_string),
+                    check.id,
+                ),
             )
 
         else:
@@ -339,10 +349,10 @@ class TerminalReporter(FontbakeryReporter):
         # Deal with event buffer
         if self._event_buffers[key]:
             self._console.print(*self._event_buffers[key], end="")
-        self._console.print("\n")
-        self._console.print(
-            f"    Result: [message-{msg.name}]{msg.name}[/message-{msg.name}]\n"
-        )
+        if not self.succinct:
+            self._console.print("\n")
+            self._console.print("    Result: ", end="")
+        self._console.print(f"[message-{msg.name}]{msg.name}[/message-{msg.name}]")
 
     def _render_event(self, event):
         status, message, identity = event
@@ -351,9 +361,6 @@ class TerminalReporter(FontbakeryReporter):
             or status in self.skip_status_report
         ):
             return
-
-        if self.print_progress:
-            self._log_context.update(self.progressbar)
 
         if status == START:
             self._render_START(event)
@@ -384,12 +391,14 @@ class TerminalReporter(FontbakeryReporter):
         self._console.print(self._render_results_counter(counter))
 
     def _render_checkresult(self, event):
+        if self.succinct:
+            return
         status, msg, identity = event
 
         # Log statuses have weights >= 0
         # log_statuses = (INFO, WARN, PASS, SKIP, FATAL, FAIL, ERROR, DEBUG)
         if status in self.loglevels:
-            self.add_to_event_buffer(event, "")
+            self.add_to_event_buffer(event, "\n")
 
             status_name = getattr(status, "name", status)
 
@@ -409,14 +418,21 @@ class TerminalReporter(FontbakeryReporter):
                 traceback = re.sub(r"\n`\s*(.*)", r"\n`\1", traceback)
                 message += traceback
 
-            self.add_to_event_buffer(event, f"\n[message-{status.name.lower()}]{status.name}[/] ")
-            self.add_to_event_buffer(event, Markdown(msg.message))
+            self.add_to_event_buffer(
+                event, f"[message-{status.name.lower()}]{status.name}[/] "
+            )
+            self.add_to_event_buffer(event, Markdown(message))
 
         if status not in statuses:
             self._console.print("-" * 8, status, "-" * 8)
 
     def _render_results_counter(self, counter):
-        formatting = "    [message-{}]{}[/]: {}".format
+        if self.succinct:
+            formatting = " [message-{}]{:1s}[/]: {}".format
+            separator = ""
+        else:
+            formatting = "    [message-{}]{}[/]: {}".format
+            separator = "\n"
         result = []
 
         seen = set()
@@ -430,4 +446,4 @@ class TerminalReporter(FontbakeryReporter):
             if name not in seen:
                 seen.add(name)
                 result.append(formatting(name.lower(), name, counter[name]))
-        return "\n".join(result)
+        return separator.join(result)
