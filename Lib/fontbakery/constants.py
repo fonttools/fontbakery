@@ -189,6 +189,7 @@ And a  [message-skip]SKIP[/] happens when the check does not apply to the given 
 
 """
 
+
 class NameID(enum.IntEnum):
     """nameID definitions for the name table"""
 

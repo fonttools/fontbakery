@@ -25,7 +25,6 @@ class FontbakeryReporter:
     collect_results_by: Optional[str] = None
     succinct: bool = False
 
-
     def __post_init__(self):
         self._started = None
         self._ended = None
