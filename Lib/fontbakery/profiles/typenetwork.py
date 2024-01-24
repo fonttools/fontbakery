@@ -102,6 +102,7 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/varfont/regular_slnt_coord",  # OVERRIDEN: Lowered to WARN
     "com.google.fonts/check/varfont/regular_ital_coord",  # OVERRIDEN: Lowered to WARN
     "com.google.fonts/check/varfont/regular_opsz_coord",  # OVERRIDEN: Lowered to WARN
+    "com.google.fonts/check/varfont/bold_wght_coord",  # OVERRIDEN: Lowered to WARN
     "com.google.fonts/check/varfont/wght_valid_range",
     "com.google.fonts/check/varfont/wdth_valid_range",
     "com.google.fonts/check/varfont/slnt_range",
@@ -156,7 +157,6 @@ SET_EXPLICIT_CHECKS = {
     # "com.google.fonts/check/os2/use_typo_metrics", # Removed in favor of
     #                                                # new vmetrics check
     # "com.google.fonts/check/metadata/empty_designer", # Review
-    "com.google.fonts/check/varfont/bold_wght_coord",  # OVERRIDEN: Lowered to WARN
     #
     # =======================================
     # From gpos.py
@@ -271,12 +271,10 @@ SET_EXPLICIT_CHECKS = {
     "com.google.fonts/check/whitespace_glyphs",
     "com.google.fonts/check/whitespace_glyphnames",
     "com.google.fonts/check/whitespace_ink",
-    "com.google.fonts/check/legacy_accents",
     "com.google.fonts/check/arabic_spacing_symbols",
     "com.google.fonts/check/arabic_high_hamza",
     "com.google.fonts/check/required_tables",
     "com.google.fonts/check/unwanted_tables",
-    "com.google.fonts/check/STAT_strings",
     "com.google.fonts/check/valid_glyphnames",
     "com.google.fonts/check/unique_glyphnames",
     "com.google.fonts/check/ttx_roundtrip",
@@ -951,8 +949,8 @@ def tn_expected_os2_weight(stylename):
         return None
     # Weight name to value mapping:
     TN_EXPECTED_WEIGHTS = {
-        "Thin": 250,
-        "ExtraLight": 275,
+        "Thin": 100,
+        "ExtraLight": 200,
         "Light": 300,
         "Regular": 400,
         "Medium": 500,
@@ -1775,7 +1773,7 @@ profile.check_log_override(
 )
 
 profile.check_log_override(
-    # From googlefonts.py
+    # From fvar.py
     "com.google.fonts/check/varfont/bold_wght_coord",
     overrides=(
         ("no-bold-instance", WARN, KEEP_ORIGINAL_MESSAGE),
