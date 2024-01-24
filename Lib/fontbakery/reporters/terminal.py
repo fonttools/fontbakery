@@ -15,7 +15,6 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 from dataclasses import dataclass
 import os
 import re
-import subprocess
 import sys
 from typing import Optional
 
