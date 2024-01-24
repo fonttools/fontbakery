@@ -43,7 +43,7 @@ class SerializeReporter(FontbakeryReporter):
 
     def omit_loglevel(self, msg) -> bool:
         """Determine if message is below log level."""
-        return self.loglevels and (self.loglevels[0] > Status(msg))
+        return bool(self.loglevels) and (self.loglevels[0] > Status(msg))
 
     def _register(self, event):
         super()._register(event)
