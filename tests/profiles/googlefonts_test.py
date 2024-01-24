@@ -430,23 +430,23 @@ def test_check_name_family_and_style_max_length():
     # So it must PASS the check:
     assert_PASS(check(ttFont), "with a good font...")
 
-    # Then we emit a WARNing with long family/style names
+    # Then we emit a FAIL with long family/style names
     # See https://github.com/fonttools/fontbakery/issues/2179 for
     # a discussion of the requirements
 
     for index, name in enumerate(ttFont["name"].names):
         if name.nameID == NameID.FULL_FONT_NAME:
-            # This has 33 chars, while the max currently allowed is 31
+            # This has 33 chars, while the max currently allowed is 32
             bad = "An Absurdly Long Family Name Font"
             assert len(bad) == 33
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
         if name.nameID == NameID.POSTSCRIPT_NAME:
-            bad = "AnAbsurdlyLongFontName-Regular"
-            assert len(bad) == 30
+            bad = "AbsurdlyLongFontName-Regular"
+            assert len(bad) == 28
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
 
     results = check(ttFont)
-    assert_results_contain(results, WARN, "nameid4-too-long", "with a bad font...")
+    assert_results_contain(results, FAIL, "nameid4-too-long", "with a bad font...")
     assert_results_contain(results, WARN, "nameid6-too-long", "with a bad font...")
 
     # Restore the original VF
@@ -455,13 +455,15 @@ def test_check_name_family_and_style_max_length():
     # ...and break the check again with a bad fvar instance name:
     nameid_to_break = ttFont["fvar"].instances[0].subfamilyNameID
     for index, name in enumerate(ttFont["name"].names):
+        if name.nameID == NameID.FONT_FAMILY_NAME:
+            assert len(ttFont["name"].names[index].string) + 28 > 32
         if name.nameID == nameid_to_break:
             bad = "WithAVeryLongAndBadStyleName"
             assert len(bad) == 28
             ttFont["name"].names[index].string = bad.encode(name.getEncoding())
             break
     assert_results_contain(
-        check(ttFont), WARN, "instance-too-long", "with a bad font..."
+        check(ttFont), FAIL, "instance-too-long", "with a bad font..."
     )
 
 
