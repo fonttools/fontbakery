@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Noteworthy code-changes
   - The babelfont dependency has been dropped. (PR #4416)
   - Fix a crash when no matching checks are found during a multi-processing run. Also, do not freeze indefinitely. Instead, terminate the program emitting a process error code -1 and giving the user some guidance. (issue #4420)
+  - Reporters have been refactored; there may be some changes to the terminal display, particularly when --succinct is passed. (PR #4447)
 
 ### Migration of checks
 #### Moved to the Google Fonts profile
