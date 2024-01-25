@@ -305,11 +305,12 @@ class TerminalReporter(FontbakeryReporter):
                     unindent_and_unwrap_rationale(check.rationale), "rationale-text"
                 )
                 self.add_to_event_buffer(
-                    event, "\n   [rationale_title]Rationale:" + " " * 64 + "[/]"
+                    event, "\n   [rationale_title]Rationale:" + " " * 64 + "[/]\n"
                 )
                 lines = content.wrap(self._console, self._console.width - 6)
                 for line in lines._lines:
                     line.pad_left(4)
+                    line.set_length(self._console.width)
                 self.add_to_event_buffer(event, lines)
 
             if check.suggested_profile:
