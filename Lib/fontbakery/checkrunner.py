@@ -28,7 +28,6 @@ from fontbakery.events import (
     StartCheckEvent,
 )
 from fontbakery.message import Message
-from fontbakery.profile import get_module_profile
 from fontbakery.utils import is_negated
 from fontbakery.errors import (
     APIViolationError,
@@ -102,10 +101,6 @@ class CheckRunner:
 
         self.use_cache = use_cache
         self._cache = {"conditions": {}, "order": None}
-
-    def clearCache(self):
-        # no need to clear 'order' cache IMO
-        self._cache["conditions"] = {}
 
     @property
     def iterargs(self):
@@ -598,14 +593,3 @@ def get_module_from_file(filename):
     # assert module.__file__ == filename
     return module
 
-
-def _get_module_from_locator(module_locator):
-    if module_locator["name"].startswith(FILE_MODULE_NAME_PREFIX):
-        return get_module_from_file(module_locator["origin"])
-    # Fails with an appropriate ImportError.
-    return importlib.import_module(module_locator["name"], package=None)
-
-
-def get_profile_from_module_locator(module_locator):
-    module = _get_module_from_locator(module_locator)
-    return get_module_profile(module)
