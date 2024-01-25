@@ -317,12 +317,12 @@ class TerminalReporter(FontbakeryReporter):
                 self.add_to_event_buffer(
                     event,
                     "    [rationale-title]Suggested Profile:[/] "
-                    + f" {check.suggested_profile}",
+                    + f" {check.suggested_profile}\n",
                 )
 
             if check.proponent:
                 self.add_to_event_buffer(
-                    event, "    [rationale-title]Proponent:[/]" + f" {check.proponent}"
+                    event, "    [rationale-title]Proponent:[/]" + f" {check.proponent}\n"
                 )
 
             if check.proposal:
@@ -334,12 +334,15 @@ class TerminalReporter(FontbakeryReporter):
                 # url which the users could access to read more about the check
                 moreinfo = [mi for mi in moreinfo if "legacy" not in mi]
                 if moreinfo:
-                    moreinfo_str = "    [rationale-title]More info:[/] " + moreinfo[0]
+                    moreinfo_str = "    [rationale-title]More info:[/] " + moreinfo[0] + "\n"
                     if len(moreinfo) > 1:
                         moreinfo_str += "\n".join(
                             ["               " + i for i in moreinfo[1:]]
                         )
                     self.add_to_event_buffer(event, moreinfo_str)
+
+            self.add_to_event_buffer(event, "\n")
+
 
     def _render_ENDCHECK(self, event):
         status, msg, identity = event
