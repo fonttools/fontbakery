@@ -130,11 +130,11 @@ class CheckRunner:
         """
         if not isinstance(result, tuple):
             msg = f"Result must be a tuple but it is {type(result)}."
-            return Event(FAIL, APIViolationError(msg, result), identity)
+            return Event(ERROR, APIViolationError(msg, result), identity)
 
         if len(result) != 2:
             msg = f"Result must have 2 items, but it has {len(result)}."
-            return Event(FAIL, APIViolationError(msg, result), identity)
+            return Event(ERROR, APIViolationError(msg, result), identity)
 
         status, message = result
         # Allow booleans, but there's no way to issue a WARNING
