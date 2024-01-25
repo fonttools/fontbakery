@@ -152,7 +152,7 @@ class CheckRunner:
         return Event(status, message, identity)
 
     def _exec_check(self, identity: Identity, args: Dict[str, Any]):
-        """Yields check sub results.
+        """Returns check sub results.
 
         Each check result is a tuple of: (<Status>, mixed message)
         `status`: must be an instance of Status.
@@ -176,25 +176,20 @@ class CheckRunner:
                 for varname in check.configs
             }
             check.inject_globals(new_globals)
+        results = []
         try:
-            # A check can be either a normal function that returns one Status or a
-            # generator that yields one or more. The latter will return a generator
-            # object that we can detect with types.GeneratorType.
             result = check(**args)  # Might raise.
-
-            if isinstance(result, types.GeneratorType):
-                # Iterate over sub-results one-by-one, list(result) would abort on
-                # encountering the first exception.
-                for sub_result in result:  # Might raise.
-                    yield self._override_status(
-                        self._check_result(sub_result, identity), check
-                    )
-                return  # Do not fall through to rest of method.
+            if inspect.isgenerator(result) or inspect.isgeneratorfunction(result):
+                results.extend(list(result))
+            else:
+                results = [result]
         except Exception as e:
-            error = FailedCheckError(e)
-            result = (ERROR, error)
+            results = [(ERROR, FailedCheckError(e))]
 
-        yield self._override_status(self._check_result(result, identity), check)
+        return [
+            self._override_status(self._check_result(result, identity), check)
+            for result in results
+        ]
 
     def _evaluate_condition(self, name, iterargs, path=None):
         if path is None:
