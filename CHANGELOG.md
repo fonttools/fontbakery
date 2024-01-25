@@ -6,7 +6,8 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New checks
 #### On the Universal Profile
   - **EXPERIMENTAL - [com.google.fonts/check/varfont/family_axis_ranges]:** Check that family axis ranges are indentical. (issue #4445)
-  
+  - **[com.google.fonts/check/tabular_kerning]:** Check that tabular numerals and symbols have no kerning
+
 ### Noteworthy code-changes
   - The babelfont dependency has been dropped. (PR #4416)
   - Fix a crash when no matching checks are found during a multi-processing run. Also, do not freeze indefinitely. Instead, terminate the program emitting a process error code -1 and giving the user some guidance. (issue #4420)
