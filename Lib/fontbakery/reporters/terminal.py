@@ -43,6 +43,8 @@ from fontbakery.status import (
     STARTCHECK,
     WARN,
 )
+from fontbakery.utils import IndentedParagraph
+
 
 statuses = (
     INFO,
@@ -322,7 +324,8 @@ class TerminalReporter(FontbakeryReporter):
 
             if check.proponent:
                 self.add_to_event_buffer(
-                    event, "    [rationale-title]Proponent:[/]" + f" {check.proponent}"
+                    event,
+                    "    [rationale-title]Proponent:[/]" + f" {check.proponent}\n",
                 )
 
             if check.proposal:
@@ -334,12 +337,16 @@ class TerminalReporter(FontbakeryReporter):
                 # url which the users could access to read more about the check
                 moreinfo = [mi for mi in moreinfo if "legacy" not in mi]
                 if moreinfo:
-                    moreinfo_str = "    [rationale-title]More info:[/] " + moreinfo[0]
+                    moreinfo_str = (
+                        "    [rationale-title]More info:[/] " + moreinfo[0] + "\n"
+                    )
                     if len(moreinfo) > 1:
                         moreinfo_str += "\n".join(
                             ["               " + i for i in moreinfo[1:]]
                         )
                     self.add_to_event_buffer(event, moreinfo_str)
+
+            self.add_to_event_buffer(event, "\n")
 
     def _render_ENDCHECK(self, event):
         status, msg, identity = event
@@ -351,8 +358,11 @@ class TerminalReporter(FontbakeryReporter):
             self._console.print(*self._event_buffers[key], end="")
         if not self.succinct:
             self._console.print("\n")
-            self._console.print("    Result: ", end="")
-        self._console.print(f"[message-{msg.name}]{msg.name}[/message-{msg.name}]")
+            self._console.print(
+                f"    Result: [message-{msg.name}]{msg.name}[/message-{msg.name}]"
+            )
+        else:
+            self._console.print(f"[message-{msg.name}]{msg.name}[/message-{msg.name}]")
 
     def _render_event(self, event):
         status, message, identity = event
@@ -419,9 +429,11 @@ class TerminalReporter(FontbakeryReporter):
                 message += traceback
 
             self.add_to_event_buffer(
-                event, f"[message-{status.name.lower()}]{status.name}[/] "
+                event, f"    [message-{status.name.lower()}]{status.name}[/] "
             )
-            self.add_to_event_buffer(event, Markdown(message))
+            self.add_to_event_buffer(
+                event, IndentedParagraph(Markdown(message), right=2, left=10, first=0)
+            )
 
         if status not in statuses:
             self._console.print("-" * 8, status, "-" * 8)
