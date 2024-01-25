@@ -149,6 +149,9 @@ class CheckRunner:
             )
             return Event(FAIL, APIViolationError(msg, result), identity)
 
+        if not isinstance(message, Message):
+            message = Message("no-code", message)
+
         return Event(status, message, identity)
 
     def _exec_check(self, identity: Identity, args: Dict[str, Any]):
