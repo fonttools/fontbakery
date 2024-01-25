@@ -1332,6 +1332,17 @@ def test_check_math_signs_width():
     assert_results_contain(check(font), WARN, "width-outliers")
 
 
+def test_check_math_tabular_kerning():
+    """Check tabular widths don't have kerning."""
+    check = CheckTester(universal_profile, "com.google.fonts/check/tabular_kerning")
+
+    font = TEST_FILE("montserrat/Montserrat-Regular.ttf")
+    assert_PASS(check(font))
+
+    font = TEST_FILE("hinting/Roboto-VF.ttf")
+    assert_results_contain(check(font), FAIL, "has-tabular-kerning")
+
+
 def test_check_linegaps():
     """Checking Vertical Metric Linegaps."""
     check = CheckTester(universal_profile, "com.google.fonts/check/linegaps")
