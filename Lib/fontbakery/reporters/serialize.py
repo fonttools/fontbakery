@@ -46,8 +46,8 @@ class SerializeReporter(FontbakeryReporter):
                 "checks": [],
                 "key": [section.name, None, None],
             }
-        self._sections[section.name]["checks"].append(checkresult.getData())
-    
+        self._sections[section.name]["checks"].append(checkresult.getData(self.runner))
+
     def end(self):
         super().end()
         for section in self._sections.keys():
