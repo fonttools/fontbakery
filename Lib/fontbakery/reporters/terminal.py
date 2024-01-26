@@ -22,17 +22,12 @@ from fontbakery.reporters import FontbakeryReporter
 from fontbakery.status import (
     Status,
     DEBUG,
-    END,
-    ENDCHECK,
     ERROR,
     FATAL,
     FAIL,
     INFO,
     PASS,
-    SECTIONSUMMARY,
     SKIP,
-    START,
-    STARTCHECK,
     WARN,
 )
 from fontbakery.utils import IndentedParagraph
@@ -42,15 +37,10 @@ statuses = (
     INFO,
     WARN,
     ERROR,
-    STARTCHECK,
     SKIP,
     PASS,
     FATAL,
     FAIL,
-    ENDCHECK,
-    SECTIONSUMMARY,
-    START,
-    END,
     DEBUG,
 )
 # these are displayed in the result counters
@@ -122,10 +112,6 @@ class TerminalReporter(FontbakeryReporter):
         self.stdout = stdout
         if not self.skip_status_report:
             self.skip_status_report = tuple()
-        self._structure_threshold = START.weight
-        if self._structure_threshold % 2:
-            # always include the according START status
-            self._structure_threshold -= 1
 
         self._event_buffers = {}
 

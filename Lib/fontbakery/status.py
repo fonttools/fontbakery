@@ -100,26 +100,3 @@ FATAL = Status("FATAL", 6)  # A FATAL is an extremely severe problem,
 ERROR = Status(
     "ERROR", 7
 )  # Something a programmer must fix. It will make a check fail as well.
-
-# Start of the suite of checks. Must be always the first message, even in async mode.
-# Message is the full execution order of the whole profile
-START = Status("START", -6)
-# Only between START and before the first SECTIONSUMMARY and END
-# Message is None.
-STARTCHECK = Status("STARTCHECK", -2)
-# Ends the last check started by STARTCHECK.
-# Message the result status of the whole check, one of PASS, SKIP, FAIL, FATAL, ERROR.
-ENDCHECK = Status("ENDCHECK", -1)
-# After the last ENDCHECK one SECTIONSUMMARY for each section before END.
-# Message is a tuple of:
-#   * the actual execution order of the section in the check runner session
-#     as reported. Especially in async mode, the order can differ significantly
-#     from the actual order of checks in the session.
-#   * a Counter dictionary where the keys are Status.name of
-#     the ENDCHECK message. If serialized, some existing statuses may not be
-#     in the counter because they never occurred in the section.
-SECTIONSUMMARY = Status("SECTIONSUMMARY", -3)
-# End of the suite of checks. Must be always the last message, even in async mode.
-# Message is a counter as described in SECTIONSUMMARY, but with the collected
-# results of all checks in all sections.
-END = Status("END", -5)

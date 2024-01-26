@@ -12,7 +12,7 @@ from typing import Iterable, Optional
 from dataclasses import dataclass
 
 from fontbakery.checkrunner import CheckRunner
-from fontbakery.status import END, START, Status
+from fontbakery.status import Status
 from fontbakery.errors import ProtocolViolationError
 from fontbakery.events import CheckResult, Identity
 

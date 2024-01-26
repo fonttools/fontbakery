@@ -1,11 +1,8 @@
-# This class is a temporary part of refactoring. If you see it still here
-# in the future, refactor it away again...
-from collections import namedtuple
 from dataclasses import dataclass
 from typing import Optional
 
 from fontbakery.section import Section
-from fontbakery.status import Status, START, ENDCHECK, STARTCHECK, END, ERROR, PASS
+from fontbakery.status import Status, ERROR, PASS
 from fontbakery.callable import FontBakeryCheck
 from fontbakery.message import Message
 
