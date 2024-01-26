@@ -24,7 +24,6 @@ except IOError:
 
 FONTTOOLS_VERSION = ">=4.39.0"  # Python 3.8+ required
 UFO2FT_VERSION = ">=2.25.2"  # 2.25.2 updated the script lists for Unicode 14.0
-VHARFBUZZ_VERSION = ">=0.2.0"  # 0.2.0 had an API update
 BEAUTIFULSOUP4_VERSION = ">=4.7.1"  # For parsing registered vendor IDs
 # com.google.fonts/check/vendor_id produces an ERROR if Beautiful Soup 4
 # version 4.0.1 to 4.6.1 or 4.7.0 is installed because of bugs in Beautiful Soup
@@ -37,7 +36,6 @@ shaping_extras = [
     # (see https://github.com/fonttools/fontbakery/issues/3970)
     "stringbrewer",
     f"ufo2ft{UFO2FT_VERSION}",
-    f"vharfbuzz{VHARFBUZZ_VERSION}",
     "shaperglot>=0.3.0",  # versions prior to v0.3.0 had too stric dependency rules
     # for other deps such as protobuf, making it harder satisfy all dependencies.
 ]
@@ -76,7 +74,6 @@ googlefonts_extras = (
         "protobuf>=3.7.0, <4",  # 3.7.0 fixed a bug on parsing some METADATA.pb files.
         # We cannot use v4 because our protobuf files have been compiled with v3.
         # (see https://github.com/fonttools/fontbakery/issues/2200)
-        f"vharfbuzz{VHARFBUZZ_VERSION}",
     ]
     + googlefonts_always_latest
     + shaping_extras
@@ -90,14 +87,10 @@ notofonts_extras = googlefonts_extras
 typenetwork_extras = [
     f"beautifulsoup4{BEAUTIFULSOUP4_VERSION}",
     f"ufo2ft{UFO2FT_VERSION}",
-    f"vharfbuzz{VHARFBUZZ_VERSION}",
-    "uharfbuzz",
     "shaperglot>=0.3.1",
 ]
 
-iso15008_extras = [
-    "uharfbuzz",
-]
+iso15008_extras = []
 
 fontval_extras = [
     "lxml",
@@ -211,6 +204,11 @@ setup(
         # used by 'italic_angle' check in OpenType profile ('post' table);
         # also used by ISO 15008 profile
         "beziers>=0.5.0",  # 0.5.0 uses new fontTools glyph outline access
+        # ---
+        # uharfbuzz and uharfbuzz are used
+        # by 'tabular_kerning' check in Universal profile:
+        "uharfbuzz",
+        f"vharfbuzz>=0.2.0",  # 0.2.0 had an API update
     ],
     extras_require={
         "all": all_extras,
