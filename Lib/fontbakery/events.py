@@ -26,10 +26,9 @@ class Identity:
 
 
 @dataclass
-class Event:
+class Subresult:
     status: Status
     message: Message
-    identity: Identity
 
 
 class CheckResult:
@@ -49,24 +48,22 @@ class CheckResult:
         if _summary_status is None:
             _summary_status = ERROR
             self.append(
-                Event(
+                Subresult(
                     ERROR,
                     (f"The check {self.identity.check} did not yield any status"),
-                    self.identity,
                 )
             )
         elif _summary_status < PASS:
             _summary_status = ERROR
             # got to yield it,so we can see it in the report
             self.append(
-                Event(
+                Subresult(
                     ERROR,
                     (
                         f"The most significant status of {self.identity.check}"
                         f" was only {_summary_status} but"
                         f" the minimum is {PASS}"
                     ),
-                    self.identity,
                 )
             )
         return _summary_status
