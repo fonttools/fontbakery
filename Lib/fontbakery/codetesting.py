@@ -167,11 +167,12 @@ class CheckTester:
             Configuration(explicit_checks=[self.check_id], full_lists=True),
         )
         for check_identity in self.runner.order:
-            _, check, _ = check_identity
-            if check.id != self.check_id:
+            if check_identity.check.id != self.check_id:
                 continue
             self.check_identity = check_identity
-            self.check_section, self.check, self.check_iterargs = check_identity
+            self.check_section = check_identity.section
+            self.check = check_identity.check
+            self.check_iterargs = check_identity.iterargs
             break
         if self.check_identity is None:
             raise KeyError(f'Check with id "{self.check_id}" not found.')
@@ -179,11 +180,9 @@ class CheckTester:
         self._args = self._get_args(condition_overrides)
 
         # Verify if the check's 'conditions' are met.
-        skipped, _ = self.runner._get_check_dependencies(
-            self.check, self.check_iterargs
-        )
+        skipped, _ = self.runner._get_check_dependencies(check_identity)
         if skipped is not None:
-            status, msg_str = skipped
+            status, msg_str = skipped.status, skipped.message
             return [(status, Message("unfulfilled-conditions", msg_str))]
         else:
             # No "try" while testing, we want to know about exceptions

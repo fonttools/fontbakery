@@ -201,7 +201,7 @@ def test_in_and_exclude_checks_default():
     exclude_checks = None  # "No checks left behind"
     iterargs = {"font": 1}
     check_names = {
-        c[1].id
+        c.check.id
         for c in profile.execution_order(
             iterargs, explicit_checks=explicit_checks, exclude_checks=exclude_checks
         )
