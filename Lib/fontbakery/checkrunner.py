@@ -21,7 +21,7 @@ from typing import Dict, Any, Optional, Tuple
 from fontbakery.callable import FontBakeryCheck
 from fontbakery.events import (
     CheckResult,
-    Event,
+    Subresult,
     Identity,
 )
 from fontbakery.message import Message
@@ -108,7 +108,7 @@ class CheckRunner:
         return self._profile
 
     @staticmethod
-    def _check_result(result, identity: Identity) -> Event:
+    def _check_result(result) -> Subresult:
         """Check that the check returned a well formed result:
         A tuple (<Status>, message)
 
@@ -122,11 +122,11 @@ class CheckRunner:
         """
         if not isinstance(result, tuple):
             msg = f"Result must be a tuple but it is {type(result)}."
-            return Event(ERROR, APIViolationError(msg, result), identity)
+            return Subresult(ERROR, APIViolationError(msg, result))
 
         if len(result) != 2:
             msg = f"Result must have 2 items, but it has {len(result)}."
-            return Event(ERROR, APIViolationError(msg, result), identity)
+            return Subresult(ERROR, APIViolationError(msg, result))
 
         status, message = result
         # Allow booleans, but there's no way to issue a WARNING
@@ -139,12 +139,12 @@ class CheckRunner:
                 f"Result item `status` must be an instance of Status,"
                 f" but it is {status} and its type is {type(status)}."
             )
-            return Event(FAIL, APIViolationError(msg, result), identity)
+            return Subresult(FAIL, APIViolationError(msg, result))
 
         if not isinstance(message, Message):
             message = Message("", message)
 
-        return Event(status, message, identity)
+        return Subresult(status, message)
 
     def _exec_check(self, identity: Identity, args: Dict[str, Any]):
         """Returns check sub results.
@@ -182,7 +182,7 @@ class CheckRunner:
             results = [(ERROR, FailedCheckError(e))]
 
         return [
-            self._override_status(self._check_result(result, identity), check)
+            self._override_status(self._check_result(result), check)
             for result in results
         ]
 
@@ -351,7 +351,7 @@ class CheckRunner:
 
     def _get_check_dependencies(
         self, identity: Identity
-    ) -> Tuple[Event, Optional[dict]]:
+    ) -> Tuple[Subresult, Optional[dict]]:
         unfulfilled_conditions = []
         for condition in identity.check.conditions:
             negate, name = is_negated(condition)
@@ -363,7 +363,7 @@ class CheckRunner:
             if negate:
                 val = not val
             if err:
-                status = Event(ERROR, err, identity)
+                status = Subresult(ERROR, err)
                 return (status, None)
 
             # An annoying FutureWarning here (Python 3.8.3) on stderr:
@@ -387,7 +387,7 @@ class CheckRunner:
             # This will make the check neither pass nor fail
             comma_separated = ", ".join(unfulfilled_conditions)
             return (
-                Event(SKIP, f"Unfulfilled Conditions: {comma_separated}", identity),
+                Subresult(SKIP, f"Unfulfilled Conditions: {comma_separated}"),
                 None,
             )
 
@@ -399,13 +399,11 @@ class CheckRunner:
                     args[k] = list(v)
 
             if all(x is None for x in args.values()):
-                status = Event(SKIP, "No applicable arguments", identity)
+                status = Subresult(SKIP, "No applicable arguments")
                 return (status, None)
             return None, args
         except Exception as error:
-            status = Event(
-                ERROR, FailedDependenciesError(identity.check, error), identity
-            )
+            status = Subresult(ERROR, FailedDependenciesError(identity.check, error))
             return (status, None)
 
     def _run_check(self, identity: Identity):
@@ -421,9 +419,7 @@ class CheckRunner:
             )
             if not accepted:
                 result.append(
-                    Event(
-                        SKIP, "Filtered: {}".format(message or "(no message)"), identity
-                    )
+                    Subresult(SKIP, "Filtered: {}".format(message or "(no message)"))
                 )
                 return result
 
@@ -432,7 +428,7 @@ class CheckRunner:
             skipped, args = self._get_check_dependencies(identity)
 
         if skipped:
-            result.append(Event(SKIP, skipped.message, identity))
+            result.append(Subresult(SKIP, skipped.message))
             return result
 
         result.extend(self._exec_check(identity, args))
@@ -494,18 +490,18 @@ class CheckRunner:
         for reporter in reporters:
             reporter.end()
 
-    def _override_status(self, event: Event, check):
+    def _override_status(self, subresult: Subresult, check):
         # Potentially override the status based on the config file.
         # Replaces the status with config["overrides"][check.id][message.code]
         status_overrides = self.config.get("overrides", {}).get(check.id)
         if (
             not status_overrides
-            or not isinstance(event.message, Message)
-            or event.message.code not in status_overrides
+            or not isinstance(subresult.message, Message)
+            or subresult.message.code not in status_overrides
         ):
-            return event
-        event.status = Status(status_overrides[event.message.code])
-        return event
+            return subresult
+        subresult.status = Status(status_overrides[subresult.message.code])
+        return subresult
 
 
 FILE_MODULE_NAME_PREFIX = "."
