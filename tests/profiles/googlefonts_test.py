@@ -19,7 +19,6 @@ from fontbakery.status import (
     PASS,
     FATAL,
     FAIL,
-    ENDCHECK,
 )
 from fontbakery.codetesting import (
     assert_results_contain,
@@ -30,7 +29,6 @@ from fontbakery.codetesting import (
     GLYPHSAPP_TEST_FILE,
     CheckTester,
 )
-from fontbakery.configuration import Configuration
 from fontbakery.constants import (
     NameID,
     PlatformID,
@@ -117,54 +115,6 @@ def delete_name_table_id(ttFont, nameID):
 @pytest.fixture
 def cabin_regular_path():
     return portable_path("data/test/cabin/Cabin-Regular.ttf")
-
-
-def test_example_checkrunner_based(cabin_regular_path):
-    """This is just an example test. We'll probably need something like
-    this setup in a checkrunner_test.py testsuite.
-    Leave it here for the moment until we implemented a real case.
-
-    This test is run via the checkRunner and demonstrate how to get
-    (mutable) objects from the conditions cache and change them.
-
-    NOTE: the actual FontBakery checks of conditions should never
-    change a condition object.
-    """
-    from fontbakery.checkrunner import CheckRunner
-    from fontbakery.profiles.googlefonts import profile
-
-    runner = CheckRunner(
-        profile,
-        {"fonts": [cabin_regular_path]},
-        Configuration(explicit_checks=["com.google.fonts/check/vendor_id"]),
-    )
-
-    # we could also reuse the `iterargs` that was assigned in the previous
-    # for loop, but this here is more explicit
-    iterargs = (("font", 0),)
-    ttFont = runner.get("ttFont", iterargs)
-
-    print("Test PASS ...")
-    # prepare
-    ttFont["OS/2"].achVendID = "APPL"
-    # run
-    for status, message, _ in runner.run():
-        if status in check_statuses:
-            last_check_message = message
-        if status == ENDCHECK:
-            assert message == PASS
-            break
-
-    print("Test WARN ...")
-    # prepare
-    ttFont["OS/2"].achVendID = "????"
-    # run
-    for status, message, _ in runner.run():
-        if status in check_statuses:
-            last_check_message = message
-        if status == ENDCHECK:
-            assert message == WARN and last_check_message.code == "unknown"
-            break
 
 
 def test_extra_needed_exit_from_conditions(monkeypatch):
