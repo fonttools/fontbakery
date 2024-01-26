@@ -2,6 +2,11 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.10.10 (2024-Jan-??)
+
+### New checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/varfont/family_axis_ranges]:** Check that family axis ranges are indentical
+  
 ### Noteworthy code-changes
   - The babelfont dependency has been dropped. (PR #4416)
   - Fix a crash when no matching checks are found during a multi-processing run. Also, do not freeze indefinitely. Instead, terminate the program emitting a process error code -1 and giving the user some guidance. (issue #4420)
