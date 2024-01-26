@@ -18,8 +18,7 @@ import importlib
 import inspect
 from typing import Dict, Any, Optional, Tuple
 
-from fontbakery.callable import FontBakeryCheck
-from fontbakery.events import (
+from fontbakery.result import (
     CheckResult,
     Subresult,
     Identity,
