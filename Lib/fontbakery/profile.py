@@ -15,7 +15,7 @@ from fontbakery.callable import (
     FontBakeryCondition,
     FontBakeryExpectedValue,
 )
-from fontbakery.events import Identity
+from fontbakery.result import Identity
 from fontbakery.configuration import Configuration
 from fontbakery.message import Message
 from fontbakery.section import Section

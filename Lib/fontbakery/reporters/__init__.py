@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from fontbakery.checkrunner import CheckRunner
 from fontbakery.status import Status
 from fontbakery.errors import ProtocolViolationError
-from fontbakery.events import CheckResult, Identity
+from fontbakery.result import CheckResult, Identity
 
 
 @dataclass

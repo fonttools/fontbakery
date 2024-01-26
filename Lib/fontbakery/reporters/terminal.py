@@ -16,7 +16,7 @@ import rich
 
 from fontbakery.constants import LIGHT_THEME, CUPCAKE, MEANING_MESSAGE
 from fontbakery.message import Message
-from fontbakery.events import CheckResult
+from fontbakery.result import CheckResult
 from fontbakery.reporters import FontbakeryReporter
 
 from fontbakery.status import (
