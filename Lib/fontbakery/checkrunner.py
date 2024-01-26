@@ -20,12 +20,9 @@ from typing import Dict, Any, Optional, Tuple
 
 from fontbakery.callable import FontBakeryCheck
 from fontbakery.events import (
+    CheckResult,
     Event,
     Identity,
-    StartEvent,
-    EndCheckEvent,
-    EndEvent,
-    StartCheckEvent,
 )
 from fontbakery.message import Message
 from fontbakery.utils import is_negated
@@ -42,15 +39,10 @@ from fontbakery.errors import (
 )
 from fontbakery.status import (
     Status,
-    END,
-    ENDCHECK,
     ERROR,
     FAIL,
     PASS,
-    SECTIONSUMMARY,
     SKIP,
-    START,
-    STARTCHECK,
 )
 
 
@@ -150,7 +142,7 @@ class CheckRunner:
             return Event(FAIL, APIViolationError(msg, result), identity)
 
         if not isinstance(message, Message):
-            message = Message("no-code", message)
+            message = Message("", message)
 
         return Event(status, message, identity)
 
@@ -417,15 +409,9 @@ class CheckRunner:
             return (status, None)
 
     def _run_check(self, identity: Identity):
-        summary_status = None
-        # A check is more than just a function, it carries
-        # a lot of meta-data for us, in this case we can use
-        # meta-data to learn how to call the check (via
-        # configuration or inspection, where inspection would be
-        # the default and configuration could be used to override
-        # inspection results).
-
         skipped = None
+        result = CheckResult(identity=identity)
+        # Does the profile want to skip this check?
         if self._profile.check_skip_filter:
             iterargsDict = {
                 key: self.get_iterarg(key, index) for key, index in identity.iterargs
@@ -434,58 +420,23 @@ class CheckRunner:
                 identity.check.id, **iterargsDict
             )
             if not accepted:
-                skipped = Event(
-                    SKIP, "Filtered: {}".format(message or "(no message)"), identity
+                result.append(
+                    Event(
+                        SKIP, "Filtered: {}".format(message or "(no message)"), identity
+                    )
                 )
+                return result
 
+        # Do we skip this check because of dependencies?
         if not skipped:
             skipped, args = self._get_check_dependencies(identity)
 
-        # FIXME: check is not a message
-        # so, to use it as a message, it should have a "message-interface"
-        # TODO: describe generic "message-interface"
-        yield StartCheckEvent(identity)
-        if skipped is not None:
-            summary_status = skipped.status
-            # `skipped` is a normal result tuple (status, message)
-            # where `status` is either FAIL for unmet dependencies
-            # or SKIP for unmet conditions or ERROR. A status of SKIP is
-            # never a failed check.
-            # ERROR is either a missing dependency or a condition that raised
-            # an exception. This shouldn't happen when everyting is set up
-            # correctly.
-            yield skipped
-        else:
-            for sub_result in self._exec_check(identity, args):
-                if summary_status is None or sub_result.status >= summary_status:
-                    summary_status = sub_result.status
-                yield sub_result
-            # The only reason to yield this is to make it testable
-            # that a check ran to its end, or, if we start to allow
-            # nestable subchecks. Otherwise, a STARTCHECK would end the
-            # previous check implicitly.
-            # We can also use it to display status updates to the user.
-        if summary_status is None:
-            summary_status = ERROR
-            yield Event(
-                ERROR,
-                (f"The check {identity.check} did not yield any status"),
-                identity,
-            )
-        elif summary_status < PASS:
-            summary_status = ERROR
-            # got to yield it,so we can see it in the report
-            yield Event(
-                ERROR,
-                (
-                    f"The most significant status of {identity.check}"
-                    f" was only {summary_status} but"
-                    f" the minimum is {PASS}"
-                ),
-                identity,
-            )
+        if skipped:
+            result.append(Event(SKIP, skipped.message, identity))
+            return result
 
-        yield EndCheckEvent(summary_status, identity)
+        result.extend(self._exec_check(identity, args))
+        return result
 
     @property
     def order(self) -> Tuple[Tuple[Any, Any, Any], ...]:
@@ -516,26 +467,17 @@ class CheckRunner:
                 raise ValueError(f"Order item {item} not found.")
         return order
 
-    def run(self, callbacks):
-        def call_all(events):
-            for event in events:
-                for callback in callbacks:
-                    callback(event)
-
+    def run(self, reporters):
         sections = OrderedDict()
-        call_all([StartEvent(self.order)])
+
+        # Tell all the reporters we're starting
+        for reporter in reporters:
+            reporter.start(self.order)
 
         def run_a_check(identity):
-            results = list(self._run_check(identity))
-            call_all(results)
-            # message is the summary_status of the check when status is ENDCHECK
-            section_key = str(identity.section)
-            if section_key not in sections:
-                sections[section_key] = ([], Counter(), identity.section)
-            section_order, section_summary, _ = sections[section_key]
-            section_order.append((identity.check, identity.iterargs))
-            # message is the summary_status of the check when status is ENDCHECK
-            section_summary[results[-1].message.name] += 1
+            result = self._run_check(identity)
+            for reporter in reporters:
+                reporter.receive_result(result)
 
         import concurrent.futures
 
@@ -548,19 +490,9 @@ class CheckRunner:
             for identity in self.order:
                 run_a_check(identity)
 
-        checkrun_summary = Counter()
-        for _, (section_order, section_summary, section) in sections.items():
-            call_all(
-                [
-                    Event(
-                        SECTIONSUMMARY,
-                        (section_order, section_summary),
-                        Identity(section, None, None),
-                    )
-                ]
-            )
-            checkrun_summary.update(section_summary)
-        call_all([EndEvent(checkrun_summary)])
+        # Tell all the reporters we're done
+        for reporter in reporters:
+            reporter.end()
 
     def _override_status(self, event: Event, check):
         # Potentially override the status based on the config file.
@@ -590,4 +522,3 @@ def get_module_from_file(filename):
     module_spec.loader.exec_module(module)
     # assert module.__file__ == filename
     return module
-

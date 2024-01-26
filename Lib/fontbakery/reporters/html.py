@@ -294,7 +294,7 @@ class HTMLReporter(SerializeReporter):
             emoticon = EMOTICON[log["status"]]
             status = log["status"]
             message = cmarkgfm.github_flavored_markdown_to_html(
-                log["message"], options=cmarkgfmOptions.CMARK_OPT_UNSAFE
+                log["message"]["message"], options=cmarkgfmOptions.CMARK_OPT_UNSAFE
             )
             return (
                 "<li class='details_item'>"
