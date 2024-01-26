@@ -12,8 +12,7 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
 import os
-import types
-from collections import OrderedDict, Counter
+from collections import OrderedDict
 import importlib
 import inspect
 from typing import Dict, Any, Optional, Tuple

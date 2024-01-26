@@ -98,12 +98,13 @@ class FontbakeryReporter:
         self._tick += 1
         if self._started is None:
             raise ProtocolViolationError(
-                f"Received Event before status START:"
-                f" {event.status} {event.message}."
+                f"Received result before status START:"
+                f" {checkresult.status} {checkresult.message}."
             )
         if self._ended:
             raise ProtocolViolationError(
-                f"Received Event after status END:" f" {event.status} {event.message}."
+                f"Received result after status END:"
+                f" {checkresult.status} {checkresult.message}."
             )
 
         if (
