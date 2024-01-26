@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from fontbakery.section import Section
-from fontbakery.status import Status, START, ENDCHECK, STARTCHECK, END
+from fontbakery.status import Status, START, ENDCHECK, STARTCHECK, END, ERROR, PASS
 from fontbakery.callable import FontBakeryCheck
 from fontbakery.message import Message
 
@@ -32,49 +32,61 @@ class Event:
     identity: Identity
 
 
-class StartEvent(Event):
-    def __init__(self, order):
-        self.order = order
-        self.status = START
-
-    @property
-    def message(self):
-        return self.order
-
-    @property
-    def identity(self):
-        return Identity(None, None, None)
-
-
-class EndEvent(Event):
-    def __init__(self, summary):
-        self.summary = summary
-        self.status = END
-
-    @property
-    def message(self):
-        return self.summary
-
-    @property
-    def identity(self):
-        return Identity(None, None, None)
-
-
-@dataclass
-class StartCheckEvent(Event):
+class CheckResult:
     def __init__(self, identity):
-        self.status = STARTCHECK
         self.identity = identity
-        self.message = None
+        self.results = []
 
+    def append(self, result):
+        self.results.append(result)
 
-@dataclass
-class EndCheckEvent(Event):
-    def __init__(self, summary_status, identity):
-        self.status = ENDCHECK
-        self.summary_status = summary_status
-        self.identity = identity
+    def extend(self, results):
+        self.results.extend(results)
 
     @property
-    def message(self):
-        return self.summary_status
+    def summary_status(self):
+        _summary_status = max(result.status for result in self.results)
+        if _summary_status is None:
+            _summary_status = ERROR
+            self.append(
+                Event(
+                    ERROR,
+                    (f"The check {self.identity.check} did not yield any status"),
+                    self.identity,
+                )
+            )
+        elif _summary_status < PASS:
+            _summary_status = ERROR
+            # got to yield it,so we can see it in the report
+            self.append(
+                Event(
+                    ERROR,
+                    (
+                        f"The most significant status of {self.identity.check}"
+                        f" was only {_summary_status} but"
+                        f" the minimum is {PASS}"
+                    ),
+                    self.identity,
+                )
+            )
+        return _summary_status
+
+    def getData(self):
+        check = self.identity.check
+        json = {
+            "key": self.identity.key,
+            "description": check.description,
+            "documentation": check.documentation,
+            "rationale": check.rationale,
+            "experimental": check.experimental,
+            "severity": check.severity,
+            "result": self.summary_status.name,
+            "logs": [],
+        }
+        for result in self.results:
+            if isinstance(result.message, Message):
+                message = result.message.getData()
+            else:
+                message = {"message": result.message}
+            json["logs"].append({"status": result.status.name, "message": message})
+        return json

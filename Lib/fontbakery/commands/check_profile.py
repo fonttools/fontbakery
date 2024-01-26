@@ -470,7 +470,7 @@ def main(profile=None, values=None):
             )
         )
 
-    runner.run([reporter.receive for reporter in reporters])
+    runner.run(reporters)
 
     for reporter in reporters:
         reporter.write()
