@@ -9,12 +9,19 @@ from fontbakery.message import Message
 
 @dataclass
 class Identity:
+    """An identity is an individual execution of a check: a combination of
+    a check's section, the check itself, and the arguments which are used to
+    call it. A check may be called multiple different times with different
+    arguments; an identity uniquely identifies one of those calls."""
+
     section: Optional[Section]
     check: Optional[FontBakeryCheck]
     iterargs: dict
 
     @property
-    def key(self):
+    def key(self) -> tuple:
+        """A tuple serializing the identity so that it can be used in
+        dictionaries, sets, JSON files, etc."""
         return (
             str(self.section) if self.section else self.section,
             str(self.check) if self.check else self.check,
@@ -24,11 +31,18 @@ class Identity:
 
 @dataclass
 class Subresult:
+    """Checks yield one or more subresults, each of which has a status and a
+    message. We wrap the status and message into a Subresult object for
+    type safety and tidiness."""
+
     status: Status
     message: Message
 
 
 class CheckResult:
+    """The result of a particular check invocation (its identity), made up
+    of the identity plus a list of subresults yielded by the check."""
+
     def __init__(self, identity):
         self.identity = identity
         self.results = []
@@ -41,6 +55,8 @@ class CheckResult:
 
     @property
     def summary_status(self):
+        """The highest status in the list of subresults. If there are no
+        subresults, we return ERROR, since the check was misbehaving."""
         _summary_status = max(result.status for result in self.results)
         if _summary_status is None:
             _summary_status = ERROR
@@ -66,6 +82,7 @@ class CheckResult:
         return _summary_status
 
     def getData(self, runner):
+        """Return the result as a dictionary with data suitable for serialization."""
         check = self.identity.check
         json = {
             "key": self.identity.key,
