@@ -2219,11 +2219,11 @@ def com_google_fonts_check_math_signs_width(ttFont):
         Tabular glyphs should not have kerning, as they are meant to be used in tables.
 
         This check looks for kerning in:
-        - all glyphs in a font in combination with tabular numerals
-        - tabular symbols in combination with tabular numerals
+        - all glyphs in a font in combination with tabular numerals;
+        - tabular symbols in combination with tabular numerals.
 
         "Tabular symbols" is defined as:
-        - for fonts with a "tnum" feature, all "tnum" substitution target glyphs
+        - for fonts with a "tnum" feature, all "tnum" substitution target glyphs;
         - for fonts without a "tnum" feature, all glyphs that have the same width
         as the tabular numerals, but limited to numbers, math and currency symbols.
 
@@ -2232,6 +2232,7 @@ def com_google_fonts_check_math_signs_width(ttFont):
         not intended to be used as tabular numerals.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4440",
+    experimental="Since 2024/Jan/30",
 )
 def com_google_fonts_check_tabular_kerning(ttFont):
     """Check tabular widths don't have kerning."""
