@@ -20,7 +20,6 @@ from fontbakery.result import CheckResult
 from fontbakery.reporters import FontbakeryReporter
 
 from fontbakery.status import (
-    Status,
     DEBUG,
     ERROR,
     FATAL,
@@ -317,7 +316,7 @@ class TerminalReporter(FontbakeryReporter):
             )
         )
         self._console.print("")
-        self._console.print(self._render_results_counter(counter))
+        self._console.print(self._render_results_counter())
 
     def _render_subresult(self, event):
         if self.succinct:
