@@ -39,7 +39,7 @@ class GHMarkdownReporter(SerializeReporter):
             return ""
 
     def render_rationale(self, check, checkid):
-        if self.succinct or "rationale" not in check:
+        if self.succinct or not check.get("rationale"):
             return ""
 
         from fontbakery.utils import unindent_and_unwrap_rationale
@@ -117,7 +117,7 @@ class GHMarkdownReporter(SerializeReporter):
                     check["profile"] = self.deduce_profile_from_section_name(
                         section["key"][0]
                     )
-                    if "experimental" in check:
+                    if check["experimental"]:
                         # These will be reported separately
                         experimental_checks.append(check)
                     elif "filename" not in check.keys():
