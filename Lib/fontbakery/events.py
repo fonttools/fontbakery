@@ -71,7 +71,7 @@ class CheckResult:
             )
         return _summary_status
 
-    def getData(self):
+    def getData(self, runner):
         check = self.identity.check
         json = {
             "key": self.identity.key,
@@ -83,6 +83,9 @@ class CheckResult:
             "result": self.summary_status.name,
             "logs": [],
         }
+        # This is a big hack
+        if json["key"][2] != ():
+            json["filename"] = runner.get_iterarg(*json["key"][2][0])
         for result in self.results:
             if isinstance(result.message, Message):
                 message = result.message.getData()

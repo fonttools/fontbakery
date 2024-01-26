@@ -235,7 +235,7 @@ class HTMLReporter(SerializeReporter):
                     continue
                 check_name = html.escape(check_id)
                 exp = ""
-                if "experimental" in results[0]:
+                if results[0]["experimental"]:
                     exp = (
                         "<div style='color:#88c'>"
                         "EXPERIMENTAL CHECK"
@@ -280,7 +280,7 @@ class HTMLReporter(SerializeReporter):
         return logs
 
     def render_rationale(self, check, checkid) -> str:
-        if self.succinct or "rationale" not in check:
+        if self.succinct or not check.get("rationale"):
             return ""
         content = unindent_and_unwrap_rationale(check["rationale"], checkid)
         return cmarkgfm.github_flavored_markdown_to_html(
