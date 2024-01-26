@@ -88,6 +88,7 @@ OPENTYPE_PROFILE_CHECKS = [
     "com.adobe.fonts/check/varfont/same_size_instance_records",
     "com.adobe.fonts/check/varfont/distinct_instance_records",
     "com.adobe.fonts/check/varfont/foundry_defined_tag_name",
+    "com.google.fonts/check/varfont/family_axis_ranges",
     "com.adobe.fonts/check/stat_has_axis_value_tables",
     "com.thetypefounders/check/vendor_id",
     "com.google.fonts/check/caret_slope",

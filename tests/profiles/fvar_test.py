@@ -688,3 +688,22 @@ def test_check_varfont_distinct_instance_records():
     # Confirm the check yields FAIL if the font doesn't have a required table
     del ttFont["name"]
     assert_results_contain(check(ttFont), FAIL, "lacks-table")
+
+
+def test_check_com_google_fonts_check_varfont_family_axis_ranges():
+    """Check that family axis ranges are indentical"""
+    check = CheckTester(
+        opentype_profile, "com.google.fonts/check/varfont/family_axis_ranges"
+    )
+
+    ttFonts = [
+        TTFont("data/test/ubuntusansmono/UbuntuMono[wght].ttf"),
+        TTFont("data/test/ubuntusansmono/UbuntuMono-Italic[wght].ttf"),
+    ]
+    assert_results_contain(check(ttFonts), FAIL, "axis-range-mismatch")
+
+    ttFonts = [
+        TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf"),
+        TTFont("data/test/cabinvf/Cabin-Italic[wdth,wght].ttf"),
+    ]
+    assert_PASS(check(ttFonts), "with good varfont...")
