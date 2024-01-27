@@ -9,13 +9,6 @@ class CircularDependencyError(FontBakeryRunnerError):
     pass
 
 
-class APIViolationError(FontBakeryRunnerError):
-    def __init__(self, message, result, *args):
-        self.message = message
-        self.result = result
-        super().__init__(message, *args)
-
-
 class ProtocolViolationError(FontBakeryRunnerError):
     def __init__(self, message, *args):
         self.message = message

@@ -25,11 +25,9 @@ from fontbakery.result import (
 from fontbakery.message import Message
 from fontbakery.utils import is_negated
 from fontbakery.errors import (
-    APIViolationError,
     CircularDependencyError,
     FailedCheckError,
     FailedConditionError,
-    FailedDependenciesError,
     MissingConditionError,
     SetupError,
     MissingValueError,
@@ -120,11 +118,11 @@ class CheckRunner:
         """
         if not isinstance(result, tuple):
             msg = f"Result must be a tuple but it is {type(result)}."
-            return Subresult(ERROR, APIViolationError(msg, result))
+            return Subresult(ERROR, Message("api-violation", msg))
 
         if len(result) != 2:
             msg = f"Result must have 2 items, but it has {len(result)}."
-            return Subresult(ERROR, APIViolationError(msg, result))
+            return Subresult(ERROR, Message("api-violation", msg))
 
         status, message = result
         # Allow booleans, but there's no way to issue a WARNING
@@ -137,7 +135,7 @@ class CheckRunner:
                 f"Result item `status` must be an instance of Status,"
                 f" but it is {status} and its type is {type(status)}."
             )
-            return Subresult(FAIL, APIViolationError(msg, result))
+            return Subresult(FAIL, Message("api-violation", msg))
 
         if not isinstance(message, Message):
             message = Message("", message)
@@ -397,11 +395,11 @@ class CheckRunner:
                     args[k] = list(v)
 
             if all(x is None for x in args.values()):
-                status = Subresult(SKIP, "No applicable arguments")
+                status = Subresult(SKIP, Message("no-arguments", "No applicable arguments"))
                 return (status, None)
             return None, args
         except Exception as error:
-            status = Subresult(ERROR, FailedDependenciesError(identity.check, error))
+            status = Subresult(ERROR, Message("failed-dependencies", error))
             return (status, None)
 
     def _run_check(self, identity: Identity):
