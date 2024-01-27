@@ -16,7 +16,7 @@ class Identity:
 
     section: Optional[Section]
     check: Optional[FontBakeryCheck]
-    iterargs: dict
+    iterargs: tuple
 
     @property
     def key(self) -> tuple:
@@ -63,19 +63,9 @@ class CheckResult:
             self.append(
                 Subresult(
                     ERROR,
-                    (f"The check {self.identity.check} did not yield any status"),
-                )
-            )
-        elif _summary_status < PASS:
-            _summary_status = ERROR
-            # got to yield it,so we can see it in the report
-            self.append(
-                Subresult(
-                    ERROR,
-                    (
-                        f"The most significant status of {self.identity.check}"
-                        f" was only {_summary_status} but"
-                        f" the minimum is {PASS}"
+                    Message(
+                        "no-status-received",
+                        f"The check {self.identity.check} did not yield any status",
                     ),
                 )
             )

@@ -15,7 +15,7 @@ import os
 from collections import OrderedDict
 import importlib
 import inspect
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Union, Tuple
 
 from fontbakery.result import (
     CheckResult,
@@ -347,7 +347,10 @@ class CheckRunner:
 
     def _get_check_dependencies(
         self, identity: Identity
-    ) -> Tuple[Subresult, Optional[dict]]:
+    ) -> Union[
+        Tuple[None, dict],  # Either we got args
+        Tuple[Subresult, None],  # or we return a Skipped message
+    ]:
         unfulfilled_conditions = []
         for condition in identity.check.conditions:
             negate, name = is_negated(condition)
@@ -383,7 +386,13 @@ class CheckRunner:
             # This will make the check neither pass nor fail
             comma_separated = ", ".join(unfulfilled_conditions)
             return (
-                Subresult(SKIP, f"Unfulfilled Conditions: {comma_separated}"),
+                Subresult(
+                    SKIP,
+                    Message(
+                        "unfulfilled-conditions",
+                        f"Unfulfilled Conditions: {comma_separated}",
+                    ),
+                ),
                 None,
             )
 
@@ -395,7 +404,9 @@ class CheckRunner:
                     args[k] = list(v)
 
             if all(x is None for x in args.values()):
-                status = Subresult(SKIP, Message("no-arguments", "No applicable arguments"))
+                status = Subresult(
+                    SKIP, Message("no-arguments", "No applicable arguments")
+                )
                 return (status, None)
             return None, args
         except Exception as error:
@@ -415,7 +426,12 @@ class CheckRunner:
             )
             if not accepted:
                 result.append(
-                    Subresult(SKIP, "Filtered: {}".format(message or "(no message)"))
+                    Subresult(
+                        SKIP,
+                        Message(
+                            "filtered", "Filtered: {}".format(message or "(no message)")
+                        ),
+                    )
                 )
                 return result
 
@@ -431,7 +447,7 @@ class CheckRunner:
         return result
 
     @property
-    def order(self) -> Tuple[Tuple[Any, Any, Any], ...]:
+    def order(self) -> Tuple[Identity, ...]:
         order = self._cache.get("order", None)
         if order is not None:
             return order  # pytype:disable=bad-return-type
