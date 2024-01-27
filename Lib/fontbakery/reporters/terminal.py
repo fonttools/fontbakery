@@ -89,7 +89,6 @@ class ProgressBar:
 class TerminalReporter(FontbakeryReporter):
     print_progress: bool = True
     theme: Optional[dict] = None
-    skip_status_report: Optional[tuple] = None
 
     def __post_init__(self):
         super().__post_init__()
@@ -109,8 +108,6 @@ class TerminalReporter(FontbakeryReporter):
         self.print_progress = stdout.isatty() and self.print_progress
 
         self.stdout = stdout
-        if not self.skip_status_report:
-            self.skip_status_report = tuple()
 
         self._event_buffers = {}
 

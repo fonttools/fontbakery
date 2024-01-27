@@ -449,7 +449,6 @@ def main(profile=None, values=None):
         succinct=args.succinct,
         collect_results_by=args.gather_by,
         theme=theme,
-        skip_status_report=not args.show_sections,
         print_progress=not args.no_progress,
     )
     reporters = [tr]

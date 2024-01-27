@@ -43,13 +43,6 @@ class FontbakeryReporter:
         """Determine if message is below log level."""
         return Status(msg).weight < self._minimum_weight
 
-    def run(self, order=None):
-        """
-        self.runner must be present
-        """
-        for event in self.runner.run(order=order):
-            self.receive(event)
-
     def write(self):
         if self.output_file is not None:
             raise NotImplementedError(
@@ -97,15 +90,9 @@ class FontbakeryReporter:
     def receive_result(self, checkresult: CheckResult):
         self._tick += 1
         if self._started is None:
-            raise ProtocolViolationError(
-                f"Received result before status START:"
-                f" {checkresult.status} {checkresult.message}."
-            )
+            raise ProtocolViolationError("Received result before status START.")
         if self._ended:
-            raise ProtocolViolationError(
-                f"Received result after status END:"
-                f" {checkresult.status} {checkresult.message}."
-            )
+            raise ProtocolViolationError("Received result after status END.")
 
         if (
             (
