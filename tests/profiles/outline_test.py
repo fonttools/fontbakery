@@ -41,7 +41,7 @@ def test_check_outline_short_segments():
 
     font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
     msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not is_variable_font"
+    assert "Unfulfilled Conditions: not is_variable_font" in msg.message
 
 
 def test_check_outline_colinear_vectors():
@@ -64,7 +64,7 @@ def test_check_outline_colinear_vectors():
 
     font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
     msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not is_variable_font"
+    assert "Unfulfilled Conditions: not is_variable_font" in msg.message
 
 
 def test_check_outline_jaggy_segments():
@@ -87,7 +87,7 @@ def test_check_outline_jaggy_segments():
 
     font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
     msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not is_variable_font"
+    assert "Unfulfilled Conditions: not is_variable_font" in msg.message
 
 
 def test_check_outline_semi_vertical():
@@ -105,8 +105,8 @@ def test_check_outline_semi_vertical():
 
     font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
     msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not is_variable_font"
+    assert "Unfulfilled Conditions: not is_variable_font" in msg.message
 
     font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Italic.otf")
     msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not is_italic"
+    assert "Unfulfilled Conditions: not is_italic" in msg.message
