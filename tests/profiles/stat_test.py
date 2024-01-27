@@ -39,7 +39,7 @@ def test_check_varfont_stat_axis_record_for_each_axis():
     # The check should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Black.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_variable_font"
+    assert "Unfulfilled Conditions: is_variable_font" in msg.message
 
 
 def test_check_stat_has_axis_value_tables():
@@ -83,7 +83,7 @@ def test_check_stat_has_axis_value_tables():
     # The check should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Black.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: has_STAT_table"
+    assert "Unfulfilled Conditions: has_STAT_table" in msg.message
 
     # Add a format 4 AxisValue table with 2 AxisValueRecords. This should PASS.
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))

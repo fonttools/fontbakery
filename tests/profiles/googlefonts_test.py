@@ -1028,7 +1028,7 @@ def test_check_family_has_license():
     )
 
     msg = assert_results_contain(check([""]), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: gfonts_repo_structure"
+    assert "Unfulfilled Conditions: gfonts_repo_structure" in msg.message
 
 
 def test_check_license_ofl_copyright():
@@ -1699,7 +1699,7 @@ def test_check_metadata_regular_is_400():
     msg = assert_results_contain(
         check(font, {"family_metadata": md}), SKIP, "unfulfilled-conditions"
     )
-    assert msg == "Unfulfilled Conditions: has_regular_style"
+    assert "Unfulfilled Conditions: has_regular_style" in msg.message
 
 
 def test_check_metadata_nameid_family_name():
@@ -3246,7 +3246,7 @@ def test_check_varfont_generate_static():
     # Now delete the fvar table to exercise a SKIP result due an unfulfilled condition.
     del ttFont["fvar"]
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_variable_font"
+    assert "Unfulfilled Conditions: is_variable_font" in msg.message
 
 
 def test_check_varfont_has_HVAR():
@@ -3445,7 +3445,7 @@ def test_check_ligature_carets():
     # because of an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: ligature_glyphs"
+    assert "Unfulfilled Conditions: ligature_glyphs" in msg.message
 
     # Simulate an error coming from the 'ligature_glyphs' condition;
     # this is to exercise the 'malformed' code path.
@@ -3483,7 +3483,7 @@ def test_check_kerning_for_non_ligated_sequences():
     # because of an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: ligatures"
+    assert "Unfulfilled Conditions: ligatures" in msg.message
 
     # Simulate an error coming from the 'ligatures' condition;
     # this is to exercise the 'malformed' code path.
@@ -3495,7 +3495,7 @@ def test_check_kerning_for_non_ligated_sequences():
     # because of an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: has_kerning_info"
+    assert "Unfulfilled Conditions: has_kerning_info" in msg.message
 
     # Finally, SourceSansPro Bold is known to not kern the non-ligated glyph sequences.
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
@@ -3660,7 +3660,7 @@ def test_check_repo_dirname_match_nameid_1(tmp_path):
 
     # SKIP result; the fonts are in a directory that doesn't have the correct structure.
     msg = assert_results_contain(check(cabin_fonts), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: gfonts_repo_structure"
+    assert "Unfulfilled Conditions: gfonts_repo_structure" in msg.message
 
 
 def test_check_repo_vf_has_static_fonts(tmp_path):
@@ -3822,7 +3822,7 @@ def test_check_vertical_metrics():
     ttFont = TTFont(TEST_FILE("akshar/Akshar[wght].ttf"))
 
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not remote_styles"
+    assert "Unfulfilled Conditions: not remote_styles" in msg.message
 
     # change the font's file name to elude the 'not remote_styles' condition.
     orig_file_name = ttFont.reader.file.name
@@ -4207,7 +4207,7 @@ def test_check_cjk_not_enough_glyphs():
 
     ttFont = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_claiming_to_be_cjk_font"
+    assert "Unfulfilled Conditions: is_claiming_to_be_cjk_font" in msg.message
 
     # Let's modify Montserrat's cmap so there's a cjk glyph
     cmap = ttFont["cmap"].getcmap(3, 1)

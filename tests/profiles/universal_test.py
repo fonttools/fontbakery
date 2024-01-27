@@ -537,14 +537,14 @@ def test_check_whitespace_glyphnames():
 
     _remove_cmap_entry(ttFont, 0x0020)
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not missing_whitespace_chars"
+    assert "Unfulfilled Conditions: not missing_whitespace_chars" in msg.message
 
     # restore the original font object in preparation for the next test-case:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
     _remove_cmap_entry(ttFont, 0x00A0)
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not missing_whitespace_chars"
+    assert "Unfulfilled Conditions: not missing_whitespace_chars" in msg.message
 
     # restore the original font object in preparation for the next test-case:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -1045,7 +1045,7 @@ def test_check_rupee():
 
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_indic_font"
+    assert "Unfulfilled Conditions: is_indic_font" in msg.message
 
     # This one is good:
     ttFont = TTFont(
@@ -1132,11 +1132,11 @@ def test_check_contour_count(montserrat_ttFonts):
 
     ttFont = TTFont(TEST_FILE("rokkitt/Rokkitt-Regular.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_ttf"
+    assert "Unfulfilled Conditions: is_ttf" in msg.message
 
     ttFont = TTFont(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not is_variable_font"
+    assert "Unfulfilled Conditions: not is_variable_font" in msg.message
 
     ttFont = montserrat_ttFonts[0]
 
@@ -1308,11 +1308,11 @@ def test_check_interpolation_issues():
 
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_variable_font"
+    assert "Unfulfilled Conditions: is_variable_font" in msg.message
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: is_ttf"
+    assert "Unfulfilled Conditions: is_ttf" in msg.message
 
 
 def test_check_math_signs_width():
@@ -1368,11 +1368,11 @@ def test_check_STAT_in_statics():
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: has_STAT_table"
+    assert "Unfulfilled Conditions: has_STAT_table" in msg.message
 
     ttFont = TTFont(TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: not is_variable_font"
+    assert "Unfulfilled Conditions: not is_variable_font" in msg.message
 
     # Remove fvar table to make FontBakery think it is dealing with a static font
     del ttFont["fvar"]

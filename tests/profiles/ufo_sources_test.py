@@ -78,7 +78,7 @@ def test_check_required_fields(empty_ufo_font):
     # Run the check on a non-UFO font.
     font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
     msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: ufo_font"
+    assert "Unfulfilled Conditions: ufo_font" in msg.message
 
 
 def test_check_recommended_fields(empty_ufo_font):
@@ -104,7 +104,7 @@ def test_check_recommended_fields(empty_ufo_font):
     # Run the check on a non-UFO font.
     font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
     msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: ufo_font"
+    assert "Unfulfilled Conditions: ufo_font" in msg.message
 
 
 def test_check_unnecessary_fields(empty_ufo_font):
@@ -127,7 +127,7 @@ def test_check_unnecessary_fields(empty_ufo_font):
     # Run the check on a non-UFO font.
     font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
     msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert msg == "Unfulfilled Conditions: ufo_font"
+    assert "Unfulfilled Conditions: ufo_font" in msg.message
 
 
 def test_check_designspace_has_sources():
