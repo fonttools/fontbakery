@@ -5,7 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### New checks
 #### On the Universal Profile
-  - **[com.google.fonts/check/varfont/family_axis_ranges]:** Check that family axis ranges are indentical
+  - **EXPERIMENTAL - [com.google.fonts/check/varfont/family_axis_ranges]:** Check that family axis ranges are indentical. (issue #4445)
   
 ### Noteworthy code-changes
   - The babelfont dependency has been dropped. (PR #4416)
