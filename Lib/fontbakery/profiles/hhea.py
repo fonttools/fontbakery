@@ -81,7 +81,6 @@ def com_google_fonts_check_caret_slope(ttFont):
     else:
         expectedCaretSlopeRise = upm
 
-    print(postItalicAngle, hheaItalicAngle)
     if abs(postItalicAngle - hheaItalicAngle) > 0.1:
         yield FAIL, Message(
             "caretslope-mismatch",
