@@ -15,14 +15,6 @@ class ProtocolViolationError(FontBakeryRunnerError):
         super().__init__(message, *args)
 
 
-class FailedCheckError(FontBakeryRunnerError):
-    def __init__(self, error, *args):
-        message = f"Failed with {type(error).__name__}: {error}"
-        self.error = error
-        self.traceback = "".join(traceback.format_tb(error.__traceback__))
-        super().__init__(message, *args)
-
-
 class FailedConditionError(FontBakeryRunnerError):
     """This is a serious problem with the check suite profile
     and it must be solved.
