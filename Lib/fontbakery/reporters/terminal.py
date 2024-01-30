@@ -8,7 +8,7 @@ import re
 import sys
 from typing import Optional
 
-from rich.segment import Segment
+from rich.segment import Segment, Segments
 from rich.live import Live
 from rich.markdown import Markdown
 from rich.markup import escape
@@ -95,7 +95,7 @@ class TerminalReporter(FontbakeryReporter):
 
         stdout = sys.stdout
         self.theme = self.theme or LIGHT_THEME
-        self._console = rich.console.Console(theme=self.theme)
+        self._console = rich.console.Console(theme=self.theme, highlight=False)
         if self.succinct:
             self.print_progress = False
         self.progressbar = None
@@ -250,7 +250,7 @@ class TerminalReporter(FontbakeryReporter):
                     unindent_and_unwrap_rationale(check.rationale), "rationale-text"
                 )
                 self._console.print(
-                    "\n   [rationale_title]Rationale:" + " " * 64 + "[/]\n"
+                    "    [rationale_title]Rationale:" + " " * 64 + "[/]"
                 )
                 lines = content.wrap(self._console, self._console.width - 6)
                 for line in lines._lines:
@@ -282,23 +282,29 @@ class TerminalReporter(FontbakeryReporter):
                         "    [rationale-title]More info:[/] " + moreinfo[0] + "\n"
                     )
                     if len(moreinfo) > 1:
-                        moreinfo_str += "\n".join(
-                            ["               " + i for i in moreinfo[1:]]
+                        moreinfo_str += (
+                            "\n".join(["               " + i for i in moreinfo[1:]])
+                            + "\n"
                         )
                     self._console.print(moreinfo_str)
-
-            self._console.print("\n")
 
         for result in checkresult.results:
             self._render_subresult(result)
 
         if not self.succinct:
-            self._console.print("\n")
             self._console.print(
-                f"    Result: [message-{msg.name}]{msg.name}[/message-{msg.name}]"
+                f"\n    Result: [message-{msg.name}]{msg.name}[/message-{msg.name}]\n"
             )
         else:
-            self._console.print(f"[message-{msg.name}]{msg.name}[/message-{msg.name}]")
+            codes = ", ".join(
+                [
+                    f"[message-{m.status.name}]{m.message.code}[/]"
+                    for m in checkresult.results
+                ]
+            )
+            self._console.print(
+                f"[message-{msg.name}]{msg.name}[/message-{msg.name}] \\[{codes}]"
+            )
 
     def _render_SECTIONSUMMARY(self, event):
         msg = event.message
@@ -320,15 +326,16 @@ class TerminalReporter(FontbakeryReporter):
             return
         msg = event.message
         status = event.status
+        if status.weight < self._log_threshold:
+            return
 
         # Log statuses have weights >= 0
         # log_statuses = (INFO, WARN, PASS, SKIP, FATAL, FAIL, ERROR, DEBUG)
-        self._console.print("\n")
 
         if not isinstance(msg, Message):
             raise (TypeError(f"Expected Message, got {type(msg)}: {msg}"))
 
-        message = f"{msg.message}\n" f"[code: {msg.code}]"
+        message = f"{msg.message} [code: {msg.code}]"
 
         if hasattr(msg, "traceback"):
             message = re.sub(r"(<[^<>]*>)", r"**`\1`**", message, flags=re.MULTILINE)
@@ -337,10 +344,21 @@ class TerminalReporter(FontbakeryReporter):
             traceback = re.sub(r"\n`\s*(.*)", r"\n`\1", traceback)
             message += traceback
 
-        self._console.print(f"    [message-{status.name.lower()}]{status.name}[/] ")
-        self._console.print(
-            IndentedParagraph(Markdown(msg.message), right=2, left=10, first=0),
+        # This is slightly gross, but rich automatically separates a string from a renderable
+        # object with __rich_console__ using a newline, and we want a space.
+        output = []
+        output.extend(
+            self._console.render(
+                f"    [message-{status.name.lower()}]{status.name}[/] "
+            )
         )
+        output.pop()
+        output.extend(
+            self._console.render(
+                IndentedParagraph(Markdown(message), right=2, left=9, first=0)
+            )
+        )
+        self._console.print(Segments(output, new_lines=False))
 
         if status not in statuses:
             self._console.print("-" * 8, status, "-" * 8)
