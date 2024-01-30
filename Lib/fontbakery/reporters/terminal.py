@@ -18,6 +18,7 @@ from fontbakery.constants import LIGHT_THEME, CUPCAKE, MEANING_MESSAGE
 from fontbakery.message import Message
 from fontbakery.result import CheckResult
 from fontbakery.reporters import FontbakeryReporter
+from fontbakery.errors import FailedCheckError
 
 from fontbakery.status import (
     DEBUG,
@@ -338,8 +339,13 @@ class TerminalReporter(FontbakeryReporter):
             message += traceback
 
         self._console.print(f"    [message-{status.name.lower()}]{status.name}[/] ")
+        text = (
+            str(msg.message)
+            if isinstance(msg.message, FailedCheckError)
+            else msg.message
+        )
         self._console.print(
-            IndentedParagraph(Markdown(msg.message), right=2, left=10, first=0),
+            IndentedParagraph(Markdown(text), right=2, left=10, first=0),
         )
 
         if status not in statuses:
