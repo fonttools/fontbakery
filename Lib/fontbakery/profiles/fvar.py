@@ -673,10 +673,11 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
 @check(
     id="com.google.fonts/check/varfont/family_axis_ranges",
     rationale="""
-        Between members of a family (think Roman & Italic),
+        Between members of a family (such as Roman & Italic),
         the ranges of variable axes must be identical.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4445",
+    experimental="Since 2024/Jan/30",
 )
 def com_google_fonts_check_varfont_family_axis_ranges(ttFonts):
     """Check that family axis ranges are indentical"""
@@ -689,15 +690,11 @@ def com_google_fonts_check_varfont_family_axis_ranges(ttFonts):
             ]
             return tuple(sorted(axis_info))
 
-    passed = True
-
     axes_info_from_font_files = {axis_info(ttFont) for ttFont in ttFonts}
     if len(axes_info_from_font_files) != 1:
-        passed = False
         yield FAIL, Message(
             "axis-range-mismatch",
             "Variable axes ranges not matching between font files",
         )
-
-    if passed:
+    else:
         yield PASS, "Variable axes ranges are matching between font files"
