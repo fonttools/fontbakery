@@ -15,7 +15,8 @@ import os
 from collections import OrderedDict
 import importlib
 import inspect
-from typing import Dict, Any, Union, Tuple
+import traceback
+from typing import Dict, Any, Sequence, Union, Tuple
 
 from fontbakery.result import (
     CheckResult,
@@ -26,7 +27,6 @@ from fontbakery.message import Message
 from fontbakery.utils import is_negated
 from fontbakery.errors import (
     CircularDependencyError,
-    FailedCheckError,
     FailedConditionError,
     MissingConditionError,
     SetupError,
@@ -142,7 +142,9 @@ class CheckRunner:
 
         return Subresult(status, message)
 
-    def _exec_check(self, identity: Identity, args: Dict[str, Any]):
+    def _exec_check(
+        self, identity: Identity, args: Dict[str, Any]
+    ) -> Sequence[Subresult]:
         """Returns check sub results.
 
         Each check result is a tuple of: (<Status>, mixed message)
@@ -174,8 +176,11 @@ class CheckRunner:
                 results.extend(list(result))
             else:
                 results = [result]
-        except Exception as e:
-            results = [(ERROR, FailedCheckError(e))]
+        except Exception as error:
+            message = f"Failed with {type(error).__name__}: {error}\n```\n"
+            message += "".join(traceback.format_tb(error.__traceback__))
+            message += "\n```"
+            results = [(ERROR, Message("failed-check", message))]
 
         return [
             self._override_status(self._check_result(result), check)
