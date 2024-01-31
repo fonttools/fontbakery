@@ -669,13 +669,16 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
     id="com.adobe.fonts/check/family/consistent_family_name",
     rationale="""
         Per the OpenType spec:
+
             * "...many existing applications that use this pair of names assume that a
               Font Family name is shared by at most four fonts that form a font
               style-linking group"
+
             * "For extended typographic families that includes fonts other than the
               four basic styles(regular, italic, bold, bold italic), it is strongly
               recommended that name IDs 16 and 17 be used in fonts to create an
               extended, typographic grouping."
+
             * "If name ID 16 is absent, then name ID 1 is considered to be the
               typographic family name."
 
