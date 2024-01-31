@@ -55,7 +55,7 @@ adobefonts_extras = []
 # deal with API-breaking updates. Only the latest released version is acceptable:
 googlefonts_always_latest = [
     "axisregistry>=0.4.5",
-    "gflanguages>=0.5.15",
+    "gflanguages>=0.5.16",
     "gfsubsets>=2024.1.22.post2",
     "glyphsets>=0.6.11",
     "shaperglot>=0.3.1",
