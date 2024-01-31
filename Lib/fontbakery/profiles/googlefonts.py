@@ -6520,16 +6520,24 @@ def com_google_fonts_check_STAT_axis_order(fonts):
         except (TTLibError, AttributeError):
             yield INFO, Message("bad-font", f"Something wrong with {font}")
 
-    report = "\n\t".join(map(str, Counter(summary).most_common()))
-    yield INFO, Message(
-        "summary",
-        f"From a total of {len(fonts)} font files,"
-        f" {no_stat} of them ({100.0*no_stat/len(fonts):.2f}%)"
-        f" lack a STAT table.\n"
-        f"\n"
-        f"\tAnd these are the most common STAT axis orderings:\n"
-        f"\t{report}",
-    )
+    if no_stat == 0:
+        percentage = "None"
+    elif no_stat == len(fonts):
+        percentage = "All"
+    else:
+        percentage = f"{100.0*no_stat/len(fonts):.2f}%"
+
+    msg = f"{percentage} of the fonts lack a STAT table.\n"
+
+    if len(Counter(summary).most_common()) > 0:
+        report = "\n\t".join(map(str, Counter(summary).most_common()))
+        msg += (
+            f"\n"
+            f"\tAnd these are the most common STAT axis orderings:\n"
+            f"\t{report}"
+        )
+
+    yield INFO, Message("summary", msg)
 
 
 @check(

@@ -38,6 +38,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/unsupported_subsets]** and **[com.google.fonts/check/metadata/unreachable_subsetting]**: Updated to use the new `gfsubsets` package. (PR #4434)
   - **[com.google.fonts/check/glyphsets/shape_languages]:** Check requires internet access. (issue #4396)
   - **[com.google.fonts/check/name/family_and_style_max_length]:** Updated max length requirements according to feedback from @vv-monsalve and improved description of problems to inform the users. Entries longer than 32 chars now emmit a FAIL. (issue #2179)
+  - **[com.google.fonts/check/STAT/axis_order]:** Improve wording. (issue #4100)
 
 
 ## 0.10.9 (2024-Jan-12)
