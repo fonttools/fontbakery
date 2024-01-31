@@ -1,16 +1,18 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.10.10 (2024-Jan-??)
-### New checks
-#### On the Universal Profile
-  - **EXPERIMENTAL - [com.google.fonts/check/varfont/family_axis_ranges]:** Check that family axis ranges are indentical. (issue #4445)
-  - **EXPERIMENTAL - [com.google.fonts/check/tabular_kerning]:** Check that tabular numerals and symbols have no kerning. (issue #4440)
 
+## Upcoming release: 0.11.0 (2024-Feb-??)
 ### Noteworthy code-changes
   - The babelfont dependency has been dropped. (PR #4416)
   - Fix a crash when no matching checks are found during a multi-processing run. Also, do not freeze indefinitely. Instead, terminate the program emitting a process error code -1 and giving the user some guidance. (issue #4420)
   - Reporters have been refactored; there may be some changes to the terminal display, particularly when --succinct is passed. (PR #4447)
+  - Added templating for the HTML reporter. We were mixing a lot of HTML and code in the same reporter, leading to messy code that's hard to improve. But now we use Jinja2 to feed the JSON output from the serialize reporter into a bunch of HTML templates. The reporter code is a lot simpler, and as a bonus, we make it easier for profile owners to change the look-and-feel of their reports. (PR #4460)
+
+### New checks
+#### On the Universal Profile
+  - **EXPERIMENTAL - [com.google.fonts/check/varfont/family_axis_ranges]:** Check that family axis ranges are indentical. (issue #4445)
+  - **EXPERIMENTAL - [com.google.fonts/check/tabular_kerning]:** Check that tabular numerals and symbols have no kerning. (issue #4440)
 
 ### Migration of checks
 #### Moved to the Google Fonts profile
