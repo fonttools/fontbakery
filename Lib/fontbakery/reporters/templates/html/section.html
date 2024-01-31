@@ -1,0 +1,9 @@
+<h2>{{ section.key[0] | replace("<", "") | replace(">", "") }}</h2>
+<span class='section__emoji'>
+    {% for status in section.status_summary %}{{ status | emoticon }}{% endfor %}
+</span>
+{% for cluster in section["clustered_checks"] %}
+    {% if not cluster is omitted %}
+        {% include "check.html" %}
+    {% endif %}
+{% endfor %}

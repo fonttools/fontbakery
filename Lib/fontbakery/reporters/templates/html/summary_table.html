@@ -1,0 +1,30 @@
+<h2>Summary</h2>
+    <table>
+    <tr>
+        <th>{{ 'ERROR' | emoticon }} ERROR</th>
+        <th>{{ 'FATAL' | emoticon }} FATAL</th>
+        <th>{{ 'FAIL' | emoticon }} FAIL</th>
+        <th>{{ 'WARN' | emoticon }} WARN</th>
+        <th>{{ 'SKIP' | emoticon }} SKIP</th>
+        <th>{{ 'INFO' | emoticon }} INFO</th>
+        <th>{{ 'PASS' | emoticon }} PASS</th>
+    </tr>
+    <tr>
+        <td>{{ summary["ERROR"] }}</td>
+        <td>{{ summary["FATAL"] }}</td>
+        <td>{{ summary["FAIL"] }}</td>
+        <td>{{ summary["WARN"] }}</td>
+        <td>{{ summary["SKIP"] }}</td>
+        <td>{{ summary["INFO"] }}</td>
+        <td>{{ summary["PASS"] }}</td>
+    </tr>
+    <tr>
+        <td>{{ summary["ERROR"] | percent_of(total) }}</td>
+        <td>{{ summary["FATAL"] | percent_of(total) }}</td>
+        <td>{{ summary["FAIL"] | percent_of(total) }}</td>
+        <td>{{ summary["WARN"] | percent_of(total) }}</td>
+        <td>{{ summary["SKIP"] | percent_of(total) }}</td>
+        <td>{{ summary["INFO"] | percent_of(total) }}</td>
+        <td>{{ summary["PASS"] | percent_of(total) }}</td>
+    </tr>
+</table>

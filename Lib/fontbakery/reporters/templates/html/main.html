@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>FontBakery Check Report</title>
+    <style>
+        {% include "base.css" %}
+    </style>
+</head>
+
+<body>
+    <header>
+        {% include "logo.svg" %}
+        <div class="titleBar">
+            Fontbakery Technical Report
+        </div>
+    </header>
+
+    <main>
+        {% include "top.html" %}
+        {% include "summary_table.html" %}
+        {% include "summary_notes.html" %}
+        {% for section in sections %}
+            {% if not section is omitted %}
+                {% include "section.html" %}
+            {% endif %}
+        {% endfor %}
+    </main>
+</body>
+
+</html>
