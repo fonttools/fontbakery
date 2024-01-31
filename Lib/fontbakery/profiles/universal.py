@@ -5,7 +5,6 @@ from typing import List
 from packaging.version import VERSION_PATTERN
 
 from fontbakery.callable import check, disable
-from fontbakery.constants import PlatformID, WindowsEncodingID
 from fontbakery.fonts_profile import profile_factory
 from fontbakery.glyphdata import desired_glyph_data
 from fontbakery.message import Message
@@ -1727,11 +1726,7 @@ def com_google_fonts_check_contour_count(ttFont, config):
                 )
 
         if len(bad_glyphs) > 0:
-            cmap = (
-                ttFont["cmap"]
-                .getcmap(PlatformID.WINDOWS, WindowsEncodingID.UNICODE_BMP)
-                .cmap
-            )
+            cmap = ttFont.getBestCmap()
 
             def _glyph_name(cmap, name):
                 if name in cmap:
