@@ -21,6 +21,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Universal Profile
   - **[com.google.fonts/check/arabic_spacing_symbols]:** Also check U+FBC2 ARABIC SYMBOL WASLA ABOVE (issue #4417)
+  - **[com.google.fonts/check/contour_count]:** Use `ttFont.getBestCmap()` to avoid potential ERROR. (issue #3601)
 
 #### On the OpenType Profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** Only check for a bold instance on fonts where the weight range extends to 700. (issue #4373)
