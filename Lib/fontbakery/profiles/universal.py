@@ -1109,7 +1109,7 @@ def com_google_fonts_check_STAT_strings(ttFont):
         should start with a letter, except the special glyph name ".notdef"
         which starts with a period.'
 
-        https://docs.microsoft.com/en-us/typography/opentype/spec/recom#post-table
+        https://learn.microsoft.com/en-us/typography/opentype/otspec181/recom#-post--table
 
 
         In practice, though, particularly in modern environments, glyph names
