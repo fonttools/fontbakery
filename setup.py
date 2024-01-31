@@ -195,6 +195,7 @@ setup(
         # a version of cmarkgfm older than 0.4 fails with:
         # ImportError: cannot import name 'Options' from 'cmarkgfm.cmark'
         "rich",  # (terminal.py)
+        "Jinja2",
         # ---
         # used by 'fontbakery_version' check in Universal profile
         "packaging",

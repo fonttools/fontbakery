@@ -1,0 +1,38 @@
+<h3>
+    {% if cluster[0].experimental %}
+    <div style='color:#88c'>EXPERIMENTAL CHECK - {{cluster[0].experimental}}</div>
+    {% endif %}
+    {{cluster[0].description}}
+</h3>
+<div class='check__idlabel'>Check ID: {{ cluster[0].key[1] }}</div>
+
+{% if cluster[0].rationale and not succinct %}
+    {{ cluster[0].rationale | unwrap | markdown }}
+{% endif %}
+
+{% for check in cluster %}
+    {% if not check is omitted %}
+        <details>
+            <summary>
+                {{ check['result'] | emoticon }}
+                {% if "filename" is in(check) %}{{ check.filename | basename }}
+                {% else %}
+                Family Check 
+                {% endif %}
+            </summary>
+            <div>
+                <ul>
+                {% for log in check.logs|sort(attribute="status.weight", reverse=true)%}
+                        <li class='details_item'>
+                            <span class='details_indicator'>
+                            {{log["status"] | emoticon}} {{log["status"]}}
+                            </span>
+                            <span class='details_text'>
+                            {{(log["message"]["message"] ~ " [code: " ~ log["message"]["code"] ~ "]") | markdown}}
+                        </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </details>
+    {% endif %}
+{% endfor %}

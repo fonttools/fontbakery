@@ -1,0 +1,28 @@
+
+{% if omitted %}
+    <p><strong>Note:</strong>
+        The following loglevels were omitted in this report:
+        {{ omitted | join(", ") }}
+    </p>
+{% endif %}
+
+<p>Meaning of check results:</p>
+
+<ul>
+<li>💥 An <em>ERROR</em> is something wrong with FontBakery itself, possibly a bug.
+<li>☠ A <em>FATAL</em> is an extremely severe issue that must be addressed
+immediately.
+<li>🔥 A <em>FAIL</em> is a problem with the font that must be fixed.
+<li>⚠️ A <em>WARN</em> is something that you should consider addressing.
+<li>ℹ️ An <em>INFO</em> result simply prints something useful. Typically stats.
+<li>✅ A <em>PASS</em> means the font looks good for the given checking routine.
+<li>⏩ And a <em>SKIP</em> happens when the check does not apply to the given font.
+</ul>
+
+<p>If you get ERRORs, please help us improve the tool by reporting them at our
+    <a href="{{ISSUE_URL}}">issue tracker.</a></p>
+
+<p>(but other kinds of bug reports and/or feature requests
+    are also always welcome, of course!)</p>
+
+<p>FontBakery version: {{fb_version}}</p>
