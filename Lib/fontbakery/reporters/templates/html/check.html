@@ -28,7 +28,10 @@
                             {{log["status"] | emoticon}} {{log["status"]}}
                             </span>
                             <span class='details_text'>
-                            {{(log["message"]["message"] ~ " [code: " ~ log["message"]["code"] ~ "]") | markdown}}
+                            {{log["message"]["message"] | markdown}}
+                            {% if log["message"]["code"] %}
+                            {{" [code: " ~ log["message"]["code"] ~ "]"}}
+                            {% endif %}
                         </li>
                 {% endfor %}
                 </ul>

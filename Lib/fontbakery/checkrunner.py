@@ -132,7 +132,7 @@ class CheckRunner:
             return Subresult(FAIL, Message("api-violation", msg))
 
         if not isinstance(message, Message):
-            message = Message("", message)
+            message = Message(None, message)
 
         return Subresult(status, message)
 

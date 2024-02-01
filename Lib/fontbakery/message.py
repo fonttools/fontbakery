@@ -26,7 +26,10 @@ class Message:
         self.message = message
 
     def __repr__(self):
-        return f"{self.message} [code: {self.code}]"
+        if self.code:
+            return f"{self.message} [code: {self.code}]"
+        else:
+            return f"{self.message}"
 
     def getData(self):
         """return a dictionary with data suitable for serialization,
