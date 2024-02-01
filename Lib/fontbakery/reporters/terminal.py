@@ -335,7 +335,7 @@ class TerminalReporter(FontbakeryReporter):
         if not isinstance(msg, Message):
             raise (TypeError(f"Expected Message, got {type(msg)}: {msg}"))
 
-        message = f"{msg.message} [code: {msg.code}]"
+        message = str(msg)
 
         if hasattr(msg, "traceback"):
             message = re.sub(r"(<[^<>]*>)", r"**`\1`**", message, flags=re.MULTILINE)
