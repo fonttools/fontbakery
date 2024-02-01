@@ -9,7 +9,7 @@ import types
 import json
 import logging
 
-from fontbakery.errors import NamespaceError, SetupError, CircularAliasError
+from fontbakery.errors import NamespaceError, SetupError
 from fontbakery.callable import (
     FontBakeryCheck,
     FontBakeryCondition,
@@ -76,7 +76,6 @@ class Profile:
         iterargs=None,
         derived_iterables=None,
         conditions=None,
-        aliases=None,
         expected_values=None,
         default_section=None,
         check_skip_filter=None,
@@ -136,10 +135,6 @@ class Profile:
         if derived_iterables:
             self._add_dict_to_namespace("derived_iterables", derived_iterables)
 
-        self.aliases = {}
-        if aliases:
-            self._add_dict_to_namespace("aliases", aliases)
-
         self.conditions = {}
         if conditions:
             self._add_dict_to_namespace("conditions", conditions)
@@ -172,7 +167,6 @@ class Profile:
     _valid_namespace_types = {
         "iterargs": "iterarg",
         "derived_iterables": "derived_iterable",
-        "aliases": "alias",
         "conditions": "condition",
         "expected_values": "expected_value",
     }
@@ -309,22 +303,6 @@ class Profile:
                 f"See also: https://github.com/fonttools/fontbakery/issues/2238\n"
                 f"\n"
             )
-
-    def resolve_alias(self, original_name):
-        name = original_name
-        seen = set()
-        path = []
-        while name in self.aliases:
-            if name in seen:
-                names = " -> ".join(path)
-                raise CircularAliasError(
-                    f'Alias for "{original_name}" has'
-                    f" a circular reference in {names}"
-                )
-            seen.add(name)
-            path.append(name)
-            name = self.aliases[name]
-        return name
 
     def validate_values(self, values):
         """
@@ -831,7 +809,7 @@ class Profile:
         filter_func(type, name_or_id, item)
         where
         type: one of "check", "module", "condition", "expected_value", "iterarg",
-              "derived_iterable", "alias"
+              "derived_iterable"
         name_or_id: the name at which the item will be registered.
               if type == 'check': the check.id
               if type == 'module': the module name (module.__name__)
@@ -879,7 +857,7 @@ class Profile:
     def merge_profile(self, profile, filter_func=None):
         """Copy all namespace items from profile to self.
 
-        Namespace items are: 'iterargs', 'derived_iterables', 'aliases',
+        Namespace items are: 'iterargs', 'derived_iterables',
                              'conditions', 'expected_values'
 
         Don't change any contents of profile ever!
@@ -887,7 +865,7 @@ class Profile:
 
         filter_func: see description in auto_register
         """
-        # 'iterargs', 'derived_iterables', 'aliases', 'conditions', 'expected_values'
+        # 'iterargs', 'derived_iterables', 'conditions', 'expected_values'
         for ns_type in self._valid_namespace_types:
             # this will raise a NamespaceError if an item of profile.{ns_type}
             # is already registered.
