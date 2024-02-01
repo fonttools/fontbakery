@@ -63,10 +63,6 @@ class MissingValueError(FontBakeryRunnerError):
     pass
 
 
-class CircularAliasError(FontBakeryRunnerError):
-    pass
-
-
 class NamespaceError(FontBakeryRunnerError):
     pass
 

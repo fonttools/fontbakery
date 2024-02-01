@@ -286,13 +286,7 @@ class CheckRunner:
         if has_fallback:
             fallback = args[0]
 
-        # try this once before resolving aliases and once after
         if name in self._values:
-            return self._values[name]
-
-        original_name = name
-        name = self._profile.resolve_alias(name)
-        if name != original_name and name in self._values:
             return self._values[name]
 
         nametype = self._profile.get_type(name, None)
@@ -328,10 +322,7 @@ class CheckRunner:
         if has_fallback:
             return fallback
 
-        if original_name != name:
-            report_name = f'"{original_name}" as "{name}"'
-        else:
-            report_name = f'"{name}"'
+        report_name = f'"{name}"'
         raise MissingValueError(f"Value {report_name} is undefined.")
 
     def _get_args(self, item, iterargs, path=None):
