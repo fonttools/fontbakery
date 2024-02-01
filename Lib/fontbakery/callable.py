@@ -316,15 +316,6 @@ class FontBakeryExpectedValue:
             raise AttributeError(f"{self} has no default value")
         return value
 
-    def validate(self, value):
-        """
-        returns (bool valid, string|None message)
-        If valid is True, message is None or can be ignored.
-        If valid is False, message should be a string describing what
-        is wrong with value.
-        """
-        return self._validator(value) if self._validator else (True, None)
-
 
 class Disabled:
     def __init__(self, func):
