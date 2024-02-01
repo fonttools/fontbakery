@@ -10,11 +10,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - Added templating for the HTML reporter. We were mixing a lot of HTML and code in the same reporter, leading to messy code that's hard to improve. But now we use Jinja2 to feed the JSON output from the serialize reporter into a bunch of HTML templates. The reporter code is a lot simpler, and as a bonus, we make it easier for profile owners to change the look-and-feel of their reports. (PR #4460)
 
 ### New checks
-#### On the Universal Profile
+#### Added to the Universal Profile
   - **EXPERIMENTAL - [com.google.fonts/check/varfont/family_axis_ranges]:** Check that family axis ranges are indentical. (issue #4445)
   - **EXPERIMENTAL - [com.google.fonts/check/tabular_kerning]:** Check that tabular numerals and symbols have no kerning. (issue #4440)
 
-#### On the Google Fonts Profile
+#### Added to the Google Fonts Profile
   - **EXPERIMENTAL - [com.google.fonts/check/metadata/has_tags]:** Check that the font family appears in the tags spreadsheet. (issue #4465)
 
 ### Migration of checks
@@ -26,7 +26,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/arabic_spacing_symbols]:** Also check U+FBC2 ARABIC SYMBOL WASLA ABOVE (issue #4417)
   - **[com.google.fonts/check/contour_count]:** Use `ttFont.getBestCmap()` to avoid potential ERROR. (issue #3601)
   - **[com.google.fonts/check/valid_glyphnames]:** Fix an outdated URL (issue #4080)
-  - **[com.google.fonts/check/alt_caron]:** Expanded to catch casing variants like "caroncomb.case" as well (issue #3308)
+  - **[com.google.fonts/check/alt_caron]:** Expanded to catch casing variants like "caroncomb.case" as well. The check previously didn't catch L+caroncomb.case, because the it relies on Unicodes to identify wrong accents. Now, we're purging known-wrong endings (e.g. .case) before resolving the Unicode, so that caroncomb.case can be found. (issue #3308 / PR #4469)
 
 #### On the OpenType Profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** Only check for a bold instance on fonts where the weight range extends to 700. (issue #4373)
