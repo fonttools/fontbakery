@@ -56,9 +56,7 @@ def get_module_profile(module: types.ModuleType, name=None):
             return None
         default_section = Section(name or module.__name__)
         spec = getattr(module, "__spec__")
-        profile = module.profile_factory(
-            default_section=default_section, module_spec=spec
-        )
+        profile = module.profile_factory(default_section=default_section)
         profile.auto_register(module.__dict__)
         return profile
 
@@ -83,7 +81,6 @@ class Profile:
         default_section=None,
         check_skip_filter=None,
         profile_tag=None,
-        module_spec=None,
     ):
         """
           sections: a list of sections, which are ideally ordered sets of
@@ -171,47 +168,6 @@ class Profile:
         )
 
         self._check_skip_filter = check_skip_filter
-
-        # Used in multiprocessing because pickling the profiles fail on
-        # Mac and Windows. See: fonttools/fontbakery#2982
-        # module_locator can actually a module.__spec__ but also just a dict
-        # self.module_locator will always be just a dict
-        if module_spec is None:
-            # This is a bit of a hack, but the idea is to reduce boilerplate
-            # when writing modules that directly define a profile.
-            try:
-                frame = inspect.currentframe()
-                while frame:
-                    frame = frame.f_back
-                    if not frame:
-                        break
-                    # Note, if __spec__ is a local variable we shpuld be at a
-                    # module top level. It should also be the correct ModuleSpec
-                    # according to how we do this "usually" (as documented and
-                    # practiced as far as I'm aware of), e.g. the profile module
-                    # defines a profile object directly by calling a Profile constructor
-                    # (e.g. profies.ufo_sources) or indirectly via a profile_factory
-                    # (e.g. profiles.google_fonts). Otherwise, if this fails
-                    # or finds a wrong ModuleSpec, there's still the option to
-                    # pass module_spec as an argument (module.__spec__), which is
-                    # actually demonstrated in get_module_profile.
-                    if "__spec__" in frame.f_locals:
-                        module_spec = frame.f_locals["__spec__"]
-                        if module_spec and isinstance(
-                            module_spec, importlib.machinery.ModuleSpec
-                        ):
-                            break
-                        module_spec = None  # reset
-            finally:
-                del frame
-
-        # If not module_spec: this is only a problem in multiprocessing, in
-        # that case we'll be failing to access this with an AttributeError.
-        if module_spec is not None:
-            self.module_locator = {
-                "name": module_spec.name,
-                "origin": module_spec.origin,
-            }
 
     _valid_namespace_types = {
         "iterargs": "iterarg",
