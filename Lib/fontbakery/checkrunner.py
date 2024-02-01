@@ -31,7 +31,6 @@ from fontbakery.errors import (
     MissingConditionError,
     SetupError,
     MissingValueError,
-    ValueValidationError,
 )
 from fontbakery.status import (
     Status,
@@ -80,11 +79,6 @@ class CheckRunner:
 
         self._profile = profile
         self._profile.test_dependencies()
-        valid, message = self._profile.validate_values(values)
-        if not valid:
-            raise ValueValidationError(
-                f"Validation of expected values failed:\n" f"{message}"
-            )
         self._values = values
 
         self.use_cache = use_cache

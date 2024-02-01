@@ -302,31 +302,6 @@ class Profile:
                 f"\n"
             )
 
-    def validate_values(self, values):
-        """
-        Validate values if they are registered as expected_values and present.
-
-        * If they are not registered they shouldn't be used anywhere at all
-          because profile can self check (profile.check_dependencies) for
-          missing/undefined dependencies.
-
-        * If they are not present in values but registered as expected_values
-          either the expected value has a default value OR a request for that
-          name will raise a KeyError on runtime. We don't know if all expected
-          values are actually needed/used, thus this fails late.
-        """
-        messages = []
-        for name, value in values.items():
-            if name not in self.expected_values:
-                continue
-            valid, message = self.expected_values[name].validate(value)
-            if valid:
-                continue
-            messages.append(f"{name}: {message} (value: {value})")
-        if messages:
-            return False, "\n".join(messages)
-        return True, None
-
     def get_type(self, name, *args):
         has_fallback = bool(args)
         if has_fallback:

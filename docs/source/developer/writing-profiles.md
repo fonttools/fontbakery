@@ -365,8 +365,6 @@ fonts_expected_value = FontBakeryExpectedValue(
       'fonts'
     , default=[]
     , description='A list of the font file paths to check.'
-    , validator=lambda fonts: (True, None) if len(fonts) \
-                                    else (False, 'Value is empty.')
 )
 # somehow added to profile, e.g.:
 # profile.register_expected_value(fonts_expected_value)
