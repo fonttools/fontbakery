@@ -20,7 +20,7 @@ from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable
 from .shared_conditions import style
 
 
-SHEET_URL = (
+GF_TAGS_SHEET_URL = (
     "https://docs.google.com/spreadsheets/d/e/"
     "2PACX-1vQVM--FKzKTWL-8w0l5AE1e087uU_OaQNHR3_kkxxymoZV5XUnHzv9TJIdy7vcd0Saf4m8CMTMFqGcg/"
     "pub?gid=1193923458&single=true&output=csv"
@@ -773,6 +773,6 @@ def gf_tags():
     global _tags_cache  # pylint:disable=W0603
     if _tags_cache is not None:
         return _tags_cache
-    req = requests.get(SHEET_URL, timeout=10)
+    req = requests.get(GF_TAGS_SHEET_URL, timeout=10)
     _tags_cache = list(csv.reader(StringIO(req.text)))
     return _tags_cache
