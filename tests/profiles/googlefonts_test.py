@@ -5307,3 +5307,20 @@ def test_check_varfont_bold_wght_coord():
     del ttFont["fvar"].instances[3]
     ttFont["fvar"].axes[0].maxValue = 600
     assert_results_contain(check(ttFont), SKIP, "no-bold-weight")
+
+
+def test_check_metadata_has_tags():
+    """The font has tags in the GF Tags spreadsheet"""
+    check = CheckTester(googlefonts_profile, "com.google.fonts/check/metadata/has_tags")
+
+    ttFont = TTFont("data/test/merriweather/Merriweather-Regular.ttf")
+    assert_PASS(check(ttFont), "with a name that's in the spreadsheet...")
+
+    md = check["family_metadata"]
+    md.name = "Not Merriweather"
+    assert_results_contain(
+        check(ttFont, {"family_metadata": md}),
+        WARN,
+        "no-tags",
+        "with a name that doesn't appear...",
+    )

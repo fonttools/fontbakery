@@ -1,3 +1,5 @@
+import csv
+from io import StringIO
 import os
 import re
 import yaml
@@ -16,6 +18,13 @@ from fontbakery.utils import exit_with_install_instructions
 from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable=W0611
 
 from .shared_conditions import style
+
+
+SHEET_URL = (
+    "https://docs.google.com/spreadsheets/d/e/"
+    "2PACX-1vQVM--FKzKTWL-8w0l5AE1e087uU_OaQNHR3_kkxxymoZV5XUnHzv9TJIdy7vcd0Saf4m8CMTMFqGcg/"
+    "pub?gid=1193923458&single=true&output=csv"
+)
 
 
 @condition
@@ -753,3 +762,17 @@ def get_glyphsets_fulfilled(ttFont):
             unicodes_in_glyphset
         )
     return res
+
+
+_tags_cache = None
+
+
+def gf_tags():
+    import requests
+
+    global _tags_cache  # pylint:disable=W0603
+    if _tags_cache is not None:
+        return _tags_cache
+    req = requests.get(SHEET_URL, timeout=10)
+    _tags_cache = list(csv.reader(StringIO(req.text)))
+    return _tags_cache

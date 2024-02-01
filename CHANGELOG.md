@@ -14,6 +14,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **EXPERIMENTAL - [com.google.fonts/check/varfont/family_axis_ranges]:** Check that family axis ranges are indentical. (issue #4445)
   - **EXPERIMENTAL - [com.google.fonts/check/tabular_kerning]:** Check that tabular numerals and symbols have no kerning. (issue #4440)
 
+#### On the Google Fonts Profile
+  - **EXPERIMENTAL - [com.google.fonts/check/metadata/has_tags]:** Check that the font family appears in the tags spreadsheet. (issue #4465)
+
 ### Migration of checks
 #### Moved to the Google Fonts profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** from the Open Type profile. (issue #4436)
