@@ -105,6 +105,7 @@ METADATA_CHECKS = [
     "com.google.fonts/check/metadata/consistent_repo_urls",
     "com.google.fonts/check/metadata/primary_script",
     "com.google.fonts/check/metadata/empty_designer",
+    "com.google.fonts/check/metadata/has_tags",
 ]
 
 GLYPHSET_CHECKS = [
@@ -7462,6 +7463,27 @@ def com_google_fonts_check_metadata_empty_designer(family_metadata):
     # (and then maybe rename the check-id)
     else:
         yield PASS, "Font designer field is not empty."
+
+
+@check(
+    id="com.google.fonts/check/metadata/has_tags",
+    conditions=["network"],
+    rationale="""
+        Any font published on Google Fonts must be listed in the tags spreadsheet.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4465",
+    experimental="Since 2024/Feb/1",
+)
+def com_google_fonts_check_metadata_has_tags(family_metadata):
+    """The font has tags in the GF Tags spreadsheet"""
+    from .googlefonts_conditions import gf_tags
+
+    tags = gf_tags()
+    tagged_families = set(row[0] for row in tags[6:])
+    if family_metadata.name not in tagged_families:
+        yield WARN, Message("no-tags", "Family does not appear in tag spreadsheet.")
+    else:
+        yield PASS, "Family has tags"
 
 
 @check(
