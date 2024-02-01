@@ -21,44 +21,6 @@ from fontbakery.utils import is_negated
 from fontbakery.status import DEBUG
 
 
-def get_module_profile(module: types.ModuleType, name=None):
-    """
-    Get or create a profile from a module and return it.
-
-    If the name `module.profile` is present the value of that is returned.
-    Otherwise, if the name `module.profile_factory` is present, a new profile
-    is created using `module.profile_factory` and then `profile.auto_register`
-    is called with the module namespace.
-    If neither name is defined, the module is not considered a profile-module
-    and None is returned.
-
-    TODO:
-    Describe the `name` argument and better define the signature of `profile_factory`.
-
-    The `module` argument is expected to behave like a python module.
-    The optional `name` argument is used when `profile_factory` is called to
-    give a name to the default section of the new profile. If name is not
-    present `module.__name__` is the fallback.
-
-    `profile_factory` is called like this:
-        `profile = module.profile_factory(default_section=default_section)`
-
-    """
-    try:
-        # if profile is defined we just use it
-        return module.profile
-    except AttributeError:  # > 'module' object has no attribute 'profile'
-        # try to create one on the fly.
-        # e.g. module.__name__ == "fontbakery.profiles.cmap"
-        if "profile_factory" not in module.__dict__:
-            return None
-        default_section = Section(name or module.__name__)
-        spec = getattr(module, "__spec__")
-        profile = module.profile_factory(default_section=default_section)
-        profile.auto_register(module.__dict__)
-        return profile
-
-
 class Profile:
     """
     Profiles may specify default configuration values (used to parameterize

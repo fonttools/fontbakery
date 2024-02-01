@@ -3,10 +3,22 @@ from fontbakery.constants import REGISTERED_AXIS_TAGS
 from fontbakery.status import FAIL, PASS, WARN, SKIP
 from fontbakery.message import Message
 
-# used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable=W0611
-
-profile_imports = ((".", ("shared_conditions",)),)
+from fontbakery.profiles.shared_conditions import (
+    is_variable_font,
+    has_wght_axis,
+    has_wdth_axis,
+    has_slnt_axis,
+    has_ital_axis,
+    has_opsz_axis,
+    regular_ital_coord,
+    regular_slnt_coord,
+    regular_wdth_coord,
+    regular_wght_coord,
+    regular_opsz_coord,
+    has_name_table,
+    slnt_axis,
+    ital_axis
+)
 
 
 @check(

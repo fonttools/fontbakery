@@ -8,6 +8,7 @@ from importlib import import_module
 from fontbakery import __version__
 import fontbakery.commands
 from fontbakery.commands.check_profile import main as check_profile_main
+from fontbakery.fonts_profile import profile_factory
 
 CLI_PROFILES = [
     "adobefonts",
@@ -31,7 +32,7 @@ def run_profile_check(profilename):
 
     set_profile_name(profilename)
     module = import_module(f"fontbakery.profiles.{profilename}")
-    sys.exit(check_profile_main(module.profile))
+    sys.exit(check_profile_main(profile_factory(module)))
 
 
 def signal_handler(sig, frame):

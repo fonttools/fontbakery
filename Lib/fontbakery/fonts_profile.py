@@ -1,17 +1,22 @@
 """
 FontBakery CheckRunner is the driver of a fontbakery suite of checks.
 """
-import glob
-import logging
 import argparse
-from dataclasses import dataclass
+import glob
+import importlib
+import inspect
+import logging
 import os
+import pkgutil
+from dataclasses import dataclass
+import warnings
 
-from fontbakery.callable import (
-    FontBakeryExpectedValue as ExpectedValue,
-)
-from fontbakery.profile import Profile
+import fontbakery.checks
+from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
+from fontbakery.callable import FontBakeryCheck, FontBakeryCondition
 from fontbakery.errors import ValueValidationError
+from fontbakery.profile import Profile
+from fontbakery.section import Section
 
 
 @dataclass
@@ -143,12 +148,50 @@ class FontsProfile(Profile):
     def _iterargs(cls):
         return {val.singular: val.name for val in cls.accepted_files}
 
+checks_by_id = {}
+conditions_by_name = {}
+checks_loaded = False
 
-def profile_factory(**kwds):
+def load_all_checks():
+    for importer, modname, ispkg in pkgutil.walk_packages(fontbakery.checks.__path__):
+        import_path = f"fontbakery.checks.{modname}"
+        if ispkg:
+            spec = pkgutil._get_spec(importer, modname)
+            importlib._bootstrap._load(spec)
+        try:
+            module = importlib.import_module(import_path)
+        except ImportError as e:
+            warnings.warn("Failed to load %s: %s" % (import_path, e))
+            continue
+        for name, definition in inspect.getmembers(module):
+            if isinstance(definition, FontBakeryCheck):
+                checks_by_id[definition.id] = definition
+            if isinstance(definition, FontBakeryCondition):
+                # if name in conditions_by_name:
+                    # raise ValueError(f"Condition {name} already defined")
+                conditions_by_name[name] = definition
+    checks_loaded = True
+
+def profile_factory(module):
+    if not checks_loaded:
+        load_all_checks()
+    profile_data = getattr(module, "PROFILE")
+    sections = []
+    for section, checks in profile_data["sections"].items():
+        check_objects = []
+        for check in checks:
+            if check not in checks_by_id:
+                raise ValueError(f"Check {check} not found")
+            check_objects.append(checks_by_id[check])
+        sections.append( Section(
+            name=section,
+            checks=check_objects,
+        ))
     profile = FontsProfile(
         iterargs=FontsProfile._iterargs(),
         derived_iterables={"ttFonts": ("ttFont", True)},
         expected_values=FontsProfile._expected_values(),
-        **kwds,
+        sections=sections,
+        conditions=conditions_by_name,
     )
     return profile
