@@ -22,9 +22,9 @@ from fontbakery.status import (
     WARN,
 )
 from fontbakery.configuration import Configuration
-from fontbakery.profile import Profile, get_module_profile
-
+from fontbakery.profile import Profile
 from fontbakery.errors import ValueValidationError
+from fontbakery.fonts_profile import profile_factory
 from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.badge import BadgeReporter
@@ -367,7 +367,7 @@ def get_profile():
         # silently fails, the main parser will show usage string.
         return Profile()
     imported = get_module(args.profile)
-    profile = get_module_profile(imported)
+    profile = profile_factory(imported)
     if not profile:
         raise Exception(f"Can't get a profile from {imported}.")
     return profile

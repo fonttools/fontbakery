@@ -9,10 +9,7 @@ from fontbakery.constants import (
 )
 from fontbakery.utils import markdown_table
 
-# used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable=W0611
-
-profile_imports = [(".shared_conditions", ("glyph_metrics_stats", "is_ttf", "is_cff"))]
+from fontbakery.profiles.shared_conditions import is_ttf, glyph_metrics_stats, style
 
 
 @check(
