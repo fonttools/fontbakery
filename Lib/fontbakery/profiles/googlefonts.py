@@ -7472,7 +7472,7 @@ def com_google_fonts_check_metadata_empty_designer(family_metadata):
         Any font published on Google Fonts must be listed in the tags spreadsheet.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4465",
-    experimental="Since 2024/Feb/1",
+    experimental="Since 2024/Feb/01",
 )
 def com_google_fonts_check_metadata_has_tags(family_metadata):
     """The font has tags in the GF Tags spreadsheet"""
