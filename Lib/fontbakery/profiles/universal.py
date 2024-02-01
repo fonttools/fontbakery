@@ -2562,7 +2562,13 @@ def com_google_fonts_check_alt_caron(ttFont):
             if len(glyph.components) > 1:
                 for component in glyph.components:
                     # Uses absolutely wrong caron mark
-                    codepoints = reverseCmap.get(component.glyphName, set())
+                    # Purge other endings in the future (not .alt)
+                    codepoints = reverseCmap.get(
+                        component.glyphName.replace(".case", "")
+                        .replace(".uc", "")
+                        .replace(".sc", ""),
+                        set(),
+                    )
                     if codepoints.intersection(WRONG_CARON_MARKS):
                         passed = False
                         yield FAIL, Message(
