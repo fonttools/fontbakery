@@ -16,7 +16,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **EXPERIMENTAL - [com.google.fonts/check/case_mapping]:** Ensure that no glyph lacks its corresponding upper or lower counterpart (but only when unicode supports case-mapping). (issue #3230)
 
 #### Added to the Google Fonts Profile
-  - **EXPERIMENTAL - [com.google.fonts/check/metadata/has_tags]:** Check that the font family appears in the tags spreadsheet. (issue #4465)
+  - **[com.google.fonts/check/metadata/has_tags]:** Check that the font family appears in the tags spreadsheet. (issues #4465 & #4470)
 
 ### Migration of checks
 #### Moved to the Google Fonts profile
