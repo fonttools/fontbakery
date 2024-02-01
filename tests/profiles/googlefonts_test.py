@@ -5320,7 +5320,7 @@ def test_check_metadata_has_tags():
     md.name = "Not Merriweather"
     assert_results_contain(
         check(ttFont, {"family_metadata": md}),
-        WARN,
+        FAIL,
         "no-tags",
         "with a name that doesn't appear...",
     )
