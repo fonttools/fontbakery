@@ -8,9 +8,6 @@ from fontbakery.section import Section
 from fontbakery.message import Message
 from fontbakery.utils import bullet_list
 
-# used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable=W0611
-
 ALIGNMENT_MISS_EPSILON = 2  # Two point lee-way on alignment misses
 SHORT_PATH_EPSILON = 0.006  # <0.6% of total outline length makes a short segment
 SHORT_PATH_ABSOLUTE_EPSILON = 3  # 3 units is a small outline
@@ -300,20 +297,3 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
     else:
         yield PASS, "No semi-horizontal/semi-vertical lines found."
 
-
-OUTLINE_PROFILE_IMPORTS = (
-    ".",
-    ("shared_conditions",),
-)
-profile_imports = (OUTLINE_PROFILE_IMPORTS,)
-profile = profile_factory(default_section=Section("Outline Correctness Checks"))
-OUTLINE_PROFILE_CHECKS = [
-    "com.google.fonts/check/outline_alignment_miss",
-    "com.google.fonts/check/outline_short_segments",
-    "com.google.fonts/check/outline_colinear_vectors",
-    "com.google.fonts/check/outline_jaggy_segments",
-    "com.google.fonts/check/outline_semi_vertical",
-]
-
-profile.auto_register(globals())
-profile.test_expected_checks(OUTLINE_PROFILE_CHECKS, exclusive=True)
