@@ -38,7 +38,6 @@ class Profile:
         conditions=None,
         expected_values=None,
         default_section=None,
-        check_skip_filter=None,
         profile_tag=None,
     ):
         """
@@ -121,8 +120,6 @@ class Profile:
         self.profile_tag = re.sub(
             r"[^a-z]", "", (profile_tag or self._default_section.name).lower()
         )
-
-        self.check_skip_filter = check_skip_filter
 
     _valid_namespace_types = {
         "iterargs": "iterarg",
