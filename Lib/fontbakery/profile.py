@@ -122,7 +122,7 @@ class Profile:
             r"[^a-z]", "", (profile_tag or self._default_section.name).lower()
         )
 
-        self._check_skip_filter = check_skip_filter
+        self.check_skip_filter = check_skip_filter
 
     _valid_namespace_types = {
         "iterargs": "iterarg",
@@ -593,37 +593,6 @@ class Profile:
 
     def _get_section(self, key):
         return self._sections[key]
-
-    @property
-    def check_skip_filter(self):
-        """return the current check_skip_filter function or None"""
-        return self._check_skip_filter
-
-    @check_skip_filter.setter
-    def check_skip_filter(self, check_skip_filter):
-        """ Set a check_skip_filter function.
-
-        A check_skip_filter has a signature like:
-
-        ```
-        def check_skip_filter(check_id: str, **iterargsDict : dict) \
-                                    -> Tuple[accepted: bool, message: str]
-          …
-        ```
-
-        If present, this function is called just before a check
-        with `check_id` is executed. `iterargsDict` is a dictionary
-        containing key:value pairs of the "iterable arguments" that will be
-        applied for that check execution.
-
-        If the returned `accepted` is falsy, the check will be SKIPed using
-        `message` for reporting.
-
-        There's no full resolution of all check arguments at this point,
-        That can be achieved with the `conditions=[]` argument of the
-        check constructor/decorator. This is for more general filtering.
-        """
-        self._check_skip_filter = check_skip_filter
 
     def setup_argparse(self, argument_parser):
         """
