@@ -47,7 +47,6 @@ class CheckRunner:
         profile,
         values,
         config,
-        values_can_override_profile_names=True,
         use_cache=True,
         jobs=0,
     ):
@@ -66,16 +65,6 @@ class CheckRunner:
             if plural in values:
                 values[plural] = tuple(values[plural])
                 self._iterargs[singular] = len(values[plural])
-
-        if not values_can_override_profile_names:
-            for name in values:
-                if profile.has(name) and profile.get_type(name) != "expected_values":
-                    # Of course values can override
-                    # expected_values, that's their purpose!
-                    raise SetupError(
-                        f'Values entry "{name}" collides with profile'
-                        f" namespace as a {profile.get_type(name)}"
-                    )
 
         self._profile = profile
         self._profile.test_dependencies()
