@@ -125,51 +125,6 @@ class CheckRunner:
 
         return Subresult(status, message)
 
-    def _exec_check(
-        self, identity: Identity, args: Dict[str, Any]
-    ) -> Sequence[Subresult]:
-        """Returns check sub results.
-
-        Each check result is a tuple of: (<Status>, mixed message)
-        `status`: must be an instance of Status.
-              If one of the `status` entries in one of the results
-              is FAIL, the whole check is considered failed.
-              WARN is most likely a PASS in a non strict mode and a
-              FAIL in a strict mode.
-        `message`:
-          * If it is an `Exception` type we expect `status`
-            not to be PASS
-          * If it is a `string` it's a description of what passed
-            or failed.
-          * we'll think of an AdvancedMessageType as well, so that
-            we can connect the check result with more in depth
-            knowledge from the check definition.
-        """
-        check = identity.check
-        if check.configs:
-            new_globals = {
-                varname: self.config.get(check.id, {}).get(varname)
-                for varname in check.configs
-            }
-            check.inject_globals(new_globals)
-        results = []
-        try:
-            result = check(**args)  # Might raise.
-            if inspect.isgenerator(result) or inspect.isgeneratorfunction(result):
-                results.extend(list(result))
-            else:
-                results = [result]
-        except Exception as error:
-            message = f"Failed with {type(error).__name__}: {error}\n```\n"
-            message += "".join(traceback.format_tb(error.__traceback__))
-            message += "\n```"
-            results = [(ERROR, Message("failed-check", message))]
-
-        return [
-            self._override_status(self._check_result(result), check)
-            for result in results
-        ]
-
     def _evaluate_condition(self, name, iterargs, path=None):
         if path is None:
             # top level call
@@ -393,18 +348,38 @@ class CheckRunner:
             return (status, None)
 
     def _run_check(self, identity: Identity):
-        skipped = None
         result = CheckResult(identity=identity)
 
         # Do we skip this check because of dependencies?
-        if not skipped:
-            skipped, args = self._get_check_dependencies(identity)
-
+        skipped, args = self._get_check_dependencies(identity)
         if skipped:
             result.append(Subresult(SKIP, skipped.message))
             return result
 
-        result.extend(self._exec_check(identity, args))
+        check = identity.check
+        if check.configs:
+            new_globals = {
+                varname: self.config.get(check.id, {}).get(varname)
+                for varname in check.configs
+            }
+            check.inject_globals(new_globals)
+    
+        try:
+            subresults = check(**args)  # Might raise.
+            if inspect.isgenerator(subresults) or inspect.isgeneratorfunction(subresults):
+                subresults = (list(subresults))
+            else:
+                subresults = [subresults]
+        except Exception as error:
+            message = f"Failed with {type(error).__name__}: {error}\n```\n"
+            message += "".join(traceback.format_tb(error.__traceback__))
+            message += "\n```"
+            subresults = [(ERROR, Message("failed-check", message))]
+
+        result.extend([
+            self._override_status(self._check_result(result), check)
+            for result in subresults
+        ])
         return result
 
     @property
