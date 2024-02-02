@@ -49,6 +49,10 @@ vim docs/source/conf.py
 git add -p
 git commit -m "update version on docs/source/conf.py"
 
+# See if there's any experimental check that could be made effective (non-experimental)
+# in the new release and update CHANGELOG accordingly.
+git grep experimental
+
 vim CHANGELOG.md
 git add -p
 git commit -m "update CHANGELOG in preparation for new release"
