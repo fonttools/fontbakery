@@ -10,14 +10,42 @@
     {{ cluster[0].rationale | unwrap | markdown }}
 {% endif %}
 
+<div style="background-color:#ee8">
 {% for check in cluster %}
-    {% if not check is omitted %}
+    {% if check['result'] == "FATAL" %}
+        {{ check['result'] | emoticon }}
+        {% if "filename" is in(check) %}{{ check.filename | basename }}
+        {% else %}
+        Family Check
+        {% endif %}
+        <ul>
+        {% for log in check.logs|sort(attribute="status.weight", reverse=true)%}
+            <li class='details_item'>
+                <span class='details_indicator'>
+                {{log["status"] | emoticon}} {{log["status"]}}
+                </span>
+
+                <span class='details_text'>
+                {{log["message"]["message"] | markdown}}
+                {% if log["message"]["code"] %}
+                {{" [code: " ~ log["message"]["code"] ~ "]"}}
+                {% endif %}
+                </span>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endfor %}
+</div>
+
+{% for check in cluster %}
+    {% if check['result'] != "FATAL" and not check is omitted %}
         <details>
             <summary>
                 {{ check['result'] | emoticon }}
                 {% if "filename" is in(check) %}{{ check.filename | basename }}
                 {% else %}
-                Family Check 
+                Family Check
                 {% endif %}
             </summary>
             <div>
@@ -27,11 +55,13 @@
                             <span class='details_indicator'>
                             {{log["status"] | emoticon}} {{log["status"]}}
                             </span>
+
                             <span class='details_text'>
                             {{log["message"]["message"] | markdown}}
                             {% if log["message"]["code"] %}
                             {{" [code: " ~ log["message"]["code"] ~ "]"}}
                             {% endif %}
+                            </span>
                         </li>
                 {% endfor %}
                 </ul>

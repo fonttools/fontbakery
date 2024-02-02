@@ -101,60 +101,89 @@ class GHMarkdownReporter(SerializeReporter):
         return all(check["logs"] == first_check["logs"] for check in cluster[1:])
 
     def get_markdown(self):
-        checks = {}
-        family_checks = []
-        experimental_checks = []
+        fatal_checks = {}
+        experimental_checks = {}
+        other_checks = {}
+
         data = self.getdoc()
         num_checks = 0
         for section in data["sections"]:
             for cluster in section["checks"]:
                 if not isinstance(cluster, list):
                     cluster = [cluster]
+
                 num_checks += len(cluster)
                 if len(cluster) > 1 and self.result_is_all_same(cluster):
                     # Pretend it's a family check
                     cluster = [cluster[0]]
                     del cluster[0]["filename"]
+
                 for check in cluster:
                     if self.omit_loglevel(check["result"]):
                         continue
                     check["profile"] = self.deduce_profile_from_section_name(
                         section["key"][0]
                     )
-                    if check["experimental"]:
-                        # These will be reported separately
-                        experimental_checks.append(check)
-                    elif "filename" not in check.keys():
-                        # That's a family check!
-                        family_checks.append(check)
-                    else:
+
+                    if "filename" in check.keys():
                         key = os.path.basename(check["filename"])
-                        if key not in checks:
-                            checks[key] = []
-                        checks[key].append(check)
+                    else:
+                        key = "Family checks"
+
+                    if check["result"] == "FATAL":
+                        # These will be reported at the very top.
+                        if key not in fatal_checks:
+                            fatal_checks[key] = []
+                        fatal_checks[key].append(check)
+                    elif check["experimental"]:
+                        # These will also be reported separately.
+                        if key not in experimental_checks:
+                            experimental_checks[key] = []
+                        experimental_checks[key].append(check)
+                    else:
+                        # All other checks are reported last.
+                        if key not in other_checks:
+                            other_checks[key] = []
+                        other_checks[key].append(check)
 
         md = f"## FontBakery report\n\nfontbakery version: {version}\n\n"
 
+        if fatal_checks:
+            md += (
+                "<h2>Checks with FATAL results</h2>"
+                "<p>These must be addressed first.</p>"
+            )
+            for filename in fatal_checks.keys():
+                md += html5_collapsible(
+                    "<b>[{}] {}</b>".format(len(fatal_checks[filename]), filename),
+                    "".join(map(self.check_md, fatal_checks[filename])) + "<br>",
+                )
+
         if experimental_checks:
-            experimental_checks.sort(key=lambda c: c["result"])
-            md += html5_collapsible(
-                "<b>[{}] Experimental checks</b>".format(len(experimental_checks)),
-                "".join(map(self.check_md, experimental_checks)) + "<br>",
+            md += (
+                "<h2>Experimental checks</h2>"
+                "<p>These won't break the CI job for now, but will become effective"
+                " after some time if nobody raises any concern.</p>"
             )
+            for filename in experimental_checks.keys():
+                experimental_checks[filename].sort(
+                    key=lambda c: LOGLEVELS.index(c["result"])
+                )
+                md += html5_collapsible(
+                    "<b>[{}] {}</b>".format(
+                        len(experimental_checks[filename]), filename
+                    ),
+                    "".join(map(self.check_md, experimental_checks[filename])) + "<br>",
+                )
 
-        if family_checks:
-            family_checks.sort(key=lambda c: c["result"])
-            md += html5_collapsible(
-                "<b>[{}] Family checks</b>".format(len(family_checks)),
-                "".join(map(self.check_md, family_checks)) + "<br>",
-            )
-
-        for filename in checks.keys():
-            checks[filename].sort(key=lambda c: LOGLEVELS.index(c["result"]))
-            md += html5_collapsible(
-                "<b>[{}] {}</b>".format(len(checks[filename]), filename),
-                "".join(map(self.check_md, checks[filename])) + "<br>",
-            )
+        if other_checks:
+            md += "<h2>All other checks</h2>"
+            for filename in other_checks.keys():
+                other_checks[filename].sort(key=lambda c: LOGLEVELS.index(c["result"]))
+                md += html5_collapsible(
+                    "<b>[{}] {}</b>".format(len(other_checks[filename]), filename),
+                    "".join(map(self.check_md, other_checks[filename])) + "<br>",
+                )
 
         if num_checks != 0:
             summary_table = (
@@ -165,9 +194,8 @@ class GHMarkdownReporter(SerializeReporter):
                 + (
                     "|" + "|".join([":-----:"] * len(LOGLEVELS)) + "|\n"
                     "|" + "|".join([" {} "] * len(LOGLEVELS)) + "|\n"
-                    ""
                 ).format(*[data["result"][k] for k in LOGLEVELS])
-                + ("|" + "|".join([" {:.0f}% "] * len(LOGLEVELS)) + "|\n" "").format(
+                + ("|" + "|".join([" {:.0f}% "] * len(LOGLEVELS)) + "|\n").format(
                     *[100 * data["result"][k] / num_checks for k in LOGLEVELS]
                 )
             )
