@@ -1,21 +1,5 @@
-"""
-Checks for Font Bureau.
-"""
-
-from fontbakery.callable import check
-from fontbakery.section import Section
-from fontbakery.status import PASS, FAIL
-from fontbakery.fonts_profile import profile_factory
-from fontbakery.message import Message
-from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
-
-profile_imports = ("fontbakery.profiles.universal",)
-profile = profile_factory(default_section=Section("Font Bureau"))
-
-FONTBUREAU_PROFILE_CHECKS = UNIVERSAL_PROFILE_CHECKS + [
-    "io.github.abysstypeco/check/ytlc_sanity"
-]
-
+from fontbakery.prelude import check, FAIL, PASS, Message
+from fontbakery.profiles.shared_conditions import is_variable_font
 
 @check(
     id="io.github.abysstypeco/check/ytlc_sanity",
@@ -44,9 +28,3 @@ def io_github_abysstypeco_check_ytlc_sanity(ttFont):
             )
     if passed:
         yield PASS, "ytlc is sane"
-
-
-profile.auto_register(globals())
-
-
-profile.test_expected_checks(FONTBUREAU_PROFILE_CHECKS, exclusive=True)
