@@ -17,6 +17,7 @@ from fontbakery.result import Identity
 from fontbakery.configuration import Configuration
 from fontbakery.message import Message
 from fontbakery.section import Section
+from fontbakery.status import Status
 from fontbakery.utils import is_negated
 from fontbakery.status import DEBUG
 
@@ -39,6 +40,7 @@ class Profile:
         expected_values=None,
         default_section=None,
         profile_tag=None,
+        overrides=None,
     ):
         """
           sections: a list of sections, which are ideally ordered sets of
@@ -120,6 +122,8 @@ class Profile:
         self.profile_tag = re.sub(
             r"[^a-z]", "", (profile_tag or self._default_section.name).lower()
         )
+
+        self.overrides = overrides or {}
 
     _valid_namespace_types = {
         "iterargs": "iterarg",
@@ -555,19 +559,12 @@ class Profile:
         section = self._check_registry[check_id]
         section.remove_check(check_id)
 
-    def check_log_override(
-        self,
-        override_check_id,
-        # see def check_log_override
-        *args,
-        **kwds,
-    ):
-        new_id = f"{override_check_id}:{self.profile_tag}"
-        old_check, section = self.get_check(override_check_id)
-        new_check = check_log_override(old_check, new_id, *args, **kwds)
-        new_check.conditions = old_check.conditions
-        section.replace_check(override_check_id, new_check)
-        return new_check
+    def should_override(self, check_id, code) -> Optional[Status]:
+        if check_id in self.overrides:
+            for override in self.overrides[check_id]:
+                if code == override["code"]:
+                    return Status(override["status"])
+        return None
 
     def get_check(self, check_id):
         section = self._check_registry[check_id]

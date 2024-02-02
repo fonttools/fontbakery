@@ -215,13 +215,12 @@ def profile_factory(module):
             sections, section, checks, excluded=profile_data.get("exclude_checks", [])
         )
 
-    if "overrides" in profile_data:
-        pass
     profile = FontsProfile(
         iterargs=FontsProfile._iterargs(),
         derived_iterables={"ttFonts": ("ttFont", True)},
         expected_values=FontsProfile._expected_values(),
         sections=list(sections.values()),
         conditions=conditions_by_name,
+        overrides=profile_data.get("overrides", {}),
     )
     return profile
