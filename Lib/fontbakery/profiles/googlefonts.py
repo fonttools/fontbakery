@@ -7468,52 +7468,6 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
 
 ###############################################################################
 
-
-def is_librebarcode(font):
-    font_filenames = [
-        "LibreBarcode39-Regular.ttf",
-        "LibreBarcode39Text-Regular.ttf",
-        "LibreBarcode128-Regular.ttf",
-        "LibreBarcode128Text-Regular.ttf",
-        "LibreBarcode39Extended-Regular.ttf",
-        "LibreBarcode39ExtendedText-Regular.ttf",
-    ]
-    for font_filename in font_filenames:
-        if font_filename in font:
-            return True
-
-
-def check_skip_filter(checkid, font=None, **iterargs):
-    if (
-        font
-        and is_librebarcode(font)
-        and checkid
-        in (
-            # See: https://github.com/graphicore/librebarcode/issues/3
-            "com.google.fonts/check/monospace",
-            "com.google.fonts/check/gpos_kerning_info",
-            "com.google.fonts/check/currency_chars",
-            "com.google.fonts/check/whitespace_ink",
-        )
-    ):
-        return False, (
-            "LibreBarcode is blacklisted for this check, see "
-            "https://github.com/graphicore/librebarcode/issues/3"
-        )
-
-    if checkid == "com.google.fonts/check/unitsperem":
-        # This is the one inherited from the OpenType profile, but:
-        return False, (
-            "Google Fonts has a stricter policy which is enforced by"
-            " com.google.fonts/check/unitsperem_strict"
-        )
-
-    return True, None
-
-
-profile.check_skip_filter = check_skip_filter
-profile.auto_register(globals())
-
 profile.check_log_override(
     # From opentype.py
     "com.google.fonts/check/italic_angle",

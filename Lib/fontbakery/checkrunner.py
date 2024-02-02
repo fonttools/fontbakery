@@ -395,24 +395,6 @@ class CheckRunner:
     def _run_check(self, identity: Identity):
         skipped = None
         result = CheckResult(identity=identity)
-        # Does the profile want to skip this check?
-        if self._profile.check_skip_filter:
-            iterargsDict = {
-                key: self.get_iterarg(key, index) for key, index in identity.iterargs
-            }
-            accepted, message = self._profile.check_skip_filter(
-                identity.check.id, **iterargsDict
-            )
-            if not accepted:
-                result.append(
-                    Subresult(
-                        SKIP,
-                        Message(
-                            "filtered", "Filtered: {}".format(message or "(no message)")
-                        ),
-                    )
-                )
-                return result
 
         # Do we skip this check because of dependencies?
         if not skipped:
