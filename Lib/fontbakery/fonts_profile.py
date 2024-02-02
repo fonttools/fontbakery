@@ -148,9 +148,11 @@ class FontsProfile(Profile):
     def _iterargs(cls):
         return {val.singular: val.name for val in cls.accepted_files}
 
+
 checks_by_id = {}
 conditions_by_name = {}
 checks_loaded = False
+
 
 def load_all_checks():
     for importer, modname, ispkg in pkgutil.walk_packages(fontbakery.checks.__path__):
@@ -168,30 +170,58 @@ def load_all_checks():
                 checks_by_id[definition.id] = definition
             if isinstance(definition, FontBakeryCondition):
                 # if name in conditions_by_name:
-                    # raise ValueError(f"Condition {name} already defined")
+                # raise ValueError(f"Condition {name} already defined")
                 conditions_by_name[name] = definition
-    checks_loaded = True
+
+
+def add_checks_to_nascent_profile(sections, section, checks, excluded=None):
+    if section not in sections:
+        sections[section] = Section(
+            name=section,
+            checks=[],
+        )
+    for check in checks:
+        if check not in checks_by_id:
+            raise ValueError(f"Check {check} not found")
+        if excluded and check in excluded:
+            continue
+        check_object = checks_by_id[check]
+        if not sections[section].has_check(check):
+            sections[section].add_check(check_object)
+
 
 def profile_factory(module):
+    global checks_loaded
     if not checks_loaded:
         load_all_checks()
+        checks_loaded = True
     profile_data = getattr(module, "PROFILE")
-    sections = []
+    sections = {}
+
+    if "include_profiles" in profile_data:
+        for profilename in profile_data["include_profiles"]:
+            module = importlib.import_module(f"fontbakery.profiles.{profilename}")
+            included_profile = profile_factory(module)
+            for section in included_profile.sections:
+                add_checks_to_nascent_profile(
+                    sections,
+                    section.name,
+                    [check.id for check in section.checks],
+                    excluded=profile_data.get("exclude_checks", []),
+                )
+
     for section, checks in profile_data["sections"].items():
-        check_objects = []
-        for check in checks:
-            if check not in checks_by_id:
-                raise ValueError(f"Check {check} not found")
-            check_objects.append(checks_by_id[check])
-        sections.append( Section(
-            name=section,
-            checks=check_objects,
-        ))
+        add_checks_to_nascent_profile(
+            sections, section, checks, excluded=profile_data.get("exclude_checks", [])
+        )
+
+    if "overrides" in profile_data:
+        pass
     profile = FontsProfile(
         iterargs=FontsProfile._iterargs(),
         derived_iterables={"ttFonts": ("ttFont", True)},
         expected_values=FontsProfile._expected_values(),
-        sections=sections,
+        sections=list(sections.values()),
         conditions=conditions_by_name,
     )
     return profile

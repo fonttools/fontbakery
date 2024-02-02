@@ -121,6 +121,9 @@ class Section:
                 continue
             self.add_check(check)
 
+    def has_check(self, check_id):
+        return check_id in self._checkid2index
+
     def get_check(self, check_id):
         index = self._checkid2index[check_id]
         return self._checks[index]
