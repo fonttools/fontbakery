@@ -429,6 +429,10 @@ class CheckRunner:
             reporter.end()
 
     def _override_status(self, subresult: Subresult, check):
+        # Potentially override the status based on the profile.
+        if new_status := self.profile.should_override(check.id, subresult.message.code):
+            subresult.status = new_status
+            return subresult
         # Potentially override the status based on the config file.
         # Replaces the status with config["overrides"][check.id][message.code]
         status_overrides = self.config.get("overrides", {}).get(check.id)
