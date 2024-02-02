@@ -51,9 +51,10 @@ class BadgeReporter(SerializeReporter):
                 if check["result"] == "ERROR":
                     error_state = True
                     break
-                out_of += severity
-                if check["result"] == "PASS":
-                    score += severity
+                if severity is not None:
+                    out_of += severity
+                    if check["result"] == "PASS":
+                        score += severity
             total_score += score
             total_total += out_of
             sections[key] = self.make_section(key, error_state, score, out_of)
