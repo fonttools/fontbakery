@@ -594,16 +594,6 @@ class Profile:
     def _get_section(self, key):
         return self._sections[key]
 
-    @staticmethod
-    def _get_package(symbol_table):
-        package = symbol_table.get("__package__", None)
-        if package is not None:
-            return package
-        name = symbol_table.get("__name__", None)
-        if name is None or "." not in name:
-            return None
-        return name.rpartition(".")[0]
-
     @property
     def check_skip_filter(self):
         """return the current check_skip_filter function or None"""
