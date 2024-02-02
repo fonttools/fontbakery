@@ -91,13 +91,13 @@
 <meta name="feedback_help_link_url" content="" />
 <meta name="feedback_product_url" content="" />
 <meta name="feedback_system" content="GitHub" />
-<meta name="git_commit_id" content="33bdf609ac20c0fd9a10720b643e7801a6c44109" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/33bdf609ac20c0fd9a10720b643e7801a6c44109/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="ba9b3366f5d41be7e40bd326bff80fe18ba12ece" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/ba9b3366f5d41be7e40bd326bff80fe18ba12ece/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="01/04/2024" />
-<meta name="ms.prod" content="typography" />
+<meta name="ms.date" content="02/01/2024" />
+<meta name="ms.service" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <meta name="page_type" content="conceptual" />
@@ -107,13 +107,9 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2024-01-04 06:55 PM" />
-<meta name="word_count" content="4714" />
+<meta name="updated_at" content="2024-02-02 01:49 AM" />
+<meta name="word_count" content="4765" />
 
-
-	<meta name="recommendation_types" content="Training" />
-	<meta name="recommendation_types" content="Certification" />
-	
 
 	<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
 	
@@ -136,12 +132,13 @@
 
 	
 
+
 	<meta name="scope" content="typography" />
 	<meta name="github_feedback_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/d017a206.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/9b5f3dea.site-ltr.css ">
 
 	
 
@@ -209,7 +206,7 @@
 			id="adobe-target-script"
 			type="application/javascript"
 		/>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/3b3c6903.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b178e385.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -513,7 +510,7 @@ Table of contents						</span>
 Article													</li>
 
 													<li class="visibility-hidden-visual-diff">
-														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-01-04T08:00:00Z" data-article-date-source="calculated">01/04/2024</time>
+														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-02-01T08:00:00Z" data-article-date-source="calculated">02/01/2024</time>
 													</li>
 														<li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
@@ -872,7 +869,7 @@ Article													</li>
 </tr>
 <tr>
 <td>AJPT</td>
-<td><a href="http://www.prescottdesignshop.com" data-linktype="external">Alan Jay Prescott Typography</a></td>
+<td>Alan Jay Prescott Typography</td>
 </tr>
 <tr>
 <td>AKDL</td>
@@ -921,6 +918,10 @@ Article													</li>
 <tr>
 <td>alte</td>
 <td><a href="http://www.altemus.com/" data-linktype="external">Altemus</a></td>
+</tr>
+<tr>
+<td>ALTR</td>
+<td><a href="https://www.brandnewtype.com/" data-linktype="external">alterType</a></td>
 </tr>
 <tr>
 <td>ALTS</td>
@@ -1370,6 +1371,10 @@ Article													</li>
 <td><a href="http://www.blazetype.eu" data-linktype="external">Blaze Type</a></td>
 </tr>
 <tr>
+<td>BM86</td>
+<td><a href="https://madzonga.com/" data-linktype="external">Madzonga</a></td>
+</tr>
+<tr>
 <td>BMD</td>
 <td>Brittney Murphy Design</td>
 </tr>
@@ -1593,6 +1598,10 @@ Article													</li>
 <td><a href="http://www.borgeslettering.com" data-linktype="external">Borges Lettering & Design</a></td>
 </tr>
 <tr>
+<td>CCCT</td>
+<td><a href="https://chochoicreative.com/" data-linktype="external">Cho Choi Creative</a></td>
+</tr>
+<tr>
 <td>CDAC</td>
 <td>Centre for Development of Advanced Computing</td>
 </tr>
@@ -1690,7 +1699,7 @@ Article													</li>
 </tr>
 <tr>
 <td>CNTP</td>
-<td>Contextype</td>
+<td><a href="https://contextype.com/" data-linktype="external">Contextype</a></td>
 </tr>
 <tr>
 <td>COFM</td>
@@ -1751,6 +1760,10 @@ Article													</li>
 <tr>
 <td>CRRT</td>
 <td><a href="http://www.carrottype.com" data-linktype="external">Carrot Type</a></td>
+</tr>
+<tr>
+<td>CSCF</td>
+<td><a href="https://casasin.com/" data-linktype="external">Casasin Custom Fonts</a></td>
 </tr>
 <tr>
 <td>csmp</td>
@@ -2240,6 +2253,10 @@ Article													</li>
 <td><a href="http://familytype.co/" data-linktype="external">Family Type</a></td>
 </tr>
 <tr>
+<td>FANC</td>
+<td>字言字型 Fancytype foundry/字言字語</td>
+</tr>
+<tr>
 <td>FARH</td>
 <td><a href="https://farhill.nl/ " data-linktype="external">Peter Verheul (cc)</a></td>
 </tr>
@@ -2250,6 +2267,10 @@ Article													</li>
 <tr>
 <td>FAUX</td>
 <td><a href="https://www.fauxfoundry.com" data-linktype="external">FauxFoundry</a></td>
+</tr>
+<tr>
+<td>FAY</td>
+<td><a href="https://faytype.com/" data-linktype="external">FayType</a></td>
 </tr>
 <tr>
 <td>FBI</td>
@@ -2382,10 +2403,6 @@ Article													</li>
 <tr>
 <td>FMLJ</td>
 <td><a href="https://familjen.se/" data-linktype="external">Familjen</a></td>
-</tr>
-<tr>
-<td>FMST</td>
-<td><a href="http://www.formist.co" data-linktype="external">Formist</a></td>
 </tr>
 <tr>
 <td>FNBD</td>
@@ -3065,6 +3082,10 @@ Article													</li>
 <td><a href="https://www.identitylab.at/" data-linktype="external">Identity Lab</a></td>
 </tr>
 <tr>
+<td>IDLT</td>
+<td><a href="https://www.identity-letters.com/" data-linktype="external">Identity Letters</a></td>
+</tr>
+<tr>
 <td>IDMS</td>
 <td><a href="https://www.incstonedesign.com/" data-linktype="external">Incstone Design by Megami Studios</a></td>
 </tr>
@@ -3499,6 +3520,10 @@ Article													</li>
 <td><a href="https://www.ksesoftware.com/type.html" data-linktype="external">KSE Software</a></td>
 </tr>
 <tr>
+<td>KT</td>
+<td><a href="https://kalaustype.com/" data-linktype="external">Kalaus Type</a></td>
+</tr>
+<tr>
 <td>KTF</td>
 <td><a href="http://www.kustomtype.com" data-linktype="external">Kustomtype</a></td>
 </tr>
@@ -3538,8 +3563,8 @@ Article													</li>
 <td><a href="http://www.L2M3.com" data-linktype="external">L2M3 Kommunikationsdesign GmbH</a></td>
 </tr>
 <tr>
-<td>L52</td>
-<td>Lipika52 Type Foundry</td>
+<td>L52</td>   
+<td><a href="https://lipika52.com.bd/" data-linktype="external">Lipika52 Type Foundry</a></td>
 </tr>
 <tr>
 <td>LA</td>
@@ -3796,6 +3821,10 @@ Article													</li>
 <tr>
 <td>Ltrm</td>
 <td><a href="http://www.lettermin.com" data-linktype="external">Lettermin type and design</a></td>
+</tr>
+<tr>
+<td>LTRS</td>
+<td><a href="http://www.formist.co" data-linktype="external">The Letters</a></td>
 </tr>
 <tr>
 <td>LTRX</td>
@@ -4305,6 +4334,10 @@ Article													</li>
 <td><a href="http://www.mauvetype.com" data-linktype="external">Mauve Type</a></td>
 </tr>
 <tr>
+<td>MVST</td>               
+<td><a href="https://manvstype.xyz/" data-linktype="external">Man Versus Type</a></td>
+</tr>
+<tr>
 <td>MVty</td>
 <td><a href="https://www.martinvalerio.com/mvtypo_home.html" data-linktype="external">MV Typo</a></td>
 </tr>
@@ -4794,6 +4827,10 @@ Article													</li>
 <td><a href="http://www.poem-editions.com" data-linktype="external">Poem</a></td>
 </tr>
 <tr>
+<td>POI</td>
+<td><a href="https://poitype.com/" data-linktype="external">Place of Interest Type Foundry</a></td>
+</tr>
+<tr>
 <td>PoW</td>
 <td>Proof of Words</td>
 </tr>
@@ -4952,6 +4989,10 @@ Article													</li>
 <td><a href="http://www.rarillustrations.com" data-linktype="external">RAR Illustrations</a></td>
 </tr>
 <tr>
+<td>RAWR</td>
+<td><a href="https://melvian.xyz/foundry/" data-linktype="external">Melvian Foundry</a></td>
+</tr>
+<tr>
 <td>RDGR</td>
 <td><a href="http://www.philippneumeyer.com/" data-linktype="external">Rüdiger</a></td>
 </tr>
@@ -5093,7 +5134,7 @@ Article													</li>
 </tr>
 <tr>
 <td>rthy</td>
-<td><a href="http://arthy.id/" data-linktype="external">Arthy</a></td>
+<td>Arthy</td>
 </tr>
 <tr>
 <td>RTYP</td>
@@ -5530,6 +5571,10 @@ Article													</li>
 <td>SySt</td>
 <td><a href="http://syfonstudio.com/" data-linktype="external">Syfon Studio</a></td>
 </tr>
+<tr>
+<td>szgs</td>
+<td>Szabó Gergely Sándor</td>
+</tr>
 </table>
 <h2 id="t">T</h2>
 <table>
@@ -5908,6 +5953,10 @@ Article													</li>
 <tr>
 <td>TYFR</td>
 <td><a href="http://www.typographies.fr" data-linktype="external">typographies.fr</a></td>
+</tr>
+<tr>
+<td>TyHa</td>
+<td><a href="https://t.me/Type_Habesha" data-linktype="external">TypeHabesha</a></td>
 </tr>
 <tr>
 <td>TYMD</td>
@@ -6290,7 +6339,7 @@ Article													</li>
 </tr>
 <tr>
 <td>YMGT</td>
-<td><a href="https://yoonmingoo.net/" data-linktype="external">YMG Type Foundry</a></td>
+<td>YMG Type Foundry</td>
 </tr>
 <tr>
 <td>YN</td>
@@ -6588,7 +6637,7 @@ High contrast					</span>
 					<li><a class="external-link-indicator" data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
 				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 				<li><a class="external-link-indicator" data-mscc-ic="false" href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/" data-bi-name="trademarks">Trademarks</a></li>
-		<li>&copy; Microsoft 2023</li>
+		<li>&copy; Microsoft 2024</li>
 	</ul>
 </footer>
 						</div>
@@ -6769,7 +6818,7 @@ High contrast					</span>
 					<li><a class="external-link-indicator" data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy</a></li>
 				<li><a class="external-link-indicator" data-mscc-ic="false" href="/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
 				<li><a class="external-link-indicator" data-mscc-ic="false" href="https://www.microsoft.com/legal/intellectualproperty/Trademarks/" data-bi-name="trademarks">Trademarks</a></li>
-		<li>&copy; Microsoft 2023</li>
+		<li>&copy; Microsoft 2024</li>
 	</ul>
 </footer>
 	</section>
