@@ -401,16 +401,6 @@ class CheckRunner:
         self._cache["order"] = order = tuple(order)
         return order
 
-    def check_order(self, order):
-        """
-        order must be a subset of self.order
-        """
-        own_order = self.order
-        for item in order:
-            if item not in own_order:
-                raise ValueError(f"Order item {item} not found.")
-        return order
-
     def run(self, reporters):
         sections = OrderedDict()
 
