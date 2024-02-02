@@ -9,7 +9,7 @@ dehinter==4.0.0
 fontTools[ufo,lxml,unicode]==4.47.2
 font-v==2.1.0
 freetype-py==2.3.0  # pinned for now. See: https://github.com/fonttools/fontbakery/issues/4143
-gflanguages==0.5.16
+gflanguages==0.5.17
 gfsubsets==2024.1.22.post2
 glyphsets==0.6.11
 Jinja2==3.1.3
