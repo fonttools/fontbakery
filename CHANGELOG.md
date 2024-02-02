@@ -2,7 +2,11 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.11.0 (2024-Feb-??)
+## Upcoming release: 0.11.1 (2024-Feb-??)
+  - ...
+
+
+## 0.11.0 (2024-Feb-02)
 ### Noteworthy code-changes
   - The babelfont dependency has been dropped. (PR #4416)
   - Fix a crash when no matching checks are found during a multi-processing run. Also, do not freeze indefinitely. Instead, terminate the program emitting a process error code -1 and giving the user some guidance. (issue #4420)
