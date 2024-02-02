@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fix a crash when no matching checks are found during a multi-processing run. Also, do not freeze indefinitely. Instead, terminate the program emitting a process error code -1 and giving the user some guidance. (issue #4420)
   - Reporters have been refactored; there may be some changes to the terminal display, particularly when --succinct is passed. (PR #4447)
   - Added templating for the HTML reporter. We were mixing a lot of HTML and code in the same reporter, leading to messy code that's hard to improve. But now we use Jinja2 to feed the JSON output from the serialize reporter into a bunch of HTML templates. The reporter code is a lot simpler, and as a bonus, we make it easier for profile owners to change the look-and-feel of their reports. (PR #4460)
+  - Improved grouping of check results on the reporters, displaying separately (1) checks with FATAL results (2) experimental checks and (3) all remaining check results. (issue #4377)
 
 ### New checks
 #### Added to the Universal Profile
