@@ -843,7 +843,6 @@ def com_google_fonts_check_metadata_category(family_metadata):
     id="com.google.fonts/check/family/equal_codepoint_coverage",
     conditions=["are_ttf", "stylenames_are_canonical"],
     proposal="https://github.com/fonttools/fontbakery/issues/4180",
-    experimental="Since 2023/Oct/13",
 )
 def com_google_fonts_check_family_equal_codepoint_coverage(ttFonts, config):
     """Fonts have equal codepoint coverage"""
@@ -3527,7 +3526,6 @@ def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
         "network"
     ],  # use Shaperglot, which uses youseedee, which downloads Unicode files
     proposal=["https://github.com/googlefonts/fontbakery/issues/4147"],
-    experimental="Since 2023/Nov/02",
 )
 def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
     """Shapes languages in all GF glyphsets."""
@@ -7451,7 +7449,6 @@ def com_google_fonts_check_description_noto_has_article(font):
         be mentioned in the designer field.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3961",
-    experimental="Since 2023/Oct/12",
 )
 def com_google_fonts_check_metadata_empty_designer(family_metadata):
     """At least one designer is declared in METADATA.pb"""

@@ -23,6 +23,18 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts Profile
   - **[com.google.fonts/check/metadata/has_tags]:** Check that the font family appears in the tags spreadsheet. (issues #4465 & #4470)
 
+### Previously experimental checks now made effective
+The dates indicate when each check was originally implemented as temporarily experimental.
+
+#### Promoted on Universal profile
+  - 2023/Oct/13: **com.google.fonts/check/legacy_accents**
+  - 2023/Oct/20: **com.google.fonts/check/arabic_high_hamza**
+
+#### Promoted on Google Fonts profile
+  - 2023/Oct/12: **com.google.fonts/check/metadata/empty_designer**
+  - 2023/Oct/13: **com.google.fonts/check/family/equal_codepoint_coverage**
+  - 2023/Nov/02: **com.google.fonts/check/glyphsets/shape_languages**
+
 ### Migration of checks
 #### Moved to the Google Fonts profile
   - **[com.google.fonts/check/varfont/bold_wght_coord]:** from the Open Type profile. (issue #4436)
