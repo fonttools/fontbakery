@@ -7480,7 +7480,7 @@ def com_google_fonts_check_metadata_has_tags(family_metadata):
     tags = gf_tags()
     tagged_families = set(row[0] for row in tags[6:])
     if family_metadata.name not in tagged_families:
-        yield FAIL, Message("no-tags", "Family does not appear in tag spreadsheet.")
+        yield FATAL, Message("no-tags", "Family does not appear in tag spreadsheet.")
     else:
         yield PASS, "Family has tags"
 
