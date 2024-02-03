@@ -308,21 +308,6 @@ class TerminalReporter(FontbakeryReporter):
                 f"[message-{msg.name}]{msg.name}[/message-{msg.name}] \\[{codes}]"
             )
 
-    def _render_SECTIONSUMMARY(self, event):
-        msg = event.message
-        order, counter = msg
-        self._console.print("")
-        self._console.print(
-            "=" * 8, f"Section results: {event.identity.section}", "=" * 8
-        )
-        self._console.print(
-            "{} {} in section".format(
-                len(order), len(order) == 1 and "check" or "checks"
-            )
-        )
-        self._console.print("")
-        self._console.print(self._render_results_counter())
-
     def _render_subresult(self, event):
         if self.succinct:
             return
