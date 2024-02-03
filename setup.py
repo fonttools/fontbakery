@@ -151,7 +151,10 @@ setup(
             "data/*.cache",
             "data/*.base64",
             "data/googlefonts/*_exceptions.txt",
-        ]
+        ],
+        "fontbakery.reporters": [
+            "templates/*/*",
+        ],
     },
     classifiers=[
         "Environment :: Console",
