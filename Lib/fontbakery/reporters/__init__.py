@@ -25,6 +25,7 @@ class FontbakeryReporter:
     loglevels: Optional[Iterable[Status]] = None
     collect_results_by: Optional[str] = None
     succinct: bool = False
+    quiet: bool = False
 
     def __post_init__(self):
         self._started = None

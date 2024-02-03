@@ -109,6 +109,13 @@ def ArgumentParser(profile, profile_arg=True):
     )
 
     argument_parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Be quiet, Don’t report anything on the terminal.",
+    )
+
+    argument_parser.add_argument(
         "-l",
         "--loglevel",
         dest="loglevels",
@@ -450,6 +457,7 @@ def main(profile=None, values=None):
         collect_results_by=args.gather_by,
         theme=theme,
         print_progress=not args.no_progress,
+        quiet=args.quiet,
     )
     reporters = [tr]
 
@@ -465,6 +473,7 @@ def main(profile=None, values=None):
                 succinct=args.succinct,
                 collect_results_by=args.gather_by,
                 output_file=output_file,
+                quiet=args.quiet,
             )
         )
 

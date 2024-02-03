@@ -3,7 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.11.1 (2024-Feb-??)
-  - ...
+### Release highlights & new features
+  - Added a `-q` `--quiet` CLI option to suppress all terminal output.
 
 
 ## 0.11.0 (2024-Feb-02)

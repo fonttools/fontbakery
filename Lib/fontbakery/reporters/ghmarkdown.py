@@ -11,11 +11,12 @@ class GHMarkdownReporter(SerializeReporter):
     def write(self):
         with open(self.output_file, "w", encoding="utf8") as fh:
             fh.write(self.get_markdown())
-        print(
-            f"A report in GitHub Markdown format which can be useful\n"
-            f" for posting issues on a GitHub issue tracker has been\n"
-            f' saved to "{self.output_file}"'
-        )
+        if not self.quiet:
+            print(
+                f"A report in GitHub Markdown format which can be useful\n"
+                f" for posting issues on a GitHub issue tracker has been\n"
+                f' saved to "{self.output_file}"'
+            )
 
     @staticmethod
     def emoticon(name):
