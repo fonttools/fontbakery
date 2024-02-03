@@ -63,4 +63,5 @@ class SerializeReporter(FontbakeryReporter):
 
         with open(self.output_file, "w", encoding="utf-8") as fh:
             json.dump(self.getdoc(), fh, sort_keys=True, indent=4)
-        print(f'A report in JSON format has been saved to "{self.output_file}"')
+        if not self.quiet:
+            print(f'A report in JSON format has been saved to "{self.output_file}"')

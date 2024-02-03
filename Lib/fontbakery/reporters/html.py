@@ -48,7 +48,8 @@ class HTMLReporter(SerializeReporter):
     def write(self):
         with open(self.output_file, "w", encoding="utf-8") as fh:
             fh.write(self.get_html())
-        print(f'A report in HTML format has been saved to "{self.output_file}"')
+        if not self.quiet:
+            print(f'A report in HTML format has been saved to "{self.output_file}"')
 
     def get_html(self) -> str:
         """Returns complete report as a HTML string."""

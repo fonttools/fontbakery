@@ -99,6 +99,8 @@ class TerminalReporter(FontbakeryReporter):
         self._console = rich.console.Console(theme=self.theme, highlight=False)
         if self.succinct:
             self.print_progress = False
+        if self.quiet:
+            self.print_progress = False
         self.progressbar = None
         self._log_context = None
         if self.print_progress:
@@ -143,6 +145,8 @@ class TerminalReporter(FontbakeryReporter):
 
     def start(self, order):
         super().start(order)
+        if self.quiet:
+            return
         self._console.print(
             f"Start ... running {len(order)} individual check executions."
         )
@@ -153,6 +157,8 @@ class TerminalReporter(FontbakeryReporter):
 
     def end(self):
         super().end()
+        if self.quiet:
+            return
         self._console.print("")
         if self.collect_results_by:
             self._console.print("Collected results by", self.collect_results_by)
@@ -197,6 +203,8 @@ class TerminalReporter(FontbakeryReporter):
 
     def receive_result(self, checkresult: CheckResult):
         super().receive_result(checkresult)
+        if self.quiet:
+            return
         if self.print_progress:
             self._set_progress_event(checkresult)
 
