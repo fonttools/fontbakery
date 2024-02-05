@@ -97,9 +97,7 @@ class TerminalReporter(FontbakeryReporter):
         stdout = sys.stdout
         self.theme = self.theme or LIGHT_THEME
         self._console = rich.console.Console(theme=self.theme, highlight=False)
-        if self.succinct:
-            self.print_progress = False
-        if self.quiet:
+        if self.succinct or self.quiet:
             self.print_progress = False
         self.progressbar = None
         self._log_context = None
