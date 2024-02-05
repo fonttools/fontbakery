@@ -1,7 +1,8 @@
 import sys
-import types
 from mock import MagicMock
+from importlib import import_module
 import unicodedata
+import json
 
 sys.modules["unicodedata2"] = sys.modules["unicodedata"]
 for notreal in [
@@ -9,6 +10,11 @@ for notreal in [
     "cmarkgfm.cmark",
     "toml",
     "rich",
+    "rich.theme",
+    "rich.segment",
+    "rich.live",
+    "rich.markdown",
+    "rich.markup",
     "pyyaml",
     "yaml",
     "glyphsLib",
@@ -25,11 +31,7 @@ import argparse
 from fontbakery.commands.check_profile import get_module, log_levels
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.checkrunner import (
-    get_module_profile,
     CheckRunner,
-    START,
-    ENDCHECK,
-    distribute_generator,
 )
 import fontbakery
 import pkgutil
@@ -39,24 +41,26 @@ import re
 
 class ProgressReporter(SerializeReporter):
     def __init__(self, callback, loglevels):
-        super().__init__(loglevels)
+        super().__init__(loglevels=loglevels)
         self.count = 0
         self.callback = callback
 
-    def receive(self, event):
-        super().receive(event)
-        status, message, identity = event
-        section, check, iterargs = identity
-        key = self._get_key(identity)
+    def start(self, order):
+        super().start(order)
+        self.count = len(order)
+
+    def receive_result(self, checkresult):
+        super().receive_result(checkresult)
         done = self.count - self._counter["(not finished)"]
-        if status == START:
-            self.count = len(message)
-        elif status == ENDCHECK:
-            self._items[key]["key"] = check.id
-            self._items[key]["doc"] = check.__doc__
-            self.callback({"progress": 100 * done / float(self.count)} | self._counter)
-            if message >= self.loglevels:
-                self.callback(self._items[key])
+        key = checkresult.identity.key
+        self.callback({"progress": 100 * done / float(self.count)} | self._counter)
+        data = checkresult.getData(self.runner)
+        data["key"] = checkresult.identity.check.id
+        for log in data["logs"]:
+            if type(log["message"]["message"]).__name__ == "FailedConditionError":
+                log["message"]["message"] = str(log["message"]["message"])
+        data = json.loads(json.dumps(data))
+        self.callback(data)
 
 
 def run_fontbakery(
@@ -68,8 +72,8 @@ def run_fontbakery(
     exclude_checks=None,
     full_lists=False,
 ):
-    loglevels = log_levels[loglevels]
-    profile = get_module_profile(get_module("fontbakery.profiles." + profilename))
+    loglevels = [log_levels[loglevels]]
+    profile = import_module("fontbakery.profiles." + profilename).profile
     argument_parser = argparse.ArgumentParser()
     # Hack
     argument_parser.add_argument(
@@ -96,9 +100,8 @@ def run_fontbakery(
     )
     prog = ProgressReporter(callback, loglevels)
     prog.runner = runner
-    reporters = [prog.receive]
-    status_generator = runner.run()
-    distribute_generator(status_generator, reporters)
+    reporters = [prog]
+    runner.run(reporters)
 
 
 def dump_all_the_checks():
@@ -111,9 +114,9 @@ def dump_all_the_checks():
     for profile_name in profiles_modules:
         try:
             imported = import_module(profile_name, package=None)
+            profile = imported.profile
         except BaseException:
             continue
-        profile = get_module_profile(imported)
         if not profile:
             continue
         profile_name = profile_name[20:]

@@ -97,6 +97,7 @@ function showError(msg) {
  * @param {Map} data - All the stuff
 */
 function showResult(data) {
+  console.log("Got a result", data)
   $('#startModal').hide();
   const tabid = $('#v-pills-tab').children().length;
   const result = data.get('result');
@@ -173,7 +174,7 @@ function showResult(data) {
                 class="bg-${log.get('status')} font-weight-bold">
                 ${log.get('status')}
               </span>:
-              <div>${CmarkGFM.convert(log.get('message'))}</div>
+              <div>${CmarkGFM.convert(log.get('message').get('message'))}</div>
             </li>
           `));
     }
