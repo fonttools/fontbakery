@@ -5,6 +5,8 @@ import tempfile
 
 import pytest
 
+from fontbakery.fonts_profile import profile_factory
+
 TOOL_NAME = "fontbakery"
 
 
@@ -31,11 +33,17 @@ def test_list_subcommands_has_all_scripts():
 def test_list_checks_option(capfd):
     """Test if 'fontbakery <subcommand> --list-checks' can run successfully and output
     the expected content."""
-    from fontbakery.profiles.universal import UNIVERSAL_PROFILE_CHECKS
+    import fontbakery.profiles.universal
+
+    profile = profile_factory(fontbakery.profiles.universal)
+
+    all_checks = set()
+    for section in profile.sections:
+        all_checks.update([check.id for check in section.checks])
 
     subprocess.run([TOOL_NAME, "check-universal", "--list-checks"], check=True)
     output = capfd.readouterr().out
-    assert set(output.split()) == set(UNIVERSAL_PROFILE_CHECKS)
+    assert set(output.split()) == all_checks
 
 
 def test_command_check_googlefonts():
