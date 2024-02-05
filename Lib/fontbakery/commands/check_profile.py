@@ -3,14 +3,10 @@
 # $ fontbakery check-profile fontbakery.profiles.googlefonts -h
 import argparse
 from collections import OrderedDict
-from importlib import import_module
 import os
 import sys
 
-from fontbakery.checkrunner import (
-    CheckRunner,
-    get_module_from_file,
-)
+from fontbakery.checkrunner import CheckRunner
 from fontbakery.status import (
     DEBUG,
     ERROR,
@@ -24,7 +20,7 @@ from fontbakery.status import (
 from fontbakery.configuration import Configuration
 from fontbakery.profile import Profile
 from fontbakery.errors import ValueValidationError
-from fontbakery.fonts_profile import profile_factory
+from fontbakery.fonts_profile import profile_factory, get_module
 from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.badge import BadgeReporter
@@ -337,18 +333,6 @@ def ArgumentParser(profile, profile_arg=True):
 
 class ArgumentParserError(Exception):
     pass
-
-
-def get_module(name):
-    if os.path.isfile(name):
-        # This name could also be the name of a module, but if there's a
-        # file that we can load the file will win. Otherwise, it's still
-        # possible to change the directory
-        imported = get_module_from_file(name)
-    else:
-        # Fails with an appropriate ImportError.
-        imported = import_module(name, package=None)
-    return imported
 
 
 def get_profile():
