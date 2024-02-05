@@ -13,7 +13,8 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.message import Message
-from fontbakery.status import PASS, FAIL, WARN, ERROR, INFO, SKIP, DEBUG
+from fontbakery.result import Subresult
+from fontbakery.status import PASS, FAIL, ERROR, SKIP, DEBUG
 
 
 def test_portable_path():
@@ -36,21 +37,21 @@ def test_assert_SKIP_success(capsys):
     skip_msg = "SKIP message"
     skip_reason = "SKIP reason"
     results = [
-        (PASS,),
-        (SKIP, skip_msg),
+        Subresult(PASS, None),
+        Subresult(SKIP, Message("skip", skip_msg)),
     ]
-    assert assert_SKIP(results, skip_reason) == skip_msg
+    assert assert_SKIP(results, skip_reason) == "SKIP message [code: skip]"
 
     captured = capsys.readouterr()
     assert captured.out == f"Test SKIP {skip_reason}\n"
 
 
 def test_assert_SKIP_failure(capsys):
-    pass_msg = "PASS message"
+    pass_msg = Message("pass", "PASS message")
     skip_reason = "SKIP reason"
     results = [
-        (SKIP,),
-        (PASS, pass_msg),
+        Subresult(SKIP, Message("skip", skip_reason)),
+        Subresult(PASS, pass_msg),
     ]
     with pytest.raises(AssertionError):
         assert_SKIP(results, skip_reason)
@@ -60,24 +61,24 @@ def test_assert_SKIP_failure(capsys):
 
 
 def test_assert_PASS_success(capsys):
-    pass_msg = "PASS message"
+    pass_msg = Message("pass", "PASS message")
     pass_reason = "with a good font..."
     results = [
-        (SKIP,),
-        (PASS, pass_msg),
+        Subresult(SKIP, Message("skip", "SKIP message")),
+        Subresult(PASS, pass_msg),
     ]
-    assert assert_PASS(results) == pass_msg
+    assert assert_PASS(results) == "PASS message [code: pass]"
 
     captured = capsys.readouterr()
     assert captured.out == f"Test PASS {pass_reason}\n"
 
 
 def test_assert_PASS_failure(capsys):
-    skip_msg = "SKIP message"
+    skip_msg = Message("skip", "SKIP message")
     pass_reason = "with a good font..."
     results = [
-        (PASS,),
-        (SKIP, skip_msg),
+        Subresult(PASS, Message("pass", "PASS message")),
+        Subresult(SKIP, skip_msg),
     ]
     with pytest.raises(AssertionError):
         assert_PASS(results)
@@ -91,8 +92,8 @@ def test_assert_PASS_ignore_error_true(capsys):
     pass_reason = "with a good font..."
     ignore = "an error"
     results = [
-        (PASS,),
-        (ERROR, error_msg),
+        Subresult(PASS, Message("pass", "PASS message")),
+        Subresult(ERROR, Message("error", error_msg)),
     ]
     assert assert_PASS(results, ignore_error=ignore) is None
 
@@ -104,8 +105,8 @@ def test_assert_PASS_ignore_error_false(capsys):
     error_msg = "ERROR message"
     pass_reason = "with a good font..."
     results = [
-        (PASS,),
-        (ERROR, error_msg),
+        Subresult(PASS, Message("pass", "PASS message")),
+        Subresult(ERROR, Message("error", error_msg)),
     ]
     with pytest.raises(AssertionError):
         assert_PASS(results)
@@ -126,8 +127,8 @@ def test_assert_results_contain_ignore_error_true(capsys):
     ignore = "an error"
     expected_status = PASS
     results = [
-        (ERROR, ""),
-        (FAIL, ""),
+        Subresult(ERROR, Message("error", "an error")),
+        Subresult(FAIL, Message("fail", "We failed")),
     ]
     assert (
         assert_results_contain(results, expected_status, msg_code, ignore_error=ignore)
@@ -138,30 +139,13 @@ def test_assert_results_contain_ignore_error_true(capsys):
     assert captured.out == f"Test {expected_status} [{msg_code}]\n{ignore}\n"
 
 
-def test_assert_results_contain_bare_string(capsys):
-    msg_code = "a message code"
-    bare_str = "just a string"
-    reason = "just because..."
-    expected_status = PASS
-    results = [
-        (WARN, bare_str),
-        (INFO, bare_str),
-    ]
-    with pytest.raises(Exception) as err:
-        assert_results_contain(results, expected_status, msg_code, reason)
-    assert f"(Bare string: {bare_str!r})" in str(err.value)
-
-    captured = capsys.readouterr()
-    assert captured.out == f"Test {expected_status} {reason}\n"
-
-
 def test_assert_results_contain_success_string_msg(capsys):
     msg_code = "a message code"
     expected_status = PASS
     results = [
-        (PASS, msg_code),
+        Subresult(PASS, Message(msg_code, "A message")),
     ]
-    assert assert_results_contain(results, expected_status, msg_code) == msg_code
+    assert assert_results_contain(results, expected_status, msg_code) == "A message"
 
     captured = capsys.readouterr()
     assert captured.out == f"Test {expected_status} [{msg_code}]\n"
@@ -171,7 +155,7 @@ def test_assert_results_contain_failure_string_msg(capsys):
     msg_code = "a message code"
     expected_status = PASS
     results = [
-        (DEBUG, msg_code),
+        Subresult(DEBUG, Message(msg_code, "A message")),
     ]
     exception_message = (
         f"Expected to find {expected_status}, [code: {msg_code}]\n"
@@ -193,7 +177,7 @@ def test_assert_results_contain_success_message_msg(capsys):
     message = Message(msg_code, msg_human)
     expected_status = FAIL
     results = [
-        (FAIL, message),
+        Subresult(FAIL, message),
     ]
     assert assert_results_contain(results, expected_status, msg_code) == msg_human
 
@@ -207,7 +191,7 @@ def test_assert_results_contain_failure_message_msg(capsys):
     message = Message(msg_code, msg_human)
     expected_status = FAIL
     results = [
-        (ERROR, message),
+        Subresult(ERROR, message),
     ]
     exception_message = (
         f"Expected to find {expected_status}, [code: {msg_code}]\n"
