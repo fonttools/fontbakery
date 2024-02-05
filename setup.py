@@ -141,6 +141,7 @@ setup(
     package_dir={"": "Lib"},
     packages=[
         "fontbakery",
+        "fontbakery.checks",
         "fontbakery.reporters",
         "fontbakery.profiles",
         "fontbakery.commands",
