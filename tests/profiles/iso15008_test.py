@@ -18,9 +18,10 @@ def test_extra_needed_exit(monkeypatch):
     module_name = "uharfbuzz"
     sys.meta_path.insert(0, ImportRaiser(module_name))
     monkeypatch.delitem(sys.modules, module_name, raising=False)
+    from fontbakery.checks.iso15008 import pair_kerning
 
     with pytest.raises(SystemExit):
-        reload_module("fontbakery.profiles.iso15008")
+        pair_kerning(None, None, None)
 
     remove_import_raiser(module_name)
 

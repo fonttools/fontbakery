@@ -14,8 +14,10 @@ from fontbakery.codetesting import (
     CheckTester,
     TEST_FILE,
 )
-from fontbakery.profiles.ufo_sources import profile as ufo_sources_profile
+from fontbakery.fonts_profile import profile_factory
+import fontbakery.profiles.ufo_sources
 
+ufo_sources_profile = profile_factory(fontbakery.profiles.ufo_sources)
 
 @pytest.fixture
 def empty_ufo_font(tmpdir):

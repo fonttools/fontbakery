@@ -132,11 +132,11 @@ def test_check_monospace():
     # a monospaced font with good metadata here.
     ttFont = TTFont(TEST_FILE("overpassmono/OverpassMono-Regular.ttf"))
 
-    status, message = check(ttFont)[-1]
+    subresult = check(ttFont)[-1]
     # WARN is emitted when there's at least one outlier.
     # I don't see a good reason to be picky and also test that one separately here...
-    assert (status == WARN and message.code == "mono-outliers") or (
-        status == PASS and message.code == "mono-good"
+    assert (subresult.status == WARN and subresult.message.code == "mono-outliers") or (
+        subresult.status == PASS and subresult.message.code == "mono-good"
     )
 
     # Mark it as a non-monospaced on the post table and it should
@@ -201,7 +201,8 @@ def test_check_monospace():
             if subtable.cmap.get(code):
                 del subtable.cmap[code]
 
-    status, message = check(ttFont)[-1]
+    subresult = check(ttFont)[-1]
+    status, message = subresult.status, subresult.message
     # WARN is emitted when there's at least one outlier.
     # I don't see a good reason to be picky and also test that one separately here...
     assert (status == WARN and message.code == "mono-outliers") or (
@@ -337,7 +338,8 @@ def assert_name_table_check_result(
     # set value
     ttFont["name"].names[index].string = value.encode(name.getEncoding())
     # run check
-    status, message = list(check(ttFont))[-1]
+    subresult = check(ttFont)[-1]
+    status, message = subresult.status, subresult.message
     # restore value
     ttFont["name"].names[index].string = backup
     assert status == expected_result

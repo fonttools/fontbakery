@@ -8,7 +8,7 @@ from fontTools.ttLib import TTFont
 
 from conftest import ImportRaiser, remove_import_raiser
 
-from fontbakery.profiles.googlefonts import can_shape
+from fontbakery.checks.googlefonts import can_shape
 from fontbakery.profiles.googlefonts_conditions import expected_font_names
 from fontbakery.status import (
     DEBUG,
@@ -42,7 +42,7 @@ from fontbakery.profiles import googlefonts as googlefonts_profile
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
-OVERRIDE_SUFFIX = ":googlefonts"
+OVERRIDE_SUFFIX = ""
 
 mada_fonts = [
     TEST_FILE("mada/Mada-Black.ttf"),

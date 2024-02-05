@@ -14,9 +14,10 @@ def test_extra_needed_exit(monkeypatch):
     module_name = "lxml.etree"
     sys.meta_path.insert(0, ImportRaiser(module_name))
     monkeypatch.delitem(sys.modules, module_name, raising=False)
+    from fontbakery.checks.fontval import com_google_fonts_check_fontvalidator
 
     with pytest.raises(SystemExit):
-        reload_module("fontbakery.profiles.fontval")
+        list(com_google_fonts_check_fontvalidator(None, None))
 
     remove_import_raiser(module_name)
 
