@@ -6,6 +6,7 @@ from dataclasses import dataclass
 import os
 import re
 import sys
+import atexit
 from typing import Optional
 
 from rich.segment import Segment, Segments
@@ -104,6 +105,7 @@ class TerminalReporter(FontbakeryReporter):
             self.progressbar = ProgressBar(0, self.theme)
             self._log_context = Live(self.progressbar, console=self._console)
             self._log_context.__enter__()
+            atexit.register(self._log_context.__exit__, None, None, None)
 
         self.print_progress = stdout.isatty() and self.print_progress
 
