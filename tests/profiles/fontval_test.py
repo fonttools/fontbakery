@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from conftest import ImportRaiser, remove_import_raiser, reload_module
+from conftest import ImportRaiser, remove_import_raiser
 
 from fontbakery.codetesting import TEST_FILE, assert_results_contain
 from fontbakery.status import ERROR
