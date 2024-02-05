@@ -18,10 +18,12 @@ import types
 import defcon
 
 from fontbakery.checkrunner import CheckRunner
+from fontbakery.fonts_profile import profile_factory
 from fontbakery.status import PASS, DEBUG, ERROR, SKIP
 from fontbakery.configuration import Configuration
 from fontbakery.message import Message
-from fontbakery.profile import Profile, get_module_profile
+from fontbakery.profile import Profile
+
 
 PATH_TEST_DATA = "data/test/"
 PATH_TEST_DATA_GLYPHS_FILES = f"{PATH_TEST_DATA}glyphs_files/"
@@ -50,11 +52,10 @@ class CheckTester:
     """
 
     def __init__(self, module_or_profile, check_id):
-        self.profile = (
-            module_or_profile
-            if isinstance(module_or_profile, Profile)
-            else get_module_profile(module_or_profile)
-        )
+        if isinstance(module_or_profile, Profile):
+            self.profile = module_or_profile
+        else:
+            self.profile = profile_factory(module_or_profile)
         self.check_id = check_id
         self.check_identity = None
         self.check_section = None
