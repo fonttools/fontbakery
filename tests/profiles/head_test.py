@@ -99,7 +99,7 @@ def test_check_unitsperem():
 
 def test_parse_version_string():
     """Checking font version fields."""
-    from fontbakery.profiles.head import parse_version_string
+    from fontbakery.checks.head import parse_version_string
     import fractions
 
     version_tests_good = {

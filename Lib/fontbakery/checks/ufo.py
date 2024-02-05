@@ -1,4 +1,16 @@
-from fontbakery.prelude import check, condition, exit_with_install_instructions, ERROR, FAIL, PASS, SKIP, WARN, Message
+from fontbakery.prelude import (
+    check,
+    condition,
+    exit_with_install_instructions,
+    ERROR,
+    FAIL,
+    PASS,
+    SKIP,
+    WARN,
+    Message,
+)
+import re
+
 
 @condition
 def ufo_font(ufo):

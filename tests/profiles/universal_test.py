@@ -16,7 +16,7 @@ from fontbakery.codetesting import (
 )
 from fontbakery.profiles import universal as universal_profile
 from fontbakery.profiles.shared_conditions import style
-from fontbakery.profiles.universal import is_up_to_date
+from fontbakery.checks.universal import is_up_to_date
 from fontbakery.utils import glyph_has_ink
 
 

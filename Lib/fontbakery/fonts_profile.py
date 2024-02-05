@@ -223,4 +223,5 @@ def profile_factory(module):
         conditions=conditions_by_name,
         overrides=profile_data.get("overrides", {}),
     )
+    profile.configuration_defaults = profile_data.get("configuration_defaults", {})
     return profile

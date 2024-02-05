@@ -13,14 +13,27 @@ def check_filter(item_type, item_id, item):
     return True
 
 
+class FakeModule:
+    PROFILE = None
+
+
 def test_external_profile():
     """Test the creation of external profiles."""
-    profile = profile_factory(default_section=Section("Dalton Maag OpenType"))
-    profile.auto_register(
-        globals(),
-        profile_imports=["fontbakery.profiles.opentype"],
-        filter_func=check_filter,
+    fakemodule = FakeModule()
+    setattr(
+        fakemodule,
+        "PROFILE",
+        {
+            "include_profiles": ["opentype"],
+            "sections": {
+                "Dalton Maag OpenType": [
+                    "com.google.fonts/check/family/panose_proportion",
+                    "com.google.fonts/check/varfont/regular_opsz_coord",
+                ]
+            },
+        },
     )
+    profile = profile_factory(fakemodule)
 
     # Probe some tests
     expected_tests = [
@@ -44,8 +57,14 @@ def test_profile_imports():
     """
 
     def _test(profile_imports, expected_tests, expected_conditions=tuple()):
-        profile = profile_factory(default_section=Section("Testing"))
-        profile.auto_register({}, profile_imports=profile_imports)
+        fakemodule = FakeModule()
+        setattr(
+            fakemodule,
+            "PROFILE",
+            {"sections": {"Testing": []}, "include_profiles": profile_imports},
+        )
+
+        profile = profile_factory(fakemodule)
         profile.test_expected_checks(expected_tests)
         if expected_conditions:
             registered_conditions = profile.conditions.keys()
@@ -55,124 +74,25 @@ def test_profile_imports():
                 ), f'"{name}" is expected to be registered as a condition.'
 
     # this is in docs/writing profiles
-    profile_imports = [["fontbakery.profiles", ["cmap", "head"]]]
+    profile_imports = ["universal"]
     # Probe some tests
     expected_tests = ["com.google.fonts/check/unitsperem"]  # in head
     _test(profile_imports, expected_tests)
-
-    # the example from issue #1886
-    profile_imports = (
-        (
-            "fontbakery.profiles",
-            (
-                "cmap",
-                "head",
-                "os2",
-                "post",
-                "name",
-                "hhea",
-                "dsig",
-                "gpos",
-                "kern",
-                "glyf",
-                "fvar",
-                "shared_conditions",
-            ),
-        ),
-    )
-    # Probe some tests
-    expected_tests = ["com.google.fonts/check/unitsperem"]  # in head
-    _test(profile_imports, expected_tests)
-
-    # make sure the suggested workaround still works:
-    # https://github.com/fonttools/fontbakery/issues/1886#issuecomment-392535435
-    profile_imports = (
-        "fontbakery.profiles.cmap",
-        "fontbakery.profiles.head",
-        "fontbakery.profiles.os2",
-        "fontbakery.profiles.post",
-        "fontbakery.profiles.name",
-        "fontbakery.profiles.hhea",
-        "fontbakery.profiles.dsig",
-        "fontbakery.profiles.gpos",
-        "fontbakery.profiles.kern",
-        "fontbakery.profiles.glyf",
-        "fontbakery.profiles.fvar",
-        "fontbakery.profiles.shared_conditions",
-    )
-    # Probe some tests
-    expected_tests = ["com.google.fonts/check/unitsperem"]  # in head
-    _test(profile_imports, expected_tests)
-
-    # cherry pick attributes from a module (instead of getting submodules)
-    # also from this is in docs/writing profiles
-    # Import just certain attributes from modules.
-    # Also, using absolute import module names:
-    profile_imports = [
-        # like we do in fontbakery.profiles.fvar
-        (
-            "fontbakery.profiles.shared_conditions",
-            (
-                "is_variable_font",
-                "regular_wght_coord",
-                "regular_wdth_coord",
-                "regular_slnt_coord",
-                "regular_ital_coord",
-                "regular_opsz_coord",
-                "bold_wght_coord",
-            ),
-        ),
-        # just as an example: import a check and a dependency/condition of
-        # that check from the googlefonts specific profile:
-        (
-            "fontbakery.profiles.googlefonts_conditions",
-            (
-                # This condition is a dependency of the check below:
-                "familyname",
-            ),
-        ),
-        (
-            "fontbakery.profiles.googlefonts",
-            (
-                # "License URL matches License text on name table?"
-                "com_google_fonts_check_name_license_url",
-            ),
-        ),
-    ]
-    # Probe some tests
-    expected_tests = ["com.google.fonts/check/name/license_url"]  # in googlefonts
-    expected_conditions = (
-        "is_variable_font",
-        "regular_wght_coord",
-        "regular_wdth_coord",
-        "regular_slnt_coord",
-        "regular_ital_coord",
-        "regular_opsz_coord",
-        "bold_wght_coord",
-        "familyname",
-    )
-    _test(profile_imports, expected_tests, expected_conditions)
-
-
-def test_opentype_checks_load():
-    profile_imports = ("fontbakery.profiles.opentype",)
-    profile = profile_factory(default_section=Section("OpenType Testing"))
-    profile.auto_register({}, profile_imports=profile_imports)
-    profile.test_dependencies()
-
-
-def test_googlefonts_checks_load():
-    profile_imports = ("fontbakery.profiles.googlefonts",)
-    profile = profile_factory(default_section=Section("Google Fonts Testing"))
-    profile.auto_register({}, profile_imports=profile_imports)
-    profile.test_dependencies()
 
 
 def test_in_and_exclude_checks():
-    profile_imports = ("fontbakery.profiles.opentype",)
-    profile = profile_factory(default_section=Section("OpenType Testing"))
-    profile.auto_register({}, profile_imports=profile_imports)
-    profile.test_dependencies()
+    fakemodule = FakeModule()
+    setattr(
+        fakemodule,
+        "PROFILE",
+        {
+            "include_profiles": ["opentype"],
+            "exclude_checks": ["065", "079"],
+            "sections": {},
+        },
+    )
+
+    profile = profile_factory(fakemodule)
     explicit_checks = ["06", "07"]  # "06" or "07" in check ID
     exclude_checks = ["065", "079"]  # "065" or "079" in check ID
     iterargs = {"font": 1}
@@ -193,10 +113,16 @@ def test_in_and_exclude_checks():
 
 
 def test_in_and_exclude_checks_default():
-    profile_imports = ("fontbakery.profiles.opentype",)
-    profile = profile_factory(default_section=Section("OpenType Testing"))
-    profile.auto_register({}, profile_imports=profile_imports)
-    profile.test_dependencies()
+    fakemodule = FakeModule()
+    setattr(
+        fakemodule,
+        "PROFILE",
+        {
+            "include_profiles": ["opentype"],
+            "sections": {},
+        },
+    )
+    profile = profile_factory(fakemodule)
     explicit_checks = None  # "All checks aboard"
     exclude_checks = None  # "No checks left behind"
     iterargs = {"font": 1}

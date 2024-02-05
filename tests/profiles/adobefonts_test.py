@@ -23,50 +23,9 @@ from fontbakery.constants import (
     WindowsLanguageID,
 )
 from fontbakery.profiles import adobefonts as adobefonts_profile
-from fontbakery.profiles.adobefonts import (
-    ADOBEFONTS_PROFILE_CHECKS,
-    OVERRIDDEN_CHECKS,
-    profile,
-    SET_EXPLICIT_CHECKS,
-)
 from fontbakery.profiles.shared_conditions import vmetrics
 
-OVERRIDE_SUFFIX = ":adobefonts"
-
-
-def test_get_family_checks():
-    """Validate the set of family checks."""
-    family_checks = profile.get_family_checks()
-    family_check_ids = {check.id for check in family_checks}
-    expected_family_check_ids = {
-        "com.adobe.fonts/check/family/bold_italic_unique_for_nameid1",
-        "com.adobe.fonts/check/family/consistent_upm",
-        "com.adobe.fonts/check/family/max_4_fonts_per_family_name",
-        "com.google.fonts/check/family/underline_thickness",
-        "com.google.fonts/check/family/panose_proportion",
-        "com.google.fonts/check/family/panose_familytype",
-        "com.google.fonts/check/family/equal_unicode_encodings",
-        "com.google.fonts/check/family/equal_font_versions",
-        f"com.google.fonts/check/family/win_ascent_and_descent{OVERRIDE_SUFFIX}",
-        "com.google.fonts/check/family/vertical_metrics",
-        "com.google.fonts/check/family/single_directory",
-        "com.adobe.fonts/check/family/consistent_family_name",
-        # should it be included here? or should we have
-        # a get_superfamily_checks() method?
-        # 'com.google.fonts/check/superfamily/vertical_metrics',
-    }
-    assert family_check_ids == expected_family_check_ids
-
-
-def test_profile_check_set():
-    """Confirm that the profile has the correct number of checks and the correct
-    set of check IDs."""
-    assert len(SET_EXPLICIT_CHECKS) == 81
-    explicit_with_overrides = sorted(
-        f"{check_id}{OVERRIDE_SUFFIX}" if check_id in OVERRIDDEN_CHECKS else check_id
-        for check_id in SET_EXPLICIT_CHECKS
-    )
-    assert explicit_with_overrides == sorted(ADOBEFONTS_PROFILE_CHECKS)
+OVERRIDE_SUFFIX = ""  # They're just overriden by the profile
 
 
 def test_check_family_consistent_upm():

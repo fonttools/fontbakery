@@ -81,7 +81,7 @@ PROFILE = {
             # "com.google.fonts/check/metadata/primary_script", # Review
             # "com.google.fonts/check/glyphsets/shape_languages", # Review
             "com.google.fonts/check/slant_direction",
-            "com.google.fonts/check/negative_advance_width",
+            # "com.google.fonts/check/negative_advance_width",
             "com.google.fonts/check/glyf_nested_components",
             "com.google.fonts/check/varfont/consistent_axes",
             "com.google.fonts/check/smart_dropout",  # OVERRIDEN
