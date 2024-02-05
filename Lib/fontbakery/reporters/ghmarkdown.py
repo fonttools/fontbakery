@@ -35,7 +35,7 @@ class GHMarkdownReporter(SerializeReporter):
         if not self.omit_loglevel(log["status"]):
             msg = log["message"]
             message = msg["message"]
-            if msg["code"]:
+            if "code" in msg and msg["code"]:
                 message += f" [code: {msg['code']}]"
             return "* {} **{}** {}\n".format(
                 self.emoticon(log["status"]), log["status"], message
