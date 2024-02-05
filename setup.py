@@ -142,6 +142,8 @@ setup(
     packages=[
         "fontbakery",
         "fontbakery.checks",
+        "fontbakery.checks.googlefonts",
+        "fontbakery.checks.universal",
         "fontbakery.reporters",
         "fontbakery.profiles",
         "fontbakery.commands",
