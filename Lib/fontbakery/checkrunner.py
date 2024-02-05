@@ -11,12 +11,10 @@ Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
-import os
 from collections import OrderedDict
-import importlib
 import inspect
 import traceback
-from typing import Dict, Any, Sequence, Union, Tuple
+from typing import Union, Tuple
 
 from fontbakery.result import (
     CheckResult,
@@ -29,7 +27,6 @@ from fontbakery.errors import (
     CircularDependencyError,
     FailedConditionError,
     MissingConditionError,
-    SetupError,
     MissingValueError,
 )
 from fontbakery.status import (
@@ -363,11 +360,13 @@ class CheckRunner:
                 for varname in check.configs
             }
             check.inject_globals(new_globals)
-    
+
         try:
             subresults = check(**args)  # Might raise.
-            if inspect.isgenerator(subresults) or inspect.isgeneratorfunction(subresults):
-                subresults = (list(subresults))
+            if inspect.isgenerator(subresults) or inspect.isgeneratorfunction(
+                subresults
+            ):
+                subresults = list(subresults)
             else:
                 subresults = [subresults]
         except Exception as error:
@@ -376,10 +375,12 @@ class CheckRunner:
             message += "\n```"
             subresults = [(ERROR, Message("failed-check", message))]
 
-        result.extend([
-            self._override_status(self._check_result(result), check)
-            for result in subresults
-        ])
+        result.extend(
+            [
+                self._override_status(self._check_result(result), check)
+                for result in subresults
+            ]
+        )
         return result
 
     @property
@@ -402,8 +403,6 @@ class CheckRunner:
         return order
 
     def run(self, reporters):
-        sections = OrderedDict()
-
         # Tell all the reporters we're starting
         for reporter in reporters:
             reporter.start(self.order)

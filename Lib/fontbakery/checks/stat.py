@@ -5,7 +5,12 @@ from fontbakery.message import Message
 from fontbakery.status import FAIL, PASS, WARN, SKIP
 from fontbakery.utils import bullet_list
 
-from fontbakery.profiles.shared_conditions import is_variable_font, has_STAT_table, style
+from fontbakery.profiles.shared_conditions import (  # pylint: disable=unused-import
+    is_variable_font,
+    has_STAT_table,
+    style,
+)
+
 
 @check(
     id="com.google.fonts/check/varfont/stat_axis_record_for_each_axis",

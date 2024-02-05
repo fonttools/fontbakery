@@ -9,7 +9,11 @@ from fontbakery.constants import (
 )
 from fontbakery.utils import markdown_table
 
-from fontbakery.profiles.shared_conditions import is_ttf, glyph_metrics_stats, style
+from fontbakery.profiles.shared_conditions import (  # pylint: disable=unused-import
+    is_ttf,
+    glyph_metrics_stats,
+    style,
+)
 
 
 @check(

@@ -2,6 +2,7 @@ from fontbakery.callable import check
 from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 
+
 @check(
     id="com.google.fonts/check/family/underline_thickness",
     rationale="""

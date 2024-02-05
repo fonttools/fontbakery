@@ -12,5 +12,5 @@ PROFILE = {
             "com.google.fonts/check/designspace_has_consistent_codepoints",
             "com.thetypefounders/check/features_default_languagesystem",
         ]
-    }
+    },
 }

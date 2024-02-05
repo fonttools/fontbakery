@@ -19,6 +19,7 @@ import fontbakery.profiles.ufo_sources
 
 ufo_sources_profile = profile_factory(fontbakery.profiles.ufo_sources)
 
+
 @pytest.fixture
 def empty_ufo_font(tmpdir):
     ufo = defcon.Font()
