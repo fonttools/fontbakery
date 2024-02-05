@@ -58,7 +58,13 @@ const pyodideReadyPromise = loadPyodideAndPackages();
 self.onmessage = async (event) => {
   // make sure loading is done
   const {id, files, profile, loglevels, fulllists} = event.data;
-  await pyodideReadyPromise;
+  try {
+    await pyodideReadyPromise;
+  }
+  catch (error) {
+    self.postMessage({error: error.message, id});
+    return;
+  }
   self.postMessage({ready: true});
   self.profile = profile;
   if (id == 'justload') {
