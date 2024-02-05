@@ -6,7 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Release highlights & new features
   - Added a `-q` `--quiet` CLI option to suppress all terminal output. (issue #4484)
   - Fixed HTML reporter by adding the templates directory to the fontbakery package. (issue #4479)
-
+  - Minor wording improvement on the GHMarkdown reporter (issue #4492)
 
 ## 0.11.0 (2024-Feb-02)
 ### Noteworthy code-changes

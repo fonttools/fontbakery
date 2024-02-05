@@ -178,7 +178,11 @@ class GHMarkdownReporter(SerializeReporter):
                 )
 
         if other_checks:
-            md += "<h2>All other checks</h2>"
+            if experimental_checks or fatal_checks:
+                md += "<h2>All other checks</h2>"
+            else:
+                md += "<h2>Check results</h2>"
+
             for filename in other_checks.keys():
                 other_checks[filename].sort(key=lambda c: LOGLEVELS.index(c["result"]))
                 md += html5_collapsible(
