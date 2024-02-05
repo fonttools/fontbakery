@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 import types
+from typing import Iterable
 
 import defcon
 
@@ -23,6 +24,7 @@ from fontbakery.status import PASS, DEBUG, ERROR, SKIP
 from fontbakery.configuration import Configuration
 from fontbakery.message import Message
 from fontbakery.profile import Profile
+from fontbakery.result import Subresult
 
 
 PATH_TEST_DATA = "data/test/"
@@ -104,7 +106,7 @@ class CheckTester:
         if key in self.runner._cache["conditions"]:
             return self.runner._cache["conditions"][key][1]
 
-    def __call__(self, values, condition_overrides=None):
+    def __call__(self, values, condition_overrides=None) -> Iterable[Subresult]:
         from fontTools.ttLib import TTFont
         from fontbakery.profiles.googlefonts_conditions import family_metadata
         from glyphsLib import GSFont
@@ -184,7 +186,7 @@ class CheckTester:
         skipped, _ = self.runner._get_check_dependencies(check_identity)
         if skipped is not None:
             status, msg_str = skipped.status, skipped.message
-            return [(status, Message("unfulfilled-conditions", msg_str))]
+            return [Subresult(status, Message("unfulfilled-conditions", msg_str))]
         else:
             # No "try" while testing, we want to know about exceptions
             if self.check.configs:
@@ -196,7 +198,12 @@ class CheckTester:
             result = self.check(**self._args)
             if not isinstance(result, types.GeneratorType):
                 result = [result]
-            return list(result)
+            return [
+                self.runner._override_status(
+                    self.runner._check_result(result), self.check
+                )
+                for result in result
+            ]
 
 
 def portable_path(p):
@@ -218,20 +225,20 @@ def GLYPHSAPP_TEST_FILE(f):
 
 def assert_PASS(check_results, reason="with a good font...", ignore_error=None):
     print(f"Test PASS {reason}")
-    status, message = list(check_results)[-1]
-    if ignore_error and status == ERROR:
+    subresult = check_results[-1]
+    if ignore_error and subresult.status == ERROR:
         print(ignore_error)
         return None
     else:
-        assert status == PASS
-        return str(message)
+        assert subresult.status == PASS
+        return str(subresult.message)
 
 
 def assert_SKIP(check_results, reason=""):
     print(f"Test SKIP {reason}")
-    status, message = list(check_results)[-1]
-    assert status == SKIP
-    return str(message)
+    subresult = list(check_results)[-1]
+    assert subresult.status == SKIP
+    return str(subresult.message)
 
 
 def assert_results_contain(
@@ -251,30 +258,28 @@ def assert_results_contain(
     print(f"Test {expected_status} {reason}")
     check_results = list(check_results)
 
-    for status, _ in check_results:
-        if ignore_error and status == ERROR:
+    for subresult in check_results:
+        if ignore_error and subresult.status == ERROR:
             print(ignore_error)
             return None
 
-    for status, msg in check_results:
-        if status not in [PASS, DEBUG] and not isinstance(msg, Message):
+    for subresult in check_results:
+        if subresult.status not in [PASS, DEBUG] and not isinstance(
+            subresult.message, Message
+        ):
             raise Exception(
                 f"Bare Python strings are no longer supported in result values.\n"
                 f"Please use the Message class to wrap strings and to give them"
                 f" a keyword useful for identifying them (in bug reports as well as"
                 f" in the implementation of reliable unit tests).\n"
-                f"(Bare string: {msg!r})"
+                f"(Bare string: {subresult.message!r})"
             )
 
-        if status == expected_status and (
-            isinstance(msg, str)
-            and msg == expected_msgcode
-            or (isinstance(msg, Message) and msg.code == expected_msgcode)
+        if subresult.status == expected_status and (
+            subresult.message.code == expected_msgcode
+            or subresult.message.message == expected_msgcode  # deprecated
         ):
-            if isinstance(msg, Message):
-                return msg.message
-            else:
-                return msg  # It is probably a plain python string
+            return subresult.message.message
 
     # if no match was found
     raise Exception(
