@@ -1,7 +1,6 @@
 import re
 
 from fontbakery.prelude import check, WARN, PASS, FAIL, SKIP, Message
-from fontbakery.profiles.shared_conditions import unicoderange
 from fontbakery.constants import (
     NameID,
     PlatformID,
@@ -172,12 +171,12 @@ def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
         proper settings by inspecting the glyphs declared on the cmap table and
         then ensures that their corresponding ranges are enabled.
     """,
-    conditions=["unicoderange"],
     proposal="https://github.com/fonttools/fontbakery/issues/2676",
 )
-def com_google_fonts_check_unicode_range_bits(ttFont, unicoderange):
+def com_google_fonts_check_unicode_range_bits(ttFont):
     """Ensure UnicodeRange bits are properly set."""
     from fontbakery.constants import UNICODERANGE_DATA
+    from fontbakery.profiles.shared_conditions import unicoderange
     from fontbakery.utils import (
         compute_unicoderange_bits,
         unicoderange_bit_name,
@@ -185,7 +184,7 @@ def com_google_fonts_check_unicode_range_bits(ttFont, unicoderange):
     )
 
     expected_unicoderange = compute_unicoderange_bits(ttFont)
-    difference = unicoderange ^ expected_unicoderange
+    difference = unicoderange(ttFont) ^ expected_unicoderange
     if not difference:
         yield PASS, "Looks good!"
     else:

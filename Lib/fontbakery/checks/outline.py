@@ -4,7 +4,6 @@ from beziers.path import BezierPath
 
 from fontbakery.callable import condition, check
 from fontbakery.status import PASS, WARN
-from fontbakery.section import Section
 from fontbakery.message import Message
 from fontbakery.utils import bullet_list
 
@@ -296,4 +295,3 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
         )
     else:
         yield PASS, "No semi-horizontal/semi-vertical lines found."
-

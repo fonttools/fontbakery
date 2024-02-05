@@ -35,19 +35,19 @@ from fontbakery.profiles.shared_conditions import (
     is_ttf,
     is_cff,
     network,
-    is_italic,
     are_ttf,
     is_claiming_to_be_cjk_font,
     bold_wght_coord,
     ligature_glyphs,
     ligatures,
     VFs,
+    is_variable_font,
+    is_italic,
 )
 from fontbakery.profiles.googlefonts_conditions import (
     registered_vendor_ids,
     is_noto,
     is_icon_font,
-    canonical_stylename,
     metadata_file,
     family_metadata,
     description,
@@ -83,7 +83,6 @@ from fontbakery.profiles.googlefonts_conditions import (
     api_gfonts_ttFont,
     VTT_hinted,
 )
-
 
 
 @check(
@@ -966,10 +965,6 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
         exit_with_install_instructions()
 
     from fontbakery.utils import pretty_print_list
-    from fontbakery.profiles.googlefonts_conditions import (
-        metadata_file,
-        family_metadata,
-    )
 
     # Use the METADATA.pb subsets if we have them
     metadatapb = metadata_file(family_directory)
@@ -1083,8 +1078,6 @@ def com_google_fonts_check_usweightclass(ttFont, expected_font_names):
     """
     Check the OS/2 usWeightClass is appropriate for the font's best SubFamily name.
     """
-    from fontbakery.profiles.shared_conditions import is_ttf, is_cff, is_variable_font
-
     passed = True
     value = ttFont["OS/2"].usWeightClass
     expected_value = expected_font_names["OS/2"].usWeightClass
@@ -2171,8 +2164,6 @@ def com_google_fonts_check_metadata_has_regular(family_metadata):
     """METADATA.pb: According to Google Fonts standards,
     families should have a Regular style.
     """
-    from fontbakery.profiles.googlefonts_conditions import has_regular_style
-
     if has_regular_style(family_metadata):
         yield PASS, "Family has a Regular style."
     else:
@@ -2566,7 +2557,6 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(
 )
 def com_google_fonts_check_metadata_valid_nameid25(ttFont, style):
     'Check name ID 25 to end with "Italic" for Italic VFs.'
-    from fontbakery.profiles.shared_conditions import is_variable_font
 
     def get_name(font, ID):
         for entry in font["name"].names:
@@ -2973,8 +2963,6 @@ def com_google_fonts_check_metadata_canonical_weight_value(font_metadata):
 )
 def com_google_fonts_check_metadata_os2_weightclass(ttFont, font_metadata):
     """Check METADATA.pb font weights are correct."""
-    from fontbakery.profiles.shared_conditions import is_variable_font
-
     # Weight name to value mapping:
     GF_API_WEIGHT_NAMES = {
         100: "Thin",
@@ -3116,8 +3104,6 @@ def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
 )
 def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata):
     """METADATA.pb: Font styles are named canonically?"""
-    from fontbakery.profiles.shared_conditions import is_italic
-
     if font_metadata.style not in ["italic", "normal"]:
         yield SKIP, (
             "This check only applies to font styles declared"
@@ -5207,7 +5193,6 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
 def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
     """A static fonts directory, if present, must contain manually hinted fonts"""
     from fontTools.ttLib import TTFont
-    from fontbakery.profiles.googlefonts_conditions import VTT_hinted
     from fontbakery.profiles.shared_conditions import is_hinted
     from fontbakery.utils import get_name_entry_strings
 
@@ -7055,8 +7040,6 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
 )
 def com_google_fonts_check_colorfont_tables(ttFont):
     """Check font has the expected color font tables."""
-    from fontbakery.profiles.shared_conditions import is_variable_font
-
     passed = True
     NANOEMOJI_ADVICE = (
         "You can do it by using the maximum_color tool provided by"

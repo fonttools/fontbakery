@@ -4,7 +4,10 @@ Checks for Fontwerk <https://fontwerk.com/>
 
 from fontbakery.prelude import check, PASS, FAIL, Message
 from fontbakery.constants import FsSelection, MacStyle
-from fontbakery.profiles.shared_conditions import is_variable_font, has_wght_axis
+from fontbakery.profiles.shared_conditions import (  # pylint: disable=unused-import
+    is_variable_font,
+    has_wght_axis,
+)
 
 
 @check(
@@ -171,11 +174,7 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
 )
 def com_fontwerk_check_style_linking(ttFont):
     """Checking style linking entries"""
-<<<<<<< HEAD
-    from .shared_conditions import is_italic, is_bold
-=======
     from fontbakery.profiles.shared_conditions import is_italic, is_bold
->>>>>>> 3e3c1642 (Fixup fontwerk)
 
     errs = []
     if is_bold(ttFont):

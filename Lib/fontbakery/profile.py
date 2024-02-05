@@ -1,25 +1,15 @@
 from typing import Iterable, Optional
 from collections import OrderedDict
-from functools import wraps, partial
 from itertools import chain
 import re
-import importlib
-import types
 import logging
 
 from fontbakery.errors import NamespaceError, SetupError
-from fontbakery.callable import (
-    FontBakeryCheck,
-    FontBakeryCondition,
-    FontBakeryExpectedValue,
-)
 from fontbakery.result import Identity
 from fontbakery.configuration import Configuration
-from fontbakery.message import Message
 from fontbakery.section import Section
 from fontbakery.status import Status
 from fontbakery.utils import is_negated
-from fontbakery.status import DEBUG
 
 
 class Profile:

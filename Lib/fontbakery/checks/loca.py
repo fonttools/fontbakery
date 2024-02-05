@@ -2,7 +2,9 @@ from fontbakery.callable import check
 from fontbakery.status import PASS, FAIL
 from fontbakery.message import Message
 
-from fontbakery.profiles.shared_conditions import is_ttf
+from fontbakery.profiles.shared_conditions import (  # pylint: disable=unused-import
+    is_ttf,
+)
 
 
 @check(

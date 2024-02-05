@@ -3,13 +3,11 @@ Checks for Adobe Fonts (formerly known as Typekit).
 """
 import unicodedata
 
-from fontbakery.callable import check
 from fontbakery.constants import (
     ALL_HANGUL_SYLLABLES_CODEPOINTS,
     MODERN_HANGUL_SYLLABLES_CODEPOINTS,
 )
-from fontbakery.message import Message, KEEP_ORIGINAL_MESSAGE
-from fontbakery.status import PASS, FAIL, WARN, SKIP
+from fontbakery.prelude import check, Message, PASS, FAIL, WARN
 
 
 @check(

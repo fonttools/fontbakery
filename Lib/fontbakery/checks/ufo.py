@@ -1,3 +1,5 @@
+import re
+
 from fontbakery.prelude import (
     check,
     condition,
@@ -9,7 +11,6 @@ from fontbakery.prelude import (
     WARN,
     Message,
 )
-import re
 
 
 @condition
@@ -344,4 +345,3 @@ def com_thetypefounders_check_features_default_languagesystem(ufo_font):
             )
         else:
             yield PASS, "Default languagesystem present or automatically inserted."
-

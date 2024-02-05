@@ -48,12 +48,13 @@ def stem_width(ttFont):
 
 
 def pair_kerning(font, left, right):
+    """The kerning between two glyphs (specified by name), in font units."""
+
     try:
         import uharfbuzz as hb
     except ImportError:
         exit_with_install_instructions()
 
-    """The kerning between two glyphs (specified by name), in font units."""
     with open(font, "rb") as fontfile:
         fontdata = fontfile.read()
     face = hb.Face(fontdata)

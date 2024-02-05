@@ -1,5 +1,8 @@
 from fontbakery.prelude import check, FAIL, PASS, Message
-from fontbakery.profiles.shared_conditions import is_variable_font
+from fontbakery.profiles.shared_conditions import (  # pylint: disable=unused-import
+    is_variable_font,
+)
+
 
 @check(
     id="io.github.abysstypeco/check/ytlc_sanity",
