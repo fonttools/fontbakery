@@ -42,6 +42,8 @@ async function loadPyodideAndPackages() {
     'dehinter',
     'beautifulsoup4',
     'fs',
+    'jinja2',
+    'gfsubsets',
   ]);
   await micropip.install('ufo2ft', false, false, null, true);
   await micropip.install('fontbakery', false, false, null, true);
