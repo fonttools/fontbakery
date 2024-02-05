@@ -153,6 +153,43 @@ checks_by_id = {}
 conditions_by_name = {}
 checks_loaded = False
 
+FILE_MODULE_NAME_PREFIX = "."
+
+
+def get_module_from_file(filename):
+    # filename = 'my/path/to/file.py'
+    # module_name = 'file_module.file_py'
+    module_name = f"{FILE_MODULE_NAME_PREFIX}{format(os.path.basename(filename).replace('.', '_'))}"  # noqa:E501 pylint:disable=C0301
+    module_spec = importlib.util.spec_from_file_location(module_name, filename)
+    if not module_spec:
+        raise ValueError(f"Could not get module spec for file {filename}")
+    module = importlib.util.module_from_spec(module_spec)
+    module_spec.loader.exec_module(module)
+    # assert module.__file__ == filename
+    return module
+
+
+def get_module(name):
+    if os.path.isfile(name):
+        # This name could also be the name of a module, but if there's a
+        # file that we can load the file will win. Otherwise, it's still
+        # possible to change the directory
+        imported = get_module_from_file(name)
+    else:
+        # Fails with an appropriate ImportError.
+        imported = importlib.import_module(name, package=None)
+    return imported
+
+
+def load_checks_from_module(module):
+    for name, definition in inspect.getmembers(module):
+        if isinstance(definition, FontBakeryCheck):
+            checks_by_id[definition.id] = definition
+        if isinstance(definition, FontBakeryCondition):
+            # if name in conditions_by_name:
+            # raise ValueError(f"Condition {name} already defined")
+            conditions_by_name[name] = definition
+
 
 def load_all_checks():
     for importer, modname, ispkg in pkgutil.walk_packages(fontbakery.checks.__path__):
@@ -165,13 +202,7 @@ def load_all_checks():
         except ImportError as e:
             warnings.warn("Failed to load %s: %s" % (import_path, e))
             continue
-        for name, definition in inspect.getmembers(module):
-            if isinstance(definition, FontBakeryCheck):
-                checks_by_id[definition.id] = definition
-            if isinstance(definition, FontBakeryCondition):
-                # if name in conditions_by_name:
-                # raise ValueError(f"Condition {name} already defined")
-                conditions_by_name[name] = definition
+        load_checks_from_module(module)
 
 
 def add_checks_to_nascent_profile(sections, section, checks, excluded=None):
@@ -197,6 +228,10 @@ def profile_factory(module):
         checks_loaded = True
     profile_data = getattr(module, "PROFILE")
     sections = {}
+
+    for check_definition in profile_data.get("check_definitions", []):
+        module = get_module(check_definition)
+        load_checks_from_module(module)
 
     if "include_profiles" in profile_data:
         for profilename in profile_data["include_profiles"]:

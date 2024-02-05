@@ -444,19 +444,3 @@ class CheckRunner:
             return subresult
         subresult.status = Status(status_overrides[subresult.message.code])
         return subresult
-
-
-FILE_MODULE_NAME_PREFIX = "."
-
-
-def get_module_from_file(filename):
-    # filename = 'my/path/to/file.py'
-    # module_name = 'file_module.file_py'
-    module_name = f"{FILE_MODULE_NAME_PREFIX}{format(os.path.basename(filename).replace('.', '_'))}"  # noqa:E501 pylint:disable=C0301
-    module_spec = importlib.util.spec_from_file_location(module_name, filename)
-    if not module_spec:
-        raise ValueError(f"Could not get module spec for file {filename}")
-    module = importlib.util.module_from_spec(module_spec)
-    module_spec.loader.exec_module(module)
-    # assert module.__file__ == filename
-    return module
