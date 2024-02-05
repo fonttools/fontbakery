@@ -1,17 +1,4 @@
-"""
-This is a temporary profile where proposed new checks with incomplete or
-experimental implementations can live for a while, until they're promoted
-to one of the other profiles (either universal, or a vendor-specific one).
-"""
-
-from fontbakery.callable import check
-from fontbakery.section import Section
-from fontbakery.status import INFO  # FAIL, WARN, PASS
-from fontbakery.fonts_profile import profile_factory
-from fontbakery.message import Message
-
-profile_imports = ((".", ("shared_conditions", "googlefonts_conditions")),)
-profile = profile_factory(default_section=Section("Check Proposals"))
+from fontbakery.prelude import check, INFO, Message
 
 TEMPLATE_FOR_NEW_CHECK = '''
 Please, feel free to use this template when adding new check proposals here:
@@ -59,6 +46,3 @@ def com_google_fonts_check_mandatory_name_entries(ttFont):
     """Mandatory name table entries (other than font names)"""
 
     yield INFO, Message("stub", "This proposed check was not yet implemented!\n")
-
-
-profile.auto_register(globals())
