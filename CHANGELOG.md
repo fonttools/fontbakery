@@ -3,7 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.11.2 (2024-Feb-??)
-  - ...
+### New checks
+#### Added to the Google Fonts Profile
+  - **[com.google.fonts/check/description/has_unsupported_elements]:** Check the description doesn't contain unsupported html elements. (issue #2811)
 
 
 ## 0.11.1 (2024-Feb-06)

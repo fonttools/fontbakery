@@ -5101,6 +5101,21 @@ def test_check_noto_has_article():
     assert_results_contain(check(font), FAIL, "missing-article", "with a bad font")
 
 
+def test_check_description_has_unsupported_elements():
+    """Check the description doesn't contain unsupported html elements"""
+    check = CheckTester(
+        googlefonts_profile,
+        "com.google.fonts/check/description/has_unsupported_elements",
+    )
+    font = TEST_FILE("librecaslontext/LibreCaslonText[wght].ttf")
+    assert_PASS(check(font))
+
+    font = TEST_FILE("unsupported_html_elements/ABeeZee-Regular.ttf")
+    assert_results_contain(
+        check(font), FATAL, "unsupported-elements", "with a bad font"
+    )
+
+
 def test_check_italic_axis_in_stat_is_boolean():
     """Ensure 'ital' STAT axis is boolean value"""
     check = CheckTester(
