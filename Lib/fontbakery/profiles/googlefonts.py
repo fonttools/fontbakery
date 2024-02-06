@@ -73,6 +73,7 @@ PROFILE = {
             "com.google.fonts/check/description/family_update",
             "com.google.fonts/check/description/urls",
             "com.google.fonts/check/description/noto_has_article",
+            "com.google.fonts/check/description/has_unsupported_elements",
         ],
         "Family Checks": [
             "com.google.fonts/check/family/equal_codepoint_coverage",
