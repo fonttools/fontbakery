@@ -191,12 +191,10 @@ def load_checks_from_module(module):
             conditions_by_name[name] = definition
 
 
-def load_all_checks():
-    for importer, modname, ispkg in pkgutil.walk_packages(fontbakery.checks.__path__):
-        import_path = f"fontbakery.checks.{modname}"
-        if ispkg:
-            spec = pkgutil._get_spec(importer, modname)
-            importlib._bootstrap._load(spec)
+def load_all_checks(package=fontbakery.checks):
+    for _, import_path, _ in pkgutil.walk_packages(
+        path=package.__path__, prefix=package.__name__ + "."
+    ):
         try:
             module = importlib.import_module(import_path)
         except ImportError as e:
