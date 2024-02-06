@@ -2,7 +2,11 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.11.1 (2024-Feb-??)
+## Upcoming release: 0.11.2 (2024-Feb-??)
+  - ...
+
+
+## 0.11.1 (2024-Feb-06)
 ### Release highlights & new features
   - Added a `-q` `--quiet` CLI option to suppress all terminal output. (issue #4484)
   - Fixed HTML reporter by adding the templates directory to the fontbakery package. (issue #4479)
