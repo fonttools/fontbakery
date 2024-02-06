@@ -276,7 +276,7 @@ def assert_results_contain(
             )
 
         if subresult.status == expected_status and (
-            subresult.message.code == expected_msgcode
+            subresult.message.code == expected_msgcode  # pylint: disable=R1714
             or subresult.message.message == expected_msgcode  # deprecated
         ):
             return subresult.message.message

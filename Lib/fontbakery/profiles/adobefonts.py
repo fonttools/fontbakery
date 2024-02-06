@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long  # This is data, not code
 """
 Checks for Adobe Fonts (formerly known as Typekit).
 """
@@ -281,38 +282,44 @@ PROFILE = {
             {
                 "code": "invalid-default-instance-subfamily-name",
                 "status": "WARN",
-                "reason": "Adobe and the OpenType spec strongly recommend following these guidelines, but they are not hard requirements so we are relaxing this to WARN rather than FAIL.⏎Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
+                "reason": "Adobe and the OpenType spec strongly recommend following these guidelines, but they are not hard requirements so we are relaxing this to WARN rather than FAIL.\n"
+                "Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
             },
             {
                 "code": "invalid-default-instance-postscript-name",
                 "status": "WARN",
-                "reason": "Adobe and the OpenType spec strongly recommend following these guidelines, but they are not hard requirements so we are relaxing this to WARN rather than FAIL.⏎Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
+                "reason": "Adobe and the OpenType spec strongly recommend following these guidelines, but they are not hard requirements so we are relaxing this to WARN rather than FAIL.\n"
+                "Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
             },
         ],
         "com.adobe.fonts/check/stat_has_axis_value_tables": [
             {
                 "code": "missing-axis-value-table",
                 "status": "WARN",
-                "reason": "Adobe and the OpenType spec strongly recommend following these guidelines, but they are not hard requirements so we are relaxing this to WARN rather than FAIL.⏎Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
+                "reason": "Adobe and the OpenType spec strongly recommend following these guidelines, but they are not hard requirements so we are relaxing this to WARN rather than FAIL.\n"
+                "Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
             },
             {
                 "code": "format-4-axis-count",
                 "status": "WARN",
-                "reason": "Adobe and the OpenType spec strongly recommend following these guidelines, but they are not hard requirements so we are relaxing this to WARN rather than FAIL.⏎Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
+                "reason": "Adobe and the OpenType spec strongly recommend following these guidelines, but they are not hard requirements so we are relaxing this to WARN rather than FAIL.\n"
+                "Fonts that do not meet these guidelines might behave inconsistently so please carefully consider trying to meet them.",
             },
         ],
         "com.fontwerk/check/inconsistencies_between_fvar_stat": [
             {
                 "code": "missing-fvar-instance-axis-value",
                 "status": "WARN",
-                "reason": "Adobe and Fontwerk strongly recommend following this guideline, but it is not a hard requirement so we are relaxing this to WARN rather than FAIL.⏎Fonts that do not meet this guideline might behave inconsistently so please carefully consider trying to meet it.",
+                "reason": "Adobe and Fontwerk strongly recommend following this guideline, but it is not a hard requirement so we are relaxing this to WARN rather than FAIL.\n"
+                "Fonts that do not meet this guideline might behave inconsistently so please carefully consider trying to meet it.",
             }
         ],
         "com.fontwerk/check/weight_class_fvar": [
             {
                 "code": "bad-weight-class",
                 "status": "WARN",
-                "reason": "Adobe and Fontwerk strongly recommend following this guideline, but it is not a hard requirement so we are relaxing this to WARN rather than FAIL.⏎Fonts that do not meet this guideline might behave inconsistently so please carefully consider trying to meet it.",
+                "reason": "Adobe and Fontwerk strongly recommend following this guideline, but it is not a hard requirement so we are relaxing this to WARN rather than FAIL.\n"
+                "Fonts that do not meet this guideline might behave inconsistently so please carefully consider trying to meet it.",
             },
         ],
     },

@@ -222,7 +222,8 @@ def add_checks_to_nascent_profile(sections, section, checks, excluded=None):
 
 
 def profile_factory(module):
-    global checks_loaded
+    # XXX replace with a singleton one day
+    global checks_loaded  # pylint: disable=global-statement
     if not checks_loaded:
         load_all_checks()
         checks_loaded = True

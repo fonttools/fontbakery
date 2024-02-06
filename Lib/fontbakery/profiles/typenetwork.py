@@ -235,7 +235,8 @@ PROFILE = {
             {
                 "code": "found-nested-components",
                 "status": "WARN",
-                "reason": "This is allowed by the spec is not a error in the font but on the systems.",
+                "reason": "This is allowed by the spec is not a error in the font but on "
+                "the systems.",
             },
         ],
         "com.google.fonts/check/ligature_carets": [
@@ -256,12 +257,16 @@ PROFILE = {
             {
                 "code": "no-bold-instance",
                 "status": "WARN",
-                "reason": "Adobe and Type Network recommend, but do not require having a Bold instance, and that instance should have coordinate 700 on the 'wght' axis.",
+                "reason": "Adobe and Type Network recommend, but do not require having a Bold "
+                "instance, and that instance should have coordinate 700 on the 'wght' "
+                "axis.",
             },
             {
                 "code": "wght-not-700",
                 "status": "WARN",
-                "reason": "Adobe and Type Network recommend, but do not require having a Bold instance, and that instance should have coordinate 700 on the 'wght' axis.",
+                "reason": "Adobe and Type Network recommend, but do not require having a "
+                "Bold instance, and that instance should have coordinate 700 on "
+                "the 'wght' axis.",
             },
         ],
         "com.google.fonts/check/varfont/regular_ital_coord": [
@@ -308,7 +313,8 @@ PROFILE = {
             {
                 "code": "non-mark-chars",
                 "status": "FAIL",
-                "reason": "When non mark characters are on the GDEF Mark class, will produce an overlap.",
+                "reason": "When non mark characters are on the GDEF Mark class,"
+                " will produce an overlap.",
             },
         ],
         "com.google.fonts/check/math_signs_width": [
@@ -354,8 +360,8 @@ PROFILE = {
             {
                 "code": "transformed-components",
                 "status": "WARN",
-                "reason": "Since it can have a big impact on font production, it’s a foundry decision"
-                " what to do regarding this situation.",
+                "reason": "Since it can have a big impact on font production, "
+                "it’s a foundry decision what to do regarding this situation.",
             },
         ],
         "com.google.fonts/check/ots": [
