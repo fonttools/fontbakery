@@ -1599,7 +1599,7 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
     if "glyf" in ttFont:
         for glyph_name in ttFont["glyf"].keys():
             base_glyph = ttFont["glyf"][glyph_name]
-            if base_glyph.isComposite():
+            if base_glyph.isComposite() and glyph_name not in all_glyphs:
                 all_glyphs -= set(base_glyph.getComponentNames(ttFont["glyf"]))
 
     if all_glyphs:

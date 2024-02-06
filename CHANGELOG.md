@@ -8,6 +8,11 @@ A more detailed list of changes is available in the corresponding milestones for
   - Fixed HTML reporter by adding the templates directory to the fontbakery package. (issue #4479)
   - Minor wording improvement on the GHMarkdown reporter (issue #4492)
 
+### Changes to existing checks
+#### On the Universal Profile
+  - **[com.google.fonts/check/unreachable_glyphs]:** Also consider the case of glyphs which are components only of unreachable glyphs. (issue #4378)
+
+
 ## 0.11.0 (2024-Feb-02)
 ### Noteworthy code-changes
   - The babelfont dependency has been dropped. (PR #4416)
