@@ -155,7 +155,7 @@ OK = 123
     )
     config.close()
     test_font = os.path.join("data", "test", "nunito", "Nunito-Regular.ttf")
-    test_profile = os.path.join("tests", "profiles", "a_test_profile.py")
+    test_profile = os.path.join("tests", "checks", "a_test_profile.py")
     result = subprocess.run(
         [
             TOOL_NAME,

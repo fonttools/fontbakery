@@ -143,6 +143,7 @@ setup(
         "fontbakery",
         "fontbakery.checks",
         "fontbakery.checks.googlefonts",
+        "fontbakery.checks.opentype",
         "fontbakery.checks.universal",
         "fontbakery.reporters",
         "fontbakery.profiles",
