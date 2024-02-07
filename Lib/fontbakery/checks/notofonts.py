@@ -86,7 +86,7 @@ def _get_advance_width_for_char(ttFont, ch):
 )
 def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
     """Ensure all cmap subtables are the typical types expected in a font."""
-    from fontbakery.profiles.shared_conditions import has_os2_table, is_cjk_font
+    from fontbakery.shared_conditions import has_os2_table, is_cjk_font
 
     if not has_os2_table(ttFont):
         yield FAIL, Message("font-lacks-OS/2-table", "Font lacks 'OS/2' table.")
@@ -176,7 +176,7 @@ def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
 def com_google_fonts_check_unicode_range_bits(ttFont):
     """Ensure UnicodeRange bits are properly set."""
     from fontbakery.constants import UNICODERANGE_DATA
-    from fontbakery.profiles.shared_conditions import unicoderange
+    from fontbakery.shared_conditions import unicoderange
     from fontbakery.utils import (
         compute_unicoderange_bits,
         unicoderange_bit_name,

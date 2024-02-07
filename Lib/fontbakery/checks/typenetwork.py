@@ -660,7 +660,7 @@ def tn_expected_os2_weight(stylename):
 )
 def com_typenetwork_check_usweightclass(ttFont, tn_expected_os2_weight):
     """Checking OS/2 usWeightClass."""
-    from fontbakery.profiles.shared_conditions import (
+    from fontbakery.shared_conditions import (
         is_ttf,
         is_cff,
         is_variable_font,
@@ -803,7 +803,7 @@ def com_typenetwork_check_family_tnum_horizontal_metrics(ttFonts, config):
 
 @condition
 def roman_ttFonts(ttFonts):
-    from fontbakery.profiles.shared_conditions import is_italic
+    from fontbakery.shared_conditions import is_italic
 
     return [ttFont for ttFont in ttFonts if not is_italic(ttFont)]
 
@@ -811,7 +811,7 @@ def roman_ttFonts(ttFonts):
 @condition
 def italic_ttFonts(ttFonts):
     italicFonts = []
-    from fontbakery.profiles.shared_conditions import is_italic
+    from fontbakery.shared_conditions import is_italic
 
     for ttFont in ttFonts:
         if is_italic(ttFont):

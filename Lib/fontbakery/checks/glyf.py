@@ -4,7 +4,7 @@ from fontbakery.message import Message
 from fontbakery.callable import check
 from fontbakery.status import FAIL, PASS, WARN
 
-from fontbakery.profiles.shared_conditions import (  # pylint: disable=unused-import
+from fontbakery.shared_conditions import (  # pylint: disable=unused-import
     is_ttf,
 )
 

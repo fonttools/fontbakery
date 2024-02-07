@@ -15,7 +15,7 @@ from fontbakery.utils import (
     iterate_lookup_list_with_extensions,
     pretty_print_list,
 )
-from fontbakery.profiles.shared_conditions import (  # pylint: disable=unused-import
+from fontbakery.shared_conditions import (  # pylint: disable=unused-import
     superfamily,
     superfamily_ttFonts,
     is_cjk_font,

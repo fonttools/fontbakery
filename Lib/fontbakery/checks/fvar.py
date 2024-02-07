@@ -3,7 +3,7 @@ from fontbakery.constants import REGISTERED_AXIS_TAGS
 from fontbakery.status import FAIL, PASS, WARN, SKIP
 from fontbakery.message import Message
 
-from fontbakery.profiles.shared_conditions import (  # pylint: disable=unused-import
+from fontbakery.shared_conditions import (  # pylint: disable=unused-import
     is_variable_font,
     has_wght_axis,
     has_wdth_axis,
