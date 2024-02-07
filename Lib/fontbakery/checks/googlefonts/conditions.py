@@ -326,9 +326,9 @@ def is_ofl(license_filename):
     return license_filename and "OFL" in license_filename
 
 
-@condition
+@condition(Font)
 def familyname(font):
-    filename = os.path.basename(font)
+    filename = os.path.basename(font.file)
     filename_base = os.path.splitext(filename)[0]
     if "-" in filename_base:
         return filename_base.split("-")[0]
@@ -703,7 +703,7 @@ def upstream_yaml(family_directory):
     return yaml.load(open(fp, "r", encoding="utf-8"), yaml.FullLoader)
 
 
-@condition
+@condition(Font)
 def is_noto(font_familyname):
     return font_familyname.startswith("Noto ")
 
