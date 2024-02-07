@@ -1,5 +1,5 @@
 from fontbakery.prelude import check, FAIL, PASS, Message
-from fontbakery.profiles.shared_conditions import (  # pylint: disable=unused-import
+from fontbakery.shared_conditions import (  # pylint: disable=unused-import
     is_variable_font,
 )
 

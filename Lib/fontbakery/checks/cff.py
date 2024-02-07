@@ -1,7 +1,7 @@
 from fontbakery.callable import check, condition
 from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
-from fontbakery.profiles.shared_conditions import (  # pylint: disable=unused-import
+from fontbakery.shared_conditions import (  # pylint: disable=unused-import
     ttFont,
     is_cff,
     is_cff2,
