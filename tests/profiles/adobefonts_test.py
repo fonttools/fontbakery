@@ -23,7 +23,7 @@ from fontbakery.constants import (
     WindowsLanguageID,
 )
 from fontbakery.profiles import adobefonts as adobefonts_profile
-from fontbakery.profiles.shared_conditions import vmetrics
+from fontbakery.shared_conditions import vmetrics
 
 OVERRIDE_SUFFIX = ""  # They're just overriden by the profile
 

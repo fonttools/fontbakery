@@ -209,28 +209,6 @@ def ligatures(ttFont):
 
 
 @condition
-def ligature_glyphs(ttFont):
-    from fontTools.ttLib.tables.otTables import LigatureSubst
-
-    all_ligature_glyphs = []
-    try:
-        if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
-            for record in ttFont["GSUB"].table.FeatureList.FeatureRecord:
-                if record.FeatureTag == "liga":
-                    for index in record.Feature.LookupListIndex:
-                        lookup = ttFont["GSUB"].table.LookupList.Lookup[index]
-                        for subtable in lookup.SubTable:
-                            if isinstance(subtable, LigatureSubst):
-                                for firstGlyph in subtable.ligatures.keys():
-                                    for lig in subtable.ligatures[firstGlyph]:
-                                        if lig.LigGlyph not in all_ligature_glyphs:
-                                            all_ligature_glyphs.append(lig.LigGlyph)
-        return all_ligature_glyphs
-    except (AttributeError, IndexError):
-        return -1  # Indicate fontTools-related crash...
-
-
-@condition
 def glyph_metrics_stats(ttFont):
     """Returns a dict containing whether the font seems_monospaced,
     what's the maximum glyph width and what's the most common width.
@@ -592,6 +570,11 @@ def get_cjk_glyphs(ttFont):
 @condition
 def typo_metrics_enabled(ttFont):
     return ttFont["OS/2"].fsSelection & 0b10000000 > 0
+
+
+@condition
+def font_codepoints(ttFont):
+    return set(ttFont.getBestCmap().keys())
 
 
 @condition

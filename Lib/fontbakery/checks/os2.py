@@ -3,7 +3,7 @@ from fontbakery.status import FAIL, PASS, WARN, INFO, SKIP
 from fontbakery.message import Message
 
 
-from fontbakery.profiles.googlefonts_conditions import (  # pylint: disable=unused-import
+from fontbakery.checks.googlefonts.conditions import (  # pylint: disable=unused-import
     RIBBI_ttFonts,
     style,
 )

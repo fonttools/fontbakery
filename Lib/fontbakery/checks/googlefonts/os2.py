@@ -1,0 +1,244 @@
+from fontbakery.prelude import check, Message, WARN, PASS, FAIL
+from fontbakery.shared_conditions import is_ttf, is_cff, is_variable_font
+
+
+@check(
+    id="com.google.fonts/check/vendor_id",
+    conditions=["registered_vendor_ids"],
+    rationale="""
+        Microsoft keeps a list of font vendors and their respective contact info. This
+        list is updated regularly and is indexed by a 4-char "Vendor ID" which is
+        stored in the achVendID field of the OS/2 table.
+
+        Registering your ID is not mandatory, but it is a good practice since some
+        applications may display the type designer / type foundry contact info on some
+        dialog and also because that info will be visible on Microsoft's website:
+
+        https://docs.microsoft.com/en-us/typography/vendors/
+
+        This check verifies whether or not a given font's vendor ID is registered in
+        that list or if it has some of the default values used by the most common
+        font editors.
+
+        Each new FontBakery release includes a cached copy of that list of vendor IDs.
+        If you registered recently, you're safe to ignore warnings emitted by this
+        check, since your ID will soon be included in one of our upcoming releases.
+    """,
+    proposal=[
+        "legacy:check/018",
+        "https://github.com/fonttools/fontbakery/issues/3943",
+    ],
+)
+def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
+    """Checking OS/2 achVendID."""
+
+    SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
+        "If you registered it recently, then it's safe to ignore this warning message."
+        " Otherwise, you should set it to your own unique 4 character code,"
+        " and register it with Microsoft at"
+        " https://www.microsoft.com/typography/links/vendorlist.aspx\n"
+    )
+
+    vid = ttFont["OS/2"].achVendID
+    bad_vids = ["UKWN", "ukwn", "PfEd", "PYRS"]
+    if vid is None:
+        yield WARN, Message(
+            "not-set",
+            f"OS/2 VendorID is not set." f" {SUGGEST_MICROSOFT_VENDORLIST_WEBSITE}",
+        )
+    elif vid in bad_vids:
+        yield WARN, Message(
+            "bad",
+            f"OS/2 VendorID is '{vid}', a font editor default."
+            f" {SUGGEST_MICROSOFT_VENDORLIST_WEBSITE}",
+        )
+    elif vid not in registered_vendor_ids.keys():
+        yield WARN, Message(
+            "unknown",
+            f"OS/2 VendorID value '{vid}' is not yet recognized."
+            f" {SUGGEST_MICROSOFT_VENDORLIST_WEBSITE}",
+        )
+    else:
+        yield PASS, f"OS/2 VendorID '{vid}' looks good!"
+
+
+@check(
+    id="com.google.fonts/check/os2/use_typo_metrics",
+    rationale="""
+        All fonts on the Google Fonts collection should have OS/2.fsSelection bit 7
+        (USE_TYPO_METRICS) set. This requirement is part of the vertical metrics scheme
+        established as a Google Fonts policy aiming at a common ground supported by
+        all major font rendering environments.
+
+        For more details, read:
+        https://github.com/googlefonts/gf-docs/blob/main/VerticalMetrics/README.md
+
+        Below is the portion of that document that is most relevant to this check:
+
+        Use_Typo_Metrics must be enabled. This will force MS Applications to use the
+        OS/2 Typo values instead of the Win values. By doing this, we can freely set
+        the Win values to avoid clipping and control the line height with the typo
+        values. It has the added benefit of future line height compatibility. When
+        a new script is added, we simply change the Win values to the new yMin
+        and yMax, without needing to worry if the line height have changed.
+    """,
+    conditions=["not is_cjk_font"],
+    severity=10,
+    proposal="https://github.com/fonttools/fontbakery/issues/3241",
+)
+def com_google_fonts_check_os2_fsselectionbit7(ttFonts):
+    """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts."""
+
+    bad_fonts = []
+    for ttFont in ttFonts:
+        if not ttFont["OS/2"].fsSelection & (1 << 7):
+            bad_fonts.append(ttFont.reader.file.name)
+
+    if bad_fonts:
+        yield FAIL, Message(
+            "missing-os2-fsselection-bit7",
+            f"OS/2.fsSelection bit 7 (USE_TYPO_METRICS) was"
+            f"NOT set in the following fonts: {bad_fonts}.",
+        )
+    else:
+        yield PASS, "OK"
+
+
+@check(
+    id="com.google.fonts/check/fstype",
+    rationale="""
+        The fsType in the OS/2 table is a legacy DRM-related field. Fonts in the
+        Google Fonts collection must have it set to zero (also known as
+        "Installable Embedding"). This setting indicates that the fonts can be
+        embedded in documents and permanently installed by applications on
+        remote systems.
+
+        More detailed info is available at:
+        https://docs.microsoft.com/en-us/typography/opentype/spec/os2#fstype
+    """,
+    proposal="legacy:check/016",
+)
+def com_google_fonts_check_fstype(ttFont):
+    """Checking OS/2 fsType does not impose restrictions."""
+    value = ttFont["OS/2"].fsType
+    if value != 0:
+        FSTYPE_RESTRICTIONS = {
+            0x0002: (
+                "* The font must not be modified, embedded or exchanged in"
+                " any manner without first obtaining permission of"
+                " the legal owner."
+            ),
+            0x0004: (
+                "The font may be embedded, and temporarily loaded on the"
+                " remote system, but documents that use it must"
+                " not be editable."
+            ),
+            0x0008: (
+                "The font may be embedded but must only be installed"
+                " temporarily on other systems."
+            ),
+            0x0100: ("The font may not be subsetted prior to embedding."),
+            0x0200: (
+                "Only bitmaps contained in the font may be embedded."
+                " No outline data may be embedded."
+            ),
+        }
+        restrictions = ""
+        for bit_mask in FSTYPE_RESTRICTIONS.keys():
+            if value & bit_mask:
+                restrictions += FSTYPE_RESTRICTIONS[bit_mask]
+
+        if value & 0b1111110011110001:
+            restrictions += (
+                "* There are reserved bits set, which indicates an invalid setting."
+            )
+
+        yield FAIL, Message(
+            "drm",
+            f"In this font fsType is set to {value} meaning that:\n"
+            f"{restrictions}\n"
+            f"\n"
+            f"No such DRM restrictions can be enabled on the"
+            f" Google Fonts collection, so the fsType field"
+            f" must be set to zero (Installable Embedding) instead.",
+        )
+    else:
+        yield PASS, "OS/2 fsType is properly set to zero."
+
+
+@check(
+    id="com.google.fonts/check/usweightclass",
+    conditions=["expected_font_names"],
+    rationale="""
+        Google Fonts expects variable fonts, static ttfs and static otfs to have
+        differing OS/2 usWeightClass values.
+
+        - For Variable Fonts, Thin-Black must be 100-900
+
+        - For static ttfs, Thin-Black can be 100-900 or 250-900
+
+        - For static otfs, Thin-Black must be 250-900
+
+        If static otfs are set lower than 250, text may appear blurry in
+        legacy Windows applications.
+
+        Glyphsapp users can change the usWeightClass value of an instance by adding
+        a 'weightClass' customParameter.
+    """,
+    proposal="legacy:check/020",
+)
+def com_google_fonts_check_usweightclass(ttFont, expected_font_names):
+    """
+    Check the OS/2 usWeightClass is appropriate for the font's best SubFamily name.
+    """
+    passed = True
+    value = ttFont["OS/2"].usWeightClass
+    expected_value = expected_font_names["OS/2"].usWeightClass
+    style_name = ttFont["name"].getBestSubFamilyName()
+    has_expected_value = value == expected_value
+    fail_message = (
+        "Best SubFamily name is '{}'. Expected OS/2 usWeightClass is {}, got {}."
+    )
+    if is_variable_font(ttFont):
+        if not has_expected_value:
+            passed = False
+            yield FAIL, Message(
+                "bad-value", fail_message.format(style_name, expected_value, value)
+            )
+    # overrides for static Thin and ExtaLight fonts
+    # for static ttfs, we don't mind if Thin is 250 and ExtraLight is 275.
+    # However, if the values are incorrect we will recommend they set Thin
+    # to 100 and ExtraLight to 250.
+    # for static otfs, Thin must be 250 and ExtraLight must be 275
+    elif "Thin" in style_name:
+        if is_ttf(ttFont) and value not in [100, 250]:
+            passed = False
+            yield FAIL, Message(
+                "bad-value", fail_message.format(style_name, expected_value, value)
+            )
+        if is_cff(ttFont) and value != 250:
+            passed = False
+            yield FAIL, Message(
+                "bad-value", fail_message.format(style_name, 250, value)
+            )
+
+    elif "ExtraLight" in style_name:
+        if is_ttf(ttFont) and value not in [200, 275]:
+            passed = False
+            yield FAIL, Message(
+                "bad-value", fail_message.format(style_name, expected_value, value)
+            )
+        if is_cff(ttFont) and value != 275:
+            passed = False
+            yield FAIL, Message(
+                "bad-value", fail_message.format(style_name, 275, value)
+            )
+
+    elif not has_expected_value:
+        passed = False
+        yield FAIL, Message(
+            "bad-value", fail_message.format(style_name, expected_value, value)
+        )
+
+    if passed:
+        yield PASS, "OS/2 usWeightClass is good"
