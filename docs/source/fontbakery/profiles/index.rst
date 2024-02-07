@@ -5,7 +5,6 @@ profiles
 .. toctree::
    :maxdepth: 1
 
-   proposals
    opentype
    universal
    adobefonts
