@@ -745,27 +745,6 @@ def test_check_family_equal_codepoint_coverage(mada_ttFonts, cabin_ttFonts):
     )
 
 
-@pytest.mark.skip(reason="re-enable after addressing issue #1998")
-def test_check_family_equal_glyph_names(mada_ttFonts, cabin_ttFonts):
-    """Fonts have equal glyph names?"""
-    check = CheckTester(
-        googlefonts_profile, "com.google.fonts/check/family/equal_glyph_names"
-    )
-
-    # our reference Cabin family is know to be good here.
-    assert_PASS(check(cabin_ttFonts), "with a good family.")
-
-    # our reference Mada family is bad here with 407 glyphs on most font files
-    # except the Black and the Medium, that both have 408 glyphs (that extra glyph
-    # causes the check to fail).
-    assert_results_contain(
-        check(mada_ttFonts),
-        FAIL,
-        "missing-glyph",
-        "with fonts that diverge on number of glyphs.",
-    )
-
-
 def test_check_fstype():
     """Checking OS/2 fsType"""
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/fstype")
