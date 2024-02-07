@@ -2,7 +2,9 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.11.2 (2024-Feb-??)
+## Upcoming release: 0.12.0 (2024-Feb-??)
+  - Major refactoring. Check definitions now are all placed at `Lib/fontbakery/checks` and profile definitions are purely declarative, picking the checks from the pool by check-id. (PR #4491)
+
 ### New checks
 #### Added to the Google Fonts Profile
   - **EXPERIMENTAL - [com.google.fonts/check/description/has_unsupported_elements]:** Check the description doesn't contain unsupported html elements. (issue #2811)
