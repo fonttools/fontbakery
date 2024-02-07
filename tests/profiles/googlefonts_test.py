@@ -8,8 +8,8 @@ from fontTools.ttLib import TTFont
 
 from conftest import ImportRaiser, remove_import_raiser
 
-from fontbakery.checks.googlefonts import can_shape
-from fontbakery.profiles.googlefonts_conditions import expected_font_names
+from fontbakery.checks.googlefonts.glyphset import can_shape
+from fontbakery.checks.googlefonts.conditions import expected_font_names
 from fontbakery.status import (
     DEBUG,
     INFO,
@@ -766,7 +766,7 @@ def test_check_fstype():
 
 def test_condition_registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
-    from fontbakery.profiles.googlefonts_conditions import registered_vendor_ids
+    from fontbakery.checks.googlefonts.conditions import registered_vendor_ids
 
     registered_ids = registered_vendor_ids()
 
@@ -951,7 +951,7 @@ def test_check_usweightclass():
 
 
 def test_family_directory_condition():
-    from fontbakery.profiles.shared_conditions import family_directory
+    from fontbakery.shared_conditions import family_directory
 
     assert family_directory("some_directory/Foo.ttf") == "some_directory"
     assert family_directory("some_directory/subdir/Foo.ttf") == "some_directory/subdir"
@@ -965,7 +965,7 @@ def test_check_family_has_license():
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/family/has_license"
     )
-    from fontbakery.profiles.googlefonts_conditions import licenses
+    from fontbakery.checks.googlefonts.conditions import licenses
 
     def licenses_for_test(path):
         found = licenses(path)
@@ -2038,7 +2038,7 @@ def test_check_metadata_valid_post_script_name_values():
 
 def test_check_metadata_valid_nameid25():
     """Check name ID 25 to end with "Italic" for Italic VFs"""
-    from fontbakery.profiles.shared_conditions import style
+    from fontbakery.shared_conditions import style
 
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/metadata/valid_nameid25"
@@ -3054,7 +3054,7 @@ def test_check_name_mandatory_entries():
 
 
 def test_condition_familyname_with_spaces():
-    from fontbakery.profiles.googlefonts_conditions import familyname_with_spaces
+    from fontbakery.checks.googlefonts.conditions import familyname_with_spaces
 
     assert familyname_with_spaces("OverpassMono") == "Overpass Mono"
     assert familyname_with_spaces("BodoniModa11") == "Bodoni Moda 11"
@@ -4964,7 +4964,7 @@ def test_check_STAT(fps, new_stat, result):
 def test_check_colorfont_tables():
     """Check font has the expected color font tables."""
     from fontTools.ttLib import newTable
-    from fontbakery.profiles.shared_conditions import is_variable_font
+    from fontbakery.shared_conditions import is_variable_font
 
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/colorfont_tables")
 
@@ -5122,7 +5122,7 @@ def test_check_italic_axis_in_stat_is_boolean():
         googlefonts_profile,
         f"com.google.fonts/check/italic_axis_in_stat_is_boolean{OVERRIDE_SUFFIX}",
     )
-    from fontbakery.profiles.shared_conditions import style
+    from fontbakery.shared_conditions import style
 
     # PASS
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
@@ -5173,7 +5173,7 @@ def test_check_italic_axis_last():
     check = CheckTester(
         googlefonts_profile, f"com.google.fonts/check/italic_axis_last{OVERRIDE_SUFFIX}"
     )
-    from fontbakery.profiles.shared_conditions import style
+    from fontbakery.shared_conditions import style
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)

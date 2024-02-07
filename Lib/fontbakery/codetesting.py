@@ -108,7 +108,7 @@ class CheckTester:
 
     def __call__(self, values, condition_overrides=None) -> Iterable[Subresult]:
         from fontTools.ttLib import TTFont
-        from fontbakery.profiles.googlefonts_conditions import family_metadata
+        from fontbakery.checks.googlefonts.conditions import family_metadata
         from glyphsLib import GSFont
         import os
 

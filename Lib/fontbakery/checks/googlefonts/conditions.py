@@ -14,10 +14,7 @@ from fontbakery.constants import (
 )
 from fontbakery.utils import exit_with_install_instructions
 
-# used to inform get_module_profile whether and how to create a profile
-from fontbakery.fonts_profile import profile_factory  # noqa:F401 pylint:disable=W0611
-
-from fontbakery.profiles.shared_conditions import style
+from fontbakery.shared_conditions import style
 
 
 GF_TAGS_SHEET_URL = (
@@ -112,7 +109,7 @@ def stylenames_are_canonical(fonts):
 def canonical_stylename(font):
     """Returns the canonical stylename of a given font."""
     from fontbakery.constants import STATIC_STYLE_NAMES, VARFONT_SUFFIXES
-    from .shared_conditions import is_variable_font
+    from fontbakery.shared_conditions import is_variable_font
     from fontTools.ttLib import TTFont
 
     # remove spaces in style names
@@ -352,7 +349,7 @@ def hinting_stats(font):
     from dehinter.font import dehint
     from fontTools.ttLib import TTFont
     from fontTools.subset import main as pyftsubset
-    from fontbakery.profiles.shared_conditions import is_ttf, is_cff, is_cff2
+    from fontbakery.shared_conditions import is_ttf, is_cff, is_cff2
 
     hinted_size = os.stat(font).st_size
     ttFont = TTFont(font)
@@ -526,7 +523,7 @@ def remote_styles(familyname_with_spaces, config, network):
 
 @condition
 def regular_remote_style(remote_styles):
-    from .shared_conditions import is_variable_font, get_instance_axis_value
+    from fontbakery.shared_conditions import is_variable_font, get_instance_axis_value
 
     if not remote_styles:
         return None
@@ -542,7 +539,7 @@ def regular_remote_style(remote_styles):
 
 @condition
 def regular_ttFont(ttFonts):
-    from .shared_conditions import is_variable_font, get_instance_axis_value
+    from fontbakery.shared_conditions import is_variable_font, get_instance_axis_value
 
     for ttFont in ttFonts:
         if "-Regular." in os.path.basename(ttFont.reader.file.name):
@@ -696,13 +693,6 @@ def production_metadata(config, network):
 
     meta_url = "http://fonts.google.com/metadata/fonts"
     return requests.get(meta_url, timeout=config.get("timeout")).json()
-
-
-@condition
-def GFAxisRegistry():
-    from axisregistry import AxisRegistry
-
-    return AxisRegistry()
 
 
 @condition

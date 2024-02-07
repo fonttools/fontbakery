@@ -3,7 +3,7 @@ from fontTools.ttLib import TTFont
 
 
 from fontbakery.codetesting import TEST_FILE
-from fontbakery.profiles.googlefonts_conditions import (
+from fontbakery.checks.googlefonts.conditions import (
     canonical_stylename,
     stylenames_are_canonical,
     is_icon_font,

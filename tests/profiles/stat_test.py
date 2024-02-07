@@ -163,7 +163,7 @@ def test_check_italic_axis_in_stat_is_boolean():
     check = CheckTester(
         opentype_profile, "com.google.fonts/check/italic_axis_in_stat_is_boolean"
     )
-    from fontbakery.profiles.shared_conditions import style
+    from fontbakery.shared_conditions import style
 
     # PASS
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
@@ -212,7 +212,7 @@ def test_check_italic_axis_in_stat_is_boolean():
 def test_check_italic_axis_last():
     """Ensure 'ital' STAT axis is last."""
     check = CheckTester(opentype_profile, "com.google.fonts/check/italic_axis_last")
-    from fontbakery.profiles.shared_conditions import style
+    from fontbakery.shared_conditions import style
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)
