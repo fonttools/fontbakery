@@ -125,7 +125,6 @@ DESCRIPTION_CHECKS = [
 
 FAMILY_CHECKS = [
     "com.google.fonts/check/family/equal_codepoint_coverage",
-    # "com.google.fonts/check/family/equal_glyph_names",
     "com.google.fonts/check/family/has_license",
     "com.google.fonts/check/family/control_chars",
     "com.google.fonts/check/family/tnum_horizontal_metrics",
@@ -872,61 +871,6 @@ def com_google_fonts_check_family_equal_codepoint_coverage(ttFonts, config):
         yield PASS, (
             "All font files in this family have an equivalent encoded glyphset."
         )
-
-
-@disable  # TODO: re-enable after addressing issue #1998
-@check(
-    id="com.google.fonts/check/family/equal_glyph_names",
-    conditions=["are_ttf"],
-    proposal="legacy:check/012",
-)
-def com_google_fonts_check_family_equal_glyph_names(ttFonts):
-    """Fonts have equal glyph names?"""
-    from .googlefonts_conditions import style
-
-    fonts = list(ttFonts)
-
-    all_glyphnames = set()
-    for ttFont in fonts:
-        all_glyphnames |= set(ttFont["glyf"].glyphs.keys())
-
-    missing = {}
-    available = {}
-    for glyphname in all_glyphnames:
-        missing[glyphname] = []
-        available[glyphname] = []
-
-    passed = True
-    for ttFont in fonts:
-        fontname = ttFont.reader.file.name
-        these_ones = set(ttFont["glyf"].glyphs.keys())
-        for glyphname in all_glyphnames:
-            if glyphname not in these_ones:
-                passed = False
-                missing[glyphname].append(fontname)
-            else:
-                available[glyphname].append(fontname)
-
-    for gn in sorted(missing.keys()):
-        if missing[gn]:
-            available_styles = [style(k) for k in available[gn]]
-            missing_styles = [style(k) for k in missing[gn]]
-            if None not in available_styles + missing_styles:
-                # if possible, use stylenames in the log messages.
-                avail = ", ".join(sorted(available_styles))
-                miss = ", ".join(sorted(missing_styles))
-            else:
-                # otherwise, print filenames:
-                avail = ", ".join(sorted(available[gn]))
-                miss = ", ".join(sorted(missing[gn]))
-
-            yield FAIL, Message(
-                "missing-glyph",
-                f"Glyphname '{gn}' is defined on {avail}" f" but is missing on {miss}.",
-            )
-
-    if passed:
-        yield PASS, "All font files have identical glyph names."
 
 
 @check(
