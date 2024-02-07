@@ -7299,43 +7299,47 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
     conditions=["description"],
     rationale="""
         The Google Fonts backend doesn't support the following html elements:
-        https://github.com/googlefonts/googlefonts.github.io/pull/128/files
+        https://googlefonts.github.io/gf-guide/description.html#requirements
     """,
     proposal=[
         "https://github.com/fonttools/fontbakery/issues/2811#issuecomment-1907566857",
     ],
+    experimental="Since 2024/Feb/07",
 )
 def com_google_fonts_check_description_has_unsupported_elements(description):
     """Check the description doesn't contain unsupported html elements"""
     unsupported_elements = frozenset(
         [
-            "<applet>",
-            "<base>",
-            "<embed>",
-            "<form>",
-            "<frame>",
-            "<frameset>",
-            "<head>",
-            "<iframe>",
-            "<link>",
-            "<math>",
-            "<meta>",
-            "<object>",
-            "<script>",
-            "<style>",
-            "<svg>",
-            "<template>",
+            "applet",
+            "base",
+            "embed",
+            "form",
+            "frame",
+            "frameset",
+            "head",
+            "iframe",
+            "link",
+            "math",
+            "meta",
+            "object",
+            "script",
+            "style",
+            "svg",
+            "template",
         ]
     )
     found = set()
     for tag in unsupported_elements:
-        if tag in description:
+        if f"<{tag}>" in description or f"<{tag} " in description:
             found.add(tag)
+
     if found:
+        found = map(r"\<{}\>".format, found)
+        found = ", ".join(found)
         yield FATAL, Message(
             "unsupported-elements",
-            "Description.en_us.html contains the following unsupported "
-            f"html elements {found}. Please remove them.",
+            f"Description.en_us.html contains unsupported"
+            f" html element(s). Please remove: {found}",
         )
     else:
         yield PASS, "DESCRIPTION.en_us.html contains correct elements"
