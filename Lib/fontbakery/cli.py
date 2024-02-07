@@ -23,7 +23,6 @@ CLI_PROFILES = [
     "typenetwork",
     "ufo_sources",
     "universal",
-    "proposals",
 ]
 
 
