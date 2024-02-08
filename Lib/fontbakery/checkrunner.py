@@ -256,22 +256,28 @@ class CheckRunner:
 
     @property
     def order(self) -> Tuple[Identity, ...]:
-        order = self._cache.get("order", None)
-        if order is not None:
-            return order  # pytype:disable=bad-return-type
-
-        order = []
-        # section, check, iterargs = identity
-        for identity in self._profile.execution_order(
-            self._iterargs,
-            custom_order=self._custom_order,
-            explicit_checks=self._explicit_checks,
-            exclude_checks=self._exclude_checks,
-        ):
-            assert isinstance(identity, Identity)
-            order.append(identity)
-        self._cache["order"] = order = tuple(order)
-        return order
+        _order = []
+        for section in self._profile.sections:
+            for check in section.checks:
+                if self._explicit_checks and check.id not in self._explicit_checks:
+                    continue
+                if self._exclude_checks and check.id in self._exclude_checks:
+                    continue
+                args = check.args
+                # Either this is a check which runs on the whole collection
+                # (i.e. all of its arguments can be called as methods on the
+                # CheckRunContext):
+                if all(hasattr(self.context, arg) for arg in args):
+                    # In which case, we run it once
+                    _order.append(Identity(section, check, ()))
+                    continue
+                # Or it's a check which runs on each item in the collection.
+                for plural, files in self.context.testables_by_type.items():
+                    if all(hasattr(file, arg) for arg in args for file in files):
+                        # In which case, we run it once for each item
+                        for i, file in enumerate(files):
+                            _order.append( Identity(section, check, ((plural, i),)) )
+        return tuple(_order)
 
     def run(self, reporters):
         # Tell all the reporters we're starting
