@@ -7,6 +7,7 @@ from fontTools.ttLib import TTFont
 from fontbakery.utils import keyword_in_full_font_name
 import os
 
+
 @dataclass
 class Testable:
     file: str
@@ -16,8 +17,8 @@ class Testable:
 class Readme(Testable):
     singular = "readme_md"
     plural = "readme_mds"
-    extensions=["README.md"]
-    description="Project's README markdown file"
+    extensions = ["README.md"]
+    description = "Project's README markdown file"
 
     @cached_property
     def readme_contents(self):
@@ -26,6 +27,39 @@ class Readme(Testable):
     @cached_property
     def readme_directory(self):
         return os.path.dirname(self.file) or "."
+
+
+@dataclass
+class Ufo(Testable):
+    singular = "ufo"
+    plural = "ufos"
+    extensions = [".ufo"]
+    description = "UFO source"
+
+
+@dataclass
+class Designspace(Testable):
+    singular = "designspace"
+    plural = "designspaces"
+    extensions = [".designspace"]
+    description = "designspace source"
+
+
+@dataclass
+class GlyphsFile(Testable):
+    singular = "glyphs_file"
+    plural = "glyphs_files"
+    extensions = [".glyphs", ".glyphspackage"]
+    description = "Glyphs source"
+
+
+@dataclass
+class MetadataPB(Testable):
+    singular = "metadata_pb"
+    plural = "metadata_pbs"
+    extensions = ["METADATA.pb"]
+    description = "Project's METADATA protobuf file"
+
 
 @dataclass
 class Font(Testable):
@@ -37,11 +71,12 @@ class Font(Testable):
     @cached_property
     def ttFont(self):
         return TTFont(self.file)
-    
+
     @cached_property
     def style(self):
         """Determine font style from canonical filename."""
         from fontbakery.constants import STATIC_STYLE_NAMES
+
         acceptable_stylenames = [name.replace(" ", "") for name in STATIC_STYLE_NAMES]
         filename = os.path.basename(self.file)
         # VF
@@ -90,7 +125,7 @@ class Font(Testable):
     @cached_property
     def has_STAT_table(self):
         return "STAT" in self.ttFont
-    
+
     @cached_property
     def axes_by_tag(self):
         if self.is_variable_font:
@@ -100,23 +135,23 @@ class Font(Testable):
     @cached_property
     def has_wght_axis(self):
         return "wght" in self.axes_by_tag
-    
+
     @cached_property
     def has_slnt_axis(self):
         return "slnt" in self.axes_by_tag
-    
+
     @cached_property
     def has_ital_axis(self):
         return "ital" in self.axes_by_tag
-    
+
     @cached_property
     def has_opsz_axis(self):
         return "opsz" in self.axes_by_tag
-    
+
     @cached_property
     def has_wdth_axis(self):
         return "wdth" in self.axes_by_tag
-    
+
     @cached_property
     def family_directory(self):
         """Get the path of font project directory."""
@@ -125,7 +160,7 @@ class Font(Testable):
     @cached_property
     def is_hinted(self):
         return "fpgm" in self.ttFont
-    
+
     @cached_property
     def slnt_axis(self):
         return self.axes_by_tag.get("slnt")
@@ -141,7 +176,7 @@ class Font(Testable):
     @cached_property
     def grad_axis(self):
         return self.axes_by_tag.get("GRAD")
-    
+
     @cached_property
     def wght_axis(self):
         return self.axes_by_tag.get("wght")
@@ -150,7 +185,7 @@ class Font(Testable):
     def default_wght_coord(self):
         if self.wght_axis:
             return self.wght_axis.defaultValue
-    
+
     @cached_property
     def font_codepoints(self):
         return set(self.ttFont.getBestCmap().keys())
@@ -184,6 +219,7 @@ class Font(Testable):
             or keyword_in_full_font_name(ttFont, "bold")
         )
 
+
 @dataclass
 class CheckRunContext:
     testables: Iterable[Testable] = field(default_factory=list)
@@ -196,21 +232,6 @@ class CheckRunContext:
             by_type[testable.singular].append(testable)
         return by_type
 
-    # I would like to get rid of this
-    def get_iterarg(self, name, iterargs):
-        if len(iterargs) > 1:
-            raise ValueError("Only one iterarg is supported")
-        plural, index = iterargs[0]
-        if plural == "fonts" or plural == "font":
-            font = list(self.fonts)[index]
-            if name == "font":
-                return font
-            if hasattr(font, name):
-                return getattr(font, name)
-            else:
-                raise ValueError(f"Font has no attribute {name}")
-        raise ValueError(f"Unknown iterarg {plural}")
-
     @property
     def fonts(self):
         return self.testables_by_type["font"]
@@ -222,7 +243,7 @@ class CheckRunContext:
     @property  # Can't cache a map
     def ttFonts(self):
         return map(lambda font: font.ttFont, self.fonts)
-    
+
     @cached_property
     def RIBBI_ttFonts(self):
         from fontbakery.constants import RIBBI_STYLE_NAMES
@@ -236,4 +257,3 @@ class CheckRunContext:
         """Returns a list of font files which are recognized as variable fonts"""
         # pytype: disable=attribute-error
         return [font.ttFont for font in self.fonts if font.is_variable_font]
-

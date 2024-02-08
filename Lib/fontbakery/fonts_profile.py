@@ -1,7 +1,6 @@
 """
 FontBakery CheckRunner is the driver of a fontbakery suite of checks.
 """
-import argparse
 import glob
 import importlib
 import inspect
@@ -12,7 +11,15 @@ import warnings
 
 import fontbakery.checks
 from fontbakery.callable import FontBakeryCheck
-from fontbakery.testable import Font, Readme, CheckRunContext
+from fontbakery.testable import (
+    Font,
+    Readme,
+    CheckRunContext,
+    Ufo,
+    Designspace,
+    GlyphsFile,
+    MetadataPB,
+)
 from fontbakery.errors import ValueValidationError
 from fontbakery.profile import Profile
 from fontbakery.section import Section
@@ -20,30 +27,14 @@ from fontbakery.section import Section
 
 class FontsProfile(Profile):
     accepted_files = [
-       Font,
-       Readme,
-        # FileDescription(
-        #     name="ufos", singular="ufo", extensions=[".ufo"], description="UFO source"
-        # ),
-        # FileDescription(
-        #     name="designspaces",
-        #     singular="designspace",
-        #     extensions=[".designspace"],
-        #     description="Designspace",
-        # ),
-        # FileDescription(
-        #     name="glyphs_files",
-        #     singular="glyphs_file",
-        #     extensions=[".glyphs"],
-        #     description="Glyphs source",
-        # ),
-        # FileDescription(
-        #     name="metadata_pb",
-        #     singular="metadata_pb",
-        #     extensions=["METADATA.pb"],
-        #     description="Project's METADATA protobuf file",
-        # ),
+        Font,
+        Readme,
+        Ufo,
+        Designspace,
+        GlyphsFile,
+        MetadataPB,
     ]
+
     @classmethod
     def _iterargs(cls):
         return {val.singular: val.plural for val in cls.accepted_files}
