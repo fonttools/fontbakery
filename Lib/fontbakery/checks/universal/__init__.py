@@ -1303,7 +1303,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
     import sys
     import tempfile
 
-    ttFont = ttx.TTFont(font)
+    ttFont = ttx.TTFont(font.file)
     failed = False
     fd, xml_file = tempfile.mkstemp()
     os.close(fd)

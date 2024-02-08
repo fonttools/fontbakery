@@ -179,3 +179,19 @@ def assert_results_contain(
         f"But did not find it in:\n"
         f"{check_results}"
     )
+
+
+class MockContext:
+    # We want a new CheckRunContext with some user-supplied attributes.
+    # But the attributes we want to feed in are generally properties, and
+    # we can't calls setattr to override them because there is no setattr
+    # for read-only properties.
+    # So our mock class doesn't have *any* properties, just the mock values
+    # we want to override. When we're asked for any other properties, we look
+    # up the implementation from CheckRunContext and run that.
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def __getattr__(self, name):
+        prop = getattr(CheckRunContext, name)
+        return prop.fget(self)

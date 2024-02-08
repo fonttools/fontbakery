@@ -378,27 +378,25 @@ def com_google_fonts_check_varfont_has_HVAR(ttFont):
     conditions=["is_variable_font", "has_wght_axis"],
     proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
-def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
+def com_google_fonts_check_varfont_bold_wght_coord(font):
     """
     The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
     instance.
     """
-    from fontbakery.shared_conditions import wght_axis
-
-    wght = wght_axis(ttFont)
-    if bold_wght_coord is None:
+    wght = font.wght_axis
+    if font.bold_wght_coord is None:
         if wght and wght.maxValue < 700:
             yield SKIP, Message("no-bold-weight", "Weight axis doesn't go up to bold")
             return
         yield FAIL, Message("no-bold-instance", '"Bold" instance not present.')
-    elif bold_wght_coord == 700:
+    elif font.bold_wght_coord == 700:
         yield PASS, "Bold:wght is 700."
     else:
         yield FAIL, Message(
             "wght-not-700",
             f'The "wght" axis coordinate of'
             f' the "Bold" instance must be 700.'
-            f" Got {bold_wght_coord} instead.",
+            f" Got {font.bold_wght_coord} instead.",
         )
 
 

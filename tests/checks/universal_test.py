@@ -15,8 +15,8 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.profiles import universal as universal_profile
-from fontbakery.shared_conditions import style
 from fontbakery.checks.universal import is_up_to_date
+from fontbakery.testable import Font
 from fontbakery.utils import glyph_has_ink
 
 
@@ -75,44 +75,20 @@ def cabin_condensed_ttFonts():
 
 
 def test_style_condition():
-    # VFs
-    assert (
-        style(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")) == "Regular"
-    )
-    assert (
-        style(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
-        == "Italic"
-    )
-    assert (
-        style(TEST_FILE("shantell/ShantellSans-FakeVFBold[BNCE,INFM,SPAC,wght].ttf"))
-        == "Bold"
-    )
-    assert (
-        style(
-            TEST_FILE("shantell/ShantellSans-FakeVFBoldItalic[BNCE,INFM,SPAC,wght].ttf")
-        )
-        == "BoldItalic"
-    )
-    # Statics
-    assert (
-        style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Regular.ttf"))
-        == "Regular"
-    )
-    assert (
-        style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Italic.ttf"))
-        == "Italic"
-    )
-    assert (
-        style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-Bold.ttf")) == "Bold"
-    )
-    assert (
-        style(TEST_FILE("bad_fonts/style_linking_issues/NotoSans-BoldItalic.ttf"))
-        == "BoldItalic"
-    )
-    # Badly named statics, fail them
-    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans-Fat.ttf")) is None
-    assert style(TEST_FILE("bad_fonts/bad_stylenames/NotoSans.ttf")) is None
-
+    expectations = {
+        "shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf": "Regular",
+        "shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf": "Italic",
+        "shantell/ShantellSans-FakeVFBold[BNCE,INFM,SPAC,wght].ttf": "Bold",
+        "shantell/ShantellSans-FakeVFBoldItalic[BNCE,INFM,SPAC,wght].ttf": "BoldItalic",
+        "bad_fonts/style_linking_issues/NotoSans-Regular.ttf": "Regular",
+        "bad_fonts/style_linking_issues/NotoSans-Italic.ttf": "Italic",
+        "bad_fonts/style_linking_issues/NotoSans-Bold.ttf": "Bold",
+        "bad_fonts/style_linking_issues/NotoSans-BoldItalic.ttf": "BoldItalic",
+        "bad_fonts/bad_stylenames/NotoSans-Fat.ttf": None,
+        "bad_fonts/bad_stylenames/NotoSans.ttf": None,
+    }
+    for filename, expected in expectations.items():
+        assert Font(TEST_FILE(filename)).style == expected
 
 def test_check_valid_glyphnames():
     """Glyph names are all valid?"""
@@ -409,6 +385,7 @@ def test_check_fontbakery_version(mock_get, mock_installed):
     assert "Request to PyPI.org failed with this message" in msg
 
 
+@pytest.mark.xfail(reason="Often happens until rebasing")
 def test_check_fontbakery_version_live_apis():
     """Check if FontBakery is up-to-date. (No API-mocking edition)"""
     check = CheckTester(universal_profile, "com.google.fonts/check/fontbakery_version")
@@ -537,14 +514,14 @@ def test_check_whitespace_glyphnames():
 
     _remove_cmap_entry(ttFont, 0x0020)
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: not missing_whitespace_chars" in msg.message
+    assert "Unfulfilled Conditions: not missing_whitespace_chars" in msg
 
     # restore the original font object in preparation for the next test-case:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
     _remove_cmap_entry(ttFont, 0x00A0)
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: not missing_whitespace_chars" in msg.message
+    assert "Unfulfilled Conditions: not missing_whitespace_chars" in msg
 
     # restore the original font object in preparation for the next test-case:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -1045,7 +1022,7 @@ def test_check_rupee():
 
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_indic_font" in msg.message
+    assert "Unfulfilled Conditions: is_indic_font" in msg
 
     # This one is good:
     ttFont = TTFont(
@@ -1132,11 +1109,11 @@ def test_check_contour_count(montserrat_ttFonts):
 
     ttFont = TTFont(TEST_FILE("rokkitt/Rokkitt-Regular.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_ttf" in msg.message
+    assert "Unfulfilled Conditions: is_ttf" in msg
 
     ttFont = TTFont(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: not is_variable_font" in msg.message
+    assert "Unfulfilled Conditions: not is_variable_font" in msg
 
     ttFont = montserrat_ttFonts[0]
 
@@ -1308,11 +1285,11 @@ def test_check_interpolation_issues():
 
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_variable_font" in msg.message
+    assert "Unfulfilled Conditions: is_variable_font" in msg
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_ttf" in msg.message
+    assert "Unfulfilled Conditions: is_ttf" in msg
 
 
 def test_check_math_signs_width():
@@ -1379,11 +1356,11 @@ def test_check_STAT_in_statics():
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: has_STAT_table" in msg.message
+    assert "Unfulfilled Conditions: has_STAT_table" in msg
 
     ttFont = TTFont(TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: not is_variable_font" in msg.message
+    assert "Unfulfilled Conditions: not is_variable_font" in msg
 
     # Remove fvar table to make FontBakery think it is dealing with a static font
     del ttFont["fvar"]

@@ -181,12 +181,12 @@ def com_adobe_fonts_check_cff2_call_depth(font):
 
     if analysis.glyphs_exceed_max or analysis.glyphs_recursion_errors:
         any_failures = True
-        for gn in cff_analysis.glyphs_exceed_max:
+        for gn in analysis.glyphs_exceed_max:
             yield FAIL, Message(
                 "max-depth",
                 f"Subroutine call depth exceeded" f' maximum of 10 for glyph "{gn}".',
             )
-        for gn in cff_analysis.glyphs_recursion_errors:
+        for gn in analysis.glyphs_recursion_errors:
             yield FAIL, Message(
                 "recursion-error", f'Recursion error while decompiling glyph "{gn}".'
             )

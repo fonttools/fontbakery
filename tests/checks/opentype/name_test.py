@@ -460,13 +460,13 @@ def test_check_name_postscript_vs_cff():
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_cff" in msg.message
+    assert "Unfulfilled Conditions: is_cff" in msg
 
     # Now test with a CFF2 font.
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_cff" in msg.message
+    assert "Unfulfilled Conditions: is_cff" in msg
 
 
 def test_check_name_postscript_name_consistency():

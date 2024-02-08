@@ -15,6 +15,7 @@ from fontbakery.codetesting import (
     CheckTester,
     portable_path,
     TEST_FILE,
+    MockContext,
 )
 from fontbakery.constants import (
     NameID,
@@ -23,7 +24,6 @@ from fontbakery.constants import (
     WindowsLanguageID,
 )
 from fontbakery.profiles import adobefonts as adobefonts_profile
-from fontbakery.shared_conditions import vmetrics
 
 OVERRIDE_SUFFIX = ""  # They're just overriden by the profile
 
@@ -41,15 +41,14 @@ def test_check_family_consistent_upm():
         "SourceSansPro-Bold.otf",
         "SourceSansPro-Italic.otf",
     ]
-    fonts = [
-        os.path.join(portable_path("data/test/source-sans-pro/OTF"), filename)
+    ttFonts = [
+        TTFont(os.path.join(portable_path("data/test/source-sans-pro/OTF"), filename))
         for filename in filenames
     ]
 
     # try fonts with consistent UPM (i.e. 1000)
-    assert_PASS(check(fonts))
+    assert_PASS(check(ttFonts))
 
-    ttFonts = check["ttFonts"]
     # now try with one font with a different UPM (i.e. 2048)
     ttFonts[1]["head"].unitsPerEm = 2048
     assert_results_contain(check(ttFonts), FAIL, "inconsistent-upem")
@@ -201,7 +200,7 @@ def test_check_override_family_win_ascent_and_descent():
         " but got 776 instead"
     )
 
-    vm = vmetrics([ttFont])
+    vm = MockContext(ttFonts=[ttFont]).vmetrics
     y_max = vm["ymax"]
     y_min = vm["ymin"]
     os2_table = ttFont["OS/2"]

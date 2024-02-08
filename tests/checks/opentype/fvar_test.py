@@ -44,7 +44,7 @@ def test_check_varfont_regular_wght_coord():
     # The check should yield SKIP.
     ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: has_wght_axis" in msg.message
+    assert "Unfulfilled Conditions: has_wght_axis" in msg
 
     # Test with an italic variable font. The Italic instance must also be 400
     ttFont = TTFont(TEST_FILE("varfont/OpenSans-Italic[wdth,wght].ttf"))
@@ -54,7 +54,7 @@ def test_check_varfont_regular_wght_coord():
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_variable_font, has_wght_axis" in msg.message
+    assert "Unfulfilled Conditions: is_variable_font, has_wght_axis" in msg
 
 
 def test_check_varfont_regular_wdth_coord():
@@ -90,7 +90,7 @@ def test_check_varfont_regular_wdth_coord():
     # The check should yield SKIP.
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: has_wdth_axis" in msg.message
+    assert "Unfulfilled Conditions: has_wdth_axis" in msg
 
     # Test with an italic variable font. The Italic instance must also be 100
     ttFont = TTFont(TEST_FILE("varfont/OpenSans-Italic[wdth,wght].ttf"))
@@ -100,7 +100,7 @@ def test_check_varfont_regular_wdth_coord():
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_variable_font, has_wdth_axis" in msg.message
+    assert "Unfulfilled Conditions: is_variable_font, has_wdth_axis" in msg
 
 
 def test_check_varfont_regular_slnt_coord():
@@ -145,13 +145,13 @@ def test_check_varfont_regular_slnt_coord():
     # The check should yield SKIP.
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: has_slnt_axis" in msg.message
+    assert "Unfulfilled Conditions: has_slnt_axis" in msg
 
     # Now test with a static font.
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_variable_font, has_slnt_axis" in msg.message
+    assert "Unfulfilled Conditions: is_variable_font, has_slnt_axis" in msg
 
 
 def test_check_varfont_regular_ital_coord():
@@ -196,13 +196,13 @@ def test_check_varfont_regular_ital_coord():
     # The check should yield SKIP.
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: has_ital_axis" in msg.message
+    assert "Unfulfilled Conditions: has_ital_axis" in msg
 
     # Now test with a static font.
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-It.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_variable_font, has_ital_axis" in msg.message
+    assert "Unfulfilled Conditions: is_variable_font, has_ital_axis" in msg
 
 
 def test_check_varfont_regular_opsz_coord():

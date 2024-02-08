@@ -55,7 +55,7 @@ def com_google_fonts_check_family_equal_codepoint_coverage(ttFonts, config):
 def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config):
     """Ensure Italic styles have Roman counterparts."""
 
-    italics = [f for f in fonts if "Italic" in f]
+    italics = [f.file for f in fonts if "Italic" in f.file]
     missing_roman = []
     for italic in italics:
         if (
