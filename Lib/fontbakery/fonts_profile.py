@@ -39,12 +39,6 @@ class FontsProfile(Profile):
         #     description="Glyphs source",
         # ),
         # FileDescription(
-        #     name="readme_md",
-        #     singular="readme_md",
-        #     extensions=["README.md"],
-        #     description="Project's README markdown file",
-        # ),
-        # FileDescription(
         #     name="metadata_pb",
         #     singular="metadata_pb",
         #     extensions=["METADATA.pb"],
@@ -111,23 +105,6 @@ class FontsProfile(Profile):
         )
 
         return tuple(x.plural for x in self.accepted_files)
-
-    def get_family_checks(self):
-        family_checks = self.get_checks_by_dependencies("fonts")
-        family_checks.extend(self.get_checks_by_dependencies("ttFonts"))
-        return family_checks
-
-    @classmethod
-    def _expected_values(cls):
-        return {
-            val.plural: ExpectedValue(
-                val.plural,
-                default=[],
-                description=f"A list of the {val.description} file paths to check",
-                force=True,
-            )
-            for val in cls.accepted_files
-        }
 
     @classmethod
     def _iterargs(cls):
@@ -232,8 +209,6 @@ def profile_factory(module):
 
     profile = FontsProfile(
         iterargs=FontsProfile._iterargs(),
-        derived_iterables={"ttFonts": ("ttFont", True)},
-        expected_values=FontsProfile._expected_values(),
         sections=list(sections.values()),
         overrides=profile_data.get("overrides", {}),
     )

@@ -23,12 +23,7 @@ from fontbakery.result import (
 )
 from fontbakery.message import Message
 from fontbakery.utils import is_negated
-from fontbakery.errors import (
-    CircularDependencyError,
-    FailedConditionError,
-    MissingConditionError,
-    MissingValueError,
-)
+from fontbakery.errors import MissingValueError
 from fontbakery.status import (
     Status,
     ERROR,
@@ -44,7 +39,6 @@ class CheckRunner:
         profile,
         context,
         config,
-        use_cache=True,
         jobs=0,
     ):
         # TODO: transform all iterables that are list like to tuples
@@ -63,25 +57,9 @@ class CheckRunner:
             # self._iterargs["fonts"] = len(values.fonts)
             self._iterargs[singular] = len(list(getattr(context, plural)))
 
-        self._profile = profile
+        self.profile = profile
         self.context = context
         self.context.config = self.config  # Move later
-
-        self.use_cache = use_cache
-        self._cache = {"conditions": {}, "order": None}
-
-    @property
-    def iterargs(self):
-        """uses the singular name as key"""
-        iterargs = OrderedDict()
-        for name in self._iterargs:
-            plural = self._profile.iterargs[name]
-            iterargs[name] = tuple(self.context[plural])
-        return iterargs
-
-    @property
-    def profile(self):
-        return self._profile
 
     @staticmethod
     def _check_result(result) -> Subresult:
@@ -122,34 +100,15 @@ class CheckRunner:
 
         return Subresult(status, message)
 
-    def get(self, key, iterargs, *args):
-        return self._get(key, iterargs, None, *args)
-
     def get_iterarg(self, name, index):
         """Used by e.g. reporters"""
-        plural = self._profile.iterargs[name]
-        return list(getattr(self.context,plural))[index].file
+        plural = self.profile.iterargs[name]
+        return list(getattr(self.context, plural))[index].file
 
-    def _get(self, name, iterargs, path, *args):
+    def _get(self, name, iterargs):
         if hasattr(self.context, name):
             return getattr(self.context, name)
         return self.context.get_iterarg(name, iterargs)
-
-    def _get_args(self, item, iterargs, path=None):
-        # iterargs can't be optional arguments yet, we wouldn't generate
-        # an execution with an empty list. I don't know if that would be even
-        # feasible, so I don't add this complication for the sake of clarity.
-        # If this is needed for anything useful, we'll have to figure this out.
-        args = {}
-        for name in item.args:
-            if name in args:
-                continue
-            try:
-                args[name] = self._get(name, iterargs, path)
-            except MissingValueError:
-                if name not in item.optionalArgs:
-                    raise
-        return args
 
     def _get_check_dependencies(
         self, identity: Identity
@@ -200,7 +159,9 @@ class CheckRunner:
             )
 
         try:
-            args = self._get_args(identity.check, identity.iterargs)
+            args = {
+                name: self._get(name, identity.iterargs) for name in identity.check.args
+            }
             # Run the generators now, so we can test if they're empty
             for k, v in args.items():
                 if inspect.isgenerator(v) or inspect.isgeneratorfunction(v):
@@ -258,7 +219,7 @@ class CheckRunner:
     @property
     def order(self) -> Tuple[Identity, ...]:
         _order = []
-        for section in self._profile.sections:
+        for section in self.profile.sections:
             for check in section.checks:
                 if self._explicit_checks and check.id not in self._explicit_checks:
                     continue
