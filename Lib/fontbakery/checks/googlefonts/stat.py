@@ -21,7 +21,7 @@ def com_google_fonts_check_STAT_axis_order(fonts):
     summary = []
     for font in fonts:
         try:
-            ttFont = TTFont(font)
+            ttFont = font.ttFont
             if "STAT" in ttFont:
                 order = {}
                 for axis in ttFont["STAT"].table.DesignAxisRecord.Axis:

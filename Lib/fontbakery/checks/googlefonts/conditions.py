@@ -115,7 +115,7 @@ def canonical_stylename(font):
 def descfile(font):
     """Get the path of the DESCRIPTION file of a given font project."""
     if font:
-        directory = os.path.dirname(font)
+        directory = os.path.dirname(font.file)
         descfilepath = os.path.join(directory, "DESCRIPTION.en_us.html")
         if os.path.exists(descfilepath):
             return descfilepath
