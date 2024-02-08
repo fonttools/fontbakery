@@ -55,7 +55,7 @@ class CheckRunner:
         # self._iterargs is the *count of each type of thing*.
         for singular, plural in profile.iterargs.items():
             # self._iterargs["fonts"] = len(values.fonts)
-            self._iterargs[singular] = len(list(getattr(context, plural)))
+            self._iterargs[singular] = len(context.testables_by_type.get(singular, []))
 
         self.profile = profile
         self.context = context
@@ -108,7 +108,15 @@ class CheckRunner:
     def _get(self, name, iterargs):
         if hasattr(self.context, name):
             return getattr(self.context, name)
-        return self.context.get_iterarg(name, iterargs)
+        thing, index = iterargs[0]
+        specific_thing = self.context.testables_by_type[thing][index]
+        if name == thing:
+            return specific_thing
+        if not hasattr(specific_thing, name):
+            raise ValueError(
+                f"This can't happen: asked for {name} of {thing} but it doesn't exist."
+            )
+        return getattr(specific_thing, name)
 
     def _get_check_dependencies(
         self, identity: Identity
@@ -120,29 +128,15 @@ class CheckRunner:
         for condition in identity.check.conditions:
             negate, name = is_negated(condition)
             try:
-                if hasattr(self.context, name):
-                    # Runs on the whole collection
-                        val = getattr(self.context, name)
-                        err = None
-                else:
-                    val = self.context.get_iterarg(name, identity.iterargs)
+                val = bool(self._get(name, identity.iterargs))
             except Exception as err:
                 status = Subresult(ERROR, Message("error", str(err)))
                 return (status, None)
 
-            if val is None:
-                bool_val = False
-            else:
-                try:
-                    _len = len(val)
-                    bool_val = not _len == 0
-                except TypeError:
-                    # TypeError: object of type 'bool' has no len()
-                    bool_val = bool(val)
             if negate:
                 val = not val
 
-            if not bool_val:
+            if not val:
                 unfulfilled_conditions.append(condition)
         if unfulfilled_conditions:
             # This will make the check neither pass nor fail
