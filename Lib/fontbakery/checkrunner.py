@@ -177,7 +177,7 @@ class CheckRunner:
         # Do we skip this check because of dependencies?
         skipped, args = self._get_check_dependencies(identity)
         if skipped:
-            result.append(Subresult(SKIP, skipped.message))
+            result.append(skipped)
             return result
 
         check = identity.check
