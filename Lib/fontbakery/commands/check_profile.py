@@ -406,7 +406,7 @@ def main(profile=None, values=None):
             skip_network=args.skip_network,
         )
     )
-    runner_kwds = {"values": args.files, "config": configuration}
+    runner_kwds = {"context": args.files, "config": configuration}
     try:
         runner = CheckRunner(profile, jobs=args.multiprocessing, **runner_kwds)
     except ValueValidationError as e:

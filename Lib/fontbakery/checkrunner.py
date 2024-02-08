@@ -42,7 +42,7 @@ class CheckRunner:
     def __init__(
         self,
         profile,
-        values,
+        context,
         config,
         use_cache=True,
         jobs=0,
@@ -61,10 +61,10 @@ class CheckRunner:
         # self._iterargs is the *count of each type of thing*.
         for singular, plural in profile.iterargs.items():
             # self._iterargs["fonts"] = len(values.fonts)
-            self._iterargs[singular] = len(list(getattr(values, plural)))
+            self._iterargs[singular] = len(list(getattr(context, plural)))
 
         self._profile = profile
-        self._values = values
+        self.context = context
 
         self.use_cache = use_cache
         self._cache = {"conditions": {}, "order": None}
@@ -75,7 +75,7 @@ class CheckRunner:
         iterargs = OrderedDict()
         for name in self._iterargs:
             plural = self._profile.iterargs[name]
-            iterargs[name] = tuple(self._values[plural])
+            iterargs[name] = tuple(self.context[plural])
         return iterargs
 
     @property
@@ -127,12 +127,12 @@ class CheckRunner:
     def get_iterarg(self, name, index):
         """Used by e.g. reporters"""
         plural = self._profile.iterargs[name]
-        return list(getattr(self._values,plural))[index].file
+        return list(getattr(self.context,plural))[index].file
 
     def _get(self, name, iterargs, path, *args):
-        if hasattr(self._values, name):
-            return getattr(self._values, name)
-        return self._values.get_iterarg(name, iterargs)
+        if hasattr(self.context, name):
+            return getattr(self.context, name)
+        return self.context.get_iterarg(name, iterargs)
 
     def _get_args(self, item, iterargs, path=None):
         # iterargs can't be optional arguments yet, we wouldn't generate
@@ -160,12 +160,12 @@ class CheckRunner:
         for condition in identity.check.conditions:
             negate, name = is_negated(condition)
             try:
-                if hasattr(self._values, name):
+                if hasattr(self.context, name):
                     # Runs on the whole collection
-                        val = getattr(self._values, name)
+                        val = getattr(self.context, name)
                         err = None
                 else:
-                    val = self._values.get_iterarg(name, identity.iterargs)
+                    val = self.context.get_iterarg(name, identity.iterargs)
             except Exception as err:
                 status = Subresult(ERROR, Message("error", str(err)))
                 return (status, None)
