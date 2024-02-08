@@ -36,14 +36,15 @@ PATH_TEST_DATA_GLYPHS_FILES = f"{PATH_TEST_DATA}glyphs_files/"
 class FakeFont(Font):
     def __init__(self, ttFont):
         self._ttFont = ttFont
-    
+
     @property
     def ttFont(self):
         return self._ttFont
-    
+
     @property
     def file(self):
         return self._ttFont.reader.file.name
+
 
 class CheckTester:
     """

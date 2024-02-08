@@ -50,6 +50,7 @@ def setup_context(files):
         raise ValueValidationError("No applicable files found")
     return context
 
+
 checks_by_id = {}
 conditions_by_name = {}
 checks_loaded = False

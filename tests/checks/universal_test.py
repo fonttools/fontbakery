@@ -90,6 +90,7 @@ def test_style_condition():
     for filename, expected in expectations.items():
         assert Font(TEST_FILE(filename)).style == expected
 
+
 def test_check_valid_glyphnames():
     """Glyph names are all valid?"""
     check = CheckTester(universal_profile, "com.google.fonts/check/valid_glyphnames")

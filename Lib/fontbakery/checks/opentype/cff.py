@@ -3,6 +3,7 @@ from fontbakery.testable import Font
 from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 
+
 class CFFAnalysis:
     def __init__(self):
         self.glyphs_dotsection = []
