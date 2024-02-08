@@ -20,7 +20,7 @@ from fontbakery.status import (
 from fontbakery.configuration import Configuration
 from fontbakery.profile import Profile
 from fontbakery.errors import ValueValidationError
-from fontbakery.fonts_profile import profile_factory, get_module
+from fontbakery.fonts_profile import profile_factory, get_module, setup_context
 from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.badge import BadgeReporter
@@ -59,8 +59,6 @@ def ArgumentParser(profile, profile_arg=True):
         argument_parser.add_argument(
             "profile", help="File/Module name, must define an fontbakery 'profile'."
         )
-
-    values_keys = profile.setup_argparse(argument_parser)
 
     argument_parser.add_argument(
         "--configuration",
@@ -328,7 +326,14 @@ def ArgumentParser(profile, profile_arg=True):
         f"One of: {valid_keys}.\n"
         f"(default: {DEFAULT_ERROR_CODE_ON.name})",
     )
-    return argument_parser, values_keys
+
+    argument_parser.add_argument(
+        "files",
+        nargs="*",  # allow no input files; needed for -L/--list-checks option
+        help="file path(s) to check. Wildcards like *.ttf are allowed.",
+    )
+
+    return argument_parser
 
 
 class ArgumentParserError(Exception):
@@ -364,7 +369,7 @@ def main(profile=None, values=None):
         profile = get_profile()
         add_profile_arg = True
 
-    argument_parser, values_keys = ArgumentParser(profile, profile_arg=add_profile_arg)
+    argument_parser = ArgumentParser(profile, profile_arg=add_profile_arg)
     try:
         args = argument_parser.parse_args()
     except ValueValidationError as e:
@@ -406,9 +411,12 @@ def main(profile=None, values=None):
             skip_network=args.skip_network,
         )
     )
-    runner_kwds = {"context": args.files, "config": configuration}
+
+    context = setup_context(args.files)
     try:
-        runner = CheckRunner(profile, jobs=args.multiprocessing, **runner_kwds)
+        runner = CheckRunner(
+            profile, jobs=args.multiprocessing, context=context, config=configuration
+        )
     except ValueValidationError as e:
         print(e)
         argument_parser.print_usage()

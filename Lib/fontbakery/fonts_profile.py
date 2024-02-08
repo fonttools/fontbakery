@@ -11,7 +11,6 @@ import pkgutil
 import warnings
 
 import fontbakery.checks
-from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.callable import FontBakeryCheck
 from fontbakery.testable import Font, Readme, CheckRunContext
 from fontbakery.errors import ValueValidationError
@@ -45,71 +44,33 @@ class FontsProfile(Profile):
         #     description="Project's METADATA protobuf file",
         # ),
     ]
-
-    def setup_argparse(self, argument_parser):
-        """
-        Set up custom arguments needed for this profile.
-        """
-        profile = self
-
-        def get_files(pattern):
-            if os.path.exists(pattern):
-                # not a pattern
-                return [pattern]
-            files_to_check = []
-            # use glob.glob to accept *.ttf
-            # Everything goes in for now, gets sorted in the Merge
-            for fullpath in glob.glob(pattern):
-                files_to_check.append(fullpath)
-            return files_to_check
-
-        class MergeAction(argparse.Action):
-            def __call__(self, parser, namespace, values, option_string=None):
-                if namespace.list_checks:
-                    # -L/--list-checks option was used; don't try to validate file
-                    # inputs because this option doesn't require them
-                    return
-                # flatten the 'values' list: [['a'], ['b']] => ['a', 'b']
-                target = [item for sublist in values for item in sublist]
-                any_accepted = False
-                files = []
-                for file in target:
-                    accepted = False
-                    for file_description in profile.accepted_files:
-                        if any(
-                            [
-                                file.endswith(extension)
-                                for extension in file_description.extensions
-                            ]
-                        ):
-                            testable = file_description(file)
-                            files.append(testable)
-                            accepted = True
-                            any_accepted = True
-                    if not accepted:
-                        logging.info(
-                            "Skipping '{}' as it does not"
-                            " seem to be accepted by this profile.",
-                            file,
-                        )
-                if not any_accepted:
-                    raise ValueValidationError("No applicable files found")
-                setattr(namespace, "files", CheckRunContext(files))
-
-        argument_parser.add_argument(
-            "files",
-            nargs="*",  # allow no input files; needed for -L/--list-checks option
-            type=get_files,
-            action=MergeAction,
-            help="file path(s) to check. Wildcards like *.ttf are allowed.",
-        )
-
-        return tuple(x.plural for x in self.accepted_files)
-
     @classmethod
     def _iterargs(cls):
         return {val.singular: val.plural for val in cls.accepted_files}
 
+def setup_context(files):
+    context = CheckRunContext([])
+
+    for pattern in files:
+        if os.path.exists(pattern):
+            subfiles = [pattern]
+        else:
+            subfiles = glob.glob(pattern)
+        for file in subfiles:
+            accepted = False
+            for filetype in FontsProfile.accepted_files:
+                if file.endswith(tuple(filetype.extensions)):
+                    context.testables.append(filetype(file))
+                    accepted = True
+            if not accepted:
+                logging.info(
+                    "Skipping '{}' as it does not"
+                    " seem to be accepted by this profile.",
+                    file,
+                )
+    if not context.testables:
+        raise ValueValidationError("No applicable files found")
+    return context
 
 checks_by_id = {}
 conditions_by_name = {}
