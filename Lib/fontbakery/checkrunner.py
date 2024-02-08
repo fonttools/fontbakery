@@ -65,6 +65,7 @@ class CheckRunner:
 
         self._profile = profile
         self.context = context
+        self.context.config = self.config  # Move later
 
         self.use_cache = use_cache
         self._cache = {"conditions": {}, "order": None}
@@ -263,17 +264,20 @@ class CheckRunner:
                     continue
                 if self._exclude_checks and check.id in self._exclude_checks:
                     continue
-                args = check.args
+                args = set(check.args)
+                context_args = set([arg for arg in args if hasattr(self.context, arg)])
+
                 # Either this is a check which runs on the whole collection
                 # (i.e. all of its arguments can be called as methods on the
                 # CheckRunContext):
-                if all(hasattr(self.context, arg) for arg in args):
+                if context_args == args:
                     # In which case, we run it once
                     _order.append(Identity(section, check, ()))
                     continue
                 # Or it's a check which runs on each item in the collection.
                 for singular, files in self.context.testables_by_type.items():
-                    if all(hasattr(file, arg) for arg in args for file in files):
+                    individual_args = args - context_args
+                    if all(hasattr(file, arg) for arg in individual_args for file in files):
                         # In which case, we run it once for each item
                         for i, file in enumerate(files):
                             _order.append(Identity(section, check, ((singular, i),)))
