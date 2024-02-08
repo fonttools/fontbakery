@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 import types
-from typing import Iterable
+from typing import Iterable, Optional
 
 import defcon
 
@@ -24,6 +24,8 @@ from fontbakery.status import PASS, DEBUG, ERROR, SKIP
 from fontbakery.configuration import Configuration
 from fontbakery.message import Message
 from fontbakery.profile import Profile
+from fontbakery.fonts_profile import setup_context
+from fontbakery.testable import CheckRunContext, Font
 from fontbakery.result import Subresult
 
 
@@ -31,26 +33,22 @@ PATH_TEST_DATA = "data/test/"
 PATH_TEST_DATA_GLYPHS_FILES = f"{PATH_TEST_DATA}glyphs_files/"
 
 
+class FakeFont(Font):
+    def __init__(self, ttFont):
+        self._ttFont = ttFont
+    
+    @property
+    def ttFont(self):
+        return self._ttFont
+    
+    @property
+    def file(self):
+        return self._ttFont.reader.file.name
+
 class CheckTester:
     """
     This class offers a bit of automation to aid in the implementation of
     code-tests to validade the proper behaviour of FontBakery checks.
-
-    !!!CAUTION: this uses a lot of "private" methods and properties
-    of CheckRunner, in order to make unit testing different cases simpler.
-
-    This is not intended to run in production. However, if that is desired
-    we may or may not find inspiration here on how to implement a proper
-    public CheckRunner API.
-
-    Not built for performance either!
-
-    The idea is that we can let this class take care of computing
-    the dependencies of a check for us. And we can also optionaly "fake"
-    some of them in order to create useful testing scenarios for the checks.
-
-    An initial run can be with unaltered arguments, as CheckRunner would
-    produce them by itself. And subsequent calls can reuse some of them.
     """
 
     def __init__(self, module_or_profile, check_id):
@@ -66,144 +64,38 @@ class CheckTester:
         self.runner = None
         self._args = None
 
-    def _get_args(self, condition_overrides=None):
-        if condition_overrides is not None:
-            for name_key, value in condition_overrides.items():
-                if isinstance(name_key, str):
-                    # this is a simplified form of a cache key:
-                    # write the conditions directly to the iterargs
-                    # of the check identity
-                    used_iterargs = self.runner._filter_condition_used_iterargs(
-                        name_key, self.check_iterargs
-                    )
-                    key = (name_key, used_iterargs)
-                else:
-                    # Full control for the caller, who has to inspect how
-                    # the desired key needs to be set up.
-                    key = name_key
-
-                self.runner._cache["conditions"][key] = (
-                    None,  # error
-                    value,  # value
-                )  # pytype:disable=unsupported-operands
-        args = self.runner._get_args(self.check, self.check_iterargs)
-        # args that are derived iterables are generators that must be
-        # converted to lists, otherwise we end up with exhausted
-        # generators after their first consumption.
-        for k in args.keys():
-            if self.profile.get_type(k, None) == "derived_iterables":
-                args[k] = list(args[k])
-        return args
-
-    def __getitem__(self, key):
-        if key in self._args:
-            return self._args[key]
-
-        used_iterargs = self.runner._filter_condition_used_iterargs(
-            key, self.check_iterargs
-        )
-        key = (key, used_iterargs)
-        if key in self.runner._cache["conditions"]:
-            return self.runner._cache["conditions"][key][1]
-
     def __call__(self, values, condition_overrides=None) -> Iterable[Subresult]:
         from fontTools.ttLib import TTFont
-        from fontbakery.checks.googlefonts.conditions import family_metadata
         from glyphsLib import GSFont
-        import os
 
         if isinstance(values, str):
-            if values.endswith("README.md"):
-                values = {"readme_md": values}
-            elif values.endswith(".ufo"):
-                values = {"ufo": values}
-            elif values.endswith(".designspace"):
-                values = {"designspace": values}
-            elif values.endswith("METADATA.pb"):
-                fonts = [
-                    os.path.join(os.path.dirname(values), f.filename)
-                    for f in family_metadata(values).fonts
-                ]
-                values = {
-                    "metadata_pb": values,
-                    "font": fonts[0],  # FIXME!
-                    "fonts": fonts,
-                }
-            else:
-                values = {"font": values, "fonts": [values], "ufo": values}
-        elif isinstance(values, TTFont):
-            values = {
-                "font": values.reader.file.name,
-                "fonts": [values.reader.file.name],
-                "ttFont": values,
-                "ttFonts": [values],
-            }
-        elif isinstance(values, GSFont):
-            values = {
-                "glyphs_file": values.filepath,
-                "glyphs_files": [values.filepath],
-                "glyphsFile": values,
-                "glyphsFiles": [values],
-            }
-        elif isinstance(values, defcon.Font):
-            values = {"ufo_font": values}
-        elif isinstance(values, list):
-            if values:
-                if isinstance(values[0], str):
-                    values = {"fonts": values}
-                elif isinstance(values[0], TTFont):
-                    values = {
-                        "fonts": [v.reader.file.name for v in values],
-                        "ttFonts": values,
-                    }
-                elif isinstance(values[0], GSFont):
-                    values = {
-                        "glyphs_files": [v.filepath for v in values],
-                        "glyphsFiles": values,
-                    }
-            else:
-                values = {}
+            context = setup_context([values])
+        elif isinstance(values, list) and all(isinstance(v, str) for v in values):
+            context = CheckRunContext([])
+            # Assert that they're fonts
+            context.testables.extend(Font(v) for v in values)
+        else:
+            if isinstance(values, (TTFont, GSFont, defcon.Font)):
+                values = [values]
+            context = CheckRunContext([])
+            for value in values:
+                if isinstance(value, TTFont):
+                    context.testables.append(FakeFont(value))
+                elif isinstance(value, GSFont):
+                    context.testables.append(FakeGSFont(value))
+                elif isinstance(value, defcon.Font):
+                    context.testables.append(FakeUFO(value))
 
         self.runner = CheckRunner(
             self.profile,
-            values,
+            context,
             Configuration(explicit_checks=[self.check_id], full_lists=True),
         )
-        for check_identity in self.runner.order:
-            if check_identity.check.id != self.check_id:
-                continue
-            self.check_identity = check_identity
-            self.check_section = check_identity.section
-            self.check = check_identity.check
-            self.check_iterargs = check_identity.iterargs
-            break
-        if self.check_identity is None:
-            raise KeyError(f'Check with id "{self.check_id}" not found.')
-
-        self._args = self._get_args(condition_overrides)
-
-        # Verify if the check's 'conditions' are met.
-        skipped, _ = self.runner._get_check_dependencies(check_identity)
-        if skipped is not None:
-            status, msg_str = skipped.status, skipped.message
-            return [Subresult(status, Message("unfulfilled-conditions", msg_str))]
-        else:
-            # No "try" while testing, we want to know about exceptions
-            if self.check.configs:
-                new_globals = {
-                    varname: self.runner.config.get(self.check.id, {}).get(varname)
-                    for varname in self.check.configs
-                }
-                self.check.inject_globals(new_globals)
-            result = self.check(**self._args)
-            if not isinstance(result, types.GeneratorType):
-                result = [result]
-            return [
-                self.runner._override_status(
-                    self.runner._check_result(result), self.check
-                )
-                for result in result
-            ]
+        if condition_overrides:
+            for condition, value in condition_overrides.items():
+                setattr(self.runner.context, condition, value)
+        result = self.runner._run_check(self.runner.order[0])
+        return result.results
 
 
 def portable_path(p):
@@ -243,7 +135,7 @@ def assert_SKIP(check_results, reason=""):
 
 def assert_results_contain(
     check_results, expected_status, expected_msgcode, reason=None, ignore_error=None
-):
+) -> Optional[str]:
     """
     This helper function is useful when we want to make sure that
     a certain log message is emited by a check but it can be in any
