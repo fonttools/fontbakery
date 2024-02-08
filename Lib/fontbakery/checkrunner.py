@@ -16,6 +16,7 @@ import inspect
 import traceback
 from typing import Union, Tuple
 
+from fontbakery.configuration import Configuration
 from fontbakery.result import (
     CheckResult,
     Subresult,
@@ -23,7 +24,6 @@ from fontbakery.result import (
 )
 from fontbakery.message import Message
 from fontbakery.utils import is_negated
-from fontbakery.errors import MissingValueError
 from fontbakery.status import (
     Status,
     ERROR,
@@ -46,7 +46,8 @@ class CheckRunner:
         # Also remove duplicates from list like iterables
 
         # Add the profile's config values "underneath" the user's config
-        self.config = profile.merge_default_config(config)
+        self.config = Configuration(**profile.configuration_defaults)
+        self.config.update(config)
         self._custom_order = config["custom_order"]
         self._explicit_checks = config["explicit_checks"]
         self._exclude_checks = config["exclude_checks"]
@@ -272,9 +273,10 @@ class CheckRunner:
 
     def _override_status(self, subresult: Subresult, check):
         # Potentially override the status based on the profile.
-        if new_status := self.profile.should_override(check.id, subresult.message.code):
-            subresult.status = new_status
-            return subresult
+        if check.id in self.profile.overrides:
+            for override in self.profile.overrides[check.id]:
+                if subresult.message.code == override["code"]:
+                    return Status(override["status"])
         # Potentially override the status based on the config file.
         # Replaces the status with config["overrides"][check.id][message.code]
         status_overrides = self.config.get("overrides", {}).get(check.id)
