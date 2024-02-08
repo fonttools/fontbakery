@@ -24,20 +24,8 @@ from fontbakery.errors import ValueValidationError
 from fontbakery.profile import Profile
 from fontbakery.section import Section
 
+accepted_files = [Font, Readme, Ufo, Designspace, GlyphsFile, MetadataPB]
 
-class FontsProfile(Profile):
-    accepted_files = [
-        Font,
-        Readme,
-        Ufo,
-        Designspace,
-        GlyphsFile,
-        MetadataPB,
-    ]
-
-    @classmethod
-    def _iterargs(cls):
-        return {val.singular: val.plural for val in cls.accepted_files}
 
 def setup_context(files):
     context = CheckRunContext([])
@@ -49,7 +37,7 @@ def setup_context(files):
             subfiles = glob.glob(pattern)
         for file in subfiles:
             accepted = False
-            for filetype in FontsProfile.accepted_files:
+            for filetype in accepted_files:
                 if file.endswith(tuple(filetype.extensions)):
                     context.testables.append(filetype(file))
                     accepted = True
@@ -159,8 +147,8 @@ def profile_factory(module):
             sections, section, checks, excluded=profile_data.get("exclude_checks", [])
         )
 
-    profile = FontsProfile(
-        iterargs=FontsProfile._iterargs(),
+    profile = Profile(
+        iterargs={val.singular: val.plural for val in accepted_files},
         sections=list(sections.values()),
         overrides=profile_data.get("overrides", {}),
     )
