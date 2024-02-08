@@ -64,7 +64,9 @@ class CheckTester:
         self.runner = None
         self._args = None
 
-    def __call__(self, values, condition_overrides=None) -> Iterable[Subresult]:
+    def __call__(
+        self, values, condition_overrides=None, config=None
+    ) -> Iterable[Subresult]:
         from fontTools.ttLib import TTFont
         from glyphsLib import GSFont
 
@@ -91,10 +93,16 @@ class CheckTester:
             context,
             Configuration(explicit_checks=[self.check_id], full_lists=True),
         )
+        if config:
+            for key, value in config.items():
+                context.config[key] = value
         if condition_overrides:
             for condition, value in condition_overrides.items():
                 setattr(self.runner.context, condition, value)
-        result = self.runner._run_check(self.runner.order[0])
+        order = self.runner.order
+        if not order:
+            raise Exception(f"No arguments matched {self.check_id}")
+        result = self.runner._run_check(order[0])
         return result.results
 
 
