@@ -3,7 +3,6 @@ from fontbakery.status import PASS, WARN
 from fontbakery.message import Message
 
 
-@condition
 def has_kerning_info(ttFont):
     """A font has kerning info if it has a GPOS table containing at least one
     Pair Adjustment lookup (either directly or through an extension
