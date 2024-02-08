@@ -55,7 +55,7 @@ def pair_kerning(font, left, right):
     except ImportError:
         exit_with_install_instructions()
 
-    with open(font, "rb") as fontfile:
+    with open(font.file, "rb") as fontfile:
         fontdata = fontfile.read()
     face = hb.Face(fontdata)
     font = hb.Font(face)

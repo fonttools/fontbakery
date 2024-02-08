@@ -290,23 +290,11 @@ def test_check_vendor_id():
     assert_SKIP(check(ttFont))
 
     config = {"vendor_id": "STC "}
-    assert_PASS(
-        check(
-            {
-                "config": config,
-                "ttFont": ttFont,
-            }
-        )
-    )
+    assert_PASS(check(ttFont, config=config))
 
     ttFont["OS/2"].achVendID = "TEST"
     assert_results_contain(
-        check(
-            {
-                "config": config,
-                "ttFont": ttFont,
-            }
-        ),
+        check(ttFont, config=config),
         FAIL,
         "bad-vendor-id",
         "OS/2 VendorID is 'TEST', but should be 'STC '",
