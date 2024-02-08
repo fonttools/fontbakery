@@ -277,7 +277,14 @@ class CheckRunner:
                 # Or it's a check which runs on each item in the collection.
                 for singular, files in self.context.testables_by_type.items():
                     individual_args = args - context_args
-                    if all(hasattr(file, arg) for arg in individual_args for file in files):
+                    if (
+                        all(
+                            hasattr(file, arg)
+                            for arg in individual_args
+                            for file in files
+                        )
+                        or singular in args
+                    ):
                         # In which case, we run it once for each item
                         for i, file in enumerate(files):
                             _order.append(Identity(section, check, ((singular, i),)))
