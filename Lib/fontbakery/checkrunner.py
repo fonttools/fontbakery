@@ -276,7 +276,8 @@ class CheckRunner:
         if check.id in self.profile.overrides:
             for override in self.profile.overrides[check.id]:
                 if subresult.message.code == override["code"]:
-                    return Status(override["status"])
+                    subresult.status = Status(override["status"])
+                    return subresult
         # Potentially override the status based on the config file.
         # Replaces the status with config["overrides"][check.id][message.code]
         status_overrides = self.config.get("overrides", {}).get(check.id)
