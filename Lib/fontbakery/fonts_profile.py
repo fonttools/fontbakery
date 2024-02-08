@@ -21,8 +21,7 @@ from fontbakery.testable import (
     MetadataPB,
 )
 from fontbakery.errors import ValueValidationError
-from fontbakery.profile import Profile
-from fontbakery.section import Section
+from fontbakery.profile import Profile, Section
 
 accepted_files = [Font, Readme, Ufo, Designspace, GlyphsFile, MetadataPB]
 
@@ -114,7 +113,7 @@ def add_checks_to_nascent_profile(sections, section, checks, excluded=None):
             continue
         check_object = checks_by_id[check]
         if not sections[section].has_check(check):
-            sections[section].add_check(check_object)
+            sections[section].checks.append(check_object)
 
 
 def profile_factory(module):

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from fontbakery.section import Section
+from fontbakery.profile import Section
 from fontbakery.status import Status, ERROR
 from fontbakery.callable import FontBakeryCheck
 from fontbakery.message import Message

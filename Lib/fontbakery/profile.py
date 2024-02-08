@@ -1,7 +1,18 @@
 from typing import Iterable
 from dataclasses import dataclass, field
 
-from fontbakery.section import Section
+
+@dataclass
+class Section:
+    name: str
+    checks: list = field(default_factory=list)
+    description: str = None
+
+    def __repr__(self):
+        return f"<Section: {self.name}>"
+
+    def has_check(self, check_id):
+        return any(check.id == check_id for check in self.checks)
 
 
 @dataclass
