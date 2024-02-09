@@ -57,7 +57,7 @@ googlefonts_always_latest = [
     "axisregistry>=0.4.5",
     "gflanguages>=0.5.17",
     "gfsubsets>=2024.1.22.post2",
-    "glyphsets>=0.6.11",
+    "glyphsets>=0.6.13",
     "shaperglot>=0.3.1",
 ]
 
