@@ -1071,7 +1071,7 @@ def com_google_fonts_check_glyph_coverage(
     """Check Google Fonts glyph coverage."""
 
     import unicodedata2
-    from .googlefonts_conditions import get_glyphsets_fulfilled
+    from glyphsets import get_glyphsets_fulfilled
 
     glyphsets_fulfilled = get_glyphsets_fulfilled(ttFont)
 
@@ -3531,8 +3531,7 @@ def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
     """Shapes languages in all GF glyphsets."""
     from shaperglot.checker import Checker
     from shaperglot.languages import Languages
-    from .googlefonts_conditions import get_glyphsets_fulfilled
-    from glyphsets.definitions import glyphset_definitions
+    from glyphsets import languages_per_glyphset, get_glyphsets_fulfilled
 
     shaperglot_checker = Checker(ttFont.reader.file.name)
     shaperglot_languages = Languages()
@@ -3548,7 +3547,7 @@ def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
 
             fails_table = []
             warns_table = []
-            for language_code in glyphset_definitions[glyphset]["language_codes"]:
+            for language_code in languages_per_glyphset(glyphset):
                 reporter = shaperglot_checker.check(shaperglot_languages[language_code])
                 if reporter.warns:
                     for n, warn in enumerate(reporter.warns):
