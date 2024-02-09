@@ -5,10 +5,6 @@ class FontBakeryRunnerError(Exception):
     pass
 
 
-class CircularDependencyError(FontBakeryRunnerError):
-    pass
-
-
 class ProtocolViolationError(FontBakeryRunnerError):
     def __init__(self, message, *args):
         self.message = message
@@ -53,18 +49,6 @@ class FailedDependenciesError(FontBakeryRunnerError):
         self.error = error
         self.traceback = "".join(traceback.format_tb(error.__traceback__))
         super().__init__(message, *args)
-
-
-class SetupError(FontBakeryRunnerError):
-    pass
-
-
-class MissingValueError(FontBakeryRunnerError):
-    pass
-
-
-class NamespaceError(FontBakeryRunnerError):
-    pass
 
 
 class ValueValidationError(FontBakeryRunnerError):

@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 from functools import cached_property
-import types
 from typing import Iterable, Optional
 
 import defcon
@@ -79,12 +78,6 @@ class CheckTester:
         else:
             self.profile = profile_factory(module_or_profile)
         self.check_id = check_id
-        self.check_identity = None
-        self.check_section = None
-        self.check = None
-        self.check_iterargs = None
-        self.runner = None
-        self._args = None
 
     def __call__(
         self, values, condition_overrides=None, config=None
@@ -116,7 +109,7 @@ class CheckTester:
                 elif isinstance(value, defcon.Font):
                     context.testables.append(MockUFO(ufo_font=value))
 
-        self.runner = CheckRunner(
+        runner = CheckRunner(
             self.profile,
             context,
             Configuration(explicit_checks=[self.check_id], full_lists=True),
@@ -126,11 +119,11 @@ class CheckTester:
                 context.config[key] = value
         if condition_overrides:
             for condition, value in condition_overrides.items():
-                setattr(self.runner.context, condition, value)
-        order = self.runner.order
+                setattr(runner.context, condition, value)
+        order = runner.order
         if not order:
             raise Exception(f"No arguments matched {self.check_id}")
-        result = self.runner._run_check(order[0])
+        result = runner._run_check(order[0])
         return result.results
 
 

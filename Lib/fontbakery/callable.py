@@ -261,42 +261,6 @@ def check(*args, **kwds):
     return wrapper
 
 
-# ExpectedValue is not a callable, but it belongs next to check and condition
-_NOT_SET = object()  # used as a marker
-
-
-class FontBakeryExpectedValue:
-    def __init__(
-        self,
-        name,  # unique name in global namespace
-        description=None,  # short text, this is mandatory
-        documentation=None,  # markdown?
-        default=_NOT_SET,  # because None can be a valid default
-        validator=None,  # function, see the docstring of `def validate`
-        force=False,
-    ):
-        self.name = name
-        self.description = description
-        self.documentation = documentation
-        self._default = (True, default) if default is not _NOT_SET else (False, None)
-        self._validator = validator
-        self.force = force
-
-    def __repr__(self):
-        return "<{}:{}>".format(type(self).__name__, self.name)
-
-    @property
-    def has_default(self):
-        return self._default[0]
-
-    @property
-    def default(self):
-        has_default, value = self._default
-        if not has_default:
-            raise AttributeError(f"{self} has no default value")
-        return value
-
-
 class Disabled:
     def __init__(self, func):
         self.func = func
