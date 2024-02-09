@@ -37,7 +37,8 @@ def github_gfonts_description(font: Font, network):
     from the google/fonts github repository corresponding
     to a given ttFont.
     """
-    if not font.license_filename or not network:
+    license_file = font.license_filename  # pytype: disable=attribute-error
+    if not license_file or not network:
         return None
 
     from fontbakery.utils import download_file
@@ -48,7 +49,7 @@ def github_gfonts_description(font: Font, network):
     familyname = filename.split("-")[0].lower()
     url = (
         f"https://github.com/google/fonts/raw/main"
-        f"/{LICENSE_DIRECTORY[font.license_filename]}/{familyname}/DESCRIPTION.en_us.html"
+        f"/{LICENSE_DIRECTORY[license_file]}/{familyname}/DESCRIPTION.en_us.html"
     )
     try:
         descfile = download_file(url)

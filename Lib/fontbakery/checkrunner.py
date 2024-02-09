@@ -237,7 +237,7 @@ class CheckRunner:
                 if self._exclude_checks and check.id in self._exclude_checks:
                     continue
                 args = set(check.args)
-                context_args = set([arg for arg in args if hasattr(self.context, arg)])
+                context_args = set(arg for arg in args if hasattr(self.context, arg))
 
                 # Either this is a check which runs on the whole collection
                 # (i.e. all of its arguments can be called as methods on the

@@ -661,26 +661,19 @@ def tn_expected_os2_weight(font):
     """,
     proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
-def com_typenetwork_check_usweightclass(ttFont, tn_expected_os2_weight):
+def com_typenetwork_check_usweightclass(font, tn_expected_os2_weight):
     """Checking OS/2 usWeightClass."""
-    from fontbakery.shared_conditions import (
-        is_ttf,
-        is_cff,
-        is_variable_font,
-        has_wght_axis,
-    )
-
     failed = False
     expected_value = tn_expected_os2_weight["weightClass"]
     weight_name = tn_expected_os2_weight["name"]
-    os2_value = ttFont["OS/2"].usWeightClass
+    os2_value = font.ttFont["OS/2"].usWeightClass
 
     fail_message = "OS/2 usWeightClass is '{}' when it should be '{}'."
     no_value_message = "OS/2 usWeightClass is '{}' and weight name is '{}'."
 
-    if is_variable_font(ttFont):
-        fvar = ttFont["fvar"]
-        if has_wght_axis(ttFont):
+    if font.is_variable_font:
+        fvar = font.ttFont["fvar"]
+        if font.has_wght_axis:
             default_axis_values = {a.axisTag: a.defaultValue for a in fvar.axes}
             fvar_value = default_axis_values.get("wght")
 
@@ -704,22 +697,22 @@ def com_typenetwork_check_usweightclass(ttFont, tn_expected_os2_weight):
         yield INFO, Message("no-value", no_value_message.format(os2_value, weight_name))
 
     elif "Thin" == weight_name.split(" "):
-        if is_ttf(ttFont) and os2_value not in [100, 250]:
+        if font.is_ttf and os2_value not in [100, 250]:
             failed = True
             yield FAIL, Message(
                 "bad-value", fail_message.format(os2_value, expected_value)
             )
-        if is_cff(ttFont) and os2_value != 250:
+        if font.is_cff and os2_value != 250:
             failed = True
             yield FAIL, Message("bad-value", fail_message.format(os2_value, 250))
 
     elif "ExtraLight" in weight_name.split(" "):
-        if is_ttf(ttFont) and os2_value not in [200, 275]:
+        if font.is_ttf and os2_value not in [200, 275]:
             failed = True
             yield FAIL, Message(
                 "bad-value", fail_message.format(os2_value, expected_value)
             )
-        if is_cff(ttFont) and os2_value != 275:
+        if font.is_cff and os2_value != 275:
             failed = True
             yield FAIL, Message("bad-value", fail_message.format(os2_value, 275))
 

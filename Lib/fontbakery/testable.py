@@ -2,7 +2,7 @@ import os
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import Iterable, Optional, List
+from typing import Optional, List
 
 from fontTools.ttLib import TTFont
 
@@ -11,8 +11,8 @@ from fontTools.ttLib import TTFont
 class Testable:
     file: str
     context: Optional["CheckRunContext"] = None
-    singular: str = "testable"
-    plural: str = "testables"
+    singular = "testable"
+    plural = "testables"
 
 
 @dataclass
@@ -226,7 +226,7 @@ class Font(Testable):
 
 @dataclass
 class CheckRunContext:
-    testables: Iterable[Testable] = field(default_factory=list)
+    testables: List[Testable] = field(default_factory=list)
     config: dict = field(default_factory=dict)
 
     @cached_property

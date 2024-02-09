@@ -15,7 +15,7 @@ from fontbakery.prelude import check, Message, INFO, SKIP
 def com_google_fonts_check_STAT_axis_order(fonts):
     """Check axis ordering on the STAT table."""
     from collections import Counter
-    from fontTools.ttLib import TTFont, TTLibError
+    from fontTools.ttLib import TTLibError
 
     no_stat = 0
     summary = []

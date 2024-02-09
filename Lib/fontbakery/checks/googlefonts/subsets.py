@@ -1,6 +1,5 @@
 from collections import defaultdict
 
-from fontbakery.checks.googlefonts.conditions import family_metadata, metadata_file
 from fontbakery.prelude import FAIL, PASS, WARN, Message, check
 from fontbakery.utils import exit_with_install_instructions
 

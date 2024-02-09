@@ -6,7 +6,7 @@ import pytest
 
 from conftest import ImportRaiser, remove_import_raiser
 
-from fontbakery.status import FAIL, SKIP, WARN
+from fontbakery.status import FAIL, WARN
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,

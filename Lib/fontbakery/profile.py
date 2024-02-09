@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Optional
 from dataclasses import dataclass, field
 
 
@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 class Section:
     name: str
     checks: list = field(default_factory=list)
-    description: str = None
+    description: Optional[str] = None
 
     def __repr__(self):
         return f"<Section: {self.name}>"

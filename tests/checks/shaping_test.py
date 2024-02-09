@@ -3,8 +3,6 @@ import os
 import tempfile
 from unittest.mock import patch
 
-from fontTools.ttLib import TTFont
-
 from fontbakery.status import FAIL, WARN
 from fontbakery.codetesting import (
     assert_PASS,

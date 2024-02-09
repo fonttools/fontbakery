@@ -124,13 +124,11 @@ def com_google_fonts_check_fontvalidator(font, config):
         "Apple recommends against using post table format 3 under most circumstances",
     ]
 
-    from fontTools.ttLib import TTFont
-
-    ttFont = TTFont(font)
-    if is_variable_font(ttFont):
+    ttFont = font.ttFont
+    if "fvar" in ttFont:
         disabled_fval_checks.extend(VARFONT_disabled_fval_checks)
 
-    if is_cff(ttFont):
+    if "CFF" in ttFont:
         disabled_fval_checks.extend(CFF_disabled_fval_checks)
 
     if disabled_checks is not None:

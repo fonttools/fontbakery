@@ -1,6 +1,5 @@
 import os
 from fontbakery.prelude import check, Message, WARN, PASS, FAIL
-from fontbakery.shared_conditions import are_ttf  # pylint: disable=unused-import
 from fontbakery.utils import bullet_list
 
 

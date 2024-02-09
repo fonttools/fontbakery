@@ -11,7 +11,6 @@ from fontbakery.constants import (
     PlatformID,
     UnicodeEncodingID,
     WindowsLanguageID,
-    PANOSE_Family_Type,
 )
 from fontbakery.utils import exit_with_install_instructions
 

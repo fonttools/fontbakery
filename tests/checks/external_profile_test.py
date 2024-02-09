@@ -40,7 +40,9 @@ def test_external_profile():
     assert len(profile.sections) > 1
 
 
-def profile_checks(module, config={}):
+def profile_checks(module, config=None):
+    if not config:
+        config = {}
     context = setup_context([TEST_FILE("nunito/Nunito-Regular.ttf")])
     opentypeprofile = profile_factory(module)
     expected_order = CheckRunner(opentypeprofile, context, config).order

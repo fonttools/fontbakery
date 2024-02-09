@@ -474,9 +474,9 @@ def main(profile=None, values=None):
 
 def list_checks(profile, theme, verbose=False):
     if verbose:
-        for section in profile._sections.values():
+        for section in profile.sections:
             print(theme["list-checks: section"]("\nSection:") + " " + section.name)
-            for check in section._checks:
+            for check in section.checks:
                 print(
                     theme["list-checks: check-id"](check.id)
                     + "\n"

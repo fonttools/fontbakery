@@ -187,7 +187,6 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
 def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
     """A static fonts directory, if present, must contain manually hinted fonts"""
     from fontbakery.utils import get_name_entry_strings
-    from fontbakery.checks.googlefonts.conditions import VTT_hinted
 
     def manually_hinted(font):
         if not font.is_hinted:

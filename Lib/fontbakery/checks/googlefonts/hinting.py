@@ -25,8 +25,8 @@ def hinting_stats(font: Font):
         dehinted_buffer.seek(0)
         dehinted_size = len(dehinted_buffer.read())
     elif font.is_cff or font.is_cff2:
-        ext = os.path.splitext(font)[1]
-        tmp = font.replace(ext, "-tmp-dehinted%s" % ext)
+        ext = os.path.splitext(font.file)[1]
+        tmp = font.file.replace(ext, "-tmp-dehinted%s" % ext)
         args = [
             font,
             "--no-hinting",

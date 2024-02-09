@@ -31,7 +31,7 @@ from fontbakery.constants import (
 )
 from fontbakery.profiles import googlefonts as googlefonts_profile
 from fontbakery.status import DEBUG, ERROR, FAIL, FATAL, INFO, PASS, SKIP, WARN
-from fontbakery.testable import CheckRunContext, Font
+from fontbakery.testable import Font
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -2767,7 +2767,7 @@ def test_check_production_encoded_glyphs(cabin_ttFonts):
         # all the glyphs for the font in data/test/cabin
         assert_PASS(check(font), f"with '{font}'")
 
-        ttFont = check["ttFont"]
+        ttFont = TTFont(font)
         # Take A glyph out of font
         ttFont["cmap"].getcmap(3, 1).cmap.pop(ord("A"))
         ttFont["glyf"].glyphs.pop("A")
@@ -3949,8 +3949,6 @@ def test_check_vertical_metrics():
 
 
 def test_check_vertical_metrics_regressions():
-    from fontbakery.testable import Font
-
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/vertical_metrics_regressions"
     )
@@ -4016,23 +4014,19 @@ def test_check_vertical_metrics_regressions():
     if 0:  # FIXME: pylint:disable=W0125
         # Pass if family on Google Fonts doesn't have fsSelection bit 7 enabled
         # but checked fonts have taken this into consideration
-        check(ttFonts)
-        remote_regular = check["regular_remote_style"]
-        local_regular = check["regular_ttFont"]
+        context = new_context()
+        remote_regular = context.testables[0].regular_remote_style
+        local_regular = context.regular_ttFont
 
         remote_regular["OS/2"].fsSelection &= ~(1 << 7)
         local_regular["OS/2"].sTypoAscender = remote_regular["OS/2"].usWinAscent
         local_regular["OS/2"].sTypoDescender = -remote_regular["OS/2"].usWinDescent
         local_regular["hhea"].ascent = remote_regular["OS/2"].usWinAscent
         local_regular["hhea"].descent = -remote_regular["OS/2"].usWinDescent
+        context.regular_ttFont = local_regular
+        context.regular_remote_style = remote_regular
         assert_PASS(
-            check(
-                ttFonts,
-                {
-                    "regular_remote_style": remote_regular,
-                    "regular_ttFont": local_regular,
-                },
-            ),
+            check(context),
             "with a remote family which does not have typo metrics"
             " enabled but the checked fonts vertical metrics have been"
             " set so its typo and hhea metrics match the remote"
@@ -4041,9 +4035,9 @@ def test_check_vertical_metrics_regressions():
 
     if 0:  # FIXME: pylint:disable=W0125
         # Same as previous check but using a remote font which has a different upm
-        check(ttFonts)
-        remote_regular = check["regular_remote_style"]
-        local_regular = check["regular_ttFont"]
+        context = new_context()
+        remote_regular = context.testables[0].regular_remote_style
+        local_regular = context.regular_ttFont
 
         remote_regular["OS/2"].fsSelection &= ~(1 << 7)
         remote_regular["head"].unitsPerEm = 2000
@@ -4058,14 +4052,10 @@ def test_check_vertical_metrics_regressions():
         local_regular["hhea"].descent = math.ceil(
             -remote_regular["OS/2"].usWinDescent / 2
         )
+        context.regular_ttFont = local_regular
+        context.regular_remote_style = remote_regular
         assert_PASS(
-            check(
-                ttFonts,
-                {
-                    "regular_remote_style": remote_regular,
-                    "regular_ttFont": local_regular,
-                },
-            ),
+            check(context),
             "with a remote family which does not have typo metrics "
             "enabled but the checked fonts vertical metrics have been "
             "set so its typo and hhea metrics match the remote "

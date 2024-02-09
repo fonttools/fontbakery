@@ -16,15 +16,13 @@
 import os
 import subprocess
 import sys
-from typing import Iterable, Text, Optional
+from typing import Text, Optional
 
 from fontTools.pens.basePen import BasePen
 from fontTools.ttLib import TTFont
 import rich
 
 from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
-
-from fontbakery.testable import Font
 
 profile_name = None
 
@@ -193,7 +191,7 @@ def markdown_table(items):
     return "\n".join(res)
 
 
-def get_regular(fonts: Iterable[Font]) -> Optional[Font]:
+def get_regular(fonts):
     # TODO: Maybe also support getting a regular instance from a variable font?
     for font in fonts:
         if "-Regular.ttf" in font.file:
