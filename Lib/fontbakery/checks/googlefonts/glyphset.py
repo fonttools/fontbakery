@@ -10,6 +10,13 @@ from fontbakery.constants import (
 from fontbakery.utils import markdown_table, bullet_list, exit_with_install_instructions
 
 
+def is_icon_font(ttFont, config):
+    return config.get("is_icon_font") or (
+        "OS/2" in ttFont
+        and ttFont["OS/2"].panose.bFamilyType == PANOSE_Family_Type.LATIN_SYMBOL
+    )
+
+
 @condition(Font)
 def is_claiming_to_be_cjk_font(font):
     """Test font object to confirm that it meets our definition of a CJK font file.
@@ -65,17 +72,12 @@ def is_claiming_to_be_cjk_font(font):
     conditions=["font_codepoints"],
     proposal="https://github.com/fonttools/fontbakery/pull/2488",
 )
-def com_google_fonts_check_glyph_coverage(
-    ttFont, family_metadata, config
-):
+def com_google_fonts_check_glyph_coverage(ttFont, family_metadata, config):
     """Check Google Fonts glyph coverage."""
     import unicodedata2
     from glyphsets import get_glyphsets_fulfilled
 
-    if config.get("is_icon_font") or (
-        "OS/2" in ttFont
-        and ttFont["OS/2"].panose.bFamilyType == PANOSE_Family_Type.LATIN_SYMBOL
-    ):
+    if is_icon_font(ttFont, config):
         yield SKIP, "This is an icon font or a symbol font."
         return
 

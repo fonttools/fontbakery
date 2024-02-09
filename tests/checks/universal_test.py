@@ -13,6 +13,7 @@ from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,
     TEST_FILE,
+    MockFont,
 )
 from fontbakery.profiles import universal as universal_profile
 from fontbakery.checks.universal import is_up_to_date
@@ -979,7 +980,7 @@ def test_check_superfamily_list():
     check = CheckTester(universal_profile, "com.google.fonts/check/superfamily/list")
 
     msg = assert_results_contain(
-        check([], {"superfamily": [cabin_fonts]}), INFO, "family-path"
+        check(MockFont(superfamily=[cabin_fonts])), INFO, "family-path"
     )
     assert msg == os.path.normpath("data/test/cabin")
 
@@ -991,16 +992,16 @@ def test_check_superfamily_vertical_metrics(
         universal_profile, "com.google.fonts/check/superfamily/vertical_metrics"
     )
 
-    msg = assert_SKIP(check([], {"superfamily_ttFonts": [cabin_ttFonts[0]]}))
+    msg = assert_SKIP(check(MockFont(superfamily_ttFonts=[cabin_ttFonts[0]])))
     assert msg == "Sibling families were not detected."
 
     assert_PASS(
-        check([], {"superfamily_ttFonts": [cabin_ttFonts, cabin_condensed_ttFonts]}),
+        check(MockFont(superfamily_ttFonts=[cabin_ttFonts, cabin_condensed_ttFonts])),
         "with multiple good families...",
     )
 
     assert_results_contain(
-        check([], {"superfamily_ttFonts": [cabin_ttFonts, montserrat_ttFonts]}),
+        check(MockFont(superfamily_ttFonts=[cabin_ttFonts, montserrat_ttFonts])),
         WARN,
         "superfamily-vertical-metrics",
         "with families that diverge on vertical metric values...",

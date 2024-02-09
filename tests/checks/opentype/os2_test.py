@@ -14,6 +14,7 @@ from fontbakery.codetesting import (
     CheckTester,
     portable_path,
     TEST_FILE,
+    MockFont,
 )
 from fontbakery.profiles import opentype as opentype_profile
 
@@ -382,12 +383,12 @@ def test_check_fsselection():
 
         if expected == PASS:
             assert_PASS(
-                check(ttFont, {"style": style}),
+                check(MockFont(ttFont=ttFont, style=style)),
                 "with fsSelection:{fsSelection_value} style:{style}...",
             )
         else:
             message = assert_results_contain(
-                check(ttFont, {"style": style}),
+                check(MockFont(ttFont=ttFont, style=style)),
                 FAIL,
                 expected,
                 f"with fsSelection:{fsSelection_value} style:{style}...",

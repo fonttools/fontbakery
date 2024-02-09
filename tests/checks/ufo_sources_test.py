@@ -55,11 +55,6 @@ def test_check_ufolint(empty_ufo_font):
     msg = assert_results_contain(check(ufo_path), FAIL, "ufolint-fail")
     assert "ufolint failed the UFO source." in msg
 
-    # Run the check on a non-UFO font. The result is PASS because ufolint does not
-    # issue any error when it's run on a non-UFO font.
-    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
-    assert assert_PASS(check(font)) == "ufolint passed the UFO source."
-
 
 def test_check_required_fields(empty_ufo_font):
     check = CheckTester(ufo_sources_profile, "com.daltonmaag/check/ufo_required_fields")
@@ -77,11 +72,6 @@ def test_check_required_fields(empty_ufo_font):
     ufo.info.familyName = "Test"
 
     assert assert_PASS(check(ufo)) == "Required fields present."
-
-    # Run the check on a non-UFO font.
-    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
-    msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: ufo_font" in msg.message
 
 
 def test_check_recommended_fields(empty_ufo_font):
@@ -104,11 +94,6 @@ def test_check_recommended_fields(empty_ufo_font):
 
     assert assert_PASS(check(ufo)) == "Recommended fields present."
 
-    # Run the check on a non-UFO font.
-    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
-    msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: ufo_font" in msg.message
-
 
 def test_check_unnecessary_fields(empty_ufo_font):
     check = CheckTester(
@@ -126,11 +111,6 @@ def test_check_unnecessary_fields(empty_ufo_font):
 
     msg = assert_results_contain(check(ufo), WARN, "unnecessary-fields")
     assert "Unnecessary field(s) present:" in msg
-
-    # Run the check on a non-UFO font.
-    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
-    msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: ufo_font" in msg.message
 
 
 def test_check_designspace_has_sources():

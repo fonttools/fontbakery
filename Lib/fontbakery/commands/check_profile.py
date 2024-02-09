@@ -342,7 +342,7 @@ class ArgumentParserError(Exception):
 
 def get_profile():
     """Prefetch the profile module, to fill some holes in the help text."""
-    argument_parser, _ = ArgumentParser(Profile(), profile_arg=True)
+    argument_parser = ArgumentParser(Profile(), profile_arg=True)
 
     # monkey patching will do here
     def error(message):
@@ -484,8 +484,8 @@ def list_checks(profile, theme, verbose=False):
                     + "\n"
                 )
     else:
-        for _, section in profile._sections.items():
-            for check in section._checks:
+        for section in profile.sections:
+            for check in section.checks:
                 print(check.id)
     sys.exit()
 

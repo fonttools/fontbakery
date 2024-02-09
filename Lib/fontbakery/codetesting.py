@@ -107,9 +107,9 @@ class CheckTester:
                         MockFont(ttFont=value, file=value.reader.file.name)
                     )
                 elif isinstance(value, GSFont):
-                    context.testables.append(MockGSFont(gsfont=value))
+                    context.testables.append(MockGlyphsFile(gsfont=value))
                 elif isinstance(value, defcon.Font):
-                    context.testables.append(MockUFO(ufo_font=value))
+                    context.testables.append(MockUfo(ufo_font=value))
 
         runner = CheckRunner(
             self.profile,

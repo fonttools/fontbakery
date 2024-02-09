@@ -7,6 +7,7 @@ from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,
     TEST_FILE,
+    MockFont,
 )
 from fontbakery.profiles import opentype as opentype_profile
 
@@ -237,7 +238,7 @@ def test_check_varfont_regular_opsz_coord():
     # We try yet another bad value
     # and the check should detect the problem:
     assert_results_contain(
-        check(ttFont, {"regular_opsz_coord": 17}),
+        check(MockFont(ttFont=ttFont, regular_opsz_coord=17)),
         WARN,
         "opsz-out-of-range",
         "with another bad Regular:opsz value (17)...",
@@ -246,7 +247,7 @@ def test_check_varfont_regular_opsz_coord():
     # We then test with good default opsz values:
     for value in [10, 11, 12, 13, 14, 15, 16]:
         assert_PASS(
-            check(ttFont, {"regular_opsz_coord": value}),
+            check(MockFont(ttFont=ttFont, regular_opsz_coord=value)),
             f"with a good Regular:opsz coordinate ({value})...",
         )
 

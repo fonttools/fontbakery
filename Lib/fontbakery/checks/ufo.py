@@ -75,7 +75,7 @@ def com_daltonmaag_check_ufolint(ufo):
 
     import subprocess
 
-    ufolint_cmd = ["ufolint", ufo]
+    ufolint_cmd = ["ufolint", ufo.file]
 
     try:
         subprocess.check_output(ufolint_cmd, stderr=subprocess.STDOUT)

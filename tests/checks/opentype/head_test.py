@@ -7,6 +7,7 @@ from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,
     TEST_FILE,
+    MockFont,
 )
 from fontbakery.profiles import opentype as opentype_profile
 
@@ -203,12 +204,12 @@ def test_check_mac_style():
 
         if expected == PASS:
             assert_PASS(
-                check(ttFont, {"style": style}),
+                check(MockFont(ttFont=ttFont, style=style)),
                 "with macStyle:{macStyle_value} style:{style}...",
             )
         else:
             assert_results_contain(
-                check(ttFont, {"style": style}),
+                check(MockFont(ttFont=ttFont, style=style)),
                 FAIL,
                 expected,
                 f"with macStyle:{macStyle_value} style:{style}...",

@@ -48,9 +48,8 @@ class CheckRunner:
         # Add the profile's config values "underneath" the user's config
         self.config = Configuration(**profile.configuration_defaults)
         self.config.update(config)
-        self._custom_order = config["custom_order"]
-        self._explicit_checks = config["explicit_checks"]
-        self._exclude_checks = config["exclude_checks"]
+        self._explicit_checks = config.get("explicit_checks")
+        self._exclude_checks = config.get("exclude_checks")
         self._iterargs = OrderedDict()
         self._jobs = jobs
         # self._iterargs is the *count of each type of thing*.
