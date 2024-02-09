@@ -240,6 +240,9 @@ class FontBakeryCheck(FontbakeryCallable):
 
 
 def condition(cls):
+    if not inspect.isclass(cls):
+        raise TypeError(f"Condition {cls.__name__} must be added to a class")
+
     def decorator(*args, **kwds):
         func = args[0]
         # We should also cache this

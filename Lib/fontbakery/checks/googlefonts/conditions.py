@@ -161,67 +161,9 @@ def family_metadata(font):
         return None
 
 
-@condition
-def registered_vendor_ids():
-    """Get a list of vendor IDs from Microsoft's website."""
-    from pkg_resources import resource_filename
-
-    try:
-        from bs4 import BeautifulSoup, NavigableString
-    except ImportError:
-        exit_with_install_instructions()
-
-    registered_vendor_ids = {}
-    CACHED = resource_filename(
-        "fontbakery", "data/fontbakery-microsoft-vendorlist.cache"
-    )
-    content = open(CACHED, encoding="utf-8").read()
-    # Strip all <A> HTML tags from the raw HTML. The current page contains a
-    # closing </A> for which no opening <A> is present, which causes
-    # beautifulsoup to silently stop processing that section from the error
-    # onwards. We're not using the href's anyway.
-    content = re.sub("<a[^>]*>", "", content, flags=re.IGNORECASE)
-    content = re.sub("</a>", "", content, flags=re.IGNORECASE)
-    soup = BeautifulSoup(content, "html.parser")
-
-    IDs = [chr(c + ord("a")) for c in range(ord("z") - ord("a") + 1)]
-    IDs.append("0-9-")
-
-    for section_id in IDs:
-        section = soup.find("h2", {"id": section_id})
-        if not section:
-            continue
-
-        table = section.find_next_sibling("table")
-        if not table or isinstance(table, NavigableString):
-            continue
-
-        # print ("table: '{}'".format(table))
-        for row in table.findAll("tr"):
-            # print("ROW: '{}'".format(row))
-            cells = row.findAll("td")
-            if not cells:
-                continue
-
-            labels = list(cells[1].stripped_strings)
-
-            # pad the code to make sure it is a 4 char string,
-            # otherwise eg "CF  " will not be matched to "CF"
-            code = cells[0].string.strip()
-            code = code + (4 - len(code)) * " "
-            registered_vendor_ids[code] = labels[0]
-
-            # Do the same with NULL-padding:
-            code = cells[0].string.strip()
-            code = code + (4 - len(code)) * chr(0)
-            registered_vendor_ids[code] = labels[0]
-
-    return registered_vendor_ids
-
-
-@condition
-def is_ofl(license_filename):
-    return license_filename and "OFL" in license_filename
+@condition(Font)
+def is_ofl(font):
+    return font.license_filename and "OFL" in font.license_filename
 
 
 @condition(Font)
@@ -237,12 +179,12 @@ def familyname(font):
         return filename_base
 
 
-@condition
-def listed_on_gfonts_api(familyname, config, network):
-    if not network:
+@condition(CheckRunContext)
+def listed_on_gfonts_api(context):
+    if not context.network:
         return
 
-    if not familyname:
+    if not context.fonts or not context.fonts[0].familyname:
         return False
 
     from fontbakery.utils import split_camel_case
@@ -250,31 +192,31 @@ def listed_on_gfonts_api(familyname, config, network):
     # Some families such as "Libre Calson Text" have camelcased filenames
     # ("LibreCalsonText-Regular.ttf") and require us to split in order
     # to find it in the GFonts metadata:
-    from_camelcased_name = split_camel_case(familyname)
+    from_camelcased_name = split_camel_case(context.fonts[0].familyname)
 
-    for item in production_metadata(config, network)["familyMetadataList"]:
+    for item in context.production_metadata["familyMetadataList"]:
         if item["family"] == familyname or item["family"] == from_camelcased_name:
             return True
 
     return False
 
 
-@condition
-def has_regular_style(family_metadata):
-    fonts = family_metadata.fonts if family_metadata else []
+@condition(Font)
+def has_regular_style(font):
+    fonts = font.family_metadata.fonts if font.family_metadata else []
     for f in fonts:
         if f.weight == 400 and f.style == "normal":
             return True
     return False
 
 
-@condition
-def font_metadata(family_metadata, font):
-    if not family_metadata:
+@condition(Font)
+def font_metadata(font):
+    if not font.family_metadata:
         return
 
-    for f in family_metadata.fonts:
-        if font.endswith(f.filename):
+    for f in font.family_metadata.fonts:
+        if font.file.endswith(f.filename):
             return f
 
 
@@ -323,63 +265,63 @@ def rfn_exception(font):
             return True
 
 
-@condition
-def remote_styles(familyname_with_spaces, config, network):
-    """Get a dictionary of TTFont objects of all font files of
-    a given family as currently hosted at Google Fonts.
-    """
-    if not network:
-        return
+# @condition
+# def remote_styles(familyname_with_spaces, config, network):
+#     """Get a dictionary of TTFont objects of all font files of
+#     a given family as currently hosted at Google Fonts.
+#     """
+#     if not network:
+#         return
 
-    def download_family_from_Google_Fonts(familyname):
-        """Return a zipfile containing a font family hosted on fonts.google.com"""
-        from zipfile import ZipFile
-        from fontbakery.utils import download_file
+#     def download_family_from_Google_Fonts(familyname):
+#         """Return a zipfile containing a font family hosted on fonts.google.com"""
+#         from zipfile import ZipFile
+#         from fontbakery.utils import download_file
 
-        url_prefix = "https://fonts.google.com/download?family="
-        url = "{}{}".format(url_prefix, familyname.replace(" ", "+"))
-        return ZipFile(download_file(url))  # pylint: disable=R1732
+#         url_prefix = "https://fonts.google.com/download?family="
+#         url = "{}{}".format(url_prefix, familyname.replace(" ", "+"))
+#         return ZipFile(download_file(url))  # pylint: disable=R1732
 
-    def fonts_from_zip(zipfile):
-        """return a list of fontTools TTFonts"""
-        from fontTools.ttLib import TTFont
-        from io import BytesIO
+#     def fonts_from_zip(zipfile):
+#         """return a list of fontTools TTFonts"""
+#         from fontTools.ttLib import TTFont
+#         from io import BytesIO
 
-        fonts = []
-        for file_name in zipfile.namelist():
-            if file_name.lower().endswith(".ttf"):
-                file_obj = BytesIO(zipfile.open(file_name).read())
-                fonts.append([file_name, TTFont(file_obj)])
-        return fonts
+#         fonts = []
+#         for file_name in zipfile.namelist():
+#             if file_name.lower().endswith(".ttf"):
+#                 file_obj = BytesIO(zipfile.open(file_name).read())
+#                 fonts.append([file_name, TTFont(file_obj)])
+#         return fonts
 
-    if not listed_on_gfonts_api(familyname_with_spaces, config, network):
-        return None
+#     if not listed_on_gfonts_api(familyname_with_spaces, config, network):
+#         return None
 
-    remote_fonts_zip = download_family_from_Google_Fonts(familyname_with_spaces)
-    rstyles = {}
+#     remote_fonts_zip = download_family_from_Google_Fonts(familyname_with_spaces)
+#     rstyles = {}
 
-    for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
-        remote_style = os.path.splitext(remote_filename)[0]
-        if "-" in remote_style:
-            remote_style = remote_style.split("-")[1]
-        rstyles[remote_style] = remote_font
-    return rstyles
+#     for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
+#         remote_style = os.path.splitext(remote_filename)[0]
+#         if "-" in remote_style:
+#             remote_style = remote_style.split("-")[1]
+#         rstyles[remote_style] = remote_font
+#     return rstyles
 
 
-@condition
-def regular_remote_style(remote_styles):
-    from fontbakery.shared_conditions import get_instance_axis_value
+# @condition
+# def regular_remote_style(remote_styles):
+#     from fontbakery.shared_conditions import get_instance_axis_value
 
-    if not remote_styles:
-        return None
-    if "Regular" in remote_styles:
-        return remote_styles["Regular"]
+#     if not remote_styles:
+#         return None
+#     if "Regular" in remote_styles:
+#         return remote_styles["Regular"]
 
-    for style_name, font in remote_styles.items():
-        if is_variable_font(font):
-            if get_instance_axis_value(font, "Regular", "wght"):
-                return font
-    return list(remote_styles.items())[0][1]
+#     for style_name, font in remote_styles.items():
+#         if is_variable_font(font):
+#             if get_instance_axis_value(font, "Regular", "wght"):
+#                 return font
+#     return list(remote_styles.items())[0][1]
 
 
 @condition(CheckRunContext)
@@ -404,74 +346,48 @@ def regular_ttFont(context):
         )
         if sub_family and sub_family.toUnicode() == "Regular" and not typo_sub_family:
             return ttFont
-        if is_variable_font(ttFont):
+        if "fvar" in ttFont:
             if get_instance_axis_value(ttFont, "Regular", "wght"):
                 return ttFont
     return None
 
 
-@condition
-def api_gfonts_ttFont(style, remote_styles):
-    """Get a TTFont object of a font downloaded from Google Fonts
-    corresponding to the given TTFont object of
-    a local font being checked.
-    """
-    if remote_styles and style in remote_styles:
-        return remote_styles[style]
+# @condition
+# def api_gfonts_ttFont(style, remote_styles):
+#     """Get a TTFont object of a font downloaded from Google Fonts
+#     corresponding to the given TTFont object of
+#     a local font being checked.
+#     """
+#     if remote_styles and style in remote_styles:
+#         return remote_styles[style]
 
 
-@condition
-def github_gfonts_ttFont(ttFont, license_filename, network):
-    """Get a TTFont object of a font downloaded
-    from Google Fonts git repository.
-    """
-    if not license_filename or not network:
-        return None
+# @condition
+# def github_gfonts_ttFont(ttFont, license_filename, network):
+#     """Get a TTFont object of a font downloaded
+#     from Google Fonts git repository.
+#     """
+#     if not license_filename or not network:
+#         return None
 
-    from fontbakery.utils import download_file
-    from fontTools.ttLib import TTFont
-    from urllib.request import HTTPError
+#     from fontbakery.utils import download_file
+#     from fontTools.ttLib import TTFont
+#     from urllib.request import HTTPError
 
-    LICENSE_DIRECTORY = {"OFL.txt": "ofl", "UFL.txt": "ufl", "LICENSE.txt": "apache"}
-    filename = os.path.basename(ttFont.reader.file.name)
-    familyname = filename.split("-")[0].split("[")[0].lower()
-    url = (
-        f"https://github.com/google/fonts/raw/main"
-        f"/{LICENSE_DIRECTORY[license_filename]}/{familyname}/{filename}"
-    )
-    try:
-        fontfile = download_file(url)
-        if fontfile:
-            return TTFont(fontfile)
-    except HTTPError:
-        return None
+#     LICENSE_DIRECTORY = {"OFL.txt": "ofl", "UFL.txt": "ufl", "LICENSE.txt": "apache"}
+#     filename = os.path.basename(ttFont.reader.file.name)
+#     familyname = filename.split("-")[0].split("[")[0].lower()
+#     url = (
+#         f"https://github.com/google/fonts/raw/main"
+#         f"/{LICENSE_DIRECTORY[license_filename]}/{familyname}/{filename}"
+#     )
+#     try:
+#         fontfile = download_file(url)
+#         if fontfile:
+#             return TTFont(fontfile)
+#     except HTTPError:
+#         return None
 
-
-@condition
-def github_gfonts_description(ttFont, license_filename, network):
-    """Get the contents of the DESCRIPTION.en_us.html file
-    from the google/fonts github repository corresponding
-    to a given ttFont.
-    """
-    if not license_filename or not network:
-        return None
-
-    from fontbakery.utils import download_file
-    from urllib.request import HTTPError
-
-    LICENSE_DIRECTORY = {"OFL.txt": "ofl", "UFL.txt": "ufl", "LICENSE.txt": "apache"}
-    filename = os.path.basename(ttFont.reader.file.name)
-    familyname = filename.split("-")[0].lower()
-    url = (
-        f"https://github.com/google/fonts/raw/main"
-        f"/{LICENSE_DIRECTORY[license_filename]}/{familyname}/DESCRIPTION.en_us.html"
-    )
-    try:
-        descfile = download_file(url)
-        if descfile:
-            return descfile.read().decode("UTF-8")
-    except HTTPError:
-        return None
 
 
 @condition(Font)
@@ -516,8 +432,8 @@ def VTT_hinted(font):
     return "TSI5" in font.ttFont
 
 
-@condition
-def gfonts_repo_structure(fonts):
+@condition(CheckRunContext)
+def gfonts_repo_structure(self):
     """The family at the given font path
     follows the files and directory structure
     typical of a font project hosted on
@@ -525,20 +441,20 @@ def gfonts_repo_structure(fonts):
 
     # FIXME: Improve this with more details
     #        about the expected structure.
-    abspath = os.path.abspath(fonts[0])
+    abspath = os.path.abspath(self.fonts[0].file)
     return abspath.split(os.path.sep)[-3] in ["ufl", "ofl", "apache"]
 
 
-@condition
-def production_metadata(config, network):
+@condition(CheckRunContext)
+def production_metadata(context):
     """Get the Google Fonts production metadata"""
-    if not network:
+    if not context.network:
         return
 
     import requests
 
     meta_url = "http://fonts.google.com/metadata/fonts"
-    return requests.get(meta_url, timeout=config.get("timeout")).json()
+    return requests.get(meta_url, timeout=context.config.get("timeout")).json()
 
 
 @condition(Font)
@@ -568,12 +484,28 @@ def expected_font_names(ttFont, ttFonts):
     return font_cp
 
 
-@condition
-def is_icon_font(ttFont, config):
-    return config.get("is_icon_font", False) or (
-        "OS/2" in ttFont
-        and ttFont["OS/2"].panose.bFamilyType == PANOSE_Family_Type.LATIN_SYMBOL
-    )
+def get_glyphsets_fulfilled(ttFont):
+    """Returns a dictionary of glyphsets that are fulfilled by the font,
+    and the percentage of glyphs in the font that are in the glyphset.
+    This is following the new glyphset definitions in glyphsets.definitions
+    """
+    from glyphsets.definitions import unicodes_per_glyphset, glyphset_definitions
+
+    res = {}
+    unicodes_in_font = set(ttFont.getBestCmap().keys())
+    for glyphset in glyphset_definitions:
+        unicodes_in_glyphset = unicodes_per_glyphset(glyphset)
+        if glyphset not in res:
+            res[glyphset] = {"has": [], "missing": [], "percentage": 0}
+        for unicode in unicodes_in_glyphset:
+            if unicode in unicodes_in_font:
+                res[glyphset]["has"].append(unicode)
+            else:
+                res[glyphset]["missing"].append(unicode)
+        res[glyphset]["percentage"] = len(res[glyphset]["has"]) / len(
+            unicodes_in_glyphset
+        )
+    return res
 
 
 _tags_cache = None

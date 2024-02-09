@@ -3,6 +3,7 @@ import math
 from beziers.path import BezierPath
 
 from fontbakery.callable import condition, check
+from fontbakery.testable import Font
 from fontbakery.status import PASS, WARN
 from fontbakery.message import Message
 from fontbakery.utils import bullet_list
@@ -16,8 +17,9 @@ JAG_ANGLE = 0.25  # Radians
 FALSE_POSITIVE_CUTOFF = 100  # More than this and we don't make a report
 
 
-@condition
-def outlines_dict(ttFont):
+@condition(Font)
+def outlines_dict(font):
+    ttFont = font.ttFont
     cmap = ttFont["cmap"].getBestCmap()
     return {
         (codepoint, glyphname): BezierPath.fromFonttoolsGlyph(ttFont, glyphname)

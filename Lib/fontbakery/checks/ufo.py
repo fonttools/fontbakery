@@ -1,5 +1,6 @@
 import re
 
+from fontbakery.testable import Designspace, Ufo
 from fontbakery.prelude import (
     check,
     condition,
@@ -13,7 +14,7 @@ from fontbakery.prelude import (
 )
 
 
-@condition
+@condition(Ufo)
 def ufo_font(ufo):
     try:
         from fontTools.ufoLib.errors import UFOLibError
@@ -22,12 +23,12 @@ def ufo_font(ufo):
         exit_with_install_instructions()
 
     try:
-        return defcon.Font(ufo)
+        return defcon.Font(ufo.file)
     except UFOLibError:
         return None
 
 
-@condition
+@condition(Designspace)
 def designSpace(designspace):
     """
     Given a filepath for a designspace file, parse it
@@ -42,13 +43,13 @@ def designSpace(designspace):
         exit_with_install_instructions()
 
     if designspace:
-        DS = DesignSpaceDocument.fromfile(designspace)
+        DS = DesignSpaceDocument.fromfile(designspace.file)
         DS.loadSourceFonts(defcon.Font)
         return DS
 
 
-@condition
-def designspace_sources(designSpace):
+@condition(Designspace)
+def designspace_sources(designspace):
     """
     Given a DesignSpaceDocument object,
     return a set of UFO font sources.
@@ -58,8 +59,8 @@ def designspace_sources(designSpace):
     except ImportError:
         exit_with_install_instructions()
 
-    if designSpace:
-        return designSpace.loadSourceFonts(defcon.Font)
+    if designspace.designSpace:
+        return designspace.designSpace.loadSourceFonts(defcon.Font)
 
 
 @check(

@@ -85,6 +85,8 @@ class CheckTester:
         from fontTools.ttLib import TTFont
         from glyphsLib import GSFont
 
+        if condition_overrides:
+            raise DeprecationWarning("Don't use condition_overrides, use a mock object")
         if isinstance(values, str):
             context = setup_context([values])
         elif hasattr(values, "mocked"):
@@ -114,15 +116,16 @@ class CheckTester:
             context,
             Configuration(explicit_checks=[self.check_id], full_lists=True),
         )
+        runner.catch_errors = False
         if config:
             for key, value in config.items():
                 context.config[key] = value
-        if condition_overrides:
-            for condition, value in condition_overrides.items():
-                setattr(runner.context, condition, value)
         order = runner.order
         if not order:
-            raise Exception(f"No arguments matched {self.check_id}")
+            raise Exception(
+                f"{self.check_id} check arguments could not be fulfilled for"
+                " any files (may indicate bad condition)"
+            )
         result = runner._run_check(order[0])
         return result.results
 

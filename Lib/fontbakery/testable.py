@@ -4,8 +4,6 @@ from dataclasses import dataclass, field
 from functools import cached_property
 from typing import Iterable
 from fontTools.ttLib import TTFont
-from fontbakery.utils import keyword_in_full_font_name
-import os
 
 
 @dataclass
@@ -199,6 +197,7 @@ class Font(Testable):
     @cached_property
     def is_italic(self):
         from fontbakery.constants import FsSelection, MacStyle
+        from fontbakery.utils import keyword_in_full_font_name
 
         ttFont = self.ttFont
         return (
@@ -211,6 +210,7 @@ class Font(Testable):
     @cached_property
     def is_bold(self):
         from fontbakery.constants import FsSelection, MacStyle
+        from fontbakery.utils import keyword_in_full_font_name
 
         ttFont = self.ttFont
         return (

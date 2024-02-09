@@ -13,9 +13,7 @@ def hinting_stats(font: Font):
     """
     from io import BytesIO
     from dehinter.font import dehint
-    from fontTools.ttLib import TTFont
     from fontTools.subset import main as pyftsubset
-    from fontbakery.shared_conditions import is_ttf, is_cff, is_cff2
 
     hinted_size = os.stat(font.file).st_size
     ttFont = font.ttFont

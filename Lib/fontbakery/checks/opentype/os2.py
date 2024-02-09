@@ -1,6 +1,6 @@
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS, WARN, INFO, SKIP
 from fontbakery.message import Message
+from fontbakery.status import FAIL, INFO, PASS, SKIP, WARN
 
 
 @check(
@@ -248,8 +248,9 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
     """Check that OS/2.fsSelection bold & italic settings are unique
     for each NameID1"""
     from collections import Counter
+
+    from fontbakery.constants import FsSelection, NameID
     from fontbakery.utils import get_name_entry_strings
-    from fontbakery.constants import NameID, FsSelection
 
     failed = False
     family_name_and_bold_italic = []
@@ -384,8 +385,8 @@ def com_thetypefounders_check_vendor_id(config, ttFont):
 )
 def com_google_fonts_check_fsselection(ttFont, style):
     """Checking OS/2 fsSelection value."""
+    from fontbakery.constants import RIBBI_STYLE_NAMES, STATIC_STYLE_NAMES, FsSelection
     from fontbakery.utils import check_bit_entry
-    from fontbakery.constants import STATIC_STYLE_NAMES, RIBBI_STYLE_NAMES, FsSelection
 
     # Checking fsSelection REGULAR bit:
     expected = "Regular" in style or (

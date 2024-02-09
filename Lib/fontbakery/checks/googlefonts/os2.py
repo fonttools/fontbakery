@@ -1,12 +1,13 @@
 from functools import lru_cache
 import re
 
-from fontbakery.prelude import check, Message, WARN, PASS, FAIL
+from fontbakery.checks.googlefonts.conditions import expected_font_names
+from fontbakery.prelude import check, Message, WARN, PASS, FAIL, SKIP
 from fontbakery.utils import exit_with_install_instructions
 
 
 @lru_cache(maxsize=1)
-def get_registered_vendor_ids():
+def registered_vendor_ids():
     """Get a list of vendor IDs from Microsoft's website."""
     from pkg_resources import resource_filename
 
@@ -65,7 +66,6 @@ def get_registered_vendor_ids():
 
 @check(
     id="com.google.fonts/check/vendor_id",
-    conditions=["registered_vendor_ids"],
     rationale="""
         Microsoft keeps a list of font vendors and their respective contact info. This
         list is updated regularly and is indexed by a 4-char "Vendor ID" which is
@@ -113,7 +113,7 @@ def com_google_fonts_check_vendor_id(ttFont):
             f"OS/2 VendorID is '{vid}', a font editor default."
             f" {SUGGEST_MICROSOFT_VENDORLIST_WEBSITE}",
         )
-    elif vid not in get_registered_vendor_ids().keys():
+    elif vid not in registered_vendor_ids().keys():
         yield WARN, Message(
             "unknown",
             f"OS/2 VendorID value '{vid}' is not yet recognized."
@@ -143,17 +143,19 @@ def com_google_fonts_check_vendor_id(ttFont):
         a new script is added, we simply change the Win values to the new yMin
         and yMax, without needing to worry if the line height have changed.
     """,
-    conditions=["not is_cjk_font"],
     severity=10,
     proposal="https://github.com/fonttools/fontbakery/issues/3241",
 )
-def com_google_fonts_check_os2_fsselectionbit7(ttFonts):
+def com_google_fonts_check_os2_fsselectionbit7(fonts):
     """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts."""
+    if any(font.is_cjk_font for font in fonts):
+        yield SKIP, Message("cjk", "This check does not apply to CJK fonts.")
+        return
 
     bad_fonts = []
-    for ttFont in ttFonts:
-        if not ttFont["OS/2"].fsSelection & (1 << 7):
-            bad_fonts.append(ttFont.reader.file.name)
+    for font in fonts:
+        if not font.ttFont["OS/2"].fsSelection & (1 << 7):
+            bad_fonts.append(font.file)
 
     if bad_fonts:
         yield FAIL, Message(
@@ -229,7 +231,6 @@ def com_google_fonts_check_fstype(ttFont):
 
 @check(
     id="com.google.fonts/check/usweightclass",
-    conditions=["expected_font_names"],
     rationale="""
         Google Fonts expects variable fonts, static ttfs and static otfs to have
         differing OS/2 usWeightClass values.
@@ -248,19 +249,20 @@ def com_google_fonts_check_fstype(ttFont):
     """,
     proposal="legacy:check/020",
 )
-def com_google_fonts_check_usweightclass(ttFont, expected_font_names):
+def com_google_fonts_check_usweightclass(font, ttFonts):
     """
     Check the OS/2 usWeightClass is appropriate for the font's best SubFamily name.
     """
     passed = True
-    value = ttFont["OS/2"].usWeightClass
-    expected_value = expected_font_names["OS/2"].usWeightClass
-    style_name = ttFont["name"].getBestSubFamilyName()
+    value = font.ttFont["OS/2"].usWeightClass
+    expected_names = expected_font_names(font.ttFont, ttFonts)
+    expected_value = expected_names["OS/2"].usWeightClass
+    style_name = font.ttFont["name"].getBestSubFamilyName()
     has_expected_value = value == expected_value
     fail_message = (
         "Best SubFamily name is '{}'. Expected OS/2 usWeightClass is {}, got {}."
     )
-    if is_variable_font(ttFont):
+    if font.is_variable_font:
         if not has_expected_value:
             passed = False
             yield FAIL, Message(
@@ -272,24 +274,24 @@ def com_google_fonts_check_usweightclass(ttFont, expected_font_names):
     # to 100 and ExtraLight to 250.
     # for static otfs, Thin must be 250 and ExtraLight must be 275
     elif "Thin" in style_name:
-        if is_ttf(ttFont) and value not in [100, 250]:
+        if font.is_ttf and value not in [100, 250]:
             passed = False
             yield FAIL, Message(
                 "bad-value", fail_message.format(style_name, expected_value, value)
             )
-        if is_cff(ttFont) and value != 250:
+        if font.is_cff and value != 250:
             passed = False
             yield FAIL, Message(
                 "bad-value", fail_message.format(style_name, 250, value)
             )
 
     elif "ExtraLight" in style_name:
-        if is_ttf(ttFont) and value not in [200, 275]:
+        if font.is_ttf and value not in [200, 275]:
             passed = False
             yield FAIL, Message(
                 "bad-value", fail_message.format(style_name, expected_value, value)
             )
-        if is_cff(ttFont) and value != 275:
+        if font.is_cff and value != 275:
             passed = False
             yield FAIL, Message(
                 "bad-value", fail_message.format(style_name, 275, value)

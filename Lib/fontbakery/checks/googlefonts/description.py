@@ -32,6 +32,32 @@ def description_html(font):
         return None
 
 
+def github_gfonts_description(font: Font, network):
+    """Get the contents of the DESCRIPTION.en_us.html file
+    from the google/fonts github repository corresponding
+    to a given ttFont.
+    """
+    if not font.license_filename or not network:
+        return None
+
+    from fontbakery.utils import download_file
+    from urllib.request import HTTPError
+
+    LICENSE_DIRECTORY = {"OFL.txt": "ofl", "UFL.txt": "ufl", "LICENSE.txt": "apache"}
+    filename = os.path.basename(font.file)
+    familyname = filename.split("-")[0].lower()
+    url = (
+        f"https://github.com/google/fonts/raw/main"
+        f"/{LICENSE_DIRECTORY[font.license_filename]}/{familyname}/DESCRIPTION.en_us.html"
+    )
+    try:
+        descfile = download_file(url)
+        if descfile:
+            return descfile.read().decode("UTF-8")
+    except HTTPError:
+        return None
+
+
 @check(
     id="com.google.fonts/check/description/noto_has_article",
     conditions=["is_noto"],
@@ -43,7 +69,7 @@ def description_html(font):
 )
 def com_google_fonts_check_description_noto_has_article(font):
     """Noto fonts must have an ARTICLE.en_us.html file"""
-    directory = os.path.dirname(font)
+    directory = os.path.dirname(font.file)
     descfilepath = os.path.join(directory, "article", "ARTICLE.en_us.html")
     if os.path.exists(descfilepath):
         yield PASS, "ARTICLE.en_us.html exists"
@@ -357,16 +383,15 @@ def com_google_fonts_check_description_eof_linebreak(description):
         will typically change if when font files are updated. Please treat this check
         as a reminder to do so whenever appropriate!
     """,
-    conditions=["description", "github_gfonts_description"],
+    conditions=["description", "network"],
     proposal="https://github.com/fonttools/fontbakery/issues/3182",
 )
-def com_google_fonts_check_description_family_update(
-    description, github_gfonts_description
-):
+def com_google_fonts_check_description_family_update(font, network):
     """
     On a family update, the DESCRIPTION.en_us.html file should ideally also be updated.
     """
-    if github_gfonts_description == description:
+    remote_description = github_gfonts_description(font, network)
+    if remote_description == font.description:
         yield WARN, Message(
             "description-not-updated",
             "The DESCRIPTION.en_us.html file in this family has not changed"

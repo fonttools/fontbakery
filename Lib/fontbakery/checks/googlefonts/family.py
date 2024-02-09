@@ -9,15 +9,12 @@ from fontbakery.utils import bullet_list
     conditions=["are_ttf", "stylenames_are_canonical"],
     proposal="https://github.com/fonttools/fontbakery/issues/4180",
 )
-def com_google_fonts_check_family_equal_codepoint_coverage(ttFonts, config):
+def com_google_fonts_check_family_equal_codepoint_coverage(fonts, config):
     """Fonts have equal codepoint coverage"""
-    from fontbakery.checks.googlefonts.conditions import canonical_stylename
-
     cmaps = {}
-    for ttFont in ttFonts:
-        fontname = ttFont.reader.file.name
-        stylename = canonical_stylename(fontname)
-        cmaps[stylename] = set(ttFont.getBestCmap().keys())
+    for font in fonts:
+        stylename = font.canonical_stylename
+        cmaps[stylename] = font.font_codepoints
     cmap_list = list(cmaps.values())
     common_cps = cmap_list[0].intersection(*cmap_list[1:])
     problems = []
@@ -55,6 +52,7 @@ def com_google_fonts_check_family_equal_codepoint_coverage(ttFonts, config):
 def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config):
     """Ensure Italic styles have Roman counterparts."""
 
+    filenames = [f.file for f in fonts]
     italics = [f.file for f in fonts if "Italic" in f.file]
     missing_roman = []
     for italic in italics:
@@ -84,7 +82,7 @@ def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config)
             # "Familyname-BoldItalic[wght,wdth].ttf" => "Familyname-Bold[wght,wdth].ttf"
             roman_counterpart = italic.replace("Italic", "")
 
-        if roman_counterpart not in fonts:
+        if roman_counterpart not in filenames:
             missing_roman.append(italic)
 
     if missing_roman:

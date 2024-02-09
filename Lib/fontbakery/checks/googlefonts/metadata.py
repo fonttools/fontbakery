@@ -440,11 +440,11 @@ def com_google_fonts_check_metadata_familyname(family_metadata):
     conditions=["family_metadata"],
     proposal="legacy:check/090",
 )
-def com_google_fonts_check_metadata_has_regular(family_metadata):
+def com_google_fonts_check_metadata_has_regular(font):
     """METADATA.pb: According to Google Fonts standards,
     families should have a Regular style.
     """
-    if has_regular_style(family_metadata):
+    if font.has_regular_style:
         yield PASS, "Family has a Regular style."
     else:
         yield FAIL, Message(
@@ -736,20 +736,18 @@ def com_google_fonts_check_metadata_valid_name_values(ttFont, font_metadata):
     conditions=["style", "font_metadata"],
     proposal="legacy:check/099",
 )
-def com_google_fonts_check_metadata_valid_full_name_values(
-    style, font_metadata, font_familynames, typographic_familynames
-):
+def com_google_fonts_check_metadata_valid_full_name_values(font):
     """METADATA.pb font.full_name field contains font name in right format?"""
-    if style in RIBBI_STYLE_NAMES:
-        familynames = font_familynames
+    if font.style in RIBBI_STYLE_NAMES:
+        familynames = font.font_familynames
         if familynames == []:
             yield SKIP, "No FONT_FAMILYNAME"
     else:
-        familynames = typographic_familynames
+        familynames = font.typographic_familynames
         if familynames == []:
             yield SKIP, "No TYPOGRAPHIC_FAMILYNAME"
 
-    if any((name in font_metadata.full_name) for name in familynames):
+    if any((name in font.font_metadata.full_name) for name in familynames):
         yield PASS, (
             "METADATA.pb font.full_name field contains font name in right format."
         )
@@ -757,7 +755,7 @@ def com_google_fonts_check_metadata_valid_full_name_values(
         yield FAIL, Message(
             "mismatch",
             f"METADATA.pb font.full_name field"
-            f' ("{font_metadata.full_name}")'
+            f' ("{font.font_metadata.full_name}")'
             f" does not match correct font name format"
             f' ("{", ".join(familynames)}").',
         )
@@ -774,7 +772,7 @@ def com_google_fonts_check_metadata_valid_full_name_values(
 )
 def com_google_fonts_check_metadata_valid_filename_values(font, family_metadata):
     """METADATA.pb font.filename field contains font name in right format?"""
-    expected = os.path.basename(font)
+    expected = os.path.basename(font.file)
     passed = False
     for font_metadata in family_metadata.fonts:
         if font_metadata.filename == expected:

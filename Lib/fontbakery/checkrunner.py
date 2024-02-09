@@ -61,6 +61,7 @@ class CheckRunner:
         self.profile = profile
         self.context = context
         self.context.config = self.config  # Move later
+        self.catch_errors = True
 
     @staticmethod
     def _check_result(result) -> Subresult:
@@ -106,11 +107,10 @@ class CheckRunner:
         plural = self.profile.iterargs[name]
         return list(getattr(self.context, plural))[index].file
 
-    def _get(self, name, iterargs):
+    def _get(self, name, iterargs, condition=False):
         # Is this a property of the whole collection?
         if hasattr(self.context, name):
             return getattr(self.context, name)
-
         # Is it a property of the file we're testing?
         for thing, index in iterargs:
             specific_thing = self.context.testables_by_type[thing][index]
@@ -120,6 +120,9 @@ class CheckRunner:
             if not hasattr(specific_thing, name):
                 continue
             return getattr(specific_thing, name)
+        if condition:
+            raise ValueError(f"Undefined condition {name}")
+
         raise ValueError(
             f"This can't happen: asked for {name} but nothing provides it."
         )
@@ -134,8 +137,10 @@ class CheckRunner:
         for condition in identity.check.conditions:
             negate, name = is_negated(condition)
             try:
-                val = bool(self._get(name, identity.iterargs))
+                val = bool(self._get(name, identity.iterargs, condition=True))
             except Exception as err:
+                if not self.catch_errors:
+                    raise
                 status = Subresult(ERROR, Message("error", str(err)))
                 return (status, None)
 
@@ -174,6 +179,8 @@ class CheckRunner:
                 return (status, None)
             return None, args
         except Exception as error:
+            if not self.catch_errors:
+                raise
             status = Subresult(ERROR, Message("failed-dependencies", error))
             return (status, None)
 
@@ -203,6 +210,8 @@ class CheckRunner:
             else:
                 subresults = [subresults]
         except Exception as error:
+            if not self.catch_errors:
+                raise
             message = f"Failed with {type(error).__name__}: {error}\n```\n"
             message += "".join(traceback.format_tb(error.__traceback__))
             message += "\n```"

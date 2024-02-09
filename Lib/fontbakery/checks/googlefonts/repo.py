@@ -1,7 +1,8 @@
 import os
 
 from fontbakery.constants import NameID
-from fontbakery.prelude import check, Message, PASS, FAIL, WARN
+from fontbakery.testable import Font
+from fontbakery.prelude import check, Message, PASS, FAIL, WARN, SKIP
 from fontbakery.utils import bullet_list
 
 
@@ -185,17 +186,15 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
 )
 def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
     """A static fonts directory, if present, must contain manually hinted fonts"""
-    from fontTools.ttLib import TTFont
-    from fontbakery.shared_conditions import is_hinted
     from fontbakery.utils import get_name_entry_strings
     from fontbakery.checks.googlefonts.conditions import VTT_hinted
 
-    def manually_hinted(ttFont):
-        if not is_hinted(ttFont):
+    def manually_hinted(font):
+        if not font.is_hinted:
             return False
-        if VTT_hinted(ttFont):
+        if font.VTT_hinted:
             return True
-        name_strings = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
+        name_strings = get_name_entry_strings(font.ttFont, NameID.VERSION_STRING)
         if any("ttfautohint" in name for name in name_strings):
             return False
         return True
@@ -203,7 +202,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
     static_dir = os.path.join(family_directory, "static")
     if os.path.exists(static_dir):
         static_fonts = [
-            os.path.join(static_dir, f)
+            Font(os.path.join(static_dir, f))
             for f in os.listdir(static_dir)
             if f.endswith(".ttf")
         ]
@@ -211,7 +210,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
             yield PASS, "OK"
             return
 
-        if not all(manually_hinted(TTFont(font)) for font in static_fonts):
+        if not all(manually_hinted(font) for font in static_fonts):
             yield WARN, Message(
                 "not-manually-hinted",
                 'There is a "static" dir but it contains fonts which are not '
@@ -223,7 +222,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
 
 @check(
     id="com.google.fonts/check/repo/dirname_matches_nameid_1",
-    conditions=["gfonts_repo_structure", "not is_variable_font"],
+    conditions=["gfonts_repo_structure"],
     proposal="https://github.com/fonttools/fontbakery/issues/2302",
 )
 def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
@@ -231,6 +230,12 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
     match NameID 1 of the regular."""
     from fontTools.ttLib import TTFont
     from fontbakery.utils import get_name_entry_strings, get_regular
+
+    if any(f.is_variable_font for f in fonts):
+        yield SKIP, Message(
+            "variable-exempt", "Variable fonts are exempt from this check."
+        )
+        return
 
     regular = get_regular(fonts)
     if not regular:
@@ -243,12 +248,12 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
         )
         return
 
-    entry = get_name_entry_strings(TTFont(regular), NameID.FONT_FAMILY_NAME)[0]
+    entry = get_name_entry_strings(TTFont(regular.file), NameID.FONT_FAMILY_NAME)[0]
     expected = entry.lower()
     expected = "".join(expected.split(" "))
     expected = "".join(expected.split("-"))
 
-    _, familypath, _ = os.path.abspath(regular).split(os.path.sep)[-3:]
+    _, familypath, _ = os.path.abspath(regular.file).split(os.path.sep)[-3:]
     if familypath == expected:
         yield PASS, "OK"
     else:

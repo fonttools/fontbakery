@@ -1,10 +1,12 @@
+from fontbakery.testable import Font
 from fontbakery.prelude import check, condition, PASS, FAIL, WARN, Message
 
 
-@condition
-def ligature_glyphs(ttFont):
+@condition(Font)
+def ligature_glyphs(font):
     from fontTools.ttLib.tables.otTables import LigatureSubst
 
+    ttFont = font.ttFont
     all_ligature_glyphs = []
     try:
         if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:

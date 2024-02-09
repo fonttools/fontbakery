@@ -13,7 +13,7 @@ def network(collection):
 
 @condition(CheckRunContext)
 def are_ttf(collection):
-    return not all(f.is_ttf for f in collection.fonts)
+    return all(f.is_ttf for f in collection.fonts)
 
 
 @condition(Font)

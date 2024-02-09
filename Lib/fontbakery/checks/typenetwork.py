@@ -4,6 +4,7 @@ Checks for Type Network <https://typenetwork.com/>
 import unicodedata
 import string
 
+from fontbakery.testable import Font, CheckRunContext
 from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN, SKIP, INFO
 from fontbakery.utils import (
     bullet_list,
@@ -585,8 +586,9 @@ def com_typenetwork_check_font_is_centered_vertically(ttFont):
         )
 
 
-@condition
-def stylename(ttFont):
+@condition(Font)
+def stylename(font):
+    ttFont = font.ttFont
     if ttFont["name"].getDebugName(16):
         styleName = ttFont["name"].getDebugName(17)
     else:
@@ -594,8 +596,8 @@ def stylename(ttFont):
     return styleName
 
 
-@condition
-def tn_expected_os2_weight(stylename):
+@condition(Font)
+def tn_expected_os2_weight(font):
     """The weight name and the expected OS/2 usWeightClass value inferred from
     the style part of the font name.
     Here the common/expected values and weight names:
@@ -611,7 +613,7 @@ def tn_expected_os2_weight(stylename):
     Thin is not set to 100 because of legacy Windows GDI issues:
     https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
     """
-    if not stylename:
+    if not font.stylename:
         return None
     # Weight name to value mapping:
     TN_EXPECTED_WEIGHTS = {
@@ -625,6 +627,7 @@ def tn_expected_os2_weight(stylename):
         "ExtraBold": 800,
         "Black": 900,
     }
+    stylename = font.stylename
     if stylename == "Italic":
         weight_name = "Regular"
     elif stylename.endswith("Italic"):
@@ -801,22 +804,14 @@ def com_typenetwork_check_family_tnum_horizontal_metrics(ttFonts, config):
         yield PASS, "OK"
 
 
-@condition
-def roman_ttFonts(ttFonts):
-    from fontbakery.shared_conditions import is_italic
-
-    return [ttFont for ttFont in ttFonts if not is_italic(ttFont)]
+@condition(CheckRunContext)
+def roman_ttFonts(context):
+    return [font.ttFont for font in context.ttFonts if not font.is_italic]
 
 
-@condition
-def italic_ttFonts(ttFonts):
-    italicFonts = []
-    from fontbakery.shared_conditions import is_italic
-
-    for ttFont in ttFonts:
-        if is_italic(ttFont):
-            italicFonts.append(ttFont)
-    return italicFonts
+@condition(CheckRunContext)
+def italic_ttFonts(context):
+    return [font.ttFont for font in context.ttFonts if font.is_italic]
 
 
 @check(

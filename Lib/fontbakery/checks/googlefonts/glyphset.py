@@ -1,8 +1,6 @@
-from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN
+from fontbakery.constants import PANOSE_Family_Type
+from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN, SKIP
 from fontbakery.testable import Font
-from fontbakery.checks.googlefonts.conditions import (  # pylint: disable=unused-import
-    is_icon_font,
-)
 from fontbakery.constants import (
     NameID,
     PlatformID,
@@ -64,16 +62,22 @@ def is_claiming_to_be_cjk_font(font):
         Google Fonts expects that fonts in its collection support at least the minimal
         set of characters defined in the `GF-latin-core` glyph-set.
     """,
-    conditions=["font_codepoints", "not is_icon_font"],
+    conditions=["font_codepoints"],
     proposal="https://github.com/fonttools/fontbakery/pull/2488",
 )
 def com_google_fonts_check_glyph_coverage(
-    ttFont, font_codepoints, family_metadata, config
+    ttFont, family_metadata, config
 ):
     """Check Google Fonts glyph coverage."""
-
     import unicodedata2
     from glyphsets import get_glyphsets_fulfilled
+
+    if config.get("is_icon_font") or (
+        "OS/2" in ttFont
+        and ttFont["OS/2"].panose.bFamilyType == PANOSE_Family_Type.LATIN_SYMBOL
+    ):
+        yield SKIP, "This is an icon font or a symbol font."
+        return
 
     glyphsets_fulfilled = get_glyphsets_fulfilled(ttFont)
 
@@ -274,11 +278,10 @@ def com_google_fonts_check_family_control_chars(ttFonts):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3214",
 )
-def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
+def com_google_fonts_check_cjk_not_enough_glyphs(font):
     """Does the font contain less than 150 CJK characters?"""
-    from fontbakery.shared_conditions import get_cjk_glyphs
 
-    cjk_glyphs = get_cjk_glyphs(ttFont)
+    cjk_glyphs = font.get_cjk_glyphs
     cjk_glyph_count = len(cjk_glyphs)
     if cjk_glyph_count > 0 and cjk_glyph_count < 150:
         if cjk_glyph_count == 1:

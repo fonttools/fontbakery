@@ -56,7 +56,7 @@ def com_google_fonts_check_canonical_filename(ttFont):
 def com_google_fonts_check_file_size(font):
     """Ensure files are not too large."""
     # pytype: disable=name-error
-    size = os.stat(font).st_size
+    size = os.stat(font.file).st_size
     if size > FAIL_SIZE:  # noqa:F821 pylint:disable=E0602
         yield FAIL, Message(
             "massive-font",

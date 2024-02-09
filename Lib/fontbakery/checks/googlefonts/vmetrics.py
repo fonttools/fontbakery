@@ -198,14 +198,12 @@ def com_google_fonts_check_vertical_metrics(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1162",
 )
-def com_google_fonts_check_vertical_metrics_regressions(
-    regular_ttFont, regular_remote_style
-):
+def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
     """Check if the vertical metrics of a family are similar to the same
     family hosted on Google Fonts."""
     import math
 
-    gf_ttFont = regular_remote_style
+    gf_ttFont = font.regular_remote_style
     ttFont = regular_ttFont
 
     if not ttFont:
