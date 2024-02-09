@@ -141,7 +141,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         fval_cmd = [
             "FontValidator",
             "-file",
-            font,
+            font.file,
             "-all-tables",
             "-report-dir",
             report_dir.name,
@@ -194,7 +194,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         else:
             return f"MS-FonVal: {msg}"
 
-    report_file = Path(report_dir.name) / f"{Path(font).name}.report.xml"
+    report_file = Path(report_dir.name) / f"{Path(font.file).name}.report.xml"
 
     grouped_msgs = {}
     with open(report_file, "rb") as xml_report:
