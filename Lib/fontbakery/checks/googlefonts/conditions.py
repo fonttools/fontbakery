@@ -389,7 +389,6 @@ def regular_ttFont(context):
 #         return None
 
 
-
 @condition(Font)
 def familyname_with_spaces(self):
     """Attempts to build family name from font name.
