@@ -49,7 +49,7 @@ def test_check_weight_class_fvar():
     # The check should yield SKIP.
     ttFont = TTFont(TEST_FILE("BadGrades/BadGrades-VF.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: has_wght_axis" in msg.message
+    assert "Unfulfilled Conditions: has_wght_axis" in msg
 
 
 def test_check_inconsistencies_between_fvar_stat():
