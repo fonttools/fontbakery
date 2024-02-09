@@ -2,6 +2,7 @@ import math
 import os
 import shutil
 import sys
+from fontbakery.codetesting import MockFont
 
 import pytest
 from fontTools.ttLib import TTFont
@@ -39,6 +40,8 @@ from fontbakery.constants import (
     OFL_BODY_TEXT,
 )
 from fontbakery.profiles import googlefonts as googlefonts_profile
+from fontbakery.testable import Font
+
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -126,7 +129,7 @@ def test_extra_needed_exit_from_conditions(monkeypatch):
         check = CheckTester(
             googlefonts_profile, "com.google.fonts/check/metadata/unknown_designer"
         )
-        font = TEST_FILE("merriweather/Merriweather.ttf")
+        font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
         check(font)
 
     remove_import_raiser(module_name)
@@ -205,26 +208,27 @@ def test_check_description_broken_links():
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(font), "with description file that has no links...")
 
-    good_desc = check["description"]
+    good_desc = Font(font).description
     good_desc += (
         "<a href='http://example.com'>Good Link</a>"
         "<a href='http://fonts.google.com'>Another Good One</a>"
     )
+
     assert_PASS(
-        check(font, {"description": good_desc}),
+        check(MockFont(file=font, description=good_desc)),
         "with description file that has good links...",
     )
 
     good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
     assert_results_contain(
-        check(font, {"description": good_desc}),
+        check(MockFont(file=font, description=good_desc)),
         FAIL,
         "email",
         'with a description file containing "mailto" links...',
     )
 
     assert_PASS(
-        check(font, {"description": good_desc}),
+        check(MockFont(file=font, description=good_desc)),
         'with a description file containing "mailto" links...',
     )
 
@@ -233,7 +237,7 @@ def test_check_description_broken_links():
         + "<a href='http://thisisanexampleofabrokenurl.com/'>This is a Bad Link</a>"
     )
     assert_results_contain(
-        check(font, {"description": bad_desc}),
+        check(MockFont(file=font, description=bad_desc)),
         FAIL,
         "broken-links",
         "with a description file containing a known-bad URL...",
@@ -263,13 +267,17 @@ def test_check_description_git_url():
         "<a href='https://gitlab.com/smc/fonts/uroob'>Another Good One</a>"
     )
     assert_PASS(
-        check(font, {"description": good_desc}),
+        check(
+            MockFont(file=TEST_FILE("cabin/Cabin-Regular.ttf"), description=good_desc)
+        ),
         "with description file that has good links...",
     )
 
     bad_desc = "<a href='https://v2.designsystem.digital.gov'>Bad URL</a>"
     assert_results_contain(
-        check(font, {"description": bad_desc}),
+        check(
+            MockFont(file=TEST_FILE("cabin/Cabin-Regular.ttf"), description=bad_desc)
+        ),
         FAIL,
         "lacks-git-url",
         "with description file that has false git in URL...",
@@ -289,7 +297,7 @@ def test_check_description_valid_html():
 
     bad_desc = open(TEST_FILE("cabin/FONTLOG.txt"), "r", encoding="utf-8").read()
     assert_results_contain(
-        check(font, {"description": bad_desc}),
+        check(MockFont(file=font, description=bad_desc)),
         FAIL,
         "lacks-paragraph",
         "with a known-bad file (without HTML paragraph tags)...",
@@ -297,7 +305,7 @@ def test_check_description_valid_html():
 
     bad_desc = "<html>foo</html>"
     assert_results_contain(
-        check(font, {"description": bad_desc}),
+        check(MockFont(file=font, description=bad_desc)),
         FAIL,
         "html-tag",
         "with description file that contains the <html> tag...",
@@ -311,7 +319,7 @@ def test_check_description_valid_html():
     )
     # See discussion at https://github.com/fonttools/fontbakery/issues/3840
     assert_PASS(
-        check(font, {"description": good_desc}),
+        check(MockFont(file=font, description=good_desc)),
         "with a file containing ampersand char without HTML entity syntax...",
     )
 
@@ -326,7 +334,7 @@ def test_check_description_min_length():
 
     bad_length = "a" * 199
     assert_results_contain(
-        check(font, {"description": bad_length}),
+        check(MockFont(file=font, description=bad_length)),
         FAIL,
         "too-short",
         "with 199-byte buffer...",
@@ -334,14 +342,16 @@ def test_check_description_min_length():
 
     bad_length = "a" * 200
     assert_results_contain(
-        check(font, {"description": bad_length}),
+        check(MockFont(file=font, description=bad_length)),
         FAIL,
         "too-short",
         "with 200-byte buffer...",
     )
 
     good_length = "a" * 201
-    assert_PASS(check(font, {"description": good_length}), "with 201-byte buffer...")
+    assert_PASS(
+        check(MockFont(file=font, description=good_length)), "with 201-byte buffer..."
+    )
 
 
 def test_check_description_eof_linebreak():
@@ -631,12 +641,12 @@ def test_check_metadata_parses():
     good = TEST_FILE("merriweather/Merriweather-Regular.ttf")
     assert_PASS(check(good), "with a good METADATA.pb file...")
 
-    skip = TEST_FILE("slabo/Slabo-Regular.ttf")
+    skip = MockFont(file=TEST_FILE("slabo/Slabo-Regular.ttf"))
     assert_results_contain(
         check(skip), SKIP, "file-not-found", "with a missing METADATA.pb file..."
     )
 
-    bad = TEST_FILE("broken_metadata/foo.ttf")
+    bad = MockFont(file=TEST_FILE("broken_metadata/foo.ttf"))
     assert_results_contain(
         check(bad), FATAL, "parsing-error", "with a bad METADATA.pb file..."
     )
@@ -648,13 +658,13 @@ def test_check_metadata_unknown_designer():
         googlefonts_profile, "com.google.fonts/check/metadata/unknown_designer"
     )
 
-    font = TEST_FILE("merriweather/Merriweather.ttf")
+    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
     assert_PASS(check(font), "with a good METADATA.pb file...")
 
-    md = check["family_metadata"]
+    md = Font(font).family_metadata
     md.designer = "unknown"
     assert_results_contain(
-        check(font, {"family_metadata": md}),
+        check(MockFont(file=font, family_metadata=md)),
         FAIL,
         "unknown-designer",
         "with a bad METADATA.pb file...",
@@ -668,19 +678,20 @@ def test_check_metadata_designer_values():
         googlefonts_profile, "com.google.fonts/check/metadata/designer_values"
     )
 
-    font = TEST_FILE("merriweather/Merriweather.ttf")
+    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
     assert_PASS(check(font), "with a good METADATA.pb file...")
 
-    md = check["family_metadata"]
+    md = Font(font).family_metadata
     md.designer = "Pentagram, MCKL"
     assert_PASS(
-        check(font, {"family_metadata": md}), "with a good multiple-designers string..."
+        check(MockFont(file=font, family_metadata=md)),
+        "with a good multiple-designers string...",
     )
 
     md.designer = "Pentagram / MCKL"  # This actually happened on an
     # early version of the Red Hat Text family
     assert_results_contain(
-        check(font, {"family_metadata": md}),
+        check(MockFont(file=font, family_metadata=md)),
         FAIL,
         "slash",
         "with a bad multiple-designers string (names separated by a slash char)...",
@@ -722,7 +733,7 @@ def test_check_metadata_undeclared_fonts():
 
     # We do accept statics folder though!
     # Jura is an example:
-    font = TEST_FILE("varfont/jura/Jura.ttf")
+    font = TEST_FILE("varfont/jura/Jura[wght].ttf")
     assert_PASS(check(font))
 
 
@@ -951,11 +962,14 @@ def test_check_usweightclass():
 
 
 def test_family_directory_condition():
-    from fontbakery.shared_conditions import family_directory
-
-    assert family_directory("some_directory/Foo.ttf") == "some_directory"
-    assert family_directory("some_directory/subdir/Foo.ttf") == "some_directory/subdir"
-    assert family_directory("Foo.ttf") == "."  # This is meant to ensure license files
+    assert Font("some_directory/Foo.ttf").family_directory == "some_directory"
+    assert (
+        Font("some_directory/subdir/Foo.ttf").family_directory
+        == "some_directory/subdir"
+    )
+    assert (
+        Font("Foo.ttf").family_directory == "."
+    )  # This is meant to ensure license files
     # are correctly detected on the current
     # working directory.
 
@@ -2548,10 +2562,10 @@ def test_check_metadata_consistent_repo_urls():
     # copyright: "Copyright 2022 The Delicious Handrawn Project Authors
     #             (https://github.com/duartp/gloock)"
     # repository_url: "https://github.com/alphArtype/Delicious-Handrawn"
-    ttFont = TTFont(TEST_FILE("delicioushandrawn/DeliciousHandrawn-Regular.ttf"))
-    assert_results_contain(check(ttFont), FAIL, "mismatch", "with different URLs...")
+    font = TEST_FILE("delicioushandrawn/DeliciousHandrawn-Regular.ttf")
+    assert_results_contain(check(font), FAIL, "mismatch", "with different URLs...")
 
-    family_md = check["family_metadata"]
+    family_md = Font(font).family_metadata
     # so we fix it:
     assert (
         family_md.source.repository_url
@@ -2561,11 +2575,11 @@ def test_check_metadata_consistent_repo_urls():
         "Copyright 2022 The Delicious Handrawn Project Authors"
         " (https://github.com/alphArtype/Delicious-Handrawn)"
     )
-    assert_PASS(check(ttFont, {"family_metadata": family_md}))
+    assert_PASS(check(MockFont(file=font, family_metadata=family_md)))
 
     family_md.source.repository_url = ""
     assert_results_contain(
-        check(ttFont, {"family_metadata": family_md}),
+        check(MockFont(file=font, family_metadata=family_md)),
         FAIL,
         "lacks-repo-url",
         "when the field is either empty or completley missing...",
@@ -3659,7 +3673,7 @@ def test_check_repo_vf_has_static_fonts(tmp_path):
     shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
 
     assert_PASS(
-        check(dir_path, {"family_directory": family_dir}),
+        check(MockFont(family_directory=family_dir)),
         "for a VF family which does not have a static dir.",
     )
 
@@ -3669,7 +3683,7 @@ def test_check_repo_vf_has_static_fonts(tmp_path):
     shutil.rmtree(static_dir)
     shutil.copytree(static_fonts, static_dir)
     assert_PASS(
-        check(dir_path, {"family_directory": family_dir}),
+        check(MockFont(family_directory=family_dir)),
         "for a VF family which has a static dir and manually hinted static fonts",
     )
 
@@ -3682,7 +3696,7 @@ def test_check_repo_vf_has_static_fonts(tmp_path):
     )
 
     assert_results_contain(
-        check(dir_path, {"family_directory": family_dir}),
+        check(MockFont(family_directory=family_dir)),
         WARN,
         "not-manually-hinted",
         "for a VF family which has a static dir but no manually hinted static fonts",
@@ -3701,14 +3715,14 @@ def test_check_repo_upstream_yaml_has_required_fields():
     }
     # Pass if upstream.yaml file contains all fields
     assert_PASS(
-        check([], {"upstream_yaml": upstream_yaml}),
+        check(MockFont(upstream_yaml=upstream_yaml)),
         "for an upstream.yaml which contains all fields",
     )
 
     # Fail if it doesn't
     upstream_yaml.pop("files")
     assert_results_contain(
-        check([], {"upstream_yaml": upstream_yaml}),
+        check(MockFont(upstream_yaml=upstream_yaml)),
         FAIL,
         "missing-fields",
         "for an upsream.yaml which doesn't contain all fields",
@@ -3726,12 +3740,12 @@ def test_check_repo_fb_report(tmp_path):
     shutil.copytree(src_family, family_dir, dirs_exist_ok=True)
 
     assert_PASS(
-        check([], {"family_directory": family_dir}),
+        check(MockFont(family_directory=family_dir)),
         "for a repo without FontBakery report files.",
     )
 
     assert_PASS(
-        check([], {"family_directory": family_dir}),
+        check(MockFont(family_directory=family_dir)),
         "with a json file that is not a FontBakery report.",
     )
 
@@ -3759,7 +3773,7 @@ def test_check_repo_fb_report(tmp_path):
         encoding="utf-8",
     ).write(FB_REPORT_SNIPPET)
     assert_results_contain(
-        check([], {"family_directory": family_dir}),
+        check(MockFont(family_directory=family_dir)),
         WARN,
         "fb-report",
         "with an actual snippet of a report.",
@@ -4742,9 +4756,11 @@ def test_check_metadata_can_render_samples():
 
     # This will try to render using strings provided by the gflanguages package
     # Available at https://pypi.org/project/gflanguages/
-    md = check["family_metadata"]
+    md = Font(font).family_metadata
     md.languages.append("non_Runr")  # Cabin does not support Old Nordic Runic
-    assert_results_contain(check(font, {"family_metadata": md}), FAIL, "sample-text")
+    assert_results_contain(
+        check(MockFont(file=font, family_metadata=md)), FAIL, "sample-text"
+    )
 
     # TODO: expand the check to also validate rendering of
     #       text provided explicitely on the sample_text field of METADATA.pb
@@ -4760,12 +4776,12 @@ def test_check_description_urls():
     font = TEST_FILE("cabinvfbeta/CabinVFBeta.ttf")
     assert_results_contain(check(font), FAIL, "prefix-found")
 
-    good_desc = check["description"].replace(">https://", ">")
-    assert_PASS(check(font, {"description": good_desc}))
+    good_desc = Font(font).description.replace(">https://", ">")
+    assert_PASS(check(MockFont(file=font, description=good_desc)))
 
     bad_desc = check["description"].replace(">github.com/impallari/Cabin<", "><")
     assert_results_contain(
-        check(font, {"description": bad_desc}), FAIL, "empty-link-text"
+        check(MockFont(file=font, description=bad_desc)), FAIL, "empty-link-text"
     )
 
 
@@ -4861,12 +4877,10 @@ def test_check_fvar_instances(fp, mod, result):
             ttFont["fvar"].instances.append(inst)
 
     if result == PASS:
-        assert_PASS(
-            check(ttFont, {"expected_font_names": expected}), "with a good font"
-        )
+        assert_PASS(check(ttFont), "with a good font")
     elif result == FAIL:
         assert_results_contain(
-            check(ttFont, {"expected_font_names": expected}),
+            check(ttFont),
             FAIL,
             "bad-fvar-instances",
             "with a bad font",

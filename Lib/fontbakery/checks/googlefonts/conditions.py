@@ -93,16 +93,14 @@ def stylenames_are_canonical(collection):
 def canonical_stylename(font):
     """Returns the canonical stylename of a given font."""
     from fontbakery.constants import STATIC_STYLE_NAMES, VARFONT_SUFFIXES
-    from fontbakery.shared_conditions import is_variable_font
-    from fontTools.ttLib import TTFont
 
     # remove spaces in style names
     valid_style_suffixes = [name.replace(" ", "") for name in STATIC_STYLE_NAMES]
 
-    filename = os.path.basename(font)
+    filename = os.path.basename(font.file)
     basename = os.path.splitext(filename)[0]
     s = "-".join(basename.split("-")[1:])
-    varfont = os.path.exists(font) and is_variable_font(TTFont(font))
+    varfont = os.path.exists(font.file) and font.is_variable_font
     if (
         "-" in basename
         and (s in VARFONT_SUFFIXES and varfont)
@@ -221,69 +219,6 @@ def registered_vendor_ids():
     return registered_vendor_ids
 
 
-def git_rootdir(family_dir):
-    if not family_dir:
-        return None
-
-    original_dir = os.getcwd()
-    root_dir = None
-    import subprocess
-
-    try:
-        os.chdir(family_dir)
-        git_cmd = ["git", "rev-parse", "--show-toplevel"]
-        git_output = subprocess.check_output(git_cmd, stderr=subprocess.STDOUT)
-        root_dir = git_output.decode("utf-8").strip()
-
-    except (OSError, IOError, subprocess.CalledProcessError):
-        pass  # Not a git repo, or git is not installed.
-
-    os.chdir(original_dir)
-    return root_dir
-
-
-@condition
-def licenses(family_directory):
-    """Get a list of paths for every license
-    file found in a font project."""
-    found = []
-    search_paths = [family_directory]
-    gitroot = git_rootdir(family_directory)
-    if gitroot and gitroot not in search_paths:
-        search_paths.append(gitroot)
-
-    for directory in search_paths:
-        if directory:
-            for license_filename in ["OFL.txt", "LICENSE.txt"]:
-                license_path = os.path.join(directory, license_filename)
-                if os.path.exists(license_path):
-                    found.append(license_path)
-    return found
-
-
-@condition
-def license_contents(license_path):
-    if license_path:
-        return open(license_path, encoding="utf-8").read().replace(" \n", "\n")
-
-
-@condition
-def license_path(licenses):
-    """Get license path."""
-    # This assumes that a repo can have multiple license files
-    # and they're all the same.
-    # FIXME: We should have a fontbakery check for that, though!
-    if licenses and len(licenses) > 0:
-        return licenses[0]
-
-
-@condition
-def license_filename(license_path):
-    """Get license filename."""
-    if license_path:
-        return os.path.basename(license_path)
-
-
 @condition
 def is_ofl(license_filename):
     return license_filename and "OFL" in license_filename
@@ -300,6 +235,7 @@ def familyname(font):
         return filename_base.split("[")[0]
     else:
         return filename_base
+
 
 @condition
 def listed_on_gfonts_api(familyname, config, network):
@@ -342,32 +278,32 @@ def font_metadata(family_metadata, font):
             return f
 
 
-@condition
-def font_familynames(ttFont):
+@condition(Font)
+def font_familynames(font):
     from fontbakery.utils import get_name_entry_strings
 
-    return get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
+    return get_name_entry_strings(font.ttFont, NameID.FONT_FAMILY_NAME)
 
 
-@condition
-def typographic_familynames(ttFont):
+@condition(Font)
+def typographic_familynames(font):
     from fontbakery.utils import get_name_entry_strings
 
-    return get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
+    return get_name_entry_strings(font.ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
 
 
-@condition
-def font_familyname(font_familynames):
+@condition(Font)
+def font_familyname(font):
     # This assumes that all familyname
     # name table entries are identical.
     # FIX-ME: Maybe we should have a check for that.
     #         Have we ever seen this kind of
     #         problem in the wild, though ?
-    return font_familynames[0]
+    return font.font_familynames[0]
 
 
-@condition
-def rfn_exception(familyname):
+@condition(Font)
+def rfn_exception(font):
     """These are the very few font families where we accept usage of
     a Reserved Font Name. These are typically fonts that had already
     been published previously with an RFN, or fonts which benefit from
@@ -383,7 +319,7 @@ def rfn_exception(familyname):
         if exception == "":
             continue
 
-        if exception in familyname:
+        if exception in font.familyname:
             return True
 
 
@@ -432,7 +368,7 @@ def remote_styles(familyname_with_spaces, config, network):
 
 @condition
 def regular_remote_style(remote_styles):
-    from fontbakery.shared_conditions import is_variable_font, get_instance_axis_value
+    from fontbakery.shared_conditions import get_instance_axis_value
 
     if not remote_styles:
         return None
@@ -446,11 +382,11 @@ def regular_remote_style(remote_styles):
     return list(remote_styles.items())[0][1]
 
 
-@condition
-def regular_ttFont(ttFonts):
-    from fontbakery.shared_conditions import is_variable_font, get_instance_axis_value
+@condition(CheckRunContext)
+def regular_ttFont(context):
+    from fontbakery.checks.shared_conditions import get_instance_axis_value
 
-    for ttFont in ttFonts:
+    for ttFont in context.ttFonts:
         if "-Regular." in os.path.basename(ttFont.reader.file.name):
             return ttFont
         nametable = ttFont["name"]
@@ -538,8 +474,8 @@ def github_gfonts_description(ttFont, license_filename, network):
         return None
 
 
-@condition
-def familyname_with_spaces(familyname):
+@condition(Font)
+def familyname_with_spaces(self):
     """Attempts to build family name from font name.
     For example, HPSimplifiedSans => HP Simplified Sans.
     Args:
@@ -547,6 +483,7 @@ def familyname_with_spaces(familyname):
     Returns:
       The name of the family that should be in this font.
     """
+    familyname = self.font_familyname
     # SomethingUpper => Something Upper
     familyname = re.sub("(.)([A-Z][a-z]+)", r"\1 \2", familyname)
     # Font3 => Font 3
@@ -573,10 +510,10 @@ def familyname_with_spaces(familyname):
     return familyname
 
 
-@condition
-def VTT_hinted(ttFont):
+@condition(Font)
+def VTT_hinted(font):
     # it seems that VTT is the only program that generates a TSI5 table
-    return "TSI5" in ttFont
+    return "TSI5" in font.ttFont
 
 
 @condition
@@ -604,20 +541,20 @@ def production_metadata(config, network):
     return requests.get(meta_url, timeout=config.get("timeout")).json()
 
 
-@condition
-def upstream_yaml(family_directory):
-    fp = os.path.join(family_directory, "upstream.yaml")
+@condition(Font)
+def upstream_yaml(font):
+    fp = os.path.join(font.family_directory, "upstream.yaml")
     if not os.path.isfile(fp):
         return None
     return yaml.load(open(fp, "r", encoding="utf-8"), yaml.FullLoader)
 
 
 @condition(Font)
-def is_noto(font_familyname):
-    return font_familyname.startswith("Noto ")
+def is_noto(font):
+    return font.font_familyname.startswith("Noto ")
 
 
-@condition
+# Note that this is not a condition!
 def expected_font_names(ttFont, ttFonts):
     from axisregistry import build_name_table, build_fvar_instances, build_stat
     from copy import deepcopy

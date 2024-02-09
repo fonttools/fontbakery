@@ -107,17 +107,22 @@ class CheckRunner:
         return list(getattr(self.context, plural))[index].file
 
     def _get(self, name, iterargs):
+        # Is this a property of the whole collection?
         if hasattr(self.context, name):
             return getattr(self.context, name)
-        thing, index = iterargs[0]
-        specific_thing = self.context.testables_by_type[thing][index]
-        if name == thing:
-            return specific_thing
-        if not hasattr(specific_thing, name):
-            raise ValueError(
-                f"This can't happen: asked for {name} of {thing} but it doesn't exist."
-            )
-        return getattr(specific_thing, name)
+
+        # Is it a property of the file we're testing?
+        for thing, index in iterargs:
+            specific_thing = self.context.testables_by_type[thing][index]
+            # Allow "font" to return the Font object itself
+            if name == thing:
+                return specific_thing
+            if not hasattr(specific_thing, name):
+                continue
+            return getattr(specific_thing, name)
+        raise ValueError(
+            f"This can't happen: asked for {name} but nothing provides it."
+        )
 
     def _get_check_dependencies(
         self, identity: Identity

@@ -58,7 +58,6 @@ def hinting_stats(font: Font):
     }
 
 
-
 @check(
     id="com.google.fonts/check/gasp",
     conditions=["is_ttf"],

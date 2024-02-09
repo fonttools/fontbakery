@@ -2,6 +2,34 @@ import os
 
 from fontbakery.prelude import check, condition, Message, INFO, PASS, FAIL, WARN, FATAL
 from fontbakery.utils import exit_with_install_instructions
+from fontbakery.testable import Font
+
+
+@condition(Font)
+def description(font):
+    """Read DESCRIPTION.en_us.html file from a font directory."""
+    descfile = os.path.join(os.path.dirname(font.file), "DESCRIPTION.en_us.html")
+    if os.path.exists(descfile):
+        return open(descfile, "r", encoding="utf-8").read()
+    else:
+        return None
+
+
+@condition(Font)
+def description_html(font):
+    try:
+        from lxml import etree
+    except ImportError:
+        exit_with_install_instructions()
+
+    if not font.description:
+        return
+
+    html = "<html>" + font.description + "</html>"
+    try:
+        return etree.fromstring(html)
+    except etree.XMLSyntaxError:
+        return None
 
 
 @check(
@@ -178,23 +206,6 @@ def com_google_fonts_check_description_urls(description_html):
 
     if passed:
         yield PASS, "All good!"
-
-
-@condition
-def description_html(description):
-    try:
-        from lxml import etree
-    except ImportError:
-        exit_with_install_instructions()
-
-    if not description:
-        return
-
-    html = "<html>" + description + "</html>"
-    try:
-        return etree.fromstring(html)
-    except etree.XMLSyntaxError:
-        return None
 
 
 @check(

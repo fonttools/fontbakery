@@ -3,7 +3,6 @@ import os
 from fontbakery.constants import NameID, RIBBI_STYLE_NAMES
 from fontbakery.prelude import check, Message, PASS, FAIL, WARN, SKIP, FATAL
 from fontbakery.utils import exit_with_install_instructions
-from fontbakery.checks.googlefonts.conditions import has_regular_style
 from fontbakery.checks.googlefonts.glyphset import can_shape
 
 

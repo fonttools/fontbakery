@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+from functools import cached_property
 import types
 from typing import Iterable, Optional
 
@@ -25,7 +26,7 @@ from fontbakery.configuration import Configuration
 from fontbakery.message import Message
 from fontbakery.profile import Profile
 from fontbakery.fonts_profile import setup_context
-from fontbakery.testable import CheckRunContext, Font
+from fontbakery.testable import CheckRunContext, Font, GlyphsFile, Ufo
 from fontbakery.result import Subresult
 
 
@@ -33,17 +34,37 @@ PATH_TEST_DATA = "data/test/"
 PATH_TEST_DATA_GLYPHS_FILES = f"{PATH_TEST_DATA}glyphs_files/"
 
 
-class FakeFont(Font):
-    def __init__(self, ttFont):
-        self._ttFont = ttFont
+def make_mock(basecls, name):
+    # We want a new CheckRunContext/Font/etc with some user-supplied attributes.
+    # But the attributes we want to feed in are generally properties, and
+    # we can't calls setattr to override them because there is no setattr
+    # for read-only properties.
+    # So our mock class doesn't have *any* properties, just the mock values
+    # we want to override. When we're asked for any other properties, we look
+    # up the implementation from CheckRunContext and run that.
+    cls = type(name, tuple(), {})
 
-    @property
-    def ttFont(self):
-        return self._ttFont
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
 
-    @property
-    def file(self):
-        return self._ttFont.reader.file.name
+    def __getattr__(self, name):
+        prop = getattr(basecls, name)
+        if isinstance(prop, cached_property):
+            return prop.func(self)
+        if isinstance(prop, property):
+            return prop.fget(self)
+        return prop
+
+    cls.__init__ = __init__
+    cls.__getattr__ = __getattr__
+    cls.mocked = True
+    return cls
+
+
+MockContext = make_mock(CheckRunContext, "MockContext")
+MockFont = make_mock(Font, "MockFont")
+MockGlyphsFile = make_mock(GlyphsFile, "MockGlyphsFile")
+MockUfo = make_mock(Ufo, "MockUfo")
 
 
 class CheckTester:
@@ -73,6 +94,10 @@ class CheckTester:
 
         if isinstance(values, str):
             context = setup_context([values])
+        elif hasattr(values, "mocked"):
+            context = CheckRunContext([values])
+        elif isinstance(values, list) and all(hasattr(v, "mocked") for v in values):
+            context = CheckRunContext(values)
         elif isinstance(values, list) and all(isinstance(v, str) for v in values):
             context = CheckRunContext([])
             # Assert that they're fonts
@@ -83,11 +108,13 @@ class CheckTester:
             context = CheckRunContext([])
             for value in values:
                 if isinstance(value, TTFont):
-                    context.testables.append(FakeFont(value))
+                    context.testables.append(
+                        MockFont(ttFont=value, file=value.reader.file.name)
+                    )
                 elif isinstance(value, GSFont):
-                    context.testables.append(FakeGSFont(value))
+                    context.testables.append(MockGSFont(gsfont=value))
                 elif isinstance(value, defcon.Font):
-                    context.testables.append(FakeUFO(value))
+                    context.testables.append(MockUFO(ufo_font=value))
 
         self.runner = CheckRunner(
             self.profile,
@@ -188,19 +215,3 @@ def assert_results_contain(
         f"But did not find it in:\n"
         f"{check_results}"
     )
-
-
-class MockContext:
-    # We want a new CheckRunContext with some user-supplied attributes.
-    # But the attributes we want to feed in are generally properties, and
-    # we can't calls setattr to override them because there is no setattr
-    # for read-only properties.
-    # So our mock class doesn't have *any* properties, just the mock values
-    # we want to override. When we're asked for any other properties, we look
-    # up the implementation from CheckRunContext and run that.
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    def __getattr__(self, name):
-        prop = getattr(CheckRunContext, name)
-        return prop.fget(self)

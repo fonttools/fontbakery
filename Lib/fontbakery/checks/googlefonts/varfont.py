@@ -1,6 +1,7 @@
 import os
 from collections import defaultdict
 
+from fontbakery.checks.googlefonts.conditions import expected_font_names
 from fontbakery.constants import PlatformID, WindowsEncodingID, WindowsLanguageID
 from fontbakery.prelude import FAIL, PASS, SKIP, WARN, Message, check, condition
 from fontbakery.utils import exit_with_install_instructions, markdown_table
@@ -122,15 +123,16 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
 
 @check(
     id="com.google.fonts/check/fvar_instances",
-    conditions=["is_variable_font", "expected_font_names"],
+    conditions=["is_variable_font"],
     rationale="""
         Check a font's fvar instance coordinates comply with our guidelines:
         https://googlefonts.github.io/gf-guide/variable.html#fvar-instances
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3800",
 )
-def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
+def com_google_fonts_check_fvar_instances(ttFont, ttFonts):
     """Check variable font instances"""
+    expected_names = expected_font_names(ttFont, ttFonts)
 
     def get_instances(ttFont):
         name = ttFont["name"]
@@ -144,7 +146,7 @@ def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
         return res
 
     font_instances = get_instances(ttFont)
-    expected_instances = get_instances(expected_font_names)
+    expected_instances = get_instances(expected_names)
     table = []
     for name in set(font_instances.keys()) | set(expected_instances.keys()):
         row = {"Name": name}
