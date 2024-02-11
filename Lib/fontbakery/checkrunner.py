@@ -62,6 +62,9 @@ class CheckRunner:
         self.context.config = self.config  # Move later
         self.catch_errors = True
 
+        for testable in self.context.testables:
+            testable.context = self.context
+
     @staticmethod
     def _check_result(result) -> Subresult:
         """Check that the check returned a well formed result:

@@ -87,7 +87,9 @@ class CheckTester:
 
         if condition_overrides:
             raise DeprecationWarning("Don't use condition_overrides, use a mock object")
-        if isinstance(values, str):
+        if isinstance(values, MockContext):
+            context = values
+        elif isinstance(values, str):
             context = setup_context([values])
         elif hasattr(values, "mocked"):
             context = CheckRunContext([values])
@@ -110,6 +112,8 @@ class CheckTester:
                     context.testables.append(MockGlyphsFile(gsfont=value))
                 elif isinstance(value, defcon.Font):
                     context.testables.append(MockUfo(ufo_font=value))
+        for testable in context.testables:
+            testable.context = context
 
         runner = CheckRunner(
             self.profile,

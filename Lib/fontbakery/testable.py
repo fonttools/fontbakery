@@ -2,13 +2,17 @@ import os
 from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import Iterable
+from typing import Iterable, Optional, List
+
 from fontTools.ttLib import TTFont
 
 
 @dataclass
 class Testable:
     file: str
+    context: Optional["CheckRunContext"] = None
+    singular: str = "testable"
+    plural: str = "testables"
 
 
 @dataclass

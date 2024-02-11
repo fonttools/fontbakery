@@ -18,6 +18,7 @@ from fontbakery.codetesting import (
     assert_results_contain,
     assert_SKIP,
     portable_path,
+    MockContext,
 )
 from fontbakery.constants import (
     OFL_BODY_TEXT,
@@ -3083,12 +3084,7 @@ def test_check_name_mandatory_entries():
 def test_condition_familyname_with_spaces():
     assert MockFont(familyname="OverpassMono").familyname_with_spaces == "Overpass Mono"
     assert (
-        MockFont(font_familyname="OverpassMono").familyname_with_spaces
-        == "Overpass Mono"
-    )
-    assert (
-        MockFont(font_familyname="BodoniModa11").familyname_with_spaces
-        == "Bodoni Moda 11"
+        MockFont(familyname="BodoniModa11").familyname_with_spaces == "Bodoni Moda 11"
     )
 
 
@@ -3832,19 +3828,20 @@ def test_check_repo_zip_files(tmp_path):
 def test_check_vertical_metrics():
     check = CheckTester(googlefonts_profile, "com.google.fonts/check/vertical_metrics")
 
-    ttFont = TTFont(TEST_FILE("akshar/Akshar[wght].ttf"))
+    font = TEST_FILE("akshar/Akshar[wght].ttf")
 
-    msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
+    msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
     assert "Unfulfilled Conditions: not remote_styles" in msg
 
-    # change the font's file name to elude the 'not remote_styles' condition.
-    orig_file_name = ttFont.reader.file.name
-    ttFont.reader.file.name = orig_file_name.replace("Akshar", "Akshar_")
-
+    # Defeat the 'not remote_styles' condition.
     # linegap is not 0
     assert_results_contain(
-        check(ttFont), FAIL, "bad-hhea.lineGap", 'hhea.lineGap is "150" it should be 0'
+        check(MockFont(file=font, remote_styles=False)),
+        FAIL,
+        "bad-hhea.lineGap",
+        'hhea.lineGap is "150" it should be 0',
     )
+    ttFont = TTFont(font)
 
     # hhea sum is above 2000 -> FAIL
     ttFont["hhea"].lineGap = 0
@@ -3852,27 +3849,36 @@ def test_check_vertical_metrics():
     ttFont["hhea"].descent = -2000
     ttFont["OS/2"].sTypoDescender = -2000
     assert_results_contain(
-        check(ttFont), FAIL, "bad-hhea-range", "hhea sum is above 2000"
+        check(MockFont(file=font, remote_styles=False, ttFont=ttFont)),
+        FAIL,
+        "bad-hhea-range",
+        "hhea sum is above 2000",
     )
 
     # hhea sum is below 1200 -> FAIL
     ttFont["hhea"].descent = 0
     ttFont["OS/2"].sTypoDescender = 0
     assert_results_contain(
-        check(ttFont), FAIL, "bad-hhea-range", "hhea sum is below 1200"
+        check(MockFont(file=font, remote_styles=False, ttFont=ttFont)),
+        FAIL,
+        "bad-hhea-range",
+        "hhea sum is below 1200",
     )
 
     # hhea sum is above 1500 -> WARN
     ttFont["hhea"].descent = -700
     ttFont["OS/2"].sTypoDescender = -700
     assert_results_contain(
-        check(ttFont), WARN, "bad-hhea-range", "hhea sum is above 1500"
+        check(MockFont(file=font, remote_styles=False, ttFont=ttFont)),
+        WARN,
+        "bad-hhea-range",
+        "hhea sum is above 1500",
     )
 
     # hhea sum is in range
     ttFont["hhea"].descent = -300
     ttFont["OS/2"].sTypoDescender = -300
-    assert_PASS(check(ttFont))
+    assert_PASS(check(MockFont(file=font, remote_styles=False, ttFont=ttFont)))
 
     # reset
     def reset_metrics():
@@ -3889,55 +3895,84 @@ def test_check_vertical_metrics():
     reset_metrics()
     ttFont["OS/2"].sTypoAscender = -900
     assert_results_contain(
-        check(ttFont), FAIL, "typo-ascender", "typo ascender is negative"
+        check(MockFont(file=font, remote_styles=False, ttFont=ttFont)),
+        FAIL,
+        "typo-ascender",
+        "typo ascender is negative",
     )
     reset_metrics()
     ttFont["hhea"].ascent = -900
     assert_results_contain(
-        check(ttFont), FAIL, "hhea-ascent", "hhea ascent is negative"
+        check(MockFont(file=font, remote_styles=False, ttFont=ttFont)),
+        FAIL,
+        "hhea-ascent",
+        "hhea ascent is negative",
     )
 
     # descenders are positive -> FAIL
     reset_metrics()
     ttFont["OS/2"].sTypoDescender = 300
     assert_results_contain(
-        check(ttFont), FAIL, "typo-descender", "typo descender is positive"
+        check(MockFont(file=font, remote_styles=False, ttFont=ttFont)),
+        FAIL,
+        "typo-descender",
+        "typo descender is positive",
     )
     reset_metrics()
     ttFont["hhea"].descent = 300
     assert_results_contain(
-        check(ttFont), FAIL, "hhea-descent", "hhea descent is positive"
+        check(MockFont(file=font, remote_styles=False, ttFont=ttFont)),
+        FAIL,
+        "hhea-descent",
+        "hhea descent is positive",
     )
 
     # winascent is negative -> FAIL
     reset_metrics()
     ttFont["OS/2"].usWinAscent = -900
     assert_results_contain(
-        check(ttFont), FAIL, "win-ascent", "OS/2.usWinAscent is negative"
+        check(MockFont(file=font, remote_styles=False, ttFont=ttFont)),
+        FAIL,
+        "win-ascent",
+        "OS/2.usWinAscent is negative",
     )
 
     # windescent is negative -> FAIL
     reset_metrics()
     ttFont["OS/2"].usWinDescent = -300
     assert_results_contain(
-        check(ttFont), FAIL, "win-descent", "OS/2.usWinDescent is negative"
+        check(MockFont(file=font, remote_styles=False, ttFont=ttFont)),
+        FAIL,
+        "win-descent",
+        "OS/2.usWinDescent is negative",
     )
 
 
-def test_check_vertical_metrics_regressions(cabin_ttFonts):
+def test_check_vertical_metrics_regressions():
+    from fontbakery.testable import Font
+
     check = CheckTester(
         googlefonts_profile, "com.google.fonts/check/vertical_metrics_regressions"
     )
-    ttFonts = [TTFont(f) for f in cabin_fonts]
+
+    def new_context():
+        context = MockContext(
+            testables=[Font(x) for x in cabin_fonts], config={"skip_network": False}
+        )
+        for testable in context.testables:
+            testable.context = context
+        return context
 
     # Cabin test family should match by default
-    assert_PASS(check(ttFonts), "with a good family...")
+    context = new_context()
+    assert_PASS(check(context), "with a good family...")
 
     # FAIL with changed vertical metric values
-    local_regular = check["regular_ttFont"]
+    local_regular = context.regular_ttFont
     local_regular["OS/2"].sTypoAscender = 0
+    context.regular_ttFont = local_regular
     assert_results_contain(
-        check(ttFonts, {"regular_ttFont": local_regular}),
+        check(context),
         FAIL,
         "bad-typo-ascender",
         "with a family which has an incorrect typoAscender...",
@@ -3945,7 +3980,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
 
     local_regular["OS/2"].sTypoDescender = 0
     assert_results_contain(
-        check(ttFonts, {"regular_ttFont": local_regular}),
+        check(context),
         FAIL,
         "bad-typo-descender",
         "with a family which has an incorrect typoDescender...",
@@ -3953,7 +3988,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
 
     local_regular["hhea"].ascent = 0
     assert_results_contain(
-        check(ttFonts, {"regular_ttFont": local_regular}),
+        check(context),
         FAIL,
         "bad-hhea-ascender",
         "with a family which has an incorrect hhea ascender...",
@@ -3961,7 +3996,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
 
     local_regular["hhea"].descent = 0
     assert_results_contain(
-        check(ttFonts, {"regular_ttFont": local_regular}),
+        check(context),
         FAIL,
         "bad-hhea-descender",
         "with a family which has an incorrect hhea descender...",
@@ -3971,7 +4006,7 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
     # but checked fonts don't
     local_regular["OS/2"].fsSelection &= ~(1 << 7)
     assert_results_contain(
-        check(ttFonts, {"regular_ttFont": local_regular}),
+        check(context),
         FAIL,
         "bad-fsselection-bit7",
         "with a remote family which has typo metrics "
@@ -4037,33 +4072,31 @@ def test_check_vertical_metrics_regressions(cabin_ttFonts):
             "fonts win metrics.",
         )
 
-    check(ttFonts)
-    remote_regular = check["regular_remote_style"]
-    local_regular = check["regular_ttFont"]
+    context = new_context()
+    remote_regular = context.testables[0].regular_remote_style
+    local_regular = context.regular_ttFont
     local_regular["OS/2"].fsSelection &= ~(1 << 7)
+    context.local_regular = local_regular
     assert_results_contain(
-        check(
-            ttFonts,
-            {"regular_remote_style": remote_regular, "regular_ttFont": local_regular},
-        ),
+        check(context),
         FAIL,
         "bad-fsselection-bit7",
         "OS/2 fsSelection bit 7 must be enabled.",
     )
 
     # Disable bit 7 in both fonts but change win metrics of ttFont
-    check(ttFonts)
-    remote_regular = check["regular_remote_style"]
-    local_regular = check["regular_ttFont"]
+    context = new_context()
+    remote_regular = context.testables[0].regular_remote_style
+    local_regular = context.regular_ttFont
 
     remote_regular["OS/2"].fsSelection &= ~(1 << 7)
     local_regular["OS/2"].fsSelection &= ~(1 << 7)
     local_regular["OS/2"].usWinAscent = 2500
+    context.local_regular = local_regular
+    context.regular_remote_style = remote_regular
+
     assert_results_contain(
-        check(
-            ttFonts,
-            {"regular_remote_style": remote_regular, "regular_ttFont": local_regular},
-        ),
+        check(context),
         FAIL,
         "bad-fsselection-bit7",
         "OS/2 fsSelection bit 7 must be enabled.",
@@ -4166,7 +4199,7 @@ def test_check_cjk_vertical_metrics_regressions():
     # Check on duplicate
     regular_remote_style = deepcopy(ttFont)
     assert_PASS(
-        check(ttFont, {"regular_remote_style": regular_remote_style}),
+        check(MockFont(ttFont=ttFont, regular_remote_style=regular_remote_style)),
         "for Source Han Sans",
     )
 
@@ -4174,7 +4207,7 @@ def test_check_cjk_vertical_metrics_regressions():
     ttFont2 = deepcopy(ttFont)
     ttFont2["hhea"].ascent = 0
     assert_results_contain(
-        check(ttFont2, {"regular_remote_style": regular_remote_style}),
+        check(MockFont(ttFont=ttFont2, regular_remote_style=regular_remote_style)),
         FAIL,
         "cjk-metric-regression",
         "hhea ascent is 0 when it should be 880",
@@ -4184,7 +4217,7 @@ def test_check_cjk_vertical_metrics_regressions():
     ttFont3 = deepcopy(ttFont)
     ttFont3["head"].unitsPerEm = 2000
     assert_results_contain(
-        check(ttFont3, {"regular_remote_style": regular_remote_style}),
+        check(MockFont(ttFont=ttFont3, regular_remote_style=regular_remote_style)),
         FAIL,
         "cjk-metric-regression",
         "upm is 2000 and vert metrics values are not updated",
@@ -4206,7 +4239,7 @@ def test_check_cjk_vertical_metrics_regressions():
         current_val = getattr(ttFont4[tbl], attrib)
         setattr(ttFont4[tbl], attrib, current_val * 2)
     assert_PASS(
-        check(ttFont4, {"regular_remote_style": regular_remote_style}),
+        check(MockFont(ttFont=ttFont4, regular_remote_style=regular_remote_style)),
         "for Source Han Sans with doubled upm and doubled vert metrics",
     )
 
@@ -4806,7 +4839,7 @@ def test_check_description_urls():
     good_desc = Font(font).description.replace(">https://", ">")
     assert_PASS(check(MockFont(file=font, description=good_desc)))
 
-    bad_desc = Font(font).description.replace(">github.com/impallari/Cabin<", "><")
+    bad_desc = good_desc.replace(">github.com/impallari/Cabin<", "><")
     assert_results_contain(
         check(MockFont(file=font, description=bad_desc)), FAIL, "empty-link-text"
     )

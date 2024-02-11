@@ -179,12 +179,12 @@ def familyname(font):
         return filename_base
 
 
-@condition(CheckRunContext)
-def listed_on_gfonts_api(context):
-    if not context.network:
+@condition(Font)
+def listed_on_gfonts_api(font):
+    if not font.context.network:
         return
 
-    if not context.fonts or not context.fonts[0].familyname:
+    if not font.familyname:
         return False
 
     from fontbakery.utils import split_camel_case
@@ -192,10 +192,10 @@ def listed_on_gfonts_api(context):
     # Some families such as "Libre Calson Text" have camelcased filenames
     # ("LibreCalsonText-Regular.ttf") and require us to split in order
     # to find it in the GFonts metadata:
-    from_camelcased_name = split_camel_case(context.fonts[0].familyname)
+    from_camelcased_name = split_camel_case(font.familyname)
 
-    for item in context.production_metadata["familyMetadataList"]:
-        if item["family"] == familyname or item["family"] == from_camelcased_name:
+    for item in font.context.production_metadata["familyMetadataList"]:
+        if item["family"] == font.familyname or item["family"] == from_camelcased_name:
             return True
 
     return False
@@ -265,63 +265,65 @@ def rfn_exception(font):
             return True
 
 
-# @condition
-# def remote_styles(familyname_with_spaces, config, network):
-#     """Get a dictionary of TTFont objects of all font files of
-#     a given family as currently hosted at Google Fonts.
-#     """
-#     if not network:
-#         return
+@condition(Font)
+def remote_styles(font):
+    """Get a dictionary of TTFont objects of all font files of
+    a given family as currently hosted at Google Fonts.
+    """
+    if not font.context.network:
+        return
 
-#     def download_family_from_Google_Fonts(familyname):
-#         """Return a zipfile containing a font family hosted on fonts.google.com"""
-#         from zipfile import ZipFile
-#         from fontbakery.utils import download_file
+    def download_family_from_Google_Fonts(familyname):
+        """Return a zipfile containing a font family hosted on fonts.google.com"""
+        from zipfile import ZipFile
+        from fontbakery.utils import download_file
 
-#         url_prefix = "https://fonts.google.com/download?family="
-#         url = "{}{}".format(url_prefix, familyname.replace(" ", "+"))
-#         return ZipFile(download_file(url))  # pylint: disable=R1732
+        url_prefix = "https://fonts.google.com/download?family="
+        url = "{}{}".format(url_prefix, familyname.replace(" ", "+"))
+        return ZipFile(download_file(url))  # pylint: disable=R1732
 
-#     def fonts_from_zip(zipfile):
-#         """return a list of fontTools TTFonts"""
-#         from fontTools.ttLib import TTFont
-#         from io import BytesIO
+    def fonts_from_zip(zipfile):
+        """return a list of fontTools TTFonts"""
+        from fontTools.ttLib import TTFont
+        from io import BytesIO
 
-#         fonts = []
-#         for file_name in zipfile.namelist():
-#             if file_name.lower().endswith(".ttf"):
-#                 file_obj = BytesIO(zipfile.open(file_name).read())
-#                 fonts.append([file_name, TTFont(file_obj)])
-#         return fonts
+        fonts = []
+        for file_name in zipfile.namelist():
+            if file_name.lower().endswith(".ttf"):
+                file_obj = BytesIO(zipfile.open(file_name).read())
+                fonts.append([file_name, TTFont(file_obj)])
+        return fonts
 
-#     if not listed_on_gfonts_api(familyname_with_spaces, config, network):
-#         return None
+    if not font.listed_on_gfonts_api:
+        return None
 
-#     remote_fonts_zip = download_family_from_Google_Fonts(familyname_with_spaces)
-#     rstyles = {}
+    remote_fonts_zip = download_family_from_Google_Fonts(font.familyname_with_spaces)
+    rstyles = {}
 
-#     for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
-#         remote_style = os.path.splitext(remote_filename)[0]
-#         if "-" in remote_style:
-#             remote_style = remote_style.split("-")[1]
-#         rstyles[remote_style] = remote_font
-#     return rstyles
+    for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
+        remote_style = os.path.splitext(remote_filename)[0]
+        if "-" in remote_style:
+            remote_style = remote_style.split("-")[1]
+        rstyles[remote_style] = remote_font
+    return rstyles
 
 
-# @condition
-# def regular_remote_style(remote_styles):
-#     from fontbakery.shared_conditions import get_instance_axis_value
+@condition(Font)
+def regular_remote_style(font):
+    from fontbakery.checks.shared_conditions import get_instance_axis_value
 
-#     if not remote_styles:
-#         return None
-#     if "Regular" in remote_styles:
-#         return remote_styles["Regular"]
+    remote_styles = font.remote_styles
 
-#     for style_name, font in remote_styles.items():
-#         if is_variable_font(font):
-#             if get_instance_axis_value(font, "Regular", "wght"):
-#                 return font
-#     return list(remote_styles.items())[0][1]
+    if not remote_styles:
+        return None
+    if "Regular" in remote_styles:
+        return remote_styles["Regular"]
+
+    for style_name, remote_font in remote_styles.items():
+        if "fvar" in remote_font:
+            if get_instance_axis_value(remote_font, "Regular", "wght"):
+                return remote_font
+    return list(remote_styles.items())[0][1]
 
 
 @condition(CheckRunContext)
@@ -398,7 +400,7 @@ def familyname_with_spaces(self):
     Returns:
       The name of the family that should be in this font.
     """
-    familyname = self.font_familyname
+    familyname = self.familyname
     # SomethingUpper => Something Upper
     familyname = re.sub("(.)([A-Z][a-z]+)", r"\1 \2", familyname)
     # Font3 => Font 3
