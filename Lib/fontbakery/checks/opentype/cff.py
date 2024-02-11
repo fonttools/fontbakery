@@ -1,12 +1,7 @@
 from fontbakery.callable import check, condition
+from fontbakery.testable import Font
 from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
-from fontbakery.shared_conditions import (  # pylint: disable=unused-import
-    ttFont,
-    is_cff,
-    is_cff2,
-)
-
 
 class CFFAnalysis:
     def __init__(self):
@@ -102,9 +97,10 @@ def _analyze_cff(analysis, top_dict, private_dict, fd_index=0):
             analysis.glyphs_dotsection.append(glyph_name)
 
 
-@condition
-def cff_analysis(ttFont):
+@condition(Font)
+def cff_analysis(font):
     analysis = CFFAnalysis()
+    ttFont = font.ttFont
 
     if "CFF " in ttFont:
         cff = ttFont["CFF "].cff
@@ -140,26 +136,27 @@ def cff_analysis(ttFont):
 
 @check(
     id="com.adobe.fonts/check/cff_call_depth",
-    conditions=["ttFont", "is_cff", "cff_analysis"],
+    conditions=["ttFont", "is_cff"],
     rationale="""
         Per "The Type 2 Charstring Format, Technical Note #5177",
         the "Subr nesting, stack limit" is 10.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2425",
 )
-def com_adobe_fonts_check_cff_call_depth(cff_analysis):
+def com_adobe_fonts_check_cff_call_depth(font):
     """Is the CFF subr/gsubr call depth > 10?"""
+    analysis = font.cff_analysis
 
     any_failures = False
 
-    if cff_analysis.glyphs_exceed_max or cff_analysis.glyphs_recursion_errors:
+    if analysis.glyphs_exceed_max or analysis.glyphs_recursion_errors:
         any_failures = True
-        for gn in cff_analysis.glyphs_exceed_max:
+        for gn in analysis.glyphs_exceed_max:
             yield FAIL, Message(
                 "max-depth",
                 f"Subroutine call depth exceeded" f' maximum of 10 for glyph "{gn}".',
             )
-        for gn in cff_analysis.glyphs_recursion_errors:
+        for gn in analysis.glyphs_recursion_errors:
             yield FAIL, Message(
                 "recursion-error", f'Recursion error while decompiling glyph "{gn}".'
             )
@@ -170,18 +167,19 @@ def com_adobe_fonts_check_cff_call_depth(cff_analysis):
 
 @check(
     id="com.adobe.fonts/check/cff2_call_depth",
-    conditions=["ttFont", "is_cff2", "cff_analysis"],
+    conditions=["ttFont", "is_cff2"],
     rationale="""
         Per "The CFF2 CharString Format", the "Subr nesting, stack limit" is 10.
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/2425",
 )
-def com_adobe_fonts_check_cff2_call_depth(cff_analysis):
+def com_adobe_fonts_check_cff2_call_depth(font):
     """Is the CFF2 subr/gsubr call depth > 10?"""
 
     any_failures = False
+    analysis = font.cff_analysis
 
-    if cff_analysis.glyphs_exceed_max or cff_analysis.glyphs_recursion_errors:
+    if analysis.glyphs_exceed_max or analysis.glyphs_recursion_errors:
         any_failures = True
         for gn in cff_analysis.glyphs_exceed_max:
             yield FAIL, Message(

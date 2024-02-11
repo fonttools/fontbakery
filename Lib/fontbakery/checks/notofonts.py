@@ -162,6 +162,17 @@ def com_google_fonts_check_cmap_unexpected_subtables(ttFont):
         yield PASS, "All cmap subtables look good!"
 
 
+def unicoderange(ttFont):
+    """Get an integer bitmap representing the UnicodeRange fields in the os/2 table."""
+    os2 = ttFont["OS/2"]
+    return (
+        os2.ulUnicodeRange1
+        | os2.ulUnicodeRange2 << 32
+        | os2.ulUnicodeRange3 << 64
+        | os2.ulUnicodeRange4 << 96
+    )
+
+
 @check(
     id="com.google.fonts/check/unicode_range_bits",
     rationale="""

@@ -9,6 +9,10 @@ from fontbakery.constants import (
 )
 
 
+def typo_metrics_enabled(ttFont):
+    return ttFont["OS/2"].fsSelection & 0b10000000 > 0
+
+
 @check(
     id="com.google.fonts/check/vertical_metrics",
     conditions=["not remote_styles", "not is_cjk_font"],
@@ -200,7 +204,6 @@ def com_google_fonts_check_vertical_metrics_regressions(
     """Check if the vertical metrics of a family are similar to the same
     family hosted on Google Fonts."""
     import math
-    from fontbakery.shared_conditions import typo_metrics_enabled
 
     gf_ttFont = regular_remote_style
     ttFont = regular_ttFont
@@ -327,7 +330,6 @@ def com_google_fonts_check_vertical_metrics_regressions(
 )
 def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     """Check font follows the Google Fonts CJK vertical metric schema"""
-    from fontbakery.shared_conditions import typo_metrics_enabled
 
     filename = os.path.basename(ttFont.reader.file.name)
 

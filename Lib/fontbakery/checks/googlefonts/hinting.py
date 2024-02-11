@@ -1,6 +1,62 @@
+import os
+
 from fontbakery.prelude import check, Message, INFO, PASS, FAIL, WARN, SKIP
 from fontbakery.constants import LATEST_TTFAUTOHINT_VERSION, NameID
 from fontbakery.utils import filesize_formatting
+from fontbakery.testable import Font
+
+
+def hinting_stats(font: Font):
+    """
+    Return file size differences for a hinted font compared to an dehinted version
+    of same file
+    """
+    from io import BytesIO
+    from dehinter.font import dehint
+    from fontTools.ttLib import TTFont
+    from fontTools.subset import main as pyftsubset
+    from fontbakery.shared_conditions import is_ttf, is_cff, is_cff2
+
+    hinted_size = os.stat(font.file).st_size
+    ttFont = font.ttFont
+
+    if font.is_ttf:
+        dehinted_buffer = BytesIO()
+        dehint(ttFont, verbose=False)
+        ttFont.save(dehinted_buffer)
+        dehinted_buffer.seek(0)
+        dehinted_size = len(dehinted_buffer.read())
+    elif font.is_cff or font.is_cff2:
+        ext = os.path.splitext(font)[1]
+        tmp = font.replace(ext, "-tmp-dehinted%s" % ext)
+        args = [
+            font,
+            "--no-hinting",
+            "--glyphs=*",
+            "--ignore-missing-glyphs",
+            "--no-notdef-glyph",
+            "--no-recommended-glyphs",
+            "--no-layout-closure",
+            "--layout-features=*",
+            "--no-desubroutinize",
+            "--name-languages=*",
+            "--glyph-names",
+            "--no-prune-unicode-ranges",
+            "--output-file=%s" % tmp,
+        ]
+        pyftsubset(args)
+
+        dehinted_size = os.stat(tmp).st_size
+        os.remove(tmp)
+
+    else:
+        return None
+
+    return {
+        "dehinted_size": dehinted_size,
+        "hinted_size": hinted_size,
+    }
+
 
 
 @check(
@@ -104,17 +160,17 @@ def com_google_fonts_check_gasp(ttFont):
 
 @check(
     id="com.google.fonts/check/hinting_impact",
-    conditions=["hinting_stats"],
     rationale="""
         This check is merely informative, displaying and useful comparison of filesizes
         of hinted versus unhinted font files.
     """,
     proposal="legacy:check/054",
 )
-def com_google_fonts_check_hinting_impact(font, hinting_stats):
+def com_google_fonts_check_hinting_impact(font):
     """Show hinting filesize impact."""
-    hinted = hinting_stats["hinted_size"]
-    dehinted = hinting_stats["dehinted_size"]
+    stats = hinting_stats(font)
+    hinted = stats["hinted_size"]
+    dehinted = stats["dehinted_size"]
     increase = hinted - dehinted
     change = (float(hinted) / dehinted - 1) * 100
 

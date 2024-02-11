@@ -2,10 +2,6 @@ from fontbakery.callable import check
 from fontbakery.status import PASS, FAIL
 from fontbakery.message import Message
 
-from fontbakery.shared_conditions import (  # pylint: disable=unused-import
-    is_ttf,
-)
-
 
 @check(
     id="com.google.fonts/check/loca/maxp_num_glyphs",

@@ -8,60 +8,48 @@ import inspect
 import logging
 import os
 import pkgutil
-from dataclasses import dataclass
 import warnings
 
 import fontbakery.checks
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
-from fontbakery.callable import FontBakeryCheck, FontBakeryCondition
+from fontbakery.callable import FontBakeryCheck
+from fontbakery.testable import Font, Readme, CheckRunContext
 from fontbakery.errors import ValueValidationError
 from fontbakery.profile import Profile
 from fontbakery.section import Section
 
 
-@dataclass
-class FileDescription:
-    name: str
-    extensions: list
-    singular: str
-    description: str
-
-
 class FontsProfile(Profile):
     accepted_files = [
-        FileDescription(
-            name="fonts",
-            singular="font",
-            extensions=[".otf", ".ttf"],
-            description="OpenType binary",
-        ),
-        FileDescription(
-            name="ufos", singular="ufo", extensions=[".ufo"], description="UFO source"
-        ),
-        FileDescription(
-            name="designspaces",
-            singular="designspace",
-            extensions=[".designspace"],
-            description="Designspace",
-        ),
-        FileDescription(
-            name="glyphs_files",
-            singular="glyphs_file",
-            extensions=[".glyphs"],
-            description="Glyphs source",
-        ),
-        FileDescription(
-            name="readme_md",
-            singular="readme_md",
-            extensions=["README.md"],
-            description="Project's README markdown file",
-        ),
-        FileDescription(
-            name="metadata_pb",
-            singular="metadata_pb",
-            extensions=["METADATA.pb"],
-            description="Project's METADATA protobuf file",
-        ),
+       Font,
+       Readme,
+        # FileDescription(
+        #     name="ufos", singular="ufo", extensions=[".ufo"], description="UFO source"
+        # ),
+        # FileDescription(
+        #     name="designspaces",
+        #     singular="designspace",
+        #     extensions=[".designspace"],
+        #     description="Designspace",
+        # ),
+        # FileDescription(
+        #     name="glyphs_files",
+        #     singular="glyphs_file",
+        #     extensions=[".glyphs"],
+        #     description="Glyphs source",
+        # ),
+        # FileDescription(
+        #     name="readme_md",
+        #     singular="readme_md",
+        #     extensions=["README.md"],
+        #     description="Project's README markdown file",
+        # ),
+        # FileDescription(
+        #     name="metadata_pb",
+        #     singular="metadata_pb",
+        #     extensions=["METADATA.pb"],
+        #     description="Project's METADATA protobuf file",
+        # ),
     ]
 
     def setup_argparse(self, argument_parser):
@@ -87,11 +75,10 @@ class FontsProfile(Profile):
                     # -L/--list-checks option was used; don't try to validate file
                     # inputs because this option doesn't require them
                     return
-                for file_description in profile.accepted_files:
-                    setattr(namespace, file_description.name, [])
                 # flatten the 'values' list: [['a'], ['b']] => ['a', 'b']
                 target = [item for sublist in values for item in sublist]
                 any_accepted = False
+                files = []
                 for file in target:
                     accepted = False
                     for file_description in profile.accepted_files:
@@ -101,11 +88,8 @@ class FontsProfile(Profile):
                                 for extension in file_description.extensions
                             ]
                         ):
-                            setattr(
-                                namespace,
-                                file_description.name,
-                                getattr(namespace, file_description.name) + [file],
-                            )
+                            testable = file_description(file)
+                            files.append(testable)
                             accepted = True
                             any_accepted = True
                     if not accepted:
@@ -116,6 +100,7 @@ class FontsProfile(Profile):
                         )
                 if not any_accepted:
                     raise ValueValidationError("No applicable files found")
+                setattr(namespace, "files", CheckRunContext(files))
 
         argument_parser.add_argument(
             "files",
@@ -125,7 +110,7 @@ class FontsProfile(Profile):
             help="file path(s) to check. Wildcards like *.ttf are allowed.",
         )
 
-        return tuple(x.name for x in self.accepted_files)
+        return tuple(x.plural for x in self.accepted_files)
 
     def get_family_checks(self):
         family_checks = self.get_checks_by_dependencies("fonts")
@@ -135,8 +120,8 @@ class FontsProfile(Profile):
     @classmethod
     def _expected_values(cls):
         return {
-            val.name: ExpectedValue(
-                val.name,
+            val.plural: ExpectedValue(
+                val.plural,
                 default=[],
                 description=f"A list of the {val.description} file paths to check",
                 force=True,
@@ -146,7 +131,7 @@ class FontsProfile(Profile):
 
     @classmethod
     def _iterargs(cls):
-        return {val.singular: val.name for val in cls.accepted_files}
+        return {val.singular: val.plural for val in cls.accepted_files}
 
 
 checks_by_id = {}
@@ -185,10 +170,6 @@ def load_checks_from_module(module):
     for name, definition in inspect.getmembers(module):
         if isinstance(definition, FontBakeryCheck):
             checks_by_id[definition.id] = definition
-        if isinstance(definition, FontBakeryCondition):
-            # if name in conditions_by_name:
-            # raise ValueError(f"Condition {name} already defined")
-            conditions_by_name[name] = definition
 
 
 def load_all_checks(package=fontbakery.checks):
@@ -254,7 +235,6 @@ def profile_factory(module):
         derived_iterables={"ttFonts": ("ttFont", True)},
         expected_values=FontsProfile._expected_values(),
         sections=list(sections.values()),
-        conditions=conditions_by_name,
         overrides=profile_data.get("overrides", {}),
     )
     profile.configuration_defaults = profile_data.get("configuration_defaults", {})

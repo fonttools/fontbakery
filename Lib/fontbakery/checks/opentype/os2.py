@@ -3,12 +3,6 @@ from fontbakery.status import FAIL, PASS, WARN, INFO, SKIP
 from fontbakery.message import Message
 
 
-from fontbakery.checks.googlefonts.conditions import (  # pylint: disable=unused-import
-    RIBBI_ttFonts,
-    style,
-)
-
-
 @check(
     id="com.google.fonts/check/family/panose_proportion", proposal="legacy:check/009"
 )

@@ -163,40 +163,6 @@ class Profile:
         target = getattr(self, ns_type)
         target[name] = value
 
-    def test_dependencies(self):
-        """Raises SetupError if profile uses any names that are not declared
-        in the its namespace.
-        """
-        seen = set()
-        failed = []
-        # make this simple, collect all used names
-        for section_name, section in self._sections.items():
-            for check in section.checks:
-                dependencies = list(check.args)
-                if hasattr(check, "conditions"):
-                    dependencies += [
-                        name for negated, name in map(is_negated, check.conditions)
-                    ]
-
-                while dependencies:
-                    name = dependencies.pop()
-                    if name in seen:
-                        continue
-                    seen.add(name)
-                    if name not in self._namespace:
-                        failed.append(name)
-                        continue
-                    # if this is a condition, expand its dependencies
-                    condition = self.conditions.get(name, None)
-                    if condition is not None:
-                        dependencies += condition.args
-        if failed:
-            comma_separated = ", ".join(failed)
-            raise SetupError(
-                f"Profile uses names that are not declared"
-                f" in its namespace: {comma_separated}."
-            )
-
     def test_expected_checks(self, expected_check_ids, exclusive=False):
         """Self-test to make a sure profile maintainer is aware of changes in
         the profile.
@@ -588,10 +554,11 @@ class Profile:
     def get_deep_check_dependencies(self, check):
         seen = set()
         dependencies = list(check.args)
-        if hasattr(check, "conditions"):
-            dependencies += [
-                name for negated, name in map(is_negated, check.conditions)
-            ]
+        # XXXX fix later
+        # if hasattr(check, "conditions"):
+        #     dependencies += [
+        #         name for negated, name in map(is_negated, check.conditions)
+        #     ]
         while dependencies:
             name = dependencies.pop()
             if name in seen:

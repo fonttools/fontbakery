@@ -379,17 +379,6 @@ def main(profile=None, values=None):
         loglevel = min(args.loglevels) if args.loglevels else DEFAULT_LOG_LEVEL
         list_checks(profile, theme, verbose=loglevel > DEFAULT_LOG_LEVEL)
 
-    values_ = {}
-    if values is not None:
-        values_.update(values)
-
-    # values_keys are returned by profile.setup_argparse
-    # these are keys for custom arguments required by the profile.
-    if values_keys:
-        for key in values_keys:
-            if hasattr(args, key):
-                values_[key] = getattr(args, key)
-
     if args.configfile:
         configuration = Configuration.from_config_file(args.configfile)
     else:
@@ -417,7 +406,7 @@ def main(profile=None, values=None):
             skip_network=args.skip_network,
         )
     )
-    runner_kwds = {"values": values_, "config": configuration}
+    runner_kwds = {"values": args.files, "config": configuration}
     try:
         runner = CheckRunner(profile, jobs=args.multiprocessing, **runner_kwds)
     except ValueValidationError as e:
