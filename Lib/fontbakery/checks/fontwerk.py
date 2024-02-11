@@ -4,10 +4,6 @@ Checks for Fontwerk <https://fontwerk.com/>
 
 from fontbakery.prelude import check, PASS, FAIL, INFO, Message
 from fontbakery.constants import FsSelection, MacStyle
-from fontbakery.shared_conditions import (  # pylint: disable=unused-import
-    is_variable_font,
-    has_wght_axis,
-)
 
 
 @check(

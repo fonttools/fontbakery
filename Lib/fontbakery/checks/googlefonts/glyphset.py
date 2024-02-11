@@ -1,8 +1,5 @@
-from fontbakery.prelude import check, Message, PASS, FAIL, WARN
-from fontbakery.shared_conditions import (  # pylint: disable=unused-import
-    is_claiming_to_be_cjk_font,
-    font_codepoints,
-)
+from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN
+from fontbakery.testable import Font
 from fontbakery.checks.googlefonts.conditions import (  # pylint: disable=unused-import
     is_icon_font,
 )
@@ -13,6 +10,52 @@ from fontbakery.constants import (
     WindowsLanguageID,
 )
 from fontbakery.utils import markdown_table, bullet_list, exit_with_install_instructions
+
+
+@condition(Font)
+def is_claiming_to_be_cjk_font(font):
+    """Test font object to confirm that it meets our definition of a CJK font file.
+
+    We do this in two ways: in some cases, we are testing the *metadata*,
+    i.e. what the font claims about itself, in which case the definition is
+    met if any of the following conditions are True:
+
+      1. The font has a CJK code page bit set in the OS/2 table
+      2. The font has a CJK Unicode range bit set in the OS/2 table
+
+    See below for another way of testing this.
+    """
+    from fontbakery.constants import (
+        CJK_CODEPAGE_BITS,
+        CJK_UNICODE_RANGE_BITS,
+    )
+
+    if not font.has_os2_table:
+        return
+
+    os2 = font.ttFont["OS/2"]
+
+    # OS/2 code page checks
+    for _, bit in CJK_CODEPAGE_BITS.items():
+        if os2.ulCodePageRange1 & (1 << bit):
+            return True
+
+    # OS/2 Unicode range checks
+    for _, bit in CJK_UNICODE_RANGE_BITS.items():
+        if bit in range(0, 32):
+            if os2.ulUnicodeRange1 & (1 << bit):
+                return True
+
+        elif bit in range(32, 64):
+            if os2.ulUnicodeRange2 & (1 << (bit - 32)):
+                return True
+
+        elif bit in range(64, 96):
+            if os2.ulUnicodeRange3 & (1 << (bit - 64)):
+                return True
+
+    # default, return False if the above checks did not identify a CJK font
+    return False
 
 
 @check(

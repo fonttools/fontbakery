@@ -1,5 +1,4 @@
 from fontbakery.prelude import check, Message, PASS, FAIL, WARN
-from fontbakery.shared_conditions import is_variable_font
 
 
 @check(

@@ -5,6 +5,7 @@ import re
 import yaml
 
 from fontbakery.callable import condition
+from fontbakery.testable import Font, CheckRunContext
 from fontbakery.constants import (
     NameID,
     PlatformID,
@@ -14,8 +15,6 @@ from fontbakery.constants import (
 )
 from fontbakery.utils import exit_with_install_instructions
 
-from fontbakery.shared_conditions import style
-
 
 GF_TAGS_SHEET_URL = (
     "https://docs.google.com/spreadsheets/d/e/"
@@ -23,34 +22,22 @@ GF_TAGS_SHEET_URL = (
     "pub?gid=1193923458&single=true&output=csv"
 )
 
+# @condition
+# def glyphsFile(glyphs_file):
+#     import glyphsLib
 
-@condition
-def RIBBI_ttFonts(ttFonts):
-    from fontbakery.constants import RIBBI_STYLE_NAMES
-
-    return [
-        ttFont
-        for ttFont in ttFonts
-        if style(ttFont.reader.file.name) in RIBBI_STYLE_NAMES
-    ]
+#     return glyphsLib.load(open(glyphs_file, encoding="utf-8"))
 
 
-@condition
-def glyphsFile(glyphs_file):
-    import glyphsLib
-
-    return glyphsLib.load(open(glyphs_file, encoding="utf-8"))
-
-
-@condition
+@condition(Font)
 def style_with_spaces(font):
     """Stylename with spaces (derived from a canonical filename)."""
-    if style(font):
-        return style(font).replace("Italic", " Italic").strip()
+    if font.style:
+        return font.style.replace("Italic", " Italic").strip()
 
 
-@condition
-def expected_os2_weight(style):
+@condition(Font)
+def expected_os2_weight(font):
     """The weight name and the expected OS/2 usWeightClass value inferred from
     the style part of the font name
 
@@ -70,8 +57,9 @@ def expected_os2_weight(style):
     Thin is not set to 100 because of legacy Windows GDI issues:
     https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
     """
-    if not style:
+    if not font.style:
         return None
+    style = font.style
     # Weight name to value mapping:
     GF_API_WEIGHTS = {
         "Thin": 250,
@@ -95,17 +83,13 @@ def expected_os2_weight(style):
     return weight_name, expected
 
 
-@condition
-def stylenames_are_canonical(fonts):
+@condition(CheckRunContext)
+def stylenames_are_canonical(collection):
     """Are all font files named canonically ?"""
-    for font in fonts:
-        if not canonical_stylename(font):
-            return False
-    # otherwise:
-    return True
+    return all(font.canonical_stylename for font in collection.fonts)
 
 
-@condition
+@condition(Font)
 def canonical_stylename(font):
     """Returns the canonical stylename of a given font."""
     from fontbakery.constants import STATIC_STYLE_NAMES, VARFONT_SUFFIXES
@@ -127,7 +111,7 @@ def canonical_stylename(font):
         return s
 
 
-@condition
+@condition(Font)
 def descfile(font):
     """Get the path of the DESCRIPTION file of a given font project."""
     if font:
@@ -137,54 +121,33 @@ def descfile(font):
             return descfilepath
 
 
-@condition
-def description(descfile):
+@condition(Font)
+def description(font):
     """Get the contents of the DESCRIPTION file of a font project."""
-    if not descfile:
+    if not font.descfile:
         return
     import io
 
-    return io.open(descfile, "r", encoding="utf-8").read()
+    return io.open(font.descfile, "r", encoding="utf-8").read()
 
 
-@condition
-def readme_directory(readme_md):
-    if not readme_md:
-        return
-    if isinstance(readme_md, list):
-        # It makes no sense to deal with more than a single README.md file
-        # This here is just a quirk of the way we handle fontbakery inputs nowadays.
-        readme_md = readme_md[0]
-    return os.path.dirname(readme_md)
-
-
-@condition
-def readme_contents(readme_md):
-    """Get the contents of the README.md file of a font project."""
-    if not readme_md:
-        return
-    if isinstance(readme_md, list):
-        readme_md = readme_md[0]  # quirk
-    return open(readme_md, "r", encoding="utf-8").read()
-
-
-@condition
-def metadata_file(family_directory, metadata_pb=None):
+@condition(Font)
+def metadata_file(font, metadata_pb=None):
     if metadata_pb:
         if isinstance(metadata_pb, list):
             metadata_pb = metadata_pb[0]  # quirk
 
         return metadata_pb
 
-    elif family_directory:
-        pb_file = os.path.join(family_directory, "METADATA.pb")
+    elif font.family_directory:
+        pb_file = os.path.join(font.family_directory, "METADATA.pb")
         if os.path.exists(pb_file):
             return pb_file
 
 
-@condition
-def family_metadata(metadata_file):
-    if not metadata_file:
+@condition(Font)
+def family_metadata(font):
+    if not font.metadata_file:
         return
 
     try:
@@ -195,7 +158,7 @@ def family_metadata(metadata_file):
     from fontbakery.utils import get_FamilyProto_Message
 
     try:
-        return get_FamilyProto_Message(metadata_file)
+        return get_FamilyProto_Message(font.metadata_file)
     except text_format.ParseError:
         return None
 
@@ -337,60 +300,6 @@ def familyname(font):
         return filename_base.split("[")[0]
     else:
         return filename_base
-
-
-@condition
-def hinting_stats(font):
-    """
-    Return file size differences for a hinted font compared to an dehinted version
-    of same file
-    """
-    from io import BytesIO
-    from dehinter.font import dehint
-    from fontTools.ttLib import TTFont
-    from fontTools.subset import main as pyftsubset
-    from fontbakery.shared_conditions import is_ttf, is_cff, is_cff2
-
-    hinted_size = os.stat(font).st_size
-    ttFont = TTFont(font)
-
-    if is_ttf(ttFont):
-        dehinted_buffer = BytesIO()
-        dehint(ttFont, verbose=False)
-        ttFont.save(dehinted_buffer)
-        dehinted_buffer.seek(0)
-        dehinted_size = len(dehinted_buffer.read())
-    elif is_cff(ttFont) or is_cff2(ttFont):
-        ext = os.path.splitext(font)[1]
-        tmp = font.replace(ext, "-tmp-dehinted%s" % ext)
-        args = [
-            font,
-            "--no-hinting",
-            "--glyphs=*",
-            "--ignore-missing-glyphs",
-            "--no-notdef-glyph",
-            "--no-recommended-glyphs",
-            "--no-layout-closure",
-            "--layout-features=*",
-            "--no-desubroutinize",
-            "--name-languages=*",
-            "--glyph-names",
-            "--no-prune-unicode-ranges",
-            "--output-file=%s" % tmp,
-        ]
-        pyftsubset(args)
-
-        dehinted_size = os.stat(tmp).st_size
-        os.remove(tmp)
-
-    else:
-        return None
-
-    return {
-        "dehinted_size": dehinted_size,
-        "hinted_size": hinted_size,
-    }
-
 
 @condition
 def listed_on_gfonts_api(familyname, config, network):

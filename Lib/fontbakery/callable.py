@@ -145,25 +145,6 @@ def get_doc_desc(func, description, documentation):
     return description, documentation
 
 
-class FontBakeryCondition(FontbakeryCallable):
-    def __init__(
-        self,
-        func,
-        # id,
-        name=None,  # very short text
-        description=None,  # short text
-        documentation=None,  # long text, markdown?
-        force=False,
-    ):
-        super().__init__(func)
-        # self.id = id
-        self.name = func.__name__ if name is None else name
-        self.description, self.documentation = get_doc_desc(
-            func, description, documentation
-        )
-        self.force = force
-
-
 class FontBakeryCheck(FontbakeryCallable):
     def __init__(
         self,
@@ -258,14 +239,13 @@ class FontBakeryCheck(FontbakeryCallable):
     #  return self.id
 
 
-def condition(*args, **kwds):
-    """Check wrapper, a factory for FontBakeryCondition
+def condition(cls):
+    def decorator(*args, **kwds):
+        func = args[0]
+        # We should also cache this
+        setattr(cls, func.__name__, property(func))
 
-    Requires all arguments of FontBakeryCondition but not `func`
-    which is passed via the decorator syntax.
-    """
-    func = args[0]
-    return FontBakeryCondition(func)
+    return decorator
 
 
 def check(*args, **kwds):

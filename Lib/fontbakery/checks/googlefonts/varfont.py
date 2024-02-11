@@ -3,10 +3,6 @@ from collections import defaultdict
 
 from fontbakery.constants import PlatformID, WindowsEncodingID, WindowsLanguageID
 from fontbakery.prelude import FAIL, PASS, SKIP, WARN, Message, check, condition
-from fontbakery.shared_conditions import (  # pylint: disable=unused-import
-    VFs,
-    bold_wght_coord,
-)
 from fontbakery.utils import exit_with_install_instructions, markdown_table
 
 

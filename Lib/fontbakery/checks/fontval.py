@@ -3,10 +3,6 @@ import tempfile
 
 from fontbakery.prelude import check, ERROR, FAIL, INFO, PASS, WARN, Message
 from fontbakery.utils import exit_with_install_instructions
-from fontbakery.shared_conditions import (
-    is_cff,
-    is_variable_font,
-)  # pylint: disable=unused-import
 
 
 @check(id="com.google.fonts/check/fontvalidator", proposal="legacy:check/037")

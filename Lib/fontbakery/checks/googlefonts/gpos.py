@@ -1,6 +1,35 @@
-from fontbakery.prelude import check, Message, PASS, FAIL, WARN
-from fontbakery.shared_conditions import ligatures  # pylint: disable=unused-import
+from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN
+from fontbakery.testable import Font
 from fontbakery.utils import bullet_list
+
+
+@condition(Font)
+def ligatures(font):
+    from fontTools.ttLib.tables.otTables import LigatureSubst
+
+    ttFont = font.ttFont
+    all_ligatures = {}
+    try:
+        if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
+            for record in ttFont["GSUB"].table.FeatureList.FeatureRecord:
+                if record.FeatureTag == "liga":
+                    for index in record.Feature.LookupListIndex:
+                        lookup = ttFont["GSUB"].table.LookupList.Lookup[index]
+                        for subtable in lookup.SubTable:
+                            if isinstance(subtable, LigatureSubst):
+                                for firstGlyph in subtable.ligatures.keys():
+                                    all_ligatures[firstGlyph] = []
+                                    for lig in subtable.ligatures[firstGlyph]:
+                                        if (
+                                            lig.Component
+                                            not in all_ligatures[firstGlyph]
+                                        ):
+                                            all_ligatures[firstGlyph].append(
+                                                lig.Component
+                                            )
+        return all_ligatures
+    except (AttributeError, IndexError):
+        return -1  # Indicate fontTools-related crash...
 
 
 @check(
