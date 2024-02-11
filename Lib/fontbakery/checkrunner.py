@@ -272,11 +272,11 @@ class CheckRunner:
                     _order.append(Identity(section, check, ()))
                     continue
                 # Or it's a check which runs on each item in the collection.
-                for plural, files in self.context.testables_by_type.items():
+                for singular, files in self.context.testables_by_type.items():
                     if all(hasattr(file, arg) for arg in args for file in files):
                         # In which case, we run it once for each item
                         for i, file in enumerate(files):
-                            _order.append( Identity(section, check, ((plural, i),)) )
+                            _order.append(Identity(section, check, ((singular, i),)))
         return tuple(_order)
 
     def run(self, reporters):
