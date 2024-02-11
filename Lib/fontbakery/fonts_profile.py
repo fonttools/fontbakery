@@ -13,7 +13,15 @@ import warnings
 import fontbakery.checks
 from fontbakery.callable import FontBakeryExpectedValue as ExpectedValue
 from fontbakery.callable import FontBakeryCheck
-from fontbakery.testable import Font, Readme, CheckRunContext
+from fontbakery.testable import (
+    Font,
+    Readme,
+    CheckRunContext,
+    Ufo,
+    Designspace,
+    GlyphsFile,
+    MetadataPB,
+)
 from fontbakery.errors import ValueValidationError
 from fontbakery.profile import Profile
 from fontbakery.section import Section
@@ -21,36 +29,14 @@ from fontbakery.section import Section
 
 class FontsProfile(Profile):
     accepted_files = [
-       Font,
-       Readme,
-        # FileDescription(
-        #     name="ufos", singular="ufo", extensions=[".ufo"], description="UFO source"
-        # ),
-        # FileDescription(
-        #     name="designspaces",
-        #     singular="designspace",
-        #     extensions=[".designspace"],
-        #     description="Designspace",
-        # ),
-        # FileDescription(
-        #     name="glyphs_files",
-        #     singular="glyphs_file",
-        #     extensions=[".glyphs"],
-        #     description="Glyphs source",
-        # ),
-        # FileDescription(
-        #     name="readme_md",
-        #     singular="readme_md",
-        #     extensions=["README.md"],
-        #     description="Project's README markdown file",
-        # ),
-        # FileDescription(
-        #     name="metadata_pb",
-        #     singular="metadata_pb",
-        #     extensions=["METADATA.pb"],
-        #     description="Project's METADATA protobuf file",
-        # ),
+        Font,
+        Readme,
+        Ufo,
+        Designspace,
+        GlyphsFile,
+        MetadataPB,
     ]
+
 
     def setup_argparse(self, argument_parser):
         """
