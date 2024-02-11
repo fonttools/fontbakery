@@ -11,6 +11,7 @@ Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
+
 from collections import OrderedDict
 import inspect
 import traceback
@@ -232,9 +233,13 @@ class CheckRunner:
         _order = []
         for section in self.profile.sections:
             for check in section.checks:
-                if self._explicit_checks and check.id not in self._explicit_checks:
+                if self._explicit_checks and all(
+                    explicit not in check.id for explicit in self._explicit_checks
+                ):
                     continue
-                if self._exclude_checks and check.id in self._exclude_checks:
+                if self._exclude_checks and any(
+                    excluded in check.id for excluded in self._exclude_checks
+                ):
                     continue
                 args = set(check.args)
                 context_args = set(arg for arg in args if hasattr(self.context, arg))
