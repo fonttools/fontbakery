@@ -100,8 +100,10 @@ def _analyze_cff(analysis, top_dict, private_dict, fd_index=0):
 
 @condition(Font)
 def cff_analysis(font):
+    from fontTools.ttLib import TTFont
+
     analysis = CFFAnalysis()
-    ttFont = font.ttFont
+    ttFont = TTFont(font.file)  # Use our own copy here since we are decompiling
 
     if "CFF " in ttFont:
         cff = ttFont["CFF "].cff
