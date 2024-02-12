@@ -44,6 +44,7 @@ async function loadPyodideAndPackages() {
     'fs',
     'jinja2',
     'gfsubsets',
+    'gflanguages',
   ]);
   await micropip.install('ufo2ft', false, false, null, true);
   await micropip.install('fontbakery', false, false, null, true);
