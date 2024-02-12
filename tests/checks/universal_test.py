@@ -15,7 +15,6 @@ from fontbakery.codetesting import (
     TEST_FILE,
     MockFont,
 )
-from fontbakery.profiles import universal as universal_profile
 from fontbakery.checks.universal import is_up_to_date
 from fontbakery.testable import Font
 from fontbakery.utils import glyph_has_ink
@@ -94,7 +93,7 @@ def test_style_condition():
 
 def test_check_valid_glyphnames():
     """Glyph names are all valid?"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/valid_glyphnames")
+    check = CheckTester("com.google.fonts/check/valid_glyphnames")
     pass_msg = "Glyph names are all valid."
 
     # We start with a good font file:
@@ -162,7 +161,7 @@ def test_check_valid_glyphnames():
 
 def test_check_unique_glyphnames():
     """Font contains unique glyph names?"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/unique_glyphnames")
+    check = CheckTester("com.google.fonts/check/unique_glyphnames")
     pass_msg = "Glyph names are all unique."
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
@@ -212,7 +211,7 @@ def test_check_unique_glyphnames():
 
 def test_check_ttx_roundtrip():
     """Checking with fontTools.ttx"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/ttx_roundtrip")
+    check = CheckTester("com.google.fonts/check/ttx_roundtrip")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_PASS(check(font))
@@ -226,9 +225,7 @@ def test_check_ttx_roundtrip():
 
 def test_check_name_trailing_spaces():
     """Name table entries must not have trailing spaces."""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/name/trailing_spaces"
-    )
+    check = CheckTester("com.google.fonts/check/name/trailing_spaces")
 
     # Our reference Cabin Regular is known to be good:
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
@@ -251,9 +248,7 @@ def test_check_name_trailing_spaces():
 
 def test_check_family_single_directory():
     """Fonts are all in the same directory."""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/family/single_directory"
-    )
+    check = CheckTester("com.google.fonts/check/family/single_directory")
     same_dir = [
         TEST_FILE("cabin/Cabin-Thin.ttf"),
         TEST_FILE("cabin/Cabin-ExtraLight.ttf"),
@@ -275,7 +270,7 @@ def test_check_family_single_directory():
 
 def test_check_ots():
     """Checking with ots-sanitize."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/ots")
+    check = CheckTester("com.google.fonts/check/ots")
 
     fine_font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(fine_font))
@@ -343,7 +338,7 @@ class MockDistribution:
 @patch("requests.get")
 def test_check_fontbakery_version(mock_get, mock_installed):
     """Check if FontBakery is up-to-date"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/fontbakery_version")
+    check = CheckTester("com.google.fonts/check/fontbakery_version")
 
     # Any of the test fonts can be used here.
     # The check requires a 'font' argument but it doesn't do anything with it.
@@ -390,7 +385,7 @@ def test_check_fontbakery_version(mock_get, mock_installed):
 @pytest.mark.xfail(reason="Often happens until rebasing")
 def test_check_fontbakery_version_live_apis():
     """Check if FontBakery is up-to-date. (No API-mocking edition)"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/fontbakery_version")
+    check = CheckTester("com.google.fonts/check/fontbakery_version")
 
     # Any of the test fonts can be used here.
     # The check requires a 'font' argument but it doesn't do anything with it.
@@ -407,7 +402,7 @@ def test_check_mandatory_glyphs():
     """Font contains the first few mandatory glyphs (.null or NULL, CR and space)?"""
     from fontTools import subset
 
-    check = CheckTester(universal_profile, "com.google.fonts/check/mandatory_glyphs")
+    check = CheckTester("com.google.fonts/check/mandatory_glyphs")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert assert_PASS(check(ttFont)) == "OK"
@@ -456,7 +451,7 @@ def _remove_cmap_entry(font, cp):
 
 def test_check_whitespace_glyphs():
     """Font contains glyphs for whitespace characters?"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/whitespace_glyphs")
+    check = CheckTester("com.google.fonts/check/whitespace_glyphs")
 
     # Our reference Mada Regular font is good here:
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -488,9 +483,7 @@ def test_check_whitespace_glyphs():
 
 def test_check_whitespace_glyphnames():
     """Font has **proper** whitespace glyph names?"""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/whitespace_glyphnames"
-    )
+    check = CheckTester("com.google.fonts/check/whitespace_glyphnames")
 
     def editCmap(font, cp, name):
         """Corrupt the cmap by changing the glyph name
@@ -565,7 +558,7 @@ def test_check_whitespace_glyphnames():
 
 def test_check_whitespace_ink():
     """Whitespace glyphs have ink?"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/whitespace_ink")
+    check = CheckTester("com.google.fonts/check/whitespace_ink")
 
     test_font = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(test_font))
@@ -604,7 +597,7 @@ def test_check_whitespace_ink():
 
 def test_check_legacy_accents():
     """Check that legacy accents aren't used in composite glyphs."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/legacy_accents")
+    check = CheckTester("com.google.fonts/check/legacy_accents")
 
     test_font = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
     assert_PASS(check(test_font))
@@ -634,7 +627,7 @@ def test_check_legacy_accents():
 
 def test_check_required_tables():
     """Font contains all required tables ?"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/required_tables")
+    check = CheckTester("com.google.fonts/check/required_tables")
 
     REQUIRED_TABLES = ["cmap", "head", "hhea", "hmtx", "maxp", "name", "OS/2", "post"]
 
@@ -783,7 +776,7 @@ def test_check_required_tables():
 
 def test_check_unwanted_tables():
     """Are there unwanted tables ?"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/unwanted_tables")
+    check = CheckTester("com.google.fonts/check/unwanted_tables")
 
     unwanted_tables = [
         "FFTM",  # FontForge
@@ -856,9 +849,7 @@ def mada_ttFonts():
 
 def test_check_family_win_ascent_and_descent(mada_ttFonts):
     """Checking OS/2 usWinAscent & usWinDescent."""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/family/win_ascent_and_descent"
-    )
+    check = CheckTester("com.google.fonts/check/family/win_ascent_and_descent")
 
     # Mada Regular is know to be bad
     # single font input
@@ -910,9 +901,7 @@ def test_check_family_win_ascent_and_descent(mada_ttFonts):
 
 def test_check_os2_metrics_match_hhea():
     """Checking OS/2 Metrics match hhea Metrics."""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/os2_metrics_match_hhea"
-    )
+    check = CheckTester("com.google.fonts/check/os2_metrics_match_hhea")
 
     # Our reference Mada Regular is know to be faulty here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -952,9 +941,7 @@ def test_check_os2_metrics_match_hhea():
 
 
 def test_check_family_vertical_metrics(montserrat_ttFonts):
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/family/vertical_metrics"
-    )
+    check = CheckTester("com.google.fonts/check/family/vertical_metrics")
 
     msg = assert_PASS(check(montserrat_ttFonts), "with multiple good fonts...")
     assert msg == "Vertical metrics are the same across the family."
@@ -977,7 +964,7 @@ def test_check_family_vertical_metrics(montserrat_ttFonts):
 
 
 def test_check_superfamily_list():
-    check = CheckTester(universal_profile, "com.google.fonts/check/superfamily/list")
+    check = CheckTester("com.google.fonts/check/superfamily/list")
 
     msg = assert_results_contain(
         check(MockFont(superfamily=[cabin_fonts])), INFO, "family-path"
@@ -988,9 +975,7 @@ def test_check_superfamily_list():
 def test_check_superfamily_vertical_metrics(
     montserrat_ttFonts, cabin_ttFonts, cabin_condensed_ttFonts
 ):
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/superfamily/vertical_metrics"
-    )
+    check = CheckTester("com.google.fonts/check/superfamily/vertical_metrics")
 
     msg = assert_SKIP(check(MockFont(superfamily_ttFonts=[cabin_ttFonts[0]])))
     assert msg == "Sibling families were not detected."
@@ -1009,7 +994,7 @@ def test_check_superfamily_vertical_metrics(
 
 
 def test_check_STAT_strings():
-    check = CheckTester(universal_profile, "com.google.fonts/check/STAT_strings")
+    check = CheckTester("com.google.fonts/check/STAT_strings")
 
     good = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Roman.ttf"))
     assert_PASS(check(good))
@@ -1020,7 +1005,7 @@ def test_check_STAT_strings():
 
 def test_check_rupee():
     """Ensure indic fonts have the Indian Rupee Sign glyph."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/rupee")
+    check = CheckTester("com.google.fonts/check/rupee")
 
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
@@ -1042,7 +1027,7 @@ def test_check_rupee():
 
 def test_check_unreachable_glyphs():
     """Check font contains no unreachable glyphs."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/unreachable_glyphs")
+    check = CheckTester("com.google.fonts/check/unreachable_glyphs")
 
     font = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
     assert_PASS(check(font))
@@ -1094,7 +1079,7 @@ def test_check_unreachable_glyphs():
 
 def test_check_soft_hyphen(montserrat_ttFonts):
     """Check glyphs contain the recommended contour count"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/soft_hyphen")
+    check = CheckTester("com.google.fonts/check/soft_hyphen")
     for ttFont in montserrat_ttFonts:
         # Montserrat has a softhyphen...
         assert_results_contain(check(ttFont), WARN, "softhyphen")
@@ -1107,7 +1092,7 @@ def test_check_contour_count(montserrat_ttFonts):
     """Check glyphs contain the recommended contour count"""
     from fontTools import subset
 
-    check = CheckTester(universal_profile, "com.google.fonts/check/contour_count")
+    check = CheckTester("com.google.fonts/check/contour_count")
 
     ttFont = TTFont(TEST_FILE("rokkitt/Rokkitt-Regular.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
@@ -1144,7 +1129,7 @@ def test_check_contour_count(montserrat_ttFonts):
 
 def test_check_cjk_chws_feature():
     """Does the font contain chws and vchw features?"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/cjk_chws_feature")
+    check = CheckTester("com.google.fonts/check/cjk_chws_feature")
 
     cjk_font = TEST_FILE("cjk/SourceHanSans-Regular.otf")
     ttFont = TTFont(cjk_font)
@@ -1170,9 +1155,7 @@ def test_check_cjk_chws_feature():
 
 def test_check_transformed_components():
     """Ensure component transforms do not perform scaling or rotation."""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/transformed_components"
-    )
+    check = CheckTester("com.google.fonts/check/transformed_components")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_PASS(check(font), "with a good font...")
@@ -1191,7 +1174,7 @@ def test_check_transformed_components():
 def test_check_gpos7():
     """Check if font contains any GPOS 7 lookups
     which are not widely supported."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/gpos7")
+    check = CheckTester("com.google.fonts/check/gpos7")
 
     font = TEST_FILE("mada/Mada-Regular.ttf")
     assert_PASS(check(font), "with a good font...")
@@ -1202,7 +1185,7 @@ def test_check_gpos7():
 
 def test_check_freetype_rasterizer():
     """Ensure that the font can be rasterized by FreeType."""
-    check = CheckTester(universal_profile, "com.adobe.fonts/check/freetype_rasterizer")
+    check = CheckTester("com.adobe.fonts/check/freetype_rasterizer")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     msg = assert_PASS(check(font), "with a good font...")
@@ -1224,7 +1207,7 @@ def test_check_freetype_rasterizer():
 
 def test_check_sfnt_version():
     """Ensure that the font has the proper sfntVersion value."""
-    check = CheckTester(universal_profile, "com.adobe.fonts/check/sfnt_version")
+    check = CheckTester("com.adobe.fonts/check/sfnt_version")
 
     # Valid TrueType font; the check must PASS.
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
@@ -1264,7 +1247,7 @@ def test_check_sfnt_version():
 
 def test_check_whitespace_widths():
     """Whitespace glyphs have coherent widths?"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/whitespace_widths")
+    check = CheckTester("com.google.fonts/check/whitespace_widths")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))
@@ -1275,9 +1258,7 @@ def test_check_whitespace_widths():
 
 def test_check_interpolation_issues():
     """Detect any interpolation issues in the font."""
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/interpolation_issues"
-    )
+    check = CheckTester("com.google.fonts/check/interpolation_issues")
     # With a good font
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
     assert_PASS(check(ttFont))
@@ -1296,7 +1277,7 @@ def test_check_interpolation_issues():
 
 def test_check_math_signs_width():
     """Check font math signs have the same width."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/math_signs_width")
+    check = CheckTester("com.google.fonts/check/math_signs_width")
 
     # The STIXTwo family was the reference font project
     # that we used to come up with the initial list of math glyphs
@@ -1313,7 +1294,7 @@ def test_check_math_signs_width():
 
 def test_check_math_tabular_kerning():
     """Check tabular widths don't have kerning."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/tabular_kerning")
+    check = CheckTester("com.google.fonts/check/tabular_kerning")
 
     font = TEST_FILE("montserrat/Montserrat-Regular.ttf")
     assert_PASS(check(font))
@@ -1324,7 +1305,7 @@ def test_check_math_tabular_kerning():
 
 def test_check_linegaps():
     """Checking Vertical Metric Linegaps."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/linegaps")
+    check = CheckTester("com.google.fonts/check/linegaps")
 
     # Our reference Mada Regular is know to be bad here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -1354,7 +1335,7 @@ def test_check_linegaps():
 
 def test_check_STAT_in_statics():
     """Checking STAT table on static fonts."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/STAT_in_statics")
+    check = CheckTester("com.google.fonts/check/STAT_in_statics")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
@@ -1384,7 +1365,7 @@ def test_check_STAT_in_statics():
 
 def test_check_alt_caron():
     """Check accent of Lcaron, dcaron, lcaron, tcaron"""
-    check = CheckTester(universal_profile, "com.google.fonts/check/alt_caron")
+    check = CheckTester("com.google.fonts/check/alt_caron")
 
     ttFont = TTFont(TEST_FILE("annie/AnnieUseYourTelescope-Regular.ttf"))
     assert_results_contain(check(ttFont), WARN, "bad-mark")
@@ -1400,9 +1381,7 @@ def test_check_alt_caron():
 def DISABLED_test_check_caps_vertically_centered():
     """Check if uppercase glyphs are vertically centered."""
 
-    check = CheckTester(
-        universal_profile, "com.google.fonts/check/caps_vertically_centered"
-    )
+    check = CheckTester("com.google.fonts/check/caps_vertically_centered")
 
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     assert_PASS(check(ttFont))
@@ -1416,7 +1395,7 @@ def DISABLED_test_check_caps_vertically_centered():
 
 def test_check_case_mapping():
     """Ensure the font supports case swapping for all its glyphs."""
-    check = CheckTester(universal_profile, "com.google.fonts/check/case_mapping")
+    check = CheckTester("com.google.fonts/check/case_mapping")
 
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
     # Glyph present in the font                  Missing case-swapping counterpart

@@ -9,12 +9,10 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 
-from fontbakery.profiles import opentype as opentype_profile
-
 
 def test_check_kern_table():
     """Is there a "kern" table declared in the font?"""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/kern_table")
+    check = CheckTester("com.google.fonts/check/kern_table")
 
     # Our reference Mada Regular is known to be good
     # (does not have a 'kern' table):

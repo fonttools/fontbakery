@@ -8,7 +8,6 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.status import DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL
-from fontbakery.profiles import opentype as opentype_profile
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
@@ -30,9 +29,7 @@ def mada_ttFonts():
 
 def test_check_family_equal_unicode_encodings(mada_ttFonts):
     """Fonts have equal unicode encodings ?"""
-    check = CheckTester(
-        opentype_profile, "com.google.fonts/check/family/equal_unicode_encodings"
-    )
+    check = CheckTester("com.google.fonts/check/family/equal_unicode_encodings")
 
     from fontbakery.constants import WindowsEncodingID
 

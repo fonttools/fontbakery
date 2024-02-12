@@ -25,15 +25,11 @@ from fontbakery.constants import (
 )
 from fontbakery.profiles import adobefonts as adobefonts_profile
 
-OVERRIDE_SUFFIX = ""  # They're just overriden by the profile
-
 
 def test_check_family_consistent_upm():
     """A group of fonts designed & produced as a family should have consistent
     units per em."""
-    check = CheckTester(
-        adobefonts_profile, "com.adobe.fonts/check/family/consistent_upm"
-    )
+    check = CheckTester("com.adobe.fonts/check/family/consistent_upm")
 
     # these fonts have a consistent unitsPerEm of 1000:
     filenames = [
@@ -56,7 +52,7 @@ def test_check_family_consistent_upm():
 
 def test_check_find_empty_letters():
     """Validate that empty glyphs are found."""
-    check = CheckTester(adobefonts_profile, "com.adobe.fonts/check/find_empty_letters")
+    check = CheckTester("com.adobe.fonts/check/find_empty_letters")
 
     PASS_MSG = "No empty glyphs for letters found."
 
@@ -100,9 +96,7 @@ def _get_nameid_1_win_eng_record(name_table):
 def test_check_nameid_1_win_english():
     """Validate that font has a good nameID 1, Windows/Unicode/US-English
     `name` table record."""
-    check = CheckTester(
-        adobefonts_profile, "com.adobe.fonts/check/nameid_1_win_english"
-    )
+    check = CheckTester("com.adobe.fonts/check/nameid_1_win_english")
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
     msg = assert_PASS(check(ttFont))
@@ -134,7 +128,7 @@ def test_check_nameid_1_win_english():
 
 def test_check_unsupported_tables():
     """Check if font has any unsupported tables."""
-    check = CheckTester(adobefonts_profile, "com.adobe.fonts/check/unsupported_tables")
+    check = CheckTester("com.adobe.fonts/check/unsupported_tables")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     msg = assert_PASS(check(ttFont))
@@ -148,7 +142,7 @@ def test_check_unsupported_tables():
 def test_check_override_whitespace_glyphs():
     """Check that overridden test for nbsp yields WARN rather than FAIL."""
     check = CheckTester(
-        adobefonts_profile, f"com.google.fonts/check/whitespace_glyphs{OVERRIDE_SUFFIX}"
+        "com.google.fonts/check/whitespace_glyphs", profile=adobefonts_profile
     )
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
@@ -163,7 +157,7 @@ def test_check_override_whitespace_glyphs():
 def test_check_override_valid_glyphnames():
     """Check that overridden test yields WARN rather than FAIL."""
     check = CheckTester(
-        adobefonts_profile, f"com.google.fonts/check/valid_glyphnames{OVERRIDE_SUFFIX}"
+        "com.google.fonts/check/valid_glyphnames", profile=adobefonts_profile
     )
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
@@ -187,8 +181,8 @@ def test_check_override_valid_glyphnames():
 def test_check_override_family_win_ascent_and_descent():
     """Check that overridden test yields WARN rather than FAIL."""
     check = CheckTester(
-        adobefonts_profile,
-        f"com.google.fonts/check/family/win_ascent_and_descent{OVERRIDE_SUFFIX}",
+        "com.google.fonts/check/family/win_ascent_and_descent",
+        profile=adobefonts_profile,
     )
 
     # Our reference Mada Regular is know to FAIL the original check.
@@ -240,8 +234,8 @@ def test_check_override_family_win_ascent_and_descent():
 def test_check_override_os2_metrics_match_hhea():
     """Check that overridden test yields WARN rather than FAIL."""
     check = CheckTester(
-        adobefonts_profile,
-        f"com.google.fonts/check/os2_metrics_match_hhea{OVERRIDE_SUFFIX}",
+        "com.google.fonts/check/os2_metrics_match_hhea",
+        profile=adobefonts_profile,
     )
 
     # Our reference Mada Black is know to be good here.
@@ -282,8 +276,8 @@ def test_check_override_os2_metrics_match_hhea():
 def test_check_override_varfont_valid_default_instance_nameids():
     """Check that overriden tests yield WARN instead of FAIL"""
     check = CheckTester(
-        adobefonts_profile,
-        f"com.adobe.fonts/check/varfont/valid_default_instance_nameids{OVERRIDE_SUFFIX}",  # noqa:E501 pylint:disable=C0301
+        "com.adobe.fonts/check/varfont/valid_default_instance_nameids",
+        profile=adobefonts_profile,
     )
 
     ttFont_1 = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
@@ -318,8 +312,8 @@ def test_check_override_varfont_valid_default_instance_nameids():
 def test_check_override_stat_has_axis_value_tables():
     """Check that overridden tests yield the right result."""
     check = CheckTester(
-        adobefonts_profile,
-        f"com.adobe.fonts/check/stat_has_axis_value_tables{OVERRIDE_SUFFIX}",
+        "com.adobe.fonts/check/stat_has_axis_value_tables",
+        profile=adobefonts_profile,
     )
 
     # Our reference Cabin[wdth,wght].ttf variable font has Axis Value tables.
@@ -350,8 +344,8 @@ def test_check_override_stat_has_axis_value_tables():
 def test_check_override_inconsistencies_between_fvar_stat():
     """Check that the overridden test yields WARN rather than FAIL"""
     check = CheckTester(
-        adobefonts_profile,
-        f"com.fontwerk/check/inconsistencies_between_fvar_stat{OVERRIDE_SUFFIX}",
+        "com.fontwerk/check/inconsistencies_between_fvar_stat",
+        profile=adobefonts_profile,
     )
 
     ttFont = TTFont(TEST_FILE("bad_fonts/fvar_stat_differences/AxisLocationVAR.ttf"))
@@ -364,7 +358,7 @@ def test_check_override_inconsistencies_between_fvar_stat():
 
 def test_check_override_weight_class_fvar():
     check = CheckTester(
-        adobefonts_profile, f"com.fontwerk/check/weight_class_fvar{OVERRIDE_SUFFIX}"
+        "com.fontwerk/check/weight_class_fvar", profile=adobefonts_profile
     )
 
     ttFont = TTFont(TEST_FILE("varfont/Oswald-VF.ttf"))
@@ -378,8 +372,8 @@ def test_check_override_weight_class_fvar():
 def test_check_override_fontbakery_version(mock_get):
     """Check that overridden test yields SKIP rather than FAIL."""
     check = CheckTester(
-        adobefonts_profile,
-        f"com.google.fonts/check/fontbakery_version{OVERRIDE_SUFFIX}",
+        "com.google.fonts/check/fontbakery_version",
+        profile=adobefonts_profile,
     )
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
@@ -390,8 +384,8 @@ def test_check_override_fontbakery_version(mock_get):
 def test_check_override_match_familyname_fullfont():
     """Check that overridden test yields WARN rather than FAIL."""
     check = CheckTester(
-        adobefonts_profile,
-        f"com.google.fonts/check/name/match_familyname_fullfont{OVERRIDE_SUFFIX}",
+        "com.google.fonts/check/name/match_familyname_fullfont",
+        profile=adobefonts_profile,
     )
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Semibold.otf"))
@@ -417,8 +411,8 @@ def test_check_override_match_familyname_fullfont():
 def test_check_override_trailing_spaces():
     """Check that overridden test yields WARN rather than FAIL."""
     check = CheckTester(
-        adobefonts_profile,
-        f"com.google.fonts/check/name/trailing_spaces{OVERRIDE_SUFFIX}",
+        "com.google.fonts/check/name/trailing_spaces",
+        profile=adobefonts_profile,
     )
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Semibold.otf"))
@@ -448,8 +442,8 @@ def test_check_override_trailing_spaces():
 def test_check_override_bold_wght_coord():
     """Check that overriden tests yield WARN rather than FAIL."""
     check = CheckTester(
-        adobefonts_profile,
-        f"com.google.fonts/check/varfont/bold_wght_coord{OVERRIDE_SUFFIX}",
+        "com.google.fonts/check/varfont/bold_wght_coord",
+        profile=adobefonts_profile,
     )
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf"))
@@ -472,7 +466,6 @@ def test_check_override_bold_wght_coord():
 def test_check_STAT_strings():
     """Check com.adobe.fonts/check/STAT_strings."""
     check = CheckTester(
-        adobefonts_profile,
         "com.adobe.fonts/check/STAT_strings",
     )
 

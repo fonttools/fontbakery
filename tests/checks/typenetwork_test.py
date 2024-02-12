@@ -7,14 +7,13 @@ from fontbakery.codetesting import (
     TEST_FILE,
     CheckTester,
 )
-from fontbakery.profiles import typenetwork as typenetwork_profile
 
 check_statuses = (ERROR, FAIL, WARN, INFO, PASS, SKIP)
 
 
 def test_check_fstype():
     """Checking OS/2 fsType"""
-    check = CheckTester(typenetwork_profile, "com.typenetwork/check/fstype")
+    check = CheckTester("com.typenetwork/check/fstype")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
     for value in [0, 1, 2, 4, 8, 0x0100, 0x0200]:

@@ -19,13 +19,18 @@ from typing import Iterable, Optional
 import defcon
 
 from fontbakery.checkrunner import CheckRunner
-from fontbakery.fonts_profile import profile_factory
+from fontbakery.fonts_profile import (
+    profile_factory,
+    load_all_checks,
+    setup_context,
+    checks_by_id,
+)
 from fontbakery.status import PASS, DEBUG, ERROR, SKIP
 from fontbakery.configuration import Configuration
 from fontbakery.message import Message
 from fontbakery.profile import Profile
-from fontbakery.fonts_profile import setup_context
-from fontbakery.testable import CheckRunContext, Font, GlyphsFile, Ufo
+from fontbakery.profile import Section
+from fontbakery.testable import FILE_TYPES, CheckRunContext, Font, GlyphsFile, Ufo
 from fontbakery.result import Subresult
 
 
@@ -69,14 +74,28 @@ MockUfo = make_mock(Ufo, "MockUfo")
 class CheckTester:
     """
     This class offers a bit of automation to aid in the implementation of
-    code-tests to validade the proper behaviour of FontBakery checks.
+    code-tests to validate the proper behaviour of FontBakery checks.
     """
 
-    def __init__(self, module_or_profile, check_id):
-        if isinstance(module_or_profile, Profile):
-            self.profile = module_or_profile
+    def __init__(self, check_id, profile=None):
+        load_all_checks()
+        # Generally we don't need a profile unless we're testing
+        # overrides and configuration settings.
+        if isinstance(profile, Profile):
+            self.profile = profile
+        elif profile:
+            self.profile = profile_factory(profile)
         else:
-            self.profile = profile_factory(module_or_profile)
+            # We create a fake profile containing just this check
+            self.profile = Profile(
+                iterargs={val.singular: val.plural for val in FILE_TYPES},
+                sections=[
+                    Section(
+                        name="Test",
+                        checks=[checks_by_id[check_id]],
+                    )
+                ],
+            )
         self.check_id = check_id
 
     def __call__(

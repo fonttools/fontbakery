@@ -14,10 +14,6 @@ from fontbakery.codetesting import (
     CheckTester,
     TEST_FILE,
 )
-from fontbakery.fonts_profile import profile_factory
-import fontbakery.profiles.ufo_sources
-
-ufo_sources_profile = profile_factory(fontbakery.profiles.ufo_sources)
 
 
 @pytest.fixture
@@ -36,16 +32,14 @@ def test_extra_needed_exit(monkeypatch):
 
     ufo_path = TEST_FILE("test.ufo")
     with pytest.raises(SystemExit):
-        check = CheckTester(
-            ufo_sources_profile, "com.daltonmaag/check/ufo_required_fields"
-        )
+        check = CheckTester("com.daltonmaag/check/ufo_required_fields")
         check(ufo_path)
 
     remove_import_raiser(module_name)
 
 
 def test_check_ufolint(empty_ufo_font):
-    check = CheckTester(ufo_sources_profile, "com.daltonmaag/check/ufolint")
+    check = CheckTester("com.daltonmaag/check/ufolint")
 
     _, ufo_path = empty_ufo_font
 
@@ -57,7 +51,7 @@ def test_check_ufolint(empty_ufo_font):
 
 
 def test_check_required_fields(empty_ufo_font):
-    check = CheckTester(ufo_sources_profile, "com.daltonmaag/check/ufo_required_fields")
+    check = CheckTester("com.daltonmaag/check/ufo_required_fields")
 
     ufo, _ = empty_ufo_font
 
@@ -75,9 +69,7 @@ def test_check_required_fields(empty_ufo_font):
 
 
 def test_check_recommended_fields(empty_ufo_font):
-    check = CheckTester(
-        ufo_sources_profile, "com.daltonmaag/check/ufo_recommended_fields"
-    )
+    check = CheckTester("com.daltonmaag/check/ufo_recommended_fields")
 
     ufo, _ = empty_ufo_font
 
@@ -96,9 +88,7 @@ def test_check_recommended_fields(empty_ufo_font):
 
 
 def test_check_unnecessary_fields(empty_ufo_font):
-    check = CheckTester(
-        ufo_sources_profile, "com.daltonmaag/check/ufo_unnecessary_fields"
-    )
+    check = CheckTester("com.daltonmaag/check/ufo_unnecessary_fields")
 
     ufo, _ = empty_ufo_font
 
@@ -115,9 +105,7 @@ def test_check_unnecessary_fields(empty_ufo_font):
 
 def test_check_designspace_has_sources():
     """See if we can actually load the source files."""
-    check = CheckTester(
-        ufo_sources_profile, "com.google.fonts/check/designspace_has_sources"
-    )
+    check = CheckTester("com.google.fonts/check/designspace_has_sources")
 
     designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
     assert_PASS(check(designspace))
@@ -127,9 +115,7 @@ def test_check_designspace_has_sources():
 
 def test_check_designspace_has_default_master():
     """Ensure a default master is defined."""
-    check = CheckTester(
-        ufo_sources_profile, "com.google.fonts/check/designspace_has_default_master"
-    )
+    check = CheckTester("com.google.fonts/check/designspace_has_default_master")
 
     designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
     assert_PASS(check(designspace))
@@ -139,10 +125,7 @@ def test_check_designspace_has_default_master():
 
 def test_check_designspace_has_consistent_glyphset():
     """Check consistency of glyphset in a designspace file."""
-    check = CheckTester(
-        ufo_sources_profile,
-        "com.google.fonts/check/designspace_has_consistent_glyphset",
-    )
+    check = CheckTester("com.google.fonts/check/designspace_has_consistent_glyphset")
 
     designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
     assert_results_contain(check(designspace), FAIL, "inconsistent-glyphset")
@@ -152,10 +135,7 @@ def test_check_designspace_has_consistent_glyphset():
 
 def test_check_designspace_has_consistent_codepoints():
     """Check codepoints consistency in a designspace file."""
-    check = CheckTester(
-        ufo_sources_profile,
-        "com.google.fonts/check/designspace_has_consistent_codepoints",
-    )
+    check = CheckTester("com.google.fonts/check/designspace_has_consistent_codepoints")
 
     designspace = TEST_FILE("stupidfont/Stupid Font.designspace")
     assert_results_contain(check(designspace), FAIL, "inconsistent-codepoints")
@@ -165,9 +145,7 @@ def test_check_designspace_has_consistent_codepoints():
 
 def test_check_default_languagesystem_pass_without_features(empty_ufo_font):
     """Pass if the UFO source has no features."""
-    check = CheckTester(
-        ufo_sources_profile, "com.thetypefounders/check/features_default_languagesystem"
-    )
+    check = CheckTester("com.thetypefounders/check/features_default_languagesystem")
 
     ufo, _ = empty_ufo_font
 
@@ -176,9 +154,7 @@ def test_check_default_languagesystem_pass_without_features(empty_ufo_font):
 
 def test_check_default_languagesystem_pass_with_empty_features(empty_ufo_font):
     """Pass if the UFO source has a feature file but it is empty."""
-    check = CheckTester(
-        ufo_sources_profile, "com.thetypefounders/check/features_default_languagesystem"
-    )
+    check = CheckTester("com.thetypefounders/check/features_default_languagesystem")
 
     ufo, _ = empty_ufo_font
 
@@ -189,9 +165,7 @@ def test_check_default_languagesystem_pass_with_empty_features(empty_ufo_font):
 
 def test_check_default_languagesystem_pass_with_features(empty_ufo_font):
     """Pass if the font has features and no default languagesystem statements."""
-    check = CheckTester(
-        ufo_sources_profile, "com.thetypefounders/check/features_default_languagesystem"
-    )
+    check = CheckTester("com.thetypefounders/check/features_default_languagesystem")
 
     ufo, _ = empty_ufo_font
 
@@ -205,9 +179,7 @@ def test_check_default_languagesystem_warn_without_default_languagesystem(
 ):
     """Warn if `languagesystem DFLT dflt` is not present in the feature file,
     but other languagesystem statements are."""
-    check = CheckTester(
-        ufo_sources_profile, "com.thetypefounders/check/features_default_languagesystem"
-    )
+    check = CheckTester("com.thetypefounders/check/features_default_languagesystem")
 
     ufo, _ = empty_ufo_font
 
@@ -220,9 +192,7 @@ def test_check_default_languagesystem_warn_without_default_languagesystem(
 
 def test_check_default_languagesystem_pass_with_default_languagesystem(empty_ufo_font):
     """Pass if `languagesystem DFLT dflt` is explicitly used in the features."""
-    check = CheckTester(
-        ufo_sources_profile, "com.thetypefounders/check/features_default_languagesystem"
-    )
+    check = CheckTester("com.thetypefounders/check/features_default_languagesystem")
 
     ufo, _ = empty_ufo_font
 

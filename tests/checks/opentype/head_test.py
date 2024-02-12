@@ -9,7 +9,6 @@ from fontbakery.codetesting import (
     TEST_FILE,
     MockFont,
 )
-from fontbakery.profiles import opentype as opentype_profile
 
 
 mada_fonts = [
@@ -30,9 +29,7 @@ def mada_ttFonts():
 
 def test_check_family_equal_font_versions(mada_ttFonts):
     """Make sure all font files have the same version value."""
-    check = CheckTester(
-        opentype_profile, "com.google.fonts/check/family/equal_font_versions"
-    )
+    check = CheckTester("com.google.fonts/check/family/equal_font_versions")
 
     # our reference Mada family is know to be good here.
     assert_PASS(check(mada_ttFonts), "with good family.")
@@ -52,7 +49,7 @@ def test_check_family_equal_font_versions(mada_ttFonts):
 
 def test_check_unitsperem():
     """Checking unitsPerEm value is reasonable."""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/unitsperem")
+    check = CheckTester("com.google.fonts/check/unitsperem")
 
     # In this test we'll forge several known-good and known-bad values.
     # We'll use Mada Regular to start with:
@@ -127,7 +124,7 @@ def test_parse_version_string():
 
 def test_check_font_version():
     """Checking font version fields."""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/font_version")
+    check = CheckTester("com.google.fonts/check/font_version")
 
     test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
     test_font = TTFont(test_font_path)
@@ -182,7 +179,7 @@ def test_check_font_version():
 
 def test_check_mac_style():
     """Checking head.macStyle value."""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/mac_style")
+    check = CheckTester("com.google.fonts/check/mac_style")
     from fontbakery.constants import MacStyle
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))

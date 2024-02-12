@@ -7,12 +7,11 @@ from fontbakery.codetesting import (
     CheckTester,
     TEST_FILE,
 )
-from fontbakery.profiles import opentype as opentype_profile
 
 
 def test_check_maxadvancewidth():
     """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/maxadvancewidth")
+    check = CheckTester("com.google.fonts/check/maxadvancewidth")
 
     ttFont = TTFont(TEST_FILE("familysans/FamilySans-Regular.ttf"))
     assert_PASS(check(ttFont))
@@ -27,7 +26,7 @@ def test_check_maxadvancewidth():
 
 def test_check_caretslope():
     """Check hhea.caretSlopeRise and hhea.caretSlopeRun"""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/caret_slope")
+    check = CheckTester("com.google.fonts/check/caret_slope")
 
     # PASS
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))

@@ -8,13 +8,11 @@ from fontbakery.codetesting import (
     CheckTester,
     TEST_FILE,
 )
-from fontbakery.profiles import opentype as opentype_profile
 
 
 def test_check_varfont_stat_axis_record_for_each_axis():
     """Check the STAT table has an Axis Record for every axis in the font."""
     check = CheckTester(
-        opentype_profile,
         "com.google.fonts/check/varfont/stat_axis_record_for_each_axis",
     )
 
@@ -44,9 +42,7 @@ def test_check_varfont_stat_axis_record_for_each_axis():
 
 def test_check_stat_has_axis_value_tables():
     """Check the STAT table has at least one Axis Value table."""
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/stat_has_axis_value_tables"
-    )
+    check = CheckTester("com.adobe.fonts/check/stat_has_axis_value_tables")
 
     # Our reference Cabin[wdth,wght].ttf variable font has Axis Value tables.
     # So the check must PASS.
@@ -119,7 +115,7 @@ def test_check_stat_has_axis_value_tables():
 
 def test_check_italic_axis_in_stat():
     """Ensure VFs have 'ital' STAT axis."""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/italic_axis_in_stat")
+    check = CheckTester("com.google.fonts/check/italic_axis_in_stat")
 
     # PASS
     fonts = [
@@ -160,9 +156,7 @@ def test_check_italic_axis_in_stat():
 
 def test_check_italic_axis_in_stat_is_boolean():
     """Ensure 'ital' STAT axis is boolean value"""
-    check = CheckTester(
-        opentype_profile, "com.google.fonts/check/italic_axis_in_stat_is_boolean"
-    )
+    check = CheckTester("com.google.fonts/check/italic_axis_in_stat_is_boolean")
 
     # PASS
     font = TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf")
@@ -200,7 +194,7 @@ def test_check_italic_axis_in_stat_is_boolean():
 
 def test_check_italic_axis_last():
     """Ensure 'ital' STAT axis is last."""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/italic_axis_last")
+    check = CheckTester("com.google.fonts/check/italic_axis_last")
 
     font = TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf")
     ttFont = TTFont(font)

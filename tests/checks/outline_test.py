@@ -5,14 +5,11 @@ from fontbakery.codetesting import (
     TEST_FILE,
     assert_PASS,
 )
-from fontbakery.profiles import outline as outline_profile
 
 
 def test_check_outline_alignment_miss():
     """Check for misaligned points."""
-    check = CheckTester(
-        outline_profile, "com.google.fonts/check/outline_alignment_miss"
-    )
+    check = CheckTester("com.google.fonts/check/outline_alignment_miss")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -25,9 +22,7 @@ def test_check_outline_alignment_miss():
 
 def test_check_outline_short_segments():
     """Check for short segments."""
-    check = CheckTester(
-        outline_profile, "com.google.fonts/check/outline_short_segments"
-    )
+    check = CheckTester("com.google.fonts/check/outline_short_segments")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -46,9 +41,7 @@ def test_check_outline_short_segments():
 
 def test_check_outline_colinear_vectors():
     """Check for colinear line segments."""
-    check = CheckTester(
-        outline_profile, "com.google.fonts/check/outline_colinear_vectors"
-    )
+    check = CheckTester("com.google.fonts/check/outline_colinear_vectors")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -69,9 +62,7 @@ def test_check_outline_colinear_vectors():
 
 def test_check_outline_jaggy_segments():
     """Check for jaggy segments."""
-    check = CheckTester(
-        outline_profile, "com.google.fonts/check/outline_jaggy_segments"
-    )
+    check = CheckTester("com.google.fonts/check/outline_jaggy_segments")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)
@@ -92,7 +83,7 @@ def test_check_outline_jaggy_segments():
 
 def test_check_outline_semi_vertical():
     """Check for semi-vertical/semi-horizontal lines."""
-    check = CheckTester(outline_profile, "com.google.fonts/check/outline_semi_vertical")
+    check = CheckTester("com.google.fonts/check/outline_semi_vertical")
 
     filename = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
     results = check(filename)

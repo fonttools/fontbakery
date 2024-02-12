@@ -16,7 +16,6 @@ from fontbakery.codetesting import (
     TEST_FILE,
     MockFont,
 )
-from fontbakery.profiles import opentype as opentype_profile
 
 
 mada_fonts = [
@@ -49,9 +48,7 @@ cabin_fonts = [
 
 def test_check_family_panose_proportion(mada_ttFonts):
     """Fonts have consistent PANOSE proportion ?"""
-    check = CheckTester(
-        opentype_profile, "com.google.fonts/check/family/panose_proportion"
-    )
+    check = CheckTester("com.google.fonts/check/family/panose_proportion")
 
     assert_PASS(check(mada_ttFonts), "with good family.")
 
@@ -67,9 +64,7 @@ def test_check_family_panose_proportion(mada_ttFonts):
 
 def test_check_family_panose_familytype(mada_ttFonts):
     """Fonts have consistent PANOSE family type ?"""
-    check = CheckTester(
-        opentype_profile, "com.google.fonts/check/family/panose_familytype"
-    )
+    check = CheckTester("com.google.fonts/check/family/panose_familytype")
 
     assert_PASS(check(mada_ttFonts), "with good family.")
 
@@ -85,7 +80,7 @@ def test_check_family_panose_familytype(mada_ttFonts):
 
 def test_check_xavgcharwidth():
     """Check if OS/2 xAvgCharWidth is correct."""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/xavgcharwidth")
+    check = CheckTester("com.google.fonts/check/xavgcharwidth")
 
     test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
 
@@ -199,9 +194,7 @@ def test_check_xavgcharwidth():
 
 def test_check_fsselection_matches_macstyle():
     """Check if OS/2 fsSelection matches head macStyle bold and italic bits."""
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/fsselection_matches_macstyle"
-    )
+    check = CheckTester("com.adobe.fonts/check/fsselection_matches_macstyle")
     from fontbakery.constants import FsSelection
 
     test_font_path = TEST_FILE("nunito/Nunito-Regular.ttf")
@@ -231,9 +224,7 @@ def test_check_fsselection_matches_macstyle():
 def test_check_family_bold_italic_unique_for_nameid1():
     """Check that OS/2.fsSelection bold/italic settings are unique within each
     Compatible Family group (i.e. group of up to 4 with same NameID1)"""
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/family/bold_italic_unique_for_nameid1"
-    )
+    check = CheckTester("com.adobe.fonts/check/family/bold_italic_unique_for_nameid1")
     from fontbakery.constants import FsSelection
 
     base_path = portable_path("data/test/source-sans-pro/OTF")
@@ -265,7 +256,7 @@ def test_check_family_bold_italic_unique_for_nameid1():
 
 def test_check_code_pages():
     """Check code page character ranges"""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/code_pages")
+    check = CheckTester("com.google.fonts/check/code_pages")
 
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
     assert (
@@ -282,7 +273,7 @@ def test_check_code_pages():
 
 def test_check_vendor_id():
     """Check vendor id against the configured value"""
-    check = CheckTester(opentype_profile, "com.thetypefounders/check/vendor_id")
+    check = CheckTester("com.thetypefounders/check/vendor_id")
 
     ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
     assert ttFont["OS/2"].achVendID == "STC "
@@ -304,7 +295,7 @@ def test_check_vendor_id():
 
 def test_check_fsselection():
     """Checking OS/2 fsSelection value."""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/fsselection")
+    check = CheckTester("com.google.fonts/check/fsselection")
 
     from fontbakery.constants import FsSelection
 
