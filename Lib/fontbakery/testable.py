@@ -224,6 +224,9 @@ class Font(Testable):
         )
 
 
+FILE_TYPES = [Readme, Ufo, Designspace, GlyphsFile, MetadataPB, Font]
+
+
 @dataclass
 class CheckRunContext:
     testables: List[Testable] = field(default_factory=list)
@@ -236,17 +239,11 @@ class CheckRunContext:
             by_type[testable.singular].append(testable)
         return by_type
 
-    @property
-    def fonts(self):
-        return self.testables_by_type["font"]
-
-    @property
-    def readme_mds(self):
-        return self.testables_by_type["readme_md"]
-
     @property  # Can't cache a map
     def ttFonts(self):
-        return map(lambda font: font.ttFont, self.fonts)
+        return map(
+            lambda font: font.ttFont, self.fonts  # pytype: disable=attribute-error
+        )
 
     @cached_property
     def RIBBI_ttFonts(self):
@@ -261,3 +258,13 @@ class CheckRunContext:
         """Returns a list of font files which are recognized as variable fonts"""
         # pytype: disable=attribute-error
         return [font.ttFont for font in self.fonts if font.is_variable_font]
+        # pytype: enable=attribute-error
+
+
+for cls in FILE_TYPES:
+    # context.fonts -> context.testables_by_type["font"]
+    setattr(
+        CheckRunContext,
+        cls.plural,
+        property(lambda self, cls=cls: self.testables_by_type[cls.singular]),
+    )

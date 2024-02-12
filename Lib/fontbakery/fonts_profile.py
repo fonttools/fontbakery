@@ -11,19 +11,9 @@ import warnings
 
 import fontbakery.checks
 from fontbakery.callable import FontBakeryCheck
-from fontbakery.testable import (
-    Font,
-    Readme,
-    CheckRunContext,
-    Ufo,
-    Designspace,
-    GlyphsFile,
-    MetadataPB,
-)
+from fontbakery.testable import CheckRunContext, FILE_TYPES
 from fontbakery.errors import ValueValidationError
 from fontbakery.profile import Profile, Section
-
-accepted_files = [Font, Readme, Ufo, Designspace, GlyphsFile, MetadataPB]
 
 
 def setup_context(files):
@@ -36,7 +26,7 @@ def setup_context(files):
             subfiles = glob.glob(pattern)
         for file in subfiles:
             accepted = False
-            for filetype in accepted_files:
+            for filetype in FILE_TYPES:
                 if file.endswith(tuple(filetype.extensions)):
                     context.testables.append(filetype(file))
                     accepted = True
@@ -148,7 +138,7 @@ def profile_factory(module):
         )
 
     profile = Profile(
-        iterargs={val.singular: val.plural for val in accepted_files},
+        iterargs={val.singular: val.plural for val in FILE_TYPES},
         sections=list(sections.values()),
         overrides=profile_data.get("overrides", {}),
     )
