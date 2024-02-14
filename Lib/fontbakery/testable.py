@@ -15,6 +15,7 @@ class Testable:
     plural = "testables"
 
 
+
 @dataclass
 class Readme(Testable):
     singular = "readme_md"
@@ -222,6 +223,19 @@ class Font(Testable):
             or ("head" in ttFont and ttFont["head"].macStyle & MacStyle.BOLD)
             or keyword_in_full_font_name(ttFont, "bold")
         )
+
+
+@dataclass
+class TTCFont(Font):
+    index: int = 0
+
+    @cached_property
+    def ttFont(self):
+        from fontTools.ttLib import TTCollection
+
+        with open(self.file, "rb") as ttcfile:
+            ttc = TTCollection(ttcfile)
+            return ttc.fonts[self.index]
 
 
 FILE_TYPES = [Readme, Ufo, Designspace, GlyphsFile, MetadataPB, Font]
