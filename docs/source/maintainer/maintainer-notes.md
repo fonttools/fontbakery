@@ -51,7 +51,7 @@ git commit -m "update version on docs/source/conf.py"
 
 # See if there's any experimental check that could be made effective (non-experimental)
 # in the new release and update CHANGELOG accordingly.
-git grep experimental
+git grep "experimental=\"Since"
 
 vim CHANGELOG.md
 git add -p
