@@ -274,6 +274,7 @@ class CheckRunner:
             reporter.start(self.order)
 
         reporter_lock = threading.Lock()
+
         def distribute_result(result):
             with reporter_lock:
                 for reporter in reporters:
@@ -285,7 +286,9 @@ class CheckRunner:
             ) as executor:
                 for identity in self.order:
                     future = executor.submit(self._run_check, identity)
-                    future.add_done_callback(lambda future: distribute_result(future.result()))
+                    future.add_done_callback(
+                        lambda future: distribute_result(future.result())
+                    )
         else:
             for identity in self.order:
                 result = self._run_check(identity)
