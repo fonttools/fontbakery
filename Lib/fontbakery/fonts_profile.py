@@ -9,9 +9,11 @@ import os
 import pkgutil
 import warnings
 
+from fontTools.ttLib.sfnt import readTTCHeader
+
 import fontbakery.checks
 from fontbakery.callable import FontBakeryCheck
-from fontbakery.testable import CheckRunContext, FILE_TYPES
+from fontbakery.testable import CheckRunContext, FILE_TYPES, TTCFont
 from fontbakery.errors import ValueValidationError
 from fontbakery.profile import Profile, Section
 
@@ -26,6 +28,15 @@ def setup_context(files):
             subfiles = glob.glob(pattern)
         for file in subfiles:
             accepted = False
+            # Special case for .ttc files, which add multiple testables
+            # to the context.
+            if file.endswith(".ttc"):
+                with open(file, "rb") as ttcfile:
+                    ttc = readTTCHeader(ttcfile)
+                    for i in range(ttc.numFonts):
+                        context.testables.append(TTCFont(file, index=i))
+                    accepted = True
+                continue
             for filetype in FILE_TYPES:
                 if file.endswith(tuple(filetype.extensions)):
                     context.testables.append(filetype(file))
