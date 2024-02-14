@@ -1,5 +1,5 @@
 --index-url https://pypi.python.org/simple/
-axisregistry==0.4.5
+axisregistry==0.4.8
 beautifulsoup4==4.12.3
 beziers==0.5.0
 cmarkgfm==2024.1.14
@@ -20,7 +20,7 @@ opentypespec==1.9.1
 packaging==23.2
 pip-api==0.0.30
 PyYAML==6.0.1
-protobuf==3.20.3
+protobuf==3.20.3  # pinned to 3.x series which was used to generate our textproto files
 requests==2.31.0
 rich==13.7.0
 shaperglot==0.4.0
