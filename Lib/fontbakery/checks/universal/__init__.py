@@ -15,7 +15,7 @@ from fontbakery.prelude import (
     INFO,
     SKIP,
 )
-from fontbakery.testable import Font, CheckRunContext
+from fontbakery.testable import Font, CheckRunContext, TTCFont
 from fontbakery.glyphdata import desired_glyph_data
 from fontbakery.checks.layout import feature_tags
 from fontbakery.utils import (
@@ -1303,7 +1303,10 @@ def com_google_fonts_check_ttx_roundtrip(font):
     import sys
     import tempfile
 
-    ttFont = ttx.TTFont(font.file)
+    if isinstance(font, TTCFont):
+        ttFont = ttx.TTFont(font.file, fontNumber=font.index)
+    else:
+        ttFont = ttx.TTFont(font.file)
     failed = False
     fd, xml_file = tempfile.mkstemp()
     os.close(fd)
