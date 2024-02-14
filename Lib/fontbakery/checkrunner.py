@@ -13,7 +13,9 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 
 from collections import OrderedDict
+import concurrent.futures
 import inspect
+import threading
 import traceback
 from typing import Union, Tuple
 
@@ -271,21 +273,23 @@ class CheckRunner:
         for reporter in reporters:
             reporter.start(self.order)
 
-        def run_a_check(identity):
-            result = self._run_check(identity)
-            for reporter in reporters:
-                reporter.receive_result(result)
-
-        import concurrent.futures
+        reporter_lock = threading.Lock()
+        def distribute_result(result):
+            with reporter_lock:
+                for reporter in reporters:
+                    reporter.receive_result(result)
 
         if self._jobs > 1:
             with concurrent.futures.ThreadPoolExecutor(
                 max_workers=self._jobs
             ) as executor:
-                list(executor.map(run_a_check, self.order))
+                for identity in self.order:
+                    future = executor.submit(self._run_check, identity)
+                    future.add_done_callback(lambda future: distribute_result(future.result()))
         else:
             for identity in self.order:
-                run_a_check(identity)
+                result = self._run_check(identity)
+                distribute_result(result)
 
         # Tell all the reporters we're done
         for reporter in reporters:
