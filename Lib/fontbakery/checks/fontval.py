@@ -3,10 +3,6 @@ import tempfile
 
 from fontbakery.prelude import check, ERROR, FAIL, INFO, PASS, WARN, Message
 from fontbakery.utils import exit_with_install_instructions
-from fontbakery.shared_conditions import (
-    is_cff,
-    is_variable_font,
-)  # pylint: disable=unused-import
 
 
 @check(id="com.google.fonts/check/fontvalidator", proposal="legacy:check/037")
@@ -128,13 +124,11 @@ def com_google_fonts_check_fontvalidator(font, config):
         "Apple recommends against using post table format 3 under most circumstances",
     ]
 
-    from fontTools.ttLib import TTFont
-
-    ttFont = TTFont(font)
-    if is_variable_font(ttFont):
+    ttFont = font.ttFont
+    if "fvar" in ttFont:
         disabled_fval_checks.extend(VARFONT_disabled_fval_checks)
 
-    if is_cff(ttFont):
+    if "CFF" in ttFont:
         disabled_fval_checks.extend(CFF_disabled_fval_checks)
 
     if disabled_checks is not None:
@@ -147,7 +141,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         fval_cmd = [
             "FontValidator",
             "-file",
-            font,
+            font.file,
             "-all-tables",
             "-report-dir",
             report_dir.name,
@@ -200,7 +194,7 @@ def com_google_fonts_check_fontvalidator(font, config):
         else:
             return f"MS-FonVal: {msg}"
 
-    report_file = Path(report_dir.name) / f"{Path(font).name}.report.xml"
+    report_file = Path(report_dir.name) / f"{Path(font.file).name}.report.xml"
 
     grouped_msgs = {}
     with open(report_file, "rb") as xml_report:

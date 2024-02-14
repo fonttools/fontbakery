@@ -1,11 +1,6 @@
-from fontbakery.prelude import check, Message, PASS, FAIL, WARN
-from fontbakery.shared_conditions import (  # pylint: disable=unused-import
-    is_claiming_to_be_cjk_font,
-    font_codepoints,
-)
-from fontbakery.checks.googlefonts.conditions import (  # pylint: disable=unused-import
-    is_icon_font,
-)
+from fontbakery.constants import PANOSE_Family_Type
+from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN, SKIP
+from fontbakery.testable import Font
 from fontbakery.constants import (
     NameID,
     PlatformID,
@@ -15,22 +10,76 @@ from fontbakery.constants import (
 from fontbakery.utils import markdown_table, bullet_list, exit_with_install_instructions
 
 
+def is_icon_font(ttFont, config):
+    return config.get("is_icon_font") or (
+        "OS/2" in ttFont
+        and ttFont["OS/2"].panose.bFamilyType == PANOSE_Family_Type.LATIN_SYMBOL
+    )
+
+
+@condition(Font)
+def is_claiming_to_be_cjk_font(font):
+    """Test font object to confirm that it meets our definition of a CJK font file.
+
+    We do this in two ways: in some cases, we are testing the *metadata*,
+    i.e. what the font claims about itself, in which case the definition is
+    met if any of the following conditions are True:
+
+      1. The font has a CJK code page bit set in the OS/2 table
+      2. The font has a CJK Unicode range bit set in the OS/2 table
+
+    See below for another way of testing this.
+    """
+    from fontbakery.constants import (
+        CJK_CODEPAGE_BITS,
+        CJK_UNICODE_RANGE_BITS,
+    )
+
+    if not font.has_os2_table:
+        return
+
+    os2 = font.ttFont["OS/2"]
+
+    # OS/2 code page checks
+    for _, bit in CJK_CODEPAGE_BITS.items():
+        if os2.ulCodePageRange1 & (1 << bit):
+            return True
+
+    # OS/2 Unicode range checks
+    for _, bit in CJK_UNICODE_RANGE_BITS.items():
+        if bit in range(0, 32):
+            if os2.ulUnicodeRange1 & (1 << bit):
+                return True
+
+        elif bit in range(32, 64):
+            if os2.ulUnicodeRange2 & (1 << (bit - 32)):
+                return True
+
+        elif bit in range(64, 96):
+            if os2.ulUnicodeRange3 & (1 << (bit - 64)):
+                return True
+
+    # default, return False if the above checks did not identify a CJK font
+    return False
+
+
 @check(
     id="com.google.fonts/check/glyph_coverage",
     rationale="""
         Google Fonts expects that fonts in its collection support at least the minimal
         set of characters defined in the `GF-latin-core` glyph-set.
     """,
-    conditions=["font_codepoints", "not is_icon_font"],
+    conditions=["font_codepoints"],
     proposal="https://github.com/fonttools/fontbakery/pull/2488",
 )
-def com_google_fonts_check_glyph_coverage(
-    ttFont, font_codepoints, family_metadata, config
-):
+def com_google_fonts_check_glyph_coverage(ttFont, family_metadata, config):
     """Check Google Fonts glyph coverage."""
-
     import unicodedata2
     from glyphsets import get_glyphsets_fulfilled
+
+    if is_icon_font(ttFont, config):
+        yield SKIP, "This is an icon font or a symbol font."
+        return
 
     glyphsets_fulfilled = get_glyphsets_fulfilled(ttFont)
 
@@ -231,11 +280,10 @@ def com_google_fonts_check_family_control_chars(ttFonts):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3214",
 )
-def com_google_fonts_check_cjk_not_enough_glyphs(ttFont):
+def com_google_fonts_check_cjk_not_enough_glyphs(font):
     """Does the font contain less than 150 CJK characters?"""
-    from fontbakery.shared_conditions import get_cjk_glyphs
 
-    cjk_glyphs = get_cjk_glyphs(ttFont)
+    cjk_glyphs = font.get_cjk_glyphs
     cjk_glyph_count = len(cjk_glyphs)
     if cjk_glyph_count > 0 and cjk_glyph_count < 150:
         if cjk_glyph_count == 1:

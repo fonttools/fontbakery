@@ -4,6 +4,7 @@ Checks for Type Network <https://typenetwork.com/>
 import unicodedata
 import string
 
+from fontbakery.testable import Font, CheckRunContext
 from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN, SKIP, INFO
 from fontbakery.utils import (
     bullet_list,
@@ -585,8 +586,9 @@ def com_typenetwork_check_font_is_centered_vertically(ttFont):
         )
 
 
-@condition
-def stylename(ttFont):
+@condition(Font)
+def stylename(font):
+    ttFont = font.ttFont
     if ttFont["name"].getDebugName(16):
         styleName = ttFont["name"].getDebugName(17)
     else:
@@ -594,8 +596,8 @@ def stylename(ttFont):
     return styleName
 
 
-@condition
-def tn_expected_os2_weight(stylename):
+@condition(Font)
+def tn_expected_os2_weight(font):
     """The weight name and the expected OS/2 usWeightClass value inferred from
     the style part of the font name.
     Here the common/expected values and weight names:
@@ -611,7 +613,7 @@ def tn_expected_os2_weight(stylename):
     Thin is not set to 100 because of legacy Windows GDI issues:
     https://www.adobe.com/devnet/opentype/afdko/topic_font_wt_win.html
     """
-    if not stylename:
+    if not font.stylename:
         return None
     # Weight name to value mapping:
     TN_EXPECTED_WEIGHTS = {
@@ -625,6 +627,7 @@ def tn_expected_os2_weight(stylename):
         "ExtraBold": 800,
         "Black": 900,
     }
+    stylename = font.stylename
     if stylename == "Italic":
         weight_name = "Regular"
     elif stylename.endswith("Italic"):
@@ -658,26 +661,19 @@ def tn_expected_os2_weight(stylename):
     """,
     proposal=["https://github.com/fonttools/fontbakery/pull/4260"],
 )
-def com_typenetwork_check_usweightclass(ttFont, tn_expected_os2_weight):
+def com_typenetwork_check_usweightclass(font, tn_expected_os2_weight):
     """Checking OS/2 usWeightClass."""
-    from fontbakery.shared_conditions import (
-        is_ttf,
-        is_cff,
-        is_variable_font,
-        has_wght_axis,
-    )
-
     failed = False
     expected_value = tn_expected_os2_weight["weightClass"]
     weight_name = tn_expected_os2_weight["name"]
-    os2_value = ttFont["OS/2"].usWeightClass
+    os2_value = font.ttFont["OS/2"].usWeightClass
 
     fail_message = "OS/2 usWeightClass is '{}' when it should be '{}'."
     no_value_message = "OS/2 usWeightClass is '{}' and weight name is '{}'."
 
-    if is_variable_font(ttFont):
-        fvar = ttFont["fvar"]
-        if has_wght_axis(ttFont):
+    if font.is_variable_font:
+        fvar = font.ttFont["fvar"]
+        if font.has_wght_axis:
             default_axis_values = {a.axisTag: a.defaultValue for a in fvar.axes}
             fvar_value = default_axis_values.get("wght")
 
@@ -701,22 +697,22 @@ def com_typenetwork_check_usweightclass(ttFont, tn_expected_os2_weight):
         yield INFO, Message("no-value", no_value_message.format(os2_value, weight_name))
 
     elif "Thin" == weight_name.split(" "):
-        if is_ttf(ttFont) and os2_value not in [100, 250]:
+        if font.is_ttf and os2_value not in [100, 250]:
             failed = True
             yield FAIL, Message(
                 "bad-value", fail_message.format(os2_value, expected_value)
             )
-        if is_cff(ttFont) and os2_value != 250:
+        if font.is_cff and os2_value != 250:
             failed = True
             yield FAIL, Message("bad-value", fail_message.format(os2_value, 250))
 
     elif "ExtraLight" in weight_name.split(" "):
-        if is_ttf(ttFont) and os2_value not in [200, 275]:
+        if font.is_ttf and os2_value not in [200, 275]:
             failed = True
             yield FAIL, Message(
                 "bad-value", fail_message.format(os2_value, expected_value)
             )
-        if is_cff(ttFont) and os2_value != 275:
+        if font.is_cff and os2_value != 275:
             failed = True
             yield FAIL, Message("bad-value", fail_message.format(os2_value, 275))
 
@@ -801,22 +797,14 @@ def com_typenetwork_check_family_tnum_horizontal_metrics(ttFonts, config):
         yield PASS, "OK"
 
 
-@condition
-def roman_ttFonts(ttFonts):
-    from fontbakery.shared_conditions import is_italic
-
-    return [ttFont for ttFont in ttFonts if not is_italic(ttFont)]
+@condition(CheckRunContext)
+def roman_ttFonts(context):
+    return [font.ttFont for font in context.ttFonts if not font.is_italic]
 
 
-@condition
-def italic_ttFonts(ttFonts):
-    italicFonts = []
-    from fontbakery.shared_conditions import is_italic
-
-    for ttFont in ttFonts:
-        if is_italic(ttFont):
-            italicFonts.append(ttFont)
-    return italicFonts
+@condition(CheckRunContext)
+def italic_ttFonts(context):
+    return [font.ttFont for font in context.ttFonts if font.is_italic]
 
 
 @check(

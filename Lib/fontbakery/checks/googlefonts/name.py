@@ -1,3 +1,4 @@
+from fontbakery.checks.googlefonts.conditions import expected_font_names
 from fontbakery.prelude import check, disable, Message, PASS, FAIL, WARN
 from fontbakery.constants import (
     RIBBI_STYLE_NAMES,
@@ -184,7 +185,6 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
 
 @check(
     id="com.google.fonts/check/font_names",
-    conditions=["expected_font_names"],
     rationale="""
         Google Fonts has several rules which need to be adhered to when
         setting a font's name table. Please read:
@@ -195,8 +195,9 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3800",
 )
-def com_google_fonts_check_font_names(ttFont, expected_font_names):
+def com_google_fonts_check_font_names(ttFont, ttFonts):
     """Check font names are correct"""
+    expected_names = expected_font_names(ttFont, ttFonts)
 
     def style_names(nametable):
         res = {}
@@ -214,7 +215,7 @@ def com_google_fonts_check_font_names(ttFont, expected_font_names):
         return res
 
     font_names = style_names(ttFont["name"])
-    expected_names = style_names(expected_font_names["name"])
+    expected_names = style_names(expected_names["name"])
 
     name_ids = {
         NameID.FONT_FAMILY_NAME: "Family Name",

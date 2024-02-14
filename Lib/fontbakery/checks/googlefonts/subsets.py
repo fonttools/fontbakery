@@ -1,6 +1,5 @@
 from collections import defaultdict
 
-from fontbakery.checks.googlefonts.conditions import family_metadata, metadata_file
 from fontbakery.prelude import FAIL, PASS, WARN, Message, check
 from fontbakery.utils import exit_with_install_instructions
 
@@ -73,9 +72,7 @@ def com_google_fonts_check_metadata_unsupported_subsets(
     ],
     severity=2,
 )
-def com_google_fonts_check_metadata_unreachable_subsetting(
-    family_directory, font, ttFont, font_codepoints, config
-):
+def com_google_fonts_check_metadata_unreachable_subsetting(font, config):
     """Check for codepoints not covered by METADATA subsets."""
     try:
         import unicodedata2
@@ -86,9 +83,8 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
     from fontbakery.utils import pretty_print_list
 
     # Use the METADATA.pb subsets if we have them
-    metadatapb = metadata_file(family_directory)
-    if metadatapb:
-        metadata = family_metadata(metadatapb)
+    if font.metadata_file:
+        metadata = font.family_metadata
         if metadata:
             subsets = metadata.subsets
         else:
@@ -98,8 +94,9 @@ def com_google_fonts_check_metadata_unreachable_subsetting(
             return
     else:
         # Follow what the packager would do
-        subsets = [s[0] for s in SubsetsInFont(font, 50, 0.01)]
+        subsets = [s[0] for s in SubsetsInFont(font.file, 50, 0.01)]
 
+    font_codepoints = font.font_codepoints
     for subset in subsets:
         font_codepoints = font_codepoints - set(CodepointsInSubset(subset))
 

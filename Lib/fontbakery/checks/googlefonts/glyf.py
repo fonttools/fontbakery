@@ -1,5 +1,4 @@
 from fontbakery.prelude import check, disable, PASS, FAIL, Message
-from fontbakery.shared_conditions import is_ttf  # pylint: disable=unused-import
 
 
 # Disabling this check since the previous implementation was

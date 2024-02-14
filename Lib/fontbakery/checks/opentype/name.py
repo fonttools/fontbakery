@@ -9,12 +9,6 @@ from fontbakery.constants import (
 )
 from fontbakery.utils import markdown_table
 
-from fontbakery.shared_conditions import (  # pylint: disable=unused-import
-    is_ttf,
-    glyph_metrics_stats,
-    style,
-)
-
 
 @check(
     id="com.adobe.fonts/check/name/empty_records",

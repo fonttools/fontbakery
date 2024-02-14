@@ -11,11 +11,13 @@ Domain specific knowledge should be encoded only in the Profile (Checks,
 Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 
 """
+
 from collections import OrderedDict
 import inspect
 import traceback
 from typing import Union, Tuple
 
+from fontbakery.configuration import Configuration
 from fontbakery.result import (
     CheckResult,
     Subresult,
@@ -23,12 +25,6 @@ from fontbakery.result import (
 )
 from fontbakery.message import Message
 from fontbakery.utils import is_negated
-from fontbakery.errors import (
-    CircularDependencyError,
-    FailedConditionError,
-    MissingConditionError,
-    MissingValueError,
-)
 from fontbakery.status import (
     Status,
     ERROR,
@@ -42,9 +38,8 @@ class CheckRunner:
     def __init__(
         self,
         profile,
-        values,
+        context,
         config,
-        use_cache=True,
         jobs=0,
     ):
         # TODO: transform all iterables that are list like to tuples
@@ -52,36 +47,24 @@ class CheckRunner:
         # Also remove duplicates from list like iterables
 
         # Add the profile's config values "underneath" the user's config
-        self.config = profile.merge_default_config(config)
-        self._custom_order = config["custom_order"]
-        self._explicit_checks = config["explicit_checks"]
-        self._exclude_checks = config["exclude_checks"]
+        self.config = Configuration(**profile.configuration_defaults)
+        self.config.update(config)
+        self._explicit_checks = config.get("explicit_checks")
+        self._exclude_checks = config.get("exclude_checks")
         self._iterargs = OrderedDict()
         self._jobs = jobs
+        # self._iterargs is the *count of each type of thing*.
         for singular, plural in profile.iterargs.items():
-            if plural in values:
-                values[plural] = tuple(values[plural])
-                self._iterargs[singular] = len(values[plural])
+            # self._iterargs["fonts"] = len(values.fonts)
+            self._iterargs[singular] = len(context.testables_by_type.get(singular, []))
 
-        self._profile = profile
-        self._profile.test_dependencies()
-        self._values = values
+        self.profile = profile
+        self.context = context
+        self.context.config = self.config  # Move later
+        self.catch_errors = True
 
-        self.use_cache = use_cache
-        self._cache = {"conditions": {}, "order": None}
-
-    @property
-    def iterargs(self):
-        """uses the singular name as key"""
-        iterargs = OrderedDict()
-        for name in self._iterargs:
-            plural = self._profile.iterargs[name]
-            iterargs[name] = tuple(self._values[plural])
-        return iterargs
-
-    @property
-    def profile(self):
-        return self._profile
+        for testable in self.context.testables:
+            testable.context = self.context
 
     @staticmethod
     def _check_result(result) -> Subresult:
@@ -122,159 +105,30 @@ class CheckRunner:
 
         return Subresult(status, message)
 
-    def _evaluate_condition(self, name, iterargs, path=None):
-        if path is None:
-            # top level call
-            path = []
-        if name in path:
-            dependencies = " -> ".join(path)
-            msg = f'Condition "{name}" is' f" a circular dependency in {dependencies}"
-            raise CircularDependencyError(msg)
-
-        path.append(name)
-
-        try:
-            condition = self._profile.conditions[name]
-        except KeyError as err:
-            error = MissingConditionError(name, err)
-            return error, None
-
-        try:
-            args = self._get_args(condition, iterargs, path)
-        except Exception as err:
-            error = FailedConditionError(condition, err)
-            return error, None
-
-        path.pop()
-        try:
-            return None, condition(**args)
-        except Exception as err:
-            error = FailedConditionError(condition, err)
-            return error, None
-
-    def _filter_condition_used_iterargs(self, name, iterargs):
-        allArgs = set()
-        names = list(self._profile.conditions[name].args)
-        while names:
-            name = names.pop()
-            if name in allArgs:
-                continue
-            allArgs.add(name)
-            if name in self._profile.conditions:
-                names += self._profile.conditions[name].args
-        return tuple((name, value) for name, value in iterargs if name in allArgs)
-
-    def _get_condition(self, name, iterargs, path=None):
-        # conditions are evaluated lazily
-        used_iterargs = self._filter_condition_used_iterargs(name, iterargs)
-        key = (name, used_iterargs)
-        if not self.use_cache or key not in self._cache["conditions"]:
-            err, val = self._evaluate_condition(name, used_iterargs, path)
-            if self.use_cache:
-                self._cache["conditions"][key] = err, val
-        else:
-            err, val = self._cache["conditions"][key]
-        return err, val
-
-    def get(self, key, iterargs, *args):
-        return self._get(key, iterargs, None, *args)
-
     def get_iterarg(self, name, index):
         """Used by e.g. reporters"""
-        plural = self._profile.iterargs[name]
-        return self._values[plural][index]
+        plural = self.profile.iterargs[name]
+        return list(getattr(self.context, plural))[index].file
 
-    def _generate_iterargs(self, requirements):
-        if not requirements:
-            yield tuple()
-            return
-        name, length = requirements[0]
-        for index in range(length):
-            current = (name, index)
-            for tail in self._generate_iterargs(requirements[1:]):
-                yield (current,) + tail
-
-    def _derive_iterable_condition(self, name, simple=False, path=None):
-        # returns a generator, which is better for memory critical situations
-        # than a list containing all results of the used conditions
-        condition = self._profile.conditions[name]
-        iterargs = self._profile.get_iterargs(condition)
-
-        if not iterargs:
-            # without this, we would return just an empty tuple
-            raise TypeError(f'Condition "{name}" uses no iterargs.')
-
-        # like [('font', 10), ('other', 22)]
-        requirements = [(singular, self._iterargs[singular]) for singular in iterargs]
-        for iterargs in self._generate_iterargs(requirements):
-            error, value = self._get_condition(name, iterargs, path)
-            if error:
-                raise error
-            if simple:
-                yield value
-            else:
-                yield (iterargs, value)
-
-    def _get(self, name, iterargs, path, *args):
-        iterargsDict = dict(iterargs)
-        has_fallback = len(args) > 0
-        if has_fallback:
-            fallback = args[0]
-
-        if name in self._values:
-            return self._values[name]
-
-        nametype = self._profile.get_type(name, None)
-
-        if name in self._values:
-            return self._values[name]
-
-        if nametype == "expected_values":
-            # No need to validate
-            expected_value = self._profile.get(name)
-            if expected_value.has_default:
-                # has no default: fallback or MissingValueError
-                return expected_value.default
-
-        if nametype == "iterargs" and name in iterargsDict:
-            index = iterargsDict[name]
-            plural = self._profile.get(name)
-            return self._values[plural][index]
-
-        if nametype == "conditions":
-            error, value = self._get_condition(name, iterargs, path)
-            if error:
-                raise error
-            return value
-
-        if nametype == "derived_iterables":
-            condition_name, simple = self._profile.get(name)
-            return self._derive_iterable_condition(condition_name, simple, path)
-
-        if nametype == "config":
-            return self.config
-
-        if has_fallback:
-            return fallback
-
-        report_name = f'"{name}"'
-        raise MissingValueError(f"Value {report_name} is undefined.")
-
-    def _get_args(self, item, iterargs, path=None):
-        # iterargs can't be optional arguments yet, we wouldn't generate
-        # an execution with an empty list. I don't know if that would be even
-        # feasible, so I don't add this complication for the sake of clarity.
-        # If this is needed for anything useful, we'll have to figure this out.
-        args = {}
-        for name in item.args:
-            if name in args:
+    def _get(self, name, iterargs, condition=False):
+        # Is this a property of the whole collection?
+        if hasattr(self.context, name):
+            return getattr(self.context, name)
+        # Is it a property of the file we're testing?
+        for thing, index in iterargs:
+            specific_thing = self.context.testables_by_type[thing][index]
+            # Allow "font" to return the Font object itself
+            if name == thing:
+                return specific_thing
+            if not hasattr(specific_thing, name):
                 continue
-            try:
-                args[name] = self._get(name, iterargs, path)
-            except MissingValueError:
-                if name not in item.optionalArgs:
-                    raise
-        return args
+            return getattr(specific_thing, name)
+        if condition:
+            raise ValueError(f"Undefined condition {name}")
+
+        raise ValueError(
+            f"This can't happen: asked for {name} but nothing provides it."
+        )
 
     def _get_check_dependencies(
         self, identity: Identity
@@ -285,33 +139,18 @@ class CheckRunner:
         unfulfilled_conditions = []
         for condition in identity.check.conditions:
             negate, name = is_negated(condition)
-            if name in self._values:
-                # this is a handy way to set flags from the outside
-                err, val = None, self._values[name]
-            else:
-                err, val = self._get_condition(name, identity.iterargs)
-            if negate:
-                val = not val
-            if err:
-                status = Subresult(ERROR, err)
+            try:
+                val = bool(self._get(name, identity.iterargs, condition=True))
+            except Exception as err:
+                if not self.catch_errors:
+                    raise
+                status = Subresult(ERROR, Message("error", str(err)))
                 return (status, None)
 
-            # An annoying FutureWarning here (Python 3.8.3) on stderr:
-            #   "FutureWarning: The behavior of this method will change in future
-            #    versions. Use specific 'len(elem)' or 'elem is not None' test instead."
-            # Actually not sure how to tackle this, since val is very unspecific
-            # here intentionally. Where is the documentation for the change?
-            if val is None:
-                bool_val = False
-            else:
-                try:
-                    _len = len(val)
-                    bool_val = not _len == 0
-                except TypeError:
-                    # TypeError: object of type 'bool' has no len()
-                    bool_val = bool(val)
+            if negate:
+                val = not val
 
-            if not bool_val:
+            if not val:
                 unfulfilled_conditions.append(condition)
         if unfulfilled_conditions:
             # This will make the check neither pass nor fail
@@ -328,7 +167,9 @@ class CheckRunner:
             )
 
         try:
-            args = self._get_args(identity.check, identity.iterargs)
+            args = {
+                name: self._get(name, identity.iterargs) for name in identity.check.args
+            }
             # Run the generators now, so we can test if they're empty
             for k, v in args.items():
                 if inspect.isgenerator(v) or inspect.isgeneratorfunction(v):
@@ -341,6 +182,8 @@ class CheckRunner:
                 return (status, None)
             return None, args
         except Exception as error:
+            if not self.catch_errors:
+                raise
             status = Subresult(ERROR, Message("failed-dependencies", error))
             return (status, None)
 
@@ -350,7 +193,7 @@ class CheckRunner:
         # Do we skip this check because of dependencies?
         skipped, args = self._get_check_dependencies(identity)
         if skipped:
-            result.append(Subresult(SKIP, skipped.message))
+            result.append(skipped)
             return result
 
         check = identity.check
@@ -370,6 +213,8 @@ class CheckRunner:
             else:
                 subresults = [subresults]
         except Exception as error:
+            if not self.catch_errors:
+                raise
             message = f"Failed with {type(error).__name__}: {error}\n```\n"
             message += "".join(traceback.format_tb(error.__traceback__))
             message += "\n```"
@@ -385,22 +230,42 @@ class CheckRunner:
 
     @property
     def order(self) -> Tuple[Identity, ...]:
-        order = self._cache.get("order", None)
-        if order is not None:
-            return order  # pytype:disable=bad-return-type
+        _order = []
+        for section in self.profile.sections:
+            for check in section.checks:
+                if self._explicit_checks and all(
+                    explicit not in check.id for explicit in self._explicit_checks
+                ):
+                    continue
+                if self._exclude_checks and any(
+                    excluded in check.id for excluded in self._exclude_checks
+                ):
+                    continue
+                args = set(check.args)
+                context_args = set(arg for arg in args if hasattr(self.context, arg))
 
-        order = []
-        # section, check, iterargs = identity
-        for identity in self._profile.execution_order(
-            self._iterargs,
-            custom_order=self._custom_order,
-            explicit_checks=self._explicit_checks,
-            exclude_checks=self._exclude_checks,
-        ):
-            assert isinstance(identity, Identity)
-            order.append(identity)
-        self._cache["order"] = order = tuple(order)
-        return order
+                # Either this is a check which runs on the whole collection
+                # (i.e. all of its arguments can be called as methods on the
+                # CheckRunContext):
+                if context_args == args:
+                    # In which case, we run it once
+                    _order.append(Identity(section, check, ()))
+                    continue
+                # Or it's a check which runs on each item in the collection.
+                for singular, files in self.context.testables_by_type.items():
+                    individual_args = args - context_args
+                    if (
+                        all(
+                            hasattr(file, arg)
+                            for arg in individual_args
+                            for file in files
+                        )
+                        or singular in args
+                    ):
+                        # In which case, we run it once for each item
+                        for i, file in enumerate(files):
+                            _order.append(Identity(section, check, ((singular, i),)))
+        return tuple(_order)
 
     def run(self, reporters):
         # Tell all the reporters we're starting
@@ -429,9 +294,11 @@ class CheckRunner:
 
     def _override_status(self, subresult: Subresult, check):
         # Potentially override the status based on the profile.
-        if new_status := self.profile.should_override(check.id, subresult.message.code):
-            subresult.status = new_status
-            return subresult
+        if check.id in self.profile.overrides:
+            for override in self.profile.overrides[check.id]:
+                if subresult.message.code == override["code"]:
+                    subresult.status = Status(override["status"])
+                    return subresult
         # Potentially override the status based on the config file.
         # Replaces the status with config["overrides"][check.id][message.code]
         status_overrides = self.config.get("overrides", {}).get(check.id)

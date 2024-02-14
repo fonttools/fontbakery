@@ -4,10 +4,6 @@ Checks for Fontwerk <https://fontwerk.com/>
 
 from fontbakery.prelude import check, PASS, FAIL, INFO, Message
 from fontbakery.constants import FsSelection, MacStyle
-from fontbakery.shared_conditions import (  # pylint: disable=unused-import
-    is_variable_font,
-    has_wght_axis,
-)
 
 
 @check(
@@ -260,23 +256,22 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
     """,
     proposal="https://github.com/googlefonts/noto-fonts/issues/2269",
 )
-def com_fontwerk_check_style_linking(ttFont):
+def com_fontwerk_check_style_linking(ttFont, font):
     """Checking style linking entries"""
-    from fontbakery.shared_conditions import is_italic, is_bold
 
     errs = []
-    if is_bold(ttFont):
+    if font.is_bold:
         if not (ttFont["OS/2"].fsSelection & FsSelection.BOLD):
             errs.append("OS/2 fsSelection flag should be (most likely) 'Bold'.")
         if not (ttFont["head"].macStyle & MacStyle.BOLD):
             errs.append("head macStyle flag should be (most likely) 'Bold'.")
         if ttFont["name"].getDebugName(2) not in ("Bold", "Bold Italic"):
             name_id_2_should_be = "Bold"
-            if is_italic(ttFont):
+            if font.is_italic:
                 name_id_2_should_be = "Bold Italic"
             errs.append(f"name ID should be (most likely) '{name_id_2_should_be}'.")
 
-    if is_italic(ttFont):
+    if font.is_italic:
         if "post" in ttFont and not ttFont["post"].italicAngle:
             errs.append(
                 "post talbe italic angle should be (most likely) different to 0."
@@ -287,7 +282,7 @@ def com_fontwerk_check_style_linking(ttFont):
             errs.append("head macStyle flag should be (most likely) 'Italic'.")
         if ttFont["name"].getDebugName(2) not in ("Italic", "Bold Italic"):
             name_id_2_should_be = "Italic"
-            if is_bold(ttFont):
+            if font.is_bold:
                 name_id_2_should_be = "Bold Italic"
             errs.append(f"name ID should be (most likely) '{name_id_2_should_be}'.")
 

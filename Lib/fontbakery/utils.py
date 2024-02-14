@@ -194,7 +194,7 @@ def markdown_table(items):
 def get_regular(fonts):
     # TODO: Maybe also support getting a regular instance from a variable font?
     for font in fonts:
-        if "-Regular.ttf" in font:
+        if "-Regular.ttf" in font.file:
             return font
 
 
@@ -667,3 +667,15 @@ class IndentedParagraph:
                 yield left
             yield from line
             yield from right
+
+
+def keyword_in_full_font_name(ttFont, keyword):
+    from fontbakery.constants import NameID
+
+    for entry in ttFont["name"].names:
+        if (
+            entry.nameID == NameID.FULL_FONT_NAME
+            and keyword in entry.string.decode(entry.getEncoding()).lower().split()
+        ):
+            return True
+    return False

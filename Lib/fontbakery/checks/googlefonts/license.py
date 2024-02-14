@@ -2,11 +2,81 @@ from difflib import Differ
 import os
 
 from fontbakery.constants import NameID, PlatformID
-from fontbakery.prelude import check, Message, INFO, PASS, FAIL, WARN, SKIP
+from fontbakery.prelude import check, condition, Message, INFO, PASS, FAIL, WARN, SKIP
+from fontbakery.testable import Font
 from fontbakery.checks.googlefonts.constants import (
     DESCRIPTION_OF_EXPECTED_COPYRIGHT_STRING_FORMATTING,
     EXPECTED_COPYRIGHT_PATTERN,
 )
+
+
+def git_rootdir(family_dir):
+    if not family_dir:
+        return None
+
+    original_dir = os.getcwd()
+    root_dir = None
+    import subprocess
+
+    try:
+        os.chdir(family_dir)
+        git_cmd = ["git", "rev-parse", "--show-toplevel"]
+        git_output = subprocess.check_output(git_cmd, stderr=subprocess.STDOUT)
+        root_dir = git_output.decode("utf-8").strip()
+
+    except (OSError, IOError, subprocess.CalledProcessError):
+        pass  # Not a git repo, or git is not installed.
+
+    os.chdir(original_dir)
+    return root_dir
+
+
+@condition(Font)
+def licenses(font):
+    """Get a list of paths for every license
+    file found in a font project."""
+    found = []
+    family_directory = font.family_directory
+    search_paths = [family_directory]
+    gitroot = git_rootdir(family_directory)
+    if gitroot and gitroot not in search_paths:
+        search_paths.append(gitroot)
+
+    for directory in search_paths:
+        if directory:
+            for license_filename in ["OFL.txt", "LICENSE.txt"]:
+                license_path = os.path.join(directory, license_filename)
+                if os.path.exists(license_path):
+                    found.append(license_path)
+    return found
+
+
+@condition(Font)
+def license_contents(font):
+    if font.license_path:
+        return open(font.license_path, encoding="utf-8").read().replace(" \n", "\n")
+
+
+@condition(Font)
+def license_path(font):
+    """Get license path."""
+    # This assumes that a repo can have multiple license files
+    # and they're all the same.
+    # FIXME: We should have a fontbakery check for that, though!
+    if font.licenses and len(font.licenses) > 0:
+        return font.licenses[0]
+
+
+@condition(Font)
+def license_filename(font):
+    """Get license filename."""
+    if font.license_path:
+        return os.path.basename(font.license_path)
+
+
+@condition(Font)
+def is_ofl(font):
+    return font.license_filename and "OFL" in font.license_filename
 
 
 @check(

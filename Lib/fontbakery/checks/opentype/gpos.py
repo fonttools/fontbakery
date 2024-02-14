@@ -1,13 +1,15 @@
 from fontbakery.callable import check, condition
+from fontbakery.testable import Font
 from fontbakery.status import PASS, WARN
 from fontbakery.message import Message
 
 
-@condition
-def has_kerning_info(ttFont):
+@condition(Font)
+def has_kerning_info(font):
     """A font has kerning info if it has a GPOS table containing at least one
     Pair Adjustment lookup (either directly or through an extension
     subtable)."""
+    ttFont = font.ttFont
     if "GPOS" not in ttFont:
         return False
 
@@ -24,11 +26,11 @@ def has_kerning_info(ttFont):
 
 
 @check(id="com.google.fonts/check/gpos_kerning_info", proposal="legacy:check/063")
-def com_google_fonts_check_gpos_kerning_info(ttFont):
+def com_google_fonts_check_gpos_kerning_info(font):
     """Does GPOS table have kerning information?
     This check skips monospaced fonts as defined by post.isFixedPitch value
     """
-    if ttFont["post"].isFixedPitch == 0 and not has_kerning_info(ttFont):
+    if font.ttFont["post"].isFixedPitch == 0 and not font.has_kerning_info:
         yield WARN, Message("lacks-kern-info", "GPOS table lacks kerning information.")
     else:
         yield PASS, "GPOS table check for kerning information passed."

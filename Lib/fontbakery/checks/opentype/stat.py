@@ -5,12 +5,6 @@ from fontbakery.message import Message
 from fontbakery.status import FAIL, PASS, WARN, SKIP
 from fontbakery.utils import bullet_list
 
-from fontbakery.shared_conditions import (  # pylint: disable=unused-import
-    is_variable_font,
-    has_STAT_table,
-    style,
-)
-
 
 @check(
     id="com.google.fonts/check/varfont/stat_axis_record_for_each_axis",
@@ -144,7 +138,8 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
     """Ensure VFs have 'ital' STAT axis."""
     from fontTools.ttLib import TTFont
 
-    italics = [f for f in fonts if "Italic" in f]
+    font_filenames = [f.file for f in fonts]
+    italics = [f for f in font_filenames if "Italic" in f]
     missing_roman = []
     italic_to_roman_mapping = {}
     for italic in italics:
@@ -167,7 +162,7 @@ def com_google_fonts_check_italic_axis_in_stat(fonts, config):
             roman_counterpart = italic.replace("Italic", "")
 
         if is_varfont:
-            if roman_counterpart not in fonts:
+            if roman_counterpart not in font_filenames:
                 missing_roman.append(italic)
             else:
                 italic_to_roman_mapping[italic] = roman_counterpart

@@ -145,25 +145,6 @@ def get_doc_desc(func, description, documentation):
     return description, documentation
 
 
-class FontBakeryCondition(FontbakeryCallable):
-    def __init__(
-        self,
-        func,
-        # id,
-        name=None,  # very short text
-        description=None,  # short text
-        documentation=None,  # long text, markdown?
-        force=False,
-    ):
-        super().__init__(func)
-        # self.id = id
-        self.name = func.__name__ if name is None else name
-        self.description, self.documentation = get_doc_desc(
-            func, description, documentation
-        )
-        self.force = force
-
-
 class FontBakeryCheck(FontbakeryCallable):
     def __init__(
         self,
@@ -258,14 +239,16 @@ class FontBakeryCheck(FontbakeryCallable):
     #  return self.id
 
 
-def condition(*args, **kwds):
-    """Check wrapper, a factory for FontBakeryCondition
+def condition(cls):
+    if not inspect.isclass(cls):
+        raise TypeError(f"Condition {cls.__name__} must be added to a class")
 
-    Requires all arguments of FontBakeryCondition but not `func`
-    which is passed via the decorator syntax.
-    """
-    func = args[0]
-    return FontBakeryCondition(func)
+    def decorator(*args, **kwds):
+        func = args[0]
+        # We should also cache this
+        setattr(cls, func.__name__, property(func))
+
+    return decorator
 
 
 def check(*args, **kwds):
@@ -279,42 +262,6 @@ def check(*args, **kwds):
         return FontBakeryCheck(checkfunc, *args, **kwds)
 
     return wrapper
-
-
-# ExpectedValue is not a callable, but it belongs next to check and condition
-_NOT_SET = object()  # used as a marker
-
-
-class FontBakeryExpectedValue:
-    def __init__(
-        self,
-        name,  # unique name in global namespace
-        description=None,  # short text, this is mandatory
-        documentation=None,  # markdown?
-        default=_NOT_SET,  # because None can be a valid default
-        validator=None,  # function, see the docstring of `def validate`
-        force=False,
-    ):
-        self.name = name
-        self.description = description
-        self.documentation = documentation
-        self._default = (True, default) if default is not _NOT_SET else (False, None)
-        self._validator = validator
-        self.force = force
-
-    def __repr__(self):
-        return "<{}:{}>".format(type(self).__name__, self.name)
-
-    @property
-    def has_default(self):
-        return self._default[0]
-
-    @property
-    def default(self):
-        has_default, value = self._default
-        if not has_default:
-            raise AttributeError(f"{self} has no default value")
-        return value
 
 
 class Disabled:

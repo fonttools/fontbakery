@@ -1,12 +1,10 @@
 import os
 from collections import defaultdict
 
+from fontbakery.checks.googlefonts.conditions import expected_font_names
 from fontbakery.constants import PlatformID, WindowsEncodingID, WindowsLanguageID
 from fontbakery.prelude import FAIL, PASS, SKIP, WARN, Message, check, condition
-from fontbakery.shared_conditions import (  # pylint: disable=unused-import
-    VFs,
-    bold_wght_coord,
-)
+from fontbakery.testable import Font
 from fontbakery.utils import exit_with_install_instructions, markdown_table
 
 
@@ -126,15 +124,16 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
 
 @check(
     id="com.google.fonts/check/fvar_instances",
-    conditions=["is_variable_font", "expected_font_names"],
+    conditions=["is_variable_font"],
     rationale="""
         Check a font's fvar instance coordinates comply with our guidelines:
         https://googlefonts.github.io/gf-guide/variable.html#fvar-instances
     """,
     proposal="https://github.com/fonttools/fontbakery/pull/3800",
 )
-def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
+def com_google_fonts_check_fvar_instances(ttFont, ttFonts):
     """Check variable font instances"""
+    expected_names = expected_font_names(ttFont, ttFonts)
 
     def get_instances(ttFont):
         name = ttFont["name"]
@@ -148,7 +147,7 @@ def com_google_fonts_check_fvar_instances(ttFont, expected_font_names):
         return res
 
     font_instances = get_instances(ttFont)
-    expected_instances = get_instances(expected_font_names)
+    expected_instances = get_instances(expected_names)
     table = []
     for name in set(font_instances.keys()) | set(expected_instances.keys()):
         row = {"Name": name}
@@ -382,27 +381,25 @@ def com_google_fonts_check_varfont_has_HVAR(ttFont):
     conditions=["is_variable_font", "has_wght_axis"],
     proposal="https://github.com/fonttools/fontbakery/issues/1707",
 )
-def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
+def com_google_fonts_check_varfont_bold_wght_coord(font):
     """
     The variable font 'wght' (Weight) axis coordinate must be 700 on the 'Bold'
     instance.
     """
-    from fontbakery.shared_conditions import wght_axis
-
-    wght = wght_axis(ttFont)
-    if bold_wght_coord is None:
+    wght = font.wght_axis
+    if font.bold_wght_coord is None:
         if wght and wght.maxValue < 700:
             yield SKIP, Message("no-bold-weight", "Weight axis doesn't go up to bold")
             return
         yield FAIL, Message("no-bold-instance", '"Bold" instance not present.')
-    elif bold_wght_coord == 700:
+    elif font.bold_wght_coord == 700:
         yield PASS, "Bold:wght is 700."
     else:
         yield FAIL, Message(
             "wght-not-700",
             f'The "wght" axis coordinate of'
             f' the "Bold" instance must be 700.'
-            f" Got {bold_wght_coord} instead.",
+            f" Got {font.bold_wght_coord} instead.",
         )
 
 
@@ -416,13 +413,12 @@ def com_google_fonts_check_varfont_bold_wght_coord(ttFont, bold_wght_coord):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3187",
 )
-def com_google_fonts_check_varfont_duplexed_axis_reflow(ttFont, config):
+def com_google_fonts_check_varfont_duplexed_axis_reflow(font, ttFont, config):
     """Ensure VFs with duplexed axes do not vary horizontal advance."""
-    from fontbakery.shared_conditions import get_axis_tags_set
     from fontbakery.utils import all_kerning, pretty_print_list
 
     DUPLEXED_AXES = {"GRAD", "ROND"}
-    relevant_axes = get_axis_tags_set(ttFont) & DUPLEXED_AXES
+    relevant_axes = set(font.axes_by_tag.keys()) & DUPLEXED_AXES
     relevant_axes_display = " or ".join(relevant_axes)
 
     if not (relevant_axes):
@@ -569,11 +565,9 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/2866",
 )
-def com_google_fonts_check_varfont_unsupported_axes(ttFont):
+def com_google_fonts_check_varfont_unsupported_axes(font):
     """Ensure VFs do not contain the ital axis."""
-    from fontbakery.shared_conditions import ital_axis
-
-    if ital_axis(ttFont):
+    if font.ital_axis:
         yield FAIL, Message(
             "unsupported-ital",
             'The "ital" axis is not yet well supported on Google Chrome.',
@@ -611,14 +605,14 @@ def com_google_fonts_check_mandatory_avar_table(ttFont):
         yield PASS, "OK"
 
 
-@condition
+@condition(Font)
 def uharfbuzz_blob(font):
     try:
         import uharfbuzz as hb
     except ImportError:
         exit_with_install_instructions()
 
-    return hb.Blob.from_file_path(font)
+    return hb.Blob.from_file_path(font.file)
 
 
 @check(

@@ -1,8 +1,9 @@
-from fontbakery.prelude import check, condition, Message, INFO, PASS, FAIL
+from functools import lru_cache
+from fontbakery.prelude import check, Message, INFO, PASS, FAIL
 from fontbakery.constants import PlatformID, WindowsEncodingID, WindowsLanguageID
 
 
-@condition
+@lru_cache(maxsize=1)
 def GFAxisRegistry():
     from axisregistry import AxisRegistry
 
@@ -16,15 +17,15 @@ def GFAxisRegistry():
         of the axis definition in the Google Fonts Axis Registry, available at
         https://github.com/google/fonts/tree/main/axisregistry
     """,
-    conditions=["is_variable_font", "family_metadata", "GFAxisRegistry"],
+    conditions=["is_variable_font", "family_metadata"],
     proposal="https://github.com/fonttools/fontbakery/issues/3010",
 )
-def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, GFAxisRegistry):
+def com_google_fonts_check_gf_axisregistry_bounds(family_metadata):
     """Validate METADATA.pb axes values are within gf_axisregistry bounds."""
     passed = True
     for axis in family_metadata.axes:
-        if axis.tag in GFAxisRegistry.keys():
-            expected = GFAxisRegistry[axis.tag]
+        if axis.tag in GFAxisRegistry().keys():
+            expected = GFAxisRegistry()[axis.tag]
             if (
                 axis.min_value < expected.min_value
                 or axis.max_value > expected.max_value
@@ -67,14 +68,14 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata, GFAxisRegistr
         of adoption of variable fonts throughout the industry, and provide source
         material for a future update to the OpenType specification's axis registry.
     """,
-    conditions=["is_variable_font", "family_metadata", "GFAxisRegistry"],
+    conditions=["is_variable_font", "family_metadata"],
     proposal="https://github.com/fonttools/fontbakery/issues/3022",
 )
-def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, GFAxisRegistry):
+def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata):
     """Validate METADATA.pb axes tags are defined in gf_axisregistry."""
     passed = True
     for axis in family_metadata.axes:
-        if axis.tag not in GFAxisRegistry.keys():
+        if axis.tag not in GFAxisRegistry().keys():
             passed = False
             yield FAIL, Message(
                 "bad-axis-tag",
@@ -107,19 +108,19 @@ def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata, GFAxisReg
         has no weight axis, was not appearing in sandbox because default position on
         'opsz' axis was 16pt, and it was not yet a registered fallback positon.
     """,
-    conditions=["is_variable_font", "GFAxisRegistry"],
+    conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3141",
 )
-def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegistry):
+def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont):
     """
     Validate defaults on fvar table match registered fallback names in GFAxisRegistry.
     """
 
     passed = True
     for axis in ttFont["fvar"].axes:
-        if axis.axisTag not in GFAxisRegistry:
+        if axis.axisTag not in GFAxisRegistry():
             continue
-        fallbacks = GFAxisRegistry[axis.axisTag].fallback
+        fallbacks = GFAxisRegistry()[axis.axisTag].fallback
         if axis.defaultValue not in [f.value for f in fallbacks]:
             passed = False
             yield FAIL, Message(
@@ -141,10 +142,10 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont, GFAxisRegi
         in each axis entry at the Google Fonts Axis Registry, available at
         https://github.com/google/fonts/tree/main/axisregistry
     """,
-    conditions=["is_variable_font", "GFAxisRegistry"],
+    conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/issues/3022",
 )
-def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
+def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont):
     """
     Validate STAT particle names and values match the fallback names in GFAxisRegistry.
     """
@@ -183,8 +184,8 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont, GFAxisRegistry):
             continue
 
         axis = ttFont["STAT"].table.DesignAxisRecord.Axis[axis_value.AxisIndex]
-        if axis.AxisTag in GFAxisRegistry.keys():
-            fallbacks = GFAxisRegistry[axis.AxisTag].fallback
+        if axis.AxisTag in GFAxisRegistry().keys():
+            fallbacks = GFAxisRegistry()[axis.AxisTag].fallback
             fallbacks = {f.name: f.value for f in fallbacks}
 
             # Here we assume that it is enough to check for only the Windows,

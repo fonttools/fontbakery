@@ -19,11 +19,10 @@ from fontbakery.codetesting import (
     portable_path,
     TEST_FILE,
 )
-from fontbakery.profiles import opentype as opentype_profile
 
 
 def test_check_name_empty_records():
-    check = CheckTester(opentype_profile, "com.adobe.fonts/check/name/empty_records")
+    check = CheckTester("com.adobe.fonts/check/name/empty_records")
 
     font_path = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
     test_font = TTFont(font_path)
@@ -48,9 +47,7 @@ def test_check_name_no_copyright_on_description():
     """Description strings in the name table
     must not contain copyright info.
     """
-    check = CheckTester(
-        opentype_profile, "com.google.fonts/check/name/no_copyright_on_description"
-    )
+    check = CheckTester("com.google.fonts/check/name/no_copyright_on_description")
 
     # Our reference Mada Regular is know to be good here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -68,7 +65,7 @@ def test_check_name_no_copyright_on_description():
 
 def test_check_monospace():
     """Checking correctness of monospaced metadata."""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/monospace")
+    check = CheckTester("com.google.fonts/check/monospace")
     import string
     from fontbakery.constants import PANOSE_Proportion, IsFixedWidth
 
@@ -216,9 +213,7 @@ def test_check_monospace():
 
 def test_check_name_match_familyname_fullfont():
     """Does full font name begin with the font family name?"""
-    check = CheckTester(
-        opentype_profile, "com.google.fonts/check/name/match_familyname_fullfont"
-    )
+    check = CheckTester("com.google.fonts/check/name/match_familyname_fullfont")
 
     # Our reference Mada Regular is known to be good
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
@@ -349,9 +344,7 @@ def assert_name_table_check_result(
 
 def test_check_family_naming_recommendations():
     """Font follows the family naming recommendations ?"""
-    check = CheckTester(
-        opentype_profile, "com.google.fonts/check/family_naming_recommendations"
-    )
+    check = CheckTester("com.google.fonts/check/family_naming_recommendations")
 
     # Our reference Mada Medium is known to be good
     ttFont = TTFont(TEST_FILE("mada/Mada-Medium.ttf"))
@@ -427,9 +420,7 @@ def test_check_family_naming_recommendations():
 
 
 def test_check_name_postscript_vs_cff():
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/name/postscript_vs_cff"
-    )
+    check = CheckTester("com.adobe.fonts/check/name/postscript_vs_cff")
 
     # Test a font that has matching names. Check should PASS.
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
@@ -460,19 +451,17 @@ def test_check_name_postscript_vs_cff():
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_cff" in msg.message
+    assert "Unfulfilled Conditions: is_cff" in msg
 
     # Now test with a CFF2 font.
     # The test should be skipped due to an unfulfilled condition.
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
-    assert "Unfulfilled Conditions: is_cff" in msg.message
+    assert "Unfulfilled Conditions: is_cff" in msg
 
 
 def test_check_name_postscript_name_consistency():
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/name/postscript_name_consistency"
-    )
+    check = CheckTester("com.adobe.fonts/check/name/postscript_name_consistency")
 
     base_path = portable_path("data/test/source-sans-pro/TTF")
     font_path = os.path.join(base_path, "SourceSansPro-Regular.ttf")
@@ -501,9 +490,7 @@ def test_check_name_postscript_name_consistency():
 
 
 def test_check_family_max_4_fonts_per_family_name():
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/family/max_4_fonts_per_family_name"
-    )
+    check = CheckTester("com.adobe.fonts/check/family/max_4_fonts_per_family_name")
 
     base_path = portable_path("data/test/source-sans-pro/OTF")
 
@@ -541,9 +528,7 @@ def test_check_family_max_4_fonts_per_family_name():
 
 
 def test_check_consistent_font_family_name():
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/family/consistent_family_name"
-    )
+    check = CheckTester("com.adobe.fonts/check/family/consistent_family_name")
 
     base_path = portable_path("data/test/source-sans-pro/OTF")
 
@@ -588,7 +573,7 @@ def test_check_consistent_font_family_name():
 
 
 def test_check_italic_names():
-    check = CheckTester(opentype_profile, "com.google.fonts/check/name/italic_names")
+    check = CheckTester("com.google.fonts/check/name/italic_names")
 
     def get_name(font, nameID):
         for entry in font["name"].names:
@@ -663,7 +648,7 @@ def test_check_italic_names():
 
 
 def test_check_name_postscript():
-    check = CheckTester(opentype_profile, "com.adobe.fonts/check/postscript_name")
+    check = CheckTester("com.adobe.fonts/check/postscript_name")
 
     # Test a font that has OK psname. Check should PASS.
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))

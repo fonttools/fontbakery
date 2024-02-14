@@ -3,8 +3,6 @@ import os
 from fontbakery.constants import NameID, RIBBI_STYLE_NAMES
 from fontbakery.prelude import check, Message, PASS, FAIL, WARN, SKIP, FATAL
 from fontbakery.utils import exit_with_install_instructions
-from fontbakery.shared_conditions import is_italic, is_variable_font
-from fontbakery.checks.googlefonts.conditions import has_regular_style
 from fontbakery.checks.googlefonts.glyphset import can_shape
 
 
@@ -442,11 +440,11 @@ def com_google_fonts_check_metadata_familyname(family_metadata):
     conditions=["family_metadata"],
     proposal="legacy:check/090",
 )
-def com_google_fonts_check_metadata_has_regular(family_metadata):
+def com_google_fonts_check_metadata_has_regular(font):
     """METADATA.pb: According to Google Fonts standards,
     families should have a Regular style.
     """
-    if has_regular_style(family_metadata):
+    if font.has_regular_style:
         yield PASS, "Family has a Regular style."
     else:
         yield FAIL, Message(
@@ -738,20 +736,18 @@ def com_google_fonts_check_metadata_valid_name_values(ttFont, font_metadata):
     conditions=["style", "font_metadata"],
     proposal="legacy:check/099",
 )
-def com_google_fonts_check_metadata_valid_full_name_values(
-    style, font_metadata, font_familynames, typographic_familynames
-):
+def com_google_fonts_check_metadata_valid_full_name_values(font):
     """METADATA.pb font.full_name field contains font name in right format?"""
-    if style in RIBBI_STYLE_NAMES:
-        familynames = font_familynames
+    if font.style in RIBBI_STYLE_NAMES:
+        familynames = font.font_familynames
         if familynames == []:
             yield SKIP, "No FONT_FAMILYNAME"
     else:
-        familynames = typographic_familynames
+        familynames = font.typographic_familynames
         if familynames == []:
             yield SKIP, "No TYPOGRAPHIC_FAMILYNAME"
 
-    if any((name in font_metadata.full_name) for name in familynames):
+    if any((name in font.font_metadata.full_name) for name in familynames):
         yield PASS, (
             "METADATA.pb font.full_name field contains font name in right format."
         )
@@ -759,7 +755,7 @@ def com_google_fonts_check_metadata_valid_full_name_values(
         yield FAIL, Message(
             "mismatch",
             f"METADATA.pb font.full_name field"
-            f' ("{font_metadata.full_name}")'
+            f' ("{font.font_metadata.full_name}")'
             f" does not match correct font name format"
             f' ("{", ".join(familynames)}").',
         )
@@ -776,7 +772,7 @@ def com_google_fonts_check_metadata_valid_full_name_values(
 )
 def com_google_fonts_check_metadata_valid_filename_values(font, family_metadata):
     """METADATA.pb font.filename field contains font name in right format?"""
-    expected = os.path.basename(font)
+    expected = os.path.basename(font.file)
     passed = False
     for font_metadata in family_metadata.fonts:
         if font_metadata.filename == expected:
@@ -837,8 +833,9 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(
         "https://typo.social/@arrowtype/110430680157544757",
     ],
 )
-def com_google_fonts_check_metadata_valid_nameid25(ttFont, style):
+def com_google_fonts_check_metadata_valid_nameid25(font, style):
     'Check name ID 25 to end with "Italic" for Italic VFs.'
+    ttFont = font.ttFont
 
     def get_name(font, ID):
         for entry in font["name"].names:
@@ -846,7 +843,7 @@ def com_google_fonts_check_metadata_valid_nameid25(ttFont, style):
                 return entry.toUnicode()
         return ""
 
-    if not ("Italic" in style and is_variable_font(ttFont)):
+    if not ("Italic" in style and font.is_variable_font):
         yield PASS, ("Not an Italic VF.")
     else:
         passed = True
@@ -1184,7 +1181,7 @@ def com_google_fonts_check_metadata_canonical_weight_value(font_metadata):
         "https://github.com/fonttools/fontbakery/issues/2683",
     ],
 )
-def com_google_fonts_check_metadata_os2_weightclass(ttFont, font_metadata):
+def com_google_fonts_check_metadata_os2_weightclass(font, font_metadata):
     """Check METADATA.pb font weights are correct."""
     # Weight name to value mapping:
     GF_API_WEIGHT_NAMES = {
@@ -1211,7 +1208,8 @@ def com_google_fonts_check_metadata_os2_weightclass(ttFont, font_metadata):
         800: "ExtraBold",
         900: "Black",
     }
-    if is_variable_font(ttFont):
+    ttFont = font.ttFont
+    if font.is_variable_font:
         axes = {f.axisTag: f for f in ttFont["fvar"].axes}
         if "wght" not in axes:
             # if there isn't a wght axis, use the OS/2.usWeightClass
@@ -1325,7 +1323,7 @@ def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
     conditions=["font_metadata"],
     proposal="legacy:check/115",
 )
-def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata):
+def com_google_fonts_check_metadata_canonical_style_names(font, font_metadata):
     """METADATA.pb: Font styles are named canonically?"""
     if font_metadata.style not in ["italic", "normal"]:
         yield SKIP, (
@@ -1333,13 +1331,13 @@ def com_google_fonts_check_metadata_canonical_style_names(ttFont, font_metadata)
             ' as "italic" or "normal" on METADATA.pb.'
         )
     else:
-        if is_italic(ttFont) and font_metadata.style != "italic":
+        if font.is_italic and font_metadata.style != "italic":
             yield FAIL, Message(
                 "italic",
                 f'The font style is "{font_metadata.style}"'
                 f' but it should be "italic".',
             )
-        elif not is_italic(ttFont) and font_metadata.style != "normal":
+        elif not font.is_italic and font_metadata.style != "normal":
             yield FAIL, Message(
                 "normal",
                 f'The font style is "{font_metadata.style}"'

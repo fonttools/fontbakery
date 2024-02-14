@@ -9,12 +9,11 @@ from fontbakery.codetesting import (
     CheckTester,
     TEST_FILE,
 )
-from fontbakery.profiles import opentype as opentype_profile
 
 
 def test_check_loca_maxp_num_glyphs():
     """Does the number of glyphs in the loca table match the maxp table?"""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/loca/maxp_num_glyphs")
+    check = CheckTester("com.google.fonts/check/loca/maxp_num_glyphs")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
     assert_PASS(check(ttFont))

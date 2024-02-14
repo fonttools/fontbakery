@@ -2,6 +2,61 @@ import os
 
 from fontbakery.prelude import check, condition, Message, INFO, PASS, FAIL, WARN, FATAL
 from fontbakery.utils import exit_with_install_instructions
+from fontbakery.testable import Font
+
+
+@condition(Font)
+def description(font):
+    """Read DESCRIPTION.en_us.html file from a font directory."""
+    descfile = os.path.join(os.path.dirname(font.file), "DESCRIPTION.en_us.html")
+    if os.path.exists(descfile):
+        return open(descfile, "r", encoding="utf-8").read()
+    else:
+        return None
+
+
+@condition(Font)
+def description_html(font):
+    try:
+        from lxml import etree
+    except ImportError:
+        exit_with_install_instructions()
+
+    if not font.description:
+        return
+
+    html = "<html>" + font.description + "</html>"
+    try:
+        return etree.fromstring(html)
+    except etree.XMLSyntaxError:
+        return None
+
+
+def github_gfonts_description(font: Font, network):
+    """Get the contents of the DESCRIPTION.en_us.html file
+    from the google/fonts github repository corresponding
+    to a given ttFont.
+    """
+    license_file = font.license_filename  # pytype: disable=attribute-error
+    if not license_file or not network:
+        return None
+
+    from fontbakery.utils import download_file
+    from urllib.request import HTTPError
+
+    LICENSE_DIRECTORY = {"OFL.txt": "ofl", "UFL.txt": "ufl", "LICENSE.txt": "apache"}
+    filename = os.path.basename(font.file)
+    familyname = filename.split("-")[0].lower()
+    url = (
+        f"https://github.com/google/fonts/raw/main"
+        f"/{LICENSE_DIRECTORY[license_file]}/{familyname}/DESCRIPTION.en_us.html"
+    )
+    try:
+        descfile = download_file(url)
+        if descfile:
+            return descfile.read().decode("UTF-8")
+    except HTTPError:
+        return None
 
 
 @check(
@@ -15,7 +70,7 @@ from fontbakery.utils import exit_with_install_instructions
 )
 def com_google_fonts_check_description_noto_has_article(font):
     """Noto fonts must have an ARTICLE.en_us.html file"""
-    directory = os.path.dirname(font)
+    directory = os.path.dirname(font.file)
     descfilepath = os.path.join(directory, "article", "ARTICLE.en_us.html")
     if os.path.exists(descfilepath):
         yield PASS, "ARTICLE.en_us.html exists"
@@ -180,23 +235,6 @@ def com_google_fonts_check_description_urls(description_html):
         yield PASS, "All good!"
 
 
-@condition
-def description_html(description):
-    try:
-        from lxml import etree
-    except ImportError:
-        exit_with_install_instructions()
-
-    if not description:
-        return
-
-    html = "<html>" + description + "</html>"
-    try:
-        return etree.fromstring(html)
-    except etree.XMLSyntaxError:
-        return None
-
-
 @check(
     id="com.google.fonts/check/description/git_url",
     conditions=["description_html", "not is_noto"],
@@ -346,16 +384,15 @@ def com_google_fonts_check_description_eof_linebreak(description):
         will typically change if when font files are updated. Please treat this check
         as a reminder to do so whenever appropriate!
     """,
-    conditions=["description", "github_gfonts_description"],
+    conditions=["description", "network"],
     proposal="https://github.com/fonttools/fontbakery/issues/3182",
 )
-def com_google_fonts_check_description_family_update(
-    description, github_gfonts_description
-):
+def com_google_fonts_check_description_family_update(font, network):
     """
     On a family update, the DESCRIPTION.en_us.html file should ideally also be updated.
     """
-    if github_gfonts_description == description:
+    remote_description = github_gfonts_description(font, network)
+    if remote_description == font.description:
         yield WARN, Message(
             "description-not-updated",
             "The DESCRIPTION.en_us.html file in this family has not changed"

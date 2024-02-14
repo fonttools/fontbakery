@@ -7,12 +7,11 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.status import WARN
-from fontbakery.profiles import opentype as opentype_profile
 
 
 def test_check_dsig():
     """Does the font have a DSIG table ?"""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/dsig")
+    check = CheckTester("com.google.fonts/check/dsig")
 
     # Our reference Cabin Regular font is bad (theres a DSIG table declared):
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))

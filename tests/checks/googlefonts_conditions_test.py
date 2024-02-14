@@ -1,13 +1,10 @@
 import pytest
 from fontTools.ttLib import TTFont
 
-
-from fontbakery.codetesting import TEST_FILE
-from fontbakery.checks.googlefonts.conditions import (
-    canonical_stylename,
-    stylenames_are_canonical,
-    is_icon_font,
-)
+from fontbakery.checks.googlefonts.glyphset import is_icon_font
+from fontbakery.codetesting import TEST_FILE, MockContext, MockFont
+from fontbakery.fonts_profile import setup_context
+from fontbakery.testable import Font
 
 
 @pytest.mark.parametrize(
@@ -58,21 +55,25 @@ from fontbakery.checks.googlefonts.conditions import (
     ],
 )
 def test_canonical_stylename_condition(font, expected_stylename):
-    assert canonical_stylename(font) == expected_stylename
+    assert Font(font).canonical_stylename == expected_stylename
 
 
 def test_stylenames_are_canonical_condition():
-    fonts = (
-        TEST_FILE("mada/Mada-Light.ttf"),
-        TEST_FILE("mada/Mada-Regular.ttf"),
+    context = setup_context(
+        [
+            TEST_FILE("mada/Mada-Light.ttf"),
+            TEST_FILE("mada/Mada-Regular.ttf"),
+        ]
     )
-    assert stylenames_are_canonical(fonts) is True
+    assert context.stylenames_are_canonical is True
 
-    fonts = (
-        TEST_FILE("merriweather/Merriweather-Regular.ttf"),
-        TEST_FILE("merriweather/Merriweather.ttf"),
+    context = MockContext(
+        testables=[
+            MockFont(file=TEST_FILE("merriweather/Merriweather-Regular.ttf")),
+            MockFont(file=TEST_FILE("merriweather/Merriweather.ttf")),
+        ]
     )
-    assert stylenames_are_canonical(fonts) is False
+    assert context.stylenames_are_canonical is False
 
 
 def test_is_icon_font_condition():

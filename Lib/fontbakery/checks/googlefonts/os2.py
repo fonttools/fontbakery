@@ -1,10 +1,71 @@
-from fontbakery.prelude import check, Message, WARN, PASS, FAIL
-from fontbakery.shared_conditions import is_ttf, is_cff, is_variable_font
+from functools import lru_cache
+import re
+
+from fontbakery.checks.googlefonts.conditions import expected_font_names
+from fontbakery.prelude import check, Message, WARN, PASS, FAIL, SKIP
+from fontbakery.utils import exit_with_install_instructions
+
+
+@lru_cache(maxsize=1)
+def registered_vendor_ids():
+    """Get a list of vendor IDs from Microsoft's website."""
+    from pkg_resources import resource_filename
+
+    try:
+        from bs4 import BeautifulSoup, NavigableString
+    except ImportError:
+        exit_with_install_instructions()
+
+    registered_vendor_ids = {}
+    CACHED = resource_filename(
+        "fontbakery", "data/fontbakery-microsoft-vendorlist.cache"
+    )
+    content = open(CACHED, encoding="utf-8").read()
+    # Strip all <A> HTML tags from the raw HTML. The current page contains a
+    # closing </A> for which no opening <A> is present, which causes
+    # beautifulsoup to silently stop processing that section from the error
+    # onwards. We're not using the href's anyway.
+    content = re.sub("<a[^>]*>", "", content, flags=re.IGNORECASE)
+    content = re.sub("</a>", "", content, flags=re.IGNORECASE)
+    soup = BeautifulSoup(content, "html.parser")
+
+    IDs = [chr(c + ord("a")) for c in range(ord("z") - ord("a") + 1)]
+    IDs.append("0-9-")
+
+    for section_id in IDs:
+        section = soup.find("h2", {"id": section_id})
+        if not section:
+            continue
+
+        table = section.find_next_sibling("table")
+        if not table or isinstance(table, NavigableString):
+            continue
+
+        # print ("table: '{}'".format(table))
+        for row in table.findAll("tr"):
+            # print("ROW: '{}'".format(row))
+            cells = row.findAll("td")
+            if not cells:
+                continue
+
+            labels = list(cells[1].stripped_strings)
+
+            # pad the code to make sure it is a 4 char string,
+            # otherwise eg "CF  " will not be matched to "CF"
+            code = cells[0].string.strip()
+            code = code + (4 - len(code)) * " "
+            registered_vendor_ids[code] = labels[0]
+
+            # Do the same with NULL-padding:
+            code = cells[0].string.strip()
+            code = code + (4 - len(code)) * chr(0)
+            registered_vendor_ids[code] = labels[0]
+
+    return registered_vendor_ids
 
 
 @check(
     id="com.google.fonts/check/vendor_id",
-    conditions=["registered_vendor_ids"],
     rationale="""
         Microsoft keeps a list of font vendors and their respective contact info. This
         list is updated regularly and is indexed by a 4-char "Vendor ID" which is
@@ -29,7 +90,7 @@ from fontbakery.shared_conditions import is_ttf, is_cff, is_variable_font
         "https://github.com/fonttools/fontbakery/issues/3943",
     ],
 )
-def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
+def com_google_fonts_check_vendor_id(ttFont):
     """Checking OS/2 achVendID."""
 
     SUGGEST_MICROSOFT_VENDORLIST_WEBSITE = (
@@ -52,7 +113,7 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
             f"OS/2 VendorID is '{vid}', a font editor default."
             f" {SUGGEST_MICROSOFT_VENDORLIST_WEBSITE}",
         )
-    elif vid not in registered_vendor_ids.keys():
+    elif vid not in registered_vendor_ids().keys():
         yield WARN, Message(
             "unknown",
             f"OS/2 VendorID value '{vid}' is not yet recognized."
@@ -82,17 +143,19 @@ def com_google_fonts_check_vendor_id(ttFont, registered_vendor_ids):
         a new script is added, we simply change the Win values to the new yMin
         and yMax, without needing to worry if the line height have changed.
     """,
-    conditions=["not is_cjk_font"],
     severity=10,
     proposal="https://github.com/fonttools/fontbakery/issues/3241",
 )
-def com_google_fonts_check_os2_fsselectionbit7(ttFonts):
+def com_google_fonts_check_os2_fsselectionbit7(fonts):
     """OS/2.fsSelection bit 7 (USE_TYPO_METRICS) is set in all fonts."""
+    if any(font.is_cjk_font for font in fonts):
+        yield SKIP, Message("cjk", "This check does not apply to CJK fonts.")
+        return
 
     bad_fonts = []
-    for ttFont in ttFonts:
-        if not ttFont["OS/2"].fsSelection & (1 << 7):
-            bad_fonts.append(ttFont.reader.file.name)
+    for font in fonts:
+        if not font.ttFont["OS/2"].fsSelection & (1 << 7):
+            bad_fonts.append(font.file)
 
     if bad_fonts:
         yield FAIL, Message(
@@ -168,7 +231,6 @@ def com_google_fonts_check_fstype(ttFont):
 
 @check(
     id="com.google.fonts/check/usweightclass",
-    conditions=["expected_font_names"],
     rationale="""
         Google Fonts expects variable fonts, static ttfs and static otfs to have
         differing OS/2 usWeightClass values.
@@ -187,19 +249,20 @@ def com_google_fonts_check_fstype(ttFont):
     """,
     proposal="legacy:check/020",
 )
-def com_google_fonts_check_usweightclass(ttFont, expected_font_names):
+def com_google_fonts_check_usweightclass(font, ttFonts):
     """
     Check the OS/2 usWeightClass is appropriate for the font's best SubFamily name.
     """
     passed = True
-    value = ttFont["OS/2"].usWeightClass
-    expected_value = expected_font_names["OS/2"].usWeightClass
-    style_name = ttFont["name"].getBestSubFamilyName()
+    value = font.ttFont["OS/2"].usWeightClass
+    expected_names = expected_font_names(font.ttFont, ttFonts)
+    expected_value = expected_names["OS/2"].usWeightClass
+    style_name = font.ttFont["name"].getBestSubFamilyName()
     has_expected_value = value == expected_value
     fail_message = (
         "Best SubFamily name is '{}'. Expected OS/2 usWeightClass is {}, got {}."
     )
-    if is_variable_font(ttFont):
+    if font.is_variable_font:
         if not has_expected_value:
             passed = False
             yield FAIL, Message(
@@ -211,24 +274,24 @@ def com_google_fonts_check_usweightclass(ttFont, expected_font_names):
     # to 100 and ExtraLight to 250.
     # for static otfs, Thin must be 250 and ExtraLight must be 275
     elif "Thin" in style_name:
-        if is_ttf(ttFont) and value not in [100, 250]:
+        if font.is_ttf and value not in [100, 250]:
             passed = False
             yield FAIL, Message(
                 "bad-value", fail_message.format(style_name, expected_value, value)
             )
-        if is_cff(ttFont) and value != 250:
+        if font.is_cff and value != 250:
             passed = False
             yield FAIL, Message(
                 "bad-value", fail_message.format(style_name, 250, value)
             )
 
     elif "ExtraLight" in style_name:
-        if is_ttf(ttFont) and value not in [200, 275]:
+        if font.is_ttf and value not in [200, 275]:
             passed = False
             yield FAIL, Message(
                 "bad-value", fail_message.format(style_name, expected_value, value)
             )
-        if is_cff(ttFont) and value != 275:
+        if font.is_cff and value != 275:
             passed = False
             yield FAIL, Message(
                 "bad-value", fail_message.format(style_name, 275, value)

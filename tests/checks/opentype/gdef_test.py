@@ -10,7 +10,6 @@ from fontbakery.codetesting import (
     CheckTester,
     TEST_FILE,
 )
-from fontbakery.profiles import opentype as opentype_profile
 
 
 def get_test_font():
@@ -43,7 +42,7 @@ def add_gdef_table(font, class_defs):
 
 def test_check_gdef_spacing_marks():
     """Are some spacing glyphs in GDEF mark glyph class?"""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/gdef_spacing_marks")
+    check = CheckTester("com.google.fonts/check/gdef_spacing_marks")
 
     ttFont = get_test_font()
     assert_SKIP(check(ttFont), "if a font lacks a GDEF table...")
@@ -63,7 +62,7 @@ def test_check_gdef_spacing_marks():
 
 def test_check_gdef_mark_chars():
     """Are some mark characters not in in GDEF mark glyph class?"""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/gdef_mark_chars")
+    check = CheckTester("com.google.fonts/check/gdef_mark_chars")
 
     ttFont = get_test_font()
     assert_SKIP(check(ttFont), "if a font lacks a GDEF table...")
@@ -82,7 +81,7 @@ def test_check_gdef_mark_chars():
 
 def test_check_gdef_non_mark_chars():
     """Are some non-mark characters in GDEF mark glyph class spacing?"""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/gdef_non_mark_chars")
+    check = CheckTester("com.google.fonts/check/gdef_non_mark_chars")
 
     ttFont = get_test_font()
     assert_SKIP(check(ttFont), "if a font lacks a GDEF table...")

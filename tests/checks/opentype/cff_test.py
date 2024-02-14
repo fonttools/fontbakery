@@ -5,13 +5,12 @@ from fontbakery.codetesting import (
     TEST_FILE,
 )
 from fontbakery.status import DEBUG, INFO, WARN, ERROR, SKIP, PASS, FAIL
-from fontbakery.profiles import opentype as opentype_profile
 
 check_statuses = (ERROR, FAIL, SKIP, PASS, WARN, INFO, DEBUG)
 
 
 def test_check_cff_call_depth():
-    check = CheckTester(opentype_profile, "com.adobe.fonts/check/cff_call_depth")
+    check = CheckTester("com.adobe.fonts/check/cff_call_depth")
 
     # this font's CFF subr call depths should all be <= 10:
     font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf")
@@ -44,7 +43,7 @@ def test_check_cff_call_depth():
 
 
 def test_check_cff2_call_depth():
-    check = CheckTester(opentype_profile, "com.adobe.fonts/check/cff2_call_depth")
+    check = CheckTester("com.adobe.fonts/check/cff2_call_depth")
 
     # this font's CFF subr call depths should all be <= 10:
     font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf")
@@ -77,9 +76,7 @@ def test_check_cff2_call_depth():
 
 
 def test_check_cff_deprecated_operators():
-    check = CheckTester(
-        opentype_profile, "com.adobe.fonts/check/cff_deprecated_operators"
-    )
+    check = CheckTester("com.adobe.fonts/check/cff_deprecated_operators")
 
     # this font uses the deprecated 'dotsection' operator
     font = TEST_FILE("deprecated_operators/cff1_dotsection.otf")

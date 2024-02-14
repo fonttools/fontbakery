@@ -1,5 +1,4 @@
 from fontbakery.prelude import check, Message, PASS, FAIL, WARN
-from fontbakery.shared_conditions import is_variable_font
 
 
 @check(
@@ -23,7 +22,7 @@ from fontbakery.shared_conditions import is_variable_font
         "https://github.com/fonttools/fontbakery/issues/4131",
     ],
 )
-def com_google_fonts_check_colorfont_tables(ttFont):
+def com_google_fonts_check_colorfont_tables(font, ttFont):
     """Check font has the expected color font tables."""
     passed = True
     NANOEMOJI_ADVICE = (
@@ -44,7 +43,7 @@ def com_google_fonts_check_colorfont_tables(ttFont):
         elif (
             ttFont["COLR"].version == 1
             and "SVG " not in ttFont
-            and not is_variable_font(ttFont)
+            and not font.is_variable_font
         ):
             passed = False
             yield FAIL, Message(
@@ -55,7 +54,7 @@ def com_google_fonts_check_colorfont_tables(ttFont):
             )
 
     if "SVG " in ttFont:
-        if is_variable_font(ttFont):
+        if font.is_variable_font:
             passed = False
             yield FAIL, Message(
                 "variable-svg",

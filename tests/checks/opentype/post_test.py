@@ -8,8 +8,8 @@ from fontbakery.codetesting import (
     assert_results_contain,
     CheckTester,
     TEST_FILE,
+    MockFont,
 )
-from fontbakery.profiles import opentype as opentype_profile
 
 
 mada_fonts = [
@@ -30,9 +30,7 @@ def mada_ttFonts():
 
 def test_check_family_underline_thickness(mada_ttFonts):
     """Fonts have consistent underline thickness ?"""
-    check = CheckTester(
-        opentype_profile, "com.google.fonts/check/family/underline_thickness"
-    )
+    check = CheckTester("com.google.fonts/check/family/underline_thickness")
 
     # We start with our reference Mada font family,
     # which we know has the same value of post.underlineThickness
@@ -61,7 +59,7 @@ def test_check_family_underline_thickness(mada_ttFonts):
 
 def test_check_post_table_version():
     """Font has acceptable post format version table?"""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/post_table_version")
+    check = CheckTester("com.google.fonts/check/post_table_version")
 
     # create mock fonts for post format testing
 
@@ -147,7 +145,7 @@ def test_check_post_table_version():
 
 def test_check_italic_angle():
     """Checking post.italicAngle value."""
-    check = CheckTester(opentype_profile, "com.google.fonts/check/italic_angle")
+    check = CheckTester("com.google.fonts/check/italic_angle")
 
     ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
 
@@ -168,32 +166,38 @@ def test_check_italic_angle():
 
         if expected_result != PASS:
             assert_results_contain(
-                check(ttFont, {"style": style}),
+                check(MockFont(ttFont=ttFont, style=style)),
                 expected_result,
                 expected_msg,
                 f"with italic-angle:{value} style:{style}...",
             )
         else:
             assert_PASS(
-                check(ttFont, {"style": style}),
+                check(MockFont(ttFont=ttFont, style=style)),
                 f"with italic-angle:{value} style:{style}...",
             )
 
     # Cairo, check left and right-leaning explicitly
     ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.rightslanted.ttf"))
-    assert_PASS(check(ttFont, {"style": "Italic"}))
+    assert_PASS(check(MockFont(ttFont=ttFont, style="Italic")))
     ttFont["post"].italicAngle *= -1
-    assert_results_contain(check(ttFont, {"style": "Italic"}), WARN, "positive")
+    assert_results_contain(
+        check(MockFont(ttFont=ttFont, style="Italic")), WARN, "positive"
+    )
 
     ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.leftslanted.ttf"))
-    assert_PASS(check(ttFont, {"style": "Italic"}))
+    assert_PASS(check(MockFont(ttFont=ttFont, style="Italic")))
     ttFont["post"].italicAngle *= -1
-    assert_results_contain(check(ttFont, {"style": "Italic"}), WARN, "negative")
+    assert_results_contain(
+        check(MockFont(ttFont=ttFont, style="Italic")), WARN, "negative"
+    )
 
     ttFont = TTFont(TEST_FILE("cairo/CairoPlay-Italic.rightslanted.ttf"))
-    assert_PASS(check(ttFont, {"style": "Italic"}))
+    assert_PASS(check(MockFont(ttFont=ttFont, style="Italic")))
     ttFont["glyf"]["I"].endPtsOfContours = []
     ttFont["glyf"]["I"].coordinates = []
     ttFont["glyf"]["I"].flags = []
     ttFont["glyf"]["I"].numberOfContours = 0
-    assert_results_contain(check(ttFont, {"style": "Italic"}), WARN, "empty-glyphs")
+    assert_results_contain(
+        check(MockFont(ttFont=ttFont, style="Italic")), WARN, "empty-glyphs"
+    )
