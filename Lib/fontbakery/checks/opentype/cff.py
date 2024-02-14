@@ -1,5 +1,5 @@
 from fontbakery.callable import check, condition
-from fontbakery.testable import Font
+from fontbakery.testable import Font, TTCFont
 from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 
@@ -103,7 +103,10 @@ def cff_analysis(font):
     from fontTools.ttLib import TTFont
 
     analysis = CFFAnalysis()
-    ttFont = TTFont(font.file)  # Use our own copy here since we are decompiling
+    if isinstance(font, TTCFont):
+        ttFont = TTFont(font.file, fontNumber=font.index)
+    else:
+        ttFont = TTFont(font.file)  # Use our own copy here since we are decompiling
 
     if "CFF " in ttFont:
         cff = ttFont["CFF "].cff
