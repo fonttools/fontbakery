@@ -13,7 +13,7 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 import inspect
 
-from functools import wraps, update_wrapper
+from functools import update_wrapper, cached_property
 from typing import Callable
 
 
@@ -245,8 +245,9 @@ def condition(cls):
 
     def decorator(*args, **kwds):
         func = args[0]
-        # We should also cache this
-        setattr(cls, func.__name__, property(func))
+        prop = cached_property(func)
+        prop.__set_name__(cls, func.__name__)
+        setattr(cls, func.__name__, prop)
 
     return decorator
 
