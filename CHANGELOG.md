@@ -3,6 +3,10 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.12.0 (2024-Feb-??)
+  - ...
+
+
+## 0.12.0a1 (2024-Feb-14)
   - Major refactoring. Check definitions now are all placed at `Lib/fontbakery/checks` and profile definitions are purely declarative, picking the checks from the pool by check-id. (PR #4491)
 
 ### New checks
