@@ -4334,7 +4334,18 @@ def test_check_STAT_gf_axisregistry():
     ttFont["STAT"].table.AxisValueArray.AxisValue[3].Value = 800
     assert_results_contain(check(ttFont), FAIL, "bad-coordinate")
 
-    # Let's remove all Axis Values. This will fail since we Google Fonts
+    # restore good value:
+    ttFont["STAT"].table.AxisValueArray.AxisValue[3].Value = 800
+
+    # We accept name = "Italic" on 'slnt' axis (since PR #4215)
+    assert ttFont["STAT"].table.DesignAxisRecord.Axis[0].AxisTag == "wght"
+    ttFont["STAT"].table.DesignAxisRecord.Axis[0].AxisTag = "slnt"
+    for i in range(7):
+        name = ttFont["name"].names[22 + i]
+        ttFont["name"].names[22 + i].string = "Italic".encode(name.getEncoding())
+    assert_results_contain(check(ttFont), INFO, "italic-detected")
+
+    # Let's remove all Axis Values. This will fail since Google Fonts
     # requires them.
     ttFont["STAT"].table.AxisValueArray = None
     assert_results_contain(check(ttFont), FAIL, "missing-axis-values")

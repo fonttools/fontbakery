@@ -12,6 +12,14 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the FontWerk Profile
   - **EXPERIMENTAL - [com.fontwerk/check/names_match_default_fvar]:** Check if the font names match default fvar. (PRs #3604 / #3698)
 
+### Deprecated checks
+#### Removed from the Universal Profile
+  - **[com.google.fonts/check/STAT_strings]:** (PR #4215)
+
+### Changes to existing checks
+#### On the Google Fonts Profile
+  - **[com.google.fonts/check/STAT/gf_axisregistry]:** Allow Italic AxisValues in slnt axis. (PR #4215)
+
 
 ## 0.11.1 (2024-Feb-06)
 ### Release highlights & new features
