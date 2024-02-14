@@ -107,8 +107,7 @@ class CheckRunner:
 
     def get_iterarg(self, name, index):
         """Used by e.g. reporters"""
-        plural = self.profile.iterargs[name]
-        return list(getattr(self.context, plural))[index].file
+        return self.context.testables_by_type[name][index].file_displayname
 
     def _get(self, name, iterargs, condition=False):
         # Is this a property of the whole collection?

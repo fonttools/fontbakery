@@ -14,6 +14,9 @@ class Testable:
     singular = "testable"
     plural = "testables"
 
+    @property
+    def file_displayname(self):
+        return os.path.basename(self.file)
 
 
 @dataclass
@@ -236,6 +239,10 @@ class TTCFont(Font):
         with open(self.file, "rb") as ttcfile:
             ttc = TTCollection(ttcfile)
             return ttc.fonts[self.index]
+
+    @property
+    def file_displayname(self):
+        return os.path.basename(self.file) + "#" + str(self.index)
 
 
 FILE_TYPES = [Readme, Ufo, Designspace, GlyphsFile, MetadataPB, Font]
