@@ -69,6 +69,15 @@ jobs:
         --verbose
         -c required_tables
 
+    - name: Run Opentype check on a TTC file
+      run: >-
+        fontbakery check-opentype
+        data/test/ttc/NotoSerifToto.ttc
+        -x tabular_kerning
+        -x style
+        -x family
+        -x monospace
+
     - name: Run Font Bureau checks
       run: >-
         fontbakery check-fontbureau
