@@ -3,6 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.12.0 (2024-Feb-??)
+  - **[multi-threading]:** Lock reporting when returning results. (issue #4494)
   - Added support for checking TTC (OpenType font collection) files. (issue #2595)
   - And also includes the changes from the previous release-candidate v0.12.0a1 (2024-Feb-14)
 
