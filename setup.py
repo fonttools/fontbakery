@@ -57,7 +57,7 @@ googlefonts_always_latest = [
     "axisregistry==0.4.5",  # FIXME: We have something wrong with v0.4.8 (issue #4516)
     "gflanguages>=0.5.17",
     "gfsubsets>=2024.2.5",
-    "glyphsets>=0.6.13",
+    "glyphsets>=0.6.14",
     "shaperglot>=0.4.0",
 ]
 
