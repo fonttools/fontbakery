@@ -13,24 +13,8 @@ Conditions) and MAYBE in *customized* reporters e.g. subclasses.
 """
 import inspect
 
-from functools import wraps, update_wrapper
+from functools import update_wrapper, cached_property
 from typing import Callable
-
-
-def cached_getter(func):
-    """Decorate a property by executing it at instatiation time and cache the
-    result on the instance object."""
-
-    @wraps(func)
-    def wrapper(self):
-        attribute = f"_{func.__name__}"
-        value = getattr(self, attribute, None)
-        if value is None:
-            value = func(self)
-            setattr(self, attribute, value)
-        return value
-
-    return wrapper
 
 
 class FontbakeryCallable:
@@ -56,13 +40,11 @@ class FontbakeryCallable:
             getattr(self, "id", getattr(self, "name", super().__repr__())),
         )  # pylint: disable=consider-using-f-string
 
-    @property
-    @cached_getter
+    @cached_property
     def args(self):
         return self.mandatoryArgs + self.optionalArgs
 
-    @property
-    @cached_getter
+    @cached_property
     def mandatoryArgs(self):
         args = []
         # make follow_wrapped=True explicit, even though it is the default!
@@ -84,8 +66,7 @@ class FontbakeryCallable:
             args.append(name)
         return tuple(args)
 
-    @property
-    @cached_getter
+    @cached_property
     def optionalArgs(self):
         args = []
         # make follow_wrapped=True explicit, even though it is the default!
@@ -245,8 +226,9 @@ def condition(cls):
 
     def decorator(*args, **kwds):
         func = args[0]
-        # We should also cache this
-        setattr(cls, func.__name__, property(func))
+        prop = cached_property(func)
+        prop.__set_name__(cls, func.__name__)
+        setattr(cls, func.__name__, prop)
 
     return decorator
 
