@@ -18,6 +18,9 @@ from fontbakery.errors import ValueValidationError
 from fontbakery.profile import Profile, Section
 
 
+ITERARGS = {val.singular: val.plural for val in FILE_TYPES}
+
+
 def setup_context(files):
     context = CheckRunContext([])
 
@@ -152,7 +155,7 @@ def profile_factory(module):
         name=profile_data.get(
             "name", module.__name__.replace("fontbakery.profiles.", "")
         ),
-        iterargs={val.singular: val.plural for val in FILE_TYPES},
+        iterargs=ITERARGS,
         sections=list(sections.values()),
         overrides=profile_data.get("overrides", {}),
     )
