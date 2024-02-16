@@ -189,10 +189,12 @@ def test_check_override_family_win_ascent_and_descent():
     # The overridden check should just WARN.
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), WARN, "ascent")
-    assert msg == (
+    assert (
         "OS/2.usWinAscent value should be equal or greater than 880,"
         " but got 776 instead"
-    )
+    ) in msg
+    assert "Overridden" in msg
+    assert "For Adobe, this is not as severe as" in msg
 
     vm = MockContext(ttFonts=[ttFont]).vmetrics
     y_max = vm["ymax"]
@@ -203,10 +205,12 @@ def test_check_override_family_win_ascent_and_descent():
     # The overridden check should just WARN.
     os2_table.usWinAscent = y_max * 2 + 1
     msg = assert_results_contain(check(ttFont), WARN, "ascent")
-    assert msg == (
+    assert (
         "OS/2.usWinAscent value 1761 is too large."
         " It should be less than double the yMax. Current yMax value is 880"
-    )
+    ) in msg
+    assert "Overridden" in msg
+    assert "For Adobe, this is not as severe as" in msg
 
     # Now fix the value of 'OS/2.usWinAscent'. The overridden check should PASS.
     os2_table.usWinAscent = y_max
@@ -216,19 +220,23 @@ def test_check_override_family_win_ascent_and_descent():
     # Now mess up the 'OS/2.usWinDescent' value. The overridden check should just WARN.
     os2_table.usWinDescent = abs(y_min) - 10
     msg = assert_results_contain(check(ttFont), WARN, "descent")
-    assert msg == (
+    assert (
         "OS/2.usWinDescent value should be equal or greater than 292,"
         " but got 282 instead"
-    )
+    ) in msg
+    assert "Overridden" in msg
+    assert "For Adobe, this is not as severe as" in msg
 
     # Now change 'OS/2.usWinDescent' to be more than double 'head.yMin'.
     # The overridden check should just WARN.
     os2_table.usWinDescent = abs(y_min) * 2 + 1
     msg = assert_results_contain(check(ttFont), WARN, "descent")
-    assert msg == (
+    assert (
         "OS/2.usWinDescent value 585 is too large."
         " It should be less than double the yMin. Current absolute yMin value is 292"
-    )
+    ) in msg
+    assert "Overridden" in msg
+    assert "For Adobe, this is not as severe as" in msg
 
 
 def test_check_override_os2_metrics_match_hhea():
@@ -252,7 +260,8 @@ def test_check_override_os2_metrics_match_hhea():
     # Now we change sTypoAscender to be bad. The overridden check should just WARN.
     os2_table.sTypoAscender = ascent - 100
     msg = assert_results_contain(check(ttFont), WARN, "ascender")
-    assert msg == "OS/2 sTypoAscender (800) and hhea ascent (900) must be equal."
+    assert "OS/2 sTypoAscender (800) and hhea ascent (900) must be equal." in msg
+    assert "Overridden" in msg
 
     # Restore 'sTypoAscender' to a good value.
     os2_table.sTypoAscender = ascent
@@ -261,7 +270,8 @@ def test_check_override_os2_metrics_match_hhea():
     # The overridden check should just WARN.
     os2_table.sTypoDescender = descent + 100
     msg = assert_results_contain(check(ttFont), WARN, "descender")
-    assert msg == "OS/2 sTypoDescender (-200) and hhea descent (-300) must be equal."
+    assert "OS/2 sTypoDescender (-200) and hhea descent (-300) must be equal." in msg
+    assert "Overridden" in msg
 
     # Restore 'sTypoDescender' to a good value.
     os2_table.sTypoDescender = descent
@@ -270,7 +280,8 @@ def test_check_override_os2_metrics_match_hhea():
     # The overridden check should just WARN.
     os2_table.sTypoLineGap = linegap + 100
     msg = assert_results_contain(check(ttFont), WARN, "lineGap")
-    assert msg == "OS/2 sTypoLineGap (200) and hhea lineGap (100) must be equal."
+    assert "OS/2 sTypoLineGap (200) and hhea lineGap (100) must be equal." in msg
+    assert "Overridden" in msg
 
 
 def test_check_override_varfont_valid_default_instance_nameids():
@@ -290,10 +301,11 @@ def test_check_override_varfont_valid_default_instance_nameids():
     msg = assert_results_contain(
         check(ttFont_1), WARN, "invalid-default-instance-subfamily-name"
     )
-    assert msg == (
+    assert (
         "'Instance #1' instance has the same coordinates as the default"
         " instance; its subfamily name should be 'Regular'"
-    )
+    ) in msg
+    assert "Overridden" in msg
 
     # The value of postScriptNameID is 0xFFFF for all the instance records in CabinVF.
     # Change one of them, to make the check validate the postScriptNameID value of the
@@ -303,10 +315,11 @@ def test_check_override_varfont_valid_default_instance_nameids():
     msg = assert_results_contain(
         check(ttFont_1), WARN, "invalid-default-instance-postscript-name"
     )
-    assert msg == (
+    assert (
         "'Instance #1' instance has the same coordinates as the default instance;"
         " its postscript name should be 'Cabin-Regular', instead of 'None'."
-    )
+    ) in msg
+    assert "Overridden" in msg
 
 
 def test_check_override_stat_has_axis_value_tables():
@@ -322,7 +335,8 @@ def test_check_override_stat_has_axis_value_tables():
     # The overridden check should WARN.
     ttFont["STAT"].table.AxisValueArray.AxisValue.pop(3)
     msg = assert_results_contain(check(ttFont), WARN, "missing-axis-value-table")
-    assert msg == "STAT table is missing Axis Value for 'wght' value '500.0'"
+    assert "STAT table is missing Axis Value for 'wght' value '500.0'" in msg
+    assert "Overridden" in msg
 
     # Add a format 4 AxisValue table with a single AxisValueRecord. This overriden check
     # should WARN.
@@ -338,7 +352,8 @@ def test_check_override_stat_has_axis_value_tables():
     f4avt.AxisCount = len(f4avt.AxisValueRecord)
     ttFont["STAT"].table.AxisValueArray.AxisValue.append(f4avt)
     msg = assert_results_contain(check(ttFont), WARN, "format-4-axis-count")
-    assert msg == "STAT Format 4 Axis Value table has axis count <= 1."
+    assert "STAT Format 4 Axis Value table has axis count <= 1." in msg
+    assert "Overridden" in msg
 
 
 def test_check_override_inconsistencies_between_fvar_stat():
@@ -436,7 +451,8 @@ def test_check_override_trailing_spaces():
         WindowsLanguageID.ENGLISH_USA,
     )
     msg = assert_results_contain(check(ttFont), WARN, "trailing-space")
-    assert msg.endswith("'This Font [...]Software. '")
+    assert "'This Font [...]Software. '" in msg
+    assert "Overridden" in msg
 
 
 def test_check_override_bold_wght_coord():
@@ -460,7 +476,8 @@ def test_check_override_bold_wght_coord():
     del fvar_table.instances[4]
 
     msg = assert_results_contain(check(ttFont), WARN, "no-bold-instance")
-    assert msg == '"Bold" instance not present.'
+    assert '"Bold" instance not present.' in msg
+    assert "Overridden" in msg
 
 
 def test_check_STAT_strings():
