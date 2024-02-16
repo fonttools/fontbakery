@@ -149,7 +149,9 @@ def profile_factory(module):
         )
 
     profile = Profile(
-        name=profile_data.get("name", module.__name__.replace("fontbakery.profiles.", "")),
+        name=profile_data.get(
+            "name", module.__name__.replace("fontbakery.profiles.", "")
+        ),
         iterargs={val.singular: val.plural for val in FILE_TYPES},
         sections=list(sections.values()),
         overrides=profile_data.get("overrides", {}),
