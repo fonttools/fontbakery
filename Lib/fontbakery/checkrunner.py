@@ -299,11 +299,20 @@ class CheckRunner:
             reporter.end()
 
     def _override_status(self, subresult: Subresult, check):
+        orig_status = subresult.status.name
+
         # Potentially override the status based on the profile.
         if check.id in self.profile.overrides:
             for override in self.profile.overrides[check.id]:
                 if subresult.message.code == override["code"]:
                     subresult.status = Status(override["status"])
+                    subresult.message.message += f"""
+
+*Overridden*: This check was originally a {orig_status} but was
+overridden by the {self.profile.name} profile:
+
+> {override.get("reason", "No reason given.")}
+"""
                     return subresult
         # Potentially override the status based on the config file.
         # Replaces the status with config["overrides"][check.id][message.code]
@@ -315,4 +324,9 @@ class CheckRunner:
         ):
             return subresult
         subresult.status = Status(status_overrides[subresult.message.code])
+        subresult.message.message += f"""
+
+*Overridden*: This check was originally a {orig_status} but was
+overridden by the configuration file.
+"""
         return subresult
