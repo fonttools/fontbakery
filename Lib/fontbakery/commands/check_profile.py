@@ -18,7 +18,6 @@ from fontbakery.status import (
     WARN,
 )
 from fontbakery.configuration import Configuration
-from fontbakery.profile import Profile
 from fontbakery.errors import ValueValidationError
 from fontbakery.fonts_profile import (
     profile_factory,
@@ -355,11 +354,7 @@ def get_profile():
 
     argument_parser.error = error
 
-    try:
-        args, _ = argument_parser.parse_known_args()
-    except ArgumentParserError:
-        # silently fails, the main parser will show usage string.
-        return Profile()
+    args, _ = argument_parser.parse_known_args()
     imported = get_module(args.profile)
     profile = profile_factory(imported)
     if not profile:
