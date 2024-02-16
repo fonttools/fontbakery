@@ -57,7 +57,7 @@ class HTMLReporter(SerializeReporter):
         total = 0
         loaders = [PackageLoader("fontbakery.reporters", "templates/html")]
         try:
-            profile = self.runner.profile.profile_tag
+            profile = self.runner.profile.name
             loaders.insert(
                 0,
                 PackageLoader("fontbakery.reporters", "templates/" + profile + "/html"),
