@@ -1,7 +1,7 @@
 import os
 
 from fontbakery.constants import NameID, RIBBI_STYLE_NAMES
-from fontbakery.prelude import check, Message, PASS, FAIL, WARN, SKIP, FATAL
+from fontbakery.prelude import check, Message, INFO, PASS, FAIL, WARN, SKIP, FATAL
 from fontbakery.utils import exit_with_install_instructions
 from fontbakery.checks.googlefonts.glyphset import can_shape
 
@@ -1890,3 +1890,45 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
         )
     else:
         yield PASS, "OK."
+
+
+@check(
+    id="com.google.fonts/check/metadata/minisite_url",
+    conditions=["family_metadata"],
+    rationale="""
+        Validate family.repository_url field.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4504",
+    experimental="Since 2024/Feb/16",
+)
+def com_google_fonts_check_metadata_minisite_url(family_metadata):
+    """
+    METADATA.pb: Validate family.repository_url field.
+    """
+    minisite_url = family_metadata.minisite_url
+    if not minisite_url:
+        yield INFO, Message(
+            "lacks-minisite-url", "Please ocnsider adding a family.minisite_url entry."
+        )
+        return
+
+    def clean_url(url):
+        if url.endswith("/"):
+            url = url[:-1]
+        if url.endswith("/index.htm"):
+            url = url[:-10]
+        if url.endswith("/index.html"):
+            url = url[:-11]
+        return url
+
+    bad_urls = []
+    expected = clean_url(minisite_url)
+    if minisite_url != expected:
+        yield FAIL, Message(
+            "trailing-clutter",
+            f"Please change minisite_url\n\n"
+            f"From '{minisite_url}'\n\n"
+            f"To: '{expected}'\n\n",
+        )
+    else:
+        yield PASS, "OK"

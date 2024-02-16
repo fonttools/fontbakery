@@ -7,6 +7,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - Added support for checking TTC (OpenType font collection) files. (issue #2595)
   - And also includes the changes from the previous release-candidate v0.12.0a1 (2024-Feb-14)
 
+### New checks
+#### Added to the Google Fonts profile
+  - **EXPERIMENTAL - [com.google.fonts/check/metadata/minisite_url]:** Validate minisite_url field on METADATA.pb (issue #4504)
+
 
 ## 0.12.0a1 (2024-Feb-14)
   - Major refactoring. Check definitions now are all placed at `Lib/fontbakery/checks` and profile definitions are purely declarative, picking the checks from the pool by check-id. (PR #4491)

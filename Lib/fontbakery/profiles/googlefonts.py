@@ -28,6 +28,7 @@ PROFILE = {
             "com.google.fonts/check/metadata/match_fullname_postscript",
             "com.google.fonts/check/metadata/match_filename_postscript",
             "com.google.fonts/check/metadata/match_weight_postscript",
+            "com.google.fonts/check/metadata/minisite_url",
             "com.google.fonts/check/metadata/valid_name_values",
             "com.google.fonts/check/metadata/valid_full_name_values",
             "com.google.fonts/check/metadata/valid_filename_values",

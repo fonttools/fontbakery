@@ -5174,3 +5174,39 @@ def test_check_metadata_has_tags():
         "no-tags",
         "with a name that doesn't appear...",
     )
+
+
+def test_check_metadata_minisite_url():
+    """Validate minisite_url field"""
+    check = CheckTester("com.google.fonts/check/metadata/minisite_url")
+
+    font = "data/test/merriweather/Merriweather-Regular.ttf"
+    assert_results_contain(check(font), INFO, "lacks-minisite-url")
+
+    md = Font(font).family_metadata
+    md.minisite_url = "a_good_one.com"
+    assert_PASS(check(MockFont(file=font, family_metadata=md)), "with a good one")
+
+    md.minisite_url = "some_url/"
+    assert_results_contain(
+        check(MockFont(file=font, family_metadata=md)),
+        FAIL,
+        "trailing-clutter",
+        "with a minisite_url with unnecessary trailing forward-slash",
+    )
+
+    md.minisite_url = "some_url/index.htm"
+    assert_results_contain(
+        check(MockFont(file=font, family_metadata=md)),
+        FAIL,
+        "trailing-clutter",
+        "with a minisite_url with unnecessary trailing /index.htm",
+    )
+
+    md.minisite_url = "some_url/index.html"
+    assert_results_contain(
+        check(MockFont(file=font, family_metadata=md)),
+        FAIL,
+        "trailing-clutter",
+        "with a minisite_url with unnecessary trailing /index.html",
+    )
