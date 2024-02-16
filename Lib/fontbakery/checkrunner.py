@@ -310,8 +310,7 @@ class CheckRunner:
 
 *Overridden*: This check was originally a {orig_status} but was
 overridden by the {self.profile.name} profile:
-
-> {override.get("reason", "No reason given.")}
+{override.get("reason", "No reason given.")}
 """
                     return subresult
         # Potentially override the status based on the config file.
