@@ -1,5 +1,7 @@
 import os
 
+from fontTools.ttLib import TTFont
+
 from fontbakery.prelude import check, Message, INFO, PASS, FAIL, WARN, SKIP
 from fontbakery.constants import LATEST_TTFAUTOHINT_VERSION, NameID
 from fontbakery.utils import filesize_formatting
@@ -16,7 +18,7 @@ def hinting_stats(font: Font):
     from fontTools.subset import main as pyftsubset
 
     hinted_size = os.stat(font.file).st_size
-    ttFont = font.ttFont
+    ttFont = TTFont(font.file)  # Use our own copy since we will dehint it
 
     if font.is_ttf:
         dehinted_buffer = BytesIO()
