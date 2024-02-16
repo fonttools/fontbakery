@@ -2922,23 +2922,31 @@ def test_check_metadata_category():
         # Open Sans' origin is Light so this should pass
         (
             TEST_FILE("varfont/OpenSans[wdth,wght].ttf"),
-            {2: "Regular", 17: "Light"},
+            {
+                NameID.FONT_SUBFAMILY_NAME: "Regular",
+                NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "Light",
+            },
             PASS,
         ),
         (
             TEST_FILE("varfont/OpenSans[wdth,wght].ttf"),
-            {2: "Regular", 17: "Condensed Light"},
+            {
+                NameID.FONT_SUBFAMILY_NAME: "Regular",
+                NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "Condensed Light",
+            },
             FAIL,
         ),
-        (TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"), {}, PASS),
+        (TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"), {}, FAIL),
         # Roboto Serif has an opsz axes so this should pass
         (
             TEST_FILE("varfont/RobotoSerif[GRAD,opsz,wdth,wght].ttf"),
             {
-                NameID.FONT_FAMILY_NAME: "Roboto Serif 20pt",
+                NameID.FONT_FAMILY_NAME: "Roboto Serif",
                 NameID.FONT_SUBFAMILY_NAME: "Regular",
-                NameID.TYPOGRAPHIC_FAMILY_NAME: "Roboto Serif",
-                NameID.TYPOGRAPHIC_SUBFAMILY_NAME: "20pt Regular",
+                NameID.FULL_FONT_NAME: "Roboto Serif Regular",
+                NameID.POSTSCRIPT_NAME: "RobotoSerif-Regular",
+                NameID.TYPOGRAPHIC_FAMILY_NAME: None,
+                NameID.TYPOGRAPHIC_SUBFAMILY_NAME: None,
             },
             PASS,
         ),
