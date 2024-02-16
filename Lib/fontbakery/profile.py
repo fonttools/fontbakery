@@ -17,6 +17,7 @@ class Section:
 
 @dataclass
 class Profile:
+    name: str
     configuration_defaults: dict = field(default_factory=dict)
     sections: Iterable[Section] = field(default_factory=list)
     iterargs: dict = field(default_factory=dict)
