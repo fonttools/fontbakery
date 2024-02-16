@@ -88,6 +88,7 @@ class CheckTester:
         else:
             # We create a fake profile containing just this check
             self.profile = Profile(
+                name="TestProfile",
                 iterargs={val.singular: val.plural for val in FILE_TYPES},
                 sections=[
                     Section(

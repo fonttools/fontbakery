@@ -498,24 +498,6 @@ def filenames_ending_in(suffix, root):
     return filenames
 
 
-def add_check_overrides(checkids, profile_tag, overrides):
-    """
-    Overridden checkids have a suffix identifying the specific
-    profile that customize their behaviour.
-
-    This helper function adds them to the list of checks and
-    ensures the original check is not redundantly listed.
-    """
-
-    # First we add the overridden check ids:
-    checkids += [f"{checkid}:{profile_tag}" for checkid in overrides]
-
-    # But then we also remove the original check ids that
-    # may have also been included from the original profile:
-    checkids[:] = [checkid for checkid in checkids if checkid not in overrides]
-    return checkids
-
-
 def all_kerning(ttFont):
     if "GPOS" not in ttFont:
         return []

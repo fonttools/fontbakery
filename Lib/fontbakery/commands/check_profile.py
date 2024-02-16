@@ -18,9 +18,13 @@ from fontbakery.status import (
     WARN,
 )
 from fontbakery.configuration import Configuration
-from fontbakery.profile import Profile
 from fontbakery.errors import ValueValidationError
-from fontbakery.fonts_profile import profile_factory, get_module, setup_context
+from fontbakery.fonts_profile import (
+    profile_factory,
+    get_module,
+    setup_context,
+    ITERARGS,
+)
 from fontbakery.reporters.terminal import TerminalReporter
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.reporters.badge import BadgeReporter
@@ -49,7 +53,7 @@ class AddReporterAction(argparse.Action):
         namespace.reporters.append((self.cls, values))
 
 
-def ArgumentParser(profile, profile_arg=True):
+def ArgumentParser(profile_arg=True):
     argument_parser = argparse.ArgumentParser(
         description="Check TTF files against a profile.",
         formatter_class=argparse.RawTextHelpFormatter,
@@ -242,7 +246,7 @@ def ArgumentParser(profile, profile_arg=True):
         help="Write a HTML report to HTML_FILE.",
     )
 
-    iterargs = sorted(profile.iterargs.keys())
+    iterargs = sorted(ITERARGS.keys())
 
     gather_by_choices = iterargs + ["*check"]
     comma_separated = ", ".join(gather_by_choices)
@@ -342,7 +346,7 @@ class ArgumentParserError(Exception):
 
 def get_profile():
     """Prefetch the profile module, to fill some holes in the help text."""
-    argument_parser = ArgumentParser(Profile(), profile_arg=True)
+    argument_parser = ArgumentParser(profile_arg=True)
 
     # monkey patching will do here
     def error(message):
@@ -350,11 +354,7 @@ def get_profile():
 
     argument_parser.error = error
 
-    try:
-        args, _ = argument_parser.parse_known_args()
-    except ArgumentParserError:
-        # silently fails, the main parser will show usage string.
-        return Profile()
+    args, _ = argument_parser.parse_known_args()
     imported = get_module(args.profile)
     profile = profile_factory(imported)
     if not profile:
@@ -369,7 +369,7 @@ def main(profile=None, values=None):
         profile = get_profile()
         add_profile_arg = True
 
-    argument_parser = ArgumentParser(profile, profile_arg=add_profile_arg)
+    argument_parser = ArgumentParser(profile_arg=add_profile_arg)
     try:
         args = argument_parser.parse_args()
     except ValueValidationError as e:
