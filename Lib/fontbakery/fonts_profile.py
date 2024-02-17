@@ -33,7 +33,7 @@ def setup_context(files):
             accepted = False
             # Special case for .ttc files, which add multiple testables
             # to the context.
-            if file.endswith(".ttc"):
+            if file.endswith(".ttc") or file.endswith(".otc"):
                 with open(file, "rb") as ttcfile:
                     ttc = readTTCHeader(ttcfile)
                     for i in range(ttc.numFonts):
