@@ -181,7 +181,7 @@ def com_google_fonts_check_hinting_impact(font):
         "size-impact",
         f"Hinting filesize impact:\n"
         f"\n"
-        f" |               | {font}          |\n"
+        f" |               | {font.file}     |\n"
         f" |:------------- | ---------------:|\n"
         f" | Dehinted Size | {dehinted_size} |\n"
         f" | Hinted Size   | {hinted_size}   |\n"
