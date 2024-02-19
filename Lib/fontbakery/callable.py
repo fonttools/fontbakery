@@ -174,9 +174,6 @@ class FontBakeryCheck(FontbakeryCallable):
         description: text, used as one line short description
         read by humans
 
-        name: text, used as a short label read by humans, defaults
-        to checkfunc.__name__
-
         conditions: a list of condition names that must be all true
         in order for this check to be executed. conditions are similar
         to checks, because they also inspect the check subject and they
@@ -200,7 +197,6 @@ class FontBakeryCheck(FontbakeryCallable):
         """
         super().__init__(checkfunc)
         self.id = id
-        self.name = checkfunc.__name__ if name is None else name
         self.conditions = conditions or []
         self.rationale = rationale
         self.description, self.documentation = get_doc_desc(
