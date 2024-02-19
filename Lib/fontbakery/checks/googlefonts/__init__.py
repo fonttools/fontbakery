@@ -131,35 +131,3 @@ def com_google_fonts_check_fontdata_namecheck(ttFont, familyname):
             f"\t\tOriginal error message:\n"
             f"\t\t{sys.exc_info()[0]}",
         )
-
-
-@check(
-    id="com.google.fonts/check/fontv",
-    rationale="""
-        The git sha1 tagging and dev/release features of Source Foundry `font-v` tool
-        are awesome and we would love to consider upstreaming the approach into
-        fontmake someday. For now we only emit an INFO if a given font does not yet
-        follow the experimental versioning style, but at some point we may start
-        enforcing it.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/issues/1563",
-)
-def com_google_fonts_check_fontv(ttFont):
-    """Check for font-v versioning."""
-    try:
-        from fontv.libfv import FontVersion
-    except ImportError:
-        exit_with_install_instructions()
-
-    fv = FontVersion(ttFont)
-    if fv.version and (fv.is_development or fv.is_release):
-        yield PASS, "Font version string looks GREAT!"
-    else:
-        yield INFO, Message(
-            "bad-format",
-            f'Version string is: "{fv.get_name_id5_version_string()}"\n'
-            f"The version string must ideally include a git commit hash"
-            f' and either a "dev" or a "release" suffix such as in the'
-            f" example below:\n"
-            f'"Version 1.3; git-0d08353-release"',
-        )

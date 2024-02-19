@@ -66,9 +66,6 @@ googlefonts_extras = (
     [
         f"beautifulsoup4{BEAUTIFULSOUP4_VERSION}",
         "dehinter>=3.1.0",  # 3.1.0 added dehinter.font.hint function
-        "font-v>=0.6.0",  # com.google.fonts/check/fontv produces an ERROR with font-v
-        # version 0.5.0 or earlier because it uses the method
-        # FontVersion.get_name_id5_version_string which was added in version 0.6.0
         f"fontTools[lxml,unicode]{FONTTOOLS_VERSION}",
         # (see https://github.com/googlefonts/gflanguages/pull/7)
         "protobuf>=3.7.0, <4",  # 3.7.0 fixed a bug on parsing some METADATA.pb files.

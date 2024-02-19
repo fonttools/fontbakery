@@ -16,6 +16,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts profile
   - **EXPERIMENTAL - [com.google.fonts/check/metadata/minisite_url]:** Validate minisite_url field on METADATA.pb (issue #4504)
 
+### Deprecated checks
+#### Removed from the Google Fonts profile
+  - **[com.google.fonts/check/font-v]:** (issue #4138)
+
 ### Changes to existing checks
 #### On the Open Type Profile
   - **[com.adobe.fonts/check/postscript_name]:** OpenType spec does not impose single hyphen condition on postcript names. (issue #4348)
