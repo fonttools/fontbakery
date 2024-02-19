@@ -3,13 +3,22 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.12.0 (2024-Feb-??)
+  - And also includes the changes from the previous release-candidates:
+    - v0.12.0a1 (2024-Feb-14)
+    - v0.12.0a2 (2024-Feb-19)
+
+
+## 0.12.0a2 (2024-Feb-19)
   - **[multi-threading]:** Lock reporting when returning results. (issue #4494)
   - Added support for checking TTC (OpenType font collection) files. (issue #2595)
-  - And also includes the changes from the previous release-candidate v0.12.0a1 (2024-Feb-14)
 
 ### New checks
 #### Added to the Google Fonts profile
   - **EXPERIMENTAL - [com.google.fonts/check/metadata/minisite_url]:** Validate minisite_url field on METADATA.pb (issue #4504)
+
+### Changes to existing checks
+#### On the Open Type Profile
+  - **[com.adobe.fonts/check/postscript_name]:** OpenType spec does not impose single hyphen condition on postcript names. (issue #4348)
 
 
 ## 0.12.0a1 (2024-Feb-14)

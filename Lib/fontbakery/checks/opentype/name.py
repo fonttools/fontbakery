@@ -439,14 +439,6 @@ def com_adobe_fonts_check_postscript_name(ttFont):
                     ),
                 }
             )
-        if string.count("-") > 1:
-            bad_entries.append(
-                {
-                    "Field": "Postscript Name",
-                    "Value": string,
-                    "Recommendation": ("May contain not more than a single hyphen."),
-                }
-            )
 
     if len(bad_entries) > 0:
         yield FAIL, Message(
