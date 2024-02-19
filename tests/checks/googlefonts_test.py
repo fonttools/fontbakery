@@ -3035,30 +3035,6 @@ def test_check_fontdata_namecheck():
     assert_PASS(check(font), "with a unique family name...", ignore_error=TIMEOUT_MSG)
 
 
-def test_check_fontv():
-    """Check for font-v versioning"""
-    check = CheckTester("com.google.fonts/check/fontv")
-
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-    assert_results_contain(
-        check(ttFont),
-        INFO,
-        "bad-format",
-        "with a font that does not follow"
-        " the suggested font-v versioning scheme ...",
-    )
-
-    from fontv.libfv import FontVersion
-
-    fv = FontVersion(ttFont)
-    fv.set_state_git_commit_sha1(development=True)
-    version_string = fv.get_name_id5_version_string()
-    for record in ttFont["name"].names:
-        if record.nameID == NameID.VERSION_STRING:
-            record.string = version_string
-    assert_PASS(check(ttFont), "with one that follows the suggested scheme ...")
-
-
 def test_check_glyf_nested_components():
     """Check glyphs do not have nested components."""
     check = CheckTester("com.google.fonts/check/glyf_nested_components")

@@ -110,7 +110,6 @@ PROFILE = {
             "com.google.fonts/check/vendor_id",
             "com.google.fonts/check/ligature_carets",
             "com.google.fonts/check/production_glyphs_similarity",
-            "com.google.fonts/check/fontv",
             # DISABLED: "com.google.fonts/check/production_encoded_glyphs",
             "com.google.fonts/check/glyf_nested_components",
             "com.google.fonts/check/varfont/generate_static",

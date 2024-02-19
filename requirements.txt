@@ -7,7 +7,6 @@ collidoscope==0.6.5
 defcon==0.10.3
 dehinter==4.0.0
 fontTools[ufo,lxml,unicode]==4.48.1
-font-v==2.1.0
 freetype-py==2.3.0  # pinned for now. See: https://github.com/fonttools/fontbakery/issues/4143
 gflanguages==0.5.17
 gfsubsets==2024.2.5
