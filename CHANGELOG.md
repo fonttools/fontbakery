@@ -24,6 +24,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Open Type Profile
   - **[com.adobe.fonts/check/postscript_name]:** OpenType spec does not impose single hyphen condition on postcript names. (issue #4348)
 
+#### On the Universal Profile
+  - **[com.google.fonts/check/unreachable_glyphs]:** Also consider glyphs referenced by MATH table. (issue #4536)
+
 
 ## 0.12.0a1 (2024-Feb-14)
   - Major refactoring. Check definitions now are all placed at `Lib/fontbakery/checks` and profile definitions are purely declarative, picking the checks from the pool by check-id. (PR #4491)

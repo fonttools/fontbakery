@@ -1552,10 +1552,11 @@ def com_google_fonts_check_rupee(ttFont):
         Glyphs are either accessible directly through Unicode codepoints or through
         substitution rules.
 
-        In Color Fonts, glyphs are also referenced by the COLR table.
+        In Color Fonts, glyphs are also referenced by the COLR table. And mathematical
+        fonts also reference glyphs via the MATH table.
 
-        Any glyphs not accessible by either of these means
-        are redundant and serve only to increase the font's file size.
+        Any glyphs not accessible by these means are redundant and serve only
+        to increase the font's file size.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3160",
 )
@@ -1624,6 +1625,38 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
     # and ignore these:
     all_glyphs.discard(".null")
     all_glyphs.discard(".notdef")
+
+    if "MATH" in ttFont:
+        glyphinfo = ttFont["MATH"].table.MathGlyphInfo
+        mathvariants = ttFont["MATH"].table.MathVariants
+
+        for glyphname in glyphinfo.MathTopAccentAttachment.TopAccentCoverage.glyphs:
+            all_glyphs.discard(glyphname)
+
+        for glyphname in glyphinfo.ExtendedShapeCoverage.glyphs:
+            all_glyphs.discard(glyphname)
+
+        for glyphname in mathvariants.VertGlyphCoverage.glyphs:
+            all_glyphs.discard(glyphname)
+
+        for glyphname in mathvariants.HorizGlyphCoverage.glyphs:
+            all_glyphs.discard(glyphname)
+
+        for vgc in mathvariants.VertGlyphConstruction:
+            if vgc.GlyphAssembly:
+                for part in vgc.GlyphAssembly.PartRecords:
+                    all_glyphs.discard(part.glyph)
+
+            for rec in vgc.MathGlyphVariantRecord:
+                all_glyphs.discard(rec.VariantGlyph)
+
+        for hgc in mathvariants.HorizGlyphConstruction:
+            if hgc.GlyphAssembly:
+                for part in hgc.GlyphAssembly.PartRecords:
+                    all_glyphs.discard(part.glyph)
+
+            for rec in hgc.MathGlyphVariantRecord:
+                all_glyphs.discard(rec.VariantGlyph)
 
     if "COLR" in ttFont:
         if ttFont["COLR"].version == 0:
