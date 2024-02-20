@@ -1076,6 +1076,19 @@ def test_check_unreachable_glyphs():
     ]:
         assert glyph not in message
 
+    ttFont = TTFont(TEST_FILE("notosansmath/NotoSansMath-Regular.ttf"))
+    # upWhiteMediumTriangle is used as a component in circledTriangle,
+    # since CFF does not have composites it became unused.
+    # So that is a build tooling issue.
+    message = assert_results_contain(check(ttFont), WARN, "unreachable-glyphs")
+    assert "upWhiteMediumTriangle" in message
+    assert "upWhiteMediumTriangle" in ttFont.glyphOrder
+
+    # Other than that problem, no other glyphs are unreachable:
+    ttFont.glyphOrder.remove("upWhiteMediumTriangle")
+    assert "upWhiteMediumTriangle" not in ttFont.glyphOrder
+    assert_PASS(check(ttFont))
+
 
 def test_check_soft_hyphen(montserrat_ttFonts):
     """Check glyphs contain the recommended contour count"""
