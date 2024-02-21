@@ -91,12 +91,12 @@
 <meta name="feedback_help_link_url" content="" />
 <meta name="feedback_product_url" content="" />
 <meta name="feedback_system" content="GitHub" />
-<meta name="git_commit_id" content="ba9b3366f5d41be7e40bd326bff80fe18ba12ece" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/ba9b3366f5d41be7e40bd326bff80fe18ba12ece/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="a19335d3dac9130f0e61544437cc616d1b6461f1" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/a19335d3dac9130f0e61544437cc616d1b6461f1/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="02/01/2024" />
+<meta name="ms.date" content="02/15/2024" />
 <meta name="ms.service" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -107,8 +107,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2024-02-02 01:49 AM" />
-<meta name="word_count" content="4765" />
+<meta name="updated_at" content="2024-02-15 09:46 PM" />
+<meta name="word_count" content="4769" />
 
 
 	<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
@@ -206,7 +206,7 @@
 			id="adobe-target-script"
 			type="application/javascript"
 		/>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/b178e385.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/e8e92f40.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -252,7 +252,7 @@ More info about Internet Explorer and Microsoft Edge					</a>
 		<!-- liquid-tag banners global -->
 
 		<!-- site header -->
-		<header id="ms--site-header" class="display-none" role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization"></header>
+		<header id="ms--site-header" data-test-id="site-header-wrapper" class="display-none" role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization"></header>
 
 		<div id="headerAreaHolder" data-bi-name="header">
 <header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
@@ -506,12 +506,11 @@ Table of contents						</span>
 									<div class="display-flex justify-content-space-between align-items-center flex-wrap-wrap page-metadata-container">
 										<div class="margin-right-xxs">
 											<ul class="metadata page-metadata" data-bi-name="page info" lang="en-us" dir="ltr">
-													<li>
-Article													</li>
-
-													<li class="visibility-hidden-visual-diff">
-														<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-02-01T08:00:00Z" data-article-date-source="calculated">02/01/2024</time>
-													</li>
+														<li>
+Article														</li>
+															<li class="visibility-hidden-visual-diff">
+																<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-02-15T08:00:00Z" data-article-date-source="calculated">02/15/2024</time>
+															</li>
 														<li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
 																	8 contributors
@@ -1045,7 +1044,7 @@ Article													</li>
 </tr>
 <tr>
 <td>ArTy</td>
-<td><a href="http://www.archivetype.com" data-linktype="external">Archive Type</a></td>
+<td>Archive Type</td>
 </tr>
 <tr>
 <td>AS</td>
@@ -3627,6 +3626,10 @@ Article													</li>
 <td><a href="https://locomotype.com/" data-linktype="external">Locomotype</a></td>
 </tr>
 <tr>
+<td>LDNT</td>
+<td><a href="https://londontype.co.uk/" data-linktype="external">London Type Foundry</a></td>
+</tr>
+<tr>
 <td>LDTP</td>
 <td><a href="https://leedotype.com" data-linktype="external">Leedotype</a></td>
 </tr>
@@ -5955,7 +5958,7 @@ Article													</li>
 <td><a href="http://www.typographies.fr" data-linktype="external">typographies.fr</a></td>
 </tr>
 <tr>
-<td>TyHa</td>
+<td>TYHA</td>
 <td><a href="https://t.me/Type_Habesha" data-linktype="external">TypeHabesha</a></td>
 </tr>
 <tr>
@@ -6459,7 +6462,13 @@ Article													</li>
     <h2 id="feedback" class="title is-3 margin-top-sm">Feedback</h2>
 
     <div class="alert choose-feedback-type padding-bottom-sm">
-        <p id="send-feedback-about">Submit and view feedback for</p>
+		<p id="git-issues-deprecation-notice">
+			<span class="icon margin-right-xxs" aria-hidden="true">
+				<span class="docon docon-status-info-outline">
+			</span>
+			</span>Coming soon: Throughout 2024 we will be phasing out GitHub Issues as the feedback mechanism for content and replacing it with a new feedback system. For more information see: <a href="https://aka.ms/ContentUserFeedback" data-bi-name="content-user-feedback">https://aka.ms/ContentUserFeedback</a>.		</p>
+
+        <p id="send-feedback-about" class="margin-top-sm">Submit and view feedback for</p>
 
         <div class="choose-feedback-buttons buttons margin-top-xs">
 			<a class="button feedback-type-product github-link" aria-label="Send feedback about this page" data-bi-name="create-issue-on-github">
@@ -6483,9 +6492,8 @@ Article													</li>
 						<!-- feedback report section -->
 						<!-- end feedback report section -->
 
-							<div
+							<aside
 								id="ms--additional-resources-mobile"
-								role="complementary"
 								aria-label="Additional resources"
 								class="display-none-desktop display-none-print"
 							>
@@ -6495,7 +6503,7 @@ Article													</li>
 								<section id="right-rail-training-mobile" data-bi-name="learning-resources-card" hidden></section>
 								<section id="right-rail-events-mobile" data-bi-name="events-card" hidden></section>
 								<section id="right-rail-qna-mobile" data-bi-name="qna-link-card" hidden></section>
-							</div>
+							</aside>
 
 						<div class="border-top is-visible-interactive has-default-focus margin-top-sm ">
 
