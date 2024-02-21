@@ -36,7 +36,7 @@ shaping_extras = [
     # (see https://github.com/fonttools/fontbakery/issues/3970)
     "stringbrewer",
     f"ufo2ft{UFO2FT_VERSION}",
-    "shaperglot>=0.3.0",  # versions prior to v0.3.0 had too stric dependency rules
+    "shaperglot>=0.4.2",  # versions prior to v0.3.0 had too stric dependency rules
     # for other deps such as protobuf, making it harder satisfy all dependencies.
 ]
 
@@ -58,7 +58,7 @@ googlefonts_always_latest = [
     "gflanguages>=0.5.17",
     "gfsubsets>=2024.2.5",
     "glyphsets>=0.6.14",
-    "shaperglot>=0.4.0",
+    "shaperglot>=0.4.2",
 ]
 
 
@@ -84,7 +84,7 @@ notofonts_extras = googlefonts_extras
 typenetwork_extras = [
     f"beautifulsoup4{BEAUTIFULSOUP4_VERSION}",
     f"ufo2ft{UFO2FT_VERSION}",
-    "shaperglot>=0.3.1",
+    "shaperglot>=0.4.2",
 ]
 
 iso15008_extras = []
