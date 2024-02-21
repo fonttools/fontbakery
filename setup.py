@@ -54,11 +54,11 @@ adobefonts_extras = []
 # always be up-to-date, so we treat any update to these deps the same way we would
 # deal with API-breaking updates. Only the latest released version is acceptable:
 googlefonts_always_latest = [
-    "axisregistry>=0.4.5",
+    "axisregistry>=0.4.8",
     "gflanguages>=0.5.17",
-    "gfsubsets>=2024.1.22.post2",
-    "glyphsets>=0.6.11",
-    "shaperglot>=0.3.1",
+    "gfsubsets>=2024.2.5",
+    "glyphsets>=0.6.14",
+    "shaperglot>=0.4.2",
 ]
 
 
@@ -87,7 +87,7 @@ notofonts_extras = googlefonts_extras
 typenetwork_extras = [
     f"beautifulsoup4{BEAUTIFULSOUP4_VERSION}",
     f"ufo2ft{UFO2FT_VERSION}",
-    "shaperglot>=0.3.1",
+    "shaperglot>=0.4.2",
 ]
 
 iso15008_extras = []
