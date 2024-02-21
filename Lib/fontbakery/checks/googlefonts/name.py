@@ -366,14 +366,14 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                 for family_name in get_name_entry_strings(
                     ttFont, NameID.FONT_FAMILY_NAME
                 ):
-                    full_instance_name = instance_name + " " + family_name
+                    full_instance_name = family_name + " " + instance_name
                     if len(full_instance_name) > 32:
                         yield FAIL, Message(
                             "instance-too-long",
                             f"Variable font instance name '{full_instance_name}'"
                             f" formed by space-separated concatenation of"
-                            f" instance subfamily nameID {instance.subfamilyNameID}"
-                            f" and font family name (nameID {NameID.FONT_FAMILY_NAME})"
+                            f" font family name (nameID {NameID.FONT_FAMILY_NAME})"
+                            f" and instance subfamily nameID {instance.subfamilyNameID}"
                             f" exceeds 32 characters.\n\n"
                             f"This has been found to cause shaping issues for some"
                             f" accented letters in Microsoft Word on Windows 10 and 11.",
