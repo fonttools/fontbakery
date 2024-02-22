@@ -216,14 +216,3 @@ Currently supported values include:
 - `is_icon_font`: A boolean value stating whether the fonts provided are icon fonts.
   (overriding a check on the PANOSE values of those fonts) Certain checks will be
   skipped for icon fonts.
-
-#### Old Command Line Tools
-
-Since November 2017 (v0.3.3) Font Bakery is solely focused on checking fonts.
-Before that (up to v0.3.2) it also provided some auxiliary scripts for fixing fonts. 
-
-Those tools are now a separate project, Google Fonts Tools, maintained at <https://github.com/googlefonts/tools> and packaged at <https://pypi.python.org/pypi/gftools>
-
-Installing the latest version of the auxiliary scripts should be as easy as:
-
-    pip install gftools --upgrade
