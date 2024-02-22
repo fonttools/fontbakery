@@ -22,10 +22,8 @@ from sphinx.util.inspect import stringify_signature
 
 from fontbakery.callable import (
     FontbakeryCallable,
-    FontBakeryCondition,
     FontBakeryCheck,
     Disabled,
-    FontBakeryExpectedValue,
 )
 
 
@@ -39,7 +37,6 @@ if False:  # pylint: disable=using-constant-test
     FontBakeryCondition  # pylint: disable=pointless-statement
     FontBakeryCheck  # pylint: disable=pointless-statement
     Disabled  # pylint: disable=pointless-statement
-    FontBakeryExpectedValue  # pylint: disable=pointless-statement
 
 __version__ = "0.0.1"
 
@@ -250,11 +247,16 @@ class FontBakeryCheckDocumenter(FontBakeryCallableDocumenter):
     objtype = "fontbakerycheck"
     can_doc_cls = FontBakeryCheck
 
+    def get_object_members(self, want_all: bool):
+        return False, []
+
 
 class FontBakeryConditionDocumenter(FontBakeryCallableDocumenter):
     objtype = "fontbakerycondition"
-    can_doc_cls = FontBakeryCondition
+    can_doc_cls = object  # XXX
 
+    def get_object_members(self, want_all: bool):
+        return False, []
 
 # REs for Python signatures
 py_sig_re = re.compile(
@@ -286,15 +288,6 @@ class PyFontBakeryObject(PyObject):
             suffix = self.objtype[len("fontbakery") :]  # noqa: E203
             return "FontBakery" + suffix[0].upper() + suffix[1:]
         return self.objtype
-
-    def get_signature_prefix(self, sig):
-        # type: (str) -> str
-        # import ipdb
-        # ipdb.set_trace()
-        # print('sig signature:', sig)
-        # > sig signature: com_google_fonts_check_all_glyphs_have_codepoints(ttFont)
-
-        return self.pretty_objtype + " "
 
     # this is bullshit, returns two values but manipulates
     # signode massively, which is undocumented.
