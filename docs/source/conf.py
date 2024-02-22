@@ -41,7 +41,7 @@ needs_sphinx = "4.3"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
-    "fontbakery.sphinx_extensions.linkcode",
+    "sphinx.ext.linkcode",
     "fontbakery.sphinx_extensions.profile",
     "sphinx.ext.napoleon",
     "recommonmark",
