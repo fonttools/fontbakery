@@ -1,462 +1,295 @@
 # Writing Profiles
 
-A Font Bakery Profile (an instance of the type `fontbakery.checkrunner.Profile`) is a container for a set of checks to be run on font files.
+A Font Bakery Profile is a container for a set of checks to be run on fonts and other associated files. Different foundries and manufacturers may have different quality control standards, and therefore may wish to include or exclude certain checks.
 
-A profile usually lives inside a Python module: one module contains one profile. Font Bakery comes with a number of profiles, located in [`fontbakery.profiles.*`](https://github.com/fonttools/fontbakery/blob/main/Lib/fontbakery/profiles), which can be used directly, but you can also create a custom profile. A custom profile can include your own checks, written in Python, and/or checks included from other profiles. Writing a custom Font Bakery profile can be a good way to either ensure the quality of a **single font project**, or for a **font foundry** or **maintainer of a font library** to establish comprehensive quality standards and quality monitoring.
+This list of checks is defined inside a Python module: one module contains one profile. Font Bakery comes with a number of profiles, located in [`fontbakery.profiles.*`](https://github.com/fonttools/fontbakery/blob/main/Lib/fontbakery/profiles), which can be used directly, but you can also create a custom profile. A custom profile specifies which checks to include, in which sections; a profile may also include other profiles by reference. Writing a custom Font Bakery profile can be a good way to either ensure the quality of a **single font project**, or for a **font foundry** or **maintainer of a font library** to establish comprehensive quality standards and quality monitoring.
 
-Font Bakery comes with a set of checks that can be included into such a custom profile according to the requirements of the author. These checks are mainly organized in profile modules named after OpenType tables, and can be found at [`fontbakery.profiles.*`](https://github.com/fonttools/fontbakery/blob/main/Lib/fontbakery/profiles).
+Font Bakery comes with a set of checks that can be included into such a custom profile according to the requirements of the author. These checks are mainly organized in Python modules named after OpenType tables, and can be found at [`fontbakery.checks.*`](https://github.com/fonttools/fontbakery/blob/main/Lib/fontbakery/checks).
 
-When you decide to include a profile or a single check from a Font Bakery profile into your own custom profile, you'll end up reading and reviewing the profile's Python code. We welcome questions, remarks, improvements, additions, **more documentation** and other contributions. Please use our [issue tracker](https://github.com/fonttools/fontbakery/issues) to contact us or send **pull requests**.
+When you decide to include a profile or a single check from a Font Bakery profile into your own custom profile, you'll end up reading and reviewing the check's Python code. We welcome questions, remarks, improvements, additions, **more documentation** and other contributions. Please use our [issue tracker](https://github.com/fonttools/fontbakery/issues) to contact us or send **pull requests**.
 
 [`fontbakery.profiles.googlefonts`](https://github.com/fonttools/fontbakery/blob/main/Lib/fontbakery/profiles/googlefonts.py) is a custom profile and can be an interesting piece of code to inspect for some inspiration.
 
-## From automatic discovery to full control
+## Anatomy of a profile
 
-To create your own profile we added tools that reduce boilerplate code to a minimum. These tools are fully optional. But it is possible to use them if you need more control over the creation of a profile. This automatic discovery can be enabled or disabled based on the presence (and value) of some special names in the module of the profile:
+A profile is a Python module which has one significant variable: `PROFILE`.
+This variable is a dictionary with the following keys:
 
-* `profile`
-* `profile_factory`
-* `profile_imports`
+- `sections`: A dictionary mapping section names to a list of check IDs.
+- `include_profiles`: A list of other profile names to include.
+- `exclude_checks`: A list of check IDs to exclude.
+- `overrides`: A dictionary mapping check IDs to a list of *overrides*.
+- `configuration_defaults`: A dictionary mapping check IDs to a namespace of configuration variables.
+- `check_definitions`: A list of Python modules containing additional check implementations.
 
-To get or create a profile from a module, the function `get_module_profile(module)` in `fontbakery.checkrunner` is used:
+Let's look at each of these in turn.
 
-> If the name `module.profile` is present the value of that is returned.
-> Otherwise, if the name `module.profile_factory` is present, a new profile is created using `module.profile_factory` and then `profile.auto_register` is called with the module namespace.
+The most basic profile, which runs a single check, looks like this:
 
-Thus, the presence of the name `profile` disables the automatic use of `profile_factory` plus `profile.auto_register`. But you can consider calling `profile.auto_register(globals())` explicitly yourself near the end of your profile module or you can register the profile contents yourself.
-
-```py
-# profile = Profile(...)
-# globals is a Python builtin
-profile.auto_register(globals())
+```python
+PROFILE = {
+  "sections": {
+    "My single check": [ "com.google.fonts/check/render_own_name" ]
+  }
+}
 ```
 
-### `profile.auto_register(symbol_table, filter_func=None)`
+We declare a section, which is a grouping of checks with a title, and then list the checks - a single check in this case - which are run in that section.
 
-Whether you call `auto_register` yourself or if it is called automatically for you, it is important to understand how it operates: It looks at all values of its `symbol_table` argument (a namespace dict as returned from `globals()` or `module.__dict__`) and at all values imported using `profile_imports` (described below) if present in `symbol_table`.
+You can build up your own profile out of all the checks available in the `fontbakery.checks` package, but it's more likely that you'll want to make use of some "pre-packaged" profiles as a starting point. The "opentype" profile contains some basic checks for compliance with the OpenType standard, so we'll probably want to use all of these. Let's add those all to our profile:
 
-If one of the items is an instance of one of `FontBakeryCheck`, `FontBakeryCondition`, `FontBakeryExpectedValue` the respective (public) interface methods: `profile.register_check`, `profile.profile` and `profile.register_expected_value` are called.
-
-If an item is a python module (an instance of `types.ModuleType`) it is tried to get a profile from that module using `sub_profile = get_module_profile(item)`. This, in many cases, invokes `get_module_profile` recursively, which itself calls `auto_register` when indicated (see above). That new sub-profile is then included into the current auto-registering profile using `profile.merge_profile(sub_profile)` (see below).
-
-When you are calling `profile.auto_register` explicitly yourself, you can also use the `filter_func` argument. This gives you finer control over which items are loaded into your profile, you can use it to implement bloklist and/or allowlist filtering.
-
-Here is an example where [`filter_func` was needed due to a namespace clash.](https://github.com/fonttools/fontbakery/pull/1770#issuecomment-380122216)
-
-If a `filter_func` argument is defined it is called like `filter_func(type, name_or_id, item)` where:
-
-* `type` is one of `"check"`, `"module"`, `"condition"`, `"expected_value"`, `"iterarg"`, `"derived_iterable"`, `"alias"`
-* `name_or_id` is the name at which the item will be registered
-* * `if type == 'check'`: the `check.id`
-* * `if type == 'module'`: the module name (`module.__name__`)
-* `item` is the item to be registered
-
-If `filter_func` returns a falsy value for an item, the item will not be registered.
-
-#### `profile_imports` used by `profile.auto_register`
-
-If `profile_imports` is defined in a module namespace, `profile.auto_register` will use it to import modules and attributes of a module into the profile.
-
-You could also use just the regular python `import` statement, which puts imports into the current module namespace and by that makes them discoverable for `profile.auto_register`. However, with that approach static linters like [flake8](https://gitlab.com/pycqa/flake8) and [pylint](https://www.pylint.org/) will complain about unused imports in your profile. That's why we added `profile_imports`.
-
-`profile_imports` must be a list or tuple of import instructions, mimicking the `import module_name` and `from module_name import (identifier, ...)` syntax. *Disclaimer:* It could be more compatible to the python `import` statements, but the algorithm of python is rather complicated (feel free to contribute).
-
-If an import instruction entry in `profile_imports` is a string: just try to import that module.
-If an import instruction is not a string it is expected to be a two items iterable (tuple or list): `(module_name, (identifier, ...))`.
-
-* If `module_name` consists of only "dots" (`.`) all `identifers` are imported as module names relative from the current module.
-* Otherwise all `identifiers` are treated as attributes of the module with `module_name`, which also can be a relative import when using leading dots.
-
-***NOTE:** one common pitfall is the python syntax for tuple literals. If a tuple has just one item, it still needs a comma after that item to make it a tuple and not just parentheses i.e. `("my_identifier", )`. For that reason the following examples use lists, although tuples, being immutable, are semantically a better fit.*
-
-```py
-# profile_imports examples
-
-# Import relative to the current module the
-# modules shared_conditions and ufo_sources.
-# This includes all of the shared_conditions
-# and ufo_sources profile into the
-# current profile:
-profile_imports = [".shared_conditions", ".ufo_sources"]
-
-# The following is equivalent to the previous statement:
-profile_imports = [
-    [".", ["shared_conditions", "ufo_sources"]]
-]
-
-# Also same as above:
-profile_imports = [
-    ".shared_conditions",
-    [".", [ "ufo_sources"]]
-]
+```python
+PROFILE = {
+  "sections": {
+    "My single check": [ "com.google.fonts/check/render_own_name" ]
+  },
+  "include_profiles": [ "opentype" ]
+}
 ```
 
-```py
-# Here's an example copied from fontbakery.profiles.googlefonts
-# This includes all of our Open Type profiles and some more into
-# the googlefonts profile:
-profile_imports = (
-    ('.', ('general', 'cmap', 'head', 'os2', 'post', 'name',
-       'hhea', 'dsig', 'hmtx', 'gpos', 'gdef', 'kern', 'glyf',
-       'prep', 'fvar', 'shared_conditions')
-    ), # IMPORTANT: this must be a tuple, note the trailing comma
-)
+But then there may be certain checks from included profiles that, as a foundry, you've decided that you don't need to run:
+
+```python
+PROFILE = {
+  "sections": {
+    "My single check": [ "com.google.fonts/check/render_own_name" ]
+  },
+  "include_profiles": [ "opentype" ],
+  "exclude_checks": [ "com.google.fonts/check/family_naming_recommendations" ]
+}
 ```
 
-```py
-# Import just certain attributes from modules.
-# Also, using absolute import module names:
-profile_imports = [
-    # like we do in fontbakery.profiles.fvar
-    ('fontbakery.profiles.shared_conditions', ('is_variable_font',
-            'regular_wght_coord', 'regular_wdth_coord', 'regular_slnt_coord',
-            'regular_ital_coord', 'regular_opsz_coord', 'bold_wght_coord')),
-    # just as an example: import a check and a dependency/condition of
-    # that check from the googlefonts specific profile:
-    ('fontbakery.profiles.googlefonts', (
-        # "License URL matches License text on name table?"
-        'com_google_fonts_check_030',
-        # This condition is a dependency of the check above:
-        'familyname',
-    ))
-]
+There may also be checks that you want to run, but for your purposes you would like a different level of severity to the original implementation; for example, the "universal" profile (a set of commonly agreed best-practices for font development) will FAIL a font if it has transformed components in the `glyf` table - something which can cause rendering errors in some environments. Arguably that's not a bug in the font but in the renderer, so you might decide only to receive a WARNing about it. To do this, you add an *override* like so:
+
+```python
+  "overrides": {
+    "com.google.fonts/check/transformed_components": [
+      {
+          "code": "transformed-components",
+          "status": "WARN",
+          "reason": "Renderers should fix their bugs, I'm not doing it",
+      },
+    ],
+  }
 ```
 
-### `profile.merge_profile(other_profile, filter_func=None)`
+Each check ID is mapped to a list of overrides, which is a dictionary with three keys: `code` is the message code reported by the check; (The same check can report several different message codes depending on what it found, and you have the flexibility to override them all separately.) `status` is the new, overridden status; `reason` will be displayed with the check result to explain why this result has been overridden.
 
-Copy all namespace items from `other_profile` to `profile`.
+Finally, some checks may expect to find certain constant values in the profile. For example, `com.google.fonts/check/file_size` checks if a font's size on disk is too big. How big is determined by the `WARN_SIZE` and `FONT_SIZE` constants, which are specified in the profile like so:
 
-Namespace items are: `iterargs`, `derived_iterables`, `aliases`, `conditions`, `expected_values`.
+```python
+    "configuration_defaults": {
+        "com.google.fonts/check/file_size": {
+            "WARN_SIZE": 1 * 1024 * 1024,
+            "FAIL_SIZE": 9 * 1024 * 1024,
+        }
+    },
+```
 
-Don't change any contents of `other_profile`, it may modify the loaded python module! That means sections are cloned not used directly.
+These constant values can be overriden by the user using a configuration file - see the user documentation.
 
-Optional argument `filter_func`: see description in `auto_register`.
-
-### `profile.test_expected_checks(expected_check_ids, exclusive=True)`
-
-Self-test to make a sure profile maintainer is aware of changes in the profile.
-
-Raises `SetupError` if expected check ids are missing in the profile, e.g. removed by an update.
-If `exclusive=True` also raises `SetupError` if check ids are in the profile that are not in `expected_check_ids` e.g. newly added by an update.
-
-This is handy if `profile.auto_register` is used and the profile maintainer is looking for a high level of control over the profile contents, especially for a warning when the profile contents have changed after an update of a dependency profile but it also makes profile maintenance a bit more laborious.
-
-### `Section`
-
-An ordered set of checks with a name.
-
-Used to structure checks in a profile. A profile consists of one or more sections.
+Note that when you inherit a list of checks from another profile using `include_profiles`, you don't (currently) inherit the configuration defaults, and need to specify those yourself.
 
 ## Running profiles
 
 ```sh
-$ fontbakery check-profile fontbakery ./path/to/fonts/*
+$ fontbakery check-profile myprofile ./path/to/fonts/*
 ```
 
-## Writing Profiles: Quick start
+## Writing checks
 
-A very basic profile with no apparent use but to document profiles, checks and conditions. For real world use cases look into the modules at [`fontbakery.profiles.*`](https://github.com/fonttools/fontbakery/tree/main/Lib/fontbakery/profiles)
+If in your profile you want to check for something we don't currently add a check for - great! We would encourage you to write one. In fact, we would encourage you to also contribute it back to fontbakery so that others can benefit. (Although you don't have to.)
 
-Execute:
+A check implementation is a Python function. To create a private check implementation that you don't want to share with the rest of the world (even though we gave you this amazing font QA tool for absolutely free), you can add the `check_definitions` key to your profile variable; this is a list of Python modules to load for checks. Then you can add your Python function to this new module.
 
-```sh
-# The example and other custom profiles can be executed with this command:
-$ fontbakery check-profile ./path/to/my/example_profile.py ./path/to/fonts/*
+To create your own *public* check implementation, simply either add a new file to the `fontbakery.checks` package (all files in this package are loaded and executed by the check runner) or add a new function to an existing file which contains similar or related checks.
 
-# But if you have installed your profile as a package, then use:
-$ fontbakery check-profile my_package.example_profile ./path/to/fonts/*
+A file containing checks usually begins by including the *prelude*, a Python package with a bunch of helpful imports:
+
+```
+from fontbakery.prelude import check, Message, INFO, PASS, FAIL, WARN
 ```
 
-Commented line by line:
+Your check implementation will use the `@check` decorator to tell Fontbakery that it's a check, and to give certain useful metadata about what it does:
 
-```py
-# We are going to define checks and conditons
-from fontbakery.callable import check, condition
-# All possible statuses a check can yield, in order of
-# severity. The least severe being DEBUG. The most severe
-# status emitted by a check is the end result of that check.
-# DEBUG can't be an end result, the least severe status
-# allowed as a check is PASS.
-from fontbakery.status import DEBUG, PASS, INFO, SKIP, WARN, FAIL, ERROR
-# Used to inform get_module_profile whether and
-# how to create a profile. This
-# example will create an instance of `FontsProfile`.
-# The comment at the end of the line disables flake8
-# and pylint to complain about unused imports.
-from fontbakery.fonts_profile import (  # NOQA pylint: disable=unused-import
-    profile_factory,
-)
-
-# At this point we already have a importable profile
-# It needs some checks though, to be useful.
-
-# profile_imports can be used to mix other profiles
-# into this profile. We are only using two profiles
-# for this example, containing checks for the accordingly
-# named tables
-profile_imports = [
-    ['fontbakery.profiles', ['shared_conditions']]
-]
-
-# Now we picked some checks from other profiles, but
-# what about defining checks ourselves.
-
-
-# We use `check` as a decorator to wrap an ordinary python
-# function into an instance of FontBakeryCheck to prepare
-# and mark it as a check.
-# A check id is mandatory and must be globally and timely
-# unique. See "Naming Things: check-ids" below.
-@check(id='de.graphicore.fontbakery/examples/hello')
-# This check will run only once as it has no iterable
-# arguments. Since it has no arguments at all and because
-# checks should be idempotent (and this one is), there's
-# not much sense in having it all. It will run once
-# and always yield the same result.
-def hello_world():
-  """Simple "Hello World" example."""
-  # The function name of a check is not very important
-  # to create it, only to import it from another module
-  # or to call it directly, However, a short line of
-  # human readable description is mandatory, preferable
-  # via the docstring of the check.
-  
-  # A status of a check can be `return`ed or `yield`ed
-  # depending on the nature of the check, `return`
-  # can only return just one status while `yield`
-  # makes a generator out of it and it can produce
-  # many statuses.
-  # A status also always must be a tuple of (Status, Message)
-  # For `Message` a string is OK, but for unit testing
-  # it turned out that an instance of `fontbakery.message.Message`
-  # can be very useful. It can additionally provide
-  # a status code, better suited to figure out the exact
-  # check result.
-  yield PASS, 'Hello World'
-
-@check(id='de.graphicore.fontbakery/examples/has-R')
-# This check will run once for each item in `fonts`.
-# This is achieved via the iterag definition of font: fonts
-def has_cap_r_in_name(font):
-  """Filename contains an "R"."""
-  # This check is not very useful again, but for each
-  # input it can result in a PASS or a FAIL.
-  if 'R' not in font:
-    # This is our first check that can potentially fail.
-    # To document this: return is also ok in a check.
-    return FAIL, '"R" is not in font filename.'
-  else:
-    # since you can't return at one point in a function
-    # and yield at another point, we always have to
-    # use return within this check.
-    return PASS, '"R" is in font filename.'
-
-   
+```python
 @check(
-    id='de.graphicore.fontbakery/examples/ttf_has_glyphs',
-    # this check will be skipped if the font is not a ttf
-    conditions=["is_ttf"]
+    id="com.myfoundry/check/has_FNRD_table",
+    rationale="""
+        All MyFoundry fonts should contain a `FNRD` table as a subtle
+        reference to The Illuminatus! Trilogy.
+    """,
+    severity=23
 )
-# this also runs once per font in fonts, but its called with
-# the ttFont instance
-def has_ttf_glyphs(ttFont):
-  """ It's bad when there are no glyphs in the TTF."""
-  # savely use the "glyf" table, because of conditions="is_ttf"
-  # we know it's available
-  if not len(ttFont['glyf'].glyphs):
-    return FAIL, "There are no glyphs in this TTF."
-  return PASS, "Some gLyphs are in this TTF."
+def check_has_FNRD_table(ttFont):
+  #... definition goes here...
 ```
 
-Now to disable the automatic creation and registration while creating an equivalent result:
+> **Naming Things: check-ids**
 
-```py
-# maybe at the top of the file
-from fontbakery.checkrunner import Section
+> Check IDs should ideally be **globally and temporally unique**. This means we once assign them and we never change them again. We plan to start enforcing this after FontBakery version 1.0.0 is released. This can then be used to keep track of the history of checks and check-results. We already rely on this feature for our tooling and we'll rely more on it in the future. within a profile a check id must be unique as well, to make sharing of checks and mixing of profiles easier. Globally unique names are a good thing.
 
-# you can use a another name for the default section
-# but this is what get_module_profile would do
-profile = profile_factory(default_section=Section(__name__))
-# IMPORTANT: after all checks etc. have ben defined:
-profile.auto_register(globals())
-```
+> We want to encourage authors to contribute their own checks to the Font Bakery collection, if they are generally useful and fit into it. Therefore an agreement on how to create check ids is needed to avoid id-collisions.
 
-Since we have the `profile` reference we can also use the `expected_check_ids` self check method.
+> [Reverse domain name notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation) has proven useful and a nice side effect is that contributors to Font Bakery will stay appreciated. Here are some examples: `com.daltonmaag/check/required-fields` and `de.graphicore.fontbakery/profile-examples/hello`: both examples are valid and more or less descriptive.
 
+> Of course, after your personal prefix, organizing names is up to you. One proposal is e.g. for checks that are specific to certain tables, the table name could be used as part of the check id.
 
-```py
-# putting this at the top of the file
-# can give a guick overview:
-expected_check_ids = (
-    'de.graphicore.fontbakery/examples/hello',
-    'de.graphicore.fontbakery/examples/has-R'
-)
-```
+Now let's look at that definition:
 
-```py
-# this must be at the end of the module,
-# after all checks were added:
-profile.test_expected_checks(expected_check_ids, exclusive=True)
-```
-
-You can also explicitly import and merge a profile:
-
-```py
-from fontbakery.profiles import os2
-from fontbakery.checkrunner import get_module_profile
-# using get_module_profile is the recommended way to get a
-# profile from a module, because it takes care of creating it
-# automatically if not explicitly defined.
-os2_profile = get_module_profile(os2)
-profile.merge_profile(os2_profile)
-```
-
-
-### Naming Things: check-ids
-
-Check IDs should ideally be **globally and temporally unique**. This means we once assign them and we never change them again. We plan to start enforcing this after FontBakery version 1.0.0 is released. This can then be used to keep track of the history of checks and check-results. We already rely on this feature for our tooling and we'll rely more on it in the future. within a profile a check id must be unique as well, to make sharing of checks and mixing of profiles easier. Globally unique names are a good thing.
-
-We want to encourage authors to contribute their own checks to the Font Bakery collection, if they are generally useful and fit into it. Therefore an agreement on how to create check ids is needed to avoid id-collisions.
-
-[Reverse domain name notation](https://en.wikipedia.org/wiki/Reverse_domain_name_notation) has proven useful and a nice side effect is that contributors to Font Bakery will stay appreciated. Here are some examples:
-
-`com.daltonmaag/check/required-fields` and `de.graphicore.fontbakery/profile-examples/hello`: both examples are valid and more or less descriptive.
-
-Of course, after your personal prefix, organizing names is up to you. One proposal is e.g. for checks that are specific to certain tables, the table name could be used as part of the check id.
-
-
-
-
-### Naming Things: The Dependency Injection Namespace
-
-***IMPORTANT:** Names can and will clash e.g. when sharing between profiles.* This is a good thing, because we need to be sure the right definitions are used for our profile. On the other hand, namespace hygiene will stay an ongoing topic.
-
-The dependency injection of the Font Bakery Check Runner is a feature that makes it easy to write actual check implementations.
-
-**Example:** Run a check once for each `fontTools.ttLib.TTFont` instance of all `fonts`: Just use `ttFont` as a parameter name.
-
-```py
-# example from fontbakery.profiles.post
-@check(id='com.google.fonts/check/post_table_version')
-def com_google_fonts_check_post_table_version(ttFont):
-  """Font has post table version 2?"""
-  if ttFont['post'].formatType != 2:
-    yield FAIL, ("Post table should be version 2 instead of {}."
-                 " More info at https://github.com/google/fonts/"
-                 "issues/215").format(ttFont['post'].formatType)
+```python
+def check_has_FNRD_table(ttFont):
+  if "FNRD" not in ttFont:
+    yield FAIL, Message("no-FNRD", "FNRD table was not present")
+  elif ttFont["FNRD"].compile(ttFont) != b'\x23':
+    yield WARN, Message("bad-FNRD", "FNRD table had incorrect contents")
   else:
-    yield PASS, "Font has post table version 2."
+    yield PASS
 ```
 
-To achieve this, Font Bakery uses inspection (meta programming) to get the parameter names of a check (or condition) and then resolves these dependencies using the matching definitions in the profile namespace.
+Notice that this function takes a `ttFont` parameter - we'll talk about the parameters soon - and then `yield`s a check status and (if it's not a PASS) a `Message` object. We `yield` rather than `return` to allow the check to potentially return multiple statuses. The message object comprises of a code - so that it can be overriden, as we described above - and a message text.
 
-There's a collection of different types that together populate the profile namespace. We need almost all of them to make our example from above work. Yet in this case they are already predefined in `FontsProfile`, making this also a documentation of those.
+### Parameters
 
+You'll notice that our check implementation above took a `ttFont` parameter.This is part of the dependency injection feature of the FontBakery check runner, which makes it easier to write check implementations. To understand this, we need to step back and understand how the check runner works.
 
-#### `fonts` Expected Value
+Fontbakery first builds a `CheckRunContext` object wrapping up all the file names that were passed in on the command line, the configuration, and a few other things. Each filename to be tested is categorized according to known filename patterns, and wrapped in a subclass of a `Testable`. For example, a file ending `.ttf` or `.otf` is wrapped in a `Font` object, a `.ufo` directory turns into a `Ufo` object, and so on. These objects have a `.file` property which stores the original filename.
 
-`FontProfile` also defines a command line argument `fonts`, which is then passed as a value to the check runner.
+Most checks are run on a single testable file - in the case of the check above, a `Font` object. Here's how we could write the above check definition more explicitly:
 
-In order to to make the namespace aware of a value that's going to be provided when the check is executed, a `FontBakeryExpectedValue` is defined and added to the profile.
+```Python
+from fontTools.ttLib import TTFont
 
-```py
-from fontbakery.callable import FontBakeryExpectedValue
-fonts_expected_value = FontBakeryExpectedValue(
-      'fonts'
-    , default=[]
-    , description='A list of the font file paths to check.'
+@check(...)
+def check_has_FNRD_table(font: Font):
+  ttFont = TTFont(font.file)
+  if "FNRD" not in ttFont:
+    ...
+```
+
+Every `Font` object (.ttf or .otf file on the command line) will get passed to a check which takes a `font` parameter; but `Ufo` objects will not be passed to these checks. (They will only get passed to checks which take a `ufo` parameter.)
+
+So how did our original check definition (`def check_has_FNRD_table(ttFont)`) work? This doesn't have a `font` parameter and we didn't get a `Font` object passed to us. Well, the issue with the "explicit" form, while it is easy to understand, is that it requires every single check definition to call `TTFont`, parse the font file, and so on. This is a waste of work. Similarly, it's fairly common to want to know what codepoints are in a font, and we don't want every check working it out for itself.
+
+When there are common "questions we want to ask" about a font - its glyphset, its parsed TTFont object, etc. - we want to ask those questions once and cache the answer. So the definition of the `Font` object contains the following code:
+
+```python
+    @cached_property
+    def ttFont(self):
+        return TTFont(self.file)
+
+    @cached_property
+    def font_codepoints(self):
+        return set(self.ttFont.getBestCmap().keys())
+```
+
+(You can see the full list of methods in the `fontbakery.testables` module.) This means that we can call `font.ttFont`, and get the same cached `TTFont` object each time - the font parsing only has to happen once. These cached properties are called "conditions" in Fontbakery-speak, for reasons we'll explain a little later.
+
+So here's a slight improvement on the above check definition:
+
+```Python
+@check(...)
+def check_has_FNRD_table(font: Font):
+  if "FNRD" not in font.ttFont:  # Use cached TTFont, don't parse it ourselves
+    ...
+```
+
+This is better, but it still doesn't explain why `check_has_FNRD_table(ttFont)` works. But here's where the check runner gets clever and does something called "dependency injection": instead of taking a parameter `font` to get a `Font` object, your check can declare a parameter *with the same name as any condition* (that is, any method on the "testable" object) and the check will be called with the result of that condition as the parameter.
+
+That's how we got `ttFont` to feed us a `TTFont` object: it noticed the parameter naming, figured that we wanted to call the `.ttFont` condition, did that under the hood, and handed the result to the check.
+
+Of course, this is a short-cut and has the danger of getting things wrong. If both `Ufo` and `Font` objects have a `font_codepoints` condition, and your check uses `font_codepoints` as a parameter, what Fontbakery does is officially undefined behaviour - although in reality it will probably attempt to call the check on both types of object. This may or may not be what you want.
+
+This is why in general you should follow the [Zen of Python](https://peps.python.org/pep-0020/) ("Explicit is better than implicit, simple is better than complex") and use `font` and `ufo` as parameters, and then call the conditions on them as methods rather than using the "clever" dependency injection mechanism.
+
+But given that it is *extremely* common for font-based checks to operate off a `TTFont` object, the mechanism turns out to be very helpful and it's a well-known convention, so it's there if you want it.
+
+### Running on all the testables
+
+While most checks deal with a single "testable" (generally a `Font`) at a time, other checks need to run against all the files on the command line. For example, you might want to check that all fonts in a family have the same family name.
+
+To enable this, Fontbakery extends the dependency injection idea a little further: when matching the names of parameters, if the name is not found as a method on the current `Testable`, Fontbakery sees if there is a method on the `CheckRunContext` with the same name, and if it is, calls that instead. In other words, the names of any methods on the `CheckRunContext` object can also be used as parameters to checks. Each type of testable (fonts, UFO files, Glyphs sources, README.md files, etc.) have their own "collection" method on the `CheckRunContext` (`.fonts`, `.ufos`...) which returns the list of files to be tested matching that type.
+
+In practice, what this means is that you can say:
+
+```Python
+@check(...)
+def check_all_same_family_name(fonts):
+```
+
+and receive a list of `Font` objects representing all the font files passed in on the command line.
+
+As a further optimization for check writers, `CheckRunContext` has a `.ttFonts` method, which calls `.ttFont` on each `Font`. Combining this with dependency injection again, you can say:
+
+```Python
+@check(...)
+def check_all_same_family_name(ttFonts):
+    family_names = [tt["name"].getDebugName(1) for tt in ttFonts]
+    if any(family_name != family_names[0] for family_name in family_names):
+        ...
+```
+
+This helps you to check things about the context as a whole. In other cases, you might want to check the status of one file, while "being aware" of the whole collection of testables. To enable this, each testable object has a `.context` property which refers back to the `CheckRunContext` object. And of course you can use dependency injection to say:
+
+```Python
+@check(...)
+def check_italic_has_matching_roman(ttFont, context):
+    # Let's assume ttFont is known to be italic, we'll show how later.
+    romans = [font.ttFont for font in context.fonts if not font.is_italic]
+    if any(is_matching_roman(roman, ttFont) for roman in romans):
+        yield PASS
+```
+
+But this is... exceptional. The more you keep things simple, the better for everyone.
+
+### Skipping checks
+
+Coming back to the question of why these cached "questions to ask" are called "conditions": the initial use of them was to be able to make checks conditional on certain situations. So a `Font` has condition methods like `.is_variable_font`, `.is_cff` and so on. If a check decorator specifies these condition names in its metadata, *the check will only be run on those testables for which the condition method returns true*:
+
+```python
+@check(
+    id="com.myfoundry/check/cff_names_match",
+    conditions=["is_cff"]
 )
-# somehow added to profile, e.g.:
-# profile.register_expected_value(fonts_expected_value)
+def check_cff_names_match(ttFont):
 ```
 
-`fonts` when used as a check argument will be something like:
-```py
-['Myfont-Regular.ttf', 'Myfont-Italic.ttf', ...]
+The check runner performs the moral equivalent of:
+
+```python
+for font in testables.font:
+    if font.is_cff:
+        yield from check_cff_names_match(font.ttFont)
+    else:
+        yield "SKIP", "Unfulfilled condition: is_cff"
 ```
 
-#### `font` Iterarg
+You can match multiple conditions, and again these can be methods on the individual testable or on the `CheckRunContext` object, and *all* have to return a true value for the check to run. One useful condition on the `CheckRunContext` is `.network`, which tells you if network checks are enabled or disabled on the command line. Checks which use the Internet should declare the `network` condition.
 
-Iterargs (iterable arguments) are defined via the `Profile` constructor.
-
-```py
-profile = FontsProfile(
-      ...,
-      iterargs={'font': 'fonts'},
-      ...
-      )
+```python
+@check(
+    id="com.myfoundry/check/lookup_on_fontsinuse",
+    conditions=["network"]
+)
 ```
 
-This tells Font Bakery when we use `font` as a check parameter, to call the check once for each `font` in `fonts`.
+### Declaring your own conditions
 
-```py
-@check(id=...)
-def once_per_font(font):
- ...
+Finally, if you have your own "questions to ask" about a testable or about the run context - particularly those you are likely to ask more than once in different checks, and hence it's worth caching the result - you can declare your own conditions. This is done with the `@condition` decorator (available for import as part of the `fontbakery.prelude`), and you can see examples of it in the `fontbakery.checks.shared_conditions` module:
 
-# Will be executed something along these lines:
-once_per_font('Myfont-Regular.ttf')
-once_per_font('Myfont-Italic.ttf')
-once_per_font(...)
+```python
+@condition(CheckRunContext)
+def are_ttf(collection):
+    return all(f.is_ttf for f in collection.fonts)
 ```
 
-#### `ttFont` Condition
+The `@condition` decorator adds a cached property to a class; it is exactly the moral equivalent of:
 
-Conditions are somehow similar to checks: they are also functions and they are also using the same dependency injection mechanism like checks for their parameters. But they are also part of the namespace and dependency injection.
-
-```
-@condition
-def ttFont(font):
-   from fontTools.ttLib import TTFont
-   return TTFont(font)
-
-# somehow added to profile, e.g.:
-# profile.register_condition(ttFont)
+```python
+class CheckRunContext:
+    @cached_property
+    def are_ttf(self):
+        return all(f.is_ttf for f in self.fonts)
 ```
 
-This, when used in a check as parameter, will inherit from the `font` iterarg, that the check will be executed once for each `font` in `fonts`. However, the argument passed will be an instance of `TTFont`:
-
-```
-@check(id=...)
-def once_per_ttfont(ttFont):
- ...
-
-# will be called like:
-once_per_font(ttFont('Myfont-Regular.ttf'))
-once_per_font(ttFont('Myfont-Italic.ttf'))
-once_per_font( ttFont(...))
-```
-
-#### `ttFonts` Derived Iterables
-
-Derived Iterables are not used in the example above, they however make it possible for a condition like `ttFont` to create an iterator for all of it values:
-
-```py
-profile = FontsProfile(
-      ...,
-      derived_iterables={'ttFonts': ('ttFont', True)}
-      ...
-      )
-```
-
-Makes it possible to:
-
-```
-@check(id=...)
-def once_for_all_ttfonts(ttFonts):
- ...
-
-# is called much like:
-once_for_all_ttfonts([ttFont(font) for font in [
-                  'Myfont-Regular.ttf', 'Myfont-Italic.ttf', ...]])
-```
-
-#### Access to the configuration object
-
-You can also inject the `config` parameter into your checks in order to gain
-access to any configuration file passed in by the user. The `config` parameter
-will contain a dictionary with the parsed configuration file.
-
-#### Explicit Namespace Overrides `force=True`
-
-In order to make it possible to create checks and conditions that depend on values unknown in advance, it is possible to forcefully override certain namespace entries with a later definition. For this `FontBakeryCondition` and `FontBakeryExpected` value have an `force=True` optional parameter and for the other namespace types `profile.add_to_namespace` can be used directly, which provides the same parameter. *Just don't over do it and take care of namspace clashes carefully!*
+If you think that other checks may end up using your shiny new condition, you can add it to `fontbakery.checks.shared_conditions`; if not, you can place the condition definition in the file containing your check definitions.
