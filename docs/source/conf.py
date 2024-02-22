@@ -38,7 +38,6 @@ needs_sphinx = "4.3"
 # or your custom ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.viewcode",
     "sphinx.ext.linkcode",
     "fontbakery.sphinx_extensions.profile",
     "sphinx.ext.napoleon",
