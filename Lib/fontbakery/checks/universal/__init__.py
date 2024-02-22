@@ -17,7 +17,7 @@ from fontbakery.prelude import (
 )
 from fontbakery.testable import Font, CheckRunContext, TTCFont
 from fontbakery.glyphdata import desired_glyph_data
-from fontbakery.checks.layout import feature_tags
+from fontbakery.checks.opentype.layout import feature_tags
 from fontbakery.utils import (
     bullet_list,
     get_font_glyph_data,
