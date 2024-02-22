@@ -1,7 +1,5 @@
-#######
-fontval
-#######
+########################
+Microsoft Font Validator
+########################
 
-.. automodule:: fontbakery.profiles.fontval
-   :members:
-   :undoc-members:
+.. autoprofile:: fontbakery.profiles.fontval

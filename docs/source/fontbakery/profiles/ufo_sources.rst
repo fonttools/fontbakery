@@ -1,7 +1,5 @@
 ###########
-ufo_sources
+UFO Sources
 ###########
 
-.. automodule:: fontbakery.profiles.ufo_sources
-   :members:
-   :undoc-members:
+.. autoprofile:: fontbakery.profiles.ufo_sources

@@ -1,7 +1,5 @@
 #######
-shaping
+Shaping
 #######
 
-.. automodule:: fontbakery.profiles.shaping
-   :members:
-   :undoc-members:
+.. autoprofile:: fontbakery.profiles.shaping
