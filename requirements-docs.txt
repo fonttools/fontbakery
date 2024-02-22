@@ -1,4 +1,4 @@
-sphinx == 4.3.0
-sphinx_rtd_theme == 1.0.0
+sphinx == 7.2.6
+sphinx_rtd_theme == 2.0.0
 myst-parser == 2.0.0
 -e .[all]
