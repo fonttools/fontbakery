@@ -94,7 +94,7 @@ fontval_extras = [
 ]
 
 docs_extras = [
-    "recommonmark",
+    "myst-parser",
     "sphinx >= 1.4",
     "sphinx_rtd_theme",
 ]
