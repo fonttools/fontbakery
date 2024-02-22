@@ -1111,7 +1111,11 @@ def test_check_hinting_impact():
     assert_results_contain(
         check(font), INFO, "size-impact", "this check always emits an INFO result..."
     )
-    # TODO: test the CFF code-path
+
+    font = TEST_FILE("rokkitt/Rokkitt-Bold.otf")
+    assert_results_contain(
+        check(font), INFO, "size-impact", "this check always emits an INFO result..."
+    )
 
 
 def test_check_file_size():
