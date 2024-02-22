@@ -1,7 +1,5 @@
 ########
-iso15008
+ISO15008
 ########
 
-.. automodule:: fontbakery.profiles.iso15008
-   :members:
-   :undoc-members:
+.. autoprofile:: fontbakery.profiles.iso15008

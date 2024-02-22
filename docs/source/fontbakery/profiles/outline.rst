@@ -1,7 +1,5 @@
 #######
-outline
+Outline
 #######
 
-.. automodule:: fontbakery.profiles.outline
-   :members:
-   :undoc-members:
+.. autoprofile:: fontbakery.profiles.outline
