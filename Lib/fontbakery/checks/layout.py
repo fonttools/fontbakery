@@ -23,6 +23,9 @@ DEPRECATED_TAGS = ["hngl", "opbd", "size"]
         Incorrect tags can be indications of typos, leftover debugging code or
         questionable approaches, or user error in the font editor. Such typos can
         cause features and language support to fail to work as intended.
+
+        Font vendors may use private tags to identify private features. These tags
+        must be four uppercase letters (A-Z) with no punctuation, spaces, or numbers.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3355",
     severity=8,
@@ -39,7 +42,8 @@ def com_google_fonts_check_layout_valid_feature_tags(ttFont):
     bad_tags = set()
     for tag in feature_tags(ttFont):
         if tag not in acceptable_tags:
-            bad_tags.add(tag)
+            if not tag.isupper() or len(tag) > 4:
+                bad_tags.add(tag)
     if bad_tags:
         yield FAIL, Message(
             "bad-feature-tags",
