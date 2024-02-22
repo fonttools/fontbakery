@@ -30,7 +30,7 @@ def hinting_stats(font: Font):
         ext = os.path.splitext(font.file)[1]
         tmp = font.file.replace(ext, "-tmp-dehinted%s" % ext)
         args = [
-            font,
+            font.file,
             "--no-hinting",
             "--glyphs=*",
             "--ignore-missing-glyphs",
