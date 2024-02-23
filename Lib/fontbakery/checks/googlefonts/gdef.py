@@ -34,7 +34,7 @@ def ligature_glyphs(font):
         caret rendering.
 
         If using GlyphsApp or UFOs, ligature carets can be defined as anchors with
-        names starting with 'caret_'. These can be compiled with fontmake as of
+        names starting with `caret_`. These can be compiled with fontmake as of
         version v2.4.0.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/1225",

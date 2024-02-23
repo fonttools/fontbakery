@@ -103,7 +103,7 @@ suite of checks. We aim to reach 100% test coverage.
 In order to run the tests you need to have the ``pytest`` dependency installed.
 
 Install ``pytest``
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 Install ``pytest`` in your virtual environment with:
 
