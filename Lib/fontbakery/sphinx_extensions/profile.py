@@ -1,14 +1,18 @@
 from typing import Any
 
-from sphinx.ext.autodoc import ModuleDocumenter
+import m2r
 from sphinx.application import Sphinx
+from sphinx.ext.autodoc import FunctionDocumenter, ModuleDocumenter
 
-from fontbakery.fonts_profile import load_all_checks, checks_by_id
+from fontbakery.callable import FontBakeryCheck
+from fontbakery.fonts_profile import checks_by_id, load_all_checks
+from fontbakery.utils import unindent_and_unwrap_rationale
 
 
 def setup(app: Sphinx) -> None:
     app.setup_extension("sphinx.ext.autodoc")  # Require autodoc extension
     app.add_autodocumenter(FontbakeryProfileDocumenter)
+    app.add_autodocumenter(FontbakeryCheckDocumenter)
     load_all_checks()
 
 
@@ -45,7 +49,8 @@ class FontbakeryProfileDocumenter(ModuleDocumenter):
             for check in checks:
                 if check in checks_by_id:
                     self.add_line(
-                        f"  - *{check}*: {checks_by_id[check].description}", source_name
+                        f"  - :ref:`{check}`: {checks_by_id[check].description}",
+                        source_name,
                     )
                 else:
                     self.add_line(f"  - *{check}*", source_name)
@@ -76,3 +81,69 @@ class FontbakeryProfileDocumenter(ModuleDocumenter):
                     for param, value in defaults[check].items():
                         self.add_line(f"      - ``{param}``: ``{value}``", source_name)
                     self.add_line("", source_name)
+
+
+class FontbakeryCheckDocumenter(FunctionDocumenter):
+    objtype = "function"
+    directivetype = FunctionDocumenter.objtype
+    priority = 10 + FunctionDocumenter.priority
+
+    @classmethod
+    def can_document_member(
+        cls, member: Any, membername: str, isattr: bool, parent: Any
+    ) -> bool:
+        return isinstance(member, FontBakeryCheck)
+
+    def add_content(
+        self,
+        more_content: Any | None,
+        # no_docstring: bool = False,
+    ) -> None:
+        super().add_content(more_content)
+        source_name = self.get_sourcename()
+        check = self.object
+        self.add_line("*" + check.description + "*", source_name)
+        self.add_line("", source_name)
+        if check.rationale:
+            for line in m2r.convert(
+                unindent_and_unwrap_rationale(check.rationale)
+            ).split("\n"):
+                self.add_line("  " + line, source_name)
+
+        if check.proposal:
+            self.add_line("", source_name)
+            self.add_line(f"**Original proposal**: {check.proposal}", source_name)
+        if check.proponent:
+            self.add_line("", source_name)
+            self.add_line(f"**Proponent**: {check.proponent}", source_name)
+        if check.conditions:
+            self.add_line("", source_name)
+            conditions = ", ".join([f"``{cond}``" for cond in check.conditions])
+            self.add_line(f"**Conditions**: {conditions}", source_name)
+        if check.severity:
+            self.add_line("", source_name)
+            self.add_line(f"**Severity**: {check.severity}", source_name)
+        self.add_line("", source_name)
+
+    def get_sourcename(self) -> str:
+        return self.object.id
+
+    def add_directive_header(self, sig: str) -> None:
+        """Add the directive header and options to the generated content."""
+        domain = getattr(self, "domain", "py")
+        directive = getattr(self, "directivetype", self.objtype)
+        name = self.format_name()
+        sourcename = self.get_sourcename()
+
+        self.add_line(".. _" + self.object.id + ":", sourcename)
+        self.add_line("", sourcename)
+
+        self.add_line(self.object.id, sourcename)
+        self.add_line("^" * len(self.object.id), sourcename)
+
+        # one signature per line, indented by column
+        prefix = f".. {domain}:{directive}:: "
+        for i, sig_line in enumerate(sig.split("\n")):
+            self.add_line(f"{prefix}{name}{sig_line}", sourcename)
+            if i == 0:
+                prefix = " " * len(prefix)
