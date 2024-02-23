@@ -59,7 +59,7 @@ class FontbakeryProfileDocumenter(ModuleDocumenter):
                         )
                         self.add_line(
                             f"    - The **{code}** result is reported as a"
-                            " **{status}** in this profile",
+                            f" **{status}** in this profile",
                             source_name,
                         )
                         if reason:
