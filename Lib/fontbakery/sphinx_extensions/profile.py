@@ -99,31 +99,57 @@ class FontbakeryCheckDocumenter(FunctionDocumenter):
         more_content: Any | None,
         # no_docstring: bool = False,
     ) -> None:
-        super().add_content(more_content)
         source_name = self.get_sourcename()
         check = self.object
         self.add_line("*" + check.description + "*", source_name)
         self.add_line("", source_name)
-        if check.rationale:
-            for line in m2r.convert(
-                unindent_and_unwrap_rationale(check.rationale)
-            ).split("\n"):
-                self.add_line("  " + line, source_name)
-
-        if check.proposal:
-            self.add_line("", source_name)
-            self.add_line(f"**Original proposal**: {check.proposal}", source_name)
-        if check.proponent:
-            self.add_line("", source_name)
-            self.add_line(f"**Proponent**: {check.proponent}", source_name)
-        if check.conditions:
-            self.add_line("", source_name)
-            conditions = ", ".join([f"``{cond}``" for cond in check.conditions])
-            self.add_line(f"**Conditions**: {conditions}", source_name)
-        if check.severity:
-            self.add_line("", source_name)
-            self.add_line(f"**Severity**: {check.severity}", source_name)
+        for section in ["rationale", "proposal", "proponent", "conditions", "severity"]:
+            if getattr(check, section):
+                getattr(self, f"render_{section}")()
         self.add_line("", source_name)
+
+    def render_rationale(self) -> None:
+        check = self.object
+        source_name = self.get_sourcename()
+        for line in m2r.convert(unindent_and_unwrap_rationale(check.rationale)).split(
+            "\n"
+        ):
+            self.add_line("  " + line, source_name)
+
+    def render_proposal(self) -> None:
+        check = self.object
+        source_name = self.get_sourcename()
+        self.add_line("", source_name)
+        if isinstance(check.proposal, list):
+            for ix, proposal in enumerate(check.proposal):
+                if ix == 0:
+                    self.add_line(f"* **Original proposal**: {proposal}", source_name)
+                else:
+                    self.add_line(
+                        f"* **Some additional changes were proposed at** {proposal}",
+                        source_name,
+                    )
+        else:
+            self.add_line(f"* **Original proposal**: {check.proposal}", source_name)
+
+    def render_proponent(self):
+        check = self.object
+        source_name = self.get_sourcename()
+        self.add_line("", source_name)
+        self.add_line(f"**Proponent**: {check.proponent}", source_name)
+
+    def render_conditions(self):
+        check = self.object
+        source_name = self.get_sourcename()
+        self.add_line("", source_name)
+        conditions = ", ".join([f"``{cond}``" for cond in check.conditions])
+        self.add_line(f"* **Conditions**: {conditions}", source_name)
+
+    def render_severity(self):
+        check = self.object
+        source_name = self.get_sourcename()
+        self.add_line("", source_name)
+        self.add_line(f"* **Severity**: {check.severity}", source_name)
 
     def get_sourcename(self) -> str:
         return self.object.id
