@@ -1,0 +1,6 @@
+######################################
+Checks to support the ISO15008 profile
+######################################
+
+.. automodule:: fontbakery.checks.iso15008
+    :members:
