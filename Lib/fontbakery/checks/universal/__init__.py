@@ -1168,8 +1168,8 @@ def com_google_fonts_check_STAT_strings(ttFont):
 
         'NOTE: The PostScript glyph name must be no longer than 31 characters,
         include only uppercase or lowercase English letters, European digits,
-        the period or the underscore, i.e. from the set [A-Za-z0-9_.] and
-        should start with a letter, except the special glyph name ".notdef"
+        the period or the underscore, i.e. from the set `[A-Za-z0-9_.]` and
+        should start with a letter, except the special glyph name `.notdef`
         which starts with a period.'
 
         https://learn.microsoft.com/en-us/typography/opentype/otspec181/recom#-post--table

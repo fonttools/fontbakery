@@ -295,13 +295,13 @@ def com_google_fonts_check_varfont_consistent_axes(VFs):
 
         The target font will be the mean of each axis e.g:
 
-        ## VF font axes
+        **VF font axes**
 
         - min weight, max weight = 400, 800
 
         - min width, max width = 50, 100
 
-        ## Target Instance
+        **Target Instance**
 
         - weight = 600
 
