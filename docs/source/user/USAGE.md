@@ -1,4 +1,4 @@
-## Font Bakery Command Line Usage
+# Font Bakery Command Line Usage
 
 Install Font Bakery as a package with the instructions in the [Installation Guides](https://font-bakery.readthedocs.io/en/stable/user/installation/index.html), and you will have a `fontbakery` command in your `$PATH`.
 
@@ -33,7 +33,7 @@ This has several subcommands, described in the help function:
                           by a space character. This is usually only used to 
                           generate the shell completion code.
 
-### fontbakery check-universal
+## fontbakery check-universal
 
 The "universal" profile contains checks for best practices agreed upon on the type design community.
 
@@ -43,11 +43,11 @@ The goal is to keep the vendor-specific profiles with only the minimal set of ch
 
 We should always consider contributing new checks (or moving existing ones) to this universal profile, if appropriate.
 
-### fontbakery check-adobefonts / check-fontbureau / check-fontwerk / check-notofonts
+## fontbakery check-adobefonts / check-fontbureau / check-fontwerk / check-notofonts
 
 Usage is analogous to the Google Fonts profile described below.
 
-### fontbakery check-googlefonts
+## fontbakery check-googlefonts
 
 This is the command used by foundries checking their projects for Google Fonts 
 
@@ -165,13 +165,13 @@ For checking the GFonts collection the script is used like this:
 
 This will create a folder called `check_results/` then run the `check-googlefonts` subcommand on every family, saving individual per-family reports in json format into subdirectories.
 
-### fontbakery check-fontval
+## fontbakery check-fontval
 
 This is a wrapper around the Microsoft Font Validator.
 
 Usage is similar to the check-googlefonts command described above.
 
-### Configuration file
+## Configuration file
 
 Some command-line parameters can be configured in a configuration file.
 This may be in TOML or YAML format, and the name of this file is passed in
