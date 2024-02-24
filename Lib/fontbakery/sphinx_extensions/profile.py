@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 import m2r
 from sphinx.application import Sphinx
@@ -29,7 +29,7 @@ class FontbakeryProfileDocumenter(ModuleDocumenter):
 
     def add_content(
         self,
-        more_content: Any | None,
+        more_content: Optional[Any],
         # no_docstring: bool = False,
     ) -> None:
         super().add_content(more_content)
@@ -96,7 +96,7 @@ class FontbakeryCheckDocumenter(FunctionDocumenter):
 
     def add_content(
         self,
-        more_content: Any | None,
+        more_content: Optional[Any],
         # no_docstring: bool = False,
     ) -> None:
         source_name = self.get_sourcename()
