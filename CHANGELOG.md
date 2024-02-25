@@ -15,6 +15,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Open Type Profile
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Updated the check to allow valid private-use feature tags. (issue #4544)
   - **[com.google.fonts/check/varfont/family_axis_ranges]:** Updated the check to skip fonts without fvar tables. (issue #4554)
+  - **[com.google.fonts/check/mac_style]:** Skip if font style can not be determined. (issue #4349)
 
 
 ## 0.12.0a2 (2024-Feb-21)

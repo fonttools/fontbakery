@@ -1,9 +1,10 @@
 from fontTools.ttLib import TTFont
 import pytest
 
-from fontbakery.status import WARN, FAIL, PASS
+from fontbakery.status import WARN, FAIL, PASS, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
+    assert_SKIP,
     assert_results_contain,
     CheckTester,
     TEST_FILE,
@@ -194,6 +195,7 @@ def test_check_mac_style():
         [MacStyle.BOLD, "Bold", PASS],
         [MacStyle.BOLD, "Thin", "bad-BOLD"],
         [MacStyle.BOLD | MacStyle.ITALIC, "BoldItalic", PASS],
+        [0, None, SKIP],
     ]
 
     for macStyle_value, style, expected in test_cases:
@@ -201,6 +203,11 @@ def test_check_mac_style():
 
         if expected == PASS:
             assert_PASS(
+                check(MockFont(ttFont=ttFont, style=style)),
+                "with macStyle:{macStyle_value} style:{style}...",
+            )
+        elif expected == SKIP:
+            assert_SKIP(
                 check(MockFont(ttFont=ttFont, style=style)),
                 "with macStyle:{macStyle_value} style:{style}...",
             )
