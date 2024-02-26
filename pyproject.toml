@@ -1,3 +1,158 @@
+[build-system]
+requires = ["setuptools >= 61.0", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fontbakery"
+dynamic = ["version"]
+description = "A font quality assurance tool for everyone"
+readme = { file = "README.md", content-type = "text/markdown" }
+authors = [
+	{ name = "Chris Simpkins", email = "csimpkins@google.com" },
+	{ name = "Dave Crossland", email = "dcrossland@google.com" },
+	{ name = "Felipe Sanches", email = "juca@members.fsf.org" },
+	{ name = "Jens Kutilek" },
+	{ name = "Lasse Fister" },
+	{ name = "Marc Foley" },
+	{ name = "Miguel Sousa" },
+    { name = "Nikolaus Waxweiler" },
+    { name = "Rosalie Wagner" },
+    { name = "Simon Cozens" },
+    { name = "Vitaly Volkov" },
+    { name = "Viviana Monsalve" },
+    { name = "Yanone" },
+]
+maintainers = [
+	{ name = "Felipe Sanches", email = "juca@members.fsf.org" }
+]
+
+dependencies = [
+	"fontTools >= 4.39.0, == 4.*",
+	"freetype-py != 2.4.0",
+	"opentypespec",
+	"opentype-sanitizer >= 9.1.0, == 9.*",
+	"munkres",
+	"PyYAML",
+	"toml",
+	"cmarkgfm >= 0.4",
+	"rich",
+	"Jinja2",
+	"packaging",
+	"pip-api",
+	"requests",
+	"beziers >=0.5.0, == 0.5.*",
+	"uharfbuzz",
+	"vharfbuzz >=0.2.0, == 0.2.*",
+]
+
+[project.optional-dependencies]
+
+shaping = [
+	"collidoscope>=0.5.2, == 0.5.*",
+	"stringbrewer",
+	"ufo2ft >=2.25.2, == 2.*",
+	"ufolint",
+]
+googlefonts = [
+	"axisregistry >=0.4.5, == 0.4.*",
+	"beautifulsoup4 >=4.7.1, == 4.*",
+	"collidoscope>=0.5.2, == 0.5.*",
+	"dehinter>=3.1.0, == 3.*",
+	"font-v>=0.6.0",
+	"fontTools[lxml,unicode] >= 4.39.0, == 4.*",
+	"gflanguages >=0.5.17, == 0.5.*",
+	"gfsubsets >=2024.1.22.post2",
+	"glyphsets >=0.6.11, == 0.6.*",
+	"protobuf>=3.7.0, == 3.*",
+	"shaperglot>=0.3.1",
+	"stringbrewer",
+	"ufo2ft >=2.25.2, == 2.*",
+	"ufolint",
+]
+fontwerk = [
+	"axisregistry >=0.4.5, == 0.4.*",
+	"beautifulsoup4 >=4.7.1, == 4.*",
+	"collidoscope>=0.5.2, == 0.5.*",
+	"dehinter>=3.1.0, == 3.*",
+	"font-v>=0.6.0",
+	"fontTools[lxml,unicode] >= 4.39.0, == 4.*",
+	"gflanguages >=0.5.17, == 0.5.*",
+	"gfsubsets >=2024.1.22.post2",
+	"glyphsets >=0.6.11, == 0.6.*",
+	"protobuf>=3.7.0, == 3.*",
+	"shaperglot>=0.3.1",
+	"stringbrewer",
+	"ufo2ft >=2.25.2, == 2.*",
+	"ufolint",
+]
+notofonts = [
+	"axisregistry >=0.4.5, == 0.4.*",
+	"beautifulsoup4 >=4.7.1, == 4.*",
+	"collidoscope>=0.5.2, == 0.5.*",
+	"dehinter>=3.1.0, == 3.*",
+	"font-v>=0.6.0",
+	"fontTools[lxml,unicode] >= 4.39.0, == 4.*",
+	"gflanguages >=0.5.17, == 0.5.*",
+	"gfsubsets >=2024.1.22.post2",
+	"glyphsets >=0.6.11, == 0.6.*",
+	"protobuf>=3.7.0, == 3.*",
+	"shaperglot>=0.3.1",
+	"stringbrewer",
+	"ufo2ft >=2.25.2, == 2.*",
+	"ufolint",
+]
+ufo_sources = [
+	"defcon",
+	"fontTools[ufo] >= 4.39.0, == 4.*",
+	"ufo2ft >=2.25.2, == 2.*",
+	"ufolint",
+]
+typenetwork = [
+	"beautifulsoup4 >=4.7.1, == 4.*",
+	"ufo2ft >=2.25.2, == 2.*",
+	"shaperglot>=0.4.2",
+]
+fontval = ["lxml"]
+docs = [
+	"myst-parser >= 2.0.0, == 2.*",
+	"sphinx >= 7.1.2, == 7.1.*",
+	"sphinx_rtd_theme >= 2.0.0, == 2.*",
+	"m2r >= 0.3.1, == 0.3.*",
+]
+tests = [
+	# Requirements for *testing*
+	"black == 23.12.1",
+    "pylint == 3.0.3",
+	"pytest-cov == 4.1.0",
+	"pytest-xdist == 3.5.0",
+
+	# Requirements for tests
+	"axisregistry >=0.4.5, == 0.4.*",
+	"beautifulsoup4 >=4.7.1, == 4.*",
+	"collidoscope>=0.5.2, == 0.5.*",
+	"defcon",
+	"dehinter>=3.1.0, == 3.*",
+	"font-v>=0.6.0",
+	"fontTools[lxml,unicode,ufo] >= 4.39.0, == 4.*",
+	"gflanguages >=0.5.17, == 0.5.*",
+	"gfsubsets >=2024.1.22.post2",
+	"glyphsets >=0.6.11, == 0.6.*",
+	"protobuf>=3.7.0, == 3.*",
+	"shaperglot>=0.3.1",
+	"stringbrewer",
+	"ufo2ft >=2.25.2, == 2.*",
+	"ufolint",
+]
+
+[project.scripts]
+fontbakery = "fontbakery.cli:main"
+
+[tool.setuptools.packages.find]
+where =["Lib"]
+
+[tool.setuptools_scm]
+write_to = "Lib/fontbakery/_version.py"
+
 # ============================================================================
 [tool.black]
 line-length = 88
@@ -17,14 +172,14 @@ minversion = "6.0"
 testpaths = ["tests"]
 addopts = "--color=yes  --verbose"
 filterwarnings = [
-    "ignore:pkg_resources is deprecated as an API:DeprecationWarning",
-    "ignore:Deprecated call to `pkg_resources.declare_namespace:DeprecationWarning",
+	"ignore:pkg_resources is deprecated as an API:DeprecationWarning",
+	"ignore:Deprecated call to `pkg_resources.declare_namespace:DeprecationWarning",
 ]
 
 # ============================================================================
 [tool.pylint.master]
 ignore-patterns = ".*_pb2.py"
-jobs = 0  # Specifying 0 will auto-detect the number of processors available to use
+jobs = 0                                                     # Specifying 0 will auto-detect the number of processors available to use
 logging-format-style = "new"
 msg-template = "{msg_id} ({symbol}) {path} @ {line} — {msg}"
 output-format = "colorized"
@@ -94,9 +249,5 @@ disable = [
 ]
 
 [tool.pytype]
-inputs = [ "Lib" ]
-exclude = [
-  "Lib/fontbakery/*_pb2.py",
-  "Lib/fontbakery/sphinx_extensions",
-]
-
+inputs = ["Lib"]
+exclude = ["Lib/fontbakery/*_pb2.py", "Lib/fontbakery/sphinx_extensions"]

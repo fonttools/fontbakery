@@ -1,5 +1,0 @@
---index-url https://pypi.python.org/simple/
-black==23.12.1
-pylint==3.0.3
-pytest-cov==4.1.0
-pytest-xdist==3.5.0
