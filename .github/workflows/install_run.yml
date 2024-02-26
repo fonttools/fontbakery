@@ -99,9 +99,9 @@ jobs:
         || exit 0
       shell: bash
 
-    - name: Install `ufo-sources` extra
+    - name: Install `ufo_sources` extra
       run: |
-        python -m pip install '.[ufo-sources]'
+        python -m pip install '.[ufo_sources]'
 
     - name: Run UFO Sources checks
       run: >-
