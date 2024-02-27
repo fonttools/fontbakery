@@ -143,6 +143,24 @@ tests = [
 	"ufo2ft >=2.25.2, == 2.*",
 	"ufolint",
 ]
+all = [
+	"axisregistry >=0.4.5, == 0.4.*",
+	"beautifulsoup4 >=4.7.1, == 4.*",
+	"collidoscope>=0.5.2, == 0.5.*",
+	"defcon",
+	"dehinter>=3.1.0, == 3.*",
+	"fontTools[lxml,ufo,unicode] >= 4.39.0, == 4.*",
+	"font-v>=0.6.0",
+	"gflanguages >=0.5.17, == 0.5.*",
+	"gfsubsets >=2024.1.22.post2",
+	"glyphsets >=0.6.11, == 0.6.*",
+	"lxml",
+	"protobuf>=3.7.0, == 3.*",
+	"shaperglot>=0.4.2",
+	"stringbrewer",
+	"ufo2ft >=2.25.2, == 2.*",
+	"ufolint"
+]
 
 [project.scripts]
 fontbakery = "fontbakery.cli:main"
