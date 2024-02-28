@@ -51,6 +51,9 @@ def make_mock(basecls, name):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
 
+    def __dir__(self):
+        return dir(basecls) + list(self.__dict__.keys())
+
     def __getattr__(self, name):
         prop = getattr(basecls, name)
         if isinstance(prop, cached_property):
@@ -61,6 +64,7 @@ def make_mock(basecls, name):
 
     cls.__init__ = __init__
     cls.__getattr__ = __getattr__
+    cls.__dir__ = __dir__
     cls.mocked = True
     return cls
 

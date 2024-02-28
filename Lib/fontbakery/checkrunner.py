@@ -113,7 +113,7 @@ class CheckRunner:
 
     def _get(self, name, iterargs, condition=False):
         # Is this a property of the whole collection?
-        if hasattr(self.context, name):
+        if name in dir(self.context):
             return getattr(self.context, name)
         # Is it a property of the file we're testing?
         for thing, index in iterargs:
@@ -121,7 +121,7 @@ class CheckRunner:
             # Allow "font" to return the Font object itself
             if name == thing:
                 return specific_thing
-            if not hasattr(specific_thing, name):
+            if name not in dir(specific_thing):
                 continue
             return getattr(specific_thing, name)
         if condition:
@@ -243,7 +243,7 @@ class CheckRunner:
                 ):
                     continue
                 args = set(check.args)
-                context_args = set(arg for arg in args if hasattr(self.context, arg))
+                context_args = set(arg for arg in args if arg in dir(self.context))
 
                 # Either this is a check which runs on the whole collection
                 # (i.e. all of its arguments can be called as methods on the
@@ -257,7 +257,7 @@ class CheckRunner:
                     individual_args = args - context_args
                     if (
                         all(
-                            hasattr(file, arg)
+                            arg in dir(file)
                             for arg in individual_args
                             for file in files
                         )
