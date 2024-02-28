@@ -26,7 +26,7 @@ from fontbakery.fonts_profile import (
     ITERARGS,
 )
 from fontbakery.reporters.terminal import TerminalReporter
-from fontbakery.reporters.serialize import SerializeReporter
+from fontbakery.reporters.serialize import JSONReporter
 from fontbakery.reporters.badge import BadgeReporter
 from fontbakery.reporters.ghmarkdown import GHMarkdownReporter
 from fontbakery.reporters.html import HTMLReporter
@@ -214,7 +214,7 @@ def ArgumentParser(profile_arg=True):
         "--json",
         default=False,
         action=AddReporterAction,
-        cls=SerializeReporter,
+        cls=JSONReporter,
         metavar="JSON_FILE",
         help="Write a json formatted report to JSON_FILE.",
     )
