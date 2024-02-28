@@ -44,16 +44,10 @@ def markdown(message):
 
 class HTMLReporter(SerializeReporter):
     """Renders a report as a HTML document."""
+    format = "HTML"
 
-    def write(self):
-        with open(self.output_file, "w", encoding="utf-8") as fh:
-            fh.write(self.get_html())
-        if not self.quiet:
-            print(f'A report in HTML format has been saved to "{self.output_file}"')
-
-    def get_html(self) -> str:
+    def template(self, data) -> str:
         """Returns complete report as a HTML string."""
-        data = self.getdoc()
         total = 0
         loaders = [PackageLoader("fontbakery.reporters", "templates/html")]
         try:

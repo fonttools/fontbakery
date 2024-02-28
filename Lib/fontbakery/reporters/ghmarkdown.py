@@ -8,15 +8,7 @@ LOGLEVELS = ["ERROR", "FATAL", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]
 
 
 class GHMarkdownReporter(SerializeReporter):
-    def write(self):
-        with open(self.output_file, "w", encoding="utf8") as fh:
-            fh.write(self.get_markdown())
-        if not self.quiet:
-            print(
-                f"A report in GitHub Markdown format which can be useful\n"
-                f" for posting issues on a GitHub issue tracker has been\n"
-                f' saved to "{self.output_file}"'
-            )
+    format = "GitHub Markdown"
 
     @staticmethod
     def emoticon(name):
@@ -82,12 +74,11 @@ class GHMarkdownReporter(SerializeReporter):
         first_check = cluster[0]
         return all(check["logs"] == first_check["logs"] for check in cluster[1:])
 
-    def get_markdown(self):
+    def template(self, data):
         fatal_checks = {}
         experimental_checks = {}
         other_checks = {}
 
-        data = self.getdoc()
         num_checks = 0
         for section in data["sections"]:
             for cluster in section["checks"]:

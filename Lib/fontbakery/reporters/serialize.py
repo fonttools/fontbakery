@@ -15,13 +15,7 @@ from fontbakery.reporters import FontbakeryReporter
 
 
 class SerializeReporter(FontbakeryReporter):
-    """
-    usage:
-    >> sr = SerializeReporter(runner=runner, collect_results_by='font')
-    >> sr.run()
-    >> import json
-    >> print(json.dumps(sr.getdoc(), sort_keys=True, indent=4))
-    """
+    format = "unknown"
 
     def __post_init__(self):
         super().__post_init__()
@@ -59,9 +53,23 @@ class SerializeReporter(FontbakeryReporter):
         }
 
     def write(self):
+        with open(self.output_file, "w", encoding="utf-8") as fh:
+            fh.write(self.template(self.getdoc()))
+        if not self.quiet:
+            print(
+                f'A report in {self.format} format has been saved to "{self.output_file}"'
+            )
+
+    def template(self, _data):
+        raise NotImplementedError(
+            "Subclasses of SerializeReporter must implement the template method"
+        )
+
+
+class JSONReporter(SerializeReporter):
+    format = "JSON"
+
+    def template(self, doc):
         import json
 
-        with open(self.output_file, "w", encoding="utf-8") as fh:
-            json.dump(self.getdoc(), fh, sort_keys=True, indent=4)
-        if not self.quiet:
-            print(f'A report in JSON format has been saved to "{self.output_file}"')
+        return json.dumps(doc, sort_keys=True, indent=4)
