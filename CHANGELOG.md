@@ -11,7 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Open Type Profile
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Updated the check to allow valid private-use feature tags. (issue #4544)
-  - **[com.google.fonts/checkvarfont/family_axis_ranges]:** Updated the check to skip fonts without fvar tables. (issue #4554)
+  - **[com.google.fonts/check/varfont/family_axis_ranges]:** Updated the check to skip fonts without fvar tables. (issue #4554)
 
 
 ## 0.12.0a2 (2024-Feb-21)
