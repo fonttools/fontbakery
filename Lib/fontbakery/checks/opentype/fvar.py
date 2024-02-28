@@ -673,6 +673,7 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4445",
     experimental="Since 2024/Jan/30",
+    conditions=["VFs"],
 )
 def com_google_fonts_check_varfont_family_axis_ranges(ttFonts):
     """Check that family axis ranges are indentical"""
