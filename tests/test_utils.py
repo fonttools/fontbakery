@@ -15,7 +15,6 @@ from fontbakery.utils import (
     exit_with_install_instructions,
     get_apple_terminal_bg_color,
     get_theme,
-    html5_collapsible,
     is_negated,
     pretty_print_list,
     split_camel_case,
@@ -172,13 +171,6 @@ def test_unindent_and_unwrap_rationale():
         "\n"
     )
     assert unindent_and_unwrap_rationale(rationale) == expected_rationale
-
-
-def test_html5_collapsible():
-    assert (
-        html5_collapsible("abc", "ABC")
-        == "<details><summary>abc</summary><div>ABC</div></details>"
-    )
 
 
 def test_split_camel_case():
