@@ -1,73 +1,14 @@
 import os
 
-from fontbakery.reporters.serialize import SerializeReporter
-from fontbakery.utils import html5_collapsible
+from fontbakery.reporters.html import HTMLReporter
 from fontbakery import __version__ as version
 
 LOGLEVELS = ["ERROR", "FATAL", "FAIL", "WARN", "SKIP", "INFO", "PASS", "DEBUG"]
 
 
-class GHMarkdownReporter(SerializeReporter):
-    format = "GitHub Markdown"
-
-    @staticmethod
-    def emoticon(name):
-        return {
-            "ERROR": "\U0001F494",  # 💔  :broken_heart:
-            "FATAL": "\U00002620",  # ☠️  :skull_and_crossbones:
-            "FAIL": "\U0001F525",  # 🔥  :fire:
-            "WARN": "\U000026A0",  # ⚠️  :warning:
-            "INFO": "\U00002139",  # ℹ️  :information_source:
-            "SKIP": "\U0001F4A4",  # 💤  :zzz:
-            "PASS": "\U0001F35E",  # 🍞  :bread
-            "DEBUG": "\U0001F50E",  # 🔎 :mag_right:
-        }[name]
-
-    def log_md(self, log):
-        if not self.omit_loglevel(log["status"]):
-            msg = log["message"]
-            message = msg["message"]
-            if "code" in msg and msg["code"]:
-                message += f" [code: {msg['code']}]"
-            return "* {} **{}** {}\n".format(
-                self.emoticon(log["status"]), log["status"], message
-            )
-        else:
-            return ""
-
-    def render_rationale(self, check, checkid):
-        if self.succinct or not check.get("rationale"):
-            return ""
-
-        from fontbakery.utils import unindent_and_unwrap_rationale
-
-        content = unindent_and_unwrap_rationale(check["rationale"], checkid)
-        return "\n".join([">" + line for line in content.split("\n")])
-
-    def check_md(self, check):
-        checkid = check["key"][1].split(":")[1].split(">")[0]
-        module = check["module"].split(".")[0]  # opentype/fvar.py -> opentype.html
-
-        check["logs"].sort(key=lambda c: c["status"])
-        logs = "".join(map(self.log_md, check["logs"]))
-        anchor = checkid.replace("_", "-").replace("/", "-").replace(".", "-")
-        github_search_url = (
-            '<a href="https://fontbakery.readthedocs.io/en/stable'
-            f'/fontbakery/checks/{module}.html#{anchor}">'
-            f"{checkid}</a>"
-        )
-
-        rationale = self.render_rationale(check, checkid)
-
-        return html5_collapsible(
-            "{} <b>{}:</b> {} ({})".format(
-                self.emoticon(check["result"]),
-                check["result"],
-                check["description"],
-                github_search_url,
-            ),
-            f"\n\n{rationale}\n{logs}",
-        )
+class GHMarkdownReporter(HTMLReporter):
+    format_name = "GitHub Markdown"
+    format = "markdown"
 
     @staticmethod
     def result_is_all_same(cluster):
@@ -115,71 +56,13 @@ class GHMarkdownReporter(SerializeReporter):
                             other_checks[key] = []
                         other_checks[key].append(check)
 
-        md = f"## FontBakery report\n\nfontbakery version: {version}\n\n"
-
-        if fatal_checks:
-            md += (
-                "<h2>Checks with FATAL results</h2>"
-                "<p>These must be addressed first.</p>"
-            )
-            for filename in fatal_checks.keys():
-                md += html5_collapsible(
-                    "<b>[{}] {}</b>".format(len(fatal_checks[filename]), filename),
-                    "".join(map(self.check_md, fatal_checks[filename])) + "<br>",
-                )
-
-        if experimental_checks:
-            md += (
-                "<h2>Experimental checks</h2>"
-                "<p>These won't break the CI job for now, but will become effective"
-                " after some time if nobody raises any concern.</p>"
-            )
-            for filename in experimental_checks.keys():
-                experimental_checks[filename].sort(
-                    key=lambda c: LOGLEVELS.index(c["result"])
-                )
-                md += html5_collapsible(
-                    "<b>[{}] {}</b>".format(
-                        len(experimental_checks[filename]), filename
-                    ),
-                    "".join(map(self.check_md, experimental_checks[filename])) + "<br>",
-                )
-
-        if other_checks:
-            if experimental_checks or fatal_checks:
-                md += "<h2>All other checks</h2>"
-            else:
-                md += "<h2>Check results</h2>"
-
-            for filename in other_checks.keys():
-                other_checks[filename].sort(key=lambda c: LOGLEVELS.index(c["result"]))
-                md += html5_collapsible(
-                    "<b>[{}] {}</b>".format(len(other_checks[filename]), filename),
-                    "".join(map(self.check_md, other_checks[filename])) + "<br>",
-                )
-
-        if num_checks != 0:
-            summary_table = (
-                "\n### Summary\n\n"
-                + ("| {} " + " | {} ".join(LOGLEVELS) + " |\n").format(
-                    *[self.emoticon(k) for k in LOGLEVELS]
-                )
-                + (
-                    "|" + "|".join([":-----:"] * len(LOGLEVELS)) + "|\n"
-                    "|" + "|".join([" {} "] * len(LOGLEVELS)) + "|\n"
-                ).format(*[data["result"][k] for k in LOGLEVELS])
-                + ("|" + "|".join([" {:.0f}% "] * len(LOGLEVELS)) + "|\n").format(
-                    *[100 * data["result"][k] / num_checks for k in LOGLEVELS]
-                )
-            )
-            md += "\n" + summary_table
-
-        omitted = [loglvl for loglvl in LOGLEVELS if self.omit_loglevel(loglvl)]
-        if omitted:
-            md += (
-                "\n"
-                + "**Note:** The following loglevels were omitted in this report:\n"
-                + "".join(map("* **{}**\n".format, omitted))
-            )
-
-        return md
+        return self.template_engine().render(
+            fb_version=version,
+            summary={k: data["result"][k] for k in LOGLEVELS},
+            omitted=[loglvl for loglvl in LOGLEVELS if self.omit_loglevel(loglvl)],
+            fatal_checks=fatal_checks,
+            experimental_checks=experimental_checks,
+            other_checks=other_checks,
+            succinct=self.succinct,
+            total=num_checks,
+        )
