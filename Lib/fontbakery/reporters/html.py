@@ -4,7 +4,7 @@ from collections import defaultdict
 import os
 import cmarkgfm
 from cmarkgfm.cmark import Options as cmarkgfmOptions
-from jinja2 import ChoiceLoader, Environment, PackageLoader, select_autoescape
+from jinja2 import ChoiceLoader, Environment, PackageLoader, Template, select_autoescape
 from markupsafe import Markup
 
 from fontbakery.reporters.serialize import SerializeReporter
@@ -44,37 +44,25 @@ def markdown(message):
 
 class HTMLReporter(SerializeReporter):
     """Renders a report as a HTML document."""
-    format = "HTML"
 
-    def template(self, data) -> str:
-        """Returns complete report as a HTML string."""
-        total = 0
-        loaders = [PackageLoader("fontbakery.reporters", "templates/html")]
+    format_name = "HTML"
+    format = "html"
+
+    def template_engine(self) -> Template:
+        loaders = [PackageLoader("fontbakery.reporters", f"templates/{self.format}")]
         try:
             profile = self.runner.profile.name
             loaders.insert(
                 0,
-                PackageLoader("fontbakery.reporters", "templates/" + profile + "/html"),
+                PackageLoader(
+                    "fontbakery.reporters", f"templates/{profile}/{self.format}"
+                ),
             )
         except ValueError:
             pass  # No special templates for this profile
         environment = Environment(
             loader=ChoiceLoader(loaders), autoescape=select_autoescape()
         )
-
-        # Rearrange the data so that checks in each section are clustered
-        # by id
-        for section in data["sections"]:
-            checks = section["checks"]
-            total += len(checks)
-            checks_by_id = defaultdict(list)
-            for check in checks:
-                checks_by_id[check["key"][1]].append(check)
-            section["clustered_checks"] = list(checks_by_id.values())
-            section["status_summary"] = sorted(
-                (e for e in section["result"].elements() if e != "PASS"),
-                key=LOGLEVELS.index,
-            )
 
         def omitted(result):
             # This is horribly polymorphic, sorry
@@ -101,8 +89,27 @@ class HTMLReporter(SerializeReporter):
         environment.filters["basename"] = os.path.basename
         environment.filters["unwrap"] = unindent_and_unwrap_rationale
 
-        template = environment.get_template("main.html")
-        return template.render(
+        return environment.get_template("main." + self.format.lower())
+
+    def template(self, data) -> str:
+        """Returns complete report as a HTML string."""
+        total = 0
+
+        # Rearrange the data so that checks in each section are clustered
+        # by id
+        for section in data["sections"]:
+            checks = section["checks"]
+            total += len(checks)
+            checks_by_id = defaultdict(list)
+            for check in checks:
+                checks_by_id[check["key"][1]].append(check)
+            section["clustered_checks"] = list(checks_by_id.values())
+            section["status_summary"] = sorted(
+                (e for e in section["result"].elements() if e != "PASS"),
+                key=LOGLEVELS.index,
+            )
+
+        return self.template_engine().render(
             sections=data["sections"],
             ISSUE_URL=ISSUE_URL,
             fb_version=fb_version,
