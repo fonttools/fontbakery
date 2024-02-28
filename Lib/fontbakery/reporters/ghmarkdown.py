@@ -78,26 +78,6 @@ class GHMarkdownReporter(SerializeReporter):
         )
 
     @staticmethod
-    def deduce_profile_from_section_name(section):
-        # This is very hacky!
-        # We should have a much better way of doing it...
-        if "Google Fonts" in section:
-            return "googlefonts"
-        if "Adobe" in section:
-            return "adobefonts"
-        if "Font Bureau" in section:
-            return "fontbureau"
-        if "Universal" in section:
-            return "universal"
-        if "Basic UFO checks" in section:
-            return "ufo_sources"
-        if "Checks inherited from Microsoft Font Validator" in section:
-            return "fontval"
-        if "fontbakery.profiles." in section:
-            return section.split("fontbakery.profiles.")[1].split(">")[0]
-        return section
-
-    @staticmethod
     def result_is_all_same(cluster):
         first_check = cluster[0]
         return all(check["logs"] == first_check["logs"] for check in cluster[1:])
@@ -123,10 +103,6 @@ class GHMarkdownReporter(SerializeReporter):
                 for check in cluster:
                     if self.omit_loglevel(check["result"]):
                         continue
-                    check["profile"] = self.deduce_profile_from_section_name(
-                        section["key"][0]
-                    )
-
                     if "filename" in check.keys():
                         key = os.path.basename(check["filename"])
                     else:
