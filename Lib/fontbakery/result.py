@@ -74,6 +74,7 @@ class CheckResult:
     def getData(self, runner):
         """Return the result as a dictionary with data suitable for serialization."""
         check = self.identity.check
+        module = check.__module__.replace("fontbakery.checks.", "")
         json = {
             "key": self.identity.key,
             "description": check.description,
@@ -82,6 +83,7 @@ class CheckResult:
             "experimental": check.experimental,
             "severity": check.severity,
             "result": self.summary_status.name,
+            "module": module,
             "logs": [],
         }
         # This is a big hack
