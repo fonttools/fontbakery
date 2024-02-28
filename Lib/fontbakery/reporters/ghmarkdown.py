@@ -54,13 +54,14 @@ class GHMarkdownReporter(SerializeReporter):
 
     def check_md(self, check):
         checkid = check["key"][1].split(":")[1].split(">")[0]
-        profile = check["profile"]
+        module = check["module"].split(".")[0]  # opentype/fvar.py -> opentype.html
 
         check["logs"].sort(key=lambda c: c["status"])
         logs = "".join(map(self.log_md, check["logs"]))
+        anchor = checkid.replace("_", "-").replace("/", "-").replace(".", "-")
         github_search_url = (
-            '<a href="https://font-bakery.readthedocs.io/en/stable'
-            f'/fontbakery/profiles/{profile}.html#{checkid}">'
+            '<a href="https://fontbakery.readthedocs.io/en/stable'
+            f'/fontbakery/checks/{module}.html#{anchor}">'
             f"{checkid}</a>"
         )
 
