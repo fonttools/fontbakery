@@ -28,7 +28,7 @@ maintainers = [
 
 dependencies = [
 	"fontTools >= 4.39.0, == 4.*",
-	"freetype-py != 2.4.0",
+	"freetype-py < 2.4.0",
 	"opentypespec",
 	"opentype-sanitizer >= 9.1.0, == 9.*",
 	"munkres",
