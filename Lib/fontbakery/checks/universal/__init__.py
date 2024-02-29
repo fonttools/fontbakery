@@ -2489,8 +2489,7 @@ def com_google_fonts_check_tabular_kerning(ttFont):
                 for a, b in ((x, y), (y, x)):
                     kerning = get_kerning(ttFont, [a, b])
                     if kerning != 0:
-                        print(get_str_buffer(ttFont, [a]), get_str_buffer(ttFont, [b]))
-                        # Check if either a or b are digraphs that themselves have kerning
+                        # Check if either a or b are digraphs that themselves have kerning when decomposed in ccmp
                         # that would throw off the reading, skip if it's identical to the kerning of the whole sequence
                         if digraph_kerning(ttFont, [a], kerning) or digraph_kerning(
                             ttFont, [b], kerning
