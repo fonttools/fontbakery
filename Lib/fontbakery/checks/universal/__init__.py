@@ -2401,7 +2401,7 @@ def com_google_fonts_check_tabular_kerning(ttFont):
     def nominal_glyph_func(font, code_point, data):
         return code_point
 
-    def buffer_for_GIDs(GIDs, features):
+    def buffer_for_GIDs(GIDs, features={}):
         buf = hb.Buffer()
         buf.add_codepoints(GIDs)
         buf.guess_segment_properties()
@@ -2423,6 +2423,18 @@ def com_google_fonts_check_tabular_kerning(ttFont):
                 GID_list,
                 {"kern": False},
             )
+        )
+
+    def get_str_buffer(ttFont, glyph_list):
+        GID_list = [GID_for_glyph(ttFont, glyph) for glyph in glyph_list]
+        buffer = buffer_for_GIDs(GID_list)
+        string = vhb.serialize_buf(buffer)
+        return string
+
+    def digraph_kerning(ttFont, glyph_list, expected_kerning):
+        return (
+            len(get_str_buffer(ttFont, glyph_list).split("|")) > 1
+            and get_kerning(ttFont, glyph_list) == expected_kerning
         )
 
     all_glyphs = list(ttFont.getGlyphOrder())
@@ -2473,21 +2485,23 @@ def com_google_fonts_check_tabular_kerning(ttFont):
             (tabular_numerals, tabular_glyphs),
         ):
             combinations = unique_combinations(sets[0], sets[1])
-            for a, b in combinations:
-                kerning = get_kerning(ttFont, [a, b])
-                if kerning != 0:
-                    yield FAIL, Message(
-                        "has-tabular-kerning",
-                        f"Kerning between {a} and {b} is {kerning}, should be 0",
-                    )
-                    passed = False
-                kerning = get_kerning(ttFont, [b, a])
-                if get_kerning(ttFont, [b, a]) != 0:
-                    yield FAIL, Message(
-                        "has-tabular-kerning",
-                        f"Kerning between {b} and {a} is {kerning}, should be 0",
-                    )
-                    passed = False
+            for x, y in combinations:
+                for a, b in ((x, y), (y, x)):
+                    kerning = get_kerning(ttFont, [a, b])
+                    if kerning != 0:
+                        print(get_str_buffer(ttFont, [a]), get_str_buffer(ttFont, [b]))
+                        # Check if either a or b are digraphs that themselves have kerning
+                        # that would throw off the reading, skip if it's identical to the kerning of the whole sequence
+                        if digraph_kerning(ttFont, [a], kerning) or digraph_kerning(
+                            ttFont, [b], kerning
+                        ):
+                            pass
+                        else:
+                            yield FAIL, Message(
+                                "has-tabular-kerning",
+                                f"Kerning between {a} and {b} is {kerning}, should be 0",
+                            )
+                            passed = False
 
     if passed:
         yield PASS, "No kerning found for tabular glyphs"
