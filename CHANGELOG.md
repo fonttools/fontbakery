@@ -6,9 +6,13 @@ A more detailed list of changes is available in the corresponding milestones for
   - ...
 
 
-## Upcoming release: 0.12.1 (2024-Apr-15)
+## 0.12.1 (2024-Apr-15)
   - Temporarily pin glyphsets dependency to version v0.6.17 until a failing assert is addressed (issue #4639)
   - **com.google.fonts/check/tabular_kerning** (Universal profile) will remain experimental for a bit longer (issue #4640)
+
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.google.fonts/check/tabular_kerning]:** Eliminated some false positives in Ubuntu Sans related to digraphs. (PR #4579)
 
 
 ## 0.12.0 (2024-Apr-12)
