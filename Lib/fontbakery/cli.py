@@ -403,6 +403,8 @@ class ArgumentParserError(Exception):
 
 
 def main():
+    signal.signal(signal.SIGINT, signal_handler)
+
     argument_parser = ArgumentParser()
     try:
         args = argument_parser.parse_args()
