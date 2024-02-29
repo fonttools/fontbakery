@@ -75,12 +75,17 @@ class CheckResult:
         """Return the result as a dictionary with data suitable for serialization."""
         check = self.identity.check
         module = check.__module__.replace("fontbakery.checks.", "")
+        if not isinstance(check.proposal, list):
+            proposal = [check.proposal]
+        else:
+            proposal = check.proposal
         json = {
             "key": self.identity.key,
             "description": check.description,
             "documentation": check.documentation,
             "rationale": check.rationale,
             "experimental": check.experimental,
+            "proposal": proposal,
             "severity": check.severity,
             "result": self.summary_status.name,
             "module": module,
