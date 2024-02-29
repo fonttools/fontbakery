@@ -7,6 +7,12 @@
 {% endfor %}
 {% endif %}
 
+{% if check.proposal and not succinct %}
+{% for proposal in check.proposal %}{% if loop.index == 1 %}> Original proposal: {{proposal}}
+{% else %}> See also: {{proposal}}
+{%endif%}{% endfor %}
+{% endif %}
+
 {% for result in check.logs |sort(attribute="status") %}
 {% if not result is omitted %}
 * {{result.status | emoticon }} **{{result.status}}** {{result.message.message}} {%if result.message.code%}[code: {{result.message.code}}]{%endif%}
