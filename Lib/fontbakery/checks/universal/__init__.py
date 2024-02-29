@@ -2411,7 +2411,7 @@ def com_google_fonts_check_tabular_kerning(ttFont):
         hb.shape(vhb.hbfont, buf, features)
         return buf
 
-    def kerning(ttFont, glyph_list):
+    def get_kerning(ttFont, glyph_list):
         GID_list = [GID_for_glyph(ttFont, glyph) for glyph in glyph_list]
         return buf_to_width(
             buffer_for_GIDs(
@@ -2474,16 +2474,18 @@ def com_google_fonts_check_tabular_kerning(ttFont):
         ):
             combinations = unique_combinations(sets[0], sets[1])
             for a, b in combinations:
-                if kerning(ttFont, [a, b]) != 0:
+                kerning = get_kerning(ttFont, [a, b])
+                if kerning != 0:
                     yield FAIL, Message(
                         "has-tabular-kerning",
-                        f"Kerning between {a} and {b} is not zero",
+                        f"Kerning between {a} and {b} is {kerning}, should be 0",
                     )
                     passed = False
-                if kerning(ttFont, [b, a]) != 0:
+                kerning = get_kerning(ttFont, [b, a])
+                if get_kerning(ttFont, [b, a]) != 0:
                     yield FAIL, Message(
                         "has-tabular-kerning",
-                        f"Kerning between {b} and {a} is not zero",
+                        f"Kerning between {b} and {a} is {kerning}, should be 0",
                     )
                     passed = False
 
