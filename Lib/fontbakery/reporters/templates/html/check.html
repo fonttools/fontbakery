@@ -9,7 +9,17 @@
 {% if cluster[0].rationale and not succinct %}
     {{ cluster[0].rationale | unwrap | markdown }}
 {% endif %}
-
+{% if cluster[0].proposal and not succinct %}
+    <ul>
+    {% for proposal in cluster[0].proposal %}
+        {% if loop.index == 1 %}
+            <li>Original proposal: <a href="{{proposal}}">{{proposal}}</a></li>
+        {% else %}
+            <li>See also: <a href="{{proposal}}">{{proposal}}</a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+{% endif %}
 <div style="background-color:#ee8">
 {% for check in cluster %}
     {% if check['result'] == "FATAL" %}
