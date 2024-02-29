@@ -2,7 +2,7 @@
     <summary>{{check.result | emoticon}} **{{check.result}}** {{check.description}} <a href="https://fontbakery.readthedocs.io/en/stable/fontbakery/checks/{{check.module}}.html#{{check.id | replace("_", "-") | replace("/", "-") | replace(".", "-")}}">{{check.id}}</a></summary>
     <div>
 
-{% if not succinct %}
+{% if not succinct and check.rationale %}
 {% for line in check.rationale.split("\n") %}> {{line | unwrap | replace("\n", "") }}
 {% endfor %}
 {% endif %}
