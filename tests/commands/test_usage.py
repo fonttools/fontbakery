@@ -62,7 +62,8 @@ def test_command_check_profile(subcommand):
 def test_tool_help():
     """Test if just 'fontbakery' command can run successfully."""
     assert subprocess.run([TOOL_NAME, "-h"]).returncode == 0
-    assert subprocess.run([TOOL_NAME]).returncode == 0
+    # A subcommand is now mandatory
+    assert subprocess.run([TOOL_NAME]).returncode == 2
 
 
 @pytest.mark.xfail(
