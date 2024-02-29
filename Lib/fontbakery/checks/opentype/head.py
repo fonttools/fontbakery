@@ -1,7 +1,7 @@
 import fractions
 
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS, WARN, SKIP
+from fontbakery.status import FAIL, PASS, WARN
 from fontbakery.message import Message
 from fontbakery.constants import NameID
 
@@ -184,16 +184,13 @@ def com_google_fonts_check_font_version(ttFont):
         that describe whether a font is bold and/or italic must be coherent with the
         actual style of the font as inferred by its filename.
     """,
+    conditions=["style"],
     proposal="legacy:check/131",
 )
 def com_google_fonts_check_mac_style(font):
     """Checking head.macStyle value."""
     from fontbakery.utils import check_bit_entry
     from fontbakery.constants import MacStyle
-
-    if font.style is None:
-        yield SKIP, "Font style could not be determined."
-        return
 
     # Checking macStyle ITALIC bit:
     expected = "Italic" in font.style
