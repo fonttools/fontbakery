@@ -1,8 +1,12 @@
+import pkgutil
 import sys
 from mock import MagicMock
 from importlib import import_module
 import unicodedata
 import json
+import re
+
+import fontbakery
 
 
 sys.modules["unicodedata2"] = sys.modules["unicodedata"]
@@ -87,3 +91,43 @@ def run_fontbakery(
     prog.runner = runner
     reporters = [prog]
     runner.run(reporters)
+
+
+def dump_all_the_checks():
+    checks = {}
+    profiles_modules = [
+        x.name
+        for x in pkgutil.walk_packages(fontbakery.__path__, "fontbakery.")
+        if x.name.startswith("fontbakery.profiles")
+    ]
+    for profile_name in profiles_modules:
+        try:
+            imported = import_module(profile_name, package=None)
+            profile = profile_factory(imported)
+        except BaseException:
+            continue
+        if not profile:
+            continue
+        profile_name = profile_name[20:]
+        for section in profile.sections:
+            for check in section.checks:
+                if check.id not in checks:
+                    checks[check.id] = {
+                        "sections": set(),
+                        "profiles": set(),
+                    }
+                checks[check.id]["sections"].add(section.name)
+                checks[check.id]["profiles"].add(profile_name)
+                for attr in ["proposal", "rationale", "severity", "description"]:
+                    if getattr(check, attr):
+                        md = getattr(check, attr)
+                        if attr == "rationale":
+                            md = re.sub(r"(?m)^\s+", "", md)
+                            checks[check.id][attr] = md
+                        else:
+                            checks[check.id][attr] = md
+
+    for ck in checks.values():
+        ck["sections"] = list(ck["sections"])
+        ck["profiles"] = list(ck["profiles"])
+    return checks
