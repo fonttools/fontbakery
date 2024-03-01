@@ -16,7 +16,7 @@ PROFILE = {
             "com.google.fonts/check/whitespace_glyphs",
             "com.google.fonts/check/whitespace_glyphnames",
             "com.google.fonts/check/whitespace_ink",
-            "com.google.fonts/check/legacy_accents",
+            # "com.google.fonts/check/legacy_accents",  # Disabled: issue #3595 / PR #4567
             "com.google.fonts/check/required_tables",
             "com.google.fonts/check/unwanted_tables",
             "com.google.fonts/check/valid_glyphnames",
