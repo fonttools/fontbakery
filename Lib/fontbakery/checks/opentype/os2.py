@@ -56,6 +56,13 @@ def com_google_fonts_check_family_panose_familytype(fonts: Iterable[Font], confi
 @check(
     id="com.google.fonts/check/xavgcharwidth",
     proposal="legacy:check/034",
+    rationale="""
+    The OS/2.xAvgCharWidth field is used to calculate the width of a string of characters.
+    It is the average width of all non-zero width glyphs in the font.
+
+    This check ensures that the value is correct. A failure here may indicate
+    a bug in the font compiler, rather than something that the designer can
+    do anything about.""",
 )
 def com_google_fonts_check_xavgcharwidth(ttFont):
     """Check if OS/2 xAvgCharWidth is correct."""
