@@ -46,22 +46,6 @@ cabin_fonts = [
 ]
 
 
-def test_check_family_panose_proportion(mada_ttFonts):
-    """Fonts have consistent PANOSE proportion ?"""
-    check = CheckTester("com.google.fonts/check/family/panose_proportion")
-
-    assert_PASS(check(mada_ttFonts), "with good family.")
-
-    # introduce a wrong value in one of the font files:
-    value = mada_ttFonts[0]["OS/2"].panose.bProportion
-    incorrect_value = value + 1
-    mada_ttFonts[0]["OS/2"].panose.bProportion = incorrect_value
-
-    assert_results_contain(
-        check(mada_ttFonts), WARN, "inconsistency", "with inconsistent family."
-    )
-
-
 def test_check_family_panose_familytype(mada_ttFonts):
     """Fonts have consistent PANOSE family type ?"""
     check = CheckTester("com.google.fonts/check/family/panose_familytype")

@@ -29,7 +29,7 @@ def test_external_profile():
             "include_profiles": ["opentype"],
             "sections": {
                 "Dalton Maag OpenType": [
-                    "com.google.fonts/check/family/panose_proportion",
+                    "com.google.fonts/check/family/panose_familytype",
                     "com.google.fonts/check/varfont/regular_opsz_coord",
                 ]
             },

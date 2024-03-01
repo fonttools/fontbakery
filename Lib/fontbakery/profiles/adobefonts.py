@@ -123,7 +123,6 @@ PROFILE = {
             "com.adobe.fonts/check/fsselection_matches_macstyle",
             "com.google.fonts/check/code_pages",
             "com.google.fonts/check/family/panose_familytype",
-            "com.google.fonts/check/family/panose_proportion",
             #
             # =======================================
         ],

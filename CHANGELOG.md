@@ -8,6 +8,10 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a1 (2024-Feb-14)
     - v0.12.0a2 (2024-Feb-21)
 
+### Deprecated checks
+#### Removed from the Open Type profile
+  - **[com.google.fonts/check/family/panose_proportion]:** (issue #4083)
+
 ### Changes to existing checks
 #### On the Google Fonts profile
   - **[com.google.fonts/check/metadata/has_tags]:** Also fetch family tagging data from a second Google Sheet (Submissions from designers via form: https://forms.gle/jcp3nDv63LaV1rxH6) (PR #4576)
