@@ -201,7 +201,9 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
         failed = True
         yield FAIL, Message(
             "fsselection-macstyle-bold",
-            "The OS/2.fsSelection and head.macStyle bold settings do not match.",
+            "The OS/2.fsSelection and head.macStyle bold settings do not match:\n\n"
+            f"* OS/2.fsSelection: BOLD is {'not ' if not os2_bold else ''}set\n"
+            f"* head.macStyle: BOLD is {'not ' if not head_bold else ''}set",
         )
     head_italic = (ttFont["head"].macStyle & MacStyle.ITALIC) != 0
     os2_italic = (ttFont["OS/2"].fsSelection & FsSelection.ITALIC) != 0
@@ -209,7 +211,9 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
         failed = True
         yield FAIL, Message(
             "fsselection-macstyle-italic",
-            "The OS/2.fsSelection and head.macStyle italic settings do not match.",
+            "The OS/2.fsSelection and head.macStyle italic settings do not match.\n\n"
+            f"* OS/2.fsSelection: ITALIC is {'not ' if not os2_italic else ''}set\n"
+            f"* head.macStyle: ITALIC is {'not ' if not head_italic else ''}set",
         )
     if not failed:
         yield PASS, (
