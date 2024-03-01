@@ -6,7 +6,7 @@ import fontTools.ttLib
 from fontTools.ttLib import TTFont
 import fontTools.subset
 
-from fontbakery.status import INFO, WARN, FAIL, PASS
+from fontbakery.status import INFO, WARN, FAIL, PASS, FATAL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
@@ -173,7 +173,7 @@ def test_check_xavgcharwidth():
         ]
     )
     subsetter.subset(test_font)
-    assert_results_contain(check(test_font), FAIL, "missing-glyphs")
+    assert_results_contain(check(test_font), FATAL, "missing-glyphs")
 
 
 def test_check_fsselection_matches_macstyle():
