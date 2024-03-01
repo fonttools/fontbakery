@@ -2,7 +2,6 @@ PROFILE = {
     "sections": {
         "OpenType Specification Checks": [
             "com.google.fonts/check/family/underline_thickness",
-            "com.google.fonts/check/family/panose_proportion",
             "com.google.fonts/check/family/panose_familytype",
             "com.google.fonts/check/family/equal_unicode_encodings",
             "com.google.fonts/check/family/equal_font_versions",

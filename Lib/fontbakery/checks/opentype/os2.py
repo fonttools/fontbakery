@@ -4,41 +4,6 @@ from fontbakery.status import FAIL, INFO, PASS, SKIP, WARN
 
 
 @check(
-    id="com.google.fonts/check/family/panose_proportion", proposal="legacy:check/009"
-)
-def com_google_fonts_check_family_panose_proportion(ttFonts):
-    """Fonts have consistent PANOSE proportion?"""
-    passed = True
-    proportion = None
-    missing = False
-    for ttFont in ttFonts:
-        if "OS/2" not in ttFont:
-            missing = True
-            passed = False
-            continue
-        if proportion is None:
-            proportion = ttFont["OS/2"].panose.bProportion
-        if proportion != ttFont["OS/2"].panose.bProportion:
-            passed = False
-
-    if missing:
-        yield FAIL, Message(
-            "lacks-OS/2", "One or more fonts lack the required OS/2 table."
-        )
-
-    if not passed:
-        yield WARN, Message(
-            "inconsistency",
-            "PANOSE proportion is not the same across this family."
-            " In order to fix this, please make sure that"
-            " the panose.bProportion value is the same"
-            " in the OS/2 table of all of this family font files.",
-        )
-    else:
-        yield PASS, "Fonts have consistent PANOSE proportion."
-
-
-@check(
     id="com.google.fonts/check/family/panose_familytype", proposal="legacy:check/010"
 )
 def com_google_fonts_check_family_panose_familytype(ttFonts):

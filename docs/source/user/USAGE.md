@@ -186,7 +186,6 @@ configuration file:
 ```
 explicit_checks = [
     'com.google.fonts/check/family/underline_thickness',
-    'com.google.fonts/check/family/panose_proportion',
     'com.google.fonts/check/family/panose_familytype',
 ]
 ```
