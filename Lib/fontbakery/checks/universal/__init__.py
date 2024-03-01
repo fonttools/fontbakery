@@ -741,6 +741,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
         yield PASS, "There is no whitespace glyph with ink."
 
 
+@disable  # https://github.com/fonttools/fontbakery/issues/3959#issuecomment-1822913547
 @check(
     id="com.google.fonts/check/legacy_accents",
     proposal=[

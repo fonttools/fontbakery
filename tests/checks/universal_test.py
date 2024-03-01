@@ -595,7 +595,7 @@ def test_check_whitespace_ink():
     )
 
 
-def test_check_legacy_accents():
+def DISABLED_test_check_legacy_accents():
     """Check that legacy accents aren't used in composite glyphs."""
     check = CheckTester("com.google.fonts/check/legacy_accents")
 
