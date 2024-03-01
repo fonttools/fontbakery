@@ -71,9 +71,9 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
     if ttFont["OS/2"].version >= 3:
         calculation_rule = "the average of the widths of all glyphs in the font"
         if not ttFont["hmtx"].metrics:  # May contain just '.notdef', which is valid.
-            yield FAIL, Message(
+            yield FATAL, Message(
                 "missing-glyphs",
-                "CRITICAL: Found no glyph width data in the hmtx table!",
+                "Found no glyph width data in the hmtx table!",
             )
             return
 
@@ -125,7 +125,7 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
         }
         glyph_order = ttFont.getGlyphOrder()
         if not all(character in glyph_order for character in weightFactors):
-            yield FAIL, Message(
+            yield FATAL, Message(
                 "missing-glyphs",
                 "Font is missing the required latin lowercase letters and/or space.",
             )
