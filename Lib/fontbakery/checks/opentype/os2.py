@@ -372,6 +372,16 @@ def com_thetypefounders_check_vendor_id(config, ttFont):
     id="com.google.fonts/check/fsselection",
     conditions=["style"],
     proposal="legacy:check/129",
+    rationale="""
+    The OS/2.fsSelection field is a bit field used to specify the stylistic
+    qualities of the font - in particular, it specifies to some operating
+    systems whether the font is italic (bit 0), bold (bit 5) or regular
+    (bit 6).
+
+    This check verifies that the fsSelection field is set correctly for the
+    font style. For a family of static fonts created in GlyphsApp, this is
+    set by using the style linking checkboxes in the exports settings.
+    """,
 )
 def com_google_fonts_check_fsselection(ttFont, style):
     """Checking OS/2 fsSelection value."""
