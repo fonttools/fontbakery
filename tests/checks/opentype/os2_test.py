@@ -89,7 +89,7 @@ def test_check_xavgcharwidth():
     test_font["glyf"].glyphs = {}
     test_font["hmtx"] = fontTools.ttLib.newTable("hmtx")
     test_font["hmtx"].metrics = {}
-    assert_results_contain(check(test_font), FAIL, "missing-glyphs")
+    assert_results_contain(check(test_font), FATAL, "missing-glyphs")
 
     test_font = TTFont(test_font_path)
     subsetter = fontTools.subset.Subsetter()
