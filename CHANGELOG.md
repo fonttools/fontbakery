@@ -36,6 +36,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/font_version]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/glyf_unused_data]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/points_out_of_bounds]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/gpos_kerning_info]:** Added rationale. (PR #4570)
 
 
 ## 0.12.0a2 (2024-Feb-21)
