@@ -145,6 +145,13 @@ def vmetrics(collection):
 @check(
     id="com.google.fonts/check/name/trailing_spaces",
     proposal="https://github.com/fonttools/fontbakery/issues/2417",
+    rationale="""
+        This check ensures that no entries in the name table end in
+        spaces; trailing spaces, particularly in font names, can be
+        confusing to users. In most cases this can be fixed by
+        removing trailing spaces from the metadata fields in the font
+        editor.
+    """,
 )
 def com_google_fonts_check_name_trailing_spaces(ttFont):
     """Name table records must not have trailing spaces."""
@@ -404,7 +411,19 @@ def com_google_fonts_check_caps_vertically_centered(ttFont):
         yield PASS, "Uppercase glyphs are vertically centered in the em box."
 
 
-@check(id="com.google.fonts/check/ots", proposal="legacy:check/036")
+@check(
+    id="com.google.fonts/check/ots",
+    proposal="legacy:check/036",
+    rationale="""
+       The OpenType Sanitizer (OTS) is a tool that checks that the font is
+       structually well-formed and passes various sanity checks. It is used by
+       many web browsers to check web fonts before using them; fonts which fail
+       such checks are blocked by browsers.
+
+       This check runs OTS on the font and reports any errors or warnings that
+       it finds.
+       """,
+)
 def com_google_fonts_check_ots(font):
     """Checking with ots-sanitize."""
     import ots
@@ -592,7 +611,22 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
         yield PASS, "OK"
 
 
-@check(id="com.google.fonts/check/whitespace_glyphs", proposal="legacy:check/047")
+@check(
+    id="com.google.fonts/check/whitespace_glyphs",
+    proposal="legacy:check/047",
+    rationale="""
+        The OpenType specification recommends that fonts should contain
+        glyphs for the following whitespace characters:
+
+        - U+0020 SPACE
+        - U+00A0 NO-BREAK SPACE
+
+        The space character is required for text processing, and the no-break
+        space is useful to prevent line breaks at its position. It is also
+        recommended to have a glyph for the tab character (U+0009) and the
+        soft hyphen (U+00AD), but these are not mandatory.
+    """,
+)
 def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
     """Font contains glyphs for whitespace characters?"""
     failed = False
@@ -683,7 +717,16 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
             yield PASS, "Font has **AGL recommended** names for whitespace glyphs."
 
 
-@check(id="com.google.fonts/check/whitespace_ink", proposal="legacy:check/049")
+@check(
+    id="com.google.fonts/check/whitespace_ink",
+    proposal="legacy:check/049",
+    rationale="""
+           This check ensures that certain whitespace glyphs are empty.
+           Certain text layout engines will assume that these glyphs are empty,
+           and will not draw them; if they were in fact not designed to be
+           empty, the result will be text layout that is not as expected.
+       """,
+)
 def com_google_fonts_check_whitespace_ink(ttFont):
     """Whitespace glyphs have ink?"""
     # This checks that certain glyphs are empty.
