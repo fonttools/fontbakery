@@ -7,7 +7,12 @@ from fontbakery.constants import NameID
 
 
 @check(
-    id="com.google.fonts/check/family/equal_font_versions", proposal="legacy:check/014"
+    id="com.google.fonts/check/family/equal_font_versions",
+    proposal="legacy:check/014",
+    rationale="""
+        Within a family released at the same time, all members of the family
+        should have the same version number in the head table.
+    """,
 )
 def com_google_fonts_check_family_equal_font_versions(ttFonts):
     """Make sure all font files have the same version value."""
@@ -109,7 +114,17 @@ def parse_version_string(name: str) -> float:
     return fractions.Fraction(version_string.group(1))
 
 
-@check(id="com.google.fonts/check/font_version", proposal="legacy:check/044")
+@check(
+    id="com.google.fonts/check/font_version",
+    proposal="legacy:check/044",
+    rationale="""
+            The OpenType specification provides for two fields which contain
+            the version number of the font: fontRevision in the head table,
+            and nameID 5 in the name table. If these fields do not match,
+            different applications will report different version numbers for
+            the font.
+        """,
+)
 def com_google_fonts_check_font_version(ttFont):
     """Checking font version fields (head and name table)."""
 

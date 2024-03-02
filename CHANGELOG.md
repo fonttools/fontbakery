@@ -32,6 +32,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.adobe.fonts/check/fsselection_matches_macstyle]:** Improve log messages to include the bit values. (PR #4570)
   - **[com.google.fonts/check/fsselection]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/family/equal_unicode_encodings]:** Added rationale, even though this is a questionable check, which we may simply deprecate, as we're not sure why would we expect what it checks. (PR #4570)
+  - **[com.google.fonts/check/family/equal_font_versions]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/font_version]:** Added rationale. (PR #4570)
 
 
 ## 0.12.0a2 (2024-Feb-21)
