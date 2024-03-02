@@ -1,8 +1,9 @@
+from collections import defaultdict
 import os
 
 from fontbakery.constants import NameID, RIBBI_STYLE_NAMES
 from fontbakery.prelude import check, Message, INFO, PASS, FAIL, WARN, SKIP, FATAL
-from fontbakery.utils import exit_with_install_instructions
+from fontbakery.utils import exit_with_install_instructions, show_inconsistencies
 from fontbakery.checks.googlefonts.glyphset import can_shape
 
 
@@ -406,18 +407,17 @@ def com_google_fonts_check_metadata_includes_production_subsets(
         for all fonts in the family.
     """,
 )
-def com_google_fonts_check_metadata_copyright(family_metadata):
+def com_google_fonts_check_metadata_copyright(family_metadata, config):
     """METADATA.pb: Copyright notice is the same in all fonts?"""
-    copyright_str = None
-    fail = False
-    for f in family_metadata.fonts:
-        if copyright_str and f.copyright != copyright_str:
-            fail = True
-        copyright_str = f.copyright
-    if fail:
+    copyrights = defaultdict(list)
+    for font in family_metadata.fonts:
+        copyrights[font.copyright].append(font.filename)
+    if len(copyrights) > 1:
         yield FAIL, Message(
             "inconsistency",
-            "METADATA.pb: Copyright field value is inconsistent across family",
+            "METADATA.pb: Copyright field value is inconsistent across the family.\n"
+            "The following copyright values were found:\n\n"
+            + show_inconsistencies(copyrights, config),
         )
     else:
         yield PASS, "Copyright is consistent across family"
