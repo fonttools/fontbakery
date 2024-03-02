@@ -6,6 +6,11 @@ from fontbakery.message import Message
 @check(
     id="com.google.fonts/check/family/equal_unicode_encodings",
     proposal="legacy:check/013",
+    rationale="""
+    Ensures that all format 4 cmap tables in a family have the same unicode
+    encoding.
+"""  # Sure, this is more a description than a rationale. I don't actually
+    # know why we want to ensure this.
 )
 def com_google_fonts_check_family_equal_unicode_encodings(ttFonts):
     """Fonts have equal unicode encodings?"""
