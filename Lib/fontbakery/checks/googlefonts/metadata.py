@@ -119,6 +119,10 @@ def com_google_fonts_check_metadata_designer_values(family_metadata):
         "https://github.com/fonttools/fontbakery/issues/2550",
         "https://github.com/fonttools/fontbakery/issues/4110",
     ],
+    rationale="""
+        This check ensures that any URLs found within the copyright
+        field of the METADATA.pb file are valid.
+    """,
 )
 def com_google_fonts_check_metadata_broken_links(family_metadata):
     """Does METADATA.pb copyright field contain broken links?"""
@@ -313,6 +317,10 @@ def com_google_fonts_check_metadata_category(family_metadata):
         "legacy:check/086",
         "https://github.com/fonttools/fontbakery/issues/912#issuecomment-237935444",
     ],
+    rationale="""
+        The 'menu' and 'latin' subsets are mandatory in METADATA.pb for the
+        font to display correctly on the Google Fonts website.
+    """,
 )
 def com_google_fonts_check_metadata_menu_and_latin(family_metadata):
     """METADATA.pb should contain at least "menu" and "latin" subsets."""
@@ -392,6 +400,11 @@ def com_google_fonts_check_metadata_includes_production_subsets(
     id="com.google.fonts/check/metadata/copyright",
     conditions=["family_metadata"],
     proposal="legacy:check/088",
+    rationale="""
+        The METADATA.pb file includes a copyright field for each font
+        file in the family. The value of this field should be the same
+        for all fonts in the family.
+    """,
 )
 def com_google_fonts_check_metadata_copyright(family_metadata):
     """METADATA.pb: Copyright notice is the same in all fonts?"""

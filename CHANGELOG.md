@@ -18,6 +18,9 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Google Fonts profile
   - **[com.google.fonts/check/metadata/has_tags]:** Also fetch family tagging data from a second Google Sheet (Submissions from designers via form: https://forms.gle/jcp3nDv63LaV1rxH6) (PR #4576)
+  - **[com.google.fonts/check/metadata/broken_links]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/menu_and_latin]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/copyright]:** Added rationale. (PR #4570)
 
 #### On the Universal profile
   - **DISABLED - [com.google.fonts/check/legacy_accents]:** This is one of the checks that we probably should run on the sources instead of binaries. (https://github.com/fonttools/fontbakery/issues/3959#issuecomment-1822913547)
