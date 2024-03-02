@@ -7,6 +7,13 @@ from fontbakery.status import FAIL, PASS, WARN
 
 @check(
     id="com.google.fonts/check/glyf_unused_data",
+    rationale="""
+        This check validates the structural integrity of the glyf table,
+        by checking that all glyphs referenced in the loca table are
+        actually present in the glyf table and that there is no unused
+        data at the end of the glyf table. A failure here indicates a
+        problem with the font compiler.
+    """,
     conditions=["is_ttf"],
     proposal="legacy:check/069",
 )
@@ -45,6 +52,12 @@ def com_google_fonts_check_glyf_unused_data(ttFont):
 @check(
     id="com.google.fonts/check/points_out_of_bounds",
     conditions=["is_ttf"],
+    rationale="""
+        The glyf table specifies a bounding box for each glyph. This check
+        ensures that all points in all glyph paths are within the bounding
+        box. Glyphs with out-of-bounds points can cause rendering issues in
+        some software, and should be corrected.
+    """,
     proposal="https://github.com/fonttools/fontbakery/issues/735",
 )
 def com_google_fonts_check_points_out_of_bounds(ttFont, config):
