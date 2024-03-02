@@ -3,7 +3,15 @@ from fontbakery.status import FAIL, PASS
 from fontbakery.message import Message
 
 
-@check(id="com.google.fonts/check/maxadvancewidth", proposal="legacy:check/073")
+@check(
+    id="com.google.fonts/check/maxadvancewidth",
+    proposal="legacy:check/073",
+    rationale="""
+        The 'hhea' table contains a field which specifies the maximum
+        advance width. This value should be consistent with the maximum
+        advance width of all glyphs specified in the 'hmtx' table.
+       """,
+)
 def com_google_fonts_check_maxadvancewidth(ttFont):
     """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""
 

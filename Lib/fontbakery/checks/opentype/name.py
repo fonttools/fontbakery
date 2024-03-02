@@ -45,6 +45,12 @@ def com_adobe_fonts_check_name_empty_records(ttFont):
 @check(
     id="com.google.fonts/check/name/no_copyright_on_description",
     proposal="legacy:check/031",
+    rationale="""
+        The name table in a font file contains strings about the font;
+        there are entries for a copyright field and a description. If the
+        copyright entry is being used correctly, then there should not
+        be any copyright information in the description entry.
+    """,
 )
 def com_google_fonts_check_name_no_copyright_on_description(ttFont):
     """Description strings in the name table must not contain copyright info."""
@@ -417,6 +423,11 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
 @check(
     id="com.adobe.fonts/check/postscript_name",
     proposal="https://github.com/miguelsousa/openbakery/issues/62",
+    rationale="""
+        The PostScript name is used by some applications to identify the font.
+        It should only consist of characters from the set A-Z, a-z, 0-9, and hyphen.
+
+    """,
 )
 def com_adobe_fonts_check_postscript_name(ttFont):
     """PostScript name follows OpenType specification requirements?"""
@@ -453,6 +464,11 @@ def com_adobe_fonts_check_postscript_name(ttFont):
 @check(
     id="com.google.fonts/check/family_naming_recommendations",
     proposal="legacy:check/071",
+    rationale="""
+        This check ensures that the length of various family name and style
+        name strings in the name table are within the maximum length
+        recommended by the OpenType specification.
+    """,
 )
 def com_google_fonts_check_family_naming_recommendations(ttFont):
     """Font follows the family naming recommendations?"""
