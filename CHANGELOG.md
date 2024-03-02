@@ -21,6 +21,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Universal profile
   - **DISABLED - [com.google.fonts/check/legacy_accents]:** This is one of the checks that we probably should run on the sources instead of binaries. (https://github.com/fonttools/fontbakery/issues/3959#issuecomment-1822913547)
+  - **[com.google.fonts/check/ttx_roundtrip]:** Added rationale. (PR #4570)
 
 #### On the Open Type Profile
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Updated the check to allow valid private-use feature tags. (issue #4544)

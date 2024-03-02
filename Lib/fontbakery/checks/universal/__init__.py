@@ -1296,6 +1296,13 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
 @check(
     id="com.google.fonts/check/ttx_roundtrip",
     conditions=["not vtt_talk_sources"],
+    rationale="""
+        One way of testing whether or not fonts are well-formed at the
+        binary level is to convert them to TTX and then back to binary. Structural
+        problems within the binary font will show up as errors during conversion.
+        This is not necessarily something that a designer will be able to address
+        but is evidence of a potential bug in the font compiler used to generate
+        the binary.""",
     proposal="https://github.com/fonttools/fontbakery/issues/1763",
 )
 def com_google_fonts_check_ttx_roundtrip(font):
