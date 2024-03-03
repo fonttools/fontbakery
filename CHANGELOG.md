@@ -25,6 +25,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/name/version_format]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/name/mandatory_entries]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/family/equal_codepoint_coverage]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/description/min_length]:** Added rationale. (PR #4570)
 
 #### On the FontValidator profile
   - **[com.google.fonts/check/fontvalidator]:** Added rationale. (PR #4570)

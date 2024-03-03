@@ -336,6 +336,14 @@ def com_google_fonts_check_description_valid_html(descfile, description):
     id="com.google.fonts/check/description/min_length",
     conditions=["description"],
     proposal="legacy:check/005",
+    rationale="""
+        The DESCRIPTION.en_us.html file is intended to provide a brief overview of
+        the font family. It should be long enough to be useful to users, but not so
+        long that it becomes overwhelming.
+
+        We chose 200 bytes as a minimum length because it suggests that someone has
+        taken the time to write "something sensible" about the font.
+    """,
 )
 def com_google_fonts_check_description_min_length(description):
     """DESCRIPTION.en_us.html must have more than 200 bytes."""
