@@ -7,6 +7,13 @@ from fontbakery.utils import bullet_list
     id="com.google.fonts/check/family/equal_codepoint_coverage",
     conditions=["are_ttf", "stylenames_are_canonical"],
     proposal="https://github.com/fonttools/fontbakery/issues/4180",
+    rationale="""
+        For a given family, all fonts must have the same codepoint coverage.
+        This is because we want to avoid the situation where, for example,
+        a character is present in a regular font but missing in the italic style;
+        turning on italic would cause the character to be rendered either as a
+        fake italic (auto-slanted) or to show tofu.
+    """,
 )
 def com_google_fonts_check_family_equal_codepoint_coverage(fonts, config):
     """Fonts have equal codepoint coverage"""
