@@ -427,20 +427,23 @@ def com_google_fonts_check_metadata_copyright(family_metadata, config):
     id="com.google.fonts/check/metadata/familyname",
     conditions=["family_metadata"],
     proposal="legacy:check/089",
+    rationale="""
+        The METADATA.pb file includes a family name field for each font
+        file in the family. The value of this field should be the same
+        for all fonts in the family.
+    """,
 )
-def com_google_fonts_check_metadata_familyname(family_metadata):
+def com_google_fonts_check_metadata_familyname(family_metadata, config):
     """Check that METADATA.pb family values are all the same."""
-    name = ""
-    fail = False
-    for f in family_metadata.fonts:
-        if name and f.name != name:
-            fail = True
-        name = f.name
-    if fail:
+    names = defaultdict(list)
+    for font in family_metadata.fonts:
+        names[font.name].append(font.filename)
+    if len(names) > 1:
         yield FAIL, Message(
             "inconsistency",
-            "METADATA.pb: Family name is not the same"
-            ' in all metadata "fonts" items.',
+            "METADATA.pb: family name value is inconsistent across the family.\n"
+            "The following name values were found:\n\n"
+            + show_inconsistencies(names, config),
         )
     else:
         yield PASS, (
