@@ -72,7 +72,15 @@ def com_google_fonts_check_name_description_max_length(ttFont):
         )
 
 
-@check(id="com.google.fonts/check/name/version_format", proposal="legacy:check/055")
+@check(
+    id="com.google.fonts/check/name/version_format",
+    proposal="legacy:check/055",
+    rationale="""
+        For Google Fonts, the version string must be in the format "Version X.Y".
+        The version number must be greater than or equal to 1.000. (Additional
+        information following the numeric version number is acceptable.)
+    """,
+)
 def com_google_fonts_check_name_version_format(ttFont):
     """Version format is correct in 'name' table?"""
     from fontbakery.utils import get_name_entry_strings
@@ -273,6 +281,12 @@ def com_google_fonts_check_font_names(ttFont, ttFonts):
     id="com.google.fonts/check/name/mandatory_entries",
     conditions=["style"],
     proposal="legacy:check/156",
+    rationale="""
+        We require all fonts to have values for their font family name,
+        font subfamily name, full font name, and postscript name. For RIBBI
+        fonts, we also require values for the typographic family name and
+        typographic subfamily name.
+    """,
 )
 def com_google_fonts_check_name_mandatory_entries(ttFont, style):
     """Font has all mandatory 'name' table entries?"""
