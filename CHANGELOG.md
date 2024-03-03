@@ -23,6 +23,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/copyright]:** Added rationale and improve display of detected inconsistencies. (PR #4570)
   - **[com.google.fonts/check/metadata/familyname]:** Added rationale and improve display of detected inconsistencies. (PR #4570)
 
+#### On the FontValidator profile
+  - **[com.google.fonts/check/fontvalidator]:** Added rationale. (PR #4570)
+
 #### On the Universal profile
   - **DISABLED - [com.google.fonts/check/legacy_accents]:** This is one of the checks that we probably should run on the sources instead of binaries. (https://github.com/fonttools/fontbakery/issues/3959#issuecomment-1822913547)
   - **[com.google.fonts/check/ttx_roundtrip]:** Added rationale. (PR #4570)
