@@ -66,6 +66,11 @@ def designspace_sources(designspace):
 @check(
     id="com.daltonmaag/check/ufolint",
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
+    rationale="""
+        ufolint is a tool that checks UFO source files for common issues.
+        It is a good idea to run it before building a font to catch potential
+        problems early in the process.
+    """,
 )
 def com_daltonmaag_check_ufolint(ufo):
     """Run ufolint on UFO source directory."""

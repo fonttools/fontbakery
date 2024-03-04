@@ -60,6 +60,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/match_weight_postscript]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/metadata/canonical_style_names]:** Added rationale. (PR #4570)
 
+#### On the UFO Sources profile
+  - **[com.daltonmaag/check/ufolint]:** Added rationale. (PR #4570)
+
 #### On the FontValidator profile
   - **[com.google.fonts/check/fontvalidator]:** Added rationale. (PR #4570)
 
