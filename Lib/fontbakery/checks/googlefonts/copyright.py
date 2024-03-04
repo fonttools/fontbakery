@@ -96,6 +96,12 @@ def com_google_fonts_check_glyphs_file_font_copyright(glyphsFile):
     id="com.google.fonts/check/metadata/copyright_max_length",
     conditions=["font_metadata"],
     proposal="legacy:check/104",
+    rationale="""
+        We check that the copyright notice within the METADATA.pb file is
+        not too long; if it is more than 500 characters, this may be an
+        indiciation that either a full license or the font's description
+        has been included in this field by mistake.
+    """,
 )
 def com_google_fonts_check_metadata_copyright_max_length(font_metadata):
     """METADATA.pb: Copyright notice shouldn't exceed 500 chars."""
@@ -113,6 +119,10 @@ def com_google_fonts_check_metadata_copyright_max_length(font_metadata):
     id="com.google.fonts/check/metadata/nameid/copyright",
     conditions=["font_metadata"],
     proposal="legacy:check/155",
+    rationale="""
+        This check verifies that the copyright field in METADATA.pb matches the
+        contents of the name table nameID 0 (Copyright).
+    """,
 )
 def com_google_fonts_check_metadata_nameid_copyright(ttFont, font_metadata):
     """Copyright field for this font on METADATA.pb matches
