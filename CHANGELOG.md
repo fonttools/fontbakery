@@ -51,6 +51,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/smart_dropout]:** Improve rationale with better fixing instructions. (PR #4570)
   - **[com.google.fonts/check/production_glyphs_similarity]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/version_bump]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/family/has_license]:** Added rationale. (PR #4570)
 
 #### On the FontValidator profile
   - **[com.google.fonts/check/fontvalidator]:** Added rationale. (PR #4570)

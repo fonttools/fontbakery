@@ -83,6 +83,11 @@ def is_ofl(font):
     id="com.google.fonts/check/family/has_license",
     conditions=["gfonts_repo_structure"],
     proposal="legacy:check/028",
+    rationale="""
+        A license file is required for all fonts in the Google Fonts collection.
+        This checks that the font's directory contains a file named OFL.txt or
+        LICENSE.txt.
+    """,
 )
 def com_google_fonts_check_family_has_license(licenses, config):
     """Check font has a license."""
