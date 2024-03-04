@@ -1539,6 +1539,8 @@ def com_google_fonts_check_metadata_empty_designer(family_metadata):
     conditions=["network"],
     rationale="""
         Any font published on Google Fonts must be listed in the tags spreadsheet.
+
+        https://forms.gle/jcp3nDv63LaV1rxH6
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4465",
 )
