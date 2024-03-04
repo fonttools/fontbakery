@@ -21,6 +21,13 @@ GF_TAGS_SHEET_URL = (
     "pub?gid=1193923458&single=true&output=csv"
 )
 
+# Submissions from designers via form https://forms.gle/jcp3nDv63LaV1rxH6
+GF_TAGS_SHEET_URL2 = (
+    "https://docs.google.com/spreadsheets/d/e/"
+    "2PACX-1vQVM--FKzKTWL-8w0l5AE1e087uU_OaQNHR3_kkxxymoZV5XUnHzv9TJIdy7vcd0Saf4m8CMTMFqGcg/"
+    "pub?gid=378442772&single=true&output=csv"
+)
+
 # @condition
 # def glyphsFile(glyphs_file):
 #     import glyphsLib
@@ -508,15 +515,22 @@ def get_glyphsets_fulfilled(ttFont):
     return res
 
 
-_tags_cache = None
+_tags_cache = []
 
 
 def gf_tags():
     import requests
 
     global _tags_cache  # pylint:disable=W0603
-    if _tags_cache is not None:
+    if _tags_cache:
         return _tags_cache
-    req = requests.get(GF_TAGS_SHEET_URL, timeout=10)
-    _tags_cache = list(csv.reader(StringIO(req.text)))
+
+    for url in (GF_TAGS_SHEET_URL, GF_TAGS_SHEET_URL2):
+        req = requests.get(url, timeout=10)
+        data = list(csv.reader(StringIO(req.text)))
+        # drop the first two columns on sheet2 since they contain
+        # the author and form submission date
+        if url == GF_TAGS_SHEET_URL2:
+            data = [i[2:] for i in data]
+        _tags_cache.extend(data)
     return _tags_cache
