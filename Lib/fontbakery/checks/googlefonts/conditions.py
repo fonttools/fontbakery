@@ -521,7 +521,7 @@ _tags_cache = []
 def gf_tags():
     import requests
 
-    global _tags_cache  # pylint:disable=W0603
+    global _tags_cache  # pylint:disable=W0603,W0602
     if _tags_cache:
         return _tags_cache
 
