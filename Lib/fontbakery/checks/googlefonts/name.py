@@ -8,7 +8,15 @@ from fontbakery.constants import (
 from fontbakery.utils import markdown_table
 
 
-@check(id="com.google.fonts/check/name/unwanted_chars", proposal="legacy:check/019")
+@check(
+    id="com.google.fonts/check/name/unwanted_chars",
+    proposal="legacy:check/019",
+    rationale="""
+        We don't want non-ASCII characters in name table entries; in particular,
+        copyright, trademark and registered symbols should be written using
+        their ASCII counterparts: e.g. (c), (tm) and (r) respectively.
+    """,
+)
 def com_google_fonts_check_name_unwanted_chars(ttFont):
     """Substitute copyright, registered and trademark
     symbols in name table entries."""
