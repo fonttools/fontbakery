@@ -448,6 +448,11 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
     id="com.google.fonts/check/metadata/license",
     conditions=["family_metadata"],
     proposal="legacy:check/085",
+    rationale="""
+        The license field in METADATA.pb must contain one of the
+        three values "APACHE2", "UFL" or "OFL". (New fonts should
+        generally be OFL unless there are special circumstances.)
+    """,
 )
 def com_google_fonts_check_metadata_license(family_metadata):
     """METADATA.pb license is "APACHE2", "UFL" or "OFL"?"""
