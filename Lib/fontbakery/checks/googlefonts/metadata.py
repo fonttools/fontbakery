@@ -48,6 +48,9 @@ def com_google_fonts_check_metadata_parses(family_directory):
         "legacy:check/007",
         "https://github.com/fonttools/fontbakery/issues/800",
     ],
+    rationale="""
+        The designer field in METADATA.pb must not be 'unknown'.
+    """,
 )
 def com_google_fonts_check_metadata_unknown_designer(family_metadata):
     """Font designer field in METADATA.pb must not be 'unknown'."""
@@ -455,11 +458,13 @@ def com_google_fonts_check_metadata_familyname(family_metadata, config):
     id="com.google.fonts/check/metadata/has_regular",
     conditions=["family_metadata"],
     proposal="legacy:check/090",
+    rationale="""
+        According to Google Fonts standards, families should have a Regular
+        style.
+    """,
 )
 def com_google_fonts_check_metadata_has_regular(font):
-    """METADATA.pb: According to Google Fonts standards,
-    families should have a Regular style.
-    """
+    """Ensure there is a regular style defined in METADATA.pb."""
     if font.has_regular_style:
         yield PASS, "Family has a Regular style."
     else:
@@ -478,6 +483,7 @@ def com_google_fonts_check_metadata_has_regular(font):
     id="com.google.fonts/check/metadata/regular_is_400",
     conditions=["family_metadata", "has_regular_style"],
     proposal="legacy:check/091",
+    rationale="The weight of the regular style should be set to 400.",
 )
 def com_google_fonts_check_metadata_regular_is_400(family_metadata):
     """METADATA.pb: Regular should be 400."""
@@ -499,6 +505,13 @@ def com_google_fonts_check_metadata_regular_is_400(family_metadata):
     id="com.google.fonts/check/metadata/nameid/family_name",
     conditions=["font_metadata"],
     proposal="legacy:check/092",
+    rationale="""
+        This check ensures that the family name declared in the METADATA.pb file
+        matches the family name declared in the name table of the font file.
+        If the font was uploaded by the packager, this should always be the
+        case. But if there were manual changes to the METADATA.pb file, a mismatch
+        could occur.
+    """,
 )
 def com_google_fonts_check_metadata_nameid_family_name(ttFont, font_metadata):
     """Checks METADATA.pb font.name field matches
@@ -539,6 +552,13 @@ def com_google_fonts_check_metadata_nameid_family_name(ttFont, font_metadata):
     id="com.google.fonts/check/metadata/nameid/post_script_name",
     conditions=["font_metadata"],
     proposal="legacy:093",
+    rationale="""
+        This check ensures that the PostScript name declared in the METADATA.pb file
+        matches the PostScript name declared in the name table of the font file.
+        If the font was uploaded by the packager, this should always be the
+        case. But if there were manual changes to the METADATA.pb file, a mismatch
+        could occur.
+    """,
 )
 def com_google_fonts_check_metadata_nameid_post_script_name(ttFont, font_metadata):
     """Checks METADATA.pb font.post_script_name matches
@@ -581,6 +601,13 @@ def com_google_fonts_check_metadata_nameid_post_script_name(ttFont, font_metadat
     id="com.google.fonts/check/metadata/nameid/full_name",
     conditions=["font_metadata"],
     proposal="legacy:check/094",
+    rationale="""
+        This check ensures that the font full name declared in the METADATA.pb file
+        matches the font full name declared in the name table of the font file.
+        If the font was uploaded by the packager, this should always be the
+        case. But if there were manual changes to the METADATA.pb file, a mismatch
+        could occur.
+    """,
 )
 def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
     """METADATA.pb font.full_name value matches
@@ -675,6 +702,13 @@ def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadat
     id="com.google.fonts/check/metadata/match_fullname_postscript",
     conditions=["font_metadata"],
     proposal="legacy:check/096",
+    rationale="""
+        The font.full_name and font.post_script_name fields in the
+        METADATA.pb file should be consistent - i.e. when all non-alphabetic
+        characters are removed, they should be the same. This is to
+        prevent inconsistencies when one or the other value has been
+        manually edited in the METADATA.pb file.
+    """,
 )
 def com_google_fonts_check_metadata_match_fullname_postscript(font_metadata):
     """METADATA.pb font.full_name and font.post_script_name
@@ -705,6 +739,11 @@ def com_google_fonts_check_metadata_match_fullname_postscript(font_metadata):
     # FIXME: We'll want to review this once
     #        naming rules for varfonts are settled.
     proposal="legacy:check/097",
+    rationale="""
+        For static fonts, this checks that the font filename as declared in
+        the METADATA.pb file matches the post_script_name field. i.e.
+        SomeFont-Regular.ttf should have a PostScript name of SomeFont-Regular.
+    """,
 )
 def com_google_fonts_check_metadata_match_filename_postscript(font_metadata):
     """METADATA.pb font.filename and font.post_script_name
@@ -751,6 +790,10 @@ def com_google_fonts_check_metadata_valid_name_values(ttFont, font_metadata):
     id="com.google.fonts/check/metadata/valid_full_name_values",
     conditions=["style", "font_metadata"],
     proposal="legacy:check/099",
+    rationale="""
+        This check ensures that the font.full_name field in the METADATA.pb
+        file contains the family name of the font.
+    """,
 )
 def com_google_fonts_check_metadata_valid_full_name_values(font):
     """METADATA.pb font.full_name field contains font name in right format?"""
@@ -780,11 +823,18 @@ def com_google_fonts_check_metadata_valid_full_name_values(font):
 @check(
     id="com.google.fonts/check/metadata/valid_filename_values",
     conditions=[
-        "style",  # This means the font filename
-        # (source of truth here) is good
+        "style",
         "family_metadata",
     ],
     proposal="legacy:check/100",
+    rationale="""
+        This check ensures that the font.filename field in the METADATA.pb
+        is correct and well-formatted; we check well-formatting because we
+        have a condition called 'style', and if that is true, then the font's
+        filename correctly reflects its style. If a correctly formatted
+        filename appears in the font.filename field in METADATA.pb, then all
+        is good.
+    """,
 )
 def com_google_fonts_check_metadata_valid_filename_values(font, family_metadata):
     """METADATA.pb font.filename field contains font name in right format?"""
@@ -810,6 +860,10 @@ def com_google_fonts_check_metadata_valid_filename_values(font, family_metadata)
     id="com.google.fonts/check/metadata/valid_post_script_name_values",
     conditions=["font_metadata", "font_familynames"],
     proposal="legacy:check/101",
+    rationale="""
+        Ensures that the postscript name in METADATA.pb contains the font's
+        family name (with no spaces) as detected from the font binary.
+    """,
 )
 def com_google_fonts_check_metadata_valid_post_script_name_values(
     font_metadata, font_familynames
@@ -929,6 +983,13 @@ def com_google_fonts_check_metadata_filenames(fonts, family_directory, family_me
     id="com.google.fonts/check/metadata/italic_style",
     conditions=["font_metadata"],
     proposal="legacy:check/106",
+    rationale="""
+        If the style is set to 'italic' in the METADATA.pb file, we expect
+        an italic font - i.e. the font's macStyle bit 1 should be set to 1,
+        and the font's fullname should end with "Italic". If these are not
+        true, it can be an indication that the style field in METADATA.pb
+        was set incorrectly.
+    """,
 )
 def com_google_fonts_check_metadata_italic_style(ttFont, font_metadata):
     """METADATA.pb font.style "italic" matches font internals?"""
@@ -978,6 +1039,15 @@ def com_google_fonts_check_metadata_italic_style(ttFont, font_metadata):
     id="com.google.fonts/check/metadata/normal_style",
     conditions=["font_metadata"],
     proposal="legacy:check/107",
+    rationale="""
+        This is the converse to the check
+        com.google.fonts/check/metadata/italic_style. If the style is set
+        to 'normal' in the METADATA.pb file, we expect a non-italic font -
+        i.e. the font's macStyle bit 1 should be set to 0, and the font's
+        fullname should not end with "Italic". If these are not true, it can
+        indicate an italic font was incorrectly marked as 'normal' in the
+        METADATA.pb file.
+    """,
 )
 def com_google_fonts_check_metadata_normal_style(ttFont, font_metadata):
     """METADATA.pb font.style "normal" matches font internals?"""
@@ -1034,6 +1104,12 @@ def com_google_fonts_check_metadata_normal_style(ttFont, font_metadata):
     id="com.google.fonts/check/metadata/unique_full_name_values",
     conditions=["family_metadata"],
     proposal="legacy:check/083",
+    rationale="""
+        Each font field in the METADATA.pb file should have a unique
+        "full_name" value. If this is not the case, it may indicate that
+        the font files have been incorrectly named, or that the METADATA.pb
+        file has been incorrectly edited.
+    """,
 )
 def com_google_fonts_check_metadata_unique_full_name_values(family_metadata):
     """METADATA.pb: check if fonts field only has
@@ -1056,6 +1132,11 @@ def com_google_fonts_check_metadata_unique_full_name_values(family_metadata):
     id="com.google.fonts/check/metadata/unique_weight_style_pairs",
     conditions=["family_metadata"],
     proposal="legacy:check/084",
+    rationale="""
+        Each font field in the METADATA.pb file should have a unique
+        style and weight. If there are duplications, it may indicate that
+        that the METADATA.pb file has been incorrectly edited.
+    """,
 )
 def com_google_fonts_check_metadata_unique_weight_style_pairs(family_metadata):
     """METADATA.pb: check if fonts field
@@ -1078,6 +1159,19 @@ def com_google_fonts_check_metadata_unique_weight_style_pairs(family_metadata):
     id="com.google.fonts/check/metadata/reserved_font_name",
     conditions=["font_metadata", "not rfn_exception"],
     proposal="legacy:check/103",
+    rationale="""
+        Unless an exception has been granted, we expect fonts on
+        Google Fonts not to use the "Reserved Font Name" clause in their
+        copyright information. This is because fonts with RFNs are difficult
+        to modify in a libre ecosystem; anyone who forks the font (with a
+        view to changing it) must first rename the font, which makes
+        it difficult to pass changes back to upstream.
+
+        There is also a potential licensing difficulty, in that Google Fonts
+        web service subsets the font - a modification of the original - but
+        then delivers the font with the same name, which could be seen as a
+        violation of the reserved font name clause.
+    """,
 )
 def com_google_fonts_check_metadata_reserved_font_name(font_metadata):
     """Copyright notice on METADATA.pb should not contain 'Reserved Font Name'."""
@@ -1099,6 +1193,15 @@ def com_google_fonts_check_metadata_reserved_font_name(font_metadata):
     id="com.google.fonts/check/metadata/nameid/family_and_full_names",
     conditions=["font_metadata"],
     proposal="legacy:check/108",
+    rationale="""
+        This check ensures that the family name declared in the METADATA.pb file
+        matches the family name declared in the name table of the font file,
+        and that the font full name declared in the METADATA.pb file
+        matches the font full name declared in the name table of the font file.
+        If the font was uploaded by the packager, this should always be the
+        case. But if there were manual changes to the METADATA.pb file, a mismatch
+        could occur.
+    """,
 )
 def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_metadata):
     """METADATA.pb font.name and font.full_name fields match
@@ -1145,6 +1248,11 @@ def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_me
         "font_metadata",
     ],  # and this one's specific to a single file
     proposal="legacy:check/110",
+    rationale="""
+        This check ensures that the 'name' field in each font's entry in
+        the METADATA.pb file matches the 'name' field at the top level of
+        the METADATA.pb.
+    """,
 )
 def com_google_fonts_check_metadata_match_name_familyname(
     family_metadata, font_metadata
@@ -1165,6 +1273,11 @@ def com_google_fonts_check_metadata_match_name_familyname(
     id="com.google.fonts/check/metadata/canonical_weight_value",
     conditions=["font_metadata"],
     proposal="legacy:check/111",
+    rationale="""
+        This check ensures that the font weight declared in the METADATA.pb file
+        has a canonical value. The canonical values are multiples of 100 between
+        100 and 900.
+    """,
 )
 def com_google_fonts_check_metadata_canonical_weight_value(font_metadata):
     """METADATA.pb: Check that font weight has a canonical value."""
