@@ -184,6 +184,7 @@ def com_google_fonts_check_font_version(ttFont):
         that describe whether a font is bold and/or italic must be coherent with the
         actual style of the font as inferred by its filename.
     """,
+    conditions=["style"],
     proposal="legacy:check/131",
 )
 def com_google_fonts_check_mac_style(font):
