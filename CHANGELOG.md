@@ -2,14 +2,16 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.12.0 (2024-Feb-??)
+## Upcoming release: 0.12.0 (2024-Mar-??)
   - Documentation for profile and check writers has been rewritten.
   - And also includes the changes from the previous release-candidates:
     - v0.12.0a1 (2024-Feb-14)
     - v0.12.0a2 (2024-Feb-21)
-  - In the googlefonts profile, get family tagging data from another Google Sheet
 
 ### Changes to existing checks
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/metadata/has_tags]:** Also fetch family tagging data from a second Google Sheet (Submissions from designers via form: https://forms.gle/jcp3nDv63LaV1rxH6) (PR #4576)
+
 #### On the Universal profile
   - **DISABLED - [com.google.fonts/check/legacy_accents]:** This is one of the checks that we probably should run on the sources instead of binaries. (https://github.com/fonttools/fontbakery/issues/3959#issuecomment-1822913547)
 
