@@ -193,6 +193,12 @@ def com_google_fonts_check_hinting_impact(font):
 @check(
     id="com.google.fonts/check/has_ttfautohint_params",
     proposal="https://github.com/fonttools/fontbakery/issues/1773",
+    rationale="""
+        It is critically important that all static TTFs in the API which
+        were autohinted with ttfautohint store their TTFAutohint args in
+        the 'name' table, so that an automated solution can be made to
+        replicate the hinting on subsets, etc.
+    """,
 )
 def com_google_fonts_check_has_ttfautohint_params(ttFont):
     """Font has ttfautohint params?"""

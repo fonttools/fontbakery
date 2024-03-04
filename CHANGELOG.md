@@ -47,6 +47,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/canonical_weight_value]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/metadata/copyright_max_length]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/metadata/nameid/copyright]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/has_ttfautohint_params]:** Added rationale. (PR #4570)
 
 #### On the FontValidator profile
   - **[com.google.fonts/check/fontvalidator]:** Added rationale. (PR #4570)
