@@ -53,6 +53,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/version_bump]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/family/has_license]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/metadata/license]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/name/unwanted_chars]:** Added rationale. (PR #4570)
 
 #### On the FontValidator profile
   - **[com.google.fonts/check/fontvalidator]:** Added rationale. (PR #4570)
