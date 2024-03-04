@@ -5,6 +5,11 @@ from fontbakery.prelude import check, disable, Message, WARN, PASS, FAIL
     id="com.google.fonts/check/version_bump",
     conditions=["api_gfonts_ttFont", "github_gfonts_ttFont"],
     proposal="legacy:check/117",
+    rationale="""
+        We check that the version number has been bumped since the last release on
+        Google Fonts. This helps to ensure that the version being PRed is newer than
+        the one currently hosted on fonts.google.com.
+    """,
 )
 def com_google_fonts_check_version_bump(
     ttFont, api_gfonts_ttFont, github_gfonts_ttFont
