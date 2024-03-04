@@ -223,6 +223,12 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
     id="com.google.fonts/check/repo/dirname_matches_nameid_1",
     conditions=["gfonts_repo_structure"],
     proposal="https://github.com/fonttools/fontbakery/issues/2302",
+    rationale="""
+        For static fonts, we expect to name the directory in google/fonts
+        according to the NameID 1 of the regular font, all lower case with
+        no hyphens or spaces. This check verifies that the directory
+        name matches our expectations.
+    """,
 )
 def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
     """Directory name in GFonts repo structure must
