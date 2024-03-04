@@ -352,6 +352,10 @@ def com_google_fonts_check_metadata_menu_and_latin(family_metadata):
     id="com.google.fonts/check/metadata/subsets_order",
     conditions=["family_metadata"],
     proposal="legacy:check/087",
+    rationale="""
+        The subsets listed in the METADATA.pb file should be sorted in
+        alphabetical order.
+    """,
 )
 def com_google_fonts_check_metadata_subsets_order(family_metadata):
     """METADATA.pb subsets should be alphabetically ordered."""
@@ -770,6 +774,10 @@ def com_google_fonts_check_metadata_match_filename_postscript(font_metadata):
     id="com.google.fonts/check/metadata/valid_name_values",
     conditions=["ttFont", "font_metadata"],
     proposal="legacy:check/098",
+    rationale="""
+        This check ensures that the font.name field in the METADATA.pb file
+        matches the family name of the font.
+    """,
 )
 def com_google_fonts_check_metadata_valid_name_values(ttFont, font_metadata):
     """METADATA.pb font.name field matches font"""
@@ -1401,6 +1409,13 @@ def com_google_fonts_check_metadata_os2_weightclass(font, font_metadata):
     id="com.google.fonts/check/metadata/match_weight_postscript",
     conditions=["font_metadata", "not is_variable_font"],
     proposal="legacy:check/113",
+    rationale="""
+        The METADATA.pb file has a field for each font file called 'weight',
+        with a numeric value from 100 to 900. This check ensures that the
+        weight value seems appropriate given the style name in the font's
+        postScriptName. For example, a font with a postScriptName ending in
+        'Bold' should have a weight value of 700.
+    """,
 )
 def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
     """METADATA.pb weight matches postScriptName for static fonts."""
@@ -1451,6 +1466,15 @@ def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
     id="com.google.fonts/check/metadata/canonical_style_names",
     conditions=["font_metadata"],
     proposal="legacy:check/115",
+    rationale="""
+        If the style is set to 'normal' in the METADATA.pb file, we expect a
+        non-italic font - i.e. the font's macStyle bit 1 should be set to 0,
+        and the font's fullname should not end with "Italic"; similarly if
+        the style is set to 'italic', we expect a font with the macStyle bit 1
+        set to 1, and the font's fullname ending with "Italic". If this is
+        not the case, it can indicate an italic font was incorrectly marked
+        as 'normal' in the METADATA.pb file or vice versa.
+    """,
 )
 def com_google_fonts_check_metadata_canonical_style_names(font, font_metadata):
     """METADATA.pb: Font styles are named canonically?"""
