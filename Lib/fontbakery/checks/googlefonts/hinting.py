@@ -327,6 +327,9 @@ def com_google_fonts_check_old_ttfautohint(ttFont):
 
         For more detailed info (such as other rules not enabled in this snippet),
         please refer to the TrueType Instruction Set documentation.
+
+        Generally this occurs with unhinted fonts; if you are not using autohinting,
+        use gftools-fix-nonhinting (or just gftools-fix-font) to fix this issue.
     """,
     proposal="legacy:check/072",
 )
