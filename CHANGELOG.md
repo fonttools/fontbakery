@@ -7,6 +7,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - And also includes the changes from the previous release-candidates:
     - v0.12.0a1 (2024-Feb-14)
     - v0.12.0a2 (2024-Feb-21)
+  - In the googlefonts profile, get family tagging data from another Google Sheet
 
 ### Changes to existing checks
 #### On the Universal profile
