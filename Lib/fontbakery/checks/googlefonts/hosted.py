@@ -55,6 +55,12 @@ def com_google_fonts_check_version_bump(
     id="com.google.fonts/check/production_glyphs_similarity",
     conditions=["api_gfonts_ttFont"],
     proposal="legacy:check/118",
+    rationale="""
+        We check that the glyphs in the font are similar to the glyphs in the
+        version hosted on fonts.google.com. We do not expect updated fonts to
+        have exactly the same glyphs as the previous version, but we do expect
+        the changes to be minimal.
+    """,
 )
 def com_google_fonts_check_production_glyphs_similarity(
     ttFont, api_gfonts_ttFont, config

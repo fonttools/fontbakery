@@ -49,6 +49,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/nameid/copyright]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/has_ttfautohint_params]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/smart_dropout]:** Improve rationale with better fixing instructions. (PR #4570)
+  - **[com.google.fonts/check/production_glyphs_similarity]:** Added rationale. (PR #4570)
 
 #### On the FontValidator profile
   - **[com.google.fonts/check/fontvalidator]:** Added rationale. (PR #4570)
