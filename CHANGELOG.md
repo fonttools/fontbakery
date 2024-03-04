@@ -55,6 +55,10 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/metadata/license]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/name/unwanted_chars]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/subsets_order]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/valid_name_values]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/match_weight_postscript]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/canonical_style_names]:** Added rationale. (PR #4570)
 
 #### On the FontValidator profile
   - **[com.google.fonts/check/fontvalidator]:** Added rationale. (PR #4570)
