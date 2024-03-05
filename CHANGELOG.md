@@ -8,6 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a1 (2024-Feb-14)
     - v0.12.0a2 (2024-Feb-21)
 
+### New utilily functions
+  - **fontbakery.utils.show_inconsistencies**: Display an 'inconsistencies dictionary' as a bullet list. (PR #4570)
+
 ### Deprecated checks
 #### Removed from the Open Type profile
   - **[com.google.fonts/check/family/panose_proportion]:** (issue #4083)
