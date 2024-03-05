@@ -656,3 +656,23 @@ def keyword_in_full_font_name(ttFont, keyword):
         ):
             return True
     return False
+
+
+def show_inconsistencies(dictionary, config):
+    """Display an 'inconsistencies dictionary' as a bullet list. Turns:
+
+        { "value1": ["file1", "file2"], "value2": ["file3"] }
+
+    into
+
+        - value1: file1 and file2
+        - value2: file3
+
+    """
+    return bullet_list(
+        config,
+        [
+            f"{value}: {pretty_print_list(config, files)}"
+            for value, files in dictionary.items()
+        ],
+    )
