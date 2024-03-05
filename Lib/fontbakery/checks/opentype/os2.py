@@ -1,39 +1,53 @@
+from collections import defaultdict
+from typing import Iterable
 from fontbakery.callable import check
 from fontbakery.message import Message
-from fontbakery.status import FAIL, INFO, PASS, SKIP, WARN
+from fontbakery.status import FAIL, INFO, PASS, SKIP, WARN, FATAL
+from fontbakery.testable import Font
+from fontbakery.utils import show_inconsistencies, bullet_list
 
 
 @check(
-    id="com.google.fonts/check/family/panose_familytype", proposal="legacy:check/010"
+    id="com.google.fonts/check/family/panose_familytype",
+    proposal="legacy:check/010",
+    rationale="""
+    The [PANOSE value](https://monotype.github.io/panose/) in the OS/2 table is a
+    way of classifying a font based on its visual appearance and characteristics.
+
+    The first field in the PANOSE classification is the family type: 2 means Latin
+    Text, 3 means Latin Script, 4 means Latin Decorative, 5 means Latin Symbol.
+    This check ensures that within a family, all fonts have the same family type.
+""",
 )
-def com_google_fonts_check_family_panose_familytype(ttFonts):
+def com_google_fonts_check_family_panose_familytype(fonts: Iterable[Font], config):
     """Fonts have consistent PANOSE family type?"""
     passed = True
-    familytype = None
-    missing = False
+    missing = []
+    familytypes = defaultdict(list)
 
-    for ttfont in ttFonts:
-        if "OS/2" not in ttfont:
-            passed = False
-            missing = True
+    for font in fonts:
+        if "OS/2" not in font.ttFont:
+            missing.append(font.file_displayname)
             continue
-        if familytype is None:
-            familytype = ttfont["OS/2"].panose.bFamilyType
-        if familytype != ttfont["OS/2"].panose.bFamilyType:
-            passed = False
+        familytype = font.ttFont["OS/2"].panose.bFamilyType
+        familytypes[familytype].append(font.file_displayname)
 
     if missing:
         yield FAIL, Message(
-            "lacks-OS/2", "One or more fonts lack the required OS/2 table."
+            "lacks-OS/2",
+            "One or more fonts lack the required OS/2 table:\n"
+            + bullet_list(config, missing),
         )
 
-    if not passed:
+    if len(familytypes) > 1:
         yield WARN, Message(
             "inconsistency",
             "PANOSE family type is not the same across this family."
             " In order to fix this, please make sure that"
             " the panose.bFamilyType value is the same"
-            " in the OS/2 table of all of this family font files.",
+            " in the OS/2 table of all of this family font files.\n\n"
+            "The following PANOSE family types were found:\n\n"
+            + show_inconsistencies(familytypes, config),
         )
     else:
         yield PASS, "Fonts have consistent PANOSE family type."

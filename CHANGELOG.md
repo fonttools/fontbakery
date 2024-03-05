@@ -26,6 +26,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Updated the check to allow valid private-use feature tags. (issue #4544)
   - **[com.google.fonts/check/varfont/family_axis_ranges]:** Updated the check to skip fonts without fvar tables. (issue #4554)
   - **[com.google.fonts/check/mac_style]:** Skip if font style can not be determined. (issue #4349)
+  - **[com.google.fonts/check/family/panose_familytype]:** Add rationale and improve message when there are inconsistencies. (PR #4570)
 
 
 ## 0.12.0a2 (2024-Feb-21)
