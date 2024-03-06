@@ -771,30 +771,6 @@ def com_google_fonts_check_metadata_match_filename_postscript(font_metadata):
 
 
 @check(
-    id="com.google.fonts/check/metadata/valid_name_values",
-    conditions=["ttFont", "font_metadata"],
-    proposal="legacy:check/098",
-    rationale="""
-        This check ensures that the font.name field in the METADATA.pb file
-        matches the family name of the font.
-    """,
-)
-def com_google_fonts_check_metadata_valid_name_values(ttFont, font_metadata):
-    """METADATA.pb font.name field matches font"""
-    family_name = ttFont["name"].getBestFamilyName()
-    if family_name != font_metadata.name:
-        yield FAIL, Message(
-            "mismatch",
-            (
-                f"METADATA.pb font.name field is {font_metadata.name} "
-                f"but font has {family_name}"
-            ),
-        )
-    else:
-        yield PASS, "METADATA.pb font.name is correct"
-
-
-@check(
     id="com.google.fonts/check/metadata/valid_full_name_values",
     conditions=["style", "font_metadata"],
     proposal="legacy:check/099",

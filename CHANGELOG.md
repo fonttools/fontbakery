@@ -13,8 +13,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Deprecated checks
 #### Removed from the Open Type profile
-  - **[com.google.fonts/check/family/panose_proportion]:** (issue #4083)
-  - **[com.google.fonts/check/family/equal_unicode_encodings]:** (issue #4569)
+  - **DEPRECATED - [com.google.fonts/check/family/equal_unicode_encodings]:** (issue #4569)
+  - **DEPRECATED - [com.google.fonts/check/family/panose_proportion]:** (issue #4083)
+
+#### Removed from the Google Fonts profile
+  - **DEPRECATED - [com.google.fonts/check/metadata/valid_name_values]:** (issue #4571)
 
 ### Changes to existing checks
 #### On the Google Fonts profile
