@@ -31,9 +31,6 @@ PROFILE = {
             "com.adobe.fonts/check/cff2_call_depth",
             "com.adobe.fonts/check/cff_deprecated_operators",
         ],
-        "cmap table": [
-            "com.google.fonts/check/family/equal_unicode_encodings",
-        ],
         "DSIG": [
             "com.google.fonts/check/dsig",
         ],

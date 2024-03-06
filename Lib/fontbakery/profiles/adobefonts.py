@@ -16,9 +16,6 @@ PROFILE = {
             "com.adobe.fonts/check/cff_call_depth",
             "com.adobe.fonts/check/cff_deprecated_operators",
         ],
-        "cmap": [
-            "com.google.fonts/check/family/equal_unicode_encodings",
-        ],
         "fontwerk": [
             "com.fontwerk/check/inconsistencies_between_fvar_stat",  # IS_OVERRIDDEN
             "com.fontwerk/check/weight_class_fvar",  # IS_OVERRIDDEN
