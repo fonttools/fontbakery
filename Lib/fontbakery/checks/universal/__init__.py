@@ -2413,17 +2413,19 @@ def com_google_fonts_check_tabular_kerning(ttFont):
 
     def get_kerning(ttFont, glyph_list):
         GID_list = [GID_for_glyph(ttFont, glyph) for glyph in glyph_list]
-        return buf_to_width(
+        width1 = buf_to_width(
             buffer_for_GIDs(
                 GID_list,
                 {"kern": True},
             )
-        ) - buf_to_width(
+        )
+        width2 = buf_to_width(
             buffer_for_GIDs(
                 GID_list,
                 {"kern": False},
             )
         )
+        return width1 - width2
 
     def get_str_buffer(ttFont, glyph_list):
         GID_list = [GID_for_glyph(ttFont, glyph) for glyph in glyph_list]
