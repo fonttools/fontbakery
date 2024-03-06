@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Deprecated checks
 #### Removed from the Open Type profile
   - **[com.google.fonts/check/family/panose_proportion]:** (issue #4083)
+  - **[com.google.fonts/check/family/equal_unicode_encodings]:** (issue #4569)
 
 ### Changes to existing checks
 #### On the Google Fonts profile
@@ -76,7 +77,6 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Open Type Profile
   - **[com.google.fonts/check/family/equal_font_versions]:** Added rationale. (PR #4570)
-  - **[com.google.fonts/check/family/equal_unicode_encodings]:** Added rationale, even though this is a questionable check, which we may simply deprecate, as we're not sure why would we expect what it checks. (PR #4570)
   - **[com.google.fonts/check/family_naming_recommendations]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/family/panose_familytype]:** Add rationale and improve message when there are inconsistencies. (PR #4570)
   - **[com.google.fonts/check/font_version]:** Added rationale. (PR #4570)
