@@ -2401,7 +2401,7 @@ def com_google_fonts_check_tabular_kerning(ttFont):
     def nominal_glyph_func(font, code_point, data):
         return code_point
 
-    def buffer_for_GIDs(GIDs, features={}):
+    def buffer_for_GIDs(GIDs, features):
         buf = hb.Buffer()
         buf.add_codepoints(GIDs)
         buf.guess_segment_properties()
@@ -2429,7 +2429,7 @@ def com_google_fonts_check_tabular_kerning(ttFont):
 
     def get_str_buffer(ttFont, glyph_list):
         GID_list = [GID_for_glyph(ttFont, glyph) for glyph in glyph_list]
-        buffer = buffer_for_GIDs(GID_list)
+        buffer = buffer_for_GIDs(GID_list, {})
         string = vhb.serialize_buf(buffer)
         return string
 
