@@ -1627,31 +1627,6 @@ def test_check_metadata_regular_is_400():
     assert "Unfulfilled Conditions: has_regular_style" in msg
 
 
-def test_check_metadata_nameid_family_name():
-    """Checks METADATA.pb font.name field matches
-    family name declared on the name table."""
-    check = CheckTester("com.google.fonts/check/metadata/nameid/family_name")
-
-    # Let's start with the METADATA.pb file from our reference FamilySans family:
-    font = TEST_FILE("familysans/FamilySans-Regular.ttf")
-
-    # We know that Family Sans Regular is good here:
-    assert_PASS(check(font))
-
-    # Then cause it to fail:
-    md = Font(font).font_metadata
-    md.name = "Foo"
-    assert_results_contain(
-        check(MockFont(file=font, font_metadata=md)), FAIL, "mismatch"
-    )
-
-    # TODO: the failure-mode below seems more generic than the scope
-    #       of this individual check. This could become a check by itself!
-    #
-    # code-paths:
-    # - FAIL code="missing", "Font lacks a FONT_FAMILY_NAME entry"
-
-
 def test_check_metadata_nameid_post_script_name():
     """Checks METADATA.pb font.post_script_name matches
     postscript name declared on the name table."""
@@ -1675,49 +1650,6 @@ def test_check_metadata_nameid_post_script_name():
     #
     # code-paths:
     # - FAIL code="missing", "Font lacks a POSTSCRIPT_NAME"
-
-
-def test_check_metadata_nameid_full_name():
-    """METADATA.pb font.fullname value matches fullname declared on the name table ?"""
-    check = CheckTester("com.google.fonts/check/metadata/nameid/full_name")
-
-    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-
-    assert_PASS(check(font), "with a good font...")
-
-    # here we change the font.fullname on the METADATA.pb
-    # to introduce a "mismatch" error condition:
-    md = Font(font).font_metadata
-    good = md.full_name
-    md.full_name = good + "bad-suffix"
-
-    assert_results_contain(
-        check(MockFont(file=font, font_metadata=md)),
-        FAIL,
-        "mismatch",
-        "with mismatching fullname values...",
-    )
-
-    # and restore the good value prior to the next test case:
-    md.full_name = good
-
-    # And here we remove all FULL_FONT_NAME entries
-    # in order to get a "lacks-entry" error condition:
-    ttFont = TTFont(font)
-    for i, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FULL_FONT_NAME:
-            del ttFont["name"].names[i]
-    assert_results_contain(
-        check(ttFont),
-        FAIL,
-        "lacks-entry",
-        "when a font lacks FULL_FONT_NAME entries in its name table...",
-    )
-
-    # Good font with other language name entries
-    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
-
-    assert_PASS(check(font), "with a good font with other languages...")
 
 
 def test_check_metadata_nameid_font_name():
@@ -1781,7 +1713,7 @@ def test_check_metadata_match_fullname_postscript():
     #       There's some relevant info at:
     #       https://github.com/fonttools/fontbakery/issues/1517
     #
-    # FIXME: com.google.fonts/check/metadata/nameid/full_name
+    # FIXME: com.google.fonts/check/metadata/nameid/family_and_full_names
     #        ties the full_name values from the METADATA.pb file and the
     #        internal name table entry (FULL_FONT_NAME)
     #        to be strictly identical. So it seems that the test below is

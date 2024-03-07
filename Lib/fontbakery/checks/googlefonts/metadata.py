@@ -506,53 +506,6 @@ def com_google_fonts_check_metadata_regular_is_400(family_metadata):
 
 
 @check(
-    id="com.google.fonts/check/metadata/nameid/family_name",
-    conditions=["font_metadata"],
-    proposal="legacy:check/092",
-    rationale="""
-        This check ensures that the family name declared in the METADATA.pb file
-        matches the family name declared in the name table of the font file.
-        If the font was uploaded by the packager, this should always be the
-        case. But if there were manual changes to the METADATA.pb file, a mismatch
-        could occur.
-    """,
-)
-def com_google_fonts_check_metadata_nameid_family_name(ttFont, font_metadata):
-    """Checks METADATA.pb font.name field matches
-    family name declared on the name table.
-    """
-    from fontbakery.utils import get_name_entry_strings
-
-    familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
-    if not familynames:
-        familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
-    if len(familynames) == 0:
-        yield FAIL, Message(
-            "missing",
-            (
-                f"This font lacks a FONT_FAMILY_NAME entry"
-                f" (nameID = {NameID.FONT_FAMILY_NAME})"
-                f" in the name table."
-            ),
-        )
-    else:
-        if font_metadata.name not in familynames:
-            yield FAIL, Message(
-                "mismatch",
-                (
-                    f"Unmatched family name in font:"
-                    f' TTF has "{familynames[0]}" while METADATA.pb'
-                    f' has "{font_metadata.name}"'
-                ),
-            )
-        else:
-            yield PASS, (
-                f'Family name "{font_metadata.name}" is identical'
-                f" in METADATA.pb and on the TTF file."
-            )
-
-
-@check(
     id="com.google.fonts/check/metadata/nameid/post_script_name",
     conditions=["font_metadata"],
     proposal="legacy:093",
@@ -601,55 +554,13 @@ def com_google_fonts_check_metadata_nameid_post_script_name(ttFont, font_metadat
         )
 
 
-@check(
-    id="com.google.fonts/check/metadata/nameid/full_name",
-    conditions=["font_metadata"],
-    proposal="legacy:check/094",
-    rationale="""
-        This check ensures that the font full name declared in the METADATA.pb file
-        matches the font full name declared in the name table of the font file.
-        If the font was uploaded by the packager, this should always be the
-        case. But if there were manual changes to the METADATA.pb file, a mismatch
-        could occur.
-    """,
-)
-def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
-    """METADATA.pb font.full_name value matches
-    fullname declared on the name table?
-    """
-    from fontbakery.utils import get_name_entry_strings
-
-    full_fontnames = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME, langID=0x409)
-    # FIXME: only check English names
-    #        https://github.com/fonttools/fontbakery/issues/4000
-
-    if len(full_fontnames) == 0:
-        yield FAIL, Message(
-            "lacks-entry",
-            (
-                f"This font lacks a FULL_FONT_NAME entry"
-                f" (nameID = {NameID.FULL_FONT_NAME})"
-                f" in the name table."
-            ),
-        )
-    else:
-        for full_fontname in full_fontnames:
-            if full_fontname != font_metadata.full_name:
-                yield FAIL, Message(
-                    "mismatch",
-                    (
-                        f"Unmatched fullname in font:"
-                        f' TTF has "{full_fontname}" while METADATA.pb'
-                        f' has "{font_metadata.full_name}".'
-                    ),
-                )
-            else:
-                yield PASS, (
-                    f'Font fullname "{full_fontname}" is identical'
-                    f" in METADATA.pb and on the TTF file."
-                )
-
-
+# FIXME! This looks suspiciously similar to the now deprecated
+#          com.google.fonts/check/metadata/nameid/family_name
+#
+#        Also similar to the current
+#          com.google.fonts/check/metadata/nameid/family_and_full_names
+#
+#        See also: issue #4581
 @check(
     id="com.google.fonts/check/metadata/nameid/font_name",
     rationale="""

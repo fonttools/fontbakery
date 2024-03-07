@@ -17,6 +17,8 @@ A more detailed list of changes is available in the corresponding milestones for
   - **DEPRECATED - [com.google.fonts/check/family/panose_proportion]:** (issue #4083)
 
 #### Removed from the Google Fonts profile
+  - **DEPRECATED - [com.google.fonts/check/metadata/nameid/family_name]:** (issue #4572)
+  - **DEPRECATED - [com.google.fonts/check/metadata/nameid/full_name]:** (issue #4572)
   - **DEPRECATED - [com.google.fonts/check/metadata/valid_name_values]:** (issue #4571)
 
 ### Changes to existing checks

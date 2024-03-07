@@ -16,14 +16,16 @@ PROFILE = {
             "com.google.fonts/check/metadata/familyname",
             "com.google.fonts/check/metadata/has_regular",
             "com.google.fonts/check/metadata/regular_is_400",
-            "com.google.fonts/check/metadata/nameid/family_name",
             "com.google.fonts/check/metadata/nameid/post_script_name",
-            "com.google.fonts/check/metadata/nameid/full_name",
-            # FIXME! This seems redundant!
             "com.google.fonts/check/metadata/nameid/family_and_full_names",
             "com.google.fonts/check/metadata/nameid/copyright",
-            # FIXME! This looks suspiciously similar
-            # to com.google.fonts/check/metadata/nameid/family_name
+            # FIXME! The check below (metadata/nameid/font_name) looks
+            #        suspiciously similar to the now deprecated
+            #          com.google.fonts/check/metadata/nameid/family_name
+            #        which is similar to
+            #          com.google.fonts/check/metadata/nameid/family_and_full_names
+            #
+            #        See also: issue #4581
             "com.google.fonts/check/metadata/nameid/font_name",
             "com.google.fonts/check/metadata/match_fullname_postscript",
             "com.google.fonts/check/metadata/match_filename_postscript",
