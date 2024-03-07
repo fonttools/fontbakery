@@ -4,7 +4,6 @@ PROFILE = {
         "Metadata Checks": [
             "com.google.fonts/check/metadata/parses",
             "com.google.fonts/check/metadata/unknown_designer",
-            "com.google.fonts/check/metadata/multiple_designers",
             "com.google.fonts/check/metadata/designer_values",
             "com.google.fonts/check/metadata/unique_full_name_values",
             "com.google.fonts/check/metadata/unique_weight_style_pairs",

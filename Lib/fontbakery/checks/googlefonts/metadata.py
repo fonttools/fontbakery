@@ -63,32 +63,6 @@ def com_google_fonts_check_metadata_unknown_designer(family_metadata):
 
 
 @check(
-    id="com.google.fonts/check/metadata/multiple_designers",
-    conditions=["family_metadata"],
-    rationale="""
-        For a while the string "Multiple designers" was used as a placeholder on
-        METADATA.pb files. We should replace all those instances with actual designer
-        names so that proper credits are displayed on the Google Fonts family
-        specimen pages.
-
-        If there's more than a single designer, the designer names must be
-        separated by commas.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/issues/2766",
-)
-def com_google_fonts_check_metadata_multiple_designers(family_metadata):
-    """Font designer field in METADATA.pb must not contain 'Multiple designers'."""
-    if "multiple designer" in family_metadata.designer.lower():
-        yield FAIL, Message(
-            "multiple-designers",
-            f"Font designer field is '{family_metadata.designer}'."
-            f" Please add an explicit comma-separated list of designer names.",
-        )
-    else:
-        yield PASS, "Looks good."
-
-
-@check(
     id="com.google.fonts/check/metadata/designer_values",
     conditions=["family_metadata"],
     rationale="""
