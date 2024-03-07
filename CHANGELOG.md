@@ -31,6 +31,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/family/equal_codepoint_coverage]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/family/has_license]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/has_ttfautohint_params]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/linegaps]:** Override WARN messages to FAIL-level. (issue #4136)
   - **[com.google.fonts/check/metadata/broken_links]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/metadata/canonical_weight_value]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/metadata/canonical_style_names]:** Added rationale. (PR #4570)
