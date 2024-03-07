@@ -20,6 +20,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **DEPRECATED - [com.google.fonts/check/metadata/multiple_designers]:** (issue #4574)
   - **DEPRECATED - [com.google.fonts/check/metadata/nameid/family_name]:** (issue #4572)
   - **DEPRECATED - [com.google.fonts/check/metadata/nameid/full_name]:** (issue #4572)
+  - **DEPRECATED - [com.google.fonts/check/metadata/unknown_designer]:** (issue #4573)
   - **DEPRECATED - [com.google.fonts/check/metadata/valid_name_values]:** (issue #4571)
 
 ### Changes to existing checks

@@ -42,27 +42,6 @@ def com_google_fonts_check_metadata_parses(family_directory):
 
 
 @check(
-    id="com.google.fonts/check/metadata/unknown_designer",
-    conditions=["family_metadata"],
-    proposal=[
-        "legacy:check/007",
-        "https://github.com/fonttools/fontbakery/issues/800",
-    ],
-    rationale="""
-        The designer field in METADATA.pb must not be 'unknown'.
-    """,
-)
-def com_google_fonts_check_metadata_unknown_designer(family_metadata):
-    """Font designer field in METADATA.pb must not be 'unknown'."""
-    if family_metadata.designer.lower() == "unknown":
-        yield FAIL, Message(
-            "unknown-designer", f"Font designer field is '{family_metadata.designer}'."
-        )
-    else:
-        yield PASS, "Font designer field is not 'unknown'."
-
-
-@check(
     id="com.google.fonts/check/metadata/designer_values",
     conditions=["family_metadata"],
     rationale="""

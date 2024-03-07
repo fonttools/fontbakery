@@ -116,7 +116,7 @@ def test_extra_needed_exit_from_conditions(monkeypatch):
     monkeypatch.delitem(sys.modules, module_name, raising=False)
 
     with pytest.raises(SystemExit):
-        check = CheckTester("com.google.fonts/check/metadata/unknown_designer")
+        check = CheckTester("com.google.fonts/check/metadata/designer_profiles")
         font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
         check(font)
 
@@ -619,23 +619,6 @@ def test_check_metadata_parses():
     bad = MockFont(file=TEST_FILE("broken_metadata/foo.ttf"))
     assert_results_contain(
         check(bad), FATAL, "parsing-error", "with a bad METADATA.pb file..."
-    )
-
-
-def test_check_metadata_unknown_designer():
-    """Font designer field in METADATA.pb must not be 'unknown'."""
-    check = CheckTester("com.google.fonts/check/metadata/unknown_designer")
-
-    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    assert_PASS(check(font), "with a good METADATA.pb file...")
-
-    md = Font(font).family_metadata
-    md.designer = "unknown"
-    assert_results_contain(
-        check(MockFont(file=font, family_metadata=md)),
-        FAIL,
-        "unknown-designer",
-        "with a bad METADATA.pb file...",
     )
 
 
