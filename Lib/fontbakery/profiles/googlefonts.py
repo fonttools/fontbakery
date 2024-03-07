@@ -169,6 +169,18 @@ PROFILE = {
         }
     },
     "overrides": {
+        "com.google.fonts/check/linegaps": [
+            {
+                "code": "hhea",
+                "status": "FAIL",
+                "reason": "For Google Fonts, all messages from this check are considered FAILs.",
+            },
+            {
+                "code": "OS/2",
+                "status": "FAIL",
+                "reason": "For Google Fonts, all messages from this check are considered FAILs.",
+            },
+        ],
         "com.google.fonts/check/italic_angle": [
             {
                 "code": "positive",
