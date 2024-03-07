@@ -37,8 +37,6 @@ PROFILE = {
             "com.google.fonts/check/metadata/reserved_font_name",
             "com.google.fonts/check/metadata/copyright_max_length",
             "com.google.fonts/check/metadata/filenames",
-            "com.google.fonts/check/metadata/italic_style",
-            "com.google.fonts/check/metadata/normal_style",
             "com.google.fonts/check/metadata/match_name_familyname",
             "com.google.fonts/check/metadata/canonical_weight_value",
             "com.google.fonts/check/metadata/os2_weightclass",
