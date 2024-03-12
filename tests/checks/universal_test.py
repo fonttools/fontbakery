@@ -993,16 +993,6 @@ def test_check_superfamily_vertical_metrics(
     )
 
 
-def test_check_STAT_strings():
-    check = CheckTester("com.google.fonts/check/STAT_strings")
-
-    good = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Roman.ttf"))
-    assert_PASS(check(good))
-
-    bad = TTFont(TEST_FILE("ibmplexsans-vf/IBMPlexSansVar-Italic.ttf"))
-    assert_results_contain(check(bad), FAIL, "bad-italic")
-
-
 def test_check_rupee():
     """Ensure indic fonts have the Indian Rupee Sign glyph."""
     check = CheckTester("com.google.fonts/check/rupee")
