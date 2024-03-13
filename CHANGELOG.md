@@ -9,6 +9,10 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a2 (2024-Feb-21)
     - v0.12.0a3 (2024-Mar-13)
 
+### Changes to existing checks
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/metadata/minisite_url]:** Added detection of duplicated `minisite_url` entries. And also fixed a few typos. (issue #4504)
+
 
 ## 0.12.0a3 (2024-Mar-13)
 ### Release notes

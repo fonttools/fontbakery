@@ -1770,19 +1770,28 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
     id="com.google.fonts/check/metadata/minisite_url",
     conditions=["family_metadata"],
     rationale="""
-        Validate family.repository_url field.
+        Validate family.minisite_url field.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4504",
     experimental="Since 2024/Feb/16",
 )
-def com_google_fonts_check_metadata_minisite_url(family_metadata):
+def com_google_fonts_check_metadata_minisite_url(
+    family_metadata, family_metadata_text_content
+):
     """
-    METADATA.pb: Validate family.repository_url field.
+    METADATA.pb: Validate family.minisite_url field.
     """
+    num_URLs = len(family_metadata_text_content.split("minisite_url")) - 1
+    if num_URLs > 1:
+        yield WARN, Message(
+            "duplicated-url",
+            "There seems to be more than a single entry for minisite_url",
+        )
+
     minisite_url = family_metadata.minisite_url
     if not minisite_url:
         yield INFO, Message(
-            "lacks-minisite-url", "Please ocnsider adding a family.minisite_url entry."
+            "lacks-minisite-url", "Please consider adding a family.minisite_url entry."
         )
         return
 

@@ -150,6 +150,14 @@ def metadata_file(font, metadata_pb=None):
 
 
 @condition(Font)
+def family_metadata_text_content(font):
+    if not font.metadata_file:
+        return
+
+    return open(font.metadata_file, "r", encoding="utf-8").read()
+
+
+@condition(Font)
 def family_metadata(font):
     if not font.metadata_file:
         return
