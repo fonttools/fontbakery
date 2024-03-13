@@ -33,7 +33,7 @@ def com_typenetwork_glyph_coverage(ttFont, font_codepoints, config):
     try:
         import unicodedata2
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("typenetwork")
 
     TN_latin_set = {
         0x0020: (" ", "SPACE"),

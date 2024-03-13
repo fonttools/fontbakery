@@ -353,7 +353,7 @@ def can_shape(ttFont, text, parameters=None):
     try:
         from vharfbuzz import Vharfbuzz
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     filename = ttFont.reader.file.name
     vharfbuzz = Vharfbuzz(filename)

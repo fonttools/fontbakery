@@ -22,7 +22,7 @@ def com_google_fonts_check_fontvalidator(font, config):
     try:
         import lxml.etree
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("fontval")
 
     check_config = config.get("com.google.fonts/check/fontvalidator", {})
     enabled_checks = check_config.get("enabled_checks")

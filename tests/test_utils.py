@@ -23,12 +23,9 @@ from fontbakery.utils import (
 
 
 def test_exit_with_install_instructions():
-    from fontbakery.utils import set_profile_name
-
     profile_name = "test-profile"
-    set_profile_name(profile_name)
     with patch("sys.exit") as mock_exit:
-        exit_with_install_instructions()
+        exit_with_install_instructions(profile_name)
         mock_exit.assert_called_with(
             f"\nTo run the {profile_name} profile, one needs to install\n"
             f"fontbakery with the '{profile_name}' extra, like this:\n\n"

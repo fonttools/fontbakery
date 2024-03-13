@@ -22,7 +22,7 @@ def com_google_fonts_check_metadata_parses(family_directory):
         from google.protobuf import text_format
         from fontbakery.utils import get_FamilyProto_Message
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     try:
         pb_file = os.path.join(family_directory, "METADATA.pb")
@@ -1683,7 +1683,7 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     try:
         from gflanguages import LoadLanguages
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     passed = True
     languages = LoadLanguages()

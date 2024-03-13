@@ -20,7 +20,7 @@ def description_html(font):
     try:
         from lxml import etree
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     if not font.description:
         return
@@ -295,7 +295,7 @@ def com_google_fonts_check_description_valid_html(descfile, description):
     try:
         from lxml import html
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     passed = True
     if "<html>" in description or "</html>" in description:
