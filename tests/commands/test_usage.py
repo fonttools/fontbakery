@@ -48,7 +48,7 @@ def test_command_check_googlefonts():
     [
         "check-profile",
         "check-opentype",
-        "check-ufo-sources",
+        "check-ufo",
     ],
 )
 def test_command_check_profile(subcommand):
