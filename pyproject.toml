@@ -118,7 +118,7 @@ googlefonts = [
     "fontbakery[beautifulsoup4]",
     "fontbakery[googlefontsalwayslatest]",
     "fontbakery[shaping]",
-    "fontbakery[ufo_sources]",
+    "fontbakery[ufo]",
 ]
 
 iso15008 = []
@@ -146,7 +146,7 @@ typenetwork = [
 ]
 
 # FIXME: This is not a vendor-specific profile!
-"ufo_sources" = [
+ufo = [
     "defcon",
     "fonttools[ufo]",
     "ufolint",
@@ -176,7 +176,7 @@ all = [
     "fontbakery[iso15008]",
     "fontbakery[notofonts]",
     "fontbakery[shaping]",
-    "fontbakery[ufo_sources]",
+    "fontbakery[ufo]",
 ]
 
 

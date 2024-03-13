@@ -1,5 +1,5 @@
 PROFILE = {
-    "include_profiles": ["universal", "outline", "shaping", "ufo_sources"],
+    "include_profiles": ["universal", "outline", "shaping", "ufo"],
     "sections": {
         "Metadata Checks": [
             "com.google.fonts/check/metadata/parses",
