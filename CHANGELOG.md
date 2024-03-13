@@ -7,6 +7,13 @@ A more detailed list of changes is available in the corresponding milestones for
   - And also includes the changes from the previous release-candidates:
     - v0.12.0a1 (2024-Feb-14)
     - v0.12.0a2 (2024-Feb-21)
+    - v0.12.0a3 (2024-Mar-13)
+
+
+## 0.12.0a3 (2024-Mar-13)
+### Release notes
+  - **UFO Sources** profile (`check-ufo-sources`) was renamed to **UFO** profile.
+  - Since it is not vendor-specific by itself, it will be merged into other profiles (most likely **Universal**) in an upcoming release. The same applies to the **Shaping** profile.
 
 ### New utilily functions
   - **fontbakery.utils.show_inconsistencies**: Display an 'inconsistencies dictionary' as a bullet list. (PR #4570)
@@ -71,7 +78,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/smart_dropout]:** Improve rationale with better fixing instructions. (PR #4570)
   - **[com.google.fonts/check/version_bump]:** Added rationale. (PR #4570)
 
-#### On the UFO Sources profile
+#### On the UFO profile
   - **[com.daltonmaag/check/ufolint]:** Added rationale. (PR #4570)
 
 #### On the FontValidator profile
