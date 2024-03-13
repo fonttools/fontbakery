@@ -53,7 +53,7 @@ def pair_kerning(font, left, right):
     try:
         import uharfbuzz as hb
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("iso15008")
 
     with open(font.file, "rb") as fontfile:
         fontdata = fontfile.read()

@@ -24,7 +24,7 @@ def com_google_fonts_check_metadata_unsupported_subsets(
     try:
         from gfsubsets import CodepointsInSubset, ListSubsets
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     passed = True
     for subset in family_metadata.subsets:
@@ -78,7 +78,7 @@ def com_google_fonts_check_metadata_unreachable_subsetting(font, config):
         import unicodedata2
         from gfsubsets import CodepointsInSubset, ListSubsets, SubsetsInFont
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     from fontbakery.utils import pretty_print_list
 

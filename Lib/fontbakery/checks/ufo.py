@@ -20,7 +20,7 @@ def ufo_font(ufo):
         from fontTools.ufoLib.errors import UFOLibError
         import defcon
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("ufo-sources")
 
     try:
         return defcon.Font(ufo.file)
@@ -40,7 +40,7 @@ def designSpace(designspace):
         from fontTools.designspaceLib import DesignSpaceDocument
         import defcon
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("ufo-sources")
 
     if designspace:
         DS = DesignSpaceDocument.fromfile(designspace.file)
@@ -57,7 +57,7 @@ def designspace_sources(designspace):
     try:
         import defcon
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("ufo-sources")
 
     if designspace.designSpace:
         return designspace.designSpace.loadSourceFonts(defcon.Font)

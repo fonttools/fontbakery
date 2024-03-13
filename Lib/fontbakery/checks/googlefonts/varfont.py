@@ -610,7 +610,7 @@ def uharfbuzz_blob(font):
     try:
         import uharfbuzz as hb
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     return hb.Blob.from_file_path(font.file)
 
@@ -635,7 +635,7 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
     try:
         import uharfbuzz as hb
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     from fontbakery.utils import PointsPen, axis
 

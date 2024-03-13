@@ -24,15 +24,8 @@ import rich
 
 from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
 
-profile_name = None
 
-
-def set_profile_name(name):
-    global profile_name  # pylint:disable=W0603 (global-statement)
-    profile_name = name
-
-
-def exit_with_install_instructions():
+def exit_with_install_instructions(profile_name):
     sys.exit(
         f"\nTo run the {profile_name} profile, one needs to install\n"
         f"fontbakery with the '{profile_name}' extra, like this:\n\n"
@@ -311,7 +304,7 @@ def get_Protobuf_Message(klass, path):
     try:
         from google.protobuf import text_format
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     message = klass()
     text_data = open(path, "rb").read()
@@ -323,7 +316,7 @@ def get_FamilyProto_Message(path):
     try:
         from fontbakery.fonts_public_pb2 import FamilyProto
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     return get_Protobuf_Message(FamilyProto, path)
 
@@ -333,7 +326,7 @@ def get_DesignerInfoProto_Message(text_data):
         from fontbakery.designers_pb2 import DesignerInfoProto
         from google.protobuf import text_format
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     message = DesignerInfoProto()
     text_format.Merge(text_data, message)

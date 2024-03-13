@@ -157,7 +157,7 @@ def family_metadata(font):
     try:
         from google.protobuf import text_format
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     from fontbakery.utils import get_FamilyProto_Message
 

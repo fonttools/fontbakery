@@ -14,7 +14,7 @@ def registered_vendor_ids():
     try:
         from bs4 import BeautifulSoup, NavigableString
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     registered_vendor_ids = {}
     CACHED = resource_filename(
