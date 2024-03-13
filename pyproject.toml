@@ -27,7 +27,7 @@ maintainers = [
 ]
 
 dependencies = [
-	"fontTools >= 4.39.0, == 4.*",
+	"fontTools == 4.*",
 	"freetype-py < 2.4.0",
 	"opentypespec",
 	"opentype-sanitizer >= 9.1.0, == 9.*",
@@ -47,119 +47,148 @@ dependencies = [
 
 [project.optional-dependencies]
 
-shaping = [
-	"collidoscope >= 0.5.2, == 0.5.*",
-	"stringbrewer",
-	"ufo2ft >= 2.25.2, == 2.*",
-	"ufolint",
+# Note: These dependencies are meant to be private (not used explicitly by users)
+#       and are used just to facilitate maintainance of versioning
+#       dependencies that are shared by multiple vendor-profiles.
+#       (this way, the maintainer only needs to edit a single entry)
+
+beautifulsoup4 = [
+    "beautifulsoup4 >= 4.7.1"
+    # For parsing registered vendor IDs
+    # com.google.fonts/check/vendor_id produces an ERROR if Beautiful Soup 4
+    # version 4.0.1 to 4.6.1 or 4.7.0 is installed because of bugs in Beautiful Soup
+    # (see https://github.com/fonttools/fontbakery/issues/4270)
 ]
-googlefonts = [
-	"axisregistry >= 0.4.5, == 0.4.*",
-	"beautifulsoup4 >= 4.7.1, == 4.*",
-	"collidoscope >= 0.5.2, == 0.5.*",
-	"dehinter >= 3.1.0, == 3.*",
-	"font-v >= 0.6.0",
-	"fontTools[lxml,unicode] >= 4.39.0, == 4.*",
+
+shaperglot = [
+    "shaperglot >= 0.4.2, == 0.4.*",
+    # versions prior to v0.3.0 had too stric dependency rules
+    # for other deps such as protobuf, making it harder satisfy all dependencies.
+]
+
+ufo2ft = [
+    "ufo2ft >= 2.25.2"
+    # 2.25.2 updated the script lists for Unicode 14.0
+]
+
+# These Google Fonts profile dependencies contain data that is critical to
+# always be up-to-date, so we treat any update to these deps the same way we would
+# deal with API-breaking updates. Only the latest released version is acceptable:
+googlefontsalwayslatest = [
+	"axisregistry >= 0.4.9, == 0.4.*",
 	"gflanguages >= 0.5.17, == 0.5.*",
-	"gfsubsets >= 2024.1.22.post2",
-	"glyphsets >= 0.6.11, == 0.6.*",
-	"protobuf >= 3.7.0, == 3.*",
-	"shaperglot >= 0.3.1",
-	"stringbrewer",
-	"ufo2ft >= 2.25.2, == 2.*",
-	"ufolint",
+	"gfsubsets >= 2024.2.5",
+	"glyphsets >= 0.6.14, == 0.6.*",
+	"shaperglot >= 0.4.2, == 0.4.*",
 ]
+
+
+# Profile-specific dependencies:
+
+adobefonts = [
+    # The Adobe Fonts profile currently depends only on the base-install of
+    # fontbakery dependencies. But we keep here a place-holder "extra" for
+    # consistency (all vendor-specific profiles have the same install instructions)
+    # And at some point in the future there may be actual dependencies listed
+    # here for this profile.
+]
+
+fontval = [
+    "lxml",
+]
+
 fontwerk = [
-	"axisregistry >= 0.4.5, == 0.4.*",
-	"beautifulsoup4 >= 4.7.1, == 4.*",
-	"collidoscope >= 0.5.2, == 0.5.*",
-	"dehinter >= 3.1.0, == 3.*",
-	"font-v >= 0.6.0",
-	"fontTools[lxml,unicode] >= 4.39.0, == 4.*",
-	"gflanguages >= 0.5.17, == 0.5.*",
-	"gfsubsets >= 2024.1.22.post2",
-	"glyphsets >= 0.6.11, == 0.6.*",
-	"protobuf >= 3.7.0, == 3.*",
-	"shaperglot >= 0.3.1",
-	"stringbrewer",
-	"ufo2ft >= 2.25.2, == 2.*",
-	"ufolint",
+    "fontbakery[googlefonts]"
 ]
+
+googlefonts = [
+    "dehinter >= 3.1.0",
+    # 3.1.0 added dehinter.font.hint function
+
+    "fonttools[lxml,unicode]",
+    # (see https://github.com/googlefonts/gflanguages/pull/7)
+
+    "protobuf >= 3.7.0, < 4",
+    # 3.7.0 fixed a bug on parsing some METADATA.pb files.
+    # We cannot use v4 because our protobuf files have been compiled with v3.
+    # (see https://github.com/fonttools/fontbakery/issues/2200)
+
+    "unicodedata2",
+
+    "fontbakery[beautifulsoup4]",
+    "fontbakery[googlefontsalwayslatest]",
+    "fontbakery[shaping]",
+    "fontbakery[ufo_sources]",
+]
+
+iso15008 = []
+
 notofonts = [
-	"axisregistry >= 0.4.5, == 0.4.*",
-	"beautifulsoup4 >= 4.7.1, == 4.*",
-	"collidoscope >= 0.5.2, == 0.5.*",
-	"dehinter >= 3.1.0, == 3.*",
-	"font-v >= 0.6.0",
-	"fontTools[lxml,unicode] >= 4.39.0, == 4.*",
-	"gflanguages >= 0.5.17, == 0.5.*",
-	"gfsubsets >= 2024.1.22.post2",
-	"glyphsets >= 0.6.11, == 0.6.*",
-	"protobuf >= 3.7.0, == 3.*",
-	"shaperglot >= 0.3.1",
-	"stringbrewer",
-	"ufo2ft >= 2.25.2, == 2.*",
-	"ufolint",
+    "fontbakery[googlefonts]"
 ]
-ufo_sources = [
-	"defcon",
-	"fontTools[ufo] >= 4.39.0, == 4.*",
-	"ufo2ft >= 2.25.2, == 2.*",
-	"ufolint",
+
+# FIXME: This is not a vendor-specific profile!
+shaping = [
+    "collidoscope >= 0.5.2",
+    # 0.5.2 added Python 3.11 wheels
+    # (see https://github.com/fonttools/fontbakery/issues/3970)
+
+    "stringbrewer",
+
+    "fontbakery[ufo2ft]",
+    "fontbakery[shaperglot]",
 ]
+
 typenetwork = [
-	"beautifulsoup4 >= 4.7.1, == 4.*",
-	"ufo2ft >= 2.25.2, == 2.*",
-	"shaperglot >= 0.4.2",
+    "fontbakery[beautifulsoup4]",
+    "fontbakery[ufo2ft]",
+    "fontbakery[shaperglot]",
 ]
-fontval = ["lxml"]
+
+# FIXME: This is not a vendor-specific profile!
+"ufo_sources" = [
+    "defcon",
+    "fonttools[ufo]",
+    "ufolint",
+
+    "fontbakery[ufo2ft]",
+]
+
+
+# Dependencies for building our documentation:
+
 docs = [
 	"myst-parser >= 2.0.0, == 2.*",
 	"sphinx >= 7.1.2, == 7.1.*",
 	"sphinx_rtd_theme >= 2.0.0, == 2.*",
 	"m2r >= 0.3.1, == 0.3.*",
 ]
+
+
+# Some users may want a full install of all profiles:
+
+all = [
+    "fontbakery[docs]",
+    "fontbakery[adobefonts]",
+    "fontbakery[fontval]",
+    "fontbakery[fontwerk]",
+    "fontbakery[googlefonts]",
+    "fontbakery[iso15008]",
+    "fontbakery[notofonts]",
+    "fontbakery[shaping]",
+    "fontbakery[ufo_sources]",
+]
+
+
+# Requirements for running code-tests:
+
 tests = [
-	# Requirements for *testing*
 	"black == 23.12.1",
     "pylint == 3.0.3",
 	"pytest-cov == 4.1.0",
 	"pytest-xdist == 3.5.0",
 
-	# Requirements for tests
-	"axisregistry >= 0.4.5, == 0.4.*",
-	"beautifulsoup4 >= 4.7.1, == 4.*",
-	"collidoscope >= 0.5.2, == 0.5.*",
-	"defcon",
-	"dehinter >= 3.1.0, == 3.*",
-	"font-v >= 0.6.0",
-	"fontTools[lxml,unicode,ufo] >= 4.39.0, == 4.*",
-	"gflanguages >= 0.5.17, == 0.5.*",
-	"gfsubsets >= 2024.1.22.post2",
-	"glyphsets >= 0.6.11, == 0.6.*",
-	"protobuf >= 3.7.0, == 3.*",
-	"shaperglot >= 0.3.1",
-	"stringbrewer",
-	"ufo2ft >= 2.25.2, == 2.*",
-	"ufolint",
-]
-all = [
-	"axisregistry >= 0.4.5, == 0.4.*",
-	"beautifulsoup4 >= 4.7.1, == 4.*",
-	"collidoscope >= 0.5.2, == 0.5.*",
-	"defcon",
-	"dehinter >= 3.1.0, == 3.*",
-	"fontTools[lxml,ufo,unicode] >= 4.39.0, == 4.*",
-	"font-v >= 0.6.0",
-	"gflanguages >= 0.5.17, == 0.5.*",
-	"gfsubsets >= 2024.1.22.post2",
-	"glyphsets >= 0.6.11, == 0.6.*",
-	"lxml",
-	"protobuf >= 3.7.0, == 3.*",
-	"shaperglot >= 0.4.2",
-	"stringbrewer",
-	"ufo2ft >= 2.25.2, == 2.*",
-	"ufolint"
+	"fontbakery[all]",
 ]
 
 [project.scripts]
