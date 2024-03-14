@@ -32,7 +32,7 @@ for notreal in [
 
 import glyphsets
 
-from fontbakery.commands.check_profile import get_module, log_levels
+from fontbakery.cli import log_levels
 from fontbakery.fonts_profile import profile_factory, setup_context
 from fontbakery.reporters.serialize import SerializeReporter
 from fontbakery.checkrunner import (
