@@ -799,12 +799,12 @@ def com_typenetwork_check_family_tnum_horizontal_metrics(ttFonts, config):
 
 @condition(CheckRunContext)
 def roman_ttFonts(context):
-    return [font.ttFont for font in context.ttFonts if not font.is_italic]
+    return [font.ttFont for font in context.fonts if not font.is_italic]
 
 
 @condition(CheckRunContext)
 def italic_ttFonts(context):
-    return [font.ttFont for font in context.ttFonts if font.is_italic]
+    return [font.ttFont for font in context.fonts if font.is_italic]
 
 
 @check(
