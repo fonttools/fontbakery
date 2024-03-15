@@ -24,11 +24,11 @@ com.google.fonts/check/shaping:
 After saving this file — as `shaping.yml`, for example — you can then run
 the Shaping profile checks using the following command:
 
-    fontbakery shaping --config shaping.yml Font.ttf
+    fontbakery check-shaping --config shaping.yml Font.ttf
 
 For best results, generate an HTML report using the `--html` option.
 
-    fontbakery shaping --config shaping.yml --html shaping.html Font.ttf
+    fontbakery check-shaping --config shaping.yml --html shaping.html Font.ttf
 
 The report will include SVG illustrations for any failing tests.
 
