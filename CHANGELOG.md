@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a2 (2024-Feb-21)
     - v0.12.0a3 (2024-Mar-13)
     - v0.12.0a4 (2024-Mar-15)
+  - Implement a basic tool to update regression test files. See https://github.com/fonttools/fontbakery/discussions/4589 for details. Run like `python -m fontbakery.update_shaping_tests input.toml output.json path/to/*.ttf`.
 
 
 ## 0.12.0a4 (2024-Mar-15)

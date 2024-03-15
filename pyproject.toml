@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "fontbakery"
 dynamic = ["version"]
 description = "A font quality assurance tool for everyone"
+requires-python = ">=3.8"
 readme = { file = "README.md", content-type = "text/markdown" }
 authors = [
 	{ name = "Chris Simpkins", email = "csimpkins@google.com" },
@@ -43,6 +44,7 @@ dependencies = [
 	"beziers >= 0.5.0, == 0.5.*",
 	"uharfbuzz",
 	"vharfbuzz >= 0.2.0, == 0.2.*",
+  "typing_extensions ; python_version < '3.11'",
 ]
 
 [project.optional-dependencies]
