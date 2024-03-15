@@ -169,7 +169,7 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
                 ]
             )
             shortened_str = name_record.toUnicode()
-            if len(shortened_str) > 20:
+            if len(shortened_str) > 25:
                 shortened_str = shortened_str[:10] + "[...]" + shortened_str[-10:]
             yield FAIL, Message(
                 "trailing-space",
