@@ -138,7 +138,6 @@ PROFILE = {
             "com.google.fonts/check/name/italic_names",
         ],
         "OS/2 table": [
-            "com.google.fonts/check/family/panose_proportion",
             "com.google.fonts/check/family/panose_familytype",
             "com.google.fonts/check/xavgcharwidth",
             "com.adobe.fonts/check/fsselection_matches_macstyle",
