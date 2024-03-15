@@ -4,11 +4,15 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.12.0 (2024-Mar-??)
   - Documentation for profile and check writers has been rewritten.
-  - Fixed markdown/html reporters (issue #4595)
   - And also includes the changes from the previous release-candidates:
     - v0.12.0a1 (2024-Feb-14)
     - v0.12.0a2 (2024-Feb-21)
     - v0.12.0a3 (2024-Mar-13)
+    - v0.12.0a4 (2024-Mar-15)
+
+
+## 0.12.0a4 (2024-Mar-15)
+  - Fixed markdown/html reporters (issue #4595)
 
 ### Changes to existing checks
 #### On the Google Fonts profile
