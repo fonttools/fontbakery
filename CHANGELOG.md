@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.12.0 (2024-Mar-??)
   - Documentation for profile and check writers has been rewritten.
+  - Fixed markdown/html reporters (issue #4595)
   - And also includes the changes from the previous release-candidates:
     - v0.12.0a1 (2024-Feb-14)
     - v0.12.0a2 (2024-Feb-21)
