@@ -127,7 +127,7 @@ jobs:
               -c font_is_centered_vertically
               -c family/tnum_horizontal_metrics
               -c family/equal_numbers_of_glyphs
-              data/test/cabin/Cabin-Regular.ttf
+              data/test/cabin/Cabin-Regular.ttf data/test/cabin/Cabin-Italic.ttf
   
     steps:
     - uses: actions/checkout@v4
