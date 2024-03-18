@@ -179,6 +179,7 @@ all = [
     "fontbakery[iso15008]",
     "fontbakery[notofonts]",
     "fontbakery[shaping]",
+    "fontbakery[typenetwork]",
     "fontbakery[ufo]",
 ]
 
