@@ -1,6 +1,7 @@
 """
 Checks for Type Network <https://typenetwork.com/>
 """
+
 import unicodedata
 import string
 
