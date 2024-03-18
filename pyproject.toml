@@ -140,9 +140,12 @@ shaping = [
 ]
 
 typenetwork = [
-	"fontbakery[fontval]",
+    "unicodedata2",
+
+    "fontbakery[beautifulsoup4]",
     "fontbakery[ufo2ft]",
     "fontbakery[shaperglot]",
+    "fontbakery[fontval]",
 ]
 
 # FIXME: This is not a vendor-specific profile!
