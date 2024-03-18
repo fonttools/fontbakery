@@ -10,7 +10,7 @@ PROFILE = {
             "com.typenetwork/check/usweightclass",
             "com.typenetwork/check/family/valid_underline",
             "com.typenetwork/check/family/valid_strikeout",
-            "com.typenetwork/check/fstype",
+            # "com.typenetwork/check/fstype", # DEPRECATED
             "com.typenetwork/check/composite_glyphs",
             "com.typenetwork/check/PUA_encoded_glyphs",
             "com.typenetwork/check/marks_width",
@@ -71,7 +71,7 @@ PROFILE = {
         ],
         "Google Fonts": [
             "com.google.fonts/check/family/equal_codepoint_coverage",
-            "com.google.fonts/check/vendor_id",
+            # "com.google.fonts/check/vendor_id", # PERMANENTLY EXCLUDED
             # "com.google.fonts/check/metadata/unreachable_subsetting", # Review
             # "com.google.fonts/check/gasp", # Review
             # "com.google.fonts/check/metadata/valid_nameid25", # TEMPORARY EXCLUDED
@@ -85,8 +85,8 @@ PROFILE = {
             "com.google.fonts/check/vttclean",
             "com.google.fonts/check/aat",
             "com.google.fonts/check/fvar_name_entries",
-            "com.google.fonts/check/ligature_carets",
-            "com.google.fonts/check/kerning_for_non_ligated_sequences",
+            # "com.google.fonts/check/ligature_carets", # PERMANENTLY EXCLUDED
+            # "com.google.fonts/check/kerning_for_non_ligated_sequences", # PERMANENTLY EXCLUDED
             "com.google.fonts/check/name/family_and_style_max_length",
             "com.google.fonts/check/family/control_chars",
             "com.google.fonts/check/varfont_duplicate_instance_names",
@@ -97,7 +97,7 @@ PROFILE = {
             "com.google.fonts/check/stylisticset_description",
             # "com.google.fonts/check/os2/use_typo_metrics", # Removed in favor of
             #                                                # new vmetrics check
-            # "com.google.fonts/check/metadata/empty_designer", # Review
+            # "com.google.fonts/check/metadata/empty_designer", # PERMANENTLY EXCLUDED
             "com.google.fonts/check/varfont/bold_wght_coord",  # OVERRIDEN: Lowered to WARN
         ],
         "GPOS Table": [
@@ -138,7 +138,7 @@ PROFILE = {
             "com.google.fonts/check/name/italic_names",
         ],
         "OS/2 table": [
-            "com.google.fonts/check/family/panose_familytype",
+            # "com.google.fonts/check/family/panose_familytype", # PERMANENTLY EXCLUDED
             "com.google.fonts/check/xavgcharwidth",
             "com.adobe.fonts/check/fsselection_matches_macstyle",
             "com.adobe.fonts/check/family/bold_italic_unique_for_nameid1",
@@ -159,11 +159,11 @@ PROFILE = {
             "com.google.fonts/check/italic_angle",
         ],
         "Shaping Checks": [
-            # "com.google.fonts/check/shaping/regression",
-            # "com.google.fonts/check/shaping/forbidden",
-            # "com.google.fonts/check/shaping/collides",
+            # "com.google.fonts/check/shaping/regression", # PERMANENTLY EXCLUDED
+            # "com.google.fonts/check/shaping/forbidden", # PERMANENTLY EXCLUDED
+            # "com.google.fonts/check/shaping/collides",  # PERMANENTLY EXCLUDED
             "com.google.fonts/check/dotted_circle",  # REVIEW
-            "com.google.fonts/check/soft_dotted",  # REVIEW
+            "com.google.fonts/check/soft_dotted",
         ],
         "STAT table": [
             "com.google.fonts/check/varfont/stat_axis_record_for_each_axis",
@@ -177,10 +177,10 @@ PROFILE = {
             "com.google.fonts/check/family/win_ascent_and_descent",
             # "com.google.fonts/check/os2_metrics_match_hhea", # Removed in favor of
             #                                                  # new vmetrics check
-            "com.google.fonts/check/family/single_directory",
+            # "com.google.fonts/check/family/single_directory", # PERMANENTLY EXCLUDED
             # "com.google.fonts/check/caps_vertically_centered", # REVIEW
             "com.google.fonts/check/ots",  # OVERRIDEN
-            # "com.google.fonts/check/fontbakery_version", # Permanently Removed
+            # "com.google.fonts/check/fontbakery_version", # PERMANENTLY EXCLUDED
             "com.google.fonts/check/mandatory_glyphs",
             "com.google.fonts/check/whitespace_glyphs",
             "com.google.fonts/check/whitespace_glyphnames",
@@ -206,7 +206,7 @@ PROFILE = {
             "com.adobe.fonts/check/sfnt_version",
             "com.google.fonts/check/whitespace_widths",
             "com.google.fonts/check/interpolation_issues",
-            "com.google.fonts/check/math_signs_width",  # OVERRIDEN
+            # "com.google.fonts/check/math_signs_width",  # PERMANENTLY EXCLUDED
             "com.google.fonts/check/linegaps",
             "com.google.fonts/check/STAT_in_statics",
             # "com.google.fonts/check/alt_caron",  # PERMANENTLY EXCLUDED
