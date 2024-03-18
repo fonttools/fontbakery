@@ -144,7 +144,6 @@ def com_typenetwork_glyph_coverage(ttFont, font_codepoints, config):
         0x00AA: ("ª", "FEMININE ORDINAL INDICATOR"),
         0x00AB: ("«", "LEFT-POINTING DOUBLE ANGLE QUOTATION MARK"),
         0x00AC: ("¬", "NOT SIGN"),
-        0x00AD: ("­", "SOFT HYPHEN"),
         0x00AE: ("®", "REGISTERED SIGN"),
         0x00AF: ("¯", "MACRON"),
         0x00B0: ("°", "DEGREE SIGN"),
@@ -1270,7 +1269,7 @@ def com_typenetwork_check_varfont_fvar_axes_order(ttFont):
         filtered = [axis for axis in prefferedOrder if axis in fontRegisteredAxes]
 
         if filtered != fontRegisteredAxes:
-            yield FAIL, Message(
+            yield WARN, Message(
                 "axes-incorrect-order",
                 "Font’s registered axes are not in a correct order to get good"
                 "instances sorting on Adobe apps.\n\n"

@@ -140,7 +140,7 @@ shaping = [
 ]
 
 typenetwork = [
-    "fontbakery[beautifulsoup4]",
+	"fontbakery[fontval]",
     "fontbakery[ufo2ft]",
     "fontbakery[shaperglot]",
 ]
