@@ -11,6 +11,10 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a4 (2024-Mar-15)
   - Implement a basic tool to update regression test files. See https://github.com/fonttools/fontbakery/discussions/4589 for details. Run like `python -m fontbakery.update_shaping_tests input.toml output.json path/to/*.ttf`.
 
+### New checks
+#### Added to the Google Fonts profile
+  - **EXPERIMENTAL - [com.google.fonts/check/article/images]:** Validate maximum filesize and resolution of images in the article/images directory. (issue #4594)
+
 
 ## 0.12.0a4 (2024-Mar-15)
   - Fixed markdown/html reporters (issue #4595)

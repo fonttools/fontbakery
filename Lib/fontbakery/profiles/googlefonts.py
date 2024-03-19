@@ -1,6 +1,9 @@
 PROFILE = {
     "include_profiles": ["universal", "outline", "shaping", "ufo"],
     "sections": {
+        "Article Checks": [
+            "com.google.fonts/check/article/images",
+        ],
         "Metadata Checks": [
             "com.google.fonts/check/metadata/broken_links",
             "com.google.fonts/check/metadata/canonical_style_names",

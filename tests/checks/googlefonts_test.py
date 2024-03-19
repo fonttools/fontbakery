@@ -4989,3 +4989,22 @@ def test_check_linegaps():
     # Confirm the check yields FAIL if the font doesn't have a required table
     del ttFont["OS/2"]
     assert_results_contain(check(ttFont), FAIL, "lacks-table")
+
+
+def test_check_article_images():
+    """Validate location, size and resolution of article images."""
+    check = CheckTester("com.google.fonts/check/article/images")
+
+    # This one is know to be bad:
+    family_dir = TEST_FILE("tirodevanagarihindi")
+
+    assert_results_contain(
+        check(MockFont(family_directory=family_dir)),
+        FAIL,
+        "misplaced-image-files",
+        "The files are not in the correct directory...",
+    )
+
+    # TODO: test WARN "lacks-article"
+    # TODO: test FAIL "image-too-large"
+    # TODO: test PASS

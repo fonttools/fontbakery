@@ -669,3 +669,36 @@ def show_inconsistencies(dictionary, config):
             for value, files in dictionary.items()
         ],
     )
+
+
+def image_dimensions(filename):
+    if filename.lower().endswith(".png"):
+        data = open(filename, "rb").read(24)
+        if data[0:4] != b"\x89PNG" and data[12:16] != b"IHDR":
+            return None  # Does not look like a PNG!
+
+        w = data[16]
+        w = w << 8 | data[17]
+        w = w << 8 | data[18]
+        w = w << 8 | data[19]
+
+        h = data[20]
+        h = h << 8 | data[21]
+        h = h << 8 | data[22]
+        h = h << 8 | data[23]
+        return w, h
+
+    elif filename.lower().endswith(".gif"):
+        data = open(filename, "rb").read(10)
+        if data[0:4] != b"GIF8":
+            return None  # Does not look like a GIF!
+
+        w = data[7]
+        w = w << 8 | data[6]
+
+        h = data[9]
+        h = h << 8 | data[8]
+        return w + 1, h + 1
+
+    else:
+        return None  # some other file format
