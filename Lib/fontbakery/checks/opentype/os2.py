@@ -356,7 +356,7 @@ def com_thetypefounders_check_vendor_id(config, ttFont):
         return
 
     config_vendor_id = config["vendor_id"]
-    font_vendor_id = ttFont["OS/2"].achVendID
+    font_vendor_id = ttFont["OS/2"].achVendID.replace(" ","").replace("\x00","")
 
     if config_vendor_id != font_vendor_id:
         yield FAIL, Message(
