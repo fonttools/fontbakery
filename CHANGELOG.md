@@ -9,6 +9,7 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a2 (2024-Feb-21)
     - v0.12.0a3 (2024-Mar-13)
     - v0.12.0a4 (2024-Mar-15)
+  - Adjust Vendor ID check [com.thetypefounders/check/vendor_id] to handle short Vendor IDs
 
 
 ## 0.12.0a4 (2024-Mar-15)
