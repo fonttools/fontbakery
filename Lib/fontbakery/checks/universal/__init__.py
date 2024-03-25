@@ -957,11 +957,8 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
     ARABIC_LETTER_HAMZA = 0x0621
     ARABIC_LETTER_HIGH_HAMZA = 0x0675
 
-    glyph_set = ttFont.getGlyphSet()
-    if (
-        ARABIC_LETTER_HAMZA not in glyph_set
-        or ARABIC_LETTER_HIGH_HAMZA not in glyph_set
-    ):
+    cmap = ttFont.getBestCmap()
+    if ARABIC_LETTER_HAMZA not in cmap or ARABIC_LETTER_HIGH_HAMZA not in cmap:
         yield SKIP, Message(
             "glyphs-missing",
             "This check will only run on fonts that have both glyphs U+0621 and U+0675",
@@ -986,13 +983,14 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
     # Also validate the bounding box of the glyph and compare
     # it to U+0621 expecting them to have roughly the same size
     # (within a certain tolerance margin)
+    glyph_set = ttFont.getGlyphSet()
     area_pen = AreaPen(glyph_set)
 
-    glyph_set[ARABIC_LETTER_HAMZA].draw(area_pen)
+    glyph_set[get_glyph_name(ttFont, ARABIC_LETTER_HAMZA)].draw(area_pen)
     hamza_area = area_pen.value
 
     area_pen.value = 0
-    glyph_set[ARABIC_LETTER_HIGH_HAMZA].draw(area_pen)
+    glyph_set[get_glyph_name(ttFont, ARABIC_LETTER_HIGH_HAMZA)].draw(area_pen)
     high_hamza_area = area_pen.value
 
     if abs((high_hamza_area - hamza_area) / hamza_area) > 0.1:
