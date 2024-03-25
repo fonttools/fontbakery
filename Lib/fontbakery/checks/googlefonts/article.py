@@ -10,9 +10,12 @@ from fontbakery.prelude import check, Message, PASS, FAIL, WARN
         The purpose of this check is to ensure images (either raster or vector files)
         are placed on the correct directory (an `images` subdirectory inside `article`) and
         they they are not excessively large in filesize and resolution.
+
+        These constraints are loosely based on infrastructure limitations under
+        default configurations.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4594",
-    experimental="Since 2024/Mar/19",
+    experimental="Since 2024/Mar/25",
 )
 def com_google_fonts_check_metadata_parses(config, family_directory):
     """Validate location, size and resolution of article images."""
@@ -25,7 +28,7 @@ def com_google_fonts_check_metadata_parses(config, family_directory):
     MAXSIZE_RASTER = 800 * 1024  # 800kb
 
     def is_raster(filename):
-        for ext in ["png", "jpg", "gif"]:
+        for ext in ["png", "jpg", "jpeg", "jxl", "gif"]:
             if filename.lower().endswith(f".{ext}"):
                 return True
         return False
@@ -60,11 +63,11 @@ def com_google_fonts_check_metadata_parses(config, family_directory):
             ]
         if misplaced_files:
             passed = False
-            yield FAIL, Message(
+            yield WARN, Message(
                 "misplaced-image-files",
-                f"There are {len(misplaced_files)} image files in the `article` directory"
-                f" and they should be moved to an `article/images` subdirectory.\n\n"
-                f" Misplaced files:\n\n"
+                f"There are {len(misplaced_files)} image files in the `article`"
+                f" directory and they should be moved to an `article/images`"
+                f" subdirectory:\n\n"
                 f"{bullet_list(config, misplaced_files)}\n",
             )
 
