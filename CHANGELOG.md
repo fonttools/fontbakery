@@ -17,7 +17,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 #### On the Universal profile
-  - **[com.google.fonts/check/arabic_high_hamza]:** Fixed a code-typo. Also check for high hamza glyph. (issue #4539)
+  - **[com.google.fonts/check/arabic_high_hamza]:** Fixed detection of glyphs by codepoint. And fixed a code-typo, to also check for high hamza glyph. (issue #4539)
 
 
 ## 0.12.0a4 (2024-Mar-15)
