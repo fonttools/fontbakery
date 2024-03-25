@@ -958,7 +958,10 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
     ARABIC_LETTER_HIGH_HAMZA = 0x0675
 
     glyph_set = ttFont.getGlyphSet()
-    if ARABIC_LETTER_HAMZA not in glyph_set or ARABIC_LETTER_HAMZA not in glyph_set:
+    if (
+        ARABIC_LETTER_HAMZA not in glyph_set
+        or ARABIC_LETTER_HIGH_HAMZA not in glyph_set
+    ):
         yield SKIP, Message(
             "glyphs-missing",
             "This check will only run on fonts that have both glyphs U+0621 and U+0675",

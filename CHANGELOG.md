@@ -15,6 +15,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Google Fonts profile
   - **EXPERIMENTAL - [com.google.fonts/check/article/images]:** Validate maximum filesize and resolution of images in the article/images directory. (issue #4594)
 
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.google.fonts/check/arabic_high_hamza]:** Fixed a code-typo. Also check for high hamza glyph. (issue #4539)
+
 
 ## 0.12.0a4 (2024-Mar-15)
   - Fixed markdown/html reporters (issue #4595)
