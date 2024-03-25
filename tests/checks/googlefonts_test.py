@@ -5000,7 +5000,7 @@ def test_check_article_images():
 
     assert_results_contain(
         check(MockFont(family_directory=family_dir)),
-        FAIL,
+        WARN,
         "misplaced-image-files",
         "The files are not in the correct directory...",
     )
