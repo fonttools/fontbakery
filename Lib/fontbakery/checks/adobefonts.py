@@ -28,8 +28,6 @@ def com_adobe_fonts_check_family_consistent_upm(ttFonts):
             "inconsistent-upem",
             f"Fonts have different units per em: {sorted(upm_set)}.",
         )
-    else:
-        yield PASS, "Fonts have consistent units per em."
 
 
 def _quick_and_dirty_glyph_is_empty(font, glyph_name):
@@ -238,8 +236,6 @@ def com_adobe_fonts_check_unsupported_tables(ttFont):
             "unsupported-tables",
             f"The following unsupported font tables were found:\n\n{unsupported_list}",
         )
-    else:
-        yield PASS, "No unsupported tables were found."
 
 
 @check(
@@ -255,7 +251,6 @@ def com_adobe_fonts_check_unsupported_tables(ttFont):
 )
 def com_adobe_fonts_check_STAT_strings(ttFont):
     """Check correctness of STAT table strings"""
-    passed = True
     stat_table = ttFont["STAT"].table
     ital_slnt_axis_indices = []
     for index, axis in enumerate(stat_table.DesignAxisRecord.Axis):
@@ -277,7 +272,6 @@ def com_adobe_fonts_check_STAT_strings(ttFont):
     bad_values = set()
     for name in ttFont["name"].names:
         if name.nameID in nameIDs and "italic" in name.toUnicode().lower():
-            passed = False
             bad_values.add(f"nameID {name.nameID}: {name.toUnicode()}")
 
     if bad_values:
@@ -287,6 +281,3 @@ def com_adobe_fonts_check_STAT_strings(ttFont):
             f' should not contain "Italic":\n'
             f" {sorted(bad_values)}",
         )
-
-    if passed:
-        yield PASS, "Looks good!"
