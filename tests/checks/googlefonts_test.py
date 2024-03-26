@@ -4744,15 +4744,24 @@ def test_check_empty_glyph_on_gid1_for_colrv0():
     )
 
 
-def test_check_noto_has_article():
-    """Noto fonts must have an ARTICLE.en_us.html file"""
-    check = CheckTester("com.google.fonts/check/description/noto_has_article")
+def test_check_has_article():
+    """Noto fonts must have an ARTICLE.en_us.html file, others with an
+    article should have an empty DESCRIPTION"""
+    check = CheckTester("com.google.fonts/check/description/has_article")
 
     font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
     assert_PASS(check(font), "with a good font")
 
     font = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
     assert_results_contain(check(font), FAIL, "missing-article", "with a bad font")
+
+    font = TEST_FILE("tirodevanagarihindi/TiroDevanagariHindi-Regular.ttf")
+    assert_results_contain(
+        check(font),
+        FAIL,
+        "description-and-article",
+        "with a font with description and article",
+    )
 
 
 def test_check_description_has_unsupported_elements():
