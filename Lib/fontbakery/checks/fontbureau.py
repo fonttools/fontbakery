@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, FAIL, PASS, Message
+from fontbakery.prelude import check, FAIL, Message
 
 
 @check(
@@ -11,14 +11,12 @@ from fontbakery.prelude import check, FAIL, PASS, Message
 )
 def io_github_abysstypeco_check_ytlc_sanity(ttFont):
     """Check if ytlc values are sane in vf"""
-    passed = True
 
     for axis in ttFont["fvar"].axes:
         if not axis.axisTag == "ytlc":
             continue
 
         if axis.minValue < 0 or axis.maxValue > 1000:
-            passed = False
             yield FAIL, Message(
                 "invalid-range",
                 f"The range of ytlc values"
@@ -26,5 +24,3 @@ def io_github_abysstypeco_check_ytlc_sanity(ttFont):
                 f" to the expected range of ytlc which"
                 f" should be min value 0 to max value 1000",
             )
-    if passed:
-        yield PASS, "ytlc is sane"
