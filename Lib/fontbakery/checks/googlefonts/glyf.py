@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, disable, PASS, FAIL, Message
+from fontbakery.prelude import check, disable, FAIL, Message
 
 
 # Disabling this check since the previous implementation was
@@ -32,22 +32,18 @@ from fontbakery.prelude import check, disable, PASS, FAIL, Message
 )
 def com_google_fonts_check_negative_advance_width(ttFont):
     """Check that advance widths cannot be inferred as negative."""
-    passed = True
     for glyphName in ttFont["glyf"].glyphs:
         coords = ttFont["glyf"][glyphName].coordinates
         rightX = coords[-3][0]
         leftX = coords[-4][0]
         advwidth = rightX - leftX
         if advwidth < 0:
-            passed = False
             yield FAIL, Message(
                 "bad-coordinates",
                 f'Glyph "{glyphName}" has bad coordinates on the glyf'
                 f" table, which may lead to the advance width to be"
                 f" interpreted as a negative value ({advwidth}).",
             )
-    if passed:
-        yield PASS, "The x-coordinates of all glyphs look good."
 
 
 @check(
@@ -84,5 +80,3 @@ def com_google_fonts_check_glyf_nested_components(ttFont, config):
             f" themselves are component glyphs:\n"
             f"{formatted_list}",
         )
-    else:
-        yield PASS, ("Glyphs do not contain nested components.")
