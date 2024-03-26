@@ -60,25 +60,62 @@ def github_gfonts_description(font: Font, network):
 
 
 @check(
-    id="com.google.fonts/check/description/noto_has_article",
-    conditions=["is_noto"],
+    id="com.google.fonts/check/description/has_article",
     rationale="""
-        Noto fonts are displayed in a different way on the fonts.google.com
-         web site, and so must also contain an article about them.
+        Fonts may have a longer article about them, or a description, but
+        not both - except for Noto fonts which should have both!
     """,
-    proposal="https://github.com/fonttools/fontbakery/issues/3841",
+    proposal=[
+        "https://github.com/fonttools/fontbakery/issues/3841",
+        "https://github.com/fonttools/fontbakery/issues/4318",
+    ],
 )
-def com_google_fonts_check_description_noto_has_article(font):
-    """Noto fonts must have an ARTICLE.en_us.html file"""
+def com_google_fonts_check_description_has_article(font):
+    """Check for presence of an ARTICLE.en_us.html file"""
     directory = os.path.dirname(font.file)
-    descfilepath = os.path.join(directory, "article", "ARTICLE.en_us.html")
-    if os.path.exists(descfilepath):
-        yield PASS, "ARTICLE.en_us.html exists"
-    else:
-        yield FAIL, Message(
-            "missing-article",
-            "This is a Noto font but it lacks an ARTICLE.en_us.html file",
-        )
+    article_path = os.path.join(directory, "article", "ARTICLE.en_us.html")
+    has_article = os.path.exists(article_path)
+    article_is_empty = has_article and os.path.getsize(article_path) == 0
+
+    description_is_empty = not font.description
+    ok = True
+
+    if not font.is_noto and has_article:
+        if not description_is_empty:
+            ok = False
+            yield FAIL, Message(
+                "description-and-article",
+                "This font has both a DESCRIPTION.en_us.html file"
+                " and an ARTICLE.en_us.html file. In this case the"
+                " description must be empty.",
+            )
+        if article_is_empty:
+            ok = False
+            yield FAIL, Message(
+                "empty-article",
+                "The ARTICLE.en_us.html file is empty.",
+            )
+    elif font.is_noto:
+        if not has_article:
+            ok = False
+            yield FAIL, Message(
+                "missing-article",
+                "This is a Noto font but it lacks an ARTICLE.en_us.html file",
+            )
+        if has_article and article_is_empty:
+            ok = False
+            yield FAIL, Message(
+                "empty-article",
+                "The ARTICLE.en_us.html file is empty.",
+            )
+        if not font.description or description_is_empty:
+            ok = False
+            yield FAIL, Message(
+                "empty-description",
+                "This is a Noto font but it lacks a DESCRIPTION.en_us.html file",
+            )
+    if ok:
+        yield PASS, "Looks good!"
 
 
 @check(
