@@ -2,7 +2,7 @@
 Checks for Fontwerk <https://fontwerk.com/>
 """
 
-from fontbakery.prelude import check, PASS, FAIL, INFO, Message
+from fontbakery.prelude import check, FAIL, INFO, Message
 from fontbakery.constants import FsSelection, MacStyle
 
 
@@ -23,14 +23,9 @@ from fontbakery.constants import FsSelection, MacStyle
 def com_fontwerk_check_name_no_mac_entries(ttFont):
     """Check if font has Mac name table entries (platform=1)"""
 
-    passed = True
     for rec in ttFont["name"].names:
         if rec.platformID == 1:
             yield FAIL, Message("mac-names", f"Please remove name ID {rec.nameID}")
-            passed = False
-
-    if passed:
-        yield PASS, "No Mac name table entries."
 
 
 @check(
@@ -48,8 +43,6 @@ def com_fontwerk_check_vendor_id(ttFont):
         yield FAIL, Message(
             "bad-vendor-id", f"OS/2 VendorID is '{vendor_id}', but should be 'WERK'."
         )
-    else:
-        yield PASS, f"OS/2 VendorID '{vendor_id}' is correct."
 
 
 @check(
@@ -65,7 +58,6 @@ def com_fontwerk_check_names_match_default_fvar(ttFont):
     """Checking if names match default fvar instance name."""
     from fontbakery.constants import NameID
 
-    passed = True
     default_axis_values = {
         axis.axisTag: axis.defaultValue for axis in ttFont["fvar"].axes
     }
@@ -76,7 +68,6 @@ def com_fontwerk_check_names_match_default_fvar(ttFont):
             break
 
     if default_name_id is None:
-        passed = False
         yield FAIL, Message(
             "missing-default-name-id", "fvar is missing a default instance name ID."
         )
@@ -86,7 +77,6 @@ def com_fontwerk_check_names_match_default_fvar(ttFont):
     subfam_name = ttFont["name"].getDebugName(default_name_id)
 
     if subfam_name is None:
-        passed = False
         yield FAIL, Message(
             "missing-name-id",
             f"Name ID {default_name_id} stored in"
@@ -118,10 +108,8 @@ def com_fontwerk_check_names_match_default_fvar(ttFont):
                 continue
 
         if name_fam is None:
-            passed = False
             yield FAIL, Message("missing-name-id", "Missing name ID {fam_id}.")
         elif name_subfam is None:
-            passed = False
             yield FAIL, Message("missing-name-id", "Missing name ID {subfam_id}.")
         else:
             possible_names = [f"{name_fam} {name_subfam}"]
@@ -129,15 +117,11 @@ def com_fontwerk_check_names_match_default_fvar(ttFont):
                 possible_names.append(name_fam)
 
             if default_name not in possible_names:
-                passed = False
                 yield FAIL, Message(
                     "bad-name",
                     f"Name {possible_names} does not match fvar"
                     f" default name '{default_name}'",
                 )
-
-    if passed:
-        yield PASS, f"Name matches fvar default name '{default_name}'."
 
 
 @check(
@@ -164,9 +148,6 @@ def com_fontwerk_check_weight_class_fvar(ttFont):
             f"OS/2 usWeightClass is '{os2_value}', "
             f"but should match fvar default value '{fvar_value}'.",
         )
-
-    else:
-        yield PASS, f"OS/2 usWeightClass '{os2_value}' matches fvar default value."
 
 
 def is_covered_in_stat(ttFont, axis_tag, value):
@@ -219,7 +200,6 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
         return FAIL, Message(
             "missing-stat-table", "Missing STAT table in variable font."
         )
-    passed = True
     fvar = ttFont["fvar"]
     name = ttFont["name"]
 
@@ -231,7 +211,6 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
                 f"The name ID {ins.subfamilyNameID} used in an"
                 f" fvar instance is missing in the name table.",
             )
-            passed = False
             continue
 
         for axis_tag, value in ins.coordinates.items():
@@ -241,12 +220,8 @@ def com_fontwerk_check_inconsistencies_between_fvar_stat(ttFont):
                     f"{instance_name}: '{axis_tag}' axis value '{value}'"
                     f" missing in STAT table.",
                 )
-                passed = False
 
         # TODO: Compare fvar instance name with constructed STAT table name.
-
-    if passed:
-        yield PASS, "STAT and fvar axis records are consistent."
 
 
 @check(
@@ -285,9 +260,6 @@ def com_fontwerk_check_style_linking(ttFont, font):
             if font.is_bold:
                 name_id_2_should_be = "Bold Italic"
             errs.append(f"name ID should be (most likely) '{name_id_2_should_be}'.")
-
-    if not errs:
-        yield PASS, "Style linking looks good."
 
     for err in errs:
         yield FAIL, Message("style-linking-issue", err)
