@@ -1,5 +1,5 @@
 import os
-from fontbakery.prelude import check, Message, WARN, PASS, FAIL
+from fontbakery.prelude import check, Message, WARN, FAIL
 from fontbakery.utils import bullet_list
 
 
@@ -36,10 +36,6 @@ def com_google_fonts_check_family_equal_codepoint_coverage(fonts, config):
 
     if problems:
         yield FAIL, Message("glyphset-diverges", "\n".join(problems))
-    else:
-        yield PASS, (
-            "All font files in this family have an equivalent encoded glyphset."
-        )
 
 
 @check(
@@ -98,8 +94,6 @@ def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config)
         yield FAIL, Message(
             "missing-roman", f"Italics missing a Roman counterpart: {missing_roman}"
         )
-    else:
-        yield PASS, "OK"
 
 
 @check(
@@ -147,5 +141,3 @@ def com_google_fonts_check_family_tnum_horizontal_metrics(RIBBI_ttFonts):
             f" tabular glyphs with different widths"
             f" such as the following ones:\n\t{tnum_widths}.",
         )
-    else:
-        yield PASS, "OK"
