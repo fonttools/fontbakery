@@ -25,7 +25,7 @@ from fontbakery.fonts_profile import (
     setup_context,
     checks_by_id,
 )
-from fontbakery.status import PASS, DEBUG, ERROR, SKIP
+from fontbakery.status import PASS, DEBUG, INFO, ERROR, SKIP
 from fontbakery.configuration import Configuration
 from fontbakery.message import Message
 from fontbakery.profile import Profile
@@ -177,7 +177,15 @@ def GLYPHSAPP_TEST_FILE(f):
 
 def assert_PASS(check_results, reason="with a good font...", ignore_error=None):
     print(f"Test PASS {reason}")
-    subresult = check_results[-1]
+
+    # We'll ignore INFO and DEBUG messages:
+    check_results = [r for r in check_results if r.status not in [INFO, DEBUG]]
+
+    if not check_results:
+        subresult = Subresult(PASS, Message("ok", "All looks good!"))
+    else:
+        subresult = check_results[-1]
+
     if ignore_error and subresult.status == ERROR:
         print(ignore_error)
         return None

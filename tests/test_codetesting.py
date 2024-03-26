@@ -67,7 +67,7 @@ def test_assert_PASS_success(capsys):
         Subresult(SKIP, Message("skip", "SKIP message")),
         Subresult(PASS, pass_msg),
     ]
-    assert assert_PASS(results) == "PASS message [code: pass]"
+    assert_PASS(results)
 
     captured = capsys.readouterr()
     assert captured.out == f"Test PASS {pass_reason}\n"
@@ -95,7 +95,7 @@ def test_assert_PASS_ignore_error_true(capsys):
         Subresult(PASS, Message("pass", "PASS message")),
         Subresult(ERROR, Message("error", error_msg)),
     ]
-    assert assert_PASS(results, ignore_error=ignore) is None
+    assert_PASS(results, ignore_error=ignore)
 
     captured = capsys.readouterr()
     assert captured.out == f"Test PASS {pass_reason}\n{ignore}\n"

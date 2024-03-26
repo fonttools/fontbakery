@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from fontbakery.profile import Section
-from fontbakery.status import Status, ERROR
+from fontbakery.status import Status, PASS
 from fontbakery.callable import FontBakeryCheck
 from fontbakery.message import Message
 
@@ -55,20 +55,11 @@ class CheckResult:
 
     @property
     def summary_status(self):
-        """The highest status in the list of subresults. If there are no
-        subresults, we return ERROR, since the check was misbehaving."""
+        """The highest status in the list of subresults."""
+        if not self.results:
+            # assume that if no result was yielded, then everything is fine:
+            self.results = [Subresult(PASS, Message("ok", "All looks good!"))]
         _summary_status = max(result.status for result in self.results)
-        if _summary_status is None:
-            _summary_status = ERROR
-            self.append(
-                Subresult(
-                    ERROR,
-                    Message(
-                        "no-status-received",
-                        f"The check {self.identity.check} did not yield any status",
-                    ),
-                )
-            )
         return _summary_status
 
     def getData(self, runner):
