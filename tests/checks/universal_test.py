@@ -1277,7 +1277,9 @@ def test_check_interpolation_issues():
     assert_PASS(check(ttFont))
 
     ttFont = TTFont(TEST_FILE("notosansbamum/NotoSansBamum[wght].ttf"))
-    assert_results_contain(check(ttFont), WARN, "interpolation-issues")
+    msg = assert_results_contain(check(ttFont), WARN, "interpolation-issues")
+    assert "becomes underweight" in msg
+    assert "has a kink" in msg
 
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
