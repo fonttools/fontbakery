@@ -156,6 +156,7 @@ PROFILE = {
             "com.google.fonts/check/varfont/duplexed_axis_reflow",
             "com.google.fonts/check/varfont_duplicate_instance_names",
             "com.google.fonts/check/varfont/generate_static",
+            "com.google.fonts/check/varfont/instances_in_order",
             "com.google.fonts/check/varfont/has_HVAR",
             "com.google.fonts/check/varfont/unsupported_axes",
             "com.google.fonts/check/vendor_id",
