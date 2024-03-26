@@ -1,6 +1,6 @@
 import os
 
-from fontbakery.prelude import check, condition, Message, INFO, PASS, FAIL, WARN, FATAL
+from fontbakery.prelude import check, condition, Message, INFO, FAIL, WARN, FATAL
 from fontbakery.utils import exit_with_install_instructions
 from fontbakery.testable import Font
 
@@ -76,13 +76,10 @@ def com_google_fonts_check_description_has_article(font):
     article_path = os.path.join(directory, "article", "ARTICLE.en_us.html")
     has_article = os.path.exists(article_path)
     article_is_empty = has_article and os.path.getsize(article_path) == 0
-
     description_is_empty = not font.description
-    ok = True
 
     if not font.is_noto and has_article:
         if not description_is_empty:
-            ok = False
             yield FAIL, Message(
                 "description-and-article",
                 "This font has both a DESCRIPTION.en_us.html file"
@@ -90,32 +87,26 @@ def com_google_fonts_check_description_has_article(font):
                 " description must be empty.",
             )
         if article_is_empty:
-            ok = False
             yield FAIL, Message(
                 "empty-article",
                 "The ARTICLE.en_us.html file is empty.",
             )
     elif font.is_noto:
         if not has_article:
-            ok = False
             yield FAIL, Message(
                 "missing-article",
                 "This is a Noto font but it lacks an ARTICLE.en_us.html file",
             )
         if has_article and article_is_empty:
-            ok = False
             yield FAIL, Message(
                 "empty-article",
                 "The ARTICLE.en_us.html file is empty.",
             )
         if not font.description or description_is_empty:
-            ok = False
             yield FAIL, Message(
                 "empty-description",
                 "This is a Noto font but it lacks a DESCRIPTION.en_us.html file",
             )
-    if ok:
-        yield PASS, "Looks good!"
 
 
 @check(
@@ -165,8 +156,6 @@ def com_google_fonts_check_description_has_unsupported_elements(description):
             f"Description.en_us.html contains unsupported"
             f" html element(s). Please remove: {found}",
         )
-    else:
-        yield PASS, "DESCRIPTION.en_us.html contains correct elements"
 
 
 @check(
@@ -218,7 +207,7 @@ def com_google_fonts_check_description_broken_links(description_html):
         except requests.exceptions.RequestException:
             broken_links.append(link)
 
-    if len(broken_links) > 0:
+    if broken_links:
         broken_links_list = "\n\t".join(broken_links)
         yield FAIL, Message(
             "broken-links",
@@ -226,8 +215,6 @@ def com_google_fonts_check_description_broken_links(description_html):
             f" in the DESCRIPTION file:\n\t"
             f"{broken_links_list}",
         )
-    else:
-        yield PASS, "All links in the DESCRIPTION file look good!"
 
 
 @check(
@@ -247,7 +234,6 @@ def com_google_fonts_check_description_broken_links(description_html):
 )
 def com_google_fonts_check_description_urls(description_html):
     """URLs on DESCRIPTION file must not display http(s) prefix."""
-    passed = True
     for a_href in description_html.iterfind(".//a[@href]"):
         link_text = a_href.text
         if not link_text:
@@ -260,16 +246,12 @@ def com_google_fonts_check_description_urls(description_html):
             continue
 
         if link_text.startswith("http://") or link_text.startswith("https://"):
-            passed = False
             yield FAIL, Message(
                 "prefix-found",
                 'Please remove the "http(s)://" prefix from the text content'
                 f" of the following anchor:\n\n{link_text}",
             )
             continue
-
-    if passed:
-        yield PASS, "All good!"
 
 
 @check(
@@ -298,9 +280,7 @@ def com_google_fonts_check_description_git_url(description_html):
             git_urls.append(link)
             yield INFO, Message("url-found", f"Found a git repo URL: {link}")
 
-    if len(git_urls) > 0:
-        yield PASS, "Looks great!"
-    else:
+    if not git_urls:
         yield FAIL, Message(
             "lacks-git-url",
             "Please host your font project on a public Git repo"
@@ -334,7 +314,6 @@ def com_google_fonts_check_description_valid_html(descfile, description):
     except ImportError:
         exit_with_install_instructions("googlefonts")
 
-    passed = True
     if "<html>" in description or "</html>" in description:
         yield FAIL, Message(
             "html-tag",
@@ -347,7 +326,6 @@ def com_google_fonts_check_description_valid_html(descfile, description):
     try:
         html.fromstring("<html>" + description + "</html>")
     except Exception as e:
-        passed = False
         yield FAIL, Message(
             "malformed-snippet",
             f"{descfile} does not look like a propper HTML snippet."
@@ -360,13 +338,9 @@ def com_google_fonts_check_description_valid_html(descfile, description):
         )
 
     if "<p>" not in description or "</p>" not in description:
-        passed = False
         yield FAIL, Message(
             "lacks-paragraph", f"{descfile} does not include an HTML <p> tag."
         )
-
-    if passed:
-        yield PASS, f"{descfile} is a propper HTML file."
 
 
 @check(
@@ -389,8 +363,6 @@ def com_google_fonts_check_description_min_length(description):
             "too-short",
             "DESCRIPTION.en_us.html must have size larger than 200 bytes.",
         )
-    else:
-        yield PASS, "DESCRIPTION.en_us.html is larger than 200 bytes."
 
 
 @check(
@@ -415,8 +387,6 @@ def com_google_fonts_check_description_eof_linebreak(description):
             "The last characther on DESCRIPTION.en_us.html"
             " is not a line-break. Please add it.",
         )
-    else:
-        yield PASS, ":-)"
 
 
 @check(
@@ -446,5 +416,3 @@ def com_google_fonts_check_description_family_update(font, network):
             "Please consider mentioning note-worthy improvements made"
             " to the family recently.",
         )
-    else:
-        yield PASS, "OK"
