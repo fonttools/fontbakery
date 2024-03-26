@@ -1,6 +1,6 @@
 import os
 
-from fontbakery.prelude import check, Message, PASS, FAIL, WARN
+from fontbakery.prelude import check, Message, FAIL, WARN
 
 
 @check(
@@ -39,11 +39,9 @@ def com_google_fonts_check_metadata_parses(config, family_directory):
                 return True
         return False
 
-    passed = True
     article_dir = os.path.join(family_directory, "article")
     images_dir = os.path.join(family_directory, "article", "images")
     if not os.path.isdir(article_dir):
-        passed = False
         yield WARN, Message(
             "lacks-article",
             f"Family metadata at {family_directory} does not have an article.\n",
@@ -62,7 +60,6 @@ def com_google_fonts_check_metadata_parses(config, family_directory):
                 if is_vector(filename) or is_raster(filename)
             ]
         if misplaced_files:
-            passed = False
             yield WARN, Message(
                 "misplaced-image-files",
                 f"There are {len(misplaced_files)} image files in the `article`"
@@ -84,7 +81,6 @@ def com_google_fonts_check_metadata_parses(config, family_directory):
 
             filesize = os.stat(filename).st_size
             if filesize > maxsize:
-                passed = False
                 yield FAIL, Message(
                     "filesize",
                     f"`{filename}` has `{filesize} bytes`, but the maximum filesize"
@@ -98,12 +94,8 @@ def com_google_fonts_check_metadata_parses(config, family_directory):
 
             w, h = dim
             if w > MAX_WIDTH or h > MAX_HEIGHT:
-                passed = False
                 yield FAIL, Message(
                     "image-too-large",
                     f"Image is too large: `{w} x {h} pixels`\n\n"
                     f"Max resulution allowed: `{MAX_WIDTH} x {MAX_HEIGHT} pixels`",
                 )
-
-    if passed:
-        yield PASS, "All looks good!"
