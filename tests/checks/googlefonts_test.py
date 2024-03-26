@@ -201,16 +201,13 @@ def test_check_description_broken_links():
         "with description file that has good links...",
     )
 
-    good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
+    bad_desc = (
+        good_desc + "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
+    )
     assert_results_contain(
-        check(MockFont(file=font, description=good_desc)),
+        check(MockFont(file=font, description=bad_desc)),
         FAIL,
         "email",
-        'with a description file containing "mailto" links...',
-    )
-
-    assert_PASS(
-        check(MockFont(file=font, description=good_desc)),
         'with a description file containing "mailto" links...',
     )
 
