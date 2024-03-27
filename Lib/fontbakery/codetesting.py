@@ -188,10 +188,8 @@ def assert_PASS(check_results, reason="with a good font...", ignore_error=None):
 
     if ignore_error and subresult.status == ERROR:
         print(ignore_error)
-        return None
     else:
         assert subresult.status == PASS
-        return str(subresult.message)
 
 
 def assert_SKIP(check_results, reason=""):
