@@ -91,7 +91,6 @@ def com_google_fonts_check_cmap_unexpected_subtables(font):
         yield FAIL, Message("font-lacks-OS/2-table", "Font lacks 'OS/2' table.")
         return
 
-    passed = True
     # Note:
     #   Format 0 = Byte encoding table
     #   Format 4 = Segment mapping to delta values
@@ -150,15 +149,12 @@ def com_google_fonts_check_cmap_unexpected_subtables(font):
             subtable.platformID,
             subtable.platEncID,
         ) not in EXPECTED_SUBTABLES:
-            passed = False
             yield WARN, Message(
                 "unexpected-subtable",
                 f"'cmap' has a subtable of"
                 f" (format={subtable.format}, platform={subtable.platformID},"
                 f" encoding={subtable.platEncID}), which it shouldn't have.",
             )
-    if passed:
-        yield PASS, "All cmap subtables look good!"
 
 
 def unicoderange(ttFont):
@@ -194,9 +190,7 @@ def com_google_fonts_check_unicode_range_bits(ttFont):
 
     expected_unicoderange = compute_unicoderange_bits(ttFont)
     difference = unicoderange(ttFont) ^ expected_unicoderange
-    if not difference:
-        yield PASS, "Looks good!"
-    else:
+    if difference:
         for bit in range(128):
             if difference & (1 << bit):
                 range_name = unicoderange_bit_name(bit)
@@ -228,11 +222,9 @@ def com_google_fonts_check_noto_manufacturer(ttFont):
     """Ensure the manufacturer is a known Noto manufacturer and the URL is correct."""
     from fontbakery.utils import get_name_entry_strings
 
-    bad = False
     manufacturers = get_name_entry_strings(ttFont, NameID.MANUFACTURER_NAME)
     good_manufacturer = None
     if not manufacturers:
-        bad = True
         yield FAIL, Message(
             "no-manufacturer", "The font contained no manufacturer name"
         )
@@ -243,7 +235,6 @@ def com_google_fonts_check_noto_manufacturer(ttFont):
         if m:
             good_manufacturer = m[0]
         else:
-            bad = True
             yield WARN, Message(
                 "unknown-manufacturer",
                 f"The font's manufacturer name '{manufacturer}' was"
@@ -252,8 +243,8 @@ def com_google_fonts_check_noto_manufacturer(ttFont):
 
     designer_urls = get_name_entry_strings(ttFont, NameID.DESIGNER_URL)
     if not designer_urls:
-        bad = True
         yield WARN, Message("no-designer-urls", "The font contained no designer URL")
+
     if good_manufacturer:
         expected_url = MANUFACTURERS_URLS[good_manufacturer]
         for designer_url in designer_urls:
@@ -263,8 +254,6 @@ def com_google_fonts_check_noto_manufacturer(ttFont):
                     f"The font's designer URL was '{designer_url}'"
                     f" but should have been '{expected_url}'",
                 )
-    if not bad:
-        yield PASS, "The manufacturer name and designer URL entries were valid"
 
 
 @check(
@@ -278,22 +267,17 @@ def com_google_fonts_check_noto_designer(ttFont):
     """Ensure the designer is a known Noto designer."""
     from fontbakery.utils import get_name_entry_strings
 
-    bad = False
     designers = get_name_entry_strings(ttFont, NameID.DESIGNER)
     if not designers:
-        bad = True
         yield FAIL, Message("no-designer", "The font contained no designer name")
 
     for designer in designers:
         if designer not in NOTO_DESIGNERS:
-            bad = True
             yield WARN, Message(
                 "unknown-designer",
                 f"The font's designer name '{designer}' was "
                 "not a known Noto font designer",
             )
-    if not bad:
-        yield PASS, "The designer name entry was valid"
 
 
 @check(
@@ -307,22 +291,16 @@ def com_google_fonts_check_noto_trademark(ttFont):
     """Ensure the trademark matches the expected string."""
     from fontbakery.utils import get_name_entry_strings
 
-    bad = False
     trademarks = get_name_entry_strings(ttFont, NameID.TRADEMARK)
     if not trademarks:
-        bad = True
         yield FAIL, Message("no-trademark", "The font contained no trademark entry")
     for trademark in trademarks:
         if not re.match(TRADEMARK, trademark):
-            bad = True
             yield FAIL, Message(
                 "bad-trademark",
                 f"The trademark entry should be '{TRADEMARK}' "
                 f"but was actually '{trademark}'",
             )
-
-    if not bad:
-        yield PASS, "The trademark name entry was valid"
 
 
 @check(
@@ -336,7 +314,6 @@ def com_google_fonts_check_noto_trademark(ttFont):
 )
 def com_google_fonts_check_cmap_format_12(ttFont, config):
     """Check that format 12 cmap subtables are correctly constituted."""
-    bad = False
     skipped = True
     # Find the format 4
     cmap4 = None
@@ -357,12 +334,12 @@ def com_google_fonts_check_cmap_format_12(ttFont, config):
         skipped = False
         codepoints = subtable.cmap.keys()
         if not any(cp > 0x0FFF for cp in codepoints):
-            bad = True
             yield FAIL, Message(
                 "pointless-format-12",
                 "A format 12 subtable did not contain"
                 " any codepoints beyond the Basic Multilingual Plane (BMP)",
             )
+
         unmapped_from_4 = set(cmap4.cmap.keys()) - set(codepoints)
         if unmapped_from_4:
             from fontbakery.utils import pretty_print_list
@@ -376,8 +353,6 @@ def com_google_fonts_check_cmap_format_12(ttFont, config):
 
     if skipped:
         yield SKIP, "No format 12 subtables found"
-    elif not bad:
-        yield PASS, "All format 12 subtables were correctly formed"
 
 
 @check(
@@ -395,8 +370,6 @@ def com_google_fonts_check_os2_noto_vendor(ttFont):
         yield FAIL, Message(
             "bad-vendor-id", f"OS/2 VendorID is '{vendor_id}', but should be 'GOOG'."
         )
-    else:
-        yield PASS, f"OS/2 VendorID '{vendor_id}' is correct."
 
 
 @check(
@@ -408,26 +381,22 @@ def com_google_fonts_check_os2_noto_vendor(ttFont):
 )
 def com_google_fonts_check_htmx_encoded_latin_digits(ttFont):
     """Check all encoded Latin digits have the same advance width"""
-    bad = False
     digits = "0123456789"
     zero_width = _get_advance_width_for_char(ttFont, "0")
     if zero_width is None:
         yield SKIP, "No encoded Latin digits"
         return
+
     for d in digits:
         actual_width = _get_advance_width_for_char(ttFont, d)
         if actual_width is None:
-            bad = True
             yield FAIL, Message("missing-digit", f"Missing Latin digit {d}")
         elif actual_width != zero_width:
-            bad = True
             yield FAIL, Message(
                 "bad-digit-width",
                 f"Width of {d} was expected to be "
                 f"{zero_width} but was {actual_width}",
             )
-    if not bad:
-        yield PASS, "All Latin digits had same advance width"
 
 
 @check(
@@ -448,8 +417,6 @@ def com_google_fonts_check_htmx_comma_period(ttFont):
             "comma-period",
             f"Advance width of comma ({comma}) != advance width" f" of period {period}",
         )
-    else:
-        yield PASS, "Comma and period had the same advance width"
 
 
 @check(
@@ -516,8 +483,6 @@ def com_google_fonts_check_htmx_whitespace_advances(
             "bad-whitespace-advances",
             f"The following glyphs had wrong advance widths:\n" f"{formatted_list}",
         )
-    else:
-        yield PASS, "Whitespace glyphs had correct advance widths"
 
 
 @check(
