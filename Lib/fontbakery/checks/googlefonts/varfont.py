@@ -105,21 +105,16 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
     table.sort(key=lambda k: (k["Axis"], str(k["Expected Value"])))
     md_table = markdown_table(table)
 
-    passed = True
     is_italic = any(a.axisTag in ["ital", "slnt"] for a in ttFont["fvar"].axes)
     missing_ital_av = any("Italic" in r["Name"] for r in table)
     if is_italic and missing_ital_av:
-        passed = False
         yield FAIL, Message("missing-ital-axis-values", "Italic Axis Value missing.")
 
     if font_axis_values != expected_axis_values:
-        passed = False
         yield FAIL, Message(
             "bad-axis-values",
             f"Compulsory STAT Axis Values are incorrect:\n\n {md_table}\n",
         )
-    if passed:
-        yield PASS, "Compulsory STAT Axis Values are correct."
 
 
 @check(
@@ -196,8 +191,6 @@ def com_google_fonts_check_fvar_instances(ttFont, ttFonts):
             " defaults. This may be intentional so please check with the font author:"
             f"\n\n{md_table}",
         )
-    else:
-        yield PASS, f"fvar instances are good:\n\n{md_table}"
 
 
 @check(
@@ -212,7 +205,6 @@ def com_google_fonts_check_fvar_instances(ttFont, ttFonts):
 def com_google_fonts_check_fvar_name_entries(ttFont):
     """All name entries referenced by fvar instances exist on the name table?"""
 
-    passed = True
     for instance in ttFont["fvar"].instances:
         entries = [
             entry
@@ -220,16 +212,12 @@ def com_google_fonts_check_fvar_name_entries(ttFont):
             if entry.nameID == instance.subfamilyNameID
         ]
         if len(entries) == 0:
-            passed = False
             yield FAIL, Message(
                 "missing-name",
                 f"Named instance with coordinates {instance.coordinates}"
                 f" lacks an entry on the name table"
                 f" (nameID={instance.subfamilyNameID}).",
             )
-
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -251,11 +239,9 @@ def com_google_fonts_check_varfont_consistent_axes(VFs):
             {k.axisTag: (k.minValue, k.maxValue) for k in vf["fvar"].axes}
         )
 
-    passed = True
     for vf in VFs:
         for axis in ref_ranges:
             if axis not in map(lambda x: x.axisTag, vf["fvar"].axes):
-                passed = False
                 yield FAIL, Message(
                     "missing-axis",
                     f"{os.path.basename(vf.reader.file.name)}:"
@@ -276,14 +262,10 @@ def com_google_fonts_check_varfont_consistent_axes(VFs):
 
     for axis, ranges in expected_ranges:
         if len(ranges) > 1:
-            passed = False
             yield FAIL, Message(
                 "inconsistent-axis-range",
                 "Axis 'axis' has diverging ranges accross the family: {ranges}.",
             )
-
-    if passed:
-        yield PASS, "All looks good!"
 
 
 @check(
@@ -353,9 +335,7 @@ def com_google_fonts_check_varfont_generate_static(ttFont):
 )
 def com_google_fonts_check_varfont_has_HVAR(ttFont):
     """Check that variable fonts have an HVAR table."""
-    if "HVAR" in ttFont.keys():
-        yield PASS, ("This variable font contains an HVAR table.")
-    else:
+    if "HVAR" not in ttFont.keys():
         yield FAIL, Message(
             "lacks-HVAR",
             "All variable fonts on the Google Fonts collection"
@@ -446,7 +426,6 @@ def com_google_fonts_check_varfont_duplexed_axis_reflow(font, ttFont, config):
 
     # Determine if any kerning rules vary the horizontal advance.
     # This is going to get grubby.
-    bad_kerning = False
 
     if "GDEF" in ttFont and hasattr(ttFont["GDEF"].table, "VarStore"):
         effective_regions = set()
@@ -485,15 +464,7 @@ def com_google_fonts_check_varfont_duplexed_axis_reflow(font, ttFont, config):
                                 f" ({relevant_axes_display})"
                                 f" (e.g. {left}/{right})",
                             )
-                            bad_kerning = True
                             break
-
-    # Check kerning here
-    if not bad_glyphs_by_axis and not bad_kerning:
-        yield PASS, (
-            "No variations or kern rules vary horizontal advance along "
-            "any duplexed axes"
-        )
 
 
 @check(
@@ -515,7 +486,6 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
     """Check variable font instances don't have duplicate names"""
     seen = set()
     duplicate = set()
-    found_all_eng_name_recs = True
     PLAT_ID = PlatformID.WINDOWS
     ENC_ID = WindowsEncodingID.UNICODE_BMP
     LANG_ID = WindowsLanguageID.ENGLISH_USA
@@ -532,7 +502,6 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
             else:
                 seen.add(name)
         else:
-            found_all_eng_name_recs = False
             yield FAIL, Message(
                 "name-record-not-found",
                 f"A 'name' table record for platformID {PLAT_ID},"
@@ -546,9 +515,6 @@ def com_google_fonts_check_varfont_duplicate_instance_names(ttFont):
             "duplicate-instance-names",
             "Following instances names are duplicate:\n\n" f"{duplicate_instances}",
         )
-
-    elif found_all_eng_name_recs:
-        yield PASS, "Instance names are unique"
 
 
 @check(
@@ -572,8 +538,6 @@ def com_google_fonts_check_varfont_unsupported_axes(font):
             "unsupported-ital",
             'The "ital" axis is not yet well supported on Google Chrome.',
         )
-    else:
-        yield PASS, "Looks good!"
 
 
 @check(
@@ -601,8 +565,6 @@ def com_google_fonts_check_mandatory_avar_table(ttFont):
         yield WARN, Message(
             "missing-avar", "This variable font does not have an avar table."
         )
-    else:
-        yield PASS, "OK"
 
 
 @condition(Font)
@@ -668,8 +630,6 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
             " which is likely a mistake. It needs to be negative"
             " to lean rightwards.",
         )
-    else:
-        yield PASS, "Angle of 'slnt' axis looks good."
 
 
 @check(
@@ -690,7 +650,6 @@ def com_google_fonts_check_varfont_instances_in_order(ttFont, config):
     from fontbakery.utils import bullet_list
 
     coords = [i.coordinates for i in ttFont["fvar"].instances]
-    ok = True
     # Partition into sub-lists based on the other axes values.
     # e.g. "Thin Regular", "Bold Regular", "Thin Condensed", "Bold Condensed"
     # becomes [ ["Thin Regular", "Bold Regular"], ["Thin Condensed", "Bold Condensed"] ]
@@ -711,6 +670,3 @@ def com_google_fonts_check_varfont_instances_in_order(ttFont, config):
                 "The fvar table instances are not in ascending order of weight:\n"
                 + bullet_list(config, lst),
             )
-            ok = False
-    if ok:
-        yield PASS, "Instances are in order of weight."
