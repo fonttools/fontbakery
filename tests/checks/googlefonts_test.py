@@ -3281,8 +3281,7 @@ def test_check_repo_dirname_match_nameid_1(tmp_path):
 
     # PASS result
     fonts = [str(pth) for pth in tmp_gf_dir.glob("*.ttf")]
-    msg = assert_PASS(check(fonts))
-    assert msg == "OK"
+    assert_PASS(check(fonts))
 
     # Get the path of the Regular font; it will be used for deleting the file later.
     reg_font_path = next((pth for pth in fonts if "Regular" in pth), None)
