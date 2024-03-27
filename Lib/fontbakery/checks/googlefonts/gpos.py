@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN
+from fontbakery.prelude import check, condition, Message, FAIL, WARN
 from fontbakery.testable import Font
 from fontbakery.utils import bullet_list
 
@@ -89,8 +89,4 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, config, lig
                 f"GPOS table lacks kerning info for the following"
                 f" non-ligated sequences:\n\n"
                 f"{bullet_list(config, ligatures_sequences(ligature_pairs))}",
-            )
-        else:
-            yield PASS, (
-                "GPOS table provides kerning info for all non-ligated sequences."
             )
