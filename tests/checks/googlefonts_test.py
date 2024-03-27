@@ -5017,3 +5017,16 @@ def test_check_article_images():
     # TODO: test WARN "lacks-article"
     # TODO: test FAIL "image-too-large"
     # TODO: test PASS
+
+
+def test_varfont_instances_in_order():
+    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+    check = CheckTester("com.google.fonts/check/varfont/instances_in_order")
+    assert_PASS(check(ttFont))
+
+    # Move the second instance to the front
+    ttFont["fvar"].instances = [
+        ttFont["fvar"].instances[1],
+        ttFont["fvar"].instances[0],
+    ] + ttFont["fvar"].instances[1:]
+    assert_results_contain(check(ttFont), FAIL, "instances-not-in-order")
