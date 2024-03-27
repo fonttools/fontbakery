@@ -1,6 +1,6 @@
 from fontbakery.callable import check, condition
 from fontbakery.testable import Font
-from fontbakery.status import PASS, WARN
+from fontbakery.status import WARN
 from fontbakery.message import Message
 
 
@@ -41,5 +41,3 @@ def com_google_fonts_check_gpos_kerning_info(font):
     """
     if font.ttFont["post"].isFixedPitch == 0 and not font.has_kerning_info:
         yield WARN, Message("lacks-kern-info", "GPOS table lacks kerning information.")
-    else:
-        yield PASS, "GPOS table check for kerning information passed."
