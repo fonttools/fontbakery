@@ -72,7 +72,7 @@ PROFILE = {
             "com.google.fonts/check/description/git_url",
             "com.google.fonts/check/description/has_unsupported_elements",
             "com.google.fonts/check/description/min_length",
-            "com.google.fonts/check/description/noto_has_article",
+            "com.google.fonts/check/description/has_article",
             "com.google.fonts/check/description/urls",
             "com.google.fonts/check/description/valid_html",
         ],

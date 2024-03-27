@@ -16,6 +16,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **EXPERIMENTAL - [com.google.fonts/check/article/images]:** Validate maximum filesize and resolution of images in the article/images directory. (issue #4594)
 
 ### Changes to existing checks
+#### On the Google Fonts profile
+  - [com.google.fonts/check/description/noto_has_article]:** This check has been renamed to `description/has_article` and also checks that fonts with article files have an empty description. (issue #4318)
+
 #### On the Universal profile
   - **[com.google.fonts/check/arabic_high_hamza]:** Fixed detection of glyphs by codepoint. And fixed a code-typo, to also check for high hamza glyph. (issue #4539)
   - **[com.google.fonts/check/interpolation_issues]:** Also detect kinks and contours becoming overweight or underweight. (issue #4388)
