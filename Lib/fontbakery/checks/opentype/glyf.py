@@ -96,8 +96,6 @@ def com_google_fonts_check_points_out_of_bounds(ttFont, config):
             f" calligraphic-script, handwriting, rounded and"
             f" other fonts. So it is common to ignore this message.",
         )
-    else:
-        yield PASS, "All glyph paths have coordinates within bounds!"
 
 
 @check(
@@ -144,9 +142,4 @@ def com_google_fonts_check_glyf_non_transformed_duplicate_components(ttFont, con
             f"The following glyphs have duplicate components which"
             f" have the same x,y coordinates:\n"
             f"{formatted_list}",
-        )
-    else:
-        yield PASS, (
-            "Glyphs do not contain duplicate components which have"
-            " the same x,y coordinates."
         )
