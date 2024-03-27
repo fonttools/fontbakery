@@ -1,7 +1,7 @@
 import fractions
 
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS, WARN
+from fontbakery.status import FAIL, WARN
 from fontbakery.message import Message
 from fontbakery.constants import NameID
 
@@ -37,8 +37,6 @@ def com_google_fonts_check_family_equal_font_versions(ttFonts):
             f"These were the version values found:\n"
             f"{versions_list}",
         )
-    else:
-        yield PASS, "All font files have the same version."
 
 
 @check(
@@ -80,10 +78,6 @@ def com_google_fonts_check_unitsperem(ttFont):
             f" And values of 1000 and 2000 are also"
             f" common and may be just fine as well."
             f" But we got {upem} instead.",
-        )
-    else:
-        yield PASS, (
-            f"The unitsPerEm value ({upem}) on" f" the 'head' table is reasonable."
         )
 
 
@@ -146,13 +140,11 @@ def com_google_fonts_check_font_version(ttFont):
         if record.nameID == NameID.VERSION_STRING
     ]
 
-    failed = False
     if name_id_5_records:
         for record in name_id_5_records:
             try:
                 name_version = parse_version_string(record.toUnicode())
                 if abs(name_version - head_version) > fail_tolerance:
-                    failed = True
                     yield FAIL, Message(
                         "mismatch",
                         f'head version is "{float(head_version):.5f}"'
@@ -173,7 +165,6 @@ def com_google_fonts_check_font_version(ttFont):
                         f" is not as accurate as possible.",
                     )
             except ValueError:
-                failed = True
                 yield FAIL, Message(
                     "parse",
                     f"name version string for"
@@ -183,13 +174,9 @@ def com_google_fonts_check_font_version(ttFont):
                     f" could not be parsed.",
                 )
     else:
-        failed = True
         yield FAIL, Message(
             "missing", "There is no name ID 5 (version string) in the font."
         )
-
-    if not failed:
-        yield PASS, "All font version fields match."
 
 
 @check(
