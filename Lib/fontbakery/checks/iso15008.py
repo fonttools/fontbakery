@@ -6,7 +6,7 @@ from beziers.path import BezierPath
 from beziers.point import Point
 from fontTools.pens.boundsPen import BoundsPen
 
-from fontbakery.prelude import check, PASS, FAIL, Message
+from fontbakery.prelude import check, FAIL, Message
 from fontbakery.utils import exit_with_install_instructions
 
 DISCLAIMER = """
@@ -105,9 +105,7 @@ def com_google_fonts_check_iso15008_proportions(ttFont):
     glyphset["H"].draw(pen)
     (xMin, yMin, xMax, yMax) = pen.bounds
     proportion = (xMax - xMin) / (yMax - yMin)
-    if 0.65 <= proportion <= 0.80:
-        yield PASS, "the letter H is not too narrow or too wide"
-    else:
+    if not 0.65 <= proportion <= 0.80:
         yield FAIL, Message(
             "invalid-proportion",
             f"The proportion of H width to H height ({proportion})"
@@ -139,9 +137,7 @@ def com_google_fonts_check_iso15008_stem_width(ttFont):
         return
     ascender = ttFont["hhea"].ascender
     proportion = width / ascender
-    if 0.10 <= proportion <= 0.20:
-        yield PASS, "the stem width is not too light or too bold"
-    else:
+    if not 0.10 <= proportion <= 0.20:
         yield FAIL, Message(
             "invalid-proportion",
             f"The proportion of stem width to ascender ({proportion})"
@@ -194,9 +190,7 @@ def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
             "There was no 'l' glyph in the font, so the spacing could not be tested",
         )
         return
-    if 1.5 <= (l_l / width) <= 2.4:
-        yield PASS, "Distance between vertical strokes was adequate"
-    else:
+    if not 1.5 <= (l_l / width) <= 2.4:
         yield FAIL, Message(
             "bad-vertical-vertical-spacing",
             f"The space between vertical strokes ({l_l})"
@@ -223,9 +217,7 @@ def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
         )
         return
 
-    if (l_v / width) > 0.85:
-        yield PASS, "Distance between vertical and diagonal strokes was adequate"
-    else:
+    if (l_v / width) <= 0.85:
         yield FAIL, Message(
             "bad-vertical-diagonal-spacing",
             f"The space between vertical and diagonal strokes ({l_v})"
@@ -233,10 +225,7 @@ def com_google_fonts_check_iso15008_intercharacter_spacing(font, ttFont):
             f" value of {width * 0.85}",
         )
 
-    v_v = v_rsb + pair_kerning(font, "v", "v") + v_lsb
-    if v_v > 0:
-        yield PASS, "Distance between diagonal strokes was adequate"
-    else:
+    if v_rsb + pair_kerning(font, "v", "v") + v_lsb <= 0:
         yield FAIL, Message(
             "bad-diagonal-diagonal-spacing", "Diagonal strokes (vv) were touching"
         )
@@ -286,9 +275,7 @@ def com_google_fonts_check_iso15008_interword_spacing(font, ttFont):
     # Add spacing caused by normal sidebearings
     space_width += m_rsb + n_lsb
 
-    if 2.50 <= space_width / l_m <= 3.0:
-        yield PASS, "Advance width of interword space was adequate"
-    else:
+    if not 2.50 <= space_width / l_m <= 3.0:
         yield FAIL, Message(
             "bad-interword-spacing",
             f"The interword space ({space_width}) was"
@@ -340,12 +327,9 @@ def com_google_fonts_check_iso15008_interline_spacing(ttFont):
     width = stem_width(ttFont)
     if width is None:
         yield FAIL, Message("no-stem-width", "Could not determine stem width")
-        return
-    if linegap < width:
+    elif linegap < width:
         yield FAIL, Message(
             "bad-interline-spacing",
             f"The interline space {linegap} should"
             f" be more than the stem width {width}",
         )
-        return
-    yield PASS, "Amount of interline space was adequate"
