@@ -21,7 +21,6 @@ from fontbakery.utils import show_inconsistencies, bullet_list
 )
 def com_google_fonts_check_family_panose_familytype(fonts: Iterable[Font], config):
     """Fonts have consistent PANOSE family type?"""
-    passed = True
     missing = []
     familytypes = defaultdict(list)
 
@@ -49,8 +48,6 @@ def com_google_fonts_check_family_panose_familytype(fonts: Iterable[Font], confi
             "The following PANOSE family types were found:\n\n"
             + show_inconsistencies(familytypes, config),
         )
-    else:
-        yield PASS, "Fonts have consistent PANOSE family type."
 
 
 @check(
@@ -194,11 +191,9 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
 
     from fontbakery.constants import FsSelection, MacStyle
 
-    failed = False
     head_bold = (ttFont["head"].macStyle & MacStyle.BOLD) != 0
     os2_bold = (ttFont["OS/2"].fsSelection & FsSelection.BOLD) != 0
     if head_bold != os2_bold:
-        failed = True
         yield FAIL, Message(
             "fsselection-macstyle-bold",
             "The OS/2.fsSelection and head.macStyle bold settings do not match:\n\n"
@@ -208,16 +203,11 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
     head_italic = (ttFont["head"].macStyle & MacStyle.ITALIC) != 0
     os2_italic = (ttFont["OS/2"].fsSelection & FsSelection.ITALIC) != 0
     if head_italic != os2_italic:
-        failed = True
         yield FAIL, Message(
             "fsselection-macstyle-italic",
             "The OS/2.fsSelection and head.macStyle italic settings do not match.\n\n"
             f"* OS/2.fsSelection: ITALIC is {'not ' if not os2_italic else ''}set\n"
             f"* head.macStyle: ITALIC is {'not ' if not head_italic else ''}set",
-        )
-    if not failed:
-        yield PASS, (
-            "The OS/2.fsSelection and head.macStyle bold and italic settings match."
         )
 
 
@@ -242,7 +232,6 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
     from fontbakery.constants import FsSelection, NameID
     from fontbakery.utils import get_name_entry_strings
 
-    failed = False
     family_name_and_bold_italic = []
     for ttFont in RIBBI_ttFonts:
         names_list = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
@@ -266,10 +255,8 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
             )
 
     counter = Counter(family_name_and_bold_italic)
-
     for (family_name, bold_italic), count in counter.items():
         if count > 1:
-            failed = True
             yield FAIL, Message(
                 "unique-fsselection",
                 f"Family '{family_name}' has {count} fonts"
@@ -277,11 +264,6 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
                 f" same OS/2.fsSelection bold & italic settings:"
                 f" {bold_italic}",
             )
-    if not failed:
-        yield PASS, (
-            "The OS/2.fsSelection bold & italic settings were unique "
-            "within each compatible family group."
-        )
 
 
 @check(
@@ -326,8 +308,6 @@ def com_google_fonts_check_code_pages(ttFont):
             "No code pages defined in the OS/2 table"
             " ulCodePageRange1 and CodePageRange2 fields.",
         )
-    else:
-        yield PASS, "At least one code page is defined."
 
 
 @check(
@@ -364,8 +344,6 @@ def com_thetypefounders_check_vendor_id(config, ttFont):
             f"OS/2 VendorID is '{font_vendor_id}',"
             f" but should be '{config_vendor_id}'.",
         )
-    else:
-        yield PASS, f"OS/2 VendorID '{font_vendor_id}' is correct."
 
 
 @check(
