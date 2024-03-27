@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.status import PASS, FAIL
+from fontbakery.status import FAIL
 from fontbakery.message import Message
 
 
@@ -21,5 +21,3 @@ def com_google_fonts_check_loca_maxp_num_glyphs(ttFont):
         yield FAIL, Message(
             "corrupt", 'Corrupt "loca" table or wrong numGlyphs in "maxp" table.'
         )
-    else:
-        yield PASS, "'loca' table matches numGlyphs in 'maxp' table."
