@@ -683,6 +683,7 @@ def com_google_fonts_check_slant_direction(ttFont, uharfbuzz_blob):
     proposal="https://github.com/googlefonts/fontbakery/issues/3334",
     severity=2,  # It only affects a few applications
     conditions=["has_wght_axis"],
+    experimental="Since 2024/Mar/27",
 )
 def com_google_fonts_check_varfont_instances_in_order(ttFont, config):
     """Ensure the font's instances are in the correct order."""

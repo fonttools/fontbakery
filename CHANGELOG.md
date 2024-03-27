@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New checks
 #### Added to the Google Fonts profile
   - **EXPERIMENTAL - [com.google.fonts/check/article/images]:** Validate maximum filesize and resolution of images in the article/images directory. (issue #4594)
+  - **EXPERIMENTAL - [com.google.fonts/check/varfont/instances_in_order]:** Ensure that the fvar table instances are in ascending order of weight. (issue #3334)
 
 ### Changes to existing checks
 #### On the Google Fonts profile
