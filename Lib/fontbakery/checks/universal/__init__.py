@@ -2213,6 +2213,7 @@ def com_google_fonts_check_whitespace_widths(ttFont):
 def com_google_fonts_check_interpolation_issues(ttFont, config):
     """Detect any interpolation issues in the font."""
     from fontTools.varLib.interpolatable import test as interpolation_test
+    from fontTools.varLib.interpolatableHelpers import InterpolatableProblem
     from fontTools.varLib.models import piecewiseLinearMap
 
     gvar = ttFont["gvar"]
@@ -2262,18 +2263,36 @@ def com_google_fonts_check_interpolation_issues(ttFont, config):
     report = []
     for glyph, glyph_problems in results.items():
         for p in glyph_problems:
-            if p["type"] == "contour_order":
+            if p["type"] == InterpolatableProblem.CONTOUR_ORDER:
                 report.append(
                     f"Contour order differs in glyph '{glyph}':"
                     f" {p['value_1']} in {p['master_1']},"
                     f" {p['value_2']} in {p['master_2']}."
                 )
-            elif p["type"] == "wrong_start_point":
+            elif p["type"] == InterpolatableProblem.WRONG_START_POINT:
                 report.append(
                     f"Contour {p['contour']} start point"
                     f" differs in glyph '{glyph}' between"
                     f" location {p['master_1']} and"
                     f" location {p['master_2']}"
+                )
+            elif p["type"] == InterpolatableProblem.KINK:
+                report.append(
+                    f"Contour {p['contour']} point {p['value']} has a kink"
+                    f" between location {p['master_1']} and"
+                    f" location {p['master_2']}"
+                )
+            elif p["type"] == InterpolatableProblem.UNDERWEIGHT:
+                report.append(
+                    f"Contour {p['contour']} in glyph '{glyph}':"
+                    f" becomes underweight between {p['master_1']}"
+                    f" and {p['master_2']}."
+                )
+            elif p["type"] == InterpolatableProblem.OVERWEIGHT:
+                report.append(
+                    f"Contour {p['contour']} in glyph '{glyph}':"
+                    f" becomes overweight between {p['master_1']}"
+                    f" and {p['master_2']}."
                 )
 
     if not report:
