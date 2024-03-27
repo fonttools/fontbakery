@@ -10,7 +10,9 @@ from fontbakery.constants import (
     MacintoshEncodingID,
     MacintoshLanguageID,
 )
+from fontbakery.message import Message
 from fontbakery.status import INFO, WARN, PASS, FAIL, SKIP
+from fontbakery.result import Subresult
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
@@ -219,8 +221,7 @@ def test_check_name_match_familyname_fullfont():
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
 
     # So it must PASS the check:
-    msg = assert_PASS(check(ttFont))
-    assert msg == "Full font name begins with the font family name."
+    assert_PASS(check(ttFont))
 
     EXPECTED_NAME_STRING = "Mada"
     BAD_PREFIX = "bad-prefix"
@@ -289,8 +290,7 @@ def test_check_name_match_familyname_fullfont():
     # Run the check on a CJK font. The font's 'name' table contains
     # English-US (1033/0x0409) and Japanese (1041/0x0411) records. It should PASS.
     ttFont = TTFont(TEST_FILE("cjk/SourceHanSans-Regular.otf"))
-    msg = assert_PASS(check(ttFont))
-    assert msg == "Full font name begins with the font family name."
+    assert_PASS(check(ttFont))
 
     name_table = ttFont["name"]
     decode_error_msg_prefix = (
@@ -379,7 +379,7 @@ def test_check_family_naming_recommendations():
             print("Test INFO: Exceeds max length (63)...")
             name_test("A" * 64, INFO, "bad-entries")
 
-            print("Test PASS: Does not exceeds max length...")
+            print("Test PASS: Does not exceed max length...")
             name_test("A" * 63, PASS)
 
         elif name.nameID == NameID.FONT_FAMILY_NAME:
@@ -388,7 +388,7 @@ def test_check_family_naming_recommendations():
             print("Test INFO: Exceeds max length (31)...")
             name_test("A" * 32, INFO, "bad-entries")
 
-            print("Test PASS: Does not exceeds max length...")
+            print("Test PASS: Does not exceed max length...")
             name_test("A" * 31, PASS)
 
         elif name.nameID == NameID.FONT_SUBFAMILY_NAME:
@@ -397,7 +397,7 @@ def test_check_family_naming_recommendations():
             print("Test INFO: Exceeds max length (31)...")
             name_test("A" * 32, INFO, "bad-entries")
 
-            print("Test PASS: Does not exceeds max length...")
+            print("Test PASS: Does not exceed max length...")
             name_test("A" * 31, PASS)
 
         elif name.nameID == NameID.TYPOGRAPHIC_FAMILY_NAME:
@@ -406,7 +406,7 @@ def test_check_family_naming_recommendations():
             print("Test INFO: Exceeds max length (31)...")
             name_test("A" * 32, INFO, "bad-entries")
 
-            print("Test PASS: Does not exceeds max length...")
+            print("Test PASS: Does not exceed max length...")
             name_test("A" * 31, PASS)
 
         elif name.nameID == NameID.TYPOGRAPHIC_SUBFAMILY_NAME:
@@ -415,7 +415,7 @@ def test_check_family_naming_recommendations():
             print("Test INFO: Exceeds max length (31)...")
             name_test("A" * 32, INFO, "bad-entries")
 
-            print("Test PASS: Does not exceeds max length...")
+            print("Test PASS: Does not exceed max length...")
             name_test("A" * 31, PASS)
 
 
@@ -424,8 +424,7 @@ def test_check_name_postscript_vs_cff():
 
     # Test a font that has matching names. Check should PASS.
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
-    msg = assert_PASS(check(ttFont))
-    assert msg == "Name table PostScript name matches CFF table FontName."
+    assert_PASS(check(ttFont))
 
     # Change the name-table string. Check should FAIL.
     other_name = "SomeOtherFontName"
