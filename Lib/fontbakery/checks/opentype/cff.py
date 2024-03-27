@@ -1,6 +1,6 @@
 from fontbakery.callable import check, condition
 from fontbakery.testable import Font, TTCFont
-from fontbakery.status import FAIL, PASS, WARN
+from fontbakery.status import FAIL, WARN
 from fontbakery.message import Message
 
 
@@ -153,22 +153,16 @@ def com_adobe_fonts_check_cff_call_depth(font):
     """Is the CFF subr/gsubr call depth > 10?"""
     analysis = font.cff_analysis
 
-    any_failures = False
-
     if analysis.glyphs_exceed_max or analysis.glyphs_recursion_errors:
-        any_failures = True
         for gn in analysis.glyphs_exceed_max:
             yield FAIL, Message(
                 "max-depth",
-                f"Subroutine call depth exceeded" f' maximum of 10 for glyph "{gn}".',
+                f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".',
             )
         for gn in analysis.glyphs_recursion_errors:
             yield FAIL, Message(
                 "recursion-error", f'Recursion error while decompiling glyph "{gn}".'
             )
-
-    if not any_failures:
-        yield PASS, "Maximum call depth not exceeded."
 
 
 @check(
@@ -182,23 +176,18 @@ def com_adobe_fonts_check_cff_call_depth(font):
 def com_adobe_fonts_check_cff2_call_depth(font):
     """Is the CFF2 subr/gsubr call depth > 10?"""
 
-    any_failures = False
     analysis = font.cff_analysis
 
     if analysis.glyphs_exceed_max or analysis.glyphs_recursion_errors:
-        any_failures = True
         for gn in analysis.glyphs_exceed_max:
             yield FAIL, Message(
                 "max-depth",
-                f"Subroutine call depth exceeded" f' maximum of 10 for glyph "{gn}".',
+                f'Subroutine call depth exceeded maximum of 10 for glyph "{gn}".',
             )
         for gn in analysis.glyphs_recursion_errors:
             yield FAIL, Message(
                 "recursion-error", f'Recursion error while decompiling glyph "{gn}".'
             )
-
-    if not any_failures:
-        yield PASS, "Maximum call depth not exceeded."
 
 
 @check(
@@ -216,10 +205,8 @@ def com_adobe_fonts_check_cff2_call_depth(font):
 )
 def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
     """Does the font use deprecated CFF operators or operations?"""
-    any_failures = False
 
     if cff_analysis.glyphs_dotsection or cff_analysis.glyphs_endchar_seac:
-        any_failures = True
         for gn in cff_analysis.glyphs_dotsection:
             yield WARN, Message(
                 "deprecated-operator-dotsection",
@@ -231,6 +218,3 @@ def com_adobe_fonts_check_cff_deprecated_operators(cff_analysis):
                 f'Glyph "{gn}" has deprecated use of "endchar"'
                 f" operator to build accented characters (seac).",
             )
-
-    if not any_failures:
-        yield PASS, "No deprecated CFF operators used."
