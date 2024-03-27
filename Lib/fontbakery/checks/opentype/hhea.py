@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS
+from fontbakery.status import FAIL
 from fontbakery.message import Message
 
 
@@ -36,10 +36,6 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
             f"AdvanceWidthMax mismatch:"
             f" expected {hmtx_advance_width_max} (from hmtx);"
             f" got {hhea_advance_width_max} (from hhea)",
-        )
-    else:
-        yield PASS, (
-            "MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables."
         )
 
 
@@ -93,8 +89,4 @@ def com_google_fonts_check_caret_slope(ttFont):
             f" and caretSlopeRun {ttFont['hhea'].caretSlopeRun}\n"
             f"Expected: caretSlopeRise {expectedCaretSlopeRise}"
             f" and caretSlopeRun {expectedCaretSlopeRun}",
-        )
-    else:
-        yield PASS, (
-            "hhea.caretSlopeRise and hhea.caretSlopeRun match with post.italicAngle."
         )
