@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, disable, Message, WARN, PASS, FAIL
+from fontbakery.prelude import check, disable, Message, WARN, FAIL
 
 
 @check(
@@ -18,41 +18,29 @@ def com_google_fonts_check_version_bump(
     v_number = ttFont["head"].fontRevision
     api_gfonts_v_number = api_gfonts_ttFont["head"].fontRevision
     github_gfonts_v_number = github_gfonts_ttFont["head"].fontRevision
-    passed = True
 
     if v_number == api_gfonts_v_number:
-        passed = False
         yield FAIL, (
             f"Version number {v_number:0.3f} is"
             f" equal to version on **Google Fonts**."
         )
 
     if v_number < api_gfonts_v_number:
-        passed = False
         yield FAIL, (
             f"Version number {v_number:0.3f} is less than on"
             f" **Google Fonts** ({api_gfonts_v_number:0.3f})."
         )
 
     if v_number == github_gfonts_v_number:
-        passed = False
         yield FAIL, (
             f"Version number {v_number:0.3f} is equal to version on"
             f" google/fonts **GitHub repo**."
         )
 
     if v_number < github_gfonts_v_number:
-        passed = False
         yield FAIL, (
             f"Version number {v_number:0.3f} is less than on"
             f" google/fonts **GitHub repo** ({github_gfonts_v_number:0.3f})."
-        )
-
-    if passed:
-        yield PASS, (
-            f"Version number {v_number:0.3f} is greater than on"
-            f" google/fonts **GitHub repo** ({github_gfonts_v_number:0.3f})"
-            f" and **production servers** ({api_gfonts_v_number:0.3f})."
         )
 
 
@@ -115,8 +103,6 @@ def com_google_fonts_check_production_glyphs_similarity(
             "Following glyphs differ greatly from"
             f" Google Fonts version:\n{formatted_list}"
         )
-    else:
-        yield PASS, "Glyphs are similar in comparison to the Google Fonts version."
 
 
 # FIXME!
@@ -146,5 +132,3 @@ def com_google_fonts_check_production_encoded_glyphs(ttFont, api_gfonts_ttFont):
             f" from the previous release"
             f" [{', '.join(hex_codepoints)}]",
         )
-    else:
-        yield PASS, ("Font has all the glyphs from the previous release")
