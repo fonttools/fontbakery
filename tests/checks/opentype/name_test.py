@@ -333,7 +333,12 @@ def assert_name_table_check_result(
     # set value
     ttFont["name"].names[index].string = value.encode(name.getEncoding())
     # run check
-    subresult = check(ttFont)[-1]
+    subresults = check(ttFont)
+    if subresults == []:
+        subresult = Subresult(PASS, Message("ok", "All looks good!"))
+    else:
+        subresult = subresults[-1]
+
     status, message = subresult.status, subresult.message
     # restore value
     ttFont["name"].names[index].string = backup
