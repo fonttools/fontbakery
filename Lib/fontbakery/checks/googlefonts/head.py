@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, Message, PASS, FAIL
+from fontbakery.prelude import check, Message, FAIL
 
 
 @check(
@@ -32,5 +32,3 @@ def com_google_fonts_check_unitsperem_strict(ttFont):
             f" Good values for unitsPerEm,"
             f" though, are typically these: {RECOMMENDED}.",
         )
-    else:
-        yield PASS, f"Font em size is good (unitsPerEm = {upm_height})."
