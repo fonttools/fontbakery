@@ -1,5 +1,5 @@
 from fontbakery.constants import PANOSE_Family_Type
-from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN, SKIP
+from fontbakery.prelude import check, condition, Message, FAIL, WARN, SKIP
 from fontbakery.testable import Font
 from fontbakery.constants import (
     NameID,
@@ -89,21 +89,15 @@ def com_google_fonts_check_glyph_coverage(ttFont, family_metadata, config):
     else:
         required_glyphset = "GF_Latin_Core"
 
-    passed = True
-
     if glyphsets_fulfilled[required_glyphset]["missing"]:
         missing = [
             "0x%04X (%s)\n" % (c, unicodedata2.name(chr(c)))
             for c in glyphsets_fulfilled[required_glyphset]["missing"]
         ]
-        passed = False
         yield FAIL, Message(
             "missing-codepoints",
             f"Missing required codepoints:\n\n" f"{bullet_list(config, missing)}",
         )
-
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -126,8 +120,6 @@ def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
 
     shaperglot_checker = Checker(ttFont.reader.file.name)
     shaperglot_languages = Languages()
-
-    passed = True
     any_glyphset_supported = False
 
     glyphsets_fulfilled = get_glyphsets_fulfilled(ttFont)
@@ -163,7 +155,6 @@ def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
                         fails_table.append(row)
 
             if fails_table:
-                passed = False
                 yield FAIL, Message(
                     "failed-language-shaping",
                     f"{glyphset} glyphset:\n\n{markdown_table(fails_table)}\n\n",
@@ -183,9 +174,6 @@ def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
                 " so language shaping support couldn't get checked."
             ),
         )
-
-    if passed:
-        yield PASS, "OK."
 
 
 @check(
@@ -265,8 +253,6 @@ def com_google_fonts_check_family_control_chars(ttFonts):
             bad = ", ".join(bad_fonts[fnt])
             msg_unacceptable += f" {fnt}: {bad}\n"
         yield FAIL, Message("unacceptable", f"{msg_unacceptable}")
-    else:
-        yield PASS, ("Unacceptable control characters were not identified.")
 
 
 @check(
@@ -299,8 +285,6 @@ def com_google_fonts_check_cjk_not_enough_glyphs(font):
             f"{cjk_glyphs}\n"
             f"Please check that these glyphs have the correct unicodes.",
         )
-    else:
-        yield PASS, "Font has the correct quantity of CJK glyphs"
 
 
 @check(
@@ -314,7 +298,6 @@ def com_google_fonts_check_cjk_not_enough_glyphs(font):
 def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
     """Check small caps glyphs are available."""
 
-    passed = True
     if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList is not None:
         llist = ttFont["GSUB"].table.LookupList
         for record in range(ttFont["GSUB"].table.FeatureList.FeatureCount):
@@ -333,16 +316,12 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
                     smcp_glyphs = set(subtable.mapping.values())
                     missing = smcp_glyphs - set(ttFont.getGlyphNames())
                     if missing:
-                        passed = False
                         missing = "\n\t - " + "\n\t - ".join(missing)
                         yield FAIL, Message(
                             "missing-glyphs",
                             f"These '{tag}' glyphs are missing:\n" f"{missing}",
                         )
                 break
-
-    if passed:
-        yield PASS, "OK"
 
 
 def can_shape(ttFont, text, parameters=None):
@@ -381,9 +360,7 @@ def com_google_fonts_check_render_own_name(ttFont):
         )
         .toUnicode()
     )
-    if can_shape(ttFont, menu_name):
-        yield PASS, f"Font can successfully render its own name ({menu_name})"
-    else:
+    if not can_shape(ttFont, menu_name):
         yield FAIL, Message(
             "render-own-name",
             f".notdef glyphs were found when attempting to render {menu_name}",

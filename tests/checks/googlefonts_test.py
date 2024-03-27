@@ -3872,7 +3872,7 @@ def test_check_cjk_vertical_metrics_regressions():
 def test_check_cjk_not_enough_glyphs():
     check = CheckTester("com.google.fonts/check/cjk_not_enough_glyphs")
     ttFont = TTFont(cjk_font)
-    assert assert_PASS(check(ttFont)) == ("Font has the correct quantity of CJK glyphs")
+    assert_PASS(check(ttFont))
 
     ttFont = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
