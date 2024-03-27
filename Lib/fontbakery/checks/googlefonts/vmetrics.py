@@ -1,6 +1,6 @@
 import os
 
-from fontbakery.prelude import check, Message, PASS, FAIL, WARN
+from fontbakery.prelude import check, Message, FAIL, WARN
 from fontbakery.constants import (
     NameID,
     PlatformID,
@@ -67,12 +67,9 @@ def com_google_fonts_check_vertical_metrics(ttFont):
         "hhea.lineGap": 0,
     }
 
-    passed = True
-
     # Check typo metrics and hhea lineGap match our expected values
     for k in expected_metrics:
         if font_metrics[k] != expected_metrics[k]:
-            passed = False
             yield FAIL, Message(
                 f"bad-{k}",
                 f'{k} is "{font_metrics[k]}" it should' f" be {expected_metrics[k]}",
@@ -87,7 +84,6 @@ def com_google_fonts_check_vertical_metrics(ttFont):
     # Check the sum of the hhea metrics is not below 1.2
     # (120% of upm or 1200 units for 1000 upm font)
     if hhea_sum < 1.2:
-        passed = False
         yield FAIL, Message(
             "bad-hhea-range",
             f"The sum of hhea.ascender + abs(hhea.descender) + hhea.lineGap"
@@ -97,7 +93,6 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # Check the sum of the hhea metrics is below 2.0
     elif hhea_sum > 2.0:
-        passed = False
         yield FAIL, Message(
             "bad-hhea-range",
             f"The sum of hhea.ascender + abs(hhea.descender) + hhea.lineGap"
@@ -107,7 +102,6 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # Check the sum of the hhea metrics is between 1.1-1.5x of the font's upm
     elif hhea_sum > 1.5:
-        passed = False
         yield WARN, Message(
             "bad-hhea-range",
             f"We recommend the absolute sum of the hhea metrics should be"
@@ -117,7 +111,6 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # OS/2.sTypoAscender must be strictly positive
     if font_metrics["OS/2.sTypoAscender"] < 0:
-        passed = False
         yield FAIL, Message(
             "typo-ascender",
             "The OS/2 sTypoAscender must be strictly positive,"
@@ -126,7 +119,6 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # hhea.ascent must be strictly positive
     if font_metrics["hhea.ascent"] <= 0:
-        passed = False
         yield FAIL, Message(
             "hhea-ascent",
             "The hhea ascender must be strictly positive,"
@@ -135,7 +127,6 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # OS/2.usWinAscent must be strictly positive
     if font_metrics["OS/2.usWinAscent"] <= 0:
-        passed = False
         yield FAIL, Message(
             "win-ascent",
             f"The OS/2.usWinAscent must be strictly positive,"
@@ -144,7 +135,6 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # OS/2.sTypoDescender must be negative or zero
     if font_metrics["OS/2.sTypoDescender"] > 0:
-        passed = False
         yield FAIL, Message(
             "typo-descender",
             "The OS/2 sTypoDescender must be negative or zero."
@@ -153,7 +143,6 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # hhea.descent must be negative or zero
     if font_metrics["hhea.descent"] > 0:
-        passed = False
         yield FAIL, Message(
             "hhea-descent",
             "The hhea descender must be negative or zero."
@@ -162,15 +151,11 @@ def com_google_fonts_check_vertical_metrics(ttFont):
 
     # OS/2.usWinDescent must be positive or zero
     if font_metrics["OS/2.usWinDescent"] < 0:
-        passed = False
         yield FAIL, Message(
             "win-descent",
             "The OS/2.usWinDescent must be positive or zero."
             " This font has a negative value.",
         )
-
-    if passed:
-        yield PASS, "Vertical metrics are good"
 
 
 @check(
@@ -224,10 +209,8 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
     gf_has_typo_metrics = typo_metrics_enabled(gf_ttFont)
     ttFont_has_typo_metrics = typo_metrics_enabled(ttFont)
 
-    passed = True
     if gf_has_typo_metrics:
         if not ttFont_has_typo_metrics:
-            passed = False
             yield FAIL, Message(
                 "bad-fsselection-bit7",
                 "fsSelection bit 7 needs to be enabled because "
@@ -248,7 +231,6 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
             math.ceil(ttFont["OS/2"].usWinDescent),
         ):
             if not ttFont_has_typo_metrics:
-                passed = False
                 yield FAIL, Message(
                     "bad-fsselection-bit7",
                     "fsSelection bit 7 needs to be enabled "
@@ -275,7 +257,6 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
     hhea_descender = ttFont["hhea"].descent
 
     if typo_ascender != expected_ascender:
-        passed = False
         yield FAIL, Message(
             "bad-typo-ascender",
             f"{full_font_name}:"
@@ -284,7 +265,6 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
         )
 
     if typo_descender != expected_descender:
-        passed = False
         yield FAIL, Message(
             "bad-typo-descender",
             f"{full_font_name}:"
@@ -293,7 +273,6 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
         )
 
     if hhea_ascender != expected_ascender:
-        passed = False
         yield FAIL, Message(
             "bad-hhea-ascender",
             f"{full_font_name}:"
@@ -302,15 +281,12 @@ def com_google_fonts_check_vertical_metrics_regressions(regular_ttFont, font):
         )
 
     if hhea_descender != expected_descender:
-        passed = False
         yield FAIL, Message(
             "bad-hhea-descender",
             f"{full_font_name}:"
             f" hhea Descender is {hhea_descender}"
             f" when it should be {expected_descender}",
         )
-    if passed:
-        yield PASS, "Vertical metrics have not regressed."
 
 
 @check(
@@ -360,11 +336,8 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
         "hhea.lineGap": 0,
     }
 
-    passed = True
-
     # Check fsSelection bit 7 is not enabled
     if typo_metrics_enabled(ttFont):
-        passed = False
         yield FAIL, Message(
             "bad-fselection-bit7", "OS/2 fsSelection bit 7 must be disabled"
         )
@@ -372,7 +345,6 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
     # Check typo metrics and hhea lineGap match our expected values
     for k in expected_metrics:
         if font_metrics[k] != expected_metrics[k]:
-            passed = False
             yield FAIL, Message(
                 f"bad-{k}",
                 f'{k} is "{font_metrics[k]}" it should be {expected_metrics[k]}',
@@ -380,13 +352,11 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
 
     # Check hhea and win values match
     if font_metrics["hhea.ascent"] != font_metrics["OS/2.usWinAscent"]:
-        passed = False
         yield FAIL, Message(
             "ascent-mismatch", "hhea.ascent must match OS/2.usWinAscent"
         )
 
     if abs(font_metrics["hhea.descent"]) != font_metrics["OS/2.usWinDescent"]:
-        passed = False
         yield FAIL, Message(
             "descent-mismatch",
             "hhea.descent must match absolute value of OS/2.usWinDescent",
@@ -399,15 +369,11 @@ def com_google_fonts_check_cjk_vertical_metrics(ttFont):
         + font_metrics["hhea.lineGap"]
     ) / font_upm
     if not 1.1 < hhea_sum <= 1.5:
-        passed = False
         yield WARN, Message(
             "bad-hhea-range",
             f"We recommend the absolute sum of the hhea metrics should be"
             f" between 1.1-1.4x of the font's upm. This font has {hhea_sum}x",
         )
-
-    if passed:
-        yield PASS, "Vertical metrics are good"
 
 
 @check(
@@ -444,7 +410,6 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(
 
     upm_scale = ttFont["head"].unitsPerEm / gf_ttFont["head"].unitsPerEm
 
-    passed = True
     for tbl, attrib in [
         ("OS/2", "sTypoAscender"),
         ("OS/2", "sTypoDescender"),
@@ -458,10 +423,7 @@ def com_google_fonts_check_cjk_vertical_metrics_regressions(
         gf_val = math.ceil(getattr(gf_ttFont[tbl], attrib) * upm_scale)
         f_val = math.ceil(getattr(ttFont[tbl], attrib))
         if gf_val != f_val:
-            passed = False
             yield FAIL, Message(
                 "cjk-metric-regression",
                 f" {tbl} {attrib} is {f_val}" f" when it should be {gf_val}",
             )
-    if passed:
-        yield PASS, "CJK vertical metrics are good"
