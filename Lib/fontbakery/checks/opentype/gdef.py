@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.status import PASS, WARN, SKIP
+from fontbakery.status import WARN, SKIP
 from fontbakery.message import Message
 
 
@@ -67,10 +67,6 @@ def com_google_fonts_check_gdef_spacing_marks(ttFont, config):
                 f" the GDEF mark glyph class by mistake:\n"
                 f"{formatted_list}",
             )
-        else:
-            yield PASS, (
-                "Font does not has spacing glyphs in the GDEF mark glyph class."
-            )
     else:
         yield SKIP, (
             'Font does not declare an optional "GDEF" table'
@@ -110,11 +106,6 @@ def com_google_fonts_check_gdef_mark_chars(ttFont, config):
                 f"The following mark characters could be"
                 f" in the GDEF mark glyph class:\n"
                 f"{formatted_marks}",
-            )
-        else:
-            yield PASS, (
-                "Font does not have mark characters"
-                " not in the GDEF mark glyph class."
             )
     else:
         yield SKIP, (
@@ -173,11 +164,6 @@ def com_google_fonts_check_gdef_non_mark_chars(ttFont, config):
                 f"The following non-mark characters should"
                 f" not be in the GDEF mark glyph class:\n"
                 f"{formatted_nonmarks}",
-            )
-        else:
-            yield PASS, (
-                "Font does not have non-mark characters"
-                " in the GDEF mark glyph class."
             )
     else:
         yield SKIP, (
