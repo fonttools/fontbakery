@@ -20,7 +20,6 @@ from fontbakery.utils import markdown_table
 def com_google_fonts_check_name_unwanted_chars(ttFont):
     """Substitute copyright, registered and trademark
     symbols in name table entries."""
-    passed = True
     replacement_map = [("\u00a9", "(c)"), ("\u00ae", "(r)"), ("\u2122", "(tm)")]
     for name in ttFont["name"].names:
         string = str(name.string, encoding=name.getEncoding())
@@ -32,12 +31,6 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
                     f"NAMEID #{name.nameID} contains symbols that"
                     f" should be replaced by '{ascii_repl}'.",
                 )
-                passed = False
-    if passed:
-        yield PASS, (
-            "No need to substitute copyright, registered and"
-            " trademark symbols in name table entries of this font."
-        )
 
 
 @check(
@@ -56,28 +49,22 @@ def com_google_fonts_check_name_unwanted_chars(ttFont):
 )
 def com_google_fonts_check_name_description_max_length(ttFont):
     """Description strings in the name table must not exceed 200 characters."""
-    passed = True
     for name in ttFont["name"].names:
         if (
             name.nameID == NameID.DESCRIPTION
             and len(name.string.decode(name.getEncoding())) > 200
         ):
-            passed = False
-            break
-
-    if passed:
-        yield PASS, "All description name records have reasonably small lengths."
-    else:
-        yield WARN, Message(
-            "too-long",
-            f"A few name table entries with ID={NameID.DESCRIPTION}"
-            f" (NameID.DESCRIPTION) are longer than 200 characters."
-            f" Please check whether those entries are copyright"
-            f" notices mistakenly stored in the description"
-            f" string entries by a bug in an old FontLab version."
-            f" If that's the case, then such copyright notices"
-            f" must be removed from these entries.",
-        )
+            yield WARN, Message(
+                "too-long",
+                f"A few name table entries with ID={NameID.DESCRIPTION}"
+                f" (NameID.DESCRIPTION) are longer than 200 characters."
+                f" Please check whether those entries are copyright"
+                f" notices mistakenly stored in the description"
+                f" string entries by a bug in an old FontLab version."
+                f" If that's the case, then such copyright notices"
+                f" must be removed from these entries.",
+            )
+            return
 
 
 @check(
@@ -97,10 +84,8 @@ def com_google_fonts_check_name_version_format(ttFont):
     def is_valid_version_format(value):
         return re.match(r"Version\s0*[1-9][0-9]*\.\d+", value)
 
-    passed = True
     version_entries = get_name_entry_strings(ttFont, NameID.VERSION_STRING)
     if len(version_entries) == 0:
-        passed = False
         yield FAIL, Message(
             "no-version-string",
             f"Font lacks a NameID.VERSION_STRING"
@@ -108,7 +93,6 @@ def com_google_fonts_check_name_version_format(ttFont):
         )
     for ventry in version_entries:
         if not is_valid_version_format(ventry):
-            passed = False
             yield FAIL, Message(
                 "bad-version-strings",
                 f"The NameID.VERSION_STRING"
@@ -117,8 +101,6 @@ def com_google_fonts_check_name_version_format(ttFont):
                 f" greater than or equal to 1.000."
                 f' Current version string is: "{ventry}"',
             )
-    if passed:
-        yield PASS, "Version format in NAME table entries is correct."
 
 
 @check(
@@ -133,7 +115,6 @@ def com_google_fonts_check_name_familyname_first_char(ttFont):
     """Make sure family name does not begin with a digit."""
     from fontbakery.utils import get_name_entry_strings
 
-    passed = True
     for familyname in get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME):
         digits = map(str, range(0, 10))
         if familyname[0] in digits:
@@ -141,9 +122,6 @@ def com_google_fonts_check_name_familyname_first_char(ttFont):
                 "begins-with-digit",
                 f"Font family name '{familyname}' begins with a digit!",
             )
-            passed = False
-    if passed:
-        yield PASS, "Font family name first character is not a digit."
 
 
 @check(
@@ -191,11 +169,6 @@ def com_google_fonts_check_name_ascii_only_entries(ttFont):
                 " non-ASCII characters in the ASCII-only"
                 " NAME table entries."
             ),
-        )
-    else:
-        yield PASS, (
-            "None of the ASCII-only NAME table entries"
-            " contain non-ASCII characteres."
         )
 
 
@@ -281,8 +254,6 @@ def com_google_fonts_check_font_names(ttFont, ttFonts):
 
     if not passed:
         yield FAIL, Message("bad-names", f"Font names are incorrect:\n\n{md_table}")
-    else:
-        yield PASS, f"Font names are good:\n\n{md_table}"
 
 
 @check(
@@ -311,17 +282,14 @@ def com_google_fonts_check_name_mandatory_entries(ttFont, style):
             NameID.TYPOGRAPHIC_FAMILY_NAME,
             NameID.TYPOGRAPHIC_SUBFAMILY_NAME,
         ]
-    passed = True
+
     # The font must have at least these name IDs:
     for nameId in required_nameIDs:
         if len(get_name_entry_strings(ttFont, nameId)) == 0:
-            passed = False
             yield FAIL, Message(
                 "missing-entry",
                 f"Font lacks entry with nameId={nameId}" f" ({NameID(nameId).name})",
             )
-    if passed:
-        yield PASS, "Font contains values for all mandatory name table entries."
 
 
 @check(
@@ -341,8 +309,6 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
     import re
 
     ribbi_re = " (" + "|".join(RIBBI_STYLE_NAMES) + ")$"
-
-    passed = True
 
     def strip_ribbi(x):
         return re.sub(ribbi_re, "", x)
@@ -371,7 +337,6 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
         for the_name in get_name_entry_strings(ttFont, nameid):
             the_name = transform(the_name)
             if len(the_name) > maxlen:
-                passed = False
                 yield loglevel, Message(
                     f"nameid{nameid}-too-long",
                     f"Name ID {nameid} '{the_name}' exceeds"
@@ -401,9 +366,6 @@ def com_google_fonts_check_name_family_and_style_max_length(ttFont):
                             f" accented letters in Microsoft Word on Windows 10 and 11.",
                         )
 
-    if passed:
-        yield PASS, "All name entries are good."
-
 
 @disable
 @check(
@@ -430,8 +392,6 @@ def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFi
             f" in order to understand the reasoning behind these"
             f" name table records max-length criteria.",
         )
-    else:
-        yield PASS, "ok"
 
 
 @check(
@@ -450,19 +410,15 @@ def com_google_fonts_check_glyphs_file_name_family_and_style_max_length(glyphsFi
 )
 def com_google_fonts_check_name_line_breaks(ttFont):
     """Name table entries should not contain line-breaks."""
-    passed = True
     for name in ttFont["name"].names:
         string = name.string.decode(name.getEncoding())
         if "\n" in string:
-            passed = False
             yield FAIL, Message(
                 "line-break",
                 f"Name entry {NameID(name.nameID).name}"
                 f" on platform {PlatformID(name.platformID).name}"
                 f" contains a line-break.",
             )
-    if passed:
-        yield PASS, "Name table entries are all single-line (no line-breaks found)."
 
 
 @check(
@@ -495,7 +451,6 @@ def com_google_fonts_check_name_family_name_compliance(ttFont):
     abbreviations_exceptions_txt = (
         "data/googlefonts/abbreviations_familyname_exceptions.txt"
     )
-    passed = True
 
     if get_name_entries(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME):
         family_name = get_name_entries(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)[
@@ -523,7 +478,6 @@ def com_google_fonts_check_name_family_name_compliance(ttFont):
                 break
 
         if not known_exception:
-            passed = False
             yield FAIL, Message(
                 "camelcase",
                 f'"{family_name}" is a CamelCased name.'
@@ -552,7 +506,6 @@ def com_google_fonts_check_name_family_name_compliance(ttFont):
         if not known_exception:
             # Allow SC ending
             if not family_name.endswith("SC"):
-                passed = False
                 yield FAIL, Message(
                     "abbreviation", f'"{family_name}" contains an abbreviation.'
                 )
@@ -561,7 +514,6 @@ def com_google_fonts_check_name_family_name_compliance(ttFont):
     forbidden_characters = re.findall(r"[^a-zA-Z0-9 ]", family_name)
     if forbidden_characters:
         forbidden_characters = "".join(sorted(list(set(forbidden_characters))))
-        passed = False
         yield FAIL, Message(
             "forbidden-characters",
             f'"{family_name}" contains the following characters'
@@ -570,11 +522,7 @@ def com_google_fonts_check_name_family_name_compliance(ttFont):
 
     # Starts with uppercase
     if not bool(re.match(r"^[A-Z]", family_name)):
-        passed = False
         yield FAIL, Message(
             "starts-with-not-uppercase",
             f'"{family_name}" doesn\'t start with an uppercase letter.',
         )
-
-    if passed:
-        yield PASS, "Font name looks good."
