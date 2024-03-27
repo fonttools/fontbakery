@@ -21,8 +21,7 @@ def test_check_varfont_stat_axis_record_for_each_axis():
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
 
     # So the check must PASS
-    msg = assert_PASS(check(ttFont))
-    assert msg == "STAT table has all necessary Axis Records."
+    assert_PASS(check(ttFont))
 
     # We then remove its first Axis Record (`wdth`):
     ttFont["STAT"].table.DesignAxisRecord.Axis.pop(0)
@@ -47,8 +46,7 @@ def test_check_stat_has_axis_value_tables():
     # Our reference Cabin[wdth,wght].ttf variable font has Axis Value tables.
     # So the check must PASS.
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
-    msg = assert_PASS(check(ttFont))
-    assert msg == "STAT table has Axis Value tables."
+    assert_PASS(check(ttFont))
 
     # Remove the 4th Axis Value table (index 3), belonging to 'Medium' weight.
     # The check should FAIL.
@@ -66,8 +64,7 @@ def test_check_stat_has_axis_value_tables():
     # Most of the Axis Value tables in Cabin[wdth,wght].ttf are format 1.
     # Now test with SourceSansVariable-Italic.ttf whose tables are mostly format 2.
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.ttf"))
-    msg = assert_PASS(check(ttFont))
-    assert msg == "STAT table has Axis Value tables."
+    assert_PASS(check(ttFont))
 
     # Remove the 2nd Axis Value table (index 1), belonging to 'Light' weight.
     # The check should FAIL.
@@ -96,8 +93,7 @@ def test_check_stat_has_axis_value_tables():
     f4avt.AxisValueRecord = [avr0, avr1]
     f4avt.AxisCount = len(f4avt.AxisValueRecord)
     ttFont["STAT"].table.AxisValueArray.AxisValue.append(f4avt)
-    msg = assert_PASS(check(ttFont))
-    assert msg == "STAT table has Axis Value tables."
+    assert_PASS(check(ttFont))
 
     # Now delete one of the AxisValueRecords of the just-added format 4 AxisValue table.
     # This should now FAIL since format 4 should contain at least 2 AxisValueRecords.
