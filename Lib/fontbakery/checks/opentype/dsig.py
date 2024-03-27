@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.status import WARN, PASS
+from fontbakery.status import WARN
 from fontbakery.message import Message
 
 
@@ -28,9 +28,7 @@ from fontbakery.message import Message
 )
 def com_google_fonts_check_dsig(ttFont):
     """Does the font have a DSIG table?"""
-    if "DSIG" not in ttFont:
-        yield PASS, "ok"
-    else:
+    if "DSIG" in ttFont:
         yield WARN, Message(
             "found-DSIG",
             "This font has a digital signature (DSIG table) which"
