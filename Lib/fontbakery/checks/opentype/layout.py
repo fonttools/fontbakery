@@ -1,7 +1,7 @@
 from opentypespec.tags import FEATURE_TAGS, SCRIPT_TAGS, LANGUAGE_TAGS
 
 from fontbakery.callable import check
-from fontbakery.status import PASS, FAIL
+from fontbakery.status import FAIL
 from fontbakery.message import Message
 
 
@@ -50,8 +50,6 @@ def com_google_fonts_check_layout_valid_feature_tags(ttFont):
             "The following invalid feature tags were found in the font: "
             + ", ".join(sorted(bad_tags)),
         )
-    else:
-        yield PASS, "No invalid feature tags were found"
 
 
 def script_tags(ttFont):
@@ -85,8 +83,6 @@ def com_google_fonts_check_layout_valid_script_tags(ttFont):
             "The following invalid script tags were found in the font: "
             + ", ".join(sorted(bad_tags)),
         )
-    else:
-        yield PASS, "No invalid script tags were found"
 
 
 def language_tags(ttFont):
@@ -121,5 +117,3 @@ def com_google_fonts_check_layout_valid_language_tags(ttFont):
             "The following invalid language tags were found in the font: "
             + ", ".join(sorted(bad_tags)),
         )
-    else:
-        yield PASS, "No invalid language tags were found"
