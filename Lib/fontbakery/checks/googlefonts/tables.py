@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, Message, WARN, PASS, FAIL
+from fontbakery.prelude import check, Message, WARN, FAIL
 
 
 @check(
@@ -55,8 +55,6 @@ def com_google_fonts_check_aat(ttFont):
             f" they built with:\n\n"
             f" {unwanted_list}",
         )
-    else:
-        yield PASS, "There are no unwanted AAT tables."
 
 
 @check(
@@ -81,5 +79,3 @@ def com_google_fonts_check_no_debugging_tables(ttFont):
             f"This font file contains the following"
             f" pre-production tables: {tables_list}",
         )
-    else:
-        yield PASS, "OK"
