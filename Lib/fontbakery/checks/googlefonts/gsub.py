@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, Message, PASS, WARN
+from fontbakery.prelude import check, Message, WARN
 
 
 @check(
@@ -13,7 +13,6 @@ from fontbakery.prelude import check, Message, PASS, WARN
 def com_google_fonts_check_stylisticset_description(ttFont):
     """Ensure Stylistic Sets have description."""
 
-    passed = True
     if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList is not None:
         for record in range(ttFont["GSUB"].table.FeatureList.FeatureCount):
             feature = ttFont["GSUB"].table.FeatureList.FeatureRecord[record]
@@ -25,7 +24,6 @@ def com_google_fonts_check_stylisticset_description(ttFont):
             assert "ss21" not in SSETS
             if tag in SSETS:
                 if feature.Feature.FeatureParams is None:
-                    passed = False
                     yield WARN, Message(
                         "missing-description",
                         f"The stylistic set {tag} lacks"
@@ -36,5 +34,3 @@ def com_google_fonts_check_stylisticset_description(ttFont):
                     #       that the referenced nameid does exist
                     #       in the name table.
                     pass
-    if passed:
-        yield PASS, "OK"
