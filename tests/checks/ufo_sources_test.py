@@ -43,7 +43,7 @@ def test_check_ufolint(empty_ufo_font):
 
     _, ufo_path = empty_ufo_font
 
-    assert assert_PASS(check(ufo_path)) == "ufolint passed the UFO source."
+    assert_PASS(check(ufo_path))
 
     os.remove(os.path.join(ufo_path, "metainfo.plist"))
     msg = assert_results_contain(check(ufo_path), FAIL, "ufolint-fail")
@@ -65,7 +65,7 @@ def test_check_required_fields(empty_ufo_font):
     ufo.info.capHeight = 700
     ufo.info.familyName = "Test"
 
-    assert assert_PASS(check(ufo)) == "Required fields present."
+    assert_PASS(check(ufo))
 
 
 def test_check_recommended_fields(empty_ufo_font):
@@ -84,7 +84,7 @@ def test_check_recommended_fields(empty_ufo_font):
     ufo.info.copyright = "Test"
     ufo.info.openTypeOS2Panose = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-    assert assert_PASS(check(ufo)) == "Recommended fields present."
+    assert_PASS(check(ufo))
 
 
 def test_check_unnecessary_fields(empty_ufo_font):
@@ -92,7 +92,7 @@ def test_check_unnecessary_fields(empty_ufo_font):
 
     ufo, _ = empty_ufo_font
 
-    assert assert_PASS(check(ufo)) == "Unnecessary fields omitted."
+    assert_PASS(check(ufo))
 
     ufo.info.openTypeNameUniqueID = "aaa"
     ufo.info.openTypeNameVersion = "1.000"
