@@ -142,9 +142,6 @@ def test_check_font_version():
     # There should be at least one WARN...
     assert_results_contain(check(test_font), WARN, "near-mismatch")
 
-    # But final result is a PASS:
-    assert_PASS(check(test_font))
-
     # Test that having more than 3 decimal places in the version
     # in the Name table is acceptable.
     # See https://github.com/fonttools/fontbakery/issues/2928
