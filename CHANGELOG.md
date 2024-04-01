@@ -2,13 +2,17 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.12.0 (2024-Mar-??)
-  - Documentation for profile and check writers has been rewritten.
-  - And also includes the changes from the previous release-candidates:
+## Upcoming release: 0.12.0 (2024-Apr-??)
+  - Includes the changes from the previous release-candidates:
     - v0.12.0a1 (2024-Feb-14)
     - v0.12.0a2 (2024-Feb-21)
     - v0.12.0a3 (2024-Mar-13)
     - v0.12.0a4 (2024-Mar-15)
+    - v0.12.0a5 (2024-Apr-01)
+
+
+## 0.12.0a5 (2024-Apr-01)
+  - Documentation for profile and check writers has been rewritten.
   - Implement a basic tool to update regression test files. See https://github.com/fonttools/fontbakery/discussions/4589 for details. Run like `python -m fontbakery.update_shaping_tests input.toml output.json path/to/*.ttf`.
 
 ### New checks
