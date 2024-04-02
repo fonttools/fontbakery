@@ -284,37 +284,33 @@ def remote_styles(font):
     """Get a dictionary of TTFont objects of all font files of
     a given family as currently hosted at Google Fonts.
     """
-    if not font.context.network:
-        return
+    from fontbakery.utils import download_file
+    from fontTools.ttLib import TTFont
+    import json
+    import requests
 
-    def download_family_from_Google_Fonts(familyname):
-        """Return a zipfile containing a font family hosted on fonts.google.com"""
-        from zipfile import ZipFile
-        from fontbakery.utils import download_file
-
-        url_prefix = "https://fonts.google.com/download?family="
-        url = "{}{}".format(url_prefix, familyname.replace(" ", "+"))
-        return ZipFile(download_file(url))  # pylint: disable=R1732
-
-    def fonts_from_zip(zipfile):
-        """return a list of fontTools TTFonts"""
-        from fontTools.ttLib import TTFont
-        from io import BytesIO
-
-        fonts = []
-        for file_name in zipfile.namelist():
-            if file_name.lower().endswith(".ttf"):
-                file_obj = BytesIO(zipfile.open(file_name).read())
-                fonts.append([file_name, TTFont(file_obj)])
-        return fonts
-
-    if not font.listed_on_gfonts_api:
+    if not font.context.network or not font.listed_on_gfonts_api:
         return None
 
-    remote_fonts_zip = download_family_from_Google_Fonts(font.familyname_with_spaces)
-    rstyles = {}
+    # download_family_from_Google_Fonts
+    dl_url = "https://fonts.google.com/download/list?family={}"
+    family = font.familyname_with_spaces
+    url = dl_url.format(family.replace(" ", "%20"))
+    data = json.loads(requests.get(url, timeout=10).text[5:])
+    remote_fonts = []
+    for item in data["manifest"]["fileRefs"]:
+        filename = item["filename"]
+        dl_url = item["url"]
+        if "static" in filename:
+            continue
+        if not filename.endswith(("otf", "ttf")):
+            continue
+        file_obj = download_file(dl_url)
+        if file_obj:
+            remote_fonts.append([filename, TTFont(file_obj)])
 
-    for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
+    rstyles = {}
+    for remote_filename, remote_font in remote_fonts:
         remote_style = os.path.splitext(remote_filename)[0]
         if "-" in remote_style:
             remote_style = remote_style.split("-")[1]
