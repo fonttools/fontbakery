@@ -13,6 +13,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## 0.12.0a6 (2024-Apr-04)
+### Release notes
+  - Temporarily pin **glyphsets** dependency to **v0.6.14** to workaround API breaking change. (https://github.com/googlefonts/glyphsets/commit/bfd0bb637)
+
 ### Changes to existing checks
 #### On the Google Fonts profile
   - **EXPERIMENTAL [com.google.fonts/check/varfont/instances_in_order]:** Fix an ERROR caused by a list IndexError (issue #4626)
