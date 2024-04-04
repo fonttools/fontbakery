@@ -10,6 +10,12 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a4 (2024-Mar-15)
     - v0.12.0a5 (2024-Apr-02)
     - v0.12.0a6 (2024-Apr-04)
+    - v0.12.0a7 (2024-Apr-04)
+
+
+## 0.12.0a7 (2024-Apr-04)
+### Release notes
+  - Unpin **glyphsets** dependency.
 
 
 ## 0.12.0a6 (2024-Apr-04)
