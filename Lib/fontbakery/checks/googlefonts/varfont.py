@@ -653,7 +653,7 @@ def com_google_fonts_check_varfont_instances_in_order(ttFont, config):
     # Partition into sub-lists based on the other axes values.
     # e.g. "Thin Regular", "Bold Regular", "Thin Condensed", "Bold Condensed"
     # becomes [ ["Thin Regular", "Bold Regular"], ["Thin Condensed", "Bold Condensed"] ]
-    sublists = []
+    sublists = [[]]
     last_non_wght = {}
     for coord in coords:
         non_wght = {k: v for k, v in coord.items() if k != "wght"}
