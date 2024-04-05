@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a5 (2024-Apr-02)
     - v0.12.0a6 (2024-Apr-04)
     - v0.12.0a7 (2024-Apr-04)
+  - Fix multithreading conflict when using `--auto-jobs` and running the [com.google.fonts/check/ttx_roundtrip] check (#4481)
 
 
 ## 0.12.0a7 (2024-Apr-04)
