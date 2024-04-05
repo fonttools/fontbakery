@@ -1352,64 +1352,55 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
 def com_google_fonts_check_ttx_roundtrip(font):
     """Checking with fontTools.ttx"""
     from fontTools import ttx
+    import subprocess
     import sys
     import tempfile
 
+    font_file = font.file
     if isinstance(font, TTCFont):
         ttFont = ttx.TTFont(font.file, fontNumber=font.index)
-    else:
-        ttFont = ttx.TTFont(font.file)
+        ttf_fd, font_file = tempfile.mkstemp()
+        os.close(ttf_fd)
+        ttFont.save(font_file)
     failed = False
-    fd, xml_file = tempfile.mkstemp()
-    os.close(fd)
+    xml_fd, xml_file = tempfile.mkstemp()
+    os.close(xml_fd)
 
-    class TTXLogger:
-        msgs = []
+    export_process = subprocess.Popen(
+        # TTX still emits warnings & errors even when -q (quiet) is passed
+        [sys.executable, "-m", "fontTools.ttx", "-qo", xml_file, font.file],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    (export_stdout, export_stderr) = export_process.communicate()
+    export_error_msgs = []
+    for line in export_stdout.splitlines() + export_stderr.splitlines():
+        if line not in export_error_msgs:
+            export_error_msgs.append(line)
 
-        def __init__(self):
-            self.original_stderr = sys.stderr
-            self.original_stdout = sys.stdout
-            sys.stderr = self
-            sys.stdout = self
-
-        def write(self, data):
-            if data not in self.msgs:
-                self.msgs.append(data)
-
-        def restore(self):
-            sys.stderr = self.original_stderr
-            sys.stdout = self.original_stdout
-
-    from xml.parsers.expat import ExpatError
-
-    try:
-        logger = TTXLogger()
-        ttFont.saveXML(xml_file)
-        export_error_msgs = logger.msgs
-
-        if export_error_msgs:
-            failed = True
-            yield INFO, (
+    if export_error_msgs:
+        failed = True
+        yield (
+            INFO,
+            (
                 "While converting TTF into an XML file,"
                 " ttx emited the messages listed below."
-            )
-            for msg in export_error_msgs:
-                yield FAIL, msg.strip()
+            ),
+        )
+        for msg in export_error_msgs:
+            yield FAIL, msg.strip()
 
-        f = ttx.TTFont()
-        f.importXML(xml_file)
-        import_error_msgs = [msg for msg in logger.msgs if msg not in export_error_msgs]
+    import_process = subprocess.Popen(
+        # TTX still emits warnings & errors even when -q (quiet) is passed
+        [sys.executable, "-m", "fontTools.ttx", "-qo", os.devnull, xml_file],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    (import_stdout, import_stderr) = import_process.communicate()
 
-        if len(import_error_msgs):
-            failed = True
-            yield INFO, (
-                "While importing an XML file and converting it back to TTF,"
-                " ttx emited the messages listed below."
-            )
-            for msg in import_error_msgs:
-                yield FAIL, msg.strip()
-        logger.restore()
-    except ExpatError as e:
+    if import_process.returncode != 0:
         failed = True
         yield FAIL, (
             "TTX had some problem parsing the generated XML file."
@@ -1421,8 +1412,22 @@ def com_google_fonts_check_ttx_roundtrip(font):
             " causes TTX to generate corrupt XML files in those cases."
             " So, check the entries of the name table and remove any control"
             " chars that you find there. The full ttx error message was:\n"
-            f"======\n{e}\n======"
+            f"======\n{import_stderr or import_stdout}\n======"
         )
+
+    import_error_msgs = []
+    for line in import_stdout.splitlines() + import_stderr.splitlines():
+        if line not in import_error_msgs:
+            import_error_msgs.append(line)
+
+    if len(import_error_msgs):
+        failed = True
+        yield INFO, (
+            "While importing an XML file and converting it back to TTF,"
+            " ttx emited the messages listed below."
+        )
+        for msg in import_error_msgs:
+            yield FAIL, msg.strip()
 
     if not failed:
         yield PASS, "Hey! It all looks good!"
@@ -1430,6 +1435,8 @@ def com_google_fonts_check_ttx_roundtrip(font):
     # and then we need to cleanup our mess...
     if os.path.exists(xml_file):
         os.remove(xml_file)
+    if font_file != font.file and os.path.exists(font_file):
+        os.remove(font_file)
 
 
 @check(
