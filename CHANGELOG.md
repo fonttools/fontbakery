@@ -13,6 +13,10 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a7 (2024-Apr-04)
   - Fix multithreading conflict when using `--auto-jobs` and running the [com.google.fonts/check/ttx_roundtrip] check (#4481)
 
+### Changes to existing checks
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/kerning_for_non_ligated_sequences]:** Correctly generate the list of ligated sequences the test warns about and do not include unligated sequences in it. (issue #2227)
+
 
 ## 0.12.0a7 (2024-Apr-04)
 ### Release notes
