@@ -3155,12 +3155,24 @@ def test_check_kerning_for_non_ligated_sequences():
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
     assert "Unfulfilled Conditions: has_kerning_info" in msg
 
-    # Finally, SourceSansPro Bold is known to not kern the non-ligated glyph sequences.
+    # SourceSansPro Bold is known to not kern the non-ligated glyph sequences.
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
     msg = assert_results_contain(check(ttFont), WARN, "lacks-kern-info")
     assert msg == (
         "GPOS table lacks kerning info for the following non-ligated sequences:\n\n"
-        "\t- f + f\n\n\t- f + t\n\n\t- t + f"
+        "\t- f + f\n\n\t- f + t"
+    )
+
+    # Simulate handling of multi-component ligatures
+    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf")
+    msg = assert_results_contain(
+        check(MockFont(file=font, ligatures={"f": [["f", "i"], ["f", "l"]]})),
+        WARN,
+        "lacks-kern-info",
+    )
+    assert msg == (
+        "GPOS table lacks kerning info for the following non-ligated sequences:\n\n"
+        "\t- f + f\n\n\t- f + i\n\n\t- f + l"
     )
 
 
