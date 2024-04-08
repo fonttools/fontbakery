@@ -1420,7 +1420,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
         if line not in import_error_msgs:
             import_error_msgs.append(line)
 
-    if len(import_error_msgs):
+    if import_error_msgs:
         failed = True
         yield INFO, (
             "While importing an XML file and converting it back to TTF,"
