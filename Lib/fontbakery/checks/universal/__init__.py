@@ -1362,7 +1362,7 @@ def com_google_fonts_check_ttx_roundtrip(font):
         ttf_fd, font_file = tempfile.mkstemp()
         os.close(ttf_fd)
         ttFont.save(font_file)
-    failed = False
+
     xml_fd, xml_file = tempfile.mkstemp()
     os.close(xml_fd)
 
@@ -1380,7 +1380,6 @@ def com_google_fonts_check_ttx_roundtrip(font):
             export_error_msgs.append(line)
 
     if export_error_msgs:
-        failed = True
         yield (
             INFO,
             (
@@ -1401,7 +1400,6 @@ def com_google_fonts_check_ttx_roundtrip(font):
     (import_stdout, import_stderr) = import_process.communicate()
 
     if import_process.returncode != 0:
-        failed = True
         yield FAIL, (
             "TTX had some problem parsing the generated XML file."
             " This most likely mean there's some problem in the font."
@@ -1421,16 +1419,12 @@ def com_google_fonts_check_ttx_roundtrip(font):
             import_error_msgs.append(line)
 
     if import_error_msgs:
-        failed = True
         yield INFO, (
             "While importing an XML file and converting it back to TTF,"
             " ttx emited the messages listed below."
         )
         for msg in import_error_msgs:
             yield FAIL, msg.strip()
-
-    if not failed:
-        yield PASS, "Hey! It all looks good!"
 
     # and then we need to cleanup our mess...
     if os.path.exists(xml_file):
