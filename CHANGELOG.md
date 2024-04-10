@@ -11,6 +11,7 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a5 (2024-Apr-02)
     - v0.12.0a6 (2024-Apr-04)
     - v0.12.0a7 (2024-Apr-04)
+  - Restablish ordering of results on github markdown reports, showing the more severe results (such as FAILs) at the top. (issue #4600)
 
 ### Changes to existing checks
 #### On the Universal profile
