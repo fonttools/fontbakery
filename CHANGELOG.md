@@ -2,8 +2,16 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.12.0 (2024-Apr-??)
-  - Includes the changes from the previous release-candidates:
+## Upcoming release: 0.12.1 (2024-Apr-??)
+  - ...
+
+
+## 0.12.0 (2024-Apr-12)
+  - Restablish ordering of results on github markdown reports, showing the more severe results (such as FAILs) at the top. (issue #4600)
+  - Set exit code when called from `__main__.py`. (issue #4633)
+  - Support setting `configuration` in input TOML for `update_shaping_tests`. (issue #4635)
+  - Fix Github Markdown syntax. (issue #4627)
+  - And also includes the changes from the previous release-candidates:
     - v0.12.0a1 (2024-Feb-14)
     - v0.12.0a2 (2024-Feb-21)
     - v0.12.0a3 (2024-Mar-13)
@@ -11,10 +19,6 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a5 (2024-Apr-02)
     - v0.12.0a6 (2024-Apr-04)
     - v0.12.0a7 (2024-Apr-04)
-  - Restablish ordering of results on github markdown reports, showing the more severe results (such as FAILs) at the top. (issue #4600)
-  - Set exit code when called from `__main__.py`. (issue #4633)
-  - Support setting `configuration` in input TOML for `update_shaping_tests`. (issue #4635)
-  - Fix Github Markdown syntax. (issue #4627)
 
 ### Changes to existing checks
 #### On the Universal profile
