@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Restablish ordering of results on github markdown reports, showing the more severe results (such as FAILs) at the top. (issue #4600)
   - Set exit code when called from `__main__.py`. (issue #4633)
   - Support setting `configuration` in input TOML for `update_shaping_tests`. (issue #4635)
+  - Fix Github Markdown syntax. (issue #4627)
 
 ### Changes to existing checks
 #### On the Universal profile
