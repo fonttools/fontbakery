@@ -155,4 +155,5 @@ jobs:
     - name: Run ${{matrix.profile.description}}
       run: >-
         fontbakery check-${{ matrix.profile.name }}
+        --error-code-on ERROR
         ${{ matrix.profile.args }}
