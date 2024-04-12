@@ -68,14 +68,17 @@ def main(args: List[str] | None = None) -> None:
 
 
 def update_shaping_output(
-    shaping_input: ShapingInput, font_paths: List[Path]
+    shaping_input: ShapingInputToml, font_paths: List[Path]
 ) -> ShapingOutput:
     tests: List[TestDefinition] = []
+    shaping_output = {"tests": tests}
+    if "configuration" in shaping_input:
+        shaping_output["configuration"] = shaping_input["configuration"]
 
     for font_path in font_paths:
         shaper = vhb.Vharfbuzz(font_path)
         font = TTFont(font_path)
-        for text in shaping_input["text"]:
+        for text in shaping_input["input"]["text"]:
             if "fvar" in font:
                 fvar: table__f_v_a_r = font["fvar"]  # type: ignore
                 for instance in fvar.instances:
@@ -83,15 +86,15 @@ def update_shaping_output(
                         shaper,
                         font_path,
                         text,
-                        shaping_input,
+                        shaping_input["input"],
                         instance.coordinates,
                     )
                     tests.append(run)
             else:
-                run = shape_run(shaper, font_path, text, shaping_input)
+                run = shape_run(shaper, font_path, text, shaping_input["input"])
                 tests.append(run)
 
-    return {"tests": tests}
+    return shaping_output
 
 
 def shape_run(
@@ -133,7 +136,7 @@ def shape_run(
     return test_definition
 
 
-def load_shaping_input(input_path: Path) -> ShapingInput:
+def load_shaping_input(input_path: Path) -> ShapingInputToml:
     with input_path.open("rb") as tf:
         try:
             shaping_input: ShapingInputToml = tomllib.load(tf)  # type: ignore
@@ -159,10 +162,15 @@ def load_shaping_input(input_path: Path) -> ShapingInput:
         input_definition.get("comparison_mode", "full")
     )
 
-    return input_definition
+    shaping_input["input"] = input_definition
+    if configuration := shaping_input.get("configuration"):
+        shaping_input["configuration"] = configuration
+
+    return shaping_input
 
 
 class ShapingInputToml(TypedDict):
+    configuration: NotRequired[Dict[str, Any]]
     input: ShapingInput
 
 

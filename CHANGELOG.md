@@ -13,6 +13,7 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a7 (2024-Apr-04)
   - Restablish ordering of results on github markdown reports, showing the more severe results (such as FAILs) at the top. (issue #4600)
   - Set exit code when called from `__main__.py`. (issue #4633)
+  - Support setting `configuration` in input TOML for `update_shaping_tests`. (issue #4635)
 
 ### Changes to existing checks
 #### On the Universal profile
