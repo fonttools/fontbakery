@@ -270,7 +270,6 @@ def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
         [...] Valid numeric range: Values must be in the range 0 to 1.
     """,
     conditions=["is_variable_font", "has_ital_axis"],
-    experimental="Since 2024/Jan/12",
 )
 def com_typenetwork_check_varfont_ital_range(ttFont, ital_axis):
     """The variable font 'ital' (Italic) axis coordinates
@@ -622,7 +621,6 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
         the ranges of variable axes must be identical.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4445",
-    experimental="Since 2024/Jan/30",
     conditions=["VFs"],
 )
 def com_google_fonts_check_varfont_family_axis_ranges(ttFonts):

@@ -20,6 +20,17 @@ A more detailed list of changes is available in the corresponding milestones for
     - v0.12.0a6 (2024-Apr-04)
     - v0.12.0a7 (2024-Apr-04)
 
+### Promotion of previously experimental checks
+  After being marked as **experimental** for 9 weeks since the v0.11.1 release, these checks are now made effective.
+  For more details, see their previous entries on the changelog.
+
+#### Made effective on the Open Type profile
+  - * **com.typenetwork/check/varfont/ital_range** (PR #4402)
+  - * **com.google.fonts/check/varfont/family_axis_ranges** (issue #4554)
+
+#### Made effective on the Universal profile
+  - * **com.google.fonts/check/tabular_kerning** (issue #4440)
+  - * **com.google.fonts/check/case_mapping** (issue #3230)
 ### Changes to existing checks
 #### On the Universal profile
   - **[com.google.fonts/check/ttx_roundtrip]:** Fix multithreading conflict when using `--auto-jobs` and running this check (issue #4481)

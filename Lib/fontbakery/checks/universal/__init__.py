@@ -2398,7 +2398,6 @@ def com_google_fonts_check_math_signs_width(ttFont):
         not intended to be used as tabular numerals.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4440",
-    experimental="Since 2024/Jan/30",
 )
 def com_google_fonts_check_tabular_kerning(ttFont):
     """Check tabular widths don't have kerning."""
@@ -2763,7 +2762,6 @@ def com_google_fonts_check_alt_caron(ttFont):
         (but only when unicode supports case-mapping).
     """,
     proposal="https://github.com/googlefonts/fontbakery/issues/3230",
-    experimental="Since 2024/Jan/19",
     severity=10,  # if a font shows tofu in caps but not in lowercase
     #               then it can be considered broken.
 )
