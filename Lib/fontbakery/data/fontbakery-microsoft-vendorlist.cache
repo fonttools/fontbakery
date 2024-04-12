@@ -53,6 +53,7 @@
 
 
 
+
 <html
 	class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light"
 	lang="en-us"
@@ -91,12 +92,12 @@
 <meta name="feedback_help_link_url" content="" />
 <meta name="feedback_product_url" content="" />
 <meta name="feedback_system" content="GitHub" />
-<meta name="git_commit_id" content="fd270c67c5a23040cdd865536512558cbb733471" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/fd270c67c5a23040cdd865536512558cbb733471/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="34a3fb967097328407260d8a0ea5fdfc47cf9d78" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/34a3fb967097328407260d8a0ea5fdfc47cf9d78/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="03/15/2024" />
+<meta name="ms.date" content="04/15/2024" />
 <meta name="ms.service" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -107,8 +108,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2024-03-15 10:59 PM" />
-<meta name="word_count" content="4793" />
+<meta name="updated_at" content="2024-04-05 10:37 PM" />
+<meta name="word_count" content="4806" />
 
 
 	<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
@@ -138,7 +139,7 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/c8599321.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/281396a.site-ltr.css ">
 
 	
 
@@ -205,7 +206,7 @@
 			id="adobe-target-script"
 			type="application/javascript"
 		/>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/9aed506d.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/81c583a1.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -395,7 +396,7 @@ Table of contents						</span>
 														class="collection justify-content-flex-start button button-clear button-sm has-inner-focus button-block display-none-tablet"
 														data-list-type="collection"
 														data-bi-name="collection"
-														title="Add to collection"
+														title="Save"
 														data-page-action-item="overflow-mobile"
 														data-check-hidden="true"
 														data-popover-close>
@@ -404,6 +405,24 @@ Table of contents						</span>
 														</span>
 														<span class="collection-status">Save</span>
 													</button>
+
+			 										
+													<button
+													 	type="button"
+														class="collection justify-content-flex-start button button-clear button-sm has-inner-focus button-block display-none-tablet"
+														data-list-type="plan"
+														data-bi-name="plan"
+														title="Add to Plan"
+														data-page-action-item="overflow-mobile"
+														data-check-hidden="true"
+														data-popover-close
+														hidden>
+														<span class="icon" aria-hidden="true">
+															<span class="docon docon-circle-addition"></span>
+														</span>
+														<span class="plan-status">Add to Plan</span>
+													</button>
+
 
 													<a	data-contenteditbtn
 														class="button button-clear button-block button-sm has-inner-focus justify-content-flex-start text-decoration-none display-none-tablet"
@@ -498,7 +517,7 @@ Table of contents						</span>
 														<li>
 Article														</li>
 															<li class="visibility-hidden-visual-diff">
-																<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-03-15T08:00:00Z" data-article-date-source="calculated">03/15/2024</time>
+																<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-04-15T08:00:00Z" data-article-date-source="calculated">04/15/2024</time>
 															</li>
 														<li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
@@ -744,6 +763,10 @@ Article														</li>
 <td>Alireza Alipour</td>
 </tr>
 <tr>
+<td>AARN</td>
+<td><a href="https://github.com/Aaron-212" data-linktype="external">Aaron212</a></td>
+</tr>
+<tr>
 <td>AAT</td>
 <td>AhmetAltunType</td>
 </tr>
@@ -785,7 +808,7 @@ Article														</li>
 </tr>
 <tr>
 <td>ABYM</td>
-<td><a href="http://www.abyme.net" data-linktype="external">ABYME</a></td>
+<td><a href="http://www.abyme.net" data-linktype="external">Abyme</a></td>
 </tr>
 <tr>
 <td>AC</td>
@@ -1235,10 +1258,6 @@ Article														</li>
 <td><a href="https://kara-lynn.info/pages/topo-typo.html" data-linktype="external">Topography Typography</a></td>
 </tr>
 <tr>
-<td>BECH</td>
-<td><a href="https://www.bechtype.com/" data-linktype="external">Bech Type</a></td>
-</tr>
-<tr>
 <td>BEN</td>
 <td><a href="http://benhodosi.com/" data-linktype="external">Ben Hodosi</a></td>
 </tr>
@@ -1534,6 +1553,10 @@ Article														</li>
 <td>Clipartdesign</td>
 </tr>
 <tr>
+<td>CAF</td>
+<td><a href="http://blog.naver.com/sf51244" data-linktype="external">CHOA FONT</a></td>
+</tr>
+<tr>
 <td>CAFE</td>
 <td><a href="https://fonts.cafe24.com/" data-linktype="external">Cafe24 Corp.</a></td>
 </tr>
@@ -1628,6 +1651,10 @@ Article														</li>
 <tr>
 <td>CFF</td>
 <td><a href="http://www.characters.nl/" data-linktype="external">Characters Font Foundry</a></td>
+</tr>
+<tr>
+<td>CHAI</td>
+<td><a href="https://tallchai.com" data-linktype="external">Tall Chai</a></td>
 </tr>
 <tr>
 <td>CHIC</td>
@@ -2074,8 +2101,7 @@ Article														</li>
     </tr>
 <tr>
 <td>EAFN</td>
-<td><a href="https://eafonts.com/" data-linktype="external">EA FONTS</a></td>
-</tr>
+<td>
 <tr>
 <td>EAST</td>
 <td><a href="https://www.eastofrome.com/" data-linktype="external">East of Rome</a></td>
@@ -2171,6 +2197,10 @@ Article														</li>
 <tr>
 <td>ERKO</td>
 <td><a href="http://karamemet.com/" data-linktype="external">Erkin Karamemet</a></td>
+</tr>
+<tr>
+<td>ESAD</td>
+<td><a href="https://xcicero.esad-gv.net/" data-linktype="external">X Cicéro</a></td>
 </tr>
 <tr>
 <td>ESD</td>
@@ -2929,6 +2959,10 @@ Article														</li>
 <tr>
 <td>HJZ</td>
 <td><a href="http://www.zinken.net" data-linktype="external">Hans J. Zinken</a></td>
+</tr>
+<tr>
+<td>HK</td>
+<td><a href="https://hadarkatan.co.il/" data-linktype="external">Hadar Katan</a></td>
 </tr>
 <tr>
 <td>HKSY</td>
@@ -4549,6 +4583,10 @@ Article														</li>
 <td><a href="https://www.pitscheider.net/" data-linktype="external">Nick Pitscheider</a></td>
 </tr>
 <tr>
+<td>MRMN</td>
+<td><a href="https://www.marman.mx/" data-linktype="external">M#RM#N FONTS</a></td>
+</tr>
+<tr>
 <td>NRON</td>
 <td>Nurrontype</td>
 </tr>
@@ -5002,8 +5040,7 @@ Article														</li>
 </tr>
 <tr>
 <td>RAWR</td>
-<td><a href="https://melvian.xyz/foundry/" data-linktype="external">Melvian Foundry</a></td>
-</tr>
+<td>
 <tr>
 <td>RDGR</td>
 <td><a href="http://www.philippneumeyer.com/" data-linktype="external">Rüdiger</a></td>
@@ -6344,6 +6381,10 @@ Article														</li>
 <tr>
 <td>Y&Y</td>
 <td>Y&Y, Inc.</td>
+</tr>
+<tr>
+<td>YADS</td>
+<td><a href="https://github.com/YADAMSS/Matemasie-Font" data-linktype="external">YA Type</a></td>
 </tr>
 <tr>
 <td>YDI</td>
