@@ -3,7 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.12.1 (2024-Apr-??)
-  - ...
+  - Temporarily pin glyphsets dependency to version v0.6.17 until a failing assert is addressed (issue #4639)
 
 
 ## 0.12.0 (2024-Apr-12)
