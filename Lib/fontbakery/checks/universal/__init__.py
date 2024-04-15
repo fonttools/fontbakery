@@ -2398,6 +2398,7 @@ def com_google_fonts_check_math_signs_width(ttFont):
         not intended to be used as tabular numerals.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4440",
+    experimental="Since 2024/Jan/30",
 )
 def com_google_fonts_check_tabular_kerning(ttFont):
     """Check tabular widths don't have kerning."""
