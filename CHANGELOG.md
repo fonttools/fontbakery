@@ -2,8 +2,13 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.12.1 (2024-Apr-??)
+## Upcoming release: 0.12.2 (2024-Apr-??)
+  - ...
+
+
+## Upcoming release: 0.12.1 (2024-Apr-15)
   - Temporarily pin glyphsets dependency to version v0.6.17 until a failing assert is addressed (issue #4639)
+  - **com.google.fonts/check/tabular_kerning** (Universal profile) will remain experimental for a bit longer (issue #4640)
 
 
 ## 0.12.0 (2024-Apr-12)
