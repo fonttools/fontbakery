@@ -27,3 +27,4 @@ UnifrakturMaguntia
 SignWriting # seen in "Noto Sans SignWriting"
 WindSong
 ADLaM
+YouTube # seen in "YouTube Sans" 
