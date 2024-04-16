@@ -1,7 +1,6 @@
 """
 Checks for Type Network <https://typenetwork.com/>
 """
-
 import unicodedata
 import string
 
@@ -617,8 +616,8 @@ def tn_expected_os2_weight(font):
         return None
     # Weight name to value mapping:
     TN_EXPECTED_WEIGHTS = {
-        "Thin": 100,
-        "ExtraLight": 200,
+        "Thin": [100, 250],
+        "ExtraLight": [200, 275],
         "Light": 300,
         "Regular": 400,
         "Medium": 500,
@@ -669,6 +668,7 @@ def com_typenetwork_check_usweightclass(font, tn_expected_os2_weight):
     os2_value = font.ttFont["OS/2"].usWeightClass
 
     fail_message = "OS/2 usWeightClass is '{}' when it should be '{}'."
+    warn_message = "OS/2 usWeightClass is '{}' it will be better if it is '{}'."
     no_value_message = "OS/2 usWeightClass is '{}' and weight name is '{}'."
 
     if font.is_variable_font:
@@ -697,24 +697,24 @@ def com_typenetwork_check_usweightclass(font, tn_expected_os2_weight):
         yield INFO, Message("no-value", no_value_message.format(os2_value, weight_name))
 
     elif "Thin" == weight_name.split(" "):
-        if font.is_ttf and os2_value not in [100, 250]:
+        if os2_value not in expected_value:
             failed = True
             yield FAIL, Message(
                 "bad-value", fail_message.format(os2_value, expected_value)
             )
-        if font.is_cff and os2_value != 250:
+        if os2_value == 100:
             failed = True
-            yield FAIL, Message("bad-value", fail_message.format(os2_value, 250))
+            yield WARN, Message("warn-value", warn_message.format(os2_value, 250))
 
     elif "ExtraLight" in weight_name.split(" "):
-        if font.is_ttf and os2_value not in [200, 275]:
+        if os2_value not in expected_value:
             failed = True
             yield FAIL, Message(
                 "bad-value", fail_message.format(os2_value, expected_value)
             )
-        if font.is_cff and os2_value != 275:
+        if os2_value == 200:
             failed = True
-            yield FAIL, Message("bad-value", fail_message.format(os2_value, 275))
+            yield WARN, Message("warn-value", warn_message.format(os2_value, 275))
 
     elif os2_value != expected_value:
         failed = True
