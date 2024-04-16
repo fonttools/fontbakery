@@ -1,5 +1,5 @@
 PROFILE = {
-    "include_profiles": ["fontval"],
+    # "include_profiles": ["fontval"], # Temporary Disabled
     "sections": {
         "Type Network": [
             "com.typenetwork/check/glyph_coverage",

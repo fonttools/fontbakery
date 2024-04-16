@@ -6,6 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the TypeNetwork profile
   - **[com.typenetwork/check/usweightclass]:** Update `tn_expected_os2_weight` condition and FAIL/WARN results (PR #4643)
+  - Also temporarily removed the FontVal check. (PR #4643)
 
 
 ## 0.12.1 (2024-Apr-15)
