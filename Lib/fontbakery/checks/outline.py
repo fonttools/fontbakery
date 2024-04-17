@@ -54,7 +54,7 @@ def close_but_not_on(yExpected, yTrue, tolerance):
 )
 def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config):
     """Are there any misaligned on-curve points?"""
-        
+
     warnings = []
 
     alignments = {
@@ -65,12 +65,12 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
 
     # The x-height and cap-height checks (which are useful)
     # use the xHeight and CapHeight fields in the OS/2 table.
-    # Those fields are only available from version 4 onwards,
-    # which any modern font will have, but some historical
-    # or otherwise esoteric fonts may have an earlier versioned
-    # OS/2 table.
+    # Those fields are available from version 2 onwards.
+    # Any modern font will generally be version 4 or higher, but
+    # some historical or otherwise esoteric fonts may have an
+    # earlier versioned OS/2 table.
     os2version = ttFont["OS/2"].version
-    if os2version >= 4:
+    if os2version >= 2:
         alignments["x-height"] = ttFont["OS/2"].sxHeight
         alignments["cap-height"] = ttFont["OS/2"].sCapHeight
     else:
@@ -78,7 +78,7 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
             "skip-cap-x-height-alignment",
             "x-height and cap-height checks are skipped"
             f" because OS/2 table version is only {os2version}"
-            " and version >= 4 is required for those checks."
+            " and version >= 2 is required for those checks.",
         )
 
     for glyph, outlines in outlines_dict.items():

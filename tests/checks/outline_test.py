@@ -6,6 +6,8 @@ from fontbakery.codetesting import (
     assert_PASS,
 )
 
+from fontTools.ttLib import TTFont
+
 
 def test_check_outline_alignment_miss():
     """Check for misaligned points."""
@@ -18,6 +20,41 @@ def test_check_outline_alignment_miss():
     assert "A (U+0041): X=3.0,Y=-2.0 (should be at baseline 0?)" in messages
 
     # TODO: PASS
+
+
+def test_check_outline_alignment_os2_old():
+    """Test that the outline_alignment_miss check works when
+    the OS/2 table has a low version and does not have the
+    xHeight and CapHeight fields that are normally used."""
+
+    check = CheckTester("com.google.fonts/check/outline_alignment_miss")
+
+    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
+
+    assert ttFont["OS/2"].version == 3
+
+    results = check(ttFont)
+    assert not any([r.status == WARN for r in results])
+    # Passes (but only because there are too many near misses)
+    assert_PASS(check(ttFont))
+
+    # Downgrade OS/2 version
+    ttFont["OS/2"].version = 2
+
+    results = check(ttFont)
+    assert not any([r.status == WARN for r in results])
+    # Passes (but only because there are too many near misses)
+    assert_PASS(check(ttFont))
+
+    # Downgrade OS/2 to version 1
+    ttFont["OS/2"].version = 1
+    del ttFont["OS/2"].sxHeight
+    del ttFont["OS/2"].sCapHeight
+    del ttFont["OS/2"].usDefaultChar
+    del ttFont["OS/2"].usBreakChar
+    del ttFont["OS/2"].usMaxContext
+
+    message = assert_results_contain(check(ttFont), WARN, "skip-cap-x-height-alignment")
 
 
 def test_check_outline_short_segments():
