@@ -2,7 +2,11 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 
-## Upcoming release: 0.12.2 (2024-Apr-??)
+## Upcoming release: 0.12.3 (2024-Apr-??)
+  - ...
+
+
+## 0.12.2 (2024-Apr-17)
   - Unpin `glyphsets` dependency and fix `fontbakery.com` (issue #4639)
 
 ### Changes to existing checks
