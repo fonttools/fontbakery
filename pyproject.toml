@@ -24,7 +24,7 @@ authors = [
     { name = "Yanone" },
 ]
 maintainers = [
-	{ name = "Felipe Sanches", email = "juca@members.fsf.org" }
+	{ name = "Felipe Sanches", email = "juca@members.fsf.org" },
 ]
 
 dependencies = [
@@ -44,7 +44,7 @@ dependencies = [
 	"beziers >= 0.5.0, == 0.5.*",
 	"uharfbuzz",
 	"vharfbuzz >= 0.2.0, == 0.2.*",
-  "typing_extensions ; python_version < '3.11'",
+    "typing_extensions ; python_version < '3.11'",
 ]
 
 [project.optional-dependencies]
@@ -55,7 +55,7 @@ dependencies = [
 #       (this way, the maintainer only needs to edit a single entry)
 
 beautifulsoup4 = [
-    "beautifulsoup4 >= 4.7.1"
+    "beautifulsoup4 >= 4.7.1",
     # For parsing registered vendor IDs
     # com.google.fonts/check/vendor_id produces an ERROR if Beautiful Soup 4
     # version 4.0.1 to 4.6.1 or 4.7.0 is installed because of bugs in Beautiful Soup
@@ -69,7 +69,7 @@ shaperglot = [
 ]
 
 ufo2ft = [
-    "ufo2ft >= 2.25.2"
+    "ufo2ft >= 2.25.2",
     # 2.25.2 updated the script lists for Unicode 14.0
 ]
 
@@ -100,7 +100,7 @@ fontval = [
 ]
 
 fontwerk = [
-    "fontbakery[googlefonts]"
+    "fontbakery[googlefonts]",
 ]
 
 googlefonts = [
@@ -126,7 +126,7 @@ googlefonts = [
 iso15008 = []
 
 notofonts = [
-    "fontbakery[googlefonts]"
+    "fontbakery[googlefonts]",
 ]
 
 # FIXME: This is not a vendor-specific profile!
@@ -200,7 +200,7 @@ tests = [
 fontbakery = "fontbakery.cli:main"
 
 [tool.setuptools.packages.find]
-where =["Lib"]
+where = ["Lib"]
 
 [tool.setuptools_scm]
 write_to = "Lib/fontbakery/_version.py"
@@ -231,7 +231,7 @@ filterwarnings = [
 # ============================================================================
 [tool.pylint.master]
 ignore-patterns = ".*_pb2.py"
-jobs = 0                                                     # Specifying 0 will auto-detect the number of processors available to use
+jobs = 0     # Specifying 0 will auto-detect the number of processors available to use
 logging-format-style = "new"
 msg-template = "{msg_id} ({symbol}) {path} @ {line} — {msg}"
 output-format = "colorized"
