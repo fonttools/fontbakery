@@ -8,6 +8,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.typenetwork/check/usweightclass]:** Update `tn_expected_os2_weight` condition and FAIL/WARN results (PR #4643)
   - Also temporarily removed the FontVal check. (PR #4643)
 
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/glyphsets/shape_languages]:** Refactor shape_languages and avoid repetition of messages. (issue #4646)
+
 
 ## 0.12.1 (2024-Apr-15)
   - Temporarily pin glyphsets dependency to version v0.6.17 until a failing assert is addressed (issue #4639)
