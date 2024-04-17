@@ -118,6 +118,20 @@ def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
     from shaperglot.languages import Languages
     from glyphsets import languages_per_glyphset, get_glyphsets_fulfilled
 
+    def table_of_results(level, results):
+        results_table = []
+        name = shaperglot_languages[language_code]["name"]
+        language = f"{language_code} ({name})"
+        messages = set()
+        for result in results:
+            if result.message not in messages:
+                results_table.append(
+                    {"Language": language, f"{level} messages": result.message}
+                )
+                messages.add(result.message)
+                language = " ^ "
+        return markdown_table(results_table)
+
     shaperglot_checker = Checker(ttFont.reader.file.name)
     shaperglot_languages = Languages()
     any_glyphset_supported = False
@@ -127,44 +141,22 @@ def com_google_fonts_check_glyphsets_shape_languages(ttFont, config):
         percentage_fulfilled = glyphsets_fulfilled[glyphset]["percentage"]
         if percentage_fulfilled > 0.8:
             any_glyphset_supported = True
-
-            fails_table = []
-            warns_table = []
             for language_code in languages_per_glyphset(glyphset):
                 reporter = shaperglot_checker.check(shaperglot_languages[language_code])
-                if reporter.warns:
-                    for n, warn in enumerate(reporter.warns):
-                        if n == 0:
-                            name = shaperglot_languages[language_code]["name"]
-                            row = {"Language": f"{language_code} ({name})"}
-                        else:
-                            row = {"Language": " ^ "}
-
-                        row["FAIL messages"] = warn.message
-                        warns_table.append(row)
 
                 if reporter.fails:
-                    for n, fail in enumerate(reporter.fails):
-                        if n == 0:
-                            name = shaperglot_languages[language_code]["name"]
-                            row = {"Language": f"{language_code} ({name})"}
-                        else:
-                            row = {"Language": " ^ "}
+                    yield FAIL, Message(
+                        "failed-language-shaping",
+                        f"{glyphset} glyphset:\n\n"
+                        f"{table_of_results('FAIL', reporter.fails)}\n\n",
+                    )
 
-                        row["FAIL messages"] = fail.message
-                        fails_table.append(row)
-
-            if fails_table:
-                yield FAIL, Message(
-                    "failed-language-shaping",
-                    f"{glyphset} glyphset:\n\n{markdown_table(fails_table)}\n\n",
-                )
-
-            if warns_table:
-                yield WARN, Message(
-                    "warning-language-shaping",
-                    f"{glyphset} glyphset:\n\n{markdown_table(warns_table)}\n\n",
-                )
+                if reporter.warns:
+                    yield WARN, Message(
+                        "warning-language-shaping",
+                        f"{glyphset} glyphset:\n\n"
+                        f"{table_of_results('WARN', reporter.warns)}\n\n",
+                    )
 
     if not any_glyphset_supported:
         yield FAIL, Message(
