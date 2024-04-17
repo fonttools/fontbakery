@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.12.3 (2024-Apr-??)
+### New Profile
+  - A new profile for Microsoft fonts. (PR #4657)
+
 ### Changes to existing checks
 #### On the Google Fonts profile
   - **[com.google.fonts/check/outline_alignment_miss]:** Extended to work even when OS/2 version is < 2 (PR #4655)
