@@ -3,6 +3,8 @@ A more detailed list of changes is available in the corresponding milestones for
 
 
 ## Upcoming release: 0.12.2 (2024-Apr-??)
+  - Unpin `glyphsets` dependency and fix `fontbakery.com` (issue #4639)
+
 ### Changes to existing checks
 #### On the TypeNetwork profile
   - **[com.typenetwork/check/usweightclass]:** Update `tn_expected_os2_weight` condition and FAIL/WARN results (PR #4643)
