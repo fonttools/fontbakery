@@ -1,3 +1,4 @@
+from fontTools.ttLib import TTFont
 from fontbakery.status import WARN, SKIP
 from fontbakery.codetesting import (
     assert_results_contain,
@@ -5,8 +6,6 @@ from fontbakery.codetesting import (
     TEST_FILE,
     assert_PASS,
 )
-
-from fontTools.ttLib import TTFont
 
 
 def test_check_outline_alignment_miss():
