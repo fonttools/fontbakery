@@ -75,7 +75,7 @@ def com_microsoft_check_vendor_url(ttFont):
     """Check whether vendor URL is pointing at microsoft.com"""
     name_record = ttFont["name"].getName(11, 3, 1, 0x0409)
     if name_record is None:
-        yield FAIL, f"Name ID 11 (vendor URL) does not exists."
+        yield FAIL, "Name ID 11 (vendor URL) does not exists."
     else:
         vendor_url = name_record.toUnicode()
         vendor_pattern = r"https?://(\w+\.)?microsoft.com/?"
@@ -106,7 +106,7 @@ def com_microsoft_check_license_description(ttFont):
     """Check whether license description is correct."""
     name_record = ttFont["name"].getName(13, 3, 1, 0x0409)
     if name_record is None:
-        yield FAIL, f"Name ID 13 (license description) does not exists."
+        yield FAIL, "Name ID 13 (license description) does not exists."
     else:
         license_description = name_record.toUnicode()
         # There are versions around with/without Oxford commas. Let's
@@ -164,21 +164,36 @@ def com_microsoft_check_vertical_metrics(ttFont):
         # useTypoMetrics is set
         if hhea_table.ascender != os2_table.sTypoAscender:
             failed = True
-            yield FAIL, f"hhea.ascent != OS/2.sTypoAscender: {hhea_table.ascender} != {os2_table.sTypoAscender}"
+            yield FAIL, (
+                "hhea.ascent != OS/2.sTypoAscender: "
+                f"{hhea_table.ascender} != {os2_table.sTypoAscender}"
+            )
         if hhea_table.descender != os2_table.sTypoDescender:
             failed = True
-            yield FAIL, f"hhea.descent != OS/2.sTypoDescender: {abs(hhea_table.descender)} != {os2_table.sTypoDescender}"
+            yield FAIL, (
+                "hhea.descent != OS/2.sTypoDescender: "
+                f"{abs(hhea_table.descender)} != {os2_table.sTypoDescender}"
+            )
         if hhea_table.lineGap != os2_table.sTypoLineGap:
             failed = True
-            yield FAIL, f"hhea.lineGap != OS/2.sTypoLineGap: {abs(hhea_table.lineGap)} != {os2_table.sTypoLineGap}"
+            yield FAIL, (
+                "hhea.lineGap != OS/2.sTypoLineGap: "
+                f"{abs(hhea_table.lineGap)} != {os2_table.sTypoLineGap}"
+            )
     else:
         # useTypoMetrics is clear
         if hhea_table.ascender != os2_table.usWinAscent:
             failed = True
-            yield FAIL, f"hhea.ascent != OS/2.usWinAscent: {hhea_table.ascender} != {os2_table.usWinAscent}"
+            yield FAIL, (
+                "hhea.ascent != OS/2.usWinAscent: "
+                f"{hhea_table.ascender} != {os2_table.usWinAscent}"
+            )
         if abs(hhea_table.descender) != os2_table.usWinDescent:
             failed = True
-            yield FAIL, f"hhea.descent != OS/2.usWinDescent: {abs(hhea_table.descender)} != {os2_table.usWinDescent}"
+            yield FAIL, (
+                "hhea.descent != OS/2.usWinDescent: "
+                f"{abs(hhea_table.descender)} != {os2_table.usWinDescent}"
+            )
     if not failed:
         yield PASS, "Vertical metrics OK"
 
@@ -202,7 +217,10 @@ def com_microsoft_check_STAT_axis_values(ttFont):
             key = (axis_index, axis_value)
             if key in axis_values_format1:
                 failed = True
-                yield FAIL, f"axis value {axis_value} (format 1) for axis #{axis_index} is not unique"
+                yield FAIL, (
+                    f"axis value {axis_value} (format 1) "
+                    f"for axis #{axis_index} is not unique"
+                )
             axis_values_format1.add(key)
     if not failed:
         yield PASS, "STAT axis values (format 1) are unique"
@@ -227,17 +245,17 @@ def com_microsoft_check_fvar_STAT_axis_ranges(ttFont):
         # for each axis of the named instance
         # first look for an exact match format 4
         format4_match = False
-        instance_coord_set = {
-            (axis_tag, coord_value)
-            for axis_tag, coord_value in fvar_instance.coordinates.items()
-        }
+        instance_coord_set = set(fvar_instance.coordinates.items())
         for stat_axis_value_record in stat_table.AxisValueArray.AxisValue:
             if stat_axis_value_record.Format == 4:
                 stat_coord_set = set()
                 for axis_index, axis_value in stat_axis_value_record.AxisValue.items():
                     if axis_index >= stat_design_axis_count:
                         failed = True
-                        yield FAIL, f"axis index {axis_index} (format 4) is greater than STAT axis count {stat_design_axis_count}"
+                        yield FAIL, (
+                            f"axis index {axis_index} (format 4) "
+                            f"is greater than STAT axis count {stat_design_axis_count}"
+                        )
                     stat_axis = stat_design_axis[axis_index].AxisTag
                     stat_coord_set.add((stat_axis, axis_value))
                 if instance_coord_set == stat_coord_set:
@@ -250,20 +268,24 @@ def com_microsoft_check_fvar_STAT_axis_ranges(ttFont):
                 # for each axis value record in STAT
                 for stat_axis_value_record in stat_table.AxisValueArray.AxisValue:
                     # format 1, format 3
-                    if (
-                        stat_axis_value_record.Format == 1
-                        or stat_axis_value_record.Format == 3
-                    ):
+                    if stat_axis_value_record.Format in {1, 3}:
                         axis_index = stat_axis_value_record.AxisIndex
                         axis_value = stat_axis_value_record.Value
                         if axis_index >= stat_design_axis_count:
                             failed = True
-                            yield FAIL, f"axis index {axis_index} (format {stat_axis_value_record.Format}) is greater than STAT axis count {stat_design_axis_count}"
+                            yield FAIL, (
+                                f"axis index {axis_index} (format {stat_axis_value_record.Format}) "
+                                f"is greater than STAT axis count {stat_design_axis_count}"
+                            )
                         stat_axis = stat_design_axis[axis_index].AxisTag
                         if instance_axis == stat_axis and instance_value == axis_value:
                             if found_instance_axis:
                                 failed = True
-                                yield FAIL, f"axis value {instance_value} (format {stat_axis_value_record.Format}) for axis {instance_axis} is not unique"
+                                yield FAIL, (
+                                    f"axis value {instance_value} "
+                                    f"(format {stat_axis_value_record.Format}) "
+                                    f"for axis {instance_axis} is not unique"
+                                )
                             found_instance_axis = True
                     # format 2
                     elif stat_axis_value_record.Format == 2:
@@ -273,7 +295,10 @@ def com_microsoft_check_fvar_STAT_axis_ranges(ttFont):
                         # axis_nominal_value = stat_axis_value_record.NominalValue
                         if axis_index >= stat_design_axis_count:
                             failed = True
-                            yield FAIL, f"axis index {axis_index} (format 2) is greater than STAT axis count {stat_design_axis_count}"
+                            yield FAIL, (
+                                f"axis index {axis_index} (format 2) "
+                                f"is greater than STAT axis count {stat_design_axis_count}"
+                            )
                         stat_axis = stat_design_axis[axis_index].AxisTag
                         if (
                             instance_axis == stat_axis
@@ -281,11 +306,17 @@ def com_microsoft_check_fvar_STAT_axis_ranges(ttFont):
                         ):
                             if found_instance_axis:
                                 failed = True
-                                yield FAIL, f"axis value {instance_value} (format 2) for axis {instance_axis} is not unique"
+                                yield FAIL, (
+                                    f"axis value {instance_value} (format 2) "
+                                    f"for axis {instance_axis} is not unique"
+                                )
                             found_instance_axis = True
                 if not found_instance_axis:
                     failed = True
-                    yield FAIL, f"axis value {instance_value} for axis {instance_axis} not found in STAT table"
+                    yield FAIL, (
+                        f"axis value {instance_value} "
+                        f"for axis {instance_axis} not found in STAT table"
+                    )
     if not failed:
         yield PASS, "fvar axis ranges found in STAT table"
 
@@ -311,12 +342,16 @@ def com_microsoft_check_STAT_table_eliding_bit(ttFont):
             value_name = name_table.getName(value_name_id, 3, 1, 0x409).toUnicode()
             if value_name == "Regular" and axis_value_flags & 0x0002 == 0:
                 failed = True
-                yield FAIL, f"axis value {value_name} (format {axis_value_record.Format}) is not elided"
+                yield FAIL, (
+                    f"axis value {value_name} "
+                    f"(format {axis_value_record.Format}) is not elided"
+                )
     if not failed:
         yield PASS, "STAT table eliding bit is valid"
 
 
-""" Reversed axis order for STAT table - note ital and slnt are rarely in same font but if they are, ital should be last."""
+# Reversed axis order for STAT table - note ital and slnt are rarely in same
+# font but if they are, ital should be last.
 AXIS_ORDER_REVERSED = ["ital", "slnt", "wdth", "wght", "opsz"]
 
 
@@ -411,9 +446,14 @@ def com_microsoft_check_name_length_req(ttFont):
     )
 
     if len(logfont) > 31:
-        yield FAIL, f"Family + subfamily name, '{logfont}', is too long: {len(logfont)} characters; must be 31 or less"
+        yield FAIL, (
+            f"Family + subfamily name, '{logfont}', is too long: "
+            f"{len(logfont)} characters; must be 31 or less"
+        )
     else:
-        yield PASS, f"Family + subfamily name has good length: {len(logfont)} characters"
+        yield PASS, (
+            f"Family + subfamily name has good length: {len(logfont)} characters"
+        )
 
 
 VTT_HINT_TABLES = [
@@ -457,14 +497,14 @@ def com_microsoft_check_vtt_volt_data_gone(ttFont):
         for feature in table.FeatureList.FeatureRecord:
             if feature.FeatureTag[:2] == "zz":
                 failure_found = True
-                yield FAIL, f"Volt zz feature found"
+                yield FAIL, "Volt zz feature found"
         for script in table.ScriptList.ScriptRecord:
             for langSysRec in script.Script.LangSysRecord:
                 if langSysRec.LangSysTag[:2] == "zz":
                     failure_found = True
-                    yield FAIL, f"Volt zz langsys found"
+                    yield FAIL, "Volt zz langsys found"
     if not failure_found:
-        yield PASS, f"No VTT or Volt Source Data Found"
+        yield PASS, "No VTT or Volt Source Data Found"
 
 
 def verify_widths(ttFont, buffer):
@@ -514,8 +554,8 @@ def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
     hbFont = hb.Font(hbFace)
 
     check_text = "0123456789"
-    if TEST_STR is not None:  # type: ignore
-        check_text = TEST_STR  # type: ignore
+    if TEST_STR is not None:  # type: ignore noqa:F821 pylint:disable=E0602
+        check_text = TEST_STR  # type: ignore noqa:F821 pylint:disable=E0602
 
     # Evaluate any unicode escape sequences, e.g. \N{PLUS SIGN}
     check_text = "".join([parse_unicode_escape(l) for l in check_text.splitlines()])
@@ -550,9 +590,15 @@ def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
             # Verify all shaped glyphs are the same width
             glyphs_with_widths = verify_widths(ttFont, hbBuffer)
             if len(glyphs_with_widths) > 1:
-                yield FAIL, f"tnum glyphs in instance {instance_coord_dict} do not align:\n{format_glyphs_by_width(glyphs_with_widths)}"
+                yield FAIL, (
+                    f"tnum glyphs in instance {instance_coord_dict} "
+                    f"do not align:\n{format_glyphs_by_width(glyphs_with_widths)}"
+                )
             else:
-                yield PASS, f"tnum glyphs in instance {instance_coord_dict} are all the same width: {next(iter(glyphs_with_widths.values()))}"
+                yield PASS, (
+                    f"tnum glyphs in instance {instance_coord_dict} "
+                    f"are all the same width: {next(iter(glyphs_with_widths.values()))}"
+                )
 
     else:
         hb.shape(hbFont, hbBuffer, features={"tnum": True})
@@ -560,9 +606,13 @@ def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
         # Verify all shaped glyphs are the same width
         glyphs_with_widths = verify_widths(ttFont, hbBuffer)
         if len(glyphs_with_widths) > 1:
-            yield FAIL, f"tnum glyphs appear not to align:\n{format_glyphs_by_width(glyphs_with_widths)}"
+            yield FAIL, (
+                f"tnum glyphs appear not to align:\n{format_glyphs_by_width(glyphs_with_widths)}"
+            )
         else:
-            yield PASS, f"tnum glyphs are all the same width: {next(iter(glyphs_with_widths.values()))}"
+            yield PASS, (
+                f"tnum glyphs are all the same width: {next(iter(glyphs_with_widths.values()))}"
+            )
 
 
 # Optional checks
@@ -573,7 +623,9 @@ def check_repertoire(ttFont, character_repertoire, name, error_status=FAIL):
     missing = character_repertoire - charset
     if missing:
         missing_formatted = ", ".join(f"0x{v:04X}" for v in sorted(missing))
-        yield error_status, f"character repertoire not complete for {name}; missing: {missing_formatted}"
+        yield error_status, (
+            f"character repertoire not complete for {name}; missing: {missing_formatted}"
+        )
     else:
         yield PASS, f"character repertoire complete for {name}"
 
