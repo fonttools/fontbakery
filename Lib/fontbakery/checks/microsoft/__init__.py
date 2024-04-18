@@ -605,7 +605,7 @@ def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
             else:
                 yield PASS, (
                     f"tnum glyphs in instance {instance_coord_dict} "
-                    f"are all the same width: {next(iter(glyphs_with_widths.values()))}"
+                    f"are all the same width: {next(iter(glyphs_with_widths.values()))}"  # pylint:disable=R1708
                 )
 
     else:
@@ -619,7 +619,7 @@ def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
             )
         else:
             yield PASS, (
-                f"tnum glyphs are all the same width: {next(iter(glyphs_with_widths.values()))}"
+                f"tnum glyphs are all the same width: {next(iter(glyphs_with_widths.values()))}"  # pylint:disable=R1708
             )
 
 
