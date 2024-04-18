@@ -29,13 +29,13 @@ def get_subfamily_name(ttFont):
     return subfamily_name.toUnicode()
 
 
-@check(id="com.microsoft/check/copyright")
+@check(id="com.microsoft/check/copyright", rationale="")
 def com_microsoft_check_copyright(ttFont):
     """Check whether the copyright string exists and is not empty."""
     yield from _ensure_name_id_exists(ttFont, 0, "copyright")
 
 
-@check(id="com.microsoft/check/version")
+@check(id="com.microsoft/check/version", rationale="")
 def com_microsoft_check_version(ttFont):
     """Check whether Name ID 5 starts with 'Version X.YY' where X and Y
     are digits."""
@@ -48,13 +48,13 @@ def com_microsoft_check_version(ttFont):
         yield PASS, "Name ID 5 starts with 'Version X.YY'"
 
 
-@check(id="com.microsoft/check/trademark")
+@check(id="com.microsoft/check/trademark", rationale="")
 def com_microsoft_check_trademark(ttFont):
     """Check whether Name ID 7 (trademark) exists and is not empty."""
     yield from _ensure_name_id_exists(ttFont, 7, "trademark", WARN)
 
 
-@check(id="com.microsoft/check/manufacturer")
+@check(id="com.microsoft/check/manufacturer", rationale="")
 def com_microsoft_check_manufacturer(ttFont):
     """Check whether Name ID 8 (manufacturer) exists and is not empty."""
     yield from _ensure_name_id_exists(ttFont, 8, "manufacturer")
@@ -70,7 +70,7 @@ def _ensure_name_id_exists(ttFont, name_id, name_name, negative_status=FAIL):
         yield PASS, f"Name ID {name_id} ({name_name}) exists and is not empty."
 
 
-@check(id="com.microsoft/check/vendor_url")
+@check(id="com.microsoft/check/vendor_url", rationale="")
 def com_microsoft_check_vendor_url(ttFont):
     """Check whether vendor URL is pointing at microsoft.com"""
     name_record = ttFont["name"].getName(11, 3, 1, 0x0409)
@@ -101,7 +101,7 @@ ms_license_description = (
 )  # ignore commas, see below
 
 
-@check(id="com.microsoft/check/license_description")
+@check(id="com.microsoft/check/license_description", rationale="")
 def com_microsoft_check_license_description(ttFont):
     """Check whether license description is correct."""
     name_record = ttFont["name"].getName(13, 3, 1, 0x0409)
@@ -118,7 +118,7 @@ def com_microsoft_check_license_description(ttFont):
             yield PASS, "License description OK"
 
 
-@check(id="com.microsoft/check/typographic_family_name")
+@check(id="com.microsoft/check/typographic_family_name", rationale="")
 def com_microsoft_check_typographic_family_name(ttFonts):
     """Check whether Name ID 16 (Typographic Family name) is consistent
     across the set of fonts."""
@@ -138,7 +138,7 @@ def com_microsoft_check_typographic_family_name(ttFonts):
         yield PASS, "Name ID 16 (Typographic Family name) is consistent"
 
 
-@check(id="com.microsoft/check/fstype")
+@check(id="com.microsoft/check/fstype", rationale="")
 def com_microsoft_check_fstype(ttFont):
     """Checking OS/2 fsType."""
     required_value = 8
@@ -149,7 +149,7 @@ def com_microsoft_check_fstype(ttFont):
         yield PASS, "OS/2 fsType is properly set."
 
 
-@check(id="com.microsoft/check/vertical_metrics")
+@check(id="com.microsoft/check/vertical_metrics", rationale="")
 def com_microsoft_check_vertical_metrics(ttFont):
     """Checking hhea OS/2 vertical_metrics:
     If OS/2.fsSelection.useTypoMetrics is not set, then
@@ -201,6 +201,7 @@ def com_microsoft_check_vertical_metrics(ttFont):
 @check(
     id="com.microsoft/check/STAT_axis_values",
     conditions=["has_STAT_table"],
+    rationale="",
 )
 def com_microsoft_check_STAT_axis_values(ttFont):
     """Check whether STAT axis values are unique."""
@@ -229,6 +230,7 @@ def com_microsoft_check_STAT_axis_values(ttFont):
 @check(
     id="com.microsoft/check/fvar_STAT_axis_ranges",
     conditions=["has_STAT_table", "is_variable_font"],
+    rationale="",
 )
 def com_microsoft_check_fvar_STAT_axis_ranges(ttFont):
     """Check fvar named instance axis values lie within a *single* STAT axis range."""
@@ -324,6 +326,7 @@ def com_microsoft_check_fvar_STAT_axis_ranges(ttFont):
 @check(
     id="com.microsoft/check/STAT_table_eliding_bit",
     conditions=["has_STAT_table"],
+    rationale="",
 )
 def com_microsoft_check_STAT_table_eliding_bit(ttFont):
     """Validate STAT table eliding bit"""
@@ -358,6 +361,7 @@ AXIS_ORDER_REVERSED = ["ital", "slnt", "wdth", "wght", "opsz"]
 @check(
     id="com.microsoft/check/STAT_table_axis_order",
     conditions=["has_STAT_table"],
+    rationale="",
 )
 def com_microsoft_check_STAT_table_axis_order(ttFont):
     """Validate STAT table axisOrder"""
@@ -388,7 +392,7 @@ def com_microsoft_check_STAT_table_axis_order(ttFont):
         yield PASS, "STAT table axisOrder is valid"
 
 
-@check(id="com.microsoft/check/name_id_1")
+@check(id="com.microsoft/check/name_id_1", rationale="")
 def com_microsoft_check_name_id_1(ttFont):
     """Font has a name with ID 1."""
     if not ttFont["name"].getName(1, 3, 1, 0x409):
@@ -397,7 +401,7 @@ def com_microsoft_check_name_id_1(ttFont):
         yield PASS, "Font has a name with ID 1."
 
 
-@check(id="com.microsoft/check/name_id_2")
+@check(id="com.microsoft/check/name_id_2", rationale="")
 def com_microsoft_check_name_id_2(ttFont):
     """Font has a name with ID 2."""
     if not ttFont["name"].getName(2, 3, 1, 0x409):
@@ -406,7 +410,7 @@ def com_microsoft_check_name_id_2(ttFont):
         yield PASS, "Font has a name with ID 2."
 
 
-@check(id="com.microsoft/check/office_ribz_req")
+@check(id="com.microsoft/check/office_ribz_req", rationale="")
 def com_microsoft_check_office_ribz_req(ttFont):
     """Office fonts: Name IDs 1 & 2 must be set for an RBIZ family model.
     I.e. ID 2 can only be one of “Regular”, “Italic”, “Bold”, or
@@ -426,7 +430,7 @@ def com_microsoft_check_office_ribz_req(ttFont):
         yield PASS, "Name ID 2 (subfamily) OK"
 
 
-@check(id="com.microsoft/check/name_length_req")
+@check(id="com.microsoft/check/name_length_req", rationale="")
 def com_microsoft_check_name_length_req(ttFont):
     """
     For Office, family and subfamily names must be 31 characters or less total
@@ -475,7 +479,7 @@ OTL_SOURCE_TABLES = [
 ]
 
 
-@check(id="com.microsoft/check/vtt_volt_data")
+@check(id="com.microsoft/check/vtt_volt_data", rationale="")
 def com_microsoft_check_vtt_volt_data_gone(ttFont):
     """
     Check to make sure all the VTT source (TSI* tables) and
@@ -541,7 +545,11 @@ def parse_unicode_escape(s):
     return ast.literal_eval(f'"{s}"')
 
 
-@check(id="com.microsoft/check/tnum_glyphs_equal_widths", configs={"TEST_STR"})
+@check(
+    id="com.microsoft/check/tnum_glyphs_equal_widths",
+    configs={"TEST_STR"},
+    rationale="",
+)
 def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
     """
     Check to make sure all the tnum glyphs are the same width.
@@ -630,7 +638,7 @@ def check_repertoire(ttFont, character_repertoire, name, error_status=FAIL):
         yield PASS, f"character repertoire complete for {name}"
 
 
-@check(id="com.microsoft/check/wgl4")
+@check(id="com.microsoft/check/wgl4", rationale="")
 def com_microsoft_check_office_wgl4(ttFont):
     """Check whether the font complies with WGL4."""
     from .character_repertoires import WGL4_OPTIONAL, WGL4_REQUIRED
@@ -641,7 +649,7 @@ def com_microsoft_check_office_wgl4(ttFont):
     )
 
 
-@check(id="com.microsoft/check/ogl2")
+@check(id="com.microsoft/check/ogl2", rationale="")
 def com_microsoft_check_office_ogl2(ttFont):
     """Check whether the font complies with OGL2."""
     from .character_repertoires import OGL2
