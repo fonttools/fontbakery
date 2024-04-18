@@ -5,6 +5,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.12.3 (2024-Apr-??)
   - ...
 
+### Changes to existing checks
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/outline_alignment_miss]:** Extended to work even when OS/2 version is < 2 (PR #4655)
+
 
 ## 0.12.2 (2024-Apr-17)
   - Unpin `glyphsets` dependency and fix `fontbakery.com` (issue #4639)
