@@ -86,8 +86,12 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
         for width, _ in ttFont[
             "hmtx"
         ].metrics.values():  # At least .notdef must be present.
-            # The OpenType spec doesn't exclude negative widths, but only positive
-            # widths seems to be the assumption in the wild?
+            # The OpenType spec excludes negative widths (the
+            # relevant field in `hmtx` tables is unsigned);
+            # other formats (UFO) may allow signed, and
+            # therefore negative, widths.
+            # For extra reassurance, here we only count strictly
+            # positive widths.
             if width > 0:
                 count += 1
                 width_sum += width
