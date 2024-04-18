@@ -562,8 +562,8 @@ def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
     hbFont = hb.Font(hbFace)
 
     check_text = "0123456789"
-    if TEST_STR is not None:  # type: ignore noqa:F821 pylint:disable=E0602
-        check_text = TEST_STR  # type: ignore noqa:F821 pylint:disable=E0602
+    if TEST_STR is not None:  # type: ignore # noqa:F821 pylint:disable=E0602
+        check_text = TEST_STR  # type: ignore # noqa:F821 pylint:disable=E0602
 
     # Evaluate any unicode escape sequences, e.g. \N{PLUS SIGN}
     check_text = "".join([parse_unicode_escape(l) for l in check_text.splitlines()])
