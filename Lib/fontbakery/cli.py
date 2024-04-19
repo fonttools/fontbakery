@@ -42,6 +42,7 @@ CLI_PROFILES = [
     "fontwerk",
     "googlefonts",
     "iso15008",
+    "microsoft",
     "notofonts",
     "opentype",
     "shaping",

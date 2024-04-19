@@ -125,6 +125,8 @@ googlefonts = [
 
 iso15008 = []
 
+microsoft = []
+
 notofonts = [
     "fontbakery[googlefonts]",
 ]
