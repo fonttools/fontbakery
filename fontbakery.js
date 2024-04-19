@@ -118,7 +118,15 @@ function showResult(data) {
           data-checkid=${data.get('key')}
           aria-controls="v-pills-${tabid}">${data.get('description')}</button>
       `);
+    // Add a header if we need one
     $('#v-pills-tab').append(thispill);
+    if ($(`#v-pills-tab button[data-sortorder=${SORT_RESULT[result]}`).length == 1) {
+      var header_sort = SORT_RESULT[result].substring(0, 1);
+      $('#v-pills-tab').append($(`
+        <button class="nav-link disabled header-${result}" data-sortorder="${header_sort}">
+        </div>
+      `))
+    }
   }
   let thistab = $(`#v-pills-tabContent div[data-checkid="${checkid}"]`);
   if (thistab.length == 0) {
@@ -141,6 +149,7 @@ function showResult(data) {
       </div>
       `);
     $('#v-pills-tabContent').append(thistab);
+    
   }
   // Update pill / tab results with worst result
   if (SORT_RESULT[result] < thispill.data('sortorder')) {
@@ -272,6 +281,10 @@ fbWorker.onmessage = (event) => {
     showLoaded();
     return;
   }
+  if ('version' in event.data) {
+    $("#fb-version").html(event.data.version);
+  }
+
   if ('checks' in event.data) {
     console.log(event.data);
     return;

@@ -87,6 +87,17 @@ self.onmessage = async (event) => {
     return;
   }
 
+  try {
+    const version = await self.pyodide.runPythonAsync(`
+        import fontbakery
+        fontbakery.__version__
+    `);
+    self.postMessage({version: version});
+  }
+  catch (error) {
+    self.postMessage({error: error.message});
+    return;
+  }
   const callback = (msg) => self.postMessage(msg.toJs());
 
   // Write the files

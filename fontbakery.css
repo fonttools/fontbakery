@@ -45,3 +45,7 @@
     .leftarrow:hover {
         text-decoration: none;
     }
+
+    .bg-ERROR.active {
+        background-image: linear-gradient(rgb(255 255 255/20%) 0 0) !important
+    }
