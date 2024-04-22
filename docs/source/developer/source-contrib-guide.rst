@@ -100,16 +100,11 @@ It also contains a set of code tests to assure the quality of the Font Bakery
 suite of checks. We aim to reach 100% test coverage.
 
 
-In order to run the tests you need to have the ``pytest`` dependency installed.
-
-Install ``pytest``
-~~~~~~~~~~~~~~~~~~
-
-Install ``pytest`` in your virtual environment with:
+In order to run the tests you need to install fontbakery with the ``tests`` extras. From the git checkout directory, within a virtual environment, run:
 
 ::
 
-   $ pip install pytest
+   $ pip install .[tests]
 
 
 Execute Source Code Test Suite
