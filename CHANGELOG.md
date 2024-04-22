@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - A new profile for Microsoft fonts. (PR #4657)
 
 ### Changes to existing checks
+#### On the Universal profile
+  - **[com.google.fonts/check/interpolation_issues]:** We had forgotten to display the glyph name (issue #4659)
+
 #### On the Google Fonts profile
   - **[com.google.fonts/check/outline_alignment_miss]:** Extended to work even when OS/2 version is < 2 (PR #4655)
 
