@@ -2279,8 +2279,8 @@ def com_google_fonts_check_interpolation_issues(ttFont, config):
                 )
             elif p["type"] == InterpolatableProblem.KINK:
                 report.append(
-                    f"Contour {p['contour']} point {p['value']} has a kink"
-                    f" between location {p['master_1']} and"
+                    f"Contour {p['contour']} point {p['value']} in glyph '{glyph}' "
+                    f"has a kink between location {p['master_1']} and"
                     f" location {p['master_2']}"
                 )
             elif p["type"] == InterpolatableProblem.UNDERWEIGHT:
