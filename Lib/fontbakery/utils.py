@@ -651,6 +651,25 @@ def keyword_in_full_font_name(ttFont, keyword):
     return False
 
 
+def bold_adjacent_styles_in_full_font_name(ttFont):
+    from fontbakery.constants import NameID
+
+    for entry in ttFont["name"].names:
+        if entry.nameID == NameID.FULL_FONT_NAME and any(
+            x in entry.string.decode(entry.getEncoding()).lower()
+            for x in [
+                "extra bold",
+                "extrabold",
+                "semi bold",
+                "semibold",
+                "demi bold",
+                "demibold",
+            ]
+        ):
+            return True
+    return False
+
+
 def show_inconsistencies(dictionary, config):
     """Display an 'inconsistencies dictionary' as a bullet list. Turns:
 
