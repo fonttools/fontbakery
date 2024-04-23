@@ -218,13 +218,19 @@ class Font(Testable):
     @cached_property
     def is_bold(self):
         from fontbakery.constants import FsSelection, MacStyle
-        from fontbakery.utils import keyword_in_full_font_name
+        from fontbakery.utils import (
+            keyword_in_full_font_name,
+            bold_adjacent_styles_in_full_font_name,
+        )
 
         ttFont = self.ttFont
         return (
             ("OS/2" in ttFont and ttFont["OS/2"].fsSelection & FsSelection.BOLD)
             or ("head" in ttFont and ttFont["head"].macStyle & MacStyle.BOLD)
-            or keyword_in_full_font_name(ttFont, "bold")
+            or (
+                keyword_in_full_font_name(ttFont, "bold")
+                and not bold_adjacent_styles_in_full_font_name(ttFont)
+            )
         )
 
 
