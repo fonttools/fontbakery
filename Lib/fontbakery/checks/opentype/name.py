@@ -117,18 +117,14 @@ def PANOSE_expected(family_type):
     ]:
         return f"Please set PANOSE Spacing to {PANOSE_Spacing.MONOSPACED} (monospaced)"
 
-    if family_type == PANOSE_Family_Type.LATIN_SYMBOL:
-        return (
-            f"PANOSE Family Type is set to 4 (latin symbol)."
-            f" Please set it instead to {PANOSE_Family_Type.LATIN_TEXT} (latin text),"
-            f" {PANOSE_Family_Type.LATIN_HAND_WRITTEN} (latin hand written)"
-            f" or {PANOSE_Family_Type.LATIN_SYMBOL} (latin symbol)"
-        )
-
     # Otherwise:
     # I can't even suggest what to do
     # if it is that much broken!
-    return f"Note: Family Type is set to {family_type}, which does not seem right."
+    return ""
+    # FIXME:
+    # - https://github.com/fonttools/fontbakery/issues/2857
+    # - https://github.com/fonttools/fontbakery/issues/2831
+    # See also: https://github.com/fonttools/fontbakery/issues/4664
 
 
 @check(
