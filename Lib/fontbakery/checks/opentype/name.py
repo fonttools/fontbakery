@@ -68,7 +68,16 @@ def com_google_fonts_check_name_no_copyright_on_description(ttFont):
 
 
 def PANOSE_is_monospaced(panose):
+    """
+    This function considers the following PANOSE combinations monospace:
+
+    2xx9x xxxxx (Family: Latin Text; Proportion: Monospaced)
+    3xx3x xxxxx (Family: Latin Hand Written; Spacing: Monospaced)
+    5xx3x xxxxx (Family: Latin Symbol; Spacing: Monospaced)
+    """
+
     # https://github.com/fonttools/fontbakery/issues/2857#issue-608671015
+
     from fontbakery.constants import (
         PANOSE_Family_Type,
         PANOSE_Proportion,
