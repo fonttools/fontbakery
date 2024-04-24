@@ -80,7 +80,7 @@ googlefontsalwayslatest = [
 	"axisregistry >= 0.4.9, == 0.4.*",
 	"gflanguages >= 0.5.17, == 0.5.*",
 	"gfsubsets >= 2024.2.5",
-	"glyphsets >= 0.6.19, == 0.6.*",
+	"glyphsets >= 0.6.20, == 0.6.*",
 	"shaperglot >= 0.5.0, == 0.5.*",
 ]
 
