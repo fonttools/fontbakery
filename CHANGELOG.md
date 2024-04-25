@@ -3,8 +3,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.12.4 (2024-Apr-??)
 ### Changes to existing checks
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/fvar_instances]:** Fix markdown table formatting. (issue #4675)
+
 #### On the FontWerk profile
- - **[com.fontwerk/check/style_linking]:** (also included in the `Type Network` profile). Adjust the `is_bold` condition to check for bold-adjacent style names with spaces, such as "Semi Bold" and "Extra Bold", and not consider such styles as "Bold" in the RIBBI sense. (issue #4667)
+  - **[com.fontwerk/check/style_linking]:** (also included in the `Type Network` profile). Adjust the `is_bold` condition to check for bold-adjacent style names with spaces, such as "Semi Bold" and "Extra Bold", and not consider such styles as "Bold" in the RIBBI sense. (issue #4667)
 
 
 ## 0.12.3 (2024-Apr-22)
