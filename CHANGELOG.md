@@ -5,6 +5,9 @@ A more detailed list of changes is available in the corresponding milestones for
 - Fix bug where some checks would modify the font under test and make other checks fail (issue #4678)
 
 ### Changes to existing checks
+#### On the OpenType profile
+  - **[com.google.fonts/check/caret_slope]:** Downgrade "caretslope-mismatch" from FAIL to WARN. (issue #4679)
+
 #### On the Google Fonts profile
   - **[com.google.fonts/check/fvar_instances]:** Fix markdown table formatting. (issue #4675)
 
