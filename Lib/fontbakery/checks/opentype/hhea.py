@@ -1,5 +1,5 @@
 from fontbakery.callable import check
-from fontbakery.status import FAIL
+from fontbakery.status import WARN, FAIL
 from fontbakery.message import Message
 
 
@@ -81,7 +81,7 @@ def com_google_fonts_check_caret_slope(ttFont):
         expectedCaretSlopeRise = upm
 
     if abs(postItalicAngle - hheaItalicAngle) > 0.1:
-        yield FAIL, Message(
+        yield WARN, Message(
             "caretslope-mismatch",
             "hhea.caretSlopeRise and hhea.caretSlopeRun"
             " do not match with post.italicAngle.\n"

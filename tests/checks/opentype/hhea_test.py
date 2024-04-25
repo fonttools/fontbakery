@@ -1,6 +1,6 @@
 from fontTools.ttLib import TTFont
 
-from fontbakery.status import FAIL
+from fontbakery.status import WARN, FAIL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
@@ -35,10 +35,10 @@ def test_check_caretslope():
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans[BNCE,INFM,SPAC,wght].ttf"))
     assert_PASS(check(ttFont))
 
-    # FAIL for right-leaning
+    # WARN for right-leaning
     ttFont = TTFont(TEST_FILE("shantell/ShantellSans-Italic[BNCE,INFM,SPAC,wght].ttf"))
     ttFont["post"].italicAngle = -12
-    message = assert_results_contain(check(ttFont), FAIL, "caretslope-mismatch")
+    message = assert_results_contain(check(ttFont), WARN, "caretslope-mismatch")
     assert message == (
         "hhea.caretSlopeRise and hhea.caretSlopeRun"
         " do not match with post.italicAngle.\n"
@@ -57,9 +57,9 @@ def test_check_caretslope():
     # Fix it again from backed up good value
     ttFont["hhea"].caretSlopeRise = good_value
 
-    # FAIL for left-leaning
+    # WARN for left-leaning
     ttFont["post"].italicAngle = 12
-    message = assert_results_contain(check(ttFont), FAIL, "caretslope-mismatch")
+    message = assert_results_contain(check(ttFont), WARN, "caretslope-mismatch")
     assert message == (
         "hhea.caretSlopeRise and hhea.caretSlopeRun"
         " do not match with post.italicAngle.\n"
