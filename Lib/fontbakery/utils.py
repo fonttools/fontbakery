@@ -542,9 +542,14 @@ def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):
     for lookup in ttFont[table].table.LookupList.Lookup:
         if lookup.LookupType == extension_type:
             for xt in lookup.SubTable:
-                xt.SubTable = [xt.ExtSubTable]
-                xt.LookupType = xt.ExtSubTable.LookupType
-                callback(xt, *args)
+                original_LookupType = xt.LookupType
+                try:
+                    xt.SubTable = [xt.ExtSubTable]
+                    xt.LookupType = xt.ExtSubTable.LookupType
+                    callback(xt, *args)
+                finally:
+                    del xt.SubTable
+                    xt.LookupType = original_LookupType
         else:
             callback(lookup, *args)
 
