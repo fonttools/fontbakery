@@ -305,13 +305,19 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
                         subtable = subtable.ExtSubTable
                     if not hasattr(subtable, "mapping"):
                         continue
-                    smcp_glyphs = set(subtable.mapping.values())
+                    smcp_glyphs = set()
+                    for value in subtable.mapping.values():
+                        if isinstance(value, list):
+                            for v in value:
+                                smcp_glyphs.add(v)
+                        else:
+                            smcp_glyphs.add(value)
                     missing = smcp_glyphs - set(ttFont.getGlyphNames())
                     if missing:
                         missing = "\n\t - " + "\n\t - ".join(missing)
                         yield FAIL, Message(
                             "missing-glyphs",
-                            f"These '{tag}' glyphs are missing:\n" f"{missing}",
+                            f"These '{tag}' glyphs are missing:\n\n{missing}",
                         )
                 break
 

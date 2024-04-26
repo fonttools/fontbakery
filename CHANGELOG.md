@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Google Fonts profile
   - **[com.google.fonts/check/fvar_instances]:** Fix markdown table formatting. (issue #4675)
+  - **[com.google.fonts/check/missing_small_caps_glyphs]:** Fix ERROR: Handle LookupType 2, which maps to more than a single glyph. (issue #4677)
 
 #### On the FontWerk profile
   - **[com.fontwerk/check/style_linking]:** (also included in the `Type Network` profile). Adjust the `is_bold` condition to check for bold-adjacent style names with spaces, such as "Semi Bold" and "Extra Bold", and not consider such styles as "Bold" in the RIBBI sense. (issue #4667)
