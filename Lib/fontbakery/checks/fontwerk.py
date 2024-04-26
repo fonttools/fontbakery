@@ -52,7 +52,6 @@ def com_fontwerk_check_vendor_id(ttFont):
     """,
     conditions=["is_variable_font"],
     proposal="https://github.com/fonttools/fontbakery/pull/3698",
-    experimental="Since 2024/Feb/08",
 )
 def com_fontwerk_check_names_match_default_fvar(ttFont):
     """Checking if names match default fvar instance name."""
