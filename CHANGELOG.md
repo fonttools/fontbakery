@@ -1,8 +1,12 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.12.4 (2024-Apr-??)
-- Fix bug where some checks would modify the font under test and make other checks fail (issue #4678)
+## Upcoming release: 0.12.5 (2024-May-??)
+  - ...
+
+
+## 0.12.4 (2024-Apr-26)
+  - Fixed bug where some checks would modify the font under test and make other checks fail (issue #4678)
 
 ### Promotion of previously experimental checks
 #### Made effective on the FontWerk profile
