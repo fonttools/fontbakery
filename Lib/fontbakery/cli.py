@@ -456,7 +456,10 @@ def main():
         )
     )
 
+    is_async = args.multiprocessing != 0
+
     context = setup_context(args.files)
+    context.is_multithreaded = is_async
     try:
         runner = CheckRunner(
             profile, jobs=args.multiprocessing, context=context, config=configuration
@@ -466,7 +469,6 @@ def main():
         argument_parser.print_usage()
         sys.exit(1)
 
-    is_async = args.multiprocessing != 0
     if not args.loglevels:
         args.loglevels = [
             status

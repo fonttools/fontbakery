@@ -76,7 +76,15 @@ class Font(Testable):
 
     @cached_property
     def ttFont(self):
-        return TTFont(self.file)
+        font = TTFont(self.file)
+        if (
+            hasattr(self, "context")
+            and self.context is not None
+            and self.context.is_multithreaded
+        ):
+            # Preload all tables while we're in this cached_property that uses locking
+            font.ensureDecompiled()
+        return font
 
     @cached_property
     def style(self):
@@ -258,6 +266,7 @@ FILE_TYPES = [Readme, Ufo, Designspace, GlyphsFile, MetadataPB, Font]
 class CheckRunContext:
     testables: List[Testable] = field(default_factory=list)
     config: dict = field(default_factory=dict)
+    is_multithreaded: bool = False
 
     @cached_property
     def testables_by_type(self):

@@ -2,6 +2,8 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.5 (2024-May-??)
+  - When multi-threading is enabled, we now ensure that the font objects are fully loaded before running the checks. This causes an initial delay but avoids some code concurrency issues. (issue #4638)
+
 ### Changes to existing checks
 #### On the OpenType profile
   - **[com.google.fonts/check/monospace]:** Fix ERROR when accessing the 4th bit of panose (spacing) when family type is LATIN_HAND_WRITTEN or LATIN_SYMBOL. FontTools still calls it 'bProportion' even though the proper name should be 'bSpacing' (issue #2857)
