@@ -92,8 +92,8 @@
 <meta name="feedback_help_link_url" content="" />
 <meta name="feedback_product_url" content="" />
 <meta name="feedback_system" content="GitHub" />
-<meta name="git_commit_id" content="34a3fb967097328407260d8a0ea5fdfc47cf9d78" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/34a3fb967097328407260d8a0ea5fdfc47cf9d78/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="f33299adf56a1f104dba6d0d890f56750430ce1a" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f33299adf56a1f104dba6d0d890f56750430ce1a/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
@@ -108,8 +108,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2024-04-05 10:37 PM" />
-<meta name="word_count" content="4806" />
+<meta name="updated_at" content="2024-04-24 01:27 AM" />
+<meta name="word_count" content="4855" />
 
 
 	<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
@@ -206,7 +206,7 @@
 			id="adobe-target-script"
 			type="application/javascript"
 		/>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/81c583a1.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d9b11812.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -871,6 +871,10 @@ Article														</li>
 <td>Aiolfi.design</td>
 </tr>
 <tr>
+<td>AIFF</td>
+<td><a href="https://idiofonts.com/" data-linktype="external">Idiofonts</a></td>
+</tr>
+<tr>
 <td>AIYR</td>
 <td><a href="https://aiyaristudio.com/" data-linktype="external">Aiyari</a></td>
 </tr>
@@ -1367,7 +1371,7 @@ Article														</li>
 </tr>
 <tr>
 <td>BLUE</td>
-<td><a href="http://blueshell.xyz/" data-linktype="external">Blue Shell</a></td>
+<td>Blue Shell</td>
 </tr>
 <tr>
 <td>BLV</td>
@@ -1515,11 +1519,15 @@ Article														</li>
 </tr>
 <tr>
 <td>BWFW</td>
-<td><a href="http://www.blueknot.com/Fonts" data-linktype="external">B/W Fontworks</a></td>
+<td>B/W Fontworks</td>
 </tr>
 <tr>
 <td>BwT</td>
 <td><a href="http://www.brandingwithtype.com" data-linktype="external">Branding with Type</a></td>
+</tr>
+<tr>
+<td>BZER</td>
+<td>Bézier</td>
 </tr>
 </table>
 <h2 id="c">C</h2>
@@ -1967,6 +1975,10 @@ Article														</li>
 <tr>
 <td>DOM</td>
 <td><a href="http://www.dukom.org" data-linktype="external">Dukom Design</a></td>
+</tr>
+<tr>
+<td>DonR</td>
+<td>Donat Raetzo</td>
 </tr>
 <tr>
 <td>DONS</td>
@@ -2511,6 +2523,10 @@ Article														</li>
 <td><a href="http://www.fontpad.co.uk" data-linktype="external">The Fontpad</a></td>
 </tr>
 <tr>
+<td>FPKY</td>
+<td><a href="https://space.bilibili.com/5584393" data-linktype="external">Fitzgerald P. K. (Fitzgerald Yu / 蔽芪茢·茇䓮·蓲䒤菥)</a></td>
+</tr>
+<tr>
 <td>FPPL</td>
 <td><a href="https://fontpeople.co.uk/" data-linktype="external">FontPeople</a></td>
 </tr>
@@ -2636,11 +2652,11 @@ Article														</li>
 </tr>
 <tr>
 <td>FXTL</td>
-<td><a href="http://www.foxtailcollectif.com" data-linktype="external">Foxtail Collectif</a></td>
+<td>Foxtail Collectif</td>
 </tr>
 <tr>
 <td>FXTP</td>
-<td><a href="https://creativemarket.com/FoxType" data-linktype="external">FoxType Co</a></td>
+<td>FoxType Co</td>
 </tr>
 <tr>
 <td>FY</td>
@@ -3228,6 +3244,10 @@ Article														</li>
 <td><a href="http://www.indiantypefoundry.com" data-linktype="external">Indian Type Foundry</a></td>
 </tr>
 <tr>
+<td>ITSK</td>
+<td><a href="https://github.com/GuoPCinGitHub" data-linktype="external">Saki Itomi</a></td>
+</tr>
+<tr>
 <td>ITSM</td>
 <td><a href="http://www.simonstratford.com" data-linktype="external">Simon Stratford</a></td>
 </tr>
@@ -3379,6 +3399,10 @@ Article														</li>
 <td><a href="http://www.justintype.com/" data-linktype="external">Just in Type</a></td>
 </tr>
 <tr>
+<td>JuTy</td>
+<td><a href="https://space.bilibili.com/180282493" data-linktype="external">JudouEco</a></td>
+</tr>
+<tr>
 <td>JVRT</td>
 <td>Just van Rossum Type</td>
 </tr>
@@ -3523,7 +3547,7 @@ Article														</li>
 </tr>
 <tr>
 <td>KOP</td>
-<td><a href="http://www.leo-koppelkamm.de" data-linktype="external">Leo Koppelkamm</a></td>
+<td>Leo Koppelkamm</td>
 </tr>
 <tr>
 <td>KORK</td>
@@ -3907,6 +3931,10 @@ Article														</li>
 <tr>
 <td>LVRC</td>
 <td><a href="https://arnaudchemin.com/" data-linktype="external">Lovercase</a></td>
+</tr>
+<tr>
+<td>LXGW</td>
+<td><a href="https://github.com/lxgw" data-linktype="external">LXGW (落霞孤鹜 / 霞鹜)</a></td>
 </tr>
 </table>
 <h2 id="m">M</h2>
@@ -4415,6 +4443,10 @@ Article														</li>
 <td><a href="http://www.nan.xyz/" data-linktype="external">NaN</a></td>
 </tr>
 <tr>
+<td>NANO</td>
+<td><a href="https://github.com/HACKERSam2011" data-linktype="external">NANOFONT Inc.</a></td>
+</tr>
+<tr>
 <td>NASK</td>
 <td><a href="https://www.behance.net/naskestudio" data-linktype="external">Naske Studio</a></td>
 </tr>
@@ -4755,6 +4787,10 @@ Article														</li>
 <tr>
 <td>PANA</td>
 <td><a href="https://www.behance.net/panatype" data-linktype="external">Pana Type Studio</a></td>
+</tr>
+<tr>
+<td>PAPF</td>
+<td><a href="https://pappware.ch/" data-linktype="external">Pappware Fonts</a></td>
 </tr>
 <tr>
 <td>PARA</td>
@@ -5425,6 +5461,10 @@ Article														</li>
 <td><a href="http://www.schriftlabor.at/" data-linktype="external">Schriftlabor</a></td>
 </tr>
 <tr>
+<td>SLCH</td>
+<td><a href="https://salecharacter.com/" data-linktype="external">Sale Character</a></td>
+</tr>
+<tr>
 <td>SLFN</td>
 <td><a href="https://www.singlelinefonts.com/" data-linktype="external">Single Line Fonts</a></td>
 </tr>
@@ -6002,6 +6042,10 @@ Article														</li>
 <tr>
 <td>TYCU</td>
 <td><a href="http://www.typeculture.com/" data-linktype="external">TypeCulture</a></td>
+</tr>
+<tr>
+<td>TYFA</td>
+<td><a href="https://typofactur.de/" data-linktype="external">typofactur</a></td>
 </tr>
 <tr>
 <td>TYFR</td>
