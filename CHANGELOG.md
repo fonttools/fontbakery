@@ -4,6 +4,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.12.4 (2024-Apr-??)
 - Fix bug where some checks would modify the font under test and make other checks fail (issue #4678)
 
+### Promotion of previously experimental checks
+#### Made effective on the FontWerk profile
+  - * **com.fontwerk/check/names_match_default_fvar** After being marked as **experimental** for 10 weeks since the v0.12.0a1 release (PRs #3604 / #3698)
+
 ### Changes to existing checks
 #### On the OpenType profile
   - **[com.google.fonts/check/caret_slope]:** Downgrade "caretslope-mismatch" from FAIL to WARN. (issue #4679)
