@@ -91,7 +91,11 @@ def PANOSE_is_monospaced(panose):
         PANOSE_Family_Type.LATIN_HAND_WRITTEN,
         PANOSE_Family_Type.LATIN_SYMBOL,
     ]:
-        return panose.bSpacing == PANOSE_Spacing.MONOSPACED
+        # NOTE: fonttools has fixed nomenclature for the panose digits,
+        #       regardless of context. So, semantically, here the 4th digit
+        #       should be called bSpacing, but fonttools still gives it
+        #       the 'bProportion' attribute name.
+        return panose.bProportion == PANOSE_Spacing.MONOSPACED
 
     # otherwise
     return False
