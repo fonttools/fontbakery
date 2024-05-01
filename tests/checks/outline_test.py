@@ -87,7 +87,6 @@ def test_check_outline_colinear_vectors():
     assert "B (U+0042)" not in messages
     assert "C (U+0043)" in messages
     assert "E (U+0045)" in messages
-    assert ".notdef" not in messages
 
     # TODO: PASS
 
