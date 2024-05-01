@@ -1,3 +1,4 @@
+from collections import defaultdict
 import math
 
 from beziers.path import BezierPath
@@ -20,10 +21,18 @@ FALSE_POSITIVE_CUTOFF = 100  # More than this and we don't make a report
 @condition(Font)
 def outlines_dict(font):
     ttFont = font.ttFont
-    cmap = ttFont["cmap"].getBestCmap()
+    reversed_cmap = {v: k for k, v in ttFont.getBestCmap().items()}
+
+    def display_name(glyphname):
+        if glyphname in reversed_cmap:
+            return f"{glyphname} (U+{reversed_cmap[glyphname]:04X})"
+        return glyphname
+
     return {
-        (codepoint, glyphname): BezierPath.fromFonttoolsGlyph(ttFont, glyphname)
-        for codepoint, glyphname in cmap.items()
+        (glyphname, display_name(glyphname)): BezierPath.fromFonttoolsGlyph(
+            ttFont, glyphname
+        )
+        for glyphname in ttFont.getGlyphOrder()
     }
 
 
@@ -82,7 +91,7 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
         )
 
     for glyph, outlines in outlines_dict.items():
-        codepoint, glyphname = glyph
+        glyphname, display_name = glyph
         for p in outlines:
             for node in p.asNodelist():
                 if node.type == "offcurve":
@@ -95,8 +104,7 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
                         continue
                     if close_but_not_on(yExpected, node.y, ALIGNMENT_MISS_EPSILON):
                         warnings.append(
-                            f"{glyphname} (U+{codepoint:04X}):"
-                            f" X={node.x},Y={node.y}"
+                            f"{display_name}: X={node.x},Y={node.y}"
                             f" (should be at {line} {yExpected}?)"
                         )
         if len(warnings) > FALSE_POSITIVE_CUTOFF:
@@ -136,8 +144,9 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
 def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config):
     """Are any segments inordinately short?"""
     warnings = []
+
     for glyph, outlines in outlines_dict.items():
-        codepoint, glyphname = glyph
+        glyphname, display_name = glyph
         for p in outlines:
             outline_length = p.length
             segments = p.asSegments()
@@ -147,16 +156,14 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config)
             for seg in p.asSegments():
                 if math.isclose(seg.length, 0):  # That's definitely wrong
                     warnings.append(
-                        f"{glyphname} (U+{codepoint:04X})"
-                        f" contains a short segment {seg}"
+                        f"{display_name}" f" contains a short segment {seg}"
                     )
                 elif (
                     seg.length < SHORT_PATH_ABSOLUTE_EPSILON
                     or seg.length < SHORT_PATH_EPSILON * outline_length
                 ) and (prev_was_line or len(seg) > 2):
                     warnings.append(
-                        f"{glyphname} (U+{codepoint:04X})"
-                        f" contains a short segment {seg}"
+                        f"{display_name}" f" contains a short segment {seg}"
                     )
                 prev_was_line = len(seg) == 2
         if len(warnings) > FALSE_POSITIVE_CUTOFF:
@@ -191,8 +198,9 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config)
 def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, config):
     """Do any segments have colinear vectors?"""
     warnings = []
+
     for glyph, outlines in outlines_dict.items():
-        codepoint, glyphname = glyph
+        glyphname, display_name = glyph
         for p in outlines:
             segments = p.asSegments()
             if not segments:
@@ -205,9 +213,7 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, confi
                         abs(prev.tangentAtTime(0).angle - this.tangentAtTime(0).angle)
                         < COLINEAR_EPSILON
                     ):
-                        warnings.append(
-                            f"{glyphname} (U+{codepoint:04X}):" f" {prev} -> {this}"
-                        )
+                        warnings.append(f"{display_name}: {prev} -> {this}")
         if len(warnings) > FALSE_POSITIVE_CUTOFF:
             yield PASS, (
                 "So many colinear vectors were found"
@@ -239,8 +245,10 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, confi
 def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config):
     """Do outlines contain any jaggy segments?"""
     warnings = []
+    reversed_cmap = {v: k for k, v in ttFont.getBestCmap().items()}
+
     for glyph, outlines in outlines_dict.items():
-        codepoint, glyphname = glyph
+        glyphname, display_name = glyph
         for p in outlines:
             segments = p.asSegments()
             if not segments:
@@ -261,8 +269,7 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config)
                 if abs(jag_angle) > JAG_ANGLE or jag_angle == 0:
                     continue
                 warnings.append(
-                    f"{glyphname} (U+{codepoint:04X}):"
-                    f" {prev}/{this} = {math.degrees(jag_angle)}"
+                    f"{display_name}: {prev}/{this} = {math.degrees(jag_angle)}"
                 )
 
     if warnings:
@@ -291,8 +298,9 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config)
 def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
     """Do outlines contain any semi-vertical or semi-horizontal lines?"""
     warnings = []
+
     for glyph, outlines in outlines_dict.items():
-        codepoint, glyphname = glyph
+        glyphname, display_name = glyph
         for p in outlines:
             segments = p.asSegments()
             if not segments:
@@ -303,7 +311,7 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
                 angle = math.degrees((s.end - s.start).angle)
                 for yExpected in [-180, -90, 0, 90, 180]:
                     if close_but_not_on(angle, yExpected, 0.5):
-                        warnings.append(f"{glyphname} (U+{codepoint:04X}): {s}")
+                        warnings.append(f"{display_name}: {s}")
 
     if warnings:
         formatted_list = bullet_list(config, sorted(warnings), bullet="*")
@@ -316,3 +324,52 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
         )
     else:
         yield PASS, "No semi-horizontal/semi-vertical lines found."
+
+
+@check(
+    id="com.google.fonts/check/outline_direction",
+    rationale="""
+        In TrueType fonts, the outermost contour of a glyph should be oriented
+        counter-clockwise, while the inner contours should be oriented clockwise.
+        Getting the path direction wrong can lead to rendering issues in some
+        software.
+    """,
+    conditions=["outlines_dict", "is_ttf"],
+    proposal="https://github.com/fonttools/fontbakery/issues/2056",
+)
+def com_google_fonts_check_outline_direction(ttFont, outlines_dict, config):
+    """Check the direction of the outermost contour in each glyph"""
+    warnings = []
+
+    def bounds_contains(bb1, bb2):
+        return (
+            bb1.left <= bb2.left
+            and bb1.right >= bb2.right
+            and bb1.top >= bb2.top
+            and bb1.bottom <= bb2.bottom
+        )
+
+    for glyph, outlines in outlines_dict.items():
+        glyphname, display_name = glyph
+        # Find outlines which are not contained within another outline
+        outline_bounds = [path.bounds() for path in outlines]
+        is_within = defaultdict(list)
+        for i, my_bounds in enumerate(outline_bounds):
+            for j in range(i + 1, len(outline_bounds)):
+                their_bounds = outline_bounds[j]
+                if bounds_contains(my_bounds, their_bounds):
+                    is_within[j].append(i)
+        # The outermost paths are those which are not within anything
+        for i, path in enumerate(outlines):
+            if is_within[i]:
+                continue
+            if path.direction == 1:
+                warnings.append(f"{display_name} has a counter-clockwise outer contour")
+
+    if warnings:
+        formatted_list = bullet_list(config, sorted(warnings), bullet="*")
+        yield WARN, Message(
+            "ccw-outer-contour",
+            f"The following glyphs have a counter-clockwise outer contour:\n\n"
+            f"{formatted_list}",
+        )

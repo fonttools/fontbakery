@@ -6,6 +6,13 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the OpenType profile
   - **[com.google.fonts/check/monospace]:** Fix ERROR when accessing the 4th bit of panose (spacing) when family type is LATIN_HAND_WRITTEN or LATIN_SYMBOL. FontTools still calls it 'bProportion' even though the proper name should be 'bSpacing' (issue #2857)
 
+#### On the Outline profile
+  - Checks now check unencoded glyphs as well as encoded glyphs. (issue #2056)
+
+### New checks
+#### Added to the Outline profile
+  - **[com.google.fonts/check/outline_direction]:** Check that outermost contours of glyphs have a clockwise direction. (issue #2056)
+
 
 ## 0.12.4 (2024-Apr-26)
   - Fixed bug where some checks would modify the font under test and make other checks fail (issue #4678)
