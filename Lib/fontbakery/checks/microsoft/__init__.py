@@ -511,8 +511,17 @@ def com_microsoft_check_vtt_volt_data_gone(ttFont):
         yield PASS, "No VTT or Volt Source Data Found"
 
 
-def verify_widths(ttFont, buffer):
-    """Verify all shaped glyphs are the same width"""
+def verify_widths(ttFont, hbFont, check_text):
+    """Shape text and verify all shaped glyphs are the same width"""
+    import uharfbuzz as hb
+
+    buffer = hb.Buffer()
+    buffer.add_str(check_text)
+    buffer.guess_segment_properties()
+    hb.shape(hbFont, buffer, features={"tnum": True})
+
+    assert buffer.content_type == hb.BufferContentType.GLYPHS
+
     glyphs_by_width = {}
     glyphOrder = ttFont.getGlyphOrder()
     for info, pos in zip(buffer.glyph_infos, buffer.glyph_positions):
@@ -580,9 +589,6 @@ def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
         yield PASS, "Font does not contain tnum opentype feature"
         return
 
-    hbBuffer = hb.Buffer()
-    hbBuffer.add_str(check_text)
-
     # variable or static font
     if "fvar" in ttFont:
         fvar_table = ttFont["fvar"]
@@ -593,10 +599,7 @@ def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
             hbFont.set_variations(instance_coord_dict)
 
             # Shape set of characters and verify glyphs have same width
-            hb.shape(hbFont, hbBuffer, features={"tnum": True})
-
-            # Verify all shaped glyphs are the same width
-            glyphs_with_widths = verify_widths(ttFont, hbBuffer)
+            glyphs_with_widths = verify_widths(ttFont, hbFont, check_text)
             if len(glyphs_with_widths) > 1:
                 yield FAIL, (
                     f"tnum glyphs in instance {instance_coord_dict} "
@@ -609,10 +612,8 @@ def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
                 )
 
     else:
-        hb.shape(hbFont, hbBuffer, features={"tnum": True})
-
-        # Verify all shaped glyphs are the same width
-        glyphs_with_widths = verify_widths(ttFont, hbBuffer)
+        # Shape set of characters and verify glyphs have same width
+        glyphs_with_widths = verify_widths(ttFont, hbFont, check_text)
         if len(glyphs_with_widths) > 1:
             yield FAIL, (
                 f"tnum glyphs appear not to align:\n{format_glyphs_by_width(glyphs_with_widths)}"
