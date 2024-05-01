@@ -137,3 +137,17 @@ def test_check_outline_semi_vertical():
     font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Italic.otf")
     msg = assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
     assert "Unfulfilled Conditions: not is_italic" in msg
+
+
+def test_check_outline_direction():
+    """Check for misaligned points."""
+    check = CheckTester("com.google.fonts/check/outline_direction")
+
+    font = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.otf")
+    assert_results_contain(check(font), SKIP, "unfulfilled-conditions")
+
+    font = TEST_FILE("wonky_paths/WonkySourceSansPro-Regular.ttf")
+    results = check(font)
+    assert_results_contain(results, WARN, "ccw-outer-contour")
+    messages = "".join([m.message.message for m in results])
+    assert "A (U+0041) has a counter-clockwise outer contour" in messages
