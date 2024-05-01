@@ -20,10 +20,9 @@ FALSE_POSITIVE_CUTOFF = 100  # More than this and we don't make a report
 @condition(Font)
 def outlines_dict(font):
     ttFont = font.ttFont
-    cmap = ttFont["cmap"].getBestCmap()
     return {
-        (codepoint, glyphname): BezierPath.fromFonttoolsGlyph(ttFont, glyphname)
-        for codepoint, glyphname in cmap.items()
+        glyphname: BezierPath.fromFonttoolsGlyph(ttFont, glyphname)
+        for glyphname in ttFont.getGlyphOrder()
     }
 
 
@@ -81,8 +80,10 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
             " and version >= 2 is required for those checks.",
         )
 
-    for glyph, outlines in outlines_dict.items():
-        codepoint, glyphname = glyph
+    reversed_cmap = {v: k for k, v in ttFont.getBestCmap().items()}
+
+    for glyphname, outlines in outlines_dict.items():
+        codepoint = reversed_cmap.get(glyphname, 0)
         for p in outlines:
             for node in p.asNodelist():
                 if node.type == "offcurve":
@@ -136,8 +137,10 @@ def com_google_fonts_check_outline_alignment_miss(ttFont, outlines_dict, config)
 def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config):
     """Are any segments inordinately short?"""
     warnings = []
-    for glyph, outlines in outlines_dict.items():
-        codepoint, glyphname = glyph
+    reversed_cmap = {v: k for k, v in ttFont.getBestCmap().items()}
+
+    for glyphname, outlines in outlines_dict.items():
+        codepoint = reversed_cmap.get(glyphname, 0)
         for p in outlines:
             outline_length = p.length
             segments = p.asSegments()
@@ -191,8 +194,10 @@ def com_google_fonts_check_outline_short_segments(ttFont, outlines_dict, config)
 def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, config):
     """Do any segments have colinear vectors?"""
     warnings = []
-    for glyph, outlines in outlines_dict.items():
-        codepoint, glyphname = glyph
+    reversed_cmap = {v: k for k, v in ttFont.getBestCmap().items()}
+
+    for glyphname, outlines in outlines_dict.items():
+        codepoint = reversed_cmap.get(glyphname, 0)
         for p in outlines:
             segments = p.asSegments()
             if not segments:
@@ -239,8 +244,10 @@ def com_google_fonts_check_outline_colinear_vectors(ttFont, outlines_dict, confi
 def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config):
     """Do outlines contain any jaggy segments?"""
     warnings = []
-    for glyph, outlines in outlines_dict.items():
-        codepoint, glyphname = glyph
+    reversed_cmap = {v: k for k, v in ttFont.getBestCmap().items()}
+
+    for glyphname, outlines in outlines_dict.items():
+        codepoint = reversed_cmap.get(glyphname, 0)
         for p in outlines:
             segments = p.asSegments()
             if not segments:
@@ -291,8 +298,10 @@ def com_google_fonts_check_outline_jaggy_segments(ttFont, outlines_dict, config)
 def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
     """Do outlines contain any semi-vertical or semi-horizontal lines?"""
     warnings = []
-    for glyph, outlines in outlines_dict.items():
-        codepoint, glyphname = glyph
+    reversed_cmap = {v: k for k, v in ttFont.getBestCmap().items()}
+
+    for glyphname, outlines in outlines_dict.items():
+        codepoint = reversed_cmap.get(glyphname, 0)
         for p in outlines:
             segments = p.asSegments()
             if not segments:
