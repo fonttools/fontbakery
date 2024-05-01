@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the OpenType profile
   - **[com.google.fonts/check/monospace]:** Fix ERROR when accessing the 4th bit of panose (spacing) when family type is LATIN_HAND_WRITTEN or LATIN_SYMBOL. FontTools still calls it 'bProportion' even though the proper name should be 'bSpacing' (issue #2857)
+  - **[com.microsoft/check/tnum_glyphs_equal_widths]:** Fix shaping error under certain conditions (PR #4689)
 
 #### On the Outline profile
   - Checks now check unencoded glyphs as well as encoded glyphs. (issue #2056)
