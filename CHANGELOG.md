@@ -1,14 +1,37 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.12.4 (2024-Apr-22)
+## Upcoming release: 0.12.5 (2024-May-??)
+### Changes to existing checks
+#### On the OpenType profile
+  - **[com.google.fonts/check/monospace]:** Fix ERROR when accessing the 4th bit of panose (spacing) when family type is LATIN_HAND_WRITTEN or LATIN_SYMBOL. FontTools still calls it 'bProportion' even though the proper name should be 'bSpacing' (issue #2857)
+
+#### On the Outline profile
+  - Checks now check unencoded glyphs as well as encoded glyphs. (issue #2056)
 
 ### New checks
 #### Added to the Outline profile
   - **[com.google.fonts/check/outline_direction]:** Check that outermost contours of glyphs have a clockwise direction. (issue #2056)
+
+
+## 0.12.4 (2024-Apr-26)
+  - Fixed bug where some checks would modify the font under test and make other checks fail (issue #4678)
+
+### Promotion of previously experimental checks
+#### Made effective on the FontWerk profile
+  - * **com.fontwerk/check/names_match_default_fvar** After being marked as **experimental** for 10 weeks since the v0.12.0a1 release (PRs #3604 / #3698)
+
 ### Changes to existing checks
-#### Added to the Outline profile
-  - Checks now check unencoded glyphs as well as encoded glyphs.
+#### On the OpenType profile
+  - **[com.google.fonts/check/caret_slope]:** Downgrade "caretslope-mismatch" from FAIL to WARN. (issue #4679)
+
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/fvar_instances]:** Fix markdown table formatting. (issue #4675)
+  - **[com.google.fonts/check/missing_small_caps_glyphs]:** Fix ERROR: Handle LookupType 2, which maps to more than a single glyph. (issue #4677)
+
+#### On the FontWerk profile
+  - **[com.fontwerk/check/style_linking]:** (also included in the `Type Network` profile). Adjust the `is_bold` condition to check for bold-adjacent style names with spaces, such as "Semi Bold" and "Extra Bold", and not consider such styles as "Bold" in the RIBBI sense. (issue #4667)
+
 
 ## 0.12.3 (2024-Apr-22)
 ### New Profile

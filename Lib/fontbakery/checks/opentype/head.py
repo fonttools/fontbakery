@@ -73,8 +73,8 @@ def com_google_fonts_check_unitsperem(ttFont):
             "suboptimal",
             f"In order to optimize performance on some"
             f" legacy renderers, the value of unitsPerEm"
-            f" at the head table should idealy be"
-            f" a power of between 16 to 16384."
+            f" at the head table should ideally be"
+            f" a power of 2 between 16 to 16384."
             f" And values of 1000 and 2000 are also"
             f" common and may be just fine as well."
             f" But we got {upem} instead.",

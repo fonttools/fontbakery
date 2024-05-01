@@ -542,9 +542,14 @@ def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):
     for lookup in ttFont[table].table.LookupList.Lookup:
         if lookup.LookupType == extension_type:
             for xt in lookup.SubTable:
-                xt.SubTable = [xt.ExtSubTable]
-                xt.LookupType = xt.ExtSubTable.LookupType
-                callback(xt, *args)
+                original_LookupType = xt.LookupType
+                try:
+                    xt.SubTable = [xt.ExtSubTable]
+                    xt.LookupType = xt.ExtSubTable.LookupType
+                    callback(xt, *args)
+                finally:
+                    del xt.SubTable
+                    xt.LookupType = original_LookupType
         else:
             callback(lookup, *args)
 
@@ -646,6 +651,25 @@ def keyword_in_full_font_name(ttFont, keyword):
         if (
             entry.nameID == NameID.FULL_FONT_NAME
             and keyword in entry.string.decode(entry.getEncoding()).lower().split()
+        ):
+            return True
+    return False
+
+
+def bold_adjacent_styles_in_full_font_name(ttFont):
+    from fontbakery.constants import NameID
+
+    for entry in ttFont["name"].names:
+        if entry.nameID == NameID.FULL_FONT_NAME and any(
+            x in entry.string.decode(entry.getEncoding()).lower()
+            for x in [
+                "extra bold",
+                "extrabold",
+                "semi bold",
+                "semibold",
+                "demi bold",
+                "demibold",
+            ]
         ):
             return True
     return False

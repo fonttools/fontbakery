@@ -113,7 +113,7 @@ def com_google_fonts_check_stat(ttFont, expected_font_names):
     if font_axis_values != expected_axis_values:
         yield FAIL, Message(
             "bad-axis-values",
-            f"Compulsory STAT Axis Values are incorrect:\n\n {md_table}\n",
+            f"Compulsory STAT Axis Values are incorrect:\n\n{md_table}\n\n",
         )
 
 
@@ -182,14 +182,16 @@ def com_google_fonts_check_fvar_instances(ttFont, ttFonts):
         if wght_wrong:
             hints += "- wght coordinates are wrong for some instances"
         yield FAIL, Message(
-            "bad-fvar-instances", f"fvar instances are incorrect:\n{hints}\n{md_table}"
+            "bad-fvar-instances",
+            f"fvar instances are incorrect:\n\n" f"{hints}\n\n{md_table}\n\n",
         )
     elif any(font_instances[i] != expected_instances[i] for i in same):
         yield WARN, Message(
             "suspicious-fvar-coords",
-            "fvar instance coordinates for non-wght axes are not the same as the fvar"
-            " defaults. This may be intentional so please check with the font author:"
-            f"\n\n{md_table}",
+            f"fvar instance coordinates for non-wght axes are not the same as"
+            f" the fvar defaults. This may be intentional so please check with"
+            f" the font author:\n\n"
+            f"{md_table}\n\n",
         )
 
 
