@@ -2,8 +2,13 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.4 (2024-Apr-22)
-  - ...
 
+### New checks
+#### Added to the Outline profile
+  - **[com.google.fonts/check/outline_direction]:** Check that outermost contours of glyphs have a clockwise direction. (issue #2056)
+### Changes to existing checks
+#### Added to the Outline profile
+  - Checks now check unencoded glyphs as well as encoded glyphs.
 
 ## 0.12.3 (2024-Apr-22)
 ### New Profile
