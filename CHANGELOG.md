@@ -14,7 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/varfont/family_axis_ranges]:** Updated the check to skip fonts without fvar tables. (issue #4554)
 
 #### On the Universal Profile
-  - **[com.google.fonts/check/tabular_kerning]:** Eliminated false positives and other errors, improved speed (issue #4640)
+  - **[com.google.fonts/check/tabular_kerning]:** Eliminated false positives and other errors (issue #4640)
 
 
 ## 0.12.0a2 (2024-Feb-21)
