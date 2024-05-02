@@ -2403,17 +2403,39 @@ def com_google_fonts_check_math_signs_width(ttFont):
 def com_google_fonts_check_tabular_kerning(ttFont):
     """Check tabular widths don't have kerning."""
     from vharfbuzz import Vharfbuzz
-    import uharfbuzz as hb
     import unicodedata
+    import copy
 
+    def add_cmap(ttFont, codepoint, glyph_name):
+        for table in ttFont["cmap"].tables:
+            if table.isUnicode():
+                table.cmap[codepoint] = glyph_name
+
+    def add_PUA_unicode(ttFont):
+        """Add PUA Unicodes to all unencoded glyphs in the font"""
+        PUA = 0xE000
+        cmap_glyphnames = ttFont.getBestCmap().values()
+        cmap_unicodes = list(ttFont.getBestCmap().keys())
+        for glyph_name in ttFont.getGlyphOrder():
+            if glyph_name not in cmap_glyphnames:
+                # Skip glyphs that are already in the PUA range
+                while PUA in cmap_unicodes:
+                    PUA += 1
+                add_cmap(ttFont, PUA, glyph_name)
+                cmap_unicodes.append(PUA)
+
+    # Copy of ttFont because we're changing data
+    ttFont_copy = copy.copy(ttFont)
+    add_PUA_unicode(ttFont_copy)
     vhb = Vharfbuzz(ttFont.reader.file.name)
+    best_cmap = ttFont_copy.getBestCmap()
+    unicode_for_glyphs = {v: k for k, v in best_cmap.items()}
 
     def glyph_width(ttFont, glyph_name):
         return ttFont["hmtx"].metrics[glyph_name][0]
 
-    def glyph_name_for_character(ttFont, character):
-        if ttFont.getBestCmap().get(ord(character)):
-            return ttFont.getBestCmap().get(ord(character))
+    def glyph_name_for_character(_ttFont, character):
+        return best_cmap.get(ord(character))
 
     def unique_combinations(list_1, list_2):
         unique_combinations = []
@@ -2423,16 +2445,6 @@ def com_google_fonts_check_tabular_kerning(ttFont):
                 unique_combinations.append((list_1[i], list_2[j]))
 
         return unique_combinations
-
-    def GID_for_glyph(ttFont, glyph_name):
-        return ttFont.getReverseGlyphMap()[glyph_name]
-
-    def unicode_for_glyph(ttFont, glyph_name):
-        for table in ttFont["cmap"].tables:
-            if table.isUnicode():
-                for codepoint, glyph in table.cmap.items():
-                    if glyph == glyph_name:
-                        return codepoint
 
     def has_feature(ttFont, featureTag):
         if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList:
@@ -2470,54 +2482,36 @@ def com_google_fonts_check_tabular_kerning(ttFont):
                                 substitutions.update(SubTable.mapping)
         return substitutions
 
-    def nominal_glyph_func(font, code_point, data):
-        return code_point
-
-    def buffer_for_GIDs(GIDs, features):
-        buf = hb.Buffer()
-        buf.add_codepoints(GIDs)
-        buf.guess_segment_properties()
-        funcs = hb.FontFuncs.create()
-        funcs.set_nominal_glyph_func(nominal_glyph_func)
-        vhb.hbfont.funcs = funcs
-        hb.shape(vhb.hbfont, buf, features)
-        return buf
-
-    def get_kerning(ttFont, glyph_list):
-        GID_list = [GID_for_glyph(ttFont, glyph) for glyph in glyph_list]
-        width1 = buf_to_width(
-            buffer_for_GIDs(
-                GID_list,
-                {"kern": True},
-            )
-        )
-        width2 = buf_to_width(
-            buffer_for_GIDs(
-                GID_list,
-                {"kern": False},
-            )
-        )
+    def get_kerning(glyph_list):
+        text = "".join([chr(unicode_for_glyphs[glyph]) for glyph in glyph_list])
+        width1 = buf_to_width(vhb.shape(text, {"features": {"kern": True}}))
+        width2 = buf_to_width(vhb.shape(text, {"features": {"kern": False}}))
         return width1 - width2
 
-    def get_str_buffer(ttFont, glyph_list):
-        GID_list = [GID_for_glyph(ttFont, glyph) for glyph in glyph_list]
-        buffer = buffer_for_GIDs(GID_list, {})
+    def get_str_buffer(glyph_list):
+        text = "".join([chr(unicode_for_glyphs[glyph]) for glyph in glyph_list])
+        buffer = vhb.shape(text)
         string = vhb.serialize_buf(buffer)
         return string
 
     def digraph_kerning(ttFont, glyph_list, expected_kerning):
         return (
-            len(get_str_buffer(ttFont, glyph_list).split("|")) > 1
-            and get_kerning(ttFont, glyph_list) == expected_kerning
+            len(get_str_buffer(glyph_list).split("|")) > 1
+            and get_kerning(glyph_list) == expected_kerning
         )
 
-    all_glyphs = list(ttFont.getGlyphOrder())
+    # Font has no numerals at all
+    if not all([glyph_name_for_character(ttFont_copy, c) for c in "0123456789"]):
+        yield SKIP, "Font has no numerals at all"
+        return
+
+    all_glyphs = list(ttFont_copy.getGlyphOrder())
     tabular_glyphs = []
     tabular_numerals = []
 
     # Fonts with tnum feautre
-    if has_feature(ttFont, "tnum"):
-        tabular_glyphs = list(get_substitutions(ttFont, "tnum").values())
+    if has_feature(ttFont_copy, "tnum"):
+        tabular_glyphs = list(get_substitutions(ttFont_copy, "tnum").values())
         buf = vhb.shape("0123456789", {"features": {"tnum": True}})
         tabular_numerals = vhb.serialize_buf(buf, glyphsonly=True).split("|")
 
@@ -2525,20 +2519,22 @@ def com_google_fonts_check_tabular_kerning(ttFont):
     else:
         # Find out if font maybe has tabular numerals by default
         glyph_widths = [
-            glyph_width(ttFont, glyph_name_for_character(ttFont, str(i)))
-            for i in range(10)
+            glyph_width(ttFont_copy, glyph_name_for_character(ttFont_copy, c))
+            for c in "0123456789"
         ]
         if len(set(glyph_widths)) == 1:
-            tabular_width = glyph_width(ttFont, glyph_name_for_character(ttFont, "0"))
+            tabular_width = glyph_width(
+                ttFont_copy, glyph_name_for_character(ttFont_copy, "0")
+            )
             tabular_numerals = [
-                glyph_name_for_character(ttFont, c) for c in "0123456789"
+                glyph_name_for_character(ttFont_copy, c) for c in "0123456789"
             ]
             # Collect all glyphs with the same width as the tabular numerals
             for glyph in all_glyphs:
-                unicode = unicode_for_glyph(ttFont, glyph)
+                unicode = unicode_for_glyphs.get(glyph)
                 if (
-                    glyph_width(ttFont, glyph) == tabular_width
-                    and unicode
+                    unicode
+                    and glyph_width(ttFont_copy, glyph) == tabular_width
                     and unicodedata.category(chr(unicode))
                     in (
                         "Nd",  # Decimal number
@@ -2553,7 +2549,7 @@ def com_google_fonts_check_tabular_kerning(ttFont):
     passed = True
 
     # Actually check for kerning
-    if tabular_numerals and has_feature(ttFont, "kern"):
+    if tabular_numerals and has_feature(ttFont_copy, "kern"):
         for sets in (
             (all_glyphs, tabular_numerals),
             (tabular_numerals, tabular_glyphs),
@@ -2561,15 +2557,15 @@ def com_google_fonts_check_tabular_kerning(ttFont):
             combinations = unique_combinations(sets[0], sets[1])
             for x, y in combinations:
                 for a, b in ((x, y), (y, x)):
-                    kerning = get_kerning(ttFont, [a, b])
+                    kerning = get_kerning([a, b])
                     if kerning != 0:
                         # Check if either a or b are digraphs that themselves
                         # have kerning when decomposed in ccmp
                         # that would throw off the reading, skip if it's identical
                         # to the kerning of the whole sequence
-                        if digraph_kerning(ttFont, [a], kerning) or digraph_kerning(
-                            ttFont, [b], kerning
-                        ):
+                        if digraph_kerning(
+                            ttFont_copy, [a], kerning
+                        ) or digraph_kerning(ttFont_copy, [b], kerning):
                             pass
                         else:
                             yield FAIL, Message(
