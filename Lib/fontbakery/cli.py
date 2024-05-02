@@ -83,13 +83,16 @@ def ArgumentParser():
         formatter_class=argparse.RawTextHelpFormatter,
     )
 
+    argument_parser.add_argument(
+        "--list-subcommands",
+        action="store_true",
+        help="print list of supported subcommands",
+    )
     argument_parser.add_argument("--version", action="version", version=__version__)
     subcommands = ["check-profile"] + ["check_" + prof for prof in CLI_PROFILES]
     subcommands = [command.replace("_", "-") for command in sorted(subcommands)]
 
-    subparsers = argument_parser.add_subparsers(
-        dest="command", help="sub-command help", required=True
-    )
+    subparsers = argument_parser.add_subparsers(dest="command")
 
     for subcommand in subcommands:
         subparser = subparsers.add_parser(
@@ -102,6 +105,8 @@ def ArgumentParser():
                 metavar="PROFILE",
             )
         add_profile_arguments(subparser)
+
+    argument_parser.subcommands = subcommands
     return argument_parser
 
 
@@ -413,6 +418,13 @@ def main():
         print(e)
         argument_parser.print_usage()
         sys.exit(1)
+
+    if args.list_subcommands:
+        print(" ".join(argument_parser.subcommands))
+        sys.exit(0)
+    elif args.command is None:
+        argument_parser.print_usage()
+        sys.exit(2)
 
     theme = get_theme(args)
 
