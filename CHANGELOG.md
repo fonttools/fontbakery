@@ -3,6 +3,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.12.5 (2024-May-??)
   - When multi-threading is enabled, we now ensure that the font objects are fully loaded before running the checks. This causes an initial delay but avoids some code concurrency issues. (issue #4638)
+  - Add back the `--list-subcommands` option that had been removed by mistake on v0.12.0 (issue #4685)
 
 ### Changes to existing checks
 #### On the OpenType profile
