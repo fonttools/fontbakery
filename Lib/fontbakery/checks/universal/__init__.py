@@ -2499,19 +2499,6 @@ def com_google_fonts_check_tabular_kerning(ttFont):
             len(get_str_buffer(glyph_list).split("|")) > 1
             and get_kerning(glyph_list) == expected_kerning
         )
-        return width1 - width2
-
-    def get_str_buffer(ttFont, glyph_list):
-        GID_list = [GID_for_glyph(ttFont, glyph) for glyph in glyph_list]
-        buffer = buffer_for_GIDs(GID_list, {})
-        string = vhb.serialize_buf(buffer)
-        return string
-
-    def digraph_kerning(ttFont, glyph_list, expected_kerning):
-        return (
-            len(get_str_buffer(ttFont, glyph_list).split("|")) > 1
-            and get_kerning(ttFont, glyph_list) == expected_kerning
-        )
 
     # Font has no numerals at all
     if not all([glyph_name_for_character(ttFont_copy, c) for c in "0123456789"]):
