@@ -202,6 +202,7 @@ PROFILES = {
   'fontbureau': 'Font Bureau',
   'typenetwork': 'Type Network',
   'fontwerk': 'Fontwerk',
+  'microsoft': 'Microsoft',
 };
 
 function addProfile(profilename, col) {
