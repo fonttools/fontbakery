@@ -94,18 +94,15 @@ def test_style_condition():
 def test_check_valid_glyphnames():
     """Glyph names are all valid?"""
     check = CheckTester("com.google.fonts/check/valid_glyphnames")
-    pass_msg = "Glyph names are all valid."
 
     # We start with a good font file:
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    message = assert_PASS(check(ttFont))
-    assert message == pass_msg
+    assert_PASS(check(ttFont))
 
     # There used to be a 31 char max-length limit.
     # This was considered good:
     ttFont.glyphOrder[2] = "a" * 31
-    message = assert_PASS(check(ttFont))
-    assert message == pass_msg
+    assert_PASS(check(ttFont))
 
     # And this was considered bad:
     legacy_too_long = "a" * 32
@@ -149,8 +146,7 @@ def test_check_valid_glyphnames():
 
     # Also test with CFF...
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
-    message = assert_PASS(check(ttFont))
-    assert message == pass_msg
+    assert_PASS(check(ttFont))
 
     # ... and CFF2 fonts
     cff2_skip_msg = "OpenType-CFF2 fonts with a format 3 post table"
@@ -162,11 +158,9 @@ def test_check_valid_glyphnames():
 def test_check_unique_glyphnames():
     """Font contains unique glyph names?"""
     check = CheckTester("com.google.fonts/check/unique_glyphnames")
-    pass_msg = "Glyph names are all unique."
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    message = assert_PASS(check(ttFont))
-    assert message == pass_msg
+    assert_PASS(check(ttFont))
 
     # Fonttools renames duplicate glyphs with #1, #2, ... on load.
     # Code snippet from https://github.com/fonttools/fonttools/issues/149
@@ -199,8 +193,7 @@ def test_check_unique_glyphnames():
 
     # Also test with CFF...
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
-    message = assert_PASS(check(ttFont))
-    assert message == pass_msg
+    assert_PASS(check(ttFont))
 
     # ... and CFF2 fonts
     cff2_skip_msg = "OpenType-CFF2 fonts with a format 3 post table"
@@ -352,14 +345,12 @@ def test_check_fontbakery_version(mock_get, mock_installed):
     mock_response.json.return_value = {"info": {"version": latest_ver}}
     mock_get.return_value = mock_response
     mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
-    msg = assert_PASS(check(font))
-    assert msg == "FontBakery is up-to-date."
+    assert_PASS(check(font))
 
     # Test the case of installed version being newer than PyPI's version.
     installed_ver = "0.1.1"
     mock_installed.return_value = {"fontbakery": MockDistribution(installed_ver)}
-    msg = assert_PASS(check(font))
-    assert msg == "FontBakery is up-to-date."
+    assert_PASS(check(font))
 
     # Test the case of installed version being older than PyPI's version.
     installed_ver = "0.0.1"
@@ -394,8 +385,7 @@ def test_check_fontbakery_version_live_apis():
     # The check will make an actual request to PyPI.org,
     # and will query 'pip' to determine which version of 'fontbakery' is installed.
     # The check should PASS.
-    msg = assert_PASS(check(font))
-    assert msg == "FontBakery is up-to-date."
+    assert_PASS(check(font))
 
 
 def test_check_mandatory_glyphs():
@@ -405,7 +395,7 @@ def test_check_mandatory_glyphs():
     check = CheckTester("com.google.fonts/check/mandatory_glyphs")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    assert assert_PASS(check(ttFont)) == "OK"
+    assert_PASS(check(ttFont))
 
     options = subset.Options()
     options.glyph_names = True  # Preserve glyph names
@@ -551,9 +541,7 @@ def test_check_whitespace_glyphnames():
 
     editCmap(ttFont, 0x0020, "space")
     editCmap(ttFont, 0x00A0, "uni00A0")
-    assert assert_PASS(check(ttFont)) == (
-        "Font has **AGL recommended** names for whitespace glyphs."
-    )
+    assert_PASS(check(ttFont))
 
 
 def test_check_whitespace_ink():
@@ -595,7 +583,7 @@ def test_check_whitespace_ink():
     )
 
 
-def test_check_legacy_accents():
+def DISABLED_test_check_legacy_accents():
     """Check that legacy accents aren't used in composite glyphs."""
     check = CheckTester("com.google.fonts/check/legacy_accents")
 
@@ -663,8 +651,7 @@ def test_check_required_tables():
     cff2_font = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
 
     # The TrueType font contains all required tables, so it must PASS the check.
-    msg = assert_PASS(check(ttFont), "with a good font...")
-    assert msg == "Font contains all required tables."
+    assert_PASS(check(ttFont), "with a good font...")
 
     # Here we confirm that the check also yields INFO with
     # a list of table tags specific to the font.
@@ -673,8 +660,7 @@ def test_check_required_tables():
         assert tag in msg
 
     # The OpenType-CFF font contains all required tables, so it must PASS the check.
-    msg = assert_PASS(check(cff_font), "with a good font...")
-    assert msg == "Font contains all required tables."
+    assert_PASS(check(cff_font), "with a good font...")
 
     # Here we confirm that the check also yields INFO with
     # a list of table tags specific to the OpenType-CFF font.
@@ -688,8 +674,7 @@ def test_check_required_tables():
     assert "CFF " in msg
 
     # The OpenType-CFF2 font contains all required tables, so it must PASS the check.
-    msg = assert_PASS(check(cff2_font), "with a good font...")
-    assert msg == "Font contains all required tables."
+    assert_PASS(check(cff2_font), "with a good font...")
 
     # Here we confirm that the check also yields INFO with
     # a list of table tags specific to the OpenType-CFF2 font.
@@ -731,8 +716,7 @@ def test_check_required_tables():
 
     del ttFont.reader.tables["fvar"]
     ttFont.reader.tables["STAT"] = "foo"
-    msg = assert_PASS(check(ttFont), "with STAT on a non-variable font...")
-    assert msg == "Font contains all required tables."
+    assert_PASS(check(ttFont), "with STAT on a non-variable font...")
 
     # and finally remove what we've just added:
     del ttFont.reader.tables["STAT"]
@@ -874,8 +858,7 @@ def test_check_family_win_ascent_and_descent(mada_ttFonts):
 
     # Fix usWinAscent
     ttFont["OS/2"].usWinAscent = 880
-    message = assert_PASS(check(ttFont))
-    assert message == "OS/2 usWinAscent & usWinDescent values look good!"
+    assert_PASS(check(ttFont))
 
     # Make usWinAscent too large
     ttFont["OS/2"].usWinAscent = 880 * 2 + 1
@@ -943,8 +926,7 @@ def test_check_os2_metrics_match_hhea():
 def test_check_family_vertical_metrics(montserrat_ttFonts):
     check = CheckTester("com.google.fonts/check/family/vertical_metrics")
 
-    msg = assert_PASS(check(montserrat_ttFonts), "with multiple good fonts...")
-    assert msg == "Vertical metrics are the same across the family."
+    assert_PASS(check(montserrat_ttFonts), "with multiple good fonts...")
 
     montserrat_ttFonts[0]["OS/2"].sTypoAscender = 3333
     montserrat_ttFonts[1]["OS/2"].usWinAscent = 4444
@@ -1015,7 +997,7 @@ def test_check_rupee():
     ttFont = TTFont(
         TEST_FILE("indic-font-with-rupee-sign/NotoSerifDevanagari-Regular.ttf")
     )
-    assert assert_PASS(check(ttFont)) == "Looks good!"
+    assert_PASS(check(ttFont))
 
     # But this one lacks the glyph:
     ttFont = TTFont(
@@ -1131,8 +1113,7 @@ def test_check_contour_count(montserrat_ttFonts):
     subsetter = subset.Subsetter()
     subsetter.populate(text="c")
     subsetter.subset(ttFont)
-    msg = assert_PASS(check(ttFont))
-    assert msg == "All glyphs have the recommended amount of contours"
+    assert_PASS(check(ttFont))
 
     # Now delete the 'cmap' table to trigger a FAIL
     del ttFont["cmap"]
@@ -1201,8 +1182,7 @@ def test_check_freetype_rasterizer():
     check = CheckTester("com.adobe.fonts/check/freetype_rasterizer")
 
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    msg = assert_PASS(check(font), "with a good font...")
-    assert msg == "Font can be rasterized by FreeType."
+    assert_PASS(check(font), "with a good font...")
 
     font = TEST_FILE("ancho/AnchoGX.ttf")
     msg = assert_results_contain(check(font), FAIL, "freetype-crash")
@@ -1214,8 +1194,7 @@ def test_check_freetype_rasterizer():
 
     # Example that segfaults with 'freetype-py' version 2.4.0
     font = TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.ttf")
-    msg = assert_PASS(check(font), "with a good font...")
-    assert msg == "Font can be rasterized by FreeType."
+    assert_PASS(check(font), "with a good font...")
 
 
 def test_check_sfnt_version():
@@ -1224,8 +1203,7 @@ def test_check_sfnt_version():
 
     # Valid TrueType font; the check must PASS.
     ttFont = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
-    msg = assert_PASS(check(ttFont))
-    assert msg == "Font has the correct sfntVersion value."
+    assert_PASS(check(ttFont))
 
     # Change the sfntVersion to an improper value for TrueType fonts.
     # The check should FAIL.
@@ -1235,8 +1213,7 @@ def test_check_sfnt_version():
 
     # Valid CFF font; the check must PASS.
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
-    msg = assert_PASS(check(ttFont))
-    assert msg == "Font has the correct sfntVersion value."
+    assert_PASS(check(ttFont))
 
     # Change the sfntVersion to an improper value for CFF fonts. The check should FAIL.
     ttFont.sfntVersion = "\x00\x01\x00\x00"
@@ -1247,8 +1224,7 @@ def test_check_sfnt_version():
 
     # Valid CFF2 font; the check must PASS.
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Roman.otf"))
-    msg = assert_PASS(check(ttFont))
-    assert msg == "Font has the correct sfntVersion value."
+    assert_PASS(check(ttFont))
 
     # Change the sfntVersion to an improper value for CFF fonts. The check should FAIL.
     ttFont.sfntVersion = "\x00\x01\x00\x00"
@@ -1277,7 +1253,9 @@ def test_check_interpolation_issues():
     assert_PASS(check(ttFont))
 
     ttFont = TTFont(TEST_FILE("notosansbamum/NotoSansBamum[wght].ttf"))
-    assert_results_contain(check(ttFont), WARN, "interpolation-issues")
+    msg = assert_results_contain(check(ttFont), WARN, "interpolation-issues")
+    assert "becomes underweight" in msg
+    assert "has a kink" in msg
 
     ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
@@ -1323,7 +1301,7 @@ def test_check_math_tabular_kerning():
     # used to throw off the check
     font = TEST_FILE("ubuntusans/UbuntuSans[wdth,wght].ttf")
     assert_PASS(check(font))
-
+    
 
 def test_check_linegaps():
     """Checking Vertical Metric Linegaps."""
@@ -1382,7 +1360,7 @@ def test_check_STAT_in_statics():
     stat.AxisValueArray.AxisValue = [stat.AxisValueArray.AxisValue[0]]
 
     # It should PASS now
-    assert assert_PASS(check(ttFont)) == "Looks good!"
+    assert_PASS(check(ttFont))
 
 
 def test_check_alt_caron():

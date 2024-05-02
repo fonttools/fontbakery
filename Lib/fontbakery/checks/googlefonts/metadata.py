@@ -1,8 +1,9 @@
+from collections import defaultdict
 import os
 
 from fontbakery.constants import NameID, RIBBI_STYLE_NAMES
 from fontbakery.prelude import check, Message, INFO, PASS, FAIL, WARN, SKIP, FATAL
-from fontbakery.utils import exit_with_install_instructions
+from fontbakery.utils import exit_with_install_instructions, show_inconsistencies
 from fontbakery.checks.googlefonts.glyphset import can_shape
 
 
@@ -21,7 +22,7 @@ def com_google_fonts_check_metadata_parses(family_directory):
         from google.protobuf import text_format
         from fontbakery.utils import get_FamilyProto_Message
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     try:
         pb_file = os.path.join(family_directory, "METADATA.pb")
@@ -38,50 +39,6 @@ def com_google_fonts_check_metadata_parses(family_directory):
             "file-not-found",
             f"Font family at '{family_directory}' lacks a METADATA.pb file.",
         )
-
-
-@check(
-    id="com.google.fonts/check/metadata/unknown_designer",
-    conditions=["family_metadata"],
-    proposal=[
-        "legacy:check/007",
-        "https://github.com/fonttools/fontbakery/issues/800",
-    ],
-)
-def com_google_fonts_check_metadata_unknown_designer(family_metadata):
-    """Font designer field in METADATA.pb must not be 'unknown'."""
-    if family_metadata.designer.lower() == "unknown":
-        yield FAIL, Message(
-            "unknown-designer", f"Font designer field is '{family_metadata.designer}'."
-        )
-    else:
-        yield PASS, "Font designer field is not 'unknown'."
-
-
-@check(
-    id="com.google.fonts/check/metadata/multiple_designers",
-    conditions=["family_metadata"],
-    rationale="""
-        For a while the string "Multiple designers" was used as a placeholder on
-        METADATA.pb files. We should replace all those instances with actual designer
-        names so that proper credits are displayed on the Google Fonts family
-        specimen pages.
-
-        If there's more than a single designer, the designer names must be
-        separated by commas.
-    """,
-    proposal="https://github.com/fonttools/fontbakery/issues/2766",
-)
-def com_google_fonts_check_metadata_multiple_designers(family_metadata):
-    """Font designer field in METADATA.pb must not contain 'Multiple designers'."""
-    if "multiple designer" in family_metadata.designer.lower():
-        yield FAIL, Message(
-            "multiple-designers",
-            f"Font designer field is '{family_metadata.designer}'."
-            f" Please add an explicit comma-separated list of designer names.",
-        )
-    else:
-        yield PASS, "Looks good."
 
 
 @check(
@@ -108,8 +65,6 @@ def com_google_fonts_check_metadata_designer_values(family_metadata):
             f" '{family_metadata.designer}'."
             f" Please use commas to separate multiple names instead.",
         )
-    else:
-        yield PASS, "Looks good."
 
 
 @check(
@@ -119,12 +74,15 @@ def com_google_fonts_check_metadata_designer_values(family_metadata):
         "https://github.com/fonttools/fontbakery/issues/2550",
         "https://github.com/fonttools/fontbakery/issues/4110",
     ],
+    rationale="""
+        This check ensures that any URLs found within the copyright
+        field of the METADATA.pb file are valid.
+    """,
 )
 def com_google_fonts_check_metadata_broken_links(family_metadata):
     """Does METADATA.pb copyright field contain broken links?"""
     import requests
 
-    passed = True
     broken_links = []
     unique_links = []
     for font_metadata in family_metadata.fonts:
@@ -172,7 +130,6 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
                                 requests.codes.ok,
                                 requests.codes.too_many_requests,
                             ]:
-                                passed = False
                                 yield WARN, Message(
                                     "bad-github-url",
                                     f"Could not fetch '{link}'.\n\n"
@@ -181,10 +138,8 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
                                 )
                                 good = True
                     if not good:
-                        passed = False
                         broken_links.append(("{} (status code: {})").format(link, code))
             except requests.exceptions.Timeout:
-                passed = False
                 yield WARN, Message(
                     "timeout",
                     f"Timed out while attempting to access: '{link}'."
@@ -195,16 +150,12 @@ def com_google_fonts_check_metadata_broken_links(family_metadata):
 
     if len(broken_links) > 0:
         broken_links_list = "\n\t".join(broken_links)
-        passed = False
         yield FAIL, Message(
             "broken-links",
             f"The following links are broken"
             f" in the METADATA.pb file:\n\t"
             f"{broken_links_list}",
         )
-
-    if passed:
-        yield PASS, "All links in the METADATA.pb file look good!"
 
 
 @check(
@@ -226,14 +177,12 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
     for font_metadata in family_metadata.fonts:
         pb_binaries.append(font_metadata.filename)
 
-    passed = True
     binaries = []
     for entry in os.listdir(family_directory):
         if entry != "static" and os.path.isdir(os.path.join(family_directory, entry)):
             for filename in os.listdir(os.path.join(family_directory, entry)):
                 if filename[-4:] in [".ttf", ".otf"]:
                     path = os.path.join(family_directory, entry, filename)
-                    passed = False
                     yield WARN, Message(
                         "font-on-subdir",
                         f'The file "{path}" is a font binary'
@@ -248,7 +197,6 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
                 binaries.append(entry)
 
     for filename in sorted(set(pb_binaries) - set(binaries)):
-        passed = False
         yield FAIL, Message(
             "file-missing",
             f'The file "{filename}" declared on METADATA.pb'
@@ -256,13 +204,9 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
         )
 
     for filename in sorted(set(binaries) - set(pb_binaries)):
-        passed = False
         yield FAIL, Message(
             "file-not-declared", f'The file "{filename}" is not declared on METADATA.pb'
         )
-
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -288,7 +232,6 @@ def com_google_fonts_check_metadata_undeclared_fonts(family_metadata, family_dir
 )
 def com_google_fonts_check_metadata_category(family_metadata):
     """Ensure METADATA.pb category field is valid."""
-    ok = True
     for category in family_metadata.category:
         if category not in [
             "MONOSPACE",
@@ -297,13 +240,10 @@ def com_google_fonts_check_metadata_category(family_metadata):
             "DISPLAY",
             "HANDWRITING",
         ]:
-            ok = False
             yield FAIL, Message(
                 "bad-value",
                 f'The field category has "{category}"' f" which is not valid.",
             )
-    if ok:
-        yield PASS, "OK!"
 
 
 @check(
@@ -313,6 +253,10 @@ def com_google_fonts_check_metadata_category(family_metadata):
         "legacy:check/086",
         "https://github.com/fonttools/fontbakery/issues/912#issuecomment-237935444",
     ],
+    rationale="""
+        The 'menu' and 'latin' subsets are mandatory in METADATA.pb for the
+        font to display correctly on the Google Fonts website.
+    """,
 )
 def com_google_fonts_check_metadata_menu_and_latin(family_metadata):
     """METADATA.pb should contain at least "menu" and "latin" subsets."""
@@ -332,14 +276,16 @@ def com_google_fonts_check_metadata_menu_and_latin(family_metadata):
             f'Subsets "menu" and "latin" are mandatory,'
             f" but METADATA.pb is missing {missing}.",
         )
-    else:
-        yield PASS, 'METADATA.pb contains "menu" and "latin" subsets.'
 
 
 @check(
     id="com.google.fonts/check/metadata/subsets_order",
     conditions=["family_metadata"],
     proposal="legacy:check/087",
+    rationale="""
+        The subsets listed in the METADATA.pb file should be sorted in
+        alphabetical order.
+    """,
 )
 def com_google_fonts_check_metadata_subsets_order(family_metadata):
     """METADATA.pb subsets should be alphabetically ordered."""
@@ -355,8 +301,6 @@ def com_google_fonts_check_metadata_subsets_order(family_metadata):
                 ""
             ).format("', '".join(family_metadata.subsets), "', '".join(expected)),
         )
-    else:
-        yield PASS, "METADATA.pb subsets are sorted in alphabetical order."
 
 
 @check(
@@ -384,54 +328,53 @@ def com_google_fonts_check_metadata_includes_production_subsets(
             "missing-subsets",
             f"The following subsets are missing [{', '.join(sorted(missing_subsets))}]",
         )
-    else:
-        yield PASS, "No missing subsets"
 
 
 @check(
     id="com.google.fonts/check/metadata/copyright",
     conditions=["family_metadata"],
     proposal="legacy:check/088",
+    rationale="""
+        The METADATA.pb file includes a copyright field for each font
+        file in the family. The value of this field should be the same
+        for all fonts in the family.
+    """,
 )
-def com_google_fonts_check_metadata_copyright(family_metadata):
+def com_google_fonts_check_metadata_copyright(family_metadata, config):
     """METADATA.pb: Copyright notice is the same in all fonts?"""
-    copyright_str = None
-    fail = False
-    for f in family_metadata.fonts:
-        if copyright_str and f.copyright != copyright_str:
-            fail = True
-        copyright_str = f.copyright
-    if fail:
+    copyrights = defaultdict(list)
+    for font in family_metadata.fonts:
+        copyrights[font.copyright].append(font.filename)
+    if len(copyrights) > 1:
         yield FAIL, Message(
             "inconsistency",
-            "METADATA.pb: Copyright field value is inconsistent across family",
+            "METADATA.pb: Copyright field value is inconsistent across the family.\n"
+            "The following copyright values were found:\n\n"
+            + show_inconsistencies(copyrights, config),
         )
-    else:
-        yield PASS, "Copyright is consistent across family"
 
 
 @check(
     id="com.google.fonts/check/metadata/familyname",
     conditions=["family_metadata"],
     proposal="legacy:check/089",
+    rationale="""
+        The METADATA.pb file includes a family name field for each font
+        file in the family. The value of this field should be the same
+        for all fonts in the family.
+    """,
 )
-def com_google_fonts_check_metadata_familyname(family_metadata):
+def com_google_fonts_check_metadata_familyname(family_metadata, config):
     """Check that METADATA.pb family values are all the same."""
-    name = ""
-    fail = False
-    for f in family_metadata.fonts:
-        if name and f.name != name:
-            fail = True
-        name = f.name
-    if fail:
+    names = defaultdict(list)
+    for font in family_metadata.fonts:
+        names[font.name].append(font.filename)
+    if len(names) > 1:
         yield FAIL, Message(
             "inconsistency",
-            "METADATA.pb: Family name is not the same"
-            ' in all metadata "fonts" items.',
-        )
-    else:
-        yield PASS, (
-            'METADATA.pb: Family name is the same in all metadata "fonts" items.'
+            "METADATA.pb: family name value is inconsistent across the family.\n"
+            "The following name values were found:\n\n"
+            + show_inconsistencies(names, config),
         )
 
 
@@ -439,14 +382,14 @@ def com_google_fonts_check_metadata_familyname(family_metadata):
     id="com.google.fonts/check/metadata/has_regular",
     conditions=["family_metadata"],
     proposal="legacy:check/090",
+    rationale="""
+        According to Google Fonts standards, families should have a Regular
+        style.
+    """,
 )
 def com_google_fonts_check_metadata_has_regular(font):
-    """METADATA.pb: According to Google Fonts standards,
-    families should have a Regular style.
-    """
-    if font.has_regular_style:
-        yield PASS, "Family has a Regular style."
-    else:
+    """Ensure there is a regular style defined in METADATA.pb."""
+    if not font.has_regular_style:
         yield FAIL, Message(
             "lacks-regular",
             "This family lacks a Regular"
@@ -462,6 +405,7 @@ def com_google_fonts_check_metadata_has_regular(font):
     id="com.google.fonts/check/metadata/regular_is_400",
     conditions=["family_metadata", "has_regular_style"],
     proposal="legacy:check/091",
+    rationale="The weight of the regular style should be set to 400.",
 )
 def com_google_fonts_check_metadata_regular_is_400(family_metadata):
     """METADATA.pb: Regular should be 400."""
@@ -475,65 +419,28 @@ def com_google_fonts_check_metadata_regular_is_400(family_metadata):
             f"METADATA.pb: Regular font weight must be 400."
             f' Please fix these: {", ".join(badfonts)}',
         )
-    else:
-        yield PASS, "Regular has weight = 400."
-
-
-@check(
-    id="com.google.fonts/check/metadata/nameid/family_name",
-    conditions=["font_metadata"],
-    proposal="legacy:check/092",
-)
-def com_google_fonts_check_metadata_nameid_family_name(ttFont, font_metadata):
-    """Checks METADATA.pb font.name field matches
-    family name declared on the name table.
-    """
-    from fontbakery.utils import get_name_entry_strings
-
-    familynames = get_name_entry_strings(ttFont, NameID.TYPOGRAPHIC_FAMILY_NAME)
-    if not familynames:
-        familynames = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
-    if len(familynames) == 0:
-        yield FAIL, Message(
-            "missing",
-            (
-                f"This font lacks a FONT_FAMILY_NAME entry"
-                f" (nameID = {NameID.FONT_FAMILY_NAME})"
-                f" in the name table."
-            ),
-        )
-    else:
-        if font_metadata.name not in familynames:
-            yield FAIL, Message(
-                "mismatch",
-                (
-                    f"Unmatched family name in font:"
-                    f' TTF has "{familynames[0]}" while METADATA.pb'
-                    f' has "{font_metadata.name}"'
-                ),
-            )
-        else:
-            yield PASS, (
-                f'Family name "{font_metadata.name}" is identical'
-                f" in METADATA.pb and on the TTF file."
-            )
 
 
 @check(
     id="com.google.fonts/check/metadata/nameid/post_script_name",
     conditions=["font_metadata"],
     proposal="legacy:093",
+    rationale="""
+        This check ensures that the PostScript name declared in the METADATA.pb file
+        matches the PostScript name declared in the name table of the font file.
+        If the font was uploaded by the packager, this should always be the
+        case. But if there were manual changes to the METADATA.pb file, a mismatch
+        could occur.
+    """,
 )
 def com_google_fonts_check_metadata_nameid_post_script_name(ttFont, font_metadata):
     """Checks METADATA.pb font.post_script_name matches
     postscript name declared on the name table.
     """
-    passed = True
     from fontbakery.utils import get_name_entry_strings
 
     postscript_names = get_name_entry_strings(ttFont, NameID.POSTSCRIPT_NAME)
     if len(postscript_names) == 0:
-        passed = False
         yield FAIL, Message(
             "missing",
             (
@@ -545,7 +452,6 @@ def com_google_fonts_check_metadata_nameid_post_script_name(ttFont, font_metadat
     else:
         for psname in postscript_names:
             if psname != font_metadata.post_script_name:
-                passed = False
                 yield FAIL, Message(
                     "mismatch",
                     (
@@ -554,55 +460,15 @@ def com_google_fonts_check_metadata_nameid_post_script_name(ttFont, font_metadat
                         f' "{font_metadata.post_script_name}".'
                     ),
                 )
-    if passed:
-        yield PASS, (
-            f'Postscript name "{font_metadata.post_script_name}"'
-            f" is identical in METADATA.pb and on the TTF file."
-        )
 
 
-@check(
-    id="com.google.fonts/check/metadata/nameid/full_name",
-    conditions=["font_metadata"],
-    proposal="legacy:check/094",
-)
-def com_google_fonts_check_metadata_nameid_full_name(ttFont, font_metadata):
-    """METADATA.pb font.full_name value matches
-    fullname declared on the name table?
-    """
-    from fontbakery.utils import get_name_entry_strings
-
-    full_fontnames = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME, langID=0x409)
-    # FIXME: only check English names
-    #        https://github.com/fonttools/fontbakery/issues/4000
-
-    if len(full_fontnames) == 0:
-        yield FAIL, Message(
-            "lacks-entry",
-            (
-                f"This font lacks a FULL_FONT_NAME entry"
-                f" (nameID = {NameID.FULL_FONT_NAME})"
-                f" in the name table."
-            ),
-        )
-    else:
-        for full_fontname in full_fontnames:
-            if full_fontname != font_metadata.full_name:
-                yield FAIL, Message(
-                    "mismatch",
-                    (
-                        f"Unmatched fullname in font:"
-                        f' TTF has "{full_fontname}" while METADATA.pb'
-                        f' has "{font_metadata.full_name}".'
-                    ),
-                )
-            else:
-                yield PASS, (
-                    f'Font fullname "{full_fontname}" is identical'
-                    f" in METADATA.pb and on the TTF file."
-                )
-
-
+# FIXME! This looks suspiciously similar to the now deprecated
+#          com.google.fonts/check/metadata/nameid/family_name
+#
+#        Also similar to the current
+#          com.google.fonts/check/metadata/nameid/family_and_full_names
+#
+#        See also: issue #4581
 @check(
     id="com.google.fonts/check/metadata/nameid/font_name",
     rationale="""
@@ -648,17 +514,19 @@ def com_google_fonts_check_metadata_nameid_font_name(ttFont, style, font_metadat
                     f' TTF has familyname = "{font_familyname}" while'
                     f' METADATA.pb has font.name = "{font_metadata.name}".',
                 )
-            else:
-                yield PASS, (
-                    f'OK: Family name "{font_metadata.name}" is identical'
-                    f" in METADATA.pb and on the TTF file."
-                )
 
 
 @check(
     id="com.google.fonts/check/metadata/match_fullname_postscript",
     conditions=["font_metadata"],
     proposal="legacy:check/096",
+    rationale="""
+        The font.full_name and font.post_script_name fields in the
+        METADATA.pb file should be consistent - i.e. when all non-alphabetic
+        characters are removed, they should be the same. This is to
+        prevent inconsistencies when one or the other value has been
+        manually edited in the METADATA.pb file.
+    """,
 )
 def com_google_fonts_check_metadata_match_fullname_postscript(font_metadata):
     """METADATA.pb font.full_name and font.post_script_name
@@ -676,11 +544,6 @@ def com_google_fonts_check_metadata_match_fullname_postscript(font_metadata):
             f" does not match"
             f' post_script_name = "{font_metadata.post_script_name}"',
         )
-    else:
-        yield PASS, (
-            'METADATA.pb font fields "full_name" and'
-            ' "post_script_name" have equivalent values.'
-        )
 
 
 @check(
@@ -689,6 +552,11 @@ def com_google_fonts_check_metadata_match_fullname_postscript(font_metadata):
     # FIXME: We'll want to review this once
     #        naming rules for varfonts are settled.
     proposal="legacy:check/097",
+    rationale="""
+        For static fonts, this checks that the font filename as declared in
+        the METADATA.pb file matches the post_script_name field. i.e.
+        SomeFont-Regular.ttf should have a PostScript name of SomeFont-Regular.
+    """,
 )
 def com_google_fonts_check_metadata_match_filename_postscript(font_metadata):
     """METADATA.pb font.filename and font.post_script_name
@@ -704,37 +572,16 @@ def com_google_fonts_check_metadata_match_filename_postscript(font_metadata):
             f" does not match"
             f' post_script_name="{font_metadata.post_script_name}".',
         )
-    else:
-        yield PASS, (
-            'METADATA.pb font fields "filename" and'
-            ' "post_script_name" have equivalent values.'
-        )
-
-
-@check(
-    id="com.google.fonts/check/metadata/valid_name_values",
-    conditions=["ttFont", "font_metadata"],
-    proposal="legacy:check/098",
-)
-def com_google_fonts_check_metadata_valid_name_values(ttFont, font_metadata):
-    """METADATA.pb font.name field matches font"""
-    family_name = ttFont["name"].getBestFamilyName()
-    if family_name != font_metadata.name:
-        yield FAIL, Message(
-            "mismatch",
-            (
-                f"METADATA.pb font.name field is {font_metadata.name} "
-                f"but font has {family_name}"
-            ),
-        )
-    else:
-        yield PASS, "METADATA.pb font.name is correct"
 
 
 @check(
     id="com.google.fonts/check/metadata/valid_full_name_values",
     conditions=["style", "font_metadata"],
     proposal="legacy:check/099",
+    rationale="""
+        This check ensures that the font.full_name field in the METADATA.pb
+        file contains the family name of the font.
+    """,
 )
 def com_google_fonts_check_metadata_valid_full_name_values(font):
     """METADATA.pb font.full_name field contains font name in right format?"""
@@ -747,11 +594,7 @@ def com_google_fonts_check_metadata_valid_full_name_values(font):
         if familynames == []:
             yield SKIP, "No TYPOGRAPHIC_FAMILYNAME"
 
-    if any((name in font.font_metadata.full_name) for name in familynames):
-        yield PASS, (
-            "METADATA.pb font.full_name field contains font name in right format."
-        )
-    else:
+    if not any((name in font.font_metadata.full_name) for name in familynames):
         yield FAIL, Message(
             "mismatch",
             f"METADATA.pb font.full_name field"
@@ -764,11 +607,18 @@ def com_google_fonts_check_metadata_valid_full_name_values(font):
 @check(
     id="com.google.fonts/check/metadata/valid_filename_values",
     conditions=[
-        "style",  # This means the font filename
-        # (source of truth here) is good
+        "style",
         "family_metadata",
     ],
     proposal="legacy:check/100",
+    rationale="""
+        This check ensures that the font.filename field in the METADATA.pb
+        is correct and well-formatted; we check well-formatting because we
+        have a condition called 'style', and if that is true, then the font's
+        filename correctly reflects its style. If a correctly formatted
+        filename appears in the font.filename field in METADATA.pb, then all
+        is good.
+    """,
 )
 def com_google_fonts_check_metadata_valid_filename_values(font, family_metadata):
     """METADATA.pb font.filename field contains font name in right format?"""
@@ -777,9 +627,6 @@ def com_google_fonts_check_metadata_valid_filename_values(font, family_metadata)
     for font_metadata in family_metadata.fonts:
         if font_metadata.filename == expected:
             passed = True
-            yield PASS, (
-                "METADATA.pb filename field contains font name in right format."
-            )
             break
 
     if not passed:
@@ -794,6 +641,10 @@ def com_google_fonts_check_metadata_valid_filename_values(font, family_metadata)
     id="com.google.fonts/check/metadata/valid_post_script_name_values",
     conditions=["font_metadata", "font_familynames"],
     proposal="legacy:check/101",
+    rationale="""
+        Ensures that the postscript name in METADATA.pb contains the font's
+        family name (with no spaces) as detected from the font binary.
+    """,
 )
 def com_google_fonts_check_metadata_valid_post_script_name_values(
     font_metadata, font_familynames
@@ -805,11 +656,7 @@ def com_google_fonts_check_metadata_valid_post_script_name_values(
         "".join(str(font_familyname).split()) for font_familyname in font_familynames
     ]
     metadata_psname = "".join(font_metadata.post_script_name.split("-"))
-    if any(psname in metadata_psname for psname in possible_psnames):
-        yield PASS, (
-            "METADATA.pb postScriptName field contains font name in right format."
-        )
-    else:
+    if not any(psname in metadata_psname for psname in possible_psnames):
         yield FAIL, Message(
             "mismatch",
             f"METADATA.pb"
@@ -843,24 +690,16 @@ def com_google_fonts_check_metadata_valid_nameid25(font, style):
                 return entry.toUnicode()
         return ""
 
-    if not ("Italic" in style and font.is_variable_font):
-        yield PASS, ("Not an Italic VF.")
-    else:
-        passed = True
+    if "Italic" in style and font.is_variable_font:
         if not get_name(ttFont, 25).endswith("Italic"):
-            passed = False
             yield FAIL, Message(
                 "nameid25-missing-italic",
                 'Name ID 25 must end with "Italic" for Italic fonts.',
             )
         if " " in get_name(ttFont, 25):
-            passed = False
             yield FAIL, Message(
                 "nameid25-has-spaces", "Name ID 25 must not contain spaces."
             )
-
-        if passed:
-            yield PASS, ("Name ID 25 looks good.")
 
 
 @check(
@@ -881,14 +720,12 @@ def com_google_fonts_check_metadata_valid_nameid25(font, style):
 def com_google_fonts_check_metadata_filenames(fonts, family_directory, family_metadata):
     """METADATA.pb: Font filenames match font.filename entries?"""
 
-    passed = True
     metadata_filenames = []
     font_filenames = [
         f for f in os.listdir(family_directory) if f[-4:] in [".ttf", ".otf"]
     ]
     for font_metadata in family_metadata.fonts:
         if font_metadata.filename not in font_filenames:
-            passed = False
             yield FAIL, Message(
                 "file-not-found",
                 f'Filename "{font_metadata.filename}" is listed on'
@@ -899,125 +736,23 @@ def com_google_fonts_check_metadata_filenames(fonts, family_directory, family_me
 
     for font in font_filenames:
         if font not in metadata_filenames:
-            passed = False
             yield FAIL, Message(
                 "file-not-declared",
                 f'Filename "{font}" is not declared'
                 f" on METADATA.pb as a font.filename entry.",
             )
-    if passed:
-        yield PASS, "Filenames in METADATA.pb look good."
-
-
-@check(
-    id="com.google.fonts/check/metadata/italic_style",
-    conditions=["font_metadata"],
-    proposal="legacy:check/106",
-)
-def com_google_fonts_check_metadata_italic_style(ttFont, font_metadata):
-    """METADATA.pb font.style "italic" matches font internals?"""
-    from fontbakery.utils import get_name_entry_strings
-    from fontbakery.constants import MacStyle
-
-    if font_metadata.style != "italic":
-        yield SKIP, "This check only applies to italic fonts."
-    else:
-        font_fullname = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
-        if len(font_fullname) == 0:
-            yield SKIP, "Font lacks fullname entries in name table."
-            # this fail scenario was already checked above
-            # (passing those previous checks is a prerequisite for this one)
-            # FIXME: Could we pack this into a condition ?
-        else:
-            # FIXME: here we only check the first name entry.
-            #        Should we iterate over them all ? Or should we check
-            #        if they're all the same?
-            font_fullname = font_fullname[0]
-
-            if not bool(ttFont["head"].macStyle & MacStyle.ITALIC):
-                yield FAIL, Message(
-                    "bad-macstyle",
-                    (
-                        "METADATA.pb style has been set to italic"
-                        " but font macStyle is improperly set."
-                    ),
-                )
-            elif not font_fullname.split("-")[-1].endswith("Italic"):
-                yield FAIL, Message(
-                    "bad-fullfont-name",
-                    (
-                        f"Font macStyle Italic bit is set"
-                        f" but nameID {NameID.FULL_FONT_NAME}"
-                        f' ("{font_fullname}") is not'
-                        f' ended with "Italic".'
-                    ),
-                )
-            else:
-                yield PASS, (
-                    'OK: METADATA.pb font.style "italic" matches font internals.'
-                )
-
-
-@check(
-    id="com.google.fonts/check/metadata/normal_style",
-    conditions=["font_metadata"],
-    proposal="legacy:check/107",
-)
-def com_google_fonts_check_metadata_normal_style(ttFont, font_metadata):
-    """METADATA.pb font.style "normal" matches font internals?"""
-    from fontbakery.utils import get_name_entry_strings
-    from fontbakery.constants import MacStyle
-
-    if font_metadata.style != "normal":
-        yield SKIP, "This check only applies to normal fonts."
-        # FIXME: declare a common condition called "normal_style"
-    else:
-        font_familyname = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
-        font_fullname = get_name_entry_strings(ttFont, NameID.FULL_FONT_NAME)
-        if len(font_familyname) == 0 or len(font_fullname) == 0:
-            # FIXME: This is the same SKIP condition as in check/metadata/italic_style
-            #        so we definitely need to address them with a common condition!
-            yield SKIP, "Font lacks familyname and/or fullname entries in name table."
-        else:
-            font_familyname = font_familyname[0]
-            font_fullname = font_fullname[0]
-
-            if bool(ttFont["head"].macStyle & MacStyle.ITALIC):
-                yield FAIL, Message(
-                    "bad-macstyle",
-                    (
-                        "METADATA.pb style has been set to normal"
-                        " but font macStyle is improperly set."
-                    ),
-                )
-            elif font_familyname.split("-")[-1].endswith("Italic"):
-                yield FAIL, Message(
-                    "familyname-italic",
-                    (
-                        "Font macStyle indicates a non-Italic font,"
-                        f" but nameID {NameID.FONT_FAMILY_NAME}"
-                        f' (FONT_FAMILY_NAME: "{font_familyname}")'
-                        ' ends with "Italic".'
-                    ),
-                )
-            elif font_fullname.split("-")[-1].endswith("Italic"):
-                yield FAIL, Message(
-                    "fullfont-italic",
-                    (
-                        "Font macStyle indicates a non-Italic font,"
-                        f" but nameID {NameID.FULL_FONT_NAME}"
-                        f' (FULL_FONT_NAME: "{font_fullname}")'
-                        ' ends with "Italic".'
-                    ),
-                )
-            else:
-                yield PASS, 'METADATA.pb font.style "normal" matches font internals.'
 
 
 @check(
     id="com.google.fonts/check/metadata/unique_full_name_values",
     conditions=["family_metadata"],
     proposal="legacy:check/083",
+    rationale="""
+        Each font field in the METADATA.pb file should have a unique
+        "full_name" value. If this is not the case, it may indicate that
+        the font files have been incorrectly named, or that the METADATA.pb
+        file has been incorrectly edited.
+    """,
 )
 def com_google_fonts_check_metadata_unique_full_name_values(family_metadata):
     """METADATA.pb: check if fonts field only has
@@ -1032,14 +767,17 @@ def com_google_fonts_check_metadata_unique_full_name_values(family_metadata):
             "duplicated",
             'Found duplicated "full_name" values in METADATA.pb fonts field.',
         )
-    else:
-        yield PASS, 'METADATA.pb "fonts" field only has unique "full_name" values.'
 
 
 @check(
     id="com.google.fonts/check/metadata/unique_weight_style_pairs",
     conditions=["family_metadata"],
     proposal="legacy:check/084",
+    rationale="""
+        Each font field in the METADATA.pb file should have a unique
+        style and weight. If there are duplications, it may indicate that
+        that the METADATA.pb file has been incorrectly edited.
+    """,
 )
 def com_google_fonts_check_metadata_unique_weight_style_pairs(family_metadata):
     """METADATA.pb: check if fonts field
@@ -1054,14 +792,25 @@ def com_google_fonts_check_metadata_unique_weight_style_pairs(family_metadata):
             "duplicated",
             "Found duplicated style:weight pair in METADATA.pb fonts field.",
         )
-    else:
-        yield PASS, 'METADATA.pb "fonts" field only has unique style:weight pairs.'
 
 
 @check(
     id="com.google.fonts/check/metadata/reserved_font_name",
     conditions=["font_metadata", "not rfn_exception"],
     proposal="legacy:check/103",
+    rationale="""
+        Unless an exception has been granted, we expect fonts on
+        Google Fonts not to use the "Reserved Font Name" clause in their
+        copyright information. This is because fonts with RFNs are difficult
+        to modify in a libre ecosystem; anyone who forks the font (with a
+        view to changing it) must first rename the font, which makes
+        it difficult to pass changes back to upstream.
+
+        There is also a potential licensing difficulty, in that Google Fonts
+        web service subsets the font - a modification of the original - but
+        then delivers the font with the same name, which could be seen as a
+        violation of the reserved font name clause.
+    """,
 )
 def com_google_fonts_check_metadata_reserved_font_name(font_metadata):
     """Copyright notice on METADATA.pb should not contain 'Reserved Font Name'."""
@@ -1073,16 +822,21 @@ def com_google_fonts_check_metadata_reserved_font_name(font_metadata):
             f' contains "Reserved Font Name".'
             f" This is an error except in a few specific rare cases.",
         )
-    else:
-        yield PASS, (
-            'METADATA.pb copyright field does not contain "Reserved Font Name".'
-        )
 
 
 @check(
     id="com.google.fonts/check/metadata/nameid/family_and_full_names",
     conditions=["font_metadata"],
     proposal="legacy:check/108",
+    rationale="""
+        This check ensures that the family name declared in the METADATA.pb file
+        matches the family name declared in the name table of the font file,
+        and that the font full name declared in the METADATA.pb file
+        matches the font full name declared in the name table of the font file.
+        If the font was uploaded by the packager, this should always be the
+        case. But if there were manual changes to the METADATA.pb file, a mismatch
+        could occur.
+    """,
 )
 def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_metadata):
     """METADATA.pb font.name and font.full_name fields match
@@ -1115,11 +869,6 @@ def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_me
                 f' does not match name table entry "{font_familyname}"!'
             ),
         )
-    else:
-        yield PASS, (
-            "METADATA.pb familyname and fullName fields"
-            " match corresponding name table entries."
-        )
 
 
 @check(
@@ -1129,6 +878,11 @@ def com_google_fonts_check_metadata_nameid_family_and_full_names(ttFont, font_me
         "font_metadata",
     ],  # and this one's specific to a single file
     proposal="legacy:check/110",
+    rationale="""
+        This check ensures that the 'name' field in each font's entry in
+        the METADATA.pb file matches the 'name' field at the top level of
+        the METADATA.pb.
+    """,
 )
 def com_google_fonts_check_metadata_match_name_familyname(
     family_metadata, font_metadata
@@ -1141,14 +895,17 @@ def com_google_fonts_check_metadata_match_name_familyname(
             f' Family name "{family_metadata.name}" does not match'
             f' font name: "{font_metadata.name}"',
         )
-    else:
-        yield PASS, "Font name is the same as family name."
 
 
 @check(
     id="com.google.fonts/check/metadata/canonical_weight_value",
     conditions=["font_metadata"],
     proposal="legacy:check/111",
+    rationale="""
+        This check ensures that the font weight declared in the METADATA.pb file
+        has a canonical value. The canonical values are multiples of 100 between
+        100 and 900.
+    """,
 )
 def com_google_fonts_check_metadata_canonical_weight_value(font_metadata):
     """METADATA.pb: Check that font weight has a canonical value."""
@@ -1160,8 +917,6 @@ def com_google_fonts_check_metadata_canonical_weight_value(font_metadata):
             f" as {font_metadata.weight} which is not a"
             f" multiple of 100 between 100 and 900.",
         )
-    else:
-        yield PASS, "Font weight has a canonical value."
 
 
 @check(
@@ -1261,17 +1016,19 @@ def com_google_fonts_check_metadata_os2_weightclass(font, font_metadata):
             f"On METADATA.pb it should be {should_be},"
             f" but instead got {font_metadata.weight}.\n",
         )
-    else:
-        yield PASS, (
-            "OS/2 usWeightClass or wght axis value matches"
-            " weight specified at METADATA.pb"
-        )
 
 
 @check(
     id="com.google.fonts/check/metadata/match_weight_postscript",
     conditions=["font_metadata", "not is_variable_font"],
     proposal="legacy:check/113",
+    rationale="""
+        The METADATA.pb file has a field for each font file called 'weight',
+        with a numeric value from 100 to 900. This check ensures that the
+        weight value seems appropriate given the style name in the font's
+        postScriptName. For example, a font with a postScriptName ending in
+        'Bold' should have a weight value of 700.
+    """,
 )
 def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
     """METADATA.pb weight matches postScriptName for static fonts."""
@@ -1314,14 +1071,21 @@ def com_google_fonts_check_metadata_match_weight_postscript(font_metadata):
             ' ended with "{}" or "{}".'
             ""
         ).format(font_metadata.post_script_name, pair[0][1], pair[0][0], pair[1][0])
-    else:
-        yield PASS, "Weight value matches postScriptName."
 
 
 @check(
     id="com.google.fonts/check/metadata/canonical_style_names",
     conditions=["font_metadata"],
     proposal="legacy:check/115",
+    rationale="""
+        If the style is set to 'normal' in the METADATA.pb file, we expect a
+        non-italic font - i.e. the font's macStyle bit 1 should be set to 0,
+        and the font's fullname should not end with "Italic"; similarly if
+        the style is set to 'italic', we expect a font with the macStyle bit 1
+        set to 1, and the font's fullname ending with "Italic". If this is
+        not the case, it can indicate an italic font was incorrectly marked
+        as 'normal' in the METADATA.pb file or vice versa.
+    """,
 )
 def com_google_fonts_check_metadata_canonical_style_names(font, font_metadata):
     """METADATA.pb: Font styles are named canonically?"""
@@ -1343,8 +1107,6 @@ def com_google_fonts_check_metadata_canonical_style_names(font, font_metadata):
                 f'The font style is "{font_metadata.style}"'
                 f' but it should be "normal".',
             )
-        else:
-            yield PASS, "Font styles are named canonically."
 
 
 @check(
@@ -1419,8 +1181,6 @@ def com_google_fonts_check_metadata_consistent_repo_urls(
             "mismatch",
             f"Repository URL is {a_url}\n\nBut: {bad_urls}\n",
         )
-    else:
-        yield PASS, "OK"
 
 
 @check(
@@ -1435,7 +1195,6 @@ def com_google_fonts_check_metadata_consistent_repo_urls(
 )
 def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
     """METADATA.pb: Check for primary_script"""
-    passed = True
 
     def get_primary_script(ttFont):
         from fontTools import unicodedata
@@ -1474,7 +1233,6 @@ def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
     if guessed_primary_script != "Latn":
         # family_metadata.primary_script is empty but should be set
         if family_metadata.primary_script in (None, ""):
-            passed = False
             message = (
                 f"METADATA.pb: primary_script field"
                 f" should be '{guessed_primary_script}' but is missing."
@@ -1498,7 +1256,6 @@ def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
             )
             is None
         ):
-            passed = False
             yield WARN, Message(
                 "wrong-primary-script",
                 (
@@ -1506,9 +1263,6 @@ def com_google_fonts_check_metadata_primary_script(ttFont, family_metadata):
                     f"\nIt should instead be '{guessed_primary_script}'."
                 ),
             )
-
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -1530,8 +1284,6 @@ def com_google_fonts_check_metadata_empty_designer(family_metadata):
 
     # TODO: Parse AUTHORS.txt and WARN if names do not match
     # (and then maybe rename the check-id)
-    else:
-        yield PASS, "Font designer field is not empty."
 
 
 @check(
@@ -1539,6 +1291,8 @@ def com_google_fonts_check_metadata_empty_designer(family_metadata):
     conditions=["network"],
     rationale="""
         Any font published on Google Fonts must be listed in the tags spreadsheet.
+
+        https://forms.gle/jcp3nDv63LaV1rxH6
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4465",
 )
@@ -1550,8 +1304,6 @@ def com_google_fonts_check_metadata_has_tags(family_metadata):
     tagged_families = set(row[0] for row in tags[6:])
     if family_metadata.name not in tagged_families:
         yield FATAL, Message("no-tags", "Family does not appear in tag spreadsheet.")
-    else:
-        yield PASS, "Family has tags"
 
 
 @check(
@@ -1570,7 +1322,6 @@ def com_google_fonts_check_metadata_has_tags(family_metadata):
 )
 def com_google_fonts_check_metadata_escaped_strings(metadata_file):
     """Ensure METADATA.pb does not use escaped strings."""
-    passed = True
     for line in open(metadata_file, "r", encoding="utf-8").readlines():
         # Escaped quotes are fine!
         # What we're really interested in detecting things like
@@ -1583,14 +1334,11 @@ def com_google_fonts_check_metadata_escaped_strings(metadata_file):
             if len(segments) >= 3:
                 a_string = segments[1]
                 if "\\" in a_string:
-                    passed = False
                     yield FAIL, Message(
                         "escaped-strings",
                         f"Found escaped chars at '{a_string}'."
                         f" Please use an unicode string instead.",
                     )
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -1649,7 +1397,6 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
                 normalized_name += TRANSLATE[c]
         return normalized_name
 
-    passed = True
     for designer in family_metadata.designer.split(","):
         designer = designer.strip()
         normalized_name = normalize(designer)
@@ -1671,7 +1418,6 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
         #              f"Config is '{config}'")
 
         if response.status_code != requests.codes.OK:
-            passed = False
             yield WARN, Message(
                 "profile-not-found",
                 f"It seems that {designer} is still not listed on"
@@ -1683,7 +1429,6 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
 
         info = get_DesignerInfoProto_Message(response.content)
         if info.designer != designer.strip():
-            passed = False
             yield FAIL, Message(
                 "mismatch",
                 f"Designer name at METADATA.pb ({designer})"
@@ -1692,7 +1437,6 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
             )
 
         if info.link != "":
-            passed = False
             yield FAIL, Message(
                 "link-field",
                 "Currently the link field is not used by the GFonts API."
@@ -1701,7 +1445,6 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
             )
 
         if not info.avatar.file_name and designer != "Google":
-            passed = False
             yield FAIL, Message(
                 "missing-avatar",
                 f"Designer {designer} still does not have an avatar image. "
@@ -1713,15 +1456,11 @@ def com_google_fonts_check_metadata_designer_profiles(family_metadata, config):
             )
             response = requests.get(avatar_url, timeout=config.get("timeout"))
             if response.status_code != requests.codes.OK:
-                passed = False
                 yield FAIL, Message(
                     "bad-avatar-filename",
                     "The avatar filename provided seems to be incorrect:"
                     f" ({avatar_url})",
                 )
-
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -1739,14 +1478,12 @@ def com_google_fonts_check_metadata_consistent_axis_enumeration(
     """Validate VF axes match the ones declared on METADATA.pb."""
     from fontbakery.utils import pretty_print_list
 
-    passed = True
     md_axes = set(axis.tag for axis in family_metadata.axes)
     fvar_axes = set(axis.axisTag for axis in ttFont["fvar"].axes)
     missing = sorted(fvar_axes - md_axes)
     extra = sorted(md_axes - fvar_axes)
 
     if missing:
-        passed = False
         yield FAIL, Message(
             "missing-axes",
             f"The font variation axes {pretty_print_list(config, missing)}"
@@ -1754,14 +1491,11 @@ def com_google_fonts_check_metadata_consistent_axis_enumeration(
             f" declared on the METADATA.pb file.",
         )
     if extra:
-        passed = False
         yield FAIL, Message(
             "extra-axes",
             f"The METADATA.pb file lists font variation axes that"
             f" are not supported but this family: {pretty_print_list(config, extra)}",
         )
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -1787,8 +1521,6 @@ def com_google_fonts_check_metadata_family_directory_name(
             f'Directory name is "{dir_name}"\n'
             f'Expected "{expected}"',
         )
-    else:
-        yield PASS, f'Directory name is "{dir_name}", as expected.'
 
 
 @check(
@@ -1809,9 +1541,8 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
     try:
         from gflanguages import LoadLanguages
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
-    passed = True
     languages = LoadLanguages()
     for lang in family_metadata.languages:
         if lang not in languages:
@@ -1820,7 +1551,6 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
                 f"Aparently there's no sample strings for"
                 f" '{lang}' in the gflanguages package.",
             )
-            passed = False
             continue
 
         # Note: checking agains all samples often results in
@@ -1841,14 +1571,10 @@ def com_google_fonts_check_metadata_can_render_samples(ttFont, family_metadata):
             sample_text = sample_text.replace("\n", "").replace("\u200b", "")
 
             if not can_shape(ttFont, sample_text):
-                passed = False
                 yield FAIL, Message(
                     "sample-text",
                     f'Font can\'t render "{lang}" sample text:\n' f'"{sample_text}"\n',
                 )
-
-    if passed:
-        yield PASS, "OK."
 
 
 @check(
@@ -1888,27 +1614,34 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
             f'Familyname seems to hint at "{inferred_category}" but'
             f' METADATA.pb declares it as "{family_metadata.category}".',
         )
-    else:
-        yield PASS, "OK."
 
 
 @check(
     id="com.google.fonts/check/metadata/minisite_url",
     conditions=["family_metadata"],
     rationale="""
-        Validate family.repository_url field.
+        Validate family.minisite_url field.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4504",
     experimental="Since 2024/Feb/16",
 )
-def com_google_fonts_check_metadata_minisite_url(family_metadata):
+def com_google_fonts_check_metadata_minisite_url(
+    family_metadata, family_metadata_text_content
+):
     """
-    METADATA.pb: Validate family.repository_url field.
+    METADATA.pb: Validate family.minisite_url field.
     """
+    num_URLs = len(family_metadata_text_content.split("minisite_url")) - 1
+    if num_URLs > 1:
+        yield WARN, Message(
+            "duplicated-url",
+            "There seems to be more than a single entry for minisite_url",
+        )
+
     minisite_url = family_metadata.minisite_url
     if not minisite_url:
         yield INFO, Message(
-            "lacks-minisite-url", "Please ocnsider adding a family.minisite_url entry."
+            "lacks-minisite-url", "Please consider adding a family.minisite_url entry."
         )
         return
 
@@ -1930,5 +1663,3 @@ def com_google_fonts_check_metadata_minisite_url(family_metadata):
             f"From '{minisite_url}'\n\n"
             f"To: '{expected}'\n\n",
         )
-    else:
-        yield PASS, "OK"

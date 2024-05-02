@@ -305,10 +305,10 @@ class TerminalReporter(FontbakeryReporter):
             )
         else:
             codes = ", ".join(
-                [
+                set(
                     f"[message-{m.status.name}]{m.message.code}[/]"
                     for m in checkresult.results
-                ]
+                )
             )
             self._console.print(
                 f"[message-{msg.name}]{msg.name}[/message-{msg.name}] \\[{codes}]"

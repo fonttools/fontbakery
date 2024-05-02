@@ -20,7 +20,7 @@ def ufo_font(ufo):
         from fontTools.ufoLib.errors import UFOLibError
         import defcon
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("ufo")
 
     try:
         return defcon.Font(ufo.file)
@@ -40,7 +40,7 @@ def designSpace(designspace):
         from fontTools.designspaceLib import DesignSpaceDocument
         import defcon
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("ufo")
 
     if designspace:
         DS = DesignSpaceDocument.fromfile(designspace.file)
@@ -57,7 +57,7 @@ def designspace_sources(designspace):
     try:
         import defcon
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("ufo")
 
     if designspace.designSpace:
         return designspace.designSpace.loadSourceFonts(defcon.Font)
@@ -66,6 +66,11 @@ def designspace_sources(designspace):
 @check(
     id="com.daltonmaag/check/ufolint",
     proposal="https://github.com/fonttools/fontbakery/pull/1736",
+    rationale="""
+        ufolint is a tool that checks UFO source files for common issues.
+        It is a good idea to run it before building a font to catch potential
+        problems early in the process.
+    """,
 )
 def com_daltonmaag_check_ufolint(ufo):
     """Run ufolint on UFO source directory."""

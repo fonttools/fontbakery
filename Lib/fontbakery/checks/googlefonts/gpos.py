@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN
+from fontbakery.prelude import check, condition, Message, FAIL, WARN
 from fontbakery.testable import Font
 from fontbakery.utils import bullet_list
 
@@ -58,6 +58,13 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, config, lig
     def ligatures_sequences(pairs):
         return [f"{first} + {second}" for first, second in pairs]
 
+    def make_pairs(first, components):
+        pairs = []
+        while components:
+            pairs.append((first, components[0]))
+            first = components.pop(0)
+        return pairs
+
     if ligatures == -1:
         yield FAIL, Message(
             "malformed",
@@ -67,15 +74,13 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, config, lig
             " https://github.com/fonttools/fontbakery/issues/1596",
         )
     else:
-        ligature_pairs = []
+        ligature_pairs = set()
         for first, comp in ligatures.items():
             for components in comp:
-                while components:
-                    pair = (first, components[0])
-                    if pair not in ligature_pairs:
-                        ligature_pairs.append(pair)
-                    first = components[0]
-                    components.pop(0)
+                pairs = make_pairs(first, components)
+                ligature_pairs.update(pairs)
+
+        ligature_pairs = sorted(ligature_pairs)
 
         for record in ttFont["GSUB"].table.FeatureList.FeatureRecord:
             if record.FeatureTag == "kern":
@@ -89,8 +94,4 @@ def com_google_fonts_check_kerning_for_non_ligated_sequences(ttFont, config, lig
                 f"GPOS table lacks kerning info for the following"
                 f" non-ligated sequences:\n\n"
                 f"{bullet_list(config, ligatures_sequences(ligature_pairs))}",
-            )
-        else:
-            yield PASS, (
-                "GPOS table provides kerning info for all non-ligated sequences."
             )

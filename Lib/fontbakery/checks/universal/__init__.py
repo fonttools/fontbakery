@@ -145,6 +145,13 @@ def vmetrics(collection):
 @check(
     id="com.google.fonts/check/name/trailing_spaces",
     proposal="https://github.com/fonttools/fontbakery/issues/2417",
+    rationale="""
+        This check ensures that no entries in the name table end in
+        spaces; trailing spaces, particularly in font names, can be
+        confusing to users. In most cases this can be fixed by
+        removing trailing spaces from the metadata fields in the font
+        editor.
+    """,
 )
 def com_google_fonts_check_name_trailing_spaces(ttFont):
     """Name table records must not have trailing spaces."""
@@ -162,7 +169,7 @@ def com_google_fonts_check_name_trailing_spaces(ttFont):
                 ]
             )
             shortened_str = name_record.toUnicode()
-            if len(shortened_str) > 20:
+            if len(shortened_str) > 25:
                 shortened_str = shortened_str[:10] + "[...]" + shortened_str[-10:]
             yield FAIL, Message(
                 "trailing-space",
@@ -404,7 +411,19 @@ def com_google_fonts_check_caps_vertically_centered(ttFont):
         yield PASS, "Uppercase glyphs are vertically centered in the em box."
 
 
-@check(id="com.google.fonts/check/ots", proposal="legacy:check/036")
+@check(
+    id="com.google.fonts/check/ots",
+    proposal="legacy:check/036",
+    rationale="""
+       The OpenType Sanitizer (OTS) is a tool that checks that the font is
+       structually well-formed and passes various sanity checks. It is used by
+       many web browsers to check web fonts before using them; fonts which fail
+       such checks are blocked by browsers.
+
+       This check runs OTS on the font and reports any errors or warnings that
+       it finds.
+       """,
+)
 def com_google_fonts_check_ots(font):
     """Checking with ots-sanitize."""
     import ots
@@ -592,7 +611,22 @@ def com_google_fonts_check_mandatory_glyphs(ttFont):
         yield PASS, "OK"
 
 
-@check(id="com.google.fonts/check/whitespace_glyphs", proposal="legacy:check/047")
+@check(
+    id="com.google.fonts/check/whitespace_glyphs",
+    proposal="legacy:check/047",
+    rationale="""
+        The OpenType specification recommends that fonts should contain
+        glyphs for the following whitespace characters:
+
+        - U+0020 SPACE
+        - U+00A0 NO-BREAK SPACE
+
+        The space character is required for text processing, and the no-break
+        space is useful to prevent line breaks at its position. It is also
+        recommended to have a glyph for the tab character (U+0009) and the
+        soft hyphen (U+00AD), but these are not mandatory.
+    """,
+)
 def com_google_fonts_check_whitespace_glyphs(ttFont, missing_whitespace_chars):
     """Font contains glyphs for whitespace characters?"""
     failed = False
@@ -683,7 +717,16 @@ def com_google_fonts_check_whitespace_glyphnames(ttFont):
             yield PASS, "Font has **AGL recommended** names for whitespace glyphs."
 
 
-@check(id="com.google.fonts/check/whitespace_ink", proposal="legacy:check/049")
+@check(
+    id="com.google.fonts/check/whitespace_ink",
+    proposal="legacy:check/049",
+    rationale="""
+           This check ensures that certain whitespace glyphs are empty.
+           Certain text layout engines will assume that these glyphs are empty,
+           and will not draw them; if they were in fact not designed to be
+           empty, the result will be text layout that is not as expected.
+       """,
+)
 def com_google_fonts_check_whitespace_ink(ttFont):
     """Whitespace glyphs have ink?"""
     # This checks that certain glyphs are empty.
@@ -741,6 +784,7 @@ def com_google_fonts_check_whitespace_ink(ttFont):
         yield PASS, "There is no whitespace glyph with ink."
 
 
+@disable  # https://github.com/fonttools/fontbakery/issues/3959#issuecomment-1822913547
 @check(
     id="com.google.fonts/check/legacy_accents",
     proposal=[
@@ -913,8 +957,8 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
     ARABIC_LETTER_HAMZA = 0x0621
     ARABIC_LETTER_HIGH_HAMZA = 0x0675
 
-    glyph_set = ttFont.getGlyphSet()
-    if ARABIC_LETTER_HAMZA not in glyph_set or ARABIC_LETTER_HAMZA not in glyph_set:
+    cmap = ttFont.getBestCmap()
+    if ARABIC_LETTER_HAMZA not in cmap or ARABIC_LETTER_HIGH_HAMZA not in cmap:
         yield SKIP, Message(
             "glyphs-missing",
             "This check will only run on fonts that have both glyphs U+0621 and U+0675",
@@ -939,13 +983,14 @@ def com_google_fonts_check_arabic_high_hamza(ttFont):
     # Also validate the bounding box of the glyph and compare
     # it to U+0621 expecting them to have roughly the same size
     # (within a certain tolerance margin)
+    glyph_set = ttFont.getGlyphSet()
     area_pen = AreaPen(glyph_set)
 
-    glyph_set[ARABIC_LETTER_HAMZA].draw(area_pen)
+    glyph_set[get_glyph_name(ttFont, ARABIC_LETTER_HAMZA)].draw(area_pen)
     hamza_area = area_pen.value
 
     area_pen.value = 0
-    glyph_set[ARABIC_LETTER_HIGH_HAMZA].draw(area_pen)
+    glyph_set[get_glyph_name(ttFont, ARABIC_LETTER_HIGH_HAMZA)].draw(area_pen)
     high_hamza_area = area_pen.value
 
     if abs((high_hamza_area - hamza_area) / hamza_area) > 0.1:
@@ -1295,70 +1340,66 @@ def com_google_fonts_check_unique_glyphnames(ttFont):
 @check(
     id="com.google.fonts/check/ttx_roundtrip",
     conditions=["not vtt_talk_sources"],
+    rationale="""
+        One way of testing whether or not fonts are well-formed at the
+        binary level is to convert them to TTX and then back to binary. Structural
+        problems within the binary font will show up as errors during conversion.
+        This is not necessarily something that a designer will be able to address
+        but is evidence of a potential bug in the font compiler used to generate
+        the binary.""",
     proposal="https://github.com/fonttools/fontbakery/issues/1763",
 )
 def com_google_fonts_check_ttx_roundtrip(font):
     """Checking with fontTools.ttx"""
     from fontTools import ttx
+    import subprocess
     import sys
     import tempfile
 
+    font_file = font.file
     if isinstance(font, TTCFont):
         ttFont = ttx.TTFont(font.file, fontNumber=font.index)
-    else:
-        ttFont = ttx.TTFont(font.file)
-    failed = False
-    fd, xml_file = tempfile.mkstemp()
-    os.close(fd)
+        ttf_fd, font_file = tempfile.mkstemp()
+        os.close(ttf_fd)
+        ttFont.save(font_file)
 
-    class TTXLogger:
-        msgs = []
+    xml_fd, xml_file = tempfile.mkstemp()
+    os.close(xml_fd)
 
-        def __init__(self):
-            self.original_stderr = sys.stderr
-            self.original_stdout = sys.stdout
-            sys.stderr = self
-            sys.stdout = self
+    export_process = subprocess.Popen(
+        # TTX still emits warnings & errors even when -q (quiet) is passed
+        [sys.executable, "-m", "fontTools.ttx", "-qo", xml_file, font.file],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    (export_stdout, export_stderr) = export_process.communicate()
+    export_error_msgs = []
+    for line in export_stdout.splitlines() + export_stderr.splitlines():
+        if line not in export_error_msgs:
+            export_error_msgs.append(line)
 
-        def write(self, data):
-            if data not in self.msgs:
-                self.msgs.append(data)
-
-        def restore(self):
-            sys.stderr = self.original_stderr
-            sys.stdout = self.original_stdout
-
-    from xml.parsers.expat import ExpatError
-
-    try:
-        logger = TTXLogger()
-        ttFont.saveXML(xml_file)
-        export_error_msgs = logger.msgs
-
-        if export_error_msgs:
-            failed = True
-            yield INFO, (
+    if export_error_msgs:
+        yield (
+            INFO,
+            (
                 "While converting TTF into an XML file,"
                 " ttx emited the messages listed below."
-            )
-            for msg in export_error_msgs:
-                yield FAIL, msg.strip()
+            ),
+        )
+        for msg in export_error_msgs:
+            yield FAIL, msg.strip()
 
-        f = ttx.TTFont()
-        f.importXML(xml_file)
-        import_error_msgs = [msg for msg in logger.msgs if msg not in export_error_msgs]
+    import_process = subprocess.Popen(
+        # TTX still emits warnings & errors even when -q (quiet) is passed
+        [sys.executable, "-m", "fontTools.ttx", "-qo", os.devnull, xml_file],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    (import_stdout, import_stderr) = import_process.communicate()
 
-        if len(import_error_msgs):
-            failed = True
-            yield INFO, (
-                "While importing an XML file and converting it back to TTF,"
-                " ttx emited the messages listed below."
-            )
-            for msg in import_error_msgs:
-                yield FAIL, msg.strip()
-        logger.restore()
-    except ExpatError as e:
-        failed = True
+    if import_process.returncode != 0:
         yield FAIL, (
             "TTX had some problem parsing the generated XML file."
             " This most likely mean there's some problem in the font."
@@ -1369,15 +1410,27 @@ def com_google_fonts_check_ttx_roundtrip(font):
             " causes TTX to generate corrupt XML files in those cases."
             " So, check the entries of the name table and remove any control"
             " chars that you find there. The full ttx error message was:\n"
-            f"======\n{e}\n======"
+            f"======\n{import_stderr or import_stdout}\n======"
         )
 
-    if not failed:
-        yield PASS, "Hey! It all looks good!"
+    import_error_msgs = []
+    for line in import_stdout.splitlines() + import_stderr.splitlines():
+        if line not in import_error_msgs:
+            import_error_msgs.append(line)
+
+    if import_error_msgs:
+        yield INFO, (
+            "While importing an XML file and converting it back to TTF,"
+            " ttx emited the messages listed below."
+        )
+        for msg in import_error_msgs:
+            yield FAIL, msg.strip()
 
     # and then we need to cleanup our mess...
     if os.path.exists(xml_file):
         os.remove(xml_file)
+    if font_file != font.file and os.path.exists(font_file):
+        os.remove(font_file)
 
 
 @check(
@@ -2161,6 +2214,7 @@ def com_google_fonts_check_whitespace_widths(ttFont):
 def com_google_fonts_check_interpolation_issues(ttFont, config):
     """Detect any interpolation issues in the font."""
     from fontTools.varLib.interpolatable import test as interpolation_test
+    from fontTools.varLib.interpolatableHelpers import InterpolatableProblem
     from fontTools.varLib.models import piecewiseLinearMap
 
     gvar = ttFont["gvar"]
@@ -2210,18 +2264,36 @@ def com_google_fonts_check_interpolation_issues(ttFont, config):
     report = []
     for glyph, glyph_problems in results.items():
         for p in glyph_problems:
-            if p["type"] == "contour_order":
+            if p["type"] == InterpolatableProblem.CONTOUR_ORDER:
                 report.append(
                     f"Contour order differs in glyph '{glyph}':"
                     f" {p['value_1']} in {p['master_1']},"
                     f" {p['value_2']} in {p['master_2']}."
                 )
-            elif p["type"] == "wrong_start_point":
+            elif p["type"] == InterpolatableProblem.WRONG_START_POINT:
                 report.append(
                     f"Contour {p['contour']} start point"
                     f" differs in glyph '{glyph}' between"
                     f" location {p['master_1']} and"
                     f" location {p['master_2']}"
+                )
+            elif p["type"] == InterpolatableProblem.KINK:
+                report.append(
+                    f"Contour {p['contour']} point {p['value']} in glyph '{glyph}' "
+                    f"has a kink between location {p['master_1']} and"
+                    f" location {p['master_2']}"
+                )
+            elif p["type"] == InterpolatableProblem.UNDERWEIGHT:
+                report.append(
+                    f"Contour {p['contour']} in glyph '{glyph}':"
+                    f" becomes underweight between {p['master_1']}"
+                    f" and {p['master_2']}."
+                )
+            elif p["type"] == InterpolatableProblem.OVERWEIGHT:
+                report.append(
+                    f"Contour {p['contour']} in glyph '{glyph}':"
+                    f" becomes overweight between {p['master_1']}"
+                    f" and {p['master_2']}."
                 )
 
     if not report:
@@ -2426,6 +2498,19 @@ def com_google_fonts_check_tabular_kerning(ttFont):
         return (
             len(get_str_buffer(glyph_list).split("|")) > 1
             and get_kerning(glyph_list) == expected_kerning
+        )
+        return width1 - width2
+
+    def get_str_buffer(ttFont, glyph_list):
+        GID_list = [GID_for_glyph(ttFont, glyph) for glyph in glyph_list]
+        buffer = buffer_for_GIDs(GID_list, {})
+        string = vhb.serialize_buf(buffer)
+        return string
+
+    def digraph_kerning(ttFont, glyph_list, expected_kerning):
+        return (
+            len(get_str_buffer(ttFont, glyph_list).split("|")) > 1
+            and get_kerning(ttFont, glyph_list) == expected_kerning
         )
 
     # Font has no numerals at all
@@ -2706,7 +2791,6 @@ def com_google_fonts_check_alt_caron(ttFont):
         (but only when unicode supports case-mapping).
     """,
     proposal="https://github.com/googlefonts/fontbakery/issues/3230",
-    experimental="Since 2024/Jan/19",
     severity=10,  # if a font shows tofu in caps but not in lowercase
     #               then it can be considered broken.
 )

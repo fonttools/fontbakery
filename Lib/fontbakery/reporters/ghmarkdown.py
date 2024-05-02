@@ -56,6 +56,13 @@ class GHMarkdownReporter(HTMLReporter):
                             other_checks[key] = []
                         other_checks[key].append(check)
 
+        # Sort them by log-level results:
+        for check_group in [fatal_checks, experimental_checks, other_checks]:
+            for k in check_group:
+                check_group[k] = sorted(
+                    check_group[k], key=lambda c: c["result"], reverse=True
+                )
+
         return self.template_engine().render(
             fb_version=version,
             summary={k: data["result"][k] for k in LOGLEVELS},

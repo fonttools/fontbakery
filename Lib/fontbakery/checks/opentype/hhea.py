@@ -1,9 +1,17 @@
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS
+from fontbakery.status import WARN, FAIL
 from fontbakery.message import Message
 
 
-@check(id="com.google.fonts/check/maxadvancewidth", proposal="legacy:check/073")
+@check(
+    id="com.google.fonts/check/maxadvancewidth",
+    proposal="legacy:check/073",
+    rationale="""
+        The 'hhea' table contains a field which specifies the maximum
+        advance width. This value should be consistent with the maximum
+        advance width of all glyphs specified in the 'hmtx' table.
+       """,
+)
 def com_google_fonts_check_maxadvancewidth(ttFont):
     """MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables?"""
 
@@ -28,10 +36,6 @@ def com_google_fonts_check_maxadvancewidth(ttFont):
             f"AdvanceWidthMax mismatch:"
             f" expected {hmtx_advance_width_max} (from hmtx);"
             f" got {hhea_advance_width_max} (from hhea)",
-        )
-    else:
-        yield PASS, (
-            "MaxAdvanceWidth is consistent with values in the Hmtx and Hhea tables."
         )
 
 
@@ -77,7 +81,7 @@ def com_google_fonts_check_caret_slope(ttFont):
         expectedCaretSlopeRise = upm
 
     if abs(postItalicAngle - hheaItalicAngle) > 0.1:
-        yield FAIL, Message(
+        yield WARN, Message(
             "caretslope-mismatch",
             "hhea.caretSlopeRise and hhea.caretSlopeRun"
             " do not match with post.italicAngle.\n"
@@ -85,8 +89,4 @@ def com_google_fonts_check_caret_slope(ttFont):
             f" and caretSlopeRun {ttFont['hhea'].caretSlopeRun}\n"
             f"Expected: caretSlopeRise {expectedCaretSlopeRise}"
             f" and caretSlopeRun {expectedCaretSlopeRun}",
-        )
-    else:
-        yield PASS, (
-            "hhea.caretSlopeRise and hhea.caretSlopeRun match with post.italicAngle."
         )

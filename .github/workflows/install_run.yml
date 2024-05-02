@@ -26,15 +26,116 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-
+        os: [ubuntu-latest, macos-13, windows-latest]
+        profile:
+          - description: Universal profile on a static font
+            name: universal
+            args: >-
+              -x win_ascent_and_descent
+              -x os2_metrics_match_hhea
+              -x soft_dotted
+              data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf
+              data/test/source-sans-pro/OTF/SourceSansPro-Italic.otf
+          - description: Universal profile on a variable font
+            name: universal
+            args: >-
+              -x win_ascent_and_descent
+              -x os2_metrics_match_hhea
+              -x fsselection
+              -x valid_default_instance_nameids
+              -x soft_dotted
+              data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
+          - description: OpenType profile on a TTC
+            name: opentype
+            args: >-
+              -x tabular_kerning
+              -x style
+              -x family
+              -x monospace
+              data/test/ttc/NotoSerifToto.ttc
+          - description: Font Bureau profile
+            name: fontbureau
+            args: >-
+              -c ots
+              -c ytlc_sanity
+              data/test/fontbureau/ytlcSample.ttf
+          - description: Adobe Fonts profile on a static font
+            name: adobefonts
+            args: >-
+              data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf
+              data/test/source-sans-pro/OTF/SourceSansPro-Italic.otf
+          - description: Adobe Fonts profile on a variable font
+            name: adobefonts
+            args: >-
+              data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
+          - description: UFO profile
+            extras: ".[ufo]"
+            name: ufo
+            args: --verbose data/test/test.ufo
+          - description: UFO Profile on a designspace
+            extras: ".[ufo]"
+            name: ufo
+            args: >-
+              -x designspace_has_consistent
+              "data/test/stupidfont/Stupid Font.designspace"
+          - description: Shaping checks
+            extras: ".[shaping]"
+            name: shaping
+            args: data/test/mada/Mada-Regular.ttf
+          - description: Google Fonts
+            extras: ".[googlefonts]"
+            name: googlefonts
+            args: >-
+              -c canonical_filename
+              -c vendor_id
+              -c glyph_coverage
+              -c name/license
+              -c hinting_impact
+              -c unreachable_glyphs
+              -c contour_count
+              -c outline_colinear_vectors
+              data/test/cabin/Cabin-*.ttf
+          - description: Fontwerk
+            extras: ".[fontwerk]"
+            name: fontwerk
+            args: >-
+              -c weight_class_fvar
+              -c inconsistencies_between_fvar_stat
+              -c style_linking
+              -c consistent_axes
+              -c metadata/parses
+              -c usweightclass
+              data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf      
+          - description: Noto fonts
+            extras: ".[notofonts]"
+            name: notofonts
+            args: >-
+              -c unicode_range_bits
+              -c noto_trademark
+              -c noto_vendor
+              -c alien_codepoints
+              -c tnum_horizontal_metrics
+              -c control_chars
+              -c canonical_filename
+              data/test/notosanskhudawadi/NotoSansKhudawadi-Regular.ttf
+          - description: Type Network
+            extras: ".[typenetwork]"
+            name: typenetwork
+            args: >-
+              -c glyph_coverage
+              -c vertical_metrics
+              -c font_is_centered_vertically
+              -c family/tnum_horizontal_metrics
+              -c family/equal_numbers_of_glyphs
+              data/test/cabin/Cabin-Regular.ttf data/test/cabin/Cabin-Italic.ttf
+  
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0  # unshallow fetch for setuptools-scm (otherwise the version is always 0.1.dev1)
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: "3.10"
         cache: 'pip' # caching pip dependencies
@@ -45,126 +146,14 @@ jobs:
         python -m pip install .
         fontbakery -h
         fontbakery --version
-
-    - name: Run Universal checks
-      run: >-
-        fontbakery check-universal
-        -x win_ascent_and_descent
-        -x os2_metrics_match_hhea
-        -x soft_dotted
-        data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf
-        data/test/source-sans-pro/OTF/SourceSansPro-Italic.otf;
-        fontbakery check-universal
-        -x win_ascent_and_descent
-        -x os2_metrics_match_hhea
-        -x fsselection
-        -x valid_default_instance_nameids
-        -x soft_dotted
-        data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
-
-    - name: Run Universal check using 'check-profile'
-      run: >-
-        fontbakery check-profile fontbakery.profiles.universal
-        data/test/mada/Mada-Regular.ttf
-        --verbose
-        -c required_tables
-
-    - name: Run Opentype check on a TTC file
-      run: >-
-        fontbakery check-opentype
-        data/test/ttc/NotoSerifToto.ttc
-        -x tabular_kerning
-        -x style
-        -x family
-        -x monospace
-
-    - name: Run Font Bureau checks
-      run: >-
-        fontbakery check-fontbureau
-        -c ots
-        -c ytlc_sanity
-        data/test/fontbureau/ytlcSample.ttf
-
-    - name: Run Adobe Fonts checks
-      run: >-
-        fontbakery check-adobefonts
-        data/test/source-sans-pro/OTF/SourceSansPro-Regular.otf
-        data/test/source-sans-pro/OTF/SourceSansPro-Italic.otf;
-        fontbakery check-adobefonts
-        data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
-
-    - name: Try running UFO Sources checks
-      run: >-
-        fontbakery check-ufo-sources --verbose data/test/test.ufo
-        || exit 0
-      shell: bash
-
-    - name: Install `ufo_sources` extra
+    
+    - name: Install any extras
+      if: ${{ matrix.profile.extras }}
       run: |
-        python -m pip install '.[ufo_sources]'
+        python -m pip install ${{ matrix.profile.extras }}
 
-    - name: Run UFO Sources checks
+    - name: Run ${{matrix.profile.description}}
       run: >-
-        fontbakery check-ufo-sources --verbose data/test/test.ufo;
-        fontbakery check-ufo-sources -x designspace_has_consistent
-        "data/test/stupidfont/Stupid Font.designspace"
-
-    - name: Install `shaping` extra
-      run: |
-        python -m pip install '.[shaping]'
-
-    - name: Run Shaping checks
-      run: >-
-        fontbakery check-shaping data/test/mada/Mada-Regular.ttf
-
-    - name: Install `googlefonts` extra
-      run: |
-        python -m pip install '.[googlefonts]'
-
-    - name: Run Google Fonts checks
-      run: >-
-        fontbakery check-googlefonts
-        -c canonical_filename
-        -c vendor_id
-        -c glyph_coverage
-        -c name/license
-        -c hinting_impact
-        -c unreachable_glyphs
-        -c contour_count
-        -c outline_colinear_vectors
-        data/test/cabin/Cabin-*.ttf
-
-    - name: Install `fontwerk` extra
-      run: |
-        python -m pip install '.[fontwerk]'
-
-    - name: Run Fontwerk checks
-      run: >-
-        fontbakery check-fontwerk
-        -c weight_class_fvar
-        -c inconsistencies_between_fvar_stat
-        -c style_linking
-        -c consistent_axes
-        -c metadata/parses
-        -c usweightclass
-        data/test/source-sans-pro/VAR/SourceSansVariable-Roman.ttf
-
-    - name: Install `notofonts` extra
-      run: |
-        python -m pip install '.[notofonts]'
-
-    - name: Run Noto Fonts checks
-      run: >-
-        fontbakery check-notofonts
-        -c unicode_range_bits
-        -c noto_trademark
-        -c noto_vendor
-        -c alien_codepoints
-        -c tnum_horizontal_metrics
-        -c control_chars
-        -c canonical_filename
-        data/test/notosanskhudawadi/NotoSansKhudawadi-Regular.ttf
-
-    - name: Uninstall FontBakery
-      run: |
-        python -m pip uninstall fontbakery -y
+        fontbakery check-${{ matrix.profile.name }}
+        --error-code-on ERROR
+        ${{ matrix.profile.args }}

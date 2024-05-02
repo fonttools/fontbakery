@@ -116,7 +116,7 @@ def test_extra_needed_exit_from_conditions(monkeypatch):
     monkeypatch.delitem(sys.modules, module_name, raising=False)
 
     with pytest.raises(SystemExit):
-        check = CheckTester("com.google.fonts/check/metadata/unknown_designer")
+        check = CheckTester("com.google.fonts/check/metadata/designer_profiles")
         font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
         check(font)
 
@@ -201,16 +201,13 @@ def test_check_description_broken_links():
         "with description file that has good links...",
     )
 
-    good_desc += "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
+    bad_desc = (
+        good_desc + "<a href='mailto:juca@members.fsf.org'>An example mailto link</a>"
+    )
     assert_results_contain(
-        check(MockFont(file=font, description=good_desc)),
+        check(MockFont(file=font, description=bad_desc)),
         FAIL,
         "email",
-        'with a description file containing "mailto" links...',
-    )
-
-    assert_PASS(
-        check(MockFont(file=font, description=good_desc)),
         'with a description file containing "mailto" links...',
     )
 
@@ -619,23 +616,6 @@ def test_check_metadata_parses():
     bad = MockFont(file=TEST_FILE("broken_metadata/foo.ttf"))
     assert_results_contain(
         check(bad), FATAL, "parsing-error", "with a bad METADATA.pb file..."
-    )
-
-
-def test_check_metadata_unknown_designer():
-    """Font designer field in METADATA.pb must not be 'unknown'."""
-    check = CheckTester("com.google.fonts/check/metadata/unknown_designer")
-
-    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-    assert_PASS(check(font), "with a good METADATA.pb file...")
-
-    md = Font(font).family_metadata
-    md.designer = "unknown"
-    assert_results_contain(
-        check(MockFont(file=font, family_metadata=md)),
-        FAIL,
-        "unknown-designer",
-        "with a bad METADATA.pb file...",
     )
 
 
@@ -1627,31 +1607,6 @@ def test_check_metadata_regular_is_400():
     assert "Unfulfilled Conditions: has_regular_style" in msg
 
 
-def test_check_metadata_nameid_family_name():
-    """Checks METADATA.pb font.name field matches
-    family name declared on the name table."""
-    check = CheckTester("com.google.fonts/check/metadata/nameid/family_name")
-
-    # Let's start with the METADATA.pb file from our reference FamilySans family:
-    font = TEST_FILE("familysans/FamilySans-Regular.ttf")
-
-    # We know that Family Sans Regular is good here:
-    assert_PASS(check(font))
-
-    # Then cause it to fail:
-    md = Font(font).font_metadata
-    md.name = "Foo"
-    assert_results_contain(
-        check(MockFont(file=font, font_metadata=md)), FAIL, "mismatch"
-    )
-
-    # TODO: the failure-mode below seems more generic than the scope
-    #       of this individual check. This could become a check by itself!
-    #
-    # code-paths:
-    # - FAIL code="missing", "Font lacks a FONT_FAMILY_NAME entry"
-
-
 def test_check_metadata_nameid_post_script_name():
     """Checks METADATA.pb font.post_script_name matches
     postscript name declared on the name table."""
@@ -1675,49 +1630,6 @@ def test_check_metadata_nameid_post_script_name():
     #
     # code-paths:
     # - FAIL code="missing", "Font lacks a POSTSCRIPT_NAME"
-
-
-def test_check_metadata_nameid_full_name():
-    """METADATA.pb font.fullname value matches fullname declared on the name table ?"""
-    check = CheckTester("com.google.fonts/check/metadata/nameid/full_name")
-
-    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
-
-    assert_PASS(check(font), "with a good font...")
-
-    # here we change the font.fullname on the METADATA.pb
-    # to introduce a "mismatch" error condition:
-    md = Font(font).font_metadata
-    good = md.full_name
-    md.full_name = good + "bad-suffix"
-
-    assert_results_contain(
-        check(MockFont(file=font, font_metadata=md)),
-        FAIL,
-        "mismatch",
-        "with mismatching fullname values...",
-    )
-
-    # and restore the good value prior to the next test case:
-    md.full_name = good
-
-    # And here we remove all FULL_FONT_NAME entries
-    # in order to get a "lacks-entry" error condition:
-    ttFont = TTFont(font)
-    for i, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FULL_FONT_NAME:
-            del ttFont["name"].names[i]
-    assert_results_contain(
-        check(ttFont),
-        FAIL,
-        "lacks-entry",
-        "when a font lacks FULL_FONT_NAME entries in its name table...",
-    )
-
-    # Good font with other language name entries
-    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
-
-    assert_PASS(check(font), "with a good font with other languages...")
 
 
 def test_check_metadata_nameid_font_name():
@@ -1781,7 +1693,7 @@ def test_check_metadata_match_fullname_postscript():
     #       There's some relevant info at:
     #       https://github.com/fonttools/fontbakery/issues/1517
     #
-    # FIXME: com.google.fonts/check/metadata/nameid/full_name
+    # FIXME: com.google.fonts/check/metadata/nameid/family_and_full_names
     #        ties the full_name values from the METADATA.pb file and the
     #        internal name table entry (FULL_FONT_NAME)
     #        to be strictly identical. So it seems that the test below is
@@ -1853,32 +1765,6 @@ MONTSERRAT_NON_RIBBI = [
     TEST_FILE("montserrat/Montserrat-ThinItalic.ttf"),
     TEST_FILE("montserrat/Montserrat-Thin.ttf"),
 ]
-
-
-def test_check_metadata_valid_name_values():
-    """METADATA.pb font.name field matches font"""
-    check = CheckTester("com.google.fonts/check/metadata/valid_name_values")
-
-    # Our reference Montserrat family is a good 18-styles family:
-    for font in MONTSERRAT_RIBBI + MONTSERRAT_NON_RIBBI:
-        # So it must PASS the check:
-        ttfont = TTFont(font)
-        assert_PASS(check(ttfont), f"with a good RIBBI font ({font})...")
-
-        # And fail if it finds a bad font_familyname:
-        ttfont["name"].setName("foobar", 1, 3, 1, 0x409)
-        ttfont["name"].setName("foobar", 16, 3, 1, 0x409)
-        assert_results_contain(
-            check(ttfont),
-            FAIL,
-            "mismatch",
-            f"with a bad RIBBI font ({font})...",
-        )
-
-    # Good font with other language name entries
-    font = TEST_FILE("bizudpmincho-nameonly/BIZUDPMincho-Regular.ttf")
-
-    assert_PASS(check(font), "with a good font with other languages...")
 
 
 def test_check_metadata_valid_full_name_values():
@@ -2177,96 +2063,6 @@ def test_check_metadata_filenames():
         FAIL,
         "file-not-declared",
         "with some font files not declared...",
-    )
-
-
-def test_check_metadata_italic_style():
-    """METADATA.pb font.style "italic" matches font internals ?"""
-    from fontbakery.constants import MacStyle
-
-    check = CheckTester("com.google.fonts/check/metadata/italic_style")
-
-    # Our reference Merriweather Italic is known to good
-    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Italic.ttf"))
-    assert_PASS(check(ttFont), "with a good font...")
-
-    # now let's introduce issues on the FULL_FONT_NAME entries
-    # to test the "bad-fullfont-name" codepath:
-    for i, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FULL_FONT_NAME:
-            backup = name.string
-            ttFont["name"].names[i].string = "BAD VALUE".encode(name.getEncoding())
-            assert_results_contain(
-                check(ttFont),
-                FAIL,
-                "bad-fullfont-name",
-                "with a bad NameID.FULL_FONT_NAME entry...",
-            )
-            # and restore the good value:
-            ttFont["name"].names[i].string = backup
-
-    # And, finally, let's flip off that italic bit
-    # and get a "bad-macstyle" FAIL (so much fun!):
-    ttFont["head"].macStyle &= ~MacStyle.ITALIC
-    assert_results_contain(
-        check(ttFont), FAIL, "bad-macstyle", "with bad macstyle bit value..."
-    )
-
-
-def test_check_metadata_normal_style():
-    """METADATA.pb font.style "normal" matches font internals ?"""
-    check = CheckTester("com.google.fonts/check/metadata/normal_style")
-    from fontbakery.constants import MacStyle
-
-    # This one is pretty similar to check/metadata/italic_style
-    # You may want to take a quick look above...
-    # Our reference Merriweather Regular is known to be good here.
-    ttFont = TTFont(TEST_FILE("merriweather/Merriweather-Regular.ttf"))
-    assert_PASS(check(ttFont), "with a good font...")
-
-    # now we sadically insert brokenness into
-    # each occurrence of the FONT_FAMILY_NAME nameid:
-    for i, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FONT_FAMILY_NAME:
-            backup = name.string
-            ttFont["name"].names[i].string = "Merriweather-Italic".encode(
-                name.getEncoding()
-            )
-            assert_results_contain(
-                check(ttFont),
-                FAIL,
-                "familyname-italic",
-                'with a non-italic font that has a "-Italic" in FONT_FAMILY_NAME...',
-            )
-            # and restore the good value:
-            ttFont["name"].names[i].string = backup
-
-    # now let's do the same with
-    # occurrences of the FULL_FONT_NAME nameid:
-    for i, name in enumerate(ttFont["name"].names):
-        if name.nameID == NameID.FULL_FONT_NAME:
-            backup = name.string
-            ttFont["name"].names[i].string = "Merriweather-Italic".encode(
-                name.getEncoding()
-            )
-            assert_results_contain(
-                check(ttFont),
-                FAIL,
-                "fullfont-italic",
-                'with a non-italic font that has a "-Italic" in FULL_FONT_NAME...',
-            )
-            # and restore the good value:
-            ttFont["name"].names[i].string = backup
-
-    # And, finally, again, we flip a bit and...
-    #
-    # Note: This time the boolean logic is the quite opposite in comparison
-    # to the test for com.google.fonts/check/metadata/italic_style above.
-    # Here we have to set the bit back to 1 to get a wrongful "this font is an italic"
-    # setting:
-    ttFont["head"].macStyle |= MacStyle.ITALIC
-    assert_results_contain(
-        check(ttFont), FAIL, "bad-macstyle", "with bad macstyle bit value..."
     )
 
 
@@ -3359,12 +3155,24 @@ def test_check_kerning_for_non_ligated_sequences():
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
     assert "Unfulfilled Conditions: has_kerning_info" in msg
 
-    # Finally, SourceSansPro Bold is known to not kern the non-ligated glyph sequences.
+    # SourceSansPro Bold is known to not kern the non-ligated glyph sequences.
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf"))
     msg = assert_results_contain(check(ttFont), WARN, "lacks-kern-info")
     assert msg == (
         "GPOS table lacks kerning info for the following non-ligated sequences:\n\n"
-        "\t- f + f\n\n\t- f + t\n\n\t- t + f"
+        "\t- f + f\n\n\t- f + t"
+    )
+
+    # Simulate handling of multi-component ligatures
+    font = TEST_FILE("source-sans-pro/OTF/SourceSansPro-Bold.otf")
+    msg = assert_results_contain(
+        check(MockFont(file=font, ligatures={"f": [["f", "i"], ["f", "l"]]})),
+        WARN,
+        "lacks-kern-info",
+    )
+    assert msg == (
+        "GPOS table lacks kerning info for the following non-ligated sequences:\n\n"
+        "\t- f + f\n\n\t- f + i\n\n\t- f + l"
     )
 
 
@@ -3485,8 +3293,7 @@ def test_check_repo_dirname_match_nameid_1(tmp_path):
 
     # PASS result
     fonts = [str(pth) for pth in tmp_gf_dir.glob("*.ttf")]
-    msg = assert_PASS(check(fonts))
-    assert msg == "OK"
+    assert_PASS(check(fonts))
 
     # Get the path of the Regular font; it will be used for deleting the file later.
     reg_font_path = next((pth for pth in fonts if "Regular" in pth), None)
@@ -4076,7 +3883,7 @@ def test_check_cjk_vertical_metrics_regressions():
 def test_check_cjk_not_enough_glyphs():
     check = CheckTester("com.google.fonts/check/cjk_not_enough_glyphs")
     ttFont = TTFont(cjk_font)
-    assert assert_PASS(check(ttFont)) == ("Font has the correct quantity of CJK glyphs")
+    assert_PASS(check(ttFont))
 
     ttFont = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
     msg = assert_results_contain(check(ttFont), SKIP, "unfulfilled-conditions")
@@ -4945,15 +4752,24 @@ def test_check_empty_glyph_on_gid1_for_colrv0():
     )
 
 
-def test_check_noto_has_article():
-    """Noto fonts must have an ARTICLE.en_us.html file"""
-    check = CheckTester("com.google.fonts/check/description/noto_has_article")
+def test_check_has_article():
+    """Noto fonts must have an ARTICLE.en_us.html file, others with an
+    article should have an empty DESCRIPTION"""
+    check = CheckTester("com.google.fonts/check/description/has_article")
 
     font = TEST_FILE("notosanskhudawadi/NotoSansKhudawadi-Regular.ttf")
     assert_PASS(check(font), "with a good font")
 
     font = TEST_FILE("noto_sans_tamil_supplement/NotoSansTamilSupplement-Regular.ttf")
     assert_results_contain(check(font), FAIL, "missing-article", "with a bad font")
+
+    font = TEST_FILE("tirodevanagarihindi/TiroDevanagariHindi-Regular.ttf")
+    assert_results_contain(
+        check(font),
+        FAIL,
+        "description-and-article",
+        "with a font with description and article",
+    )
 
 
 def test_check_description_has_unsupported_elements():
@@ -5072,36 +4888,6 @@ def test_check_alt_caron():
     assert_PASS(check(ttFont))
 
 
-def test_check_legacy_accents():
-    """Check that legacy accents aren't used in composite glyphs."""
-    check = CheckTester("com.google.fonts/check/legacy_accents")
-
-    test_font = TTFont(TEST_FILE("montserrat/Montserrat-Regular.ttf"))
-    assert_PASS(check(test_font))
-
-    test_font = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
-    assert_results_contain(
-        check(test_font),
-        FAIL,
-        "legacy-accents-gdef",
-        "for legacy accents being defined in GDEF as marks.",
-    )
-
-    test_font = TTFont(TEST_FILE("lugrasimo/Lugrasimo-Regular.ttf"))
-    assert_results_contain(
-        check(test_font),
-        WARN,
-        "legacy-accents-component",
-        "for legacy accents being used in composites.",
-    )
-    assert_results_contain(
-        check(test_font),
-        FAIL,
-        "legacy-accents-width",
-        "for legacy accents having zero width.",
-    )
-
-
 def test_check_shape_languages():
     """Shapes languages in all GF glyphsets."""
     check = CheckTester("com.google.fonts/check/glyphsets/shape_languages")
@@ -5190,3 +4976,65 @@ def test_check_metadata_minisite_url():
         "trailing-clutter",
         "with a minisite_url with unnecessary trailing /index.html",
     )
+
+
+def test_check_linegaps():
+    """Checking Vertical Metric Linegaps."""
+    check = CheckTester("com.google.fonts/check/linegaps", profile=googlefonts_profile)
+
+    # Our reference Mada Regular is know to be bad here.
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+
+    # But just to be sure, we first explicitely set
+    # the values we're checking for:
+    ttFont["hhea"].lineGap = 1
+    ttFont["OS/2"].sTypoLineGap = 0
+    assert_results_contain(check(ttFont), FAIL, "hhea", "with non-zero hhea.lineGap...")
+
+    # Then we run the check with a non-zero OS/2.sTypoLineGap:
+    ttFont["hhea"].lineGap = 0
+    ttFont["OS/2"].sTypoLineGap = 1
+    assert_results_contain(
+        check(ttFont), FAIL, "OS/2", "with non-zero OS/2.sTypoLineGap..."
+    )
+
+    # And finaly we fix it by making both values equal to zero:
+    ttFont["hhea"].lineGap = 0
+    ttFont["OS/2"].sTypoLineGap = 0
+    assert_PASS(check(ttFont))
+
+    # Confirm the check yields FAIL if the font doesn't have a required table
+    del ttFont["OS/2"]
+    assert_results_contain(check(ttFont), FAIL, "lacks-table")
+
+
+def test_check_article_images():
+    """Validate location, size and resolution of article images."""
+    check = CheckTester("com.google.fonts/check/article/images")
+
+    # This one is know to be bad:
+    family_dir = TEST_FILE("tirodevanagarihindi")
+
+    assert_results_contain(
+        check(MockFont(family_directory=family_dir)),
+        WARN,
+        "misplaced-image-files",
+        "The files are not in the correct directory...",
+    )
+
+    # TODO: test WARN "lacks-article"
+    # TODO: test FAIL "image-too-large"
+    # TODO: test PASS
+
+
+def test_varfont_instances_in_order():
+    ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
+    check = CheckTester("com.google.fonts/check/varfont/instances_in_order")
+    assert_PASS(check(ttFont))
+
+    # Move the second instance to the front
+    ttFont["fvar"].instances = [
+        ttFont["fvar"].instances[1],
+        ttFont["fvar"].instances[0],
+    ] + ttFont["fvar"].instances[1:]
+    assert_results_contain(check(ttFont), FAIL, "instances-not-in-order")

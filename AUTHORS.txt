@@ -8,6 +8,7 @@
 
 Adobe Inc.
 Google Inc.
+Microsoft Corporation
 Mikhail Kashkin <mkashkin@gmail.com>
 Brian Dickens <hostilefork@gmail.com>
 Vitaliy Volkov <hash.3g@gmail.com>

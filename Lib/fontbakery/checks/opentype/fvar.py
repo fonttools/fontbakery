@@ -180,21 +180,16 @@ def com_google_fonts_check_varfont_wght_valid_range(ttFont):
     """The variable font 'wght' (Weight) axis coordinate
     must be within spec range of 1 to 1000 on all instances."""
 
-    passed = True
     for instance in ttFont["fvar"].instances:
         if "wght" in instance.coordinates:
             value = instance.coordinates["wght"]
             if value < 1 or value > 1000:
-                passed = False
                 yield FAIL, Message(
                     "wght-out-of-range",
                     f'Found a bad "wght" coordinate with value {value}'
                     f" outside of the valid range from 1 to 1000.",
                 )
                 break
-
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -214,18 +209,17 @@ def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
     """The variable font 'wdth' (Width) axis coordinate
     must strictly greater than zero."""
 
-    passed = True
     for instance in ttFont["fvar"].instances:
         if "wdth" in instance.coordinates:
             value = instance.coordinates["wdth"]
             if value < 1:
-                passed = False
                 yield FAIL, Message(
                     "wdth-out-of-range",
                     f'Found a bad "wdth" coordinate with value {value}'
                     f" outside of the valid range (> 0).",
                 )
                 break
+
             if value > 1000:
                 yield WARN, Message(
                     "wdth-greater-than-1000",
@@ -233,9 +227,6 @@ def com_google_fonts_check_varfont_wdth_valid_range(ttFont):
                     f" which is valid but unusual.",
                 )
                 break
-
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -256,9 +247,7 @@ def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
     """The variable font 'slnt' (Slant) axis coordinate
     specifies positive values in its range?"""
 
-    if slnt_axis.minValue < 0 and slnt_axis.maxValue >= 0:
-        yield PASS, "Looks good!"
-    else:
+    if not (slnt_axis.minValue < 0 and slnt_axis.maxValue >= 0):
         yield WARN, Message(
             "unusual-slnt-range",
             f'The range of values for the "slnt" axis in'
@@ -281,15 +270,12 @@ def com_google_fonts_check_varfont_slnt_range(ttFont, slnt_axis):
         [...] Valid numeric range: Values must be in the range 0 to 1.
     """,
     conditions=["is_variable_font", "has_ital_axis"],
-    experimental="Since 2024/Jan/12",
 )
 def com_typenetwork_check_varfont_ital_range(ttFont, ital_axis):
     """The variable font 'ital' (Italic) axis coordinates
     is in a valid range?"""
 
-    if ital_axis.minValue == 0 and ital_axis.maxValue == 1:
-        yield PASS, "Looks good!"
-    else:
+    if not (ital_axis.minValue == 0 and ital_axis.maxValue == 1):
         yield FAIL, Message(
             "invalid-ital-range",
             f'The range of values for the "ital" axis in'
@@ -322,9 +308,7 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
         yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
         return
 
-    passed = True
     name_table = ttFont["name"]
-
     font_axis_nameids = [axis.axisNameID for axis in ttFont["fvar"].axes]
     invalid_axis_nameids = [val for val in font_axis_nameids if not (255 < val < 32768)]
 
@@ -336,10 +320,6 @@ def com_adobe_fonts_check_varfont_valid_axis_nameid(ttFont, has_name_table):
             f"{inst_name!r} instance has an axisNameID value that"
             " is not greater than 255 and less than 32768.",
         )
-        passed = False
-
-    if passed:
-        yield PASS, "All axisNameID values are valid."
 
 
 @check(
@@ -365,9 +345,7 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table)
         yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
         return
 
-    passed = True
     name_table = ttFont["name"]
-
     font_subfam_nameids = [inst.subfamilyNameID for inst in ttFont["fvar"].instances]
     invalid_subfam_nameids = [
         val
@@ -383,10 +361,6 @@ def com_adobe_fonts_check_varfont_valid_subfamily_nameid(ttFont, has_name_table)
             f"{inst_name!r} instance has a subfamilyNameID value that"
             " is neither 2, 17, or greater than 255 and less than 32768.",
         )
-        passed = False
-
-    if passed:
-        yield PASS, "All subfamilyNameID values are valid."
 
 
 @check(
@@ -412,9 +386,7 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
         yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
         return
 
-    passed = True
     name_table = ttFont["name"]
-
     font_postscript_nameids = [
         inst.postscriptNameID for inst in ttFont["fvar"].instances
     ]
@@ -430,12 +402,8 @@ def com_adobe_fonts_check_varfont_valid_postscript_nameid(ttFont, has_name_table
         yield FAIL, Message(
             f"invalid-postscript-nameid:{nameid}",
             f"{inst_name!r} instance has a postScriptNameID value that"
-            " is neither 6, 0xFFFF, or greater than 255 and less than 32768.",
+            f" is neither 6, 0xFFFF, or greater than 255 and less than 32768.",
         )
-        passed = False
-
-    if passed:
-        yield PASS, "All postScriptNameID values are valid."
 
 
 @check(
@@ -471,7 +439,6 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
         yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
         return
 
-    passed = True
     name_table = ttFont["name"]
     fvar_table = ttFont["fvar"]
 
@@ -504,7 +471,6 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
                     f"{subfam_name!r} instance has the same coordinates as the default"
                     f" instance; its subfamily name should be {font_subfam_name!r}",
                 )
-                passed = False
 
             # Validate the postScriptNameID string only if
             # at least one instance record includes it
@@ -515,10 +481,6 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
                     f" instance; its postscript name should be {name6!r}, instead of"
                     f" {postscript_name!r}.",
                 )
-                passed = False
-
-    if passed:
-        yield PASS, "All default instance name strings are valid."
 
 
 @check(
@@ -539,7 +501,8 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
     """Validates that all of the instance records in a given font have the same size."""
 
     if not ttFont["fvar"].instances:
-        return SKIP, Message("no-instance-records", "Font has no instance records.")
+        yield SKIP, Message("no-instance-records", "Font has no instance records.")
+        return
 
     font_ps_nameids_not_provided = set(
         inst.postscriptNameID == 0xFFFF for inst in ttFont["fvar"].instances
@@ -550,12 +513,10 @@ def com_adobe_fonts_check_varfont_same_size_instance_records(ttFont):
     # it means that some instance records have postscriptNameID values while
     # others do not.
     if len(font_ps_nameids_not_provided) != 1:
-        return FAIL, Message(
+        yield FAIL, Message(
             "different-size-instance-records",
             "Instance records don't all have the same size.",
         )
-
-    return PASS, "All instance records have the same size."
 
 
 @check(
@@ -579,9 +540,7 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
         yield FAIL, Message("lacks-table", "Font lacks 'name' table.")
         return
 
-    passed = True
     name_table = ttFont["name"]
-
     unique_inst_recs = set()
 
     for i, inst in enumerate(ttFont["fvar"].instances, 1):
@@ -603,10 +562,6 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
                 f"repeated-instance-record:{inst_name}",
                 f"{inst_name!r} is a repeated instance record.",
             )
-            passed = False
-
-    if passed:
-        yield PASS, "All instance records are distinct."
 
 
 @check(
@@ -624,7 +579,6 @@ def com_adobe_fonts_check_varfont_distinct_instance_records(ttFont, has_name_tab
 )
 def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
     "Validate foundry-defined design-variation axis tag names."
-    passed = True
     for axis in ttFont["fvar"].axes:
         axisTag = axis.axisTag
         if axisTag in REGISTERED_AXIS_TAGS:
@@ -640,7 +594,6 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
 
         firstChar = ord(axisTag[0])
         if not (firstChar >= ord("A") and firstChar <= ord("Z")):
-            passed = False
             yield FAIL, Message(
                 "invalid-foundry-defined-tag-first-letter",
                 f'Please fix axis tag "{axisTag}".\n'
@@ -653,16 +606,12 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
                 (char >= ord("0") and char <= ord("9"))
                 or (char >= ord("A") and char <= ord("Z"))
             ):
-                passed = False
                 yield FAIL, Message(
                     "invalid-foundry-defined-tag-chars",
                     f'Please fix axis tag "{axisTag}".\n'
                     f"Foundry-defined tags must only use"
                     f" uppercase or digits.",
                 )
-
-    if passed:
-        yield PASS, f"Axis tag '{axisTag}' looks good."
 
 
 @check(
@@ -672,7 +621,6 @@ def com_adobe_fonts_check_varfont_foundry_defined_tag_name(ttFont):
         the ranges of variable axes must be identical.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4445",
-    experimental="Since 2024/Jan/30",
     conditions=["VFs"],
 )
 def com_google_fonts_check_varfont_family_axis_ranges(ttFonts):
@@ -692,5 +640,3 @@ def com_google_fonts_check_varfont_family_axis_ranges(ttFonts):
             "axis-range-mismatch",
             "Variable axes ranges not matching between font files",
         )
-    else:
-        yield PASS, "Variable axes ranges are matching between font files"

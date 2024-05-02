@@ -1,9 +1,10 @@
 from fontTools.ttLib import TTFont
 import pytest
 
-from fontbakery.status import WARN, FAIL, PASS
+from fontbakery.status import WARN, FAIL, PASS, SKIP
 from fontbakery.codetesting import (
     assert_PASS,
+    assert_SKIP,
     assert_results_contain,
     CheckTester,
     TEST_FILE,
@@ -141,9 +142,6 @@ def test_check_font_version():
     # There should be at least one WARN...
     assert_results_contain(check(test_font), WARN, "near-mismatch")
 
-    # But final result is a PASS:
-    assert_PASS(check(test_font))
-
     # Test that having more than 3 decimal places in the version
     # in the Name table is acceptable.
     # See https://github.com/fonttools/fontbakery/issues/2928
@@ -194,6 +192,7 @@ def test_check_mac_style():
         [MacStyle.BOLD, "Bold", PASS],
         [MacStyle.BOLD, "Thin", "bad-BOLD"],
         [MacStyle.BOLD | MacStyle.ITALIC, "BoldItalic", PASS],
+        [0, None, SKIP],
     ]
 
     for macStyle_value, style, expected in test_cases:
@@ -201,6 +200,11 @@ def test_check_mac_style():
 
         if expected == PASS:
             assert_PASS(
+                check(MockFont(ttFont=ttFont, style=style)),
+                "with macStyle:{macStyle_value} style:{style}...",
+            )
+        elif expected == SKIP:
+            assert_SKIP(
                 check(MockFont(ttFont=ttFont, style=style)),
                 "with macStyle:{macStyle_value} style:{style}...",
             )

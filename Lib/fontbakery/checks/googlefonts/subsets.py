@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from fontbakery.prelude import FAIL, PASS, WARN, Message, check
+from fontbakery.prelude import FAIL, WARN, Message, check
 from fontbakery.utils import exit_with_install_instructions
 
 
@@ -24,9 +24,8 @@ def com_google_fonts_check_metadata_unsupported_subsets(
     try:
         from gfsubsets import CodepointsInSubset, ListSubsets
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
-    passed = True
     for subset in family_metadata.subsets:
         if subset == "menu":
             continue
@@ -44,14 +43,11 @@ def com_google_fonts_check_metadata_unsupported_subsets(
         subset_codepoints -= set([0, 13, 32, 160])
 
         if len(subset_codepoints.intersection(font_codepoints)) == 0:
-            passed = False
             yield FAIL, Message(
                 "unsupported-subset",
                 f"Please remove '{subset}' from METADATA.pb since none"
                 f" of its glyphs are supported by this font file.",
             )
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -78,7 +74,7 @@ def com_google_fonts_check_metadata_unreachable_subsetting(font, config):
         import unicodedata2
         from gfsubsets import CodepointsInSubset, ListSubsets, SubsetsInFont
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     from fontbakery.utils import pretty_print_list
 
@@ -101,7 +97,7 @@ def com_google_fonts_check_metadata_unreachable_subsetting(font, config):
         font_codepoints = font_codepoints - set(CodepointsInSubset(subset))
 
     if not font_codepoints:
-        yield PASS, "OK"
+        # it is all fine!
         return
 
     unreachable = []

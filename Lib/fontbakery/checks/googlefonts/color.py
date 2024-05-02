@@ -1,4 +1,4 @@
-from fontbakery.prelude import check, Message, PASS, FAIL, WARN
+from fontbakery.prelude import check, Message, FAIL, WARN
 
 
 @check(
@@ -24,7 +24,6 @@ from fontbakery.prelude import check, Message, PASS, FAIL, WARN
 )
 def com_google_fonts_check_colorfont_tables(font, ttFont):
     """Check font has the expected color font tables."""
-    passed = True
     NANOEMOJI_ADVICE = (
         "You can do it by using the maximum_color tool provided by"
         " the nanoemoji project:\n"
@@ -33,7 +32,6 @@ def com_google_fonts_check_colorfont_tables(font, ttFont):
 
     if "COLR" in ttFont:
         if ttFont["COLR"].version == 0 and "SVG " in ttFont:
-            passed = False
             yield FAIL, Message(
                 "drop-svg",
                 "Font has a COLR v0 table, which is already widely supported,"
@@ -45,7 +43,6 @@ def com_google_fonts_check_colorfont_tables(font, ttFont):
             and "SVG " not in ttFont
             and not font.is_variable_font
         ):
-            passed = False
             yield FAIL, Message(
                 "add-svg",
                 "Font has COLRv1 but no SVG table; for CORLv1, we require"
@@ -55,7 +52,6 @@ def com_google_fonts_check_colorfont_tables(font, ttFont):
 
     if "SVG " in ttFont:
         if font.is_variable_font:
-            passed = False
             yield FAIL, Message(
                 "variable-svg",
                 "This is a variable font and SVG does not support"
@@ -64,15 +60,11 @@ def com_google_fonts_check_colorfont_tables(font, ttFont):
             )
 
         if "COLR" not in ttFont:
-            passed = False
             yield FAIL, Message(
                 "add-colr",
                 "Font only has an SVG table."
                 " Please add a COLR table as well.\n" + NANOEMOJI_ADVICE,
             )
-
-    if passed:
-        yield PASS, "Looks Good!"
 
 
 @check(
@@ -128,8 +120,6 @@ def com_google_fonts_check_color_cpal_brightness(config, ttFont):
             f" layers in question to current color (0xFFFF), or alter"
             f" the brightness of these layers significantly.",
         )
-    else:
-        yield PASS, "Looks good!"
 
 
 @check(
@@ -169,5 +159,3 @@ def com_google_fonts_check_empty_glyph_on_gid1_for_colrv0(ttFont):
             "This is a COLR font. As a workaround for a rendering bug in"
             " Windows 10, it needs an empty glyph to be in GID 1. " + SUGGESTED_FIX,
         )
-    else:
-        yield PASS, "Looks good!"

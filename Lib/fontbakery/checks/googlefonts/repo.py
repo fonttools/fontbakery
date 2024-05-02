@@ -2,7 +2,7 @@ import os
 
 from fontbakery.constants import NameID
 from fontbakery.testable import Font
-from fontbakery.prelude import check, Message, PASS, FAIL, WARN, SKIP
+from fontbakery.prelude import check, Message, FAIL, WARN, SKIP
 from fontbakery.utils import bullet_list
 
 
@@ -26,9 +26,7 @@ def com_google_fonts_check_repo_fb_report(family_directory):
             if '"result"' in open(f, encoding="utf-8").read()
         ]
     )
-    if not has_report_files:
-        yield PASS, "OK"
-    else:
+    if has_report_files:
         yield WARN, Message(
             "fb-report",
             "There's no need to keep a copy of FontBakery reports in the"
@@ -60,8 +58,6 @@ def com_google_fonts_check_repo_upstream_yaml_has_required_fields(upstream_yaml)
             f"The upstream.yaml file is missing the following fields:"
             f" {list(missing_fields)}",
         )
-    else:
-        yield PASS, "The upstream.yaml file contains all necessary fields"
 
 
 @check(
@@ -86,9 +82,7 @@ def com_google_fonts_check_repo_zip_files(family_directory, config):
     for ext in COMMON_ZIP_EXTENSIONS:
         zip_files.extend(filenames_ending_in(ext, family_directory))
 
-    if not zip_files:
-        yield PASS, "OK"
-    else:
+    if zip_files:
         files_list = pretty_print_list(config, zip_files, sep="\n\t* ")
         yield FAIL, Message(
             "zip-files",
@@ -146,9 +140,7 @@ def com_google_fonts_check_repo_sample_image(readme_contents, readme_directory, 
                 f" {os.path.join(readme_directory, image_path)}\n",
             )
         else:
-            if line_number < 10:
-                yield PASS, "Looks good!"
-            else:
+            if line_number >= 10:
                 yield WARN, Message(
                     "not-ideal-placement",
                     "Please consider placing the sample image closer"
@@ -206,7 +198,7 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
             if f.endswith(".ttf")
         ]
         if not static_fonts:
-            yield PASS, "OK"
+            # it is all fine!
             return
 
         if not all(manually_hinted(font) for font in static_fonts):
@@ -216,13 +208,18 @@ def com_google_fonts_check_repo_vf_has_static_fonts(family_directory):
                 "manually hinted. Delete the directory.",
             )
             return
-    yield PASS, "OK"
 
 
 @check(
     id="com.google.fonts/check/repo/dirname_matches_nameid_1",
     conditions=["gfonts_repo_structure"],
     proposal="https://github.com/fonttools/fontbakery/issues/2302",
+    rationale="""
+        For static fonts, we expect to name the directory in google/fonts
+        according to the NameID 1 of the regular font, all lower case with
+        no hyphens or spaces. This check verifies that the directory
+        name matches our expectations.
+    """,
 )
 def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
     """Directory name in GFonts repo structure must
@@ -253,9 +250,7 @@ def com_google_fonts_check_repo_dirname_match_nameid_1(fonts):
     expected = "".join(expected.split("-"))
 
     _, familypath, _ = os.path.abspath(regular.file).split(os.path.sep)[-3:]
-    if familypath == expected:
-        yield PASS, "OK"
-    else:
+    if familypath != expected:
         yield FAIL, Message(
             "mismatch",
             f"Family name on the name table ('{entry}') does not match"

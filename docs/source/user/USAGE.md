@@ -16,7 +16,7 @@ This has several subcommands, described in the help function:
         check-googlefonts
         check-notofonts
         check-profile
-        check-ufo-sources
+        check-ufo
         check-universal
         generate-glyphdata
     
@@ -186,7 +186,6 @@ configuration file:
 ```
 explicit_checks = [
     'com.google.fonts/check/family/underline_thickness',
-    'com.google.fonts/check/family/panose_proportion',
     'com.google.fonts/check/family/panose_familytype',
 ]
 ```

@@ -33,7 +33,7 @@ def com_typenetwork_glyph_coverage(ttFont, font_codepoints, config):
     try:
         import unicodedata2
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("typenetwork")
 
     TN_latin_set = {
         0x0020: (" ", "SPACE"),
@@ -144,7 +144,6 @@ def com_typenetwork_glyph_coverage(ttFont, font_codepoints, config):
         0x00AA: ("ª", "FEMININE ORDINAL INDICATOR"),
         0x00AB: ("«", "LEFT-POINTING DOUBLE ANGLE QUOTATION MARK"),
         0x00AC: ("¬", "NOT SIGN"),
-        0x00AD: ("­", "SOFT HYPHEN"),
         0x00AE: ("®", "REGISTERED SIGN"),
         0x00AF: ("¯", "MACRON"),
         0x00B0: ("°", "DEGREE SIGN"),
@@ -617,8 +616,8 @@ def tn_expected_os2_weight(font):
         return None
     # Weight name to value mapping:
     TN_EXPECTED_WEIGHTS = {
-        "Thin": 100,
-        "ExtraLight": 200,
+        "Thin": [100, 250],
+        "ExtraLight": [200, 275],
         "Light": 300,
         "Regular": 400,
         "Medium": 500,
@@ -669,6 +668,7 @@ def com_typenetwork_check_usweightclass(font, tn_expected_os2_weight):
     os2_value = font.ttFont["OS/2"].usWeightClass
 
     fail_message = "OS/2 usWeightClass is '{}' when it should be '{}'."
+    warn_message = "OS/2 usWeightClass is '{}' it will be better if it is '{}'."
     no_value_message = "OS/2 usWeightClass is '{}' and weight name is '{}'."
 
     if font.is_variable_font:
@@ -697,24 +697,24 @@ def com_typenetwork_check_usweightclass(font, tn_expected_os2_weight):
         yield INFO, Message("no-value", no_value_message.format(os2_value, weight_name))
 
     elif "Thin" == weight_name.split(" "):
-        if font.is_ttf and os2_value not in [100, 250]:
+        if os2_value not in expected_value:
             failed = True
             yield FAIL, Message(
                 "bad-value", fail_message.format(os2_value, expected_value)
             )
-        if font.is_cff and os2_value != 250:
+        if os2_value == 100:
             failed = True
-            yield FAIL, Message("bad-value", fail_message.format(os2_value, 250))
+            yield WARN, Message("warn-value", warn_message.format(os2_value, 250))
 
     elif "ExtraLight" in weight_name.split(" "):
-        if font.is_ttf and os2_value not in [200, 275]:
+        if os2_value not in expected_value:
             failed = True
             yield FAIL, Message(
                 "bad-value", fail_message.format(os2_value, expected_value)
             )
-        if font.is_cff and os2_value != 275:
+        if os2_value == 200:
             failed = True
-            yield FAIL, Message("bad-value", fail_message.format(os2_value, 275))
+            yield WARN, Message("warn-value", warn_message.format(os2_value, 275))
 
     elif os2_value != expected_value:
         failed = True
@@ -799,12 +799,12 @@ def com_typenetwork_check_family_tnum_horizontal_metrics(ttFonts, config):
 
 @condition(CheckRunContext)
 def roman_ttFonts(context):
-    return [font.ttFont for font in context.ttFonts if not font.is_italic]
+    return [font.ttFont for font in context.fonts if not font.is_italic]
 
 
 @condition(CheckRunContext)
 def italic_ttFonts(context):
-    return [font.ttFont for font in context.ttFonts if font.is_italic]
+    return [font.ttFont for font in context.fonts if font.is_italic]
 
 
 @check(
@@ -1270,7 +1270,7 @@ def com_typenetwork_check_varfont_fvar_axes_order(ttFont):
         filtered = [axis for axis in prefferedOrder if axis in fontRegisteredAxes]
 
         if filtered != fontRegisteredAxes:
-            yield FAIL, Message(
+            yield WARN, Message(
                 "axes-incorrect-order",
                 "Font’s registered axes are not in a correct order to get good"
                 "instances sorting on Adobe apps.\n\n"

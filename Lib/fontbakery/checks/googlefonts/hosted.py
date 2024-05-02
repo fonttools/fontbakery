@@ -1,10 +1,15 @@
-from fontbakery.prelude import check, disable, Message, WARN, PASS, FAIL
+from fontbakery.prelude import check, disable, Message, WARN, FAIL
 
 
 @check(
     id="com.google.fonts/check/version_bump",
     conditions=["api_gfonts_ttFont", "github_gfonts_ttFont"],
     proposal="legacy:check/117",
+    rationale="""
+        We check that the version number has been bumped since the last release on
+        Google Fonts. This helps to ensure that the version being PRed is newer than
+        the one currently hosted on fonts.google.com.
+    """,
 )
 def com_google_fonts_check_version_bump(
     ttFont, api_gfonts_ttFont, github_gfonts_ttFont
@@ -13,41 +18,29 @@ def com_google_fonts_check_version_bump(
     v_number = ttFont["head"].fontRevision
     api_gfonts_v_number = api_gfonts_ttFont["head"].fontRevision
     github_gfonts_v_number = github_gfonts_ttFont["head"].fontRevision
-    passed = True
 
     if v_number == api_gfonts_v_number:
-        passed = False
         yield FAIL, (
             f"Version number {v_number:0.3f} is"
             f" equal to version on **Google Fonts**."
         )
 
     if v_number < api_gfonts_v_number:
-        passed = False
         yield FAIL, (
             f"Version number {v_number:0.3f} is less than on"
             f" **Google Fonts** ({api_gfonts_v_number:0.3f})."
         )
 
     if v_number == github_gfonts_v_number:
-        passed = False
         yield FAIL, (
             f"Version number {v_number:0.3f} is equal to version on"
             f" google/fonts **GitHub repo**."
         )
 
     if v_number < github_gfonts_v_number:
-        passed = False
         yield FAIL, (
             f"Version number {v_number:0.3f} is less than on"
             f" google/fonts **GitHub repo** ({github_gfonts_v_number:0.3f})."
-        )
-
-    if passed:
-        yield PASS, (
-            f"Version number {v_number:0.3f} is greater than on"
-            f" google/fonts **GitHub repo** ({github_gfonts_v_number:0.3f})"
-            f" and **production servers** ({api_gfonts_v_number:0.3f})."
         )
 
 
@@ -55,6 +48,12 @@ def com_google_fonts_check_version_bump(
     id="com.google.fonts/check/production_glyphs_similarity",
     conditions=["api_gfonts_ttFont"],
     proposal="legacy:check/118",
+    rationale="""
+        We check that the glyphs in the font are similar to the glyphs in the
+        version hosted on fonts.google.com. We do not expect updated fonts to
+        have exactly the same glyphs as the previous version, but we do expect
+        the changes to be minimal.
+    """,
 )
 def com_google_fonts_check_production_glyphs_similarity(
     ttFont, api_gfonts_ttFont, config
@@ -104,8 +103,6 @@ def com_google_fonts_check_production_glyphs_similarity(
             "Following glyphs differ greatly from"
             f" Google Fonts version:\n{formatted_list}"
         )
-    else:
-        yield PASS, "Glyphs are similar in comparison to the Google Fonts version."
 
 
 # FIXME!
@@ -135,5 +132,3 @@ def com_google_fonts_check_production_encoded_glyphs(ttFont, api_gfonts_ttFont):
             f" from the previous release"
             f" [{', '.join(hex_codepoints)}]",
         )
-    else:
-        yield PASS, ("Font has all the glyphs from the previous release")

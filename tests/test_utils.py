@@ -19,16 +19,16 @@ from fontbakery.utils import (
     pretty_print_list,
     split_camel_case,
     unindent_and_unwrap_rationale,
+    all_kerning,
+    iterate_lookup_list_with_extensions,
 )
+from fontbakery.codetesting import TEST_FILE
 
 
 def test_exit_with_install_instructions():
-    from fontbakery.utils import set_profile_name
-
     profile_name = "test-profile"
-    set_profile_name(profile_name)
     with patch("sys.exit") as mock_exit:
-        exit_with_install_instructions()
+        exit_with_install_instructions(profile_name)
         mock_exit.assert_called_with(
             f"\nTo run the {profile_name} profile, one needs to install\n"
             f"fontbakery with the '{profile_name}' extra, like this:\n\n"
@@ -327,3 +327,35 @@ def test_bullet_list(values, expected_str):
     assert bullet_list(config, values) == expected_str
     assert bullet_list(config, values, bullet="*") == expected_str.replace("-", "*")
     assert bullet_list(config, values, indentation="") == expected_str.replace("\t", "")
+
+
+def test_iterate_lookup_list_with_extensions_doesnt_change_font():
+    """Make sure the function `iterate_lookup_list_with_extensions` doesn't
+    modify the ttFont in place. The side-effect used to make the other function
+    `all_kerning` fail on the modified font.
+
+    This bug only occurs on fonts with an Extension lookup in GPOS, hence the
+    new test file.
+    """
+    from fontTools.ttLib import TTFont
+
+    ttFont = TTFont(TEST_FILE("abeezee_ext_lookup/ABeeZee-Regular_GPOS_ext_lookup.ttf"))
+
+    all_kerning_before = all_kerning(ttFont)
+    iterate_lookup_list_with_extensions(ttFont, "GPOS", lambda _: ...)
+    all_kerning_after = all_kerning(ttFont)
+
+    assert all_kerning_before == all_kerning_after
+
+    # Check that it also works if the lambda raises midway through iteration
+    def callback(_):
+        raise RuntimeError()
+
+    all_kerning_before = all_kerning(ttFont)
+    try:
+        iterate_lookup_list_with_extensions(ttFont, "GPOS", callback)
+    except RuntimeError:
+        pass
+    all_kerning_after = all_kerning(ttFont)
+
+    assert all_kerning_before == all_kerning_after

@@ -21,6 +21,13 @@ GF_TAGS_SHEET_URL = (
     "pub?gid=1193923458&single=true&output=csv"
 )
 
+# Submissions from designers via form https://forms.gle/jcp3nDv63LaV1rxH6
+GF_TAGS_SHEET_URL2 = (
+    "https://docs.google.com/spreadsheets/d/e/"
+    "2PACX-1vQVM--FKzKTWL-8w0l5AE1e087uU_OaQNHR3_kkxxymoZV5XUnHzv9TJIdy7vcd0Saf4m8CMTMFqGcg/"
+    "pub?gid=378442772&single=true&output=csv"
+)
+
 # @condition
 # def glyphsFile(glyphs_file):
 #     import glyphsLib
@@ -143,6 +150,14 @@ def metadata_file(font, metadata_pb=None):
 
 
 @condition(Font)
+def family_metadata_text_content(font):
+    if not font.metadata_file:
+        return
+
+    return open(font.metadata_file, "r", encoding="utf-8").read()
+
+
+@condition(Font)
 def family_metadata(font):
     if not font.metadata_file:
         return
@@ -150,7 +165,7 @@ def family_metadata(font):
     try:
         from google.protobuf import text_format
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     from fontbakery.utils import get_FamilyProto_Message
 
@@ -269,37 +284,33 @@ def remote_styles(font):
     """Get a dictionary of TTFont objects of all font files of
     a given family as currently hosted at Google Fonts.
     """
-    if not font.context.network:
-        return
+    from fontbakery.utils import download_file
+    from fontTools.ttLib import TTFont
+    import json
+    import requests
 
-    def download_family_from_Google_Fonts(familyname):
-        """Return a zipfile containing a font family hosted on fonts.google.com"""
-        from zipfile import ZipFile
-        from fontbakery.utils import download_file
-
-        url_prefix = "https://fonts.google.com/download?family="
-        url = "{}{}".format(url_prefix, familyname.replace(" ", "+"))
-        return ZipFile(download_file(url))  # pylint: disable=R1732
-
-    def fonts_from_zip(zipfile):
-        """return a list of fontTools TTFonts"""
-        from fontTools.ttLib import TTFont
-        from io import BytesIO
-
-        fonts = []
-        for file_name in zipfile.namelist():
-            if file_name.lower().endswith(".ttf"):
-                file_obj = BytesIO(zipfile.open(file_name).read())
-                fonts.append([file_name, TTFont(file_obj)])
-        return fonts
-
-    if not font.listed_on_gfonts_api:
+    if not font.context.network or not font.listed_on_gfonts_api:
         return None
 
-    remote_fonts_zip = download_family_from_Google_Fonts(font.familyname_with_spaces)
-    rstyles = {}
+    # download_family_from_Google_Fonts
+    dl_url = "https://fonts.google.com/download/list?family={}"
+    family = font.familyname_with_spaces
+    url = dl_url.format(family.replace(" ", "%20"))
+    data = json.loads(requests.get(url, timeout=10).text[5:])
+    remote_fonts = []
+    for item in data["manifest"]["fileRefs"]:
+        filename = item["filename"]
+        dl_url = item["url"]
+        if "static" in filename:
+            continue
+        if not filename.endswith(("otf", "ttf")):
+            continue
+        file_obj = download_file(dl_url)
+        if file_obj:
+            remote_fonts.append([filename, TTFont(file_obj)])
 
-    for remote_filename, remote_font in fonts_from_zip(remote_fonts_zip):
+    rstyles = {}
+    for remote_filename, remote_font in remote_fonts:
         remote_style = os.path.splitext(remote_filename)[0]
         if "-" in remote_style:
             remote_style = remote_style.split("-")[1]
@@ -484,39 +495,22 @@ def expected_font_names(ttFont, ttFonts):
     return font_cp
 
 
-def get_glyphsets_fulfilled(ttFont):
-    """Returns a dictionary of glyphsets that are fulfilled by the font,
-    and the percentage of glyphs in the font that are in the glyphset.
-    This is following the new glyphset definitions in glyphsets.definitions
-    """
-    from glyphsets.definitions import unicodes_per_glyphset, glyphset_definitions
-
-    res = {}
-    unicodes_in_font = set(ttFont.getBestCmap().keys())
-    for glyphset in glyphset_definitions:
-        unicodes_in_glyphset = unicodes_per_glyphset(glyphset)
-        if glyphset not in res:
-            res[glyphset] = {"has": [], "missing": [], "percentage": 0}
-        for unicode in unicodes_in_glyphset:
-            if unicode in unicodes_in_font:
-                res[glyphset]["has"].append(unicode)
-            else:
-                res[glyphset]["missing"].append(unicode)
-        res[glyphset]["percentage"] = len(res[glyphset]["has"]) / len(
-            unicodes_in_glyphset
-        )
-    return res
-
-
-_tags_cache = None
+_tags_cache = []
 
 
 def gf_tags():
     import requests
 
-    global _tags_cache  # pylint:disable=W0603
-    if _tags_cache is not None:
+    global _tags_cache  # pylint:disable=W0603,W0602
+    if _tags_cache:
         return _tags_cache
-    req = requests.get(GF_TAGS_SHEET_URL, timeout=10)
-    _tags_cache = list(csv.reader(StringIO(req.text)))
+
+    for url in (GF_TAGS_SHEET_URL, GF_TAGS_SHEET_URL2):
+        req = requests.get(url, timeout=10)
+        data = list(csv.reader(StringIO(req.text)))
+        # drop the first two columns on sheet2 since they contain
+        # the author and form submission date
+        if url == GF_TAGS_SHEET_URL2:
+            data = [i[2:] for i in data]
+        _tags_cache.extend(data)
     return _tags_cache

@@ -2,9 +2,7 @@ PROFILE = {
     "sections": {
         "OpenType Specification Checks": [
             "com.google.fonts/check/family/underline_thickness",
-            "com.google.fonts/check/family/panose_proportion",
             "com.google.fonts/check/family/panose_familytype",
-            "com.google.fonts/check/family/equal_unicode_encodings",
             "com.google.fonts/check/family/equal_font_versions",
             "com.adobe.fonts/check/family/bold_italic_unique_for_nameid1",
             "com.adobe.fonts/check/family/max_4_fonts_per_family_name",

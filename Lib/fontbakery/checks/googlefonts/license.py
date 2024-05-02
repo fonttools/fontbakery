@@ -83,6 +83,11 @@ def is_ofl(font):
     id="com.google.fonts/check/family/has_license",
     conditions=["gfonts_repo_structure"],
     proposal="legacy:check/028",
+    rationale="""
+        A license file is required for all fonts in the Google Fonts collection.
+        This checks that the font's directory contains a file named OFL.txt or
+        LICENSE.txt.
+    """,
 )
 def com_google_fonts_check_family_has_license(licenses, config):
     """Check font has a license."""
@@ -104,8 +109,6 @@ def com_google_fonts_check_family_has_license(licenses, config):
             " upstream repo, which is fine, just make sure"
             " there is a temporary license file in the same folder.",
         )
-    else:
-        yield PASS, f"Found license at '{licenses[0]}'"
 
 
 @check(
@@ -124,10 +127,7 @@ def com_google_fonts_check_license_OFL_copyright(license_contents):
     import re
 
     string = license_contents.strip().split("\n")[0].lower()
-    does_match = re.search(EXPECTED_COPYRIGHT_PATTERN, string)
-    if does_match:
-        yield PASS, "looks good"
-    else:
+    if not re.search(EXPECTED_COPYRIGHT_PATTERN, string):
         yield FAIL, Message(
             "bad-format",
             f"First line in license file is:\n\n"
@@ -185,8 +185,6 @@ def com_google_fonts_check_license_OFL_body_text(license_contents):
             "Lines changed:\n\n"
             f"{output}\n\n",
         )
-    else:
-        yield PASS, "OFL license body text is correct"
 
 
 @check(
@@ -222,7 +220,6 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
     """Check copyright namerecords match license file."""
     from fontbakery.constants import PLACEHOLDER_LICENSING_TEXT
 
-    passed = True
     http_warn = False
     placeholder = PLACEHOLDER_LICENSING_TEXT[license_filename]
     entry_found = False
@@ -242,7 +239,6 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
                 http_warn = True
 
             if "scripts.sil.org/OFL" in value:
-                passed = True
                 yield WARN, Message(
                     "old-url",
                     "Please consider updating the url from "
@@ -251,7 +247,6 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
                 )
                 return
             if value != placeholder:
-                passed = False
                 yield FAIL, Message(
                     "wrong",
                     f"License file {license_filename} exists but"
@@ -277,8 +272,6 @@ def com_google_fonts_check_name_license(ttFont, license_filename):
             f" (LICENSE DESCRIPTION). A proper licensing"
             f" entry must be set.",
         )
-    elif passed:
-        yield PASS, "Licensing entry on name table is correctly set."
 
 
 @check(
@@ -443,16 +436,16 @@ def com_google_fonts_check_name_license_url(ttFont, familyname):
     id="com.google.fonts/check/metadata/license",
     conditions=["family_metadata"],
     proposal="legacy:check/085",
+    rationale="""
+        The license field in METADATA.pb must contain one of the
+        three values "APACHE2", "UFL" or "OFL". (New fonts should
+        generally be OFL unless there are special circumstances.)
+    """,
 )
 def com_google_fonts_check_metadata_license(family_metadata):
     """METADATA.pb license is "APACHE2", "UFL" or "OFL"?"""
     expected_licenses = ["APACHE2", "OFL", "UFL"]
-    if family_metadata.license in expected_licenses:
-        yield PASS, (
-            f"Font license is declared in METADATA.pb"
-            f' as "{family_metadata.license}"'
-        )
-    else:
+    if not family_metadata.license in expected_licenses:
         yield FAIL, Message(
             "bad-license",
             f'METADATA.pb license field ("{family_metadata.license}")'
@@ -483,8 +476,6 @@ def com_google_fonts_check_epar(ttFont):
             "EPAR table not present in font. To learn more see"
             " https://github.com/fonttools/fontbakery/issues/818",
         )
-    else:
-        yield PASS, "EPAR table present in font."
 
 
 # Although this is a /name/ check, it's really about licensing
@@ -508,7 +499,6 @@ def com_google_fonts_check_epar(ttFont):
 )
 def com_google_fonts_check_name_rfn(ttFont, familyname):
     """Name table strings must not contain the string 'Reserved Font Name'."""
-    ok = True
     for entry in ttFont["name"].names:
         string = entry.toUnicode()
         if "This license is copied below, and is also available with a FAQ" in string:
@@ -539,7 +529,3 @@ def com_google_fonts_check_name_rfn(ttFont, familyname):
                     f" from the currently used family name ({familyname}),"
                     f" which is fine.",
                 )
-            ok = False
-
-    if ok:
-        yield PASS, 'None of the name table strings contain "Reserved Font Name".'

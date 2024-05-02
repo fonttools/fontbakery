@@ -24,15 +24,8 @@ import rich
 
 from fontbakery.constants import NO_COLORS_THEME, DARK_THEME, LIGHT_THEME
 
-profile_name = None
 
-
-def set_profile_name(name):
-    global profile_name  # pylint:disable=W0603 (global-statement)
-    profile_name = name
-
-
-def exit_with_install_instructions():
+def exit_with_install_instructions(profile_name):
     sys.exit(
         f"\nTo run the {profile_name} profile, one needs to install\n"
         f"fontbakery with the '{profile_name}' extra, like this:\n\n"
@@ -311,7 +304,7 @@ def get_Protobuf_Message(klass, path):
     try:
         from google.protobuf import text_format
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     message = klass()
     text_data = open(path, "rb").read()
@@ -323,7 +316,7 @@ def get_FamilyProto_Message(path):
     try:
         from fontbakery.fonts_public_pb2 import FamilyProto
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     return get_Protobuf_Message(FamilyProto, path)
 
@@ -333,7 +326,7 @@ def get_DesignerInfoProto_Message(text_data):
         from fontbakery.designers_pb2 import DesignerInfoProto
         from google.protobuf import text_format
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     message = DesignerInfoProto()
     text_format.Merge(text_data, message)
@@ -549,9 +542,14 @@ def iterate_lookup_list_with_extensions(ttFont, table, callback, *args):
     for lookup in ttFont[table].table.LookupList.Lookup:
         if lookup.LookupType == extension_type:
             for xt in lookup.SubTable:
-                xt.SubTable = [xt.ExtSubTable]
-                xt.LookupType = xt.ExtSubTable.LookupType
-                callback(xt, *args)
+                original_LookupType = xt.LookupType
+                try:
+                    xt.SubTable = [xt.ExtSubTable]
+                    xt.LookupType = xt.ExtSubTable.LookupType
+                    callback(xt, *args)
+                finally:
+                    del xt.SubTable
+                    xt.LookupType = original_LookupType
         else:
             callback(lookup, *args)
 
@@ -656,3 +654,75 @@ def keyword_in_full_font_name(ttFont, keyword):
         ):
             return True
     return False
+
+
+def bold_adjacent_styles_in_full_font_name(ttFont):
+    from fontbakery.constants import NameID
+
+    for entry in ttFont["name"].names:
+        if entry.nameID == NameID.FULL_FONT_NAME and any(
+            x in entry.string.decode(entry.getEncoding()).lower()
+            for x in [
+                "extra bold",
+                "extrabold",
+                "semi bold",
+                "semibold",
+                "demi bold",
+                "demibold",
+            ]
+        ):
+            return True
+    return False
+
+
+def show_inconsistencies(dictionary, config):
+    """Display an 'inconsistencies dictionary' as a bullet list. Turns:
+
+        { "value1": ["file1", "file2"], "value2": ["file3"] }
+
+    into
+
+        - value1: file1 and file2
+        - value2: file3
+
+    """
+    return bullet_list(
+        config,
+        [
+            f"{value}: {pretty_print_list(config, files)}"
+            for value, files in dictionary.items()
+        ],
+    )
+
+
+def image_dimensions(filename):
+    if filename.lower().endswith(".png"):
+        data = open(filename, "rb").read(24)
+        if data[0:4] != b"\x89PNG" and data[12:16] != b"IHDR":
+            return None  # Does not look like a PNG!
+
+        w = data[16]
+        w = w << 8 | data[17]
+        w = w << 8 | data[18]
+        w = w << 8 | data[19]
+
+        h = data[20]
+        h = h << 8 | data[21]
+        h = h << 8 | data[22]
+        h = h << 8 | data[23]
+        return w, h
+
+    elif filename.lower().endswith(".gif"):
+        data = open(filename, "rb").read(10)
+        if data[0:4] != b"GIF8":
+            return None  # Does not look like a GIF!
+
+        w = data[7]
+        w = w << 8 | data[6]
+
+        h = data[9]
+        h = h << 8 | data[8]
+        return w + 1, h + 1
+
+    else:
+        return None  # some other file format

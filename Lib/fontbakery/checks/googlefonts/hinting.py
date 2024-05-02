@@ -99,7 +99,6 @@ def com_google_fonts_check_gasp(ttFont):
                 "empty", "The 'gasp' table has no values.\n" + NON_HINTING_MESSAGE
             )
         else:
-            passed = True
             if 0xFFFF not in ttFont["gasp"].gaspRange:
                 yield WARN, Message(
                     "lacks-ffff-range",
@@ -140,21 +139,14 @@ def com_google_fonts_check_gasp(ttFont):
                             f"The gasp table has a range of {key}"
                             f" that may be unneccessary.",
                         )
-                        passed = False
                     else:
                         value = ttFont["gasp"].gaspRange[0xFFFF]
                         if value != 0x0F:
-                            passed = False
                             yield WARN, Message(
                                 "unset-flags",
                                 f"The gasp range 0xFFFF value 0x{value:02X}"
                                 f" should be set to 0x0F.",
                             )
-                if passed:
-                    yield PASS, (
-                        "The 'gasp' table is correctly set, with one "
-                        "gaspRange:value of 0xFFFF:0x0F."
-                    )
 
 
 @check(
@@ -193,6 +185,12 @@ def com_google_fonts_check_hinting_impact(font):
 @check(
     id="com.google.fonts/check/has_ttfautohint_params",
     proposal="https://github.com/fonttools/fontbakery/issues/1773",
+    rationale="""
+        It is critically important that all static TTFs in the API which
+        were autohinted with ttfautohint store their TTFAutohint args in
+        the 'name' table, so that an automated solution can be made to
+        replicate the hinting on subsets, etc.
+    """,
 )
 def com_google_fonts_check_has_ttfautohint_params(ttFont):
     """Font has ttfautohint params?"""
@@ -277,12 +275,6 @@ def com_google_fonts_check_old_ttfautohint(ttFont):
                     f" latest = {LATEST_TTFAUTOHINT_VERSION};"
                     f" Need to re-run with the newer version!",
                 )
-            else:
-                yield PASS, (
-                    f"Font has been hinted with ttfautohint {ttfa_version}"
-                    f" which is greater than or equal to the latest"
-                    f" known version {LATEST_TTFAUTOHINT_VERSION}"
-                )
         except ValueError:
             yield FAIL, Message(
                 "parse-error",
@@ -321,6 +313,9 @@ def com_google_fonts_check_old_ttfautohint(ttFont):
 
         For more detailed info (such as other rules not enabled in this snippet),
         please refer to the TrueType Instruction Set documentation.
+
+        Generally this occurs with unhinted fonts; if you are not using autohinting,
+        use gftools-fix-nonhinting (or just gftools-fix-font) to fix this issue.
     """,
     proposal="legacy:check/072",
 )
@@ -328,11 +323,7 @@ def com_google_fonts_check_smart_dropout(ttFont):
     """Font enables smart dropout control in "prep" table instructions?"""
     INSTRUCTIONS = b"\xb8\x01\xff\x85\xb0\x04\x8d"
 
-    if "prep" in ttFont and INSTRUCTIONS in ttFont["prep"].program.getBytecode():
-        yield PASS, (
-            "'prep' table contains instructions enabling smart dropout control."
-        )
-    else:
+    if not ("prep" in ttFont and INSTRUCTIONS in ttFont["prep"].program.getBytecode()):
         yield FAIL, Message(
             "lacks-smart-dropout",
             "The 'prep' table does not contain TrueType"
@@ -366,8 +357,6 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
             f" to reduce total filesize:"
             f" {', '.join(vtt_talk_sources)}",
         )
-    else:
-        yield PASS, "There are no tables with VTT Talk sources embedded in the font."
 
 
 @check(
@@ -389,9 +378,7 @@ def com_google_fonts_check_vtt_clean(ttFont, vtt_talk_sources):
 def com_google_fonts_check_integer_ppem_if_hinted(ttFont):
     """PPEM must be an integer on hinted fonts."""
 
-    if ttFont["head"].flags & (1 << 3):
-        yield PASS, "OK"
-    else:
+    if not ttFont["head"].flags & (1 << 3):
         yield FAIL, Message(
             "bad-flags",
             (

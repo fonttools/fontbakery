@@ -54,19 +54,17 @@ def test_check_find_empty_letters():
     """Validate that empty glyphs are found."""
     check = CheckTester("com.adobe.fonts/check/find_empty_letters")
 
-    PASS_MSG = "No empty glyphs for letters found."
-
     # this OT-CFF font has inked glyphs for all letters
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
-    assert assert_PASS(check(ttFont)) == PASS_MSG
+    assert_PASS(check(ttFont))
 
     # this OT-CFF2 font has inked glyphs for all letters
     ttFont = TTFont(TEST_FILE("source-sans-pro/VAR/SourceSansVariable-Italic.otf"))
-    assert assert_PASS(check(ttFont)) == PASS_MSG
+    assert_PASS(check(ttFont))
 
     # this TrueType font has inked glyphs for all letters
     ttFont = TTFont(TEST_FILE("source-sans-pro/TTF/SourceSansPro-Bold.ttf"))
-    assert assert_PASS(check(ttFont)) == PASS_MSG
+    assert_PASS(check(ttFont))
 
     # Add 2 Korean hangul syllable characters to cmap table mapped to the 'space' glyph.
     # These characters are part of the set whose glyphs are allowed to be blank.
@@ -99,8 +97,7 @@ def test_check_nameid_1_win_english():
     check = CheckTester("com.adobe.fonts/check/nameid_1_win_english")
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
-    msg = assert_PASS(check(ttFont))
-    assert msg == "Font contains a good Windows nameID 1 US-English record."
+    assert_PASS(check(ttFont))
 
     name_table = ttFont["name"]
     nameid_1_win_eng_rec = _get_nameid_1_win_eng_record(name_table)
@@ -131,8 +128,7 @@ def test_check_unsupported_tables():
     check = CheckTester("com.adobe.fonts/check/unsupported_tables")
 
     ttFont = TTFont(TEST_FILE("nunito/Nunito-Regular.ttf"))
-    msg = assert_PASS(check(ttFont))
-    assert msg == "No unsupported tables were found."
+    assert_PASS(check(ttFont))
 
     ttFont = TTFont(TEST_FILE("hinting/Roboto-VF.ttf"))
     msg = assert_results_contain(check(ttFont), FAIL, "unsupported-tables")
@@ -214,8 +210,7 @@ def test_check_override_family_win_ascent_and_descent():
 
     # Now fix the value of 'OS/2.usWinAscent'. The overridden check should PASS.
     os2_table.usWinAscent = y_max
-    msg = assert_PASS(check(ttFont), PASS)
-    assert msg == "OS/2 usWinAscent & usWinDescent values look good!"
+    assert_PASS(check(ttFont), PASS)
 
     # Now mess up the 'OS/2.usWinDescent' value. The overridden check should just WARN.
     os2_table.usWinDescent = abs(y_min) - 10
@@ -248,8 +243,7 @@ def test_check_override_os2_metrics_match_hhea():
 
     # Our reference Mada Black is know to be good here.
     ttFont = TTFont(TEST_FILE("mada/Mada-Black.ttf"))
-    msg = assert_PASS(check(ttFont), PASS)
-    assert msg == "OS/2.sTypoAscender/Descender values match hhea.ascent/descent."
+    assert_PASS(check(ttFont), PASS)
 
     os2_table = ttFont["OS/2"]
     hhea_table = ttFont["hhea"]
@@ -404,8 +398,7 @@ def test_check_override_match_familyname_fullfont():
     )
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Semibold.otf"))
-    msg = assert_PASS(check(ttFont), PASS)
-    assert msg == "Full font name begins with the font family name."
+    assert_PASS(check(ttFont), PASS)
 
     # Change the Full Font Name string for Microsoft platform record
     full_font_name = "SourceSansPro-Semibold"
@@ -431,8 +424,7 @@ def test_check_override_trailing_spaces():
     )
 
     ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Semibold.otf"))
-    msg = assert_PASS(check(ttFont), PASS)
-    assert msg == "No trailing spaces on name table entries."
+    assert_PASS(check(ttFont), PASS)
 
     # Add a trailing space to the License string for Microsoft platform record
     name_table = ttFont["name"]
@@ -499,5 +491,4 @@ def test_check_STAT_strings():
     ttFont = TTFont(TEST_FILE("slant_direction/Cairo_correct_slnt_axis.ttf"))
     ttFont["name"].setName("Italic", 286, 3, 1, 1033)
     # This should PASS with our check
-    msg = assert_results_contain(check(ttFont), PASS, "Looks good!")
-    assert msg == "Looks good!"
+    assert_PASS(check(ttFont))

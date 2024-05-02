@@ -53,6 +53,7 @@
 
 
 
+
 <html
 	class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus theme-light"
 	lang="en-us"
@@ -91,12 +92,12 @@
 <meta name="feedback_help_link_url" content="" />
 <meta name="feedback_product_url" content="" />
 <meta name="feedback_system" content="GitHub" />
-<meta name="git_commit_id" content="a19335d3dac9130f0e61544437cc616d1b6461f1" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/a19335d3dac9130f0e61544437cc616d1b6461f1/typographydocs/vendors/index.md" />
+<meta name="git_commit_id" content="f33299adf56a1f104dba6d0d890f56750430ce1a" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f33299adf56a1f104dba6d0d890f56750430ce1a/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
-<meta name="ms.date" content="02/15/2024" />
+<meta name="ms.date" content="04/15/2024" />
 <meta name="ms.service" content="typography" />
 <meta name="ms.topic" content="article" />
 <meta name="original_content_git_url" content="https://github.com/MicrosoftDocs/typography/blob/live/typographydocs/vendors/index.md" />
@@ -107,8 +108,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2024-02-15 09:46 PM" />
-<meta name="word_count" content="4769" />
+<meta name="updated_at" content="2024-04-24 01:27 AM" />
+<meta name="word_count" content="4855" />
 
 
 	<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
@@ -138,7 +139,7 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/9b5f3dea.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/281396a.site-ltr.css ">
 
 	
 
@@ -161,7 +162,6 @@
 			standardFeedback: false,
 			showFeedbackReport: false,
 			enableTutorialFeedback: false,
-			contentWellNotification: '',
 			feedbackSystem: 'GitHub',
 			feedbackGitHubRepo: 'MicrosoftDocs/typography-issues',
 			feedbackProductUrl: '',
@@ -206,7 +206,7 @@
 			id="adobe-target-script"
 			type="application/javascript"
 		/>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/e8e92f40.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d9b11812.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -252,21 +252,11 @@ More info about Internet Explorer and Microsoft Edge					</a>
 		<!-- liquid-tag banners global -->
 
 		<!-- site header -->
-		<header id="ms--site-header" data-test-id="site-header-wrapper" class="display-none" role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization"></header>
-
-		<div id="headerAreaHolder" data-bi-name="header">
-<header role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
-	<div id="ms--primary-nav" class="nav-bar">
-		<div class="nav-bar-brand">
-			<a itemprop="url" href="https://www.microsoft.com" aria-label="Microsoft" class="nav-bar-button">
-				<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
-				<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
-			</a>
-		</div>
-	</div>
-	<div id="ms--secondary-nav" class="nav-bar border-bottom is-hidden-mobile"></div>
-</header>
-		</div>
+		<header id="ms--site-header" data-test-id="site-header-wrapper" role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization">
+			<div id="ms--mobile-nav" class="site-header display-none-tablet padding-inline-none gap-none" data-bi-name="mobile-header" data-test-id="mobile-header"></div>
+			<div id="ms--primary-nav" class="site-header display-none display-flex-tablet" data-bi-name="L1-header" data-test-id="primary-header"></div>
+			<div id="ms--secondary-nav" class="site-header display-none display-flex-tablet" data-bi-name="L2-header" data-test-id="secondary-header"></div>
+		</header>
 
 
 			<div id="content-header" class="content-header uhf-container has-padding has-default-focus border-bottom-none" data-bi-name="content-header">
@@ -293,7 +283,7 @@ Table of contents						</span>
 		<div class="columns has-large-gaps is-gapless-mobile ">
 
 			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
-				<nav id="affixed-left-container" class="margin-top-sm-tablet position-sticky display-flex flex-direction-column" role="navigation" aria-label="Primary"></nav>
+				<nav id="affixed-left-container" class="margin-top-sm-tablet position-sticky display-flex flex-direction-column" aria-label="Primary"></nav>
 			</div>
 
 			<!-- .primary-holder -->
@@ -367,7 +357,7 @@ Table of contents						</span>
 
 										
 										<details class="popover popover-right" id="article-header-page-actions-overflow">
-											<summary class="justify-content-flex-start button button-clear button-sm button-primary" aria-label="More actions">
+											<summary class="justify-content-flex-start button button-clear button-sm button-primary" aria-label="More actions" title="More actions">
 												<span class="icon" aria-hidden="true">
 													<span class="docon docon-more-vertical"></span>
 												</span>
@@ -406,7 +396,7 @@ Table of contents						</span>
 														class="collection justify-content-flex-start button button-clear button-sm has-inner-focus button-block display-none-tablet"
 														data-list-type="collection"
 														data-bi-name="collection"
-														title="Add to collection"
+														title="Save"
 														data-page-action-item="overflow-mobile"
 														data-check-hidden="true"
 														data-popover-close>
@@ -415,6 +405,24 @@ Table of contents						</span>
 														</span>
 														<span class="collection-status">Save</span>
 													</button>
+
+			 										
+													<button
+													 	type="button"
+														class="collection justify-content-flex-start button button-clear button-sm has-inner-focus button-block display-none-tablet"
+														data-list-type="plan"
+														data-bi-name="plan"
+														title="Add to Plan"
+														data-page-action-item="overflow-mobile"
+														data-check-hidden="true"
+														data-popover-close
+														hidden>
+														<span class="icon" aria-hidden="true">
+															<span class="docon docon-circle-addition"></span>
+														</span>
+														<span class="plan-status">Add to Plan</span>
+													</button>
+
 
 													<a	data-contenteditbtn
 														class="button button-clear button-block button-sm has-inner-focus justify-content-flex-start text-decoration-none display-none-tablet"
@@ -509,7 +517,7 @@ Table of contents						</span>
 														<li>
 Article														</li>
 															<li class="visibility-hidden-visual-diff">
-																<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-02-15T08:00:00Z" data-article-date-source="calculated">02/15/2024</time>
+																<time class="is-invisible" data-article-date aria-label="Article review date" datetime="2024-04-15T08:00:00Z" data-article-date-source="calculated">04/15/2024</time>
 															</li>
 														<li class="contributors-holder display-none-print">
 															<button aria-label="View all contributors" class="contributors-button link-button" data-bi-name="contributors" title="View all contributors">
@@ -538,7 +546,7 @@ Article														</li>
 
 									<div id="ms--inline-notifications" data-bi-name="inline-notification"></div>
 
-										<nav id="center-doc-outline" class="doc-outline is-hidden-desktop display-none-print margin-bottom-sm" data-bi-name="intopic toc" role="navigation" aria-label="In this article">
+										<nav id="center-doc-outline" class="doc-outline is-hidden-desktop display-none-print margin-bottom-sm" data-bi-name="intopic toc" aria-label="In this article">
 											<h2 id="ms--in-this-article" class="title is-6 margin-block-xs">In this article</h2>
 										</nav>
 
@@ -755,6 +763,10 @@ Article														</li>
 <td>Alireza Alipour</td>
 </tr>
 <tr>
+<td>AARN</td>
+<td><a href="https://github.com/Aaron-212" data-linktype="external">Aaron212</a></td>
+</tr>
+<tr>
 <td>AAT</td>
 <td>AhmetAltunType</td>
 </tr>
@@ -796,7 +808,7 @@ Article														</li>
 </tr>
 <tr>
 <td>ABYM</td>
-<td><a href="http://www.abyme.net" data-linktype="external">ABYME</a></td>
+<td><a href="http://www.abyme.net" data-linktype="external">Abyme</a></td>
 </tr>
 <tr>
 <td>AC</td>
@@ -857,6 +869,10 @@ Article														</li>
 <tr>
 <td>aide</td>
 <td>Aiolfi.design</td>
+</tr>
+<tr>
+<td>AIFF</td>
+<td><a href="https://idiofonts.com/" data-linktype="external">Idiofonts</a></td>
 </tr>
 <tr>
 <td>AIYR</td>
@@ -1246,10 +1262,6 @@ Article														</li>
 <td><a href="https://kara-lynn.info/pages/topo-typo.html" data-linktype="external">Topography Typography</a></td>
 </tr>
 <tr>
-<td>BECH</td>
-<td><a href="https://www.bechtype.com/" data-linktype="external">Bech Type</a></td>
-</tr>
-<tr>
 <td>BEN</td>
 <td><a href="http://benhodosi.com/" data-linktype="external">Ben Hodosi</a></td>
 </tr>
@@ -1359,7 +1371,7 @@ Article														</li>
 </tr>
 <tr>
 <td>BLUE</td>
-<td><a href="http://blueshell.xyz/" data-linktype="external">Blue Shell</a></td>
+<td>Blue Shell</td>
 </tr>
 <tr>
 <td>BLV</td>
@@ -1507,11 +1519,15 @@ Article														</li>
 </tr>
 <tr>
 <td>BWFW</td>
-<td><a href="http://www.blueknot.com/Fonts" data-linktype="external">B/W Fontworks</a></td>
+<td>B/W Fontworks</td>
 </tr>
 <tr>
 <td>BwT</td>
 <td><a href="http://www.brandingwithtype.com" data-linktype="external">Branding with Type</a></td>
+</tr>
+<tr>
+<td>BZER</td>
+<td>Bézier</td>
 </tr>
 </table>
 <h2 id="c">C</h2>
@@ -1543,6 +1559,10 @@ Article														</li>
 <tr>
 <td>CAD3</td>
 <td>Clipartdesign</td>
+</tr>
+<tr>
+<td>CAF</td>
+<td><a href="http://blog.naver.com/sf51244" data-linktype="external">CHOA FONT</a></td>
 </tr>
 <tr>
 <td>CAFE</td>
@@ -1639,6 +1659,10 @@ Article														</li>
 <tr>
 <td>CFF</td>
 <td><a href="http://www.characters.nl/" data-linktype="external">Characters Font Foundry</a></td>
+</tr>
+<tr>
+<td>CHAI</td>
+<td><a href="https://tallchai.com" data-linktype="external">Tall Chai</a></td>
 </tr>
 <tr>
 <td>CHIC</td>
@@ -1953,6 +1977,10 @@ Article														</li>
 <td><a href="http://www.dukom.org" data-linktype="external">Dukom Design</a></td>
 </tr>
 <tr>
+<td>DonR</td>
+<td>Donat Raetzo</td>
+</tr>
+<tr>
 <td>DONS</td>
 <td><a href="https://donsvg.com/" data-linktype="external">Don SVG Files</a></td>
 </tr>
@@ -2053,6 +2081,10 @@ Article														</li>
 <td>Dotzeem</td>
 </tr>
 <tr>
+<td>DUAL</td>
+<td><a href="https://www.dualtype.design/" data-linktype="external">DualType</a></td>
+</tr>
+<tr>
 <td>DUXB</td>
 <td><a href="http://www.duxsys.com/" data-linktype="external">Duxbury Systems, Inc.</a></td>
 </tr>
@@ -2081,8 +2113,7 @@ Article														</li>
     </tr>
 <tr>
 <td>EAFN</td>
-<td><a href="https://eafonts.com/" data-linktype="external">EA FONTS</a></td>
-</tr>
+<td>
 <tr>
 <td>EAST</td>
 <td><a href="https://www.eastofrome.com/" data-linktype="external">East of Rome</a></td>
@@ -2178,6 +2209,10 @@ Article														</li>
 <tr>
 <td>ERKO</td>
 <td><a href="http://karamemet.com/" data-linktype="external">Erkin Karamemet</a></td>
+</tr>
+<tr>
+<td>ESAD</td>
+<td><a href="https://xcicero.esad-gv.net/" data-linktype="external">X Cicéro</a></td>
 </tr>
 <tr>
 <td>ESD</td>
@@ -2488,6 +2523,10 @@ Article														</li>
 <td><a href="http://www.fontpad.co.uk" data-linktype="external">The Fontpad</a></td>
 </tr>
 <tr>
+<td>FPKY</td>
+<td><a href="https://space.bilibili.com/5584393" data-linktype="external">Fitzgerald P. K. (Fitzgerald Yu / 蔽芪茢·茇䓮·蓲䒤菥)</a></td>
+</tr>
+<tr>
 <td>FPPL</td>
 <td><a href="https://fontpeople.co.uk/" data-linktype="external">FontPeople</a></td>
 </tr>
@@ -2577,7 +2616,7 @@ Article														</li>
 </tr>
 <tr>
 <td>FTGD</td>
-<td><a href="http://www.fontgarden.com/shop" data-linktype="external">Font Garden</a></td>
+<td>Font Garden</td>
 </tr>
 <tr>
 <td>FTH</td>
@@ -2613,11 +2652,11 @@ Article														</li>
 </tr>
 <tr>
 <td>FXTL</td>
-<td><a href="http://www.foxtailcollectif.com" data-linktype="external">Foxtail Collectif</a></td>
+<td>Foxtail Collectif</td>
 </tr>
 <tr>
 <td>FXTP</td>
-<td><a href="https://creativemarket.com/FoxType" data-linktype="external">FoxType Co</a></td>
+<td>FoxType Co</td>
 </tr>
 <tr>
 <td>FY</td>
@@ -2914,8 +2953,16 @@ Article														</li>
 <td><a href="https://www.heyporterposter.com/" data-linktype="external">HEY PORTER!</a></td>
 </tr>
 <tr>
+<td>HFEW</td>
+<td><a href="https://www.happyfew.art" data-linktype="external">Happyfew</a></td>
+</tr>
+<tr>
 <td>HFJ</td>
 <td>Hoefler & Frere-Jones (replaced by H&FJ)</td>
+</tr>
+<tr>
+<td>HH</td>
+<td>Halwote Hareg</td>
 </tr>
 <tr>
 <td>HIH</td>
@@ -2928,6 +2975,10 @@ Article														</li>
 <tr>
 <td>HJZ</td>
 <td><a href="http://www.zinken.net" data-linktype="external">Hans J. Zinken</a></td>
+</tr>
+<tr>
+<td>HK</td>
+<td><a href="https://hadarkatan.co.il/" data-linktype="external">Hadar Katan</a></td>
 </tr>
 <tr>
 <td>HKSY</td>
@@ -3193,6 +3244,10 @@ Article														</li>
 <td><a href="http://www.indiantypefoundry.com" data-linktype="external">Indian Type Foundry</a></td>
 </tr>
 <tr>
+<td>ITSK</td>
+<td><a href="https://github.com/GuoPCinGitHub" data-linktype="external">Saki Itomi</a></td>
+</tr>
+<tr>
 <td>ITSM</td>
 <td><a href="http://www.simonstratford.com" data-linktype="external">Simon Stratford</a></td>
 </tr>
@@ -3344,6 +3399,10 @@ Article														</li>
 <td><a href="http://www.justintype.com/" data-linktype="external">Just in Type</a></td>
 </tr>
 <tr>
+<td>JuTy</td>
+<td><a href="https://space.bilibili.com/180282493" data-linktype="external">JudouEco</a></td>
+</tr>
+<tr>
 <td>JVRT</td>
 <td>Just van Rossum Type</td>
 </tr>
@@ -3488,7 +3547,7 @@ Article														</li>
 </tr>
 <tr>
 <td>KOP</td>
-<td><a href="http://www.leo-koppelkamm.de" data-linktype="external">Leo Koppelkamm</a></td>
+<td>Leo Koppelkamm</td>
 </tr>
 <tr>
 <td>KORK</td>
@@ -3595,7 +3654,7 @@ Article														</li>
 </tr>
 <tr>
 <td>LANS</td>
-<td><a href="http://www.p22.com" data-linktype="external">Lanston Type Company</a></td>
+<td>Lanston Type Company</td>
 </tr>
 <tr>
 <td>LARA</td>
@@ -3872,6 +3931,10 @@ Article														</li>
 <tr>
 <td>LVRC</td>
 <td><a href="https://arnaudchemin.com/" data-linktype="external">Lovercase</a></td>
+</tr>
+<tr>
+<td>LXGW</td>
+<td><a href="https://github.com/lxgw" data-linktype="external">LXGW (落霞孤鹜 / 霞鹜)</a></td>
 </tr>
 </table>
 <h2 id="m">M</h2>
@@ -4162,7 +4225,7 @@ Article														</li>
 </tr>
 <tr>
 <td>MNLF</td>
-<td><a href="https://manualfoundry.xyz/" data-linktype="external">Manual Foundry</a></td>
+<td>Manual Foundry</td>
 </tr>
 <tr>
 <td>MODI</td>
@@ -4380,6 +4443,10 @@ Article														</li>
 <td><a href="http://www.nan.xyz/" data-linktype="external">NaN</a></td>
 </tr>
 <tr>
+<td>NANO</td>
+<td><a href="https://github.com/HACKERSam2011" data-linktype="external">NANOFONT Inc.</a></td>
+</tr>
+<tr>
 <td>NASK</td>
 <td><a href="https://www.behance.net/naskestudio" data-linktype="external">Naske Studio</a></td>
 </tr>
@@ -4548,6 +4615,10 @@ Article														</li>
 <td><a href="https://www.pitscheider.net/" data-linktype="external">Nick Pitscheider</a></td>
 </tr>
 <tr>
+<td>MRMN</td>
+<td><a href="https://www.marman.mx/" data-linktype="external">M#RM#N FONTS</a></td>
+</tr>
+<tr>
 <td>NRON</td>
 <td>Nurrontype</td>
 </tr>
@@ -4687,6 +4758,10 @@ Article														</li>
 <td><a href="https://otlab.ru/" data-linktype="external">OTLab Rus</a></td>
 </tr>
 <tr>
+<td>OTTS</td>
+<td><a href="https://onetenthestudio.com/" data-linktype="external">OneTen The Studio</a></td>
+</tr>	
+<tr>
 <td>OTYP</td>
 <td><a href="http://o-type.co/" data-linktype="external">O-Type</a></td>
 </tr>
@@ -4707,11 +4782,15 @@ Article														</li>
     </tr>
 <tr>
 <td>P22</td>
-<td><a href="http://www.p22.com/" data-linktype="external">P22 Inc.</a></td>
+<td>P22 Inc.</td>
 </tr>
 <tr>
 <td>PANA</td>
 <td><a href="https://www.behance.net/panatype" data-linktype="external">Pana Type Studio</a></td>
+</tr>
+<tr>
+<td>PAPF</td>
+<td><a href="https://pappware.ch/" data-linktype="external">Pappware Fonts</a></td>
 </tr>
 <tr>
 <td>PARA</td>
@@ -4752,6 +4831,10 @@ Article														</li>
 <tr>
 <td>PEAR</td>
 <td><a href="http://www.pear-socam.com/" data-linktype="external">Pear-Socam Softworks</a></td>
+</tr>
+<tr>
+<td>PEBL</td>
+<td>Pebblestone Design</td>
 </tr>
 <tr>
 <td>PECI</td>
@@ -4993,8 +5076,7 @@ Article														</li>
 </tr>
 <tr>
 <td>RAWR</td>
-<td><a href="https://melvian.xyz/foundry/" data-linktype="external">Melvian Foundry</a></td>
-</tr>
+<td>
 <tr>
 <td>RDGR</td>
 <td><a href="http://www.philippneumeyer.com/" data-linktype="external">Rüdiger</a></td>
@@ -5379,6 +5461,10 @@ Article														</li>
 <td><a href="http://www.schriftlabor.at/" data-linktype="external">Schriftlabor</a></td>
 </tr>
 <tr>
+<td>SLCH</td>
+<td><a href="https://salecharacter.com/" data-linktype="external">Sale Character</a></td>
+</tr>
+<tr>
 <td>SLFN</td>
 <td><a href="https://www.singlelinefonts.com/" data-linktype="external">Single Line Fonts</a></td>
 </tr>
@@ -5698,6 +5784,10 @@ Article														</li>
 <td><a href="http://www.tightype.com" data-linktype="external">TIGHTYPE</a></td>
 </tr>
 <tr>
+<td>TGS</td>
+<td><a href="https://linktr.ee/dannyaldana" data-linktype="external">The Good Store</a></td>
+</tr>
+<tr>
 <td>THIN</td>
 <td><a href="http://www.thinstroke.com" data-linktype="external">Thinstroke Design LLC</a></td>
 </tr>
@@ -5954,6 +6044,10 @@ Article														</li>
 <td><a href="http://www.typeculture.com/" data-linktype="external">TypeCulture</a></td>
 </tr>
 <tr>
+<td>TYFA</td>
+<td><a href="https://typofactur.de/" data-linktype="external">typofactur</a></td>
+</tr>
+<tr>
 <td>TYFR</td>
 <td><a href="http://www.typographies.fr" data-linktype="external">typographies.fr</a></td>
 </tr>
@@ -6004,6 +6098,10 @@ Article														</li>
 <tr>
 <td>TYSO</td>
 <td><a href="https://tyso.co/" data-linktype="external">TYSO Type</a></td>
+</tr>
+<tr>
+<td>TYSP</td>
+<td><a href="http://type-space.com/" data-linktype="external">Typespace</a></td>
 </tr>
 <tr>
 <td>TYTA</td>
@@ -6192,6 +6290,10 @@ Article														</li>
 <td><a href="http://www.vtypo.com/" data-linktype="external">(v) design</a></td>
 </tr>
 <tr>
+<td>VVD</td>
+<td><a href="https://www.vintagevoyagedesign.com/" data-linktype="external">Vintage Voyage Design</a></td>
+</tr>
+<tr>
 <td>VZWO</td>
 <td><a href="https://www.viktorzumegen.de/" data-linktype="external">VZWO | Viktor Zumegen</a></td>
 </tr>
@@ -6325,6 +6427,10 @@ Article														</li>
 <td>Y&Y, Inc.</td>
 </tr>
 <tr>
+<td>YADS</td>
+<td><a href="https://github.com/YADAMSS/Matemasie-Font" data-linktype="external">YA Type</a></td>
+</tr>
+<tr>
 <td>YDI</td>
 <td>YOON Design Group</td>
 </tr>
@@ -6409,7 +6515,7 @@ Article														</li>
 </tr>
 <tr>
 <td>ZERO</td>
-<td><a href="http://www.federicoparra.co/" data-linktype="external">Federico Parra</a></td>
+<td>Federico Parra</td>
 </tr>
 <tr>
 <td>zeta</td>
@@ -6520,10 +6626,10 @@ Article														</li>
 						<span class="docon docon-world"></span>
 					</span>
 					<span class="local-selector-link-text"></span></a>
-		<div class="ccpa-privacy-link flex-shrink-0" hidden>
+		<div class="ccpa-privacy-link" data-ccpa-privacy-link hidden>
 <a
 	href="https://aka.ms/yourcaliforniaprivacychoices"
-	class="button button-sm button-clear"
+	class="button button-sm button-clear flex-shrink-0"
 	data-mscc-ic="false"
 	data-bi-name="your-privacy-choices"
 >
@@ -6664,7 +6770,7 @@ High contrast					</span>
 								<section id="right-rail-events" data-bi-name="events-card" hidden></section>
 								<section id="right-rail-training" data-bi-name="learning-resources-card" hidden></section>
 								<section id="right-rail-recommendations" data-bi-name="recommendations" hidden></section>
-								<nav id="side-doc-outline" class="doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="In this article">
+								<nav id="side-doc-outline" class="doc-outline" data-bi-name="intopic toc" aria-label="In this article">
 									<h3>In this article</h3>
 								</nav>
 								<section id="right-rail-qna" class="margin-top-xxs" data-bi-name="qna-link-card" hidden></section>
@@ -6701,10 +6807,10 @@ High contrast					</span>
 						<span class="docon docon-world"></span>
 					</span>
 					<span class="local-selector-link-text"></span></a>
-		<div class="ccpa-privacy-link flex-shrink-0" hidden>
+		<div class="ccpa-privacy-link" data-ccpa-privacy-link hidden>
 <a
 	href="https://aka.ms/yourcaliforniaprivacychoices"
-	class="button button-sm button-clear"
+	class="button button-sm button-clear flex-shrink-0"
 	data-mscc-ic="false"
 	data-bi-name="your-privacy-choices"
 >

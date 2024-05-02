@@ -10,26 +10,6 @@ from fontbakery.fonts_profile import profile_factory
 TOOL_NAME = "fontbakery"
 
 
-def test_list_subcommands_has_all_scripts():
-    """Tests if the output from running `fontbakery --list-subcommands` matches
-    the fontbakery scripts within the bin folder and the promoted profiles."""
-    import fontbakery.commands
-    from fontbakery.cli import CLI_PROFILES
-
-    commands_dir = os.path.dirname(fontbakery.commands.__file__)
-
-    scripts = [
-        f.rstrip(".py").replace("_", "-")
-        for f in os.listdir(commands_dir)
-        if (f.endswith(".py") and not f.startswith("_"))
-    ]
-    scripts = scripts + [("check-" + i).replace("_", "-") for i in CLI_PROFILES]
-    subcommands = (
-        subprocess.check_output([TOOL_NAME, "--list-subcommands"]).decode().split()
-    )
-    assert sorted(scripts) == sorted(subcommands)
-
-
 def test_list_checks_option(capfd):
     """Test if 'fontbakery <subcommand> --list-checks' can run successfully and output
     the expected content."""
@@ -68,7 +48,7 @@ def test_command_check_googlefonts():
     [
         "check-profile",
         "check-opentype",
-        "check-ufo-sources",
+        "check-ufo",
     ],
 )
 def test_command_check_profile(subcommand):
@@ -82,7 +62,8 @@ def test_command_check_profile(subcommand):
 def test_tool_help():
     """Test if just 'fontbakery' command can run successfully."""
     assert subprocess.run([TOOL_NAME, "-h"]).returncode == 0
-    assert subprocess.run([TOOL_NAME]).returncode == 0
+    # A subcommand is now mandatory
+    assert subprocess.run([TOOL_NAME]).returncode == 2
 
 
 @pytest.mark.xfail(

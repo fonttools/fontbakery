@@ -1,17 +1,248 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
+## Upcoming release: 0.12.5 (2024-May-??)
+  - When multi-threading is enabled, we now ensure that the font objects are fully loaded before running the checks. This causes an initial delay but avoids some code concurrency issues. (issue #4638)
+  - Add back the `--list-subcommands` option that had been removed by mistake on v0.12.0 (issue #4685)
 
-## Upcoming release: 0.12.0 (2024-Feb-??)
-  - Documentation for profile and check writers has been rewritten.
+### Changes to existing checks
+#### On the OpenType profile
+  - **[com.google.fonts/check/monospace]:** Fix ERROR when accessing the 4th bit of panose (spacing) when family type is LATIN_HAND_WRITTEN or LATIN_SYMBOL. FontTools still calls it 'bProportion' even though the proper name should be 'bSpacing' (issue #2857)
+  - **[com.microsoft/check/tnum_glyphs_equal_widths]:** Fix shaping error under certain conditions (PR #4689)
+
+#### On the Outline profile
+  - Checks now check unencoded glyphs as well as encoded glyphs. (issue #2056)
+
+### New checks
+#### Added to the Outline profile
+  - **[com.google.fonts/check/outline_direction]:** Check that outermost contours of glyphs have a clockwise direction. (issue #2056)
+
+
+## 0.12.4 (2024-Apr-26)
+  - Fixed bug where some checks would modify the font under test and make other checks fail (issue #4678)
+
+### Promotion of previously experimental checks
+#### Made effective on the FontWerk profile
+  - * **com.fontwerk/check/names_match_default_fvar** After being marked as **experimental** for 10 weeks since the v0.12.0a1 release (PRs #3604 / #3698)
+
+### Changes to existing checks
+#### On the OpenType profile
+  - **[com.google.fonts/check/caret_slope]:** Downgrade "caretslope-mismatch" from FAIL to WARN. (issue #4679)
+
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/fvar_instances]:** Fix markdown table formatting. (issue #4675)
+  - **[com.google.fonts/check/missing_small_caps_glyphs]:** Fix ERROR: Handle LookupType 2, which maps to more than a single glyph. (issue #4677)
+
+#### On the FontWerk profile
+  - **[com.fontwerk/check/style_linking]:** (also included in the `Type Network` profile). Adjust the `is_bold` condition to check for bold-adjacent style names with spaces, such as "Semi Bold" and "Extra Bold", and not consider such styles as "Bold" in the RIBBI sense. (issue #4667)
+
+
+## 0.12.3 (2024-Apr-22)
+### New Profile
+  - A new profile for Microsoft fonts. (PR #4657)
+
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.google.fonts/check/interpolation_issues]:** We had forgotten to display the glyph name (issue #4659)
+
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/outline_alignment_miss]:** Extended to work even when OS/2 version is < 2 (PR #4655)
+
+
+## 0.12.2 (2024-Apr-17)
+  - Unpin `glyphsets` dependency and fix `fontbakery.com` (issue #4639)
+
+### Changes to existing checks
+#### On the TypeNetwork profile
+  - **[com.typenetwork/check/usweightclass]:** Update `tn_expected_os2_weight` condition and FAIL/WARN results (PR #4643)
+  - Also temporarily removed the FontVal check. (PR #4643)
+
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/glyphsets/shape_languages]:** Refactor shape_languages and avoid repetition of messages. (issue #4646)
+
+
+## 0.12.1 (2024-Apr-15)
+  - Temporarily pin glyphsets dependency to version v0.6.17 until a failing assert is addressed (issue #4639)
+  - **com.google.fonts/check/tabular_kerning** (Universal profile) will remain experimental for a bit longer (issue #4640)
+
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.google.fonts/check/tabular_kerning]:** Eliminated some false positives in Ubuntu Sans related to digraphs. (PR #4579)
+
+
+## 0.12.0 (2024-Apr-12)
+  - Restablish ordering of results on github markdown reports, showing the more severe results (such as FAILs) at the top. (issue #4600)
+  - Set exit code when called from `__main__.py`. (issue #4633)
+  - Support setting `configuration` in input TOML for `update_shaping_tests`. (issue #4635)
+  - Fix Github Markdown syntax. (issue #4627)
   - And also includes the changes from the previous release-candidates:
     - v0.12.0a1 (2024-Feb-14)
     - v0.12.0a2 (2024-Feb-21)
+    - v0.12.0a3 (2024-Mar-13)
+    - v0.12.0a4 (2024-Mar-15)
+    - v0.12.0a5 (2024-Apr-02)
+    - v0.12.0a6 (2024-Apr-04)
+    - v0.12.0a7 (2024-Apr-04)
+
+### Promotion of previously experimental checks
+  After being marked as **experimental** for 9 weeks since the v0.11.1 release, these checks are now made effective.
+  For more details, see their previous entries on the changelog.
+
+#### Made effective on the Open Type profile
+  - * **com.typenetwork/check/varfont/ital_range** (PR #4402)
+  - * **com.google.fonts/check/varfont/family_axis_ranges** (issue #4554)
+
+#### Made effective on the Universal profile
+  - * **com.google.fonts/check/tabular_kerning** (issue #4440)
+  - * **com.google.fonts/check/case_mapping** (issue #3230)
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.google.fonts/check/ttx_roundtrip]:** Fix multithreading conflict when using `--auto-jobs` and running this check (issue #4481)
+
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/kerning_for_non_ligated_sequences]:** Correctly generate the list of ligated sequences the test warns about and do not include unligated sequences in it. (issue #2227)
+
+
+## 0.12.0a7 (2024-Apr-04)
+### Release notes
+  - Unpin **glyphsets** dependency.
+
+
+## 0.12.0a6 (2024-Apr-04)
+### Release notes
+  - Temporarily pin **glyphsets** dependency to **v0.6.14** to workaround API breaking change. (https://github.com/googlefonts/glyphsets/commit/bfd0bb637)
 
 ### Changes to existing checks
+#### On the Google Fonts profile
+  - **EXPERIMENTAL [com.google.fonts/check/varfont/instances_in_order]:** Fix an ERROR caused by a list IndexError (issue #4626)
+
+
+## 0.12.0a5 (2024-Apr-02)
+  - Documentation for profile and check writers has been rewritten.
+  - Implement a basic tool to update regression test files. See https://github.com/fonttools/fontbakery/discussions/4589 for details. Run like `python -m fontbakery.update_shaping_tests input.toml output.json path/to/*.ttf`.
+
+### New checks
+#### Added to the Google Fonts profile
+  - **EXPERIMENTAL - [com.google.fonts/check/article/images]:** Validate maximum filesize and resolution of images in the article/images directory. (issue #4594)
+  - **EXPERIMENTAL - [com.google.fonts/check/varfont/instances_in_order]:** Ensure that the fvar table instances are in ascending order of weight. (issue #3334)
+
+### Changes to existing checks
+#### On the Google Fonts profile
+  - [com.google.fonts/check/description/noto_has_article]:** This check has been renamed to `description/has_article` and also checks that fonts with article files have an empty description. (issue #4318)
+
+#### On the Universal profile
+  - **[com.google.fonts/check/arabic_high_hamza]:** Fixed detection of glyphs by codepoint. And fixed a code-typo, to also check for high hamza glyph. (issue #4539)
+  - **[com.google.fonts/check/interpolation_issues]:** Also detect kinks and contours becoming overweight or underweight. (issue #4388)
+
+
+## 0.12.0a4 (2024-Mar-15)
+  - Fixed markdown/html reporters (issue #4595)
+
+### Changes to existing checks
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/metadata/minisite_url]:** Added detection of duplicated `minisite_url` entries. And also fixed a few typos. (issue #4504)
+
+
+## 0.12.0a3 (2024-Mar-13)
+### Release notes
+  - **UFO Sources** profile (`check-ufo-sources`) was renamed to **UFO** profile.
+  - Since it is not vendor-specific by itself, it will be merged into other profiles (most likely **Universal**) in an upcoming release. The same applies to the **Shaping** profile.
+
+### New utilily functions
+  - **fontbakery.utils.show_inconsistencies**: Display an 'inconsistencies dictionary' as a bullet list. (PR #4570)
+
+### Deprecated checks
+#### Removed from the Open Type profile
+  - **DEPRECATED - [com.google.fonts/check/family/equal_unicode_encodings]:** (issue #4569)
+  - **DEPRECATED - [com.google.fonts/check/family/panose_proportion]:** (issue #4083)
+
+#### Removed from the Google Fonts profile
+  - **DEPRECATED - [com.google.fonts/check/metadata/italic_style]:** (issue #4575)
+  - **DEPRECATED - [com.google.fonts/check/metadata/multiple_designers]:** (issue #4574)
+  - **DEPRECATED - [com.google.fonts/check/metadata/nameid/family_name]:** (issue #4572)
+  - **DEPRECATED - [com.google.fonts/check/metadata/nameid/full_name]:** (issue #4572)
+  - **DEPRECATED - [com.google.fonts/check/metadata/normal_style]:** (issue #4575)
+  - **DEPRECATED - [com.google.fonts/check/metadata/unknown_designer]:** (issue #4573)
+  - **DEPRECATED - [com.google.fonts/check/metadata/valid_name_values]:** (issue #4571)
+
+### Changes to existing checks
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/description/min_length]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/family/equal_codepoint_coverage]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/family/has_license]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/has_ttfautohint_params]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/linegaps]:** Override WARN messages to FAIL-level. (issue #4136)
+  - **[com.google.fonts/check/metadata/broken_links]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/canonical_weight_value]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/canonical_style_names]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/copyright]:** Added rationale and improve display of detected inconsistencies. (PR #4570)
+  - **[com.google.fonts/check/metadata/copyright_max_length]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/familyname]:** Added rationale and improve display of detected inconsistencies. (PR #4570)
+  - **[com.google.fonts/check/metadata/has_tags]:** Also fetch family tagging data from a second Google Sheet (Submissions from designers via form: https://forms.gle/jcp3nDv63LaV1rxH6) (PR #4576)
+  - **[com.google.fonts/check/metadata/has_regular]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/italic_style]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/license]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/match_filename_postscript]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/match_fullname_postscript]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/match_name_familyname]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/match_weight_postscript]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/menu_and_latin]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/nameid/copyright]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/nameid/family_and_full_names]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/nameid/family_name]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/nameid/full_name]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/nameid/post_script_name]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/normal_style]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/valid_filename_values]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/valid_full_name_values]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/valid_post_script_name_values]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/regular_is_400]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/reserved_font_name]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/subsets_order]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/unique_full_name_values]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/unique_weight_style_pairs]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/unknown_designer]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/metadata/valid_name_values]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/name/mandatory_entries]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/name/unwanted_chars]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/name/version_format]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/production_glyphs_similarity]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/repo/dirname_matches_nameid_1]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/smart_dropout]:** Improve rationale with better fixing instructions. (PR #4570)
+  - **[com.google.fonts/check/version_bump]:** Added rationale. (PR #4570)
+
+#### On the UFO profile
+  - **[com.daltonmaag/check/ufolint]:** Added rationale. (PR #4570)
+
+#### On the FontValidator profile
+  - **[com.google.fonts/check/fontvalidator]:** Added rationale. (PR #4570)
+
+#### On the Universal profile
+  - **DISABLED - [com.google.fonts/check/legacy_accents]:** This is one of the checks that we probably should run on the sources instead of binaries. (https://github.com/fonttools/fontbakery/issues/3959#issuecomment-1822913547)
+  - **[com.google.fonts/check/name/trailing_spaces]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/ots]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/ttx_roundtrip]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/whitespace_glyphs]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/whitespace_ink]:** Added rationale. (PR #4570)
+
 #### On the Open Type Profile
+  - **[com.google.fonts/check/family/equal_font_versions]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/family_naming_recommendations]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/family/panose_familytype]:** Add rationale and improve message when there are inconsistencies. (PR #4570)
+  - **[com.google.fonts/check/font_version]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/fsselection]:** Added rationale. (PR #4570)
+  - **[com.adobe.fonts/check/fsselection_matches_macstyle]:** Improve log messages to include the bit values. (PR #4570)
+  - **[com.google.fonts/check/glyf_unused_data]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/gpos_kerning_info]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/layout_valid_feature_tags]:** Updated the check to allow valid private-use feature tags. (issue #4544)
+  - **[com.google.fonts/check/loca/maxp_num_glyphs]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/mac_style]:** Skip if font style can not be determined. (issue #4349)
+  - **[com.google.fonts/check/maxadvancewidth]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/name/no_copyright_on_description]:** Added rationale. (PR #4570)
+  - **[com.google.fonts/check/points_out_of_bounds]:** Added rationale. (PR #4570)
+  - **[com.adobe.fonts/check/postscript_name]:** Added rationale. (PR #4570)
   - **[com.google.fonts/check/varfont/family_axis_ranges]:** Updated the check to skip fonts without fvar tables. (issue #4554)
+  - **[com.google.fonts/check/xavgcharwidth]:** Added rationale. Also, when glyphs needed to compute xAvgCharWidth are missing, it is considered critical, so it is now results in a FATAL-level result. (PR #4570)
 
 #### On the Universal Profile
   - **[com.google.fonts/check/tabular_kerning]:** Eliminated false positives and other errors (issue #4640)

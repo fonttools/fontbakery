@@ -1,13 +1,18 @@
 import fractions
 
 from fontbakery.callable import check
-from fontbakery.status import FAIL, PASS, WARN
+from fontbakery.status import FAIL, WARN
 from fontbakery.message import Message
 from fontbakery.constants import NameID
 
 
 @check(
-    id="com.google.fonts/check/family/equal_font_versions", proposal="legacy:check/014"
+    id="com.google.fonts/check/family/equal_font_versions",
+    proposal="legacy:check/014",
+    rationale="""
+        Within a family released at the same time, all members of the family
+        should have the same version number in the head table.
+    """,
 )
 def com_google_fonts_check_family_equal_font_versions(ttFonts):
     """Make sure all font files have the same version value."""
@@ -32,8 +37,6 @@ def com_google_fonts_check_family_equal_font_versions(ttFonts):
             f"These were the version values found:\n"
             f"{versions_list}",
         )
-    else:
-        yield PASS, "All font files have the same version."
 
 
 @check(
@@ -70,15 +73,11 @@ def com_google_fonts_check_unitsperem(ttFont):
             "suboptimal",
             f"In order to optimize performance on some"
             f" legacy renderers, the value of unitsPerEm"
-            f" at the head table should idealy be"
-            f" a power of between 16 to 16384."
+            f" at the head table should ideally be"
+            f" a power of 2 between 16 to 16384."
             f" And values of 1000 and 2000 are also"
             f" common and may be just fine as well."
             f" But we got {upem} instead.",
-        )
-    else:
-        yield PASS, (
-            f"The unitsPerEm value ({upem}) on" f" the 'head' table is reasonable."
         )
 
 
@@ -109,7 +108,17 @@ def parse_version_string(name: str) -> float:
     return fractions.Fraction(version_string.group(1))
 
 
-@check(id="com.google.fonts/check/font_version", proposal="legacy:check/044")
+@check(
+    id="com.google.fonts/check/font_version",
+    proposal="legacy:check/044",
+    rationale="""
+            The OpenType specification provides for two fields which contain
+            the version number of the font: fontRevision in the head table,
+            and nameID 5 in the name table. If these fields do not match,
+            different applications will report different version numbers for
+            the font.
+        """,
+)
 def com_google_fonts_check_font_version(ttFont):
     """Checking font version fields (head and name table)."""
 
@@ -131,13 +140,11 @@ def com_google_fonts_check_font_version(ttFont):
         if record.nameID == NameID.VERSION_STRING
     ]
 
-    failed = False
     if name_id_5_records:
         for record in name_id_5_records:
             try:
                 name_version = parse_version_string(record.toUnicode())
                 if abs(name_version - head_version) > fail_tolerance:
-                    failed = True
                     yield FAIL, Message(
                         "mismatch",
                         f'head version is "{float(head_version):.5f}"'
@@ -158,7 +165,6 @@ def com_google_fonts_check_font_version(ttFont):
                         f" is not as accurate as possible.",
                     )
             except ValueError:
-                failed = True
                 yield FAIL, Message(
                     "parse",
                     f"name version string for"
@@ -168,13 +174,9 @@ def com_google_fonts_check_font_version(ttFont):
                     f" could not be parsed.",
                 )
     else:
-        failed = True
         yield FAIL, Message(
             "missing", "There is no name ID 5 (version string) in the font."
         )
-
-    if not failed:
-        yield PASS, "All font version fields match."
 
 
 @check(
@@ -184,6 +186,7 @@ def com_google_fonts_check_font_version(ttFont):
         that describe whether a font is bold and/or italic must be coherent with the
         actual style of the font as inferred by its filename.
     """,
+    conditions=["style"],
     proposal="legacy:check/131",
 )
 def com_google_fonts_check_mac_style(font):

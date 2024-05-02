@@ -1,5 +1,5 @@
 from functools import lru_cache
-from fontbakery.prelude import check, Message, INFO, PASS, FAIL
+from fontbakery.prelude import check, Message, INFO, FAIL
 from fontbakery.constants import PlatformID, WindowsEncodingID, WindowsLanguageID
 
 
@@ -22,7 +22,6 @@ def GFAxisRegistry():
 )
 def com_google_fonts_check_gf_axisregistry_bounds(family_metadata):
     """Validate METADATA.pb axes values are within gf_axisregistry bounds."""
-    passed = True
     for axis in family_metadata.axes:
         if axis.tag in GFAxisRegistry().keys():
             expected = GFAxisRegistry()[axis.tag]
@@ -30,7 +29,6 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata):
                 axis.min_value < expected.min_value
                 or axis.max_value > expected.max_value
             ):
-                passed = False
                 yield FAIL, Message(
                     "bad-axis-range",
                     f"The range in the font variation axis"
@@ -40,8 +38,6 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata):
                     f" as defined on Google Fonts Axis Registry"
                     f" (min:{expected.min_value} max:{expected.max_value}).",
                 )
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -73,18 +69,13 @@ def com_google_fonts_check_gf_axisregistry_bounds(family_metadata):
 )
 def com_google_fonts_check_gf_axisregistry_valid_tags(family_metadata):
     """Validate METADATA.pb axes tags are defined in gf_axisregistry."""
-    passed = True
     for axis in family_metadata.axes:
         if axis.tag not in GFAxisRegistry().keys():
-            passed = False
             yield FAIL, Message(
                 "bad-axis-tag",
                 f"The font variation axis '{axis.tag}'"
                 f" is not yet registered on Google Fonts Axis Registry.",
             )
-
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -116,13 +107,11 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont):
     Validate defaults on fvar table match registered fallback names in GFAxisRegistry.
     """
 
-    passed = True
     for axis in ttFont["fvar"].axes:
         if axis.axisTag not in GFAxisRegistry():
             continue
         fallbacks = GFAxisRegistry()[axis.axisTag].fallback
         if axis.defaultValue not in [f.value for f in fallbacks]:
-            passed = False
             yield FAIL, Message(
                 "not-registered",
                 f"The defaul value {axis.axisTag}:{axis.defaultValue} is not registered"
@@ -131,8 +120,6 @@ def com_google_fonts_check_gf_axisregistry_fvar_axis_defaults(ttFont):
                 " or adopted one of the existing fallback names for this axis:\n"
                 f"\t{fallbacks}",
             )
-    if passed:
-        yield PASS, "OK"
 
 
 @check(
@@ -153,7 +140,6 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont):
     def normalize_name(name):
         return "".join(name.split(" "))
 
-    passed = True
     format4_entries = False
     if "STAT" not in ttFont:
         yield FAIL, "Font is missing STAT table."
@@ -210,7 +196,6 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont):
                 is_value = axis_value.NominalValue
             if name not in expected_names:
                 expected_names = ", ".join(expected_names)
-                passed = False
                 yield FAIL, Message(
                     "invalid-name",
                     f"On the font variation axis '{axis.AxisTag}',"
@@ -219,7 +204,6 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont):
                     " to the Google Fonts Axis Registry.",
                 )
             elif is_value != fallbacks[name_entry.toUnicode()]:
-                passed = False
                 yield FAIL, Message(
                     "bad-coordinate",
                     f"Axis Value for '{axis.AxisTag}':'{name_entry.toUnicode()}' is"
@@ -235,6 +219,3 @@ def com_google_fonts_check_STAT_gf_axisregistry_names(ttFont):
             " which is what these 'format 4' entries are designed to describe,"
             " so this check will ignore them for now.",
         )
-
-    if passed:
-        yield PASS, "OK"

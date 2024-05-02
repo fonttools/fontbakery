@@ -20,11 +20,9 @@ from fontbakery.utils import markdown_table
 )
 def com_adobe_fonts_check_name_empty_records(ttFont):
     """Check name table for empty records."""
-    failed = False
     for name_record in ttFont["name"].names:
         name_string = name_record.toUnicode().strip()
         if len(name_string) == 0:
-            failed = True
             name_key = tuple(
                 [
                     name_record.platformID,
@@ -38,43 +36,48 @@ def com_adobe_fonts_check_name_empty_records(ttFont):
                 f'"name" table record with key={name_key} is'
                 f" empty and should be removed.",
             )
-    if not failed:
-        yield PASS, ("No empty name table records found.")
 
 
 @check(
     id="com.google.fonts/check/name/no_copyright_on_description",
     proposal="legacy:check/031",
+    rationale="""
+        The name table in a font file contains strings about the font;
+        there are entries for a copyright field and a description. If the
+        copyright entry is being used correctly, then there should not
+        be any copyright information in the description entry.
+    """,
 )
 def com_google_fonts_check_name_no_copyright_on_description(ttFont):
     """Description strings in the name table must not contain copyright info."""
-    failed = False
     for name in ttFont["name"].names:
         if (
             "opyright" in name.string.decode(name.getEncoding())
             and name.nameID == NameID.DESCRIPTION
         ):
-            failed = True
-
-    if failed:
-        yield FAIL, Message(
-            "copyright-on-description",
-            f"Some namerecords with"
-            f" ID={NameID.DESCRIPTION} (NameID.DESCRIPTION)"
-            f" containing copyright info should be removed"
-            f" (perhaps these were added by a longstanding"
-            f" FontLab Studio 5.x bug that copied"
-            f" copyright notices to them.)",
-        )
-    else:
-        yield PASS, (
-            "Description strings in the name table"
-            " do not contain any copyright string."
-        )
+            yield FAIL, Message(
+                "copyright-on-description",
+                f"Some namerecords with"
+                f" ID={NameID.DESCRIPTION} (NameID.DESCRIPTION)"
+                f" containing copyright info should be removed"
+                f" (perhaps these were added by a longstanding"
+                f" FontLab Studio 5.x bug that copied"
+                f" copyright notices to them.)",
+            )
+            break
 
 
 def PANOSE_is_monospaced(panose):
+    """
+    This function considers the following PANOSE combinations monospace:
+
+    2xx9x xxxxx (Family: Latin Text; Proportion: Monospaced)
+    3xx3x xxxxx (Family: Latin Hand Written; Spacing: Monospaced)
+    5xx3x xxxxx (Family: Latin Symbol; Spacing: Monospaced)
+    """
+
     # https://github.com/fonttools/fontbakery/issues/2857#issue-608671015
+
     from fontbakery.constants import (
         PANOSE_Family_Type,
         PANOSE_Proportion,
@@ -88,7 +91,11 @@ def PANOSE_is_monospaced(panose):
         PANOSE_Family_Type.LATIN_HAND_WRITTEN,
         PANOSE_Family_Type.LATIN_SYMBOL,
     ]:
-        return panose.bSpacing == PANOSE_Spacing.MONOSPACED
+        # NOTE: fonttools has fixed nomenclature for the panose digits,
+        #       regardless of context. So, semantically, here the 4th digit
+        #       should be called bSpacing, but fonttools still gives it
+        #       the 'bProportion' attribute name.
+        return panose.bProportion == PANOSE_Spacing.MONOSPACED
 
     # otherwise
     return False
@@ -114,18 +121,14 @@ def PANOSE_expected(family_type):
     ]:
         return f"Please set PANOSE Spacing to {PANOSE_Spacing.MONOSPACED} (monospaced)"
 
-    if family_type == PANOSE_Family_Type.LATIN_SYMBOL:
-        return (
-            f"PANOSE Family Type is set to 4 (latin symbol)."
-            f" Please set it instead to {PANOSE_Family_Type.LATIN_TEXT} (latin text),"
-            f" {PANOSE_Family_Type.LATIN_HAND_WRITTEN} (latin hand written)"
-            f" or {PANOSE_Family_Type.LATIN_SYMBOL} (latin symbol)"
-        )
-
     # Otherwise:
     # I can't even suggest what to do
     # if it is that much broken!
-    return f"Note: Family Type is set to {family_type}, which does not seem right."
+    return ""
+    # FIXME:
+    # - https://github.com/fonttools/fontbakery/issues/2857
+    # - https://github.com/fonttools/fontbakery/issues/2831
+    # See also: https://github.com/fonttools/fontbakery/issues/4664
 
 
 @check(
@@ -319,7 +322,6 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
 
     name_table = ttFont["name"]
     names_compared = False  # Used for knowing if at least one comparison was attempted
-    passed = True
 
     # Collect all the unique platformIDs, encodingIDs, and languageIDs
     # used in the font's name table.
@@ -372,7 +374,6 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
                             f"{decode_error_msg_prefix} and nameID {family_name_id}"
                             " failed to be decoded.",
                         )
-                        passed = False
                         continue
 
                     try:
@@ -385,7 +386,6 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
                             f"{decode_error_msg_prefix} and nameID {full_name_id}"
                             " failed to be decoded.",
                         )
-                        passed = False
                         continue
 
                     if not full_name.startswith(family_name):
@@ -398,7 +398,6 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
                             f" languageID {lang_id}({lang_id:04X}),"
                             f" and nameID {family_name_id}.",
                         )
-                        passed = False
 
     if not names_compared:
         yield FAIL, Message(
@@ -410,13 +409,16 @@ def com_google_fonts_check_name_match_familyname_fullfont(ttFont):
             f" {NameID.TYPOGRAPHIC_FAMILY_NAME} (Typographic Family name),"
             f" or {NameID.WWS_FAMILY_NAME} (WWS Family name).",
         )
-    elif passed:
-        yield PASS, "Full font name begins with the font family name."
 
 
 @check(
     id="com.adobe.fonts/check/postscript_name",
     proposal="https://github.com/miguelsousa/openbakery/issues/62",
+    rationale="""
+        The PostScript name is used by some applications to identify the font.
+        It should only consist of characters from the set A-Z, a-z, 0-9, and hyphen.
+
+    """,
 )
 def com_adobe_fonts_check_postscript_name(ttFont):
     """PostScript name follows OpenType specification requirements?"""
@@ -446,13 +448,16 @@ def com_adobe_fonts_check_postscript_name(ttFont):
             f"PostScript name does not follow requirements:\n\n"
             f"{markdown_table(bad_entries)}",
         )
-    else:
-        yield PASS, "PostScript name follows requirements."
 
 
 @check(
     id="com.google.fonts/check/family_naming_recommendations",
     proposal="legacy:check/071",
+    rationale="""
+        This check ensures that the length of various family name and style
+        name strings in the name table are within the maximum length
+        recommended by the OpenType specification.
+    """,
 )
 def com_google_fonts_check_family_naming_recommendations(ttFont):
     """Font follows the family naming recommendations?"""
@@ -534,8 +539,6 @@ def com_google_fonts_check_family_naming_recommendations(ttFont):
             f"\n"
             f"{table}",
         )
-    else:
-        yield PASS, "Font follows the family naming recommendations."
 
 
 @check(
@@ -560,21 +563,16 @@ def com_adobe_fonts_check_name_postscript_vs_cff(ttFont):
         )
         return
 
-    passed = True
     cff_name = cff_names[0]
     for entry in ttFont["name"].names:
         if entry.nameID == NameID.POSTSCRIPT_NAME:
             postscript_name = entry.toUnicode()
             if postscript_name != cff_name:
-                passed = False
                 yield FAIL, Message(
                     "ps-cff-name-mismatch",
                     f"Name table PostScript name '{postscript_name}' "
                     f"does not match CFF table FontName '{cff_name}'.",
                 )
-
-    if passed:
-        yield PASS, ("Name table PostScript name matches CFF table FontName.")
 
 
 @check(
@@ -602,10 +600,6 @@ def com_adobe_fonts_check_name_postscript_name_consistency(ttFont):
             f'Entries in the "name" table for ID 6'
             f" (PostScript name) are not consistent."
             f" Names found: {sorted(postscript_names)}.",
-        )
-    else:
-        yield PASS, (
-            'Entries in the "name" table for ID 6 (PostScript name) are consistent.'
         )
 
 
@@ -639,17 +633,13 @@ def com_adobe_fonts_check_family_max_4_fonts_per_family_name(ttFonts):
         names_set = set(names_list)
         family_names.extend(names_set)
 
-    passed = True
     counter = Counter(family_names)
     for family_name, count in counter.items():
         if count > 4:
-            passed = False
             yield FAIL, Message(
                 "too-many",
                 f"Family '{family_name}' has {count} fonts" f" (should be 4 or fewer).",
             )
-    if passed:
-        yield PASS, ("There were no more than 4 fonts per family name.")
 
 
 @check(
@@ -731,8 +721,6 @@ def com_adobe_fonts_check_consistent_font_family_name(ttFonts):
             f"{''.join(detail_str_arr)}"
         )
         yield FAIL, Message("inconsistent-family-name", msg)
-    else:
-        yield PASS, ("Font family names are consistent across the family.")
 
 
 @check(
@@ -756,13 +744,11 @@ def com_google_fonts_check_name_italic_names(ttFont, style):
     if "Italic" not in style:
         yield SKIP, ("Font is not Italic.")
     else:
-        passed = True
         # Name ID 1 (Family Name)
         if "Italic" in get_name(NameID.FONT_FAMILY_NAME):
             yield FAIL, Message(
                 "bad-familyname", "Name ID 1 (Family Name) must not contain 'Italic'."
             )
-            passed = False
 
         # Name ID 2 (Subfamily Name)
         subfamily_name = get_name(NameID.FONT_SUBFAMILY_NAME)
@@ -773,7 +759,6 @@ def com_google_fonts_check_name_italic_names(ttFont, style):
                 " Only R/I/B/BI are allowed.\n"
                 f"Got: '{subfamily_name}'.",
             )
-            passed = False
 
         # Name ID 16 (Typographic Family Name)
         if get_name(NameID.TYPOGRAPHIC_FAMILY_NAME):
@@ -782,7 +767,6 @@ def com_google_fonts_check_name_italic_names(ttFont, style):
                     "bad-typographicfamilyname",
                     "Name ID 16 (Typographic Family Name) must not contain 'Italic'.",
                 )
-                passed = False
 
         # Name ID 17 (Typographic Subfamily Name)
         if get_name(NameID.TYPOGRAPHIC_SUBFAMILY_NAME):
@@ -791,7 +775,3 @@ def com_google_fonts_check_name_italic_names(ttFont, style):
                     "bad-typographicsubfamilyname",
                     "Name ID 17 (Typographic Subfamily Name) must contain 'Italic'.",
                 )
-                passed = False
-
-        if passed:
-            yield PASS, ("All font names are good for Italic fonts.")

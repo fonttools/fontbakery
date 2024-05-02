@@ -30,7 +30,7 @@ def com_google_fonts_check_canonical_filename(ttFont):
     try:
         import axisregistry
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("googlefonts")
 
     current_filename = os.path.basename(ttFont.reader.file.name)
     expected_filename = axisregistry.build_filename(ttFont)

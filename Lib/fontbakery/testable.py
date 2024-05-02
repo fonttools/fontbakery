@@ -76,7 +76,15 @@ class Font(Testable):
 
     @cached_property
     def ttFont(self):
-        return TTFont(self.file)
+        font = TTFont(self.file)
+        if (
+            hasattr(self, "context")
+            and self.context is not None
+            and self.context.is_multithreaded
+        ):
+            # Preload all tables while we're in this cached_property that uses locking
+            font.ensureDecompiled()
+        return font
 
     @cached_property
     def style(self):
@@ -218,13 +226,19 @@ class Font(Testable):
     @cached_property
     def is_bold(self):
         from fontbakery.constants import FsSelection, MacStyle
-        from fontbakery.utils import keyword_in_full_font_name
+        from fontbakery.utils import (
+            keyword_in_full_font_name,
+            bold_adjacent_styles_in_full_font_name,
+        )
 
         ttFont = self.ttFont
         return (
             ("OS/2" in ttFont and ttFont["OS/2"].fsSelection & FsSelection.BOLD)
             or ("head" in ttFont and ttFont["head"].macStyle & MacStyle.BOLD)
-            or keyword_in_full_font_name(ttFont, "bold")
+            or (
+                keyword_in_full_font_name(ttFont, "bold")
+                and not bold_adjacent_styles_in_full_font_name(ttFont)
+            )
         )
 
 
@@ -252,6 +266,7 @@ FILE_TYPES = [Readme, Ufo, Designspace, GlyphsFile, MetadataPB, Font]
 class CheckRunContext:
     testables: List[Testable] = field(default_factory=list)
     config: dict = field(default_factory=dict)
+    is_multithreaded: bool = False
 
     @cached_property
     def testables_by_type(self):

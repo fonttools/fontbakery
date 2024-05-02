@@ -6,6 +6,7 @@ PROFILE = {
             "com.google.fonts/check/outline_colinear_vectors",
             "com.google.fonts/check/outline_jaggy_segments",
             "com.google.fonts/check/outline_semi_vertical",
+            "com.google.fonts/check/outline_direction",
         ]
     }
 }

@@ -117,7 +117,7 @@ def run_a_set_of_shaping_tests(
         filename = Path(ttFont.reader.file.name)
         vharfbuzz = Vharfbuzz(filename)
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("shaping")
 
     shaping_file_found = False
     ran_a_test = False
@@ -368,7 +368,7 @@ def setup_glyph_collides(ttFont, configuration):
     try:
         from collidoscope import Collidoscope
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("shaping")
 
     filename = Path(ttFont.reader.file.name)
     collidoscope_configuration = configuration.get("collidoscope")
@@ -393,7 +393,7 @@ def run_collides_glyph_test(
     try:
         from stringbrewer import StringBrewer
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("shaping")
 
     col = extra_data["collidoscope"]
     is_stringbrewer = (
@@ -448,7 +448,7 @@ def is_complex_shaper_font(ttFont):
     try:
         from ufo2ft.constants import INDIC_SCRIPTS, USE_SCRIPTS
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("shaping")
 
     for table in ["GSUB", "GPOS"]:
         if table not in ttFont:
@@ -576,7 +576,7 @@ def com_google_fonts_check_soft_dotted(ttFont):
     try:
         from vharfbuzz import Vharfbuzz
     except ImportError:
-        exit_with_install_instructions()
+        exit_with_install_instructions("shaping")
 
     import itertools
     from beziers.path import BezierPath

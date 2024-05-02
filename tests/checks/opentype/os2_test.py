@@ -6,7 +6,7 @@ import fontTools.ttLib
 from fontTools.ttLib import TTFont
 import fontTools.subset
 
-from fontbakery.status import INFO, WARN, FAIL, PASS
+from fontbakery.status import INFO, WARN, FAIL, PASS, FATAL
 from fontbakery.codetesting import (
     assert_PASS,
     assert_SKIP,
@@ -44,22 +44,6 @@ cabin_fonts = [
     TEST_FILE("cabin/Cabin-SemiBoldItalic.ttf"),
     TEST_FILE("cabin/Cabin-SemiBold.ttf"),
 ]
-
-
-def test_check_family_panose_proportion(mada_ttFonts):
-    """Fonts have consistent PANOSE proportion ?"""
-    check = CheckTester("com.google.fonts/check/family/panose_proportion")
-
-    assert_PASS(check(mada_ttFonts), "with good family.")
-
-    # introduce a wrong value in one of the font files:
-    value = mada_ttFonts[0]["OS/2"].panose.bProportion
-    incorrect_value = value + 1
-    mada_ttFonts[0]["OS/2"].panose.bProportion = incorrect_value
-
-    assert_results_contain(
-        check(mada_ttFonts), WARN, "inconsistency", "with inconsistent family."
-    )
 
 
 def test_check_family_panose_familytype(mada_ttFonts):
@@ -105,7 +89,7 @@ def test_check_xavgcharwidth():
     test_font["glyf"].glyphs = {}
     test_font["hmtx"] = fontTools.ttLib.newTable("hmtx")
     test_font["hmtx"].metrics = {}
-    assert_results_contain(check(test_font), FAIL, "missing-glyphs")
+    assert_results_contain(check(test_font), FATAL, "missing-glyphs")
 
     test_font = TTFont(test_font_path)
     subsetter = fontTools.subset.Subsetter()
@@ -189,7 +173,7 @@ def test_check_xavgcharwidth():
         ]
     )
     subsetter.subset(test_font)
-    assert_results_contain(check(test_font), FAIL, "missing-glyphs")
+    assert_results_contain(check(test_font), FATAL, "missing-glyphs")
 
 
 def test_check_fsselection_matches_macstyle():

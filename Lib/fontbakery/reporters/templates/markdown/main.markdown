@@ -35,10 +35,10 @@ These won't break the CI job for now, but will become effective after some time 
 {% if total > 0 %}
 ### Summary
 
-| {%for level in summary.keys() %}{{level | emoticon }} {{level}} | {%endfor%} |
-|---|---|
-| {%for level in summary.keys() %}{{summary[level]}} | {%endfor%} |
-| {%for level in summary.keys() %}{{summary[level] | percent_of(total )}} | {%endfor%} |
+| {%for level in summary.keys() %}{{level | emoticon }} {{level}} | {%endfor%}
+| {%for level in summary.keys() %}---|{%endfor%}
+| {%for level in summary.keys() %}{{summary[level]}} | {%endfor%}
+| {%for level in summary.keys() %}{{summary[level] | percent_of(total )}} | {%endfor%}
 {% endif %}
 
 {% if omitted %}

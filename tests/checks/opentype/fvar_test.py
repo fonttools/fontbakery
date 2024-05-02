@@ -19,7 +19,7 @@ def test_check_varfont_regular_wght_coord():
     # Our reference varfont CabinVFBeta.ttf
     # has a good Regular:wght coordinate
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-    assert assert_PASS(check(ttFont)) == "Regular:wght is 400."
+    assert_PASS(check(ttFont))
 
     # We then ensure the check detects it when we
     # introduce the problem by setting a bad value:
@@ -46,7 +46,7 @@ def test_check_varfont_regular_wght_coord():
 
     # Test with an italic variable font. The Italic instance must also be 400
     ttFont = TTFont(TEST_FILE("varfont/OpenSans-Italic[wdth,wght].ttf"))
-    assert assert_PASS(check(ttFont)) == "Regular:wght is 400."
+    assert_PASS(check(ttFont))
 
     # Now test with a static font.
     # The test should be skipped due to an unfulfilled condition.
@@ -63,7 +63,7 @@ def test_check_varfont_regular_wdth_coord():
     # Our reference varfont CabinVFBeta.ttf
     # has a good Regular:wdth coordinate
     ttFont = TTFont("data/test/cabinvfbeta/CabinVFBeta.ttf")
-    assert assert_PASS(check(ttFont)) == "Regular:wdth is 100."
+    assert_PASS(check(ttFont))
 
     # We then ensure the check detects it when we
     # introduce the problem by setting a bad value:
@@ -90,7 +90,7 @@ def test_check_varfont_regular_wdth_coord():
 
     # Test with an italic variable font. The Italic instance must also be 100
     ttFont = TTFont(TEST_FILE("varfont/OpenSans-Italic[wdth,wght].ttf"))
-    assert assert_PASS(check(ttFont)) == "Regular:wdth is 100."
+    assert_PASS(check(ttFont))
 
     # Now test with a static font.
     # The test should be skipped due to an unfulfilled condition.
@@ -127,7 +127,7 @@ def test_check_varfont_regular_slnt_coord():
 
     # We correct the slant coordinate value to make the check PASS.
     first_instance.coordinates["slnt"] = 0
-    assert assert_PASS(check(ttFont)) == "Regular:slnt is zero."
+    assert_PASS(check(ttFont))
 
     # Change the name of the first instance from 'Regular' (nameID 258)
     # to 'Medium' (nameID 259). The font now has no Regular instance.
@@ -176,7 +176,7 @@ def test_check_varfont_regular_ital_coord():
 
     # We correct the italic coordinate value to make the check PASS.
     first_instance.coordinates["ital"] = 0
-    assert assert_PASS(check(ttFont)) == "Regular:ital is zero."
+    assert_PASS(check(ttFont))
 
     # Change the name of the first instance from 'Regular' (nameID 258)
     # to 'Medium' (nameID 259). The font now has no Regular instance.
@@ -360,8 +360,7 @@ def test_check_varfont_valid_axis_nameid():
 
     # The axisNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    msg = assert_PASS(check(ttFont), "with a good varfont...")
-    assert msg == "All axisNameID values are valid."
+    assert_PASS(check(ttFont), "with a good varfont...")
 
     fvar_table = ttFont["fvar"]
     wght_axis = fvar_table.axes[0]
@@ -370,8 +369,7 @@ def test_check_varfont_valid_axis_nameid():
     # Change the axes' axisNameID to the maximum and minimum allowed values
     wght_axis.axisNameID = 32767
     wdth_axis.axisNameID = 256
-    msg = assert_PASS(check(ttFont), "with a good varfont...")
-    assert msg == "All axisNameID values are valid."
+    assert_PASS(check(ttFont), "with a good varfont...")
 
     # Change the axes' axisNameID to invalid values
     # (32768 is greater than the maximum, and 255 is less than the minimum)
@@ -406,8 +404,7 @@ def test_check_varfont_valid_subfamily_nameid():
 
     # The subfamilyNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    msg = assert_PASS(check(ttFont), "with a good varfont...")
-    assert msg == "All subfamilyNameID values are valid."
+    assert_PASS(check(ttFont), "with a good varfont...")
 
     fvar_table = ttFont["fvar"]
     inst_1 = fvar_table.instances[0]
@@ -421,8 +418,7 @@ def test_check_varfont_valid_subfamily_nameid():
     inst_2.subfamilyNameID = 17
     inst_3.subfamilyNameID = 256
     inst_4.subfamilyNameID = 32767
-    msg = assert_PASS(check(ttFont), "with a good varfont...")
-    assert msg == "All subfamilyNameID values are valid."
+    assert_PASS(check(ttFont), "with a good varfont...")
 
     # Change two instances' subfamilyNameID to invalid values
     # (32768 is greater than the maximum, and 255 is less than the minimum)
@@ -460,8 +456,7 @@ def test_check_varfont_valid_postscript_nameid():
 
     # The postScriptNameID values in the reference varfont are all valid
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    msg = assert_PASS(check(ttFont), "with a good varfont...")
-    assert msg == "All postScriptNameID values are valid."
+    assert_PASS(check(ttFont), "with a good varfont...")
 
     fvar_table = ttFont["fvar"]
     inst_1 = fvar_table.instances[0]
@@ -475,8 +470,7 @@ def test_check_varfont_valid_postscript_nameid():
     inst_2.postscriptNameID = 0xFFFF
     inst_3.postscriptNameID = 256
     inst_4.postscriptNameID = 32767
-    msg = assert_PASS(check(ttFont), "with a good varfont...")
-    assert msg == "All postScriptNameID values are valid."
+    assert_PASS(check(ttFont), "with a good varfont...")
 
     # Change two instances' postScriptNameID to invalid values
     # (32768 is greater than the maximum, and 255 is less than the minimum)
@@ -516,14 +510,12 @@ def test_check_varfont_valid_default_instance_nameids():
     # The font's 'Regular' instance record has the same coordinates as the default
     # instance, and the record's string matches the string of nameID 2.
     ttFont_1 = TTFont(TEST_FILE("cabinvf/Cabin[wdth,wght].ttf"))
-    msg = assert_PASS(check(ttFont_1))
-    assert msg == "All default instance name strings are valid."
+    assert_PASS(check(ttFont_1))
 
     # The font's 'LightCondensed' instance record has the same coordinates as the
     # default instance, and the record's string matches the string of nameID 17.
     ttFont_2 = TTFont(TEST_FILE("mutatorsans-vf/MutatorSans-VF.ttf"))
-    msg = assert_PASS(check(ttFont_2))
-    assert msg == "All default instance name strings are valid."
+    assert_PASS(check(ttFont_2))
 
     # Change subfamilyNameID value of the default instance to another name ID whose
     # string doesn't match the font's Subfamily name, thus making the check fail.
@@ -593,8 +585,7 @@ def test_check_varfont_same_size_instance_records():
     # The value of postScriptNameID is 0xFFFF for all the instance records in the
     # reference varfont
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    msg = assert_PASS(check(ttFont), "with a good varfont...")
-    assert msg == "All instance records have the same size."
+    assert_PASS(check(ttFont), "with a good varfont...")
 
     fvar_table = ttFont["fvar"]
     inst_1 = fvar_table.instances[0]
@@ -611,8 +602,7 @@ def test_check_varfont_same_size_instance_records():
     inst_2.postscriptNameID = 356
     inst_3.postscriptNameID = 456
     inst_4.postscriptNameID = 556
-    msg = assert_PASS(check(ttFont), "with a good varfont...")
-    assert msg == "All instance records have the same size."
+    assert_PASS(check(ttFont), "with a good varfont...")
 
     # Change the postScriptNameID of two instance records
     inst_1.postscriptNameID = 0xFFFF
@@ -632,8 +622,7 @@ def test_check_varfont_distinct_instance_records():
 
     # All of the instance records in the reference varfont are unique
     ttFont = TTFont("data/test/cabinvf/Cabin[wdth,wght].ttf")
-    msg = assert_PASS(check(ttFont), "with a good varfont...")
-    assert msg == "All instance records are distinct."
+    assert_PASS(check(ttFont), "with a good varfont...")
 
     fvar_table = ttFont["fvar"]
     inst_1 = fvar_table.instances[0]

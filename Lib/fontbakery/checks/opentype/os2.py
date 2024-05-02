@@ -1,82 +1,65 @@
+from collections import defaultdict
+from typing import Iterable
 from fontbakery.callable import check
 from fontbakery.message import Message
-from fontbakery.status import FAIL, INFO, PASS, SKIP, WARN
+from fontbakery.status import FAIL, INFO, PASS, SKIP, WARN, FATAL
+from fontbakery.testable import Font
+from fontbakery.utils import show_inconsistencies, bullet_list
 
 
 @check(
-    id="com.google.fonts/check/family/panose_proportion", proposal="legacy:check/009"
+    id="com.google.fonts/check/family/panose_familytype",
+    proposal="legacy:check/010",
+    rationale="""
+    The [PANOSE value](https://monotype.github.io/panose/) in the OS/2 table is a
+    way of classifying a font based on its visual appearance and characteristics.
+
+    The first field in the PANOSE classification is the family type: 2 means Latin
+    Text, 3 means Latin Script, 4 means Latin Decorative, 5 means Latin Symbol.
+    This check ensures that within a family, all fonts have the same family type.
+""",
 )
-def com_google_fonts_check_family_panose_proportion(ttFonts):
-    """Fonts have consistent PANOSE proportion?"""
-    passed = True
-    proportion = None
-    missing = False
-    for ttFont in ttFonts:
-        if "OS/2" not in ttFont:
-            missing = True
-            passed = False
-            continue
-        if proportion is None:
-            proportion = ttFont["OS/2"].panose.bProportion
-        if proportion != ttFont["OS/2"].panose.bProportion:
-            passed = False
-
-    if missing:
-        yield FAIL, Message(
-            "lacks-OS/2", "One or more fonts lack the required OS/2 table."
-        )
-
-    if not passed:
-        yield WARN, Message(
-            "inconsistency",
-            "PANOSE proportion is not the same across this family."
-            " In order to fix this, please make sure that"
-            " the panose.bProportion value is the same"
-            " in the OS/2 table of all of this family font files.",
-        )
-    else:
-        yield PASS, "Fonts have consistent PANOSE proportion."
-
-
-@check(
-    id="com.google.fonts/check/family/panose_familytype", proposal="legacy:check/010"
-)
-def com_google_fonts_check_family_panose_familytype(ttFonts):
+def com_google_fonts_check_family_panose_familytype(fonts: Iterable[Font], config):
     """Fonts have consistent PANOSE family type?"""
-    passed = True
-    familytype = None
-    missing = False
+    missing = []
+    familytypes = defaultdict(list)
 
-    for ttfont in ttFonts:
-        if "OS/2" not in ttfont:
-            passed = False
-            missing = True
+    for font in fonts:
+        if "OS/2" not in font.ttFont:
+            missing.append(font.file_displayname)
             continue
-        if familytype is None:
-            familytype = ttfont["OS/2"].panose.bFamilyType
-        if familytype != ttfont["OS/2"].panose.bFamilyType:
-            passed = False
+        familytype = font.ttFont["OS/2"].panose.bFamilyType
+        familytypes[familytype].append(font.file_displayname)
 
     if missing:
         yield FAIL, Message(
-            "lacks-OS/2", "One or more fonts lack the required OS/2 table."
+            "lacks-OS/2",
+            "One or more fonts lack the required OS/2 table:\n"
+            + bullet_list(config, missing),
         )
 
-    if not passed:
+    if len(familytypes) > 1:
         yield WARN, Message(
             "inconsistency",
             "PANOSE family type is not the same across this family."
             " In order to fix this, please make sure that"
             " the panose.bFamilyType value is the same"
-            " in the OS/2 table of all of this family font files.",
+            " in the OS/2 table of all of this family font files.\n\n"
+            "The following PANOSE family types were found:\n\n"
+            + show_inconsistencies(familytypes, config),
         )
-    else:
-        yield PASS, "Fonts have consistent PANOSE family type."
 
 
 @check(
     id="com.google.fonts/check/xavgcharwidth",
     proposal="legacy:check/034",
+    rationale="""
+    The OS/2.xAvgCharWidth field is used to calculate the width of a string of characters.
+    It is the average width of all non-zero width glyphs in the font.
+
+    This check ensures that the value is correct. A failure here may indicate
+    a bug in the font compiler, rather than something that the designer can
+    do anything about.""",
 )
 def com_google_fonts_check_xavgcharwidth(ttFont):
     """Check if OS/2 xAvgCharWidth is correct."""
@@ -92,9 +75,9 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
     if ttFont["OS/2"].version >= 3:
         calculation_rule = "the average of the widths of all glyphs in the font"
         if not ttFont["hmtx"].metrics:  # May contain just '.notdef', which is valid.
-            yield FAIL, Message(
+            yield FATAL, Message(
                 "missing-glyphs",
-                "CRITICAL: Found no glyph width data in the hmtx table!",
+                "Found no glyph width data in the hmtx table!",
             )
             return
 
@@ -103,8 +86,12 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
         for width, _ in ttFont[
             "hmtx"
         ].metrics.values():  # At least .notdef must be present.
-            # The OpenType spec doesn't exclude negative widths, but only positive
-            # widths seems to be the assumption in the wild?
+            # The OpenType spec excludes negative widths (the
+            # relevant field in `hmtx` tables is unsigned);
+            # other formats (UFO) may allow signed, and
+            # therefore negative, widths.
+            # For extra reassurance, here we only count strictly
+            # positive widths.
             if width > 0:
                 count += 1
                 width_sum += width
@@ -146,7 +133,7 @@ def com_google_fonts_check_xavgcharwidth(ttFont):
         }
         glyph_order = ttFont.getGlyphOrder()
         if not all(character in glyph_order for character in weightFactors):
-            yield FAIL, Message(
+            yield FATAL, Message(
                 "missing-glyphs",
                 "Font is missing the required latin lowercase letters and/or space.",
             )
@@ -208,26 +195,23 @@ def com_adobe_fonts_check_fsselection_matches_macstyle(ttFont):
 
     from fontbakery.constants import FsSelection, MacStyle
 
-    failed = False
     head_bold = (ttFont["head"].macStyle & MacStyle.BOLD) != 0
     os2_bold = (ttFont["OS/2"].fsSelection & FsSelection.BOLD) != 0
     if head_bold != os2_bold:
-        failed = True
         yield FAIL, Message(
             "fsselection-macstyle-bold",
-            "The OS/2.fsSelection and head.macStyle bold settings do not match.",
+            "The OS/2.fsSelection and head.macStyle bold settings do not match:\n\n"
+            f"* OS/2.fsSelection: BOLD is {'not ' if not os2_bold else ''}set\n"
+            f"* head.macStyle: BOLD is {'not ' if not head_bold else ''}set",
         )
     head_italic = (ttFont["head"].macStyle & MacStyle.ITALIC) != 0
     os2_italic = (ttFont["OS/2"].fsSelection & FsSelection.ITALIC) != 0
     if head_italic != os2_italic:
-        failed = True
         yield FAIL, Message(
             "fsselection-macstyle-italic",
-            "The OS/2.fsSelection and head.macStyle italic settings do not match.",
-        )
-    if not failed:
-        yield PASS, (
-            "The OS/2.fsSelection and head.macStyle bold and italic settings match."
+            "The OS/2.fsSelection and head.macStyle italic settings do not match.\n\n"
+            f"* OS/2.fsSelection: ITALIC is {'not ' if not os2_italic else ''}set\n"
+            f"* head.macStyle: ITALIC is {'not ' if not head_italic else ''}set",
         )
 
 
@@ -252,7 +236,6 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
     from fontbakery.constants import FsSelection, NameID
     from fontbakery.utils import get_name_entry_strings
 
-    failed = False
     family_name_and_bold_italic = []
     for ttFont in RIBBI_ttFonts:
         names_list = get_name_entry_strings(ttFont, NameID.FONT_FAMILY_NAME)
@@ -276,10 +259,8 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
             )
 
     counter = Counter(family_name_and_bold_italic)
-
     for (family_name, bold_italic), count in counter.items():
         if count > 1:
-            failed = True
             yield FAIL, Message(
                 "unique-fsselection",
                 f"Family '{family_name}' has {count} fonts"
@@ -287,11 +268,6 @@ def com_adobe_fonts_check_family_bold_italic_unique_for_nameid1(RIBBI_ttFonts):
                 f" same OS/2.fsSelection bold & italic settings:"
                 f" {bold_italic}",
             )
-    if not failed:
-        yield PASS, (
-            "The OS/2.fsSelection bold & italic settings were unique "
-            "within each compatible family group."
-        )
 
 
 @check(
@@ -336,8 +312,6 @@ def com_google_fonts_check_code_pages(ttFont):
             "No code pages defined in the OS/2 table"
             " ulCodePageRange1 and CodePageRange2 fields.",
         )
-    else:
-        yield PASS, "At least one code page is defined."
 
 
 @check(
@@ -374,14 +348,22 @@ def com_thetypefounders_check_vendor_id(config, ttFont):
             f"OS/2 VendorID is '{font_vendor_id}',"
             f" but should be '{config_vendor_id}'.",
         )
-    else:
-        yield PASS, f"OS/2 VendorID '{font_vendor_id}' is correct."
 
 
 @check(
     id="com.google.fonts/check/fsselection",
     conditions=["style"],
     proposal="legacy:check/129",
+    rationale="""
+    The OS/2.fsSelection field is a bit field used to specify the stylistic
+    qualities of the font - in particular, it specifies to some operating
+    systems whether the font is italic (bit 0), bold (bit 5) or regular
+    (bit 6).
+
+    This check verifies that the fsSelection field is set correctly for the
+    font style. For a family of static fonts created in GlyphsApp, this is
+    set by using the style linking checkboxes in the exports settings.
+    """,
 )
 def com_google_fonts_check_fsselection(ttFont, style):
     """Checking OS/2 fsSelection value."""

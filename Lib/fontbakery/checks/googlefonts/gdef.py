@@ -1,5 +1,5 @@
 from fontbakery.testable import Font
-from fontbakery.prelude import check, condition, PASS, FAIL, WARN, Message
+from fontbakery.prelude import check, condition, FAIL, WARN, Message
 
 
 @condition(Font)
@@ -83,5 +83,3 @@ def com_google_fonts_check_ligature_carets(ttFont, ligature_glyphs):
                 f" values for these ligature glyphs:"
                 f"\n\t- {missing}\n\n  ",
             )
-        else:
-            yield PASS, "Looks good!"
