@@ -1301,7 +1301,7 @@ def test_check_math_tabular_kerning():
     # used to throw off the check
     font = TEST_FILE("ubuntusans/UbuntuSans[wdth,wght].ttf")
     assert_PASS(check(font))
-    
+
 
 def test_check_linegaps():
     """Checking Vertical Metric Linegaps."""
