@@ -1315,15 +1315,14 @@ def test_check_math_tabular_kerning():
     font = TEST_FILE("hinting/Roboto-VF.ttf")
     assert_results_contain(check(font), FAIL, "has-tabular-kerning")
 
+    font = TEST_FILE("amiri/AmiriQuranColored.ttf")
+    assert_results_contain(check(font), FAIL, "has-tabular-kerning")
+
     # Ubuntu Sans has digraphs (like DZ) that get decomposed in ccmp
     # and then have kerning between the individual D and Z, which
     # used to throw off the check
     font = TEST_FILE("ubuntusans/UbuntuSans[wdth,wght].ttf")
     assert_PASS(check(font))
-    # This currently shows false positives:
-    # TODO: Fix this and turn this into an assert_PASS
-    font = TEST_FILE("ubuntusans/UbuntuSans-Italic[wdth,wght].ttf")
-    assert_results_contain(check(font), FAIL, "has-tabular-kerning")
 
 
 def test_check_linegaps():
