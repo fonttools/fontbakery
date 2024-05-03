@@ -78,7 +78,7 @@ ufo2ft = [
 # deal with API-breaking updates. Only the latest released version is acceptable:
 googlefontsalwayslatest = [
 	"axisregistry >= 0.4.9, == 0.4.*",
-	"gflanguages >= 0.5.17, == 0.5.*",
+	"gflanguages >= 0.6.0, == 0.6.*",
 	"gfsubsets >= 2024.2.5",
 	"glyphsets >= 1.0.0, == 1.*",
 	"shaperglot >= 0.5.0, == 0.5.*",
