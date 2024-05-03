@@ -1,7 +1,11 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.12.5 (2024-May-??)
+## Upcoming release: 0.12.6 (2024-May-??)
+  - ...
+
+
+## 0.12.5 (2024-May-03)
   - When multi-threading is enabled, we now ensure that the font objects are fully loaded before running the checks. This causes an initial delay but avoids some code concurrency issues. (issue #4638)
   - Add back the `--list-subcommands` option that had been removed by mistake on v0.12.0 (issue #4685)
   - Fix ordering of log-messages on reports to show FAILs at the top. (issue #4672)
