@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 #### On the Type Network profile
   - **[com.typenetwork/check/glyph_coverage]:** Added minus sign to min charset. (PR #4701)
+  - **[com.typenetwork/check/usweightclass]:** Updated `tn_expected_os2_weight` condition. (issue #4694 / PR #4701)
 
 
 ## 0.12.5 (2024-May-03)

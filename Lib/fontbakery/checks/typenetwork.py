@@ -600,8 +600,8 @@ def tn_expected_os2_weight(font):
     """The weight name and the expected OS/2 usWeightClass value inferred from
     the style part of the font name.
     Here the common/expected values and weight names:
-    250, Thin
-    275, ExtraLight
+    100-250, Thin
+    200-275, ExtraLight
     300, Light
     400, Regular
     500, Medium
@@ -691,34 +691,38 @@ def com_typenetwork_check_usweightclass(font, tn_expected_os2_weight):
     # However, if the values are incorrect we will recommend they set Thin
     # to 100 and ExtraLight to 250.
     # for static otfs, Thin must be 250 and ExtraLight must be 275
+    else:
+        if not expected_value:
+            failed = True
+            yield INFO, Message(
+                "no-value", no_value_message.format(os2_value, weight_name)
+            )
 
-    elif not expected_value:
-        failed = True
-        yield INFO, Message("no-value", no_value_message.format(os2_value, weight_name))
+        elif "Thin" in weight_name.split(" "):
+            if os2_value not in expected_value:
+                failed = True
+                yield FAIL, Message(
+                    "bad-value", fail_message.format(os2_value, expected_value)
+                )
+            if os2_value == 100:
+                failed = True
+                yield WARN, Message("warn-value", warn_message.format(os2_value, 250))
 
-    elif "Thin" == weight_name.split(" "):
-        if os2_value not in expected_value:
+        elif "ExtraLight" in weight_name.split(" "):
+            if os2_value not in expected_value:
+                failed = True
+                yield FAIL, Message(
+                    "bad-value", fail_message.format(os2_value, expected_value)
+                )
+            if os2_value == 200:
+                failed = True
+                yield WARN, Message("warn-value", warn_message.format(os2_value, 275))
+
+        elif os2_value != expected_value:
             failed = True
             yield FAIL, Message(
                 "bad-value", fail_message.format(os2_value, expected_value)
             )
-        if os2_value == 100:
-            failed = True
-            yield WARN, Message("warn-value", warn_message.format(os2_value, 250))
-
-    elif "ExtraLight" in weight_name.split(" "):
-        if os2_value not in expected_value:
-            failed = True
-            yield FAIL, Message(
-                "bad-value", fail_message.format(os2_value, expected_value)
-            )
-        if os2_value == 200:
-            failed = True
-            yield WARN, Message("warn-value", warn_message.format(os2_value, 275))
-
-    elif os2_value != expected_value:
-        failed = True
-        yield FAIL, Message("bad-value", fail_message.format(os2_value, expected_value))
 
     if not failed:
         yield PASS, "OS/2 usWeightClass is good"
