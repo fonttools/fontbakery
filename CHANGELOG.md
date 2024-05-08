@@ -12,6 +12,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Google Fonts profile
   - **[com.google.font/check/description/has_article]:** yield INFO when a non-Noto font doesn' t have an article. Also, an empty description file is not needed anymore (issue #4702)
 
+#### On the Type Network profile
+  - **[com.typenetwork/check/glyph_coverage]:** Added minus sign to min charset. (PR #4701)
+
+
 ## 0.12.5 (2024-May-03)
   - When multi-threading is enabled, we now ensure that the font objects are fully loaded before running the checks. This causes an initial delay but avoids some code concurrency issues. (issue #4638)
   - Add back the `--list-subcommands` option that had been removed by mistake on v0.12.0 (issue #4685)
