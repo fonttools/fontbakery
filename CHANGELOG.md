@@ -2,6 +2,8 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.6 (2024-May-??)
+  - Fixed race condition with `--auto-jobs` caused by the current working directory changing (issue #4700)
+
 ### Changes to existing checks
 #### On the Google Fonts profile
   - **[com.google.font/check/description/has_article]:** yield INFO when a non-Noto font doesn' t have an article. Also, an empty description file is not needed anymore (issue #4702)
