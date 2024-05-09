@@ -784,20 +784,13 @@ def com_google_fonts_check_whitespace_ink(ttFont):
         yield PASS, "There is no whitespace glyph with ink."
 
 
-@disable  # https://github.com/fonttools/fontbakery/issues/3959#issuecomment-1822913547
 @check(
     id="com.google.fonts/check/legacy_accents",
     proposal=[
-        "https://github.com/googlefonts/fontbakery/issues/3959",
         "https://github.com/googlefonts/fontbakery/issues/4310",
     ],
     rationale="""
-        Legacy accents should not be used in accented glyphs. The use of legacy
-        accents in accented glyphs breaks the mark to mark combining feature that
-        allows a font to stack diacritics over one glyph. Use combining marks
-        instead as a component in composite glyphs.
-
-        Legacy accents should not have anchors and should have non-zero width.
+        Legacy accents should not have anchors and should have positive width.
         They are often used independently of a letter, either as a placeholder
         for an expected combined mark+letter combination in MacOS, or separately.
         For instance, U+00B4 (ACUTE ACCENT) is often mistakenly used as an apostrophe,
@@ -827,26 +820,8 @@ def com_google_fonts_check_legacy_accents(ttFont):
 
     passed = True
 
-    glyphOrder = ttFont.getGlyphOrder()
     reverseCmap = ttFont["cmap"].buildReversed()
     hmtx = ttFont["hmtx"]
-
-    # Check whether the composites are using legacy accents.
-    if "glyf" in ttFont:
-        glyf = ttFont["glyf"]
-        for name in glyphOrder:
-            if not glyf[name].isComposite():
-                continue
-            for component in glyf[name].components:
-                codepoints = reverseCmap.get(component.glyphName, set())
-                if codepoints.intersection(LEGACY_ACCENTS):
-                    passed = False
-                    yield WARN, Message(
-                        "legacy-accents-component",
-                        f'Glyph "{name}" has a legacy accent component '
-                        f" ({component.glyphName}). "
-                        "It needs to be replaced by a combining mark.",
-                    )
 
     # Check whether legacy accents have positive width.
     for name in reverseCmap:
@@ -855,7 +830,7 @@ def com_google_fonts_check_legacy_accents(ttFont):
                 passed = False
                 yield FAIL, Message(
                     "legacy-accents-width",
-                    f'Width of legacy accent "{name}" is zero.',
+                    f'Width of legacy accent "{name}" is zero; should be positive.',
                 )
 
     # Check whether legacy accents appear in GDEF as marks.

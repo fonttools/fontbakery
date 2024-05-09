@@ -7,10 +7,10 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Universal profile
   - **[com.google.fonts/check/tabular_kerning]:** Fixed race condition / bug where the check would modify the cmap of the font being checked (issue #4697)
+  - **[com.google.fonts/check/legacy_accents]:** Re-enabled check but dropped complaints about legacy accents as part of glyph compositions (issue #4567)
 
 #### On the Google Fonts profile
   - **[com.google.font/check/description/has_article]:** yield INFO when a non-Noto font doesn' t have an article. Also, an empty description file is not needed anymore (issue #4702)
-
 
 ## 0.12.5 (2024-May-03)
   - When multi-threading is enabled, we now ensure that the font objects are fully loaded before running the checks. This causes an initial delay but avoids some code concurrency issues. (issue #4638)
