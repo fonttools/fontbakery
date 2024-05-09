@@ -20,7 +20,7 @@ PROFILE = {
             "com.adobe.fonts/check/freetype_rasterizer",
             "com.google.fonts/check/gpos7",
             "com.google.fonts/check/interpolation_issues",
-            # "com.google.fonts/check/legacy_accents",  # Disabled: issue #3595 / PR #4567
+            "com.google.fonts/check/legacy_accents",
             "com.google.fonts/check/linegaps",
             "com.google.fonts/check/mandatory_glyphs",
             "com.google.fonts/check/math_signs_width",
