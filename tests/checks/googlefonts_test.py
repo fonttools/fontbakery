@@ -4752,7 +4752,7 @@ def test_check_empty_glyph_on_gid1_for_colrv0():
     )
 
 
-def test_check_has_article():
+def test_check_description_has_article():
     """Noto fonts must have an ARTICLE.en_us.html file, others with an
     article should have an empty DESCRIPTION"""
     check = CheckTester("com.google.fonts/check/description/has_article")
