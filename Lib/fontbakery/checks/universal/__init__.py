@@ -2424,8 +2424,8 @@ def com_google_fonts_check_tabular_kerning(ttFont):
                 add_cmap(ttFont, PUA, glyph_name)
                 cmap_unicodes.append(PUA)
 
-    # Copy of ttFont because we're changing data
-    ttFont_copy = copy.copy(ttFont)
+    # Deep copy of ttFont because we're changing data
+    ttFont_copy = copy.deepcopy(ttFont)
     add_PUA_unicode(ttFont_copy)
     vhb = Vharfbuzz(ttFont.reader.file.name)
     best_cmap = ttFont_copy.getBestCmap()
