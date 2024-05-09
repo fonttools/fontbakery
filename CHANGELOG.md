@@ -2,7 +2,7 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.6 (2024-May-??)
-  - ...
+  - Fixed race condition with `--auto-jobs` caused by the current working directory changing (issue #4700)
 
 
 ## 0.12.5 (2024-May-03)
