@@ -16,6 +16,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.typenetwork/check/glyph_coverage]:** Added minus sign to min charset. (PR #4701)
   - **[com.typenetwork/check/usweightclass]:** Updated `tn_expected_os2_weight` condition. (issue #4694 / PR #4701)
 
+#### On the Outline profile
+  - **[com.google.fonts/check/outline_direction]:** fixed float division by zero error
+
 
 ## 0.12.5 (2024-May-03)
   - When multi-threading is enabled, we now ensure that the font objects are fully loaded before running the checks. This causes an initial delay but avoids some code concurrency issues. (issue #4638)
