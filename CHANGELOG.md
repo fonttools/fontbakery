@@ -19,6 +19,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Microsoft profile
   - Make it independent of Universal and OpenType profiles by explicitly listing all needed checks instead of including the Universal profile. (PR #4712)
 
+#### On the Outline profile
+  - **[com.google.fonts/check/outline_direction]:** fixed float division by zero error, by bumping the `beziers` dependency to a version that includes the necessary fix. (issue #4699)
+
 
 ## 0.12.5 (2024-May-03)
   - When multi-threading is enabled, we now ensure that the font objects are fully loaded before running the checks. This causes an initial delay but avoids some code concurrency issues. (issue #4638)
