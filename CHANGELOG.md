@@ -17,7 +17,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.typenetwork/check/usweightclass]:** Updated `tn_expected_os2_weight` condition. (issue #4694 / PR #4701)
 
 #### On the Microsoft profile
-  - Make it independent of Universal and OpenType profiles by Explicitly listing all needed checks instead of including the Universal profile. (PR #4712)
+  - Make it independent of Universal and OpenType profiles by explicitly listing all needed checks instead of including the Universal profile. (PR #4712)
 
 
 ## 0.12.5 (2024-May-03)
