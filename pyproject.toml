@@ -37,10 +37,10 @@ dependencies = [
 	"toml",
 	"cmarkgfm >= 0.4",
 	"rich",
-	"Jinja2",
+	"Jinja2 >= 3.0.0",  # issue #4717
 	"packaging",
 	"pip-api",
-	"requests",
+	"requests >= 2.19",  # issue #4718
 	"beziers >= 0.6.0, == 0.6.*",
 	"uharfbuzz",
 	"vharfbuzz >= 0.2.0",
@@ -79,7 +79,7 @@ ufo2ft = [
 googlefontsalwayslatest = [
 	"axisregistry >= 0.4.9, == 0.4.*",
 	"gflanguages >= 0.6.0, == 0.6.*",
-	"gfsubsets >= 2024.2.5",
+	"gfsubsets >= 2024.5.9",
 	"glyphsets >= 1.0.0, == 1.*",
 	"shaperglot >= 0.5.0, == 0.5.*",
 ]
