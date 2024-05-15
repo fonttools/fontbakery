@@ -4,6 +4,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ##  Upcoming release: 0.13.0 (2024-Sep-??)
 ### Changes to existing checks
 #### On the Universal profile
+  - **[missing_small_caps_glyphs]:** Rewrote it from scratch, marked it as **experimental** (issue #4713)
   - **[name/family_and_style_max_length"]:** Use nameID 16 (Typographic family name) to determine name length if it exists. (PR #4811)
 
 ### Migration of checks

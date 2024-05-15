@@ -726,3 +726,30 @@ def image_dimensions(filename):
 
     else:
         return None  # some other file format
+
+
+def has_feature(ttFont, featureTag):
+    """Return whether a font has a certain OpenType feature"""
+    if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList:
+        for FeatureRecord in ttFont["GSUB"].table.FeatureList.FeatureRecord:
+            if FeatureRecord.FeatureTag == featureTag:
+                return True
+    if "GPOS" in ttFont and ttFont["GPOS"].table.FeatureList:
+        for FeatureRecord in ttFont["GPOS"].table.FeatureList.FeatureRecord:
+            if FeatureRecord.FeatureTag == featureTag:
+                return True
+    return False
+
+
+def characters_per_script(ttFont, target_script, target_category=None):
+    """Return the number of characters in a font for a given script"""
+    from unicodedataplus import script, category  # type: ignore
+
+    characters = []
+    for codepoint in ttFont.getBestCmap().keys():
+        if script(chr(codepoint)) == target_script and (
+            not target_category or category(chr(codepoint)) == target_category
+        ):
+            characters.append(codepoint)
+
+    return characters

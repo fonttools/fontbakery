@@ -1,10 +1,13 @@
+import unicodedata
+from vharfbuzz import Vharfbuzz
+
 from fontbakery.constants import (
     NameID,
     PlatformID,
     WindowsEncodingID,
     WindowsLanguageID,
 )
-from fontbakery.prelude import check, Message, FAIL, WARN, PASS
+from fontbakery.prelude import check, Message, FAIL, WARN, SKIP, PASS
 from fontbakery.utils import bullet_list, glyph_has_ink
 
 
@@ -20,7 +23,6 @@ from fontbakery.utils import bullet_list, glyph_has_ink
 )
 def check_case_mapping(ttFont):
     """Ensure the font supports case swapping for all its glyphs."""
-    import unicodedata
     from fontbakery.utils import markdown_table
 
     # These are a selection of codepoints for which the corresponding case-swap
@@ -222,42 +224,91 @@ def check_mandatory_glyphs(ttFont):
     rationale="""
         Ensure small caps glyphs are available if
         a font declares smcp or c2sc OT features.
+
+        If you believe that a certain character should not
+        be reported as missing, please add it to the
+        `exceptions_smcp` or `exceptions_c2sc` lists.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3154",
+    experimental="Since 2024/May/15",
 )
 def check_missing_small_caps_glyphs(ttFont):
     """Ensure small caps glyphs are available."""
+    from fontbakery.utils import has_feature, characters_per_script
 
-    if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList is not None:
-        llist = ttFont["GSUB"].table.LookupList
-        for record in range(ttFont["GSUB"].table.FeatureList.FeatureCount):
-            feature = ttFont["GSUB"].table.FeatureList.FeatureRecord[record]
-            tag = feature.FeatureTag
-            if tag in ["smcp", "c2sc"]:
-                for index in feature.Feature.LookupListIndex:
-                    subtable = llist.Lookup[index].SubTable[0]
-                    if subtable.LookupType == 7:
-                        # This is an Extension lookup
-                        # used for reaching 32-bit offsets
-                        # within the GSUB table.
-                        subtable = subtable.ExtSubTable
-                    if not hasattr(subtable, "mapping"):
-                        continue
-                    smcp_glyphs = set()
-                    for value in subtable.mapping.values():
-                        if isinstance(value, list):
-                            for v in value:
-                                smcp_glyphs.add(v)
-                        else:
-                            smcp_glyphs.add(value)
-                    missing = smcp_glyphs - set(ttFont.getGlyphNames())
-                    if missing:
-                        missing = "\n\t - " + "\n\t - ".join(missing)
-                        yield FAIL, Message(
-                            "missing-glyphs",
-                            f"These '{tag}' glyphs are missing:\n\n{missing}",
-                        )
-                break
+    has_smcp = has_feature(ttFont, "smcp")
+    has_c2sc = has_feature(ttFont, "c2sc")
+
+    if not has_smcp and not has_c2sc:
+        yield SKIP, "Neither smcp nor c2sc features are declared in the font."
+        return
+
+    vhb = Vharfbuzz(ttFont.reader.file.name)
+    cmap = ttFont.getBestCmap()
+
+    missing_smcp = []
+    missing_c2sc = []
+
+    exceptions_smcp = [
+        0x0192,  # florin
+        0x00B5,  # micro (common, not Greek)
+        0x2113,  # liter sign
+        0xA78C,  # saltillo
+        0x1FBE,  # Greek prosgegrammeni
+    ]
+    exceptions_c2sc = [
+        0xA78B,  # Saltillo
+        0x2126,  # Ohm (not Omega)
+    ]
+
+    # Font has incomplete legacy Greek coverage, so ignore Greek dynamically
+    # (minimal Greek coverage is 2x24=48 characters, so we assume incomplete
+    # if coverage is less than half of 48)
+    if 0 < len(characters_per_script(ttFont, "Greek")) < 24:
+        exceptions_smcp.extend(characters_per_script(ttFont, "Greek", "Ll"))
+        exceptions_c2sc.extend(characters_per_script(ttFont, "Greek", "Lu"))
+
+    for codepoint in cmap:
+        char = chr(codepoint)
+
+        if (
+            has_smcp
+            and unicodedata.category(char) == "Ll"
+            and codepoint not in exceptions_smcp
+        ):
+            if vhb.serialize_buf(vhb.shape(char)) == vhb.serialize_buf(
+                vhb.shape(char, {"features": {"smcp": True}})
+            ):
+                missing_smcp.append(char)
+        if (
+            has_c2sc
+            and unicodedata.category(char) == "Lu"
+            and codepoint not in exceptions_c2sc
+        ):
+            if vhb.serialize_buf(vhb.shape(char)) == vhb.serialize_buf(
+                vhb.shape(char, {"features": {"c2sc": True}})
+            ):
+                missing_c2sc.append(char)
+
+    if missing_smcp:
+        missing_smcp = "\n\t - " + "\n\t - ".join(
+            [f"U+{ord(x):04X}: {unicodedata.name(x)}" for x in missing_smcp]
+        )
+        yield FAIL, Message(
+            "missing-smcp",
+            "'smcp' substitution target glyphs for these"
+            f" characters are missing:\n\n{missing_smcp}",
+        )
+
+    if missing_c2sc:
+        missing_c2sc = "\n\t - " + "\n\t - ".join(
+            [f"U+{ord(x):04X}: {unicodedata.name(x)}" for x in missing_c2sc]
+        )
+        yield FAIL, Message(
+            "missing-c2sc",
+            "'c2sc' substitution target glyphs for these"
+            f" characters are missing:\n\n{missing_c2sc}",
+        )
 
 
 def can_shape(ttFont, text, parameters=None):
@@ -265,8 +316,6 @@ def can_shape(ttFont, text, parameters=None):
     Returns true if the font can render a text string without any
     .notdef characters.
     """
-    from vharfbuzz import Vharfbuzz
-
     filename = ttFont.reader.file.name
     vharfbuzz = Vharfbuzz(filename)
     buf = vharfbuzz.shape(text, parameters)
