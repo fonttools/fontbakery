@@ -2751,6 +2751,7 @@ def com_google_fonts_check_case_mapping(ttFont):
     """Ensure the font supports case swapping for all its glyphs."""
     import unicodedata
     from fontbakery.utils import markdown_table
+    from fontbakery.checks.shared_conditions import characters_per_script
 
     # These are a selection of codepoints for which the corresponding case-swap
     # glyphs are missing way too often on the Google Fonts library,
@@ -2758,11 +2759,7 @@ def com_google_fonts_check_case_mapping(ttFont):
     EXCEPTIONS = [
         0x0192,  # ƒ - Latin Small Letter F with Hook
         0x00B5,  # µ - Micro Sign
-        0x03C0,  # π - Greek Small Letter Pi
         0x2126,  # Ω - Ohm Sign
-        0x03BC,  # μ - Greek Small Letter Mu
-        0x03A9,  # Ω - Greek Capital Letter Omega
-        0x0394,  # Δ - Greek Capital Letter Delta
         0x0251,  # ɑ - Latin Small Letter Alpha
         0x0261,  # ɡ - Latin Small Letter Script G
         0x00FF,  # ÿ - Latin Small Letter Y with Diaeresis
@@ -2779,6 +2776,13 @@ def com_google_fonts_check_case_mapping(ttFont):
         0x0240,  # ɀ - Latin Small Letter Z with Swash Tail
         0x026B,  # ɫ - Latin Small Letter L with Middle Tilde
     ]
+
+    # Font has incomplete legacy Greek coverage, so ignore Greek dynamically
+    # (minimal Greek coverage is 2x24=48 characters, so we assume incomplete
+    # if coverage is less than half of 48)
+    greek = characters_per_script(ttFont, "Greek")
+    if 0 < len(greek) < 24:
+        EXCEPTIONS.extend(greek)
 
     missing_counterparts_table = []
     cmap = ttFont["cmap"].getBestCmap()
@@ -2863,8 +2867,9 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
         0x2126,  # Ohm (!= Omega)
     ]
 
-    # Font has incomplete legacy Greek coverage, so ignore Greek
-    # (minimal Greek coverage is 2x24=48 characters)
+    # Font has incomplete legacy Greek coverage, so ignore Greek dynamically
+    # (minimal Greek coverage is 2x24=48 characters, so we assume incomplete
+    # if coverage is less than half of 48)
     if 0 < len(characters_per_script(ttFont, "Greek")) <= 24:
         exceptions_smcp.extend(characters_per_script(ttFont, "Greek", "Ll"))
         exceptions_c2sc.extend(characters_per_script(ttFont, "Greek", "Lu"))
