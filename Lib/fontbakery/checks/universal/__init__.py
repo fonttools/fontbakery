@@ -2905,7 +2905,8 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
         )
         yield FAIL, Message(
             "missing-smcp",
-            f"These 'smcp' glyphs are missing:\n\n{missing_smcp}",
+            "'smcp' substitution target glyphs for these"
+            f" characters are missing:\n\n{missing_smcp}",
         )
 
     if missing_c2sc:
@@ -2915,7 +2916,8 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
         )
         yield FAIL, Message(
             "missing-c2sc",
-            f"These 'c2sc' glyphs are missing:\n\n{missing_c2sc}",
+            "'c2sc' substitution target glyphs for these"
+            f" characters are missing:\n\n{missing_c2sc}",
         )
 
     if passed:
