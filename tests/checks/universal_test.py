@@ -1406,3 +1406,17 @@ def test_check_case_mapping():
     _remove_cmap_entry(ttFont, 0x01E6)
     _remove_cmap_entry(ttFont, 0x01F4)
     assert_PASS(check(ttFont))
+
+
+def test_check_missing_small_caps_glyphs():
+    """Check small caps glyphs are available."""
+    check = CheckTester("com.google.fonts/check/missing_small_caps_glyphs")
+
+    ttFont = TTFont(TEST_FILE("cormorantunicase/CormorantUnicase-Bold.ttf"))
+    assert_PASS(check(ttFont))
+
+    ttFont = TTFont(TEST_FILE("varfont/Georama[wdth,wght].ttf"))
+    assert_results_contain(check(ttFont), FAIL, "missing-smcp")
+
+    ttFont = TTFont(TEST_FILE("ubuntusans/UbuntuSans[wdth,wght].ttf"))
+    assert_results_contain(check(ttFont), FAIL, "missing-c2sc")

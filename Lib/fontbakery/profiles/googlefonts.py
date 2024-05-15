@@ -130,7 +130,6 @@ PROFILE = {
             "com.google.fonts/check/ligature_carets",
             "com.google.fonts/check/mandatory_avar_table",
             "com.google.fonts/check/meta/script_lang_tags",
-            "com.google.fonts/check/missing_small_caps_glyphs",
             "com.google.fonts/check/name/ascii_only_entries",
             "com.google.fonts/check/name/copyright_length",
             "com.google.fonts/check/name/description_max_length",

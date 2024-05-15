@@ -4123,9 +4123,9 @@ def test_check_gf_axisregistry_valid_tags():
     assert_PASS(check(font))
 
     md = Font(font).family_metadata
-    md.axes[
-        0
-    ].tag = "crap"  # I'm pretty sure this one wont ever be included in the registry
+    md.axes[0].tag = (
+        "crap"  # I'm pretty sure this one wont ever be included in the registry
+    )
     assert_results_contain(
         check(MockFont(file=font, family_metadata=md)), FAIL, "bad-axis-tag"
     )
@@ -4190,9 +4190,7 @@ def test_check_metadata_consistent_axis_enumeration():
     assert_PASS(check(font))
 
     md = Font(font).family_metadata
-    md.axes[
-        1
-    ].tag = (
+    md.axes[1].tag = (
         "wdth"  # this effectively removes the "wght" axis while not adding an extra one
     )
     assert_results_contain(
@@ -4356,12 +4354,6 @@ def TODO_test_check_os2_use_typo_metrics_with_cjk():
         )
     )
     assert_SKIP(check(tt_pass_set))
-
-
-def test_check_missing_small_caps_glyphs():
-    """Check small caps glyphs are available."""
-    # check = CheckTester("com.google.fonts/check/missing_small_caps_glyphs")
-    # TODO: Implement-me!
 
 
 def test_check_stylisticset_description():

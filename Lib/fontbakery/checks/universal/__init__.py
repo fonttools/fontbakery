@@ -25,6 +25,7 @@ from fontbakery.utils import (
     glyph_has_ink,
     iterate_lookup_list_with_extensions,
     pretty_print_list,
+    exit_with_install_instructions,
 )
 
 re_version = re.compile(r"^\s*" + VERSION_PATTERN + r"\s*$", re.VERBOSE | re.IGNORECASE)
@@ -2811,3 +2812,106 @@ def com_google_fonts_check_case_mapping(ttFont):
         )
     else:
         yield PASS, "Looks good!"
+
+
+@check(
+    id="com.google.fonts/check/missing_small_caps_glyphs",
+    rationale="""
+        Ensure small caps glyphs are available if
+        a font declares smcp or c2sc OT features.
+
+        If you believe that a certain character should not
+        be reported as missing, please add it to the
+        `exceptions_smcp` or `exceptions_c2sc` lists in the
+        `com_google_fonts_check_missing_small_caps_glyphs` function.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/3154",
+    experimental="Since 2024/May/15",
+)
+def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
+    """Check small caps glyphs are available."""
+
+    try:
+        from vharfbuzz import Vharfbuzz
+    except ImportError:
+        exit_with_install_instructions("googlefonts")
+    import unicodedata
+    from fontbakery.checks.shared_conditions import has_feature, characters_per_script
+    from youseedee import ucd_data
+
+    has_smcp = has_feature(ttFont, "smcp")
+    has_c2sc = has_feature(ttFont, "c2sc")
+
+    if not has_smcp and not has_c2sc:
+        yield SKIP, "Neither smcp nor c2sc features are declared in the font."
+        return
+
+    vhb = Vharfbuzz(ttFont.reader.file.name)
+    cmap = ttFont.getBestCmap()
+
+    missing_smcp = []
+    missing_c2sc = []
+
+    exceptions_smcp = [
+        0x0192,  # florin
+        0x00B5,  # micro (common, not Greek)
+        0x2113,  # liter sign
+        0xA78C,  # saltillo
+    ]
+    exceptions_c2sc = [
+        0xA78B,  # Saltillo
+        0x2126,  # Ohm (!= Omega)
+    ]
+
+    # Font has incomplete legacy Greek coverage, so ignore Greek
+    # (minimal Greek coverage is 2x24=48 characters)
+    if 0 < len(characters_per_script(ttFont, "Greek")) <= 24:
+        exceptions_smcp.extend(characters_per_script(ttFont, "Greek", "Ll"))
+        exceptions_c2sc.extend(characters_per_script(ttFont, "Greek", "Lu"))
+
+    for unicode in cmap:
+        char = chr(unicode)
+
+        if (
+            has_smcp
+            and unicodedata.category(char) == "Ll"
+            and unicode not in exceptions_smcp
+        ):
+            if vhb.serialize_buf(vhb.shape(char)) == vhb.serialize_buf(
+                vhb.shape(char, {"features": {"smcp": True}})
+            ):
+                missing_smcp.append(char)
+        if (
+            has_c2sc
+            and unicodedata.category(char) == "Lu"
+            and unicode not in exceptions_c2sc
+        ):
+            if vhb.serialize_buf(vhb.shape(char)) == vhb.serialize_buf(
+                vhb.shape(char, {"features": {"c2sc": True}})
+            ):
+                missing_c2sc.append(char)
+
+    passed = True
+
+    if missing_smcp:
+        passed = False
+        missing_smcp = "\n\t - " + "\n\t - ".join(
+            [x + " (" + ucd_data(ord(x))["Script"] + ")" for x in missing_smcp]
+        )
+        yield FAIL, Message(
+            "missing-smcp",
+            f"These 'smcp' glyphs are missing:\n\n{missing_smcp}",
+        )
+
+    if missing_c2sc:
+        passed = False
+        missing_c2sc = "\n\t - " + "\n\t - ".join(
+            [x + " (" + ucd_data(ord(x))["Script"] + ")" for x in missing_c2sc]
+        )
+        yield FAIL, Message(
+            "missing-c2sc",
+            f"These 'c2sc' glyphs are missing:\n\n{missing_c2sc}",
+        )
+
+    if passed:
+        yield PASS, "All 'smcp' and 'c2sc' glyphs are available."
