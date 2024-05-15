@@ -2739,6 +2739,7 @@ def com_google_fonts_check_alt_caron(ttFont):
 
 @check(
     id="com.google.fonts/check/case_mapping",
+    conditions=["network"],
     rationale="""
         Ensure that no glyph lacks its corresponding upper or lower counterpart
         (but only when unicode supports case-mapping).
@@ -2820,6 +2821,7 @@ def com_google_fonts_check_case_mapping(ttFont):
 
 @check(
     id="com.google.fonts/check/missing_small_caps_glyphs",
+    conditions=["network"],
     rationale="""
         Ensure small caps glyphs are available if
         a font declares smcp or c2sc OT features.
