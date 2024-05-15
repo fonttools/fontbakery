@@ -6,7 +6,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 #### On the Universal profile
-  - **[com.google.fonts/check/missing_small_caps_glyphs]:** Moved check from GF to universal profile and rewrote it from scratch, marked it as **experimental**
+  - **[com.google.fonts/check/missing_small_caps_glyphs]:** Moved check from GF to universal profile and rewrote it from scratch, marked it as **experimental** (issue #4713)
   - **[com.google.fonts/check/case_mapping]:** Dynamically exclude incomplete Greek glyphs rather than hard-coded
 
 Updated case_mapping to dynamically exclude incomplete Greek
