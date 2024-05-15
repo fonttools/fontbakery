@@ -225,17 +225,14 @@ def has_feature(font, featureTag):
     return False
 
 
-def characters_per_script(ttFont, script, category=None):
+def characters_per_script(ttFont, target_script, target_category=None):
     """Return the number of characters in a font for a given script"""
-    from youseedee import ucd_data
+    from unicodedataplus import script, category
 
     characters = []
     for codepoint in ttFont.getBestCmap().keys():
-        data = ucd_data(codepoint)
-        if (
-            "Script" in data
-            and data["Script"] == script
-            and (not category or data["General_Category"] == category)
+        if script(chr(codepoint)) == target_script and (
+            not target_category or category(chr(codepoint)) == target_category
         ):
             characters.append(codepoint)
 
