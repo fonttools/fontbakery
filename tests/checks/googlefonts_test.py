@@ -4358,12 +4358,6 @@ def TODO_test_check_os2_use_typo_metrics_with_cjk():
     assert_SKIP(check(tt_pass_set))
 
 
-def test_check_missing_small_caps_glyphs():
-    """Check small caps glyphs are available."""
-    # check = CheckTester("com.google.fonts/check/missing_small_caps_glyphs")
-    # TODO: Implement-me!
-
-
 def test_check_stylisticset_description():
     """Ensure Stylistic Sets have description."""
     # check = CheckTester("com.google.fonts/check/stylisticset_description")

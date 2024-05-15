@@ -25,6 +25,7 @@ from fontbakery.utils import (
     glyph_has_ink,
     iterate_lookup_list_with_extensions,
     pretty_print_list,
+    exit_with_install_instructions,
 )
 
 re_version = re.compile(r"^\s*" + VERSION_PATTERN + r"\s*$", re.VERBOSE | re.IGNORECASE)
@@ -2380,6 +2381,7 @@ def com_google_fonts_check_tabular_kerning(ttFont):
     from vharfbuzz import Vharfbuzz
     import unicodedata
     import copy
+    from fontbakery.checks.shared_conditions import has_feature
 
     def add_cmap(ttFont, codepoint, glyph_name):
         for table in ttFont["cmap"].tables:
@@ -2420,17 +2422,6 @@ def com_google_fonts_check_tabular_kerning(ttFont):
                 unique_combinations.append((list_1[i], list_2[j]))
 
         return unique_combinations
-
-    def has_feature(ttFont, featureTag):
-        if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList:
-            for FeatureRecord in ttFont["GSUB"].table.FeatureList.FeatureRecord:
-                if FeatureRecord.FeatureTag == featureTag:
-                    return True
-        if "GPOS" in ttFont and ttFont["GPOS"].table.FeatureList:
-            for FeatureRecord in ttFont["GPOS"].table.FeatureList.FeatureRecord:
-                if FeatureRecord.FeatureTag == featureTag:
-                    return True
-        return False
 
     def buf_to_width(buf):
         x_cursor = 0
@@ -2760,6 +2751,7 @@ def com_google_fonts_check_case_mapping(ttFont):
     """Ensure the font supports case swapping for all its glyphs."""
     import unicodedata
     from fontbakery.utils import markdown_table
+    from fontbakery.checks.shared_conditions import characters_per_script
 
     # These are a selection of codepoints for which the corresponding case-swap
     # glyphs are missing way too often on the Google Fonts library,
@@ -2767,11 +2759,7 @@ def com_google_fonts_check_case_mapping(ttFont):
     EXCEPTIONS = [
         0x0192,  # ƒ - Latin Small Letter F with Hook
         0x00B5,  # µ - Micro Sign
-        0x03C0,  # π - Greek Small Letter Pi
         0x2126,  # Ω - Ohm Sign
-        0x03BC,  # μ - Greek Small Letter Mu
-        0x03A9,  # Ω - Greek Capital Letter Omega
-        0x0394,  # Δ - Greek Capital Letter Delta
         0x0251,  # ɑ - Latin Small Letter Alpha
         0x0261,  # ɡ - Latin Small Letter Script G
         0x00FF,  # ÿ - Latin Small Letter Y with Diaeresis
@@ -2788,6 +2776,13 @@ def com_google_fonts_check_case_mapping(ttFont):
         0x0240,  # ɀ - Latin Small Letter Z with Swash Tail
         0x026B,  # ɫ - Latin Small Letter L with Middle Tilde
     ]
+
+    # Font has incomplete legacy Greek coverage, so ignore Greek dynamically
+    # (minimal Greek coverage is 2x24=48 characters, so we assume incomplete
+    # if coverage is less than half of 48)
+    greek = characters_per_script(ttFont, "Greek")
+    if 0 < len(greek) < 24:
+        EXCEPTIONS.extend(greek)
 
     missing_counterparts_table = []
     cmap = ttFont["cmap"].getBestCmap()
@@ -2821,3 +2816,109 @@ def com_google_fonts_check_case_mapping(ttFont):
         )
     else:
         yield PASS, "Looks good!"
+
+
+@check(
+    id="com.google.fonts/check/missing_small_caps_glyphs",
+    rationale="""
+        Ensure small caps glyphs are available if
+        a font declares smcp or c2sc OT features.
+
+        If you believe that a certain character should not
+        be reported as missing, please add it to the
+        `exceptions_smcp` or `exceptions_c2sc` lists in the
+        `com_google_fonts_check_missing_small_caps_glyphs` function.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/3154",
+    experimental="Since 2024/May/15",
+)
+def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
+    """Check small caps glyphs are available."""
+
+    try:
+        from vharfbuzz import Vharfbuzz
+    except ImportError:
+        exit_with_install_instructions("googlefonts")
+    import unicodedata
+    from fontbakery.checks.shared_conditions import has_feature, characters_per_script
+
+    has_smcp = has_feature(ttFont, "smcp")
+    has_c2sc = has_feature(ttFont, "c2sc")
+
+    if not has_smcp and not has_c2sc:
+        yield SKIP, "Neither smcp nor c2sc features are declared in the font."
+        return
+
+    vhb = Vharfbuzz(ttFont.reader.file.name)
+    cmap = ttFont.getBestCmap()
+
+    missing_smcp = []
+    missing_c2sc = []
+
+    exceptions_smcp = [
+        0x0192,  # florin
+        0x00B5,  # micro (common, not Greek)
+        0x2113,  # liter sign
+        0xA78C,  # saltillo
+        0x1FBE,  # Greek prosgegrammeni
+    ]
+    exceptions_c2sc = [
+        0xA78B,  # Saltillo
+        0x2126,  # Ohm (!= Omega)
+    ]
+
+    # Font has incomplete legacy Greek coverage, so ignore Greek dynamically
+    # (minimal Greek coverage is 2x24=48 characters, so we assume incomplete
+    # if coverage is less than half of 48)
+    if 0 < len(characters_per_script(ttFont, "Greek")) < 24:
+        exceptions_smcp.extend(characters_per_script(ttFont, "Greek", "Ll"))
+        exceptions_c2sc.extend(characters_per_script(ttFont, "Greek", "Lu"))
+
+    for unicode in cmap:
+        char = chr(unicode)
+
+        if (
+            has_smcp
+            and unicodedata.category(char) == "Ll"
+            and unicode not in exceptions_smcp
+        ):
+            if vhb.serialize_buf(vhb.shape(char)) == vhb.serialize_buf(
+                vhb.shape(char, {"features": {"smcp": True}})
+            ):
+                missing_smcp.append(char)
+        if (
+            has_c2sc
+            and unicodedata.category(char) == "Lu"
+            and unicode not in exceptions_c2sc
+        ):
+            if vhb.serialize_buf(vhb.shape(char)) == vhb.serialize_buf(
+                vhb.shape(char, {"features": {"c2sc": True}})
+            ):
+                missing_c2sc.append(char)
+
+    passed = True
+
+    if missing_smcp:
+        passed = False
+        missing_smcp = "\n\t - " + "\n\t - ".join(
+            [f"U+{ord(x):04X}: {unicodedata.name(x)}" for x in missing_smcp]
+        )
+        yield FAIL, Message(
+            "missing-smcp",
+            "'smcp' substitution target glyphs for these"
+            f" characters are missing:\n\n{missing_smcp}",
+        )
+
+    if missing_c2sc:
+        passed = False
+        missing_c2sc = "\n\t - " + "\n\t - ".join(
+            [f"U+{ord(x):04X}: {unicodedata.name(x)}" for x in missing_c2sc]
+        )
+        yield FAIL, Message(
+            "missing-c2sc",
+            "'c2sc' substitution target glyphs for these"
+            f" characters are missing:\n\n{missing_c2sc}",
+        )
+
+    if passed:
+        yield PASS, "All 'smcp' and 'c2sc' glyphs are available."

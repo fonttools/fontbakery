@@ -210,3 +210,30 @@ def get_cjk_glyphs(font):
         if uni in cjk_unicodes:
             results.append(glyph_name)
     return results
+
+
+def has_feature(font, featureTag):
+    """Return whether a font has a certain OpenType feature"""
+    if "GSUB" in font and font["GSUB"].table.FeatureList:
+        for FeatureRecord in font["GSUB"].table.FeatureList.FeatureRecord:
+            if FeatureRecord.FeatureTag == featureTag:
+                return True
+    if "GPOS" in font and font["GPOS"].table.FeatureList:
+        for FeatureRecord in font["GPOS"].table.FeatureList.FeatureRecord:
+            if FeatureRecord.FeatureTag == featureTag:
+                return True
+    return False
+
+
+def characters_per_script(ttFont, target_script, target_category=None):
+    """Return the number of characters in a font for a given script"""
+    from unicodedataplus import script, category
+
+    characters = []
+    for codepoint in ttFont.getBestCmap().keys():
+        if script(chr(codepoint)) == target_script and (
+            not target_category or category(chr(codepoint)) == target_category
+        ):
+            characters.append(codepoint)
+
+    return characters
