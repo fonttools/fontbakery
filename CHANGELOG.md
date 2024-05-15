@@ -4,6 +4,12 @@ A more detailed list of changes is available in the corresponding milestones for
 ## Upcoming release: 0.12.7 (2024-May-??)
   - ...
 
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.google.fonts/check/missing_small_caps_glyphs]:** Moved check from GF to universal profile and rewrote it from scratch, marked it as **experimental**
+  - **[com.google.fonts/check/case_mapping]:** Dynamically exclude incomplete Greek glyphs rather than hard-coded
+
+Updated case_mapping to dynamically exclude incomplete Greek
 
 ## 0.12.6 (2024-May-13)
   - Fixed race condition with `--auto-jobs` caused by the current working directory changing (issue #4700)
