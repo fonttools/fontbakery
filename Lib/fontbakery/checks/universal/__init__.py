@@ -2380,6 +2380,7 @@ def com_google_fonts_check_tabular_kerning(ttFont):
     from vharfbuzz import Vharfbuzz
     import unicodedata
     import copy
+    from fontbakery.checks.shared_conditions import has_feature
 
     def add_cmap(ttFont, codepoint, glyph_name):
         for table in ttFont["cmap"].tables:
@@ -2420,17 +2421,6 @@ def com_google_fonts_check_tabular_kerning(ttFont):
                 unique_combinations.append((list_1[i], list_2[j]))
 
         return unique_combinations
-
-    def has_feature(ttFont, featureTag):
-        if "GSUB" in ttFont and ttFont["GSUB"].table.FeatureList:
-            for FeatureRecord in ttFont["GSUB"].table.FeatureList.FeatureRecord:
-                if FeatureRecord.FeatureTag == featureTag:
-                    return True
-        if "GPOS" in ttFont and ttFont["GPOS"].table.FeatureList:
-            for FeatureRecord in ttFont["GPOS"].table.FeatureList.FeatureRecord:
-                if FeatureRecord.FeatureTag == featureTag:
-                    return True
-        return False
 
     def buf_to_width(buf):
         x_cursor = 0

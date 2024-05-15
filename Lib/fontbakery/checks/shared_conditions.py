@@ -210,3 +210,16 @@ def get_cjk_glyphs(font):
         if uni in cjk_unicodes:
             results.append(glyph_name)
     return results
+
+
+def has_feature(font, featureTag):
+    """Return whether a font has a certain OpenType feature"""
+    if "GSUB" in font and font["GSUB"].table.FeatureList:
+        for FeatureRecord in font["GSUB"].table.FeatureList.FeatureRecord:
+            if FeatureRecord.FeatureTag == featureTag:
+                return True
+    if "GPOS" in font and font["GPOS"].table.FeatureList:
+        for FeatureRecord in font["GPOS"].table.FeatureList.FeatureRecord:
+            if FeatureRecord.FeatureTag == featureTag:
+                return True
+    return False
