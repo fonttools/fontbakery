@@ -2870,7 +2870,7 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
     # Font has incomplete legacy Greek coverage, so ignore Greek dynamically
     # (minimal Greek coverage is 2x24=48 characters, so we assume incomplete
     # if coverage is less than half of 48)
-    if 0 < len(characters_per_script(ttFont, "Greek")) <= 24:
+    if 0 < len(characters_per_script(ttFont, "Greek")) < 24:
         exceptions_smcp.extend(characters_per_script(ttFont, "Greek", "Ll"))
         exceptions_c2sc.extend(characters_per_script(ttFont, "Greek", "Lu"))
 
