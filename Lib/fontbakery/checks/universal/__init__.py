@@ -2902,7 +2902,7 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
     if missing_smcp:
         passed = False
         missing_smcp = "\n\t - " + "\n\t - ".join(
-            [x + " (" + ucd_data(ord(x))["Script"] + ")" for x in missing_smcp]
+            [f"U+{ord(x):04X}: {unicodedata.name(x)}" for x in missing_smcp]
         )
         yield FAIL, Message(
             "missing-smcp",
@@ -2912,7 +2912,7 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
     if missing_c2sc:
         passed = False
         missing_c2sc = "\n\t - " + "\n\t - ".join(
-            [x + " (" + ucd_data(ord(x))["Script"] + ")" for x in missing_c2sc]
+            [f"U+{ord(x):04X}: {unicodedata.name(x)}" for x in missing_c2sc]
         )
         yield FAIL, Message(
             "missing-c2sc",
