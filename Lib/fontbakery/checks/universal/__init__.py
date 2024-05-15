@@ -2861,6 +2861,7 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
         0x00B5,  # micro (common, not Greek)
         0x2113,  # liter sign
         0xA78C,  # saltillo
+        0x1FBE,  # Greek prosgegrammeni
     ]
     exceptions_c2sc = [
         0xA78B,  # Saltillo
