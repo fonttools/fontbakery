@@ -4123,7 +4123,9 @@ def test_check_gf_axisregistry_valid_tags():
     assert_PASS(check(font))
 
     md = Font(font).family_metadata
-    md.axes[0].tag = (
+    md.axes[
+        0
+    ].tag = (
         "crap"  # I'm pretty sure this one wont ever be included in the registry
     )
     assert_results_contain(
@@ -4190,7 +4192,9 @@ def test_check_metadata_consistent_axis_enumeration():
     assert_PASS(check(font))
 
     md = Font(font).family_metadata
-    md.axes[1].tag = (
+    md.axes[
+        1
+    ].tag = (
         "wdth"  # this effectively removes the "wght" axis while not adding an extra one
     )
     assert_results_contain(
