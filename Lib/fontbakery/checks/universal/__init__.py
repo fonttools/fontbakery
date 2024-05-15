@@ -2841,7 +2841,6 @@ def com_google_fonts_check_missing_small_caps_glyphs(ttFont):
         exit_with_install_instructions("googlefonts")
     import unicodedata
     from fontbakery.checks.shared_conditions import has_feature, characters_per_script
-    from youseedee import ucd_data
 
     has_smcp = has_feature(ttFont, "smcp")
     has_c2sc = has_feature(ttFont, "c2sc")
