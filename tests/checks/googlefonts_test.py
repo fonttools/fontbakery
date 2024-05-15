@@ -4125,9 +4125,7 @@ def test_check_gf_axisregistry_valid_tags():
     md = Font(font).family_metadata
     md.axes[
         0
-    ].tag = (
-        "crap"  # I'm pretty sure this one wont ever be included in the registry
-    )
+    ].tag = "crap"  # I'm pretty sure this one wont ever be included in the registry
     assert_results_contain(
         check(MockFont(file=font, family_metadata=md)), FAIL, "bad-axis-tag"
     )
