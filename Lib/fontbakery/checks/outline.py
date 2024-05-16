@@ -341,14 +341,6 @@ def com_google_fonts_check_outline_direction(ttFont, outlines_dict, config):
     """Check the direction of the outermost contour in each glyph"""
     warnings = []
 
-    def bounds_contains(bb1, bb2):
-        return (
-            bb1.left <= bb2.left
-            and bb1.right >= bb2.right
-            and bb1.top >= bb2.top
-            and bb1.bottom <= bb2.bottom
-        )
-
     for (_glyphname, display_name), outlines in outlines_dict.items():
         if (
             outlines
