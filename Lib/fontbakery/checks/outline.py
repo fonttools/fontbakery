@@ -349,25 +349,12 @@ def com_google_fonts_check_outline_direction(ttFont, outlines_dict, config):
             and bb1.bottom <= bb2.bottom
         )
 
-    for glyph, outlines in outlines_dict.items():
-        glyphname, display_name = glyph
-        # Find outlines which are not contained within another outline
-        outline_bounds = [
-            path.bounds()
-            for path in sorted(outlines, key=lambda x: x.area, reverse=True)
-        ]
-        is_within = defaultdict(list)
-        for i, my_bounds in enumerate(outline_bounds):
-            for j in range(i + 1, len(outline_bounds)):
-                their_bounds = outline_bounds[j]
-                if bounds_contains(my_bounds, their_bounds):
-                    is_within[j].append(i)
-        # The outermost paths are those which are not within anything
-        for i, path in enumerate(outlines):
-            if is_within[i]:
-                continue
-            if path.direction == 1:
-                warnings.append(f"{display_name} has a counter-clockwise outer contour")
+    for (_glyphname, display_name), outlines in outlines_dict.items():
+        if (
+            outlines
+            and sorted(outlines, key=lambda x: x.area, reverse=True)[0].direction == 1
+        ):
+            warnings.append(f"{display_name} has a counter-clockwise outer contour")
 
     if warnings:
         formatted_list = bullet_list(config, sorted(warnings), bullet="*")
