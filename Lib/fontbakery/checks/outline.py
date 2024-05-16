@@ -352,7 +352,10 @@ def com_google_fonts_check_outline_direction(ttFont, outlines_dict, config):
     for glyph, outlines in outlines_dict.items():
         glyphname, display_name = glyph
         # Find outlines which are not contained within another outline
-        outline_bounds = [path.bounds() for path in outlines]
+        outline_bounds = [
+            path.bounds()
+            for path in sorted(outlines, key=lambda x: x.area, reverse=True)
+        ]
         is_within = defaultdict(list)
         for i, my_bounds in enumerate(outline_bounds):
             for j in range(i + 1, len(outline_bounds)):
