@@ -2,9 +2,14 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.7 (2024-May-??)
-
-#### On the Outline profile
+### Changes to existing checks
+#### On the Google Fonts profile (Outline checks)
   - **[com.google.fonts/check/outline_direction]:** fixed an error where the outermost path was not correctly detected. (issue #4719)
+
+#### On the Google Fonts profile
+  - Checks which validate the description files now also validate article files (issue #4730)
+  - **[com.google.font/check/description/unsupported_elements]:** Also checks for wellformedness of HTML video tags (issue #4730)
+
 
 ## 0.12.6 (2024-May-13)
   - Fixed race condition with `--auto-jobs` caused by the current working directory changing (issue #4700)
