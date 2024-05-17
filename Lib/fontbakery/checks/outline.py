@@ -355,7 +355,9 @@ def com_google_fonts_check_outline_direction(ttFont, outlines_dict, config):
         outline_bounds = [path.bounds() for path in outlines]
         is_within = defaultdict(list)
         for i, my_bounds in enumerate(outline_bounds):
-            for j in range(i + 1, len(outline_bounds)):
+            for j in range(0, len(outline_bounds)):
+                if i == j:
+                    continue
                 their_bounds = outline_bounds[j]
                 if bounds_contains(my_bounds, their_bounds):
                     is_within[j].append(i)
