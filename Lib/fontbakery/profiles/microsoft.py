@@ -10,6 +10,7 @@ PROFILE = {
         "opentype/cff_ascii_strings",
         "opentype/slant_direction",
         "opentype/weight_class_fvar",
+        "allah_ligature",
         "cjk_not_enough_glyphs",
         "cmap/format_12",
         "color_cpal_brightness",

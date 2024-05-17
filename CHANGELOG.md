@@ -2,6 +2,10 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ##  Upcoming release: 0.13.0 (2024-Sep-??)
+### New checks
+#### Added to the Universal profile
+  - **[allah_ligature]:** Check correct formation of allah ligature in presence of explicit tashkeel. (issue #4727)
+
 ### Changes to existing checks
 #### On the Universal profile
   - **[name/family_and_style_max_length"]:** Use nameID 16 (Typographic family name) to determine name length if it exists. (PR #4811)
@@ -135,6 +139,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/case_mapping]:** Only check letters. As per David Corbett's suggestion, we now check for unicode category = "L*". (issue #4733)
   - **EXPERIMENTAL - [com.google.fonts/check/tabular_kerning]:** Revised check another time to remove even further false positives (issue #4640)
 
+### Changes to existing checks
 #### On the Outline profile
   - **[com.google.fonts/check/outline_direction]:** fixed an error where the outermost path was not correctly detected. (issue #4719)
   - **[com.google.fonts/check/outline_direction]:** fix wording in rational, it stated the opposite of what the check does. (issue #4743)

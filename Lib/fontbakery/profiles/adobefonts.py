@@ -43,6 +43,7 @@ PROFILE = {
         "opentype/varfont/family_axis_ranges",
         "opentype/varfont/ital_range",
         "opentype/vendor_id",
+        "allah_ligature",
         "alt_caron",
         "arabic_high_hamza",
         "arabic_spacing_symbols",
