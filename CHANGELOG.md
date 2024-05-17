@@ -3,6 +3,11 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.12.7 (2024-May-??)
 
+### New checks
+#### Added to the Universal profile
+  - **[com.google.fonts/check/allah_ligature]:** Check correct formation of allah ligature in presence of explicit tashkeel (issue #4727)
+
+### Changes to existing checks
 #### On the Outline profile
   - **[com.google.fonts/check/outline_direction]:** fixed an error where the outermost path was not correctly detected. (issue #4719)
 

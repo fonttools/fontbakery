@@ -44,6 +44,7 @@ PROFILE = {
             "com.google.fonts/check/whitespace_glyphs",
             "com.google.fonts/check/whitespace_ink",
             "com.google.fonts/check/whitespace_widths",
+            "com.google.fonts/check/allah_ligature",
         ],
     },
 }
