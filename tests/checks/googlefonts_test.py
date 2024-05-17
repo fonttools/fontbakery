@@ -4845,9 +4845,9 @@ def test_check_description_has_unsupported_elements():
     assert_PASS(check(font))
 
     font = TEST_FILE("unsupported_html_elements/ABeeZee-Regular.ttf")
-    assert_results_contain(
-        check(font), FATAL, "unsupported-elements", "with a bad font"
-    )
+    results = check(font)
+    assert_results_contain(results, FATAL, "unsupported-elements", "with a bad font")
+    assert_results_contain(results, FATAL, "video-tag-needs-src", "with a bad font")
 
 
 def test_check_italic_axis_in_stat_is_boolean():

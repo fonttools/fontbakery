@@ -16,20 +16,59 @@ def description(font):
 
 
 @condition(Font)
-def description_html(font):
+def article(font):
+    """Read article/ARTICLE.en_us.html file from a font directory."""
+    descfile = os.path.join(os.path.dirname(font.file), "article", "ARTICLE.en_us.html")
+    if os.path.exists(descfile):
+        return open(descfile, "r", encoding="utf-8").read()
+    else:
+        return None
+
+
+def parse_html(html):
     try:
         from lxml import etree
     except ImportError:
         exit_with_install_instructions("googlefonts")
+    if html:
+        try:
+            return etree.fromstring("<html>" + html + "</html>")
+        except etree.XMLSyntaxError:
+            return None
 
-    if not font.description:
-        return
 
-    html = "<html>" + font.description + "</html>"
-    try:
-        return etree.fromstring(html)
-    except etree.XMLSyntaxError:
-        return None
+@condition(Font)
+def description_html(font):
+    return parse_html(font.description)
+
+
+@condition(Font)
+def article_html(font):
+    return parse_html(font.article)
+
+
+@condition(Font)
+def description_and_article(font):
+    description = font.description
+    article = font.article
+    result = {}
+    if description:
+        result["description"] = description
+    if article:
+        result["article"] = article
+    return result
+
+
+@condition(Font)
+def description_and_article_html(font):
+    description = font.description_html
+    article = font.article_html
+    result = {}
+    if description:
+        result["description"] = description
+    if article:
+        result["article"] = article
+    return result
 
 
 def github_gfonts_description(font: Font, network, config):
@@ -117,7 +156,7 @@ def com_google_fonts_check_description_has_article(font):
 
 @check(
     id="com.google.fonts/check/description/has_unsupported_elements",
-    conditions=["description"],
+    conditions=["description_and_article"],
     rationale="""
         The Google Fonts backend doesn't support the following html elements:
         https://googlefonts.github.io/gf-guide/description.html#requirements
@@ -127,8 +166,15 @@ def com_google_fonts_check_description_has_article(font):
     ],
     experimental="Since 2024/Feb/07",
 )
-def com_google_fonts_check_description_has_unsupported_elements(description):
+def com_google_fonts_check_description_has_unsupported_elements(
+    description_and_article, description_and_article_html
+):
     """Check the description doesn't contain unsupported html elements"""
+    try:
+        from lxml import html
+    except ImportError:
+        exit_with_install_instructions("googlefonts")
+
     unsupported_elements = frozenset(
         [
             "applet",
@@ -149,27 +195,39 @@ def com_google_fonts_check_description_has_unsupported_elements(description):
             "template",
         ]
     )
-    found = set()
-    for tag in unsupported_elements:
-        if f"<{tag}>" in description or f"<{tag} " in description:
-            found.add(tag)
 
-    if found:
-        found = map(r"\<{}\>".format, found)
-        found = ", ".join(found)
-        yield FATAL, Message(
-            "unsupported-elements",
-            f"Description.en_us.html contains unsupported"
-            f" html element(s). Please remove: {found}",
-        )
+    for file, doc in description_and_article.items():
+        found = set()
+        for tag in unsupported_elements:
+            if f"<{tag}>" in doc or f"<{tag} " in doc:
+                found.add(tag)
+
+        if found:
+            found = map(r"\<{}\>".format, found)
+            found = ", ".join(found)
+            yield FATAL, Message(
+                "unsupported-elements",
+                f"{file} contains unsupported html element(s). Please remove: {found}",
+            )
+
+        parsed = html.fromstring(doc)
+        # Video tags must have a src attribute
+        bad_video = False
+        for video in parsed.iterfind(".//video"):
+            bad_video = bad_video or not video.get("src")
+        if bad_video:
+            yield FATAL, Message(
+                "video-tag-needs-src",
+                "{file} contains a video tag with no src attribute.",
+            )
 
 
 @check(
     id="com.google.fonts/check/description/broken_links",
-    conditions=["network", "description_html"],
+    conditions=["network", "description_and_article_html"],
     rationale="""
-        The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font
-        family webpage on the Google Fonts website. For that reason, all hyperlinks
+        The snippet of HTML in the DESCRIPTION.en_us.html/ARTICLE.en_us.html file is added
+        to the font family webpage on the Google Fonts website. For that reason, all hyperlinks
         in it must be properly working.
     """,
     proposal=[
@@ -177,55 +235,55 @@ def com_google_fonts_check_description_has_unsupported_elements(description):
         "https://github.com/fonttools/fontbakery/issues/4110",
     ],
 )
-def com_google_fonts_check_description_broken_links(description_html):
+def com_google_fonts_check_description_broken_links(description_and_article_html, font):
     """Does DESCRIPTION file contain broken links?"""
     import requests
 
-    doc = description_html
-    broken_links = []
-    unique_links = []
-    for a_href in doc.iterfind(".//a[@href]"):
-        link = a_href.get("href")
+    for source, doc in description_and_article_html.items():
+        broken_links = []
+        unique_links = []
+        for a_href in doc.iterfind(".//a[@href]"):
+            link = a_href.get("href")
 
-        # avoid requesting the same URL more then once
-        if link in unique_links:
-            continue
+            # avoid requesting the same URL more then once
+            if link in unique_links:
+                continue
 
-        if link.startswith("mailto:") and "@" in link and "." in link.split("@")[1]:
-            yield FAIL, Message("email", f"Found an email address: {link}")
-            continue
+            if link.startswith("mailto:") and "@" in link and "." in link.split("@")[1]:
+                yield FAIL, Message("email", f"Found an email address: {link}")
+                continue
 
-        unique_links.append(link)
-        try:
-            response = requests.head(link, allow_redirects=True, timeout=10)
-            code = response.status_code
-            # Status 429: "Too Many Requests" is acceptable
-            # because it means the website is probably ok and
-            # we're just perhaps being too agressive in probing the server!
-            if code not in [requests.codes.ok, requests.codes.too_many_requests]:
-                broken_links.append(f"{link} (status code: {code})")
-        except requests.exceptions.Timeout:
-            yield WARN, Message(
-                "timeout",
-                f"Timedout while attempting to access: '{link}'."
-                f" Please verify if that's a broken link.",
+            unique_links.append(link)
+            try:
+                response = requests.head(link, allow_redirects=True, timeout=10)
+                code = response.status_code
+                # Status 429: "Too Many Requests" is acceptable
+                # because it means the website is probably ok and
+                # we're just perhaps being too agressive in probing the server!
+                if code not in [requests.codes.ok, requests.codes.too_many_requests]:
+                    broken_links.append(f"{link} (status code: {code})")
+            except requests.exceptions.Timeout:
+                yield WARN, Message(
+                    "timeout",
+                    f"Timedout while attempting to access: '{link}'."
+                    f" Please verify if that's a broken link.",
+                )
+            except requests.exceptions.RequestException:
+                broken_links.append(link)
+
+        if broken_links:
+            broken_links_list = "\n\t".join(broken_links)
+            yield FAIL, Message(
+                "broken-links",
+                f"The following links are broken"
+                f" in the f{source} file:\n\t"
+                f"{broken_links_list}",
             )
-        except requests.exceptions.RequestException:
-            broken_links.append(link)
-
-    if broken_links:
-        broken_links_list = "\n\t".join(broken_links)
-        yield FAIL, Message(
-            "broken-links",
-            f"The following links are broken"
-            f" in the DESCRIPTION file:\n\t"
-            f"{broken_links_list}",
-        )
 
 
 @check(
     id="com.google.fonts/check/description/urls",
-    conditions=["description_html"],
+    conditions=["description_and_article_html"],
     rationale="""
         The snippet of HTML in the DESCRIPTION.en_us.html file is added to the font
         family webpage on the Google Fonts website.
@@ -238,26 +296,27 @@ def com_google_fonts_check_description_broken_links(description_html):
         "https://github.com/fonttools/fontbakery/issues/4283",
     ],
 )
-def com_google_fonts_check_description_urls(description_html):
+def com_google_fonts_check_description_urls(description_and_article_html):
     """URLs on DESCRIPTION file must not display http(s) prefix."""
-    for a_href in description_html.iterfind(".//a[@href]"):
-        link_text = a_href.text
-        if not link_text:
-            if a_href.attrib:
-                yield FAIL, Message(
-                    "empty-link-text",
-                    "The following anchor has empty text content:\n\n"
-                    f"{a_href.attrib}\n",
-                )
-            continue
+    for source, doc in description_and_article_html.items():
+        for a_href in doc.iterfind(".//a[@href]"):
+            link_text = a_href.text
+            if not link_text:
+                if a_href.attrib:
+                    yield FAIL, Message(
+                        "empty-link-text",
+                        f"The following anchor in the {source} has empty text content:\n\n"
+                        f"{a_href.attrib}\n",
+                    )
+                continue
 
-        if link_text.startswith("http://") or link_text.startswith("https://"):
-            yield FAIL, Message(
-                "prefix-found",
-                'Please remove the "http(s)://" prefix from the text content'
-                f" of the following anchor:\n\n{link_text}",
-            )
-            continue
+            if link_text.startswith("http://") or link_text.startswith("https://"):
+                yield FAIL, Message(
+                    "prefix-found",
+                    'Please remove the "http(s)://" prefix from the text content'
+                    f" of the following anchor:\n\n{link_text}",
+                )
+                continue
 
 
 @check(
@@ -297,7 +356,7 @@ def com_google_fonts_check_description_git_url(description_html):
 
 @check(
     id="com.google.fonts/check/description/valid_html",
-    conditions=["description"],
+    conditions=["description_and_article"],
     rationale="""
         Sometimes people write malformed HTML markup. This check should ensure the
         file is good.
@@ -313,40 +372,41 @@ def com_google_fonts_check_description_git_url(description_html):
         "https://github.com/fonttools/fontbakery/issues/2664",
     ],
 )
-def com_google_fonts_check_description_valid_html(descfile, description):
+def com_google_fonts_check_description_valid_html(descfile, description_and_article):
     """Is this a proper HTML snippet?"""
     try:
         from lxml import html
     except ImportError:
         exit_with_install_instructions("googlefonts")
 
-    if "<html>" in description or "</html>" in description:
-        yield FAIL, Message(
-            "html-tag",
-            f"{descfile} should not have an <html> tag,"
-            f" since it should only be a snippet that will"
-            f" later be included in the Google Fonts"
-            f" font family specimen webpage.",
-        )
+    for source, content in description_and_article.items():
+        if "<html>" in content or "</html>" in content:
+            yield FAIL, Message(
+                "html-tag",
+                f"{source} should not have an <html> tag,"
+                f" since it should only be a snippet that will"
+                f" later be included in the Google Fonts"
+                f" font family specimen webpage.",
+            )
 
-    try:
-        html.fromstring("<html>" + description + "</html>")
-    except Exception as e:
-        yield FAIL, Message(
-            "malformed-snippet",
-            f"{descfile} does not look like a propper HTML snippet."
-            f" Please look for syntax errors."
-            f" Maybe the following parser error message can help"
-            f" you find what's wrong:\n"
-            f"----------------\n"
-            f"{e}\n"
-            f"----------------\n",
-        )
+        try:
+            html.fromstring("<html>" + content + "</html>")
+        except Exception as e:
+            yield FAIL, Message(
+                "malformed-snippet",
+                f"{source} does not look like a proper HTML snippet."
+                f" Please look for syntax errors."
+                f" Maybe the following parser error message can help"
+                f" you find what's wrong:\n"
+                f"----------------\n"
+                f"{e}\n"
+                f"----------------\n",
+            )
 
-    if "<p>" not in description or "</p>" not in description:
-        yield FAIL, Message(
-            "lacks-paragraph", f"{descfile} does not include an HTML <p> tag."
-        )
+        if "<p>" not in content or "</p>" not in content:
+            yield FAIL, Message(
+                "lacks-paragraph", f"{descfile} does not include an HTML <p> tag."
+            )
 
 
 @check(
