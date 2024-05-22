@@ -2795,6 +2795,10 @@ def com_google_fonts_check_case_mapping(ttFont):
         if codepoint in EXCEPTIONS:
             continue
 
+        # Only check letters
+        if unicodedata.category(chr(codepoint))[0] != "L":
+            continue
+
         the_char = chr(codepoint)
         swapped = the_char.swapcase()
 

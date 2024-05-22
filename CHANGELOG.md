@@ -7,12 +7,15 @@ A more detailed list of changes is available in the corresponding milestones for
   - **EXPERIMENTAL - [com.google.fonts/check/metadata/date_added]:** Check that the date_added field is not empty or malformed. (issue #4729)
 
 ### Changes to existing checks
-#### On the Google Fonts profile (Outline checks)
+#### On the Universal profile
+  - **[com.google.fonts/check/case_mapping]:** Only check letters. As per David Corbett's suggestion, we now check for unicode category = "L*". (issue #4733)
+
+#### On the Outline profile
   - **[com.google.fonts/check/outline_direction]:** fixed an error where the outermost path was not correctly detected. (issue #4719)
 
 #### On the Google Fonts profile
   - Checks which validate the description files now also validate article files (issue #4730)
-  - **[com.google.font/check/description/unsupported_elements]:** Also checks for wellformedness of HTML video tags (issue #4730)
+  - **[com.google.font/check/description/unsupported_elements]:** Also checks for wellformedness of HTML video tags. (issue #4730)
 
 
 ## 0.12.6 (2024-May-13)

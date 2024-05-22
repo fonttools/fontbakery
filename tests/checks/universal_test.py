@@ -1406,3 +1406,10 @@ def test_check_case_mapping():
     _remove_cmap_entry(ttFont, 0x01E6)
     _remove_cmap_entry(ttFont, 0x01F4)
     assert_PASS(check(ttFont))
+
+    # Let's add something which *does* have case swapping but which isn't a letter
+    # to ensure the check doesn't fail for such glyphs.
+    for table in ttFont["cmap"].tables:
+        table.cmap[0x2160] = "uni2160"  # ROMAN NUMERAL ONE, which downcases to 0x2170
+    assert 0x2170 not in ttFont.getBestCmap()
+    assert_PASS(check(ttFont))
