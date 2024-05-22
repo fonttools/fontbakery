@@ -663,6 +663,37 @@ def test_check_metadata_designer_values():
     )
 
 
+def test_check_metadata_date_added():
+    """Validate 'date_added' field on METADATA.pb."""
+    check = CheckTester("com.google.fonts/check/metadata/date_added")
+
+    font = TEST_FILE("merriweather/Merriweather-Regular.ttf")
+    assert_PASS(check(font), "with a good METADATA.pb file...")
+
+    md = Font(font).family_metadata
+    md.date_added = "2021-07-11"
+    assert_PASS(
+        check(MockFont(file=font, family_metadata=md)),
+        "with a good date_added field...",
+    )
+
+    md.date_added = ""
+    assert_results_contain(
+        check(MockFont(file=font, family_metadata=md)),
+        FATAL,
+        "empty",
+        "with an empty string on date_added field...",
+    )
+
+    md.date_added = "2020, Oct 1st"  # This is not the YYYY-MM-DD format we expect.
+    assert_results_contain(
+        check(MockFont(file=font, family_metadata=md)),
+        FATAL,
+        "malformed",
+        "with a bad date string on date_added field...",
+    )
+
+
 def test_check_metadata_broken_links():
     """Does DESCRIPTION file contain broken links?"""
     # check = CheckTester("com.google.fonts/check/metadata/broken_links")

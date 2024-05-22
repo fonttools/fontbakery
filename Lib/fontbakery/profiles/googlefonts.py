@@ -15,6 +15,7 @@ PROFILE = {
             "com.google.fonts/check/metadata/consistent_repo_urls",
             "com.google.fonts/check/metadata/copyright",
             "com.google.fonts/check/metadata/copyright_max_length",
+            "com.google.fonts/check/metadata/date_added",
             "com.google.fonts/check/metadata/designer_profiles",
             "com.google.fonts/check/metadata/designer_values",
             "com.google.fonts/check/metadata/empty_designer",
