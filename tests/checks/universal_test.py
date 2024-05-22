@@ -1277,17 +1277,22 @@ def test_check_math_signs_width():
     assert_results_contain(check(font), WARN, "width-outliers")
 
 
-def test_check_math_tabular_kerning():
+def test_check_tabular_kerning():
     """Check tabular widths don't have kerning."""
     check = CheckTester("com.google.fonts/check/tabular_kerning")
+
+    # Has no numerals at all
+    font = TEST_FILE("BadGrades/BadGrades-VF.ttf")
+    assert_SKIP(check(font))
+
+    # Has no tabular numerals
+    font = TEST_FILE("akshar/Akshar[wght].ttf")
+    assert_SKIP(check(font))
 
     font = TEST_FILE("montserrat/Montserrat-Regular.ttf")
     assert_PASS(check(font))
 
-    font = TEST_FILE("hinting/Roboto-VF.ttf")
-    assert_results_contain(check(font), FAIL, "has-tabular-kerning")
-
-    font = TEST_FILE("amiri/AmiriQuranColored.ttf")
+    font = TEST_FILE("sharetech/ShareTech-Regular.ttf")
     assert_results_contain(check(font), FAIL, "has-tabular-kerning")
 
     # Ubuntu Sans has digraphs (like DZ) that get decomposed in ccmp

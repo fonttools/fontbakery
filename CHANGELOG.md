@@ -10,6 +10,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Universal profile
   - Most checks were reorganised into separate files, thematically. (PR #4746)
   - **[com.google.fonts/check/case_mapping]:** Only check letters. As per David Corbett's suggestion, we now check for unicode category = "L*". (issue #4733)
+  - **EXPERIMENTAL - [com.google.fonts/check/tabular_kerning]:** Revised check another time to remove even further false positives (issue #4640)
 
 #### On the Outline profile
   - **[com.google.fonts/check/outline_direction]:** fixed an error where the outermost path was not correctly detected. (issue #4719)
