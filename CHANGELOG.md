@@ -2,6 +2,10 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.7 (2024-May-??)
+### New checks
+#### Added to the Google Fonts profile
+  - **EXPERIMENTAL - [com.google.fonts/check/metadata/date_added]:** Check that the date_added field is not empty or malformed. (issue #4729)
+
 ### Changes to existing checks
 #### On the Google Fonts profile (Outline checks)
   - **[com.google.fonts/check/outline_direction]:** fixed an error where the outermost path was not correctly detected. (issue #4719)
