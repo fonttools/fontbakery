@@ -1702,3 +1702,20 @@ def com_google_fonts_check_metadata_minisite_url(
             f"From '{minisite_url}'\n\n"
             f"To: '{expected}'\n\n",
         )
+
+    import requests
+
+    if not minisite_url.startswith("http"):
+        minisite_url = f"http://{minisite_url}"
+
+    response = requests.head(minisite_url, allow_redirects=True, timeout=10)
+    # Status 429: "Too Many Requests" is acceptable
+    # because it means the website is probably ok and
+    # we're just perhaps being too agressive in probing the server!
+    if response.status_code not in [
+        requests.codes.ok,
+        requests.codes.too_many_requests,
+    ]:
+        yield FATAL, Message(
+            "broken", f"The minisite_url seems broken: '{minisite_url}'\n\n"
+        )
