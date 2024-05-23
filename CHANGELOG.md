@@ -16,6 +16,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Google Fonts profile
   - Checks which validate the description files now also validate article files (issue #4730)
   - **[com.google.font/check/description/unsupported_elements]:** Also checks for wellformedness of HTML video tags. (issue #4730)
+  - **[com.google.fonts/check/metadata/minisite_url]:** Check that the URL is not broken. (issue #4739)
 
 
 ## 0.12.6 (2024-May-13)

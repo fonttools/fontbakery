@@ -5084,6 +5084,14 @@ def test_check_metadata_minisite_url():
         "with a minisite_url with unnecessary trailing /index.html",
     )
 
+    md.minisite_url = "Playwrite España"
+    assert_results_contain(
+        check(MockFont(file=font, family_metadata=md)),
+        FATAL,
+        "broken",
+        "with bad content at the minisite_url field",
+    )
+
 
 def test_check_linegaps():
     """Checking Vertical Metric Linegaps."""
