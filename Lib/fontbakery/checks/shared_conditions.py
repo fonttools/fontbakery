@@ -129,6 +129,8 @@ def regular_wght_coord(font):
     ttFont = font.ttFont
     upright = get_instance_axis_value(ttFont, "Regular", "wght")
     italic = get_instance_axis_value(ttFont, "Italic", "wght")
+    if upright is None and italic is None:
+        italic = get_instance_axis_value(ttFont, "Regular Italic", "wght")
     # Note: you cannot simply do `return upright or italic` since `0 or None`
     # will return None in Python.
     return upright if upright is not None else italic
@@ -149,6 +151,8 @@ def regular_wdth_coord(font):
     ttFont = font.ttFont
     upright = get_instance_axis_value(ttFont, "Regular", "wdth")
     italic = get_instance_axis_value(ttFont, "Italic", "wdth")
+    if upright is None and italic is None:
+        italic = get_instance_axis_value(ttFont, "Regular Italic", "wdth")
     # Note: you cannot simply do `return upright or italic` since `0 or None`
     # will return None in Python.
     return upright if upright is not None else italic
@@ -171,6 +175,8 @@ def regular_opsz_coord(font):
     ttFont = font.ttFont
     upright = get_instance_axis_value(ttFont, "Regular", "opsz")
     italic = get_instance_axis_value(ttFont, "Italic", "opsz")
+    if upright is None and italic is None:
+        italic = get_instance_axis_value(ttFont, "Regular Italic", "opsz")
     # Note: you cannot simply do `return upright or italic` since `0 or None`
     # will return None in Python.
     return upright if upright is not None else italic

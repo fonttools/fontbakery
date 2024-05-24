@@ -21,6 +21,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.font/check/description/unsupported_elements]:** Also checks for wellformedness of HTML video tags. (issue #4730)
   - **[com.google.fonts/check/metadata/copyright_max_length], [com.google.fonts/check/metadata/nameid/copyright], [com.google.fonts/check/metadata/valid_copyright], [com.google.fonts/check/name/copyright_length]:** These checks have all been merged into [com.google.fonts/check/font_copyright]. (PR #4748 / issue #4735)
 
+#### Shared Conditions
+  - Extend "regular coord" conditions to accept "Regular Italic" style name, in addition to "Regular" and "Italic" (PR #4741)
+
 
 ## 0.12.6 (2024-May-13)
   - Fixed race condition with `--auto-jobs` caused by the current working directory changing (issue #4700)
