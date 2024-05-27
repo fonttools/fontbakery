@@ -14,7 +14,6 @@ PROFILE = {
             "com.google.fonts/check/metadata/consistent_axis_enumeration",
             "com.google.fonts/check/metadata/consistent_repo_urls",
             "com.google.fonts/check/metadata/copyright",
-            "com.google.fonts/check/metadata/copyright_max_length",
             "com.google.fonts/check/metadata/date_added",
             "com.google.fonts/check/metadata/designer_profiles",
             "com.google.fonts/check/metadata/designer_values",
@@ -35,7 +34,6 @@ PROFILE = {
             "com.google.fonts/check/metadata/match_weight_postscript",
             "com.google.fonts/check/metadata/menu_and_latin",
             "com.google.fonts/check/metadata/minisite_url",
-            "com.google.fonts/check/metadata/nameid/copyright",
             "com.google.fonts/check/metadata/nameid/family_and_full_names",
             # FIXME! The check below (metadata/nameid/font_name) looks
             #        suspiciously similar to the now deprecated
@@ -57,7 +55,6 @@ PROFILE = {
             "com.google.fonts/check/metadata/unique_weight_style_pairs",
             "com.google.fonts/check/metadata/unreachable_subsetting",
             "com.google.fonts/check/metadata/unsupported_subsets",
-            "com.google.fonts/check/metadata/valid_copyright",
             "com.google.fonts/check/metadata/valid_filename_values",
             "com.google.fonts/check/metadata/valid_full_name_values",
             "com.google.fonts/check/metadata/valid_nameid25",
@@ -133,7 +130,6 @@ PROFILE = {
             "com.google.fonts/check/meta/script_lang_tags",
             "com.google.fonts/check/missing_small_caps_glyphs",
             "com.google.fonts/check/name/ascii_only_entries",
-            "com.google.fonts/check/name/copyright_length",
             "com.google.fonts/check/name/description_max_length",
             "com.google.fonts/check/name/familyname_first_char",
             "com.google.fonts/check/name/mandatory_entries",

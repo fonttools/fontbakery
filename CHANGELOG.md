@@ -17,6 +17,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Google Fonts profile
   - Checks which validate the description files now also validate article files (issue #4730)
   - **[com.google.font/check/description/unsupported_elements]:** Also checks for wellformedness of HTML video tags. (issue #4730)
+  - **[com.google.fonts/check/metadata/copyright_max_length], [com.google.fonts/check/metadata/nameid/copyright], [com.google.fonts/check/metadata/valid_copyright], [com.google.fonts/check/name/copyright_length]:** These checks have all been merged into [com.google.fonts/check/font_copyright]. (PR #4748 / issue #4735)
 
 
 ## 0.12.6 (2024-May-13)

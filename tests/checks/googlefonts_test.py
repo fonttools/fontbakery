@@ -1969,61 +1969,66 @@ GOOD_COPYRIGHT_NOTICE_STRINGS = (
         "Copyright 2012-2014, 2016, 2019-2021, 2023 The MultiYear Project Authors"
         " (https://github.com/With/ManyRanges)"
     ),
+    # We also ignore case, so these should also PASS:
+    (
+        "COPYRIGHT 2017 THE ARCHIVO BLACK PROJECT AUTHORS"
+        " (HTTPS://GITHUB.COM/OMNIBUS-TYPE/ARCHIVOBLACK)"
+    ),
+    (
+        "copyright 2017 the archivo black project authors"
+        " (https://github.com/omnibus-type/archivoblack)"
+    ),
 )
 
 
-def test_check_metadata_valid_copyright():
+def test_check_font_copyright():
     """Copyright notice on METADATA.pb matches canonical pattern ?"""
-    check = CheckTester("com.google.fonts/check/metadata/valid_copyright")
+    check = CheckTester("com.google.fonts/check/font_copyright")
 
     # Our reference Cabin Regular is known to be bad
-    # Since it provides an email instead of a git URL:
+    # Since it provides an email instead of a git URL.
+    # Also the check should work fine without a METADATA.pb file.
     font = TEST_FILE("cabin/Cabin-Regular.ttf")
     assert_results_contain(
         check(font), FAIL, "bad-notice-format", "with a bad copyright notice string..."
     )
 
-    # Then, to make the check PASS, we change it into a few good strings:
-    for good_string in GOOD_COPYRIGHT_NOTICE_STRINGS:
-        md = Font(font).font_metadata
-        md.copyright = good_string
-        assert_PASS(
-            check(MockFont(file=font, font_metadata=md)),
-            "with a good copyright notice string...",
-        )
-
-        # We also ignore case, so these should also PASS:
-        md.copyright = good_string.upper()
-        assert_PASS(
-            check(MockFont(file=font, font_metadata=md)), "with all uppercase..."
-        )
-
-        md.copyright = good_string.lower()
-        assert_PASS(
-            check(MockFont(file=font, font_metadata=md)), "with all lowercase..."
-        )
-
-
-def test_check_font_copyright():
-    """Copyright notices match canonical pattern in fonts"""
-    check = CheckTester("com.google.fonts/check/font_copyright")
-
-    # Our reference Cabin Regular is known to be bad
-    # since it provides an email instead of a git URL:
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-    assert_results_contain(
-        check(ttFont),
-        FAIL,
-        "bad-notice-format",
-        "with a bad copyright notice string...",
-    )
+    ttFont = TTFont(font)
 
     # Then, to make the check PASS, we change it into a few good strings:
     for good_string in GOOD_COPYRIGHT_NOTICE_STRINGS:
         for i, entry in enumerate(ttFont["name"].names):
             if entry.nameID == NameID.COPYRIGHT_NOTICE:
                 ttFont["name"].names[i].string = good_string.encode(entry.getEncoding())
-        assert_PASS(check(ttFont), "with good strings...")
+
+        md = Font(font).font_metadata
+        md.copyright = good_string
+        assert_PASS(
+            check(MockFont(ttFont=ttFont, font_metadata=md)),
+            "with a good copyright notice string...",
+        )
+
+        too_long = good_string + "x" * (501 - len(good_string))
+        md.copyright = too_long
+        for i, entry in enumerate(ttFont["name"].names):
+            if entry.nameID == NameID.COPYRIGHT_NOTICE:
+                ttFont["name"].names[i].string = too_long.encode(entry.getEncoding())
+
+        assert_results_contain(
+            check(MockFont(ttFont=ttFont, font_metadata=md)),
+            FAIL,
+            "max-length",
+            "with a 501-char copyright notice string...",
+        )
+
+    # Now let's make them different
+    md.copyright = good_string
+    assert_results_contain(
+        check(MockFont(file=font, font_metadata=md)),
+        FAIL,
+        "mismatch",
+        "with a bad METADATA.pb (with a copyright string not matching this font)...",
+    )
 
 
 def DISABLE_test_check_glyphs_file_font_copyright():
@@ -2071,29 +2076,6 @@ def test_check_metadata_reserved_font_name():
         WARN,
         "rfn",
         'with a notice containing "Reserved Font Name"...',
-    )
-
-
-def test_check_metadata_copyright_max_length():
-    """METADATA.pb: Copyright notice shouldn't exceed 500 chars."""
-    check = CheckTester("com.google.fonts/check/metadata/copyright_max_length")
-
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    check(font)
-    md = Font(font).font_metadata
-
-    md.copyright = 500 * "x"
-    assert_PASS(
-        check(MockFont(file=font, font_metadata=md)),
-        "with a 500-char copyright notice string...",
-    )
-
-    md.copyright = 501 * "x"
-    assert_results_contain(
-        check(MockFont(file=font, font_metadata=md)),
-        FAIL,
-        "max-length",
-        "with a 501-char copyright notice string...",
     )
 
 
@@ -2516,28 +2498,6 @@ def test_check_production_encoded_glyphs(cabin_ttFonts):
         assert_results_contain(check(ttFont), FAIL, "lost-glyphs")
 
 
-def test_check_metadata_nameid_copyright():
-    """Copyright field for this font on METADATA.pb matches
-    all copyright notice entries on the name table?"""
-    check = CheckTester("com.google.fonts/check/metadata/nameid/copyright")
-    from fontbakery.utils import get_name_entry_strings
-
-    # Our reference Cabin Regular is known to be good
-    font = TEST_FILE("cabin/Cabin-Regular.ttf")
-    assert_PASS(check(font), "with a good METADATA.pb for this font...")
-
-    # But the check must report when mismatching names are found:
-    good_value = get_name_entry_strings(Font(font).ttFont, NameID.COPYRIGHT_NOTICE)[0]
-    md = Font(font).font_metadata
-    md.copyright = good_value + "something bad"
-    assert_results_contain(
-        check(MockFont(file=font, font_metadata=md)),
-        FAIL,
-        "mismatch",
-        "with a bad METADATA.pb (with a copyright string not matching this font)...",
-    )
-
-
 def test_check_metadata_category():
     """Category field for this font on METADATA.pb is valid?"""
     check = CheckTester("com.google.fonts/check/metadata/category")
@@ -2831,33 +2791,6 @@ def test_condition_familyname_with_spaces():
     assert MockFont(familyname="OverpassMono").familyname_with_spaces == "Overpass Mono"
     assert (
         MockFont(familyname="BodoniModa11").familyname_with_spaces == "Bodoni Moda 11"
-    )
-
-
-def test_check_name_copyright_length():
-    """Length of copyright notice must not exceed 500 characters."""
-    check = CheckTester("com.google.fonts/check/name/copyright_length")
-
-    ttFont = TTFont(TEST_FILE("cabin/Cabin-Regular.ttf"))
-
-    good_entry = "a" * 499
-    for i, entry in enumerate(ttFont["name"].names):
-        if entry.nameID == NameID.COPYRIGHT_NOTICE:
-            ttFont["name"].names[i].string = good_entry.encode(entry.getEncoding())
-    assert_PASS(check(ttFont), "with 499-byte copyright notice string...")
-
-    good_entry = "a" * 500
-    for i, entry in enumerate(ttFont["name"].names):
-        if entry.nameID == NameID.COPYRIGHT_NOTICE:
-            ttFont["name"].names[i].string = good_entry.encode(entry.getEncoding())
-    assert_PASS(check(ttFont), "with 500-byte copyright notice string...")
-
-    bad_entry = "a" * 501
-    for i, entry in enumerate(ttFont["name"].names):
-        if entry.nameID == NameID.COPYRIGHT_NOTICE:
-            ttFont["name"].names[i].string = bad_entry.encode(entry.getEncoding())
-    assert_results_contain(
-        check(ttFont), FAIL, "too-long", "with 501-byte copyright notice string..."
     )
 
 
