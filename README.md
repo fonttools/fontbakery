@@ -6,8 +6,8 @@
 
 Font Bakery is a command-line tool for checking the quality of font projects.
 
-For a quick overview, check out the [list of checks](https://font-bakery.readthedocs.io/en/stable/fontbakery/profiles/index.html) currently offered.
-And for a full written introduction [check out our documentation at Read The Docs.](https://font-bakery.readthedocs.io/en/stable)
+For a quick overview, check out the [list of checks](https://fontbakery.readthedocs.io/en/latest/fontbakery/profiles/index.html) currently offered.
+And for a full written introduction [check out our documentation at Read The Docs.](https://fontbakery.readthedocs.io/en/stable)
 
 For video introductions, see the [TypeCon 2018](https://www.youtube.com/watch?v=5S3cN3VHfBg) and [ATypI 2020](https://www.youtube.com/watch?v=6OKE6p9E0eY)  FontBakery presentations.
 
@@ -31,21 +31,21 @@ All comments on the issue tracker or on pull requests will be treated as also li
 
 See the Font Bakery Installation Guide for your platform:
 
-- [GNU + Linux](https://font-bakery.readthedocs.io/en/stable/user/installation/install-gnu-linux.html)
-- [macOS](https://font-bakery.readthedocs.io/en/stable/user/installation/install-macos.html)
-- [Windows](https://font-bakery.readthedocs.io/en/stable/user/installation/install-windows.html)
+- [GNU + Linux](https://fontbakery.readthedocs.io/en/latest/user/installation/install-gnu-linux.html)
+- [macOS](https://fontbakery.readthedocs.io/en/latest/user/installation/install-macos.html)
+- [Windows](https://fontbakery.readthedocs.io/en/latest/user/installation/install-windows.html)
 
 ## Usage
 
-Font Bakery is primarily a Terminal app, learn more in the [Command Line Usage Guide](https://font-bakery.readthedocs.io/en/stable/user/USAGE.html).
+Font Bakery is primarily a Terminal app, learn more in the [Command Line Usage Guide](https://fontbakery.readthedocs.io/en/latest/user/USAGE.html).
 
-If you write little Python scripts in your workflow, you can easily [write custom checks](https://font-bakery.readthedocs.io/en/stable/developer/writing-profiles.html).
+If you write little Python scripts in your workflow, you can easily [write custom checks](https://fontbakery.readthedocs.io/en/latest/developer/writing-profiles.html).
 
-For full developer documentation, check out [font-bakery.readthedocs.io](https://font-bakery.readthedocs.io) (a hosted and compiled copy of contents in the `/docs` directory.)
+For full developer documentation, check out [fontbakery.readthedocs.io](https://fontbakery.readthedocs.io) (a hosted and compiled copy of contents in the `/docs` directory.)
 
 ## Contributing
 
-See the guide to [Getting Started as a Contributor](https://font-bakery.readthedocs.io/en/stable/developer/contrib-getting-started.html).
+See the guide to [Getting Started as a Contributor](https://fontbakery.readthedocs.io/en/latest/developer/contrib-getting-started.html).
 
 ## History
 
@@ -61,7 +61,7 @@ However, the project was halted at the end of 2019.
 Most of the checks are for OpenType binary files, and project metadata files. 
 (Currently, the Google Fonts `METADATA.pb` files are supported.)
 
-If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (like [Travis](https://www.travis-ci.org)) to run Font Bakery on each commit, so that with each update all checks will be run on your files.
+If you are developing a font project publicly with Github (or a similar host) you can set up a Continuous Integration service (such as GHActions) to run Font Bakery on each commit, so that with each update all checks will be run on your files.
 
 ## Trivia
 
