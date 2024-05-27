@@ -150,6 +150,7 @@ def test_check_outline_direction():
     assert_results_contain(results, WARN, "ccw-outer-contour")
     messages = "".join([m.message.message for m in results])
     assert "A (U+0041) has a counter-clockwise outer contour" in messages
+    assert " x (U+0078) has a path with no bounds (probably a single point)" in messages
 
     font = TEST_FILE("wonky_paths/OutlineTest.ttf")
     assert_PASS(check(font))
