@@ -1,19 +1,16 @@
 {
-.appVersion = "1342";
+.appVersion = "3243";
 DisplayStrings = (
 A,
 EF,
 C,
 xE,
 E,
-F
+F,
+x
 );
 copyright = "Copyright 2010 - 2018 Adobe Systems Incorporated (http://www.adobe.com/), with Reserved Font Name 'Source'.";
 customParameters = (
-{
-name = vendorID;
-value = ADBO;
-},
 {
 name = panose;
 value = (
@@ -67,6 +64,23 @@ value = (
 {
 name = blueScale;
 value = 0.0625;
+},
+{
+name = vendorID;
+value = ADBO;
+},
+{
+name = Axes;
+value = (
+{
+Name = Weight;
+Tag = wght;
+},
+{
+Name = Width;
+Tag = wdth;
+}
+);
 }
 );
 date = "2018-10-07 02:24:56 +0000";
@@ -518,7 +532,7 @@ unicode = 0046;
 },
 {
 glyphname = x;
-lastChange = "2020-11-09 10:16:59 +0000";
+lastChange = "2024-05-27 11:26:09 +0000";
 layers = (
 {
 layerId = "720A55C3-B58A-4103-BEB9-5C4D00BBC4B8";
@@ -552,6 +566,12 @@ nodes = (
 "114 486 LINE",
 "25 486 LINE",
 "173 254 LINE"
+);
+},
+{
+closed = 0;
+nodes = (
+"30 360 LINE"
 );
 }
 );
@@ -657,7 +677,6 @@ instanceInterpolations = {
 "720A55C3-B58A-4103-BEB9-5C4D00BBC4B8" = 1;
 };
 name = Regular;
-weightClass = Normal;
 }
 );
 kerning = {

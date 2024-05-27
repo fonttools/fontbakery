@@ -355,10 +355,17 @@ def com_google_fonts_check_outline_direction(ttFont, outlines_dict, config):
         outline_bounds = [path.bounds() for path in outlines]
         is_within = defaultdict(list)
         for i, my_bounds in enumerate(outline_bounds):
+            if my_bounds.bl is None:
+                warnings.append(
+                    f"{display_name} has a path with no bounds (probably a single point)"
+                )
+                continue
             for j in range(0, len(outline_bounds)):
                 if i == j:
                     continue
                 their_bounds = outline_bounds[j]
+                if their_bounds.bl is None:
+                    continue  # Already warned
                 if bounds_contains(my_bounds, their_bounds):
                     is_within[j].append(i)
         # The outermost paths are those which are not within anything

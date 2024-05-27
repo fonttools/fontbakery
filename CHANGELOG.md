@@ -14,6 +14,7 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Outline profile
   - **[com.google.fonts/check/outline_direction]:** fixed an error where the outermost path was not correctly detected. (issue #4719)
   - **[com.google.fonts/check/outline_direction]:** fix wording in rational, it stated the opposite of what the check does. (issue #4743)
+  - **[com.google.fonts/check/outline_direction]:** fixed an error where single-point contours would crash the check. (PR #4745)
 
 #### On the Google Fonts profile
   - Checks which validate the description files now also validate article files (issue #4730)
