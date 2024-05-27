@@ -8,6 +8,7 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ### Changes to existing checks
 #### On the Universal profile
+  - Most checks were reorganised into separate files, thematically. (PR #4746)
   - **[com.google.fonts/check/case_mapping]:** Only check letters. As per David Corbett's suggestion, we now check for unicode category = "L*". (issue #4733)
 
 #### On the Outline profile
