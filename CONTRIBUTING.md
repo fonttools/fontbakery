@@ -13,7 +13,7 @@ all involved. The community looks forward to your contributions. 🎉
 If this is your first contribution to FontBakery, we have a [tutorial] that walks
 you through setting up your developer environment, making a change, and testing it.
 
-[tutorial]: https://font-bakery.readthedocs.io/en/latest/developer/source-contrib-guide.html
+[tutorial]: https://fontbakery.readthedocs.io/en/latest/developer/source-contrib-guide.html
 
 ## Google CLA
 

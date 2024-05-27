@@ -7,7 +7,7 @@ Welcome to the Font Bakery Documentation!
 
 Font Bakery is command-line tool for checking the quality of font projects.  
 
-For a quick overview, check out the `list of checks <https://font-bakery.readthedocs.io/en/stable/fontbakery/profiles/index.html>`_ currently offered.
+For a quick overview, check out the `list of checks <https://fontbakery.readthedocs.io/en/latest/fontbakery/profiles/index.html>`_ currently offered.
 
 .. raw:: html
 

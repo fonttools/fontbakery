@@ -1,6 +1,6 @@
 # Font Bakery Command Line Usage
 
-Install Font Bakery as a package with the instructions in the [Installation Guides](https://font-bakery.readthedocs.io/en/stable/user/installation/index.html), and you will have a `fontbakery` command in your `$PATH`.
+Install Font Bakery as a package with the instructions in the [Installation Guides](https://fontbakery.readthedocs.io/en/latest/user/installation/index.html), and you will have a `fontbakery` command in your `$PATH`.
 
 This has several subcommands, described in the help function:
 

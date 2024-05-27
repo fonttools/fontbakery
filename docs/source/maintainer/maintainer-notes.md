@@ -43,7 +43,7 @@ vim Lib/fontbakery/constants.py
 git add -p
 git commit -m "Updating LATEST_TTFAUTOHINT_VERSION"
 
-# update the docs so that https://font-bakery.readthedocs.io/
+# update the docs so that https://fontbakery.readthedocs.io/
 # displays the correct version number
 vim docs/source/conf.py
 git add -p

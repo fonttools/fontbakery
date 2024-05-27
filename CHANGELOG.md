@@ -1112,7 +1112,7 @@ The dates indicate when each check was originally implemented as temporarily exp
 
 ## 0.8.4 (2021-Nov-19)
 ### Noteworthy code-changes
-  - Updated Sphinx-docs extension code to use the latest API so that we can have FontBakery online docs properly build once more at https://font-bakery.readthedocs.io (issue #3313)
+  - Updated Sphinx-docs extension code to use the latest API so that we can have FontBakery online docs properly build once more at https://fontbakery.readthedocs.io (issue #3313)
   - Also improved the documentation of checks, now displaying the contents of the `proposal` metadata fields. (Also issue #3313)
   - Fixed readability of tracebacks on ERROR messages on the text terminal (issue #3482)
   - Update fonts_public.proto and fonts_public_pb2.py
@@ -2197,7 +2197,7 @@ a - **[com.google.fonts/check/ligature_carets]:** Change 'ligature_glyphs' condi
 
 ## 0.6.0 (2018-Nov-08)
 ### Noteworthy changes
-  - Now we have our documentation hosted at https://font-bakery.readthedocs.io/
+  - Now we have our documentation hosted at https://fontbakery.readthedocs.io/
   - Limit ammount of details printed by fontval checks and group fontval checks to make their data more readable.
   - Print Font Bakery version on the header of Markdown reports, so that we know if a report was generated with an old version. (issue #2133)
   - Add 'axes' field to protocol-buffer schema
