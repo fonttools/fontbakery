@@ -2,7 +2,19 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.6 (2024-May-??)
-  - ...
+  - Fixed race condition with `--auto-jobs` caused by the current working directory changing (issue #4700)
+
+### Changes to existing checks
+#### On the Universal profile
+  - **[com.google.fonts/check/tabular_kerning]:** Fixed race condition / bug where the check would modify the cmap of the font being checked (issue #4697)
+  - **[com.google.fonts/check/legacy_accents]:** Re-enabled check but dropped complaints about legacy accents as part of glyph compositions (issue #4567)
+
+#### On the Google Fonts profile
+  - **[com.google.font/check/description/has_article]:** yield INFO when a non-Noto font doesn' t have an article. Also, an empty description file is not needed anymore (issue #4702)
+
+#### On the Type Network profile
+  - **[com.typenetwork/check/glyph_coverage]:** Added minus sign to min charset. (PR #4701)
+  - **[com.typenetwork/check/usweightclass]:** Updated `tn_expected_os2_weight` condition. (issue #4694 / PR #4701)
 
 
 ## 0.12.5 (2024-May-03)

@@ -583,7 +583,7 @@ def test_check_whitespace_ink():
     )
 
 
-def DISABLED_test_check_legacy_accents():
+def test_check_legacy_accents():
     """Check that legacy accents aren't used in composite glyphs."""
     check = CheckTester("com.google.fonts/check/legacy_accents")
 
@@ -599,12 +599,6 @@ def DISABLED_test_check_legacy_accents():
     )
 
     test_font = TTFont(TEST_FILE("lugrasimo/Lugrasimo-Regular.ttf"))
-    assert_results_contain(
-        check(test_font),
-        WARN,
-        "legacy-accents-component",
-        "for legacy accents being used in composites.",
-    )
     assert_results_contain(
         check(test_font),
         FAIL,

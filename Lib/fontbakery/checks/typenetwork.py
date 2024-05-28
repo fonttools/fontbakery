@@ -694,7 +694,9 @@ def com_typenetwork_check_usweightclass(font, tn_expected_os2_weight):
     else:
         if not expected_value:
             failed = True
-            yield INFO, Message("no-value", no_value_message.format(os2_value, weight_name))
+            yield INFO, Message(
+                "no-value", no_value_message.format(os2_value, weight_name)
+            )
 
         elif "Thin" in weight_name.split(" "):
             if os2_value not in expected_value:
@@ -718,7 +720,9 @@ def com_typenetwork_check_usweightclass(font, tn_expected_os2_weight):
 
         elif os2_value != expected_value:
             failed = True
-            yield FAIL, Message("bad-value", fail_message.format(os2_value, expected_value))
+            yield FAIL, Message(
+                "bad-value", fail_message.format(os2_value, expected_value)
+            )
 
     if not failed:
         yield PASS, "OS/2 usWeightClass is good"
