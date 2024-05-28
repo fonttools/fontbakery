@@ -330,7 +330,7 @@ def com_google_fonts_check_outline_semi_vertical(ttFont, outlines_dict, config):
     id="com.google.fonts/check/outline_direction",
     rationale="""
         In TrueType fonts, the outermost contour of a glyph should be oriented
-        counter-clockwise, while the inner contours should be oriented clockwise.
+        clockwise, while the inner contours should be oriented counter-clockwise.
         Getting the path direction wrong can lead to rendering issues in some
         software.
     """,
