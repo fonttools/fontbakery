@@ -627,6 +627,13 @@ def tn_expected_os2_weight(font):
         "Black": 900,
     }
     stylename = font.stylename
+
+    # Modify style name for weights using space separator
+    prefixes = ["Semi ", "Ultra ", "Extra "]
+    for prefix in prefixes:
+        if prefix in stylename:
+            stylename = stylename.replace(prefix, prefix.strip())
+
     if stylename == "Italic":
         weight_name = "Regular"
     elif stylename.endswith("Italic"):

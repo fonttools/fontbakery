@@ -21,6 +21,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.font/check/description/unsupported_elements]:** Also checks for wellformedness of HTML video tags. (issue #4730)
   - **[com.google.fonts/check/metadata/copyright_max_length], [com.google.fonts/check/metadata/nameid/copyright], [com.google.fonts/check/metadata/valid_copyright], [com.google.fonts/check/name/copyright_length]:** These checks have all been merged into [com.google.fonts/check/font_copyright]. (PR #4748 / issue #4735)
 
+#### On the Type Network profile
+ - **[com.typenetwork/check/usweightclass]:** Detects better "Semi", "Extra" and "Ultra" weights using a space on the name. (PR #4751)
+
 #### Shared Conditions
   - Extend "regular coord" conditions to accept "Regular Italic" style name, in addition to "Regular" and "Italic" (PR #4741)
 
