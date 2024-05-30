@@ -55,7 +55,11 @@ def com_google_fonts_check_family_italics_have_roman_counterparts(fonts, config)
     """Ensure Italic styles have Roman counterparts."""
 
     filenames = [f.file for f in fonts]
-    italics = [f.file for f in fonts if "Italic" in f.file]
+    italics = [
+        f.file
+        for f in fonts
+        if "Italic" in f.file and f.file.find("-") < f.file.find("Italic")
+    ]
     missing_roman = []
     for italic in italics:
         if (
