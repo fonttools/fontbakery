@@ -79,7 +79,7 @@ def update_shaping_output(
         shaper = vhb.Vharfbuzz(font_path)
         font = TTFont(font_path)
         for text in shaping_input["input"]["text"]:
-            if "fvar" in font:
+            if "fvar" in font and "variations" not in shaping_input["input"]:
                 fvar: table__f_v_a_r = font["fvar"]  # type: ignore
                 for instance in fvar.instances:
                     run = shape_run(
@@ -114,6 +114,8 @@ def shape_run(
     if features := shaping_input.get("features"):
         parameters["features"] = features
     if variations:
+        parameters["variations"] = variations
+    elif variations := shaping_input.get("variations"):
         parameters["variations"] = variations
     buffer = shaper.shape(text, parameters)
 
