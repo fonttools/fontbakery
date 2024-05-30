@@ -17,6 +17,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - **[com.google.fonts/check/outline_direction]:** fixed an error where single-point contours would crash the check. (PR #4745)
 
 #### On the Google Fonts profile
+  - **[com.google.fonts/check/family/italics_have_roman_counterparts]:** Look for style name only after "-" in file name. (issue #1733)
   - Checks which validate the description files now also validate article files (issue #4730)
   - **[com.google.font/check/description/unsupported_elements]:** Also checks for wellformedness of HTML video tags. (issue #4730)
   - **[com.google.fonts/check/metadata/copyright_max_length], [com.google.fonts/check/metadata/nameid/copyright], [com.google.fonts/check/metadata/valid_copyright], [com.google.fonts/check/name/copyright_length]:** These checks have all been merged into [com.google.fonts/check/font_copyright]. (PR #4748 / issue #4735)
