@@ -8,8 +8,7 @@ from fontbakery.prelude import check, Message, FAIL, WARN, PASS
     conditions=["family_directory"],
     rationale="""
         The purpose of this check is to ensure images (either raster or vector files)
-        are placed on the correct directory (an `images` subdirectory inside `article`)
-        and that they are not excessively large in filesize and resolution.
+        are not excessively large in filesize and resolution.
 
         These constraints are loosely based on infrastructure limitations under
         default configurations.
@@ -21,10 +20,10 @@ from fontbakery.prelude import check, Message, FAIL, WARN, PASS
     experimental="Since 2024/Mar/25",
 )
 def com_google_fonts_check_article_images(config, family_directory):
-    """Validate location, size, and resolution of article images,
+    """Validate size, and resolution of article images,
     and ensure article page has minimum length and includes visual assets."""
     from bs4 import BeautifulSoup
-    from fontbakery.utils import bullet_list
+    from fontbakery.utils import bullet_list, image_dimensions
 
     MAX_WIDTH = 2048
     MAX_HEIGHT = 1024
@@ -85,26 +84,11 @@ def com_google_fonts_check_article_images(config, family_directory):
             f"Visual asset files are missing:\n{bullet_list(config, missing_files)}",
         )
 
-    misplaced_files = [
+    all_image_files = [
         os.path.join(article_dir, filename)
         for filename in os.listdir(article_dir)
         if is_vector(filename) or is_raster(filename)
     ]
-    all_image_files = misplaced_files
-    if os.path.isdir(images_dir):
-        all_image_files += [
-            os.path.join(images_dir, filename)
-            for filename in os.listdir(images_dir)
-            if is_vector(filename) or is_raster(filename)
-        ]
-    if misplaced_files:
-        yield WARN, Message(
-            "misplaced-image-files",
-            f"There are {len(misplaced_files)} image files in the `article`"
-            f" directory and they should be moved to an `article/images`"
-            f" subdirectory:\n\n"
-            f"{bullet_list(config, misplaced_files)}\n",
-        )
 
     for filename in all_image_files:
         if is_vector(filename):

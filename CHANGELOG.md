@@ -22,7 +22,7 @@ A more detailed list of changes is available in the corresponding milestones for
   - Checks which validate the description files now also validate article files (issue #4730)
   - **[com.google.font/check/description/unsupported_elements]:** Also checks for wellformedness of HTML video tags. (issue #4730)
   - **[com.google.fonts/check/metadata/copyright_max_length], [com.google.fonts/check/metadata/nameid/copyright], [com.google.fonts/check/metadata/valid_copyright], [com.google.fonts/check/name/copyright_length]:** These checks have all been merged into [com.google.fonts/check/font_copyright]. (PR #4748 / issue #4735)
-  - **EXPERIMENTAL - [com.google.fonts/check/article/images]:** Ensure article page has minimum length and includes visual assets. Also added more thorough code-testing. (issue #4653)
+  - **EXPERIMENTAL - [com.google.fonts/check/article/images]:** Ensure article page has minimum length and includes visual assets. Also added more thorough code-testing. (issue #4653) and remove checking of location of the image files (issue #4703)
 
 #### On the Type Network profile
  - **[com.typenetwork/check/usweightclass]:** Detects better "Semi", "Extra" and "Ultra" weights using a space on the name. (PR #4751)
