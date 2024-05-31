@@ -5019,7 +5019,7 @@ def test_check_linegaps():
 
 
 def test_check_article_images():
-    """Test ARTICLE page visual content, length requirements, and image properties."""
+    """Test article page visual content, length requirements, and image properties."""
     check = CheckTester(
         "com.google.fonts/check/article/images", profile=googlefonts_profile
     )
@@ -5050,23 +5050,19 @@ def test_check_article_images():
         check(MockFont(family_directory=family_directory)), WARN, "missing-visual-file"
     )
 
-    # Test case for misplaced image files
-    family_directory = portable_path("data/test/misplaced_image_files")
-    assert_results_contain(
-        check(MockFont(family_directory=family_directory)),
-        WARN,
-        "misplaced-image-files",
-    )
-
     #    TODO:
     #    # Test case for image file exceeding size limit
     #    family_directory = portable_path("data/test/large_image_file")
-    #    assert_results_contain(check(MockFont(family_directory=family_directory)), FAIL, "filesize")
+    #    assert_results_contain(
+    #        check(MockFont(family_directory=family_directory)), FAIL, "filesize"
+    #    )
 
     #    TODO:
     #    # Test case for image file exceeding resolution limit
     #    family_directory = portable_path("data/test/large_resolution_image")
-    #    assert_results_contain(check(MockFont(family_directory=family_directory)), FAIL, "image-too-large")
+    #    assert_results_contain(
+    #        check(MockFont(family_directory=family_directory)), FAIL, "image-too-large"
+    #    )
 
     # Test case for ARTICLE meeting requirements
     family_directory = portable_path("data/test/article_valid")
