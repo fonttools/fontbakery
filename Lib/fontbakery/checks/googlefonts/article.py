@@ -1,6 +1,6 @@
 import os
 
-from fontbakery.prelude import check, Message, FAIL, WARN
+from fontbakery.prelude import check, Message, FAIL, WARN, PASS
 
 
 @check(
@@ -8,19 +8,23 @@ from fontbakery.prelude import check, Message, FAIL, WARN
     conditions=["family_directory"],
     rationale="""
         The purpose of this check is to ensure images (either raster or vector files)
-        are placed on the correct directory (an `images` subdirectory inside `article`) and
-        they they are not excessively large in filesize and resolution.
+        are placed on the correct directory (an `images` subdirectory inside `article`)
+        and that they are not excessively large in filesize and resolution.
 
         These constraints are loosely based on infrastructure limitations under
         default configurations.
+
+        It also ensures that the article page has a minimum length and includes
+        at least one visual asset.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4594",
     experimental="Since 2024/Mar/25",
 )
-def com_google_fonts_check_metadata_parses(config, family_directory):
-    """Validate location, size and resolution of article images."""
-
-    from fontbakery.utils import bullet_list, image_dimensions
+def com_google_fonts_check_article_images(config, family_directory):
+    """Validate location, size, and resolution of article images,
+    and ensure article page has minimum length and includes visual assets."""
+    from bs4 import BeautifulSoup
+    from fontbakery.utils import bullet_list
 
     MAX_WIDTH = 2048
     MAX_HEIGHT = 1024
@@ -40,62 +44,98 @@ def com_google_fonts_check_metadata_parses(config, family_directory):
         return False
 
     article_dir = os.path.join(family_directory, "article")
-    images_dir = os.path.join(family_directory, "article", "images")
-    if not os.path.isdir(article_dir):
+    article_path = os.path.join(article_dir, "ARTICLE.en_us.html")
+    images_dir = os.path.join(article_dir, "images")
+
+    if not os.path.exists(article_path):
         yield WARN, Message(
             "lacks-article",
             f"Family metadata at {family_directory} does not have an article.\n",
         )
-    else:
-        misplaced_files = [
-            os.path.join(article_dir, filename)
-            for filename in os.listdir(article_dir)
+        return
+
+    with open(article_path, "r", encoding="utf-8") as file:
+        content = file.read()
+
+    soup = BeautifulSoup(content, "html.parser")
+    text = soup.get_text()
+    word_count = len(text.split())
+    char_count = len(text)
+
+    visuals = soup.find_all(["img", "svg", "video", "iframe"])
+    missing_files = []
+    for visual in visuals:
+        if src := visual.get("src"):
+            visual_path = os.path.join(article_dir, src)
+            if not os.path.exists(visual_path):
+                missing_files.append(src)
+
+    if word_count < 100 or char_count < 500:
+        yield WARN, Message(
+            "length-requirements-not-met",
+            "Article page is too short!",
+        )
+
+    if not visuals:
+        yield WARN, Message("missing-visual-asset", "Article page lacks visual assets.")
+
+    if missing_files:
+        yield WARN, Message(
+            "missing-visual-file",
+            f"Visual asset files are missing:\n{bullet_list(config, missing_files)}",
+        )
+
+    misplaced_files = [
+        os.path.join(article_dir, filename)
+        for filename in os.listdir(article_dir)
+        if is_vector(filename) or is_raster(filename)
+    ]
+    all_image_files = misplaced_files
+    if os.path.isdir(images_dir):
+        all_image_files += [
+            os.path.join(images_dir, filename)
+            for filename in os.listdir(images_dir)
             if is_vector(filename) or is_raster(filename)
         ]
-        all_image_files = misplaced_files
-        if os.path.isdir(images_dir):
-            all_image_files += [
-                os.path.join(images_dir, filename)
-                for filename in os.listdir(images_dir)
-                if is_vector(filename) or is_raster(filename)
-            ]
-        if misplaced_files:
-            yield WARN, Message(
-                "misplaced-image-files",
-                f"There are {len(misplaced_files)} image files in the `article`"
-                f" directory and they should be moved to an `article/images`"
-                f" subdirectory:\n\n"
-                f"{bullet_list(config, misplaced_files)}\n",
+    if misplaced_files:
+        yield WARN, Message(
+            "misplaced-image-files",
+            f"There are {len(misplaced_files)} image files in the `article`"
+            f" directory and they should be moved to an `article/images`"
+            f" subdirectory:\n\n"
+            f"{bullet_list(config, misplaced_files)}\n",
+        )
+
+    for filename in all_image_files:
+        if is_vector(filename):
+            maxsize = MAXSIZE_VECTOR
+            imagetype = "vector"
+        elif is_raster(filename):
+            maxsize = MAXSIZE_RASTER
+            imagetype = "raster"
+        else:
+            # ignore this file type
+            continue
+
+        filesize = os.stat(filename).st_size
+        if filesize > maxsize:
+            yield FAIL, Message(
+                "filesize",
+                f"`{filename}` has `{filesize} bytes`, but the maximum filesize"
+                f" for {imagetype} images is `{maxsize} bytes`.",
             )
 
-        for filename in all_image_files:
-            if is_vector(filename):
-                maxsize = MAXSIZE_VECTOR
-                imagetype = "vector"
-            elif is_raster(filename):
-                maxsize = MAXSIZE_RASTER
-                imagetype = "raster"
-            else:
-                # ignore this file type
-                continue
+        dim = image_dimensions(filename)
+        if dim is None:
+            # Could not detect image dimensions
+            continue
 
-            filesize = os.stat(filename).st_size
-            if filesize > maxsize:
-                yield FAIL, Message(
-                    "filesize",
-                    f"`{filename}` has `{filesize} bytes`, but the maximum filesize"
-                    f" for {imagetype} images is `{maxsize} bytes`.",
-                )
+        w, h = dim
+        if w > MAX_WIDTH or h > MAX_HEIGHT:
+            yield FAIL, Message(
+                "image-too-large",
+                f"Image is too large: `{w} x {h} pixels`\n\n"
+                f"Max resolution allowed: `{MAX_WIDTH} x {MAX_HEIGHT} pixels`",
+            )
 
-            dim = image_dimensions(filename)
-            if dim is None:
-                # Could not detect image dimensions
-                continue
-
-            w, h = dim
-            if w > MAX_WIDTH or h > MAX_HEIGHT:
-                yield FAIL, Message(
-                    "image-too-large",
-                    f"Image is too large: `{w} x {h} pixels`\n\n"
-                    f"Max resulution allowed: `{MAX_WIDTH} x {MAX_HEIGHT} pixels`",
-                )
+    yield PASS, "ok"
