@@ -5019,22 +5019,58 @@ def test_check_linegaps():
 
 
 def test_check_article_images():
-    """Validate location, size and resolution of article images."""
-    check = CheckTester("com.google.fonts/check/article/images")
-
-    # This one is know to be bad:
-    family_dir = TEST_FILE("tirodevanagarihindi")
-
-    assert_results_contain(
-        check(MockFont(family_directory=family_dir)),
-        WARN,
-        "misplaced-image-files",
-        "The files are not in the correct directory...",
+    """Test ARTICLE page visual content, length requirements, and image properties."""
+    check = CheckTester(
+        "com.google.fonts/check/article/images", profile=googlefonts_profile
     )
 
-    # TODO: test WARN "lacks-article"
-    # TODO: test FAIL "image-too-large"
-    # TODO: test PASS
+    # Test case for missing ARTICLE
+    family_directory = portable_path("data/test/missing_article")
+    assert_results_contain(
+        check(MockFont(family_directory=family_directory)), WARN, "lacks-article"
+    )
+
+    # Test case for ARTICLE not meeting length requirements
+    family_directory = portable_path("data/test/short_article")
+    assert_results_contain(
+        check(MockFont(family_directory=family_directory)),
+        WARN,
+        "length-requirements-not-met",
+    )
+
+    # Test case for ARTICLE missing visual asset
+    family_directory = portable_path("data/test/article_no_visual")
+    assert_results_contain(
+        check(MockFont(family_directory=family_directory)), WARN, "missing-visual-asset"
+    )
+
+    # Test case for ARTICLE with missing visual files
+    family_directory = portable_path("data/test/article_missing_visual_file")
+    assert_results_contain(
+        check(MockFont(family_directory=family_directory)), WARN, "missing-visual-file"
+    )
+
+    # Test case for misplaced image files
+    family_directory = portable_path("data/test/misplaced_image_files")
+    assert_results_contain(
+        check(MockFont(family_directory=family_directory)),
+        WARN,
+        "misplaced-image-files",
+    )
+
+    #    TODO:
+    #    # Test case for image file exceeding size limit
+    #    family_directory = portable_path("data/test/large_image_file")
+    #    assert_results_contain(check(MockFont(family_directory=family_directory)), FAIL, "filesize")
+
+    #    TODO:
+    #    # Test case for image file exceeding resolution limit
+    #    family_directory = portable_path("data/test/large_resolution_image")
+    #    assert_results_contain(check(MockFont(family_directory=family_directory)), FAIL, "image-too-large")
+
+    # Test case for ARTICLE meeting requirements
+    family_directory = portable_path("data/test/article_valid")
+    assert_PASS(check(MockFont(family_directory=family_directory)))
 
 
 def test_varfont_instances_in_order():
