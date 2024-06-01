@@ -45,23 +45,17 @@ message FamilyProto {
   // The script to use when picking sample text. See the Script spanner table.
   optional string primary_script = 21;
 
-  // Stroke of the letter forms: serif, sans serif, or slab serif.  A family
-  // has a single stroke and may have none at all. The values are strings that
-  // in all uppercase with spaces replaced by underscores:
-  //    SERIF
-  //    SANS_SERIF
-  //    SLAB_SERIF
-  optional string stroke = 22;
+  optional string primary_language = 22;
 
-  // A family's broad classifications: display, handwriting, monospace, and
-  // symbols (not text). The values are in all uppercase:
-  //    DISPLAY
-  //    HANDWRITING
-  //    MONOTYPE
-  //    SYMBOLS
-  repeated string classifications = 23;
+  // Stroke of the letter forms: serif, sans serif, etc. Stroke is mutually
+  // exclusive. The values are the string names from the Stroke enum or the
+  // empty string.
+  optional string stroke = 23;
 
-  // Next = 24
+  // A family's broad classifications: display, handwriting, monospace, etc.
+  // The values are the string names from the Classification enum.
+  repeated string classifications = 25;
+  // Next = 25
 }
 
 message FontProto {
@@ -137,6 +131,7 @@ message SampleTextProto {
   optional string specimen_32 = 10;
   optional string specimen_21 = 11;
   optional string specimen_16 = 12;
+  optional string note = 13;
 }
 
 message GlyphGroupProto {
