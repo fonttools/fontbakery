@@ -91,9 +91,9 @@
 <meta name="feedback_help_link_type" content="" />
 <meta name="feedback_help_link_url" content="" />
 <meta name="feedback_product_url" content="" />
-<meta name="feedback_system" content="GitHub" />
-<meta name="git_commit_id" content="f33299adf56a1f104dba6d0d890f56750430ce1a" />
-<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/f33299adf56a1f104dba6d0d890f56750430ce1a/typographydocs/vendors/index.md" />
+<meta name="feedback_system" content="Standard" />
+<meta name="git_commit_id" content="3fa0ee489e47db9983163147ce5ab52486da9b0c" />
+<meta name="gitcommit" content="https://github.com/MicrosoftDocs/typography/blob/3fa0ee489e47db9983163147ce5ab52486da9b0c/typographydocs/vendors/index.md" />
 <meta name="keywords" content="typography" />
 <meta name="locale" content="en-us" />
 <meta name="ms.author" content="alib" />
@@ -108,8 +108,8 @@
 <meta name="source-file" content="http://www.microsoft.com/typography/links/links.aspx" />
 <meta name="toc_rel" content="../toc.json" />
 <meta name="uhfHeaderId" content="MSDocsHeader-MSTypography" />
-<meta name="updated_at" content="2024-04-24 01:27 AM" />
-<meta name="word_count" content="4855" />
+<meta name="updated_at" content="2024-05-31 03:32 AM" />
+<meta name="word_count" content="4859" />
 
 
 	<meta name="persistent_id" content="9118132d-6b83-bbdf-1939-3e660d31ce3e" />
@@ -139,7 +139,7 @@
 <link href="https://learn.microsoft.com/en-us/typography/vendors/" rel="canonical">
 	<title>Registered font vendors - Typography | Microsoft Learn</title>
 
-		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/281396a.site-ltr.css ">
+		<link rel="stylesheet" href="/_themes/docs.theme/master/en-us/_themes/styles/3589a59e.site-ltr.css ">
 
 	
 
@@ -156,14 +156,14 @@
 			context: {
 			},
 			hasBinaryRating: true,
-			hasGithubIssues: true,
+			hasGithubIssues: false,
 			feedbackHelpLinkType:'',
 			feedbackHelpLinkUrl:'',
-			standardFeedback: false,
+			standardFeedback: true,
 			showFeedbackReport: false,
 			enableTutorialFeedback: false,
-			feedbackSystem: 'GitHub',
-			feedbackGitHubRepo: 'MicrosoftDocs/typography-issues',
+			feedbackSystem: 'Standard',
+			feedbackGitHubRepo: '',
 			feedbackProductUrl: '',
 			extendBreadcrumb: false,
 			isEditDisplayable: false,
@@ -194,19 +194,7 @@
 
 	<script src="/_themes/docs.theme/master/en-us/_themes/global/67a45209.deprecation.js"></script>
 
-		<link rel="preconnect" href="//mscom.demdex.net" crossorigin>
-		<link rel="dns-prefetch" href="//target.microsoft.com">
-		<link rel="dns-prefetch" href="//microsoftmscompoc.tt.omtrdc.net">
-		<link
-			rel="preload"
-			as="script"
-			href="/static/third-party/adobe-target/at-js/2.9.0/at.js"
-			integrity="sha384-1/viVM50hgc33O2gOgkWz3EjiD/Fy/ld1dKYXJRUyjNYVEjSUGcSN+iPiQF7e4cu"
-			crossorigin="anonymous"
-			id="adobe-target-script"
-			type="application/javascript"
-		/>
-		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/d9b11812.index-docs.js"></script>
+		<script src="/_themes/docs.theme/master/en-us/_themes/scripts/12bcaea5.index-docs.js"></script>
 </head>
 
 <body lang="en-us" dir="ltr">
@@ -362,7 +350,7 @@ Table of contents						</span>
 													<span class="docon docon-more-vertical"></span>
 												</span>
 											</summary>
-											<div class="popover-content padding-none">
+											<div class="popover-content padding-xs">
 													<button
 														data-page-action-item="overflow-mobile"
 														type="button"
@@ -440,8 +428,38 @@ Table of contents						</span>
 														<span>Edit</span>
 													</a>
 
+												<div aria-hidden="true" class="margin-none" data-page-action-item="overflow-all"></div>
+														<hr class="display-none-tablet margin-bottom-xxs margin-top-xxs" />
+														<h4 class="font-size-sm padding-left-xxs">Share via</h4>
+
+													
+														<a class="button button-clear button-sm button-block has-inner-focus text-decoration-none justify-content-flex-start share-facebook" data-bi-name="facebook" data-page-action-item="overflow-all">
+															<span class="icon" aria-hidden="true">
+																<span class="docon docon-facebook-share font-size-md color-primary"></span>
+															</span>
+															<span class="margin-left-xxs">Facebook</span>
+														</a>
+														<a class="button button-clear button-sm has-inner-focus button-block text-decoration-none justify-content-flex-start share-twitter" data-bi-name="twitter" data-page-action-item="overflow-all">
+															<span class="icon" aria-hidden="true">
+																<span class="docon docon-xlogo-share font-size-xxs"></span>
+															</span>
+															<span class="margin-left-xxs">x.com</span>
+														</a>
+														<a class="button button-clear button-sm has-inner-focus button-block text-decoration-none justify-content-flex-start share-linkedin" data-bi-name="linkedin" data-page-action-item="overflow-all">
+															<span class="icon" aria-hidden="true">
+																<span class="docon docon-linked-in-logo font-size-sm color-primary"></span>
+															</span>
+															<span class="margin-left-xxs">LinkedIn</span>
+														</a>
+														<a class="button button-clear button-sm button-block has-inner-focus text-decoration-none justify-content-flex-start margin-bottom-xxs share-email" data-bi-name="email" data-page-action-item="overflow-all">
+															<span class="icon" aria-hidden="true">
+																<span class="docon docon-mail-message font-size-sm color-primary"></span>
+															</span>
+															<span class="margin-left-xxs">Email</span>
+														</a>
+													<hr />
 													<button
-														class="button button-block button-clear button-sm justify-content-flex-start has-inner-focus"
+														class="button button-block button-clear button-sm justify-content-flex-start has-inner-focus margin-top-xxs"
 														title="Print"
 														type="button"
 														aria-label="Print"
@@ -451,39 +469,10 @@ Table of contents						</span>
 														data-print-page
 														data-check-hidden="true">
 														<span class="icon" aria-hidden="true">
-															<span class="docon docon-print"></span>
+															<span class="docon docon-print font-size-sm color-primary"></span>
 														</span>
-														<span>Print</span>
+														<span class="margin-left-xxs">Print</span>
 													</button>
-
-													<div aria-hidden="true" class="margin-none
-														border-top" data-page-action-item="overflow-all"></div>
-
-													
-														<a class="button button-clear button-sm has-inner-focus button-block text-decoration-none justify-content-flex-start share-twitter" data-bi-name="twitter" data-page-action-item="overflow-all">
-															<span class="icon" aria-hidden="true">
-																<span class="docon docon-brand-twitter"></span>
-															</span>
-															<span>Twitter</span>
-														</a>
-														<a class="button button-clear button-sm has-inner-focus button-block text-decoration-none justify-content-flex-start share-linkedin" data-bi-name="linkedin" data-page-action-item="overflow-all">
-															<span class="icon" aria-hidden="true">
-																<span class="docon docon-brand-linkedin"></span>
-															</span>
-															<span>LinkedIn</span>
-														</a>
-														<a class="button button-clear button-sm button-block has-inner-focus text-decoration-none justify-content-flex-start share-facebook" data-bi-name="facebook" data-page-action-item="overflow-all">
-															<span class="icon" aria-hidden="true">
-																<span class="docon docon-brand-facebook"></span>
-															</span>
-															<span>Facebook</span>
-														</a>
-														<a class="button button-clear button-sm button-block has-inner-focus text-decoration-none justify-content-flex-start share-email" data-bi-name="email" data-page-action-item="overflow-all">
-															<span class="icon" aria-hidden="true">
-																<span class="docon docon-mail-message-fill"></span>
-															</span>
-															<span>Email</span>
-														</a>
 												
 											</div>
 										</details>
@@ -543,8 +532,6 @@ Article														</li>
 	</button>
 </div>
 									</div>
-
-									<div id="ms--inline-notifications" data-bi-name="inline-notification"></div>
 
 										<nav id="center-doc-outline" class="doc-outline is-hidden-desktop display-none-print margin-bottom-sm" data-bi-name="intopic toc" aria-label="In this article">
 											<h2 id="ms--in-this-article" class="title is-6 margin-block-xs">In this article</h2>
@@ -2113,7 +2100,8 @@ Article														</li>
     </tr>
 <tr>
 <td>EAFN</td>
-<td>
+<td>EA FONTS</td>
+</tr>
 <tr>
 <td>EAST</td>
 <td><a href="https://www.eastofrome.com/" data-linktype="external">East of Rome</a></td>
@@ -5076,7 +5064,8 @@ Article														</li>
 </tr>
 <tr>
 <td>RAWR</td>
-<td>
+<td>Melvian Foundry</td>
+</tr>
 <tr>
 <td>RDGR</td>
 <td><a href="http://www.philippneumeyer.com/" data-linktype="external">Rüdiger</a></td>
@@ -6551,6 +6540,8 @@ Article														</li>
 
 							</div>
 
+								<div id="ms--inline-notifications" class="margin-block-xs" data-bi-name="inline-notification"></div>
+
 							<div id="assertive-live-region" role="alert" aria-live="assertive" class="visually-hidden" aria-relevant="additions" aria-atomic="true"></div>
 							<div id="polite-live-region" role="status" aria-live="polite" class="visually-hidden" aria-relevant="additions" aria-atomic="true"></div>
 							<!-- </content> -->
@@ -6564,6 +6555,47 @@ Article														</li>
 						<!-- end recommendations section -->
 
 						<!-- feedback section -->
+<section id="site-user-feedback-footer" class="font-size-sm margin-top-md" data-test-id="site-user-feedback-footer" data-bi-name="site-feedback-section">
+	<hr class="hr" />
+	<h2 id="feedback" class="title is-3">Feedback</h2>
+	<div class="display-flex flex-wrap-wrap align-items-center">
+		<p class="font-weight-semibold margin-xxs margin-left-none">Was this page helpful?</p>
+		<div class="buttons">
+			<button
+				class="thumb-rating-button like button button-primary button-sm"
+				data-test-id="footer-rating-yes"
+				data-binary-rating-response="rating-yes"
+				type="button"
+				title="This article is helpful"
+				data-bi-name="button-rating-yes"
+				aria-pressed="false"
+			>
+				<span class="icon" aria-hidden="true">
+					<span class="docon docon-like"></span>
+				</span>
+				<span>Yes</span>
+			</button>
+			<button
+				class="thumb-rating-button dislike button button-primary button-sm"
+				data-test-id="footer-rating-no"
+				data-binary-rating-response="rating-no"
+				type="button"
+				title="This article is not helpful"
+				data-bi-name="button-rating-no"
+				aria-pressed="false"
+			>
+				<span class="icon" aria-hidden="true">
+					<span class="docon docon-dislike"></span>
+				</span>
+				<span>No</span>
+			</button>
+		</div>
+	</div>
+
+
+<div class="display-flex flex-wrap-wrap margin-top-xxs">
+</div>
+</section>
 <section class="feedback-section position-relative" data-bi-name="feedback-section">
     <h2 id="feedback" class="title is-3 margin-top-sm">Feedback</h2>
 
@@ -6587,7 +6619,7 @@ Article														</li>
     </div>
 
     <div class="action-container display-flex justify-content-flex-end margin-block-xxs">
-        <a class="view-on-github has-external-link-indicator" data-bi-name="view-on-github" href="https://github.com/MicrosoftDocs/typography-issues/issues">
+        <a class="view-on-github has-external-link-indicator" data-bi-name="view-on-github" href="https://github.com//issues">
             <span aria-hidden="true" class="docon docon-brand-github"></span>
             <span>View all page feedback</span>
         </a>
