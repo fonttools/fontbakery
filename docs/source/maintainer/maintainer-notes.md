@@ -85,12 +85,9 @@ git push upstream --tags
 # And also uncheck its "pre-release" checkbox!
 
 # Close the current milestone on the GitHub issue tracker
-# moving to a future milestone any of its issue that we've
+# moving to a future milestone any of its issues that we've
 # not been able to close yet.
 # https://github.com/fonttools/fontbakery/milestones
-
-# And after a new release is also a good moment to update the versions
-# of dependencies on requirements.txt ;-)
 ```
 
 ## Cached Vendor ID data
