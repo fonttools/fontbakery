@@ -29,7 +29,7 @@ maintainers = [
 
 dependencies = [
     "fontTools >= 4.46.0",
-    "freetype-py < 2.4.0",
+    "freetype-py < 2.4.0",  # see: https://github.com/fonttools/fontbakery/issues/4143
     "opentypespec",
     "opentype-sanitizer >= 9.1.0, == 9.*",
     "munkres",
