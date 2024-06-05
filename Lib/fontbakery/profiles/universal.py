@@ -19,6 +19,7 @@ PROFILE = {
             "com.google.fonts/check/fontbakery_version",
             "com.adobe.fonts/check/freetype_rasterizer",
             "com.google.fonts/check/gpos7",
+            "com.google.fonts/check/gsub/smallcaps_before_ligatures",
             "com.google.fonts/check/interpolation_issues",
             "com.google.fonts/check/legacy_accents",
             "com.google.fonts/check/linegaps",
