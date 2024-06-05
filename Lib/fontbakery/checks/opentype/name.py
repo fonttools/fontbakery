@@ -215,8 +215,8 @@ def com_google_fonts_check_monospace(ttFont, glyph_metrics_stats):
             passed = False
             yield WARN, Message(
                 "bad-numberOfHMetrics",
-                f"The OpenType spec recomments at https://learn.microsoft.com/"
-                f"en-us/typography/opentype/spec/recom#hhea-table"
+                f"The OpenType spec recommends at "
+                f"https://learn.microsoft.com/en-us/typography/opentype/spec/recom#hhea-table"
                 f" that hhea.numberOfHMetrics be set to 3"
                 f" but this font has {number_of_h_metrics} instead.\n"
                 f"Please read https://github.com/fonttools/fonttools/issues/3014"
