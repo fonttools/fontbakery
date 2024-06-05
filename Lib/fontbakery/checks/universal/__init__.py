@@ -1201,3 +1201,63 @@ def com_google_fonts_check_alt_caron(ttFont):
                         )
     if passed:
         yield PASS, "Looks good!"
+
+
+@check(
+    id="com.google.fonts/check/gsub/smallcaps_before_ligatures",
+    rationale="""
+        OpenType small caps should be defined before ligature lookups to ensure
+        proper functionality.
+
+        Rainer Erich Scheichelbauer (a.k.a. MekkaBlue) pointed out in a tweet
+        (https://twitter.com/mekkablue/status/1297486769668132865) that the ordering
+        of small caps and ligature lookups can lead to bad results such as the example
+        he provided of the word "WAFFLES" in small caps, but with an unfortunate
+        lowercase ffl ligature substitution.
+	
+        This check attempts to detect this kind of mistake.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/3020",
+    experimental="Since 2024/Jun/10",
+    conditions=["is_ttf"],
+)
+def com_google_fonts_check_gsub_smallcaps_before_ligatures(ttFont):
+    """
+    Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table.
+    """
+    if "GSUB" not in ttFont:
+        return FAIL, Message(
+            "missing-gsub-table", "Font does not contain a GSUB table."
+        )
+
+    gsub_table = ttFont["GSUB"].table
+    lookup_order = {
+        lookup.LookupType: idx
+        for idx, lookup in enumerate(gsub_table.LookupList.Lookup)
+    }
+
+    smcp_indices = [
+        idx
+        for idx, feature in enumerate(gsub_table.FeatureList.FeatureRecord)
+        if feature.FeatureTag == "smcp"
+    ]
+    liga_indices = [
+        idx
+        for idx, feature in enumerate(gsub_table.FeatureList.FeatureRecord)
+        if feature.FeatureTag == "liga"
+    ]
+
+    if not smcp_indices or not liga_indices:
+        return FAIL, Message(
+            "missing-lookups", "'smcp' or 'liga' lookups not found in GSUB table."
+        )
+
+    first_smcp_index = min(smcp_indices)
+    first_liga_index = min(liga_indices)
+
+    if first_smcp_index < first_liga_index:
+        return PASS, "'smcp' lookups are defined before 'liga' lookups."
+    else:
+        return FAIL, Message(
+            "feature-ordering", "'smcp' lookups are not defined before 'liga' lookups."
+        )

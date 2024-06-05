@@ -1418,3 +1418,54 @@ def test_check_case_mapping():
         table.cmap[0x2160] = "uni2160"  # ROMAN NUMERAL ONE, which downcases to 0x2170
     assert 0x2170 not in ttFont.getBestCmap()
     assert_PASS(check(ttFont))
+
+
+def test_check_gsub_smallcaps_before_ligatures():
+    """Ensure 'smcp' lookups are defined before 'liga' lookups in the 'GSUB' table."""
+    check = CheckTester("com.google.fonts/check/gsub/smallcaps_before_ligatures")
+    from fontTools.ttLib.tables.otTables import Feature, FeatureRecord
+
+    ttFont = TTFont(TEST_FILE("mada/Mada-Regular.ttf"))
+
+    smcp_feature = Feature()
+    smcp_feature.LookupListIndex = [0]
+    liga_feature = Feature()
+    liga_feature.LookupListIndex = [1]
+
+    from copy import deepcopy
+
+    original_gsub_table = deepcopy(ttFont["GSUB"])
+
+    # Test GSUB table is missing
+    del ttFont["GSUB"]
+    msg = assert_results_contain(check(ttFont), FAIL, "missing-gsub-table")
+    assert "Font does not contain a GSUB table." in msg
+
+    # Restore GSUB table for further tests
+    ttFont["GSUB"] = original_gsub_table
+
+    smcp_record = FeatureRecord()
+    smcp_record.FeatureTag = "smcp"
+    smcp_record.Feature = smcp_feature
+
+    liga_record = FeatureRecord()
+    liga_record.FeatureTag = "liga"
+    liga_record.Feature = liga_feature
+
+    # Test both 'smcp' and 'liga' lookups are present
+    ttFont["GSUB"].table.FeatureList.FeatureRecord = [smcp_record, liga_record]
+    assert_PASS(check(ttFont))
+
+    # Test 'liga' lookup before 'smcp' lookup
+    ttFont["GSUB"].table.FeatureList.FeatureRecord = [liga_record, smcp_record]
+    assert_results_contain(check(ttFont), FAIL, "feature-ordering")
+
+    # Test 'smcp' lookup missing
+    ttFont["GSUB"].table.FeatureList.FeatureRecord = [liga_record]
+    msg = assert_results_contain(check(ttFont), FAIL, "missing-lookups")
+    assert "'smcp' or 'liga' lookups not found in GSUB table." in msg
+
+    # Test 'liga' lookup missing
+    ttFont["GSUB"].table.FeatureList.FeatureRecord = [smcp_record]
+    msg = assert_results_contain(check(ttFont), FAIL, "missing-lookups")
+    assert "'smcp' or 'liga' lookups not found in GSUB table." in msg
