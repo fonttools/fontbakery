@@ -465,11 +465,25 @@ def com_adobe_fonts_check_varfont_valid_default_instance_nameids(
             if postscript_nameid == 0xFFFF:
                 postscript_nameid = "0xFFFF"
 
-            if subfam_name != font_subfam_name:
+            if name17 and subfam_name != font_subfam_name:
                 yield FAIL, Message(
                     "invalid-default-instance-subfamily-name",
                     f"{subfam_name!r} instance has the same coordinates as the default"
-                    f" instance; its subfamily name should be {font_subfam_name!r}",
+                    f" instance; its subfamily name should be {font_subfam_name!r}.\n\n"
+                    f"Note: It is alternatively possible that Name ID 17 is incorrect,"
+                    f" and should be set to the default instance subfamily name, {subfam_name!r},"
+                    f" rather than '{name17!r}'. If the default instance is {subfam_name!r},"
+                    f" NameID 17 is probably the problem.",
+                )
+
+            if not name17 and subfam_name != font_subfam_name:
+                yield FAIL, Message(
+                    "invalid-default-instance-subfamily-name",
+                    f"{subfam_name!r} instance has the same coordinates as the default"
+                    f" instance; its subfamily name should be {font_subfam_name!r}.\n\n"
+                    f"Note: If the default instance really is meant to be called {subfam_name!r},"
+                    f" the problem may be that the font lacks NameID 17, which should"
+                    f" probably be present and set to {subfam_name!r}.",
                 )
 
             # Validate the postScriptNameID string only if
