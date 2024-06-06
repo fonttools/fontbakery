@@ -6,6 +6,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### Added to the Universal profile
   - **EXPERIMENTAL - [com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table (issue #3020)
 
+### Changes to existing checks
+#### On the OpenType profile
+  - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]** Clarify that the problem may actually be NameID 17, rather than the default instance. (PR #4761)
+
 
 ## 0.12.7 (2024-Jun-04)
   - Support setting `input.variations` in input TOML for `update_shaping_tests`. (PR #4753)

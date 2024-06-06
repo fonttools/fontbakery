@@ -525,10 +525,10 @@ def test_check_varfont_valid_default_instance_nameids():
     msg = assert_results_contain(
         check(ttFont_1), FAIL, "invalid-default-instance-subfamily-name"
     )
-    assert msg == (
+    assert (
         "'Instance #1' instance has the same coordinates as the default"
         " instance; its subfamily name should be 'Regular'"
-    )
+    ) in msg
     # Restore the original ID
     dflt_inst.subfamilyNameID = 258
 
@@ -538,10 +538,10 @@ def test_check_varfont_valid_default_instance_nameids():
     msg = assert_results_contain(
         check(ttFont_2), FAIL, "invalid-default-instance-subfamily-name"
     )
-    assert msg == (
+    assert (
         "'MutatorMathTest' instance has the same coordinates as the default"
         " instance; its subfamily name should be 'LightCondensed'"
-    )
+    ) in msg
     # Restore the original ID
     dflt_inst.subfamilyNameID = 258
 
@@ -553,10 +553,10 @@ def test_check_varfont_valid_default_instance_nameids():
     msg = assert_results_contain(
         check(ttFont_1), FAIL, "invalid-default-instance-postscript-name"
     )
-    assert msg == (
+    assert (
         "'Regular' instance has the same coordinates as the default instance;"
         " its postscript name should be 'Cabin-Regular', instead of 'None'."
-    )
+    ) in msg
 
     # The default instance of MutatorSans-VF has the correct postScriptNameID.
     # Change it to make the check fail.
@@ -565,11 +565,11 @@ def test_check_varfont_valid_default_instance_nameids():
     msg = assert_results_contain(
         check(ttFont_2), FAIL, "invalid-default-instance-postscript-name"
     )
-    assert msg == (
+    assert (
         "'LightCondensed' instance has the same coordinates as the default instance;"
         " its postscript name should be 'MutatorMathTest-LightCondensed',"
         " instead of 'MutatorMathTest-BoldCondensed'."
-    )
+    ) in msg
 
     # Confirm the check yields FAIL if the font doesn't have a required table
     del ttFont_1["name"]
