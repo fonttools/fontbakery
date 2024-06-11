@@ -62,7 +62,8 @@ class ProgressReporter(SerializeReporter):
             if type(log["message"]["message"]).__name__ == "FailedConditionError":
                 log["message"]["message"] = str(log["message"]["message"])
         data = json.loads(json.dumps(data))
-        self.callback(data)
+        if not self.omit_loglevel(checkresult.summary_status.name):
+            self.callback(data)
 
 
 def run_fontbakery(
