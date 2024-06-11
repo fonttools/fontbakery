@@ -4,6 +4,8 @@ import os
 import re
 import yaml
 
+from fontTools.ttLib.ttFont import TTFont
+
 from fontbakery.callable import condition
 from fontbakery.testable import Font, CheckRunContext
 from fontbakery.constants import (
@@ -285,7 +287,6 @@ def remote_styles(font):
     a given family as currently hosted at Google Fonts.
     """
     from fontbakery.utils import download_file
-    from fontTools.ttLib import TTFont
     import json
     import requests
 
@@ -487,7 +488,10 @@ def expected_font_names(ttFont, ttFonts):
     from copy import deepcopy
 
     siblings = [f for f in ttFonts if f != ttFont]
-    font_cp = deepcopy(ttFont)
+    font_cp = TTFont()
+    for table in ["fvar", "name", "STAT", "OS/2", "post", "head"]:
+        if table in ttFont:
+            font_cp[table] = deepcopy(ttFont[table])
     build_name_table(font_cp, siblings=siblings)
     if "fvar" in font_cp:
         build_fvar_instances(font_cp)
