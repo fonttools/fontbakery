@@ -44,6 +44,7 @@ const EXCUSES = {
 
   // Other checks
   'com.google.fonts/check/metadata/family_directory_name': NOWASM('there are no directories in the WASM environment'),
+  'com.google.fonts/check/ttx_roundtrip': NOWASM('the WASM environment does not support calling other processes')
 };
 const fbWorker = new Worker('./fb-webworker.js');
 
