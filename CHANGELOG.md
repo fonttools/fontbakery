@@ -5,6 +5,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### New checks
 #### Added to the Universal profile
   - **EXPERIMENTAL - [com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table (issue #3020)
+  - [com.google.fonts/check/unreachable_glyphs]: ignore /caroncomb.alt and /uni030C.alt when checking OTF fonts, as these are often present as components for related TTF fonts
 
 
 ## 0.12.7 (2024-Jun-04)
