@@ -254,7 +254,6 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
         ]
         all_glyphs -= set(glyphsToIgnoreInOTF)
 
-
     if all_glyphs:
         yield WARN, Message(
             "unreachable-glyphs",
