@@ -246,6 +246,15 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
             if base_glyph.isComposite() and glyph_name not in all_glyphs:
                 all_glyphs -= set(base_glyph.getComponentNames(ttFont["glyf"]))
 
+    # In OTF fonts, ignore glyphs that are commonly only present as componenents in TTF fonts
+    if "CFF " in ttFont:
+        glyphsToIgnoreInOTF = [
+            "uni030C.alt",
+            "caroncomb.alt",
+        ]
+        all_glyphs -= set(glyphsToIgnoreInOTF)
+
+
     if all_glyphs:
         yield WARN, Message(
             "unreachable-glyphs",
