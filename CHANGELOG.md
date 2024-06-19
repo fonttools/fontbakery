@@ -3,6 +3,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## Upcoming release: 0.12.8 (2024-Jun-??)
 ### New checks
+#### Added to the OpenType profile
+  - **EXPERIMENTAL - [com.adobe.fonts/check/cff_ascii_strings]:** Checks if all strings in a font's CFF table top dict fit in the range of ASCII values (issue #4619)
+
 #### Added to the Universal profile
   - **EXPERIMENTAL - [com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table (issue #3020)
 

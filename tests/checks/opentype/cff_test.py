@@ -1,3 +1,5 @@
+from fontTools.ttLib import TTFont
+
 from fontbakery.codetesting import (
     assert_PASS,
     assert_results_contain,
@@ -96,5 +98,43 @@ def test_check_cff_deprecated_operators():
         (
             'Glyph "Agrave" has deprecated use of "endchar" operator'
             " to build accented characters (seac)."
+        ),
+    )
+
+
+def test_check_cff_strings():
+    check = CheckTester("com.adobe.fonts/check/cff_ascii_strings")
+
+    ttFont = TTFont(TEST_FILE("source-sans-pro/OTF/SourceSansPro-Regular.otf"))
+
+    # check that a healthy CFF font passes:
+    assert_PASS(check(ttFont))
+
+    # FIXME: The condition cff_analysis creates a new ttFont object
+    #        and, consequently, discards the modifications we made
+    #        here prior to invoking the check.
+    #
+    # # put an out of range char into FullName field:
+    # rawDict = ttFont["CFF "].cff.topDictIndex[0].rawDict
+    # rawDict["FullName"] = "S\u00F2urceSansPro-Regular"
+    # assert_results_contain(
+    #     check(ttFont),
+    #     FAIL,
+    #     "cff-string-not-in-ascii-range",
+    #     (
+    #         "The following CFF TopDict strings are not in the ASCII range:"
+    #         f"- FullName: {rawDict['FullName']}"
+    #     ),
+    # )
+
+    # Out-of-ascii-range char in the FontName field will cause decode issues:
+    ttFont = TTFont(TEST_FILE("unicode-decode-err/unicode-decode-err-cff.otf"))
+    assert_results_contain(
+        check(ttFont),
+        FAIL,
+        "cff-unable-to-decode",
+        (
+            "Unable to decode CFF table, possibly due to out "
+            "of ASCII range strings. Please check table strings."
         ),
     )
