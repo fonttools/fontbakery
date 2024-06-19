@@ -15,6 +15,7 @@ PROFILE = {
             "com.adobe.fonts/check/cff2_call_depth",
             "com.adobe.fonts/check/cff_call_depth",
             "com.adobe.fonts/check/cff_deprecated_operators",
+            "com.adobe.fonts/check/cff_ascii_strings",
         ],
         "fontwerk": [
             "com.fontwerk/check/inconsistencies_between_fvar_stat",  # IS_OVERRIDDEN
