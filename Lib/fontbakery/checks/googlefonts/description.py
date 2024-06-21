@@ -226,9 +226,9 @@ def com_google_fonts_check_description_has_unsupported_elements(
     id="com.google.fonts/check/description/broken_links",
     conditions=["network", "description_and_article_html"],
     rationale="""
-        The snippet of HTML in the DESCRIPTION.en_us.html/ARTICLE.en_us.html file is added
-        to the font family webpage on the Google Fonts website. For that reason, all hyperlinks
-        in it must be properly working.
+        The snippet of HTML in the DESCRIPTION.en_us.html/ARTICLE.en_us.html file is
+        added to the font family webpage on the Google Fonts website. For that reason,
+        all hyperlinks in it must be properly working.
     """,
     proposal=[
         "legacy:check/003",
@@ -276,7 +276,7 @@ def com_google_fonts_check_description_broken_links(description_and_article_html
             yield FAIL, Message(
                 "broken-links",
                 f"The following links are broken"
-                f" in the f{source} file:\n\t"
+                f" in the {source} file:\n\t"
                 f"{broken_links_list}",
             )
 
