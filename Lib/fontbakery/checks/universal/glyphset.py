@@ -170,6 +170,14 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
     all_glyphs.discard(".null")
     all_glyphs.discard(".notdef")
 
+    # Glyphs identified in the Extender Glyph Table within JSTF table,
+    # such as kashidas, are not included in the check output:
+    # https://github.com/fonttools/fontbakery/issues/4773
+    if "JSTF" in ttFont:
+        for subtable in ttFont["JSTF"].table.iterSubTables():
+            for extender_glyph in subtable.value.JstfScript.ExtenderGlyph.ExtenderGlyph:
+                all_glyphs.discard(extender_glyph)
+
     if "MATH" in ttFont:
         glyphinfo = ttFont["MATH"].table.MathGlyphInfo
         mathvariants = ttFont["MATH"].table.MathVariants
