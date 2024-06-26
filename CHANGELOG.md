@@ -10,6 +10,9 @@ A more detailed list of changes is available in the corresponding milestones for
   - **EXPERIMENTAL - [com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table (issue #3020)
 
 ### Changes to existing checks
+#### On the Universal profile
+  - **[com.google.fonts/check/unreachable_glyphs]:** Glyphs identified in the Extender Glyph Table within JSTF table, such as kashidas, are not included in the check output. (issue #4773)
+
 #### On the OpenType profile
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]** Clarify that the problem may actually be NameID 17, rather than the default instance. (PR #4761)
 
