@@ -5,12 +5,16 @@
 
 3D # seen in "Rock 3D"
 ABeeZee
+BatangChe
 BenchNine
 BhuTuka # seen in "BhuTuka Expanded One"
 BioRhyme
 DotGothic # seen in "DotGothic16"
+DotumChe
 DynaPuff
 FakeFont
+GulimChe
+GungsuhChe
 JetBrains # seen in "JetBrains Mono"
 KoHo
 McLaren
