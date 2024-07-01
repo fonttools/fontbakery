@@ -27,6 +27,7 @@ PROFILE = {
             "com.google.fonts/check/metadata/has_regular",
             "com.google.fonts/check/metadata/has_tags",
             "com.google.fonts/check/metadata/includes_production_subsets",
+            "com.google.fonts/check/metadata/single_cjk_subset",
             "com.google.fonts/check/metadata/license",
             "com.google.fonts/check/metadata/match_filename_postscript",
             "com.google.fonts/check/metadata/match_fullname_postscript",

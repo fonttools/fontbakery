@@ -370,6 +370,37 @@ def com_google_fonts_check_metadata_includes_production_subsets(
 
 
 @check(
+    id="com.google.fonts/check/metadata/single_cjk_subset",
+    conditions=["family_metadata"],
+    rationale="""
+        Check METADATA.pb file only contains a single CJK subset since the Google Fonts
+        backend doesn't support multiple CJK subsets.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/issues/4779",
+    experimental="Since 2024/Jul/02",
+)
+def com_google_fonts_check_metadata_single_cjk_subset(family_metadata):
+    """Check METADATA.pb file only contains a single CJK subset."""
+    cjk_subsets = frozenset(
+        [
+            "chinese-hongkong",
+            "chinese-simplified",
+            "chinese-traditional",
+            "korean",
+            "japanese",
+        ]
+    )
+    cjk_subset_in_font = set(family_metadata.subsets) & cjk_subsets
+
+    if len(cjk_subset_in_font) > 1:
+        yield FATAL, Message(
+            "multiple-cjk-subsets",
+            "METADATA.pb file contains more than one CJK subset. Please choose "
+            f"only one from {', '.join(cjk_subsets)}.",
+        )
+
+
+@check(
     id="com.google.fonts/check/metadata/copyright",
     conditions=["family_metadata"],
     proposal="legacy:check/088",
