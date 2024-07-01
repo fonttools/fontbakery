@@ -1551,6 +1551,31 @@ def test_check_metadata_includes_production_subsets(requests_mock):
     )
 
 
+def test_check_metadata_single_cjk_subset():
+    """Check METADATA.pb file only contains a single CJK subset"""
+    check = CheckTester(
+        "com.google.fonts/check/metadata/single_cjk_subset",
+    )
+    font = TEST_FILE("familysans/FamilySans-Regular.ttf")
+    md = Font(font).family_metadata
+
+    # Test should pass since there isn't a CJK subset
+    assert_PASS(check(MockFont(file=font, family_metadata=md)))
+
+    # Let's append a single cjk subset
+    md.subsets.append("korean")
+    assert_PASS(check(MockFont(file=font, family_metadata=md)))
+
+    # Let's add another to raise a FATAL
+    md.subsets.append("japanese")
+    assert_results_contain(
+        check(MockFont(file=font, family_metadata=md)),
+        FATAL,
+        "multiple-cjk-subsets",
+        "METADATA.pb has multiple cjk subsets...",
+    )
+
+
 def test_check_metadata_copyright():
     """METADATA.pb: Copyright notice is the same in all fonts?"""
     check = CheckTester("com.google.fonts/check/metadata/copyright")

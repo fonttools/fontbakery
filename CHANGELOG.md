@@ -1,10 +1,13 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.12.8 (2024-Jun-??)
+## Upcoming release: 0.12.8 (2024-Jul-??)
 ### New checks
 #### Added to the OpenType profile
   - **EXPERIMENTAL - [com.adobe.fonts/check/cff_ascii_strings]:** Checks if all strings in a font's CFF table top dict fit in the range of ASCII values (issue #4619)
+
+#### Added to the Google Fonts profile
+- **EXPERIMENTAL - [com.google.fonts/check/metadata/single_cjk_subset]:** Check METADATA.pb file only contains a single CJK subset since the Google Fonts backend doesn't support multiple CJK subsets. (issue #4779)
 
 #### Added to the Universal profile
   - **EXPERIMENTAL - [com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table (issue #3020)
