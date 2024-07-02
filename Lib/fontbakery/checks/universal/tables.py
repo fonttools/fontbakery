@@ -91,6 +91,10 @@ def com_google_fonts_check_required_tables(ttFont, config, is_variable_font):
 
     missing_tables = [req for req in REQUIRED_TABLES if req not in font_tables]
 
+    # Note (from the OpenType spec):
+    # OpenType fonts that contain TrueType outlines should use the value of 0x00010000
+    # for sfntVersion. OpenType fonts containing CFF data (version 1 or 2) should use
+    # 0x4F54544F ('OTTO', when re-interpreted as a Tag) for sfntVersion.
     if ttFont.sfntVersion == "OTTO" and (
         "CFF " not in font_tables and "CFF2" not in font_tables
     ):
