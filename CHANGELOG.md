@@ -22,6 +22,7 @@ A more detailed list of changes is available in the corresponding milestones for
 ### Changes to existing checks
 #### On the Universal profile
   - **[com.google.fonts/check/unreachable_glyphs]:** Glyphs identified in the Extender Glyph Table within JSTF table, such as kashidas, are not included in the check output. (issue #4773)
+  - **[com.google.fonts/check/tabular_kerning]:** bumped the date of its EXPERIMENTAL flag, due to last month's additional changes at issue #4640.
 
 #### On the OpenType profile
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]** Clarify that the problem may actually be NameID 17, rather than the default instance. (PR #4761)
