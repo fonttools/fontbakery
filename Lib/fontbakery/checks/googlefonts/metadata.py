@@ -1692,7 +1692,6 @@ def com_google_fonts_check_metadata_category_hint(family_metadata):
         Validate family.minisite_url field.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4504",
-    experimental="Since 2024/Feb/16",
 )
 def com_google_fonts_check_metadata_minisite_url(
     family_metadata, family_metadata_text_content
