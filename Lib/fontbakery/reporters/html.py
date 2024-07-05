@@ -95,8 +95,8 @@ class HTMLReporter(SerializeReporter):
         """Returns complete report as a HTML string."""
         total = 0
 
-        # Rearrange the data so that checks in each section are clustered
-        # by id
+        # Rearrange the data so that checks in each section
+        # are clustered by id
         for section in data["sections"]:
             checks = section["checks"]
             total += len(checks)
