@@ -27,6 +27,10 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the OpenType profile
   - **[com.adobe.fonts/check/varfont/valid_default_instance_nameids]** Clarify that the problem may actually be NameID 17, rather than the default instance. (PR #4761)
 
+#### On the Google Fonts profile
+  - **[com.google.fonts/check/description/has_unsupported_elements]:** No longer marked EXPERIMENTAL. (was "Since 2024/Feb/07")
+  - **[com.google.fonts/check/metadata/minisite_url]:** No longer marked EXPERIMENTAL. (was "Since 2024/Feb/16")
+
 
 ## 0.12.7 (2024-Jun-04)
   - Support setting `input.variations` in input TOML for `update_shaping_tests`. (PR #4753)

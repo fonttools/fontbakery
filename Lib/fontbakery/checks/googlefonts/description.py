@@ -164,7 +164,6 @@ def com_google_fonts_check_description_has_article(font):
     proposal=[
         "https://github.com/fonttools/fontbakery/issues/2811#issuecomment-1907566857",
     ],
-    experimental="Since 2024/Feb/07",
 )
 def com_google_fonts_check_description_has_unsupported_elements(
     description_and_article, description_and_article_html
