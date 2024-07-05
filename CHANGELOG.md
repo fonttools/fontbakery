@@ -1,16 +1,23 @@
 Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
-## Upcoming release: 0.12.8 (2024-Jul-??)
+## Upcoming release: 0.12.9 (2024-Jul-??)
+  - ...
+
+
+## 0.12.8 (2024-Jul-05)
+### Noteworthy code-changes
+  - The HTML reporter bug reported at issue #4687 is not fully fixed yet, but as a partial-fix, the check results are not ommited anymore. A better fix is planned for a future release.
+
 ### New checks
+#### Added to the Universal profile
+  - **EXPERIMENTAL - [com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table (issue #3020)
+
 #### Added to the OpenType profile
   - **EXPERIMENTAL - [com.adobe.fonts/check/cff_ascii_strings]:** Checks if all strings in a font's CFF table top dict fit in the range of ASCII values (issue #4619)
 
 #### Added to the Google Fonts profile
-- **EXPERIMENTAL - [com.google.fonts/check/metadata/single_cjk_subset]:** Check METADATA.pb file only contains a single CJK subset since the Google Fonts backend doesn't support multiple CJK subsets. (issue #4779)
-
-#### Added to the Universal profile
-  - **EXPERIMENTAL - [com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table (issue #3020)
+  - **FATAL - [com.google.fonts/check/metadata/single_cjk_subset]:** Check METADATA.pb file only contains a single CJK subset since the Google Fonts backend doesn't support multiple CJK subsets. (issue #4779)
 
 ### Changes to existing checks
 #### On the Universal profile

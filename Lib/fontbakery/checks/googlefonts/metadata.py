@@ -377,7 +377,6 @@ def com_google_fonts_check_metadata_includes_production_subsets(
         backend doesn't support multiple CJK subsets.
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/4779",
-    experimental="Since 2024/Jul/02",
 )
 def com_google_fonts_check_metadata_single_cjk_subset(family_metadata):
     """Check METADATA.pb file only contains a single CJK subset."""
