@@ -3,7 +3,5 @@
     {% for status in section.status_summary %}{{ status | emoticon }}{% endfor %}
 </span>
 {% for cluster in section["clustered_checks"] %}
-    {% if not cluster is omitted %}
-        {% include "check.html" %}
-    {% endif %}
+    {% include "check.html" %}
 {% endfor %}
