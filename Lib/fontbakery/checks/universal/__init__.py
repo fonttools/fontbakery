@@ -1248,7 +1248,7 @@ def com_google_fonts_check_gsub_smallcaps_before_ligatures(ttFont):
     ]
 
     if not smcp_indices or not liga_indices:
-        return FAIL, Message(
+        return SKIP, Message(
             "missing-lookups", "'smcp' or 'liga' lookups not found in GSUB table."
         )
 
