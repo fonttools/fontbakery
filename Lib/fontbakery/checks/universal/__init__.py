@@ -1226,15 +1226,9 @@ def com_google_fonts_check_gsub_smallcaps_before_ligatures(ttFont):
     Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table.
     """
     if "GSUB" not in ttFont:
-        return FAIL, Message(
-            "missing-gsub-table", "Font does not contain a GSUB table."
-        )
+        return SKIP, "Font lacks a 'GSUB' table."
 
     gsub_table = ttFont["GSUB"].table
-    lookup_order = {
-        lookup.LookupType: idx
-        for idx, lookup in enumerate(gsub_table.LookupList.Lookup)
-    }
 
     smcp_indices = [
         idx
@@ -1248,9 +1242,7 @@ def com_google_fonts_check_gsub_smallcaps_before_ligatures(ttFont):
     ]
 
     if not smcp_indices or not liga_indices:
-        return FAIL, Message(
-            "missing-lookups", "'smcp' or 'liga' lookups not found in GSUB table."
-        )
+        return SKIP, "Font lacks 'smcp' or 'liga' features."
 
     first_smcp_index = min(smcp_indices)
     first_liga_index = min(liga_indices)

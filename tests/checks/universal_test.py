@@ -1432,18 +1432,6 @@ def test_check_gsub_smallcaps_before_ligatures():
     liga_feature = Feature()
     liga_feature.LookupListIndex = [1]
 
-    from copy import deepcopy
-
-    original_gsub_table = deepcopy(ttFont["GSUB"])
-
-    # Test GSUB table is missing
-    del ttFont["GSUB"]
-    msg = assert_results_contain(check(ttFont), FAIL, "missing-gsub-table")
-    assert "Font does not contain a GSUB table." in msg
-
-    # Restore GSUB table for further tests
-    ttFont["GSUB"] = original_gsub_table
-
     smcp_record = FeatureRecord()
     smcp_record.FeatureTag = "smcp"
     smcp_record.Feature = smcp_feature
@@ -1459,13 +1447,3 @@ def test_check_gsub_smallcaps_before_ligatures():
     # Test 'liga' lookup before 'smcp' lookup
     ttFont["GSUB"].table.FeatureList.FeatureRecord = [liga_record, smcp_record]
     assert_results_contain(check(ttFont), FAIL, "feature-ordering")
-
-    # Test 'smcp' lookup missing
-    ttFont["GSUB"].table.FeatureList.FeatureRecord = [liga_record]
-    msg = assert_results_contain(check(ttFont), FAIL, "missing-lookups")
-    assert "'smcp' or 'liga' lookups not found in GSUB table." in msg
-
-    # Test 'liga' lookup missing
-    ttFont["GSUB"].table.FeatureList.FeatureRecord = [smcp_record]
-    msg = assert_results_contain(check(ttFont), FAIL, "missing-lookups")
-    assert "'smcp' or 'liga' lookups not found in GSUB table." in msg
