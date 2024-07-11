@@ -2,7 +2,8 @@ Below are the noteworthy changes from each release.
 A more detailed list of changes is available in the corresponding milestones for each release in the Github issue tracker (https://github.com/googlefonts/fontbakery/milestones?state=closed).
 
 ## Upcoming release: 0.12.9 (2024-Jul-??)
-  - ...
+### Noteworthy code-changes
+  - **EXPERIMENTAL - [com.google.fonts/check/gsub/smallcaps_before_ligatures]:** This check is not relevant to fonts without the 'smcp' feature. Do not fail on fonts without smallcaps.
 
 
 ## 0.12.8 (2024-Jul-05)

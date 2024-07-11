@@ -1462,10 +1462,10 @@ def test_check_gsub_smallcaps_before_ligatures():
 
     # Test 'smcp' lookup missing
     ttFont["GSUB"].table.FeatureList.FeatureRecord = [liga_record]
-    msg = assert_results_contain(check(ttFont), FAIL, "missing-lookups")
+    msg = assert_results_contain(check(ttFont), SKIP, "missing-lookups")
     assert "'smcp' or 'liga' lookups not found in GSUB table." in msg
 
     # Test 'liga' lookup missing
     ttFont["GSUB"].table.FeatureList.FeatureRecord = [smcp_record]
-    msg = assert_results_contain(check(ttFont), FAIL, "missing-lookups")
+    msg = assert_results_contain(check(ttFont), SKIP, "missing-lookups")
     assert "'smcp' or 'liga' lookups not found in GSUB table." in msg
