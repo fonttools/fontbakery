@@ -37,6 +37,7 @@ PROFILE = {
             "com.google.fonts/check/tabular_kerning",
             "com.google.fonts/check/transformed_components",
             "com.google.fonts/check/ttx_roundtrip",
+            "com.arrowtype.fonts/check/typoascender_exceeds_Agrave",
             "com.google.fonts/check/unique_glyphnames",
             "com.google.fonts/check/unreachable_glyphs",
             "com.google.fonts/check/unwanted_tables",

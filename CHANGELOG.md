@@ -7,6 +7,9 @@ A more detailed list of changes is available in the corresponding milestones for
 
 ## 0.12.9 (2024-Jul-17)
 ### New checks
+#### Added to the Universal profile
+  - **EXPERIMENTAL - [com.arrowtype.fonts/check/typoascender_exceeds_Agrave]:** Check that the typoAscender exceeds the yMax of the /Agrave (issue #3170)
+
 #### Added to the UFO profile
   -  **EXPERIMENTAL - [com.google.fonts/check/consistent_curve_type]:**: checks that a consistent curve type is used across the font sources as well as within glyphs. (PR #4795)
 
