@@ -1,13 +1,6 @@
 import os
-
-from fontbakery.prelude import (
-    check,
-    condition,
-    Message,
-    PASS,
-    FAIL,
-    WARN,
-)
+from fontTools.pens.boundsPen import BoundsPen
+from fontbakery.prelude import check, condition, Message, PASS, FAIL, WARN, SKIP
 from fontbakery.testable import CheckRunContext
 
 
@@ -266,3 +259,58 @@ def com_google_fonts_check_linegaps(ttFont):
         yield WARN, Message("OS/2", "OS/2 sTypoLineGap is not equal to 0.")
     else:
         yield PASS, "OS/2 sTypoLineGap and hhea lineGap are both 0."
+
+
+@check(
+    id="com.arrowtype.fonts/check/typoascender_exceeds_Agrave",
+    rationale="""
+        MacOS uses OS/2.sTypoAscender/Descender values to determine the line height
+        of a font. If the sTypoAscender value is smaller than the maximum height of
+        the uppercase /Agrave, the font’s sTypoAscender value is ignored, and a very
+        tall line height is used instead.
+
+        This happens on a per-font, per-style basis, so it’s possible for a font to
+        have a good sTypoAscender value in one style but not in another. This can
+        lead to inconsistent line heights across a typeface family.
+
+        So, it is important to ensure that the sTypoAscender value is greater than
+        the maximum height of the uppercase /Agrave in all styles of a type family.
+    """,
+    experimental="Since 2024/Jul/17",
+    proposal="https://github.com/fonttools/fontbakery/issues/3170",
+)
+def com_arrowtype_fonts_check_typoascender_exceeds_Agrave(ttFont):
+    """Checking that the typoAscender exceeds the yMax of the /Agrave."""
+
+    if "OS/2" not in ttFont:
+        yield FAIL, Message("lacks-OS/2", "Font file lacks OS/2 table")
+        return
+
+    glyphset = ttFont.getGlyphSet()
+
+    if "Agrave" not in glyphset and "uni00C0" not in glyphset:
+        yield SKIP, Message(
+            "lacks-Agrave",
+            "Font file lacks the /Agrave, so it can’t be compared with typoAscender",
+        )
+        return
+
+    pen = BoundsPen(glyphset)
+
+    try:
+        glyphset["Agrave"].draw(pen)
+    except KeyError:
+        glyphset["uni00C0"].draw(pen)
+
+    yMax = pen.bounds[-1]
+
+    typoAscender = ttFont["OS/2"].sTypoAscender
+
+    if typoAscender < yMax:
+        yield FAIL, Message(
+            "typoAscender",
+            f"OS/2.sTypoAscender value should be greater than {yMax},"
+            f" but got {typoAscender} instead",
+        )
+    else:
+        yield PASS, "OS/2.sTypoAscender value is greater than the yMax of /Agrave."
