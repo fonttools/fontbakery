@@ -1438,7 +1438,7 @@ def test_check_gsub_smallcaps_before_ligatures():
 
     # Test GSUB table is missing
     del ttFont["GSUB"]
-    msg = assert_results_contain(check(ttFont), FAIL, "missing-gsub-table")
+    msg = assert_results_contain(check(ttFont), SKIP, "missing-gsub-table")
     assert "Font does not contain a GSUB table." in msg
 
     # Restore GSUB table for further tests

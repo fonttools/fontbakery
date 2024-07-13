@@ -1226,7 +1226,7 @@ def com_google_fonts_check_gsub_smallcaps_before_ligatures(ttFont):
     Ensure 'smcp' (small caps) lookups are defined before ligature lookups in the 'GSUB' table.
     """
     if "GSUB" not in ttFont:
-        return FAIL, Message(
+        return SKIP, Message(
             "missing-gsub-table", "Font does not contain a GSUB table."
         )
 
