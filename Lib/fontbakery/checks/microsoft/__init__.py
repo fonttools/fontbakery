@@ -29,16 +29,28 @@ def get_subfamily_name(ttFont):
     return subfamily_name.toUnicode()
 
 
-@check(id="com.microsoft/check/copyright", rationale="")
+@check(
+    id="com.microsoft/check/copyright",
+    rationale="""
+        Check whether the copyright string exists and is not empty.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_copyright(ttFont):
-    """Check whether the copyright string exists and is not empty."""
+    """Validate copyright string in name table."""
     yield from _ensure_name_id_exists(ttFont, 0, "copyright")
 
 
-@check(id="com.microsoft/check/version", rationale="")
+@check(
+    id="com.microsoft/check/version",
+    rationale="""
+        Check whether Name ID 5 starts with 'Version X.YY'
+        where X and Y are digits.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_version(ttFont):
-    """Check whether Name ID 5 starts with 'Version X.YY' where X and Y
-    are digits."""
+    """Version string formating requirements."""
     version = ttFont["name"].getName(5, 3, 1, 0x0409).toUnicode()
     version_pattern = r"Version \d\.\d\d"
     m = re.match(version_pattern, version)
@@ -48,15 +60,27 @@ def com_microsoft_check_version(ttFont):
         yield PASS, "Name ID 5 starts with 'Version X.YY'"
 
 
-@check(id="com.microsoft/check/trademark", rationale="")
+@check(
+    id="com.microsoft/check/trademark",
+    rationale="""
+        Check whether Name ID 7 (trademark) exists and is not empty.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_trademark(ttFont):
-    """Check whether Name ID 7 (trademark) exists and is not empty."""
+    """Validate trademark field in name table."""
     yield from _ensure_name_id_exists(ttFont, 7, "trademark", WARN)
 
 
-@check(id="com.microsoft/check/manufacturer", rationale="")
+@check(
+    id="com.microsoft/check/manufacturer",
+    rationale="""
+        Check whether Name ID 8 (manufacturer) exists and is not empty.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_manufacturer(ttFont):
-    """Check whether Name ID 8 (manufacturer) exists and is not empty."""
+    """Validate manufacturer field in name table."""
     yield from _ensure_name_id_exists(ttFont, 8, "manufacturer")
 
 
@@ -70,9 +94,15 @@ def _ensure_name_id_exists(ttFont, name_id, name_name, negative_status=FAIL):
         yield PASS, f"Name ID {name_id} ({name_name}) exists and is not empty."
 
 
-@check(id="com.microsoft/check/vendor_url", rationale="")
+@check(
+    id="com.microsoft/check/vendor_url",
+    rationale="""
+        Check whether vendor URL is pointing at microsoft.com
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_vendor_url(ttFont):
-    """Check whether vendor URL is pointing at microsoft.com"""
+    """Validate vendor URL."""
     name_record = ttFont["name"].getName(11, 3, 1, 0x0409)
     if name_record is None:
         yield FAIL, "Name ID 11 (vendor URL) does not exists."
@@ -81,9 +111,7 @@ def com_microsoft_check_vendor_url(ttFont):
         vendor_pattern = r"https?://(\w+\.)?microsoft.com/?"
         m = re.match(vendor_pattern, vendor_url)
         if m is None:
-            yield FAIL, (
-                f"vendor URL does not point at microsoft.com: " f"'{vendor_url}'"
-            )
+            yield FAIL, (f"vendor URL does not point at microsoft.com: '{vendor_url}'")
         else:
             yield PASS, "vendor URL OK"
 
@@ -101,9 +129,15 @@ ms_license_description = (
 )  # ignore commas, see below
 
 
-@check(id="com.microsoft/check/license_description", rationale="")
+@check(
+    id="com.microsoft/check/license_description",
+    rationale="""
+        Check whether license description is correct.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_license_description(ttFont):
-    """Check whether license description is correct."""
+    """Validate license description field in the name table."""
     name_record = ttFont["name"].getName(13, 3, 1, 0x0409)
     if name_record is None:
         yield FAIL, "Name ID 13 (license description) does not exists."
@@ -118,10 +152,16 @@ def com_microsoft_check_license_description(ttFont):
             yield PASS, "License description OK"
 
 
-@check(id="com.microsoft/check/typographic_family_name", rationale="")
+@check(
+    id="com.microsoft/check/typographic_family_name",
+    rationale="""
+        Check whether Name ID 16 (Typographic Family name) is consistent
+        across the set of fonts.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_typographic_family_name(ttFonts):
-    """Check whether Name ID 16 (Typographic Family name) is consistent
-    across the set of fonts."""
+    """Typographic Family name consistency."""
     values = set()
     for ttFont in ttFonts:
         name_record = ttFont["name"].getName(16, 3, 1, 0x0409)
@@ -138,25 +178,44 @@ def com_microsoft_check_typographic_family_name(ttFonts):
         yield PASS, "Name ID 16 (Typographic Family name) is consistent"
 
 
-@check(id="com.microsoft/check/fstype", rationale="")
+@check(
+    id="com.microsoft/check/fstype",
+    rationale="""
+        The value of the OS/2.fstype field must be 8 (Editable embedding), meaning,
+        according to the OpenType spec:
+        
+        "Editable embedding: the font may be embedded, and may be temporarily loaded
+        on other systems. As with Preview & Print embedding, documents containing
+        Editable fonts may be opened for reading. In addition, editing is permitted,
+        including ability to format new text using the embedded font, and changes
+        may be saved." 
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_fstype(ttFont):
     """Checking OS/2 fsType."""
     required_value = 8
     value = ttFont["OS/2"].fsType
     if value != required_value:
-        yield FAIL, f"OS/2 fsType must be set to {required_value}, found {value} instead."
+        yield FAIL, (
+            f"OS/2 fsType must be set to {required_value}, found {value} instead."
+        )
     else:
         yield PASS, "OS/2 fsType is properly set."
 
 
-@check(id="com.microsoft/check/vertical_metrics", rationale="")
+@check(
+    id="com.microsoft/check/vertical_metrics",
+    rationale="""
+        If OS/2.fsSelection.useTypoMetrics is not set, then
+            hhea.ascender == OS/2.winAscent
+            hhea.descender == OS/2.winDescent
+            hhea.lineGap == 0
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_vertical_metrics(ttFont):
-    """Checking hhea OS/2 vertical_metrics:
-    If OS/2.fsSelection.useTypoMetrics is not set, then
-        hhea.ascender == OS/2.winAscent
-        hhea.descender == OS/2.winDescent
-        hhea.lineGap == 0
-    """
+    """Checking hhea OS/2 vertical_metrics."""
     os2_table = ttFont["OS/2"]
     hhea_table = ttFont["hhea"]
     failed = False
@@ -201,10 +260,13 @@ def com_microsoft_check_vertical_metrics(ttFont):
 @check(
     id="com.microsoft/check/STAT_axis_values",
     conditions=["has_STAT_table"],
-    rationale="",
+    rationale="""
+        Check whether STAT axis values are unique.
+    """,  # FIXME: Expand this rationale detailing why the values must be unique.
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
 )
 def com_microsoft_check_STAT_axis_values(ttFont):
-    """Check whether STAT axis values are unique."""
+    """STAT axis values must be unique."""
     stat_table = ttFont["STAT"].table
     axis_values_format1 = set()  # set of (axisIndex, axisValue) tuples
     failed = False
@@ -230,10 +292,13 @@ def com_microsoft_check_STAT_axis_values(ttFont):
 @check(
     id="com.microsoft/check/fvar_STAT_axis_ranges",
     conditions=["has_STAT_table", "is_variable_font"],
-    rationale="",
+    rationale="""
+        Check fvar named instance axis values lie within a *single* STAT axis range.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
 )
 def com_microsoft_check_fvar_STAT_axis_ranges(ttFont):
-    """Check fvar named instance axis values lie within a *single* STAT axis range."""
+    """Requirements for named instances and STAT axis ranges."""
     stat_table = ttFont["STAT"].table
     stat_design_axis = stat_table.DesignAxisRecord.Axis
     stat_design_axis_count = len(stat_design_axis)
@@ -326,7 +391,10 @@ def com_microsoft_check_fvar_STAT_axis_ranges(ttFont):
 @check(
     id="com.microsoft/check/STAT_table_eliding_bit",
     conditions=["has_STAT_table"],
-    rationale="",
+    rationale="""
+        Validate STAT table eliding bit.
+    """,  # FIXME: Expand this rationale text.
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
 )
 def com_microsoft_check_STAT_table_eliding_bit(ttFont):
     """Validate STAT table eliding bit"""
@@ -353,18 +421,23 @@ def com_microsoft_check_STAT_table_eliding_bit(ttFont):
         yield PASS, "STAT table eliding bit is valid"
 
 
-# Reversed axis order for STAT table - note ital and slnt are rarely in same
-# font but if they are, ital should be last.
-AXIS_ORDER_REVERSED = ["ital", "slnt", "wdth", "wght", "opsz"]
-
-
 @check(
     id="com.microsoft/check/STAT_table_axis_order",
     conditions=["has_STAT_table"],
-    rationale="",
+    rationale="""
+        Validate STAT table axisOrder.
+    """,
+    # FIXME: Expanding this rationale detailing the reasons why
+    #        this ordeging is necessary.
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
 )
 def com_microsoft_check_STAT_table_axis_order(ttFont):
-    """Validate STAT table axisOrder"""
+    """STAT table axis order."""
+
+    # Reversed axis order for STAT table - note ital and slnt are rarely in same
+    # font but if they are, ital should be last.
+    AXIS_ORDER_REVERSED = ["ital", "slnt", "wdth", "wght", "opsz"]
+
     failed = False
     stat_table = ttFont["STAT"].table
     stat_design_axis = stat_table.DesignAxisRecord.Axis
@@ -392,7 +465,13 @@ def com_microsoft_check_STAT_table_axis_order(ttFont):
         yield PASS, "STAT table axisOrder is valid"
 
 
-@check(id="com.microsoft/check/name_id_1", rationale="")
+@check(
+    id="com.microsoft/check/name_id_1",
+    rationale="""
+        Presence of a name ID 1 entry is mandatory.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_name_id_1(ttFont):
     """Font has a name with ID 1."""
     if not ttFont["name"].getName(1, 3, 1, 0x409):
@@ -401,7 +480,13 @@ def com_microsoft_check_name_id_1(ttFont):
         yield PASS, "Font has a name with ID 1."
 
 
-@check(id="com.microsoft/check/name_id_2", rationale="")
+@check(
+    id="com.microsoft/check/name_id_2",
+    rationale="""
+        Presence of a name ID 2 entry is mandatory.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_name_id_2(ttFont):
     """Font has a name with ID 2."""
     if not ttFont["name"].getName(2, 3, 1, 0x409):
@@ -410,17 +495,26 @@ def com_microsoft_check_name_id_2(ttFont):
         yield PASS, "Font has a name with ID 2."
 
 
-@check(id="com.microsoft/check/office_ribz_req", rationale="")
+@check(
+    id="com.microsoft/check/office_ribz_req",
+    rationale="""
+        Office fonts:
+        Name IDs 1 & 2 must be set for an RBIZ family model.
+        I.e. ID 2 can only be one of “Regular”, “Italic”, “Bold”, or
+        “Bold Italic”.
+        
+        All other style designators (including “Light” or
+        “Semilight”) must be in ID 1.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_office_ribz_req(ttFont):
-    """Office fonts: Name IDs 1 & 2 must be set for an RBIZ family model.
-    I.e. ID 2 can only be one of “Regular”, “Italic”, “Bold”, or
-    “Bold Italic”. All other style designators (including “Light” or
-    “Semilight”) must be in ID 1.
-    """
-    # family_name = get_family_name(ttFont)
+    """MS Office RBIZ requirements."""
+
     subfamily_name = get_subfamily_name(ttFont)
     if subfamily_name is None:
         yield FAIL, "Name ID 2 (sub family) missing"
+
     if subfamily_name not in {"Regular", "Italic", "Bold", "Bold Italic"}:
         yield FAIL, (
             f"Name ID 2 (subfamily) invalid: {subfamily_name}; "
@@ -430,12 +524,16 @@ def com_microsoft_check_office_ribz_req(ttFont):
         yield PASS, "Name ID 2 (subfamily) OK"
 
 
-@check(id="com.microsoft/check/name_length_req", rationale="")
+@check(
+    id="com.microsoft/check/name_length_req",
+    rationale="""
+        For Office, family and subfamily names must be 31 characters or less total
+        to fit in a LOGFONT.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_name_length_req(ttFont):
-    """
-    For Office, family and subfamily names must be 31 characters or less total
-    to fit in a LOGFONT.
-    """
+    """Maximum allowed length for family and subfamily names."""
     family_name = get_family_name(ttFont)
     subfamily_name = get_subfamily_name(ttFont)
     if family_name is None:
@@ -460,31 +558,34 @@ def com_microsoft_check_name_length_req(ttFont):
         )
 
 
-VTT_HINT_TABLES = [
-    "TSI0",
-    "TSI1",
-    "TSI2",
-    "TSI3",
-    "TSI5",
-    "TSIC",  # cvar
-]
-
-OTL_SOURCE_TABLES = [
-    "TSIV",  # Volt
-    "TSIP",  # GPOS
-    "TSIS",  # GSUB
-    "TSID",  # GDEF
-    "TSIJ",  # JSTF
-    "TSIB",  # BASE
-]
-
-
-@check(id="com.microsoft/check/vtt_volt_data", rationale="")
+@check(
+    id="com.microsoft/check/vtt_volt_data",
+    rationale="""
+        Check to make sure all the VTT source (TSI* tables) and
+        VOLT stuff (TSIV and zz features & langsys records) are gone.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_vtt_volt_data_gone(ttFont):
-    """
-    Check to make sure all the VTT source (TSI* tables) and
-    VOLT stuff (TSIV and zz features & langsys records) are gone.
-    """
+    """VTT or Volt Source Data must not be present."""
+
+    VTT_HINT_TABLES = [
+        "TSI0",
+        "TSI1",
+        "TSI2",
+        "TSI3",
+        "TSI5",
+        "TSIC",  # cvar
+    ]
+
+    OTL_SOURCE_TABLES = [
+        "TSIV",  # Volt
+        "TSIP",  # GPOS
+        "TSIS",  # GSUB
+        "TSID",  # GDEF
+        "TSIJ",  # JSTF
+        "TSIB",  # BASE
+    ]
 
     failure_found = False
     for table in VTT_HINT_TABLES + OTL_SOURCE_TABLES:
@@ -507,6 +608,7 @@ def com_microsoft_check_vtt_volt_data_gone(ttFont):
                 if langSysRec.LangSysTag[:2] == "zz":
                     failure_found = True
                     yield FAIL, "Volt zz langsys found"
+
     if not failure_found:
         yield PASS, "No VTT or Volt Source Data Found"
 
@@ -557,12 +659,13 @@ def parse_unicode_escape(s):
 @check(
     id="com.microsoft/check/tnum_glyphs_equal_widths",
     configs={"TEST_STR"},
-    rationale="",
+    rationale="""
+        Check to make sure all the tnum glyphs are the same width.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
 )
 def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
-    """
-    Check to make sure all the tnum glyphs are the same width.
-    """
+    """Widths of tabular number glyphs."""
     import uharfbuzz as hb
 
     filename = ttFont.reader.file.name
@@ -625,6 +728,7 @@ def com_microsoft_check_tnum_glyphs_equal_widths(ttFont):
 
 
 # Optional checks
+# FIXME: There's no way to run these checks, as they are not included in any profile!
 
 
 def check_repertoire(ttFont, character_repertoire, name, error_status=FAIL):
@@ -639,9 +743,15 @@ def check_repertoire(ttFont, character_repertoire, name, error_status=FAIL):
         yield PASS, f"character repertoire complete for {name}"
 
 
-@check(id="com.microsoft/check/wgl4", rationale="")
+@check(
+    id="com.microsoft/check/wgl4",
+    rationale="""
+        Check whether the font complies with WGL4.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_office_wgl4(ttFont):
-    """Check whether the font complies with WGL4."""
+    """WGL4 compliance."""
     from .character_repertoires import WGL4_OPTIONAL, WGL4_REQUIRED
 
     yield from check_repertoire(ttFont, WGL4_REQUIRED, "WGL4")
@@ -650,9 +760,15 @@ def com_microsoft_check_office_wgl4(ttFont):
     )
 
 
-@check(id="com.microsoft/check/ogl2", rationale="")
+@check(
+    id="com.microsoft/check/ogl2",
+    rationale="""
+        Check whether the font complies with OGL2.
+    """,
+    proposal="https://github.com/fonttools/fontbakery/pull/4657",
+)
 def com_microsoft_check_office_ogl2(ttFont):
-    """Check whether the font complies with OGL2."""
+    """OGL2 compliance."""
     from .character_repertoires import OGL2
 
     yield from check_repertoire(ttFont, OGL2, "OGL2")
