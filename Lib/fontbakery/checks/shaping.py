@@ -480,6 +480,10 @@ def is_complex_shaper_font(ttFont):
         Additionally, when a dotted circle glyph is present, it should be able to
         display all marks correctly, meaning that it should contain anchors for all
         attaching marks.
+
+        A fontmake filter can be used to automatically add a dotted_circle to a font:
+
+        fontmake --filter 'DottedCircleFilter(pre=True)' --filter '...'
     """,
     proposal="https://github.com/fonttools/fontbakery/issues/3600",
 )
