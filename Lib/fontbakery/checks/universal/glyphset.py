@@ -237,9 +237,10 @@ def com_google_fonts_check_unreachable_glyphs(ttFont, config):
                 if hasattr(paint_record.Paint, "Glyph"):
                     all_glyphs.discard(paint_record.Paint.Glyph)
 
-            for paint in ttFont["COLR"].table.LayerList.Paint:
-                if hasattr(paint, "Glyph"):
-                    all_glyphs.discard(paint.Glyph)
+            if ttFont["COLR"].table.LayerList:
+                for paint in ttFont["COLR"].table.LayerList.Paint:
+                    if hasattr(paint, "Glyph"):
+                        all_glyphs.discard(paint.Glyph)
 
     if "GSUB" in ttFont and ttFont["GSUB"].table.LookupList:
         lookups = ttFont["GSUB"].table.LookupList.Lookup

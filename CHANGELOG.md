@@ -17,6 +17,9 @@ A more detailed list of changes is available in the corresponding milestones for
 #### On the Universal profile
   - **[com.google.fonts/check/gsub/smallcaps_before_ligatures]:** Skip check if font lacks GSUB table or font is missing either liga or smcp features. (PR #4787)
 
+#### On the Shaping profile
+  - **[com.google.fonts/check/unreachable_glyphs]:** Fix ERROR by being sure that we have a LayerList before attempting to access it. (issue #4786)
+
 
 ## 0.12.8 (2024-Jul-05)
 ### Noteworthy code-changes
