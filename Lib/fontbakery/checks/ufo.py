@@ -361,6 +361,8 @@ def com_thetypefounders_check_features_default_languagesystem(ufo_font):
         build pipeline unless specifically configured to account for this.
     """,
     conditions=["ufo_font"],
+    experimental="Since 2024/Jul/17",
+    proposal="https://github.com/fonttools/fontbakery/pull/4795",
 )
 def check_consistent_curve_type(config, ufo: Ufo):
     """Check that all glyphs across the source use the same curve type"""
@@ -394,8 +396,9 @@ def check_consistent_curve_type(config, ufo: Ufo):
             WARN,
             Message(
                 "both-cubic-and-quadratic",
-                f"{ufo.file_displayname} contains a mix of cubic-curve glyphs and quadratic-curve "
-                "glyphs\n\nCubics:\n\n"
+                f"{ufo.file_displayname} contains a mix of cubic-curve glyphs"
+                " and quadratic-curve glyphs\n\n"
+                "Cubics:\n\n"
                 f"{utils.bullet_list(config, cubic_glyphs)}\n\n"
                 "Quadratics:\n\n"
                 f"{utils.bullet_list(config, quadratic_glyphs)}\n",
